@@ -151,6 +151,8 @@
       *  04.03.00    NACL-¾®Æ¦Âô  08/08/11  ÆÃÄêÆþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¤ò¥µ¥Ö¥×¥í¤ËÊÑ¹¹
       *  04.07.00    NACL-¾®Æ¦Âô  11.07.25  µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü
       *                                     ²Ã»»¤Î¥·¥¹¥Æ¥à´ÉÍýÀßÄêÄÉ²Ã
+      *  04.07.00    NACL-¾®Æ¦Âô  11/08/01  êóáì´µ¼Ô´ÉÍý²Ã»»¤Î°ÛÆ°½èÍý»þ
+      *                                     ¥³¥ó¥ÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -265,6 +267,7 @@
            03  IDX-KSN2                    PIC 9(05).
            03  IDX-SST                     PIC 9(05).
            03  IDX-NSRY                    PIC 9(05).
+           03  IDX-JOKU                    PIC 9(05).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -533,6 +536,11 @@
            03  WRK-SHOKUJI-ASA             PIC 9(01).
            03  WRK-SHOKUJI-HIRU            PIC 9(01).
            03  WRK-SHOKUJI-YORU            PIC 9(01).
+      *
+      *    êóáì´µ¼Ô´ÉÍý²Ã»»È½ÄêÎÎ°è
+           03  WRK-JOKUSOU-IDXX            PIC X(02).
+           03  WRK-JOKUSOU-IDX9   REDEFINES   WRK-JOKUSOU-IDXX
+                                           PIC 9(02).
       *
       *    ´µ¼ÔÇ¯Îð»»½ÐÍÑ¥¨¥ê¥¢
        01  WRK-NENREI-AREA.
@@ -5448,13 +5456,23 @@
                    ELSE
                        MOVE    ZERO    TO  FLG-HIT
                    END-IF
+               ELSE
+      *            êóáì´µ¼Ô´ÉÍý²Ã»»
+                   IF    ( CONST-KSNCD (IDX-KSN)
+                                  =   CONST-KSNCD-190116990)  AND
+                         (WRK-KJNYMD     >=  "20040401" )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO    TO  FLG-HIT
+                   END-IF
                END-IF
       *
                IF    ( SPA-GMN-I01-SYORIKBN-CD =   CONST-IDO )
                    IF    ( CONST-KSNCD (IDX-KSN)
                                    =   CONST-KSNCD-190135470
                                     OR CONST-KSNCD-190134270
-                                    OR CONST-KSNCD-190135670 )
+                                    OR CONST-KSNCD-190135670
+                                    OR CONST-KSNCD-190116990 )
                      AND ( SPA-NAI-I01-IDOYMD
                                            >=  SPA-NAI-I01-NYUINYMD )
                        CONTINUE
@@ -5567,6 +5585,12 @@
                    END-IF
                END-IF
       *
+      *        êóáì´µ¼Ô´ÉÍý²Ã»»¤Î»»ÄêºÑ¤ß¥Á¥§¥Ã¥¯
+               IF    (FLG-HIT         =   1 )   AND
+                     (CONST-KSNCD (IDX-KSN)    =  "190116990")
+                    PERFORM    410111-JOKUSOU-CHK-SEC
+               END-IF
+      *
                IF    ( FLG-HIT         =   1 )
                    COMPUTE CNT-KSN =   CNT-KSN +   1
                    MOVE    WRK-KSNNAME TO  SPA-GMN-I01-LBLKSN (CNT-KSN)
@@ -5579,6 +5603,14 @@
                    MOVE    "»»Äê¤¹¤ë"
                                    TO  SPA-GMN-I01-KSNMEIL   (CNT-KSN 2)
                    MOVE    2       TO  SPA-GMN-I01-KSN-CNT   (CNT-KSN)
+      *
+      *            êóáì´µ¼Ô´ÉÍý²Ã»»¤Î»»ÄêºÑ¤ß¤Î¾ì¹ç¤Ï¥³¥ó¥Ü¤ÎÉ½¼¨ÆâÍÆÊÑ¹¹
+                   IF  (SPA-GMN-I01-KSN-SRYCD (CNT-KSN) = "190116990" )
+                     AND (SPA-I01-JOKUSOUKBN   =  "1")
+                   MOVE    "»»ÄêºÑ¤ß"
+                                   TO  SPA-GMN-I01-KSNMEIL   (CNT-KSN 1)
+                   END-IF
+      *
                END-IF
       *
            END-PERFORM
@@ -5599,6 +5631,14 @@
                PERFORM 4103-CMB-KSN-CHK-SEC
                IF    ( WRK-CMB-ITM     =   SPACE )
                    MOVE    "1"         TO  WRK-CMB-CD
+      *
+      *            êóáì´µ¼Ô´ÉÍý²Ã»»
+                   IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190116990"
+                           MOVE   "1"         TO  WRK-CMB-CD
+                       IF   SPA-I01-JOKUSOUKBN   =   "1"
+                           MOVE   "1"         TO  WRK-CMB-CD
+                       END-IF
+                   END-IF
       *
       *            Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»
                    IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190135470"
@@ -5634,6 +5674,19 @@
                END-IF
            END-PERFORM
       *
+      *    =====   TEST  ======
+      *     DISPLAY "SPA-GMN-I01-KSN-SRYCD(1) = "
+      *              SPA-GMN-I01-KSN-SRYCD(1)
+      *     DISPLAY "SPA-GMN-I01-KSN-SRYCD(2) = "
+      *              SPA-GMN-I01-KSN-SRYCD(2)
+      *     DISPLAY "SPA-GMN-I01-KSN-SRYCD(3) = "
+      *              SPA-GMN-I01-KSN-SRYCD(3)
+      *     MOVE   "2 »»ÄêºÑ¤ß"  TO  WRK-CMB-ITM
+      *     MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-KSN (1)
+      *     MOVE    WIDGET-INSENSITIVE
+      *                          TO   I01-KSN-STT (1)
+      *                               I01-KSN-ITM-STT(1)
+      *    =====   TEST  ======
            .
        41011-CMB-KSN-SET-EXT.
            EXIT.
@@ -5690,6 +5743,73 @@
       *
            .
        410111-IPPAN-NYUIN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    êóáì´µ¼Ô´ÉÍý²Ã»»¤Î»»ÄêºÑ¤ß¥Á¥§¥Ã¥¯
+      *****************************************************************
+       410111-JOKUSOU-CHK-SEC      SECTION.
+      *
+           MOVE     SPACE              TO  SPA-I01-JOKUSOUKBN
+      *    Æþ±¡ÍúÎò¤ÈÆþ±¡²ñ·×¤ò¸¡º÷¤·¡¢»»ÄêºÑ¤ßÆü¿ô¤òµá¤á¤ë
+           INITIALIZE                      PTNYUINRRK-REC
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
+           MOVE    SPA-NAI-I01-IDOYMD  TO  PTNYUINRRK-TENNYUYMD
+                                           PTNYUINRRK-TENSTUYMD
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key42"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    SPA-HOSPNUM     TO  NACCT-HOSPNUM
+               MOVE    SPA-PTID        TO  NACCT-PTID
+               MOVE    PTNYUINRRK-NYUINYMD(1:6)
+                                       TO  NACCT-SRYYM
+               MOVE    "key47"         TO  MCP-PATHNAME
+               PERFORM 910-NYUINACCT-SELECT-SEC
+               IF      FLG-NYUINACCT   =   ZERO
+                   MOVE    "key47"         TO  MCP-PATHNAME
+                   PERFORM 910-NYUINACCT-READ-SEC
+                   PERFORM   UNTIL
+                            (FLG-NYUINACCT   =   1)
+                       IF   NACCT-ZAIKAISU   NOT =   ZERO
+                          IF   PTNYUINRRK-NYUINYMD(1:6)
+                                        =   NACCT-SRYYM
+                              MOVE   PTNYUINRRK-NYUINYMD(7:2)
+                                           TO   WRK-JOKUSOU-IDXX
+                              PERFORM    VARYING   IDX-JOKU  FROM
+                                         WRK-JOKUSOU-IDX9  BY  1
+                                UNTIL   (IDX-JOKU  >  31)
+                                   IF  NACCT-DAY(IDX-JOKU) NOT = ZERO
+                                       MOVE   "1"     TO
+                                                   SPA-I01-JOKUSOUKBN
+                                   END-IF
+                              END-PERFORM
+                          ELSE
+                            MOVE   "1"     TO   SPA-I01-JOKUSOUKBN
+                          END-IF
+                       END-IF
+                       MOVE    "key47"         TO  MCP-PATHNAME
+                       PERFORM 910-NYUINACCT-READ-SEC
+                   END-PERFORM
+               END-IF
+      *
+               MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+               MOVE    "key47"         TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+           END-IF
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key42"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+      **     DISPLAY "==  ORCGI01 SPA-I01-JOKUSOUKBN = "
+      **                 SPA-I01-JOKUSOUKBN
+      *
+           .
+       410111-JOKUSOU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    »ÜÀß´ð½à¸¡º÷½èÍý
@@ -22899,6 +23019,14 @@
                    MOVE    WIDGET-INSENSITIVE
                                        TO  I01-KSN-STT (IDX-KSN)
                                            I01-KSN-ITM-STT (IDX-KSN)
+               END-IF
+      *        
+      *        êóáì´µ¼Ô´ÉÍý²Ã»»¤Î»»ÄêºÑ¤ß»þ¤ÏÁªÂò¥³¥ó¥ÜÈó³èÀ­
+               IF  (SPA-GMN-I01-KSN-SRYCD(IDX-KSN)  =  "190116990") AND
+                   (SPA-I01-JOKUSOUKBN              =  "1")
+                    MOVE    WIDGET-INSENSITIVE
+                                       TO   I01-KSN-STT (IDX-KSN)
+                                            I01-KSN-ITM-STT(IDX-KSN)
                END-IF
       *
            END-PERFORM

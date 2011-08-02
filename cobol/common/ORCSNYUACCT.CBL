@@ -1065,7 +1065,7 @@
                IF      LNK-SCNYUACCT-NYUKHNKSN-KBN (IDX-K)
                                            =   "1"
       *            入院処理時のみ行う
-                   IF      LNK-SCNYUACCT-SYORI-KBN     =   "1"
+                   IF      LNK-SCNYUACCT-SYORI-KBN     =   "1"  OR  "8"
                        MOVE    1                   TO  WRK-ZOGEN
                    ELSE
                        MOVE    1                   TO  FLG-SYORI
