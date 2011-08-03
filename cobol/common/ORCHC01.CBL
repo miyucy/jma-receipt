@@ -60,6 +60,7 @@
       *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
       *  04.06.00    NACL=多々納  11/02/03  保険適応病名判定対応
       *  04.07.00    NACL=多々納  11/06/XX  病名なし処理区分対応
+      *  04.07.00    NACL=多々納  11/08/03  主病区分、全公費編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -113,6 +114,7 @@
       *
            03  FLG-INNO            PIC 9(01).
            03  FLG-COMEND          PIC 9(01).
+           03  FLG-ALLKOH          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -151,6 +153,7 @@
            03  IDX-STR                 PIC 9(04).
       *
            03  IDX-H                   PIC 9(04).
+           03  IDX-KOH                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -247,6 +250,7 @@
            03  WRK-KARUTE-BYOMEI   PIC X(01).
       *    病名
            03  WRK-BYOMEI          PIC X(100).
+           03  WRK-BYOMEI-S        PIC X(100).
       *    補足コメント
            03  WRK-HOSOKU-COMMENT      PIC X(80).
            03  WRK-UTAGAIFLG           PIC X(01).
@@ -300,6 +304,8 @@
            03  PARA-ALLERGY            PIC X(01).
            03  PARA-KANSENSYO          PIC X(01).
            03  PARA-HKNCOMBIKBN        PIC X(01).
+           03  PARA-SYUBYOKBN          PIC X(01).
+           03  PARA-ALLKOHKBN          PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -541,6 +547,14 @@
            MOVE    "HKNCOMBIKBN"       TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-HKNCOMBIKBN
+      *    主病編集区分
+           MOVE    "SYUBYOKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-SYUBYOKBN
+      *    全公費編集区分
+           MOVE    "ALLKOHKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-ALLKOHKBN
       *
       *    病名編集オプション設定
            IF      PARA-BYOMEIKBN      =   "0"
@@ -989,29 +1003,29 @@
            END-STRING
       *
       *    公費情報
+           MOVE    ZERO                TO  IDX-KOH
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       3
-               INITIALIZE                  PTKOHINF-REC
-               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-               MOVE    SPA-PTID            TO  PTKOH-PTID
-               MOVE    COMB-KOHID (IDY)    TO  PTKOH-KOHID
-               PERFORM 940-PTKOHINF-READ-SEC
-               IF      FLG-PTKOHINF          =   ZERO
-                   PERFORM 3102-PTKOHINF-HEN-SEC
-                   MOVE    WRK-FTNSNO      TO  HC01-FTNSNO (IDY)
-      *************MOVE    WRK-JKYSNO      TO  HC01-JKYSNO (IDY)
-                   EVALUATE    WRK-JKYSNO-MAX
-                   WHEN    0   THRU   14
-                       MOVE    WRK-JKYSNO      TO  HC01-JKYSNO (IDY)
-                   WHEN    15  THRU   20
-                       MOVE    WRK-JKYSNO      TO  HC01-JKYSNON(IDY)
-                   WHEN    21  THRU   24
-                       MOVE    WRK-JKYSNO      TO  HC01-JKYSNO12(IDY)
-                   WHEN    OTHER
-                       MOVE    WRK-JKYSNO      TO  HC01-JKYSNO15(IDY)
-                   END-EVALUATE
+               IF      COMB-KOHID (IDY)    NOT =   ZERO
+                   ADD     1                   TO  IDX-KOH
+                   INITIALIZE                  PTKOHINF-REC
+                   MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+                   MOVE    SPA-PTID            TO  PTKOH-PTID
+                   MOVE    COMB-KOHID (IDY)    TO  PTKOH-KOHID
+                   PERFORM 940-PTKOHINF-READ-SEC
+                   IF      FLG-PTKOHINF          =   ZERO
+                       PERFORM 3103-KOHHEN-HC01-SEC
+                   END-IF
                END-IF
            END-PERFORM
+      *!
+      *    全公費編集判定
+           IF     (PARA-ALLKOHKBN      =   "1"  )
+             AND  (IDX-KOH             <   3    )
+               PERFORM 200209-ALLKOHHEN-SEC
+           END-IF
+      *!!
+      *
       *---- (01.00.03) LINE MOD END ------------------------------ 
       *---- (01.00.11) LINE ADD START ----------------------------
       *
@@ -1068,6 +1082,27 @@
            END-IF
            .
        2002-HC01-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    公費内容編集処理
+      *****************************************************************
+       3103-KOHHEN-HC01-SEC         SECTION.
+      *
+           PERFORM 3102-PTKOHINF-HEN-SEC
+           MOVE    WRK-FTNSNO      TO  HC01-FTNSNO (IDY)
+      *****MOVE    WRK-JKYSNO      TO  HC01-JKYSNO (IDY)
+           EVALUATE    WRK-JKYSNO-MAX
+               WHEN    0   THRU   14
+                   MOVE    WRK-JKYSNO      TO  HC01-JKYSNO (IDY)
+               WHEN    15  THRU   20
+                   MOVE    WRK-JKYSNO      TO  HC01-JKYSNON(IDY)
+               WHEN    21  THRU   24
+                   MOVE    WRK-JKYSNO      TO  HC01-JKYSNO12(IDY)
+               WHEN    OTHER
+                   MOVE    WRK-JKYSNO      TO  HC01-JKYSNO15(IDY)
+           END-EVALUATE
+           .
+       3103-KOHHEN-HC01-EXT.
            EXIT.
       *****************************************************************
       *    備考禁忌編集処理
@@ -1194,6 +1229,69 @@
            .
        2002101-COMMENT-TBLHEN-EXT.
            EXIT.
+      *****************************************************************
+      *    全公費編集処理
+      *****************************************************************
+       200209-ALLKOHHEN-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ALLKOH
+           IF     (SPA-HKNCOMBINUM     =   ZERO )
+      *        保険組合せ選択なし
+               MOVE    1               TO  FLG-ALLKOH
+           ELSE
+               IF      COMB-HKNNUM(1:1)    =   "9"
+      *            治験・労災・自賠責・公害・自費
+                   MOVE    1               TO  FLG-ALLKOH
+                END-IF
+           END-IF
+           IF      FLG-ALLKOH          =   ZERO
+      *
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+               MOVE    SPA-PTID            TO  PTKOH-PTID
+               MOVE    SPA-SYSYMD          TO  PTKOH-TEKSTYMD
+               MOVE    SPA-SYSYMD          TO  PTKOH-TEKEDYMD
+      *
+               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key13"             TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                   MOVE    "key13"             TO  MCP-PATHNAME
+                   PERFORM 941-PTKOHINF-NEXT-SEC
+               ELSE
+                   MOVE    1               TO  FLG-PTKOHINF
+               END-IF
+               PERFORM UNTIL      (FLG-PTKOHINF    =   1 )
+                               OR (IDX-KOH         >=  3 )
+      *            負担者番号・受給者番号なしは対象外
+                   IF    ((PTKOH-FTNJANUM      =   SPACE )  AND
+                          (PTKOH-JKYSNUM       =   SPACE ) )
+                   OR    ((PTKOH-KOHID         =   COMB-KOHID (1)) OR
+                          (PTKOH-KOHID         =   COMB-KOHID (2)) OR
+                          (PTKOH-KOHID         =   COMB-KOHID (3)) OR
+                          (PTKOH-KOHID         =   COMB-KOHID (4)))
+                       CONTINUE
+                   ELSE
+                       ADD     1               TO  IDX-KOH
+                       MOVE    IDX-KOH         TO  IDY
+      *                公費編集
+                       PERFORM 3103-KOHHEN-HC01-SEC
+                   END-IF
+                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                   MOVE    "key13"             TO  MCP-PATHNAME
+                   PERFORM 941-PTKOHINF-NEXT-SEC
+               END-PERFORM
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key13"             TO  MCP-PATHNAME
+               PERFORM 900-DBCLOSE-SEC
+           END-IF
+           .
+       200209-ALLKOHHEN-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    病名処理
       *****************************************************************
@@ -1418,6 +1516,18 @@
            END-IF
       *    病名編集
            PERFORM 200211-BYOMEI-UTAGAI-SEC
+      *    主病区分編集
+           IF      PARA-SYUBYOKBN      =   "1"
+               IF     (PTBYO-SYUBYOFLG     =   "1"   )
+                 AND  (PTBYO-CHARTBYOMEI   =   SPACE )
+                   MOVE    SPACE               TO  WRK-BYOMEI-S
+                   STRING  "（主）"
+                           WRK-BYOMEI      DELIMITED   BY  SIZE
+                                           INTO    WRK-BYOMEI-S
+                   END-STRING
+                   MOVE    WRK-BYOMEI-S        TO  WRK-BYOMEI
+               END-IF
+           END-IF
            .
        200211-BYOMEI-HEN-EXT.
            EXIT.
@@ -1588,7 +1698,6 @@
            .
        2009-HKNCOMBI-HEN-EXT.
            EXIT.
-      *
       *---- (01.00.05) LINE MOD START ----------------------------
       *****************************************************************
       *    続紙頭書印刷処理
@@ -1744,12 +1853,9 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  PTINF-REC
                    MOVE    ZERO            TO  FLG-PTINF
@@ -1795,10 +1901,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        909-HKNCOMBI-NEXT-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
                MOVE    ZERO            TO  FLG-HKNCOMBI
@@ -1819,12 +1922,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_pthkninf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  PTHKNINF-REC
                    MOVE    ZERO            TO  FLG-PTHKNINF
@@ -1853,12 +1953,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_hknnum"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  HKNNUM-REC
                    MOVE    ZERO            TO  FLG-HKNNUM
@@ -1888,12 +1985,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  PTKOHINF-REC
                    MOVE    ZERO            TO  FLG-PTKOHINF
@@ -1913,14 +2007,28 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    公費マスター読み込み
+      *****************************************************************
+       941-PTKOHINF-NEXT-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       941-PTKOHINF-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    患者病名マスター読み込み
       *****************************************************************
        950-PTBYOMEI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
                MOVE    ZERO            TO  FLG-PTBYOMEI
@@ -1941,12 +2049,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
                    MOVE    MCPDATA-REC     TO  SYSKANRI-REC
@@ -1970,10 +2075,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        900-HKNJAINF-READ-SEC              SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNJAINF-REC
                MOVE    ZERO            TO  FLG-HKNJAINF
@@ -1990,10 +2092,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        993-PTRSIINF-NEXT-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTRSIINF-REC
                MOVE    ZERO            TO  FLG-PTRSIINF
@@ -2018,6 +2117,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        910-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブル読込処理
+      *****************************************************************
+       920-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       920-DBFETCH-EXT.
            EXIT.
       *
       *****************************************************************
