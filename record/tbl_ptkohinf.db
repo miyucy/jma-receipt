@@ -226,3 +226,19 @@ path	key12 	{
 	};
 };
 
+path	key13 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohinf_key13_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohinf
+			WHERE HOSPNUM     =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   TEKSTYMD    <=  :TEKSTYMD
+			AND   TEKEDYMD    >=  :TEKEDYMD
+			AND   SAKJOKBN    <>   '1'
+			ORDER   BY      KOHNUM,
+					KOHID
+		;
+	};
+};
+
