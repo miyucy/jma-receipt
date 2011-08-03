@@ -25,8 +25,8 @@ xml_patientlst2res {
 		Outpatient_Class		varchar(1);
 		HealthInsurance_Information	{
 		InsuranceProvider_Class			varchar(03);
-            	InsuranceProvider_Number		varchar(08);
             	InsuranceProvider_WholeName		varchar(20);
+            	InsuranceProvider_Number		varchar(08);
             	HealthInsuredPerson_Symbol		varchar(80);
             	HealthInsuredPerson_Number		varchar(80);
             	HealthInsuredPerson_Continuation	varchar(01);
