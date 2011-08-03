@@ -227,6 +227,8 @@
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *    数字変換領域
+           COPY    "CPORCSNUM.INC".
       *
       *    API XML読み込み用定義体
            COPY    "CPMDCGETREQ.INC".
@@ -777,11 +779,6 @@
            AND    (WRK-ERRCD           =   SPACE  )
                PERFORM 20011-SRYKA-CHK-SEC
            END-IF
-      *    保険組合せチェック
-           IF     (FLG-SYORI           =   2   OR  3  )
-           AND    (WRK-ERRCD           =   SPACE  )
-               PERFORM 20011-HKNCOMBI-CHK-SEC
-           END-IF
       *
            .
        2001-INPUT-CHK-EXT.
@@ -915,15 +912,6 @@
        20011-SRYKA-CHK-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    保険組合せ情報チェック
-      *****************************************************************
-       20011-HKNCOMBI-CHK-SEC          SECTION.
-      *
-      *
-           .
-       20011-DRCD-CHK-EXT.
-           EXIT.
       *
       *****************************************************************
       *    受診履歴編集処理
@@ -1347,19 +1335,43 @@
                    MOVE    ORCSAPIHKN-OT-HKNCOMBI  TO  WRK-HKNCOMBI
                END-IF
            ELSE
-               MOVE    MDCREQ-COMBINATION-NUMBER   TO  WRK-HKNCOMBI
+      *        保険組合せチェック
+               PERFORM 200311-HKNCOMBI-NUM-SEC
       *        存在チェック
-               INITIALIZE                  HKNCOMBI-REC
-               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
-               MOVE    SPA-PTID            TO  COMB-PTID
-               MOVE    WRK-HKNCOMBI        TO  COMB-HKNCOMBINUM
-               PERFORM 920-HKNCOMBI-READ-SEC
-               IF      FLG-HKNCOMBI        =   1
-                   MOVE    "20"                TO  WRK-ERRCD
+               IF      WRK-ERRCD           =   SPACE
+                   INITIALIZE                  HKNCOMBI-REC
+                   MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+                   MOVE    SPA-PTID            TO  COMB-PTID
+                   MOVE    WRK-HKNCOMBI        TO  COMB-HKNCOMBINUM
+                   PERFORM 920-HKNCOMBI-READ-SEC
+                   IF      FLG-HKNCOMBI        =   1
+                       MOVE    "20"                TO  WRK-ERRCD
+                   END-IF
                END-IF
            END-IF
            .
        20031-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険組合せ番号数値チェック
+      *****************************************************************
+       200311-HKNCOMBI-NUM-SEC          SECTION.
+      *
+           INITIALIZE                      ORCSNUMAREA
+           MOVE    MDCREQ-COMBINATION-NUMBER   TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF     (SNUM-RC         NOT =   ZERO  )   OR
+                  (SNUM-MINKBN     NOT =   SPACE )   OR
+                  (SNUM-SYOKBN     NOT =   SPACE )
+               MOVE    "12"                TO  WRK-ERRCD
+               MOVE    MDCREQ-COMBINATION-NUMBER   TO  WRK-HKNCOMBI
+           ELSE
+               MOVE    SNUM-OUTEDT(12:4)   TO  WRK-HKNCOMBI
+           END-IF
+      *
+           .
+       200311-HKNCOMBI-NUM-EXT.
            EXIT.
       *****************************************************************
       *    患者情報出力情報編集処理
@@ -2347,6 +2359,9 @@
                                                TO  WRK-ERRMSG
            WHEN    "11"
                MOVE    "診療日設定誤り"
+                                               TO  WRK-ERRMSG
+           WHEN    "12"
+               MOVE    "保険組合せ番号誤り"
                                                TO  WRK-ERRMSG
            WHEN    "13"
                MOVE    "診療科が存在しません"
