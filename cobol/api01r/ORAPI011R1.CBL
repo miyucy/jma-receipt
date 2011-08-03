@@ -145,10 +145,6 @@
       *
       *    保険組合せセット領域
            COPY    "CPORCSAPIHKN.INC".
-      *ver.4.7
-      *    API XML読み込み共通定義
-           COPY    "CPAPIREQ.INC".
-      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -198,10 +194,6 @@
                                      //APILST-// BY //APILST4-//.
            COPY    "CPAPILST.INC"    REPLACING
                                      //APILST-// BY //APILST5-//.
-           COPY    "CPAPILST.INC"    REPLACING
-                                     //APILST-// BY //APILST6-//.
-           COPY    "CPAPILST.INC"    REPLACING
-                                     //APILST-// BY //APILST7-//.
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -342,16 +334,15 @@
            IF      APILST-BODY        NOT =   LOW-VALUE
                DISPLAY "ACPLSTRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-ACCEPTLSTREQ
       * XML情報取り出し
            MOVE   "XMLOPEN"            TO  MCP-FUNC
            MOVE    "xml_acceptlstreq"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST-BODY         TO  APIREQ-OBJECT
-           MOVE    ZERO                TO  APIREQ-MODE
+           MOVE    APILST-BODY        TO  ACPLSTREQ-OBJECT
+           MOVE    ZERO                TO  ACPLSTREQ-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-ACCEPTLSTREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
                CONTINUE
@@ -361,16 +352,15 @@
            END-IF
       *
       *
-           MOVE    "XMLREAD"           TO  MCP-FUNC
+           MOVE   "XMLREAD"            TO  MCP-FUNC
            MOVE    "xml_acceptlstreq"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  ACPLSTREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-ACCEPTLSTREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    XML-APIREQ          TO  XML-ACCEPTLSTREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                MOVE   "98"             TO  WRK-ERRCD
@@ -380,10 +370,10 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_acceptlstreq"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  ACPLSTREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-ACCEPTLSTREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                CONTINUE
