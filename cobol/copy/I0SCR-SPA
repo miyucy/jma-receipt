@@ -479,7 +479,8 @@
                      15  SPA-GMN-I01-USERPGL       PIC X(01).
                      15  SPA-GMN-I01-USERPGFLL     PIC X(01).
                      15  SPA-GMN-I01-USERPGMEIL    PIC X(20).
-      *      褥瘡患者管理加算の算定済み判定区分
+      *      褥瘡患者管理加算の算定済み判定エリア
+             07  SPA-I01-JOKUSOUYMD                PIC X(08).
              07  SPA-I01-JOKUSOUKBN                PIC X(01).
       *
       *  入院歴表示画面

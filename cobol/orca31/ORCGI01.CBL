@@ -267,7 +267,7 @@
            03  IDX-KSN2                    PIC 9(05).
            03  IDX-SST                     PIC 9(05).
            03  IDX-NSRY                    PIC 9(05).
-           03  IDX-JOKU                    PIC 9(05).
+           03  IDX-JOKU                    PIC 9(02).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -540,6 +540,9 @@
       *    êóáì´µ¼Ô´ÉÍý²Ã»»È½ÄêÎÎ°è
            03  WRK-JOKUSOU-IDXX            PIC X(02).
            03  WRK-JOKUSOU-IDX9   REDEFINES   WRK-JOKUSOU-IDXX
+                                           PIC 9(02).
+           03  WRK-JOKUSOU-IDXX2           PIC X(02).
+           03  WRK-JOKUSOU-IDX92   REDEFINES   WRK-JOKUSOU-IDXX2
                                            PIC 9(02).
       *
       *    ´µ¼ÔÇ¯Îð»»½ÐÍÑ¥¨¥ê¥¢
@@ -4686,7 +4689,6 @@
                MOVE    4               TO   SPA-GMN-I01-CUR
       *
            END-IF
-      
       *
            .
       *
@@ -5606,9 +5608,10 @@
       *
       *            êóáì´µ¼Ô´ÉÍý²Ã»»¤Î»»ÄêºÑ¤ß¤Î¾ì¹ç¤Ï¥³¥ó¥Ü¤ÎÉ½¼¨ÆâÍÆÊÑ¹¹
                    IF  (SPA-GMN-I01-KSN-SRYCD (CNT-KSN) = "190116990" )
-                     AND (SPA-I01-JOKUSOUKBN   =  "1")
+                     AND (SPA-I01-JOKUSOUKBN   =  "1"  OR  "2")
                    MOVE    "»»ÄêºÑ¤ß"
                                    TO  SPA-GMN-I01-KSNMEIL   (CNT-KSN 1)
+                                       SPA-GMN-I01-KSNMEIL   (CNT-KSN 2)
                    END-IF
       *
                END-IF
@@ -5637,6 +5640,9 @@
                            MOVE   "1"         TO  WRK-CMB-CD
                        IF   SPA-I01-JOKUSOUKBN   =   "1"
                            MOVE   "1"         TO  WRK-CMB-CD
+                       END-IF
+                       IF   SPA-I01-JOKUSOUKBN   =   "2"
+                           MOVE   "2"         TO  WRK-CMB-CD
                        END-IF
                    END-IF
       *
@@ -5670,6 +5676,18 @@
                    PERFORM 4103-CMB-KSN-CHK-SEC
                    MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-KSN (IDX-KSN)
                ELSE
+      *            êóáì´µ¼Ô´ÉÍý²Ã»»
+                   IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190116990"
+                           MOVE   "1"         TO  WRK-CMB-CD
+                       IF   SPA-I01-JOKUSOUKBN   =   "1"
+                           MOVE   "1"         TO  WRK-CMB-CD
+                           MOVE   "1 »»ÄêºÑ¤ß"  TO  WRK-CMB-ITM
+                       END-IF
+                       IF   SPA-I01-JOKUSOUKBN   =   "2"
+                           MOVE   "2"         TO  WRK-CMB-CD
+                           MOVE   "2 »»ÄêºÑ¤ß"  TO  WRK-CMB-ITM
+                       END-IF
+                   END-IF
                    MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-KSN (IDX-KSN)
                END-IF
            END-PERFORM
@@ -5746,16 +5764,22 @@
            EXIT.
       *****************************************************************
       *    êóáì´µ¼Ô´ÉÍý²Ã»»¤Î»»ÄêºÑ¤ß¥Á¥§¥Ã¥¯
+      *    SPA-I01-JOKUSOUKBN  =  "1" OR "2"¡Êêóáì´µ¼Ô´ÉÍý²Ã»»»»ÄêºÑ¤ß¡Ë
+      *    SPA-I01-JOKUSOUKBN  =  "1" ¡Ê°ÛÆ°Æü¤Ë²Ã»»¤¬»»Äê¤µ¤ì¤Æ¤¤¤Ê¤¤¾ì¹ç¡Ë
+      *    SPA-I01-JOKUSOUKBN  =  "2" ¡Ê°ÛÆ°Æü¤Ë²Ã»»¤¬»»Äê¤µ¤ì¤Æ¤¤¤ë¾ì¹ç¡Ë
       *****************************************************************
        410111-JOKUSOU-CHK-SEC      SECTION.
       *
-           MOVE     SPACE              TO  SPA-I01-JOKUSOUKBN
-      *    Æþ±¡ÍúÎò¤ÈÆþ±¡²ñ·×¤ò¸¡º÷¤·¡¢»»ÄêºÑ¤ßÆü¿ô¤òµá¤á¤ë
+           MOVE     SPACE              TO  SPA-I01-JOKUSOUYMD
+                                           SPA-I01-JOKUSOUKBN
+      *    Æþ±¡ÍúÎò¤ÈÆþ±¡²ñ·×¤ò¸¡º÷¤·¡¢²Ã»»»»ÄêÆü¤òµá¤á¤ë
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
            MOVE    SPA-NAI-I01-IDOYMD  TO  PTNYUINRRK-TENNYUYMD
                                            PTNYUINRRK-TENSTUYMD
+           MOVE    SPA-NAI-I01-IDOYMD(7:2)
+                                       TO  WRK-JOKUSOU-IDXX2
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key42"             TO  MCP-PATHNAME
@@ -5775,6 +5799,7 @@
                    PERFORM   UNTIL
                             (FLG-NYUINACCT   =   1)
                        IF   NACCT-ZAIKAISU   NOT =   ZERO
+      *                   Æþ±¡·î
                           IF   PTNYUINRRK-NYUINYMD(1:6)
                                         =   NACCT-SRYYM
                               MOVE   PTNYUINRRK-NYUINYMD(7:2)
@@ -5783,12 +5808,23 @@
                                          WRK-JOKUSOU-IDX9  BY  1
                                 UNTIL   (IDX-JOKU  >  31)
                                    IF  NACCT-DAY(IDX-JOKU) NOT = ZERO
-                                       MOVE   "1"     TO
-                                                   SPA-I01-JOKUSOUKBN
+                                     MOVE   NACCT-SRYYM
+                                             TO  SPA-I01-JOKUSOUYMD(1:6)
+                                     MOVE   IDX-JOKU
+                                             TO  SPA-I01-JOKUSOUYMD(7:2)
                                    END-IF
                               END-PERFORM
                           ELSE
-                            MOVE   "1"     TO   SPA-I01-JOKUSOUKBN
+      *                       Æþ±¡·î°Ê³°
+                              PERFORM  VARYING  IDX-JOKU  FROM 1 BY 1
+                                UNTIL  (IDX-JOKU  >  31)
+                                  IF  NACCT-DAY(IDX-JOKU) NOT =  ZERO
+                                     MOVE   NACCT-SRYYM
+                                             TO  SPA-I01-JOKUSOUYMD(1:6)
+                                     MOVE   IDX-JOKU
+                                             TO  SPA-I01-JOKUSOUYMD(7:2)
+                                  END-IF
+                              END-PERFORM
                           END-IF
                        END-IF
                        MOVE    "key47"         TO  MCP-PATHNAME
@@ -5805,8 +5841,20 @@
            MOVE    "key42"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-      **     DISPLAY "==  ORCGI01 SPA-I01-JOKUSOUKBN = "
-      **                 SPA-I01-JOKUSOUKBN
+           IF    SPA-I01-JOKUSOUYMD   NOT = SPACE
+             IF    SPA-NAI-I01-IDOYMD   =   SPA-I01-JOKUSOUYMD
+                 MOVE   "2"             TO  SPA-I01-JOKUSOUKBN
+             ELSE
+                 MOVE   "1"             TO  SPA-I01-JOKUSOUKBN
+             END-IF
+           END-IF
+      *
+           DISPLAY "==  ORCGI01 SPA-NAI-I01-IDOYMD = "
+                       SPA-NAI-I01-IDOYMD
+           DISPLAY "==  ORCGI01 SPA-I01-JOKUSOUYMD = "
+                       SPA-I01-JOKUSOUYMD
+           DISPLAY "==  ORCGI01 SPA-I01-JOKUSOUKBN = "
+                       SPA-I01-JOKUSOUKBN
       *
            .
        410111-JOKUSOU-CHK-EXT.
@@ -23023,7 +23071,7 @@
       *        
       *        êóáì´µ¼Ô´ÉÍý²Ã»»¤Î»»ÄêºÑ¤ß»þ¤ÏÁªÂò¥³¥ó¥ÜÈó³èÀ­
                IF  (SPA-GMN-I01-KSN-SRYCD(IDX-KSN)  =  "190116990") AND
-                   (SPA-I01-JOKUSOUKBN              =  "1")
+                   (SPA-I01-JOKUSOUKBN              =  "1"  OR  "2")
                     MOVE    WIDGET-INSENSITIVE
                                        TO   I01-KSN-STT (IDX-KSN)
                                             I01-KSN-ITM-STT(IDX-KSN)
