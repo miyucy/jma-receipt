@@ -65,10 +65,10 @@
                   04  PATLSTRES-INSURANCE-INFO     OCCURS  3 TIMES.
       *               保険の種類
                       06  PATLSTRES-MAIN-INSURANCE-CLASS   PIC X(03).
-      *               保険者番号
-                      06  PATLSTRES-MAIN-INSURANCE-NUMBER  PIC X(08).
       *               保険の種類名称
                       06  PATLSTRES-MAIN-INSURANCE-NAME    PIC X(20).
+      *               保険者番号
+                      06  PATLSTRES-MAIN-INSURANCE-NUMBER  PIC X(08).
       *               記号
                       06  PATLSTRES-MAIN-MARK              PIC X(80).
       *               番号
