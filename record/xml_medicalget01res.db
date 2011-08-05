@@ -14,7 +14,7 @@ xml_medicalget01res {
         	BirthDate			varchar(10);
         	Sex				varchar(1);
 		};
-	Medicalget_Information  {
+	Medical_List_Information  {
 	        Perform_Date			varchar(10);
 	        Department_Code			varchar(2);
 	        Department_Name			varchar(20);

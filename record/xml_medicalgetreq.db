@@ -4,7 +4,7 @@ xml_medicalgetreq {
 	medicalgetreq {
 		Patient_ID		varchar(20);
     		Perform_Date		varchar(10);
-		Diagnosis_Information  {
+		Medical_Information  {
 		Department_Code		varchar(2);
 		Sequential_Number		varchar(1);
 		Insurance_Combination_Number	varchar(4);
