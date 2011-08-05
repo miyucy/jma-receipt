@@ -25,6 +25,7 @@
 #
 
 # クライアント印刷用(複数ps をまとめる)
+# (2011/08/05 ) 労災枠有り対応
 $:.unshift(File.dirname(__FILE__))
 require "monpeps"
 
@@ -544,6 +545,62 @@ end
 			red_file = std_form + ls_w1
 		when	'HCM29V03.red'
 			ls_w1 = 'HCM49V01.red'
+			red_file = std_form + ls_w1
+#   -----------> 労災分(2011/8/05)
+		when	'HCM22V06.red'
+			ls_w1 = 'HCM22V06P.red'
+			red_file = std_form + ls_w1
+		when	'HCN50V02.red'
+			ls_w1 = 'HCN50V02P.red'
+			red_file = std_form + ls_w1
+		when	'HCM24V06.red'
+			ls_w1 = 'HCM24V06P.red'
+			red_file = std_form + ls_w1
+		when	'HCM24V06.red'
+			ls_w1 = 'HCM24V06P.red'
+			red_file = std_form + ls_w1
+		when	'HCM21V06.red'
+			ls_w1 = 'HCM21V06P.red'
+			red_file = std_form + ls_w1
+		when	'HCN51V02.red'
+			ls_w1 = 'HCN51V02P.red'
+			red_file = std_form + ls_w1
+		when	'HCM24V06.red'
+			ls_w1 = 'HCM24V06P.red'
+			red_file = std_form + ls_w1
+		when	'HCM24V06.red'
+			ls_w1 = 'HCM24V06P.red'
+			red_file = std_form + ls_w1
+		when	'HCM18V06.red'
+			ls_w1 = 'HCM18V06P.red'
+			red_file = std_form + ls_w1
+		when	'HCM20V06.red'
+			ls_w1 = 'HCM20V06P.red'
+			red_file = std_form + ls_w1
+#   -----------> 自賠分(2011/8/05)
+		when	'HCM23V06.red'
+			ls_w1 = 'HCM48V02.red'
+			red_file = std_form + ls_w1
+		when	'HCN23V06.red'
+			ls_w1 = 'HCN48V02.red'
+			red_file = std_form + ls_w1
+		when	'HCM29V04.red'
+			ls_w1 = 'HCM49V02.red'
+			red_file = std_form + ls_w1
+		when	'HCM29V04.red'
+			ls_w1 = 'HCM49V02.red'
+			red_file = std_form + ls_w1
+		when	'HCM53V02.red'
+			ls_w1 = 'HCM54V02.red'
+			red_file = std_form + ls_w1
+		when	'HCN53V02.red'
+			ls_w1 = 'HCN54V02.red'
+			red_file = std_form + ls_w1
+		when	'HCM29V04.red'
+			ls_w1 = 'HCM49V02.red'
+			red_file = std_form + ls_w1
+		when	'HCM29V04.red'
+			ls_w1 = 'HCM49V02.red'
 			red_file = std_form + ls_w1
 		end
 	end
