@@ -594,6 +594,9 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
+               IF    ( FLG-END     =   1 )
+                   GO  TO  100-INIT-EXT
+               END-IF
       *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
@@ -622,13 +625,19 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
       *
-           IF    ( SPA-MOTOPG      =   "M02" )
+           EVALUATE    TRUE
+           WHEN  ( SPA-MOTOPG          =   "V01" )
+               PERFORM 420-W65-SENI-SEC
+           WHEN  ( SPA-MOTOPG          =   "W65" )
+            AND  ( SPA-W01-MOTOPG  NOT =   SPACE )
+               PERFORM 210-BACK
+           WHEN  ( SPA-MOTOPG          =   "M02" )
                PERFORM 310-SPASET-SEC
-           ELSE
+           WHEN    OTHER
                MOVE    SPA-W01-MAE-G   TO  WRK-W01-MAE-G
                PERFORM 310-SPASET-SEC
                MOVE    WRK-W01-MAE-G   TO  SPA-W01-MAE-G
-           END-IF
+           END-EVALUATE
       *
            MOVE    1               TO  SPA-GMN-PAGE
       *
@@ -878,7 +887,12 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M02"               TO  SPA-SAKIPG
+           IF    ( SPA-W01-MOTOPG  NOT =   SPACE )
+               MOVE    SPA-W01-MOTOPG  TO  SPA-SAKIPG
+           ELSE
+               MOVE    "M02"           TO  SPA-SAKIPG
+           END-IF
+      *
            MOVE    "W01"               TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  LINKAREA
@@ -2356,6 +2370,28 @@
        4101-KAKUTEI-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    確定ボタン押下時チェック処理
+      *****************************************************************
+       420-W65-SENI-SEC            SECTION.
+      *
+           INITIALIZE              SPA-W01-AREA
+                                   SPA-W01KYOUTU
+      *
+           MOVE    "V01"               TO  SPA-W01-MOTOPG
+           MOVE    "W65"               TO  SPA-SAKIPG
+           MOVE    "W01"               TO  SPA-MOTOPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       420-W65-SENI-EXT.
+           EXIT.
       *****************************************************************
       *    日付チェック・編集処理
       *****************************************************************

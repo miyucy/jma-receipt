@@ -47,6 +47,7 @@
            05  SPA-W01-MAE-G.
                07  SPA-W01-MAE-KANRICD     PIC X(04).
                07  SPA-W01-MAE-KBNCD       PIC X(08).
+           05  SPA-W01-MOTOPG              PIC X(08).
       *
       *警告メッセージ
            05  SPA-WIDCD                   PIC X(04).

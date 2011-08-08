@@ -1,7 +1,10 @@
 V01	{
 	fixed1	{
 		B05	{
-			label	varchar(8);
+			label	varchar(10);
+		};
+		B06	{
+			label	varchar(10);
 		};
 		B11	{
          		state	int;

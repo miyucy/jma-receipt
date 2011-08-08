@@ -494,6 +494,9 @@
                    IF    ( SPA-PREFNUM =   40 )
                        PERFORM  450-V03-SENI-SEC
                    END-IF
+      *        県単設定
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 450-W65-SENI-SEC
       *        状況
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                    PERFORM 400-JYOKYO-SEC
@@ -1206,6 +1209,29 @@
        450-V03-SENI-EXT.
            EXIT.
       *****************************************************************
+      *    県単設定処理へ
+      *****************************************************************
+       450-W65-SENI-SEC                SECTION.
+      *
+           MOVE    "W01"               TO  SPA-SAKIPG
+           MOVE    "V01"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       450-W65-SENI-EXT.
+           EXIT.
+      *****************************************************************
       *    日付チェック・編集処理
       *****************************************************************
        5002-HIZUKE-CHK-SEC         SECTION.
@@ -1329,6 +1355,8 @@
            ELSE
                MOVE    SPACE           TO V01-B05
            END-IF
+      *
+           MOVE    "県単設定"          TO V01-B06
       *
            IF    ( SPA-GMN-HKNNUM-NO   >=  100 )  AND
                  ( SPA-GMN-HKNNUM-NO   <=  899 )  AND
