@@ -236,3 +236,15 @@ path	key8		{
 	};
 };
 
+path	key9		{ 	
+	DBSELECT	{
+		DECLARE tbl_hknnum_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hknnum
+			WHERE   HOSPNUM      =   :HOSPNUM
+			AND   TEKSTYMD      <=  :TEKSTYMD
+			AND   TEKEDYMD      >=  :TEKEDYMD
+			ORDER BY HKNNUM ASC,TEKSTYMD DESC
+		;
+	};
+};
