@@ -648,6 +648,9 @@
            03  WRK-NAI-YUKOSTYMD                           PIC X(08).
            03  WRK-NAI-YUKOEDYMD                           PIC X(08).
       *
+       01  KEY-AREA.
+           03  KEY-HKNNUM                                  PIC X(03).
+      *
        01  SEL-AREA.
            05  SEL-HKNNUM                                  PIC X(03).
            05  SEL-KJNYMD                                  PIC X(08).
@@ -1731,10 +1734,11 @@
       *
            INITIALIZE                  SPA-GMN-KOHNUMLST-G
            MOVE    0               TO  IDX0
+           MOVE    LOW-VALUE       TO  KEY-HKNNUM
       *
            MOVE    SPA-NAI-YUKOSTYMD   TO  SEL-STYMD
            MOVE    SPA-NAI-YUKOEDYMD   TO  SEL-EDYMD
-           PERFORM 900-HKNNUM-KEY3-SEL-SEC
+           PERFORM 900-HKNNUM-KEY9-SEL-SEC
       *
            PERFORM UNTIL ( FLG-HKNNUM  NOT =   ZERO )
                     OR   ( IDX0            >   200 )
@@ -1742,22 +1746,27 @@
                IF    ( HKN-HKNNUM         >=   "100" )
                 AND  ( HKN-HKNNUM         <=   "899" )
       *
-                   COMPUTE IDX0 =  IDX0 +  1
+                   IF    ( HKN-HKNNUM  NOT =   KEY-HKNNUM )
       *
-                   MOVE    HKN-HKNNUM  TO  SPA-GMN-KOHNUML (IDX0)
-                   MOVE    HKN-SEIDONAME
-                                       TO  SPA-GMN-KOHNUMMEIL (IDX0)
+                       COMPUTE IDX0 =  IDX0 +  1
+      *
+                       MOVE    HKN-HKNNUM  TO  SPA-GMN-KOHNUML (IDX0)
+                       MOVE    HKN-SEIDONAME
+                                           TO  SPA-GMN-KOHNUMMEIL (IDX0)
+      *
+                       MOVE    HKN-HKNNUM  TO  KEY-HKNNUM
+                   END-IF
       *
                END-IF
       *
-               PERFORM 900-HKNNUM-KEY3-FET-SEC
+               PERFORM 900-HKNNUM-KEY9-FET-SEC
       *
            END-PERFORM
       *
            MOVE    IDX0            TO  SPA-GMN-KOHNUM-MAX
       *
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -8363,7 +8372,7 @@
       *****************************************************************
       *    保険番号マスタ検索処理
       *****************************************************************
-       900-HKNNUM-KEY3-SEL-SEC         SECTION.
+       900-HKNNUM-KEY9-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-HKNNUM
       *
@@ -8380,7 +8389,7 @@
            END-IF
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF ( MCP-RC             NOT =   ZERO )
                MOVE    1               TO  FLG-HKNNUM
@@ -8389,19 +8398,19 @@
            END-IF
       *
            .
-       900-HKNNUM-KEY3-SEL-EXT.
+       900-HKNNUM-KEY9-SEL-EXT.
            EXIT.
       *****************************************************************
       *    保険番号マスタFETCH処理
       *****************************************************************
-       900-HKNNUM-KEY3-FET-SEC         SECTION.
+       900-HKNNUM-KEY9-FET-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-HKNNUM
       *
       *    保険番号検索
       *
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF ( MCP-RC             NOT =   ZERO )
                MOVE    1               TO  FLG-HKNNUM
@@ -8410,7 +8419,7 @@
            END-IF
       *
            .
-       900-HKNNUM-KEY3-FET-EXT.
+       900-HKNNUM-KEY9-FET-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
