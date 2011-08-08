@@ -1064,6 +1064,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                    MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
                                                TO  HC18-LOPTION
                END-IF
+           ELSE
+               MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
+                                           TO  HC18-LOPTION
            END-IF
       *
            .
@@ -1593,10 +1596,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      CNT-PAGE            =   1
                EVALUATE  WRK-PARA-FRAME
                    WHEN      "0"
-                       MOVE    "HCM18V05.red"      TO
+                       MOVE    "HCM18V06.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                    WHEN      "1"
-                       MOVE    "HCM18V05P.red"     TO
+                       MOVE    "HCM18V06P.red"     TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                END-EVALUATE
                MOVE    HC18                TO
@@ -1604,10 +1607,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE
                EVALUATE  WRK-PARA-FRAME
                    WHEN      "0"
-                       MOVE    "HCM20V05.red"      TO
+                       MOVE    "HCM20V06.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                    WHEN      "1"
-                       MOVE    "HCM20V05P.red"     TO
+                       MOVE    "HCM20V06P.red"     TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                END-EVALUATE
                MOVE    HC20                TO
@@ -1742,12 +1745,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCM18V05.red"                  
+                       WHEN    "HCM18V06.red"                  
                            MOVE    RECE08-PRTDATA  TO HC18
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC18-PAGE
                            MOVE    HC18            TO RECE08-PRTDATA
-                       WHEN    "HCM20V05.red"                  
+                       WHEN    "HCM20V06.red"                  
                            MOVE    RECE08-PRTDATA  TO HC20
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC20-PAGE

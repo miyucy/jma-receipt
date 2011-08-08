@@ -1231,6 +1231,9 @@
                     MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
                                                TO  HCN58-LOPTION
                END-IF
+           ELSE
+               MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
+                                           TO  HCN58-LOPTION
            END-IF
       *
       *    リアルタイムプレビュー時の表示

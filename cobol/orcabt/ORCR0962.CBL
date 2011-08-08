@@ -1323,6 +1323,9 @@ grpsys        PERFORM 900-DBSELECT-SEC
                    MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
                                                TO  HCM56-LOPTION
                END-IF
+           ELSE
+               MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
+                                           TO  HCM56-LOPTION
            END-IF
       *
            .

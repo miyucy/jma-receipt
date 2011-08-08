@@ -2965,6 +2965,9 @@
                    MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
                                                TO  HC06-LOPTION
                END-IF
+          ELSE
+               MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
+                                           TO  HC06-LOPTION
           END-IF     
       *
       *    リアルタイムプレビュー時の表示

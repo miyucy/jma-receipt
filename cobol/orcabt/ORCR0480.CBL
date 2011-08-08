@@ -1353,6 +1353,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                    MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
                                                TO  HC22-LOPTION
                END-IF
+           ELSE
+               MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
+                                           TO  HC22-LOPTION
            END-IF
       *
            .
@@ -2348,10 +2351,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      CNT-PAGE            =   1
                EVALUATE  WRK-PARA-FRAME
                    WHEN      "0"
-                       MOVE    "HCM22V05.red"    TO
+                       MOVE    "HCM22V06.red"    TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                    WHEN      "1"
-                       MOVE    "HCM22V05P.red"   TO
+                       MOVE    "HCM22V06P.red"   TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                END-EVALUATE
                MOVE    HC22                TO
@@ -2359,10 +2362,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE
                EVALUATE  WRK-PARA-FRAME
                    WHEN      "0"
-                       MOVE    "HCM24V05.red"  TO
+                       MOVE    "HCM24V06.red"  TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                    WHEN      "1"
-                       MOVE    "HCM24V05P.red" TO
+                       MOVE    "HCM24V06P.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                END-EVALUATE
                MOVE    HC24                TO
@@ -2499,12 +2502,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCM22V05.red"                  
+                       WHEN    "HCM22V06.red"                  
                            MOVE    RECE08-PRTDATA  TO HC22
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC22-PAGE
                            MOVE    HC22            TO RECE08-PRTDATA
-                       WHEN    "HCM24V05.red"                  
+                       WHEN    "HCM24V06.red"                  
                            MOVE    RECE08-PRTDATA  TO HC24
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC24-PAGE

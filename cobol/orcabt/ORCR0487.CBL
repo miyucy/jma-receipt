@@ -1268,6 +1268,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                    MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
                                                TO  HC23-LOPTION
                END-IF
+           ELSE
+               MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
+                                           TO  HC23-LOPTION
            END-IF
       *
            .
