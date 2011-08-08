@@ -15,12 +15,13 @@ W65	{
 		SELNUM1	{
 			value	varchar(50);
 		};
-		KOHNUM	{
-			value	varchar(3);
-			state	int;
-		};
-		KOHNAME	{
-			value	varchar(50);
+		CMB_KOHNUM	{
+			KOHNUM	{
+					value	varchar(64);
+					state	int;
+			};
+			count	int;
+			item	varchar(64)[200];
 			state	int;
 		};
 		nb1	{

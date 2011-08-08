@@ -57,8 +57,10 @@
                05  SPA-GMN-KJNYMD                  PIC X(10).
                05  SPA-GMN-INPUT-AREA.
                  06  SPA-GMN-SELNUM1               PIC X(50).
-                 06  SPA-GMN-KOHNUM                PIC X(3).
-                 06  SPA-GMN-KOHNAME               PIC X(50).
+                 06  SPA-GMN-KOHNUM-G.
+                   07  SPA-GMN-KOHNUM              PIC X(03).
+                   07  SPA-GMN-KOHNUMF             PIC X(01).
+                   07  SPA-GMN-KOHNUMMEI           PIC X(60).
                  06  SPA-GMN-YUKOSTYMD             PIC X(10).
                  06  SPA-GMN-YUKOEDYMD             PIC X(10).
                  06  SPA-GMN-SELNUM2               PIC S9(2).
@@ -344,6 +346,12 @@
                        09  SPA-GMN-SEIKANTAIKBNTNKF        PIC X(01).
                        09  SPA-GMN-SEIKANTAIKBNTNKMEI      PIC X(38).
                05  SPA-GMN-CMB-AREA.
+                   07  SPA-GMN-KOHNUMLST-G.
+                       09  SPA-GMN-KOHNUM-MAX              PIC 9(03).
+                       09  SPA-GMN-KOHNUMLST               OCCURS  200.
+                           11  SPA-GMN-KOHNUML             PIC X(03).
+                           11  SPA-GMN-KOHNUMFL            PIC X(01).
+                           11  SPA-GMN-KOHNUMMEIL          PIC X(60).
                    07  SPA-GMN-JNISSUKBNLST-G.
                        09  SPA-GMN-JNISSUKBN-MAX           PIC 9(03).
                        09  SPA-GMN-JNISSUKBNLST            OCCURS  10.
@@ -626,6 +634,7 @@
                05  WRK-INPUT-MODE                          PIC 9(01).
                05  WRK-SELNUM-X                            PIC X(50).
                05  WRK-SELNUM                              PIC 9(03).
+               05  WRK-BASESELNUM                          PIC 9(03).
                05  WRK-SELNUM-FLG                          PIC 9(01)
                                                            OCCURS  200.
            03  WRK-MULTI-AREA.
@@ -636,6 +645,8 @@
                05  WRK-MUL-STNUM                           PIC 9(05).
                05  WRK-MUL-EDNUM                           PIC 9(05).
            03  WRK-PAGENO                                  PIC 9(03).
+           03  WRK-NAI-YUKOSTYMD                           PIC X(08).
+           03  WRK-NAI-YUKOEDYMD                           PIC X(08).
       *
        01  SEL-AREA.
            05  SEL-HKNNUM                                  PIC X(03).
@@ -695,6 +706,11 @@
            03  CONST-MIYAZAKI             PIC 9(02) VALUE 45.
            03  CONST-KAGOSHIMA            PIC 9(02) VALUE 46.
            03  CONST-OKINAWA              PIC 9(02) VALUE 47.
+      *
+      *    保険番号
+       01  THKNNUM-REC.
+           COPY    "CPHKNNUM.INC"         REPLACING     //HKN-//
+                                          BY            //THKN-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1709,6 +1725,45 @@
        3110-JYUHENTAIKBNLST-EXT.
            EXIT.
       *****************************************************************
+      *    公費の種類コンボ編集処理
+      *****************************************************************
+       3110-KOHNUMLST-SEC              SECTION.
+      *
+           INITIALIZE                  SPA-GMN-KOHNUMLST-G
+           MOVE    0               TO  IDX0
+      *
+           MOVE    SPA-NAI-YUKOSTYMD   TO  SEL-STYMD
+           MOVE    SPA-NAI-YUKOEDYMD   TO  SEL-EDYMD
+           PERFORM 900-HKNNUM-KEY3-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-HKNNUM  NOT =   ZERO )
+                    OR   ( IDX0            >   200 )
+      *
+               IF    ( HKN-HKNNUM         >=   "100" )
+                AND  ( HKN-HKNNUM         <=   "899" )
+      *
+                   COMPUTE IDX0 =  IDX0 +  1
+      *
+                   MOVE    HKN-HKNNUM  TO  SPA-GMN-KOHNUML (IDX0)
+                   MOVE    HKN-SEIDONAME
+                                       TO  SPA-GMN-KOHNUMMEIL (IDX0)
+      *
+               END-IF
+      *
+               PERFORM 900-HKNNUM-KEY3-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    IDX0            TO  SPA-GMN-KOHNUM-MAX
+      *
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       3110-KOHNUMLST-EXT.
+           EXIT.
+      *****************************************************************
       *    公費付加情報リスト編集処理
       *****************************************************************
        3110-KOHLST-EDIT-SEC        SECTION.
@@ -1733,8 +1788,8 @@
                                            TO  IDX-MAX
                MOVE    SYS-2010-KBNCD      TO  SPA-GMN-TKKOHNUM(IDX-MAX)
                MOVE    SYS-2010-KBNCD      TO  SEL-HKNNUM
-               MOVE    SYS-2010-EDYUKYMD   TO  SEL-STYMD
-               MOVE    SYS-2010-STYUKYMD   TO  SEL-EDYMD
+               MOVE    SYS-2010-STYUKYMD   TO  SEL-STYMD
+               MOVE    SYS-2010-EDYUKYMD   TO  SEL-EDYMD
                PERFORM 900-HKNNUM-KEY8-SEL-SEC
                MOVE    HKN-SEIDONAME
                                        TO  SPA-GMN-TKKOHNAME(IDX-MAX)
@@ -1952,7 +2007,7 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
-           MOVE    W65-KOHNUM          TO  SPA-GMN-KOHNUM
+           MOVE    W65-KOHNUM          TO  SPA-GMN-KOHNUM-G
            MOVE    W65-JNISSUKBN       TO  SPA-GMN-JNISSUKBN-G
            MOVE    W65-JNISSUTAIKBN    TO  SPA-GMN-JNISSUTAIKBN-G
            MOVE    W65-TOTALTENKBN     TO  SPA-GMN-TOTALTENKBN-G
@@ -2039,12 +2094,20 @@
                PERFORM 4101-SELNUM1-CHK-SEC
            END-IF
       *
+           MOVE    SPA-NAI-YUKOSTYMD   TO  WRK-NAI-YUKOSTYMD
+           MOVE    SPA-NAI-YUKOEDYMD   TO  WRK-NAI-YUKOEDYMD
+      *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4101-YUKOSTYMD-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4101-YUKOEDYMD-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-NAI-YUKOSTYMD   NOT =   WRK-NAI-YUKOSTYMD )
+            OR   ( SPA-NAI-YUKOEDYMD   NOT =   WRK-NAI-YUKOEDYMD )
+               PERFORM 3110-KOHNUMLST-SEC
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -3036,22 +3099,17 @@
       *
            IF    ( WRK-INPUT-MODE      =   2 )
                MOVE    W65-SELNUM1     TO  SPA-GMN-SELNUM1
-               MOVE    ZERO            TO  WRK-SELNUM
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   SPA-GMN-KOHLST-MAX )
                    MOVE    WRK-SELNUM-FLG (IDX0)
                                        TO  SPA-NAI-SELNUM1-FLG (IDX0)
-                   IF    ( SPA-NAI-SELNUM1-FLG (IDX0)  =   1 )
-                    AND  ( WRK-SELNUM  =   ZERO )
-                       MOVE    IDX0    TO  WRK-SELNUM
-                   END-IF
                END-PERFORM
            END-IF
       *
-           MOVE    WRK-SELNUM          TO  SPA-GMN-KOHLST-SEL
+           MOVE    WRK-BASESELNUM      TO  SPA-GMN-KOHLST-SEL
       *
            MOVE    WRK-INPUT-MODE      TO  SPA-NAI-INPUT-MODE
-           MOVE    SPA-GMN-TKKOHNUM (WRK-SELNUM)
+           MOVE    SPA-GMN-TKKOHNUM (WRK-BASESELNUM)
                                        TO  SEL-HKNNUM
            MOVE    SPA-NAI-KJNYMD      TO  SEL-KJNYMD
            PERFORM 4100-INPUT-AREA-EDIT-SEC
@@ -3095,6 +3153,7 @@
            INITIALIZE                  WRK-MULTI-AREA
       *
            MOVE    ZERO            TO  WRK-INPUT-MODE
+                                       WRK-BASESELNUM
       *
            UNSTRING    WRK-SELNUM-MUL  DELIMITED   BY  ","
                                                    OR  "."
@@ -3180,7 +3239,7 @@
                         AND  ( IDX1        <=  SPA-GMN-KOHLST-MAX )
                            COMPUTE CNT-SEL  =   CNT-SEL  +   1
                            IF    ( CNT-SEL  =   1 )
-                               MOVE    IDX1    TO  WRK-SELNUM
+                               MOVE    IDX1    TO  WRK-BASESELNUM
                            END-IF
                            MOVE    1       TO  WRK-SELNUM-FLG (IDX1)
                        END-IF
@@ -3277,14 +3336,26 @@
            PERFORM 800-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG     TO  SPA-GMN-YUKOEDYMD
       *
-           MOVE    SYS-2010-KBNCD  TO  SPA-GMN-KOHNUM
-                                       SPA-NAI-KOHNUM
-                                       SPA-NAI-KOHNUM-ORG
+      *    公費の種類コンボ編集処理
+           PERFORM 3110-KOHNUMLST-SEC
       *
-           MOVE    SYS-2010-EDYUKYMD   TO  SEL-STYMD
-           MOVE    SYS-2010-STYUKYMD   TO  SEL-EDYMD
-           PERFORM 900-HKNNUM-KEY8-SEL-SEC
-           MOVE    HKN-SEIDONAME   TO  SPA-GMN-KOHNAME
+           IF    ( SPA-NAI-INPUT-MODE  =   1 )
+               MOVE    SYS-2010-KBNCD  TO  SPA-GMN-KOHNUM
+                                           SPA-NAI-KOHNUM
+                                           SPA-NAI-KOHNUM-ORG
+           ELSE
+               MOVE    SPACE           TO  SPA-GMN-KOHNUM
+                                           SPA-NAI-KOHNUM
+                                           SPA-NAI-KOHNUM-ORG
+           END-IF
+      *
+           MOVE    SPA-GMN-KOHNUM  TO  WRK-CMB-CD
+           PERFORM 4200-KOHNUMLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    WRK-CMB-CD  TO  SPA-GMN-KOHNUM-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-KOHNUM-G
+           END-IF
       *
            MOVE    SYS-2010-JNISSUKBN  TO  WRK-CMB-CD
            PERFORM 4200-JNISSUKBNLST-CHK-SEC
@@ -3630,6 +3701,15 @@
            PERFORM 4200-SKJFUKATAIKBNTNKLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-SEIKANTAIKBNTNK-G
       *
+           IF    ( SYS-2010-FTNKEIKBN-G    =   SPACE )
+               MOVE    SYS-2010-STYUKYMD   TO  SEL-STYMD
+               MOVE    SYS-2010-EDYUKYMD   TO  SEL-EDYMD
+               MOVE    SYS-2010-KBNCD      TO  SEL-HKNNUM
+               PERFORM 900-HKNNUM-KEY8-SEL-SEC
+               MOVE    HKNNUM-REC          TO  THKNNUM-REC
+               PERFORM 42012-COMBO-SET-DEFAULT-SEC
+           END-IF
+      *
            .
        4100-INPUT-AREA-EDIT-EXT.
            EXIT.
@@ -3696,334 +3776,46 @@
            INITIALIZE                      HKNNUM-REC
       *
            IF    ( SPA-GMN-KOHNUM =   SPACE   )
-               CONTINUE
+               MOVE    SPACE               TO  SPA-GMN-KOHNUM-G
            ELSE
-               MOVE    SPA-GMN-KOHNUM      TO  WRK-KANACHK-INPUT
-               PERFORM 800-ENRTRY-CHK-SEC
-               MOVE    WRK-KANACHK-INPUT   TO  SPA-GMN-KOHNUM
-               IF    ( FLG-ENTRYCHK        NOT =   1 )
-                   MOVE    2               TO  SPA-GMN-CUR
-                   MOVE    "0002"          TO  SPA-ERRCD
-               END-IF
-      *
-               IF    ( SPA-GMN-KOHNUM      >=   "100" )
-                AND  ( SPA-GMN-KOHNUM      <=   "899" )
-                   CONTINUE
+               MOVE    SPA-GMN-KOHNUM      TO  WRK-CMB-CD
+               PERFORM 4200-KOHNUMLST-CHK-SEC
+               IF    ( WRK-CMB-ITM     =   SPACE )
+                   IF    ( SPA-GMN-KOHNUM      >=   "100" )
+                    AND  ( SPA-GMN-KOHNUM      <=   "899" )
+                       MOVE    2           TO  SPA-GMN-CUR
+                       MOVE    "0006"      TO  SPA-ERRCD
+                   ELSE
+                       MOVE    2           TO  SPA-GMN-CUR
+                       MOVE    "0005"      TO  SPA-ERRCD
+                   END-IF
                ELSE
-                   MOVE    2               TO  SPA-GMN-CUR
-                   MOVE    "0005"          TO  SPA-ERRCD
-               END-IF
-      *
-               IF    ( SPA-ERRCD           =   SPACE )
-                   MOVE    SPA-GMN-KOHNUM      TO  SEL-HKNNUM
-                   IF    ( SPA-NAI-YUKOEDYMD   >=  SPA-NAI-YUKOSTYMD )
-                       MOVE    SPA-NAI-YUKOSTYMD   TO  SEL-EDYMD
-                       MOVE    SPA-NAI-YUKOEDYMD   TO  SEL-STYMD
-                   ELSE
-                       MOVE    SPA-NAI-YUKOSTYMD   TO  SEL-STYMD
-                       MOVE    SPA-NAI-YUKOEDYMD   TO  SEL-EDYMD
-                   END-IF
-                   PERFORM 900-HKNNUM-KEY8-SEL-SEC
-                   IF    ( FLG-HKNNUM          =   ZERO )
-                       MOVE    HKN-SEIDONAME   TO  SPA-GMN-KOHNAME
-                   ELSE
-                       MOVE    2               TO  SPA-GMN-CUR
-                       MOVE    "0006"          TO  SPA-ERRCD
-                   END-IF
+                   MOVE    WRK-CMB-ITM     TO  SPA-GMN-KOHNUM-G
                END-IF
            END-IF
       *
            IF    ( SPA-GMN-KOHNUM      NOT =   SPA-NAI-KOHNUM )
       *
-               INITIALIZE              SPA-GMN-NBOOK-AREA
-                                       SPA-NAI-NBOOK-AREA
-               PERFORM 42011-COMBO-SET-DEFAULT-SEC
+               IF    ( SPA-ERRCD           =   SPACE )
+                   INITIALIZE              SPA-GMN-NBOOK-AREA
+                                           SPA-NAI-NBOOK-AREA
+                   PERFORM 42011-COMBO-SET-DEFAULT-SEC
       *
-               IF    ( SPA-PREFNUM     =       CONST-NAGASAKI )
-                AND  ( SPA-GMN-KOHNUM  =   "180" )
-                   MOVE    "1"         TO  SPA-GMN-JGNFTNKBN
+                   IF    ( SPA-PREFNUM     =       CONST-NAGASAKI )
+                    AND  ( SPA-GMN-KOHNUM  =   "180" )
+                       MOVE    "1"         TO  SPA-GMN-JGNFTNKBN
+                   END-IF
+      *
+                   MOVE    SPA-NAI-YUKOSTYMD   TO  SEL-STYMD
+                   MOVE    SPA-NAI-YUKOEDYMD   TO  SEL-EDYMD
+                   MOVE    SPA-GMN-KOHNUM      TO  SEL-HKNNUM
+                   PERFORM 900-HKNNUM-KEY8-SEL-SEC
+                   MOVE    HKNNUM-REC      TO  THKNNUM-REC
+                   PERFORM 42012-COMBO-SET-DEFAULT-SEC
                END-IF
       *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-NARA )
-                 AND ( HKN-HBTNUM      =   "71" OR "81" OR "91" )
-               WHEN  ( SPA-PREFNUM     =   CONST-SHIMANE )
-                 AND ( SPA-GMN-KOHNUM  =   "790" )
-               WHEN  ( SPA-PREFNUM     =   CONST-YAMAGUCHI )
-                 AND ( SPA-GMN-KOHNUM  =   "781" )
-      *        WHEN  ( SPA-PREFNUM     =   CONST-TOKUSHIMA )
-      *          AND ( SPA-GMN-KOHNUM  =   "245" )
-               WHEN  ( SPA-PREFNUM     =   CONST-KOCHI )
-                 AND ( HKN-HBTNUM      =   "72" )
-                   MOVE    "1"         TO  SPA-GMN-FTNKEIKBNG
-                   MOVE    "1"         TO  SPA-GMN-FTNKEITAIKBNG
-               WHEN  ( SPA-PREFNUM     =   CONST-MIYAZAKI )
-                 AND ( SPA-GMN-KOHNUM  =   "190" )
-                   MOVE    "2"         TO  SPA-GMN-FTNKEIKBNG
-                   MOVE    "1"         TO  SPA-GMN-FTNKEITAIKBNG
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-NARA )
-                 AND ( HKN-HBTNUM      =   "71" OR "81" OR "91" )
-               WHEN  ( SPA-PREFNUM     =   CONST-SHIMANE )
-                 AND ( SPA-GMN-KOHNUM  =   "790" )
-               WHEN  ( SPA-PREFNUM     =   CONST-YAMAGUCHI )
-                 AND ( SPA-GMN-KOHNUM  =   "781" )
-      *        WHEN  ( SPA-PREFNUM     =   CONST-TOKUSHIMA )
-      *          AND ( SPA-GMN-KOHNUM  =   "245" )
-               WHEN  ( SPA-PREFNUM     =   CONST-KOCHI )
-                 AND ( HKN-HBTNUM      =   "72" )
-                   MOVE    "1"         TO  SPA-GMN-FTNKEIKBNN
-                   MOVE    "1"         TO  SPA-GMN-FTNKEITAIKBNN
-               WHEN  ( SPA-PREFNUM     =   CONST-MIYAZAKI )
-                 AND ( SPA-GMN-KOHNUM  =   "190" )
-                   MOVE    "2"         TO  SPA-GMN-FTNKEIKBNN
-                   MOVE    "1"         TO  SPA-GMN-FTNKEITAIKBNN
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
-                AND  ( SPA-GMN-KOHNUM  =   "186" )
-                   MOVE    "1"         TO  SPA-GMN-HKNFTNKBNK
-                   MOVE    "0"         TO  SPA-GMN-HKNFTNTAIKBNK
-               WHEN  ( SPA-PREFNUM     =   CONST-AKITA )
-               WHEN  ( SPA-PREFNUM     =   CONST-IBARAKI )
-               WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
-               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
-               WHEN  ( SPA-PREFNUM     =   CONST-OSAKA )
-               WHEN  ( SPA-PREFNUM     =   CONST-HIROSHIMA )
-               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
-                AND  ( SPA-GMN-KOHNUM  NOT =   "186" )
-                   MOVE    "1"         TO  SPA-GMN-HKNFTNKBNK
-                   MOVE    "2"         TO  SPA-GMN-HKNFTNTAIKBNK
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-OKAYAMA )
-               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
-                AND  ( SPA-GMN-KOHNUM  =   "186" )
-                   MOVE    "1"         TO  SPA-GMN-HKNFTNKBNY
-                   MOVE    "0"         TO  SPA-GMN-HKNFTNTAIKBNY
-               WHEN  ( SPA-PREFNUM     =   CONST-AKITA )
-               WHEN  ( SPA-PREFNUM     =   CONST-IBARAKI )
-               WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
-               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
-               WHEN  ( SPA-PREFNUM     =   CONST-OSAKA )
-               WHEN  ( SPA-PREFNUM     =   CONST-HIROSHIMA )
-               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
-                AND  ( SPA-GMN-KOHNUM  NOT =   "186" )
-                   MOVE    "1"         TO  SPA-GMN-HKNFTNKBNY
-                   MOVE    "2"         TO  SPA-GMN-HKNFTNTAIKBNY
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "481" OR "482"
-                                        OR "483" OR "383" )
-                   MOVE    "1"         TO  SPA-GMN-RECEKSIKBNN
-                   MOVE    "0"         TO  SPA-GMN-RECEKSITAIKBNN
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
-                AND  ( SPA-GMN-KOHNUM  =   "588" )
-                   MOVE    "1"         TO  SPA-GMN-CHKJGNKBNG
-                   MOVE    "0"         TO  SPA-GMN-CHKJGNTAIKBNG
-               WHEN  ( SPA-PREFNUM     =   CONST-CHIBA )
-                   MOVE    "2"         TO  SPA-GMN-CHKJGNKBNG
-                   MOVE    "0"         TO  SPA-GMN-CHKJGNTAIKBNG
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "783" )
-               WHEN  ( SPA-PREFNUM     =   CONST-CHIBA )
-               WHEN  ( SPA-PREFNUM     =   CONST-SHIGA )
-               WHEN  ( SPA-PREFNUM     =   CONST-FUKUOKA )
-               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
-                AND  ( SPA-GMN-KOHNUM  =   "182" OR "282" )
-                   MOVE    "1"         TO  SPA-GMN-CHKJGNKBNN
-                   MOVE    "0"         TO  SPA-GMN-CHKJGNTAIKBNN
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
-                AND  ( HKN-HBTNUM      =   "80" OR "82" OR "84"
-                                        OR "86" OR "00" )
-               WHEN  ( SPA-PREFNUM     =   CONST-NARA )
-                AND  ( HKN-HBTNUM      =   "71" OR "81" OR "91" )
-                   MOVE    "1"         TO  SPA-GMN-KOHSKYKBNG
-                   MOVE    "1"         TO  SPA-GMN-KOHSKYTAIKBNG
-               WHEN  ( SPA-PREFNUM     =   CONST-FUKUOKA )
-                AND  ( HKN-HBTNUM  NOT =   "41" )
-                   MOVE    "1"         TO  SPA-GMN-KOHSKYKBNG
-                   MOVE    "3"         TO  SPA-GMN-KOHSKYTAIKBNG
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-NARA )
-                AND  ( HKN-HBTNUM      =   "71" OR "81" OR "91" )
-                   MOVE    "1"         TO  SPA-GMN-KOHSKYKBNN
-                   MOVE    "1"         TO  SPA-GMN-KOHSKYTAIKBNN
-               WHEN  ( SPA-PREFNUM     =   CONST-FUKUOKA )
-                AND  ( HKN-HBTNUM  NOT =   "41" )
-                   MOVE    "1"         TO  SPA-GMN-KOHSKYKBNN
-                   MOVE    "3"         TO  SPA-GMN-KOHSKYTAIKBNN
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-HOKKAIDO )
-                AND  ( SPA-GMN-KOHNUM  =   "183" )
-               WHEN  ( SPA-PREFNUM     =   CONST-IBARAKI )
-                AND  ( SPA-GMN-KOHNUM  =   "152" )
-               WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
-                AND  ( SPA-GMN-KOHNUM  =   "151" )
-               WHEN  ( SPA-PREFNUM     =   CONST-AICHI )
-                AND  ( SPA-GMN-KOHNUM  =   "191" )
-               WHEN  ( SPA-PREFNUM     =   CONST-HYOGO )
-                AND  ( SPA-GMN-KOHNUM  =   "186" )
-                   MOVE    "1"         TO  SPA-GMN-PTJGNKBN
-                   MOVE    "0"         TO  SPA-GMN-PTJGNTAIKBN
-               WHEN  ( SPA-PREFNUM     =   CONST-FUKUSHIMA )
-                AND  ( SPA-GMN-KOHNUM  =   "281" )
-                   MOVE    "2"         TO  SPA-GMN-PTJGNKBN
-                   MOVE    "0"         TO  SPA-GMN-PTJGNTAIKBN
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-FUKUSHIMA )
-                AND  ( SPA-GMN-KOHNUM  =   "245" OR "246" OR "445"
-                                        OR "545" )
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "343" OR "342" OR "181"
-                                        OR "182" OR "183" OR "481"
-                                        OR "482" OR "383" OR "543"
-                                        OR "582" OR "743" OR "442"
-                                        OR "781" OR "542" OR "681"
-                                        OR "682" OR "381" OR "372"
-                                        OR "373" OR "281" )
-               WHEN  ( SPA-PREFNUM     =   CONST-KUMAMOTO )
-                AND  ( SPA-GMN-KOHNUM  =   "341" OR "442" )
-                   MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNG
-                   MOVE    "0"         TO  SPA-GMN-IRYOKEITAIKBNG
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "344" OR "483" OR "783"
-                                        OR "683" )
-                   MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNG
-                   MOVE    "1"         TO  SPA-GMN-IRYOKEITAIKBNG
-               END-EVALUATE
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-FUKUSHIMA )
-                AND  ( SPA-GMN-KOHNUM  =   "245" OR "246" OR "445"
-                                        OR "545" )
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "181" OR "182" OR "183"
-                                        OR "543" OR "582" OR "743"
-                                        OR "442" OR "781" OR "542"
-                                        OR "681" OR "682" OR "381"
-                                        OR "372" OR "373" OR "281" )
-               WHEN  ( SPA-PREFNUM     =   CONST-KUMAMOTO )
-                AND  ( SPA-GMN-KOHNUM  =   "341" OR "442" )
-                   MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNN
-                   MOVE    "0"         TO  SPA-GMN-IRYOKEITAIKBNN
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "783" OR "683" )
-                   MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNN
-                   MOVE    "1"         TO  SPA-GMN-IRYOKEITAIKBNN
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-FUKUSHIMA )
-                AND  ( SPA-GMN-KOHNUM  =   "445" OR "545" )
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "543" OR "582" OR "743"
-                                        OR "442" OR "781" OR "542"
-                                        OR "381" OR "372" OR "373" )
-                   MOVE    "1"         TO  SPA-GMN-SKJKEIKBN
-                   MOVE    "0"         TO  SPA-GMN-SKJKEITAIKBN
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "682" OR "281" )
-                   MOVE    "2"         TO  SPA-GMN-SKJKEIKBN
-                   MOVE    "0"         TO  SPA-GMN-SKJKEITAIKBN
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "683" )
-                   MOVE    "2"         TO  SPA-GMN-SKJKEIKBN
-                   MOVE    "1"         TO  SPA-GMN-SKJKEITAIKBN
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-MIYAGI )
-                AND  ( SPA-GMN-KOHNUM  =   "183" OR "483" OR "583"
-                                        OR "783" )
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "352" OR "353" OR "354"
-                                        OR "382" OR "683" )
-                   MOVE    "2"         TO  SPA-GMN-SKJRYOKBNHON
-                   MOVE    "0"         TO  SPA-GMN-SKJRYOTAIKBNHON
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "382" OR "683" )
-                   MOVE    "2"         TO  SPA-GMN-SEIRYOKBNHON
-                   MOVE    "0"         TO  SPA-GMN-SEIRYOTAIKBNHON
-               WHEN  ( SPA-PREFNUM     =   CONST-GUNMA )
-                AND  ( SPA-GMN-KOHNUM  =   "146" OR "246" OR "143"
-                                        OR "243" OR "177" OR "187" )
-               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
-                AND  ( SPA-GMN-KOHNUM  =   "261" OR "361" OR "561"
-                                        OR "264" OR "364" OR "564"
-                                        OR "298" )
-                   MOVE    "3"         TO  SPA-GMN-SEIRYOKBNHON
-                   MOVE    "0"         TO  SPA-GMN-SEIRYOTAIKBNHON
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "683" )
-                   MOVE    "2"         TO  SPA-GMN-SEIKANKBNHON
-                   MOVE    "0"         TO  SPA-GMN-SEIKANTAIKBNHON
-               WHEN  ( SPA-PREFNUM     =   CONST-GUNMA )
-                AND  ( SPA-GMN-KOHNUM  =   "146" OR "246" OR "143"
-                                        OR "243" OR "177" OR "187" )
-               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
-                AND  ( SPA-GMN-KOHNUM  =   "261" OR "361" OR "561"
-                                        OR "264" OR "364" OR "564"
-                                        OR "298" )
-                   MOVE    "3"         TO  SPA-GMN-SEIKANKBNHON
-                   MOVE    "0"         TO  SPA-GMN-SEIKANTAIKBNHON
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
-                AND  ( SPA-GMN-KOHNUM  =   "198" )
-                   MOVE    "3"         TO  SPA-GMN-SEIRYOKBNTSY
-                   MOVE    "0"         TO  SPA-GMN-SEIRYOTAIKBNTSY
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
-                AND  ( SPA-GMN-KOHNUM  =   "198" )
-                   MOVE    "3"         TO  SPA-GMN-SEIKANKBNTSY
-                   MOVE    "0"         TO  SPA-GMN-SEIKANTAIKBNTSY
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
-                AND  ( SPA-GMN-KOHNUM  =   "198" )
-                   MOVE    "3"         TO  SPA-GMN-SEIRYOKBNTNK
-                   MOVE    "0"         TO  SPA-GMN-SEIRYOTAIKBNTNK
-               END-EVALUATE
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
-                AND  ( SPA-GMN-KOHNUM  =   "198" )
-                   MOVE    "3"         TO  SPA-GMN-SEIKANKBNTNK
-                   MOVE    "0"         TO  SPA-GMN-SEIKANTAIKBNTNK
-               END-EVALUATE
-      *
                MOVE    SPA-GMN-KOHNUM  TO  SPA-NAI-KOHNUM
+      *
            END-IF
       *
            .
@@ -5304,6 +5096,9 @@
            MOVE    "99999999"      TO  SPA-GMN-YUKOEDYMD
                                        SPA-NAI-YUKOEDYMD
       *
+      *    公費の種類コンボ編集処理
+           PERFORM 3110-KOHNUMLST-SEC
+      *
            PERFORM 42011-COMBO-SET-DEFAULT-SEC
       *
            MOVE    1               TO  SPA-GMN-CUR
@@ -5513,6 +5308,294 @@
       *
            .
        42011-COMBO-SET-DEFAULT-ETXT.
+           EXIT.
+      *****************************************************************
+      *    コンボボックス初期値設定処理（Ver4.7.0追加分）
+      *****************************************************************
+       42012-COMBO-SET-DEFAULT-SEC     SECTION.
+      *
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-NARA )
+                 AND ( THKN-HBTNUM      =   "71" OR "81" OR "91" )
+               WHEN  ( SPA-PREFNUM     =   CONST-SHIMANE )
+                 AND ( SPA-GMN-KOHNUM  =   "790" )
+               WHEN  ( SPA-PREFNUM     =   CONST-YAMAGUCHI )
+                 AND ( SPA-GMN-KOHNUM  =   "781" )
+      *        WHEN  ( SPA-PREFNUM     =   CONST-TOKUSHIMA )
+      *          AND ( SPA-GMN-KOHNUM  =   "245" )
+               WHEN  ( SPA-PREFNUM     =   CONST-KOCHI )
+                 AND ( THKN-HBTNUM      =   "72" )
+                   MOVE    "1"         TO  SPA-GMN-FTNKEIKBNG
+                   MOVE    "1"         TO  SPA-GMN-FTNKEITAIKBNG
+               WHEN  ( SPA-PREFNUM     =   CONST-MIYAZAKI )
+                 AND ( SPA-GMN-KOHNUM  =   "190" )
+                   MOVE    "2"         TO  SPA-GMN-FTNKEIKBNG
+                   MOVE    "1"         TO  SPA-GMN-FTNKEITAIKBNG
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-NARA )
+                 AND ( THKN-HBTNUM      =   "71" OR "81" OR "91" )
+               WHEN  ( SPA-PREFNUM     =   CONST-SHIMANE )
+                 AND ( SPA-GMN-KOHNUM  =   "790" )
+               WHEN  ( SPA-PREFNUM     =   CONST-YAMAGUCHI )
+                 AND ( SPA-GMN-KOHNUM  =   "781" )
+      *        WHEN  ( SPA-PREFNUM     =   CONST-TOKUSHIMA )
+      *          AND ( SPA-GMN-KOHNUM  =   "245" )
+               WHEN  ( SPA-PREFNUM     =   CONST-KOCHI )
+                 AND ( THKN-HBTNUM      =   "72" )
+                   MOVE    "1"         TO  SPA-GMN-FTNKEIKBNN
+                   MOVE    "1"         TO  SPA-GMN-FTNKEITAIKBNN
+               WHEN  ( SPA-PREFNUM     =   CONST-MIYAZAKI )
+                 AND ( SPA-GMN-KOHNUM  =   "190" )
+                   MOVE    "2"         TO  SPA-GMN-FTNKEIKBNN
+                   MOVE    "1"         TO  SPA-GMN-FTNKEITAIKBNN
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
+                AND  ( SPA-GMN-KOHNUM  =   "186" )
+                   MOVE    "1"         TO  SPA-GMN-HKNFTNKBNK
+                   MOVE    "0"         TO  SPA-GMN-HKNFTNTAIKBNK
+               WHEN  ( SPA-PREFNUM     =   CONST-AKITA )
+               WHEN  ( SPA-PREFNUM     =   CONST-IBARAKI )
+               WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
+               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
+               WHEN  ( SPA-PREFNUM     =   CONST-OSAKA )
+               WHEN  ( SPA-PREFNUM     =   CONST-HIROSHIMA )
+               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
+                AND  ( SPA-GMN-KOHNUM  NOT =   "186" )
+                   MOVE    "1"         TO  SPA-GMN-HKNFTNKBNK
+                   MOVE    "2"         TO  SPA-GMN-HKNFTNTAIKBNK
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-OKAYAMA )
+               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
+                AND  ( SPA-GMN-KOHNUM  =   "186" )
+                   MOVE    "1"         TO  SPA-GMN-HKNFTNKBNY
+                   MOVE    "0"         TO  SPA-GMN-HKNFTNTAIKBNY
+               WHEN  ( SPA-PREFNUM     =   CONST-AKITA )
+               WHEN  ( SPA-PREFNUM     =   CONST-IBARAKI )
+               WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
+               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
+               WHEN  ( SPA-PREFNUM     =   CONST-OSAKA )
+               WHEN  ( SPA-PREFNUM     =   CONST-HIROSHIMA )
+               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
+                AND  ( SPA-GMN-KOHNUM  NOT =   "186" )
+                   MOVE    "1"         TO  SPA-GMN-HKNFTNKBNY
+                   MOVE    "2"         TO  SPA-GMN-HKNFTNTAIKBNY
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "481" OR "482"
+                                        OR "483" OR "383" )
+                   MOVE    "1"         TO  SPA-GMN-RECEKSIKBNN
+                   MOVE    "0"         TO  SPA-GMN-RECEKSITAIKBNN
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
+                AND  ( SPA-GMN-KOHNUM  =   "588" )
+                   MOVE    "1"         TO  SPA-GMN-CHKJGNKBNG
+                   MOVE    "0"         TO  SPA-GMN-CHKJGNTAIKBNG
+               WHEN  ( SPA-PREFNUM     =   CONST-CHIBA )
+                   MOVE    "2"         TO  SPA-GMN-CHKJGNKBNG
+                   MOVE    "0"         TO  SPA-GMN-CHKJGNTAIKBNG
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "783" )
+               WHEN  ( SPA-PREFNUM     =   CONST-CHIBA )
+               WHEN  ( SPA-PREFNUM     =   CONST-SHIGA )
+               WHEN  ( SPA-PREFNUM     =   CONST-FUKUOKA )
+               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
+                AND  ( SPA-GMN-KOHNUM  =   "182" OR "282" )
+                   MOVE    "1"         TO  SPA-GMN-CHKJGNKBNN
+                   MOVE    "0"         TO  SPA-GMN-CHKJGNTAIKBNN
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
+                AND  ( THKN-HBTNUM      =   "80" OR "82" OR "84"
+                                        OR "86" OR "00" )
+               WHEN  ( SPA-PREFNUM     =   CONST-NARA )
+                AND  ( THKN-HBTNUM      =   "71" OR "81" OR "91" )
+                   MOVE    "1"         TO  SPA-GMN-KOHSKYKBNG
+                   MOVE    "1"         TO  SPA-GMN-KOHSKYTAIKBNG
+               WHEN  ( SPA-PREFNUM     =   CONST-FUKUOKA )
+                AND  ( THKN-HBTNUM NOT =   "41" )
+                   MOVE    "1"         TO  SPA-GMN-KOHSKYKBNG
+                   MOVE    "3"         TO  SPA-GMN-KOHSKYTAIKBNG
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-NARA )
+                AND  ( THKN-HBTNUM      =   "71" OR "81" OR "91" )
+                   MOVE    "1"         TO  SPA-GMN-KOHSKYKBNN
+                   MOVE    "1"         TO  SPA-GMN-KOHSKYTAIKBNN
+               WHEN  ( SPA-PREFNUM     =   CONST-FUKUOKA )
+                AND  ( THKN-HBTNUM NOT =   "41" )
+                   MOVE    "1"         TO  SPA-GMN-KOHSKYKBNN
+                   MOVE    "3"         TO  SPA-GMN-KOHSKYTAIKBNN
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-HOKKAIDO )
+                AND  ( SPA-GMN-KOHNUM  =   "183" )
+               WHEN  ( SPA-PREFNUM     =   CONST-IBARAKI )
+                AND  ( SPA-GMN-KOHNUM  =   "152" )
+               WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
+                AND  ( SPA-GMN-KOHNUM  =   "151" )
+               WHEN  ( SPA-PREFNUM     =   CONST-AICHI )
+                AND  ( SPA-GMN-KOHNUM  =   "191" )
+               WHEN  ( SPA-PREFNUM     =   CONST-HYOGO )
+                AND  ( SPA-GMN-KOHNUM  =   "186" )
+                   MOVE    "1"         TO  SPA-GMN-PTJGNKBN
+                   MOVE    "0"         TO  SPA-GMN-PTJGNTAIKBN
+               WHEN  ( SPA-PREFNUM     =   CONST-FUKUSHIMA )
+                AND  ( SPA-GMN-KOHNUM  =   "281" )
+                   MOVE    "2"         TO  SPA-GMN-PTJGNKBN
+                   MOVE    "0"         TO  SPA-GMN-PTJGNTAIKBN
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-FUKUSHIMA )
+                AND  ( SPA-GMN-KOHNUM  =   "245" OR "246" OR "445"
+                                        OR "545" )
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "343" OR "342" OR "181"
+                                        OR "182" OR "183" OR "481"
+                                        OR "482" OR "383" OR "543"
+                                        OR "582" OR "743" OR "442"
+                                        OR "781" OR "542" OR "681"
+                                        OR "682" OR "381" OR "372"
+                                        OR "373" OR "281" )
+               WHEN  ( SPA-PREFNUM     =   CONST-KUMAMOTO )
+                AND  ( SPA-GMN-KOHNUM  =   "341" OR "442" )
+                   MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNG
+                   MOVE    "0"         TO  SPA-GMN-IRYOKEITAIKBNG
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "344" OR "483" OR "783"
+                                        OR "683" )
+                   MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNG
+                   MOVE    "1"         TO  SPA-GMN-IRYOKEITAIKBNG
+               END-EVALUATE
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-FUKUSHIMA )
+                AND  ( SPA-GMN-KOHNUM  =   "245" OR "246" OR "445"
+                                        OR "545" )
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "181" OR "182" OR "183"
+                                        OR "543" OR "582" OR "743"
+                                        OR "442" OR "781" OR "542"
+                                        OR "681" OR "682" OR "381"
+                                        OR "372" OR "373" OR "281" )
+               WHEN  ( SPA-PREFNUM     =   CONST-KUMAMOTO )
+                AND  ( SPA-GMN-KOHNUM  =   "341" OR "442" )
+                   MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNN
+                   MOVE    "0"         TO  SPA-GMN-IRYOKEITAIKBNN
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "783" OR "683" )
+                   MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNN
+                   MOVE    "1"         TO  SPA-GMN-IRYOKEITAIKBNN
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-FUKUSHIMA )
+                AND  ( SPA-GMN-KOHNUM  =   "445" OR "545" )
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "543" OR "582" OR "743"
+                                        OR "442" OR "781" OR "542"
+                                        OR "381" OR "372" OR "373" )
+                   MOVE    "1"         TO  SPA-GMN-SKJKEIKBN
+                   MOVE    "0"         TO  SPA-GMN-SKJKEITAIKBN
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "682" OR "281" )
+                   MOVE    "2"         TO  SPA-GMN-SKJKEIKBN
+                   MOVE    "0"         TO  SPA-GMN-SKJKEITAIKBN
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "683" )
+                   MOVE    "2"         TO  SPA-GMN-SKJKEIKBN
+                   MOVE    "1"         TO  SPA-GMN-SKJKEITAIKBN
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-MIYAGI )
+                AND  ( SPA-GMN-KOHNUM  =   "183" OR "483" OR "583"
+                                        OR "783" )
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "352" OR "353" OR "354"
+                                        OR "382" OR "683" )
+                   MOVE    "2"         TO  SPA-GMN-SKJRYOKBNHON
+                   MOVE    "0"         TO  SPA-GMN-SKJRYOTAIKBNHON
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "382" OR "683" )
+                   MOVE    "2"         TO  SPA-GMN-SEIRYOKBNHON
+                   MOVE    "0"         TO  SPA-GMN-SEIRYOTAIKBNHON
+               WHEN  ( SPA-PREFNUM     =   CONST-GUNMA )
+                AND  ( SPA-GMN-KOHNUM  =   "146" OR "246" OR "143"
+                                        OR "243" OR "177" OR "187" )
+               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
+                AND  ( SPA-GMN-KOHNUM  =   "261" OR "361" OR "561"
+                                        OR "264" OR "364" OR "564"
+                                        OR "298" )
+                   MOVE    "3"         TO  SPA-GMN-SEIRYOKBNHON
+                   MOVE    "0"         TO  SPA-GMN-SEIRYOTAIKBNHON
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "683" )
+                   MOVE    "2"         TO  SPA-GMN-SEIKANKBNHON
+                   MOVE    "0"         TO  SPA-GMN-SEIKANTAIKBNHON
+               WHEN  ( SPA-PREFNUM     =   CONST-GUNMA )
+                AND  ( SPA-GMN-KOHNUM  =   "146" OR "246" OR "143"
+                                        OR "243" OR "177" OR "187" )
+               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
+                AND  ( SPA-GMN-KOHNUM  =   "261" OR "361" OR "561"
+                                        OR "264" OR "364" OR "564"
+                                        OR "298" )
+                   MOVE    "3"         TO  SPA-GMN-SEIKANKBNHON
+                   MOVE    "0"         TO  SPA-GMN-SEIKANTAIKBNHON
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
+                AND  ( SPA-GMN-KOHNUM  =   "198" )
+                   MOVE    "3"         TO  SPA-GMN-SEIRYOKBNTSY
+                   MOVE    "0"         TO  SPA-GMN-SEIRYOTAIKBNTSY
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
+                AND  ( SPA-GMN-KOHNUM  =   "198" )
+                   MOVE    "3"         TO  SPA-GMN-SEIKANKBNTSY
+                   MOVE    "0"         TO  SPA-GMN-SEIKANTAIKBNTSY
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
+                AND  ( SPA-GMN-KOHNUM  =   "198" )
+                   MOVE    "3"         TO  SPA-GMN-SEIRYOKBNTNK
+                   MOVE    "0"         TO  SPA-GMN-SEIRYOTAIKBNTNK
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
+                AND  ( SPA-GMN-KOHNUM  =   "198" )
+                   MOVE    "3"         TO  SPA-GMN-SEIKANKBNTNK
+                   MOVE    "0"         TO  SPA-GMN-SEIKANTAIKBNTNK
+               END-EVALUATE
+      *
+           .
+       42012-COMBO-SET-DEFAULT-ETXT.
            EXIT.
       *****************************************************************
       *   履歴情報領域初期化処理
@@ -6073,8 +6156,14 @@
       *****************************************************************
        5001-GMNHEN-SEC                 SECTION.
       *
-           MOVE    SPA-GMN-KOHNUM      TO  W65-KOHNUM
-           MOVE    SPA-GMN-KOHNAME     TO  W65-KOHNAME
+           MOVE    SPA-GMN-KOHNUM-G    TO  W65-KOHNUM
+           MOVE    SPA-GMN-KOHNUM-MAX  TO  W65-KOHNUM-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-KOHNUM-MAX )
+                   MOVE    SPA-GMN-KOHNUMLST (IDX-CMB)
+                                   TO  W65-KOHNUM-ITEM (IDX-CMB)
+           END-PERFORM
+      *
            MOVE    SPA-GMN-YUKOSTYMD   TO  W65-YUKOSTYMD
            MOVE    SPA-GMN-YUKOEDYMD   TO  W65-YUKOEDYMD
            MOVE    SPA-GMN-SELNUM2     TO  W65-SELNUM2
@@ -6091,7 +6180,7 @@
                                        W65-B07-STATE
                                        W65-B08-STATE
                                        W65-KOHNUM-STATE
-                                       W65-KOHNAME-STATE
+                                       W65-KOHNUM-ITEM-STATE
                                        W65-YUKOSTYMD-STATE
                                        W65-YUKOEDYMD-STATE
                                        W65-SELNUM2-STATE
@@ -6350,7 +6439,7 @@
                                         TO W65-B06-STATE
                                            W65-B08-STATE
                                            W65-KOHNUM-STATE
-                                           W65-KOHNAME-STATE
+                                           W65-KOHNUM-ITEM-STATE
                                            W65-YUKOSTYMD-STATE
                                            W65-YUKOEDYMD-STATE
                                            W65-SELNUM2-STATE
@@ -8031,6 +8120,30 @@
        4200-JYUHENTAIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    公費の種類コンボボックスチェック処理
+      *****************************************************************
+       4200-KOHNUMLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-KOHNUM-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-KOHNUML (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-KOHNUMLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-KOHNUMLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    全角半角混在チェック
       *****************************************************************
        800-ENRTRY-CHK-SEC              SECTION.
@@ -8223,8 +8336,13 @@
            MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    SEL-HKNNUM          TO  HKN-HKNNUM
            MOVE    ZERO                TO  HKN-PAYKBN
-           MOVE    SEL-STYMD           TO  HKN-TEKSTYMD
-           MOVE    SEL-EDYMD           TO  HKN-TEKEDYMD
+           IF    ( SEL-EDYMD           >   SEL-STYMD )
+               MOVE    SEL-EDYMD       TO  HKN-TEKSTYMD
+               MOVE    SEL-STYMD       TO  HKN-TEKEDYMD
+           ELSE
+               MOVE    SEL-STYMD       TO  HKN-TEKSTYMD
+               MOVE    SEL-EDYMD       TO  HKN-TEKEDYMD
+           END-IF
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
@@ -8241,6 +8359,58 @@
       *
            .
        900-HKNNUM-KEY8-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険番号マスタ検索処理
+      *****************************************************************
+       900-HKNNUM-KEY3-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNNUM
+      *
+      *    保険番号検索
+           MOVE    ZERO                TO  FLG-HKNNUM
+           INITIALIZE                      HKNNUM-REC
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+           IF    ( SEL-EDYMD           >   SEL-STYMD )
+               MOVE    SEL-EDYMD       TO  HKN-TEKSTYMD
+               MOVE    SEL-STYMD       TO  HKN-TEKEDYMD
+           ELSE
+               MOVE    SEL-STYMD       TO  HKN-TEKSTYMD
+               MOVE    SEL-EDYMD       TO  HKN-TEKEDYMD
+           END-IF
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF ( MCP-RC             NOT =   ZERO )
+               MOVE    1               TO  FLG-HKNNUM
+           ELSE
+               MOVE    MCPDATA-REC     TO  HKNNUM-REC
+           END-IF
+      *
+           .
+       900-HKNNUM-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険番号マスタFETCH処理
+      *****************************************************************
+       900-HKNNUM-KEY3-FET-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNNUM
+      *
+      *    保険番号検索
+      *
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF ( MCP-RC             NOT =   ZERO )
+               MOVE    1               TO  FLG-HKNNUM
+           ELSE
+               MOVE    MCPDATA-REC     TO  HKNNUM-REC
+           END-IF
+      *
+           .
+       900-HKNNUM-KEY3-FET-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

@@ -22,10 +22,12 @@
               03  W65-B08-STATE                  PIC S9(9) BINARY.
               03  W65-KJNYMD                     PIC X(10).
               03  W65-SELNUM1                    PIC X(50).
-              03  W65-KOHNUM                     PIC X(3).
-              03  W65-KOHNUM-STATE               PIC S9(9) BINARY.
-              03  W65-KOHNAME                    PIC X(50).
-              03  W65-KOHNAME-STATE              PIC S9(9) BINARY.
+              03  W65-CMB-KOHNUM.
+                04  W65-KOHNUM             PIC X(64).
+                04  W65-KOHNUM-STATE       PIC S9(9) BINARY.
+                04  W65-KOHNUM-COUNT       PIC S9(9) BINARY.
+                04  W65-KOHNUM-ITEM        PIC X(64) OCCURS 200.
+                04  W65-KOHNUM-ITEM-STATE  PIC S9(9) BINARY.
               03  W65-NB1.
                 04  W65-NB1-PAGENO               PIC S9(9) BINARY.
                 04  W65-FXD7.
