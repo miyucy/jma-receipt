@@ -1356,7 +1356,7 @@
                MOVE    SPACE           TO V01-B05
            END-IF
       *
-           MOVE    "県単設定"          TO V01-B06
+           MOVE    "付加設定"          TO V01-B06
       *
            IF    ( SPA-GMN-HKNNUM-NO   >=  100 )  AND
                  ( SPA-GMN-HKNNUM-NO   <=  899 )  AND
