@@ -88,6 +88,7 @@
       *                                     （休業証明請求時）
       *  04.05.03    NACL-藤原    10/03/03  平成２２年４月改正対応
       *  04.05.04    NACL-藤原    10/03/29  「改正未対応」の記載をやめる
+      *  04.05.05    NACL-藤原    11/08/02  点検レセ印字位置変更対応
       *
       *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *****************************************************************
@@ -195,7 +196,8 @@
       *****COPY    "HCM22V02.INC"  REPLACING  //HCM22V02//
       *****COPY    "HCM22V03.INC"  REPLACING  //HCM22V03//
       *****COPY    "HCM22V04.INC"  REPLACING  //HCM22V04//
-           COPY    "HCM22V05.INC"  REPLACING  //HCM22V05//
+      *****COPY    "HCM22V05.INC"  REPLACING  //HCM22V05//
+           COPY    "HCM22V06.INC"  REPLACING  //HCM22V06//
                                    BY         //HC22//.
       *
       *    長期・短期（続紙）     
@@ -206,7 +208,8 @@
       *****COPY    "HCM24V02.INC"  REPLACING  //HCM24V02//
       *****COPY    "HCM24V03.INC"  REPLACING  //HCM24V03//
       *****COPY    "HCM24V04.INC"  REPLACING  //HCM24V04//
-           COPY    "HCM24V05.INC"  REPLACING  //HCM24V05//
+      *****COPY    "HCM24V05.INC"  REPLACING  //HCM24V05//
+           COPY    "HCM24V06.INC"  REPLACING  //HCM24V06//
                                    BY         //HC24//.
       *
       *    フラグ領域
@@ -529,6 +532,8 @@
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
+      *
+           COPY    "CPSK200501.INC".
       *
            COPY    "CPRCF008.INC".
       *
@@ -992,6 +997,28 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
            END-IF    
+      *         
+      *    レセプト編集区分情報
+           MOVE    SPACE           TO  SYSKANRI-REC
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "2005"          TO  SYS-KANRICD
+           MOVE    "01"            TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+           MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+           MOVE    "key10"         TO  WRK-MCP-PATHNAME
+           PERFORM 960-KANRIMST-READ-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-200501-REC
+           ELSE    
+               INITIALIZE                  SYS-200501-REC
+           END-IF
+           IF      SYS-200501-INSPECT-CHARACTER-KBN
+                                   =   SPACE
+               MOVE    ZERO            TO
+                                       SYS-200501-INSPECT-CHARACTER-KBN
+           END-IF
       *
            .
        120-HOSPINF-GET-EXT.
@@ -1320,7 +1347,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
       *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN     =   "2"
-               MOVE    "点検用レセプト"    TO  HC22-LABEL
+               IF      SYS-200501-INSPECT-CHARACTER-KBN
+                                           =   "0"
+                   MOVE    "点検用レセプト"    TO  HC22-LABEL
+                   MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
+                                               TO  HC22-LOPTION
+               END-IF
            END-IF
       *
            .
@@ -1378,6 +1410,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
       *    点検用レセプト作成時
            MOVE    HC22-LABEL          TO  HC24-LABEL
+           MOVE    HC22-LOPTION        TO  HC24-LOPTION
       *
            .
        310-HC101-HEAD-HEN-EXT.

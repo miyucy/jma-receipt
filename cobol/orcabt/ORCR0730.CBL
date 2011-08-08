@@ -133,6 +133,7 @@
       *  04.05.27    NACL-藤原    11/04/20  災害対応
       *                                     公費負担医療の記載対応
       *  04.05.28    NACL-門脇    11/06/20  公費分離区分区切り編集修正
+      *  04.05.29    NACL-藤原    11/08/02  点検レセ印字位置変更対応
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -272,13 +273,17 @@
       *       
       *****COPY    "HCN09V01.INC"  REPLACING  //HCN09V01//
       *****COPY    "HCN09V02.INC"  REPLACING  //HCN09V02//
-           COPY    "HCN09V03.INC"  REPLACING  //HCN09V03//
+      *****COPY    "HCN09V03.INC"  REPLACING  //HCN09V03//
+           COPY    "HCN09V04.INC"  REPLACING  //HCN09V04//
                                    BY         //HC06//.
-           COPY    "HCM12V01.INC"  REPLACING  //HCM12V01//
+      *****COPY    "HCM12V01.INC"  REPLACING  //HCM12V01//
+           COPY    "HCM12V02.INC"  REPLACING  //HCM12V02//
                                    BY         //HC061//.
-           COPY    "HCM13V01.INC"  REPLACING  //HCM13V01//
+      *****COPY    "HCM13V01.INC"  REPLACING  //HCM13V01//
+           COPY    "HCM13V02.INC"  REPLACING  //HCM13V02//
                                    BY         //HC062//.
-           COPY    "HCM14V01.INC"  REPLACING  //HCM14V01//
+      *****COPY    "HCM14V01.INC"  REPLACING  //HCM14V01//
+           COPY    "HCM14V02.INC"  REPLACING  //HCM14V02//
                                    BY         //HC063//.
       *
       *    フラグ領域
@@ -1796,6 +1801,11 @@
                                         =   SPACE
                MOVE    "0"              TO  SYS-200501-BTUNUM-PRTJYUNKBN
            END-IF
+           IF      SYS-200501-INSPECT-CHARACTER-KBN
+                                    =   SPACE
+               MOVE    ZERO             TO
+                                    SYS-200501-INSPECT-CHARACTER-KBN
+           END-IF
       *         
       *    レセプト編綴順情報
            MOVE    SPACE            TO  SYSKANRI-REC
@@ -3039,7 +3049,12 @@
       *
       *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN     =   "2"
-               MOVE    "点検用レセプト"    TO  HC06-LABEL
+               IF      SYS-200501-INSPECT-CHARACTER-KBN
+                                           =   "0"
+                   MOVE    "点検用レセプト"    TO  HC06-LABEL
+                   MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
+                                               TO  HC06-LOPTION
+               END-IF
            END-IF     
       *
       *    リアルタイムプレビュー時の表示
@@ -3314,6 +3329,7 @@
       *
       *            点検用レセプト作成時
                    MOVE    HC06-LABEL          TO  HC061-LABEL
+                   MOVE    HC06-LOPTION        TO  HC061-LOPTION
                WHEN    "1"
                    INITIALIZE                      HC062
                    MOVE    SPACE               TO  HC062
@@ -3395,6 +3411,7 @@
       *
       *            点検用レセプト作成時
                    MOVE    HC06-LABEL          TO  HC062-LABEL
+                   MOVE    HC06-LOPTION        TO  HC062-LOPTION
                WHEN    "2"
                    INITIALIZE                      HC063
                    MOVE    SPACE               TO  HC063
@@ -3476,6 +3493,7 @@
       *
       *            点検用レセプト作成時
                    MOVE    HC06-LABEL          TO  HC063-LABEL
+                   MOVE    HC06-LOPTION        TO  HC063-LOPTION
            END-EVALUATE
            .
        310-HCN061-HEAD-HEN-EXT.
@@ -8428,24 +8446,28 @@
            IF      CNT-PAGE            =   1
       *********MOVE    "HCN09V01.red"      TO
       *********MOVE    "HCN09V02.red"      TO
-               MOVE    "HCN09V03.red"      TO
+      *********MOVE    "HCN09V03.red"      TO
+               MOVE    "HCN09V04.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
                EVALUATE    SYS-2005-NEXTPRTKBN
                    WHEN    ZERO
-                       MOVE    "HCM12V01.red" TO
+      *********        MOVE    "HCM12V01.red" TO
+                       MOVE    "HCM12V02.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC061           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
                    WHEN    "1"   
-                       MOVE    "HCM13V01.red" TO
+      *********        MOVE    "HCM13V01.red" TO
+                       MOVE    "HCM13V02.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC062           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
                    WHEN    "2"   
-                       MOVE    "HCM14V01.red" TO
+      *********        MOVE    "HCM14V01.red" TO
+                       MOVE    "HCM14V02.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC063           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -8697,22 +8719,26 @@
                    EVALUATE    RECE08-FORMID
       *****************WHEN    "HCN09V01.red"
       *****************WHEN    "HCN09V02.red"
-                       WHEN    "HCN09V03.red"
+      *****************WHEN    "HCN09V03.red"
+                       WHEN    "HCN09V04.red"
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE
                            MOVE    HC06            TO RECE08-PRTDATA
-                       WHEN    "HCM12V01.red"                  
+      *****************WHEN    "HCM12V01.red" 
+                       WHEN    "HCM12V02.red"                  
                            MOVE    RECE08-PRTDATA  TO HC061
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC061-PAGE
                            MOVE    HC061           TO RECE08-PRTDATA
-                       WHEN    "HCM13V01.red"                  
+      *****************WHEN    "HCM13V01.red" 
+                       WHEN    "HCM13V02.red"                  
                            MOVE    RECE08-PRTDATA  TO HC062
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC062-PAGE
                            MOVE    HC062           TO RECE08-PRTDATA
-                       WHEN    "HCM14V01.red"                  
+      *****************WHEN    "HCM14V01.red" 
+                       WHEN    "HCM14V02.red"                  
                            MOVE    RECE08-PRTDATA  TO HC063
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC063-PAGE

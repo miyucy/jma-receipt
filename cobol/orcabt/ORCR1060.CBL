@@ -49,6 +49,7 @@
       *  04.05.03    NACL-藤原    10/03/29  「改正未対応」の記載をやめる
       *                                     平成２２年４月分以降の処理を
       *                                     行うようにする
+      *  04.05.04    NACL-藤原    11/08/02  点検レセ印字位置変更対応
       *
       *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *  04.06.02    NACL-藤原    10/10/12  公費単独のレセ分離対応
@@ -123,9 +124,11 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-           COPY    "HCM58V01.INC"  REPLACING  //HCM58V01//
+      *****COPY    "HCM58V01.INC"  REPLACING  //HCM58V01//
+           COPY    "HCM58V02.INC"  REPLACING  //HCM58V02//
                                    BY         //HCM58//.
-           COPY    "HCM59V01.INC"  REPLACING  //HCM59V01//
+      *****COPY    "HCM59V01.INC"  REPLACING  //HCM59V01//
+           COPY    "HCM59V02.INC"  REPLACING  //HCM59V02//
                                    BY         //HCM59//.
       *
       *    フラグ領域
@@ -557,6 +560,8 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
       *
+           COPY    "CPSK200501.INC".
+      *
            COPY    "CPRCF008.INC".
       *
            COPY    "CPRCF010.INC".
@@ -957,6 +962,28 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                    MOVE    2               TO  FLG-STS
                END-IF
            END-IF
+      *         
+      *    レセプト編集区分情報
+           MOVE    SPACE           TO  SYSKANRI-REC
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "2005"          TO  SYS-KANRICD
+           MOVE    "01"            TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+           MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+           MOVE    "key10"         TO  WRK-MCP-PATHNAME
+           PERFORM 960-KANRIMST-READ-SEC
+           IF      FLG-KANRIMST    =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-200501-REC
+           ELSE    
+               INITIALIZE                  SYS-200501-REC
+           END-IF
+           IF      SYS-200501-INSPECT-CHARACTER-KBN
+                                   =   SPACE
+               MOVE    ZERO            TO
+                                       SYS-200501-INSPECT-CHARACTER-KBN
+           END-IF
            .
        120-HOSPINF-GET-EXT.
            EXIT.
@@ -1166,8 +1193,13 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
       *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN     =   "2"
-               MOVE    "点検用レセプト"    TO  HCM58-LABEL
-           END-IF
+               IF      SYS-200501-INSPECT-CHARACTER-KBN
+                                           =   "0"
+                   MOVE    "点検用レセプト"    TO  HCM58-LABEL
+                   MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
+                                               TO  HCM58-LOPTION
+               END-IF
+           END-IF     
       *
       *    リアルタイムプレビュー時の表示
            IF      WRK-PARA-SHELLID    =   "RECEPTX"
@@ -1287,6 +1319,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
       *    点検用レセプト作成時
            MOVE    HCM58-LABEL         TO  HCM59-LABEL
+           MOVE    HCM58-LOPTION       TO  HCM59-LOPTION
            .
        310-HCN061-HEAD-HEN-EXT.
            EXIT.
@@ -2178,12 +2211,14 @@ grpsys     MOVE    RECE100-HOSPNUM      TO  OPECOM-HOSPNUM
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCM58V01.red"       TO
+      *********MOVE    "HCM58V01.red"       TO
+               MOVE    "HCM58V02.red"       TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HCM58                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
-               MOVE    "HCM59V01.red"       TO
+      *********MOVE    "HCM59V01.red"       TO
+               MOVE    "HCM59V02.red"       TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HCM59                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -2317,12 +2352,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCM58V01.red"
+      *****************WHEN    "HCM58V01.red"
+                       WHEN    "HCM58V02.red"
                            MOVE    RECE08-PRTDATA  TO HCM58
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HCM58-PAGE
                            MOVE    HCM58            TO RECE08-PRTDATA
-                       WHEN    "HCM59V01.red"                  
+      *****************WHEN    "HCM59V01.red"
+                       WHEN    "HCM59V02.red"                  
                            MOVE    RECE08-PRTDATA  TO HCM59
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HCM59-PAGE
