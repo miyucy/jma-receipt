@@ -17,8 +17,8 @@ K10	{
 					value5	varchar(50);
 					value6	varchar(50);
 					value7	varchar(2);
-				}	[100];
-				select	bool[100];
+				}	[200];
+				select	bool[200];
 			};
 		};
 	};

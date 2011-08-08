@@ -32,6 +32,7 @@
       *  01.00.03    NACL-多々納  05/11/16  患者番号表示
       *                                     MONFUNC 対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.07.00    NACL-多々納  11/08/08  明細２００件対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -406,11 +407,11 @@
            END-IF
            PERFORM
                UNTIL   (FLG-WKSRYACT   =   1 )  OR
-                       (IDX            >   100 )
+                       (IDX            >   200 )
                IF      (WKSRY-ZAINUM       =   1   )  AND
                        (WKSRY-RENNUM       =   1   )
                    ADD     1                   TO  IDX
-                   IF      IDX                 >   100
+                   IF      IDX                 >   200
                        MOVE    1                   TO  SPA-K10-NEXT
                    ELSE
                        PERFORM 3101-TBL-HENSYU-SEC
