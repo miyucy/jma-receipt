@@ -23,199 +23,576 @@ W65	{
 			value	varchar(50);
 			state	int;
 		};
-		CMB_JNISSUKBN	{
-			JNISSUKBN	{
-				value	varchar(80);
+		nb1	{
+			pageno	int;
+			fxd7	{
+				CMB_JNISSUKBN	{
+					JNISSUKBN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_JNISSUTAIKBN	{
+					JNISSUTAIKBN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_TOTALTENKBN	{
+					TOTALTENKBN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_TOTALTENTAIKBN	{
+					TOTALTENTAIKBN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SYUKEIKBN	{
+					SYUKEIKBN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SYUKEITAIKBN	{
+					SYUKEITAIKBN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_FTNKEIKBNG	{
+					FTNKEIKBNG	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_FTNKEITAIKBNG	{
+					FTNKEITAIKBNG	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_FTNKEIKBNN	{
+					FTNKEIKBNN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_FTNKEITAIKBNN	{
+					FTNKEITAIKBNN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_FTNMONEYKBNG	{
+					FTNMONEYKBNG	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_FTNMONEYTAIKBNG	{
+					FTNMONEYTAIKBNG	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_FTNMONEYKBNN	{
+					FTNMONEYKBNN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_FTNMONEYTAIKBNN	{
+					FTNMONEYTAIKBNN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_FTNZEROKBNG	{
+					FTNZEROKBNG	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_FTNZEROTAIKBNG	{
+					FTNZEROTAIKBNG	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_FTNZEROKBNN	{
+					FTNZEROKBNN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_FTNZEROTAIKBNN	{
+					FTNZEROTAIKBNN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SKJKBN	{
+					SKJKBN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SKJTAIKBN	{
+					SKJTAIKBN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_OCRKBN	{
+					OCRKBN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_OCRTAIKBN	{
+					OCRTAIKBN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SAIKEIKBN	{
+					SAIKEIKBN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SAIKEITAIKBN	{
+					SAIKEITAIKBN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
 			};
-			count	int;
-			item	varchar(80)[10];
-		};
-		CMB_JNISSUTAIKBN	{
-			JNISSUTAIKBN	{
-				value	varchar(30);
-				state	int;
+			fxd8	{
+				CMB_HKNFTNKBNK	{
+					HKNFTNKBNK	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_HKNFTNTAIKBNK	{
+					HKNFTNTAIKBNK	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_HKNFTNKBNY	{
+					HKNFTNKBNY	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_HKNFTNTAIKBNY	{
+					HKNFTNTAIKBNY	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_RECEKSIKBNG	{
+					RECEKSIKBNG	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_RECEKSITAIKBNG	{
+					RECEKSITAIKBNG	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_RECEKSIKBNN	{
+					RECEKSIKBNN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_RECEKSITAIKBNN	{
+					RECEKSITAIKBNN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_CHKJGNKBNG	{
+					CHKJGNKBNG	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_CHKJGNTAIKBNG	{
+					CHKJGNTAIKBNG	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_CHKJGNKBNN	{
+					CHKJGNKBNN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_CHKJGNTAIKBNN	{
+					CHKJGNTAIKBNN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_KOHSKYKBNG	{
+					KOHSKYKBNG	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_KOHSKYTAIKBNG	{
+					KOHSKYTAIKBNG	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_KOHSKYKBNN	{
+					KOHSKYKBNN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_KOHSKYTAIKBNN	{
+					KOHSKYTAIKBNN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
 			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
-		};
-		CMB_TOTALTENKBN	{
-			TOTALTENKBN	{
-				value	varchar(80);
+			fxd9	{
+				CMB_JYUHENKBN	{
+					JYUHENKBN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_JYUHENTAIKBN	{
+					JYUHENTAIKBN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_JGNFTNKBN	{
+					JGNFTNKBN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_JGNFTNTAIKBN	{
+					JGNFTNTAIKBN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_PTJGNKBN	{
+					PTJGNKBN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_PTJGNTAIKBN	{
+					PTJGNTAIKBN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_IRYOKEIKBNG	{
+					IRYOKEIKBNG	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_IRYOKEITAIKBNG	{
+					IRYOKEITAIKBNG	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_IRYOKEIKBNN	{
+					IRYOKEIKBNN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_IRYOKEITAIKBNN	{
+					IRYOKEITAIKBNN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SKJKEIKBN	{
+					SKJKEIKBN	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SKJKEITAIKBN	{
+					SKJKEITAIKBN	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
 			};
-			count	int;
-			item	varchar(80)[10];
-		};
-		CMB_TOTALTENTAIKBN	{
-			TOTALTENTAIKBN	{
-				value	varchar(30);
-				state	int;
+			fxd10	{
+				CMB_SKJRYOKBNHON	{
+					SKJRYOKBNHON	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SKJRYOTAIKBNHON	{
+					SKJRYOTAIKBNHON	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SEIRYOKBNHON	{
+					SEIRYOKBNHON	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SEIRYOTAIKBNHON	{
+					SEIRYOTAIKBNHON	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SEIKANKBNHON	{
+					SEIKANKBNHON	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SEIKANTAIKBNHON	{
+					SEIKANTAIKBNHON	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SKJRYOKBNTSY	{
+					SKJRYOKBNTSY	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SKJRYOTAIKBNTSY	{
+					SKJRYOTAIKBNTSY	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SEIRYOKBNTSY	{
+					SEIRYOKBNTSY	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SEIRYOTAIKBNTSY	{
+					SEIRYOTAIKBNTSY	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SEIKANKBNTSY	{
+					SEIKANKBNTSY	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SEIKANTAIKBNTSY	{
+					SEIKANTAIKBNTSY	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SKJRYOKBNTNK	{
+					SKJRYOKBNTNK	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SKJRYOTAIKBNTNK	{
+					SKJRYOTAIKBNTNK	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SEIRYOKBNTNK	{
+					SEIRYOKBNTNK	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SEIRYOTAIKBNTNK	{
+					SEIRYOTAIKBNTNK	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
+				CMB_SEIKANKBNTNK	{
+					SEIKANKBNTNK	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_SEIKANTAIKBNTNK	{
+					SEIKANTAIKBNTNK	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
 			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
-		};
-		CMB_SYUKEIKBN	{
-			SYUKEIKBN	{
-				value	varchar(80);
-			};
-			count	int;
-			item	varchar(80)[10];
-		};
-		CMB_SYUKEITAIKBN	{
-			SYUKEITAIKBN	{
-				value	varchar(30);
-				state	int;
-			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
-		};
-		CMB_FTNMONEYKBNG	{
-			FTNMONEYKBNG	{
-				value	varchar(80);
-			};
-			count	int;
-			item	varchar(80)[10];
-		};
-		CMB_FTNMONEYTAIKBNG	{
-			FTNMONEYTAIKBNG	{
-				value	varchar(30);
-				state	int;
-			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
-		};
-		CMB_FTNMONEYKBNN	{
-			FTNMONEYKBNN	{
-				value	varchar(80);
-			};
-			count	int;
-			item	varchar(80)[10];
-		};
-		CMB_FTNMONEYTAIKBNN	{
-			FTNMONEYTAIKBNN	{
-				value	varchar(30);
-				state	int;
-			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
-		};
-		CMB_FTNZEROKBNG	{
-			FTNZEROKBNG	{
-				value	varchar(80);
-			};
-			count	int;
-			item	varchar(80)[10];
-		};
-		CMB_FTNZEROTAIKBNG	{
-			FTNZEROTAIKBNG	{
-				value	varchar(30);
-				state	int;
-			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
-		};
-		CMB_FTNZEROKBNN	{
-			FTNZEROKBNN	{
-				value	varchar(80);
-			};
-			count	int;
-			item	varchar(80)[10];
-		};
-		CMB_FTNZEROTAIKBNN	{
-			FTNZEROTAIKBNN	{
-				value	varchar(30);
-				state	int;
-			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
-		};
-		CMB_SKJKBN	{
-			SKJKBN	{
-				value	varchar(80);
-			};
-			count	int;
-			item	varchar(80)[10];
-		};
-		CMB_SKJTAIKBN	{
-			SKJTAIKBN	{
-				value	varchar(30);
-				state	int;
-			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
-		};
-		CMB_OCRKBN	{
-			OCRKBN	{
-				value	varchar(80);
-			};
-			count	int;
-			item	varchar(80)[10];
-		};
-		CMB_OCRTAIKBN	{
-			OCRTAIKBN	{
-				value	varchar(30);
-				state	int;
-			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
-		};
-		CMB_SAIKEIKBN	{
-			SAIKEIKBN	{
-				value	varchar(80);
-				state	int;
-			};
-			count	int;
-			item	varchar(80)[10];
-			state	int;
-		};
-		CMB_SAIKEITAIKBN	{
-			SAIKEITAIKBN	{
-				value	varchar(30);
-				state	int;
-			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
-		};
-		CMB_JYUHENKBN	{
-			JYUHENKBN	{
-				value	varchar(80);
-			};
-			count	int;
-			item	varchar(80)[10];
-		};
-		CMB_JYUHENTAIKBN	{
-			JYUHENTAIKBN	{
-				value	varchar(30);
-				state	int;
-			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
-		};
-		CMB_JGNFTNKBN	{
-			JGNFTNKBN	{
-				value	varchar(80);
-			};
-			count	int;
-			item	varchar(80)[10];
-		};
-		CMB_JGNFTNTAIKBN	{
-			JGNFTNTAIKBN	{
-				value	varchar(30);
-				state	int;
-			};
-			count	int;
-			item	varchar(30)[10];
-			state	int;
 		};
 		YUKOSTYMD	{
 			value	varchar(10);
@@ -233,7 +610,7 @@ W65	{
 			style	varchar(20);
 			value	varchar(40);
 		};
-		scrw28	{
+		scrw1	{
 			KOHLST	{
 				count	int;
 				row	int;
