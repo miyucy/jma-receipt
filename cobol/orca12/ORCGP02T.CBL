@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCGP02H.
+       PROGRAM-ID.             ORCGP02T.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 患者登録
-      *  コンポーネント名  : 制度公費一覧画面（Ｐ０２Ｈ）
+      *  コンポーネント名  : 保険確認年月日履歴画面（Ｐ０２Ｔ）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  11/07/XX    NACL-多々納   新規作成
+      *  11/08/XX    NACL-多々納   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -52,7 +52,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
-           03  FLG-PARA            PIC 9(01).
+           03  FLG-PTHKNRRK        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
       *
@@ -103,13 +103,9 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-      *    保険番号
-       01  HKNNUM-REC.
-           COPY    "CPHKNNUM.INC".
-      *
-      *    保険者号マスタ
-       01  HKNJAINF-REC.
-           COPY    "CPHKNJAINF.INC".
+      *    保険確認年月日履歴マスタ
+       01  PTHKNRRK-REC.
+           COPY    "CPPTHKNRRK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -237,7 +233,7 @@
                MOVE    SPACE               TO  LINKAREA
       *
                MOVE    "NEW"               TO  MCP-PUTTYPE
-               MOVE    "P02H"              TO  MCP-WINDOW
+               MOVE    "P02T"              TO  MCP-WINDOW
                PERFORM 900-PUT-WINDOW
                MOVE    1                   TO  FLG-END
            END-IF
@@ -269,26 +265,45 @@
       *****************************************************************
        300-SPA-INIT-SEC                SECTION.
       *
-           MOVE    1                   TO  WRK-LIST-INIT
-           INITIALIZE                  SPA-P02H-KOHNUM-LST
-           MOVE    ZERO                TO  SPA-P02H-MAX
-           MOVE    ZERO                TO  IDY
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN-KOHMAX )
-                          OR  (IDY     >=  10             )
-               IF      SPA-NAI-HBTNUM (IDX)    =   SPA-P02H-HBTNUM
-                   ADD     1                   TO  IDY
-                   MOVE    SPA-GMN-KOHNUML (IDX)
-                                               TO  SPA-P02H-TKOHNUM(IDY)
-                   MOVE    SPA-GMN-KOHNUMMEIL(IDX)
-                                               TO  SPA-P02H-TKOHNUMMEI
-                                                                  (IDY)
-                   MOVE    IDY                 TO  SPA-P02H-MAX
-               END-IF
-           END-PERFORM
+           INITIALIZE                  SPA-P02T-HKNRRK-LST
       *
-           MOVE    ZERO                TO  SPA-P02H-SELNUM
-           MOVE    1                   TO  SPA-P02H-CUR
+           INITIALIZE                  PTHKNRRK-REC
+           MOVE    SPA-HOSPNUM         TO  PTHKNRRK-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTHKNRRK-PTID
+           MOVE    SPA-P02T-HKNID      TO  PTHKNRRK-HKNID
+      *
+           MOVE    PTHKNRRK-REC        TO  MCPDATA-REC
+           MOVE    "tbl_pthknrrk"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_pthknrrk"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-PTHKNRRK-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTHKNRRK
+               INITIALIZE                  PTHKNRRK-REC
+           END-IF
+      *
+           MOVE    ZERO                TO  SPA-P02T-MAX
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL     (FLG-PTHKNRRK     =   1    )
+                       OR    (IDX              >=  5    )
+               ADD     1                   TO  IDX
+               MOVE    PTHKNRRK-KAKUNINYMD TO  WRK-SYMD
+               PERFORM 4001-SEIWA-YMDEDIT-SEC
+               MOVE    WRK-HENYMD          TO  SPA-P02T-KAKUNINYMD
+                                                                 (IDX)
+               ADD     1                   TO  SPA-P02T-MAX
+      *
+               MOVE    "tbl_pthknrrk"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-PTHKNRRK-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_pthknrrk"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
            .
        300-SPA-INIT-EXT.
            EXIT.
@@ -309,37 +324,15 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           IF     (WRK-LIST-INIT       =   1  )  OR
-                  (SPA-P02H-MAX        =   ZERO )
-               MOVE    ZERO                TO  WRK-LIST-ROW
-           ELSE
-               MOVE    P02H-LIST-ROW       TO  WRK-LIST-ROW
-           END-IF
+           MOVE    SPACE               TO  P02T
+           INITIALIZE                      P02T
       *
-           MOVE    SPACE               TO  P02H
-           INITIALIZE                      P02H
-      *
-           MOVE    WRK-LIST-ROW        TO  P02H-LIST-ROW
-      *
-           MOVE    SPA-P02H-HBTNUM     TO  P02H-HBTNUM
-           MOVE    SPA-P02H-SELNUM     TO  P02H-SELNUM
-      *
+           MOVE    SPA-P02T-HKNMSG     TO  P02T-HKNMSG
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-P02H-MAX   )
-                MOVE    IDX                TO  WRK-Z9
-                MOVE    WRK-Z9             TO  P02H-TNUM    (IDX)
-                MOVE    SPA-P02H-TKOHNUM (IDX)
-                                           TO  P02H-TKOHNUM (IDX)
-                MOVE    SPA-P02H-TKOHNUMMEI (IDX)
-                                           TO  P02H-TKOHNUMMEI(IDX)
-                IF      IDX                =   SPA-P02H-SELNUM
-                    MOVE    "T"            TO  P02H-LIST-SELECT (IDX)
-                    MOVE    IDX            TO  P02H-LIST-ROW
-                ELSE
-                    MOVE    "F"            TO  P02H-LIST-SELECT  (IDX)
-                END-IF
+                   UNTIL      (IDX     >   5   )
+                MOVE    SPA-P02T-KAKUNINYMD (IDX)
+                                           TO  P02T-KAKUNINYMD (IDX)
            END-PERFORM
-           MOVE    SPA-P02H-MAX        TO  P02H-LIST-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -357,8 +350,6 @@
            END-IF
            EVALUATE    SPA-P02H-CUR
                WHEN    01
-                   MOVE    "SELNUM"           TO  MCP-WIDGET
-               WHEN    99
                    MOVE    "B01"              TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -385,72 +376,9 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
-           MOVE    ZERO                TO  SPA-P02H-CUR
-      *
-      *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        選択
-               WHEN    "ACTIVATE"       ALSO    "SELNUM"
-                   PERFORM  420-SELNUM-CHK-SEC
-      *        選択
-               WHEN    ANY              ALSO    "HBTNUMLST"
-                   PERFORM  430-LIST-CHK-SEC
-      *        その他
-      *        WHEN    OTHER
-      *            入力チェック処理
-      *            PERFORM 410-INPUT-CHK-SEC
-           END-EVALUATE.
       *
            .
        200-ENTRY-EXT.
-           EXIT.
-      *****************************************************************
-      *    行選択処理
-      *****************************************************************
-       420-SELNUM-CHK-SEC       SECTION.
-      *
-           MOVE    P02H-SELNUM         TO  SPA-P02H-SELNUM
-           MOVE    1                   TO  SPA-P02H-CUR
-      *
-           IF      SPA-P02H-SELNUM     >=  1    AND
-                                       <=  SPA-P02H-MAX
-               MOVE    SPA-P02H-TKOHNUM (SPA-P02H-SELNUM)
-                                           TO  SPA-P02H-KOHNUM
-               MOVE    1                   TO  FLG-OK
-           END-IF
-           IF      FLG-OK              =   ZERO
-               IF      SPA-P02H-SELNUM     NOT =   ZERO
-                   MOVE    "0001"              TO  SPA-ERRCD
-               END-IF
-           ELSE
-      *        戻る
-               PERFORM 210-BACK
-           END-IF
-           .
-       420-SELNUM-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    行選択処理
-      *****************************************************************
-       430-LIST-CHK-SEC       SECTION.
-      *
-      *    行選択
-           MOVE    ZERO                TO  SPA-P02H-SELNUM
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   10
-               IF      P02H-LIST-SELECT  (IDX)  =   "T"
-                   MOVE    IDX              TO  SPA-P02H-SELNUM
-                   MOVE    10               TO  IDX
-               END-IF
-           END-PERFORM
-      *
-           IF      SPA-P02H-SELNUM     >   ZERO
-               MOVE    SPA-P02H-SELNUM     TO  P02H-SELNUM
-               PERFORM 420-SELNUM-CHK-SEC
-           END-IF
-           .
-       430-LIST-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -500,7 +428,7 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "P02H"              TO  SPA-MOTOPG
+           MOVE    "P02T"              TO  SPA-MOTOPG
            MOVE    "P02"               TO  SPA-SAKIPG
       *
            MOVE    SPACE               TO  LNK-KYOUTU
@@ -513,7 +441,7 @@
            MOVE    1                   TO  FLG-END
       *
            MOVE    ZERO                TO  SPA-FLG-END
-           MOVE    "P02"               TO  SPA-P02-GAMEN
+      **** MOVE    "P02"               TO  SPA-P02-GAMEN
       *
            .
        210-BACK-EXT.
@@ -562,15 +490,10 @@
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-      *    IF      SPA-PIDCD       NOT =   SPACE
-      **       PERFORM 520-JIDSET-SEC
-      *        GO  TO  500-SET-SCREEN-EXT
-      *    END-IF
-      *
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
-           MOVE    "P02H"              TO  MCP-WINDOW
+           MOVE    "P02T"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -582,8 +505,8 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
-           MOVE    SPACE               TO  SPA-ERRMSG
       *
+           MOVE    SPACE               TO  SPA-ERRMSG
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "選択番号エラー"
@@ -595,7 +518,7 @@
            MOVE    SPA-ERRMSG          TO  PERR-ERRMSG
            MOVE    "B01"               TO  MCP-WIDGET
       *
-           MOVE    "P02H"              TO  SPA-MOTOPG
+           MOVE    "P02T"              TO  SPA-MOTOPG
            MOVE    "PERR"              TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
@@ -609,36 +532,20 @@
        510-ERRMSG-EXT.
            EXIT.
       *****************************************************************
-      *    エラーメッセージ表示理
+      *    保険確認年月日履歴マスタ検索処理
       *****************************************************************
-       520-JIDSET-SEC              SECTION.
+       900-PTHKNRRK-READ-SEC              SECTION.
       *
-           MOVE    SPACE               TO  PID1
-      *    EVALUATE    SPA-PIDCD
-      *        WHEN    OTHER
-      *            MOVE    SPA-PIDCD
-      *                                TO  PID1-ID1MSG
-      *    END-EVALUATE
-      *
-           MOVE    SPACE               TO  SPA-PID1-FLG
-      *
-           MOVE    SPA-PIDCD           TO  PID1-ID1CODE
-           MOVE    "戻る"              TO  PID1-B01
-           MOVE    "ＯＫ"              TO  PID1-B12
-           MOVE    "B12"               TO  MCP-WIDGET
-      *
-           MOVE    "P02H"              TO  SPA-MOTOPG
-           MOVE    "PID1"              TO  SPA-SAKIPG
-      *
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "PID1"              TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
-      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PTHKNRRK-REC
+               MOVE    ZERO                TO  FLG-PTHKNRRK
+           ELSE
+               INITIALIZE                  PTHKNRRK-REC
+               MOVE    1                   TO  FLG-PTHKNRRK
+           END-IF
            .
-       520-JIDSET-EXT.
+       900-PTHKNRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************

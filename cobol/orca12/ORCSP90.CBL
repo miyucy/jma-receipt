@@ -699,6 +699,9 @@
                WHEN    "0115"
                    MOVE    "公費の次頁はありません。"
                                                TO  SPA-ERRMSG
+               WHEN    "0116"
+                   MOVE    "確認年月日の履歴はありません"
+                                               TO  SPA-ERRMSG
       *    保険組合せ
                WHEN    "2701"
                    MOVE    "保険組合せがありません。"

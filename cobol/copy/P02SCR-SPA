@@ -40,6 +40,7 @@
       *  04.04.00    NACL-多々納  09/01/27  本院分院対応
       *  04.05.00    NACL-多々納  09/07/XX  患者公費負担額機能追加
       *  04.06.00    NACL-多々納  11/02/XX  京都府通り名称編集機能追加
+      *  04.07.00    NACL-多々納  11/08/XX  保険確認年月日履歴対応
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -1676,7 +1677,7 @@
                    07  SPA-P02K-MSG03              PIC X(50).
                    07  SPA-P02K-MSG04              PIC X(30).
                    07  SPA-P02K-MSG05              PIC X(30).
-      *
+      *ver.4.7
       *    公費制度一覧画面（Ｐ０２Ｈ）
            03  SPA-P02H-AREA.
                05  SPA-P02H-CUR                PIC 9(01).
@@ -1689,6 +1690,15 @@
                05  SPA-P02H-MAX                PIC 9(03).
                05  SPA-P02H-SELNUM             PIC 9(03).
                05  SPA-P02H-KOHNUM             PIC X(03).
+      *ver.4.7
+      *    確認年月日履歴画面（Ｐ０２Ｔ）
+           03  SPA-P02T-AREA.
+               05  SPA-P02T-HKNID              PIC 9(10).
+               05  SPA-P02T-HKNMSG             PIC X(30).
+               05  SPA-P02T-MAX                PIC 9(02).
+               05  SPA-P02T-HKNRRK-LST.
+                   07  SPA-P02T-HKNRRK-OCC     OCCURS   5.
+                       09  SPA-P02T-KAKUNINYMD     PIC X(10).
       *
       *@@
       *    ＱＲ画面（Ｐ０２Ｑ）

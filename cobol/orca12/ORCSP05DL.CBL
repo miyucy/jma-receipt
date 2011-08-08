@@ -270,6 +270,9 @@
       *    チェック例外テーブル
            COPY    "CPCHKREIGAI.INC".
       *
+      *    保険確認年月日履歴マスタ
+       01  PTHKNRRK-REC.
+           COPY    "CPPTHKNRRK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -965,6 +968,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    BUNBEN-REC          TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_bunben"        TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *    患者保険確認年月日履歴
+           INITIALIZE                      PTHKNRRK-REC
+           MOVE    SPA-HOSPNUM         TO  PTHKNRRK-HOSPNUM
+           MOVE    SPA-PTID            TO  PTHKNRRK-PTID
+           MOVE    PTHKNRRK-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_pthknrrk"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC

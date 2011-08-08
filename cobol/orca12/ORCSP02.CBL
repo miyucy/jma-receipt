@@ -50,6 +50,7 @@
       * 04.04.00     NACL-Â¿¡¹Ç¼  09/01/27  ËÜ±¡Ê¬±¡ÂÐ±þ
       * 04.05.00     NACL-Â¿¡¹Ç¼  09/07/XX  ´µ¼Ô¸øÈñÉéÃ´³Ûµ¡Ç½ÄÉ²Ã
       * 04.05.00     NACL-Â¿¡¹Ç¼  10/03/XX  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
+      * 04.07.00     NACL-Â¿¡¹Ç¼  11/08/XX  ÊÝ¸±³ÎÇ§Ç¯·îÆüÍúÎòÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3377,6 +3378,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "F"             TO  P02-BH1-VALUE
                MOVE    "Ì¤"            TO  P02-BH1-LABEL
            END-IF
+      *ver.4.7
+      *    ³ÎÇ§Ç¯·îÆüÍúÎò
+           IF     (SPA-GMN-HKNNUM      =   "971"
+                                       OR  "973"
+                                       OR  SPACE )
+           OR     (SPA-NAI-HKNSTR      =   ZERO )
+           OR    ((SPA-NAI-HKNSTR      >   ZERO )  AND
+                  (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR) =   "1"))
+               MOVE    WIDGET-INSENSITIVE  TO  P02-BHR-STATE
+               MOVE    SPACE               TO  P02-BHR-LABEL
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  P02-BHR-STATE
+               MOVE    "ÍúÎò"              TO  P02-BHR-LABEL
+           END-IF
       *    ÊÝ¸±¾ðÊó
            MOVE    SPA-HKNJA-HKNJANAME TO  P02-P02-HKNNAME
            MOVE    SPA-HKNJA-HKNJANAME(31:)
@@ -3704,6 +3719,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-RENNUMZ         TO  P02-P027-TNSTANKA
            MOVE    SPA-GMN27-TAXKBN    TO  P02-P027-TAXKBN
       *
+      *!! ver.4.7
+           MOVE    WIDGET-INSENSITIVE  TO  P02-BHR1-STATE
+           MOVE    SPACE               TO  P02-BHR1-LABEL
+           MOVE    WIDGET-INSENSITIVE  TO  P02-BHR2-STATE
+           MOVE    SPACE               TO  P02-BHR2-LABEL
+           MOVE    WIDGET-INSENSITIVE  TO  P02-BHR3-STATE
+           MOVE    SPACE               TO  P02-BHR3-LABEL
+           MOVE    WIDGET-INSENSITIVE  TO  P02-BHR4-STATE
+           MOVE    SPACE               TO  P02-BHR4-LABEL
+           MOVE    WIDGET-INSENSITIVE  TO  P02-BHR5-STATE
+           MOVE    SPACE               TO  P02-BHR5-LABEL
+      *!!
       *    ÊÝ¸±¾ðÊó¡ÊÁ´·ï¥Æ¡¼¥Ö¥ë¤Î³«»Ï¤È½ªÎ»°ÌÃÖ¤è¤ê¡Ë
            IF      SPA-GMN27-HKN-PCNT  =   ZERO
                MOVE    1               TO  SPA-GMN27-HKN-PCNT
@@ -3774,6 +3801,30 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    5
                        MOVE    "T"         TO  P02-BHO5-VALUE
                        MOVE    "ºÑ"        TO  P02-BHO5-LABEL
+                   END-EVALUATE
+               END-IF
+      *!!
+               IF      (SPA-PTHKN-HKNNUM (IDY) =   "971"
+                                               OR  "973" )
+                  OR   (SPA-PTHKN-SINKIKBN(IDY)    =   "1" )
+                   CONTINUE
+               ELSE
+                   EVALUATE    IDX
+                   WHEN    1
+                       MOVE    WIDGET-NORMAL       TO  P02-BHR1-STATE
+                       MOVE    "Îò"                TO  P02-BHR1-LABEL
+                   WHEN    2
+                       MOVE    WIDGET-NORMAL       TO  P02-BHR2-STATE
+                       MOVE    "Îò"                TO  P02-BHR2-LABEL
+                   WHEN    3
+                       MOVE    WIDGET-NORMAL       TO  P02-BHR3-STATE
+                       MOVE    "Îò"                TO  P02-BHR3-LABEL
+                   WHEN    4
+                       MOVE    WIDGET-NORMAL       TO  P02-BHR4-STATE
+                       MOVE    "Îò"                TO  P02-BHR4-LABEL
+                   WHEN    5
+                       MOVE    WIDGET-NORMAL       TO  P02-BHR5-STATE
+                       MOVE    "Îò"                TO  P02-BHR5-LABEL
                    END-EVALUATE
                END-IF
            END-PERFORM

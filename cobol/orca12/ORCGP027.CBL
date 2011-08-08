@@ -267,6 +267,7 @@
            COPY    "P02G2.INC".
            COPY    "P02K.INC".
            COPY    "P02H.INC".
+           COPY    "P02T.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
            COPY    "CPAPIMOD.INC".
@@ -890,6 +891,15 @@
                WHEN    "CLICKED"       ALSO    "BHO4"
                WHEN    "CLICKED"       ALSO    "BHO5"
                    PERFORM 450-HKNKAKUNINYMD-ZUMI-SEC
+      *ver.4.7
+      *    保険確認履歴
+               WHEN    "CLICKED"       ALSO    "BHR1"
+               WHEN    "CLICKED"       ALSO    "BHR2"
+               WHEN    "CLICKED"       ALSO    "BHR3"
+               WHEN    "CLICKED"       ALSO    "BHR4"
+               WHEN    "CLICKED"       ALSO    "BHR5"
+                   PERFORM 470-HKNKAKUNINYMD-RRK-SEC
+      *
       *    公費チェック
                WHEN    "CLICKED"       ALSO    "BKH1"
                WHEN    "CLICKED"       ALSO    "BKH2"
@@ -1046,6 +1056,90 @@
       *
            .
        450-HKNKAKUNINYMD-ZUMI-EXT.
+           EXIT.
+      *
+      ***************************************************************
+      *    保険確認年月日履歴画面処理
+      ***************************************************************
+       470-HKNKAKUNINYMD-RRK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  IDX
+           EVALUATE    MCP-WIDGET
+               WHEN    "BHR1"
+                   MOVE    1              TO  IDX
+               WHEN    "BHR2"
+                   MOVE    2              TO  IDX
+               WHEN    "BHR3"
+                   MOVE    3              TO  IDX
+               WHEN    "BHR4"
+                   MOVE    4              TO  IDX
+               WHEN    "BHR5"
+                   MOVE    5              TO  IDX
+           END-EVALUATE
+      *
+           MOVE    SPA-GMN27-HKNRENNUM(SPA-GMN27-HKN-PCNT IDX)
+                                       TO  IDY
+           IF      IDY                 >   ZERO
+      *        労災保険の時、セットしない
+               IF      SPA-PTHKN-HKNNUM (IDY) =   "971"
+                                              OR  "973"
+                   CONTINUE
+               ELSE
+                   PERFORM 4701-P02T-SYORI-SEC
+               END-IF
+           END-IF
+      *
+           .
+       470-HKNKAKUNINYMD-RRK-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険確認年月日履歴画面処理
+      *****************************************************************
+       4701-P02T-SYORI-SEC   SECTION.
+      *
+           INITIALIZE                  SPA-P02T-AREA
+           STRING  SPA-PTHKN-HKNNUM (IDY)
+                   " "
+                   SPA-PTHKN-HKNNUM-MEI (IDY)
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-P02T-HKNMSG
+           END-STRING
+           MOVE    SPA-PTHKN-HKNID (IDY)   TO  SPA-P02T-HKNID
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02T"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+      *
+           IF      SPA-P02T-MAX        >   ZERO
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+               MOVE    "P02T"              TO  SPA-SAKIPG
+               MOVE    "P02"               TO  SPA-MOTOPG
+      *
+               MOVE    "NEW"               TO  MCP-PUTTYPE
+               MOVE    "P02T"              TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  SPA-FLG-END
+           ELSE
+               MOVE    "0116"              TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4701-P02T-SYORI-EXT.
            EXIT.
       *
       ****************************************************************
@@ -1960,6 +2054,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        990-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＰＵＴ　処理
+      *****************************************************************
+       900-PUT-WINDOW           SECTION.
+      *
+           MOVE    "PUTWINDOW"      TO  MCP-FUNC.
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+       900-PUT-WINDOW-EXT.
            EXIT.
       *
       *

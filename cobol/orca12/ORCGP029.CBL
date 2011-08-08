@@ -46,6 +46,7 @@
       *  03.05.01    NACL-多々納  07/06/11  氏名変更の予約・受付対応
       *  04.03.00    NACL-多々納  08/07/22  特記事項追加
       *  04.05.00    NACL-多々納  09/07/XX  患者公費負担額機能追加
+      *  04.07.00    NACL-多々納  11/08/XX  患者保険確認履歴追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -345,6 +346,9 @@
       *    主情報アクセス用パラメタ
            01  ORCSSYUACCAREA.
                COPY    "CPORCSSYUACC.INC".
+      *
+      *    保険確認年月日履歴登録サブ
+           COPY    "CPORCSPTHKNRRK.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -814,12 +818,44 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            ",PTHKN-TEKSTYMD:" PTHKN-TEKSTYMD
                    MOVE    "9000"          TO  SPA-ERRCD
                END-IF
+      *        確認年月日履歴
+               IF     (SPA-ERRCD           =   SPACE )
+                  AND (HZN-PTHKN-KAKUNINYMD    NOT =   SPACE )
+                  AND (PTHKN-KAKUNINYMD        NOT =   SPACE )
+                   IF      HZN-PTHKN-KAKUNINYMD    =   PTHKN-KAKUNINYMD
+                       CONTINUE
+                   ELSE
+      *                今回変更あり
+                       PERFORM 2209-PTHKNRRK-ADD-SEC
+                   END-IF
+               END-IF
            END-IF
            .
        220-PTHKNINF-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    患者保険マスター処理
+      *    患者保険確認年月日履歴処理
+      *****************************************************************
+       2209-PTHKNRRK-ADD-SEC        SECTION.
+      *
+           INITIALIZE                      ORCSPTHKNRRKAREA
+           MOVE    SPA-GMN-PTID        TO  ORCSHKNRRK-PTID
+           MOVE    PTHKN-HKNID         TO  ORCSHKNRRK-HKNID
+           MOVE    HZN-PTHKN-KAKUNINYMD
+                                       TO  ORCSHKNRRK-KAKUNINYMD
+           CALL    "ORCSPTHKNRRK"      USING
+                                       SPA-AREA
+                                       ORCSPTHKNRRKAREA
+           IF      ORCSHKNRRK-RC       =   9
+               DISPLAY "P029 PTHKNRRK UPD ERR:" ORCSHKNRRK-RC
+                       ",PTHKN-HKNID:" PTHKN-HKNID
+               MOVE    "9000"          TO  SPA-ERRCD
+           END-IF
+           .
+       2209-PTHKNRRK-ADD-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者公費マスター処理
       *****************************************************************
        230-PTKOHINF-SYORI-SEC        SECTION.
       *

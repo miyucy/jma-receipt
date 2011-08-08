@@ -26,11 +26,11 @@ bind	"P02G"		"OpenCOBOL"	"ORCGP02G";
 bind	"P02G2"		"OpenCOBOL"	"ORCGP02G2";
 bind	"P02K"		"OpenCOBOL"	"ORCGP02K";
 bind	"P02H"		"OpenCOBOL"	"ORCGP02H";
+bind	"P02T"		"OpenCOBOL"	"ORCGP02T";
 bind	"PERR"		"OpenCOBOL"	"ORCGPERR";
 bind	"PID1"		"OpenCOBOL"	"ORCGPID1";
-/*
 bindapi "patientmod"    "OpenCOBOL" "ORAPI012S1"; 
-*/
+
 
 multiplex_group	orca12;
 
@@ -60,6 +60,7 @@ data	{
 		P02G2;
 		P02K;
 		P02H;
+		P02T;
 		PERR;
 		PID1;
 		patientmod;

@@ -358,6 +358,9 @@
                   05  P02-TEIMSG2.
                     06  P02-TEIMSG2-STYLE   PIC X(20).
                     06  P02-TEIMSG2-VALUE   PIC X(10).
+                  05  P02-BHR.
+                    06  P02-BHR-STATE   PIC S9(9)   BINARY.
+                    06  P02-BHR-LABEL   PIC X(4).
                 04 P02-FP3.
                   05  P02-P027-SELNUM.
                     06  P02-VALUE   PIC X(4).
@@ -454,6 +457,21 @@
                   05  P02-BHO5.
                     06  P02-BHO5-VALUE   PIC X.
                     06  P02-BHO5-LABEL   PIC X(2).
+                  05  P02-BHR1.
+                    06  P02-BHR1-STATE   PIC S9(9)   BINARY.
+                    06  P02-BHR1-LABEL   PIC X(2).
+                  05  P02-BHR2.
+                    06  P02-BHR2-STATE   PIC S9(9)   BINARY.
+                    06  P02-BHR2-LABEL   PIC X(2).
+                  05  P02-BHR3.
+                    06  P02-BHR3-STATE   PIC S9(9)   BINARY.
+                    06  P02-BHR3-LABEL   PIC X(2).
+                  05  P02-BHR4.
+                    06  P02-BHR4-STATE   PIC S9(9)   BINARY.
+                    06  P02-BHR4-LABEL   PIC X(2).
+                  05  P02-BHR5.
+                    06  P02-BHR5-STATE   PIC S9(9)   BINARY.
+                    06  P02-BHR5-LABEL   PIC X(2).
                   05  P02-P027-HKNLIST.
                       07  P02-P027-HKNLIST-COUNT   PIC S9(9)   BINARY.
                       07  P02-P027-HKNLIST-ROW     PIC S9(9)   BINARY.

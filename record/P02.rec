@@ -462,6 +462,10 @@ P02	{
 					style	varchar(20);
 					value	varchar(10);
 				};
+				BHR	{
+					state	int;
+					label	varchar(4);
+				};
 			};
 			FP3	{
 				P027_SELNUM	{
@@ -663,6 +667,26 @@ P02	{
 				};
 				BHO5	{
 					value	bool;
+					label	varchar(2);
+				};
+				BHR1	{
+					state	int;
+					label	varchar(2);
+				};
+				BHR2	{
+					state	int;
+					label	varchar(2);
+				};
+				BHR3	{
+					state	int;
+					label	varchar(2);
+				};
+				BHR4	{
+					state	int;
+					label	varchar(2);
+				};
+				BHR5	{
+					state	int;
 					label	varchar(2);
 				};
 				P027_HKNLIST	{

@@ -80,6 +80,7 @@
       *  04.06.00    NACL-多々納  10/09/29  入外非表示対応
       *  04.07.00    NACL-多々納  11/07/XX  カルテ病名なし対応
       *                                     予約選択患者登録遷移対応他
+      *  04.07.00    NACL-多々納  11/08/XX  患者保険確認履歴追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -483,6 +484,9 @@
       *
       *    前回来院日設定パラメタ
            COPY    "CPORCSLASTYMD.INC".
+      *
+      *    保険確認年月日履歴登録サブ
+           COPY    "CPORCSPTHKNRRK.INC".
       *
       *===> For Claim Start
            COPY    "CPSHELLTBL.INC".
@@ -5345,7 +5349,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "tbl_pthkninf"      TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
                        PERFORM 990-DBCLOSE-SEC
-                       IF      FLG-PTHKNINF        =   ZERO
+                       IF    ( FLG-PTHKNINF        =   ZERO )
+                       AND   ( SPA-NAI-KAKUNINYMD (IDX)
+                                               NOT =   PTHKN-KAKUNINYMD)
+      *                確認年月日の変更時のみ行う
                            MOVE    SPA-NAI-KAKUNINYMD (IDX)
                                                    TO  PTHKN-KAKUNINYMD
       *
@@ -5360,6 +5367,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            MCPDATA-REC
                                                            SPA-AREA
+                           IF      MCP-RC          NOT =   ZERO 
+                               MOVE    "1011"              TO  SPA-ERRCD
+                               DISPLAY "U02 PTHKNINF UPDATE ERR:" MCP-RC
+                                               ",KEY:" PTHKN-KEY
+                           END-IF
+                           IF      SPA-ERRCD           =   SPACE
+      *                        確認年月日履歴処理
+                               PERFORM 49041-PTHKNRRK-SYORI-SEC
+                           END-IF
                        END-IF
       *
       *            公費
@@ -5383,7 +5399,10 @@ grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
                        MOVE    "key"               TO  MCP-PATHNAME
                        PERFORM 990-DBCLOSE-SEC
-                       IF      FLG-PTKOHINF        =   ZERO
+                       IF     (FLG-PTKOHINF        =   ZERO )
+                       AND    (SPA-NAI-KAKUNINYMD (IDX)
+                                               NOT =   PTKOH-KAKUNINYMD)
+      *                確認年月日の変更時のみ行う
                            MOVE    SPA-NAI-KAKUNINYMD (IDX)
                                                    TO  PTKOH-KAKUNINYMD
       *
@@ -5405,6 +5424,32 @@ grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        4904-HKN-KOUSIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    確認年月日履歴処理
+      *****************************************************************
+       49041-PTHKNRRK-SYORI-SEC              SECTION.
+      *
+           IF     (SPA-MAE-KAKUNINYMD (IDX)  =   SPACE )
+               CONTINUE
+           ELSE
+               INITIALIZE                      ORCSPTHKNRRKAREA
+               MOVE    SPA-GMN-PTID        TO  ORCSHKNRRK-PTID
+               MOVE    SPA-NAI-HKNID (IDX) TO  ORCSHKNRRK-HKNID
+               MOVE    SPA-MAE-KAKUNINYMD (IDX)
+                                           TO  ORCSHKNRRK-KAKUNINYMD
+               CALL    "ORCSPTHKNRRK"      USING
+                                           SPA-AREA
+                                           ORCSPTHKNRRKAREA
+               IF      ORCSHKNRRK-RC       =   9
+                   DISPLAY "U02 PTHKNRRK UPD ERR:" ORCSHKNRRK-RC
+                                         ",HKNID:" ORCSHKNRRK-HKNID
+                   MOVE    "1011"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       49041-PTHKNRRK-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    ＱＲデータ更新処理
@@ -6746,6 +6791,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                 DELIMITED  BY  SIZE
                                                 INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "1011"
+                   MOVE    "患者保険情報更新エラー"
+                                                TO  SPA-ERRMSG
                WHEN    "0200"
                    MOVE    "患者登録処理済みのＱＲデータはありません。"
                                                 TO  SPA-ERRMSG

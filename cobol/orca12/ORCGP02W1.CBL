@@ -94,6 +94,7 @@
       * 04.06.00     NACL-Â¿¡¹Ç¼  11/02/10  µþÅÔÉÜÄÌ¤êÌ¾¾ÎÊÔ½¸ÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  11/06/15  ÊÝ¸±¡¦¸øÈñËèÊÇÊÑ¹¹ÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  11/07/01  ¸øÈñ°ìÍ÷É½¼¨ÂÐ±þ
+      * 04.07.00     NACL-Â¿¡¹Ç¼  11/08/XX  ÊÝ¸±³ÎÇ§Ç¯·îÆüÍúÎòÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -805,6 +806,7 @@
            COPY    "P02G2.INC".
            COPY    "P02K.INC".
            COPY    "P02H.INC".
+           COPY    "P02T.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
            COPY    "CPAPIMOD.INC".
@@ -2518,6 +2520,10 @@
                WHEN    "CLICKED"       ALSO    "CK2"
                WHEN    "CLICKED"       ALSO    "CK3"
                    PERFORM 460-TEKEDCHKKBN-CHK-SEC
+      *!ver.4.7
+      *    ÊÝ¸±³ÎÇ§ÆüÉÕÍúÎò
+               WHEN    "CLICKED"       ALSO    "BHR"
+                   PERFORM 4501-HKNKAKUINYMD-RRK-SEC
       *!API
       *!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       *   APIÊÝ¸±¾ðÊó½èÍý
@@ -6091,6 +6097,77 @@
       *
            .
        450-HKNKAKUNINYMD-ZUMI-EXT.
+           EXIT.
+      *!ver.4.7
+      *
+      ***************************************************************
+      *    ÊÝ¸±³ÎÇ§Ç¯·îÆüÍúÎòÉ½¼¨½èÍý
+      ***************************************************************
+       4501-HKNKAKUINYMD-RRK-SEC      SECTION.
+      *
+           IF     (SPA-NAI-HKNSTR      >   ZERO )
+           AND    (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR) NOT =   "1")
+               CONTINUE
+           ELSE
+      *        ¿·µ¬¤Ï¥¨¥é¡¼
+               MOVE    "XXXX"              TO  SPA-ERRCD
+           END-IF
+      *    Ï«ºÒ¡¦¼«ÇåÀÕ
+           IF     (SPA-GMN-HKNNUM      =   "971"
+                                       OR  "973"  )
+           OR     (SPA-NAI-HKNSTR      =   ZERO   )
+           OR    ((SPA-NAI-HKNSTR      >   ZERO   )  AND
+                  (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR) =   "1"))
+               CONTINUE
+           ELSE
+               PERFORM 45011-P02T-SYORI-SEC
+           END-IF
+           .
+       4501-HKNKAKUINYMD-RRK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÊÝ¸±³ÎÇ§Ç¯·îÆüÍúÎò²èÌÌ½èÍý
+      *****************************************************************
+       45011-P02T-SYORI-SEC   SECTION.
+      *
+           INITIALIZE                  SPA-P02T-AREA
+           MOVE    SPA-GMN-HKNNUM-G    TO  SPA-P02T-HKNMSG
+           MOVE    SPA-NAI-HKNID       TO  SPA-P02T-HKNID
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02T"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+      *
+           IF      SPA-P02T-MAX        >   ZERO
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+               MOVE    "P02T"              TO  SPA-SAKIPG
+               MOVE    "P02"               TO  SPA-MOTOPG
+      *
+               MOVE    "NEW"               TO  MCP-PUTTYPE
+               MOVE    "P02T"              TO  MCP-WINDOW
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  SPA-FLG-END
+           ELSE
+               MOVE    "0116"              TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       45011-P02T-SYORI-EXT.
            EXIT.
       *
       ****************************************************************

@@ -538,6 +538,7 @@
            COPY    "P02G2.INC".
            COPY    "P02K.INC".
            COPY    "P02H.INC".
+           COPY    "P02T.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
            COPY    "CPAPIMOD.INC".
@@ -832,6 +833,14 @@
                    MOVE    SPACE               TO  SPA-P02-WIDGET
                    MOVE    "P024_FTNSELNUM2"   TO  SPA-P02-WIDGET
                    MOVE    4                   TO  P02-PAGENO
+      *ver.4.7
+      *        確認年月日履歴画面より
+               WHEN    "P02T"
+                   IF      SPA-P02-GAMEN       =   "P02"
+                       MOVE    1                   TO  P02-PAGENO
+                   ELSE
+                       MOVE    2                   TO  P02-PAGENO
+                   END-IF
       *!
       *DDDDDDD ＱＲより
       *        WHEN    "P02Q"

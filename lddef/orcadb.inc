@@ -170,4 +170,5 @@ db	{
 	tbl_infection_judgment;
 	exec_sql;
 	tbl_prtctrl;
+	tbl_pthknrrk;
 };
