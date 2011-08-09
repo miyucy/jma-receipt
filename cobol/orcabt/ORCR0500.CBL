@@ -1127,6 +1127,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM48V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM48V01-RENNUM
                        MOVE    HCM48V01            TO  RECE08-PRTDATA
+                   WHEN    "HCM48V02.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM48V02
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM48V02-RENNUM
+                       MOVE    HCM48V02            TO  RECE08-PRTDATA
                    WHEN    "HCN48.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN48
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN48-RENNUM
@@ -1189,6 +1193,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM53V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM53V01-RENNUM
                        MOVE    HCM53V01            TO  RECE08-PRTDATA
+                   WHEN    "HCM53V02.red"
+                   WHEN    "HCM54V02.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM53V02
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM53V02-RENNUM
+                       MOVE    HCM53V02            TO  RECE08-PRTDATA
       ***          WHEN    "HCM54.red"
       ***              MOVE    RECE08-PRTDATA      TO  HCM54
       ***              MOVE    WRK-HEN-RENNUM-AREA TO  HCM54-RENNUM
@@ -1219,6 +1228,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCN53V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN53V01-RENNUM
                        MOVE    HCN53V01            TO  RECE08-PRTDATA
+                   WHEN    "HCN53V02.red"
+                   WHEN    "HCN54V02.red"
+                       MOVE    RECE08-PRTDATA      TO  HCN53V02
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN53V02-RENNUM
+                       MOVE    HCN53V02            TO  RECE08-PRTDATA
       ***          WHEN    "HCN54.red"
       ***              MOVE    RECE08-PRTDATA      TO  HCN54
       ***              MOVE    WRK-HEN-RENNUM-AREA TO  HCN54-RENNUM

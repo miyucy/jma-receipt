@@ -2521,16 +2521,14 @@
            MOVE    "0"             TO  SPA-GMN-ROUPRTKBNL    (1)
            MOVE    "旧様式"        TO  SPA-GMN-ROUPRTKBNMEIL (1)
            MOVE    "1"             TO  SPA-GMN-ROUPRTKBNL    (2)
-           MOVE    "平成１９年４月改正様式"
-                                   TO  SPA-GMN-ROUPRTKBNMEIL (2)
+           MOVE    "改正様式"      TO  SPA-GMN-ROUPRTKBNMEIL (2)
            MOVE    2               TO  SPA-GMN-ROUPRTKBN-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-ROUPRTKBN-NL      (1)
            MOVE    "旧様式"
                                    TO  SPA-GMN-ROUPRTKBN-NMEIL   (1)
            MOVE    "1"             TO  SPA-GMN-ROUPRTKBN-NL      (2)
-           MOVE    "平成１９年４月改正様式"
-                                   TO  SPA-GMN-ROUPRTKBN-NMEIL   (2)
+           MOVE    "改正様式"      TO  SPA-GMN-ROUPRTKBN-NMEIL   (2)
            MOVE    2               TO  SPA-GMN-ROUPRTKBN-N-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-FRAME-JIBAIPRTKBNL    (1)

@@ -2503,11 +2503,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
                        WHEN    "HCM22V06.red"                  
+                       WHEN    "HCM22V06P.red"                  
                            MOVE    RECE08-PRTDATA  TO HC22
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC22-PAGE
                            MOVE    HC22            TO RECE08-PRTDATA
                        WHEN    "HCM24V06.red"                  
+                       WHEN    "HCM24V06P.red"                  
                            MOVE    RECE08-PRTDATA  TO HC24
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC24-PAGE
