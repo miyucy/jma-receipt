@@ -173,6 +173,11 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F6</key>
+	<signal>clicked</signal>
+      </accelerator>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
