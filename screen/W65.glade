@@ -383,7 +383,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>KJNYMD</name>
-      <x>580</x>
+      <x>584</x>
       <y>288</y>
       <width>75</width>
       <height>24</height>
@@ -4293,22 +4293,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label927</name>
-      <x>528</x>
-      <y>288</y>
-      <width>50</width>
-      <height>24</height>
-      <label>基準日</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label922</name>
       <x>8</x>
       <y>316</y>
@@ -4328,7 +4312,7 @@
       <name>CMB_KOHNUM</name>
       <x>88</x>
       <y>316</y>
-      <width>300</width>
+      <width>496</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -4362,6 +4346,22 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label927</name>
+      <x>532</x>
+      <y>288</y>
+      <width>50</width>
+      <height>24</height>
+      <label>基準日</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

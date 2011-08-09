@@ -1831,20 +1831,39 @@
       *****************************************************************
        312-SPASET-SEC              SECTION.
       *
-           PERFORM VARYING IDX-LST FROM    1   BY  1
-                   UNTIL ( IDX-LST >   SPA-GMN-KOHLST-MAX )
+           MOVE    ZERO            TO  IDX-LST
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SPA-GMN-KOHLST-MAX )
+                    OR   ( IDX-LST >   ZERO )
       *
-               IF    ( SPA-GMN-TKKOHNUM (IDX-LST)
+               IF    ( SPA-GMN-TKKOHNUM (IDX0)
                                    =   SPA-W01-KBNCD )
-                   MOVE    IDX-LST     TO  WRK-ZZZ9
-                   MOVE    WRK-ZZZ9    TO  W65-SELNUM1
-                   PERFORM 4100-SELNUM1-CHK-SEC
-                   MOVE    SPACE       TO  SPA-ERRCD
-                   MOVE    SPA-GMN-KOHLST-MAX
-                                       TO  IDX-LST
+                   MOVE    IDX0    TO  IDX-LST
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( IDX-LST >   ZERO )
+               MOVE    IDX-LST     TO  WRK-ZZZ9
+               MOVE    WRK-ZZZ9    TO  W65-SELNUM1
+               PERFORM 4100-SELNUM1-CHK-SEC
+               MOVE    101     TO  SPA-GMN-CUR
+           ELSE
+               MOVE    SPA-W01-KBNCD
+                                   TO  WRK-CMB-CD
+               PERFORM 4200-KOHNUMLST-CHK-SEC
+               IF    ( WRK-CMB-ITM     =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-W01-KBNCD
+                                   TO  SPA-GMN-KOHNUM-G
+                   PERFORM 4102-KIHON-CHK-SEC
+                   MOVE    101     TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           MOVE    ZERO            TO  SPA-GMN-PAGENO
+           MOVE    SPACE           TO  SPA-ERRCD
       *
            .
        312-SPASET-EXT.
