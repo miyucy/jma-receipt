@@ -3565,7 +3565,7 @@
 	  <y>100</y>
 	  <width>244</width>
 	  <height>24</height>
-	  <label>　低所得タブ：食事療養）</label>
+	  <label>　低所得タブ：食事療養</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
