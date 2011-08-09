@@ -37,17 +37,31 @@
       *  01.02.05    NACL-多々納  03/02/14  複写追加の追加
       *                                     一括入力へ変更
       *  04.06.00    NACL-多々納  11/03/22  LD104 ,LD105,LD106,LD108,LD109　統合
+      *  04.07.00    NACL-太田    11/08/09  システム管理業務への遷移処理追加
+      *                                     前回ＣＤボタン追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
        CONFIGURATION                             SECTION.
        INPUT-OUTPUT                              SECTION.
        FILE-CONTROL.
+           SELECT  SAVESPA-FILE    ASSIGN         ASSID01
+                                   ORGANIZATION    IS  SEQUENTIAL
+                                   FILE    STATUS  IS  STS-SAVESPA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
+       FD  SAVESPA-FILE.
+           COPY  "ORCA-SPA"            REPLACING   //SPA//
+                                       BY          //SAVESPA//.
       *
        WORKING-STORAGE             SECTION.
+      *
+           COPY  "CPCOMMONDAT3.INC"    REPLACING   //TMPFLPARA//
+                                       BY          //ASSID01//.
+      *
+       01  STS-AREA.
+           03  STS-SAVESPA             PIC X(02).
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -146,6 +160,7 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+           03  WRK-MAE-HKNNUM      PIC X(03).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
       *
@@ -169,6 +184,8 @@
                                    PIC X(08)   VALUE   "MSTGET".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
       *
+           COPY    "CPLNKSYS.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -186,6 +203,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -320,6 +340,22 @@
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+               IF    ( SPA-MOTOPG      =   "W01" )
+                   MOVE    SPA-HOSPNUM         TO  ASSID01-HOSPNUM
+                   MOVE    "ORCA104_"          TO  ASSID01-FILE-ID
+                   MOVE    SPA-TERMID          TO  ASSID01-TERMID
+                   OPEN    INPUT               SAVESPA-FILE
+                   READ    SAVESPA-FILE
+                   MOVE    SAVESPA-COMMON      TO  SPA-AREA
+                   MOVE    SPA-WORK            TO  SPA-V01KYOUTU
+                   MOVE    SAVESPA-FREE        TO  SPA-V01
+                   CLOSE   SAVESPA-FILE
+                   MOVE    ZERO        TO      IF-RESULT
+                   MOVE    ASSID01     TO      IF-FILENAME
+                   CALL    "orcfiledel"    USING
+                                           ORCSFDELAREA
+                   GO  TO  300-SCREEN-EXT
+               END-IF
            END-IF
       *
            EVALUATE    SPA-MOTOPG
@@ -359,9 +395,14 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
+           MOVE    SPA-V01-MAE-HKNNUM
+                                   TO  WRK-MAE-HKNNUM
       *
            INITIALIZE              SPA-V01-AREA
                                    SPA-V01KYOUTU
+      *
+           MOVE    WRK-MAE-HKNNUM  TO  SPA-V01-MAE-HKNNUM
+      *
            MOVE    1               TO  SPA-GMN-CUR
       *
       *    都道府県番号コンボ項目設定
@@ -489,6 +530,9 @@
       *        クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM  290-CLREA-SEC
+      *        前回ＣＤ
+               WHEN    "CLICKED"       ALSO    "B03"
+                   PERFORM  230-ZENKAICD-SEC
       *        公費付加情報遷移
                WHEN    "CLICKED"       ALSO    "B05"
                    IF    ( SPA-PREFNUM =   40 )
@@ -642,6 +686,20 @@
        210-BACK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    前回ＣＤ処理
+      *****************************************************************
+       230-ZENKAICD-SEC                SECTION.
+      *
+           IF    ( SPA-V01-MAE-HKNNUM  NOT =   SPACE )
+               MOVE    SPA-V01-MAE-HKNNUM  TO  V01-HKNNUM
+               PERFORM 4104-HKNNUM-CHK-SEC
+               PERFORM  41041-HKNNUM-HENSYU-SEC
+           END-IF
+      *
+           .
+       230-ZENKAICD-EXT.
+           EXIT.
       *****************************************************************
       *    番号選択　入力処理
       *****************************************************************
@@ -1157,6 +1215,7 @@
       *
       *    画面移行用のパラメタ
            MOVE    SPA-GMN-HKNNUM      TO  SPA-V01-HKNNUM
+                                           SPA-V01-MAE-HKNNUM
            IF      SPA-GMN-PAYKBN      =   SPACE
                MOVE    "00"                TO  SPA-V01-PAYKBN
            ELSE
@@ -1209,16 +1268,33 @@
        450-V03-SENI-EXT.
            EXIT.
       *****************************************************************
-      *    県単設定処理へ
+      *    地方公費付加情報設定処理へ
       *****************************************************************
        450-W65-SENI-SEC                SECTION.
       *
            MOVE    "W01"               TO  SPA-SAKIPG
            MOVE    "V01"               TO  SPA-MOTOPG
       *
+           MOVE    SPA-HOSPNUM         TO  ASSID01-HOSPNUM
+           MOVE    "ORCA104_"          TO  ASSID01-FILE-ID
+           MOVE    SPA-TERMID          TO  ASSID01-TERMID
+      *
+           OPEN    OUTPUT              SAVESPA-FILE
+      *
+           INITIALIZE                  SAVESPAAREA
+           MOVE    SPA-V01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SAVESPA-COMMON
+           MOVE    SPA-V01         TO  SAVESPA-FREE
+           WRITE   SAVESPAAREA
+      *
+           CLOSE   SAVESPA-FILE
+      *
            MOVE    SPACE               TO  LINKAREA
       *
            INITIALIZE                  SPA-KYOTUKEY
+                                       LNKSYS-AREA
+           MOVE    SPA-GMN-HKNNUM      TO  LNKSYS-HKNNUM
+           MOVE    LNKSYS-AREA         TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE

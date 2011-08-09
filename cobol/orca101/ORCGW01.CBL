@@ -94,6 +94,8 @@
       *  04.04.00    NACL-太田    09/07/29  出産費用内訳明細情報
       *  04.07.00    NACL-小豆沢  11/07/22  選択番号未入力のエンター押下で
       *                                     最新分を選択状態とする
+      *  04.07.00    NACL-小豆沢  11/08/09  保険者マスタ業務からの遷移処理
+      *                                     追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -403,6 +405,9 @@
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-N        PIC X(30).
        01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   15.
+      *
+      *    他業務からシステム管理に遷移する場合の引継ぎパラメタ
+           COPY    "CPLNKSYS.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2377,6 +2382,9 @@
       *
            INITIALIZE              SPA-W01-AREA
                                    SPA-W01KYOUTU
+      *
+           MOVE    SPA-WORK            TO  LNKSYS-AREA
+           MOVE    LNKSYS-HKNNUM       TO  SPA-W01-KBNCD
       *
            MOVE    "V01"               TO  SPA-W01-MOTOPG
            MOVE    "W65"               TO  SPA-SAKIPG

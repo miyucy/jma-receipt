@@ -1469,7 +1469,7 @@
            MOVE    "V01"               TO  SPA-SAKIPG
            MOVE    "V03"               TO  SPA-MOTOPG
       *
-           INITIALIZE                  SPA-V01KYOUTU
+      *    INITIALIZE                  SPA-V01KYOUTU
       *
       ***  MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW

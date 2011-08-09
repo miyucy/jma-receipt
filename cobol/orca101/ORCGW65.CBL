@@ -902,16 +902,15 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    他のＬＤより
-           IF    ( LINKAREA        NOT =   SPACE )
-               MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
-           END-IF
-      *
            EVALUATE    SPA-MOTOPG
            WHEN    "WID1"
                PERFORM 330-WID1-SET-SEC
            WHEN    OTHER
                PERFORM 310-SPASET-SEC
+               IF    ( SPA-W01-KBNCD  >=   "100" )
+                AND  ( SPA-W01-KBNCD  <=   "899" )
+                   PERFORM 312-SPASET-SEC
+               END-IF
            END-EVALUATE
       *
       *
@@ -1826,6 +1825,29 @@
       *
            .
        3110-KOHLST-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       312-SPASET-SEC              SECTION.
+      *
+           PERFORM VARYING IDX-LST FROM    1   BY  1
+                   UNTIL ( IDX-LST >   SPA-GMN-KOHLST-MAX )
+      *
+               IF    ( SPA-GMN-TKKOHNUM (IDX-LST)
+                                   =   SPA-W01-KBNCD )
+                   MOVE    IDX-LST     TO  WRK-ZZZ9
+                   MOVE    WRK-ZZZ9    TO  W65-SELNUM1
+                   PERFORM 4100-SELNUM1-CHK-SEC
+                   MOVE    SPACE       TO  SPA-ERRCD
+                   MOVE    SPA-GMN-KOHLST-MAX
+                                       TO  IDX-LST
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       312-SPASET-EXT.
            EXIT.
       *****************************************************************
       *    確認画面（ＣＩＤ１）ＯＫ処理

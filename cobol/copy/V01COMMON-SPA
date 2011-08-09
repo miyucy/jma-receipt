@@ -41,6 +41,8 @@
       *
            05  SPA-V01-SELNUM              PIC 9(03).
       *
+           05  SPA-V01-MAE-HKNNUM          PIC X(03).
+      *
       *警告メッセージ
            05  SPA-VIDCD                   PIC X(04).
       *警告画面より
