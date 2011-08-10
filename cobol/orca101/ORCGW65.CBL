@@ -3860,6 +3860,9 @@
            IF    ( SPA-GMN-KOHNUM      NOT =   SPA-NAI-KOHNUM )
       *
                IF    ( SPA-ERRCD           =   SPACE )
+      *
+                   PERFORM 4201-YUKOKIKAN-RESET-SEC
+      *
                    INITIALIZE              SPA-GMN-NBOOK-AREA
                                            SPA-NAI-NBOOK-AREA
                    PERFORM 42011-COMBO-SET-DEFAULT-SEC
@@ -5152,6 +5155,21 @@
            INITIALIZE  SPA-GMN-INPUT-AREA
                        SPA-NAI-INPUT-AREA
       *
+           PERFORM 4201-YUKOKIKAN-RESET-SEC
+      *
+           PERFORM 42011-COMBO-SET-DEFAULT-SEC
+      *
+           MOVE    1               TO  SPA-GMN-CUR
+      *
+           .
+      *
+       4201-INPUT-AREA-CLEAR-EXT.
+           EXIT.
+      *****************************************************************
+      *    有効期間初期化処理
+      *****************************************************************
+       4201-YUKOKIKAN-RESET-SEC        SECTION.
+      *
       *    有効期間の開始日と終了日を設定
            MOVE    "00000000"      TO  SPA-GMN-YUKOSTYMD
                                        SPA-NAI-YUKOSTYMD
@@ -5162,13 +5180,9 @@
       *    公費の種類コンボ編集処理
            PERFORM 3110-KOHNUMLST-SEC
       *
-           PERFORM 42011-COMBO-SET-DEFAULT-SEC
-      *
-           MOVE    1               TO  SPA-GMN-CUR
-      *
            .
       *
-       4201-INPUT-AREA-CLEAR-EXT.
+       4201-YUKOKIKAN-RESET-EXT.
            EXIT.
       *****************************************************************
       *    コンボボックス初期値設定処理
