@@ -1857,7 +1857,7 @@
                ELSE
                    MOVE    SPA-W01-KBNCD
                                    TO  SPA-GMN-KOHNUM-G
-                   PERFORM 4103-KIHON-CHK-SEC
+                   PERFORM 4102-KIHON-CHK-SEC
                    MOVE    101     TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -2106,6 +2106,34 @@
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
+           PERFORM 41021-KIHON-CHK-SEC
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4102-PAGE00-KIHON-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4102-PAGE01-KIHON-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4102-PAGE02-KIHON-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4102-PAGE03-KIHON-CHK-SEC
+           END-IF
+      *
+           .
+      *
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       41021-KIHON-CHK-SEC             SECTION.
+      *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4101-SELNUM1-CHK-SEC
            END-IF
@@ -2130,42 +2158,15 @@
                PERFORM 4101-KOHNUM-CHK-SEC
            END-IF
       *
-           EVALUATE    SPA-GMN-PAGENO
-           WHEN    0
-               PERFORM 4102-PAGE00-KIHON-CHK-SEC
-           WHEN    1
-               PERFORM 4102-PAGE01-KIHON-CHK-SEC
-           WHEN    2
-               PERFORM 4102-PAGE02-KIHON-CHK-SEC
-           WHEN    3
-               PERFORM 4102-PAGE03-KIHON-CHK-SEC
-           END-EVALUATE
-      *
            .
-      *
-       4102-KIHON-CHK-EXT.
+       41021-KIHON-CHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    基本チェック処理
       *****************************************************************
        4103-KIHON-CHK-SEC              SECTION.
       *
-           IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 4101-SELNUM1-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 4101-YUKOSTYMD-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 4101-YUKOEDYMD-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 4101-KOHNUM-CHK-SEC
-           END-IF
+           PERFORM 41021-KIHON-CHK-SEC
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4102-PAGE00-KIHON-CHK-SEC
