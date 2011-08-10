@@ -42,10 +42,23 @@
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
+           SELECT  SAVESPA-FILE    ASSIGN         ASSID01
+                                   ORGANIZATION    IS  SEQUENTIAL
+                                   FILE    STATUS  IS  STS-SAVESPA.
       *
        DATA                    DIVISION.
+       FILE                        SECTION.
+       FD  SAVESPA-FILE.
+           COPY  "ORCA-SPA"            REPLACING   //SPA//
+                                       BY          //SAVESPA//.
       *
        WORKING-STORAGE             SECTION.
+      *
+           COPY  "CPCOMMONDAT3.INC"    REPLACING   //TMPFLPARA//
+                                       BY          //ASSID01//.
+      *
+       01  STS-AREA.
+           03  STS-SAVESPA             PIC X(02).
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -202,6 +215,9 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+      *
+           COPY    "CPLNKSYS.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -220,6 +236,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
       *   チェックデジット
            COPY    "CPORCCHKDGT.INC".
       *
@@ -357,6 +376,22 @@
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+               IF    ( SPA-MOTOPG      =   "W01" )
+                   MOVE    SPA-HOSPNUM         TO  ASSID01-HOSPNUM
+                   MOVE    "ORCA105_"          TO  ASSID01-FILE-ID
+                   MOVE    SPA-TERMID          TO  ASSID01-TERMID
+                   OPEN    INPUT               SAVESPA-FILE
+                   READ    SAVESPA-FILE
+                   MOVE    SAVESPA-COMMON      TO  SPA-AREA
+                   MOVE    SPA-WORK            TO  SPA-N01KYOUTU
+                   MOVE    SAVESPA-FREE        TO  SPA-N01
+                   CLOSE   SAVESPA-FILE
+                   MOVE    ZERO        TO      IF-RESULT
+                   MOVE    ASSID01     TO      IF-FILENAME
+                   CALL    "orcfiledel"    USING
+                                           ORCSFDELAREA
+                   GO  TO  300-SCREEN-EXT
+               END-IF
            END-IF
       *
            EVALUATE    SPA-MOTOPG
@@ -511,6 +546,9 @@
       *        削除
                WHEN    "CLICKED"       ALSO    "B03"
                    PERFORM  403-DEL-SEC
+      *        付加設定（システム管理）
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 450-W65-SENI-SEC
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
@@ -1775,6 +1813,48 @@
        490-KOUSHIN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    付加設定（システム管理）へ
+      *****************************************************************
+       450-W65-SENI-SEC                SECTION.
+      *
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    "W01"               TO  SPA-SAKIPG
+           MOVE    "N01"               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-HOSPNUM         TO  ASSID01-HOSPNUM
+           MOVE    "ORCA105_"          TO  ASSID01-FILE-ID
+           MOVE    SPA-TERMID          TO  ASSID01-TERMID
+      *
+           OPEN    OUTPUT              SAVESPA-FILE
+      *
+           INITIALIZE                  SAVESPAAREA
+           MOVE    SPA-N01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SAVESPA-COMMON
+           MOVE    SPA-N01         TO  SAVESPA-FREE
+           WRITE   SAVESPAAREA
+      *
+           CLOSE   SAVESPA-FILE
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           INITIALIZE                  SPA-KYOTUKEY
+                                       LNKSYS-AREA
+           MOVE    SPA-GMN-HKNJANUM    TO  LNKSYS-HKNJANUM
+           MOVE    LNKSYS-AREA         TO  SPA-WORK
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       450-W65-SENI-EXT.
+           EXIT.
       *****************************************************************
       *    自画面編集処理
       *****************************************************************

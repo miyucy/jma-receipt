@@ -805,6 +805,7 @@
            COPY    "W65.INC".
            COPY    "W66.INC".
            COPY    "W67.INC".
+           COPY    "W68.INC".
            COPY    "W96.INC".
            COPY    "W98.INC".
            COPY    "W981.INC".
@@ -7113,7 +7114,7 @@
                    WHEN    3
                        MOVE    401         TO  SPA-GMN-CUR
                    WHEN    OTHER
-                       MOVE    6           TO  SPA-GMN-CUR
+                       MOVE    101         TO  SPA-GMN-CUR
                    END-EVALUATE
                WHEN    4
                WHEN    5

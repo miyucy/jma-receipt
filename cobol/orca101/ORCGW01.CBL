@@ -330,6 +330,8 @@
            03  FILLER              PIC X(35)   VALUE
                "2010 地方公費保険番号付加情報".
            03  FILLER              PIC X(35)   VALUE
+               "2012 保険者付加情報".
+           03  FILLER              PIC X(35)   VALUE
                "3001 統計帳票出力情報（日次）".
            03  FILLER              PIC X(35)   VALUE
                "3002 統計帳票出力情報（月次）".
@@ -341,11 +343,11 @@
                "4100 公害医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   45.
+           03  TBL-KANRICD-TBL         OCCURS   46.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   45.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   46.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -534,6 +536,7 @@
            COPY    "W65.INC".
            COPY    "W66.INC".
            COPY    "W67.INC".
+           COPY    "W68.INC".
            COPY    "W96.INC".
            COPY    "W98.INC".
            COPY    "W981.INC".
@@ -633,7 +636,9 @@
            EVALUATE    TRUE
            WHEN  ( SPA-MOTOPG          =   "V01" )
                PERFORM 420-W65-SENI-SEC
-           WHEN  ( SPA-MOTOPG          =   "W65" )
+           WHEN  ( SPA-MOTOPG          =   "N01" )
+               PERFORM 420-W68-SENI-SEC
+           WHEN  ( SPA-MOTOPG          =   "W65" OR "W68" )
             AND  ( SPA-W01-MOTOPG  NOT =   SPACE )
                PERFORM 210-BACK
            WHEN  ( SPA-MOTOPG          =   "M02" )
@@ -894,6 +899,7 @@
       *
            IF    ( SPA-W01-MOTOPG  NOT =   SPACE )
                MOVE    SPA-W01-MOTOPG  TO  SPA-SAKIPG
+               MOVE    SPACE           TO  SPA-W01-MOTOPG
            ELSE
                MOVE    "M02"           TO  SPA-SAKIPG
            END-IF
@@ -1230,6 +1236,7 @@
                WHEN    "2006"
                WHEN    "2007"
                WHEN    "2010"
+               WHEN    "2012"
                WHEN    "1910"
                WHEN    "9600"
                WHEN    "9700"
@@ -2012,6 +2019,7 @@
              OR                            "2006"
              OR                            "2007"
              OR                            "2010"
+             OR                            "2012"
       *---- (01.05.24) LINE ADD START --------------------------------
              OR                            "1010"
              OR                            "1014"
@@ -2089,6 +2097,8 @@
                    MOVE    "W64"               TO  SPA-SAKIPG
                WHEN    "2010"
                    MOVE    "W65"               TO  SPA-SAKIPG
+               WHEN    "2012"
+                   MOVE    "W68"               TO  SPA-SAKIPG
               WHEN    "1030"
               WHEN    "1031"
                    MOVE    "W11"               TO  SPA-SAKIPG
@@ -2386,7 +2396,7 @@
            MOVE    SPA-WORK            TO  LNKSYS-AREA
            MOVE    LNKSYS-HKNNUM       TO  SPA-W01-KBNCD
       *
-           MOVE    "V01"               TO  SPA-W01-MOTOPG
+           MOVE    SPA-MOTOPG          TO  SPA-W01-MOTOPG
            MOVE    "W65"               TO  SPA-SAKIPG
            MOVE    "W01"               TO  SPA-MOTOPG
       *
@@ -2399,6 +2409,31 @@
       *
            .
        420-W65-SENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    確定ボタン押下時チェック処理
+      *****************************************************************
+       420-W68-SENI-SEC            SECTION.
+      *
+           INITIALIZE              SPA-W01-AREA
+                                   SPA-W01KYOUTU
+      *
+           MOVE    SPA-WORK            TO  LNKSYS-AREA
+           MOVE    LNKSYS-HKNJANUM     TO  SPA-W01-KBNCD
+      *
+           MOVE    SPA-MOTOPG          TO  SPA-W01-MOTOPG
+           MOVE    "W68"               TO  SPA-SAKIPG
+           MOVE    "W01"               TO  SPA-MOTOPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       420-W68-SENI-EXT.
            EXIT.
       *****************************************************************
       *    日付チェック・編集処理

@@ -26,3 +26,4 @@
       ************************************************************
        01  LNKSYS-AREA.
             03  LNKSYS-HKNNUM               PIC X(03).
+            03  LNKSYS-HKNJANUM             PIC X(08).
