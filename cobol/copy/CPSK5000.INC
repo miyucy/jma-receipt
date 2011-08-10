@@ -63,11 +63,14 @@
                05  SYS-5000-IPPANKSNKBN    PIC  X(01).
       *救急・在宅等支援療養病床初期加算区分
                05  SYS-5000-KYUKYUKSNKBN   PIC  X(01).
+      *栄養管理実施加算算定区分
+               05  SYS-5000-EIYOUKSNKBN    PIC  X(01).
       *予備（１）
       ******   05                          PIC  X(60).
       ******   05                          PIC  X(56).
       ******   05  SYS-5000-YOBI           PIC  X(55).
-               05  SYS-5000-YOBI           PIC  X(54).
+      ******   05  SYS-5000-YOBI           PIC  X(54).
+               05  SYS-5000-YOBI           PIC  X(53).
       *入院時の食事
                05  SYS-5000-SKJKBN         PIC  X(01).
       *入院時の選定入院
