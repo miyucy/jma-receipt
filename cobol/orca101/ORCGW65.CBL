@@ -273,78 +273,106 @@
                        09  SPA-GMN-SKJKEITAIKBN            PIC X(01).
                        09  SPA-GMN-SKJKEITAIKBNF           PIC X(01).
                        09  SPA-GMN-SKJKEITAIKBNMEI         PIC X(38).
-                   07  SPA-GMN-SKJRYOKBNHON-G.
+                   07  SPA-GMN-HONTSYTNK-G.
+                     08  SPA-GMN-SKJRYOKBNHON-G.
                        09  SPA-GMN-SKJRYOKBNHON            PIC X(01).
                        09  SPA-GMN-SKJRYOKBNHONF           PIC X(01).
                        09  SPA-GMN-SKJRYOKBNHONMEI         PIC X(78).
-                   07  SPA-GMN-SKJRYOTAIKBNHON-G.
+                     08  SPA-GMN-SKJRYOTAIKBNHON-G.
                        09  SPA-GMN-SKJRYOTAIKBNHON         PIC X(01).
                        09  SPA-GMN-SKJRYOTAIKBNHONF        PIC X(01).
                        09  SPA-GMN-SKJRYOTAIKBNHONMEI      PIC X(38).
-                   07  SPA-GMN-SEIRYOKBNHON-G.
+                     08  SPA-GMN-SEIRYOKBNHON-G.
                        09  SPA-GMN-SEIRYOKBNHON            PIC X(01).
                        09  SPA-GMN-SEIRYOKBNHONF           PIC X(01).
                        09  SPA-GMN-SEIRYOKBNHONMEI         PIC X(78).
-                   07  SPA-GMN-SEIRYOTAIKBNHON-G.
+                     08  SPA-GMN-SEIRYOTAIKBNHON-G.
                        09  SPA-GMN-SEIRYOTAIKBNHON         PIC X(01).
                        09  SPA-GMN-SEIRYOTAIKBNHONF        PIC X(01).
                        09  SPA-GMN-SEIRYOTAIKBNHONMEI      PIC X(38).
-                   07  SPA-GMN-SEIKANKBNHON-G.
+                     08  SPA-GMN-SEIKANKBNHON-G.
                        09  SPA-GMN-SEIKANKBNHON            PIC X(01).
                        09  SPA-GMN-SEIKANKBNHONF           PIC X(01).
                        09  SPA-GMN-SEIKANKBNHONMEI         PIC X(78).
-                   07  SPA-GMN-SEIKANTAIKBNHON-G.
+                     08  SPA-GMN-SEIKANTAIKBNHON-G.
                        09  SPA-GMN-SEIKANTAIKBNHON         PIC X(01).
                        09  SPA-GMN-SEIKANTAIKBNHONF        PIC X(01).
                        09  SPA-GMN-SEIKANTAIKBNHONMEI      PIC X(38).
-                   07  SPA-GMN-SKJRYOKBNTSY-G.
+                     08  SPA-GMN-SKJRYOKBNTSY-G.
                        09  SPA-GMN-SKJRYOKBNTSY            PIC X(01).
                        09  SPA-GMN-SKJRYOKBNTSYF           PIC X(01).
                        09  SPA-GMN-SKJRYOKBNTSYMEI         PIC X(78).
-                   07  SPA-GMN-SKJRYOTAIKBNTSY-G.
+                     08  SPA-GMN-SKJRYOTAIKBNTSY-G.
                        09  SPA-GMN-SKJRYOTAIKBNTSY         PIC X(01).
                        09  SPA-GMN-SKJRYOTAIKBNTSYF        PIC X(01).
                        09  SPA-GMN-SKJRYOTAIKBNTSYMEI      PIC X(38).
-                   07  SPA-GMN-SEIRYOKBNTSY-G.
+                     08  SPA-GMN-SEIRYOKBNTSY-G.
                        09  SPA-GMN-SEIRYOKBNTSY            PIC X(01).
                        09  SPA-GMN-SEIRYOKBNTSYF           PIC X(01).
                        09  SPA-GMN-SEIRYOKBNTSYMEI         PIC X(78).
-                   07  SPA-GMN-SEIRYOTAIKBNTSY-G.
+                     08  SPA-GMN-SEIRYOTAIKBNTSY-G.
                        09  SPA-GMN-SEIRYOTAIKBNTSY         PIC X(01).
                        09  SPA-GMN-SEIRYOTAIKBNTSYF        PIC X(01).
                        09  SPA-GMN-SEIRYOTAIKBNTSYMEI      PIC X(38).
-                   07  SPA-GMN-SEIKANKBNTSY-G.
+                     08  SPA-GMN-SEIKANKBNTSY-G.
                        09  SPA-GMN-SEIKANKBNTSY            PIC X(01).
                        09  SPA-GMN-SEIKANKBNTSYF           PIC X(01).
                        09  SPA-GMN-SEIKANKBNTSYMEI         PIC X(78).
-                   07  SPA-GMN-SEIKANTAIKBNTSY-G.
+                     08  SPA-GMN-SEIKANTAIKBNTSY-G.
                        09  SPA-GMN-SEIKANTAIKBNTSY         PIC X(01).
                        09  SPA-GMN-SEIKANTAIKBNTSYF        PIC X(01).
                        09  SPA-GMN-SEIKANTAIKBNTSYMEI      PIC X(38).
-                   07  SPA-GMN-SKJRYOKBNTNK-G.
+                     08  SPA-GMN-SKJRYOKBNTNK-G.
                        09  SPA-GMN-SKJRYOKBNTNK            PIC X(01).
                        09  SPA-GMN-SKJRYOKBNTNKF           PIC X(01).
                        09  SPA-GMN-SKJRYOKBNTNKMEI         PIC X(78).
-                   07  SPA-GMN-SKJRYOTAIKBNTNK-G.
+                     08  SPA-GMN-SKJRYOTAIKBNTNK-G.
                        09  SPA-GMN-SKJRYOTAIKBNTNK         PIC X(01).
                        09  SPA-GMN-SKJRYOTAIKBNTNKF        PIC X(01).
                        09  SPA-GMN-SKJRYOTAIKBNTNKMEI      PIC X(38).
-                   07  SPA-GMN-SEIRYOKBNTNK-G.
+                     08  SPA-GMN-SEIRYOKBNTNK-G.
                        09  SPA-GMN-SEIRYOKBNTNK            PIC X(01).
                        09  SPA-GMN-SEIRYOKBNTNKF           PIC X(01).
                        09  SPA-GMN-SEIRYOKBNTNKMEI         PIC X(78).
-                   07  SPA-GMN-SEIRYOTAIKBNTNK-G.
+                     08  SPA-GMN-SEIRYOTAIKBNTNK-G.
                        09  SPA-GMN-SEIRYOTAIKBNTNK         PIC X(01).
                        09  SPA-GMN-SEIRYOTAIKBNTNKF        PIC X(01).
                        09  SPA-GMN-SEIRYOTAIKBNTNKMEI      PIC X(38).
-                   07  SPA-GMN-SEIKANKBNTNK-G.
+                     08  SPA-GMN-SEIKANKBNTNK-G.
                        09  SPA-GMN-SEIKANKBNTNK            PIC X(01).
                        09  SPA-GMN-SEIKANKBNTNKF           PIC X(01).
                        09  SPA-GMN-SEIKANKBNTNKMEI         PIC X(78).
-                   07  SPA-GMN-SEIKANTAIKBNTNK-G.
+                     08  SPA-GMN-SEIKANTAIKBNTNK-G.
                        09  SPA-GMN-SEIKANTAIKBNTNK         PIC X(01).
                        09  SPA-GMN-SEIKANTAIKBNTNKF        PIC X(01).
                        09  SPA-GMN-SEIKANTAIKBNTNKMEI      PIC X(38).
+                   07  SPA-GMN-HONTSYTNK-R    REDEFINES
+                                              SPA-GMN-HONTSYTNK-G.
+                     08  SPA-GMN-HONTSYTNK-OCC       OCCURS  3.
+                       09  SPA-GMN-SKJRYOKBN-G.
+                         11  SPA-GMN-SKJRYOKBN            PIC X(01).
+                         11  SPA-GMN-SKJRYOKBNF           PIC X(01).
+                         11  SPA-GMN-SKJRYOKBNMEI         PIC X(78).
+                       09  SPA-GMN-SKJRYOTAIKBN-G.
+                         11  SPA-GMN-SKJRYOTAIKBN         PIC X(01).
+                         11  SPA-GMN-SKJRYOTAIKBNF        PIC X(01).
+                         11  SPA-GMN-SKJRYOTAIKBNMEI      PIC X(38).
+                       09  SPA-GMN-SEIRYOKBN-G.
+                         11  SPA-GMN-SEIRYOKBN            PIC X(01).
+                         11  SPA-GMN-SEIRYOKBNF           PIC X(01).
+                         11  SPA-GMN-SEIRYOKBNMEI         PIC X(78).
+                       09  SPA-GMN-SEIRYOTAIKBN-G.
+                         11  SPA-GMN-SEIRYOTAIKBN         PIC X(01).
+                         11  SPA-GMN-SEIRYOTAIKBNF        PIC X(01).
+                         11  SPA-GMN-SEIRYOTAIKBNMEI      PIC X(38).
+                       09  SPA-GMN-SEIKANKBN-G.
+                         11  SPA-GMN-SEIKANKBN            PIC X(01).
+                         11  SPA-GMN-SEIKANKBNF           PIC X(01).
+                         11  SPA-GMN-SEIKANKBNMEI         PIC X(78).
+                       09  SPA-GMN-SEIKANTAIKBN-G.
+                         11  SPA-GMN-SEIKANTAIKBN         PIC X(01).
+                         11  SPA-GMN-SEIKANTAIKBNF        PIC X(01).
+                         11  SPA-GMN-SEIKANTAIKBNMEI      PIC X(38).
                05  SPA-GMN-CMB-AREA.
                    07  SPA-GMN-KOHNUMLST-G.
                        09  SPA-GMN-KOHNUM-MAX              PIC 9(03).
@@ -566,6 +594,9 @@
                                                            OCCURS  100.
                        09  SPA-NAI-KOHNUM                  PIC X(03).
                        09  SPA-NAI-KOHNUM-ORG              PIC X(03).
+                       09  SPA-NAI-SKJKBNHON               PIC X(01).
+                       09  SPA-NAI-SKJKBNTSY               PIC X(01).
+                       09  SPA-NAI-SKJKBNTNK               PIC X(01).
                        09  SPA-NAI-YUKOSTYMD               PIC X(08).
                        09  SPA-NAI-YUKOSTYMD-ORG           PIC X(08).
                        09  SPA-NAI-YUKOEDYMD               PIC X(08).
@@ -576,6 +607,9 @@
                    07  SPA-NAI-KOHLST                      OCCURS   100.
                        09  SPA-NAI-TKYUKOSTYMD             PIC X(08).
                        09  SPA-NAI-TKYUKOEDYMD             PIC X(08).
+                       09  SPA-NAI-TKSKJKBNHON             PIC X(01).
+                       09  SPA-NAI-TKSKJKBNTSY             PIC X(01).
+                       09  SPA-NAI-TKSKJKBNTNK             PIC X(01).
                05  SPA-NAI-RIREKILST-AREA.
                    07  SPA-NAI-RIREKILST                   OCCURS   20.
                        09  SPA-NAI-TRYUKOSTYMD             PIC X(08).
@@ -590,6 +624,7 @@
            03  FLG-HIZUKECHK                               PIC 9(01).
            03  FLG-UPD-KBN                                 PIC 9(01).
            03  FLG-KIKAN-DABURI                            PIC 9(01).
+           03  FLG-ERR                                     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -599,6 +634,7 @@
            03  IDX-CMB                                     PIC 9(05).
            03  IDX-MUL                                     PIC 9(05).
            03  IDX-LST                                     PIC 9(05).
+           03  IDXE                                        PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -647,6 +683,9 @@
            03  WRK-PAGENO                                  PIC 9(03).
            03  WRK-NAI-YUKOSTYMD                           PIC X(08).
            03  WRK-NAI-YUKOEDYMD                           PIC X(08).
+           03  WRK-SKJKBNHON                               PIC X(01).
+           03  WRK-SKJKBNTSY                               PIC X(01).
+           03  WRK-SKJKBNTNK                               PIC X(01).
       *
        01  KEY-AREA.
            03  KEY-HKNNUM                                  PIC X(03).
@@ -1802,6 +1841,12 @@
                PERFORM 900-HKNNUM-KEY8-SEL-SEC
                MOVE    HKN-SEIDONAME
                                        TO  SPA-GMN-TKKOHNAME(IDX-MAX)
+               MOVE    HKN-HON-NYUSKJRYYKBN
+                                       TO  SPA-NAI-TKSKJKBNHON(IDX-MAX)
+               MOVE    HKN-TSY-NYUSKJRYYKBN
+                                       TO  SPA-NAI-TKSKJKBNTSY(IDX-MAX)
+               MOVE    HKN-TNK-NYUSKJRYYKBN
+                                       TO  SPA-NAI-TKSKJKBNTNK(IDX-MAX)
                MOVE    SYS-2010-STYUKYMD
                                        TO  SPA-NAI-TKYUKOSTYMD(IDX-MAX)
                MOVE    SYS-2010-STYUKYMD
@@ -2572,9 +2617,80 @@
       *****************************************************************
        4102-PAGE03-KANREN-CHK-SEC       SECTION.
       *
+           EVALUATE    SPA-NAI-INPUT-MODE
+           WHEN    1
+               MOVE    SPA-NAI-SKJKBNHON       TO  WRK-SKJKBNHON
+               MOVE    SPA-NAI-SKJKBNTSY       TO  WRK-SKJKBNTSY
+               MOVE    SPA-NAI-SKJKBNTNK       TO  WRK-SKJKBNTNK
+                PERFORM 41021-PAGE03-KANREN-CHK-SEC
+           WHEN    2
+               PERFORM VARYING IDX-LST FROM    1   BY  1
+                       UNTIL ( IDX-LST >   SPA-GMN-KOHLST-MAX )
+                        OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   IF    ( SPA-NAI-SELNUM1-FLG (IDX-LST)   =   1 )
+                       MOVE    SPA-NAI-TKSKJKBNHON (IDX-LST)
+                                               TO  WRK-SKJKBNHON
+                       MOVE    SPA-NAI-TKSKJKBNTSY (IDX-LST)
+                                               TO  WRK-SKJKBNTSY
+                       MOVE    SPA-NAI-TKSKJKBNTNK (IDX-LST)
+                                               TO  WRK-SKJKBNTNK
+                       PERFORM 41021-PAGE03-KANREN-CHK-SEC
+                   END-IF
+      *
+               END-PERFORM
+           END-EVALUATE
       *
            .
        4102-PAGE03-KANREN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    関連チェック処理（３頁）
+      *****************************************************************
+       41021-PAGE03-KANREN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO            TO      FLG-ERR
+      *
+           PERFORM VARYING IDXE    FROM    1   BY  1
+                   UNTIL ( IDXE    >       3 )
+                    OR   ( FLG-ERR NOT =   ZERO )
+      *
+               IF    ( WRK-SKJKBNHON  =   "0" )
+                   IF    ( SPA-GMN-SKJRYOKBN (IDXE)  NOT =   "0" )
+                    OR   ( SPA-GMN-SEIRYOKBN (IDXE)  NOT =   "0" )
+                    OR   ( SPA-GMN-SEIKANKBN (IDXE)  NOT =   "0" )
+                       MOVE    IDXE    TO  FLG-ERR
+                   END-IF
+               END-IF
+      *
+               IF    ( WRK-SKJKBNHON   =   "1" OR "2" OR "3" OR "4" )
+                   IF    ( SPA-GMN-SKJRYOKBN(IDXE) =   "1" )
+                    AND  ( SPA-GMN-SEIRYOKBN(IDXE) =   "1" )
+                    AND  ( SPA-GMN-SEIKANKBN(IDXE) =   "1" )
+                       MOVE    IDXE    TO  FLG-ERR
+                   END-IF
+                   IF    ( SPA-GMN-SKJRYOKBN(IDXE) =   "3" )
+                    AND  ( SPA-GMN-SEIRYOKBN(IDXE) =   "3" )
+                    AND  ( SPA-GMN-SEIKANKBN(IDXE) =   "3" )
+                       MOVE    IDXE    TO  FLG-ERR
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           EVALUATE    FLG-ERR
+           WHEN    1
+               MOVE    "0009"          TO  SPA-ERRCD
+               MOVE    401             TO  SPA-GMN-CUR
+           WHEN    2
+               MOVE    "0010"          TO  SPA-ERRCD
+               MOVE    407             TO  SPA-GMN-CUR
+           WHEN    3
+               MOVE    "0011"          TO  SPA-ERRCD
+               MOVE    413             TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
+           .
+       41021-PAGE03-KANREN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -3765,11 +3881,18 @@
            PERFORM 4200-SKJFUKATAIKBNTNKLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-SEIKANTAIKBNTNK-G
       *
+           MOVE    SYS-2010-STYUKYMD   TO  SEL-STYMD
+           MOVE    SYS-2010-EDYUKYMD   TO  SEL-EDYMD
+           MOVE    SYS-2010-KBNCD      TO  SEL-HKNNUM
+           PERFORM 900-HKNNUM-KEY8-SEL-SEC
+           MOVE    HKN-HON-NYUSKJRYYKBN
+                                       TO  SPA-NAI-SKJKBNHON
+           MOVE    HKN-TSY-NYUSKJRYYKBN
+                                       TO  SPA-NAI-SKJKBNTSY
+           MOVE    HKN-TNK-NYUSKJRYYKBN
+                                       TO  SPA-NAI-SKJKBNTNK
+      *
            IF    ( SYS-2010-FTNKEIKBN-G    =   SPACE )
-               MOVE    SYS-2010-STYUKYMD   TO  SEL-STYMD
-               MOVE    SYS-2010-EDYUKYMD   TO  SEL-EDYMD
-               MOVE    SYS-2010-KBNCD      TO  SEL-HKNNUM
-               PERFORM 900-HKNNUM-KEY8-SEL-SEC
                MOVE    HKNNUM-REC          TO  THKNNUM-REC
                PERFORM 42012-COMBO-SET-DEFAULT-SEC
            END-IF
@@ -7168,6 +7291,30 @@
                        "異なります"
                                        DELIMITED   BY  SIZE
                INTO                    SPA-ERRMSG
+               END-STRING
+           WHEN    "0009"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "保険番号マスタの食事療養費の設定と"
+                                       DELIMITED   BY  SIZE
+                       "付加情報の設定が矛盾します【本人タブ】"
+                                       DELIMITED   BY  SIZE
+               INTO                        SPA-ERRMSG
+               END-STRING
+           WHEN    "0010"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "保険番号マスタの食事療養費の設定と"
+                                       DELIMITED   BY  SIZE
+                       "付加情報の設定が矛盾します【低所得タブ】"
+                                       DELIMITED   BY  SIZE
+               INTO                        SPA-ERRMSG
+               END-STRING
+           WHEN    "0011"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "保険番号マスタの食事療養費の設定と"
+                                       DELIMITED   BY  SIZE
+                       "付加情報の設定が矛盾します【低年金タブ】"
+                                       DELIMITED   BY  SIZE
+               INTO                        SPA-ERRMSG
                END-STRING
            WHEN    "0014"
                MOVE    "基準日入力エラー"
