@@ -6645,6 +6645,13 @@
                                            W65-SELNUM2-STATE
            END-IF
       *
+           IF    ( SPA-GMN-KOHLST-SEL   >  0 )
+            AND  ( SPA-GMN-KOHLST-SEL   <= SPA-GMN-KOHLST-MAX )
+               MOVE    WIDGET-INSENSITIVE
+                                        TO W65-KOHNUM-STATE
+                                           W65-KOHNUM-ITEM-STATE
+           END-IF
+      *
            .
        500-GMNHEN-STATE-EDIT-EXT.
            EXIT.
@@ -7011,6 +7018,21 @@
            IF    ( SPA-GMN-CUR         =   1 )
                IF    ( SPA-GMN-KOHLST-MAX  =   ZERO )
                    MOVE    2           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   2)
+               IF    ( W65-KOHNUM-STATE    =   WIDGET-INSENSITIVE )
+                   EVALUATE    SPA-GMN-PAGENO
+                   WHEN    1
+                       MOVE    201         TO  SPA-GMN-CUR
+                   WHEN    2
+                       MOVE    301         TO  SPA-GMN-CUR
+                   WHEN    3
+                       MOVE    401         TO  SPA-GMN-CUR
+                   WHEN    OTHER
+                       MOVE    101         TO  SPA-GMN-CUR
+                   END-EVALUATE
                END-IF
            END-IF
       *
