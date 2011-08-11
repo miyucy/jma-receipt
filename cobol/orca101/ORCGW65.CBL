@@ -683,9 +683,8 @@
            03  WRK-PAGENO                                  PIC 9(03).
            03  WRK-NAI-YUKOSTYMD                           PIC X(08).
            03  WRK-NAI-YUKOEDYMD                           PIC X(08).
-           03  WRK-SKJKBNHON                               PIC X(01).
-           03  WRK-SKJKBNTSY                               PIC X(01).
-           03  WRK-SKJKBNTNK                               PIC X(01).
+           03  WRK-SKJKBN                                  PIC X(01)
+                                                           OCCURS 3.
       *
        01  KEY-AREA.
            03  KEY-HKNNUM                                  PIC X(03).
@@ -2619,9 +2618,9 @@
       *
            EVALUATE    SPA-NAI-INPUT-MODE
            WHEN    1
-               MOVE    SPA-NAI-SKJKBNHON       TO  WRK-SKJKBNHON
-               MOVE    SPA-NAI-SKJKBNTSY       TO  WRK-SKJKBNTSY
-               MOVE    SPA-NAI-SKJKBNTNK       TO  WRK-SKJKBNTNK
+               MOVE    SPA-NAI-SKJKBNHON       TO  WRK-SKJKBN(1)
+               MOVE    SPA-NAI-SKJKBNTSY       TO  WRK-SKJKBN(2)
+               MOVE    SPA-NAI-SKJKBNTNK       TO  WRK-SKJKBN(3)
                 PERFORM 41021-PAGE03-KANREN-CHK-SEC
            WHEN    2
                PERFORM VARYING IDX-LST FROM    1   BY  1
@@ -2630,11 +2629,11 @@
       *
                    IF    ( SPA-NAI-SELNUM1-FLG (IDX-LST)   =   1 )
                        MOVE    SPA-NAI-TKSKJKBNHON (IDX-LST)
-                                               TO  WRK-SKJKBNHON
+                                               TO  WRK-SKJKBN(1)
                        MOVE    SPA-NAI-TKSKJKBNTSY (IDX-LST)
-                                               TO  WRK-SKJKBNTSY
+                                               TO  WRK-SKJKBN(2)
                        MOVE    SPA-NAI-TKSKJKBNTNK (IDX-LST)
-                                               TO  WRK-SKJKBNTNK
+                                               TO  WRK-SKJKBN(3)
                        PERFORM 41021-PAGE03-KANREN-CHK-SEC
                    END-IF
       *
@@ -2655,7 +2654,7 @@
                    UNTIL ( IDXE    >       3 )
                     OR   ( FLG-ERR NOT =   ZERO )
       *
-               IF    ( WRK-SKJKBNHON  =   "0" )
+               IF    ( WRK-SKJKBN (IDXE)   =   "0" )
                    IF    ( SPA-GMN-SKJRYOKBN (IDXE)  NOT =   "0" )
                     OR   ( SPA-GMN-SEIRYOKBN (IDXE)  NOT =   "0" )
                     OR   ( SPA-GMN-SEIKANKBN (IDXE)  NOT =   "0" )
@@ -2663,7 +2662,7 @@
                    END-IF
                END-IF
       *
-               IF    ( WRK-SKJKBNHON   =   "1" OR "2" OR "3" OR "4" )
+               IF    ( WRK-SKJKBN (IDXE) = "1" OR "2" OR "3" OR "4" )
                    IF    ( SPA-GMN-SKJRYOKBN(IDXE) =   "1" )
                     AND  ( SPA-GMN-SEIRYOKBN(IDXE) =   "1" )
                     AND  ( SPA-GMN-SEIKANKBN(IDXE) =   "1" )
