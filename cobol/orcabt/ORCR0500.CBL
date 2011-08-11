@@ -120,6 +120,7 @@
       *
       *  04.05.00    NACL-太田    10/01/28  拡張漢字対応
       *  04.05.01    NACL-藤原    11/08/02  点検レセ印字位置変更対応
+      *  04.05.02    NACL-藤原    11/08/10  労災新様式対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -291,6 +292,9 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCM57.INC".
            COPY    "HCM57V01.INC".
            COPY    "HCM57V02.INC".
+           COPY    "HCM69.INC".
+           COPY    "HCM70.INC".
+           COPY    "HCM71.INC".
       *
            COPY    "HCN21.INC".
            COPY    "HCN21V01.INC".
@@ -308,6 +312,8 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCN51.INC".
            COPY    "HCN51V01.INC".
            COPY    "HCN51V02.INC".
+           COPY    "HCN66.INC".
+           COPY    "HCN67.INC".
       *
       *    自賠責レセプト
            COPY    "HCM23.INC".
@@ -1309,6 +1315,26 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCN58V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN58V02-RENNUM
                        MOVE    HCN58V02            TO  RECE08-PRTDATA
+                   WHEN    "HCN66.red"
+                       MOVE    RECE08-PRTDATA      TO  HCN66
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN66-RENNUM
+                       MOVE    HCN66               TO  RECE08-PRTDATA
+                   WHEN    "HCN67.red"
+                       MOVE    RECE08-PRTDATA      TO  HCN67
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN67-RENNUM
+                       MOVE    HCN67               TO  RECE08-PRTDATA
+                   WHEN    "HCM69.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM69
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM69-RENNUM
+                       MOVE    HCM69               TO  RECE08-PRTDATA
+                   WHEN    "HCM70.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM70
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM70-RENNUM
+                       MOVE    HCM70               TO  RECE08-PRTDATA
+                   WHEN    "HCM71.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM71
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM71-RENNUM
+                       MOVE    HCM71               TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
       *    MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
@@ -1516,6 +1542,9 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM57.red"     ALSO    "2"
                WHEN    "HCM57V01.red"  ALSO    "2"
                WHEN    "HCM57V02.red"  ALSO    "2"
+               WHEN    "HCM69.red"     ALSO    "2"
+               WHEN    "HCM70.red"     ALSO    "2"
+               WHEN    "HCM71.red"     ALSO    "2"
                MOVE    "労災レセプト（入院外）"    TO  SPRT-TITLE
                WHEN    "HCM23.red"     ALSO    ANY
                WHEN    "HCM23V01.red"  ALSO    ANY
@@ -1606,6 +1635,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM57.red"     ALSO    "1"
                WHEN    "HCM57V01.red"  ALSO    "1"
                WHEN    "HCM57V02.red"  ALSO    "1"
+               WHEN    "HCN66.red"     ALSO    "1"
+               WHEN    "HCN67.red"     ALSO    "1"
                    MOVE    "労災レセプト（入院）"      TO  SPRT-TITLE
                WHEN    "HCN23.red"     ALSO    ANY
                WHEN    "HCN23V01.red"  ALSO    ANY

@@ -139,6 +139,7 @@
       *  04.05.06    NACL-藤原    10/03/29  平成２２年４月改正対応
       *                                     平成２２年４月分以降の訂正日
       *                                     の処理を元に戻す
+      *  04.05.07    NACL-藤原    11/08/02  労災新様式対応
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -4067,6 +4068,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                        =   SPACE
                MOVE    ZERO            TO  SYS-200501-COMMENT-ROU-KSIKBN
            END-IF
+           IF      SYS-200501-ROUPRTKBN
+                                       =   SPACE
+               MOVE    ZERO            TO  SYS-200501-ROUPRTKBN
+           END-IF
+           IF      SYS-200501-ROUPRTKBN-N
+                                       =   SPACE
+               MOVE    ZERO            TO  SYS-200501-ROUPRTKBN-N
+           END-IF
       *
            MOVE    SPACE           TO  SHELLTBL
            EVALUATE    SPA-R01-RECEKBN
@@ -4193,6 +4202,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                                                    TO  SHELLTBL-ARG17
                    ELSE
                        MOVE    SYS-200501-JIBAIPRTKBN
+                                                   TO  SHELLTBL-ARG17
+                   END-IF
+               WHEN    "3"
+                   IF      SPA-R01-NYUGAIKBN   =   "1"
+                       MOVE    SYS-200501-ROUPRTKBN-N
+                                                   TO  SHELLTBL-ARG17
+                   ELSE
+                       MOVE    SYS-200501-ROUPRTKBN
                                                    TO  SHELLTBL-ARG17
                    END-IF
            END-EVALUATE

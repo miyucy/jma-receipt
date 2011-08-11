@@ -105,6 +105,7 @@
       *  04.05.01    NACL-藤原    09/06/11  病棟別出力対応
       *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
       *  04.05.03    NACL-小豆沢  10/02/18  スクリプト起動パスサーチ対応
+      *  04.05.04    NACL-藤原    11/08/02  労災新様式対応
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -2316,6 +2317,16 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                        MOVE    ZERO            TO
                                    SYS-200501-COMMENT-ROU-KSIKBN
                    END-IF
+                   IF      SYS-200501-ROUPRTKBN
+                                               =   SPACE
+                       MOVE    ZERO            TO
+                                           SYS-200501-ROUPRTKBN
+                   END-IF
+                   IF      SYS-200501-ROUPRTKBN-N
+                                               =   SPACE
+                       MOVE    ZERO            TO
+                                           SYS-200501-ROUPRTKBN-N
+                   END-IF
       *
                    MOVE    SPACE           TO  SHELLTBL
                    EVALUATE    SPA-R01-RECEKBN
@@ -2443,6 +2454,14 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                                                    TO  SHELLTBL-ARG17
                            ELSE
                                MOVE    SYS-200501-JIBAIPRTKBN
+                                                   TO  SHELLTBL-ARG17
+                           END-IF
+                       WHEN    "3"
+                           IF      SPA-R01-NYUGAIKBN   =   "1"
+                               MOVE    SYS-200501-ROUPRTKBN-N
+                                                   TO  SHELLTBL-ARG17
+                           ELSE
+                               MOVE    SYS-200501-ROUPRTKBN
                                                    TO  SHELLTBL-ARG17
                            END-IF
                    END-EVALUATE
