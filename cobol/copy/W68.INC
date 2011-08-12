@@ -25,6 +25,7 @@
               03  W68-HKNJANUM                   PIC X(08).
               03  W68-HKNJANUM-STATE             PIC S9(9) BINARY.
               03  W68-HKNJANAME                  PIC X(100).
+              03  W68-HKNJANAME-STATE            PIC S9(9) BINARY.
               03  W68-CMB-HBTNUM10KBN.
                 04  W68-HBTNUM10KBN              PIC X(80).
                 04  W68-HBTNUM10KBN-COUNT        PIC S9(9) BINARY.

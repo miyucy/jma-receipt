@@ -21,6 +21,7 @@ W68	{
 		};
 		HKNJANAME	{
 			value	varchar(100);
+			state	int;
 		};
 		CMB_HBTNUM10KBN	{
 			HBTNUM10KBN	{

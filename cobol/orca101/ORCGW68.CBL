@@ -2303,6 +2303,7 @@
                                        W68-B07-STATE
                                        W68-B08-STATE
                                        W68-HKNJANUM-STATE
+                                       W68-HKNJANAME-STATE
                                        W68-YUKOSTYMD-STATE
                                        W68-YUKOEDYMD-STATE
                                        W68-SELNUM2-STATE
@@ -2348,9 +2349,17 @@
                                         TO W68-B06-STATE
                                            W68-B08-STATE
                                            W68-HKNJANUM-STATE
+                                           W68-HKNJANAME-STATE
                                            W68-YUKOSTYMD-STATE
                                            W68-YUKOEDYMD-STATE
                                            W68-SELNUM2-STATE
+           END-IF
+      *
+           IF    ( SPA-GMN-HKNJALST-SEL   >  0 )
+            AND  ( SPA-GMN-HKNJALST-SEL   <= SPA-GMN-HKNJALST-MAX )
+               MOVE    WIDGET-INSENSITIVE
+                                        TO W68-HKNJANUM-STATE
+                                           W68-HKNJANAME-STATE
            END-IF
       *
            .
@@ -2462,6 +2471,12 @@
            IF    ( SPA-GMN-CUR         =   1 )
                IF    ( SPA-GMN-HKNJALST-MAX  =   ZERO )
                    MOVE    2           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   2 )
+               IF    ( W68-HKNJANUM-STATE  =   WIDGET-INSENSITIVE )
+                   MOVE    101                 TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
