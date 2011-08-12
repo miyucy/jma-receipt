@@ -42,6 +42,7 @@ all: $(COBJS)
 	
 clean: 
 	-rm -f $(COBJS)
+	-rm -f *.o
 
 distclean: 
 	-rm -f $(COBJS)
