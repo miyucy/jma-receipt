@@ -1,4 +1,4 @@
-medicalgetmod {
+medicalget {
 		argument {
 			class			varchar(02);
 		};

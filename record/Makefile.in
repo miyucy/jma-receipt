@@ -440,7 +440,7 @@ RECORD_files = \
 	P02H.rec \
 	system01lst.rec \
 	CID6.rec \
-	medicalgetmod.rec \
+	medicalget.rec \
 	P02T.rec \
 	
 
