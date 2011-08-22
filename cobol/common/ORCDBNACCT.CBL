@@ -145,7 +145,8 @@
                IF    ( MCP-RC  =   ZERO )
                    MOVE    MCPDATA-REC   TO   NYUINACCT-REC
                    IF    NACCT-SRYCDTOTAL  =  190120410
-                   PERFORM 2001-EDIT-NYUINACCT-SEC
+                       PERFORM 2001-EDIT-NYUINACCT-SEC
+                   END-IF
                END-IF
            END-EVALUATE
       *
