@@ -2,21 +2,39 @@ CID6	{
 	fixed1	{
 		B10     {
 			state   int;
+			label	varchar(22);
 		};
 		B12     {
 			state   int;
+		};
+		H_BYOMEI1	{
+                        style   varchar(20);
+			value	varchar(70);
+		};
+		HAISIYMD_H	{
+			value	varchar(10);
+		};
+		HAISIYMD	{
+			value	varchar(22);
 		};
 		BYOMEICD1	{
 			value	varchar(10);
 		};
 		BYOMEI1	{
+			value	varchar(60);
+		};
+		LABEL1	{
+			value	varchar(12);
+		};
+		H_BYOMEI2	{
+                        style   varchar(20);
 			value	varchar(70);
 		};
 		BYOMEICD2	{
 			value	varchar(10);
 		};
 		BYOMEI2	{
-			value	varchar(70);
+			value	varchar(60);
 		};
 		MSG	{
 			value	varchar(120);

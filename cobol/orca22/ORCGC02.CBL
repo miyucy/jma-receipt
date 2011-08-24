@@ -2768,8 +2768,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                                        SPA-NAI-C02-TOKSKNCD (IDZ)
                            MOVE    BYO-NANBYOCD    TO
                                        SPA-NAI-C02-NANBYOCD-O(IDZ)
-                           MOVE    BYO-TANDOKUKBN
-                                                   TO
+                           MOVE    BYO-TANDOKUKBN  TO
                                        SPA-NAI-C02-TANDOKUKBN-O
                                                              (IDZ IDX2)
                        END-IF
@@ -5236,6 +5235,8 @@ grpsys             MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
                                            TO  SPA-C02-IKOMOTO-BYOMEICD
                                    MOVE    BYO-BYOMEI 
                                            TO  SPA-C02-IKOMOTO-BYOMEI
+                                   MOVE    BYO-HAISIYMD 
+                                           TO  SPA-C02-IKOMOTO-HAISIYMD
                                    MOVE    BYO-IKOSAKICD
                                            TO  BYO-BYOMEICD
                                    PERFORM 900-BYOMEI-READ-SEC
@@ -5273,6 +5274,10 @@ grpsys             MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
                                                             (IDZ IDXX)
                                                        TO
                                                SPA-C02-IKOMOTO-BYOMEI
+                                   MOVE    SPA-NAI-C02-HAISIYMD-O
+                                                            (IDZ IDXX)
+                                                       TO
+                                               SPA-C02-IKOMOTO-HAISIYMD
                                    MOVE    IDZ         TO
                                                SPA-C02-IKOSAKI-INDEX                    
       *
@@ -5314,6 +5319,10 @@ grpsys             MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
                            MOVE    SPA-NAI-C02-BYOMEI-O (IDZ 1)
                                                    TO
                                                SPA-C02-IKOMOTO-BYOMEI
+                           MOVE    SPA-NAI-C02-HAISIYMD-O
+                                                        (IDZ 1)
+                                                       TO
+                                               SPA-C02-IKOMOTO-HAISIYMD
                            MOVE    IDZ             TO
                                                SPA-C02-IKOSAKI-INDEX  
       *                  
@@ -5353,6 +5362,9 @@ grpsys             MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
                            MOVE    SPA-NAI-C02-BYOMEI   (IDZ)
                                                    TO
                                                SPA-C02-IKOMOTO-BYOMEI
+                           MOVE    SPA-NAI-C02-HAISIYMD (IDZ)
+                                                   TO
+                                               SPA-C02-IKOMOTO-HAISIYMD
                            MOVE    BYO-BYOMEICD    TO
                                                SPA-C02-IKOSAKI-BYOMEICD
                            MOVE    BYO-BYOMEI      TO
@@ -5373,6 +5385,9 @@ grpsys             MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
                            MOVE    SPA-NAI-C02-BYOMEI   (IDZ)
                                                TO
                                                SPA-C02-IKOMOTO-BYOMEI
+                           MOVE    SPA-NAI-C02-HAISIYMD (IDZ)
+                                               TO
+                                               SPA-C02-IKOMOTO-HAISIYMD
                            MOVE    IDZ         TO
                                                SPA-C02-IKOSAKI-INDEX                    
                            INITIALIZE              SYNONYM-REC
@@ -5445,6 +5460,8 @@ grpsys         MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
                                            TO  SPA-C02-IKOMOTO-BYOMEICD
                                MOVE    BYO-BYOMEI 
                                            TO  SPA-C02-IKOMOTO-BYOMEI
+                               MOVE    BYO-HAISIYMD
+                                           TO  SPA-C02-IKOMOTO-HAISIYMD
                                MOVE    BYO-IKOSAKICD   TO  BYO-BYOMEICD
                                PERFORM 900-BYOMEI-READ-SEC
                                IF      FLG-BYOMEI          =   ZERO
@@ -5476,10 +5493,12 @@ grpsys         MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
                                                             (IDZ IDXX)
                                                TO
                                                SPA-C02-IKOMOTO-BYOMEICD
-                               MOVE    SPA-NAI-C02-BYOMEI-O
-                                                            (IDZ IDXX)
+                               MOVE    SPA-NAI-C02-BYOMEI-O (IDZ IDXX)
                                                TO
                                                SPA-C02-IKOMOTO-BYOMEI
+                               MOVE    SPA-NAI-C02-HAISIYMD-O (IDZ IDXX)
+                                               TO
+                                               SPA-C02-IKOMOTO-HAISIYMD
                                MOVE    IDZ     TO
                                                SPA-C02-IKOSAKI-INDEX                    
                                INITIALIZE              SYNONYM-REC
@@ -5517,6 +5536,8 @@ grpsys         MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
                                            TO  SPA-C02-IKOMOTO-BYOMEICD
                        MOVE    SPA-NAI-C02-BYOMEI-O   (IDZ 1)
                                            TO  SPA-C02-IKOMOTO-BYOMEI
+                       MOVE    SPA-NAI-C02-HAISIYMD-O (IDZ 1)
+                                           TO  SPA-C02-IKOMOTO-HAISIYMD
                        MOVE    IDZ         TO  SPA-C02-IKOSAKI-INDEX                    
                        INITIALIZE              SYNONYM-REC
                        MOVE    SPA-NAI-C02-BYOMEI (IDZ)
@@ -5590,6 +5611,10 @@ grpsys         MOVE    SPA-HOSPNUM          TO  USBYO-HOSPNUM
                                                        TO  WRK-BYOMEI
                            MOVE    IDY                 TO
                                                SPA-C02-CHANGE-INDEX-ST
+                           IF      IDY                 =   6
+                               MOVE    IDY                 TO
+                                               SPA-C02-CHANGE-INDEX-ED
+                           END-IF
                        END-IF
                    ELSE
                        MOVE    IDY                 TO
@@ -6948,6 +6973,8 @@ grpsys                                       SPA-AREA
                                            TO  SPA-C02-IKOMOTO-BYOMEICD
                        MOVE    SPA-NAI-C02-BYOMEI   (1)
                                            TO  SPA-C02-IKOMOTO-BYOMEI
+      *****            MOVE    SPA-NAI-C02-HAISIYMD (1)
+      *****                                TO  SPA-C02-IKOMOTO-HAISIYMD
                        MOVE    SYNONYM-BYOMEICD
                                            TO  SPA-C02-IKOSAKI-BYOMEICD
                        MOVE    BYO-BYOMEI  TO  SPA-C02-IKOSAKI-BYOMEI
@@ -6974,6 +7001,8 @@ grpsys                                       SPA-AREA
                                            TO  SPA-C02-IKOMOTO-BYOMEICD
                                    MOVE    SPA-NAI-C02-BYOMEI   (IDX)
                                            TO  SPA-C02-IKOMOTO-BYOMEI
+                                   MOVE    SPA-NAI-C02-HAISIYMD (IDX)
+                                           TO  SPA-C02-IKOMOTO-HAISIYMD
                                    MOVE    SYNONYM-BYOMEICD
                                            TO  SPA-C02-IKOSAKI-BYOMEICD
                                    MOVE    BYO-BYOMEI
@@ -7001,6 +7030,8 @@ grpsys                                       SPA-AREA
                                            TO  SPA-C02-IKOMOTO-BYOMEICD
                        MOVE    SPA-NAI-C02-BYOMEI   (IDX) 
                                            TO  SPA-C02-IKOMOTO-BYOMEI
+                       MOVE    SPA-NAI-C02-HAISIYMD (IDX)
+                                           TO  SPA-C02-IKOMOTO-HAISIYMD
                        MOVE    LNK-BYO-IKOSAKICD
                                            TO  SPA-C02-IKOSAKI-BYOMEICD
                        MOVE    LNK-BYO-IKOSAKICD-BYOMEI
@@ -11885,8 +11916,8 @@ grpsys                                          SPA-AREA
            MOVE    "C02"               TO  SPA-MOTOPG
            MOVE    "CID4"              TO  SPA-SAKIPG
       *
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "CID4"              TO  MCP-WINDOW.
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "CID4"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -11901,97 +11932,139 @@ grpsys                                          SPA-AREA
       *****************************************************************
        560-CIDSET6-SEC              SECTION.
       *
-           MOVE    SPACE               TO  SPA-CID6-FLG
-                                           WRK-CIDMSG
+           MOVE    SPACE           TO  SPA-CID6-FLG
+                                       WRK-CIDMSG
+      *
+           INITIALIZE                  CID6
       *
            EVALUATE    SPA-CIDCD6
                WHEN    "0101"
                WHEN    "0103"
-                   STRING  "入力された病名は移行病名の扱い"
-                                       DELIMITED  BY  SIZE
-                  "となっていますが、別のコードでの組み立てが可能です"
-                                       DELIMITED  BY  SIZE
-                                       INTO    WRK-CIDMSG
+                   STRING
+                       "入力された病名は"      DELIMITED   BY  SIZE 
+                       "移行病名の扱いとなっていますが、"
+                                               DELIMITED   BY  SIZE 
+                      "別のコードで登録が可能です"
+                                               DELIMITED   BY  SIZE
+                                               INTO    WRK-CIDMSG
                    END-STRING
                WHEN    "0104"
-                   STRING  "入力された自院病名の病名は移行病名の扱い"
-                                       DELIMITED  BY  SIZE
-                  "となっていますが、別のコードでの組み立てが可能です"
-                                       DELIMITED  BY  SIZE
-                                       INTO    WRK-CIDMSG
+                   STRING
+                       "入力された自院病名の病名は" 
+                                               DELIMITED   BY  SIZE 
+                       "移行病名の扱いとなっていますが、"
+                                               DELIMITED   BY  SIZE 
+                      "別のコードで登録が可能です"
+                                               DELIMITED   BY  SIZE
+                                               INTO    WRK-CIDMSG
                    END-STRING
                WHEN    "0102"
                WHEN    "0105"
                    STRING  "入力された病名は「傷病名コードの統一の推進"
-                                       DELIMITED  BY  SIZE
-                   "」による推奨病名がありますが、別のコードでの組み立"
-                                       DELIMITED  BY  SIZE
-                   "てが可能です"      DELIMITED  BY  SIZE
-                                       INTO    WRK-CIDMSG
+                                               DELIMITED  BY  SIZE
+                   "」による推奨病名がありますが、別のコードで登録が"
+                                               DELIMITED   BY  SIZE
+                   "可能です"                  DELIMITED   BY  SIZE
+                                               INTO    WRK-CIDMSG
                    END-STRING
                WHEN    "0106"
                    STRING  "入力された自院病名の病名は「傷病名コードの"
-                                       DELIMITED  BY  SIZE
+                                               DELIMITED   BY  SIZE
                    "統一の推進」による推奨病名がありますが、別のコード"
-                                       DELIMITED  BY  SIZE
-                   "での組み立てが可能です"      DELIMITED  BY  SIZE
-                                       INTO    WRK-CIDMSG
+                                               DELIMITED   BY  SIZE
+                   "で登録が可能です"          DELIMITED   BY  SIZE
+                                               INTO    WRK-CIDMSG
                    END-STRING
                WHEN    "0107"
                    STRING
                        "入力された病名は"      DELIMITED   BY  SIZE 
-                       WRK-HAISIYMDH           DELIMITED   BY  SIZE 
-                       "で廃止の扱いとなっていますが、"
+                       "廃止の扱いとなっていますが、"
                                                DELIMITED   BY  SIZE 
-                       "別のコードでの組み立てが可能です"
+                       "別のコードで登録が可能です"
                                                DELIMITED   BY  SIZE 
-                                       INTO    WRK-CIDMSG
+                                               INTO    WRK-CIDMSG
                    END-STRING
                WHEN    "0109"
                    STRING
                        "入力された自院病名の病名は"
                                                DELIMITED   BY  SIZE 
-                       WRK-HAISIYMDH           DELIMITED   BY  SIZE 
-                       "で廃止の扱いとなっていますが、"
+                       "廃止の扱いとなっていますが、"
                                                DELIMITED   BY  SIZE 
-                       "別のコードでの組み立てが可能です"
+                       "別のコードで登録が可能です"
                                                DELIMITED   BY  SIZE 
-                                       INTO    WRK-CIDMSG
+                                               INTO    WRK-CIDMSG
                    END-STRING
                WHEN    "0108"
                    STRING
                        "入力された自院病名の病名は"
                                                DELIMITED   BY  SIZE 
-                       "別のコードでの組み立てが可能です"
+                       "別のコードで登録が可能です"
                                                DELIMITED   BY  SIZE 
-                                       INTO    WRK-CIDMSG
+                                               INTO    WRK-CIDMSG
                    END-STRING
            END-EVALUATE
-           MOVE    SPACE               TO  WRK-HAISIYMDH
-      *
-           MOVE    SPACE               TO  CID6
            MOVE    WRK-CIDMSG          TO  CID6-MSG
+      *
            MOVE    SPA-C02-IKOMOTO-BYOMEICD
                                        TO  CID6-BYOMEICD1
            MOVE    SPA-C02-IKOMOTO-BYOMEI  
                                        TO  CID6-BYOMEI1
+      *
            EVALUATE    SPA-CIDCD6
-               WHEN    "0107"
                WHEN    "0108"
+                   MOVE    WIDGET-INSENSITIVE  TO  CID6-B10-STATE
+                   MOVE    "別のコードでの登録を行いますか"
+                                               TO  CID6-MSG1 
+               WHEN    "0107"
                WHEN    "0109"
                    MOVE    WIDGET-INSENSITIVE  TO  CID6-B10-STATE
-                   MOVE    "病名コードを置き換えますか"
+                   MOVE    "別のコードでの登録を行いますか"
                                                TO  CID6-MSG1 
+                   MOVE    "廃止年月日"        TO  CID6-HAISIYMD-H
+                   MOVE    WRK-HAISIYMDH       TO  CID6-HAISIYMD
                WHEN    OTHER
                    MOVE    SPA-C02-IKOSAKI-BYOMEICD
                                                TO  CID6-BYOMEICD2
                    MOVE    SPA-C02-IKOSAKI-BYOMEI
                                                TO  CID6-BYOMEI2
                    MOVE    WIDGET-NORMAL       TO  CID6-B10-STATE
-                   MOVE
-            "推奨する病名に置き換えますか、病名コードを置き換えますか"
-                                               TO  CID6-MSG1 
+                   IF      SPA-C02-IKOMOTO-HAISIYMD
+                                               >   ZERO
+                       MOVE    "廃止年月日"        TO  CID6-HAISIYMD-H
+                       MOVE    SPA-C02-IKOMOTO-HAISIYMD
+                                                   TO  WRK-SYMD
+                       PERFORM 5002-HIZUKE-HEN-SEC
+                       MOVE    LNK-DAY2-EDTYMD3    TO  CID6-HAISIYMD
+                   END-IF
+                   EVALUATE    SPA-CIDCD6
+                       WHEN    "0102"
+                       WHEN    "0105"
+                       WHEN    "0106"
+                           STRING
+                               "推奨する病名へ変更しますか、"
+                                                   DELIMITED   BY  SIZE  
+                               "別のコードでの登録を行いますか"
+                                                   DELIMITED   BY  SIZE  
+                                                   INTO  CID6-MSG1
+                           END-STRING 
+                           MOVE    "推奨する病名"  TO  CID6-LABEL1
+                           MOVE    "F10:推奨する病名へ変更"
+                                                   TO  CID6-B10-LABEL
+                       WHEN    OTHER
+                           STRING
+                               "移行先病名へ変更しますか、"
+                                                   DELIMITED   BY  SIZE  
+                               "別のコードでの登録を行いますか"
+                                                   DELIMITED   BY  SIZE  
+                                                   INTO  CID6-MSG1
+                           END-STRING 
+                           MOVE    "移行先病名"    TO  CID6-LABEL1
+                           MOVE    "F10:移行先病名へ変更"
+                                                   TO  CID6-B10-LABEL
+                   END-EVALUATE
            END-EVALUATE
+      *
+           MOVE    SPACE               TO  WRK-HAISIYMDH
       *
            MOVE    "B12"               TO  MCP-WIDGET
            MOVE    WIDGET-NORMAL       TO  CID6-B12-STATE
@@ -12018,12 +12091,13 @@ grpsys                                          SPA-AREA
                                        +   SPA-C02-CHANGE-MAX             
                        IF    ( SPA-C02-CHANGE-MAX  >   6  )
                        OR    ( IDX                 >   6  ) 
-                           STRING
-                               "置換え病名コードが表示できないため、"
+                           STRING  "別のコードで登録を行いたい場合、"
                                                DELIMITED   BY  SIZE 
-                               "該当の病名は単独で入力して置換え処理を"
+                               "置換病名コードが表示できないため"
                                                DELIMITED   BY  SIZE 
-                               "して下さい"    DELIMITED   BY  SIZE 
+                               "該当の病名を単独で入力して登録処理を"
+                                               DELIMITED   BY  SIZE 
+                               "行って下さい"  DELIMITED   BY  SIZE 
                                        INTO    CID6-MSG2
                            END-STRING
                            MOVE    WIDGET-INSENSITIVE
@@ -12032,9 +12106,9 @@ grpsys                                          SPA-AREA
                        END-IF
                    ELSE
                        IF      SPA-C02-CHANGE-MAX  >   6
-                           STRING  "病名コード置換えを選択した場合は"
+                           STRING  "別のコードで登録を行う場合は"
                                                DELIMITED   BY  SIZE 
-                                   "病名コード欄に表示しません"
+                                   "病名コード欄に表示を行いません"
                                                DELIMITED   BY  SIZE 
                                        INTO    CID6-MSG2
                            END-STRING
@@ -12052,12 +12126,91 @@ grpsys                                          SPA-AREA
            PERFORM VARYING IDX FROM    2   BY  1
                    UNTIL   IDX >       SPA-C02-CHANGE-MAX
                STRING  WRK-BYOMEI                  DELIMITED   BY  SPACE
-                       "　"                        DELIMITED   BY  SIZE
                        SPA-C02-CHANGE-BYOMEI (IDX) DELIMITED   BY  SPACE
                                        INTO    WRK-BYOMEI
                END-STRING
            END-PERFORM
            MOVE    WRK-BYOMEI          TO  CID6-BYOMEI10
+      *
+           MOVE    SPACE               TO  WRK-BYOMEI
+           PERFORM VARYING IDX FROM    SPA-C02-CHANGE-INDEX-ST
+                                       BY  1
+                   UNTIL   IDX >       SPA-C02-CHANGE-INDEX-ED
+               STRING  WRK-BYOMEI          DELIMITED   BY  SPACE
+                       SPA-NAI-C02-BYOMEI(IDX)
+                                           DELIMITED   BY  SPACE
+                                           INTO    WRK-BYOMEI
+                END-STRING
+           END-PERFORM
+           MOVE    WRK-BYOMEI          TO  CID6-H-BYOMEI1
+           MOVE    "blue"              TO  CID6-H-BYOMEI1-STYLE
+      *
+           EVALUATE    SPA-CIDCD6
+               WHEN    "0107"
+               WHEN    "0108"
+               WHEN    "0109"
+                   CONTINUE
+               WHEN    "0104"
+               WHEN    "0106"
+                   MOVE    SPACE               TO  WRK-BYOMEI
+                   PERFORM VARYING IDX FROM    SPA-C02-CHANGE-INDEX-ST
+                                               BY  1
+                           UNTIL   IDX >       SPA-C02-CHANGE-INDEX-ED
+                       IF      IDX         =   SPA-C02-IKOSAKI-INDEX
+                           PERFORM VARYING IDX2    FROM    1   BY  1
+                                   UNTIL   IDX2    >       21
+                                   OR      SPA-NAI-C02-BYOMEICD-O
+                                                           (IDX IDX2)
+                                               =   SPACE
+                               IF      IDX2        =
+                                                SPA-C02-IKOSAKI-INDEX1
+                                   STRING  WRK-BYOMEI
+                                                   DELIMITED   BY  SPACE
+                                           SPA-C02-IKOSAKI-BYOMEI
+                                                   DELIMITED   BY  SPACE
+                                                   INTO    WRK-BYOMEI
+                                   END-STRING
+                               ELSE
+                                   STRING  WRK-BYOMEI
+                                                   DELIMITED   BY  SPACE
+                                           SPA-NAI-C02-BYOMEI-O
+                                                           (IDX IDX2)
+                                                   DELIMITED   BY  SPACE
+                                                   INTO    WRK-BYOMEI
+                                   END-STRING
+                               END-IF 
+                           END-PERFORM
+                       ELSE
+                           STRING  WRK-BYOMEI      DELIMITED   BY  SPACE
+                                   SPA-NAI-C02-BYOMEI (IDX)
+                                                   DELIMITED   BY  SPACE
+                                                   INTO    WRK-BYOMEI
+                           END-STRING
+                       END-IF  
+                   END-PERFORM
+                   MOVE    WRK-BYOMEI          TO  CID6-H-BYOMEI2
+               WHEN    OTHER
+                   MOVE    SPACE               TO  WRK-BYOMEI
+                   PERFORM VARYING IDX FROM    SPA-C02-CHANGE-INDEX-ST
+                                               BY  1
+                           UNTIL   IDX >       SPA-C02-CHANGE-INDEX-ED
+                       IF      IDX         =   SPA-C02-IKOSAKI-INDEX
+                           STRING  WRK-BYOMEI      DELIMITED   BY  SPACE
+                                   SPA-C02-IKOSAKI-BYOMEI
+                                                   DELIMITED   BY  SPACE
+                                                   INTO    WRK-BYOMEI
+                           END-STRING
+                       ELSE
+                           STRING  WRK-BYOMEI      DELIMITED   BY  SPACE
+                                   SPA-NAI-C02-BYOMEI (IDX)
+                                                   DELIMITED   BY  SPACE
+                                                   INTO    WRK-BYOMEI
+                           END-STRING
+                       END-IF  
+                   END-PERFORM
+                   MOVE    WRK-BYOMEI          TO  CID6-H-BYOMEI2
+           END-EVALUATE
+           MOVE    "blue"              TO  CID6-H-BYOMEI2-STYLE
       *
            MOVE    "C02"               TO  SPA-MOTOPG
            MOVE    "CID6"              TO  SPA-SAKIPG

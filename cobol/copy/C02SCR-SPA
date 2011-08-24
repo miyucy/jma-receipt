@@ -466,6 +466,8 @@
                            11  SPA-C02-IKOMOTO-BYOMEICD
                                                        PIC X(07).
                            11  SPA-C02-IKOMOTO-BYOMEI  PIC X(200).
+                           11  SPA-C02-IKOMOTO-HAISIYMD
+                                                       PIC 9(08).
       *
       *            病名コード廃止表示用領域
                        09  SPA-C02-HAISI-AREA.
@@ -637,6 +639,8 @@
                            11  SPA-C03-IKOMOTO-BYOMEICD
                                                        PIC X(07).
                            11  SPA-C03-IKOMOTO-BYOMEI  PIC X(200).
+                           11  SPA-C03-IKOMOTO-HAISIYMD
+                                                       PIC X(22).
       *
       *                病名コード廃止表示用領域
                        09  SPA-C03-HAISI-AREA.
@@ -724,6 +728,8 @@
                        09  SPA-C04-IKOMOTO-BYOMEICD
                                                    PIC X(07).
                        09  SPA-C04-IKOMOTO-BYOMEI  PIC X(200).
+                       09  SPA-C04-IKOMOTO-HAISIYMD
+                                                   PIC 9(08).
       *
       *            病名コード置き換え用領域
                    07  SPA-C04-CHANGE-AREA. 
@@ -785,8 +791,9 @@
                            11  SPA-C05-IKOSAKI-BYOMEICD    PIC X(07).
                            11  SPA-C05-IKOSAKI-BYOMEI      PIC X(200).
                            11  SPA-C05-IKOSAKI-INDEX       PIC 9(02).  
-                           11  SPA-C05-IKOMOTO-BYOMEICD   PIC X(07).
+                           11  SPA-C05-IKOMOTO-BYOMEICD    PIC X(07).
                            11  SPA-C05-IKOMOTO-BYOMEI      PIC X(200).
+                           11  SPA-C05-IKOMOTO-HAISIYMD    PIC X(22).
       *
       *                病名コード置き換え用領域
                        09  SPA-C05-CHANGE-AREA.

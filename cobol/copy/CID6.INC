@@ -18,16 +18,29 @@
         02  CID6.
               03  CID6-B10-STATE
                                 PIC S9(9)   BINARY.
+              03  CID6-B10-LABEL PIC X(22).
               03  CID6-B12-STATE
                                 PIC S9(9)   BINARY.
+              03  CID6-H-BYOMEI1-STYLE   PIC X(20).
+              03  CID6-H-BYOMEI1.
+                04  CID6-VALUE  PIC X(70).
+              03  CID6-HAISIYMD-H.
+                04  CID6-VALUE  PIC X(10).
+              03  CID6-HAISIYMD.
+                04  CID6-VALUE  PIC X(22).
               03  CID6-BYOMEICD1.
                 04  CID6-VALUE  PIC X(10).
               03  CID6-BYOMEI1.
+                04  CID6-VALUE  PIC X(60).
+              03  CID6-LABEL1.
+                04  CID6-VALUE  PIC X(12).
+              03  CID6-H-BYOMEI2-STYLE   PIC X(20).
+              03  CID6-H-BYOMEI2.
                 04  CID6-VALUE  PIC X(70).
               03  CID6-BYOMEICD2.
                 04  CID6-VALUE  PIC X(10).
               03  CID6-BYOMEI2.
-                04  CID6-VALUE  PIC X(70).
+                04  CID6-VALUE  PIC X(60).
               03  CID6-MSG.
                 04  CID6-VALUE  PIC X(120).
               03  CID6-BYOMEICD PIC X(07)  OCCURS  6.
