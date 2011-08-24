@@ -77,7 +77,7 @@ path	all		{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE tbl_infection_judgment
+		UPDATE	tbl_infection_judgment
 				SET
 				ID      = :ID,
 				DISEASE      = :DISEASE,
