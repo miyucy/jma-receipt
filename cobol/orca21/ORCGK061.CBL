@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.00    NACL-多々納  11/08/XX  リハビリコメント終了日対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,6 +72,7 @@
            03  FLG-TBLOK           PIC 9(01).
            03  FLG-SANTEI-OK       PIC 9(01).
            03  FLG-SRY-OK          PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -80,6 +82,8 @@
            03  IDZ                 PIC 9(04).
            03  IDX2                PIC 9(02).
            03  IDXS                PIC 9(02).
+      *
+           03  IDX-C               PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -141,6 +145,11 @@
       *
            03  WRK-MIDASI             PIC X(160).
       *
+           03  WRK-END-YMD.
+               05  WRK-END-YM          PIC X(06).
+               05  WRK-END-DD          PIC X(02).
+           03  IDD                     PIC 9(02).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -158,6 +167,7 @@
                05  TBL-DAT-HKNCOMBI        PIC X(04).
                05  TBL-DAT-SRYYM           PIC X(06).
                05  TBL-DAT-FSANTEIYMD      PIC X(08).
+               05  TBL-DAT-MSANTEID        PIC X(02).
                05  TBL-DAT-DAY-G.
                    07  TBL-DAT-DAY         PIC 9(03)
                                               OCCURS   31.
@@ -165,6 +175,9 @@
                05  TBL-DAT-SYORIKBN        PIC X(01).
                05  TBL-DAT-CHKKBN          PIC X(01).
                05  TBL-DAT-SANTEIPLUS      PIC X(01).
+      *
+               05  TBL-DAT-ENDYMD          PIC X(08).
+               05  TBL-DAT-ENDFLG          PIC X(01).
       *
       *移行算定履歴作成
        01  TBL-IKOU-SRYCD-G.
@@ -188,26 +201,44 @@
        01  TBL-RRK-SRYCD-G.
       *    心大血管疾患リハビリ開始日
            03  FILLER          PIC X(09)   VALUE  "099800111".
+      *    心大血管疾患リハビリ終了日
+           03  FILLER          PIC X(09)   VALUE  "099800112".
       *    脳血管疾患リハビリ開始日
            03  FILLER          PIC X(09)   VALUE  "099800121".
+      *    脳血管疾患リハビリ終了日
+           03  FILLER          PIC X(09)   VALUE  "099800122".
       *    運動器リハビリ開始日
            03  FILLER          PIC X(09)   VALUE  "099800131".
+      *    運動器リハビリ終了日
+           03  FILLER          PIC X(09)   VALUE  "099800132".
       *    呼吸器リハビリ開始日
            03  FILLER          PIC X(09)   VALUE  "099800141".
+      *    呼吸器リハビリ終了日
+           03  FILLER          PIC X(09)   VALUE  "099800142".
       *    摂食機能リハビリ開始日
            03  FILLER          PIC X(09)   VALUE  "099800151".
+      *    摂食機能リハビリ終了日
+           03  FILLER          PIC X(09)   VALUE  "099800152".
       *    難病患者リハビリ開始日
            03  FILLER          PIC X(09)   VALUE  "099800161".
+      *    難病患者リハビリ終了日
+           03  FILLER          PIC X(09)   VALUE  "099800162".
       *    障害児リハビリ開始日
            03  FILLER          PIC X(09)   VALUE  "099800171".
+      *    障害児リハビリ終了日
+           03  FILLER          PIC X(09)   VALUE  "099800172".
       *    がん患者リハビリ開始日
            03  FILLER          PIC X(09)   VALUE  "099800181".
+      *    がん患者リハビリ終了日
+           03  FILLER          PIC X(09)   VALUE  "099800182".
       *    他医院退院日
            03  FILLER          PIC X(09)   VALUE  "099999906".
+           03  FILLER          PIC X(09)   VALUE  SPACE.
       *
        01  TBL-RRK-SRYCD-GR    REDEFINES   TBL-RRK-SRYCD-G.
-           03  TBL-RRK-SRYCD           PIC X(09)
-                                       OCCURS    9.
+           03  TBL-RRK-SRYCD-GT        OCCURS    9.
+               05  TBL-RRK-SRYCD           PIC X(09).
+               05  TBL-END-SRYCD           PIC X(09).
        01  TBL-RRK-MAX                 PIC 9(02)   VALUE   9.
       *
       *
@@ -450,6 +481,7 @@
                    END-IF
       *        登録確認
                WHEN    "0102"
+               WHEN    "0103"
                    IF      SPA-KID1-FLG        =   "OK"
       *                登録処理
                        PERFORM 4501-TOUROKU-SYORI-SEC
@@ -780,6 +812,7 @@
            MOVE    SANTEI-HKNCOMBINUM  TO  TBL-DAT-HKNCOMBI (IDX)
            MOVE    SANTEI-SRYYM        TO  TBL-DAT-SRYYM (IDX)
            MOVE    SANTEI-FSANTEIYMD   TO  TBL-DAT-FSANTEIYMD (IDX)
+           MOVE    SANTEI-MSANTEID     TO  TBL-DAT-MSANTEID  (IDX)
            MOVE    SANTEI-DAY-AREA     TO  TBL-DAT-DAY-G (IDX)
       *    最終日
            MOVE    TBL-DAT-SRYYM (IDX)
@@ -993,6 +1026,20 @@
                IF      TBL-DAT-SANTEIPLUS (IDX)    =   "1"
                    MOVE    "コ"            TO  SPA-K061-TKBNMEI2(IDX)
                END-IF
+      *        リハビリコメント終了日
+               MOVE    TBL-DAT-ENDYMD(IDX)
+                                           TO  SPA-K061-TENDYMD (IDX)
+               IF      SPA-K061-TENDYMD (IDX)  =   SPACE
+                   MOVE    SPACE               TO  SPA-K061-TENDYMDG
+                                                                  (IDX)
+               ELSE
+                   MOVE    SPA-K061-TENDYMD (IDX)  TO  WRK-SYMD
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    WRK-HENYMDG         TO  SPA-K061-TENDYMDG
+                                                                  (IDX)
+               END-IF
+               MOVE    TBL-DAT-ENDFLG(IDX)
+                                           TO  SPA-K061-TENDFLG (IDX)
            END-PERFORM
            .
        31021-SPATBL-HENSYU-EXT.
@@ -1084,19 +1131,16 @@
            PERFORM
                    UNTIL       (FLG-SANTEI     =   1    )
       *        テーブル編集
-      **       IF      SANTEI-MSANTEICNT   >   ZERO
-                   ADD     1                   TO  IDX
-                   MOVE    SANTEI-SRYCD        TO  TBL-DAT-SRYCD
+               ADD     1                   TO  IDX
+               MOVE    SANTEI-SRYCD        TO  TBL-DAT-SRYCD  (IDX)
+               MOVE    SANTEI-HKNCOMBINUM  TO  TBL-DAT-HKNCOMBI
                                                                (IDX)
-                   MOVE    SANTEI-HKNCOMBINUM  TO  TBL-DAT-HKNCOMBI
-                                                               (IDX)
-                   MOVE    SANTEI-SRYYM        TO  TBL-DAT-SRYYM
+               MOVE    SANTEI-SRYYM        TO  TBL-DAT-SRYYM   (IDX)
+               MOVE    SANTEI-FSANTEIYMD   TO  TBL-DAT-FSANTEIYMD
                                                                 (IDX)
-                   MOVE    SANTEI-FSANTEIYMD   TO  TBL-DAT-FSANTEIYMD
-                                                                (IDX)
-                   MOVE    SANTEI-DAY-AREA     TO  TBL-DAT-DAY-G
-                                                                (IDX)
-                   MOVE    1                   TO  FLG-SANTEI-OK
+               MOVE    SANTEI-MSANTEID     TO  TBL-DAT-MSANTEID (IDX)
+               MOVE    SANTEI-DAY-AREA     TO  TBL-DAT-DAY-G   (IDX)
+               MOVE    1                   TO  FLG-SANTEI-OK
       *        テーブル編集
                IF      SANTEI-MSANTEICNT   >   ZERO
       *            診療行為有無判定
@@ -1104,6 +1148,49 @@
       *            コメント登録判定
                    PERFORM 31032-SANTEIPLUS-CHK-SEC
                END-IF
+      *
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key12"             TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key12"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *!!!!
+      *    リハビリ終了日算定履歴検索
+           IF      TBL-END-SRYCD (IDY) =   SPACE
+               GO      TO      31031-SANTEI-INIHEN-EXT
+           END-IF
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    TBL-END-SRYCD (IDY) TO  SANTEI-SRYCD
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key12"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key12"             TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           PERFORM
+                   UNTIL       (FLG-SANTEI     =   1    )
+      *        対象開始日判定
+               MOVE    SPACE               TO  WRK-END-YMD
+               MOVE    SANTEI-SRYYM        TO  WRK-END-YM
+               PERFORM VARYING     IDD     FROM    31  BY  -1
+                       UNTIL       IDD     <   1
+      *            最終日で判定
+                   IF      SANTEI-DAY (IDD)    >   ZERO
+                       MOVE    IDD             TO  WRK-END-DD
+                       PERFORM 31033-ENDYMD-HEN-SEC
+                       MOVE    1               TO  IDD
+                   END-IF
+               END-PERFORM
       *
                MOVE    "tbl_santei"        TO  MCP-TABLE
                MOVE    "key12"             TO  MCP-PATHNAME
@@ -1358,9 +1445,44 @@
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-SANTEIPLUS      =   ZERO
                MOVE    "1"                 TO  TBL-DAT-SANTEIPLUS (IDX)
+               IF      SANTEIPLUS-RENNUM   =   ZERO
+                   MOVE    SANTEIPLUS-ENDYMD   TO  TBL-DAT-ENDYMD (IDX)
+                   MOVE    "1"                 TO  TBL-DAT-ENDFLG (IDX)
+               END-IF
            END-IF
            .
        31032-SANTEIPLUS-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    リハビリ終了日編集処理
+      *****************************************************************
+       31033-ENDYMD-HEN-SEC          SECTION.
+      *
+           PERFORM VARYING    IDX-C    FROM    1  BY  1
+                   UNTIL     (IDX-C    >   IDX  )
+               MOVE    ZERO                TO  FLG-CHK
+               IF     (TBL-RRK-SRYCD (IDY) =   TBL-DAT-SRYCD (IDX-C))
+               AND    (TBL-DAT-HKNCOMBI(IDX-C) =   SANTEI-HKNCOMBINUM)
+               AND    (TBL-DAT-SRYYM (IDX-C)   <=  SANTEI-SRYYM     )
+               AND   ((TBL-DAT-ENDYMD(IDX-C)   =   SPACE )  OR
+                      (TBL-DAT-ENDFLG(IDX-C)   =   "1"   ))
+                   IF      TBL-DAT-SRYYM(IDX-C)    =   SANTEI-SRYYM
+      *                同月算定の時、初回日より後であること
+                       IF      TBL-DAT-MSANTEID (IDX-C) <  WRK-END-DD
+                            MOVE    1              TO  FLG-CHK
+                       END-IF
+                   ELSE
+                       MOVE    1                   TO  FLG-CHK
+                   END-IF
+                   IF      FLG-CHK             =   1
+                        MOVE    WRK-END-YMD    TO  TBL-DAT-ENDYMD(IDX-C)
+                        MOVE    "2"            TO  TBL-DAT-ENDFLG(IDX-C)
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       31033-ENDYMD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1484,6 +1606,19 @@
                   (SPA-K061-KBN2       =   "2"  )
                MOVE    SPA-K061-NAI-LSTYMD     TO  SPA-K061-LSTYMD
                MOVE    SPA-K061-NAI-LSTYMDG    TO  SPA-K061-LSTYMDG
+           END-IF
+      *!
+      *    終了日付
+           IF     (SPA-K061-KBN        =   "1" )  AND
+                  (SPA-K061-KBN2       =   "1" )
+               MOVE    SPA-K061-TENDFLG (SPA-K061-SELNUM)
+                                           TO  SPA-K061-NAI-ENDFLG
+               IF      SPA-K061-TENDFLG (SPA-K061-SELNUM)  NOT =   "2"
+                   MOVE    SPA-K061-TENDYMD (SPA-K061-SELNUM)
+                                               TO  SPA-K061-ENDYMD
+                   MOVE    SPA-K061-TENDYMDG(SPA-K061-SELNUM)
+                                               TO  SPA-K061-LSTYMDG
+               END-IF
            END-IF
       *
            IF      SPA-K061-KBN        =   "1"
@@ -1792,7 +1927,12 @@
            END-IF
       *    最終来院日
            IF      SPA-ERRCD           =   SPACE
-               PERFORM 41012-LSTYMD-CHK-SEC
+               IF      (SPA-K061-KBN2      =   "1" )
+      *            リハビリ開始日は終了日
+                   PERFORM 41012-ENDYMD-CHK-SEC
+               ELSE
+                   PERFORM 41012-LSTYMD-CHK-SEC
+               END-IF
            END-IF
            .
        4102-KIHON-CHK-EXT.
@@ -2103,6 +2243,49 @@
            .
        41012-LSTYMD-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    終了日付チェック処理
+      *****************************************************************
+       41012-ENDYMD-CHK-SEC          SECTION.
+      *
+           IF    (SPA-K061-LSTYMDG     =   SPACE )
+               MOVE    SPACE               TO  SPA-K061-ENDYMD
+           ELSE
+               MOVE    SPA-K061-LSTYMDG    TO  WRK-YMD
+               MOVE    SPACE               TO  WRK-INTYPE
+               PERFORM 5002-HIZUKE-CHK-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    WRK-SYMD            TO  SPA-K061-ENDYMD
+                   MOVE    WRK-HENYMDG         TO  SPA-K061-LSTYMDG
+                   IF      SPA-K061-SANYMD     >   SPA-K061-ENDYMD
+      *            算定日以降
+                       MOVE    "0018"              TO  SPA-ERRCD
+                   END-IF
+      *
+                   IF     (SPA-ERRCD           =   SPACE )
+                   AND    (SPA-K061-TENDFLG (SPA-K061-SELNUM)  =   "2")
+                       IF     SPA-K061-TENDYMD (SPA-K061-SELNUM)
+                                               <   SPA-K061-ENDYMD
+      *                    リハビリ終了日以降
+                           MOVE    "0019"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+                   IF     (SPA-ERRCD           =   SPACE )
+                   AND    (SPA-K061-ENDYMD     <   "20100401")
+                       MOVE    "0020"              TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    "0017"               TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    7                   TO  SPA-K061-CUR
+           END-IF
+      *
+           .
+       41012-ENDYMD-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    戻る　処理
@@ -2110,6 +2293,7 @@
        210-BACK                    SECTION.
       *
            MOVE    "K06"               TO  SPA-SAKIPG
+      ***  MOVE    SPA-K061-MOTOPG     TO  SPA-SAKIPG
            MOVE    "K061"              TO  SPA-MOTOPG
       *
            MOVE    "CHANGE"            TO  MCP-PUTTYPE
@@ -2199,8 +2383,15 @@
                MOVE    2                   TO  SPA-K061-CUR
            END-IF
            IF      SPA-K061-SYORIKBN   =   "P"
-               MOVE    "0041"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-K061-CUR
+      *!!
+               IF      (SPA-K061-KBN       =   "1" )
+                  AND  (SPA-K061-KBN2      =   "1" )
+                  AND  (SPA-K061-TKAISU  (SPA-K061-SELNUM) =   1   )
+                   CONTINUE
+               ELSE
+                   MOVE    "0041"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-K061-CUR
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -2220,8 +2411,10 @@
       *
            IF      SPA-ERRCD           =   SPACE
                MOVE    "0102"          TO  SPA-KIDCD
+               IF      SPA-K061-SYORIKBN   =   "P"
+                   MOVE    "0103"          TO  SPA-KIDCD
+               END-IF
            END-IF
-      *
            .
        450-TOUROKU-EXT.
            EXIT.
@@ -2230,6 +2423,16 @@
       *    算定履歴登録処理
       *****************************************************************
        4501-TOUROKU-SYORI-SEC                SECTION.
+      *
+           IF      SPA-K061-SYORIKBN   =   "P"
+      *        診療行為登録分は、リハビリ終了日のみ更新
+               PERFORM 4502-SANTEIPLUS-ADD-SEC
+               IF      SPA-ERRCD           =   SPACE
+      *            一覧初期表示
+                   PERFORM 310-SPASET-SEC
+               END-IF
+               GO      TO      450-TOUROKU-EXT
+           END-IF
       *
       *    登録処理
            IF      SPA-K061-SELNUM     >   ZERO
@@ -2245,6 +2448,15 @@
       *        登録処理
                PERFORM 4502-SANTEI-ADD-SEC
            END-IF
+      *ver.4.7
+           IF     (SPA-ERRCD           =   SPACE )
+      *        終了日付登録処理
+           AND    (SPA-K061-KBN         =   "1"  )
+           AND    (SPA-K061-KBN2        =   "1"  )
+           AND    (SPA-K061-KBN2        =   "1"  )
+               PERFORM 4502-SANTEIPLUS-ADD-SEC
+           END-IF
+      *
       *    初診ダミーは診療科履歴更新
            IF      SPA-K061-KBN2       =   "2"
                MOVE    SPA-K061-SANYMD(1:6)    TO  WRK-SRYYM
@@ -2528,6 +2740,7 @@
            MOVE    SMCNDATE-YMD        TO  SANTEI-CREYMD
            MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
            MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
+           MOVE    SPA-OPID            TO  SANTEI-OPID
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -2543,6 +2756,171 @@
       *
           .
        4502-SANTEI-ADD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    登録　処理
+      *****************************************************************
+       4502-SANTEIPLUS-ADD-SEC                SECTION.
+      *
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    SPA-K061-SANYMD(1:6)
+                                       TO  SANTEI-SRYYM
+           MOVE    SPA-K061-SRYCD      TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           IF      SPA-K061-HKNCOMBI   =   SPACE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    SPA-K061-HKNCOMBI   TO  SANTEI-HKNCOMBINUM
+           END-IF
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SANTEI          =   1
+               MOVE    "XXXX"              TO  SPA-ERRCD
+               GO      TO      4502-SANTEIPLUS-ADD-EXT
+           END-IF
+      *
+           INITIALIZE                  SANTEIPLUS-REC
+           MOVE    SANTEI-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
+           MOVE    SANTEI-PTID         TO  SANTEIPLUS-PTID
+           MOVE    SANTEI-SRYCD        TO  SANTEIPLUS-SRYCD
+           MOVE    SANTEI-SRYYM        TO  SANTEIPLUS-SRYYM
+           MOVE    SANTEI-SRYKA        TO  SANTEIPLUS-SRYKA
+           MOVE    SANTEI-NYUGAIKBN    TO  SANTEIPLUS-NYUGAIKBN
+           MOVE    SANTEI-HKNCOMBINUM  TO  SANTEIPLUS-HKNCOMBINUM
+           MOVE    SANTEI-MSANTEID     TO  SANTEIPLUS-DAYKEY
+           MOVE    ZERO                TO  SANTEIPLUS-RENNUM
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-SANTEIPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SANTEIPLUS      =   ZERO
+               IF      SPA-K061-ENDYMD     =   SPACE
+      *            削除
+                   PERFORM 45023-SANTEIPLUS-END-DEL-SEC
+               ELSE
+      *            更新
+                   IF      SANTEIPLUS-ENDYMD   NOT =   SPA-K061-ENDYMD
+                       PERFORM 45022-SANTEIPLUS-END-UPD-SEC
+                   END-IF
+               END-IF
+           ELSE
+      *        新規
+               IF      SPA-K061-ENDYMD NOT =   SPACE
+                   PERFORM 45021-SANTEIPLUS-END-INS-SEC
+               END-IF
+           END-IF
+      *
+          .
+       4502-SANTEIPLUS-ADD-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴付加情報登録処理
+      *****************************************************************
+       45021-SANTEIPLUS-END-INS-SEC         SECTION.
+      *
+           INITIALIZE                  SANTEIPLUS-REC
+           MOVE    SANTEI-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
+           MOVE    SANTEI-PTID         TO  SANTEIPLUS-PTID
+           MOVE    SANTEI-SRYCD        TO  SANTEIPLUS-SRYCD
+           MOVE    SANTEI-SRYYM        TO  SANTEIPLUS-SRYYM
+           MOVE    SANTEI-SRYKA        TO  SANTEIPLUS-SRYKA
+           MOVE    SANTEI-NYUGAIKBN    TO  SANTEIPLUS-NYUGAIKBN
+           MOVE    SANTEI-HKNCOMBINUM  TO  SANTEIPLUS-HKNCOMBINUM
+           MOVE    SANTEI-MSANTEID     TO  SANTEIPLUS-DAYKEY
+           MOVE    ZERO                TO  SANTEIPLUS-RENNUM
+           MOVE    SPA-K061-ENDYMD     TO  SANTEIPLUS-ENDYMD
+      *
+           MOVE    SPA-OPID            TO  SANTEIPLUS-OPID
+      *
+           MOVE    SMCNDATE-YMD        TO  SANTEIPLUS-CREYMD
+           MOVE    SMCNDATE-YMD        TO  SANTEIPLUS-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SANTEIPLUS-UPHMS
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_santeiplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO 
+               MOVE    "1001"              TO  SPA-ERRCD
+               DISPLAY "K061 INS SANTEIPLUS-KEY =>" SANTEIPLUS-KEY 
+           END-IF
+          .
+       45021-SANTEIPLUS-END-INS-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴付加情報更新処理
+      *****************************************************************
+       45022-SANTEIPLUS-END-UPD-SEC         SECTION.
+      *
+           MOVE    SPA-K061-ENDYMD     TO  SANTEIPLUS-ENDYMD
+      *
+           MOVE    SPA-OPID            TO  SANTEIPLUS-OPID
+           MOVE    SMCNDATE-YMD        TO  SANTEIPLUS-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SANTEIPLUS-UPHMS
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "tbl_santeiplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO 
+               MOVE    "1001"              TO  SPA-ERRCD
+               DISPLAY "K061 UPD SANTEIPLUS-KEY =>" SANTEIPLUS-KEY 
+           END-IF
+          .
+       45022-SANTEIPLUS-END-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴付加情報削除処理
+      *****************************************************************
+       45023-SANTEIPLUS-END-DEL-SEC         SECTION.
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_santeiplus"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO 
+               MOVE    "1001"              TO  SPA-ERRCD
+               DISPLAY "K061 DEL SANTEIPLUS-KEY =>" SANTEIPLUS-KEY 
+           END-IF
+          .
+       45023-SANTEIPLUS-END-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2633,7 +3011,16 @@
            MOVE    SPA-K061-SANYMD(1:6)
                                        TO  SPA-K062-SRYYM
            MOVE    SPA-K061-HKNCOMBI   TO  SPA-K062-HKNCOMBI
+      *    リハビリ終了日算定日
+           IF     (SPA-K061-TENDFLG (SPA-K061-SELNUM)  =   "2")
+               MOVE    SPA-K061-TENDYMD (SPA-K061-SELNUM)
+                                           TO  SPA-K062-RRKENDYMD
+               MOVE    "リハビリ終了日"    TO  SPA-K062-MIDASI2
+               MOVE    SPA-K061-TENDYMDG(SPA-K061-SELNUM)
+                                           TO  SPA-K062-MSGENDYMD
+           END-IF
            MOVE    "K061"              TO  SPA-K062-MOTOPG
+      *
       *    初期画面セット
            MOVE    SPACE               TO  LINKAREA
       *
@@ -2673,11 +3060,11 @@
            EXIT.
       *
       *****************************************************************
-      *    前頁　処理
+      *    診療年月の算定履歴月へ処理
       *****************************************************************
        4100-K06-SYORI-SEC               SECTION.
       *
-      *    登録処理
+      *    算定履歴画面へ
            IF     (SPA-K061-SELNUM     >   ZERO      AND
                                        <=  SPA-K061-MAX )   AND
                   (SPA-K061-TSRYYM (SPA-K061-SELNUM)
@@ -2817,6 +3204,12 @@
                MOVE    SPA-K061-TKAISU   (IDX) TO  WRK-Z9
                MOVE    WRK-Z9                  TO  K061-TKAISU(IDX)
                MOVE    SPA-K061-TKBNMEI  (IDX) TO  K061-TKUBUN    (IDX)
+      *ver.4.7
+               MOVE    SPA-K061-TENDYMDG (IDX) TO  K061-TENDYMD   (IDX)
+               IF      SPA-K061-TENDFLG (IDX)  =   "2"
+                   MOVE    "（診）"            TO  K061-TENDYMD (IDX)
+                                                                  (10:)
+               END-IF
                IF      IDX               =   SPA-K061-SELNUM
                    MOVE    "T"           TO  K061-RRKLIST-SELECT(IDX)
                ELSE
@@ -2869,6 +3262,15 @@
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  K061-LSTYMD-STATE
                MOVE    SPACE               TO  K061-MIDASI2
+           END-IF
+      *
+           IF     (SPA-K061-KBN         =   "1"  )
+           AND    (SPA-K061-KBN2        =   "1"  )
+      *        リハビリ開始日で登録済みの時
+               IF      SPA-K061-TKAISU  (SPA-K061-SELNUM)  =   1
+                   MOVE    WIDGET-NORMAL       TO  K061-LSTYMD-STATE
+               END-IF
+               MOVE    "　終了日付"        TO  K061-MIDASI2
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -3012,6 +3414,23 @@
                WHEN    "0016"
                    MOVE    "最終来院日＜システム日付で入力して下さい。"
                                                        TO  SPA-ERRMSG
+               WHEN    "0017"
+                   MOVE    "終了日付暦日エラーです。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0018"
+                   MOVE    "算定日≦終了日付で入力して下さい。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0019"
+                   STRING  "リハビリテーション終了日が算定済みです。"
+                           "終了日付は算定日より前の日付のみ有効です。"
+                                               DELIMITED   BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0020"
+                   STRING  "終了日付はＨ２２年４月１日以降として下さい"
+                                               DELIMITED   BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0021"
                    MOVE    "保険組合せは入力できません。"
                                                    TO  SPA-ERRMSG
@@ -3126,6 +3545,12 @@
                WHEN    "0102"
                    STRING    "算定履歴を登録します。"
                              "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-KIDMSG
+                   END-STRING
+               WHEN    "0103"
+                   STRING    "診療行為から登録した算定履歴です。"
+                             "リハビリ終了日付のみ更新します。"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-KIDMSG
                    END-STRING

@@ -105,6 +105,7 @@
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
       *°Ü¹ÔÍúÎòÅÐÏ¿²èÌÌ¡Ê£Ë£°£¶£±¡Ë
+           03  SPA-K061-MOTOPG                PIC X(08).
            03  SPA-K061-GMN                   PIC 9(01).
            03  SPA-K061-AREA.
                05  SPA-K061-CUR               PIC 9(02).
@@ -123,6 +124,7 @@
                            11  SPA-K061-TKBNMEI1   PIC X(02).
                            11  SPA-K061-TKBNMEI2   PIC X(02).
                            11  SPA-K061-TKBNMEI3   PIC X(02).
+                       09  SPA-K061-TENDYMDG       PIC X(09).
       *
                        09  SPA-K061-TSRYYM         PIC X(06).
                        09  SPA-K061-TSANYMD        PIC X(08).
@@ -130,6 +132,8 @@
                        09  SPA-K061-THKNFLG        PIC X(01).
                        09  SPA-K061-TSYORIKBN      PIC X(01).
                        09  SPA-K061-TPLUSKBN       PIC X(01).
+                       09  SPA-K061-TENDYMD        PIC X(08).
+                       09  SPA-K061-TENDFLG        PIC X(01).
                    07  SPA-K061-MAX                PIC 9(03).
                05  SPA-K061-SELNUM             PIC 9(03).
       *
@@ -142,10 +146,12 @@
                    07  SPA-K061-HKNCOMBI       PIC X(04).
                    07  SPA-K061-HKNCOMBIMEI    PIC X(30).
                    07  SPA-K061-LSTYMDG        PIC X(11).
+                   07  SPA-K061-ENDYMDG        PIC X(11).
       *
                    07  SPA-K061-SANYMD         PIC X(08).
                    07  SPA-K061-SYOYMD         PIC X(08).
                    07  SPA-K061-LSTYMD         PIC X(08).
+                   07  SPA-K061-ENDYMD         PIC X(08).
                    07  SPA-K061-SYORIKBN       PIC X(01).
       *            ²ó¿ô·Ù¹ð
                    07  SPA-K061-KAISU-KEI      PIC 9(01).
@@ -167,6 +173,8 @@
                    07  SPA-K061-NAI-LSTYMD        PIC X(08).
                    07  SPA-K061-NAI-LSTYMDG       PIC X(09).
       *
+                   07  SPA-K061-NAI-ENDFLG        PIC X(01).
+      *
       *¥ê¥Ï¥Ó¥ê¥³¥á¥ó¥ÈÅÐÏ¿¡Ê£Ë£°£¶£²¡Ë
            03  SPA-K062-GMN-G.
                05  SPA-K062-MOTOPG            PIC X(08).
@@ -185,6 +193,9 @@
                05  SPA-K062-ACT-DAY-G.
                    07  SPA-K062-DAYA          PIC X(01)
                                               OCCURS   31.
+               05  SPA-K062-MIDASI2            PIC X(20).
+               05  SPA-K062-MSGENDYMD          PIC X(10).
+               05  SPA-K062-RRKENDYMD          PIC X(08).
            03  SPA-K062-AREA.
                05  SPA-K062-CUR                PIC 9(02).
                05  SPA-K062-SELNUM             PIC 9(02).
@@ -194,6 +205,12 @@
                05  SPA-K062-SYORI-KEI          PIC 9(01).
       *
                05  SPA-K062-INPUT-G.
-                   07  SPA-K062-COMMENT-TBL     OCCURS   50.
-                       09  SPA-K062-COMMENT     PIC X(80).
+                   07  SPA-K062-ENDYMDG            PIC X(10).
+                   07  SPA-K062-ENDYMD             PIC X(08).
+      *
+                   07  SPA-K062-COMMENT-TBL    OCCURS   50.
+                       09  SPA-K062-COMMENT        PIC X(80).
+                       09  SPA-K062-TENDYMDG       PIC X(10).
+                       09  SPA-K062-TENDYMD        PIC X(08).
+                       09  SPA-K062-INFLG          PIC X(01).
       *

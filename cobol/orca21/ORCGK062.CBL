@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.00    NACL-多々納  11/08/XX  リハビリコメント終了日対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -68,6 +69,7 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-NEXT            PIC 9(01).
            03  FLG-SRY-OK          PIC 9(01).
+           03  FLG-CHKCOM          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -128,6 +130,13 @@
            03  WRK-HKNKBN-MEI         PIC X(02).
            03  WRK-COMB-TEKSTYMD      PIC X(08).
            03  WRK-COMB-TEKEDYMD      PIC X(08).
+      *
+           03  WRK-STR-YMD.
+               05  WRK-STR-YM          PIC X(06).
+               05  WRK-STR-DD          PIC X(02).
+      *
+           03  WRK-ENDYMD              PIC X(08).
+           03  WRK-ENDYMDG             PIC X(11).
       *入力タイプ
            03  WRK-INTYPE             PIC X(01).
       *
@@ -378,7 +387,7 @@
       *                削除処理
                        PERFORM 4401-DELETE-SYORI-SEC
                    ELSE
-                       MOVE    1               TO  SPA-K061-CUR
+                       MOVE    1               TO  SPA-K062-CUR
                    END-IF
       *        登録確認
                WHEN    "0102"
@@ -386,12 +395,42 @@
       *                登録処理
                        PERFORM 4501-TOUROKU-SYORI-SEC
                    ELSE
-                       MOVE    1               TO  SPA-K061-CUR
+                       MOVE    1               TO  SPA-K062-CUR
+                   END-IF
+      *        終了日付設定
+               WHEN    "0110"
+                   IF      SPA-KID1-FLG        =   "OK"
+      *                終了日付設定
+                       PERFORM 30012-ENDYMD-AUTO-SEC
+                   ELSE
+                       MOVE    2               TO  SPA-K062-CUR
                    END-IF
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KIDCD
            .
        30010-KID1-SET-EXT.
+           EXIT. 
+      *
+      *****************************************************************
+      *    終了日付設定処理
+      *****************************************************************
+       30012-ENDYMD-AUTO-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ENDYMD
+           MOVE    SPACE               TO  WRK-ENDYMDG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX             >   50   )
+                          OR  (SPA-K062-COMMENT(IDX)   =   SPACE )
+               IF      SPA-K062-TENDYMD (IDX)      >   WRK-ENDYMD
+                   MOVE    SPA-K062-TENDYMD (IDX)  TO  WRK-ENDYMD
+                   MOVE    SPA-K062-TENDYMDG(IDX)  TO  WRK-ENDYMDG
+               END-IF
+           END-PERFORM
+           MOVE    WRK-ENDYMD          TO  SPA-K062-ENDYMD
+           MOVE    WRK-ENDYMDG         TO  SPA-K062-ENDYMDG
+           MOVE    99                  TO  SPA-K062-CUR
+           .
+       30012-ENDYMD-AUTO-EXT.
            EXIT. 
       *
       *****************************************************************
@@ -645,6 +684,7 @@
            PERFORM
                    UNTIL       (FLG-SANTEIPLUS     =   1    )
                IF      SANTEIPLUS-RENNUM   =   1
+                                           OR  ZERO
                    MOVE    SANTEIPLUS-DAYKEY   TO  IDX
                    MOVE    "1"                 TO  SPA-K062-DAYC (IDX)
                END-IF
@@ -758,8 +798,26 @@
            MOVE    ZERO                TO  IDX
            PERFORM
                    UNTIL       (FLG-SANTEIPLUS     =   1    )
-               ADD     1                   TO  IDX
-               MOVE    SANTEIPLUS-COMMENT  TO  SPA-K062-COMMENT (IDX)
+               IF      SANTEIPLUS-RENNUM   =   ZERO
+      *            開始日終了日
+                   MOVE    SANTEIPLUS-ENDYMD   TO  SPA-K062-ENDYMD
+                   IF      SANTEIPLUS-ENDYMD   NOT =   SPACE
+                       MOVE    SANTEIPLUS-ENDYMD   TO  WRK-SYMD
+                       PERFORM 5002-HIZUKE-HEN-SEC
+                       MOVE    WRK-HENYMDG         TO  SPA-K062-ENDYMDG
+                   END-IF
+               ELSE
+                   ADD     1                   TO  IDX
+                   MOVE    SANTEIPLUS-COMMENT  TO  SPA-K062-COMMENT(IDX)
+                   MOVE    "1"                 TO  SPA-K062-INFLG  (IDX)
+                   MOVE    SANTEIPLUS-ENDYMD   TO  SPA-K062-TENDYMD(IDX)
+                   IF      SANTEIPLUS-ENDYMD   NOT =   SPACE
+                       MOVE    SANTEIPLUS-ENDYMD   TO  WRK-SYMD
+                       PERFORM 5002-HIZUKE-HEN-SEC
+                       MOVE    WRK-HENYMDG         TO  SPA-K062-TENDYMDG
+                                                                   (IDX)
+                   END-IF
+               END-IF
       *
                MOVE    1                   TO  SPA-K062-SYORI
       *
@@ -772,6 +830,10 @@
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    11                  TO  SPA-K062-CUR 
+      *
+           IF      SPA-K062-SYORI      =   1
+               MOVE    02                  TO  SPA-K062-CUR
+           END-IF
            .
        31021-COMMENT-HEN-EXT.
            EXIT.
@@ -969,8 +1031,12 @@
                    PERFORM 31021-COMMENT-HEN-SEC
                END-IF
            ELSE
-               MOVE    "0003"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-K062-CUR
+               IF      SPA-K062-SELNUM    =   ZERO
+                   PERFORM 4100-NEXT-DAY-SEC
+               ELSE
+                   MOVE    "0003"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-K062-CUR
+               END-IF
            END-IF
            .
        41011-RENNUM-HEN-EXT.
@@ -995,12 +1061,16 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC          SECTION.
       *
+           MOVE    K062-ENDYMD         TO  SPA-K062-ENDYMDG
+      *
            COMPUTE IDX-STR             =  (SPA-K062-PAGE   -   1 )
                                        *   5
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   5
                ADD     1                   TO  IDX-STR
                MOVE    K062-COMMENT (IDX)  TO  SPA-K062-COMMENT(IDX-STR)
+               MOVE    K062-TENDYMD (IDX)  TO  SPA-K062-TENDYMDG
+                                                             (IDX-STR)
            END-PERFORM
            .
       *
@@ -1012,10 +1082,60 @@
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
-      *    コメントチェック
-           PERFORM 41012-COMMENT-CHK-SEC
+      *    終了日付チェック
+           PERFORM 41012-ENDYMD-CHK-SEC
+      *    コメント・終了日付チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41012-COMMENT-CHK-SEC
+           END-IF
            .
        4102-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    終了日付チェック処理
+      *****************************************************************
+       41012-ENDYMD-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-K062-SRYYM      TO  WRK-STR-YM
+           MOVE    SPA-K062-SELNUM     TO  WRK-STR-DD
+      *
+           IF     SPA-K062-ENDYMDG     =   SPACE
+               MOVE    SPACE               TO  SPA-K062-ENDYMD
+           ELSE
+               MOVE    SPA-K062-ENDYMDG    TO  WRK-YMD
+               MOVE    SPACE               TO  WRK-INTYPE
+               PERFORM 5002-HIZUKE-CHK-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    WRK-SYMD            TO  SPA-K062-ENDYMD
+                   MOVE    WRK-HENYMDG         TO  SPA-K062-ENDYMDG
+                   IF      WRK-STR-YMD         >   SPA-K062-ENDYMD
+      *                開始日以降
+                       MOVE    "0008"              TO  SPA-ERRCD
+                   END-IF
+      *            終了日算定日より前のみ
+                   IF     (SPA-K062-RRKENDYMD  NOT =   SPACE )
+                   AND    (SPA-ERRCD               =   SPACE )
+                       IF     SPA-K062-RRKENDYMD   <   SPA-K062-ENDYMD
+                           MOVE    "0010"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+      *            Ｈ２２．４から
+                   IF     (SPA-K062-ENDYMD     <   "20100401")
+                   AND    (SPA-ERRCD               =   SPACE )
+                       MOVE    "0011"              TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    "0007"               TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    2                   TO  SPA-K062-CUR
+           END-IF
+      *
+           .
+       41012-ENDYMD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1028,9 +1148,10 @@
                    UNTIL       IDX     >   50
                IF     (IDX                 <   50   )  AND
                       (SPA-K062-COMMENT(IDX)   =   SPACE )
-                   MOVE    SPA-K062-COMMENT (IDX + 1)
-                                           TO  SPA-K062-COMMENT(IDX)
-                   MOVE    SPACE           TO  SPA-K062-COMMENT(IDX + 1)
+                   MOVE    SPA-K062-COMMENT-TBL (IDX + 1)
+                                           TO  SPA-K062-COMMENT-TBL(IDX)
+                   MOVE    SPACE           TO  SPA-K062-COMMENT-TBL
+                                                               (IDX + 1)
                END-IF
            END-PERFORM
       *    全角チェック
@@ -1041,13 +1162,27 @@
                IF      SPA-K062-COMMENT(IDX)   NOT =   SPACE
                    PERFORM 410121-MEISYO-HENKAN-SEC
                END-IF
+               IF     (SPA-K062-TENDYMDG(IDX)  NOT =   SPACE )
+               AND    (SPA-ERRCD                   =   SPACE )
+                   PERFORM 410122-TENDYMD-CHK-SEC
+               END-IF
+               IF      SPA-ERRCD       NOT =   SPACE
+                   MOVE    IDX                 TO  IDX-ERR
+               END-IF
            END-PERFORM
       *    カーソル
            IF      IDX-ERR             >   ZERO
                DIVIDE 5       INTO  IDX-ERR    GIVING WRK-SHO
                               REMAINDER WRK-AMARI
-               COMPUTE SPA-K062-CUR    =   WRK-AMARI   +  1
+               COMPUTE SPA-K062-CUR    =   WRK-AMARI   +  10
                COMPUTE SPA-K062-PAGE   =   WRK-SHO     +  1
+      *
+               IF      SPA-ERRCD       =   "0007"
+                                       OR  "0008"
+                                       OR  "0009"
+                                       OR  "0011"
+                   COMPUTE SPA-K062-CUR    =   SPA-K062-CUR  +   10
+               END-IF
            END-IF
            .
        41012-COMMENT-CHK-EXT.
@@ -1075,6 +1210,47 @@
       *
            .
        401131-MEISYO-HENKAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    終了日付チェック処理
+      *****************************************************************
+       410122-TENDYMD-CHK-SEC          SECTION.
+      *
+           MOVE    SPA-K062-SRYYM      TO  WRK-STR-YM
+           MOVE    SPA-K062-SELNUM     TO  WRK-STR-DD
+      *
+           IF      SPA-K062-TENDYMDG(IDX)  =   SPACE
+               MOVE    SPACE               TO  SPA-K062-TENDYMD (IDX)
+           ELSE
+               MOVE    SPA-K062-TENDYMDG(IDX)  TO  WRK-YMD
+               MOVE    SPACE               TO  WRK-INTYPE
+               PERFORM 5002-HIZUKE-CHK-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    WRK-SYMD            TO  SPA-K062-TENDYMD
+                                                                 (IDX)
+                   MOVE    WRK-HENYMDG         TO  SPA-K062-TENDYMDG
+                                                                 (IDX)
+                   IF      WRK-STR-YMD         >   SPA-K062-TENDYMD(IDX)
+      *                開始日以降
+                       MOVE    "0008"              TO  SPA-ERRCD
+                   END-IF
+      *            Ｈ２２．４から
+                   IF     (SPA-K062-TENDYMD(IDX)   <   "20100401")
+                   AND    (SPA-ERRCD               =   SPACE )
+                       MOVE    "0011"              TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    "0007"              TO  SPA-ERRCD
+               END-IF
+      *
+               IF     (SPA-ERRCD               =   SPACE )
+                  AND (SPA-K062-COMMENT(IDX)   =   SPACE)
+                   MOVE    "0009"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       410122-TENDYMD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1164,7 +1340,8 @@
                PERFORM 4501-KANREN-CHK-SEC
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
+           IF     (SPA-ERRCD           =   SPACE )
+           AND    (SPA-KIDCD           =   SPACE )
                MOVE    "0102"          TO  SPA-KIDCD
            END-IF
       *
@@ -1202,9 +1379,29 @@
        4501-KANREN-CHK-SEC                SECTION.
       *
            IF      (SPA-K062-COMMENT (1)   =   SPACE )
+            AND    (SPA-K062-ENDYMD        =   SPACE )
                MOVE    "0006"              TO  SPA-ERRCD
                MOVE    11                  TO  SPA-K062-CUR
            END-IF
+      *
+           MOVE    ZERO                TO  FLG-CHKCOM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX             >   50   )
+                          OR  (SPA-ERRCD   NOT =   SPACE )
+                          OR  (SPA-K062-COMMENT(IDX)   =   SPACE )
+               IF      SPA-K062-TENDYMD (IDX)      =   SPACE
+                   MOVE    1                   TO  FLG-CHKCOM
+               END-IF
+           END-PERFORM
+           IF     (SPA-ERRCD           =   SPACE )
+           AND    (SPA-K062-COMMENT(1) NOT =   SPACE )
+      *        コメント毎の終了日がすべて設定されている時、終了日があること
+               IF      (FLG-CHKCOM         =   ZERO  )
+                   IF      SPA-K062-ENDYMD     =   SPACE
+                       MOVE    "0110"              TO  SPA-KIDCD
+                   END-IF
+               END-IF
+            END-IF
       *
            .
        4501-KANREN-CHK-EXT.
@@ -1270,6 +1467,11 @@
            END-IF
            MOVE    SPA-K062-SELNUM     TO  SANTEIPLUS-DAYKEY
       *
+      *    開始日の終了日付あり
+           IF      SPA-K062-ENDYMD NOT =   SPACE
+               PERFORM 4501-SANTEIPLUS-END-INS-SEC
+           END-IF
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX             >   50   )
                           OR  (SPA-ERRCD   NOT =   SPACE )
@@ -1284,11 +1486,10 @@
       *****************************************************************
       *    算定履歴付加情報登録処理
       *****************************************************************
-       4502-SANTEIPLUS-INS-SEC         SECTION.
+       4501-SANTEIPLUS-END-INS-SEC         SECTION.
       *
-           MOVE    IDX                 TO  SANTEIPLUS-RENNUM
-           MOVE    SPA-K062-COMMENT (IDX)
-                                       TO  SANTEIPLUS-COMMENT
+           MOVE    ZERO                TO  SANTEIPLUS-RENNUM
+           MOVE    SPA-K062-ENDYMD     TO  SANTEIPLUS-ENDYMD
       *
            MOVE    SMCNDATE-YMD        TO  SANTEIPLUS-CREYMD
            MOVE    SMCNDATE-YMD        TO  SANTEIPLUS-UPYMD
@@ -1296,7 +1497,39 @@
       *
            MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_santeiplus"     TO  MCP-TABLE
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO 
+               MOVE    "1001"              TO  SPA-ERRCD
+               DISPLAY "K062 INS SANTEIPLUS-KEY =>" SANTEIPLUS-KEY 
+           END-IF
+          .
+       4501-SANTEIPLUS-END-INS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    算定履歴付加情報登録処理
+      *****************************************************************
+       4502-SANTEIPLUS-INS-SEC         SECTION.
+      *
+           MOVE    IDX                 TO  SANTEIPLUS-RENNUM
+           MOVE    SPA-K062-COMMENT (IDX)
+                                       TO  SANTEIPLUS-COMMENT
+           MOVE    SPA-K062-TENDYMD (IDX)
+                                       TO  SANTEIPLUS-ENDYMD
+      *
+           MOVE    SMCNDATE-YMD        TO  SANTEIPLUS-CREYMD
+           MOVE    SMCNDATE-YMD        TO  SANTEIPLUS-UPYMD
+           MOVE    SMCNDATE-HMS        TO  SANTEIPLUS-UPHMS
+      *
+           MOVE    SPA-OPID            TO  SANTEIPLUS-OPID
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
@@ -1483,6 +1716,8 @@
            END-PERFORM
            MOVE    SPA-K062-SELNUM        TO  K062-SELNUM
       *
+           MOVE    SPA-K062-ENDYMDG    TO  K062-ENDYMD
+      *
            COMPUTE IDY                 =   (SPA-K062-PAGE  -  1 )
                                        *   5
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1490,6 +1725,8 @@
                ADD     1                   TO  IDY
                MOVE    SPA-K062-COMMENT (IDY)
                                            TO  K062-COMMENT  (IDX)
+               MOVE    SPA-K062-TENDYMDG(IDY)
+                                           TO  K062-TENDYMD  (IDX)
       *
                PERFORM 5003-COMMENT-NO-SEC
            END-PERFORM
@@ -1498,6 +1735,11 @@
                MOVE    "【診療行為登録済】"    TO  K062-MIDASI-VALUE
                MOVE    "red"                   TO  K062-MIDASI-STYLE
            END-IF
+      *
+           MOVE    SPA-K062-MIDASI2     TO  K062-MIDASI2-VALUE
+           MOVE    "black"              TO  K062-MIDASI2-STYLE
+           MOVE    SPA-K062-MSGENDYMD   TO  K062-MSGENDYMD-VALUE
+           MOVE    "black"              TO  K062-MSGENDYMD-STYLE
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1544,6 +1786,8 @@
            EVALUATE    SPA-K062-CUR
                WHEN    01
                    MOVE  "SELNUM"            TO  MCP-WIDGET
+               WHEN    02
+                   MOVE  "ENDYMD"             TO  MCP-WIDGET
                WHEN    11
                    MOVE  "COMMENT01"          TO  MCP-WIDGET
                WHEN    12
@@ -1554,6 +1798,16 @@
                    MOVE  "COMMENT04"          TO  MCP-WIDGET
                WHEN    15
                    MOVE  "COMMENT05"          TO  MCP-WIDGET
+               WHEN    21
+                   MOVE  "ENDYMD01"           TO  MCP-WIDGET
+               WHEN    22
+                   MOVE  "ENDYMD02"           TO  MCP-WIDGET
+               WHEN    23
+                   MOVE  "ENDYMD03"           TO  MCP-WIDGET
+               WHEN    24
+                   MOVE  "ENDYMD04"           TO  MCP-WIDGET
+               WHEN    25
+                   MOVE  "ENDYMD05"           TO  MCP-WIDGET
                WHEN    98
                    MOVE  "B03"               TO  MCP-WIDGET
                WHEN    99
@@ -1569,18 +1823,48 @@
       *****************************************************************
        50011-INPUT-CUR-SEC          SECTION.
       *
+           COMPUTE IDY                 =   (SPA-K062-PAGE  -  1 )
+                                       *   5
+      *
            EVALUATE    WRK-MCP-WIDGET
                WHEN    "SELNUM"
                    MOVE    11          TO  SPA-K062-CUR
+               WHEN    "ENDYMD"
+                   MOVE    11          TO  SPA-K062-CUR
                WHEN    "COMMENT01"
                    MOVE    12          TO  SPA-K062-CUR
+                   IF      SPA-K062-INFLG (IDY + 1)  =   "1"
+                       MOVE    21          TO  SPA-K062-CUR
+                   END-IF
                WHEN    "COMMENT02"
                    MOVE    13          TO  SPA-K062-CUR
+                   IF      SPA-K062-INFLG (IDY + 2)  =   "1"
+                       MOVE    22          TO  SPA-K062-CUR
+                   END-IF
                WHEN    "COMMENT03"
                    MOVE    14          TO  SPA-K062-CUR
+                   IF      SPA-K062-INFLG (IDY + 3)  =   "1"
+                       MOVE    23          TO  SPA-K062-CUR
+                   END-IF
                WHEN    "COMMENT04"
                    MOVE    15          TO  SPA-K062-CUR
+                   IF      SPA-K062-INFLG (IDY + 4)  =   "1"
+                       MOVE    24          TO  SPA-K062-CUR
+                   END-IF
                WHEN    "COMMENT05"
+                   MOVE    99          TO  SPA-K062-CUR
+                   IF      SPA-K062-INFLG (IDY +  5)  =   "1"
+                       MOVE    25          TO  SPA-K062-CUR
+                   END-IF
+               WHEN    "ENDYMD01"
+                   MOVE    12          TO  SPA-K062-CUR
+               WHEN    "ENDYMD02"
+                   MOVE    13          TO  SPA-K062-CUR
+               WHEN    "ENDYMD03"
+                   MOVE    14          TO  SPA-K062-CUR
+               WHEN    "ENDYMD04"
+                   MOVE    15          TO  SPA-K062-CUR
+               WHEN    "ENDYMD05"
                    MOVE    99          TO  SPA-K062-CUR
            END-EVALUATE
            .
@@ -1619,8 +1903,34 @@
                            DELIMITED   BY  SIZE    INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0006"
-                   MOVE    "コメントが入力されていません。"
+                   STRING  "コメント・終了日の入力がありません。"
+                           "削除の時は、削除ボタンを押下して下さい。"
+                           DELIMITED   BY  SIZE    INTO    SPA-ERRMSG
+                   END-STRING
+      ****         MOVE    "コメントまたは終了日を入力して下さい。"
+      ****                                             TO  SPA-ERRMSG
+               WHEN    "0007"
+                   MOVE    "終了日付が暦日エラーです。"
                                                        TO  SPA-ERRMSG
+               WHEN    "0008"
+                   MOVE    "開始日付＞終了日付です。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0009"
+                   STRING  "コメントが入力されていません。"
+                           "終了日付の登録はできません。"
+                           DELIMITED   BY  SIZE    INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0010"
+                   STRING  "リハビリテーション終了日が算定済みです。"
+                           "終了日付は算定日より前の日付のみ有効です。"
+                                               DELIMITED   BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0011"
+                   STRING  "終了日付はＨ２２年４月１日以降として下さい"
+                                               DELIMITED   BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0020"
                    MOVE    "最大件数です。これ以上入力できません。"
                                                        TO  SPA-ERRMSG
@@ -1673,6 +1983,12 @@
                WHEN    "0102"
                    STRING    "リハビリコメントを登録します。"
                              "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-KIDMSG
+                   END-STRING
+               WHEN    "0110"
+                   STRING    "履歴毎の終了日付がありません。"
+                          "ＯＫでコメント毎の終了日付を設定をします。"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-KIDMSG
                    END-STRING

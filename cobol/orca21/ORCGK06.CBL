@@ -2073,7 +2073,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    2                   TO  SPA-K061-GMN
-           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    "K06"               TO  SPA-MOTOPG
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -2165,6 +2165,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    1                   TO  SPA-K061-GMN
+           MOVE    "K06"               TO  SPA-MOTOPG
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON

@@ -9,6 +9,7 @@ tbl_santeiplus {
 	DAYKEY   			number(2,0);
 	RENNUM				number(2,0);
 	COMMENT  			varchar(80);
+	ENDYMD				char(8);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);

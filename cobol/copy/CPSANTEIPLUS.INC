@@ -44,6 +44,8 @@
                05  SANTEIPLUS-RENNUM           PIC  9(02).
       *リハビリコメント
            03  SANTEIPLUS-COMMENT              PIC  X(80).
+      *終了日付
+           03  SANTEIPLUS-ENDYMD               PIC  X(08).
       *端末ＩＤ
            03  SANTEIPLUS-TERMID           PIC  X(16).
       *オペーレータＩＤ

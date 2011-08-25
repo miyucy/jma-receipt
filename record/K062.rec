@@ -176,5 +176,31 @@ K062	{
 			style	varchar(20);
 			value	varchar(20);
 		};
+		ENDYMD	{
+			value	varchar(11);
+		};
+		ENDYMD01	{
+			value	varchar(11);
+		};
+		ENDYMD02	{
+			value	varchar(11);
+		};
+		ENDYMD03	{
+			value	varchar(11);
+		};
+		ENDYMD04	{
+			value	varchar(11);
+		};
+		ENDYMD05	{
+			value	varchar(11);
+		};
+		MIDASI2	{
+			style	varchar(20);
+			value	varchar(20);
+		};
+		MSGENDYMD	{
+			style	varchar(20);
+			value	varchar(20);
+		};
 	};
 };

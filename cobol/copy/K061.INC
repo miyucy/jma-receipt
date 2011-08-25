@@ -34,6 +34,7 @@
                     06  K061-TKAISU  PIC X(2).
                     06  K061-THKNCOMBI PIC X(20).
                     06  K061-TKUBUN    PIC X(6).
+                    06  K061-TENDYMD   PIC X(16).
                   05  K061-RRKLIST-SELECT
                           PIC X       OCCURS  100 TIMES.
               03  K061-MIDASI.

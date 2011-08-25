@@ -41,6 +41,7 @@ K061	{
 					value5	varchar(2);
 					value6	varchar(20);
 					value7	varchar(6);
+					value8	varchar(16);
 				}	[100];
 				select	bool[100];
 			};

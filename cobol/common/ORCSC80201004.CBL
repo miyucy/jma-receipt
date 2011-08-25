@@ -47,6 +47,7 @@
       * 04.05.00     NACL-多々納  10/03/XX  平成２２年４月改正対応
       * 04.06.00     NACL-多々納  10/07/01  残量廃棄自動算定対応
       * 04.06.00     NACL-多々納  10/09/XX  精神療法２０歳未満加算未対応
+      * 04.07.00     NACL-多々納  11/08/XX  リハビリ算定日毎終了日付対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -70,6 +71,7 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
+           03  FLG-SANTEIPLUS      PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -117,6 +119,8 @@
       *    他院退院日
            03  FLG-TAITAIIN            PIC 9(01).
            03  FLG-NINCHI              PIC 9(01).
+      *
+           03  FLG-CHK-END             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -382,6 +386,10 @@
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *    算定履歴付加
+       01  SANTEIPLUS-REC.
+           COPY    "CPSANTEIPLUS.INC".
+      *
       *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
@@ -573,8 +581,10 @@
            PERFORM 990-DBCLOSE-SEC
       *
       *    各急性発生日
+      *    心大血管疾患リハビリテーション
            MOVE    "099800111"         TO  WRK-SRYCD
-           PERFORM 10001-KYUSEI-YMD-SEC
+      *****PERFORM 10001-KYUSEI-YMD-SEC
+           PERFORM 10001-RIHA-STRYMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI1-YMD
       *    終了日判定
            IF      WRK-KYUSEI1-YMD NOT =   SPACE
@@ -586,9 +596,10 @@
                    END-IF
                END-IF
            END-IF
-      *
+      *    脳血管疾患リハビリテーション
            MOVE    "099800121"         TO  WRK-SRYCD
-           PERFORM 10001-KYUSEI-YMD-SEC
+      *****PERFORM 10001-KYUSEI-YMD-SEC
+           PERFORM 10001-RIHA-STRYMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI2-YMD
            IF      WRK-KYUSEI2-YMD NOT =   SPACE
                MOVE    "099800122"         TO  WRK-SRYCD
@@ -599,9 +610,10 @@
                    END-IF
                END-IF
            END-IF
-      *
+      *    運動器リハビリテーション
            MOVE    "099800131"         TO  WRK-SRYCD
-           PERFORM 10001-KYUSEI-YMD-SEC
+      *****PERFORM 10001-KYUSEI-YMD-SEC
+           PERFORM 10001-RIHA-STRYMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI3-YMD
            IF      WRK-KYUSEI3-YMD NOT =   SPACE
                MOVE    "099800132"         TO  WRK-SRYCD
@@ -612,9 +624,10 @@
                    END-IF
                END-IF
            END-IF
-      *
+      *    呼吸器リハビリテーション
            MOVE    "099800141"         TO  WRK-SRYCD
-           PERFORM 10001-KYUSEI-YMD-SEC
+      *****PERFORM 10001-KYUSEI-YMD-SEC
+           PERFORM 10001-RIHA-STRYMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI4-YMD
            IF      WRK-KYUSEI4-YMD NOT =   SPACE
                MOVE    "099800142"         TO  WRK-SRYCD
@@ -734,6 +747,145 @@
       *
            .
        10001-KYUSEI-YMD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    リハビリ開始日設定処理
+      *****************************************************************
+       10001-RIHA-STRYMD-SEC            SECTION.
+      *
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *    訂正時
+           MOVE    ZERO                TO  FLG-TOUJITU
+           IF      LNK-ORCSC-SYORIFLG      =   1
+               PERFORM VARYING     IDZ     FROM    1   BY  1
+                       UNTIL      (IDZ     >   100 )  OR
+                                  (LNK-ORCSC-TEI-SRYCD(IDZ)
+                                           =   SPACE )
+                   IF      LNK-ORCSC-TEI-SRYCD(IDZ)
+                                           =   WRK-SRYCD
+                       MOVE    1           TO  FLG-TOUJITU
+                   END-IF
+               END-PERFORM
+           END-IF
+      *    算定履歴検索
+           MOVE    SPACE               TO  SANTEI-REC
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+      *
+      *    労災毎とする
+           IF     (SPA-HKNKBN          =   1
+                                       OR  2   )
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-YMD
+           PERFORM
+               UNTIL       FLG-SANTEI      =   1
+               IF     (SANTEI-MSANTEICNT   >   ZERO )  AND
+                      (SANTEI-SRYYM        <=  SPA-SRYYMD(1:6))
+      *            最後の発生日、当日以降は対象外
+                   IF      SANTEI-SRYYM        =   SPA-SRYYMD(1:6)
+                       MOVE    SPA-SRYYMD(7:2)     TO  IDD2
+      *                訂正分は対象外
+                       IF      FLG-TOUJITU         =   1
+                           COMPUTE IDD2            =   IDD2   -  1
+                       END-IF
+                   ELSE
+                       MOVE    31                  TO  IDD2
+                   END-IF
+                   MOVE    ZERO                TO  WRK-SDD
+                   PERFORM VARYING     IDD     FROM    IDD2  BY  -1
+                           UNTIL       IDD     <   1
+                       IF      SANTEI-DAY (IDD)    >   ZERO
+                           MOVE    IDD             TO  WRK-SDD
+      *                    終了日付検索
+                           MOVE    ZERO            TO  FLG-CHK-END
+                           PERFORM 100011-RIHA-SANTEIPLUS-SEC
+                           IF      FLG-CHK-END     =   ZERO
+                               MOVE    1               TO  IDD
+                           END-IF
+                       END-IF
+                   END-PERFORM
+                   IF      WRK-SDD             >   ZERO
+                       MOVE    SANTEI-SRYYM    TO  WRK-YYMM
+                       MOVE    WRK-SDD         TO  WRK-DD
+                       MOVE    1               TO  FLG-SANTEI
+                   END-IF
+               END-IF
+      *
+               IF     FLG-SANTEI           =   ZERO
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    "key3"              TO  MCP-PATHNAME
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       10001-RIHA-STRYMD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    リハビリ開始日算定履歴付加情報編集処理
+      *****************************************************************
+       100011-RIHA-SANTEIPLUS-SEC                SECTION.
+      *
+      *
+           INITIALIZE                  SANTEIPLUS-REC
+           MOVE    SANTEI-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
+           MOVE    SANTEI-PTID         TO  SANTEIPLUS-PTID
+           MOVE    SANTEI-SRYCD        TO  SANTEIPLUS-SRYCD
+           MOVE    SANTEI-SRYYM        TO  SANTEIPLUS-SRYYM
+           MOVE    SANTEI-SRYKA        TO  SANTEIPLUS-SRYKA
+           MOVE    SANTEI-NYUGAIKBN    TO  SANTEIPLUS-NYUGAIKBN
+           MOVE    SANTEI-HKNCOMBINUM  TO  SANTEIPLUS-HKNCOMBINUM
+           MOVE    WRK-SDD             TO  SANTEIPLUS-DAYKEY
+           MOVE    ZERO                TO  SANTEIPLUS-RENNUM
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 921-SANTEIPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SANTEIPLUS      =   ZERO
+               IF      SANTEIPLUS-ENDYMD   <   SPA-SRYYMD
+      *            システム日付より前の終了
+                   MOVE    1                   TO  FLG-CHK-END
+                   MOVE    ZERO                TO  WRK-SDD
+               END-IF
+           END-IF
+      *
+           .
+       100011-RIHA-SANTEIPLUS-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1305,7 +1457,8 @@
                WHEN    "099800152"
                    IF      WRK-KYUSEI5-CHK     =   SPACE
                        MOVE    "099800151"         TO  WRK-SRYCD
-                       PERFORM 10001-KYUSEI-YMD-SEC
+      ************     PERFORM 10001-KYUSEI-YMD-SEC
+                       PERFORM 10001-RIHA-STRYMD-SEC
                        MOVE    WRK-YMD             TO  WRK-KYUSEI5-YMD
                        MOVE    "1"                 TO  WRK-KYUSEI5-CHK
                    END-IF
@@ -1327,7 +1480,8 @@
                    MOVE    "1"             TO  WRK-KYUSEI-ED (6)
                    IF      WRK-KYUSEI6-CHK     =   SPACE
                        MOVE    "099800161"         TO  WRK-SRYCD
-                       PERFORM 10001-KYUSEI-YMD-SEC
+      ************     PERFORM 10001-KYUSEI-YMD-SEC
+                       PERFORM 10001-RIHA-STRYMD-SEC
                        MOVE    WRK-YMD             TO  WRK-KYUSEI6-YMD
                        MOVE    "1"                 TO  WRK-KYUSEI6-CHK
                    END-IF
@@ -1349,7 +1503,8 @@
                    MOVE    "1"             TO  WRK-KYUSEI-ED (7)
                    IF      WRK-KYUSEI7-CHK     =   SPACE
                        MOVE    "099800171"         TO  WRK-SRYCD
-                       PERFORM 10001-KYUSEI-YMD-SEC
+      ************     PERFORM 10001-KYUSEI-YMD-SEC
+                       PERFORM 10001-RIHA-STRYMD-SEC
                        MOVE    WRK-YMD             TO  WRK-KYUSEI7-YMD
                        MOVE    "1"                 TO  WRK-KYUSEI7-CHK
                    END-IF
@@ -1372,7 +1527,8 @@
                    MOVE    "1"             TO  WRK-KYUSEI-ED (8)
                    IF      WRK-KYUSEI8-CHK     =   SPACE
                        MOVE    "099800181"         TO  WRK-SRYCD
-                       PERFORM 10001-KYUSEI-YMD-SEC
+      ************     PERFORM 10001-KYUSEI-YMD-SEC
+                       PERFORM 10001-RIHA-STRYMD-SEC
                        MOVE    WRK-YMD             TO  WRK-KYUSEI8-YMD
                        MOVE    "1"                 TO  WRK-KYUSEI8-CHK
                    END-IF
@@ -3282,6 +3438,23 @@
            END-IF
            .
        910-PTNYUINRRK-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定歴付加マスタ読み込み
+      *****************************************************************
+       921-SANTEIPLUS-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEIPLUS-REC
+               MOVE    ZERO                TO  FLG-SANTEIPLUS
+           ELSE
+               INITIALIZE                      SANTEIPLUS-REC
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+      *
+           .
+       921-SANTEIPLUS-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

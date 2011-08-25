@@ -30,3 +30,13 @@
               03  K062-MIDASI.
                 04  K062-MIDASI-STYLE  PIC X(20).
                 04  K062-MIDASI-VALUE  PIC X(20).
+              03  K062-ENDYMD.
+                04  K062-VALUE  PIC X(11).
+              03  K062-TENDYMD-G     OCCURS  5.
+                04  K062-TENDYMD    PIC X(11).
+              03  K062-MIDASI2.
+                04  K062-MIDASI2-STYLE  PIC X(20).
+                04  K062-MIDASI2-VALUE  PIC X(20).
+              03  K062-MSGENDYMD.
+                04  K062-MSGENDYMD-STYLE  PIC X(20).
+                04  K062-MSGENDYMD-VALUE  PIC X(20).

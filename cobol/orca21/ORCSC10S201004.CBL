@@ -67,6 +67,7 @@
       * 04.05.00     NACL-多々納  09/10/20  初診再診自動発生なし対応
       * 04.05.00     NACL-多々納  10/02/XX  アフターケア対象外対応
       * 04.05.00     NACL-多々納  10/03/XX  平成２２年４月改正対応
+      * 04.07.00     NACL-多々納  11/08/XX  リハビリ開始日の終了日対応
       *****************************************************************
       *
       *
@@ -95,6 +96,7 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-SANTEIPLUS      PIC 9(01).
       *
            03  FLG-KBN             PIC 9(01).
       *
@@ -178,6 +180,8 @@
            03  FLG-TAKA             PIC 9(01).
            03  FLG-SYOHEN           PIC 9(01).
            03  FLG-DOUJI-HEN2       PIC 9(01).
+      *
+           03  FLG-CHK-END          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -339,6 +343,7 @@
            03  WRK-RIHAMEI                 PIC X(60).
            03  WRK-ZOGEN-MEI               PIC X(12).
            03  WRK-ZOGEN                   PIC S9(03).
+           03  WRK-ENDYMD                  PIC X(08).
       *
       *    診察料テーブル
        01  TBL-SINSATU-AREA.
@@ -483,6 +488,10 @@
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *
+      *    算定履歴付加
+       01  SANTEIPLUS-REC.
+           COPY    "CPSANTEIPLUS.INC".
       *
       *    受診履歴
        01  JYURRK-REC.
@@ -1843,100 +1852,12 @@
                        UNTIL       IDX-Y2  <   1
                    IF      SANTEI-DAY (IDX-Y2) >   ZERO
                        MOVE    IDX-Y2          TO  WRK-DD
-                       MOVE    1               TO  IDX-Y2
+                       PERFORM 1001932-RIHA-SANTEIHEN-SEC
+                       IF      FLG-CHK-END     =   1
+                           MOVE    1               TO  IDX-Y2
+                       END-IF
                    END-IF
                END-PERFORM
-               IF      WRK-DD              >   ZERO
-                   MOVE    SANTEI-SRYYM    TO  WRK-YYMM
-               END-IF
-      *
-               IF      WRK-YMD         NOT =   ZERO
-               EVALUATE    SANTEI-SRYCD
-      *        脳血管疾患急性発生日
-               WHEN    "099800101"
-                   IF      SPA-KYUSEI-YMD          =   SPACE
-                       MOVE    WRK-YMD             TO  SPA-KYUSEI-YMD
-                   END-IF
-      *        脳血管疾患急性発生終了日
-               WHEN    "099800102"
-                   IF      SPA-KYUSEI-END          =   SPACE
-                       MOVE    WRK-YMD             TO  SPA-KYUSEI-END
-                   END-IF
-      *        心大血管疾患リハビリテーション
-               WHEN    "099800111"
-                   IF      WRK-RIHA-STR(1)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(1)
-                   END-IF
-               WHEN    "099800112"
-                   IF      WRK-RIHA-END(1)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-END(1)
-                   END-IF
-      *        脳血管疾患リハビリテーション
-               WHEN    "099800121"
-                   IF      WRK-RIHA-STR(2)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(2)
-                   END-IF
-               WHEN    "099800122"
-                   IF      WRK-RIHA-END(2)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-END(2)
-                   END-IF
-      *        運動器リハビリテーション
-               WHEN    "099800131"
-                   IF      WRK-RIHA-STR(3)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(3)
-                   END-IF
-               WHEN    "099800132"
-                   IF      WRK-RIHA-END(3)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-END(3)
-                   END-IF
-      *        呼吸器リハビリテーション
-               WHEN    "099800141"
-                   IF      WRK-RIHA-STR(4)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(4)
-                   END-IF
-               WHEN    "099800142"
-                   IF      WRK-RIHA-END(4)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-END(4)
-                   END-IF
-      *        摂食機能療法終了日
-               WHEN    "099800151"
-                   IF      WRK-RIHA-STR(5)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(5)
-                   END-IF
-               WHEN    "099800152"
-                   IF      WRK-RIHA-END(5)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-END(5)
-                   END-IF
-      *        難病患者リハビリ
-               WHEN    "099800161"
-                   IF      WRK-RIHA-STR(6)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(6)
-                   END-IF
-               WHEN    "099800162"
-                   IF      WRK-RIHA-END(6)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-END(6)
-                   END-IF
-      *        障害者リハビリ
-               WHEN    "099800171"
-                   IF      WRK-RIHA-STR(7)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(7)
-                   END-IF
-               WHEN    "099800172"
-                   IF      WRK-RIHA-END(7)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-END(7)
-                   END-IF
-      *        がん患者リハビリ
-               WHEN    "099800181"
-                   IF      WRK-RIHA-STR(8)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(8)
-                   END-IF
-               WHEN    "099800182"
-                   IF      WRK-RIHA-END(8)         =   SPACE
-                       MOVE    WRK-YMD             TO  WRK-RIHA-END(8)
-                   END-IF
-               END-EVALUATE
-      *
-               END-IF
       *
                MOVE    "tbl_santei"        TO  MCP-TABLE
                MOVE    "key16"             TO  MCP-PATHNAME
@@ -1950,6 +1871,7 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   8   )
                          OR   (IDX-R   >=  7   )
+      *
       *        訂正で終了日が当日なら、対象外
                IF      SPA-SYORIFLG        =   1
                    IF      WRK-RIHA-END (IDX)   =   SPA-SRYYMD
@@ -1969,6 +1891,148 @@
            END-PERFORM
            .
        100193-RIHABIRI-YMDHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    リハビリ発症日編集処理
+      *****************************************************************
+       1001932-RIHA-SANTEIHEN-SEC                  SECTION.
+      *
+           MOVE    SANTEI-SRYYM        TO  WRK-YYMM
+           MOVE    1                   TO  FLG-CHK-END
+           EVALUATE    SANTEI-SRYCD
+      *        脳血管疾患急性発生日
+               WHEN    "099800101"
+                   IF      SPA-KYUSEI-YMD          =   SPACE
+                       MOVE    WRK-YMD             TO  SPA-KYUSEI-YMD
+                   END-IF
+      *        脳血管疾患急性発生終了日
+               WHEN    "099800102"
+                   IF      SPA-KYUSEI-END          =   SPACE
+                       MOVE    WRK-YMD             TO  SPA-KYUSEI-END
+                   END-IF
+      *        心大血管疾患リハビリテーション
+               WHEN    "099800111"
+                   IF      WRK-RIHA-STR(1)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(1)
+      *                終了日検索
+                       PERFORM 1001931-SANTEIPLUS-CHK-SEC
+                       IF      WRK-ENDYMD      NOT =   SPACE
+                           MOVE    SPACE           TO  WRK-RIHA-STR(1)
+                           MOVE    ZERO            TO  FLG-CHK-END
+                       END-IF
+                   END-IF
+               WHEN    "099800112"
+                   IF      WRK-RIHA-END(1)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(1)
+                   END-IF
+      *        脳血管疾患リハビリテーション
+               WHEN    "099800121"
+                   IF      WRK-RIHA-STR(2)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(2)
+      *                終了日検索
+                       PERFORM 1001931-SANTEIPLUS-CHK-SEC
+                       IF      WRK-ENDYMD      NOT =   SPACE
+                           MOVE    SPACE           TO  WRK-RIHA-STR(2)
+                           MOVE    ZERO            TO  FLG-CHK-END
+                       END-IF
+                   END-IF
+               WHEN    "099800122"
+                   IF      WRK-RIHA-END(2)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(2)
+                   END-IF
+      *        運動器リハビリテーション
+               WHEN    "099800131"
+                   IF      WRK-RIHA-STR(3)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(3)
+      *                終了日検索
+                       PERFORM 1001931-SANTEIPLUS-CHK-SEC
+                       IF      WRK-ENDYMD      NOT =   SPACE
+                           MOVE    SPACE           TO  WRK-RIHA-STR(3)
+                           MOVE    ZERO            TO  FLG-CHK-END
+                       END-IF
+                   END-IF
+               WHEN    "099800132"
+                   IF      WRK-RIHA-END(3)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(3)
+                   END-IF
+      *        呼吸器リハビリテーション
+               WHEN    "099800141"
+                   IF      WRK-RIHA-STR(4)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(4)
+      *                終了日検索
+                       PERFORM 1001931-SANTEIPLUS-CHK-SEC
+                       IF      WRK-ENDYMD      NOT =   SPACE
+                           MOVE    SPACE           TO  WRK-RIHA-STR(4)
+                           MOVE    ZERO            TO  FLG-CHK-END
+                       END-IF
+                   END-IF
+               WHEN    "099800142"
+                   IF      WRK-RIHA-END(4)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(4)
+                   END-IF
+      *        摂食機能療法終了日
+               WHEN    "099800151"
+                   IF      WRK-RIHA-STR(5)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(5)
+      *                終了日検索
+                       PERFORM 1001931-SANTEIPLUS-CHK-SEC
+                       IF      WRK-ENDYMD      NOT =   SPACE
+                           MOVE    SPACE           TO  WRK-RIHA-STR(5)
+                           MOVE    ZERO            TO  FLG-CHK-END
+                       END-IF
+                   END-IF
+               WHEN    "099800152"
+                   IF      WRK-RIHA-END(5)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(5)
+                   END-IF
+      *        難病患者リハビリ
+               WHEN    "099800161"
+                   IF      WRK-RIHA-STR(6)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(6)
+      *                終了日検索
+                       PERFORM 1001931-SANTEIPLUS-CHK-SEC
+                       IF      WRK-ENDYMD      NOT =   SPACE
+                           MOVE    SPACE           TO  WRK-RIHA-STR(6)
+                           MOVE    ZERO            TO  FLG-CHK-END
+                       END-IF
+                   END-IF
+               WHEN    "099800162"
+                   IF      WRK-RIHA-END(6)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(6)
+                   END-IF
+      *        障害者リハビリ
+               WHEN    "099800171"
+                   IF      WRK-RIHA-STR(7)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(7)
+      *                終了日検索
+                       PERFORM 1001931-SANTEIPLUS-CHK-SEC
+                       IF      WRK-ENDYMD      NOT =   SPACE
+                           MOVE    SPACE           TO  WRK-RIHA-STR(7)
+                           MOVE    ZERO            TO  FLG-CHK-END
+                       END-IF
+                   END-IF
+               WHEN    "099800172"
+                   IF      WRK-RIHA-END(7)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(7)
+                   END-IF
+      *        がん患者リハビリ
+               WHEN    "099800181"
+                   IF      WRK-RIHA-STR(8)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-STR(8)
+      *                終了日検索
+                       PERFORM 1001931-SANTEIPLUS-CHK-SEC
+                       IF      WRK-ENDYMD      NOT =   SPACE
+                           MOVE    SPACE           TO  WRK-RIHA-STR(8)
+                           MOVE    ZERO            TO  FLG-CHK-END
+                       END-IF
+                   END-IF
+               WHEN    "099800182"
+                   IF      WRK-RIHA-END(8)         =   SPACE
+                       MOVE    WRK-YMD             TO  WRK-RIHA-END(8)
+                   END-IF
+           END-EVALUATE
+           .
+       1001932-RIHA-SANTEIHEN-EXT.
            EXIT.
       *****************************************************************
       *    リハビリ発症日編集処理
@@ -2052,6 +2116,48 @@
       *
            .
        1001931-RIHA-HENKAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    算定履歴付加情報編集処理
+      *****************************************************************
+       1001931-SANTEIPLUS-CHK-SEC                  SECTION.
+      *
+           INITIALIZE                  SANTEIPLUS-REC
+           MOVE    SANTEI-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
+           MOVE    SANTEI-PTID         TO  SANTEIPLUS-PTID
+           MOVE    SANTEI-SRYCD        TO  SANTEIPLUS-SRYCD
+           MOVE    SANTEI-SRYYM        TO  SANTEIPLUS-SRYYM
+           MOVE    SANTEI-SRYKA        TO  SANTEIPLUS-SRYKA
+           MOVE    SANTEI-NYUGAIKBN    TO  SANTEIPLUS-NYUGAIKBN
+           MOVE    SANTEI-HKNCOMBINUM  TO  SANTEIPLUS-HKNCOMBINUM
+           MOVE    WRK-DD              TO  SANTEIPLUS-DAYKEY
+           MOVE    ZERO                TO  SANTEIPLUS-RENNUM
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 921-SANTEIPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           MOVE    SPACE               TO  WRK-ENDYMD
+           IF      FLG-SANTEIPLUS      =   ZERO
+               IF      SANTEIPLUS-ENDYMD   <   SPA-SRYYMD
+      *            システム日付より前の終了
+                   MOVE    SANTEIPLUS-ENDYMD   TO  WRK-ENDYMD
+               END-IF
+           END-IF
+      *
+           .
+       1001931-SANTEIPLUS-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6940,6 +7046,23 @@
       *
            .
        960-SYSKANRI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定歴付加マスタ読み込み
+      *****************************************************************
+       921-SANTEIPLUS-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEIPLUS-REC
+               MOVE    ZERO                TO  FLG-SANTEIPLUS
+           ELSE
+               INITIALIZE                      SANTEIPLUS-REC
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+      *
+           .
+       921-SANTEIPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************
