@@ -442,6 +442,7 @@ RECORD_files = \
 	CID6.rec \
 	medicalget.rec \
 	P02T.rec \
+	W68.rec \
 	
 
 DEF_files = \
