@@ -25,6 +25,7 @@
       *
        01  SPA-K06.
            03  SPA-K06-AREA.
+               07  SPA-K06-MOTOPG      PIC X(08).
                07  SPA-GMN-MAX         PIC 9(04).
                07  SPA-GMN-PAGE        PIC 9(02).
                07  SPA-GMN-CUR         PIC 9(02).

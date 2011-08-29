@@ -41,6 +41,7 @@
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *  04.03.00    NACL-多々納  08/08/01  入院調剤料保険期間チェック対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値・関連コメント対応
+      *  04.07.00    NACL-多々納  11/08/XX  算定履歴付加テーブル削除対応
       *****************************************************************
       *
       *
@@ -274,6 +275,18 @@
        01  TBL-NYU-SRYKA-AREA.
            03  TBL-NYU-SRYKA           PIC X(02)   OCCURS   10.
       *
+      *!!!!
+      *    リハビリ開始日訂正前情報
+       01  TBL-RIHADEL-AREA.
+           03  TBL-RIHADEL-G               OCCURS   10.
+               05  TBL-RIHA-SRYCD          PIC X(09).
+               05  TBL-RIHA-SRYKA          PIC X(02).
+               05  TBL-RIHA-HKNCOMBI       PIC X(04).
+               05  TBL-RIHA-HKNKBN         PIC X(01).
+           03  IDX-RIH                 PIC 9(02).
+           03  IDX-R2                  PIC 9(02).
+      *!!!!
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -441,6 +454,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  TBL-RIHADEL-AREA
       *
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            MOVE    SPACE               TO  ORCSCNYUIN-ERRMSG
@@ -452,6 +466,8 @@
            EVALUATE    ORCSCNYUIN-KBN
       *        診療行為作成
                WHEN    "1"
+      *        診療行為削除（訂正削除）
+               WHEN    "3"
                    PERFORM 100-SAKUSEI-SYORI-SEC
       *        退院処理（診療会計削除）
                WHEN    "2"
@@ -558,6 +574,13 @@
                    PERFORM 200-JYURRK-SYORI-SEC
                END-IF
            END-IF
+      *
+      *!!!!
+           IF      SPA-SYORIFLG        =   1
+      *        リハビリ開始日の履歴付加削除
+               PERFORM 45005-SANTEIPLUS-DEL-SEC
+           END-IF
+      *!!!!
       *
       *    削除の時、受診履歴の連番更新
            IF      SPA-ERRCD           =   SPACE
@@ -1725,6 +1748,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        ORCSSANTEIAREA
                                        SPA-AREA
       *
+      *!!!!
+      *    訂正前のリハビリ開始日判定
+           IF      SPA-SYORIFLG        =   1
+               PERFORM VARYING IDX-R2      FROM    1   BY  1
+                       UNTIL  (IDX-R2      >   IDX-RIH )
+                   IF     (TBL-RIHA-SRYCD(IDX-R2)  =   WRK-SRYCD )
+                       MOVE    SPACE       TO  TBL-RIHA-SRYCD(IDX-R2)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *!!!!
            .
        45021-SANTEI-UPD-EXT.
            EXIT.
@@ -2625,6 +2659,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE                  ORCSSANTEIAREA
            MOVE    "3"                 TO  SSANTEI-SYORI
+      *    削除（算定履歴付加削除）
+           IF     (ORCSCNYUIN-KBN      =   "2"
+                                       OR  "3" )
+               MOVE    "1"                 TO  SSANTEI-SYORI2
+           END-IF
            MOVE    "K03"               TO  SSANTEI-PG
            MOVE    WRK-SRYCD           TO  SSANTEI-SRYCD
            MOVE    SPA-PTID            TO  SSANTEI-PTID
@@ -2673,6 +2712,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SSANTEI-MSANTEIDEL  =   1
                MOVE    1               TO  FLG-NAIBUN
            END-IF
+      *
+      *!!!
+      *    リハビリ開始日コード
+           IF      SSANTEI-SANTEIPLUS  =   1
+               ADD     1               TO  IDX-RIH
+               MOVE    WRK-SRYCD       TO  TBL-RIHA-SRYCD (IDX-RIH)
+               MOVE    SSANTEI-SRYKA   TO  TBL-RIHA-SRYKA (IDX-RIH)
+               MOVE    SSANTEI-HKNCOMBINUM
+                                       TO  TBL-RIHA-HKNCOMBI (IDX-RIH)
+               MOVE    SSANTEI-HKNKBN  TO  TBL-RIHA-HKNKBN (IDX-RIH)
+           END-IF
+      *!!!!
       *
            .
        45001131-SANTEI-DEL-EXT.
@@ -3008,6 +3059,39 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        45020-SANTEI-SRYCD-EXT.
            EXIT.
+      *!!!!
+      *****************************************************************
+      *    リハビリ開始日の履歴付加削除
+      *****************************************************************
+       45005-SANTEIPLUS-DEL-SEC              SECTION.
+      *
+           PERFORM VARYING IDX-R2      FROM    1   BY  1
+                   UNTIL  (IDX-R2      >   10      )
+               IF      TBL-RIHA-SRYCD(IDX-R2)  NOT =   SPACE
+                   INITIALIZE                  ORCSSANTEIAREA
+                   MOVE    "3"                 TO  SSANTEI-SYORI
+                   MOVE    "2"                 TO  SSANTEI-SYORI2
+                   MOVE    "K03"               TO  SSANTEI-PG
+                   MOVE    TBL-RIHA-SRYCD(IDX-R2)
+                                               TO  SSANTEI-SRYCD
+                   MOVE    SPA-PTID            TO  SSANTEI-PTID
+                   MOVE    SPA-SRYYMD          TO  SSANTEI-SRYYMD
+                   MOVE    ZERO                TO  SSANTEI-KAISU
+                   MOVE    TBL-RIHA-SRYKA (IDX-R2)
+                                               TO  SSANTEI-SRYKA
+                   MOVE    TBL-RIHA-HKNCOMBI (IDX-R2)
+                                               TO  SSANTEI-HKNCOMBINUM
+                   MOVE    TBL-RIHA-HKNKBN (IDX-R2)
+                                               TO  SSANTEI-HKNKBN
+                   CALL    "ORCSSANTEI"        USING
+                                               ORCSSANTEIAREA
+                                               SPA-AREA
+               END-IF
+           END-PERFORM
+           .
+       45005-SANTEIPLUS-DEL-EXT.
+           EXIT.
+      *!!!!
       *
       *****************************************************************
       *    診療科履歴更新処理

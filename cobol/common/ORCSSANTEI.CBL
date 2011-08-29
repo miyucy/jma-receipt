@@ -33,6 +33,7 @@
       *  03.04.01    NACL-多々納  07/03/XX  リハビリ管理料追加（H19.4改正）
       *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
       *  04.05.00    NACL-多々納  10/03/15  平成２２年４月改正対応
+      *  04.07.00    NACL-多々納  11/08/XX  算定履歴付加テーブル削除対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -56,6 +57,7 @@
            03  FLG-SYOKAI          PIC 9(01).
            03  FLG-SRYKARRK        PIC 9(01).
            03  FLG-TENSUPLUS       PIC 9(01).
+           03  FLG-SANTEIPLUS      PIC 9(01).
       *
            03  FLG-MANSEI-ALL      PIC 9(01).
       *
@@ -158,6 +160,10 @@
        01  KEN2-SANTEI-REC.
            COPY    "CPSANTEI.INC"   REPLACING
                                     //SANTEI-// BY //KEN2-SANTEI-//.
+      *    算定履歴
+       01  HZN2-SANTEI-REC.
+           COPY    "CPSANTEI.INC"   REPLACING
+                                    //SANTEI-// BY //HZN2-SANTEI-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -176,6 +182,10 @@
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
+      *    算定履歴付加
+       01  SANTEIPLUS-REC.
+           COPY    "CPSANTEIPLUS.INC".
+      *
       *    診療科履歴
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
@@ -186,7 +196,7 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
-     *
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -537,6 +547,9 @@
            ELSE
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
            END-IF
+      *!!
+           MOVE    SANTEI-REC          TO  HZN2-SANTEI-REC
+      *!!
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
@@ -1357,6 +1370,24 @@
                GO      TO      300-DELETE-SYORI-EXT
             END-IF
       *
+      *!!!
+      *    算定履歴付加情報削除
+           IF      SSANTEI-SYORI2      =   "2"
+               IF      FLG-SANTEI      =   1
+      *            算定履歴がない時
+                   MOVE    HZN2-SANTEI-REC     TO  SANTEI-REC
+                   MOVE    WRK-SRYYMD(7:2)     TO  IDX-Y2
+                   PERFORM 30010-SANTEIPLUS-DEL-SEC
+               ELSE
+      *            算定回数がゼロの時
+                   MOVE    WRK-SRYYMD(7:2)     TO  IDX-Y2
+                   IF      SANTEI-DAY (IDX-Y2) =   ZERO
+                       PERFORM 30010-SANTEIPLUS-DEL-SEC
+                   END-IF
+               END-IF
+      *!!!
+               GO      TO      300-DELETE-SYORI-EXT
+           END-IF
       *    対象データが無い時、終了
            IF      FLG-SANTEI          =   1
                GO      TO      300-DELETE-SYORI-EXT
@@ -1478,6 +1509,20 @@
                PERFORM 510-SANTEI-UPD-SEC
            END-IF
       *
+      *    算定履歴付加情報の判定
+           MOVE    ZERO                TO  SSANTEI-SANTEIPLUS
+           MOVE    WRK-SRYYMD(7:2)     TO  IDX-Y2
+           IF     (SSANTEI-SRYCD(1:7)  =   "0998001")
+            AND   (SANTEI-DAY (IDX-Y2) =   ZERO    )
+               PERFORM 30010-SANTEIPLUS-CHK-SEC
+           END-IF
+      *    算定履歴付加情報の削除
+           IF     (SSANTEI-SYORI2      =   "1" )
+            AND   (SSANTEI-SANTEIPLUS  =   1   )
+               PERFORM 30010-SANTEIPLUS-DEL-SEC
+               MOVE    ZERO                TO  SSANTEI-SANTEIPLUS
+           END-IF
+      *
       *    すべての初回回数の変更
            IF      FLG-SYOKAI          =   1
                PERFORM 400-SANTEI-ALLUPD-SEC
@@ -1595,6 +1640,75 @@
       *
            .
        300111-DEL-SYOKAI-EXT.
+           EXIT.
+      *!!!!
+      *****************************************************************
+      *    リハビリ開始日の算定履歴付加情報削除処理
+      *****************************************************************
+       30010-SANTEIPLUS-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  SANTEIPLUS-REC
+           MOVE    SANTEI-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
+           MOVE    SANTEI-PTID         TO  SANTEIPLUS-PTID
+           MOVE    SANTEI-SRYCD        TO  SANTEIPLUS-SRYCD
+           MOVE    SANTEI-SRYYM        TO  SANTEIPLUS-SRYYM
+           MOVE    SANTEI-SRYKA        TO  SANTEIPLUS-SRYKA
+           MOVE    SANTEI-NYUGAIKBN    TO  SANTEIPLUS-NYUGAIKBN
+           MOVE    SANTEI-HKNCOMBINUM  TO  SANTEIPLUS-HKNCOMBINUM
+           MOVE    IDX-Y2              TO  SANTEIPLUS-DAYKEY
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEIPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    算定履歴付加情報あり
+           IF      FLG-SANTEIPLUS      =   ZERO
+               MOVE    1                   TO  SSANTEI-SANTEIPLUS
+           END-IF
+           .
+       30010-SANTEIPLUS-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    リハビリ開始日の算定履歴付加情報削除処理
+      *****************************************************************
+       30010-SANTEIPLUS-DEL-SEC         SECTION.
+      *
+      *    今回削除の算定履歴付加情報を削除
+           INITIALIZE                  SANTEIPLUS-REC
+           MOVE    SANTEI-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
+           MOVE    SANTEI-PTID         TO  SANTEIPLUS-PTID
+           MOVE    SANTEI-SRYCD        TO  SANTEIPLUS-SRYCD
+           MOVE    SANTEI-SRYYM        TO  SANTEIPLUS-SRYYM
+           MOVE    ZERO                TO  SANTEIPLUS-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEIPLUS-SRYKA
+           MOVE    SANTEI-HKNCOMBINUM  TO  SANTEIPLUS-HKNCOMBINUM
+           MOVE    IDX-Y2              TO  SANTEIPLUS-DAYKEY
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ORCSSANTEI  DEL ERR:" SANTEIPLUS-KEY
+                                      ","   MCP-RC
+               MOVE    "9000"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+        30010-SANTEIPLUS-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1872,7 +1986,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                   ","  MCP-RC
                MOVE    "9000"          TO  SPA-ERRCD
            END-IF
-      *
            .
        520-SANTEI-DEL-EXT.
            EXIT.
@@ -1983,6 +2096,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        920-SANTEI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴付加情報マスタ読み込み
+      *****************************************************************
+       920-SANTEIPLUS-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEIPLUS-REC
+               MOVE    ZERO                TO  FLG-SANTEIPLUS
+           ELSE
+               INITIALIZE                      SANTEIPLUS-REC
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+           .
+       920-SANTEIPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -64,6 +64,7 @@
       *  04.04.00    NACL-多々納  08/12/24  入院料包括対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.06.00    NACL-多々納  10/09/06  自費保険入院中入力対応
+      *  04.07.00    NACL-多々納  11/08/XX  算定履歴付加情報削除対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -165,6 +166,7 @@
            03  FLG-SYUMEI          PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-SYUTTL          PIC 9(01).
+           03  FLG-SANTEIPLUS      PIC 9(01).
       *
            03  FLG-NAIYAK          PIC X(01).
            03  FLG-TONPUK          PIC X(01).
@@ -677,6 +679,10 @@
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
+      *    算定履歴付加情報
+       01  SANTEIPLUS-REC.
+           COPY    "CPSANTEIPLUS.INC".
+      *
       *    入力セットコード
        01  INPUTSET-REC.
            COPY    "CPINPUTSET.INC".
@@ -1027,6 +1033,7 @@
                                                       OR  "P97"
                                                       OR  "XC01"
                                                       OR  "C50"
+                                                      OR  "K06"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-J02
                    MOVE    SPA-WORK        TO  SPA-J01KYOUTU
@@ -1043,6 +1050,7 @@
                END-IF
       *        コメント入力から
                IF      WRK-MOTOPG          =   "C50"
+                                           OR  "K06"
                    GO      TO      300-SCREEN-EXT
                END-IF
       *        外部より選択がある時
@@ -3788,6 +3796,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    プレビュー
                WHEN    "CLICKED"       ALSO    "B01S"
                    PERFORM 4010-PREVIEW-SYORI-SEC
+      *!!!
+      *    算定履歴画面へ
+               WHEN    "CLICKED"       ALSO    "B08S"
+                   PERFORM 4801-K06-SYORI-SEC
+      *!!!
            END-EVALUATE
       *
            .
@@ -8715,6 +8728,58 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    算定履歴画面へ
+      *****************************************************************
+       4801-K06-SYORI-SEC              SECTION.
+      *
+      *    患者選択チェック
+           IF      SPA-GMN-PTID        =   ZERO
+               MOVE    "0019"          TO  SPA-ERRCD
+               GO      TO      4801-K06-SYORI-EXT
+           END-IF
+      *    剤修正のチェック
+           IF      SPA-GMN-BANGO   NOT =   ZERO
+               MOVE    "0009"          TO  SPA-ERRCD
+               GO      TO      4801-K06-SYORI-EXT
+           END-IF
+      *
+      *    戻り時、画面を元へ戻す
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-J02             TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "J02"               TO  SPA-MOTOPG
+           MOVE    "K06"               TO  SPA-SAKIPG
+      *
+      *****MOVE    SPACE               TO  SPA-KYOTUKEY
+      *    遷移後の初期表示
+           MOVE    SPA-GMN-SRYYM       TO  SPA-SRYYMDW(1:6)
+           MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD (1:6)
+           MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
+           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  SPA-PTID
+           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
+           MOVE    SPA-GMN-NAME        TO  SPA-NAME
+           MOVE    SPA-GMN-KANANAME    TO  SPA-KANANAME
+           MOVE    SPA-GMN-SEX         TO  SPA-SEX
+           MOVE    SPA-GMN-BIRTHDAYW   TO  SPA-BIRTHDAYW
+           MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAY
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE.
+           MOVE    "K06"               TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4801-K06-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    前月選択　処理
       *****************************************************************
        41018-ZENGETU-HEN-SEC             SECTION.
@@ -11530,8 +11595,223 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        ORCSSANTEIAREA
                                        SPA-AREA
       *
+      *    算定履歴付加情報処理
+           IF      (WRK-SRYCD (1:7)    =   "0998001")
+             AND   (SPA-ERRCD          =   SPACE    )
+               IF      FLG-SYORI           =   1
+      *            受診日の変更
+                   PERFORM 490212-SANTEIPLUS-SYORI02-SEC
+               ELSE
+                   PERFORM 490211-SANTEIPLUS-SYORI-SEC
+               END-IF
+           END-IF
            .
        49021-SANTEI-UPD-EXT.
+           EXIT.
+      *****************************************************************
+      *    リハビリ開始日算定履歴付加情報処理
+      *****************************************************************
+       490211-SANTEIPLUS-SYORI-SEC            SECTION.
+      *TEST
+            DISPLAY "490211-SANTEIPLUS-SYORI-SEC"
+                 ",WRK-SRYCD:"  WRK-SRYCD
+      *TEST
+      *
+      *    算定履歴検索
+           MOVE    SPACE               TO  SANTEI-REC
+           INITIALIZE                      SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ACCT-SRYYM          TO  SANTEI-SRYYM
+      *
+           IF     (SPA-HKNKBN      NOT =   ZERO)
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+           END-IF
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    算定履歴付加情報検索
+           INITIALIZE                  SANTEIPLUS-REC
+           MOVE    SANTEI-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
+           MOVE    SANTEI-PTID         TO  SANTEIPLUS-PTID
+           MOVE    SANTEI-SRYCD        TO  SANTEIPLUS-SRYCD
+           MOVE    SANTEI-SRYYM        TO  SANTEIPLUS-SRYYM
+           MOVE    SANTEI-SRYKA        TO  SANTEIPLUS-SRYKA
+           MOVE    SANTEI-NYUGAIKBN    TO  SANTEIPLUS-NYUGAIKBN
+           MOVE    SANTEI-HKNCOMBINUM  TO  SANTEIPLUS-HKNCOMBINUM
+      *    MOVE    IDX-Y2              TO  SANTEIPLUS-DAYKEY
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEIPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+           PERFORM
+                   UNTIL   FLG-SANTEIPLUS  =   1
+               IF      SANTEI-DAY (SANTEIPLUS-DAYKEY)  =   ZERO
+      *            算定のない日は、削除
+                   PERFORM 4902111-SANTEIPLUS-DELETE-SEC
+               END-IF
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEIPLUS-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       490211-SANTEIPLUS-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴付加情報削除処理
+      *****************************************************************
+       4902111-SANTEIPLUS-DELETE-SEC            SECTION.
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "J02 SANTEIPLUS DEL ERR:" SANTEIPLUS-KEY
+                                      ","   MCP-RC
+           END-IF
+           .
+       4902111-SANTEIPLUS-DELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    リハビリ開始日算定履歴付加情報処理
+      *****************************************************************
+       490212-SANTEIPLUS-SYORI02-SEC  SECTION.
+      *
+      *    算定履歴付加情報検索
+           INITIALIZE                  SANTEIPLUS-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEIPLUS-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEIPLUS-PTID
+           MOVE    WRK-SRYCD           TO  SANTEIPLUS-SRYCD
+           MOVE    ACCT-SRYYM          TO  SANTEIPLUS-SRYYM
+           MOVE    ZERO                TO  SANTEIPLUS-SRYKA
+           MOVE    ZERO                TO  SANTEIPLUS-NYUGAIKBN
+      *
+           IF     (SPA-HKNKBN      NOT =   ZERO)
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEIPLUS-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEIPLUS-HKNCOMBINUM
+           END-IF
+           MOVE    IDX-D2              TO  SANTEIPLUS-DAYKEY
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEIPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    変更前に存在する時、削除
+           IF      FLG-SANTEIPLUS      =   ZERO
+               MOVE    IDX-D1              TO  SANTEIPLUS-DAYKEY
+      *
+               MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "del3"              TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               GO      TO   490212-SANTEIPLUS-SYORI02-EXT
+           END-IF
+      *    算定履歴付加情報検索
+           INITIALIZE                  SANTEIPLUS-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEIPLUS-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEIPLUS-PTID
+           MOVE    WRK-SRYCD           TO  SANTEIPLUS-SRYCD
+           MOVE    ACCT-SRYYM          TO  SANTEIPLUS-SRYYM
+           MOVE    ZERO                TO  SANTEIPLUS-SRYKA
+           MOVE    ZERO                TO  SANTEIPLUS-NYUGAIKBN
+      *
+           IF     (SPA-HKNKBN      NOT =   ZERO)
+               MOVE    SPA-HKNCOMBINUM     TO  SANTEIPLUS-HKNCOMBINUM
+           ELSE
+               MOVE    ZERO                TO  SANTEIPLUS-HKNCOMBINUM
+           END-IF
+           MOVE    IDX-D1              TO  SANTEIPLUS-DAYKEY
+      *
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEIPLUS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+           PERFORM
+                   UNTIL   FLG-SANTEIPLUS  =   1
+      *        削除
+               PERFORM 4902111-SANTEIPLUS-DELETE-SEC
+      *        算定日変更
+               MOVE    IDX-D2              TO  SANTEIPLUS-DAYKEY
+               MOVE    SMCNDATE-YMD        TO  SANTEI-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
+      *
+               MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "J02 SANTEIPLUS INS ERR:" SANTEIPLUS-KEY
+                                          ","   MCP-RC
+                   MOVE    "2000"          TO  SPA-ERRCD
+               END-IF
+      *
+               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEIPLUS-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       490212-SANTEIPLUS-SYORI02-EXT.
            EXIT.
       *****************************************************************
       *    収納変更確認遷移処理
@@ -13885,6 +14165,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        920-SANTEI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    算定歴マスタ読み込み
+      *****************************************************************
+       920-SANTEIPLUS-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SANTEIPLUS-REC
+               MOVE    ZERO                TO  FLG-SANTEIPLUS
+           ELSE
+               INITIALIZE                      SANTEIPLUS-REC
+               MOVE    1                   TO  FLG-SANTEIPLUS
+           END-IF
+      *
+           .
+       920-SANTEIPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************

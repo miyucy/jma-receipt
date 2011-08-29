@@ -450,6 +450,7 @@
            MOVE    SPA-SRYYMDW (1:6)   TO  SPA-GMN-SRYYM
            MOVE    SPA-SRYYMD  (1:6)   TO  SPA-NAI-SRYYM
       *
+           MOVE    SPA-MOTOPG          TO  SPA-K06-MOTOPG
       *
            PERFORM 3101-SANTEI-SPA-SEC
            .
@@ -1346,7 +1347,8 @@
                MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
                MOVE    SPACE               TO  SPA-MOTOPG2
            ELSE
-               MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
+    ****       MOVE    SPA-HZN-MOTOPG      TO  SPA-SAKIPG
+               MOVE    SPA-K06-MOTOPG      TO  SPA-SAKIPG
            END-IF
            MOVE    "K06"               TO  SPA-MOTOPG
       *
