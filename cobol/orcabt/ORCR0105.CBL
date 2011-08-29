@@ -129,6 +129,8 @@
       *  04.05.25    NACL-藤原    11/08/02  点検レセ印字位置変更対応
       *  04.05.26    NACL-門脇    11/08/08  ７０歳未満現物給付の摘要欄
       *                                     低所得記載修正
+      *  04.05.27    NACL-藤原    11/08/25  公費単独対応
+      *                                     保険履歴を最大１００に変更
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -582,7 +584,7 @@
       *                 
       *    保険履歴編集（適用欄）
            03  WRK-HKN-RIREKI-AREA.
-               05  WRK-HKN-RIREKI-TBL          OCCURS  50.  
+               05  WRK-HKN-RIREKI-TBL          OCCURS  100.  
                    07  WRK-HKN-RIREKI          PIC X(52).
                    07  WRK-HKN-RIREKI-W   REDEFINES    WRK-HKN-RIREKI.
                        09  WRK-HKN-MEISYO      PIC X(04).
@@ -597,7 +599,7 @@
                                13  WRK-HKN-TEKEDMD
                                                PIC X(12).
                            11  WRK-HKN-FL2     PIC X(04).
-           03  WRK-RIREKI-MAX                  PIC 9(02).                
+           03  WRK-RIREKI-MAX                  PIC 9(03).                
            03  WRK-HKN-RIREKI-X                PIC X(60).
            03  WRK-HKN-HKNJANUM                PIC X(16).
            03  WRK-HKN-NUM                     PIC X(50).
@@ -2077,7 +2079,7 @@
                ADD     1                  TO  CNT-RECE09
       *
                ADD     1                  TO  WRK-RIREKI-MAX
-               IF      WRK-RIREKI-MAX     >   50
+               IF      WRK-RIREKI-MAX     >   100
                    MOVE    "保険履歴情報がテーブルオーバーしました"
                                               TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
@@ -2177,7 +2179,7 @@
                               INTO    WRK-HKN-RIREKI (WRK-RIREKI-MAX)
                        END-STRING
                        ADD     1                   TO  WRK-RIREKI-MAX
-                       IF      WRK-RIREKI-MAX     >   50
+                       IF      WRK-RIREKI-MAX     >   100
                            MOVE
                                "保険履歴情報がテーブルオーバーしました"
                                                    TO  WRK-RECEERR
@@ -2200,7 +2202,7 @@
                IF      WRK-HKN-RIREKI (WRK-RIREKI-MAX)
                                           NOT =   SPACE
                    ADD     1                   TO  WRK-RIREKI-MAX
-                   IF      WRK-RIREKI-MAX     >   50
+                   IF      WRK-RIREKI-MAX     >   100
                        MOVE    "保険履歴情報がテーブルオーバーしました"
                                                    TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
