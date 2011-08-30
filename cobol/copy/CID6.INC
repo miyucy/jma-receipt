@@ -48,5 +48,6 @@
                 04  CID6-VALUE  PIC X(90).
               03  CID6-MSG1.
                 04  CID6-VALUE  PIC X(80).
+              03  CID6-MSG2-STYLE   PIC X(20).
               03  CID6-MSG2.
                 04  CID6-VALUE  PIC X(120).

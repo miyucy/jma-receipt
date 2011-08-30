@@ -64,6 +64,7 @@ CID6	{
 			value	varchar(80);
 		};
 		MSG2	{
+                        style   varchar(20);
 			value	varchar(120);
 		};
 	};

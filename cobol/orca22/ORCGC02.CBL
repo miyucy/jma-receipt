@@ -12068,6 +12068,7 @@ grpsys                                          SPA-AREA
       *
            MOVE    "B12"               TO  MCP-WIDGET
            MOVE    WIDGET-NORMAL       TO  CID6-B12-STATE
+           MOVE    "red"               TO  CID6-MSG2-STYLE
            EVALUATE    SPA-CIDCD6
                WHEN    "0104"
                WHEN    "0106"

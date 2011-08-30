@@ -5377,6 +5377,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
       *
            MOVE    "B12"               TO  MCP-WIDGET
            MOVE    WIDGET-NORMAL       TO  CID6-B12-STATE
+           MOVE    "red"               TO  CID6-MSG2-STYLE
       *
            IF      SPA-C03-CHANGE-MAX  >   6
                STRING  "別のコードで登録を行う場合は"

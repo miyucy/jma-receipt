@@ -1737,7 +1737,7 @@ grpsys                                       SPA-AREA
       *
            MOVE    "B12"               TO  MCP-WIDGET
            MOVE    WIDGET-NORMAL       TO  CID6-B12-STATE
-      *
+           MOVE    "red"               TO  CID6-MSG2-STYLE
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL       IDX     >   6
