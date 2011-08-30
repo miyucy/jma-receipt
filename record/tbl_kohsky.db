@@ -8,9 +8,7 @@ TEISYUTUSAKI	number(1,0);
 RECESYUBETU	char(4);
 HKNJANUM_KEY	char(8);
 HOJOKBN_KEY     char(1);
-KOHID_KEY       number(10);
 TEKSTYMD	char(8);
-RECEIPT_KBN	char(10);
 PTNUM		char(20);
 KANANAME        char(50);
 NAME            char(100);
@@ -534,14 +532,14 @@ FLG4				number(1,0);
 FLG5				number(1,0);
 CREYMD	        char(8);
 UPDYMD	        char(8);
-#-----> æ¤œç´¢ç”¨é …ç›®
+#-----> ¸¡º÷ÍÑ¹àÌÜ
 XXKOHNUM1 			char(3),virtual;
 XXKOHNUM2 			char(3),virtual;
 XXKOHNUM3 			char(3),virtual;
 XXKOHNUM4 			char(3),virtual;
 };
 primary{
-	HOSPNUM,SRYYM,NYUGAIKBN,PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM_KEY,HOJOKBN_KEY,KOHID_KEY,TEKSTYMD,RECEIPT_KBN;
+	HOSPNUM,SRYYM,NYUGAIKBN,PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM_KEY,HOJOKBN_KEY,TEKSTYMD;
 };
 
 path	key		{ 	
@@ -558,9 +556,7 @@ path	key		{
                   AND   RECESYUBETU  =   :RECESYUBETU
                   AND   HKNJANUM_KEY =   :HKNJANUM_KEY
                   AND   HOJOKBN_KEY  =   :HOJOKBN_KEY
-                  AND   KOHID_KEY    =   :KOHID_KEY 
                   AND   TEKSTYMD     =   :TEKSTYMD
-                  AND   RECEIPT_KBN    =   :RECEIPT_KBN
 		;
 	};
 };
