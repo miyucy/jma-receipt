@@ -274,6 +274,14 @@
        01  PTHKNRRK-REC.
            COPY    "CPPTHKNRRK.INC".
       *
+      *    Æþ±¡¥ª¡¼¥À
+       01  ORDER-REC.
+           COPY    "CPORDER.INC".
+      *
+      *    Äê´üÀÁµá°õºþ
+       01  TEIKIPRT-REC.
+           COPY    "CPTEIKIPRT.INC".
+      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
       *****************************************************************
@@ -981,6 +989,30 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_pthknrrk"      TO  MCP-TABLE
            MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *    Æþ±¡¥ª¡¼¥À
+           INITIALIZE                      ORDER-REC
+           MOVE    SPA-HOSPNUM         TO  ORDER-HOSPNUM
+           MOVE    SPA-PTID            TO  ORDER-PTID
+           MOVE    ORDER-REC           TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_order"         TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *    Äê´üÀÁµá°õºþ¾ðÊó
+           INITIALIZE                      TEIKIPRT-REC
+           MOVE    SPA-HOSPNUM         TO  TEIKIPRT-HOSPNUM
+           MOVE    SPA-PTID            TO  TEIKIPRT-PTID
+           MOVE    TEIKIPRT-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_teikiprt"      TO  MCP-TABLE
+           MOVE    "del3"              TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
