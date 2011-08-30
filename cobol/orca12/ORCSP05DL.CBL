@@ -27,12 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 04.07.00     NACL-多々納  12/11/22  患者地域連携対応
-      * 04.07.00     NACL-多々納  12/12/19  患者レセプト分割対応
-      * 04.07.00     NACL-多々納  13/07/XX  患者個別設定対応
-      * 04.07.00     NACL-多々納  14/02/XX  患者介護情報追加対応
-      * 05.00.00     NACL-多々納  16/12/15  患者個人番号
-      *                                     お薬手帳管理・データ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -51,7 +45,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-YYK             PIC 9(01).
            03  FLG-PTSAME          PIC 9(01).
-           03  FLG-OKUKAN          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -102,6 +95,10 @@
       *    年金
        01  TNKRRK-REC.
            COPY    "CPTNKRRK.INC".
+      *
+      *    紹介履歴
+       01  SYKRRK-REC.
+           COPY    "CPSYKRRK.INC".
       *
       *    診療行為マスタ−
        01  SRYACT-REC.
@@ -273,10 +270,6 @@
       *    チェック例外テーブル
            COPY    "CPCHKREIGAI.INC".
       *
-      *    保険確認年月日履歴マスタ
-       01  PTHKNRRK-REC.
-           COPY    "CPPTHKNRRK.INC".
-      *
       *    入院オーダ
        01  ORDER-REC.
            COPY    "CPORDER.INC".
@@ -285,37 +278,6 @@
        01  TEIKIPRT-REC.
            COPY    "CPTEIKIPRT.INC".
       *
-      *    患者地域連携テーブル
-       01  PTPUBLIC-REC.
-           COPY    "CPPTNUM-PUBLIC.INC".
-      *
-      *    患者レセプト分割テーブル
-       01  PT-HDIST-DAY-REC.
-           COPY    "CPPT-HDIST-DAY.INC".
-      *
-      *    患者個別設定テーブル
-       01  PTCONF-REC.
-           COPY    "CPPTCONF.INC".
-      *
-      *    患者介護保険情報テーブル
-       01  PTCARE-HKNINF-REC.
-           COPY    "CPPTCARE-HKNINF.INC".
-      *
-      *    患者介護認定者情報テーブル
-       01  PTCARE-NINTEI-REC.
-           COPY    "CPPTCARE-NINTEI.INC".
-      *H28.12
-      *    患者個人番号テーブル
-       01  PTMYNUMBER-REC.
-           COPY    "CPPTMYNUMBER.INC".
-      *
-      *    お薬手帳管理データ
-       01  OKUSURIKANRI-REC.
-           COPY    "CPOKUSURIKANRI.INC".
-      *
-      *    お薬手帳薬剤データ
-       01  OKUSURIDATA-REC.
-           COPY    "CPOKUSURIDATA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -598,6 +560,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *    紹介履歴
+           INITIALIZE                      SYKRRK-REC
+           MOVE    SPA-HOSPNUM         TO  SYK-HOSPNUM
+           MOVE    SPA-PTID            TO  SYK-PTID
+           MOVE    SYKRRK-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_sykrrk"        TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
@@ -944,19 +918,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *
-      *    患者レセプト分割テーブル
-           INITIALIZE                      PT-HDIST-DAY-REC
-           MOVE    SPA-HOSPNUM         TO  PT-HDIST-DAY-HOSPNUM
-           MOVE    SPA-PTID            TO  PT-HDIST-DAY-PTID
-           MOVE    PT-HDIST-DAY-REC    TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
-           MOVE    "del"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
       *    患者公費負担額マスタ
            INITIALIZE                      PTKOHFTNETC-REC
            MOVE    SPA-HOSPNUM         TO  PTKOHFTNETC-HOSPNUM
@@ -1017,18 +978,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    患者保険確認年月日履歴
-           INITIALIZE                      PTHKNRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTHKNRRK-HOSPNUM
-           MOVE    SPA-PTID            TO  PTHKNRRK-PTID
-           MOVE    PTHKNRRK-REC        TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_pthknrrk"      TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
       *    入院オーダ
            INITIALIZE                      ORDER-REC
            MOVE    SPA-HOSPNUM         TO  ORDER-HOSPNUM
@@ -1053,96 +1002,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    患者地域連携
-           INITIALIZE                      PTPUBLIC-REC
-           MOVE    SPA-HOSPNUM         TO  PTPUBLIC-HOSPNUM
-           MOVE    SPA-PTID            TO  PTPUBLIC-PTID
-           MOVE    PTPUBLIC-REC        TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptnum_public"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-      *    患者個別設定
-           INITIALIZE                      PTCONF-REC
-           MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
-           MOVE    SPA-PTID            TO  PTCONF-PTID
-           MOVE    PTCONF-REC          TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptconf"        TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-      *    患者介護保険情報
-           INITIALIZE                      PTCARE-HKNINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
-           MOVE    SPA-PTID            TO  PTCRHKN-PTID
-           MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-      *    患者介護認定者情報
-           INITIALIZE                      PTCARE-NINTEI-REC
-           MOVE    SPA-HOSPNUM         TO  PTCRNIN-HOSPNUM
-           MOVE    SPA-PTID            TO  PTCRNIN-PTID
-           MOVE    PTCARE-NINTEI-REC   TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *    患者個人番号情報
-           INITIALIZE                      PTMYNUMBER-REC
-           MOVE    SPA-HOSPNUM         TO  PTMYNUM-HOSPNUM
-           MOVE    SPA-PTID            TO  PTMYNUM-PTID
-           MOVE    PTMYNUMBER-REC      TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *H26.5
-      *    医療情報連携基盤データ(レセプト電算)
-           INITIALIZE                      RECEDEN-REC
-           MOVE    SPA-HOSPNUM         TO  RECEDEN-HOSPNUM
-           MOVE    SPA-PTID            TO  RECEDEN-PTID
-           MOVE    RECEDEN-REC         TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_renkei_tmp"    TO  MCP-TABLE
-           MOVE    "del3"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *    ＥＦ出力データ(レセプト電算)
-           INITIALIZE                      RECEDEN-REC
-           MOVE    SPA-HOSPNUM         TO  RECEDEN-HOSPNUM
-           MOVE    SPA-PTID            TO  RECEDEN-PTID
-           MOVE    RECEDEN-REC         TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_efout"         TO  MCP-TABLE
-           MOVE    "del3"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
       *    予約
            PERFORM 2001-YYK-DELETE-SEC
       *
       *    同一患者識別テーブル
            PERFORM 2002-PTSAME-DELETE-SEC
-      *H28.12
-      *    電子お薬手帳連携テーブル
-           PERFORM 2003-OKUSURIKANRI-DELETE-SEC
       *
       *
            .
@@ -1304,65 +1168,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        2002-PTSAME-DELETE-EXT.
            EXIT.
       *
-      *H28.12
-      *
-      *****************************************************************
-      *    電子お薬手帳連携テーブル削除処理
-      *****************************************************************
-       2003-OKUSURIKANRI-DELETE-SEC    SECTION.
-      *
-           INITIALIZE                  OKUSURIKANRI-REC
-           MOVE    SPA-HOSPNUM         TO  OKUKAN-HOSPNUM
-           MOVE    SPA-PTID            TO  OKUKAN-PTID
-      *
-           MOVE    OKUSURIKANRI-REC    TO  MCPDATA-REC
-           MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 910-OKUSURIKANRI-READ-SEC
-           ELSE
-               INITIALIZE                  OKUSURIKANRI-REC
-               MOVE    1               TO  FLG-OKUKAN
-           END-IF
-           PERFORM
-               UNTIL   (FLG-OKUKAN     =   1   )
-      *
-      *        お薬手帳データ削除
-               INITIALIZE                  OKUSURIDATA-REC
-               MOVE    OKUKAN-DATA-KEY     TO  OKUDAT-DATA-KEY
-               MOVE    OKUSURIDATA-REC     TO  MCPDATA-REC
-               MOVE    "tbl_okusuri_data"  TO  MCP-TABLE
-               MOVE    "del1"              TO  MCP-PATHNAME
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-      *
-               MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 910-OKUSURIKANRI-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    お薬手帳管理データ削除
-           INITIALIZE                  OKUSURIKANRI-REC
-           MOVE    SPA-HOSPNUM         TO  OKUKAN-HOSPNUM
-           MOVE    SPA-PTID            TO  OKUKAN-PTID
-           MOVE    OKUSURIKANRI-REC    TO  MCPDATA-REC
-           MOVE    "tbl_okusuri_kanri" TO  MCP-TABLE
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-       2003-OKUSURIKANRI-DELETE-EXT.
-           EXIT.
       *
       *****************************************************************
       *    予約マスター読込処理
@@ -1398,24 +1203,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-PTSAME-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    お薬手帳データ連携　管理マスター読込
-      *****************************************************************
-       910-OKUSURIKANRI-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  OKUSURIKANRI-REC
-               MOVE    ZERO            TO  FLG-OKUKAN
-           ELSE
-               INITIALIZE                  OKUSURIKANRI-REC
-               MOVE    1               TO  FLG-OKUKAN
-           END-IF
-      *
-           .
-       910-OKUSURIKANRI-EXT.
            EXIT.
       *
       *****************************************************************
