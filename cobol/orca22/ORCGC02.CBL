@@ -12078,7 +12078,9 @@ grpsys                                          SPA-AREA
                    CONTINUE
                WHEN    OTHER
       *            病名コード
-                   IF      SPA-NAI-C02-RENNUM  =   ZERO
+                   IF    ( SPA-NAI-C02-RENNUM          =   ZERO )
+                   AND   ( SPA-NAI-C02-BYOMEICD-MAX    >   1    )
+      *               複数病名のとき
                        MOVE   ZERO             TO  IDX
                        PERFORM VARYING IDXX    FROM    1   BY  1
                                UNTIL   IDXX    >       6
