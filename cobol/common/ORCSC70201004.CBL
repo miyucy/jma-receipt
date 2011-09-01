@@ -2421,7 +2421,7 @@
       *    蕙戲價�衝�
            IF     (LNK-ORCSC-NENREI-YY     =   ZERO )  AND
                   (LNK-ORCSC-NENREI-MM     =   ZERO )  AND
-                  (LNK-ORCSC-NENREI-DD     <=  28   )
+                  (LNK-ORCSC-NENREI-DD     <   28   )
                MOVE    WRK-SRYCD1          TO  WRK-SRYCD
            ELSE
       *        ウ苃價﹋ㄢ碟怳坢﹌
@@ -3162,10 +3162,8 @@
       *        鰾觼反ㄠ莢及心午允月
       *        陸侳及凜及心﹋ェ情反鰾觼匹民尼永弁﹌
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
-      **              (WRK-COM-SRYSYUKBN(IDX-Z) NOT =  "950"  AND
-      **                                               "960") AND
-                      (WRK-COM-SRYKBN   (IDX-Z) NOT =  "95"   AND
-                                                       "96" ) AND
+                      (WRK-COM-SRYSYUKBN(IDX-Z) NOT =  "950"  AND
+                                                       "960") AND
                       (WRK-COM-INPUTCD  (IDX-Z)    =   "130009310" OR
                                                        "130003710" OR
                                                        "130003810")
