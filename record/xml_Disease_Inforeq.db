@@ -1,0 +1,8 @@
+xml_Disease_Inforeq {
+	object		object;
+	mode		int;
+	Disease_Inforeq {
+		Patient_ID		varchar(20);
+		Base_Date		varchar(10);
+   	};
+};
