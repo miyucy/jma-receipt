@@ -309,7 +309,7 @@
            END-IF
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_Disease_Inforeq"   TO  MCP-TABLE
+           MOVE    "xml_disease_inforeq"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    APILST7-BODY        TO  DISEREQ-OBJECT
            MOVE    ZERO                TO  DISEREQ-MODE
@@ -326,7 +326,7 @@
            END-IF
       *
            MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_Disease_Inforeq"   TO  MCP-TABLE
+           MOVE    "xml_disease_inforeq"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  DISEREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
@@ -341,7 +341,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_Disease_Inforeq"   TO  MCP-TABLE
+           MOVE    "xml_disease_inforeq"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  DISEREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
@@ -394,7 +394,7 @@
            END-IF
       *
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_Disease_Infores"   TO  MCP-TABLE
+           MOVE    "xml_disease_infores"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  DISERES-MODE
            CALL    "ORCDBMAIN"         USING
@@ -408,7 +408,7 @@
            END-IF
       *
            MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_Disease_Infores"   TO  MCP-TABLE
+           MOVE    "xml_disease_infores"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -421,7 +421,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_Disease_Infores"   TO  MCP-TABLE
+           MOVE    "xml_disease_infores"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA

@@ -1,4 +1,4 @@
-Diseaseget {
+diseaseget {
 		argument {
 			class			varchar(02);
 		};

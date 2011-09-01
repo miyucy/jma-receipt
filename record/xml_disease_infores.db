@@ -1,7 +1,7 @@
-xml_Disease_Infores {
+xml_disease_infores {
     object  object;
 	mode	int;
-	Disease_Infores {
+	disease_infores {
 	Information_Date	varchar(10);
        	Information_Time	varchar(8);
 	Api_Result		varchar(2);
