@@ -194,7 +194,6 @@
                                15  SPA-GMN-I51-SKYSUMKBNMEIL PIC X(28).
       *
                    09  SPA-NAI-I51-HEAD-AREA.
-                       11  SPA-NAI-I51-LOCK          PIC 9(01).
       *                患者番号エラー状態
                        11  SPA-NAI-I51-PTNUM-ERR     PIC X(04).
       *                患者ＩＤ

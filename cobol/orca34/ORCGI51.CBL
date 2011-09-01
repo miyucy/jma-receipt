@@ -700,12 +700,8 @@
            MOVE    SPA-GMN-I51-KANANAME
                                        TO  I51-KANANAME
       *    氏名
+           MOVE    "black"             TO  I51-NAME-STYLE
            MOVE    SPA-GMN-I51-NAME    TO  I51-NAME
-           IF    ( SPA-NAI-I51-LOCK    =   1 )
-               MOVE    "red"           TO  I51-NAME-STYLE
-           ELSE
-               MOVE    "black"         TO  I51-NAME-STYLE
-           END-IF
       *    性別
            MOVE    SPA-GMN-I51-SEX     TO  I51-SEX
       *    保険組み合わせ
@@ -1172,7 +1168,13 @@
                PERFORM 480-KENSAKU-SEC
       *    概算書発行
            WHEN    "CLICKED"       ALSO    "B11"
-               PERFORM 450-GAISANPRT-SEC
+      *
+               PERFORM 990-LOCK-IN-SEC
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 450-GAISANPRT-SEC
+               END-IF
+               PERFORM 990-LOCK-OUT-SEC
+      *
       *    仮計算
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 450-KARIKEISAN-SEC
@@ -2005,13 +2007,6 @@
            MOVE    SPA-GMN-I51-PTNUM   TO  SPA-LAST-PTNUM
            MOVE    SPA-NAI-I51-PTID    TO  SPA-LAST-PTID
       *
-      *    排他制御処理
-           PERFORM 990-LOCK-IN-SEC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               MOVE    1               TO  SPA-NAI-I51-LOCK
-               GO  TO  4101-PTINF-SET-EXT
-           END-IF
-      *
       *    算定開始日
       *    前回定期請求日の翌日か入院日を設定
            PERFORM 4101-SKYSTYMD-GET-SEC
@@ -2351,9 +2346,6 @@
       *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
-      *
-      *    排他制御解除処理
-           PERFORM 990-LOCK-OUT-SEC
       *
            MOVE    "M01"               TO  SPA-SAKIPG
            MOVE    "I51"               TO  SPA-MOTOPG
