@@ -49,7 +49,6 @@
            03  FLG-LOOP-END                PIC 9(01).
            03  FLG-TAISYO-HKN              PIC 9(01).
            03  FLG-CHKSND                  PIC 9(01).
-           03  FLG-PTKOHINF                PIC 9(01).
            03  FLG-GRPCHK                  PIC 9(01).
       *
       *    Åº»úÎÎ°è
@@ -82,7 +81,6 @@
            03  WRK-SRYYMD.
                05  WRK-SRYYM               PIC X(06).
                05  WRK-SRYDD               PIC 9(02).
-           03  WRK-COMPKBN                 PIC X(1).
       *
        01  LEN-AREA.
            03  LEN-CHKMST                  PIC 9(05).
@@ -104,7 +102,6 @@
            03  TBYOMEI-MAX                 PIC 9(05).
            03  TBYOMEI-OCC                 OCCURS 101.
                05  TBYOMEI-BYOMEI          PIC X(160).
-               05  TBYOMEI-HOSOKU          PIC X(40).
                05  TBYOMEI-ERRDAY-G.
                    07  TBYOMEI-ERRDAY      PIC 9(01)   OCCURS  31.
                05  TBYOMEI-KEY.
@@ -132,8 +129,6 @@
                                        VALUE   "7".
            03  CONST-CHIKEN            PIC X(01)
                                        VALUE   "8".
-           03  CONST-DAISAN            PIC X(01)
-                                       VALUE   "9".
            03  CONST-HOUKATU           PIC X(01)
                                        VALUE   "H".
            03  CONST-GRP-MAX           PIC 9(31)
@@ -155,16 +150,9 @@
        01  CHKSND-REC.
            COPY    "CPCHKSND.INC".
       *
-      *    ´µ¼Ô¸øÈñ¾ðÊó
-       01  PTKOHINF-REC.
-           COPY    "CPPTKOHINF.INC".
-      *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
       *****************************************************************
-      *
-      *    Ê¸»úÎóÁàºî¥µ¥Ö
-           COPY    "CPORCSSTRING.INC".
       *
       *    ÆüÉÕÊÑ´¹¥µ¥Ö
            COPY    "CPORCSDAY.INC".
@@ -226,7 +214,7 @@
                                        TBYOMEI-AREA
                                        TGRP-AREA
       *
-           IF    ( SDTCHK01-CHKKBN     =   "1" OR "2" )
+           IF    ( SDTCHK01-CHKKBN     =   "1" )
             AND  ( SDTCHK01-GRPCHKKBN  =   "1" )
                PERFORM 1001-GRP-INIT-SEC
            END-IF
@@ -428,7 +416,6 @@
                        PERFORM 20011-BYOMEICDKEY-HEN-SEC
                        MOVE    QDTCHK-CD       TO  WRK-CHKMST-KEY
                        MOVE    WRK-BYOMEICD-G  TO  WRK-PTBYOMEI-KEY
-                       MOVE    QDTCHK-COMPKBN  TO  WRK-COMPKBN
                        PERFORM 20011-TOTUGO-SEC
                     END-IF
                 END-IF
@@ -437,7 +424,6 @@
                     IF   ( FLG-MATCH           =   ZERO )
                        MOVE    QDTCHK-BYOMEI   TO  WRK-CHKMST-KEY
                        MOVE    QDTCHK-PTBYOMEI TO  WRK-PTBYOMEI-KEY
-                       MOVE    QDTCHK-COMPKBN  TO  WRK-COMPKBN
                        PERFORM 20011-TOTUGO-SEC
                     END-IF
                 END-IF
@@ -451,7 +437,6 @@
                     IF   ( FLG-MATCH           =   ZERO )
                        MOVE    QDTCHK-BYOMEI   TO  WRK-CHKMST-KEY
                        MOVE    QDTCHK-PTBYOMEI TO  WRK-PTBYOMEI-KEY
-                       MOVE    QDTCHK-COMPKBN  TO  WRK-COMPKBN
                        PERFORM 20011-TOTUGO-SEC
                     END-IF
                 END-IF
@@ -465,7 +450,6 @@
                     IF   ( FLG-MATCH           =   ZERO )
                        MOVE    QDTCHK-BYOMEI   TO  WRK-CHKMST-KEY
                        MOVE    QDTCHK-PTBYOMEI TO  WRK-PTBYOMEI-KEY
-                       MOVE    QDTCHK-COMPKBN  TO  WRK-COMPKBN
                        PERFORM 20011-TOTUGO-SEC
                     END-IF
                 END-IF
@@ -479,24 +463,10 @@
                     IF   ( FLG-MATCH           =   ZERO )
                        MOVE    QDTCHK-BYOMEI   TO  WRK-CHKMST-KEY
                        MOVE    QDTCHK-PTBYOMEI TO  WRK-PTBYOMEI-KEY
-                       MOVE    QDTCHK-COMPKBN  TO  WRK-COMPKBN
                        PERFORM 20011-TOTUGO-SEC
                     END-IF
                 END-IF
       *
-           END-IF
-      *
-           IF    ( FLG-MATCH           =   1 )
-               IF    ( QDTCHK-HOSOKU   NOT =   SPACE )
-      *
-                   MOVE    ZERO            TO  FLG-MATCH
-      *
-                   MOVE    QDTCHK-HOSOKU   TO  WRK-CHKMST-KEY
-                   MOVE    QDTCHK-PTHOSOKU TO  WRK-PTBYOMEI-KEY
-                   MOVE    QDTCHK-HOSOKU-COMPKBN
-                                           TO  WRK-COMPKBN
-                   PERFORM 20011-TOTUGO-SEC
-               END-IF
            END-IF
       *
            .
@@ -530,7 +500,7 @@
       *****************************************************************
        20011-TOTUGO-SEC                SECTION.
       *
-           EVALUATE    WRK-COMPKBN
+           EVALUATE    QDTCHK-COMPKBN
            WHEN    "2"
                IF    ( WRK-CHKMST-KEY  =   WRK-PTBYOMEI-KEY )
                        MOVE    1   TO  FLG-MATCH
@@ -564,15 +534,7 @@
                    END-IF
                END-IF
            WHEN    OTHER
-               INITIALIZE       ORCSSTRINGAREA
-               MOVE    "search"        TO  ORCSSTR-COMMAND
-               MOVE    WRK-PTBYOMEI-KEY
-                                       TO  ORCSSTR-STRING1
-               MOVE    WRK-CHKMST-KEY  TO  ORCSSTR-STRING2
-               CALL    "orcsstring" USING  ORCSSTRINGAREA
-               IF    ( ORCSSTR-NUM1    >   ZERO )
-                   MOVE    1           TO  FLG-MATCH
-               END-IF
+               MOVE    1           TO  FLG-MATCH
            END-EVALUATE
       *
            .
@@ -635,14 +597,12 @@
                     OR   ( TBYOMEI-IDX1    >   ZERO    )
       *
                IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE)
-                   IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-PTBYOMEI )
-                    AND  ( TBYOMEI-HOSOKU (IDX1)   =   QDTCHK-PTHOSOKU )
+                   IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-BYOMEI )
                     AND  ( TBYOMEI-SRYKA  (IDX1)   =   QDTCHK-SRYKA )
                        MOVE    IDX1    TO  TBYOMEI-IDX1
                    END-IF
                ELSE
-                   IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-PTBYOMEI )
-                    AND  ( TBYOMEI-HOSOKU (IDX1)   =   QDTCHK-PTHOSOKU )
+                   IF    ( TBYOMEI-BYOMEI (IDX1)   =   QDTCHK-BYOMEI )
                        MOVE    IDX1    TO  TBYOMEI-IDX1
                    END-IF
                END-IF
@@ -657,8 +617,7 @@
                COMPUTE TBYOMEI-MAX
                    =   TBYOMEI-MAX     +   1
       *
-               MOVE    QDTCHK-PTBYOMEI TO  TBYOMEI-BYOMEI (TBYOMEI-MAX)
-               MOVE    QDTCHK-PTHOSOKU TO  TBYOMEI-HOSOKU (TBYOMEI-MAX)
+               MOVE    QDTCHK-BYOMEI   TO  TBYOMEI-BYOMEI (TBYOMEI-MAX)
                MOVE    QDTCHK-SRYKA    TO  TBYOMEI-SRYKA  (TBYOMEI-MAX)
                MOVE    "00000000"      TO  TBYOMEI-SRYYMD (TBYOMEI-MAX)
       *
@@ -748,10 +707,6 @@
                IF    ( SDTCHK01-HKNKBN =   CONST-JIBAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
-           WHEN      ( WRK-ZAIHKNNUM   =   "970" )
-               IF    ( SDTCHK01-HKNKBN =   CONST-DAISAN )
-                   MOVE    1           TO  FLG-TAISYO-HKN
-               END-IF
            WHEN      ( WRK-ZAIHKNNUM   =   "975" )
                IF    ( SDTCHK01-HKNKBN =   CONST-KOUGAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
@@ -835,9 +790,6 @@
                                                 (SDTCHK01-O-MAX)
                    MOVE    TBYOMEI-BYOMEI (IDX0)
                                        TO  SDTCHK01-O-BYOMEI
-                                                (SDTCHK01-O-MAX)
-                   MOVE    TBYOMEI-HOSOKU (IDX0)
-                                       TO  SDTCHK01-O-HOSOKU
                                                 (SDTCHK01-O-MAX)
                    MOVE    TBYOMEI-ERRDAY-G (IDX0)
                                        TO  SDTCHK01-O-ERRDAY-G
@@ -966,6 +918,8 @@
       *
                    MOVE    1               TO  FLG-LOOP-END
       *
+                   CALL    "ORCSDTCHK07"   USING   QDTCHK-REC
+      *
                    IF   ( QDTCHK-UTAGAIFLG     =   "1"  OR "3" )
                        IF    ( SDTCHK01-CHKKBN             =   "1" )
                            IF    ( QDTCHK-UTAGAIKBN        =   "0" )
@@ -986,82 +940,52 @@
                        MOVE    ZERO        TO  FLG-LOOP-END
                    END-IF
       *
-                   IF    ( QDTCHK-TENKIKBN =   "8" )
-                    AND  ( QDTCHK-TENKIYMD (1:6)
-                                          <=   SDTCHK01-KJNYMD (1:6))
-                       MOVE    ZERO        TO  FLG-LOOP-END
-                   END-IF
-      *
                    IF    ( QDTCHK-HKNCOMBI  NOT =   ZERO )
-                    OR   ( QDTCHK-KOHID     NOT =   ZERO )
-      *
-                       MOVE    "99999999"  TO  WRK-BYOEDYMD
-                       IF    ( QDTCHK-TENKIYMD NOT = SPACE )
-                           MOVE    QDTCHK-TENKIYMD
-                                           TO  WRK-BYOEDYMD
+                       MOVE    QDTCHK-HKNCOMBI     TO  WRK-HKNCOMBI
+                       PERFORM 220-HKNCOMBI-GET-SEC
+                       MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
+                       PERFORM 220-TAISYO-HKN-CHK-SEC
+                       IF    ( FLG-TAISYO-HKN  =   ZERO )
+                           MOVE    ZERO            TO  FLG-LOOP-END
                        END-IF
       *
-                       IF    ( QDTCHK-HKNCOMBI  NOT =   ZERO )
-                           MOVE    QDTCHK-HKNCOMBI     TO  WRK-HKNCOMBI
-                           PERFORM 220-HKNCOMBI-GET-SEC
-                           MOVE    COMB-HKNNUM         TO  WRK-ZAIHKNNUM
-                           PERFORM 220-TAISYO-HKN-CHK-SEC
-                           IF    ( FLG-TAISYO-HKN  =   ZERO )
-                               MOVE    ZERO            TO  FLG-LOOP-END
-                           END-IF
+                       MOVE    ZERO            TO  WRK-HKNCOMBI
+                       PERFORM VARYING IDX-COMB    FROM    1   BY  1
+                               UNTIL ( IDX-COMB    >   THKNCOMBI-MAX )
+                                OR   ( WRK-HKNCOMBI    NOT =   ZERO )
       *
-                           MOVE    ZERO            TO  WRK-HKNCOMBI
-                           PERFORM VARYING IDX-COMB FROM    1   BY  1
-                                   UNTIL ( IDX-COMB >   THKNCOMBI-MAX )
-                                    OR   ( WRK-HKNCOMBI NOT =   ZERO )
-      *
-                               IF    ( COMB-HKNCOMBINUM
+                           IF    ( COMB-HKNCOMBINUM
                                                =   THKNCOMBI-HKNCOMBI
                                                         (IDX-COMB))
-                                   MOVE    THKNCOMBI-HKNCOMBI (IDX-COMB)
+                               MOVE    THKNCOMBI-HKNCOMBI (IDX-COMB)
                                                    TO  WRK-HKNCOMBI
-      *
-                                   IF    ( QDTCHK-SRYYMD
-                                               <=  COMB-TEKEDYMD )
-                                    AND  ( WRK-BYOEDYMD
-                                               >=  COMB-TEKSTYMD )
-                                       CONTINUE
-                                   ELSE
-                                       MOVE    ZERO    TO  FLG-LOOP-END
-                                   END-IF
-      *
+                               MOVE    "99999999"  TO  WRK-BYOEDYMD
+                               IF    ( QDTCHK-TENKIYMD  NOT =   SPACE )
+                                   MOVE    QDTCHK-TENKIYMD
+                                                   TO  WRK-BYOEDYMD
                                END-IF
       *
-                           END-PERFORM
-      *
-                           IF    ( WRK-HKNCOMBI    =   ZERO )
-                                   MOVE    ZERO    TO  FLG-LOOP-END
-                           END-IF
-                       END-IF
-      *
-                       IF    ( QDTCHK-KOHID    NOT =   ZERO )
-                           MOVE    "970"           TO  WRK-ZAIHKNNUM
-                           PERFORM 220-TAISYO-HKN-CHK-SEC
-                           IF    ( FLG-TAISYO-HKN  =   ZERO )
-                               MOVE    ZERO        TO  FLG-LOOP-END
-                           ELSE
-                               PERFORM 900-PTKOHINF-KEY-SEL-SEC
                                IF    ( QDTCHK-SRYYMD
-                                                   <=  PTKOH-TEKEDYMD )
+                                               <=  COMB-TEKEDYMD )
                                 AND  ( WRK-BYOEDYMD
-                                                   >=  PTKOH-TEKSTYMD )
+                                               >=  COMB-TEKSTYMD )
                                    CONTINUE
                                ELSE
                                    MOVE    ZERO    TO  FLG-LOOP-END
                                END-IF
+      *
                            END-IF
+      *
+                       END-PERFORM
+      *
+                       IF    ( WRK-HKNCOMBI    =   ZERO )
+                                   MOVE    ZERO    TO  FLG-LOOP-END
                        END-IF
       *
                    ELSE
                        IF    ( SDTCHK01-HKNKBN      =  CONST-ROSAI
                                                     OR CONST-JIBAI
-                                                    OR CONST-KOUGAI 
-                                                    OR CONST-DAISAN )
+                                                    OR CONST-KOUGAI  )
                            MOVE    ZERO            TO  FLG-LOOP-END
                        END-IF
                    END-IF
@@ -1123,35 +1047,6 @@
       *
            .
        900-CHKSND-KEY25-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊó¸¡º÷½èÍý
-      *****************************************************************
-       900-PTKOHINF-KEY-SEL-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PTKOHINF
-           INITIALIZE                      PTKOHINF-REC
-           MOVE    SDTCHK01-HOSPNUM    TO  PTKOH-HOSPNUM
-           MOVE    SDTCHK01-PTID       TO  PTKOH-PTID
-           MOVE    QDTCHK-KOHID        TO  PTKOH-KOHID
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
-           ELSE
-               MOVE    1               TO  FLG-PTKOHINF
-               INITIALIZE                  PTKOHINF-REC
-           END-IF
-      *
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-      *
-       900-PTKOHINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
