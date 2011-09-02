@@ -1,10 +1,10 @@
 \set ON_ERROR_STOP
 --
--- Ï«ºÒ´ð½à´ÆÆÄ½ð¥Þ¥¹¥¿
+-- Ï«Æ¯´ð½à´ÆÆÄ½ð¥Þ¥¹¥¿
 --
--- Create Date : 2011/08/18 --
+-- Create Date : 2011/09/01 --
 --
-create	table	tbl_rsikantokusyo	(
+create	table	tbl_labor_sio	(
 	SYOCD		char(5),
 	YUKOSTYMD	char(8),
 	YUKOEDYMD	char(8),
@@ -15,11 +15,11 @@ create	table	tbl_rsikantokusyo	(
 	UPYMD		char(8),
 	UPHMS		char(6)
 );
-ALTER TABLE ONLY tbl_rsikantokusyo
-	ADD CONSTRAINT tbl_rsikantokusyo_primary_key PRIMARY KEY (SYOCD,YUKOSTYMD,YUKOEDYMD)
+ALTER TABLE ONLY tbl_labor_sio
+	ADD CONSTRAINT tbl_labor_sio_primary_key PRIMARY KEY (SYOCD,YUKOSTYMD,YUKOEDYMD)
 ;
 
-COPY "tbl_rsikantokusyo" FROM stdin;
+COPY "tbl_labor_sio" FROM stdin;
 01101	20080401	99999999	»¥ËÚÃæ±û					
 01102	20080401	99999999	È¡´Û					
 01103	20080401	99999999	¾®Ã®					

@@ -171,5 +171,5 @@ db	{
 	exec_sql;
 	tbl_prtctrl;
 	tbl_pthknrrk;
-	tbl_rsikantokusyo;
+	tbl_labor_sio;
 };

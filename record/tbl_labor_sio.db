@@ -1,4 +1,4 @@
-tbl_rsikantokusyo {
+tbl_labor_sio {
 	SYOCD			char(5);
 	YUKOSTYMD		char(8);
 	YUKOEDYMD		char(8);
@@ -17,9 +17,9 @@ primary	{
 
 path	key	{
 	DBSELECT	{
-		DECLARE tbl_rsikantokusyo_key_csr CURSOR FOR
+		DECLARE tbl_labor_sio_key_csr CURSOR FOR
 		SELECT *
-		FROM tbl_rsikantokusyo
+		FROM tbl_labor_sio
 			WHERE	SYOCD        =  :SYOCD
 			AND	YUKOSTYMD   <=  :YUKOSTYMD
 			AND	YUKOEDYMD   >=  :YUKOEDYMD
@@ -29,9 +29,9 @@ path	key	{
 
 path	all	{
 	DBSELECT	{
-		DECLARE tbl_rsikantokusyo_all_csr CURSOR FOR
+		DECLARE tbl_labor_sio_all_csr CURSOR FOR
 		SELECT *
-		FROM tbl_rsikantokusyo
+		FROM tbl_labor_sio
       		;
 	};
 };

@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       *******************************************************************
       ************************************************************
-      *    労災基準監督署マスタ     COPY  (CPRSIKANTOKUSYO.INC)  *
+      *    労働基準監督署マスタ     COPY  (CPLABOR-SIO.INC)      *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-      *01  RSIKANTOKUSYO-REC.
+      *01  LABOR-SIO-REC.
       *キー
-           03  RSIKANTOKUSYO-KEY.
+           03  LABOR-SIO-KEY.
       *署コード
-               05  RSIKANTOKUSYO-SYOCD          PIC  X(05).
+               05  LABOR-SIO-SYOCD          PIC  X(05).
       *有効開始年月日
-               05  RSIKANTOKUSYO-YUKOSTYMD      PIC  X(08).
+               05  LABOR-SIO-YUKOSTYMD      PIC  X(08).
       *有効終了年月日
-               05  RSIKANTOKUSYO-YUKOEDYMD      PIC  X(08).
+               05  LABOR-SIO-YUKOEDYMD      PIC  X(08).
       *名称
-           03  RSIKANTOKUSYO-NAME               PIC  X(50).
+           03  LABOR-SIO-NAME               PIC  X(50).
       *端末ＩＤ
-           03  RSIKANTOKUSYO-TERMID             PIC  X(16).
+           03  LABOR-SIO-TERMID             PIC  X(16).
       *オペーレータＩＤ
-           03  RSIKANTOKUSYO-OPID               PIC  X(16).
+           03  LABOR-SIO-OPID               PIC  X(16).
       *作成年月日
-           03  RSIKANTOKUSYO-CREYMD             PIC  X(08).
+           03  LABOR-SIO-CREYMD             PIC  X(08).
       *更新年月日
-           03  RSIKANTOKUSYO-UPYMD              PIC  X(08).
+           03  LABOR-SIO-UPYMD              PIC  X(08).
       *更新時間
-           03  RSIKANTOKUSYO-UPHMS              PIC  X(06).
+           03  LABOR-SIO-UPHMS              PIC  X(06).
