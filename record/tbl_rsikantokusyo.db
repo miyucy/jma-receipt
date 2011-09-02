@@ -1,0 +1,37 @@
+tbl_rsikantokusyo {
+	SYOCD			char(5);
+	YUKOSTYMD		char(8);
+	YUKOEDYMD		char(8);
+	NAME			varchar(50);
+	TERMID			varchar(16);
+	OPID			varchar(16);
+	CREYMD			char(8);
+	UPYMD			char(8);
+	UPHMS			char(6);
+};
+
+primary	{
+	SYOCD,YUKOSTYMD,YUKOEDYMD;
+
+};
+
+path	key	{
+	DBSELECT	{
+		DECLARE tbl_rsikantokusyo_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rsikantokusyo
+			WHERE	SYOCD        =  :SYOCD
+			AND	YUKOSTYMD   <=  :YUKOSTYMD
+			AND	YUKOEDYMD   >=  :YUKOEDYMD
+		;
+	};
+};
+
+path	all	{
+	DBSELECT	{
+		DECLARE tbl_rsikantokusyo_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_rsikantokusyo
+      		;
+	};
+};
