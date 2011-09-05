@@ -121,6 +121,7 @@
       *  04.05.00    NACL-太田    10/01/28  拡張漢字対応
       *  04.05.01    NACL-藤原    11/08/02  点検レセ印字位置変更対応
       *  04.05.02    NACL-藤原    11/08/10  労災新様式対応
+      *  04.05.03    NACL-藤原    11/09/02  起動方法の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -380,9 +381,6 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCM58V02.INC".
            COPY    "HCM59V02.INC".
            COPY    "HCN58V02.INC".
-      *
-      *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -656,21 +654,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            IF      CNT-OUT             >   ZERO 
       *
                MOVE    SPACE           TO  SHELLTBL
-      *        ファイルデイレクトリ位置指定
-               INITIALIZE              ORCSMKPASSAREA
-      *********MOVE    "scripts/daily/HCALL2.sh"
-               MOVE    "scripts/daily/HCALL_prv.sh"
-                                       TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
-      *         
+               MOVE    "HCALL_prv.sh"  TO  SHELLTBL-NAME
                MOVE    HC01PARA        TO  SHELLTBL-ARG1
                MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
-               MOVE    "shell"         TO  MCP-PATHNAME
+               MOVE    "daily"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
       *        処理中止設定処理
