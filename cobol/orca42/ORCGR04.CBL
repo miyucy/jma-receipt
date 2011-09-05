@@ -1,4 +1,4 @@
-      ************************************************??********************
+      ********************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
@@ -70,6 +70,8 @@
       *  04.03.03    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *
       *  04.06.01    NACL-藤原    10/08/25  一括入力対応
+      *
+      *  04.07.01    NACL-藤原    11/09/02  起動方法の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -119,9 +121,6 @@
       *
       *    レセプト作成−印刷指示画面ＳＰＡ
            COPY    "R02SCR-SPA".
-      *
-      *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -227,11 +226,6 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
-      *                             
-       01  WRK-SHELL-NAME.
-           05  FILLER             PIC X(16) VALUE
-                                             "scripts/monthly/".
-           05  WRK-SHELL-SHELL    PIC X(20).         
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".             
@@ -1751,13 +1745,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-TERMID          TO  RECEERR-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *
-           MOVE    SPACE           TO  SHELLTBL
-           MOVE    "recept7.sh"        TO  WRK-SHELL-SHELL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    "recept7.sh"        TO  SHELLTBL-NAME
       *     
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG1
            MOVE    WRK-CONS-JOB-SHELLID
@@ -1853,7 +1842,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "monthly"       TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
            COMPUTE SPA-R01-JOBCNT  =   WRK-RECE08-PRTJYUN  +   1
@@ -1964,12 +1953,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            ADD     1               TO  WRK-RECE08-PRTJYUN                 
       *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "recept7.sh"        TO  WRK-SHELL-SHELL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    "recept7.sh"        TO  SHELLTBL-NAME
       *     
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG1
            MOVE    WRK-CONS-JOB-SHELLID
@@ -2029,7 +2013,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "monthly"       TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            .
        45011-RECEPRT-HENSYU-EXT.

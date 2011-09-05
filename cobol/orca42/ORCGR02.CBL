@@ -130,6 +130,8 @@
       *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
       *  04.05.03    NACL-藤原    09/08/19  全件印刷時の自費レセプトの
       *                                     印刷指定対応
+      *
+      *  04.07.01    NACL-藤原    11/09/02  起動方法の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -195,9 +197,6 @@
       *
       *    レセプト作成−印刷指示画面ＳＰＡ
            COPY    "R02SCR-SPA".
-      *
-      *    ファイルデイレクトリ位置指定サブ
-           COPY  "CPMKPASS.INC".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -333,16 +332,6 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
-      *                             
-       01  WRK-SHELL-NAME.
-           05  FILLER             PIC X(16) VALUE
-                                             "scripts/monthly/".
-           05  WRK-SHELL-SHELL    PIC X(20).         
-      *
-       01  WRK-SHELL-NAME1.
-           05  FILLER             PIC X(16) VALUE
-                                             "scripts/allways/".
-           05  WRK-SHELL-SHELL1   PIC X(20).         
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".             
@@ -5437,12 +5426,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
 grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *
            MOVE    SPACE           TO  SHELLTBL
-           MOVE    "recept2.sh"    TO  WRK-SHELL-SHELL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    "recept2.sh"    TO  SHELLTBL-NAME
       *     
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG1
@@ -5545,7 +5529,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "monthly"       TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            COMPUTE SPA-R01-JOBCNT  =   WRK-RECE08-PRTJYUN  +   1
@@ -5899,12 +5883,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
            ADD     1               TO  WRK-RECE08-PRTJYUN                 
       *
            MOVE    SPACE           TO  SHELLTBL
-           MOVE    "recept2.sh"    TO  WRK-SHELL-SHELL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    "recept2.sh"    TO  SHELLTBL-NAME
       *     
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG1
@@ -5936,7 +5915,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "monthly"       TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
@@ -5982,12 +5961,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
            ADD     1               TO  WRK-RECE08-PRTJYUN                 
       *
            MOVE    SPACE           TO  SHELLTBL
-           MOVE    "recept2.sh"    TO  WRK-SHELL-SHELL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    "recept2.sh"    TO  SHELLTBL-NAME
       *     
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG1
@@ -6051,7 +6025,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "monthly"       TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            .
        4502-RECEPRT-INPUT-HENSYU-EXT.
