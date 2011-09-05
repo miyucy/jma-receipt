@@ -179,24 +179,29 @@
            05 PIC  X(30)   VALUE   "                              ".
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "040002".
-           05 PIC  X(30)   VALUE   "老人の保険適応年齢誤りです    ".
-           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "後期高齢者の保険適応年齢誤りで".
+           05 PIC  X(30)   VALUE   "す                            ".
            05 PIC  X(30)   VALUE   "                              ".
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "040003".
-           05 PIC  X(30)   VALUE   "老人の保険が未設定です        ".
+           05 PIC  X(30)   VALUE   "後期高齢者の保険が未設定です  ".
            05 PIC  X(30)   VALUE   "                              ".
            05 PIC  X(30)   VALUE   "                              ".
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "040004".
-           05 PIC  X(30)   VALUE   "老人の負担割合が２割です。３割".
-           05 PIC  X(30)   VALUE   "に登録し直して下さい          ".
+           05 PIC  X(30)   VALUE   "後期高齢者の負担割合が２割です".
+           05 PIC  X(30)   VALUE   "。３割に登録し直して下さい    ".
            05 PIC  X(30)   VALUE   "                              ".
-      *
+      *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "040005".
            05 PIC  X(30)   VALUE   "６５歳以上で退職者国保の入力が".
            05 PIC  X(30)   VALUE   "あります                      ".
            05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "040006".
+           05 PIC  X(30)   VALUE   "前期高齢者医療の適用年齢に到達".
+           05 PIC  X(30)   VALUE   "しています。保険確認を行ってく".
+           05 PIC  X(30)   VALUE   "ださい。                      ".
       *    ** 05xxxx 患者病名
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "050001".
@@ -588,7 +593,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  104.
+           05 ERRMES-OCC   OCCURS  105.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   104.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   105.

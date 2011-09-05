@@ -346,6 +346,7 @@
            03  FLG-SRYCDCHG                            PIC 9(01).
            03  FLG-COMERR                              PIC 9(01).
            03  FLG-ZAIARI                              PIC 9(01).
+           03  FLG-AGE70ERR                            PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -604,6 +605,10 @@
            03  WRK-COMLEN                              PIC 9(08).
            03  WRK-TNSLEN                              PIC 9(08).
            03  WRK-GETUMATU                            PIC X(08).
+           03  WRK-AGE70.
+               05  WRK-AGE70-YY                        PIC 9(04).
+               05  WRK-AGE70-MM                        PIC 9(02).
+               05  WRK-AGE70-DD                        PIC 9(02).
       *
        01  TERRINF-AREA.
            03  TERRINF-SRYCD                           PIC X(09).
@@ -2534,6 +2539,15 @@
                    PERFORM 900-PTHKNINF-KEY-SEL-SEC
                    MOVE    PTHKN-HKNNUM
                                        TO  THKNID-HKNNUM(THKNID-MAX)
+                   MOVE    PTHKN-HOJOKBN
+                                       TO  THKNID-HOJOKBN
+                                                        (THKNID-MAX)
+                   MOVE    PTHKN-TEKSTYMD
+                                       TO  THKNID-TEKSTYMD
+                                                        (THKNID-MAX)
+                   MOVE    PTHKN-KAKUNINYMD
+                                       TO  THKNID-KAKUNINYMD
+                                                        (THKNID-MAX)
                    MOVE    THKNID-MAX  TO  THKNID-IDX
                END-IF
            ELSE
@@ -4873,6 +4887,19 @@
                MOVE    1               TO  FLG-CHKEND (4)
            END-IF
       *
+      *    £·£°ºÐÅþÃ£·î»»½Ð
+           MOVE    PTINF-BIRTHDAY      TO  WRK-AGE70
+           IF    ( WRK-AGE70-DD        >   1 )
+               IF    ( WRK-AGE70-MM    =   12 )
+                   COMPUTE WRK-AGE70-YY    =   WRK-AGE70-YY    +   1
+                   MOVE    1           TO  WRK-AGE70-MM
+               ELSE
+                   COMPUTE WRK-AGE70-MM    =   WRK-AGE70-MM    +   1
+               END-IF
+                   MOVE    1           TO  WRK-AGE70-DD
+           END-IF
+           COMPUTE WRK-AGE70-YY        =   WRK-AGE70-YY    +   70
+      *
            PERFORM VARYING IDX20   FROM    1   BY  1
                    UNTIL ( IDX20   >   THKNCOMBI-MAX )
                     OR   ( FLG-CHKEND (4)  =   1 )
@@ -5035,6 +5062,36 @@
                        END-IF
                    END-IF
                END-IF
+           END-IF
+      *
+           IF    ( FLG-RJN             =   ZERO )
+            AND  ( AGECHK-NENREI      >=   70 )
+               PERFORM VARYING IDX41   FROM    1   BY  1
+                       UNTIL ( IDX41   >   THKNID-MAX )
+      *
+                   IF    ( THKNID-HKNNUM (IDX41)(1:1)    =   "9" )
+                    OR   ( THKNID-HKNNUM (IDX41) =   "039" OR "040" )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO    TO  FLG-AGE70ERR
+                       IF    ( THKNID-HOJOKBN (IDX41)    =   SPACE )
+                           MOVE    1   TO  FLG-AGE70ERR
+                       END-IF
+                       IF    ( THKNID-TEKSTYMD (IDX41) >=  WRK-AGE70 )
+                        OR   ( THKNID-KAKUNINYMD(IDX41)>=  WRK-AGE70 )
+                           CONTINUE
+                       ELSE
+                           MOVE    1   TO  FLG-AGE70ERR
+                       END-IF
+                       IF    ( FLG-AGE70ERR    =   1 )
+                           MOVE    THKNID-HKNNUM (IDX41)
+                                               TO  SRH-HKNNUM
+                           MOVE    "040006"    TO  WRK-ERRCD
+                           INITIALIZE              TERRINF-AREA
+                           PERFORM 211-ERRMES-HEN-SEC
+                       END-IF
+                   END-IF
+               END-PERFORM
            END-IF
       *
            .

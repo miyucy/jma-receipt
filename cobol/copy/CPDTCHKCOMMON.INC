@@ -31,6 +31,9 @@
            03  THKNID-OCC                              OCCURS 20.
                05  THKNID-HKNID                        PIC 9(10).
                05  THKNID-HKNNUM                       PIC X(03).
+               05  THKNID-HOJOKBN                      PIC X(01).
+               05  THKNID-TEKSTYMD                     PIC X(08).
+               05  THKNID-KAKUNINYMD                   PIC X(08).
                05  THKNID-HKNID-DAY-G.
                    07  THKNID-HKNID-DAY                PIC 9(01)
                                                        OCCURS  31.
