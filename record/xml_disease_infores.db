@@ -33,7 +33,6 @@ xml_disease_infores {
 			Disease_OutCome			varchar(2);
 #---> 補足コメント
 			Disease_Supplement_Name		varchar(80);
-			Disease_Supplement_Code		varchar(20)[3];
 #---> カルテ病名
 			Disease_Karte_Name		varchar(160);
 #---> 疾患区分

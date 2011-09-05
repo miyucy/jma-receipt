@@ -703,10 +703,6 @@
       *    補足コメント
            MOVE    SBYOINFO-HOSOKU-COMMENT (IDX)
                                        TO  DISERES-SUPPLEMENT-NAME(IDX)
-      *    補足コメントコード
-           MOVE    SBYOINFO-HOSOKUCD-G (IDX)
-                                       TO  DISERES-SUPPLEMENT-CODE-G
-                                                               (IDX)
       *    カルテ病名
            MOVE    SBYOINFO-CHARTBYOMEI (IDX)
                                        TO  DISERES-KARTE-NAME (IDX)

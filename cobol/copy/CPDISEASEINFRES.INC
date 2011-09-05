@@ -77,10 +77,6 @@
                    05  DISERES-OUTCOME             PIC X(02).
       *            補足コメント
                    05  DISERES-SUPPLEMENT-NAME     PIC X(80).
-      *            補足コメントコード
-                   05  DISERES-SUPPLEMENT-CODE-G.
-                       07  DISERES-SUPPLEMENT-CODE PIC X(20)
-                                                   OCCURS   3.
       *            カルテ病名
                    05  DISERES-KARTE-NAME          PIC X(160).
       *            疾患区分
