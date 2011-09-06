@@ -10419,16 +10419,7 @@
       *
            MOVE    SPACE               TO  WRK-ERRMES
       *
-           IF    ( WRK-ERRCD           =   "140004" )
-             STRING "保険組合せが正しく作成されていません。"
-                                           DELIMITED BY SIZE
-                    "保険または公費情報を確認してください"
-                                           DELIMITED BY SIZE
-             INTO   WRK-ERRMES
-             END-STRING
-           ELSE
-      *
-             PERFORM VARYING IDX-ERRCD   FROM    1   BY  1
+           PERFORM VARYING IDX-ERRCD   FROM    1   BY  1
                    UNTIL ( IDX-ERRCD   >   ERRMES-MAX )
       *
                IF    ( WRK-ERRCD       =   ERRMES-CD (IDX-ERRCD) )
@@ -10437,8 +10428,7 @@
                    MOVE    ERRMES-MAX  TO  IDX-ERRCD
                END-IF
       *
-             END-PERFORM
-           END-IF
+           END-PERFORM
       *
            .
        2111-ERRMES-GET-EXT.
