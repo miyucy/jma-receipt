@@ -5708,7 +5708,7 @@
                WHEN  ( SPA-PREFNUM     =   CONST-FUKUSHIMA )
                 AND  ( SPA-GMN-KOHNUM  =   "445" OR "545" )
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "543" OR "582" OR "743"
+                AND  ( SPA-GMN-KOHNUM  =            "582" OR "743"
                                         OR "442" OR "781" OR "542"
                                         OR "381" OR "372" OR "373" )
                    MOVE    "1"         TO  SPA-GMN-SKJKEIKBN
