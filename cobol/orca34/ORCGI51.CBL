@@ -96,6 +96,7 @@
            03  FLG-HKNCOMBILST-ROW PIC 9(01).
            03  FLG-NYUINKA         PIC 9(01).
            03  FLG-TARGET          PIC 9(01).
+           03  FLG-TEIKIKEISAN     PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -204,6 +205,7 @@
            03  WRK-CHOSEI                  PIC  S9(08).
            03  WRK-IDX                     PIC  9(05).
            03  WRK-SEIKYU                  PIC S9(08).
+           03  WRK-TAIINYMD                PIC  X(08).
       *
        01  WRK-ROW-AREA.
            03  WRK-HKNCOMBILST-ROW         PIC S9(9)   BINARY.
@@ -2840,7 +2842,45 @@
                                        TO  SS006-SKYSTYMD
            MOVE    SPA-NAI-I51-SANTEIEDYMD
                                        TO  SS006-SKYEDYMD
-           MOVE    "1"                 TO  SS006-SKYKBN
+      *
+           IF    ( SPA-NAI-I51-SANTEISTYMD
+                                   =   SPA-NAI-I51-SANTEIEDYMD )
+      *
+               PERFORM 900-PTNYUINRRK-KEY24-SEL-SEC
+      *
+               MOVE    ZERO        TO  FLG-TEIKIKEISAN
+               MOVE    "99999999"  TO  WRK-TAIINYMD
+               PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
+                        OR   ( FLG-TEIKIKEISAN     =   1 )
+      *
+      *
+                   IF    ( PTNYUINRRK-NYUINYMD
+                                   =   WRK-TAIINYMD )
+                    AND  ( PTNYUINRRK-NYUINYMD
+                                   =   SS006-SKYSTYMD )
+                       MOVE    1   TO  FLG-TEIKIKEISAN
+                   END-IF
+      *
+                   MOVE    PTNYUINRRK-TAIINYMD
+                                   TO  WRK-TAIINYMD
+      *
+                   PERFORM 900-PTNYUINRRK-KEY24-FET-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key24"             TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               IF    ( FLG-TEIKIKEISAN     =   1 )
+                   MOVE    "2"             TO  SS006-SKYKBN
+               ELSE
+                   MOVE    "1"             TO  SS006-SKYKBN
+               END-IF
+      *
+           ELSE
+               MOVE    "1"             TO  SS006-SKYKBN
+           END-IF
            CALL    "ORCSS006"      USING
                                    SS006-AREA
                                    SPA-AREA
@@ -4206,6 +4246,52 @@
            .
        900-PTINF-KEY-SEL-EXT.
            EXIT.
+      *****************************************************************
+      *    Æþ±¡ÍúÎò¸¡º÷½èÍý
+      *****************************************************************
+       900-PTNYUINRRK-KEY24-SEL-SEC    SECTION.
+      *
+           MOVE    ZERO            TO  FLG-PTNYUINRRK
+      *
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SPA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
+           MOVE    SPA-PTID        TO  PTNYUINRRK-PTID
+           MOVE    SS006-SKYEDYMD  TO  PTNYUINRRK-NYUINYMD
+           MOVE    SS006-SKYSTYMD  TO  PTNYUINRRK-TAIINYMD
+           MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key24"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1           TO  FLG-PTNYUINRRK
+               INITIALIZE              PTNYUINRRK-REC
+           END-IF
+      *
+           .
+       900-PTNYUINRRK-KEY24-SEL-EXT.
+            EXIT.
+      *****************************************************************
+      *    Æþ±¡ÍúÎòFETCHÍý
+      *****************************************************************
+       900-PTNYUINRRK-KEY24-FET-SEC    SECTION.
+      *
+           MOVE    ZERO            TO  FLG-PTNYUINRRK
+      *
+           MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
+           MOVE    "key24"         TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+           ELSE
+               MOVE    1           TO  FLG-PTNYUINRRK
+               INITIALIZE              PTNYUINRRK-REC
+           END-IF
+      *
+           .
+       900-PTNYUINRRK-KEY24-FET-EXT.
+            EXIT.
       *****************************************************************
       *    Æþ±¡ÍúÎò¸¡º÷½èÍý
       *****************************************************************
