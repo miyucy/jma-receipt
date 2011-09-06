@@ -1082,8 +1082,7 @@
            WHEN    "5"
            WHEN    "A"
            WHEN    "B"
-               IF    ( SPA-GMN-TTEKCD (IDX-LINE) (1:1)     =   "6"
-                                                            OR "7" )
+               IF    ( SPA-GMN-TTEKCD (IDX-LINE) (1:1)     =   "6" )
                    MOVE    "0008"      TO  SPA-ERRCD
                    MOVE    IDX-LINE    TO  IDX-ERR
                END-IF
