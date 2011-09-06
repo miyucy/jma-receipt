@@ -87,6 +87,8 @@
            03  PTRSI-KIJYUNYM              PIC  X(06).
       *Ï«ºÒ¥ì¥»²ó¿ôµ­ºÜ¡§²ó¿ô
            03  PTRSI-KAISU                 PIC  9(03).
+      *Ï«Æ¯´ð½à´ÆÆÄ½ð¥³¡¼¥É
+           03  PTRSI-SYOCD                 PIC  X(05).
       *Ã¼Ëö£É£Ä
            03  PTRSI-TERMID                PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

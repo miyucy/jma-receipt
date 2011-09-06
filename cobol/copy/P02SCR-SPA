@@ -1305,6 +1305,9 @@
       *
                    07  SPA-GMN2D-TANTOIMEI         PIC X(20).
                    07  SPA-GMN2D-SEIKBNMEI         PIC X(20).
+      *            Ï«Æ¯´ð½à´ÆÆÄ½ð¥³¡¼¥É
+                   07  SPA-GMN2D-SYOCD             PIC X(05).
+                   07  SPA-GMN2D-SYOCDNAME         PIC X(30).
       *
                05  SPA-NAI2D-AREA.
                    07  SPA-NAI2D-HKNKBN-MAE        PIC X(01).
@@ -1326,12 +1329,17 @@
       *************07  SPA-NAI2D-SONSHOUKBN-EDANUM   PIC  X(01).
       *            ·Ù¹ð£±
                    07  SPA-NAI2D-KEIFLG            PIC 9(01).
+      *            ·Ù¹ð£²
+                   07  SPA-NAI2D-KEIFLG2           PIC 9(01).
       *
                    07  SPA-NAI2D-GMNIDX            PIC 9(04).
       *            ¼«ÇåÀÕÀÁµá¶èÊ¬
                    07  SPA-JIBAI-SEI               PIC  X(01).
       *            ¸øÌ³ºÒ³²ÀÕÀÁµá¶èÊ¬
                    07  SPA-KOMU-SEI                PIC  X(01).
+      *            Á°Ï«Æ¯´ð½à´ÆÆÄ½ð¥³¡¼¥É
+                   07  SPA-NAI2D-MAE-SYOCD         PIC  X(05).
+                   07  SPA-NAI2D-SYOCDCHK          PIC  X(01).
       *
       *
       *----(01.00.03) LINE ADD START ---------------------------------

@@ -39,6 +39,7 @@
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  04.01.00    NACL-多々納  07/10/19  公務災害追加
       *  04.05.00    NACL-多々納  09/06/26  自賠責請求区分初期設定対応
+      *  04.07.00    NACL-多々納  11/09/06  労働基準監督署コード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -69,6 +70,7 @@
            03  FLG-HKNNUM          PIC 9(01).
            03  FLG-HKNJAINF        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-LABOR-SIO       PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -169,6 +171,10 @@
       *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
+      *
+      *    労働基準監督署マスタ
+       01  LABOR-SIO-REC.
+           COPY    "CPLABOR-SIO.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -484,10 +490,124 @@
                    ELSE
                        MOVE    PTRSI-KAISU         TO  SPA-GMN2D-KAISU
                    END-IF
+      *            労働基準監督署コード
+                   MOVE    PTRSI-SYOCD         TO  SPA-GMN2D-SYOCD
+                   MOVE    PTRSI-SYOCD         TO  SPA-NAI2D-MAE-SYOCD
+                   IF      PTRSI-SYOCD         =   SPACE
+      *                労働基準監督署コード初期設定
+                       PERFORM 30011-SYOCD-INITSET-SEC
+                   END-IF
+                   IF      SPA-GMN2D-SYOCD     NOT =   SPACE
+      *                労働基準監督署名称編集
+                       PERFORM 30012-SYOCD-HEN-SEC
+                   END-IF
            END-EVALUATE
       *
            .
        3001-RSHKN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労働基準監督署コード初期設定処理
+      *****************************************************************
+       30011-SYOCD-INITSET-SEC             SECTION.
+      *
+           EVALUATE    SPA-GMN2D-HKNKBN
+      *        短期給付
+               WHEN    "1"
+      *            労働保険番号
+                   MOVE    SPA-GMN2D-KOHNUM1(1:5)  TO  SPA-GMN2D-SYOCD
+      *        傷病年金
+               WHEN    "2"
+      *            短期給付の登録チェック
+                   PERFORM 30012-SYOCD-DATACHK-SEC
+           END-EVALUATE
+      *
+           .
+       30011-SYOCD-INITSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労働基準監督署名称編集処理
+      *****************************************************************
+       30012-SYOCD-DATACHK-SEC         SECTION.
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTRSIINF"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+           PERFORM UNTIL       FLG-PARA    =   1
+               MOVE    PARA-DATA-REC       TO  PTRSIINF-REC
+               IF     (PTRSI-HKNKBN        =   "1"  )
+                  AND (PTRSI-SHOBYOYMD     =   SPA-NAI2D-SHOBYOYMD)
+                  AND (PTRSI-SAKUJOKBN     =   SPACE )
+      *            傷病年月日が同じ短期給付の労働保険番号とする
+                   IF      PTRSI-SYOCD         =   SPACE
+                       MOVE    PTRSI-KOFUNUM(1:5)  TO  SPA-GMN2D-SYOCD
+                   ELSE
+                       MOVE    PTRSI-SYOCD         TO  SPA-GMN2D-SYOCD
+                   END-IF
+                   MOVE    1                   TO  FLG-PARA
+               ELSE
+                   MOVE    "tbl_para"          TO  MCP-TABLE
+                   MOVE    "key5"              TO  MCP-PATHNAME
+                   PERFORM 990-PARA-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       30011-SYOCD-INITSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労働基準監督署名称編集処理
+      *****************************************************************
+       30012-SYOCD-HEN-SEC             SECTION.
+      *
+           INITIALIZE                      LABOR-SIO-REC
+           MOVE    SPA-GMN2D-SYOCD     TO  LABOR-SIO-SYOCD
+           MOVE    SPA-NAI2D-RYOSTYMD  TO  LABOR-SIO-YUKOSTYMD
+           MOVE    SPA-NAI2D-RYOSTYMD  TO  LABOR-SIO-YUKOEDYMD
+      *
+           MOVE    LABOR-SIO-REC       TO  MCPDATA-REC
+           MOVE    "tbl_labor_sio"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_labor_sio"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-LABOR-SIO-READ-SEC
+           ELSE
+               INITIALIZE                  LABOR-SIO-REC
+               MOVE    1               TO  FLG-LABOR-SIO
+           END-IF
+           MOVE    "tbl_labor_sio"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-LABOR-SIO       =   ZERO
+               MOVE    LABOR-SIO-NAME      TO  SPA-GMN2D-SYOCDNAME
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN2D-SYOCDNAME
+           END-IF
+           .
+       30012-SYOCD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -992,6 +1112,9 @@
       *    労災レセ回数記載
            MOVE    SPA-GMN2D-KIJYUNYM  TO  P02D-KIJYUNYM
            MOVE    SPA-GMN2D-KAISU     TO  P02D-KAISU
+      *    労働基準監督署コード
+           MOVE    SPA-GMN2D-SYOCD     TO  P02D-SYOCD
+           MOVE    SPA-GMN2D-SYOCDNAME TO  P02D-SYOCDNAME
       *
            MOVE    SPA-GMN2D-SEIKBNMEI    TO  P02D-SEIKBNMEI
            MOVE    SPA-GMN2D-TANTOIMEI    TO  P02D-TANTOIMEI
@@ -1055,6 +1178,8 @@
                    MOVE    "KIJYUNYM"          TO  MCP-WIDGET
                WHEN    29
                    MOVE    "KAISU"             TO  MCP-WIDGET
+               WHEN    30
+                   MOVE    "SYOCD"             TO  MCP-WIDGET
       *
                WHEN    16
                    MOVE    "KOHNUM3"           TO  MCP-WIDGET
@@ -1168,6 +1293,8 @@
                WHEN    "KIJYUNYM"
                    MOVE    29              TO  SPA-GMN2D-CUR
                WHEN    "KAISU"
+                   MOVE    30              TO  SPA-GMN2D-CUR
+               WHEN    "SYOCD"
                    MOVE    90              TO  SPA-GMN2D-CUR
       *
                WHEN    "KOHNUM3"
@@ -1285,6 +1412,12 @@
       *    労災レセ回数記載
            MOVE    P02D-KIJYUNYM      TO  SPA-GMN2D-KIJYUNYM
            MOVE    P02D-KAISU         TO  SPA-GMN2D-KAISU
+      *    労働基準監督署コード
+           IF      P02D-SYOCD      NOT =   SPA-GMN2D-SYOCD
+               MOVE    ZERO                TO  SPA-NAI2D-KEIFLG2
+               MOVE    SPACE               TO  SPA-NAI2D-SYOCDCHK
+           END-IF
+           MOVE    P02D-SYOCD         TO  SPA-GMN2D-SYOCD
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1378,6 +1511,10 @@
            END-IF
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4101-KAISU-CHK-SEC
+           END-IF
+      *    労働基準監督署コード
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101-SYOCD-CHK-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -1661,7 +1798,7 @@
       *
       *    全角チェック
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    "2"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN2D-COMMENT   TO  KANACHK-MAE-INPUT
            MOVE    100                 TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
@@ -2008,9 +2145,9 @@
                 GO      TO      4101-JIGYOUNAME-CHK-EXT
            END-IF
       *
-      *    半角空白→全角空白
+      *    半角→全角
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    "2"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN2D-JIGYOUNAME
                                        TO  KANACHK-MAE-INPUT
            MOVE    100                 TO  KANACHK-MAX-CNT
@@ -2088,7 +2225,7 @@
       *
       *    半角空白→全角空白
            INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    "2"                 TO  KANACHK-SYORI
            MOVE    SPA-GMN2D-CITYNAME
                                        TO  KANACHK-MAE-INPUT
            MOVE    20                  TO  KANACHK-MAX-CNT
@@ -2263,7 +2400,7 @@
            IF      SPA-GMN2D-HOKENNAME NOT =   SPACE
       *        半角空白→全角空白
                INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    "2"                 TO  KANACHK-SYORI
                MOVE    SPA-GMN2D-HOKENNAME
                                            TO  KANACHK-MAE-INPUT
                MOVE    80                  TO  KANACHK-MAX-CNT
@@ -2342,6 +2479,42 @@
       *
           .
        4101-KAISU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労働基準監督署コード入力処理
+      *****************************************************************
+       4101-SYOCD-CHK-SEC           SECTION.
+      *
+           IF      SPA-GMN2D-SYOCD     =   SPACE
+               MOVE    SPACE               TO  SPA-GMN2D-SYOCDNAME
+      *        初期設定
+               IF     (SPA-NAI2D-SHOBYOYMD NOT =   SPACE )
+                  AND (SPA-NAI2D-RYOSTYMD  NOT =   SPACE )
+      *            傷病年月日・療養開始日の設定がある時
+                   PERFORM 30011-SYOCD-INITSET-SEC
+               END-IF
+           END-IF
+      *
+           IF     (SPA-GMN2D-SYOCD NOT =   SPACE )
+             AND  (SPA-NAI2D-SYOCDCHK  =   SPACE )
+               MOVE    "1"                 TO  SPA-NAI2D-SYOCDCHK
+               PERFORM 30012-SYOCD-HEN-SEC
+               IF     (FLG-LABOR-SIO       =   1   )
+                 AND  (SPA-NAI2D-SHOBYOYMD >=  "20080401" )
+                   MOVE    SPACE               TO  SPA-NAI2D-SYOCDCHK
+                   IF     (SPA-NAI2D-KEIFLG2   =   ZERO )
+                     AND ((FLG-TOUROKU         =   1      ) OR
+                          (WRK-MCP-WIDGET      =   "SYOCD"))
+                       MOVE    1                   TO  SPA-NAI2D-KEIFLG2
+                       MOVE    "K049"              TO  SPA-ERRCD
+                       MOVE    30                  TO  SPA-GMN2D-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *
+          .
+       4101-SYOCD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2636,6 +2809,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "0012"              TO  SPA-ERRCD
                        MOVE    9                   TO  SPA-GMN2D-CUR
                    END-IF
+      *            労働基準監督署コード
+                   IF     (SPA-GMN2D-SYOCD     =   SPACE )
+                     AND  (SPA-ERRCD           =   SPACE )
+                       IF      SPA-NAI2D-KEIFLG2   =   ZERO
+                           MOVE    1               TO  SPA-NAI2D-KEIFLG2
+                           MOVE    "K050"              TO  SPA-ERRCD
+                           MOVE    30                  TO  SPA-GMN2D-CUR
+                       END-IF
+                   END-IF
       *        傷病
                WHEN    "2"
                    IF      SPA-GMN2D-KOHNUM2   =   SPACE
@@ -2660,6 +2842,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                      AND  (SPA-ERRCD               =   SPACE )
                        MOVE    "0012"              TO  SPA-ERRCD
                        MOVE    9                   TO  SPA-GMN2D-CUR
+                   END-IF
+      *            労働基準監督署コード
+                   IF     (SPA-GMN2D-SYOCD     =   SPACE )
+                     AND  (SPA-ERRCD           =   SPACE )
+                       IF      SPA-NAI2D-KEIFLG2   =   ZERO
+                           MOVE    1               TO  SPA-NAI2D-KEIFLG2
+                           MOVE    "K050"              TO  SPA-ERRCD
+                           MOVE    30                  TO  SPA-GMN2D-CUR
+                       END-IF
                    END-IF
                WHEN    "3"
                    IF      SPA-GMN2D-KOHNUM3   =   SPACE
@@ -2892,6 +3083,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        短期・傷病
                    MOVE    SPA-NAI2D-KIJYUNYM  TO  PTRSI-KIJYUNYM
                    MOVE    SPA-GMN2D-KAISU     TO  PTRSI-KAISU
+                   MOVE    SPA-GMN2D-SYOCD     TO  PTRSI-SYOCD
            END-EVALUATE
       *    確認年月日
            MOVE    SPA-NAI2D-KAKUNINYMD
@@ -3060,10 +3252,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "被保険者名入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "労働保険番号は半角１４桁か１１桁で"
-                                               TO  SPA-ERRMSG
-                   MOVE    "入力して下さい。"
-                                               TO  SPA-ERRMSG(35:)
+                   STRING  "労働保険番号は半角１４桁か１１桁で"
+                           "入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0004"
                    MOVE    "年金証書番号は半角９桁で入力して下さい"
                                                TO  SPA-ERRMSG
@@ -3094,9 +3287,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0017"
                    MOVE    "療養開始日の暦日エラーです"
                                                TO  SPA-ERRMSG
-               WHEN    "0018"
-                   MOVE    "検査年月日の暦日エラーです"
-                                               TO  SPA-ERRMSG
                WHEN    "0019"
                    MOVE    "療養開始日は必須入力です。入力して下さい"
                                                TO  SPA-ERRMSG
@@ -3125,10 +3315,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "災害区分は必須入力です。入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "0028"
-                   MOVE    "健康管理手帳番号は半角１３桁か１０桁で"
-                                               TO  SPA-ERRMSG
-                   MOVE    "入力して下さい。"
-                                               TO  SPA-ERRMSG(35:)
+                   STRING  "健康管理手帳番号は半角１３桁か１０桁で"
+                           "入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0029"
                    MOVE    "事業の名称は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
@@ -3180,6 +3371,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "K049"
+                   STRING  "警告！！"
+                           "労働基準監督署コードが存在しません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K050"
+                   STRING  "警告！！"
+                           "労働基準監督署コードが未入力です。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE               TO  PERR
@@ -3219,6 +3422,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        990-PARA-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労働基準監督署マスタ読み込み
+      *****************************************************************
+       900-LABOR-SIO-READ-SEC        SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  LABOR-SIO-REC
+               MOVE    ZERO            TO  FLG-LABOR-SIO
+           ELSE
+               INITIALIZE                  LABOR-SIO-REC
+               MOVE    1               TO  FLG-LABOR-SIO
+           END-IF
+      *
+           .
+       900-LABOR-SIO-READ-EXT.
            EXIT.
       *
       *****************************************************************

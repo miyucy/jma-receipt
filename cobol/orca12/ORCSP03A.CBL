@@ -1538,19 +1538,30 @@
            IF      SPA-GMN-KIGO    NOT =   SPACE
                MOVE    SPA-GMN-KIGO        TO  WRK-MAE-INPUT
                MOVE    40                  TO  WRK-MAX
-               PERFORM 890-HALF-ZEN-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KIGO
-               IF      FLG-ERR             =   1
-                   MOVE    "0048"              TO  SPA-ERRCD
-                   MOVE    13                  TO  SPA-GMN-CUR
-               END-IF
-      *        半角の時、変更はＯＫとする
-               IF      FLG-ERR             =   2
-                   IF      SPA-GMN-KIGO    NOT =   SPA-OLD-KIGO
+               IF      SPA-GMN-KIGO    NOT =   SPA-OLD-KIGO
+      *            変更ありは半角変換
+                   PERFORM 890-HALF-ZENC-SEC
+                   MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KIGO
+                   IF      FLG-ERR             =   1
+                       MOVE    "0048"              TO  SPA-ERRCD
+                       MOVE    13                  TO  SPA-GMN-CUR
+                   END-IF
+               ELSE
+      *            変更なしは混在チェックのみ（半角ＯＫ）
+                   PERFORM 890-HALF-ZEN-SEC
+                   MOVE    WRK-ATO-INPUT       TO  SPA-GMN-KIGO
+                   IF      FLG-ERR             =   1
                        MOVE    "0048"              TO  SPA-ERRCD
                        MOVE    13                  TO  SPA-GMN-CUR
                    END-IF
                END-IF
+      *        半角の時、変更はＯＫとする
+      *        IF      FLG-ERR             =   2
+      *            IF      SPA-GMN-KIGO    NOT =   SPA-OLD-KIGO
+      *                MOVE    "0048"              TO  SPA-ERRCD
+      *                MOVE    13                  TO  SPA-GMN-CUR
+      *            END-IF
+      *****    END-IF
       *        後期高齢者は記号なしとする
                IF      SPA-GMN-HKNNUM      =   "039"
                    IF      SPA-GMN-KIGO    NOT =   SPA-MAE-KIGO
@@ -1590,19 +1601,30 @@
                   (SPA-GMN-NUM     NOT =   SPACE )
                MOVE    SPA-GMN-NUM         TO  WRK-MAE-INPUT
                MOVE    40                  TO  WRK-MAX
-               PERFORM 890-HALF-ZEN-SEC
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NUM
-               IF      FLG-ERR             =   1
-                   MOVE    "0049"              TO  SPA-ERRCD
-                   MOVE    14                  TO  SPA-GMN-CUR
-               END-IF
-      *        半角の時、変更はＯＫとする
-               IF      FLG-ERR             =   2
-                   IF      SPA-GMN-NUM     NOT =   SPA-OLD-NUM
+               IF      SPA-GMN-NUM     NOT =   SPA-OLD-NUM
+      *            変更ありは半角変換
+                   PERFORM 890-HALF-ZENC-SEC
+                   MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NUM
+                   IF      FLG-ERR             =   1
+                       MOVE    "0049"              TO  SPA-ERRCD
+                       MOVE    14                  TO  SPA-GMN-CUR
+                   END-IF
+               ELSE
+      *            変更なしは混在チェックのみ（半角ＯＫ）
+                   PERFORM 890-HALF-ZEN-SEC
+                   MOVE    WRK-ATO-INPUT       TO  SPA-GMN-NUM
+                   IF      FLG-ERR             =   1
                        MOVE    "0049"              TO  SPA-ERRCD
                        MOVE    14                  TO  SPA-GMN-CUR
                    END-IF
                END-IF
+      *        半角の時、変更はＯＫとする
+      *        IF      FLG-ERR             =   2
+      *            IF      SPA-GMN-NUM     NOT =   SPA-OLD-NUM
+      *                MOVE    "0049"              TO  SPA-ERRCD
+      *                MOVE    14                  TO  SPA-GMN-CUR
+      *            END-IF
+      *        END-IF
       *        空白チェック
                IF     (SPA-ERRCD           =   SPACE  )
                   AND (SPA-GMN-HKNNUM      >=  "001"  AND
@@ -3237,6 +3259,32 @@
       *
            .
        890-HALF-ZEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    半角を全角へ変換処理
+      *****************************************************************
+       890-HALF-ZENC-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ERR
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-INPUT
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    1                   TO  FLG-ERR
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
+           ELSE
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
+           END-IF
+      *
+           .
+       890-HALF-ZENC-EXT.
            EXIT.
       *****************************************************************
       *    半角空白を全角空白へ変換処理

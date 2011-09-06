@@ -95,6 +95,7 @@
       * 04.07.00     NACL-多々納  11/06/15  保険・公費毎頁変更対応
       * 04.07.00     NACL-多々納  11/07/01  公費一覧表示対応
       * 04.07.00     NACL-多々納  11/08/XX  保険確認年月日履歴対応
+      * 04.07.00     NACL-多々納  11/09/06  住所等半角全角変換へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4534,14 +4535,14 @@
                   (SPA-ERRCD               =   SPACE )
                MOVE    SPA-GMN-COMMENT-1   TO  WRK-MAE-INPUT
                MOVE    100                 TO  WRK-LEN
-               PERFORM 890-HALF-ZEN-SEC
+               PERFORM 890-HALF-ZENS-SEC
                MOVE    WRK-MAE-INPUT       TO  SPA-GMN-COMMENT-1
            END-IF
            IF     (SPA-GMN-COMMENT-2   NOT =   SPACE ) AND
                   (SPA-ERRCD               =   SPACE )
                MOVE    SPA-GMN-COMMENT-2   TO  WRK-MAE-INPUT
                MOVE    100                 TO  WRK-LEN
-               PERFORM 890-HALF-ZEN-SEC
+               PERFORM 890-HALF-ZENS-SEC
                MOVE    WRK-MAE-INPUT       TO  SPA-GMN-COMMENT-2
            END-IF
            .
@@ -8244,9 +8245,34 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    半角空白を全角空白へ変換処理
+      *    半角を全角へ変換処理
       *****************************************************************
        890-HALF-ZEN-SEC         SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           MOVE    WRK-LEN             TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-INPUT
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    1                   TO  FLG-ERR
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
+           ELSE
+               MOVE    ZERO                TO  FLG-ERR
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
+           END-IF
+      *
+           .
+       890-HALF-ZEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    半角空白を全角空白へ変換処理
+      *****************************************************************
+       890-HALF-ZENS-SEC         SECTION.
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
@@ -8265,7 +8291,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            .
-       890-HALF-ZEN-EXT.
+       890-HALF-ZENS-EXT.
            EXIT.
       *****************************************************************
       *    半角空白を全角空白へ変換処理（外字あり）
@@ -8277,7 +8303,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 8910-HALF-ZENC2-SEC
            ELSE
       *        拡張漢字不可
-               PERFORM 890-HALF-ZEN-SEC
+               PERFORM 890-HALF-ZENS-SEC
            END-IF
       *
            .

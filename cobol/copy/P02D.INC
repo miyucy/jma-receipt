@@ -113,6 +113,10 @@
                 04  P02D-VALUE  PIC X(20).
               03  P02D-SEIKBNMEI.
                 04  P02D-VALUE  PIC X(20).
+              03  P02D-SYOCD.
+                04  P02D-VALUE  PIC X(5).
+              03  P02D-SYOCDNAME.
+                04  P02D-VALUE  PIC X(26).
 
 
 

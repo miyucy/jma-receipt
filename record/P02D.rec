@@ -135,5 +135,11 @@ P02D	{
 		SEIKBNMEI	{
 			value	varchar(20);
 		};
+		SYOCD	{
+			value	varchar(5);
+		};
+		SYOCDNAME	{
+			value	varchar(26);
+		};
 	};
 };

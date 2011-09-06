@@ -30,6 +30,7 @@ tbl_ptrsiinf {
         HOKENNAME			varchar(80);
         KIJYUNYM			char(6);
         KAISU				number(03);
+	SYOCD				char(5);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);

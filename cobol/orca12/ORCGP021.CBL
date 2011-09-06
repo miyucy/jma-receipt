@@ -34,6 +34,7 @@
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  04.04.00    NACL-多々納  08/12/03  住所から郵便番号設定追加
       *  04.05.00    NACL-多々納  09/11/20  郵便番号自動記載区分追加
+      *  04.07.00    NACL-多々納  11/09/06  半角全角変換へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -751,7 +752,7 @@
       *    半角空白を全角空白へ
            MOVE    SPA-GMN21-JOB       TO  WRK-MAE-INPUT
            MOVE    20                  TO  WRK-MAX
-           PERFORM 890-HALF-ZEN-SEC
+           PERFORM 890-HALF-ZENS-SEC
            MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-JOB
            .
       *
@@ -1337,9 +1338,32 @@
            EXIT.
       *
       *****************************************************************
-      *    半角空白を全角空白へ変換処理
+      *    半角を全角へ変換処理
       *****************************************************************
        890-HALF-ZEN-SEC         SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-MAE-INPUT       TO  KANACHK-MAE-INPUT
+           MOVE    WRK-MAX             TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    1                   TO  FLG-ERR
+               MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
+           ELSE
+               MOVE    ZERO                TO  FLG-ERR
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-ATO-INPUT
+           END-IF
+      *
+           .
+       890-HALF-ZEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    半角空白を全角空白へ変換処理
+      *****************************************************************
+       890-HALF-ZENS-SEC         SECTION.
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
@@ -1357,7 +1381,7 @@
            END-IF
       *
            .
-       890-HALF-ZEN-EXT.
+       890-HALF-ZENS-EXT.
            EXIT.
       *
       *****************************************************************
