@@ -99,3 +99,17 @@ path	key3 	{
 		;
 	};
 };
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_ptrsiinf_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptrsiinf
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   HKNKBN      =   :HKNKBN
+			AND   SHOBYOYMD   =   :SHOBYOYMD
+			AND   SAKUJOKBN   <>  '1'
+		;
+	};
+};

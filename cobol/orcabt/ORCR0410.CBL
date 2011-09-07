@@ -83,6 +83,8 @@
       *
       *  04.06.01    NACL-門脇    10/12/06  労災・自賠責の金額フリー入力
       *                                     コード対応
+      *
+      *  04.07.01    NACL-門脇    11/09/07  労災請求書作成対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -844,6 +846,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                         MOVE   PTRSI-KAISU      TO  RECE41-KAISU-KSI
                         MOVE   PTRSI-JIBAISEIKBN
                                                 TO  RECE41-SEIKYUKBN
+                        MOVE   PTRSI-SYOCD      TO  RECE41-SYOCD
                    END-IF
                END-IF
       *    END-IF
@@ -943,7 +946,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
       *    労災レセプト回数取得
            IF    ( RECE41-HKNKBN     =   "1"  OR  "2" )
-           AND   ( RECE41-ROUKAISU   =   "2"          )
+      **>  AND   ( RECE41-ROUKAISU   =   "2"          )
              INITIALIZE                    LNK-ORCSROUKAISU-REC
              MOVE  RECE41-HOSPNUM      TO  LNK-ORCSROUKAISU-HOSPNUM
              MOVE  RECE41-NYUGAIKBN    TO  LNK-ORCSROUKAISU-NYUGAIKBN
@@ -997,9 +1000,47 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                        SPA-AREA
       *
              IF    LNK-ORCSROUKAISU-RC   =   ZERO
+              IF   LNK-ORCSROUKAISU-RECEKAISU  =  1
+                MOVE   "1"               TO  RECE41-SYOKAIFLG
+              END-IF
+              IF   RECE41-ROUKAISU   =   "2"
                 MOVE   LNK-ORCSROUKAISU-RECEKAISU
                                          TO  RECE41-RECEKAISU
+              END-IF
              END-IF
+           END-IF
+      *
+           IF    RECE41-SYOCD  =  SPACE
+             EVALUATE  RECE41-HKNKBN
+               WHEN       "1"
+                 MOVE    RECE41-KOFUNUM(1:5)
+                                           TO  RECE41-SYOCD
+               WHEN       "2"
+                 INITIALIZE                    PTRSIINF-REC
+                 MOVE    RECE41-HOSPNUM    TO  PTRSI-HOSPNUM
+                 MOVE    RECE41-PTID       TO  PTRSI-PTID
+                 MOVE    "1"               TO  PTRSI-HKNKBN
+                 MOVE    RECE41-SHOBYOYMD  TO  PTRSI-SHOBYOYMD
+                 MOVE    PTRSIINF-REC      TO  MCPDATA-REC
+                 MOVE    "tbl_ptrsiinf"    TO  MCP-TABLE
+                 MOVE    "key4"            TO  MCP-PATHNAME
+                 PERFORM  900-DBSELECT-SEC
+                 IF      MCP-RC            =   ZERO
+                   MOVE  "tbl_ptrsiinf"    TO  MCP-TABLE
+                   MOVE  "key4"            TO  MCP-PATHNAME
+                   PERFORM  800-PTRSIINF-READ-SEC
+                   IF    FLG-PTRSIINF      =   ZERO
+                     IF    PTRSI-SYOCD  NOT = SPACE
+                       MOVE  PTRSI-SYOCD         TO  RECE41-SYOCD
+                     ELSE
+                       MOVE  PTRSI-KOFUNUM(1:5)  TO  RECE41-SYOCD
+                     END-IF
+                   END-IF
+                 END-IF
+                 MOVE    "tbl_ptrsiinf"    TO  MCP-TABLE
+                 MOVE    "key4"            TO  MCP-PATHNAME
+                 PERFORM  900-CLOSE-SEC
+             END-EVALUATE
            END-IF
       *
            .

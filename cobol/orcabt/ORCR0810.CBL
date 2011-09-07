@@ -55,6 +55,8 @@
       *  04.02.01    NACL-ÌçÏÆ    08/02/26  ÀÁµá¶èÊ¬ÊÔ½¸
       *
       *  04.04.01    NACL-ÌçÏÆ    09/05/11  Ãê½ÐÂÐ¾Ý¾ò·ï½¤Àµ
+      *
+      *  04.07.01    NACL-ÌçÏÆ    11/09/07  Ï«ºÒÀÁµá½ñºîÀ®ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -207,6 +209,9 @@
                05  WRK-ERR-ERRKBN      PIC 9(01).
                05  WRK-ERR-TEKSTYMD    PIC 9(08).
                05  WRK-ERR-TEKEDYMD    PIC 9(08).
+      *
+           03  WRK-MCP-TABLE           PIC X(64).
+           03  WRK-MCP-PATHNAME        PIC X(64).
       * 
            03  WRK-YMD.
                05  WRK-YY              PIC 9(04).
@@ -778,6 +783,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
            MOVE    COMB-HKNID      TO  PTRSI-HKNID
            MOVE    COMB-PTID       TO  PTRSI-PTID
            MOVE    PTRSIINF-REC    TO  MCPDATA-REC
+           MOVE    "tbl_ptrsiinf"  TO  WRK-MCP-TABLE
+           MOVE    "key"           TO  WRK-MCP-PATHNAME
            PERFORM 900-PTRSIINF-INV-SEC
            IF      FLG-PTRSIINF    =   1
                MOVE    "1"             TO  WRK-ROUSAIKBN
@@ -1025,6 +1032,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
            MOVE    COMB-HKNID      TO  PTRSI-HKNID
            MOVE    COMB-PTID       TO  PTRSI-PTID
            MOVE    PTRSIINF-REC    TO  MCPDATA-REC
+           MOVE    "tbl_ptrsiinf"  TO  WRK-MCP-TABLE
+           MOVE    "key"           TO  WRK-MCP-PATHNAME
            PERFORM 900-PTRSIINF-INV-SEC
       *
            PERFORM 20011-FILE-HENSYU-SEC
@@ -1199,6 +1208,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE   PTRSI-KIJYUNYM       TO  WRK-RECE82-KIJYUNYM-KSI
            MOVE   PTRSI-KAISU          TO  WRK-RECE82-KAISU-KSI
            MOVE   PTRSI-JIBAISEIKBN    TO  WRK-RECE82-SEIKYUKBN
+           MOVE   PTRSI-SYOCD          TO  WRK-RECE82-SYOCD
       *
       *    ÅÀ¿ôÃ±²Á
            EVALUATE  SYS-4001-TENKBN
@@ -1229,6 +1239,31 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    WRK-KOMUKBN           TO   WRK-RECE82-KOMUKBN
       *    ¸øÌ³ºÒ³²ÅÀÃ±²Á
            MOVE    WRK-KOMUTENTANKA      TO   WRK-RECE82-KOMUTENTANKA
+      *
+           IF    WRK-RECE82-SYOCD  =  SPACE
+             EVALUATE  WRK-RECE82-HKNKBN
+               WHEN       "1"
+                 MOVE    WRK-RECE82-KOFUNUM(1:5)
+                                               TO  WRK-RECE82-SYOCD
+               WHEN       "2"
+                 INITIALIZE                        PTRSIINF-REC
+                 MOVE    WRK-RECE82-HOSPNUM    TO  PTRSI-HOSPNUM
+                 MOVE    WRK-RECE82-PTID       TO  PTRSI-PTID
+                 MOVE    "1"                   TO  PTRSI-HKNKBN
+                 MOVE    WRK-RECE82-SHOBYOYMD  TO  PTRSI-SHOBYOYMD
+                 MOVE    PTRSIINF-REC          TO  MCPDATA-REC
+                 MOVE    "tbl_ptrsiinf"        TO  WRK-MCP-TABLE
+                 MOVE    "key4"                TO  WRK-MCP-PATHNAME
+                 PERFORM 900-PTRSIINF-INV-SEC
+                 IF   FLG-PTRSIINF   =   ZERO
+                   IF    PTRSI-SYOCD  NOT = SPACE
+                     MOVE   PTRSI-SYOCD        TO  WRK-RECE82-SYOCD
+                   ELSE
+                     MOVE   PTRSI-KOFUNUM(1:5) TO  WRK-RECE82-SYOCD
+                   END-IF
+                 END-IF
+             END-EVALUATE
+           END-IF
       *
            MOVE    WRK-RECE82-REC      TO  RECE82-REC
            WRITE   RECE82-REC
@@ -2092,12 +2127,12 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *****************************************************************
        900-PTRSIINF-INV-SEC         SECTION.
       *
-           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
 grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-PTRSIINF
@@ -2114,8 +2149,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                INITIALIZE                      PTRSIINF-REC
            END-IF
       *
-           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .

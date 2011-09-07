@@ -44,6 +44,8 @@
       *                                     入院日として起算しレセプト記
       *                                     載を行なう対応
       *  04.04.02    NACL-門脇    09/06/12  療養期間の編集修正
+      *
+      *  04.07.01    NACL-門脇    11/09/07  労災請求書作成対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -355,7 +357,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    労災レセプト回数取得
            IF    ( RECE82-HKNKBN     =   "1"  OR  "2" )
-           AND   ( RECE82-ROUKAISU   =   "2"          )
+      **>  AND   ( RECE82-ROUKAISU   =   "2"          )
              INITIALIZE                    LNK-ORCSROUKAISU-REC
              MOVE  RECE82-HOSPNUM      TO  LNK-ORCSROUKAISU-HOSPNUM
              MOVE  RECE82-NYUGAIKBN    TO  LNK-ORCSROUKAISU-NYUGAIKBN
@@ -391,8 +393,13 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                        SPA-AREA
       *
              IF    LNK-ORCSROUKAISU-RC   =   ZERO
+              IF   LNK-ORCSROUKAISU-RECEKAISU  =  1
+                MOVE   "1"               TO  RECE82-SYOKAIFLG
+              END-IF
+              IF   RECE82-ROUKAISU   =   "2"
                 MOVE   LNK-ORCSROUKAISU-RECEKAISU
                                          TO  RECE82-RECEKAISU
+              END-IF
              END-IF
            END-IF
       *
