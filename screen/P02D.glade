@@ -1453,22 +1453,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label274</name>
-      <x>452</x>
-      <y>420</y>
-      <width>108</width>
-      <height>24</height>
-      <label>Ï«Æ¯´ð½à´ÆÆÄ½ë</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>SYOCDNAME</name>
       <x>624</x>
       <y>420</y>
@@ -1561,6 +1545,22 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label274</name>
+      <x>452</x>
+      <y>420</y>
+      <width>108</width>
+      <height>24</height>
+      <label>Ï«Æ¯´ð½à´ÆÆÄ½ð</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
