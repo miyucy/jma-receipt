@@ -134,6 +134,7 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
+           03  FLG-HKNNUM          PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
@@ -181,6 +182,8 @@
            03  IDY                 PIC 9(04).
            03  IDG                 PIC 9(04).
            03  IDH                 PIC 9(04).
+           03  IDI                 PIC 9(04).
+           03  IDJ                 PIC 9(04).
            03  IDK                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDZ2                PIC 9(04).
@@ -408,6 +411,11 @@
            03  WRK-IKKATUKAI            PIC 9(03).
       *
            03  WRK-HZNSU              PIC X(60).
+           03  WRK-GRP-HKNCOMBI-G.
+               05  WRK-GRP-HKNCOMBI   PIC 9(04)
+                                      OCCURS   31.
+           03  WRK-HKNNUM             PIC X(03).
+           03  WRK-PAYKBN             PIC X(02).
       *
       *    診療行為テーブル
        01  TBL-SRYCD-HEN-AREA.
@@ -571,6 +579,10 @@
       *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
+      *
+      *    保険番号
+       01  HKNNUM-REC.
+           COPY    "CPHKNNUM.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -2746,6 +2758,7 @@
       *
            MOVE    ZERO            TO  WRK-HKN-ST
            MOVE    ZERO            TO  WRK-HKN-ED
+           INITIALIZE                  WRK-GRP-HKNCOMBI-G
       ***     MOVE    SPACE           TO  SPA-GMN-KEIKOKU
       *
            PERFORM VARYING IDK     FROM    1   BY  1
@@ -2776,31 +2789,98 @@
                        END-IF
                    END-IF
                END-IF
+               PERFORM VARYING IDI    FROM    1   BY  1
+                       UNTIL ( IDI    >   31 )
+                        OR   ( WRK-HKNCOMBINUM
+                                       =   WRK-GRP-HKNCOMBI (IDI))
+                   IF    ( WRK-GRP-HKNCOMBI (IDI) =   ZERO )
+                       MOVE    WRK-HKNCOMBINUM
+                                           TO WRK-GRP-HKNCOMBI (IDI)
+                       MOVE    31          TO IDI
+                   END-IF
+               END-PERFORM
            END-PERFORM
       *
            IF     (WRK-HKN-ST          =   ZERO )  AND
                   (WRK-HKN-ED          =   ZERO )
-               GO      TO      31061-HKN-KIKANCHK-EXT
-           END-IF
-      *
-           IF     (WRK-HKN-ST          =   WRK-HKN-ED ) 
-               MOVE    SPACE           TO   SPA-GMN-KEIKOKU
-               STRING  "保険の適用が切れている期間があります。"
+               CONTINUE
+           ELSE
+               IF     (WRK-HKN-ST          =   WRK-HKN-ED ) 
+                   MOVE    SPACE           TO   SPA-GMN-KEIKOKU
+                   STRING  "保険の適用が切れている期間があります。"
                                             DELIMITED  BY  SIZE
                        WRK-HKN-ST           DELIMITED  BY  SIZE
                        "日"                 DELIMITED  BY  SIZE
                                        INTO      SPA-GMN-KEIKOKU
-               END-STRING
-           ELSE
-               MOVE    SPACE           TO   SPA-GMN-KEIKOKU
-               STRING  "保険の適用が切れている期間があります。"
+                   END-STRING
+               ELSE
+                   MOVE    SPACE           TO   SPA-GMN-KEIKOKU
+                   STRING  "保険の適用が切れている期間があります。"
                                             DELIMITED  BY  SIZE
                        WRK-HKN-ST           DELIMITED  BY  SIZE
                        " - "                DELIMITED  BY  SIZE
                        WRK-HKN-ED           DELIMITED  BY  SIZE
                        "日"                 DELIMITED  BY  SIZE
                                        INTO      SPA-GMN-KEIKOKU
-               END-STRING
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-KEIKOKU     =   SPACE )
+               PERFORM VARYING IDI    FROM    1   BY  1
+                       UNTIL ( IDI    >   31 )
+                        OR   ( WRK-GRP-HKNCOMBI (IDI) =   ZERO )
+                        OR   ( SPA-GMN-KEIKOKU     NOT =   SPACE )
+                 INITIALIZE              HKNCOMBI-REC
+                 MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
+                 MOVE    SPA-GMN-PTID    TO  COMB-PTID
+                 MOVE    WRK-GRP-HKNCOMBI (IDI)
+                                         TO  COMB-HKNCOMBINUM
+                 MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
+                 MOVE    "tbl_hkncombi"  TO  MCP-TABLE
+                 MOVE    "key"           TO  MCP-PATHNAME
+                 PERFORM 910-DBSELECT-SEC
+                 IF    ( MCP-RC          =   ZERO )
+                   MOVE    "tbl_hkncombi"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 920-DBFETCH-SEC
+                   IF    ( MCP-RC      =   ZERO )
+                     MOVE    MCPDATA-REC TO  HKNCOMBI-REC
+                     IF    ( COMB-HKNNUM NOT =   SPACE )
+                       MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
+                       MOVE    ZERO            TO  WRK-PAYKBN
+                       PERFORM 980-HKNNUM-SEL-SEC
+                       IF    ( FLG-HKNNUM  NOT =   ZERO )
+                           STRING "有効期間が切れた保険での"
+                                                   DELIMITED BY SIZE
+                                  "登録があります。"
+                                                   DELIMITED BY SIZE
+                           INTO   SPA-GMN-KEIKOKU
+                           END-STRING
+                       END-IF
+                       PERFORM VARYING IDJ   FROM  1   BY  1
+                               UNTIL ( IDJ   >   4 )
+                                OR   ( COMB-KOHHKNNUM(IDJ) =   SPACE )
+                                OR   ( SPA-GMN-KEIKOKU NOT =   SPACE )
+                           MOVE    COMB-KOHHKNNUM(IDJ) TO  WRK-HKNNUM
+                           MOVE    COMB-KOHPAYKBN(IDJ) TO  WRK-PAYKBN
+                           PERFORM 980-HKNNUM-SEL-SEC
+                           IF    ( FLG-HKNNUM  NOT =   ZERO )
+                               STRING "有効期間が切れた保険での"
+                                                   DELIMITED BY SIZE
+                                      "登録があります。"
+                                                   DELIMITED BY SIZE
+                               INTO   SPA-GMN-KEIKOKU
+                               END-STRING
+                           END-IF
+                       END-PERFORM
+                     END-IF
+                   END-IF
+                 END-IF
+                 MOVE    "tbl_hkncombi"  TO  MCP-TABLE
+                 MOVE    "key"           TO  MCP-PATHNAME
+                 PERFORM 990-DBCLOSE-SEC
+               END-PERFORM
            END-IF
       *
            .
@@ -9863,6 +9943,47 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        970-PTNYUINRRK-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    保険番号検索処理
+      *****************************************************************
+       980-HKNNUM-SEL-SEC              SECTION.
+      *
+           MOVE    ZERO            TO  FLG-HKNNUM
+      *
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
+           MOVE    WRK-HKNNUM      TO  HKN-HKNNUM
+           MOVE    WRK-PAYKBN      TO  HKN-PAYKBN
+           MOVE    SPA-NAI-SRYYM   TO  HKN-TEKSTYMD(1:6)
+           MOVE    "01"            TO  HKN-TEKSTYMD(7:2)
+           MOVE    HKN-TEKSTYMD    TO  HKN-TEKEDYMD
+           MOVE    HKNNUM-REC      TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    "tbl_hknnum"    TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  HKNNUM-REC
+               ELSE
+                   INITIALIZE              HKNNUM-REC
+                   MOVE    1           TO  FLG-HKNNUM
+               END-IF
+           ELSE
+                   INITIALIZE              HKNNUM-REC
+                   MOVE    1           TO  FLG-HKNNUM
+           END-IF.
+      *
+           MOVE    "tbl_hknnum"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+      *
+       980-HKNNUM-SEL-EXT.
+           EXIT.
       *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
