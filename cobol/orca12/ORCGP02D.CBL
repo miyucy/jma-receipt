@@ -2501,7 +2501,7 @@
                MOVE    "1"                 TO  SPA-NAI2D-SYOCDCHK
                PERFORM 30012-SYOCD-HEN-SEC
                IF     (FLG-LABOR-SIO       =   1   )
-                 AND  (SPA-NAI2D-SHOBYOYMD >=  "20080401" )
+                 AND  (SPA-NAI2D-RYOSTYMD  >=  "20080401" )
                    MOVE    SPACE               TO  SPA-NAI2D-SYOCDCHK
                    IF     (SPA-NAI2D-KEIFLG2   =   ZERO )
                      AND ((FLG-TOUROKU         =   1      ) OR
