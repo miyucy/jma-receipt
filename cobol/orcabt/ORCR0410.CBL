@@ -409,6 +409,8 @@
            COPY    "CPORCSJOBKANRI.INC".
       *    Ï«ºÒ¥ì¥»¥×¥È²ó¿ô¼èÆÀ¥µ¥Ö
            COPY    "CPORCSROUKAISU.INC".
+      *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
+           COPY    "CPORCSAGECHK.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -755,6 +757,22 @@ grpsys     MOVE    RECE40-HOSPNUM       TO      PTINF-HOSPNUM
            MOVE   PTINF-SEX         TO  RECE41-SEX
            MOVE   PTINF-BIRTHDAY    TO  RECE41-BIRTHDAY
            MOVE   PTINF-DEATHKBN    TO  RECE41-DEATHKBN
+      *
+      *    ´µ¼ÔÇ¯Îð·×»»
+           INITIALIZE                   ORCSAGECHKAREA
+           MOVE    RECE40-HOSPNUM   TO  AGECHK-HOSPNUM
+           MOVE    RECE40-PTID      TO  AGECHK-PTID
+           MOVE    RECE41-SRYYM     TO  AGECHK-SRYYMD(1:6)
+           MOVE    "01"             TO  AGECHK-SRYYMD(7:2)
+           MOVE    PTINF-BIRTHDAY   TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"         USING
+                                        ORCSAGECHKAREA
+                                        SPA-AREA
+           IF      AGECHK-RC        =   ZERO
+               MOVE  AGECHK-NENREI  TO  RECE41-AGE
+           END-IF
+      *
+           MOVE   PTINF-TSTPTNUMKBN TO  RECE41-TSTPTNUMKBN
       *
       *    µìÀ«ÍúÎò¤Î¼èÆÀ
            INITIALIZE                           KYUSEIRRK-REC

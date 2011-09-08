@@ -1124,6 +1124,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                MOVE  AGECHK-NENREI         TO  WRK-RECE82-AGE
            END-IF
       *
+           MOVE   PTINF-TSTPTNUMKBN    TO  WRK-RECE82-TSTPTNUMKBN
+      *
       *    患者情報（旧姓履歴の取得）
            INITIALIZE                      KYUSEIRRK-REC
            MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
