@@ -57,6 +57,7 @@
       *  04.06.00    NACL=多々納  10/07/01  残量廃棄区分対応
       *  04.06.00    NACL=多々納  10/11/02  難病外来指導管理料対応
       *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
+      *  04.07.00    NACL=多々納  11/09/08  アトピー性皮膚炎と他病名対応
       *****************************************************************
       *
       *
@@ -139,6 +140,8 @@
            03  FLG-UKETUKE-ARI     PIC 9(01).
            03  FLG-HEN             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
+      *
+           03  FLG-ATOPII          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -3390,6 +3393,7 @@
       *****************************************************************
        110111-MANSEIKBN-SET-SEC              SECTION.
       *
+           MOVE    ZERO                TO  FLG-ATOPII
       *    皮膚科特定疾患（２）の病名チェック
            IF      PTBYO-MANSEIKBN     =   04
                PERFORM 110111-ATOPIICHEK-SEC
@@ -3405,6 +3409,8 @@
                                                OR  08
                        MOVE    PTBYO-MANSEIKBN TO  SPA-TOKU05-FLG(IDX)
                    END-IF
+      *            アトピー性皮膚フラグ
+                   MOVE    FLG-ATOPII      TO  SPA-ATOPII (IDX)
                    MOVE    10              TO  IDX
                ELSE
                    IF      SPA-TOKU-SRYKA (IDX)    =   PTBYO-SRYKA
@@ -3474,6 +3480,14 @@
                                            OR  09
                    MOVE    PTBYO-MANSEIKBN     TO  SPA-TOKU-FLG  (IDX)
                    MOVE    PTBYO-SYUBYOFLG     TO  WRK-SYUBYOFLG (IDX)
+                   MOVE    ZERO                TO  SPA-ATOPII (IDX)
+               END-IF
+      *
+      *        アトピー以外の皮膚科特定疾患（２）あり
+               IF      PTBYO-MANSEIKBN     =   04
+                   IF      FLG-ATOPII          =   ZERO
+                       MOVE    ZERO            TO  SPA-ATOPII (IDX)
+                   END-IF
                END-IF
            END-EVALUATE
       *    特定疾患
@@ -3498,6 +3512,7 @@
                                        OR  "8830277"
       *        アトピー性皮膚炎
                MOVE    1               TO  SPA-ATOPII-FLG
+               MOVE    1               TO  FLG-ATOPII
            END-IF
            .
        110111-ATOPIICHEK-EXT.

@@ -68,6 +68,7 @@
       * 04.05.00     NACL-多々納  10/02/XX  アフターケア対象外対応
       * 04.05.00     NACL-多々納  10/03/XX  平成２２年４月改正対応
       * 04.07.00     NACL-多々納  11/08/XX  リハビリ開始日の終了日対応
+      * 04.07.00     NACL=多々納  11/09/08  アトピー性皮膚炎と他病名対応
       *****************************************************************
       *
       *
@@ -166,6 +167,7 @@
            03  FLG-SRYKBN           PIC 9(01).
            03  FLG-TOKUTEI          PIC 9(02).
            03  FLG-TOKUTEI05        PIC 9(02).
+           03  FLG-ATOPII           PIC 9(01).
            03  FLG-ADD2             PIC 9(01).
       *
            03  FLG-FUKU-ARI         PIC 9(01).
@@ -3343,6 +3345,7 @@
       *    特定疾患科
            MOVE    ZERO                TO  FLG-TOKUTEI
            MOVE    ZERO                TO  FLG-TOKUTEI05
+           MOVE    ZERO                TO  FLG-ATOPII
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   10  )  OR
                               (SPA-TOKU-SRYKA(IDX) =   SPACE ) OR
@@ -3350,6 +3353,7 @@
                IF      SPA-TOKU-SRYKA (IDX)    =   WRK-SRYKA
                    MOVE    SPA-TOKU-FLG (IDX)      TO  FLG-TOKUTEI
                    MOVE    SPA-TOKU05-FLG (IDX)    TO  FLG-TOKUTEI05
+                   MOVE    SPA-ATOPII  (IDX)       TO  FLG-ATOPII
                END-IF
            END-PERFORM
       *
@@ -3770,7 +3774,9 @@
            END-EVALUATE
       *    皮膚科特定疾患管理料（２）でアトピー性皮膚炎のある場合
            IF     (FLG-TOKUTEI         =   04  )  AND
-                  (SPA-ATOPII-FLG      =   1   )
+      ***         (SPA-ATOPII-FLG      =   1   )
+      *ver.4.7   アトピー性皮膚炎のみの時、判定する
+                  (FLG-ATOPII          =   1   )
       *        16才未満はなし
                IF      SPA-NENREI-YY       <   16
                    MOVE    SPACE           TO  WRK-SRYCD

@@ -288,6 +288,7 @@
                        09  SPA-TOKU-SRYKA      PIC X(02).
                        09  SPA-TOKU-FLG        PIC 9(02).
                        09  SPA-TOKU05-FLG      PIC 9(02).
+                       09  SPA-ATOPII          PIC 9(01).
                    07  SPA-ATOPII-FLG      PIC  9(01).
                05  SPA-TOKUTEI-CNT         PIC  9(01).
                05  SPA-TOKUTEI-SRYKA       PIC  X(02).

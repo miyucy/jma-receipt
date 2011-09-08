@@ -2822,6 +2822,9 @@
                            MOVE    SPA-NAI-MANSEIKBN(IDX-B)
                                                TO  SPA-TOKU05-FLG(IDX)
                        END-IF
+      *                アトピー性皮膚フラグ
+                       MOVE    SPA-NAI-ATOPII (IDX-B)
+                                               TO  SPA-ATOPII (IDX)
                        MOVE    10              TO  IDX
                    ELSE
                        IF      SPA-TOKU-SRYKA(IDX) =   SPA-NAI-SRYKA
@@ -2903,6 +2906,14 @@
                                                TO  SPA-TOKU-FLG  (IDX)
                    MOVE    SPA-NAI-SYUBYOFLG (IDX-B)
                                                TO  WRK-SYUBYOFLG (IDX)
+                   MOVE    ZERO                TO  SPA-ATOPII (IDX)
+               END-IF
+      *
+      *        アトピー以外の皮膚科特定疾患（２）あり
+               IF      SPA-NAI-MANSEIKBN (IDX-B)   =   04
+                   IF      SPA-NAI-ATOPII (IDX-B)  =   ZERO
+                       MOVE    ZERO            TO  SPA-ATOPII (IDX)
+                   END-IF
                END-IF
            END-EVALUATE
       *    特定疾患
