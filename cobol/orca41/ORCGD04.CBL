@@ -106,8 +106,10 @@
                05  WRK-KBNCD-KBN           PIC X(01).
                05  WRK-KBNCD-SEQ           PIC 9(07).
            03  WRK-ZZZZ9                   PIC ZZZZ9.
+           03  WRK-ZZZ9                    PIC  ZZZ9.
            03  WRK-ERRLST-SEL              PIC 9(05).
            03  WRK-BYOLST-SEL              PIC 9(05).
+           03  WRK-CHKLST-SEL              PIC 9(05).
            03  WRK-MOTOPG                  PIC X(05).
            03  WRK-SELKBNCD                PIC X(08).
            03  WRK-NAME                    PIC X(100).
@@ -115,6 +117,7 @@
            03  WRK-KJNYMD                  PIC X(08).
            03  WRK-TENKIYMD                PIC X(08).
            03  WRK-OFFSET                  PIC 9(08).
+           03  WRK-BYOMEI                  PIC X(100).
       *
        01  WRK-ROW-AREA.
            03  WRK-ERRLST-ROW              PIC S9(9).
@@ -174,6 +177,9 @@
            COPY    "CPDSUB01.INC".
       *
            COPY    "CPSENDX01.INC".
+      *
+      *    文字列操作サブ
+           COPY    "CPORCSSTRING.INC".
       *
       *    患者番号変換サブ
            COPY    "CPORCSPTNUM.INC".
@@ -322,25 +328,49 @@
                    MOVE    DSUB01-SCRSPA-AREA
                                            TO  SPA-D04
                    MOVE    DSUB01-COMMON   TO  SPA-D01KYOUTU
+                   MOVE    SPA-GMN-BYOMEI  TO  WRK-BYOMEI
                    IF    ( SPA-MOTOPG      =   "X01" )
-                       MOVE    SPACE       TO  SPA-GMN-BYOMEI
-                       MOVE    ZERO        TO  SPA-GMN-BYOLST-SELNUM
-                                               SPA-GMN-BYOLST-SEL
+                       MOVE    SPA-GMN-CHKLST-SEL
+                                           TO  WRK-CHKLST-SEL
+                       MOVE    ZERO        TO  SPA-GMN-CHKLST-SELNUM
+                                               SPA-GMN-CHKLST-SEL
                        INITIALIZE              SPA-GMN-CHKLST-AREA
                                                SPA-NAI-CHKLST-AREA
                        PERFORM 3101-CHKLST-SEC
+                       IF    ( SPA-GMN-TCHKBYOMEI (WRK-CHKLST-SEL)
+                                           =   WRK-BYOMEI )
+                           MOVE    WRK-CHKLST-SEL
+                                           TO  SPA-GMN-CHKLST-SELNUM
+                                               SPA-GMN-CHKLST-SEL
+                       END-IF
                    ELSE
                        IF    ( SPA-NAI-PTID    NOT =   ZERO )
+                           MOVE    SPA-GMN-BYOLST-SEL
+                                           TO  WRK-BYOLST-SEL
+                           MOVE    ZERO        TO  SPA-GMN-BYOLST-SELNUM
+                                                   SPA-GMN-BYOLST-SEL
                            INITIALIZE          SPA-GMN-BYOLST-AREA
                                                SPA-NAI-BYOLST-AREA
-                           MOVE    SPACE       TO  SPA-GMN-BYOMEI
                            PERFORM 3101-BYOLST-SEC
                        END-IF
+                       IF    ( SPA-GMN-TBYOMEI (WRK-BYOLST-SEL)
+                                           =   WRK-BYOMEI )
+                           MOVE    WRK-BYOLST-SEL
+                                           TO  SPA-GMN-BYOLST-SELNUM
+                                               SPA-GMN-BYOLST-SEL
+                       END-IF
                    END-IF
-      *
-                   IF    ( SPA-MOTOPG  =   "X01" )
+                   MOVE    WRK-BYOMEI  TO  SPA-GMN-BYOMEI
+                   EVALUATE    TRUE
+                   WHEN  ( SPA-GMN-BYOLST-SELNUM   >   ZERO )
                        MOVE    4       TO  SPA-GMN-CUR
-                   END-IF
+                   WHEN  ( SPA-GMN-CHKLST-SELNUM   >   ZERO )
+                       MOVE    6       TO  SPA-GMN-CUR
+                   WHEN  ( SPA-MOTOPG  =   "X01" )
+                       MOVE    4       TO  SPA-GMN-CUR
+                   WHEN  ( SPA-MOTOPG  =   "C02" )
+                       MOVE    6       TO  SPA-GMN-CUR
+                   END-EVALUATE
                    GO  TO  300-SCREEN-EXT
                END-EVALUATE
       *
@@ -937,12 +967,14 @@
                PERFORM 4100-SELNUM-CHK-SEC
            WHEN    "ACTIVATE"      ALSO    "BYOSELNUM"
                PERFORM 4100-BYOSELNUM-CHK-SEC
+           WHEN    "ACTIVATE"      ALSO    "CHKSELNUM"
+               PERFORM 4100-CHKSELNUM-CHK-SEC
            WHEN    ANY             ALSO    "ERRLST"
                PERFORM 4100-ERRLST-CHK-SEC
            WHEN    ANY             ALSO    "BYOLST"
                PERFORM 4100-BYOLST-CHK-SEC
-      *    WHEN    ANY             ALSO    "CHKLST"
-      *        PERFORM 4100-CHKLST-CHK-SEC
+           WHEN    ANY             ALSO    "CHKLST"
+               PERFORM 4100-CHKLST-CHK-SEC
            WHEN    OTHER
       *        入力個所のセット
                PERFORM 400-GMN-INPUT-SEC
@@ -1137,11 +1169,63 @@
                    MOVE    "0004"      TO  SPA-ERRCD
                    MOVE    4           TO  SPA-GMN-CUR
                END-IF
+               MOVE    ZERO            TO  SPA-GMN-CHKLST-SELNUM
+               MOVE    ZERO            TO  SPA-GMN-CHKLST-SEL
            END-IF
       *
            .
       *
        4101-BYOSELNUM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ病名選択番号チェック処理
+      *****************************************************************
+       4100-CHKSELNUM-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           MOVE    ZERO                TO  SPA-GMN-CHKLST-SEL
+      *
+           MOVE    D04-CHKSELNUM       TO  SPA-GMN-CHKLST-SELNUM
+      *
+           PERFORM 4101-CHKSELNUM-CHK-SEC
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( WRK-CHKLST-SEL  >   ZERO )
+                   MOVE    WRK-CHKLST-SEL  TO  SPA-GMN-CHKLST-SEL
+                   MOVE    SPA-GMN-TCHKBYOMEI (SPA-GMN-CHKLST-SEL)
+                                       TO  SPA-GMN-BYOMEI
+                   MOVE    5           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+      *
+       4100-CHKSELNUM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ病名選択番号チェック処理
+      *****************************************************************
+       4101-CHKSELNUM-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  WRK-CHKLST-SEL
+      *
+           IF    ( SPA-GMN-CHKLST-SELNUM  >   ZERO )
+      *
+               IF    ( SPA-GMN-CHKLST-SELNUM
+                                       <= SPA-GMN-CHKLST-MAX )
+                   MOVE    SPA-GMN-CHKLST-SELNUM
+                                       TO  WRK-CHKLST-SEL
+               ELSE
+                   MOVE    "0005"      TO  SPA-ERRCD
+                   MOVE    6           TO  SPA-GMN-CUR
+               END-IF
+               MOVE    ZERO            TO  SPA-GMN-BYOLST-SELNUM
+               MOVE    ZERO            TO  SPA-GMN-BYOLST-SEL
+           END-IF
+      *
+           .
+      *
+       4101-CHKSELNUM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    チェック内容リストチェック処理
@@ -1204,9 +1288,10 @@
                     OR   ( SPA-GMN-CHKLST-SEL  >   ZERO )
       *
                IF    ( D04-CHKLST-SELECT (IDXL)    =   "T")
-                   MOVE    IDXL     TO  SPA-GMN-CHKLST-SEL
-                   MOVE    SPA-GMN-TCHKBYOMEI (IDXL)
-                                       TO  SPA-GMN-BYOMEI
+                   MOVE    IDXL        TO  SPA-GMN-CHKLST-SEL
+                                           D04-CHKSELNUM
+                   MOVE    6           TO  SPA-GMN-CUR
+                   PERFORM 4100-CHKSELNUM-CHK-SEC
                END-IF
       *
            END-PERFORM
@@ -1268,12 +1353,22 @@
       *****************************************************************
        4101-BYOMEI-CHK-SEC             SECTION.
       *
-           INITIALIZE   ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    SPA-GMN-BYOMEI      TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"   USING
-                                   ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-BYOMEI
+           IF    ( SPA-GMN-BYOMEI  NOT =   SPACE )
+               INITIALIZE   ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-BYOMEI      TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING
+                                       ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-BYOMEI
+               IF    ( KANACHK-RC          =   ZERO )
+                AND  ( KANACHK-SYUBETU     =   "2" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0006"              TO  SPA-ERRCD
+                   MOVE    5                   TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
       *
            .
       *
@@ -1534,6 +1629,7 @@
            MOVE    SPACE               TO  LINKAREA
       *
            INITIALIZE                      LNK-D04-AREA
+           MOVE    SPA-GMN-BYOMEI      TO  LNK-D04-BYOMEI
            MOVE    LNK-D04-AREA        TO  SPA-WORK
            MOVE    SPA-AREA            TO  LNK-KYOUTU
       *
@@ -1862,6 +1958,8 @@
            MOVE    SPA-GMN-BYOLST-SELNUM
                                        TO  D04-BYOSELNUM
            MOVE    SPA-GMN-BYOMEI      TO  D04-BYOMEI
+           MOVE    SPA-GMN-CHKLST-SELNUM
+                                       TO  D04-CHKSELNUM
       *
            IF    ( SPA-NAI-REIGAICHKKBN    =   "1" )
                MOVE    SPA-GMN-BEHAVE-G    TO  D04-BEHAVE
@@ -1884,8 +1982,18 @@
            MOVE    SPA-GMN-BYOLST-MAX  TO  D04-BYOLST-COUNT
            PERFORM VARYING IDX-LST FROM    1   BY  1
                    UNTIL ( IDX-LST >   SPA-GMN-BYOLST-MAX )
-               MOVE    IDX-LST         TO  WRK-ZZZZ9
-               MOVE    WRK-ZZZZ9       TO  D04-TBYOLSTNO (IDX-LST)
+               MOVE    IDX-LST         TO  WRK-ZZZ9
+               MOVE    WRK-ZZZ9        TO  D04-TBYOLSTNO (IDX-LST)
+               IF    ( SPA-GMN-BYOMEI  NOT =   SPACE )
+                   MOVE    "search"        TO  ORCSSTR-COMMAND
+                   MOVE    SPA-GMN-TBYOMEI (IDX-LST)
+                                           TO  ORCSSTR-STRING1
+                   MOVE    SPA-GMN-BYOMEI  TO  ORCSSTR-STRING2
+                   CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   IF    ( ORCSSTR-NUM1    >   ZERO )
+                       MOVE    "*"     TO  D04-TBYOLSTNO (IDX-LST)(5:1)
+                   END-IF
+               END-IF
                MOVE    SPA-GMN-TBYOMEI (IDX-LST)
                                        TO  D04-TBYOMEI   (IDX-LST)
                MOVE    SPA-GMN-TSRYKA  (IDX-LST)
@@ -1914,12 +2022,13 @@
            MOVE    SPA-GMN-CHKLST-MAX  TO  D04-CHKLST-COUNT
            PERFORM VARYING IDX-LST FROM    1   BY  1
                    UNTIL ( IDX-LST >   SPA-GMN-CHKLST-MAX )
+               MOVE    IDX-LST         TO  WRK-ZZZ9
+               MOVE    WRK-ZZZ9        TO  D04-TCHKLSTNO (IDX-LST)
                MOVE    SPA-GMN-TGRPID (IDX-LST)
-                                       TO  D04-TCHKBYOMEI
-                                                  (IDX-LST)
+                                       TO  D04-TCHKLSTNO (IDX-LST)(5:1)
                MOVE    SPA-GMN-TCHKBYOMEI (IDX-LST)
                                        TO  D04-TCHKBYOMEI
-                                                  (IDX-LST) (3:)
+                                                  (IDX-LST)
                MOVE    SPA-GMN-TCOMPKBN   (IDX-LST)
                                        TO  D04-TCOMPKBN     (IDX-LST)
       *
@@ -1988,7 +2097,6 @@
       *****************************************************************
        5001-MAPCUR-SEC                 SECTION.
       *
-      *
            IF    ( SPA-ERRCD           =   SPACE)
              AND ( SPA-GMN-CUR         =   ZERO )
                PERFORM 5011-INPUT-CUR-SEC
@@ -2007,6 +2115,10 @@
                MOVE    "BYOSELNUM"     TO  MCP-WIDGET
            WHEN    005
                MOVE    "BYOMEI"        TO  MCP-WIDGET
+           WHEN    006
+               MOVE    "CHKSELNUM"     TO  MCP-WIDGET
+           WHEN    208
+               MOVE    "B08"           TO  MCP-WIDGET
            WHEN    209
                MOVE    "B09"           TO  MCP-WIDGET
            WHEN    212
@@ -2033,8 +2145,22 @@
                ELSE
                    MOVE    212         TO  SPA-GMN-CUR
                END-IF
+           WHEN    "BYOSELNUM"
+               MOVE    005             TO  SPA-GMN-CUR
            WHEN    "BYOMEI"
-               MOVE    209             TO  SPA-GMN-CUR
+               MOVE    006             TO  SPA-GMN-CUR
+               IF    ( SPA-GMN-BYOLST-SELNUM   >   ZERO )
+                   MOVE    209         TO  SPA-GMN-CUR
+               END-IF
+               IF    ( SPA-GMN-CHKLST-SELNUM   >   ZERO )
+                   MOVE    208         TO  SPA-GMN-CUR
+               END-IF
+           WHEN    "CHKSELNUM"
+               IF    ( SPA-GMN-CHKLST-SELNUM   >   ZERO )
+                   MOVE    208         TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    209         TO  SPA-GMN-CUR
+               END-IF
            WHEN    "BREIGAI"
                MOVE    002             TO  SPA-GMN-CUR
            END-EVALUATE
@@ -2078,6 +2204,12 @@
                                        TO  SPA-ERRMSG
            WHEN    "0004"
                MOVE    "病名選択番号入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0005"
+               MOVE    "チェックマスタ病名選択番号入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0006"
+               MOVE    "病名は全角で入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "0007"
                MOVE    "エラー内容を選択してください"

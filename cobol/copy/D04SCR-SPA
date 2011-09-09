@@ -76,6 +76,7 @@
                        09  SPA-GMN-THKNCOMBI   PIC X(40).
                05  SPA-GMN-CHKLST-AREA.
                    07  SPA-GMN-CHKLST-MAX      PIC 9(5).
+                   07  SPA-GMN-CHKLST-SELNUM   PIC 9(5).
                    07  SPA-GMN-CHKLST-SEL      PIC 9(5).
                    07  SPA-GMN-CHKLST-OCC      OCCURS  200.
                        09  SPA-GMN-TCHKBYOMEI  PIC X(100).

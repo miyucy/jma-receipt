@@ -45,6 +45,7 @@
                 04  D04-BEHAVE-ITEM-STATE  PIC S9(9)   BINARY.
               03  D04-BYOSELNUM            PIC S9(4).
               03  D04-BYOMEI               PIC X(100).
+              03  D04-CHKSELNUM            PIC S9(4).
               03  D04-SW1.
                 04  D04-ERRLST.
                   05  D04-ERRLST-COUNT     PIC S9(9)   BINARY.
@@ -80,6 +81,7 @@
                   05  D04-CHKLST-ROW       PIC S9(9)   BINARY.
                   05  D04-CHKLST-ROWATTR   PIC S9(9)   BINARY.
                   05  D04-CHKLST-ITEM      OCCURS  200.
+                    06  D04-TCHKLSTNO      PIC X(5).
                     06  D04-TCHKBYOMEI     PIC X(100).
                     06  D04-TCOMPKBN       PIC X(4).
                   05  D04-CHKLST-SELECT    PIC X       OCCURS  200.

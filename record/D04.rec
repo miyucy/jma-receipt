@@ -66,6 +66,9 @@ D04	{
 		BYOMEI	{
 			value	varchar(100);
 		};
+		CHKSELNUM	{
+			value	number(4);
+		};
 		sw1	{
 			ERRLST	{
 				count	int;
@@ -109,8 +112,9 @@ D04	{
 				row	int;
 				rowattr	int;
 				item	{
-					value0	varchar(100);
-					value1	varchar(4);
+					value0	varchar(5);
+					value1	varchar(100);
+					value2	varchar(4);
 				}	[200];
 				select	bool[200];
 			};
