@@ -69,6 +69,8 @@
       *
       *  04.06.01    NACL-門脇    10/12/06  労災・自賠責の金額フリー入力
       *                                     コード対応
+      *
+      *  04.07.01    NACL-門脇    11/09/09  労災請求書作成対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2500,6 +2502,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
               COMPUTE  RECE82-TOTALTEN  = 
                        RECE82-TOTALTEN  + 
                        RECE82-NYUTOKKEI2
+      *
+              MOVE     RECE82-TOTALTEN  TO   RECE82-NYUTOTALTEN
       *
               ADD      TOTALTEN-ACCT    TO   RECE82-TOTALTEN
       *
