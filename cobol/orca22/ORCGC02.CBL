@@ -794,6 +794,10 @@
                            GO  TO  100-INIT-EXT
                    END-EVALUATE
                END-IF
+               IF      SPA-CIDCD2      NOT =   SPACE
+                           PERFORM 530-CIDSET2-SEC
+                           GO  TO  100-INIT-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -851,6 +855,11 @@
                MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
       *
                INITIALIZE              SPA-C01KYOUTU
+      *
+               IF    ( WRK-MOTOPG          =   "D04" )
+                   MOVE    SPACE           TO  LINKAREA
+               END-IF
+      *
            END-IF
       *
            EVALUATE    SPA-MOTOPG(1:3)
@@ -1362,7 +1371,6 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
                MOVE    SPA-FTNRATEMEI  TO  SPA-GMN-C02-FTNRATE
                IF      SPA-ERRCD   NOT =   SPACE
                    MOVE    27              TO  SPA-GMN-C02-CUR
-                   MOVE    SPACE           TO  SPA-ERRCD
                ELSE
                    IF    ( SPA-SRYKA   NOT =   SPACE )
                    AND   ( SPA-C02-1042-SRYKA-DSPKBN
@@ -1391,9 +1399,6 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
                    IF      LNK-D04-BYOMEI  NOT =   SPACE
                        MOVE    LNK-D04-BYOMEI      TO  C02-BYOMEI
                        PERFORM 41013-BYOMEI-CHK-SEC
-                       IF      SPA-ERRCD   NOT =   SPACE
-                           MOVE    SPACE           TO  SPA-ERRCD
-                       END-IF
                    END-IF
                END-IF
            ELSE    
