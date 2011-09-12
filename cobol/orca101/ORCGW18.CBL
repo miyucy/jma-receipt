@@ -1859,6 +1859,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            PERFORM 5001-MAPCUR-SEC
       *
+      *----(04.06.01)--UPD-START---
            IF      W18-PAGENO          =   0
                MOVE    WIDGET-NORMAL       TO  W18-B02-STATE
                MOVE    WIDGET-NORMAL       TO  W18-B03-STATE
@@ -1866,6 +1867,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-INSENSITIVE  TO  W18-B02-STATE
                MOVE    WIDGET-INSENSITIVE  TO  W18-B03-STATE
            END-IF
+      *----(04.06.01)--UPD-END-----
       *
            .
        500-GMNHEN-EXT.
