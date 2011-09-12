@@ -19,8 +19,6 @@
                     06  W18-VALUE   PIC X(80).
                   05  W18-HOSPNAME3.
                     06  W18-VALUE   PIC X(80).
-                  05  W18-KAISETUNAME.
-                    06  W18-VALUE   PIC X(80).
                   05  W18-POST.
                     06  W18-VALUE   PIC X(7).
                   05  W18-ADRS1.
@@ -34,15 +32,13 @@
                   05  W18-FAX.
                     06  W18-VALUE   PIC X(15).
                 04  W18-FI24.
-                  05  W18-PRTKBN-COMBO  OCCURS  25.
+                  05  W18-PRTKBN-COMBO  OCCURS  21.
                     06  W18-PRTKBN.
                       07  W18-VALUE   PIC X(21).
                     06  W18-PRTKBN-COUNT   PIC S9(9)   BINARY.
                     06  W18-PRTKBN-ITEM
                             PIC X(21)   OCCURS  99 TIMES.
               03  W18-HHOSPNAME.
-                04  W18-VALUE   PIC X(60).
-              03  W18-HKAISETUNAME.
                 04  W18-VALUE   PIC X(60).
               03  W18-HADRS.
                 04  W18-VALUE   PIC X(100).

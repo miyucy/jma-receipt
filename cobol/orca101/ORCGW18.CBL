@@ -35,13 +35,7 @@
       *  04.02.00    NACL-森脇    08/03/17  広域連合追加、お薬手帳追加
       *  04.03.01    NACL-森脇    08/06/24  レセプト電算、症状詳記追加
       *  04.04.00    NACL-森脇    08/11/21  光ディスク等送付書追加
-      *  04.06.00    NACL-多々納  10/06/28  予約票追加
       *  04.06.01    NACL-森脇    11/09/12  削除ボタン追加
-      *  04.06.02    NACL-森脇    11/09/28  診療報酬請求書（労災）追加
-      *
-      *  04.07.01    NACL-藤原    12/05/28  タブラベル対応
-      *  04.07.02    NACL-藤原    15/08/18  開設者名追加対応
-      *  04.08.01    NACL-太田    16/08/04  支払証明書、自費内訳明細書追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -71,7 +65,6 @@
                    07  SPA-GMN-STYUKYMD       PIC X(09).
                    07  SPA-GMN-EDYUKYMD       PIC X(09).
                    07  SPA-GMN-HHOSPNAME      PIC X(60).
-                   07  SPA-GMN-HKAISETUNAME   PIC X(60).
                    07  SPA-GMN-HPOST          PIC X(07).
                    07  SPA-GMN-HADRS          PIC X(100).
                    07  SPA-GMN-HTEL           PIC X(15).
@@ -83,31 +76,25 @@
                        09  SPA-GMN-F1         PIC X(01).
                        09  SPA-GMN-KBNCDMEI   PIC X(18).
                    07  SPA-GMN-KOUMOKU1.
-                       09  SPA-GMN-HOSPNAME-G.
-                           11  SPA-GMN-HOSPNAME1
-                                              PIC X(80).
-                           11  SPA-GMN-HOSPNAME2
-                                              PIC X(80).
-                           11  SPA-GMN-HOSPNAME3
-                                              PIC X(80).
-                       09  SPA-GMN-KAISETUNAME
-                                              PIC X(80).
-                       09  SPA-GMN-POST       PIC X(07).
-                       09  SPA-GMN-ADRS1      PIC X(76).
-                       09  SPA-GMN-ADRS2      PIC X(76).
-                       09  SPA-GMN-ADRS3      PIC X(76).
-                       09  SPA-GMN-TEL        PIC X(15).
-                       09  SPA-GMN-FAX        PIC X(15).
+                       09  SPA-GMN-HOSPNAME1  PIC X(80).              
+                       09  SPA-GMN-HOSPNAME2  PIC X(80).              
+                       09  SPA-GMN-HOSPNAME3  PIC X(80).              
+                       09  SPA-GMN-POST       PIC X(07).              
+                       09  SPA-GMN-ADRS1      PIC X(76).              
+                       09  SPA-GMN-ADRS2      PIC X(76).              
+                       09  SPA-GMN-ADRS3      PIC X(76).              
+                       09  SPA-GMN-TEL        PIC X(15).              
+                       09  SPA-GMN-FAX        PIC X(15).              
       *
-      *----(04.06.02)--UPD-START---
+      *----(04.04.00)--UPD-START---
                    07  SPA-GMN-KOUMOKU2.
-                       09  SPA-GMN-PRTKBN-G   OCCURS  25.
+                       09  SPA-GMN-PRTKBN-G   OCCURS  21.
                            11  SPA-GMN-PRTKBN
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTKBNMEI
                                               PIC X(18).
-      *----(04.06.02)--UPD-END-----
+      *----(04.04.00)--UPD-END-----
       *                                        
                    07  SPA-GMN-KBNCDLST-G.
                        09  SPA-GMN-KBNCDLST   OCCURS  99.
@@ -131,7 +118,6 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-SYS-1901        PIC 9(01).
-           03  FLG-SYS-1903        PIC 9(01).
            03  FLG-SYS-1902        PIC 9(01).
       *
            03  FLG-TOUROKU         PIC 9(01).
@@ -170,8 +156,6 @@
            03  WRK-MOJI1           PIC X(04).
            03  WRK-MOJI2           PIC X(04).
       *
-           03  WRK-PAGENO          PIC S9(9)   BINARY.
-      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -199,7 +183,6 @@
       *
            COPY    "CPSK1902.INC".
       *
-           COPY    "CPSK1903.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -219,6 +202,8 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+           COPY    "CPORCMCP.INC".
+      *    COPY    "ORCA-DBPATH".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -234,13 +219,65 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC". 
+           COPY    "W08.INC". 
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
            SPAAREA
            LINKAREA
            SCRAREA.
+      *
+      *
       *
       *****************************************************************
       *    主　　処理
@@ -301,11 +338,6 @@
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
-      *
-               IF      SPA-WIDCD2      NOT =   SPACE
-                   PERFORM 530-WID2SET-SEC
-                   GO  TO  100-INIT-EXT
-               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -349,24 +381,13 @@
        330-WID-SET-SEC            SECTION.
       *
            IF      SPA-WID1-FLG    =   "OK"
-               EVALUATE    SPA-WIDCD
-                   WHEN    "1005"
-                       PERFORM 490-SAKUJYO-SEC
-                   WHEN    "1003"
-                   WHEN    "1001"
-      *                登録時の医療機関名未入力の警告
-                       IF      SPA-GMN-HOSPNAME-G  =   SPACE
-                           MOVE    "1006"              TO  SPA-WIDCD2
-                           MOVE    SPACE               TO  SPA-WID1-FLG
-                           MOVE    SPACE               TO  SPA-WIDCD
-                           GO  TO  330-WID-SET-EXT
-                       ELSE
-                           PERFORM 490-KOUSHIN-SEC
-                       END-IF
-                   WHEN    OTHER
-                       PERFORM 490-KOUSHIN-SEC
-               END-EVALUATE
-      *
+      *----(04.06.01)--UPD-START---
+               IF      SPA-WIDCD   =   "1005"
+                   PERFORM 490-SAKUJYO-SEC
+               ELSE
+                   PERFORM 490-KOUSHIN-SEC
+               END-IF
+      *----(04.06.01)--UPD-END-----
                EVALUATE    SPA-WIDCD
                    WHEN    "1003"
                    WHEN    "1004"
@@ -378,7 +399,9 @@
                EVALUATE    SPA-WIDCD
                    WHEN    "1001"
                    WHEN    "1003"
+      *----(04.06.01)--ADD-START---
                    WHEN    "1005"
+      *----(04.06.01)--ADD-END-----
                        MOVE    2            TO  SPA-GMN-CUR
                    WHEN    "1002"
                    WHEN    "1004"
@@ -387,7 +410,7 @@
            END-IF
       *
            MOVE    SPACE           TO  SPA-WID1-FLG
-           MOVE    SPACE           TO  SPA-WIDCD
+           MOVE    SPACE           TO  SPA-WIDCD      
       *
            .
        330-WID-SET-EXT.
@@ -399,41 +422,18 @@
        330-WID2-SET-SEC            SECTION.
       *
            IF      SPA-WID2-FLG    =   "OK"
-               EVALUATE    SPA-WIDCD2
-                   WHEN    "1003"
-      *                登録時の医療機関名未入力の警告
-                       IF      SPA-GMN-HOSPNAME-G  =   SPACE
-                           MOVE    "1007"              TO  SPA-WIDCD2
-                           MOVE    SPACE               TO  SPA-WID2-FLG
-                           GO  TO  330-WID2-SET-EXT
-                       ELSE
-                           PERFORM 490-KOUSHIN-SEC
-                       END-IF
-                   WHEN    OTHER
-                       PERFORM 490-KOUSHIN-SEC
-               END-EVALUATE
-      *
-               EVALUATE    SPA-WIDCD2
-                   WHEN    "1003"
-                   WHEN    "1007"
-                       MOVE    101          TO  SPA-GMN-CUR
-                   WHEN    "1004"
-                   WHEN    "1006"
-                       MOVE    1            TO  SPA-GMN-CUR
-               END-EVALUATE
-           ELSE
-               EVALUATE    SPA-WIDCD2
-                   WHEN    "1003"
-                       MOVE    101          TO  SPA-GMN-CUR
-                   WHEN    "1004"
-                   WHEN    "1006"
-                   WHEN    "1007"
-                       MOVE    1            TO  SPA-GMN-CUR
-               END-EVALUATE
+               PERFORM 490-KOUSHIN-SEC
            END-IF
       *
+           EVALUATE    SPA-WIDCD2
+               WHEN    "1003"
+                   MOVE    101          TO  SPA-GMN-CUR
+               WHEN    "1004"
+                   MOVE    1            TO  SPA-GMN-CUR
+           END-EVALUATE
+      *
            MOVE    SPACE           TO  SPA-WID2-FLG
-           MOVE    SPACE           TO  SPA-WIDCD2
+           MOVE    SPACE           TO  SPA-WIDCD2    
            .
        330-WID2-SET-EXT.
            EXIT.
@@ -445,9 +445,9 @@
       *
            INITIALIZE   SPA-W18-AREA
       *
-      *----(04.06.02)--UPD-START---
-           MOVE    25                  TO  SPA-GMN-PRTKBN-MAX
-      *----(04.06.02)--UPD-END-----
+      *----(04.04.00)--UPD-START---
+           MOVE    21                  TO  SPA-GMN-PRTKBN-MAX
+      *----(04.04.00)--UPD-END-----
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
@@ -469,8 +469,6 @@
                INITIALIZE                      SYS-1001-REC
            END-IF
            MOVE    SYS-1001-HOSPNAME   TO  SPA-GMN-HHOSPNAME
-           MOVE    SYS-1001-KAISETUNAME
-                                       TO  SPA-GMN-HKAISETUNAME
       * 
            MOVE    SPACE               TO  SYS-1002-REC
            INITIALIZE                      SYS-1002-REC
@@ -548,6 +546,10 @@
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-KOUSHIN-MAE-SEC
+      *    タグ
+               WHEN    "CLICKED"       ALSO    "N01"
+               WHEN    "CLICKED"       ALSO    "N02"
+                   PERFORM 440-TAG-CHANGE-SEC
            END-EVALUATE
       *
            .
@@ -563,9 +565,6 @@
       *        区分コード
                WHEN    "ACTIVATE"       ALSO    "KBNCD"
                    PERFORM 4100-KBNCD-CHK-SEC
-      *        タグ
-               WHEN    "SWITCH"        ALSO    "note3"
-                   PERFORM 440-TAG-CHANGE-SEC
       *        一括分
                WHEN    "ACTIVATE"       ALSO    ANY
                    PERFORM 400-ENTRY-SYORI-SEC
@@ -640,21 +639,6 @@
                        INITIALIZE                      SYS-1902-REC
                    END-IF
       *
-                   MOVE    SPACE               TO  SYS-1903-REC
-                   INITIALIZE                      SYS-1903-REC
-                   MOVE    "1903"              TO  SYS-1903-KANRICD
-                   MOVE    SPA-GMN-KBNCD       TO  SYS-1903-KBNCD
-                   MOVE    SPA-W01-STYUKYMD    TO  SYS-1903-STYUKYMD
-                   MOVE    SPA-W01-STYUKYMD    TO  SYS-1903-EDYUKYMD
-                   MOVE    SPA-HOSPNUM         TO  SYS-1903-HOSPNUM
-                   MOVE    SYS-1903-REC        TO  MCPDATA-REC
-                   PERFORM 900-SYSKANRI-INV-SEC
-                   IF      FLG-SYSKANRI        =   ZERO
-                       MOVE    MCPDATA-REC         TO  SYS-1903-REC
-                   ELSE
-                       INITIALIZE                      SYS-1903-REC
-                   END-IF
-      *
                    MOVE    SYS-1901-HOSPNAME1  TO  SPA-GMN-HOSPNAME1
                    MOVE    SYS-1901-HOSPNAME2  TO  SPA-GMN-HOSPNAME2
                    MOVE    SYS-1901-HOSPNAME3  TO  SPA-GMN-HOSPNAME3
@@ -667,8 +651,6 @@
                    MOVE    SYS-1902-TEL        TO  SPA-GMN-TEL
                    MOVE    SYS-1902-FAX        TO  SPA-GMN-FAX
                    MOVE    SYS-1902-ADRS1MOJI  TO  SPA-NAI-ADRS1MOJI
-                   MOVE    SYS-1903-KAISETUNAME
-                                               TO  SPA-GMN-KAISETUNAME
                END-IF
            END-IF
       *
@@ -720,8 +702,7 @@
       *
            MOVE    W18-HOSPNAME1       TO  SPA-GMN-HOSPNAME1
            MOVE    W18-HOSPNAME2       TO  SPA-GMN-HOSPNAME2
-           MOVE    W18-HOSPNAME3       TO  SPA-GMN-HOSPNAME3
-           MOVE    W18-KAISETUNAME     TO  SPA-GMN-KAISETUNAME
+           MOVE    W18-HOSPNAME3       TO  SPA-GMN-HOSPNAME3 
            MOVE    W18-POST            TO  SPA-GMN-POST
            MOVE    W18-ADRS1           TO  SPA-GMN-ADRS1
            MOVE    W18-ADRS2           TO  SPA-GMN-ADRS2
@@ -753,11 +734,6 @@
            END-IF
       *
            PERFORM 41023-HOSPNAME3-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
-           END-IF
-      *
-           PERFORM 41024-KAISETUNAME-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -889,32 +865,6 @@
       *
            .
        41023-HOSPNAME3-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    開設者名チェック
-      *****************************************************************
-       41024-KAISETUNAME-CHK-SEC         SECTION.
-      *
-           IF      SPA-GMN-KAISETUNAME =   SPACE
-               CONTINUE
-           ELSE
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    SPA-GMN-KAISETUNAME TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"       USING
-                                           ORCSKANACHKAREA
-               IF     (KANACHK-RC      NOT =   ZERO  )  OR
-                      (KANACHK-SYUBETU     =   1     )
-                   MOVE    "0008"              TO  SPA-ERRCD
-                   MOVE    11                  TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-KAISETUNAME
-               END-IF
-           END-IF 
-      *
-           .
-       41024-KAISETUNAME-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1078,7 +1028,7 @@
                    MOVE    "0001"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-GMN-CUR 
                END-IF           
-           END-IF
+           END-IF 
            .
        4103-KAKUTEI-CHK-EXT.
            EXIT.
@@ -1088,10 +1038,15 @@
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
       *
-           MOVE   W18-PAGENO           TO  WRK-PAGENO
+           EVALUATE    MCP-WIDGET
+               WHEN    "N01"
+                   MOVE   ZERO         TO  IDX
+               WHEN    "N02"
+                  MOVE    1            TO  IDX
+           END-EVALUATE
       *
       *    タグが変わったとき項目チェック
-      *****IF      IDX              NOT =   W18-PAGENO
+           IF      IDX              NOT =   W18-PAGENO
                MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
                MOVE    ZERO                TO  SPA-GMN-CUR
       *
@@ -1099,8 +1054,8 @@
                MOVE    2                   TO  FLG-TOUROKU
                PERFORM 410-INPUT-CHK-SEC
                IF      SPA-ERRCD            =   SPACE
-                   EVALUATE    WRK-PAGENO
-                       WHEN    0
+                   EVALUATE    WRK-MCP-WIDGET
+                       WHEN    "N01"
                            IF      SPA-GMN-KOUMOKU2 =   SPACE
                                MOVE    1            TO  SPA-GMN-CUR
                            ELSE
@@ -1115,7 +1070,7 @@
                                    MOVE    "1004"       TO  SPA-WIDCD2
                                END-IF
                            END-IF
-                       WHEN    1
+                       WHEN    "N02"
                            IF      SPA-GMN-KBNCD    =   SPACE
                                MOVE    101          TO  SPA-GMN-CUR
                            ELSE 
@@ -1132,7 +1087,7 @@
                            END-IF 
                    END-EVALUATE
                END-IF
-      *****END-IF        
+           END-IF        
            .
        440-TAG-CHANGE-EXT.
            EXIT.
@@ -1179,6 +1134,8 @@
        430-DEL-SEC                 SECTION.
       *
            IF    ( SPA-GMN-KBNCD   =   SPACE )
+           AND   ( SPA-GMN-KOUMOKU1 
+                                   =   SPACE )
                MOVE    "0102"          TO  SPA-ERRCD
            ELSE
                MOVE    "1005"          TO  SPA-WIDCD
@@ -1307,26 +1264,6 @@
                GO  TO  490-SAKUJYO-EXT
            END-IF
       *
-      *    医療機関編集情報−基本情報（２）
-           MOVE    SPACE               TO  SYS-1903-REC
-           INITIALIZE                      SYS-1903-REC
-           MOVE    "1903"              TO  SYS-1903-KANRICD
-           MOVE    SPA-GMN-KBNCD       TO  SYS-1903-KBNCD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-1903-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMD    TO  SYS-1903-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1903-HOSPNUM
-           MOVE    SYS-1903-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1004"              TO  SPA-ERRCD
-               GO  TO  490-SAKUJYO-EXT
-           END-IF
-      *
       *    医療機関編集情報−所在地、連絡先
            MOVE    SPACE               TO  SYS-1902-REC
            INITIALIZE                      SYS-1902-REC
@@ -1347,81 +1284,35 @@
                GO  TO  490-SAKUJYO-EXT
            END-IF
       *
-      *    使用状況チェック
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-PRTKBN-MAX
                IF      SPA-GMN-PRTKBN (IDX)    =   SPA-GMN-KBNCD
-                   MOVE    1               TO  FLG-CHK
-                   MOVE    SPACE           TO  SPA-GMN-PRTKBN (IDX)
+                   MOVE    1           TO  FLG-CHK
                END-IF
            END-PERFORM
       *
-          IF      FLG-CHK              NOT =   ZERO
-      *
-           MOVE    ZERO                TO  FLG-CHK
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-GMN-PRTKBN-MAX
-               IF      SPA-GMN-PRTKBN (IDX)    NOT =   SPACE
-                   MOVE    1               TO  FLG-CHK
+           IF      FLG-CHK     =   1
+      *        医療機関編集情報
+               MOVE    SPACE               TO  SYS-1900-REC
+               INITIALIZE                      SYS-1900-REC
+               MOVE    "1900"              TO  SYS-1900-KANRICD
+               MOVE    "*"                 TO  SYS-1900-KBNCD
+               MOVE    SPA-W01-STYUKYMD    TO  SYS-1900-STYUKYMD
+               MOVE    SPA-W01-EDYUKYMD    TO  SYS-1900-EDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  SYS-1900-HOSPNUM
+               MOVE    SYS-1900-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC              NOT =   ZERO 
+                   MOVE    "1002"              TO  SPA-ERRCD
+                   GO  TO  490-SAKUJYO-EXT
                END-IF
-           END-PERFORM
-      *
-      *    帳票別指定情報
-           MOVE    SPACE               TO  SYS-1900-REC
-           INITIALIZE                      SYS-1900-REC
-           MOVE    "1900"              TO  SYS-1900-KANRICD
-           MOVE    "*"                 TO  SYS-1900-KBNCD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-1900-STYUKYMD
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-1900-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1900-HOSPNUM
-           MOVE    SYS-1900-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-      *
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1900-REC
-               IF      FLG-CHK             =   ZERO
-                   MOVE    SYS-1900-REC        TO  SYSKANRI-REC
-                   MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-                   MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   IF      MCP-RC              NOT =   ZERO 
-                       MOVE    "1002"              TO  SPA-ERRCD
-                       GO  TO  490-SAKUJYO-EXT
-                   END-IF
-               ELSE
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       SPA-GMN-PRTKBN-MAX
-                       MOVE    SPA-GMN-PRTKBN (IDX)
-                                               TO  SYS-1900-PRTKBN (IDX)
-                   END-PERFORM
-                   MOVE    SYS-1900-REC        TO  SYSKANRI-REC
-                   MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
-                   MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
-                   MOVE    SYS-KANRICD         TO  SYSUP-KANRICD
-                   MOVE    SYS-KBNCD           TO  SYSUP-KBNCD
-                   MOVE    SPA-W01-STYUKYMD    TO  SYSUP-STYUKYMD
-                   MOVE    SPA-W01-EDYUKYMD    TO  SYSUP-EDYUKYMD
-                   MOVE    SPA-HOSPNUM         TO  SYSUP-HOSPNUM
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "upd1"              TO  MCP-PATHNAME
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-                   MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   IF      MCP-RC              NOT =   ZERO
-                       MOVE    "1001"              TO  SPA-ERRCD
-                       GO  TO  490-SAKUJYO-EXT
-                   END-IF
-               END-IF
-           END-IF
+               INITIALIZE                  SPA-GMN-KOUMOKU2
            END-IF
       *
       *    区分コード編集処理
@@ -1441,12 +1332,8 @@
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
-           EVALUATE    SPA-WIDCD    ALSO    SPA-WIDCD2
-               WHEN    "1003"       ALSO    ANY
-               WHEN    "1001"       ALSO    ANY
-               WHEN    ANY          ALSO    "1003"
-               WHEN    ANY          ALSO    "1006"
-               WHEN    ANY          ALSO    "1007"
+           EVALUATE    W18-PAGENO
+               WHEN    0
       *            医療機関編集情報
                    IF      SPA-GMN-KBNCD       =   SPACE
                        CONTINUE
@@ -1456,10 +1343,8 @@
                        INITIALIZE                      SYS-1901-REC
                        MOVE    "1901"              TO  SYS-1901-KANRICD
                        MOVE    SPA-GMN-KBNCD       TO  SYS-1901-KBNCD
-                       MOVE    SPA-W01-STYUKYMD
-                                                   TO  SYS-1901-STYUKYMD
-                       MOVE    SPA-W01-STYUKYMD
-                                                   TO  SYS-1901-EDYUKYMD
+                       MOVE    SPA-W01-STYUKYMD    TO  SYS-1901-STYUKYMD
+                       MOVE    SPA-W01-STYUKYMD    TO  SYS-1901-EDYUKYMD
                        MOVE    SPA-HOSPNUM         TO  SYS-1901-HOSPNUM
                        MOVE    SYS-1901-REC        TO  MCPDATA-REC
                        PERFORM 900-SYSKANRI-INV-SEC
@@ -1481,7 +1366,7 @@
                        MOVE    SPA-GMN-HOSPNAME3   TO
                                                    SYS-1901-HOSPNAME3
                        MOVE    SPA-NAI-HOSPNAME1MOJI   TO
-                                               SYS-1901-HOSPNAME1MOJI
+                                               SYS-1901-HOSPNAME1MOJI 
                        MOVE    SYS-1901-REC        TO  SYSKANRI-REC
                        PERFORM 800-MCNDATE-SEC
                        IF      FLG-SYSKANRI        =   ZERO
@@ -1515,97 +1400,13 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                            GO  TO  490-KOUSHIN-EXT
                        END-IF
       *
-      *                医療機関編集情報−基本情報（２）
-                       MOVE    SPACE               TO  SYS-1903-REC
-                       INITIALIZE                      SYS-1903-REC
-                       MOVE    "1903"              TO  SYS-1903-KANRICD
-                       MOVE    SPA-GMN-KBNCD       TO  SYS-1903-KBNCD
-                       MOVE    SPA-W01-STYUKYMD
-                                                   TO  SYS-1903-STYUKYMD
-                       MOVE    SPA-W01-STYUKYMD
-                                                   TO  SYS-1903-EDYUKYMD
-                       MOVE    SPA-HOSPNUM         TO  SYS-1903-HOSPNUM
-                       MOVE    SYS-1903-REC        TO  MCPDATA-REC
-                       PERFORM 900-SYSKANRI-INV-SEC
-                       IF      FLG-SYSKANRI        =   ZERO
-                           MOVE    MCPDATA-REC     TO  SYS-1903-REC
-                       ELSE
-                           MOVE    SPACE           TO  SYS-1903-REC
-                           INITIALIZE                  SYS-1903-REC
-                           MOVE    "1903"          TO  SYS-1903-KANRICD
-                           MOVE    SPA-GMN-KBNCD   TO  SYS-1903-KBNCD
-                       END-IF
-      *
-                       MOVE    ZERO                TO  FLG-CHK
-                       IF      SPA-GMN-KAISETUNAME NOT =   SPACE
-                           MOVE    1                   TO  FLG-CHK
-                       END-IF
-      *  
-                       IF      FLG-CHK             =   ZERO
-                           IF      FLG-SYSKANRI        =   ZERO
-                               MOVE    SYS-1903-REC    TO  MCPDATA-REC
-                               MOVE    "DBDELETE"      TO  MCP-FUNC
-                               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                               MOVE    "key"           TO  MCP-PATHNAME
-                               CALL    "ORCDBMAIN"     USING   MCPAREA
-                                                           MCPDATA-REC
-                                                           SPA-AREA
-                               IF      MCP-RC          NOT =   ZERO 
-                                   MOVE    "1006"          TO  SPA-ERRCD
-                                   GO  TO  490-KOUSHIN-EXT
-                                END-IF
-                           END-IF    
-                       ELSE
-                           MOVE    SPA-W01-STYUKYMD
-                                                   TO  SYS-1903-STYUKYMD
-                           MOVE    SPA-W01-EDYUKYMD
-                                                   TO  SYS-1903-EDYUKYMD
-                           MOVE    SPA-GMN-KAISETUNAME
-                                                   TO
-                                                   SYS-1903-KAISETUNAME
-                           MOVE    SYS-1903-REC    TO  SYSKANRI-REC
-                           PERFORM 800-MCNDATE-SEC
-                           IF      FLG-SYSKANRI        =   ZERO
-                               MOVE    SMCNDATE-YMD    TO  SYS-UPYMD
-                               MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
-                               MOVE    SYS-KANRICD     TO  SYSUP-KANRICD
-                               MOVE    SYS-KBNCD       TO  SYSUP-KBNCD
-                               MOVE    SPA-W01-STYUKYMD
-                                                       TO SYSUP-STYUKYMD
-                               MOVE    SPA-W01-EDYUKYMD
-                                                       TO SYSUP-EDYUKYMD
-                               MOVE    SPA-HOSPNUM     TO  SYSUP-HOSPNUM
-                               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                               MOVE    "upd1"          TO  MCP-PATHNAME
-                               MOVE    "DBUPDATE"      TO  MCP-FUNC
-                           ELSE
-                               MOVE    SMCNDATE-YMD    TO  SYS-CREYMD
-                                                           SYS-UPYMD
-                               MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
-                               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                               MOVE    "key"           TO  MCP-PATHNAME
-                               MOVE    "DBINSERT"      TO  MCP-FUNC
-                           END-IF
-                           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-                           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                           MCPDATA-REC
-                                                           SPA-AREA
-                           IF      MCP-RC              NOT =   ZERO 
-                               MOVE    "1005"              TO  SPA-ERRCD
-                               GO  TO  490-KOUSHIN-EXT
-                           END-IF
-                       END-IF
-      *
       *                医療機関編集情報−所在地、連絡先
                        MOVE    SPACE               TO  SYS-1902-REC
                        INITIALIZE                      SYS-1902-REC
                        MOVE    "1902"              TO  SYS-1902-KANRICD
                        MOVE    SPA-GMN-KBNCD       TO  SYS-1902-KBNCD
-                       MOVE    SPA-W01-STYUKYMD
-                                                   TO  SYS-1902-STYUKYMD
-                       MOVE    SPA-W01-STYUKYMD
-                                                   TO  SYS-1902-EDYUKYMD
+                       MOVE    SPA-W01-STYUKYMD    TO  SYS-1902-STYUKYMD
+                       MOVE    SPA-W01-STYUKYMD    TO  SYS-1902-EDYUKYMD
                        MOVE    SPA-HOSPNUM         TO  SYS-1902-HOSPNUM
                        MOVE    SYS-1902-REC        TO  MCPDATA-REC
                        PERFORM 900-SYSKANRI-INV-SEC
@@ -1697,16 +1498,14 @@ grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
                    INITIALIZE                  SPA-GMN-KOUMOKU1
                                                SPA-GMN-KBNCD-G
                    MOVE    1                   TO  SPA-GMN-CUR
-               WHEN    OTHER
+               WHEN    1
       *            帳票別指定情報
                    MOVE    SPACE               TO  SYS-1900-REC
                    INITIALIZE                      SYS-1900-REC
                    MOVE    "1900"              TO  SYS-1900-KANRICD
                    MOVE    "*"                 TO  SYS-1900-KBNCD
-                   MOVE    SPA-W01-STYUKYMD
-                                               TO  SYS-1900-STYUKYMD
-                   MOVE    SPA-W01-STYUKYMD
-                                               TO  SYS-1900-EDYUKYMD
+                   MOVE    SPA-W01-STYUKYMD    TO  SYS-1900-STYUKYMD
+                   MOVE    SPA-W01-STYUKYMD    TO  SYS-1900-EDYUKYMD
                    MOVE    SPA-HOSPNUM         TO  SYS-1900-HOSPNUM
                    MOVE    SYS-1900-REC        TO  MCPDATA-REC
                    PERFORM 900-SYSKANRI-INV-SEC
@@ -1788,11 +1587,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    101                 TO  SPA-GMN-CUR
            END-EVALUATE
-      *
-           EVALUATE    SPA-WIDCD    ALSO    SPA-WIDCD2
-               WHEN    "1003"       ALSO    ANY
-               WHEN    "1004"       ALSO    ANY
-               WHEN    ANY          ALSO    "1006"
+      *  
+           EVALUATE    SPA-WIDCD     
+               WHEN    "1003"
+               WHEN    "1004"
       *            医療機関編集情報
                    MOVE    SPACE               TO  SYSKANRI-REC
                    INITIALIZE                      SYSKANRI-REC
@@ -1814,32 +1612,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO
-                       MOVE    "1003"              TO  SPA-ERRCD
-                       GO  TO  490-KOUSHIN-EXT
-                   END-IF
-      *
-                   MOVE    SPACE               TO  SYSKANRI-REC
-                   INITIALIZE                      SYSKANRI-REC
-                   MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
-                   MOVE    SPA-W01-EDYUKYMD    TO  SYS-EDYUKYMD
-                   MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
-                   MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
-                   MOVE    "1903"              TO  SYSUP-KANRICD
-                   MOVE    SPA-W01-SEL-STYUKYMD
-                                               TO  SYSUP-STYUKYMD
-                   MOVE    SPA-W01-SEL-EDYUKYMD
-                                               TO  SYSUP-EDYUKYMD
-                   MOVE    SPA-HOSPNUM         TO  SYSUP-HOSPNUM
-                   MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-                   MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "upd2"              TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO
+                   IF      MCP-RC          NOT =   ZERO 
                        MOVE    "1003"              TO  SPA-ERRCD
                        GO  TO  490-KOUSHIN-EXT
                    END-IF
@@ -1864,7 +1637,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO
+                   IF      MCP-RC          NOT =   ZERO 
                        MOVE    "1005"              TO  SPA-ERRCD
                        GO  TO  490-KOUSHIN-EXT
                    END-IF
@@ -1889,11 +1662,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO
+                   IF      MCP-RC          NOT =   ZERO 
                        MOVE    "1001"              TO  SPA-ERRCD
                        GO  TO  490-KOUSHIN-EXT
                    END-IF
-           END-EVALUATE
+           END-EVALUATE    
            .
        490-KOUSHIN-EXT.
            EXIT.
@@ -2028,8 +1801,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE
-           MOVE    "W18    "           TO  MCP-WINDOW
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
+           MOVE    "W18    "           TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
            .
@@ -2043,7 +1816,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-STYUKYMD         TO  W18-YUKOSTYMD
            MOVE    SPA-GMN-EDYUKYMD         TO  W18-YUKOEDYMD
            MOVE    SPA-GMN-HHOSPNAME        TO  W18-HHOSPNAME
-           MOVE    SPA-GMN-HKAISETUNAME      TO W18-HKAISETUNAME
            MOVE    SPA-GMN-HPOST            TO  W18-HPOST
            MOVE    SPA-GMN-HADRS            TO  W18-HADRS
            MOVE    SPA-GMN-HTEL             TO  W18-HTEL
@@ -2053,7 +1825,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-HOSPNAME1        TO  W18-HOSPNAME1
            MOVE    SPA-GMN-HOSPNAME2        TO  W18-HOSPNAME2
            MOVE    SPA-GMN-HOSPNAME3        TO  W18-HOSPNAME3
-           MOVE    SPA-GMN-KAISETUNAME      TO  W18-KAISETUNAME
            MOVE    SPA-GMN-POST             TO  W18-POST
            MOVE    SPA-GMN-ADRS1            TO  W18-ADRS1
            MOVE    SPA-GMN-ADRS2            TO  W18-ADRS2
@@ -2127,9 +1898,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0007"
                    MOVE    "所在地（３段目）は全角で入力して下さい"
                                                          TO  SPA-ERRMSG
-               WHEN    "0008"
-                   MOVE    "開設者名は全角で入力して下さい"
-                                                         TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "帳票別指定入力エラー"        TO  SPA-ERRMSG
       *----(04.03.01)--ADD-START---
@@ -2149,7 +1917,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(04.06.01)--ADD-START---
                WHEN    "0102"
                    MOVE
-                       "区分コードが選択されていないので削除できません"
+                       "項目が未選択なので削除できません"
                                                          TO  SPA-ERRMSG
       *----(04.06.01)--ADD-END-----
                WHEN    "1001"
@@ -2210,15 +1978,16 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE
                    "適用日を変更しますので、登録後選択画面へ戻ります"
                                                 TO  WRK-WIDMSG
+      *----(04.06.01)--ADD-START---
                WHEN    "1005"
                    MOVE
                    "医療機関編集情報（帳票別指定含む）を削除します。"
                                                 TO  WRK-WIDMSG(1:48)
                    MOVE    "よろしいですか？"   TO  WRK-WIDMSG(49:16)
+      *----(04.06.01)--ADD-END-----
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2253,15 +2022,9 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE
                    "画面を切替えます。帳票別指定情報を登録しますか？"
                                                 TO  WRK-WIDMSG
-               WHEN    "1006"
-               WHEN    "1007"
-                   MOVE
-                   "医療機関名称が未入力ですが、このまま登録しますか？"
-                                                TO  WRK-WIDMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID2
-           INITIALIZE                       WID2
            MOVE    SPA-WIDCD2           TO  WID2-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID2-ID1MSG
            MOVE    "いいえ"             TO  WID2-B01 
@@ -2312,8 +2075,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "TEL"              TO   MCP-WIDGET
                 WHEN    10
                     MOVE  "FAX"              TO   MCP-WIDGET
-                WHEN    11
-                    MOVE  "KAISETUNAME"      TO   MCP-WIDGET
                 WHEN    101
                     MOVE  "PRTKBN1"          TO   MCP-WIDGET
                 WHEN    102
@@ -2366,16 +2127,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    121
                     MOVE  "PRTKBN21"          TO   MCP-WIDGET
       *----(04.04.00)--ADD-END-----
-                WHEN    122
-                    MOVE  "PRTKBN22"          TO   MCP-WIDGET
-      *----(04.06.02)--ADD-START---
-                WHEN    123
-                    MOVE  "PRTKBN23"          TO   MCP-WIDGET
-      *----(04.06.02)--ADD-END-----
-                WHEN    124
-                    MOVE  "PRTKBN24"          TO   MCP-WIDGET
-                WHEN    125
-                    MOVE  "PRTKBN25"          TO   MCP-WIDGET
                 WHEN    200
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -2403,8 +2154,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "HOSPNAME2"
                    MOVE    4           TO  SPA-GMN-CUR
                WHEN    "HOSPNAME3"
-                   MOVE    11          TO  SPA-GMN-CUR
-               WHEN    "KAISETUNAME"
                    MOVE    5           TO  SPA-GMN-CUR
                WHEN    "POST"
                    MOVE    6           TO  SPA-GMN-CUR
@@ -2418,7 +2167,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    10          TO  SPA-GMN-CUR
                WHEN    "FAX"
                    MOVE    200         TO  SPA-GMN-CUR
-      *----(04.06.02)--UPD-START---
+      *----(04.04.00)--UPD-START---
                WHEN    "PRTKBN1"
                    MOVE    102         TO  SPA-GMN-CUR
                WHEN    "PRTKBN2"
@@ -2448,7 +2197,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "PRTKBN16"
                    MOVE    117         TO  SPA-GMN-CUR
                WHEN    "PRTKBN17"
-                   MOVE    123         TO  SPA-GMN-CUR
+                   MOVE    109         TO  SPA-GMN-CUR
                WHEN    "PRTKBN9"
                    MOVE    110         TO  SPA-GMN-CUR
                WHEN    "PRTKBN10"
@@ -2456,21 +2205,12 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "PRTKBN11"
                    MOVE    112         TO  SPA-GMN-CUR
                WHEN    "PRTKBN12"
-                   MOVE    124         TO  SPA-GMN-CUR
+                   MOVE    113         TO  SPA-GMN-CUR
                WHEN    "PRTKBN13"
                    MOVE    118         TO  SPA-GMN-CUR
                WHEN    "PRTKBN18"
-      ********     MOVE    200         TO  SPA-GMN-CUR
-                   MOVE    122         TO  SPA-GMN-CUR
-               WHEN    "PRTKBN22"
                    MOVE    200         TO  SPA-GMN-CUR
-               WHEN    "PRTKBN23"
-                   MOVE    109         TO  SPA-GMN-CUR
-      *----(04.06.02)--UPD-END-----
-               WHEN    "PRTKBN24"
-                   MOVE    125         TO  SPA-GMN-CUR
-               WHEN    "PRTKBN25"
-                   MOVE    113         TO  SPA-GMN-CUR
+      *----(04.04.00)--UPD-END-----
            END-EVALUATE
       *
            .
