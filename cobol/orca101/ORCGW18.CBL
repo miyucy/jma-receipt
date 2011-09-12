@@ -1915,10 +1915,12 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE
                        "項目が未入力なので更新できません"
                                                          TO  SPA-ERRMSG
+      *----(04.06.01)--ADD-START---
                WHEN    "0102"
                    MOVE
                        "項目が未選択なので削除できません"
                                                          TO  SPA-ERRMSG
+      *----(04.06.01)--ADD-END-----
                WHEN    "1001"
                    MOVE    "帳票別指定情報の更新ができませんでした"
                                                          TO  SPA-ERRMSG
