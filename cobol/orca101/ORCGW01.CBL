@@ -227,6 +227,7 @@
            03  WRK-W01-MAE-G.
                05  WRK-W01-MAE-KANRICD PIC X(04).
                05  WRK-W01-MAE-KBNCD   PIC X(08).
+           03  WRK-SELNUM              PIC 9(03).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -998,6 +999,8 @@
       *
            MOVE    2               TO  SPA-GMN-CUR
       *     
+           MOVE    SPA-GMN-SELNUM  TO  WRK-SELNUM
+      *     
            INITIALIZE                  SPA-GMN-KOUMOKU1
                                        SPA-NAI-KOUMOKU
                                        SPA-NAI-SELNO
@@ -1007,7 +1010,8 @@
       *    選択番号チェック
       ***     IF      SPA-GMN-SELNUM      =   ZERO
            IF     (SPA-GMN-SELNUM      =   ZERO)   AND
-                  (SPA-GMN-MAX         =   ZERO)
+                 ((SPA-GMN-MAX         =   ZERO) OR
+                  (WRK-SELNUM      NOT =   ZERO))
                MOVE    3                   TO  SPA-GMN-CUR 
                GO  TO  4101-SELNUM-CHK-EXT 
            ELSE
