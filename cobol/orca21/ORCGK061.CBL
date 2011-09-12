@@ -1761,7 +1761,14 @@
                MOVE    "0004"               TO  SPA-ERRCD
            END-IF
       *    初診ダミー
-           IF     (WRK-SRYCD           =   "099110001")
+           IF     (WRK-SRYCD           =   "099110001"
+                                       OR  "111000110"
+                                       OR  "113003510"
+                                       OR  "113003710"
+                                       OR  "101110010"
+                                       OR  "111700210"
+                                       OR  "111700110"
+                                       OR  "111003610" )
                MOVE    "2"                 TO  SPA-K061-KBN2
            END-IF
       *    リハビリ発症日
@@ -2005,7 +2012,8 @@
              AND  (SPA-K061-KBN        =   "1"   )
              AND  (SPA-K061-FSYOYMD    =   SPA-K061-TSANYMD
                                                 (SPA-K061-SELNUM) )
-             AND  (SPA-K061-SRYCD      =    "099110001"  )
+      ****   AND  (SPA-K061-SRYCD      =    "099110001"  )
+             AND  (SPA-K061-KBN2       =   "2"     )
                MOVE    SPACE               TO  SPA-ERRCD
            END-IF
       *    システム日チェック
@@ -2356,7 +2364,8 @@
       *    削除処理
            PERFORM 4501-SANTEI-DEL-SEC
       *    初診ダミーは診療科履歴更新
-           IF      SPA-K061-SRYCD      =   "099110001"
+      ***  IF      SPA-K061-SRYCD      =   "099110001"
+           IF     (SPA-K061-KBN2       =   "2"         )
                MOVE    SPA-K061-SANYMD(1:6)    TO  WRK-SRYYM
                PERFORM 4510-KARRK-UPD-SEC
            END-IF

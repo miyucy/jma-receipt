@@ -410,6 +410,10 @@
                    IF      SPA-KID1-FLG        =   "OK"
       *                ÅÐÏ¿½èÍý
                        PERFORM 4501-TOUROKU-SYORI-SEC
+      *
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           PERFORM 510-ERRSET-SEC
+                       END-IF
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
@@ -2018,6 +2022,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ¿ÇÎÅ²ÊÍúÎò¤Î½é¿Ç»»ÄêÆü½¤Àµ½èÍý
       *****************************************************************
        4510-KARRK-UPD-SEC             SECTION.
+      *
+      *    ½é¿ÇÎÁ¤Î¤ßÂÐ¾Ý
+           IF      SPA-GMN-SRYCD       =   "111000110"
+                                       OR  "111700210"
+                                       OR  "111003610"
+                                       OR  "111700110"
+                                       OR  "113003510"
+                                       OR  "113003710"
+                                       OR  "101110010"
+                                       OR  "099110001"
+               CONTINUE
+           ELSE
+               GO      TO      4510-KARRK-UPD-EXT
+           END-IF
       *
            INITIALIZE                  ORCSKARRKAREA
            MOVE    SPA-NAI-SRYYM       TO  SKARRK-SRYYM

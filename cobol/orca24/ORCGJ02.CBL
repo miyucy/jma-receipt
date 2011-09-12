@@ -8742,6 +8742,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "0009"          TO  SPA-ERRCD
                GO      TO      4801-K06-SYORI-EXT
            END-IF
+      *    診療科選択チェック
+           IF      SPA-GMN-SRYKA       =   ZERO
+               MOVE    "0036"              TO  SPA-ERRCD
+               MOVE    06                  TO  SPA-GMN-CUR
+               GO      TO      4801-K06-SYORI-EXT
+           END-IF
       *
       *    戻り時、画面を元へ戻す
            MOVE    SPACE               TO  LINKAREA
@@ -11612,10 +11618,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    リハビリ開始日算定履歴付加情報処理
       *****************************************************************
        490211-SANTEIPLUS-SYORI-SEC            SECTION.
-      *TEST
-            DISPLAY "490211-SANTEIPLUS-SYORI-SEC"
-                 ",WRK-SRYCD:"  WRK-SRYCD
-      *TEST
       *
       *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
@@ -13405,6 +13407,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG
                WHEN    "0035"
                    STRING  "全科では剤の新規登録はできません。"
+                           "診療科を選択して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
+               WHEN    "0036"
+                   STRING  "全科での算定履歴画面遷移はできません。"
                            "診療科を選択して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-ERRMSG
