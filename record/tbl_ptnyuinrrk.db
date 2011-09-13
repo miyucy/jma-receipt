@@ -135,6 +135,7 @@ path	key7		{
 			AND		RRKNUM      <>  :RRKNUM
 			AND		NYUINYMD   <=   :TAIINYMD
 			AND		TAIINYMD   >=   :NYUINYMD
+		    ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC
 		;
 	};
 };
@@ -974,6 +975,34 @@ path	key54		{
 			AND	PTID         =   :PTID
 			AND	RRKEDANUM    =   1
 			ORDER BY RRKNUM DESC,RRKEDANUM DESC
+		;
+	};
+};
+
+path	key55		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key55_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE   HOSPNUM      =   :HOSPNUM 
+			AND		PTID         =   :PTID
+			AND		RRKEDANUM    =   1
+			AND		TAIINYMD     =   :TAIINYMD
+			ORDER BY RRKNUM DESC
+		;
+	};
+};
+
+path	key56		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key56_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE   HOSPNUM      =   :HOSPNUM 
+			AND		PTID         =   :PTID
+			AND		RRKEDANUM    =   1
+			AND		NYUINYMD     =   :NYUINYMD
+			ORDER BY RRKNUM DESC
 		;
 	};
 };
