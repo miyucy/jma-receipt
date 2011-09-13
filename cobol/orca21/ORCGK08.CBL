@@ -5215,6 +5215,11 @@
            MOVE    "1"                 TO  ORCSCNYUIN-KBN
       *    Âà±¡Æü
            MOVE    SPA-K02N-TAIINYMD   TO  ORCSCNYUIN-TAIINYMD
+      *    ºï½ü
+           IF      (SPA-SYORIFLG       =   1   )  AND
+                   (LNK-WKSRYACT-MAX   =   ZERO)
+               MOVE    "3"                 TO  ORCSCNYUIN-KBN
+           END-IF
       *
            CALL    "ORCSCNYUIN"        USING
                                        SPA-AREA
