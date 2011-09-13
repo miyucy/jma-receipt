@@ -124,3 +124,20 @@ path	del3 	{
 	};
 };
 
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_santeiplus_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_santeiplus
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+			AND   SRYCD       =   :SRYCD
+			AND   SRYKA       =   :SRYKA
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   HKNCOMBINUM =   :HKNCOMBINUM
+			AND   DAYKEY      =   :DAYKEY
+			AND   RENNUM      =    0
+		;
+	};
+};

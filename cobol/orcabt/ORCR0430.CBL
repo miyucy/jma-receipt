@@ -114,6 +114,9 @@
       *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料の
       *                                     レセプトコメント自動記載（重複時）
       *                                     対応
+      *
+      *  04.07.01    NACL-門脇    10/09/12  複数リハビリ開始日・リハビリ
+      *                                     コメントの対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -323,6 +326,8 @@
            03  FLG-COMARI2         PIC 9(01).
            03  FLG-SANTEIPLUS      PIC 9(01).
            03  FLG-SINPESU-COMMENT PIC 9(01).
+           03  FLG-SANTEIPLUS-HANTEI
+                                   PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -2399,7 +2404,13 @@ grpsys        PERFORM  900-DBSELECT-SEC
                  MOVE    "key2"               TO  MCP-PATHNAME
                  PERFORM  900-SANTEIPLUS-READ-SEC
                  PERFORM  UNTIL   FLG-SANTEIPLUS     =   1
-                   IF  SANTEIPLUS-COMMENT  NOT =  SPACE
+      *            リハコメントの終了日と診療月をチェック
+      *            （履歴番号＞０のデータ）
+                   IF     SANTEIPLUS-RENNUM   NOT =  ZERO
+                    IF  ( SANTEIPLUS-ENDYMD       =  SPACE        )
+                    OR  ((SANTEIPLUS-ENDYMD   NOT =  SPACE       ) AND
+                         (SANTEIPLUS-ENDYMD(1:6) >=  RECE41-SRYYM))
+                     IF  SANTEIPLUS-COMMENT  NOT =  SPACE
                       ADD     1                 TO  IDZ
                       MOVE  SANTEIPLUS-COMMENT  TO  WK-FREE-NAME(IDZ)
                       PERFORM   VARYING   IDX13   FROM   200   BY  -1
@@ -2410,9 +2421,9 @@ grpsys        PERFORM  900-DBSELECT-SEC
                           MOVE     1     TO      IDX13
                         END-IF
                       END-PERFORM
-                   END-IF
-                   IF   FLG-COMOKIKAE  =    1
-                   AND  FLG-COMARI2    =   ZERO
+                     END-IF
+                     IF   FLG-COMOKIKAE  =    1
+                     AND  FLG-COMARI2    =   ZERO
                       IF   SANTEIPLUS-COMMENT(1:8)  = "手術　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    1    TO  FLG-COMOKIKAE2
@@ -2429,6 +2440,8 @@ grpsys        PERFORM  900-DBSELECT-SEC
                            COMPUTE  IDZ  =  IDZ - 1
                         END-IF
                       END-IF
+                     END-IF
+                    END-IF
                    END-IF
                    MOVE    "tbl_santeiplus"     TO  MCP-TABLE
                    MOVE    "key2"               TO  MCP-PATHNAME
@@ -3019,6 +3032,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                OR    ( FLG-KYUSEI-COMMENT2 =   1 )
       *
                      IF   SANTEI-DAY(IDX3)  NOT =  ZERO
+                       PERFORM  200111-RIHA-SANTEIPLUS-HANTEI-SEC
+                     END-IF
+      *
+                     IF  (SANTEI-DAY(IDX3)  NOT =  ZERO)
+                     AND (FLG-SANTEIPLUS-HANTEI =  ZERO)
       *
       ****               MOVE   SANTEI-SRYYM   TO  WRK-KYUSEIYMD(1:6)
       ****               MOVE   IDX3           TO  WRK-KYUSEIYMD(7:2)
@@ -3094,6 +3112,46 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        20011-RIHABIRIHASSYO-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    リハビリ・算定履歴付加判定
+      *    （リハ開始日の終了日と診療月をチェック）（履歴番号＝０のデータ）
+      *****************************************************************
+       200111-RIHA-SANTEIPLUS-HANTEI-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SANTEIPLUS-HANTEI
+      *
+           INITIALIZE                      SANTEIPLUS-REC
+           MOVE    RECE41-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
+           MOVE    RECE41-PTID         TO  SANTEIPLUS-PTID
+           MOVE    SANTEI-SRYYM        TO  SANTEIPLUS-SRYYM
+           MOVE    WRK-SRYCD           TO  SANTEIPLUS-SRYCD
+           MOVE    ZERO                TO  SANTEIPLUS-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEIPLUS-SRYKA
+           MOVE    RECE41-HKNCOMBI     TO  SANTEIPLUS-HKNCOMBINUM
+           MOVE    IDX3                TO  SANTEIPLUS-DAYKEY
+           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC           =  ZERO
+             MOVE  "tbl_santeiplus"    TO  MCP-TABLE
+             MOVE  "key4"              TO  MCP-PATHNAME
+             PERFORM  900-SANTEIPLUS-READ-SEC
+             IF    FLG-SANTEIPLUS   =  ZERO
+               IF  (SANTEIPLUS-ENDYMD   NOT =  SPACE       )
+               AND (SANTEIPLUS-ENDYMD(1:6)  <  RECE41-SRYYM)
+                  MOVE     1           TO  FLG-SANTEIPLUS-HANTEI
+               END-IF
+             END-IF
+           END-IF
+           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       200111-RIHA-SANTEIPLUS-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
