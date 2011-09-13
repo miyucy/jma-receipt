@@ -73,6 +73,7 @@
            03  FLG-SANTEI-OK       PIC 9(01).
            03  FLG-SRY-OK          PIC 9(01).
            03  FLG-CHK             PIC 9(01).
+           03  FLG-CHK2            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -149,6 +150,9 @@
                05  WRK-END-YM          PIC X(06).
                05  WRK-END-DD          PIC X(02).
            03  IDD                     PIC 9(02).
+      *
+           03  WRK-SYOYMD              PIC X(08).
+           03  WRK-SYOYMDG             PIC X(09).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -715,10 +719,10 @@
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
-           IF      SPA-K061-RRKYMD    =   SPACE
-               MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
+           IF      SPA-K061-RRKYMD     =   SPACE
+               MOVE    SPA-SRYYMD(1:6)         TO  SANTEI-SRYYM
            ELSE
-               MOVE    SPA-K061-RRKYMD(1:6)   TO  SANTEI-SRYYM
+               MOVE    SPA-K061-RRKYMD(1:6)    TO  SANTEI-SRYYM
            END-IF
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
@@ -1462,11 +1466,17 @@
            PERFORM VARYING    IDX-C    FROM    1  BY  1
                    UNTIL     (IDX-C    >   IDX  )
                MOVE    ZERO                TO  FLG-CHK
+               MOVE    ZERO                TO  FLG-CHK2
                IF     (TBL-RRK-SRYCD (IDY) =   TBL-DAT-SRYCD (IDX-C))
                AND    (TBL-DAT-HKNCOMBI(IDX-C) =   SANTEI-HKNCOMBINUM)
                AND    (TBL-DAT-SRYYM (IDX-C)   <=  SANTEI-SRYYM     )
-               AND   ((TBL-DAT-ENDYMD(IDX-C)   =   SPACE )  OR
-                      (TBL-DAT-ENDFLG(IDX-C)   =   "1"   ))
+                   IF     (TBL-DAT-ENDYMD(IDX-C)   =   SPACE )  OR
+                         ((TBL-DAT-ENDFLG(IDX-C)   =   "1"   ) AND
+                          (TBL-DAT-ENDYMD(IDX-C)   >   WRK-END-YMD ))
+                       CONTINUE
+                   ELSE
+                       MOVE    1                   TO  FLG-CHK2
+                   END-IF
                    IF      TBL-DAT-SRYYM(IDX-C)    =   SANTEI-SRYYM
       *                同月算定の時、初回日より後であること
                        IF      TBL-DAT-MSANTEID (IDX-C) <  WRK-END-DD
@@ -1475,7 +1485,8 @@
                    ELSE
                        MOVE    1                   TO  FLG-CHK
                    END-IF
-                   IF      FLG-CHK             =   1
+                   IF     (FLG-CHK             =   1   )
+                      AND (FLG-CHK2            =   ZERO)
                         MOVE    WRK-END-YMD    TO  TBL-DAT-ENDYMD(IDX-C)
                         MOVE    "2"            TO  TBL-DAT-ENDFLG(IDX-C)
                    END-IF
@@ -1950,6 +1961,8 @@
       *****************************************************************
        41012-SANYMD-CHK-SEC          SECTION.
       *
+           MOVE    SPACE               TO  WRK-SYOYMD
+           MOVE    SPACE               TO  WRK-SYOYMDG
            IF     SPA-K061-SANYMDG     =   SPACE
                MOVE    SPACE               TO  SPA-K061-SANYMD
            ELSE
@@ -1959,6 +1972,8 @@
                IF      SPA-ERRCD           =   SPACE
                    MOVE    WRK-SYMD            TO  SPA-K061-SANYMD
                    MOVE    WRK-HENYMDG         TO  SPA-K061-SANYMDG
+                   MOVE    SPA-K061-SANYMD     TO  WRK-SYOYMD
+                   MOVE    SPA-K061-SANYMDG    TO  WRK-SYOYMDG
                    IF      SPA-K061-GMN        =   1
       *            移行履歴
                        PERFORM 41012-SANYMD-IKO-CHK-SEC
@@ -1973,8 +1988,10 @@
       *
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-K061-SYOYMD     =   SPACE
-                   MOVE    SPA-K061-SANYMD     TO  SPA-K061-SYOYMD
-                   MOVE    SPA-K061-SANYMDG    TO  SPA-K061-SYOYMDG
+      ***          MOVE    SPA-K061-SANYMD     TO  SPA-K061-SYOYMD
+      ***          MOVE    SPA-K061-SANYMDG    TO  SPA-K061-SYOYMDG
+                   MOVE    WRK-SYOYMD          TO  SPA-K061-SYOYMD
+                   MOVE    WRK-SYOYMDG         TO  SPA-K061-SYOYMDG
                END-IF
            ELSE
                MOVE    3                   TO  SPA-K061-CUR
@@ -2035,12 +2052,22 @@
               AND (SPA-K061-SANYMD      >   SPA-SYSYMD )
                 MOVE    "0013"               TO  SPA-ERRCD
            END-IF
+      *    同じコードの判定
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-K061-MAX  )
+               IF     (SPA-K061-SELNUM         =   ZERO  )  AND
+                      (SPA-K061-TSRYCD (IDX)   =   SPA-K061-SRYCD )
+                   MOVE    SPA-K061-TSYOYMD (IDX)  TO  WRK-SYOYMD
+                   MOVE    SPA-K061-TSYOYMDG(IDX)  TO  WRK-SYOYMDG
+               END-IF
+           END-PERFORM
+      *
            .
        41012-SANYMD-RRK-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    算定日チェック処理
+      *    初回算定日チェック処理
       *****************************************************************
        41012-SYOYMD-CHK-SEC          SECTION.
       *
@@ -2337,6 +2364,7 @@
        440-SAKUJYO-SEC                SECTION.
       *
            IF      SPA-K061-SYORIKBN   =   "P"
+                                       OR  "2"
                MOVE    "0040"              TO  SPA-ERRCD
            END-IF
            IF     (SPA-K061-SELNUM     >   ZERO )
@@ -2392,6 +2420,7 @@
                MOVE    2                   TO  SPA-K061-CUR
            END-IF
            IF      SPA-K061-SYORIKBN   =   "P"
+                                       OR  "2"
       *!!
                IF      (SPA-K061-KBN       =   "1" )
                   AND  (SPA-K061-KBN2      =   "1" )
