@@ -84,6 +84,10 @@
            03  IDX5                        PIC 9(05).
            03  IDX-CMB                     PIC 9(05).
       *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-DOJITU                  PIC 9(05).
+      *
       *    システム領域
        01  SYS-AREA.
            03  SYS-YMD     PIC X(08).
@@ -107,11 +111,15 @@
            03  WRK-CMB-G.
                05  WRK-CMB-IDX             PIC 9(03).
                05  WRK-CMB-ITM             PIC X(100).
+           03  WRK-DOJITUSTYMD             PIC X(08).
+           03  WRK-DOJITUEDYMD             PIC X(08).
            03  WRK-NYUINYMD                PIC X(08).
            03  WRK-TAIINYMD                PIC X(08).
+           03  WRK-RRK-NYUINYMD            PIC X(08).
+           03  WRK-RRK-TAIINYMD            PIC X(08).
            03  WRK-STYMD                   PIC X(08).
            03  WRK-EDYMD                   PIC X(08).
-           03  WRK-TUSAN                   PIC 9(06).
+           03  WRK-TUSAN-NISSU             PIC 9(06).
            03  WRK-NISSU1                  PIC 9(06).
            03  WRK-NISSU2                  PIC 9(06).
            03  WRK-UPDKBN                  PIC X(3).
@@ -215,6 +223,7 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
+           INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA.
@@ -1461,6 +1470,8 @@
                COMPUTE WRK-SHONUM      =   SPA-GMN-I03-SHONUM
            END-IF
       *
+           
+      *
            .
       *
        4801-PTNYUINRRK-EDIT-MAE-EXT.
@@ -1635,6 +1646,14 @@
                GO  TO  4801-KANREN-CHK-EXT
            END-IF
       *
+      *    同日再入院チェック
+           IF    ( SPA-GMN-I03-RRKKBN-CD   =   "1" )
+               PERFORM 4801-DOJITU-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4801-KANREN-CHK-EXT
+               END-IF
+           END-IF
+      *
       *    入院日≦退院日となっていること
            IF    ( SPA-NAI-I03-NYUINYMD
                                   <=   SPA-NAI-I03-TAIINYMD )
@@ -1700,44 +1719,11 @@
                IF    ( PTNYUINRRK-NYUINYMD <   SPA-NAI-I03-TAIINYMD )
                 AND  ( PTNYUINRRK-TAIINYMD >   SPA-NAI-I03-NYUINYMD )
                    MOVE    "1008"          TO  SPA-ERRCD
-               ELSE
-                   IF    ( PTNYUINRRK-JTIKBN   NOT =   "5" )
-                     AND ( SPA-GMN-I03-RRKKBN-CD   =   "1" )
-                       MOVE    SPACE       TO  WRK-NYUINYMD
-                                               WRK-TAIINYMD
-                       MOVE    ZERO        TO  WRK-TUSAN
-                       IF    ( PTNYUINRRK-TAIINYMD
-                                           =   SPA-NAI-I03-NYUINYMD )
-                           MOVE    PTNYUINRRK-NYUINYMD  TO WRK-NYUINYMD
-                           MOVE    SPA-NAI-I03-TAIINYMD TO WRK-TAIINYMD
-                       END-IF
-                       IF    ( PTNYUINRRK-NYUINYMD
-                                           =   SPA-NAI-I03-TAIINYMD )
-                           MOVE    SPA-NAI-I03-NYUINYMD TO WRK-NYUINYMD
-                           MOVE    PTNYUINRRK-TAIINYMD  TO WRK-TAIINYMD
-                       END-IF
-                       IF    ( WRK-NYUINYMD    NOT =   SPACE )
-                           IF    ( PTNYUINRRK-JTIKBN       =   "6" )
-                               COMPUTE WRK-TUSAN
-                                   =   PTNYUINRRK-TAISYONISSU
-                                   +   SPA-GMN-I03-TAISYONISSU
-                           ELSE
-                               MOVE    PTNYUINRRK-NYUINYMD TO  WRK-STYMD
-                               MOVE    PTNYUINRRK-TAIINYMD TO  WRK-EDYMD
-                               PERFORM 5002-KIKAN-CALC-SEC
-                               COMPUTE WRK-TUSAN
-                                   =   WRK-NISSU2
-                                   +   SPA-GMN-I03-TAISYONISSU
-                           END-IF
-                           MOVE    WRK-NYUINYMD    TO  WRK-STYMD
-                           MOVE    WRK-TAIINYMD    TO  WRK-EDYMD
-                           PERFORM 5002-KIKAN-CALC-SEC
-                           IF    ( WRK-TUSAN   >   WRK-NISSU2 )
-                               MOVE    "1006"  TO  SPA-ERRCD
-                               MOVE    5       TO  SPA-GMN-I03-CUR
-                         END-IF
-                       END-IF
-                   END-IF
+               END-IF
+      *
+               IF    ( SPA-NAI-I03-NYUINYMD =  SPA-NAI-I03-TAIINYMD )
+                AND  ( PTNYUINRRK-TAIINYMD  =  SPA-NAI-I03-TAIINYMD )
+                   MOVE    "1015"          TO  SPA-ERRCD
                END-IF
       *
                PERFORM 900-PTNYUINRRK-KEY7-FET-SEC
@@ -1750,6 +1736,169 @@
       *
            .
        4801-NYUKIKAN-DABURI-EXT.
+           EXIT.
+      *****************************************************************
+      *    同日再入院チェック
+      *****************************************************************
+       4801-DOJITU-CHK-SEC                 SECTION.
+      *
+           MOVE    SPACE                   TO  WRK-DOJITUSTYMD
+                                               WRK-DOJITUEDYMD
+           MOVE    SPA-GMN-I03-TAISYONISSU TO  WRK-TUSAN-NISSU
+      *
+           MOVE    "99999999"              TO  WRK-NYUINYMD
+           MOVE    SPA-NAI-I03-NYUINYMD    TO  WRK-TAIINYMD
+           MOVE    ZERO                    TO  FLG-LOOPEND
+           PERFORM UNTIL ( FLG-LOOPEND     NOT =   ZERO )
+      *
+               MOVE    ZERO                TO  CNT-DOJITU
+      *
+               PERFORM 900-PTNYUINRRK-KEY55-SEL-SEC
+      *
+               PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
+      *
+                   IF    ( SPA-I01-I03-PTRRKNUM
+                                           NOT =   PTNYUINRRK-RRKNUM )
+                    AND  ( PTNYUINRRK-JTIKBN   =   "6" )
+                       IF    ( PTNYUINRRK-NYUINYMD <   WRK-NYUINYMD )
+      *
+                           COMPUTE CNT-DOJITU
+                               =   CNT-DOJITU  +   1
+      *
+                           MOVE    PTNYUINRRK-NYUINYMD
+                                           TO  WRK-NYUINYMD
+                           COMPUTE WRK-TUSAN-NISSU
+                               =   WRK-TUSAN-NISSU
+                               +   PTNYUINRRK-TAISYONISSU
+                       END-IF
+                   END-IF
+      *
+                   IF    ( PTNYUINRRK-JTIKBN   NOT  =   "6" )
+                    AND  ( PTNYUINRRK-JTIKBN   NOT  =   "5" )
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"                TO  LNK-DAY6-IRAI
+                       MOVE    PTNYUINRRK-TAIINYMD TO  LNK-DAY6-KIJUN
+                       MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+                       MOVE    1                   TO  LNK-DAY6-ZOGEN
+                       CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                                           LNK-DAY6-AREA
+                       MOVE    LNK-DAY6-KEISAN     TO  WRK-NYUINYMD
+                       MOVE    1                   TO  FLG-PTNYUINRRK
+                   ELSE
+                       PERFORM 900-PTNYUINRRK-KEY55-FET-SEC
+                   END-IF
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key55"             TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               IF    ( CNT-DOJITU          =   ZERO )
+                   MOVE    1               TO  FLG-LOOPEND
+               ELSE
+                   IF    ( WRK-NYUINYMD    <   WRK-TAIINYMD )
+                       MOVE    WRK-NYUINYMD    TO  WRK-TAIINYMD
+                   ELSE
+                       MOVE    1               TO  FLG-LOOPEND
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-NYUINYMD    NOT =   "99999999" )
+               MOVE    WRK-NYUINYMD    TO  WRK-DOJITUSTYMD
+           END-IF
+      *
+           MOVE    "00000000"              TO  WRK-TAIINYMD
+           MOVE    SPA-NAI-I03-TAIINYMD    TO  WRK-NYUINYMD
+           MOVE    ZERO                    TO  FLG-LOOPEND
+           PERFORM UNTIL ( FLG-LOOPEND     NOT =   ZERO )
+      *
+               MOVE    ZERO                TO  CNT-DOJITU
+      *
+               PERFORM 900-PTNYUINRRK-KEY56-SEL-SEC
+      *
+               PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
+      *
+                   IF    ( PTNYUINRRK-JTIKBN   =   "6" )
+                       IF    ( PTNYUINRRK-TAIINYMD >   WRK-TAIINYMD )
+      *
+                           COMPUTE CNT-DOJITU
+                               =   CNT-DOJITU  +   1
+      *
+                           MOVE    PTNYUINRRK-TAIINYMD
+                                           TO  WRK-TAIINYMD
+                           COMPUTE WRK-TUSAN-NISSU
+                               =   WRK-TUSAN-NISSU
+                               +   PTNYUINRRK-TAISYONISSU
+                       END-IF
+                   END-IF
+      *
+                   IF    ( PTNYUINRRK-JTIKBN   NOT  =   "6" )
+                    AND  ( PTNYUINRRK-JTIKBN   NOT  =   "5" )
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"                TO  LNK-DAY6-IRAI
+                       MOVE    PTNYUINRRK-NYUINYMD TO  LNK-DAY6-KIJUN
+                       MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
+                       MOVE    -1                  TO  LNK-DAY6-ZOGEN
+                       CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                                           LNK-DAY6-AREA
+                       MOVE    LNK-DAY6-KEISAN     TO  WRK-TAIINYMD
+                       MOVE    1                   TO  FLG-PTNYUINRRK
+                   ELSE
+                       PERFORM 900-PTNYUINRRK-KEY56-FET-SEC
+                   END-IF
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key56"             TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               IF    ( CNT-DOJITU          =   ZERO )
+                   MOVE    1               TO  FLG-LOOPEND
+               ELSE
+                   IF    ( WRK-NYUINYMD    <   WRK-TAIINYMD )
+                       MOVE    WRK-TAIINYMD    TO  WRK-NYUINYMD
+                   ELSE
+                       MOVE    1               TO  FLG-LOOPEND
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-TAIINYMD    NOT =   "00000000" )
+               MOVE    WRK-TAIINYMD    TO  WRK-DOJITUEDYMD
+           END-IF
+      *
+      *    DISPLAY "WRK-DOJITUSTYMD[" WRK-DOJITUSTYMD "]"
+      *            "WRK-DOJITUEDYMD[" WRK-DOJITUEDYMD "]"
+      *
+           IF    ( WRK-DOJITUSTYMD     NOT =  SPACE )
+            OR   ( WRK-DOJITUEDYMD     NOT =  SPACE )
+               IF    ( WRK-DOJITUSTYMD     NOT =  SPACE )
+                   MOVE    WRK-DOJITUSTYMD TO WRK-STYMD
+               ELSE
+                   MOVE    SPA-NAI-I03-NYUINYMD
+                                           TO WRK-STYMD
+               END-IF
+               IF    ( WRK-DOJITUEDYMD     NOT =  SPACE )
+                   MOVE    WRK-DOJITUEDYMD TO WRK-EDYMD
+               ELSE
+                   MOVE    SPA-NAI-I03-TAIINYMD
+                                           TO WRK-EDYMD
+               END-IF
+               PERFORM 5002-KIKAN-CALC-SEC
+               IF    ( WRK-TUSAN-NISSU     >  WRK-NISSU2 )
+                   MOVE    "1016"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       4801-DOJITU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    自院入院中チェック
@@ -2248,6 +2397,12 @@
                                        TO  SPA-ERRMSG (1:40)
                MOVE    "院中」として登録できません"
                                        TO  SPA-ERRMSG (41:)
+           WHEN    "1015"
+               MOVE    "同日再入院の場合、同日の退院登録は行えません"
+                                       TO  SPA-ERRMSG
+           WHEN    "1016"
+               MOVE    "入院期間＜通算対象日数となっています"
+                                       TO  SPA-ERRMSG
            WHEN    "2001"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
@@ -2545,8 +2700,8 @@
            INITIALIZE  PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-I01-I03-PTID    TO  PTNYUINRRK-PTID
-           MOVE    SPA-NAI-I03-NYUINYMD
-                                       TO  PTNYUINRRK-TAIINYMD
+           MOVE    SPA-I01-I03-PTRRKNUM TO PTNYUINRRK-RRKNUM
+           MOVE    WRK-TAIINYMD        TO  PTNYUINRRK-TAIINYMD
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key55"             TO  MCP-PATHNAME
@@ -2580,6 +2735,52 @@
       *
            .
        900-PTNYUINRRK-KEY55-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者入院履歴検索処理
+      *****************************************************************
+       900-PTNYUINRRK-KEY56-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTNYUINRRK
+      *
+           INITIALIZE  PTNYUINRRK-REC
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+           MOVE    SPA-I01-I03-PTID    TO  PTNYUINRRK-PTID
+           MOVE    SPA-I01-I03-PTRRKNUM TO PTNYUINRRK-RRKNUM
+           MOVE    WRK-NYUINYMD        TO  PTNYUINRRK-NYUINYMD
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key56"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC      =   ZERO  )
+               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+           ELSE
+               INITIALIZE              PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           .
+       900-PTNYUINRRK-KEY56-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者入院履歴FETCH処理
+      *****************************************************************
+       900-PTNYUINRRK-KEY56-FET-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  FLG-PTNYUINRRK
+      *
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key56"             TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC      =   ZERO  )
+               MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+           ELSE
+               INITIALIZE              PTNYUINRRK-REC
+               MOVE    1           TO  FLG-PTNYUINRRK
+           END-IF
+      *
+           .
+       900-PTNYUINRRK-KEY56-FET-EXT.
            EXIT.
       *****************************************************************
       *    患者入院履歴検索処理

@@ -986,9 +986,10 @@ path	key55		{
 		FROM tbl_ptnyuinrrk
 			WHERE   HOSPNUM      =   :HOSPNUM 
 			AND		PTID         =   :PTID
+			AND		RRKNUM       <>  :RRKNUM
 			AND		RRKEDANUM    =   1
 			AND		TAIINYMD     =   :TAIINYMD
-			ORDER BY RRKNUM DESC
+			ORDER BY NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC
 		;
 	};
 };
@@ -1000,9 +1001,10 @@ path	key56		{
 		FROM tbl_ptnyuinrrk
 			WHERE   HOSPNUM      =   :HOSPNUM 
 			AND		PTID         =   :PTID
+			AND		RRKNUM       <>  :RRKNUM
 			AND		RRKEDANUM    =   1
 			AND		NYUINYMD     =   :NYUINYMD
-			ORDER BY RRKNUM DESC
+			ORDER BY NYUINYMD ,TAIINYMD ,RRKNUM
 		;
 	};
 };
