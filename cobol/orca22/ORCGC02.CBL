@@ -266,6 +266,8 @@
       *
       *  04.07.01    NACL-藤原    11/06/10  未コード化病名となる病名の別
       *                                     組み立てへの移行を可能にする
+      *  04.07.02    NACL-太田    11/09/15  データチェック業務からの病名
+      *                                     引継ぎ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1371,6 +1373,7 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
                MOVE    SPA-FTNRATEMEI  TO  SPA-GMN-C02-FTNRATE
                IF      SPA-ERRCD   NOT =   SPACE
                    MOVE    27              TO  SPA-GMN-C02-CUR
+                   MOVE    SPACE           TO  SPA-ERRCD
                ELSE
                    IF    ( SPA-SRYKA   NOT =   SPACE )
                    AND   ( SPA-C02-1042-SRYKA-DSPKBN
