@@ -36,6 +36,8 @@
              07  SPA-GMN-W20-INPUT-AREA.
       *        ÉÂ¼¼¥Ü¥¿¥ó
                09  SPA-GMN-W20-B09                 PIC X(04).
+      *        Æþ±¡ÎÁ²Ã»»¥Ü¥¿¥ó
+               09  SPA-GMN-W20-B10                 PIC X(10).
       *        ÉÂÅïÈÖ¹æ
                09  SPA-GMN-W20-BTUNUM              PIC S9(2).
       *        ÉÂÅïÌ¾¾Î
@@ -1076,3 +1078,27 @@
          03  SPA-W20-W21-AREA.
       *      ÉÂÅïÈÖ¹æ
              05  SPA-W20-W21-BTUNUM                      PIC  X(02).
+      *    Æþ±¡ÎÁ²Ã»»ÀßÄê¡Ê£×£²£°£±¡Ë
+           03  SPA-W201-AREA.
+               05  SPA-W201-PAGE           PIC 9(02).
+               05  SPA-W201-CUR            PIC 9(02).
+      *
+               05  SPA-W201-LIST-G.
+                   07  SPA-W201-LIST       OCCURS  100.
+                       09  SPA-W201-TRENNUM         PIC 9(03).
+                       09  SPA-W201-TFORMID         PIC X(20).
+                       09  SPA-W201-TPRTNM          PIC X(16).
+                       09  SPA-W201-TOFFSET-X       PIC X(05).
+                       09  SPA-W201-TOFFSET-Y       PIC X(05).
+                       09  SPA-W201-NAI-KBNCD       PIC X(08).
+                   07  SPA-W201-LIST-MAX           PIC 9(03).
+      *
+               05  SPA-W201-GMN-G.
+                   07  SPA-W201-SELNUM             PIC 9(03).
+                   07  SPA-W201-FORMID             PIC X(20).
+                   07  SPA-W201-PRTNM              PIC X(16).
+                   07  SPA-W201-OFFSET-X           PIC X(05).
+                   07  SPA-W201-OFFSET-Y           PIC X(05).
+               05  SPA-W201-NAI-G.
+                   07  SPA-W201-KBNCD-MAX          PIC 9(08).
+                   07  SPA-W201-MAE-SELNUM         PIC 9(03).

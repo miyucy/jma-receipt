@@ -16,18 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGW111.
+       PROGRAM-ID.                 ORCGW201.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : システム管理情報設定
-      *  コンポーネント名  : 帳票オフセット登録
+      *  コンポーネント名  : 入院料加算設定登録
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  06/03/08    NACL−多々納  新規作成
+      *  06/03/08    NACL−小豆沢  新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -47,7 +46,7 @@
            COPY    "W01COMMON-SPA".
       *
       *    画面用ＳＰＡ
-           COPY    "W11SCR-SPA".
+           COPY    "W20SCR-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -72,7 +71,7 @@
            03  WRK-ZZ9                 PIC ZZ9.
       *
       *    コラムリスト位置
-           03  WRK-W111-ROW            PIC S9(09).
+           03  WRK-W201-ROW            PIC S9(09).
            03  FLG-GMN-INIT            PIC  9(01).
       *
       *
@@ -186,7 +185,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-W11
+           MOVE    SPA-FREE        TO  SPA-W20-AREA
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -207,7 +206,7 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
-           MOVE    SPA-W11         TO  SPA-FREE
+           MOVE    SPA-W20-AREA    TO  SPA-FREE
            MOVE    SPA-W01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
@@ -236,7 +235,7 @@
            IF      FLG-END             =   ZERO
                MOVE    SPACE               TO  LINKAREA
                MOVE   "NEW"                TO  MCP-PUTTYPE
-               MOVE   "W111"               TO  MCP-WINDOW
+               MOVE   "W201"               TO  MCP-WINDOW
                PERFORM 900-PUT-WINDOW
                MOVE    1                   TO  FLG-END
            END-IF
@@ -276,14 +275,14 @@
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM 2201-TOUROKU-SYORI-SEC
                    ELSE
-                       MOVE    1           TO  SPA-W111-CUR
+                       MOVE    1           TO  SPA-W201-CUR
                    END-IF
                WHEN    "1003"
       *            削除
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM 2301-DELETE-SYORI-SEC
                    ELSE
-                       MOVE    1           TO  SPA-W111-CUR
+                       MOVE    1           TO  SPA-W201-CUR
                    END-IF
            END-EVALUATE
            MOVE    SPACE           TO  SPA-WID1-FLG
@@ -297,11 +296,11 @@
       *****************************************************************
        310-SPASET-SEC                  SECTION.
       *
-           INITIALIZE                  SPA-W111-AREA
+           INITIALIZE                  SPA-W201-AREA
       *
            MOVE    1                   TO  FLG-GMN-INIT
       *
-           INITIALIZE                  SPA-W111-LIST-G
+           INITIALIZE                  SPA-W201-LIST-G
            MOVE    SPACE               TO  SYS-1044-REC
            INITIALIZE                      SYS-1044-REC
            MOVE    "1044"              TO  SYS-1044-KANRICD
@@ -324,17 +323,17 @@
                           (IDX             >=  100)
                MOVE    MCPDATA-REC         TO  SYS-1044-REC
                ADD     1                   TO  IDX
-               MOVE    IDX                 TO  SPA-W111-LIST-MAX
-               MOVE    IDX                 TO  SPA-W111-TRENNUM (IDX)
-               MOVE    SYS-1044-KBNCD      TO  SPA-W111-NAI-KBNCD (IDX)
-               MOVE    SYS-1044-FORMID     TO  SPA-W111-TFORMID (IDX)
-               MOVE    SYS-1044-PRTNM      TO  SPA-W111-TPRTNM (IDX)
-               MOVE    SYS-1044-OFFSET-X   TO  SPA-W111-TOFFSET-X (IDX)
-               MOVE    SYS-1044-OFFSET-Y   TO  SPA-W111-TOFFSET-Y (IDX)
+               MOVE    IDX                 TO  SPA-W201-LIST-MAX
+               MOVE    IDX                 TO  SPA-W201-TRENNUM (IDX)
+               MOVE    SYS-1044-KBNCD      TO  SPA-W201-NAI-KBNCD (IDX)
+               MOVE    SYS-1044-FORMID     TO  SPA-W201-TFORMID (IDX)
+               MOVE    SYS-1044-PRTNM      TO  SPA-W201-TPRTNM (IDX)
+               MOVE    SYS-1044-OFFSET-X   TO  SPA-W201-TOFFSET-X (IDX)
+               MOVE    SYS-1044-OFFSET-Y   TO  SPA-W201-TOFFSET-Y (IDX)
       *        最大区分番号
-               IF     (SPA-W111-KBNCD-MAX  =   ZERO )  OR
-                      (SPA-W111-KBNCD-MAX  <   SYS-1044-KBNCD)
-                   MOVE    SYS-1044-KBNCD      TO  SPA-W111-KBNCD-MAX
+               IF     (SPA-W201-KBNCD-MAX  =   ZERO )  OR
+                      (SPA-W201-KBNCD-MAX  <   SYS-1044-KBNCD)
+                   MOVE    SYS-1044-KBNCD      TO  SPA-W201-KBNCD-MAX
                END-IF
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -345,10 +344,10 @@
            MOVE    "key15"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF      SPA-W111-LIST-MAX   =   ZERO
-               MOVE    2                   TO  SPA-W111-CUR
+           IF      SPA-W201-LIST-MAX   =   ZERO
+               MOVE    2                   TO  SPA-W201-CUR
            ELSE
-               MOVE    1                   TO  SPA-W111-CUR
+               MOVE    1                   TO  SPA-W201-CUR
            END-IF
            .
        310-SPASET-EXT.
@@ -361,47 +360,47 @@
       *
       *    コラムリスト位置保存
            IF      FLG-GMN-INIT        =   1
-               MOVE    ZERO                TO  WRK-W111-ROW
+               MOVE    ZERO                TO  WRK-W201-ROW
            ELSE
-               MOVE    W111-MEILIST-ROW    TO  WRK-W111-ROW
+               MOVE    W201-MEILIST-ROW    TO  WRK-W201-ROW
            END-IF
       *
-           MOVE    SPACE               TO  W111
+           MOVE    SPACE               TO  W201
       *    コラムリストの位置指定
-           MOVE    ZERO                TO  W111-MEILIST-ROW
-           IF      WRK-W111-ROW    NOT =   ZERO
-               MOVE    WRK-W111-ROW    TO  W111-MEILIST-ROW 
+           MOVE    ZERO                TO  W201-MEILIST-ROW
+           IF      WRK-W201-ROW    NOT =   ZERO
+               MOVE    WRK-W201-ROW    TO  W201-MEILIST-ROW 
            END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-W111-LIST-MAX
-               MOVE    SPA-W111-TRENNUM (IDX)  TO  WRK-ZZ9
-               MOVE    WRK-ZZ9             TO  W111-TRENNUM (IDX)
-               MOVE    SPA-W111-TFORMID(IDX)
-                                           TO  W111-TFORMID (IDX)
-               MOVE    SPA-W111-TPRTNM (IDX)
-                                           TO  W111-TPRTNM (IDX)
-               MOVE    SPA-W111-TOFFSET-X (IDX)
-                                           TO  W111-TOFFSET-X (IDX)
-               MOVE    SPA-W111-TOFFSET-Y (IDX)
-                                           TO  W111-TOFFSET-Y (IDX)
-               IF      SPA-W111-SELNUM     =   SPA-W111-TRENNUM (IDX)
-                   MOVE    "T"             TO  W111-MEILIST-SELECT
+                   UNTIL       IDX     >   SPA-W201-LIST-MAX
+               MOVE    SPA-W201-TRENNUM (IDX)  TO  WRK-ZZ9
+               MOVE    WRK-ZZ9             TO  W201-TRENNUM (IDX)
+               MOVE    SPA-W201-TFORMID(IDX)
+                                           TO  W201-TFORMID (IDX)
+               MOVE    SPA-W201-TPRTNM (IDX)
+                                           TO  W201-TPRTNM (IDX)
+               MOVE    SPA-W201-TOFFSET-X (IDX)
+                                           TO  W201-TOFFSET-X (IDX)
+               MOVE    SPA-W201-TOFFSET-Y (IDX)
+                                           TO  W201-TOFFSET-Y (IDX)
+               IF      SPA-W201-SELNUM     =   SPA-W201-TRENNUM (IDX)
+                   MOVE    "T"             TO  W201-MEILIST-SELECT
                                                                (IDX)
-                   MOVE    IDX             TO  W111-MEILIST-ROW
-                   MOVE    2               TO  W111-MEILIST-ROWATTR
+                   MOVE    IDX             TO  W201-MEILIST-ROW
+                   MOVE    2               TO  W201-MEILIST-ROWATTR
                ELSE
-                   MOVE    "F"             TO  W111-MEILIST-SELECT
+                   MOVE    "F"             TO  W201-MEILIST-SELECT
                                                                (IDX)
                END-IF
            END-PERFORM
-           MOVE    SPA-W111-LIST-MAX    TO  W111-MEILIST-COUNT
+           MOVE    SPA-W201-LIST-MAX    TO  W201-MEILIST-COUNT
       *
-           MOVE    SPA-W111-SELNUM      TO  W111-SELNUM
-           MOVE    SPA-W111-FORMID      TO  W111-FORMID
-           MOVE    SPA-W111-PRTNM       TO  W111-PRTNM
-           MOVE    SPA-W111-OFFSET-X    TO  W111-OFFSET-X
-           MOVE    SPA-W111-OFFSET-Y    TO  W111-OFFSET-Y
+           MOVE    SPA-W201-SELNUM      TO  W201-SELNUM
+           MOVE    SPA-W201-FORMID      TO  W201-FORMID
+           MOVE    SPA-W201-PRTNM       TO  W201-PRTNM
+           MOVE    SPA-W201-OFFSET-X    TO  W201-OFFSET-X
+           MOVE    SPA-W201-OFFSET-Y    TO  W201-OFFSET-Y
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -413,22 +412,22 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-           IF      SPA-W111-CUR        =   ZERO
+           IF      SPA-W201-CUR        =   ZERO
                EVALUATE    WRK-WIDGET
                    WHEN    "SELNUM"
-                       MOVE    2                   TO  SPA-W111-CUR
+                       MOVE    2                   TO  SPA-W201-CUR
                    WHEN    "FORMID"
-                       MOVE    3                   TO  SPA-W111-CUR
+                       MOVE    3                   TO  SPA-W201-CUR
                    WHEN    "PRTNM"
-                       MOVE    4                   TO  SPA-W111-CUR
+                       MOVE    4                   TO  SPA-W201-CUR
                    WHEN    "OFFSET_X"
-                       MOVE    5                   TO  SPA-W111-CUR
+                       MOVE    5                   TO  SPA-W201-CUR
                    WHEN    "OFFSET_Y"
-                       MOVE    99                  TO  SPA-W111-CUR
+                       MOVE    99                  TO  SPA-W201-CUR
                END-EVALUATE
            END-IF
       *
-           EVALUATE    SPA-W111-CUR
+           EVALUATE    SPA-W201-CUR
                WHEN    1
                    MOVE    "SELNUM"            TO  MCP-WIDGET
                WHEN    2
@@ -495,7 +494,7 @@
       *****************************************************************
        210-GMN-INPUT-SEC               SECTION.
       *
-           MOVE    ZERO                TO  SPA-W111-CUR
+           MOVE    ZERO                TO  SPA-W201-CUR
       *    入力項目の決定
            MOVE    MCP-WIDGET          TO  WRK-WIDGET
       *
@@ -537,9 +536,9 @@
       *
            MOVE    ZERO                TO  WRK-SELNUM
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL       IDX     >   SPA-W111-LIST-MAX
-              IF      W111-MEILIST-SELECT (IDX)    =  "T"
-                  IF       IDX                 =   SPA-W111-SELNUM
+                   UNTIL       IDX     >   SPA-W201-LIST-MAX
+              IF      W201-MEILIST-SELECT (IDX)    =  "T"
+                  IF       IDX                 =   SPA-W201-SELNUM
                       CONTINUE
                   ELSE
                       MOVE    IDX              TO  WRK-SELNUM
@@ -548,7 +547,7 @@
            END-PERFORM
       *
            IF      WRK-SELNUM      NOT =   ZERO
-               MOVE    WRK-SELNUM          TO  SPA-W111-SELNUM
+               MOVE    WRK-SELNUM          TO  SPA-W201-SELNUM
                MOVE    1                   TO  FLG-SELNUM
                PERFORM 2002-SELNUM-SEC
            END-IF
@@ -563,36 +562,36 @@
        2002-SELNUM-SEC               SECTION.
       *
            INITIALIZE                      ORCSNUMAREA
-           MOVE    SPA-W111-SELNUM     TO  SNUM-INX
+           MOVE    SPA-W201-SELNUM     TO  SNUM-INX
            CALL    "ORCSNUM"           USING
                                        ORCSNUMAREA
            IF     (SNUM-RC         NOT =   ZERO  )   OR
                   (SNUM-MINKBN         =   "1"   )
                MOVE    "0001"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-W111-CUR
+               MOVE    1                   TO  SPA-W201-CUR
            ELSE
-               MOVE    SNUM-OUTNUM         TO  SPA-W111-SELNUM
+               MOVE    SNUM-OUTNUM         TO  SPA-W201-SELNUM
            END-IF
       *
-           IF      (SPA-W111-SELNUM    >   ZERO)  AND
+           IF      (SPA-W201-SELNUM    >   ZERO)  AND
                    (SPA-ERRCD          =   SPACE) 
                MOVE    ZERO                TO  FLG-CHK
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   SPA-W111-LIST-MAX ) OR
+                       UNTIL      (IDX     >   SPA-W201-LIST-MAX ) OR
                                   (FLG-CHK =   1    )
-                   IF      SPA-W111-TRENNUM (IDX)   =   SPA-W111-SELNUM
+                   IF      SPA-W201-TRENNUM (IDX)   =   SPA-W201-SELNUM
                        MOVE    1                   TO  FLG-CHK
                        IF      FLG-SELNUM          =   1
       *                    明細編集
                            PERFORM 20021-MEISAI-HENSYU-SEC
                        END-IF
-                       MOVE    SPA-W111-SELNUM     TO
-                                                   SPA-W111-MAE-SELNUM
+                       MOVE    SPA-W201-SELNUM     TO
+                                                   SPA-W201-MAE-SELNUM
                    END-IF
                END-PERFORM
                IF      FLG-CHK             =   ZERO
                    MOVE    "0001"          TO  SPA-ERRCD
-                   MOVE    1               TO  SPA-W111-CUR
+                   MOVE    1               TO  SPA-W201-CUR
                END-IF
            END-IF
       *
@@ -605,10 +604,10 @@
       *****************************************************************
        20021-MEISAI-HENSYU-SEC               SECTION.
       *
-           MOVE    SPA-W111-TFORMID (IDX)   TO  SPA-W111-FORMID
-           MOVE    SPA-W111-TPRTNM  (IDX)   TO  SPA-W111-PRTNM
-           MOVE    SPA-W111-TOFFSET-X (IDX) TO  SPA-W111-OFFSET-X
-           MOVE    SPA-W111-TOFFSET-Y (IDX) TO  SPA-W111-OFFSET-Y
+           MOVE    SPA-W201-TFORMID (IDX)   TO  SPA-W201-FORMID
+           MOVE    SPA-W201-TPRTNM  (IDX)   TO  SPA-W201-PRTNM
+           MOVE    SPA-W201-TOFFSET-X (IDX) TO  SPA-W201-OFFSET-X
+           MOVE    SPA-W201-TOFFSET-Y (IDX) TO  SPA-W201-OFFSET-Y
       *
            .
        20021-MEISAI-HENSYU-EXT.
@@ -619,16 +618,16 @@
       *****************************************************************
        2201-GMNSPA-SET-SEC               SECTION.
       *
-           IF      W111-SELNUM         =   SPA-W111-MAE-SELNUM
+           IF      W201-SELNUM         =   SPA-W201-MAE-SELNUM
                MOVE    ZERO                TO  FLG-SELNUM
            ELSE
                MOVE    1                   TO  FLG-SELNUM
            END-IF
-           MOVE    W111-SELNUM          TO  SPA-W111-SELNUM
-           MOVE    W111-FORMID          TO  SPA-W111-FORMID
-           MOVE    W111-PRTNM           TO  SPA-W111-PRTNM
-           MOVE    W111-OFFSET-X        TO  SPA-W111-OFFSET-X
-           MOVE    W111-OFFSET-Y        TO  SPA-W111-OFFSET-Y
+           MOVE    W201-SELNUM          TO  SPA-W201-SELNUM
+           MOVE    W201-FORMID          TO  SPA-W201-FORMID
+           MOVE    W201-PRTNM           TO  SPA-W201-PRTNM
+           MOVE    W201-OFFSET-X        TO  SPA-W201-OFFSET-X
+           MOVE    W201-OFFSET-Y        TO  SPA-W201-OFFSET-Y
       *
            .
        2201-GMNSPA-SET-EXT.
@@ -658,11 +657,11 @@
       *****************************************************************
        2204-OFFSETX-CHK-SEC            SECTION.
       *
-           IF      SPA-W111-OFFSET-X   =   SPACE
+           IF      SPA-W201-OFFSET-X   =   SPACE
                CONTINUE
            ELSE
                INITIALIZE                      ORCSNUMAREA
-               MOVE    SPA-W111-OFFSET-X   TO  SNUM-INX
+               MOVE    SPA-W201-OFFSET-X   TO  SNUM-INX
                CALL    "ORCSNUM"           USING
                                            ORCSNUMAREA
                IF     (SNUM-RC         NOT =   ZERO  )   OR
@@ -670,7 +669,7 @@
                       (SNUM-SYOSUU         >   1     )   OR
                       (SNUM-KETSUU         =   ZERO  )
                    MOVE    "0002"              TO  SPA-ERRCD
-                   MOVE    4                   TO  SPA-W111-CUR
+                   MOVE    4                   TO  SPA-W201-CUR
                END-IF
            END-IF
       *
@@ -682,11 +681,11 @@
       *****************************************************************
        2205-OFFSETY-CHK-SEC            SECTION.
       *
-           IF      SPA-W111-OFFSET-Y   =   SPACE
+           IF      SPA-W201-OFFSET-Y   =   SPACE
                CONTINUE
            ELSE
                INITIALIZE                      ORCSNUMAREA
-               MOVE    SPA-W111-OFFSET-Y   TO  SNUM-INX
+               MOVE    SPA-W201-OFFSET-Y   TO  SNUM-INX
                CALL    "ORCSNUM"           USING
                                            ORCSNUMAREA
                IF     (SNUM-RC         NOT =   ZERO  )   OR
@@ -694,7 +693,7 @@
                       (SNUM-SYOSUU         >   1     )   OR
                       (SNUM-KETSUU         =   ZERO  )
                    MOVE    "0003"              TO  SPA-ERRCD
-                   MOVE    5                   TO  SPA-W111-CUR
+                   MOVE    5                   TO  SPA-W201-CUR
                END-IF
            END-IF
       *
@@ -707,13 +706,13 @@
       *****************************************************************
        220-CLERA-SYORI-SEC                   SECTION.
       *
-           INITIALIZE                  SPA-W111-GMN-G
-           MOVE    ZERO                TO  SPA-W111-MAE-SELNUM
+           INITIALIZE                  SPA-W201-GMN-G
+           MOVE    ZERO                TO  SPA-W201-MAE-SELNUM
       *
-           IF      SPA-W111-LIST-MAX   =   ZERO
-               MOVE    2                   TO  SPA-W111-CUR
+           IF      SPA-W201-LIST-MAX   =   ZERO
+               MOVE    2                   TO  SPA-W201-CUR
            ELSE
-               MOVE    1                   TO  SPA-W111-CUR
+               MOVE    1                   TO  SPA-W201-CUR
            END-IF
       *
            .
@@ -726,11 +725,11 @@
       *
            PERFORM 2002-SELNUM-SEC
            IF      SPA-ERRCD           =   SPACE
-               IF      SPA-W111-SELNUM     >   ZERO
+               IF      SPA-W201-SELNUM     >   ZERO
                    MOVE    "1003"          TO  SPA-WIDCD
                ELSE
                    MOVE    "0004"          TO  SPA-ERRCD
-                   MOVE    1               TO  SPA-W111-CUR
+                   MOVE    1               TO  SPA-W201-CUR
                END-IF
            END-IF
       *
@@ -746,7 +745,7 @@
            MOVE    SPACE               TO  SYS-1044-REC
            INITIALIZE                      SYS-1044-REC
            MOVE    "1044"              TO  SYS-1044-KANRICD
-           MOVE    SPA-W111-NAI-KBNCD(SPA-W111-SELNUM)
+           MOVE    SPA-W201-NAI-KBNCD(SPA-W201-SELNUM)
                                        TO  SYS-1044-KBNCD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1044-STYUKYMD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1044-EDYUKYMD
@@ -778,7 +777,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    SPA-AREA
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "9001"              TO  SPA-ERRCD
-                   DISPLAY "W111 DEL SYSKANRI-KEY =>" SYS-1044-KEY 
+                   DISPLAY "W201 DEL SYSKANRI-KEY =>" SYS-1044-KEY 
                            ",MCP-RC:" MCP-RC 
                END-IF
            END-IF
@@ -815,18 +814,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        2201-ALL-CHK-SEC                SECTION.
       *
-           IF      SPA-W111-FORMID     =   SPACE
+           IF      SPA-W201-FORMID     =   SPACE
                MOVE    "0010"          TO  SPA-ERRCD
-               MOVE    2               TO  SPA-W111-CUR
+               MOVE    2               TO  SPA-W201-CUR
            END-IF
-           IF      SPA-W111-PRTNM      =   SPACE
+           IF      SPA-W201-PRTNM      =   SPACE
                MOVE    "0011"          TO  SPA-ERRCD
-               MOVE    3               TO  SPA-W111-CUR
+               MOVE    3               TO  SPA-W201-CUR
            END-IF
-           IF     (SPA-W111-OFFSET-X   =   SPACE )  AND
-                  (SPA-W111-OFFSET-Y   =   SPACE )
+           IF     (SPA-W201-OFFSET-X   =   SPACE )  AND
+                  (SPA-W201-OFFSET-Y   =   SPACE )
                MOVE    "0012"          TO  SPA-ERRCD
-               MOVE    4               TO  SPA-W111-CUR
+               MOVE    4               TO  SPA-W201-CUR
            END-IF
            .
        2201-ALL-CHK-EXT.
@@ -837,12 +836,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        2201-TOUROKU-SYORI-SEC                   SECTION.
       *
            PERFORM 800-MCNDATE-SEC
-           IF      SPA-W111-SELNUM     =   ZERO
+           IF      SPA-W201-SELNUM     =   ZERO
       *        連番号決定
-               COMPUTE WRK-KBNCD           =   SPA-W111-KBNCD-MAX
+               COMPUTE WRK-KBNCD           =   SPA-W201-KBNCD-MAX
                                            +   1
            ELSE
-               MOVE    SPA-W111-NAI-KBNCD(SPA-W111-SELNUM)
+               MOVE    SPA-W201-NAI-KBNCD(SPA-W201-SELNUM)
                                            TO  WRK-KBNCD
            END-IF
       *
@@ -885,7 +884,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    SPA-AREA
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "9001"              TO  SPA-ERRCD
-                   DISPLAY "W111 UPD SYSKANRI-KEY =>" SYS-1044-KEY 
+                   DISPLAY "W201 UPD SYSKANRI-KEY =>" SYS-1044-KEY 
                            ",MCP-RC:" MCP-RC 
                END-IF
            ELSE
@@ -911,7 +910,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    SPA-AREA
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "9001"              TO  SPA-ERRCD
-                   DISPLAY "W111 INS SYSKANRI-KEY =>" SYS-1044-KEY 
+                   DISPLAY "W201 INS SYSKANRI-KEY =>" SYS-1044-KEY 
                            ",MCP-RC:" MCP-RC 
                END-IF
            END-IF
@@ -927,10 +926,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        22011-DBHENSYU-SEC                   SECTION.
       *
-           MOVE    SPA-W111-FORMID     TO  SYS-1044-FORMID
-           MOVE    SPA-W111-PRTNM      TO  SYS-1044-PRTNM
-           MOVE    SPA-W111-OFFSET-X   TO  SYS-1044-OFFSET-X
-           MOVE    SPA-W111-OFFSET-Y   TO  SYS-1044-OFFSET-Y
+           MOVE    SPA-W201-FORMID     TO  SYS-1044-FORMID
+           MOVE    SPA-W201-PRTNM      TO  SYS-1044-PRTNM
+           MOVE    SPA-W201-OFFSET-X   TO  SYS-1044-OFFSET-X
+           MOVE    SPA-W201-OFFSET-Y   TO  SYS-1044-OFFSET-Y
            .
        22011-DBHENSYU-EXT.
            EXIT.
@@ -940,11 +939,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "W11"               TO  SPA-SAKIPG
-           MOVE    "W111"              TO  SPA-MOTOPG
+           MOVE    "W20"               TO  SPA-SAKIPG
+           MOVE    "W201"              TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
-           MOVE    "W11"               TO  MCP-WINDOW
+           MOVE    "W20"               TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -974,7 +973,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "W111"              TO  MCP-WINDOW.
+           MOVE    "W201"              TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
            .
@@ -1019,7 +1018,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-ERRMSG          TO  WERR-ERRMSG
            MOVE    "B01"               TO  MCP-WIDGET
       *
-           MOVE    "W111"               TO  SPA-MOTOPG
+           MOVE    "W201"               TO  SPA-MOTOPG
            MOVE    "WERR"              TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE.
@@ -1058,7 +1057,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-WIDMSG          TO  WID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
       *
-           MOVE    "W111"              TO  SPA-MOTOPG
+           MOVE    "W201"              TO  SPA-MOTOPG
            MOVE    "WID1"              TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE

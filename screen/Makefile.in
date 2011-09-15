@@ -209,6 +209,7 @@ SCREEN_screen = \
         W13.glade \
         W14.glade \
         W20.glade \
+        W201.glade \
         W21.glade \
         W22.glade \
         W23.glade \

@@ -216,6 +216,7 @@ RECORD_files = \
 	W16.rec \
 	W18.rec \
 	W20.rec \
+	W201.rec \
 	W21.rec \
 	W22.rec \
 	W23.rec \

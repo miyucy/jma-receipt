@@ -406,6 +406,7 @@
            COPY    "W18.INC".
            COPY    "W19.INC".
            COPY    "W20.INC".
+           COPY    "W201.INC".
            COPY    "W21.INC".
            COPY    "W22.INC".
            COPY    "W23.INC".
@@ -553,6 +554,8 @@
                    PERFORM 310-BTU-SET-SEC
                    GO  TO  300-SCREEN-EXT
                END-IF
+           WHEN    "W201"
+                   CONTINUE
            WHEN    "WID1"
                MOVE    SPA-GMN-W20-MOTOPG
                                        TO  SPA-MOTOPG
@@ -1755,6 +1758,7 @@
       *****************************************************************
        200-GMNSENI                           SECTION.
       *
+           DISPLAY "200-GMNSENI MCP-WIDGET = " MCP-WIDGET
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
@@ -1783,6 +1787,11 @@
                IF  ( SPA-MOTOPG    =       "W01" )
                    PERFORM 420-BYOSITU-KANRI-SEC
                END-IF
+      *    入院料加算設定画面へ
+           WHEN    "CLICKED"       ALSO    "B10"
+      ***         IF  SPA-W01-KANRICD   =   "5001"
+                   PERFORM 420-W201-SYORI-SEC
+      ***         END-IF
       *
            END-EVALUATE
            .
@@ -2158,6 +2167,7 @@
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
            MOVE    SPA-MOTOPG2         TO  SPA-MOTOPG3
            MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
+           MOVE    "W01"               TO  SPA-SAKIPG
            MOVE    "W20"               TO  SPA-MOTOPG
       *
       ***  MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -2538,6 +2548,54 @@
       *
            .
        420-BYOSITU-KANRI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院料加算設定へ
+      *****************************************************************
+       420-W201-SYORI-SEC           SECTION.
+      *
+      *    初期画面セット
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-W20-AREA        TO  SPA-FREE
+           MOVE    SPA-W01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGW201"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-W20-AREA
+           MOVE    SPA-WORK            TO  SPA-W01KYOUTU
+      *
+           MOVE    "W201"              TO  SPA-SAKIPG
+           MOVE    "W20"               TO  SPA-MOTOPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    ZERO   TO   SPA-W201-LIST-MAX
+           IF      SPA-W201-LIST-MAX   =   ZERO
+               MOVE    "FORMID"            TO  MCP-WIDGET
+           ELSE
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+           END-IF
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "W201"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+      *
+           .
+       420-W201-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    病室管理情報更新処理
@@ -5173,6 +5231,9 @@
            IF    ( SPA-MOTOPG      =   "W01" )
                MOVE    "病室"      TO  SPA-GMN-W20-B09
            END-IF
+           IF    ( SPA-MOTOPG      =   "W01" )
+               MOVE    "入院料加算"      TO  SPA-GMN-W20-B10
+           END-IF
       *
       *    有効期間の開始日と終了日を設定
            MOVE    SPA-GMN-W20-KJNYMD (1 : 6)
@@ -7043,6 +7104,9 @@
       *
       *    病室ボタン
            MOVE    SPA-GMN-W20-B09         TO  W20-B09
+      *
+      *    入院料加算ボタン
+           MOVE    SPA-GMN-W20-B10         TO  W20-B10
       *
       *    基準日
            MOVE    SPA-GMN-W20-KJNYMD      TO  W20-KJNYMD
