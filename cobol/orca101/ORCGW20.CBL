@@ -1784,7 +1784,7 @@
                PERFORM 420-SAKUJO-SEC
       *    病室管理情報画面へ
            WHEN    "CLICKED"       ALSO    "B09"
-               IF  ( SPA-MOTOPG    =       "W01" )
+               IF  ( SPA-MOTOPG    =       "W01" OR "W201")
                    PERFORM 420-BYOSITU-KANRI-SEC
                END-IF
       *    入院料加算設定画面へ
@@ -5228,10 +5228,10 @@
            INITIALIZE  SPA-GMN-W20-INPUT-AREA
                        SPA-NAI-W20-INPUT-AREA
       *
-           IF    ( SPA-MOTOPG      =   "W01" )
+           IF    ( SPA-MOTOPG      =   "W01" OR "W201")
                MOVE    "病室"      TO  SPA-GMN-W20-B09
            END-IF
-           IF    ( SPA-MOTOPG      =   "W01" )
+           IF    ( SPA-MOTOPG      =   "W01" OR "W201")
                MOVE    "入院料加算"      TO  SPA-GMN-W20-B10
            END-IF
       *
@@ -7359,6 +7359,7 @@
                                        W20-B07-STATE
                                        W20-B08-STATE
                                        W20-B09-STATE
+                                       W20-B10-STATE
                                        W20-B12-STATE
                                        W20-NAME-STATE
                                        W20-TANNAME-STATE
@@ -7513,6 +7514,8 @@
                MOVE    "B08"               TO  MCP-WIDGET
            WHEN    209
                MOVE    "B09"               TO  MCP-WIDGET
+           WHEN    210
+               MOVE    "B10"               TO  MCP-WIDGET
            END-EVALUATE
       *
            .
