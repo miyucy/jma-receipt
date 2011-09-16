@@ -39,13 +39,6 @@
       *  04.05.01    NACL-藤原    11/09/16  公費単独対応
       *                                     公費を最大５０に変更に併せて
       *                                     保険組合せも変更
-      *
-      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     kohid 追加
-      *  04.06.02    NACL-藤原    11/12/12  点検レセ０点公費印字対応
-      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
-      *                                     receipt_kbn 追加 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -154,7 +147,7 @@
                                            =   "01"    OR  "02"    OR
                                                "03"    OR  "04"    OR
                                                "05"    OR  "06"    OR
-                                               "07"    OR  "08"
+                                               "07"
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-END
@@ -163,7 +156,7 @@
                        IF      LNK-SYUACC-I-KBN
                                            =   "01"    OR  "02"    OR
                                                "05"    OR  "06"    OR
-                                               "07"    OR  "08"
+                                               "07"
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-END
@@ -242,8 +235,7 @@
                END-EVALUATE
            ELSE
                IF      LNK-SYUACC-I-KBN    =   "01"    OR  "02"    OR  
-                                               "06"    OR  "07"    OR
-                                               "08"
+                                               "06"    OR  "07"
                    PERFORM 2004-ORCSSYUACC-SEC
                ELSE
                    IF      SPA-SYUKA-MODE  =   "2"
@@ -323,10 +315,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                                    TO  LNK-SYUACC-IO-HKNJANUM     (IDY)
                    MOVE    LNK-SYUBETU-HOJOKBN      (IDY)
                                    TO  LNK-SYUACC-IO-HOJOKBN      (IDY)
-                   MOVE    LNK-SYUBETU-KOHID        (IDY)
-                                   TO  LNK-SYUACC-IO-KOHID        (IDY)
-                   MOVE    LNK-SYUBETU-RECEIPT-KBN  (IDY)
-                                   TO  LNK-SYUACC-IO-RECEIPT-KBN  (IDY)
                    MOVE    LNK-SYUBETU-HKNNUM       (IDY)
                                    TO  LNK-SYUACC-IO-HKNNUM       (IDY)
       *            精神入院か生保単独複数のとき
@@ -508,7 +496,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
       *    レセプト別集計
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       10
-                   OR      LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (IDX1)
+                   OR      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (IDX1)
                                            =   ZERO
                PERFORM VARYING IDY1    FROM    1   BY  1
                        UNTIL   IDY1    >       100
@@ -518,7 +506,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
                            UNTIL   IDY2    >       10
                            OR      LNK-SYUBETU-HKNCOMBI (IDY1 IDY2)
                                                    =   ZERO
-                       IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                       IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                                         (IDX1)
                                    =   LNK-SYUBETU-HKNCOMBI (IDY1 IDY2)
                            PERFORM 20031-ORCHCN33SUB-SYUKEI-SEC
@@ -556,12 +544,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LNK-ORCHCN33SUB-HOSPNUM
                                                        (IDY1 IDY3 IDY4)
                                                    =   ZERO
                                MOVE
-                                   LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                                   LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                                        (IDX1)
                                            TO  LNK-SYUACC-IO-HKNCOMBI
                                                         (IDY1 IDY3 IDY4)
                            END-IF
-                           IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOM
+                           IF      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
                                                        (IDX1)
                                            =   LNK-SYUACC-IO-HKNCOMBI
                                                         (IDY1 IDY3 IDY4)
