@@ -1789,9 +1789,16 @@
                END-IF
       *    入院料加算設定画面へ
            WHEN    "CLICKED"       ALSO    "B10"
-      ***         IF  SPA-W01-KANRICD   =   "5001"
-                   PERFORM 420-W201-SYORI-SEC
-      ***         END-IF
+               IF (SPA-GMN-W20-BTUNUM    NOT =   ZERO)   AND
+                  (SPA-GMN-W20-SELNUM    NOT =   ZERO)
+                   IF   SPA-GMN-W20-SBT  NOT =   "10"
+                       PERFORM 420-W201-SYORI-SEC
+                   ELSE
+                       MOVE   "1109"   TO      SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE   "1108"   TO      SPA-ERRCD
+               END-IF
       *
            END-EVALUATE
            .
@@ -7767,6 +7774,12 @@
                                        TO  SPA-ERRMSG
            WHEN    "1107"
                MOVE    "診療所の病棟種別を選択してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "1108"
+               MOVE    "登録済みの病棟が選択されていません"
+                                       TO  SPA-ERRMSG
+           WHEN    "1109"
+               MOVE    "医療観察病棟では登録不可です"
                                        TO  SPA-ERRMSG
            WHEN    "1201"
            WHEN    "1202"
