@@ -708,18 +708,10 @@
       *
            IF    ( WRK-SEIKYU      >=  ZERO )
                IF    ( WRK-NYUKIN  >=  ZERO )
-                   IF    ( WRK-NYUKIN      >   0 )
-                    AND  ( WRK-MISYU-ZEN   <   0 )
-                    AND  ( WRK-SEIKYU  >=  WRK-NYUKIN - WRK-MISYU-ZEN )
-                       COMPUTE WRK-NYUKIN-KON
-                           =   WRK-NYUKIN
-                           -   WRK-MISYU-ZEN
+                   IF    ( WRK-SEIKYU      >=  WRK-NYUKIN )
+                       COMPUTE WRK-NYUKIN-KON  =   WRK-NYUKIN
                    ELSE
-                       IF    ( WRK-SEIKYU      >=  WRK-NYUKIN )
-                           COMPUTE WRK-NYUKIN-KON  =   WRK-NYUKIN
-                       ELSE
-                           COMPUTE WRK-NYUKIN-KON  =   WRK-SEIKYU
-                       END-IF
+                       COMPUTE WRK-NYUKIN-KON  =   WRK-SEIKYU
                    END-IF
                ELSE
                        COMPUTE WRK-NYUKIN-KON  =   0
