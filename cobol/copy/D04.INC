@@ -66,7 +66,7 @@
                   05  D04-BYOLST-ROWATTR   PIC S9(9)   BINARY.
                   05  D04-BYOLST-ITEM      OCCURS  300.
                     06  D04-TBYOLSTNO      PIC X(05).
-                    06  D04-TBYOMEI        PIC X(100).
+                    06  D04-TBYOMEI        PIC X(101).
                     06  D04-TSRYKA         PIC X(10).
                     06  D04-TSRYYMD        PIC X(10).
                     06  D04-TTENKIYMD      PIC X(10).
@@ -82,7 +82,7 @@
                   05  D04-CHKLST-ROWATTR   PIC S9(9)   BINARY.
                   05  D04-CHKLST-ITEM      OCCURS  200.
                     06  D04-TCHKLSTNO      PIC X(5).
-                    06  D04-TCHKBYOMEI     PIC X(100).
+                    06  D04-TCHKBYOMEI     PIC X(101).
                     06  D04-TCOMPKBN       PIC X(4).
                   05  D04-CHKLST-SELECT    PIC X       OCCURS  200.
 

@@ -1991,11 +1991,11 @@
                    MOVE    SPA-GMN-BYOMEI  TO  ORCSSTR-STRING2
                    CALL    "orcsstring" USING  ORCSSTRINGAREA
                    IF    ( ORCSSTR-NUM1    >   ZERO )
-                       MOVE    "*"     TO  D04-TBYOLSTNO (IDX-LST)(5:1)
+                       MOVE    "*"     TO  D04-TBYOMEI   (IDX-LST)(1:1)
                    END-IF
                END-IF
                MOVE    SPA-GMN-TBYOMEI (IDX-LST)
-                                       TO  D04-TBYOMEI   (IDX-LST)
+                                       TO  D04-TBYOMEI   (IDX-LST)(2:)
                MOVE    SPA-GMN-TSRYKA  (IDX-LST)
                                        TO  D04-TSRYKA    (IDX-LST)
                MOVE    SPA-GMN-TSRYYMD(IDX-LST)
@@ -2026,9 +2026,19 @@
                MOVE    WRK-ZZZ9        TO  D04-TCHKLSTNO (IDX-LST)
                MOVE    SPA-GMN-TGRPID (IDX-LST)
                                        TO  D04-TCHKLSTNO (IDX-LST)(5:1)
+               IF    ( SPA-GMN-BYOMEI  NOT =   SPACE )
+                   MOVE    "search"        TO  ORCSSTR-COMMAND
+                   MOVE    SPA-GMN-TCHKBYOMEI (IDX-LST)
+                                           TO  ORCSSTR-STRING1
+                   MOVE    SPA-GMN-BYOMEI  TO  ORCSSTR-STRING2
+                   CALL    "orcsstring" USING  ORCSSTRINGAREA
+                   IF    ( ORCSSTR-NUM1    >   ZERO )
+                       MOVE    "*"     TO  D04-TCHKBYOMEI (IDX-LST)(1:1)
+                   END-IF
+               END-IF
                MOVE    SPA-GMN-TCHKBYOMEI (IDX-LST)
                                        TO  D04-TCHKBYOMEI
-                                                  (IDX-LST)
+                                                  (IDX-LST)(2:)
                MOVE    SPA-GMN-TCOMPKBN   (IDX-LST)
                                        TO  D04-TCOMPKBN     (IDX-LST)
       *
