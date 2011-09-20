@@ -33,6 +33,7 @@ db	{
 	tbl_seikyu_main;
 	tbl_seikyu_koh;
 	tbl_seikyu_etc;
+	tbl_seikyu_rsi;
 	tbl_kohsky;
 	tbl_ptinf;
 	tbl_ptkohinf;

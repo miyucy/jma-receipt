@@ -66,6 +66,7 @@ db	{
 	tbl_seikyu_main;
 	tbl_seikyu_koh;
 	tbl_seikyu_etc;
+	tbl_seikyu_rsi;
 	tbl_senteicdchg;
 	tbl_sryact;
 	tbl_syskanri;

@@ -48,6 +48,8 @@
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
       *  04.06.02    NACL-藤原    10/12/20  保険者からの返戻対応
+      *
+      *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       *****************************************************************
        01  SPA-H01FREE.
          02  SPA-H01FREE-AREA.
@@ -73,12 +75,14 @@
                        09  SPA-H01GMN-NAME            PIC X(24).
                        09  SPA-H01GMN-SRYKA           PIC X(02).
                        09  SPA-H01GMN-SRYKANAME       PIC X(18).
+                       09  SPA-H01GMN-TITLE-HKNJANUM  PIC X(16).
+                       09  SPA-H01GMN-TITLE-KIGO      PIC X(10).
       *
                    07  SPA-H01GMN-KOUMOKU.
                        09  SPA-H01GMN-HNYUGAIKBN      PIC X(06).
                        09  SPA-H01GMN-HTEISYUTUSAKI   PIC X(10).
-                       09  SPA-H01GMN-HRECESYUBETU    PIC X(10).
-                       09  SPA-H01GMN-HHKNJANUM       PIC X(08).
+                       09  SPA-H01GMN-HRECESYUBETU    PIC X(12).
+                       09  SPA-H01GMN-HHKNJANUM       PIC X(14).
                        09  SPA-H01GMN-HHOJOKBN        PIC X(08).
                        09  SPA-H01GMN-HKIGO           PIC X(20).
                        09  SPA-H01GMN-HCREYMD         PIC X(13).
@@ -199,7 +203,7 @@
                05  SPA-H02GMN-SYORIYM         PIC X(06).
                05  SPA-H02GMN-NYUGAIKBN       PIC X(06).
                05  SPA-H02GMN-RECESYUBETU     PIC X(04).
-               05  SPA-H02GMN-HKNJANUM        PIC X(08).
+               05  SPA-H02GMN-HKNJANUM        PIC X(14).
                05  SPA-H02GMN-KIGO            PIC X(20).
                05  SPA-H02GMN-ERR             PIC X(100).
       *
@@ -277,7 +281,7 @@
                                                   PIC X(10).
                        09  SPA-H99GMN-TRECESYUBETU
                                                   PIC X(44).
-                       09  SPA-H99GMN-THKNJANUM   PIC X(8).
+                       09  SPA-H99GMN-THKNJANUM   PIC X(14).
                        09  SPA-H99GMN-THOJOKBN    PIC X(8).
                        09  SPA-H99GMN-TKIGO       PIC X(20).
                        09  SPA-H99GMN-TCREYMD     PIC X(9).

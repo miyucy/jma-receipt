@@ -67,6 +67,8 @@
       *                                     番号の表示に自立支援を追加
       *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
       *                                     は公費単独のレセプトとする
+      *
+      *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -436,6 +438,12 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                    WHEN    "2"
                        MOVE    "国保連合会"    TO
                                            SPA-H99GMN-TTEISYUTUSAKI(IDX)
+                   WHEN    "3"
+                       MOVE    "労災"          TO
+                                           SPA-H99GMN-TTEISYUTUSAKI(IDX)
+                   WHEN    "4"
+                       MOVE    "自賠責"        TO
+                                           SPA-H99GMN-TTEISYUTUSAKI(IDX)
                    WHEN    "5"
                        MOVE    "公害"          TO
                                            SPA-H99GMN-TTEISYUTUSAKI(IDX)
@@ -456,6 +464,9 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                            MOVE    RECE10-HKNJANUM     TO
                                            SPA-H99GMN-THKNJANUM (IDX)
                        END-IF
+                   WHEN    "3"
+                       MOVE    RECE10-KOFUNUM      TO
+                                           SPA-H99GMN-THKNJANUM (IDX)
                END-EVALUATE
       *
                EVALUATE    RECE10-HKNNUM
@@ -485,6 +496,10 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                EVALUATE    RECE10-TEISYUTUSAKI
                    WHEN    "6"
                        MOVE    RECE10-NUM  TO  SPA-H99GMN-TKIGO(IDX)
+                   WHEN    "3"
+                   WHEN    "4"
+                       MOVE    RECE10-COMMENT
+                                           TO  SPA-H99GMN-TKIGO(IDX)
                    WHEN    OTHER
                        STRING  RECE10-KIGO     DELIMITED   BY  SPACE
                                "　"            DELIMITED   BY  SIZE
@@ -582,6 +597,36 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *
            IF      RECE10-RECESYUBETU  =   "6666"
                MOVE    "特別療養費"        TO  WRK-RECESYUBETU
+               GO  TO  530-RECESYUBETU-HENSYU-EXT
+           END-IF        
+      *
+           IF      RECE10-TEISYUTUSAKI =   "3" OR  "4"
+               EVALUATE    RECE10-RECESYUBETU
+                   WHEN    "7101"
+                   WHEN    "7091"
+                       MOVE    "傷病・業務"        TO  WRK-RECESYUBETU
+                   WHEN    "7102"
+                   WHEN    "7092"
+                       MOVE    "傷病・通勤"        TO  WRK-RECESYUBETU
+                   WHEN    "7071"
+                   WHEN    "7082"
+                       MOVE    "短期・業務"        TO  WRK-RECESYUBETU
+                   WHEN    "7072"
+                   WHEN    "7081"
+                       MOVE    "短期・通勤"        TO  WRK-RECESYUBETU
+                   WHEN    "7021"
+                       MOVE    "アフターケア"      TO  WRK-RECESYUBETU
+                   WHEN    "7051"
+                   WHEN    "7061"
+                       MOVE    "公務災害"          TO  WRK-RECESYUBETU
+                   WHEN    "7011"
+                   WHEN    "7001"
+                       IF      RECE10-RECEKBN      =   "4"
+                           MOVE    "新様式"        TO  WRK-RECESYUBETU
+                       ELSE
+                           MOVE    "従来様式"      TO  WRK-RECESYUBETU
+                       END-IF
+               END-EVALUATE
                GO  TO  530-RECESYUBETU-HENSYU-EXT
            END-IF        
       *

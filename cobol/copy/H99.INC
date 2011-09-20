@@ -34,7 +34,7 @@
                     06  H99-TSRYKA        PIC X(10).
                     06  H99-TTEISYUTUSAKI PIC X(10).
                     06  H99-TRECESYUBETU  PIC X(44).
-                    06  H99-THKNJANUM     PIC X(8).
+                    06  H99-THKNJANUM     PIC X(14).
                     06  H99-THOJOKBN      PIC X(8).
                     06  H99-TKIGO         PIC X(20).
                     06  H99-TCREYMD       PIC X(9).

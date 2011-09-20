@@ -140,6 +140,7 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-BTPARA          PIC 9(01).
+           03  FLG-RECE10          PIC 9(01).
       *
            03  FLG-KUGIRI          PIC 9(01).
            03  FLG-SET             PIC 9(01).
@@ -401,6 +402,9 @@
       *    ¥Ñ¥é¥á¥¿
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
+      *
+      *    ÀÁµá´ÉÍý
+           COPY    "CPRCF010.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -1628,6 +1632,10 @@
                END-IF
            END-PERFORM
       *
+      *    ÀÁµá´ÉÍý£Ä£Â¹¹¿·
+           IF      FLG-ERR              =   ZERO
+               PERFORM 3904-RECE10-HENSYU-SEC
+           END-IF
       *
            IF      FLG-ERR              =   1
                MOVE    2                    TO  FLG-STS
@@ -1703,8 +1711,8 @@
                                                DELIMITED  BY  SIZE
                         RECE41-PTNUM           DELIMITED  BY  SIZE  
                                                INTO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               MOVE    1                  TO  FLG-ERR
+               END-STRING
+               PERFORM 900-DB-ERR-ABORT-SEC
            ELSE    
                MOVE    RECE41-KANANAME     TO  RECE08-KANANAME
                MOVE    "2"                 TO  RECE08-NYUGAIKBN
@@ -1881,6 +1889,143 @@
            EXIT.
       *
       *****************************************************************
+      *    ÀÁµá´ÉÍý£Ä£Â¹¹¿·
+      *****************************************************************
+       3904-RECE10-HENSYU-SEC          SECTION.
+      * 
+      *    ¥Æ¥¹¥È´µ¼Ô¡¢¥ì¥»¥×¥È¼ïÊÌÉÔÌÀ¤Î¤È¤­¹¹¿·¤·¤Ê¤¤
+           IF    ( RECE41-TSTPTNUMKBN  =   "1"  )
+           OR    ( RECE41-RECESYUBETU  =   ZERO )
+               GO  TO  3904-RECE10-HENSYU-EXT
+           END-IF
+      *          
+           INITIALIZE                      RECE10-REC
+           MOVE    RECE41-HOSPNUM      TO  RECE10-HOSPNUM
+           MOVE    RECE41-SRYYM        TO  RECE10-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE10-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE10-PTID
+           MOVE    ZERO                TO  RECE10-RECEKA
+           MOVE    3                   TO  RECE10-TEISYUTUSAKI
+           MOVE    RECE41-RECESYUBETU  TO  RECE10-RECESYUBETU
+           MOVE    ZERO                TO  RECE10-HKNJANUM
+           MOVE    ZERO                TO  RECE10-HOJOKBN-KEY
+           MOVE    RECE41-HKNID        TO  RECE10-KOHID-KEY
+           MOVE    RECE41-TEKSTYMD     TO  RECE10-TEKSTYMD
+      *
+           MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
+           MOVE    "key"               TO  WRK-MCP-PATHNAME
+           PERFORM 900-SEIKYU-INV-SEC
+           IF      FLG-RECE10          =   ZERO
+               MOVE    MCPDATA-REC         TO  RECE10-REC
+               MOVE    WRK-PARA-CREYMD     TO  RECE10-UPDYMD
+               MOVE    WRK-PARA-CREHMS (1:6)
+                                           TO  RECE10-UPDHMS
+               IF      RECE10-SKYKBN       =   "2"
+                   MOVE    "1"                 TO  RECE10-SKYKBN
+               END-IF 
+               MOVE    "2"                 TO  RECE10-TEISEIKBN
+           ELSE
+               MOVE    "1"                 TO  RECE10-SKYKBN
+               MOVE    RECE41-PTNUM        TO  RECE10-PTNUM
+               MOVE    RECE41-HKNNUM       TO  RECE10-HKNNUM
+                                               RECE10-HKNNUM-S
+               MOVE    RECE41-HKNID        TO  RECE10-HKNID
+               MOVE    ZERO                TO  RECE10-SKYYM
+                                               RECE10-HENREIYM
+                                               RECE10-TEISEIKBN
+               MOVE    WRK-PARA-CREYMD     TO  RECE10-CREYMD
+               MOVE    WRK-PARA-CREHMS (1:6)
+                                           TO  RECE10-CREHMS
+               MOVE    ZERO                TO  RECE10-UPDYMD
+                                               RECE10-UPDHMS
+           END-IF
+      *
+           MOVE    RECE41-AGE          TO  RECE10-AGE
+      *
+           MOVE    RECE41-KOFUNUM      TO  RECE10-KOFUNUM
+           MOVE    RECE41-TEKSTYMD     TO  WRK-SYMD
+           PERFORM 31012-SE-WA-YMDEDIT-SEC
+           STRING  LNK-DAY2-EDTYMD2-D      DELIMITED   BY  SPACE
+                   "Æü¡¡"                  DELIMITED   BY  SIZE
+                   RECE41-COMMENT          DELIMITED   BY  SPACE
+                                           INTO        RECE10-COMMENT
+           END-STRING
+      * 
+           MOVE    RECE41-JNISSU       TO  RECE10-JNISSU       (1)
+           MOVE    RECE41-TOTALTEN     TO  RECE10-TOTALTEN     (1)
+           COMPUTE RECE10-FTNMONEY (1) =   RECE41-TOTALKIN     +
+                                           RECE41-TOTALKIN2
+           MOVE    RECE41-TOTALKIN     TO  RECE10-FTNMONEY-FTN (1)
+           MOVE    RECE41-TOTALKIN2    TO  RECE10-FTNMONEY-KOJ (1)
+      *
+           MOVE    RECE41-TENSU (1)    TO  RECE10-TENSU (1 1)
+           COMPUTE RECE10-TENSU (2 1)  =   RECE41-TENSU (2)    +
+                                           RECE41-TENSU (3)    +
+                                           RECE41-TENSU (4)
+           MOVE    RECE41-TENSU (5)    TO  RECE10-TENSU (3 1)
+           MOVE    RECE41-TENSU (6)    TO  RECE10-TENSU (4 1)
+           COMPUTE RECE10-TENSU (5 1)  =   RECE41-TENSU (7)    +
+                                           RECE41-TENSU (8)    +
+                                           RECE41-TENSU (9)    +
+                                           RECE41-TENSU (10)   +
+                                           RECE41-TENSU (11)   +
+                                           RECE41-TENSU (12)   +
+                                           RECE41-TENSU (13)   +
+                                           RECE41-TENSU (14)
+           COMPUTE RECE10-TENSU (6 1)  =   RECE41-TENSU (15)   +
+                                           RECE41-TENSU (16)   +
+                                           RECE41-TENSU (17)
+           COMPUTE RECE10-TENSU (7 1)  =   RECE41-TENSU (18)   +
+                                           RECE41-TENSU (19)   +
+                                           RECE41-TENSU (20)
+           COMPUTE RECE10-TENSU (8 1)  =   RECE41-TENSU (21)   +
+                                           RECE41-TENSU (22)   +
+                                           RECE41-TENSU (23)
+           COMPUTE RECE10-TENSU (9 1)  =   RECE41-TENSU (24)   +
+                                           RECE41-TENSU (25)   +
+                                           RECE41-TENSU (26)
+           COMPUTE RECE10-TENSU (10 1) =   RECE41-TENSU (27)   +
+                                           RECE41-TENSU (28)   +
+                                           RECE41-TENSU (29)
+           COMPUTE RECE10-TENSU (11 1) =   RECE41-TENSU (30)   +
+                                           RECE41-TENSU (31)   +
+                                           RECE41-TENSU (32)
+           MOVE    RECE41-KINGAKU2 (1) TO  RECE10-TENSU (13 1)
+           MOVE    RECE41-KINGAKU2 (2) TO  RECE10-TENSU (14 1)
+      *
+           MOVE    RECE41-HKNCOMBI     TO  RECE10-HKNCOMBI (1)
+      *
+           MOVE    "00000000000000000000000000000000000000000000000000"
+                                       TO  RECE10-RESERVE-AREA
+      *
+           MOVE    RECE10-REC          TO  MCPDATA-REC
+           MOVE    "tbl_seikyu"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           IF      FLG-RECE10          =   1    
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+           ELSE
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+           END-IF 
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "ORCR0482 SEIKYU MCP-RC= "  MCP-RC
+               IF      FLG-RECE10          =   1
+               MOVE    "ÀÁµá´ÉÍý£Ä£Â¤ËÄÉ²Ã¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+                                               TO  WRK-RECEERR
+               ELSE
+               MOVE    "ÀÁµá´ÉÍý£Ä£Â¤Ë¹¹¿·¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+                                               TO  WRK-RECEERR
+               END-IF
+               PERFORM 900-DB-ERR-ABORT-SEC
+           END-IF
+           .
+       3904-RECE10-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    À¾Îñ¢ªÏÂÎñÆüÉÕÊÔ½¸
       *****************************************************************
        31012-SE-WA-YMDEDIT-SEC        SECTION.
@@ -2004,6 +2149,18 @@
            MOVE    WRK-RECENUM         TO  WRK-RECEYMD-RECENUM
            MOVE    WRK-RECEYMD-REC     TO  RECEYMD-REC
            WRITE   RECEYMD-REC
+           WRITE   RECEYMD-REC
+           IF      STS-RECEYMD         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE           TO  WRK-ERR-AREA
+               INITIALIZE                  WRK-ERR-AREA
+               MOVE    3               TO  WRK-ERR-FLG
+               MOVE    RECEYMD         TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECEYMD     TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            CLOSE   RECEYMD-FILE
       *          
       *    ¥Õ¥¡¥¤¥ë£Ã£Ì£Ï£Ó£Å½èÍý
@@ -2444,6 +2601,36 @@
       *
            .
        900-BTPARA-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÀÁµá´ÉÍýÆÉ¹þ
+      *****************************************************************
+       900-SEIKYU-INV-SEC         SECTION.
+      *
+           MOVE    RECE10-REC          TO  MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO            TO  FLG-RECE10
+               ELSE
+                   MOVE    1               TO  FLG-RECE10
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-RECE10
+           END-IF
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-SEIKYU-INV-EXT.
            EXIT.
       *
       *****************************************************************

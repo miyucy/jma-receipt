@@ -62,20 +62,26 @@
                 04  H01-SHONISSU-STATE   PIC S9(9)   BINARY.
                 04  H01-SHONISSU   PIC 9(2).
               03  H01-NKHNTEN-G  OCCURS  38.
+                04  H01-NKHNTEN-STATE   PIC S9(09) BINARY.
                 04  H01-NKHNTEN   PIC 9(8).
               03  H01-NKAISU-G  OCCURS  38.
+                04  H01-NKAISU-STATE   PIC S9(09) BINARY.
                 04  H01-NKAISU   PIC 9(5).
               03  H01-NTENSU-G  OCCURS  3.
                 04  H01-NTENSU-TBL  OCCURS  38.
+                  05  H01-NTENSU-STATE   PIC S9(09) BINARY.
                   05  H01-NTENSU   PIC S9(8).
               03  H01-NTOTALTEN-G OCCURS  5.
                 04  H01-NTOTALTEN-STATE   PIC S9(9)   BINARY.
                 04  H01-NTOTALTEN   PIC 9(8).
               03  H01-NFTNMONEY-G OCCURS  5.
+                04  H01-NFTNMONEY-STATE   PIC S9(09) BINARY.
                 04  H01-NFTNMONEY   PIC 9(8).
               03  H01-NYKZFTN-G   OCCURS  5.
+                04  H01-NYKZFTN-STATE   PIC S9(09) BINARY.
                 04  H01-NYKZFTN   PIC 9(8).
               03  H01-NJNISSU-G   OCCURS  5.
+                04  H01-NJNISSU-STATE   PIC S9(09) BINARY.
                 04  H01-NJNISSU   PIC 9(2).
               03  H01-NSHORYOYOHI-G  OCCURS  5.
                 04  H01-NSHORYOYOHI-STATE   PIC S9(9)   BINARY.
@@ -129,10 +135,10 @@
                 04  H01-HTEISYUTUSAKI-VALUE   PIC X(10).
               03  H01-HRECESYUBETU.
                 04  H01-HRECESYUBETU-STYLE   PIC X(20).
-                04  H01-HRECESYUBETU-VALUE   PIC X(10).
+                04  H01-HRECESYUBETU-VALUE   PIC X(12).
               03  H01-HHKNJANUM.
                 04  H01-HHKNJANUM-STYLE   PIC X(20).
-                04  H01-HHKNJANUM-VALUE   PIC X(8).
+                04  H01-HHKNJANUM-VALUE   PIC X(14).
               03  H01-HHOJOKBN.
                 04  H01-HHOJOKBN-STYLE   PIC X(20).
                 04  H01-HHOJOKBN-VALUE   PIC X(6).
@@ -153,3 +159,7 @@
                 04  H01-VALUE   PIC X(14).
               03  H01-HONKZKKBN.
                 04  H01-VALUE   PIC X(4).
+              03  H01-TITLE-HKNJANUM.
+                04  H01-VALUE   PIC X(16).
+              03  H01-TITLE-KIGO.
+                04  H01-VALUE   PIC X(10).

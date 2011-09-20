@@ -1,6 +1,6 @@
 \set ON_ERROR_STOP
 --
--- Ï«Æ¯´ð½à´ÆÆÄ½ð¥Þ¥¹¥¿
+-- Ï«Æ¯´ð½à´ÆÆÄ½ð¥Þ¥¹¥¿ the Labor Standards Inspection Office
 --
 -- Create Date : 2011/09/01 --
 --

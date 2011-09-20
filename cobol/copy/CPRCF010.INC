@@ -62,6 +62,8 @@
       *  04.06.02    NACL-藤原    10/11/30  統計帳票用の項目追加
       *                                     請求額情報（医療費、食事）
       *                                     保険組合せ情報
+      *
+      *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       ************************************************************
        01  RECE10-REC.
       *ＫＥＹ
@@ -84,7 +86,7 @@
                05  RECE10-HKNJANUM         PIC  X(08).
       *補助区分（船員保険のときのみ）
                05  RECE10-HOJOKBN-KEY      PIC  X(01).
-      *公費ＩＤ（公費単独のみ）
+      *公費ＩＤ（医保：公費単独のみ、労災、自賠責：保険ＩＤ）
                05  RECE10-KOHID-KEY        PIC  9(10).
       *適用開始年月日
                05  RECE10-TEKSTYMD         PIC  X(08).
@@ -243,6 +245,20 @@
       *特記事項略称
            03  RECE10-TOKKINMINF.
                05  RECE10-TOKKINM          PIC X(12)   OCCURS  5.
+      *労災情報
+           03  RECE10-RSIINF.
+      *様式区分
+               05  RECE10-RECEKBN          PIC X(01).
+      *労災初回請求分フラグ
+               05  RECE10-SYOKAIFLG        PIC X(01).
+      *労働基準監督署コード
+               05  RECE10-SYOCD            PIC X(05).
+      *患者交付番号
+               05  RECE10-KOFUNUM          PIC X(14).
+      *災害区分
+               05  RECE10-SAIGAIKBN        PIC X(01).
+      *労災コメント
+               05  RECE10-COMMENT          PIC X(200).
       *フラグ
            03  RECE10-FLGINF.
                05  RECE10-FLG              PIC 9(01)   OCCURS  5.
@@ -263,6 +279,7 @@
            03  RECE10-UPDYMD               PIC X(08).
       *更新時間
            03  RECE10-UPDHMS               PIC X(06).
+      *
       *主キー更新用項目
            03  RECE10-UPHKNJANUM           PIC X(10).
       *保険者番号検索用項目

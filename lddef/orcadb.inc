@@ -36,6 +36,7 @@ db	{
 	tbl_seikyu_main;
 	tbl_seikyu_koh;
 	tbl_seikyu_etc;
+	tbl_seikyu_rsi;
 	view_bd001;
 	view_bd002;
 	tbl_userbyomei;
