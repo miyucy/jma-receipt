@@ -2529,8 +2529,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            RECE41-TENSU (15)   +
                                            RECE41-TENSU (16)   +
                                            RECE41-TENSU (17)
-           COMPUTE RECE10-TENSU (6 1)  =   RECE41-TENSU (18)   +
-                                           RECE41-TENSU (19)   +
+           COMPUTE RECE10-TENSU (6 1)  =   RECE41-TENSU (19)   +
                                            RECE41-TENSU (20)   +
                                            RECE41-TENSU (21)
            COMPUTE RECE10-TENSU (7 1)  =   RECE41-TENSU (23)   +
