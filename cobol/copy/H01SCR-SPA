@@ -123,11 +123,11 @@
                            11  SPA-H01GMN-TOTALTEN    PIC 9(08).
                            11  SPA-H01GMN-FTNMONEY    PIC 9(08).
                            11  SPA-H01GMN-YKZFTN      PIC 9(08).
-                           11  SPA-H01GMN-JNISSU      PIC 9(02).
+                           11  SPA-H01GMN-JNISSU      PIC 9(08).
                            11  SPA-H01GMN-NTOTALTEN   PIC 9(08).
                            11  SPA-H01GMN-NFTNMONEY   PIC 9(08).
                            11  SPA-H01GMN-NYKZFTN     PIC 9(08).
-                           11  SPA-H01GMN-NJNISSU     PIC 9(02).
+                           11  SPA-H01GMN-NJNISSU     PIC 9(08).
                            11  SPA-H01GMN-SHORYOYOHI  PIC 9(08).
                            11  SPA-H01GMN-SHOFTN      PIC 9(08).
                            11  SPA-H01GMN-SHONISSU    PIC 9(02).

@@ -2870,23 +2870,22 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    "5"                 TO  RECE10-RECEKBN
       * 
-           MOVE    RECE82-JNISSU       TO  RECE10-JNISSU       (1)
-           COMPUTE RECE10-TOTALTEN (1) =   RECE82-TOTALTEN     +
-                                           RECE82-TOTALTEN-YAK
+           MOVE    RECE82-TOTALTEN     TO  RECE10-TOTALTEN         (1)
+           MOVE    RECE82-TOTALKIN-JYU TO  RECE10-FTNMONEY-FTN     (1)
+           COMPUTE RECE10-FTNMONEY-KOJ (1) 
+                                       =   RECE82-SONOTAKIN-JYU    +
+                                           RECE82-SINDAN-KIN       +
+                                           RECE82-MEISAI-KIN       +
+                                           RECE82-SITURYO-JYU
+           MOVE    RECE82-SHOKUJITOTALKIN
+                                       TO  RECE10-SHOKUJIRYOYOHI   (1)
            COMPUTE RECE10-FTNMONEY (1) =   RECE82-TOTALKIN-JYU     +
                                            RECE82-SONOTAKIN-JYU    +
                                            RECE82-SINDAN-KIN       +
-                                           RECE82-MEISAI-KIN
-           COMPUTE RECE10-FTNMONEY-FTN (1)
-                                       =   RECE82-TOTALKIN     +
-                                           RECE82-TOTALKIN-YAK
-           COMPUTE RECE10-FTNMONEY-KOJ (1) 
-                                       =   RECE82-TOTALKIN2    +
-                                           RECE82-KINGAKU3-SYO +
-                                           RECE82-SINDAN-KIN   +
-                                           RECE82-MEISAI-KIN
-           MOVE    RECE82-SHOKUJITOTALKIN
-                                       TO  RECE10-SHOKUJIRYOYOHI   (1)
+                                           RECE82-MEISAI-KIN       +
+                                           RECE82-SITURYO-JYU      +
+                                           RECE82-SHOKUJITOTALKIN
+           MOVE    RECE82-JNISSU       TO  RECE10-JNISSU           (1)
            MOVE    RECE82-SHOKUJITOTALDAY
                                        TO  RECE10-SHOKUJINISSU     (1) 
       *

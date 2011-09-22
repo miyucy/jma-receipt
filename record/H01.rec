@@ -992,23 +992,23 @@ H01	{
 		};
 		JNISSU1	{
                     state   int;
-			value	number(2);
+			value	number(8);
 		};
 		JNISSU2	{
                     state   int;
-			value	number(2);
+			value	number(8);
 		};
 		JNISSU3	{
                     state   int;
-			value	number(2);
+			value	number(8);
 		};
 		JNISSU4	{
                     state   int;
-			value	number(2);
+			value	number(8);
 		};
 		JNISSU5	{
                     state   int;
-			value	number(2);
+			value	number(8);
 		};
 		SHORYOYOHI1	{
                     state   int;
@@ -1892,23 +1892,23 @@ H01	{
 		};
 		NJNISSU1	{
 			state   int;
-			value	number(2);
+			value	number(8);
 		};
 		NJNISSU2	{
 			state   int;
-			value	number(2);
+			value	number(8);
 		};
 		NJNISSU3	{
 			state   int;
-			value	number(2);
+			value	number(8);
 		};
 		NJNISSU4	{
 			state   int;
-			value	number(2);
+			value	number(8);
 		};
 		NJNISSU5	{
 			state   int;
-			value	number(2);
+			value	number(8);
 		};
 		NSHORYOYOHI1	{
                     state   int;

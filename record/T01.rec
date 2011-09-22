@@ -81,6 +81,10 @@ T01	{
 			state	int;
 			value	bool;
 		};
+		DATAKBN8	{
+			state	int;
+			value	bool;
+		};
 		HKNJAMEI	{
 			value	varchar(50);
 		};
@@ -146,6 +150,14 @@ T01	{
 		TITLE	{
 			style	varchar(20);
 			value	varchar(40);
+		};
+		SYOKBN1	{
+			state	int;
+			value	bool;
+		};
+		SYOKBN2	{
+			state	int;
+			value	bool;
 		};
 	};
 };

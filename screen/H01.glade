@@ -5882,7 +5882,7 @@
 	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
 	    </signal>
 	    <editable>False</editable>
-	    <format>ZZ</format>
+	    <format>ZZZZZZZZ</format>
 	  </widget>
 
 	  <widget>
@@ -5906,7 +5906,7 @@
 	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
 	    </signal>
 	    <editable>False</editable>
-	    <format>ZZ</format>
+	    <format>ZZZZZZZZ</format>
 	  </widget>
 
 	  <widget>
@@ -5930,7 +5930,7 @@
 	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
 	    </signal>
 	    <editable>False</editable>
-	    <format>ZZ</format>
+	    <format>ZZZZZZZZ</format>
 	  </widget>
 
 	  <widget>
@@ -6314,7 +6314,7 @@
 	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
 	    </signal>
 	    <editable>False</editable>
-	    <format>ZZ</format>
+	    <format>ZZZZZZZZ</format>
 	  </widget>
 
 	  <widget>
@@ -6338,7 +6338,7 @@
 	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
 	    </signal>
 	    <editable>False</editable>
-	    <format>ZZ</format>
+	    <format>ZZZZZZZZ</format>
 	  </widget>
 
 	  <widget>
@@ -11282,7 +11282,7 @@
 	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
 	    </signal>
 	    <editable>True</editable>
-	    <format>ZZ</format>
+	    <format>ZZZZZZZZ</format>
 	  </widget>
 
 	  <widget>
@@ -11306,7 +11306,7 @@
 	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
 	    </signal>
 	    <editable>True</editable>
-	    <format>ZZ</format>
+	    <format>ZZZZZZZZ</format>
 	  </widget>
 
 	  <widget>
@@ -11330,7 +11330,7 @@
 	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
 	    </signal>
 	    <editable>True</editable>
-	    <format>ZZ</format>
+	    <format>ZZZZZZZZ</format>
 	  </widget>
 
 	  <widget>
@@ -11714,7 +11714,7 @@
 	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
 	    </signal>
 	    <editable>True</editable>
-	    <format>ZZ</format>
+	    <format>ZZZZZZZZ</format>
 	  </widget>
 
 	  <widget>
@@ -11738,7 +11738,7 @@
 	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
 	    </signal>
 	    <editable>True</editable>
-	    <format>ZZ</format>
+	    <format>ZZZZZZZZ</format>
 	  </widget>
 
 	  <widget>

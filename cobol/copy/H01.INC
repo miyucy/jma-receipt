@@ -51,7 +51,7 @@
                 04  H01-YKZFTN   PIC 9(8).
               03  H01-JNISSU-G  OCCURS  5.
                 04  H01-JNISSU-STATE   PIC S9(9)   BINARY.
-                04  H01-JNISSU   PIC 9(2).
+                04  H01-JNISSU   PIC 9(8).
               03  H01-SHORYOYOHI-G  OCCURS  5.
                 04  H01-SHORYOYOHI-STATE   PIC S9(9)   BINARY.
                 04  H01-SHORYOYOHI   PIC 9(8).
@@ -82,7 +82,7 @@
                 04  H01-NYKZFTN   PIC 9(8).
               03  H01-NJNISSU-G   OCCURS  5.
                 04  H01-NJNISSU-STATE   PIC S9(09) BINARY.
-                04  H01-NJNISSU   PIC 9(2).
+                04  H01-NJNISSU   PIC 9(8).
               03  H01-NSHORYOYOHI-G  OCCURS  5.
                 04  H01-NSHORYOYOHI-STATE   PIC S9(9)   BINARY.
                 04  H01-NSHORYOYOHI   PIC 9(8).

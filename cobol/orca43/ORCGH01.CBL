@@ -4472,10 +4472,10 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    WHEN    "7092"
                        MOVE    "傷病・通勤"        TO  WRK-RECESYUBETU
                    WHEN    "7071"
-                   WHEN    "7082"
+                   WHEN    "7081"
                        MOVE    "短期・業務"        TO  WRK-RECESYUBETU
                    WHEN    "7072"
-                   WHEN    "7081"
+                   WHEN    "7082"
                        MOVE    "短期・通勤"        TO  WRK-RECESYUBETU
                    WHEN    "7021"
                        MOVE    "アフターケア"      TO  WRK-RECESYUBETU
