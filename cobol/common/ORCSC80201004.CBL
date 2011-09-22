@@ -48,6 +48,7 @@
       * 04.06.00     NACL-多々納  10/07/01  残量廃棄自動算定対応
       * 04.06.00     NACL-多々納  10/09/XX  精神療法２０歳未満加算未対応
       * 04.07.00     NACL-多々納  11/08/XX  リハビリ算定日毎終了日付対応
+      * 04.07.00     NACL-多々納  11/09/XX  精神科ケア早期加算チェック対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -257,9 +258,9 @@
                    07   WRK-MM             PIC X(02).
                05  WRK-DD                  PIC X(02).
            03  WRK-SDD             PIC 9(02).
-           03   WRK-EDMM           PIC X(02).
-           03   WRK-EDDD           PIC X(02).
-           03   WRK-KYUSEI-MSG     PIC X(80).
+           03  WRK-EDMM            PIC X(02).
+           03  WRK-EDDD            PIC X(02).
+           03  WRK-KYUSEI-MSG      PIC X(80).
       *
            03   WRK-RIHA-KBN       PIC X(01).
            03   WRK-RIHA-KBN2      PIC X(01).
@@ -306,6 +307,11 @@
                05  WRK-SURYO-S1        PIC 9(07).
                05  WRK-SURYO-S2        PIC 9(05).
       *
+      *    精神科ケア開始日
+           03  WRK-KEASTRYMD.
+               05  WRK-KEASTR-YY       PIC 9(04).
+               05  WRK-KEASTR-MM       PIC 9(02).
+               05  WRK-KEASTR-DD       PIC 9(02).
       *    リハビリ回数集計
        01  WRK-RIGAKU-NCNT-AREA.
            03  WRK-RIGAKU-INT2             PIC X(01).
@@ -349,6 +355,9 @@
                    07  WRK-DOU-SRYYMD      PIC X(08).
       *    初期区分
            03  WRK-RIGAKU-INT              PIC X(01).
+      *    精神科ケア早期加算開始日
+           03  WRK-KEASOKI-INT             PIC X(01).
+           03  WRK-KEASOKI-YMD             PIC X(08).
       *
        01  WRK-ERRCD-AREA.
            03  WRK-ERRCD-H                 PIC X(04). 
@@ -482,6 +491,7 @@
                IF      WRK-RIGAKU-INT2     =   SPACE
       *            今回算定回数クリア
                    INITIALIZE  WRK-RIHA-CNT-G
+                   MOVE    SPACE           TO  WRK-KEASOKI-INT
       ************ INITIALIZE  WRK-KYUSEI-INP-G
                    MOVE    "1"             TO  WRK-RIGAKU-INT2
                END-IF
@@ -1207,7 +1217,7 @@
                    IF      LNK-ORCSC-PG        =   "K02"
                        PERFORM 100113-SEISIN-CHK-SEC
                    END-IF
-      *
+      *ver.4.7
       *            加算チェック
                    IF      WRK-COM-DATAKBN (IDX-Z) =   "2"
                        PERFORM 1005-KASAN-CHK-SEC
@@ -1354,6 +1364,13 @@
                    MOVE    "1002"              TO  WRK-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
                END-IF
+           END-IF
+      *
+      *ver.4.7
+      *    精神科ケア開始日
+           IF     (LNK-ORCSC-PG        =   "K02"  )  AND
+                  (WRK-COM-INPUTCD (IDX-Z) =   "099830101" )
+               MOVE    "2"                 TO  WRK-KEASOKI-INT
            END-IF
       *
            .
@@ -1586,6 +1603,14 @@
       *        END-IF
            END-IF
       *
+      *ver.4.7
+      *    精神科ケア早期加算チェック
+           IF     (SPA-ERRCD           =   SPACE  )
+             AND  (LNK-ORCSC-PG        =   "K02"  )
+             AND  (WRK-COM-INPUTCD (IDX-Z) =   "180033370"
+                                           OR  "180033470")
+               PERFORM 10053-KEAKASAN-CHK-SEC
+           END-IF
            .
        1005-KASAN-CHK-EXT.
            EXIT.
@@ -1664,6 +1689,49 @@
            END-IF
            .
        20011-RIHAKSN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    精神科ケア早期加算チェック処理
+      *****************************************************************
+       10053-KEAKASAN-CHK-SEC                SECTION.
+      *
+           IF      WRK-KEASOKI-INT         =   SPACE
+      *        開始日検索
+               MOVE    "099830101"         TO  WRK-SRYCD
+               PERFORM 10001-KYUSEI-YMD-SEC
+               MOVE    WRK-YMD             TO  WRK-KEASOKI-YMD
+               MOVE    "1"                 TO  WRK-KEASOKI-INT
+           END-IF
+      *
+           IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
+           AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
+           AND    (WRK-KEASOKI-INT         =   "1"  )
+           AND    (WRK-KEASOKI-YMD     NOT =   SPACE)
+      *        開始日から１年後はエラー
+               MOVE    WRK-KEASOKI-YMD         TO  WRK-KEASTRYMD
+               COMPUTE WRK-KEASTR-YY       =   WRK-KEASTR-YY   +   1
+               IF      WRK-KEASTRYMD       <=  SPA-SRYYMD
+                   MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"                 TO  WRK-COM-KZMFLG
+                                                           (IDX-Z)
+                   MOVE    "K270"              TO  WRK-ERRCD
+      *            発生日
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY2-AREA
+                   MOVE    "21"                TO  LNK-DAY2-IRAI
+                   MOVE    WRK-KEASOKI-YMD     TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY2-AREA
+                   MOVE    SPACE               TO  LNK-ORCSC-ERRMSG
+                   STRING  "精神科ケア早期加算開始日："
+                                                   DELIMITED  BY  SIZE
+                           LNK-DAY2-EDTYMD3        DELIMITED  BY  SIZE
+                           INTO                    LNK-ORCSC-ERRMSG
+                   END-STRING
+               END-IF
+           END-IF
+           .
+       10053-KEAKASAN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3197,8 +3265,8 @@
                        MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                    END-IF
                END-IF
-           END-IF
       *
+           END-IF
            END-PERFORM
            .
        200-ALL-SYORI-EXT.

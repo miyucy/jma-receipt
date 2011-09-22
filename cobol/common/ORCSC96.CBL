@@ -1775,6 +1775,13 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *ver.4.7
+               WHEN    "K270"
+                   STRING  "警告！！"
+                           "精神科ケア早期加算開始日から１年超です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0280"
                    STRING  "同時撮影の撮影料です。"
                            "撮影料の下に入力して下さい。"

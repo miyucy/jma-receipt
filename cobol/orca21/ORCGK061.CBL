@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.00    NACL-多々納  11/08/XX  リハビリコメント終了日対応
+      *  04.07.00    NACL-多々納  11/09/XX  精神科ケア開始日対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -238,12 +239,15 @@
       *    他医院退院日
            03  FILLER          PIC X(09)   VALUE  "099999906".
            03  FILLER          PIC X(09)   VALUE  SPACE.
+      *    精神科ケア開始日
+           03  FILLER          PIC X(09)   VALUE  "099830101".
+           03  FILLER          PIC X(09)   VALUE  SPACE.
       *
        01  TBL-RRK-SRYCD-GR    REDEFINES   TBL-RRK-SRYCD-G.
-           03  TBL-RRK-SRYCD-GT        OCCURS    9.
+           03  TBL-RRK-SRYCD-GT        OCCURS    10.
                05  TBL-RRK-SRYCD           PIC X(09).
                05  TBL-END-SRYCD           PIC X(09).
-       01  TBL-RRK-MAX                 PIC 9(02)   VALUE   9.
+       01  TBL-RRK-MAX                 PIC 9(02)   VALUE   10.
       *
       *
        01  WRK-MIDAIS-HEN.
@@ -1102,7 +1106,7 @@
       *    ＳＰＡ編集
            PERFORM 31021-SPATBL-HENSYU-SEC
       *
-           MOVE    "【リハビリテーション開始日・他医退院日履歴】"
+           MOVE    "【リハビリテーション開始日・他院退院日等履歴】"
                                        TO  SPA-K061-MIDASI
       *
            MOVE    1                   TO  SPA-K061-CUR 
@@ -3505,7 +3509,8 @@
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0035"
-                   STRING  "リハビリ開始日・他院退院日のみ"
+                   STRING  "リハビリ開始日・他院退院日・"
+                           "精神科ケア開始日のみ"
                            "登録できます。"
                                                DELIMITED   BY  SIZE
                                                INTO  SPA-ERRMSG

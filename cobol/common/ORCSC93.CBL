@@ -1956,6 +1956,16 @@
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
+      *ver.4.7         精神科ケア開始
+                       WHEN    "099830101"
+                           MOVE    "80"            TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                           MOVE    "830"           TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+      *                    １剤１明細とする
+                           MOVE    "1"             TO  SPA-COM-ZAIEND
+                                                                  (IDX)
+                           MOVE    1               TO  FLG-ZAI
                        WHEN    OTHER
       *                Ｈ１８．４からリハビリ発生日
                        IF       SPA-COM-INPUTCD (IDX)(1:6) =   "099800"
