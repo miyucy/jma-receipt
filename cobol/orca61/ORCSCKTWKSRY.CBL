@@ -2883,6 +2883,12 @@
                MOVE    SPA-COM-CHISOTEN(IDW2)  TO  WKSRYP-CHISOTEN
                MOVE    "1"                 TO  WKSRYP-ADDKBN
            END-IF
+      *ver.4.7
+      *    ±°≥∞ΩË ˝≈¿øÙ
+           IF      SPA-COM-INGAITEN(IDW2)  NOT =   ZERO
+               MOVE    SPA-COM-INGAITEN(IDW2)  TO  WKSRYP-INGAITEN
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
+           END-IF
       *    ∆‚ ¨»Á…È≤ŸªÓ∏≥Õ—
            IF     (SPA-COM-SRYKBN(IDW2)    =   "60" )  AND
                   (SPA-COM-DATAKBN(IDW2)   =   "1"   )  AND

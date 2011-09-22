@@ -65,6 +65,7 @@
       * 04.05.00     NACL-多々納  09/09/16  "0086XXXXX"コメント対応
       * 04.05.00     NACL-多々納  10/01/XX  治験対応
       * 04.06.00     NACL-多々納  10/08/12  診療科変更対応
+      *  04.07.00    NACL-多々納  11/09/XX  院外処方点数表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -372,6 +373,11 @@
            03  WRK-GOKEI-X3.
                05  WRK-GOKEI-Z3    PIC ---,---,---.
            03  WRK-NOZ             PIC ZZ9.
+      *ver.4.7
+           03  WRK-TENSU-GX.
+               05  WRK-TENSU-G1    PIC X(01).
+               05  WRK-TENSU-GZ    PIC ZZZZZZ.
+               05  WRK-TENSU-G2    PIC X(01).
       *
       *    剤回数等画面編集用
            03  WRK-KAISU-H         PIC X(03).
@@ -9903,12 +9909,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-GMN-KAISU (WRK-IDX) =   SPACE
                MOVE    SPACE               TO  WRK-KAKERU
            ELSE
-               IF     (SPA-GMN-KEI   (WRK-IDX) =   ZERO )  AND
-                      (SPA-COM-SRYKBN(WRK-IDX)
-                                           NOT =   "21"  AND "22"
-                                               AND "23" )
-                   MOVE    SPACE               TO  WRK-KAISU-H
-                   MOVE    SPACE               TO  WRK-KAKERU
+               IF     (SPA-GMN-KEI   (WRK-IDX) =   ZERO )
+      *            院外処方の時、回数表示
+                   IF     (SPA-COM-SRYKBN(WRK-IDX)
+                                               =   "21"  OR "22"
+                                               OR  "23" )   OR
+                          (SPA-COM-SRYSYUKBN(WRK-IDX)
+                                               =   "148"  OR
+                                                   "149"  )
+                       MOVE    " X "               TO  WRK-KAKERU
+      *ver.4.7
+                       IF      SPA-COM-INGAITEN (WRK-IDX) >  ZERO
+                           MOVE    SPACE           TO  WRK-TENSU-GX
+                           MOVE    SPA-COM-INGAITEN(WRK-IDX)
+                                                   TO  WRK-TENSU-GZ
+                           MOVE    "("             TO  WRK-TENSU-G1
+                           MOVE    ")"             TO  WRK-TENSU-G2
+                           MOVE    WRK-TENSU-GX    TO  WRK-TENSU-X
+                        END-IF
+      *ver.4.7
+                   ELSE
+                       MOVE    SPACE               TO  WRK-KAISU-H
+                       MOVE    SPACE               TO  WRK-KAKERU
+                   END-IF
                ELSE
                    MOVE    " X "               TO  WRK-KAKERU
                END-IF

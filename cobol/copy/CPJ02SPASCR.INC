@@ -104,4 +104,6 @@
                        09  SPA-NAI-TSURYO          PIC  9(05).
       *                入院自動発生調剤料
                        09  SPA-NAI-NYUAUTO         PIC  9(01).
+      *ver.4.7         院外処方点数
+                       09  SPA-NAI-INGAITEN        PIC  9(07).
       *

@@ -1617,8 +1617,10 @@
                    IF      LNK-WKSRY-ZAITENKEI (IDX)   =   ZERO
       *                管鰾醒﹥未伕﹛情陸
       *                管ま卞泔管互丐月凜及心
-                       IF      LNK-WKSRY-SRYCD (IDX IDY)(1:1)
-                                               =   "6"
+                       IF     ( LNK-WKSRY-SRYCD (IDX IDY)(1:1)
+                                               =   "6" )
+                         OR   ( LNK-WKSRY-SRYCD (IDX IDY)(1:3)
+                                               =   "059" )
                            MOVE    1               TO  FLG-INGAIKBN
                        END-IF
                    ELSE
@@ -2843,6 +2845,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    轎豳鰾醒
            IF      SPA-COM-CHISOTEN(IDW2)  NOT =   ZERO
                MOVE    SPA-COM-CHISOTEN(IDW2)  TO  WKSRYP-CHISOTEN
+               MOVE    "1"                 TO  WKSRYP-ADDKBN
+           END-IF
+      *ver.4.7
+      *    情陸質杅鰾醒
+           IF      SPA-COM-INGAITEN(IDW2)  NOT =   ZERO
+               MOVE    SPA-COM-INGAITEN(IDW2)  TO  WKSRYP-INGAITEN
                MOVE    "1"                 TO  WKSRYP-ADDKBN
            END-IF
       *    ま坌�褆斢棡賹凱�

@@ -952,6 +952,17 @@
                  ( WRK-CHK-SRYSYUKBN           =   "213"  OR
                                                    "223"  OR
                                                    "233" ) 
+      *ver.4.7
+      *        院外処方の点数
+               IF     (WRK-CHK-SRYSYUKBN       =   "213"  OR
+                                                   "223"  OR
+                                                   "233" )
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-COM-TENSU  (IDX-MAX)
+                                       TO  WRK-COM-INGAITEN (IDX-MAX)
+               END-IF
+      *
                MOVE    ZERO            TO  WRK-COM-KEI    (IDX-MAX)
                MOVE    ZERO            TO  WRK-COM-TENSU  (IDX-MAX)
                MOVE    ZERO            TO  WRK-COM-YKZTEN (IDX-MAX)

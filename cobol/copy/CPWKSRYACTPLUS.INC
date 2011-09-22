@@ -43,6 +43,8 @@
            05  WKSRYP-SANSOTEN       PIC  9(07).
       *窒素点数
            05  WKSRYP-CHISOTEN       PIC  9(07).
+      *院外処方点数
+           05  WKSRYP-INGAITEN       PIC  9(07).
       *
       *内分泌負荷試験用
       *当月算定フラグ

@@ -65,6 +65,7 @@
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.06.00    NACL-多々納  10/09/06  自費保険入院中入力対応
       *  04.07.00    NACL-多々納  11/08/XX  算定履歴付加情報削除対応
+      *  04.07.00    NACL-多々納  11/09/XX  院外処方点数表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -353,6 +354,14 @@
                05  WRK-KAISU       PIC Z(08).
            03  WRK-KEI-X.
                05  WRK-KEI         PIC Z(07).
+      *ver.4.7
+           03  WRK-TENSU-GX.
+               05  WRK-TENSU-G1    PIC X(01).
+               05  WRK-TENSU-G     PIC Z(05).
+               05  WRK-TENSU-G2    PIC X(01).
+           03  WRK-TENSU-GX-R      REDEFINES    WRK-TENSU-GX.
+               05  WRK-TENSU-GR    PIC Z(06).
+               05  WRK-TENSU-GR2   PIC X(01).
       *
            03  WRK-MEISYO          PIC X(80).
       *    数量表示用
@@ -2628,6 +2637,40 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-PERFORM
+      *ver.4.7
+      *    院内処方点数編集
+           IF     (ACCT-ZAITEN         =   ZERO )
+              AND (ACCT-ZAIREQFLG      =   "1"  )
+               INITIALIZE                  SRYACCTPLUS-REC
+               MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
+               MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
+               MOVE    ACCT-PTID           TO  ACCTP-PTID
+               MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
+               MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
+               MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
+               MOVE    1                   TO  ACCTP-RENNUM
+      *
+               MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
+               MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM 920-DBFETCH-SEC
+                   IF      MCP-RC              =   ZERO
+                       MOVE    MCPDATA-REC     TO  SRYACCTPLUS-REC
+      *                院外処方点数
+                       MOVE    ACCTP-INGAITEN  TO  SPA-NAI-INGAITEN
+                                                                 (IDX)
+                   ELSE
+                       INITIALIZE                  SRYACCTPLUS-REC
+                   END-IF
+               END-IF
+               MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+           END-IF
       *
            ADD     1                   TO  IDG
            IF      IDG                 >   400
@@ -3348,6 +3391,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-NAI-ZAITENFLG (IDX) =   1
                COMPUTE WRK-TENSU-2         =   SPA-NAI-ZAITEN  (IDX)
                                            *   -1
+           END-IF
+      *    院外処方
+           IF     (SPA-NAI-ZAITEN  (IDX)   =   ZERO )
+             AND  (SPA-NAI-INGAITEN(IDX)   >   ZERO )
+               IF      SPA-NAI-INGAITEN(IDX)   <   100000
+                   MOVE    SPA-NAI-INGAITEN(IDX)   TO  WRK-TENSU-G
+                   MOVE    "("                     TO  WRK-TENSU-G1
+                   MOVE    ")"                     TO  WRK-TENSU-G2
+               ELSE
+                   MOVE    SPA-NAI-INGAITEN(IDX)   TO  WRK-TENSU-GR
+                   MOVE    ")"                     TO  WRK-TENSU-GR2
+               END-IF
+               MOVE    WRK-TENSU-GX            TO  WRK-TENSU-X
            END-IF
       *
            .

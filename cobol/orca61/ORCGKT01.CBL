@@ -458,6 +458,11 @@
            03  WRK-GOKEI-X3.
                05  WRK-GOKEI-Z3    PIC ---,---,---.
            03  WRK-NOZ             PIC ZZ9.
+      *ver.4.7
+           03  WRK-TENSU-GX.
+               05  WRK-TENSU-G1    PIC X(01).
+               05  WRK-TENSU-GZ    PIC ZZZZZZ.
+               05  WRK-TENSU-G2    PIC X(01).
       *
       *    剤回数等画面編集用
            03  WRK-KAISU-H         PIC X(04).
@@ -8691,6 +8696,16 @@
                                                =   "148"  OR
                                                    "149"  )
                        MOVE    " X "               TO  WRK-KAKERU
+      *ver.4.7
+                       IF      SPA-COM-INGAITEN (WRK-IDX) >  ZERO
+                           MOVE    SPACE           TO  WRK-TENSU-GX
+                           MOVE    SPA-COM-INGAITEN(WRK-IDX)
+                                                   TO  WRK-TENSU-GZ
+                           MOVE    "("             TO  WRK-TENSU-G1
+                           MOVE    ")"             TO  WRK-TENSU-G2
+                           MOVE    WRK-TENSU-GX    TO  WRK-TENSU-X
+                        END-IF
+      *ver.4.7
                    ELSE
                        MOVE    SPACE               TO  WRK-KAISU-H
                        MOVE    SPACE               TO  WRK-KAKERU

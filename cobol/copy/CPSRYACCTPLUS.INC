@@ -56,6 +56,8 @@
            03  ACCTP-SANSOTEN       PIC  9(07).
       *窒素点数
            03  ACCTP-CHISOTEN       PIC  9(07).
+      *院外処方剤点数
+           03  ACCTP-INGAITEN          PIC  9(07).
       *
       *内服７種類逓減対象剤番号
            03  ACCTP-GRP-ZAINUM-G.

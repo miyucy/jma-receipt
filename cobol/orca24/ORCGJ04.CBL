@@ -278,6 +278,11 @@
            03  WRK-GOKEI-X.
                05  WRK-GOKEI-Z     PIC ZZZZZZZZ.
            03  WRK-NOZ             PIC ZZ9.
+      *ver.4.7
+           03  WRK-TENSU-GX.
+               05  WRK-TENSU-G1    PIC X(01).
+               05  WRK-TENSU-GZ    PIC ZZZZZZ.
+               05  WRK-TENSU-G2    PIC X(01).
       *
            03  WRK-SURYO-H         PIC X(09).
            03  WRK-KAISU-H         PIC X(04).
@@ -1619,7 +1624,8 @@
                                   (SRY-SRYCD (IDS) =   SPACE)
                    PERFORM 31011-SPA-HEN-SEC
       *            ÌôºÞ¤ÎÍ­Ìµ
-                   IF      SRY-SRYCD (IDS)(1:1)    =   "6"
+                   IF     (SRY-SRYCD (IDS)(1:1)    =   "6" )
+                     OR   (SRY-SRYCD (IDS)(1:3)    =   "059")
                        MOVE    1               TO  FLG-YAKZAI
                    END-IF
       *            ÊÝ¸±ÊÑ¹¹²ÄÇ½¤«¤ÎÈ½Äê
@@ -5642,6 +5648,13 @@
                MOVE    SPA-COM-CHISOTEN(IDX)  TO  WKSRYP-CHISOTEN
                MOVE    "1"                 TO  WKSRYP-ADDKBN
            END-IF
+      *ver.4.7
+      *    ±¡³°½èÊýÅÀ¿ô
+           IF      SPA-COM-INGAITEN(IDX)   NOT =   ZERO
+               MOVE    SPA-COM-INGAITEN(IDX)   TO  WKSRYP-INGAITEN
+               MOVE    "1"                     TO  WKSRYP-ADDKBN
+           END-IF
+      *
       *    ÆâÊ¬ÈçÉé²Ù»î¸³ÍÑ
            IF     (SPA-COM-SRYKBN(IDX)    =   "60" )  AND
                   (SPA-COM-DATAKBN(IDX)   =   "1"   )  AND
@@ -6714,6 +6727,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WKSRYP-SANSOTEN     TO  ACCTP-SANSOTEN
       *    ÃâÁÇÅÀ¿ô
            MOVE    WKSRYP-CHISOTEN     TO  ACCTP-CHISOTEN
+      *    ±¡³°½èÊýÅÀ¿ô
+           MOVE    WKSRYP-INGAITEN     TO  ACCTP-INGAITEN
       *    ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾ÝºÞÈÖ¹æ¤Ï¤Ê¤¤¤â¤Î¤È¤¹¤ë
            INITIALIZE                  ACCTP-GRP-ZAINUM-G
       *
@@ -7213,6 +7228,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-KIZAITEN        TO  ACCT-KIZAITEN
       *    ºÞ¼±ÊÌ¶èÊ¬
            MOVE    WRK-ZAIKBN          TO  ACCT-ZAIKBN
+      *!!
+      *    Éí²Ã¾ðÊó¤¢¤ê
+           IF      WKSRYP-ADDKBN       =   "1"
+      *        ºÞÀÁµá¥Õ¥é¥°
+               MOVE    "1"                 TO  ACCT-ZAIREQFLG
+           END-IF
       *
            IF      SPA-J04-SYORI       =   ZERO
                IF      FLG-SRYKBN-HEN      =   1
@@ -8047,6 +8068,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-GOKEI-X                 TO  WRK-H-SURYO
            END-IF
            MOVE    SPA-GMN-TENSU(WRK-IDX)   TO  WRK-H-ZAIKEI
+      *ver.4.7
+           IF     (SPA-GMN-TENSU(WRK-IDX)  =   SPACE )
+               IF      SPA-COM-INGAITEN (WRK-IDX) >  ZERO
+                   MOVE    SPACE               TO  WRK-TENSU-GX
+                   MOVE    SPA-COM-INGAITEN(WRK-IDX)
+                                               TO  WRK-TENSU-GZ
+                   MOVE    "("                 TO  WRK-TENSU-G1
+                   MOVE    ")"                 TO  WRK-TENSU-G2
+                   MOVE    WRK-TENSU-GX        TO  WRK-H-ZAIKEI
+                END-IF
+           END-IF
+      *ver.4.7
       *
            MOVE    WRK-SURYO-HENSYU    TO  J04-SURYO (IDX)
            MOVE    "user-font"         TO  J04-SURYO-STYLE(IDX)

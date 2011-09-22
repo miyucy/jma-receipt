@@ -3970,6 +3970,11 @@
       *    院外分の時、ゼロとする
            IF      WRK-COM-SRYSYUKBN(IDX-MAX)  =   "148"  OR
                                                    "149"
+      *ver.4.7
+      *        院外処方の点数
+               MOVE    WRK-COM-TENSU  (IDX-MAX)
+                                       TO  WRK-COM-INGAITEN (IDX-MAX)
+      *
                MOVE    ZERO            TO  WRK-COM-TENSU  (IDX-MAX)
                MOVE    ZERO            TO  WRK-COM-SYUTEN1 (IDX-MAX)
                MOVE    ZERO            TO  WRK-COM-KIZAITEN(IDX-MAX)

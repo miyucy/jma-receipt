@@ -3963,6 +3963,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LNK-WKSRYP-SANSOTEN (1) TO  ACCTP-SANSOTEN
       *    窒素点数
            MOVE    LNK-WKSRYP-CHISOTEN (1) TO  ACCTP-CHISOTEN
+      *    院外処方点数
+           MOVE    LNK-WKSRYP-INGAITEN (1) TO  ACCTP-INGAITEN
       *
       *    内服７種類逓減対象剤番号
            IF      LNK-WKSRYP-TEI-NKBN (1) =   2

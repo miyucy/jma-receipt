@@ -1937,6 +1937,7 @@
                    MOVE    ZERO            TO  WRK-COM-SYUTEN2(IDX-Z)
                    MOVE    ZERO            TO  WRK-COM-YKZTEN(IDX-Z)
                    MOVE    ZERO            TO  WRK-COM-KIZAITEN(IDX-Z)
+                   MOVE    ZERO            TO  WRK-COM-INGAITEN (IDX-Z)
                    MOVE    SPACE           TO  WRK-GMN-TENSU(IDX-Z)
                    MOVE    SPACE           TO  WRK-GMN-SURYO(IDX-Z)
                    MOVE    SPACE           TO  WRK-GMN-KAISU(IDX-Z)
