@@ -2591,31 +2591,35 @@
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   ORCSHKN-HKN-MAX )  OR
                               (IDH     >=  30              )
-               ADD     1                   TO  IDH
-               MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
+               IF     (ORCSHKN-NAI-RSI-HKNKBN (IDX)  =  "3")
+                      CONTINUE
+               ELSE
+                  ADD     1                   TO  IDH
+                  MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
                                        TO  SPA-I41-THKNCOMBI (IDH)
-               MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
+                  MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
                                        TO  SPA-I41-THKNCOMBIMEI(IDH)
       *
-      ****     MOVE    ORCSHKN-NAI-HKNID (IDX)
+      ****        MOVE    ORCSHKN-NAI-HKNID (IDX)
       ****                             TO  SPA-NAI-THKNID  (IDH)
-               MOVE    ORCSHKN-NAI-HKNNUM (IDX)
+                  MOVE    ORCSHKN-NAI-HKNNUM (IDX)
                                        TO  SPA-I41-HKNNUM  (IDH)
-               MOVE    ORCSHKN-NAI-HKNKBN (IDX)
+                  MOVE    ORCSHKN-NAI-HKNKBN (IDX)
                                        TO  SPA-I41-HKNKBN  (IDH)
-      *        Å¬ÍÑ´ü´Ö
-               MOVE    ORCSHKN-NAI-TEKSTYMD (IDX)
+      *           Å¬ÍÑ´ü´Ö
+                  MOVE    ORCSHKN-NAI-TEKSTYMD (IDX)
                                        TO  SPA-I41-TTEKSTYMD (IDH)
-               MOVE    ORCSHKN-NAI-TEKEDYMD (IDX)
+                  MOVE    ORCSHKN-NAI-TEKEDYMD (IDX)
                                        TO  SPA-I41-TTEKEDYMD (IDH)
-      *        »Í»è¶èÊ¬
-               MOVE    ORCSHKN-NAI-RSI-SISIKBN (IDX)
+      *           »Í»è¶èÊ¬
+                  MOVE    ORCSHKN-NAI-RSI-SISIKBN (IDX)
                                        TO  SPA-I41-SISIKBN (IDH)
-      *        Ï«ºÒ¶èÊ¬
-               MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX)
+      *           Ï«ºÒ¶èÊ¬
+                  MOVE    ORCSHKN-NAI-RSI-HKNKBN (IDX)
                                        TO  SPA-I41-RSI-HKNKBN  (IDH)
       *
-               MOVE    IDH             TO  SPA-HKNCOMBI-MAX
+                  MOVE    IDH             TO  SPA-HKNCOMBI-MAX
+               END-IF
            END-PERFORM
       *
            .
