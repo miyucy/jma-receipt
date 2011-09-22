@@ -156,7 +156,7 @@
               03  H01-KYURATE.
                 04  H01-VALUE   PIC 9(3).
               03  H01-ZAITAKU.
-                04  H01-VALUE   PIC X(14).
+                04  H01-VALUE   PIC X(20).
               03  H01-HONKZKKBN.
                 04  H01-VALUE   PIC X(4).
               03  H01-TITLE-HKNJANUM.

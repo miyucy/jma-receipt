@@ -98,7 +98,7 @@
                        09  SPA-H01GMN-TEISEIKBNNM     PIC X(14).
                        09  SPA-H01GMN-AGE             PIC 9(03).
                        09  SPA-H01GMN-KYURATE         PIC 9(03).
-                       09  SPA-H01GMN-ZAITAKU         PIC X(14).
+                       09  SPA-H01GMN-ZAITAKU         PIC X(20).
                        09  SPA-H01GMN-HONKZKKBN       PIC X(04).
                        09  SPA-H01GMN-HENREI-SIJI-FLG PIC X(01).
                        09  SPA-H01GMN-HENREI-SIJI-FLG-STATE

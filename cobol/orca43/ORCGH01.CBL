@@ -148,6 +148,7 @@
            03  FLG-HENREI-B        PIC 9(01).
            03  FLG-MONTHLYNUM      PIC 9(01).
            03  FLG-PTKOHINF        PIC 9(01).
+           03  FLG-LABOR-SIO       PIC 9(01).
       *
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-HENREI-B-CHK    pic 9(01).
@@ -255,6 +256,10 @@
       *    ´µ¼Ô¸øÈñ¾ðÊó
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
+      *
+      *    Ï«Æ¯´ð½à´ÆÆÄ½ð¥Þ¥¹¥¿
+       01  LABOR-SIO-REC.
+           COPY    "CPLABOR-SIO.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -1954,8 +1959,23 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "5"
                    CONTINUE
                WHEN    "3"
-               WHEN    "4"
-                   MOVE    RECE10-SYOCD    TO  SPA-H01GMN-ZAITAKU
+                   IF      RECE10-SYOKAIFLG    =   "1"
+                       INITIALIZE                  LABOR-SIO-REC
+                       MOVE    RECE10-SYOCD    TO  LABOR-SIO-SYOCD
+                       MOVE    RECE10-SRYYM    TO  LABOR-SIO-YUKOSTYMD
+                                                           (1:6)
+                       MOVE    "01"            TO  LABOR-SIO-YUKOSTYMD
+                                                           (7:2)
+                       MOVE    LABOR-SIO-YUKOSTYMD
+                                               TO  LABOR-SIO-YUKOEDYMD
+                       MOVE    LABOR-SIO-REC   TO  MCPDATA-REC
+                       PERFORM 900-LABOR-SIO-READ-SEC
+                       MOVE    RECE10-SYOCD    TO  SPA-H01GMN-ZAITAKU
+                                                           (1:5) 
+                       MOVE    LABOR-SIO-NAME (1:14)
+                                               TO  SPA-H01GMN-ZAITAKU
+                                                           (7:14) 
+                   END-IF
                WHEN    OTHER
                    MOVE    RECE10-KYURATE  TO  SPA-H01GMN-KYURATE
       *
@@ -4851,6 +4871,36 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *
            .
        900-MONTHLYNUM-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ï«Æ¯´ð½à´ÆÆÄ½ðÌ¾ÆÉ¹þ
+      *****************************************************************
+       900-LABOR-SIO-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_labor_sio"    TO  MCP-TABLE
+           MOVE    "key"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC               =   ZERO
+           MOVE    "tbl_labor_sio"    TO  MCP-TABLE
+           MOVE    "key"              TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-LABOR-SIO
+                   MOVE    MCPDATA-REC         TO  LABOR-SIO-REC
+               ELSE
+                   MOVE    1                   TO  FLG-LABOR-SIO
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-LABOR-SIO
+           END-IF
+      *
+           MOVE    "tbl_labor_sio"    TO  MCP-TABLE
+           MOVE    "key"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-LABOR-SIO-READ-EXT.
            EXIT.
       *
       *****************************************************************

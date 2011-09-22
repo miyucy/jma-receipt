@@ -27,6 +27,7 @@ data	{
 db	{
 	tbl_syskanri;
 	tbl_ptnum;
+	tbl_labor_sio;
 	tbl_lock;
 	tbl_ldmap;
 	tbl_monthlynum;

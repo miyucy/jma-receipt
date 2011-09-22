@@ -2142,7 +2142,7 @@ H01	{
 			value	number(3);
 		};
 		ZAITAKU	{
-			value	varchar(14);
+			value	varchar(20);
 		};
 		HONKZKKBN	{
 			value	varchar(4);

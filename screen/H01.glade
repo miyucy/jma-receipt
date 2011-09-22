@@ -13011,11 +13011,11 @@
     <widget>
       <class>GtkLabel</class>
       <name>ZAITAKU</name>
-      <x>210</x>
+      <x>206</x>
       <y>47</y>
-      <width>105</width>
+      <width>143</width>
       <height>18</height>
-      <label>£±£²£³£´£µ£¶£·</label>
+      <label>£±£²£³£´£µ£¶£·£¸£¹£°</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
