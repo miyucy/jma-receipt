@@ -96,10 +96,6 @@
        01  TNKRRK-REC.
            COPY    "CPTNKRRK.INC".
       *
-      *    ¾Ò²ðÍúÎò
-       01  SYKRRK-REC.
-           COPY    "CPSYKRRK.INC".
-      *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡Ý
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
@@ -563,18 +559,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_tsyrrk"        TO  MCP-TABLE
            MOVE    "del11"             TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-      *    ¾Ò²ðÍúÎò
-           INITIALIZE                      SYKRRK-REC
-           MOVE    SPA-HOSPNUM         TO  SYK-HOSPNUM
-           MOVE    SPA-PTID            TO  SYK-PTID
-           MOVE    SYKRRK-REC          TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_sykrrk"        TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
