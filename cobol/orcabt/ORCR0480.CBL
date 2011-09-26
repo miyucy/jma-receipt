@@ -1409,6 +1409,11 @@
            MOVE    RECE41-RECEKAISU        TO  WRK-RECEKAISU
            MOVE    WRK-RECEKAISU           TO  HC22-KAI
       *
+      *    労災基準監督署コード
+           IF      RECE41-SYOKAIFLG    =   "1"
+               MOVE   RECE41-SYOCD         TO  HC22-SYOCD
+           END-IF     
+      *
       *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN     =   "2"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
@@ -1480,7 +1485,7 @@
            MOVE    HC22-LOPTION        TO  HC24-LOPTION
       *
            .
-       310-HC101-HEAD-HEN-EXT.
+       310-HC24-HEAD-HEN-EXT.
            EXIT.
       *
       *****************************************************************

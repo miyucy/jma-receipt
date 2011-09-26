@@ -103,4 +103,5 @@
             02  HCN50V02-KAI    PIC X(3).
             02  HCN50V02-PAGE   PIC X(5).
             02  HCN50V02-LABEL  PIC X(14).
+            02  HCN50V02-SYOCD  PIC X(5).
             02  HCN50V02-LOPTION    PIC X(100).

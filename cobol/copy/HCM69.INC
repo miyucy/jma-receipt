@@ -71,4 +71,5 @@
             02  HCM69-KAI   PIC X(3).
             02  HCM69-PAGE  PIC X(5).
             02  HCM69-LABEL PIC X(14).
+            02  HCM69-SYOCD PIC X(5).
             02  HCM69-LOPTION   PIC X(100).

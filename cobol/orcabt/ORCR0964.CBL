@@ -1307,6 +1307,11 @@
            MOVE    RECE82-RECEKAISU    TO  WRK-RECEKAISU
            MOVE    WRK-RECEKAISU       TO  HCN67-KAI
       *
+      *    労災基準監督署コード
+           IF      RECE82-SYOKAIFLG    =   "1"
+               MOVE   RECE82-SYOCD         TO  HCN67-SYOCD
+           END-IF     
+      *
       *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN     =   "2"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
@@ -1377,7 +1382,7 @@
            MOVE    HCN67-LOPTION       TO  HC24-LOPTION
       *
            .
-       20021-HEAD-HEN-EXT.
+       310-HC24-HEAD-HEN-EXT.
            EXIT.
       *
       *****************************************************************

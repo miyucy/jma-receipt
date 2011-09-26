@@ -93,4 +93,5 @@
             02  HCN67-KAI   PIC X(3).
             02  HCN67-PAGE  PIC X(5).
             02  HCN67-LABEL PIC X(14).
+            02  HCN67-SYOCD PIC X(5).
             02  HCN67-LOPTION   PIC X(100).

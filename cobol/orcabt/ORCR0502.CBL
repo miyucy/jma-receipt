@@ -1317,6 +1317,16 @@
            MOVE    RECE41-RECEKAISU    TO  WRK-RECEKAISU
            MOVE    WRK-RECEKAISU       TO  HCM70-KAI
       *
+      *    Ï«ºÒ´ð½à´ÆÆÄ½ð¥³¡¼¥É
+           IF      RECE41-SYOKAIFLG    =   "1"
+               MOVE   RECE41-SYOCD         TO  HCM70-SYOCD
+           END-IF     
+      *
+      *    Ï«ºÒ´ð½à´ÆÆÄ½ð¥³¡¼¥É
+           IF      RECE41-SYOKAIFLG    =   "1"
+               MOVE   RECE41-SYOCD         TO  HCM70-SYOCD
+           END-IF     
+      *
       *    ÅÀ¸¡ÍÑ¥ì¥»¥×¥ÈºîÀ®»þ
            IF      WRK-PARA-PRTKBN     =   "2"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
@@ -1388,7 +1398,7 @@
            MOVE    HCM70-LOPTION        TO  HC24-LOPTION
       *
            .
-       310-HC101-HEAD-HEN-EXT.
+       310-HC24-HEAD-HEN-EXT.
            EXIT.
       *
       *****************************************************************

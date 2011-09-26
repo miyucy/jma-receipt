@@ -1351,6 +1351,11 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    RECE82-RECEKAISU    TO  WRK-RECEKAISU
            MOVE    WRK-RECEKAISU       TO  HCN50-KAI
       *
+      *    労災基準監督署コード
+           IF      RECE82-SYOKAIFLG    =   "1"
+               MOVE   RECE82-SYOCD         TO  HCN50-SYOCD
+           END-IF     
+      *
       *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN     =   "2"
                IF      SYS-200501-INSPECT-CHARACTER-KBN

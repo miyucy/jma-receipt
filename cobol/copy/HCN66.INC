@@ -103,4 +103,5 @@
             02  HCN66-KAI   PIC X(3).
             02  HCN66-PAGE  PIC X(5).
             02  HCN66-LABEL PIC X(14).
+            02  HCN66-SYOCD PIC X(5).
             02  HCN66-LOPTION   PIC X(100).

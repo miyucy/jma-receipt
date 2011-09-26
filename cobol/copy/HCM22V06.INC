@@ -71,4 +71,5 @@
             02  HCM22V06-KAI    PIC X(3).
             02  HCM22V06-PAGE   PIC X(5).
             02  HCM22V06-LABEL  PIC X(14).
+            02  HCM22V06-SYOCD  PIC X(5).
             02  HCM22V06-LOPTION    PIC X(100).
