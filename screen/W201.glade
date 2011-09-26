@@ -2,8 +2,8 @@
 <GTK-Interface>
 
 <project>
-  <name>W111</name>
-  <program_name>W111</program_name>
+  <name>W201</name>
+  <program_name>W201</program_name>
   <directory></directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <gnome_support>True</gnome_support>
@@ -32,7 +32,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(W201)システム管理情報−入院料加算追加設定</title>
+  <title>(W201)システム管理情報−入院料加算設定</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -87,7 +87,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F12 登録</label>
+      <label>F12 追加</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -151,8 +151,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Wed, 08 Mar 2006 01:03:50 GMT</last_modification_time>
 	</signal>
-	<columns>5</columns>
-	<column_widths>39,166,135,91,80</column_widths>
+	<columns>3</columns>
+	<column_widths>39,166,135</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -195,38 +195,12 @@
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
 	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label484</name>
-	  <label></label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <child_name>CList:title</child_name>
-	  <name>label485</name>
-	  <label></label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
       </widget>
     </widget>
 
     <widget>
       <class>GtkPandaEntry</class>
-      <name>FORMID</name>
+      <name>KSNCD2</name>
       <x>68</x>
       <y>328</y>
       <width>184</width>
@@ -254,10 +228,10 @@
 
     <widget>
       <class>GtkPandaEntry</class>
-      <name>PRTNM</name>
+      <name>KSNNM2</name>
       <x>256</x>
       <y>328</y>
-      <width>148</width>
+      <width>320</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <signal>
@@ -275,62 +249,6 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>16</text_max_length>
-      <text></text>
-      <input_mode>ASCII</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>OFFSET_X</name>
-      <x>408</x>
-      <y>328</y>
-      <width>84</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 08 Mar 2006 01:06:29 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 08 Mar 2006 01:06:45 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>5</text_max_length>
-      <text></text>
-      <input_mode>ASCII</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>OFFSET_Y</name>
-      <x>496</x>
-      <y>328</y>
-      <width>84</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 08 Mar 2006 01:06:29 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 08 Mar 2006 01:06:45 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>5</text_max_length>
       <text></text>
       <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>

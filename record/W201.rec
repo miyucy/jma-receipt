@@ -9,23 +9,15 @@ W201	{
 					value0	varchar(3);
 					value1	varchar(20);
 					value2	varchar(16);
-					value3	varchar(05);
-					value4	varchar(05);
-				}	[100];
-				select	bool[100];
+				}	[10];
+				select	bool[10];
 			};
 		};
-		FORMID	{
+		KSNCD2	{
 			value	varchar(20);
 		};
-		PRTNM	{
+		KSNNM2	{
 			value	varchar(16);
-		};
-		OFFSET_X	{
-			value	varchar(5);
-		};
-		OFFSET_Y	{
-			value	varchar(5);
 		};
 		SELNUM	{
 			value	number(3);

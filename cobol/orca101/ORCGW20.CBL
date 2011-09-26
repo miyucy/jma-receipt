@@ -95,6 +95,7 @@
            03  IDX-KSN                             PIC 9(05).
            03  IDX-GKSN                            PIC 9(05).
            03  IDX-SST                             PIC 9(05).
+           03  IDX-KSN2                            PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -532,6 +533,7 @@
                MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
            END-IF
       *
+           DISPLAY     "SPA-MOTOPG = " SPA-MOTOPG
            EVALUATE    SPA-MOTOPG
            WHEN    "W21"
                IF    ( SPA-MOTOPG2     =   "W20" )
@@ -555,7 +557,16 @@
                    GO  TO  300-SCREEN-EXT
                END-IF
            WHEN    "W201"
-                   CONTINUE
+      *            病棟リストを再編集する
+                   MOVE    SPA-GMN-W20-BTULST-SEL
+                                       TO  WRK-BTULST-SEL
+                   PERFORM 3101-EDIT-BTULST-SEC 
+                   MOVE    WRK-BTULST-SEL
+                                       TO  SPA-GMN-W20-BTULST-SEL
+      *
+                   PERFORM 4100-SYS-KANRI-SAI-SET-SEC
+      *
+                   GO  TO  300-SCREEN-EXT
            WHEN    "WID1"
                MOVE    SPA-GMN-W20-MOTOPG
                                        TO  SPA-MOTOPG
@@ -2562,6 +2573,9 @@
       *****************************************************************
        420-W201-SYORI-SEC           SECTION.
       *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
       *    初期画面セット
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPACE               TO  SPA-MOTOPG
@@ -2587,11 +2601,13 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
+           DISPLAY "ORCGW20 SYS-5001-KBNCD    = " SYS-5001-KBNCD
+           DISPLAY "ORCGW20 SYS-5001-STYUKYMD = " SYS-5001-STYUKYMD
            MOVE    ZERO   TO   SPA-W201-LIST-MAX
-           IF      SPA-W201-LIST-MAX   =   ZERO
-               MOVE    "FORMID"            TO  MCP-WIDGET
+           IF      SPA-W201-TKSNCD2(1) =   SPACE
+               MOVE    "KSNCD2"        TO  MCP-WIDGET
            ELSE
-               MOVE    "SELNUM"            TO  MCP-WIDGET
+               MOVE    "SELNUM"        TO  MCP-WIDGET
            END-IF
            MOVE    "NEW"               TO  MCP-PUTTYPE
            MOVE    "W201"              TO  MCP-WINDOW
@@ -4649,6 +4665,17 @@
            MOVE    WRK-HENYMDG     TO  SPA-GMN-W20-YUKOEDYMD
       *
            PERFORM 41001-INPUT-AREA-EDIT-SEC
+      *
+      *    入院料加算設定画面の引き継ぎ領域編集
+           PERFORM    VARYING   IDX-KSN2   FROM   1   BY  1
+             UNTIL   (IDX-KSN2   >   10)    OR
+                     (SYS-5001-KSNCD2(IDX-KSN2)  =  SPACE)
+                 MOVE   SYS-5001-KSNCD2(IDX-KSN2)
+                                   TO  SPA-W201-TKSNCD2 (IDX-KSN2)
+           END-PERFORM
+           DISPLAY "ORCGW20 SET SYS-5001-KANRICD = " SYS-5001-KANRICD
+           DISPLAY "ORCGW20 SET SYS-5001-KBNCD   = " SYS-5001-KBNCD
+           DISPLAY "ORCGW20 SET SYS-5001-STYUKYMD = " SYS-5001-STYUKYMD
       *
            .
        4100-INPUT-AREA-EDIT-EXT.
@@ -7779,7 +7806,7 @@
                MOVE    "登録済みの病棟が選択されていません"
                                        TO  SPA-ERRMSG
            WHEN    "1109"
-               MOVE    "医療観察病棟では登録不可です"
+               MOVE   "医療観察病棟では入院料加算の追加設定はできません"
                                        TO  SPA-ERRMSG
            WHEN    "1201"
            WHEN    "1202"

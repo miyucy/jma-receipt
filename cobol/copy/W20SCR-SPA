@@ -1086,19 +1086,13 @@
                05  SPA-W201-LIST-G.
                    07  SPA-W201-LIST       OCCURS  100.
                        09  SPA-W201-TRENNUM         PIC 9(03).
-                       09  SPA-W201-TFORMID         PIC X(20).
-                       09  SPA-W201-TPRTNM          PIC X(16).
-                       09  SPA-W201-TOFFSET-X       PIC X(05).
-                       09  SPA-W201-TOFFSET-Y       PIC X(05).
-                       09  SPA-W201-NAI-KBNCD       PIC X(08).
+                       09  SPA-W201-TKSNCD2         PIC X(20).
+                       09  SPA-W201-TKSNNM2         PIC X(16).
                    07  SPA-W201-LIST-MAX           PIC 9(03).
       *
                05  SPA-W201-GMN-G.
                    07  SPA-W201-SELNUM             PIC 9(03).
-                   07  SPA-W201-FORMID             PIC X(20).
-                   07  SPA-W201-PRTNM              PIC X(16).
-                   07  SPA-W201-OFFSET-X           PIC X(05).
-                   07  SPA-W201-OFFSET-Y           PIC X(05).
+                   07  SPA-W201-KSNCD2             PIC X(20).
+                   07  SPA-W201-KSNNM2             PIC X(16).
                05  SPA-W201-NAI-G.
-                   07  SPA-W201-KBNCD-MAX          PIC 9(08).
                    07  SPA-W201-MAE-SELNUM         PIC 9(03).
