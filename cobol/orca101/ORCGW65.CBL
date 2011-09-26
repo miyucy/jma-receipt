@@ -1338,11 +1338,11 @@
                                    TO  SPA-GMN-RECEKSIKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-RECEKSIKBNL    (2)
-           MOVE    "（無条件に）レセプト記載しない"
+           MOVE    "負担に関係なく記載なし"
                                    TO  SPA-GMN-RECEKSIKBNMEIL (2)
       *
            MOVE    "2"             TO  SPA-GMN-RECEKSIKBNL    (3)
-           MOVE    "（無条件に）レセプト記載する"
+           MOVE    "負担上限未満記載あり"
                                    TO  SPA-GMN-RECEKSIKBNMEIL (3)
       *
            MOVE    3               TO  SPA-GMN-RECEKSIKBN-MAX

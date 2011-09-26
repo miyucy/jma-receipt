@@ -2146,7 +2146,7 @@
 	  <y>100</y>
 	  <width>244</width>
 	  <height>24</height>
-	  <label>　設定と異なる記載設定　（入院）</label>
+	  <label>　設定と異なる記載　（入院）</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2162,7 +2162,7 @@
 	  <y>124</y>
 	  <width>244</width>
 	  <height>24</height>
-	  <label>　チェック対象上限額設定（外来）</label>
+	  <label>　チェック対象上限額（外来）</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2178,7 +2178,7 @@
 	  <y>148</y>
 	  <width>244</width>
 	  <height>24</height>
-	  <label>　チェック対象上限額設定（入院）</label>
+	  <label>　チェック対象上限額（入院）</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2308,7 +2308,7 @@
 	  <y>76</y>
 	  <width>244</width>
 	  <height>24</height>
-	  <label>　設定と異なる記載設定　（外来）</label>
+	  <label>　設定と異なる記載　（外来）</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
