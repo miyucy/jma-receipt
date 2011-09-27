@@ -533,7 +533,6 @@
                MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
            END-IF
       *
-           DISPLAY     "SPA-MOTOPG = " SPA-MOTOPG
            EVALUATE    SPA-MOTOPG
            WHEN    "W21"
                IF    ( SPA-MOTOPG2     =   "W20" )
@@ -1769,7 +1768,6 @@
       *****************************************************************
        200-GMNSENI                           SECTION.
       *
-           DISPLAY "200-GMNSENI MCP-WIDGET = " MCP-WIDGET
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
@@ -2579,7 +2577,7 @@
       *    初期画面セット
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPACE               TO  SPA-MOTOPG
-           MOVE    SPA-W20-AREA        TO  SPA-FREE
+           MOVE    SPA-W20FREE         TO  SPA-FREE
            MOVE    SPA-W01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
       *
@@ -2593,7 +2591,7 @@
                                        SCRAREA
       *
            MOVE    SPA-COMMON          TO  SPA-AREA
-           MOVE    SPA-FREE            TO  SPA-W20-AREA
+           MOVE    SPA-FREE            TO  SPA-W20FREE
            MOVE    SPA-WORK            TO  SPA-W01KYOUTU
       *
            MOVE    "W201"              TO  SPA-SAKIPG
@@ -2601,9 +2599,6 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           DISPLAY "ORCGW20 SYS-5001-KBNCD    = " SYS-5001-KBNCD
-           DISPLAY "ORCGW20 SYS-5001-STYUKYMD = " SYS-5001-STYUKYMD
-           MOVE    ZERO   TO   SPA-W201-LIST-MAX
            IF      SPA-W201-TKSNCD2(1) =   SPACE
                MOVE    "KSNCD2"        TO  MCP-WIDGET
            ELSE
@@ -4673,9 +4668,6 @@
                  MOVE   SYS-5001-KSNCD2(IDX-KSN2)
                                    TO  SPA-W201-TKSNCD2 (IDX-KSN2)
            END-PERFORM
-           DISPLAY "ORCGW20 SET SYS-5001-KANRICD = " SYS-5001-KANRICD
-           DISPLAY "ORCGW20 SET SYS-5001-KBNCD   = " SYS-5001-KBNCD
-           DISPLAY "ORCGW20 SET SYS-5001-STYUKYMD = " SYS-5001-STYUKYMD
       *
            .
        4100-INPUT-AREA-EDIT-EXT.

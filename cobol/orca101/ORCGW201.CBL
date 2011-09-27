@@ -82,6 +82,8 @@
       *
       *    システム管理マスタ
            COPY  "CPSYSKANRI.INC".
+      *    病棟管理
+           COPY  "CPSK5001.INC".
       *    点数マスタ
            COPY  "CPTENSU.INC".
       *
@@ -259,7 +261,7 @@
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
                WHEN    OTHER
-                   PERFORM 310-SPASET-SEC
+                       PERFORM 310-SPASET-SEC
            END-EVALUATE
       *
            .
@@ -301,17 +303,35 @@
       *
            MOVE    1                   TO  FLG-GMN-INIT
       *
-      ****     INITIALIZE                  SPA-W201-LIST-G
+           INITIALIZE                  SPA-W201-LIST-G
+      *
+      *    アップデート対象のデータを読み直す
+           INITIALIZE                  SYSKANRI-REC
+      *
+           MOVE   "5001"               TO  SYS-KANRICD
+           MOVE   SPA-GMN-W20-BTUNUM   TO  SYS-KBNCD
+           MOVE   SPA-NAI-W20-YUKOSTYMD-OLD
+                                       TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF   ( FLG-SYSKANRI    NOT =   ZERO )
+               MOVE    "9000"          TO  SPA-ERRCD
+               GO  TO  310-SPASET-EXT
+           END-IF
+      *
+           MOVE    SYSKANRI-REC        TO  SYS-5001-REC
       *
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL  (IDX             >=  10)
                ADD     1                   TO  IDX
-               IF      SPA-W201-TKSNCD2 (IDX)  NOT =   SPACE
+               IF      SYS-5001-KSNCD2 (IDX)  NOT =   SPACE
                    MOVE    IDX             TO  SPA-W201-LIST-MAX
                    MOVE    IDX             TO  SPA-W201-TRENNUM (IDX)
+                   MOVE    SYS-5001-KSNCD2 (IDX)
+                                           TO  SPA-W201-TKSNCD2 (IDX)
                    INITIALIZE                  TNS-TENSU-REC
                    MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
-                   MOVE    SPA-W201-TKSNCD2 (IDX)
+                   MOVE    SYS-5001-KSNCD2 (IDX)
                                            TO  TNS-SRYCD
                    MOVE    SPA-NAI-W20-YUKOSTYMD
                                            TO  TNS-YUKOSTYMD
@@ -344,13 +364,11 @@
                END-IF
            END-PERFORM
       *
-           DISPLAY  "SPA-W201-LIST-MAX = " SPA-W201-LIST-MAX
            IF      SPA-W201-LIST-MAX   =   ZERO
                MOVE    2                   TO  SPA-W201-CUR
            ELSE
                MOVE    1                   TO  SPA-W201-CUR
            END-IF
-           DISPLAY "SPA-W201-CUR = " SPA-W201-CUR
            .
        310-SPASET-EXT.
            EXIT.
@@ -380,8 +398,36 @@
                MOVE    WRK-ZZ9             TO  W201-TRENNUM (IDX)
                MOVE    SPA-W201-TKSNCD2(IDX)
                                            TO  W201-TKSNCD2 (IDX)
-               MOVE    SPA-W201-TKSNNM2 (IDX)
-                                           TO  W201-TKSNNM2 (IDX)
+               INITIALIZE                      TNS-TENSU-REC
+               MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+               MOVE    SPA-W201-TKSNCD2(IDX)
+                                           TO  TNS-SRYCD
+               MOVE    SPA-NAI-W20-YUKOSTYMD
+                                           TO  TNS-YUKOSTYMD
+               MOVE    SPA-NAI-W20-YUKOSTYMD
+                                           TO  TNS-YUKOEDYMD
+               MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_tensu"     TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 900-TENSU-READ-SEC
+                   IF    FLG-TENSU         =   ZERO
+                       MOVE   MCPDATA-REC  TO  TNS-TENSU-REC
+                           MOVE   TNS-NAME TO  SPA-W201-TKSNNM2(IDX)
+                                               W201-TKSNNM2 (IDX)
+                   ELSE
+                       MOVE   SPACE        TO  SPA-W201-TKSNNM2(IDX)
+                                               W201-TKSNNM2 (IDX)
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-TENSU
+               END-IF
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
                IF      SPA-W201-SELNUM     =   SPA-W201-TRENNUM (IDX)
                    MOVE    "T"             TO  W201-MEILIST-SELECT
                                                                (IDX)
@@ -408,9 +454,7 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-           DISPLAY "5001-MAPCUR-SEC SPA-W201-CUR = " SPA-W201-CUR
            IF      SPA-W201-CUR        =   ZERO
-               DISPLAY "WRK-WIDGET = " WRK-WIDGET
                EVALUATE    WRK-WIDGET
                    WHEN    "SELNUM"
                        MOVE    2                   TO  SPA-W201-CUR
@@ -427,7 +471,6 @@
                WHEN    99
                    MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
-           DISPLAY  "SET MCP-WIDGET = " MCP-WIDGET
       *
            .
        5001-MAPCUR-EXT.
@@ -436,7 +479,6 @@
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
-      *
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
@@ -531,7 +573,7 @@
            END-IF
       *
            .
-       2001-HKNCOMBI-LIST-EXT.
+       2001-MEILIST-EXT.
            EXIT.
       *
       *****************************************************************
@@ -582,6 +624,7 @@
       *****************************************************************
        20021-MEISAI-HENSYU-SEC               SECTION.
       *
+           MOVE    SPA-W201-TRENNUM (IDX)   TO  SPA-W201-SELNUM
            MOVE    SPA-W201-TKSNCD2 (IDX)   TO  SPA-W201-KSNCD2
            MOVE    SPA-W201-TKSNNM2 (IDX)   TO  SPA-W201-KSNNM2
       *
@@ -611,13 +654,12 @@
       *****************************************************************
        2202-KSNCD2-CHK-SEC            SECTION.
       *
-           DISPLAY "KSNCD2-CHK"
            IF      SPA-W201-KSNCD2     =   SPACE
                CONTINUE
            ELSE
                INITIALIZE                      TNS-TENSU-REC
                MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
-               MOVE    W201-KSNCD2         TO  TNS-SRYCD
+               MOVE    SPA-W201-KSNCD2     TO  TNS-SRYCD
                MOVE    SPA-NAI-W20-YUKOSTYMD
                                            TO  TNS-YUKOSTYMD
                MOVE    SPA-NAI-W20-YUKOSTYMD
@@ -735,6 +777,63 @@
       *****************************************************************
        2201-TOUROKU-SYORI-SEC                   SECTION.
       *
+           IF    SPA-W201-SELNUM       =   ZERO
+                 PERFORM    VARYING    IDX   FROM  1   BY   1
+                   UNTIL   (IDX     >   10)  OR
+                           (SPA-W201-TKSNCD2(IDX)   =   SPACE)
+                    CONTINUE
+                 END-PERFORM
+           END-IF
+           MOVE     SPA-W201-KSNCD2    TO  SPA-W201-TKSNCD2(IDX)
+           MOVE     IDX                TO  SPA-W201-TRENNUM(IDX)
+           ADD      1                  TO  SPA-W201-LIST-MAX
+      *
+      *    アップデート対象のデータを読み直す
+           INITIALIZE                      SYSKANRI-REC
+      *
+           MOVE   "5001"               TO  SYS-KANRICD
+           MOVE   SPA-GMN-W20-BTUNUM   TO  SYS-KBNCD
+           MOVE   SPA-NAI-W20-YUKOSTYMD-OLD
+                                       TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF   ( FLG-SYSKANRI         NOT =   ZERO )
+               MOVE    "9001"          TO  SPA-ERRCD
+               GO  TO  2201-TOUROKU-SYORI-EXT
+           END-IF
+      *
+           MOVE    SYSKANRI-REC        TO  SYS-5001-REC
+           PERFORM    VARYING   IDX   FROM   1  BY  1
+             UNTIL   (IDX       >   10)  OR
+                     (SPA-W201-TKSNCD2(IDX)  =  SPACE)
+             MOVE    SPA-W201-TKSNCD2(IDX)
+                                       TO  SYS-5001-KSNCD2(IDX)
+           END-PERFORM
+           MOVE    SYS-5001-REC        TO  SYSKANRI-REC
+           MOVE    SYS-5001-KANRICD    TO  SYSUP-KANRICD
+           MOVE    SYS-5001-KBNCD      TO  SYSUP-KBNCD
+           MOVE    SPA-NAI-W20-YUKOSTYMD-OLD
+                                       TO  SYSUP-STYUKYMD
+           MOVE    SPA-NAI-W20-YUKOEDYMD-OLD
+                                       TO  SYSUP-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYSUP-HOSPNUM
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  SYS-UPYMD
+           MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "upd1"              TO  MCP-PATHNAME
+           PERFORM 910-DBUPDATE-SEC
+           IF   (  MCP-RC              NOT =   ZERO )
+               MOVE    "9001"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF   SPA-ERRCD    =    SPACE
+                PERFORM   220-CLERA-SYORI-SEC
+           END-IF
            .
        2201-TOUROKU-SYORI-EXT.
            EXIT.
@@ -811,6 +910,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "入院料加算コードが未設定です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "9000"
+                   MOVE    "病棟情報が取得できません。"
                                        TO  SPA-ERRMSG
                WHEN    "9001"
                    MOVE    "更新エラーです。"
@@ -902,6 +1004,35 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
+      *    システム管理検索処理(KEY10)
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM  920-DBFETCH-SEC
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               MOVE    1           TO  FLG-SYSKANRI
+               INITIALIZE              SYSKANRI-REC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       900-SYSKANRI-KEY10-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    点数マスター読込処理
       *****************************************************************
        900-TENSU-READ-SEC        SECTION.
@@ -945,6 +1076,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    ＤＢＵＰＤＡＴＥ処理
+      *****************************************************************
+       910-DBUPDATE-SEC                SECTION.
+      *
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
@@ -963,7 +1109,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           DISPLAY "900-PUT-WINDOW  MCP-WIDGET = " MCP-WIDGET
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
