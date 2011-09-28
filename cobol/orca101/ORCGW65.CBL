@@ -624,7 +624,7 @@
            03  FLG-HIZUKECHK                               PIC 9(01).
            03  FLG-UPD-KBN                                 PIC 9(01).
            03  FLG-KIKAN-DABURI                            PIC 9(01).
-           03  FLG-ERR                                     PIC 9(01).
+           03  FLG-ERR                                     PIC 9(02).
       *
       *    添字領域
        01  IDX-AREA.
@@ -685,6 +685,7 @@
            03  WRK-NAI-YUKOEDYMD                           PIC X(08).
            03  WRK-SKJKBN                                  PIC X(01)
                                                            OCCURS 3.
+           03  WRK-TABNAME                                 PIC X(20).
       *
        01  KEY-AREA.
            03  KEY-HKNNUM                                  PIC X(03).
@@ -2650,12 +2651,13 @@
        41021-PAGE03-KANREN-CHK-SEC       SECTION.
       *
            MOVE    ZERO            TO      FLG-ERR
+           MOVE    SPACE           TO      WRK-TABNAME
       *
            PERFORM VARYING IDXE    FROM    1   BY  1
                    UNTIL ( IDXE    >       3 )
                     OR   ( FLG-ERR NOT =   ZERO )
       *
-               IF    ( WRK-SKJKBN (IDXE)   =   "0" )
+               IF    ( WRK-SKJKBN (IDXE)   =   "0" OR "2" OR "4" OR "5")
                    IF    ( SPA-GMN-SKJRYOKBN (IDXE)  NOT =   "0" )
                     OR   ( SPA-GMN-SEIRYOKBN (IDXE)  NOT =   "0" )
                     OR   ( SPA-GMN-SEIKANKBN (IDXE)  NOT =   "0" )
@@ -2663,29 +2665,42 @@
                    END-IF
                END-IF
       *
-               IF    ( WRK-SKJKBN (IDXE) = "1" OR "2" OR "3" OR "4" )
+               IF    ( WRK-SKJKBN (IDXE) = "1" OR "3" )
                    IF    ( SPA-GMN-SKJRYOKBN(IDXE) =   "1" )
                     AND  ( SPA-GMN-SEIRYOKBN(IDXE) =   "1" )
                     AND  ( SPA-GMN-SEIKANKBN(IDXE) =   "1" )
-                       MOVE    IDXE    TO  FLG-ERR
+                       COMPUTE FLG-ERR
+                           =   IDXE    +   10
                    END-IF
                    IF    ( SPA-GMN-SKJRYOKBN(IDXE) =   "3" )
                     AND  ( SPA-GMN-SEIRYOKBN(IDXE) =   "3" )
                     AND  ( SPA-GMN-SEIKANKBN(IDXE) =   "3" )
-                       MOVE    IDXE    TO  FLG-ERR
+                       COMPUTE FLG-ERR
+                           =   IDXE    +   10
                    END-IF
                END-IF
            END-PERFORM
       *
+      *
+           EVALUATE    FLG-ERR
+           WHEN    1   THRU  3
+               MOVE    "0009"          TO  SPA-ERRCD
+           WHEN    11  THRU  13
+               MOVE    "0010"          TO  SPA-ERRCD
+           END-EVALUATE
+      *
            EVALUATE    FLG-ERR
            WHEN    1
-               MOVE    "0009"          TO  SPA-ERRCD
+           WHEN    11
+               MOVE    "本人タブ"      TO  WRK-TABNAME
                MOVE    401             TO  SPA-GMN-CUR
            WHEN    2
-               MOVE    "0010"          TO  SPA-ERRCD
+           WHEN    12
+               MOVE    "低所得タブ"    TO  WRK-TABNAME
                MOVE    407             TO  SPA-GMN-CUR
            WHEN    3
-               MOVE    "0011"          TO  SPA-ERRCD
+           WHEN    13
+               MOVE    "低年金タブ"    TO  WRK-TABNAME
                MOVE    413             TO  SPA-GMN-CUR
            END-EVALUATE
       *
@@ -7316,25 +7331,23 @@
                END-STRING
            WHEN    "0009"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "保険番号マスタの食事療養費の設定と"
+               STRING  "保険番号マスタの食事療養費の設定が"
                                        DELIMITED   BY  SIZE
-                       "付加情報の設定が矛盾します【本人タブ】"
+                       "１又は３の時に設定可能です【"
+                                       DELIMITED   BY  SIZE
+                       WRK-TABNAME     DELIMITED   BY  SPACE
+                                       "】"
                                        DELIMITED   BY  SIZE
                INTO                        SPA-ERRMSG
                END-STRING
            WHEN    "0010"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "保険番号マスタの食事療養費の設定と"
+               STRING  "この設定は保険番号マスタの"
                                        DELIMITED   BY  SIZE
-                       "付加情報の設定が矛盾します【低所得タブ】"
+                       "食事療養費で設定して下さい【"
                                        DELIMITED   BY  SIZE
-               INTO                        SPA-ERRMSG
-               END-STRING
-           WHEN    "0011"
-               MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "保険番号マスタの食事療養費の設定と"
-                                       DELIMITED   BY  SIZE
-                       "付加情報の設定が矛盾します【低年金タブ】"
+                       WRK-TABNAME     DELIMITED   BY  SPACE
+                                       "】"
                                        DELIMITED   BY  SIZE
                INTO                        SPA-ERRMSG
                END-STRING
