@@ -13,7 +13,6 @@ tbl_inputset {
 	ATAI2				char(8);
 	ATAI3				char(8);
 	ATAI4				char(8);
-	ATAI5				char(8);
 	INPUTKBN			char(1);
 	KANSURYO			number(10,5);
 	TERMID  			varchar(16);
@@ -145,41 +144,4 @@ path	key7	{
 	};
 };
 
-path	key8	{
-	DBSELECT	{
-		DECLARE tbl_inputset_key8_csr CURSOR FOR
-		SELECT *
-		FROM tbl_inputset
-			WHERE   HOSPNUM   =   :HOSPNUM
-			AND    (INPUTCD   LIKE '101%'
-                          OR    INPUTCD   LIKE '78888%' )
-			ORDER   BY        SETCD,
-					  YUKOSTYMD,
-			                  SETSEQ
-		;
-	};
-};
-
-path	key9	{
-	DBSELECT	{
-		DECLARE tbl_inputset_key9_csr CURSOR FOR
-		SELECT *
-		FROM tbl_inputset
-			WHERE   HOSPNUM   =   :HOSPNUM
-			AND   SETCD       =   :SETCD
-			ORDER   BY        YUKOSTYMD  DESC,
-			                  SETSEQ
-		;
-	};
-};
-
-path	del2	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_inputset
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   SETCD       =   :SETCD
-		;
-	};
-};
 
