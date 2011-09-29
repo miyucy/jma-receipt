@@ -719,7 +719,7 @@
            03  CONST-PTSRY-MAX                     PIC 9(05)
                                                    VALUE   5000.
            03  CONST-PTZAI-MAX                     PIC 9(05)
-                                                   VALUE   30.
+                                                   VALUE   5000.
            03  CONST-TINGAI-MAX                      PIC 9(05)
                                                    VALUE   20.
            03  CONST-CHKPTN                        PIC X(05)
@@ -3338,8 +3338,7 @@
       *
            MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
            IF    ( WRK-HKNNUM      =   SPACE )
-               MOVE    COMB-KOHHKNNUM (1)
-                                   TO  WRK-HKNNUM
+               MOVE    ZERO        TO  WRK-HKNNUM
            END-IF
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TJNISSU-MAX )
@@ -3499,8 +3498,7 @@
       *
            MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
            IF    ( WRK-HKNNUM      =   SPACE )
-               MOVE    COMB-KOHHKNNUM (1)
-                                   TO  WRK-HKNNUM
+               MOVE    ZERO        TO  WRK-HKNNUM
            END-IF
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TKAISU-MAX )
@@ -10166,7 +10164,7 @@
                MOVE    ZERO        TO  IDXH
                MOVE    DCACCT-HKNNUM       TO  WRK-HKNNUM
                IF    ( WRK-HKNNUM      =   SPACE )
-                   MOVE    DCACCT-KOHNUM   TO  WRK-HKNNUM
+                   MOVE    ZERO        TO  WRK-HKNNUM
                END-IF
                PERFORM VARYING IDX0    FROM    1   BY  1
                        UNTIL ( IDX0    >   CONST-TINGAI-MAX )
@@ -10666,12 +10664,6 @@
                                        TO  SRH-IDX
                END-IF
            END-PERFORM
-      *
-           IF    ( SRH-HKNNUMMEI       =   SPACE )
-               MOVE    SRH-HKNNUM      TO  SRH-KOHNUM
-               PERFORM 2111-KOHNUM-GET-SEC
-               MOVE    SRH-KOHNUMMEI   TO  SRH-HKNNUMMEI
-           END-IF
       *
            .
        2111-HKNNUM-GET-EXT.
