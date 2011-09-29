@@ -37,6 +37,7 @@
            03  DCACCT-ZAITEN           PIC 9(08).
            03  DCACCT-ZAIKAISU         PIC 9(07).
            03  DCACCT-HKNNUM           PIC X(03).
+           03  DCACCT-KOHNUM           PIC X(03).
            03  DCACCT-HKNKBN           PIC X(01).
            03  DCACCT-RECESYUBETU      PIC X(04).
            03  DCACCT-DAY              PIC 9(02).
@@ -52,6 +53,7 @@
                05  DCACCT-STS-JITDAY   PIC 9(01).
                05  DCACCT-STS-SNTDAY   PIC 9(01).
                05  DCACCT-STS-NODATA   PIC 9(01).
+           03  DCACCT-INGAITEN         PIC 9(07).
            03  DCACCT-TERMID           PIC X(16).
            03  DCACCT-OPID             PIC X(16).
            03  DCACCT-CREYMD           PIC X(08).

@@ -104,6 +104,17 @@
                    07  SPA-GMN-ERR990009KBN    PIC X(01).
                    07  SPA-GMN-ERR990009KBNFL  PIC X(01).
                    07  SPA-GMN-ERR990009KBNMEI PIC X(20).
+               05  SPA-GMN-INGAITEN-G.
+                   07  SPA-GMN-SYA-INGAITEN    PIC 9(04).
+                   07  SPA-GMN-KOK-INGAITEN    PIC 9(04).
+                   07  SPA-GMN-KOU-INGAITEN    PIC 9(04).
+                   07  SPA-GMN-RSI-INGAITEN    PIC 9(04).
+                   07  SPA-GMN-JBI-INGAITEN    PIC 9(04).
+                   07  SPA-GMN-JIH-INGAITEN    PIC 9(04).
+                   07  SPA-GMN-KGI-INGAITEN    PIC 9(04).
+               05  SPA-GMN-INGAITEN-R REDEFINES SPA-GMN-INGAITEN-G.
+                   07  SPA-GMN-INGAITEN        PIC 9(04)
+                                               OCCURS  7.
            03  SPA-GMN-CMB-AREA.
                05  SPA-GMN-SEIHOJNUMCHKKBNLST-G.
                    07  SPA-GMN-SEIHOJNUMCHKKBN-MAX     PIC 9(03).
@@ -625,6 +636,34 @@
                                        TO  SPA-GMN-YBKENSAYAKUKBN
                MOVE    SYS-1101-TENKITEKBYOKBN
                                        TO  SPA-GMN-TENKITEKBYOKBN
+               IF    ( SYS-1101-SYA-INGAITEN   IS  NUMERIC )
+                   MOVE    SYS-1101-SYA-INGAITEN
+                                       TO  SPA-GMN-SYA-INGAITEN
+               END-IF
+               IF    ( SYS-1101-KOK-INGAITEN   IS  NUMERIC )
+                   MOVE    SYS-1101-KOK-INGAITEN
+                                       TO  SPA-GMN-KOK-INGAITEN
+               END-IF
+               IF    ( SYS-1101-KOU-INGAITEN   IS  NUMERIC )
+                   MOVE    SYS-1101-KOU-INGAITEN
+                                       TO  SPA-GMN-KOU-INGAITEN
+               END-IF
+               IF    ( SYS-1101-RSI-INGAITEN   IS  NUMERIC )
+                   MOVE    SYS-1101-RSI-INGAITEN
+                                       TO  SPA-GMN-RSI-INGAITEN
+               END-IF
+               IF    ( SYS-1101-JBI-INGAITEN   IS  NUMERIC )
+                   MOVE    SYS-1101-JBI-INGAITEN
+                                       TO  SPA-GMN-JBI-INGAITEN
+               END-IF
+               IF    ( SYS-1101-JIH-INGAITEN   IS  NUMERIC )
+                   MOVE    SYS-1101-JIH-INGAITEN
+                                       TO  SPA-GMN-JIH-INGAITEN
+               END-IF
+               IF    ( SYS-1101-KGI-INGAITEN   IS  NUMERIC )
+                   MOVE    SYS-1101-KGI-INGAITEN
+                                       TO  SPA-GMN-KGI-INGAITEN
+               END-IF
       *
                MOVE    SYS-1101-STYUKYMD
                                        TO  WRK-STYUKYMD
@@ -644,7 +683,7 @@
            MOVE    WRK-STYUKYMD            TO  CK4-1103-STYUKYMD
                                                CK4-1103-EDYUKYMD
            MOVE    CK4-1103-REC            TO  CHK004-REC
-           PERFORM 900-CHK004-KEY2-SEL-SEC
+           PERFORM 900-CHK004-KEY10-SEL-SEC
            MOVE    CHK004-REC              TO  CK4-1103-REC
       *
            PERFORM UNTIL ( FLG-CHK004      NOT =   ZERO )
@@ -655,13 +694,13 @@
                                            TO  SPA-GMN-ERR990009KBN
                END-EVALUATE
       *
-               PERFORM 900-CHK004-KEY2-FET-SEC
+               PERFORM 900-CHK004-KEY10-FET-SEC
                MOVE    CHK004-REC      TO  CK4-1103-REC
       *
            END-PERFORM
       *
            MOVE    "tbl_chk004"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -1143,6 +1182,11 @@
            MOVE    W60-YBUTAGAIKBN     TO  SPA-GMN-YBUTAGAIKBN-G
            MOVE    W60-SRYHEIWRNKBN    TO  SPA-GMN-SRYHEIWRNKBN-G
            MOVE    W60-ERR990009KBN    TO  SPA-GMN-ERR990009KBN-G
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   7 )
+               MOVE    W60-INGAITEN (IDX0)
+                                       TO  SPA-GMN-INGAITEN (IDX0)
+           END-PERFORM
            MOVE    W60-REIGAICHKKBN    TO  SPA-GMN-REIGAICHKKBN-G
            MOVE    W60-PRTSRTKBN       TO  SPA-GMN-PRTSRTKBN-G
            MOVE    W60-PRTPTLSTKBN     TO  SPA-GMN-PRTPTLSTKBN-G
@@ -1962,6 +2006,22 @@
       *
            MOVE    SPA-GMN-SRYHEIWRNKBN TO   SYS-1101-SRYHEIWRNKBN
       *
+           MOVE    SPA-GMN-SYA-INGAITEN
+                                       TO  SYS-1101-SYA-INGAITEN
+           MOVE    SPA-GMN-KOK-INGAITEN
+                                       TO  SYS-1101-KOK-INGAITEN
+           MOVE    SPA-GMN-KOU-INGAITEN
+                                       TO  SYS-1101-KOU-INGAITEN
+           MOVE    SPA-GMN-RSI-INGAITEN
+                                       TO  SYS-1101-RSI-INGAITEN
+           MOVE    SPA-GMN-JBI-INGAITEN
+                                       TO  SYS-1101-JBI-INGAITEN
+           MOVE    SPA-GMN-JIH-INGAITEN
+                                       TO  SYS-1101-JIH-INGAITEN
+                                           SYS-1101-CKN-INGAITEN
+           MOVE    SPA-GMN-KGI-INGAITEN
+                                       TO  SYS-1101-KGI-INGAITEN
+      *
            MOVE    SPA-GMN-REIGAICHKKBN TO   SYS-1101-REIGAICHKKBN
       *
            MOVE    SPA-GMN-PRTSRTKBN   TO   SYS-1101-PRTSRTKBN
@@ -2220,6 +2280,14 @@
       *
            END-PERFORM
       *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   7 )
+      *
+               MOVE    SPA-GMN-INGAITEN (IDX0)
+                                       TO  W60-INGAITEN (IDX0)
+      *
+           END-PERFORM
+      *
            MOVE    SPA-GMN-REIGAICHKKBN-G   TO  W60-REIGAICHKKBN
       *
            MOVE    SPA-GMN-REIGAICHKKBN-MAX
@@ -2334,6 +2402,20 @@
                MOVE    "ERR990009KBN"   TO  MCP-WIDGET
            WHEN    018
                MOVE    "SEIHOJNUMCHKKBN" TO MCP-WIDGET
+           WHEN    019
+               MOVE    "SYA_INGAITEN"  TO MCP-WIDGET
+           WHEN    020
+               MOVE    "KOK_INGAITEN"  TO MCP-WIDGET
+           WHEN    021
+               MOVE    "KOU_INGAITEN"  TO MCP-WIDGET
+           WHEN    022
+               MOVE    "RSI_INGAITEN"  TO MCP-WIDGET
+           WHEN    023
+               MOVE    "JBI_INGAITEN"  TO MCP-WIDGET
+           WHEN    024
+               MOVE    "KGI_INGAITEN"  TO MCP-WIDGET
+           WHEN    025
+               MOVE    "JIH_INGAITEN"  TO MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -2377,6 +2459,20 @@
            WHEN    "SRYHEIWRNKBN"
                MOVE    17              TO  SPA-GMN-CUR
            WHEN    "ERR990009KBN"
+               MOVE    19              TO  SPA-GMN-CUR
+           WHEN    "SYA_INGAITEN"
+               MOVE    20              TO  SPA-GMN-CUR
+           WHEN    "KOK_INGAITEN"
+               MOVE    21              TO  SPA-GMN-CUR
+           WHEN    "KOU_INGAITEN"
+               MOVE    22              TO  SPA-GMN-CUR
+           WHEN    "RSI_INGAITEN"
+               MOVE    23              TO  SPA-GMN-CUR
+           WHEN    "JBI_INGAITEN"
+               MOVE    24              TO  SPA-GMN-CUR
+           WHEN    "KGI_INGAITEN"
+               MOVE    25              TO  SPA-GMN-CUR
+           WHEN    "JIH_INGAITEN"
                MOVE    16              TO  SPA-GMN-CUR
            WHEN    "REIGAICHKKBN"
                MOVE    08              TO  SPA-GMN-CUR
@@ -2531,14 +2627,14 @@
       *****************************************************************
       *    チェックマスタ４検索処理
       *****************************************************************
-       900-CHK004-KEY2-SEL-SEC         SECTION.
+       900-CHK004-KEY10-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK004
       *
            MOVE    SPA-HOSPNUM         TO  CHK004-HOSPNUM
            MOVE    CHK004-REC          TO  MCPDATA-REC
            MOVE    "tbl_chk004"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      =   ZERO )
                MOVE    MCPDATA-REC     TO  CHK004-REC
@@ -2548,17 +2644,17 @@
            END-IF
       *
            .
-       900-CHK004-KEY2-SEL-EXT.
+       900-CHK004-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ４検索処理
       *****************************************************************
-       900-CHK004-KEY2-FET-SEC         SECTION.
+       900-CHK004-KEY10-FET-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK004
       *
            MOVE    "tbl_chk004"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC      =   ZERO )
                MOVE    MCPDATA-REC     TO  CHK004-REC
@@ -2568,7 +2664,7 @@
            END-IF
       *
            .
-       900-CHK004-KEY2-FET-EXT.
+       900-CHK004-KEY10-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理

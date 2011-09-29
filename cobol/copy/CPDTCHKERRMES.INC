@@ -592,8 +592,13 @@
            05 PIC  X(30)   VALUE   "力内容を確認してください      ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "990019".
+           05 PIC  X(30)   VALUE   "院外処方せんに記載された薬剤の".
+           05 PIC  X(30)   VALUE   "合計点数が＃＃＃＃点以上です  ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  105.
+           05 ERRMES-OCC   OCCURS  106.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   105.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   106.

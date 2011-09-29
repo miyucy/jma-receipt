@@ -423,6 +423,7 @@
            03  IDXA                                    PIC 9(05).
            03  IDXD                                    PIC 9(05).
            03  IDXE                                    PIC 9(05).
+           03  IDXH                                    PIC 9(05).
            03  IDXP                                    PIC 9(05).
            03  IDX-TSRYKA                              PIC 9(05).
            03  IDX-TKAISU                              PIC 9(05).
@@ -609,6 +610,7 @@
                05  WRK-AGE70-YY                        PIC 9(04).
                05  WRK-AGE70-MM                        PIC 9(02).
                05  WRK-AGE70-DD                        PIC 9(02).
+           03  WRK-INGAITEN                            PIC 9(07).
       *
        01  TERRINF-AREA.
            03  TERRINF-SRYCD                           PIC X(09).
@@ -717,7 +719,9 @@
            03  CONST-PTSRY-MAX                     PIC 9(05)
                                                    VALUE   5000.
            03  CONST-PTZAI-MAX                     PIC 9(05)
-                                                   VALUE   5000.
+                                                   VALUE   30.
+           03  CONST-TINGAI-MAX                      PIC 9(05)
+                                                   VALUE   20.
            03  CONST-CHKPTN                        PIC X(05)
                                                    VALUE   "1 111".
            03  CONST-NBHOUKTCD                     PIC X(09)
@@ -1780,6 +1784,28 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
+           IF    ( SYS-1101-SYA-INGAITEN   IS  NOT NUMERIC )
+               MOVE    ZERO            TO  SYS-1101-SYA-INGAITEN
+           END-IF
+           IF    ( SYS-1101-KOK-INGAITEN   IS  NOT NUMERIC )
+               MOVE    ZERO            TO  SYS-1101-KOK-INGAITEN
+           END-IF
+           IF    ( SYS-1101-KOU-INGAITEN   IS  NOT NUMERIC )
+               MOVE    ZERO            TO  SYS-1101-KOU-INGAITEN
+           END-IF
+           IF    ( SYS-1101-RSI-INGAITEN   IS  NOT NUMERIC )
+               MOVE    ZERO            TO  SYS-1101-RSI-INGAITEN
+           END-IF
+           IF    ( SYS-1101-JBI-INGAITEN   IS  NOT NUMERIC )
+               MOVE    ZERO            TO  SYS-1101-JBI-INGAITEN
+           END-IF
+           IF    ( SYS-1101-JIH-INGAITEN   IS  NOT NUMERIC )
+               MOVE    ZERO            TO  SYS-1101-JIH-INGAITEN
+               END-IF
+           IF    ( SYS-1101-KGI-INGAITEN   IS  NOT NUMERIC )
+               MOVE    ZERO            TO  SYS-1101-KGI-INGAITEN
+           END-IF
+      *
            .
        1001-SYS1101-GET-EXT.
            EXIT.
@@ -2124,6 +2150,7 @@
                                        TNYUKSN-AREA
                                        TCOMERR-AREA
                                        TGENZAN-AREA
+                                       TINGAI-AREA
                                        PTACCT-AREA
                                        PTSRY-AREA
                                        PTZAI-AREA
@@ -3309,11 +3336,16 @@
       *    実日数算定チェック
            PERFORM 200111-JNISSU-HEN-SEC
       *
+           MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
+           IF    ( WRK-HKNNUM      =   SPACE )
+               MOVE    COMB-KOHHKNNUM (1)
+                                   TO  WRK-HKNNUM
+           END-IF
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TJNISSU-MAX )
                     OR   ( IDX0    >   CONST-TJNISSU-MAX )
                     OR   ( TJNISSU-HKNNUM (IDX0)
-                                   =   COMB-HKNNUM )
+                                   =   WRK-HKNNUM )
       *
                CONTINUE
       *
@@ -3324,7 +3356,7 @@
       *
                    COMPUTE TJNISSU-MAX =   TJNISSU-MAX +   1
       *
-                   MOVE    COMB-HKNNUM
+                   MOVE    WRK-HKNNUM
                                    TO  TJNISSU-HKNNUM (TJNISSU-MAX)
                    MOVE    TJNISSU-MAX
                                    TO  IDXA
@@ -3465,10 +3497,15 @@
       *****************************************************************
        200111-TKAISU-HKNNUM-HEN-SEC    SECTION.
       *
+           MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
+           IF    ( WRK-HKNNUM      =   SPACE )
+               MOVE    COMB-KOHHKNNUM (1)
+                                   TO  WRK-HKNNUM
+           END-IF
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TKAISU-MAX )
                     OR   ( IDX0    >   CONST-TKAISU-MAX )
-                    OR   ( COMB-HKNNUM
+                    OR   ( WRK-HKNNUM
                                    =   TKAISU-HKNNUM (IDX0) )
       *
                CONTINUE
@@ -3479,7 +3516,7 @@
                IF    ( CONST-TKAISU-MAX    >   TKAISU-MAX )
                    COMPUTE TKAISU-MAX  =   TKAISU-MAX  +   1
                    MOVE    TKAISU-MAX  TO  IDX-TKAISU
-                   MOVE    COMB-HKNNUM TO  TKAISU-HKNNUM
+                   MOVE    WRK-HKNNUM  TO  TKAISU-HKNNUM
                                                    (TKAISU-MAX)
                ELSE
                    MOVE    1           TO  FLG-TKAISU-OVER
@@ -3965,14 +4002,6 @@
       *    データチェック処理
       *****************************************************************
        20011-DATA-CHK-CHKMST-SEC       SECTION.
-      *
-      *    併用算定のチェック用に
-      *    入力引数とは反対の入外区分および、対象外の保険で診療会計
-      *    テーブルを検索する
-           IF    ( ORCBSD01-CHKKBN (11)    NOT =   ZERO )
-            OR   ( ORCBSD01-CHKKBN (16)    NOT =   ZERO )
-               PERFORM 200112-SRYINF-TAIHI-SEC
-           END-IF
       *
            INITIALIZE                  PTACCT-AREA
                                        PTSRY-AREA
@@ -10029,6 +10058,7 @@
        200121-TAIHI-AREA-INIT-SEC      SECTION.
       *
            INITIALIZE                  TSRYCD-AREA
+                                       TINGAI-AREA
                                        PTACCT-AREA
                                        PTSRY-AREA
                                        PTZAI-AREA
@@ -10113,7 +10143,7 @@
                    MOVE    PTSRY-OCC (IDX-SRY)
                                        TO  DCSRY-REC
       *
-                   IF    ( DCSRY-SRYCD (1:1)  =    "6" )
+                   IF    ( DCSRY-SRYCD (1:1)   =   "6" )
       *
                        IF    ( FLG-TSRYKA-OVER =   ZERO )
                         AND  ( IDX-TSRYKA      >   ZERO )
@@ -10128,6 +10158,38 @@
                END-IF
       *
            END-PERFORM
+      *
+           MOVE    DCACCT-HKNNUM   TO  WRK-ZAIHKNNUM
+           PERFORM 2001111-TAISYO-HKN-CHK-SEC
+           IF    ( FLG-TAISYO-HKN  =   1 )
+            AND  ( DTCHK003-HKNKBN NOT =   CONST-HOUKATU )
+               MOVE    ZERO        TO  IDXH
+               MOVE    DCACCT-HKNNUM       TO  WRK-HKNNUM
+               IF    ( WRK-HKNNUM      =   SPACE )
+                   MOVE    DCACCT-KOHNUM   TO  WRK-HKNNUM
+               END-IF
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   CONST-TINGAI-MAX )
+                        OR   ( IDXH    >   ZERO )
+                   IF    ( TINGAI-HKNNUM (IDX0)
+                                       =   WRK-HKNNUM
+                                        OR SPACE )
+                       MOVE    IDX0    TO  IDXH
+                                           TINGAI-MAX
+                   END-IF
+               END-PERFORM
+               IF    ( IDXH            >   ZERO )
+                   IF    ( TINGAI-HKNNUM (IDXH)
+                                       =   SPACE )
+                       MOVE    WRK-HKNNUM
+                                       TO  TINGAI-HKNNUM (IDXH)
+                   END-IF
+                   COMPUTE TINGAI-TEN (IDXH)
+                       =   TINGAI-TEN (IDXH)
+                       + ( DCACCT-INGAITEN
+                       *   DCACCT-ZAIKAISU )
+               END-IF
+           END-IF
       *
            .
        2001211-SRYINF-TAIHI-EXT.
@@ -10153,6 +10215,10 @@
       *    併用禁忌の薬剤チェック処理
            IF    ( ORCBSD01-CHKKBN(15) NOT =   ZERO  )
                PERFORM 200121-HEI-YKZKNKBYO-CHK-SEC
+           END-IF
+      *
+           IF    ( ORCBSD01-INGAIPROCKBN   NOT =   ZERO )
+               PERFORM 200121-INGAITEN-CHK-SEC
            END-IF
       *
            .
@@ -10193,6 +10259,67 @@
       *
            .
        200121-HEI-YKZKNKBYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    院外処方点数チェック処理
+      *****************************************************************
+       200121-INGAITEN-CHK-SEC    SECTION.
+      *
+           MOVE    ZERO            TO  WRK-INGAITEN
+      *
+           EVALUATE    DTCHK003-HKNKBN
+           WHEN    CONST-SYAHO
+               MOVE    SYS-1101-SYA-INGAITEN
+                                   TO  WRK-INGAITEN
+           WHEN    CONST-KOKUHO
+               MOVE    SYS-1101-KOK-INGAITEN
+                                   TO  WRK-INGAITEN
+           WHEN    CONST-ROSAI
+               MOVE    SYS-1101-RSI-INGAITEN
+                                   TO  WRK-INGAITEN
+           WHEN    CONST-JIBAI
+               MOVE    SYS-1101-JBI-INGAITEN
+                                   TO  WRK-INGAITEN
+           WHEN    CONST-JIHI
+               MOVE    SYS-1101-JIH-INGAITEN
+                                   TO  WRK-INGAITEN
+           WHEN    CONST-KOUGAI
+               MOVE    SYS-1101-KGI-INGAITEN
+                                   TO  WRK-INGAITEN
+           WHEN    CONST-KOUKI
+               MOVE    SYS-1101-KOU-INGAITEN
+                                   TO  WRK-INGAITEN
+           WHEN    CONST-CHIKEN
+               MOVE    SYS-1101-CKN-INGAITEN
+                                   TO  WRK-INGAITEN
+           END-EVALUATE
+           IF    ( WRK-INGAITEN    >   ZERO )
+             PERFORM VARYING IDXH    FROM    1   BY  1
+                   UNTIL ( IDXH    >   TINGAI-MAX )
+               IF    ( TINGAI-TEN (IDXH)  >=  WRK-INGAITEN )
+                   MOVE    "990019"    TO  WRK-ERRCD
+                   MOVE    TINGAI-HKNNUM (IDXH)
+                                       TO  SRH-HKNNUM
+                   INITIALIZE              TERRINF-AREA
+                   MOVE    SPACE       TO  WRK-ERRMES-PLUS
+                   MOVE    TINGAI-TEN (IDXH)
+                                       TO  WRK-STR-LEFT-ZX99
+                   PERFORM 800-STR-HIDARIZUME-HEN-SEC
+                   MOVE    WRK-STR-LEFT    TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   STRING  "院外処方合計点数："
+                                           DELIMITED   BY  SIZE
+                           WRK-OUT-INPUT   DELIMITED   BY  SPACE
+                           "点"            DELIMITED   BY  SPACE
+                   INTO    WRK-ERRMES-PLUS
+                   END-STRING
+                   PERFORM 216-ERRMES-HEN-SEC
+               END-IF
+             END-PERFORM
+           END-IF
+      *
+           .
+       200121-INGAITEN-CHK-CHK-EXT.
            EXIT.
       *****************************************************************
       *    エラーメッセージ編集処理（メッセージに付加する情報なし）
@@ -10430,6 +10557,19 @@
       *
            END-PERFORM
       *
+           IF    ( WRK-ERRCD   =   "990019" )
+               MOVE    WRK-INGAITEN    TO  WRK-STR-LEFT-ZX99
+               PERFORM 800-STR-HIDARIZUME-HEN-SEC
+               MOVE    WRK-STR-LEFT    TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    "sub"           TO  ORCSSTR-COMMAND
+               MOVE    WRK-ERRMES      TO  ORCSSTR-STRING1
+               MOVE    "＃＃＃＃"      TO  ORCSSTR-STRING2
+               MOVE    WRK-OUT-INPUT   TO  ORCSSTR-STRING3
+               CALL    "orcsstring" USING  ORCSSTRINGAREA
+               MOVE    ORCSSTR-STRING1 TO  WRK-ERRMES
+           END-IF
+      *
            .
        2111-ERRMES-GET-EXT.
            EXIT.
@@ -10527,6 +10667,11 @@
                END-IF
            END-PERFORM
       *
+           IF    ( SRH-HKNNUMMEI       =   SPACE )
+               MOVE    SRH-HKNNUM      TO  SRH-KOHNUM
+               PERFORM 2111-KOHNUM-GET-SEC
+               MOVE    SRH-KOHNUMMEI   TO  SRH-HKNNUMMEI
+           END-IF
       *
            .
        2111-HKNNUM-GET-EXT.

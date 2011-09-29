@@ -132,5 +132,26 @@ W60	{
 			count	int;
 			item	varchar(22)[5];
 		};
+		SYA_INGAITEN	{
+			value	number(4);
+		};
+		KOK_INGAITEN	{
+			value	number(4);
+		};
+		KOU_INGAITEN	{
+			value	number(4);
+		};
+		RSI_INGAITEN	{
+			value	number(4);
+		};
+		JBI_INGAITEN	{
+			value	number(4);
+		};
+		JIH_INGAITEN	{
+			value	number(4);
+		};
+		KGI_INGAITEN	{
+			value	number(4);
+		};
 	};
 };

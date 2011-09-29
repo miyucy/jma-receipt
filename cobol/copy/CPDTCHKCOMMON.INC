@@ -314,6 +314,12 @@
                05  TCOMERR-DAY-G.
                    07  TCOMERR-DAY                 PIC 9(01)
                                                    OCCURS  31.
+      *  ±¡³°½èÊýÎÎ°è
+         02  TINGAI-AREA.
+           03  TINGAI-MAX                          PIC 9(07).
+           03  TINGAI-OCC                          OCCURS  20.
+               05  TINGAI-HKNNUM                   PIC X(03).
+               05  TINGAI-TEN                      PIC 9(07).
       *
          02  SRH-AREA.
            03  SRH-IDX                             PIC 9(05).
