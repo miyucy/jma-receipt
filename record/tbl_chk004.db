@@ -245,3 +245,16 @@ path    del3            {
         };
 };
 
+path	key10		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk004_key10_csr CURSOR FOR
+		SELECT DISTINCT ON (KBNCD) *
+		FROM tbl_chk004
+			WHERE   HOSPNUM      =   :HOSPNUM 
+			AND	KANRICD      =   :KANRICD 
+			AND	STYUKYMD     <=  :STYUKYMD
+			ORDER	BY KBNCD DESC
+		;
+	};
+};
+
