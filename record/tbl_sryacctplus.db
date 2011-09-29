@@ -176,3 +176,27 @@ path	key4 	{
 	};
 };
 
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_sryacctplus_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacctplus
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   LIKE :NYUGAIKBN
+			AND   SRYYM       =   :SRYYM
+		;
+	};
+};
+
+path	key6 	{
+	DBSELECT	{
+		DECLARE tbl_sryacctplus_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacctplus
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   LIKE :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYM       =   :SRYYM
+		;
+	};
+};
