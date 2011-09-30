@@ -10182,6 +10182,11 @@
                        MOVE    WRK-HKNNUM
                                        TO  TINGAI-HKNNUM (IDXH)
                    END-IF
+                   IF    ( DCACCT-NYUGAIKBN
+                                       =   ORCBSD01-NYUGAIKBN )
+                       MOVE    DCACCT-NYUGAIKBN
+                                       TO  TINGAI-NYUGAIKBN (IDXH)
+                   END-IF
                    COMPUTE TINGAI-TEN (IDXH)
                        =   TINGAI-TEN (IDXH)
                        + ( DCACCT-INGAITEN
@@ -10294,7 +10299,11 @@
            IF    ( WRK-INGAITEN    >   ZERO )
              PERFORM VARYING IDXH    FROM    1   BY  1
                    UNTIL ( IDXH    >   TINGAI-MAX )
-               IF    ( TINGAI-TEN (IDXH)  >=  WRK-INGAITEN )
+               DISPLAY IDXH ":" TINGAI-NYUGAIKBN (IDXH) "/"
+                       TINGAI-HKNNUM (IDXH) "/" TINGAI-TEN (IDXH)
+               IF   ( TINGAI-NYUGAIKBN (IDXH)
+                                          =  ORCBSD01-NYUGAIKBN )
+                AND ( TINGAI-TEN (IDXH)  >=  WRK-INGAITEN )
                    MOVE    "990019"    TO  WRK-ERRCD
                    MOVE    TINGAI-HKNNUM (IDXH)
                                        TO  SRH-HKNNUM

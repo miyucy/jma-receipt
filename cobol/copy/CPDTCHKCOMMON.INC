@@ -319,6 +319,7 @@
            03  TINGAI-MAX                          PIC 9(07).
            03  TINGAI-OCC                          OCCURS  20.
                05  TINGAI-HKNNUM                   PIC X(03).
+               05  TINGAI-NYUGAIKBN                PIC X(01).
                05  TINGAI-TEN                      PIC 9(07).
       *
          02  SRH-AREA.
