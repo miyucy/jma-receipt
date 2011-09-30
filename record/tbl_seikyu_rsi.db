@@ -10,6 +10,7 @@ HKNJANUM			char(8);
 HOJOKBN_KEY     		char(1);
 KOHID_KEY       		number(10);
 TEKSTYMD			char(8);
+HKNKBN				char(1);
 RECEKBN				char(1);
 SYOKAIFLG			char(1);
 SYOCD				char(5);

@@ -427,6 +427,7 @@
                MOVE    SKYRSI-SAIGAIKBN        TO  RECE10-SAIGAIKBN
                MOVE    SKYRSI-COMMENT          TO  RECE10-COMMENT
                MOVE    SKYRSI-RECEKBN          TO  RECE10-RECEKBN
+               MOVE    SKYRSI-HKNKBN           TO  RECE10-HKNKBN
            END-IF
       *
            IF    ( SKYMAIN-ETCCREATEFLG    =   1 )
@@ -772,6 +773,7 @@
                MOVE    RECE10-SAIGAIKBN    TO  SKYRSI-SAIGAIKBN
                MOVE    RECE10-COMMENT      TO  SKYRSI-COMMENT
                MOVE    RECE10-RECEKBN      TO  SKYRSI-RECEKBN
+               MOVE    RECE10-HKNKBN       TO  SKYRSI-HKNKBN
                MOVE    SKYRSI-REC          TO  MCPDATA-REC
                MOVE    "tbl_seikyu_rsi"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME

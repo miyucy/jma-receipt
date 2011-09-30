@@ -16,6 +16,7 @@ create	table	tbl_seikyu_rsi	(
 	hojokbn_key	character(1)	 NOT NULL,
 	kohid_key	bigint		 DEFAULT 0 NOT NULL,
 	tekstymd	character(8)	 NOT NULL,
+	hknkbn		character(1),
 	recekbn		character(1),
 	syokaiflg	character(1),
 	syocd		character(5),

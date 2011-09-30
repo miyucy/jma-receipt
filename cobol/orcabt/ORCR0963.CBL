@@ -3004,11 +3004,15 @@
            MOVE    RECE82-AGE          TO  RECE10-AGE
       *
            MOVE    RECE82-SYOCD        TO  RECE10-SYOCD
+      *****MOVE    ZERO                TO  RECE10-HKNJANUM-S
            IF      RECE82-SYOCD        =   SPACE
-               MOVE    ZERO                TO  RECE10-HKNJANUM-S
+               CONTINUE   
            ELSE
-               MOVE    RECE82-SYOCD    TO  RECE10-HKNJANUM-S
+               IF      RECE82-SYOKAIFLG    =   "1"
+                   MOVE    RECE82-SYOCD        TO  RECE10-HKNJANUM-S
+               END-IF
            END-IF
+           MOVE    "1"                 TO  RECE10-HKNKBN
            MOVE    RECE82-SYOKAIFLG    TO  RECE10-SYOKAIFLG
            MOVE    RECE82-KOFUNUM      TO  RECE10-KOFUNUM
            MOVE    RECE82-COMMENT      TO  RECE10-COMMENT

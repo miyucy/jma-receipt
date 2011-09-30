@@ -1942,6 +1942,9 @@
       *
            MOVE    RECE41-AGE          TO  RECE10-AGE
       *
+      *****MOVE    ZERO                TO  RECE10-HKNJANUM-S
+      *
+           MOVE    "3"                 TO  RECE10-HKNKBN
            MOVE    RECE41-KOFUNUM      TO  RECE10-KOFUNUM
            MOVE    RECE41-TEKSTYMD     TO  WRK-SYMD
            PERFORM 31012-SE-WA-YMDEDIT-SEC

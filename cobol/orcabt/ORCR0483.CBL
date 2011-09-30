@@ -2654,6 +2654,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    RECE41-AGE          TO  RECE10-AGE
       *
+           MOVE    "4"                 TO  RECE10-HKNKBN
            MOVE    RECE41-COMMENT      TO  RECE10-COMMENT
       * 
            MOVE    RECE41-JNISSU       TO  RECE10-JNISSU       (1)

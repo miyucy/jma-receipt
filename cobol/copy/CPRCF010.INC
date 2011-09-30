@@ -247,15 +247,17 @@
                05  RECE10-TOKKINM          PIC X(12)   OCCURS  5.
       *労災情報
            03  RECE10-RSIINF.
-      *様式区分
+      *保険区分（１：短期、２：傷病、３：アフターケア、４：公務災害）
+               05  RECE10-HKNKBN           PIC X(01).
+      *様式区分（４：新様式、５：従来様式）
                05  RECE10-RECEKBN          PIC X(01).
-      *労災初回請求分フラグ
+      *労災初回請求分フラグ（１：初回請求分）
                05  RECE10-SYOKAIFLG        PIC X(01).
       *労働基準監督署コード
                05  RECE10-SYOCD            PIC X(05).
       *患者交付番号
                05  RECE10-KOFUNUM          PIC X(14).
-      *災害区分
+      *災害区分（１：業務、２：通勤）
                05  RECE10-SAIGAIKBN        PIC X(01).
       *労災コメント
                05  RECE10-COMMENT          PIC X(200).
