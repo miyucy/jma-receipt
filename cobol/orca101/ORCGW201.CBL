@@ -60,6 +60,7 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDX2                PIC 9(04).
            03  IDY                 PIC 9(04).
       *
       *    一時領域
@@ -735,6 +736,63 @@
       *    削除処理
       *****************************************************************
        2301-DELETE-SYORI-SEC                   SECTION.
+      *
+           IF    SPA-W201-SELNUM       NOT =   ZERO
+               MOVE    SPACE           TO  SPA-W201-TKSNCD2
+                                                 (SPA-W201-SELNUM)
+           END-IF
+      *
+      *    アップデート対象のデータを読み直す
+           INITIALIZE                      SYSKANRI-REC
+      *
+           MOVE   "5001"               TO  SYS-KANRICD
+           MOVE   SPA-GMN-W20-BTUNUM   TO  SYS-KBNCD
+           MOVE   SPA-NAI-W20-YUKOSTYMD-OLD
+                                       TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF   ( FLG-SYSKANRI         NOT =   ZERO )
+               MOVE    "9001"          TO  SPA-ERRCD
+               GO  TO  2201-TOUROKU-SYORI-EXT
+           END-IF
+      *
+           MOVE    SYSKANRI-REC        TO  SYS-5001-REC
+           MOVE    SPACE               TO  SYS-5001-KSN2
+      *
+           MOVE    ZERO                TO  IDX2
+           PERFORM    VARYING   IDX   FROM   1  BY  1
+             UNTIL   (IDX       >   10)
+               IF   SPA-W201-TKSNCD2(IDX)   NOT =    SPACE
+                  ADD     1            TO  IDX2
+                  MOVE    SPA-W201-TKSNCD2(IDX)
+                                       TO  SYS-5001-KSNCD2(IDX2)
+               END-IF
+           END-PERFORM
+           MOVE    SYS-5001-REC        TO  SYSKANRI-REC
+           MOVE    SYS-5001-KANRICD    TO  SYSUP-KANRICD
+           MOVE    SYS-5001-KBNCD      TO  SYSUP-KBNCD
+           MOVE    SPA-NAI-W20-YUKOSTYMD-OLD
+                                       TO  SYSUP-STYUKYMD
+           MOVE    SPA-NAI-W20-YUKOEDYMD-OLD
+                                       TO  SYSUP-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYSUP-HOSPNUM
+      *
+           PERFORM 800-MCNDATE-SEC
+           MOVE    SMCNDATE-YMD    TO  SYS-UPYMD
+           MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "upd1"              TO  MCP-PATHNAME
+           PERFORM 910-DBUPDATE-SEC
+           IF   (  MCP-RC              NOT =   ZERO )
+               MOVE    "9001"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF   SPA-ERRCD    =    SPACE
+                PERFORM   310-SPASET-SEC
+           END-IF
       *
            .
        2301-DELETE-SYORI-EXT.
