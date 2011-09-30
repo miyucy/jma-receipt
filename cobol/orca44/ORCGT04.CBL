@@ -712,7 +712,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *     
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG1
-           MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG2
+           MOVE    SPA-NAI-SKYYM   TO  SHELLTBL-ARG2
            MOVE    SPA-NAI-T04-TSHELLID      (SPA-NAI-T04-SELNUM)
                                    TO  SHELLTBL-ARG3
            MOVE    SPA-NAI-T04-TSHORI-RENNUM (SPA-NAI-T04-SELNUM)

@@ -146,6 +146,8 @@
       *                                     システム管理の設定に従い、災
       *                                     害該当レセプトのレセ電データ
       *                                     のチェックを追加
+      *
+      *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -711,29 +713,6 @@ grpsys                                         SPA-AREA
       *    請求年月日
            MOVE    SPA-SYSYMD          TO  SPA-NAI-SKYYMD
            MOVE    SPA-SYSYMDWH        TO  SPA-GMN-SKYYMD
-      *             
-      *    レセプト指示コード
-           INITIALIZE                  SYS-2001-REC
-           MOVE    "2001"              TO  SYS-2001-KANRICD
-           MOVE    "*"                 TO  SYS-2001-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-2001-STYUKYMD
-                                           SYS-2001-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-2001-HOSPNUM
-           MOVE    SYS-2001-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-2001-REC
-               IF      SYS-2001-SYOKBN     =   "1"
-                   MOVE    SYS-2001-SRYYM      TO  SPA-NAI-SRYYM
-                                                   WRK-SYMD (1:6)
-                   MOVE    "01"                TO  WRK-SYMD (7:2) 
-                   PERFORM 5002-HIZUKE-HEN-SEC
-                   MOVE    WRK-HENYMDG3(1:16)  TO  SPA-GMN-SRYYM
-               END-IF     
-           END-IF
-           IF      SPA-NAI-SRYYM      =   ZERO
-               MOVE    "請求書対象データなし"  TO  SPA-GMN-SRYYM
-           END-IF    
       *
       *    レセ電処理区分
            MOVE    SPACE               TO  SYS-2005-REC 
@@ -877,6 +856,7 @@ grpsys                                         SPA-AREA
                                            SPA-DATAKBN7-STATE       
                                            SPA-DATAKBN1-STATE       
                                            SPA-DATAKBN2-STATE       
+                                           SPA-DATAKBN8-STATE       
                                            SPA-B21-STATE
       *
       *    公害医療機関情報
@@ -991,20 +971,18 @@ grpsys                                         SPA-AREA
                END-IF
            END-IF
       *
+           MOVE    "T"                TO  SPA-SYOKBN1-VALUE  
+           MOVE    "F"                TO  SPA-SYOKBN2-VALUE  
+      *
            MOVE    "T"                TO  SPA-DATAKBN1-VALUE  
            MOVE    "T"                TO  SPA-DATAKBN4-VALUE  
            MOVE    "T"                TO  SPA-DATAKBN5-VALUE  
            MOVE    "T"                TO  SPA-DATAKBN3-VALUE  
            MOVE    "T"                TO  SPA-DATAKBN6-VALUE  
            MOVE    "F"                TO  SPA-DATAKBN7-VALUE
+           MOVE    "F"                TO  SPA-DATAKBN8-VALUE
       *    ★
            MOVE    "F"                TO  SPA-DATAKBN2-VALUE  
-      *
-      *****IF      SPA-NAI-SRYYM      =   ZERO
-      ******** MOVE    WIDGET-INSENSITIVE  TO  SPA-DATAKBN3-STATE
-      ********                                 SPA-B21-STATE
-      ******** MOVE    "F"                 TO  SPA-DATAKBN3-VALUE  
-      *****END-IF
       *
            IF      SYS-2005-KKHRECEKBN =   "1" OR  "2" OR  "3"
                CONTINUE
@@ -1246,6 +1224,15 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                                                         (IDX)
            MOVE    SPA-NAI-1031-PRTNM
                                    TO  SPA-3004-PRTNM   (IDX)
+      *    
+           ADD     1               TO  IDX
+           MOVE    906             TO  SPA-3004-KBNCD   (IDX)
+           MOVE    "recept17.sh"   TO  SPA-3004-SHELLID (IDX) 
+           MOVE    "労災・総括表（標準）"
+                                   TO  SPA-3004-SHORIMSG
+                                                        (IDX)
+           MOVE    SPA-NAI-1031-PRTNM
+                                   TO  SPA-3004-PRTNM   (IDX)
       *
       *    県単独事業
            MOVE    ZERO                TO  FLG-3004-PARAKBN
@@ -1308,8 +1295,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    1       TO  FLG-3004-PARAKBN 
                        END-IF
       *
-                       IF    ( SPA-NAI-SRYYM      =   ZERO  )
-                       AND   ( SYS-3004-PARAKBN   =   SPACE )
+      *****************IF    ( SPA-NAI-SRYYM      =   ZERO  )
+      *****************AND   ( SYS-3004-PARAKBN   =   SPACE )
+                       IF      SYS-3004-PARAKBN   =   SPACE
                            CONTINUE
                        ELSE
                            ADD     1       TO  IDY
@@ -1348,17 +1336,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    IDX                 TO  SPA-3004-MAX
            MOVE    IDY                 TO  SPA-GMN-T02-SHELLID-MAX
-      *
-      *****IF      SPA-NAI-SRYYM      =   ZERO
-      *****    IF      SPA-GMN-T02-SHELLID-MAX
-      *****                                >   ZERO
-      *****        MOVE    WIDGET-NORMAL       TO  SPA-B21-STATE
-      *****        IF      FLG-3004-PARAKBN    =   ZERO
-      *****            MOVE    WIDGET-NORMAL   TO  SPA-DATAKBN3-STATE
-      *****            MOVE    "T"             TO  SPA-DATAKBN3-VALUE  
-      *****        END-IF
-      *****    END-IF
-      *****END-IF
       *
            MOVE    "0"             TO  SPA-GMN-T02-SYORIFLGL   (1)
            MOVE    "処理しない"    TO  SPA-GMN-T02-SYORIFLGMEIL(1)
@@ -2193,6 +2170,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "CLICKED"       ALSO    "DATAKBN5"
                WHEN    "CLICKED"       ALSO    "DATAKBN6"
                WHEN    "CLICKED"       ALSO    "DATAKBN7"
+               WHEN    "CLICKED"       ALSO    "DATAKBN8"
                    PERFORM 400-DATAKBN-SEC
       *    当月分・月遅れ分、返戻分
                WHEN    "CLICKED"       ALSO    "CHK11"
@@ -2202,6 +2180,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "CLICKED"       ALSO    "CHK31"
                WHEN    "CLICKED"       ALSO    "CHK32"
                    PERFORM 400-CHK-SEC
+               WHEN    "CLICKED"       ALSO    "SYOKBN1"
+               WHEN    "CLICKED"       ALSO    "SYOKBN2"
+                   PERFORM 400-SYOKBN-SEC
            END-EVALUATE
       *
            .
@@ -2325,30 +2306,47 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EVALUATE    MCP-WIDGET
                WHEN    "DATAKBN3"
                    MOVE    T01-DATAKBN3-VALUE  TO  SPA-DATAKBN3-VALUE
+                   IF      SPA-DATAKBN3-VALUE  =   "T"
+                       MOVE    "T"             TO  SPA-SYOKBN1-VALUE
+                   END-IF
                WHEN    "DATAKBN4"
                    MOVE    T01-DATAKBN4-VALUE  TO  SPA-DATAKBN4-VALUE
                    IF      SPA-DATAKBN4-VALUE  =   "T"
                        MOVE    "T"             TO  SPA-CHK11-VALUE
                                                    SPA-CHK12-VALUE
+                       MOVE    "T"             TO  SPA-SYOKBN1-VALUE
                    END-IF
                WHEN    "DATAKBN5"
                    MOVE    T01-DATAKBN5-VALUE  TO  SPA-DATAKBN5-VALUE
                    IF      SPA-DATAKBN5-VALUE  =   "T"
                        MOVE    "T"             TO  SPA-CHK21-VALUE
                                                    SPA-CHK22-VALUE
+                       MOVE    "T"             TO  SPA-SYOKBN1-VALUE
                    END-IF
                WHEN    "DATAKBN6"
                    MOVE    T01-DATAKBN6-VALUE  TO  SPA-DATAKBN6-VALUE
+                   IF      SPA-DATAKBN6-VALUE  =   "T"
+                       MOVE    "T"             TO  SPA-SYOKBN1-VALUE
+                   END-IF
                WHEN    "DATAKBN7"
                    MOVE    T01-DATAKBN7-VALUE  TO  SPA-DATAKBN7-VALUE
+                   IF      SPA-DATAKBN7-VALUE  =   "T"
+                       MOVE    "T"             TO  SPA-SYOKBN1-VALUE
+                   END-IF
                WHEN    "DATAKBN1"
                    MOVE    T01-DATAKBN1-VALUE  TO  SPA-DATAKBN1-VALUE
                    IF      SPA-DATAKBN1-VALUE  =   "T"
                        MOVE    "T"             TO  SPA-CHK31-VALUE
                                                    SPA-CHK32-VALUE
+                       MOVE    "T"             TO  SPA-SYOKBN1-VALUE
                    END-IF
                WHEN    "DATAKBN2"
                    MOVE    T01-DATAKBN2-VALUE  TO  SPA-DATAKBN2-VALUE
+               WHEN    "DATAKBN8"
+                   MOVE    T01-DATAKBN8-VALUE  TO  SPA-DATAKBN8-VALUE
+                   IF      SPA-DATAKBN8-VALUE  =   "T"
+                       MOVE    "T"             TO  SPA-SYOKBN2-VALUE
+                   END-IF
            END-EVALUATE
       *
            .
@@ -2377,6 +2375,53 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        400-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医保、労災処理選択処理
+      *****************************************************************
+       400-SYOKBN-SEC            SECTION.
+      *
+           EVALUATE    MCP-WIDGET
+               WHEN    "SYOKBN1"
+                   MOVE    T01-SYOKBN1-VALUE   TO  SPA-SYOKBN1-VALUE
+                   IF      SPA-SYOKBN1-VALUE   =   "T"
+                       MOVE    "T"             TO  SPA-CHK11-VALUE
+                                                   SPA-CHK12-VALUE
+                       MOVE    "T"             TO  SPA-CHK21-VALUE
+                                                   SPA-CHK22-VALUE
+                       MOVE    "T"             TO  SPA-CHK31-VALUE
+                                                   SPA-CHK32-VALUE
+                       MOVE    "T"             TO  SPA-DATAKBN1-VALUE
+                                                   SPA-DATAKBN2-VALUE
+                                                   SPA-DATAKBN3-VALUE
+                                                   SPA-DATAKBN4-VALUE
+                                                   SPA-DATAKBN5-VALUE
+                                                   SPA-DATAKBN7-VALUE
+                       IF      SPA-NAI-PRTKBN3 NOT =   SPACE
+                           MOVE    "T"             TO
+                                                   SPA-DATAKBN6-VALUE
+                       END-IF
+                   ELSE
+                       MOVE    "F"             TO  SPA-DATAKBN1-VALUE
+                                                   SPA-DATAKBN2-VALUE
+                                                   SPA-DATAKBN3-VALUE
+                                                   SPA-DATAKBN4-VALUE
+                                                   SPA-DATAKBN5-VALUE
+                                                   SPA-DATAKBN7-VALUE
+                                                   SPA-DATAKBN6-VALUE
+                   END-IF
+               WHEN    "SYOKBN2"
+                   MOVE    T01-SYOKBN2-VALUE   TO  SPA-SYOKBN2-VALUE
+                   IF      SPA-SYOKBN2-VALUE   =   "T"
+                       MOVE    "T"             TO  SPA-DATAKBN8-VALUE
+                   ELSE
+                       MOVE    "F"             TO  SPA-DATAKBN8-VALUE
+                   END-IF
+           END-EVALUATE    
+      *
+           .
+       400-SYOKBN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2620,7 +2665,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
        4101-KAKUTEI-CHK-SEC        SECTION.
       *
       *    対象帳票が未選択
-           IF      SPA-DATAKBN     =   "FFFFFFF" 
+           IF      SPA-DATAKBN     =   "FFFFFFFF" 
                MOVE    "0006"          TO  SPA-ERRCD
            END-IF
       *
@@ -2763,20 +2808,22 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                IF      SPA-ERRCD       =   SPACE
       *            ガイドメッセージセット
                    EVALUATE    TRUE
-                       WHEN    SPA-DATAKBN     =   "TFFFFFF" 
+                       WHEN    SPA-DATAKBN     =   "TFFFFFFF" 
                            MOVE    "1003"              TO  SPA-TIDCD
-                       WHEN    SPA-DATAKBN     =   "FTFFFFF"
+                       WHEN    SPA-DATAKBN     =   "FTFFFFFF"
                            MOVE    "1004"              TO  SPA-TIDCD
-                       WHEN    SPA-DATAKBN     =   "FFTFFFF"
+                       WHEN    SPA-DATAKBN     =   "FFTFFFFF"
                            MOVE    "1005"              TO  SPA-TIDCD
-                       WHEN    SPA-DATAKBN     =   "FFFTFFF"
+                       WHEN    SPA-DATAKBN     =   "FFFTFFFF"
                            MOVE    "1006"              TO  SPA-TIDCD
-                       WHEN    SPA-DATAKBN     =   "FFFFTFF"
+                       WHEN    SPA-DATAKBN     =   "FFFFTFFF"
                            MOVE    "1007"              TO  SPA-TIDCD
-                       WHEN    SPA-DATAKBN     =   "FFFFFTF"
+                       WHEN    SPA-DATAKBN     =   "FFFFFTFF"
                            MOVE    "1008"              TO  SPA-TIDCD
-                       WHEN    SPA-DATAKBN     =   "FFFFFFT"
+                       WHEN    SPA-DATAKBN     =   "FFFFFFTF"
                            MOVE    "1009"              TO  SPA-TIDCD
+                       WHEN    SPA-DATAKBN     =   "FFFFFFFT"
+                           MOVE    "1012"              TO  SPA-TIDCD
                        WHEN    SPA-DATAKBN3-VALUE
                                                =   "T" 
                            MOVE    "1001"              TO  SPA-TIDCD
@@ -3062,6 +3109,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            EVALUATE    TRUE
                WHEN    T01-DATAKBN7-VALUE    =   "T" 
                    PERFORM 45015-KOUGAI-SOKATU-SYORI-SEC
+           END-EVALUATE                                               
+      *
+      *    総括表印刷（労災）
+           EVALUATE    TRUE
+               WHEN    T01-DATAKBN8-VALUE    =   "T" 
+                   PERFORM 45016-RSI-SOKATU-SYORI-SEC
            END-EVALUATE                                               
       *     
       *    県単独事業（総括）
@@ -3886,6 +3939,89 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        45015-KOUGAI-SOKATU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    総括（労災）処理        
+      *****************************************************************
+       45016-RSI-SOKATU-SYORI-SEC       SECTION.
+      *
+           PERFORM 45011-JOBKANRI-HENSYU-SEC
+      *             
+           MOVE    SPACE           TO  SHELLTBL
+           MOVE    "scripts/monthly/recept17.sh"
+                                       TO  WRK-SHELL-NAME
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+      *                                 
+           MOVE    SPACE           TO  LNK-PRTKANRI-AREA
+           INITIALIZE                  LNK-PRTKANRI-AREA
+           ADD     1               TO  WRK-PRTKANRI-RENNUM
+           MOVE    WRK-PRTKANRI-RENNUM
+                                   TO  LNK-PRTKANRI-RENNUM 
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                   TO  LNK-PRTKANRI-TBL-KEY 
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                   TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    SPA-NAI-SKYYM   TO  LNK-PRTKANRI-SRYYM 
+           MOVE    SPA-NAI-SKYYMD  TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "receden_sokatu.sh"
+                                   TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
+           MOVE    WRK-CONS-TERMID TO  LNK-PRTKANRI-TERMID 
+           MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       6
+               IF      SPA-3004-KBNCD  (IDXX)
+                                           =   906
+                   MOVE    SPA-3004-PRTNM (IDXX)
+                                           TO  LNK-PRTKANRI-PRTNM
+                   MOVE    SPA-3004-MAX    TO  IDXX
+               END-IF
+           END-PERFORM         
+           MOVE    LNK-PRTKANRI-RENNUM
+                                   TO  SHELLTBL-ARG1       
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                   TO  SHELLTBL-ARG2     
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                   TO  SHELLTBL-ARG3       
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                   TO  SHELLTBL-ARG4       
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SHELLTBL-ARG5       
+           MOVE    LNK-PRTKANRI-SKYYMD
+                                   TO  SHELLTBL-ARG6       
+           MOVE    LNK-PRTKANRI-SHELLID
+                                   TO  SHELLTBL-ARG7       
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                   TO  SHELLTBL-ARG8      
+           MOVE    LNK-PRTKANRI-TERMID
+                                   TO  SHELLTBL-ARG9       
+           MOVE    LNK-PRTKANRI-OPID
+                                   TO  SHELLTBL-ARG10      
+           MOVE    LNK-PRTKANRI-PRTNM
+                                   TO  SHELLTBL-ARG11      
+      *                 
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG12
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG13
+grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
+           MOVE    RECEERR         TO  SHELLTBL-ARG15
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "ERROR MCP-RC=" MCP-RC 
+           END-IF
+      *
+           .
+       45016-RSI-SOKATU-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5190,6 +5326,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    "1008"
                    WHEN    "1009"
                    WHEN    "1011"
+                   WHEN    "1012"
                    WHEN    "1019"  
                        PERFORM 530-TID2SET-SEC
                        GO  TO  500-SET-SCREEN-EXT
@@ -5217,7 +5354,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            INITIALIZE                      T01
       *
            MOVE    SPA-GMN-SKYYM       TO  T01-SKYYM
-           MOVE    SPA-GMN-SRYYM       TO  T01-SRYYM-VALUE
            MOVE    SPA-GMN-SKYYMD      TO  T01-SKYYMD
            MOVE    SPA-GMN-HKNJANUM    TO  T01-HKNJANUM
            MOVE    SPA-GMN-HKNJAMEI    TO  T01-HKNJAMEI
@@ -5245,6 +5381,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-DATAKBN5-STATE  TO  T01-DATAKBN5-STATE
            MOVE    SPA-DATAKBN6-STATE  TO  T01-DATAKBN6-STATE
            MOVE    SPA-DATAKBN7-STATE  TO  T01-DATAKBN7-STATE
+           MOVE    SPA-DATAKBN8-STATE  TO  T01-DATAKBN8-STATE
            MOVE    SPA-DATAKBN1-VALUE  TO  T01-DATAKBN1-VALUE
            MOVE    SPA-DATAKBN2-VALUE  TO  T01-DATAKBN2-VALUE
            MOVE    SPA-DATAKBN3-VALUE  TO  T01-DATAKBN3-VALUE
@@ -5252,6 +5389,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-DATAKBN5-VALUE  TO  T01-DATAKBN5-VALUE
            MOVE    SPA-DATAKBN6-VALUE  TO  T01-DATAKBN6-VALUE
            MOVE    SPA-DATAKBN7-VALUE  TO  T01-DATAKBN7-VALUE
+           MOVE    SPA-DATAKBN8-VALUE  TO  T01-DATAKBN8-VALUE
       *
            EVALUATE    SPA-DATAKBN4-VALUE
                WHEN    "T"
@@ -5283,6 +5421,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-CHK22-VALUE     TO  T01-CHK22-VALUE
            MOVE    SPA-CHK31-VALUE     TO  T01-CHK31-VALUE
            MOVE    SPA-CHK32-VALUE     TO  T01-CHK32-VALUE
+      *
+           MOVE    SPA-SYOKBN1-VALUE   TO  T01-SYOKBN1-VALUE
+           MOVE    SPA-SYOKBN2-VALUE   TO  T01-SYOKBN2-VALUE
       *
            MOVE    SPA-GMN-DATAKBN-G   TO  T01-DATA
            PERFORM VARYING IDX FROM    1   BY  1
@@ -5330,7 +5471,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-GMN-PRTKBN5-STYLE
                                        TO  T01-PRTKBN5-STYLE
       *
-           MOVE    WIDGET-INSENSITIVE  TO  T01-SRYYM-STATE
            MOVE    WIDGET-NORMAL       TO  T01-HKNJANUM1-STATE
       *
            IF      SPA-NAI-SKYYM       <   200804
@@ -5632,14 +5772,14 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE
                        "レセ電総括表（広域）の印刷処理を行います" 
                                        TO  WRK-TIDMSG
+               WHEN    "1010"
+                   MOVE    "社保分のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
                WHEN    "1011"
                    MOVE    "チェックリストの印刷処理を行います"
                                        TO  WRK-TIDMSG
-               WHEN    "1019"
-                   MOVE    "主科未設定リストの印刷処理を行います"
-                                       TO  WRK-TIDMSG
-               WHEN    "1010"
-                   MOVE    "社保分のレセプト電算データを作成します"
+               WHEN    "1012"
+                   MOVE    "総括表（労災）の印刷処理を行います" 
                                        TO  WRK-TIDMSG
                WHEN    "1014"
                    MOVE    "国保分のレセプト電算データを作成します"
@@ -5659,6 +5799,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1018"
                    MOVE
                    "国保分（入院外）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+               WHEN    "1019"
+                   MOVE    "主科未設定リストの印刷処理を行います"
                                        TO  WRK-TIDMSG
                WHEN    "1020"
                    MOVE

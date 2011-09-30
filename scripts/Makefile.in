@@ -57,6 +57,7 @@ utf8_shell_sources = \
 	monthly/recept14.sh.in \
 	monthly/recept15.sh.in \
 	monthly/recept16.sh.in \
+	monthly/recept17.sh.in \
 	monthly/sokatsu.sh.in \
 	monthly/teiki1.sh.in \
 	monthly/teiki2.sh.in \

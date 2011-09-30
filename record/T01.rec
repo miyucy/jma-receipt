@@ -27,10 +27,6 @@ T01	{
 		B21	{
 			state	int;
 		};
-		SRYYM	{
-			state	int;
-			value	varchar(20);
-		};
 		SKYYMD	{
 			value	varchar(10);
 		};
@@ -78,6 +74,10 @@ T01	{
 			value	bool;
 		};
 		DATAKBN7	{
+			state	int;
+			value	bool;
+		};
+		DATAKBN8	{
 			state	int;
 			value	bool;
 		};
@@ -146,6 +146,12 @@ T01	{
 		TITLE	{
 			style	varchar(20);
 			value	varchar(40);
+		};
+		SYOKBN1	{
+			value	bool;
+		};
+		SYOKBN2	{
+			value	bool;
 		};
 	};
 };

@@ -64,6 +64,8 @@
       *                                     の作成のチェックを追加
       *
       *  04.06.01    NACL-藤原    10/12/20  保険者からの返戻対応
+      *
+      *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -106,7 +108,6 @@
                        09  SPA-GMN-PRTKBNMEI       PIC X(30).
       *                                             
                    07  SPA-GMN-SKYYM               PIC X(07).
-                   07  SPA-GMN-SRYYM               PIC X(20).
                    07  SPA-GMN-SKYYMD              PIC X(10).
                    07  SPA-GMN-PRTKBN1.
                        09  SPA-GMN-PRTKBN1-STYLE   PIC X(20).
@@ -132,7 +133,6 @@
                05  SPA-NAIB-T01-AREA.
                    07  SPA-NAI-WIDGET              PIC X(08). 
                    07  SPA-NAI-SKYYM               PIC 9(06).
-                   07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-SKYYMD              PIC 9(08).
                    07  SPA-NAI-PRTKBN1             PIC X(01).
                    07  SPA-NAI-PRTKBN2             PIC X(01).
@@ -161,6 +161,7 @@
                    07  SPA-DATAKBN5-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN6-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN7-STATE          PIC S9(09)  BINARY.
+                   07  SPA-DATAKBN8-STATE          PIC S9(09)  BINARY.
       *
                05  SPA-DATAKBN.         
                    07  SPA-DATAKBN3-VALUE          PIC X(01).
@@ -170,6 +171,7 @@
                    07  SPA-DATAKBN7-VALUE          PIC X(01).
                    07  SPA-DATAKBN1-VALUE          PIC X(01).
                    07  SPA-DATAKBN2-VALUE          PIC X(01).
+                   07  SPA-DATAKBN8-VALUE          PIC X(01).
       *
                05  SPA-CHK.
                    07  SPA-CHK11-VALUE             PIC X(01).
@@ -178,6 +180,9 @@
                    07  SPA-CHK22-VALUE             PIC X(01).
                    07  SPA-CHK31-VALUE             PIC X(01).
                    07  SPA-CHK32-VALUE             PIC X(01).
+      *
+                   07  SPA-SYOKBN1-VALUE           PIC X(01).
+                   07  SPA-SYOKBN2-VALUE           PIC X(01).
       *
                05  SPA-3004-AREA.
                    07  SPA-3004-MAX                PIC 9(03).

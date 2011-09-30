@@ -9,8 +9,6 @@
               03  T01-B19-STATE   PIC S9(9)   BINARY.
               03  T01-B20-STATE   PIC S9(9)   BINARY.
               03  T01-B21-STATE   PIC S9(9)   BINARY.
-              03  T01-SRYYM-STATE   PIC S9(9)   BINARY.
-              03  T01-SRYYM-VALUE   PIC X(20).
               03  T01-SKYYMD.
                 04  T01-VALUE   PIC X(10).
               03  T01-HKNJANUM.
@@ -47,6 +45,8 @@
               03  T01-DATAKBN6-VALUE   PIC X.
               03  T01-DATAKBN7-STATE   PIC S9(9)   BINARY.
               03  T01-DATAKBN7-VALUE   PIC X.
+              03  T01-DATAKBN8-STATE   PIC S9(9)   BINARY.
+              03  T01-DATAKBN8-VALUE   PIC X.
               03  T01-HKNJAMEI.
                 04  T01-VALUE   PIC X(50).
               03  T01-HKNJAMEI1.
@@ -81,3 +81,5 @@
               03  T01-PRTKBN5-VALUE   PIC X(4).
               03  T01-TITLE-STYLE     PIC X(20).
               03  T01-TITLE-VALUE     PIC X(40).
+              03  T01-SYOKBN1-VALUE   PIC X.
+              03  T01-SYOKBN2-VALUE   PIC X.
