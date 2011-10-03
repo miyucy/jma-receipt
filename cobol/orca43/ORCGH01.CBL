@@ -3105,8 +3105,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SPA-H01GMN-SKYKBN      TO  RECE10-SKYKBN
            MOVE    "1"                    TO  RECE10-TEISEIKBN
       *
-      *    公害は点数等の更新はしない
-           IF      SPA-RECE10-TEISYUTUSAKI =   "5"
+      *    公害、労災、自賠責は点数等の更新はしない
+           IF      SPA-RECE10-TEISYUTUSAKI =   "5" OR  "3" OR  "4"
                CONTINUE
            ELSE
                PERFORM VARYING IDX FROM    1   BY  1
