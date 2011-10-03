@@ -834,6 +834,22 @@
                  MOVE    2               TO  SPA-W201-CUR
              END-IF
            END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+             IF (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(1)) OR
+                (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(2)) OR
+                (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(3)) OR
+                (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(4)) OR
+                (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(5)) OR
+                (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(6)) OR
+                (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(7)) OR
+                (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(8)) OR
+                (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(9)) OR
+                (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(10))
+                 MOVE    "0012"          TO  SPA-ERRCD
+                 MOVE    2               TO  SPA-W201-CUR
+             END-IF
+           END-IF
            .
        2201-ALL-CHK-EXT.
            EXIT.
@@ -978,6 +994,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE    "入院料加算コードの設定は１０件が上限です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "入院料加算コードが重複しています。"
                                        TO  SPA-ERRMSG
                WHEN    "9000"
                    MOVE    "病棟情報が取得できません。"
