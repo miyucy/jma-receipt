@@ -508,8 +508,8 @@
            PERFORM 2001-SYUKEI-SEC
       *
       *    ¥¢¥Õ¥¿¡¼¥±¥¢°ÑÂ÷ÈñÀÁµá½ñ
-      *??     MOVE    2               TO  FLG-SYORI
-      *??     PERFORM 2001-SYUKEI-SEC
+           MOVE    2               TO  FLG-SYORI
+           PERFORM 2001-SYUKEI-SEC
       *
            MOVE    1               TO  FLG-END 
            .
@@ -520,6 +520,9 @@
       *    ½¸·×½èÍý
       *****************************************************************
        2001-SYUKEI-SEC                SECTION.
+      *
+           DISPLAY "FLG-SYORI=" FLG-SYORI
+      *
       *
            MOVE    LOW-VALUE       TO  KEY-AREA    
       *
@@ -578,6 +581,10 @@
       *
                PERFORM 2002-PRINT-HENSYU-SEC
            END-PERFORM
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
        2001-SYUKEI-EXT.
            EXIT.
@@ -585,7 +592,7 @@
       *****************************************************************
       *    ÀÁµá£Ä£Â¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
       *****************************************************************
-       20011-UPD-FILE-HENSYU-SEC         SECTION.
+       20011-UPD-FILE-HENSYU-SEC       SECTION.
       *
            MOVE    RECE10-REC          TO  RECE10X-REC
            WRITE   RECE10X-REC
@@ -621,66 +628,110 @@
       *****************************************************************
       *    Ä¢É¼ÊÔ½¸½èÍý
       *****************************************************************
-       20021-PRINT-HEN-SEC          SECTION.
+       20021-PRINT-HEN-SEC             SECTION.
       *
            EVALUATE    FLG-SYORI
                WHEN    1 
-           INITIALIZE                      HCM73
+                   INITIALIZE                      HCM73
       *
-           MOVE    WRK-RSIIRYOCD       TO  HCM73-RSIIRYOCD
+                   MOVE    WRK-RSIIRYOCD       TO  HCM73-RSIIRYOCD
       *
-           MOVE    SUM-KINGAK          TO  WRK-KINGAKZ
-           MOVE    WRK-KINGAKZ         TO  HCM73-GOKEI
-           PERFORM VARYING IDX FROM    8   BY  -1
-                   UNTIL   IDX <       1
-               IF      WRK-KINGAKZ (IDX:1) =   SPACE
-                   MOVE    "¡ï"                TO  HCM73-MARK-S (IDX)
-                   MOVE    1                   TO  IDX
-               END-IF
-           END-PERFORM    
+                   MOVE    SUM-KINGAK          TO  WRK-KINGAKZ
+                   MOVE    WRK-KINGAKZ         TO  HCM73-GOKEI
+                   PERFORM VARYING IDX FROM    8   BY  -1
+                           UNTIL   IDX <       1
+                       IF      WRK-KINGAKZ (IDX:1) =   SPACE
+                           MOVE    "¡ï"            TO
+                                                   HCM73-MARK-S (IDX)
+                           MOVE    1               TO  IDX
+                       END-IF
+                   END-PERFORM    
       *
-           MOVE    SUM-KENSU           TO  WRK-KENSUZ
-           MOVE    WRK-KENSUZ          TO  HCM73-MAISU
+                   MOVE    SUM-KENSU           TO  WRK-KENSUZ
+                   MOVE    WRK-KENSUZ          TO  HCM73-MAISU
       *
-           MOVE    WRK-SRYYMWH         TO  HCM73-SKYYM
+                   MOVE    WRK-SRYYMWH         TO  HCM73-SKYYM
       *
-           MOVE    WRK-SEIYMDWH        TO  HCM73-PRTYMD
+                   MOVE    WRK-SEIYMDWH        TO  HCM73-PRTYMD
       *
-           COMPUTE SUM-NINZU   =   SUM-NINZU   -   1
-           MOVE    SUM-NINZU           TO  WRK-NINZUZ
-           MOVE    WRK-NINZUZ          TO  HCM73-NINZU
+                   COMPUTE SUM-NINZU   =   SUM-NINZU   -   1
+                   MOVE    SUM-NINZU           TO  WRK-NINZUZ
+                   MOVE    WRK-NINZUZ          TO  HCM73-NINZU
       *    
-           MOVE    SYS-1002-POST       TO  HCM73-HOSPPOST
+                   MOVE    SYS-1002-POST       TO  HCM73-HOSPPOST
       *
-           MOVE    WRK-HOSPADRS        TO  HCM73-HOSPADRS
+                   MOVE    WRK-HOSPADRS        TO  HCM73-HOSPADRS
       *
-           MOVE    WRK-HOSPNAME        TO  HCM73-HOSPNAME
+                   MOVE    WRK-HOSPNAME        TO  HCM73-HOSPNAME
       *    
-           MOVE    SYS-1001-KAISETUNAME
-                                       TO  HCM73-KAISETSUNAME
+                   MOVE    SYS-1001-KAISETUNAME
+                                               TO  HCM73-KAISETSUNAME
       *    
-           MOVE    WRK-TEL             TO  HCM73-HOSPTEL
+                   MOVE    WRK-TEL             TO  HCM73-HOSPTEL
       *
-           MOVE    WRK-PREFNAME        TO  HCM73-ROUDOUNAME
+                   MOVE    WRK-PREFNAME        TO  HCM73-ROUDOUNAME
       *
-           IF      KEY-O-SYOKAIFLG     =   "1"
-               MOVE    KEY-O-SYOCD         TO  HCM73-SYOCD
+                   IF      KEY-O-SYOKAIFLG     =   "1"
+                       MOVE    KEY-O-SYOCD         TO  HCM73-SYOCD
       *
-               INITIALIZE                  LABOR-SIO-REC
-               MOVE    KEY-O-SYOCD         TO  LABOR-SIO-SYOCD
-               MOVE    LNK-PRTKANRI-SRYYM  TO  LABOR-SIO-YUKOSTYMD(1:6)
-               MOVE    "01"                TO  LABOR-SIO-YUKOSTYMD(7:2)
-               MOVE    LABOR-SIO-YUKOSTYMD TO  LABOR-SIO-YUKOEDYMD
-               MOVE    LABOR-SIO-REC       TO  MCPDATA-REC
-               PERFORM 900-LABOR-SIO-READ-SEC
-               IF      FLG-LABOR-SIO       =   ZERO
-                   STRING  "¡Ê"                DELIMITED   BY  SIZE
-                           LABOR-SIO-NAME      DELIMITED   BY  SPACE
-                           "½ðÊ¬¡Ë"            DELIMITED   BY  SIZE
-                                               INTO    HCM73-SYONAME
-                   END-STRING
-               END-IF
-           END-IF
+                       INITIALIZE                  LABOR-SIO-REC
+                       MOVE    KEY-O-SYOCD         TO  LABOR-SIO-SYOCD
+                       MOVE    LNK-PRTKANRI-SRYYM  TO
+                                               LABOR-SIO-YUKOSTYMD(1:6)
+                       MOVE    "01"                TO
+                                               LABOR-SIO-YUKOSTYMD(7:2)
+                       MOVE    LABOR-SIO-YUKOSTYMD TO
+                                               LABOR-SIO-YUKOEDYMD
+                       MOVE    LABOR-SIO-REC       TO  MCPDATA-REC
+                       PERFORM 900-LABOR-SIO-READ-SEC
+                       IF      FLG-LABOR-SIO       =   ZERO
+                           STRING  "¡Ê"            DELIMITED   BY  SIZE
+                                   LABOR-SIO-NAME  DELIMITED   BY  SPACE
+                                   "½ðÊ¬¡Ë"        DELIMITED   BY  SIZE
+                                                   INTO    HCM73-SYONAME
+                           END-STRING
+                       END-IF
+                   END-IF
+               WHEN    2 
+                   INITIALIZE                      HCM72
+      *
+                   MOVE    WRK-RSIIRYOCD       TO  HCM72-RSIIRYOCD
+      *
+                   MOVE    SUM-KINGAK          TO  WRK-KINGAKZ
+                   MOVE    WRK-KINGAKZ         TO  HCM72-GOKEI
+                   PERFORM VARYING IDX FROM    8   BY  -1
+                           UNTIL   IDX <       1
+                       IF      WRK-KINGAKZ (IDX:1) =   SPACE
+                           MOVE    "¡ï"            TO
+                                                   HCM72-MARK-S (IDX)
+                           MOVE    1               TO  IDX
+                       END-IF
+                   END-PERFORM    
+      *
+                   MOVE    SUM-KENSU           TO  WRK-KENSUZ
+                   MOVE    WRK-KENSUZ          TO  HCM72-MAISU
+      *
+                   MOVE    "7"                 TO  HCM72-SKYYM (1:1)
+                   MOVE    WRK-SRYYMWH         TO  HCM72-SKYYM (2:4)
+      *
+                   MOVE    WRK-SEIYMDWH        TO  HCM72-PRTYMD
+      *
+                   COMPUTE SUM-NINZU   =   SUM-NINZU   -   1
+                   MOVE    SUM-NINZU           TO  WRK-NINZUZ
+                   MOVE    WRK-NINZUZ          TO  HCM72-NINZU
+      *    
+                   MOVE    SYS-1002-POST       TO  HCM72-HOSPPOST
+      *
+                   MOVE    WRK-HOSPADRS        TO  HCM72-HOSPADRS
+      *
+                   MOVE    WRK-HOSPNAME        TO  HCM72-HOSPNAME
+      *    
+                   MOVE    SYS-1001-KAISETUNAME
+                                               TO  HCM72-KAISETSUNAME
+      *    
+                   MOVE    WRK-TEL             TO  HCM72-HOSPTEL
+      *
+                   MOVE    WRK-PREFNAME        TO  HCM72-ROUDOUNAME
            END-EVALUATE
            .
        20021-PRINT-HEN-EXT.
@@ -689,7 +740,7 @@
       *****************************************************************
       *    Ä¢É¼°õºþ½èÍý
       *****************************************************************
-       20023-PRINT-OUT-SEC                SECTION.
+       20023-PRINT-OUT-SEC                 SECTION.
       *
            ADD     1                   TO  CNT-PAGE
       *
@@ -853,18 +904,14 @@
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
            CLOSE   UPD-FILE
       *
       *
-           IF      CNT-RECE10            =   ZERO 
+           IF      CNT-RECE10      =   ZERO 
                CONTINUE
            ELSE
-              IF      FLG-UPD        =   1
-              AND     FLG-ERR        =   ZERO 
+              IF    ( FLG-UPD          =   1    )
+              AND   ( FLG-ERR          =   ZERO ) 
                    IF      CNT-UPDFILE    >   ZERO
                        PERFORM 310-SEIKYU-UPD-SEC
                    END-IF
@@ -1067,6 +1114,7 @@
                        " SRYYM="    RECE10-SRYYM 
                        " SYOKAFLG=" RECE10-SYOKAIFLG
                        " HKNJANUM-S="    RECE10-HKNJANUM-S
+                       " FTNMONEY=" RECE10-FTNMONEY (1)
       *         
            ELSE
                MOVE    HIGH-VALUE      TO  KEY-NEW

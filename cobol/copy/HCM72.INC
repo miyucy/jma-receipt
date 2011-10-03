@@ -25,7 +25,7 @@
               03  HCM72-PRTDD PIC X(2).
             02  HCM72-HOSPPOST  PIC X(7).
             02  HCM72-HOSPADRS  PIC X(100).
-            02  HCM72-HOSPNAME  PIC X(90).
+            02  HCM72-HOSPNAME  PIC X(100).
             02  HCM72-KAISETSUNAME  PIC X(60).
             02  HCM72-HOSPTEL   PIC X(15).
             02  HCM72-ROUDOUNAME    PIC X(8).
