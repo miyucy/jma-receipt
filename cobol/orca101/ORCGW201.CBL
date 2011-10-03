@@ -827,6 +827,13 @@
                MOVE    "0010"          TO  SPA-ERRCD
                MOVE    2               TO  SPA-W201-CUR
            END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+             IF  SPA-W201-TKSNCD2(10)    NOT =  SPACE
+                 MOVE    "0011"          TO  SPA-ERRCD
+                 MOVE    2               TO  SPA-W201-CUR
+             END-IF
+           END-IF
            .
        2201-ALL-CHK-EXT.
            EXIT.
@@ -968,6 +975,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "入院料加算コードが未設定です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE    "入院料加算コードの設定は１０件が上限です。"
                                        TO  SPA-ERRMSG
                WHEN    "9000"
                    MOVE    "病棟情報が取得できません。"

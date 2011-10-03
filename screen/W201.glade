@@ -16,7 +16,7 @@
   <x>260</x>
   <y>180</y>
   <width>630</width>
-  <height>400</height>
+  <height>360</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -49,7 +49,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>24</x>
-      <y>368</y>
+      <y>320</y>
       <width>62</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -72,7 +72,7 @@
       <class>GtkButton</class>
       <name>B12</name>
       <x>528</x>
-      <y>368</y>
+      <y>320</y>
       <width>66</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -95,7 +95,7 @@
       <class>GtkButton</class>
       <name>B03</name>
       <x>228</x>
-      <y>368</y>
+      <y>320</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -115,12 +115,115 @@
     </widget>
 
     <widget>
+      <class>GtkPandaEntry</class>
+      <name>KSNCD2</name>
+      <x>68</x>
+      <y>280</y>
+      <width>184</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 08 Mar 2006 01:06:29 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 08 Mar 2006 01:06:45 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>20</text_max_length>
+      <text></text>
+      <input_mode>ASCII</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkPandaEntry</class>
+      <name>KSNNM2</name>
+      <x>256</x>
+      <y>280</y>
+      <width>320</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 08 Mar 2006 01:06:29 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 08 Mar 2006 01:06:45 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <text_visible>True</text_visible>
+      <text_max_length>16</text_max_length>
+      <text></text>
+      <input_mode>ASCII</input_mode>
+      <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>SELNUM</name>
+      <x>24</x>
+      <y>280</y>
+      <width>40</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 08 Mar 2006 04:26:12 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 08 Mar 2006 04:26:28 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>ZZZ</format>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B02</name>
+      <x>116</x>
+      <y>320</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F2</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
+      </signal>
+      <label>F2 クリア</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow28</name>
       <x>28</x>
       <y>20</y>
       <width>568</width>
-      <height>292</height>
+      <height>240</height>
       <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -196,109 +299,6 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>KSNCD2</name>
-      <x>68</x>
-      <y>328</y>
-      <width>184</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 08 Mar 2006 01:06:29 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 08 Mar 2006 01:06:45 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>ASCII</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>KSNNM2</name>
-      <x>256</x>
-      <y>328</y>
-      <width>320</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 08 Mar 2006 01:06:29 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 08 Mar 2006 01:06:45 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>16</text_max_length>
-      <text></text>
-      <input_mode>ASCII</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>SELNUM</name>
-      <x>24</x>
-      <y>328</y>
-      <width>40</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 08 Mar 2006 04:26:12 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 08 Mar 2006 04:26:28 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <format>ZZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B02</name>
-      <x>116</x>
-      <y>368</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F2</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
-      </signal>
-      <label>F2 クリア</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>
 </widget>
