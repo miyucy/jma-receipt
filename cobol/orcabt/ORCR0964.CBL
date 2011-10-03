@@ -314,6 +314,8 @@
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
+           03  WRK-HOSPNAME        PIC X(100).
+      *
            03  WRK-EDIT-AREA.
       *        編集傷病名文字数 
                05  WRK-CLM                     PIC 9(03).
@@ -1205,9 +1207,26 @@
            MOVE    SYS-4001-RSIIRYOCDN TO  HCN67-RSIIRYOCD
       *    病院等の名称
            IF      FLG-SYS-1901        =   1
-               MOVE    SYS-1901-HOSPNAME1  TO  HCN67-HOSPNAME (1:)
-               MOVE    SYS-1901-HOSPNAME2  TO  HCN67-HOSPNAME (31:)
-               MOVE    SYS-1901-HOSPNAME3  TO  HCN67-HOSPNAME (61:)
+               MOVE    SPACE               TO  WRK-HOSPNAME
+               STRING   SYS-1901-HOSPNAME1     DELIMITED  BY  SPACE
+                        "　"                   DELIMITED  BY  SIZE
+                        SYS-1901-HOSPNAME2     DELIMITED  BY  SPACE
+                        "　"                   DELIMITED  BY  SIZE
+                        SYS-1901-HOSPNAME3     DELIMITED  BY  SPACE
+                                               INTO    WRK-HOSPNAME
+               END-STRING
+               INITIALIZE                      ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    WRK-HOSPNAME        TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+               IF    ( KANACHK-RC          =   ZERO )
+               AND   ( KANACHK-SYUBETU     =   "2"  )
+                   IF      KANACHK-MAX         >   64
+                       MOVE    WRK-HOSPNAME        TO  HCN67-HOSPNAME2
+                   ELSE
+                       MOVE    WRK-HOSPNAME        TO  HCN67-HOSPNAME
+                   END-IF
+               END-IF      
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HCN67-HOSPNAME
            END-IF

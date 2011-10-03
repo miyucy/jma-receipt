@@ -2,7 +2,7 @@
             02  HCN67-SAIGAIKBN PIC X(8).
             02  HCN67-PTNUM PIC X(20).
             02  HCN67-RSIIRYOCD PIC X(30).
-            02  HCN67-HOSPNAME  PIC X(90).
+            02  HCN67-HOSPNAME  PIC X(64).
             02  HCN67-RENNUM    PIC X(7).
             02  HCN67-SINKEI    PIC X(1).
             02  HCN67-TENKI PIC X(1).
@@ -94,4 +94,5 @@
             02  HCN67-PAGE  PIC X(5).
             02  HCN67-LABEL PIC X(14).
             02  HCN67-SYOCD PIC X(5).
+            02  HCN67-HOSPNAME2 PIC X(94).
             02  HCN67-LOPTION   PIC X(100).

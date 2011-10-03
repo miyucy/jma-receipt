@@ -27,7 +27,7 @@
             02  HCM70-KHNTEN
                     PIC X(7)    OCCURS  19 TIMES.
             02  HCM70-RSIIRYOCD PIC X(30).
-            02  HCM70-HOSPNAME  PIC X(90).
+            02  HCM70-HOSPNAME  PIC X(64).
             02  HCM70-SAIGAIKBN PIC X(8).
             02  HCM70-TANJYOY   PIC X(2).
             02  HCM70-TANJYOM   PIC X(2).
@@ -61,4 +61,5 @@
             02  HCM70-PAGE  PIC X(5).
             02  HCM70-LABEL PIC X(14).
             02  HCM70-SYOCD PIC X(5).
+            02  HCM70-HOSPNAME2 PIC X(94).
             02  HCM70-LOPTION   PIC X(100).

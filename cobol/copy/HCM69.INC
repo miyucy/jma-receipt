@@ -29,7 +29,7 @@
             02  HCM69-KAISU
                     PIC X(3)    OCCURS  35 TIMES.
             02  HCM69-RSIIRYOCD PIC X(30).
-            02  HCM69-HOSPNAME  PIC X(90).
+            02  HCM69-HOSPNAME  PIC X(64).
             02  HCM69-GUNSIKUKBN1   PIC X(2).
             02  HCM69-GUNSIKUKBN2   PIC X(2).
             02  HCM69-GUNSIKUKBN3   PIC X(2).
@@ -72,4 +72,5 @@
             02  HCM69-PAGE  PIC X(5).
             02  HCM69-LABEL PIC X(14).
             02  HCM69-SYOCD PIC X(5).
+            02  HCM69-HOSPNAME2 PIC X(94).
             02  HCM69-LOPTION   PIC X(100).
