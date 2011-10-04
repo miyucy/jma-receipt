@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGK02.
+       PROGRAM-ID.                 ORCGK42.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 診療行為入力
@@ -332,6 +332,8 @@
       *
            03  FLG-TEI-ARI             PIC 9(01).
            03  FLG-SANTEI              PIC 9(01).
+      *ito
+           03  FLG-BGCOLOR             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -725,9 +727,13 @@
       *処理最大行
        01  MAX-LINE-VALUE          PIC 9(04)   VALUE   400.
       *画面最大行
-       01  MAX-GMN                 PIC 9(04)   VALUE   20.
+      *ito
+      *01  MAX-GMN                 PIC 9(04)   VALUE   20.
+       01  MAX-GMN                 PIC 9(04)   VALUE   200.
       *画面ページ数（処理最大行÷画面最大行）
-       01  MAX-PAGE                PIC 9(04)   VALUE   20.
+      *ito
+      *01  MAX-PAGE                PIC 9(04)   VALUE   20.
+       01  MAX-PAGE                PIC 9(04)   VALUE   2.
       *
        01  WRK-MOJI-AREA.
            03  FLG-SP              PIC 9(02).
@@ -1057,6 +1063,7 @@
       *ito     COPY    "KID1.INC".
       *ito     COPY    "KID2.INC".
       *ito     COPY    "KHELP.INC".
+      *ito     COPY    "K42.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1121,6 +1128,9 @@
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-K02         TO  SPA-FREE
+      *ito debug
+           DISPLAY "TCOLUMN [ " K42-PANDATABLE1-TCOLUMN " ]"
+           DISPLAY "TROW    [ " K42-PANDATABLE1-TROW " ]"
       *
            .
            EXIT    PROGRAM
@@ -1161,7 +1171,8 @@
                MOVE    SPACE               TO  LINKAREA
       *
                MOVE   SPACE                TO  MCP-PUTTYPE
-               MOVE   "K02"                TO  MCP-WINDOW
+      *ito     MOVE   "K02"                TO  MCP-WINDOW
+               MOVE   "K42"                TO  MCP-WINDOW
       *
                PERFORM 900-PUT-WINDOW
                MOVE    1                   TO  FLG-END
@@ -1474,13 +1485,6 @@
                    PERFORM 520-KIDSET-SEC
                END-IF
            END-IF
-      *ito test start
-           DISPLAY "300-SCREEN SPA-K42-ON = " SPA-K42-ON
-           IF      SPA-K42-ON          =   1
-               PERFORM 399-K42-SYORI-SEC
-               GO  TO  300-SCREEN-EXT
-           END-IF
-      *ito test end
       *
            .
        300-SCREEN-EXT.
@@ -2347,7 +2351,7 @@
            ELSE
                IF      WRK-SPA-PTNUM       NOT =   SPACE
       *            初期表示へ
-                   MOVE    WRK-SPA-PTNUM   TO  K02-PTNUM
+                   MOVE    WRK-SPA-PTNUM   TO  K42-PTNUM
       *            受付一覧からの時、診療科を編集する
                    IF      WRK-MOTOPG          =   "U01"
                        MOVE    WRK-SPA-SRYKA       TO  SPA-SRYKA
@@ -2437,30 +2441,6 @@
        3011-K98-SET-EXT.
            EXIT.
       *@@
-      * ito test start
-      *****************************************************************
-      *    Ｋ４２処理へ
-      *****************************************************************
-       399-K42-SYORI-SEC           SECTION.
-      *
-           MOVE    SPA-K01KYOUTU   TO  SPA-WORK
-      *
-           MOVE    SPACE           TO  LINKAREA
-      *
-           MOVE    "CHANGE"        TO  MCP-PUTTYPE
-           MOVE    "K42"           TO  MCP-WINDOW
-      *
-           MOVE    "K42"           TO  SPA-SAKIPG
-           MOVE    "K02"           TO  SPA-MOTOPG
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1               TO  FLG-END
-           .
-       399-K42-SYORI-EXT.
-           EXIT.
-      * ito test end
-      *
       *****************************************************************
       *    悪性腫瘍検査一覧へ処理
       *****************************************************************
@@ -2531,7 +2511,7 @@
       *                訂正
                        MOVE    "T"             TO  SPA-GMN-TEISEI
                        MOVE    1               TO  SPA-NAI-SYORI
-                       MOVE    "01"            TO  K02-DOSELNUM
+                       MOVE    "01"            TO  K42-DOSELNUM
                        PERFORM 41014-DOSELNUM-SEC
                    END-IF
       *
@@ -2543,7 +2523,7 @@
       *                訂正
                        MOVE    "T"             TO  SPA-GMN-TEISEI
                        MOVE    1               TO  SPA-NAI-SYORI
-                       MOVE    "01"            TO  K02-DOSELNUM
+                       MOVE    "01"            TO  K42-DOSELNUM
                        PERFORM 41014-DOSELNUM-SEC
                    ELSE
       *                同日再診
@@ -4817,11 +4797,14 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
+           DISPLAY "MCP-WIDGET = [ " MCP-WIDGET " ]"
+           DISPLAY "MCP-EVENT  = [ " MCP-EVENT " ]"
       *    入力項目の決定
            IF      MCP-EVENT           =   "ACTIVATE"   OR
                                            "ACTIVATE2"
-               IF     (MCP-WIDGET(1:07)    =   "INPUTCD"  )  OR
-                      (MCP-WIDGET(1:6)     =   "MEISYO"   )
+      *ito         IF     (MCP-WIDGET(1:07)    =   "INPUTCD"  )  OR
+      *ito                (MCP-WIDGET(1:6)     =   "MEISYO"   )
+               IF      MCP-WIDGET      =   "PANDATABLE1"
                    PERFORM 2001-INPUT-SET-SEC
                    IF      WRK-IDX2        =   ZERO
                        GO      TO      200-ENTRY-EXT
@@ -4872,13 +4855,25 @@
       *    入力行NOの設定
            MOVE    ZERO                TO  WRK-IDX2
            MOVE    SPACE               TO  WRK-WIDGET
-           IF      MCP-WIDGET(1:07)    =   "INPUTCD"
-               MOVE    MCP-WIDGET(8:2)     TO  WRK-IDX2
-               MOVE    MCP-WIDGET(1:7)     TO  WRK-WIDGET
-           END-IF
-           IF      MCP-WIDGET(1:6)     =   "MEISYO"
-               MOVE    MCP-WIDGET(7:2)     TO  WRK-IDX2
-               MOVE    MCP-WIDGET(1:6)     TO  WRK-WIDGET
+      *ito     IF      MCP-WIDGET(1:07)    =   "INPUTCD"
+      *ito         MOVE    MCP-WIDGET(8:2)     TO  WRK-IDX2
+      *ito         MOVE    MCP-WIDGET(1:7)     TO  WRK-WIDGET
+      *ito     END-IF
+      *ito     IF      MCP-WIDGET(1:6)     =   "MEISYO"
+      *ito         MOVE    MCP-WIDGET(7:2)     TO  WRK-IDX2
+      *ito         MOVE    MCP-WIDGET(1:6)     TO  WRK-WIDGET
+      *ito     END-IF
+           IF      MCP-WIDGET          =   "PANDATABLE1"
+               MOVE    K42-PANDATABLE1-TROW    TO  WRK-IDX2
+               IF      K42-PANDATABLE1-TCOLUMN =   2
+                   MOVE    "INPUTCD"           TO  WRK-WIDGET
+                   MOVE    K42-PANDATABLE1-TVALUE
+                                               TO  K42-INPUTCD(WRK-IDX2)
+               ELSE
+                   MOVE    "MEISYO"            TO  WRK-WIDGET
+                   MOVE    K42-PANDATABLE1-TVALUE
+                                               TO  K42-MEISYO(WRK-IDX2)
+               END-IF
            END-IF
       *
            MOVE    ZERO                TO  SPA-GMN-IDX
@@ -4933,7 +4928,7 @@
            MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
            MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
       *
-           MOVE    K02-PTNUM           TO  SPA-GMN-PTNUM
+           MOVE    K42-PTNUM           TO  SPA-GMN-PTNUM
       *
            EVALUATE    TRUE
                WHEN   (SPA-GMN-PTNUM(1:1)  =   "N" OR "n")  AND
@@ -5225,14 +5220,14 @@
       *
       *    訂正の時、入力エラー
            IF      SPA-SYORIFLG        =   1
-               IF      K02-SRYYMD      NOT =   SPA-GMN-SRYYMD
+               IF      K42-SRYYMD      NOT =   SPA-GMN-SRYYMD
                    MOVE    1                   TO  SPA-GMN-CUR
                    MOVE    "1009"              TO  SPA-ERRCD
                END-IF
                GO      TO      41017-SRYYMD-SYORI-EXT
            END-IF
       *
-           MOVE    K02-SRYYMD          TO  SPA-GMN-SRYYMD
+           MOVE    K42-SRYYMD          TO  SPA-GMN-SRYYMD
       *
            INITIALIZE                      ORCSGDAYAREA
            MOVE    SPA-GMN-SRYYMD      TO  SGDAY-INDAY
@@ -5331,8 +5326,8 @@
            MOVE    5                   TO  SPA-GMN-CUR
       *
       *    保険番号入力
-           IF    ( K02-HKNCOMBI        =   SPA-GMN-HKNCOMBI-G)  OR
-                 ( K02-PTNUM           =   SPACE             )
+           IF    ( K42-HKNCOMBI        =   SPA-GMN-HKNCOMBI-G)  OR
+                 ( K42-PTNUM           =   SPACE             )
                MOVE    1               TO  SPA-GMN-PAGE
                MOVE    1               TO  SPA-GMN-CUR
                GO      TO      41012-HKNCOMBI-SYORI-EXT
@@ -5350,7 +5345,7 @@
                MOVE    SPA-HKNKBN          TO  SPA-MAE-HKNKBN
                MOVE    SPA-CHIKENKBN       TO  SPA-MAE-CHIKENKBN
                MOVE    SPA-NAI-ROUJIN      TO  SPA-MAE-ROUJIN
-               MOVE    K02-HKNCOMBI        TO  SPA-GMN-HKNCOMBI-G
+               MOVE    K42-HKNCOMBI        TO  SPA-GMN-HKNCOMBI-G
       *        包括まとめの変更不可
                IF      (SPA-GMN-HKNCOMBINUM     =   "9999" )  OR
                        (SPA-MAE-HKNCOMBINUM     =   "9999" )
@@ -5369,7 +5364,7 @@
                END-IF
            ELSE
                MOVE    SPA-GMN-HKNCOMBI-G  TO  SPA-MAE-HKNCOMBI-G
-               MOVE    K02-HKNCOMBI        TO  SPA-GMN-HKNCOMBI-G
+               MOVE    K42-HKNCOMBI        TO  SPA-GMN-HKNCOMBI-G
                MOVE    SPA-HKNKBN          TO  SPA-MAE-HKNKBN
                MOVE    SPA-CHIKENKBN       TO  SPA-MAE-CHIKENKBN
                MOVE    SPA-NAI-ROUJIN      TO  SPA-MAE-ROUJIN
@@ -5703,14 +5698,14 @@
            MOVE    6                   TO  SPA-GMN-CUR
       *
       *    診療科変更あり
-           IF      K02-SRYKA           =   SPA-GMN-SRYKA-G
+           IF      K42-SRYKA           =   SPA-GMN-SRYKA-G
                MOVE    1               TO  SPA-GMN-PAGE
                MOVE    1               TO  SPA-GMN-CUR
                GO      TO      41013-SRYKAI-SYORI-EXT
            END-IF
            IF      SPA-PTID            =   ZERO
                MOVE    ZERO                TO  SPA-GMN-CUR
-               MOVE    K02-SRYKA           TO  SPA-GMN-SRYKA-G
+               MOVE    K42-SRYKA           TO  SPA-GMN-SRYKA-G
                GO      TO      41013-SRYKAI-SYORI-EXT
            END-IF
       *    訂正の時、エラー
@@ -5724,7 +5719,7 @@
            END-IF
       *
            MOVE    SPA-GMN-SRYKA-G     TO  SPA-MAE-SRYKA-G
-           MOVE    K02-SRYKA           TO  SPA-GMN-SRYKA-G
+           MOVE    K42-SRYKA           TO  SPA-GMN-SRYKA-G
       *    診療科
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -5948,7 +5943,7 @@
       *
       *    患者の入力チェック
            IF      SPA-PTID            =   ZERO
-               IF      K02-INPUTCD(1)      NOT =   SPACE
+               IF      K42-INPUTCD(1)      NOT =   SPACE
                    MOVE    00              TO  SPA-GMN-CUR
                    MOVE    "1005"          TO  SPA-ERRCD
                    GO      TO      41011-KOUI-ALLHEN-EXT
@@ -6035,9 +6030,9 @@
                    MOVE    ZERO                TO  FLG-INPUT-NASI
                END-IF
       *
-               MOVE    K02-INPUTCD (WRK-IDX2)  TO  SPA-GMN-INPUTCD
+               MOVE    K42-INPUTCD (WRK-IDX2)  TO  SPA-GMN-INPUTCD
                                                            (SPA-GMN-IDX)
-               MOVE    K02-MEISYO  (WRK-IDX2)  TO  SPA-GMN-MEISYO-G
+               MOVE    K42-MEISYO  (WRK-IDX2)  TO  SPA-GMN-MEISYO-G
                                                            (SPA-GMN-IDX)
       *        入力行の保存
                IF     (WRK-IN-MAP-IDX  NOT =   ZERO )  AND
@@ -6075,7 +6070,7 @@
                PERFORM VARYING     WRK-IDX3    FROM    WRK-IDX2 BY  1
                        UNTIL      (WRK-IDX3    >   MAX-GMN   )   OR
                                   (SPA-ERRCD   NOT =   SPACE )
-                   IF      K02-INPUTCD (WRK-IDX3)  NOT =  SPACE
+                   IF      K42-INPUTCD (WRK-IDX3)  NOT =  SPACE
                        MOVE    "7004"          TO  SPA-ERRCD
                    END-IF
                END-PERFORM
@@ -8583,12 +8578,12 @@
       *
            MOVE    4                   TO  SPA-GMN-CUR
       *
-           MOVE    K02-DOSELNUM        TO  SPA-GMN-DOSELNUM
-           IF      K02-DOSELNUM        =   SPACE
+           MOVE    K42-DOSELNUM        TO  SPA-GMN-DOSELNUM
+           IF      K42-DOSELNUM        =   SPACE
                MOVE    ZERO            TO  SPA-NAI-SELNUM
            ELSE
                INITIALIZE                      ORCSNUMAREA
-               MOVE    K02-DOSELNUM        TO  SNUM-INX
+               MOVE    K42-DOSELNUM        TO  SNUM-INX
                CALL    "ORCSNUM"           USING
                                            ORCSNUMAREA
                IF     (SNUM-RC         NOT =   ZERO  )   OR
@@ -8641,7 +8636,7 @@
       *
            PERFORM VARYING     IDX   FROM   1   BY  1
                    UNTIL       IDX   >   SPA-GMN-MAX1
-              IF      K02-SELECT (IDX)        =  "T"
+              IF      K42-SELECT (IDX)        =  "T"
                   IF      IDX                 =   SPA-NAI-TESELNUM
                       CONTINUE
                   ELSE
@@ -10256,7 +10251,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-LAST-PTNUM      =   SPACE
                CONTINUE
            ELSE
-               MOVE    SPA-LAST-PTNUM      TO  K02-PTNUM
+               MOVE    SPA-LAST-PTNUM      TO  K42-PTNUM
                PERFORM 41010-PTNUM-SYORI-SEC
            END-IF
       *
@@ -10634,7 +10629,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    診療日付のチェック訂正の時、入力エラー
            IF      SPA-SYORIFLG        =   1
-               IF      K02-SRYYMD      NOT =   SPA-GMN-SRYYMD
+               IF      K42-SRYYMD      NOT =   SPA-GMN-SRYYMD
                    MOVE    1                   TO  SPA-GMN-CUR
                    MOVE    "1009"              TO  SPA-ERRCD
                END-IF
@@ -11496,7 +11491,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "K02    "           TO  MCP-WINDOW.
+      *ito MOVE    "K02    "           TO  MCP-WINDOW.
+           MOVE    "K42    "           TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
            .
@@ -11682,19 +11678,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO                TO  WRK-K02-ROW
                MOVE    ZERO                TO  WRK-K02-ROWATTR
            ELSE
-               MOVE    K02-ROW             TO  WRK-K02-ROW
-               MOVE    K02-ROWATTR         TO  WRK-K02-ROWATTR
+               MOVE    K42-ROW             TO  WRK-K02-ROW
+               MOVE    K42-ROWATTR         TO  WRK-K02-ROWATTR
            END-IF
       *
            MOVE    SPACE               TO  K02
            INITIALIZE                      K02
       *
       *    コラムリストの位置指定
-           MOVE    ZERO                TO  K02-ROW
-           MOVE    ZERO                TO  K02-ROWATTR
+           MOVE    ZERO                TO  K42-ROW
+           MOVE    ZERO                TO  K42-ROWATTR
            IF      WRK-K02-ROW     NOT =   ZERO
-               MOVE    WRK-K02-ROW         TO  K02-ROW
-               MOVE    WRK-K02-ROWATTR     TO  K02-ROWATTR
+               MOVE    WRK-K02-ROW         TO  K42-ROW
+               MOVE    WRK-K02-ROWATTR     TO  K42-ROWATTR
            END-IF
       *
            MOVE    ZERO                TO  IDX
@@ -11703,52 +11699,73 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
                    UNTIL      (WRK-IDX     >   SPA-MAX-LINE)  OR
                               (IDX         >=  MAX-GMN )
+      *ito ちょっと試し start
+               MOVE    "black"         TO
+                               K42-PANDATABLE1-FGCOLORS(IDX)
+               IF      FLG-BGCOLOR         =   ZERO
+                   MOVE    "white"         TO
+                               K42-PANDATABLE1-BGCOLORS(IDX)
+                   MOVE    1               TO  FLG-BGCOLOR
+               ELSE
+                   MOVE    "AntiqueWhite"  TO
+                               K42-PANDATABLE1-BGCOLORS(IDX)
+                   MOVE    ZERO            TO  FLG-BGCOLOR
+               END-IF
+      *ito ちょっと試し end
       *        画面表示
                IF      SPA-COM-PAGE(WRK-IDX)   =   SPA-GMN-PAGE
                    ADD     1               TO  IDX
                    MOVE    SPA-GMN-SRYKBN (WRK-IDX)
-                                               TO  K02-SRYKBN(IDX)
+                                               TO  K42-SRYKBN(IDX)
                    MOVE    SPA-GMN-INPUTCD(WRK-IDX)
-                                               TO  K02-INPUTCD(IDX)
+                                               TO  K42-INPUTCD(IDX)
                    MOVE    SPA-GMN-MEISYO-G(WRK-IDX)
-                                               TO  K02-MEISYO(IDX)
+                                               TO  K42-MEISYO(IDX)
                    PERFORM 5002-SURYO-HEN-SEC
       *@
       *            包括行
                    IF     (SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)
                       OR ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
                       AND (SPA-HKNCOMBINUM    NOT =   "9999" ))
-                       MOVE    "blue"         TO  K02-SRYKBN-STYLE(IDX)
-                       MOVE    "blue"         TO  K02-MEISYO-STYLE(IDX)
+      *ito                 MOVE    "blue"         TO  K42-SRYKBN-STYLE(IDX)
+      *ito                 MOVE    "blue"         TO  K42-MEISYO-STYLE(IDX)
+                       MOVE    "blue"         TO
+                               K42-PANDATABLE1-FGCOLORS(IDX)
                        IF       SPA-COM-HOUKATU-FLG2(WRK-IDX)   =   1
-                           MOVE    "red"      TO  K02-SRYKBN-STYLE(IDX)
-                           MOVE    "red"      TO  K02-MEISYO-STYLE(IDX)
+      *ito                     MOVE    "red"      TO  K42-SRYKBN-STYLE(IDX)
+      *ito                     MOVE    "red"      TO  K42-MEISYO-STYLE(IDX)
+                           MOVE    "red"          TO
+                                   K42-PANDATABLE1-FGCOLORS(IDX)
                        END-IF
                    ELSE
-                       MOVE    "black"        TO  K02-SRYKBN-STYLE(IDX)
-                       MOVE    "black"        TO  K02-MEISYO-STYLE(IDX)
+      *ito                 MOVE    "black"        TO  K42-SRYKBN-STYLE(IDX)
+      *ito                 MOVE    "black"        TO  K42-MEISYO-STYLE(IDX)
+                       MOVE    "black"       TO
+                               K42-PANDATABLE1-FGCOLORS(IDX)
                    END-IF
       *
       *!!          禁忌薬剤
                    IF      SPA-COM-PTKINKI-ARI (WRK-IDX)   =   1
-                       MOVE    "red"          TO  K02-MEISYO-STYLE(IDX)
+      *ito                 MOVE    "red"          TO  K42-MEISYO-STYLE(IDX)
+                       MOVE    "red"         TO
+                               K42-PANDATABLE1-FGCOLORS(IDX)
                    END-IF
       *!
                    IF      SPA-GMN-INPUTCD(WRK-IDX)(1:1)   =   "#"
-                        MOVE    ALL "#"             TO  K02-SRYKBN(IDX)
-                        MOVE    ALL "#"             TO  K02-SURYO (IDX)
+                        MOVE    ALL "#"             TO  K42-SRYKBN(IDX)
+                        MOVE    ALL "#"             TO  K42-SURYO (IDX)
                    END-IF
       *!
                    IF      SPA-GMN-INPUTCD(WRK-IDX)(1:1)   =   "$"
-                        MOVE    ALL "="             TO  K02-SRYKBN(IDX)
-                        MOVE    ALL "="             TO  K02-SURYO (IDX)
+                        MOVE    ALL "="             TO  K42-SRYKBN(IDX)
+                        MOVE    ALL "="             TO  K42-SURYO (IDX)
                     END-IF
       *!
                END-IF
       *
            END-PERFORM
       *
-           MOVE    "複数科保険"        TO  K02-B06S-LABEL
+           MOVE    "複数科保険"        TO  K42-B06S-LABEL
       *
       *    ページ表示
            MOVE    SPACE               TO  WRK-HEN-PAGE
@@ -11758,7 +11775,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "/"                 TO  WRK-HEN2
                MOVE    WRK-MAP-MAXPAGE     TO  WRK-HEN-PAGE2
            END-IF
-           MOVE    WRK-HEN-PAGE        TO  K02-MODE
+           MOVE    WRK-HEN-PAGE        TO  K42-MODE
       *
       *    前頁表示の時、１行目へ
            IF      SPA-GMN-CUR         =   99  OR  88
@@ -11768,45 +11785,45 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    明細入力の時、コードが入力されていること
            IF      SPA-GMN-CUR         =   2
-               IF      K02-INPUTCD(SPA-MAP-IDX)    =   SPACE
+               IF      K42-INPUTCD(SPA-MAP-IDX)    =   SPACE
                    MOVE    1               TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
-           MOVE    SPA-GMN-PTNUM       TO  K02-PTNUM
-           MOVE    SPA-GMN-KANANAME    TO  K02-KANANAME
-           MOVE    SPA-GMN-NAME        TO  K02-NAME
+           MOVE    SPA-GMN-PTNUM       TO  K42-PTNUM
+           MOVE    SPA-GMN-KANANAME    TO  K42-KANANAME
+           MOVE    SPA-GMN-NAME        TO  K42-NAME
       *    排他中
            IF      SPA-LOCK                =   ZERO
-               MOVE    "black"             TO  K02-KANANAME-STYLE
-               MOVE    "black"             TO  K02-NAME-STYLE
+               MOVE    "black"             TO  K42-KANANAME-STYLE
+               MOVE    "black"             TO  K42-NAME-STYLE
            ELSE
-               MOVE    "red"               TO  K02-KANANAME-STYLE
-               MOVE    "red"               TO  K02-NAME-STYLE
+               MOVE    "red"               TO  K42-KANANAME-STYLE
+               MOVE    "red"               TO  K42-NAME-STYLE
            END-IF
-           MOVE    SPA-GMN-SEX         TO  K02-SEX
+           MOVE    SPA-GMN-SEX         TO  K42-SEX
            MOVE    SPA-GMN-HKNCOMBI-G
-                                       TO  K02-HKNCOMBI
-           MOVE    SPA-GMN-FTNRATEMEI  TO  K02-RATE
+                                       TO  K42-HKNCOMBI
+           MOVE    SPA-GMN-FTNRATEMEI  TO  K42-RATE
       *    診療日
            IF      SPA-GMN-SRYYMD      =   SPACE
-               MOVE    SPA-SRYYMDW         TO  K02-SRYYMD
+               MOVE    SPA-SRYYMDW         TO  K42-SRYYMD
            ELSE
-               MOVE    SPA-GMN-SRYYMD      TO  K02-SRYYMD
+               MOVE    SPA-GMN-SRYYMD      TO  K42-SRYYMD
            END-IF
-           MOVE    SPA-GMN-BIRTHDAY    TO  K02-BIRTHDAY
+           MOVE    SPA-GMN-BIRTHDAY    TO  K42-BIRTHDAY
       *    年齢
-           MOVE    SPA-NENREI-HEN      TO  K02-NENREI
+           MOVE    SPA-NENREI-HEN      TO  K42-NENREI
       *
            IF      SPA-GMN-GOKEI       >=   ZERO
                MOVE    SPA-GMN-GOKEI       TO  WRK-GOKEI-Z2
-               MOVE    WRK-GOKEI-X2        TO  K02-GOKEITEN
+               MOVE    WRK-GOKEI-X2        TO  K42-GOKEITEN
            ELSE
                MOVE    SPA-GMN-GOKEI       TO  WRK-GOKEI-Z3
-               MOVE    WRK-GOKEI-X3        TO  K02-GOKEITEN
+               MOVE    WRK-GOKEI-X3        TO  K42-GOKEITEN
            END-IF
-           MOVE    SPA-GMN-LASTYMD-G   TO  K02-LASTYMD
-           MOVE    SPA-GMN-SYOSINYMD   TO  K02-SYOSINYMD
+           MOVE    SPA-GMN-LASTYMD-G   TO  K42-LASTYMD
+           MOVE    SPA-GMN-SYOSINYMD   TO  K42-SYOSINYMD
            IF      SPA-GMN-LASTMID     =   SPACE
                IF      SPA-BEDFLG          =   ZERO
                    MOVE    "最終来院日"            TO  SPA-GMN-LASTMID
@@ -11814,74 +11831,74 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "最終来院日（退院日）"  TO  SPA-GMN-LASTMID
                END-IF
            END-IF
-           MOVE    SPA-GMN-LASTMID     TO  K02-LASTMID
+           MOVE    SPA-GMN-LASTMID     TO  K42-LASTMID
       *
            MOVE    SPA-GMN-MISYUMONEY  TO  WRK-GOKEI-Z3
-           MOVE    WRK-GOKEI-X3        TO  K02-MISYUMONEY
+           MOVE    WRK-GOKEI-X3        TO  K42-MISYUMONEY
       *    累計点数
       *        訂正の時、”＊”
       *    IF      SPA-SYORIFLG        =   1
-      *        MOVE    ALL "*"             TO  K02-ZAITENTOTAL
+      *        MOVE    ALL "*"             TO  K42-ZAITENTOTAL
       *    ELSE
                COMPUTE WRK-GOKEI-Z2        =   SPA-GMN-GOKEI
                                            +   SPA-ZAITENTOTAL
-               MOVE    WRK-GOKEI-Z2        TO  K02-ZAITENTOTAL
+               MOVE    WRK-GOKEI-Z2        TO  K42-ZAITENTOTAL
       *    END-IF
       *
       *    包括分入力は、累計に集計しない
            IF      SPA-HKNCOMBINUM     =   "9999"
                MOVE    SPA-ZAITENTOTAL     TO  WRK-GOKEI-Z2
-               MOVE    WRK-GOKEI-Z2        TO  K02-ZAITENTOTAL
+               MOVE    WRK-GOKEI-Z2        TO  K42-ZAITENTOTAL
            END-IF
       *
       *    保険組合せ
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-HKN-MAX
-               MOVE    SPA-GMN-HKN-LIST (IDX)  TO  K02-HKNCOMBI-ITEM
+               MOVE    SPA-GMN-HKN-LIST (IDX)  TO  K42-HKNCOMBI-ITEM
                                                              (IDX)
            END-PERFORM
-           MOVE    SPA-HKN-MAX         TO  K02-HKNCOMBI-COUNT
+           MOVE    SPA-HKN-MAX         TO  K42-HKNCOMBI-COUNT
       *
       *    診療科
-           MOVE    SPA-GMN-SRYKA-G     TO  K02-SRYKA
+           MOVE    SPA-GMN-SRYKA-G     TO  K42-SRYKA
            PERFORM  VARYING   IDX     FROM    1   BY  1
                     UNTIL     IDX         >   SPA-SRYKA-MAX
-               MOVE    SPA-GMN-SRYKALST (IDX)  TO  K02-SRYKA-ITEM
+               MOVE    SPA-GMN-SRYKALST (IDX)  TO  K42-SRYKA-ITEM
                                                              (IDX)
            END-PERFORM
-           MOVE    SPA-SRYKA-MAX       TO  K02-SRYKA-COUNT
+           MOVE    SPA-SRYKA-MAX       TO  K42-SRYKA-COUNT
       *
       *    ＤＯ診療日
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-GMN-MAX1
                MOVE    SPA-GMN-NO     (IDX)    TO  WRK-ZZ
-               MOVE    WRK-ZZ                  TO  K02-NO  (IDX)
+               MOVE    WRK-ZZ                  TO  K42-NO  (IDX)
                                                        (1:4)
-               MOVE    SPA-GMN-RRKYMD (IDX)    TO  K02-RRKYMD(IDX)
-               MOVE    SPA-GMN-RRKSRYKA(IDX)   TO  K02-RRKSRYKA(IDX)
+               MOVE    SPA-GMN-RRKYMD (IDX)    TO  K42-RRKYMD(IDX)
+               MOVE    SPA-GMN-RRKSRYKA(IDX)   TO  K42-RRKSRYKA(IDX)
                MOVE    SPA-GMN-RRKHKNCOMBI(IDX)
-                                               TO  K02-RRKHKNCOMBI(IDX)
+                                               TO  K42-RRKHKNCOMBI(IDX)
       *T
                IF      SPA-NAI-SYU-UPDKBN (IDX)    =   "1"
-                   MOVE    "*"                 TO  K02-NO  (IDX)
+                   MOVE    "*"                 TO  K42-NO  (IDX)
                                                           (1:1)
                END-IF
       *T
       *D       IF      SPA-GMN-NO (IDX)    =   SPA-NAI-TESELNUM
                IF      IDX                 =   SPA-NAI-TESELNUM
-                   MOVE    "T"             TO  K02-SELECT  (IDX)
+                   MOVE    "T"             TO  K42-SELECT  (IDX)
       *            訂正の時
                    IF      SPA-SYORIFLG        =   1
-                       MOVE    IDX             TO  K02-ROW
-                       MOVE    2               TO  K02-ROWATTR
+                       MOVE    IDX             TO  K42-ROW
+                       MOVE    2               TO  K42-ROWATTR
                    END-IF
                ELSE
-                   MOVE    "F"             TO  K02-SELECT  (IDX)
+                   MOVE    "F"             TO  K42-SELECT  (IDX)
                END-IF
            END-PERFORM
-           MOVE    SPA-GMN-MAX1        TO  K02-COUNT
+           MOVE    SPA-GMN-MAX1        TO  K42-COUNT
       *
-           MOVE    SPA-GMN-DOSELNUM    TO  K02-DOSELNUM
+           MOVE    SPA-GMN-DOSELNUM    TO  K42-DOSELNUM
       *
       *    院内院外
            IF      SPA-INGAIKBN        =   "1"  OR  "0"
@@ -11892,12 +11909,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EVALUATE    SPA-INGAIKBN
                WHEN    "1"
                    MOVE    "T"             TO  SPA-GMN-INGAI
-                   MOVE    "T"             TO  K02-INGAI-VALUE
-                   MOVE    "院外"          TO  K02-INGAI-LABEL
+                   MOVE    "T"             TO  K42-INGAI-VALUE
+                   MOVE    "院外"          TO  K42-INGAI-LABEL
                WHEN    "0"
                    MOVE    "F"             TO  SPA-GMN-INGAI
-                   MOVE    "F"             TO  K02-INGAI-VALUE
-                   MOVE    "院内"          TO  K02-INGAI-LABEL
+                   MOVE    "F"             TO  K42-INGAI-VALUE
+                   MOVE    "院内"          TO  K42-INGAI-LABEL
            END-EVALUATE
       *
       *    訂正・処理
@@ -11910,50 +11927,50 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            EVALUATE    SPA-GMN-TEISEI
                WHEN    "T"
-                   MOVE    "T"             TO  K02-TEISEI-VALUE
-                   MOVE    "訂正診療日"    TO  K02-TEISEI-LABEL
+                   MOVE    "T"             TO  K42-TEISEI-VALUE
+                   MOVE    "訂正診療日"    TO  K42-TEISEI-LABEL
                    MOVE    1               TO  SPA-NAI-SYORI
                    MOVE    "T"             TO  SPA-GMN-TEISEI
                WHEN    "F"
                WHEN    SPACE
                    MOVE    "F"             TO  SPA-GMN-TEISEI
-                   MOVE    "F"             TO  K02-TEISEI-VALUE
-                   MOVE    "ＤＯ検索"      TO  K02-TEISEI-LABEL
+                   MOVE    "F"             TO  K42-TEISEI-VALUE
+                   MOVE    "ＤＯ検索"      TO  K42-TEISEI-LABEL
                    MOVE    ZERO            TO  SPA-NAI-SYORI
            END-EVALUATE
       *
       *    処理
            EVALUATE    SPA-SYORIFLG
                WHEN    0
-                   MOVE    SPACE           TO  K02-SYORIMEI-VALUE
+                   MOVE    SPACE           TO  K42-SYORIMEI-VALUE
                WHEN    1
-                   MOVE    "red"           TO  K02-SYORIMEI-STYLE
-                   MOVE    "［訂　正］"    TO  K02-SYORIMEI-VALUE
+                   MOVE    "red"           TO  K42-SYORIMEI-STYLE
+                   MOVE    "［訂　正］"    TO  K42-SYORIMEI-VALUE
            END-EVALUATE
       *
       *    継続
            EVALUATE    SPA-CONTKBN
                WHEN    SPACE
-                   MOVE    SPACE           TO  K02-CONTKBN-VALUE
+                   MOVE    SPACE           TO  K42-CONTKBN-VALUE
                    IF      SPA-FUKU-SYORI      =   "1"  OR  "2"
-                       MOVE    "red"       TO  K02-CONTKBN-STYLE
-                       MOVE    "［複］"    TO  K02-CONTKBN-VALUE
+                       MOVE    "red"       TO  K42-CONTKBN-STYLE
+                       MOVE    "［複］"    TO  K42-CONTKBN-VALUE
                    END-IF
                    IF      SPA-FUKU-SYORI      =   "F"
-                       MOVE    "black"     TO  K02-CONTKBN-STYLE
-                       MOVE    "［複］"    TO  K02-CONTKBN-VALUE
+                       MOVE    "black"     TO  K42-CONTKBN-STYLE
+                       MOVE    "［複］"    TO  K42-CONTKBN-VALUE
                    END-IF
                WHEN    "1"
-                   MOVE    "red"           TO  K02-CONTKBN-STYLE
-                   MOVE    "［継］"        TO  K02-CONTKBN-VALUE
+                   MOVE    "red"           TO  K42-CONTKBN-STYLE
+                   MOVE    "［継］"        TO  K42-CONTKBN-VALUE
                WHEN    "2"
-                   MOVE    "red"           TO  K02-CONTKBN-STYLE
-                   MOVE    "［確］"        TO  K02-CONTKBN-VALUE
+                   MOVE    "red"           TO  K42-CONTKBN-STYLE
+                   MOVE    "［確］"        TO  K42-CONTKBN-VALUE
            END-EVALUATE
       *    入院期間中
            IF      SPA-NAI-NYUIN       =   1
-               MOVE    "blue"              TO  K02-CONTKBN-STYLE
-               MOVE    "［入］"            TO  K02-CONTKBN-VALUE
+               MOVE    "blue"              TO  K42-CONTKBN-STYLE
+               MOVE    "［入］"            TO  K42-CONTKBN-VALUE
            END-IF
       *
       *    リハビリ・患者情報編集
@@ -11964,78 +11981,78 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *             UNTIL     IDX         >   7
       *        IF      SPA-GMN-RIHAYMD (IDX)  NOT =   SPACE
       *            ADD     1                      TO  IDY
-      *            MOVE    SPA-GMN-RIHAYMD (IDX)  TO  K02-TABOO-ITEM
+      *            MOVE    SPA-GMN-RIHAYMD (IDX)  TO  K42-TABOO-ITEM
       *                                                      (IDY)
       *        END-IF
       *    END-PERFORM
       *    急性発症日
       *    IF      SPA-GMN-KYUSEI     NOT =   SPACE
       *        ADD     1                  TO  IDY
-      *        MOVE    SPA-GMN-KYUSEI     TO  K02-TABOO-ITEM(IDY)
+      *        MOVE    SPA-GMN-KYUSEI     TO  K42-TABOO-ITEM(IDY)
       *    END-IF
       *    禁忌
       *    PERFORM  VARYING   IDX     FROM    1   BY  1
       *             UNTIL    (IDX         >   SPA-TABOO-MAX )
       *                   OR (IDY         >=  40   )
       *        ADD     1                      TO  IDY
-      *        MOVE    SPA-GMN-TABOO (IDX)    TO  K02-TABOO-ITEM
+      *        MOVE    SPA-GMN-TABOO (IDX)    TO  K42-TABOO-ITEM
       *                                                      (IDY)
       **** END-PERFORM
-           MOVE    IDY                 TO  K02-TABOO-COUNT
-           MOVE    K02-TABOO-ITEM(1)   TO  K02-TABOO
+           MOVE    IDY                 TO  K42-TABOO-COUNT
+           MOVE    K42-TABOO-ITEM(1)   TO  K42-TABOO
       *
       *    小児科時間外
            IF      SPA-GMN-JIKANMSG    =   SPACE
-               MOVE    SPACE               TO  K02-JIKANMSG-VALUE
+               MOVE    SPACE               TO  K42-JIKANMSG-VALUE
       *
       *Ｈ２０．４から施設入居中の特記事項を編集
                IF      SPA-PTTOKK-NAIYO    NOT =   SPACE
-                   MOVE    "blue"              TO  K02-JIKANMSG-STYLE
-                   MOVE    SPA-PTTOKK-NAIYO    TO  K02-JIKANMSG-VALUE
+                   MOVE    "blue"              TO  K42-JIKANMSG-STYLE
+                   MOVE    SPA-PTTOKK-NAIYO    TO  K42-JIKANMSG-VALUE
                END-IF
            ELSE
-               MOVE    "red"               TO  K02-JIKANMSG-STYLE
-               MOVE    SPA-GMN-JIKANMSG    TO  K02-JIKANMSG-VALUE
+               MOVE    "red"               TO  K42-JIKANMSG-STYLE
+               MOVE    SPA-GMN-JIKANMSG    TO  K42-JIKANMSG-VALUE
            END-IF
       *    公費期限切れ名称
            IF      SPA-GMN-KOHMSG      =   SPACE
-               MOVE    SPACE               TO  K02-KOHMSG-VALUE
+               MOVE    SPACE               TO  K42-KOHMSG-VALUE
            ELSE
-               MOVE    "red"               TO  K02-KOHMSG-STYLE
-               MOVE    SPA-GMN-KOHMSG      TO  K02-KOHMSG-VALUE
+               MOVE    "red"               TO  K42-KOHMSG-STYLE
+               MOVE    SPA-GMN-KOHMSG      TO  K42-KOHMSG-VALUE
            END-IF
       *
-           MOVE    SPA-DRCD-NAME       TO  K02-DRNAME
+           MOVE    SPA-DRCD-NAME       TO  K42-DRNAME
       *    病名
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-BYOMEI-MAX
-               MOVE    SPA-GMN-BYOMEI-NO(IDX)  TO  K02-BYOMEIKA(IDX)
-               MOVE    SPA-GMN-BYOMEI   (IDX)  TO  K02-BYOMEI(IDX)
+               MOVE    SPA-GMN-BYOMEI-NO(IDX)  TO  K42-BYOMEIKA(IDX)
+               MOVE    SPA-GMN-BYOMEI   (IDX)  TO  K42-BYOMEI(IDX)
            END-PERFORM
-           MOVE    SPA-BYOMEI-MAX      TO  K02-BYOMEI-COUNT
+           MOVE    SPA-BYOMEI-MAX      TO  K42-BYOMEI-COUNT
       *
       *    メモボタン
            IF      SPA-NAI-MEMOKBN     =   "1"
-               MOVE    "red"               TO  K02-BC10-STYLE
+               MOVE    "red"               TO  K42-BC10-STYLE
            ELSE
-               MOVE    "black"             TO  K02-BC10-STYLE
+               MOVE    "black"             TO  K42-BC10-STYLE
            END-IF
-           MOVE    "メモ"              TO  K02-BC10-LABEL
+           MOVE    "メモ"              TO  K42-BC10-LABEL
       *
       *    他院紐付けあり
            IF      SPA-NAI-GRPKBN      =   1
-               MOVE    "darkgreen"         TO  K02-GRPMEI-STYLE
+               MOVE    "darkgreen"         TO  K42-GRPMEI-STYLE
                IF      SPA-NAI-GRPKBN2     =   1
-                   MOVE    "red"           TO  K02-GRPMEI-STYLE
+                   MOVE    "red"           TO  K42-GRPMEI-STYLE
                END-IF
-               MOVE    "【他】"            TO  K02-GRPMEI-VALUE
+               MOVE    "【他】"            TO  K42-GRPMEI-VALUE
            ELSE
-               MOVE    "black"             TO  K02-GRPMEI-STYLE
-               MOVE    SPACE               TO  K02-GRPMEI-VALUE
+               MOVE    "black"             TO  K42-GRPMEI-STYLE
+               MOVE    SPACE               TO  K42-GRPMEI-VALUE
            END-IF
       *
       *    医院名称
-           MOVE    SPA-HOSPNAME        TO  K02-TITLE
+           MOVE    SPA-HOSPNAME        TO  K42-TITLE
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
@@ -12056,48 +12073,48 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *業務処理権限設定
       *    受付
            IF      SPA-GSRAUTH-11      =   "1"
-               MOVE    WIDGET-NORMAL       TO  K02-B04S-STATE
+               MOVE    WIDGET-NORMAL       TO  K42-B04S-STATE
            ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B04S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B04S-STATE
            END-IF
       *    患者登録
            IF      SPA-GSRAUTH-12      =   "1"
-               MOVE    WIDGET-NORMAL       TO  K02-B05S-STATE
+               MOVE    WIDGET-NORMAL       TO  K42-B05S-STATE
            ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B05S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B05S-STATE
            END-IF
       *    病名登録
            IF      SPA-GSRAUTH-22      =   "1"
-               MOVE    WIDGET-NORMAL       TO  K02-B07S-STATE
+               MOVE    WIDGET-NORMAL       TO  K42-B07S-STATE
            ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B07S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B07S-STATE
            END-IF
       *    収納登録
            IF      SPA-GSRAUTH-23      =   "1"
-               MOVE    WIDGET-NORMAL       TO  K02-B08S-STATE
+               MOVE    WIDGET-NORMAL       TO  K42-B08S-STATE
            ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B08S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B08S-STATE
            END-IF
       *    会計照会
            IF      SPA-GSRAUTH-24      =   "1"
-               MOVE    WIDGET-NORMAL       TO  K02-B09S-STATE
+               MOVE    WIDGET-NORMAL       TO  K42-B09S-STATE
            ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B09S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B09S-STATE
            END-IF
       *
       *    排他中
            IF      SPA-LOCK            =   ZERO
-               MOVE    WIDGET-NORMAL       TO  K02-B12-STATE
-               MOVE    WIDGET-NORMAL       TO  K02-B12S-STATE
+               MOVE    WIDGET-NORMAL       TO  K42-B12-STATE
+               MOVE    WIDGET-NORMAL       TO  K42-B12S-STATE
            ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B04S-STATE
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B05S-STATE
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B07S-STATE
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B08S-STATE
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B09S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B04S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B05S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B07S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B08S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B09S-STATE
       *
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B12-STATE
-               MOVE    WIDGET-INSENSITIVE  TO  K02-B12S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B12-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  K42-B12S-STATE
            END-IF
            .
        51O-GSRAUTH-EXT.
@@ -12185,14 +12202,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-KEI-Z2          TO  WRK-H-KEI
            END-IF
       *
-           MOVE    WRK-SURYO-HENSYU    TO  K02-SURYO (IDX)
-           MOVE    "user-font"         TO  K02-SURYO-STYLE(IDX)
+           MOVE    WRK-SURYO-HENSYU    TO  K42-SURYO (IDX)
+      *ito     MOVE    "user-font"         TO  K42-SURYO-STYLE(IDX)
       *@
       *    包括剤
            IF    ( SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)   OR
                  ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
               AND (SPA-HKNCOMBINUM           NOT =   "9999" ))
-              MOVE    "blue"         TO  K02-SURYO-STYLE(IDX)
+      *ito        MOVE    "blue"         TO  K42-SURYO-STYLE(IDX)
+              MOVE    "blue"         TO  K42-PANDATABLE1-FGCOLORS(IDX)
            END-IF
            .
        5002-SURYO-HEN-EXT.
@@ -12234,7 +12252,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        IF      SPA-GMN-RIHAYMD (IDX)  NOT =   SPACE
                            ADD     1               TO  IDY
                            MOVE    SPA-GMN-RIHAYMD (IDX)
-                                                   TO  K02-TABOO-ITEM
+                                                   TO  K42-TABOO-ITEM
                                                                (IDY)
                        END-IF
                    END-PERFORM
@@ -12242,7 +12260,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF     (SPA-GMN-KYUSEI     NOT =   SPACE )
                       AND (IDY                    <   40    )
                        ADD     1                  TO  IDY
-                       MOVE    SPA-GMN-KYUSEI     TO  K02-TABOO-ITEM
+                       MOVE    SPA-GMN-KYUSEI     TO  K42-TABOO-ITEM
                                                               (IDY)
                    END-IF
                WHEN    1   THRU   4
@@ -12254,7 +12272,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    NOT =   SPACE
                            ADD     1               TO  IDY
                            MOVE    SPA-GMN-TABOO (IDY2 IDX)
-                                                   TO  K02-TABOO-ITEM
+                                                   TO  K42-TABOO-ITEM
                                                                (IDY)
                        END-IF
                    END-PERFORM
@@ -12282,7 +12300,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    患者番号が空白の時、患者番号へ
-           IF      K02-PTNUM       =  SPACE
+           IF      K42-PTNUM       =  SPACE
                MOVE    00              TO  SPA-GMN-CUR
            END-IF
       *
@@ -12297,8 +12315,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    00
                    MOVE    "PTNUM"         TO  MCP-WIDGET
                WHEN    01
-                   MOVE    "INPUTCD"       TO  MCP-WIDGET
-                   MOVE    WRK-IDX2        TO  MCP-WIDGET(8:2)
+      *ito             MOVE    "INPUTCD"       TO  MCP-WIDGET
+      *ito             MOVE    WRK-IDX2        TO  MCP-WIDGET(8:2)
+                   MOVE    "PANDATABLE1"   TO  MCP-WIDGET
+                   MOVE    2               TO  K42-PANDATABLE1-TROWATTR
+                   MOVE    2               TO  K42-PANDATABLE1-TCOLUMN
+                   MOVE    WRK-IDX2        TO  K42-PANDATABLE1-TROW
                WHEN    02
                    MOVE    "MEISYO"        TO  MCP-WIDGET
                    MOVE    WRK-IDX2        TO  MCP-WIDGET(7:2)

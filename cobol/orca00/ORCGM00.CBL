@@ -155,6 +155,9 @@
            03  WRK-MSG             PIC X(70).
            03  WRK-MOTOPG          PIC X(08).
            03  WRK-MIDMSG          PIC X(80).
+      * ito test start
+           03  WRK-K42-ON          PIC 9(01).
+      * ito test end
       *
        01  SHELL-AREA.
            05  SHELL-NAME          PIC X(17) VALUE
@@ -472,6 +475,9 @@
                MOVE    SPA-GAI-JIKANKBN    TO  WRK-GAI-JIKANKBN
                MOVE    SPA-SYSYMD-YOBI     TO  WRK-SYSYMD-YOBI
                MOVE    SPA-OPID            TO  WRK-OPID
+      * ito test start
+               MOVE    SPA-K42-ON          TO  WRK-K42-ON
+      * ito test end
                INITIALIZE                  SPA-AREA
                MOVE    WRK-WSYSYMDH        TO  SPA-SYSYMDWH
                MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
@@ -479,6 +485,9 @@
                MOVE    WRK-GAI-JIKANKBN    TO  SPA-GAI-JIKANKBN
                MOVE    WRK-SYSYMD-YOBI     TO  SPA-SYSYMD-YOBI
                MOVE    WRK-OPID            TO  SPA-OPID
+      * ito test start
+               MOVE    WRK-K42-ON          TO  SPA-K42-ON
+      * ito test end
            ELSE
       *---- (01.00.04) LINE ADD END   --------------------------------
       *
@@ -1232,6 +1241,16 @@
       *        JOBLOG画面
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 480-M98-SEC
+      * ito test start
+      *        診療行為画面切り替え
+               WHEN    "CLICKED"       ALSO    "B08"
+                   IF      SPA-K42-ON          =   ZERO
+                       MOVE    1                   TO  SPA-K42-ON
+                   ELSE
+                       MOVE    ZERO                TO  SPA-K42-ON
+                   END-IF
+                   DISPLAY "M00 B08 K42-ON [ " SPA-K42-ON " ]"
+      * ito test end
       *!!!!!!!
       *外来まとめテスト
       *        外来まとめテスト

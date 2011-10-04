@@ -299,8 +299,11 @@
              03  SPA-CLIENT-TEMP-FLG       PIC 9(01).
       *クライアント印刷ダイアログ表示フラグ
              03  SPA-CLIENT-SHOWDIALOG     PIC 9(01).
+      * ito test start
+             03  SPA-K42-ON                PIC 9(01).
+      * ito test end
       *
-      *ここまで 1,036 bytes
+      *ここまで 1,037 bytes
       *
       *----(01.00.02) LINE UPD START ----------------------------------
       *******03  SPA-WORK                  PIC X(2460).
@@ -316,6 +319,7 @@
       *****  03  SPA-WORK                  PIC X(19280).
       *****  03  SPA-WORK                  PIC X(19027).
       ****   03  SPA-WORK                  PIC X(18964).
-             03  SPA-WORK                  PIC X(18961).
+      ****   03  SPA-WORK                  PIC X(18961).
+             03  SPA-WORK                  PIC X(18960).
       *----(01.00.02) LINE UPD END   ----------------------------------
       *
