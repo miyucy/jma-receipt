@@ -690,6 +690,24 @@
                    MOVE    "0002"          TO  SPA-ERRCD
                    MOVE    2               TO  SPA-W201-CUR
                END-IF
+      *
+               IF      FLG-TENSU           =   ZERO
+                  IF   TNS-HOSPSRYKBN      =   ZERO
+                      CONTINUE
+                  ELSE
+                      IF  (TNS-HOSPSRYKBN  =  1)   AND
+                          (SPA-HOSPSBT     =  2)
+                          MOVE    "0005"   TO  SPA-ERRCD
+                          MOVE    2        TO  SPA-W201-CUR
+                      END-IF
+                      IF  (TNS-HOSPSRYKBN  =  2)   AND
+                          (SPA-HOSPSBT     =  1)
+                          MOVE    "0006"   TO  SPA-ERRCD
+                          MOVE    2        TO  SPA-W201-CUR
+                      END-IF
+                  END-IF
+               END-IF
+      *
            END-IF
       *
            .
@@ -988,6 +1006,12 @@
                                        TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "選択番号を入力して下さい。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE   "病院のみ算定可能な加算です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE   "診療所のみ算定可能な加算です。"
                                        TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "入院料加算コードが未設定です。"
