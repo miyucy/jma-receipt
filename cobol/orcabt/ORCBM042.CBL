@@ -503,7 +503,7 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    œ´∆Øº‘∫“≥≤ ›æ⁄ ›∏±ø«Œ≈»Ò¿¡µ·ΩÒ
+      *    œ´∆Øº‘∫“≥≤ ‰Ω˛ ›∏±ø«Œ≈»Ò¿¡µ·ΩÒ
            MOVE    1               TO  FLG-SYORI
            PERFORM 2001-SYUKEI-SEC
       *
@@ -769,12 +769,12 @@
                    IF    ( KEY-O-SYOKAIFLG     =   "1"  )
                    AND   ( FLG-LABOR-SIO       =   ZERO )
                        STRING  LABOR-SIO-NAME      DELIMITED  BY  SPACE
-                               "°°œ´∆Øº‘∫“≥≤ ›æ⁄ ›∏±ø«Œ≈»Ò¿¡µ·ΩÒ"
+                               "°°œ´∆Øº‘∫“≥≤ ‰Ω˛ ›∏±ø«Œ≈»Ò¿¡µ·ΩÒ"
                                                    DELIMITED  BY  SIZE
                                                    INTO    SPRT-TITLE
                        END-STRING
                    ELSE
-                       MOVE    "œ´∆Øº‘∫“≥≤ ›æ⁄ ›∏±ø«Œ≈»Ò¿¡µ·ΩÒ" 
+                       MOVE    "œ´∆Øº‘∫“≥≤ ‰Ω˛ ›∏±ø«Œ≈»Ò¿¡µ·ΩÒ" 
                                                    TO  SPRT-TITLE
                    END-IF
                WHEN    2
