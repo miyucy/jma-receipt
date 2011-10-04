@@ -2501,7 +2501,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    "5"                 TO  RECE10-RECEKBN
       * 
-           MOVE    RECE41-JNISSU       TO  RECE10-JNISSU       (1)
+           IF      RECE41-JNISSU       =   999
+               MOVE    ZERO                TO  RECE10-JNISSU       (1)
+           ELSE
+               MOVE    RECE41-JNISSU       TO  RECE10-JNISSU       (1)
+           END-IF
            MOVE    RECE41-TOTALTEN     TO  RECE10-TOTALTEN     (1)
            COMPUTE RECE10-FTNMONEY (1) =   RECE41-TOTALKIN-JYU     +
                                            RECE41-SONOTAKIN-JYU    +

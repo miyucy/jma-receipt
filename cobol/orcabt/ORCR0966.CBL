@@ -2885,7 +2885,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            RECE82-MEISAI-KIN       +
                                            RECE82-SITURYO-JYU      +
                                            RECE82-SHOKUJITOTALKIN
-           MOVE    RECE82-JNISSU       TO  RECE10-JNISSU           (1)
+           IF      RECE82-JNISSU       =   999
+               MOVE    ZERO                TO  RECE10-JNISSU       (1)
+           ELSE
+               MOVE    RECE82-JNISSU       TO  RECE10-JNISSU       (1)
+           END-IF
            MOVE    RECE82-SHOKUJITOTALDAY
                                        TO  RECE10-SHOKUJINISSU     (1) 
       *
