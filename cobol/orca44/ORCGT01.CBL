@@ -2823,7 +2823,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                        WHEN    SPA-DATAKBN     =   "FFFFFFTF"
                            MOVE    "1009"              TO  SPA-TIDCD
                        WHEN    SPA-DATAKBN     =   "FFFFFFFT"
-                           MOVE    "1012"              TO  SPA-TIDCD
+                           MOVE    "1026"              TO  SPA-TIDCD
                        WHEN    SPA-DATAKBN3-VALUE
                                                =   "T" 
                            MOVE    "1001"              TO  SPA-TIDCD
@@ -5326,7 +5326,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    "1008"
                    WHEN    "1009"
                    WHEN    "1011"
-                   WHEN    "1012"
+                   WHEN    "1026"
                    WHEN    "1019"  
                        PERFORM 530-TID2SET-SEC
                        GO  TO  500-SET-SCREEN-EXT
@@ -5778,7 +5778,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1011"
                    MOVE    "チェックリストの印刷処理を行います"
                                        TO  WRK-TIDMSG
-               WHEN    "1012"
+               WHEN    "1026"
                    MOVE    "総括表（労災）の印刷処理を行います" 
                                        TO  WRK-TIDMSG
                WHEN    "1014"
