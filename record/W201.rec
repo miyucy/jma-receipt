@@ -8,7 +8,7 @@ W201	{
 				item	{
 					value0	varchar(3);
 					value1	varchar(20);
-					value2	varchar(16);
+					value2	varchar(40);
 				}	[10];
 				select	bool[10];
 			};
@@ -17,7 +17,7 @@ W201	{
 			value	varchar(20);
 		};
 		KSNNM2	{
-			value	varchar(16);
+			value	varchar(40);
 		};
 		SELNUM	{
 			value	number(3);
