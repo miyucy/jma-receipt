@@ -3268,6 +3268,17 @@
                    END-PERFORM
                  END-IF
                END-IF
+      *
+      *      入院料加算（ユーザー設定）
+             PERFORM   VARYING   IDX7   FROM   1  BY  1
+               UNTIL  (IDX7      >   10)
+                   IF   SYS-5001-KSNCD2(IDX7)  NOT =   SPACE
+                       ADD   1     TO    IDX8
+                       MOVE   SYS-5001-KSNCD2(IDX7) TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                   END-IF
+             END-PERFORM
+      *
            END-IF
       *
       *病室情報
