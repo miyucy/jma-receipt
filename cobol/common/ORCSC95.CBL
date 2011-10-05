@@ -3454,6 +3454,11 @@
                IF     (PTBYO-MANSEIKBN     =   05
                                            OR  08 )
                  AND  (PTBYO-SYUBYOFLG     =  "1" )
+      *            主病でないなら、０５を優先
+                   IF     (PTBYO-MANSEIKBN     =   05    )  AND
+                          (WRK-SYUBYOFLG (IDX) =   SPACE )
+                       MOVE    PTBYO-MANSEIKBN     TO  SPA-TOKU-FLG(IDX)
+                   END-IF
                    MOVE    PTBYO-SYUBYOFLG     TO  WRK-SYUBYOFLG (IDX)
                END-IF
                IF     (PTBYO-MANSEIKBN     =   09    ) 
@@ -3493,7 +3498,12 @@
       *    特定疾患
            IF      PTBYO-MANSEIKBN     =   05
                                        OR  08
-               MOVE    PTBYO-MANSEIKBN     TO  SPA-TOKU05-FLG(IDX)
+      *        05 を優先
+               IF      SPA-TOKU05-FLG(IDX)     =   05
+                   CONTINUE
+               ELSE
+                   MOVE    PTBYO-MANSEIKBN     TO  SPA-TOKU05-FLG(IDX)
+               END-IF
            END-IF
       *
            .
