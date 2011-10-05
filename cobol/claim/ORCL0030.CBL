@@ -34,6 +34,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 03.05.00     NACL-多々納  07/05/10  グループ診療対応
+      * 04.07.00     NACL-多々納  11/10/05  OPENエラー対応追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -78,6 +79,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
+           03  FLG-SYORIEND        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -153,7 +155,9 @@
       *
            PERFORM 100-INIT-SEC
       *
-           PERFORM 200-MAIN-SEC
+           IF      FLG-SYORIEND        =   ZERO
+               PERFORM 200-MAIN-SEC
+           END-IF
       *            UNTIL       FLG-END     =   1
       *
            PERFORM 300-END-SEC
@@ -194,6 +198,14 @@
       *     
            MOVE    WRK-PARA-PTID       TO  FILE-PTID
            OPEN    INPUT    LF04-FILE
+      *    OPEN エラー
+           IF      STS-LF04        NOT =   ZERO
+               DISPLAY "**ORCL0030 LF04-FILE OPEN ERR:"
+                                           STS-LF04
+               MOVE    1                   TO  FLG-SYORIEND
+               GO      TO      100-INIT-EXT
+           END-IF
+      *
            MOVE    ZERO                TO  IDX
       *     
       ************
