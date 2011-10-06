@@ -443,7 +443,9 @@
            03  WRK-NYUKHNKSN-SRYCD         PIC X(09)  OCCURS 20.
            03  WRK-NYUKSNKBN               PIC X(03).
            03  WRK-BTU-NYUKSNKBN           PIC X(03).
+           03  WRK-BTU-CHUKSNCD            PIC X(04).
            03  WRK-KSN-NYUKSNKBN           PIC X(03).
+           03  WRK-KSN-CHUKSNCD            PIC X(04).
            03  WRK-STYUKYMD                PIC X(08).
            03  WRK-TAIINYMD.
                05  WRK-TAIINYM             PIC X(06).
@@ -13678,6 +13680,16 @@
                MOVE    "tbl_nyuksnchk" TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           END-IF
+      *
+      *    注加算コードが同一であることの判定
+           IF   WRK-KSN-CHUKSNCD      NOT =   "0000"
+              IF   WRK-BTU-CHUKSNCD   =        WRK-KSN-CHUKSNCD
+                  CONTINUE
+              ELSE
+                  MOVE    1     TO    FLG-NYUKSN
+              END-IF
            END-IF
       *
            .
@@ -13691,6 +13703,7 @@
        48011-TENSU-SEL-SEC              SECTION.
       *
            MOVE    SPACE           TO  WRK-NYUKSNKBN
+           MOVE    SPACE           TO  WRK-BTU-CHUKSNCD
            MOVE    SPACE           TO  WRK-TOKUBETSU-NYUIN
       *
            MOVE    ZERO            TO  FLG-TENSU
@@ -13727,6 +13740,7 @@
       *
            MOVE    TNS-NYUKHNKSNKBN
                                    TO  WRK-BTU-NYUKSNKBN
+           MOVE    TNS-CHUKSNCD    TO  WRK-BTU-CHUKSNCD
       *
       *    特別入院料の判定
            EVALUATE   TNS-NYUKHNKBN
@@ -13755,6 +13769,7 @@
        48012-TENSU-SEL-SEC              SECTION.
       *
            MOVE    SPACE           TO  WRK-NYUKSNKBN
+           MOVE    SPACE           TO  WRK-KSN-CHUKSNCD
       *
            MOVE    ZERO            TO  FLG-TENSU
            INITIALIZE              TNS-TENSU-REC
@@ -13796,6 +13811,7 @@
       *
            MOVE    TNS-NYUKHNKSNKBN
                                    TO  WRK-KSN-NYUKSNKBN
+           MOVE    TNS-CHUKSNCD    TO  WRK-KSN-CHUKSNCD
            .
       *
        48012-TENSU-SEL-EXT.

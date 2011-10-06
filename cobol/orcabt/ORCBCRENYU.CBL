@@ -175,7 +175,9 @@
                05  WRK-NYUKHNKSN-SRYCD PIC X(09)  OCCURS 60.
            03  WRK-NYUKSNKBN       PIC X(03).
            03  WRK-BTU-NYUKSNKBN   PIC X(03).
+           03  WRK-BTU-CHUKSNCD    PIC X(04).
            03  WRK-KSN-NYUKSNKBN   PIC X(03).
+           03  WRK-KSN-CHUKSNCD    PIC X(04).
            03  WRK-SRYCD           PIC X(09).
            03  WRK-STYUKYMD        PIC X(08).
            03  WRK-NYUINYM         PIC X(06).
@@ -3204,6 +3206,15 @@
                PERFORM 900-CLOSE-SEC
            END-IF
       *
+      *    注加算コードが同一であることの判定
+           IF   WRK-KSN-CHUKSNCD      NOT =   "0000"
+              IF   WRK-BTU-CHUKSNCD   =        WRK-KSN-CHUKSNCD
+                  CONTINUE
+              ELSE
+                  MOVE    1     TO    FLG-NYUKSN
+              END-IF
+           END-IF
+      *
            .
       *
        4801-NYUKSN-CHK-EXT.
@@ -3253,6 +3264,7 @@
       *
            MOVE    TNS-NYUKHNKSNKBN
                                    TO  WRK-BTU-NYUKSNKBN
+           MOVE    TNS-CHUKSNCD    TO  WRK-BTU-CHUKSNCD
       *    特別入院料の判定
            EVALUATE   TNS-NYUKHNKBN
                WHEN   73
@@ -3322,6 +3334,7 @@
       *
            MOVE    TNS-NYUKHNKSNKBN
                                    TO  WRK-KSN-NYUKSNKBN
+           MOVE    TNS-CHUKSNCD    TO  WRK-KSN-CHUKSNCD
            .
       *
        48012-TENSU-SEL-EXT.
