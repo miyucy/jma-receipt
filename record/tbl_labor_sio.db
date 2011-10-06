@@ -5,9 +5,9 @@ tbl_labor_sio {
 	NAME			varchar(50);
 	TERMID			varchar(16);
 	OPID			varchar(16);
-	CREYMD			char(8);
-	UPYMD			char(8);
-	UPHMS			char(6);
+	CREYMD			varchar(8);
+	UPYMD			varchar(8);
+	UPHMS			varchar(6);
 };
 
 primary	{

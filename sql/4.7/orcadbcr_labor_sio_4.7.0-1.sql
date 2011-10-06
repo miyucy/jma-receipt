@@ -11,9 +11,9 @@ create	table	tbl_labor_sio	(
 	NAME		varchar(50),
 	TERMID		varchar(16),
 	OPID		varchar(16),
-	CREYMD		char(8),
-	UPYMD		char(8),
-	UPHMS		char(6)
+	CREYMD		varchar(8),
+	UPYMD		varchar(8),
+	UPHMS		varchar(6)
 );
 ALTER TABLE ONLY tbl_labor_sio
 	ADD CONSTRAINT tbl_labor_sio_primary_key PRIMARY KEY (SYOCD,YUKOSTYMD,YUKOEDYMD)
