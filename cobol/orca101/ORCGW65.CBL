@@ -5745,14 +5745,14 @@
                                         OR "783" )
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
                 AND  ( SPA-GMN-KOHNUM  =   "352" OR "353" OR "354"
-                                        OR "382" OR "683" )
+                                        OR "683" )
                    MOVE    "2"         TO  SPA-GMN-SKJRYOKBNHON
                    MOVE    "0"         TO  SPA-GMN-SKJRYOTAIKBNHON
                END-EVALUATE
       *
                EVALUATE    TRUE
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "382" OR "683" )
+                AND  ( SPA-GMN-KOHNUM  =   "683" )
                    MOVE    "2"         TO  SPA-GMN-SEIRYOKBNHON
                    MOVE    "0"         TO  SPA-GMN-SEIRYOTAIKBNHON
                WHEN  ( SPA-PREFNUM     =   CONST-GUNMA )
