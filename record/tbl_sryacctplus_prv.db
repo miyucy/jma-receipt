@@ -35,6 +35,7 @@ tbl_sryacctplus_prv {
 	FIRTEN5				number(7,0);
 	SANSOTEN			number(7,0);
 	CHISOTEN			number(7,0);
+	INGAITEN			number(7,0);
 	GRP_ZAINUM1			number(8,0);
 	GRP_ZAINUM2			number(8,0);
 	GRP_ZAINUM3			number(8,0);
