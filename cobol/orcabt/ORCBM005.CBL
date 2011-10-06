@@ -50,6 +50,8 @@
       *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
       * 
       *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *
+      *  04.07.01    NACL-Æ£¸¶    11/09/02  Ï«ºÒÀÁµá½ñºîÀ®ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -694,6 +696,10 @@ grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-END
                MOVE    MCPDATA-REC         TO  RECE10-REC
+      *
+               IF      RECE10-TEISYUTUSAKI =   "3" OR  "4"
+                   GO  TO  900-SEIKYU-FETCH-SEC
+               END-IF
       *
                EVALUATE    FLG-SYORI
                    WHEN    1
