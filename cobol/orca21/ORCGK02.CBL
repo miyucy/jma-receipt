@@ -1474,13 +1474,6 @@
                    PERFORM 520-KIDSET-SEC
                END-IF
            END-IF
-      *ito test start
-           DISPLAY "300-SCREEN SPA-K42-ON = " SPA-K42-ON
-           IF      SPA-K42-ON          =   1
-               PERFORM 399-K42-SYORI-SEC
-               GO  TO  300-SCREEN-EXT
-           END-IF
-      *ito test end
       *
            .
        300-SCREEN-EXT.
@@ -2437,30 +2430,6 @@
        3011-K98-SET-EXT.
            EXIT.
       *@@
-      * ito test start
-      *****************************************************************
-      *    £Ë£´£²½èÍý¤Ø
-      *****************************************************************
-       399-K42-SYORI-SEC           SECTION.
-      *
-           MOVE    SPA-K01KYOUTU   TO  SPA-WORK
-      *
-           MOVE    SPACE           TO  LINKAREA
-      *
-           MOVE    "CHANGE"        TO  MCP-PUTTYPE
-           MOVE    "K42"           TO  MCP-WINDOW
-      *
-           MOVE    "K42"           TO  SPA-SAKIPG
-           MOVE    "K02"           TO  SPA-MOTOPG
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1               TO  FLG-END
-           .
-       399-K42-SYORI-EXT.
-           EXIT.
-      * ito test end
-      *
       *****************************************************************
       *    °­À­¼ðáç¸¡ºº°ìÍ÷¤Ø½èÍý
       *****************************************************************
