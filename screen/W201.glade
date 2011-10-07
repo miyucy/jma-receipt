@@ -164,7 +164,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>16</text_max_length>
+      <text_max_length>20</text_max_length>
       <text></text>
       <input_mode>ASCII</input_mode>
       <xim_enabled>False</xim_enabled>
