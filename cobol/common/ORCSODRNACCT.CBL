@@ -2794,7 +2794,7 @@
            END-IF
       *
       *    注加算コードが同一であることの判定
-           IF   WRK-KSN-CHUKSNCD      NOT =   "0000"
+           IF   WRK-KSN-CHUKSNCD      NOT =    SPACE
               IF   WRK-BTU-CHUKSNCD   =        WRK-KSN-CHUKSNCD
                   CONTINUE
               ELSE
@@ -2813,6 +2813,7 @@
        48011-TENSU-SEL-SEC              SECTION.
       *
            MOVE    SPACE           TO  WRK-NYUKSNKBN
+           MOVE    SPACE           TO  WRK-BTU-CHUKSNCD
            MOVE    SPACE           TO  WRK-TOKUBETSU-NYUIN
       *
            MOVE    ZERO            TO  FLG-TENSU
@@ -2879,6 +2880,7 @@
        48012-TENSU-SEL-SEC              SECTION.
       *
            MOVE    SPACE           TO  WRK-NYUKSNKBN
+           MOVE    SPACE           TO  WRK-KSN-CHUKSNCD
       *
            MOVE    ZERO            TO  FLG-TENSU
            INITIALIZE              TNS-TENSU-REC
@@ -2920,7 +2922,20 @@
       *
            MOVE    TNS-NYUKHNKSNKBN
                                    TO  WRK-KSN-NYUKSNKBN
-           MOVE    TNS-CHUKSNCD    TO  WRK-KSN-CHUKSNCD
+      *
+      *    入院料（Ａ１００番台）、特定入院料（Ａ３００番台）に含まれる
+      *    注加算のみが判定対象となる
+           IF      (TNS-CDKBN-KBN       =   "A")     AND
+                   (TNS-CDKBN-KBNNUM   >=   100)     AND
+                   (TNS-CDKBN-KBNNUM   <=   199)
+               MOVE    TNS-CHUKSNCD    TO  WRK-KSN-CHUKSNCD
+           END-IF
+      *
+           IF      (TNS-CDKBN-KBN       =   "A")     AND
+                   (TNS-CDKBN-KBNNUM   >=   300)     AND
+                   (TNS-CDKBN-KBNNUM   <=   399)
+               MOVE    TNS-CHUKSNCD    TO  WRK-KSN-CHUKSNCD
+           END-IF
            .
       *
        48012-TENSU-SEL-EXT.
