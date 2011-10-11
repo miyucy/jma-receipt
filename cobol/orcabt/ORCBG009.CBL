@@ -1482,7 +1482,9 @@ grpsys                                     SPA-AREA
                IF          MCP-RC          =   ZERO
                    MOVE    ZERO                TO  FLG-SEIKYU
                    MOVE    MCPDATA-REC         TO  RECE10-REC
-                   IF      RECE10-HKNNUM-S =   "975"
+                   IF    ( RECE10-HKNNUM-S =   "975" ) OR
+                         ( RECE10-HKNNUM-S =   "971" ) OR
+                         ( RECE10-HKNNUM-S =   "973" )
                        MOVE    ZERO            TO  FLG-OK
                    ELSE
                        MOVE    1               TO  FLG-OK
