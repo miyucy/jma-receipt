@@ -5146,6 +5146,8 @@
                    IF        ( WRK-PARA-TEISYUTU   =   "2" )
                        OR    ( WRK-PARA-TEISYUTU   =   "3" )
                        OR    ( WRK-PARA-TEISYUTU   =   "4" )
+                       OR    ( WRK-PARA-TEISYUTU   =   "5" )
+                       OR    ( WRK-PARA-TEISYUTU   =   "6" )
                        OR    ( WRK-PARA-TEISYUTU   =   "9" )
                        GO  TO  900-SEIKYU-CHEK-EXT
                    END-IF
