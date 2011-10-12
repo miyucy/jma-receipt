@@ -936,6 +936,13 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
            ELSE
       *
+              MOVE       SPACE             TO     TBL-JNISSU
+              INITIALIZE                          TBL-JNISSU
+              MOVE       SPACE             TO     TBL-JNISSU2
+              INITIALIZE                          TBL-JNISSU2
+              MOVE       SPACE             TO     TBL-JNISSU-GEN
+              INITIALIZE                          TBL-JNISSU-GEN
+      *
               MOVE       ZERO       TO     WRK-KENSAYMD-ZEN
       *
               PERFORM    VARYING    IDX    FROM   1   BY   1
@@ -2156,6 +2163,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 (ACCT-ZAIKAISU  NOT =    ZERO)    AND
                                 (ACCT-JIHOKBN       =   SPACE)    AND
                                 (ACCT-ZAIKBN    NOT = 1 AND 2)
+                               MOVE    ZERO    TO      FLG-SHOSAISIN
+                                                       FLG-SHOSAISIN2
+                                                       FLG-SHOSAISIN-GEN
+                               IF   ACCT-SRYKBN  =  "11"  OR  "12"  OR
+                                                    "13"  OR  "14"
+                                   PERFORM   21031-SHOSAISIN-HANTEI-SEC
+                               END-IF
+                               PERFORM   21062-TENSOU5-SEC
+      *
                                MOVE  ACCT-DAY(1 WRK-DAY)  
                                                TO      WRK-ZAIKAISU
                                MOVE    ZERO    TO      FLG-KENSA
@@ -2166,6 +2182,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                END-IF
                                PERFORM   21035-ENDATE-HANTEI-SEC 
                                PERFORM   21061-TENSOU3-SEC
+                           END-IF
+      *
+                           IF   (ACCT-ZAITEN        =    ZERO)    AND
+                                (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                                (ACCT-JIHOKBN       =   SPACE)    AND
+                                (ACCT-ZAIKBN    NOT = 1 AND 2)
+                               MOVE    ZERO    TO      FLG-SHOSAISIN
+                                                       FLG-SHOSAISIN2
+                                                       FLG-SHOSAISIN-GEN
+                               IF   ACCT-SRYKBN  =  "11"  OR  "12" 
+                                                          OR  "99" 
+                                   PERFORM   21031-SHOSAISIN-HANTEI-SEC
+                               END-IF
+                               PERFORM   21062-TENSOU5-SEC
                            END-IF
                    END-IF
       *                 
@@ -2218,6 +2248,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    END-IF
            .
        21061-TENSOU3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト中間ファイルの項目転送５
+      *****************************************************************
+       21062-TENSOU5-SEC                 SECTION.
+      *
+           IF   FLG-SHOSAISIN        =       1
+              MOVE    "1"    TO   TBL-JNISSU-DAY(WRK-DAY)
+           END-IF
+           IF   FLG-SHOSAISIN2       =       1
+              MOVE    "1"    TO   TBL-JNISSU2-DAY(WRK-DAY)
+           END-IF
+           IF   FLG-SHOSAISIN-GEN    =       1
+              MOVE    "1"    TO   TBL-JNISSU-DAY-GEN(WRK-DAY)
+           END-IF
+           .
+       21062-TENSOU5-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2301,6 +2349,27 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF     WRK-KENSAYMD-ZEN    NOT  =    ZERO
                 MOVE   WRK-KENSAYMD-ZEN    TO  RECE41-KENSAYMD-ZEN
            END-IF
+      *
+      *    実日数から減する
+           PERFORM    VARYING    IDZ    FROM    1   BY   1
+                       UNTIL     IDZ     >     31
+                IF  (TBL-JNISSU-DAY(IDZ)      NOT =  SPACE)
+                AND (TBL-JNISSU-DAY-GEN(IDZ)  NOT =  SPACE)
+                    MOVE  SPACE  TO  TBL-JNISSU-DAY(IDZ)
+                END-IF
+                IF  (TBL-JNISSU2-DAY(IDZ)     NOT =  SPACE)
+                AND (TBL-JNISSU-DAY-GEN(IDZ)  NOT =  SPACE)
+                    MOVE  SPACE  TO  TBL-JNISSU2-DAY(IDZ)
+                END-IF
+           END-PERFORM
+      *
+           PERFORM    VARYING    IDZ    FROM    1   BY   1
+                       UNTIL     IDZ     >     31
+                IF   TBL-JNISSU-DAY(IDZ)      NOT =  SPACE
+                    ADD    1     TO  RECE41-JNISSU
+      ***           MOVE  "1"    TO  RECE41-JNISSUTBL(IDZ)
+                END-IF
+           END-PERFORM
       *
            .
        2108-HENSYU-SET3-EXT.
