@@ -835,6 +835,8 @@ grpsys                                 SPA-AREA
                MOVE    "同義語マスタ"          TO  WRK-MSTNAME
            WHEN    "22"
                MOVE    "電子点数表マスタ"      TO  WRK-MSTNAME
+           WHEN    "23"
+               MOVE    "労働基準監督署マスタ"  TO  WRK-MSTNAME
            WHEN    OTHER
                MOVE    PARA-MASTER-KBN         TO  WRK-MSTNAME
            END-EVALUATE
