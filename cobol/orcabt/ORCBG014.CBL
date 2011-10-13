@@ -2165,6 +2165,9 @@
       *
       *    帳票クリア
            PERFORM 310-HEAD-SET-SEC
+           IF      TOKEI-TEISYUTU  =   "7"
+               MOVE    SPACE           TO  WRK-HKNJANUM
+           END-IF
       *
            .
        310-HEAD-HEN2-EXT.
@@ -2923,7 +2926,7 @@
                WHEN    "6"     ALSO    "2"
                    MOVE    "＜広域　入院＞"          TO  WRK-PRT-LINE
                WHEN    "8"     ALSO    ANY
-                   MOVE    "＜アフターケア＞"        TO  WRK-PRT-LINE
+                   MOVE    "アフターケア"            TO  WRK-PRT-LINE
                WHEN    "9"     ALSO    "1"
                    MOVE    "＜公害　外来＞"          TO  WRK-PRT-LINE
                WHEN    "9"     ALSO    "2"
@@ -2974,11 +2977,7 @@
            MOVE    "01"            TO  LABOR-SIO-YUKOEDYMD(7:2)
            MOVE    LABOR-SIO-REC   TO  MCPDATA-REC
            PERFORM 900-LABOR-SIO-READ-SEC
-           IF    ( TOKEI-HKNJANUM2 NOT =   WRK-HKNJANUM2 )
-               MOVE    "初回分　"      TO  WRK-PRT-LINE(1:8)
-           ELSE
-               MOVE    "　　　　"      TO  WRK-PRT-LINE(1:8)
-           END-IF
+           MOVE    "短期傷病初回分　"      TO  WRK-PRT-LINE(1:16)
            IF      FLG-LABOR-SIO       =   ZERO
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "2"             TO  KANACHK-SYORI
@@ -2987,20 +2986,20 @@
                IF      KANACHK-RC      =   0
                    STRING  KANACHK-OUT-INPUT   DELIMITED BY SPACE
                            "署分"              DELIMITED BY SIZE
-                                       INTO    WRK-PRT-LINE(16:40)
+                                       INTO    WRK-PRT-LINE(24:40)
                    END-STRING
-                   MOVE    WRK-PRT-LINE(16:40) TO  CSV-HKNJANAME
+                   MOVE    WRK-PRT-LINE(24:40) TO  CSV-HKNJANAME
                END-IF
            END-IF
-           MOVE    WRK-HKNJANUM(1:5)   TO  WRK-PRT-LINE(9:5)
+           MOVE    WRK-HKNJANUM(1:5)   TO  WRK-PRT-LINE(17:5)
                                        CSV-HKNJANUM
-           MOVE    "　"                TO  WRK-PRT-LINE(14:2)
+           MOVE    "　"                TO  WRK-PRT-LINE(22:2)
            ELSE
-               MOVE    "継続分"        TO  WRK-PRT-LINE
+               MOVE    "短期傷病継続分"    TO  WRK-PRT-LINE
                                            CSV-HKNJANAME
            END-IF
       *
-           ADD     1                   TO  CNT-LINE
+      *     ADD     1                   TO  CNT-LINE
       *
       *    見出し行セット
            PERFORM 320-BODY-SET-SEC
@@ -5130,6 +5129,8 @@
                            ELSE
                                MOVE    "8"             TO  WRK-TEISYUTU
                            END-IF
+                       WHEN    OTHER
+                           GO  TO  900-SEIKYU-CHEK-EXT
                    END-EVALUATE
       *        公害
                WHEN    "975"
