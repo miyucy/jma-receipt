@@ -1625,8 +1625,8 @@
 	  <height>24</height>
 	  <label>院外処方せん発行フラグ</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1641,8 +1641,8 @@
 	  <height>24</height>
 	  <label>薬剤情報発行フラグ</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1657,8 +1657,8 @@
 	  <height>24</height>
 	  <label>診療費明細書発行フラグ</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1673,8 +1673,8 @@
 	  <height>24</height>
 	  <label>＜請求確認＞</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1689,8 +1689,8 @@
 	  <height>24</height>
 	  <label>請求書発行フラグ</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1705,8 +1705,8 @@
 	  <height>24</height>
 	  <label>＜画面表示＞</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1721,8 +1721,8 @@
 	  <height>24</height>
 	  <label>検査正式名称表示フラグ</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1737,8 +1737,8 @@
 	  <height>28</height>
 	  <label>＜クライアント保存＞</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1753,8 +1753,8 @@
 	  <height>24</height>
 	  <label>クライアント保存可否</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1769,8 +1769,8 @@
 	  <height>28</height>
 	  <label>＜ログインユーザー管理＞</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1785,8 +1785,8 @@
 	  <height>24</height>
 	  <label>ログインユーザー管理権限</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1801,8 +1801,8 @@
 	  <height>28</height>
 	  <label>＜クライアント印刷＞</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1817,8 +1817,8 @@
 	  <height>24</height>
 	  <label>クライアント印刷</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1833,8 +1833,8 @@
 	  <height>24</height>
 	  <label>ダイアログ表示</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -2511,8 +2511,8 @@
 	  <height>24</height>
 	  <label>他院オペレータＩＤ</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -3200,8 +3200,8 @@
       <height>24</height>
       <label>フリガナ</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -3216,8 +3216,8 @@
       <height>24</height>
       <label>氏        名</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -3443,8 +3443,8 @@
       <height>24</height>
       <label>オペレータＩＤ</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

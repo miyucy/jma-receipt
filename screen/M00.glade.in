@@ -331,8 +331,8 @@
       <height>24</height>
       <label>選択番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -423,8 +423,8 @@
       <height>24</height>
       <label>上記使用許諾契約をお読み頂き、必ず同意の上ご利用ください。</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -439,8 +439,8 @@
       <height>24</height>
       <label>上記使用許諾契約は、下の「情報」ボタンを押すことで表示されます。</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -456,8 +456,8 @@
       <label>このソフトウェアは「日医オープンソース使用許諾契約」の下に公開
 されたものです。</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -519,7 +519,7 @@
       <height>24</height>
       <label>マスタ更新処理中です。</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -535,7 +535,7 @@
       <height>24</height>
       <label>マスタ更新処理中です。２３４５６７８９０１２３４５６７８９０１２３４５</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -551,7 +551,7 @@
       <height>24</height>
       <label>標準マスタ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -567,7 +567,7 @@
       <height>24</height>
       <label>ライセンスマスタ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>

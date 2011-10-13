@@ -3372,8 +3372,8 @@
       <height>24</height>
       <label>ÊÂ¤Ó½ç</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -3388,7 +3388,7 @@
       <height>24</height>
       <label>£±</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -3404,7 +3404,7 @@
       <height>24</height>
       <label>£²</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -3420,7 +3420,7 @@
       <height>24</height>
       <label>£³</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>

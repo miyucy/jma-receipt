@@ -665,7 +665,7 @@
 	  <height>24</height>
 	  <label>一部負担金０円記載（記録）（外来）</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>True</wrap>
+	  <wrap>False</wrap>
 	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>

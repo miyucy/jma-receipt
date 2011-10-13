@@ -2988,7 +2988,7 @@
       <height>24</height>
       <label>診療行為コード</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -3084,7 +3084,7 @@
       <height>24</height>
       <label> </label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -3100,7 +3100,7 @@
       <height>24</height>
       <label>頁</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -3116,7 +3116,7 @@
       <height>24</height>
       <label>※マスタ提供適用コードは削除できません。入外、エラーの区分変更は可能です。</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>

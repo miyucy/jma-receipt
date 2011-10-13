@@ -504,8 +504,8 @@
       <height>22</height>
       <label>患者ＩＤを患者番号に置換しますか</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -520,8 +520,8 @@
       <height>22</height>
       <label>しない</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

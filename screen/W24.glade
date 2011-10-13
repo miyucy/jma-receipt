@@ -1523,8 +1523,8 @@
       <height>25</height>
       <label>Æþ±¡ÎÁºï½ü»þ¤Î¼¼ÎÁº¹³Û</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1899,7 +1899,7 @@
       <height>25</height>
       <label>°ìÈÌÉÂ¾²½é´ü²Ã»»</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -3231,7 +3231,7 @@
       <height>25</height>
       <label>ÎÅÍÜÆþ±¡²ñ·×É½¼¨</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -3247,7 +3247,7 @@
       <height>25</height>
       <label>³°ÇñÅÐÏ¿»þ¤Î¿©»ö¡¦²Ã»»</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -3263,8 +3263,8 @@
       <height>25</height>
       <label>É¸·ç¤Ë¤è¤ë¸º³Û</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -3279,7 +3279,7 @@
       <height>25</height>
       <label>µßµÞºßÂðÅù²Ã»»</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -3295,8 +3295,8 @@
       <height>25</height>
       <label>¼¼ÎÁº¹³Û¾ÃÈñÀÇ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -3311,7 +3311,7 @@
       <height>25</height>
       <label>£Á£Ä£ÌÆþÎÏ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
@@ -3327,7 +3327,7 @@
       <height>25</height>
       <label>Äê¿ôÄ¶²á</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
