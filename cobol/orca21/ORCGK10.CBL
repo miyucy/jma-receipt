@@ -33,6 +33,7 @@
       *                                     MONFUNC ÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  11/08/08  ÌÀºÙ£²£°£°·ïÂÐ±þ
+      *  04.07.00    NACL-Â¿¡¹Ç¼  11/10/XX  ºÞÈÖ¡á£±¤Ê¤·ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -91,6 +92,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
+           03  FLG-CHK             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -133,6 +135,12 @@
       *    ¥³¥é¥à¥ê¥¹¥È°ÌÃÖ
            03  WRK-K10-ROW             PIC S9(09).
            03  FLG-GMN-INIT            PIC  9(01).
+      *
+           03  WRK-KEY-AREA.
+               05  WRK-KEY-PTID        PIC 9(10).
+               05  WRK-KEY-SRYYMD      PIC X(08).
+               05  WRK-KEY-SRYKA       PIC X(02).
+               05  WRK-KEY-HKNCOMBI    PIC X(04).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -406,11 +414,21 @@
                INITIALIZE                  WKSRYACT-REC
                MOVE    1               TO  FLG-WKSRYACT
            END-IF
+           INITIALIZE                  WRK-KEY-AREA
            PERFORM
                UNTIL   (FLG-WKSRYACT   =   1 )  OR
                        (IDX            >   200 )
-               IF      (WKSRY-ZAINUM       =   1   )  AND
-                       (WKSRY-RENNUM       =   1   )
+               IF      (WKSRY-PTID         =   WRK-KEY-PTID  )  AND
+                       (WKSRY-SRYKA        =   WRK-KEY-SRYKA )  AND
+                       (WKSRY-SRYYMD       =   WRK-KEY-SRYYMD)  AND
+                       (WKSRY-HKNCOMBI     =   WRK-KEY-HKNCOMBI)
+                   MOVE    1                   TO  FLG-CHK
+               ELSE
+                   MOVE    ZERO                TO  FLG-CHK
+               END-IF
+               IF     ((WKSRY-ZAINUM       =   1   )  OR
+                       (FLG-CHK            =   ZERO ))  AND
+                      ( WKSRY-RENNUM       =   1   )
                    ADD     1                   TO  IDX
                    IF      IDX                 >   200
                        MOVE    1                   TO  SPA-K10-NEXT
@@ -418,6 +436,11 @@
                        PERFORM 3101-TBL-HENSYU-SEC
                    END-IF
                END-IF
+      *
+               MOVE    WKSRY-PTID          TO  WRK-KEY-PTID
+               MOVE    WKSRY-SRYKA         TO  WRK-KEY-SRYKA
+               MOVE    WKSRY-SRYYMD        TO  WRK-KEY-SRYYMD
+               MOVE    WKSRY-HKNCOMBI      TO  WRK-KEY-HKNCOMBI
       *
                MOVE    "tbl_wksryact"      TO  MCP-TABLE
                MOVE    WRK-PATH            TO  MCP-PATHNAME

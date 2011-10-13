@@ -66,6 +66,7 @@
       *  04.06.02    NACL-多々納  11/02/18  用法コメント対応
       *
       *  04.07.01    NACL-藤原    10/10/20  病名の削除処理対応
+      *  04.07.00    NACL-多々納  11/10/13  ＵＩＤ編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2557,6 +2558,8 @@
                    UNTIL       IDX      >   TBL-MAX
                MOVE    TBL-WKSRYACT-REC (IDX)
                                            TO  WKSRYACT-REC
+      *UID
+               MOVE    LF04-MEDICAL-UID    TO  WKSRY-KARTE-KEY
       *
                MOVE    SMCNDATE-YMD        TO  WKSRY-CREYMD
                MOVE    SMCNDATE-YMD        TO  WKSRY-UPYMD
