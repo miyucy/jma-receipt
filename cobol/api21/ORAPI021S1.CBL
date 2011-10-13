@@ -893,9 +893,6 @@
                                        ST
                                        UIDIO-AREA
            MOVE    C-UID               TO  MDCRES-MEDICAL-UID
-      *TEST
-           DISPLAY "UUID CALL" UIDIO-AREA
-      *TEST
       *
            MOVE    SPACE               TO  LF04-REC
            INITIALIZE                  LF04-REC
@@ -1020,6 +1017,10 @@
                                        TO  LF04-SND-TENKI(IDY)
                    WHEN    "S"
                      MOVE  "continued"
+                                       TO  LF04-SND-TENKI(IDY)
+      *
+                   WHEN    "O"
+                     MOVE  "delete"
                                        TO  LF04-SND-TENKI(IDY)
                END-EVALUATE
            END-PERFORM
