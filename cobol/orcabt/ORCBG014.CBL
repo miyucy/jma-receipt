@@ -2926,7 +2926,7 @@
                WHEN    "6"     ALSO    "2"
                    MOVE    "～僮啗﹛ェ情∩"          TO  WRK-PRT-LINE
                WHEN    "8"     ALSO    ANY
-                   MOVE    "失白正□弗失"            TO  WRK-PRT-LINE
+                   MOVE    "失白正□弗失坌"            TO  WRK-PRT-LINE
                WHEN    "9"     ALSO    "1"
                    MOVE    "～跤陴﹛陸侳∩"          TO  WRK-PRT-LINE
                WHEN    "9"     ALSO    "2"
