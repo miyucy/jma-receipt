@@ -341,6 +341,10 @@
            03  WRK-BYOMEI2.  
                05  WRK-BYOMEI2-NAME            PIC X(52).
       *
+      *    傷病名が３行になるときの編集
+           03  WRK-BYOMEI3                     PIC X(52).
+           03  WRK-MOJISU3                     PIC 9(03).
+      *
            03  WRK-WLINETEK                    PIC 9(03).
            03  WRK-R061-ZAINUM-O               PIC 9(08).
            03  WRK-R061-SRYKBN-O               PIC X(02).
@@ -1411,6 +1415,8 @@
       *     
            MOVE    SPACE               TO  WRK-BYOMEI1
                                            WRK-BYOMEI2                  
+                                           WRK-BYOMEI3
+           MOVE    ZERO                TO  WRK-MOJISU3
       *
       *    傷病の部位編集
            IF      RECE82-COMMENT      =   SPACE
@@ -1531,6 +1537,8 @@
       *     
       *    単病名文字数を計算
            COMPUTE WRK-MOJISU          =   RECE83-BYOMEIMOJI   *   2
+           MOVE    SPACE               TO  WRK-BYOMEI3
+           MOVE    ZERO                TO  WRK-MOJISU3
       *     
            EVALUATE    TRUE
       *        傷病名欄に編集
@@ -1543,10 +1551,18 @@
                            MOVE    RECE83-BYOMEI(45:)
                                                    TO  WRK-BYOMEI1-NAME
                                                           (WRK-STCLM:)
+      *
+                           MOVE    RECE83-BYOMEI(89:)  TO  WRK-BYOMEI3
+                           COMPUTE WRK-MOJISU3     =   WRK-MOJISU   -
+                                                       88
                        ELSE
                            MOVE    RECE83-BYOMEI(45:)
                                                    TO  WRK-BYOMEI2-NAME
                                                           (WRK-STCLM:)
+      *
+                           MOVE    RECE83-BYOMEI(97:)  TO  WRK-BYOMEI3
+                           COMPUTE WRK-MOJISU3     =   WRK-MOJISU   -
+                                                       96
                        END-IF                                   
                        MOVE    1               TO  WRK-CONTINUE    
                    END-IF    
@@ -1560,12 +1576,38 @@
                        MOVE    RECE83-BYOMEI(53:)
                                                TO  WRK-BYOMEI2-NAME
                                                           (WRK-STCLM:)
+      *
+                       MOVE    RECE83-BYOMEI(105:) TO  WRK-BYOMEI3
+                       COMPUTE WRK-MOJISU3     =   WRK-MOJISU   -
+                                                   104
                    END-IF                                       
            END-EVALUATE
       *
            COMPUTE     WRK-CLM           =   WRK-MOJISU
                                          +   WRK-CLM
-      *     
+      *
+           IF      WRK-BYOMEI3       NOT =   SPACE
+               EVALUATE    TRUE
+      *            傷病名欄に編集
+                   WHEN    WRK-LINEBYO     <   WRK-BYOMEI-LINE
+                       PERFORM 200232-BYOMEI1-OUT-SEC
+                       IF      WRK-LINEBYO     <   WRK-BYOMEI-LINE 
+                           MOVE    WRK-BYOMEI3     TO  WRK-BYOMEI1-NAME
+                                                          (WRK-STCLM:)
+                       ELSE
+                           MOVE    WRK-BYOMEI3     TO  WRK-BYOMEI2-NAME
+                                                          (WRK-STCLM:)
+                       END-IF                                   
+      *            適用欄に編集
+                   WHEN    WRK-LINEBYO     >=  WRK-BYOMEI-LINE
+                       PERFORM 200233-BYOMEI2-OUT-SEC
+                       MOVE    WRK-BYOMEI3     TO  WRK-BYOMEI2-NAME
+                                                          (WRK-STCLM:)
+               END-EVALUATE
+      *
+               COMPUTE     WRK-CLM           =   WRK-MOJISU3
+                                             +   WRK-CLM
+           END-IF
       *
            PERFORM 990-RECE83-NEXT-SEC
       *
@@ -1581,6 +1623,8 @@
       *
            ADD     1               TO  WRK-LINEBYO
       *
+           INSPECT WRK-BYOMEI1
+                           REPLACING    ALL   "  "   BY   "　"
            MOVE    WRK-BYOMEI1     TO  HCN67-SYOBYOMEI (WRK-LINEBYO)
       *
       *    クリア
