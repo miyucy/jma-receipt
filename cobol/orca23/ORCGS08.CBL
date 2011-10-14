@@ -912,6 +912,8 @@
       *****************************************************************
        320-S09-SENI-SEC              SECTION.
       *
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
            INITIALIZE                  SPA-S09-AREA
       *
            MOVE    SPACE           TO  SPA-MOTOPG
