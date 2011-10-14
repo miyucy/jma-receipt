@@ -415,8 +415,8 @@
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
                PERFORM 230-CLEAR-SEC
       *    説明更新
-           WHEN    "CLICKED"       ALSO    "B04"
-               PERFORM 240-PARAUPDATE-SEC
+      *    WHEN    "CLICKED"       ALSO    "B04"
+      *        PERFORM 240-PARAUPDATE-SEC
       *    OK
            WHEN    "CLICKED"       ALSO    "B12"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
@@ -959,9 +959,12 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           IF    ( SPA-NAI-G03-PARAARI =   1 )
-               MOVE    "説明更新"      TO  G03-B04-LABEL
-           END-IF
+           MOVE    SPACE               TO  G03
+           INITIALIZE                      G03
+      *
+      *    IF    ( SPA-NAI-G03-PARAARI =   1 )
+      *        MOVE    "説明更新"      TO  G03-B04-LABEL
+      *    END-IF
       *
       *
            MOVE    "red"               TO  G03-MARKHISSU-STYLE
