@@ -891,6 +891,9 @@
       *****************************************************************
        370-CID6-SET-SEC            SECTION.
       *
+      *??
+           DISPLAY  "SPA-CID6-FLG=" SPA-CID6-FLG "#" SPA-CIDCD6 "#"
+      *??
            EVALUATE    SPA-CIDCD6
                WHEN    "0104"
                WHEN    "0106"
@@ -928,6 +931,11 @@
                                                SPA-C04-CHANGE-INDEX-ED
                    END-IF
                    IF      SPA-CID6-FLG    =   "CHG"
+      *??
+           DISPLAY  "SPA-C04-CHANGE-INDEX-ST=" SPA-C04-CHANGE-INDEX-ST
+                            "#" SPA-C04-CHANGE-INDEX-ED "#" 
+                            SPA-C04-CHANGE-MAX "#"
+      *??
                        PERFORM VARYING IDXX    FROM
                                        SPA-C04-CHANGE-INDEX-ST   BY  1
                                UNTIL   IDXX    >
@@ -1608,36 +1616,44 @@
            MOVE    SPACE               TO  ORCSBYOMEIAREA
            INITIALIZE                      ORCSBYOMEIAREA
            MOVE    "1"                 TO  LNK-BYO-SYORI
-           MOVE    SPACE               TO  WRK-BYOMEI
-           MOVE    ZERO                TO  IDYY
-           PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       6
-               IF      SPA-NAI-C04-BYOMEITOP (IDY)
-                                           =   "1"
-                   IF      IDY                 >   IDZ
-                       COMPUTE SPA-C04-CHANGE-INDEX-ED
-                                          =    IDY     -   1
-                       MOVE    6                   TO  IDY
-                   ELSE
-                       MOVE    SPA-NAI-C04-BYOMEI (IDY)
-                                                   TO  WRK-BYOMEI
-                       MOVE    IDY                 TO
-                                               SPA-C04-CHANGE-INDEX-ST
-                       IF      IDY                 =   6
+           IF      SPA-C01-INDEX       =   ZERO
+               MOVE    SPACE               TO  WRK-BYOMEI
+               MOVE    ZERO                TO  IDYY
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       6
+                   IF      SPA-NAI-C04-BYOMEITOP (IDY)
+                                               =   "1"
+                       IF      IDY                 >   IDZ
+                           COMPUTE SPA-C04-CHANGE-INDEX-ED
+                                              =    IDY     -   1
+                           MOVE    6                   TO  IDY
+                       ELSE
+                           MOVE    SPA-NAI-C04-BYOMEI (IDY)
+                                                       TO  WRK-BYOMEI
                            MOVE    IDY                 TO
+                                               SPA-C04-CHANGE-INDEX-ST
+                           IF      IDY                 =   6
+                               MOVE    IDY                 TO
                                                SPA-C04-CHANGE-INDEX-ED
+                           END-IF
                        END-IF
-                   END-IF
-               ELSE
-                   MOVE    IDY                 TO
+                   ELSE
+                       MOVE    IDY                 TO
                                                SPA-C04-CHANGE-INDEX-ED
-                   STRING  WRK-BYOMEI              DELIMITED  BY  SPACE
-                           SPA-NAI-C04-BYOMEI(IDY) DELIMITED  BY  SPACE
-                                      INTO          WRK-BYOMEI
-                   END-STRING
-               END-IF    
-           END-PERFORM
-           MOVE    WRK-BYOMEI          TO  LNK-BYO-BYOMEI
+                       STRING  WRK-BYOMEI          DELIMITED  BY  SPACE
+                               SPA-NAI-C04-BYOMEI(IDY)
+                                                   DELIMITED  BY  SPACE
+                                                   INTO       WRK-BYOMEI
+                       END-STRING
+                   END-IF    
+               END-PERFORM
+               MOVE    WRK-BYOMEI          TO  LNK-BYO-BYOMEI
+           ELSE
+               MOVE    SPA-C01-INDEX       TO  SPA-C04-CHANGE-INDEX-ST
+                                               SPA-C04-CHANGE-INDEX-ED
+               MOVE    SPA-NAI-C04-BYOMEI (SPA-C01-INDEX)
+                                           TO  LNK-BYO-BYOMEI
+           END-IF
            COMPUTE SPA-C04-CHANGE-INDEX-MAX
                    =   SPA-C04-CHANGE-INDEX-ED -
                        SPA-C04-CHANGE-INDEX-ST +   1
