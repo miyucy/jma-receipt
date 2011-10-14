@@ -38,8 +38,6 @@
               03  MDCREQ-PERFORM-TIME PIC X(8).
       *       UID
               03  MDCREQ-MEDICAL-UID       PIC X(36).
-      *       入院日
-              03  MDCREQ-ADMISSION-DATE    PIC X(10).
       *
               03  MDCREQ-MEDICAL-INFO.
       *         診療科
@@ -100,17 +98,12 @@
       *             診療コード
                     06  MDCREQ-PRSCRPT-CODE          PIC X(9).
       *             診療名称（コメント）
-                    06  MDCREQ-PRSCRPT-NAME          PIC X(80).
+                    06  MDCREQ-PRSCRPT-NAME          PIC X(50).
       *             数量
                     06  MDCREQ-PRSCRPT-NUMBER        PIC X(40).
-      *             処方せん一般名記載
-                    06  MDCREQ-GENERIC-FLG           PIC X(03).
       *         病名
                 04  MDCREQ-DIAGNOSIS-INFO           OCCURS  50 TIMES.
                   05  MDCREQ-DIAGNOSIS-NUMBER        PIC X(50).
-      *ver.4.7    入外区分
-                  05  MDCREQ-DIAGNOSIS-INOUT         PIC X(01).
-      *
                   05  MDCREQ-DIAGNOSIS-NAME          PIC X(80).
                   05  MDCREQ-DIAGNOSIS-SINGLE       OCCURS  6  TIMES.
                     07 MDCREQ-DIAGNOSIS-SINGLE-NUMBER

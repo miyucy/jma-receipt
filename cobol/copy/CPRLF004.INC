@@ -8,9 +8,6 @@
       *  01.00.01    NACL-藤原    03/09/30  診断履歴モジュールの変更
       *  02.05.00    NACL-竹田    04/10/20  ドクターコード追加
       *  04.07.00    NACL-多々納  11/10/XX  UID追加
-      *  04.07.00    NACL-多々納  11/11/02  同日再入院区分追加
-      *  04.07.00    NACL-多々納  13/08/XX  API病名補足コメント追加
-      *  04.08.00    NACL-多々納  17/03/XX  API内服１種類区分追加
       ************************************************************
       *01  LF04-REC.
       *
@@ -443,8 +440,6 @@
                05  LF04-SND-SKNSHOSHINDATE  PIC X(10).
       * 疾患な関する保険の健康保険モジュールのUID (単独タグ) (mmlRd:uid)
                05  LF04-SND-SKNHLTUID       PIC X(36).
-      * 入外区分 (mmlRd:InOutPatient)
-               05  LF04-SND-NYUGAIKBN       PIC X(20).
       *
       *
       * [予約請求(Claim)モジュール]
@@ -602,23 +597,4 @@
       *AIP用
       *UID
            03  LF04-MEDICAL-UID       PIC X(36).
-      *同日再入院区分
-           03  LF04-DOUJITSUKBN       PIC X(01).
-      *ver.4.7
-      *病名補足コメント
-           03  LF04-BYOMEI-TBL        OCCURS   50.
-      *        補足コメントコード
-               05  LF04-HOSOKUCD-G.
-                   07  LF04-HOSOKUCD      PIC X(10)
-                                          OCCURS   3.
-      *        補足コメント
-               05  LF04-HOSOKU-COMMENT    PIC X(40).
-      *ver.4.8
-      *API 診療行為
-           03  LF04-SRYACCT-TBL1       OCCURS   40.
-               05  LF04-SRYACCT-TBL2       OCCURS   40.
-      *            継続コメント指示区分
-                   07  LF04-CONTKBN        PIC X(01).
-      *            内服１種類区分
-                   07  LF04-NAIFKBN        PIC X(01).
       *

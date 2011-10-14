@@ -90,33 +90,14 @@
            03  WRK-NINPUFTN-MONEY          PIC 9(10).
            03  WRK-CREYMD                  PIC X(08).
            03  WRK-KYUSEINAME              PIC X(100).
-           03  WRK-GMN-SKYYM               PIC X(06).
            03  WRK-SKYYMD.
                05  WRK-SKYYM               PIC X(06).
                05  WRK-SKYDD               PIC X(02).
-           03  WRK-GMN-BUNBENKBN           PIC X(01).
-           03  WRK-STATE                   PIC S9(09).
-           03  WRK-VISIBLE                 PIC X(01).
-           03  WRK-LABEL-G.
-               05  WRK-LBLNYU-MONEY        PIC X(20).
-               05  WRK-LBLRMSGK-MONEY      PIC X(20).
-               05  WRK-LBLKAIJO-MONEY      PIC X(20).
-               05  WRK-LBLBUNBEN-MONEY     PIC X(20).
-               05  WRK-LBLSHIN-MONEY       PIC X(20).
-               05  WRK-LBLKNS-MONEY        PIC X(20).
-               05  WRK-LBLSYC-MONEY        PIC X(20).
-               05  WRK-LBLSNK-MONEY        PIC X(20).
-               05  WRK-LBLETC-MONEY        PIC X(20).
-               05  WRK-LBLICBFTN-MONEY     PIC X(20).
-               05  WRK-LBLNINPUFTN-MONEY   PIC X(20).
-               05  WRK-LBLDAIRI-MONEY      PIC X(20).
-               05  WRK-LBLMEIPRTKBN        PIC X(20).
-           03  WRK-BASE-MONEY              PIC S9(08).
+           03  WRK-BUNBENKBN               PIC X(01).
+      *
       *
        01  CONST-AREA.
            03  CONST-H211001               PIC X(08)   VALUE "20091001".
-           03  CONST-H270101               PIC X(08)   VALUE "20150101".
-           03  CONST-H2904                 PIC X(08)   VALUE "201704".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -173,9 +154,6 @@
            COPY    "CPORCHCN63.INC".
            COPY    "CPONPRTDATA.INC".
       *
-      *    ¥¯¥é¥¤¥¢¥ó¥È°õºþÀ©¸æ
-           COPY    "CPORCSPRTCTRL.INC".
-      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *
@@ -192,7 +170,19 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA23SCRAREA.INC".
+           COPY    "S02.INC".
+           COPY    "S03.INC".
+           COPY    "S03N.INC".
+           COPY    "S04.INC".
+           COPY    "S06.INC".
+           COPY    "S07.INC".
+           COPY    "S08.INC".
+           COPY    "S09.INC".
+           COPY    "S99.INC".
+           COPY    "SERR.INC".
+           COPY    "SID1.INC".
+           COPY    "SID2.INC".
+           COPY    "SID3.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -321,12 +311,6 @@
                    MOVE    SPA-GMN-S09-HKNJANUM
                                    TO  SPA-NAI-HKNJANUM-S
                END-IF
-      *
-               PERFORM 3121-TEISYUTUSAKI-EDIT-SEC
-               MOVE    SPA-GMN-TEISYUTUSAKI    TO  WRK-CMB-CD
-               PERFORM 4200-TEISYUTUSAKILST-CHK-SEC
-               MOVE    WRK-CMB-ITM         TO  SPA-GMN-TEISYUTUSAKI-G
-      *
            END-IF
       *
            .
@@ -356,27 +340,19 @@
            MOVE    SPACE           TO  SPA-S08
            INITIALIZE                  SPA-S08
       *
+      *    ¥³¥ó¥Ü¥Ü¥Ã¥¯¥¹ÊÔ½¸½èÍý
+           PERFORM 310-COMBO-EDIT-SEC
+      *
            PERFORM 800-ORCSBUNBENFTN-SEC
       *
            PERFORM 900-BUNBEN-KEY3-SEL-SEC
            IF    ( FLG-BUNBEN      =   ZERO )
-               IF    ( SPA-S08-NYUGAIKBN   =   "1" )
-                   IF    ( BUNBEN-UPDKBN   =   ZERO OR "3" )
-                       IF    ( BUNBEN-UPDKBN       =   "3" )
-                           MOVE    2   TO  SPA-NAI-NNEW
-                       ELSE
-                           MOVE    1   TO  SPA-NAI-NNEW
-                       END-IF
-                   END-IF
-               END-IF
+               CONTINUE
            ELSE
                IF    ( SPA-S08-NYUGAIKBN   =   "2" )
                    MOVE    1       TO  SPA-NAI-GNEW
                END-IF
            END-IF
-      *
-      *    ¥³¥ó¥Ü¥Ü¥Ã¥¯¥¹ÊÔ½¸½èÍý
-           PERFORM 310-COMBO-EDIT-SEC
       *
            PERFORM 311-SPASET-SEC
       *
@@ -405,20 +381,15 @@
       *
            IF    ( SPA-S08-NYUGAIKBN   =   "1" )
                PERFORM 900-PTNYUINRRK-KEY4-SEL-SEC
-               MOVE    PTNYUINRRK-NYUINYMD
+               MOVE    PTNYUINRRK-TAIINYMD
                                    TO  SPA-NAI-SRYYMD
       *
                MOVE    PTNYUINRRK-NYUINYMD TO  WRK-SYMD
                PERFORM 800-HIZUKE-CHK-SEC
                MOVE    WRK-HENYMDG         TO  SPA-GMN-NYUINYMD
-               IF    ( PTNYUINRRK-TAIINYMD NOT =   "99999999" )
-                   MOVE    PTNYUINRRK-TAIINYMD
-                                   TO      SPA-NAI-SRYYMD
-                   MOVE    PTNYUINRRK-TAIINYMD
-                                           TO  WRK-SYMD
-                   PERFORM 800-HIZUKE-CHK-SEC
-                   MOVE    WRK-HENYMDG     TO  SPA-GMN-TAIINYMD
-               END-IF
+               MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SYMD
+               PERFORM 800-HIZUKE-CHK-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-TAIINYMD
       *
            ELSE
                PERFORM 900-SYUNOU-KEY-SEL-SEC
@@ -432,10 +403,13 @@
       *
            MOVE    SPACE               TO  WRK-KYUSEINAME
            PERFORM 900-KYUSEIRRK-KEY3-SEL-SEC
-           IF    ( FLG-KYUSEIRRK   =   ZERO )
-               MOVE    KYUSEI-NAME
-                                       TO  WRK-KYUSEINAME
-           END-IF
+           PERFORM UNTIL ( FLG-KYUSEIRRK   NOT =   ZERO )
+               MOVE    KYUSEI-NAME     TO  WRK-KYUSEINAME
+               PERFORM 900-KYUSEIRRK-KEY3-FET-SEC
+           END-PERFORM
+           MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "1001"          TO  SYS-KANRICD
@@ -495,7 +469,6 @@
       *
            IF    ( SPA-NAI-GNEW    =   1 )
             OR   ( FLG-SAIKEISAN   =   1 )
-            OR   ( SPA-NAI-NNEW    =   1 )
                MOVE    LNKBUNBEN-KANYUKBN 
                                        TO  SPA-GMN-SYAKOK
                MOVE    LNKBUNBEN-HONKZKKBN
@@ -506,10 +479,7 @@
                MOVE    LNKBUNBEN-NUM   TO  SPA-GMN-NUM
                MOVE    LNKBUNBEN-HKNJANUM-S
                                        TO  SPA-NAI-HKNJANUM-S
-           END-IF
       *
-           IF    ( SPA-NAI-GNEW    =   1 )
-            OR   ( FLG-SAIKEISAN   =   1 )
                MOVE    LNKBUNBEN-NYU-MONEY TO  SPA-GMN-NYU-MONEY
                MOVE    LNKBUNBEN-RMSGK-MONEY
                                            TO  SPA-GMN-RMSGK-MONEY
@@ -541,7 +511,6 @@
       *
            END-IF
       *
-      *
            IF    ( LNKBUNBEN-KANYUKBN  =   "2" )
                MOVE    "2"         TO  SPA-NAI-RECESAKI
            ELSE
@@ -553,7 +522,6 @@
            ELSE
       *
                IF    ( SPA-NAI-GNEW    =   1 )
-                OR   ( SPA-NAI-NNEW    =   1 )
                    CONTINUE
                ELSE
                    IF    ( BUNBEN-NAME =   LNKBUNBEN-NAME )
@@ -585,7 +553,7 @@
       *
            IF    ( BUNBEN-SKYYM        =   ZERO )
                MOVE    SPACE           TO  SPA-GMN-SKYYM
-               MOVE    SPACE           TO  SPA-NAI-SKYYM
+               MOVE    ZERO            TO  SPA-NAI-SKYYM
            ELSE
                MOVE    BUNBEN-SKYYM    TO  SPA-NAI-SKYYM
                MOVE    BUNBEN-SKYYM    TO  WRK-SYMD
@@ -673,27 +641,13 @@
       *****************************************************************
        3121-TEISYUTUSAKI-EDIT-SEC              SECTION.
       *
-           IF   (( SPA-NAI-SKYYM        NOT =   SPACE )
-             AND ( SPA-NAI-SKYYM           >=   CONST-H2904 ))
-             OR  ( SPA-NAI-SRYYMD (1:6)    >=   CONST-H2904 )
-                   EVALUATE    SPA-GMN-SYAKOK
-                   WHEN    "1"
-                       MOVE    "1"     TO  SPA-GMN-TEISYUTUSAKI
-                   WHEN    "2"
-                       MOVE    "2"     TO  SPA-GMN-TEISYUTUSAKI
-                   END-EVALUATE
+           IF    ( SPA-GMN-BUNBENKBN       =   "1" )
+                   MOVE    "2"     TO  SPA-GMN-TEISYUTUSAKI
            ELSE
-               IF    ( SPA-GMN-BUNBENKBN       =   "1" )
-                       MOVE    "2"     TO   SPA-GMN-TEISYUTUSAKI
+               IF    ( SPA-NAI-RECESAKI    =   "2" )
+                   MOVE    "2"     TO  SPA-GMN-TEISYUTUSAKI
                ELSE
-      *
-                   IF    ( SPA-NAI-RECESAKI    =   "1" )
-                       MOVE    "1"     TO  SPA-GMN-TEISYUTUSAKI
-                   END-IF
-      *
-                   IF    ( SPA-NAI-RECESAKI    =   "2" )
-                       MOVE    "2"     TO  SPA-GMN-TEISYUTUSAKI
-                   END-IF
+                   MOVE    "1"     TO  SPA-GMN-TEISYUTUSAKI
                END-IF
            END-IF
       *
@@ -754,15 +708,12 @@
        3101-TEISYUTUBIKBNLST-SEC       SECTION.
       *
            INITIALIZE                  SPA-GMN-TEISYUTUBIKBNLST-G
+           MOVE    "1"             TO  SPA-GMN-TEISYUTUBIKBNL   (1)
+           MOVE    "£±£°ÆüÀÁµá"    TO  SPA-GMN-TEISYUTUBIKBNMEIL(1)
+           MOVE    "2"             TO  SPA-GMN-TEISYUTUBIKBNL   (2)
+           MOVE    "£²£µÆüÀÁµá"    TO  SPA-GMN-TEISYUTUBIKBNMEIL(2)
       *
-           IF    ( SPA-NAI-NNEW            =   ZERO  )
-               MOVE    "1"             TO  SPA-GMN-TEISYUTUBIKBNL   (1)
-               MOVE    "£±£°ÆüÀÁµá"    TO  SPA-GMN-TEISYUTUBIKBNMEIL(1)
-               MOVE    "2"             TO  SPA-GMN-TEISYUTUBIKBNL   (2)
-               MOVE    "£²£µÆüÀÁµá"    TO  SPA-GMN-TEISYUTUBIKBNMEIL(2)
-      *
-               MOVE    2               TO  SPA-GMN-TEISYUTUBIKBN-MAX
-           END-IF
+           MOVE    2               TO  SPA-GMN-TEISYUTUBIKBN-MAX
       *
            .
        3101-TEISYUTUBIKBNLST-EXT.
@@ -773,17 +724,14 @@
        3101-SKYKBNLST-SEC            SECTION.
       *
            INITIALIZE                  SPA-GMN-SKYKBNLST-G
+           MOVE    "0"             TO  SPA-GMN-SKYKBNL   (1)
+           MOVE    "ÀÁµá¤·¤Ê¤¤"    TO  SPA-GMN-SKYKBNMEIL(1)
+           MOVE    "1"             TO  SPA-GMN-SKYKBNL   (2)
+           MOVE    "Ì¤ÀÁµá"        TO  SPA-GMN-SKYKBNMEIL(2)
+           MOVE    "2"             TO  SPA-GMN-SKYKBNL   (3)
+           MOVE    "ÀÁµáºÑ"        TO  SPA-GMN-SKYKBNMEIL(3)
       *
-           IF    ( SPA-NAI-NNEW            =   ZERO  )
-               MOVE    "0"             TO  SPA-GMN-SKYKBNL   (1)
-               MOVE    "ÀÁµá¤·¤Ê¤¤"    TO  SPA-GMN-SKYKBNMEIL(1)
-               MOVE    "1"             TO  SPA-GMN-SKYKBNL   (2)
-               MOVE    "Ì¤ÀÁµá"        TO  SPA-GMN-SKYKBNMEIL(2)
-               MOVE    "2"             TO  SPA-GMN-SKYKBNL   (3)
-               MOVE    "ÀÁµáºÑ"        TO  SPA-GMN-SKYKBNMEIL(3)
-      *
-               MOVE    3               TO  SPA-GMN-SKYKBN-MAX
-           END-IF
+           MOVE    3               TO  SPA-GMN-SKYKBN-MAX
       *
            .
        3101-SKYKBNLST-EXT.
@@ -862,15 +810,12 @@
        3101-MEIPRTKBNLST-SEC            SECTION.
       *
            INITIALIZE                      SPA-GMN-MEIPRTKBNLST-G
+           MOVE    "0"                 TO  SPA-GMN-MEIPRTKBNL   (1)
+           MOVE    "È¯¹Ô¤·¤Ê¤¤"        TO  SPA-GMN-MEIPRTKBNMEIL(1)
+           MOVE    "1"                 TO  SPA-GMN-MEIPRTKBNL   (2)
+           MOVE    "È¯¹Ô¤¹¤ë"          TO  SPA-GMN-MEIPRTKBNMEIL(2)
       *
-           IF    ( SPA-NAI-NNEW            =   ZERO  )
-               MOVE    "0"                 TO  SPA-GMN-MEIPRTKBNL   (1)
-               MOVE    "È¯¹Ô¤·¤Ê¤¤"        TO  SPA-GMN-MEIPRTKBNMEIL(1)
-               MOVE    "1"                 TO  SPA-GMN-MEIPRTKBNL   (2)
-               MOVE    "È¯¹Ô¤¹¤ë"          TO  SPA-GMN-MEIPRTKBNMEIL(2)
-      *
-               MOVE    2                   TO  SPA-GMN-MEIPRTKBN-MAX
-           END-IF
+           MOVE    2                   TO  SPA-GMN-MEIPRTKBN-MAX
       *
            .
        3101-MEIPRTKBNLST-EXT.
@@ -939,7 +884,6 @@
                    MOVE    BUNBEN-NYUGAIKBN    TO  SYU-NYUGAIKBN
                    MOVE    BUNBEN-RRKNUM       TO  SYU-DENPNUM
                    MOVE    ZERO                TO  SYU-BUNBENINFFLG
-                   MOVE    SPA-OPID            TO  SYU-OPID
                    MOVE    BUNBEN-UPYMD        TO  SYU-UPYMD
                    MOVE    BUNBEN-UPHMS        TO  SYU-UPHMS
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
@@ -1090,8 +1034,7 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
-           MOVE    SPA-GMN-BUNBENKBN-G TO  WRK-GMN-BUNBENKBN
-           MOVE    SPA-GMN-SKYYM       TO  WRK-GMN-SKYYM
+           MOVE    SPA-GMN-BUNBENKBN-G TO  WRK-BUNBENKBN
       *
            MOVE    S08-RIYOUKBN        TO  SPA-GMN-RIYOUKBN-G
            MOVE    S08-SKYYM           TO  SPA-GMN-SKYYM
@@ -1254,7 +1197,7 @@
            IF    ( SPA-GMN-RIYOUKBN    =   "0" )
             OR   ( SPA-GMN-HKNJANUM    =   ZERO )
                MOVE    SPACE           TO  SPA-GMN-SKYYM
-               MOVE    SPACE           TO  SPA-NAI-SKYYM
+               MOVE    ZERO            TO  SPA-NAI-SKYYM
                MOVE    SPACE           TO  SPA-GMN-TEISYUTUBIKBN
                MOVE    "1"             TO  SPA-GMN-SKYKBN
            END-IF
@@ -1267,7 +1210,7 @@
       *****************************************************************
        4101-SKYYM-CHK-SEC              SECTION.
       *
-           MOVE    SPACE               TO  SPA-NAI-SKYYM
+           MOVE    ZERO                TO  SPA-NAI-SKYYM
       *
            IF    ( SPA-GMN-SKYYM       =   SPACE )
                CONTINUE
@@ -1282,10 +1225,6 @@
                                        TO  SPA-NAI-SKYYM
                    MOVE    WRK-HENYMDG (1:6)
                                        TO  SPA-GMN-SKYYM
-                   IF    ( SPA-GMN-SKYYM   NOT =   WRK-GMN-SKYYM )
-                    AND  ( SPA-NAI-SKYYM      >=   CONST-H2904 )
-                       PERFORM 3121-TEISYUTUSAKI-EDIT-SEC
-                   END-IF
                END-IF
            END-IF
       *
@@ -1339,7 +1278,7 @@
                                        TO  SPA-GMN-BUNBENKBN-G
            END-IF
       *
-           IF    ( SPA-GMN-BUNBENKBN   NOT =   WRK-GMN-BUNBENKBN )
+           IF    ( SPA-GMN-BUNBENKBN   NOT =   WRK-BUNBENKBN )
                PERFORM 3121-TEISYUTUSAKI-EDIT-SEC
            END-IF
       *
@@ -1633,43 +1572,22 @@
       *****************************************************************
        4101-DAIRI-MONEY-CHK-SEC        SECTION.
       *
-           MOVE    ZERO    TO  SPA-GMN-DAIRI-MONEY
-           MOVE    ZERO    TO  WRK-BASE-MONEY
-      *
            IF    ( SPA-GMN-RIYOUKBN        =   "1" )
-      *
-               EVALUATE    TRUE
-               WHEN  ( SPA-NAI-SANKANUM    =   ZERO )
-               WHEN  ( SPA-GMN-ZAIWEEK     <   22 )
-               WHEN  ( SPA-GMN-SANKAKBN    =   "2" OR "3" )
-                   IF    ( SPA-NAI-BIRTHDAY-BABY   NOT =   SPACE )
-                       EVALUATE   TRUE
-                       WHEN    ( SPA-NAI-BIRTHDAY-BABY
-                                          >= CONST-H270101 )
-                           MOVE    404000  TO  WRK-BASE-MONEY
-                       WHEN    OTHER
-                           MOVE    390000  TO  WRK-BASE-MONEY
-                       END-EVALUATE
-                   END-IF
-               WHEN    OTHER
-                   MOVE    420000      TO  WRK-BASE-MONEY
-               END-EVALUATE
-      *
-               IF    ( SPA-GMN-SANKAKBN    =   "3" )
+               IF    ( SPA-NAI-SANKANUM    NOT =   ZERO )
+                AND  ( SPA-GMN-ZAIWEEK        >=   22 )
                    COMPUTE SPA-GMN-DAIRI-MONEY
-                       =   WRK-BASE-MONEY  *   SPA-GMN-BIRTHCNT
-                       +   SPA-GMN-SNK-MONEY
+                       =   420000      *   SPA-GMN-BIRTHCNT
                ELSE
                    COMPUTE SPA-GMN-DAIRI-MONEY
-                       =   WRK-BASE-MONEY  *   SPA-GMN-BIRTHCNT
+                       =   390000      *   SPA-GMN-BIRTHCNT
                END-IF
       *
-           END-IF
-      *
-           IF  ( SPA-GMN-DAIRI-MONEY >   ZERO )
-            AND( SPA-GMN-DAIRI-MONEY >   SPA-GMN-NINPUFTN-MONEY )
-               MOVE    SPA-GMN-NINPUFTN-MONEY
+               IF    ( SPA-GMN-DAIRI-MONEY >   SPA-GMN-NINPUFTN-MONEY )
+                   MOVE    SPA-GMN-NINPUFTN-MONEY
                                    TO  SPA-GMN-DAIRI-MONEY
+               END-IF
+           ELSE
+                   MOVE    ZERO    TO  SPA-GMN-DAIRI-MONEY
            END-IF
       *
            .
@@ -1911,8 +1829,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-NAI-NNEW        =   ZERO )
-                AND  ( SPA-GMN-NYUIN-DAY   =   ZERO )
+               IF    ( SPA-GMN-NYUIN-DAY   =   ZERO )
                    MOVE    "1004"          TO  SPA-ERRCD
                    MOVE    9               TO  SPA-GMN-CUR
                END-IF
@@ -1933,13 +1850,48 @@
                END-IF
            END-IF
       *
-           IF    ( SPA-ERRCD               =   SPACE )
-               IF    ( SPA-GMN-RIYOUKBN    =   "1" )
-                   IF    ( SPA-NAI-SKYYM   NOT =   SPACE )
-                       PERFORM 4111-TEISYUTUSAKI-CHK-SEC
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-GMN-RIYOUKBN        =   "1" )
+                   IF    ( SPA-GMN-TEISYUTUSAKI    =   SPACE )
+                       MOVE    "1012"      TO  SPA-ERRCD
+                       MOVE    14          TO  SPA-GMN-CUR
                    END-IF
                END-IF
-               
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-GMN-BUNBENKBN   =   "1" )
+                   IF    ( SPA-GMN-TEISYUTUSAKI    =   "1" )
+                       MOVE    "1013"      TO  SPA-ERRCD
+                       MOVE    14          TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-GMN-RIYOUKBN    =   "1" )
+                   IF    ( SPA-GMN-BUNBENKBN   =   "2" )
+                    AND  ( SPA-NAI-RECESAKI    =   "1" )
+                    AND  ( SPA-GMN-SYAKOK      =   "1" )
+                       IF    ( SPA-GMN-TEISYUTUSAKI    =   "2" )
+                           MOVE    "1014"  TO  SPA-ERRCD
+                           MOVE    7       TO  SPA-GMN-CUR
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-GMN-RIYOUKBN    =   "1" )
+                   IF    ( SPA-GMN-BUNBENKBN   =   "2" )
+                    AND  ( SPA-NAI-RECESAKI    =   "2" )
+                    AND  ( SPA-GMN-SYAKOK      =   "2" )
+                       IF    ( SPA-GMN-TEISYUTUSAKI    =   "1" )
+                           MOVE    "1015"  TO  SPA-ERRCD
+                           MOVE    7       TO  SPA-GMN-CUR
+                       END-IF
+                   END-IF
+               END-IF
            END-IF
       *
            IF    ( SPA-GMN-BIRTHCNT    =   1 )
@@ -2013,17 +1965,15 @@
                PERFORM UNTIL ( FLG-BUNBEN  NOT =   ZERO )
                          OR  ( SPA-ERRCD   NOT =   SPACE )
       *
-                   IF    ( BUNBEN-BUNBENKBN    =   "1" OR "2" )
-                       IF    ( SPA-HOSPNUM =   BUNBEN-HOSPNUM )
-                        AND  ( SPA-PTID    =   BUNBEN-PTID )
-                        AND  ( SPA-S08-NYUGAIKBN
-                                           =   BUNBEN-NYUGAIKBN )
-                        AND  ( SPA-S08-RRKNUM
-                                           =   BUNBEN-RRKNUM )
-                           CONTINUE
-                       ELSE
-                           MOVE    "0013"  TO  SPA-ERRCD
-                       END-IF
+                   IF    ( SPA-HOSPNUM =   BUNBEN-HOSPNUM )
+                    AND  ( SPA-PTID    =   BUNBEN-PTID )
+                    AND  ( SPA-S08-NYUGAIKBN
+                                       =   BUNBEN-NYUGAIKBN )
+                    AND  ( SPA-S08-RRKNUM
+                                       =   BUNBEN-RRKNUM )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0013"  TO  SPA-ERRCD
                    END-IF
       *
                    PERFORM 900-BUNBEN-KEY5-FET-SEC
@@ -2039,67 +1989,6 @@
            .
       *
        411-KANREN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    ´ØÏ¢¥Á¥§¥Ã¥¯½èÍý¡ÊÄó½ÐÀè¥Á¥§¥Ã¥¯¡Ë
-      *****************************************************************
-       4111-TEISYUTUSAKI-CHK-SEC              SECTION.
-      *
-           IF    ( SPA-NAI-SKYYM      >=   CONST-H2904 )
-               EVALUATE    SPA-GMN-SYAKOK
-               WHEN    "1"
-                   IF    ( SPA-GMN-TEISYUTUSAKI    =   "2" )
-                       MOVE    "1014"  TO  SPA-ERRCD
-                       MOVE    24      TO  SPA-GMN-CUR
-                   END-IF
-               WHEN    "2"
-                   IF    ( SPA-GMN-TEISYUTUSAKI    =   "1" )
-                       MOVE    "1015"  TO  SPA-ERRCD
-                       MOVE    24      TO  SPA-GMN-CUR
-                   END-IF
-               END-EVALUATE
-           ELSE
-               IF    ( SPA-ERRCD           =   SPACE )
-                   IF    ( SPA-GMN-TEISYUTUSAKI    =   SPACE )
-                       MOVE    "1012"  TO  SPA-ERRCD
-                       MOVE    24      TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
-      *
-               IF    ( SPA-ERRCD           =   SPACE )
-                   IF    ( SPA-GMN-BUNBENKBN   =   "1" )
-                       IF    ( SPA-GMN-TEISYUTUSAKI    =   "1" )
-                           MOVE    "1013"      TO  SPA-ERRCD
-                           MOVE    24          TO  SPA-GMN-CUR
-                       END-IF
-                   END-IF
-               END-IF
-      *
-               IF    ( SPA-ERRCD           =   SPACE )
-                   IF    ( SPA-GMN-BUNBENKBN   =   "2" )
-                    AND  ( SPA-NAI-RECESAKI    =   "1" )
-                    AND  ( SPA-GMN-SYAKOK      =   "1" )
-                       IF    ( SPA-GMN-TEISYUTUSAKI    =   "2" )
-                           MOVE    "1014"  TO  SPA-ERRCD
-                           MOVE    24      TO  SPA-GMN-CUR
-                       END-IF
-                   END-IF
-      *
-                   IF    ( SPA-ERRCD           =   SPACE )
-                       IF    ( SPA-GMN-BUNBENKBN   =   "2" )
-                        AND  ( SPA-NAI-RECESAKI    =   "2" )
-                        AND  ( SPA-GMN-SYAKOK      =   "2" )
-                           IF    ( SPA-GMN-TEISYUTUSAKI    =   "1" )
-                               MOVE    "1015"  TO  SPA-ERRCD
-                               MOVE    24      TO  SPA-GMN-CUR
-                           END-IF
-                       END-IF
-                   END-IF
-               END-IF
-           END-IF
-      *
-           .
-       4111-TEISYUTUSAKI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    Ìá¤ë¡¡½èÍý
@@ -2156,11 +2045,7 @@
            MOVE    SPA-HOSPNUM             TO  BUNBEN-HOSPNUM
            MOVE    SPA-PTID                TO  BUNBEN-PTID
            MOVE    SPA-S08-NYUGAIKBN       TO  BUNBEN-NYUGAIKBN
-           IF    ( SPA-NAI-SKYYM           =   SPACE )
-               MOVE    "000000"            TO  BUNBEN-SKYYM
-           ELSE
-               MOVE    SPA-NAI-SKYYM       TO  BUNBEN-SKYYM
-           END-IF
+           MOVE    SPA-NAI-SKYYM           TO  BUNBEN-SKYYM
            MOVE    SPA-S08-RRKNUM          TO   BUNBEN-RRKNUM
            MOVE    SPA-GMN-PTNUM           TO   BUNBEN-PTNUM
            MOVE    SPA-GMN-TEISYUTUBIKBN   TO   BUNBEN-TEISYUTUBIKBN
@@ -2198,12 +2083,7 @@
            MOVE    SPA-GMN-DAIRI-MONEY     TO  BUNBEN-DAIRI-MONEY
            MOVE    SPA-GMN-BIKOU           TO  BUNBEN-BIKOU
            MOVE    SPA-NAI-HKNJANUM-S      TO  BUNBEN-HKNJANUM-S
-           IF    ( SPA-NAI-NNEW            =   ZERO )
-               MOVE    "1"                 TO  BUNBEN-UPDKBN
-           ELSE
-               MOVE    "3"                 TO  BUNBEN-UPDKBN
-           END-IF
-           MOVE    SPA-OPID                TO  BUNBEN-OPID
+           MOVE    "1"                     TO  BUNBEN-UPDKBN
            PERFORM 800-MCNDATE-SEC
            MOVE    WRK-CREYMD              TO  BUNBEN-CREYMD
            MOVE    SMCNDATE-YMD            TO  BUNBEN-UPYMD
@@ -2240,7 +2120,6 @@
                    MOVE    BUNBEN-NYUGAIKBN    TO  SYU-NYUGAIKBN
                    MOVE    BUNBEN-RRKNUM       TO  SYU-DENPNUM
                    MOVE    "1"                 TO  SYU-BUNBENINFFLG
-                   MOVE    SPA-OPID            TO  SYU-OPID
                    MOVE    BUNBEN-UPYMD        TO  SYU-UPYMD
                    MOVE    BUNBEN-UPHMS        TO  SYU-UPHMS
                    MOVE    SYUNOU-REC          TO  MCPDATA-REC
@@ -2261,13 +2140,19 @@
                IF    ( SPA-GMN-MEIPRTKBN   =   "1" )
       *
                    CALL    "ORCSONPRTSET"  USING   SPA-AREA
-                   IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-                    OR   ( SPA-PRTCONF         =   "1" )
-                       PERFORM 800-CLIENT-PRT-SEC
-                   END-IF
-                   PERFORM 22011-PRINT-SEC
-                   PERFORM 800-CLIENT-DUMMY-PRT-SEC
       *
+                   INITIALIZE                      ONPRTDATA
+                                                   ORCHCN63AREA
+                   MOVE    SPA-PTID            TO  ORCHCN63-PTID
+                   MOVE    SPA-S08-NYUGAIKBN   TO  ORCHCN63-NYUGAIKBN
+                   MOVE    SPA-S08-RRKNUM      TO  ORCHCN63-RRKNUM
+                   MOVE    ORCHCN63AREA        TO  ONPRTDATA-DATA
+                   MOVE    "ORCHCN63"          TO  ONPRTDATA-PGID
+                   MOVE    "01"                TO  SPA-PRT-FLG
+                   CALL    "ORCHCOMMON"        USING
+                                               SPA-AREA
+                                               ONPRTDATA
+                   MOVE    SPACE               TO  SPA-PRT-FLG
                END-IF
       *
                IF    ( SPA-S08-MOTOPG  =   "I04" )
@@ -2281,27 +2166,6 @@
            .
       *
        2201-TOUROKU-EXT.
-           EXIT.
-      *****************************************************************
-      *    °õºþ½èÍý
-      *****************************************************************
-       22011-PRINT-SEC                 SECTION.
-      *
-           INITIALIZE                      ONPRTDATA
-                                           ORCHCN63AREA
-           MOVE    SPA-PTID            TO  ORCHCN63-PTID
-           MOVE    SPA-S08-NYUGAIKBN   TO  ORCHCN63-NYUGAIKBN
-           MOVE    SPA-S08-RRKNUM      TO  ORCHCN63-RRKNUM
-           MOVE    ORCHCN63AREA        TO  ONPRTDATA-DATA
-           MOVE    "01"                TO  SPA-PRT-FLG
-           CALL    "ORCHCN63"              USING
-                                           SPA-AREA
-                                           ONPRTDATA
-           MOVE    SPACE               TO  SPA-PRT-FLG
-      *
-           .
-      *
-       22011-PRINT-EXT.
            EXIT.
       *****************************************************************
       *    ¼«²èÌÌÊÔ½¸½èÍý
@@ -2546,7 +2410,6 @@
                CONTINUE
            ELSE
                IF    ( SPA-GMN-SANKAKBN        =   "1" OR "3" )
-                AND  ( SPA-NAI-NNEW            =   ZERO )
                    IF    ( SPA-GMN-SNK-MONEY   =   ZERO )
                        COMPUTE IDX-INFO    =   IDX-INFO    +   1
                        MOVE    "blue"  TO  S08-LBLINFO-STYLE (IDX-INFO)
@@ -2582,51 +2445,6 @@
       *
            END-IF
       *
-           MOVE    "T"                     TO  WRK-VISIBLE
-      *
-           MOVE    "Æþ±¡ÎÁ"                TO  WRK-LBLNYU-MONEY
-           MOVE    "¼¼ÎÁº¹³Û"              TO  WRK-LBLRMSGK-MONEY
-           MOVE    "Ê¬ÊÚ²ð½õÎÁ"            TO  WRK-LBLKAIJO-MONEY
-           MOVE    "Ê¬ÊÚÎÁ"                TO  WRK-LBLBUNBEN-MONEY
-           MOVE    "¿·À¸»ù´ÉÍýÊÝ°éÎÁ"      TO  WRK-LBLSHIN-MONEY
-           MOVE    "¸¡ºº¡¦ÌôºÞÎÁ"          TO  WRK-LBLKNS-MONEY
-           MOVE    "½èÃÖ¡¦¼êÅöÎÁ"          TO  WRK-LBLSYC-MONEY
-           MOVE    "»º²Ê°åÎÅÊä½þÀ©ÅÙ"      TO  WRK-LBLSNK-MONEY
-           MOVE    "¤½¤ÎÂ¾"                TO  WRK-LBLETC-MONEY
-           MOVE    "°ìÉôÉéÃ´¶âÅù"          TO  WRK-LBLICBFTN-MONEY
-           MOVE    "Ç¥ÉØ¹ç·×ÉéÃ´³Û"        TO  WRK-LBLNINPUFTN-MONEY
-           MOVE    "ÂåÍý¼õ¼è³Û"            TO  WRK-LBLDAIRI-MONEY
-           MOVE    "ÌÀºÙ½ñ"                TO  WRK-LBLMEIPRTKBN
-      *
-           MOVE    WRK-LBLNYU-MONEY        TO  S08-LBLNYU-MONEY
-           MOVE    WRK-LBLRMSGK-MONEY      TO  S08-LBLRMSGK-MONEY
-           MOVE    WRK-LBLKAIJO-MONEY      TO  S08-LBLKAIJO-MONEY
-           MOVE    WRK-LBLBUNBEN-MONEY     TO  S08-LBLBUNBEN-MONEY
-           MOVE    WRK-LBLSHIN-MONEY       TO  S08-LBLSHIN-MONEY
-           MOVE    WRK-LBLKNS-MONEY        TO  S08-LBLKNS-MONEY
-           MOVE    WRK-LBLSYC-MONEY        TO  S08-LBLSYC-MONEY
-           MOVE    WRK-LBLSNK-MONEY        TO  S08-LBLSNK-MONEY
-           MOVE    WRK-LBLETC-MONEY        TO  S08-LBLETC-MONEY
-           MOVE    WRK-LBLICBFTN-MONEY     TO  S08-LBLICBFTN-MONEY
-           MOVE    WRK-LBLNINPUFTN-MONEY   TO  S08-LBLNINPUFTN-MONEY
-           MOVE    WRK-LBLDAIRI-MONEY      TO  S08-LBLDAIRI-MONEY
-           MOVE    WRK-LBLMEIPRTKBN        TO  S08-LBLMEIPRTKBN
-      *
-           MOVE    WRK-VISIBLE         TO  S08-NYU-MONEY-VISIBLE
-                                           S08-RMSGK-MONEY-VISIBLE
-                                           S08-KAIJO-MONEY-VISIBLE
-                                           S08-BUNBEN-MONEY-VISIBLE
-                                           S08-SHIN-MONEY-VISIBLE
-                                           S08-KNS-MONEY-VISIBLE
-                                           S08-SYC-MONEY-VISIBLE
-                                           S08-SNK-MONEY-VISIBLE
-                                           S08-ETC-MONEY-VISIBLE
-                                           S08-ICBFTN-MONEY-VISIBLE
-                                           S08-NINPUFTN-MONEY-VISIBLE
-                                           S08-DAIRI-MONEY-VISIBLE
-                                           S08-MEIPRTKBN-VISIBLE
-                                           S08-MEIPRTKBN-ITEM-VISIBLE
-      *
       *    ¹àÌÜ¾õÂÖÊÔ½¸
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
       *
@@ -2653,8 +2471,6 @@
                                            S08-B05-STATE
                                            S08-B12-STATE
       *
-           MOVE    WIDGET-NORMAL       TO  WRK-STATE
-      *
            IF    ( SPA-NAI-LOCK        NOT =   ZERO )
                MOVE    WIDGET-INSENSITIVE
                                        TO  S08-B05-STATE
@@ -2663,7 +2479,6 @@
       *
            IF    ( SPA-GMN-RIYOUKBN    =   "0" )
             OR   ( SPA-GMN-HKNJANUM    =   SPACE )
-            OR   ( SPA-NAI-NNEW    NOT =   ZERO )
                MOVE    WIDGET-INSENSITIVE
                                        TO  S08-SKYYM-STATE
                                            S08-TEISYUTUBIKBN-STATE
@@ -2683,26 +2498,6 @@
                                        TO  S08-SANKAKBN-STATE
                                            S08-SANKAKBN-ITEM-STATE
            END-IF
-      *
-           IF    ( SPA-NAI-NNEW            NOT =   ZERO )
-               MOVE    WIDGET-INSENSITIVE  TO  WRK-STATE
-           END-IF
-      *
-           MOVE    WRK-STATE           TO  S08-NYUIN-DAY-STATE
-                                           S08-NYU-MONEY-STATE
-                                           S08-RMSGK-MONEY-STATE
-                                           S08-KAIJO-MONEY-STATE
-                                           S08-BUNBEN-MONEY-STATE
-                                           S08-SHIN-MONEY-STATE
-                                           S08-KNS-MONEY-STATE
-                                           S08-SYC-MONEY-STATE
-                                           S08-SNK-MONEY-STATE
-                                           S08-ETC-MONEY-STATE
-                                           S08-ICBFTN-MONEY-STATE
-                                           S08-NINPUFTN-MONEY-STATE
-                                           S08-DAIRI-MONEY-STATE
-                                           S08-MEIPRTKBN-STATE
-                                           S08-MEIPRTKBN-ITEM-STATE
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
@@ -2867,85 +2662,10 @@
                END-IF
            END-IF
       *
-           IF    ( SPA-GMN-CUR     =   9 )
-               IF    ( S08-NYUIN-DAY-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    10      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
            IF    ( SPA-GMN-CUR     =   10 )
                IF    ( S08-SANKAKBN-STATE
                                         =   WIDGET-INSENSITIVE )
                    MOVE    11      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR     =   11 )
-               IF    ( S08-NYU-MONEY-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    12      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR     =   12 )
-               IF    ( S08-RMSGK-MONEY-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    13      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-           IF    ( SPA-GMN-CUR     =   13 )
-               IF    ( S08-KAIJO-MONEY-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    14      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-           IF    ( SPA-GMN-CUR     =   14 )
-               IF    ( S08-BUNBEN-MONEY-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    15      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-           IF    ( SPA-GMN-CUR     =   15 )
-               IF    ( S08-SHIN-MONEY-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    16      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-           IF    ( SPA-GMN-CUR     =   16 )
-               IF    ( S08-KNS-MONEY-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    17      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-           IF    ( SPA-GMN-CUR     =   17 )
-               IF    ( S08-SYC-MONEY-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    18      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-           IF    ( SPA-GMN-CUR     =   18 )
-               IF    ( S08-SNK-MONEY-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    19      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-           IF    ( SPA-GMN-CUR     =   19 )
-               IF    ( S08-ETC-MONEY-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    20      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-           IF    ( SPA-GMN-CUR     =   20 )
-               IF    ( S08-ICBFTN-MONEY-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    21      TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-           IF    ( SPA-GMN-CUR     =   23 )
-               IF    ( S08-MEIPRTKBN-STATE
-                                        =   WIDGET-INSENSITIVE )
-                   MOVE    212     TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
@@ -3112,7 +2832,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  SID1
-           INITIALIZE                      SID1
            MOVE    SPA-SIDCD           TO  SID1-ID1CODE
            MOVE    WRK-SIDMSG          TO  SID1-ID1MSG
       *
@@ -3130,34 +2849,6 @@
       *
            .
        520-SIDSET-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¥¯¥é¥¤¥¢¥ó¥È°õºþÁ°¡¡½èÍý
-      *****************************************************************
-       800-CLIENT-PRT-SEC         SECTION.
-      *
-      *    ¥¯¥é¥¤¥¢¥ó¥È°õºþÀ©¸æ¾ðÊó¼èÆÀ¥µ¥Ö
-           INITIALIZE                          ORCSPRTCTRLAREA
-           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCTRLAREA
-                                               MCPAREA
-      *
-           .
-       800-CLIENT-PRT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¥¯¥é¥¤¥¢¥ó¥È¥À¥ß¡¼°õºþ¡¡½èÍý
-      *****************************************************************
-       800-CLIENT-DUMMY-PRT-SEC        SECTION.
-      *
-           IF      (SPA-CLIENT-PRT-FLG =   1  )
-      *        °õºþ¥À¥ß¡¼½èÍý
-               MOVE    "99"                TO  SPA-PRT-FLG
-               CALL    "ORCHCDUMMY"    USING   SPA-AREA
-           END-IF
-      *
-           .
-       800-CLIENT-DUMMY-PRT-EXT.
            EXIT.
       *****************************************************************
       *    Ê¬ÊÚÉéÃ´¶â¥µ¥Ö
@@ -3475,10 +3166,6 @@
                INITIALIZE                  KYUSEIRRK-REC
                MOVE    1               TO  FLG-KYUSEIRRK
            END-IF
-      *
-           MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        900-KYUSEIRRK-KEY3-SEL-EXT.

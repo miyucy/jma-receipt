@@ -28,9 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.00    NACL-多々納  11/10/XX  削除・置換え対応
-      *  04.07.00    NACL-多々納  11/11/XX  同日再入院対応
-      *  04.07.00    NACL=多々納  12/03/XX  平成２４年４月改正対応
-      *  04.07.00    NACL-多々納  14/10/XX  パラメタ変更対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -51,11 +48,9 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
            03  FLG-WKSRYACT            PIC 9(01).
-           03  FLG-PTNYUINRRK          PIC 9(01).
       *
            03  FLG-SYORI               PIC 9(01).
            03  FLG-CHKWK               PIC 9(01).
-           03  FLG-DOUJITU             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -94,6 +89,8 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
+      *    受付ＩＤ
+           03  WRK-UKEID               PIC 9(05).
       *    保険組合せ
            03  WRK-HKNCOMBI            PIC 9(04).
            03  WRK-IN-HKNCOMBI         PIC 9(04).
@@ -129,9 +126,6 @@
       *
            03  WRK-START-DATE          PIC X(10).
            03  WRK-END-DATE            PIC X(10).
-      *    入院日
-           03  WRK-NYUIN-DATE          PIC X(10).
-           03  WRK-NYUIN-YMD           PIC X(08).
       *
       *    半角全角変換
        01  WRK-HENKAN-AREA.
@@ -141,19 +135,13 @@
            03  WRK-LEN                 PIC 9(04).
       *
       *    claim連携リターンエリア
-      *01  WRK-ERROR-AREA.
-      *    03  WRK-KBN-CODE            PIC X(01).
-      *    03  WRK-KBN-CODE2           PIC X(01).
-      *    03  WRK-KBN-V2              PIC X(01).
-      *    03  WRK-ERR-CODE            PIC 9(02).
-      *    03  WRK-ERR-MSG             PIC X(100).
-      *    03  WRK-OUT-HKNCOMBI        PIC X(04).
-      *    03  WRK-OUT-CNT1            PIC 9(04).
-      *    03  WRK-OUT-CNT2            PIC 9(04).
-      *!
-      *H26.10
-      *    claim連携サブリターンエリア
-           COPY    "CPORCL0031.INC".
+       01  WRK-ERROR-AREA.
+           03  WRK-KBN-CODE            PIC X(01).
+           03  WRK-ERR-CODE            PIC 9(02).
+           03  WRK-ERR-MSG             PIC X(100).
+           03  WRK-OUT-HKNCOMBI        PIC X(04).
+           03  WRK-OUT-CNT1            PIC 9(04).
+           03  WRK-OUT-CNT2            PIC 9(04).
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -184,10 +172,9 @@
            COPY    "CPORCSLOCK.INC".
       *    ユーザプログラム起動チェックサブパラメタ
            COPY    "CPORCSUSERCHK.INC".
-      *
       *    API XML読み込み用定義体
            COPY    "CPMDCXMLREQ.INC".
-      *
+      *01  FIL-REC        PIC X(50).
       *    API XML書き込み用定義体
            COPY    "CPMDCXMLRES.INC".
       *
@@ -202,10 +189,6 @@
            03  C-RET               PIC X(2).
            03  C-UID               PIC X(36).
        01  ST                      PIC 9(2).
-      *
-      *ver.4.7
-      *    API XML読み込み共通定義
-           COPY    "CPAPIREQ.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -237,10 +220,6 @@
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
       *
-      *    入院履歴
-       01  PTNYUINRRK-REC.
-           COPY    "CPPTNYUINRRK.INC".
-      *
       *　　（ＣＬＡＩＭ接続）
       *    COPY    "CPSK9000.INC".
       *    COPY    "CPSK9001.INC".
@@ -259,7 +238,6 @@
             COPY    "LINKAREA".
        01  SCRAREA.
            COPY    "CPAPIMOD.INC".
-           COPY    "CPAPILSTV2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -336,50 +314,6 @@
                GO  TO         100-INIT-EXT
            END-IF
       *    ＳＰＡ共通設定
-      *    INITIALIZE                  SYS-1010-REC
-      *    INITIALIZE                  ORCSCOMMONAREA
-      *    MOVE    "M00"               TO  ORCSCOMMON-PG
-      *    CALL    "ORCSCOMMON"        USING
-      *                                MCPAREA
-      *                                SPA-AREA
-      *                                ORCSCOMMONAREA
-      *                                SYS-1010-REC
-      *    IF      SPA-ERRCD       NOT =   SPACE
-      *        MOVE   "89"             TO  WRK-ERRCD
-      *    END-IF
-      *
-           .
-       100-INIT-EXT.
-           EXIT.
-      *
-      *H27.8
-      *****************************************************************
-      *    ＳＰＡ共通設定処理
-      *****************************************************************
-       1001-ORCSCOMMON-SEC           SECTION.
-      *
-      *    診療日チェック
-           MOVE    MDCREQ-PERFORM-DATE     TO  WRK-HEN-DATE
-           MOVE    MDCREQ-PERFORM-TIME     TO  WRK-HEN-TIME
-           PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD                TO  WRK-PERFORM-YMD
-           MOVE    WRK-THMS                TO  WRK-PERFORM-TIME
-      *    未設定時はシステム情報設定
-           IF      WRK-PERFORM-YMD         =   SPACE
-               MOVE    SMCNDATE-YMD        TO  WRK-PERFORM-YMD
-           END-IF
-      *    診療日チェック
-           PERFORM 20011-PERFORM-CHK-SEC
-      *    診療日をシステム日付へ
-           IF      WRK-ERRCD           =   SPACE
-               MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
-           ELSE
-      *        エラーは他項目と同時
-               MOVE    SPACE               TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    SPACE               TO  SPA-MOTOPG
-      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -391,10 +325,10 @@
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE   "89"             TO  WRK-ERRCD
            END-IF
+      *
            .
-       1001-ORCSCOMMON-EXT.
+       100-INIT-EXT.
            EXIT.
-      *H27.8
       *
       *****************************************************************
       *    主　処理
@@ -403,12 +337,6 @@
       *
       *    XML情報取り出し
            PERFORM 1000-APTXMLREAD-SEC
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO      TO      200-MAIN-EXT
-           END-IF
-      *H27.8
-      *    ＳＰＡ共通設定
-           PERFORM 1001-ORCSCOMMON-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
            END-IF
@@ -468,16 +396,15 @@
            IF      API-BODY        NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-MEDICALREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_medicalreq"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    API-BODY            TO  APIREQ-OBJECT
-           MOVE    ZERO                TO  APIREQ-MODE
+           MOVE    API-BODY            TO  MDCREQ-OBJECT
+           MOVE    ZERO                TO  MDCREQ-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-MEDICALREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
                CONTINUE
@@ -490,13 +417,12 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_medicalreq"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  MDCREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-MEDICALREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    XML-APIREQ      TO  XML-MEDICALREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
@@ -506,10 +432,10 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_medicalreq"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  MDCREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-MEDICALREQ
                                        SPA-AREA
            IF (MCP-RC = ZERO OR 1)
                CONTINUE
@@ -536,11 +462,6 @@
                    WHEN    1
                        MOVE    "登録処理終了"
                                            TO  MDCRES-API-RESULT-MSG
-                       IF     (LNK-OUT-CNT1        =   ZERO )
-                         AND  (LNK-OUT-CNT2        >   ZERO )
-                           MOVE    "病名登録処理終了"
-                                           TO  MDCRES-API-RESULT-MSG
-                       END-IF
                    WHEN    2
                        MOVE    "削除処理終了"
                                            TO  MDCRES-API-RESULT-MSG
@@ -725,11 +646,6 @@
            AND    (WRK-ERRCD           =   SPACE  )
                PERFORM 20011-DRCD-CHK-SEC
            END-IF
-      *    入院日付チェック
-           IF     (WRK-NYUIN-DATE  NOT =   SPACE  )
-           AND    (WRK-ERRCD           =   SPACE  )
-               PERFORM 20011-NYUINYMD-CHK-SEC
-           END-IF
       *
            .
        2001-INPUT-CHK-EXT.
@@ -778,18 +694,6 @@
                MOVE    "1"                 TO  SPA-NYUGAIKBN
            ELSE
                MOVE    "2"                 TO  SPA-NYUGAIKBN
-           END-IF
-      *    入院日（同日再入院判定）
-           IF      MDCREQ-ADMISSION-DATE   =   SPACE
-               MOVE    SPACE               TO  WRK-NYUIN-DATE
-               MOVE    SPACE               TO  WRK-NYUIN-YMD
-           ELSE
-               MOVE    MDCREQ-ADMISSION-DATE   TO  WRK-HEN-DATE
-               MOVE    SPACE                   TO  WRK-HEN-TIME
-               PERFORM 802-DAYHEN02-SEC
-               MOVE    WRK-SYMD                TO  WRK-NYUIN-YMD
-               MOVE    MDCREQ-ADMISSION-DATE   TO  WRK-NYUIN-DATE
-               MOVE    MDCREQ-ADMISSION-DATE   TO  MDCRES-ADMISSION-DATE
            END-IF
       *
       *    必須入力チェック
@@ -928,77 +832,6 @@
            .
        20011-DRCD-CHK-EXT.
            EXIT.
-      *****************************************************************
-      *    入院日付チェック
-      *****************************************************************
-       20011-NYUINYMD-CHK-SEC    SECTION.
-      *
-      *    日付チェックサブ
-           MOVE    SPACE               TO  STS-AREA-DAY
-           INITIALIZE                      STS-AREA-DAY
-           MOVE    SPACE               TO  LNK-DAY2-AREA
-           MOVE    "21"                TO  LNK-DAY2-IRAI
-           MOVE    WRK-NYUIN-YMD       TO  LNK-DAY2-YMD
-           CALL    "ORCSDAY"           USING
-                                       STS-AREA-DAY
-                                       LNK-DAY2-AREA
-           IF      STS-DAY-RC1     NOT =   ZERO
-               MOVE    "23"                TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    ZERO                TO  FLG-DOUJITU
-           IF     (WRK-ERRCD           =   SPACE )
-              AND (SPA-NYUGAIKBN       =   "1"   )
-      *        入院履歴検索
-               PERFORM 200111-NYUINRRK-HEN-SEC
-               IF      FLG-PTNYUINRRK      =   1
-                   MOVE    "24"                TO  WRK-ERRCD
-               END-IF
-      *        同日再入院区分
-               IF     (PTNYUINRRK-NYUINYMD     =   WRK-PERFORM-YMD ) AND
-                      (PTNYUINRRK-DOUJITSUKBN  =   "1"             )
-                   MOVE    1                   TO  FLG-DOUJITU
-               END-IF
-           END-IF
-           .
-       20011-NYUINYMD-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    入院履歴検索処理
-      *****************************************************************
-       200111-NYUINRRK-HEN-SEC        SECTION.
-      *
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-           MOVE    WRK-NYUIN-YMD       TO  PTNYUINRRK-NYUINYMD
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key39"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key39"             TO  MCP-PATHNAME
-               PERFORM 910-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-                   MOVE    ZERO            TO  FLG-PTNYUINRRK
-               ELSE
-                   INITIALIZE                  PTNYUINRRK-REC
-                   MOVE    1               TO  FLG-PTNYUINRRK
-               END-IF
-           ELSE
-               INITIALIZE                  PTNYUINRRK-REC
-               MOVE    1                   TO  FLG-PTNYUINRRK
-           END-IF
-      *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key39"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       200111-NYUINRRK-HEN-EXT.
-           EXIT.
       *
       *****************************************************************
       *    中途終了データ登録処理
@@ -1081,11 +914,6 @@
            MOVE    WRK-PTNUM           TO  LF04-PTID1
            MOVE    WRK-SRYKA           TO  LF04-CRE001-DPERTID
            MOVE    WRK-DRCD            TO  LF04-DOCCD
-      *
-      *    同日再入院区分
-           IF      FLG-DOUJITU         =   1
-               MOVE    "1"                 TO  LF04-DOUJITSUKBN
-           END-IF
       *    保険情報
            MOVE    MDCREQ-MAIN-INSURANCE-CLASS
                                        TO  LF04-HKN-HKNSBTCODE (01)
@@ -1115,16 +943,6 @@
                                            TO  LF04-ALSNAME(IDY IDZ)
                    MOVE    MDCREQ-PRSCRPT-NUMBER(IDY IDZ)
                                            TO  LF04-SURYO(IDY IDZ)
-      *H24.4
-      *            数量コードに一般名記載区分編集
-                   EVALUATE    MDCREQ-GENERIC-FLG (IDY IDZ)
-                      WHEN     "yes"
-      *                   一般名記載
-                          MOVE    "90"         TO  LF04-SURYOCD(IDY IDZ)
-                      WHEN     "no"
-      *                   銘柄名記載
-                          MOVE    "91"         TO  LF04-SURYOCD(IDY IDZ)
-                   END-EVALUATE
       *
                    IF      MDCREQ-PRSCRPT-CODE (IDY IDZ)   NOT =   SPACE
                        ADD     1               TO  CNT-SRYCNT
@@ -1140,25 +958,6 @@
                                            TO  LF04-SND-SPICOD1(IDY)
                MOVE    MDCREQ-DIAGNOSIS-NAME (IDY)
                                            TO  LF04-SND-SPINAME1(IDY)
-      *
-               IF     (MDCREQ-DIAGNOSIS-NUMBER(IDY)
-                                               NOT =   SPACE )
-                 OR   (MDCREQ-DIAGNOSIS-NAME (IDY)
-                                               NOT =   SPACE )
-                   ADD     1                   TO  CNT-BYOCNT
-               END-IF
-      *ver.4.7
-               EVALUATE    MDCREQ-DIAGNOSIS-INOUT (IDY)
-               WHEN    "I"
-      *            入院
-                   MOVE    "inpatient"     TO  LF04-SND-NYUGAIKBN (IDY)
-               WHEN    "O"
-      *            外来
-                   MOVE    "outpatient"    TO  LF04-SND-NYUGAIKBN (IDY)
-               WHEN    OTHER
-                   MOVE    SPACE           TO  LF04-SND-NYUGAIKBN (IDY)
-               END-EVALUATE
-      *
                PERFORM VARYING   IDZ   FROM    1   BY  1
                        UNTIL    (IDZ           >   6)
                    MOVE    MDCREQ-DIAGNOSIS-SINGLE-NUMBER(IDY IDZ)
@@ -1167,11 +966,8 @@
                    MOVE    MDCREQ-DIAGNOSIS-SINGLE-NAME (IDY IDZ)
                                            TO  LF04-SNDSPITBL-SPINAME2
                                                            (IDY IDZ)
-      *
-                   IF     (MDCREQ-DIAGNOSIS-SINGLE-NUMBER(IDY IDZ)
-                                               NOT =   SPACE  )
-                     OR   (MDCREQ-DIAGNOSIS-SINGLE-NAME (IDY IDZ)
-                                               NOT =   SPACE  )
+                   IF      MDCREQ-DIAGNOSIS-SINGLE-NUMBER(IDY IDZ)
+                                               NOT =   SPACE
                        ADD     1               TO  CNT-BYOCNT
                    END-IF
                END-PERFORM
@@ -1233,41 +1029,29 @@
                GO      TO      20021-CLAIM-CALL-EXT
            END-IF
       *
-      **** INITIALIZE                  WRK-ERROR-AREA
-           INITIALIZE                  LNK-ORCL0031AREA
-           MOVE    "1"                 TO  LNK-KBN-CODE
-      *    診療行為なし
-           IF     (CNT-SRYCNT          =   ZERO )
-               MOVE    "1"                 TO  LNK-KBN-CODE2
-           END-IF
+           INITIALIZE                  WRK-ERROR-AREA
+           MOVE    "1"                 TO  WRK-KBN-CODE
            CALL    "ORCL0031"          USING LF04-REC
-      ****                                   WRK-ERROR-AREA
-                                             LNK-ORCL0031AREA
-           IF      LNK-OUT-HKNCOMBI    NOT =   ZERO
+                                             WRK-ERROR-AREA
+           IF      WRK-OUT-HKNCOMBI    NOT =   ZERO
       *        対象保険組合せ情報編集
                PERFORM 200210-HKNCOMBI-HEN-SEC
            END-IF
-           IF      LNK-ERR1-CODE   NOT =   SPACE
+           IF      WRK-ERR-CODE    NOT =   ZERO
+      ******** MOVE    WRK-ERR-CODE        TO  WRK-ERRCD
                MOVE    "80"                TO  WRK-ERRCD
-               MOVE    LNK-ERR1-MSG        TO  WRK-ERRMSG
+               MOVE    WRK-ERR-MSG         TO  WRK-ERRMSG
            ELSE
-               IF      LNK-ERR2-CODE   NOT =   SPACE
-                   MOVE    "80"                TO  WRK-ERRCD
-                   MOVE    LNK-ERR2-MSG        TO  WRK-ERRMSG
-               END-IF
-           END-IF
-           IF      WRK-ERRCD           =   SPACE
-               IF     (LNK-OUT-HKNCOMBI    =   ZERO
-                                           OR  SPACE)
-               AND    (CNT-SRYCNT          >   ZERO )
+               IF      WRK-OUT-HKNCOMBI    =   ZERO
+                                           OR  SPACE
                    MOVE    "K2"                TO  WRK-KEICD
                END-IF
                IF     (CNT-SRYCNT          >   ZERO )  AND
-                      (LNK-OUT-CNT1        =   ZERO )
+                      (WRK-OUT-CNT1        =   ZERO )
                    MOVE    "20"                TO  WRK-ERRCD
                END-IF
                IF     (CNT-BYOCNT          >   ZERO )  AND
-                      (LNK-OUT-CNT2        =   ZERO )
+                      (WRK-OUT-CNT2        =   ZERO )
                    MOVE    "21"                TO  WRK-ERRCD
                END-IF
                IF     (CNT-SRYCNT          =   ZERO )  AND
@@ -1276,7 +1060,7 @@
                END-IF
            END-IF
       *
-           IF      LNK-OUT-CNT1        =   ZERO
+           IF      WRK-OUT-CNT1        =   ZERO
       *        中途終了データ登録なしは、ＵＩＤのクリア
                MOVE    SPACE           TO  MDCRES-MEDICAL-UID
            END-IF
@@ -1342,7 +1126,7 @@
       *    診療科
            MOVE    WRK-SRYKA           TO  ORCSAPIHKN-SRYKA
       *    保険組合せ
-           MOVE    LNK-OUT-HKNCOMBI    TO  ORCSAPIHKN-IN-HKNCOMBI
+           MOVE    WRK-OUT-HKNCOMBI    TO  ORCSAPIHKN-IN-HKNCOMBI
            CALL    "ORCSAPIHKN"        USING
                                        SPA-AREA
                                        ORCSAPIHKNAREA
@@ -1352,7 +1136,7 @@
                    UNTIL      (IDX     >   20  )
                          OR   (ORCSAPIHKN-THKNCOMBI (IDX)
                                            =   SPACE  )
-               IF      ORCSAPIHKN-THKNCOMBI (IDX)  =   LNK-OUT-HKNCOMBI
+               IF      ORCSAPIHKN-THKNCOMBI (IDX)  =   WRK-OUT-HKNCOMBI
                    PERFORM 2002101-HKNHEN-TBL-SEC
                    MOVE    20                  TO  IDX
                END-IF
@@ -1472,7 +1256,6 @@
                                        LNK-DAY2-AREA
            IF      STS-DAY-RC1     NOT =   ZERO
                MOVE    "17"                TO  WRK-ERRCD
-               DISPLAY "Accept Ymd =  " WRK-SYMD
                GO      TO   200211-BYOMEI-YMD-EXT
            END-IF
       *    終了日
@@ -1791,12 +1574,6 @@
                                                TO  WRK-ERRMSG
            WHEN    "22"
                MOVE    "登録対象のデータがありません"
-                                               TO  WRK-ERRMSG
-           WHEN    "23"
-               MOVE    "入院日付が暦日エラーです。"
-                                               TO  WRK-ERRMSG
-           WHEN    "24"
-               MOVE    "入院日付が入院日ではありません。"
                                                TO  WRK-ERRMSG
       *
            WHEN    "30"

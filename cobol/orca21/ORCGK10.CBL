@@ -34,7 +34,6 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.07.00    NACL-多々納  11/08/08  明細２００件対応
       *  04.07.00    NACL-多々納  11/10/XX  剤番＝１なし対応
-      *                                     同日再入院対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -142,7 +141,6 @@
                05  WRK-KEY-SRYYMD      PIC X(08).
                05  WRK-KEY-SRYKA       PIC X(02).
                05  WRK-KEY-HKNCOMBI    PIC X(04).
-               05  WRK-KEY-DOUJITSUKBN    PIC X(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -209,33 +207,33 @@
       *
        01  SCRAREA.
            COPY    "ORCA21SCRAREA.INC".
-      *!!!     COPY    "K01.INC".
-      *!!!     COPY    "K02.INC".
-      *!!!     COPY    "K02N.INC".
-      *!!!     COPY    "K021.INC".
-      *!!!     COPY    "K023.INC".
-      *!!!     COPY    "K03.INC".
-      *!!!     COPY    "K04.INC".
-      *!!!     COPY    "K05.INC".
-      *!!!     COPY    "K051.INC".
-      *!!!     COPY    "K052.INC".
-      *!!!     COPY    "K06.INC".
-      *!!!     COPY    "K061.INC".
-      *!!!     COPY    "K062.INC".
-      *!!!     COPY    "K07.INC".
-      *!!!     COPY    "K08.INC".
-      *!!!     COPY    "K081.INC".
-      *!!!     COPY    "K09.INC".
-      *!!!     COPY    "K10.INC".
-      *!!!     COPY    "K97.INC".
-      *!!!     COPY    "K98.INC".
-      *!!!     COPY    "K99.INC".
-      *!!!     COPY    "K03X.INC".
-      *!!!     COPY    "KERR.INC".
-      *!!!     COPY    "KERR2.INC".
-      *!!!     COPY    "KID1.INC".
-      *!!!     COPY    "KID2.INC".
-      *!!!     COPY    "KHELP.INC".
+      *ito     COPY    "K01.INC".
+      *ito     COPY    "K02.INC".
+      *ito     COPY    "K02N.INC".
+      *ito     COPY    "K021.INC".
+      *ito     COPY    "K023.INC".
+      *ito     COPY    "K03.INC".
+      *ito     COPY    "K04.INC".
+      *ito     COPY    "K05.INC".
+      *ito     COPY    "K051.INC".
+      *ito     COPY    "K052.INC".
+      *ito     COPY    "K06.INC".
+      *ito     COPY    "K061.INC".
+      *ito     COPY    "K062.INC".
+      *ito     COPY    "K07.INC".
+      *ito     COPY    "K08.INC".
+      *ito     COPY    "K081.INC".
+      *ito     COPY    "K09.INC".
+      *ito     COPY    "K10.INC".
+      *ito     COPY    "K97.INC".
+      *ito     COPY    "K98.INC".
+      *ito     COPY    "K99.INC".
+      *ito     COPY    "K03X.INC".
+      *ito     COPY    "KERR.INC".
+      *ito     COPY    "KERR2.INC".
+      *ito     COPY    "KID1.INC".
+      *ito     COPY    "KID2.INC".
+      *ito     COPY    "KHELP.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -423,8 +421,7 @@
                IF      (WKSRY-PTID         =   WRK-KEY-PTID  )  AND
                        (WKSRY-SRYKA        =   WRK-KEY-SRYKA )  AND
                        (WKSRY-SRYYMD       =   WRK-KEY-SRYYMD)  AND
-                       (WKSRY-HKNCOMBI     =   WRK-KEY-HKNCOMBI)  AND
-                       (WKSRY-DOUJITSUKBN  =   WRK-KEY-DOUJITSUKBN)
+                       (WKSRY-HKNCOMBI     =   WRK-KEY-HKNCOMBI)
                    MOVE    1                   TO  FLG-CHK
                ELSE
                    MOVE    ZERO                TO  FLG-CHK
@@ -444,7 +441,6 @@
                MOVE    WKSRY-SRYKA         TO  WRK-KEY-SRYKA
                MOVE    WKSRY-SRYYMD        TO  WRK-KEY-SRYYMD
                MOVE    WKSRY-HKNCOMBI      TO  WRK-KEY-HKNCOMBI
-               MOVE    WKSRY-DOUJITSUKBN   TO  WRK-KEY-DOUJITSUKBN
       *
                MOVE    "tbl_wksryact"      TO  MCP-TABLE
                MOVE    WRK-PATH            TO  MCP-PATHNAME
@@ -521,9 +517,6 @@
            ELSE
                PERFORM 31012-DRCD-NAME-SEC
            END-IF
-      *ver.4.7
-           MOVE    WKSRY-DOUJITSUKBN   TO  SPA-K10-DOUKBN (IDX)
-      *
       *    保険組合せ
            IF      WKSRY-HKNCOMBI      =   "9999"
                MOVE    "包括分入力"    TO  SPA-K10-GMN-HKNCOMBI (IDX)
@@ -866,17 +859,6 @@
                END-IF
            END-IF
       *
-      *H28.10
-      *    排他中判定
-           IF     (SPA-GMN-PTID    NOT =   ZERO )
-              AND (SPA-ERRCD           =   SPACE)
-      *        排他中
-               IF      SPA-LOCK        NOT  =  ZERO
-                   MOVE    "9998"              TO  SPA-ERRCD
-                   MOVE    4                   TO  SPA-K10GMN-CUR
-               END-IF
-           END-IF
-      *
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-PTID        NOT =   ZERO
                    IF      FLG-OK              =   1
@@ -909,9 +891,6 @@
                                        TO  SPA-HKNCOMBINUM
            MOVE    SPA-K10-PTNUM  (IDX)
                                        TO  SPA-PTNUM
-      *ver.4.7
-           MOVE    SPA-K10-DOUKBN (IDX)
-                                       TO  SPA-WKSRY-DOUKBN
       *
            .
        4510-KAKUTEI-SYORI-EXT.
@@ -953,19 +932,6 @@
                    MOVE    "0003"          TO  SPA-ERRCD
                    MOVE    2               TO  SPA-K10GMN-CUR
                END-IF
-           END-IF
-      *H28.10
-      *    排他中判定
-           IF     (SPA-GMN-PTID    NOT =   ZERO )
-              AND (SPA-ERRCD           =   SPACE)
-      *        排他中
-               IF      SPA-LOCK        NOT  =  ZERO
-                   MOVE    "9998"              TO  SPA-ERRCD
-                   MOVE    4                   TO  SPA-K10GMN-CUR
-               END-IF
-           END-IF
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4610-TUIKA-SYORI-EXT
            END-IF
       *
            IF     (SPA-HKNCOMBINUM     =   "9999")  OR
@@ -1062,9 +1028,6 @@
            MOVE    SPA-K10-SRYYMD(IDX) TO  WKSRY-SRYYMD
            MOVE    SPA-K10-HKNCOMBI(IDX)
                                        TO  WKSRY-HKNCOMBI
-      *ver.4.7
-           MOVE    SPA-K10-DOUKBN (IDX)
-                                       TO  WKSRY-DOUJITSUKBN
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
@@ -1122,7 +1085,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       **** END-IF
            MOVE    SPACE               TO  SPA-K10-GMN-SELNUM
            MOVE    ZERO                TO  SPA-K10-SELNUM
-           MOVE    1                   TO  SPA-K10GMN-CUR
       *
            .
         30011-WKSRYCD-DEL-EXT.
@@ -1191,7 +1153,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  K10
       *
       *    コラムリストの位置指定
-           INITIALIZE                      K10
            MOVE    ZERO                TO  K10-ROW
            MOVE    ZERO                TO  K10-ROWATTR
            IF      WRK-K10-ROW     NOT =   ZERO
@@ -1210,12 +1171,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  K10-SRYKA (IDX)
                MOVE    SPA-K10-GMN-SRYYMD (IDX)
                                                TO  K10-SRYYMD(IDX)
-      *TEST
-               IF      SPA-K10-DOUKBN (IDX)    =   "1"
-                   MOVE    "(2)"               TO  K10-SRYYMD(IDX)
-                                                           (10:3)
-               END-IF
-      *TEST
                MOVE    SPA-K10-GMN-HKNCOMBI (IDX)
                                                TO  K10-HKNCOMBI(IDX)
                MOVE    SPA-K10-SYORIKBN (IDX)
@@ -1249,8 +1204,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "B12"             TO  MCP-WIDGET
                WHEN    03
                    MOVE    "B10"             TO  MCP-WIDGET
-               WHEN    04
-                   MOVE    "B01"             TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -1313,12 +1266,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                INTO    SPA-ERRMSG
                    END-STRING
       *
-               WHEN    "9998"
-                   STRING  "他端末で使用中です。" 
-                                               DELIMITED  BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
-      *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
                                                TO  SPA-ERRMSG
@@ -1368,7 +1315,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  KID1
-           INITIALIZE                      KID1
            MOVE    SPA-KIDCD           TO  KID1-ID1CODE
            MOVE    WRK-KIDMSG          TO  KID1-ID1MSG
       *
