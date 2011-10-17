@@ -461,6 +461,9 @@
       *******                              TO SPA-NAI-C04-BYOMEITOP(IDX)
                                MOVE    SPA-NAI-C02-BYOMEISBT  (IDZ)
                                            TO SPA-NAI-C04-BYOMEISBT(IDX)
+                               MOVE    SPA-NAI-C02-BYOMEI-CHG (IDZ)
+                                           TO SPA-NAI-C04-BYOMEI-CHG
+                                                                   (IDX)
                                MOVE    6   TO  IDZ
                            END-IF
                        END-PERFORM 
@@ -891,9 +894,6 @@
       *****************************************************************
        370-CID6-SET-SEC            SECTION.
       *
-      *??
-           DISPLAY  "SPA-CID6-FLG=" SPA-CID6-FLG "#" SPA-CIDCD6 "#"
-      *??
            EVALUATE    SPA-CIDCD6
                WHEN    "0104"
                WHEN    "0106"
@@ -907,6 +907,8 @@
                                                TO  IDZ
                        MOVE    SPA-C04-IKOSAKI-INDEX1
                                                TO  IDX2
+                       MOVE    SPA-CID6-FLG    TO
+                                       SPA-NAI-C04-BYOMEI-CHG (IDZ)
                        MOVE    SPA-C04-IKOSAKI-BYOMEICD
                                                TO
                                        SPA-NAI-C04-BYOMEICD-O (IDZ IDX2)
@@ -931,11 +933,6 @@
                                                SPA-C04-CHANGE-INDEX-ED
                    END-IF
                    IF      SPA-CID6-FLG    =   "CHG"
-      *??
-           DISPLAY  "SPA-C04-CHANGE-INDEX-ST=" SPA-C04-CHANGE-INDEX-ST
-                            "#" SPA-C04-CHANGE-INDEX-ED "#" 
-                            SPA-C04-CHANGE-MAX "#"
-      *??
                        PERFORM VARYING IDXX    FROM
                                        SPA-C04-CHANGE-INDEX-ST   BY  1
                                UNTIL   IDXX    >
@@ -944,6 +941,8 @@
                        END-PERFORM
                        MOVE    SPA-C04-CHANGE-INDEX-ST
                                                TO  IDZ
+                       MOVE    SPA-CID6-FLG    TO
+                                       SPA-NAI-C04-BYOMEI-CHG (IDZ)
                        PERFORM VARYING IDXX    FROM   1   BY  1
                                UNTIL   IDXX    >      SPA-C04-CHANGE-MAX
                            MOVE    SPA-C04-CHANGE-BYOMEICD (IDXX)

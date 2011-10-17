@@ -999,6 +999,10 @@
                                                TO  IDZ
                        MOVE    SPA-C02-IKOSAKI-INDEX1
                                                TO  IDX2
+                       MOVE    SPA-CID2-FLG    TO  
+                                       SPA-NAI-C02-BYOMEI-CHG (IDZ)
+                       INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDZ)
+      *
                        MOVE    SPA-C02-IKOSAKI-BYOMEICD
                                                TO
                                        SPA-NAI-C02-BYOMEICD-O(IDZ IDX2)
@@ -1988,6 +1992,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SPA-NAI-C02-BYOMEICD (IDZ)
                                            TO  USBYO-BYOMEIINPUTCD
                PERFORM 410112-USERBYOMEI-HENSYU-SEC
+               IF      SPA-NAI-C04-BYOMEI-CHG (IDZ)
+                                       NOT =   SPACE
+                   INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDZ)
+               END-IF    
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       6
                    IF      SPA-C01-TBYOMEICD-INDEX (IDZ)
@@ -2051,6 +2059,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SPA-C01-INDEX   TO  IDZ
       *
                IF      SPA-C01-WIDGET  =   "BYOMEICD"
+      *************INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDZ)
                    MOVE    SPA-C01-BYOMEIINPUTCD
                                        TO  SPA-NAI-C02-BYOMEICD (IDZ)
                                            SPA-GMN-C02-BYOMEICD (IDZ)
@@ -2060,7 +2069,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    PERFORM VARYING IDZ     FROM    SPA-C01-INDEX-ST
                                                    BY  1
                            UNTIL   IDZ     >       SPA-C01-INDEX-ED
-                     INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDZ)
+                     IF      SPA-NAI-C04-BYOMEI-CHG (IDZ)
+                                               NOT =   SPACE
+                       INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDZ)
+                     END-IF    
                      PERFORM VARYING IDX3    FROM    1   BY  1
                              UNTIL   IDX3    >       21
                              OR      SPA-NAI-C04-BYOMEICD-O (IDZ IDX3)
@@ -2761,6 +2773,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                                                TO  IDZ
                        MOVE    SPA-C02-IKOSAKI-INDEX1
                                                TO  IDX2
+                       MOVE    SPA-CID6-FLG    TO
+                                       SPA-NAI-C02-BYOMEI-CHG  (IDZ)
+                       INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDZ)
+      *
                        MOVE    SPA-C02-IKOSAKI-BYOMEICD
                                                TO
                                        SPA-NAI-C02-BYOMEICD-O(IDZ IDX2)
@@ -2805,6 +2821,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                        END-PERFORM
                        MOVE    SPA-C02-CHANGE-INDEX-ST
                                                TO  IDZ
+                       MOVE    SPA-CID6-FLG    TO
+                                       SPA-NAI-C02-BYOMEI-CHG  (IDZ)
                        PERFORM VARYING IDXX    FROM   1   BY  1
                                UNTIL   IDXX    >      SPA-C02-CHANGE-MAX
                            MOVE    SPA-C02-CHANGE-BYOMEICD (IDXX)
@@ -2827,7 +2845,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                                        SPA-NAI-C02-TANDOKUKBN-O
                                                              (IDZ IDXX)
                            END-IF
-                       END-PERFORM 
+                        END-PERFORM 
                        MOVE    SPA-NAI-C02-BYOMEI-O (IDZ 1)
                                                TO
                                            SPA-NAI-C02-BYOMEI (IDZ)
