@@ -1615,7 +1615,7 @@
            MOVE    SPACE               TO  ORCSBYOMEIAREA
            INITIALIZE                      ORCSBYOMEIAREA
            MOVE    "1"                 TO  LNK-BYO-SYORI
-           IF      SPA-C01-INDEX       =   ZERO
+      *****IF      SPA-C01-INDEX       =   ZERO
                MOVE    SPACE               TO  WRK-BYOMEI
                MOVE    ZERO                TO  IDYY
                PERFORM VARYING IDY FROM    1   BY  1
@@ -1647,12 +1647,12 @@
                    END-IF    
                END-PERFORM
                MOVE    WRK-BYOMEI          TO  LNK-BYO-BYOMEI
-           ELSE
-               MOVE    SPA-C01-INDEX       TO  SPA-C04-CHANGE-INDEX-ST
-                                               SPA-C04-CHANGE-INDEX-ED
-               MOVE    SPA-NAI-C04-BYOMEI (SPA-C01-INDEX)
-                                           TO  LNK-BYO-BYOMEI
-           END-IF
+      *****ELSE
+      ******   MOVE    SPA-C01-INDEX       TO  SPA-C04-CHANGE-INDEX-ST
+      ******                                   SPA-C04-CHANGE-INDEX-ED
+      ******   MOVE    SPA-NAI-C04-BYOMEI (SPA-C01-INDEX)
+      ******                              TO  LNK-BYO-BYOMEI
+      *****END-IF
            COMPUTE SPA-C04-CHANGE-INDEX-MAX
                    =   SPA-C04-CHANGE-INDEX-ED -
                        SPA-C04-CHANGE-INDEX-ST +   1
