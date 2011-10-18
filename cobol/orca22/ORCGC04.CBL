@@ -902,6 +902,10 @@
       *            自院病名コード廃止処理
                WHEN    "0108"
       *            自院病名コード未コード化病名処理
+                   MOVE    SPACE           TO
+                                           SPA-NAI-C04-BYOMEI-CHG
+                                               (SPA-C04-IKOSAKI-INDEX)
+      *
                    IF      SPA-CID6-FLG    =   "OK"
                        MOVE    SPA-C04-IKOSAKI-INDEX
                                                TO  IDZ

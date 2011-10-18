@@ -993,6 +993,9 @@
                    GO      TO      300-SCREEN-EXT
                END-IF    
                IF      SPA-CIDCD2          =   "0104"  OR  "0106"
+                   MOVE    SPACE               TO  
+                                               SPA-NAI-C02-BYOMEI-CHG
+                                                 (SPA-C02-IKOSAKI-INDEX)
       *            自院病名コードの移行
                    IF      SPA-CID2-FLG    =   "OK"
                        MOVE    SPA-C02-IKOSAKI-INDEX
@@ -2770,6 +2773,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
       *            自院病名コード廃止処理
                WHEN    "0108"
       *            自院病名コード未コード化病名処理
+                   MOVE    SPACE               TO  
+                                               SPA-NAI-C02-BYOMEI-CHG
+                                                 (SPA-C02-IKOSAKI-INDEX)
+      *
                    IF      SPA-CID6-FLG    =   "OK"
                        MOVE    SPA-C02-IKOSAKI-INDEX
                                                TO  IDZ
