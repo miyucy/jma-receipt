@@ -35,8 +35,6 @@
               03  MDCRES-PERFORM-TIME      PIC X(8).
       *       UID
               03  MDCRES-MEDICAL-UID       PIC X(36).
-      *       Æþ±¡Æü
-              03  MDCRES-ADMISSION-DATE    PIC X(10).
       *
               03  MDCRES-APPOINT-DEP-CODE  PIC X(2).
               03  MDCRES-APPOINT-DEP-NAME  PIC X(80).
