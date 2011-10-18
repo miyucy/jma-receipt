@@ -938,11 +938,11 @@
                                UNTIL   IDXX    >
                                        SPA-C04-CHANGE-INDEX-ED
                            INITIALIZE      SPA-NAI-C04-BYOMEI-G (IDXX)
+                           MOVE    SPA-CID6-FLG    TO
+                                           SPA-NAI-C04-BYOMEI-CHG (IDXX)
                        END-PERFORM
                        MOVE    SPA-C04-CHANGE-INDEX-ST
                                                TO  IDZ
-                       MOVE    SPA-CID6-FLG    TO
-                                       SPA-NAI-C04-BYOMEI-CHG (IDZ)
                        PERFORM VARYING IDXX    FROM   1   BY  1
                                UNTIL   IDXX    >      SPA-C04-CHANGE-MAX
                            MOVE    SPA-C04-CHANGE-BYOMEICD (IDXX)

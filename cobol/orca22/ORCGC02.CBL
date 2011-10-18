@@ -1985,7 +1985,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      SPA-C01-INDEX   =   ZERO
       *      自院病名検索時
              PERFORM VARYING IDZ FROM    1   BY  1
-                     UNTIL   IDZ >       6      
+                     UNTIL   IDZ >       6
                MOVE    SPA-C01-TBYOMEICD (IDZ)
                                        TO  SPA-NAI-C02-BYOMEICD (IDZ)
                                            SPA-GMN-C02-BYOMEICD (IDZ)
@@ -1995,7 +1995,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF      SPA-NAI-C04-BYOMEI-CHG (IDZ)
                                        NOT =   SPACE
                    INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDZ)
-               END-IF    
+               END-IF
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       6
                    IF      SPA-C01-TBYOMEICD-INDEX (IDZ)
@@ -2036,6 +2036,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        END-PERFORM 
                        MOVE    SPA-NAI-C04-BYOMEI  (IDX)
                                        TO  SPA-NAI-C02-BYOMEI (IDZ)
+                       MOVE    SPA-NAI-C04-BYOMEI-CHG  (IDX)
+                                       TO  SPA-NAI-C02-BYOMEI-CHG (IDZ)
                        MOVE    6       TO  IDX
                    END-IF   
                END-PERFORM
@@ -2818,11 +2820,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                                        SPA-C02-CHANGE-INDEX-ED
       ****                 INITIALIZE      SPA-GMN-C02-BYOMEICD (IDXX)
                            INITIALIZE      SPA-NAI-C02-BYOMEI-G (IDXX)
+                           MOVE    SPA-CID6-FLG    TO
+                                           SPA-NAI-C02-BYOMEI-CHG (IDXX)
                        END-PERFORM
                        MOVE    SPA-C02-CHANGE-INDEX-ST
                                                TO  IDZ
-                       MOVE    SPA-CID6-FLG    TO
-                                       SPA-NAI-C02-BYOMEI-CHG  (IDZ)
                        PERFORM VARYING IDXX    FROM   1   BY  1
                                UNTIL   IDXX    >      SPA-C02-CHANGE-MAX
                            MOVE    SPA-C02-CHANGE-BYOMEICD (IDXX)
