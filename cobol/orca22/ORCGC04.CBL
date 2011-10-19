@@ -347,11 +347,18 @@
       *
       *    病名移行確認画面より
            IF      SPA-MOTOPG(1:4)     =   "CID2"
+               MOVE    SPACE               TO  SPA-NAI-C04-BYOMEI-CHG
+                                                 (SPA-C04-IKOSAKI-INDEX)
+      *
                IF      SPA-CID2-FLG    =   "OK"
                    MOVE    SPA-C04-IKOSAKI-INDEX
                                                TO  IDZ
                    MOVE    SPA-C04-IKOSAKI-INDEX1
                                                TO  IDX2
+                   MOVE    SPA-CID2-FLG        TO  
+                                           SPA-NAI-C04-BYOMEI-CHG (IDZ)
+                   INITIALIZE              SPA-NAI-C04-BYOMEI-G (IDZ)
+       *
                    MOVE    SPA-C04-IKOSAKI-BYOMEICD
                                                TO
                                        SPA-NAI-C04-BYOMEICD-O (IDZ IDX2)
@@ -913,6 +920,8 @@
                                                TO  IDX2
                        MOVE    SPA-CID6-FLG    TO
                                        SPA-NAI-C04-BYOMEI-CHG (IDZ)
+                       INITIALIZE      SPA-NAI-C04-BYOMEI-G   (IDZ)
+      *
                        MOVE    SPA-C04-IKOSAKI-BYOMEICD
                                                TO
                                        SPA-NAI-C04-BYOMEICD-O (IDZ IDX2)
@@ -1609,12 +1618,12 @@
       *****************************************************************
        500-BYOMEI-KENSAKU-SEC      SECTION.
       *
-           IF      SPA-C01-INDEX   =   ZERO           
+      *****IF      SPA-C01-INDEX   =   ZERO           
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       6
                    PERFORM 3101-BYOMEITOP-HENSYU-SEC
                END-PERFORM
-           END-IF
+      *****END-IF
       *
            MOVE    SPACE               TO  ORCSBYOMEIAREA
            INITIALIZE                      ORCSBYOMEIAREA

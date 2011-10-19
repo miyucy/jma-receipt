@@ -964,6 +964,9 @@
       *
       *    病名移行確認画面より
            IF      SPA-MOTOPG(1:4)     =   "CID2"
+               MOVE    SPACE               TO  SPA-NAI-C02-BYOMEI-CHG
+                                                 (SPA-C02-IKOSAKI-INDEX)
+      *
                IF      SPA-CIDCD2          =   "0103"  OR  "0101"
                                            OR  "0102"  OR  "0105"
       *            病名コードの移行
@@ -993,9 +996,6 @@
                    GO      TO      300-SCREEN-EXT
                END-IF    
                IF      SPA-CIDCD2          =   "0104"  OR  "0106"
-                   MOVE    SPACE               TO  
-                                               SPA-NAI-C02-BYOMEI-CHG
-                                                 (SPA-C02-IKOSAKI-INDEX)
       *            自院病名コードの移行
                    IF      SPA-CID2-FLG    =   "OK"
                        MOVE    SPA-C02-IKOSAKI-INDEX
@@ -2017,8 +2017,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            SPA-NAI-C02-HAISIYMD (IDZ)
                                            SPA-NAI-C02-HAISIYMD-O
                                                              (IDZ IDX3)
-                               MOVE    BYO-TANDOKUKBN
-                                                       TO
+                               MOVE    BYO-TANDOKUKBN  TO
                                            SPA-NAI-C02-TANDOKUKBN-O
                                                              (IDZ IDX3)
                                IF      SPA-NAI-C04-BYOMEICD-O (IDX IDX3)
