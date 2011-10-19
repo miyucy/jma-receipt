@@ -358,7 +358,7 @@
                    MOVE    SPA-CID2-FLG        TO  
                                            SPA-NAI-C04-BYOMEI-CHG (IDZ)
                    INITIALIZE              SPA-NAI-C04-BYOMEI-G (IDZ)
-       *
+      *
                    MOVE    SPA-C04-IKOSAKI-BYOMEICD
                                                TO
                                        SPA-NAI-C04-BYOMEICD-O (IDZ IDX2)
