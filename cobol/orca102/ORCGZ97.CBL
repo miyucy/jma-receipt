@@ -114,7 +114,25 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA102SCRAREA.INC".
+           COPY    "Z01.INC".
+           COPY    "Z02.INC".
+           COPY    "Z03.INC".
+           COPY    "Z04.INC".
+           COPY    "Z05.INC".
+           COPY    "Z06.INC".
+           COPY    "Z07.INC".
+           COPY    "Z08.INC".
+           COPY    "Z90.INC".
+           COPY    "Z91.INC".
+           COPY    "Z97.INC".
+           COPY    "Z98.INC".
+           COPY    "Z99.INC".
+           COPY    "ZERR.INC".
+           COPY    "ZID1.INC".
+           COPY    "ZID2.INC".
+           COPY    "ZID3.INC".
+           COPY    "Z100.INC".
+           COPY    "ZFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -152,6 +170,15 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
+           IF      SPA-MOTOPG          =   "ZFIL"
+      *        ファイルエントリ処理(クライアント保存)
+               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
+                   ADD     1                   TO  SPA-SFILESV-IDX 
+                   PERFORM 3001-FILEENTRY-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+           END-IF
+      *
            MOVE    "B01"               TO  MCP-WIDGET
            MOVE    SPACE               TO  LINKAREA
       *
@@ -179,17 +206,6 @@
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
-               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
-                   ADD     1                   TO  SPA-SFILESV-IDX 
-                   PERFORM 3001-FILEENTRY-SEC
-                 IF      SPA-SFILESV-MAX   =   SPA-SFILESV-IDX
-                   ADD     1                   TO  SPA-SFILESV-IDX 
-                 END-IF
-               ELSE
-                 IF      SPA-SFILESV-MAX   NOT =   ZERO
-                   MOVE    ZERO                TO  Z97-DURATION
-                 END-IF
-               END-IF
       *    プレビュー画面へ
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 4501-NEXT-GMN-SEC
@@ -262,7 +278,6 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  Z97
-           INITIALIZE                      Z97
            MOVE    ZERO                TO  Z97-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  Z97-B12-STATE
       *
@@ -328,7 +343,13 @@
                            PERFORM 4902-FILE-INFO-CHK-SEC
                        ELSE
       *                    ファイルエントリ処理(クライアント保存)
-                           ADD     1               TO  SPA-SFILESV-IDX 
+      *                     MOVE    1               TO  SPA-SFILESV-IDX 
+                           PERFORM VARYING SPA-SFILESV-IDX FROM 1 BY 1
+                                   UNTIL
+                             ( SPA-SFILESV-MAX <   SPA-SFILESV-IDX ) OR
+                             ( SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX) 
+                                                       NOT =   ZERO )
+                           END-PERFORM
                            PERFORM 3001-FILEENTRY-SEC
                            IF      FLG-END         =   1
                                GO  TO  490-KAKUNIN-EXT
@@ -465,10 +486,24 @@
                                        ORCA-BLOB
                                        SPA-AREA
       *
-           MOVE    ORCA-BLOB-OBJECT    TO  Z97-OBJECTDATA
-           MOVE    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
-                                       TO  Z97-FILENAME
-           MOVE    1                   TO  Z97-DURATION
+           INITIALIZE                      ZFIL 
+           MOVE    ORCA-BLOB-OBJECT    TO  ZFIL-OBJECTDATA
+           STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                                       INTO  ZFIL-ENTRY1
+           END-STRING
+           MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
+                                       TO  ZFIL-TITLE
+           MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
+                                       TO  WRK-KENSU-Z
+           MOVE    WRK-KENSU-Z         TO  ZFIL-KENSU
+      *
+           MOVE    ZERO                TO  Z97-DURATION
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "ZFIL"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  FLG-END
