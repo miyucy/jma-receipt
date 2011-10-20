@@ -105,11 +105,15 @@
                05  WRK-ITEM                        PIC X(50)
                                                    OCCURS  4.
            03  WRK-KOHTBLID                        PIC X(02).
+           03  WRK-FUGOU                           PIC X(02).
+           03  WRK-NOT                             PIC X(03).
+           03  WRK-ANDOR                           PIC X(03).
       *
       *    ¸ÇÄêÃÍÎÎ°è
        01  CONST-AREA.
            03  CONST-AND                   PIC X(01) VALUE "1".
-           03  CONST-OR                    PIC X(01) VALUE " ".
+           03  CONST-OR                    PIC X(01) VALUE "2".
+           03  CONST-NOT                   PIC X(01) VALUE "9".
            03  CONST-TABLE-AREA.
                05  CONST-TBL-A     PIC X(20) VALUE "TBL_PTINF       A".
                05  CONST-TBL-B     PIC X(20) VALUE "TBL_SRYKARRK    B".
@@ -2091,7 +2095,7 @@
       *****************************************************************
        10011-PTHKNINF-SQL-EDIT-SEC     SECTION.
       *
-           MOVE    ZERO    TO      CNT-JYOKEN
+           MOVE    ZERO                TO  CNT-JYOKEN
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL   (   IDX1    >   5 )
       *
@@ -2099,8 +2103,12 @@
                                            NOT =   SPACE )
                    COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
       *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
-      *
+                   IF    ( CNT-JYOKEN  =   1 )
+                    OR   ( SPA-Q01-HKNJANUM-JKN    =   "2" )
+                       PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+                   ELSE
+                       PERFORM 900-SQL-JYOKEN-EDIT9-SEC
+                   END-IF
       *
       *            ÊÝ¸±¼ÔÈÖ¹æ¤Î¹àÌÜÄ¹¤òµá¤á¤ë
                    MOVE    1               TO  WRK-STR-LEN
@@ -2117,15 +2125,30 @@
                    PERFORM 900-STR-LEN-GET-SEC
                    MOVE    WRK-STR-LEN             TO  WRK-KIGO-LEN
       *
+                   IF    ( SPA-Q01-HKNJANUM-JKN  =   CONST-NOT )
+                       STRING  "(NOT"      DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
                    STRING  "("             DELIMITED   BY  SIZE
-                       WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                       ".HKNJANUM ='"      DELIMITED   BY  SIZE
-                       SPA-Q01-HKNJANUM (IDX1)(1: WRK-KIGO-LEN)
-                                           DELIMITED   BY  SIZE
-                       "')"                DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                           ".HKNJANUM = '"     DELIMITED   BY  SIZE
+                           SPA-Q01-HKNJANUM (IDX1)(1: WRK-KIGO-LEN)
+                                               DELIMITED   BY  SIZE
+                           "')"                DELIMITED   BY  SIZE
                    INTO    WRK-SQL
                    WITH    POINTER WRK-SQL-PNT
                    END-STRING
+                   IF    ( SPA-Q01-HKNJANUM-JKN  =   CONST-NOT )
+                       STRING  "OR("           DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                           ".HKNJANUM is null" DELIMITED   BY  SIZE
+                           "))"                DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -2149,63 +2172,127 @@
                PERFORM 900-SQL-JYOKEN-EDIT3-SEC
            END-IF
       *
-      *
-           MOVE    ZERO    TO      CNT-JYOKEN
+           IF    ( SPA-Q01-HKNNUM-JKN    =   CONST-NOT )
+                   MOVE    "<>"        TO  WRK-FUGOU
+                   MOVE    "NOT"       TO  WRK-NOT
+                   MOVE    "AND"       TO  WRK-ANDOR
+           ELSE
+                   MOVE    "="         TO  WRK-FUGOU
+                   MOVE    SPACE       TO  WRK-NOT
+                   MOVE    "OR"        TO  WRK-ANDOR
+           END-IF
+           MOVE    ZERO                TO  CNT-JYOKEN
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL   (   IDX1    >   5 )
       *
                IF  ( SPA-Q01-HKNNUM (IDX1) NOT =   SPACE )
                    COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
       *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+                   IF    ( CNT-JYOKEN  =   1 )
+                    OR   ( SPA-Q01-HKNNUM-JKN  =   "2" )
+                       PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+                   ELSE
+                       PERFORM 900-SQL-JYOKEN-EDIT9-SEC
+                   END-IF
       *
                    EVALUATE    SPA-Q01-HKNNUM (IDX1)
                    WHEN    "SYA"
                        STRING  "("             DELIMITED   BY  SIZE
                            WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                           ".HKNNUM in ('001','002','003','004'"
+                           ".HKNNUM "          DELIMITED   BY  SIZE
+                           WRK-NOT             DELIMITED   BY  SPACE
+                           " in ('001','002','003','004'"
                                                DELIMITED   BY  SIZE
                            ",'006','007','031','032','033','034','063'"
                                                DELIMITED   BY  SIZE
                            ",'072','073','074','075','009'"
                                                DELIMITED   BY  SIZE
                            ")"                 DELIMITED   BY  SIZE
-                           " or ("             DELIMITED   BY  SIZE
+                           WRK-ANDOR           DELIMITED   BY  SPACE
+                           "("                 DELIMITED   BY  SIZE
                            WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                           ".HKNNUM is null"   DELIMITED   BY  SIZE
+                           ".HKNNUM is "       DELIMITED   BY  SIZE
+                           WRK-NOT             DELIMITED   BY  SPACE
+                           " null"             DELIMITED   BY  SIZE
                            "))"                DELIMITED   BY  SIZE
                        INTO    WRK-SQL
                        WITH    POINTER WRK-SQL-PNT
                        END-STRING
                    WHEN    "KOK"
-                       STRING  "("             DELIMITED   BY  SIZE
+                       STRING  "(("            DELIMITED   BY  SIZE
                            WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                           ".HKNNUM in ('060','067','068','069')"
+                           ".HKNNUM "          DELIMITED   BY  SIZE
+                           WRK-NOT             DELIMITED   BY  SPACE
+                           " in ('060','067','068','069')"
                                                DELIMITED   BY  SIZE
                            ")"                 DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                       IF    ( SPA-Q01-HKNNUM-JKN  =   CONST-NOT )
+                           STRING  "or ("          DELIMITED   BY  SIZE
+                               WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                               ".HKNNUM "          DELIMITED   BY  SIZE
+                               "is null"           DELIMITED   BY  SIZE
+                               ")"                 DELIMITED   BY  SIZE
+                           INTO    WRK-SQL
+                           WITH    POINTER WRK-SQL-PNT
+                           END-STRING
+                       END-IF
+                       STRING  ")"                 DELIMITED   BY  SIZE
                        INTO    WRK-SQL
                        WITH    POINTER WRK-SQL-PNT
                        END-STRING
                    WHEN    "KOU"
-                       STRING  "("             DELIMITED   BY  SIZE
+                       STRING  "(("            DELIMITED   BY  SIZE
                            WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                           ".HKNNUM in ('039','040')"
-                                               DELIMITED   BY  SIZE
+                           ".HKNNUM "          DELIMITED   BY  SIZE
+                           WRK-NOT             DELIMITED   BY  SPACE
+                           " in ('039','040')" DELIMITED   BY  SIZE
                            ")"                 DELIMITED   BY  SIZE
                        INTO    WRK-SQL
                        WITH    POINTER WRK-SQL-PNT
                        END-STRING
+                       IF    ( SPA-Q01-HKNNUM-JKN    =   CONST-NOT )
+                           STRING  "or ("          DELIMITED   BY  SIZE
+                               WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                               ".HKNNUM "          DELIMITED   BY  SIZE
+                               "is null"           DELIMITED   BY  SIZE
+                               ")"                 DELIMITED   BY  SIZE
+                           INTO    WRK-SQL
+                           WITH    POINTER WRK-SQL-PNT
+                           END-STRING
+                       END-IF
+                       STRING  ")"                 DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
                    WHEN    OTHER
-                       STRING  "("             DELIMITED   BY  SIZE
+                       STRING  "(("            DELIMITED   BY  SIZE
                            WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                           ".HKNNUM ='"        DELIMITED   BY  SIZE
+                           ".HKNNUM "          DELIMITED   BY  SIZE
+                           WRK-FUGOU           DELIMITED   BY  SPACE
+                           " '"                DELIMITED   BY  SIZE
                            SPA-Q01-HKNNUM (IDX1)
                                                DELIMITED   BY  SIZE
                            "')"                DELIMITED   BY  SIZE
                        INTO    WRK-SQL
                        WITH    POINTER WRK-SQL-PNT
                        END-STRING
-		   END-EVALUATE
+                       IF    ( SPA-Q01-HKNNUM-JKN    =   CONST-NOT )
+                           STRING  " OR("        DELIMITED BY  SIZE
+                               WRK-SQL-TBL-NAME  DELIMITED BY  SPACE
+                               ".HKNNUM IS NULL )"
+                                                 DELIMITED BY  SIZE
+                           INTO    WRK-SQL
+                           WITH    POINTER WRK-SQL-PNT
+                           END-STRING
+                       END-IF
+                       STRING  ")"               DELIMITED BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-EVALUATE
                END-IF
            END-PERFORM
       *
@@ -2300,7 +2387,7 @@
            EXIT.
       *****************************************************************
       *    ´µ¼Ô¸øÈñ¥Þ¥¹¥¿¡Ê¸øÈñ¤Î¼ïÎà¡Ë¸¡º÷¾ò·ïÊÔ½¸½èÍý
-      *    ¡ÊOR¾ò·ïÍÑ¡Ë
+      *    ¡ÊOR,NOT¾ò·ïÍÑ¡Ë
       *****************************************************************
        10011-PTKOHINF-KOHNUM-EDIT-SEC  SECTION.
       *
@@ -2311,7 +2398,12 @@
                IF  ( SPA-Q01-KOHNUM (IDX1) NOT =   SPACE )
                    COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
       *
-                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+                   IF    ( CNT-JYOKEN  =   1 )
+                    OR   ( SPA-Q01-KOHNUM-JKN  =   "2" )
+                       PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+                   ELSE
+                       PERFORM 900-SQL-JYOKEN-EDIT9-SEC
+                   END-IF
       *
       *            ÊÝ¸±ÈÖ¹æ¤Î¹àÌÜÄ¹¤òµá¤á¤ë
                    MOVE    1               TO  WRK-STR-LEN
@@ -2327,6 +2419,13 @@
                    MOVE    SPA-Q01-KOHNUM (IDX1)   TO  WRK-STR
                    PERFORM 900-STR-LEN-GET-SEC
                    MOVE    WRK-STR-LEN             TO  WRK-KIGO-LEN
+      *
+                   IF    ( SPA-Q01-KOHNUM-JKN  =   CONST-NOT )
+                       STRING  "(NOT"      DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
       *
                    IF    ( SPA-Q01-KOHNUM (IDX1)   =   "027" )
                     AND  ( SPA-Q01-PAYKBN (IDX1)   =   "01" 
@@ -2353,6 +2452,15 @@
                            SPA-Q01-KOHNUM (IDX1)(1: WRK-KIGO-LEN)
                                                DELIMITED   BY  SIZE
                            "')"                DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
+                   IF    ( SPA-Q01-KOHNUM-JKN  =   CONST-NOT )
+                       STRING  "OR("           DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                           ".KOHNUM is null"   DELIMITED   BY  SIZE
+                           "))"                DELIMITED   BY  SIZE
                        INTO    WRK-SQL
                        WITH    POINTER WRK-SQL-PNT
                        END-STRING
@@ -4092,6 +4200,19 @@
       *
            .
        900-SQL-JYOKEN-EDIT8-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ó£Ñ£Ì¾ò·ïÊÔ½¸½èÍý£¹
+      *****************************************************************
+       900-SQL-JYOKEN-EDIT9-SEC                SECTION.
+      *
+           STRING  "AND "              DELIMITED   BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER WRK-SQL-PNT
+           END-STRING
+      *
+           .
+       900-SQL-JYOKEN-EDIT9-EXT.
            EXIT.
       *****************************************************************
       *    Ê¸»úÎóÄ¹¼èÆÀ½èÍý
