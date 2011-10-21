@@ -117,6 +117,11 @@
       *  04.06.02    NACL-門脇    10/12/13  請求額情報の追加
       *  04.06.03    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
+      *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
+      *                                     一部負担金金額集計フラグ追加
+      *                                     保険欄−一部負担金記載
+      *                                     （高齢者）（70歳未満）フラグ追加
+      *                                     食事区分追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -439,6 +444,12 @@
       *標準負担額
                    07  RECE62-SHOKUJIFTN  PIC  9(09).
       *
+      *食事療養費情報２
+           03  RECE62-SHOKUJIINF2-AREA.
+               05  RECE62-SHOKUJIINF2     OCCURS  5.
+      *食事区分
+                   07  RECE62-SKJRYYKBN   PIC  X(01).
+      *
       *一部負担金・食事療養費標準負担額区分
            03  RECE62-SHOKUJIFTNKBN       PIC  X(01).
       *一部負担金・食事療養費標準負担額区分２（地方公費判定用）
@@ -691,6 +702,9 @@
                    07  RECE62-EKF-TOTALTENFLG  PIC  X(01).
                    07  RECE62-EKF-SKJFLG       PIC  X(01).
                    07  RECE62-EKF-OCRFLG       PIC  X(01).
+                   07  RECE62-EKF-FTNKEIFLG    PIC  X(01).
+                   07  RECE62-EKF-HKNFTNFLG-K  PIC  X(01).
+                   07  RECE62-EKF-HKNFTNFLG-Y  PIC  X(01).
       *
       *実日数・請求点記載フラグ
            03  RECE62-JSKISAIFLG          PIC  X(01).

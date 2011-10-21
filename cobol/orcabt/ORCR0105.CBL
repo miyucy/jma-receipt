@@ -149,6 +149,7 @@
       *
       *  04.07.01    NACL-藤原    11/06/02  入退院履歴記載対応
       *                                     「2自費分は含まない」を追加
+      *  04.07.02    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2976,10 +2977,10 @@
                    MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
                                                TO  HC06-LOPTION
                END-IF
-          ELSE
+           ELSE
                MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
                                            TO  HC06-LOPTION
-          END-IF     
+           END-IF     
       *
       *    リアルタイムプレビュー時の表示
            IF      WRK-PARA-SHELLID    =   "RECEPTX"
@@ -4932,8 +4933,7 @@
                                       NOT =   RECE02-TOTALTEN (IDX1)) OR
                   (RECE02-FTNMONEY (IDX2)
                                       NOT =   RECE02-FTNMONEY (IDX1))  )
-             IF    SYS-1001-PREFNUM   =   45
-             AND   RECE02-KOHNUM(1)   =  "190"
+             IF    RECE02-EKF-FTNKEIFLG(IDX2)  =  "2"
                CONTINUE
              ELSE
                IF    RECE02-FTNMONEY (IDX2)   >   ZERO
@@ -4977,8 +4977,7 @@
                                     NOT =   RECE02-FTNMONEY (IDX1)) OR
                 (RECE02-FTNMONEY (IDX3)
                                     NOT =   RECE02-FTNMONEY (IDX2))  )
-               IF    SYS-1001-PREFNUM   =   45
-               AND   RECE02-KOHNUM(2)   =  "190"
+               IF    RECE02-EKF-FTNKEIFLG(IDX3)  =  "2"
                  CONTINUE
                ELSE
                  IF      RECE02-FTNMONEY (IDX3)   >   ZERO
@@ -5042,8 +5041,7 @@
                                    NOT =   RECE02-FTNMONEY (IDX2)) OR
                       (RECE02-FTNMONEY (IDX4)
                                    NOT =   RECE02-FTNMONEY (IDX3))    )
-                   IF    SYS-1001-PREFNUM   =   45
-                   AND   RECE02-KOHNUM(3)   =  "190"
+                   IF    RECE02-EKF-FTNKEIFLG(IDX4)  =  "2"
                        CONTINUE
                    ELSE
                        IF      RECE02-FTNMONEY (IDX4)   >   ZERO
@@ -5113,8 +5111,7 @@
                                     NOT =   RECE02-FTNMONEY (IDX3)) OR
                     (RECE02-FTNMONEY (IDX5)
                                     NOT =   RECE02-FTNMONEY (IDX4))   )
-                   IF    SYS-1001-PREFNUM   =   45
-                   AND   RECE02-KOHNUM(4)   =  "190"
+                   IF    RECE02-EKF-FTNKEIFLG(IDX5)  =  "2"
                      CONTINUE
                    ELSE
                        IF      RECE02-FTNMONEY (IDX5)   >   ZERO

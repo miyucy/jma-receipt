@@ -150,6 +150,8 @@
       *                                     キーにkohid 追加
       *                                     調査用にcrehms,updhms 追加
       *  04.06.05    NACL-藤原    11/10/07  傷病名を３行まで記載可能とする
+      *
+      *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5952,8 +5954,7 @@
                                       NOT =   RECE62-TOTALTEN (IDX1)) OR
                   (RECE62-FTNMONEY (IDX2)
                                       NOT =   RECE62-FTNMONEY (IDX1))  )
-             IF    SYS-1001-PREFNUM   =   45
-             AND   RECE62-KOHNUM(1)   =  "190"
+             IF    RECE62-EKF-FTNKEIFLG(IDX2)  =  "2"
                CONTINUE
              ELSE
                IF    RECE62-FTNMONEY (IDX2)   >   ZERO
@@ -6046,8 +6047,7 @@
                                     NOT =   RECE62-FTNMONEY (IDX1)) OR
                 (RECE62-FTNMONEY (IDX3)
                                     NOT =   RECE62-FTNMONEY (IDX2))  )
-                 IF    SYS-1001-PREFNUM   =   45
-                 AND   RECE62-KOHNUM(2)   =  "190"
+                 IF    RECE62-EKF-FTNKEIFLG(IDX3)  =  "2"
                    CONTINUE
                  ELSE
                    IF  RECE62-FTNMONEY (IDX3)   >   ZERO
@@ -6165,8 +6165,7 @@
                                    NOT =   RECE62-FTNMONEY (IDX2)) OR
                      ( RECE62-FTNMONEY (IDX4)
                                    NOT =   RECE62-FTNMONEY (IDX3))    )
-                   IF      SYS-1001-PREFNUM    =   45
-                   AND     RECE62-KOHNUM(3)    =  "190"
+                   IF    RECE62-EKF-FTNKEIFLG(IDX4)  =  "2"
                        CONTINUE
                    ELSE
                        IF      RECE62-FTNMONEY (IDX4)   >   ZERO
@@ -6292,8 +6291,7 @@
                                    NOT =   RECE62-FTNMONEY (IDX3)) OR
                      ( RECE62-FTNMONEY (IDX5)
                                    NOT =   RECE62-FTNMONEY (IDX4))    )
-                   IF      SYS-1001-PREFNUM    =   45
-                   AND     RECE62-KOHNUM(4)    =  "190"
+                   IF    RECE62-EKF-FTNKEIFLG(IDX5)  =  "2"
                        CONTINUE
                    ELSE
                        IF      RECE62-FTNMONEY (IDX5)   >   ZERO

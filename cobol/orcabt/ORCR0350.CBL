@@ -338,6 +338,8 @@
       *                                     方法の修正
       *  04.06.09    NACL-藤原    11/09/29  基本項目でデータ区分２のデー
       *                                     タのみの診療区分の記録
+      *
+      *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3352,8 +3354,10 @@
                    MOVE    8                      TO  WRK-NAGASA
                END-IF
            ELSE
-             IF    RECE62-PREFNUM     =   "45"
-             AND   RECE62-KOHNUM(IDY) =   "190"
+             IF  ((RECE62-PREFNUM     =   "45"      ) AND
+                  (RECE62-KOHNUM(IDY) =   "190"     ) AND
+                  (RECE62-SRYYM      <=  "200803"   ))
+             OR  ( RECE62-EKF-FTNKEIFLG(IDX)  =  "2" )
                CONTINUE
              ELSE
                IF      RECE62-FTNMONEY(IDX)   >   ZERO     
