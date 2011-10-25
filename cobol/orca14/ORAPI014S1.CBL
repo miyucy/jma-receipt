@@ -177,9 +177,6 @@
       *
       *    保険組合せ決定関数サブ
            COPY    "CPORCSAPIHKN.INC".
-      *ver.4.7
-      *    API XML読み込み共通定義
-           COPY    "CPAPIREQ.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -257,7 +254,6 @@
            COPY    "YERR.INC".
            COPY    "YID1.INC".
            COPY    "APPOINTMOD.INC".
-           COPY    "CPAPIMODV2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -411,18 +407,18 @@
       *****************************************************************
        1000-APTXMLREAD-SEC   SECTION.
       *
-      *    IF      APNTRES-OBJECT      NOT =   LOW-VALUE
-      *        DISPLAY "APNTRES-OBJECT not low_value"
-      *    END-IF
+           IF      APNTRES-OBJECT      NOT =   LOW-VALUE
+               DISPLAY "APNTRES-OBJECT not low_value"
+           END-IF
       * XML情報取り出し
            MOVE   "XMLOPEN"            TO  MCP-FUNC
            MOVE    "xml_appointreq"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APNT-BODY           TO  APIREQ-OBJECT
-           MOVE    ZERO                TO  APIREQ-MODE
+           MOVE    APNT-BODY           TO  APNTREQ-OBJECT
+           MOVE    ZERO                TO  APNTREQ-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-APPOINTREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
                CONTINUE
@@ -435,13 +431,12 @@
            MOVE   "XMLREAD"            TO  MCP-FUNC
            MOVE    "xml_appointreq"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APNTREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-APPOINTREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    XML-APIREQ      TO  XML-APPOINTREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
@@ -451,10 +446,10 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_appointreq"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APNTREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-APPOINTREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                CONTINUE
@@ -690,9 +685,7 @@
            IF     (WRK-PTNUM           =   SPACE  )
               AND (WRK-NAME            =   SPACE  )
               AND (WRK-KANANAME        =   SPACE  )
-               IF     (WRK-ERRCD           =   SPACE  )
-                   MOVE    "01"                TO  WRK-ERRCD
-               END-IF
+               MOVE    "01"                TO  WRK-ERRCD
            END-IF
       *    予約日
            IF      WRK-APPOINT-YMD     =   SPACE
@@ -1033,7 +1026,7 @@
            IF      WRK-YYKMEMO     NOT =   SPACE
       *        半角空白を全角空白へ
                MOVE    WRK-YYKMEMO         TO  WRK-MAE-INPUT
-               MOVE    80                  TO  WRK-LEN
+               MOVE    50                  TO  WRK-LEN
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  WRK-YYKMEMO
                IF      FLG-ERR             =   1
