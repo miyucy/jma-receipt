@@ -31,16 +31,6 @@
       *  04.01.00    NACL-多々納  08/01/21  公費編集パラメタ対応
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *  04.06.00    NACL-多々納  11/02/21  用法コメント対応
-      *  04.06.00    NACL-多々納  12/03/XX  Ｈ２４年４月改正対応
-      *  04.06.00    NACL-多々納  12/04/04  薬品名称を４０文字までとする
-      *  04.06.00    NACL-多々納  12/08/17  薬価基準コード変換対応
-      *  04.06.00    NACL-多々納  12/09/27  医師コード等編集対応
-      *  04.07.00    NACL-多々納  13/03/27  一般名例外テーブル期間対応
-      *  04.07.00    NACL-多々納  14/05/XX  内服１回量対応
-      *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
-      *  04.08.00    NACL-多々納  16/03/XX  最低薬価テーブル対応
-      *  04.08.00    NACL-多々納  16/04/XX  備考を２０へ
-      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
       *****************************************************************
       *
       *
@@ -64,12 +54,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    ファイル指定領域
-       01  FILE-NAME1              PIC X(1024).
-       01  FILE-NAME2              PIC X(1024).
-      *
-      *    ファイル指定領域
-       01  FILE-NAME1-PARA.
-      *****03  FILLER              PIC X(05)   VALUE   "/tmp/".
+       01  FILE-NAME1.
+           03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
            03  FILE-FORM-ID1       PIC X(04)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ".".
@@ -77,9 +63,8 @@
            03  FILLER              PIC X(01)   VALUE   ".".
            03  FILE-SYOHMS1        PIC 9(08)   VALUE   ZERO.
            03  FILLER              PIC X(07)   VALUE   ".qr.dat".
-      *
-       01  FILE-NAME2-PARA.
-      *****03  FILLER              PIC X(05)   VALUE   "/tmp/".
+       01  FILE-NAME2.
+           03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-FORM-ID2       PIC X(04)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ".".
@@ -87,7 +72,6 @@
            03  FILLER              PIC X(01)   VALUE   ".".
            03  FILE-SYOHMS2        PIC 9(08)   VALUE   ZERO.
            03  FILLER              PIC X(07)   VALUE   ".qr.png".
-      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-FILE1           PIC X(02).
@@ -98,7 +82,6 @@
            03  FLG-PTHKNINF        PIC 9(01).
            03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
-           03  FLG-GENERICPRICE    PIC 9(01).
            03  FLG-SP              PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
       *
@@ -117,9 +100,6 @@
       *
            03  TBL-MAX             PIC 9(04).
            03  IDX-B2              PIC 9(03).
-      *
-           03  IDXF                PIC 9(04).
-           03  IDXF2               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -162,16 +142,6 @@
                    07  WRK-QR-JKYSNUM      PIC X(07).
                05  WRK-QR-FTNJA-N      PIC X(40).
                05  WRK-QR-JKYSNUM-N    PIC X(40).
-      *    薬品名称
-           03  WRK-NAME.
-               05  WRK-NAME-1          PIC X(80).
-               05  WRK-NAME-2          PIC X(20).
-      *H24.8
-           03  WRK-YAKKAKJNCD          PIC X(12).
-           03  WRK-GENERIC-STYMD       PIC X(08).
-           03  WRK-GENERIC-EDYMD       PIC X(08).
-      *
-           03  WRK-KEI-SURYO           PIC 9(05)V9(05).
       *
       *    ＱＲテーブル
        01  TBL-QRCSV-AREA.
@@ -180,9 +150,6 @@
       *
       *    ＱＲ作成用
            COPY    "CPORCSQRENCODE.INC".
-      *
-      *    一般名例外コードテーブル
-           COPY    "CMGENERICTBL.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -199,10 +166,6 @@
       *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
-      *H28.4
-      *    最低薬価マスタ
-       01  GENERICPRICE-REC.
-           COPY    "CPGENERICPRICE.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -212,10 +175,6 @@
            COPY    "CPORCSKANACHK.INC".
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
-      *
-      *    一時ファイル名取得
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *
            COPY    "MCPDATA.INC".
       *
@@ -252,15 +211,6 @@
            MOVE    "HC2Q"              TO  FILE-FORM-ID1
            MOVE    SPA-TERMID          TO  FILE-TERMID1
            MOVE    ORCSQRCSV-SYSTIME   TO  FILE-SYOHMS1
-      *ver.4.8
-      *    一時ファイル名取得
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    FILE-NAME1-PARA     TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP"       USING
-                                           SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES(1)
-                                       TO  FILE-NAME1
-      *
            OPEN    OUTPUT              QRCSV-FILE
            IF      STS-FILE1       NOT =   ZERO
                MOVE    9               TO  ORCSQRCSV-ERRCD
@@ -285,13 +235,10 @@
            END-IF
       *
       *    ＱＲデータ削除
-           IF    ( SPA-API-FLG         =   ZERO )
-               MOVE    ZERO                TO  IF-RESULT
-               MOVE    FILE-NAME1          TO  IF-FILENAME
-               CALL    "orcfiledel"        USING
-                                           ORCSFDELAREA
-           END-IF
-      *
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME1          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
            .
        000-PROC-EXT.
            EXIT    PROGRAM
@@ -305,17 +252,6 @@
       *    バージョン情報
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "JAHIS2"            TO  TBL-QRCSV-DATA (1)
-           IF     (SPA-SRYYMD          >=  "20160401" )
-      *    残量確認指示
-            AND   (ORCSQRCSV-ZANSIJI   =   "1"
-                                       OR  "2"   )
-               MOVE    "JAHIS3"            TO  TBL-QRCSV-DATA (1)
-           END-IF
-      *H30.4
-           IF     (SPA-SRYYMD          >=  "20180401" )
-               MOVE    "JAHIS5"            TO  TBL-QRCSV-DATA (1)
-           END-IF
-      *
            MOVE    1                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
       *    医療機関コード
@@ -340,12 +276,6 @@
                MOVE    "3"                 TO  TBL-QRCSV-DATA (1)
                MOVE    ORCSQRCSV-HOSPTEL   TO  TBL-QRCSV-DATA (2)
                MOVE    2                   TO  TBL-MAX
-      *H30.4
-      *        FAX
-               IF      SPA-SRYYMD          >=  "20180401"
-                   MOVE    ORCSQRCSV-HOSPFAX    TO  TBL-QRCSV-DATA (3)
-                   MOVE    3                    TO  TBL-MAX
-               END-IF
                PERFORM 400-DATAOUT-SEC
            END-IF
       *    診療科
@@ -363,8 +293,6 @@
       *    医師レコード
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "5"                 TO  TBL-QRCSV-DATA (1)
-      *    医師コード
-           MOVE    ORCSQRCSV-DR-CD     TO  TBL-QRCSV-DATA (2)
       **** MOVE    ORCSQRCSV-DR-KANANAME
       ****                             TO  TBL-QRCSV-DATA (3)
       *    拡張漢字変換
@@ -380,8 +308,6 @@
       *    患者氏名レコード
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "11"                TO  TBL-QRCSV-DATA (1)
-      *    患者番号
-           MOVE    ORCSQRCSV-PTNUM     TO  TBL-QRCSV-DATA (2)
       **   MOVE    ORCSQRCSV-NAME(1:40)
       **                               TO  TBL-QRCSV-DATA (3)
       *    拡張漢字変換
@@ -570,74 +496,25 @@
            IF      ORCSQRCSV-MAYAKU    =   1
                MOVE    SPACE               TO  TBL-QRCSV-AREA
                MOVE    "61"                TO  TBL-QRCSV-DATA (1)
-      *        麻薬施用コード
-               MOVE    ORCSQRCSV-MAYAKULICENSE
-                                           TO  TBL-QRCSV-DATA (2)
                MOVE    ORCSQRCSV-ADRS      TO  TBL-QRCSV-DATA (3)
                MOVE    ORCSQRCSV-TEL       TO  TBL-QRCSV-DATA (4)
                MOVE    4                   TO  TBL-MAX
                PERFORM 400-DATAOUT-SEC
            END-IF
-      *H28.4
-      *    残量確認指示
-           IF      ORCSQRCSV-ZANSIJI   =   "1"
-                                       OR  "2"
-               MOVE    SPACE               TO  TBL-QRCSV-AREA
-               MOVE    "62"                TO  TBL-QRCSV-DATA (1)
-      *        残量確認指示
-               MOVE    ORCSQRCSV-ZANSIJI   TO  TBL-QRCSV-DATA (2)
-               MOVE    2                   TO  TBL-MAX
-               PERFORM 400-DATAOUT-SEC
-           END-IF
-      *H30.4
-      *    分割指示レコード
-           IF     (SPA-SRYYMD              >=  "20180401" )
-             AND  (ORCSQRCSV-BUNKATU-MAX   >   1         )
-               MOVE    SPACE               TO  TBL-QRCSV-AREA
-               MOVE    "63"                TO  TBL-QRCSV-DATA (1)
-      *        分割回数
-               MOVE    ORCSQRCSV-BUNKATU-MAX
-                                           TO  TBL-QRCSV-DATA (2)
-      *        分割回
-               MOVE    ORCSQRCSV-BUNKATU-CNT
-                                           TO  TBL-QRCSV-DATA (3)
-               MOVE    3                   TO  TBL-MAX
-               PERFORM 400-DATAOUT-SEC
-           END-IF
-      *
       *    備考レコード
            MOVE    ZERO                TO  IDX-B2
            PERFORM VARYING     IDX-B   FROM    1   BY  1
-                   UNTIL      (IDX-B   >   20  )
+                   UNTIL      (IDX-B   >   10  )
                            OR (ORCSQRCSV-BIKOU (IDX-B) =   SPACE)
                ADD     1                   TO  IDX-B2
                MOVE    SPACE               TO  TBL-QRCSV-AREA
                MOVE    "81"                TO  TBL-QRCSV-DATA (1)
-               MOVE    IDX-B2              TO  WRK-ZZZ
-               PERFORM 20011-SUJIHEN-SEC
-               MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (2)
-      *        種別
-               IF      ORCSQRCSV-BIKOU-KBN (IDX-B)  NOT =   SPACE
-                   MOVE    ORCSQRCSV-BIKOU-KBN (IDX-B)
-                                           TO  TBL-QRCSV-DATA (3)
-               END-IF
+               MOVE    IDX-B2              TO  TBL-QRCSV-DATA (2)
                MOVE    ORCSQRCSV-BIKOU (IDX-B)
                                            TO  TBL-QRCSV-DATA (4)
                MOVE    4                   TO  TBL-MAX
                PERFORM 400-DATAOUT-SEC
            END-PERFORM
-      *
-      *H27.1
-      *    連携用コード
-           IF      ORCSQRCSV-CSVFILE   NOT =   SPACE
-               MOVE    SPACE               TO  TBL-QRCSV-AREA
-               MOVE    "81"                TO  TBL-QRCSV-DATA (1)
-               MOVE    "999"               TO  TBL-QRCSV-DATA (2)
-               MOVE    "51"                TO  TBL-QRCSV-DATA (3)
-               MOVE    ORCSQRCSV-CSVFILE   TO  TBL-QRCSV-DATA (4)
-               MOVE    4                   TO  TBL-MAX
-               PERFORM 400-DATAOUT-SEC
-           END-IF
       *
            .
        100-HEAD-SYORI-EXT.
@@ -801,21 +678,12 @@
            MOVE    "HC2Q"              TO  FILE-FORM-ID2
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            MOVE    ORCSQRCSV-SYSTIME   TO  FILE-SYOHMS2
-      *ver.4.8
-      *    一時ファイル名取得
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    FILE-NAME2-PARA     TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES(1)
-                                       TO  FILE-NAME2
-      *
            MOVE    FILE-NAME2          TO  QREN-QRFILENAME
            MOVE    "L"                 TO  QREN-SL-OPTION
            MOVE    "1"                 TO  QREN-SS-OPTION
            MOVE    "2"                 TO  QREN-SM-OPTION
            MOVE    "12"                TO  QREN-SV-OPTION
-      **** MOVE    "1"                 TO  QREN-SK-OPTION
-           MOVE    "0"                 TO  QREN-SK-OPTION
+           MOVE    "1"                 TO  QREN-SK-OPTION
            MOVE    "1"                 TO  QREN-LC-OPTION
       *
            CALL    "orcqrencode"       USING   ORCSQRENCODEAREA
@@ -871,13 +739,6 @@
                IF      FLG-SYORI           =   1
       *            剤型レコード
                    PERFORM 2001-RP101-SEC
-      *H30.4
-      *            分割指示数量レコード
-                   IF     (SPA-SRYYMD          >=  "20180401" )
-                     AND  (ORCSQRCSV-GOKKAISU(IDX) >   ZERO   )
-                       PERFORM 2001-RP102-SEC
-                   END-IF
-      *
       *            用法レコード
                    PERFORM 2002-RP111-SYORI-SEC
       *
@@ -942,40 +803,12 @@
            MOVE    ORCSQRCSV-ZAIKATA (IDX)
                                        TO  TBL-QRCSV-DATA (3)
            MOVE    ORCSQRCSV-KAISU (IDX)   TO  WRK-ZZZ
-      *H30.4
-      *    分割指示の時は、総量
-           IF     (SPA-SRYYMD          >=  "20180401" )
-             AND  (ORCSQRCSV-GOKKAISU(IDX) >   ZERO   )
-               MOVE    ORCSQRCSV-GOKKAISU (IDX)    TO  WRK-ZZZ
-           END-IF
-      *
            PERFORM 20011-SUJIHEN-SEC
            MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (5)
            MOVE    5                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
            .
        2001-RP101-EXT.
-           EXIT.
-      *
-      *H30.4
-      *****************************************************************
-      *    分割指示数量レコード処理
-      *****************************************************************
-       2001-RP102-SEC            SECTION.
-      *
-           MOVE    SPACE               TO  TBL-QRCSV-AREA
-           MOVE    "102"               TO  TBL-QRCSV-DATA (1)
-           MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
-           MOVE    ORCSQRCSV-KAISU (IDX)   TO  WRK-ZZZ
-           PERFORM 20011-SUJIHEN-SEC
-           MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (3)
-           MOVE    ORCSQRCSV-GOKKAISU(IDX) TO  WRK-ZZZ
-           PERFORM 20011-SUJIHEN-SEC
-           MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (4)
-           MOVE    4                   TO  TBL-MAX
-           PERFORM 400-DATAOUT-SEC
-           .
-       2001-RP102-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1118,42 +951,15 @@
            END-EVALUATE
            IF     (ORCSQRCSV-SRYCD(IDX IDX2)(1:1)  =   "6"
                                                    OR  "7" )
-             AND  (ORCSQRCSV-KISAIKBN (IDX IDX2)   =   ZERO )
+             AND  (ORCSQRCSV-KISAIKBN (IDX IDX2)   =   ZERO  )
                MOVE    "2"                 TO  TBL-QRCSV-DATA (5)
                MOVE    ORCSQRCSV-SRYCD(IDX IDX2)
                                            TO  TBL-QRCSV-DATA (6)
            ELSE
                MOVE    "1"                 TO  TBL-QRCSV-DATA (5)
            END-IF
-      *
-      *H24.4 から
-      *    一般名記載
-           IF     (SPA-SRYYMD          >=  "20120401" )  AND
-                  (ORCSQRCSV-SRYCD(IDX IDX2)(1:1)  =   "6" )
-             AND  (ORCSQRCSV-KISAIKBN (IDX IDX2)   =   1   )
-               MOVE    "7"                 TO  TBL-QRCSV-DATA (5)
-      *H24.8
-      **       MOVE    ORCSQRCSV-YAKKAKJNCD(IDX IDX2)
-      **                                   TO  TBL-QRCSV-DATA (6)
-      *        一般名例外コード変換
-      *H28.4
-               IF      SPA-SRYYMD      <   "20160401"
-                   PERFORM 20039-GENERICCD-HEN-SEC
-               ELSE
-      *            最低薬価テーブルより
-                   PERFORM 20039-GENERICPRICE-HEN-SEC
-               END-IF
-               MOVE    WRK-YAKKAKJNCD      TO  TBL-QRCSV-DATA (6)
-           END-IF
-      *
-      *H24.4 訂正
-      **** MOVE    ORCSQRCSV-TNS-NAME (IDX IDX2)
-      ****                             TO  TBL-QRCSV-DATA (7)
-      *    薬品の名称は４０文字とする
            MOVE    ORCSQRCSV-TNS-NAME (IDX IDX2)
-                                       TO  WRK-NAME
-           MOVE    WRK-NAME-1          TO  TBL-QRCSV-DATA (7)
-      *
+                                       TO  TBL-QRCSV-DATA (7)
            MOVE    ORCSQRCSV-SURYOU(IDX IDX2)  TO  WRK-SURYO
            PERFORM 20031-SURYO-HEN-SEC
            MOVE    WRK-SURYO-H         TO  TBL-QRCSV-DATA (8)
@@ -1185,14 +991,6 @@
                PERFORM 400-DATAOUT-SEC
            END-IF
       *
-      *H26.5
-      *    １回服用量レコード
-           IF     (ORCSQRCSV-SURYOU-SG (IDX IDX2)  NOT =   ZERO)
-              AND (ORCSQRCSV-KAISU-SG  (IDX IDX2)  NOT =   ZERO)
-               PERFORM 20032-RP241-SYORI-SEC
-           END-IF
-      *
-      *
            MOVE    ZERO                TO   WRK-RP2-1
       *    前に破砕がある時
            COMPUTE IDX3                =   IDX2  -  1
@@ -1202,147 +1000,6 @@
            END-IF
            .
        2003-RP201-EXT.
-           EXIT.
-      *
-      *H28.4
-      *****************************************************************
-      *    一般名例外コード変換処理
-      *****************************************************************
-       20039-GENERICPRICE-HEN-SEC         SECTION.
-      *
-           MOVE    SPACE               TO  WRK-YAKKAKJNCD
-      *
-           MOVE    SPACE               TO  GENERICPRICE-REC
-           INITIALIZE                      GENERICPRICE-REC
-           MOVE    ORCSQRCSV-YAKKAKJNCD(IDX IDX2)
-                                       TO  GENERICPRICE-YAKKAKJNCD
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOEDYMD
-           MOVE    GENERICPRICE-REC    TO  MCPDATA-REC
-           MOVE    "tbl_generic_price" TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_generic_price" TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  GENERICPRICE-REC
-      *            一般名コード
-                   MOVE    GENERICPRICE-GECODE TO  WRK-YAKKAKJNCD
-               ELSE
-                   INITIALIZE                  GENERICPRICE-REC
-                   MOVE    1                   TO  FLG-GENERICPRICE
-               END-IF
-           ELSE
-               INITIALIZE                  GENERICPRICE-REC
-               MOVE    1                   TO  FLG-GENERICPRICE
-           END-IF
-           MOVE    "tbl_generic_price" TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      WRK-YAKKAKJNCD      =   SPACE
-               STRING  ORCSQRCSV-YAKKAKJNCD(IDX IDX2)(1:9)
-                       "ZZZ"               DELIMITED  BY  SIZE
-                                           INTO    WRK-YAKKAKJNCD
-               END-STRING
-           END-IF
-           .
-       20039-GENERICPRICE-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一般名例外コード変換処理
-      *****************************************************************
-       20039-GENERICCD-HEN-SEC         SECTION.
-      *
-           SET     TBL-GEN             TO  1
-           SEARCH      TBL-GENERIC-OCC     VARYING   TBL-GEN
-                   AT  END
-                       MOVE    SPACE            TO  WRK-YAKKAKJNCD
-                       MOVE    SPACE            TO  WRK-GENERIC-STYMD
-                       MOVE    SPACE            TO  WRK-GENERIC-EDYMD
-                   WHEN    ORCSQRCSV-YAKKAKJNCD(IDX IDX2)
-                                               =   TBL-YAKKAKJNCD
-                                                           (TBL-GEN)
-                       MOVE    TBL-GENERIC-CODE (TBL-GEN)
-                                                TO  WRK-YAKKAKJNCD
-                       MOVE    TBL-GENERIC-STYMD (TBL-GEN)
-                                                TO  WRK-GENERIC-STYMD
-                       MOVE    TBL-GENERIC-EDYMD (TBL-GEN)
-                                                TO  WRK-GENERIC-EDYMD
-           END-SEARCH
-      *H25.4
-           IF      WRK-YAKKAKJNCD  NOT =   SPACE
-      *        有効期間判定
-               IF    (SPA-SRYYMD           >=  WRK-GENERIC-STYMD)
-                 AND (SPA-SRYYMD           <=  WRK-GENERIC-EDYMD)
-                   CONTINUE
-               ELSE
-                   MOVE    SPACE           TO  WRK-YAKKAKJNCD
-               END-IF
-           END-IF
-      *
-           IF      WRK-YAKKAKJNCD      =   SPACE
-               STRING  ORCSQRCSV-YAKKAKJNCD(IDX IDX2)(1:9)
-                       "ZZZ"               DELIMITED  BY  SIZE
-                                           INTO    WRK-YAKKAKJNCD
-               END-STRING
-           END-IF
-           .
-       20039-GENERICCD-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    １回服用量レコード作成処理
-      *****************************************************************
-       20032-RP241-SYORI-SEC         SECTION.
-      *
-           COMPUTE WRK-KEI-SURYO  =   ORCSQRCSV-SURYOU-SG (IDX IDX2)
-                                  *   ORCSQRCSV-KAISU-SG  (IDX IDX2)
-           IF      WRK-KEI-SURYO      =    ORCSQRCSV-SURYOU(IDX IDX2)
-      *    服用量×服用回数＝数量
-               MOVE    SPACE               TO  TBL-QRCSV-AREA
-               MOVE    "241"               TO  TBL-QRCSV-DATA (1)
-               MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
-               MOVE    WRK-H-RP2           TO  TBL-QRCSV-DATA (3)
-      *        １回服用量
-               MOVE    ORCSQRCSV-SURYOU-SG (IDX IDX2)
-                                           TO  WRK-SURYO
-               PERFORM 20031-SURYO-HEN-SEC
-               MOVE    WRK-SURYO-H         TO  TBL-QRCSV-DATA (4)
-      *        １日服用回数
-               MOVE    ORCSQRCSV-KAISU-SG (IDX IDX2)
-                                           TO  WRK-SURYO
-               PERFORM 20031-SURYO-HEN-SEC
-               MOVE    WRK-SURYO-H         TO  TBL-QRCSV-DATA (5)
-               MOVE    5                   TO  TBL-MAX
-               PERFORM 400-DATAOUT-SEC
-           ELSE
-      *        不均等レコード
-               MOVE    SPACE               TO  TBL-QRCSV-AREA
-               MOVE    "221"               TO  TBL-QRCSV-DATA (1)
-               MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
-               MOVE    WRK-H-RP2           TO  TBL-QRCSV-DATA (3)
-      *        １回服用量
-               MOVE    ORCSQRCSV-SURYOU-SG (IDX IDX2)
-                                           TO  WRK-SURYO
-               PERFORM 20031-SURYO-HEN-SEC
-               MOVE    3                   TO  IDXF
-               PERFORM VARYING    IDXF2    FROM    1   BY  1
-                       UNTIL     (IDXF2    >   ORCSQRCSV-KAISU-SG
-                                                         (IDX IDX2))
-                              OR (IDXF2    >   5    )
-                   ADD     1               TO  IDXF
-                   PERFORM 20031-SURYO-HEN-SEC
-                   MOVE    WRK-SURYO-H         TO  TBL-QRCSV-DATA(IDXF)
-               END-PERFORM
-               MOVE    IDXF                TO  TBL-MAX
-               PERFORM 400-DATAOUT-SEC
-           END-IF
-           .
-       20032-RP241-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1376,24 +1033,6 @@
            MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
            MOVE    WRK-H-RP2           TO  TBL-QRCSV-DATA (3)
            MOVE    WRK-H-RP2-1         TO  TBL-QRCSV-DATA (4)
-      *H24.4
-           IF      SPA-SRYYMD          >=  "20120401"
-               EVALUATE    ORCSQRCSV-SRYCD(IDX IDX3)
-               WHEN    "099209901"
-      *            粉砕
-                   MOVE    "2"         TO  TBL-QRCSV-DATA (5)
-               WHEN    "099209903"
-      *            後発医薬品へ変更不可
-                   MOVE    "3"         TO  TBL-QRCSV-DATA (5)
-               WHEN    "099209906"
-      *            剤型変更不可
-                   MOVE    "4"         TO  TBL-QRCSV-DATA (5)
-               WHEN    "099209905"
-      *            含量規格変更不可
-                   MOVE    "5"         TO  TBL-QRCSV-DATA (5)
-               END-EVALUATE
-           END-IF
-      *
            MOVE    ORCSQRCSV-TNS-NAME (IDX IDX3)
                                        TO  TBL-QRCSV-DATA (6)
            MOVE    6                   TO  TBL-MAX
