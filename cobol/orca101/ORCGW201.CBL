@@ -1144,6 +1144,13 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
+             IF  SPA-W201-SELNUM   NOT =   ZERO
+                 MOVE    "0014"          TO  SPA-ERRCD
+                 MOVE    1               TO  SPA-W201-CUR
+             END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
              IF (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(1)) OR
                 (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(2)) OR
                 (SPA-W201-KSNCD2       =   SPA-W201-TKSNCD2(3)) OR
@@ -1323,6 +1330,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "入退院登録画面で設定可能な加算です。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "選択された加算は追加できません。"
                                        TO  SPA-ERRMSG
                WHEN    "9000"
                    MOVE    "病棟情報が取得できません。"
