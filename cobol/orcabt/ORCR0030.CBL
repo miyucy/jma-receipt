@@ -545,6 +545,7 @@
       *  04.06.06    NACL-藤原    11/01/05  機能追加（注加算、同時併施等）
       *
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
+      *  04.07.02    NACL-門脇    11/10/17  法定外現物給付対応（法別１０、２１）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1294,6 +1295,10 @@
                 07  WRK-KISAIFLG               PIC X(01).
                 07  WRK-OCRFLG                 PIC X(01).
       *
+           03  WRK-SYS2012-TAIHI-TBL.
+              05  WRK-SYS2012-TAIHI-OCC        OCCURS   4.
+                07  WRK-FTNJYOSEI              PIC 9(01).
+      *
            03  WRK-FTNMONEY-MAE                PIC 9(09).
       *
            03  WRK-CYOKI-KEISAN                PIC 9(09).
@@ -1852,6 +1857,7 @@
            COPY    "CPSK200501.INC".     
       *
            COPY    "CPSK2010.INC".
+           COPY    "CPSK2012.INC".
       *
       *    患者コメント
        01  PTCOM-REC.
@@ -2338,10 +2344,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            INITIALIZE                   WRK-KOGAKU-TAISYOGAI-T
       *
            INITIALIZE                   WRK-SYS2010-TAIHI-TBL
+           INITIALIZE                   WRK-SYS2012-TAIHI-TBL
       *
            PERFORM     211J-SYUKEIKBN-HANBETU-SEC
       *
            PERFORM     211R-ETCKISAIFLGINF-HENSYU-SEC
+           PERFORM     211Q-HOTEIGAI-HENSYU-SEC
       *
            PERFORM     2117-GENGAKU-HANTEI-SEC
       *
@@ -5677,6 +5685,131 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
       *
            .
        211R1-ETCKISAIFLGINF-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    法定外現物給付の設定編集
+      *****************************************************************
+       211Q-HOTEIGAI-HENSYU-SEC      SECTION.
+      *
+           IF    IDZ    =    1
+      *
+             PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                         UNTIL    KOHFTN-IDX     >    4
+      *
+              IF  (RECE02-HKNJANUM       NOT =      SPACE     )
+              AND (RECE02-RJNHKNNUM          =      SPACE     )
+              AND (RECE02-KOHNUM(KOHFTN-IDX) =  "010" OR "021")
+      *
+                 IF    RECE02-SRYYM        >=  "200804"
+                    INITIALIZE                   SYSKANRI-REC
+                    MOVE    "2012"           TO  SYS-KANRICD
+                    MOVE    RECE02-HKNJANUM  TO  SYS-KBNCD
+                    MOVE    RECE02-SRYYM     TO  SYS-STYUKYMD (1:6)
+                    MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+                    MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+                    MOVE    "tbl_syskanri"   TO  WRK-MCP-TABLE
+                    MOVE    "key10"          TO  WRK-MCP-PATHNAME
+                    PERFORM 960-KANRIMST-READ-SEC
+                    IF      FLG-SYSKANRI     =   ZERO
+                      MOVE    MCPDATA-REC   TO  SYS-2012-REC
+                    ELSE
+                      INITIALIZE                SYS-2012-REC
+                    END-IF
+                    PERFORM   211Q1-HBTNUMKBN-SET-SEC
+                 ELSE
+                    PERFORM   211Q2-HBTNUMKBN-SET2-SEC
+                    PERFORM   211Q3-HBTNUMKBN-SET3-SEC
+                 END-IF
+      *
+              END-IF
+      *
+             END-PERFORM
+      *
+           END-IF
+      *
+           .
+       211Q-HOTEIGAI-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    法定外現物給付の設定セット
+      *****************************************************************
+       211Q1-HBTNUMKBN-SET-SEC               SECTION.
+      *
+           IF  RECE02-KOHNUM(KOHFTN-IDX) = "010"
+             EVALUATE  SYS-2012-HBTNUM10KBN
+               WHEN      SPACE
+                 PERFORM   211Q2-HBTNUMKBN-SET2-SEC
+                 PERFORM   211Q3-HBTNUMKBN-SET3-SEC
+               WHEN      "0"
+      ******     システム管理２０１２デフォルト設定なしの為
+      ******     救済措置
+                 PERFORM   211Q3-HBTNUMKBN-SET3-SEC
+               WHEN      "1"
+                 MOVE    1     TO   WRK-FTNJYOSEI(KOHFTN-IDX)
+             END-EVALUATE
+           END-IF
+      *
+           IF  RECE02-KOHNUM(KOHFTN-IDX) = "021"
+             EVALUATE  SYS-2012-HBTNUM21KBN
+               WHEN      SPACE
+                 PERFORM   211Q2-HBTNUMKBN-SET2-SEC
+                 PERFORM   211Q3-HBTNUMKBN-SET3-SEC
+               WHEN      "0"
+      ******     システム管理２０１２デフォルト設定なしの為
+      ******     救済措置
+                 PERFORM   211Q3-HBTNUMKBN-SET3-SEC
+               WHEN      "1"
+                 MOVE    1     TO   WRK-FTNJYOSEI(KOHFTN-IDX)
+             END-EVALUATE
+           END-IF
+      *
+           .
+       211Q1-HBTNUMKBN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    法定外現物給付の設定セット２
+      *****************************************************************
+       211Q2-HBTNUMKBN-SET2-SEC               SECTION.
+      *
+           IF   RECE02-HKNJANUM(1:6)  =
+                "133041" OR "133074" OR "133090" OR "133116" OR
+                "133132" OR "133140" OR "133157" OR "133165" OR
+                "133173" OR "133181" OR "133207" OR "133223" OR
+                "133249" OR "133256" OR "133272" OR "283077"
+                IF  RECE02-KOHNUM(KOHFTN-IDX) = "010" OR "021"
+                   MOVE    1     TO   WRK-FTNJYOSEI(KOHFTN-IDX)
+                END-IF
+           END-IF
+      *
+           .
+       211Q2-HBTNUMKBN-SET2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    法定外現物給付の設定セット３
+      *****************************************************************
+       211Q3-HBTNUMKBN-SET3-SEC               SECTION.
+      *
+           IF ((RECE02-HKNJANUM(1:6) = "233064" OR "133280") AND
+               (RECE02-SRYYM        <= "201103"            ))
+           OR ((RECE02-HKNJANUM(1:6) = "133033" OR "133066"
+                                                OR "133199") AND
+               (RECE02-SRYYM        <= "201203"            ))
+              IF  (SYS-1001-PREFNUM     = "29"    )
+              AND (RECE02-HKNJANUM(1:6) = "133033")
+                CONTINUE
+              ELSE
+                IF  RECE02-KOHNUM(KOHFTN-IDX) = "010" OR "021"
+                   MOVE    1     TO   WRK-FTNJYOSEI(KOHFTN-IDX)
+                END-IF
+              END-IF
+           END-IF
+      *
+           .
+       211Q3-HBTNUMKBN-SET3-EXT.
            EXIT.
       *
       *****************************************************************
@@ -13727,25 +13860,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      MOVE  1      TO   FLG-IRYOHI70K
                 END-EVALUATE
              END-IF
-             IF ( RECE02-HKNJANUM(1:6)
-                           =  "133033" OR "133041" OR
-                              "133066" OR "133074" OR "133090" OR
-                              "133116" OR "133132" OR "133140" OR
-                              "133157" OR "133165" OR "133173" OR
-                              "133181" OR "133199" OR "133207" OR
-                              "133223" OR "133249" OR "133256" OR
-                              "133272" OR "283077" )
-             OR ((RECE02-HKNJANUM(1:6) =  "233064"
-                                       OR "133280") AND
-                 (RECE02-SRYYM        <=  "201103"))
-               IF  ( RECE02-RJNHKNNUM  NOT =  SPACE    )
-               OR  ((SYS-1001-PREFNUM      =   29     ) AND
-                    (RECE02-HKNJANUM(1:6)  =  "133033"))
-                CONTINUE
-               ELSE
+             IF   WRK-FTNJYOSEI(1)   =   1
                 MOVE   ZERO                 TO  WRK-JYOGEN-KOH
                 MOVE   ZERO                 TO  FLG-IRYOHI70K
-               END-IF
              END-IF
            ELSE
              INITIALIZE                     LNK-ORCSJGNGET-REC
@@ -14967,27 +15084,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     MOVE  "1"   TO  RECE02-KISAIFLG(KOHFTN-IDX + 1)
                     MOVE SPACE  TO  RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                   END-IF
-                  IF  (RECE02-KOHNUM(KOHFTN-IDX) =  "010" OR "021"   )
-                   IF ( RECE02-HKNJANUM(1:6)
-                                 =  "133033" OR "133041" OR
-                                    "133066" OR "133074" OR "133090" OR
-                                    "133116" OR "133132" OR "133140" OR
-                                    "133157" OR "133165" OR "133173" OR
-                                    "133181" OR "133199" OR "133207" OR
-                                    "133223" OR "133249" OR "133256" OR
-                                    "133272" OR "283077" )
-                   OR ((RECE02-HKNJANUM(1:6) =  "233064"
-                                             OR "133280") AND
-                       (RECE02-SRYYM        <=  "201103"))
-                    IF  ( RECE02-RJNHKNNUM  NOT =  SPACE    )
-                    OR  ((SYS-1001-PREFNUM      =   29     ) AND
-                         (RECE02-HKNJANUM(1:6)  =  "133033"))
-                      CONTINUE
-                    ELSE
-                      MOVE  "1" TO  RECE02-KISAIFLG(KOHFTN-IDX + 1)
-                      MOVE  "1" TO  RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
-                    END-IF
-                   END-IF
+                  IF  (RECE02-KOHNUM(KOHFTN-IDX) =  "010" OR "021")
+                  AND (WRK-FTNJYOSEI(KOHFTN-IDX) =   1            )
+                    MOVE  "1"   TO  RECE02-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                   END-IF
                 END-IF
       *

@@ -317,6 +317,7 @@
       *
       *  04.07.01    NACL-門脇    11/09/01  保険・公費有効期間チェック
       *  04.07.02    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
+      *  04.07.03    NACL-門脇    11/10/17  法定外現物給付対応（法別１０、２１）
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1248,6 +1249,7 @@
            COPY    "CPSK1027.INC".
            COPY    "CPSK1037.INC".
            COPY    "CPSK2010.INC".
+           COPY    "CPSK2012.INC".
            COPY    "CPSK4001.INC".
            COPY    "CPSK4003.INC".
            COPY    "CPSK5000.INC".
@@ -5301,18 +5303,6 @@
                     MOVE    "1"        TO   COMB-KOH2-NYUJGNKBN
                END-IF
       *
-               IF    (COMB-KOH2HKNNUM       =  "021"   )
-               AND   (LNK-SYU-SRYYMD(1:6)   >= "200604")
-                  CONTINUE
-               ELSE
-                 IF    COMB-KOH2HKNNUM       =  "010" OR "021"
-                     IF    FLG-SEISINJYO  =   1
-                        MOVE   ZERO   TO    MAX-KIN-KOHI2-M
-                        MOVE   SPACE  TO    COMB-KOH2-NYUJGNKBN
-                     END-IF
-                 END-IF
-               END-IF
-      *
                IF  ( LNK-S02-KOUREI-NYUIN-KBN     =       "1"  )
                AND ( COMB-KOH2HKNNUM(1:1)        >=       "1"  )
                AND ( COMB-KOH2HKNNUM(1:1)        <=       "8"  )
@@ -6511,25 +6501,6 @@
                MOVE    "key"              TO    MCP-PATHNAME
                PERFORM  PTHKNINF-READ-SEC
                IF      FLG-PTHKNINF   =     ZERO
-                  IF ( PTHKN-HKNJANUM(1:6)  =
-                              "133033" OR "133041" OR
-                              "133066" OR "133074" OR "133090" OR
-                              "133116" OR "133132" OR "133140" OR
-                              "133157" OR "133165" OR "133173" OR
-                              "133181" OR "133199" OR "133207" OR
-                              "133223" OR "133249" OR "133256" OR
-                              "133272" OR "283077"      )
-                  OR ((PTHKN-HKNJANUM(1:6)  =  "233064"
-                                            OR "133280") AND
-                      (LNK-SYU-SRYYMD(1:6) <=  "201103"))
-                    IF ( COMB-KOH1HKNNUM     = "027"    )
-                    OR ((WK-1001-PREFNUM     =  29     ) AND
-                        (PTHKN-HKNJANUM(1:6) = "133033"))
-                      CONTINUE
-                    ELSE
-                      MOVE    1      TO    FLG-SEISINJYO
-                    END-IF
-                  END-IF
                   IF   PTHKN-HKNJANUM      = "67330753"
                       MOVE    1      TO    FLG-TOKUREI-HKNJYA
                   END-IF
@@ -6547,9 +6518,146 @@
            MOVE     "key"            TO    MCP-PATHNAME
            PERFORM   DB-CLOSE-SEC
       *
+      *    法定外現物給付
+           IF  (PTHKN-HKNJANUM   NOT =   SPACE                      )
+           AND (COMB-KOH1HKNNUM  =  "010" OR "011" OR "020" OR "021")
+             IF     LNK-SYU-SRYYMD(1:6) >= "200804"
+               INITIALIZE                   SYS-2012-REC
+               MOVE    "2012"           TO  SYS-2012-KANRICD
+               MOVE    PTHKN-HKNJANUM   TO  SYS-2012-KBNCD
+               MOVE    LNK-SYU-HOSPNUM  TO  SYS-2012-HOSPNUM
+               MOVE    LNK-SYU-SRYYMD   TO  SYS-2012-STYUKYMD
+               MOVE    LNK-SYU-SRYYMD   TO  SYS-2012-EDYUKYMD
+               MOVE    SYS-2012-REC     TO  MCPDATA-REC
+               MOVE    "DBSELECT"       TO  MCP-FUNC
+               MOVE    "tbl_syskanri"   TO  MCP-TABLE
+               MOVE    "key10"          TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"  USING   MCPAREA
+                                            MCPDATA-REC
+                                            SPA-AREA
+               IF      MCP-RC         =   ZERO
+                  MOVE  "tbl_syskanri"  TO  MCP-TABLE
+                  MOVE  "key10"         TO  MCP-PATHNAME
+                  PERFORM      SYSKANRI-READ-SEC
+               ELSE
+                  INITIALIZE   SYS-2012-REC
+               END-IF
+               PERFORM   21011-HBTNUMKBN-HENSYU-SEC
+               MOVE     "tbl_syskanri"  TO  MCP-TABLE
+               MOVE     "key10"         TO  MCP-PATHNAME
+               PERFORM      DB-CLOSE-SEC
+             ELSE
+               PERFORM   21012-HBTNUMKBN-HENSYU2-SEC
+               PERFORM   21013-HBTNUMKBN-HENSYU3-SEC
+             END-IF
+           END-IF
+      *
            .
       *
        2101-PTHKNINF-KENSAKU-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    法定外現物給付の設定編集
+      ******************************************************************
+       21011-HBTNUMKBN-HENSYU-SEC          SECTION.
+      *
+           IF   COMB-KOH1HKNNUM  =  "010"
+             EVALUATE  SYS-2012-HBTNUM10KBN
+               WHEN      SPACE
+                 PERFORM   21012-HBTNUMKBN-HENSYU2-SEC
+                 PERFORM   21013-HBTNUMKBN-HENSYU3-SEC
+               WHEN      "0"
+      ******     システム管理２０１２デフォルト設定なしの為
+      ******     救済措置
+                 PERFORM   21013-HBTNUMKBN-HENSYU3-SEC
+               WHEN      "1"
+                 MOVE       1     TO    FLG-SEISINJYO
+             END-EVALUATE
+           END-IF
+      *
+           IF   COMB-KOH1HKNNUM  =  "011"
+             EVALUATE  SYS-2012-HBTNUM11KBN
+               WHEN      SPACE
+               WHEN      "0"
+                 MOVE      ZERO   TO    FLG-SEISINJYO
+               WHEN      "1"
+                 MOVE       1     TO    FLG-SEISINJYO
+             END-EVALUATE
+           END-IF
+      *
+           IF   COMB-KOH1HKNNUM  =  "020"
+             EVALUATE  SYS-2012-HBTNUM20KBN
+               WHEN      SPACE
+               WHEN      "0"
+                 MOVE      ZERO   TO    FLG-SEISINJYO
+               WHEN      "1"
+                 MOVE       1     TO    FLG-SEISINJYO
+             END-EVALUATE
+           END-IF
+      *
+           IF   COMB-KOH1HKNNUM  =  "021"
+             EVALUATE  SYS-2012-HBTNUM21KBN
+               WHEN      SPACE
+                 PERFORM   21012-HBTNUMKBN-HENSYU2-SEC
+                 PERFORM   21013-HBTNUMKBN-HENSYU3-SEC
+               WHEN      "0"
+      ******     システム管理２０１２デフォルト設定なしの為
+      ******     救済措置
+                 PERFORM   21013-HBTNUMKBN-HENSYU3-SEC
+               WHEN      "1"
+                 MOVE       1     TO    FLG-SEISINJYO
+             END-EVALUATE
+           END-IF
+      *
+           .
+      *
+       21011-HBTNUMKBN-HENSYU-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    法定外現物給付の設定編集２
+      ******************************************************************
+       21012-HBTNUMKBN-HENSYU2-SEC          SECTION.
+      *
+           IF   PTHKN-HKNJANUM(1:6)  =
+                "133041" OR "133074" OR "133090" OR "133116" OR
+                "133132" OR "133140" OR "133157" OR "133165" OR
+                "133173" OR "133181" OR "133207" OR "133223" OR
+                "133249" OR "133256" OR "133272" OR "283077"
+                IF   COMB-KOH1HKNNUM  =  "010" OR "021"
+                    MOVE    1      TO    FLG-SEISINJYO
+                END-IF
+           END-IF
+      *
+           .
+      *
+       21012-HBTNUMKBN-HENSYU2-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    法定外現物給付の設定編集３
+      ******************************************************************
+       21013-HBTNUMKBN-HENSYU3-SEC          SECTION.
+      *
+           IF ((PTHKN-HKNJANUM(1:6)  =  "233064" OR "133280") AND
+               (LNK-SYU-SRYYMD(1:6) <=  "201103"            ))
+           OR ((PTHKN-HKNJANUM(1:6)  =  "133033" OR "133066"
+                                                 OR "133199") AND
+               (LNK-SYU-SRYYMD(1:6) <=  "201203"            ))
+              IF  (WK-1001-PREFNUM     =  29     )
+              AND (PTHKN-HKNJANUM(1:6) = "133033")
+                CONTINUE
+              ELSE
+                IF   COMB-KOH1HKNNUM  =  "010" OR "021"
+                    MOVE    1      TO    FLG-SEISINJYO
+                END-IF
+              END-IF
+           END-IF
+      *
+           .
+      *
+       21013-HBTNUMKBN-HENSYU3-EXT.
            EXIT.
       *
       ******************************************************************
@@ -19828,10 +19936,13 @@
                 MOVE    "2"                  TO   HKN-RECEFTNDSPKBN
            END-IF.
       *
-           IF   COMB-KOHHKNNUM(KOH-IDX)  =  "010" OR "021"
+           IF  (KOH-IDX                  =    1           )
+           AND (COMB-KOHHKNNUM(KOH-IDX)  =  "010" OR "021")
               IF    (COMB-KOHHKNNUM(KOH-IDX)  =  "021"   )
               AND   (LNK-SYU-SRYYMD(1:6)     >=  "200604")
-                 CONTINUE
+                 IF   FLG-SEISINJYO  =  1
+                   MOVE     "3"      TO    WK-NYUSKJRYYKBN
+                 END-IF
               ELSE
                  IF   FLG-SEISINJYO  =  1
                    MOVE     ZERO     TO    WK-NYUKFTNRATE
@@ -24269,6 +24380,16 @@
              END-IF
            END-IF.
       *
+           IF  ((LNK-SYU-SRYYMD(1:6)   >= "200704") AND
+                (COMB-KOH1HKNNUM  = "011" OR "020") AND
+                (FLG-SEISINJYO    =   1           ))
+           OR  ((LNK-SYU-SRYYMD(1:6)   >= "200604") AND
+                (COMB-KOH1HKNNUM  = "021"         ) AND
+                (FLG-SEISINJYO    =   1           ))
+              MOVE     ZERO     TO    WK-KNJFTNKIN
+              MOVE     ZERO     TO    WK-KNJFTNKIN-ENTANI
+           END-IF.
+      *
       *    収納テーブルの請求額をセット
            MOVE    WK-KNJFTNKIN             TO  LNK-SYU-SKYMONEY.
       *
@@ -27544,6 +27665,7 @@
                                            SYS-1027-REC
                                            SYS-1037-REC
                                            SYS-2010-REC
+                                           SYS-2012-REC
                                            SYS-4001-REC
                                            SYS-4003-REC
                                            SYS-5000-REC
@@ -27554,6 +27676,7 @@
                                            SYS-1027-REC
                                            SYS-1037-REC
                                            SYS-2010-REC
+                                           SYS-2012-REC
                                            SYS-4001-REC
                                            SYS-4003-REC
                                            SYS-5000-REC
