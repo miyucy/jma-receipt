@@ -1800,7 +1800,6 @@
                   "))) AND ("          DELIMITED   BY  SIZE
                   WRK-SQL-TBL-NAME     DELIMITED   BY  SPACE
                   ".DLTFLG = ' ')AND " DELIMITED   BY  SIZE
-           DELIMITED   BY  SIZE
            INTO        WRK-SQL
            WITH POINTER WRK-SQL-PNT
            END-STRING
