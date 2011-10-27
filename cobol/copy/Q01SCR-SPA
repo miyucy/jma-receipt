@@ -1114,8 +1114,24 @@
                05  SPA-Q01-Q02-SENI-AREA.
                    07  SPA-Q01-SAKIPG                  PIC X(10).
                    07  SPA-Q01-GAITO-TBL.
-                       09  SPA-Q01-GTBL                PIC X(01)
-                                                       OCCURS  12.
+                       09  SPA-Q01-GITEM-G.
+                           11  SPA-Q01-GPTNUM          PIC X(01).
+                           11  SPA-Q01-GNAME           PIC X(01).
+                           11  SPA-Q01-GLASTYMD        PIC X(01).
+                           11  SPA-Q01-GBYOMEI         PIC X(01).
+                           11  SPA-Q01-GHKNINF         PIC X(01).
+                           11  SPA-Q01-GKOHINF         PIC X(01).
+                           11  SPA-Q01-GPTINF          PIC X(01).
+                           11  SPA-Q01-GJYURRK         PIC X(01).
+                           11  SPA-Q01-GSRYACT         PIC X(01).
+                           11  SPA-Q01-GTSY            PIC X(01).
+                           11  SPA-Q01-GRECECOM        PIC X(01).
+                           11  SPA-Q01-GSEIKYU         PIC X(01).
+                           11  SPA-Q01-GXBYOMEI        PIC X(01).
+                           11  SPA-Q01-GXSRYACT        PIC X(01).
+                       09  SPA-Q01-GITEM-R REDEFINES   SPA-Q01-GITEM-G.
+                           11  SPA-Q01-GTBL            PIC X(01)
+                                                       OCCURS  14.
                    07  SPA-Q01-AGE-CALC-KBN            PIC 9(01).
                    07  SPA-Q01-STSRYYMD                PIC X(08).
                    07  SPA-Q01-EDSRYYMD                PIC X(08).
@@ -1249,6 +1265,12 @@
                        09  SPA-Q01-SORTKBN-TBL.
                            11  SPA-Q01-SORTKBN         PIC 9(01)
                                                        OCCURS  3.
+      *            NOT¸¡º÷¾ò·ï¥¨¥ê¥¢
+                   07  SPA-Q01-NOT-AREA.
+                       09  SPA-Q01-XSELECT             PIC X(01).
+                       09  SPA-Q01-XSRYCD-G.
+                           11  SPA-Q01-XSRYCD          PIC X(09)
+                                                       OCCURS  5.
       *
       *        Q01¢«¢ªQ04Á«°Ü¾ðÊó
                05  SPA-Q01-Q04-SENI-AREA.
