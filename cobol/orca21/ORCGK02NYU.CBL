@@ -8230,6 +8230,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "XXXX"          TO  WRK-ERRCD
       *            前回展開中中止
                    MOVE    1               TO  FLG-MOD-FLG
+                   PERFORM 4900-WKSRYACT-CLEAR-SEC
+               END-IF
+           ELSE
+      *        中途終了に変更
+               IF     (SPA-GMN-MAX         >   ZERO )
+                 AND  (FLG-NYUNEXT         =   ZERO )
+                   MOVE    ZERO            TO  FLG-MOD-FLG
+                   PERFORM 4900-WKSRYACT-CLEAR-SEC
                END-IF
            END-IF
       *    スパ共通編集処理
@@ -8244,8 +8252,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-NYUNEXT         =   1
       *        前回展開
                MOVE    2                   TO  FLG-MOD-FLG
+               PERFORM 4900-WKSRYACT-CLEAR-SEC
            END-IF
-           PERFORM 4900-WKSRYACT-CLEAR-SEC
+      ***  PERFORM 4900-WKSRYACT-CLEAR-SEC
       *
            IF      FLG-NYUNEXT         =   1
       *        内容を残す
