@@ -39,6 +39,7 @@
       *  04.05.00    NACL-多々納  09/10/02  換算値数値他対応
       *  04.05.00    NACL-多々納  10/01/XX  治験対応
       *  04.06.00    NACL-多々納  10/11/29  自賠責金額入力対応
+      *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2056,6 +2057,7 @@
            MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
            MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
            MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
+           MOVE    SPA-K02N-DOUKBN     TO  WKSRY-DOUJITSUKBN
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
@@ -2155,8 +2157,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *            数量
       *!!          数量入力のできないコードは数量編集なし
-                   IF     (SPA-COM-SURYO  (IDX)    >   1   )  AND
-                          (SPA-COM-INPUTCD(IDX)(1:3)   =   "058"
+      ****         IF     (SPA-COM-SURYO  (IDX)    >   1   )  AND
+                   IF     (SPA-COM-INPUTCD(IDX)(1:3)   =   "058"
                                                        OR  "001"
                                                        OR  "002"
                                                        OR  "099")
@@ -2437,6 +2439,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-DOUJI-RENNUM    TO  WKSRY-DOUJI-RENNUM
       *    継続区分
            MOVE    SPA-CONTKBN         TO  WKSRY-CONTKBN
+      *ver.4.7
+      *    同日再入院分
+           MOVE    SPACE               TO  WKSRY-DOUJITSUKBN
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    SPA-K02N-DOUKBN     TO  WKSRY-DOUJITSUKBN
+           END-IF
       *@
       *    包括剤は継続区分に'H'を編集
            IF      SPA-COM-HOUKATU-ZAI(IDX) =   1
@@ -2716,6 +2724,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-DOUJI-RENNUM    TO  WKSRY-DOUJI-RENNUM
       *    継続区分
            MOVE    SPA-CONTKBN         TO  WKSRY-CONTKBN
+      *ver.4.7
+      *    同日再入院分
+           MOVE    SPACE               TO  WKSRY-DOUJITSUKBN
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    SPA-K02N-DOUKBN     TO  WKSRY-DOUJITSUKBN
+           END-IF
       *@
       *    包括剤は継続区分に'H'を編集
            IF      WRK-HOUKATU-ZAI      =   1

@@ -282,6 +282,8 @@
                    07  SPA-K02N-NYUINYMDW          PIC X(09).
                    07  SPA-K02N-H1                 PIC X(01).
                    07  SPA-K02N-TAIINYMDW          PIC X(09).
+      *        同日再入院あり
+               05  SPA-K02N-DOUNYUKBN          PIC 9(01).
       *        検査処理
                05  SPA-K02N-KENSAFLG           PIC X(01).
       *
@@ -615,6 +617,7 @@
                        09  SPA-K10-GMN-DRCD-NAME
                                                PIC X(50).
                        09  SPA-K10-SYORIKBN    PIC X(02).
+                       09  SPA-K10-DOUKBN      PIC X(01).
                05  SPA-K10-GMN-SELNUM      PIC X(03).
                05  SPA-K10-SELNUM          PIC 9(03).
       *

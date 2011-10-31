@@ -2529,6 +2529,23 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+      *ver.4.7
+               WHEN    "0170"
+                   STRING  "診療日に同日再入院はありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0171"
+                   STRING  "同日再入院日ではありません。"
+                           "内容をクリアして受診履歴を削除して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0172"
+                   STRING  "該当の中途終了データの内容に置換えました。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG

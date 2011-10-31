@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.00    NACL-多々納  09/10/26  他院退院日対応
+      *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
       *****************************************************************
       *
       *
@@ -70,6 +71,9 @@
       *
            03  WRK-TAIINYMD            PIC X(08).
            03  WRK-LASTTAIINYMD        PIC X(08).
+           03  WRK-YMD.
+               05  WRK-SYM             PIC 9(06).
+               05  WRK-SDD             PIC 9(02).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -249,7 +253,21 @@
            IF     (PTNYUINRRK-NYUINYMD NOT =   WRK-OLD-NYUINYMD ) AND
                   (PTNYUINRRK-TAIINYMD NOT =   WRK-OLD-TAIINYMD )
                IF      PTNYUINRRK-TAIINYMD     =   WRK-OLD-NYUINYMD
-                   MOVE    ZERO                TO  FLG-OK
+                   IF      (ORCSCNYUHEN-KBN2   NOT =   "1"     )
+      *                退院日＝入院日あり
+                       IF    ( FLG-OK          =   1             )
+                       AND   ( PTNYUINRRK-TAIINYMD =   WRK-SRYYMD)
+                           MOVE    1           TO  ORCSCNYUHEN-DOUNYUKBN
+                       END-IF
+                       MOVE    ZERO            TO  FLG-OK
+                   END-IF
+               END-IF
+      *!!!     同日再入院日あり対象
+               IF     (PTNYUINRRK-TAIINYMD     =   WRK-OLD-NYUINYMD )
+                 AND  (WRK-OLD-NYUINYMD        =   ORCSCNYUHEN-NYUINYMD)
+      *            同日再入院日
+                   MOVE    PTNYUINRRK-TAIINYMD    TO  WRK-YMD
+                   MOVE    WRK-SDD         TO  ORCSCNYUHEN-DOUNYUIN 
                END-IF
            END-IF
       *
@@ -263,6 +281,8 @@
                      AND  (FLG-OK                  =   ZERO      )
                        PERFORM 1002-PTNYUINRRK-HEN-SEC
                        MOVE    1               TO  FLG-OK
+      *                同日再入院日
+                       MOVE    ZERO            TO  ORCSCNYUHEN-DOUNYUIN
                    END-IF
                END-IF
            END-IF

@@ -517,6 +517,9 @@
            ELSE
                PERFORM 31012-DRCD-NAME-SEC
            END-IF
+      *ver.4.7
+           MOVE    WKSRY-DOUJITSUKBN   TO  SPA-K10-DOUKBN (IDX)
+      *
       *    保険組合せ
            IF      WKSRY-HKNCOMBI      =   "9999"
                MOVE    "包括分入力"    TO  SPA-K10-GMN-HKNCOMBI (IDX)
@@ -891,6 +894,9 @@
                                        TO  SPA-HKNCOMBINUM
            MOVE    SPA-K10-PTNUM  (IDX)
                                        TO  SPA-PTNUM
+      *ver.4.7
+           MOVE    SPA-K10-DOUKBN (IDX)
+                                       TO  SPA-WKSRY-DOUKBN
       *
            .
        4510-KAKUTEI-SYORI-EXT.
@@ -1171,6 +1177,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  K10-SRYKA (IDX)
                MOVE    SPA-K10-GMN-SRYYMD (IDX)
                                                TO  K10-SRYYMD(IDX)
+      *TEST
+               IF      SPA-K10-DOUKBN (IDX)    =   "1"
+                   MOVE    "(2)"               TO  K10-SRYYMD(IDX)
+                                                           (10:3)
+               END-IF
+      *TEST
                MOVE    SPA-K10-GMN-HKNCOMBI (IDX)
                                                TO  K10-HKNCOMBI(IDX)
                MOVE    SPA-K10-SYORIKBN (IDX)

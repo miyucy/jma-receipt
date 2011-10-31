@@ -58,6 +58,7 @@
       *  04.06.00    NACL=多々納  10/11/02  難病外来指導管理料対応
       *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
       *  04.07.00    NACL=多々納  11/09/08  アトピー性皮膚炎と他病名対応
+      *  04.07.00    NACL=多々納  11/10/XX  同日再入院対応
       *****************************************************************
       *
       *
@@ -5061,6 +5062,15 @@
            MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
            MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
            MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
+      *ver.4.7
+      *    同日再入院区分
+           IF      SPA-NYUGAIKBN       =   "1"
+               MOVE    SPA-WKSRY-DOUKBN    TO  WKSRY-DOUJITSUKBN
+               IF     (SPA-WKSRY-DOUKBN    =   SPACE )
+                 AND  (SPA-K02N-DOUKBN     =   "1"   )
+                   MOVE    "1"             TO  WKSRY-DOUJITSUKBN
+               END-IF
+           END-IF
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
@@ -5173,7 +5183,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
            END-IF
-      *
            .
        4902-WKBUNSAN-EXT.
            EXIT.

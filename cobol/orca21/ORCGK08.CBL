@@ -827,6 +827,9 @@
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-K08
            MOVE    SPA-WORK        TO  SPA-K01KYOUTU
+      *TEST
+           DISPLAY "K08 SPA-K02N-DOUDAY:" SPA-K02N-DOUDAY
+      *TEST
       *
       *    診療種別テーブルセット
            PERFORM 1001-SRYKBN-SET-SEC
@@ -5747,6 +5750,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "1"                 TO  LNK-ORDERPRT-DRCD(1:1)
                MOVE    SPA-K081GMN-DRCD    TO  LNK-ORDERPRT-DRCD(2:4)
            END-IF
+      *    同日再入院区分
+           MOVE    SPA-K02N-DOUKBN     TO  LNK-ORDERPRT-DOUJITSUKBN
            CALL    "ORCSORDERPRT"      USING
                                        ORCSORDERPRTAREA
                                        SPA-AREA
