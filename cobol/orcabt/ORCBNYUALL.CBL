@@ -907,7 +907,9 @@
                IF    ( LNK-WKSRYACT-MAX    =   ZERO    )   OR
                      ((WKSRY-PTID          =   LNK-WKSRY-PTID (1))
                  AND  (WKSRY-SRYKA         =   LNK-WKSRY-SRYKA (1))
-                 AND  (WKSRY-HKNCOMBI      =   LNK-WKSRY-HKNCOMBI (1)))
+                 AND  (WKSRY-HKNCOMBI      =   LNK-WKSRY-HKNCOMBI (1))
+                 AND  (WKSRY-DOUJITSUKBN   =   LNK-WKSRY-DOUJITSUKBN
+                                                                  (1)))
                    CONTINUE
                ELSE
                    MOVE    WKSRYACT-REC        TO  HZN-WKSRYACT-REC
@@ -1929,6 +1931,10 @@
            MOVE    SPA-SRYKA           TO  WKSRY-SRYKA
            MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
            MOVE    SPA-HKNCOMBINUM     TO  WKSRY-HKNCOMBI
+      *ver.4.7
+           IF      SPA-K02N-DOUKBN     =   "1"
+               MOVE    "1"                 TO  WKSRY-DOUJITSUKBN
+           END-IF
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
