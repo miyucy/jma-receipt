@@ -1397,9 +1397,9 @@
       *
                        IF    (SPA-Q01-KOHNUM (IDX1)    NOT =   SPACE )
                            MOVE    IDX1    TO  WRK-NAME-SEQ
-                           STRING  ",D"            DELIMITED  BY  SIZE
+                           STRING  ",COALESCE(D"   DELIMITED  BY  SIZE
                                    WRK-NAME-SEQ    DELIMITED  BY  SIZE
-                                   ".HKNID"  DELIMITED  BY  SIZE
+                                   ".HKNID,0)"     DELIMITED  BY  SIZE
                            INTO    WRK-SQL
                            WITH    POINTER WRK-SQL-PNT
                            END-STRING
@@ -1410,7 +1410,7 @@
                    WITH    POINTER WRK-SQL-PNT
                    END-STRING
                ELSE
-                   STRING  "L.HKNID in (null, D.HKNID)"
+                   STRING  "L.HKNID in (null, COALESCE(D.HKNID,0))"
                                        DELIMITED BY SIZE
                    INTO    WRK-SQL
                    WITH    POINTER WRK-SQL-PNT
