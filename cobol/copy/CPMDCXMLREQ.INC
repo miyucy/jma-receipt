@@ -38,6 +38,8 @@
               03  MDCREQ-PERFORM-TIME PIC X(8).
       *       UID
               03  MDCREQ-MEDICAL-UID       PIC X(36).
+      *       Æþ±¡Æü
+              03  MDCREQ-ADMISSION-DATE    PIC X(10).
       *
               03  MDCREQ-MEDICAL-INFO.
       *         ¿ÇÎÅ²Ê

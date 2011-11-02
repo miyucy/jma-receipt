@@ -67,6 +67,7 @@
       *
       *  04.07.01    NACL-藤原    10/10/20  病名の削除処理対応
       *  04.07.00    NACL-多々納  11/10/13  ＵＩＤ編集対応
+      *  04.07.00    NACL-多々納  11/11/02  同日再入院対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -229,6 +230,8 @@
            03  WRK-SRYKA           PIC X(02).
            03  WRK-SRYKA-KEY       PIC X(02).
            03  WRK-NYUGAIKBN       PIC X(01).
+      *    同日再入院区分
+           03  WRK-DOUJITSUKBN     PIC X(01).
       *
            03  WRK-DRCD            PIC X(05).
       *
@@ -974,6 +977,13 @@
       *
            DISPLAY "ドクタ   = ["  WRK-DRCD "]"
       *
+      *ver.4.7
+      *    同日再入院区分
+           IF      LF04-DOUJITSUKBN    =   "1"
+               MOVE    "1"             TO  WRK-DOUJITSUKBN
+           ELSE
+               MOVE    SPACE           TO  WRK-DOUJITSUKBN
+           END-IF
            .
        2000-SYOKI-SET-EXT.
            EXIT.
@@ -1968,6 +1978,10 @@
       *
       *    診療日付
            MOVE    WRK-SRYYMD          TO  TBL-WKSRY-SRYYMD (TBL-MAX)
+      *ver.4.7
+      *    同日再入院区分
+           MOVE    WRK-DOUJITSUKBN     TO  TBL-WKSRY-DOUJITSUKBN
+                                                            (TBL-MAX)
       *    保険組合せ
            MOVE    WRK-HKNCOMBI        TO  TBL-WKSRY-HKNCOMBI(TBL-MAX)
       *    剤番号
@@ -2602,6 +2616,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-SRYKA           TO  WKSRY-SRYKA
            MOVE    WRK-SRYYMD          TO  WKSRY-SRYYMD
            MOVE    WRK-HKNCOMBI        TO  WKSRY-HKNCOMBI
+      *    同日再入院区分
+           MOVE    WRK-DOUJITSUKBN     TO  WKSRY-DOUJITSUKBN
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
@@ -2646,6 +2662,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-SRYKA           TO  WKSRY-SRYKA
            MOVE    WRK-SRYYMD          TO  WKSRY-SRYYMD
            MOVE    WRK-HKNCOMBI        TO  WKSRY-HKNCOMBI
+      *    同日再入院区分
+           MOVE    WRK-DOUJITSUKBN     TO  WKSRY-DOUJITSUKBN
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
@@ -2747,6 +2765,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-SRYKA           TO  WKSRY-SRYKA
            MOVE    WRK-SRYYMD          TO  WKSRY-SRYYMD
            MOVE    WRK-HKNCOMBI        TO  WKSRY-HKNCOMBI
+      *    同日再入院区分
+           MOVE    WRK-DOUJITSUKBN     TO  WKSRY-DOUJITSUKBN
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE

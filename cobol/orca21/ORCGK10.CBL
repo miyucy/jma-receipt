@@ -34,6 +34,7 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.07.00    NACL-多々納  11/08/08  明細２００件対応
       *  04.07.00    NACL-多々納  11/10/XX  剤番＝１なし対応
+      *                                     同日再入院対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -141,6 +142,7 @@
                05  WRK-KEY-SRYYMD      PIC X(08).
                05  WRK-KEY-SRYKA       PIC X(02).
                05  WRK-KEY-HKNCOMBI    PIC X(04).
+               05  WRK-KEY-DOUJITSUKBN    PIC X(01).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -421,7 +423,8 @@
                IF      (WKSRY-PTID         =   WRK-KEY-PTID  )  AND
                        (WKSRY-SRYKA        =   WRK-KEY-SRYKA )  AND
                        (WKSRY-SRYYMD       =   WRK-KEY-SRYYMD)  AND
-                       (WKSRY-HKNCOMBI     =   WRK-KEY-HKNCOMBI)
+                       (WKSRY-HKNCOMBI     =   WRK-KEY-HKNCOMBI)  AND
+                       (WKSRY-DOUJITSUKBN  =   WRK-KEY-DOUJITSUKBN)
                    MOVE    1                   TO  FLG-CHK
                ELSE
                    MOVE    ZERO                TO  FLG-CHK
@@ -441,6 +444,7 @@
                MOVE    WKSRY-SRYKA         TO  WRK-KEY-SRYKA
                MOVE    WKSRY-SRYYMD        TO  WRK-KEY-SRYYMD
                MOVE    WKSRY-HKNCOMBI      TO  WRK-KEY-HKNCOMBI
+               MOVE    WKSRY-DOUJITSUKBN   TO  WRK-KEY-DOUJITSUKBN
       *
                MOVE    "tbl_wksryact"      TO  MCP-TABLE
                MOVE    WRK-PATH            TO  MCP-PATHNAME
@@ -1034,6 +1038,9 @@
            MOVE    SPA-K10-SRYYMD(IDX) TO  WKSRY-SRYYMD
            MOVE    SPA-K10-HKNCOMBI(IDX)
                                        TO  WKSRY-HKNCOMBI
+      *ver.4.7
+           MOVE    SPA-K10-DOUKBN (IDX)
+                                       TO  WKSRY-DOUJITSUKBN
       *
            MOVE    WKSRYACT-REC        TO  MCPDATA-REC
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
