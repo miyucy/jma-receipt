@@ -7,5 +7,5 @@
 
 \set ON_ERROR_STOP
 
-create index idx_srysrh_ptid on tbl_rrksrh (hospnum,ptid,termid);
+create index idx_srysrh_ptid on tbl_srysrh (hospnum,ptid);
 
