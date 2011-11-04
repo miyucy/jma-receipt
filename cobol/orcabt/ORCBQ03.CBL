@@ -435,14 +435,12 @@
             OR  ( SPA-Q01-GXSRYACT  =   "1" )
                IF    ( SPA-Q01-GJYURRK  =   SPACE )
                    IF    ( SPA-Q01-SRYCD-G  NOT =   SPACE )
-                    OR   ( SPA-Q01-XSRYCD-G NOT =   SPACE )
                        MOVE    1    TO  SEL-SRYSRH
                    ELSE
                        MOVE    3    TO  SEL-SRYSRH
                    END-IF
                ELSE
                    IF    ( SPA-Q01-SRYCD-G  NOT =   SPACE )
-                    OR   ( SPA-Q01-XSRYCD-G NOT =   SPACE )
                        MOVE    2    TO  SEL-SRYSRH
                    ELSE
                        MOVE    4    TO  SEL-SRYSRH
@@ -506,6 +504,9 @@
                PERFORM 900-SRYSRH-INS3-SEC
            WHEN    4
                PERFORM 900-SRYSRH-INS4-SEC
+               IF    ( SPA-Q01-XSRYCD-G  NOT =   SPACE )
+                   PERFORM 900-SRYSRH-INS2-SEC
+               END-IF
            END-EVALUATE
       *
            PERFORM 910-DBCOMMIT-SEC
