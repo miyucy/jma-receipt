@@ -1529,8 +1529,11 @@
                    ")AND("                     DELIMITED   BY  SIZE
                    "N.PTID=A.PTID"             DELIMITED   BY  SIZE
                    ")AND("                     DELIMITED   BY  SIZE
-                   "N.TERMID='"                DELIMITED   BY  SIZE
-                   SPA-TERMID                  DELIMITED   BY  SIZE
+                   "N.UPYMD='"                 DELIMITED   BY  SIZE
+                   QSUB02-YMD                  DELIMITED   BY  SIZE
+                   "')AND("                    DELIMITED   BY  SIZE
+                   "N.UPHMS='"                 DELIMITED   BY  SIZE
+                   QSUB02-HMS                  DELIMITED   BY  SIZE
                    "')AND"                      DELIMITED   BY  SIZE
            INTO    WRK-SQL
            WITH    POINTER     WRK-SQL-PNT
@@ -2852,9 +2855,10 @@
       *****************************************************************
        1001-JYURRK-SQL-EDIT-SEC        SECTION.
       *
-      *
            MOVE    "F"             TO  WRK-SQL-TBL-NAME
            PERFORM 900-SQL-JYOKEN-EDIT1-SEC
+      *
+           PERFORM 10011-UPYMD-SQL-EDIT-SEC
       *
            IF    ( SPA-Q01-NYUGAIKBN   NOT =   SPACE )
                PERFORM 10011-NYUGAIKBN-SQL-EDIT-SEC
@@ -2927,6 +2931,8 @@
                WITH POINTER WRK-SQL-PNT
                END-STRING
            END-IF
+      *
+           PERFORM 10011-UPYMD-SQL-EDIT-SEC
       *
            IF    ( SPA-Q01-NYUGAIKBN   NOT =   SPACE )
                PERFORM 10011-NYUGAIKBN-SQL-EDIT-SEC
@@ -3012,6 +3018,8 @@
                        WITH POINTER WRK-SQL-PNT
                        END-STRING
                    END-IF
+      *
+                   PERFORM 10011-UPYMD-SQL-EDIT-SEC
       *
                    IF    ( SPA-Q01-NYUGAIKBN   NOT =   SPACE )
                        PERFORM 10011-NYUGAIKBN-SQL-EDIT-SEC
@@ -3896,6 +3904,33 @@
       *
            .
        10012-HKNCOMBINUM-SQL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    UPYMD編集処理
+      * (TERMIDだと検索に時間がかかるので、UPYMD,UPHMSで代用する）
+      *****************************************************************
+       10011-UPYMD-SQL-EDIT-SEC        SECTION.
+      *
+           MOVE    1                   TO  CNT-JYOKEN
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+           STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                   ".UPYMD ='"         DELIMITED BY SIZE
+                   QSUB02-YMD          DELIMITED BY SIZE
+                   "' AND "            DELIMITED BY SIZE
+                   WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                   ".UPHMS ='"         DELIMITED BY SIZE
+                   QSUB02-HMS          DELIMITED BY SIZE
+                   "' "                DELIMITED BY SIZE
+           INTO    WRK-SQL
+           WITH    POINTER WRK-SQL-PNT
+           END-STRING
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           .
+       10011-UPYMD-SQL-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    入外区分編集処理

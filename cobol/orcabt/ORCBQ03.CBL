@@ -1235,9 +1235,9 @@
            MOVE    SEL-SRYKA       TO  RRKSRH-SRYKA
            MOVE    SEL-STSRYYMD    TO  RRKSRH-STSRYYMD
            MOVE    SEL-EDSRYYMD    TO  RRKSRH-EDSRYYMD
-           MOVE    SMCNDATE-YMD    TO  RRKSRH-CREYMD
+           MOVE    SEL-UPYMD    TO  RRKSRH-CREYMD
                                        RRKSRH-UPYMD
-           MOVE    SMCNDATE-HMS    TO  RRKSRH-UPHMS
+           MOVE    SEL-UPHMS    TO  RRKSRH-UPHMS
            MOVE    RRKSRH-REC      TO  MCPDATA-REC
            MOVE    "tbl_rrksrh"    TO  MCP-TABLE
            MOVE    "ins1"          TO  MCP-PATHNAME
@@ -1339,7 +1339,7 @@
            MOVE    ZERO            TO  IDX1
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   5 )
-               MOVE    SEL-SRYCD   TO  SRYSRH-SRYCD (IDX1)
+               MOVE    SEL-SRYCD   TO  SRYSRH-SRYCD (IDX0)
            END-PERFORM
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   5 )
@@ -1361,9 +1361,9 @@
                                    TO  SRYSRH-SRYCD (IDX1)
                END-IF
            END-PERFORM
-           MOVE    SMCNDATE-YMD    TO  SRYSRH-CREYMD
+           MOVE    SEL-UPYMD    TO  SRYSRH-CREYMD
                                        SRYSRH-UPYMD
-           MOVE    SMCNDATE-HMS    TO  SRYSRH-UPHMS
+           MOVE    SEL-UPHMS    TO  SRYSRH-UPHMS
       *
       *
            .
