@@ -3313,6 +3313,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        200-TAIIN-SYORI-SEC             SECTION.
       *
+      *    Æ±ÆüºÆÆþ±¡Ê¬
+           IF      ORCSCNYUIN-DOUJITSUKBN  =   "1"
+               MOVE    1                   TO  FLG-DOUJITU
+           ELSE
+               MOVE    ZERO                TO  FLG-DOUJITU
+           END-IF
+      *
            INITIALIZE                      TBL-NYU-SRYKA-AREA
            MOVE    ZERO                TO  IDX-K
       *    Æþ±¡ÍúÎòÈ½Äê
@@ -3334,7 +3341,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                  PTNYUINRRK-REC
            END-IF
            MOVE    SPACE               TO  WRK-SRYKA
-           MOVE    ZERO                TO  FLG-DOUJITU
            PERFORM
                    UNTIL      (FLG-PTNYUINRRK      =   1 )  OR
                               (WRK-SRYKA       NOT =   SPACE)
@@ -3348,13 +3354,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            (IDX-K)
                END-IF
       *
-               IF      ORCSCNYUIN-YMD      =   PTNYUINRRK-NYUINYMD
-      *            Æ±ÆüºÆÆþ±¡¶èÊ¬
-                   IF      PTNYUINRRK-DOUJITSUKBN  =   "1"
-                       MOVE    1                   TO  FLG-DOUJITU
-                   END-IF
-               END-IF
-      *
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
                MOVE    "key33"             TO  MCP-PATHNAME
                PERFORM 910-PTNYUINRRK-READ-SEC
@@ -3362,11 +3361,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key33"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *TEST
-           DISPLAY "ORCSCNYUIN-YMD:" ORCSCNYUIN-YMD
-                ",ORCSCNYUIN-TAIINYMD:" ORCSCNYUIN-TAIINYMD
-                ",FLG-DOUJITU:" FLG-DOUJITU
-      *TEST
       *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
