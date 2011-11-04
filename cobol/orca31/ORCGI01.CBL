@@ -13923,6 +13923,13 @@
            MOVE    SPACE               TO  WRK-DOUJITSU-FLG
                                            WRK-DOUJITSU-MOTOYMD
            IF     FLG-JIINRRK          =   1
+      *        同日再入院分の診療会計削除用引数追加対応
+               IF   SPA-GMN-I01-SYORIKBN-CD(2:1)  =   "6"
+                   MOVE   "1"          TO  LNK-SCNYUACCT-DOUJITSUKBN
+                   MOVE    SPA-NAI-I01-NYUINYMD
+                                       TO  LNK-SCNYUACCT-SRYDELYMD
+               END-IF
+      *
                MOVE    "1"             TO  WRK-DOUJITSU-FLG
                INITIALIZE                  STS-AREA-DAY
                INITIALIZE                  LNK-DAY6-AREA
@@ -13938,6 +13945,13 @@
            END-IF
       *---------------退院日の同日入院処理ここまで----------------------
       *
+           DISPLAY   "==== NYUIN-ERASE ===="
+           DISPLAY   "LNK-SCNYUACCT-DOUJITSUKBN = "
+                      LNK-SCNYUACCT-DOUJITSUKBN
+           DISPLAY   "LNK-SCNYUACCT-STSRYYMD = "
+                      LNK-SCNYUACCT-STSRYYMD
+           DISPLAY   "LNK-SCNYUACCT-SRYDELYMD = "
+                      LNK-SCNYUACCT-SRYDELYMD
       *    入院会計作成サブの呼出し
            INITIALIZE            ORCSNYUACCT-AREA
            MOVE     SPA-GMN-I01-SYORIKBN-CD(2:1)
