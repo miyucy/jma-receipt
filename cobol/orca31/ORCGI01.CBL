@@ -13891,6 +13891,8 @@
       *****************************************************************
        4801-NYUKAIKEI-ERASE-SUB-SEC         SECTION.
       *
+           INITIALIZE            ORCSNYUACCT-AREA
+      *
       *---------------退院日の同日入院処理ここから----------------------
            MOVE   SPACE                TO  WRK-DOU-TENNYUYMD
       *    同日再入院用に入院日（転入日）を退避
@@ -13945,15 +13947,7 @@
            END-IF
       *---------------退院日の同日入院処理ここまで----------------------
       *
-           DISPLAY   "==== NYUIN-ERASE ===="
-           DISPLAY   "LNK-SCNYUACCT-DOUJITSUKBN = "
-                      LNK-SCNYUACCT-DOUJITSUKBN
-           DISPLAY   "LNK-SCNYUACCT-STSRYYMD = "
-                      LNK-SCNYUACCT-STSRYYMD
-           DISPLAY   "LNK-SCNYUACCT-SRYDELYMD = "
-                      LNK-SCNYUACCT-SRYDELYMD
       *    入院会計作成サブの呼出し
-           INITIALIZE            ORCSNYUACCT-AREA
            MOVE     SPA-GMN-I01-SYORIKBN-CD(2:1)
                                        TO   LNK-SCNYUACCT-SYORI-KBN
            MOVE     "1"                TO  SPA-NYUGAIKBN
