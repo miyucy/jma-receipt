@@ -5374,7 +5374,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    END-STRING                   
            END-EVALUATE
            MOVE    WRK-RIDMSG          TO  RID4-ID1MSG
-       *
+      *
            EVALUATE    SPA-RIDCD4
                WHEN    "1002"
                WHEN    "1006"
