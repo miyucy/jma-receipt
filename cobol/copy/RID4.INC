@@ -22,7 +22,7 @@
               05  RID4-LABEL-STYLE  PIC X(20).
               05  RID4-LABEL        PIC X(80).
               05  RID4-LABEL1-STYLE PIC X(20).
-              05  RID4-LABEL1       PIC X(80).
+              05  RID4-LABEL1       PIC X(110).
               04  RID4-B01.
                 05  RID4-B01-LABEL  PIC X(4).
               04  RID4-ID1MSG.

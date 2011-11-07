@@ -9,7 +9,7 @@ RID4	{
 		};
 		LABEL1	{
 			style   varchar(20);
-			value	varchar(80);
+			value	varchar(110);
 		};
 		B01	{
 			label	varchar(4);

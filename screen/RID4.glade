@@ -13,7 +13,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>RID4</name>
-  <width>670</width>
+  <width>694</width>
   <height>145</height>
   <signal>
     <name>map_event</name>
@@ -64,7 +64,7 @@
       <name>B01</name>
       <x>8</x>
       <y>115</y>
-      <width>56</width>
+      <width>64</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -101,7 +101,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B10</name>
-      <x>400</x>
+      <x>395</x>
       <y>115</y>
       <width>100</width>
       <height>24</height>
@@ -117,16 +117,16 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F10:削除あり</label>
+      <label>F10:削除する</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
-      <x>555</x>
+      <x>577</x>
       <y>115</y>
-      <width>100</width>
+      <width>105</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -140,7 +140,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F12:削除なし</label>
+      <label>F12:削除しない</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -165,9 +165,9 @@
       <name>LABEL1</name>
       <x>8</x>
       <y>77</y>
-      <width>652</width>
+      <width>677</width>
       <height>24</height>
-      <label>請求しない設定の請求データを削除して未請求として作成してよろしいですか</label>
+      <label>請求しない設定された請求管理データがあります。このデータを削除し新たに請求管理データを作成しますか</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

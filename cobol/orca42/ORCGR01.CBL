@@ -899,8 +899,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
                        END-IF 
                    WHEN    OTHER
                        PERFORM 480-ZENKAI-HYOUJI-SEC
-                       MOVE    SPACE           TO  SPA-RID1-FLG
-                                                   SPA-R99-FLG
+                       INITIALIZE                  SPA-RID1-AREA
                        IF      SPA-RIDCD   NOT =   SPACE
                            GO  TO  330-RID1-SET-EXT
                        END-IF 
@@ -3685,9 +3684,6 @@ grpsys             PERFORM 900-DBSELECT-SEC
            END-IF
       *
       *    請求しない設定ありのとき
-      *??
-           DISPLAY "SPA-RIDCD=" SPA-RIDCD " "SPA-NAI-R01-SEIKYU-CHK " "
-      *??
            EVALUATE    SPA-RIDCD
                WHEN    "1002"
                WHEN    "1006"
@@ -3697,9 +3693,6 @@ grpsys             PERFORM 900-DBSELECT-SEC
                        MOVE    SPACE           TO  SPA-RIDCD
                    END-IF
            END-EVALUATE
-      *??
-           DISPLAY "SPA-RIDCD4=" SPA-RIDCD4 " " SPA-RIDCD " "
-      *??
            .
        450-TOUROKU-EXT.
            EXIT.
@@ -4350,10 +4343,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                    END-IF
            END-EVALUATE
            MOVE    SPA-R01-PRTKBN  TO  SHELLTBL-ARG18
-           IF      SPA-RID4-FLG    =   "OK"
-               MOVE    "0"             TO  SHELLTBL-ARG19
-           ELSE
+           IF      SPA-RID4-FLG    =   "CHG"
                MOVE    "1"             TO  SHELLTBL-ARG19
+           ELSE
+               MOVE    "0"             TO  SHELLTBL-ARG19
            END-IF
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -5391,10 +5384,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                        END-STRING
                    END-IF
       *
-                   STRING  "請求しない設定の請求データを"
+                   STRING  "請求しない設定された請求管理データが"
                                                     DELIMITED  BY  SIZE
-                           "未請求として作成しますか"
+                           "あります。このデータを削除し新たに請求管理"
                                                     DELIMITED  BY  SIZE
+                           "データを作成しますか"   DELIMITED  BY  SIZE
                                                     INTO  RID4-LABEL1
                    END-STRING 
            END-EVALUATE
@@ -5823,9 +5817,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
            MOVE    "key59"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *??
-           DISPLAY "FLG-SEIKYU-UMU=" FLG-SEIKYU-UMU "#"
-      *??
       *
            .
        900-SEIKYU-SKYKBN-CHECK-EXT.
