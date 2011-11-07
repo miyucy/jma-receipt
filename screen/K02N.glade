@@ -3023,7 +3023,7 @@
       <class>GtkButton</class>
       <name>B12CS</name>
       <x>936</x>
-      <y>664</y>
+      <y>668</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -3483,8 +3483,8 @@
       <class>GtkButton</class>
       <name>BNYU</name>
       <x>936</x>
-      <y>640</y>
-      <width>60</width>
+      <y>638</y>
+      <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
