@@ -40,6 +40,7 @@
       *  03.05.02    NACL−竹田    07/06/22  労災自賠対応
       *
       *  04.06.01    NACL-藤原     10/10/12  設定による初期表示の変更
+      *  04.07.01    NACL-太田     11/11/08  コラムリスト選択行表示制御変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -782,7 +783,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    1                TO  SPA-GMN-CUR 
            END-IF
       *
-           MOVE    IDY              TO  XC01-ROW         
            .
        2011-SELECT-HENSYU-EXT.
            EXIT.
@@ -2115,20 +2115,34 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    SPA-NAI-SELNUM      TO  WRK-ROW
+           IF    ( MCP-WIDGET          =   "B05" OR "B08" OR "SELNUM" )
+            OR   ( FLG-GMN-INIT        =   2 )
+            OR   ( SPA-XC01-HYOUJI     =   2 )
+               COMPUTE WRK-ROW
+                   =   SPA-NAI-SELNUM  -   2
+               IF    ( WRK-ROW         <   ZERO )
+                   MOVE    1           TO  FLG-GMN-INIT
+               END-IF
+           ELSE
+               MOVE    XC01-ROW        TO  WRK-ROW
+           END-IF
       *
            MOVE    SPACE               TO  XC01
       *
            EVALUATE    FLG-GMN-INIT
            WHEN    1
-               MOVE    ZERO            TO  XC01-ROW 
-               MOVE    ZERO            TO  XC01-ROWATTR
-           WHEN    2
-               MOVE    SPA-GMN-MAX     TO  XC01-ROW 
+      *        glclient2,monsiajでrow=0の振る舞いが違う為の対処
+      *        (H23.11.8現在)
+      *        MOVE    ZERO            TO  XC01-ROW 
+      *        MOVE    ZERO            TO  XC01-ROWATTR
+               MOVE    1               TO  XC01-ROW 
                MOVE    1               TO  XC01-ROWATTR
+      *    WHEN    2
+      *        MOVE    SPA-GMN-MAX     TO  XC01-ROW 
+      *        MOVE    ZERO            TO  XC01-ROWATTR
            WHEN    OTHER
-               MOVE    WRK-ROW         TO  XC01-ROW
-               MOVE    ZERO            TO  XC01-ROWATTR
+                   MOVE    WRK-ROW     TO  XC01-ROW
+                   MOVE    ZERO        TO  XC01-ROWATTR
            END-EVALUATE
       *
            EVALUATE    SPA-PRTKANRI-TBL-KEY
