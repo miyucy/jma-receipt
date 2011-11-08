@@ -337,10 +337,6 @@
            03  WRK-TIME-KBN1           PIC X(01).
            03  WRK-TIME-KBN2           PIC X(01).
       *
-      *    Æþ±¡»»Äê¾å¸Â
-           03  WRK-NYUCNT              PIC 9(03).
-           03  WRK-NYU-CNT             PIC 9(03).
-      *
       *    ÊÝÂ¸ÍÑ£Ó£Ð£Á
        01  HZN-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
@@ -2193,7 +2189,7 @@
       *            ¿·À¸»ùÈ½Äê
                    IF     (LNK-ORCSC-NENREI-YY     =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM     =   ZERO )  AND
-                          (LNK-ORCSC-NENREI-DD     <=  28   )
+                          (LNK-ORCSC-NENREI-DD     <   28   )
                        MOVE    ZERO                TO  FLG-NENREI-OK
                    ELSE
                        MOVE    1                   TO  FLG-NENREI-OK
@@ -2215,7 +2211,7 @@
       *            ¿·À¸»ùÈ½Äê
                    IF     (LNK-ORCSC-NENREI-YY     =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM     =   ZERO )  AND
-                          (LNK-ORCSC-NENREI-DD     <=  28   )
+                          (LNK-ORCSC-NENREI-DD     <   28   )
                        MOVE    1                   TO  FLG-NENREI-OK
                    ELSE
                        MOVE    ZERO                TO  FLG-NENREI-OK
@@ -3974,11 +3970,6 @@
       *    ±¡³°Ê¬¤Î»þ¡¢¥¼¥í¤È¤¹¤ë
            IF      WRK-COM-SRYSYUKBN(IDX-MAX)  =   "148"  OR
                                                    "149"
-      *ver.4.7
-      *        ±¡³°½èÊý¤ÎÅÀ¿ô
-               MOVE    WRK-COM-TENSU  (IDX-MAX)
-                                       TO  WRK-COM-INGAITEN (IDX-MAX)
-      *
                MOVE    ZERO            TO  WRK-COM-TENSU  (IDX-MAX)
                MOVE    ZERO            TO  WRK-COM-SYUTEN1 (IDX-MAX)
                MOVE    ZERO            TO  WRK-COM-KIZAITEN(IDX-MAX)
@@ -4521,25 +4512,21 @@
       *        ¥ê¥ó¥ÑÉâ¼ð»ØÆ³´ÉÍýÎÁ
                IF      WRK-COM-INPUTCD (IDX-Z) =   "113010410"
                    MOVE    1                   TO  FLG-NYUIN
-                   MOVE    1                   TO  WRK-NYUCNT
                    PERFORM 10016-NYUIN-KIKAN-SEC
                END-IF
-      *        Âà±¡»þ¶¦Æ±»ØÆ³ÎÁ£²¡Ê·ÑÂ³½é²ó¤«¤é£²²ó¡Ë
+      *        Âà±¡»þ¶¦Æ±»ØÆ³ÎÁ£²
                IF      WRK-COM-INPUTCD (IDX-Z) =   "113008910"
                    MOVE    2                   TO  FLG-NYUIN
-                   MOVE    2                   TO  WRK-NYUCNT
                    PERFORM 10016-NYUIN-KIKAN-SEC
                END-IF
       *        ²ð¸î»Ù±çÏ¢·È»ØÆ³ÎÁ¡ÊÆþ±¡Ãæ£²²ó¡Ë
                IF      WRK-COM-INPUTCD (IDX-Z) =   "113011710"
-                   MOVE    1                   TO  FLG-NYUIN
-                   MOVE    2                   TO  WRK-NYUCNT
+                   MOVE    2                   TO  FLG-NYUIN
                    PERFORM 10016-NYUIN-KIKAN-SEC
                END-IF
       *        °åÌôÉÊ°ÂÁ´À­¾ðÊóÅù´ÉÍýÂÎÀ©²Ã»»¡ÊÆþ±¡Ãæ£±²ó¡Ë
                IF      WRK-COM-INPUTCD (IDX-Z) =   "113012470"
                    MOVE    1                   TO  FLG-NYUIN
-                   MOVE    1                   TO  WRK-NYUCNT
                    PERFORM 10016-NYUIN-KIKAN-SEC
                END-IF
       *
@@ -5556,8 +5543,6 @@
            ELSE
                MOVE    "9"                 TO  LNK-SC91-KBN
            END-IF
-      *    ¾å¸Â²ó¿ô
-           MOVE    WRK-NYUCNT          TO  LNK-SC91-NYUCNT
            MOVE    WRK-COM-INPUTCD (IDX-Z)
                                        TO  LNK-SC91-SRYCD
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
@@ -5568,43 +5553,15 @@
                                        SPA-AREA
                                        TNS-TENSU-REC
       *
-           IF      LNK-SC91-CNT        =   LNK-SC91-NYUZCNT
-               MOVE    ZERO                TO  WRK-NYU-CNT
-           ELSE
-               COMPUTE WRK-NYU-CNT     =   LNK-SC91-CNT
-                                       -   LNK-SC91-NYUZCNT
-           END-IF
            IF      LNK-SC91-ERRCD  NOT =   SPACE
-               IF      LNK-SC91-ERRCD(1:1) =   "K"
-                   MOVE    "K214"              TO  SPA-ERRCD
-               ELSE
-                   MOVE    "0212"              TO  SPA-ERRCD
-                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
-               END-IF
-           END-IF
-      *    ²ó¿ôÈ½Äê
-           IF    ((WRK-COM-NYU-KAI (IDX-Z) + WRK-NYU-CNT)
-                                           >   WRK-NYUCNT )
-      *        Æþ±¡Ãæ²ó¿ô
                MOVE    "0212"              TO  SPA-ERRCD
                MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
-           ELSE
-               IF    ((WRK-COM-NYU-KAI (IDX-Z) + LNK-SC91-CNT)
-                                               >   WRK-NYUCNT )
-                   MOVE    "K214"              TO  SPA-ERRCD
-               END-IF
            END-IF
-      *!!
-      *    ·Ù¹ð¤Ø
-           IF      SPA-ERRCD(1:1)      =   "K"
-               IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
-                 AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
-                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"             TO  WRK-COM-KZMFLG  (IDX-Z)
-                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-               ELSE
-                   MOVE    SPACE           TO  SPA-ERRCD
-               END-IF
+      *    ²ó¿ôÈ½Äê
+           IF  ((WRK-COM-NYU-KAI (IDX-Z) + LNK-SC91-CNT)
+                                           >   FLG-NYUIN )
+               MOVE    "0212"              TO  SPA-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
            END-IF
       *    IF   (WRK-COM-NYU-KAI (IDX-Z)   >   FLG-NYUIN )  OR
       *         (LNK-ORCSC-KAISU           >   FLG-NYUIN )
@@ -5635,7 +5592,6 @@
                  AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
                    MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
                    MOVE    "1"             TO  WRK-COM-KZMFLG  (IDX-Z)
-                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                ELSE
                    MOVE    SPACE           TO  SPA-ERRCD
                END-IF
