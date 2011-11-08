@@ -37,18 +37,8 @@
       *  07/06/02    NACL−竹田            タイマーの停止処理
       *  03.05.01    NACL−竹田    07/05/09  グループ診療対応およびオンライン
       *                                      帳票対応
-      *  03.05.02    NACL−竹田    07/06/22  労災自賠対応
-      *
-      *  04.06.01    NACL-藤原     10/10/12  設定による初期表示の変更
-      *
-      *  04.07.01    NACL-太田     11/11/08  コラムリスト選択行表示制御変更
-      *  04.07.02    NACL-藤原     12/03/30  タイトル表示の修正
-      *  04.07.03    NACL-藤原    15/07/17  労災診療費請求書及びアフター
-      *                                     ケア委託費請求書のＯＣＲ様式
-      *                                     （枠なし）対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  05.00.00    NACL-太田     17/11/29  クライアント印刷対応
+      *  03.05.02    NACL−竹田    07/06/22  労災自倍対応
+      *  04.07.01    NACL-太田    11/11/08  コラムリスト選択行表示制御変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -56,14 +46,33 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    入力ＰＳファイル
+           SELECT  PREVIEW-FILE    ASSIGN  
+                                         "/etc/jma-receipt/preview.env"
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PREVIEW.
+      *    出力ＰＳファイル
+      *    SELECT  OTPREVIEW-FILE    ASSIGN  OTPREVIEW
+      *                            ORGANIZATION    IS  LINE SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-OTPREVIEW.
+      *
        DATA                    DIVISION.
        FILE                        SECTION.
+      *
+      *    入力ＰＳファイル
+       FD  PREVIEW-FILE.
+       01  PREVIEW-RECORD. 
+           03  PREVIEW-ENV      PIC X(200). 
+      *    出力ＰＳファイル
+      *FD  OTPREVIEW-FILE.
+      *01  OTPREVIEW-RECORD. 
+      *    03  OTPREVIEW-FIL    PIC X(1000). 
       *
        WORKING-STORAGE             SECTION.
        01  PREVIEW              PIC X(512).
        01  OTPREVIEW            PIC X(512).
        01  WORK-KEY-AREA.
-           03 WRK-TITLE         PIC X(60).
+           03 WRK-TITLE         PIC X(40).
            03 WRK-PTNUM         PIC X(20).
            03 WRK-SRYYM         PIC X(10).
            03 WRK-PRTID         PIC X(20).
@@ -72,7 +81,10 @@
            COPY    "CPCOMMONSHELL1.INC".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPERRFL.INC".
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
+                                   BY         //RECEERR//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -95,7 +107,7 @@
                    07  SPA-GMN-TITLE2              PIC X(10).
                    07  SPA-GMN-ERRMSG              PIC X(60).
                    07  SPA-GMN-FILENAME            PIC X(200).
-      *            07  SPA-GMN-OBJECT              PIC X(08).
+                   07  SPA-GMN-OBJECT              PIC X(08).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-OCC             OCCURS  100.
                            11  SPA-GMN-TNO         PIC 9(05).
@@ -145,7 +157,7 @@
                            11  SPA-NAI-PTID        PIC 9(10).
                            11  SPA-NAI-MAKEOK-FLG  PIC 9(01).
                            11  SPA-NAI-UPDFLG      PIC X(01).
-      *                    11  SPA-NAI-OBJECT      PIC X(08).
+                           11  SPA-NAI-OBJECT      PIC X(08).
       *                     
                05  SPA-WRK-TBL-KEY                 PIC X(08).            
       *                 
@@ -159,9 +171,14 @@
       *
        01  PS-FILE-ID              PIC X(200).
       *    フラグ領域
+       01  STS-AREA.
+           03  STS-RECEERR         PIC X(02).
+           03  STS-PREVIEW         PIC X(02).
+           03  STS-OTPREVIEW       PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
+           03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PREVIEW         PIC 9(01).
            03  FLG-PRVKANRI        PIC 9(01).
            03  FLG-END             PIC 9(01).
@@ -212,13 +229,16 @@
            03  WRK-SELNUM          PIC 9(05). 
            03  WRK-BANGO           PIC 9(05).
            03  WRK-STR             PIC 9(05).
+           03  WRK-MCP-PATH.
+               04  WRK-MCP-BLOCKS  PIC S9(9)   BINARY.
+               04  WRK-MCP-RNAME   PIC S9(9)   BINARY.
+               04  WRK-MCP-PNAME   PIC S9(9)   BINARY.
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
            03  WRK-ZZ              PIC ZZZZ9.
       *
        01  WRK-ROW-AREA.
            03  WRK-ROW             PIC S9(9)   BINARY.
-           03  WRK-ROWATTR         PIC S9(9)   BINARY.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -287,6 +307,13 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *
+           COPY    "CPSK1031.INC".
+      *
+           COPY    "CPSK3003.INC".
       *
       *01  PREVIEW-REC.
            COPY    "CPPREVIEW.INC".
@@ -470,10 +497,26 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE                  SPA-XC01-AREA
-           STRING  MCP-TEMPDIR         DELIMITED  BY  SPACE
-                   "/"                 DELIMITED  BY  SIZE
+      *
+           OPEN    INPUT      PREVIEW-FILE
+           IF      STS-PREVIEW         =   ZERO
+                   PERFORM 45013-INPS-READ-SEC 
+                   CLOSE   PREVIEW-FILE
+           ELSE
+                   MOVE    1              TO  FLG-IN 
+           END-IF
+           IF      FLG-IN      =   ZERO
+                   MOVE  1     TO  SPA-NAI-ENV-FLG
+                   STRING  PREVIEW-ENV         DELIMITED  BY  SPACE
+                           "/"                 DELIMITED  BY  SPACE
                                        INTO    SPA-NAI-ENV
-           END-STRING
+                   END-STRING
+           ELSE
+                   MOVE "/tmp/"
+                               TO  SPA-NAI-ENV
+           END-IF
+           MOVE "/var/lib/jma-receipt/orca_ps/"      
+                                          TO  SPA-NAI-ENV
       *
            EVALUATE    SPA-PRTKANRI-TBL-KEY
                WHEN    "SOKATU"
@@ -496,11 +539,7 @@
            PERFORM 2011-PRVKANRI-HEN-SEC
            MOVE    1                      TO  SPA-GMN-CUR
       *
-           IF      LNK-XC01-MODE          =   "2"
-               MOVE    2                      TO  SPA-XC01-HYOUJI
-           ELSE
-               MOVE    ZERO                   TO  SPA-XC01-HYOUJI
-           END-IF
+           MOVE    ZERO                   TO  SPA-XC01-HYOUJI
       *
            .
        310-SPASET-EXT.
@@ -700,7 +739,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    WRK-BANGO                TO  IDY
       *     
            MOVE    SPA-NAI-FILENAME (IDY)   TO  SPA-GMN-FILENAME 
-      *    MOVE    SPA-NAI-OBJECT   (IDY)   TO  SPA-GMN-OBJECT
+           MOVE    SPA-NAI-OBJECT   (IDY)   TO  SPA-GMN-OBJECT
       **** MOVE    SPA-GMN-TSHORI-RENNUM (IDY) TO
       ****                                     SPA-NAI-SHORI-RENNUM
       *                                 
@@ -716,7 +755,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    WRK-PSFILE-SRENNUM  DELIMITED  BY  SPACE
                    WRK-PSFILE-PAGE     DELIMITED  BY  SPACE
                    WRK-PSFILE-UUID     DELIMITED  BY  SPACE
-                   ".pdf"              DELIMITED  BY  SIZE
                                        INTO   PREVIEW
            END-STRING
       *                                 
@@ -725,8 +763,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 2013-PREVIEW-CHECK-SEC
            MOVE    SPA-NAI-FILENAME (IDY)
                                        TO  SPA-GMN-FILENAME
-      *    MOVE    SPA-NAI-OBJECT (IDY)
-      *                                TO  SPA-GMN-OBJECT
+           MOVE    SPA-NAI-OBJECT (IDY)
+                                       TO  SPA-GMN-OBJECT
       *
            IF      SPA-NAI-UPDFLG(IDY)      =   "1"
                MOVE    SPA-NAI-MEMO (IDY)
@@ -1045,6 +1083,19 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        480-BEFORELINE-SEC                SECTION.
       *
+      *     
+      ***     PERFORM VARYING     IDX     FROM    1   BY  1
+      *             UNTIL       IDX     >   SPA-GMN-MAX
+      *         IF      XC01-SELECT (IDX)   =   "T"
+      *             IF      IDX             =   SPA-NAI-SELNUM
+      *                 CONTINUE
+      *             ELSE        
+      *                 MOVE    IDX         TO  SPA-NAI-SELNUM
+      *                 MOVE    SPA-GMN-MAX TO  IDX
+      *             END-IF
+      *         END-IF    
+      ***     END-PERFORM
+      *
       *    行選択
            IF     (SPA-NAI-SELNUM      =   1)
                IF    ( SPA-GMN-PAGE    =   1 )
@@ -1119,7 +1170,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-GMN-BODY
                                        SPA-GMN-FILENAME
-      *                                SPA-GMN-OBJECT
+                                       SPA-GMN-OBJECT
            INITIALIZE                  SPA-NAI-BODY
                                        SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -1145,7 +1196,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            INITIALIZE                  SPA-GMN-TBL
                                        SPA-GMN-BODY
                                        SPA-GMN-FILENAME
-      *                                SPA-GMN-OBJECT
+                                       SPA-GMN-OBJECT
            INITIALIZE                  SPA-NAI-BODY
                                        SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX
@@ -1212,12 +1263,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *****************************************************************
        450-PRINT-SEC                   SECTION.
       * 
-           IF (    SPA-PRTKANRI-TBL-KEY (1:6)  =   "RECEPT"      )
-           OR (  ( SPA-PRTKANRI-TBL-KEY (1:6)  =   "SOKATU"    )
-               AND
-                 ( SPA-GMN-TPRTID(SPA-NAI-SELNUM)
-                                               =   "HCM79.red"
-                                               OR  "HCM81.red" ) )
+           IF      SPA-PRTKANRI-TBL-KEY(1:6) = "RECEPT"  
                    PERFORM 4501-PRINT-SEC
                    GO      TO          450-PRINT-EXT
            END-IF
@@ -1225,15 +1271,22 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  WRK-CONS-JOB-JOBID     
                                            WRK-PREVIEW-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PREVIEW-TBL-GROUP                                
+      *     
       *
       *    印刷処理
       *
-           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
-           MOVE    "PVERRORR"          TO  ERRFLPARA-FILE-ID
-           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+      *                                   
+           MOVE    RECEERR             TO  SHELL-ERRFILE
       *             
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "preprint.sh"       TO  SHELLTBL-NAME
+      *****MOVE    "/usr/local/orca/scripts/allways/print.sh"
+      *****                            TO  SHELLTBL-NAME
+           MOVE    "preprint.sh"       TO  WRK-SHELL-SHELL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
       *     
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
            INITIALIZE                      LNK-PRTKANRI-AREA
@@ -1265,10 +1318,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9       
            MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
            MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
-           MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG12
+      *                 
+           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
+           MOVE    LNK-PRTKANRI-TBL-UUID
+                                       TO  SHELLTBL-ARG18
       *    MOVE    SPA-GMN-STPAGE      TO  SHELLTBL-ARG15
       *    MOVE    SPA-GMN-EDPAGE      TO  SHELLTBL-ARG16                      
            IF      SPA-XCID1-FLG    =   "OK"
@@ -1277,6 +1333,19 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  OTPREVIEW
              MOVE    WRK-CONS-JOB-SHELLID
                                        TO  OTPREVIEW(6:)
+      *      OPEN  OUTPUT OTPREVIEW-FILE
+             PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-MAX
+      *        
+               IF      SPA-NAI-FILENAME (IDX)  NOT  =  SPACE 
+                       MOVE    SPA-NAI-FILENAME (IDX)
+                                          TO  PREVIEW
+                       OPEN    INPUT      PREVIEW-FILE
+                       PERFORM 45013-INPS-READ-SEC 
+                       CLOSE               PREVIEW-FILE
+               END-IF
+             END-PERFORM
+      *      CLOSE OTPREVIEW-FILE
              MOVE  SPA-NAI-ENV 
                                        TO  SHELLTBL-ARG15
              MOVE    WRK-CONS-JOB-SHELLID
@@ -1289,14 +1358,16 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
              MOVE    SPA-NAI-PRTNM    (SPA-NAI-SELNUM)
                                        TO  SHELLTBL-ARG16                                 
            END-IF
-           IF    SPA-CLIENT-PRT-FLG  =  2
-               MOVE    "1"             TO  SHELLTBL-ARG17
+           IF      SPA-XCIDCD          =   "1005"
+                   MOVE    "3"         TO  SHELLTBL-ARG17                                   
+           ELSE
+                   MOVE    "1"         TO  SHELLTBL-ARG17                                   
            END-IF
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "allways"           TO  MCP-PATHNAME
+           MOVE    "shell"             TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1320,11 +1391,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            ACCEPT  SYS-TIME            FROM    TIME
       *
       *    印刷処理
-           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
-           MOVE    "PVERRORR"          TO  ERRFLPARA-FILE-ID
-           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+      *****MOVE    RECEERR             TO  SHELL-ERRFILE
       *
            MOVE    SPACE               TO  SHELLTBL
+      *****MOVE    "/usr/local/orca/scripts/allways/print.sh"
+      *****                            TO  SHELLTBL-NAME
            MOVE    "print_prv.sh"          TO  WRK-SHELL-SHELL
       *    ファイルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
@@ -1364,7 +1435,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *                 
       *                 
-           MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG12
+           MOVE    RECEERR             TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
@@ -1372,11 +1443,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SHELLTBL-ARG15
            MOVE    SPA-NAI-PAGE (SPA-NAI-SELNUM)
                                        TO  SHELLTBL-ARG16
-           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-               MOVE    "5"             TO  SHELLTBL-ARG17
-           ELSE
-               MOVE    "1"             TO  SHELLTBL-ARG17
-           END-IF
+           MOVE    "1"                 TO  SHELLTBL-ARG17
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
@@ -1599,7 +1666,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                           WRK-PSFILE-SRENNUM   DELIMITED  BY  SPACE
                           WRK-PSFILE-PAGE      DELIMITED  BY  SPACE
                           PRVKANRI-TBL-UUID    DELIMITED  BY  SPACE
-                          ".pdf"               DELIMITED  BY  SIZE
                                        INTO    SPA-NAI-FILENAME (IDX)
                    END-STRING
                    MOVE    PRVKANRI-PRTNM      TO  SPA-NAI-PRTNM (IDX)
@@ -1610,6 +1676,8 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    END-IF
                    MOVE    PRVKANRI-PRTID      TO
                                            SPA-GMN-TPRTID (IDX)
+      *??
+                    DISPLAY "IDX=" IDX "#" SPA-NAI-FILENAME (IDX) "#"
       *
                    INITIALIZE                      ORCSPTIDAREA
       *            MOVE    SPA-HOSPID          TO  SPTID-HOSPID
@@ -1701,7 +1769,6 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    WRK-PSFILE-SRENNUM  DELIMITED  BY  SPACE
                    WRK-PSFILE-PAGE     DELIMITED  BY  SPACE
                    WRK-PSFILE-UUID     DELIMITED  BY  SPACE
-                   ".pdf"              DELIMITED  BY  SIZE
                                        INTO   ORCF-FILE-NAME
            END-STRING
            MOVE    "r"                 TO  ORCF-FILE-MODE
@@ -1711,17 +1778,131 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        SPA-NAI-MAKEOK-FLG (IDX)
                    MOVE   "*"          TO
                                         SPA-GMN-TPRFLG     (IDX)
-      *            MOVE    ORCF-FILE-NAME      TO  ORCA-BLOB-FILE
-      *            MOVE    "BLOBIMPORT"      TO  MCP-FUNC
-      *            MOVE    "blob"            TO  MCP-TABLE
-      *            MOVE    "key"             TO  MCP-PATHNAME
+                   MOVE    ORCF-FILE-NAME      TO  ORCA-BLOB-FILE
+                   MOVE    "BLOBIMPORT"      TO  MCP-FUNC
+                   MOVE    "blob"            TO  MCP-TABLE
+                   MOVE    "key"             TO  MCP-PATHNAME
 grpsys*            CALL    "MONFUNC"         USING MCPAREA
-grpsys*            CALL    "ORCDBMAIN"       USING MCPAREA
-      *                                      ORCA-BLOB
-grpsys*                                      SPA-AREA
-      *            MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
+grpsys             CALL    "ORCDBMAIN"       USING MCPAREA
+                                             ORCA-BLOB
+grpsys                                       SPA-AREA
+                   MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
                    MOVE    ORCF-FILE-NAME      TO  SPA-NAI-FILENAME(IDX)
                    GO        TO  20122-PSFILE-EXIST-EXT
+           END-IF
+      *   rin st  ----------------------------------------------
+                   GO        TO  20122-PSFILE-EXIST-EXT
+      *   rin ed  ----------------------------------------------
+           MOVE   SPACE                TO  ORCF-FILE-NAME
+           STRING  "/var/lib/jma-receipt/orca_ps/"
+                                       DELIMITED  BY  SPACE
+                  WRK-PSFILE-HOSPNUM   DELIMITED  BY  SPACE
+                  WRK-PSFILE-TBL-KEY   DELIMITED  BY  SPACE
+                  WRK-PSFILE-RENNUM    DELIMITED  BY  SPACE
+                  WRK-PSFILE-GROUP     DELIMITED  BY  SPACE
+                  WRK-PSFILE-SRENNUM   DELIMITED  BY  SPACE
+                  WRK-PSFILE-PAGE      DELIMITED  BY  SPACE
+                  WRK-PSFILE-UUID      DELIMITED  BY  SPACE
+                                       INTO   ORCF-FILE-NAME
+           END-STRING
+      *
+           MOVE    "r"         TO  ORCF-FILE-MODE
+           MOVE    SPACE       TO  PREVIEW-PRTDATA 
+           CALL    "orcfileio" USING ST  ORCFILEGET-AREA
+           IF      ORCF-RET    NOT =   ZERO
+                   DISPLAY "★★★★★FGET FILE OPEN ERROR "
+                                       ORCF-FILE-NAME 
+           ELSE  
+                   MOVE    ORCF-DATA    TO  PREVIEW-PRTDATA 
+      *
+                   MOVE    SPACE        TO  ORCF-FILE-NAME
+                   STRING  SPA-NAI-ENV  DELIMITED  BY  SPACE
+                        WRK-PSFILE-HOSPNUM   DELIMITED  BY  SPACE
+                        WRK-PSFILE-TBL-KEY DELIMITED  BY  SPACE
+                        WRK-PSFILE-RENNUM  DELIMITED  BY  SPACE
+                        WRK-PSFILE-GROUP   DELIMITED  BY  SPACE
+                        WRK-PSFILE-SRENNUM DELIMITED  BY  SPACE
+                        WRK-PSFILE-PAGE    DELIMITED  BY  SPACE
+                        WRK-PSFILE-UUID    DELIMITED  BY  SPACE
+                                           INTO   ORCF-FILE-NAME
+                   END-STRING
+      *---------------------------------------------------------
+                   MOVE    "w"          TO  ORCF-FILE-MODE
+                   MOVE    PREVIEW-PRTDATA
+                                           TO  ORCF-DATA 
+                   CALL    "orcfileio"     USING ST  ORCFILEGET-AREA
+                      IF   ORCF-RET        NOT =   ZERO
+                           DISPLAY "FGET FILE OPEN ERROR "
+                                           ORCF-FILE-NAME 
+                      ELSE
+                           MOVE  1         TO
+                                           SPA-NAI-MAKEOK-FLG (IDX)
+                           MOVE   "*"      TO
+                                           SPA-GMN-TPRFLG     (IDX)
+      *
+                           MOVE    SPA-NAI-TBL-KEY (IDX)
+                                           TO  PREVIEW-TBL-KEY
+                           MOVE    SPA-NAI-RENNUM    (IDX)
+                                           TO  PREVIEW-RENNUM
+                           MOVE    SPA-NAI-TBL-GROUP (IDX)
+                                           TO  PREVIEW-TBL-GROUP
+                           MOVE    SPA-NAI-TBL-UUID  (IDX)
+                                           TO  PREVIEW-TBL-UUID
+                           MOVE    SPA-NAI-SHORI-RENNUM (IDX)
+                                           TO  PREVIEW-SHORI-RENNUM
+                           MOVE    SPA-NAI-PAGE (IDX)
+                                           TO  PREVIEW-PAGE
+                           MOVE    SPA-HOSPNUM
+                                           TO  PREVIEW-HOSPNUM
+grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
+                           MOVE    PREVIEW-REC
+                                           TO  MCPDATA-REC
+                           MOVE    "DBINSERT"
+                                           TO  MCP-FUNC
+                           MOVE    ZERO    TO  MCP-RC
+      *
+                           IF      MCP-RC  =   ZERO
+                             MOVE    ZERO  TO  IF-RESULT
+                             MOVE   SPA-HOSPNUM
+                                           TO  WRK-PSFILE-HOSPNUM
+                             MOVE   SPA-NAI-TBL-KEY (IDX)
+                                           TO  WRK-PSFILE-TBL-KEY
+                             MOVE   SPA-NAI-RENNUM    (IDX)
+                                           TO  WRK-PSFILE-RENNUM
+                             MOVE   SPA-NAI-TBL-GROUP (IDX)
+                                           TO  WRK-PSFILE-GROUP
+                             MOVE   SPA-NAI-TBL-UUID  (IDX)
+                                           TO  WRK-PSFILE-UUID
+                             MOVE   SPA-NAI-SHORI-RENNUM (IDX)
+                                           TO  WRK-PSFILE-SRENNUM
+                             MOVE   SPA-NAI-PAGE (IDX)
+                                           TO  WRK-PSFILE-PAGE
+                             MOVE   SPA-NAI-TBL-UUID  (IDX)
+                                           TO  WRK-PSFILE-UUID
+                             MOVE   SPACE  TO  ORCF-FILE-NAME
+                             STRING  "/var/lib/jma-receipt/orca_ps/"
+                                                 DELIMITED  BY  SPACE
+                               WRK-PSFILE-HOSPNUM
+                                                 DELIMITED  BY  SPACE
+                               WRK-PSFILE-TBL-KEY
+                                                 DELIMITED  BY  SPACE
+                               WRK-PSFILE-RENNUM DELIMITED  BY  SPACE
+                               WRK-PSFILE-GROUP  DELIMITED  BY  SPACE
+                               WRK-PSFILE-SRENNUM
+                                                 DELIMITED  BY  SPACE
+                               WRK-PSFILE-PAGE   DELIMITED  BY  SPACE
+                               WRK-PSFILE-UUID   DELIMITED  BY  SPACE
+                                                 INTO  ORCF-FILE-NAME
+                             END-STRING
+                             MOVE    ORCF-FILE-NAME
+                                           TO  IF-FILENAME
+                             CALL    "orcfiledel"    USING
+                                           ORCSFDELAREA
+                           ELSE
+                               DISPLAY "preview insert err "
+                                   PRVKANRI-PAGE
+                           END-IF
+                      END-IF
            END-IF
            .
        20122-PSFILE-EXIST-EXT.
@@ -1758,17 +1939,17 @@ grpsys*                                      SPA-AREA
                                                SPA-NAI-MAKEOK-FLG (IDX)
                      MOVE   "*"                TO
                                                SPA-GMN-TPRFLG     (IDX)
-      *              MOVE   "BLOBIMPORT"       TO  MCP-FUNC
-      *              MOVE   SPA-NAI-FILENAME (IDX)
-      *                                        TO  ORCA-BLOB-FILE
-      *              MOVE    "key"               TO  MCP-PATHNAME
-      *              MOVE    "blob"              TO  MCP-TABLE
-grpsys*              CALL    "ORCDBMAIN"       USING
-      *                                        MCPAREA
-      *                                        ORCA-BLOB
-      *                                        SPA-AREA
-      *              MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
-      ***************DISPLAY "take file = "  ORCA-BLOB-FILE
+                     MOVE   "BLOBIMPORT"       TO  MCP-FUNC
+                     MOVE   SPA-NAI-FILENAME (IDX)
+                                               TO  ORCA-BLOB-FILE
+                     MOVE    "key"               TO  MCP-PATHNAME
+                     MOVE    "blob"              TO  MCP-TABLE
+grpsys               CALL    "ORCDBMAIN"       USING
+                                               MCPAREA
+                                               ORCA-BLOB
+                                               SPA-AREA
+                     MOVE    ORCA-BLOB-OBJECT    TO  SPA-NAI-OBJECT(IDX)
+                     DISPLAY "take file = "  ORCA-BLOB-FILE
                    END-IF
             END-IF
            .
@@ -1825,6 +2006,41 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            .
        2013-PREVIEW-CHECK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ＰＳファイルＩ−Ｏ処理
+      *****************************************************************
+       45013-INPS-READ-SEC             SECTION.
+      *    入力ＰＳファイル読込み
+           PERFORM 900-IN-READ-SEC
+      *    PERFORM
+      *        UNTIL    FLG-IN         =   1
+      *
+      *        MOVE     PREVIEW-FIL    TO  
+      *                                OTPREVIEW-FIL     
+      *        WRITE    OTPREVIEW-RECORD    
+      *    入力ＰＳファイル読込み
+      *        PERFORM 900-IN-READ-SEC
+      *    END-PERFORM
+           .
+       45013-INPS-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力ファイル読込み処理
+      *****************************************************************
+       900-IN-READ-SEC          SECTION.
+      *
+          READ    PREVIEW-FILE
+              AT  END
+                  MOVE    1               TO  FLG-IN
+              NOT AT  END
+                  MOVE    ZERO            TO  FLG-IN
+          END-READ
+      *
+          .
+       900-IN-READ-EXT.
+          EXIT.
       *
       *****************************************************************
       *    和暦西暦変換編集処理
@@ -1887,30 +2103,31 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            IF    ( MCP-WIDGET          =   "B05" OR "B08" OR "SELNUM" )
             OR   ( FLG-GMN-INIT        =   2 )
             OR   ( SPA-XC01-HYOUJI     =   2 )
-               MOVE    ZERO            TO  WRK-ROWATTR
                COMPUTE WRK-ROW
                    =   SPA-NAI-SELNUM  -   2
                IF    ( WRK-ROW         <=  0 )
-                   MOVE    1           TO  WRK-ROW
-                   MOVE    1           TO  WRK-ROWATTR
+                   MOVE    1           TO  FLG-GMN-INIT
                END-IF
            ELSE
                MOVE    XC01-ROW        TO  WRK-ROW
-               MOVE    ZERO            TO  WRK-ROWATTR
            END-IF
       *
            MOVE    SPACE               TO  XC01
       *
            EVALUATE    FLG-GMN-INIT
            WHEN    1
-               MOVE    ZERO            TO  XC01-ROW 
-               MOVE    ZERO            TO  XC01-ROWATTR
+      *        glclient2,monsiajでrow=0の振る舞いが違う為の対処
+      *        (H23.11.8現在)
+      *        MOVE    ZERO            TO  XC01-ROW 
+      *        MOVE    ZERO            TO  XC01-ROWATTR
+               MOVE    1               TO  XC01-ROW 
+               MOVE    1               TO  XC01-ROWATTR
       *    WHEN    2
       *        MOVE    SPA-GMN-MAX     TO  XC01-ROW 
       *        MOVE    ZERO            TO  XC01-ROWATTR
            WHEN    OTHER
                    MOVE    WRK-ROW     TO  XC01-ROW
-                   MOVE    WRK-ROWATTR TO  XC01-ROWATTR
+                   MOVE    ZERO        TO  XC01-ROWATTR
            END-EVALUATE
       *
            EVALUATE    SPA-PRTKANRI-TBL-KEY
@@ -1930,21 +2147,9 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-GMN-ERRMSG      TO  XC01-ERRMSG
            MOVE    "red"               TO  XC01-ERRMSG-STYLE
       *    MOVE    SPA-GMN-TITLE2      TO  XC01-HEAD2
-      *
+      *     
            MOVE    SPA-GMN-SELNUM      TO  XC01-SELNUM
-      *
-           IF    ( SPA-GMN-FILENAME    NOT =   SPACE )
-               MOVE   "BLOBIMPORT"     TO  MCP-FUNC
-               MOVE   SPA-GMN-FILENAME TO  ORCA-BLOB-FILE
-               MOVE    "key"           TO  MCP-PATHNAME
-               MOVE    "blob"          TO  MCP-TABLE
-               CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       ORCA-BLOB
-                                       SPA-AREA
-               MOVE    ORCA-BLOB-OBJECT
-                                       TO  XC01-PSAREA
-           END-IF
+           MOVE    SPA-GMN-OBJECT      TO  XC01-PSAREA
       *
            MOVE    SPACE               TO  WRK-TITLE
            MOVE    SPACE               TO  WRK-PTNUM
@@ -2249,6 +2454,47 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            .
        900-RECEPRT-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    管理マスター読込（キー）
+      *****************************************************************
+       900-SYSKANRI-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+       900-SYSKANRI-INV-EXT.
            EXIT.
       *
       *****************************************************************
