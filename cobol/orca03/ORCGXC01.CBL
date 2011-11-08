@@ -2120,7 +2120,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
             OR   ( SPA-XC01-HYOUJI     =   2 )
                COMPUTE WRK-ROW
                    =   SPA-NAI-SELNUM  -   2
-               IF    ( WRK-ROW         <   ZERO )
+               IF    ( WRK-ROW         <=  0 )
                    MOVE    1           TO  FLG-GMN-INIT
                END-IF
            ELSE
