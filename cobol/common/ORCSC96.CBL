@@ -1842,6 +1842,14 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *!!!
+               WHEN    "K901"
+                   STRING  "警告！！"
+                           "救急搬送診療料が入院期間中に"
+                           "算定されています。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
