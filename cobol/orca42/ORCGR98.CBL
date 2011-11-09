@@ -72,8 +72,6 @@
       * 
       *  04.05.01    NACL-藤原    09/08/17  生保等まとめ入力画面表示順
       *                                     設定対応
-      *
-      *  04.06.01    NACL-藤原    12/09/27  生活保護期間重複対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -115,8 +113,6 @@
                                                    PIC X(08).
                                13  SPA-GMN-TJKYSNUM
                                                    PIC X(20).
-                               13  SPA-GMN-TTEKSTYMD
-                                                   PIC X(09).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SRYYM               PIC 9(06).
@@ -325,7 +321,21 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA42SCRAREA.INC".
+           COPY    "R01.INC".
+           COPY    "R02.INC".
+           COPY    "R03.INC".
+           COPY    "R04.INC".
+           COPY    "R05.INC".
+           COPY    "R06.INC".
+           COPY    "R96.INC".
+           COPY    "R97.INC".
+           COPY    "R98.INC".
+           COPY    "R99.INC".
+           COPY    "RERR.INC".
+           COPY    "RID1.INC".
+           COPY    "RID2.INC".
+           COPY    "RID3.INC".
+           COPY    "RID4.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -633,10 +643,7 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                                                    >   PTKOH-TEKEDYMD )
                                        CONTINUE
                                    ELSE
-                                       IF      COMB-KOHID (IDX)
-                                                       =   PTKOH-KOHID
-                                           MOVE    1       TO  FLG-SEIHO
-                                       END-IF
+                                       MOVE    1       TO  FLG-SEIHO
                                    END-IF 
                                END-IF
                            END-PERFORM
@@ -727,11 +734,7 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                                                    >   PTKOH-TEKEDYMD )
                                                CONTINUE
                                            ELSE
-                                               IF      COMB-KOHID (IDX)
-                                                       =   PTKOH-KOHID
-                                                   MOVE    1
-                                                       TO  FLG-SEIHO
-                                               END-IF
+                                               MOVE    1   TO  FLG-SEIHO
                                            END-IF 
                                          END-IF
                                        END-PERFORM
@@ -865,9 +868,6 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       *****    MOVE    SPA-NAI-SRYYM   TO  SPA-NAI-TSRYYM(IDX1 IDX2)
                MOVE    PTKOH-FTNJANUM  TO  SPA-GMN-TFTNJANUM (IDX1 IDX2)
                MOVE    PTKOH-JKYSNUM   TO  SPA-GMN-TJKYSNUM  (IDX1 IDX2)
-               MOVE    PTKOH-TEKSTYMD  TO  WRK-SYMD
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG1    TO  SPA-GMN-TTEKSTYMD (IDX1 IDX2)
                MOVE    PTKOH-KOHNUM    TO  SPA-NAI-TKOHNUM   (IDX1 IDX2)
                MOVE    PTKOH-KOHID     TO  SPA-NAI-TKOHID    (IDX1 IDX2)
                IF      FLG-MONTHLYNUM  =   ZERO
@@ -1782,7 +1782,6 @@ grpsys                         MOVE    SPA-HOSPNUM
       * 
            MOVE    SPACE               TO  R98
       *
-           INITIALIZE                      R98
            MOVE    SPA-GMN-SRYYMH      TO  R98-SRYYMH-VALUE
            MOVE    "blue"              TO  R98-SRYYMH-STYLE
                                            R98-HYOUJIKBN-STYLE
@@ -1801,8 +1800,6 @@ grpsys                         MOVE    SPA-HOSPNUM
                                            TO  R98-FTNJANUM (IDX)
                MOVE    SPA-GMN-TJKYSNUM   (IDX1 IDX)
                                            TO  R98-JKYSNUM  (IDX)
-               MOVE    SPA-GMN-TTEKSTYMD  (IDX1 IDX)
-                                           TO  R98-TEKSTYMD (IDX)
            END-PERFORM
       *
            IF      SPA-GMN-PAGE        =   1     
@@ -2027,7 +2024,6 @@ grpsys                         MOVE    SPA-HOSPNUM
            END-EVALUATE
       *
            MOVE    SPACE                TO  RID1
-           INITIALIZE                       RID1
            MOVE    SPA-RIDCD            TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            EVALUATE    SPA-RIDCD
