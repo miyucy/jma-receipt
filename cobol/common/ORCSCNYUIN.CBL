@@ -120,6 +120,8 @@
            03  FLG-RENNUM          PIC 9(01).
            03  FLG-DOUJITU         PIC 9(01).
            03  FLG-OK2             PIC 9(01).
+      *    処理有
+           03  FLG-SYORI-ARI            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -541,6 +543,10 @@
            PERFORM     UNTIL      (FLG-PARA    =    1 )  OR
                                   (SPA-ERRCD   NOT =   SPACE )
                IF      PARA-FILEMEI        =   "WKSRYACT"
+      *!!!
+      *            対象有
+                   MOVE    1                   TO  FLG-SYORI-ARI
+      *!!!
                    MOVE    PARA-DATA-REC       TO  WRK-WKSRYACT-REC
                    MOVE    1                   TO  FLG-DEL
       *
@@ -594,6 +600,23 @@
                    PERFORM 4500115-TEISEI-RENNUM-SEC
                END-IF
            END-IF
+      *!!!
+      *    明細の登録なしはＤＢ異常終了とする
+           IF     (SPA-ERRCD       NOT =   SPACE)
+             OR   (FLG-SYORI-ARI       =   ZERO )
+               MOVE    SPACE               TO  MCPDATA-REC
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "abort"             TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+      *
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0051"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *!!!
       *
       *    包括まとめの時、以下対象外
            IF     (SPA-ERRCD           =   SPACE ) AND
