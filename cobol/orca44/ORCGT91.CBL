@@ -99,7 +99,6 @@
            03  IDX2                PIC 9(05).
            03  IDX2-1              PIC 9(05).
            03  IDX-1               PIC 9(05).
-           03  IDX-1U              PIC 9(05).
            03  IDX-3               PIC 9(05).
            03  IDY                 PIC 9(05).
            03  IDZ                 PIC 9(05).
@@ -122,7 +121,6 @@
            03  WRK-DATAVIEW-G      PIC X(63000).
            03  WRK-DATAVIEW        PIC X(63000). 
            03  WRK-CNT             PIC 9(05).
-           03  WRK-CNT-U           PIC 9(05).
       *
            03  WRK-Z1              PIC ZZZ,ZZ9.
            03  WRK-Z2              PIC ZZZ,ZZ9.
@@ -210,7 +208,23 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA44SCRAREA.INC".
+           COPY    "T01.INC".
+           COPY    "T02.INC".
+           COPY    "T03.INC".
+           COPY    "T04.INC".
+           COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T08.INC".
+           COPY    "T09.INC".
+           COPY    "T91.INC".
+           COPY    "T98.INC".
+           COPY    "T99.INC".
+           COPY    "TERR.INC".
+           COPY    "TID1.INC".
+           COPY    "TID2.INC".
+           COPY    "TID3.INC".
+           COPY    "TFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -377,7 +391,6 @@
       *
            MOVE   SPACE            TO  WRK-DATAVIEW
            MOVE   ZERO             TO  WRK-CNT
-           MOVE   ZERO             TO  WRK-CNT-U
            PERFORM UNTIL       FLG-COLLECT  =   1
                READ    COLLECT-FILE
                    AT  END
@@ -531,7 +544,6 @@
       *
            MOVE   ZERO             TO  FLG-OVR
            MOVE   ZERO             TO  IDX-1
-           MOVE   ZERO             TO  IDX-1U
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   3000 )  OR
                               (FLG-OVR =   1    )
@@ -539,16 +551,15 @@
                IF     (COLLECT-REC(IDX2:2)     =   SPACE )
                    MOVE    1           TO  FLG-OVR
                ELSE
-                   ADD     1           TO  IDX-1
                    IF     (COLLECT-REC(IDX2:1)     >=  X"A1" )
-                       ADD     2           TO  IDX-1U
+                       ADD     2           TO  IDX-1
                    ELSE
-                       ADD     1           TO  IDX-1U
+                       ADD     1           TO  IDX-1
                    END-IF
                END-IF
            END-PERFORM
       *
-           IF     (IDX-1U +  WRK-CNT-U )   >=  WRK-CONS-MAX-LEN
+           IF     (IDX-1   +   WRK-CNT )   >=  WRK-CONS-MAX-LEN
                MOVE    1               TO  FLG-COLLECT
                MOVE    1               TO  SPA-NAI-NEXT
                COMPUTE SPA-NAI-CNT     =   IDX    -   1
@@ -556,17 +567,14 @@
                IF      WRK-DATAVIEW    =   SPACE
                    MOVE    COLLECT-REC(1:IDX-1)   TO  WRK-DATAVIEW
                    MOVE    IDX-1           TO  WRK-CNT
-                   MOVE    IDX-1U          TO  WRK-CNT-U
                ELSE
                    COMPUTE IDX-3           =   WRK-CNT   +  1
                    MOVE    COLLECT-REC(1:IDX-1)   TO  WRK-DATAVIEW
                                                           (IDX-3:IDX-1)
                    COMPUTE WRK-CNT         =   WRK-CNT  +  IDX-1
-                   COMPUTE WRK-CNT-U       =   WRK-CNT-U  +  IDX-1U
                END-IF
                COMPUTE WRK-CNT         =   WRK-CNT  +  1
-               COMPUTE WRK-CNT-U       =   WRK-CNT-U  +  1
-               IF      WRK-CNT-U       <=  WRK-CONS-MAX-LEN
+               IF      WRK-CNT         <=  WRK-CONS-MAX-LEN
                    MOVE    X"0A"           TO  WRK-DATAVIEW(WRK-CNT:1)
                END-IF
            END-IF
@@ -817,10 +825,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    SPACE               TO  SPA-WORK
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -998,7 +1002,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  TID1
-           INITIALIZE                       TID1
            MOVE    SPA-TIDCD            TO  TID1-ID1CODE
            MOVE    WRK-TIDMSG           TO  TID1-ID1MSG
       *
