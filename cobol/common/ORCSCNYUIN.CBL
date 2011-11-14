@@ -602,19 +602,19 @@
            END-IF
       *!!!
       *    明細の登録なしはＤＢ異常終了とする
-           IF     (SPA-ERRCD       NOT =   SPACE)
-             OR   (FLG-SYORI-ARI       =   ZERO )
-               MOVE    SPACE               TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "abort"             TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-      *
-               IF      SPA-ERRCD           =   SPACE
-                   MOVE    "0051"              TO  SPA-ERRCD
-               END-IF
+           IF    ((ORCSCNYUIN-KBN      =   "1"  )  AND
+                  (FLG-SYORI-ARI       =   ZERO ))
+             OR   (SPA-ERRCD       NOT =   SPACE)
+                   MOVE    SPACE               TO  MCPDATA-REC
+                   MOVE    "DBSELECT"          TO  MCP-FUNC
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "abort"             TO  MCP-PATHNAME
+                   CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
+                   IF      SPA-ERRCD           =   SPACE
+                       MOVE    "0051"              TO  SPA-ERRCD
+                   END-IF
            END-IF
       *!!!
       *
