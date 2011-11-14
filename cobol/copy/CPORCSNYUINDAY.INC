@@ -55,6 +55,20 @@
       *  （空白：未算定 　１：算定）
                07  LNK-NYUINDAY-KYUKYU-KBN    PIC  X(01)  OCCURS  31.
       *
+      *同日再入院判定用
+             05  LNK-NYUINDAY-DOUJITSU-TBL.
+      *       （空白：同日再入院以外 　１：同日再入院）
+               07  LNK-NYUINDAY-DOUJITSU-KBN  PIC  X(01)  OCCURS  31.
+      *        同日再入院の保険組合せ
+               07  LNK-NYUINDAY-DOUJITSU-HKNCOMBI PIC 9(04) OCCURS  31.
+      *        同日再入院の保険種類
+      *        （１：社保　２：国保　３：後期高齢　４：労災　５：自賠
+      *          ６：公害　７：自費　８：治験）
+               07  LNK-NYUINDAY-DOUJITSU-HKNSYU   PIC X(01) OCCURS  31.
+      *        同日再入院の食事開始時間区分
+      *       （０：食なし／１：朝から／２：昼から／３：夕から）
+               07  LNK-NYUINDAY-DOUJITSU-SKJKBN PIC X(01) OCCURS  31.
+      *
       *復帰コード（１：算定年月エラー　２：患者検索エラー
       *            ３：入院会計なし　４：入院区分設定なし）
            03  LNK-NYUINDAY-RC                PIC S9(9) BINARY.
