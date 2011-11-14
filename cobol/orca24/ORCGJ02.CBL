@@ -9671,12 +9671,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                       (SPA-RRK-SRYKA (IDR) =   SPA-NAIGMN-SRYKA)
                    MOVE    SPA-RRK-RENNUM(IDR) TO  WRK-RRK-RENNUM
       *            入院の場合、最大同時連番を取得する
-                   IF     (SPA-NYUGAIKBN       =   "1" )  AND
-                          (SPA-RRK-DOUJI-RENNUM(IDR)
-                                               >   WRK-RRK-DOUJI-RENNUM)
-                       IF     (WRK-D-RENNUM        =   ZERO   )  OR
+                   IF     (SPA-NYUGAIKBN       =   "1" )
+                       IF     (WRK-D-RENNUM        =   ZERO   )
+                         AND  (SPA-RRK-DOUJI-RENNUM(IDR)
+                                               >  WRK-RRK-DOUJI-RENNUM)
+                           MOVE    SPA-RRK-DOUJI-RENNUM(IDR)
+                                              TO  WRK-RRK-DOUJI-RENNUM
+                           MOVE    IDR        TO  WRK-D-IDX
+                       END-IF
+                       IF    ((WRK-D-RENNUM   NOT  =   ZERO   )  AND
                               (WRK-D-RENNUM        =   SPA-RRK-RENNUM
-                                                             (IDR))
+                                                             (IDR)))
+                       AND   ( SPA-RRK-DOUJI-RENNUM(IDR)
+                                              >=  WRK-RRK-DOUJI-RENNUM )
                            MOVE    SPA-RRK-DOUJI-RENNUM(IDR)
                                               TO  WRK-RRK-DOUJI-RENNUM
                            MOVE    IDR        TO  WRK-D-IDX
@@ -9964,6 +9971,23 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-RRK-RRKYMD(IDR) TO  WRK-SYMD
            PERFORM 41012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-RRKYMD (IDR)
+           IF     (SPA-RRK-RENNUM (IDR)    >   1 ) OR
+                  (SPA-RRK-DOUJI-RENNUM (IDR)  >  ZERO )
+               MOVE    1                   TO  FLG-HEN
+           END-IF
+           IF      FLG-HEN             =   1
+               MOVE    "("                 TO  SPA-GMN-RRKYMD (IDR)
+                                                               (10:1)
+               MOVE    SPA-RRK-RENNUM (IDR)    TO  SPA-GMN-RRKYMD (IDR)
+                                                              (11:1)
+               MOVE    ")"                 TO  SPA-GMN-RRKYMD (IDR)
+                                                              (12:1)
+               IF      SPA-RRK-DOUJI-RENNUM (IDR)  NOT =   ZERO
+                   MOVE    SPA-RRK-DOUJI-RENNUM (IDR) 
+                                               TO  SPA-GMN-RRKYMD (IDR)
+                                                              (13:1)
+               END-IF
+           END-IF
            MOVE    SPA-GMN-BSRYKAMEI   TO  SPA-GMN-RRKSRYKA (IDR)
            MOVE    SPA-GMN-HKNCOMBI    TO  SPA-GMN-RRKHKNCOMBI (IDR)
       *
