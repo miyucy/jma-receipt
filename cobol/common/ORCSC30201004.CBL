@@ -91,6 +91,8 @@
            03  FLG-GAZO-ARI        PIC 9(01).
       *
            03  FLG-OUT-OK          PIC 9(01).
+      *    √Êø¥¿≈ÃÆ§¢§Í 
+           03  FLG-SYUGI-CHU       PIC 9(01).
       *
       *
       *    ≈∫ª˙ŒŒ∞Ë
@@ -265,6 +267,9 @@
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HZN-//.
       *
+      *    √Êø¥¿≈ÃÆ√ÌºÕ
+       01  CON-CHUJYO              PIC X(09)   VALUE   "130004410".
+      *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
       *****************************************************************
@@ -411,6 +416,7 @@
            MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  IDX-SYU
            MOVE    ZERO                TO  FLG-SYUGI
+           MOVE    ZERO                TO  FLG-SYUGI-CHU
            MOVE    ZERO                TO  FLG-MADOKU
            MOVE    ZERO                TO  FLG-SEIBUTU
            INITIALIZE                  WRK-AREA
@@ -534,6 +540,12 @@
                                                                 (IDX-Z)
       *                ºÍµªŒ¡§Œ∞Ã√÷•ª•√•»
                        MOVE    IDX-Z               TO  IDX-SYU
+      *!!
+      *                √Êø¥¿≈ÃÆ√ÌºÕ»ΩƒÍ
+                       IF      WRK-COM-INPUTCD (IDX-Z) =   CON-CHUJYO
+                           MOVE    1                   TO  FLG-SYUGI-CHU
+                       END-IF 
+      *!!
                    END-IF
       *            ∆˛±°ª˛§Œ∫ﬁ∆‚Õ∆§Œ•¡•ß•√•Ø
                    IF     (WRK-COM-DATAKBN (IDX-Z) =   "2" ) AND
@@ -581,6 +593,16 @@
                        MOVE    "9020"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    END-IF
+      *!!!!
+      *            ∆˛±°ª˛§Œ√Êø¥¿≈ÃÆ√ÌºÕ§»ÃÙ∫ﬁ§œ ¨§±§Î
+                   IF    (SPA-NYUGAIKBN        =   "1" )   AND
+                         (FLG-SYUGI-CHU        =   1   )   AND
+                         (WRK-COM-HKNCOMBI (IDX-Z)
+                                           NOT =   "9999")
+                       MOVE    "9040"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
+                   END-IF
+      *!!!!
       *            ªƒŒÃ«—¥˛
                    PERFORM 1006-HAIKI-SYORI-SEC
       *
@@ -679,7 +701,7 @@
                    END-IF
                WHEN    "340"
       *            √Êø¥¿≈ÃÆ√ÌºÕ
-                   IF      WRK-COM-INPUTCD (IDX-Z) =   "130004410"
+                   IF      WRK-COM-INPUTCD (IDX-Z) =   CON-CHUJYO
                        IF     (LNK-ACCT2-SRYCD-JYO1    =   SPACE )  AND
                               (LNK-ACCT2-SRYCD-JYO2    =   SPACE )  AND
                               (LNK-ACCT2-SRYCD         =   SPACE )  AND
@@ -1564,7 +1586,7 @@
                END-IF
       *
       *        √Êø¥¿≈ÃÆ§Œª˛
-               IF      WRK-COM-INPUTCD (IDX)   =   "130004410"
+               IF      WRK-COM-INPUTCD (IDX)   =   CON-CHUJYO
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
                        IF      WRK-COM-NYUINDAY (IDX IDY)  >   ZERO
@@ -2004,7 +2026,7 @@
                        MOVE    SRY-AUTOKBN (IDX2)  TO  WRK-TEN-AUTO
                    END-IF
       *            ºÍµªŒ¡° √Êø¥¿≈ÃÆ°À
-                   IF      SRY-SRYCD (IDX2)        =   "130004410"
+                   IF      SRY-SRYCD (IDX2)        =   CON-CHUJYO
                        MOVE    SRY-SRYCD (IDX2)    TO  WRK-TEN-SRYCD1
                    END-IF
       *            ºÍµªŒ¡° À„∆«°À
@@ -2467,7 +2489,7 @@
                    IF    ((TBL-TEN-IDX   (IDY)     >   ZERO  )  OR
                           (TBL-TEN-SRYCD (IDY)     =   SPACE )) AND
                           (TBL-TEN-SRYCD2(IDY)     =   SPACE )
-                       MOVE    "130004410"         TO  TBL-IVHA-SRYCD
+                       MOVE    CON-CHUJYO          TO  TBL-IVHA-SRYCD
                                                                (IDY)
                    ELSE
                        IF      TBL-IVH-CHUIDX (IDY)   >   ZERO
@@ -2631,7 +2653,7 @@
                    END-IF
                ELSE
                    IF     (TBL-TEN-IDX  (IDY)  >   ZERO ) AND
-                          (TBL-TEN-SRYCD(IDY)  NOT =   "130004410")
+                          (TBL-TEN-SRYCD(IDY)  NOT =   CON-CHUJYO)
       *                ±’ŒÃ•®•È°º
                        MOVE    TBL-TEN-IDX (IDY)   TO  IDX-KBN
                        MOVE    IDY                 TO  IDX-IDY
