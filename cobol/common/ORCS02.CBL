@@ -312,6 +312,7 @@
       *  04.05.16    NACL-門脇    11/10/05  岡山県西粟倉村退職者国保２割対応
       *                                     修正（平成２３年９月まで）
       *  04.05.17    NACL-門脇    11/10/05  埼玉県地方公費対応
+      *  04.05.18    NACL-門脇    11/11/09  同日再入院食事対応
       *
       *  04.06.01    NACL-門脇    10/11/08  主保険＋マル長の請求対応
       *
@@ -1617,8 +1618,9 @@
            END-IF.
       *
       *    同日再入院計算識別用
-           IF   (LNK-S02-DOJITUFLG-ST   =  "1"                )
-           AND  (LNK-S02-SKYSTYMD(1:6)  =  LNK-SYU-SRYYMD(1:6))
+           MOVE  LNK-S02-SKYSTYMD(7:2)  TO   IDX-ST
+           IF   (LNK-S02-SKYSTYMD(1:6)      =  LNK-SYU-SRYYMD(1:6))
+           AND  (LNK-S02-DOJITU-DAY(IDX-ST) =  8  OR  9           )
                 MOVE    "1"     TO      LNK-SYU-SAIKEISANKBN
            END-IF.
       *
@@ -9768,10 +9770,14 @@
                           IF   SYU-NYUGAIKBN     =  "1"
                             EVALUATE  LNK-S02-TEIKI-KBN
                              WHEN       "Y"
-                              IF ( SYU-SKYEDYMD < LNK-SYU-SKYSTYMD )
-                              OR ((SYU-SKYEDYMD = LNK-SYU-SKYSTYMD) AND
-                                  (SYU-SAIKEISANKBN = SPACE       ) AND
-                                  (LNK-SYU-SAIKEISANKBN = "1"     ))
+                              IF ( LNK-SYU-SKYSTYMD  > SYU-SKYEDYMD )
+                              OR ((LNK-SYU-SKYSTYMD  > SYU-SKYSTYMD) AND
+                                  (LNK-SYU-SKYSTYMD  = SYU-SKYEDYMD) AND
+                                  (LNK-SYU-SAIKEISANKBN   =  "1"   ))
+                              OR ((LNK-SYU-SKYSTYMD  = SYU-SKYSTYMD) AND
+                                  (LNK-SYU-SKYEDYMD >= SYU-SKYEDYMD) AND
+                                  (SYU-SAIKEISANKBN  = SPACE       ) AND
+                                  (LNK-SYU-SAIKEISANKBN   =  "1"   ))
                                  IF   SYU-DAYINFFLG  =  "1"
                                    PERFORM     SYUDAY-READ-SEC
                                  ELSE
@@ -9780,13 +9786,11 @@
                                  PERFORM       2201-SYUNOU-COUNT-SEC
                               END-IF
                              WHEN      OTHER
-                              IF ( LNK-SYU-SKYSTYMD > SYU-SKYSTYMD )
-                              OR ((LNK-SYU-SKYSTYMD = SYU-SKYSTYMD) AND
-                                  (LNK-SYU-SKYEDYMD > SYU-SKYEDYMD))
-                              OR ((LNK-SYU-SKYSTYMD = SYU-SKYSTYMD) AND
-                                  (LNK-SYU-SKYEDYMD = SYU-SKYEDYMD) AND
-                                  (SYU-SAIKEISANKBN = SPACE       ) AND
-                                  (LNK-SYU-SAIKEISANKBN  =  "1"   ))
+                              IF ( LNK-SYU-SKYSTYMD >  SYU-SKYSTYMD )
+                              OR ((LNK-SYU-SKYSTYMD  = SYU-SKYSTYMD) AND
+                                  (LNK-SYU-SKYEDYMD >= SYU-SKYEDYMD) AND
+                                  (SYU-SAIKEISANKBN  = SPACE       ) AND
+                                  (LNK-SYU-SAIKEISANKBN   =  "1"   ))
                                  IF   SYU-DAYINFFLG  =  "1"
                                    PERFORM     SYUDAY-READ-SEC
                                  ELSE
@@ -9833,10 +9837,14 @@
                        IF  SYU-DENPJTIKBN    NOT =  "3"
                             EVALUATE  LNK-S02-TEIKI-KBN
                              WHEN       "Y"
-                              IF ( SYU-SKYEDYMD < LNK-SYU-SKYSTYMD )
-                              OR ((SYU-SKYEDYMD = LNK-SYU-SKYSTYMD) AND
-                                  (SYU-SAIKEISANKBN = SPACE       ) AND
-                                  (LNK-SYU-SAIKEISANKBN = "1"     ))
+                              IF ( LNK-SYU-SKYSTYMD  > SYU-SKYEDYMD )
+                              OR ((LNK-SYU-SKYSTYMD  > SYU-SKYSTYMD) AND
+                                  (LNK-SYU-SKYSTYMD  = SYU-SKYEDYMD) AND
+                                  (LNK-SYU-SAIKEISANKBN   =  "1"   ))
+                              OR ((LNK-SYU-SKYSTYMD  = SYU-SKYSTYMD) AND
+                                  (LNK-SYU-SKYEDYMD >= SYU-SKYEDYMD) AND
+                                  (SYU-SAIKEISANKBN  = SPACE       ) AND
+                                  (LNK-SYU-SAIKEISANKBN   =  "1"   ))
                                  IF   SYU-DAYINFFLG  =  "1"
                                    PERFORM     SYUDAY-READ-SEC
                                  ELSE
@@ -9845,13 +9853,11 @@
                                  PERFORM       2201-SYUNOU-COUNT-SEC
                               END-IF
                              WHEN      OTHER
-                              IF ( LNK-SYU-SKYSTYMD > SYU-SKYSTYMD )
-                              OR ((LNK-SYU-SKYSTYMD = SYU-SKYSTYMD) AND
-                                  (LNK-SYU-SKYEDYMD > SYU-SKYEDYMD))
-                              OR ((LNK-SYU-SKYSTYMD = SYU-SKYSTYMD) AND
-                                  (LNK-SYU-SKYEDYMD = SYU-SKYEDYMD) AND
-                                  (SYU-SAIKEISANKBN = SPACE       ) AND
-                                  (LNK-SYU-SAIKEISANKBN  =  "1"   ))
+                              IF ( LNK-SYU-SKYSTYMD >  SYU-SKYSTYMD )
+                              OR ((LNK-SYU-SKYSTYMD  = SYU-SKYSTYMD) AND
+                                  (LNK-SYU-SKYEDYMD >= SYU-SKYEDYMD) AND
+                                  (SYU-SAIKEISANKBN  = SPACE       ) AND
+                                  (LNK-SYU-SAIKEISANKBN   =  "1"   ))
                                  IF   SYU-DAYINFFLG  =  "1"
                                    PERFORM     SYUDAY-READ-SEC
                                  ELSE
@@ -11076,7 +11082,7 @@
                           (LNK-SYU-SRYYMD(1:6) >= "200508" ))
                    PERFORM   VARYING  IDX2  FROM  1  BY  1
                               UNTIL   IDX2   >   31
-                     IF   SYU-DAY(IDX2)  =  "1" OR "2"
+                     IF   SYU-DAY(IDX2)  =  "1" OR "2" OR "8" OR "9"
                         EVALUATE  TRUE
                            WHEN  (LNK-SYU-KOH1HKNNUM = SYU-KOH1HKNNUM)
                              IF  KOHI1-TBL(IDX2)            =  ZERO
@@ -11931,7 +11937,7 @@
                           (LNK-SYU-SRYYMD(1:6) >= "200508" ))
                    PERFORM   VARYING  IDX2  FROM  1  BY  1
                               UNTIL   IDX2   >   31
-                     IF   SYU-DAY(IDX2)  =  "1" OR "2"
+                     IF   SYU-DAY(IDX2)  =  "1" OR "2" OR "8" OR "9"
                         EVALUATE  TRUE
                            WHEN  (LNK-SYU-KOH2HKNNUM = SYU-KOH1HKNNUM)
                              IF  KOHI2-TBL(IDX2)            =  ZERO
@@ -12632,7 +12638,7 @@
                           (LNK-SYU-SRYYMD(1:6) >= "200508" ))
                    PERFORM   VARYING  IDX2  FROM  1  BY  1
                               UNTIL   IDX2   >   31
-                     IF   SYU-DAY(IDX2)  =  "1" OR "2"
+                     IF   SYU-DAY(IDX2)  =  "1" OR "2" OR "8" OR "9"
                         EVALUATE  TRUE
                            WHEN  (LNK-SYU-KOH3HKNNUM = SYU-KOH1HKNNUM)
                              IF  KOHI3-TBL(IDX2)            =  ZERO
@@ -13248,7 +13254,7 @@
                           (LNK-SYU-SRYYMD(1:6) >= "200508" ))
                    PERFORM   VARYING  IDX2  FROM  1  BY  1
                               UNTIL   IDX2   >   31
-                     IF   SYU-DAY(IDX2)  =  "1" OR "2"
+                     IF   SYU-DAY(IDX2)  =  "1" OR "2" OR "8" OR "9"
                         EVALUATE  TRUE
                            WHEN  (LNK-SYU-KOH4HKNNUM = SYU-KOH1HKNNUM)
                              IF  KOHI4-TBL(IDX2)            =  ZERO
@@ -16696,7 +16702,8 @@
                   MOVE        1         TO    WK-DAYINFFLG(1)
                   PERFORM    VARYING   IDX2   FROM   1   BY   1
                               UNTIL    IDX2     >    31
-                     IF   ( LNK-SYU-DAY(IDX2)          =  "1" OR "2" )
+                     IF   ( LNK-SYU-DAY(IDX2)  =
+                                             "1" OR "2" OR "8" OR "9")
                      AND  ( LNK-SDAY-HKNTEN(IDX2)      NOT =  ZERO   )
                        IF   MAX-KAI-KOHI1-M       NOT = ZERO
                           IF  KOHI1-TBL(IDX2)  NOT = ZERO
@@ -16752,7 +16759,8 @@
                   MOVE        1         TO    WK-DAYINFFLG(2)
                   PERFORM    VARYING   IDX2   FROM   1   BY   1
                               UNTIL    IDX2     >    31
-                     IF   ( LNK-SYU-DAY(IDX2)          =  "1" OR "2" )
+                     IF   ( LNK-SYU-DAY(IDX2)  =
+                                             "1" OR "2" OR "8" OR "9")
                      AND  ( LNK-SDAY-HKNTEN(IDX2)      NOT =  ZERO   )
                        IF   MAX-KAI-KOHI2-M       NOT = ZERO
                           IF  KOHI2-TBL(IDX2)  NOT = ZERO
@@ -16808,7 +16816,8 @@
                   MOVE        1         TO    WK-DAYINFFLG(3)
                   PERFORM    VARYING   IDX2   FROM   1   BY   1
                               UNTIL    IDX2     >    31
-                     IF   ( LNK-SYU-DAY(IDX2)          =  "1" OR "2" )
+                     IF   ( LNK-SYU-DAY(IDX2)  =
+                                             "1" OR "2" OR "8" OR "9")
                      AND  ( LNK-SDAY-HKNTEN(IDX2)      NOT =  ZERO   )
                        IF   MAX-KAI-KOHI3-M       NOT = ZERO
                           IF  KOHI3-TBL(IDX2)  NOT = ZERO
@@ -16864,7 +16873,8 @@
                   MOVE        1         TO    WK-DAYINFFLG(4)
                   PERFORM    VARYING   IDX2   FROM   1   BY   1
                               UNTIL    IDX2     >    31
-                     IF   ( LNK-SYU-DAY(IDX2)          =  "1" OR "2" )
+                     IF   ( LNK-SYU-DAY(IDX2)  =
+                                             "1" OR "2" OR "8" OR "9")
                      AND  ( LNK-SDAY-HKNTEN(IDX2)      NOT =  ZERO   )
                        IF   MAX-KAI-KOHI4-M       NOT = ZERO
                           IF  KOHI4-TBL(IDX2)  NOT = ZERO
@@ -17292,8 +17302,8 @@
       *
              MOVE     ZERO     TO      WK-SHOKUJI-JIHI
       *
-             IF       ( NACCT-DAY(IDY)   NOT =  ZERO )
-             AND      ( LNK-SYU-DAY(IDY)     =  "1"  )
+             IF       ( NACCT-DAY(IDY)   NOT =  ZERO        )
+             AND      ( LNK-SYU-DAY(IDY)     =  "1" OR "9"  )
              AND      ( WK-GAIHAKU(IDY)      =  ZERO  OR  4
                                                       OR  5 )
       *
@@ -17994,62 +18004,17 @@
       ******************************************************************
        23046-SHOKUJI-FURIWAKE-SEC                 SECTION.
       *
-           IF   LNK-S02-SKYSTYMD(1:6) = LNK-SYU-SRYYMD(1:6)
-             IF   LNK-S02-DOJITUFLG-ST  =  "1"
-                MOVE      LNK-SYU-SKYSTYMD(7:2)  TO   IDX-ST
-                EVALUATE  LNK-S02-TIMEKBN-ST
-                  WHEN     "0"
-                    MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDX-ST)
-                    MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDX-ST)
-                    MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDX-ST)
-                    MOVE   ZERO   TO  WK-SHOKUDOKASAN(IDX-ST)
-                  WHEN     "1"
-                    CONTINUE
-                  WHEN     "2"
-                    IF   WK-SHOKUJI-ASA (IDX-ST)  NOT = ZERO
-                      MOVE ZERO   TO  WK-SHOKUDOKASAN(IDX-ST)
-                    END-IF
-                    MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDX-ST)
-                  WHEN     "3"
-                    IF   WK-SHOKUJI-ASA (IDX-ST)  NOT = ZERO
-                    OR   WK-SHOKUJI-HIRU(IDX-ST)  NOT = ZERO
-                      MOVE ZERO   TO  WK-SHOKUDOKASAN(IDX-ST)
-                    END-IF
-                    MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDX-ST)
-                    MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDX-ST)
-                END-EVALUATE
-                MOVE        1     TO  WK-SHOKUJI-KANFLG(IDX-ST)
-                MOVE       ZERO   TO  WK-ROSAITOKU95 (IDX-ST)
-                MOVE       ZERO   TO  WK-ROSAITOKU96 (IDX-ST)
-                MOVE       ZERO   TO  WK-ROSAITOKU97 (IDX-ST)
-             END-IF
-           END-IF
-           IF   LNK-S02-SKYEDYMD(1:6) = LNK-SYU-SRYYMD(1:6)
-             IF   LNK-S02-DOJITUFLG-ED  =  "1"
-                MOVE      LNK-SYU-SKYEDYMD(7:2)  TO   IDX-ED
-                EVALUATE  LNK-S02-TIMEKBN-ED
-                  WHEN     "0"
-                    MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDX-ED)
-                    MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDX-ED)
-                    MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDX-ED)
-                    MOVE   ZERO   TO  WK-SHOKUDOKASAN(IDX-ED)
-                  WHEN     "1"
-                    IF   WK-SHOKUJI-ASA (IDX-ED)   = ZERO
-                      MOVE ZERO   TO  WK-SHOKUDOKASAN(IDX-ED)
-                    END-IF
-                    MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDX-ED)
-                    MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDX-ED)
-                  WHEN     "2"
-                    IF   WK-SHOKUJI-ASA (IDX-ED)   = ZERO
-                    AND  WK-SHOKUJI-HIRU(IDX-ED)   = ZERO
-                      MOVE ZERO   TO  WK-SHOKUDOKASAN(IDX-ED)
-                    END-IF
-                    MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDX-ED)
-                  WHEN     "3"
-                    CONTINUE
-                END-EVALUATE
-             END-IF
-           END-IF
+           PERFORM    VARYING   IDY   FROM   1   BY   1
+                       UNTIL    IDY    >    31
+      *
+              IF  LNK-S02-DOJITU-DAY(IDY)  =  9
+                  PERFORM   230461-SHOKUJI-FURIWAKE-HENSYU-SEC
+              END-IF
+              IF  LNK-S02-DOJITU-DAY(IDY)  =  1
+                  PERFORM   230462-SHOKUJI-FURIWAKE-HENSYU2-SEC
+              END-IF
+      *
+           END-PERFORM
       *
            PERFORM    VARYING   IDY   FROM   1   BY   1
                        UNTIL    IDY    >    31
@@ -18107,6 +18072,74 @@
            .
       *
        23046-SHOKUJI-FURIWAKE-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    入院時食事療養と特別食加算をわける
+      ******************************************************************
+       230461-SHOKUJI-FURIWAKE-HENSYU-SEC                 SECTION.
+      *
+           EVALUATE  LNK-S02-DOJITU-SKJST(IDY)
+             WHEN     "0"
+               MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDY)
+               MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDY)
+               MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDY)
+               MOVE   ZERO   TO  WK-SHOKUDOKASAN(IDY)
+             WHEN     "1"
+               CONTINUE
+             WHEN     "2"
+               IF   WK-SHOKUJI-ASA (IDY)  NOT = ZERO
+                 MOVE ZERO   TO  WK-SHOKUDOKASAN(IDY)
+               END-IF
+               MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDY)
+             WHEN     "3"
+               IF   WK-SHOKUJI-ASA (IDY)  NOT = ZERO
+               OR   WK-SHOKUJI-HIRU(IDY)  NOT = ZERO
+                 MOVE ZERO   TO  WK-SHOKUDOKASAN(IDY)
+               END-IF
+               MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDY)
+               MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDY)
+           END-EVALUATE
+           MOVE        1     TO  WK-SHOKUJI-KANFLG(IDY)
+           MOVE       ZERO   TO  WK-ROSAITOKU95 (IDY)
+           MOVE       ZERO   TO  WK-ROSAITOKU96 (IDY)
+           MOVE       ZERO   TO  WK-ROSAITOKU97 (IDY)
+      *
+           .
+      *
+       230461-SHOKUJI-FURIWAKE-HENSYU-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    入院時食事療養と特別食加算をわける
+      ******************************************************************
+       230462-SHOKUJI-FURIWAKE-HENSYU2-SEC                 SECTION.
+      *
+           EVALUATE  LNK-S02-DOJITU-SKJED(IDY)
+             WHEN     "0"
+               MOVE   ZERO   TO  WK-SHOKUJI-ASA (IDY)
+               MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDY)
+               MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDY)
+               MOVE   ZERO   TO  WK-SHOKUDOKASAN(IDY)
+             WHEN     "1"
+               IF   WK-SHOKUJI-ASA (IDY)  = ZERO
+                 MOVE ZERO   TO  WK-SHOKUDOKASAN(IDY)
+               END-IF
+               MOVE   ZERO   TO  WK-SHOKUJI-HIRU(IDY)
+               MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDY)
+             WHEN     "2"
+               IF   WK-SHOKUJI-ASA (IDY)  = ZERO
+               AND  WK-SHOKUJI-HIRU(IDY)  = ZERO
+                 MOVE ZERO   TO  WK-SHOKUDOKASAN(IDY)
+               END-IF
+               MOVE   ZERO   TO  WK-SHOKUJI-YORU(IDY)
+             WHEN     "3"
+               CONTINUE
+           END-EVALUATE
+      *
+           .
+      *
+       230462-SHOKUJI-FURIWAKE-HENSYU2-EXT.
            EXIT.
       *
       ******************************************************************
@@ -18198,7 +18231,7 @@
       *
       *       入院時生活療養（食事）
               IF       ( WK-SHOKUJI-NYUINJI(IDY)   NOT =  ZERO )
-              AND      ((LNK-SYU-DAY(IDY)              =  "1" ) OR
+              AND      ((LNK-SYU-DAY(IDY)       =  "1" OR "9" ) OR
                         (LNK-S02-NYUINDAY-KBN(IDY)     =  "1" ))
               AND      ( WK-GAIHAKU(IDY)        =  ZERO  OR  4
                                                          OR  5 )
@@ -18358,7 +18391,7 @@
       *
       *       入院時生活療養（環境）
               MOVE     ZERO     TO      WK-SHOKUJI-JIHI
-              IF       ((LNK-SYU-DAY(IDY)              =  "1" ) OR
+              IF       ((LNK-SYU-DAY(IDY)       =  "1" OR "9" ) OR
                         (LNK-S02-NYUINDAY-KBN(IDY)     =  "1" ))
               AND      ( WK-GAIHAKU(IDY)        =  ZERO  OR  4
                                                          OR  5 )
@@ -18464,7 +18497,7 @@
              ELSE
       *
               IF       ( WK-SHOKUJI-NYUINJI(IDY)   NOT =  ZERO )
-              AND      ((LNK-SYU-DAY(IDY)              =  "1" ) OR
+              AND      ((LNK-SYU-DAY(IDY)       =  "1" OR "9" ) OR
                         (LNK-S02-NYUINDAY-KBN(IDY)     =  "1" ))
               AND      ( WK-GAIHAKU(IDY)        =  ZERO  OR  4
                                                          OR  5 )

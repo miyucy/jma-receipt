@@ -516,6 +516,7 @@
       *  04.05.36    NACL-ÌçÏÆ    11/10/12  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¼«Î©»Ù±ç
       *                                     °ìÉôÉéÃ´³Ûµ­ºÜ½¤Àµ
       *  04.05.37    NACL-ÌçÏÆ    11/10/18  °¦ÃÎ¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  04.05.38    NACL-ÌçÏÆ    11/11/09  Æ±ÆüºÆÆþ±¡¿©»öÂÐ±þ
       *
       *  04.06.01    NACL-Æ£¸¶    10/06/23  ¥ì¥»ÅÅÀÁµá»þ¤Î¼õÉÕ¥¨¥é¡¼Ê¬¤Î
       *                                     ¼ïÊÌÉÔÌÀ¥ì¥»ÂÐ±þ
@@ -13004,7 +13005,7 @@
            AND  (RECE62-HKNNUM      =  SPACE)
               PERFORM    VARYING   IDX-SAI    FROM   1   BY   1
                           UNTIL    IDX-SAI      >   31
-                IF   SYU-DAY(IDX-SAI)   =   "1"  OR  "2"
+                IF   SYU-DAY(IDX-SAI)   =   "1"  OR  "2"  OR  "9"
                     IF   IDX-SAI  <  WRK-SAIGAI-DD
                        MOVE    1     TO   FLG-GENMEN-NASI2
                     ELSE
@@ -14916,7 +14917,7 @@
                                                 "7" OR "8"
                   PERFORM    VARYING   IDX7    FROM   1   BY   1
                                UNTIL   IDX7      >      31
-                    IF   (SYU-DAY(IDX7)           =   "1"  OR  "2")
+                    IF   (SYU-DAY(IDX7)  =   "1"  OR  "2"  OR  "9")
                     AND  (RECE62-JNISSUTBL(IDX7)  =   "1"         )
                        MOVE   "1"   TO   RECE62-KOHJNISSUTBL(IDX7)
                     END-IF
