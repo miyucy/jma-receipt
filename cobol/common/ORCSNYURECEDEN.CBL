@@ -5707,7 +5707,8 @@
                    END-IF
       *
       *            同日再入院（朝から）
-                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN  =  "3")   AND
+                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                                                                     AND
                          (LNK-NYURECEDEN-HKNKBN
                               =  LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX1)) AND
                          (NACCT-DAY(IDX1)    NOT =  ZERO)            AND
@@ -5831,7 +5832,8 @@
                    END-IF
       *
       *            同日再入院（昼から）
-                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN  =  "3")   AND
+                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                                                                     AND
                          (LNK-NYURECEDEN-HKNKBN
                               =  LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX1)) AND
                          (NACCT-DAY(IDX1)    NOT =  ZERO)            AND
@@ -5956,7 +5958,8 @@
                    END-IF
       *
       *            同日再入院（夕から）
-                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN  =  "3")   AND
+                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                                                                     AND
                          (LNK-NYURECEDEN-HKNKBN
                               =  LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX1)) AND
                          (NACCT-DAY(IDX1)    NOT =  ZERO)            AND
