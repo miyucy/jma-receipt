@@ -597,8 +597,13 @@
            05 PIC  X(30)   VALUE   "合計点数が＃＃＃＃点以上です  ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "990020".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。同".
+           05 PIC  X(30)   VALUE   "日再入院日に実日数算定コードを".
+           05 PIC  X(30)   VALUE   "入力してください              ".
+      *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  106.
+           05 ERRMES-OCC   OCCURS  107.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   106.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   107.
