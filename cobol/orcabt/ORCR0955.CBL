@@ -1017,6 +1017,9 @@ grpsys        PERFORM 900-DBSELECT-SEC
                MOVE    ZERO            TO
                                        SYS-200501-INSPECT-CHARACTER-KBN
            END-IF
+           DISPLAY "SYS-200501-INSPECT-CHARACTER-KBN="
+                                    SYS-200501-INSPECT-CHARACTER-KBN
+                    " " WRK-PARA-PRTKBN
       *
            .
        120-HOSPINF-GET-EXT.
@@ -1346,7 +1349,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            END-IF
       *    
            .
-       310-HC101-HEAD-HEN-EXT.
+       20021-HEAD-HEN-EXT.
            EXIT.
       *     
       *****************************************************************

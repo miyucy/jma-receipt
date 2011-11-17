@@ -1324,7 +1324,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            END-IF
       *    
            .
-       310-HC101-HEAD-HEN-EXT.
+       20021-HEAD-HEN-EXT.
            EXIT.
       *     
       *****************************************************************

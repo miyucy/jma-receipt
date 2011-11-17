@@ -1074,6 +1074,9 @@
                MOVE    ZERO            TO
                                        SYS-200501-INSPECT-CHARACTER-KBN
            END-IF
+           DISPLAY "SYS-200501-INSPECT-CHARACTER-KBN="
+                                    SYS-200501-INSPECT-CHARACTER-KBN
+                    " " WRK-PARA-PRTKBN
            .
        120-HOSPINF-GET-EXT.
            EXIT.
