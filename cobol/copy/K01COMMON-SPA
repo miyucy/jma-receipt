@@ -154,6 +154,8 @@
                05  SPA-KENSAAUTO-FLG       PIC X(01).
       *自立支援負担変更区分
                05  SPA-FTNHEN-KBN          PIC X(01).
+      *訂正時の自動発生（処方せん料）
+               05  SPA-TEISEISYO-FLG       PIC X(01).
       *包括診療行為チェック
                05  SPA-HKTSANTEI-FLG       PIC 9(01).
       *包括診療行為チェック（入院料）

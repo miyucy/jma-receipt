@@ -567,6 +567,7 @@
                           (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "3"
                                                          OR "6" )
       *                訂正自動作成で算定回数を超えている時対象とする
+      *                （薬情）
                        PERFORM 10023-AUTOCHK-SEC
                        IF      FLG-AUTO-OK         =   1
                            MOVE    ZERO            TO  FLG-HEN-CHK
@@ -577,7 +578,7 @@
                           (LNK-WKSRY-AUTOKBN(IDX IDY)  =  "4"
                                                        OR "6" )
       *                訂正時の自動発生しない
-                       IF     (SPA-TEISEI-FLG            =  "1")
+                       IF     (SPA-TEISEI-FLG            =  "1"  )
                          AND  (FLG-AUTO-OK               =   ZERO)
                            MOVE    1               TO  FLG-HEN-CHK
                        ELSE
@@ -597,6 +598,19 @@
                            MOVE    1               TO  FLG-AUTO-OK
                        END-IF
                    END-IF
+      *ver.4.7
+      *            処方せん料判定
+                   IF     (ORCSCWKSRY-SYORIFLG         =   ZERO ) AND
+                          (LNK-WKSRY-AUTOKBN(IDX IDY)  =  "3"   ) AND
+                          (LNK-WKSRY-SRYSYUKBN(IDX)    =  "820" )
+      *                訂正時の展開あり
+                       IF     (SPA-TEISEISYO-FLG       =  "1" )
+                           MOVE    ZERO            TO  FLG-HEN-CHK
+                           MOVE    SPACE           TO  LNK-WKSRY-AUTOKBN
+                                                            (IDX IDY)
+                       END-IF
+                   END-IF
+      *!
       *            自動発生の有無判定
                    IF      ORCSCWKSRY-SYORIFLG     =   ZERO
                        IF     (LNK-WKSRY-AUTOKBN(IDX IDY)  =  "4"
