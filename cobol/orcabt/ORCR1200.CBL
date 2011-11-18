@@ -31,6 +31,9 @@
       *  04.04.01    NACL-藤原    09/03/10  特別な関係にある他院歴を初回
       *                                     入院日として起算しレセプト記
       *                                     載を行なう対応
+      *
+      *  04.05.08    NACL-藤原    11/11/18  他保険での同日再入院時の保険
+      *                                     履歴対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -346,6 +349,9 @@
            COPY    "CPORCSJOBKANRI.INC".
       *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
+      *
+      *    入院料未算定日取得サブ
+           COPY    "CPORCSNYUINDAY.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1585,11 +1591,41 @@
                ELSE
                    PERFORM VARYING IDX FROM    IDX4    BY  1
                            UNTIL   IDX >       IDX5
-                       IF      WRK-RECE200-DAY (IDX)
-                                           =   WRK-RECE200-HKNCOMBI
-                           PERFORM 2401-PTNYUINRRK-HENSYU-SEC
-                           MOVE   IDX5                 TO  IDX
-                       END-IF
+                       IF      IDX             =   IDX4
+      *                    同日再入院のとき保険組合せ取得
+                           INITIALIZE               ORCSNYUINDAY-AREA
+                           MOVE    WRK-RECE200-HOSPNUM
+                                               TO  LNK-NYUINDAY-HOSPNUM
+                           MOVE    WRK-RECE200-PTID
+                                               TO  LNK-NYUINDAY-PTID
+                           MOVE    PTNYUINRRK-NYUINYMD (1:6)
+                                               TO  LNK-NYUINDAY-SANTEIYM
+                           CALL    "ORCSNYUINDAY"
+                                               USING   ORCSNYUINDAY-AREA
+                                                       SPA-AREA
+                           IF    ( LNK-NYUINDAY-RC  =   ZERO )
+                           AND   ( LNK-NYUINDAY-DOUJITSU-KBN (IDX)
+                                                    =   "1"  )
+                               IF      LNK-NYUINDAY-DOUJITSU-HKNCOMBI
+                                                               (IDX)
+                                               =   WRK-RECE200-HKNCOMBI
+                                   PERFORM 2401-PTNYUINRRK-HENSYU-SEC
+                                   MOVE   IDX5                 TO  IDX
+                               END-IF
+                           ELSE    
+                               IF      WRK-RECE200-DAY (IDX)
+                                               =   WRK-RECE200-HKNCOMBI
+                                   PERFORM 2401-PTNYUINRRK-HENSYU-SEC
+                                   MOVE   IDX5                 TO  IDX
+                               END-IF
+                           END-IF
+                       ELSE    
+                           IF      WRK-RECE200-DAY (IDX)
+                                               =   WRK-RECE200-HKNCOMBI
+                               PERFORM 2401-PTNYUINRRK-HENSYU-SEC
+                               MOVE   IDX5                 TO  IDX
+                           END-IF
+                       END-IF 
                    END-PERFORM
                END-IF
              END-IF          

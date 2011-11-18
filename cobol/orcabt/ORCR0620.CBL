@@ -190,6 +190,8 @@
       *                                     ¸øÈñ¤òºÇÂç£µ£°¤ËÊÑ¹¹
       *  04.05.10    NACL-ÌçÏÆ    11/10/05  ²¬»³¸©À¾°ÀÁÒÂ¼Âà¿¦¼Ô¹ñÊÝ£²³äÂÐ±þ
       *                                     ½¤Àµ¡ÊÊ¿À®£²£³Ç¯£¹·î¤Þ¤Ç¡Ë
+      *  04.05.11    NACL-Æ£¸¶    11/11/18  Â¾ÊÝ¸±¤Ç¤ÎÆ±ÆüºÆÆþ±¡»þ¤ÎÊÝ¸±
+      *                                     ÍúÎòÂÐ±þ
       *
       *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
       *                                     ¥­¡¼¤Ëkohid ÄÉ²Ã
@@ -630,6 +632,9 @@
       *    °å»Õ¥³¡¼¥É¼èÆÀ¥µ¥Ö
        01  ORCSDRCDGETAREA.
            COPY    "CPORCSDRCDGET.INC".
+      *
+      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
+           COPY    "CPORCSNYUINDAY.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -3385,16 +3390,59 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                ELSE
                    PERFORM VARYING IDX FROM    IDX4    BY  1
                            UNTIL   IDX >       IDX5
-                       PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       10
-                               OR  RECE62-HKNCOMBI (IDY)   =   ZERO
-                           IF      RECE61-DAY (IDX)
-                                           =   RECE62-HKNCOMBI (IDY)
-                               PERFORM 2401-PTNYUINRRK-HENSYU-SEC
-                               MOVE    10                  TO  IDY
-                               MOVE   IDX5                 TO  IDX
+                       IF      IDX             =   IDX4
+      *                    Æ±ÆüºÆÆþ±¡¤Î¤È¤­ÊÝ¸±ÁÈ¹ç¤»¼èÆÀ
+                           INITIALIZE               ORCSNYUINDAY-AREA
+                           MOVE    RECE62-HOSPNUM
+                                               TO  LNK-NYUINDAY-HOSPNUM
+                           MOVE    RECE62-PTID TO  LNK-NYUINDAY-PTID
+                           MOVE    PTNYUINRRK-NYUINYMD (1:6)
+                                               TO  LNK-NYUINDAY-SANTEIYM
+                           CALL    "ORCSNYUINDAY"
+                                               USING   ORCSNYUINDAY-AREA
+                                                       SPA-AREA
+                           IF    ( LNK-NYUINDAY-RC  =   ZERO )
+                           AND   ( LNK-NYUINDAY-DOUJITSU-KBN (IDX)
+                                                    =   "1"  )
+                               PERFORM VARYING IDY FROM    1   BY  1
+                                       UNTIL   IDY >       10
+                                       OR  RECE62-HKNCOMBI (IDY)
+                                                           =   ZERO
+                                   IF     LNK-NYUINDAY-DOUJITSU-HKNCOMBI
+                                                               (IDX)
+                                               =   RECE62-HKNCOMBI (IDY)
+                                       PERFORM
+                                           2401-PTNYUINRRK-HENSYU-SEC
+                                       MOVE    10              TO  IDY
+                                       MOVE   IDX5             TO  IDX
+                                   END-IF
+                              END-PERFORM
+                           ELSE    
+                               PERFORM VARYING IDY FROM    1   BY  1
+                                       UNTIL   IDY >       10
+                                       OR  RECE62-HKNCOMBI (IDY)
+                                                           =   ZERO
+                                   IF      RECE61-DAY (IDX)
+                                               =   RECE62-HKNCOMBI (IDY)
+                                       PERFORM
+                                           2401-PTNYUINRRK-HENSYU-SEC
+                                       MOVE    10              TO  IDY
+                                       MOVE   IDX5             TO  IDX
+                                   END-IF
+                               END-PERFORM
                            END-IF
-                       END-PERFORM
+                       ELSE    
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       10
+                                   OR  RECE62-HKNCOMBI (IDY)   =   ZERO
+                               IF      RECE61-DAY (IDX)
+                                               =   RECE62-HKNCOMBI (IDY)
+                                   PERFORM 2401-PTNYUINRRK-HENSYU-SEC
+                                   MOVE    10                  TO  IDY
+                                   MOVE   IDX5                 TO  IDX
+                               END-IF
+                           END-PERFORM
+                       END-IF
                    END-PERFORM
                END-IF
              END-IF          

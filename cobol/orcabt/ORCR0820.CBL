@@ -46,6 +46,8 @@
       *  04.04.02    NACL-門脇    09/06/12  療養期間の編集修正
       *
       *  04.05.01    NACL-門脇    11/10/07  療養期間（終了日）の編集修正
+      *  04.05.02    NACL-藤原    11/11/18  他保険での同日再入院時の保険
+      *                                     履歴対応
       *
       *  04.07.01    NACL-門脇    11/09/07  労災請求書作成対応
       *****************************************************************
@@ -224,6 +226,9 @@
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
+      *
+      *    入院料未算定日取得サブ
+           COPY    "CPORCSNYUINDAY.INC".
       *
            COPY    "MCPAREA".
       *
@@ -503,11 +508,42 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                ELSE
                    PERFORM VARYING IDX FROM    IDX4    BY  1
                            UNTIL   IDX >       IDX5
-                       IF      RECE82-DAY (IDX)
-                                           =   RECE82-HKNCOMBI
-                           MOVE    1     TO    FLG-RRKOK
-                           PERFORM 21011-PTNYUINRRK-HENSYU-SEC
-                           MOVE   IDX5                 TO  IDX
+                       IF      IDX             =   IDX4
+      *                    同日再入院のとき保険組合せ取得
+                           INITIALIZE               ORCSNYUINDAY-AREA
+                           MOVE    RECE82-HOSPNUM
+                                               TO  LNK-NYUINDAY-HOSPNUM
+                           MOVE    RECE82-PTID TO  LNK-NYUINDAY-PTID
+                           MOVE    PTNYUINRRK-NYUINYMD (1:6)
+                                               TO  LNK-NYUINDAY-SANTEIYM
+                           CALL    "ORCSNYUINDAY"
+                                               USING   ORCSNYUINDAY-AREA
+                                                       SPA-AREA
+                           IF    ( LNK-NYUINDAY-RC  =   ZERO )
+                           AND   ( LNK-NYUINDAY-DOUJITSU-KBN (IDX)
+                                                    =   "1"  )
+                               IF      LNK-NYUINDAY-DOUJITSU-HKNCOMBI
+                                                                (IDX)
+                                                   =   RECE82-HKNCOMBI
+                                   MOVE    1           TO  FLG-RRKOK
+                                   PERFORM 21011-PTNYUINRRK-HENSYU-SEC
+                                   MOVE   IDX5         TO  IDX
+                               END-IF
+                           ELSE    
+                               IF      RECE82-DAY (IDX)
+                                                   =   RECE82-HKNCOMBI
+                                   MOVE    1           TO  FLG-RRKOK
+                                   PERFORM 21011-PTNYUINRRK-HENSYU-SEC
+                                   MOVE   IDX5         TO  IDX
+                               END-IF
+                           END-IF
+                       ELSE    
+                           IF      RECE82-DAY (IDX)
+                                               =   RECE82-HKNCOMBI
+                               MOVE    1     TO    FLG-RRKOK
+                               PERFORM 21011-PTNYUINRRK-HENSYU-SEC
+                               MOVE   IDX5                 TO  IDX
+                           END-IF
                        END-IF
                    END-PERFORM
       *
