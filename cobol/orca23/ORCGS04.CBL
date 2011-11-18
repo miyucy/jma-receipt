@@ -264,6 +264,7 @@
            COPY    "SID1.INC".
            COPY    "SID2.INC".
            COPY    "SID3.INC".
+           COPY    "SID4.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

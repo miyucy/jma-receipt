@@ -446,6 +446,7 @@ RECORD_files = \
 	P02T.rec \
 	W68.rec \
 	diseaseget.rec \
+	SID4.rec \
 	
 
 DEF_files = \

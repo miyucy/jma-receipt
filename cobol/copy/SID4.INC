@@ -15,12 +15,18 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  SID3.
-            03  SID3-FIXED1.
-              04  SID3-B12S-STATE   PIC S9(9) BINARY.
-              04  SID3-ID1CODE.
-                05  SID3-VALUE  PIC X(10).
-              04  SID3-ID1MSG.
-                05  SID3-VALUE  PIC X(70).
-              04  SID3-LBLID1SKYPRT.
-                05  SID3-VALUE  PIC X(70).
+        02  SID4.
+            03  SID4-FIXED1.
+              04  SID4-B06-STATE    PIC S9(9) BINARY.
+              04  SID4-B07-STATE    PIC S9(9) BINARY.
+              04  SID4-LBLID1SKYPRT.
+                05  SID4-VALUE  PIC X(70).
+              04  SID4-LBLSRYYMD.
+                05  SID4-VALUE  PIC X(8).
+              04  SID4-LBLKENSU.
+                05  SID4-VALUE  PIC X(20).
+              04  SID4-SRYYMD   PIC X(20).
+              04  SID4-SRYKA    PIC X(50).
+              04  SID4-HOKEN    PIC X(20).
+              04  SID4-KINGAKU  PIC X(10) OCCURS 5.
+

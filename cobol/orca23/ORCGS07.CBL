@@ -183,6 +183,7 @@
            COPY    "SID1.INC".
            COPY    "SID2.INC".
            COPY    "SID3.INC".
+           COPY    "SID4.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -409,6 +410,7 @@
                MOVE    SPACE           TO  SPA-S01-TUKI-SKYPRT
                                            SPA-S01-TUKI-SRYPRT
                PERFORM 210-BACK
+           WHEN    "CLICKED"       ALSO    "B12S"
            WHEN    "CLICKED"       ALSO    "B10"
            WHEN    "CLICKED"       ALSO    "B11"
            WHEN    "CLICKED"       ALSO    "B12"
@@ -678,6 +680,7 @@
       *
                MOVE    1           TO  FLG-HIT
                MOVE    SYU-DENPNUM TO  WRK-DENPNUM
+               MOVE    SYU-SRYYMD  TO  WRK-SRYYMD
       *
                IF    ( SPA-GMN-KIKANKBN    =   "1" )
                    MOVE    SPA-NAI-SRYYM   TO  WRK-STYM
@@ -728,7 +731,7 @@
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
@@ -767,6 +770,9 @@
                                            TO  SPA-S01-TUKI-GRPKBN
       *
                EVALUATE    WRK-MCP-WIDGET
+               WHEN    "B12S"
+                   MOVE    "2"             TO  SPA-S01-TUKI-SKYPRT
+                   MOVE    "2"             TO  SPA-S01-TUKI-SRYPRT
                WHEN    "B10"
                    MOVE    "1"             TO  SPA-S01-TUKI-SKYPRT
                WHEN    "B11"

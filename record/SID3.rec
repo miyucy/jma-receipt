@@ -1,5 +1,8 @@
 SID3	{
 	fixed1	{
+		B12S	{
+	           	state	int;
+		};
 		ID1CODE	{
 			value	varchar(10);
 		};
