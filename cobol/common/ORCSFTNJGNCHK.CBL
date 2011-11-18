@@ -78,6 +78,7 @@
       *
       *  04.05.01    NACL-ÌçÏÆ    09/12/04  ¿©»ö¡ÊÆÃÊÌ¿©¡Ë¤ÎÂ¾ÊÝ¸±ÂÐ±þ
       *  04.05.02    NACL-ÌçÏÆ    11/03/08  Ä¹ºê¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  04.05.03    NACL-ÌçÏÆ    11/11/17  ºë¶Ì¸©ÃÏÊý¸øÈñÂÐ±þ¡Ê¾¾ÉúÄ®¡Ë
       *
       *  04.07.01    NACL-ÌçÏÆ    11/09/01  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *****************************************************************
@@ -783,6 +784,12 @@
       *@@@ AND  (LNK-FTNJGNCHK-KOHNUM    = "343" OR "342" OR "344")
       *@@@ AND  (LNK-FTNJGNCHK-NYUGAIKBN = "1"                    )
       *@@@ AND  (LNK-FTNJGNCHK-SRYYM    >= "200507"               )
+      *@@@          MOVE    999999      TO  WRK-HKNMST-JGNGAK
+      *@@@ END-IF
+      *@@@ IF   (LNK-FTNJGNCHK-PREFNUM   =  11                    )
+      *@@@ AND  (LNK-FTNJGNCHK-KOHNUM    = "562" OR "662"         )
+      *@@@ AND  (LNK-FTNJGNCHK-NYUGAIKBN = "1"                    )
+      *@@@ AND  (LNK-FTNJGNCHK-SRYYM    >= "201112"               )
       *@@@          MOVE    999999      TO  WRK-HKNMST-JGNGAK
       *@@@ END-IF
       *
@@ -1755,6 +1762,15 @@
                  (LNK-FTNJGNCHK-KOHNUM   = "372" OR
                                            "373"   ) AND
                  (LNK-FTNJGNCHK-SRYYM   >= "201101"))
+             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
+                 (LNK-FTNJGNCHK-KOHNUM   =
+                   "462" OR "762"                  ) AND
+                 (LNK-FTNJGNCHK-SRYYM   >= "201112"))
+             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
+                 (LNK-FTNJGNCHK-KOHNUM   =
+                   "562" OR "662"                  ) AND
+                 (LNK-FTNJGNCHK-NYUGAIKBN = "2"    ) AND
+                 (LNK-FTNJGNCHK-SRYYM   >= "201112"))
                IF   WRK-KOHFTN   NOT = ZERO
                        MOVE   01        TO  LNK-FTNJGNCHK-RC
                END-IF
