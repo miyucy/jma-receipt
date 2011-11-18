@@ -594,6 +594,20 @@
                MOVE    WRK-KINGAKUZ    TO  SPA-GMN-ZENSEIKYU
            END-IF
       *
+           COMPUTE WRK-KINGAKU9
+               =   SPA-NAI-KONSEIKYU
+               +   SPA-NAI-ZENSEIKYU
+      *
+           IF    ( WRK-KINGAKU9    >=  10000000 )
+            OR   ( WRK-KINGAKU9    <= -1000000 )
+               IF    ( WRK-MCP-WIDGET  =   "KINGAKU03" )
+                   MOVE    3       TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    1       TO  SPA-GMN-CUR
+               END-IF
+               MOVE    "0005"      TO  SPA-ERRCD
+           END-IF
+      *
            .
        4101-ZENSEIKYU-CHK-EXT.
            EXIT.
@@ -870,6 +884,9 @@
            WHEN    "0004"
                MOVE    "入金額入力エラー"
                                            TO  SPA-ERRMSG
+           WHEN    "0005"
+               MOVE    "合計請求額が大きすぎます"
+                                           TO  SPA-ERRMSG
            WHEN    "4001" THRU "4002"
                MOVE    "パラメタテーブルの更新に失敗しました"
                                            TO  SPA-ERRMSG
@@ -909,10 +926,21 @@
            CALL    "ORCSNUM"           USING
                                        ORCSNUMAREA
            IF    ( SNUM-RC         NOT =   ZERO  )
-            OR   ( SNUM-SEISUU         >   7     )
-            OR   ( SNUM-SYOKBN         =   "1"   )
-               MOVE    1               TO  FLG-ORCSNUMERR
-           ELSE
+               MOVE    1           TO  FLG-ORCSNUMERR
+           END-IF
+           IF    ( SNUM-MINKBN     =   SPACE  )
+            AND  ( SNUM-SEISUU     >   7     )
+               MOVE    1           TO  FLG-ORCSNUMERR
+           END-IF
+           IF    ( SNUM-MINKBN     =   "1"  )
+            AND  ( SNUM-SEISUU     >   6     )
+               MOVE    1           TO  FLG-ORCSNUMERR
+           END-IF
+           IF    ( SNUM-SYOKBN         =   "1"   )
+               MOVE    1           TO  FLG-ORCSNUMERR
+           END-IF
+      *
+           IF    ( FLG-ORCSNUMERR      =   ZERO )
                MOVE    SNUM-OUTNUM     TO  WRK-KINGAKU9
                MOVE    SNUM-OUTNUM     TO  WRK-KINGAKUZ
            END-IF
