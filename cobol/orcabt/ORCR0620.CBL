@@ -192,6 +192,8 @@
       *                                     修正（平成２３年９月まで）
       *  04.05.11    NACL-藤原    11/11/18  他保険での同日再入院時の保険
       *                                     履歴対応
+      *  04.05.12    NACL-藤原    11/11/21  診療年月＜転入年月の入院歴を
+      *                                     処理対象外とする
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
@@ -3335,8 +3337,11 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                MOVE    1                   TO  FLG-PTNYUINRRK23
            END-IF
            PERFORM                 UNTIL   FLG-PTNYUINRRK23    =   1
-             IF    ( PTNYUINRRK-TENNYUYMD  >   RECE62-TEKEDYMD-X )
-             AND   ( RECE62-TEKEDYMD-X NOT =   SPACE             )
+             IF  (   PTNYUINRRK-TENNYUYMD (1:6)
+                                         >    RECE62-SRYYM         )
+             OR  ( ( PTNYUINRRK-TENNYUYMD  >   RECE62-TEKEDYMD-X )
+                  AND
+                   ( RECE62-TEKEDYMD-X NOT =   SPACE             ) )
                  CONTINUE
              ELSE
       *
