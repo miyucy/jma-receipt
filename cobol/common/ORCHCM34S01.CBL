@@ -708,11 +708,6 @@
                 END-IF
            END-PERFORM
       *
-           IF    ( FLG-NYUINARI            =   ZERO )
-               MOVE    4                   TO  HCM34S01-RC
-               PERFORM 990-EXIT-PROGRAM-SEC
-           END-IF
-      *
            MOVE    HCM34S01-SANTEIYM       TO  WRK-SKYSTYMD
                                                WRK-SKYEDYMD
            MOVE    1                       TO  WRK-SKYSTDD
