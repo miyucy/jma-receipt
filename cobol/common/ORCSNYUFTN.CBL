@@ -876,11 +876,11 @@
              END-IF
            END-IF.
       *
-           IF    LNK-S02-RC   =   ZERO
-             IF   WRK-JNISSU-ERR  =  1
-                MOVE     23     TO    LNK-S02-RC
-             END-IF
-           END-IF.
+      ***  IF    LNK-S02-RC   =   ZERO
+      ***    IF   WRK-JNISSU-ERR  =  1
+      ***       MOVE     23     TO    LNK-S02-RC
+      ***    END-IF
+      ***  END-IF.
       *
       *    不要な収納を除外する
            PERFORM     TAISYOGAI-DATA-HENSYU-SEC.
