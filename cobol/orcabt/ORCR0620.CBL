@@ -194,6 +194,7 @@
       *                                     履歴対応
       *  04.05.12    NACL-藤原    11/11/21  診療年月＜転入年月の入院歴を
       *                                     処理対象外とする
+      *  04.05.13    NACL-藤原    11/11/22  同日再入院対応
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
@@ -634,9 +635,6 @@
       *    医師コード取得サブ
        01  ORCSDRCDGETAREA.
            COPY    "CPORCSDRCDGET.INC".
-      *
-      *    入院料未算定日取得サブ
-           COPY    "CPORCSNYUINDAY.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1750,6 +1748,9 @@
                    MOVE    "1"                 TO  RECE62-SEIHOFLG
                END-IF
            END-IF
+      *
+      *    同日再入院（入院分）の保険組合せ、食事開始時間区分
+           MOVE    RECE61-DOUJITSU-AREA    TO  RECE62-DOUJITSU-AREA
       *
            PERFORM     220-DATA-WRITE-SEC
       *
@@ -3395,47 +3396,21 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                ELSE
                    PERFORM VARYING IDX FROM    IDX4    BY  1
                            UNTIL   IDX >       IDX5
-                       IF      IDX             =   IDX4
-      *                    同日再入院のとき保険組合せ取得
-                           INITIALIZE               ORCSNYUINDAY-AREA
-                           MOVE    RECE62-HOSPNUM
-                                               TO  LNK-NYUINDAY-HOSPNUM
-                           MOVE    RECE62-PTID TO  LNK-NYUINDAY-PTID
-                           MOVE    PTNYUINRRK-NYUINYMD (1:6)
-                                               TO  LNK-NYUINDAY-SANTEIYM
-                           CALL    "ORCSNYUINDAY"
-                                               USING   ORCSNYUINDAY-AREA
-                                                       SPA-AREA
-                           IF    ( LNK-NYUINDAY-RC  =   ZERO )
-                           AND   ( LNK-NYUINDAY-DOUJITSU-KBN (IDX)
-                                                    =   "1"  )
-                               PERFORM VARYING IDY FROM    1   BY  1
-                                       UNTIL   IDY >       10
-                                       OR  RECE62-HKNCOMBI (IDY)
-                                                           =   ZERO
-                                   IF     LNK-NYUINDAY-DOUJITSU-HKNCOMBI
-                                                               (IDX)
+                       IF    ( IDX             =   IDX4 )
+                       AND   ( RECE61-DOUJITSU-HKNCOMBI (IDX)
+                                               >   ZERO )
+      *                    同日再入院のとき再入院分の保険組合せをチェック
+                           PERFORM VARYING IDY FROM    1   BY  1
+                                   UNTIL   IDY >       10
+                                   OR  RECE62-HKNCOMBI (IDY)
+                                                       =   ZERO
+                               IF     RECE61-DOUJITSU-HKNCOMBI (IDX)
                                                =   RECE62-HKNCOMBI (IDY)
-                                       PERFORM
-                                           2401-PTNYUINRRK-HENSYU-SEC
-                                       MOVE    10              TO  IDY
-                                       MOVE   IDX5             TO  IDX
-                                   END-IF
-                              END-PERFORM
-                           ELSE    
-                               PERFORM VARYING IDY FROM    1   BY  1
-                                       UNTIL   IDY >       10
-                                       OR  RECE62-HKNCOMBI (IDY)
-                                                           =   ZERO
-                                   IF      RECE61-DAY (IDX)
-                                               =   RECE62-HKNCOMBI (IDY)
-                                       PERFORM
-                                           2401-PTNYUINRRK-HENSYU-SEC
-                                       MOVE    10              TO  IDY
-                                       MOVE   IDX5             TO  IDX
-                                   END-IF
-                               END-PERFORM
-                           END-IF
+                                   PERFORM 2401-PTNYUINRRK-HENSYU-SEC
+                                   MOVE    10              TO  IDY
+                                   MOVE   IDX5             TO  IDX
+                               END-IF
+                           END-PERFORM
                        ELSE    
                            PERFORM VARYING IDY FROM    1   BY  1
                                    UNTIL   IDY >       10
