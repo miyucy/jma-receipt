@@ -3581,15 +3581,11 @@
                DISPLAY "LNK-NYUINDAY-RC=" LNK-NYUINDAY-RC
                GO  TO  500-ORCSNYUINDAY-CHECK-EXT
            END-IF
-       *
+      *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       31
              IF      LNK-NYUINDAY-DOUJITSU-KBN (IDXX)
                                            =   "1"
-      *??
-               DISPLAY "LNK-NYUINDAY-DOUJITSU-HKNCOMBI=" IDXX " "
-                      LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDXX) "#" 
-      *??
       *
                PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >   10
