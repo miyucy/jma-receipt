@@ -2403,7 +2403,7 @@ grpsys                 MOVE    NACCT-HOSPNUM       TO  COMB-HOSPNUM
                IF      LNK-NYUINDAY-RC >   0
                    GO  TO  42032-NYUINACCT-CHK-EXT
                END-IF
-       *
+      *
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       31
                        OR      FLG-CHK =       1
