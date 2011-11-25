@@ -3146,6 +3146,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       *
            IF      FLG-BYOMEI-DELETE   =   1
+      *       「の疑い」を検索したとき
                IF      WRK-UTAGAIFLG-KETASU    >   ZERO
                    EVALUATE    WRK-UTAGAIFLG
                        WHEN    SPACE
@@ -3156,6 +3157,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    "3"         TO  WRK-UTAGAIFLG
                    END-EVALUATE
                END-IF    
+      *
+               IF      WRK-UTAGAIFLG       =   "3" OR  "2"
+                   CONTINUE
+               ELSE
+      *            「急性」を検索
+                   PERFORM VARYING IDY FROM    1  BY  2
+                           UNTIL   IDY >       77
+                       IF      WRK-BYOMEI1 (IDY:4)  =   "急性"
+                           EVALUATE    WRK-UTAGAIFLG
+                               WHEN    SPACE
+                                   MOVE    "2"         TO  WRK-UTAGAIFLG
+                               WHEN    "1"
+                                   MOVE    "3"         TO  WRK-UTAGAIFLG
+                           END-EVALUATE
+                           MOVE    80               TO  IDY
+                       END-IF     
+                   END-PERFORM
+               END-IF     
            END-IF    
       *
       *    患者病名マスタ検索（同一開始日・病名）
