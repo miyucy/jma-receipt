@@ -158,6 +158,11 @@
            03  WRK-GENSAN3-MIJISI          PIC 9(01).
            03  WRK-GENSAN4-MIJISI          PIC 9(01).
       *
+           03  WRK-GETSUMATSU-YMD.
+               05  WRK-GETSUMATSU-YY       PIC 9(04).
+               05  WRK-GETSUMATSU-MM       PIC 9(02).
+               05  WRK-GETSUMATSU-DD       PIC 9(02).
+      *
       *    Æþ±¡²ñ·×¥ï¡¼¥¯
            03  WRK-NYUIN-TABLE.
                05  WRK-NYUIN-TBL           OCCURS  31.
@@ -2837,7 +2842,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *         END-IF
            END-PERFORM
       *    
-      *    Æ±ÆüºÆÆþ±¡È½Äê¤Ë¤Ä¤¤¤Æ¼èÆÀ
+      *    ·îËöÆü¤ÎÆ±ÆüºÆÆþ±¡È½Äê¤Ë¤Ä¤¤¤Æ¼èÆÀ
+      *    ·îËöÆü¤ò¼èÆÀ
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM
+                                       TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY7-KOYOMI     TO  WRK-GETSUMATSU-YMD
+           END-IF
+      *
            INITIALIZE                          ORCSNYUINDAY-AREA
            MOVE    LNK-ORCHCN33SUB-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
            MOVE    LNK-ORCHCN33SUB-PTID        TO  LNK-NYUINDAY-PTID
@@ -2845,7 +2862,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
                                                SPA-AREA
       *
-           PERFORM    VARYING   IDX1   FROM  1  BY  1
+           IF   LNK-NYUINDAY-DOUJITSU-KBN(WRK-GETSUMATSU-DD)  =   "1"
+             PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
       *         IF     WRK-SO-TEN(IDX1)       NOT =   ZERO
                     MOVE   ZERO    TO   FLG-HKNCOMBI-MATCH
@@ -2905,45 +2923,46 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       END-IF
                     END-IF
       *         END-IF
-           END-PERFORM
+             END-PERFORM
+           END-IF
       *
-           DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
-           DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
-                      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (1)
-           DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
-                      LNK-ORCHCN33SUB-NYUINKA (1 1)
-           DISPLAY   "³«»ÏÆü£±¡¡£± = "
-                      LNK-ORCHCN33SUB-STDAY (1 1)
-           DISPLAY   "½ªÎ»Æü£±¡¡£± = "
-                      LNK-ORCHCN33SUB-EDDAY (1 1)
-           DISPLAY   "Æü¿ô£±¡¡£± = "
-                      LNK-ORCHCN33SUB-DAY (1 1)
-           DISPLAY   "Æþ±¡²Ê£±¡¡£² = "
-                      LNK-ORCHCN33SUB-NYUINKA (1 2)
-           DISPLAY   "³«»ÏÆü£±¡¡£² = "
-                      LNK-ORCHCN33SUB-STDAY (1 2)
-           DISPLAY   "½ªÎ»Æü£±¡¡£² = "
-                      LNK-ORCHCN33SUB-EDDAY (1 2)
-           DISPLAY   "Æü¿ô£±¡¡£² = "
-                      LNK-ORCHCN33SUB-DAY (1 2)
-           DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
-                      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (2)
-           DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
-                      LNK-ORCHCN33SUB-NYUINKA (2 1)
-           DISPLAY   "³«»ÏÆü£²¡¡£± = "
-                      LNK-ORCHCN33SUB-STDAY (2 1)
-           DISPLAY   "½ªÎ»Æü£²¡¡£± = "
-                      LNK-ORCHCN33SUB-EDDAY (2 1)
-           DISPLAY   "Æü¿ô£²¡¡£± = "
-                      LNK-ORCHCN33SUB-DAY (2 1)
-           DISPLAY   "Æþ±¡²Ê£²¡¡£² = "
-                      LNK-ORCHCN33SUB-NYUINKA (2 2)
-           DISPLAY   "³«»ÏÆü£²¡¡£² = "
-                      LNK-ORCHCN33SUB-STDAY (2 2)
-           DISPLAY   "½ªÎ»Æü£²¡¡£² = "
-                      LNK-ORCHCN33SUB-EDDAY (2 2)
-           DISPLAY   "Æü¿ô£²¡¡£² = "
-                      LNK-ORCHCN33SUB-DAY (2 2)
+      *     DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
+      *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (1)
+      *     DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
+      *                LNK-ORCHCN33SUB-NYUINKA (1 1)
+      *     DISPLAY   "³«»ÏÆü£±¡¡£± = "
+      *                LNK-ORCHCN33SUB-STDAY (1 1)
+      *     DISPLAY   "½ªÎ»Æü£±¡¡£± = "
+      *                LNK-ORCHCN33SUB-EDDAY (1 1)
+      *     DISPLAY   "Æü¿ô£±¡¡£± = "
+      *                LNK-ORCHCN33SUB-DAY (1 1)
+      *     DISPLAY   "Æþ±¡²Ê£±¡¡£² = "
+      *                LNK-ORCHCN33SUB-NYUINKA (1 2)
+      *     DISPLAY   "³«»ÏÆü£±¡¡£² = "
+      *                LNK-ORCHCN33SUB-STDAY (1 2)
+      *     DISPLAY   "½ªÎ»Æü£±¡¡£² = "
+      *                LNK-ORCHCN33SUB-EDDAY (1 2)
+      *     DISPLAY   "Æü¿ô£±¡¡£² = "
+      *                LNK-ORCHCN33SUB-DAY (1 2)
+      *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (2)
+      *     DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
+      *                LNK-ORCHCN33SUB-NYUINKA (2 1)
+      *     DISPLAY   "³«»ÏÆü£²¡¡£± = "
+      *                LNK-ORCHCN33SUB-STDAY (2 1)
+      *     DISPLAY   "½ªÎ»Æü£²¡¡£± = "
+      *                LNK-ORCHCN33SUB-EDDAY (2 1)
+      *     DISPLAY   "Æü¿ô£²¡¡£± = "
+      *                LNK-ORCHCN33SUB-DAY (2 1)
+      *     DISPLAY   "Æþ±¡²Ê£²¡¡£² = "
+      *                LNK-ORCHCN33SUB-NYUINKA (2 2)
+      *     DISPLAY   "³«»ÏÆü£²¡¡£² = "
+      *                LNK-ORCHCN33SUB-STDAY (2 2)
+      *     DISPLAY   "½ªÎ»Æü£²¡¡£² = "
+      *                LNK-ORCHCN33SUB-EDDAY (2 2)
+      *     DISPLAY   "Æü¿ô£²¡¡£² = "
+      *                LNK-ORCHCN33SUB-DAY (2 2)
            .
        210-NYUINDAY-SET-EXT.
            EXIT.
