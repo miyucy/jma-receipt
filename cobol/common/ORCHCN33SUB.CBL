@@ -525,10 +525,10 @@
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-ORCHCN33SUB-PTID     TO  PTNYUINRRK-PTID
-           MOVE    "key3"                   TO  MCP-PATHNAME
+           MOVE    "key8"                   TO  MCP-PATHNAME
            PERFORM 910-PTNYUINRRK-SELECT-SEC
            IF      FLG-PTNYUINRRK            =   ZERO
-               MOVE    "key3"               TO  MCP-PATHNAME
+               MOVE    "key8"               TO  MCP-PATHNAME
                PERFORM   910-PTNYUINRRK-READ-SEC
                PERFORM   UNTIL   (FLG-PTNYUINRRK    =   1)
                    IF   PTNYUINRRK-JTIKBN    =    "5"
@@ -561,10 +561,13 @@
                                    PERFORM  VARYING  IDX1  
                                             FROM IDX-ST   BY  1
                                             UNTIL (IDX1  >  IDX-ED)
-                                        IF   TBL-NYUINKA(IDX1) = SPACE
+      **                                  IF   TBL-NYUINKA(IDX1) = SPACE
+      **                                     MOVE PTNYUINRRK-NYUINKA  TO
+      **                                               TBL-NYUINKA(IDX1)
+      **                                  END-IF
+      *
                                            MOVE PTNYUINRRK-NYUINKA  TO
                                                      TBL-NYUINKA(IDX1)
-                                        END-IF
                                    END-PERFORM
                                END-IF
                            ELSE
@@ -598,7 +601,7 @@
                            END-IF
                        END-IF
                    END-IF
-                   MOVE    "key3"                 TO  MCP-PATHNAME
+                   MOVE    "key8"                 TO  MCP-PATHNAME
                    PERFORM 910-PTNYUINRRK-READ-SEC
                END-PERFORM
            ELSE
@@ -607,7 +610,7 @@
            END-IF
       *    ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
-           MOVE    "key3"                  TO  MCP-PATHNAME
+           MOVE    "key8"                  TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
            IF    ( LNK-ORCHCN33SUB-RC       NOT =   ZERO )
