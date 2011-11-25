@@ -190,13 +190,17 @@
                05  RECE61-RENRAKU-TEL2    PIC X(15).
       *県番号
            03  RECE61-PREFNUM             PIC  9(02).
-      *同日再入院情報
+      *入院料情報
            03  RECE61-DOUJITSU-AREA.
       *同日再入院（入院分）の保険組合せ
                05  RECE61-DOUJITSU-HKNCOMBI
                                           PIC 9(04)   OCCURS  31.
       *同日再入院（入院分）の食事開始時間区分
                05  RECE61-DOUJITSU-SKJKBN PIC X(01)   OCCURS  31.
+      *入院区分
+               05  RECE61-NYUINDAY-TBL.
+                   07  RECE61-NYUINDAY-KBN
+                                          PIC  X(01)  OCCURS  31.
       *印刷順
            03  RECE61-PRTSEQ              PIC  9(03).
       *未請求フラグ

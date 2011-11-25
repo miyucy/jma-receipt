@@ -2404,18 +2404,17 @@
            END-IF
       *
       *同日再入院（入院分）の保険組合せ、食事開始時間区分
-           EVALUATE    WRK-SYOKBN
-               WHEN    "1"
-                   PERFORM VARYING IDX1    FROM    1   BY  1
-                           UNTIL   IDX1    >       31
-                       MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX1)
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       31
+               MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX1)
                                            TO
                                    WRK-RECE61-DOUJITSU-HKNCOMBI (IDX1)
-                       MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX1)
+               MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX1)
                                            TO
                                    WRK-RECE61-DOUJITSU-SKJKBN   (IDX1)
-                   END-PERFORM
-           END-EVALUATE
+           END-PERFORM
+      *入院区分
+           MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE61-NYUINDAY-TBL
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
