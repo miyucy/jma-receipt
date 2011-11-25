@@ -98,6 +98,7 @@
       *同日再入院区分
            03  LNK-S02-DOJITU.
               05  LNK-S02-DOJITU-DAY       PIC  9(01)   OCCURS  31.
+              05  LNK-S02-DOJITU-DAY2      PIC  9(01)   OCCURS  31.
               05  LNK-S02-DOJITU-SKJST     PIC  X(01)   OCCURS  31.
               05  LNK-S02-DOJITU-SKJED     PIC  X(01)   OCCURS  31.
       *
