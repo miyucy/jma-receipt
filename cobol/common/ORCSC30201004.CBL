@@ -192,6 +192,11 @@
            03  FLG-SYUJUTU             PIC 9(01).
            03  IDX-CHU                 PIC 9(04).
       *
+      *ver.4.7
+      *    同日再入院分
+           03  WRK-D-DAY               PIC 9(03).
+           03  IDXX                    PIC 9(02).
+           03  IDX-D                   PIC 9(02).
       *
        01  TBL-NISUU-AREA.
            03  TBL-NISUU-OCC           OCCURS   31.
@@ -325,6 +330,9 @@
            COPY    "MCPDATA.INC".
       *DDD COPY    "CPORCMCP.INC".
       *
+      *    診療行為用共通パラメタ
+           COPY    "K01COMMON-SPA".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -357,6 +365,12 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
+      *
+           IF      LNK-ORCSC-PG        =   "K02"
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           ELSE
+               INITIALIZE                      SPA-K01KYOUTU
+           END-IF
       *
            EVALUATE    LNK-ORCSC-KBN
       *        剤別　チェック、編集、自動算定
@@ -1873,6 +1887,23 @@
       *****************************************************************
        3001-EKIRYO-SYUKEI-SEC         SECTION.
       *
+      *    同日再入院対応
+           MOVE    ZERO                TO  IDX-D
+           MOVE    1                   TO  IDXX
+           IF     (LNK-ORCSC-SYORIFLG =   "1"    )
+      *        訂正の時のみ対象回数変更
+               IF     (SPA-K02N-DOUKBN     =   "1"  )
+                   MOVE    SPA-K02N-DOUDAY     TO  IDX-D
+                   MOVE    2                   TO  IDXX
+               ELSE
+      *        診療日付＝同日再入院日
+                   IF     (SPA-SRYYMD             =   SPA-K02N-TAIINYMD)
+                       MOVE    SPA-K02N-TAIINYMD(7:2)  TO  IDX-D
+                       MOVE    3                   TO  IDXX
+                   END-IF
+               END-IF
+           END-IF
+      *!!!
       *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
@@ -1912,6 +1943,10 @@
                       (ACCT-SRYKA         =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI      =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO               TO  FLG-ZAIARI
+                   IF     (IDX-D              >   ZERO )  AND
+                          (ACCT-DAY (IDXX IDX-D)  >  ZERO )
+                       MOVE    1                  TO  FLG-ZAIARI
+                   END-IF
                END-IF
       *        包括まとめは対象外
                IF      ACCT-HKNCOMBI           =   "9999"
@@ -2065,7 +2100,16 @@
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   31
-               IF     (ACCT-DAY (1 IDY)    >   ZERO )  AND
+      *ver.4.7
+      *同日再入院日
+               IF      IDX-D           =   IDY
+                   MOVE    ACCT-DAY (IDXX IDY)     TO  WRK-D-DAY
+               ELSE
+                   MOVE    ACCT-DAY (1    IDY)     TO  WRK-D-DAY
+               END-IF
+      *
+      ******   IF     (ACCT-DAY (1 IDY)    >   ZERO )  AND
+               IF     (WRK-D-DAY           >   ZERO )  AND
                       (TBL-DAY  (IDY)      >   ZERO )
                  IF      WRK-SRYSYUKBN       =   "330"
                    ADD     WRK-GOK-RYOU    TO  TBL-CHUSYA (IDY)
@@ -2073,7 +2117,8 @@
                    ADD     WRK-GOK-RYOU    TO  TBL-CHUSYA-2 (IDY)
                  END-IF
                END-IF
-               IF      ACCT-DAY (1 IDY)    >   ZERO
+      ******** IF      ACCT-DAY (1 IDY)    >   ZERO
+               IF      WRK-D-DAY           >   ZERO
                    IF      WRK-TEN-SRYCD   NOT =   SPACE
                        IF     (TBL-TEN-SRYCD(IDY)  NOT =  SPACE )
                            MOVE    WRK-TEN-SRYCD
@@ -2144,7 +2189,15 @@
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   31
-               IF      ACCT-DAY (1 IDY)    >   ZERO
+      *ver.4.7
+      *同日再入院日
+               IF      IDX-D           =   IDY
+                   MOVE    ACCT-DAY (IDXX IDY)     TO  WRK-D-DAY
+               ELSE
+                   MOVE    ACCT-DAY (1    IDY)     TO  WRK-D-DAY
+               END-IF
+      *********IF      ACCT-DAY (1 IDY)    >   ZERO
+               IF      WRK-D-DAY           >   ZERO
       *            生物学的製剤区分
                    IF      FLG-SEIBUTU         =   1
                        MOVE    1               TO  TBL-IVH2-SEIBUTU(IDY)
@@ -2191,6 +2244,11 @@
                       (ACCT-SRYKA          =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI       =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO                TO  FLG-ZAIARI
+      *            同日再日
+                   IF     (IDX-D              >   ZERO )  AND
+                          (ACCT-DAY (IDXX IDX-D)  >  ZERO )
+                       MOVE    1                  TO  FLG-ZAIARI
+                   END-IF
                END-IF
       *        手技料点数がないものは対象外
                IF      ACCT-SYUTEN1        =   ZERO
@@ -2214,8 +2272,18 @@
                IF      FLG-ZAIARI          =   1
                   PERFORM VARYING     IDY     FROM    1   BY  1
                           UNTIL       IDY     >   31
-                       IF      ACCT-DAY (1 IDY)    >   ZERO
-                           MOVE    ACCT-DAY (1 IDY)
+      *ver.4.7
+      *同日再入院日
+                       IF      IDX-D           =   IDY
+                           MOVE    ACCT-DAY (IDXX IDY)     TO  WRK-D-DAY
+                       ELSE
+                           MOVE    ACCT-DAY (1    IDY)     TO  WRK-D-DAY
+                       END-IF
+      *
+      **************** IF      ACCT-DAY (1 IDY)    >   ZERO
+      ***************      MOVE    ACCT-DAY (1 IDY)
+                       IF      WRK-D-DAY       >   ZERO
+                           MOVE    WRK-D-DAY
                                                TO  TBL-SYU-DAY(IDY)
                        END-IF
                    END-PERFORM
@@ -2305,6 +2373,11 @@
                       (ACCT-SRYKA          =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI       =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO                TO  FLG-ZAIARI
+      *ver.4.7     同日再日
+                   IF     (IDX-D              >   ZERO )  AND
+                          (ACCT-DAY (IDXX IDX-D)  >  ZERO )
+                       MOVE    1                  TO  FLG-ZAIARI
+                   END-IF
                END-IF
       *        手技料点数がないものは対象外
                IF      ACCT-SYUTEN1       =   ZERO
@@ -2326,8 +2399,15 @@
                    IF      FLG-GAZO-ARI        =   1
                        PERFORM VARYING IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
-                           IF      ACCT-DAY (1 IDY)    >   ZERO
-                               MOVE    ACCT-DAY (1 IDY)
+      *ver.4.7
+      *同日再入院日
+                           IF      IDX-D           =   IDY
+                               MOVE    ACCT-DAY (IDXX IDY) TO  WRK-D-DAY
+                           ELSE
+                               MOVE    ACCT-DAY (1    IDY) TO  WRK-D-DAY
+                           END-IF
+                           IF      WRK-D-DAY        >   ZERO
+                               MOVE    WRK-D-DAY
                                                TO  TBL-GAZ-DAY(IDY)
                            END-IF
                        END-PERFORM
