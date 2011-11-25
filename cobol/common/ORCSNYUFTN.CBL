@@ -170,6 +170,7 @@
            03  WRK-HIKAKU-ZAITEN           PIC 9(08).
            03  WRK-TENSU-KEISAN            PIC 9(08).
            03  WRK-JNISSU-ERR              PIC 9(01).
+           03  WRK-DOJITU-TENTEK           PIC 9(07).
       *
        01  WRK-ROSAI-AREA.
            03  WRK-SYUTEN                  PIC 9(09).
@@ -222,6 +223,7 @@
        01  WRK-DOJITU-TABLE.
            02  WRK-DOJITU-TBL    OCCURS   10.
               03 WRK-DOJITU-FLG            PIC 9(01)  OCCURS  31.
+              03 WRK-DOJITU-FLG2           PIC 9(01)  OCCURS  31.
               03 WRK-DOJITUSKJST-FLG       PIC X(01)  OCCURS  31.
               03 WRK-DOJITUSKJED-FLG       PIC X(01)  OCCURS  31.
       *
@@ -246,6 +248,10 @@
        01  WRK-KAIKEING-TABLE.
            02  WRK-KAIKEING-TBL  OCCURS   10.
               03 WRK-KAIKEING              PIC 9(01).
+      *
+       01  WRK-KAIKEING2-TABLE.
+           02  WRK-KAIKEING2-TBL OCCURS   10.
+              03 WRK-KAIKEING2             PIC 9(01).
       *
       *    高齢者他保険入院フラグ
        01  WRK-KOREI-TANYUIN-TABLE.
@@ -684,6 +690,7 @@
                          WRK-NYUINDAY-TAIHI-TABLE
                          WRK-TAISYOGAI-HANTEI-TABLE
                          WRK-KAIKEING-TABLE
+                         WRK-KAIKEING2-TABLE
                          WRK-KOREI-TANYUIN-TABLE
                          FLG-AREA
                          CNT-AREA.
@@ -822,6 +829,9 @@
               END-IF
            END-IF.
       *
+      *    不要な収納を除外する
+           PERFORM     TAISYOGAI-DATA-HENSYU-SEC.
+      *
       *    入院料算定保険組み合わせ以外の保険組み合わせで
       *    入院料加算があるかチェック
            IF    LNK-S02-RC   =   ZERO
@@ -839,6 +849,10 @@
                   WHEN      3
                     IF   WRK-MSGCD = ZERO
                         MOVE     16     TO    WRK-MSGCD
+                    END-IF
+                  WHEN      4
+                    IF   WRK-MSGCD = ZERO OR 14 OR 16
+                        MOVE     24     TO    WRK-MSGCD
                     END-IF
                 END-EVALUATE
              END-PERFORM
@@ -882,9 +896,6 @@
       ***    END-IF
       ***  END-IF.
       *
-      *    不要な収納を除外する
-           PERFORM     TAISYOGAI-DATA-HENSYU-SEC.
-      *
        MAIN-EXT.
            EXIT PROGRAM
            STOP RUN.
@@ -924,6 +935,7 @@
       *
            INITIALIZE    WRK-SYUNOU-REC-T
            INITIALIZE    WRK-SYUDAY-REC-T
+           INITIALIZE    WRK-KAIKEING2-TABLE
       *
            MOVE    ZERO     TO      IDY
       *
@@ -934,6 +946,7 @@
                 ADD      1                TO     IDY
                 MOVE  LNK-SYUNOU-REC(IDX) TO  WRK-SYUNOU-REC(IDY)
                 MOVE  LNK-SYUDAY-REC(IDX) TO  WRK-SYUDAY-REC(IDY)
+                MOVE  WRK-KAIKEING(IDX)   TO  WRK-KAIKEING2 (IDY)
              END-IF
            END-PERFORM
       *
@@ -941,11 +954,13 @@
       *
            INITIALIZE    LNK-SYUNOU-REC-T
            INITIALIZE    LNK-SYUDAY-REC-T
+           INITIALIZE    WRK-KAIKEING-TABLE
       *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                        UNTIL   (IDX                 >    10 )
                 MOVE  WRK-SYUNOU-REC(IDX) TO  LNK-SYUNOU-REC(IDX)
                 MOVE  WRK-SYUDAY-REC(IDX) TO  LNK-SYUDAY-REC(IDX)
+                MOVE  WRK-KAIKEING2 (IDX) TO  WRK-KAIKEING(IDX)
            END-PERFORM
       *
            .
@@ -2283,6 +2298,7 @@
                            END-IF
                            MOVE       9   TO  WRK-DOJITU-FLG (IDX IDY)
                            MOVE      "9"  TO  LNK-SYU-DAY(IDX IDY)
+                           MOVE       1   TO  WRK-DOJITU-FLG2(IDX IDY)
                          WHEN     OTHER
                            IF   ( IDX-ST  =  IDY          )
                            OR   ((LNK-S02-TEIKI-KBN = "Y") AND
@@ -2293,11 +2309,19 @@
                              END-IF
                              MOVE     9   TO  WRK-DOJITU-FLG (IDX IDY)
                              MOVE    "9"  TO  LNK-SYU-DAY(IDX IDY)
+                             IF  (LNK-S02-TEIKI-KBN = "Y")
+                             AND (IDX-ST  NOT = IDY      )
+                             AND (IDX-ED  NOT = IDY      )
+                                MOVE  1   TO  WRK-DOJITU-FLG2(IDX IDY)
+                             END-IF
                            ELSE
                              IF   IDX-ED  =  IDY
                                IF  LNK-SYU-DAY(IDX IDY) = "9"
                                  MOVE  SPACE
                                           TO  LNK-SYU-DAY(IDX IDY)
+                               END-IF
+                               IF  LNK-SYU-DAY(IDX IDY) = "2"
+                                 MOVE 7   TO  WRK-DOJITU-FLG (IDX IDY)
                                END-IF
                                MOVE   1   TO  WRK-TAISYOGAI-HANTEI(IDX)
                              END-IF
@@ -2310,12 +2334,18 @@
                        EVALUATE  LNK-S02-TEIKI-KBN
                          WHEN      "X"
                            MOVE       1   TO  WRK-DOJITU-FLG (IDX IDY)
+                           MOVE       1   TO  WRK-DOJITU-FLG2(IDX IDY)
                          WHEN     OTHER
                            IF   ( IDX-ED  =  IDY          )
                            OR   ((LNK-S02-TEIKI-KBN = "Y") AND
                                  (IDX-ST  NOT = IDY      ) AND
                                  (IDX-ED  NOT = IDY      ))
                              MOVE     1   TO  WRK-DOJITU-FLG (IDX IDY)
+                             IF  (LNK-S02-TEIKI-KBN = "Y")
+                             AND (IDX-ST  NOT = IDY      )
+                             AND (IDX-ED  NOT = IDY      )
+                                MOVE  1   TO  WRK-DOJITU-FLG2(IDX IDY)
+                             END-IF
                            ELSE
                              IF   IDX-ST  =  IDY
                                MOVE   8   TO  WRK-DOJITU-FLG (IDX IDY)
@@ -2329,10 +2359,14 @@
                          WHEN      "X"
                            CONTINUE
                          WHEN     OTHER
-                           IF  (LNK-SYU-DAY(IDX IDY)  =   "2")
-                           AND (IDX-ST  =  IDY               )
-                             MOVE     8   TO  WRK-DOJITU-FLG (IDX IDY)
-                             MOVE    "8"  TO  LNK-SYU-DAY(IDX IDY)
+                           IF  LNK-SYU-DAY(IDX IDY) =  "2"
+                             IF   IDX-ST  =  IDY
+                               MOVE   8   TO  WRK-DOJITU-FLG (IDX IDY)
+                               MOVE  "8"  TO  LNK-SYU-DAY(IDX IDY)
+                             END-IF
+                             IF   IDX-ED  =  IDY
+                               MOVE   7   TO  WRK-DOJITU-FLG (IDX IDY)
+                             END-IF
                              MOVE     1   TO  WRK-TAISYOGAI-HANTEI(IDX)
                            END-IF
                        END-EVALUATE
@@ -2401,13 +2435,13 @@
                        UNTIL   IDY   >    31
                 EVALUATE  LNK-SYU-DAY(IDX IDY)
                   WHEN     SPACE
-                  WHEN      "8"
-                  WHEN      "9"
                      CONTINUE
                   WHEN      "2"
+                  WHEN      "8"
                      MOVE    1     TO   FLG-KOREI-TANYUIN
                   WHEN      "1"
                   WHEN      "3"
+                  WHEN      "9"
                      MOVE   ZERO   TO   FLG-KOREI-TANYUIN
                      MOVE    31    TO   IDY
                 END-EVALUATE
@@ -3611,8 +3645,14 @@ grpsys                              SPA-AREA
                                                  TO  SYU-HKNTEN(15)
                      ADD   LNK-SROUNYUIN-ZAITEN-NACCT(SYU-IDX)
                                                  TO  SYU-HKNTEN(15)
-                     ADD   LNK-SROUNYUIN-ZAITEN-ACCT(SYU-IDX)
+                     EVALUATE  WRK-DOJITU-FLG(IDX SYU-IDX)
+                       WHEN      0
+                         ADD  LNK-SROUNYUIN-ZAITEN-ACCT (SYU-IDX)
                                                  TO  SYU-HKNTEN(15)
+                       WHEN      1
+                         ADD  LNK-SROUNYUIN-ZAITEN-ACCT2(SYU-IDX)
+                                                 TO  SYU-HKNTEN(15)
+                     END-EVALUATE
       **>            ADD   LNK-SROUNYUIN-ZAITEN-ACCTETC(SYU-IDX)
       **>                                        TO  SYU-HKNTEN(15)
                      ADD   LNK-SROUNYUIN-GENTEN(SYU-IDX)
@@ -3621,11 +3661,26 @@ grpsys                              SPA-AREA
       *
                 MOVE   SYU-SKYSTYMD(7:2)  TO  WRK-CHECK-STDAY
                 MOVE   SYU-SKYEDYMD(7:2)  TO  WRK-CHECK-EDDAY
-                IF  ( WRK-CHECK-STDAY  <=  SYU-IDX                )
-                AND ( SYU-IDX          <=  WRK-CHECK-EDDAY        )
-                AND ( WRK-DOJITU-FLG(IDX SYU-IDX) = 0 OR 1        )
-                     ADD   LNK-SROUNYUIN-ZAITEN-ACCTETC(SYU-IDX)
+                IF  ( WRK-CHECK-STDAY  <=  SYU-IDX         )
+                AND ( SYU-IDX          <=  WRK-CHECK-EDDAY )
+                 IF  WRK-DOJITU-FLG2(IDX SYU-IDX) = 1
+                     ADD   LNK-SROUNYUIN-ZAITEN-ACCTETC (SYU-IDX)
                                                  TO  SYU-HKNTEN(15)
+                 ELSE
+                  EVALUATE  WRK-DOJITU-FLG(IDX SYU-IDX)
+                    WHEN      0
+                     ADD   LNK-SROUNYUIN-ZAITEN-ACCTETC (SYU-IDX)
+                                                 TO  SYU-HKNTEN(15)
+                    WHEN      1
+                    WHEN      7
+                     ADD   LNK-SROUNYUIN-ZAITEN-ACCTETC2(SYU-IDX)
+                                                 TO  SYU-HKNTEN(15)
+                    WHEN      8
+                    WHEN      9
+                     ADD   LNK-SROUNYUIN-ZAITEN-ACCTETC3(SYU-IDX)
+                                                 TO  SYU-HKNTEN(15)
+                  END-EVALUATE
+                 END-IF
                 END-IF
       *
               END-PERFORM
@@ -4937,14 +4992,24 @@ grpsys                                        SPA-AREA
                  AND ( TBL-GAIHAKU(SYU-IDX)  =   ZERO   OR   4
                                                         OR   5 )
                  AND ( WRK-DOJITU-FLG(IDX SYU-IDX) = 0 OR 1    )
-                     ADD   ACCT-DAY(1 SYU-IDX)
-                                      TO   SINRYO-COUNT
-                     IF   SYU-SYUHKNNUM  =  "971" OR "973" OR "975"
-                        CONTINUE                                       
-                     ELSE                                              
-                        MOVE  ACCT-DAY(1 SYU-IDX)                      
-                                      TO   TBL-ZAIKAISU(SYU-IDX)       
-                     END-IF                                            
+                     EVALUATE  WRK-DOJITU-FLG(IDX SYU-IDX)
+                       WHEN      0
+                         ADD    ACCT-DAY(1 SYU-IDX) TO  SINRYO-COUNT
+                         IF  SYU-SYUHKNNUM  = "971" OR "973" OR "975"
+                           CONTINUE
+                         ELSE
+                           MOVE ACCT-DAY(1 SYU-IDX)
+                                            TO  TBL-ZAIKAISU(SYU-IDX)
+                         END-IF
+                       WHEN      1
+                         ADD    ACCT-DAY(2 SYU-IDX) TO  SINRYO-COUNT
+                         IF  SYU-SYUHKNNUM  = "971" OR "973" OR "975"
+                           CONTINUE
+                         ELSE
+                           MOVE ACCT-DAY(2 SYU-IDX)
+                                            TO  TBL-ZAIKAISU(SYU-IDX)
+                         END-IF
+                     END-EVALUATE
                  ELSE
                    IF  ( ACCT-DAY(1 SYU-IDX)         NOT =  ZERO )
                    AND ( SYU-HKNCOMBINUM       =   ACCT-HKNCOMBI )
@@ -4955,19 +5020,43 @@ grpsys                                        SPA-AREA
                      MOVE   SYU-SKYEDYMD(7:2)  TO  WRK-CHECK-EDDAY
                      IF     (WRK-CHECK-STDAY  <=  SYU-IDX        )
                      AND    (SYU-IDX          <=  WRK-CHECK-EDDAY)
-                       ADD   ACCT-DAY(1 SYU-IDX)
-                                      TO   SINRYO-COUNT
-                       IF   SYU-SYUHKNNUM  =  "971" OR "973" OR "975"
-                          CONTINUE
-                       ELSE
-                          MOVE  ACCT-DAY(1 SYU-IDX)
-                                      TO   TBL-ZAIKAISU(SYU-IDX)
-                       END-IF
+                       EVALUATE  WRK-DOJITU-FLG(IDX SYU-IDX)
+                         WHEN      0
+                           ADD    ACCT-DAY(1 SYU-IDX) TO  SINRYO-COUNT
+                           IF  SYU-SYUHKNNUM  = "971" OR "973" OR "975"
+                             CONTINUE
+                           ELSE
+                             MOVE ACCT-DAY(1 SYU-IDX)
+                                              TO  TBL-ZAIKAISU(SYU-IDX)
+                           END-IF
+                         WHEN      1
+                           ADD    ACCT-DAY(2 SYU-IDX) TO  SINRYO-COUNT
+                           IF  SYU-SYUHKNNUM  = "971" OR "973" OR "975"
+                             CONTINUE
+                           ELSE
+                             MOVE ACCT-DAY(2 SYU-IDX)
+                                              TO  TBL-ZAIKAISU(SYU-IDX)
+                           END-IF
+                       END-EVALUATE
                      END-IF
                    END-IF
                  END-IF
-                 IF  (ACCT-DAY(1 SYU-IDX)         NOT =  ZERO)
-                 AND (WRK-DOJITU-FLG(IDX SYU-IDX) = 0 OR 1   )
+                 IF   FLG-NYUINRYO-KASAN-CHK =  ZERO
+                    MOVE   ACCT-HKNCOMBI   TO   WRK-HKNCOMBINUM
+                    PERFORM  HKNCOMBI-KENSAKU-SEC
+                    IF  COMB-HKNNUM  =  "971" OR "973" OR "975"
+                      IF  COMB-HKNNUM  =  "971" OR "973"
+                         PERFORM   NYUINRYO-KASAN-CHECK2-SEC
+                      END-IF
+                    ELSE
+                      PERFORM   NYUINRYO-KASAN-CHECK-SEC
+                    END-IF
+                    MOVE    1    TO   FLG-NYUINRYO-KASAN-CHK
+                 END-IF
+                 IF  ((WRK-DOJITU-FLG(IDX SYU-IDX) =  0 OR 1 OR 7) AND
+                      (ACCT-DAY(2 SYU-IDX)     NOT =  ZERO       ))
+                 OR  ((WRK-DOJITU-FLG(IDX SYU-IDX) =  8 OR 9     ) AND
+                      (ACCT-DAY(3 SYU-IDX)     NOT =  ZERO       ))
                    IF  (SYU-DAY(SYU-IDX)                =   "1")
                    OR  (WRK-NYUINDAY-KBN(IDX SYU-IDX)   =   "1")
                      IF  TBL-GAIHAKU(SYU-IDX)  =  ZERO OR 4
@@ -4982,18 +5071,6 @@ grpsys                                        SPA-AREA
                        CONTINUE
                      ELSE
                        IF  ACCT-ZAITEN  NOT = ZERO
-                         IF   FLG-NYUINRYO-KASAN-CHK =  ZERO
-                            MOVE   ACCT-HKNCOMBI   TO   WRK-HKNCOMBINUM
-                            PERFORM  HKNCOMBI-KENSAKU-SEC
-                            IF  COMB-HKNNUM  =  "971" OR "973" OR "975"
-                              IF  COMB-HKNNUM  =  "971" OR "973"
-                                 PERFORM   NYUINRYO-KASAN-CHECK2-SEC
-                              END-IF
-                            ELSE
-                              PERFORM   NYUINRYO-KASAN-CHECK-SEC
-                            END-IF
-                            MOVE    1    TO   FLG-NYUINRYO-KASAN-CHK
-                         END-IF
                          IF  (WRK-KAIKEING(IDX)  = ZERO OR 3)
                          AND (FLG-NYUINRYO-KASAN-OK  =  ZERO)
                          AND (FLG-NYUINRYO-KASAN2-OK =  ZERO)
@@ -5010,31 +5087,44 @@ grpsys                                        SPA-AREA
                       OR  ((SYU-HKNCOMBINUM  NOT =  ACCT-HKNCOMBI) AND
                            (WRK-HANBETU-DAY-NACCT(IDX SYU-IDX)
                                                       NOT = SPACE))
+                      OR  ((SYU-HKNCOMBINUM  NOT =  ACCT-HKNCOMBI) AND
+                           (WRK-HANBETU-DAY-NACCT(IDX SYU-IDX)
+                                                          = SPACE) AND
+                           (WRK-DOJITU-FLG(IDX SYU-IDX) =  9     ))
                        IF  ACCT-ZAITEN  NOT = ZERO
-                         IF   FLG-NYUINRYO-KASAN-CHK =  ZERO
-                            MOVE   ACCT-HKNCOMBI   TO   WRK-HKNCOMBINUM
-                            PERFORM  HKNCOMBI-KENSAKU-SEC
-                            IF  COMB-HKNNUM  =  "971" OR "973" OR "975"
-                              IF  COMB-HKNNUM  =  "971" OR "973"
-                                 PERFORM   NYUINRYO-KASAN-CHECK2-SEC
-                              END-IF
-                            ELSE
-                              PERFORM   NYUINRYO-KASAN-CHECK-SEC
-                            END-IF
-                            IF  WRK-HANBETU-DAY-NACCT(IDX SYU-IDX)
-                                                           NOT = SPACE
-                              MOVE  ZERO TO   FLG-NYUINRYO-KASAN-OK
-                              MOVE  ZERO TO   FLG-NYUINRYO-KASAN2-OK
-                            END-IF
-                            MOVE    1    TO   FLG-NYUINRYO-KASAN-CHK
-                         END-IF
-                         IF  (WRK-KAIKEING(IDX)      =  ZERO)
-                         AND (FLG-NYUINRYO-KASAN-OK  =  ZERO)
-                         AND (FLG-NYUINRYO-KASAN2-OK =  ZERO)
-                            MOVE    3     TO    WRK-KAIKEING(IDX)
+                         IF  (( FLG-NYUINRYO-KASAN-OK  =  ZERO    )  OR
+                              ( WRK-HANBETU-DAY-NACCT(IDX SYU-IDX)
+                                                NOT = SPACE       )  OR
+                              ((WRK-HANBETU-DAY-NACCT(IDX SYU-IDX)
+                                                    = SPACE      ) AND
+                               (WRK-DOJITU-FLG(IDX SYU-IDX) =  9 )))
+                         AND (  FLG-NYUINRYO-KASAN2-OK =  ZERO     )
+                           IF   WRK-DOJITU-FLG(IDX SYU-IDX) =  8 OR 9
+                             IF  WRK-KAIKEING(IDX)  =  ZERO OR 1 OR 3
+                               MOVE    4     TO    WRK-KAIKEING(IDX)
+                             END-IF
+                           ELSE
+                             IF  WRK-KAIKEING(IDX)  =  ZERO
+                               MOVE    3     TO    WRK-KAIKEING(IDX)
+                             END-IF
+                           END-IF
                          END-IF
                        END-IF
                       END-IF
+                     END-IF
+                   END-IF
+                 END-IF
+                 IF   (WRK-DOJITU-FLG(IDX SYU-IDX) =  0          )
+                 AND  (ACCT-DAY(3 SYU-IDX)     NOT =  ZERO       )
+                   MOVE   SYU-SKYSTYMD(7:2)  TO  WRK-CHECK-STDAY
+                   MOVE   SYU-SKYEDYMD(7:2)  TO  WRK-CHECK-EDDAY
+                   IF     (WRK-CHECK-STDAY  <=  SYU-IDX        )
+                   AND    (SYU-IDX          <=  WRK-CHECK-EDDAY)
+                     IF  ACCT-ZAITEN  NOT = ZERO
+                       IF  (WRK-KAIKEING(IDX)      =  ZERO OR 1 OR 3)
+                       AND (FLG-NYUINRYO-KASAN2-OK =  ZERO          )
+                          MOVE    4     TO    WRK-KAIKEING(IDX)
+                       END-IF
                      END-IF
                    END-IF
                  END-IF
@@ -5052,19 +5142,47 @@ grpsys                                        SPA-AREA
            ELSE
              PERFORM   VARYING   SYU-IDX   FROM   1   BY   1
                      UNTIL      SYU-IDX   >   31
-      *@@@       IF  (SYU-DAY(SYU-IDX)
-      *@@@                           = "1" OR "2" OR "8" OR "9")
-                 IF  (SYU-DAY(SYU-IDX)       =     "1"  OR  "2")
-                 AND (ACCT-DAY(1 SYU-IDX)    NOT =  ZERO       )
-                 AND (SYU-HKNCOMBINUM        =    ACCT-HKNCOMBI)
-                     ADD   ACCT-DAY(1 SYU-IDX)
-                                      TO   SINRYO-COUNT
-                     IF   SYU-SYUHKNNUM  =  "971" OR "973" OR "975"
-                        CONTINUE                                       
-                     ELSE                                              
-                        MOVE  ACCT-DAY(1 SYU-IDX)                      
-                                      TO   TBL-ZAIKAISU(SYU-IDX)       
-                     END-IF                                            
+                 IF  (SYU-DAY(SYU-IDX) = "1" OR "2" OR "8" OR "9")
+                 AND (ACCT-DAY(1 SYU-IDX)    NOT =  ZERO         )
+                 AND (SYU-HKNCOMBINUM        =    ACCT-HKNCOMBI  )
+                    IF  WRK-DOJITU-FLG2(IDX SYU-IDX) = 1
+                         ADD    ACCT-DAY(1 SYU-IDX) TO  SINRYO-COUNT
+                         IF  SYU-SYUHKNNUM  = "971" OR "973" OR "975"
+                           CONTINUE
+                         ELSE
+                           MOVE ACCT-DAY(1 SYU-IDX)
+                                            TO  TBL-ZAIKAISU(SYU-IDX)
+                         END-IF
+                    ELSE
+                     EVALUATE  WRK-DOJITU-FLG(IDX SYU-IDX)
+                       WHEN      0
+                         ADD    ACCT-DAY(1 SYU-IDX) TO  SINRYO-COUNT
+                         IF  SYU-SYUHKNNUM  = "971" OR "973" OR "975"
+                           CONTINUE
+                         ELSE
+                           MOVE ACCT-DAY(1 SYU-IDX)
+                                            TO  TBL-ZAIKAISU(SYU-IDX)
+                         END-IF
+                       WHEN      1
+                       WHEN      7
+                         ADD    ACCT-DAY(2 SYU-IDX) TO  SINRYO-COUNT
+                         IF  SYU-SYUHKNNUM  = "971" OR "973" OR "975"
+                           CONTINUE
+                         ELSE
+                           MOVE ACCT-DAY(2 SYU-IDX)
+                                            TO  TBL-ZAIKAISU(SYU-IDX)
+                         END-IF
+                       WHEN      8
+                       WHEN      9
+                         ADD    ACCT-DAY(3 SYU-IDX) TO  SINRYO-COUNT
+                         IF  SYU-SYUHKNNUM  = "971" OR "973" OR "975"
+                           CONTINUE
+                         ELSE
+                           MOVE ACCT-DAY(3 SYU-IDX)
+                                            TO  TBL-ZAIKAISU(SYU-IDX)
+                         END-IF
+                     END-EVALUATE
+                    END-IF
                  END-IF
              END-PERFORM
            END-IF
@@ -6873,18 +6991,60 @@ grpsys                            SPA-AREA
            PERFORM  VARYING  IDX1    FROM    1   BY  1
                       UNTIL  IDX1     >       31
       *
-      *@@@     IF   SYU-DAY(SYU-IDX)  = "1"  OR  "2"  OR  "8"  OR  "9"
-               IF   SYU-DAY(IDX1)   =   "1"  OR  "2"
-                    IF  ORCSTEN-ZAITEN(IDX1)  NOT =  ZERO
-                        ADD    ORCSTEN-ZAITEN(IDX1)
-                                      TO   SYU-HKNTEN (05)
-                        IF   SYU-SYUHKNNUM  =  "971" OR "973" OR "975"
-                           CONTINUE                                    
-                        ELSE                                           
-                           ADD    ORCSTEN-ZAITEN(IDX1)                 
-                                      TO   SDAY-HKNTEN(IDX1)           
-                        END-IF                                         
-                    END-IF
+               IF   SYU-DAY(IDX1)   =   "1"  OR  "2"  OR  "8"  OR  "9"
+                 IF  ORCSTEN-ZAITEN(IDX1)  NOT =  ZERO
+                  IF  WRK-DOJITU-FLG2(IDX IDX1) = 1
+                      ADD    ORCSTEN-ZAITEN(IDX1)  TO  SYU-HKNTEN (05)
+                      IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                        CONTINUE
+                      ELSE
+                        ADD  ORCSTEN-ZAITEN(IDX1)  TO  SDAY-HKNTEN(IDX1)
+                      END-IF
+                  ELSE
+                   EVALUATE  WRK-DOJITU-FLG(IDX IDX1)
+                     WHEN      0
+                      ADD    ORCSTEN-ZAITEN(IDX1)  TO  SYU-HKNTEN (05)
+                      IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                        CONTINUE
+                      ELSE
+                        ADD  ORCSTEN-ZAITEN(IDX1)  TO  SDAY-HKNTEN(IDX1)
+                      END-IF
+                     WHEN      1
+                     WHEN      7
+                      ADD    ORCSTEN-DOU-ZAITEN(IDX1 1)
+                                                   TO  SYU-HKNTEN (05)
+                      IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                        CONTINUE
+                      ELSE
+                        ADD  ORCSTEN-DOU-ZAITEN(IDX1 1)
+                                                   TO  SDAY-HKNTEN(IDX1)
+                      END-IF
+                     WHEN      8
+                     WHEN      9
+                      IF   ORCSTEN-ZAITEN(IDX1) =
+                                            ORCSTEN-DOU-ZAITEN(IDX1 2)
+                        ADD    ORCSTEN-DOU-ZAITEN(IDX1 2)
+                                                   TO  SYU-HKNTEN (05)
+                        IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                          CONTINUE
+                        ELSE
+                          ADD  ORCSTEN-DOU-ZAITEN(IDX1 2)
+                                                   TO  SDAY-HKNTEN(IDX1)
+                        END-IF
+                      ELSE
+                        COMPUTE   WRK-DOJITU-TENTEK    =
+                                  ORCSTEN-ZAITEN(IDX1) -
+                                  ORCSTEN-DOU-ZAITEN(IDX1 1)
+                        ADD    WRK-DOJITU-TENTEK   TO  SYU-HKNTEN (05)
+                        IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                          CONTINUE
+                        ELSE
+                          ADD  WRK-DOJITU-TENTEK   TO  SDAY-HKNTEN(IDX1)
+                        END-IF
+                      END-IF
+                   END-EVALUATE
+                  END-IF
+                 END-IF
                END-IF
       *
            END-PERFORM
@@ -6896,28 +7056,64 @@ grpsys                            SPA-AREA
                     MOVE    ZERO   TO   WRK-ZAIKAISU
                     PERFORM  VARYING  IDX2    FROM    1   BY  1
                           UNTIL   IDX2     >       31
-      *@@@            IF   SYU-DAY(SYU-IDX) = "1"  OR  "2"  OR
-      *@@@                                    "8"  OR  "9"
-                      IF   SYU-DAY(IDX2)  =   "1"  OR  "2"
-      *
-                        IF   SYU-SYUHKNNUM  =  "971" OR "973" OR "975"
-                           CONTINUE                                    
-                        ELSE                                           
-                           COMPUTE  SDAY-HKNTEN(IDX2)  =               
-                                    SDAY-HKNTEN(IDX2)  +               
-                                    ( ORCSTEN-KIZ-ZAITEN(IDX1) *       
-                                      ORCSTEN-KIZ-DAY(IDX1 IDX2) )     
-                        END-IF
-      *
-                        ADD    ORCSTEN-KIZ-DAY(IDX1 IDX2)
-                                      TO   WRK-ZAIKAISU
+                      IF   SYU-DAY(IDX2) = "1" OR "2" OR "8" OR "9"
+                       IF  WRK-DOJITU-FLG2(IDX IDX2) = 1
+                           IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                             CONTINUE
+                           ELSE
+                             COMPUTE SDAY-HKNTEN(IDX2) =
+                                     SDAY-HKNTEN(IDX2) +
+                                   ( ORCSTEN-KIZ-ZAITEN(IDX1) *
+                                     ORCSTEN-KIZ-DAY (IDX1 IDX2) )
+                           END-IF
+                           ADD   ORCSTEN-KIZ-DAY (IDX1 IDX2)
+                                                 TO   WRK-ZAIKAISU
+                       ELSE
+                        EVALUATE  WRK-DOJITU-FLG(IDX IDX2)
+                          WHEN      0
+                           IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                             CONTINUE
+                           ELSE
+                             COMPUTE SDAY-HKNTEN(IDX2) =
+                                     SDAY-HKNTEN(IDX2) +
+                                   ( ORCSTEN-KIZ-ZAITEN(IDX1) *
+                                     ORCSTEN-KIZ-DAY (IDX1 IDX2) )
+                           END-IF
+                           ADD   ORCSTEN-KIZ-DAY (IDX1 IDX2)
+                                                 TO   WRK-ZAIKAISU
+                          WHEN      1
+                          WHEN      7
+                           IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                             CONTINUE
+                           ELSE
+                             COMPUTE SDAY-HKNTEN(IDX2) =
+                                     SDAY-HKNTEN(IDX2) +
+                                   ( ORCSTEN-KIZ-ZAITEN(IDX1) *
+                                     ORCSTEN-KIZ-DAY2(IDX1 IDX2 1) )
+                           END-IF
+                           ADD   ORCSTEN-KIZ-DAY2(IDX1 IDX2 1)
+                                                 TO   WRK-ZAIKAISU
+                          WHEN      8
+                          WHEN      9
+                           IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
+                             CONTINUE
+                           ELSE
+                             COMPUTE SDAY-HKNTEN(IDX2) =
+                                     SDAY-HKNTEN(IDX2) +
+                                   ( ORCSTEN-KIZ-ZAITEN(IDX1) *
+                                     ORCSTEN-KIZ-DAY2(IDX1 IDX2 2) )
+                           END-IF
+                           ADD   ORCSTEN-KIZ-DAY2(IDX1 IDX2 2)
+                                                 TO   WRK-ZAIKAISU
+                        END-EVALUATE
+                       END-IF
                       END-IF
                     END-PERFORM
       *
                     COMPUTE  SYU-HKNTEN (05)  =
                              SYU-HKNTEN (05)  +
                              ( ORCSTEN-KIZ-ZAITEN(IDX1) *
-                               WRK-ZAIKAISU ) 
+                               WRK-ZAIKAISU )
       *
            END-PERFORM
       *

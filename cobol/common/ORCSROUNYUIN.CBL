@@ -82,6 +82,8 @@
       *
       *  04.05.01    NACL-ÌçÏÆ    10/01/18  ¼£¸³ÂÐ±þ
       *  04.05.02    NACL-ÌçÏÆ    11/08/16  Ï«ºÒÉÂ°áÂßÍ¿ÎÁÂÐ±þ
+      *
+      *  04.07.01    NACL-ÌçÏÆ    11/11/22  Æ±ÆüºÆÆþ±¡ÂÐ±þ
       *****************************************************************
       *
       *
@@ -1217,6 +1219,16 @@
                                     =  LNK-SROUNYUIN-ZAITEN-ACCTETC
                                                              (IDX1)
                                     + (ACCT-ZAITEN * ACCT-DAY(1 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCTETC2
+                                                             (IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCTETC2
+                                                             (IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(2 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCTETC3
+                                                             (IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCTETC3
+                                                             (IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(3 IDX1))
       *
                                IF   FLG-RYAKU   =   ZERO
                                   MOVE   ACCT-SRYCDTOTAL(6:9)
@@ -1237,9 +1249,15 @@
                              IF    ((WRK-NYUINKHN(IDX1) NOT = SPACE) OR
                                     (WRK-NYUINDAY-KBN(IDX1) =  "1" ))
                              AND   ( ACCT-DAY(1 IDX1)   NOT =  ZERO )
-                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
-                                    =  LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT (IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCT (IDX1)
                                     + (ACCT-ZAITEN * ACCT-DAY(1 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT2(IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCT2(IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(2 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT3(IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCT3(IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(3 IDX1))
       *
                                IF   FLG-RYAKU   =   ZERO
                                   PERFORM   210-SRYACT-HENSYU-SEC
@@ -2024,6 +2042,16 @@
                                     =  LNK-SROUNYUIN-ZAITEN-ACCTETC
                                                              (IDX1)
                                     + (ACCT-ZAITEN * ACCT-DAY(1 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCTETC2
+                                                             (IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCTETC2
+                                                             (IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(2 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCTETC3
+                                                             (IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCTETC3
+                                                             (IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(3 IDX1))
       *
                                IF   FLG-RYAKU   =   ZERO
                                   MOVE   ACCT-SRYCDTOTAL(6:9)
@@ -2044,9 +2072,15 @@
                              IF    ((WRK-NYUINKHN(IDX1) NOT = SPACE) OR
                                     (WRK-NYUINDAY-KBN(IDX1) =  "1" ))
                              AND   ( ACCT-DAY(1 IDX1)   NOT =  ZERO )
-                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
-                                    =  LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT (IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCT (IDX1)
                                     + (ACCT-ZAITEN * ACCT-DAY(1 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT2(IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCT2(IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(2 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT3(IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCT3(IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(3 IDX1))
       *
                                IF   FLG-RYAKU   =   ZERO
                                   PERFORM   210-SRYACT-HENSYU-SEC
@@ -2941,6 +2975,16 @@
                                     =  LNK-SROUNYUIN-ZAITEN-ACCTETC
                                                              (IDX1)
                                     + (ACCT-ZAITEN * ACCT-DAY(1 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCTETC2
+                                                             (IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCTETC2
+                                                             (IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(2 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCTETC3
+                                                             (IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCTETC3
+                                                             (IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(3 IDX1))
       *
                                IF   FLG-RYAKU   =   ZERO
                                   MOVE   ACCT-SRYCDTOTAL(6:9)
@@ -2961,9 +3005,15 @@
                              IF    ((WRK-NYUINKHN(IDX1) NOT = SPACE) OR
                                     (WRK-NYUINDAY-KBN(IDX1) =  "1" ))
                              AND   ( ACCT-DAY(1 IDX1)   NOT =  ZERO )
-                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
-                                    =  LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT (IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCT (IDX1)
                                     + (ACCT-ZAITEN * ACCT-DAY(1 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT2(IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCT2(IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(2 IDX1))
+                               COMPUTE LNK-SROUNYUIN-ZAITEN-ACCT3(IDX1)
+                                    =  LNK-SROUNYUIN-ZAITEN-ACCT3(IDX1)
+                                    + (ACCT-ZAITEN * ACCT-DAY(3 IDX1))
       *
                                IF   FLG-RYAKU   =   ZERO
                                   PERFORM   210-SRYACT-HENSYU-SEC

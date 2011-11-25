@@ -1286,6 +1286,9 @@
                     WHEN       23
                       MOVE "同日再入院日の実日数算定コード未入力"
                                           TO  ERR-ERRMSG
+                    WHEN       24
+                      MOVE "同日再入院日の再入院分に入院料加算有"
+                                          TO  ERR-ERRMSG
                     WHEN      OTHER
                       MOVE "仮収納データの取得に失敗"
                                           TO  ERR-ERRMSG
