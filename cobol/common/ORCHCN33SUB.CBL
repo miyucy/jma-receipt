@@ -2753,28 +2753,112 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     END-IF
                END-IF
            END-PERFORM
+      *    
+      *    ·îËöÆü¤ÎÆ±ÆüºÆÆþ±¡È½Äê¤Ë¤Ä¤¤¤Æ¼èÆÀ
+      *    ·îËöÆü¤ò¼èÆÀ
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM
+                                       TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY7-KOYOMI     TO  WRK-GETSUMATSU-YMD
+           END-IF
       *
-      *     DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
-      *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
-      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (1)
-      *     DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
-      *                LNK-ORCHCN33SUB-NYUINKA (1 1)
-      *     DISPLAY   "ÅÀ¿ô£±¡¡£± = "
-      *                LNK-ORCHCN33SUB-TENSU (1 1)
-      *     DISPLAY   "Æþ±¡²Ê£±¡¡£² = "
-      *                LNK-ORCHCN33SUB-NYUINKA (1 2)
-      *     DISPLAY   "ÅÀ¿ô£±¡¡£² = "
-      *                LNK-ORCHCN33SUB-TENSU (1 2)
-      *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
-      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (2)
-      *     DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
-      *                LNK-ORCHCN33SUB-NYUINKA (2 1)
-      *     DISPLAY   "ÅÀ¿ô£²¡¡£± = "
-      *                LNK-ORCHCN33SUB-TENSU (2 1)
-      *     DISPLAY   "Æþ±¡²Ê£²¡¡£² = "
-      *                LNK-ORCHCN33SUB-NYUINKA (2 2)
-      *     DISPLAY   "ÅÀ¿ô£²¡¡£² = "
-      *                LNK-ORCHCN33SUB-TENSU (2 2)
+           INITIALIZE                          ORCSNYUINDAY-AREA
+           MOVE    LNK-ORCHCN33SUB-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    LNK-ORCHCN33SUB-PTID        TO  LNK-NYUINDAY-PTID
+           MOVE    LNK-ORCHCN33SUB-SANTEIYM    TO  LNK-NYUINDAY-SANTEIYM
+           CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
+                                               SPA-AREA
+      *
+           IF   LNK-NYUINDAY-DOUJITSU-KBN(WRK-GETSUMATSU-DD)  =   "1"
+             PERFORM    VARYING   IDX1   FROM  1  BY  1
+                      UNTIL     (IDX1   >     31)
+      *         IF     WRK-SO-TEN(IDX1)       NOT =   ZERO
+                    MOVE   ZERO    TO   FLG-HKNCOMBI-MATCH
+                    MOVE   ZERO    TO   FLG-NYUINKA-MATCH
+                    PERFORM   VARYING  IDX-HKNCOMBI  FROM  1  BY  1
+                      UNTIL  (IDX-HKNCOMBI         >  10)    OR
+                             (FLG-HKNCOMBI-MATCH   =   1)    OR
+                             (LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                                 (IDX-HKNCOMBI)   =   ZERO)
+                        IF  LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                              (IDX-HKNCOMBI)    =   
+                                   LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)
+                             MOVE   1    TO   FLG-HKNCOMBI-MATCH
+                             PERFORM  VARYING  IDX-NYUINKA FROM 1 BY 1
+                               UNTIL (IDX-NYUINKA   >   50)     OR
+                                     (FLG-NYUINKA-MATCH  =  1)  OR
+                                     (LNK-ORCHCN33SUB-NYUINKA
+                                     (IDX-HKNCOMBI IDX-NYUINKA) = SPACE)
+                                 IF  LNK-ORCHCN33SUB-NYUINKA
+                                     (IDX-HKNCOMBI IDX-NYUINKA)
+                                                   = TBL-NYUINKA(IDX1)
+                                     MOVE   1    TO  FLG-NYUINKA-MATCH
+                                     MOVE  IDX1  TO
+                                             LNK-ORCHCN33SUB-EDDAY
+                                             (IDX-HKNCOMBI IDX-NYUINKA)
+                                     ADD  1  TO  LNK-ORCHCN33SUB-DAY
+                                           (IDX-HKNCOMBI IDX-NYUINKA)
+                                 END-IF
+                             END-PERFORM
+                             IF      FLG-NYUINKA-MATCH   =   ZERO
+                                 MOVE  TBL-NYUINKA(IDX1)    TO
+                                    LNK-ORCHCN33SUB-NYUINKA
+                                      (IDX-HKNCOMBI  IDX-NYUINKA)
+                                 MOVE  IDX1  TO  LNK-ORCHCN33SUB-STDAY
+                                           (IDX-HKNCOMBI IDX-NYUINKA)
+                                 MOVE  IDX1  TO  LNK-ORCHCN33SUB-EDDAY
+                                           (IDX-HKNCOMBI IDX-NYUINKA)
+                                 ADD   1     TO  LNK-ORCHCN33SUB-DAY
+                                           (IDX-HKNCOMBI IDX-NYUINKA)
+                             END-IF
+                        END-IF
+                    END-PERFORM
+                    IF      FLG-HKNCOMBI-MATCH   =   ZERO
+                      IF LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1) NOT = ZERO
+                        MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)   TO
+                              LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM
+                                                      (IDX-HKNCOMBI)
+                        MOVE  TBL-NYUINKA(IDX1)    TO
+                              LNK-ORCHCN33SUB-NYUINKA
+                                 (IDX-HKNCOMBI  1)
+                        MOVE  IDX1     TO   LNK-ORCHCN33SUB-STDAY
+                                                 (IDX-HKNCOMBI 1)
+                        MOVE  IDX1     TO   LNK-ORCHCN33SUB-EDDAY
+                                                 (IDX-HKNCOMBI 1)
+                        ADD   1        TO   LNK-ORCHCN33SUB-DAY
+                                                 (IDX-HKNCOMBI 1)
+                      END-IF
+                    END-IF
+      *         END-IF
+             END-PERFORM
+           END-IF
+      *
+           DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
+           DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
+                      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (1)
+           DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
+                      LNK-ORCHCN33SUB-NYUINKA (1 1)
+           DISPLAY   "ÅÀ¿ô£±¡¡£± = "
+                      LNK-ORCHCN33SUB-TENSU (1 1)
+           DISPLAY   "Æþ±¡²Ê£±¡¡£² = "
+                      LNK-ORCHCN33SUB-NYUINKA (1 2)
+           DISPLAY   "ÅÀ¿ô£±¡¡£² = "
+                      LNK-ORCHCN33SUB-TENSU (1 2)
+           DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
+                      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (2)
+           DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
+                      LNK-ORCHCN33SUB-NYUINKA (2 1)
+           DISPLAY   "ÅÀ¿ô£²¡¡£± = "
+                      LNK-ORCHCN33SUB-TENSU (2 1)
+           DISPLAY   "Æþ±¡²Ê£²¡¡£² = "
+                      LNK-ORCHCN33SUB-NYUINKA (2 2)
+           DISPLAY   "ÅÀ¿ô£²¡¡£² = "
+                      LNK-ORCHCN33SUB-TENSU (2 2)
            .
        210-NYUINTEN-SET-EXT.
            EXIT.
