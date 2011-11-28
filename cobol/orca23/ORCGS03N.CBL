@@ -174,7 +174,7 @@
                05  SPA-GMN-SMEITBL-AREA.
                    07  SPA-GMN-SMEILIST-MAX        PIC 9(02).
                    07  SPA-GMN-SMEILIST-SEL        PIC 9(02).
-                   07  SPA-GMN-SMEITBL-OCC         OCCURS  50.
+                   07  SPA-GMN-SMEITBL-OCC         OCCURS  99.
                        09  SPA-GMN-TDENPEDANUM     PIC 9(02).
                        09  SPA-GMN-TSKYMONEY       PIC S9(10).
                        09  SPA-GMN-TNYUKIN         PIC S9(10).
@@ -214,7 +214,7 @@
                                                    PIC X(10).
       *
                05  SPA-NAI-SMEITBL-AREA.
-                   07  SPA-NAI-SMEITBL-OCC         OCCURS  50.
+                   07  SPA-NAI-SMEITBL-OCC         OCCURS  99.
                        09  SPA-NAI-TNYKN-HOHO      PIC X(02).
                        09  SPA-NAI-TJOUTAIKBN      PIC X(1).
                        09  SPA-NAI-TLASTHENKINFLG  PIC 9(1).
@@ -303,7 +303,7 @@
            03  WRK-SMEILIST1-ROW                   PIC S9(9)   BINARY.
       *
        01  CONST-AREA.
-           03  CONST-SMEILIST-MAX         PIC 9(03)   VALUE   50.
+           03  CONST-SMEILIST-MAX         PIC 9(03)   VALUE   99.
            03  CONST-JIHI-MAX          PIC 9(03)   VALUE  10.
            03  CONST-PROC-NO-G.
                05  CONST-PROC-NYUKIN   PIC X(02)   VALUE   "05".
@@ -3343,6 +3343,7 @@
            PERFORM 900-SYUNOU-KEY-SEL-SEC
            IF    ( FLG-SYUNOU      NOT =   ZERO )
                MOVE    "1001"          TO  SPA-ERRCD
+               PERFORM 910-DBABORT-SEC
            ELSE
       *
                EVALUATE    SPA-S01-SYORINO
@@ -3452,7 +3453,9 @@
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-SYUMEI      NOT =   ZERO )
+            OR   ( SMEI-DENPEDANUM    >=   CONST-SMEILIST-MAX )
                MOVE    "1003"          TO  SPA-ERRCD
+               PERFORM 910-DBABORT-SEC
            ELSE
       *
                COMPUTE WRK-DENPEDANUM  =   SMEI-DENPEDANUM +   1
@@ -3599,6 +3602,7 @@
       *
            IF    ( FLG-SYUMEI      NOT =   ZERO )
                MOVE    "1005"          TO  SPA-ERRCD
+               PERFORM 910-DBABORT-SEC
            ELSE
       *
                PERFORM 900-SYUNOU-KEY-SEL-SEC
@@ -3982,10 +3986,6 @@
                                        TO  SPA-ERRMSG
            WHEN    "1001"
            WHEN    "1002"
-                MOVE    "収納の更新処理でエラーになりました"
-                                       TO  SPA-ERRMSG
-           WHEN    "1001"
-           WHEN    "1002"
                MOVE    "収納の更新処理でエラーになりました"
                                        TO  SPA-ERRMSG
            WHEN    "1003"
@@ -4238,6 +4238,20 @@
       *
            .
        900-SYURRK-KEY-SEL-EXT.
+           EXIT.
+      *************************************************************
+      *    トランザクションキャンセル処理
+      *************************************************************
+       910-DBABORT-SEC               SECTION.
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "abort"         TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+      *
+           .
+       910-DBABORT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
