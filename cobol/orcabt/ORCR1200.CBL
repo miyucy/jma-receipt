@@ -32,8 +32,9 @@
       *                                     入院日として起算しレセプト記
       *                                     載を行なう対応
       *
-      *  04.05.08    NACL-藤原    11/11/18  他保険での同日再入院時の保険
+      *  04.05.01    NACL-藤原    11/11/18  他保険での同日再入院時の保険
       *                                     履歴対応
+      *  04.05.02    NACL-藤原    11/11/22  同日再入院対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -719,6 +720,9 @@
            END-PERFORM
       *
            IF      FLG-END             =   ZERO
+      *        同日再入院のチェック
+               PERFORM 500-ORCSNYUINDAY-CHECK-SEC
+      *
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       31
                    IF      WRK-DAY (1 IDX)     >   ZERO    AND
@@ -817,9 +821,10 @@
                                        WRK-COMB-HKNCOMBINUM (IDX1)
                    IF      WRK-HKNCOMBI-SYOKBN (IDX1)   NOT =   SPACE
       *                公害以外のとき初期化する
-                       IF      WRK-HKNCOMBI-SYOKBN (IDX1)  =   "1"
-                           MOVE    ZERO            TO  WRK-DAY (2 IDX)
-                       END-IF  
+      ****             IF      WRK-HKNCOMBI-SYOKBN (IDX1)  =   "1"
+      ****                 MOVE    ZERO            TO  WRK-DAY (2 IDX)
+      ****             END-IF
+                       CONTINUE  
                    ELSE     
                        MOVE    WRK-STYMD       TO  WRK-YMD
                        MOVE    IDX             TO  WRK-DD
@@ -970,7 +975,21 @@
            END-IF 
       *
       *    病院・診療所区分
-           MOVE    SYS-1001-HOSPSBT TO  WRK-RECE200-HOSPSBT               
+           MOVE    SYS-1001-HOSPSBT TO  WRK-RECE200-HOSPSBT
+      *        
+      *同日再入院（入院分）の保険組合せ、食事開始時間区分
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL   IDX3    >       31
+               MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX3)
+                                           TO
+                                   WRK-RECE200-DOUJITSU-HKNCOMBI (IDX3)
+               MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX3)
+                                           TO
+                                   WRK-RECE200-DOUJITSU-SKJKBN   (IDX3)
+           END-PERFORM
+      *入院区分
+           MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE200-NYUINDAY-TBL
+      *
       *
            MOVE    WRK-RECE200-REC     TO  TBL-RECE200-OCC (IDXX)
       *
@@ -1233,7 +1252,7 @@
            END-IF
       *
       *    基本ファイル編集処理
-           PERFORM 2001212-KIHON-HENSYU-SEC     
+           PERFORM 2001212-KIHON-HENSYU-SEC
            .
        20012212-SRYSCCT-FILE-SYORI-EXT.
            EXIT. 
@@ -1619,7 +1638,7 @@
                                    MOVE   IDX5                 TO  IDX
                                END-IF
                            END-IF
-                       ELSE    
+                       ELSE
                            IF      WRK-RECE200-DAY (IDX)
                                                =   WRK-RECE200-HKNCOMBI
                                PERFORM 2401-PTNYUINRRK-HENSYU-SEC
@@ -1988,6 +2007,112 @@
            DISPLAY "*** ORCR1200 END ***"
            .
        300-TERM-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同日再入院チェック処理
+      *****************************************************************
+       500-ORCSNYUINDAY-CHECK-SEC          SECTION.
+      *
+           INITIALIZE                      ORCSNYUINDAY-AREA
+           MOVE    SYS-1001-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    KEY-O-PTID          TO  LNK-NYUINDAY-PTID
+           EVALUATE    WRK-PARA-SYOKBN
+               WHEN    "1"
+                   MOVE    SYS-2001-SRYYM  TO  LNK-NYUINDAY-SANTEIYM
+               WHEN    "2"
+                   MOVE    SYS-2002-SRYYM  TO  LNK-NYUINDAY-SANTEIYM
+           END-EVALUATE
+           CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
+                                               SPA-AREA
+           IF      LNK-NYUINDAY-RC >   0
+               DISPLAY "LNK-NYUINDAY-RC=" LNK-NYUINDAY-RC
+               GO  TO  500-ORCSNYUINDAY-CHECK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       31
+             IF      LNK-NYUINDAY-DOUJITSU-KBN (IDXX)
+                                           =   "1"
+      *
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >   10
+      *
+      *            保険組合せ追加
+                   IF      WRK-COMB-HKNCOMBINUM (IDX1) =   ZERO
+                       INITIALIZE                      HKNCOMBI-REC
+                       MOVE    SYS-1001-HOSPNUM    TO  COMB-HOSPNUM
+                       MOVE    KEY-O-PTID          TO  COMB-PTID
+                       MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDXX)
+                                                   TO  COMB-HKNCOMBINUM 
+                       MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+                       PERFORM  910-HKNCOMBI-INV-SEC
+      *                （対象外の組合せは１をセット）
+                       IF      FLG-HKNCOMBI    =   ZERO
+                           MOVE    HKNCOMBI-REC    TO
+                                           WRK-HKNCOMBI-REC  (IDX1)
+      *                    医保以外読み飛ばし
+                           IF      COMB-HKNNUM     =
+                                               WRK-CONS-KOUGAI-HKNNUM
+                               CONTINUE
+                           ELSE
+                               MOVE    "1"         TO
+                                           WRK-HKNCOMBI-SYOKBN (IDX1)
+                           END-IF
+                       ELSE
+                           IF      COMB-DELKBN         =   "1"
+                               MOVE    HKNCOMBI-REC    TO
+                                               WRK-HKNCOMBI-REC  (IDX1)
+      *                        医保以外読み飛ばし
+                               IF      COMB-HKNNUM     =
+                                               WRK-CONS-KOUGAI-HKNNUM
+                                   MOVE    "2"             TO
+                                           WRK-HKNCOMBI-SYOKBN  (IDX1)
+                               ELSE
+                                   MOVE    "1"         TO
+                                           WRK-HKNCOMBI-SYOKBN (IDX1)
+                               END-IF
+                           ELSE
+                               MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI
+                                                                (IDXX)
+                                                   TO
+                                           WRK-COMB-HKNCOMBINUM (IDX1)
+                               MOVE    "2"             TO
+                                           WRK-HKNCOMBI-SYOKBN  (IDX1)
+                           END-IF
+                       END-IF
+                   END-IF
+      *
+      *            適用範囲かチェック（範囲外のとき２をセット）
+                   IF      LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDXX)
+                                           =
+                                       WRK-COMB-HKNCOMBINUM (IDX1)
+                       IF      WRK-HKNCOMBI-SYOKBN (IDX1)
+                                           NOT =   SPACE
+                           CONTINUE                    
+                       ELSE     
+                           MOVE    WRK-STYMD       TO  WRK-YMD
+                           MOVE    IDXX            TO  WRK-DD
+                           IF      WRK-COMB-TEKSTYMD (IDX1)
+                                                   <=  WRK-YMD
+                           AND     WRK-COMB-TEKEDYMD (IDX1)
+                                                   >=  WRK-YMD
+                               CONTINUE
+                           ELSE   
+                               MOVE    "2"         TO
+                                           WRK-HKNCOMBI-SYOKBN  (IDX1)
+                               MOVE    IDXX        TO
+                                           WRK-HKNCOMBI-ERR-DAY (IDX1)
+                           END-IF
+                       END-IF
+                       MOVE    10              TO  IDX1
+                   END-IF            
+               END-PERFORM
+             END-IF
+           END-PERFORM
+      *
+           .
+       500-ORCSNYUINDAY-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
