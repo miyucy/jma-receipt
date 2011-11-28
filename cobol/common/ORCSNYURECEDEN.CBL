@@ -218,6 +218,13 @@
            03  WRK-GENSAN3-MIJISI          PIC 9(01).
            03  WRK-GENSAN4-MIJISI          PIC 9(01).
       *
+      *    同日再入院処理用
+           03  WRK-GETSUMATSU-YMD.
+               05  WRK-GETSUMATSU-YY       PIC 9(04).
+               05  WRK-GETSUMATSU-MM       PIC 9(02).
+               05  WRK-GETSUMATSU-DD       PIC 9(02).
+           03  WRK-DOUJITSU-KBN            PIC X(01).
+      *
       *    入院会計ワーク
            03  WRK-NYUIN-TABLE.
                05  WRK-NYUIN-TBL           OCCURS  31.
@@ -885,6 +892,28 @@
                END-IF
            END-PERFORM
       *
+      *月末に同日再入院時のレセ電対象保険組合せ番号の取得
+      *    月末日を取得
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    LNK-NYURECEDEN-SANTEIYM
+                                       TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    LNK-DAY7-KOYOMI     TO  WRK-GETSUMATSU-YMD
+           END-IF
+      *
+           MOVE    SPACE                   TO  WRK-DOUJITSU-KBN
+           IF (LNK-NYUINDAY-DOUJITSU-KBN(WRK-GETSUMATSU-DD) = "1") AND
+              (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(WRK-GETSUMATSU-DD) = "3")
+              IF   LNK-NYURECEDEN-HKNKBN  = LNK-NYUINDAY-DOUJITSU-HKNSYU
+                                            (WRK-GETSUMATSU-DD)
+                MOVE      "1"              TO  WRK-DOUJITSU-KBN
+              END-IF
+           END-IF
+      *
       *入院料の取得
            MOVE    ZERO                    TO  FLG-OK
            INITIALIZE                          NYUINACCT-REC
@@ -1011,7 +1040,8 @@
                    MOVE    "key17"                 TO  MCP-PATHNAME
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
-               IF   FLG-OK     =   ZERO
+               IF  (FLG-OK     =   ZERO)   AND
+                   (WRK-DOUJITSU-KBN   =   SPACE)
                    MOVE     4      TO      LNK-NYURECEDEN-RC
       *            入院会計クローズ
                    MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
