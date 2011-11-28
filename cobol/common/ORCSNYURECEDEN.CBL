@@ -4064,7 +4064,7 @@
            MOVE    LNK-NYURECEDEN-PTID  TO   COMB-PTID
            PERFORM   VARYING   IDX   FROM  1  BY  1
                      UNTIL     (WRK-HKNCOMBI-DAY(IDX)  NOT =  ZERO) OR
-                               (IDX     >   31)
+                               (IDX     >   WRK-GETSUMATSU-DD)
                IF   WRK-HKNCOMBI-DAY(IDX)   NOT =   ZERO
                   MOVE    WRK-HKNCOMBI-DAY(IDX)
                                        TO   COMB-HKNCOMBINUM
