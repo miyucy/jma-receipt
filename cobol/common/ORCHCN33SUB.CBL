@@ -2838,27 +2838,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              END-PERFORM
            END-IF
       *
-           DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
-           DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
-                      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (1)
-           DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
-                      LNK-ORCHCN33SUB-NYUINKA (1 1)
-           DISPLAY   "ÅÀ¿ô£±¡¡£± = "
-                      LNK-ORCHCN33SUB-TENSU (1 1)
-           DISPLAY   "Æþ±¡²Ê£±¡¡£² = "
-                      LNK-ORCHCN33SUB-NYUINKA (1 2)
-           DISPLAY   "ÅÀ¿ô£±¡¡£² = "
-                      LNK-ORCHCN33SUB-TENSU (1 2)
-           DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
-                      LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (2)
-           DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
-                      LNK-ORCHCN33SUB-NYUINKA (2 1)
-           DISPLAY   "ÅÀ¿ô£²¡¡£± = "
-                      LNK-ORCHCN33SUB-TENSU (2 1)
-           DISPLAY   "Æþ±¡²Ê£²¡¡£² = "
-                      LNK-ORCHCN33SUB-NYUINKA (2 2)
-           DISPLAY   "ÅÀ¿ô£²¡¡£² = "
-                      LNK-ORCHCN33SUB-TENSU (2 2)
+      *     DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
+      *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (1)
+      *     DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
+      *                LNK-ORCHCN33SUB-NYUINKA (1 1)
+      *     DISPLAY   "ÅÀ¿ô£±¡¡£± = "
+      *                LNK-ORCHCN33SUB-TENSU (1 1)
+      *     DISPLAY   "Æþ±¡²Ê£±¡¡£² = "
+      *                LNK-ORCHCN33SUB-NYUINKA (1 2)
+      *     DISPLAY   "ÅÀ¿ô£±¡¡£² = "
+      *                LNK-ORCHCN33SUB-TENSU (1 2)
+      *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
+      *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOMBINUM (2)
+      *     DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
+      *                LNK-ORCHCN33SUB-NYUINKA (2 1)
+      *     DISPLAY   "ÅÀ¿ô£²¡¡£± = "
+      *                LNK-ORCHCN33SUB-TENSU (2 1)
+      *     DISPLAY   "Æþ±¡²Ê£²¡¡£² = "
+      *                LNK-ORCHCN33SUB-NYUINKA (2 2)
+      *     DISPLAY   "ÅÀ¿ô£²¡¡£² = "
+      *                LNK-ORCHCN33SUB-TENSU (2 2)
            .
        210-NYUINTEN-SET-EXT.
            EXIT.
