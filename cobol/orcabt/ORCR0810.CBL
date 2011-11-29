@@ -1276,18 +1276,20 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
              END-EVALUATE
            END-IF
       *
-      *同日再入院（入院分）の保険組合せ、食事開始時間区分
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL   IDX1    >       31
-               MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX1)
-                                           TO
+           IF      WRK-DBKBN          =   "2"
+      *        同日再入院（入院分）の保険組合せ、食事開始時間区分
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL   IDX1    >       31
+                   MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX1)
+                                               TO
                                    WRK-RECE82-DOUJITSU-HKNCOMBI (IDX1)
-               MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX1)
-                                           TO
+                   MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX1)
+                                               TO
                                    WRK-RECE82-DOUJITSU-SKJKBN   (IDX1)
-           END-PERFORM
-      *入院区分
-           MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE82-NYUINDAY-TBL
+               END-PERFORM
+      *        入院区分
+               MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE82-NYUINDAY-TBL
+           END-IF
       *
            MOVE    WRK-RECE82-REC      TO  RECE82-REC
            WRITE   RECE82-REC
@@ -1327,6 +1329,21 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                     MOVE   WRK-DAY(2 IDX3)  TO  WRK-RECE82-DAY(IDX3)
                  END-IF
                END-PERFORM
+           END-IF
+      *
+           IF      WRK-DBKBN          =   "2"
+      *        同日再入院（入院分）の保険組合せ、食事開始時間区分
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL   IDX1    >       31
+                   MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX1)
+                                               TO
+                                   WRK-RECE82-DOUJITSU-HKNCOMBI (IDX1)
+                   MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX1)
+                                               TO
+                                   WRK-RECE82-DOUJITSU-SKJKBN   (IDX1)
+               END-PERFORM
+      *        入院区分
+               MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE82-NYUINDAY-TBL
            END-IF
       *
            IF      WRK-TEISEIKBN           =   "1"

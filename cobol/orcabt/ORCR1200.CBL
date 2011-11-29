@@ -977,19 +977,20 @@
       *    病院・診療所区分
            MOVE    SYS-1001-HOSPSBT TO  WRK-RECE200-HOSPSBT
       *        
-      *同日再入院（入院分）の保険組合せ、食事開始時間区分
-           PERFORM VARYING IDX3    FROM    1   BY  1
-                   UNTIL   IDX3    >       31
-               MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX3)
-                                           TO
+           IF      WRK-DBKBN           =   "2" 
+      *        同日再入院（入院分）の保険組合せ、食事開始時間区分
+               PERFORM VARYING IDX3    FROM    1   BY  1
+                       UNTIL   IDX3    >       31
+                   MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX3)
+                                               TO
                                    WRK-RECE200-DOUJITSU-HKNCOMBI (IDX3)
-               MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX3)
-                                           TO
+                   MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX3)
+                                               TO
                                    WRK-RECE200-DOUJITSU-SKJKBN   (IDX3)
-           END-PERFORM
-      *入院区分
-           MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE200-NYUINDAY-TBL
-      *
+               END-PERFORM
+      *        入院区分
+               MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE200-NYUINDAY-TBL
+           END-IF
       *
            MOVE    WRK-RECE200-REC     TO  TBL-RECE200-OCC (IDXX)
       *
@@ -1025,6 +1026,21 @@
                    END-IF
                END-PERFORM
            END-IF    
+      *        
+           IF      WRK-DBKBN           =   "2" 
+      *        同日再入院（入院分）の保険組合せ、食事開始時間区分
+               PERFORM VARYING IDX3    FROM    1   BY  1
+                       UNTIL   IDX3    >       31
+                   MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX3)
+                                               TO
+                                   WRK-RECE200-DOUJITSU-HKNCOMBI (IDX3)
+                   MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX3)
+                                               TO
+                                   WRK-RECE200-DOUJITSU-SKJKBN   (IDX3)
+               END-PERFORM
+      *        入院区分
+               MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE200-NYUINDAY-TBL
+           END-IF
       *
            IF      WRK-TEISEIKBN           =   "1"
                IF      WRK-RECE200-TEISEIKBN    =   SPACE
