@@ -2475,6 +2475,23 @@
                       END-IF
                     END-IF
                   END-PERFORM
+                  IF    FLG-KOREI-TANYUIN2  =  1
+                    PERFORM   VARYING   IDY   FROM  1  BY   1
+                               UNTIL    IDY    >   31
+                     IF  WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(1 IDY)
+                                                            NOT = ZERO
+                      MOVE WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(1 IDY)
+                                              TO  WRK-HKNCOMBINUM
+                      PERFORM  HKNCOMBI-KENSAKU-SEC
+                      IF   COMB-HKNNUM  =  "971" OR "973" OR "975"
+                        CONTINUE
+                      ELSE
+                        MOVE   ZERO   TO   FLG-KOREI-TANYUIN2
+                        MOVE    31    TO   IDY
+                      END-IF
+                     END-IF
+                    END-PERFORM
+                  END-IF
                   IF  FLG-KOREI-TANYUIN2  =  1
                       MOVE   "1"    TO   WRK-KOREI-TANYUINFLG(IDX)
                   END-IF
@@ -2507,6 +2524,23 @@
                       END-IF
                     END-IF
                   END-PERFORM
+                  IF    FLG-KOREI-TANYUIN2  =  1
+                    PERFORM   VARYING   IDY   FROM  1  BY   1
+                               UNTIL    IDY    >   31
+                     IF  WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(2 IDY)
+                                                            NOT = ZERO
+                      MOVE WRK-NYUINDAY-TAIHI-DOUJITSU-HKNCOMBI(2 IDY)
+                                              TO  WRK-HKNCOMBINUM
+                      PERFORM  HKNCOMBI-KENSAKU-SEC
+                      IF   COMB-HKNNUM  =  "971" OR "973" OR "975"
+                        CONTINUE
+                      ELSE
+                        MOVE   ZERO   TO   FLG-KOREI-TANYUIN2
+                        MOVE    31    TO   IDY
+                      END-IF
+                     END-IF
+                    END-PERFORM
+                  END-IF
                   IF  FLG-KOREI-TANYUIN2  =  1
                       MOVE   "1"    TO   WRK-KOREI-TANYUINFLG(IDX)
                   END-IF

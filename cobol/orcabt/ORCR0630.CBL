@@ -1059,6 +1059,8 @@
       *
                  IF   RECE62-HKNCOMBI(IDX1)   =
                                    RECE62-DOUJITSU-HKNCOMBI(IDY)
+                      MOVE    SPACE   TO    RECE62-NYUINRYOFLG
+      *
                       MOVE     1      TO    FLG-SHOSAISIN
       *
                       PERFORM   500-KUMIAWASE-HANBETU-SEC

@@ -422,6 +422,7 @@
       *
                  IF   RECE200-HKNCOMBI        =
                                    RECE200-DOUJITSU-HKNCOMBI(IDY)
+                          MOVE   SPACE  TO   RECE200-NYUINRYOFLG
                           MOVE   "1"    TO   TBL-JNISSU-DAY(IDY)
                  END-IF
       *

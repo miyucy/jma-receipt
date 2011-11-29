@@ -812,6 +812,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                  IF   RECE82-HKNCOMBI         =
                                    RECE82-DOUJITSU-HKNCOMBI(IDY)
+                      MOVE    SPACE   TO    RECE82-NYUINRYOFLG
                       MOVE     1      TO    FLG-SHOSAISIN
                       PERFORM   2202-RECE82-TENSOU11-SEC
                  END-IF
