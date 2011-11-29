@@ -227,9 +227,6 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    入院料未算定日取得サブ
-           COPY    "CPORCSNYUINDAY.INC".
-      *
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
@@ -508,41 +505,22 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                ELSE
                    PERFORM VARYING IDX FROM    IDX4    BY  1
                            UNTIL   IDX >       IDX5
-                       IF      IDX             =   IDX4
-      *                    同日再入院のとき保険組合せ取得
-                           INITIALIZE               ORCSNYUINDAY-AREA
-                           MOVE    RECE82-HOSPNUM
-                                               TO  LNK-NYUINDAY-HOSPNUM
-                           MOVE    RECE82-PTID TO  LNK-NYUINDAY-PTID
-                           MOVE    PTNYUINRRK-NYUINYMD (1:6)
-                                               TO  LNK-NYUINDAY-SANTEIYM
-                           CALL    "ORCSNYUINDAY"
-                                               USING   ORCSNYUINDAY-AREA
-                                                       SPA-AREA
-                           IF    ( LNK-NYUINDAY-RC  =   ZERO )
-                           AND   ( LNK-NYUINDAY-DOUJITSU-KBN (IDX)
-                                                    =   "1"  )
-                               IF      LNK-NYUINDAY-DOUJITSU-HKNCOMBI
-                                                                (IDX)
+                       IF    ( IDX             =   IDX4 )
+                       AND   ( RECE82-DOUJITSU-HKNCOMBI (IDX)
+                                               >   ZERO )
+      *                    同日再入院のとき再入院分の保険組合せをチェック
+                           IF      RECE82-DOUJITSU-HKNCOMBI (IDX)
                                                    =   RECE82-HKNCOMBI
-                                   MOVE    1           TO  FLG-RRKOK
-                                   PERFORM 21011-PTNYUINRRK-HENSYU-SEC
-                                   MOVE   IDX5         TO  IDX
-                               END-IF
-                           ELSE    
-                               IF      RECE82-DAY (IDX)
-                                                   =   RECE82-HKNCOMBI
-                                   MOVE    1           TO  FLG-RRKOK
-                                   PERFORM 21011-PTNYUINRRK-HENSYU-SEC
-                                   MOVE   IDX5         TO  IDX
-                               END-IF
+                               MOVE    1               TO  FLG-RRKOK
+                               PERFORM 21011-PTNYUINRRK-HENSYU-SEC
+                               MOVE   IDX5             TO  IDX
                            END-IF
                        ELSE    
                            IF      RECE82-DAY (IDX)
-                                               =   RECE82-HKNCOMBI
-                               MOVE    1     TO    FLG-RRKOK
+                                                   =   RECE82-HKNCOMBI
+                               MOVE    1               TO  FLG-RRKOK
                                PERFORM 21011-PTNYUINRRK-HENSYU-SEC
-                               MOVE   IDX5                 TO  IDX
+                               MOVE   IDX5             TO  IDX
                            END-IF
                        END-IF
                    END-PERFORM

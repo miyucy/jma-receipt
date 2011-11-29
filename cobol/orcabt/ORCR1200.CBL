@@ -1610,33 +1610,14 @@
                ELSE
                    PERFORM VARYING IDX FROM    IDX4    BY  1
                            UNTIL   IDX >       IDX5
-                       IF      IDX             =   IDX4
-      *                    同日再入院のとき保険組合せ取得
-                           INITIALIZE               ORCSNYUINDAY-AREA
-                           MOVE    WRK-RECE200-HOSPNUM
-                                               TO  LNK-NYUINDAY-HOSPNUM
-                           MOVE    WRK-RECE200-PTID
-                                               TO  LNK-NYUINDAY-PTID
-                           MOVE    PTNYUINRRK-NYUINYMD (1:6)
-                                               TO  LNK-NYUINDAY-SANTEIYM
-                           CALL    "ORCSNYUINDAY"
-                                               USING   ORCSNYUINDAY-AREA
-                                                       SPA-AREA
-                           IF    ( LNK-NYUINDAY-RC  =   ZERO )
-                           AND   ( LNK-NYUINDAY-DOUJITSU-KBN (IDX)
-                                                    =   "1"  )
-                               IF      LNK-NYUINDAY-DOUJITSU-HKNCOMBI
-                                                               (IDX)
+                       IF    ( IDX             =   IDX4 )
+                       AND   ( WRK-RECE200-DOUJITSU-HKNCOMBI (IDX)
+                                               >   ZERO )
+      *                    同日再入院のとき再入院分の保険組合せをチェック
+                           IF      WRK-RECE200-DOUJITSU-HKNCOMBI (IDX)
                                                =   WRK-RECE200-HKNCOMBI
-                                   PERFORM 2401-PTNYUINRRK-HENSYU-SEC
-                                   MOVE   IDX5                 TO  IDX
-                               END-IF
-                           ELSE    
-                               IF      WRK-RECE200-DAY (IDX)
-                                               =   WRK-RECE200-HKNCOMBI
-                                   PERFORM 2401-PTNYUINRRK-HENSYU-SEC
-                                   MOVE   IDX5                 TO  IDX
-                               END-IF
+                               PERFORM 2401-PTNYUINRRK-HENSYU-SEC
+                               MOVE   IDX5                 TO  IDX
                            END-IF
                        ELSE
                            IF      WRK-RECE200-DAY (IDX)
