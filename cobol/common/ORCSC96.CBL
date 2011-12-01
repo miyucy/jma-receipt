@@ -1544,6 +1544,15 @@
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *ver.4.7
+               WHEN    "K214"
+                   STRING  "警告！"
+                           "初回入院日からの回数が上限回数を"
+                           "超えています。"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "0213"
                    STRING  "画像等手術支援加算の算定できない手術です。"
                                        DELIMITED  BY  SPACE

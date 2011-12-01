@@ -3442,11 +3442,13 @@
                ELSE
                    MOVE    SPACE              TO  SPA-K02N-DOUKBN
                END-IF
+      *        同日再入院日へ変更可
                MOVE    ORCSCNYUHEN-DOUNYUKBN  TO  SPA-K02N-DOUNYUKBN
       *        訂正は変更付加
                IF      SPA-SYORIFLG        =   1
                    MOVE    ZERO                TO  SPA-K02N-DOUNYUKBN
                END-IF
+               MOVE    ORCSCNYUHEN-DOUTAIKBN  TO  SPA-K02N-DOUTAIKBN
            END-IF
       *    入退院日
            MOVE    SPA-K02N-NYUINYMD   TO  WRK-NYUINYMD
@@ -3490,6 +3492,10 @@
            MOVE    WRK-HENYMDG         TO  SPA-K02N-TAIINYMDW
       *    担当医１（主治医）
            MOVE    ORCSCNYUHEN-DRCD    TO  SPA-DRCD
+      *
+      *    継続開始日入院日
+           MOVE    ORCSCNYUHEN-STR-NYUINYMD
+                                       TO  SPA-STR-NYUINYMD
            .
        4101011-PTNYUINRRK-HEN-EXT.
            EXIT.
@@ -10372,10 +10378,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "処理を終了します。よろしいですか？"
                                        TO  WRK-KIDMSG
                WHEN    "0105"
-                   MOVE    "保険組合せが変更されました。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-KIDMSG(29:)
+                   STRING  "保険組合せが変更されました。"
+                           "よろしいですか？"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0124"
                    STRING  "保険組合せが変更されました。"
                            "同日の同じ受診履歴に追加されます。"
@@ -10395,10 +10402,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-KIDMSG
                    END-STRING
                WHEN    "0123"
-                   MOVE     "診療科が変更されました。"
-                                       TO  WRK-KIDMSG
-                   MOVE     "よろしいですか？"
-                                       TO  WRK-KIDMSG(25:)
+                   STRING   "診療科が変更されました。"
+                            "よろしいですか？"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0128"
                    STRING  "診療科が変更されました。"
                            "同日の同じ受診履歴に追加されます。"
@@ -10406,10 +10414,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-KIDMSG
                    END-STRING
                WHEN    "0122"
-                   MOVE    "この科の中途終了データが存在します。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "ＯＫで中途終了内容へ置換えます。"
-                                       TO  WRK-KIDMSG(41:)
+                   STRING  "この科の中途終了データが存在します。"
+                           "ＯＫで中途終了内容へ置換えます。"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0108"
                MOVE
                "初診算定日を登録します。現在の診療内容はクリアします。"
@@ -10452,22 +10461,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "よろしいですか？"
                                        TO  WRK-KIDMSG(39:)
                WHEN    "0116"
-                   MOVE    "診療行為内容をクリアします。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-KIDMSG(29:)
+                   STRING  "診療行為内容をクリアします。"
+                           "よろしいですか？"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0127"
                    STRING  "ＯＫで展開中の中途終了データを削除します。"
-                                           DELIMITED   BY  SIZE
                            "よろしいですか？"
                                            DELIMITED   BY  SIZE
                                    INTO    WRK-KIDMSG
                    END-STRING
                WHEN    "0118"
-                   MOVE    "この保険の中途終了データが存在します。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "ＯＫで中途終了内容へ置換えます。"
-                                       TO  WRK-KIDMSG(41:)
+                   STRING  "この保険の中途終了データが存在します。"
+                           "ＯＫで中途終了内容へ置換えます。"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0119"
                    MOVE    "既に他保険で受診済みです。"
                                        TO  WRK-KIDMSG
@@ -10477,25 +10487,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "中途終了します。よろしいですか？"
                                        TO  WRK-KIDMSG
                WHEN    "0120"
-                   MOVE    "診療日では退院済です。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "外来の画面に遷移しますか？"
-                                       TO  WRK-KIDMSG(23:)
+                   STRING  "診療日では退院済です。"
+                           "外来の画面に遷移しますか？"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0160"
-                   MOVE    "包括検査で同じ検査があります。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "ＯＫですべての同一検査を削除します。"
-                                       TO  WRK-KIDMSG(31:)
+                   STRING  "包括検査で同じ検査があります。"
+                           "ＯＫですべての同一検査を削除します。"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0180"
-                   MOVE    "個別療法が１０単位を超えます。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "逓減しますか？"
-                                       TO  WRK-KIDMSG(31:)
+                   STRING  "個別療法が１０単位を超えます。"
+                           "逓減しますか？"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0125"
-                   MOVE    "患者取消が選択されました。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "表示内容をクリアします。よろしいですか？"
-                                       TO  WRK-KIDMSG(27:)
+                   STRING  "患者取消が選択されました。"
+                           "表示内容をクリアします。よろしいですか？"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0126"
                    STRING  "アフターケアは外来での入力になります。"
                            "外来へ遷移しますか？"
@@ -10504,7 +10518,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "0150"
                    STRING  "包括算定エラーの項目があります。"
-                                           DELIMITED  BY  SIZE
                            "エラー項目を削除します。"
                                            DELIMITED  BY  SIZE
                                        INTO    WRK-KIDMSG
@@ -10575,10 +10588,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-KIDCD2
                WHEN    "0117"
-                   MOVE    "登録後、帳票を発行する時は各帳票の発行を、"
-                                       TO  WRK-KIDMSG
-                   MOVE    "発行しない時は登録を押下して下さい。"
-                                       TO  WRK-KIDMSG(43:)
+                   STRING  "登録後、帳票を発行する時は各帳票の発行を、"
+                           "発行しない時は登録を押下して下さい。"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-KIDCD2
                                        TO  WRK-KIDMSG

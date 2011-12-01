@@ -58,4 +58,8 @@
       *        同一再入院有無
                05  ORCSCNYUHEN-DOUNYUKBN           PIC 9(01).
                05  ORCSCNYUHEN-DOUNYUIN            PIC 9(02).
+      *        継続初回入院日
+               05  ORCSCNYUHEN-STR-NYUINYMD        PIC X(08).
+      *        同一再入院有無（退院日）
+               05  ORCSCNYUHEN-DOUTAIKBN           PIC 9(01).
       *

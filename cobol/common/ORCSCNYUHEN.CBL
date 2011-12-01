@@ -75,6 +75,8 @@
                05  WRK-SYM             PIC 9(06).
                05  WRK-SDD             PIC 9(02).
       *
+           03  WRK-SHONUM                  PIC 9(03).
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -240,6 +242,12 @@
            MOVE    WRK-LASTTAIINYMD    TO  ORCSCNYUHEN-LAST-TAIINYMD
       *    Â¾°å±¡Âà±¡Æü
            MOVE    WRK-TAI-TAIINYMD    TO  ORCSCNYUHEN-TAI-TAIINYMD
+      *
+      *    ³ºÅö¤ÎÆþ±¡ÍúÎò¤¬·ÑÂ³¤Î»þ
+           MOVE    SPACE               TO  ORCSCNYUHEN-STR-NYUINYMD
+           IF      WRK-SHONUM      NOT =   ZERO
+               PERFORM 1003-STR-NYUINYMD-HEN-SEC
+           END-IF
            .
        100-MAIN-SYORI-EXT.
            EXIT.
@@ -254,7 +262,6 @@
                   (PTNYUINRRK-TAIINYMD NOT =   WRK-OLD-TAIINYMD )
                IF      PTNYUINRRK-TAIINYMD     =   WRK-OLD-NYUINYMD
                    IF      (ORCSCNYUHEN-KBN2   NOT =   "1"     )
-      *                Âà±¡Æü¡áÆþ±¡Æü¤¢¤ê
                        IF    ( FLG-OK          =   1             )
                        AND   ( PTNYUINRRK-TAIINYMD =   WRK-SRYYMD)
                            MOVE    1           TO  ORCSCNYUHEN-DOUNYUKBN
@@ -363,7 +370,19 @@
       *        Æþ±¡Ãæ
                MOVE    1                   TO  ORCSCNYUHEN-NYUIN-KBN
            END-IF
-	   .
+      *ver.4.7
+      *    ·ÑÂ³
+           IF      PTNYUINRRK-SHOKAIKBN    =   "2"
+      *        ·ÑÂ³
+               MOVE    PTNYUINRRK-SHONUM   TO  WRK-SHONUM
+           ELSE
+               MOVE    ZERO                TO  WRK-SHONUM
+           END-IF
+           IF      PTNYUINRRK-TAIINYMD =   WRK-OLD-NYUINYMD
+      *        Âà±¡Æü¡áÁ°²óÆþ±¡Æü¤¢¤ê
+               MOVE    1               TO  ORCSCNYUHEN-DOUTAIKBN
+           END-IF
+           .
        1002-PTNYUINRRK-HEN-EXT.
            EXIT.
       *
@@ -404,6 +423,39 @@
            END-PERFORM
            .
        1003-NYUINDAY-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡ÍúÎò¤¬·ÑÂ³³«»ÏÊÔ½¸½èÍý
+      *****************************************************************
+       1003-STR-NYUINYMD-HEN-SEC             SECTION.
+      *
+      *    ·ÑÂ³¤Î»þ¡¢½é²óÆþ±¡Æü¸¡º÷
+           INITIALIZE                  PTNYUINRRK-REC
+           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
+           MOVE    ORCSCNYUHEN-NYUINYMD    TO  PTNYUINRRK-NYUINYMD
+           MOVE    WRK-SHONUM          TO  PTNYUINRRK-SHONUM
+      *
+           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key13"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key13"             TO  MCP-PATHNAME
+               PERFORM 910-PTNYUINRRK-READ-SEC
+            ELSE
+               MOVE    1               TO  FLG-PTNYUINRRK
+               INITIALIZE                  PTNYUINRRK-REC
+           END-IF
+           IF      FLG-PTNYUINRRK      =   ZERO
+               MOVE    PTNYUINRRK-NYUINYMD
+                                           TO  ORCSCNYUHEN-STR-NYUINYMD
+           END-IF
+           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+           MOVE    "key13"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       1003-STR-NYUINYMD-HEN-EXT.
            EXIT.
       *****************************************************************
       *    À¾ÎñÏÂÎñÊÔ½¸½èÍý

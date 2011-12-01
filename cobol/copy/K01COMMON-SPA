@@ -393,6 +393,9 @@
                  06  SPA-K02N-DOUKBN             PIC X(01).
       *        中途終了選択の区分
                  06  SPA-WKSRY-DOUKBN          PIC  X(01).
+      *        継続開始日入院日
+                 06  SPA-STR-NYUINYMD          PIC X(08).
+                 06  SPA-K02N-DOUTAIKBN        PIC X(01).
       *
       *複数診療科用
            03  SPA-FUKU-AREA.
