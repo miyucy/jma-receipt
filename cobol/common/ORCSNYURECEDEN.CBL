@@ -2967,6 +2967,7 @@
       *                             LNK-RYOCOM-ADL-TEN-MOJI(IDX1)
       *     END-PERFORM
       *
+           MOVE      ZERO      TO   MATOME-IDX
       *
       *    再構築した入院会計情報から同一剤のまとめ処理
            PERFORM      VARYING    IDX1   FROM   1  BY  1
