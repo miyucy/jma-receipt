@@ -3596,12 +3596,13 @@
       *
            INITIALIZE                      ORCSNYUINDAY-AREA
            MOVE    SYS-1001-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    KEY-O-PTID          TO  LNK-NYUINDAY-PTID
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    "1"
                    MOVE    SYS-2001-SRYYM  TO  LNK-NYUINDAY-SANTEIYM
+                   MOVE    KEY-O-PTID      TO  LNK-NYUINDAY-PTID
                WHEN    "2"
                    MOVE    SYS-2002-SRYYM  TO  LNK-NYUINDAY-SANTEIYM
+                   MOVE    SYS-2002-PTID   TO  LNK-NYUINDAY-PTID
            END-EVALUATE
            CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
                                                SPA-AREA
