@@ -365,6 +365,8 @@
       *公務災害点単価
                05  RECE82-KOMUTENTANKA    PIC  9(02).
       *
+      *入院料情報取得フラグ
+           03  RECE82-DOUJITSU-FLG        PIC 9(01).
       *入院料情報
            03  RECE82-DOUJITSU-AREA.
       *同日再入院（入院分）の保険組合せ

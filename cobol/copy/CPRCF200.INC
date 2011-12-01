@@ -218,6 +218,8 @@
       *実日数テーブル
                05  RECE200-JNISSUTBL       PIC X(01).
       *
+      *入院料情報取得フラグ
+           03  RECE200-DOUJITSU-FLG        PIC 9(01).
       *入院料情報
            03  RECE200-DOUJITSU-AREA.
       *同日再入院（入院分）の保険組合せ

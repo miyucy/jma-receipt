@@ -714,6 +714,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      FLG-END         =   1 
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
+      *            同日再入院情報取得
+                   PERFORM 500-ORCSNYUINDAY-CALL-SEC
+      *
       *            保険組合せ読込み
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
@@ -909,6 +912,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
                END-PERFORM
       *
                IF      FLG-END                 =   ZERO 
+      *            同日再入院情報取得
+                   PERFORM 500-ORCSNYUINDAY-CALL-SEC
       *            同日再入院のチェック
                    PERFORM 500-ORCSNYUINDAY-CHECK-SEC
       *
@@ -1276,20 +1281,20 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
              END-EVALUATE
            END-IF
       *
-           IF      WRK-DBKBN          =   "2"
-      *        同日再入院（入院分）の保険組合せ、食事開始時間区分
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL   IDX1    >       31
-                   MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX1)
-                                               TO
+      *    入院料情報取得フラグ
+           MOVE    1               TO  WRK-RECE82-DOUJITSU-FLG
+      *    同日再入院（入院分）の保険組合せ、食事開始時間区分
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL   IDX1    >       31
+               MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX1)
+                                           TO
                                    WRK-RECE82-DOUJITSU-HKNCOMBI (IDX1)
-                   MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX1)
-                                               TO
+               MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX1)
+                                           TO
                                    WRK-RECE82-DOUJITSU-SKJKBN   (IDX1)
-               END-PERFORM
-      *        入院区分
-               MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE82-NYUINDAY-TBL
-           END-IF
+           END-PERFORM
+      *    入院区分
+           MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE82-NYUINDAY-TBL
       *
            MOVE    WRK-RECE82-REC      TO  RECE82-REC
            WRITE   RECE82-REC
@@ -1331,7 +1336,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                END-PERFORM
            END-IF
       *
-           IF      WRK-DBKBN          =   "2"
+           IF      WRK-RECE82-DOUJITSU-FLG =   ZERO
+      *        入院料情報取得フラグ
+               MOVE    1               TO  WRK-RECE82-DOUJITSU-FLG
       *        同日再入院（入院分）の保険組合せ、食事開始時間区分
                PERFORM VARYING IDX1    FROM    1   BY  1
                        UNTIL   IDX1    >       31
@@ -1523,6 +1530,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
       *
+      *    同日再入院情報取得
+           PERFORM 500-ORCSNYUINDAY-CALL-SEC
+      *
       *    診療会計読み込み
            MOVE    "1"                 TO  WRK-DBKBN 
       *      
@@ -1712,6 +1722,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            PERFORM 500-CANCEL-HENSYU-SEC
       *
            IF      FLG-END             =   ZERO
+      *        同日再入院情報取得
+               PERFORM 500-ORCSNYUINDAY-CALL-SEC
+      *
       *        診療会計読み込み
                MOVE    "1"                 TO  WRK-DBKBN 
       *      
@@ -2032,25 +2045,33 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    同日再入院チェック処理
+      *    同日再入院情報取得処理
       *****************************************************************
-       500-ORCSNYUINDAY-CHECK-SEC          SECTION.
+       500-ORCSNYUINDAY-CALL-SEC      SECTION.
       *
            INITIALIZE                      ORCSNYUINDAY-AREA
            MOVE    SYS-1001-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    KEY-O-PTID          TO  LNK-NYUINDAY-PTID
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    "1"
+                   MOVE    KEY-O-PTID      TO  LNK-NYUINDAY-PTID
                    MOVE    SYS-2001-SRYYM  TO  LNK-NYUINDAY-SANTEIYM
                WHEN    "2"
+                   MOVE    SYS-2002-PTID   TO  LNK-NYUINDAY-PTID
                    MOVE    SYS-2002-SRYYM  TO  LNK-NYUINDAY-SANTEIYM
            END-EVALUATE
            CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
                                                SPA-AREA
            IF      LNK-NYUINDAY-RC >   0
                DISPLAY "LNK-NYUINDAY-RC=" LNK-NYUINDAY-RC
-               GO  TO  500-ORCSNYUINDAY-CHECK-EXT
            END-IF
+           .
+       500-ORCSNYUINDAY-CALL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同日再入院チェック処理
+      *****************************************************************
+       500-ORCSNYUINDAY-CHECK-SEC          SECTION.
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       31

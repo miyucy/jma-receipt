@@ -190,6 +190,8 @@
                05  RECE61-RENRAKU-TEL2    PIC X(15).
       *県番号
            03  RECE61-PREFNUM             PIC  9(02).
+      *入院料情報取得フラグ
+           03  RECE61-DOUJITSU-FLG        PIC 9(01).
       *入院料情報
            03  RECE61-DOUJITSU-AREA.
       *同日再入院（入院分）の保険組合せ

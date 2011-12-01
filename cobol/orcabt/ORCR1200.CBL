@@ -659,6 +659,9 @@
                    PERFORM 900-NYUINACCT-READ-SEC
                END-PERFORM
            ELSE
+      *        同日再入院情報取得
+               PERFORM 500-ORCSNYUINDAY-CALL-SEC
+      *
       *       入院会計編集処理
                PERFORM 200121-NYUINACCT-HENSYU-SEC
       *
@@ -977,20 +980,20 @@
       *    病院・診療所区分
            MOVE    SYS-1001-HOSPSBT TO  WRK-RECE200-HOSPSBT
       *        
-           IF      WRK-DBKBN           =   "2" 
-      *        同日再入院（入院分）の保険組合せ、食事開始時間区分
-               PERFORM VARYING IDX3    FROM    1   BY  1
-                       UNTIL   IDX3    >       31
-                   MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX3)
-                                               TO
+      *    入院料情報取得フラグ
+           MOVE    1               TO  WRK-RECE200-DOUJITSU-FLG
+      *    日再入院（入院分）の保険組合せ、食事開始時間区分
+           PERFORM VARYING IDX3    FROM    1   BY  1
+                   UNTIL   IDX3    >       31
+               MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX3)
+                                           TO
                                    WRK-RECE200-DOUJITSU-HKNCOMBI (IDX3)
-                   MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX3)
-                                               TO
+               MOVE    LNK-NYUINDAY-DOUJITSU-SKJKBN   (IDX3)
+                                           TO
                                    WRK-RECE200-DOUJITSU-SKJKBN   (IDX3)
-               END-PERFORM
-      *        入院区分
-               MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE200-NYUINDAY-TBL
-           END-IF
+           END-PERFORM
+      *    入院区分
+           MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE200-NYUINDAY-TBL
       *
            MOVE    WRK-RECE200-REC     TO  TBL-RECE200-OCC (IDXX)
       *
@@ -1027,7 +1030,9 @@
                END-PERFORM
            END-IF    
       *        
-           IF      WRK-DBKBN           =   "2" 
+           IF      WRK-RECE200-DOUJITSU-FLG =   ZERO
+      *        入院料情報取得フラグ
+               MOVE    1               TO  WRK-RECE200-DOUJITSU-FLG
       *        同日再入院（入院分）の保険組合せ、食事開始時間区分
                PERFORM VARYING IDX3    FROM    1   BY  1
                        UNTIL   IDX3    >       31
@@ -1374,6 +1379,9 @@
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
       *
+      *    同日再入院情報取得
+           PERFORM 500-ORCSNYUINDAY-CALL-SEC
+      *
       *    診療会計読み込み
            MOVE    "1"                 TO  WRK-DBKBN 
       *   
@@ -1502,6 +1510,9 @@
                PERFORM 500-CANCEL-HENSYU-SEC
       *
                IF      FLG-END             =   ZERO
+      *            同日再入院情報取得
+                   PERFORM 500-ORCSNYUINDAY-CALL-SEC
+      *
       *            診療会計読み込み
                    MOVE    "1"                 TO  WRK-DBKBN 
       *      
@@ -2007,25 +2018,33 @@
            EXIT.
       *
       *****************************************************************
-      *    同日再入院チェック処理
+      *    同日再入院情報取得処理
       *****************************************************************
-       500-ORCSNYUINDAY-CHECK-SEC          SECTION.
+       500-ORCSNYUINDAY-CALL-SEC      SECTION.
       *
            INITIALIZE                      ORCSNYUINDAY-AREA
            MOVE    SYS-1001-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    KEY-O-PTID          TO  LNK-NYUINDAY-PTID
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    "1"
                    MOVE    SYS-2001-SRYYM  TO  LNK-NYUINDAY-SANTEIYM
+                   MOVE    KEY-N-PTID      TO  LNK-NYUINDAY-PTID
                WHEN    "2"
                    MOVE    SYS-2002-SRYYM  TO  LNK-NYUINDAY-SANTEIYM
+                   MOVE    SYS-2002-PTID   TO  LNK-NYUINDAY-PTID
            END-EVALUATE
            CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
                                                SPA-AREA
            IF      LNK-NYUINDAY-RC >   0
                DISPLAY "LNK-NYUINDAY-RC=" LNK-NYUINDAY-RC
-               GO  TO  500-ORCSNYUINDAY-CHECK-EXT
            END-IF
+           .
+       500-ORCSNYUINDAY-CALL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同日再入院チェック処理
+      *****************************************************************
+       500-ORCSNYUINDAY-CHECK-SEC          SECTION.
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       31
