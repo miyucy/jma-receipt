@@ -2,14 +2,13 @@ tbl_syuka {
     HOSPNUM              number(2,0);
     NYUGAIKBN           char(1);
     PTID                number(10,0);
-# ---> å…¥é™¢åŸºæœ¬æ–™ã¨è¨ºç™‚åˆ†ã‚’ã‚ã‘ã‚‹
+# ---> Æþ±¡´ðËÜÎÁ¤È¿ÇÎÅÊ¬¤ò¤ï¤±¤ë
     TEN_KBN             char(1);
     SRYYM               char(6);
     TEISYUTUSAKI        char(1);
     HKNJANUM            char(8);
     HOJOKBN             char(1);
     KOHID               number(10,0);
-    RECEIPT_KBN		char(10);
     RECESYUBETU         char(4);
     SRYKA               char(2);
 #------> key
@@ -30,20 +29,20 @@ tbl_syuka {
     KAISU               number(3);
     NISSU               number(3);
     EDDAY               number(2);
-#  æœªè«‹æ±‚ãƒ¬ã‚»ã§ä½¿ã†äºˆå®š
+#  Ì¤ÀÁµá¥ì¥»¤Ç»È¤¦Í½Äê
     MISEIKYU_FLG        char(2);
-#  å‰Šé™¤ãƒ•ãƒ©ã‚°
+#  ºï½ü¥Õ¥é¥°
     DLT_FLG             char(1);
     TERMID              varchar(16);
     OPID                varchar(16);
     CREYMD              char(8);
     UPYMD               char(8);
     UPHMS               char(6);
-#-----> æ¤œç´¢ç”¨é …ç›®
+#-----> ¸¡º÷ÍÑ¹àÌÜ
     XXPTNUM             char(20),virtual;
 };
 primary {
-    HOSPNUM,NYUGAIKBN,PTID,TEN_KBN,SRYYM,TEISYUTUSAKI,HKNJANUM,HOJOKBN,KOHID,RECEIPT_KBN,RECESYUBETU,SRYKA;
+    HOSPNUM,NYUGAIKBN,PTID,TEN_KBN,SRYYM,TEISYUTUSAKI,HKNJANUM,HOJOKBN,KOHID,RECESYUBETU,SRYKA;
 };
 
 
@@ -63,7 +62,6 @@ path	key		{
 			AND     KOHID          =   :KOHID
 			AND     RECESYUBETU    =   :RECESYUBETU
 			AND     SRYKA          =   :SRYKA
-			AND   RECEIPT_KBN      =   :RECEIPT_KBN
 		;
 	};
 };
@@ -162,7 +160,6 @@ path	key7		{
 			AND     HKNJANUM       =    :HKNJANUM
 			AND     HOJOKBN        =    :HOJOKBN
 			AND     KOHID          =    :KOHID
-			AND     RECEIPT_KBN    =    :RECEIPT_KBN
 			AND     DLT_FLG        <>   '1'
 			ORDER BY SRYKA,TEN_KBN
 		;
@@ -271,7 +268,6 @@ path	upd2	{
 			AND     HOJOKBN        =   :HOJOKBN
 			AND     KOHID          =   :KOHID
 			AND     RECESYUBETU    =   :RECESYUBETU
-			AND   RECEIPT_KBN      =   :RECEIPT_KBN
 		;
 	};
 };
@@ -426,26 +422,6 @@ path	upd4	{
 			AND	PTID           =    :PTID
 			AND	SRYYM          =    :SRYYM
 			AND     RECESYUBETU    =    :RECESYUBETU
-		;
-	};
-};
-
-path	key17		{ 	
-	DBSELECT	{
-		DECLARE tbl_syuka_key17_csr CURSOR FOR
-		SELECT *
-		FROM tbl_syuka
-			WHERE   HOSPNUM         =    :HOSPNUM
-			AND     SRYYM          =    :SRYYM
-			AND     NYUGAIKBN      =    :NYUGAIKBN
-			AND     TEISYUTUSAKI   LIKE :TEISYUTUSAKI
-			AND     PTID           =    :PTID
-			AND     RECESYUBETU    =    :RECESYUBETU
-			AND     HOJOKBN        =    :HOJOKBN
-			AND     KOHID          =    :KOHID
-			AND     RECEIPT_KBN    =    :RECEIPT_KBN
-			AND     DLT_FLG        <>   '1'
-			ORDER BY SRYKA,TEN_KBN
 		;
 	};
 };
