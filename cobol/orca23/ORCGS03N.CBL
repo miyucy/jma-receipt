@@ -2384,26 +2384,6 @@
                MOVE    "0005"      TO  SPA-ERRCD
            END-IF
       *
-           IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
-                   IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
-                       IF    ( SPA-NAI-TLASTHENKINFLG(SPA-GMN-SELNUM)
-                           =   1 )
-                           CONTINUE
-                       END-IF
-                   ELSE
-                       IF    ( SPA-NAI-TJOUTAIKBN (SPA-GMN-SELNUM)
-                               =   " " OR "1" OR "2" OR "3"
-                                OR "4" OR "6" OR "7" OR "8" OR "9" )
-                           CONTINUE
-                       ELSE
-                           MOVE    "0009"  TO  SPA-ERRCD
-                           MOVE    1       TO  SPA-GMN-CUR
-                       END-IF
-                   END-IF
-               END-IF
-           END-IF
-      *
            .
        41001-SELNUM-CHK-EXT.
            EXIT.

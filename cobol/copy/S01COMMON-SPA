@@ -125,7 +125,7 @@
       *警告画面より
            05  SPA-SID1-AREA. 
                07  SPA-SID1-FLG          PIC  X(05).
-               07  SPA-S99-FLG           PIC  X(02).
+               07  SPA-S99-FLG           PIC  X(05).
            05  SPA-S01-SHIHARAI-PARA.
                07  SPA-S01-SHR-ORDER     PIC  X(02).
                07  SPA-S01-SHR-NYUGAIKBN PIC  X(01).
