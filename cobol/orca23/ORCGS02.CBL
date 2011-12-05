@@ -411,7 +411,6 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-SYORINO         PIC X(02).
            03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-STATE           PIC S9(9)   BINARY.
            03  WRK-SIDCD           PIC X(04).
@@ -505,6 +504,7 @@
            03  WRK-PATHNAME        PIC X(64).
            03  WRK-ORG-NYUGAIKBN   PIC X(01).
            03  WRK-ORG-DENPNUM     PIC 9(07).
+           03  WRK-ORG-SYORINO     PIC X(02).
            03  WRK-PAGE-CNT        PIC 9(06).
            03  WRK-DENPEDANUM      PIC 9(02).
            03  WRK-OLD-NYUHEN-YMD  PIC X(08).
@@ -774,7 +774,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-S01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-S02
+           MOVE    SPA-FREE1       TO  SPA-S02
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -797,7 +797,7 @@
       *
            MOVE    SPA-S01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-S02         TO  SPA-FREE
+           MOVE    SPA-S02         TO  SPA-FREE1
       *
            .
            EXIT    PROGRAM
@@ -918,7 +918,7 @@
            WHEN    "S06"
                PERFORM 320-S03SPASET-SEC
            WHEN    "S07"
-               PERFORM 320-S03SPASET-SEC
+               PERFORM 320-S07SPASET-SEC
                EVALUATE    TRUE
                WHEN  ( SPA-S01-TUKI-SKYPRT =   "2" )
                WHEN  ( SPA-S01-TUKI-SRYPRT =   "2" )
@@ -928,7 +928,7 @@
                    PERFORM 4901-GAI-TUKISKYPRT-SEC
                END-EVALUATE
            WHEN    "S04"
-               PERFORM 320-S03SPASET-SEC
+      *        PERFORM 320-S03SPASET-SEC
                IF    ( SPA-S01-SHR-ORDER  NOT =   SPACE )
                    PERFORM 340-SHIHARAI-PRT-SEC
                ELSE
@@ -943,7 +943,7 @@
            WHEN    "SID3"
                PERFORM 330-SID3-SET-SEC
            WHEN    "SID4"
-               PERFORM 320-S03SPASET-SEC
+      *        PERFORM 320-S03SPASET-SEC
                PERFORM 330-SID4-SET-SEC
            WHEN    "S99"
                PERFORM 340-S99-SET-SEC
@@ -1684,15 +1684,6 @@
            MOVE    SPA-S01-MODE        TO  SPA-GMN-MODE
            MOVE    SPA-S01-SORTKBN     TO  SPA-GMN-SORTKBN
       *
-           MOVE    SPA-S01-TUKI-DENPNUM    TO  SPA-TUKI-DENPNUM
-           MOVE    SPA-S01-TUKI-SRYYM      TO  SPA-TUKI-SRYYM
-           MOVE    SPA-S01-TUKI-KIKANKBN   TO  SPA-TUKI-KIKANKBN
-           MOVE    SPA-S01-TUKI-STYMD      TO  SPA-TUKI-STYMD
-           MOVE    SPA-S01-TUKI-EDYMD      TO  SPA-TUKI-EDYMD
-           MOVE    SPA-S01-TUKI-GRPKBN     TO  SPA-TUKI-GRPKBN
-           MOVE    SPA-S01-TUKI-SKYPRT     TO  SPA-TUKI-SKYPRT
-           MOVE    SPA-S01-TUKI-SRYPRT     TO  SPA-TUKI-SRYPRT
-      *
            PERFORM 320-HKNCOMBI-EDIT-SEC
       *
            PERFORM 3101-COMBO-EDIT-SEC
@@ -1736,6 +1727,23 @@
        320-S03SPASET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ·îÊÌÀÁµá½ñ·óÎÎ¼ý½ñ°õºþ»Ø¼¨²èÌÌÌá¤ê»þÊÔ½¸½èÍý
+      *****************************************************************
+       320-S07SPASET-SEC          SECTION.
+      *
+           MOVE    SPA-S01-TUKI-DENPNUM    TO  SPA-TUKI-DENPNUM
+           MOVE    SPA-S01-TUKI-SRYYM      TO  SPA-TUKI-SRYYM
+           MOVE    SPA-S01-TUKI-KIKANKBN   TO  SPA-TUKI-KIKANKBN
+           MOVE    SPA-S01-TUKI-STYMD      TO  SPA-TUKI-STYMD
+           MOVE    SPA-S01-TUKI-EDYMD      TO  SPA-TUKI-EDYMD
+           MOVE    SPA-S01-TUKI-GRPKBN     TO  SPA-TUKI-GRPKBN
+           MOVE    SPA-S01-TUKI-SKYPRT     TO  SPA-TUKI-SKYPRT
+           MOVE    SPA-S01-TUKI-SRYPRT     TO  SPA-TUKI-SRYPRT
+      *
+           .
+       320-S07SPASET-EXT.
+           EXIT.
       **************************************************************
       *    ¼ýÇ¼¥Þ¥¹¥¿ÊÔ½¸½èÍý
       **************************************************************
@@ -1764,7 +1772,9 @@
       *
            MOVE    WRK-TBL-SEL-MOT      TO  SPA-GMN-TBL-SEL
       *
-           PERFORM 300-SYUMEI-HENSYU-SEC
+           IF    ( WRK-ORG-SYORINO      =   SPACE )
+               PERFORM 300-SYUMEI-HENSYU-SEC
+           END-IF
       *
            .
        300-SYUNOU-HENSYU-EXT.
@@ -1853,6 +1863,11 @@
                                        TO  SPA-NAI-TMCHOSEI2(IDXM)
       *
            END-PERFORM
+      *
+           IF    ( SPA-GMN-TSEIKYU(SPA-GMN-TBL-SEL)
+                               >   SPA-GMN-TNYUKIN(SPA-GMN-TBL-SEL))
+               PERFORM 4601-NYUKIN-SEC
+           END-IF
       *
            .
        3001-SYUMEI-HENSYU-EXT.
@@ -3964,13 +3979,10 @@
                MOVE    SPA-GMN-SELBAN  TO  SPA-GMN-TBL-SEL
            END-IF
       *
-           MOVE    SPA-NAI-SYORINO     TO  WRK-SYORINO
+      *
            PERFORM 300-SYUMEI-HENSYU-SEC
-      *    IF    ( WRK-SYORINO =   CONST-PROC-RRKSYU )
-      *        PERFORM 490-RIREKI-SEC
-      *    ELSE
-               PERFORM 4601-NYUKIN-SEC
-      *    END-IF
+      *
+           MOVE    1                   TO  SPA-GMN-CUR
       *
            .
        4101-SELNUM-CHK-EXT.
@@ -4154,16 +4166,8 @@
                     OR   ( SPA-GMN-TBL-SEL    >   ZERO )
       *
                IF    ( S02-SYULIST-SELECT (IDXL)    =   "T" )
-                   MOVE    IDXL TO  SPA-GMN-SELBAN
-                                       SPA-GMN-TBL-SEL
-      *
-                   MOVE    SPA-NAI-SYORINO     TO  WRK-SYORINO
-                   PERFORM 300-SYUMEI-HENSYU-SEC
-      *            IF    ( WRK-SYORINO =   CONST-PROC-RRKSYU )
-      *                PERFORM 490-RIREKI-SEC
-      *            ELSE
-                       PERFORM 4601-NYUKIN-SEC
-      *            END-IF
+                   MOVE    IDXL TO     S02-SELNUM
+                   PERFORM 4101-SELNUM-CHK-SEC
                END-IF
       *
            END-PERFORM
@@ -4885,7 +4889,7 @@
       *
                MOVE    SPA-S01KYOUTU   TO  SPA-WORK
                MOVE    SPA-AREA        TO  SPA-COMMON
-               MOVE    SPA-S02         TO  SPA-FREE
+               MOVE    SPA-S02         TO  SPA-FREE1
       *
                MOVE    "LINK"          TO  MCP-STATUS
                MOVE    SPACE           TO  MCP-EVENT
@@ -4899,7 +4903,7 @@
       *
                MOVE    SPA-COMMON      TO  SPA-AREA
                MOVE    SPA-WORK        TO  SPA-S01KYOUTU
-               MOVE    SPA-FREE        TO  SPA-S02
+               MOVE    SPA-FREE1       TO  SPA-S02
       *
                MOVE    "S02"           TO  SPA-MOTOPG
                MOVE    "S07"           TO  SPA-SAKIPG
@@ -6351,7 +6355,11 @@
                PERFORM 3101-MISYU-EDIT-SEC
                MOVE    2           TO  FLG-MEILIST-ROW
                PERFORM 300-SYUNOU-HENSYU-SEC
-               MOVE    1           TO  SPA-GMN-CUR
+               MOVE    SPA-GMN-TBL-SEL TO  S02-SELNUM
+               PERFORM 4101-SELNUM-CHK-SEC
+               IF    ( SPA-S01-SYORINO =   CONST-PROC-RRKSYU )
+                   PERFORM 490-RIREKI-SEC
+               END-IF
            END-IF
       *
            .
@@ -7309,11 +7317,15 @@
       *
            INITIALIZE                  WRK-ORG-NYUGAIKBN
                                        WRK-ORG-DENPNUM
+                                       WRK-ORG-SYORINO
+      *
            IF    ( SPA-GMN-TBL-SEL >   ZERO )
                MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-TBL-SEL)
                                    TO  WRK-ORG-NYUGAIKBN
                MOVE    SPA-GMN-TDENPNUM (SPA-GMN-TBL-SEL)
                                    TO  WRK-ORG-DENPNUM
+               MOVE    SPA-NAI-SYORINO
+                                   TO  WRK-ORG-SYORINO
            END-IF
       *
            .
@@ -7338,11 +7350,17 @@
       *
                    MOVE    IDXL    TO  SPA-GMN-TBL-SEL
                                        SPA-GMN-SELBAN
-                   PERFORM 300-SYUMEI-HENSYU-SEC
+                   IF    ( WRK-ORG-SYORINO =   SPACE )
+                       PERFORM 300-SYUMEI-HENSYU-SEC
+                   END-IF
       *
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( SPA-GMN-TBL-SEL =   ZERO )
+               PERFORM 300-SYUMEI-HENSYU-SEC
+           END-IF
       *
            .
        4200-LOAD-SYULST-SEL-EXT.
@@ -7605,7 +7623,7 @@
       *
            MOVE    SPA-S01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-S02             TO  SPA-FREE
+           MOVE    SPA-S02             TO  SPA-FREE1
       *
            MOVE    "LINK"              TO  MCP-STATUS
            MOVE    SPACE               TO  MCP-EVENT
@@ -7619,7 +7637,7 @@
       *
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-WORK            TO  SPA-S01KYOUTU
-           MOVE    SPA-FREE            TO  SPA-S02
+           MOVE    SPA-FREE1           TO  SPA-S02
       *
            .
        41011-S04-SET-EXT.
@@ -7891,7 +7909,9 @@
                                         =   "1" )
                MOVE    WIDGET-INSENSITIVE
                                         TO  SID3-B12S-STATE
+               MOVE    "F"              TO  SID3-B12S-VISIBLE
            ELSE
+               MOVE    "T"              TO  SID3-B12S-VISIBLE
                MOVE    WIDGET-NORMAL    TO  SID3-B12S-STATE
            END-IF
       *
@@ -7984,7 +8004,7 @@
       *
                MOVE    SPA-S01KYOUTU   TO  SPA-WORK
                MOVE    SPA-AREA        TO  SPA-COMMON
-               MOVE    SPA-S02         TO  SPA-FREE
+               MOVE    SPA-S02         TO  SPA-FREE1
       *
                MOVE    "LINK"          TO  MCP-STATUS
                MOVE    SPACE           TO  MCP-EVENT
@@ -8003,7 +8023,7 @@
       *
                MOVE    SPA-COMMON      TO  SPA-AREA
                MOVE    SPA-WORK        TO  SPA-S01KYOUTU
-               MOVE    SPA-FREE        TO  SPA-S02
+               MOVE    SPA-FREE1       TO  SPA-S02
       *
                MOVE    "B12"           TO  MCP-WIDGET
       *

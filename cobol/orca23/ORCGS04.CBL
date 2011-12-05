@@ -282,7 +282,7 @@
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-S01KYOUTU
-           MOVE    SPA-FREE        TO  SPA-S04
+           MOVE    SPA-FREE2       TO  SPA-S04
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -305,7 +305,7 @@
       *
            MOVE    SPA-S01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-S04         TO  SPA-FREE
+           MOVE    SPA-S04         TO  SPA-FREE2
       *
            .
            EXIT    PROGRAM

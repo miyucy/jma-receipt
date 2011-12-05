@@ -203,7 +203,7 @@
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-FREE        TO  SPA-S07
+           MOVE    SPA-FREE2       TO  SPA-S07
            MOVE    SPA-WORK        TO  SPA-S01KYOUTU
       *
            MOVE    SPACE           TO  SPA-ERRCD
@@ -227,7 +227,7 @@
       *
            MOVE    SPA-S01KYOUTU    TO  SPA-WORK
            MOVE    SPA-AREA         TO  SPA-COMMON.
-           MOVE    SPA-S07          TO  SPA-FREE
+           MOVE    SPA-S07          TO  SPA-FREE2
            .
       *
        000-PROC-SEC-EXT.
@@ -407,8 +407,7 @@
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
            WHEN    "CLICKED"       ALSO    "B01"
-               MOVE    SPACE           TO  SPA-S01-TUKI-SKYPRT
-                                           SPA-S01-TUKI-SRYPRT
+               INITIALIZE              SPA-S01-TUKI-G
                PERFORM 210-BACK
            WHEN    "CLICKED"       ALSO    "B12S"
            WHEN    "CLICKED"       ALSO    "B10"
@@ -751,6 +750,8 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
+      *
+               INITIALIZE              SPA-S01-TUKI-G
       *
                MOVE    WRK-DENPNUM     TO  SPA-S01-TUKI-DENPNUM
       *
