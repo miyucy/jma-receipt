@@ -363,6 +363,14 @@
                    ELSE
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
+      *        アップグレード
+               WHEN    "0105"
+                   IF      SPA-M80ID1-FLG      =   "OK"
+                       MOVE    "upgrade"       TO  WRK-COMMAND
+                       PERFORM 4010-SHELL-SYORI-SEC
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
            END-EVALUATE
            MOVE    SPACE               TO  SPA-M80ID1CD
            IF      SPA-ERRCD       NOT =   SPACE
@@ -894,6 +902,7 @@
       *****************************************************************
        410-UPGRADE-SEC       SECTION.
       *
+           MOVE    "0105"              TO  SPA-M80ID1CD
            .
        410-UPGRADE-EXT.
            EXIT.
@@ -1254,6 +1263,12 @@
                    END-STRING
                WHEN    "0104"
                    STRING  "選択したパッケージをアンリンクします。"
+                           "よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO   M80ID1-ID1MSG
+                   END-STRING
+               WHEN    "0105"
+                   STRING  "パッケージをアップグレードします。"
                            "よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   M80ID1-ID1MSG
