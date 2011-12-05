@@ -84,7 +84,7 @@
        WORKING-STORAGE                 SECTION.
       *
       *    中間ファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //DTCHKERRPARA//.
       *
            COPY    "CPCOMMONDAT3.INC"
@@ -109,12 +109,10 @@
            03  FLG-ERR                     PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
-           03  FLG-PTRSIINF                PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
-           03  FLG-TNYUINRRK               PIC 9(01).
+           03  FLG-GENZAN                  PIC 9(01).
            03  FLG-DTCHK002                PIC 9(01).
            03  FLG-LOOP-END                PIC 9(01).
-           03  FLG-NODATA                  PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -130,24 +128,14 @@
            03  IDX6                        PIC 9(05).
            03  IDX7                        PIC 9(05).
            03  IDX8                        PIC 9(05).
-           03  IDX9                        PIC 9(05).
            03  IDX-DAY                     PIC 9(02).
       *
        01  WRK-AREA.
            03  WRK-DTCHKERR                PIC X(200).
            03  WRK-JOB-YOBI                PIC X(500).
            03  WRK-COMB-HKNCOMBINUM        PIC 9(04).
-           03  WRK-HKNCOMBINUM-G.
-               05  WRK-HKNCOMBINUM         PIC 9(04).
-               05  WRK-HKNCOMBINUM-SKJHKN  PIC X(01).
-           03  WRK-HKNNUM                  PIC X(03).
-           03  WRK-KOHNUM                  PIC X(03).
-           03  WRK-RSI-HKNKBN              PIC X(01).
-           03  WRK-KOHID                   PIC 9(10).
-           03  WRK-LASTCOMB                PIC X(04).
-           03  WRK-NYUINYMD                PIC X(08).
+           03  WRK-HKNCOMBINUM             PIC 9(04).
            03  WRK-HBTSRYKA-G.
-               05  WRK-HBTSRYKA-ALL        PIC 9(01)   OCCURS  31.
                05  WRK-HBTSRYKA-HBTKA      PIC X(02)   OCCURS  31.
                05  WRK-HBTSRYKA-MAX        PIC 9(05).
                05  WRK-HBTSRYKA-OCC        OCCURS  100.
@@ -157,11 +145,6 @@
            03  WRK-EDIDX                   PIC 9(02).
            03  WRK-DAY-G.
                05  WRK-DAY                 PIC 9(03)   OCCURS  31.
-           03  WRK-HKNCOMBI.
-               05  WRK-HKNCOMBI9           PIC 9(04).
-           03  WRK-SRYYMD.
-               05  WRK-SRYYM               PIC X(06).
-               05  WRK-SRYDD               PIC 9(02).
       *
        01  TCOMBI-AREA.
            03  TCOMBI-MAX                  PIC 9(05).
@@ -173,20 +156,32 @@
       *
       *    固定値領域
        01  CONST-AREA.
-           03  CONST-H2910                 PIC X(06) VALUE "201710".
            03  CONST-HKNCOMBICD            PIC X(09) VALUE  "999999912".
            03  CONST-HBTSRYKA-MAX          PIC 9(05) VALUE  100.
+           03  CONST-ACCT-STATUS-G.
+               05  CONST-STS-NYUKHN        PIC 9(05) VALUE     1.
+               05  CONST-STS-GAIHAKU       PIC 9(05) VALUE     2.
+               05  CONST-STS-HKNCOMBI      PIC 9(05) VALUE     4.
+               05  CONST-STS-NYUKSN        PIC 9(05) VALUE     8.
+               05  CONST-STS-NYUGEN        PIC 9(05) VALUE    16.
+               05  CONST-STS-JITDAY        PIC 9(05) VALUE    32.
+               05  CONST-STS-SNTDAY        PIC 9(05) VALUE    64.
+           03  CONST-GENZAN-G.
+               05  CONST-GENZAN-VAL.
+                   07  CONST-GENKNS-IPNCD  PIC X(09) VALUE "190080570".
+                   07  CONST-GENKNS-RJNCD  PIC X(09) VALUE "190799770".
+                   07  CONST-GENANZ-IPNCD  PIC X(09) VALUE "190111690".
+                   07  CONST-GENANZ-RJNCD  PIC X(09) VALUE "190809090".
+                   07  CONST-GENJKS-IPNCD  PIC X(09) VALUE "190111790".
+                   07  CONST-GENJKS-RJNCD  PIC X(09) VALUE "190809190".
+               05  CONST-GENZAN-R  REDEFINES   CONST-GENZAN-VAL.
+                   07  CONST-GENZANCD      PIC X(09) OCCURS 6.
+               05  CONST-GENZAN-MAX        PIC 9(05) VALUE  6.
            03  CONST-SRYCD-MAX             PIC 9(05) VALUE 20.
            03  CONST-TCOMBI-MAX            PIC 9(05) VALUE 50.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
-      *
-      *    入院履歴
-       01  TNYUINRRK-REC.
-           COPY    "CPPTNYUINRRK.INC"
-                                   REPLACING  //PTNYUINRRK//
-                                   BY         //TNYUINRRK//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -208,10 +203,6 @@
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    患者労災情報
-       01  PTRSIINF-REC.
-           COPY    "CPPTRSIINF.INC".
-      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -228,12 +219,6 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
-      *    入院料と異なる食事算定保険組み合わせ取得サブ
-           COPY    "CPORCSSKJHKN.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -249,7 +234,7 @@
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //LNKDTCHKERRPARA//.
       *
       *    データチェック一括処理パラメータ
@@ -296,19 +281,17 @@
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
-               PERFORM 900-DBSTART-SEC
+           PERFORM 900-DBSTART-SEC
       *
       *    ステップ管理開始処理
-               MOVE    "STS"               TO  SJOBKANRI-MODE
-               INITIALIZE                      JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
-               MOVE    "ORCDTCHK006"       TO  JOB-PGID
-               MOVE    "入院会計情報抽出"  TO  JOB-SHELLMSG
-               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-               PERFORM 800-ORCSJOB-SEC
-           END-IF
+           MOVE    "STS"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
+           MOVE    "ORCDTCHK006"       TO  JOB-PGID
+           MOVE    "入院会計情報抽出"  TO  JOB-SHELLMSG
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+           PERFORM 800-ORCSJOB-SEC
       *
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
@@ -325,24 +308,6 @@
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHKSRYPARA-HOSPNUM
            MOVE    "DCSRY000"          TO  DTCHKSRYPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHKSRYPARA-TERMID
-      *
-           INITIALIZE                      SGETTEMP-AREA
-      *
-           MOVE    DTCHK002PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (1)
-           MOVE    DTCHKACCTPARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (2)
-           MOVE    DTCHKSRYPARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (3)
-      *
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-      *
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  DTCHK002PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  DTCHKACCTPARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  DTCHKSRYPARA-FULLNAME
       *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
@@ -385,20 +350,24 @@
            OPEN    I-O     DCACCT-FILE
                            DCSRY-FILE
       *
-           PERFORM 900-PTNYUINRRK-KEY43-SEL-SEC
+           PERFORM 900-NYUINACCT-KEY27-SEL-SEC
       *
-           PERFORM UNTIL ( FLG-TNYUINRRK NOT =   ZERO )
+           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
       *
-               PERFORM 2001-HBTSRYKA-HEN-SEC
+               IF    ( NACCT-ZAIKAISU  >   ZERO )
+                   PERFORM 2001-HBTSRYKA-HEN-SEC
       *
-               PERFORM 20011-SRYACCT-EDIT-SEC
+                   PERFORM 2001-TCOMBI-HEN-SEC
       *
-               PERFORM 900-PTNYUINRRK-KEY43-FET-SEC
+                   PERFORM 2001-NACCT-EDIT-SEC
+               END-IF
+      *
+               PERFORM 900-NYUINACCT-KEY27-FET-SEC
       *
            END-PERFORM
       *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key43"             TO  MCP-PATHNAME
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key27"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            CLOSE           DCACCT-FILE
@@ -406,90 +375,6 @@
       *
            .
        2001-SRYACCT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療会計編集処理
-      *****************************************************************
-       20011-SRYACCT-EDIT-SEC          SECTION.
-      *
-           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
-      *
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           IF    ( FLG-NYUINACCT   =   ZERO )
-      *
-               PERFORM 2001-TCOMBI-HEN-SEC
-      *
-               PERFORM 2001-NACCT-EDIT-SEC
-      *
-           ELSE
-      *
-               PERFORM 200111-HKNCOMBI-EDIT-SEC
-               MOVE    WRK-HKNCOMBI    TO  WRK-COMB-HKNCOMBINUM
-               PERFORM 900-HKNCOMBI-KEY-SEL-SEC
-               INITIALIZE                  PTRSIINF-REC
-               IF    ( COMB-HKNNUM         =   "971"  OR  "973" )
-                   PERFORM 900-PTRSIINF-KEY-SEL-SEC
-               END-IF
-      *
-               INITIALIZE                  NYUINACCT-REC
-               MOVE    SPA-HOSPNUM     TO  NACCT-HOSPNUM
-               MOVE    "1"             TO  NACCT-NYUGAIKBN
-               MOVE    TNYUINRRK-PTID  TO  NACCT-PTID
-               MOVE    WRK-HKNCOMBI    TO  NACCT-HKNCOMBI
-                                           NACCT-SRYKA
-               MOVE    "90"            TO  NACCT-SRYKBN
-               MOVE    ORCBSD01-SRYYM  TO  NACCT-SRYYM
-               MOVE    ZERO            TO  NACCT-ZAITEN
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   31 )
-                   IF    ( WRK-HBTSRYKA-ALL (IDX0) >   ZERO )
-                       COMPUTE NACCT-ZAIKAISU
-                           =   NACCT-ZAIKAISU  +   1
-                       MOVE    1       TO  NACCT-DAY (IDX0)
-                   END-IF
-               END-PERFORM
-               MOVE    1               TO  FLG-NODATA
-               MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
-               MOVE    COMB-KOHHKNNUM (1)
-                                       TO  WRK-KOHNUM
-               MOVE    COMB-KOHID  (1) TO  WRK-KOHID
-               MOVE    PTRSI-HKNKBN    TO  WRK-RSI-HKNKBN
-               PERFORM 20012-DCACCT-INS-SEC
-           END-IF
-      *
-           .
-       20011-SRYACCT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険組合せ処理
-      *****************************************************************
-       200111-HKNCOMBI-EDIT-SEC        SECTION.
-      *
-           MOVE    ZERO            TO  WRK-HKNCOMBI9
-      *
-           PERFORM 900-NYUINACCT-KEY19-SEL-SEC
-           MOVE    NACCT-SRYYM     TO  WRK-SRYYM
-           PERFORM VARYING IDX0    FROM    31   BY  -1
-                   UNTIL ( IDX0    <   1 )
-                    OR   ( WRK-HKNCOMBI9   NOT  =   ZERO )
-               IF    ( NACCT-DAY (IDX0)    >    ZERO )
-                   MOVE    IDX0    TO  WRK-SRYDD
-                   IF    ( WRK-NYUINYMD    <=  WRK-SRYYMD )
-                       MOVE    NACCT-DAY (IDX0)
-                                   TO  WRK-HKNCOMBI9
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           IF    ( WRK-HKNCOMBI9   =   ZERO )
-               MOVE    WRK-LASTCOMB    TO  WRK-HKNCOMBI
-           END-IF
-      *
-           .
-       200111-HKNCOMBI-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    診療会計編集処理
@@ -504,11 +389,25 @@
       *
            PERFORM UNTIL ( FLG-DTCHK002    NOT =   ZERO )
       *
-               INITIALIZE                  TNYUINRRK-REC
-               MOVE    DTCHK002-PTID   TO  TNYUINRRK-PTID
-               PERFORM 2001-HBTSRYKA-HEN-SEC
+               PERFORM 900-NYUINACCT-KEY14-SEL-SEC
       *
-               PERFORM 20011-SRYACCT-EDIT-SEC
+               PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+      *
+                   IF    ( NACCT-ZAIKAISU  >   ZERO )
+                       PERFORM 2001-HBTSRYKA-HEN-SEC
+      *
+                       PERFORM 2001-TCOMBI-HEN-SEC
+      *
+                       PERFORM 2001-NACCT-EDIT-SEC
+                   END-IF
+      *
+                   PERFORM 900-NYUINACCT-KEY14-FET-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
       *
                PERFORM 900-DTCHK002-READ-SEC
       *
@@ -527,21 +426,19 @@
        2001-HBTSRYKA-HEN-SEC           SECTION.
       *
            MOVE    ZERO                TO  WRK-HBTSRYKA-G
-           MOVE    ZERO                TO  WRK-LASTCOMB
-           MOVE    ALL "9"             TO  WRK-NYUINYMD
       *
            PERFORM 900-PTNYUINRRK-KEY41-SEL-SEC
       *
            PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
       *
-               IF    ( PTNYUINRRK-TENNYUYMD (1:6)  <   ORCBSD01-SRYYM )
+               IF    ( PTNYUINRRK-TENNYUYMD (1:6)  <   NACCT-SRYYM )
                    MOVE    1           TO  WRK-STIDX
                ELSE
                    MOVE    PTNYUINRRK-TENNYUYMD (7:2)
                                        TO  WRK-STIDX
                END-IF
       *
-               IF    ( PTNYUINRRK-TENSTUYMD (1:6)  >   ORCBSD01-SRYYM )
+               IF    ( PTNYUINRRK-TENSTUYMD (1:6)  >   NACCT-SRYYM )
                    MOVE    31          TO  WRK-EDIDX
                ELSE
                    MOVE    PTNYUINRRK-TENSTUYMD (7:2)
@@ -550,15 +447,8 @@
       *
                PERFORM VARYING IDX-DAY     FROM    WRK-STIDX   BY  1
                        UNTIL ( IDX-DAY     >       WRK-EDIDX )
-                   MOVE    1           TO  WRK-HBTSRYKA-ALL   (IDX-DAY)
                    MOVE    PTNYUINRRK-NYUINKA
                                        TO  WRK-HBTSRYKA-HBTKA (IDX-DAY)
-                   MOVE    PTNYUINRRK-HKNCOMBINUM
-                                       TO  WRK-LASTCOMB
-                   IF    ( PTNYUINRRK-NYUINYMD     <   WRK-NYUINYMD )
-                       MOVE    PTNYUINRRK-NYUINYMD
-                                       TO  WRK-NYUINYMD
-                   END-IF
                END-PERFORM
       *
                PERFORM 900-PTNYUINRRK-KEY41-FET-SEC
@@ -624,7 +514,6 @@
       *
                IF    ( NACCT-DAY (IDX1)    >   ZERO )
       *
-                   INITIALIZE                      WRK-HKNCOMBINUM-G
                    MOVE    NACCT-DAY (IDX1)    TO  WRK-HKNCOMBINUM
                    PERFORM 20011-TCOMBI-HEN-SEC
       *
@@ -647,40 +536,12 @@
                    UNTIL ( IDX1   >       31 )
       *
                IF    ( LNK-NYUINDAY-DOUJITSU-KBN(IDX1) = "1" )
-                   INITIALIZE              WRK-HKNCOMBINUM-G
                    MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1)
                                        TO  WRK-HKNCOMBINUM
                    PERFORM 20011-TCOMBI-HEN-SEC
                END-IF
       *
            END-PERFORM
-      *
-           IF    ( NACCT-SRYYM         >= CONST-H2910 )
-               INITIALIZE              ORCSSKJHKN-AREA
-               MOVE    NACCT-HOSPNUM   TO  LNK-SKJHKN-HOSPNUM
-               MOVE    NACCT-PTID      TO  LNK-SKJHKN-PTID
-               MOVE    NACCT-SRYYM     TO  LNK-SKJHKN-SANTEIYM
-               CALL    "ORCSSKJHKN"    USING
-                                       ORCSSKJHKN-AREA
-                                       ORCSNYUINDAY-AREA
-                                       SPA-AREA
-               IF    ( LNK-SKJHKN-RC   =   ZERO )
-                   PERFORM VARYING IDX1   FROM    1   BY  1
-                           UNTIL ( IDX1   >       31 )
-                       PERFORM VARYING IDX9    FROM    1   BY  1
-                               UNTIL ( IDX9    >   2 )
-                           IF    ( LNK-SKJHKN-HKNCOMBINUM  (IDX1 IDX9)
-                                       NOT =   SPACE )
-                               MOVE LNK-SKJHKN-HKNCOMBINUM (IDX1 IDX9)
-                                       TO  WRK-HKNCOMBINUM-G
-                               MOVE "1"
-                                       TO  WRK-HKNCOMBINUM-SKJHKN
-                               PERFORM 20011-TCOMBI-HEN-SEC
-                           END-IF
-                       END-PERFORM
-                   END-PERFORM
-               END-IF
-           END-IF
       *
            .
        2001-TCOMBI-HEN-EXT.
@@ -699,7 +560,7 @@
       *
            END-PERFORM
       *
-           IF    (     IDX2                >   TCOMBI-MAX )
+           IF    (     IDX2               >   TCOMBI-MAX )
                IF    ( CONST-TCOMBI-MAX    >   TCOMBI-MAX )
                    COMPUTE TCOMBI-MAX  =   TCOMBI-MAX  +   1
                    MOVE    WRK-HKNCOMBINUM
@@ -708,20 +569,16 @@
                    COMPUTE TCOMBI-HKNCOMBI-CNT (TCOMBI-MAX)
                        =   TCOMBI-HKNCOMBI-CNT (TCOMBI-MAX)
                        +   1
-                   IF    ( WRK-HKNCOMBINUM-SKJHKN  =   SPACE )
-                       MOVE    1       TO  TCOMBI-HKNCOMBI-DAY
+                   MOVE    1       TO  TCOMBI-HKNCOMBI-DAY
                                                (TCOMBI-MAX IDX1)
-                   END-IF
                ELSE
                    IF    ( TCOMBI-HKNCOMBI-DAY (IDX2 IDX1)
                                            =    ZERO )
                        COMPUTE TCOMBI-HKNCOMBI-CNT (IDX2)
                            =   TCOMBI-HKNCOMBI-CNT (IDX2)
                            +   1
-                       IF    ( WRK-HKNCOMBINUM-SKJHKN =   SPACE )
-                           MOVE    1   TO  TCOMBI-HKNCOMBI-DAY
-                                               (IDX2 IDX1)
-                       END-IF
+                       MOVE    1   TO  TCOMBI-HKNCOMBI-DAY
+                                                   (IDX2 IDX1)
                    END-IF
                END-IF
            END-IF
@@ -741,10 +598,6 @@
       *
                MOVE    TCOMBI-HKNCOMBI (IDX3)  TO  WRK-COMB-HKNCOMBINUM
                PERFORM 900-HKNCOMBI-KEY-SEL-SEC
-               INITIALIZE                  PTRSIINF-REC
-               IF    ( COMB-HKNNUM         =   "971"  OR  "973" )
-                   PERFORM 900-PTRSIINF-KEY-SEL-SEC
-               END-IF
       *
                INITIALIZE                  HCM34S01-AREA
       *
@@ -767,11 +620,6 @@
       *
            END-PERFORM
       *
-           MOVE    ZERO            TO  FLG-NODATA
-           MOVE    SPACE           TO  WRK-HKNNUM
-                                       WRK-KOHNUM
-                                       WRK-RSI-HKNKBN
-           MOVE    ZERO            TO  WRK-KOHID
            PERFORM 20012-DCACCT-INS-SEC
       *
            .
@@ -819,6 +667,8 @@
       *****************************************************************
        200111-DCACCT-INS-SEC           SECTION.
       *
+           MOVE    ZERO            TO  FLG-GENZAN
+      *
            COMPUTE CNT-ZAINUM  =   CNT-ZAINUM  +   1
       *
            PERFORM 200111-DCSRY-INS-SEC
@@ -835,8 +685,6 @@
            MOVE    COMB-HKNCOMBINUM    TO  DCACCT-HKNCOMBI
            MOVE    HCM34S01-ZAITEN (IDX4)
                                        TO  DCACCT-ZAITEN
-           MOVE    HCM34S01-ZAIMINUS (IDX4)
-                                       TO  DCACCT-MINUS
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
@@ -848,25 +696,30 @@
            END-PERFORM
       *
            MOVE    COMB-HKNNUM         TO  DCACCT-HKNNUM
-           MOVE    COMB-KOHHKNNUM (1)  TO  DCACCT-KOHNUM
-           MOVE    COMB-KOHID  (1)     TO  DCACCT-KOHID
-           MOVE    PTRSI-HKNKBN        TO  DCACCT-RSI-HKNKBN
            MOVE    NACCT-NYUGAIKBN     TO  DCACCT-NYUGAIKBN
       *
            IF    ( HCM34S01-ZAISKBKBN (IDX4) =   "1" )
-               MOVE    1               TO  DCACCT-STS-JITDAY
-               MOVE    1               TO  DCACCT-STS-NYUKHN
+               COMPUTE DCACCT-STATUS
+                   =   DCACCT-STATUS
+                   +   CONST-STS-JITDAY
+                   +   CONST-STS-NYUKHN
            END-IF
       *
            IF    ( HCM34S01-ZAISKBKBN (IDX4) =   "2" )
-               MOVE    1               TO  DCACCT-STS-GAIHAKU
+               COMPUTE DCACCT-STATUS
+                   =   DCACCT-STATUS
+                   +   CONST-STS-GAIHAKU
            END-IF
       *
            IF    ( HCM34S01-ZAISKBKBN (IDX4)  =   "6" )
-               IF    ( HCM34S01-ZAIMINUS (IDX4)    =   ZERO )
-                   MOVE    1           TO  DCACCT-STS-NYUKSN
+               IF    ( FLG-GENZAN  =   ZERO )
+                   COMPUTE DCACCT-STATUS
+                       =   DCACCT-STATUS
+                       +   CONST-STS-NYUKSN
                ELSE
-                   MOVE    1           TO  DCACCT-STS-NYUGEN
+                   COMPUTE DCACCT-STATUS
+                       =   DCACCT-STATUS
+                       +   CONST-STS-NYUGEN
                END-IF
            END-IF
       *
@@ -880,7 +733,6 @@
                    MOVE    IDX-DAY     TO  DCACCT-SRYYMD (7:2)
                    MOVE    WRK-DAY (IDX-DAY)
                                        TO  DCACCT-DAYCNT
-                                           DCACCT-DAYCNT2 (1)
                    MOVE    IDX-DAY     TO  DCACCT-DAY
       *
                    WRITE   DCACCT-REC
@@ -910,6 +762,13 @@
                                    TO  DCSRY-SRYCD
                MOVE    HCM34S01-SURYO (IDX4 IDX8)
                                    TO  DCSRY-SURYO
+      *
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   CONST-GENZAN-MAX )
+                   IF    ( DCSRY-SRYCD =   CONST-GENZANCD (IDX0) )
+                       MOVE    1   TO  FLG-GENZAN
+                   END-IF
+               END-PERFORM
       *
                MOVE    SMCNDATE-YMD    TO  DCSRY-CREYMD
                                            DCSRY-UPYMD
@@ -949,15 +808,11 @@
            MOVE    NACCT-SRYKA         TO  DCACCT-SRYKA
            MOVE    NACCT-SRYKBN        TO  DCACCT-SRYKBN
            MOVE    SPACE               TO  DCACCT-JIHOKBN
-           MOVE    WRK-HKNNUM          TO  DCACCT-HKNNUM
-           MOVE    WRK-KOHNUM          TO  DCACCT-KOHNUM
-           MOVE    WRK-RSI-HKNKBN      TO  DCACCT-RSI-HKNKBN
            MOVE    NACCT-HKNCOMBI      TO  DCACCT-HKNCOMBI
            MOVE    NACCT-ZAITEN        TO  DCACCT-ZAITEN
            MOVE    NACCT-ZAIKAISU      TO  DCACCT-ZAIKAISU
            MOVE    NACCT-NYUGAIKBN     TO  DCACCT-NYUGAIKBN
-           MOVE    1                   TO  DCACCT-STS-NYUINDAY
-           MOVE    FLG-NODATA          TO  DCACCT-STS-NODATA
+           MOVE    CONST-STS-HKNCOMBI  TO  DCACCT-STATUS
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
@@ -967,8 +822,8 @@
                        =   DCACCT-ACCTRENNUM  +   1
                    MOVE    NACCT-SRYYM TO  DCACCT-SRYYMD
                    MOVE    IDX-DAY     TO  DCACCT-SRYYMD (7:2)
-                   MOVE    1           TO  DCACCT-DAYCNT
-                   MOVE    1           TO  DCACCT-DAYCNT2 (1)
+                   MOVE    NACCT-DAY (IDX-DAY)
+                                       TO  DCACCT-DAYCNT
                    MOVE    IDX-DAY     TO  DCACCT-DAY
                    WRITE   DCACCT-REC
                END-IF
@@ -1016,19 +871,17 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-           IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
       *    ステップ管理終了処理
-               MOVE    "STE"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-               MOVE    WRK-PARA-SHELLID
-                                       TO  JOB-SHELLID
-               MOVE    ZERO            TO  JOB-UPDCNT
-               MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-               PERFORM 800-ORCSJOB-SEC
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    ZERO            TO  JOB-UPDCNT
+           MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
+           PERFORM 800-ORCSJOB-SEC
       *
-               PERFORM 900-DBCOMMIT-SEC
-           END-IF
+           PERFORM 900-DBCOMMIT-SEC
       *     
            DISPLAY "*** ORCDTCHK006 END ***"
            .
@@ -1086,8 +939,8 @@
            MOVE    ZERO                TO  FLG-PTNYUINRRK
            INITIALIZE                  PTNYUINRRK-REC
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
-           MOVE    TNYUINRRK-PTID      TO  PTNYUINRRK-PTID
+           MOVE    WRK-PARA-HOSPNUM     TO  PTNYUINRRK-HOSPNUM
+           MOVE    NACCT-PTID          TO  PTNYUINRRK-PTID
            MOVE    ORCBSD01-SRYYM      TO  PTNYUINRRK-TENNYUYMD
            MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD
            MOVE    ORCBSD01-SRYYM      TO  PTNYUINRRK-TENSTUYMD
@@ -1111,8 +964,6 @@
       *****************************************************************
        900-PTNYUINRRK-KEY41-FET-SEC     SECTION.
       *
-           MOVE    ZERO                TO  FLG-PTNYUINRRK
-      *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key41"             TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
@@ -1125,53 +976,6 @@
       *
            .
        900-PTNYUINRRK-KEY41-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計検索処理(KEY43)
-      *****************************************************************
-       900-PTNYUINRRK-KEY43-SEL-SEC    SECTION.
-      *
-           MOVE    ZERO                TO  FLG-TNYUINRRK
-           INITIALIZE                      TNYUINRRK-REC
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  TNYUINRRK-HOSPNUM
-           MOVE    ORCBSD01-SRYYM      TO  TNYUINRRK-TENNYUYMD
-           MOVE    "31"                TO  TNYUINRRK-TENNYUYMD(7:2)
-           MOVE    ORCBSD01-SRYYM      TO  TNYUINRRK-TENSTUYMD
-           MOVE    "01"                TO  TNYUINRRK-TENSTUYMD(7:2)
-           MOVE    TNYUINRRK-REC       TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key43"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  TNYUINRRK-REC
-           ELSE
-               MOVE    1               TO  FLG-TNYUINRRK
-               INITIALIZE                  TNYUINRRK-REC
-           END-IF
-      *
-           .
-       900-PTNYUINRRK-KEY43-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計FETCH処理(KEY43)
-      *****************************************************************
-       900-PTNYUINRRK-KEY43-FET-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  FLG-TNYUINRRK
-      *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key43"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  TNYUINRRK-REC
-           ELSE
-               MOVE    1               TO  FLG-TNYUINRRK
-               INITIALIZE                  TNYUINRRK-REC
-           END-IF
-      *
-           .
-       900-PTNYUINRRK-KEY43-FET-EXT.
            EXIT.
       *****************************************************************
       *    入院会計検索処理(KEY27)
@@ -1220,62 +1024,62 @@
        900-NYUINACCT-KEY27-FET-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計検索処理(KEY17)
+      *    入院会計検索処理(KEY14)
       *****************************************************************
-       900-NYUINACCT-KEY17-SEL-SEC     SECTION.
+       900-NYUINACCT-KEY14-SEL-SEC     SECTION.
       *
            MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                  NYUINACCT-REC
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  NACCT-HOSPNUM
-           MOVE    TNYUINRRK-PTID      TO  NACCT-PTID
+           MOVE    WRK-PARA-HOSPNUM     TO  NACCT-HOSPNUM
+           MOVE    DTCHK002-PTID       TO  NACCT-PTID
            MOVE    ORCBSD01-SRYYM      TO  NACCT-SRYYM
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    "5"                 TO  NACCT-ZAISKBKBN
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "key14"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+               PERFORM 900-NYUINACCT-KEY14-FET-SEC
            ELSE
                MOVE    1               TO  FLG-NYUINACCT
                INITIALIZE                  NYUINACCT-REC
            END-IF
       *
            .
-       900-NYUINACCT-KEY17-SEL-EXT.
+       900-NYUINACCT-KEY14-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計検索処理(KEY19)
+      *    入院会計FETCH処理(KEY14)
       *****************************************************************
-       900-NYUINACCT-KEY19-SEL-SEC     SECTION.
+       900-NYUINACCT-KEY14-FET-SEC     SECTION.
       *
-           MOVE    ZERO                TO  FLG-NYUINACCT
-           INITIALIZE                  NYUINACCT-REC
+           MOVE    ZERO            TO  FLG-NYUINACCT
+           MOVE    ZERO            TO  FLG-LOOP-END
       *
-           MOVE    WRK-PARA-HOSPNUM    TO  NACCT-HOSPNUM
-           MOVE    TNYUINRRK-PTID       TO  NACCT-PTID
-           MOVE    ORCBSD01-SRYYM      TO  NACCT-SRYYM
-           MOVE    "1"                 TO  NACCT-NYUGAIKBN
-           MOVE    "5"                 TO  NACCT-ZAISKBKBN
-           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key19"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
-           ELSE
-               MOVE    1               TO  FLG-NYUINACCT
-               INITIALIZE                  NYUINACCT-REC
-           END-IF
+           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
       *
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key19"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+      *
+                   IF    ( NACCT-ZAISKBKBN =   "5" )
+                       MOVE    1   TO  FLG-LOOP-END
+                   END-IF
+      *
+               ELSE
+                   MOVE    1               TO  FLG-NYUINACCT
+                   INITIALIZE                  NYUINACCT-REC
+               END-IF
+      *
+           END-PERFORM
       *
            .
-       900-NYUINACCT-KEY19-SEL-EXT.
+       900-NYUINACCT-KEY14-FET-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ取得処理
@@ -1286,7 +1090,7 @@
       *
            INITIALIZE                          HKNCOMBI-REC
            MOVE    WRK-PARA-HOSPNUM        TO  COMB-HOSPNUM
-           MOVE    TNYUINRRK-PTID          TO  COMB-PTID
+           MOVE    NACCT-PTID              TO  COMB-PTID
            MOVE    WRK-COMB-HKNCOMBINUM    TO  COMB-HKNCOMBINUM
            MOVE    HKNCOMBI-REC            TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"          TO  MCP-TABLE
@@ -1305,35 +1109,6 @@
       *
            .
        900-HKNCOMBI-KEY-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者労災保険情報検索処理
-      *****************************************************************
-       900-PTRSIINF-KEY-SEL-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PTRSIINF
-      *
-           INITIALIZE                      PTRSIINF-REC
-           MOVE    COMB-HOSPNUM        TO  PTRSI-HOSPNUM
-           MOVE    COMB-PTID           TO  PTRSI-PTID
-           MOVE    COMB-HKNID          TO  PTRSI-HKNID
-           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTRSIINF-REC
-           ELSE
-               MOVE    1               TO  FLG-PTRSIINF
-               INITIALIZE                  PTRSIINF-REC
-           END-IF
-      *
-           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-PTRSIINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    データチェック中間ファイル（受診患者）読込処理
