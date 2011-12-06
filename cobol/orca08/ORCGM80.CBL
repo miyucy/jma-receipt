@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.00    NACL-多々納  11/12/06  upgrade非活性対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1138,6 +1139,16 @@
            END-EVALUATE
       *
            MOVE   SPA-GMN-DURATION     TO  M80-DURATION
+      *ver.4.7
+           MOVE    SPACE               TO  M80-B10-LABEL
+           MOVE    WIDGET-INSENSITIVE  TO  M80-B10-STATE
+      *    明細があり未選択の時
+           IF     (SPA-TBL-MAX         >   ZERO )
+             AND  (SPA-GMN-SELNUM      =   ZERO )
+               MOVE    "upgrade"           TO  M80-B10-LABEL
+               MOVE    WIDGET-NORMAL       TO  M80-B10-STATE
+           END-IF
+      *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
       *
