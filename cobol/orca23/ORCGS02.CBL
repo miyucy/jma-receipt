@@ -419,7 +419,7 @@
            03  WRK-CMB-ITM-G.
                05  WRK-CMB-ITM     PIC X(200).
                05  WRK-CMB-ITM2    PIC X(200).
-           03  WRK-SELNO           PIC 9(03).
+           03  WRK-SELBAN          PIC 9(05).
            03  WRK-SYMD            PIC X(10).
            03  WRK-WYMD.
                05  WRK-WGO         PIC X(01).
@@ -3126,11 +3126,11 @@
            WHEN    CONST-MODE-NORMON
            WHEN    CONST-MODE-NORYEAR
            WHEN    CONST-MODE-NORALL
-               MOVE    "未収一覧"              TO  S02-B08S-LABEL
+               MOVE    "未収一覧"              TO  S02-B08-LABEL
            WHEN    CONST-MODE-MISYU
-               MOVE    "入返金日"              TO  S02-B08S-LABEL
+               MOVE    "入返金日"              TO  S02-B08-LABEL
            WHEN    CONST-MODE-NYUHEN
-               MOVE    "収納一覧"              TO  S02-B08S-LABEL
+               MOVE    "収納一覧"              TO  S02-B08-LABEL
            END-EVALUATE
       *
            MOVE    WIDGET-NORMAL               TO  S02-SRYYM-STATE
@@ -3454,7 +3454,7 @@
            WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 440-SAIKEI-SEC
       *    返金
-           WHEN    "CLICKED"       ALSO    "B05"
+           WHEN    "CLICKED"       ALSO    "B07S"
                    PERFORM 450-HENKIN-SEC
       *    入金
            WHEN    "CLICKED"       ALSO    "B05S"
@@ -3463,10 +3463,10 @@
            WHEN    "CLICKED"       ALSO    "B06S"
                    PERFORM 460-IKKATU-NYUKIN-SEC
       *    入金取消
-           WHEN    "CLICKED"       ALSO    "B08"
+           WHEN    "CLICKED"       ALSO    "B08S"
                    PERFORM 470-NYUDEL-SEC
       *    履歴修正
-           WHEN    "CLICKED"       ALSO    "B07S"
+           WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 490-RIREKI-SEC
       *    確定
            WHEN    "CLICKED"       ALSO    "B12"
@@ -3483,7 +3483,7 @@
            WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 490-JIGETU-SEC
       *    画面モード変更
-           WHEN    "CLICKED"       ALSO    "B08S"
+           WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 470-MODE-CHENGE-SEC
       *    氏名検索（Ｐ９７）
            WHEN    "CLICKED"       ALSO    "B09"
@@ -3982,7 +3982,11 @@
       *
            PERFORM 300-SYUMEI-HENSYU-SEC
       *
-           MOVE    1                   TO  SPA-GMN-CUR
+           IF    ( SPA-NAI-SYORINO     =   SPACE )
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    8               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        4101-SELNUM-CHK-EXT.
@@ -4168,6 +4172,7 @@
                IF    ( S02-SYULIST-SELECT (IDXL)    =   "T" )
                    MOVE    IDXL TO     S02-SELNUM
                    PERFORM 4101-SELNUM-CHK-SEC
+                   MOVE    1    TO     SPA-GMN-CUR
                END-IF
       *
            END-PERFORM
@@ -6734,7 +6739,12 @@
                    IF    ( SPA-GMN-SKYMONEYIN   <=   ZERO )
                        MOVE    SPACE   TO  SMEI-JOUTAIKBN
                    ELSE
-                       MOVE    "9"     TO  SMEI-JOUTAIKBN
+                       IF    ( SPA-S01-NYUGAIKBN
+                                       =   "1" )
+                           MOVE    "9" TO  SMEI-JOUTAIKBN
+                       ELSE
+                           MOVE    "1" TO  SMEI-JOUTAIKBN
+                       END-IF
                    END-IF
                WHEN    2
                WHEN    4
@@ -7412,7 +7422,10 @@
            IF    ( SPA-NAI-SYORINO     =   SPACE )
                PERFORM 4201-CLEAR-SEC
            ELSE
-               PERFORM 300-SYUMEI-HENSYU-SEC
+               INITIALIZE              SPA-GMN-SYUMEI-AREA
+                                       SPA-NAI-SYUMEI-AREA
+                                       SPA-GMN-EDANUM
+                                       SPA-GMN-SMEILIST-SEL
            END-IF
       *
            .

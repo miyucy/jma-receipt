@@ -289,7 +289,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 06:34:31 GMT</last_modification_time>
       </signal>
-      <label>返金</label>
+      <label>履歴修正</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -358,7 +358,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 06:43:34 GMT</last_modification_time>
       </signal>
-      <label>入金取消</label>
+      <label></label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -617,7 +617,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 06 Jan 2001 08:46:40 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>入金取消</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -663,7 +663,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 06:45:39 GMT</last_modification_time>
       </signal>
-      <label>履歴修正</label>
+      <label>返金</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
