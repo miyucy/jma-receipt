@@ -2,9 +2,11 @@ SID4	{
 	fixed1	{
 		B06	{
 	           	state	int;
+	           	visible	bool;
 		};
 		B07	{
 	           	state	int;
+	           	visible	bool;
 		};
 		LBLID1SKYPRT	{
 			value	varchar(70);

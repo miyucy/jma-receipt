@@ -18,7 +18,9 @@
         02  SID4.
             03  SID4-FIXED1.
               04  SID4-B06-STATE    PIC S9(9) BINARY.
+              04  SID4-B06-VISIBLE  PIC X(1).
               04  SID4-B07-STATE    PIC S9(9) BINARY.
+              04  SID4-B07-VISIBLE  PIC X(1).
               04  SID4-LBLID1SKYPRT.
                 05  SID4-VALUE  PIC X(70).
               04  SID4-LBLSRYYMD.

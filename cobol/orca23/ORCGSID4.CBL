@@ -803,11 +803,18 @@
       *
            MOVE    WIDGET-NORMAL       TO  SID4-B06-STATE
                                            SID4-B07-STATE
+           MOVE    "T"                 TO  SID4-B06-VISIBLE
+                                           SID4-B07-VISIBLE
            IF    ( SPA-NAI-PREV        =   ZERO )
-               MOVE    WIDGET-INSENSITIVE  TO  SID4-B06-STATE
-           END-IF
-           IF    ( SPA-NAI-NEXT        =   ZERO )
-               MOVE    WIDGET-INSENSITIVE  TO  SID4-B07-STATE
+            AND  ( SPA-NAI-NEXT        =   ZERO )
+               MOVE    "F"             TO  SID4-B06-VISIBLE
+                                           SID4-B07-VISIBLE
+               IF    ( SPA-NAI-PREV    =   ZERO )
+                   MOVE    WIDGET-INSENSITIVE  TO  SID4-B06-STATE
+               END-IF
+               IF    ( SPA-NAI-NEXT    =   ZERO )
+                   MOVE    WIDGET-INSENSITIVE  TO  SID4-B07-STATE
+               END-IF
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
