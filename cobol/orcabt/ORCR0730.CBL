@@ -140,6 +140,7 @@
       *                                     の保険の記号番号を更新する
       *  04.05.32    NACL-藤原    11/10/24  「請求しない」設定の請求管理
       *                                     の削除処理の有無対応
+      *  04.05.33    NACL-門脇    11/12/01  宮城県地方公費対応（仙台市）
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -6024,8 +6025,9 @@
            ELSE
                IF      RECE62-FUKUSHIFLG-SKJ(1)   =    "1"
                  IF   (SYS-1001-PREFNUM  =  04                    )
-                 AND  (RECE62-KOHNUM(1)  = "183" OR "383" OR "483"
-                                        OR "583" OR "683" OR "783")
+                 AND  (RECE62-KOHNUM(1)  = "183" OR "483" OR "583"
+                                        OR "783" OR "463" OR "563"
+                                        OR "263" OR "363"         )
                      MOVE    RECE62-SHOKUJINISSU (IDX2)
                                                  TO  WRK-KGK2 
                      MOVE    WRK-KGK2            TO
@@ -6137,8 +6139,9 @@
            ELSE
                IF      RECE62-FUKUSHIFLG-SKJ(2)   =    "1"
                  IF   (SYS-1001-PREFNUM  =  04                    )
-                 AND  (RECE62-KOHNUM(2)  = "183" OR "383" OR "483"
-                                        OR "583" OR "683" OR "783")
+                 AND  (RECE62-KOHNUM(2)  = "183" OR "483" OR "583"
+                                        OR "783" OR "463" OR "563"
+                                        OR "263" OR "363"         )
                      MOVE    RECE62-SHOKUJINISSU (IDX3)
                                                  TO  WRK-KGK2 
                      MOVE    WRK-KGK2            TO
@@ -6259,8 +6262,9 @@
                    IF      RECE62-FUKUSHIFLG-SKJ (3)
                                                =   "1"
                        IF   (SYS-1001-PREFNUM      =   04              )
-                       AND  (RECE62-KOHNUM(3) = "183" OR "383" OR "483"
-                                             OR "583" OR "683" OR "783")
+                       AND  (RECE62-KOHNUM(3) = "183" OR "483" OR "583"
+                                             OR "783" OR "463" OR "563"
+                                             OR "263" OR "363"         )
                            MOVE    RECE62-SHOKUJINISSU (IDX4)
                                                    TO  WRK-KGK2 
                            MOVE    WRK-KGK2        TO
@@ -6385,8 +6389,9 @@
                    IF      RECE62-FUKUSHIFLG-SKJ (4)
                                                =   "1"
                        IF   (SYS-1001-PREFNUM      =   04              )
-                       AND  (RECE62-KOHNUM(4) = "183" OR "383" OR "483"
-                                             OR "583" OR "683" OR "783")
+                       AND  (RECE62-KOHNUM(4) = "183" OR "483" OR "583"
+                                             OR "783" OR "463" OR "563"
+                                             OR "263" OR "363"         )
                            MOVE    RECE62-SHOKUJINISSU (IDX5)
                                                    TO  WRK-KGK2 
                            MOVE    WRK-KGK2        TO
