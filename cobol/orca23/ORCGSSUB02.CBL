@@ -149,7 +149,7 @@
                IF    ( SMEI-JOUTAIKBN      =   "4" OR  "6" )
                 OR  (( SMEI-JOUTAIKBN      =   "8" )
                  AND ( SMEI-NYUHEN-MONEY   <   ZERO ))
-                   MOVE    "1"         TO  SSUB02-MAINUS (IDXM)
+                   MOVE    "1"         TO  SSUB02-MINUS (IDXM)
                END-IF
       *
                EVALUATE    SMEI-JOUTAIKBN

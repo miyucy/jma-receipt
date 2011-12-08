@@ -24,7 +24,7 @@
                05  SSUB02-MAX                 PIC  9(03).
                05  SSUB02-OCC                 OCCURS 99.
                    07  SSUB02-JOUTAI          PIC  X(20).
-                   07  SSUB02-MAINUS          PIC  X(1).
+                   07  SSUB02-MINUS           PIC  X(1).
                    07  SSUB02-CHOSEI1         PIC  S9(10).
                    07  SSUB02-CHOSEI2         PIC  S9(10).
                    07  SSUB02-PROC-FLG        PIC  9(01).

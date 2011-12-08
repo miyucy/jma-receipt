@@ -229,7 +229,7 @@
                            11  SPA-GMN-TMSKYMONEY      PIC S9(10).
                            11  SPA-GMN-TMNYUKIN        PIC S9(10).
                            11  SPA-GMN-TMSYORIYMD      PIC X(09).
-                           11  SPA-GMN-TMJOUTAI        PIC X(10).
+                           11  SPA-GMN-TMJOUTAI        PIC X(12).
                            11  SPA-GMN-TMNYKN-HOHO     PIC X(10).
       *
                05  SPA-GMN-COMBO-AREA.
@@ -337,7 +337,7 @@
                            11  SPA-NAI-TMJOUTAIKBN     PIC X(1).
                            11  SPA-NAI-TMMEIJOUTAIKBN  PIC X(1).
                            11  SPA-NAI-TMSYORIYMD      PIC X(08).
-                           11  SPA-NAI-TMMAINUS        PIC X(1).
+                           11  SPA-NAI-TMMINUS        PIC X(1).
                            11  SPA-NAI-TMSYURRKNUM     PIC 9(9).
                            11  SPA-NAI-TMSYUEDANUM     PIC 9(9).
                            11  SPA-NAI-TMSYURRKUPDKBN  PIC X(1).
@@ -1842,10 +1842,17 @@
                MOVE    SMEI-JOUTAIKBN  TO  SPA-NAI-TMJOUTAIKBN (IDXM)
                MOVE    SMEI-MEISAIJOUTAIKBN
                                        TO  SPA-NAI-TMMEIJOUTAIKBN (IDXM)
-               MOVE    SSUB02-MAINUS (IDXM)
-                                       TO  SPA-NAI-TMMAINUS (IDXM)
-               MOVE    SSUB02-JOUTAI (IDXM)
+               MOVE    SSUB02-MINUS (IDXM)
+                                       TO  SPA-NAI-TMMINUS (IDXM)
+               IF    ( SMEI-MEISAIJOUTAIKBN    =   "1" )
+                   STRING  SSUB02-JOUTAI (IDXM)    DELIMITED BY SPACE
+                           "*"                     DELIMITED BY SIZE
+                   INTO    SPA-GMN-TMJOUTAI (IDXM)
+                   END-STRING
+               ELSE
+                   MOVE    SSUB02-JOUTAI (IDXM)
                                        TO  SPA-GMN-TMJOUTAI (IDXM)
+               END-IF
       *
                MOVE    SMEI-NYUHEN-YMD TO  WRK-SYMD
                PERFORM 800-HIZUKE-SEC
@@ -3172,7 +3179,8 @@
                MOVE    SPA-GMN-NYUKINYMD   TO  S02-NYUKINYMD
       *
                IF    ( SPA-NAI-SYORINO     =   CONST-PROC-RRKSYU )
-                AND  ( SPA-NAI-DENPJTIKBN  =   "4" )
+                AND  ( SPA-NAI-MINUS       =   "1" )
+                AND  ( SPA-NAI-DENPJTIKBN  NOT =   "6" )
                    CONTINUE
                ELSE
                    MOVE    SPA-GMN-NYKN-HOHO-G TO  S02-NYUKINHOUHOU
@@ -3234,7 +3242,8 @@
       *
                MOVE    "blue"          TO  S02-SKYMONEYIN-STYLE
       *
-               IF    ( SPA-NAI-DENPJTIKBN  =   "4" )
+               IF    ( SPA-NAI-MINUS           =   "1" )
+                AND  ( SPA-NAI-DENPJTIKBN  NOT =   "6" )
                    MOVE    WIDGET-INSENSITIVE
                                        TO  S02-NYUKINHOUHOU-STATE
                                            S02-NYUKINHOUHOULST-STATE
@@ -3684,7 +3693,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-NAI-DENPJTIKBN  =   "4" OR  "6" )
+               IF    ( SPA-NAI-MINUS  =   "1" )
                    PERFORM 4102-NYUKIN-CHK-SEC
                ELSE
                    PERFORM 4101-NYUKIN-CHK-SEC
@@ -4437,6 +4446,8 @@
                                        TO  SPA-NAI-SYURRKUPDKBN
            MOVE    SPA-NAI-TMJOUTAIKBN(SPA-GMN-EDANUM)
                                        TO  SPA-NAI-DENPJTIKBN
+           MOVE    SPA-NAI-TMMINUS(SPA-GMN-EDANUM)
+                                       TO  SPA-NAI-MINUS
       *
            MOVE    SPA-NAI-TMPROC-FLG  (SPA-GMN-EDANUM)
                                        TO  SPA-NAI-PROC-FLG
