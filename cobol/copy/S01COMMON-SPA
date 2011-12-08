@@ -36,6 +36,8 @@
            05  SPA-S01-DENPNUM           PIC 9(07).
       *伝票発行日
            05  SPA-S01-DENPPRTYMD        PIC X(08).
+      *グループ伝票番号
+           05  SPA-S01-GRP-DENPNUM       PIC 9(07).
       *患者ＩＤ
            05  SPA-S01-PTID              PIC 9(10).
       *患者番号

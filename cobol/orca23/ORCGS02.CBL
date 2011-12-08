@@ -305,6 +305,7 @@
                        09  SPA-NAI-TBLREC  OCCURS  500.
                            11  SPA-NAI-TBUNBEN     PIC  X(01).
                            11  SPA-NAI-THOJOKBN    PIC  X(01).
+                           11  SPA-NAI-TGRP-DENPNUM PIC  9(07).
                            11  SPA-NAI-TSRYKA      PIC  X(02).
                            11  SPA-NAI-TSRYKAMEI   PIC  X(16).
                            11  SPA-NAI-TRECESRYKA  PIC  X(02).
@@ -360,6 +361,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-SYUMEI          PIC 9(01).
+           03  FLG-SYUTTL          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-PTNUM           PIC 9(01).
@@ -629,6 +631,10 @@
       *    収納明細マスター
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
+      *
+      *    収納合計
+       01  SYUTOTAL-REC.
+           COPY    "CPSYUTOTAL.INC".
       *
       *    患者定期請求履歴
        01  PTTEIKIRRK-REC.
@@ -2473,6 +2479,7 @@
       *
            MOVE    SYU-DENPNUM         TO  SPA-GMN-TDENPNUM (IDXL)
       *
+           MOVE    SYU-GRP-DENPNUM     TO  SPA-NAI-TGRP-DENPNUM (IDXL)
            IF    ( SYU-GRP-DENPNUM     NOT =  ZERO )
                MOVE   "M"              TO  SPA-GMN-DENPGRP  (IDXL)
            END-IF
@@ -6343,6 +6350,8 @@
            MOVE    SPA-GMN-PTID    TO  SPA-S01-PTID
            MOVE    SPA-NAI-TSRYKA (SPA-GMN-TBL-SEL)
                                    TO  SPA-S01-SRYKA
+           MOVE    SPA-NAI-TGRP-DENPNUM (SPA-GMN-TBL-SEL)
+                                   TO  SPA-S01-GRP-DENPNUM
            MOVE    SPA-NAI-SYORINO TO  SPA-S01-SYORINO
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -6390,6 +6399,13 @@
        4902-NYUKIN-RRKSYU-SEC          SECTION.
       *
            PERFORM 49021-SYUNOU-UPD-SEC
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF  ( SPA-S01-NYUGAIKBN   =   "2" )
+                AND( SPA-NAI-PROC-FLG    =   1  OR  2 )
+                   PERFORM 49021-SYUTTL-UPD-SEC
+               END-IF
+           END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 49021-SYUMEI-UPD-SEC
@@ -6507,6 +6523,46 @@
       *
            .
        49021-SYUNOU-UPD-EXT.
+           EXIT.
+      *************************************************************
+      *    収納合計マスタ更新処理
+      *************************************************************
+       49021-SYUTTL-UPD-SEC            SECTION.
+      *
+           PERFORM 900-SYUTOTAL-KEY-SEL-SEC
+           IF    ( FLG-SYUTTL      =   ZERO )
+      *
+               COMPUTE SYUTTL-SKYMONEY
+                   =   SYUTTL-SKYMONEY
+                   -   SPA-NAI-SKYMONEY-MOTO
+                   +   SPA-GMN-SKYMONEYIN
+      *
+               COMPUTE SYUTTL-CHOSEI1
+                   =   SYUTTL-CHOSEI1
+                   -   SPA-NAI-CHOSEI1IN-MOTO
+                   +   SPA-GMN-CHOSEI1IN
+      *
+               COMPUTE SYUTTL-CHOSEI2
+                   =   SYUTTL-CHOSEI2
+                   -   SPA-NAI-CHOSEI2IN-MOTO
+                   +   SPA-GMN-CHOSEI2IN
+      *
+               COMPUTE SYUTTL-CHOSEI
+                   =   SYUTTL-CHOSEI1
+                   +   SYUTTL-CHOSEI2
+      *
+               MOVE    SYUTOTAL-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syutotal"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+               IF    ( MCP-RC              NOT =   ZERO )
+                   MOVE    "4007"          TO  SPA-ERRCD
+               END-IF
+      *
+           END-IF
+      *
+           .
+       49021-SYUTTL-UPD-EXT.
            EXIT.
       *************************************************************
       *    収納明細作成処理
@@ -6929,6 +6985,8 @@
                                        TO  SPA-S01-FTNRATEMEI
                MOVE    SPA-GMN-TDENPNUM   (SPA-GMN-SELBAN)
                                        TO  SPA-S01-DENPNUM
+               MOVE    SPA-NAI-TGRP-DENPNUM   (SPA-GMN-SELBAN)
+                                       TO  SPA-S01-GRP-DENPNUM
                MOVE    SPA-NAI-THAKYMD    (SPA-GMN-SELBAN)
                                        TO  SPA-S01-DENPPRTYMD
                MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
@@ -7802,7 +7860,7 @@
            WHEN    "1007"
                MOVE    "ジョブ管理ＤＢが削除できませんでした"
                                                TO  SPA-ERRMSG
-           WHEN    "4000"  THRU    "4006"
+           WHEN    "4000"  THRU    "4007"
                MOVE    "更新処理に失敗しました"
                                                TO  SPA-ERRMSG
            WHEN    "9999"
@@ -8996,6 +9054,35 @@
       *
            .
        900-PARA-KEY5-FET-EXT.
+           EXIT.
+      *************************************************************
+      *    収納合計マスター検索処理
+      *************************************************************
+       900-SYUTOTAL-KEY-SEL-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUTTL
+           INITIALIZE                       SYUTOTAL-REC
+           MOVE    SPA-HOSPNUM         TO  SYUTTL-HOSPNUM
+           MOVE    SPA-S01-NYUGAIKBN   TO  SYUTTL-NYUGAIKBN
+           MOVE    SPA-S01-PTID        TO  SYUTTL-PTID
+           MOVE    SPA-S01-GRP-DENPNUM TO  SYUTTL-DENPNUM
+           MOVE    SYUTOTAL-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syutotal"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUTOTAL-REC
+           ELSE
+               MOVE    1               TO  FLG-SYUTTL
+               INITIALIZE                  SYUTOTAL-REC
+           END-IF
+      *
+           MOVE    "tbl_syutotal"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYUTOTAL-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
