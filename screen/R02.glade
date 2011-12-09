@@ -334,7 +334,7 @@
       <name>CREYMD</name>
       <x>352</x>
       <y>5</y>
-      <width>128</width>
+      <width>134</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <editable>False</editable>

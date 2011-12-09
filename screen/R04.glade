@@ -3971,7 +3971,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>CREYMD</name>
-      <x>710</x>
+      <x>720</x>
       <y>8</y>
       <width>165</width>
       <height>24</height>
@@ -4092,7 +4092,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>label536</name>
-      <x>650</x>
+      <x>660</x>
       <y>10</y>
       <width>54</width>
       <height>18</height>
@@ -4171,9 +4171,9 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>PREFKBN_COMBO</name>
-      <x>590</x>
+      <x>585</x>
       <y>45</y>
-      <width>70</width>
+      <width>76</width>
       <height>24</height>
       <sensitive>False</sensitive>
       <value_in_list>False</value_in_list>
