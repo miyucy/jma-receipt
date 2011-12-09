@@ -7443,18 +7443,19 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    CONTINUE
                ELSE
                    IF    ( SPA-GMN-SYUKA-KBN       =   ZERO )
-                       IF    ( SPA-GMN-SYUKA-NYUIN     =   SPACE )
-                       AND   ( SPA-GMN-SYUKA-GAIRAI    =   SPACE )
-                       AND   ( SPA-GMN-SYUKA-MODE      =   SPACE )
-                       AND   ( SPA-GMN-SYUKA-SELECT    =   SPACE )
-                       AND   ( SPA-GMN-SYUKA-SYAHO     =   SPACE )
-                       AND   ( SPA-GMN-SYUKA-KOKUHO    =   SPACE )
-                       AND   ( SPA-GMN-SYUKA-KOUIKI    =   SPACE )
-                           CONTINUE
-                       ELSE
-                           MOVE    91                  TO  SPA-GMN-CUR
-                           MOVE    "0100"              TO  SPA-ERRCD
-                       END-IF
+      *****************IF    ( SPA-GMN-SYUKA-NYUIN     =   SPACE )
+      **               AND   ( SPA-GMN-SYUKA-GAIRAI    =   SPACE )
+      **               AND   ( SPA-GMN-SYUKA-MODE      =   SPACE )
+      **               AND   ( SPA-GMN-SYUKA-SELECT    =   SPACE )
+      **               AND   ( SPA-GMN-SYUKA-SYAHO     =   SPACE )
+      **               AND   ( SPA-GMN-SYUKA-KOKUHO    =   SPACE )
+      **               AND   ( SPA-GMN-SYUKA-KOUIKI    =   SPACE )
+      **                   CONTINUE
+      **               ELSE
+      **                   MOVE    91                  TO  SPA-GMN-CUR
+      **                   MOVE    "0100"              TO  SPA-ERRCD
+      *****************END-IF
+                       CONTINUE
                    ELSE
                        IF      SPA-1001-HOSPSBT1   =   1
                            MOVE    90                  TO  SPA-GMN-CUR
