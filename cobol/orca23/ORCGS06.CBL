@@ -411,7 +411,6 @@
       *****COPY    "S01.INC".
            COPY    "S02.INC".
            COPY    "S03.INC".
-           COPY    "S03N.INC".
            COPY    "S04.INC".
            COPY    "S06.INC".
            COPY    "S07.INC".

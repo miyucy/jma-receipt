@@ -749,7 +749,6 @@
        01  SCRAREA.
            COPY    "S02.INC".
            COPY    "S03.INC".
-           COPY    "S03N.INC".
            COPY    "S04.INC".
            COPY    "S06.INC".
            COPY    "S07.INC".
@@ -920,7 +919,6 @@
            WHEN    "I01"
                PERFORM 320-SENIJI-SYOGMN-EDIT-SEC
            WHEN    "S03"
-           WHEN    "S03N"
            WHEN    "S06"
                PERFORM 320-S03SPASET-SEC
            WHEN    "S07"
@@ -2070,7 +2068,7 @@
            CALL    "ORCSPRTNM"         USING
                                            ORCSPRTNMAREA
                                            WRK-SPA-AREA
-                                           SYS-1032-REC
+                                           SYSKANRI-REC
            IF    ( ORCSPRTNM-RC        =   ZERO )
               MOVE    ORCSPRTNM-PRTPG  TO  WRK-PGNAME (1)
            ELSE
@@ -2088,7 +2086,7 @@
            CALL    "ORCSPRTNM"         USING
                                            ORCSPRTNMAREA
                                            WRK-SPA-AREA
-                                           SYS-1032-REC
+                                           SYSKANRI-REC
            IF    ( ORCSPRTNM-RC        =   ZERO )
               MOVE    ORCSPRTNM-PRTPG  TO  WRK-PGNAME (2)
            ELSE
@@ -2644,15 +2642,9 @@
       *
            MOVE    "S02"           TO  SPA-MOTOPG
       *
-           IF    ( SPA-S01-NYUGAIKBN   =   "1" )
-               MOVE    "S03N"          TO  SPA-SAKIPG
-               MOVE   "CHANGE"         TO  MCP-PUTTYPE
-               MOVE   "S03N"           TO  MCP-WINDOW
-           ELSE
-               MOVE    "S03"           TO  SPA-SAKIPG
-               MOVE   "CHANGE"         TO  MCP-PUTTYPE
-               MOVE   "S03    "        TO  MCP-WINDOW
-           END-IF
+           MOVE    "S03"           TO  SPA-SAKIPG
+           MOVE   "CHANGE"         TO  MCP-PUTTYPE
+           MOVE   "S03    "        TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
       *
@@ -3898,7 +3890,7 @@
                                        =   SPA-NAI-TMSYORIYMD (IDXM))
                        COMPUTE WRK-NYUKIN
                            =   WRK-NYUKIN
-                           +   SPA-GMN-TNYUKIN (IDXM)
+                           +   SPA-GMN-TMNYUKIN (IDXM)
                    END-IF
       *
                END-PERFORM

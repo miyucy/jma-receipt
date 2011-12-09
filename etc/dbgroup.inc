@@ -1,7 +1,8 @@
 db_group {
  type "PostgreSQL";
  port "";
- name "orca";
+ name "docs";
+ name "hd";
  redirect "log";
 };
 db_group "log" {
