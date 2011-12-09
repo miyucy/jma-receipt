@@ -2102,15 +2102,6 @@
            ELSE
                MOVE    PTNYUINRRK-NYUINYMD
                                        TO  WRK-NOW-SKYSTYMD
-               IF    ( PTNYUINRRK-DOUJITSUKBN  =   "1" )
-                   MOVE    PTNYUINRRK-NYUINYMD
-                                       TO  WRK-YMD
-                   MOVE    "1"         TO  WRK-ZOGENPTN
-                   MOVE    1           TO  WRK-ZOGEN
-                   PERFORM 5002-CALENDAR-SEC
-                   MOVE    WRK-KEISANYMD
-                                       TO  WRK-NOW-SKYSTYMD
-               END-IF
            END-IF
       *
            .
