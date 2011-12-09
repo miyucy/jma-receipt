@@ -61,14 +61,6 @@
       *                                     エラー時処理終了
       *  04.06.04    NACL-藤原    11/10/24  予約コード入力による病名編集
       *                                     フラグの設定
-      *  04.06.05    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
-      *
-      *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
-      *  04.07.02    NACL-藤原    13/07/01  レセ電請求時の受付エラー分の
-      *                                     自費レセプト対象の有無設定
-      *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -111,19 +103,18 @@
        WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE62PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE62//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE63PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE63//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"
+                                   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名取得
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -219,8 +210,6 @@
       *    拡張漢字チェックサブ
            COPY    "CPORCSKANACHK2.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -273,24 +262,13 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    "RECE620"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    "RECE630"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE62PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE63PARA
+           MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE62PARA-HOSPNUM
+      *
+           MOVE    "RECE630"           TO  RECE63PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE63PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE63PARA-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -349,21 +327,6 @@
                                     =   SPACE
                MOVE    ZERO             TO  SYS-200501-BYOMEI-PRTJYUN
            END-IF
-           IF      SYS-200501-TENKIBYOMEI-KBN
-                                    =   SPACE
-               MOVE    ZERO             TO  SYS-200501-TENKIBYOMEI-KBN
-           END-IF
-      *
-           DISPLAY "SYS-2005-BYOMEIHENKBN1    ="
-                                    SYS-2005-BYOMEIHENKBN1
-           DISPLAY "SYS-2005-SYUBYOHENFLG     ="
-                                    SYS-2005-SYUBYOHENFLG
-           DISPLAY "SYS-200501-CHKKBN         ="
-                                    SYS-200501-CHKKBN
-           DISPLAY "SYS-200501-BYOMEI-PRTJYUN ="
-                                    SYS-200501-BYOMEI-PRTJYUN
-           DISPLAY "SYS-200501-TENKIBYOMEI-KBN="
-                                    SYS-200501-TENKIBYOMEI-KBN
       *
       *        レセプト明細０２読み込み
            PERFORM 900-RECE62-READ-SEC
@@ -415,10 +378,7 @@
            PERFORM 900-CLOSE-SEC
       *
       *    対象病名がなかったとき
-           IF    ( SYS-200501-CHKKBN   =   "1"     )
-           OR    ( SYS-200501-CHKKBN   =   "2" AND
-                   RECE62-RECESYUBETU
-                                   NOT =   "8888"  )
+           IF      SYS-200501-CHKKBN   =   "1"
                IF      CNT-RECE-OUT        =   ZERO
                    IF      RECE62-ERR-ERRKBN   =   ZERO 
                        MOVE    10                  TO  RECE62-ERR-ERRKBN
@@ -437,9 +397,6 @@
       *    患者病名診療年月日別処理
       *****************************************************************
        2001-PTBYO-HENSYU-SEC                SECTION.
-      *??
-           DISPLAY "RECE62-DAISAN-GAITO=" RECE62-DAISAN-GAITO "#"
-      *??
       *
            MOVE    PTBYO-SRYYMD            TO  KEY-N-SRYYMD
            MOVE    ZERO                    TO  WRK-RENNUM
@@ -497,6 +454,25 @@
                END-IF
            END-IF        
       *
+      *    診療開始日
+           IF      PTBYO-SRYYMD(1:6)    =   RECE62-SRYYM
+               CONTINUE
+           ELSE
+               IF      PTBYO-SRYYMD(1:6)    <   RECE62-SRYYM 
+                   IF      PTBYO-TENKIKBN       =   SPACE
+                       CONTINUE
+                   ELSE
+                       IF      PTBYO-TENKIYMD(1:6)  >=  RECE62-SRYYM
+                           CONTINUE
+                       ELSE
+                           GO  TO  2001-PTBYO-CHK-EXT
+                       END-IF
+                   END-IF       
+               ELSE
+                   GO  TO  2001-PTBYO-CHK-EXT
+               END-IF
+           END-IF
+      *
       *    入外区分
            IF      PTBYO-NYUGAIKBN      =   SPACE
                CONTINUE
@@ -509,18 +485,13 @@
       *    保険組合せ
            IF      PTBYO-HKNCOMBI     =   ZERO
                CONTINUE
-           ELSE
-      *        第三者行為のみの場合は対象外
-               IF      RECE62-DAISAN-GAITO =   1
-                   GO  TO  2001-PTBYO-CHK-EXT
-               END-IF
-      *
+           ELSE 
                MOVE    ZERO            TO  IDZ  
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       10
                        OR      RECE62-HKNCOMBI (IDX)   =   ZERO 
-                   IF      PTBYO-HKNCOMBI  =
-                                           RECE62-HKNCOMBI (IDX)
+                   IF      PTBYO-HKNCOMBI   =
+                                            RECE62-HKNCOMBI (IDX)
                        MOVE    IDX             TO  IDZ
                        MOVE    10              TO  IDX
                    END-IF
@@ -532,112 +503,28 @@
                END-IF
            END-IF
       *
-      *    公費ＩＤ（第三者行為）
-           IF      RECE62-DAISAN-GAITO =   9
-               CONTINUE
-           ELSE
-      *        患者登録で第三者行為の登録なし以外のときにチェック
-               IF      PTBYO-KOHID         =   ZERO
-      *            第三者行為のみの場合は対象外
-                   IF      RECE62-DAISAN-GAITO =   1
-                       GO  TO  2001-PTBYO-CHK-EXT
-                   END-IF
-               ELSE 
-      *            第三者行為以外のみの場合は対象外
-                   IF      RECE62-DAISAN-GAITO =   0
-                       GO  TO  2001-PTBYO-CHK-EXT
-                   END-IF
-      *
-                   MOVE    ZERO            TO  IDZ
-                   PERFORM VARYING IDX     FROM    1   BY  1
-                           UNTIL   IDX     >       10
-                           OR      RECE62-HKNCOMBI (IDX)
-                                           =   ZERO 
-                       IF    ( RECE62-DAISANFLG     (IDX)
-                                               =   1           )
-                       AND   ( RECE62-DAISAN-SKYFLG (IDX)
-                                               =   1           )
-                       AND   ( RECE62-DAISAN-KOHID  (IDX)
-                                               =   PTBYO-KOHID )  
-                           MOVE    IDX             TO  IDZ
-                           MOVE    10              TO  IDX
-                       END-IF
-                   END-PERFORM
-                   IF      IDZ            >   ZERO
-                       CONTINUE
-                   ELSE
-                       GO  TO  2001-PTBYO-CHK-EXT
-                   END-IF
-               END-IF
-           END-IF
-      *
       *    レセプト表示月
            IF      PTBYO-REZEFLG          =   "1"
               GO  TO  2001-PTBYO-CHK-EXT
            END-IF
       *
-      *    診療開始日
-           IF      PTBYO-SRYYMD(1:6)    =   RECE62-SRYYM
-               CONTINUE
-           ELSE
-               IF      PTBYO-SRYYMD(1:6)    >   RECE62-SRYYM 
-                   GO  TO  2001-PTBYO-CHK-EXT
-               ELSE
-      *            転帰日
-                   IF      PTBYO-TENKIKBN       =   SPACE
-                       CONTINUE
-                   ELSE
-                       IF    ( SYS-200501-TENKIBYOMEI-KBN
-                                                   =   "0"  )
-                       OR    ( PTBYO-REZEMM        =   ZERO )
-                           IF      PTBYO-TENKIYMD(1:6) >=  RECE62-SRYYM
-                               CONTINUE
-                           ELSE
-                               GO  TO  2001-PTBYO-CHK-EXT
-                           END-IF
-                       END-IF       
-                   END-IF       
-               END-IF
-      *
-      *        レセプト表示期間
-               MOVE    ZERO                   TO  WRK-YM
-               IF      PTBYO-REZEMM           >   ZERO
-                   INITIALIZE                      STS-AREA-DAY
-                   INITIALIZE                      LNK-DAY6-AREA
-                   MOVE    "61"                TO  LNK-DAY6-IRAI
-                   MOVE    PTBYO-SRYYMD        TO  LNK-DAY6-KIJUN 
-                   MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
-                   COMPUTE LNK-DAY6-ZOGEN  =   PTBYO-REZEMM    -   1    
-                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                       LNK-DAY6-AREA
-                   MOVE    LNK-DAY6-KEISAN(1:6)
-                                               TO  WRK-YM
-                   IF    ( SYS-200501-TENKIBYOMEI-KBN
-                                               =   "0"   )
-                   OR    ( PTBYO-TENKIKBN      =   SPACE )
-                       IF      WRK-YM              >=  RECE62-SRYYM
-                           CONTINUE
-                       ELSE
-                           GO  TO  2001-PTBYO-CHK-EXT
-                       END-IF
-                   END-IF
-               END-IF                    
-      *
-      *        レセプト表示期間と転帰日の優先設定による判定
-               IF    ( PTBYO-TENKIKBN      =   SPACE )
-               OR    ( PTBYO-REZEMM        =   ZERO  )
+           IF      PTBYO-REZEMM           >   ZERO
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE    PTBYO-SRYYMD        TO  LNK-DAY6-KIJUN 
+               MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+               COMPUTE LNK-DAY6-ZOGEN  =   PTBYO-REZEMM    -   1    
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+               MOVE    LNK-DAY6-KEISAN(1:6)
+                                           TO  WRK-YM
+               IF      WRK-YM              >=  RECE62-SRYYM
                    CONTINUE
                ELSE
-                   IF      SYS-200501-TENKIBYOMEI-KBN
-                                               =   "1"
-                       IF      WRK-YM              >=  RECE62-SRYYM
-                           CONTINUE
-                       ELSE
-                           GO  TO  2001-PTBYO-CHK-EXT
-                       END-IF
-                   END-IF    
+                   GO  TO  2001-PTBYO-CHK-EXT
                END-IF
-           END-IF
+           END-IF                    
       *                               
            PERFORM 20011-RECE63-WRITE-SEC
            .
@@ -715,7 +602,17 @@
       *
            MOVE    SPACE               TO  RECE63-REC
            INITIALIZE                      RECE63-REC
-           MOVE    RECE62-KEY          TO  RECE63-KEY1
+           MOVE    RECE62-HOSPNUM      TO  RECE63-HOSPNUM
+           MOVE    RECE62-SRYYM        TO  RECE63-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE63-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE63-PTID
+           MOVE    RECE62-RECEKA       TO  RECE63-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE63-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE63-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE63-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE63-HOJOKBN
+           MOVE    RECE62-KOHID-KEY    TO  RECE63-KOHID
+           MOVE    RECE62-TEKSTYMD     TO  RECE63-TEKSTYMD
            MOVE    PTBYO-SRYYMD        TO  RECE63-SRYYMD
            MOVE    WRK-RENNUM          TO  RECE63-RENNUM
            MOVE    RECE62-PTNUM        TO  RECE63-PTNUM
@@ -870,17 +767,6 @@
           DISPLAY "*** ORCR0670 END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           .
-       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

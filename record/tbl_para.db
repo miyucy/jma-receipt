@@ -1,12 +1,10 @@
 tbl_para {
 	HOSPNUM				number(2,0);
-	GYOUMUID			char(4);
+	GYOUMUID			char(3);
 	TERMID				char(64);
 	FILEMEI 			char(20);
 	EDANUM  			number(3,0);
 	DATA_REC 			char(5000);
-	UPYMD				char(8);
-	UPHMS				char(6);
 };
 primary	{
 	HOSPNUM,GYOUMUID,TERMID,FILEMEI,EDANUM;
@@ -20,7 +18,7 @@ path	key 	{
 		WHERE 	HOSPNUM	= :HOSPNUM
 			AND   GYOUMUID   =   :GYOUMUID
 			AND   TERMID       =   :TERMID
-			AND   FILEMEI      =  :FILEMEI
+			AND   FILEMEI      LIKE  :FILEMEI
 			AND   EDANUM       =   :EDANUM
 		;
 	};
@@ -152,58 +150,3 @@ path	key7 	{
 		;
 	};
 };
-
-path	key8 	{
-	DBSELECT	{
-		DECLARE tbl_para_key8_csr CURSOR FOR
-		SELECT *
-		FROM tbl_para
-		WHERE 	HOSPNUM	= :HOSPNUM
-			AND   GYOUMUID   =   :GYOUMUID
-			AND   TERMID       =   :TERMID
-			AND   FILEMEI      LIKE :FILEMEI
-			ORDER   BY      FILEMEI,
-					EDANUM
-		;
-	};
-};
-
-path	key9 	{
-	DBSELECT	{
-		DECLARE tbl_para_key9_csr CURSOR FOR
-		SELECT *
-		FROM tbl_para
-		WHERE 	HOSPNUM	= :HOSPNUM
-			AND   GYOUMUID   =   :GYOUMUID
-			AND   TERMID       =   :TERMID
-			AND   FILEMEI      =   :FILEMEI
-			ORDER   BY        EDANUM DESC
-		;
-	};
-};
-
-path	del4 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_para
-		WHERE 	HOSPNUM	= :HOSPNUM
-			AND   TERMID       =   :TERMID
-		;
-	};
-};
-
-path	key10 	{
-	DBSELECT	{
-		DECLARE tbl_para_key10_csr CURSOR FOR
-		SELECT *
-		FROM tbl_para
-		WHERE 	HOSPNUM	= :HOSPNUM
-			AND   GYOUMUID     =   :GYOUMUID
-			AND   FILEMEI      =   :FILEMEI
-			ORDER   BY        TERMID,
-					  EDANUM DESC
-		;
-	};
-};
-
-

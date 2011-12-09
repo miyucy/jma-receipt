@@ -53,6 +53,7 @@
       *  04.05.00    NACL-多々納  10/03/XX  Ｈ２２年４月改正対応
       *  04.06.00    NACL-多々納  10/08/18  手帳記載加算確認追加
       *  04.06.00    NACL-多々納  10/11/02  難病外来疾患区分対応
+      *  04.07.00    NACL-多々納  11/11/XX  訂正処方せん料展開対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -733,7 +734,7 @@
                                                             (IDX-Z + 1)
                        END-IF
                    END-IF
-      *H23.11      薬剤の診療種別
+      *            薬剤の診療種別
                WHEN    "6"
                    IF      WRK-SRYSYUKBN       =   SPACE
                        IF      WRK-COM-SRYSYUKBN (IDX-Z) NOT =   SPACE
@@ -883,8 +884,6 @@
                MOVE    SPACE               TO  WRK-GMN-TENSU (IDX-Z)
                MOVE    SPACE               TO  WRK-GMN-KAISU (IDX-Z)
                MOVE    ZERO                TO  WRK-GMN-KEI   (IDX-Z)
-               MOVE    ZERO                TO  WRK-COM-SYUTEN1 (IDX-Z)
-               MOVE    ZERO                TO  WRK-COM-SYUTEN2 (IDX-Z)
       *        手技毎
                INITIALIZE                   WRK-COM-PLUS-AREA(IDX-Z)
       *
@@ -1543,7 +1542,7 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-SYOHORYO
-      *    処方箋料算定
+      *    処方料算定
            IF    ((FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    ))   OR
@@ -1714,6 +1713,56 @@
                    END-IF
                END-IF
            END-IF
+      *!!
+      *ver.4.7
+      *    処方せん料と投薬チェック
+           IF     (IDX-SYOHOU      NOT =   ZERO )  AND
+                  (FLG-NAIYAK2         =   ZERO )  AND
+                  (FLG-TONPUK2         =   ZERO )  AND
+                  (FLG-GAIYAK2         =   ZERO )  AND
+                  (SPA-ERRCD           =   SPACE )
+               IF     (FLG-NAIYAK          =   1    )  OR
+                      (FLG-TONPUK          =   1    )  OR
+                      (FLG-GAIYAK          =   1    )
+      *            処方せん料と院内投薬のみはエラー
+                   MOVE    "0122"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-SYOHOU)
+               END-IF
+           END-IF
+      *    処方せん料と投薬チェック
+           IF     (IDX-SYOHOU      NOT =   ZERO )  AND
+                  (SPA-ERRCD           =   SPACE)  AND
+                 ((FLG-NAIYAK2         =   1    )  OR
+                  (FLG-TONPUK2         =   1    )  OR
+                  (FLG-GAIYAK2         =   1    ))
+      *        処方せん料の内容チェック
+               IF      WRK-ZAICNT2         >=  7
+      *            ７種類以上
+                   IF      WRK-COM-INPUTCD (IDX-SYOHOU)
+                                           NOT =   "120002710"
+                       MOVE    "K232"          TO  SPA-ERRCD
+                   END-IF
+               ELSE
+      *            ７種類以内
+                   IF     (WRK-COM-INPUTCD (IDX-SYOHOU)
+                                               =   "120002710" )
+                       MOVE    "K233"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+               IF      SPA-ERRCD       NOT =   SPACE
+                   IF     (WRK-COM-KZMFLG (IDX-SYOHOU) =   SPACE) AND
+                          (LNK-ORCSC-KEI-IDX           =   ZERO )
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                          (IDX-SYOHOU)
+                       MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                          (IDX-SYOHOU)
+                       MOVE    IDX-SYOHOU      TO  LNK-ORCSC-KEI-IDX
+                   ELSE
+                       MOVE    SPACE               TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+      *!!
       *
       *    調基が算定時の処方せん料とのチェック
            IF      IDX-CHOKI           >   ZERO
@@ -2455,6 +2504,7 @@
            IF     (FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    )
+           OR     (IDX-SYOHOU      NOT =   ZERO )
                GO      TO      3002-INNAI-SYORI-EXT
            END-IF
       *
@@ -4088,7 +4138,7 @@
       *            新生児判定
                    IF     (LNK-ORCSC-NENREI-YY   =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM   =   ZERO )  AND
-                          (LNK-ORCSC-NENREI-DD   <=  28   )
+                          (LNK-ORCSC-NENREI-DD   <   28   )
                        MOVE    1                 TO  FLG-CHK
                    END-IF
                ELSE
@@ -4108,7 +4158,7 @@
       *            新生児判定
                    IF     (LNK-ORCSC-NENREI-YY    =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM    =   ZERO )  AND
-                          (LNK-ORCSC-NENREI-DD    <=  28   )
+                          (LNK-ORCSC-NENREI-DD    <   28   )
                        CONTINUE
                    ELSE
                        MOVE    1                 TO  FLG-CHK
@@ -4253,10 +4303,9 @@
       *
                       COMPUTE IDX-Y3              =   JYURRK-RENNUM
                                                   +   1
-      *ver.4.8
-      *               IF      IDX-Y3              >   4
-      *                    MOVE    4               TO  IDX-Y3
-      *****           END-IF
+                      IF      IDX-Y3              >   4
+                           MOVE    4               TO  IDX-Y3
+                      END-IF
                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                       IF      (ACCT-DAY (IDX-Y3 IDX-Y2)
                                                    >   ZERO  ) AND
@@ -4404,8 +4453,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC

@@ -47,28 +47,11 @@
       *                                     載を行なう対応
       *  04.05.01   NACL-門脇     10/01/25  日別手技点にサイン追加
       *  04.05.02   NACL-門脇     10/02/16  予備項目追加
-      *  04.05.03   NACL-藤原     11/11/22  同日再入院対応
-      *  04.05.04   NACL-門脇     12/04/09  入院略称の文字数拡張
+      *  04.05.03    NACL-藤原    11/11/22  同日再入院対応
       *
-      *  04.07.01   NACL-門脇     11/09/01  労災初回請求分フラグ追加
+      *  04.07.01    NACL-門脇    11/09/01  労災初回請求分フラグ追加
       *                                     労災基準監督署コード追加
       *                                     テスト患者番号区分追加
-      *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
-      *  04.07.03    NACL-門脇    13/04/16  労災レセ電対応
-      *                                     労災指定医療機関区分追加
-      *  04.07.04    NACL-門脇    13/08/20  ０９５９３で始まるコードの
-      *                                     有無区分追加
-      *  04.07.05    NACL-藤原    13/09/20  第三者行為対応
-      *  04.07.06    NACL-門脇    14/05/13  超重症児（者）入院診療加算等の
-      *                                     算定フラグ追加
-      *  04.07.07    NACL-門脇    14/07/31  第三者行為に関するフラグ追加
-      *  04.07.08    NACL-門脇    15/09/08  自賠責（新様式）（ＯＣＲ様式）
-      *                                     用の項目追加
-      *
-      *  04.08.01    NACL-門脇    15/08/27  自賠責・請求金額欄端数処理
-      *                                     区分追加
-      *  04.08.02    NACL-門脇    16/04/15  平成２８年４月改正対応
-      *  04.08.03    NACL-門脇    17/02/24  レセプト種別不明エラー情報修正
       ************************************************************
       *01  RECE82-REC.
            03  RECE82-KEY.
@@ -179,11 +162,6 @@
       *医療機関種別
            03  RECE82-HOSPSBT             PIC  X(01).
       *
-      *病棟区分情報
-           03  RECE82-BYOTOKBNINF         OCCURS  4.
-      *病棟区分
-               05  RECE82-BYOTOKBN        PIC  X(02).
-      *
       *病棟種別情報
            03  RECE82-BYOTOSYUBETUINF     OCCURS 31.
       *病棟番号
@@ -194,7 +172,7 @@
       *入院基本料種別情報
            03  RECE82-NYUSYUINF           OCCURS  20.
       *入院基本料種別
-               05  RECE82-NYUSYUBETU      PIC  X(20).
+               05  RECE82-NYUSYUBETU      PIC  X(10).
       *
       *入院基本料情報
            03  RECE82-NYUKHNINF           OCCURS  10.
@@ -218,7 +196,7 @@
       *特定入院料・その他（点）
                05  RECE82-NYUTOKRYO       PIC  9(08).
       *特定入院料・その他（略称）
-               05  RECE82-NYUTOKRYO-RYAKU PIC  X(20).
+               05  RECE82-NYUTOKRYO-RYAKU PIC  X(10).
       *入院日数
                05  RECE82-NYUTOKNISSU     PIC  9(02).
       *合計点数
@@ -274,7 +252,7 @@
                05  RECE82-SHOKUJIKHNNISSU PIC  9(02).
       *
       *食事種別情報‐基本（生活）
-           03  RECE82-SHOKUJISYUBETU-SEI  PIC  X(02).
+           03  RECE82-SHOKUJISYUBETU-KHNSEI   PIC  X(02).
       *
       *食事基本料情報（生活）
            03  RECE82-SHOKUJIKHNINF-SEI   OCCURS   2.
@@ -330,8 +308,6 @@
                05  RECE82-YKZTEN-JI       PIC  9(08).
       *コメントカウントフラグ
            03  RECE82-COMCNTFLG           PIC  X(01).
-      *病床数編集フラグ（特定疾患療養指導料等）
-           03  RECE82-BEDSUFLG            PIC  X(01).
       *外来迅速検体検査加算フラグ
            03  RECE82-KENTAIKASANFLG      PIC  X(01).
       *特別な関係にある他院歴ありフラグ
@@ -342,7 +318,7 @@
                                                OCCURS   31.
       *レセプト種別不明エラー情報
            03  RECE82-ERR-AREA.
-               05  RECE82-ERR-ERRKBN      PIC 9(02).
+               05  RECE82-ERR-ERRKBN      PIC 9(01).
                05  RECE82-ERR-DAY         PIC 9(02).
                05  RECE82-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE82-ERR-TEKSTYMD    PIC 9(08).
@@ -388,11 +364,6 @@
                05  RECE82-KOMUKBN         PIC  X(01).
       *公務災害点単価
                05  RECE82-KOMUTENTANKA    PIC  9(02).
-      *労災指定医療機関区分
-               05  RECE82-RSIIRYOKBN      PIC  X(01).
-      *
-      *０９５９３で始まるコードの有無区分
-           03  RECE82-ORIGINALCDKBN       PIC 9(01).
       *
       *入院料情報取得フラグ
            03  RECE82-DOUJITSU-FLG        PIC 9(01).
@@ -407,70 +378,6 @@
                05  RECE82-NYUINDAY-TBL.
                    07  RECE82-NYUINDAY-KBN
                                           PIC  X(01)  OCCURS  31.
-      *
-      *第三者行為時の医保分主保険情報
-           03  RECE82-HKN-X.
-      *医保分主保険番号
-               05  RECE82-HKNNUM-X        PIC X(03).
-      *医保分主保険ＩＤ
-               05  RECE82-HKNID-X         PIC 9(10).
-      *医保分保険者番号
-               05  RECE82-HKNJANUM        PIC X(08).
-      *医保分保険者名
-               05  RECE82-HKNJANAME       PIC X(200).
-      *医保分記号
-               05  RECE82-KIGO            PIC X(80).
-      *医保分番号
-               05  RECE82-NUM             PIC X(80).
-      *
-      *第三者行為（社会保険への請求額）
-           03  RECE82-SKYMONEY            PIC  9(09).
-      *第三者行為（患者負担）
-           03  RECE82-FTNMONEY            PIC  9(09).
-      *第三者行為（患者割合）
-           03  RECE82-FTNRATE             PIC  9(03).
-      *第三者行為（食事標準負担）
-           03  RECE82-SKJFTNMONEY         PIC  9(09).
-      *第三者行為レセプト現物給付該当フラグ
-           03  RECE82-DAISAN-GENBUTU-GAITO
-                                          PIC  9(01).
-      *第三者行為一部負担金金額置換フラグ
-           03  RECE82-DAISAN-CHIKAN       PIC  9(01).
-      *
-      *超重症児（者）入院診療加算等の算定フラグ
-           03  RECE82-CYOJKSNFLG          PIC  X(01).
-      *
-      *自賠責・請求金額欄端数処理区分
-           03  RECE82-JIBAI-HASUKBN       PIC  X(01).
-      *
-      *自賠責（新様式）（ＯＣＲ様式）用
-      *合計額
-           03  RECE82-JIBAI-GOKEI-BE      PIC  9(09).
-           03  RECE82-JIBAI-GOKEI-AF      PIC  9(09).
-      *請求額
-           03  RECE82-JIBAI-SKYKINFLG     PIC  9(01).
-           03  RECE82-JIBAI-SKYKIN        PIC  9(09).
-      *受領額・受領先
-           03  RECE82-JIBAI-JYUKINFLG     PIC  9(01).
-           03  RECE82-JIBAI-JYUKIN        PIC  9(09).
-           03  RECE82-JIBAI-JYUNAMEFLG    PIC  9(01).
-           03  RECE82-JIBAI-JYUNAME       PIC  X(80).
-      *自賠責受領金額欄置換入力分
-           03  RECE82-JIBAI-CHIKANKINFLG  PIC  9(01).
-           03  RECE82-JIBAI-CHIKANKIN     PIC  9(09).
-           03  RECE82-JIBAI-CHIKANNAMEFLG PIC  9(01).
-           03  RECE82-JIBAI-CHIKANNAME    PIC  X(80).
-      *
-      *標準負担額経過措置（精神）
-           03  RECE82-SEISIN-SKJFLG       PIC  9(01).
-           03  RECE82-SEISIN-NYUINYMD     PIC  X(08).
-      *
-      *再診加算（入院）情報
-           03  RECE82-NYUSAIINF.
-               05  RECE82-NYUSAI-TENSU    PIC  9(08).
-      *入院料日別診療区分情報
-           03  RECE82-NYUDAYINF.
-               05  RECE82-NYUDAY-SRYKBN   PIC  X(02)  OCCURS 31.
       *
       *予備
            03  RECE82-YOBIETC-AREA.

@@ -2193,7 +2193,7 @@
       *            糠栏基冉年
                    IF     (LNK-ORCSC-NENREI-YY     =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM     =   ZERO )  AND
-                          (LNK-ORCSC-NENREI-DD     <=  28   )
+                          (LNK-ORCSC-NENREI-DD     <   28   )
                        MOVE    ZERO                TO  FLG-NENREI-OK
                    ELSE
                        MOVE    1                   TO  FLG-NENREI-OK
@@ -2215,7 +2215,7 @@
       *            糠栏基冉年
                    IF     (LNK-ORCSC-NENREI-YY     =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM     =   ZERO )  AND
-                          (LNK-ORCSC-NENREI-DD     <=  28   )
+                          (LNK-ORCSC-NENREI-DD     <   28   )
                        MOVE    1                   TO  FLG-NENREI-OK
                    ELSE
                        MOVE    ZERO                TO  FLG-NENREI-OK
@@ -5601,7 +5601,6 @@
                  AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
                    MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
                    MOVE    "1"             TO  WRK-COM-KZMFLG  (IDX-Z)
-                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                ELSE
                    MOVE    SPACE           TO  SPA-ERRCD
                END-IF
@@ -5635,7 +5634,6 @@
                  AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
                    MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
                    MOVE    "1"             TO  WRK-COM-KZMFLG  (IDX-Z)
-                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                ELSE
                    MOVE    SPACE           TO  SPA-ERRCD
                END-IF

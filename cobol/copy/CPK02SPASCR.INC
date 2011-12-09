@@ -41,9 +41,6 @@
       * 04.05.00     NACL-多々納  09/10/02  換算値入力他対応
       * 04.06.00     NACL-多々納  11/02/14  用法コメント対応
       * 04.07.00     NACL-多々納  11/09/21  院外処方点数対応
-      * 04.07.00     NACL-多々納  11/12/20  商品名コード単価対応
-      * 04.07.00     NACL-多々納  12/11/07  警告区分等追加
-      * 04.08.00     NACL-多々納  16/02/XX  Ｈ２８年改正対応
       ************************************************************
       *
       *01  SPA-K02SCR-REC.
@@ -80,8 +77,6 @@
                        09  SPA-COM-IN2           PIC X(01).
       *                数量入力有り
                        09  SPA-COM-IN3           PIC X(01).
-      *ver.4.7         入力有り
-                       09  SPA-COM-IN4           PIC X(01).
                        09  SPA-MAE-INPUTCD       PIC X(54).
       *---(01.00.01)
       *
@@ -96,9 +91,9 @@
       *                自費明細金額
                        09  SPA-COM-JIHIMONEY     PIC 9(07).
       *                点数
-                       09  SPA-COM-TEN           PIC 9(08)V9(4).
+                       09  SPA-COM-TEN           PIC 9(08)V99.
       *                点数（きざみ値計算後）
-                       09  SPA-COM-KISOTEN       PIC 9(08)V9(4).
+                       09  SPA-COM-KISOTEN       PIC 9(08)V99.
                        09  SPA-COM-KAISU         PIC 9(03).
                        09  SPA-COM-KEI           PIC 9(08).
       *                外用薬用入力用
@@ -152,26 +147,9 @@
                        09  SPA-COM-FLGAREA.
       *                    禁忌薬剤警告済フラグ
                            11  SPA-COM-KNKFLG        PIC X(01).
-      *                    禁忌薬剤チェック済フラグ
                            11  SPA-COM-KNKUMU        PIC X(01).
       *                    労災読み替え加算分
                            11  SPA-COM-RSIFLG2       PIC X(01).
-      *                    数量チェック済（投与量チェック）
-                           11  SPA-COM-SURCHK        PIC X(01).
-      *                    併用算定済フラグ
-                           11  SPA-COM-HCHKFLG       PIC X(01).
-      *                    併用算定警告済フラグ
-                           11  SPA-COM-HKEIFLG       PIC X(01).
-      *                    基本チェック済フラグ
-                           11  SPA-COM-CHKFLG        PIC X(01).
-      *                    時間加算フラグ
-                           11  SPA-COM-TIMEFLG       PIC 9(01).
-      *ver.4.8             再診自動算定フラグ
-                           11  SPA-COM-KSNAUTO       PIC X(01).
-      *                警告済みフラグ
-                       09  SPA-COM-KZMFLGAREA.
-      *                    患者禁忌薬剤チェック済フラグ
-                           11  SPA-COM-KINKIFLG      PIC X(01).
       *                    警告済フラグ
                            11  SPA-COM-KZMFLG        PIC X(01).
       *                    警告済フラグ２
@@ -182,23 +160,22 @@
                            11  SPA-COM-KZMFLG4       PIC X(01).
       *                    警告済フラグ５（投与量チェック）
                            11  SPA-COM-KZMFLG5       PIC X(01).
-      *ver.4.7             処方せん料警告２
-                           11  SPA-COM-KZMFLG6       PIC X(01).
-      *                    警告（湿布薬警告）
-                           11  SPA-COM-KZMFLG7       PIC X(01).
-      *                    警告（リハビリ減点）
-                           11  SPA-COM-KZMFLG8       PIC X(01).
-      *                    警告（包括算定入力警告(H29.9）
-                           11  SPA-COM-KZMFLG9       PIC X(01).
-      *                    入院料併用警告
-                           11  SPA-COM-KZMFLGNK      PIC X(01).
-      *                    翌月入院料なし警告
-                           11  SPA-COM-KZMFLGN2      PIC X(01).
-      *
+      *                    数量チェック済（投与量チェック）
+                           11  SPA-COM-SURCHK        PIC X(01).
+      *                    併用算定済フラグ
+                           11  SPA-COM-HCHKFLG       PIC X(01).
+      *                    併用算定警告済フラグ
+                           11  SPA-COM-HKEIFLG       PIC X(01).
+      *                    基本チェック済フラグ
+                           11  SPA-COM-CHKFLG        PIC X(01).
+      *                    時間加算フラグ
+                           11  SPA-COM-TIMEFLG       PIC 9(01).
+      *                    患者禁忌薬剤チェック済フラグ
+                           11  SPA-COM-KINKIFLG      PIC X(01).
       *                自動発生済フラグ
                        09  SPA-COM-AUTOFLG           PIC X(01).
       *                残量廃棄自動発生済フラグ
-                       09  SPA-COM-AUTOFLG2          PIC X(01).
+                       09  SPA-COM-AUTOFLG2           PIC X(01).
       *                計算チェック済フラグ（毎回クリア）
                        09  SPA-COM-SANFLG        PIC 9(01).
       *                逓減検査対象有無（１：逓減有り）
@@ -311,7 +288,6 @@
                        09  SPA-COM-CSYYOURYO     PIC 9(05).
       *                単位コード
                        09  SPA-COM-TANICD        PIC X(03).
-                       09  SPA-COM-TANINAME      PIC X(12).
       *                薬剤区分
                        09  SPA-COM-YKZKBN        PIC 9(01).
                        09  SPA-COM-ZAIGATAKBN    PIC 9(01).
@@ -338,14 +314,12 @@
       *                検査用　区分番号
                        09  SPA-COM-CDKBN.
                            11  SPA-COM-CDKBN-KBN   PIC  X(01).
-      ****                 11  SPA-COM-CDKBN-SYO   PIC  X(01).
-      ****                 11  SPA-COM-CDKBN-BU    PIC  X(02).
+                           11  SPA-COM-CDKBN-SYO   PIC  X(01).
+                           11  SPA-COM-CDKBN-BU    PIC  X(02).
       *                    労災用　区分番号
                            11  SPA-COM-CDKBN-KBNNUM     PIC  X(03).
       *                    労災用　区分番号枝番
-                           11  SPA-COM-CDKBN-KBNNUM-EDA PIC  X(02).
-      *H28.9               項番
-                           11  SPA-COM-CDKBN-KOUBAN     PIC  X(02).
+                           11  SPA-COM-CDKBN-KBNNUM-EDA   PIC  X(02).
       *                算定履歴区分
                        09  SPA-COM-SANTEIRRKKBN    PIC  9(01).
       *                外来管理加算区分
@@ -425,42 +399,6 @@
       *ver.4.6
       *                用法の数量埋め込み区分
                        09  SPA-COM-YCOMKBN             PIC  9(01).
-      *ver.4.7
-      *H24.4 改正分（ver.4.7.0　から使用）
-      *                一般名記載区分（１：一般名）
-                       09  SPA-COM-IPN-KISAIKBN        PIC  9(01).
-      *                最低薬価
-                       09  SPA-COM-GEN-PRICE           PIC  9(09)V9(4).
-      *                薬価基準コード
-                       09  SPA-COM-YAKKAKJNCD          PIC  X(12).
-      *H28.4 改正分
-      *                湿布薬区分
-                       09  SPA-COM-SIPPUKBN        PIC  X(01).
-      *                湿布薬　膏体量１
-                       09  SPA-COM-SIPRYO1         PIC 9(05).
-                       09  SPA-COM-SIPRYO2         PIC 9(05).
-      *                湿布薬換算数量
-                       09  SPA-COM-SIP-SURYO       PIC 9(05)V9(05).
-      *                湿布薬減算有
-                       09  SPA-COM-SIPGEN          PIC X(01).
-                       09  SPA-COM-SIPKBN          PIC X(01).
-      *                湿布減対象剤
-                       09  SPA-COM-SIPZAI          PIC X(01).
-      *
-      *                労災　算定不可
-                       09  SPA-COM-ROSAIKBN        PIC  X(01).
-      *                労災　四肢加算
-                       09  SPA-COM-SISIKSN         PIC  X(01).
-      *                非侵襲的血行動態モニタリング加算
-                       09  SPA-COM-HISINKSN        PIC  X(01).
-      *                凍結保存同種組織加算
-                       09  SPA-COM-TOUKETUHOZONKSN PIC  X(01).
-      *H30.4
-      *                悪性腫瘍病理組織標本加算
-                       09  SPA-COM-AKUSEIBYORIKSN  PIC  X(01).
-      *H29.1           ユーザー管理区分
-                       09  SPA-COM-MASTER-CLASS    PIC  X(01).
-      *
       *    点数マスタ付加情報より
       *                採血区分
                        09  SPA-COM-SAIKETUKBN          PIC 9(01).
@@ -472,8 +410,6 @@
                        09  SPA-COM-KANZANTANICD        PIC X(03).
       *                数量換算値
                        09  SPA-COM-KANZANCHI           PIC 9(05)V9(05).
-      *ver.4.7         内服滴剤
-                       09  SPA-COM-SOURYOHENKBN        PIC  9(01).
       *    点数マスタ薬剤附加情報より
       *                内服算定
                        09  SPA-COM-NAIFUKUKBN          PIC 9(01).
@@ -498,23 +434,4 @@
                        09  SPA-COM-KINKSTYMD           PIC X(08).
                        09  SPA-COM-TOUYOYMD            PIC X(08).
                        09  SPA-COM-PTKINKICD           PIC 9(01).
-      *v4.8  連続行挿入用
-                       09  SPA-COM-GMNINS              PIC X(01).
-      *H28.2 一般名表示対応
-      *                銘柄名
-                       09  SPA-COM-MEI-NAME            PIC X(78).
-      *                一般名（処方せん記載）
-                       09  SPA-COM-IPN-NAME            PIC X(100).
-                       09  SPA-COM-IPN-TANINAME        PIC X(02).
-                       09  SPA-COM-MEI-KBN             PIC X(01).
-      *H28.5           一般名記載区分
-                       09  SPA-COM-TNSP-KISAIKBN       PIC X(01).
-      *                向精神薬区分
-                       09  SPA-COM-PSY-CLASS           PIC X(01).
-      *H28.9           持参薬剤区分
-                       09  SPA-COM-JISANYAKU           PIC X(01).
-      *ver.4.7 から予備
-                       09  SPA-COM-YOBI1               PIC X(10).
-                       09  SPA-COM-YOBI2               PIC X(10).
-                       09  SPA-COM-YOBI3               PIC S9(10)V9(5).
       * 

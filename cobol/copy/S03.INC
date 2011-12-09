@@ -18,12 +18,12 @@
         02  S03.
               03  S03-B03-LABEL    PIC X(10).
               03  S03-B05-LABEL    PIC X(10).
-              03  S03-B12-STATE PIC S9(9)   BINARY.
-              03  S03-B12S-STATE PIC S9(9)  BINARY.
+              03  S03-B12-STATE    PIC S9(9)   BINARY.
+              03  S03-B12S-STATE   PIC S9(9)   BINARY.
               03  S03-LBLGEMNEN-G.
                 04  S03-LBLGENMEN-STYLE
                                          PIC X(20).
-                04  S03-LBLGENMEN       PIC X(30).
+                04  S03-LBLGENMEN        PIC X(30).
               03  S03-PTNUM     PIC X(20).
               03  S03-SRYYMD    PIC X(9).
               03  S03-KANANAME  PIC X(50).
@@ -36,10 +36,10 @@
               03  S03-NYUGAIKBN PIC X(6).
               03  S03-NAIYO-COMBO.
                 04  S03-NAIYO PIC X(12).
-                04  S03-NAIYO-STATE   PIC S9(9)   BINARY.
+                04  S03-NAIYO-STATE PIC S9(9)   BINARY.
                 04  S03-NAIYO-COUNT   PIC S9(9)   BINARY.
                 04  S03-NAIYOLST      PIC X(12) OCCURS 5 TIMES.
-                04  S03-NAIYOLST-STATE   PIC S9(9)   BINARY.
+                04  S03-NAIYOLST-STATE PIC S9(9)   BINARY.
               03  S03-DENPNUM   PIC X(10).
               03  S03-DENPJTI   PIC X(10).
               03  S03-HAKYMD    PIC X(9).
@@ -84,14 +84,13 @@
               03  S03-SSNTGMONEY PIC S9(10).
               03  S03-HOUTGMONEY PIC S9(10).
               03  S03-BYRTGMONEY PIC S9(10).
-              03  S03-NYUTGMONEY
-                                PIC S9(10).
+              03  S03-NYUTGMONEY PIC S9(10).
               03  S03-RYOTGMONEY PIC S9(10).
               03  S03-HKNTEKMONEY
                                 PIC S9(10).
               03  S03-HKNTEKGAI PIC S9(10).
               03  S03-JIHIMSG-G OCCURS 10.
-                04  S03-JIHIMSG PIC X(12).
+                04  S03-JIHIMSG PIC X(8).
               03  S03-JIHI1     PIC S9(10).
               03  S03-JIHI2     PIC S9(10).
               03  S03-JIHI3     PIC S9(10).
@@ -114,89 +113,64 @@
               03  S03-JIHI9TAX  PIC S9(10).
               03  S03-JIHI10TAX PIC S9(10).
               03  S03-JIHITAXTOTAL
-                                 PIC S9(10).
+                                PIC S9(10).
               03  S03-JIHITAX   PIC S9(10).
-      *
-              03  S03-FR2-VISIBLE  PIC X(01).
-              03  S03-S03N-SKJRYOYO  PIC S9(10).
-              03  S03-S03N-LIFERYOYO PIC S9(10).
-              03  S03-S03N-SKJFTN    PIC S9(10).
-              03  S03-S03N-LIFEFTN   PIC S9(10).
-              03  S03-S03N-RJNFTN    PIC S9(10).
-              03  S03-S03N-KOHFTN    PIC S9(10).
-              03  S03-S03N-FTNTOTAL  PIC S9(10).
-              03  S03-S03N-RSISHOSHIN
+              03  S03-YKZFTN    PIC S9(10).
+              03  S03-RJNFTN    PIC S9(10).
+              03  S03-KOHFTN    PIC S9(10).
+              03  S03-FTNTOTAL  PIC S9(10).
+              03  S03-RSISHOSHIN
                                 PIC S9(10).
-              03  S03-S03N-RSISAISHIN
+              03  S03-RSISAISHIN
                                 PIC S9(10).
-              03  S03-S03N-RSISDO    PIC S9(10).
-              03  S03-S03N-RSIETC    PIC S9(10).
-              03  S03-S03N-RMSAGAKU  PIC S9(10).
-              03  S03-S03N-CHOSEI1   PIC S9(10).
-              03  S03-S03N-CHOSEI2   PIC S9(10).
-              03  S03-S03N-SKYMONEY  PIC S9(10).
-              03  S03-S03N-NYUKINGK1 PIC S9(10).
-              03  S03-S03N-MISYUZAN  PIC S9(10).
-              03  S03-S03N-ZENMISYU-GAI  PIC S9(10).
-              03  S03-S03N-ZENMISYU-NYU  PIC S9(10).
-              03  S03-S03N-GOKMISYU  PIC S9(10).
-      *
-              03  S03-FR3-VISIBLE    PIC X(01).
-              03  S03-S03G-YKZFTN    PIC S9(10).
-              03  S03-S03G-RJNFTN    PIC S9(10).
-              03  S03-S03G-KOHFTN    PIC S9(10).
-              03  S03-S03G-FTNTOTAL  PIC S9(10).
-              03  S03-S03G-RSISHOSHIN
-                                PIC S9(10).
-              03  S03-S03G-RSISAISHIN
-                                PIC S9(10).
-              03  S03-S03G-RSISDO    PIC S9(10).
-              03  S03-S03G-RSIETC    PIC S9(10).
-              03  S03-S03G-CHOSEI1   PIC S9(10).
-              03  S03-S03G-CHOSEI2   PIC S9(10).
-              03  S03-S03G-SKYMONEY  PIC S9(10).
-              03  S03-S03G-NYUKINGK1 PIC S9(10).
-              03  S03-S03G-MISYUZAN  PIC S9(10).
-              03  S03-S03G-ZENMISYU  PIC S9(10).
-              03  S03-S03G-GOKMISYU  PIC S9(10).
-      *
-              03  S03-CHOSEI1IN  PIC X(10).
+              03  S03-RSISDO    PIC S9(10).
+              03  S03-RSIETC    PIC S9(10).
+              03  S03-CHOSEI1   PIC S9(10).
+              03  S03-CHOSEI2   PIC S9(10).
+              03  S03-SKYMONEY  PIC S9(10).
+              03  S03-NYUKINGK1 PIC S9(10).
+              03  S03-MISYUZAN  PIC S9(10).
+              03  S03-ZENMISYU  PIC S9(10).
+              03  S03-GOKMISYU  PIC S9(10).
+              03  S03-CHOSEI1IN PIC X(10).
               03  S03-CHOSEI1IN-STATE
-                                 PIC S9(9)   BINARY.
-              03  S03-CHOSEI2IN  PIC X(10).
+                                PIC S9(9)   BINARY.
+              03  S03-CHOSEI2IN PIC X(10).
               03  S03-CHOSEI2IN-STATE
-                                 PIC S9(9)   BINARY.
-              03  S03-SKYMONEYIN-STYLE  PIC X(20).
-              03  S03-SKYMONEYIN  PIC X(10).
+                                PIC S9(9)   BINARY.
+              03  S03-SKYMONEYIN-STYLE
+                                PIC X(20).
+              03  S03-SKYMONEYIN
+                                PIC X(10).
               03  S03-SKYMONEYIN-STATE
-                                 PIC S9(9)   BINARY.
+                                PIC S9(9)   BINARY.
               03  S03-NYUKINGK2 PIC X(10).
               03  S03-NYUKINGK2-STATE
-                                 PIC S9(9)   BINARY.
+                                PIC S9(9)   BINARY.
               03  S03-NYUKINYMD.
                 04  S03-VALUE   PIC X(10).
               03  S03-NYUKINYMD-STATE
-                                 PIC S9(9)   BINARY.
+                                PIC S9(9)   BINARY.
               03  S03-NYUKINHOUHOU-COMBO.
                 04  S03-NYUKINHOUHOU PIC X(33).
                 04  S03-NYUKINHOUHOU-STATE
-                                 PIC S9(9)   BINARY.
+                                PIC S9(9)   BINARY.
                 04  S03-NYUKINHOUHOU-COUNT   PIC S9(9)   BINARY.
                 04  S03-NYUKINHOUHOULST      PIC X(33) OCCURS 50 TIMES.
                 04  S03-NYUKINHOUHOULST-STATE
-                                 PIC S9(9)   BINARY.
+                                PIC S9(9)   BINARY.
               03  S03-SKYPRT-COMBO.
                 04  S03-SKYPRT PIC X(24).
-                04  S03-SKYPRT-STATE   PIC S9(9)   BINARY.
+                04  S03-SKYPRT-STATE PIC S9(9)   BINARY.
                 04  S03-SKYPRT-COUNT   PIC S9(9)   BINARY.
                 04  S03-SKYPRTLST      PIC X(24) OCCURS 5 TIMES.
-                04  S03-SKYPRTLST-STATE   PIC S9(9)   BINARY.
+                04  S03-SKYPRTLST-STATE PIC S9(9)   BINARY.
               03  S03-SRYPRT-COMBO.
                 04  S03-SRYPRT PIC X(24).
-                04  S03-SRYPRT-STATE   PIC S9(9)   BINARY.
+                04  S03-SRYPRT-STATE PIC S9(9)   BINARY.
                 04  S03-SRYPRT-COUNT   PIC S9(9)   BINARY.
                 04  S03-SRYPRTLST      PIC X(24) OCCURS 5 TIMES.
-                04  S03-SRYPRTLST-STATE   PIC S9(9)   BINARY.
+                04  S03-SRYPRTLST-STATE PIC S9(9)   BINARY.
               03  S03-RIREKIIN PIC S9(2).
               03  S03-SCROLLEDWINDOW1.
                 04  S03-CLIST1.

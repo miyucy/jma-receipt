@@ -2,17 +2,17 @@
 # http protocol
 #
 #DBUPGRADEPATH=http://ftp.orca.med.or.jp/pub/orca_data
-#PGUPGRADEPATH=http://ftp.orca.med.or.jp/pub/bugfix/ubuntu/@ARCHITECTURE@/@DISTCODENAME@
+#PGUPGRADEPATH=http://ftp.orca.med.or.jp/pub/bugfix/ubuntu/i386/@DISTCODENAME@
 #MSTUPDATEPATH=http://ftp.orca.med.or.jp/pub/orca_data
-#DBLICENSEPATH=http://ftp.orca.med.or.jp/pub/orca_data/license_master
+#DBLICENSEPATH=http://ftp.orca.med.or.jp/pub/orca_data
 
 #
 # ftp protocol
 #
 #DBUPGRADEPATH=ftp://ftp.orca.med.or.jp/pub/orca_data
-#PGUPGRADEPATH=ftp://ftp.orca.med.or.jp/pub/bugfix/ubuntu/@ARCHITECTURE@/@DISTCODENAME@
+#PGUPGRADEPATH=ftp://ftp.orca.med.or.jp/pub/bugfix/ubuntu/i386/@DISTCODENAME@
 #MSTUPDATEPATH=ftp://ftp.orca.med.or.jp/pub/orca_data
-#DBLICENSEPATH=ftp://ftp.orca.med.or.jp/pub/orca_data/license_master
+#DBLICENSEPATH=ftp://ftp.orca.med.or.jp/pub/orca_data
 
 #WGETOPTION=--passive-ftp
 
@@ -20,6 +20,6 @@
 # file protocol
 #
 #DBUPGRADEPATH=file:///cdrom/pub/orca_data
-#PGUPGRADEPATH=file:///cdrom/pub/bugfix/ubuntu/@ARCHITECTURE@/@DISTCODENAME@
+#PGUPGRADEPATH=file:///cdrom/pub/bugfix/ubuntu/i386/@DISTCODENAME@
 #MSTUPDATEPATH=file:///cdrom/pub/orca_data
-#DBLICENSEPATH=file:///cdrom/pub/orca_data/license_master
+#DBLICENSEPATH=file:///cdrom/pub/orca_data

@@ -22,7 +22,7 @@ fi
 #        $9  ジョブＩＤ
 #        $10 シェルＩＤ
 #        $11 ファイル出力先 1:client
-#        $12 文字コード区分 1:euc 2:s-jis 3:utf-8
+#        $12 文字コード区分 1:euc 2:s-jis
 #        $13 FILENM FOLDER
 #        $14 FILENM 
 #        $15 WKCSVファイル名
@@ -30,66 +30,48 @@ fi
 #
 #-------------------------------------------#
 
-LOG_FILE="/var/log/jma-receipt/${7}orcb013_1.log"
+        OLDLOG="/var/log/jma-receipt/${7}ORCBQ01.log"
+        LOG_FILE="/var/log/jma-receipt/${7}orcb013_1.log"
 
+[ -e "${OLDLOG}" ] &&  rm ${OLDLOG}
 [ -e "${LOG_FILE}" ] &&  rm ${LOG_FILE}
 
-PARA_FILE_BASE=$3
-PARA_FILE_FULL=${MCP_TEMPDIR}/${3}
-
-WKCSV_FILE_BASE=${15}
-WKCSV_FILE_FULL=${MCP_TEMPDIR}/${15}
-
+        echo "all params [" $@ "]"   >$LOG_FILE
+        echo "arg2   = [" ${2}   "]" <>$LOG_FILE
+        echo "arg11  = [" ${11}  "]" >>$LOG_FILE
+        echo "arg12  = [" ${12}  "]" >>$LOG_FILE
 ##
         PGNAME=ORCBQ01
         [ ${16} == "1" ] && PGNAME=ORCBQ01A
         [ ${16} == "2" ] && PGNAME=ORCBQ01B
 ##
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ${PGNAME} -parameter ${PARA_FILE_BASE},$4,$5,$6,$7,$8,${11},${13},${14},${WKCSV_FILE_BASE},${16} 
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ${PGNAME} -parameter $3,$4,$5,$6,$7,$8,${11},${13},${14},${15},${16} >> $LOG_FILE 2>&1
 
 ##      ＣＳＶファイル作成
         if  [ $1 -eq "0" ]; then
-            if  [ -e ${WKCSV_FILE_FULL} ]; then
-                awk ' {
-                #     行頭の空白を取り除く
-                      sub(/^ */,"");
-                #     行末の空白を取り除く
-                      sub(/ *$/,"");
-                #     カンマの後の空白を取り除く
-                      gsub(/, */,",");
-                #     カンマの前の空白を取り除く
-                      gsub(/ *,/,",");
-                      print $0
-                }'  ${WKCSV_FILE_FULL} > $2.tmp
+            if  [ -e ${15} ]; then
+		ruby -e 'STDIN.readlines.each{|y| puts y.split(",").each{|x|  x.strip!}.join(",")}' <  ${15} > ${2}.tmp
 
                 if   [ ${11} = '1' ]; then
-#                 クライアント保存のとき固定ファイルに文字コード変換
-                  case ${12} in
-                    2)
-#                     EUC => SJIS
-                        nkf -s -Lw $2.tmp > ${WKCSV_FILE_FULL}
-                        rm  $2.tmp
-                      ;;
-                    3)
-#                     EUC => UTF8
-                      nkf --ic=EUC-JIS-2004 --oc=UTF-8 $2.tmp | tru8.rb > ${WKCSV_FILE_FULL}
-                      rm  $2.tmp
-                      ;;
-                    *)
-                      mv  $2.tmp ${WKCSV_FILE_FULL}
-                  esac
+#                   クライアント保存のとき固定ファイルに文字コード変換（ＥＵＣからＳ−ｊｉｓ）
+                    if  [ ${12} = '2' ]; then
+                        nkf -s -Lw ${2}.tmp > ${15}
+                        rm  ${2}.tmp
+                    else 
+                        mv  ${2}.tmp ${15}
+                    fi
                 else
-                    mv  $2.tmp $2
-                    rm  ${WKCSV_FILE_FULL}
+                    mv  ${2}.tmp $2
+                    rm  ${15}
                 fi 
             fi
         fi
 
 ##      パラメータファイル削除
-        if  [ -e ${PARA_FILE_FULL} ]; then
-            rm  ${PARA_FILE_FULL}
+        if  [ -e $3 ]; then
+            rm  $3
         fi
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE$9${10},$7" 
+       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBE$9${10},$7" >> $LOG_FILE 2>&1
 
         exit

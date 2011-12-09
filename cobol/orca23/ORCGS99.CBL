@@ -60,7 +60,7 @@
            03  IDX                 PIC 9(04).
       *
        01  WRK-AREA.
-           03  WRK-PAGE            PIC ZZZZZZZZZZ.
+           03  WRK-PAGE            PIC ZZZZZZZZZ9.
       *----(03.04.01)--ADD-START---
            03  WRK-PRT-PAGE        PIC 9(10).
       *----(03.04.01)--ADD-END-----
@@ -119,7 +119,20 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA23SCRAREA.INC".
+           COPY    "S02.INC".
+           COPY    "S03.INC".
+           COPY    "S03N.INC".
+           COPY    "S04.INC".
+           COPY    "S06.INC".
+           COPY    "S07.INC".
+           COPY    "S08.INC".
+           COPY    "S09.INC".
+           COPY    "S99.INC".
+           COPY    "SERR.INC".
+           COPY    "SID1.INC".
+           COPY    "SID2.INC".
+           COPY    "SID3.INC".
+           COPY    "SID4.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -214,7 +227,6 @@
        490-KAKUNIN-SEC             SECTION.
       *     
            MOVE    SPACE               TO  S99
-           INITIALIZE                      S99
            MOVE    ZERO                TO  S99-COUNT
       *----(03.04.01)--ADD-START---
            MOVE    WIDGET-INSENSITIVE  TO  S99-B12-STATE

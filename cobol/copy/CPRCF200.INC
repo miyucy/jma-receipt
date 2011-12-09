@@ -24,12 +24,6 @@
       *                                     載を行なう対応
       *  04.05.01    NACL-門脇    10/02/16  予備項目追加
       *  04.05.02    NACL-藤原    11/11/22  同日再入院対応
-      *  04.05.03    NACL-門脇    12/04/09  入院略称の文字数拡張
-      *  04.07.01    NACL-門脇    12/10/12  合計日数（食事）追加
-      *  04.07.02    NACL-門脇    14/05/13  超重症児（者）入院診療加算等の
-      *                                     算定フラグ追加
-      *  04.08.01    NACL-門脇    16/04/15  平成２８年４月改正対応
-      *  04.08.02    NACL-門脇    18/03/27  平成３０年４月改正対応
       ********************************************************************
       *01  RECE200-REC.
            03  RECE200-KEY.
@@ -123,7 +117,7 @@
       *入院基本料種別情報
            03  RECE200-NYUSYUINF           OCCURS  20.
       *入院基本料種別
-               05  RECE200-NYUSYUBETU      PIC X(20).
+               05  RECE200-NYUSYUBETU      PIC X(12).
       *
       *入院基本料情報
            03  RECE200-NYUKHNINF           OCCURS  10.
@@ -144,7 +138,7 @@
       *特定入院料・その他（点）
                05  RECE200-NYUTOKRYO       PIC 9(09).
       *特定入院料・その他（略称）
-               05  RECE200-NYUTOKRYO-RYAKU PIC X(20).
+               05  RECE200-NYUTOKRYO-RYAKU PIC X(14).
       *入院日数
                05  RECE200-NYUTOKNISSU     PIC 9(02).
       *合計金額
@@ -187,12 +181,6 @@
                05  RECE200-SHOKUJIKHNRYO   PIC 9(09).
       *食事日数
                05  RECE200-SHOKUJIKHNNISSU PIC 9(02).
-      *
-      *合計日数（食事）
-           03  RECE200-SHOKUJITOTALDAY     PIC 9(02).
-      *
-      *食事基本料の金額集計
-           03  RECE200-SHOKUJIKHNRYO-KEI   PIC 9(09).
       *
       *他保険入院料算定済みフラグ
            03  RECE200-NYUINRYOFLG         PIC X(01).
@@ -268,20 +256,6 @@
                05  RECE200-ERR-HKNCOMBINUM PIC 9(04).
                05  RECE200-ERR-TEKSTYMD    PIC 9(08).
                05  RECE200-ERR-TEKEDYMD    PIC 9(08).
-      *
-      *超重症児（者）入院診療加算等の算定フラグ
-           03  RECE200-CYOJKSNFLG          PIC X(01).
-      *
-      *再診加算（入院）情報
-           03  RECE200-NYUSAIINF.
-               05  RECE200-NYUSAI-TENSU    PIC 9(08).
-      *入院料日別診療区分情報
-           03  RECE200-NYUDAYINF.
-               05  RECE200-NYUDAY-SRYKBN   PIC X(02)  OCCURS 31.
-      *
-      *夜間看護体制特定日減算情報
-           03  RECE200-KANGOGENINF.
-               05  RECE200-KANGOGEN-SRYCD  PIC X(09)  OCCURS 31.
       *
       *予備
            03  RECE200-YOBIETC-AREA.

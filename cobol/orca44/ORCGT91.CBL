@@ -210,7 +210,23 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA44SCRAREA.INC".
+           COPY    "T01.INC".
+           COPY    "T02.INC".
+           COPY    "T03.INC".
+           COPY    "T04.INC".
+           COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T08.INC".
+           COPY    "T09.INC".
+           COPY    "T91.INC".
+           COPY    "T98.INC".
+           COPY    "T99.INC".
+           COPY    "TERR.INC".
+           COPY    "TID1.INC".
+           COPY    "TID2.INC".
+           COPY    "TID3.INC".
+           COPY    "TFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -817,10 +833,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    SPACE               TO  SPA-WORK
-           INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -998,7 +1010,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  TID1
-           INITIALIZE                       TID1
            MOVE    SPA-TIDCD            TO  TID1-ID1CODE
            MOVE    WRK-TIDMSG           TO  TID1-ID1MSG
       *

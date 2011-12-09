@@ -36,7 +36,6 @@
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値・関連コメント対応
       *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
-      *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
       *****************************************************************
       *
       *
@@ -46,34 +45,34 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-      *                            ORGANIZATION    IS  SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-PARA.
+           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+                                   ORGANIZATION    IS  SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PARA-KEY.
-      *        05  PARA-FILEMEI         PIC X(08).
-      *        05  PARA-EDABAN          PIC 9(03).
-      *    03  PARA-DATA-REC            PIC X(60000).
+       FD  PARA-FILE.
+       01  PARA-REC.
+           03  PARA-KEY.
+               05  PARA-FILEMEI         PIC X(08).
+               05  PARA-EDABAN          PIC 9(03).
+           03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-      *01  FILE-NAME2.
-      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-      *    03  FILLER              PIC X(10)   VALUE   "PRVK01PARA".
-      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
+       01  FILE-NAME2.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(10)   VALUE   "PRVK01PARA".
+           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
-      *01  STS-AREA.
-      *    03  STS-PARA            PIC X(02).
+       01  STS-AREA.
+           03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -337,11 +336,6 @@
            COPY    "CPJYURRK.INC"  REPLACING
                                      //JYURRK-// BY //TBL-JYURRK-//.
       *
-      *v4.8
-      *    パラメタテーブル
-       01  PARA-REC.
-           COPY    "CPPARA.INC". 
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -351,7 +345,7 @@
            COPY    "CPORCSLNK.INC".
       *
       *    診療行為入力項目変換パラメタ
-      **   COPY    "CPORCSC97.INC".
+           COPY    "CPORCSC97.INC".
       *
       *   算定履歴更新サブ
            COPY    "CPORCSSANTEI.INC".
@@ -482,39 +476,18 @@
            MOVE    ZERO                TO  IDX-KOUI
       *
       *    更新用ＤＢ読込み
-      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-      *    OPEN    INPUT               PARA-FILE
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+           OPEN    INPUT               PARA-FILE
       *
-      *    IF      STS-PARA           =  ZERO
-      *        PERFORM 980-PARA-READ-SEC
-      *    ELSE
-      *        MOVE    1               TO  FLG-PARA 
-      **** END-IF
-      *ver.4.8
-           MOVE    SPACE               TO  PARA-REC
-           INITIALIZE                      PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    "PVK8"              TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
-      *
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
+           IF      STS-PARA           =  ZERO
+               PERFORM 980-PARA-READ-SEC
            ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1                   TO  FLG-PARA
+               MOVE    1               TO  FLG-PARA 
            END-IF
-      *
            PERFORM     UNTIL      (FLG-PARA    =    1 )  OR
                                   (SPA-ERRCD   NOT =   SPACE )
-      ******   IF      PARA-FILEMEI        =   "WKSRYACT"
+               IF      PARA-FILEMEI        =   "WKSRYACT"
                    MOVE    PARA-DATA-REC       TO  WRK-WKSRYACT-REC
       *
                    IF     (IDX-KOUI        >   ZERO  )  AND
@@ -529,24 +502,20 @@
                    ADD     1               TO  IDX-KOUI
                    MOVE    PARA-DATA-REC   TO  LNK-WKSRYACT-REC
                                                             (IDX-KOUI)
-      ****     ELSE
+               ELSE
       *            剤毎に処理を行う
-      *            IF      IDX-KOUI        >   ZERO
-      *                PERFORM 100-SRYACT-KOU-SEC
-      *                PERFORM 200-JYURRK-SYORI-SEC
-      *                MOVE    SPACE           TO  LNK-WKSRYACT-AREA
-      *                MOVE    ZERO            TO  IDX-KOUI
-      *            END-IF
-      *****    END-IF
+                   IF      IDX-KOUI        >   ZERO
+                       PERFORM 100-SRYACT-KOU-SEC
+                       PERFORM 200-JYURRK-SYORI-SEC
+                       MOVE    SPACE           TO  LNK-WKSRYACT-AREA
+                       MOVE    ZERO            TO  IDX-KOUI
+                   END-IF
+               END-IF
       *
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
+               PERFORM 980-PARA-READ-SEC
            END-PERFORM
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
+           CLOSE                       PARA-FILE
       *
            IF      SPA-ERRCD           =   SPACE
       *    剤毎に処理を行う
@@ -1480,9 +1449,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF     (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =  "8")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "008")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "001")
-      *H30.4
-                      OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:7)
-                                                           =  "0992081")
                        PERFORM 45011-PTCOM-SYROI-SEC
                    END-IF
                END-IF
@@ -2143,10 +2109,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        ELSE
                            MOVE    "1"                 TO  JYURRK-HKNKBN
                        END-IF
-      *
-                   WHEN    "6"
-      *                自賠責（第三者行為）
-                       MOVE    "7"             TO  JYURRK-HKNKBN
                END-EVALUATE
            END-IF
       *    公害保険
@@ -2300,15 +2262,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM
                    UNTIL   (FLG-SRYACCT        =   1    ) OR
                            (FLG-OK             =   1    )
-      ***        投薬関係の有無
-      *          IF      ACCT-SRYKBN(1:1)      =   "2"
-      *              MOVE    1                 TO  FLG-TOUYAKU
-      **         END-IF
+      *          投薬関係の有無
+                 IF      ACCT-SRYKBN(1:1)      =   "2"
+                     MOVE    1                 TO  FLG-TOUYAKU
+                 END-IF
       *
       *          入院調剤料と麻毒については後で一括変更するのでそのまま
-      *          IF      ACCT-SRYKBN             =   "24"  OR "26"
-      *                CONTINUE
-      ***        ELSE
+                 IF      ACCT-SRYKBN             =   "24"  OR "26"
+                       CONTINUE
+                 ELSE
       *
                    MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
                    EVALUATE    JYURRK-RENNUM
@@ -2350,7 +2312,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
       *
-      ***         END-IF
+                  END-IF
       *
                    MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
                    MOVE    "key5"              TO  MCP-PATHNAME
@@ -2498,16 +2460,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    1                   TO  FLG-SRYACT
            END-IF
-      *    投薬関係の有無
-           IF       FLG-SRYACT         =   ZERO
-               IF      (ACCT-SRYKBN        =   "21"
-                                           OR  "22"
-                                           OR  "23" )
-                   IF      (SRY-SRYSYUKBN(3:1)   NOT =   "4" )
-                       MOVE    1                 TO  FLG-TOUYAKU
-                   END-IF
-               END-IF
-           END-IF
            PERFORM
                    UNTIL   FLG-SRYACT          =   1
       *
@@ -2600,12 +2552,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "6"
       *            公害
                    MOVE    "2"             TO  SSANTEI-HKNKBN
-      *
-               WHEN    "7"
-      *            自賠責（第三者行為）
-                   MOVE    "1"             TO  SSANTEI-HKNKBN
-                   MOVE    "6"             TO  SSANTEI-RSI-HKNKBN
-                   MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
            END-EVALUATE
       * take mod st
       *    CALL    "ORCSSANTEI"        USING
@@ -3262,25 +3208,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        910-PTNYUINRRK-READ-EXT.
            EXIT.
-      *v.4.8
-      *****************************************************************
-      *    パラメタ情報読み込み
-      *****************************************************************
-       990-PARA-READ-SEC        SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PARA-REC
-               MOVE    ZERO            TO  FLG-PARA
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1               TO  FLG-PARA
-           END-IF
-      *
-           .
-       990-PARA-READ-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    テーブル検索処理
@@ -3322,6 +3249,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        990-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタデータ順読み
+      *****************************************************************
+       980-PARA-READ-SEC         SECTION.
+      *
+           READ    PARA-FILE 
+               AT  END
+                   MOVE    1           TO  FLG-PARA
+               NOT AT  END 
+                   MOVE    ZERO        TO  FLG-PARA
+           END-READ
+      *
+           .
+       980-PARA-READ-EXT.
            EXIT.
       *
       * take add st

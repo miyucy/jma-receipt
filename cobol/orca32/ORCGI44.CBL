@@ -262,7 +262,7 @@
                05  WRK-MEISYO      PIC X(60).
       *    施設規準テーブル
        01  WRK-TBL-SSTKIJUN-AREA.
-           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  3500.
+           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  1000.
                05  WRK-TBL-SSTKIJUN       PIC 9(01).
       *
       *    行位置編集
@@ -495,7 +495,14 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA32SCRAREA.INC".
+           COPY    "I41.INC".
+           COPY    "I42.INC".
+           COPY    "I44.INC".
+           COPY    "I47.INC".
+           COPY    "I48.INC".
+           COPY    "I49.INC".
+           COPY    "I4ERR.INC".
+           COPY    "I4ID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1098,16 +1105,8 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL   (FLG-SYSKANRI   =   1    )
-                   OR      (IDX            >=  3500 )
+                   OR      (IDX            >=  1000 )
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
-               EVALUATE     SYS-1006-KBNCD
-                   WHEN     "1"
-                        MOVE    0          TO  IDX
-                   WHEN     "2"
-                        MOVE    500        TO  IDX
-                   WHEN     "7"
-                        MOVE    3000       TO  IDX
-               END-EVALUATE
                PERFORM VARYING IDY         FROM    1   BY  1
                        UNTIL   IDY         >       500
                    ADD     1               TO  IDX
@@ -1279,8 +1278,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC.
            INITIALIZE                      TENSUPLUS-REC.
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD.
-           MOVE    SPA-I40-SRYYMD      TO  TNSP-YUKOSTYMD.
-           MOVE    SPA-I40-SRYYMD      TO  TNSP-YUKOEDYMD.
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD.
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD.
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC.
@@ -2497,7 +2496,6 @@
            INITIALIZE                  SPA-I49GMN-AREA
            MOVE    SPACE               TO  SPA-I49-DATA
            MOVE    SPACE               TO  I49
-           INITIALIZE                      I49
            MOVE    SPACE               TO  I49-PIN
            MOVE    SPACE               TO  I49-PED
       *
@@ -2689,13 +2687,6 @@
       *
                MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN (IDX)
-      *H28.11
-      *        診療区分変更はエラー
-               IF     (SPA-SRYKBN      NOT =   WRK-SRYKBN)
-                   MOVE    "1019"              TO  SPA-ERRCD
-                   MOVE    "1"                 TO  SPA-COM-CUR (IDX)
-               END-IF
-      *
                IF      IDX                 >   1
                    MOVE    "1017"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  SPA-COM-CUR (IDX)
@@ -3489,7 +3480,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  I44
       *
-           INITIALIZE                      I44
            MOVE    ZERO                TO  IDX.
       *
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
@@ -3787,9 +3777,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-ERRMSG
                    MOVE    "手技料を入力して下さい。"
                                        TO  SPA-ERRMSG(31:)
-               WHEN    "1019"
-                   MOVE    "診療区分は変更できません。"
-                                       TO  SPA-ERRMSG
                WHEN    "1020"
                    MOVE    "内容がありませんので、更新はできません。"
                                        TO  SPA-ERRMSG
@@ -3838,10 +3825,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  I4ID1.
            MOVE    SPA-IIDCD           TO  I4ID1-ID1CODE.
            MOVE    WRK-JIDMSG          TO  I4ID1-ID1MSG.
-      *
-           MOVE    "戻る"              TO  I4ID1-B01
-           MOVE    "ＯＫ"              TO  I4ID1-B12
-      *
            MOVE    "B12"               TO  MCP-WIDGET.
       *
            MOVE    "I44"               TO  SPA-MOTOPG.
