@@ -3261,6 +3261,7 @@ grpsys                                         SPA-AREA
            MOVE    SPA-NAI-C02-SYSYMD  TO  SPA-NAI-C02-SRYYMD
       *
            MOVE    C02-SRYKA           TO  SPA-GMN-C02-SRYKA-G
+           MOVE    SPACE               TO  SPA-GMN-C02-SRYKA-G (3:)
       *
            MOVE    SPA-GMN-C02-SRYKA   TO  WRK-KBN
            PERFORM 5001-SRYKA-HENSYU-SEC
@@ -7273,6 +7274,7 @@ grpsys                                       SPA-AREA
            END-IF  
       *
            MOVE    C02-BSRYKA          TO  SPA-GMN-C02-BSRYKA-G
+           MOVE    SPACE               TO  SPA-GMN-C02-BSRYKA-G (3:)
       *
            IF      SPA-GMN-C02-BSRYKA  =   SPACE
                IF    ( SPA-GMN-C02-SRYKA   NOT =   ZERO    AND SPACE )
