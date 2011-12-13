@@ -278,8 +278,9 @@
            END-IF
       *
            MOVE    LNK-FTNJGNCHK-RC   TO   LNK-FTNJGNCHK-TENKEN-RC
-           IF   (LNK-FTNJGNCHK-RC  =   1)
-           AND  (FLG-TENKEN        =   1)
+           IF   (LNK-FTNJGNCHK-RC      =   1  )
+           AND  (FLG-TENKEN            =   1  )
+           AND  (LNK-FTNJGNCHK-HKNID   =  ZERO)
               MOVE     ZERO           TO   LNK-FTNJGNCHK-TENKEN-RC
            END-IF
       *
