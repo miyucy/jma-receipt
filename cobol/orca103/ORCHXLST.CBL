@@ -1991,6 +1991,23 @@
                END-IF
            END-IF
       *
+           IF        ( HXLST-CHKKBN    =   "8" OR "9" )
+      *
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL ( IDX2    >   CONST-TOTUGO-MES-MAX )
+      *
+                   IF    ( FLG-TOTUGO (IDX2)   =   1 )
+                       STRING CONST-TOTUGO-MES (IDX2)
+                                           DELIMITED   BY  SPACE
+                              " "          DELIMITED   BY  SIZE
+                       INTO   H02-MIDASI1
+                       WITH   POINTER  WRK-TGPNT
+                       END-STRING
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
            MOVE    1                   TO  WRK-TGPNT
            MOVE    SPACE               TO  H02-MIDASI2
            STRING  WRK-MIDASI2         DELIMITED   BY  SPACE
@@ -1999,8 +2016,7 @@
            WITH    POINTER WRK-TGPNT
            END-STRING
       *
-           IF        ( HXLST-CHKKBN    =   "1" OR "2" OR "6" 
-                                        OR "8" OR "9" )
+           IF        ( HXLST-CHKKBN    =   "1" OR "2" OR "6" )
       *
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL ( IDX2    >   CONST-TOTUGO-MES-MAX )
