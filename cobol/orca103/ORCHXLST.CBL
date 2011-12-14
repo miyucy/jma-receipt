@@ -62,6 +62,7 @@
        01  B01L-REC.
            03  B01L-KEY.
                05  B01L-MSTSEQ         PIC 9(10).
+           03  B01L-NYUGAIKBN          PIC X(01).
            03  B01L-TEKIYO-G.
                05 B01L-NYUGAIKBNMEI    PIC X(02).
                05 B01L-SRYCD           PIC X(12).
@@ -153,6 +154,7 @@
                                        OCCURS  3.
            03  FLG-TEKCD               PIC 9(01).
            03  FLG-UTAGAIKBN           PIC 9(01).
+           03  FLG-NOCHECK             PIC 9(01).
            03  FLG-CHKERR-G.
                05  FLG-KEIKOKU         PIC 9(01).
                05  FLG-NASI            PIC 9(01).
@@ -213,6 +215,7 @@
                05  WRK-TEKCD-OCC       OCCURS  200.
                    07  WRK-DMKBN       PIC X(01).
                    07  WRK-TEKCD       PIC X(170).
+           03  WRK-MIDASI1             PIC X(56).
            03  WRK-MIDASI2             PIC X(100).
            03  WRK-YKSK-G.
                05  WRK-YKSK-MAX        PIC 9(05).
@@ -651,7 +654,7 @@
                "＜　薬剤と禁忌一覧表　＞"
                                        TO  H01-MIDASI
                    MOVE    "薬剤コード"
-                                       TO  H02-MIDASI1
+                                       TO  WRK-MIDASI1
                    MOVE    "禁忌コード"
                                        TO  WRK-MIDASI2
            WHEN    "4" 
@@ -659,7 +662,7 @@
                "＜　薬剤と併用禁忌一覧表　＞"
                                        TO  H01-MIDASI
                    MOVE    "薬剤コード"
-                                       TO  H02-MIDASI1
+                                       TO  WRK-MIDASI1
                    MOVE    "適用薬剤コード"
                                        TO  WRK-MIDASI2
            WHEN    "5"
@@ -667,7 +670,7 @@
                "＜　同一月に併用算定できない診療行為一覧表　＞"
                                        TO  H01-MIDASI
                    MOVE    "診療行為コード"
-                                       TO  H02-MIDASI1
+                                       TO  WRK-MIDASI1
                    MOVE    "適用診療行為コード"
                                        TO  WRK-MIDASI2
            WHEN    "A"
@@ -675,7 +678,7 @@
                "＜　同一日に併用算定できない診療行為一覧表　＞"
                                        TO  H01-MIDASI
                    MOVE    "診療行為コード"
-                                       TO  H02-MIDASI1
+                                       TO  WRK-MIDASI1
                    MOVE    "適用診療行為コード"
                                        TO  WRK-MIDASI2
            WHEN    "B"
@@ -683,7 +686,7 @@
                "＜　同一会計に併用算定できない診療行為一覧表　＞"
                                        TO  H01-MIDASI
                    MOVE    "診療行為コード"
-                                       TO  H02-MIDASI1
+                                       TO  WRK-MIDASI1
                    MOVE    "適用診療行為コード"
                                        TO  WRK-MIDASI2
            END-EVALUATE
@@ -702,7 +705,7 @@
                "＜　薬剤と病名一覧表　＞"
                                        TO  H01-MIDASI
                    MOVE    "薬剤コード"
-                                       TO  H02-MIDASI1
+                                       TO  WRK-MIDASI1
                    MOVE    "病名コード"
                                        TO  WRK-MIDASI2
            WHEN    "2"
@@ -710,7 +713,7 @@
                "＜　診療行為と病名一覧表　＞"
                                        TO  H01-MIDASI
                    MOVE    "診療行為コード"
-                                       TO  H02-MIDASI1
+                                       TO  WRK-MIDASI1
                    MOVE    "病名コード"
                                        TO  WRK-MIDASI2
            WHEN    "6"
@@ -718,7 +721,7 @@
                "＜　投与禁忌薬剤と病名　＞"
                                        TO  H01-MIDASI
                    MOVE    "薬剤コード"
-                                       TO  H02-MIDASI1
+                                       TO  WRK-MIDASI1
                    MOVE    "病名コード"
                                        TO  WRK-MIDASI2
            END-EVALUATE
@@ -781,7 +784,7 @@
                "＜　診療行為どうしの算定漏れ一覧表　＞"
                                        TO  H01-MIDASI
            MOVE    "診療行為コード（薬剤コード）"
-                                       TO  H02-MIDASI1
+                                       TO  WRK-MIDASI1
            MOVE    "診療行為コード（薬剤コード）"
                                        TO  WRK-MIDASI2
       *
@@ -816,7 +819,7 @@
                "＜　病名と薬剤一覧表　＞"
                                        TO  H01-MIDASI
                    MOVE    "病名コード"
-                                       TO  H02-MIDASI1
+                                       TO  WRK-MIDASI1
                    MOVE    "薬剤コード"
                                        TO  WRK-MIDASI2
            WHEN    "9"
@@ -824,7 +827,7 @@
                "＜　病名と診療行為一覧表　＞"
                                        TO  H01-MIDASI
                    MOVE    "病名コード"
-                                       TO  H02-MIDASI1
+                                       TO  WRK-MIDASI1
                    MOVE    "診療行為コード"
                                        TO  WRK-MIDASI2
            END-EVALUATE
@@ -1127,6 +1130,7 @@
                MOVE    WRK-NAME-G      TO  WRK-SRYNAME
            END-IF
       *
+           MOVE    CHKSND-NYUGAIKBN    TO  B01L-NYUGAIKBN
            EVALUATE    CHKSND-NYUGAIKBN
            WHEN    "0"
                MOVE    "×"        TO  B01L-NYUGAIKBNMEI
@@ -1445,6 +1449,10 @@
       *
            MOVE    B01L-TEKIYO-G   TO  B01-LEFT
       *
+           IF    ( B01L-NYUGAIKBN  =   "0" )
+               MOVE    1           TO  FLG-NOCHECK
+           END-IF
+      *
            .
        210-BODY-01-LEFT-EXT.
            EXIT.
@@ -1453,7 +1461,7 @@
       *****************************************************************
        210-BODY-01-RIGHT-SEC           SECTION.
       *
-           EVALUATE    CHKSND-COMPKBN
+           EVALUATE    B01R-COMPKBN
            WHEN    "2"
                MOVE    1      TO  FLG-KANZEN
            WHEN    "3"
@@ -1956,6 +1964,34 @@
            MOVE    HEAD-01             TO  HCM44-MOJI(1)
       *
            MOVE    1                   TO  WRK-TGPNT
+           MOVE    SPACE               TO  H02-MIDASI1
+           STRING  WRK-MIDASI1  DELIMITED   BY  SPACE
+                   "　"         DELIMITED   BY  SIZE
+           INTO    H02-MIDASI1
+           WITH    POINTER WRK-TGPNT
+           END-STRING
+      *
+           IF        ( HXLST-CHKKBN    =   "1" )
+               IF    ( FLG-NOCHECK     =   1 )
+                   STRING "×：チェックしない薬剤"
+                                       DELIMITED   BY  SIZE
+                   INTO   H02-MIDASI1
+                   WITH   POINTER WRK-TGPNT
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           IF        ( HXLST-CHKKBN    =   "2" )
+               IF    ( FLG-NOCHECK     =   1 )
+                   STRING "×：チェックしない診療行為"
+                                       DELIMITED   BY  SIZE
+                   INTO   H02-MIDASI1
+                   WITH   POINTER WRK-TGPNT
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           MOVE    1                   TO  WRK-TGPNT
            MOVE    SPACE               TO  H02-MIDASI2
            STRING  WRK-MIDASI2         DELIMITED   BY  SPACE
                    "　　"              DELIMITED   BY  SIZE
@@ -2057,6 +2093,7 @@
                MOVE    ZERO        TO  FLG-KEIKOKU
                MOVE    ZERO        TO  FLG-NASI
                MOVE    ZERO        TO  FLG-MSTDAT
+               MOVE    ZERO        TO  FLG-NOCHECK
       *
                MOVE    CONST-MEISAI-ST TO  IDX-LINE
       *
