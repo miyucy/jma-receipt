@@ -1463,6 +1463,9 @@
            END-EVALUATE
       *
            MOVE    B01R-TEKIYO-G   TO  B01-RIGHT
+           IF    ( B01R-UTAGAIKBN  =   "1" )
+               MOVE    1      TO  FLG-UTAGAIKBN
+           END-IF
       *
            .
        210-BODY-01-RIGHT-EXT.
