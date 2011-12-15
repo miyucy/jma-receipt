@@ -242,6 +242,9 @@
                05  WRK-SURYO-KEI3  PIC 9(05).
                05  WRK-SURYO-KEI4  PIC 9(03).
       *
+      *    商品名称の金額
+           03  WRK-SYOHIN-TEN          PIC 9(09)V99.
+      *
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
            03  WRK-INPUT-TBL.
@@ -3490,12 +3493,20 @@
                 MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
            END-IF
       *!
-      *!
       *    器材商品名コードの発生分
            IF     (SPA-COM-INPUTCD (IDX-T)(1:1)    =   "7"   )  AND
                   (SPA-COM-AUTOKBN2(IDX-T)         =   "1"   )
                 PERFORM 3005-INPUT-MEISYO4-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
+      *H23.12
+      *         商品点数へ変更
+                IF      SPA-COM-TEN (IDX-T - 1)  >   ZERO
+                    MOVE    SPA-COM-TEN (IDX-T - 1) 
+                                           TO  SPA-COM-TEN (IDX-T)
+                    MOVE    SPA-COM-TEN (IDX-T - 1) 
+                                           TO  SPA-COM-KISOTEN(IDX-T)
+                END-IF
+      *!!
            END-IF
       *!
       *
@@ -4942,6 +4953,9 @@
       *****************************************************************
        400-SYOHINMEI-SEC         SECTION.
       *
+      *    商品金額編集
+           MOVE    TNS-TEN             TO  SPA-COM-TEN      (IDX-T)
+      *!!
            IF     (IDX-T               <   SPA-MAX-LINE )  AND
                   (SPA-COM-AUTOKBN2(IDX-T + 1)  =   "1" )  AND
                   (SPA-COM-INPUTCD (IDX-T + 1)  =   TNS-IDOKANREN)
