@@ -998,7 +998,8 @@
        505-TANICD-CHK-SEC              SECTION.
       *
            IF      SPA-GMN-TANICD      =   SPACE
-               MOVE    ZERO            TO  SPA-GMN-TANICD
+               MOVE    SPACE           TO  SPA-GMN-TANICD-G
+               GO      TO      505-TANICD-CHK-EXT
            END-IF
       *
            INITIALIZE                      ORCSNUMAREA
@@ -1344,9 +1345,12 @@
                END-IF
            END-IF
       *    単位コードチェック必須
-           IF     (SPA-GMN-TANICD  NOT =   ZERO  )
-              AND (SPA-ERRCD           =   SPACE )
-               IF      SPA-NAI-TANICD  NOT =   ZERO
+           IF     (SPA-GMN-TANICD      =   ZERO
+                                       OR  SPACE  )
+               CONTINUE
+           ELSE
+               IF     (SPA-NAI-TANICD  NOT =   ZERO  )
+                  AND (SPA-ERRCD           =   SPACE )
                    MOVE    "0023"              TO  SPA-ERRCD
                    MOVE    11                  TO  SPA-GMN-CUR
                END-IF
