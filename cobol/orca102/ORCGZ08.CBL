@@ -1968,9 +1968,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM  891-STRCOUNT-SEC
            MOVE  CNT-STRING                TO  TNS-FORMALYUKOKETA
       *
-           MOVE  SPA-GMN-IDOKANREN         TO  TNS-IDOKANREN
+           MOVE    SPA-GMN-IDOKANREN       TO  TNS-IDOKANREN
       *
-           MOVE  SPA-GMN-TEN               TO  TNS-TEN
+           MOVE    SPA-GMN-TEN             TO  TNS-TEN
+      *    金額種別（金額）
+           IF      SPA-GMN-TEN         NOT =   ZERO
+               MOVE    1                   TO  TNS-TENSIKIBETU
+           END-IF
+      *    単位コード
            MOVE  SPA-GMN-TANICD            TO  TNS-TANICD
            MOVE  SPA-GMN-TANINAME          TO  TNS-TANINAME
            MOVE  SPA-GMN-TANINAME          TO  WRK-STRINGTBL
