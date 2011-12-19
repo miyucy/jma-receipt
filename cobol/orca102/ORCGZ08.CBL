@@ -1349,7 +1349,8 @@
                                        OR  SPACE  )
                CONTINUE
            ELSE
-               IF     (SPA-NAI-TANICD  NOT =   ZERO  )
+               IF     (SPA-NAI-TANICD  NOT =   ZERO
+                                           AND SPACE  )
                   AND (SPA-ERRCD           =   SPACE )
                    MOVE    "0023"              TO  SPA-ERRCD
                    MOVE    11                  TO  SPA-GMN-CUR
