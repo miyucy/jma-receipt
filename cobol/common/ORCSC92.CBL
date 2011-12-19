@@ -68,16 +68,6 @@
       *  04.05.00    NACL-多々納  10/03/XX  平成２２年４月改正対応
       *  04.06.00    NACL-多々納  10/07/XX  エラー内容変更
       *  04.06.00    NACL-多々納  10/12/20  患者禁忌薬剤経過措置対応
-      *  04.07.00    NACL-多々納  11/12/20  商品名コード金額単位対応
-      *  04.07.00    NACL-多々納  12/01/10  新生児２８日判定修正
-      *  04.07.00    NACL-多々納  12/03/XX  平成２４年４月改正対応
-      *  04.07.00    NACL-多々納  12/09/14  器材、コメントチェックマスタ対応
-      *  04.07.00    NACL-多々納  13/02/XX  労災レセ電コード対応(H25.7)
-      *  04.07.00    NACL-多々納  14/04/25  施設基準チェック対応
-      *  04.08.00    NACL-多々納  16/03/XX  平成２８年４月改正対応
-      *  04.08.00    NACL-多々納  16/04/20  向精神薬区分追加対応
-      *  05.00.00    NACL-多々納  17/01/XX  点数マスタユーザ対応
-      *  04.08.00    NACL-多々納  18/03/XX  平成３０年４月改正対応
       *****************************************************************
       *
       *
@@ -104,12 +94,6 @@
            03  FLG-TENSUPLUS2      PIC 9(01).
            03  FLG-CHKMST          PIC 9(01).
            03  FLG-PTKINKI         PIC 9(01).
-      *H24.4
-           03  FLG-GENERICPRICE    PIC 9(01).
-      *H28.1
-           03  FLG-GENERICNAME     PIC 9(01).
-           03  FLG-PSYCHOTROPIC    PIC 9(01).
-           03  FLG-TENSUPRICE      PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-SST             PIC 9(01).
@@ -137,15 +121,6 @@
            03  FLG-RKAN-OK2            PIC 9(01).
            03  FLG-RKAN-ARI            PIC 9(01).
            03  FLG-RKAN-ARI2           PIC 9(01).
-      *
-      *    施設基準チェック
-           03  FLG-SST1                PIC 9(01).
-           03  FLG-SST2                PIC 9(01).
-           03  FLG-SST3                PIC 9(01).
-           03  FLG-SSA1                PIC 9(01).
-           03  FLG-SSA2                PIC 9(01).
-           03  FLG-SSA3                PIC 9(01).
-      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -181,8 +156,6 @@
            03  IDX-SN              PIC 9(04).
            03  IDD                 PIC 9(02).
       *
-           03  IDX-TH              PIC 9(04).
-      *
       *    一時領域
        01  WRK-AREA.
       *    単位名称
@@ -190,7 +163,6 @@
       *
            03  WRK-MEISYO          PIC X(80).
            03  WRK-MEISYO-2        PIC X(80).
-           03  WRK-MSG1            PIC X(04).
       *   きざみ値行為再計算用
            03  WRK-KEI-TEN         PIC 9(08)V9(03).
            03  WRK-KEI-TEN1        PIC 9(08)V9(03).
@@ -218,9 +190,7 @@
       *
            03  WRK-SRYCD               PIC X(09).
            03  WRK-SRYCD2              PIC X(09).
-           03  WRK-SRYCD3              PIC X(09).
-      *H25.7
-           03  WRK-CHK-SRYCD           PIC X(09).
+           03  WRK-SRYCD-3             PIC X(09).
       *
            03  WRK-SYOSINYMD1          PIC X(08).
            03  WRK-YMD.
@@ -274,19 +244,6 @@
       *
       *    商品名称の金額
            03  WRK-SYOHIN-TEN          PIC 9(09)V99.
-      *
-      *H24.4
-           03  WRK-NEN-03.
-               05  WRK-NEN03-YM.
-                   07  WRK-NEN03-YY        PIC 9(04).
-                   07  WRK-NEN03-MM        PIC 9(02).
-               05  WRK-NEN03-DD            PIC 9(02).
-           03  WRK-NEN-15.
-               05  WRK-NEN15-YM.
-                   07  WRK-NEN15-YY        PIC 9(04).
-                   07  WRK-NEN15-MM        PIC 9(02).
-               05  WRK-NEN15-DD            PIC 9(02).
-      *H24.4
       *
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
@@ -349,15 +306,10 @@
                05  WRK-SRYCDCHG        PIC X(09)   OCCURS  5.
            03  WRK-NAIYOU              PIC X(54).
            03  WRK-PATH                PIC X(64).
-      *H24.4
-      *    最低薬価
-           03  WRK-CHKTEN               PIC 9(09)V9(4).
-      *
-           03  WRK-PSY-MEI              PIC X(02).
       *
       *    施設規準テーブル
        01  WRK-TBL-SSTKIJUN-AREA.
-           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  9999.
+           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  1000.
                05  WRK-TBL-SSTKIJUN       PIC 9(01).
       *
       *   日本語数字
@@ -389,9 +341,6 @@
            COPY   "CMSANTEITBL.INC".
       *    リハビリ同一算定コードテーブル
            COPY   "CMRIHACDTBL.INC".
-      *H25.7
-      *    労災コード置換えテーブル 
-           COPY   "CMRSICNGTBL.INC".
       *
       *    酸素コードテーブル
            COPY     "CMSANSOTBL.INC".
@@ -442,27 +391,9 @@
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *H24.4
-      *    最低薬価マスタ
-       01  GENERICPRICE-REC.
-           COPY    "CPGENERICPRICE.INC".
-      *
-      *H28.2
-      *    一般名称マスタ
-       01  GENERICNAME-REC.
-           COPY    "CPGENERICNAME.INC".
-      *
       *    患者禁忌薬剤マスタ
        01  PTKINKI-REC.
            COPY    "CPPTKINKI.INC".
-      *
-      *    向精神薬成分コード
-       01  PSYCHOTROPIC-REC.
-           COPY    "CPPSYCHOTROPIC.INC".
-      *v5.0
-      *    点数マスタ器材金額
-        01 TENSU-PRICE-REC.
-           COPY    "CPTENSU-PRICE.INC".
       *
       *    算定履歴
        01  HZN-SANTEI-REC.
@@ -672,8 +603,8 @@
                    MOVE    LNK-SC92-SRYCD  TO  SPA-COM-INPUTCD(IDX-T)
                    PERFORM 200-KIHON-CHK-SEC
                    IF     (SPA-ERRCD           =   SPACE ) AND
-                          (LNK-SC92-ERRCD3     =   SPACE )
-      *ver.4.7 ***   AND  (LNK-SC92-SRYCD(1:1) =   "1"   )
+                          (LNK-SC92-ERRCD3     =   SPACE ) AND
+                          (LNK-SC92-SRYCD(1:1) =   "1"   )
                        PERFORM 2005-HEIYOU-CHK-SEC
                    END-IF
                WHEN    "4"
@@ -927,8 +858,8 @@
       *
       *    併用算定チェック（算定回数がＯＫの時）
            IF      SPA-COM-CHKFLG (IDX-T)  =   SPACE
-               IF     (LNK-SC92-ERRCD3     =   SPACE )
-      **ver.4.7   AND (LNK-SC92-SRYCD(1:1) =   "1"   )
+               IF     (LNK-SC92-ERRCD3     =   SPACE ) AND
+                      (LNK-SC92-SRYCD(1:1) =   "1"   )
                   AND (LNK-SC92-PG         =   "K02" )
                   AND (LNK-SC92-KBN        =   "1"
                                            OR  "3"
@@ -1005,13 +936,8 @@
            IF     (SPA-ERRCD           NOT =   SPACE  )  OR
                   (LNK-SC92-SRYCD  (1:1)   =   "8"    )  OR
                   (LNK-SC92-SRYCD  (1:3)   =   "001"  )  OR
-                  (LNK-SC92-SRYCD  (1:3)   =   "008"  )
-            OR    (LNK-SC92-SRYCD  (1:1)   =   "6"    )
-            OR    (LNK-SC92-SRYCD  (1:1)   =   "7"    )
-      *H30.4
-      *     分割調剤
-            OR    (LNK-SC92-SRYCD  (1:7)   =   "0992081")
-      ******OR    (TNS-SSTKIJUNCD(01)      =   ZERO   )
+                  (LNK-SC92-SRYCD  (1:3)   =   "008"  )  OR
+                  (TNS-SSTKIJUNCD(01)      =   ZERO   )
                CONTINUE
            ELSE
                PERFORM 2002-SSTKIJUN-CHK-SEC
@@ -1021,18 +947,9 @@
            IF     (LNK-SC92-SRYCD(1:1) =   "1" )  OR
                   (LNK-SC92-SRYCD(1:1) =   "7" )
              OR   (LNK-SC92-SRYCD(1:3) =   "059" )
-      *H28.4
-      *        セット登録で患者指定なしは、年齢チェックなし
-               IF     (LNK-SC92-PG         =   "K05" )
-                 AND  (SPA-PTID            =   ZERO  )
-                   CONTINUE
-               ELSE
-      *!
                MOVE    TNS-KGNAGE          TO  WRK-TNS-KGNAGE
                MOVE    TNS-JGNAGE          TO  WRK-TNS-JGNAGE
                PERFORM 2003-NENREI-CHK-SEC
-           END-IF
-      *
            END-IF
       *
       *    病床数チェック
@@ -1330,8 +1247,6 @@
                    ELSE
                        MOVE    SPACE           TO  SPA-COM-KZMFLG5
                                                               (IDX-T)
-                       MOVE    SPACE           TO  SPA-COM-KZMFLG7
-                                                              (IDX-T)
                        MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG
                                                               (IDX-T)
                    END-IF
@@ -1438,8 +1353,6 @@
            IF     (LNK-SC92-SRYCD (1:2)    =   "84") 
              OR   (LNK-SC92-SRYCD (1:4)    =   "0084")
              OR   (LNK-SC92-SRYCD (1:3)    =   "001" )
-      *H30.4
-             OR   (LNK-SC92-SRYCD (1:7)    =   "0992081" )
                IF     (LNK-SC97-MCNT1      >   8   )
                   OR  (LNK-SC97-MCNT2      >   8   )
                   OR  (LNK-SC97-MCNT3      >   8   )
@@ -1664,12 +1577,6 @@
       *    数量反映
            MOVE    SPA-COM-SURYO (IDX-T)
                                        TO  LNK-SC91-SURYO
-      *H24.8
-      *    数量999以上は999で判
-           IF      SPA-COM-SURYO (IDX-T)   >  999
-               MOVE    999                 TO  LNK-SC91-SURYO
-           END-IF
-      *H24.8
            MOVE    LNK-SC92-TEISEI-AREA
                                        TO  LNK-SC91-TEISEI-AREA
            MOVE    LNK-SC92-KT01-AREA
@@ -1694,18 +1601,6 @@
       *****************************************************************
        2002-SSTKIJUN-CHK-SEC      SECTION.
       *
-           MOVE    ZERO                TO  FLG-SST
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   10  )   OR
-                              (FLG-SST     =   1   )
-               IF      TNS-SSTKIJUNCD (IDX)    NOT =   ZERO
-                   MOVE    1               TO  FLG-SST
-               END-IF
-           END-PERFORM
-           IF      FLG-SST             =   ZERO
-               GO      TO      2002-SSTKIJUN-CHK-EXT
-           END-IF
-      *
            INITIALIZE                  WRK-TBL-SSTKIJUN-AREA
       *    施設基準情報検索
            MOVE    SPACE               TO  SYS-1006-REC
@@ -1727,26 +1622,10 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL   (FLG-SYSKANRI   =   1    )
+                   OR      (IDX            >=  1000 )
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
-      *H24.4
-               EVALUATE    SYS-1006-KBNCD
-                   WHEN    "1"
-                       MOVE    0               TO  IDX
-                   WHEN    "2"
-                       MOVE    500             TO  IDX
-                   WHEN    "7"
-                       MOVE    3000            TO  IDX
-      *H28.4
-                   WHEN    "8"
-                       MOVE    3500            TO  IDX
-      *H26.4
-                   WHEN    "17"
-                       MOVE    8000            TO  IDX
-                   END-EVALUATE
-      *H24.4
                PERFORM VARYING IDY         FROM    1   BY  1
-                       UNTIL  (IDY         >       500 )
-                           OR (IDX         >=      9999)
+                       UNTIL   IDY         >       500
                    ADD     1               TO  IDX
                    MOVE    SYS-1006-SSTKIJUN  (IDY)
                                            TO  WRK-TBL-SSTKIJUN (IDX)
@@ -1760,12 +1639,6 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *Ｈ２６年４月から
-           IF      SPA-SRYYMD          >=  "20140401"
-               PERFORM 20021-SSTKIJUN-CHK02-SEC
-           ELSE
-      *
-      *    １〜１０までのいずれかの設定有
            MOVE    ZERO                TO  FLG-SST
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   10  )   OR
@@ -1783,16 +1656,13 @@
                MOVE    "0024"          TO  LNK-SC92-ERRCD4
            END-IF
       *
-           END-IF
-      *
       *平成１６年４月から
       *    手術の基準不適合逓減判定
            MOVE    ZERO                TO  FLG-SSTKIJUNCD-ERR
            IF     (SPA-SRYYMD          >=  "20040401" )  AND
                   (TNS-SRYKBN          =   "50"       )  AND
                   (TNS-KIJUNTEIGENKBN  =   "2"  OR  "3" )
-      **       IF      FLG-SST             =   ZERO
-               IF      LNK-SC92-ERRCD4 NOT =   SPACE
+               IF      FLG-SST             =   ZERO
                    MOVE    SPACE           TO  LNK-SC92-ERRCD4
                    MOVE    1               TO  FLG-SSTKIJUNCD-ERR
                END-IF
@@ -1800,59 +1670,6 @@
       *
            .
        2002-SSTKIJUN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    施設基準適合分チェック２処理
-      *****************************************************************
-       20021-SSTKIJUN-CHK02-SEC             SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SST1
-           MOVE    ZERO                TO  FLG-SST2
-           MOVE    ZERO                TO  FLG-SST3
-           MOVE    ZERO                TO  FLG-SSA1
-           MOVE    ZERO                TO  FLG-SSA2
-           MOVE    ZERO                TO  FLG-SSA3
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   10  )
-               IF      TNS-SSTKIJUNCD (IDX)    =   ZERO
-                   CONTINUE
-               ELSE
-                   MOVE    TNS-SSTKIJUNCD (IDX)    TO  IDY
-                   EVALUATE    IDX
-                       WHEN    1   THRU    6
-                           MOVE    1               TO  FLG-SSA1
-      *                    施設基準あり
-                           IF      WRK-TBL-SSTKIJUN (IDY)  =   1
-                               MOVE    1               TO  FLG-SST1
-                           END-IF
-                       WHEN    7   THRU    9
-                           MOVE    1               TO  FLG-SSA2
-      *                    施設基準あり
-                           IF      WRK-TBL-SSTKIJUN (IDY)  =   1
-                               MOVE    1               TO  FLG-SST2
-                           END-IF
-                       WHEN    10
-                           MOVE    1               TO  FLG-SSA3
-      *                    施設基準あり
-                           IF      WRK-TBL-SSTKIJUN (IDY)  =   1
-                               MOVE    1               TO  FLG-SST3
-                           END-IF
-                   END-EVALUATE
-               END-IF
-           END-PERFORM
-           IF    ((FLG-SSA1            =   1  )  AND
-                  (FLG-SST1            =   ZERO))
-             OR  ((FLG-SSA2            =   1  )  AND
-                  (FLG-SST2            =   ZERO))
-             OR  ((FLG-SSA3            =   1  )  AND
-                  (FLG-SST3            =   ZERO))
-               MOVE    "0024"          TO  LNK-SC92-ERRCD4
-           END-IF
-      *
-           .
-       20021-SSTKIJUN-CHK02-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1865,26 +1682,15 @@
            MOVE    WRK-TNS-KGNAGE      TO  WRK-KGNAGE(2:2)
            MOVE    WRK-TNS-JGNAGE      TO  WRK-JGNAGE(2:2)
       *
-      *H24.4
-           IF      SPA-PTID            =   ZERO
-               MOVE    ZERO                TO  WRK-NEN-03
-               MOVE    ZERO                TO  WRK-NEN-15
-           ELSE
-               MOVE    SPA-BIRTHDAY        TO  WRK-NEN-03
-               MOVE    SPA-BIRTHDAY        TO  WRK-NEN-15
-               COMPUTE WRK-NEN03-YY        =   WRK-NEN03-YY  +  3
-               COMPUTE WRK-NEN15-YY        =   WRK-NEN15-YY  +  15
-           END-IF
-      *
       *    下限年齢チェック
            IF      WRK-TNS-KGNAGE          =   SPACE  OR  ZERO
                CONTINUE
            ELSE
                IF      WRK-TNS-KGNAGE          =   "AA"
-      *            新生児判定（２８日まで新生児）
+      *            新生児判定
                    IF     (LNK-SC92-NENREI-YY   =   ZERO )  AND
                           (LNK-SC92-NENREI-MM   =   ZERO )  AND
-                          (LNK-SC92-NENREI-DD   <=  28   )
+                          (LNK-SC92-NENREI-DD   <   28   )
                        MOVE    "0032"              TO  LNK-SC92-ERRCD5
                    END-IF
                ELSE
@@ -1894,89 +1700,22 @@
                        MOVE    "0032"              TO  LNK-SC92-ERRCD5
                    END-IF
                END-IF
-          END-IF
+           END-IF
       *
       *    上限年齢チェック
            IF      WRK-TNS-JGNAGE          =   SPACE  OR  ZERO
                CONTINUE
            ELSE
-      *        IF      WRK-TNS-JGNAGE          =   "AA"
-      *            新生児判定（２８日まで新生児）
-      *            IF     (LNK-SC92-NENREI-YY    =   ZERO )  AND
-      *                   (LNK-SC92-NENREI-MM    =   ZERO )  AND
-      *                   (LNK-SC92-NENREI-DD    <=  28   )
-      *                CONTINUE
-      *            ELSE
-      *                MOVE    "0032"              TO  LNK-SC92-ERRCD5
-      *            END-IF
-      *        ELSE
-      *            IF      LNK-SC92-NENREI-YY    <   WRK-JGNAGE
-      *                CONTINUE
-      *            ELSE
-      *                MOVE    "0032"              TO  LNK-SC92-ERRCD5
-      *            END-IF
-      *            １５歳未満で、１５歳到達月の判定
-      *            IF      (WRK-JGNAGE             =   15  )  AND
-      *                    (LNK-SC92-NENREI-YY     =   15  )  AND
-      *                    (LNK-SC92-15MIMAN-ARI   =   1   )
-      *                初診・再診で手技料の時、エラーとしない
-      *                IF     (TNS-DATAKBN             =   1  )  AND
-      *                       (TNS-SRYKBN              =   11  OR  12 )
-      *                    MOVE    SPACE           TO  LNK-SC92-ERRCD5
-      *                END-IF
-      *            END-IF
-      ***      END-IF
-      *
-      *H24.4
-               EVALUATE    WRK-TNS-JGNAGE
-               WHEN    "AA"
-      *            新生児判定（２８日まで新生児）
-                   IF     (LNK-SC92-NENREI-YY   =   ZERO )  AND
-                          (LNK-SC92-NENREI-MM   =   ZERO )  AND
-                          (LNK-SC92-NENREI-DD   <=  28   )
+               IF      WRK-TNS-JGNAGE          =   "AA"
+      *            新生児判定
+                   IF     (LNK-SC92-NENREI-YY    =   ZERO )  AND
+                          (LNK-SC92-NENREI-MM    =   ZERO )  AND
+                          (LNK-SC92-NENREI-DD    <   28   )
                        CONTINUE
                    ELSE
                        MOVE    "0032"              TO  LNK-SC92-ERRCD5
                    END-IF
-      *H28.4
-               WHEN    "AE"
-      *            生後９０日
-                   IF     (LNK-SC92-NENREI-YY   =   ZERO )  AND
-                          (LNK-SC92-NENREI-MM   <=  3    )
-                       PERFORM 20031-NENREI-DAY90-SEC
-                   ELSE
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-                   END-IF
-               WHEN    "B3"
-      *            ３歳までに受診があった時にのみ可能（H24.4改正）
-                   IF     (LNK-SC92-NENREI-YY      >=  3  )
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-                       IF     (LNK-SC92-NENREI-YY  =   3  )
-                          AND (SPA-SRYYMD(1:6)     =   WRK-NEN03-YM )
-      *                    当月受診チェック（小児科外来診療料のみの
-                           PERFORM 20032-NENREI-RRKCHK-SEC
-                       END-IF
-                   END-IF
-               WHEN    "BF"
-      *            １５歳までに受診があった時にのみ可能？（H24.4改正）
-                   IF     (LNK-SC92-NENREI-YY   >=    15    )
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-                       IF     (LNK-SC92-NENREI-YY  =   15  )
-                          AND (SPA-SRYYMD(1:6)     =   WRK-NEN15-YM )
-                          AND (LNK-SC92-15MIMAN-ARI    =   1  )
-                           MOVE    SPACE           TO  LNK-SC92-ERRCD5
-                       END-IF
-                   END-IF
-      *H26.4
-               WHEN    "BK"
-      *           ２０歳誕生月まで（H26.4改正）
-                   IF     (LNK-SC92-NENREI-YY   >    20    )
-                      OR ((LNK-SC92-NENREI-YY   =    20    )
-                      AND (LNK-SC92-NENREI-MM   >    ZERO  ))
-                       MOVE    "0032"             TO  LNK-SC92-ERRCD5
-                   END-IF
-               WHEN    OTHER
-      *            年齢判定
+               ELSE
                    IF      LNK-SC92-NENREI-YY    <   WRK-JGNAGE
                        CONTINUE
                    ELSE
@@ -1992,69 +1731,11 @@
                            MOVE    SPACE           TO  LNK-SC92-ERRCD5
                        END-IF
                    END-IF
-               END-EVALUATE
-      *H24.4
+               END-IF
            END-IF
       *
            .
        2003-NENREI-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    小児科外来診療料の算定チェック
-      *****************************************************************
-       20032-NENREI-RRKCHK-SEC      SECTION.
-      *
-      *    小児科外来診療料は別チェックとする
-           IF     (TNS-CDKBN-KBN       =   "B" )
-              AND (TNS-CDKBN-KBNNUM    =   001 )
-              AND (TNS-CDKBN-KBNNUM-EDA    =   2 )
-      *
-               IF      SPA-SRYYMD      <   "20160401"
-                   IF      SPA-SYONIKA-ARI3    NOT =   ZERO
-                       MOVE    SPACE           TO  LNK-SC92-ERRCD5
-                   END-IF
-               ELSE
-      *            当月受診ありのチェック
-                   IF      (LNK-SC92-15MIMAN-ARI   =   2  )
-                       MOVE    SPACE           TO  LNK-SC92-ERRCD5
-                   END-IF
-               END-IF
-      *        会計照会
-               IF      LNK-SC92-PG         =   "J04"
-                   MOVE    SPACE           TO  LNK-SC92-ERRCD5
-               END-IF
-               GO      TO      20032-NENREI-RRKCHK-EXT
-           END-IF
-      *
-           MOVE    SPACE               TO  LNK-SC92-ERRCD5
-           .
-       20032-NENREI-RRKCHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    生後90日チェック（未熟児加算）処理
-      *****************************************************************
-       20031-NENREI-DAY90-SEC        SECTION.
-      *
-           IF      SPA-PTID            =   ZERO
-               GO     TO       20031-NENREI-DAY90-EXT
-           END-IF
-      *
-      *    年齢期間算定
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY5-AREA
-           MOVE    "51"                TO  LNK-DAY5-IRAI
-           MOVE    SPA-BIRTHDAY        TO  LNK-DAY5-START
-           MOVE    SPA-SRYYMD          TO  LNK-DAY5-END
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY5-AREA
-           IF      LNK-DAY5-NISSU2     <   90
-               CONTINUE
-           ELSE
-               MOVE    "0032"              TO  LNK-SC92-ERRCD5
-           END-IF
-           .
-       20031-NENREI-DAY90-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2123,16 +1804,6 @@
            IF      SPA-COM-HCHKFLG (IDX-T) =   "1"
                GO      TO      2005-HEIYOU-CHK-EXT
            END-IF
-      **ver.4.7
-      *    診療コード、器材、コメントのみ
-           IF     (LNK-SC92-SRYCD(1:1) =   "1"  )
-            OR    (LNK-SC92-SRYCD(1:1) =   "7"
-                                       OR  "8"   )
-            OR    (LNK-SC92-SRYCD(1:3) =   "008" )
-               CONTINUE
-           ELSE
-               GO      TO      2005-HEIYOU-CHK-EXT
-           END-IF
       *
       *    チェックテーブル検索
            INITIALIZE                  CHK-REC
@@ -2171,18 +1842,12 @@
            PERFORM
                    UNTIL     (FLG-CHKMST       =   1    ) 
                          OR  (FLG-CHKERR       =   1 )
-      *H24.6
-      *    診療コードのみ対象
-      *****IF      CHK-CD(1:1)         =   "1"
-      *
                EVALUATE    CHK-CHKKBN
                    WHEN    "5"
       *            同月内チェック
       *                同一画面でのチェック
                        PERFORM 20052-CHK-INPUT-SEC
                        IF      FLG-CHKERR          =   ZERO
-      *                  診療コードのみ対象
-                         AND  (CHK-CD(1:1)         =   "1"  )
       *                    算定履歴とのチェック
                            PERFORM 20051-CHK-SANTEI-SEC
                        END-IF
@@ -2192,8 +1857,6 @@
       *                    同一画面でのチェック
                            PERFORM 20052-CHK-INPUT-SEC
                            IF      FLG-CHKERR          =   ZERO
-      *                       診療コードのみ対象
-                             AND  (CHK-CD(1:1)         =   "1"  )
       *                        算定履歴とのチェック
                                PERFORM 20053-DAYCHK-SANTEI-SEC
                            END-IF
@@ -2208,7 +1871,6 @@
       *                    同一画面でのチェック
                            PERFORM 200521-CHKNYU-INPUT-SEC
                            IF      FLG-CHKERR          =   ZERO
-                             AND  (CHK-CD(1:1)         =   "1"  )
       *                        算定履歴とのチェック
                                PERFORM 200531-DAYCHKNYU-SANTEI-SEC
                            END-IF
@@ -2222,8 +1884,6 @@
                            PERFORM 20052-CHK-INPUT-SEC
                        END-IF
                END-EVALUATE
-      *****END-IF
-      *
                MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key14"             TO  MCP-PATHNAME
                PERFORM 950-CHK-READ-SEC
@@ -2333,14 +1993,6 @@
            MOVE    WRK-KEI-SRYCD       TO  TNS-SRYCD
            PERFORM 911-TENSU-READ22-SEC
       *
-      *H25.8
-      *    労災の再診時
-           IF     (WRK-KEI-SRYCD       =   "101130190")
-             OR   (LNK-SC92-SRYCD      =   "101130190")
-               MOVE    "K035"              TO  LNK-SC92-ERRCD6
-           END-IF
-      *H25.8
-      *
            PERFORM 200531-ERRMSG-HEN-SEC
            .
        20054-CHKKEIMSG-EXT.
@@ -2372,13 +2024,6 @@
            IF      FLG-SANTEI-OK       =   ZERO
                INITIALIZE                  SANTEI-REC
            END-IF
-      *H25.8
-      *    労災以外で労災コードは対象外
-           IF     (SPA-HKNKBN          =   ZERO   )
-              AND (CHK-CD (1:3)        =   "101"  )
-               INITIALIZE                  SANTEI-REC
-           END-IF
-      *H25.8
       *
       *    算定歴の回数をチェックする
            MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNT
@@ -2762,47 +2407,9 @@
                        END-IF
                    END-IF
            END-SEARCH
-      *H25.7
-      *    労災保険コード変更
-           IF     (CHK-CD(1:3)         =   "101"    )   AND
-                  (SPA-SRYYMD          >=  "20130701" )
-               MOVE    CHK-CD              TO  WRK-CHK-SRYCD
-               PERFORM 10001-RSICD-SANTEI-CHK-SEC
-           END-IF
-      *
       *
            .
        1000-SANTEI-CHK-EXT.
-           EXIT.
-      *
-      *H25.7
-      *****************************************************************
-      *    労災コード保険毎のコードの判定処理
-      *****************************************************************
-       10001-RSICD-SANTEI-CHK-SEC      SECTION.
-      *
-      *    労災のコードの判定
-           SET     TBL-RCN             TO  1
-           SEARCH  TBL-RSICHG-OCC      VARYING   TBL-RCN
-               AT  END
-                   MOVE    SPACE           TO  WRK-RSI-KBN
-               WHEN    WRK-CHK-SRYCD       =   TBL-RSICHG-ATO-SRYCD
-                                                          (TBL-RCN)
-                   MOVE    TBL-RSICHG-KBN (TBL-RCN)
-                                           TO  WRK-RSI-KBN
-           END-SEARCH
-      *
-           IF      WRK-RSI-KBN         =   "R"
-               MOVE    1               TO  FLG-HKNSAN
-           ELSE
-               IF      WRK-RSI-KBN         =   "A"
-                   MOVE    1               TO  FLG-HKNSAN
-               ELSE
-                   MOVE    ZERO            TO  FLG-HKNSAN
-               END-IF
-           END-IF
-           .
-       10001-RSICD-SANTEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3159,13 +2766,6 @@
                        END-IF
                    END-IF
            END-SEARCH
-      *H25.7
-      *    労災保険コード変更
-           IF     (WRK-SRYCD(1:3)      =   "101"    )   AND
-                  (SPA-SRYYMD          >=  "20130701" )
-               MOVE    WRK-SRYCD           TO  WRK-CHK-SRYCD
-               PERFORM 10001-RSICD-SANTEI-CHK-SEC
-           END-IF
       *
            INITIALIZE                  SANTEI-REC
            MOVE    ZERO                TO  FLG-SANTEI-OK
@@ -3244,13 +2844,6 @@
                        END-IF
                    END-IF
            END-SEARCH
-      *H25.7
-      *    労災保険コード変更
-           IF     (WRK-SRYCD2(1:3)     =   "101"    )   AND
-                  (SPA-SRYYMD          >=  "20130701" )
-               MOVE    WRK-SRYCD2           TO  WRK-CHK-SRYCD
-               PERFORM 10001-RSICD-SANTEI-CHK-SEC
-           END-IF
       *
            INITIALIZE                  HZN-SANTEI-REC
       *
@@ -3319,6 +2912,22 @@
       *
        200541-RIHASANTEI-CHK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *     リハビリ料チェック処理
+      *****************************************************************
+      *200542-RIHA-HENKAN-SEC        SECTION.
+      *
+      *    SET     TBL-RIH             TO  1
+      *    SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
+      *            AT  END
+      *                MOVE    ZERO            TO  FLG-RIHA-OK
+      *            WHEN    WRK-SRYCD-3     =   TBL-RIHA-SRYCD(TBL-RIH)
+      *                MOVE    1               TO  FLG-RIHA-OK
+      *    END-SEARCH
+      *    .
+      *200542-RIHA-HENKAN-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    入院中の場合、算定なしとする
@@ -3397,13 +3006,6 @@
                        END-IF
                    END-IF
            END-SEARCH
-      *H25.7
-      *    労災保険コード変更
-           IF     (WRK-SRYCD(1:3)      =   "101"    )   AND
-                  (SPA-SRYYMD          >=  "20130701" )
-               MOVE    WRK-SRYCD            TO  WRK-CHK-SRYCD
-               PERFORM 10001-RSICD-SANTEI-CHK-SEC
-           END-IF
       *
            INITIALIZE                  HZN-SANTEI-REC
       *    算定履歴検索
@@ -3525,17 +3127,10 @@
       *
       *    初診料
            MOVE    "111000110"         TO  WRK-SRYCD
-      *    初診料（紹介状なし）
-           MOVE    "111012510"         TO  WRK-SRYCD2
-      *H27.1
-      *    初診料（妥結率５割以下）
-           MOVE    "111012710"         TO  WRK-SRYCD3
       *
            MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
            MOVE    ZERO                TO  FLG-SYO-ERR
            IF      CHK-CD              =   WRK-SRYCD
-                                       OR  WRK-SRYCD2
-                                       OR  WRK-SRYCD3
       *        初診以外入力時、前に初診算定があればエラー
                PERFORM VARYING     IDX-Y3  FROM    1   BY   1
                        UNTIL       IDX-Y3  >   31
@@ -3693,20 +3288,7 @@
        20088-RSIJIB-CHK-SEC        SECTION.
       *
       *    包括まとめ入力は以下対象外
-           IF      SPA-HKNCOMBINUM     =   "9999"
-               GO      TO      20088-RSIJIB-CHK-EXT
-           END-IF
-      *
-      *H25.4
-      *    労災の外来管理加算（読替）（レセプト自動記載なのでエラー）
-           IF     (LNK-SC92-SRYCD(1:3)     =   "101" )
-           AND    (TNS-SRYKBN           NOT =   "12" )
-           AND    (TNS-GAIKANRIKBN          =   2    )
-               MOVE    "8052"              TO  LNK-SC92-ERRCD8
-           END-IF
-      *
-      *    セット登録は以下対象外
-           IF      LNK-SC92-PG         =   "K05"
+          IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      20088-RSIJIB-CHK-EXT
            END-IF
       *
@@ -3714,27 +3296,27 @@
            IF     (LNK-SC92-SRYCD (1:1)    =   "1"  )  AND
                   (LNK-SC92-SRYCD (2:2)    =   "01" )
                IF     (SPA-HKNKBN          NOT =   1 )
+      ********    OR  (SPA-RSI-HKNKBN          =   "5" )
                   OR  (SPA-RSI-JUNKYO          =   "1" )
-      ************ MOVE    "8000"              TO  SPA-ERRCD
-                   MOVE    "8000"              TO  LNK-SC92-ERRCD8
+                   MOVE    "8000"              TO  SPA-ERRCD
                END-IF
            END-IF
       *    労災（器材）
            IF     (LNK-SC92-SRYCD (1:1)    =   "7"  )  AND
                   (LNK-SC92-SRYCD (2:5)    =   "88888")
                IF     (SPA-HKNKBN          NOT =   1 )
+      *******     OR  (SPA-RSI-HKNKBN          =   "5" )
                   OR  (SPA-RSI-JUNKYO          =   "1" )
-      ************ MOVE    "8000"              TO  SPA-ERRCD
-                   MOVE    "8000"              TO  LNK-SC92-ERRCD8
+                   MOVE    "8000"              TO  SPA-ERRCD
                END-IF
            END-IF
       *    労災（コメント）
            IF     (LNK-SC92-SRYCD (1:1)    =   "8"  )  AND
                   (LNK-SC92-SRYCD (4:1)    =   "8"  )
                IF     (SPA-HKNKBN          NOT =   1 )
+     ***********  OR  (SPA-RSI-HKNKBN          =   "5" )
                   OR  (SPA-RSI-JUNKYO          =   "1" )
-      ************ MOVE    "8000"              TO  SPA-ERRCD
-                   MOVE    "8000"              TO  LNK-SC92-ERRCD8
+                   MOVE    "8000"              TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -3742,8 +3324,7 @@
            IF      LNK-SC92-SRYCD          =   "099509901"
                IF     (SPA-HKNKBN          NOT =   1   )
                   OR  (SPA-RSI-JUNKYO          =   "1" )
-      ************ MOVE    "8000"              TO  SPA-ERRCD
-                   MOVE    "8000"              TO  LNK-SC92-ERRCD8
+                   MOVE    "8000"              TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -3752,23 +3333,7 @@
            IF     (LNK-SC92-SRYCD (1:1)    =   "1"  )  AND
                   (LNK-SC92-SRYCD (2:2)    =   "02" )
                IF     (SPA-HKNKBN          NOT =   2 )
-      ************ MOVE    "8100"              TO  SPA-ERRCD
-                   MOVE    "8100"              TO  LNK-SC92-ERRCD8
-               END-IF
-           END-IF
-      *
-      *H25.11
-      *    公務災害のコード
-           IF     (LNK-SC92-SRYCD (1:6)    =   "101989") 
-               IF     (SPA-HKNKBN          =   1 )
-                  AND (SPA-RSI-HKNKBN      =   5 )
-                  AND (SPA-RSI-JUNKYO  NOT =   "1")
-      *            京都以外は警告
-                   IF     (SPA-PREFNUM         NOT =   26    )
-                       MOVE    "K811"          TO  LNK-SC92-ERRCD8
-                   END-IF
-               ELSE
-                   MOVE    "8101"              TO  LNK-SC92-ERRCD8
+                   MOVE    "8100"              TO  SPA-ERRCD
                END-IF
            END-IF
            .
@@ -3866,24 +3431,6 @@
       *    基礎点数
            MOVE    TNS-TEN             TO  SPA-COM-TEN      (IDX-T)
            MOVE    TNS-TEN             TO  SPA-COM-KISOTEN  (IDX-T)
-      *
-      *H28.4
-      *    薬剤　除算金額（１０で除す）
-           IF     (TNS-SRYCD(1:1)      =   "6"  ) AND
-                  (TNS-TENSIKIBETU     =   4    ) AND
-                  (TNS-TEN             >   ZERO )
-               COMPUTE SPA-COM-TEN     (IDX-T) =   TNS-TEN   /  10
-               COMPUTE SPA-COM-KISOTEN (IDX-T) =   TNS-TEN   /  10
-           END-IF
-      *!!
-      *    コメント金額クリア
-           IF     (TNS-SRYCD(1:1)      =   "8"  )
-              OR  (TNS-SRYCD(1:3)      =   "008"
-                                       OR  "002")
-               MOVE    ZERO            TO  SPA-COM-TEN      (IDX-T)
-               MOVE    ZERO            TO  SPA-COM-KISOTEN  (IDX-T)
-           END-IF
-      *!!
       *    名称
            MOVE    TNS-NAME            TO  SPA-COM-NAME     (IDX-T)
       *
@@ -3891,16 +3438,6 @@
       *        労災・自賠責 編集
                PERFORM 3000-RSIJIB-HEN-SEC
            END-IF
-      *
-      *H28.4
-      *    向精神薬情報編集
-           MOVE    SPACE           TO  SPA-COM-PSY-CLASS (IDX-T)
-           MOVE    SPACE           TO  WRK-PSY-MEI
-           IF     (TNS-SRYCD(1:1)      =   "6" )
-             AND  (TNS-YAKKAKJNCD  NOT =   SPACE )
-               PERFORM 3009-PSYCHOTROPIC-HEN-SEC
-           END-IF
-      *
       *
       *    名称(フリーコメントの時、前回のコメントをのこす）
            IF    ((SPA-COM-INPUTCD (IDX-T)   =   "810000001"
@@ -3931,10 +3468,6 @@
               IF      SPA-COM-INPUTCD (IDX-T)  =   "099209903"
                                                OR  "099209905"
                                                OR  "099209906"
-      *H24.4 改正
-                                               OR  "099209907"
-                                               OR  "099209908"
-      *H24.4 改正
                    PERFORM 30021-KOUHEN-MEISYO-SEC
                    MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
                END-IF
@@ -3959,18 +3492,13 @@
                 PERFORM 3005-INPUT-MEISYO3-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
            END-IF
-      *H30.4
-      *    分割調剤など
-           IF     (SPA-COM-INPUTCD(IDX-T)(1:7) =   "0992081" )
-                PERFORM 3002-INPUT-MEISYO-SEC
-                MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
-           END-IF
+      *!
       *!
       *    器材商品名コードの発生分
            IF     (SPA-COM-INPUTCD (IDX-T)(1:1)    =   "7"   )  AND
                   (SPA-COM-AUTOKBN2(IDX-T)         =   "1"   )
-               PERFORM 3005-INPUT-MEISYO4-SEC
-               MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
+                PERFORM 3005-INPUT-MEISYO4-SEC
+                MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
       *H23.12
       *        器材商品名点数へ変更
                IF      SPA-COM-TEN (IDX-T - 1)  >   ZERO
@@ -3979,16 +3507,6 @@
                    MOVE    SPA-COM-TEN (IDX-T - 1) 
                                            TO  SPA-COM-KISOTEN(IDX-T)
                END-IF
-      *ver.4.7 から
-      *        器材商品名単位へ変更
-               IF     (SPA-COM-TANINAME (IDX-T - 1)
-                                           NOT =   SPACE  )
-                   MOVE    SPA-COM-TANICD(IDX-T - 1) 
-                                               TO  TNS-TANICD
-                   MOVE    SPA-COM-TANINAME (IDX-T - 1)
-                                               TO  TNS-TANINAME
-               END-IF
-      *!!
            END-IF
       *!
       *
@@ -4009,17 +3527,6 @@
                END-IF
            ELSE
                MOVE    SPACE               TO  SPA-GMN-TANINAME (IDX-T)
-           END-IF
-      *H25.2
-      *    自賠責特定コードの単位
-      **** IF     (SPA-COM-INPUTCD (IDX-T)(1:5)    =   "09593" )
-      *H29.2   自費の薬剤のみ
-           IF     (SPA-COM-INPUTCD (IDX-T)(1:3)    =   "095"
-                                                   OR  "096" )
-              AND (TNS-TANICD              NOT =   ZERO   )
-              AND (TNS-YKZKBN              NOT =   ZERO   )
-               PERFORM 3004-TANI-HENSYU-SEC
-               MOVE    WRK-TANINAME        TO  SPA-GMN-TANINAME (IDX-T)
            END-IF
       *
       *    診療種別区分
@@ -4092,16 +3599,13 @@
            MOVE    TNS-GAIKANRIKBN     TO  SPA-COM-GAIKANRIKBN (IDX-T)
       *    検査用　区分番号
            MOVE    TNS-CDKBN-KBN       TO  SPA-COM-CDKBN-KBN (IDX-T)
-      **** MOVE    TNS-CDKBN-SYO       TO  SPA-COM-CDKBN-SYO (IDX-T)
-      **** MOVE    TNS-CDKBN-BU        TO  SPA-COM-CDKBN-BU  (IDX-T)
+           MOVE    TNS-CDKBN-SYO       TO  SPA-COM-CDKBN-SYO (IDX-T)
+           MOVE    TNS-CDKBN-BU        TO  SPA-COM-CDKBN-BU  (IDX-T)
       *    労災用　区分番号
            MOVE    TNS-CDKBN-KBNNUM    TO  SPA-COM-CDKBN-KBNNUM (IDX-T)
       *    労災用　区分番号枝番
            MOVE    TNS-CDKBN-KBNNUM-EDA
                                        TO  SPA-COM-CDKBN-KBNNUM-EDA
-                                                              (IDX-T)
-      *    項番
-           MOVE    TNS-CDKBN-KOUBAN    TO  SPA-COM-CDKBN-KOUBAN
                                                               (IDX-T)
       *    検査用　包括対象検査
            MOVE    TNS-HOUKNSKBN       TO  SPA-COM-HOUKNSKBN (IDX-T)
@@ -4204,54 +3708,6 @@
            ELSE
                MOVE    ZERO            TO  SPA-COM-YCOMKBN (IDX-T)
            END-IF
-      *Ｈ２６年４月から
-      *    v4.7,4.8 はYOBI1 V4.9は追加
-      *    副鼻腔手術用内視鏡加算
-           MOVE    TNS-FUKUBIKUNAIKBN  TO  SPA-COM-YOBI1 (IDX-T)(2:1)
-      *    副鼻腔切除機器加算
-           MOVE    TNS-FUKUBIKUKOTUKBN TO  SPA-COM-YOBI1 (IDX-T)(3:1)
-      *    長時間麻酔管理加算
-           MOVE    TNS-TIMEMASUIKBN    TO  SPA-COM-YOBI1 (IDX-T)(4:1)
-      *    脊髄誘発電位測定
-           MOVE    TNS-SEKIZUISOKUTEI  TO  SPA-COM-YOBI1 (IDX-T)(5:1)
-      *H28.4
-      *    湿布薬区分
-           IF     (TNS-SRYCD(1:1)      =   "6" )
-             AND  (TNS-MEIUSESKB       =   1   )
-               MOVE    "1"                 TO  SPA-COM-SIPPUKBN (IDX-T)
-               MOVE    TNS-SSTKIJUNCD(2)   TO  SPA-COM-SIPRYO1 (IDX-T)
-               MOVE    TNS-SSTKIJUNCD(4)   TO  SPA-COM-SIPRYO2 (IDX-T)
-      *H29.1   付加情報があれば優先
-               IF     (TNSP-SIPPURYO1      =   ZERO )
-                  AND (TNSP-SIPPURYO2      =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    TNSP-SIPPURYO1  TO  SPA-COM-SIPRYO1 (IDX-T)
-                   MOVE    TNSP-SIPPURYO2  TO  SPA-COM-SIPRYO2 (IDX-T)
-               END-IF
-           END-IF
-      *H28.4
-      *    労災算定不可
-           MOVE    TNS-ROSAIKBN        TO  SPA-COM-ROSAIKBN (IDX-T)
-           MOVE    TNS-SISIKSN         TO  SPA-COM-SISIKSN  (IDX-T)
-      *    非侵襲的血行動態モニタリング加算
-           MOVE    TNS-HISINSYUMONITORKSN  TO  SPA-COM-HISINKSN(IDX-T)
-      *    凍結保存同種組織加算
-           MOVE    TNS-TOUKETUHOZONKSN TO  SPA-COM-TOUKETUHOZONKSN
-                                                             (IDX-T)
-      *H30.4
-      *    悪性腫瘍病理組織標本加算
-           MOVE    TNS-AKUSEIBYORIKSN  TO  SPA-COM-AKUSEIBYORIKSN
-                                                             (IDX-T)
-      *H29.1
-      *    ユーザー管理区分
-           IF     (TNS-MASTER-CLASS    =   2 )
-              AND (TNS-SRYCD(1:1)      =   "1"
-                                       OR  "6"
-                                       OR  "7" )
-               MOVE    "2"             TO  SPA-COM-MASTER-CLASS
-                                                             (IDX-T)
-           END-IF
       *
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC
@@ -4266,167 +3722,8 @@
              AND  (LNK-SC92-PG     NOT =   "K05")
                PERFORM 3008-PTKINKI-CHK-SEC
            END-IF
-      *
-      *H24.4
-      *    処方箋一般名記載区分
-           IF      SPA-SRYYMD          >=  "20120401"
-               IF     (TNS-SRYCD(1:1)      =   "6"  )
-                 AND ((TNS-KOUHATUKBN      =   1  OR  2
-      *29.3    先発なし後発医薬品（加算対象）追加
-                                           OR  3
-                                           OR  4    )  OR
-                      (TNSP-IPN-KISAIKBN   =   3    )  OR
-                      (TNSP-IPN-KISAIKBN   =   1    ))
-      *            後発品・後発のある先発品の最低薬価
-                   IF      TNSP-IPN-KISAIKBN   =   1
-                                               OR  3
-                       MOVE    1               TO  SPA-COM-IPN-KISAIKBN
-                                                               (IDX-T)
-                   END-IF
-      *            最低金額の編集
-      *            最低薬価編集
-                   PERFORM 300001-GENERICPRICE-CHEK-SEC
-                   MOVE    WRK-CHKTEN      TO  SPA-COM-GEN-PRICE(IDX-T)
-      *
-               END-IF
-           END-IF
-      *ver.4.7.0
-      *    薬価基準コード
-           MOVE    TNS-YAKKAKJNCD      TO  SPA-COM-YAKKAKJNCD (IDX-T)
-      *!!
-      *H28.2 一般名表示対応
-           IF     (SPA-SRYYMD          >=  "20160401")
-            AND   (TNS-SRYCD(1:1)      =   "6"  )
-      *        銘柄名称（初期画面）
-               MOVE    SPA-GMN-MEISYO (IDX-T)
-                                           TO  SPA-COM-MEI-NAME(IDX-T)
-               MOVE    SPACE               TO  SPA-COM-IPN-NAME(IDX-T)
-               MOVE    TNSP-IPN-KISAIKBN   TO  SPA-COM-TNSP-KISAIKBN
-                                                                (IDX-T)
-      *        一般名称
-               IF     (TNS-YAKKAKJNCD      NOT =   SPACE )
-                AND   (TNSP-IPN-KISAIKBN   =   1
-                                           OR  3   )
-                   PERFORM 300002-GENERICNAME-HEN-SEC
-               END-IF
-           END-IF
-      *
            .
        300-TENSU-HENSYU-EXT.
-           EXIT.
-      *
-      *H24.4
-      *****************************************************************
-      *     最低薬価の編集処理
-      *****************************************************************
-       300001-GENERICPRICE-CHEK-SEC        SECTION.
-      *
-           MOVE    TNS-TEN             TO  WRK-CHKTEN
-      *    薬価基準コードの最低薬価
-           IF      TNS-YAKKAKJNCD      =   SPACE
-               GO      TO    300001-GENERICPRICE-CHEK-EXT
-           END-IF
-      *
-           MOVE    SPACE               TO  GENERICPRICE-REC
-           INITIALIZE                      GENERICPRICE-REC
-           MOVE    TNS-YAKKAKJNCD      TO  GENERICPRICE-YAKKAKJNCD
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOEDYMD
-           MOVE    GENERICPRICE-REC    TO  MCPDATA-REC
-           MOVE    "tbl_generic_price"
-                                      TO  MCP-TABLE
-           MOVE    "key"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_generic_price"
-                                          TO  MCP-TABLE
-               MOVE    "key"              TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  GENERICPRICE-REC
-      *            薬価
-                   MOVE    GENERICPRICE-PRICE  TO  WRK-CHKTEN
-               ELSE
-                   INITIALIZE                  GENERICPRICE-REC
-                   MOVE    1                   TO  FLG-GENERICPRICE
-               END-IF
-           ELSE
-               INITIALIZE                  GENERICPRICE-REC
-               MOVE    1                   TO  FLG-GENERICPRICE
-           END-IF
-           MOVE    "tbl_generic_price"
-                                      TO  MCP-TABLE
-           MOVE    "key"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       300001-GENERICPRICE-CHEK-EXT.
-           EXIT.
-      *
-      *H28.2
-      *****************************************************************
-      *     一般名称編集処理
-      *****************************************************************
-       300002-GENERICNAME-HEN-SEC        SECTION.
-      *
-           MOVE    SPACE               TO  GENERICNAME-REC
-           INITIALIZE                      GENERICNAME-REC
-           MOVE    TNS-YAKKAKJNCD      TO  GENERIC-YAKKAKJNCD
-      **** MOVE    SPA-HOSPNUM         TO  GENERIC-HOSPNUM
-      *
-           MOVE    GENERICNAME-REC     TO  MCPDATA-REC
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_genericname"   TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  GENERICNAME-REC
-                   MOVE    ZERO                TO  FLG-GENERICNAME
-               ELSE
-                   INITIALIZE                  GENERICNAME-REC
-                   MOVE    1                   TO  FLG-GENERICNAME
-               END-IF
-           ELSE
-               INITIALIZE                      GENERICNAME-REC
-               MOVE    1                   TO  FLG-GENERICNAME
-           END-IF
-           MOVE    "tbl_genericname"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-GENERICNAME     NOT =   ZERO
-               GO      TO      300002-GENERICNAME-HEN-EXT
-           END-IF
-           EVALUATE    TNSP-IPN-KISAIKBN
-               WHEN    1
-                   MOVE    SPACE               TO  WRK-MEISYO
-                   STRING  "≪般≫"                DELIMITED  BY  SIZE
-                           GENERIC-GENERICNAME     DELIMITED  BY  SPACE
-                                               INTO    WRK-MEISYO
-                   END-STRING
-                   MOVE    WRK-MEISYO          TO  SPA-COM-IPN-NAME
-                                                              (IDX-T)
-                   MOVE    GENERIC-TANICD      TO  TNS-TANICD
-                   MOVE    GENERIC-TANINAME    TO  TNS-TANINAME
-                   PERFORM 3004-TANI-HENSYU-SEC
-                   MOVE    WRK-TANINAME        TO  SPA-COM-IPN-TANINAME
-                                                               (IDX-T)
-               WHEN    3
-                   MOVE    SPACE               TO  WRK-MEISYO
-                   STRING  "≪般≫"                DELIMITED  BY  SIZE
-                           TNSP-SHONAME            DELIMITED  BY  SPACE
-                                               INTO    WRK-MEISYO
-                   END-STRING
-                   MOVE    WRK-MEISYO          TO  SPA-COM-IPN-NAME
-                                                              (IDX-T)
-                   MOVE    SPA-GMN-TANINAME(IDX-T)
-                                               TO  SPA-COM-IPN-TANINAME
-                                                               (IDX-T)
-           END-EVALUATE
-           .
-       300002-GENERICNAME-HEN-EXT.
            EXIT.
       *
       *
@@ -4513,101 +3810,24 @@
       *****************************************************************
        3002-KOUHATU-MEISYO-SEC        SECTION.
       *
-      *H24.4
-           MOVE    SPACE               TO  WRK-MSG1
-           IF      SPA-SRYYMD          >=  "20120401"
-               IF     (TNSP-IPN-KISAIKBN   =   1    )
-      *            一般名記載あり
-                   MOVE    "般"                TO  WRK-MSG1
-               END-IF
-               IF     (TNSP-IPN-KISAIKBN   =   3    )
-      *            処方名称（一般名）記載
-                   MOVE    "般"                TO  WRK-MSG1
-               END-IF
-           END-IF
-      *
            MOVE    TNS-NAME            TO  WRK-MEISYO
            EVALUATE    TNS-KOUHATUKBN
                WHEN    1
-      *            後発品（先発品のある後発品）
-                   MOVE    SPACE                TO  WRK-MEISYO
-                   STRING      "【"             DELIMITED   BY  SIZE
-                               WRK-PSY-MEI      DELIMITED   BY  SPACE
-                               WRK-MSG1         DELIMITED   BY  SPACE
-                               "後】"           DELIMITED   BY  SIZE
+      *            後発品
+                   MOVE    SPACE               TO  WRK-MEISYO
+                   STRING      "【後】"         DELIMITED   BY  SIZE
                                TNS-NAME         DELIMITED   BY  SIZE
                                INTO             WRK-MEISYO
                    END-STRING
                WHEN    2
       *            後発品のある先発品
                    MOVE    SPACE               TO  WRK-MEISYO
-                   STRING      "【"             DELIMITED   BY  SIZE
-                               WRK-PSY-MEI      DELIMITED   BY  SPACE
-                               WRK-MSG1         DELIMITED   BY  SPACE
-                               "先】"           DELIMITED   BY  SIZE
+                   STRING      "【先】"         DELIMITED   BY  SIZE
                                TNS-NAME         DELIMITED   BY  SIZE
                                INTO             WRK-MEISYO
                    END-STRING
-      *??
-               WHEN    0
-      *            後発品のない先発品で一般名記載区分あり
-                   IF     (WRK-MSG1        NOT =   SPACE )
-                     OR   (WRK-PSY-MEI     NOT =   SPACE )
-                       MOVE    SPACE               TO  WRK-MEISYO
-                       STRING  "【"             DELIMITED   BY  SIZE
-                               WRK-MSG1         DELIMITED   BY  SPACE
-                               WRK-PSY-MEI      DELIMITED   BY  SPACE
-                               "】"             DELIMITED   BY  SIZE
-                               TNS-NAME         DELIMITED   BY  SIZE
-                               INTO             WRK-MEISYO
-                       END-STRING
-                   END-IF
-      *
-               WHEN    7
-      *            先発品のない後発品（加算非対象）
-                   MOVE    SPACE                TO  WRK-MEISYO
-                   STRING      "【"             DELIMITED   BY  SIZE
-                               WRK-PSY-MEI      DELIMITED   BY  SPACE
-                               WRK-MSG1         DELIMITED   BY  SPACE
-                               "無】"           DELIMITED   BY  SIZE
-                               TNS-NAME         DELIMITED   BY  SIZE
-                               INTO             WRK-MEISYO
-                   END-STRING
-      *H29.3
-               WHEN    3
-      *            先発品のない後発品（加算対象）
-                   MOVE    SPACE                TO  WRK-MEISYO
-                   STRING      "【"             DELIMITED   BY  SIZE
-                               WRK-PSY-MEI      DELIMITED   BY  SPACE
-                               WRK-MSG1         DELIMITED   BY  SPACE
-                               "加】"           DELIMITED   BY  SIZE
-                               TNS-NAME         DELIMITED   BY  SIZE
-                               INTO             WRK-MEISYO
-                   END-STRING
-               WHEN    4
-      *            後発医薬品でない（加算対象）
-                   MOVE    SPACE                TO  WRK-MEISYO
-                   STRING      "【"             DELIMITED   BY  SIZE
-                               WRK-PSY-MEI      DELIMITED   BY  SPACE
-                               WRK-MSG1         DELIMITED   BY  SPACE
-                               "加】"           DELIMITED   BY  SIZE
-                               TNS-NAME         DELIMITED   BY  SIZE
-                               INTO             WRK-MEISYO
-                   END-STRING
-      *H28.6
-               WHEN    OTHER
-      *            なし
-                   IF      WRK-PSY-MEI     NOT =   SPACE
-                       MOVE    SPACE                TO  WRK-MEISYO
-                       STRING  "【"             DELIMITED   BY  SIZE
-                               WRK-PSY-MEI      DELIMITED   BY  SPACE
-                                "】"            DELIMITED   BY  SIZE
-                               TNS-NAME         DELIMITED   BY  SIZE
-                               INTO             WRK-MEISYO
-                       END-STRING
-                   END-IF
            END-EVALUATE
-      *!!!!
+      *TEST
       *ver.4.5（削除かも〜）
       *    換算値あり
            IF     (TNSP-KANZANTANINAME =   SPACE )
@@ -4727,8 +3947,7 @@
            END-PERFORM
       *    ユーザコメントで位置のみ指定
            IF     (FLG-KCHK            =   1    )  AND
-                 ((SPA-COM-INPUTCD (IDX-T)(1:4)  =  "0084" )
-               OR (SPA-COM-INPUTCD (IDX-T)(1:7) =   "0992081"))
+                  (SPA-COM-INPUTCD (IDX-T)(1:4)  =  "0084" )
                PERFORM 30011-FUKYO-MEIHEN02-SEC
                GO      TO  3002-INPUT-MEISYO-EXT
            END-IF
@@ -5295,11 +4514,6 @@
                    IF      SPA-COM-KZMERR (IDX-T)  =   2  OR  3
                        MOVE    "0021"          TO  SPA-ERRCD
                    END-IF
-      *H29.12
-      *            数量ゼロはエラーなし
-                   IF      (WRK-SURYO          =   ZERO )
-                       MOVE    SPACE           TO  SPA-ERRCD
-                   END-IF
       *
       *            下限値＜データ≦上限値
                WHEN     (SPA-COM-KZMKGN (IDX-T)    <   WRK-SURYO )   AND
@@ -5445,9 +4659,7 @@
       *    MOVE    TNSP-KANZANTANINAME TO  SPA-COM-KANZANTANINAME(IDX-T)
       *    数量換算値
            MOVE    TNSP-KANZANCHI      TO  SPA-COM-KANZANCHI (IDX-T)
-      *ver.4.7
-      *    総量編集区分（内服滴剤）
-           MOVE    TNSP-SOURYOHENKBN   TO  SPA-COM-SOURYOHENKBN (IDX-T)
+      *ver.4.5
            .
        3006-TENSUPLUS-HEN-EXT.
            EXIT.
@@ -5510,68 +4722,13 @@
            .
        3007-TENSUPLUS2-HEN-EXT.
            EXIT.
-      *****************************************************************
-      *    向精神薬情報編集処理
-      *****************************************************************
-       3009-PSYCHOTROPIC-HEN-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  PSYCHOTROPIC-REC
-           INITIALIZE                      PSYCHOTROPIC-REC
-           MOVE    TNS-YAKKAKJNCD      TO  PSYCHOTROPIC-CODE
-           MOVE    SPA-SRYYMD          TO  PSYCHOTROPIC-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  PSYCHOTROPIC-YUKOEDYMD
-           MOVE    PSYCHOTROPIC-REC    TO  MCPDATA-REC
-           MOVE    "tbl_psychotropic"  TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_psychotropic"  TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  PSYCHOTROPIC-REC
-      *
-                   IF     (PSYCHOTROPIC-CLASS  >=  1  AND  <=  4 )
-      *                向精神薬
-                       MOVE    PSYCHOTROPIC-CLASS
-                                               TO  SPA-COM-PSY-CLASS
-                                                               (IDX-T)
-                   END-IF
-               ELSE
-                   INITIALIZE                  PSYCHOTROPIC-REC
-                   MOVE    1                   TO  FLG-PSYCHOTROPIC
-               END-IF
-           ELSE
-               INITIALIZE                  PSYCHOTROPIC-REC
-               MOVE    1                   TO  FLG-PSYCHOTROPIC
-           END-IF
-           MOVE    "tbl_psychotropic" TO  MCP-TABLE
-           MOVE    "key"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    向精神薬設定
-           EVALUATE    SPA-COM-PSY-CLASS (IDX-T)
-               WHEN    "1"
-                   MOVE    "不"            TO  WRK-PSY-MEI
-               WHEN    "2"
-                   MOVE    "睡"            TO  WRK-PSY-MEI
-               WHEN    "3"
-                   MOVE    "う"            TO  WRK-PSY-MEI
-               WHEN    "4"
-                   MOVE    "精"            TO  WRK-PSY-MEI
-           END-EVALUATE
-      *
-           .
-       3009-PSYCHOTROPIC-HEN-EXT.
-           EXIT.
       *
       *****************************************************************
       *    加算行追加編集処理
       *****************************************************************
        400-GYOINSN-SEC                 SECTION.
       *
-      **** IF      SPA-GMN-INPUTCD (200)   NOT =   SPACE
-           IF      SPA-GMN-INPUTCD (SPA-MAX-LINE)   NOT =   SPACE
+           IF      SPA-GMN-INPUTCD (200)   NOT =   SPACE
                MOVE    "0007"          TO  SPA-ERRCD
                GO      TO      400-GYOINSN-EXT
            END-IF
@@ -5721,8 +4878,6 @@
       *    入力値のある時、再編集
            IF     (SPA-COM-INPUTCD (IDX-T)(1:2)    =   "84" )  OR
                   (SPA-COM-INPUTCD (IDX-T)(1:4)    =   "0084")
-      *H30.4
-              OR  (SPA-COM-INPUTCD (IDX-T)(1:7)    =   "0992081")
                MOVE    LNK-SC92-SRYCD      TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
                IF      FLG-TENSU           =   ZERO
@@ -5800,11 +4955,7 @@
       *
       *    商品金額編集
            MOVE    TNS-TEN             TO  SPA-COM-TEN    (IDX-T)
-      *ver.4.7 から
-      *    単位コード
-           MOVE    TNS-TANICD          TO  SPA-COM-TANICD (IDX-T)
-           MOVE    TNS-TANINAME        TO  SPA-COM-TANINAME(IDX-T)
-      *!!
+      *
            IF     (IDX-T               <   SPA-MAX-LINE )  AND
                   (SPA-COM-AUTOKBN2(IDX-T + 1)  =   "1" )  AND
                   (SPA-COM-INPUTCD (IDX-T + 1)  =   TNS-IDOKANREN)
@@ -5826,38 +4977,6 @@
                    MOVE    TNS-IDOKANREN   TO  SPA-COM-INPUTCD(IDX-T)
                    MOVE    TNS-IDOKANREN   TO  SPA-GMN-INPUTCD(IDX-T)
                    MOVE    "1"             TO  SPA-COM-AUTOKBN2 (IDX-T)
-      *H27.4
-      *            商品名コードに数量・回数入力あり
-                   MOVE    ZERO            TO  IDX-TH
-                   IF     (SPA-COM-SURFLG (IDX-T - 1)  =   "1" )
-                     AND  (SPA-COM-SURYO  (IDX-T - 1)  >   1   )
-                       IF      SPA-COM-SURYO  (IDX-T)      =   ZERO
-                           MOVE    SPA-COM-SURFLG(IDX-T - 1)
-                                               TO  SPA-COM-SURFLG(IDX-T)
-                           MOVE    SPA-COM-SURYO(IDX-T - 1) 
-                                               TO  SPA-COM-SURYO (IDX-T)
-                       END-IF
-                       COMPUTE IDX-TH          =   IDX-T   -   1
-                       MOVE    SPACE           TO  SPA-COM-SURFLG
-                                                            (IDX-TH)
-                       MOVE    1               TO  SPA-COM-SURYO
-                                                            (IDX-TH)
-                   END-IF
-                   IF      SPA-COM-KAIFLG (IDX-T - 1)  =   "1"
-                       MOVE    SPA-COM-KAIFLG(IDX-T - 1) 
-                                               TO  SPA-COM-KAIFLG(IDX-T)
-                       MOVE    SPA-COM-KAISU(IDX-T - 1) 
-                                               TO  SPA-COM-KAISU (IDX-T)
-                       COMPUTE IDX-TH          =   IDX-T   -   1
-                       MOVE    SPACE           TO  SPA-COM-KAIFLG
-                                                               (IDX-TH)
-                       MOVE    ZERO            TO  SPA-COM-KAISU
-                                                               (IDX-TH)
-                   END-IF
-                   IF      IDX-TH              >   ZERO
-                       PERFORM 500-GMN-HEN02-SEC
-                   END-IF
-      *
       *            基本編集・併用チェック
                    PERFORM 200-KIHON-CHK-SEC
                    IF      SPA-ERRCD           =   SPACE
@@ -5867,37 +4986,11 @@
                                            TO  SPA-COM-IN       (IDX-T)
                    MOVE    SPA-COM-IN2(IDX-T - 1)
                                            TO  SPA-COM-IN2      (IDX-T)
-      *H27.4
-      *            器材コードの画面再編集
-                   IF      IDX-TH              >   ZERO
-                       MOVE    IDX-T           TO  IDX-TH
-                       PERFORM 500-GMN-HEN02-SEC
-                   END-IF
-      *
                    MOVE    IDX-T           TO  LNK-SC92-GMN-IDX
                END-IF
            END-IF
            .
        400-SYOHINMEI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画面再編処理
-      *****************************************************************
-       500-GMN-HEN02-SEC                SECTION.
-      *
-      *    画面再編集・基本チェック
-           INITIALIZE                  ORCSC94AREA
-           MOVE    "1"                 TO  LNK-SC94-KBN
-           MOVE    LNK-SC92-PG         TO  LNK-SC94-PG
-           MOVE    IDX-TH              TO  LNK-SC94-IDX
-           CALL    "ORCSC94"           USING
-                                       ORCSC94AREA
-                                       SPA-SCR-REC
-                                       SPA-AREA
-      *
-           .
-       500-GMN-HEN02-EXT.
            EXIT.
       *****************************************************************
       *    システム管理マスタ読み込み処理
@@ -5958,79 +5051,17 @@
                    MOVE    TNS-FORMALNAME  TO  TNS-NAME
                END-IF
            END-IF
-      *!!
-      *    医療観察コード名称編集
-           IF      (TNS-SRYCD(1:1)     =   "1"  )  AND
-                   (TNS-IRYOKANSATUKBN =   4    )
-      *        医療観察区分
-               MOVE    SPACE               TO  WRK-MEISYO
-               STRING  "【医観】"          DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO             WRK-MEISYO
-               END-STRING
-               MOVE    WRK-MEISYO          TO  TNS-NAME
-           END-IF
-      *
-      *H29.3
-      *    器材別表区分編集
-           IF     (TNS-SRYCD(1:1)      =   "7" )
-             AND  (TNS-CDKBN-BU        =   "01"
-                                       OR  "08" )
-               MOVE    SPACE               TO  WRK-MEISYO
-               IF      TNS-CDKBN-BU        =   "01"
-                   STRING  "【在】"            DELIMITED   BY  SIZE
-                          TNS-NAME             DELIMITED   BY  SPACE
-                          INTO                 WRK-MEISYO
-                   END-STRING
-               ELSE
-                   STRING  "【調】"            DELIMITED   BY  SIZE
-                          TNS-NAME             DELIMITED   BY  SPACE
-                          INTO                 WRK-MEISYO
-                   END-STRING
-               END-IF
-               MOVE    WRK-MEISYO          TO  TNS-NAME
-           END-IF
-      *!!
       *!
       *    附加情報の上限回数設定
            IF     (TNS-SRYCD(1:1)      =   "1"
                                        OR  "6"  ) AND
                   (FLG-TENSU           =   ZERO)
                PERFORM 9101-TENSUPLUS-SYORI-SEC
-      *H24.4
-      *        システム管理の変更可によって一般名記載とする
-               IF     (SPA-SRYYMD          >=  "20120401"  )
-                 AND  (SPA-KOUHATUKA       =   "1"         )
-                 AND  (TNS-SRYCD(1:1)      =   "6"         )
-                   IF     (TNSP-IPN-KISAIKBN   =   2    )
-                   OR     (TNS-KOUHATUKBN      =   ZERO )
-                   OR     (TNSP-IPN-KISAIKBN   =   3    )
-      *                処方名記載、先発品は変更なし
-                       CONTINUE
-                   ELSE
-                       MOVE    1               TO  TNSP-IPN-KISAIKBN
-                   END-IF
-               END-IF
            ELSE
                MOVE    SPACE               TO  TENSUPLUS-REC
                INITIALIZE                      TENSUPLUS-REC
            END-IF
-      *
-      *H29.1
-      *    器材ユーザー金額編集（酸素等）
-      *    IF     (TNS-SRYCD(1:1)      =   "7" )
-      *        酸素等、都道府県購入価格
-      *       AND ((TNS-TOKUKIZAISBT1  =   "2"
-      *                                OR  "3"
-      *                                OR  "4" )  OR
-      *            (TNS-TENSIKIBETU    =   "2" ))
-      *        PERFORM 9103-TENSUPRICE-READ-SEC
-      *        IF    ( FLG-TENSUPRICE      =   ZERO )
-      *          AND ( TNSPR-PRICE     NOT =   ZERO )
-      *            MOVE    TNSPR-PRICE         TO  TNS-TEN
-      *        END-IF
-      *****END-IF
-           .
+          .
        910-TENSU-READ-EXT.
            EXIT.
       *
@@ -6042,10 +5073,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-      **   MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-      **   MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
@@ -6114,45 +5143,6 @@
            .
        9102-TENSUPLUS2-READ-EXT.
            EXIT.
-      *H29.1
-      *****************************************************************
-      *    点数マスタ器材金額付加情報より編集処理
-      *****************************************************************
-       9103-TENSUPRICE-READ-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  TENSU-PRICE-REC
-           INITIALIZE                  TENSU-PRICE-REC
-           MOVE    SPA-HOSPNUM         TO  TNSPR-HOSPNUM
-           MOVE    TNS-SRYCD           TO  TNSPR-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSPR-YUKOEDYMD
-      *
-           MOVE    TENSU-PRICE-REC     TO  MCPDATA-REC
-           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  TENSU-PRICE-REC
-                   MOVE    ZERO                TO  FLG-TENSUPRICE
-               ELSE
-                   MOVE    1                   TO  FLG-TENSUPRICE
-                   INITIALIZE                      TENSU-PRICE-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-TENSUPRICE
-               INITIALIZE                      TENSU-PRICE-REC
-           END-IF
-           MOVE    "tbl_tensu_price"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       9103-TENSUPRICE-READ-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    点数マスター読込（算定履歴検索用）
       *****************************************************************
@@ -6196,19 +5186,6 @@
                    MOVE    TNS-FORMALNAME  TO  TNS-NAME
                END-IF
            END-IF
-      *!!
-      *    医療観察コード名称編集
-           IF      (TNS-SRYCD(1:1)     =   "1"  )  AND
-                   (TNS-IRYOKANSATUKBN =   4    )
-      *        医療観察区分
-               MOVE    SPACE               TO  WRK-MEISYO
-               STRING  "【医観】"          DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO             WRK-MEISYO
-               END-STRING
-               MOVE    WRK-MEISYO          TO  TNS-NAME
-           END-IF
-      *!!
       *
            .
        911-TENSU-READ22-EXT.
