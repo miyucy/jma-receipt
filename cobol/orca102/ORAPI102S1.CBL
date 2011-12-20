@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.00    NACL-多々納  11/12/20  商品名コード金額単位対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -98,6 +99,9 @@
       *
            03  WRK-TENS-CNT            PIC 9(02).
            03  WRK-MAE-YUKOEDYMD       PIC X(08).
+      *    金額種別・単位
+           03  WRK-IDO-TENSIKIBETU     PIC X(01).
+           03  WRK-IDO-TANINAME        PIC X(12).
       *
        01  WRK-XML-AREA.
            03  WRK-YUKOSTYMD           PIC X(08).
@@ -623,6 +627,7 @@
       *    単位コード
            IF      WRK-ERRCD           =   SPACE
                IF      WRK-SRYCD(1:3)      =   "059"
+                                           OR  "058"
                    PERFORM 20011-TANICD-CHK-SEC
                END-IF
            END-IF
@@ -1270,6 +1275,9 @@
                IF      FLG-TENSU           =   1
                    MOVE    "28"                TO  WRK-ERRCD
                END-IF
+      *        金額種別・単位
+               MOVE    TNS-TENSIKIBETU     TO  WRK-IDO-TENSIKIBETU
+               MOVE    TNS-TANINAME        TO  WRK-IDO-TANINAME
            END-IF
       *
            .
@@ -1478,6 +1486,29 @@
                MOVE    WRK-COUNT               TO  TNS-FORMALYUKOKETA
       *
                MOVE    MEDIREQ-EQUIPMENT-CODE  TO  TNS-IDOKANREN
+      *        金額
+               IF     (WRK-IDO-TENSIKIBETU     =   "2"  )
+                  AND (WRK-TENSU           NOT =   ZERO )
+      *            金額
+                   MOVE    WRK-TENSU           TO  TNS-TEN
+      *            金額種別（金額）
+                   MOVE    1                   TO  TNS-TENSIKIBETU
+               ELSE
+                   MOVE    SPACE               TO  MEDIRES-AMOUNT-MONEY
+               END-IF
+      *        単位区分
+               IF     (WRK-IDO-TANINAME        =   SPACE )
+                 AND  (WRK-TANINAME        NOT =   SPACE )
+                   MOVE    WRK-TANICD          TO  TNS-TANICD
+      *            単位名称
+                   MOVE    WRK-TANINAME        TO  TNS-TANINAME
+                   MOVE    WRK-TANINAME        TO  WRK-STRINGTBL
+                   MOVE    12                  TO  WRK-LEN
+                   PERFORM 890-MOJICOUNT-SEC
+                   MOVE    WRK-COUNT           TO  TNS-TANIMOJISU
+               ELSE
+                   MOVE    SPACE               TO  MEDIRES-UNIT-CODE
+               END-IF
            END-IF
       *
            .
