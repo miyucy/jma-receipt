@@ -396,6 +396,8 @@
                                     TO  DTCHK006-SURYO
                 MOVE    SRY-INPUTNUM (IDX0)
                                     TO  DTCHK006-INPUTNUM
+                MOVE    SRY-MEISKYFLG(IDX0)
+                                    TO  DTCHK006-MEISKYFLG
       *
                 IF    ( SRY-NYUGAIKBN   =   "1" )
       *
@@ -593,6 +595,8 @@
            MOVE    DTCHK006-SURYO  TO  DCSRY-SURYO
            MOVE    DTCHK006-INPUTNUM
                                    TO  DCSRY-INPUTNUM
+           MOVE    DTCHK006-MEISKYFLG
+                                   TO  DCSRY-MEISKYFLG
       *
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD    TO  DCSRY-CREYMD

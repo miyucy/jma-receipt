@@ -436,6 +436,12 @@
                05  WRK-TOTALZ                      PIC -------9.
                05  WRK-TOTAL-TANI                  PIC X(02).
                05  WRK-TOTAL-KAKKO                 PIC X(01).
+           03  WRK-TNS-NAME                        PIC X(200).
+           03  WRK-KZI-G.
+               05  WRK-KZI-TANICD                  PIC X(03).
+               05  WRK-KZI-TANINAME                PIC X(24).
+               05  WRK-KZI-TEN                     PIC 9(08).
+           03  WRK-LEN                             PIC 9(05).
       *
        01  COMMENT-CHK-AREA.
            03  COMMENT-IDX                         PIC 9(03).
@@ -3481,6 +3487,7 @@
            MOVE    SPACE               TO  WRK-JBI-RYOYO-TEATE-KBN
            INITIALIZE                      WRK-JBI-SONOTA-G
                                            WRK-RSI-SONOTA-G
+                                           WRK-KZI-G
       *
            PERFORM 900-HCM34SRY-START-SEC
       *
@@ -4134,6 +4141,48 @@
       *
            END-IF
       *
+           IF    ( SRY-SRYCD      (IDX9)(1:3)  =   "058" )
+      *
+               INITIALIZE                      WRK-KZI-G
+      *
+               MOVE    TNS-FORMALNAME      TO  TNS-NAME
+      *
+               IF    ( TNS-TANICD          NOT = SPACE )
+                AND  ( TNS-TANICD          NOT = "000" )
+                   MOVE    TNS-TANICD      TO  WRK-KZI-TANICD
+                   MOVE    TNS-TANINAME    TO  WRK-KZI-TANINAME
+                   INITIALIZE                  TNS-TANICD
+                                               TNS-TANINAME
+               END-IF
+               IF    ( TNS-TEN         NOT =   ZERO )
+                   MOVE    TNS-TEN         TO  WRK-KZI-TEN
+                   MOVE    ZERO            TO  TNS-TEN
+               END-IF
+           END-IF
+      *
+           IF    ( SRY-SRYCD (IDX9)(1:1)   =   "7")
+            AND  ( SRY-MEISKYFLG(IDX9)     =   "1")
+      *
+               MOVE    TNS-NAME            TO  WRK-TNS-NAME
+               MOVE    SPACE               TO  TNS-NAME
+               STRING  "（"                DELIMITED   BY  SIZE
+                       WRK-TNS-NAME        DELIMITED   BY  SPACE
+               INTO    TNS-NAME
+               END-STRING
+               IF    ( WRK-KZI-TANICD      NOT = SPACE )
+                AND  ( WRK-KZI-TANICD      NOT = "000" )
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-KZI-TANICD      TO  TNS-TANICD
+                   MOVE    WRK-KZI-TANINAME    TO  TNS-TANINAME
+               END-IF
+               IF    ( WRK-KZI-TEN         NOT =   ZERO )
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-KZI-TEN         TO  TNS-TEN
+               END-IF
+           END-IF
+      *
       *    行為名称
            MOVE    TNS-NAME                TO  WRK-SRYACT-STR
       *
@@ -4166,10 +4215,6 @@
                PERFORM 800-ZENKAKU-HEN-SEC
                MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR-PLUS
                PERFORM 210-WRK-SRYACT-TBL-HEN6-SEC
-           END-IF
-      *
-           IF    ( SRY-SRYCD      (IDX9)(1:3)  =   "058" )
-               MOVE    TNS-FORMALNAME  TO  WRK-SRYACT-STR
            END-IF
       *
       *    コメントの時、内容設定
@@ -4267,6 +4312,13 @@
                        MOVE    TNS-TEN     TO  WRK-RSI-SONOTA-TEN
                    END-IF
                END-IF
+           END-IF
+      *
+           IF    ( SRY-SRYCD (IDX9)(1:1)   =   "7")
+            AND  ( SRY-MEISKYFLG(IDX9)     =   "1")
+               MOVE    "）"                TO  WRK-SRYACT-STR
+               MOVE   ZERO                 TO  FLG-ZENSP
+               PERFORM 210-WRK-SRYACT-TBL-HEN2-SEC
            END-IF
       *
            .
@@ -6309,6 +6361,23 @@
       *****************************************************************
        210-WRK-SRYACT-TBL-HEN6-SEC     SECTION.
       *
+           MOVE    WRK-SRYACT-STR      TO  WRK-STR
+           PERFORM 800-STRLEN-CHK-SEC
+           COMPUTE WRK-LEN
+               =   WRK-STRLEN / CONST-SRYACT-LEN
+           COMPUTE WRK-LEN
+               =   WRK-STRLEN
+               -   CONST-SRYACT-LEN    * WRK-LEN
+      *
+           MOVE    SPACE               TO  WRK-STR
+           STRING  "　"                DELIMITED   BY  SIZE
+                   WRK-SRYACT-STR-PLUS DELIMITED   BY  SPACE
+           INTO    WRK-STR
+           END-STRING
+           PERFORM 800-STRLEN-CHK-SEC
+           COMPUTE WRK-LEN
+               =   WRK-LEN + WRK-STRLEN
+      *
            MOVE    SPACE               TO  WRK-STR
            STRING  WRK-SRYACT-STR      DELIMITED   BY  SPACE
                    "　"                DELIMITED   BY  SIZE
@@ -6316,12 +6385,7 @@
            INTO    WRK-STR
            END-STRING
       *
-           PERFORM 800-STRLEN-CHK-SEC
-           IF    ( WRK-STRLEN  <=  ZERO )
-               GO  TO  210-WRK-SRYACT-TBL-HEN6-EXT
-           END-IF
-      *
-           IF    ( WRK-STRLEN          >   CONST-SRYACT-LEN )
+           IF    ( WRK-LEN             >   CONST-SRYACT-LEN )
                PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
                MOVE    SPACE           TO  WRK-SRYACT-STR
                STRING  "　　"              DELIMITED   BY  SIZE

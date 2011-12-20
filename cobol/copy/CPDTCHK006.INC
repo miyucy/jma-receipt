@@ -31,4 +31,7 @@
            03  DTCHK006-SRYSYUKBN          PIC X(03).
            03  DTCHK006-SRYCD              PIC X(09).
            03  DTCHK006-SURYO              PIC 9(05)V9(05).
+           03  DTCHK006-MEISKYFLG          PIC X(01).
+           03  DTCHK006-058-TANICD         PIC X(03).
+           03  DTCHK006-058-SRYCD          PIC X(09).
            03  DTCHK006-INPUTNUM           PIC 9(03).

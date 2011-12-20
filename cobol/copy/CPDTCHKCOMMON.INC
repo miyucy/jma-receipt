@@ -205,6 +205,16 @@
                        09  THEIYOU-DAY2                PIC 9(01)
                                                        OCCURS 31.
       *
+      *  器材単位チェック退避ワーク
+         02  TKZI-AREA.
+           03  TKZI-MAX                                PIC 9(05).
+           03  TKZI-OCC                                OCCURS 30.
+               05  TKZI-SRYCD                          PIC X(09).
+               05  TKZI-058-SRYCD                      PIC X(09).
+               05  TKZI-DAY-G.
+                   07  TKZI-DAY                        PIC 9(01)
+                                                       OCCURS 31.
+      *
       *    チェックマスタ退避ワーク
          02  TCHK-AREA.
            03  TCHK-IDX                                PIC 9(08).

@@ -611,6 +611,9 @@
                05  WRK-AGE70-MM                        PIC 9(02).
                05  WRK-AGE70-DD                        PIC 9(02).
            03  WRK-INGAITEN                            PIC 9(07).
+           03  WRK-058-G.
+               05  WRK-058-SRYCD                       PIC X(09).
+               05  WRK-058-TANICD                      PIC X(03).
       *
        01  TERRINF-AREA.
            03  TERRINF-SRYCD                           PIC X(09).
@@ -642,7 +645,11 @@
            03  ERRKBN-990009                           PIC X(01).
       *
        01  KEY-AREA.
-           03  KEY-HKNCOMBI                            PIC 9(04).
+           03  KEY-HKNCOMBI                    PIC 9(04).
+           03  KEY-SRYACT.
+               05  KEY-SRY-PTID                PIC 9(10).
+               05  KEY-SRY-ZAINUM              PIC 9(08).
+               05  KEY-SRY-ACCTKBN             PIC X(01).
       *
       *    剤番号退避
        01  PTZAI-AREA.
@@ -722,6 +729,8 @@
                                                    VALUE   5000.
            03  CONST-TINGAI-MAX                      PIC 9(05)
                                                    VALUE   20.
+           03  CONST-TKZI-MAX                      PIC 9(05)
+                                                   VALUE   30.
            03  CONST-CHKPTN                        PIC X(05)
                                                    VALUE   "1 111".
            03  CONST-NBHOUKTCD                     PIC X(09)
@@ -2151,6 +2160,7 @@
                                        TCOMERR-AREA
                                        TGENZAN-AREA
                                        TINGAI-AREA
+                                       TKZI-AREA
                                        PTACCT-AREA
                                        PTSRY-AREA
                                        PTZAI-AREA
@@ -2464,10 +2474,41 @@
       *
            PERFORM 900-DCSRY-START-SEC
       *
+           MOVE    LOW-VALUE             TO  KEY-SRYACT
+           INITIALIZE                        WRK-058-G
            PERFORM UNTIL ( FLG-DCSRY NOT =   ZERO )
                     OR   ( PTSRY-MAX    >=   CONST-PTSRY-MAX )
       *
                COMPUTE PTSRY-MAX   =   PTSRY-MAX   +   1
+      *
+               IF    ( KEY-SRY-PTID        NOT =   DCSRY-PTID )
+                  OR ( KEY-SRY-ZAINUM      NOT =   DCSRY-ZAINUM )
+                  OR ( KEY-SRY-ACCTKBN     NOT =   DCSRY-ACCTKBN )
+                   MOVE    DCSRY-PTID      TO  KEY-SRY-PTID
+                   MOVE    DCSRY-ZAINUM    TO  KEY-SRY-ZAINUM
+                   MOVE    DCSRY-ACCTKBN   TO  KEY-SRY-ACCTKBN
+                   INITIALIZE                  WRK-058-G
+               END-IF
+      *
+               IF    ( DCSRY-SRYCD (1:3)   =   "058" )
+                   INITIALIZE                      WRK-058-G
+                   MOVE    DCSRY-SRYCD         TO  WRK-058-SRYCD
+                   MOVE    DCSRY-SRYCD         TO  WRK-SRYCD
+                   MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   IF    ( TNS-TANICD          NOT = SPACE )
+                    AND  ( TNS-TANICD          NOT = "000" )
+                       MOVE    TNS-TANICD  TO  WRK-058-TANICD
+                   END-IF
+               END-IF
+      *
+               IF    ( DCSRY-SRYCD (1:1)   =   "7")
+                AND  ( DCSRY-MEISKYFLG     =   "1")
+                   MOVE    WRK-058-SRYCD
+                                   TO  DCSRY-058-SRYCD
+                   MOVE    WRK-058-TANICD
+                                   TO  DCSRY-058-TANICD
+               END-IF
       *
                MOVE    DCSRY-REC   TO  PTSRY-OCC (PTSRY-MAX)
       *
@@ -2813,6 +2854,12 @@
                             AND  ( TNS-DAYCNT      =   0 )
                                PERFORM 200111-TKAISU-HEN-SEC
                            END-IF
+      *
+      *                    器材単位チェック退避ワーク編集処理
+                           IF    ( DCSRY-SRYCD (1:1)   =   "7" )
+                               PERFORM 200111-TKZI-HEN-SEC
+                           END-IF
+      *
                        END-IF
       *
                        EVALUATE    TRUE
@@ -3573,6 +3620,76 @@
       *
            .
        200111-TKAISU-SRYCD-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    器材単位チェック退避ワーク編集処理
+      *****************************************************************
+       200111-TKZI-HEN-SEC             SECTION.
+      *
+           IF    ( TNS-TENSIKIBETU     =   0 OR 1 OR 2)
+               IF   (  DCSRY-058-TANICD    =   SPACE  OR "000" )
+                AND (  TNS-TANICD          =   SPACE  OR "000" )
+                   MOVE    PTZAI-HKNNUM (IDX-ZAI)
+                                           TO   WRK-ZAIHKNNUM
+                   PERFORM 2001111-TAISYO-HKN-CHK-SEC
+                   IF    ( FLG-TAISYO-HKN      =   1 )
+                       IF    ( PTZAI-NYUGAIKBN (IDX-ZAI)
+                                               =   ORCBSD01-NYUGAIKBN )
+                           PERFORM 2001111-TKZI-HEN-SEC
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       200111-TKZI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    器材単位チェック退避ワーク編集処理
+      *****************************************************************
+       2001111-TKZI-HEN-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  IDXA
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   TKZI-MAX )
+                    OR   ( IDX0    >   CONST-TKZI-MAX )
+                    OR  (( TKZI-SRYCD (IDX0)
+                                   =   DCSRY-SRYCD )
+                      AND( TKZI-058-SRYCD (IDX0)
+                                   =   DCSRY-058-SRYCD ))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX0            >   TKZI-MAX )
+      *
+               IF    ( CONST-TKZI-MAX
+                                   >   TKZI-MAX )
+                   COMPUTE TKZI-MAX
+                       =   TKZI-MAX    +   1
+                   MOVE    TKZI-MAX    TO  IDXA
+      *
+                   MOVE    DCSRY-SRYCD TO  TKZI-SRYCD (IDXA)
+                   MOVE    DCSRY-058-SRYCD
+                                       TO  TKZI-058-SRYCD (IDXA)
+               END-IF
+           ELSE
+               MOVE    IDX0            TO  IDXA
+           END-IF
+      *
+           IF    ( IDXA            >   ZERO )
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL ( IDX2    >   31 )
+                   IF    ( PTZAI-DAY (IDX-ZAI IDX2)   >   ZERO )
+                       MOVE    1   TO  TKZI-DAY (IDXA IDX2)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       2001111-TKZI-HEN-EXT.
            EXIT.
       *****************************************************************
       *    コメントエラー退避ワーク編集処理
@@ -9660,42 +9777,53 @@
        200111-KIZAI-TANICD-CHK-SEC     SECTION.
       *
            PERFORM VARYING IDX6    FROM    1   BY  1
-                   UNTIL ( IDX6    >   TSRYCD-MAX )
+                   UNTIL ( IDX6    >   TKZI-MAX )
       *
                INITIALIZE  WRK-NISSU-DAY-G
-               IF    ( TSRYCD-SRYCD (IDX6)(1:1)    =   "7" )
-                   MOVE    TSRYCD-SRYCD (IDX6)
-                                               TO  WRK-SRYCD
-                   MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
-                   PERFORM 900-TENSU-KEY-SEL-SEC
-                   IF    ( TNS-TANICD          =   SPACE OR ZERO )
-                    AND  ( TNS-TENSIKIBETU     =   0 OR 1 OR 2)
-                       PERFORM VARYING IDX-DAY FROM    1   BY  1
-                               UNTIL ( IDX-DAY >   31 )
-                           IF    ( TSRYCD-DAY-NYUGAIKBN (IDX6 IDX-DAY)
-                                           =   ORCBSD01-NYUGAIKBN )
-                            AND  ( TSRYCD-DAY-HKNFLG (IDX6 IDX-DAY)
-                                           =   1 )
-                               MOVE    1   TO  WRK-NISSU-DAY (IDX-DAY)
-                           END-IF
-                       END-PERFORM
-      *
-                       MOVE    SPACE       TO  WRK-ERRMES-PLUS
-      *
-                       IF    ( WRK-NISSU-DAY-G    NOT  =   ZERO )
-                           PERFORM 200111-NISSU-HEN-SEC
-                           STRING  TNS-NAME        DELIMITED   BY  SPACE
-                                   WRK-NISSU-MES   DELIMITED   BY  SPACE
-                           INTO  WRK-ERRMES-PLUS
-                           END-STRING
-      *
-                           MOVE    "990006"    TO  WRK-ERRCD
-      *
-                           INITIALIZE              TERRINF-AREA
-                           PERFORM 215-ERRMES-HEN-SEC
-                       END-IF
-      *
+               PERFORM VARYING IDX-DAY FROM    1   BY  1
+                       UNTIL ( IDX-DAY >   31 )
+                   IF    ( TKZI-DAY (IDX6 IDX-DAY)  >   ZERO )
+                       MOVE    1   TO  WRK-NISSU-DAY (IDX-DAY)
                    END-IF
+               END-PERFORM
+      *
+               IF    ( WRK-NISSU-DAY-G    NOT  =   ZERO )
+      *
+                   PERFORM 200111-NISSU-HEN-SEC
+      *
+                   MOVE    SPACE          TO  WRK-STR
+                   MOVE    SPACE          TO  WRK-ERRMES-PLUS
+                   IF    ( TKZI-058-SRYCD (IDX6)   NOT =   SPACE )
+                       MOVE    TKZI-058-SRYCD (IDX6)
+                                               TO  WRK-SRYCD
+                       MOVE    WRK-KJNYMD      TO  WRK-TNS-YMD
+                       PERFORM 900-TENSU-KEY-SEL-SEC
+                       MOVE    TNS-FORMALNAME  TO  WRK-STR
+      *
+                       MOVE    TKZI-SRYCD (IDX6)   TO  WRK-SRYCD
+                       MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
+                       PERFORM 900-TENSU-KEY-SEL-SEC
+                       STRING  "商品名称："    DELIMITED   BY  SIZE
+                               WRK-STR         DELIMITED   BY  SPACE
+                               "　器材マスタ名称："
+                                               DELIMITED   BY  SIZE
+                               TNS-NAME        DELIMITED   BY  SPACE
+                               WRK-NISSU-MES   DELIMITED   BY  SPACE
+                       INTO  WRK-ERRMES-PLUS
+                       END-STRING
+                   ELSE
+                       MOVE    TKZI-SRYCD (IDX6)   TO  WRK-SRYCD
+                       MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
+                       PERFORM 900-TENSU-KEY-SEL-SEC
+                       STRING  TNS-NAME        DELIMITED   BY  SPACE
+                               WRK-NISSU-MES   DELIMITED   BY  SPACE
+                       INTO  WRK-ERRMES-PLUS
+                       END-STRING
+                   END-IF
+      *
+                   MOVE    "990006"    TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
+                   PERFORM 215-ERRMES-HEN-SEC
                END-IF
       *
            END-PERFORM
