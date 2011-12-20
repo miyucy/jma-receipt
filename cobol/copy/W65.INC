@@ -294,6 +294,7 @@
                     06  W65-SKJKEITAIKBN-ITEM    PIC X(40)   OCCURS  10.
                     06  W65-SKJKEITAIKBN-ITEM-STATE   PIC S9(9) BINARY.
                 04  W65-FXD10.
+                  05  W65-LBLSKJHON              PIC X(40).
                   05  W65-CMB-SKJRYOKBNHON.
                     06  W65-SKJRYOKBNHON         PIC X(80).
                     06  W65-SKJRYOKBNHON-COUNT   PIC S9(9) BINARY.
@@ -324,6 +325,7 @@
                     06  W65-SEIKANTAIKBNHON-COUNT PIC S9(9) BINARY.
                     06  W65-SEIKANTAIKBNHON-ITEM PIC X(40)   OCCURS  10.
                     06  W65-SEIKANTAIKBNHON-ITEM-STATE PIC S9(9) BINARY.
+                  05  W65-LBLSKJTSY              PIC X(40).
                   05  W65-CMB-SKJRYOKBNTSY.
                     06  W65-SKJRYOKBNTSY         PIC X(80).
                     06  W65-SKJRYOKBNTSY-COUNT   PIC S9(9) BINARY.
@@ -354,6 +356,7 @@
                     06  W65-SEIKANTAIKBNTSY-COUNT PIC S9(9) BINARY.
                     06  W65-SEIKANTAIKBNTSY-ITEM PIC X(40)   OCCURS  10.
                     06  W65-SEIKANTAIKBNTSY-ITEM-STATE PIC S9(9) BINARY.
+                  05  W65-LBLSKJTNK              PIC X(40).
                   05  W65-CMB-SKJRYOKBNTNK.
                     06  W65-SKJRYOKBNTNK         PIC X(80).
                     06  W65-SKJRYOKBNTNK-COUNT   PIC S9(9) BINARY.

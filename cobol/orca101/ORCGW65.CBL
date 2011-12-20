@@ -683,7 +683,8 @@
            03  WRK-PAGENO                                  PIC 9(03).
            03  WRK-NAI-YUKOSTYMD                           PIC X(08).
            03  WRK-NAI-YUKOEDYMD                           PIC X(08).
-           03  WRK-SKJKBN                                  PIC X(01)
+           03  WRK-SKJKBN-G.
+               05  WRK-SKJKBN                              PIC X(01)
                                                            OCCURS 3.
            03  WRK-TABNAME                                 PIC X(20).
       *
@@ -2618,13 +2619,7 @@
       *****************************************************************
        4102-PAGE03-KANREN-CHK-SEC       SECTION.
       *
-           EVALUATE    SPA-NAI-INPUT-MODE
-           WHEN    1
-               MOVE    SPA-NAI-SKJKBNHON       TO  WRK-SKJKBN(1)
-               MOVE    SPA-NAI-SKJKBNTSY       TO  WRK-SKJKBN(2)
-               MOVE    SPA-NAI-SKJKBNTNK       TO  WRK-SKJKBN(3)
-                PERFORM 41021-PAGE03-KANREN-CHK-SEC
-           WHEN    2
+           IF    ( SPA-NAI-INPUT-MODE   =   2 )
                PERFORM VARYING IDX-LST FROM    1   BY  1
                        UNTIL ( IDX-LST >   SPA-GMN-KOHLST-MAX )
                         OR   ( SPA-ERRCD   NOT =   SPACE )
@@ -2640,7 +2635,12 @@
                    END-IF
       *
                END-PERFORM
-           END-EVALUATE
+           ELSE
+               MOVE    SPA-NAI-SKJKBNHON       TO  WRK-SKJKBN(1)
+               MOVE    SPA-NAI-SKJKBNTSY       TO  WRK-SKJKBN(2)
+               MOVE    SPA-NAI-SKJKBNTNK       TO  WRK-SKJKBN(3)
+                PERFORM 41021-PAGE03-KANREN-CHK-SEC
+           END-IF
       *
            .
        4102-PAGE03-KANREN-CHK-EXT.
@@ -2657,52 +2657,73 @@
                    UNTIL ( IDXE    >       3 )
                     OR   ( FLG-ERR NOT =   ZERO )
       *
-               IF    ( WRK-SKJKBN (IDXE)   =   "0" OR "2" OR "4" OR "5")
-                   IF    ( SPA-GMN-SKJRYOKBN (IDXE)  NOT =   "0" )
-                    OR   ( SPA-GMN-SEIRYOKBN (IDXE)  NOT =   "0" )
-                    OR   ( SPA-GMN-SEIKANKBN (IDXE)  NOT =   "0" )
+               EVALUATE    WRK-SKJKBN (IDXE)
+               WHEN    "1"
+                   EVALUATE    SPA-GMN-SKJRYOKBN (IDXE)
+                               ALSO    SPA-GMN-SEIRYOKBN (IDXE)
+                                   ALSO    SPA-GMN-SEIKANKBN (IDXE)
+                   WHEN    "2" ALSO  "2" ALSO  "2"
+                   WHEN    "2" ALSO  "2" ALSO  "0"
+                   WHEN    "2" ALSO  "0" ALSO  "0"
+                   WHEN    "2" ALSO  "2" ALSO  "3"
+                   WHEN    "2" ALSO  "3" ALSO  "3"
+                   WHEN    "0" ALSO  "0" ALSO  "0"
+                   WHEN    "1" ALSO  "1" ALSO  "3"
+                   WHEN    "1" ALSO  "3" ALSO  "3"
+                       CONTINUE
+                   WHEN    OTHER
                        MOVE    IDXE    TO  FLG-ERR
-                   END-IF
-               END-IF
+                   END-EVALUATE
       *
-               IF    ( WRK-SKJKBN (IDXE) = "1" OR "3" )
-                   IF    ( SPA-GMN-SKJRYOKBN(IDXE) =   "1" )
-                    AND  ( SPA-GMN-SEIRYOKBN(IDXE) =   "1" )
-                    AND  ( SPA-GMN-SEIKANKBN(IDXE) =   "1" )
-                       COMPUTE FLG-ERR
-                           =   IDXE    +   10
-                   END-IF
-                   IF    ( SPA-GMN-SKJRYOKBN(IDXE) =   "3" )
-                    AND  ( SPA-GMN-SEIRYOKBN(IDXE) =   "3" )
-                    AND  ( SPA-GMN-SEIKANKBN(IDXE) =   "3" )
-                       COMPUTE FLG-ERR
-                           =   IDXE    +   10
-                   END-IF
-               END-IF
+               WHEN    "3"
+      *
+                   EVALUATE    SPA-GMN-SKJRYOKBN (IDXE)
+                               ALSO    SPA-GMN-SEIRYOKBN (IDXE)
+                                   ALSO    SPA-GMN-SEIKANKBN (IDXE)
+                   WHEN    "0" ALSO  "0" ALSO  "3"
+                   WHEN    "0" ALSO  "3" ALSO  "3"
+                   WHEN    "1" ALSO  "1" ALSO  "3"
+                   WHEN    "1" ALSO  "3" ALSO  "3"
+                   WHEN    "0" ALSO  "0" ALSO  "0"
+                       CONTINUE
+                   WHEN    OTHER
+                       MOVE    IDXE    TO  FLG-ERR
+                   END-EVALUATE
+      *
+               WHEN    "0"
+               WHEN    "2"
+               WHEN    "4"
+               WHEN    "5"
+      *
+                   EVALUATE    SPA-GMN-SKJRYOKBN (IDXE)
+                               ALSO    SPA-GMN-SEIRYOKBN (IDXE)
+                                   ALSO    SPA-GMN-SEIKANKBN (IDXE)
+                   WHEN    "0" ALSO  "0" ALSO  "0"
+                       CONTINUE
+                   WHEN    OTHER
+                       MOVE    IDXE    TO  FLG-ERR
+                   END-EVALUATE
+      *
+               END-EVALUATE
            END-PERFORM
       *
+           IF    ( FLG-ERR   NOT   =   ZERO )
       *
-           EVALUATE    FLG-ERR
-           WHEN    1   THRU  3
                MOVE    "0009"          TO  SPA-ERRCD
-           WHEN    11  THRU  13
-               MOVE    "0010"          TO  SPA-ERRCD
-           END-EVALUATE
       *
-           EVALUATE    FLG-ERR
-           WHEN    1
-           WHEN    11
-               MOVE    "本人タブ"      TO  WRK-TABNAME
-               MOVE    401             TO  SPA-GMN-CUR
-           WHEN    2
-           WHEN    12
-               MOVE    "低所得タブ"    TO  WRK-TABNAME
-               MOVE    407             TO  SPA-GMN-CUR
-           WHEN    3
-           WHEN    13
-               MOVE    "低年金タブ"    TO  WRK-TABNAME
-               MOVE    413             TO  SPA-GMN-CUR
-           END-EVALUATE
+               EVALUATE    FLG-ERR
+               WHEN    1
+                   MOVE    "本人タブ"      TO  WRK-TABNAME
+                   MOVE    401             TO  SPA-GMN-CUR
+               WHEN    2
+                   MOVE    "低所得タブ"    TO  WRK-TABNAME
+                   MOVE    407             TO  SPA-GMN-CUR
+               WHEN    3
+                   MOVE    "低年金タブ"    TO  WRK-TABNAME
+                   MOVE    413             TO  SPA-GMN-CUR
+               END-EVALUATE
+      *
+           END-IF
       *
            .
        41021-PAGE03-KANREN-CHK-EXT.
@@ -4015,6 +4036,12 @@
                    MOVE    SPA-NAI-YUKOEDYMD   TO  SEL-EDYMD
                    MOVE    SPA-GMN-KOHNUM      TO  SEL-HKNNUM
                    PERFORM 900-HKNNUM-KEY8-SEL-SEC
+                   MOVE    HKN-HON-NYUSKJRYYKBN
+                                       TO  SPA-NAI-SKJKBNHON
+                   MOVE    HKN-TSY-NYUSKJRYYKBN
+                                       TO  SPA-NAI-SKJKBNTSY
+                   MOVE    HKN-TNK-NYUSKJRYYKBN
+                                       TO  SPA-NAI-SKJKBNTNK
                    MOVE    HKNNUM-REC      TO  THKNNUM-REC
                    PERFORM 42012-COMBO-SET-DEFAULT-SEC
                END-IF
@@ -6180,7 +6207,23 @@
                    MOVE    SPA-GMN-SKJKEITAIKBNLST (IDX-CMB)
                                    TO  W65-SKJKEITAIKBN-ITEM (IDX-CMB)
            END-PERFORM
-      * 
+      *
+           IF    ( SPA-NAI-INPUT-MODE  =   2 )
+               CONTINUE
+           ELSE
+               MOVE    SPA-NAI-SKJKBNHON       TO  WRK-CMB-CD
+               PERFORM 5002-LBLSKJ-EDIT-SEC
+               MOVE    WRK-CMB-ITM             TO  W65-LBLSKJHON
+      *
+               MOVE    SPA-NAI-SKJKBNTSY       TO  WRK-CMB-CD
+               PERFORM 5002-LBLSKJ-EDIT-SEC
+               MOVE    WRK-CMB-ITM             TO  W65-LBLSKJTSY
+      *
+               MOVE    SPA-NAI-SKJKBNTNK       TO  WRK-CMB-CD
+               PERFORM 5002-LBLSKJ-EDIT-SEC
+               MOVE    WRK-CMB-ITM             TO  W65-LBLSKJTNK
+           END-IF
+      *
            MOVE    SPA-GMN-SKJFUKAKBN-MAX
                                    TO  W65-SKJRYOKBNHON-COUNT
                                        W65-SEIRYOKBNHON-COUNT
@@ -6389,6 +6432,37 @@
       *
            .
        5001-GMNHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事療養費設定ラベル編集処理
+      *****************************************************************
+       5002-LBLSKJ-EDIT-SEC           SECTION.
+      *
+            INITIALIZE                 WRK-CMB-ITM-G
+      *
+            EVALUATE    WRK-CMB-CD
+            WHEN    "0"
+                MOVE    "【使用しない】"
+                                   TO  WRK-CMB-ITM
+            WHEN    "1"
+                MOVE    "【患者負担あり】"
+                                   TO  WRK-CMB-ITM
+            WHEN    "2"
+                MOVE    "【患者負担あり（上限あり）】"
+                                   TO  WRK-CMB-ITM
+            WHEN    "3"
+                MOVE    "【患者負担なし】"
+                                   TO  WRK-CMB-ITM
+            WHEN    "4"
+                MOVE    "【患者負担あり（消費税あり）】"
+                                   TO  WRK-CMB-ITM
+            WHEN    "5"
+                MOVE    "【患者負担あり（消費税なし）】"
+                                   TO  WRK-CMB-ITM
+            END-EVALUATE
+      *
+           .
+       5002-LBLSKJ-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    項目状態編集処理
@@ -7334,20 +7408,9 @@
                END-STRING
            WHEN    "0009"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "保険番号マスタの食事療養費の設定が"
+               STRING  "「食事療養費」付加設定に"
                                        DELIMITED   BY  SIZE
-                       "１又は３の時に設定可能です【"
-                                       DELIMITED   BY  SIZE
-                       WRK-TABNAME     DELIMITED   BY  SPACE
-                                       "】"
-                                       DELIMITED   BY  SIZE
-               INTO                        SPA-ERRMSG
-               END-STRING
-           WHEN    "0010"
-               MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "この設定は保険番号マスタの"
-                                       DELIMITED   BY  SIZE
-                       "食事療養費で設定して下さい【"
+                       "登録不可な組み合わせが設定されています【"
                                        DELIMITED   BY  SIZE
                        WRK-TABNAME     DELIMITED   BY  SPACE
                                        "】"
@@ -8614,6 +8677,17 @@
                MOVE    1               TO  FLG-HKNNUM
            ELSE
                MOVE    MCPDATA-REC     TO  HKNNUM-REC
+      *
+               IF    ( HKN-HON-NYUSKJRYYKBN    =   SPACE )
+                   MOVE    "0"         TO  HKN-HON-NYUSKJRYYKBN
+               END-IF
+               IF    ( HKN-TSY-NYUSKJRYYKBN    =   SPACE )
+                   MOVE    "0"         TO  HKN-TSY-NYUSKJRYYKBN
+               END-IF
+               IF    ( HKN-TNK-NYUSKJRYYKBN    =   SPACE )
+                   MOVE    "0"         TO  HKN-TNK-NYUSKJRYYKBN
+               END-IF
+      *
            END-IF
       *
            MOVE    "tbl_hknnum"        TO  MCP-TABLE

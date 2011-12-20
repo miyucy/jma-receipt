@@ -449,6 +449,9 @@ W65	{
 				};
 			};
 			fxd10	{
+				LBLSKJHON	{
+					value	varchar(40);
+				};
 				CMB_SKJRYOKBNHON	{
 					SKJRYOKBNHON	{
 						value	varchar(80);
@@ -497,6 +500,9 @@ W65	{
 					item	varchar(40)[10];
 					state	int;
 				};
+				LBLSKJTSY	{
+					value	varchar(40);
+				};
 				CMB_SKJRYOKBNTSY	{
 					SKJRYOKBNTSY	{
 						value	varchar(80);
@@ -544,6 +550,9 @@ W65	{
 					count	int;
 					item	varchar(40)[10];
 					state	int;
+				};
+				LBLSKJTNK	{
+					value	varchar(40);
 				};
 				CMB_SKJRYOKBNTNK	{
 					SKJRYOKBNTNK	{
