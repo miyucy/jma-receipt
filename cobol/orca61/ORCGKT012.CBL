@@ -294,6 +294,8 @@
       *    換算値数量表示用
            03  WRK-TSURYO              PIC X(30).
            03  IDM2                    PIC 9(04).
+      *    商品名単位名称
+           03  WRK-SYO-TANINAME        PIC X(12).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -2287,7 +2289,18 @@
                   (LNK-WKSRY-AUTOKBN (IDX IDZ)     =   "T"  )
                 PERFORM 3005-INPUT-MEISYO4-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+      *ver.4.7
+      *        商品名コードの単位へ
+               IF      WRK-SYO-TANINAME    NOT =   SPACE
+                   MOVE    WRK-SYO-TANINAME    TO  TNS-TANINAME
+                   MOVE    SPACE               TO  WRK-SYO-TANINAME
+               END-IF
            END-IF
+      *    器材商品名コード
+           IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:3)   =   "058"  )
+               MOVE    TNS-TANINAME        TO  WRK-SYO-TANINAME
+           END-IF
+      *ver.4.7
       *!
       *
       *    約束の内容の時、再編集

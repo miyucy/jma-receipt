@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
       * 04.06.00     NACL-多々納  10/12/07  チェック追加対応
+      * 04.07.00     NACL-多々納  11/12/19  商品名コード単価対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -530,11 +531,14 @@
       *
            03  CNT-ZAI                 PIC 9(04).
       *
-           03  WRK-DAY-HENSYU      PIC X(100).
-           03  WRK-HENSYU          PIC X(100).
+           03  WRK-DAY-HENSYU          PIC X(100).
+           03  WRK-HENSYU              PIC X(100).
       *
-           03  WRK-TJIHI           PIC X(40).
-           03  WRK-Z7              PIC Z(07).
+           03  WRK-TJIHI               PIC X(40).
+           03  WRK-Z7                  PIC Z(07).
+      *
+      *    商品名単位名称
+           03  WRK-SYO-TANINAME        PIC X(12).
       *
       *    集計収納請求内容
        01  WRK-SUM-AREA.
@@ -2174,7 +2178,18 @@
                   (LNK-WKSRY-AUTOKBN (IDX IDZ)     =   "T"  )
                 PERFORM 3005-INPUT-MEISYO4-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+      *ver.4.7
+      *        商品名コードの単位へ
+               IF      WRK-SYO-TANINAME    NOT =   SPACE
+                   MOVE    WRK-SYO-TANINAME    TO  TNS-TANINAME
+                   MOVE    SPACE               TO  WRK-SYO-TANINAME
+               END-IF
            END-IF
+      *    器材商品名コード
+           IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:3)   =   "058"  )
+               MOVE    TNS-TANINAME        TO  WRK-SYO-TANINAME
+           END-IF
+      *ver.4.7
       *!
       *
       *    約束の内容の時、再編集
@@ -5530,6 +5545,17 @@
                    STRING  "１日の受診履歴が１３５剤以上になります。"
                            "リアルタイムデータチェック作成が"
                            "失敗しました。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *ver.4.6
+      *
+               WHEN    "9000"
+                   MOVE    "【算定履歴の更新ができませんでした】"
+                                       TO  SPA-ERRMSG
+               WHEN    "0051"
+                   STRING  "中間データに不整合が発生しました。"
+                           "再度、診療行為から入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING

@@ -38,6 +38,7 @@
       * 04.04.00     NACL=多々納  09/01/30  本院分院対応
       * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
       * 04.05.00     NACL-多々納  09/10/XX  換算値入力対応
+      * 04.07.00     NACL-多々納  11/12/19  商品名コード単価対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -324,6 +325,9 @@
            03  WRK-K09-MEILIST-ROW     PIC S9(09).
            03  FLG-GMN-INIT1           PIC  9(01).
            03  FLG-GMN-INIT2           PIC  9(01).
+      *
+      *    商品名単位名称
+           03  WRK-SYO-TANINAME        PIC X(12).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -2477,7 +2481,17 @@
                   (LNK-WKSRY-AUTOKBN (IDX IDZ)     =   "T"  )
                 PERFORM 3005-INPUT-MEISYO4-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+      *ver.4.7
+      *         商品名コードの単位へ
+                IF      WRK-SYO-TANINAME   NOT =   SPACE
+                    MOVE    WRK-SYO-TANINAME   TO  TNS-TANINAME
+                END-IF
            END-IF
+      *    器材商品名コード
+           IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:3)   =   "058"  )
+               MOVE    TNS-TANINAME        TO  WRK-SYO-TANINAME
+           END-IF
+      *ver.4.7
       *!
       *
       *    約束の内容の時、再編集

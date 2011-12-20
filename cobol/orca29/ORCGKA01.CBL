@@ -375,6 +375,9 @@
            03  WRK-AMARI               PIC 9(04).
            03  WRK-KANSURYO-9          PIC 9(05)V9(05).
       *
+      *    商品名単位名称
+           03  WRK-SYO-TANINAME        PIC X(12).
+      *
       *   年齢表示
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
@@ -1783,7 +1786,18 @@
                   (LNK-WKSRY-AUTOKBN (IDX IDZ)     =   "T"  )
                 PERFORM 3005-INPUT-MEISYO4-SEC
                 MOVE    WRK-MEISYO        TO  SPA-GMN-TMEISYO2(IDG)
+      *ver.4.7
+      *        商品名コードの単位へ
+               IF      WRK-SYO-TANINAME    NOT =   SPACE
+                   MOVE    WRK-SYO-TANINAME    TO  TNS-TANINAME
+                   MOVE    SPACE               TO  WRK-SYO-TANINAME
+               END-IF
            END-IF
+      *    器材商品名コード
+           IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:3)   =   "058"  )
+               MOVE    TNS-TANINAME        TO  WRK-SYO-TANINAME
+           END-IF
+      *ver.4.7
       *!
       *
       *    数量（薬剤、器材のとき）

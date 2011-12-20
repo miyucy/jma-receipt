@@ -185,6 +185,9 @@
            03  WRK-AMARI               PIC 9(04).
            03  WRK-KANZANTANINAME      PIC X(08).
       *
+      *    商品名単位名称
+           03  WRK-SYO-TANINAME        PIC X(12).
+      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -653,7 +656,18 @@
                   (SPA-PARA-AUTOKBN (IDX IDZ)     =   "T"  )
                 PERFORM 3005-INPUT-MEISYO4-SEC
                 MOVE    WRK-MEISYO        TO  SPA-KA021-TMEISYO2(IDG)
+      *ver.4.7
+      *        商品名コードの単位へ
+               IF      WRK-SYO-TANINAME    NOT =   SPACE
+                   MOVE    WRK-SYO-TANINAME    TO  TNS-TANINAME
+                   MOVE    SPACE               TO  WRK-SYO-TANINAME
+               END-IF
            END-IF
+      *    器材商品名コード
+           IF     (SPA-PARA-SRYCD(IDX IDZ)(1:3)    =   "058"  )
+               MOVE    TNS-TANINAME        TO  WRK-SYO-TANINAME
+           END-IF
+      *ver.4.7
       *
       *    数量（薬剤、器材のとき）
            IF     (SPA-PARA-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )

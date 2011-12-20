@@ -68,6 +68,7 @@
       *  04.05.00    NACL-多々納  10/03/XX  平成２２年４月改正対応
       *  04.06.00    NACL-多々納  10/07/XX  エラー内容変更
       *  04.06.00    NACL-多々納  10/12/20  患者禁忌薬剤経過措置対応
+      *  04.07.00    NACL-多々納  11/12/20  商品名コード金額単位対応
       *****************************************************************
       *
       *
@@ -3496,16 +3497,25 @@
       *    器材商品名コードの発生分
            IF     (SPA-COM-INPUTCD (IDX-T)(1:1)    =   "7"   )  AND
                   (SPA-COM-AUTOKBN2(IDX-T)         =   "1"   )
-                PERFORM 3005-INPUT-MEISYO4-SEC
-                MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
+               PERFORM 3005-INPUT-MEISYO4-SEC
+               MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
       *H23.12
-      *         商品点数へ変更
-                IF      SPA-COM-TEN (IDX-T - 1)  >   ZERO
-                    MOVE    SPA-COM-TEN (IDX-T - 1) 
+      *        器材商品名点数へ変更
+               IF      SPA-COM-TEN (IDX-T - 1)  >   ZERO
+                   MOVE    SPA-COM-TEN (IDX-T - 1) 
                                            TO  SPA-COM-TEN (IDX-T)
-                    MOVE    SPA-COM-TEN (IDX-T - 1) 
+                   MOVE    SPA-COM-TEN (IDX-T - 1) 
                                            TO  SPA-COM-KISOTEN(IDX-T)
-                END-IF
+               END-IF
+      *ver.4.7 から
+      *        器材商品名単位へ変更
+               IF     (SPA-COM-TANINAME (IDX-T - 1)
+                                           NOT =   SPACE  )
+                   MOVE    SPA-COM-TANICD(IDX-T - 1) 
+                                               TO  TNS-TANICD
+                   MOVE    SPA-COM-TANINAME (IDX-T - 1)
+                                               TO  TNS-TANINAME
+               END-IF
       *!!
            END-IF
       *!
@@ -4954,7 +4964,11 @@
        400-SYOHINMEI-SEC         SECTION.
       *
       *    商品金額編集
-           MOVE    TNS-TEN             TO  SPA-COM-TEN      (IDX-T)
+           MOVE    TNS-TEN             TO  SPA-COM-TEN    (IDX-T)
+      *ver.4.7 から
+      *    単位コード
+           MOVE    TNS-TANICD          TO  SPA-COM-TANICD (IDX-T)
+           MOVE    TNS-TANINAME        TO  SPA-COM-TANINAME(IDX-T)
       *!!
            IF     (IDX-T               <   SPA-MAX-LINE )  AND
                   (SPA-COM-AUTOKBN2(IDX-T + 1)  =   "1" )  AND

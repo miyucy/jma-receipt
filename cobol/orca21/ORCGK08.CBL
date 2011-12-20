@@ -58,6 +58,7 @@
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *  04.06.01    NACL-伊藤    11/01/28  リアルタイム送信
       *  04.06.00    NACL-多々納  11/02/18  用法コメント対応
+      *  04.07.00    NACL-多々納  11/12/16  商品名単位コード対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -525,6 +526,8 @@
            03  CNT-ZAI                 PIC 9(04).
       *
            03  WRK-PTID                PIC X(10).
+      *
+           03  WRK-SYO-TANINAME        PIC X(12).
       *
       *    集計収納請求内容
        01  WRK-SUM-AREA.
@@ -2432,7 +2435,17 @@
                   (LNK-WKSRY-AUTOKBN (IDX IDZ)     =   "T"  )
                 PERFORM 3005-INPUT-MEISYO4-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
+      *ver.4.7
+      *         商品名コードの単位へ
+                IF      WRK-SYO-TANINAME   NOT =   SPACE
+                    MOVE    WRK-SYO-TANINAME   TO  TNS-TANINAME
+                END-IF
            END-IF
+      *    器材商品名コード
+           IF     (LNK-WKSRY-SRYCD(IDX IDZ)(1:3)   =   "058"  )
+               MOVE    TNS-TANINAME        TO  WRK-SYO-TANINAME
+           END-IF
+      *ver.4.7
       *!
       *
       *    約束の内容の時、再編集
