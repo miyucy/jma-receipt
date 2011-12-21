@@ -145,6 +145,7 @@
            03  WRK-CHIHOUNUMKBN   PIC X(01).
       *
            03  WRK-TEISYOTOKU     PIC X(01).
+           03  WRK-TEISYOTOKU2    PIC X(01).
            03  WRK-RECEJGNDSPKBN  PIC X(01).
       *
            03  WRK-HKNCOMBINUM-TBL.
@@ -189,6 +190,8 @@
                05  WRK-CHKJGNFLG-N          PIC X(01).
                05  WRK-KOHSKYFLG-G          PIC X(01).
                05  WRK-KOHSKYFLG-N          PIC X(01).
+               05  WRK-IRYOKEIKBN-G         PIC X(01).
+               05  WRK-IRYOKEIKBN-N         PIC X(01).
       *
       *    ¶¦ÄÌÎÎ°è
            COPY    "MCPAREA".
@@ -324,6 +327,7 @@
            MOVE        ZERO      TO     FLG-CHECK
            MOVE        ZERO      TO     FLG-OK
            MOVE        SPACE     TO     WRK-TEISYOTOKU
+           MOVE        SPACE     TO     WRK-TEISYOTOKU2
            MOVE        SPACE     TO     WRK-RECEJGNDSPKBN
            MOVE        ZERO      TO     WRK-KOHFTN-RITU
       *
@@ -331,6 +335,21 @@
            PERFORM    2001-HKNNUM-GET-SEC
       *
            IF   FLG-HKNNUM     =    ZERO
+      *
+             IF ((LNK-FTNJGNCHK-PREFNUM =  32            ) AND
+                 (LNK-FTNJGNCHK-KOHNUM  = "191"          ) AND
+                 (LNK-FTNJGNCHK-SRYYM  >= "200510"       ))
+             OR ((LNK-FTNJGNCHK-PREFNUM =  11            ) AND
+                 (LNK-FTNJGNCHK-KOHNUM  = "483"          ) AND
+                 (LNK-FTNJGNCHK-SRYYM  >= "200804"       ))
+             OR ((LNK-FTNJGNCHK-PREFNUM =  11            ) AND
+                 (LNK-FTNJGNCHK-KOHNUM  = "344"          ) AND
+                 (LNK-FTNJGNCHK-SRYYM  >= "200507"       ))
+             OR ((LNK-FTNJGNCHK-KOHNUM(1:1)
+                                       >= "1" AND <= "8" ) AND
+                 (LNK-FTNJGNCHK-SRYYM  >= "200810"       ))
+                 PERFORM    2005-SYOTOKU-HENSYU-SEC
+             END-IF
       *
       *      ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°ÊÔ½¸
              PERFORM      2002-SYS2010-HENSYU-SEC
@@ -472,6 +491,8 @@
                       MOVE  "1"  TO WRK-KOHSKYFLG-N
                     END-IF
                 END-EVALUATE
+                PERFORM   200211-SYS2010-SET2-SEC
+                PERFORM   200212-SYS2010-SET3-SEC
              END-IF
       *
       *      ¸øÈñÀÁµá¥Æ¡¼¥Ö¥ëºîÀ®¥Õ¥é¥°¤ÎÊÔ½¸
@@ -649,29 +670,172 @@
                END-EVALUATE
            END-EVALUATE
       *
+           EVALUATE  SYS-2010-IRYOKEIKBN-G
+             WHEN      SPACE
+               PERFORM   200211-SYS2010-SET2-SEC
+             WHEN      "1"
+               EVALUATE  SYS-2010-IRYOKEI-TAIKBN-G
+                 WHEN        "0"
+                    MOVE  "1"  TO WRK-IRYOKEIKBN-G
+                 WHEN        "1"
+                  IF   WRK-TEISYOTOKU2  NOT =  SPACE
+                    MOVE  "1"  TO WRK-IRYOKEIKBN-G
+                  END-IF
+               END-EVALUATE
+           END-EVALUATE
+      *
+           EVALUATE  SYS-2010-IRYOKEIKBN-N
+             WHEN      SPACE
+               PERFORM   200212-SYS2010-SET3-SEC
+             WHEN      "1"
+               EVALUATE  SYS-2010-IRYOKEI-TAIKBN-N
+                 WHEN        "0"
+                    MOVE  "1"  TO WRK-IRYOKEIKBN-N
+                 WHEN        "1"
+                  IF   WRK-TEISYOTOKU2  NOT =  SPACE
+                    MOVE  "1"  TO WRK-IRYOKEIKBN-N
+                  END-IF
+               END-EVALUATE
+           END-EVALUATE
+      *
            .
        20021-SYS2010-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°¥»¥Ã¥È£²
+      *****************************************************************
+       200211-SYS2010-SET2-SEC       SECTION.
+      *
+           EVALUATE   LNK-FTNJGNCHK-PREFNUM
+             WHEN       07
+               IF ((LNK-FTNJGNCHK-KOHNUM    =  "245"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200412" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "246"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200604" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "445" OR "545"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200604" ))
+                 MOVE    "1"    TO  WRK-IRYOKEIKBN-G
+               END-IF
+             WHEN       11
+               IF ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "343" OR "342"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200507" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "344"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200507" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                    "181" OR "182" OR "183" OR "281"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200704" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "543" OR "582"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200710" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "381"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200801" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                    "481" OR "482" OR "743" OR "442"
+                                            OR "542"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200804" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "483"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200804" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "383"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "201001" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "681" OR "682"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "683"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "781"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "783"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "201004" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "372" OR "373"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "201101" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                    "462" OR "562" OR "662" OR "762"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "201112" ))
+                 MOVE    "1"    TO  WRK-IRYOKEIKBN-G
+               END-IF
+             WHEN       43
+               IF ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "341" OR "442"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200912" ))
+                 MOVE    "1"    TO  WRK-IRYOKEIKBN-G
+               END-IF
+           END-EVALUATE
+      *
+           .
+       200211-SYS2010-SET2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°¥»¥Ã¥È£³
+      *****************************************************************
+       200212-SYS2010-SET3-SEC       SECTION.
+      *
+           EVALUATE   LNK-FTNJGNCHK-PREFNUM
+             WHEN       07
+               IF ((LNK-FTNJGNCHK-KOHNUM    =  "245"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200412" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "246"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200604" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "445" OR "545"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200604" ))
+                 MOVE    "1"    TO  WRK-IRYOKEIKBN-N
+               END-IF
+             WHEN       11
+               IF ((LNK-FTNJGNCHK-KOHNUM    =
+                    "181" OR "182" OR "183" OR "281"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200704" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "543" OR "582"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200710" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "381"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200801" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                             "743" OR "442" OR "542"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200804" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "681" OR "682"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "683"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "781"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "783"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "201004" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "372" OR "373"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "201101" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "462" OR "762"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "201112" ))
+                 MOVE    "1"    TO  WRK-IRYOKEIKBN-N
+               END-IF
+             WHEN       43
+               IF ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "341" OR "442"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "200912" ))
+                 MOVE    "1"    TO  WRK-IRYOKEIKBN-N
+               END-IF
+           END-EVALUATE
+      *
+           .
+       200212-SYS2010-SET3-EXT.
            EXIT.
       *
       *****************************************************************
       *    ´µ¼Ô¸øÈñÉéÃ´¥Þ¥¹¥¿¤«¤éÉéÃ´¾å¸Â³Û¤Î¼èÆÀ
       *****************************************************************
        2003-PTKOHFTN-GET-SEC       SECTION.
-      *
-           IF ((LNK-FTNJGNCHK-PREFNUM =  32            ) AND
-               (LNK-FTNJGNCHK-KOHNUM  = "191"          ) AND
-               (LNK-FTNJGNCHK-SRYYM  >= "200510"       ))
-           OR ((LNK-FTNJGNCHK-PREFNUM =  11            ) AND
-               (LNK-FTNJGNCHK-KOHNUM  = "483"          ) AND
-               (LNK-FTNJGNCHK-SRYYM  >= "200804"       ))
-           OR ((LNK-FTNJGNCHK-PREFNUM =  11            ) AND
-               (LNK-FTNJGNCHK-KOHNUM  = "344"          ) AND
-               (LNK-FTNJGNCHK-SRYYM  >= "200507"       ))
-           OR ((LNK-FTNJGNCHK-KOHNUM(1:1)
-                                     >= "1" AND <= "8" ) AND
-               (LNK-FTNJGNCHK-SRYYM  >= "200810"       ))
-               PERFORM    20031-SYOTOKU-HENSYU-SEC
-           END-IF
       *
            IF    LNK-FTNJGNCHK-NYUGAIKBN     =   "1"
                EVALUATE   WRK-TEISYOTOKU
@@ -807,142 +971,6 @@
       *
            .
        2003-PTKOHFTN-GET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Äã½êÆÀ¡¦ÄãÇ¯¶â¾ðÊóÊÔ½¸
-      *****************************************************************
-       20031-SYOTOKU-HENSYU-SEC       SECTION.
-      *
-           MOVE       1       TO      SYOTOKU-IDX
-      *
-           IF   LNK-FTNJGNCHK-SRYYM   >=  "200604"
-      *
-              INITIALIZE                         PTKOHINF-REC
-              MOVE    LNK-FTNJGNCHK-HOSPNUM  TO  PTKOH-HOSPNUM
-              MOVE    LNK-FTNJGNCHK-PTID     TO  PTKOH-PTID
-              MOVE    LNK-FTNJGNCHK-KOHID    TO  PTKOH-KOHID
-              MOVE    PTKOHINF-REC           TO  MCPDATA-REC
-              MOVE    "DBSELECT"             TO  MCP-FUNC
-              MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
-              MOVE    "key8"                 TO  MCP-PATHNAME
-              CALL    "ORCDBMAIN"            USING  MCPAREA
-                                                    MCPDATA-REC
-                                                    SPA-AREA
-              IF      MCP-RC   =    ZERO
-                MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                MOVE    "key8"           TO  MCP-PATHNAME
-                PERFORM  910-PTKOHINF-READ-SEC
-                IF       FLG-PTKOHINF    =   ZERO
-                  IF   PTKOH-TEKSTYMD(1:6)  >=  LNK-FTNJGNCHK-SRYYM
-                      MOVE   PTKOH-TEKSTYMD(7:2)  TO   SYOTOKU-IDX
-                  END-IF
-                END-IF
-              END-IF
-              MOVE     "tbl_ptkohinf"    TO   MCP-TABLE
-              MOVE     "key8"            TO   MCP-PATHNAME
-              PERFORM   910-DB-CLOSE-SEC
-      *
-           END-IF
-      *
-           INITIALIZE                       ORCSSYOTOKUAREA
-           MOVE  LNK-FTNJGNCHK-HOSPNUM  TO  LNK-SYOTOKU-HOSPNUM
-           MOVE  LNK-FTNJGNCHK-PTID     TO  LNK-SYOTOKU-PTID
-           MOVE  LNK-FTNJGNCHK-SRYYM    TO  LNK-SYOTOKU-SRYYM
-      *
-           CALL    "ORCSSYOTOKU"   USING  ORCSSYOTOKUAREA
-                                          SPA-AREA
-      *
-           IF    LNK-SYOTOKU-RC    =   ZERO
-                 MOVE   LNK-SYOTOKU-CHIKBN(SYOTOKU-IDX)
-                                        TO  WRK-TEISYOTOKU
-           END-IF
-      *
-           IF ((LNK-FTNJGNCHK-PREFNUM =  32            ) AND
-               (LNK-FTNJGNCHK-KOHNUM  = "191"          ) AND
-               (LNK-FTNJGNCHK-SRYYM  >= "200510"       ))
-           OR ((LNK-FTNJGNCHK-PREFNUM =  11            ) AND
-               (LNK-FTNJGNCHK-KOHNUM  = "483"          ) AND
-               (LNK-FTNJGNCHK-SRYYM  >= "200804"       ))
-           OR ((LNK-FTNJGNCHK-PREFNUM =  11            ) AND
-               (LNK-FTNJGNCHK-KOHNUM  = "344"          ) AND
-               (LNK-FTNJGNCHK-SRYYM  >= "200507"       ))
-             CONTINUE
-           ELSE
-             PERFORM  200311-SYSKAN-HENSYU-SEC
-             IF       WRK-CHIHOUNUMKBN         =   "1"
-               IF     LNK-FTNJGNCHK-NYUGAIKBN  =   "1"
-                 EVALUATE    WRK-TEISYOTOKU
-                   WHEN    "2"
-                   WHEN    "3"
-                     IF    HKN-TSY-NYUFTNNBK  =  "0"
-                       MOVE   SPACE   TO  WRK-TEISYOTOKU
-                     END-IF
-                   WHEN    "1"
-                   WHEN    "4"
-                     IF    HKN-TNK-NYUFTNKBN  =  "0"
-                       MOVE   SPACE   TO  WRK-TEISYOTOKU
-                     END-IF
-                 END-EVALUATE
-               ELSE
-                 EVALUATE    WRK-TEISYOTOKU
-                   WHEN    "2"
-                     IF    HKN-TSY-GAIFTNKBN  =  "0"
-                       MOVE   SPACE   TO  WRK-TEISYOTOKU
-                     END-IF
-                   WHEN    "1"
-                   WHEN    "4"
-                     IF    HKN-TNK-GAIFTNKBN  =  "0"
-                       MOVE   SPACE   TO  WRK-TEISYOTOKU
-                     END-IF
-                 END-EVALUATE
-               END-IF
-             ELSE
-                       MOVE   SPACE   TO  WRK-TEISYOTOKU
-             END-IF
-           END-IF
-      *
-           .
-       20031-SYOTOKU-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸
-      *****************************************************************
-       200311-SYSKAN-HENSYU-SEC       SECTION.
-      *
-           MOVE    SPACE               TO  WRK-CHIHOUNUMKBN
-      *
-           INITIALIZE                      SYS-1001-REC
-           MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*"                 TO  SYS-1001-KBNCD
-           MOVE    LNK-FTNJGNCHK-HOSPNUM
-                                       TO  SYS-1001-HOSPNUM
-           MOVE    LNK-FTNJGNCHK-SRYYM TO  SYS-1001-STYUKYMD(1:6)
-           MOVE    "01"                TO  SYS-1001-STYUKYMD(7:2)
-           MOVE    LNK-FTNJGNCHK-SRYYM TO  SYS-1001-EDYUKYMD(1:6)
-           MOVE    "01"                TO  SYS-1001-EDYUKYMD(7:2)
-           MOVE    SYS-1001-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC               =  ZERO
-               MOVE     "tbl_syskanri" TO  MCP-TABLE
-               MOVE     "key10"        TO  MCP-PATHNAME
-               PERFORM   SYSKANRI-READ-SEC
-               MOVE      SYS-1001-CHIHOUNUMKBN
-                                       TO  WRK-CHIHOUNUMKBN
-           END-IF
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥¯¥í¡¼¥º
-           MOVE     "tbl_syskanri"     TO    MCP-TABLE
-           MOVE     "key10"            TO    MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
-      *
-           .
-       200311-SYSKAN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1720,70 +1748,10 @@
                END-IF
              END-IF
            ELSE
-             IF ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   =
-                   "181" OR "182" OR "183" OR "281") AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "200704"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   = "381"   ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "200801"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   = "481" OR
-                                           "482"   ) AND
-                 (LNK-FTNJGNCHK-NYUGAIKBN = "2"    ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "200804"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   = "483"   ) AND
-                 (WRK-TEISYOTOKU     NOT =  SPACE  ) AND
-                 (LNK-FTNJGNCHK-NYUGAIKBN = "2"    ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "200804"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   = "383"   ) AND
-                 (LNK-FTNJGNCHK-NYUGAIKBN = "2"    ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "201001"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   = "783"   ) AND
-                 (WRK-TEISYOTOKU     NOT =  SPACE  ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "201004"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   =
-                   "743" OR "442" OR "542"         ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "200804"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   =
-                   "543" OR "582"                  ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "200710"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   =
-                   "681" OR "682" OR "781"         ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "200904"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   = "683"   ) AND
-                 (WRK-TEISYOTOKU     NOT =  SPACE  ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "200904"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   = "343" OR
-                                           "342"   ) AND
-                 (LNK-FTNJGNCHK-NYUGAIKBN = "2"    ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "200507"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   = "344"   ) AND
-                 (WRK-TEISYOTOKU     NOT =  SPACE  ) AND
-                 (LNK-FTNJGNCHK-NYUGAIKBN = "2"    ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "200507"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   = "372" OR
-                                           "373"   ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "201101"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   =
-                   "462" OR "762"                  ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "201112"))
-             OR ((LNK-FTNJGNCHK-PREFNUM  =  11     ) AND
-                 (LNK-FTNJGNCHK-KOHNUM   =
-                   "562" OR "662"                  ) AND
-                 (LNK-FTNJGNCHK-NYUGAIKBN = "2"    ) AND
-                 (LNK-FTNJGNCHK-SRYYM   >= "201112"))
+             IF ((LNK-FTNJGNCHK-NYUGAIKBN = "2") AND
+                 (WRK-IRYOKEIKBN-G        = "1"))
+             OR ((LNK-FTNJGNCHK-NYUGAIKBN = "1") AND
+                 (WRK-IRYOKEIKBN-N        = "1"))
                IF   WRK-KOHFTN   NOT = ZERO
                        MOVE   01        TO  LNK-FTNJGNCHK-RC
                END-IF
@@ -1969,6 +1937,143 @@
       *
            .
        200412-SYUKEI-HENSYU2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Äã½êÆÀ¡¦ÄãÇ¯¶â¾ðÊóÊÔ½¸
+      *****************************************************************
+       2005-SYOTOKU-HENSYU-SEC       SECTION.
+      *
+           MOVE       1       TO      SYOTOKU-IDX
+      *
+           IF   LNK-FTNJGNCHK-SRYYM   >=  "200604"
+      *
+              INITIALIZE                         PTKOHINF-REC
+              MOVE    LNK-FTNJGNCHK-HOSPNUM  TO  PTKOH-HOSPNUM
+              MOVE    LNK-FTNJGNCHK-PTID     TO  PTKOH-PTID
+              MOVE    LNK-FTNJGNCHK-KOHID    TO  PTKOH-KOHID
+              MOVE    PTKOHINF-REC           TO  MCPDATA-REC
+              MOVE    "DBSELECT"             TO  MCP-FUNC
+              MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
+              MOVE    "key8"                 TO  MCP-PATHNAME
+              CALL    "ORCDBMAIN"            USING  MCPAREA
+                                                    MCPDATA-REC
+                                                    SPA-AREA
+              IF      MCP-RC   =    ZERO
+                MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+                MOVE    "key8"           TO  MCP-PATHNAME
+                PERFORM  910-PTKOHINF-READ-SEC
+                IF       FLG-PTKOHINF    =   ZERO
+                  IF   PTKOH-TEKSTYMD(1:6)  >=  LNK-FTNJGNCHK-SRYYM
+                      MOVE   PTKOH-TEKSTYMD(7:2)  TO   SYOTOKU-IDX
+                  END-IF
+                END-IF
+              END-IF
+              MOVE     "tbl_ptkohinf"    TO   MCP-TABLE
+              MOVE     "key8"            TO   MCP-PATHNAME
+              PERFORM   910-DB-CLOSE-SEC
+      *
+           END-IF
+      *
+           INITIALIZE                       ORCSSYOTOKUAREA
+           MOVE  LNK-FTNJGNCHK-HOSPNUM  TO  LNK-SYOTOKU-HOSPNUM
+           MOVE  LNK-FTNJGNCHK-PTID     TO  LNK-SYOTOKU-PTID
+           MOVE  LNK-FTNJGNCHK-SRYYM    TO  LNK-SYOTOKU-SRYYM
+      *
+           CALL    "ORCSSYOTOKU"   USING  ORCSSYOTOKUAREA
+                                          SPA-AREA
+      *
+           IF    LNK-SYOTOKU-RC    =   ZERO
+                 MOVE   LNK-SYOTOKU-CHIKBN(SYOTOKU-IDX)
+                                        TO  WRK-TEISYOTOKU
+                                            WRK-TEISYOTOKU2
+           END-IF
+      *
+           IF ((LNK-FTNJGNCHK-PREFNUM =  32            ) AND
+               (LNK-FTNJGNCHK-KOHNUM  = "191"          ) AND
+               (LNK-FTNJGNCHK-SRYYM  >= "200510"       ))
+           OR ((LNK-FTNJGNCHK-PREFNUM =  11            ) AND
+               (LNK-FTNJGNCHK-KOHNUM  = "483"          ) AND
+               (LNK-FTNJGNCHK-SRYYM  >= "200804"       ))
+           OR ((LNK-FTNJGNCHK-PREFNUM =  11            ) AND
+               (LNK-FTNJGNCHK-KOHNUM  = "344"          ) AND
+               (LNK-FTNJGNCHK-SRYYM  >= "200507"       ))
+             CONTINUE
+           ELSE
+             PERFORM  20051-SYSKAN-HENSYU-SEC
+             IF       WRK-CHIHOUNUMKBN         =   "1"
+               IF     LNK-FTNJGNCHK-NYUGAIKBN  =   "1"
+                 EVALUATE    WRK-TEISYOTOKU
+                   WHEN    "2"
+                   WHEN    "3"
+                     IF    HKN-TSY-NYUFTNNBK  =  "0"
+                       MOVE   SPACE   TO  WRK-TEISYOTOKU
+                     END-IF
+                   WHEN    "1"
+                   WHEN    "4"
+                     IF    HKN-TNK-NYUFTNKBN  =  "0"
+                       MOVE   SPACE   TO  WRK-TEISYOTOKU
+                     END-IF
+                 END-EVALUATE
+               ELSE
+                 EVALUATE    WRK-TEISYOTOKU
+                   WHEN    "2"
+                     IF    HKN-TSY-GAIFTNKBN  =  "0"
+                       MOVE   SPACE   TO  WRK-TEISYOTOKU
+                     END-IF
+                   WHEN    "1"
+                   WHEN    "4"
+                     IF    HKN-TNK-GAIFTNKBN  =  "0"
+                       MOVE   SPACE   TO  WRK-TEISYOTOKU
+                     END-IF
+                 END-EVALUATE
+               END-IF
+             ELSE
+                       MOVE   SPACE   TO  WRK-TEISYOTOKU
+             END-IF
+           END-IF
+      *
+           .
+       2005-SYOTOKU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸
+      *****************************************************************
+       20051-SYSKAN-HENSYU-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  WRK-CHIHOUNUMKBN
+      *
+           INITIALIZE                      SYS-1001-REC
+           MOVE    "1001"              TO  SYS-1001-KANRICD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
+           MOVE    LNK-FTNJGNCHK-HOSPNUM
+                                       TO  SYS-1001-HOSPNUM
+           MOVE    LNK-FTNJGNCHK-SRYYM TO  SYS-1001-STYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-1001-STYUKYMD(7:2)
+           MOVE    LNK-FTNJGNCHK-SRYYM TO  SYS-1001-EDYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-1001-EDYUKYMD(7:2)
+           MOVE    SYS-1001-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC               =  ZERO
+               MOVE     "tbl_syskanri" TO  MCP-TABLE
+               MOVE     "key10"        TO  MCP-PATHNAME
+               PERFORM   SYSKANRI-READ-SEC
+               MOVE      SYS-1001-CHIHOUNUMKBN
+                                       TO  WRK-CHIHOUNUMKBN
+           END-IF
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥¯¥í¡¼¥º
+           MOVE     "tbl_syskanri"     TO    MCP-TABLE
+           MOVE     "key10"            TO    MCP-PATHNAME
+           PERFORM   910-DB-CLOSE-SEC
+      *
+           .
+       20051-SYSKAN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

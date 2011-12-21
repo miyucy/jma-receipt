@@ -15802,8 +15802,9 @@
       *
                 IF   RECE62-SRYYM    >=  "200610"
                   IF   WRK-TOKUSYU-SKJFLG2(KH-IDX - 1) = ZERO
-                    IF    SYU-SKJ-FTNKBN(IDX3)  =  "5" OR "7" OR "8"
-                      IF   SYU-SKJ-FTNKBN(IDX3)  =  "8"
+                    IF    SYU-SKJ-FTNKBN(IDX3)  =
+                                      "5" OR "7" OR "8" OR "9"
+                      IF   SYU-SKJ-FTNKBN(IDX3)  =  "8" OR "9"
                         MOVE     2   TO    FLG-TOKUSYU-SKJ
                       ELSE
                         MOVE     1   TO    FLG-TOKUSYU-SKJ
