@@ -9523,6 +9523,7 @@
              WHEN      SPACE
                PERFORM    21134-SYSKAN2010-SET4-SEC
              WHEN       "0"
+               MOVE         "0"     TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
                IF ((WK-1001-PREFNUM         =   11     ) AND
                    (COMB-KOHHKNNUM(IDX-CYO) =  "382"   ) AND
                    (LNK-SYU-SRYYMD(1:6)    >= "200910" ) AND
@@ -9540,6 +9541,7 @@
              WHEN      SPACE
                PERFORM    21134-SYSKAN2010-SET4-SEC
              WHEN       "0"
+               MOVE         "0"     TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
                IF ((WK-1001-PREFNUM         =   11     ) AND
                    (COMB-KOHHKNNUM(IDX-CYO) =  "382"   ) AND
                    (LNK-SYU-SRYYMD(1:6)    >= "200910" ) AND
@@ -9556,6 +9558,7 @@
            EVALUATE  SYS-2010-SEIKANKBN-HON
              WHEN      SPACE
                PERFORM    21134-SYSKAN2010-SET4-SEC
+             WHEN       "0"
              WHEN       "1"
              WHEN       "2"
              WHEN       "3"
@@ -9566,6 +9569,7 @@
            EVALUATE  SYS-2010-SKJRYOKBN-TSY
              WHEN      SPACE
                PERFORM    21134-SYSKAN2010-SET4-SEC
+             WHEN       "0"
              WHEN       "1"
              WHEN       "2"
              WHEN       "3"
@@ -9576,6 +9580,7 @@
            EVALUATE  SYS-2010-SEIRYOKBN-TSY
              WHEN      SPACE
                PERFORM    21134-SYSKAN2010-SET4-SEC
+             WHEN       "0"
              WHEN       "1"
              WHEN       "2"
              WHEN       "3"
@@ -9586,6 +9591,7 @@
            EVALUATE  SYS-2010-SEIKANKBN-TSY
              WHEN      SPACE
                PERFORM    21134-SYSKAN2010-SET4-SEC
+             WHEN       "0"
              WHEN       "1"
              WHEN       "2"
              WHEN       "3"
@@ -9596,6 +9602,7 @@
            EVALUATE  SYS-2010-SKJRYOKBN-TNK
              WHEN      SPACE
                PERFORM    21134-SYSKAN2010-SET4-SEC
+             WHEN       "0"
              WHEN       "1"
              WHEN       "2"
              WHEN       "3"
@@ -9606,6 +9613,7 @@
            EVALUATE  SYS-2010-SEIRYOKBN-TNK
              WHEN      SPACE
                PERFORM    21134-SYSKAN2010-SET4-SEC
+             WHEN       "0"
              WHEN       "1"
              WHEN       "2"
              WHEN       "3"
@@ -9616,6 +9624,7 @@
            EVALUATE  SYS-2010-SEIKANKBN-TNK
              WHEN      SPACE
                PERFORM    21134-SYSKAN2010-SET4-SEC
+             WHEN       "0"
              WHEN       "1"
              WHEN       "2"
              WHEN       "3"
