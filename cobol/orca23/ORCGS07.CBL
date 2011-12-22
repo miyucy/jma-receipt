@@ -984,7 +984,7 @@
                MOVE    "期間指定が開始日＞終了日となっています"
                                        TO  SPA-ERRMSG
            WHEN    "1002"
-               MOVE "対象となる収納データが存在しません"
+               MOVE "対象となる外来収納データが存在しません"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *

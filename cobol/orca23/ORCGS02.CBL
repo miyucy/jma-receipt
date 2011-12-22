@@ -7779,7 +7779,7 @@
                                                TO  SPA-ERRMSG
       *
            WHEN    "0060"
-               MOVE "該当収納データが見つかりません" 
+               MOVE "該当する外来収納データが見つかりません" 
                                                TO  SPA-ERRMSG
            WHEN    "0061"
                MOVE "請求取消済みの為、再計算はできません"
