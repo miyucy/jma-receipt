@@ -4336,38 +4336,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label597</name>
-      <x>130</x>
-      <y>195</y>
-      <width>97</width>
-      <height>18</height>
-      <label>２</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>1</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label596</name>
-      <x>130</x>
-      <y>225</y>
-      <width>97</width>
-      <height>18</height>
-      <label>３</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>1</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>HKNKOHSBTKBN_CMB</name>
       <x>260</x>
@@ -4418,38 +4386,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label875</name>
-      <x>560</x>
-      <y>236</y>
-      <width>100</width>
-      <height>18</height>
-      <label>レセプト請求</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label599</name>
-      <x>560</x>
-      <y>204</y>
-      <width>70</width>
-      <height>18</height>
-      <label>点数単価</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label598</name>
       <x>368</x>
       <y>236</y>
@@ -4472,22 +4408,6 @@
       <width>120</width>
       <height>18</height>
       <label>条件−年齢開始</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label876</name>
-      <x>560</x>
-      <y>264</y>
-      <width>120</width>
-      <height>18</height>
-      <label>レセプト負担金額</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4633,86 +4553,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label877</name>
-      <x>488</x>
-      <y>108</y>
-      <width>144</width>
-      <height>20</height>
-      <label>法別番号チェック区分</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label591</name>
-      <x>130</x>
-      <y>105</y>
-      <width>120</width>
-      <height>18</height>
-      <label>保険公費種別区分</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label592</name>
-      <x>130</x>
-      <y>165</y>
-      <width>110</width>
-      <height>18</height>
-      <label>限定保険番号１</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label593</name>
-      <x>130</x>
-      <y>135</y>
-      <width>100</width>
-      <height>18</height>
-      <label>公費主保区分</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label595</name>
-      <x>488</x>
-      <y>136</y>
-      <width>140</width>
-      <height>18</height>
-      <label>検証番号チェック区分</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>HBTNUMCHKKBN_CMB</name>
       <x>680</x>
@@ -4834,12 +4674,172 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label599</name>
+      <x>560</x>
+      <y>204</y>
+      <width>70</width>
+      <height>18</height>
+      <label>点数単価</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label875</name>
+      <x>560</x>
+      <y>236</y>
+      <width>100</width>
+      <height>18</height>
+      <label>レセプト請求</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label876</name>
+      <x>560</x>
+      <y>264</y>
+      <width>120</width>
+      <height>18</height>
+      <label>レセプト負担金額</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label877</name>
+      <x>488</x>
+      <y>108</y>
+      <width>144</width>
+      <height>20</height>
+      <label>法別番号チェック区分</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label591</name>
+      <x>130</x>
+      <y>108</y>
+      <width>120</width>
+      <height>18</height>
+      <label>保険公費種別区分</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label595</name>
+      <x>488</x>
+      <y>136</y>
+      <width>140</width>
+      <height>18</height>
+      <label>検証番号チェック区分</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>label594</name>
       <x>488</x>
       <y>163</y>
       <width>190</width>
       <height>18</height>
       <label>受給者検証番号チェック区分</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label597</name>
+      <x>130</x>
+      <y>197</y>
+      <width>110</width>
+      <height>18</height>
+      <label>　　　　　　２</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label592</name>
+      <x>130</x>
+      <y>167</y>
+      <width>110</width>
+      <height>18</height>
+      <label>限定保険番号１</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label596</name>
+      <x>130</x>
+      <y>226</y>
+      <width>110</width>
+      <height>18</height>
+      <label>　　　　　　３</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label593</name>
+      <x>130</x>
+      <y>136</y>
+      <width>100</width>
+      <height>18</height>
+      <label>公費主保区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
