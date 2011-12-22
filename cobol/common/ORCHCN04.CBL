@@ -42,6 +42,7 @@
       *  04.05.00    NACL-太田    10/03/11  平成２２年４月改正対応
       *  04.06.00    NACL-多々納  10/12/01  自賠責金額入力対応
       *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
+      *  04.07.00    NACL-多々納  11/12/22  商品名コード単価対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -195,6 +196,9 @@
                05  WRK-NYUINYM         PIC X(06).
                05  WRK-NYUINDD         PIC 9(02).
            03  WRK-DOUDAY              PIC 9(02).
+      *    商品名単位名称
+           03  WRK-SYO-TANINAME        PIC X(12).
+           03  WRK-SYO-TEN             PIC 9(07)V99.
       *
            03  WRK-SUM-TENSU                   PIC 9(09)V99.
            03  WRK-SUM-KINGAKU                 PIC 9(09).
@@ -1234,6 +1238,11 @@
       *    器材商品名コード
            IF      SRY-SRYCD (IDXA)(1:3)   =   "058"
                MOVE   TNS-FORMALNAME       TO  TBL-NAME (IDX-S)
+      *ver.4.7 単位名称
+               MOVE    TNS-TANINAME        TO  WRK-SYO-TANINAME
+               MOVE    TNS-TEN             TO  WRK-SYO-TEN
+               MOVE    SPACE               TO  TNS-TANINAME
+               MOVE    ZERO                TO  TNS-TANICD
            END-IF
       *    器材商品名の器材コード
            IF     (SRY-SRYCD (IDXA)(1:1)   =   "7" ) AND
@@ -1244,6 +1253,15 @@
                           "〕"             DELIMITED   BY  SIZE
                           INTO             TBL-NAME  (IDX-S)
                END-STRING
+      *ver.4.7
+      *        商品名コードの単位へ
+               IF      WRK-SYO-TANINAME    NOT =   SPACE
+                   MOVE    WRK-SYO-TANINAME    TO  TNS-TANINAME
+                   MOVE    SPACE               TO  WRK-SYO-TANINAME
+               END-IF
+               IF      WRK-SYO-TEN         >   ZERO
+                   MOVE    WRK-SYO-TEN     TO  TNS-TEN
+               END-IF
            END-IF
       *
       *    単位
@@ -1253,8 +1271,14 @@
            IF     (TNS-TANICD          =   ZERO
                                        OR  SPACE )
       *        器材は単位なしでも表示
-               IF     (SRY-SRYCD (IDXA)(1:1)   =   "7" )
-                 AND  (SRY-SRYSURYO(IDXA)      >   1    )
+      *        IF     (SRY-SRYCD (IDXA)(1:1)   =   "7" )
+      *          AND  (SRY-SRYSURYO(IDXA)      >   1   )
+      *        器材、薬剤は単位なしでも表示（％加算、減算等は対象外）
+               IF    ( SRY-SRYCD (IDXA)(1:1)   =   "6"
+                                               OR  "7"  )  AND
+                     ( TNS-TEN                 >   ZERO )  AND
+                     ( TNS-TENSIKIBETU         =   1
+                                               OR  2    )
                    CONTINUE
                ELSE
                    MOVE    ZERO            TO  TBL-SURYO (IDX-S)

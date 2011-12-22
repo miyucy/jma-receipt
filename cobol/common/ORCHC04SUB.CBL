@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.06.00    NACL-多々納  10/11/29  自賠責金額入力対応
+      *  04.07.00    NACL-多々納  11/12/19  商品名コード単価対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -142,6 +143,10 @@
            03  WRK-Z-SURYO             PIC X(11).
            03  WRK-K-SURYO             PIC X(22).
            03  WRK-ZENHEN-SURYO        PIC X(80).
+      *
+      *    商品名単位名称
+           03  WRK-SYO-TANINAME        PIC X(12).
+           03  WRK-SYO-TEN             PIC 9(07)V99.
       *
        01  WRK-MEISAI-AREA.
            03  WRK-TBL-AREA            OCCURS   50.
@@ -524,7 +529,12 @@
            MOVE    TNS-NAME            TO  WRK-TBL-NAME  (IDX-S)
       *    器材商品名コード
            IF      SRY-SRYCD (IDXA)(1:3)   =   "058"
-               MOVE   TNS-FORMALNAME       TO  WRK-TBL-NAME  (IDX-S)
+               MOVE    TNS-FORMALNAME      TO  WRK-TBL-NAME  (IDX-S)
+      *ver.4.7 単位は器材コードで表示
+               MOVE    TNS-TANINAME        TO  WRK-SYO-TANINAME
+               MOVE    TNS-TEN             TO  WRK-SYO-TEN
+               MOVE    SPACE               TO  TNS-TANINAME
+               MOVE    ZERO                TO  TNS-TANICD
            END-IF
       *    器材商品名の器材コード
            IF     (SRY-SRYCD (IDXA)(1:1)   =   "7" ) AND
@@ -535,6 +545,16 @@
                           "〕"             DELIMITED   BY  SIZE
                           INTO             WRK-TBL-NAME  (IDX-S)
                END-STRING
+      *ver.4.7
+      *        商品名コードの単位へ
+               IF      WRK-SYO-TANINAME    NOT =   SPACE
+                   MOVE    WRK-SYO-TANINAME    TO  TNS-TANINAME
+                   MOVE    SPACE               TO  WRK-SYO-TANINAME
+               END-IF
+               IF      WRK-SYO-TEN         >   ZERO
+                   MOVE    WRK-SYO-TEN     TO  TNS-TEN
+               END-IF
+      *
            END-IF
       *    単位
            MOVE    TNS-TANINAME        TO  WRK-TBL-TANINAME(IDX-S)

@@ -184,6 +184,9 @@
            03  IDM                     PIC 9(04).
            03  IDM2                    PIC 9(04).
       *
+      *    商品名単位名称
+           03  WRK-SYO-TANINAME        PIC X(12).
+      *
       *    印刷内容
        01  HEAD-01.
            03  FILLER                  PIC X(10)   VALUE   SPACE.
@@ -863,6 +866,8 @@
       *    器材商品コード
            IF      ISET-INPUTCD(1:3)   =   "058"
                MOVE    1                   TO  FLG-KIZAI
+      *ver.4.7 単位は器材コードで表示
+               MOVE    WRK-TNS-TANINAME    TO  WRK-SYO-TANINAME
            ELSE
                MOVE    ZERO                TO  FLG-KIZAI
            END-IF
@@ -1018,6 +1023,12 @@
                            "〕"            DELIMITED  BY  SIZE
                                            INTO  WRK-NAME
                    END-STRING
+      *ver.4.7
+      *            商品名コードの単位へ
+                   IF      WRK-SYO-TANINAME    NOT =   SPACE
+                       MOVE    WRK-SYO-TANINAME    TO  TNS-TANINAME
+                       MOVE    SPACE               TO  WRK-SYO-TANINAME
+                   END-IF
                END-IF
       *
                IF     (TNS-YUKOSTYMD       <=  SPA-SRYYMD )  AND
@@ -1103,6 +1114,7 @@
            IF     (ISET-INPUTCD(1:1)   =   "6"  OR  "7" )  OR
                  ((ISET-INPUTCD(1:1)   NOT =   "1"   )  AND
                   (ISET-SURYO1         NOT =   1     )  )
+              OR  (ISET-INPUTCD(1:3)   =   "059"     )
                MOVE    ISET-SURYO1         TO  B01-SURYO1
                MOVE    WRK-HEN-SURYO       TO  B01-SURYO-HEN
                MOVE    WRK-TNS-TANINAME    TO  B01N-TANINAME

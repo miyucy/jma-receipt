@@ -191,6 +191,9 @@
       *
            03  WRK-BRMNUM              PIC 9(06).
            03  WRK-Z6                  PIC ZZZZZ9.
+      *    商品名単位名称
+           03  WRK-SYO-TANINAME        PIC X(12).
+      *
       *---(01.00.01) LINE ADD START -----------------------------------
       *    コメント備考
        01  WRK-BIKOU-COMMENT-AREA.
@@ -874,6 +877,9 @@
       *            器材商品名コード
                    IF      WRK-SRYCD (1:3)     =   "058"
                        MOVE   TNS-FORMALNAME       TO  WRK-TNS-NAME
+      *ver.4.7 単位名称
+                       MOVE    TNS-TANINAME        TO  WRK-SYO-TANINAME
+                       MOVE    SPACE               TO  TNS-TANINAME
                    END-IF
       *!           器材商品名の器材
                    IF     (WRK-SRYCD (1:1)     =   "7"  )  AND
@@ -884,6 +890,12 @@
                                "〕"            DELIMITED  BY  SIZE
                                                INTO    WRK-TNS-NAME
                        END-STRING
+      *ver.4.7
+      *                商品名コードの単位へ
+                       IF      WRK-SYO-TANINAME    NOT =   SPACE
+                           MOVE    WRK-SYO-TANINAME    TO  TNS-TANINAME
+                           MOVE    SPACE           TO  WRK-SYO-TANINAME
+                       END-IF
                    END-IF
                END-IF
       *        名称編集
