@@ -114,6 +114,7 @@
       *                                     種別不明レセ対応
       *                                     不明分ありのとき赤字でエラー
       *                                     表示を行う
+      *  04.06.02    NACL-藤原    11/12/12  点検レセ０点公費印字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2331,6 +2332,11 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                        MOVE    ZERO            TO
                                            SYS-200501-ROUPRTKBN-N
                    END-IF
+                   IF      SYS-200501-INSPECT-ZERO-KBN
+                                               =   SPACE
+                       MOVE    "0"             TO
+                                           SYS-200501-INSPECT-ZERO-KBN
+                   END-IF
       *
                    MOVE    SPACE           TO  SHELLTBL
                    EVALUATE    SPA-R01-RECEKBN
@@ -2388,7 +2394,8 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
       *     
                    MOVE    SPA-NAI-SRYYM   TO  WRK-SHELL-SRYYM
                    MOVE    SPA-TERMID      TO  WRK-SHELL-TERMID
-                   MOVE    SPA-SYSYMD      TO  WRK-SHELL-SYSYMD
+      *************MOVE    SPA-SYSYMD      TO  WRK-SHELL-SYSYMD
+                   MOVE    SMCNDATE-YMD    TO  WRK-SHELL-SYSYMD
                    MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG1
                    MOVE    "1"             TO  SHELLTBL-ARG2
                    MOVE    SPA-R01-RECEKBN TO  SHELLTBL-ARG3
@@ -2469,7 +2476,13 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                                                    TO  SHELLTBL-ARG17
                            END-IF
                    END-EVALUATE
-                   MOVE    SPA-R01-PRTKBN  TO  SHELLTBL-ARG18
+                   IF    ( SPA-R01-PRTKBN      =   "2" )
+                   AND   ( SYS-200501-INSPECT-ZERO-KBN
+                                               =   "1" )
+                       MOVE    "3"                 TO  SHELLTBL-ARG18
+                   ELSE
+                       MOVE    SPA-R01-PRTKBN      TO  SHELLTBL-ARG18
+                   END-IF
                    MOVE    "0"             TO  SHELLTBL-ARG19
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC

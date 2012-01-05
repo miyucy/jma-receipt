@@ -46,7 +46,7 @@
       <class>GtkPandaEntry</class>
       <name>SKYYM</name>
       <x>280</x>
-      <y>30</y>
+      <y>40</y>
       <width>104</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1600,7 +1600,7 @@
       <class>GtkLabel</class>
       <name>label600</name>
       <x>416</x>
-      <y>30</y>
+      <y>40</y>
       <width>250</width>
       <height>18</height>
       <label>¡Ê½ÐÎÏÂÐ¾Ý¤Î¿ÇÎÅÇ¯·î¤òÆþÎÏ¡Ë¡¡¡¡</label>
@@ -1616,7 +1616,7 @@
       <class>GtkLabel</class>
       <name>label505</name>
       <x>200</x>
-      <y>30</y>
+      <y>40</y>
       <width>60</width>
       <height>18</height>
       <label>¿ÇÎÅÇ¯·î</label>
@@ -1633,9 +1633,9 @@
       <name>TITLE</name>
       <x>200</x>
       <y>8</y>
-      <width>569</width>
+      <width>640</width>
       <height>18</height>
-      <label>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°¡¡¡¡</label>
+      <label>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>7.45058e-09</xalign>

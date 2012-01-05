@@ -41,6 +41,8 @@
       *  04.03.03    NACL-藤原    08/08/19  仮レセ作成（院外処方含む）対応
       *
       *  04.05.01    NACL-藤原    11/08/02  労災新様式対応
+      *
+      *  04.06.01    NACL-藤原    11/12/12  点検レセ０点公費印字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -323,6 +325,19 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
            END-IF
            IF      SYS-200501-ROUPRTKBN-N  =   SPACE
                MOVE    ZERO                TO  SYS-200501-ROUPRTKBN-N
+           END-IF
+           IF      SYS-200501-ROUPRTKBN-N  =   SPACE
+               MOVE    ZERO                TO  SYS-200501-ROUPRTKBN-N
+           END-IF
+           IF      SYS-200501-INSPECT-ZERO-KBN
+                                           =   SPACE
+               MOVE    "0"                 TO
+                                           SYS-200501-INSPECT-ZERO-KBN
+           END-IF
+           IF    ( LINK-PRTKBN             =   "2" )
+           AND   ( SYS-200501-INSPECT-ZERO-KBN
+                                           =   "1" )
+               MOVE    "3"                 TO  LINK-PRTKBN
            END-IF
       *                
       *    出力先プリンタ名割り当て情報の取得

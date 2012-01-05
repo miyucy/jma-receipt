@@ -67,6 +67,7 @@
       *                                     番号の表示に自立支援を追加
       *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
       *                                     は公費単独のレセプトとする
+      *  04.06.03    NACL-藤原    11/12/12  点検レセ０点公費印字対応
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       *****************************************************************
@@ -147,6 +148,8 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-SYURUINAME      PIC X(40).
+      *
+       01  WRK-ERRCD               PIC X(04).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -231,6 +234,7 @@
            MOVE    SPA-FREE        TO  SPA-H01FREE
            MOVE    SPA-WORK        TO  SPA-H01KYOUTU
       *
+           MOVE    SPA-ERRCD       TO  WRK-ERRCD
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
@@ -267,6 +271,10 @@
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "HERR"
+               IF      WRK-ERRCD           =   "0009"
+                   PERFORM 210-BACK
+                   GO  TO  100-INIT-EXT
+               END-IF
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
@@ -400,8 +408,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        OR          IDX            =  50
                ADD     1                   TO  IDX
                MOVE    MCPDATA-REC     TO  RECE10-REC
-               MOVE    RECE10-KEY      TO
-                                   SPA-H99NAI-RECE10-KEY (IDX)
+               MOVE    RECE10-KEY      TO  SPA-H99NAI-RECE10-KEY   (IDX)
+      *        点検レセ０点公費あり
+               MOVE    RECE10-SKYKBN-RECEDEN
+                                       TO  SPA-H99NAI-SKYKBN-RECEDEN
+                                                                   (IDX)
+      *  
                MOVE    IDX             TO  WRK-Z9
                MOVE    WRK-Z9          TO
                                    SPA-H99GMN-TRENNUM    (IDX)
@@ -833,6 +845,12 @@ grpsys         PERFORM 900-DBSELECT-SEC
            ELSE
                MOVE    SPA-H99NAI-RECE10-KEY (SPA-H99GMN-SELNUM)
                                        TO  SPA-H99-KEY
+      *        点検用レセ０点公費のとき入力不可
+               IF      SPA-H99NAI-SKYKBN-RECEDEN  (SPA-H99GMN-SELNUM)
+                                           =   "1"
+                   MOVE    "0009"              TO  SPA-ERRCD
+                   GO  TO  4104-SELNUM-CHK-EXT
+               END-IF
       *        主科設定時の主科未設定のチェック（特別療養費を除く）
                IF    ( SPA-H99-RECEKA          =   "00"   )
                AND   ( SPA-H99-RECESYUBETU NOT =   "6666" )
@@ -879,6 +897,12 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
            MOVE    SPA-H99NAI-RECE10-KEY (SPA-H99GMN-SELNUM)
                                        TO  SPA-H99-KEY
+      *    点検用レセ０点公費のとき入力不可
+           IF      SPA-H99NAI-SKYKBN-RECEDEN  (SPA-H99GMN-SELNUM)
+                                       =   "1"
+               MOVE    "0009"              TO  SPA-ERRCD
+               GO  TO  4105-RECESEL-EXT
+           END-IF
       *    主科設定時の主科未設定のチェック（特別療養費を除く）
            IF    ( SPA-H99-RECEKA          =   "00"   )
            AND   ( SPA-H99-RECESYUBETU NOT =   "6666" )
@@ -886,24 +910,24 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    WHEN    "1"
                        IF     SPA-NAI-2009-SYUKA-SYAHO  =   "1"                           
                            MOVE    "1006"         TO  SPA-HIDCD
-                           GO  TO  41016-BYOMEISEL-EXT
+                           GO  TO  4105-RECESEL-EXT
                        END-IF
                    WHEN    "2"
                        IF      SPA-NAI-2009-SYUKA-KOKUHO =   "1"
                            MOVE    "1006"         TO  SPA-HIDCD
-                           GO  TO  41016-BYOMEISEL-EXT
+                           GO  TO  4105-RECESEL-EXT
                        END-IF
                    WHEN    "6"
                        IF      SPA-NAI-2009-SYUKA-KOUIKI =   "1"
                            MOVE    "1006"         TO  SPA-HIDCD
-                           GO  TO  41016-BYOMEISEL-EXT
+                           GO  TO  4105-RECESEL-EXT
                        END-IF
                END-EVALUATE
            END-IF
       *
            PERFORM 210-BACK
            .
-       41016-BYOMEISEL-EXT.
+       4105-RECESEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1050,9 +1074,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    エラーメッセージ表示理
+      *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
@@ -1061,6 +1086,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
                WHEN    "0003"
                    MOVE    "対象のレセプトは存在しません"
                                              TO  SPA-ERRMSG
+               WHEN    "0009"
+                   MOVE
+                   "０点公費記載のレセプトです、更新処理はできません" 
+                                               TO  SPA-ERRMSG
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
