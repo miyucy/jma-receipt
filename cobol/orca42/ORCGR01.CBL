@@ -4274,10 +4274,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                        =   SPACE
                MOVE    ZERO            TO  SYS-200501-ROUPRTKBN-N
            END-IF
-           IF      SYS-200501-INSPECT-ZERO-KBN
-                                       =   SPACE
-               MOVE    "0"             TO  SYS-200501-INSPECT-ZERO-KBN
-           END-IF
       *
            MOVE    SPACE           TO  SHELLTBL
            EVALUATE    SPA-R01-RECEKBN
@@ -4416,9 +4412,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                                                    TO  SHELLTBL-ARG17
                    END-IF
            END-EVALUATE
-           IF    ( SPA-R01-PRTKBN      =   "2" )
-           AND   ( SYS-200501-INSPECT-ZERO-KBN
-                                       =   "1" )
+      *    医保分で点検用レセのとき
+           IF    ( SPA-R01-RECEKBN     =   "0" OR  "1" OR
+                                           "2" OR  "7"    )
+           AND   ( SPA-R01-PRTKBN      =   "2"            )
+           AND   ( SPA-R01-INSPECT-ZERO-KBN
+                                       =   "1"            )
                MOVE    "3"                 TO  SHELLTBL-ARG18
            ELSE
                MOVE    SPA-R01-PRTKBN      TO  SHELLTBL-ARG18

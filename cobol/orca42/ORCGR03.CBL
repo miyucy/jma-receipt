@@ -184,6 +184,8 @@
                        09  SPA-GMN-PRTKBN          PIC X(01).
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-PRTKBNMEI       PIC X(30).
+      *             
+                   07  SPA-GMN-PRTKBN-LABEL        PIC X(20).
       *
                    07  SPA-DATAKBN.         
                        09  SPA-DATAKBN1-VALUE      PIC X(01).
@@ -206,6 +208,8 @@
                    07  SPA-NAI-NYUGAIKBN           PIC X(06).
       *
                    07  SPA-NAI-2005-AUTODSPKBN     PIC X(01).
+                   07  SPA-NAI-200501-INSPECT-ZERO-KBN
+                                                   PIC X(01).
       *
        01  SPA-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -687,6 +691,28 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            MOVE    SYS-2005-AUTODSPKBN 
                                    TO  SPA-NAI-2005-AUTODSPKBN
       *
+      *    区分コード０１のデータ読み込み
+           INITIALIZE                  SYS-200501-REC
+           MOVE    "2005"          TO  SYS-200501-KANRICD
+           MOVE    "01"            TO  SYS-200501-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-200501-STYUKYMD
+                                       SYS-200501-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
+           MOVE    SYS-200501-REC  TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE   MCPDATA-REC  TO  SYS-200501-REC
+           ELSE
+               INITIALIZE              SYS-200501-REC
+               MOVE    SYS-2005-TERMID (1:4)
+                                   TO  SYS-200501-TBL (1:4)
+           END-IF
+           IF      SYS-200501-INSPECT-ZERO-KBN
+                                   =   SPACE
+               MOVE    "0"             TO  SYS-200501-INSPECT-ZERO-KBN
+           END-IF
+           MOVE    SYS-200501-INSPECT-ZERO-KBN
+                                   TO  SPA-NAI-200501-INSPECT-ZERO-KBN
       *
            IF      SPA-BEDSU           >   ZERO
                MOVE    3                   TO  SPA-GMN-CUR
@@ -884,6 +910,22 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            END-EVALUATE      
       *
            MOVE    SPA-R01-AUTODSPKBN  TO  SPA-NAI-2005-AUTODSPKBN
+           MOVE    SPA-R01-INSPECT-ZERO-KBN
+                                       TO
+                                       SPA-NAI-200501-INSPECT-ZERO-KBN
+      *
+           IF    ( SPA-GMN-PRTKBN      =   "2" )
+               IF    ( SPA-NAI-200501-INSPECT-ZERO-KBN
+                                           =   "1" )
+                   MOVE    "０点公費を記載する"
+                                           TO  SPA-GMN-PRTKBN-LABEL
+      ******   ELSE
+      ******       MOVE    "０点公費を記載しない"
+      ******                               TO  SPA-GMN-PRTKBN-LABEL
+               END-IF
+           ELSE
+               MOVE    SPACE           TO   SPA-GMN-PRTKBN-LABEL
+           END-IF
       *
            IF      SPA-GMN-IKKATU          =   "T" 
                MOVE    2               TO  SPA-GMN-CUR
@@ -1163,6 +1205,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
       *****************************************************************
        41023-PRTKBN-CHK-SEC                SECTION.
       *
+           MOVE    SPACE               TO  SPA-GMN-PRTKBN-LABEL
+      *
            IF      SPA-GMN-PRTKBN      =   SPACE
                IF      SPA-GMN-SYOKBN      =   "T"
                    MOVE    SPA-GMN-PRTKBNLST (1)
@@ -1194,7 +1238,20 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    4                   TO  SPA-GMN-CUR
-           END-IF 
+           ELSE
+               IF    ( SPA-GMN-PRTKBN      =   "2" )
+                   IF    ( SPA-NAI-200501-INSPECT-ZERO-KBN
+                                               =   "1" )
+                       MOVE    "０点公費を記載する"
+                                               TO  SPA-GMN-PRTKBN-LABEL
+      ******       ELSE
+      ******           MOVE    "０点公費を記載しない"
+      ******                                   TO  SPA-GMN-PRTKBN-LABEL
+                   END-IF
+               ELSE
+                   MOVE    SPACE           TO   SPA-GMN-PRTKBN-LABEL
+               END-IF
+           END-IF
            .
        41023-PRTKBN-CHK-EXT.
            EXIT.
@@ -2332,11 +2389,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                        MOVE    ZERO            TO
                                            SYS-200501-ROUPRTKBN-N
                    END-IF
-                   IF      SYS-200501-INSPECT-ZERO-KBN
-                                               =   SPACE
-                       MOVE    "0"             TO
-                                           SYS-200501-INSPECT-ZERO-KBN
-                   END-IF
       *
                    MOVE    SPACE           TO  SHELLTBL
                    EVALUATE    SPA-R01-RECEKBN
@@ -2476,9 +2528,12 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                                                    TO  SHELLTBL-ARG17
                            END-IF
                    END-EVALUATE
-                   IF    ( SPA-R01-PRTKBN      =   "2" )
-                   AND   ( SYS-200501-INSPECT-ZERO-KBN
-                                               =   "1" )
+      *            医保分で点検用レセのとき
+                   IF    ( SPA-R01-RECEKBN     =   "0" OR  "1" OR
+                                                   "2" OR  "7"    )
+                   AND   ( SPA-R01-PRTKBN      =   "2"            )
+                   AND   ( SPA-R01-INSPECT-ZERO-KBN
+                                               =   "1"            )
                        MOVE    "3"                 TO  SHELLTBL-ARG18
                    ELSE
                        MOVE    SPA-R01-PRTKBN      TO  SHELLTBL-ARG18
@@ -2591,6 +2646,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    SPA-NAI-2005-AUTODSPKBN
                                        TO  SPA-R01-AUTODSPKBN
+           MOVE    SPA-NAI-200501-INSPECT-ZERO-KBN
+                                       TO  SPA-R01-INSPECT-ZERO-KBN
       *
            MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
       *
@@ -2947,6 +3004,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                            TO  R03-PRTKBN-ITEM (IDX)
            END-PERFORM
            MOVE    SPA-GMN-PRTKBN-MAX   TO  R03-PRTKBN-COUNT
+      *
+           MOVE    SPA-GMN-PRTKBN-LABEL TO  R03-PRTKBN-LABEL
+           MOVE    "blue"               TO  R03-PRTKBN-LABEL-STYLE
+      * 
            EVALUATE    SPA-GMN-SYOKBN
                WHEN    "T"
                    MOVE    WIDGET-NORMAL       TO  R03-PRTKBN-STATE

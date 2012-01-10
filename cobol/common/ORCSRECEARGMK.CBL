@@ -335,6 +335,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                            SYS-200501-INSPECT-ZERO-KBN
            END-IF
            IF    ( LINK-PRTKBN             =   "2" )
+           AND   ( LINK-HKNKBN             =   "0" )
            AND   ( SYS-200501-INSPECT-ZERO-KBN
                                            =   "1" )
                MOVE    "3"                 TO  LINK-PRTKBN
