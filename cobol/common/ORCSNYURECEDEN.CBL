@@ -656,6 +656,9 @@
       *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
+      *    医療機関コード切替え判定サブ
+           COPY    "CPORCSHOSPCHG.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -791,6 +794,13 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
+      *
+      *    テスト　医療機関コード切替え判定サブ
+           INITIALIZE                             ORCSHOSPCHG-AREA
+           MOVE    LNK-NYURECEDEN-HOSPNUM     TO  LNK-HOSPCHG-HOSPNUM
+           MOVE    LNK-NYURECEDEN-SANTEIYM    TO  LNK-HOSPCHG-HANTEIYM
+           CALL    "ORCSHOSPCHG"          USING   ORCSHOSPCHG-AREA
+                                                  SPA-AREA
            .
        100-PRM-CHK-EXT.
            EXIT.
@@ -6479,11 +6489,11 @@
                    COMPUTE WRK-SKJ7-SRYCDTOTAL(IDX1)  =
                            WRK-SKJ7-SRYCDTOTAL(IDX1)  +  WRK-SRYCD-9
                END-IF
-      **         IF   WRK-SKJ7-TOKU-SHOKU(IDX1)  NOT =  SPACE
-      **             MOVE    WRK-SKJ7-TOKU-SHOKU(IDX1)  TO WRK-SRYCD-X
-      **             COMPUTE WRK-SKJ7-SRYCDTOTAL(IDX1)  =
-      **                     WRK-SKJ7-SRYCDTOTAL(IDX1)  +  WRK-SRYCD-9
-      **         END-IF
+               IF   WRK-SKJ7-TOKU-SHOKU(IDX1)  NOT =  SPACE
+                   MOVE    WRK-SKJ7-TOKU-SHOKU(IDX1)  TO WRK-SRYCD-X
+                   COMPUTE WRK-SKJ7-SRYCDTOTAL(IDX1)  =
+                           WRK-SKJ7-SRYCDTOTAL(IDX1)  +  WRK-SRYCD-9
+               END-IF
                IF   WRK-SKJ7-SKJFTN(IDX1)      NOT =  SPACE
                    MOVE    WRK-SKJ7-SKJFTN(IDX1)  TO WRK-SRYCD-X
                    COMPUTE WRK-SKJ7-SRYCDTOTAL(IDX1)  =
