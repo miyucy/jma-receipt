@@ -69,6 +69,7 @@
       *  04.06.00    NACL-多々納  10/07/XX  エラー内容変更
       *  04.06.00    NACL-多々納  10/12/20  患者禁忌薬剤経過措置対応
       *  04.07.00    NACL-多々納  11/12/20  商品名コード金額単位対応
+      *  04.07.00    NACL-多々納  12/01/10  新生児２８日判定修正
       *****************************************************************
       *
       *
@@ -1688,10 +1689,10 @@
                CONTINUE
            ELSE
                IF      WRK-TNS-KGNAGE          =   "AA"
-      *            新生児判定
+      *            新生児判定（２８日まで新生児）
                    IF     (LNK-SC92-NENREI-YY   =   ZERO )  AND
                           (LNK-SC92-NENREI-MM   =   ZERO )  AND
-                          (LNK-SC92-NENREI-DD   <   28   )
+                          (LNK-SC92-NENREI-DD   <=  28   )
                        MOVE    "0032"              TO  LNK-SC92-ERRCD5
                    END-IF
                ELSE
@@ -1708,10 +1709,10 @@
                CONTINUE
            ELSE
                IF      WRK-TNS-JGNAGE          =   "AA"
-      *            新生児判定
+      *            新生児判定（２８日まで新生児）
                    IF     (LNK-SC92-NENREI-YY    =   ZERO )  AND
                           (LNK-SC92-NENREI-MM    =   ZERO )  AND
-                          (LNK-SC92-NENREI-DD    <   28   )
+                          (LNK-SC92-NENREI-DD    <=  28   )
                        CONTINUE
                    ELSE
                        MOVE    "0032"              TO  LNK-SC92-ERRCD5
