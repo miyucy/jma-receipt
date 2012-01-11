@@ -711,7 +711,7 @@
            MOVE    WRK-HKNCOMBI        TO  SPA-HKNCOMBINUM
            MOVE    WRK-DRCD            TO  SPA-DRCD
            MOVE    WRK-SRYKA           TO  SPA-SRYKA
-           MOVE    SPACE               TO  SPA-PRT-FLG
+      *****MOVE    SPACE               TO  SPA-PRT-FLG
            CALL    WRK-SYOHOU-PG       USING   SPA-AREA
                                                ORCHC19AREA
            .
