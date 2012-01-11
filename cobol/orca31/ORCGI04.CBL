@@ -6253,9 +6253,11 @@
            IF    ( WKPTNYUINRRK-DOUJITSUKBN    =   "1" )
                MOVE    "1"                 TO  ORCSNYUINSHO-DOUJITSUKBN
            END-IF
+           MOVE    "04"            TO      WRK-SPA-PRT-FLG
            CALL    "ORCSNYUINSHO"      USING
                                        WRK-SPA-AREA
                                        ORCSNYUINSHOAREA
+           MOVE    SPACE           TO      WRK-SPA-PRT-FLG
            .
        451-SHOHOSEN-PRINT-EXT.
            EXIT.
