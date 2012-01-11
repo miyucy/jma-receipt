@@ -499,12 +499,13 @@
            MOVE    SPACE               TO  MCP-PUTTYPE
            MOVE    "R03    "           TO  MCP-WINDOW
       *
-           PERFORM 900-PUT-WINDOW.
+           PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
            .
        100-INIT-EXT.
            EXIT.
+      *
       *****************************************************************
       *    初期画面処理
       *****************************************************************
@@ -823,6 +824,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                    MOVE    SPA-GMN-PRTKBNLST (1)
                                                TO  SPA-GMN-PRTKBN-G
                WHEN    "2"    
+               WHEN    "3"    
                    MOVE    SPA-GMN-PRTKBNLST (2)
                                                TO  SPA-GMN-PRTKBN-G
            END-EVALUATE        
@@ -903,10 +905,19 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
            EVALUATE    SPA-GMN-SYOKBN
                WHEN    "T"
                    MOVE    "レセプト新規作成" TO  SPA-GMN-SYOKBN-LABEL
+                   IF      SPA-R01-PRTKBN     =   "3"
+                       MOVE    "０点公費記載設定"
+                                              TO  SPA-GMN-PRTKBN-LABEL
+                   ELSE
+      *****            MOVE    "０点公費を記載しない"
+      *****                                   TO  SPA-GMN-PRTKBN-LABEL
+                       MOVE    SPACE          TO  SPA-GMN-PRTKBN-LABEL
+                   END-IF
                WHEN    "F"
                    MOVE    "作成済レセプト再印刷"
                                               TO  SPA-GMN-SYOKBN-LABEL
                    MOVE    SPACE              TO  SPA-GMN-PRTKBN-G
+                   MOVE    SPACE              TO  SPA-GMN-PRTKBN-LABEL
            END-EVALUATE      
       *
            MOVE    SPA-R01-AUTODSPKBN  TO  SPA-NAI-2005-AUTODSPKBN
@@ -914,18 +925,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                        TO
                                        SPA-NAI-200501-INSPECT-ZERO-KBN
       *
-           IF    ( SPA-GMN-PRTKBN      =   "2" )
-               IF    ( SPA-NAI-200501-INSPECT-ZERO-KBN
-                                           =   "1" )
-                   MOVE    "０点公費を記載する"
-                                           TO  SPA-GMN-PRTKBN-LABEL
-      ******   ELSE
-      ******       MOVE    "０点公費を記載しない"
-      ******                               TO  SPA-GMN-PRTKBN-LABEL
-               END-IF
-           ELSE
-               MOVE    SPACE           TO   SPA-GMN-PRTKBN-LABEL
-           END-IF
       *
            IF      SPA-GMN-IKKATU          =   "T" 
                MOVE    2               TO  SPA-GMN-CUR
@@ -1242,7 +1241,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                IF    ( SPA-GMN-PRTKBN      =   "2" )
                    IF    ( SPA-NAI-200501-INSPECT-ZERO-KBN
                                                =   "1" )
-                       MOVE    "０点公費を記載する"
+                       MOVE    "０点公費記載設定"
                                                TO  SPA-GMN-PRTKBN-LABEL
       ******       ELSE
       ******           MOVE    "０点公費を記載しない"
@@ -1836,6 +1835,10 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                                MOVE    SPA-GMN-PRTKBNLST (2)
                                               TO  SPA-GMN-PRTKBN-G
                                MOVE    "2"    TO  SPA-R01-PRTKBN
+                           WHEN    "2"
+                               MOVE    SPA-GMN-PRTKBNLST (2)
+                                              TO  SPA-GMN-PRTKBN-G
+                               MOVE    "3"    TO  SPA-R01-PRTKBN
                        END-EVALUATE
                    END-IF    
            END-EVALUATE
@@ -2528,16 +2531,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                                                    TO  SHELLTBL-ARG17
                            END-IF
                    END-EVALUATE
-      *            医保分で点検用レセのとき
-                   IF    ( SPA-R01-RECEKBN     =   "0" OR  "1" OR
-                                                   "2" OR  "7"    )
-                   AND   ( SPA-R01-PRTKBN      =   "2"            )
-                   AND   ( SPA-R01-INSPECT-ZERO-KBN
-                                               =   "1"            )
-                       MOVE    "3"                 TO  SHELLTBL-ARG18
-                   ELSE
-                       MOVE    SPA-R01-PRTKBN      TO  SHELLTBL-ARG18
-                   END-IF
+                   MOVE    SPA-R01-PRTKBN  TO  SHELLTBL-ARG18
                    MOVE    "0"             TO  SHELLTBL-ARG19
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
@@ -2641,6 +2635,14 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-R01-NYUGAIKBN
       *
            MOVE    SPA-GMN-PRTKBN      TO  SPA-R01-PRTKBN
+      *    医保分で点検用レセ（０点公費あり）のとき
+           IF    ( SPA-R01-RECEKBN     =   "0" OR  "1" OR
+                                           "2" OR  "7"    )
+           AND   ( SPA-R01-PRTKBN      =   "2"            )
+           AND   ( SPA-NAI-200501-INSPECT-ZERO-KBN
+                                       =   "1"            )
+               MOVE    "3"                 TO  SPA-R01-PRTKBN
+           END-IF
       *
            MOVE    SPACE               TO  SPA-R01-GMNKBN
       *
@@ -2649,7 +2651,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-NAI-200501-INSPECT-ZERO-KBN
                                        TO  SPA-R01-INSPECT-ZERO-KBN
       *
-           MOVE    SPA-R01KYOUTU       TO  SPA-WORK       
+           MOVE    SPA-R01KYOUTU       TO  SPA-WORK
       *
            .
        45011-PARA-HENSYU-EXT.

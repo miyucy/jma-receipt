@@ -9550,8 +9550,12 @@
                            MOVE    "4"             TO  RECE07-SYORISBT
                    END-EVALUATE
                END-IF
-               IF      WRK-PARA-PRTKBN     =   "2" OR  "3"
+               IF      WRK-PARA-PRTKBN     =   "2"
                    MOVE    "1"                 TO  RECE07-PRTKBN
+               ELSE
+                   IF      WRK-PARA-PRTKBN     =   "3"
+                       MOVE    "2"                 TO  RECE07-PRTKBN
+                   END-IF
                END-IF
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
