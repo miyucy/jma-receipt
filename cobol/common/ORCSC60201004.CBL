@@ -55,7 +55,6 @@
       *  04.05.00    NACL-多々納  10/03/XX  Ｈ２２．４改正対応
       *  04.06.00    NACL-多々納  10/07/01  残量廃棄自動算定対応
       *  04.06.00    NACL-多々納  10/07/16  免疫学的検査重複チェック対応
-      *  04.07.00    NACL-多々納  11/11/25  同日再入院対応
       *****************************************************************
       *
       *
@@ -254,8 +253,6 @@
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(07).
                05  WRK-SURYO-S2    PIC 9(05).
-      *
-           03  WRK-D-DAY           PIC 9(03).
       *
       *    検査　判断グループ
        01  WRK-KENSA-AREA.
@@ -845,9 +842,9 @@
                    END-IF
       *
       *----(01.00.03) LINE ADD START ----------------------------------
-      *H24.5       年齢加算算定チェック
-      *            MOVE    SPACE               TO  WRK-NYU-SRYCD
-      *            PERFORM 1007-NENREI-SYORI-SEC
+      *            年齢加算算定チェック
+                   MOVE    SPACE               TO  WRK-NYU-SRYCD
+                   PERFORM 1007-NENREI-SYORI-SEC
       *----(01.00.03) LINE ADD END   ----------------------------------
       *            施設基準不適合チェック
                    IF      WRK-COM-KIJUNTEIGENKBN(IDX-Z)
@@ -871,11 +868,6 @@
                            PERFORM 100115-ZENKNSCOMMNT-SET-SEC
                        END-IF
                    END-IF
-      *H24.5
-      *            年齢加算算定チェック
-                   MOVE    SPACE               TO  WRK-NYU-SRYCD
-                   PERFORM 1007-NENREI-SYORI-SEC
-      *
       *            初回コンタクトレンズ検査チェック
       *Ｈ２０．４から削除
       *********    IF     (SPA-ERRCD           =   SPACE ) AND
@@ -3319,9 +3311,9 @@
       *****************************************************************
        2001-JIDOTUIKA-SEC     SECTION.
       *
-      **   IF      FLG-KASAN       NOT =   5
+           IF      FLG-KASAN       NOT =   5
                PERFORM 1110-KASAN-CHK-SEC
-      **   END-IF
+           END-IF
            IF      FLG-ARI             =   1
                MOVE    IDX-T               TO  WRK-IDX
            ELSE
@@ -4795,12 +4787,6 @@
                    ADD     1               TO  IDN2
                    MOVE    1               TO  IDN3
                END-IF
-      *        '-' の次判定
-               IF     (WRK-SEL (IDN1)      =   "-" )
-                  AND ((IDN3   +   3 )     >=  19  )
-                   ADD     1               TO  IDN2
-                   MOVE    1               TO  IDN3
-               END-IF
                IF      LNK-ORCSC-INPUTCD(07 IDXS IDN2)   =   SPACE
                    STRING  "*"             DELIMITED  BY  SIZE
                            WRK-KAISU-H     DELIMITED  BY  SPACE
@@ -5000,17 +4986,7 @@
                PERFORM VARYING    IDX2     FROM    1   BY  1
                        UNTIL     (IDX2     >   31  )  OR
                                  (FLG-KENSA-ARI    =   1   )
-      *ver.4.7
-      *        同日再入院日
-               MOVE    ACCT-DAY (2 IDX2)   TO  WRK-D-DAY
-               IF     (SPA-K02N-DOUDAY     >   ZERO )
-                   IF     (WRK-YM          =   SPA-K02N-NYUINYMD(1:6))
-                     AND  (SPA-K02N-DOUDAY =   IDX2  )
-                       MOVE    ACCT-DAY (3 IDX2)   TO  WRK-D-DAY
-                   END-IF
-               END-IF
-      *****        IF      ACCT-DAY (1 IDX2)   NOT =   ZERO
-                   IF      WRK-D-DAY           NOT =   ZERO
+                   IF      ACCT-DAY (1 IDX2)   NOT =   ZERO
                        MOVE    IDX2            TO  WRK-DD
       *                入院期間中
                        IF     (WRK-YMD         >=  SPA-K02N-NYUINYMD)
