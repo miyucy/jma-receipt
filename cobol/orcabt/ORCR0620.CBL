@@ -1829,6 +1829,28 @@
                MOVE    RECE62-TEKSTYMD
                                   TO  LNK-SYUACC-IO-HKNJANUM    (1)
            END-IF 
+      *
+      *    点検レセ０点公費記載ありのとき
+           IF      RECE61-TENKEN-FLG   =   "1"
+               EVALUATE    RECE62-RECESYUBETU (3:1)
+                   WHEN    "5"
+                       MOVE    "4"         TO
+                                   LNK-SYUACC-IO-RECESYUBETU (1) (3:1)
+                   WHEN    "4"
+                       MOVE    "3"         TO
+                                   LNK-SYUACC-IO-RECESYUBETU (1) (3:1)
+                   WHEN    "3"
+                       MOVE    "2"         TO
+                                   LNK-SYUACC-IO-RECESYUBETU (1) (3:1)
+                   WHEN    "2"
+                       MOVE    "1"         TO
+                                   LNK-SYUACC-IO-RECESYUBETU (1) (3:1)
+                       MOVE    RECE62-KOHTEKSTYMD (1)
+                                           TO
+                                   LNK-SYUACC-IO-HKNJANUM    (1)
+               END-EVALUATE
+           END-IF
+      *
            MOVE    "06"            TO  LNK-SYUACC-I-KBN
            CALL    "ORCSSYUKAMAIN" USING   SPA-AREA
                                            ORCSSYUACCAREA
