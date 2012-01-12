@@ -1928,9 +1928,11 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    WHEN    "2"
                        MOVE    "1"         TO
                                    LNK-SYUACC-IO-RECESYUBETU (1) (3:1)
-                       MOVE    RECE02-KOHTEKSTYMD (1)
+                       IF      RECE02-RECESYUBETU (2:1)    =   "2"
+                           MOVE    RECE02-KOHTEKSTYMD (1)
                                            TO
-                                   LNK-SYUACC-IO-HKNJANUM    (1)
+                                       LNK-SYUACC-IO-HKNJANUM    (1)
+                       END-IF
                END-EVALUATE
            END-IF
       *
