@@ -1,5 +1,4 @@
       *******************************************************************
-
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
@@ -1342,6 +1341,13 @@ grpsys                 MOVE    SPA-HOSPNUM TO  LNK-FTNJGNCHK-HOSPNUM
                                                    ORCSFTNJGNCHKAREA
 grpsys                                             SPA-AREA
                        IF      WRK-PARA-PRTKBN     =   "3"
+                           DISPLAY "LNK-FTNJGNCHK-KOHNUM="
+                                               LNK-FTNJGNCHK-KOHNUM
+                                   " LNK-FTNJGNCHK-TENKEN-RC="
+                                               LNK-FTNJGNCHK-TENKEN-RC
+                                   " LNK-FTNJGNCHK-RC="
+                                               LNK-FTNJGNCHK-RC
+       *
                            IF     LNK-FTNJGNCHK-TENKEN-RC  =   1
                                MOVE       1        TO    FLG-KOHRECEDSP
                            END-IF
@@ -1393,6 +1399,13 @@ grpsys                 MOVE    SPA-HOSPNUM TO  LNK-FTNJGNCHK-HOSPNUM
                                                    ORCSFTNJGNCHKAREA
 grpsys                                             SPA-AREA
                        IF      WRK-PARA-PRTKBN     =   "3"
+                           DISPLAY "LNK-FTNJGNCHK-KOHNUM="
+                                               LNK-FTNJGNCHK-KOHNUM
+                                   " LNK-FTNJGNCHK-TENKEN-RC="
+                                               LNK-FTNJGNCHK-TENKEN-RC
+                                   " LNK-FTNJGNCHK-RC="
+                                               LNK-FTNJGNCHK-RC
+       *
                            IF     LNK-FTNJGNCHK-TENKEN-RC  =   1
                                MOVE       1        TO  FLG-KOHRECEDSP
                            END-IF

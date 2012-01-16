@@ -1341,6 +1341,13 @@
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
                        IF      WRK-PARA-PRTKBN     =   "3"
+                           DISPLAY "LNK-FTNJGNCHK-KOHNUM="
+                                               LNK-FTNJGNCHK-KOHNUM
+                                   " LNK-FTNJGNCHK-TENKEN-RC="
+                                               LNK-FTNJGNCHK-TENKEN-RC
+                                   " LNK-FTNJGNCHK-RC="
+                                               LNK-FTNJGNCHK-RC
+       *
                            IF     LNK-FTNJGNCHK-TENKEN-RC  =   1
                                MOVE       1        TO    FLG-KOHRECEDSP
                            END-IF
@@ -1392,6 +1399,13 @@
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
                        IF      WRK-PARA-PRTKBN     =   "3"
+                           DISPLAY "LNK-FTNJGNCHK-KOHNUM="
+                                               LNK-FTNJGNCHK-KOHNUM
+                                   " LNK-FTNJGNCHK-TENKEN-RC="
+                                               LNK-FTNJGNCHK-TENKEN-RC
+                                   " LNK-FTNJGNCHK-RC="
+                                               LNK-FTNJGNCHK-RC
+       *
                            IF     LNK-FTNJGNCHK-TENKEN-RC  =   1
                                MOVE       1        TO  FLG-KOHRECEDSP
                            END-IF
@@ -1816,6 +1830,13 @@
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
                        IF      WRK-PARA-PRTKBN     =   "3"
+                           DISPLAY "LNK-FTNJGNCHK-KOHNUM="
+                                               LNK-FTNJGNCHK-KOHNUM
+                                   " LNK-FTNJGNCHK-TENKEN-RC="
+                                               LNK-FTNJGNCHK-TENKEN-RC
+                                   " LNK-FTNJGNCHK-RC="
+                                               LNK-FTNJGNCHK-RC
+       *
                            IF     LNK-FTNJGNCHK-TENKEN-RC  =   1
                                MOVE       1        TO    FLG-KOHRECEDSP
                            END-IF
@@ -1867,6 +1888,13 @@
                                                    ORCSFTNJGNCHKAREA
                                                    SPA-AREA
                        IF      WRK-PARA-PRTKBN     =   "3"
+                           DISPLAY "LNK-FTNJGNCHK-KOHNUM="
+                                               LNK-FTNJGNCHK-KOHNUM
+                                   " LNK-FTNJGNCHK-TENKEN-RC="
+                                               LNK-FTNJGNCHK-TENKEN-RC
+                                   " LNK-FTNJGNCHK-RC="
+                                               LNK-FTNJGNCHK-RC
+       *
                            IF     LNK-FTNJGNCHK-TENKEN-RC  =   1
                                MOVE       1        TO  FLG-KOHRECEDSP
                            END-IF
