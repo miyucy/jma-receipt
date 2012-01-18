@@ -129,7 +129,7 @@
                    07  SPA-GMN-HKNJAMEI            PIC X(50). 
                    07  SPA-GMN-HKNJANUM1           PIC X(08).
                    07  SPA-GMN-HKNJAMEI1           PIC X(50). 
-                   07  SPA-GMN-TITLE               PIC X(90). 
+                   07  SPA-GMN-TITLE               PIC X(108). 
       *
                05  SPA-NAIB-T01-AREA.
                    07  SPA-NAI-WIDGET              PIC X(08). 

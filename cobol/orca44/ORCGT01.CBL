@@ -147,6 +147,8 @@
       *                                     害該当レセプトのレセ電データ
       *                                     のチェックを追加
       *
+      *  04.06.01    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       *****************************************************************
       *
@@ -1417,21 +1419,30 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF      SPA-NAI-RECEDEN-CHK  =   SPACE
-               CONTINUE
+               MOVE    "1"                 TO  SPA-GMN-PRTKBNL       (1)
+               MOVE    "提出用"            TO  SPA-GMN-PRTKBNMEIL    (1)
+               MOVE    "2"                 TO  SPA-GMN-PRTKBNL       (2)
+               MOVE    "点検用（院外処方含）"
+                                           TO  SPA-GMN-PRTKBNMEIL    (2)
+               MOVE    2                   TO  SPA-GMN-PRTKBN-MAX
+      *
+               MOVE    SPACE               TO  SPA-GMN-TITLE
            ELSE
+               MOVE    "2"                 TO  SPA-GMN-PRTKBNL       (1)
+               MOVE    "点検用（院外処方含）"
+                                           TO  SPA-GMN-PRTKBNMEIL    (1)
+               MOVE    1                   TO  SPA-GMN-PRTKBN-MAX
+      *
                STRING  "該当の診療年月に０点公費記載ありの点検用レセ"
                                                DELIMITED  BY  SIZE
-                       "プトがあるため、医保分の処理はできません"
+                       "プトがあるため、医保分は点検用レセ電データの"
                                                DELIMITED  BY  SIZE
+                       "作成のみ可能です"      DELIMITED  BY  SIZE
                                                INTO  SPA-GMN-TITLE
-      *
-               MOVE    "F"                 TO  SPA-SYOKBN1-VALUE
-                                               SPA-DATAKBN1-VALUE
-                                               SPA-DATAKBN3-VALUE
-                                               SPA-DATAKBN4-VALUE
-                                               SPA-DATAKBN5-VALUE
-                                               SPA-DATAKBN6-VALUE
            END-IF
+      *
+           MOVE    SPA-GMN-PRTKBNLST (1)
+                                       TO  SPA-GMN-PRTKBN-G
       *
            .
        3104-SEIKYU-CHECK-EXT.
@@ -2762,7 +2773,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                MOVE    SPA-GMN-PRTKBNLST (1)
                                            TO  SPA-GMN-PRTKBN-G
            ELSE
-               PERFORM VARYING IDX FROM    1   BY  1
+                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-PRTKBN-MAX
                    IF        SPA-GMN-PRTKBN
                                    =   SPA-GMN-PRTKBNL (IDX)
@@ -2771,8 +2782,8 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                        MOVE    SPA-GMN-PRTKBN-MAX
                                            TO  IDX
                    END-IF
-               END-PERFORM        
-               IF      SPA-GMN-PRTKBNMEI  =   SPACE  
+               END-PERFORM
+               IF      SPA-GMN-PRTKBNMEI  =   SPACE
                    MOVE    SPA-GMN-PRTKBNLST (1)
                                                TO  SPA-GMN-PRTKBN-G
                END-IF
@@ -5622,14 +5633,20 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                T01-DATAKBN4-STATE
                                                T01-DATAKBN5-STATE
                                                T01-DATAKBN6-STATE
-                                               T01-B06-STATE
-                                               T01-B07-STATE
-                                               T01-B08-STATE
+      **************************************** T01-B06-STATE
+      **************************************** T01-B07-STATE
+      **************************************** T01-B08-STATE
                                                T01-B09-STATE
                                                T01-B10-STATE
-                                               T01-B16-STATE
+      **************************************** T01-B16-STATE
                                                T01-B21-STATE
                                                T01-B22-STATE
+               MOVE    "F"                 TO  T01-SYOKBN1-VALUE
+                                               T01-DATAKBN1-VALUE
+                                               T01-DATAKBN3-VALUE
+                                               T01-DATAKBN4-VALUE
+                                               T01-DATAKBN5-VALUE
+                                               T01-DATAKBN6-VALUE
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC

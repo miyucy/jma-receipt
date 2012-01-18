@@ -83,7 +83,7 @@
               03  T01-PRTKBN5-STYLE   PIC X(20).
               03  T01-PRTKBN5-VALUE   PIC X(4).
               03  T01-TITLE-STYLE     PIC X(20).
-              03  T01-TITLE-VALUE     PIC X(90).
+              03  T01-TITLE-VALUE     PIC X(110).
               03  T01-SYOKBN1-STATE   PIC S9(9)   BINARY.
               03  T01-SYOKBN1-VALUE   PIC X.
               03  T01-SYOKBN2-VALUE   PIC X.

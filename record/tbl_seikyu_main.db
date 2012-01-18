@@ -2384,9 +2384,11 @@ path	key78	{
                   AND   NYUGAIKBN      like :NYUGAIKBN
                   AND   TEISYUTUSAKI   =    :TEISYUTUSAKI
                   AND   SKYKBN_RECEDEN =    '1'
-                  AND ( SRYYM       =   :SKYYM
-                           AND ( SKYYM   =  '000000' OR SKYYM = :SKYYM ))
-                   OR ( SKYYM       =   :SKYYM )
+                  AND (   ((  SRYYM       =   :SKYYM   )
+                       AND (  SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR ((  SKYYM       =   :SKYYM   )
+                       AND (  SKYKBN      <>  '0'      )))
 		;
 	};
 };
@@ -2399,9 +2401,11 @@ path	key79	{
                 WHERE   HOSPNUM        =    :HOSPNUM
                   AND   NYUGAIKBN      like :NYUGAIKBN
                   AND   SKYKBN_RECEDEN =    '1'
-                  AND ( SRYYM       =   :SKYYM
-                           AND ( SKYYM   =  '000000' OR SKYYM = :SKYYM ))
-                   OR ( SKYYM       =   :SKYYM )
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
 		;
 	};
 };

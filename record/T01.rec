@@ -154,7 +154,7 @@ T01	{
 		};
 		TITLE	{
 			style	varchar(20);
-			value	varchar(90);
+			value	varchar(110);
 		};
 		SYOKBN1	{
 			state	int;
