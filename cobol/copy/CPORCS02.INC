@@ -46,25 +46,25 @@
            03  LNK-S02-SKYSTYMD            PIC  X(08).
       *請求終了日
            03  LNK-S02-SKYEDYMD            PIC  X(08).
-      *請求開始日同日再入院フラグ
+      *請求開始日同日再入院フラグ（＊）
            03  LNK-S02-DOJITUFLG-ST        PIC  X(01).
-      *開始日入院食事区分（０：食なし、１：朝から、２：昼から、３：夕から）
+      *開始日入院食事区分（０：食なし、１：朝から、２：昼から、３：夕から）（＊）
            03  LNK-S02-TIMEKBN-ST          PIC  X(01).
-      *請求終了日同日再入院フラグ
+      *請求終了日同日再入院フラグ（＊）
            03  LNK-S02-DOJITUFLG-ED        PIC  X(01).
-      *終了日入院食事区分（０：食なし、１：朝まで、２：昼まで、３：夕まで）
+      *終了日入院食事区分（０：食なし、１：朝まで、２：昼まで、３：夕まで）（＊）
            03  LNK-S02-TIMEKBN-ED          PIC  X(01).
-      *再計算処理区分
+      *再計算処理区分（＊）
            03  LNK-S02-SAIKEISAN-KBN       PIC  X(01).
-      *再計算対象伝票番号
+      *再計算対象伝票番号（＊）
            03  LNK-S02-SAIKEISAN-DENPYO    PIC  9(07).
       *高齢者算定患者区分
            03  LNK-S02-KOUREI-NYUIN-KBN    PIC  X(01).
-      *自立支援再計算区分
+      *自立支援再計算区分（＊）
            03  LNK-S02-JIRITU-SAI-KBN      PIC  X(01).
       *特殊計算再計算区分
            03  LNK-S02-TOKUSYU-SAI-KBN     PIC  X(01).
-      *入院通算日数
+      *入院通算日数（＊）
            03  LNK-S02-NYUIN-TSUSAN-NISSU  PIC  9(04).
       *システム日付
            03  LNK-S02-SYSYMD              PIC  X(08).

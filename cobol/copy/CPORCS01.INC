@@ -40,9 +40,9 @@
       *    03  LNK-S01-SAIKEISAN-DENPYO    PIC  9(07).
       *高齢者（在宅総合・在宅末期）算定患者区分
            03  LNK-S01-KOUREI-ZAITAKU-KBN  PIC  X(01).
-      *自立支援再計算区分
+      *自立支援再計算区分（＊）
            03  LNK-S01-JIRITU-SAI-KBN      PIC  X(01).
-      *自立支援負担変更区分
+      *自立支援負担変更区分（＊）
            03  LNK-S01-JIRITU-FTNHEN-KBN   PIC  X(01).
       *特殊計算再計算区分
            03  LNK-S01-TOKUSYU-SAI-KBN     PIC  X(01).
