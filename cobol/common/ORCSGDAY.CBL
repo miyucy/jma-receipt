@@ -119,7 +119,9 @@
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *   患者番号変換サブ
-           COPY    "CPORCSPTID.INC".
+      **** COPY    "CPORCSPTID.INC".
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ＤＢ検索
        01  MCPDATA-REC                 PIC X(5000).
@@ -150,6 +152,10 @@
            IF      SGDAY-INDAY         =   SPACE  OR  ZERO
                MOVE    99                  TO  SGDAY-RC
            ELSE
+      *        半角チェック
+               PERFORM 100-INDAY-INITCHK-SEC
+           END-IF
+           IF      SGDAY-RC            =   ZERO
       *        入力日付変換
                PERFORM 100-INDAY-CHK-SEC
                IF      WRK-ERRCD       NOT =   SPACE
@@ -166,6 +172,30 @@
            .
            EXIT PROGRAM
            .
+      *
+      *****************************************************************
+      *    半角チェック処理
+      *****************************************************************
+       100-INDAY-INITCHK-SEC               SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SGDAY-INDAY         TO  KANACHK-MAE-INPUT
+           MOVE    10                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SGDAY-INDAY
+           IF     (KANACHK-RC          =   ZERO  )  AND
+                  (KANACHK-SYUBETU     =   1     )
+               CONTINUE
+           ELSE
+      *        半角以外はエラー
+               MOVE    99                  TO  SGDAY-RC
+               MOVE    SGDAY-INDAY         TO  SGDAY-OTDAY
+           END-IF
+           .
+       100-INDAY-INITCHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    入力日付検索処理
