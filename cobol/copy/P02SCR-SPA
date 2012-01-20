@@ -70,7 +70,7 @@
                    07  SPA-GMN-SEX-COB.
                        09  SPA-GMN-SEX-LST     PIC X(04)   OCCURS  2.
       *            生年月日・年齢
-                   07  SPA-GMN-BIRTHDAYW       PIC X(09).
+                   07  SPA-GMN-BIRTHDAYW       PIC X(10).
                    07  SPA-GMN-NENREI          PIC X(12).
                    07  SPA-GMN-DEATHKBN        PIC X(01).
       *            テスト患者

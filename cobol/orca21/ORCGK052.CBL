@@ -30,6 +30,7 @@
       *  01.00.01    NACL-多々納  05/11/17  MONFUNC 対応
       *  03.04.00    NACL-多々納  07/03/13  経過措置費追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.07.00    NACL-多々納  12/01/06  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -60,6 +61,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-INPUTSET        PIC 9(01).
+      *    クライアント印刷有
+           03  FLG-CLIENT-OK       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -120,6 +123,9 @@
       *
       *    一覧印刷変換領域
            COPY    "CPORCHCSET.INC".
+      *
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -203,6 +209,11 @@
       *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
+           END-IF
+      *
+      *    クライアント印刷
+           IF      FLG-CLIENT-OK       =   1
+               PERFORM 600-CLIENT-DMY-SEC
            END-IF
       *
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
@@ -551,6 +562,17 @@
       *****************************************************************
        3001-PRINT-SYORI-SEC            SECTION.
       *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+           MOVE    ZERO                TO  FLG-CLIENT-OK
+      *
+           IF     (SPA-CLIENT-PRT-FLG  =   2      )
+      *        印刷制御情報取得サブ
+      ***      CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *        クライアント印刷制御情報取得処理
+               PERFORM 4901-CLIENT-PRT-SEC
+           END-IF
+      *
       *    対象件数チェック
            IF      SPA-K052-INPUTCD1   =   SPACE
                MOVE    "P     "            TO  WRK-STR-SETCD
@@ -568,13 +590,58 @@
            MOVE    WRK-END-SETCD       TO  HCSET-END-SETCD
            MOVE    SPA-K052-NAI-KEIKAYMD   TO  HCSET-KEIKAYMD
       *
+           MOVE    "01"                TO  SPA-PRT-FLG
+      *
            CALL    "ORCHCSET"          USING   SPA-AREA
                                                ORCHCSETAREA
+      *
+           IF      (SPA-CLIENT-PRT-FLG =   1  )
+      *??  IF      (FLG-CLIENT-OK =   1  )
+      *        印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+           END-IF
+           MOVE    SPACE               TO  SPA-PRT-FLG
       *
            .
        3001-PRINT-SYORI-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       4901-CLIENT-PRT-SEC         SECTION.
+      *
+           INITIALIZE                  KDMY01
+           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                  ORCSPRTCLTRAREA
+           MOVE    "セット一覧表"      TO  ORCSPRTCLTR-TITLE-I(01)
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCLTRAREA
+                                               MCPAREA
+           MOVE    ORCSPRTCLTR-OUT     TO  KDMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
+           .
+       4901-CLIENT-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC              SECTION.
+      *
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+      *
+           MOVE    "_KDMY01"           TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************

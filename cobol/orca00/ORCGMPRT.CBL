@@ -207,6 +207,7 @@
       *    ½ªÎ»½èÍý
            PERFORM 300-CANCEL-CHECK-SEC
       *
+           DISPLAY "MPRT-HTTPSTATUS = " MPRT-HTTPSTATUS
            .
            EXIT    PROGRAM
            .
@@ -370,6 +371,8 @@
            IF      FLG-CANCEL      =   1
              DISPLAY "This data cansel " 
                       MPRT-FILENAME 
+      *      MOVE  500                 TO  MPRT-HTTPSTATUS
+             MOVE  204                 TO  MPRT-HTTPSTATUS
            END-IF
       *
            .

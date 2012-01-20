@@ -39,5 +39,7 @@
       *    帳票タイトル
                07  ORCSPRTCLTR-TITLE-O   PIC X(256).
       *    リトライ回数
+               07  ORCSPRTCLTR-SHOWDIALOG   PIC S9(9)   BINARY.
+               07  ORCSPRTCLTR-NRETRY   PIC S9(9)   BINARY.
       *
       *

@@ -72,6 +72,7 @@
       *  04.06.00    NACL-多々納  10/11/05  発行日変更対応
       *  04.06.00    NACL-多々納  10/11/16  マル長負担額を保険負担額反映
       *  04.06.01    NACL-伊藤    11/01/28  リアルタイム送信
+      *  04.07.01    NACL-多々納  12/01/05  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -164,6 +165,8 @@
            03  FLG-SOUSIN              PIC 9(01).
       *    感染症削除
            03  FLG-INFEC-DLT           PIC 9(01).
+      *    クライアント印刷有
+           03  FLG-CLIENT-OK           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -639,7 +642,6 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-                   PERFORM 101-CLIENT-PRT-SEC
       *
       *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
@@ -654,10 +656,14 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
+      *    クライアント印刷
+           IF      FLG-CLIENT-OK       =   1
+               PERFORM 600-CLIENT-DMY-SEC
+           END-IF
+      *
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-K03         TO  SPA-FREE
-           DISPLAY "K03-PRTPATH(01) = " K03-PRTPATH(01)
       *
            .
            EXIT    PROGRAM
@@ -706,42 +712,6 @@
            .
       *
        100-INIT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    クライアント印刷前　処理
-      *****************************************************************
-       101-CLIENT-PRT-SEC         SECTION.
-      *
-      * For Test St
-      *    IF      SPA-PTNUM           = "44444"
-      *      MOVE    1                 TO  SPA-CLIENT-PRT-FLG
-      *    ELSE
-      *      MOVE    ZERO              TO  SPA-CLIENT-PRT-FLG
-      *    END-IF
-      * For Test Ed
-      *    印刷制御情報取得サブ
-      *
-           MOVE    SPACE               TO  K03-PANDAPRINT1
-           IF      SPA-CLIENT-PRT-FLG  =   2
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
-      *    クライアント印刷制御情報取得サブ
-           INITIALIZE  ORCSPRTCLTRAREA
-           MOVE    "処方箋"            TO  ORCSPRTCLTR-TITLE-I(01)
-           MOVE    "請求書兼領収書"    TO  ORCSPRTCLTR-TITLE-I(02)
-           MOVE    "お薬情報"          TO  ORCSPRTCLTR-TITLE-I(03)
-           MOVE    "診療費明細書"      TO  ORCSPRTCLTR-TITLE-I(04)
-           MOVE    "お薬手帳"          TO  ORCSPRTCLTR-TITLE-I(05)
-           MOVE    "予約票"            TO  ORCSPRTCLTR-TITLE-I(06)
-           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCLTRAREA
-                                               MCPAREA
-           MOVE    ORCSPRTCLTR-OUT     TO  K03-PANDAPRINT1
-           END-IF
-      *
-           .
-      *
-       101-CLIENT-PRT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5275,13 +5245,6 @@
       *****************************************************************
        210-BACK                        SECTION.
       *
-           IF      SPA-CLIENT-PRT-FLG  =  1
-               INITIALIZE    ORCSPRTCLTRAREA
-               MOVE  "C"               TO  ORCSPRTCLTR-MODE
-               CALL    "ORCSPRTCTRL"   USING   SPA-AREA
-                                       ORCSPRTCLTRAREA
-                                       MCPAREA
-           END-IF
       *    調整金
       *    MOVE    SPA-GMN-CHOSEI      TO  SPA-K03-CHOSEI
       *    請求書作成区分
@@ -5315,7 +5278,6 @@
                MOVE    "0033"          TO  SPA-ERRCD
                MOVE    7               TO  SPA-GMN-CUR
            ELSE
-     **********MOVE    "1"             TO  SPA-NAI-CHOSEI
                MOVE    6               TO  SPA-GMN-CUR
            END-IF
            .
@@ -6328,13 +6290,26 @@
       *****************************************************************
        45009-PRINT-SEC              SECTION.
       *
+           MOVE    ZERO                TO  FLG-CLIENT-OK
       *    帳票プログラム取得
            PERFORM 4901-PRINT-PG-SEC
       *
-          IF    SPA-CLIENT-PRT-FLG  NOT =   1
       *    印刷制御情報取得サブ
-               CALL    "ORCSONPRTSET"      USING   SPA-AREA
-          END-IF
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *
+           IF      SPA-CLIENT-PRT-FLG  =   2
+               IF     (SPA-GMN-SYOHOPRTFLG =   ZERO)
+               AND    (SPA-GMN-HAKFLG      =   ZERO)
+               AND    (SPA-GMN-YAKJYOFLG   =   ZERO)
+               AND    (SPA-GMN-MEIPRTFLG   =   ZERO)
+               AND    (SPA-GMN-OKUSURIFLG  =   ZERO)
+               AND    (SPA-GMN-YYKHYOFLG   =   ZERO)
+                   CONTINUE
+               ELSE
+      *            クライアント印刷制御情報取得処理
+                   PERFORM 4901-CLIENT-PRT-SEC
+               END-IF
+           END-IF
       *
       *    主たる伝票番号
            MOVE    SPA-SYUNOU-REC(1)   TO  SYUNOU-REC
@@ -6531,11 +6506,11 @@
                                            ONPRTDATA
            END-IF
       *
-          IF    SPA-CLIENT-PRT-FLG     =   1
-      *    印刷ダミー処理
+           IF      (SPA-CLIENT-PRT-FLG =   1  )
+      *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
-          END-IF
+           END-IF
       *
            MOVE    SPACE               TO  SPA-PRT-FLG
            .
@@ -6610,6 +6585,49 @@
            .
       *
        4901-PRINT-PG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       4901-CLIENT-PRT-SEC         SECTION.
+      *
+           INITIALIZE                  KDMY01
+           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                  ORCSPRTCLTRAREA
+           MOVE    "処方箋"            TO  ORCSPRTCLTR-TITLE-I(01)
+           MOVE    "請求書兼領収書"    TO  ORCSPRTCLTR-TITLE-I(02)
+           MOVE    "お薬情報"          TO  ORCSPRTCLTR-TITLE-I(03)
+           MOVE    "診療費明細書"      TO  ORCSPRTCLTR-TITLE-I(04)
+           MOVE    "お薬手帳"          TO  ORCSPRTCLTR-TITLE-I(05)
+           MOVE    "予約票"            TO  ORCSPRTCLTR-TITLE-I(06)
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCLTRAREA
+                                               MCPAREA
+           MOVE    ORCSPRTCLTR-OUT     TO  KDMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
+      *
+           .
+       4901-CLIENT-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC              SECTION.
+      *
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+           MOVE    "_KDMY01"           TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           .
+       600-CLIENT-DMY-EXT.
            EXIT.
       *
       *****************************************************************

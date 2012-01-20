@@ -10,6 +10,7 @@ bind	"KA021"		"OpenCOBOL"	"ORCGKA021";
 bind	"KAERR"		"OpenCOBOL"	"ORCGKAERR";
 bind	"KAID1"		"OpenCOBOL"	"ORCGKAID1";
 bind	"KAID2"		"OpenCOBOL"	"ORCGKAID2";
+bind	"_KADMY01"	"OpenCOBOL"	"ORCGKADMY01";
 
 multiplex_group	orca29;
 
@@ -23,6 +24,7 @@ data	{
 		KAERR;
 		KAID1;
 		KAID2;
+                _KADMY01;
 	};
 };
 
@@ -55,6 +57,7 @@ db	{
 	tbl_sryacct_main;
 	tbl_sryacct_sub;
 	tbl_dbcatalog;
+	tbl_prtctrl;
 };
 
 /* #include "orcadb.inc" */

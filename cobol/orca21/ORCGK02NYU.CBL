@@ -67,6 +67,7 @@
       * 04.06.00     NACL-多々納  10/08/12  診療科変更対応
       * 04.07.00     NACL-多々納  11/09/XX  院外処方点数表示対応
       * 04.07.00     NACL-多々納  11/10/XX  同日再入院対応
+      * 04.07.00     NACL-多々納  12/01/05  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -263,6 +264,8 @@
       *
            03  FLG-DOUNYUIN            PIC 9(01).
            03  FLG-NYUNEXT             PIC 9(01).
+      *    クライアント印刷有
+           03  FLG-CLIENT-OK           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -901,6 +904,10 @@
       *    COMMONSPA初期編集
            COPY    "CPORCSCOMMON.INC".
       *
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
+      *
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -986,7 +993,7 @@
       *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    入力
+      *        入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
@@ -999,6 +1006,10 @@
       *    画面ＳＰＡ書込み
            IF      FLG-END2            =   ZERO
                PERFORM 1003-K02SPA-OUT-SEC
+           END-IF
+      *    クライアント印刷
+           IF      FLG-CLIENT-OK       =   1
+               PERFORM 600-CLIENT-DMY-SEC
            END-IF
       *
            MOVE    "K02N"          TO  SPA-HZN-MOTOPG
@@ -1037,8 +1048,8 @@
       *
            IF      FLG-END             =   ZERO
                MOVE    SPACE               TO  LINKAREA
-               MOVE   SPACE                TO  MCP-PUTTYPE
-               MOVE   "K02N"               TO  MCP-WINDOW
+               MOVE    SPACE               TO  MCP-PUTTYPE
+               MOVE    "K02N"              TO  MCP-WINDOW
                PERFORM 900-PUT-WINDOW
                MOVE    1                   TO  FLG-END
            END-IF
@@ -9101,6 +9112,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *
+           IF     (SPA-CLIENT-PRT-FLG  =   2      )
+             AND  (SPA-ERRCD           =   SPACE  )
+      *        クライアント印刷制御情報取得処理
+               PERFORM 4901-CLIENT-PRT-SEC
+           END-IF
+      *
       *    入院処方箋印刷
            IF     (SPA-ERRCD           =   SPACE  )  AND
                   (SPA-K081GMN-SYOHOU  =   "1"    )
@@ -9176,6 +9194,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "1201"          TO  SPA-ERRCD
                END-IF
            END-IF
+      *
+           IF      (SPA-CLIENT-PRT-FLG =   1  )
+      *        印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+           END-IF
+      *
            MOVE    SPACE               TO  SPA-PRT-FLG
            .
        45900-SIJISEN-SYORI-EXT.
@@ -9233,6 +9258,45 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        459001-PRTNUM-HEN-EXT.
            EXIT.
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       4901-CLIENT-PRT-SEC         SECTION.
+      *
+           INITIALIZE                  KDMY01
+           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                  ORCSPRTCLTRAREA
+           MOVE    "入院処方箋"        TO  ORCSPRTCLTR-TITLE-I(01)
+           MOVE    "注射処方箋"        TO  ORCSPRTCLTR-TITLE-I(02)
+           MOVE    "入院指示箋"        TO  ORCSPRTCLTR-TITLE-I(03)
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCLTRAREA
+                                               MCPAREA
+           MOVE    ORCSPRTCLTR-OUT     TO  KDMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
+           .
+       4901-CLIENT-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC              SECTION.
+      *
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+      *
+           MOVE    "_KDMY01"           TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ユーザプログラム起動処理
       *****************************************************************

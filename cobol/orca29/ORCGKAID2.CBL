@@ -78,6 +78,7 @@
            COPY    "KAERR.INC".
            COPY    "KAID1.INC".
            COPY    "KAID2.INC".
+           COPY    "KADMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -147,8 +148,8 @@
                    MOVE    "F7"            TO  SPA-KAID2-FLG
                    PERFORM 210-BACK
       *     °õºþ
-               WHEN    "CLICKED"       ALSO    "B11"
-                   MOVE    "F11"            TO  SPA-KAID2-FLG
+               WHEN    "CLICKED"       ALSO    "B10"
+                   MOVE    "F10"            TO  SPA-KAID2-FLG
                    PERFORM 210-BACK
            END-EVALUATE
       *

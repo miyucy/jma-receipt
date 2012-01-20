@@ -210,6 +210,14 @@
                WHEN    "0031"
                    MOVE    "警告！郵便番号は存在しません。"
                                                TO  SPA-ERRMSG
+      *ver.4.7
+               WHEN    "0131"
+                   MOVE    "郵便番号は半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0132"
+                   MOVE    "電話番号は半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+      *ver.4.7
                WHEN    "0032"
                    MOVE    "住所は全角で入力して下さい"
                                                TO  SPA-ERRMSG
@@ -737,6 +745,32 @@
                WHEN    "2110"
                    MOVE    "帰省先住所は全角で入力して下さい"
                                                TO  SPA-ERRMSG
+      *ver.4.7
+               WHEN    "2111"
+                   MOVE    "連絡先郵便番号は半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2112"
+                   MOVE    "勤務先郵便番号は半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2113"
+                   MOVE    "帰省先郵便番号は半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2114"
+                   MOVE    "連絡先電話番号は半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2115"
+                   MOVE    "勤務先電話番号は半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2116"
+                   MOVE    "帰省先電話番号は半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2117"
+                   MOVE    "ＦＡＸは半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2118"
+                   MOVE    "携帯番号は半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+      *ver.4.7
       *    受付エラー
                WHEN    "2001"
                    MOVE    "受付選択番号入力エラー"

@@ -333,6 +333,7 @@
            COPY    "P02T.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
+           COPY    "PDMY01.INC".
            COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING

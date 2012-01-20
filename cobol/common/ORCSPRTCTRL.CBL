@@ -261,6 +261,9 @@
                  INTO    ORCSPRTCLTR-PATH-O(IDX)
                  MOVE    "°õºþ¥À¥ß¡¼"      TO
                                        ORCSPRTCLTR-TITLE-O(IDX)
+                 MOVE    SPA-CLIENT-SHOWDIALOG
+                                       TO  ORCSPRTCLTR-SHOWDIALOG (IDX)
+                 MOVE    100           TO  ORCSPRTCLTR-NRETRY  (IDX)
       *
                    MOVE  11            TO  IDX
                ELSE
@@ -284,6 +287,10 @@
                  INTO    ORCSPRTCLTR-PATH-O(IDX)
                  MOVE    ORCSPRTCLTR-TITLE-I(IDX)      TO
                                        ORCSPRTCLTR-TITLE-O(IDX)
+      *
+                 MOVE    SPA-CLIENT-SHOWDIALOG
+                                       TO  ORCSPRTCLTR-SHOWDIALOG (IDX)
+                 MOVE    100           TO  ORCSPRTCLTR-NRETRY  (IDX)
                END-IF
            END-PERFORM
       *

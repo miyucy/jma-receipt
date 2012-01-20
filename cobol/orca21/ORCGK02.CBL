@@ -99,6 +99,7 @@
       *  04.06.00    NACL-多々納  10/09/06  自費保険入院中入力対応
       *  04.06.00    NACL-多々納  11/02/16  用法コメント対応
       *  04.07.00    NACL-多々納  11/09/XX  院外処方点数表示対応
+      *  04.07.00    NACL-多々納  12/01/05  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -332,6 +333,8 @@
       *
            03  FLG-TEI-ARI             PIC 9(01).
            03  FLG-SANTEI              PIC 9(01).
+      *    クライアント印刷有
+           03  FLG-CLIENT-OK           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1013,6 +1016,9 @@
       *
            COPY    "CPORCSCOMMON.INC".
       *
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -1115,6 +1121,11 @@
       *    画面ＳＰＡ書込み
            IF      FLG-END2            =   ZERO
                PERFORM 1003-K02SPA-OUT-SEC
+           END-IF
+      *
+      *    クライアント印刷
+           IF      FLG-CLIENT-OK       =   1
+               PERFORM 600-CLIENT-DMY-SEC
            END-IF
       *
            MOVE    "K02"           TO  SPA-HZN-MOTOPG
@@ -2855,6 +2866,8 @@
       *        内服７種類以上逓減確認
                WHEN    "2001"
                WHEN    "2002"
+               WHEN    "2004"
+               WHEN    "2005"
                    MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                       MOVE    1                TO  SPA-NAIFUKU-OK
@@ -9344,6 +9357,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            頭書
                    MOVE    "2"                 TO  ORCHC19-KBN
                    MOVE    SPACE               TO  SPA-PRT-FLG
+      *            クライアント印刷用
+                   IF      SPA-CLIENT-PRT-FLG  =   2
+                       PERFORM 41241-SYOHOU-CLIENTPRT-SEC
+                   END-IF
                WHEN    3
       *            中途終了時（院外）
                    MOVE    "4"                 TO  ORCHC19-KBN
@@ -9358,8 +9375,42 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    WRK-SYOHOU-PG       USING   SPA-AREA
                                                ORCHC19AREA
       *
+      *    頭書印刷のクライアント印刷処理
+           IF      (FLG-SYOHOU         =   1  )
+           AND     (SPA-CLIENT-PRT-FLG =   1  )
+      *        印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+           END-IF
+      *
            .
        4124-SYOHOU-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    クライアント印刷前　処理（頭書）
+      *****************************************************************
+       41241-SYOHOU-CLIENTPRT-SEC         SECTION.
+      *
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *
+           MOVE    "01"                TO  SPA-PRT-FLG
+           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
+      *
+           INITIALIZE                  KDMY01
+           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                  ORCSPRTCLTRAREA
+           MOVE    "処方箋"            TO  ORCSPRTCLTR-TITLE-I(01)
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCLTRAREA
+                                               MCPAREA
+           MOVE    ORCSPRTCLTR-OUT     TO  KDMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
+           .
+       41241-SYOHOU-CLIENTPRT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -10986,6 +11037,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
+      *
+           IF      SPA-CLIENT-PRT-FLG  =   2
+               IF      SPA-KID2-FLG        =   "OK"
+                                           OR  SPACE
+                   CONTINUE
+               ELSE
+      *            クライアント印刷制御情報取得処理
+                   PERFORM 4901-CLIENT-PRT-SEC
+               END-IF
+           END-IF
+      *
       *    中途終了時、処方せんの有無
            EVALUATE    SPA-KID2-FLG
       *        処方せん発行
@@ -11032,6 +11094,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            お薬手帳発行
                    PERFORM 4126-OKUSURI-SYORI-SEC
            END-EVALUATE
+      *
+           IF      (SPA-CLIENT-PRT-FLG =   1  )
+      *        印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+           END-IF
+      *
            MOVE    SPACE               TO  SPA-KID1-FLG
       *
       *    ユーザプログラム起動
@@ -11070,6 +11139,46 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4510-SNRYO-NYU-EXT.
            EXIT.
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       4901-CLIENT-PRT-SEC         SECTION.
+      *
+           INITIALIZE                  KDMY01
+           MOVE    SPACE               TO  KDMY01-PANDAPRINT1
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                  ORCSPRTCLTRAREA
+           MOVE    "処方箋"            TO  ORCSPRTCLTR-TITLE-I(01)
+           MOVE    "お薬情報"          TO  ORCSPRTCLTR-TITLE-I(02)
+           MOVE    "お薬手帳"          TO  ORCSPRTCLTR-TITLE-I(03)
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCLTRAREA
+                                               MCPAREA
+           MOVE    ORCSPRTCLTR-OUT     TO  KDMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
+      *
+           .
+       4901-CLIENT-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC              SECTION.
+      *
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+           MOVE    "_KDMY01"           TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ユーザプログラム起動処理
       *****************************************************************
@@ -12621,6 +12730,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *TEST H24.1 
+               WHEN    "2004"
+                   STRING  "内服薬剤が７種類以上になりますが、"
+                           "用法まとめでは７種類以下です。"
+                           "７種類以上の処方せん料にしますか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+               WHEN    "2005"
+                   STRING  "用法まとめで内服薬剤が７種類以上になります"
+                           "。"
+                           "７種類以上の処方せん料にしますか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+      *TEST H24.1 
                WHEN    "0140"
                    STRING  "初回算定日を算定履歴に作成します。"
                                            DELIMITED  BY  SIZE

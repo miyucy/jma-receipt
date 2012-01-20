@@ -25,3 +25,4 @@
            COPY    "KID1.INC".
            COPY    "KID2.INC".
            COPY    "KHELP.INC".
+           COPY    "KDMY01.INC".

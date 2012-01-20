@@ -32,6 +32,7 @@
       *  04.05.00    NACL-多々納  10/01/XX  治験対応
       *  04.06.00    NACL-多々納  11/02/22  用法コメント対応
       *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
+      *  04.07.00    NACL-多々納  12/01/10  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -121,6 +122,8 @@
            03  FLG-YAKUZAI         PIC 9(01).
            03  FLG-HENKOU          PIC 9(01).
            03  FLG-KANSAN          PIC 9(01).
+      *    クライアント印刷有
+           03  FLG-CLIENT-OK       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -402,6 +405,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -422,6 +428,7 @@
            COPY    "KAERR.INC".
            COPY    "KAID1.INC".
            COPY    "KAID2.INC".
+           COPY    "KADMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -465,6 +472,11 @@
       *    画面ＳＰＡ書込み
            IF      FLG-END2            =   ZERO
                PERFORM 1003-KA02SPA-OUT-SEC
+           END-IF
+      *
+      *    クライアント印刷
+           IF      FLG-CLIENT-OK       =   1
+               PERFORM 600-CLIENT-DMY-SEC
            END-IF
       *
            MOVE    SPA-KA01KYOUTU      TO  SPA-WORK
@@ -2163,67 +2175,105 @@
       *****************************************************************
        3002-KAID1-SET-SEC          SECTION.
       *
+           IF      SPA-KAID1-FLG       =   "OK"
+               PERFORM 30021-KAID1-PRT-SEC
+           ELSE
+               IF      SPA-PRINT-SYORI     =   1
+                   INITIALIZE              SPA-PARA-WKSRY-TBL
+                   INITIALIZE              SPA-KA02-PRT
+                   MOVE    ZERO            TO  SPA-WKSRY-MAX
+               END-IF
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    SPACE               TO  SPA-KAID1CD
+           END-IF
+      *
+           .
+       3002-KAID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（ＸＤＩＤ１）ＯＫ処理
+      *****************************************************************
+       30021-KAID1-PRT-SEC          SECTION.
+      *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *
+           IF      SPA-CLIENT-PRT-FLG  =   2
+      *        クライアント印刷制御情報取得処理
+               PERFORM 4901-CLIENT-PRT-SEC
+           END-IF
       *
            EVALUATE    SPA-KAID1CD
       *        薬剤情報印刷
                WHEN    "0101"
-                   IF      SPA-KAID1-FLG        =   "OK"
-                       MOVE    2                TO  FLG-PRINT
-                       PERFORM 4103-YAKJYO-PRINT-SEC
-                   ELSE
-                       IF      SPA-PRINT-SYORI     =   1
-                           INITIALIZE              SPA-PARA-WKSRY-TBL
-                           INITIALIZE              SPA-KA02-PRT
-                           MOVE    ZERO            TO  SPA-WKSRY-MAX
-                       END-IF
-                       MOVE    1               TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    2                TO  FLG-PRINT
+                   PERFORM 4103-YAKJYO-PRINT-SEC
       *        退院時処方せん選択印刷
                WHEN    "0106"
-                   IF      SPA-KAID1-FLG        =   "OK"
-                       MOVE    2                TO  FLG-PRINT
-                       PERFORM 4102-SYOHOU-PRINT-SEC
-                   ELSE
-                       IF      SPA-PRINT-SYORI     =   1
-                           INITIALIZE              SPA-PARA-WKSRY-TBL
-                           INITIALIZE              SPA-KA02-PRT
-                       END-IF
-                       MOVE    1               TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    2                TO  FLG-PRINT
+                   PERFORM 4102-SYOHOU-PRINT-SEC
       *        退院時処方せん印刷
                WHEN    "0105"
-                   IF      SPA-KAID1-FLG        =   "OK"
-                       MOVE    2                TO  FLG-PRINT
-                       PERFORM 451-SHOHOSEN-PRINT-SEC
-                   ELSE
-                       IF      SPA-PRINT-SYORI     =   1
-                           INITIALIZE              SPA-PARA-WKSRY-TBL
-                           INITIALIZE              SPA-KA02-PRT
-                       END-IF
-                       MOVE    1               TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    2                TO  FLG-PRINT
+                   PERFORM 451-SHOHOSEN-PRINT-SEC
       *        お薬手帳前回印刷
                WHEN    "0107"
-                   IF      SPA-KAID1-FLG        =   "OK"
-                       MOVE    2                TO  FLG-PRINT
-                       PERFORM 4104-OKUSURI-PRINT-SEC
-                   ELSE
-                       IF      SPA-PRINT-SYORI     =   1
-                           INITIALIZE              SPA-PARA-WKSRY-TBL
-                           INITIALIZE              SPA-KA02-PRT
-                       END-IF
-                       MOVE    1               TO  SPA-GMN-CUR
-                   END-IF
+                   MOVE    2                TO  FLG-PRINT
+                   PERFORM 4104-OKUSURI-PRINT-SEC
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KAID1CD
+      *
+           IF      (SPA-CLIENT-PRT-FLG =   1  )
+      *        印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+           END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
            END-IF
            .
-       3002-KAID1-SET-EXT.
+       30021-KAID1-PRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       4901-CLIENT-PRT-SEC         SECTION.
+      *
+           INITIALIZE                  KADMY01
+           MOVE    SPACE               TO  KADMY01-PANDAPRINT1
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                  ORCSPRTCLTRAREA
+           MOVE    "お薬情報"          TO  ORCSPRTCLTR-TITLE-I(01)
+           MOVE    "処方箋"            TO  ORCSPRTCLTR-TITLE-I(02)
+           MOVE    "お薬手帳"          TO  ORCSPRTCLTR-TITLE-I(03)
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCLTRAREA
+                                               MCPAREA
+           MOVE    ORCSPRTCLTR-OUT     TO  KADMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
+      *
+           .
+       4901-CLIENT-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC              SECTION.
+      *
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+           MOVE    "_KADMY01"          TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           .
+       600-CLIENT-DMY-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3815,7 +3865,7 @@
            PERFORM 41021-ORCHC19-HENSYU-SEC
       *
            IF      SPA-ERRCD           =   SPACE
-               MOVE    "01"                TO  SPA-PRT-FLG
+               MOVE    "02"                TO  SPA-PRT-FLG
                CALL    WRK-SYOHOU-PG       USING   SPA-AREA
                                                    ORCHC19AREA
            END-IF
@@ -4121,7 +4171,7 @@
            MOVE    1                   TO  ORCHCN62-CNT
            PERFORM 41041-ORCHC62-HENSYU-SEC
            IF      SPA-ERRCD           =   SPACE
-               MOVE    "01"                TO  SPA-PRT-FLG
+               MOVE    "03"                TO  SPA-PRT-FLG
                CALL    WRK-OKUSURI-PG      USING
                                            SPA-AREA
                                            ORCHCN62AREA
@@ -4379,6 +4429,9 @@
            MOVE    "1"                 TO  ORCSNYUINSHO-DRCD  (1)(1:1)
            MOVE    SPA-GMN-DRCD        TO  ORCSNYUINSHO-DRCD  (1)(2:4)
            MOVE    1                   TO  ORCSNYUINSHO-SRYKA-MAX
+      *
+           MOVE    "02"                TO  SPA-PRT-FLG
+      *
            CALL    "ORCSNYUINSHO"      USING
                                        SPA-AREA
                                        ORCSNYUINSHOAREA

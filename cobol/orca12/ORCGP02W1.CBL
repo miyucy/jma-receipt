@@ -759,7 +759,7 @@
       *   画面日付変換サブ
           COPY    "CPORCSGDAY.INC".
       *
-      *    公費月上限額取得用パラメタ
+      *   公費月上限額取得用パラメタ
           COPY    "CPORCSJGNGET.INC".
       *
       *    全角チェックパラメタ
@@ -812,6 +812,7 @@
            COPY    "P02T.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
+           COPY    "PDMY01.INC".
            COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -3092,6 +3093,12 @@
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-BANTI-CHK-SEC
            END-IF
+      *ver.4.7
+      *    電話番号
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-TEL-CHK-SEC
+           END-IF
       *    世帯主
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
@@ -3661,11 +3668,11 @@
       *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
            MOVE    SPA-GMN-BIRTHDAYW   TO  SGDAY-INDAY
-      *!!
            MOVE    SPA-SYSYMD          TO  SGDAY-SYSYMD
            MOVE    "2"                 TO  SGDAY-SYSKBN
            CALL    "ORCSGDAY"          USING
                                        ORCSGDAYAREA
+      *
            IF      SGDAY-RC            =   ZERO
                MOVE    SGDAY-OTDAY         TO  SPA-GMN-BIRTHDAYW
                MOVE    SGDAY-SDAY          TO  SPA-NAI-BIRTHDAY
@@ -3891,6 +3898,23 @@
       *
            IF      SPA-GMN-POST        =   SPACE
                MOVE    SPA-GMN-POST        TO  SPA-MAE-POST
+               GO      TO      4101-POST-CHK-EXT
+           END-IF
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-POST        TO  KANACHK-MAE-INPUT
+           MOVE    7                   TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-POST
+           IF     (KANACHK-RC          =   ZERO  )  AND
+                  (KANACHK-SYUBETU     =   1     )
+      *        半角であること
+               CONTINUE
+           ELSE
+               MOVE    "0131"              TO  SPA-ERRCD
+               MOVE     40                 TO  SPA-GMN-CUR
                GO      TO      4101-POST-CHK-EXT
            END-IF
       *
@@ -4234,6 +4258,50 @@
            END-IF
            .
        4101-BANTI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    電話番号 チェック処理
+      *****************************************************************
+       4101-TEL-CHK-SEC             SECTION.
+      *
+           IF      SPA-GMN-TEL1    NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-TEL1        TO  KANACHK-MAE-INPUT
+               MOVE    15                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-TEL1
+               IF     (KANACHK-RC          =   ZERO  )  AND
+                      (KANACHK-SYUBETU     =   1     )
+      *            半角であること
+                   CONTINUE
+               ELSE
+                   MOVE    "0132"              TO  SPA-ERRCD
+                   MOVE     43                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF      SPA-GMN-TEL2    NOT =   SPACE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    SPA-GMN-TEL2        TO  KANACHK-MAE-INPUT
+               MOVE    15                  TO  KANACHK-MAX-CNT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-TEL2
+               IF     (KANACHK-RC          =   ZERO  )  AND
+                      (KANACHK-SYUBETU     =   1     )
+      *            半角であること
+                   CONTINUE
+               ELSE
+                   MOVE    "0132"              TO  SPA-ERRCD
+                   MOVE     44                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4101-TEL-CHK-EXT.
            EXIT.
       *
       *****************************************************************

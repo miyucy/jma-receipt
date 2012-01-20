@@ -81,6 +81,7 @@
       *  04.07.00    NACL-多々納  11/07/XX  カルテ病名なし対応
       *                                     予約選択患者登録遷移対応他
       *  04.07.00    NACL-多々納  11/08/XX  患者保険確認履歴追加
+      *  04.07.01    NACL-多々納  12/01/05  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -148,6 +149,9 @@
            03  FLG-NYUIN               PIC 9(01).
            03  FLG-UKE-CHK             PIC 9(01).
            03  FLG-YYK-CHK             PIC 9(01).
+      *    クライアント印刷有
+           03  FLG-CLIENT-OK           PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
@@ -451,9 +455,6 @@
       *    カルテパラメタ
            COPY    "CPORCHC01.INC".
       *
-      *    処方箋印刷パラメタ
-      **** COPY    "CPORCHC02.INC".
-      *
       *    処方箋印刷パラメタ（Ａ５）
            COPY    "CPORCHC19.INC".
       *
@@ -488,6 +489,9 @@
       *    保険確認年月日履歴登録サブ
            COPY    "CPORCSPTHKNRRK.INC".
       *
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
+      *
       *===> For Claim Start
            COPY    "CPSHELLTBL.INC".
       *****COPY    "ORCA-DBPATH".
@@ -508,6 +512,7 @@
            COPY    "U02X.INC".
            COPY    "U2ERR.INC".
            COPY    "U2ID1.INC".
+           COPY    "UDMY01.INC".
            COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -547,6 +552,11 @@
                PERFORM 500-SET-SCREEN
            END-IF
       *
+      *    クライアント印刷
+           IF      FLG-CLIENT-OK       =   1
+               PERFORM 600-CLIENT-DMY-SEC
+           END-IF
+      *
            MOVE    SPA-AREA                      TO  SPA-COMMON
            MOVE    SPA-U02                       TO  SPA-FREE
            .
@@ -554,6 +564,7 @@
       *
            EXIT    PROGRAM
            .
+      *
       *****************************************************************
       *    初期　処理
       *****************************************************************
@@ -1909,6 +1920,11 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    U02-USERPG          TO  SPA-GMN-USERPG-G
       *
            MOVE    U02-SELNUM          TO  SPA-GMN-SELNUM
+      *TEST
+           DISPLAY "U02-SELNUM:"  U02-SELNUM
+                   ",SPA-GMN-SELNUM:"  SPA-GMN-SELNUM
+           DISPLAY "U02-HKNCOMBI:"  U02-HKNCOMBI
+                   ",SPA-GMN-HKNCOMBI:"  SPA-GMN-COMBINUM
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -4264,71 +4280,34 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      495-PRINT-EXT
            END-IF
-      *
-      *    帳票プログラム取得
-           PERFORM 4901-PRINT-PG-SEC
-      *
-      *  カルテ印刷
+      *    カルテ印刷
            IF      SPA-GMN-KARUTE          =   "1"  OR  "2"
                                            OR  "3"
                IF     (SPA-GMN-PTID            =   ZERO  )  OR
                       (SPA-GMN-SRYKA           =   SPACE )
-      ************OR *(SPA-GMN-COMBINUM        =   ZERO  )
                    MOVE    "0024"          TO  SPA-ERRCD
                    GO      TO   495-PRINT-EXT
                END-IF
-      *
-               MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
-               MOVE    SPA-GMN-SRYKANAME   TO  SPA-SRYKAMEI
-               MOVE    SPA-GMN-PTID        TO  SPA-PTID
-               MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
-               MOVE    SPA-GMN-COMBINUM    TO  SPA-HKNCOMBINUM   
-      *********CALL    "ORCHC01"           USING  SPA-AREA 
-               MOVE    SPA-GMN-KARUTE      TO  ORCHC01-SYORIKBN
-      *        病名なしは、区分＝４へ
-               IF      SPA-GMN-KARUTE      =   "3"
-                   MOVE    "4"             TO  ORCHC01-SYORIKBN
-               END-IF
-               CALL    WRK-KARUTE-PG       USING  SPA-AREA
-                                                  ORCHC01AREA
            END-IF
-      *
       *    処方箋印刷
            IF      SPA-GMN-SYOHO          =   "1"
                IF     (SPA-GMN-PTID            =   ZERO  )  OR
                       (SPA-GMN-SRYKA           =   SPACE )
-      *************OR (SPA-GMN-COMBINUM        =   ZERO  )
                    MOVE    "0025"          TO  SPA-ERRCD
                    GO      TO   495-PRINT-EXT
                END-IF
-               MOVE    SPA-GMN-PTID        TO  SPA-PTID
-               MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
-               MOVE    SPA-GMN-NAME        TO  SPA-NAME
-               MOVE    SPA-GMN-SEX         TO  SPA-SEX
-               MOVE    SPA-NAI-BIRTHDAY    TO  SPA-BIRTHDAY
-               MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
-               MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
-               MOVE    SPA-GMN-SRYKANAME   TO  SPA-SRYKAMEI
-               MOVE    "2"                 TO  SPA-NYUGAIKBN
-               IF      SPA-GMN-DRCD        =   SPACE
-                   MOVE    SPACE               TO  SPA-DRCD
-               ELSE
-                   MOVE    "1"                 TO  SPA-DRCD (1:1) 
-                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD (2:)
-               END-IF
-               MOVE    SPA-GMN-COMBINUM    TO  SPA-HKNCOMBINUM
-               INITIALIZE                      ORCHC19AREA
-               MOVE    ZERO                TO  ORCHC19-RENNUM
-               MOVE    "1"                 TO  ORCHC19-KBN
-      ****     CALL    "ORCHC19"           USING   SPA-AREA
-      ****                                         ORCHC19AREA
-               CALL    WRK-SYOHOU-PG       USING   SPA-AREA
-                                                   ORCHC19AREA
+           END-IF
+      *
+           IF     (SPA-GMN-KARUTE      =   "0" )  AND
+                  (SPA-GMN-SYOHO       =   "0" )
+               CONTINUE
+           ELSE
+      *        帳票印刷処理
+               PERFORM 49002-PRINT-SYORI-SEC
            END-IF
       *
            PERFORM 493-CLEAR-SEC
            .
-      *
         495-PRINT-EXT.
            EXIT.
       *
@@ -4364,43 +4343,11 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
       *
       *    カルテ
-      *****MOVE    SPACE               TO  WRK-KARUTE-PG
-      *    INITIALIZE                      SYS-1032-REC
-      *    MOVE    "1032"              TO  SYS-1032-KANRICD
-      *    MOVE    "00000001"          TO  SYS-1032-KBNCD
-      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
-      *    PERFORM 910-SYSKANRI-READ-SEC
-      *    IF      FLG-SYSKANRI        =   ZERO
-      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
-      *        独自開発分
-      *        IF      SYS-1032-ORCACSTCHK     =   "T"
-      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-KARUTE-PG
-      *        ELSE
-      *        ＯＲＣＡ標準分
-      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-KARUTE-PG
-      *        END-IF
-      *****END-IF
            IF      WRK-KARUTE-PG       =   SPACE
                MOVE    "ORCHC01"           TO  WRK-KARUTE-PG
            END-IF
       *
-      ***  処方せん
-      *    MOVE    SPACE               TO  WRK-SYOHOU-PG
-      *    INITIALIZE                      SYS-1032-REC
-      *    MOVE    "1032"              TO  SYS-1032-KANRICD
-      *    MOVE    "00000002"          TO  SYS-1032-KBNCD
-      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
-      *    PERFORM 910-SYSKANRI-READ-SEC
-      *    IF      FLG-SYSKANRI        =   ZERO
-      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
-      *        独自開発分
-      *        IF      SYS-1032-ORCACSTCHK     =   "T"
-      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-SYOHOU-PG
-      *        ELSE
-      *        ＯＲＣＡ標準分
-      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-SYOHOU-PG
-      *        END-IF
-      *****END-IF
+      *    処方せん
            IF      WRK-SYOHOU-PG       =   SPACE
                MOVE    "ORCHC19"           TO  WRK-SYOHOU-PG
            END-IF
@@ -4487,15 +4434,52 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
            MOVE    SPA-KYOUTU          TO  WRK-SPA-KYOUTU
       *
-           IF     (SPA-GMN-KARUTE      =   "1"  OR "2"  OR  "3")  OR
-                  (SPA-GMN-SYOHO       =   "1" )
-      *        帳票プログラム取得
-               PERFORM 4901-PRINT-PG-SEC
+           IF     (SPA-GMN-KARUTE      =   "0" )  AND
+                  (SPA-GMN-SYOHO       =   "0" )
+               CONTINUE
+           ELSE
+      *        帳票印刷処理
+               PERFORM 49002-PRINT-SYORI-SEC
            END-IF
       *
-      *  カルテ印刷
+           IF      FLG-CLAIM       =   1 
+               PERFORM 4906-CLAIM-SOUSIN-SEC
+           END-IF
+      *
+      *    ユーザプログラム起動
+           IF      SPA-GMN-PTNUM   NOT =   SPACE
+               PERFORM 4907-USERPG-SEC
+           END-IF
+           IF      FLG-END             =   ZERO
+      *
+               MOVE    WRK-SPA-KYOUTU          TO  SPA-KYOUTU
+           END-IF
+      *
+           PERFORM 493-CLEAR-SEC
+      *****PERFORM 3101-UKETU-HEN-SEC
+           .
+       49001-KOUSIN-EXT.
+           EXIT.   
+      *
+      *****************************************************************
+      *    帳票印刷処理ク処理
+      *****************************************************************
+       49002-PRINT-SYORI-SEC             SECTION.
+      *
+           IF      SPA-CLIENT-PRT-FLG  =   2
+      *        クライアント印刷制御情報取得処理
+               PERFORM 4951-CLIENT-PRT-SEC
+           END-IF
+      *
+      *    帳票プログラム取得
+           PERFORM 4901-PRINT-PG-SEC
+      *
+      *    カルテ印刷
            IF      SPA-GMN-KARUTE          =   "1"   OR  "2"  OR  "3"
-      ************ SPA-GMN-COMBINUM    NOT =   ZERO
+      *        クライアント印刷あり
+               IF    ( SPA-CLIENT-PRT-FLG  =   1  )
+                   MOVE    "01"            TO  SPA-PRT-FLG
+               END-IF
                MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
                MOVE    SPA-GMN-SRYKANAME   TO  SPA-SRYKAMEI
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
@@ -4512,6 +4496,12 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
       *    処方箋印刷
            IF      SPA-GMN-SYOHO          =   "1"
+      *        クライアント印刷あり
+               IF    ( SPA-CLIENT-PRT-FLG  =   1  )
+                   MOVE    "02"            TO  SPA-PRT-FLG
+                   MOVE    2               TO  SPA-CLIENT-TEMP-FLG
+               END-IF
+      *
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
                MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
                MOVE    SPA-GMN-NAME        TO  SPA-NAME
@@ -4535,24 +4525,63 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                                                    ORCHC19AREA
            END-IF
       *
-           IF      FLG-CLAIM       =   1 
-               PERFORM 4906-CLAIM-SOUSIN-SEC
-           END-IF
+      *    IF     (SPA-CLIENT-PRT-FLG   =   1  )
+      *    印刷ダミー処理
+      *        MOVE    "99"                TO  SPA-PRT-FLG
+      *        CALL    "ORCHCDUMMY"    USING   SPA-AREA
+      *        MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
+      **   END-IF
       *
-      *    ユーザプログラム起動
-           IF      SPA-GMN-PTNUM   NOT =   SPACE
-               PERFORM 4907-USERPG-SEC
-           END-IF
-           IF      FLG-END             =   ZERO
-      *
-               MOVE    WRK-SPA-KYOUTU          TO  SPA-KYOUTU
-           END-IF
-      *
-           PERFORM 493-CLEAR-SEC  
-      *****PERFORM 3101-UKETU-HEN-SEC
+           MOVE    SPACE               TO  SPA-PRT-FLG
            .
-       49001-KOUSIN-EXT.
-           EXIT.   
+       49002-PRINT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       4951-CLIENT-PRT-SEC         SECTION.
+      *
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
+      *
+           INITIALIZE                  UDMY01
+           MOVE    SPACE               TO  UDMY01-PANDAPRINT1
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                  ORCSPRTCLTRAREA
+           MOVE    "カルテ"            TO  ORCSPRTCLTR-TITLE-I(01)
+           MOVE    "処方箋"            TO  ORCSPRTCLTR-TITLE-I(02)
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCLTRAREA
+                                               MCPAREA
+           MOVE    ORCSPRTCLTR-OUT     TO  UDMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
+           .
+       4951-CLIENT-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC              SECTION.
+      *
+           IF     (SPA-CLIENT-PRT-FLG   =   1  )
+      *    印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
+           END-IF
+      *
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+           MOVE    "_UDMY01"           TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
       *
       *****************************************************************
       *    更新チェック処理

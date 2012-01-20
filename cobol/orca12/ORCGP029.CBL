@@ -47,6 +47,7 @@
       *  04.03.00    NACL-多々納  08/07/22  特記事項追加
       *  04.05.00    NACL-多々納  09/07/XX  患者公費負担額機能追加
       *  04.07.00    NACL-多々納  11/08/XX  患者保険確認履歴追加
+      *  04.07.00    NACL-多々納  12/01/12  印刷処理移動
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,14 +86,12 @@
            COPY    "P02COMMON-SPA".
       *    患者登録全画面スパ領域
            COPY    "P02SCR-SPA".
-      *    処方箋印刷パラメータ
-           COPY    "CPORCHC02.INC".
       *
       *    カルテパラメータ
-           COPY    "CPORCHC01.INC".
+      *    COPY    "CPORCHC01.INC".
       *
       *    処方箋印刷パラメータ
-           COPY    "CPORCHC19.INC".
+      *    COPY    "CPORCHC19.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -186,9 +185,9 @@
            03  WRK-PTSAME-CNT          PIC 9(02).
       *
       *    カルテＰＧ名
-           03  WRK-KARUTE-PG           PIC X(20).
+      *    03  WRK-KARUTE-PG           PIC X(20).
       *    処方せんＰＧ名
-           03  WRK-SYOHOU-PG           PIC X(20).
+      *    03  WRK-SYOHOU-PG           PIC X(20).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -213,7 +212,7 @@
       *    患者番号構成管理マスタ
            COPY    "CPSK1009.INC".
       *　　（帳票プログラム）
-           COPY    "CPSK1032.INC".
+      *    COPY    "CPSK1032.INC".
       *
       *    患者マスタ
        01  PTINF-REC.
@@ -333,16 +332,16 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      **** COPY    "CPORCMCP.INC".
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
-           COPY    "CPORCSPRTNM.INC".
+      **   COPY    "CPORCSPRTNM.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
       *    レセプト作成管理マスタ更新サブ
            COPY    "CPORCSRECEUPD.INC".
+      *
       *    主情報アクセス用パラメタ
            01  ORCSSYUACCAREA.
                COPY    "CPORCSSYUACC.INC".
@@ -358,12 +357,9 @@
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
       *
-      ***  COPY    "LINKAREA".
-      *
        PROCEDURE                   DIVISION    USING
            MCPAREA
            SPAAREA
-      **** LINKAREA
            .
       *
       *****************************************************************
@@ -600,8 +596,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        PERFORM 2120-QRCDHKN-UPD-SEC
       **** END-IF
       *
+      *ver.4.7　クライアント印刷対応の為、ORCGP02 へ移動
       *    カルテ／処方箋発行処理
-           PERFORM 2100-HC01-SYORI-SEC
+      **   PERFORM 2100-HC01-SYORI-SEC
       *
            IF      WRK-ERRCD       NOT =   SPACE
                MOVE    WRK-ERRCD           TO  SPA-ERRCD
@@ -1600,6 +1597,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    ZERO                TO  SYS-1009-PTID
                END-IF
                COMPUTE SYS-1009-PTID           =   SYS-1009-PTID  +   1
+      *        ＰＴＩＤ＝ゼロ　はなし
+               IF      SYS-1009-PTID           =   ZERO
+                   MOVE    "8001"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SYS-1009-PTID
+               END-IF
                MOVE    SYS-1009-PTID           TO  SPA-GMN-PTID
       *
                MOVE    SMCNDATE-YMD        TO  SYS-1009-UPYMD
@@ -2414,176 +2416,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        2120-QRCDHKN-UPD-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    カルテ　出力へ
-      *****************************************************************
-       2100-HC01-SYORI-SEC         SECTION.
-      *
-      *    ＳＰＡに共通項目を設定
-           MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
-           MOVE    "2"                 TO  SPA-NYUGAIKBN
-      *
-      *    帳票プログラム取得
-           PERFORM 21000-PRINT-PG-SEC
-      *
-      *    基本画面のカルテ出力
-           IF      SPA-GMN-HAKKO       =   "1"  OR  "2"
-                                       OR  "3"
-               PERFORM 21003-HC01-CALL2-SEC
-           END-IF
-      *
-           MOVE    ZERO                TO  IDX
-           PERFORM   VARYING   IDX2    FROM    1   BY  1
-                     UNTIL   ( IDX2            >   10 )
-                     OR      ( SPA-GMN20-YBANGOU(IDX2)
-                                               =   ZERO  OR  SPACE )
-      *        カルテ出力
-      *********IF  ( SPA-GMN20-TKARUTE (IDX2)      =   "1"   )  AND
-      *            ( SPA-GMN20-THKNCOMBI(IDX2)  NOT =   SPACE  AND
-      **********     SPA-GMN20-THKNCOMBI(IDX2)  NOT =   ZERO  )
-               IF   (SPA-GMN20-TKARUTE (IDX2)      =   "1"  OR  "2"
-                                                   OR  "3"  )
-                   PERFORM 21001-HC01-CALL-SEC
-               END-IF
-      *        処方箋出力
-      ******** IF  ( SPA-GMN20-TSYOHOU (IDX2)      =   "1"   )  AND
-      *            ( SPA-GMN20-THKNCOMBI(IDX2)  NOT =   SPACE  AND
-      **********     SPA-GMN20-THKNCOMBI(IDX2)  NOT =   ZERO  )
-               IF    SPA-GMN20-TSYOHOU (IDX2)      =   "1"
-                   PERFORM 21001-HC02-CALL-SEC
-               END-IF
-           END-PERFORM
-      *
-           .
-       2100-HC01-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    帳票プログラム取得処理
-      *****************************************************************
-       21000-PRINT-PG-SEC              SECTION.
-      *
-      *    カルテ
-           MOVE    SPACE               TO  WRK-KARUTE-PG
-           INITIALIZE                      ORCSPRTNMAREA
-           MOVE    "1"                 TO  ORCSPRTNM-KBN
-           MOVE    "00000001"          TO  ORCSPRTNM-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
-           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
-           CALL    "ORCSPRTNM"         USING
-                                           ORCSPRTNMAREA
-                                           SPA-AREA
-                                           SYS-1032-REC
-           MOVE    ORCSPRTNM-PRTPG     TO  WRK-KARUTE-PG
-      *
-      *    処方せん
-           MOVE    SPACE               TO  WRK-SYOHOU-PG
-           INITIALIZE                      ORCSPRTNMAREA
-           MOVE    "1"                 TO  ORCSPRTNM-KBN
-           MOVE    "00000002"          TO  ORCSPRTNM-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
-           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
-           CALL    "ORCSPRTNM"         USING
-                                           ORCSPRTNMAREA
-                                           SPA-AREA
-                                           SYS-1032-REC
-           MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
-      *
-           IF      WRK-KARUTE-PG       =   SPACE
-               MOVE    "ORCHC01"           TO  WRK-KARUTE-PG
-           END-IF
-      *
-           IF      WRK-SYOHOU-PG       =   SPACE
-               MOVE    "ORCHCM19"          TO  WRK-SYOHOU-PG
-           END-IF
-      *
-           .
-      *
-       21000-PRINT-PG-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    基本画面のカルテ出力処理
-      *****************************************************************
-       21003-HC01-CALL2-SEC           SECTION.
-      *
-      *
-           MOVE    SPA-GMN-PTID        TO  SPA-PTID
-           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
-      *
-           MOVE    SPA-GMN-SELNUM      TO  SPA-HKNCOMBINUM
-           MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
-           MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
-           MOVE    SPA-GMN-HAKKO       TO  ORCHC01-SYORIKBN
-      *    病名なしは、区分＝４へ
-           IF      SPA-GMN-HAKKO       =   "3"
-               MOVE    "4"             TO  ORCHC01-SYORIKBN
-           END-IF
-      *
-           CALL    WRK-KARUTE-PG     USING  SPA-AREA
-                                            ORCHC01AREA
-      *
-           .
-       21003-HC01-CALL2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    カルテ　出力へ
-      *****************************************************************
-       21001-HC01-CALL-SEC           SECTION.
-      *
-      *
-           MOVE    SPA-GMN-PTID        TO  SPA-PTID
-           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
-      *----(01.00.02) LINE ADD START -------------------------------
-           IF      SPA-GMN20-THKNCOMBI(IDX2)   =   SPACE
-               MOVE    ZERO            TO  SPA-HKNCOMBINUM
-           ELSE
-               MOVE    SPA-GMN20-THKNCOMBI(IDX2)
-                                       TO  SPA-HKNCOMBINUM
-           END-IF
-           MOVE    SPA-NAI20-SRYKA   (IDX2)
-                                       TO  SPA-SRYKA
-           MOVE    SPA-GMN20-TSRYKA  (IDX2)
-                                       TO  SPA-SRYKAMEI
-           MOVE    SPA-GMN20-TKARUTE (IDX2)
-                                       TO  ORCHC01-SYORIKBN
-      *    病名なしは、区分＝４へ
-           IF      SPA-GMN20-TKARUTE (IDX2)    =   "3"
-               MOVE    "4"             TO  ORCHC01-SYORIKBN
-           END-IF
-           CALL    WRK-KARUTE-PG       USING  SPA-AREA
-                                              ORCHC01AREA
-      *
-           .
-       21001-HC01-CALL-EXT.
-           EXIT.
-      *****************************************************************
-      *    処方箋　出力へ
-      *****************************************************************
-       21001-HC02-CALL-SEC           SECTION.
-      *
-           MOVE    SPA-GMN-PTID        TO  SPA-PTID
-           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
-           MOVE    SPA-GMN-NAME        TO  SPA-NAME
-           MOVE    SPA-GMN-SEXH        TO  SPA-SEX
-           MOVE    SPA-NAI-BIRTHDAY    TO  SPA-BIRTHDAY
-      *
-           MOVE    SPA-NAI20-SRYKA   (IDX2)       TO  SPA-SRYKA
-           MOVE    SPA-GMN20-TSRYKA  (IDX2)       TO  SPA-SRYKAMEI
-           MOVE    "1"                            TO  SPA-DRCD (1:1)
-           MOVE    SPA-NAI20-DRCD    (IDX2)       TO  SPA-DRCD (2:)
-      *----(01.00.01) LINE MOD END   --------------------------------
-           MOVE    SPA-GMN20-THKNCOMBI(IDX2)       TO  SPA-HKNCOMBINUM
-      *    印刷
-           MOVE    ZERO              TO  ORCHC19-RENNUM
-           MOVE    "1"               TO  ORCHC19-KBN
-           CALL    WRK-SYOHOU-PG     USING   SPA-AREA
-                                             ORCHC19AREA
-      *
-           .
-       21001-HC02-CALL-EXT.
-           EXIT.
       *****************************************************************
       *    ＡＰＩ患者保険情報更新処理
       *****************************************************************
