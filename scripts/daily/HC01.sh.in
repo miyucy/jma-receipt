@@ -10,10 +10,9 @@ fi
 . $JMARECEIPT_ENV
 
 export HOME=/home/orca
-
 ruby -e "puts File.readlines(ARGV[0]).at(0).chomp + ' ' * 20000  " $4 > $4.tmp
 mv $4.tmp $4
-LAYEROPTION=`ruby -ne '$_.scan(/MonpeLayerIn(.*)MonpeLayerOut/){ print $1 }' $4`
+LAYEROPTION=`ruby -ne '$_.scan(/MonpeLayerIn(.*)MonpeLayerOut/){ print $1.gsub(/ *-L */,",").sub(/,/,"-H ") }' $4`
 ruby -ne 'print $_.gsub(/MonpeLayerIn(.*)MonpeLayerOut/){|s| " " * s.length } ' $4 > $4.tmp
 mv $4.tmp $4
 
@@ -39,22 +38,24 @@ if [ "$8"  == '2' ]; then
 else
 	export	RED2PS_OUTPUT_CHARSET=EUC-JP
 fi
-	if	[ $1 = 'red2ps' ]	;then
-		if	[ -z $6  ]	;then
-			OFFSETX=0
-		else
-			OFFSETX=$6
-		fi
-		if	[ -z $7  ]	;then
-			OFFSETY=0
-		else
-			OFFSETY=$7
-		fi
-		if	[ -z $5  ]	;then
-			$1 $usr_form $4 $LAYEROPTION -x $OFFSETX -y $OFFSETY -p lp1
-		else
-			$1 $usr_form $4 $LAYEROPTION -x $OFFSETX -y $OFFSETY -p $5
-		fi
+	if	[ $1 = 'red2ps' ];then
+		RED2IFILE=$4.red2
+		PDFFILE=$4.pdf
+		FILE=$4.pdf
+		PRINTER=$5
+		OFFSETX=$6
+		OFFSETY=$7
+
+		[ -z $PRINTER  ] && PRINTER=lp1
+		[ -z $OFFSETX  ] && OFFSETX=0
+		[ -z $OFFSETY  ] && OFFSETY=0
+
+		red2embed $usr_form $4 -o $RED2IFILE
+		monpe $LAYEROPTION -x $OFFSETX -y $OFFSETY $RED2IFILE -e $PDFFILE
+	 	lpr -P $PRINTER $PDFFILE
+
+		[ -e $RED2IFILE ] && rm $RED2IFILE
+		[ -e $PDFFILE ]   && rm $PDFFILE
 	else	
 		ruby $1 $2 $3 $4 $5
 	fi

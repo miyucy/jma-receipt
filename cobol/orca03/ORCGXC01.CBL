@@ -762,6 +762,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    WRK-PSFILE-SRENNUM  DELIMITED  BY  SPACE
                    WRK-PSFILE-PAGE     DELIMITED  BY  SPACE
                    WRK-PSFILE-UUID     DELIMITED  BY  SPACE
+                   ".pdf"              DELIMITED  BY  SIZE
                                        INTO   PREVIEW
            END-STRING
       *                                 
@@ -1682,6 +1683,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                           WRK-PSFILE-SRENNUM   DELIMITED  BY  SPACE
                           WRK-PSFILE-PAGE      DELIMITED  BY  SPACE
                           PRVKANRI-TBL-UUID    DELIMITED  BY  SPACE
+                          ".pdf"               DELIMITED  BY  SIZE
                                        INTO    SPA-NAI-FILENAME (IDX)
                    END-STRING
                    MOVE    PRVKANRI-PRTNM      TO  SPA-NAI-PRTNM (IDX)
@@ -1785,6 +1787,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    WRK-PSFILE-SRENNUM  DELIMITED  BY  SPACE
                    WRK-PSFILE-PAGE     DELIMITED  BY  SPACE
                    WRK-PSFILE-UUID     DELIMITED  BY  SPACE
+                   ".pdf"              DELIMITED  BY  SIZE
                                        INTO   ORCF-FILE-NAME
            END-STRING
            MOVE    "r"                 TO  ORCF-FILE-MODE
@@ -1819,6 +1822,7 @@ grpsys                                       SPA-AREA
                   WRK-PSFILE-SRENNUM   DELIMITED  BY  SPACE
                   WRK-PSFILE-PAGE      DELIMITED  BY  SPACE
                   WRK-PSFILE-UUID      DELIMITED  BY  SPACE
+                  ".pdf"               DELIMITED  BY  SIZE
                                        INTO   ORCF-FILE-NAME
            END-STRING
       *
@@ -1840,6 +1844,7 @@ grpsys                                       SPA-AREA
                         WRK-PSFILE-SRENNUM DELIMITED  BY  SPACE
                         WRK-PSFILE-PAGE    DELIMITED  BY  SPACE
                         WRK-PSFILE-UUID    DELIMITED  BY  SPACE
+                        ".pdf"             DELIMITED  BY  SIZE
                                            INTO   ORCF-FILE-NAME
                    END-STRING
       *---------------------------------------------------------
@@ -1908,6 +1913,7 @@ grpsys*                    MOVE SPA-HOSPNUM TO -HOSPNUM
                                                  DELIMITED  BY  SPACE
                                WRK-PSFILE-PAGE   DELIMITED  BY  SPACE
                                WRK-PSFILE-UUID   DELIMITED  BY  SPACE
+                               ".pdf"            DELIMITED  BY  SIZE
                                                  INTO  ORCF-FILE-NAME
                              END-STRING
                              MOVE    ORCF-FILE-NAME

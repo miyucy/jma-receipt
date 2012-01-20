@@ -45,7 +45,7 @@
 # ※LP名は空白の場合、子プロセスの引数を省略する
 
 
-
+require "tempfile"
 
 
 # ============================================================
@@ -88,7 +88,9 @@ patch_form = ARGV[7] + '/'  		# 日レセpatch固有formディレクトリ
 
 
 # .redからpsファイルに変換する際に使用するプログラム
-RED_EXEC = 'red2ps'
+#RED_EXEC = 'red2ps'
+RED2EMBED = 'red2embed'
+MONPE = 'monpe'
 # .redファイルで、LP名を省略された際に使用するプリンタ名
 DEFAULT_LP = 'lp1'
 
@@ -253,11 +255,19 @@ li_cnt1 = 0
 
 # 実行処理
 word2.each do |d2|
+
+	fred=Tempfile.new(['tmpred','.red'])
+	fred.close
+	fpdf=Tempfile.new(['tmppdf','.pdf'])
+	fpdf.close
+
+
 # デバッグ用コード
 #	puts '[' + d2 + ']'
 	li_cnt1 = li_cnt1 + 1
 	d2_len = d2.size	# 文字列の長さの取得
 
+	layeroption = d2.scan(/MonpeLayerIn(.*)MonpeLayerOut/).join.gsub(/ *-L */,",").sub(/,/,"-H ")
 
 	# 先頭30バイトは、.diaと.defファイルのファイル名部分
 	# あるいは、.redファイルの拡張子を含むファイル名
@@ -334,9 +344,12 @@ end
 			offset_y = '0'
 		end
 
-#		w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name
-		puts RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name
-		w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name
+#		w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name
+
+		w_exec = RED2EMBED + ' '   + red_file + ' ' + temp_file + ' -o ' + fred.path  + ' ; ' \
+               + MONPE + ' ' +  fred.path + ' -x ' + offset_x + ' -y ' + offset_y + ' -e ' + fpdf.path + ' ' + layeroption  + ' ; ' \
+               + 'cat ' + fpdf.path + ' |  lpr -P ' + lp_name
+
 
 # デバッグ用の表示
 #		puts w_exec
@@ -353,64 +366,13 @@ end
 
 
 	else
-		# .redファイル以外である
-
-		# Dia・defファイル名のセット
-		case	site_flag
-		when	'1'
-			dia_file = std_form + ls_w1 + '.dia'
-			def_file = std_record + ls_w1 + '.def'
-		when	'2'
-			dia_file = site_form + ls_w1 + '.dia'
-			def_file = site_record + ls_w1 + '.def'
-		else
-			dia_file = std_form + ls_w1 + '.dia'
-			def_file = std_record + ls_w1 + '.def'
-		end
-
-		lp_name = d2[30, 20].strip	# LP名のセット
-		word3 = d2[61, (d2_len - 61)]	# 一時ファイルへ出力する内容のセット
-#		word3 = d2[51, (d2_len - 51)]	# 一時ファイルへ出力する内容のセット
-
-
-		# 一時ファイルへの書き込み
-		open(temp_file, "w") do |fp|
-			fp.print word3
-			fp.print ' ' * 20000
-		end
-# デバッグ用の表示
-		case	word3
-		when	nil
-			puts	'改行のみです' + '[' + String(li_cnt1) + ']'
-		when	''
-			puts	'改行のみです' + '[' + String(li_cnt1) + ']'
-		else
-			if d2 =~ /\A\s*\z/
-				puts	'空白・改行です' + '[' + String(li_cnt1) + ']'
-#			else
-#				puts	'OK [' + String(li_cnt1) + ']'
-			end
-		end
-		w_exec = exec_file + ' ' + dia_file + ' ' + def_file + ' ' + temp_file
-#		w_exec = exec_file + ' ' + dia_file2 + ' ' + def_file2 + ' ' + temp_file2
-		# LP名が指定されていたら、引数に追加
-		if lp_name != ''
-			w_exec = w_exec + ' ' + lp_name
-		end
-# デバッグ用の表示
-#		puts w_exec
-# **
-		# 実行前メッセージ出力
-		puts	'Print Start [' + String(li_cnt1) + ']'
-		# プログラムの実行
-		pid = fork do
-			exec w_exec
-		end
-		sleep 0.01	# 予期せぬエラーの回避のため、待つ(これを行わないと、ruby ver1.4上で呼び出されたスクリプトにエラーが発生する)
-		# 実行したプログラムが終わるまで待つ(引数の２番目は、1.4でのエラー回避のため)
-		Process.waitpid(pid, 0)
-
+#	monpe以外のファイルはエラーとする。
+		exit 4
 	end
+
+	fred.unlink
+	fpdf.unlink
+
 end
 
 
@@ -427,7 +389,6 @@ begin
 rescue
 # 例外が発生すれば、一時ファイルが存在しない
 end
-
 
 
 # ============================================================

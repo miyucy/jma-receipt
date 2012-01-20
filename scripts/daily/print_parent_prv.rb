@@ -27,8 +27,7 @@
 # クライアント印刷用(複数ps をまとめる)
 # (2011/08/05 ) 労災枠有り対応
 $:.unshift(File.dirname(__FILE__))
-require "monpeps"
-
+require 'tempfile'
 
 # ※複数のプロセスの実行はできない
 # For Debug st
@@ -45,8 +44,7 @@ require "monpeps"
 # 引数6  = 日医標準レセプトsite固有recordディレクトリ
 # 引数7  = dataファイル
 # 引数8  = 起動用スクリプト名1
-# 引数9  = 起動用スクリプト名2
-# 引数10 = 日医標準レセプトpatch固有formディレクトリ
+# 引数9  = 日医標準レセプトpatch固有formディレクトリ
 
 # dataファイルフォーマット
 # +------------------+------------+---------------+---------------+---------------+---------------+-----------------------+
@@ -104,11 +102,14 @@ std_form = ARGV[2] + '/'   		# 日レセ標準formディレクトリ
 std_record = ARGV[3] + '/' 		# 日レセ標準recordディレクトリ
 site_form = ARGV[4] + '/'  		# 日レセsite固有formディレクトリ
 site_record = ARGV[5] + '/'		# 日レセsite固有recordディレクトリ
-patch_form = ARGV[9] + '/'  		# 日レセsite固有formディレクトリ
+patch_form = ARGV[8] + '/'  		# 日レセsite固有formディレクトリ
 
 
 # .redからpsファイルに変換する際に使用するプログラム
-RED_EXEC = 'red2ps'
+#RED_EXEC = 'red2ps'
+RED2EMBED = 'red2embed'
+MONPE = 'monpe'
+
 # .redファイルで、LP名を省略された際に使用するプリンタ名
 DEFAULT_LP = 'lp1'
 
@@ -121,16 +122,16 @@ PDF = "ps2pdf"
 # 領域の初期化
 
 # ファイル名領域
-temp_file = ''; exec_file = ''; dia_file = ''; def_file = ''; data_file = ''; lp_name = ''; offset_x = ''; offset_y = ''
+temp_file = ''; exec_file = ''; dia_file = ''; def_file = ''; data_file = ''; lp_name = ''; offset_x = ''; offset_y = ''; offset_xy = ''
 temp_file2 = ''; exec_file2 = ''; dia_file2 = ''; def_file2 = ''; data_file2 = ''; lp_name2 = ''
 site_flag = ''; base_dir = ''
 #---- (2003/01/20 ) start
-prt_flg = '';psfile_name = '';psfile_name_folder = '';exec_file_prv = '';exec_file_prv = ''
+prt_flg = '';pdffile_name = '';pdffile_name_folder = '';exec_file_prv = '';exec_file_prv = ''
 #---- (2003/01/20 ) end
 # 文字列領域
 word1 = ''; word2 = []; word3 = ''
-# exec用文字列領域
-w_exec = ''
+# exec用領域
+w_exec= []
 # fork用領域
 pid = []
 # カウンタ用領域
@@ -143,7 +144,7 @@ d2_len = 0
 # 引数のセット
 
 # 引数の数チェック
-for li_cnt1 in 1..9 do
+for li_cnt1 in 1..8 do
 	if ARGV[li_cnt1] == nil
 		puts '引数の数が足りません'
 		exit 1
@@ -157,7 +158,6 @@ exec_file = String(ARGV[1])		# 起動プログラムファイル
 data_file = String(ARGV[6])		# dataファイル名
 #---- (2003/07/03 ) add start
 exec_file_prv = String(ARGV[7])		# 起動プログラムファイル
-RED_EXECPS = String(ARGV[8])		# 起動プログラムファイル
 #---- (2003/07/03 ) add end  
 
 
@@ -283,7 +283,7 @@ open(data_file, "r") do |fp|
 	word1 = fp.read
 end
 
-# LAYEROPTION 設定
+# layeroption 設定
 
 
 # -----------------------------------
@@ -303,14 +303,18 @@ stop_file_2 = ''
 on_flg = ''                    #オンライン帳票識別フラグ
 
 li_cnt1 = 0
-
 # 実行処理
 	puts '[start ' + `date` + ']'
 word2.each do |d2|
-  d2.scan(/MonpeLayerIn(.*)MonpeLayerOut/)
-  LAYEROPTION = $1.to_s
+
+	fred=Tempfile.new(['tmpred','.red'])
+	fred.close
+	fpdf=Tempfile.new(['tmppdf','.pdf'])
+	fpdf.close
+  
+    layeroption = d2.scan(/MonpeLayerIn(.*)MonpeLayerOut/).join.gsub(/ *-L */,",").sub(/,/,"-H ")
 #  puts  'layer = '
-#  puts  LAYEROPTION
+#  puts  layeroption
 # 印刷処理実行可能判定
 stop_file_1 = d2[227, 8].strip		# key情報の取得
 stop_file_2 = d2[239, 14].strip		# group情報の取得
@@ -371,11 +375,11 @@ end
 		offset_y = d2[55, 5].strip				# offset-yのセット
 #---- (2003/07/03 ) add start
 		prt_flg = d2[61, 1].strip                       	# 出力フラグのセット
-		psfile_name_folder = d2[62, 165].strip	                # PSファイル格納フォルダのセット
-		psfile_name_folder = add_slash(psfile_name_folder) 	#/を付加
-		psfile_name = psfile_name_folder.strip + hospnum + d2[227, 8].strip + d2[235, 4].strip \
-		+ d2[239, 14].strip + d2[253, 4].strip + d2[257, 5].strip + d2[262,36].strip
-									# PSファイル名のセット
+		pdffile_name_folder = d2[62, 165].strip	                # PDFファイル格納フォルダのセット
+		pdffile_name_folder = add_slash(pdffile_name_folder) 	#/を付加
+		pdffile_name = pdffile_name_folder.strip + hospnum + d2[227, 8].strip + d2[235, 4].strip \
+		+ d2[239, 14].strip + d2[253, 4].strip + d2[257, 5].strip + d2[262,36].strip + ".pdf"
+									# PDFファイル名のセット
 #		word3 = d2[51, (d2_len - 51)]				# 一時ファイルへ出力する内容のセット
 #		word3 = d2[262, (d2_len - 262)]				# 一時ファイルへ出力する内容のセット
 		word3 = d2[298, (d2_len - 298)]				# 一時ファイルへ出力する内容のセット
@@ -412,6 +416,7 @@ end
 		if offset_y == ''
 			offset_y = '0'
 		end
+		offset_xy="-x #{offset_x} -y #{offset_y}"
 
 #---- (2003/01/20 ) start
 #		w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name
@@ -620,6 +625,17 @@ else
   end
 end
 
+is_portlait=''
+optRotate = ''
+w_exec.clear
+
+is_portlait=`zcat -f #{red_file} | ruby -e 'STDIN.read.delete("\n").scan(/attribute name="is_portrait".*?"(.*?)"/){|s| print s}'`
+puts is_portlait
+if is_portlait=='false'
+    optRotate=' -E '
+end
+puts "is_portlait[" +  is_portlait + "]"
+
 #---- (2003/07/03) start
 		case	prt_flg
 		when	nil
@@ -627,41 +643,77 @@ end
 		when	''
 			puts	'出力区分未設定'
 		when	'1'     # 印刷のみの指示
-		puts	'take1 Start [' + psfile_name + ']'
-			w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name + ' ' + LAYEROPTION
-		when	'2'     # 印刷＆PSファイル出力の指示
-		puts	'take2 Start [' + psfile_name + ']'
+		puts	'take1 Start [' + pdffile_name + ']'
+			# w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name + ' ' + layeroption
+			w_exec << "#{RED2EMBED} #{red_file} #{temp_file} -o #{fred.path}"
+			w_exec << "#{MONPE} #{fred.path} #{offset_xy} #{layeroption} -e #{fpdf.path}"
+			w_exec << "lpr -P #{lp_name} #{fpdf.path}"
+
+		when	'2'     # 印刷＆PDFファイル出力の指示
+		puts	'take2 Start [' + pdffile_name + ']'
 			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
-			if psfile_name == ''
+			if pdffile_name == ''
 				puts	'出力ファイル名未設定'
-				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name + ' ' + LAYEROPTION
+				#w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name + ' ' + layeroption
+				w_exec << "#{RED2EMBED} #{red_file} #{temp_file} -o #{fred.path}"
+				w_exec << "#{MONPE} #{fred.path} #{offset_xy} #{layeroption} -e #{fpdf.path}"
+				w_exec << "lpr -P #{lp_name} #{fpdf.path}"
 			else
-#				w_exec = RED_EXECPS + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name + ' -o ' + psfile_name
-				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name + ' -o ' + psfile_name + ' '  + LAYEROPTION
+				#w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name + ' -o ' + pdffile_name + ' '  + layeroption
+				w_exec << "#{RED2EMBED} #{red_file} #{temp_file} -o #{fred.path}"
+				w_exec << "#{MONPE} #{fred.path} #{offset_xy} #{layeroption} -e #{fpdf.path}"
+				if optRotate == ''
+					w_exec << "mv #{fpdf.path} #{pdffile_name}"
+                else
+					w_exec << "pdftk #{fpdf.path} cat #{optRotate} output #{pdffile_name}"
+                end
+				w_exec << "lpr -P #{lp_name} #{pdffile_name}"
 			end
-		when	'3'     # PSファイル出力の指示
-		puts	'take3 Start [' + psfile_name + ']'
+		when	'3'     # PDFファイル出力の指示
+		puts	'take3 Start [' + pdffile_name + ']'
 			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
-			if psfile_name == ''
+			if pdffile_name == ''
 				puts	'出力ファイル名未設定'
 			else
-				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + psfile_name + ' ' + LAYEROPTION
-				Print_Area.push(psfile_name)
+				#w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + pdffile_name + ' ' + layeroption
+				w_exec << "#{RED2EMBED} #{red_file} #{temp_file} -o #{fred.path}"
+				w_exec << "#{MONPE} #{fred.path} #{offset_xy} #{layeroption} -e #{fpdf.path}"
+				if optRotate == ''
+					w_exec << "mv #{fpdf.path} #{pdffile_name}"
+                else
+					w_exec << "pdftk #{fpdf.path} cat #{optRotate} output #{pdffile_name}"
+                end
+				Print_Area.push(pdffile_name)
 			end
-		when	'4'     # PSファイル出力の指示
+		when	'4'     # PDFファイル出力の指示
 			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
-			if psfile_name == ''
+			if pdffile_name == ''
 				puts	'出力ファイル名未設定'
 			else
-				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + psfile_name + ' ' + LAYEROPTION
+				#w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + pdffile_name + ' ' + layeroption
+				w_exec << "#{RED2EMBED} #{red_file} #{temp_file} -o #{fred.path}"
+				w_exec << "#{MONPE} #{fred.path} #{offset_xy} #{layeroption} -e #{fpdf.path}"
+				if optRotate == ''
+					w_exec << "mv #{fpdf.path} #{pdffile_name}"
+                else
+					w_exec << "pdftk #{fpdf.path} cat #{optRotate} output #{pdffile_name}"
+                end
 			end
 		when	'5'     # クライアント印刷指示
 			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
-			if psfile_name == ''
+			if pdffile_name == ''
 				puts	'出力ファイル名未設定'
 			else
-				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -o ' + psfile_name + ' ' + LAYEROPTION
-				Print_Area.push(psfile_name)
+				#w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -o ' + pdffile_name + ' ' + layeroption
+				w_exec << "#{RED2EMBED} #{red_file} #{temp_file} -o #{fred.path}"
+				w_exec << "#{MONPE} #{fred.path} #{offset_xy} #{layeroption} -e #{fpdf.path}"
+				if optRotate == ''
+					w_exec << "mv #{fpdf.path} #{pdffile_name}"
+                else
+					w_exec << "pdftk #{fpdf.path} cat #{optRotate} output #{pdffile_name}"
+                end
+				w_exec << "lpr -P #{lp_name} #{pdffile_name}"
+				Print_Area.push(pdffile_name)
 			end
 		else
 			puts	'出力区分内容設定エラー'
@@ -669,10 +721,10 @@ end
 #---- (2003/07/03) end  
 #		if prt_flg == '3'
 #			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
-#			if psfile_name == ''
+#			if pdffile_name == ''
 #				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name
 #			else
-#				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + psfile_name
+#				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + pdffile_name
 #			end
 #		else
 #			w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -p ' + lp_name
@@ -681,7 +733,7 @@ end
 #---- (2003/01/20 ) end
 
 # デバッグ用の表示
-		puts w_exec
+		puts w_exec.join(';')
 # **
 		# 実行前メッセージ出力
 		puts	'Print Start [' + String(li_cnt1) + ']'
@@ -689,186 +741,47 @@ end
 		if (li_cnt1 == 1)
 			ADD_File=d2[257, 5].strip
 			if	d2[262,36].strip == ''
-		#		ADD_File=psfile_name[-5..-1]
+		#		ADD_File=pdffile_name[-5..-1]
 				on_flg='0'
 			else
-		#		ADD_File=File.basename(psfile_name)[30,5].strip
+		#		ADD_File=File.basename(pdffile_name)[30,5].strip
 				on_flg='1'
 			end
 		end
 #
 		# プログラムの実行
-		pid = fork do
-			exec w_exec
+        pid = fork do
+			exec w_exec.join(';')
 		end
-		sleep 0.01	# 予期せぬエラーの回避のため、待つ(これを行わないと、ruby ver1.4上で呼び出されたスクリプトにエラーが発生する)
-		# 実行したプログラムが終わるまで待つ(引数の２番目は、1.4でのエラー回避のため)
+		sleep 0.01  # 予期せぬエラーの回避のため、待つ(これを行わないと、ruby ver1.4上で呼び出されたスクリプトにエラーが発生する)
+        # 実行したプログラムが終わるまで待つ(引数の２番目は、1.4でのエラー回避のため)
 		Process.waitpid(pid, 0)
-
-
 	else
-		# .redファイル以外である
-
-		# Dia・defファイル名のセット
-		case	site_flag
-		when	'1'
-			dia_file = std_form + ls_w1 + '.dia'
-			def_file = std_record + ls_w1 + '.def'
-		when	'2'
-			dia_file = site_form + ls_w1 + '.dia'
-			def_file = site_record + ls_w1 + '.def'
-		else
-			dia_file = std_form + ls_w1 + '.dia'
-			def_file = std_record + ls_w1 + '.def'
-		end
-
-		lp_name = d2[30, 20].strip	# LP名のセット
-#---- (2003/01/20 ) start
-		prt_flg = d2[61, 1].strip                       	# 出力フラグのセット
-#---- (2003/07/03 ) add start
-		psfile_name_folder = d2[62, 165].strip	                # PSファイル格納フォルダのセット
-		psfile_name_folder = add_slash(psfile_name_folder) 	#/を付加
-		psfile_name = psfile_name_folder.strip + hospnum + d2[227, 8].strip + d2[235, 4].strip \
-		+ d2[239, 14].strip + d2[253, 4].strip + d2[257, 5].strip + d2[262,36].strip
-									# PSファイル名のセット
-#		word3 = d2[51, (d2_len - 51)]				# 一時ファイルへ出力する内容のセット
-#		word3 = d2[262, (d2_len - 262)]				# 一時ファイルへ出力する内容のセット
-		word3 = d2[298, (d2_len - 298)]				# 一時ファイルへ出力する内容のセット
-#---- (2003/07/03 ) add end
-#---- (2003/01/20 ) end
-
-
-		# 一時ファイルへの書き込み
-		open(temp_file, "w") do |fp|
-			fp.print word3
-			fp.print ' ' * 20000
-		end
-# デバッグ用の表示
-		case	word3
-		when	nil
-			puts	'改行のみです' + '[' + String(li_cnt1) + ']'
-		when	''
-			puts	'改行のみです' + '[' + String(li_cnt1) + ']'
-		else
-			if d2 =~ /\A\s*\z/
-				puts	'空白・改行です' + '[' + String(li_cnt1) + ']'
-#			else
-#				puts	'OK [' + String(li_cnt1) + ']'
-			end
-		end
-#---- (2003/01/20 ) start
-#		w_exec = exec_file + ' ' + dia_file + ' ' + def_file + ' ' + temp_file
-##		w_exec = exec_file + ' ' + dia_file2 + ' ' + def_file2 + ' ' + temp_file2
-
-#---- (2003/07/03) start
-		case	prt_flg
-		when	nil
-			puts	'出力区分未設定'
-		when	''
-			puts	'出力区分未設定'
-		when	'1'     # 印刷のみの指示
-			w_exec = exec_file + ' ' + dia_file + ' ' + def_file + ' ' + temp_file
-			# LP名が指定されていたら、引数に追加
-			if lp_name != ''
-				w_exec = w_exec + ' ' + lp_name
-			end
-			puts	'OKtake [' + w_exec + ']'
-		when	'2'     # 印刷＆PSファイル出力の指示
-			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
-			if psfile_name == ''
-				puts	'出力ファイル名未設定'
-				w_exec = exec_file + ' ' + dia_file + ' ' + def_file + ' ' + temp_file
-				# LP名が指定されていたら、引数に追加
-				if lp_name != ''
-					w_exec = w_exec + ' ' + lp_name
-				end
-			else
-				w_exec = exec_file_prv + ' ' + dia_file + ' ' + def_file + ' ' + temp_file + ' ' + psfile_name
-				# LP名が指定されていたら、引数に追加
-				if lp_name != ''
-					w_exec = w_exec + ' ' + lp_name
-				end
-			end
-		when	'3'     # PSファイル出力の指示
-			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
-			if psfile_name == ''
-				puts	'出力ファイル名未設定'
-			else
-				w_exec = exec_file_prv + ' ' + dia_file + ' ' + def_file + ' ' + temp_file + ' ' + psfile_name
-				# LP名はダミーを設定(印刷しないモード)
-				w_exec = w_exec + ' ' + '@@@@@@@@@@'
-			end
-		when	'4'     # PSファイル出力の指示
-			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
-			if psfile_name == ''
-				puts	'出力ファイル名未設定'
-			else
-				w_exec = exec_file_prv + ' ' + dia_file + ' ' + def_file + ' ' + temp_file + ' ' + psfile_name
-				# LP名はダミーを設定(印刷しないモード)
-				w_exec = w_exec + ' ' + '@@@@@@@@@@'
-			end
-		else
-			puts	'出力区分内容設定エラー'
-		end
-#---- (2003/07/03) end  
-#---- (2003/03/20) start
-#		if prt_flg == '3'
-#			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
-#			if psfile_name == ''
-#				w_exec = exec_file + ' ' + dia_file + ' ' + def_file + ' ' + temp_file
-#			# LP名が指定されていたら、引数に追加
-#				if lp_name != ''
-#					w_exec = w_exec + ' ' + lp_name
-#				end
-#			else
-#				w_exec = exec_file + ' ' + dia_file + ' ' + def_file + ' ' + temp_file + ' -o ' + psfile_name
-#			end
-#		else
-#			w_exec = exec_file + ' ' + dia_file + ' ' + def_file + ' ' + temp_file
-#			# LP名が指定されていたら、引数に追加
-#			if lp_name != ''
-#				w_exec = w_exec + ' ' + lp_name
-#			end
-#		end
-#---- (2003/03/20) end
-		# LP名が指定されていたら、引数に追加
-#		if lp_name != ''
-#			w_exec = w_exec + ' ' + lp_name
-#		end
-#---- (2003/01/20 ) end
-# デバッグ用の表示
-#		puts w_exec
-# **
-		# 実行前メッセージ出力
-		puts	'Print Start [' + String(li_cnt1) + ']'
-		# プログラムの実行
-		pid = fork do
-			exec w_exec
-		end
-		sleep 0.01	# 予期せぬエラーの回避のため、待つ(これを行わないと、ruby ver1.4上で呼び出されたスクリプトにエラーが発生する)
-		# 実行したプログラムが終わるまで待つ(引数の２番目は、1.4でのエラー回避のため)
-		Process.waitpid(pid, 0)
-
+#	monpe以外のファイルはエラーとする。
+		exit 4
 	end
+
+	fred.unlink
+	fpdf.unlink
 end
+
+
 #クライアント印刷処理
         case    prt_flg
         when    '5'     # PSファイル出力の指示
 	if	on_flg == '1'
 	puts "on_flg set 1"
-		BS_File="/tmp/" + File.basename(psfile_name)[0,30] + "99999" + ADD_File + File.basename(psfile_name)[35,36]
+		BS_File="/tmp/" + File.basename(pdffile_name)[0,30] + "99999" + ADD_File + File.basename(pdffile_name)[35,36]
 	else
 	puts "on_flg set 0"
-		BS_File="/tmp/" + File.basename(psfile_name) + ADD_File
+		BS_File="/tmp/" + File.basename(pdffile_name).sub(/.pdf/,'') + ADD_File
 	end
-		PS_File= BS_File + ".ps"
 		PDF_File=BS_File + ".pdf"
 		API_File=PDF_File.sub("pdf","api")
 		puts "--------------------------------------"
 		puts API_File
 		puts "--------------------------------------"
-		MONPEPS::merge_ps(PS_File,Print_Area)
-		system(PDF,PS_File, PDF_File)
+		system("pdftk " + Print_Area.join(' ') + ' cat output ' + PDF_File)
 		api_file = File.open(API_File,'w')
 		api_file.close
 	end
@@ -887,8 +800,6 @@ begin
 rescue
 # 例外が発生すれば、一時ファイルが存在しない
 end
-
-
 
 # ============================================================
 

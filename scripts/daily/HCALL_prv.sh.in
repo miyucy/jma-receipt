@@ -25,14 +25,8 @@ export HOME=/home/orca
 	echo	`date`
 	echo $#
 	echo	$1
-#whether encoding is utf-8 or not.
-if [ "$3"  == '2' ]; then
-	export	RED2PS_OUTPUT_CHARSET=UTF-8
-else
-	export	RED2PS_OUTPUT_CHARSET=EUC-JP
-fi
 
-	ruby "$SCRIPTSDIR"/daily/print_parent_prv.rb "/var/tmp/temp.tmp" "ruby ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 "ruby ${SCRIPTSDIR}/daily/print-data_prv.rb " "ruby ${SCRIPTSDIR}/daily/orcred2ps.rb " ${PATCHFORMDIR}
+	ruby "$SCRIPTSDIR"/daily/print_parent_prv.rb "/var/tmp/temp.tmp" "ruby ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 "ruby ${SCRIPTSDIR}/daily/print-data_prv.rb " ${PATCHFORMDIR}
 
 	if	[ $?  =  0 ]; then
         	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter $1,$2

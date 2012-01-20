@@ -266,6 +266,7 @@ grpsys COPY    "COMMON-SPA".
                    PRT-SHORI-RENNUM
                                    DELIMITED  BY  SPACE
                    PRT-PAGE        DELIMITED  BY  SPACE
+                   ".pdf"          DELIMITED  BY  SIZE
                                    INTO   PS-FILE-ID
            END-STRING
       * 
@@ -670,7 +671,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
            MOVE    SPACE               TO  PS-FILE-DATA  
            CALL    "orcfileio"     USING ST  ORCFILEGET-AREA
            IF      ORCF-RET        NOT =   ZERO
-                   DISPLAY "FGET FILE OPEN ERROR " ORCF-RET 
+                   DISPLAY "FGET FILE OPEN ERROR (" ORCF-RET  ")"
+                           "[" PS-FILE-ID "]"
            ELSE 
       *            DISPLAY "FGET FILE OPEN OK " ORCF-DATA
              MOVE  ORCF-DATA           TO  PS-FILE-DATA
