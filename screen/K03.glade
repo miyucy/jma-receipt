@@ -3464,14 +3464,6 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
-    <widget>
-      <class>GtkPandaPrint</class>
-      <name>pandaprint1</name>
-      <x>352</x>
-      <y>16</y>
-      <width>24</width>
-      <height>24</height>
-    </widget>
 
   </widget>
 </widget>
