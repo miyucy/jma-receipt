@@ -712,7 +712,6 @@ puts "is_portlait[" +  is_portlait + "]"
                 else
 					w_exec << "pdftk #{fpdf.path} cat #{optRotate} output #{pdffile_name}"
                 end
-				w_exec << "lpr -P #{lp_name} #{pdffile_name}"
 				Print_Area.push(pdffile_name)
 			end
 		else
