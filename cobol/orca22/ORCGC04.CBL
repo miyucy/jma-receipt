@@ -63,6 +63,10 @@
       *                                     登録された場合のチェックを追加
       *  04.06.02    NACL-藤原    10/10/26  同義語変換対応
       *  04.06.03    NACL-藤原    10/11/04  補足コメント対応
+      *  04.06.04    NACL-藤原    11/10/11  同義語変換時の編集病名フラグ
+      *                                     の設定
+      *  04.06.05    NACL-藤原    11/12/19  自院病名検索時のチェックと
+      *                                     自院病名検索から戻り時の表示の修正
       *
       *  04.07.01    NACL-藤原    11/06/10  未コード化病名となる病名の別
       *                                     組み立てへの移行を可能にする
@@ -120,6 +124,8 @@
            03  IDX3                PIC 9(04).
            03  IDXX                PIC 9(04).
            03  IDYY                PIC 9(04).
+           03  IDZ1                PIC 9(04).
+           03  IDZ2                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -153,6 +159,8 @@
            03  WRK-C04-BYO-ROW     PIC S9(09). 
       *
            03  WRK-CIDMSG          PIC X(80).
+      *
+           
       *
        01  WRK-TBL-MAX             PIC 9(03)   VALUE   100.
       *
@@ -357,7 +365,12 @@
                                                TO  IDX2
                    MOVE    SPA-CID2-FLG        TO  
                                            SPA-NAI-C04-BYOMEI-CHG (IDZ)
-                   INITIALIZE              SPA-NAI-C04-BYOMEI-G (IDZ)
+                   INITIALIZE              SPA-NAI-C04-BYOMEI (IDZ)
+                                           SPA-NAI-C04-BYOMEICD-O
+                                                              (IDZ IDX2)
+                                           SPA-NAI-C04-BYOMEI-O
+                                                              (IDZ IDX2)
+                                            
       *
                    MOVE    SPA-C04-IKOSAKI-BYOMEICD
                                                TO
@@ -437,6 +450,7 @@
                IF      SPA-C01-TBYOMEICD(IDX)  NOT =   SPACE
                    MOVE    SPA-C01-TBYOMEICD(IDX)
                                        TO  SPA-GMN-C04-INPUTCD(IDX)
+                                           SPA-NAI-C04-BYOMEICD(IDX)
       *
                  IF      SPA-C01-TUSERBYOMEIFLG (IDX)    =   "1"
                    IF    ( SPA-C01-INDEX   =   ZERO       )
@@ -920,7 +934,11 @@
                                                TO  IDX2
                        MOVE    SPA-CID6-FLG    TO
                                        SPA-NAI-C04-BYOMEI-CHG (IDZ)
-                       INITIALIZE      SPA-NAI-C04-BYOMEI-G   (IDZ)
+                       INITIALIZE          SPA-NAI-C04-BYOMEI (IDZ)
+                                           SPA-NAI-C04-BYOMEICD-O
+                                                              (IDZ IDX2)
+                                           SPA-NAI-C04-BYOMEI-O
+                                                              (IDZ IDX2)
       *
                        MOVE    SPA-C04-IKOSAKI-BYOMEICD
                                                TO
@@ -964,6 +982,7 @@
                            MOVE    SPA-C04-CHANGE-BYOMEI   (IDXX)
                                            TO 
                                        SPA-NAI-C04-BYOMEI-O  (IDZ IDXX)
+      *
                            MOVE    SPA-NAI-C04-BYOMEI-O (IDZ 1)
                                                TO
                                            SPA-NAI-C04-BYOMEI (IDZ)
@@ -1179,6 +1198,8 @@
            MOVE    SPACE               TO  WRK-HAISIYMDH
       *
            INITIALIZE                      SPA-NAI-C04-BYOMEI-OCC (IDZ)
+           MOVE    SPA-GMN-C04-INPUTCD (IDZ)
+                                       TO  SPA-NAI-C04-BYOMEICD   (IDZ)
       *
            IF      SPA-GMN-C04-INPUTCD (IDZ)
                                    NOT =   SPACE
@@ -1389,7 +1410,8 @@
       *****************************************************************
        4101111-BYOMEITOP-HENSYU-SEC      SECTION.
       *
-           IF      SPA-GMN-C04-INPUTCD (IDX3) 
+      *****IF      SPA-GMN-C04-INPUTCD  (IDX3) 
+           IF      SPA-NAI-C04-BYOMEICD (IDX3) 
                                    =   SPACE
                MOVE    SPACE           TO  SPA-NAI-C04-BYOMEITOP(IDX3)
                GO  TO  4101111-BYOMEITOP-HENSYU-EXT
@@ -1422,7 +1444,8 @@
            END-PERFORM
       *
            COMPUTE IDW     =   IDX3    -   1
-           IF    ( SPA-GMN-C04-INPUTCD (IDW)
+      *****IF    ( SPA-GMN-C04-INPUTCD (IDW)
+           IF    ( SPA-NAI-C04-BYOMEICD(IDW)
                                        =   SPACE )
            AND   ( IDW                 >   1     )
                COMPUTE IDW     =   IDW    -   1
@@ -1712,6 +1735,64 @@
       *
            COMPUTE SPA-GMN-C04-CUR =   2   +   IDZ
       *
+      *    病名コード置換え後にコード入力した時の処理
+           IF    ( SPA-NAI-C04-BYOMEICD (1)
+                               NOT =   SPACE               AND
+                   SPA-NAI-C04-BYOMEICD-O (1 1)
+                                   =   SPACE                   )
+           OR    ( SPA-NAI-C04-BYOMEICD (2)
+                               NOT =   SPACE               AND
+                   SPA-NAI-C04-BYOMEICD-O (2 1)
+                                   =   SPACE                   )
+           OR    ( SPA-NAI-C04-BYOMEICD (3)
+                               NOT =   SPACE               AND
+                   SPA-NAI-C04-BYOMEICD-O (3 1)
+                                   =   SPACE                   )
+           OR    ( SPA-NAI-C04-BYOMEICD (4)
+                               NOT =   SPACE               AND
+                   SPA-NAI-C04-BYOMEICD-O (4 1)
+                                   =   SPACE                   )
+           OR    ( SPA-NAI-C04-BYOMEICD (5)
+                               NOT =   SPACE               AND
+                   SPA-NAI-C04-BYOMEICD-O (5 1)
+                                   =   SPACE                   )
+           OR    ( SPA-NAI-C04-BYOMEICD (6)
+                               NOT =   SPACE               AND
+                   SPA-NAI-C04-BYOMEICD-O (6 1)
+                                   =   SPACE                   )
+               MOVE    ZERO                TO  IDZ1
+                                               IDZ2 
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       6
+                   IF      SPA-NAI-C04-BYOMEITOP (IDY)
+                                               =   "1"
+                       IF      IDY                 >   IDZ
+                           COMPUTE IDZ2    =    IDY     -   1
+                           MOVE    6                   TO  IDY
+                       ELSE
+                           MOVE    IDY                 TO  IDZ1
+                           IF      IDY                 =   6
+                               MOVE    IDY                 TO  IDZ2
+                           END-IF
+                       END-IF
+                   ELSE
+                       MOVE    IDY                 TO  IDZ2
+                   END-IF    
+               END-PERFORM
+               PERFORM VARYING IDZ FROM    IDZ1    BY  1
+                       UNTIL   IDZ >       IDZ2
+                   PERFORM 410021-INPUTCD-HENSYU-SEC
+               END-PERFORM
+      *
+               INITIALIZE                  SPA-CIDCD-AREA
+                                           SPA-CID1-AREA
+               INITIALIZE                  SPA-C04-IKOSAKI-AREA
+                                           SPA-C04-CHANGE-AREA
+                                           WRK-HAISIYMDH
+      *
+               MOVE    WRK-WIDGET2     TO  IDZ
+           END-IF 
+      *
       *    コードの挿入・削除の制御文字取得
            IF      C04-INPUTCD (IDZ)  NOT =   SPACE
                PERFORM VARYING IDX FROM    10  BY  -1
@@ -1738,13 +1819,15 @@
                        END-EVALUATE
       *                追加のとき
                        IF      WRK-SEIGYO      =   "+"
-                           IF      SPA-GMN-C04-INPUTCD (6)
+      *****                IF      SPA-GMN-C04-INPUTCD (6)
+                           IF      SPA-NAI-C04-BYOMEICD (6)
                                                    NOT =   SPACE
                                MOVE    SPACE           TO  WRK-SEIGYO
                            END-IF 
                            IF      IDZ         >   1
                                COMPUTE IDW     =   IDZ     -   1
-                               IF      SPA-GMN-C04-INPUTCD (IDW)
+      *****                    IF      SPA-GMN-C04-INPUTCD (IDW)
+                               IF      SPA-NAI-C04-BYOMEICD(IDW)
                                                            =   SPACE 
                                    MOVE    SPACE       TO  WRK-SEIGYO
                                END-IF
@@ -1817,7 +1900,8 @@
                END-IF
            END-IF    
       *
-           MOVE    C04-INPUTCD (IDZ)   TO  SPA-GMN-C04-INPUTCD(IDZ)
+           MOVE    C04-INPUTCD (IDZ)   TO  SPA-GMN-C04-INPUTCD (IDZ)
+                                           SPA-NAI-C04-BYOMEICD(IDZ)
       *
            PERFORM 410021-INPUTCD-HENSYU-SEC
            IF    ( SPA-CIDCD2      NOT =   SPACE )
@@ -2067,6 +2151,8 @@
                    IF      SPA-GMN-C04-INPUTCD (IDXX)  =   SPACE
                        MOVE    SPA-GMN-C04-TINPUTCD   (WRK-BANGO)
                                            TO  SPA-GMN-C04-INPUTCD(IDXX)
+                                               SPA-NAI-C04-BYOMEICD
+                                                                  (IDXX)
                        MOVE    IDXX        TO  IDZ
                        PERFORM 410021-INPUTCD-HENSYU-SEC
       *
@@ -2077,6 +2163,7 @@
                MOVE    SPA-C01-INDEX   TO  IDZ
                MOVE    SPA-GMN-C04-TINPUTCD (WRK-BANGO)
                                        TO  SPA-GMN-C04-INPUTCD(IDZ)
+                                           SPA-NAI-C04-BYOMEICD(IDZ)
                PERFORM 410021-INPUTCD-HENSYU-SEC
            END-IF
       *
@@ -2377,68 +2464,72 @@
                GO  TO  450-KAKUTEI-EXT
            END-IF
       *
-      *    コードチェック
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       6
-               IF    ( SPA-GMN-C04-INPUTCD (IDX)
-                                           NOT =   SPACE )
-               AND   ( SPA-NAI-C04-BYOMEI(IDX) (1:2)
-                                               =   "■"  )
-                   COMPUTE SPA-GMN-C04-CUR     =   IDX     +   2
-                   MOVE    "0004"              TO  SPA-ERRCD
-                   GO  TO  450-KAKUTEI-EXT
-               END-IF
-           END-PERFORM    
-      *
-      *    病名重複チェック
-           MOVE    SPACE                   TO  WRK-BYOMEI-AREA
-           MOVE    ZERO                    TO  IDY
-      *
-           MOVE    SPA-NAI-C04-BYOMEI (1)  TO  WRK-BYOMEI
-      *     
-           PERFORM VARYING IDX FROM    2   BY  1
-                   UNTIL   IDX >       6
-               IF      SPA-GMN-C04-INPUTCD (IDX)
-                                   NOT =   SPACE
-                   IF      SPA-NAI-C04-BYOMEITOP (IDX) =   "1"
-                       IF      WRK-BYOMEI  NOT =   SPACE
-                           ADD     1           TO  IDY
-                           MOVE    WRK-BYOMEI  TO  WRK-BYOMEI-O (IDY)
-                       END-IF
-                       MOVE    SPACE           TO  WRK-BYOMEI
+      *    病名入力可のときのチェック
+           IF      SPA-C01-B10-FLG =   ZERO    OR  1
+      *        コードチェック
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       6
+                   IF    ( SPA-GMN-C04-INPUTCD (IDX)
+                                               NOT =   SPACE )
+                   AND   ( SPA-NAI-C04-BYOMEI(IDX) (1:2)
+                                                   =   "■"  )
+                       COMPUTE SPA-GMN-C04-CUR     =   IDX     +   2
+                       MOVE    "0004"              TO  SPA-ERRCD
+                       GO  TO  450-KAKUTEI-EXT
                    END-IF
-                   STRING  WRK-BYOMEI              DELIMITED   BY  SPACE
-                           SPA-NAI-C04-BYOMEI(IDX) DELIMITED   BY  SPACE
+               END-PERFORM    
+      *
+      *        病名重複チェック
+               MOVE    SPACE                   TO  WRK-BYOMEI-AREA
+               MOVE    ZERO                    TO  IDY
+      *
+               MOVE    SPA-NAI-C04-BYOMEI (1)  TO  WRK-BYOMEI
+      *     
+               PERFORM VARYING IDX FROM    2   BY  1
+                       UNTIL   IDX >       6
+                   IF      SPA-GMN-C04-INPUTCD (IDX)
+                                       NOT =   SPACE
+                       IF      SPA-NAI-C04-BYOMEITOP (IDX) =   "1"
+                           IF      WRK-BYOMEI  NOT =   SPACE
+                               ADD     1           TO  IDY
+                               MOVE    WRK-BYOMEI  TO  WRK-BYOMEI-O(IDY)
+                           END-IF
+                           MOVE    SPACE           TO  WRK-BYOMEI
+                       END-IF
+                       STRING  WRK-BYOMEI          DELIMITED   BY  SPACE
+                               SPA-NAI-C04-BYOMEI(IDX)
+                                                   DELIMITED   BY  SPACE
                                                    INTO    WRK-BYOMEI
-                   END-STRING
-               END-IF    
-           END-PERFORM    
-           IF      WRK-BYOMEI      NOT =   SPACE
-               ADD     1               TO  IDY
-               MOVE    WRK-BYOMEI      TO  WRK-BYOMEI-O (IDY)
+                       END-STRING
+                   END-IF    
+               END-PERFORM    
+               IF      WRK-BYOMEI      NOT =   SPACE
+                   ADD     1               TO  IDY
+                   MOVE    WRK-BYOMEI      TO  WRK-BYOMEI-O (IDY)
+               END-IF
+      *
+               MOVE    SPACE               TO  WRK-ERR-BYOMEI
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       6
+                       OR      WRK-BYOMEI-O (IDX)  =   SPACE
+                   PERFORM VARYING IDY FROM    IDX  BY  1
+                           UNTIL   IDY >       6
+                           OR      WRK-BYOMEI-O (IDY)  =   SPACE
+                       IF      IDY             >   IDX
+                           IF      WRK-BYOMEI-O (IDX)  =
+                                                   WRK-BYOMEI-O (IDY)
+                               MOVE    "0002"      TO  SPA-ERRCD
+                               MOVE    WRK-BYOMEI-O (IDX)
+                                                   TO  WRK-ERR-BYOMEI
+                               GO  TO  450-KAKUTEI-EXT
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
            END-IF
       *
-           MOVE    SPACE               TO  WRK-ERR-BYOMEI
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       6
-                   OR      WRK-BYOMEI-O (IDX)  =   SPACE
-               PERFORM VARYING IDY FROM    IDX  BY  1
-                       UNTIL   IDY >       6
-                       OR      WRK-BYOMEI-O (IDY)  =   SPACE
-                   IF      IDY             >   IDX
-                       IF      WRK-BYOMEI-O (IDX)  =
-                                               WRK-BYOMEI-O (IDY)
-                           MOVE    "0002"          TO  SPA-ERRCD
-                           MOVE    WRK-BYOMEI-O (IDX)
-                                                   TO  WRK-ERR-BYOMEI
-                           GO  TO  450-KAKUTEI-EXT
-                       END-IF
-                   END-IF
-               END-PERFORM
-           END-PERFORM
-      *
       *    補足コメント入力可のときのチェック
-           IF      SPA-C01-B10-FLG =   ZERO
+           IF      SPA-C01-B10-FLG =   ZERO    OR  2
       *        コードチェック
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       3
@@ -2480,10 +2571,9 @@
       *********    END-IF
       *********END-IF
            END-IF            
-      *
       *     
            IF      SPA-C01-INDEX   =   ZERO
-               INITIALIZE                  SPA-C01KYOUTU
+               INITIALIZE                  SPA-C01-BYOMEI-TBL
       *
                MOVE    ZERO            TO  IDY
                PERFORM VARYING IDX     FROM    1   BY  1
@@ -2735,6 +2825,11 @@
                                            TO  C04-HOSOKUCD-STATE (IDX)
                    END-PERFORM
                    MOVE    "F10:病名検索"  TO  C04-B10-LABEL
+                   IF      SPA-C01-B10-FLG     =   ZERO
+                       MOVE    WIDGET-NORMAL       TO  C04-B10-STATE
+                   ELSE
+                       MOVE    WIDGET-INSENSITIVE  TO  C04-B10-STATE
+                   END-IF
                END-IF    
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  C04-B04-STATE

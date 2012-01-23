@@ -704,6 +704,7 @@
                05  SPA-NAIB-C04-AREA.
                    07  SPA-NAI-C04-BUNRUICD-IDX    PIC 9(05).
                    07  SPA-NAI-C04-BYOMEI-OCC  OCCURS  6.
+                       09  SPA-NAI-C04-BYOMEICD    PIC X(10).
                        09  SPA-NAI-C04-BYOMEITOP   PIC X(01).
                        09  SPA-NAI-C04-BYOMEISBT   PIC X(01).
                        09  SPA-NAI-C04-BYOMEI-G.
