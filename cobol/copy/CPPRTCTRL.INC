@@ -43,6 +43,8 @@
             03  PRTCTRL-CONT-FLG       PIC S9(2).
       *  ¶ÈÌ³¥³¡¼¥É
             03  PRTCTRL-GYOUMU-CD      PIC S9(3).
+      *  °õºþ¥Ç¡¼¥¿³ÊÇ¼Ì¾¾Î
+            03  PRTCTRL-DNAME          PIC X(200).
       *  Ã¼ËöID
             03  PRTCTRL-TERMID         PIC X(64).
             03  PRTCTRL-OPID           PIC X(16).

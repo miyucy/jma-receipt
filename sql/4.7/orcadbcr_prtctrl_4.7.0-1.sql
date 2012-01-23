@@ -15,6 +15,7 @@ create	table	tbl_prtctrl	(
 	DATA_KBN	smallint NOT NULL,
 	CONT_FLG	smallint NOT NULL,
 	GYOUMU_CD	integer DEFAULT 0,
+	DNAME		varchar(200),
 	TERMID		char(64),
 	OPID		varchar(16),
 	CREYMD		char(8),
