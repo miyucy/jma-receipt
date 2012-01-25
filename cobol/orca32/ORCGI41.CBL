@@ -172,6 +172,7 @@
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDX6                PIC 9(04).
@@ -237,6 +238,7 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-GMN-SRYYM       PIC X(06).
            03  WRK-NAI-SRYYM       PIC X(06).
+           03  WRK-RRKNUM          PIC 9(03).
       *    ·îËöÆü»»ÄêÎÎ°è
            03  WRK-MATSUYMD.
                05  WRK-MATSUYY     PIC 9(04).
@@ -489,6 +491,10 @@
        01  WK-PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC"     REPLACING
                                 //PTNYUINRRK-// BY //WK-PTNYUINRRK-//.
+      *    Æþ±¡ÍúÎòÂàÈòÍÑ¥ï¡¼¥¯
+       01  WWK-PTNYUINRRK-REC.
+           COPY    "CPPTNYUINRRK.INC"     REPLACING
+                                //PTNYUINRRK-// BY //WWK-PTNYUINRRK-//.
       *    ÆÃÄêÆþ±¡´ü´Ö»»ÄêÍÑ¥ï¡¼¥¯
        01  WRK-SCNYUACCT-AREA.
            03  WRK-SCNYUACCT-KAGENCD-TBL         OCCURS  7.
@@ -1464,6 +1470,7 @@
        3103-PTNYUINRRK-HEN-EXT.
            EXIT.
       *
+      *
       *****************************************************************
       *   £¹£±ÆüÊÔ½¸½èÍý
       *****************************************************************
@@ -1477,31 +1484,64 @@
       *
            MOVE    STUSAN-NISSU03  TO  WRK-TUSAN
       *
-           INITIALIZE                  STS-AREA-DAY
-           INITIALIZE                  LNK-DAY6-AREA
-           MOVE    "61"            TO  LNK-DAY6-IRAI
-           MOVE    PTNYUINRRK-NYUINYMD   TO  LNK-DAY6-KIJUN
-           MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-           IF    WRK-TUSAN         =   ZERO
-                 COMPUTE LNK-DAY6-ZOGEN
-                              =   91   -          WRK-TUSAN
-           ELSE
-                 COMPUTE LNK-DAY6-ZOGEN
-                              =   92   -          WRK-TUSAN
-           END-IF
-           DISPLAY "LNK-DAY6-KIJUN = " LNK-DAY6-KIJUN
-           DISPLAY "LNK-DAY6-ZOGEN = " LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"   USING   STS-AREA-DAY
-                                       LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KOYOMI TO  SPA-GMN-IJYOU91
-           MOVE    LNK-DAY6-KOYOMI TO  WRK-SYMD
-           IF      SPA-SYSYMD   >=   SPA-GMN-IJYOU91
-               MOVE  "red"      TO   SPA-GMN-IJYOU91-STYLE
-           ELSE
-               MOVE  "black"    TO   SPA-GMN-IJYOU91-STYLE
-           END-IF
-           PERFORM 41012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU91
+           PERFORM VARYING IDX10   FROM    1   BY  1
+                   UNTIL ( IDX10   >   STUSAN-RRK-CNT )
+               IF    ( STUSAN-RRK-JTIKBN (IDX10)
+                                           NOT = "5" )
+                   IF (STUSAN-RRK-NYUINYMD (IDX10)  NOT =  SPACE)  AND
+                      (STUSAN-RRK-NISSU (IDX10)    =   ZERO)   AND
+                      (STUSAN-RRK-DJKBN (IDX10)    =   SPACE)
+                           ADD   1    TO   STUSAN-RRK-NISSU (IDX10)
+                   END-IF
+      *
+                   IF   (STUSAN-RRK-TAIINYMD(IDX10)  NOT = "99999999")
+                    IF (STUSAN-RRK-NISSU (IDX10)    =   ZERO  OR  1)
+                      CONTINUE
+                    ELSE
+                     INITIALIZE                  STS-AREA-DAY
+                     INITIALIZE                  LNK-DAY5-AREA
+                     MOVE    "51"            TO  LNK-DAY5-IRAI
+                     MOVE    STUSAN-RRK-NYUINYMD (IDX10)
+                                             TO  LNK-DAY5-START
+                     MOVE    STUSAN-RRK-TAIINYMD (IDX10)
+                                             TO  LNK-DAY5-END
+                     CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                                 LNK-DAY5-AREA
+                     MOVE    LNK-DAY5-NISSU2 TO  STUSAN-RRK-NISSU(IDX10)
+                    END-IF
+                   END-IF
+      *
+                   COMPUTE WRK-TUSAN
+                       =   WRK-TUSAN   -   STUSAN-RRK-NISSU (IDX10)
+                   IF    ( WRK-TUSAN  <    91 )
+                       INITIALIZE                  STS-AREA-DAY
+                       INITIALIZE                  LNK-DAY6-AREA
+                       MOVE    "61"            TO  LNK-DAY6-IRAI
+                       MOVE    STUSAN-RRK-NYUINYMD (IDX10)
+                                               TO  LNK-DAY6-KIJUN
+                       MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
+                       IF    ( STUSAN-RRK-DJKBN (IDX10) = SPACE OR "2" )
+                           COMPUTE LNK-DAY6-ZOGEN
+                               =   91   -          WRK-TUSAN
+                       ELSE
+                           COMPUTE LNK-DAY6-ZOGEN
+                               =   92   -          WRK-TUSAN
+                       END-IF
+                       CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+                       MOVE    LNK-DAY6-KOYOMI TO  SPA-GMN-IJYOU91
+                       MOVE    LNK-DAY6-KOYOMI TO  WRK-SYMD
+                       IF      SPA-SYSYMD   >=   SPA-GMN-IJYOU91
+                           MOVE  "red"      TO   SPA-GMN-IJYOU91-STYLE
+                       ELSE
+                           MOVE  "black"    TO   SPA-GMN-IJYOU91-STYLE
+                       END-IF
+                       PERFORM 41012-SEIWA-HEN-SEC
+                       MOVE    WRK-HENYMDG     TO  SPA-GMN-IJYOU91
+                       MOVE    STUSAN-RRK-CNT  TO  IDX10
+                   END-IF
+               END-IF
+           END-PERFORM
       *
            .
        3103-91DAYS-EDIT-EXT.
@@ -9964,6 +10004,23 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF.
       *
        970-PTNYUINRRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *****************************************************************
+       980-PTNYUINRRK-READ-SEC     SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  WWK-PTNYUINRRK-REC
+               MOVE    ZERO            TO  FLG-PTNYUINRRK
+           ELSE
+               INITIALIZE                  WWK-PTNYUINRRK-REC
+               MOVE    1               TO  FLG-PTNYUINRRK
+           END-IF.
+      *
+       980-PTNYUINRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
