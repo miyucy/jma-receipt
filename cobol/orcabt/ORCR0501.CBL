@@ -383,7 +383,7 @@
       *    ¶èÀÚ¤êÀþ
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "¡Ý".
+               ALL "¡½".
            03  WRK-KUGIRI2.
                05  FILLER          PIC X(16)   VALUE
                                    "¡á¡á¡á¡á¡á¡á¡á¡á".
@@ -392,7 +392,7 @@
                05  FILLER          PIC X(16)   VALUE
                                    "¡á¡á¡á¡á¡á¡á¡á¡á".
            03  WRK-KUGIRI3         PIC X(44)   VALUE
-               ALL "¡Ý".
+               ALL "¡½".
       *
        01  WRK-TENSU-AREA.
            03  WRK-KHNTENZ         PIC ZZZZZZZ.
@@ -1180,6 +1180,8 @@
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HCM69-HOSPNAME
            END-IF
+           INSPECT HCM69-HOSPNAME  REPLACING   ALL "  "    BY  "¡¡"
+           INSPECT HCM69-HOSPNAME2 REPLACING   ALL "  "    BY  "¡¡"
       *    Ï«Æ¯ÊÝ¸±¼ÔÈÖ¹æ
            MOVE    RECE41-KOFUNUM      TO  HCM69-KOFUNUM
       *    ¿··Ñ¶èÊ¬
@@ -1409,6 +1411,7 @@
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HC24-HOSPNAME
            END-IF
+           INSPECT HC24-HOSPNAME   REPLACING   ALL "  "    BY  "¡¡"
       *
            EVALUATE    RECE41-HKNKBN
                WHEN    "1"

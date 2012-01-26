@@ -112,6 +112,8 @@
       *
       *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *                                     ¥Õ¥é¥°¡¢¥Ç¡¼¥¿¥¨¥ê¥¢ÄÉ²Ã
+      *
+      *  04.07.01    NACL-Æ£¸¶    12/01/24  monpe-0.6.20ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -721,7 +723,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *    ¶èÀÚ¤êÀþ
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "¡Ý".
+               ALL "¡½".
            03  WRK-KUGIRI2.
                05  FILLER          PIC X(22)   VALUE
                                    "¡á¡á¡á¡á¡á¡á¡á¡¡°Ê²¼¡¡".
@@ -729,7 +731,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                05  FILLER          PIC X(20)   VALUE
                                    "¡¡Å¬ÍÑÊ¬¡¡¡á¡á¡á¡á¡á".
            03  WRK-KUGIRI3         PIC X(52)   VALUE
-               ALL "¡Ý".
+               ALL "¡½".
            03  WRK-KUGIRI4         PIC X(52)   VALUE
                ALL "¡á".
       *
@@ -1655,7 +1657,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                            WRK-HKN-HKNJANUM       DELIMITED  BY  SPACE
                            "¡¡"                   DELIMITED  BY  SIZE
                            WRK-HKN-KIGO           DELIMITED  BY  SPACE
-                           "¡Ý"                   DELIMITED  BY  SIZE
+                           "¡½"                   DELIMITED  BY  SIZE
                            WRK-HKN-NUM            DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI-X
                    END-STRING
@@ -1678,7 +1680,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                            GO  TO  2001-RIREKI-HEN-EXT
                        END-IF    
                        STRING  WRK-HKN-KIGO       DELIMITED  BY  SPACE
-                               "¡Ý"               DELIMITED  BY  SIZE
+                               "¡½"               DELIMITED  BY  SIZE
                                WRK-HKN-NUM        DELIMITED  BY  SPACE
                                INTO
                                    WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
@@ -2280,6 +2282,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            ELSE
                MOVE    SYS-1002-ADRS       TO  HC06-HOSPADRS
            END-IF
+           INSPECT HC06-HOSPADRS   REPLACING   ALL "  "    BY  "¡¡"
       *
       *    °åÎÅµ¡´ØÌ¾¾Î
            IF      FLG-SYS-1901        =   1
@@ -2288,6 +2291,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HC06-HOSPNAME
            END-IF
+           INSPECT HC06-HOSPNAME   REPLACING   ALL "  "    BY  "¡¡"
       *
       *    °åÎÅµ¡´Ø£Ô£Å£Ì
            IF      FLG-SYS-1902        =   1

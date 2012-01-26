@@ -61,6 +61,8 @@
       *                                     キーにkohid 追加
       *                                     調査用にcrehms,updhms 追加
       *  04.06.03    NACL-藤原    11/10/07  傷病名を３行まで記載可能とする
+      *
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -495,7 +497,7 @@
       *    区切り線
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "−".
+               ALL "―".
       *
        01  WRK-TENSU-AREA.
            03  WRK-KHNTEN.
@@ -1212,13 +1214,13 @@
            ELSE
                IF      WRK-KIGO-LEN        <=  22
                    STRING  WRK-KIGO            DELIMITED   BY  SPACE
-                           "−"                DELIMITED   BY  SIZE
+                           "―"                DELIMITED   BY  SIZE
                            WRK-NUM             DELIMITED   BY  SPACE
                                                INTO    HCN58-KIGONUM
                    END-STRING
                ELSE
                    STRING  WRK-KIGO            DELIMITED   BY  SPACE
-                           "−"                DELIMITED   BY  SIZE
+                           "―"                DELIMITED   BY  SIZE
                                                INTO    HCN58-KIGONUM2(1)
                    END-STRING
                    MOVE    WRK-NUM             TO  HCN58-KIGONUM2(2)
@@ -1261,6 +1263,7 @@
            ELSE
                MOVE    SYS-1002-ADRS       TO  HCN58-HOSPADRS
            END-IF
+           INSPECT HCN58-HOSPADRS  REPLACING   ALL "  "    BY  "　"
       *
       *    医療機関名称
            IF      FLG-SYS-1901        =   1
@@ -1269,6 +1272,7 @@
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HCN58-HOSPNAME
            END-IF
+           INSPECT HCN58-HOSPNAME  REPLACING   ALL "  "    BY  "　"
       *
       *    医療機関ＴＥＬ
            IF      FLG-SYS-1902        =   1
@@ -1558,7 +1562,7 @@
                        MOVE    WRK-BYOMEI(97:) TO  WRK-BYOMEI1-NAME
                        MOVE    1               TO  WRK-CONTINUE
                    ELSE
-                       MOVE    WRK-BYOMEI(89:) TO  WRK-BYOMEI2-NAME
+                       MOVE    WRK-BYOMEI(97:) TO  WRK-BYOMEI2-NAME
                        MOVE    1               TO  WRK-CONTINUE    
                    END-IF                                   
                END-IF

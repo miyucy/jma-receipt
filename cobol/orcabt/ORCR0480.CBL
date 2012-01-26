@@ -96,6 +96,7 @@
       *  04.06.02    NACL-Æ£¸¶    11/10/07  ½ýÉÂÌ¾¤ò£³¹Ô¤Þ¤Çµ­ºÜ²ÄÇ½¤È¤¹¤ë
       *
       *  04.07.01    NACL-Æ£¸¶    11/09/02  Ï«ºÒÀÁµá½ñºîÀ®ÂÐ±þ
+      *  04.07.02    NACL-Æ£¸¶    12/01/24  monpe-0.6.20ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -466,7 +467,7 @@
       *    ¶èÀÚ¤êÀþ
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "¡Ý".
+               ALL "¡½".
            03  WRK-KUGIRI2.
                05  FILLER          PIC X(16)   VALUE
                                    "¡á¡á¡á¡á¡á¡á¡á¡á".
@@ -475,7 +476,7 @@
                05  FILLER          PIC X(16)   VALUE
                                    "¡á¡á¡á¡á¡á¡á¡á¡á".
            03  WRK-KUGIRI3         PIC X(44)   VALUE
-               ALL "¡Ý".
+               ALL "¡½".
       *
        01  WRK-TENSU-AREA.
            03  WRK-KHNTENZ         PIC ZZZZZZZ.
@@ -1247,6 +1248,7 @@
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HC22-HOSPNAME
            END-IF
+           INSPECT HC22-HOSPNAME   REPLACING   ALL "  "    BY  "¡¡"
       *    Ï«Æ¯ÊÝ¸±¼ÔÈÖ¹æ
            MOVE    RECE41-KOFUNUM      TO  HC22-KOFUNUM
       *    ¿··Ñ¶èÊ¬

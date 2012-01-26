@@ -158,6 +158,7 @@
       *  04.06.06    NACL-Æ£¸¶    11/12/12  ÅÀ¸¡¥ì¥»£°ÅÀ¸øÈñ°õ»úÂÐ±þ
       *
       *  04.07.01    NACL-ÌçÏÆ    11/09/01  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
+      *  04.07.02    NACL-Æ£¸¶    12/01/24  monpe-0.6.20ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -912,7 +913,7 @@
       *    ¶èÀÚ¤êÀþ
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "¡Ý".
+               ALL "¡½".
            03  WRK-KUGIRI2.
                05  FILLER          PIC X(22)   VALUE
                                    "¡á¡á¡á¡á¡á¡á¡á¡¡°Ê²¼¡¡".
@@ -920,7 +921,7 @@
                05  FILLER          PIC X(20)   VALUE
                                    "¡¡Å¬ÍÑÊ¬¡¡¡á¡á¡á¡á¡á".
            03  WRK-KUGIRI3         PIC X(52)   VALUE
-               ALL "¡Ý".
+               ALL "¡½".
            03  WRK-KUGIRI4.
                05  FILLER          PIC X(16)   VALUE
                                    "¡á¡á¡á¡á¡¡°Ê²¼¡¡".
@@ -2189,7 +2190,7 @@
                    WHEN    "6"
                        MOVE    SPACE      TO  WRK-HKN-FIL
                    WHEN    OTHER
-                       MOVE    "¡Ý"       TO  WRK-HKN-FIL
+                       MOVE    "¡½"       TO  WRK-HKN-FIL
                END-EVALUATE
       *
                IF    ( RECE69-NUM         =   SPACE )
@@ -2868,6 +2869,7 @@
            ELSE
                MOVE    SYS-1002-ADRS       TO  HC06-HOSPADRS
            END-IF
+           INSPECT HC06-HOSPADRS   REPLACING   ALL "  "    BY  "¡¡"
       *
       *    °åÎÅµ¡´ØÌ¾¾Î
            IF      FLG-SYS-1901        =   1
@@ -2876,6 +2878,7 @@
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HC06-HOSPNAME
            END-IF
+           INSPECT HC06-HOSPNAME   REPLACING   ALL "  "    BY  "¡¡"
       *
       *    °åÎÅµ¡´Ø£Ô£Å£Ì
            IF      FLG-SYS-1902        =   1

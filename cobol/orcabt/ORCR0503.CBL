@@ -320,7 +320,7 @@
       *    区切り線
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "−".
+               ALL "―".
       *
        01  WRK-TENSU-AREA.
            03  WRK-KHNTENZ         PIC ZZZZZZZ.
@@ -1032,6 +1032,7 @@
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HCM71-HOSPNAME
            END-IF
+           INSPECT HCM71-HOSPNAME  REPLACING   ALL "  "    BY  "　"
       *    傷病コード
            MOVE    RECE41-SONSHOUKBN   TO  HCM71-SYOBYO
            MOVE    RECE41-SONSHOUKBN-EDANUM
@@ -1092,6 +1093,7 @@
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HC20-HOSPNAME
            END-IF
+           INSPECT HC20-HOSPNAME   REPLACING   ALL "  "    BY  "　"
       *
       *    健康管理手帳番号
            MOVE    RECE41-KOFUNUM      TO  HC20-KOFUNUM

@@ -82,6 +82,7 @@
       *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
+      *  04.07.02    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -390,7 +391,7 @@
       *    区切り線
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "−".
+               ALL "―".
       *
        01  WRK-TENSU-AREA.
            03  WRK-KHNTENZ         PIC ZZZZZZZ.
@@ -1092,6 +1093,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HC18-HOSPNAME
            END-IF
+           INSPECT HC18-HOSPNAME   REPLACING   ALL "  "    BY  "　"
       *    傷病コード
            MOVE    RECE41-SONSHOUKBN   TO  HC18-SYOBYO
            MOVE    RECE41-SONSHOUKBN-EDANUM
@@ -1152,6 +1154,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HC20-HOSPNAME
            END-IF
+           INSPECT HC20-HOSPNAME   REPLACING   ALL "  "    BY  "　"
       *
       *    健康管理手帳番号
            MOVE    RECE41-KOFUNUM      TO  HC20-KOFUNUM

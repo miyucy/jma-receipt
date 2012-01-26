@@ -60,6 +60,8 @@
       *                                     キーにkohid 追加
       *                                     調査用にcrehms,updhms 追加
       *  04.06.03    NACL-藤原    11/10/07  傷病名を３行まで記載可能とする
+      *
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -453,7 +455,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *    区切り線
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "−".
+               ALL "―".
       *
       *
        01  WRK-TENSU-AREA.
@@ -1172,13 +1174,13 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            ELSE
                IF      WRK-KIGO-LEN        <=  22
                    STRING  WRK-KIGO            DELIMITED   BY  SPACE
-                           "−"                DELIMITED   BY  SIZE
+                           "―"                DELIMITED   BY  SIZE
                            WRK-NUM             DELIMITED   BY  SPACE
                                                INTO    HCM58-KIGONUM
                    END-STRING
                ELSE
                    STRING  WRK-KIGO            DELIMITED   BY  SPACE
-                           "−"                DELIMITED   BY  SIZE
+                           "―"                DELIMITED   BY  SIZE
                                                INTO    HCM58-KIGONUM2(1)
                    END-STRING
                    MOVE    WRK-NUM             TO  HCM58-KIGONUM2(2)
@@ -1221,6 +1223,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            ELSE
                MOVE    SYS-1002-ADRS       TO  HCM58-HOSPADRS
            END-IF
+           INSPECT HCM58-HOSPADRS  REPLACING   ALL "  "    BY  "　"
       *
       *    医療機関名称
            IF      FLG-SYS-1901        =   1
@@ -1229,6 +1232,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HCM58-HOSPNAME
            END-IF
+           INSPECT HCM58-HOSPNAME  REPLACING   ALL "  "    BY  "　"
       *
       *    医療機関ＴＥＬ
            IF      FLG-SYS-1902        =   1
@@ -1474,7 +1478,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                        MOVE    WRK-BYOMEI(97:) TO  WRK-BYOMEI1-NAME
                        MOVE    1               TO  WRK-CONTINUE
                    ELSE
-                       MOVE    WRK-BYOMEI(89:) TO  WRK-BYOMEI2-NAME
+                       MOVE    WRK-BYOMEI(97:) TO  WRK-BYOMEI2-NAME
                        MOVE    1               TO  WRK-CONTINUE    
                    END-IF                                   
                END-IF

@@ -49,6 +49,7 @@
       *  04.06.02    NACL-藤原    11/10/07  傷病名を３行まで記載可能とする
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
+      *  04.07.02    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -430,7 +431,7 @@
       *    区切り線
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "−".
+               ALL "―".
       *
        01  WRK-TENSU-AREA.
            03  WRK-KHNTENZ         PIC ZZZZZZZ.
@@ -1372,6 +1373,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            ELSE
                MOVE    SYS-1002-ADRS       TO  HCM56-HOSPJYUSYO
            END-IF
+           INSPECT HCM56-HOSPJYUSYO REPLACING   ALL "  "    BY  "　"
       *    名称
            IF      FLG-SYS-1901        =   1
                MOVE    SYS-1901-HOSPNAME1  TO  HCM56-HOSPNAME (1:)
@@ -1380,6 +1382,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HCM56-HOSPNAME
            END-IF
+           INSPECT HCM56-HOSPNAME  REPLACING   ALL "  "    BY  "　"
       *    医師の氏名
            IF   RECE41-DRCD  =  SPACE
                MOVE    SYS-1001-KANRINAME  TO  HCM56-ISYA
