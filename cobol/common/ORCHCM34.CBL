@@ -6492,12 +6492,12 @@
            IF    ( CNT-SRYACT-LINE >   ZERO )
                IF    ( FLG-HEAD        =   ZERO )
                    IF    ( HCM341-TEKIYO (CNT-SRYACT-LINE)
-                                               NOT = ALL "¡Ý" )
+                                               NOT = ALL "¡½" )
                        MOVE    1       TO  FLG-LINECHK
                    END-IF
                ELSE
                    IF    ( HCM342-TEKIYO (CNT-SRYACT-LINE)
-                                               NOT = ALL "¡Ý" )
+                                               NOT = ALL "¡½" )
                        MOVE    1       TO  FLG-LINECHK
                    END-IF
                END-IF
@@ -6516,9 +6516,9 @@
                    COMPUTE CNT-SRYACT-LINE =   CNT-SRYACT-LINE +   1
                    MOVE    CNT-SRYACT-LINE TO  IDXC
                    IF    ( FLG-HEAD    =   ZERO )
-                       MOVE    ALL "¡Ý"    TO  HCM341-TEKIYO (IDXC)
+                       MOVE    ALL "¡½"    TO  HCM341-TEKIYO (IDXC)
                    ELSE
-                       MOVE    ALL "¡Ý"    TO  HCM342-TEKIYO (IDXC)
+                       MOVE    ALL "¡½"    TO  HCM342-TEKIYO (IDXC)
                    END-IF
                    PERFORM 210-KAIPEGE-CHK-SEC
                END-EVALUATE

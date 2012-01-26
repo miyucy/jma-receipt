@@ -215,8 +215,8 @@
                05  WRK-TEKCD-OCC       OCCURS  200.
                    07  WRK-DMKBN       PIC X(01).
                    07  WRK-TEKCD       PIC X(170).
-           03  WRK-MIDASI1             PIC X(56).
-           03  WRK-MIDASI2             PIC X(100).
+           03  WRK-MIDASI1             PIC X(68).
+           03  WRK-MIDASI2             PIC X(90).
            03  WRK-YKSK-G.
                05  WRK-YKSK-MAX        PIC 9(05).
                05  WRK-YKSK-CD         PIC X(09)
@@ -241,10 +241,8 @@
            03  FILLER                  PIC X(04)   VALUE   "  P-".
            03  H01-PCNT                PIC ZZ9.
        01  HEAD-02.
-           03  FILLER                  PIC X(04)   VALUE   SPACE.
-           03  H02-MIDASI1             PIC X(56).
-           03  FILLER                  PIC X(01)   VALUE   SPACE.
-           03  H02-MIDASI2             PIC X(100).
+           03  H02-MIDASI1             PIC X(68).
+           03  H02-MIDASI2             PIC X(90).
        01  BODY-01.
            03  B01-LEFT                PIC X(63).
            03  B01-RIGHT               PIC X(95).
@@ -652,41 +650,41 @@
                MOVE
                "＜　薬剤と禁忌一覧表　＞"
                                        TO  H01-MIDASI
-                   MOVE    "薬剤コード"
+                   MOVE    "薬剤コード@"
                                        TO  WRK-MIDASI1
-                   MOVE    "禁忌コード"
+                   MOVE    "禁忌コード@"
                                        TO  WRK-MIDASI2
            WHEN    "4" 
                MOVE
                "＜　薬剤と併用禁忌一覧表　＞"
                                        TO  H01-MIDASI
-                   MOVE    "薬剤コード"
+                   MOVE    "薬剤コード@"
                                        TO  WRK-MIDASI1
-                   MOVE    "適用薬剤コード"
+                   MOVE    "  適用薬剤コード@"
                                        TO  WRK-MIDASI2
            WHEN    "5"
                MOVE
                "＜　同一月に併用算定できない診療行為一覧表　＞"
                                        TO  H01-MIDASI
-                   MOVE    "診療行為コード"
+                   MOVE    "診療行為コード@"
                                        TO  WRK-MIDASI1
-                   MOVE    "適用診療行為コード"
+                   MOVE    "  適用診療行為コード@"
                                        TO  WRK-MIDASI2
            WHEN    "A"
                MOVE
                "＜　同一日に併用算定できない診療行為一覧表　＞"
                                        TO  H01-MIDASI
-                   MOVE    "診療行為コード"
+                   MOVE    "診療行為コード@"
                                        TO  WRK-MIDASI1
-                   MOVE    "適用診療行為コード"
+                   MOVE    "  適用診療行為コード@"
                                        TO  WRK-MIDASI2
            WHEN    "B"
                MOVE
                "＜　同一会計に併用算定できない診療行為一覧表　＞"
                                        TO  H01-MIDASI
-                   MOVE    "診療行為コード"
+                   MOVE    "診療行為コード@"
                                        TO  WRK-MIDASI1
-                   MOVE    "適用診療行為コード"
+                   MOVE    "  適用診療行為コード@"
                                        TO  WRK-MIDASI2
            END-EVALUATE
       *
@@ -703,25 +701,25 @@
                MOVE
                "＜　薬剤と病名一覧表　＞"
                                        TO  H01-MIDASI
-                   MOVE    "薬剤コード"
+                   MOVE    "  薬剤コード@"
                                        TO  WRK-MIDASI1
-                   MOVE    "病名コード"
+                   MOVE    "病名コード@"
                                        TO  WRK-MIDASI2
            WHEN    "2"
                MOVE
                "＜　診療行為と病名一覧表　＞"
                                        TO  H01-MIDASI
-                   MOVE    "診療行為コード"
+                   MOVE    "  診療行為コード@"
                                        TO  WRK-MIDASI1
-                   MOVE    "病名コード"
+                   MOVE    "病名コード@"
                                        TO  WRK-MIDASI2
            WHEN    "6"
                MOVE
                "＜　投与禁忌薬剤と病名　＞"
                                        TO  H01-MIDASI
-                   MOVE    "薬剤コード"
+                   MOVE    "  薬剤コード@"
                                        TO  WRK-MIDASI1
-                   MOVE    "病名コード"
+                   MOVE    "病名コード@"
                                        TO  WRK-MIDASI2
            END-EVALUATE
       *
@@ -782,9 +780,9 @@
            MOVE
                "＜　診療行為どうしの算定漏れ一覧表　＞"
                                        TO  H01-MIDASI
-           MOVE    "診療行為コード（薬剤コード）"
+           MOVE    "    診療行為コード（薬剤コード）@"
                                        TO  WRK-MIDASI1
-           MOVE    "診療行為コード（薬剤コード）"
+           MOVE    "  診療行為コード（薬剤コード）@"
                                        TO  WRK-MIDASI2
       *
            .
@@ -817,17 +815,17 @@
                MOVE
                "＜　病名と薬剤一覧表　＞"
                                        TO  H01-MIDASI
-                   MOVE    "病名コード"
+                   MOVE    "        病名コード@"
                                        TO  WRK-MIDASI1
-                   MOVE    "薬剤コード"
+                   MOVE    "      薬剤コード@"
                                        TO  WRK-MIDASI2
            WHEN    "9"
                MOVE
                "＜　病名と診療行為一覧表　＞"
                                        TO  H01-MIDASI
-                   MOVE    "病名コード"
+                   MOVE    "        病名コード@"
                                        TO  WRK-MIDASI1
-                   MOVE    "診療行為コード"
+                   MOVE    "      診療行為コード@"
                                        TO  WRK-MIDASI2
            END-EVALUATE
       *
@@ -1964,7 +1962,7 @@
       *
            MOVE    1                   TO  WRK-TGPNT
            MOVE    SPACE               TO  H02-MIDASI1
-           STRING  WRK-MIDASI1  DELIMITED   BY  SPACE
+           STRING  WRK-MIDASI1  DELIMITED   BY  "@"
                    "　"         DELIMITED   BY  SIZE
            INTO    H02-MIDASI1
            WITH    POINTER WRK-TGPNT
@@ -2009,7 +2007,7 @@
       *
            MOVE    1                   TO  WRK-TGPNT
            MOVE    SPACE               TO  H02-MIDASI2
-           STRING  WRK-MIDASI2         DELIMITED   BY  SPACE
+           STRING  WRK-MIDASI2         DELIMITED   BY  "@"
                    "　　"              DELIMITED   BY  SIZE
            INTO    H02-MIDASI2
            WITH    POINTER WRK-TGPNT
