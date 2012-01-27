@@ -217,9 +217,10 @@
            03  LST-ERR-HEAD2.
                05  FILLER              PIC X(20)   VALUE
                    "¥µº‘»÷πÊ".
-               05  FILLER              PIC X(02)   VALUE   SPACE.
-               05  FILLER              PIC X(26)   VALUE
+      *        05  FILLER              PIC X(02)   VALUE   SPACE.
+               05  FILLER              PIC X(28)   VALUE
                    "ª·Ãæ".
+               05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE
                    "≤ ".
                05  FILLER              PIC X(12)   VALUE
@@ -260,9 +261,10 @@
            03  LST-PRT-HEAD2.
                05  FILLER              PIC X(20)   VALUE
                    "¥µº‘»÷πÊ".
-               05  FILLER              PIC X(02)   VALUE   SPACE.
-               05  FILLER              PIC X(26)   VALUE
+      *        05  FILLER              PIC X(02)   VALUE   SPACE.
+               05  FILLER              PIC X(28)   VALUE
                    "ª·Ãæ".
+               05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE
                    "≤ ".
                05  FILLER              PIC X(12)   VALUE

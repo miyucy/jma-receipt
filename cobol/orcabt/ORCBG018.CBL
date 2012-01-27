@@ -139,8 +139,8 @@
       *
        01  HEAD-AREA.
            03  HEAD-FL1                    PIC X(05).
-           03  HEAD-NAME-OLD               PIC X(76).
-           03  HEAD-NAME-NEW               PIC X(70).
+           03  HEAD-NAME-OLD               PIC X(73).
+           03  HEAD-NAME-NEW               PIC X(73).
       *
        01  MEISAI-AREA.
            03  MEISAI-NO                   PIC Z(04).
@@ -1158,8 +1158,6 @@
            END-IF
       *
            INITIALIZE                      HEAD-AREA
-           MOVE    ALL "°°"            TO  HEAD-NAME-OLD
-                                           HEAD-NAME-NEW
            STRING  "∑–≤·¡º√÷ÃÙ∫ﬁ"      DELIMITED   BY  SIZE
            INTO    HEAD-NAME-OLD
            END-STRING
