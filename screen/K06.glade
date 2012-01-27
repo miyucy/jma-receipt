@@ -1484,22 +1484,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label288</name>
-      <x>16</x>
-      <y>560</y>
-      <width>0</width>
-      <height>16</height>
-      <label>変更入力欄</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label503</name>
       <x>28</x>
       <y>664</y>
@@ -1987,6 +1971,22 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label288</name>
+      <x>16</x>
+      <y>560</y>
+      <width>80</width>
+      <height>20</height>
+      <label>変更入力欄</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
