@@ -33,6 +33,8 @@
       *                                     システム管理の設定に従い、災
       *                                     害該当レセプトのレセ電データ
       *                                     の作成のチェックを追加
+      *
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -113,7 +115,7 @@
            03  FILLER                  PIC X(02)   VALUE   SPACE.
            03  FILLER                  PIC X(22)   VALUE   "患者番号".
            03  FILLER                  PIC X(20)   VALUE   "氏名".
-           03  FILLER                  PIC X(01)   VALUE   SPACE.
+           03  FILLER                  PIC X(02)   VALUE   SPACE.
            03  FILLER                  PIC X(16)   VALUE   "診療年月".
            03  FILLER                  PIC X(08)   VALUE   "提出先".
            03  FILLER                  PIC X(08)   VALUE   "入外区分".

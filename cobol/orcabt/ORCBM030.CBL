@@ -63,6 +63,8 @@
       *
       *  04.05.01    NACL-藤原    09/07/08  公費再掲欄への地方公費記載
       *                                     設定対応
+      *
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1037,16 +1039,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
       *
            MOVE    WRK-SRYYMWH         TO  HCM2U-PRTYM
       *
-      *----(03.04.01)--UPD-START---
-      *    医療機関住所
-      *    MOVE    SYS-1002-ADRS       TO  HCM2U-ADRS
-      *    医療機関名
-      *    MOVE    SYS-1001-HOSPNAME   TO  HCM2U-HOSPNAME
       *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM2U-ADRS
+           INSPECT HCM2U-ADRS          REPLACING   ALL "  "    BY  "　"
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM2U-HOSPNAME
-      *----(03.04.01)--UPD-END-----
+           INSPECT HCM2U-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *    
            MOVE    SYS-1001-KAISETUNAME
                                        TO  HCM2U-KAISETUNAME

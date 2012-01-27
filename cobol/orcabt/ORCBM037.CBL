@@ -34,6 +34,8 @@
       *                                     備考欄の記載等追加
       *  04.05.02    NACL-藤原    11/04/18  災害対応
       *                                     確定分の記載を中止
+      *
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -520,13 +522,11 @@
            MOVE    WRK-SRYYMWH         TO  HCM3C-PRTYM
       *
       *    医療機関住所
-      *    MOVE    SYS-1002-ADRS       TO  HCM3C-ADRS
-      *    医療機関名
-      *    MOVE    SYS-1001-HOSPNAME   TO  HCM3C-HOSPNAME
-      *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM3C-ADRS
+           INSPECT HCM3C-ADRS          REPLACING   ALL "  "    BY  "　"
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM3C-HOSPNAME
+           INSPECT HCM3C-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *
       *    開設者名
            MOVE    SYS-1001-KAISETUNAME

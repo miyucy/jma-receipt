@@ -39,6 +39,8 @@
       *  04.06.02    NACL-藤原    11/03/15  平成２３年４月以降提出分は
       *                                     様式変更（１枚１名記載） 
       *                                     HCN61V02.red
+      *
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1284,6 +1286,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
       *        所在地
                MOVE    WRK-HOSPADRS    TO  HCN64-HOSPADRS
+               INSPECT HCN64-HOSPADRS  REPLACING   ALL "  "    BY  "　"
       *
       *        開設者
                MOVE    SYS-1001-KAISETUNAME
@@ -1300,6 +1303,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
       *        医療機関名称
                MOVE    WRK-HOSPNAME    TO  HCN64-HOSPNAME
+               INSPECT HCN64-HOSPNAME  REPLACING   ALL "  "    BY  "　"
       *
       *        分娩機関管理番号・施設等区分
                EVALUATE    SYS-1001-HOSPSBT
@@ -1375,6 +1379,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
       *        所在地
                MOVE    WRK-HOSPADRS    TO  HCN65-HOSPADRS
+               INSPECT HCN65-HOSPADRS  REPLACING   ALL "  "    BY  "　"
       *
       *        開設者
                MOVE    SYS-1001-KAISETUNAME
@@ -1391,6 +1396,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
       *        医療機関名称
                MOVE    WRK-HOSPNAME    TO  HCN65-HOSPNAME
+               INSPECT HCN65-HOSPNAME  REPLACING   ALL "  "    BY  "　"
       *
       *        分娩機関管理番号・施設等区分
                EVALUATE    SYS-1001-HOSPSBT

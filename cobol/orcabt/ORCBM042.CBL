@@ -661,8 +661,12 @@
                    MOVE    SYS-1002-POST       TO  HCM73-HOSPPOST
       *
                    MOVE    WRK-HOSPADRS        TO  HCM73-HOSPADRS
+                   INSPECT HCM73-HOSPADRS
+                                   REPLACING   ALL "  "    BY  "　"
       *
                    MOVE    WRK-HOSPNAME        TO  HCM73-HOSPNAME
+                   INSPECT HCM73-HOSPNAME
+                                   REPLACING   ALL "  "    BY  "　"
       *    
                    MOVE    SYS-1001-KAISETUNAME
                                                TO  HCM73-KAISETSUNAME
@@ -723,8 +727,12 @@
                    MOVE    SYS-1002-POST       TO  HCM72-HOSPPOST
       *
                    MOVE    WRK-HOSPADRS        TO  HCM72-HOSPADRS
+                   INSPECT HCM72-HOSPADRS
+                                   REPLACING   ALL "  "    BY  "　"
       *
                    MOVE    WRK-HOSPNAME        TO  HCM72-HOSPNAME
+                   INSPECT HCM72-HOSPNAME
+                                   REPLACING   ALL "  "    BY  "　"
       *    
                    MOVE    SYS-1001-KAISETUNAME
                                                TO  HCM72-KAISETSUNAME

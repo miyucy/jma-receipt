@@ -61,6 +61,8 @@
       *
       *  04.05.01    NACL-藤原    11/04/04  災害対応
       *                                     備考欄の記載等追加
+      *
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -542,16 +544,12 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *
            MOVE    WRK-SRYYMWH         TO  HCM2S-PRTYM
       *
-      *----(03.04.01)--UPD-START---
-      *    医療機関住所
-      *    MOVE    SYS-1002-ADRS       TO  HCM2S-ADRS
-      *    医療機関名
-      *    MOVE    SYS-1001-HOSPNAME   TO  HCM2S-HOSPNAME
       *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM2S-ADRS
+           INSPECT HCM2S-ADRS          REPLACING   ALL "  "    BY  "　"
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM2S-HOSPNAME
-      *----(03.04.01)--UPD-END-----
+           INSPECT HCM2S-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *
       *    開設者名
            MOVE    SYS-1001-KAISETUNAME

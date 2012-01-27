@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -406,8 +407,10 @@
            MOVE    WRK-SRYYMWH         TO  HCM3E-PRTYM
       *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM3E-ADRS
+           INSPECT HCM3E-ADRS          REPLACING   ALL "  "    BY  "　"
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM3E-HOSPNAME
+           INSPECT HCM3E-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *    
            MOVE    SYS-1001-KAISETUNAME
                                        TO  HCM3E-KAISETUNAME

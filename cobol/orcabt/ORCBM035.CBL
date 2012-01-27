@@ -38,6 +38,8 @@
       *  04.05.01    NACL-藤原    09/05/25  広域連合の保険者番号指定対応
       *  04.05.02    NACL-藤原    09/07/08  公費再掲欄への地方公費記載
       *                                     設定対応
+      *
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1089,8 +1091,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
            MOVE    WRK-SRYYMWH         TO  HCM3G-PRTYM
       *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM3G-ADRS
+           INSPECT HCM3G-ADRS          REPLACING   ALL "  "    BY  "　"
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM3G-HOSPNAME
+           INSPECT HCM3G-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *    
            MOVE    SYS-1001-KAISETUNAME
                                        TO  HCM3G-KAISETUNAME

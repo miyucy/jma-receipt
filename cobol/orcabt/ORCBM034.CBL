@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -508,8 +509,10 @@
            MOVE    SYS-1001-HOSPCD     TO  HCM60-HOSPCD
       *
            MOVE    WRK-HOSPADRS        TO  HCM60-ADRS
+           INSPECT HCM60-ADRS          REPLACING   ALL "  "    BY  "　"
       *
            MOVE    WRK-HOSPNAME        TO  HCM60-HOSPNAME
+           INSPECT HCM60-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *    
            MOVE    SYS-1001-KAISETUNAME
                                        TO  HCM60-KAISETUNAME

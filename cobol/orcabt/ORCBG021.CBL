@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.04.01    NACL-藤原    09/04/01  診療科を名称で表示する
       *  04.05.00    NACL-太田    10/01/29  拡張漢字対応
+      *
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -127,11 +129,12 @@
            03  H01-PAGE                PIC ZZZ9.
       *
        01  HEAD-02.
-           03  FILLER                  PIC X(22)   VALUE
-               "患者番号　　　　　　　".
-           03  FILLER                  PIC X(02)   VALUE   SPACE.
+           03  FILLER                  PIC X(20)   VALUE
+               "患者番号　　　　　　".
+      **     03  FILLER                  PIC X(02)   VALUE   SPACE.
            03  FILLER                  PIC X(14)   VALUE
                "氏名　　　　".
+           03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(08)   VALUE
                "診療科　".
            03  FILLER                  PIC X(10)   VALUE
@@ -143,12 +146,12 @@
            03  FILLER                  PIC X(08)   VALUE   "病名".
       *
        01  HEAD-03.
-           03  FILLER                  PIC X(53)   VALUE   SPACE.
+           03  FILLER                  PIC X(59)   VALUE   SPACE.
            03  FILLER                  PIC X(100)  VALUE
                "理由".
       *
        01  HEAD-04.
-           03  FILLER                  PIC X(53)   VALUE   SPACE.
+           03  FILLER                  PIC X(59)   VALUE   SPACE.
            03  FILLER                  PIC X(20)   VALUE
                "入力コード".
       *
@@ -157,14 +160,15 @@
            03  B01-NAME                PIC X(14).
            03  B01-FIL1                PIC X(01).
            03  B01-SRYKA               PIC X(06).
-           03  B01-FIL2                PIC X(01).
+           03  B01-FIL2                PIC X(02).
            03  B01-SRYYMD              PIC X(10).
-           03  B01-NYUGAIKBN           PIC X(04).
            03  B01-FIL3                PIC X(01).
+           03  B01-NYUGAIKBN           PIC X(04).
+           03  B01-FIL4                PIC X(01).
            03  B01-BYOMEI              PIC X(80).
       *
        01  BODY-02.
-           03  B02-FIL1                PIC X(54).
+           03  B02-FIL1                PIC X(59).
            03  B02-RIYUU               PIC X(104).
            03  B02-RIYUU-R             REDEFINES   B02-RIYUU.
                05  B02-RIYUU1          PIC X(24).
@@ -177,7 +181,7 @@
                05  B02-FIL5            PIC X(01).
       *
        01  BODY-03.
-           03  B03-FIL1                PIC X(54).
+           03  B03-FIL1                PIC X(59).
            03  B03-RIYUU               PIC X(24).
            03  B03-FIL2                PIC X(01).
            03  B03-HAISIYMD            PIC X(09).
@@ -187,7 +191,7 @@
            03  B03-BYOMEI              PIC X(60).
       *
        01  BODY-04.
-           03  B04-FIL1                PIC X(54).
+           03  B04-FIL1                PIC X(59).
            03  B04-BYOMEIINPUTCD       PIC X(22)   OCCURS  4.
       *
        01  WRK-CONST-AREA.

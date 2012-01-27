@@ -49,6 +49,8 @@
       *                                     不詳、保険者未特定は読み飛ばす
       *  04.02.00    NACL-小豆沢  08/04/18  平成２０年４月以降の診療分は
       *                                     読み飛ばす
+      *
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -730,16 +732,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            MOVE    WRK-SRYYMWH     TO  HCM2Q-PRTYM
       *
-      *----(03.04.01)--UPD-START---
-      *    医療機関住所
-      *    MOVE    SYS-1002-ADRS       TO  HCM2Q-ADRS
-      *    医療機関名
-      *    MOVE    SYS-1001-HOSPNAME   TO  HCM2Q-HOSPNAME
       *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM2Q-ADRS
+           INSPECT HCM2Q-ADRS          REPLACING   ALL "  "    BY  "　"
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM2Q-HOSPNAME
-      *----(03.04.01)--UPD-END-----
+           INSPECT HCM2Q-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *
            MOVE    SYS-1001-KAISETUNAME
                                    TO  HCM2Q-KAISETUNAME

@@ -31,6 +31,8 @@
       *                                      方法の修正
       *  04.04.02    NACL-藤原    10/08/10   支払基金支部の名称の変更に伴
       *                                      う修正
+      *
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -379,6 +381,7 @@
       *
       *    住所
            MOVE    WRK-ADRS            TO  HCM64-ADRS
+           INSPECT HCM64-ADRS          REPLACING   ALL "  "    BY  "　"
       *
       *    開設者
            MOVE    SYS-1001-KAISETUNAME
@@ -389,6 +392,7 @@
       *
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM64-HOSPNAME
+           INSPECT HCM64-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *
       *    点数表区分
            MOVE    "○"                TO  HCM64-TENHYOKBN
