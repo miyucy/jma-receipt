@@ -131,16 +131,16 @@
                              "  複写先：".
                05  LST-HEAD-SAKIHOSP   PIC X(10).
                05                      PIC X(02)   VALUE   "）".
-               05                      PIC X(08)   VALUE   " ".
+               05                      PIC X(08)   VALUE   SPACE.
                05  LST-HEAD-PAGE       PIC Z,ZZ9.
                05                      PIC X(05)   VALUE   "頁".
            03  LST-HEAD.
                05                      PIC X(04)   VALUE   "番号".
-               05                      PIC X(02)   VALUE   "   ".
+               05                      PIC X(02)   VALUE   SPACE.
                05                      PIC X(20)   VALUE   "複写コード".
-               05                      PIC X(01)   VALUE   "   ".
+               05                      PIC X(01)   VALUE   SPACE.
                05                      PIC X(30)   VALUE   "名称".
-               05                      PIC X(06)   VALUE   "     ".
+               05                      PIC X(06)   VALUE   SPACE.
                05                      PIC X(52)   VALUE   "処理結果".
       *
            03  LST-MEISAI-G.
