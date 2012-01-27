@@ -1321,6 +1321,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
                MOVE    RECE82-HOKENNAME
                                        TO  HC23-HOKENNAME
            END-IF
+           INSPECT HC23-HOKENNAME  REPLACING   ALL "  "    BY  "　"
       *
       *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN     =   "2"

@@ -1456,6 +1456,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HC24-HOSPNAME
            END-IF
+           INSPECT HC24-HOSPNAME   REPLACING   ALL "  "    BY  "¡¡"
       *
            EVALUATE    RECE41-HKNKBN
                WHEN    "1"
