@@ -1233,6 +1233,9 @@
                        END-EVALUATE
       *                管理情報編集処理
                        PERFORM 3101-ONRECE-KANRI-HENSYU-SEC
+      *
+      *                点検レセ０点公費記載の請求管理のチェック処理
+                       PERFORM 3104-SEIKYU-CHECK-SEC
                    WHEN    "2001"
       *                ジョブ管理チェック処理
                        PERFORM 4501-JOBKANRI-CHK-SEC
@@ -1609,6 +1612,9 @@
                    END-IF
       *            管理情報編集処理
                    PERFORM 3101-ONRECE-KANRI-HENSYU-SEC
+      *
+      *            点検レセ０点公費記載の請求管理のチェック処理
+                   PERFORM 3104-SEIKYU-CHECK-SEC
                END-IF
            ELSE
                MOVE    SPA-NAI-T06-SRYYM-OLD   TO  SPA-NAI-T06-SRYYM-H

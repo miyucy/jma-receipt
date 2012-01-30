@@ -607,6 +607,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                        " HENREIYM="     RECE10-HENREIYM
                        " HENREI-SIJI-FLG="  RECE10-HENREI-SIJI-FLG
                        " ETC-YKZFTN1="  RECE10-ETC-YKZFTN (1)
+                       " SKYKBN-RECEDEN="  RECE10-SKYKBN-RECEDEN
       *???
                PERFORM 900-RECEDEN-SELECT-SEC
                PERFORM     UNTIL   FLG-RECEDEN =   1
@@ -1435,7 +1436,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
-           DISPLAY "RECE300  IN   " CNT-IN  
+           DISPLAY "RECE300  IN   " CNT-RECE10
            DISPLAY "RECE300  OUT  " CNT-OUT
            DISPLAY "RECE300  FILE " WRK-FILE-RENNUM  
            DISPLAY "*** ORCBM500 END ***"
@@ -1821,8 +1822,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        900-SEIKYU-READ-SEC           SECTION.
       *
-            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-END
