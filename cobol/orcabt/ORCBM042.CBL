@@ -658,7 +658,11 @@
                    MOVE    SUM-NINZU           TO  WRK-NINZUZ
                    MOVE    WRK-NINZUZ          TO  HCM73-NINZU
       *    
-                   MOVE    SYS-1002-POST       TO  HCM73-HOSPPOST
+                   IF   SYS-1002-POST   IS  NUMERIC
+                     MOVE  SYS-1002-POST(1:3)  TO  HCM73-HOSPPOST(1:3)
+                     MOVE  "-"                 TO  HCM73-HOSPPOST(4:1)
+                     MOVE  SYS-1002-POST(4:4)  TO  HCM73-HOSPPOST(5:4)
+                   END-IF
       *
                    MOVE    WRK-HOSPADRS        TO  HCM73-HOSPADRS
                    INSPECT HCM73-HOSPADRS
@@ -724,7 +728,11 @@
                    MOVE    SUM-NINZU           TO  WRK-NINZUZ
                    MOVE    WRK-NINZUZ          TO  HCM72-NINZU
       *    
-                   MOVE    SYS-1002-POST       TO  HCM72-HOSPPOST
+                   IF   SYS-1002-POST   IS  NUMERIC
+                     MOVE  SYS-1002-POST(1:3)  TO  HCM72-HOSPPOST(1:3)
+                     MOVE  "-"                 TO  HCM72-HOSPPOST(4:1)
+                     MOVE  SYS-1002-POST(4:4)  TO  HCM72-HOSPPOST(5:4)
+                   END-IF
       *
                    MOVE    WRK-HOSPADRS        TO  HCM72-HOSPADRS
                    INSPECT HCM72-HOSPADRS
