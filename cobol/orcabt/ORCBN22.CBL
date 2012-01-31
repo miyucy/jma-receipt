@@ -174,7 +174,7 @@
                                            "診療コード　薬剤名".
            03  WRK-PRT-LINE3.
                05  WRK-PRT-SRYCD       PIC X(09)   VALUE   SPACE.
-               05  FILLER              PIC X(01)   VALUE   SPACE.
+               05  FILLER              PIC X(03)   VALUE   SPACE.
                05  WRK-PRT-NAME        PIC X(96)   VALUE   SPACE.
       *
       *    ファイル名
