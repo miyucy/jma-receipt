@@ -9,6 +9,7 @@ fi
 
 . $JMARECEIPT_ENV
 export HOME=/home/orca
+export PATH=$SITESCRIPTSDIR/daily:$PATCHSCRIPTSDIR/daily:$SCRIPTSDIR/daily:$PATH
 
 #if ! test -d /var/tmp/.orca_ps ; then
 #    mkdir /var/tmp/.orca_ps
