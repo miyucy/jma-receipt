@@ -1,5 +1,6 @@
 M01	{
 	title  varchar(120);
+	bgcolor		varchar(20);
 	fixed1	{
 		                 G11	{
 		                	state	int;

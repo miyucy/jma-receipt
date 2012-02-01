@@ -659,6 +659,10 @@
                MOVE    SYS-1038-SEI20KSNKBN    TO  SPA-SEI20KSNKBN
       *        リハビリ・患者情報表示区分
                MOVE    SYS-1038-GMNHYOKBN-G    TO  SPA-GMNHYOKBN-G
+      *        入力スクロール背景色
+               MOVE    SYS-1038-BGCOLORS       TO  SPA-BGCOLORS
+      *        入力スクロール背景色
+               MOVE    SYS-1038-BGLINEKBN      TO  SPA-BGLINEKBN
            END-IF
            IF      SPA-KAGRPFLG        =   SPACE
                MOVE    "0"                 TO  SPA-KAGRPFLG
@@ -703,6 +707,14 @@
                MOVE    "3"                 TO  SPA-GMNHYOKBN (3)
                MOVE    "4"                 TO  SPA-GMNHYOKBN (4)
                MOVE    "5"                 TO  SPA-GMNHYOKBN (5)
+           END-IF
+      *    入力スクロール背景色
+           IF      SPA-BGCOLORS        =   SPACE
+               MOVE    "AntiqueWhite"      TO  SPA-BGCOLORS
+           END-IF
+      *    入力スクロール背景色
+           IF      SPA-BGLINEKBN       =   SPACE
+               MOVE    "0"                 TO  SPA-BGLINEKBN
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

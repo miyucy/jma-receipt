@@ -21,6 +21,8 @@
       ************************************************************
          02  M01.
             03  M01-TITLE           PIC X(120).
+            03  M01-BGCOLORS.
+              04  M01-VALUE   PIC X(20).
             03  M01-FIXED1.
               04  M01-STATE-G.
                 05  M01-G11-STATE   PIC S9(09) BINARY.

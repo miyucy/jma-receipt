@@ -138,6 +138,7 @@
            03  FLG-SOUSIN              PIC 9(01).
       *    クライアント印刷有
            03  FLG-CLIENT-OK       PIC 9(01).
+           03  FLG-PRT             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -2878,6 +2879,30 @@
       *    カルテ／処方箋発行処理
       *****************************************************************
        49023-HC01-SYORI-SEC         SECTION.
+      *
+      *    帳票印刷有無判定
+           MOVE    ZERO                TO  FLG-PRT
+           IF      SPA-GMN-HAKKO       =   "1"  OR  "2"
+                                       OR  "3"
+               MOVE    1               TO  FLG-PRT
+           END-IF
+           PERFORM   VARYING   IDX2    FROM    1   BY  1
+                     UNTIL   ( IDX2            >   10 )
+                     OR      ( FLG-PRT         =   1  )
+                     OR      ( SPA-GMN20-YBANGOU(IDX2)
+                                               =   ZERO  OR  SPACE )
+               IF   (SPA-GMN20-TKARUTE (IDX2)      =   "0"
+                                                   OR  SPACE  )  AND
+                    (SPA-GMN20-TSYOHOU (IDX2)      =   "0"
+                                                   OR  SPACE  )
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-PRT
+               END-IF
+           END-PERFORM
+           IF      FLG-PRT             =   ZERO
+               GO      TO      49023-HC01-SYORI-EXT
+           END-IF
       *
       *    ＳＰＡに共通項目を設定
            MOVE    SPA-SYSYMD          TO  SPA-SRYYMD

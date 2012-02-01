@@ -1,5 +1,7 @@
         02  M95.
    ******** 02  M95-FIXED1.
+            03  M95-BGCOLORS.
+              04  M95-VALUE   PIC X(20).
               03  M95-NOTEBOOK1.
                 04  M95-PAGENO  PIC S9(9)   BINARY.
                 04  M95-FIXED2.

@@ -1,4 +1,5 @@
 M95	{
+	bgcolor		varchar(20);
 	fixed1	{
 		notebook1	{
 			pageno	int;

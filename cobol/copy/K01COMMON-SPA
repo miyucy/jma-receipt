@@ -33,6 +33,7 @@
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０．４改正
       *  04.03.00    NACL-多々納  08/07/XX  最大RL=19280 へ変更
       *  04.04.00    NACL-多々納  08/12/XX  入院料包括対応
+      *  04.07.00    NACL-多々納  12/01/25  入力スクロール背景色
       ************************************************************
       *
        01  SPA-K01KYOUTU.
@@ -185,6 +186,9 @@
                05  SPA-GMNHYOKBN-G.
                    07  SPA-GMNHYOKBN       PIC  X(01)
                                            OCCURS   5.
+      *入力スクロール背景色
+               05  SPA-BGCOLORS               PIC X(20).
+               05  SPA-BGLINEKBN              PIC X(01).
       *
       *前回保険組合せ相違チェック
                05  SPA-ZENHKNCHK-FLG       PIC X(01).
@@ -614,5 +618,3 @@
       *ヘルプ・発行指示共通
            03  SPA-ETCKYOUTU-AREA           PIC X(7500).
       *
-ito   * test
-           03  SPA-BGCOLOR-SW            PIC 9(01).

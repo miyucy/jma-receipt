@@ -1247,6 +1247,8 @@
       *
            MOVE    SPA-HOSPNAME        TO  M01-TITLE
            MOVE    SPA-GMN-GSEL        TO  M01-SELNUM
+      *ver.4.7
+           MOVE    SPA-M00-BGCOLORS    TO  M01-BGCOLORS
       *
       *----(01.00.04) LINE DEL START ----------------------------------
       ***     IF  ACC1-ST =  "01"

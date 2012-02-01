@@ -473,6 +473,34 @@
                     06  W07-GMNHYOKBN5-COUNT   PIC S9(9)   BINARY.
                     06  W07-GMNHYOKBN5-ITEM
                             PIC X(40)   OCCURS  10 TIMES.
+                  05  W07-BGCOLORS.
+                    06  W07-VALUE   PIC X(20).
+                  05  W07-BGLINEKBN-COMB.
+                    06  W07-BGLINEKBN.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-BGLINEKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-BGLINEKBN-ITEM
+                            PIC X(40)   OCCURS  5 TIMES.
+                  05  W07-BGCOLORSJ0.
+                    06  W07-VALUE   PIC X(20).
+                  05  W07-BGCOLORSDAY.
+                    06  W07-VALUE   PIC X(20).
+                  05  W07-BGCOLORSJ1.
+                    06  W07-VALUE   PIC X(20).
+                  05  W07-BGCOLORSJ2.
+                    06  W07-VALUE   PIC X(20).
+                  05  W07-BGCOLORSJ3.
+                    06  W07-VALUE   PIC X(20).
+                  05  W07-BGCOLORSJ4.
+                    06  W07-VALUE   PIC X(20).
+                  05  W07-BGCOLORSJ5.
+                    06  W07-VALUE   PIC X(20).
+                  05  W07-BGCOLORSJ6.
+                    06  W07-VALUE   PIC X(20).
+                  05  W07-BGCOLORSJ7.
+                    06  W07-VALUE   PIC X(20).
+                  05  W07-BGCOLORSJ8.
+                    06  W07-VALUE   PIC X(20).
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.

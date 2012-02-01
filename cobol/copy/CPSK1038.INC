@@ -36,6 +36,7 @@
       *  04.06.00    NACL-多々納  10/08/03  入金・返金額設定区分追加
       *  04.06.00    NACL-多々納  10/11/10  発行日変更区分追加
       *  04.07.00    NACL-多々納  11/07/10  リハビリ・患者情報表示区分追加
+      *  04.07.00    NACL-多々納  12/01/25  入力スクロール背景色追加
       ************************************************************
        01  SYS-1038-REC.
            03  SYS-1038-KEY.
@@ -92,10 +93,25 @@
                05  SYS-1038-GMNHYOKBN-G.
                    07  SYS-1038-GMNHYOKBN     PIC  X(01)
                                               OCCURS   5.
-      *予備
+      *入力スクロール背景色
+               05  SYS-1038-BGCOLORS       PIC  X(20).
+      *入力スクロール背景行区分
+               05  SYS-1038-BGLINEKBN      PIC  X(01).
+      *環境設定背景色変更
+               05  SYS-1038-M95BGCOLORS-G.
+      *            標準
+                   07  SYS-1038-BGCOLORSJ0      PIC  X(20).
+      *            システム日付変更
+                   07  SYS-1038-BGCOLORSDAY     PIC  X(20).
+      *            時間外区分
+                   07  SYS-1038-BGCOLORSJ-G.
+                       09 SYS-1038-BGCOLORSJ   PIC  X(20)
+                                               OCCURS   8.
+      *予備 
       *******  05                          PIC  X(488).
       ******   05  SYS-1038-YOBI           PIC  X(480).
-               05  SYS-1038-YOBI           PIC  X(475).
+      ****     05  SYS-1038-YOBI           PIC  X(454).
+               05  SYS-1038-YOBI           PIC  X(254).
       *端末ＩＤ
            03  SYS-1038-TERMID          PIC  X(16).
       *オペーレータＩＤ

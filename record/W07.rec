@@ -606,6 +606,46 @@ W07	{
 					count	int;
 					item	varchar(40)[10];
 				};
+				BGCOLORS	{
+					value	varchar(20);
+				};
+				BGLINEKBN_COMB	{
+					BGLINEKBN	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[5];
+				};
+				BGCOLORSJ0	{
+					value	varchar(20);
+				};
+				BGCOLORSDAY	{
+					value	varchar(20);
+				};
+				BGCOLORSJ1	{
+					value	varchar(20);
+				};
+				BGCOLORSJ2	{
+					value	varchar(20);
+				};
+				BGCOLORSJ3	{
+					value	varchar(20);
+				};
+				BGCOLORSJ4	{
+					value	varchar(20);
+				};
+				BGCOLORSJ5	{
+					value	varchar(20);
+				};
+				BGCOLORSJ6	{
+					value	varchar(20);
+				};
+				BGCOLORSJ7	{
+					value	varchar(20);
+				};
+				BGCOLORSJ8	{
+					value	varchar(20);
+				};
 			};
 			TAGNAME3    {
 			  	state   int;

@@ -36,6 +36,7 @@
       *  02.00.00    NACL-多々納  06/08/09  担当医設定追加
       *  04.04.00    NACL-森脇    09/01/30  他院切替機能追加、MID2の追加
       *  04.05.00    NACL-多々納  09/07/15  小児科特例時間外区分追加
+      *  04.07.00    NACL-多々納  12/01/26  背景色変更追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -142,6 +143,8 @@
            03  IDX-H                   PIC 9(04).
            03  IDX-D                   PIC 9(04).
       *
+           03  IDJ                     PIC 9(01).
+      *
       *    一時領域
        01  WRK-AREA.
       *    選択日付
@@ -227,6 +230,8 @@
            COPY  "CPSK1006.INC".
       *    チェック機能制御情報
            COPY  "CPSK1008.INC".
+      *    診療行為一括入金管理情報
+           COPY  "CPSK1038.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -403,8 +408,80 @@
            INITIALIZE                  SPA-M95PAGE2-AREA
       *    他院切替画面
            INITIALIZE                  SPA-M95PAGE3-AREA
+      *ver.4.7
+      *    背景色設定
+           PERFORM 3102-BGCOLORS-INIT-SEC
            .
        310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    背景色設定処理
+      *****************************************************************
+       3102-BGCOLORS-INIT-SEC       SECTION.
+      *
+      *    システム日付決定
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+           MOVE    SMCNDATE-YMD        TO  SPA-ACCTSYSYMD
+      *
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                      SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-ACCTSYSYMD      TO  SYS-1038-STYUKYMD
+           MOVE    SPA-ACCTSYSYMD      TO  SYS-1038-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
+      *    システム管理検索
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1038-REC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-1038-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-SYSKANRI        =   ZERO
+      *        背景色設定
+               PERFORM 31021-BGCOLORS-HEN-SEC
+           END-IF
+           .
+       3102-BGCOLORS-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    背景色設定処理
+      *****************************************************************
+       31021-BGCOLORS-HEN-SEC       SECTION.
+      *
+      *    時間内（標準
+           MOVE    SYS-1038-BGCOLORSJ0 TO  SPA-M95-BGCOLORS
+      *    日付変更
+           IF      SPA-ACCTSYSYMD  NOT =   SPA-NAI-SYSYMD
+               MOVE    SYS-1038-BGCOLORSDAY    TO  SPA-M95-BGCOLORS
+               GO      TO      31021-BGCOLORS-HEN-EXT
+           END-IF
+      *    時間外
+           IF      SPA-GMN-JIKANKBN    NOT =   "0"
+               MOVE    SPA-GMN-JIKANKBN        TO  IDJ
+               IF     (IDJ                 >=  1   AND   <=  8 )
+                   MOVE    SYS-1038-BGCOLORSJ (IDJ)
+                                               TO  SPA-M95-BGCOLORS
+               END-IF
+           END-IF
+           .
+       31021-BGCOLORS-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -714,9 +791,12 @@
                MOVE    WRK-HENYMDG         TO  SPA-GMN-SYSYMD
                MOVE    WRK-CAL-YMD         TO  SPA-NAI-SYSYMD
                MOVE    3                   TO  SPA-M95-CUR
+      *
       *        時間外区分
                MOVE    SPA-GAI-JIKANKBN    TO  SPA-GMN-JIKANKBN
                PERFORM 3101-JIKANGAI-SET-SEC
+      *        背景色設定
+               PERFORM 3102-BGCOLORS-INIT-SEC
            ELSE
                MOVE    "0001"              TO  SPA-ERRCD
            END-IF
@@ -742,6 +822,10 @@
                    MOVE    SPA-JIKANKBN-MAX    TO  IDX
                END-IF
            END-PERFORM
+      *    背景色設定
+           IF      FLG-CHK             =   1
+               PERFORM 3102-BGCOLORS-INIT-SEC
+           END-IF
       *
            IF      FLG-CHK             =   ZERO
                MOVE    "0003"          TO  SPA-ERRCD
@@ -1645,6 +1729,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1011-REC
                PERFORM 420091-SYS1011-DEL-SEC
            END-IF
       *
@@ -1737,6 +1822,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            IF      SPA-ERRCD           =   SPACE
                PERFORM 40101-PAGE1-HENSYU-SEC
            END-IF
+      *ver.4.7
+      *    背景色設定
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 3102-BGCOLORS-INIT-SEC
+               MOVE    SPA-M95-BGCOLORS    TO  SPA-M00-BGCOLORS
+           END-IF
       *
            .
        4010-PAGE1-TOROKU-EXT.
@@ -1817,6 +1908,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1011-REC
                PERFORM 4021-SYS1011-HEN-SEC
       *
                MOVE    SMCNDATE-YMD        TO  SYS-1011-UPYMD
@@ -1952,6 +2044,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            INITIALIZE                  M95
+      *    背景色設定
+           MOVE    SPA-M95-BGCOLORS        TO  M95-BGCOLORS
       *
            IF      SPA-GRPHOSPKBN      =   1
                MOVE    WIDGET-NORMAL       TO  M95-N03-STATE

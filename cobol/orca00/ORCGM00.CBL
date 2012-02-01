@@ -100,6 +100,8 @@
            03  FLG-MSTKANRI        PIC 9(01).
            03  FLG-SYSBASE         PIC 9(01).
       *
+           03  FLG-INIT            PIC 9(01).
+      *
       *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
@@ -137,6 +139,8 @@
       *
            03  WRK-GAI-JIKANKBN    PIC X(01).
            03  WRK-SYSYMD-YOBI     PIC X(01).
+      *ver.4.7
+           03  WRK-BGCOLORS        PIC X(20).
       *
            03  WRK-GNO             PIC X(02).
       *
@@ -472,6 +476,8 @@
                MOVE    SPA-GAI-JIKANKBN    TO  WRK-GAI-JIKANKBN
                MOVE    SPA-SYSYMD-YOBI     TO  WRK-SYSYMD-YOBI
                MOVE    SPA-OPID            TO  WRK-OPID
+      *ver.4.7
+               MOVE    SPA-M00-BGCOLORS    TO  WRK-BGCOLORS
                INITIALIZE                  SPA-AREA
                MOVE    WRK-WSYSYMDH        TO  SPA-SYSYMDWH
                MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
@@ -479,7 +485,11 @@
                MOVE    WRK-GAI-JIKANKBN    TO  SPA-GAI-JIKANKBN
                MOVE    WRK-SYSYMD-YOBI     TO  SPA-SYSYMD-YOBI
                MOVE    WRK-OPID            TO  SPA-OPID
+      *ver.4.7
+               MOVE    WRK-BGCOLORS        TO  SPA-M00-BGCOLORS 
+               MOVE    ZERO                TO  FLG-INIT
            ELSE
+               MOVE    1                   TO  FLG-INIT
       *---- (01.00.04) LINE ADD END   --------------------------------
       *
            INITIALIZE              SPA-AREA
@@ -546,6 +556,12 @@
                                        SYS-1010-REC
       *    年度切替メッセージ
            MOVE    ORCSCOMMON-LABLMSG  TO  SPA-GMN-LBLMSG2
+      *ver.4.7
+           IF      FLG-INIT            =   1
+      *        環境設定の初期表示で背景色を設定する
+               PERFORM 3109-M95INIT-SEC
+           END-IF
+      *ver.4.7
       *
            MOVE    '1'                 TO  SPA-NOCHK-HOSPNUM
            MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
@@ -1397,6 +1413,34 @@
            EXIT.
       *
       *****************************************************************
+      *   環境設定の初期表示
+      *****************************************************************
+       3109-M95INIT-SEC                    SECTION.
+      *
+           MOVE    SPA-M00KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGM95"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-M00KYOUTU
+      *
+      *ver.4.7
+           MOVE    SPA-M95-BGCOLORS    TO  SPA-M00-BGCOLORS
+      *
+           .
+       3109-M95INIT-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    ヴァージョン情報表示画面へ
       *****************************************************************
        470-MVER-SEC                    SECTION.
@@ -1637,6 +1681,10 @@
                  ( SPA-DATAINFECTIONKBN    =    2 )
                MOVE    "定点調査"      TO  M00-B11-LABEL
            END-IF
+      *
+      *ver.4.7
+           MOVE    SPA-M00-BGCOLORS    TO  M00-BGCOLORS
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .

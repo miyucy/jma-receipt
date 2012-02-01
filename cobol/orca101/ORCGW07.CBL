@@ -120,6 +120,7 @@
       *  04.07.00    NACL-多々納  11/07/XX  公費法別一覧表示区分追加
       *                                     リハビリ等表示区分追加
       *  04.07.00    NACL-多々納  11/11/XX  訂正処方せん料算定区分追加
+      *  04.07.00    NACL-多々納  12/01/26  入力スクロール等背景色追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -719,6 +720,26 @@
                            11  SPA-GMN-YMDHENKBN-LST   PIC X(60)
                                                         OCCURS  5.
                            11  SPA-GMN-YMDHENKBN-MAX   PIC 9(01).
+      *ver.4.7
+      *                入力スクロール背景色
+                       09  SPA-GMN-BGCOLORS            PIC  X(20).
+      *                入力スクロール背景行
+                       09  SPA-GMN-BGLINEKBN-G.
+                           11  SPA-GMN-BGLINEKBN       PIC X(01).
+                           11  SPA-GMN-BGLINEKBN-F1    PIC X(01).
+                           11  SPA-GMN-BGLINEKBN-MEI   PIC X(38).
+                       09  SPA-GMN-BGLINEKBN-COMB.
+                           11  SPA-GMN-BGLINEKBN-LST   PIC X(40)
+                                                        OCCURS  5.
+                           11  SPA-GMN-BGLINEKBN-MAX   PIC 9(01).
+      *                環境設定背景色（標準）
+                       09  SPA-GMN-BGCOLORSJ0         PIC  X(20).
+      *                環境設定背景色（日付変更）
+                       09  SPA-GMN-BGCOLORSDAY         PIC  X(20).
+      *                環境設定背景色（時間外）
+                       09  SPA-GMN-BGCOLORSJ-G.
+                           11  SPA-GMN-BGCOLORSJ       PIC  X(20)
+                                                       OCCURS   8.
       *
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
@@ -1347,6 +1368,9 @@
       *    ドクター編集変換サブ
            COPY    "CPORCSDRSET.INC".
       *
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -1961,6 +1985,10 @@
            MOVE    "5"                 TO  SPA-GMN-GMNHYOKBNL (5)
            MOVE    "コメント"          TO  SPA-GMN-GMNHYOKBN-LST (5)
            MOVE    5                   TO  SPA-GMN-GMNHYOKBN-MAX
+      *    入力スクロール背景行区分
+           MOVE    "0 行毎"            TO  SPA-GMN-BGLINEKBN-LST (1)
+           MOVE    "1 剤毎"            TO  SPA-GMN-BGLINEKBN-LST (2)
+           MOVE    2                   TO  SPA-GMN-BGLINEKBN-MAX
       *
       *    入金・返金額初期設定区分
            MOVE    "0 今回請求額のみ"  TO  SPA-GMN-NYKHNKKBN-LST(1)
@@ -3259,6 +3287,18 @@
                    MOVE    SPACE           TO  SPA-GMN-GMNHYOKBN-G (IDX)
                END-IF
            END-PERFORM
+      *    入力スクロール背景色
+           MOVE    SYS-1038-BGCOLORS       TO  SPA-GMN-BGCOLORS
+           IF      SPA-GMN-BGCOLORS        =   SPACE
+      *        空白は初期表示
+               MOVE    "AntiqueWhite"      TO  SPA-GMN-BGCOLORS
+           END-IF
+      *    入力スクロール背景行区分
+           MOVE    SYS-1038-BGLINEKBN      TO  SPA-GMN-BGLINEKBN
+      *    環境設定背景色
+           MOVE    SYS-1038-BGCOLORSJ0     TO  SPA-GMN-BGCOLORSJ0
+           MOVE    SYS-1038-BGCOLORSDAY    TO  SPA-GMN-BGCOLORSDAY
+           MOVE    SYS-1038-BGCOLORSJ-G    TO  SPA-GMN-BGCOLORSJ-G
       *
       *    入金管理区分
            MOVE    ZERO                TO  FLG-OK
@@ -3589,6 +3629,23 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-YMDHENKBN-LST (1)
                                        TO  SPA-GMN-YMDHENKBN-G
+           END-IF
+      *    入力スクロール背景行
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL  (IDY         >   SPA-GMN-BGLINEKBN-MAX )
+                       OR (FLG-OK      =   1       )
+               IF      SPA-GMN-BGLINEKBN
+                                       =   SPA-GMN-BGLINEKBN-LST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-BGLINEKBN-LST (IDY)
+                                       TO  SPA-GMN-BGLINEKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-BGLINEKBN-LST (1)
+                                       TO  SPA-GMN-BGLINEKBN-G
            END-IF
       *
            MOVE    301                  TO  SPA-GMN-CUR
@@ -4895,6 +4952,18 @@
            MOVE    W07-GMNHYOKBN3      TO  SPA-GMN-GMNHYOKBN-G (3)
            MOVE    W07-GMNHYOKBN4      TO  SPA-GMN-GMNHYOKBN-G (4)
            MOVE    W07-GMNHYOKBN5      TO  SPA-GMN-GMNHYOKBN-G (5)
+           MOVE    W07-BGCOLORS        TO  SPA-GMN-BGCOLORS
+           MOVE    W07-BGLINEKBN       TO  SPA-GMN-BGLINEKBN-G
+           MOVE    W07-BGCOLORSDAY     TO  SPA-GMN-BGCOLORSDAY
+           MOVE    W07-BGCOLORSJ0      TO  SPA-GMN-BGCOLORSJ0
+           MOVE    W07-BGCOLORSJ1      TO  SPA-GMN-BGCOLORSJ(1)
+           MOVE    W07-BGCOLORSJ2      TO  SPA-GMN-BGCOLORSJ(2)
+           MOVE    W07-BGCOLORSJ3      TO  SPA-GMN-BGCOLORSJ(3)
+           MOVE    W07-BGCOLORSJ4      TO  SPA-GMN-BGCOLORSJ(4)
+           MOVE    W07-BGCOLORSJ5      TO  SPA-GMN-BGCOLORSJ(5)
+           MOVE    W07-BGCOLORSJ6      TO  SPA-GMN-BGCOLORSJ(6)
+           MOVE    W07-BGCOLORSJ7      TO  SPA-GMN-BGCOLORSJ(7)
+           MOVE    W07-BGCOLORSJ8      TO  SPA-GMN-BGCOLORSJ(8)
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -5251,6 +5320,26 @@
       *            発行日変更区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-YMDHENKBN-CHK-SEC
+                   END-IF
+      *            環境設定背景色標準
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-BGCOLORSJ0-CHK-SEC
+                   END-IF
+      *            環境設定背景色（日付変更）
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-BGCOLORSDAY-CHK-SEC
+                   END-IF
+      *            環境設定背景色（時間外）
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-BGCOLORJG-CHK-SEC
+                   END-IF
+      *            入力スクロール背景色
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-BGCOLORS-CHK-SEC
+                   END-IF
+      *            入力スクロール背景行区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-BGLINEKBN-CHK-SEC
                    END-IF
                WHEN    "1039"
       *            請求書兼領収書発行区分（外来）チェック
@@ -7424,6 +7513,57 @@
        4108-GMNHYOKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    入力スクロール背景色チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-BGCOLORS-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-BGCOLORS        =   SPACE
+      *        空白は初期表示
+               MOVE    "AntiqueWhite"      TO  SPA-GMN-BGCOLORS
+           ELSE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    20                  TO  KANACHK-MAX-CNT
+               MOVE    SPA-GMN-BGCOLORS    TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF     (KANACHK-RC          =   ZERO  )  AND
+                      (KANACHK-SYUBETU     =   1     )
+      *            半角以外はエラー
+                   CONTINUE
+               ELSE
+                   MOVE    345             TO  SPA-GMN-CUR
+                   MOVE    "2024"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       4108-BGCOLORS-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力スクロール背景行区分チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-BGLINEKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-BGLINEKBN-MAX
+               IF      SPA-GMN-BGLINEKBN
+                                       =   SPA-GMN-BGLINEKBN-LST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-BGLINEKBN-LST(IDX)
+                                          TO  SPA-GMN-BGLINEKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    346             TO  SPA-GMN-CUR
+               MOVE    "2025"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-BGLINEKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    薬情・お薬手帳対象チェック処理（診療行為機能情報）
       *****************************************************************
        4108-OKUSURIKBN-CHK-SEC      SECTION.
@@ -7527,6 +7667,106 @@
       *
            .
        4108-YMDHENKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    環境設定背景色標準チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-BGCOLORSJ0-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-BGCOLORSJ0      =   SPACE
+               CONTINUE
+           ELSE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    20                  TO  KANACHK-MAX-CNT
+               MOVE    SPA-GMN-BGCOLORSJ0  TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF     (KANACHK-RC          =   ZERO  )  AND
+                      (KANACHK-SYUBETU     =   1     )
+      *            半角以外はエラー
+                   CONTINUE
+               ELSE
+                   MOVE    335             TO  SPA-GMN-CUR
+                   MOVE    "2026"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       4108-BGCOLORSJ0-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    環境設定背景色（日付変更）チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-BGCOLORSDAY-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-BGCOLORSDAY =   SPACE
+               CONTINUE
+           ELSE
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"                 TO  KANACHK-SYORI
+               MOVE    20                  TO  KANACHK-MAX-CNT
+               MOVE    SPA-GMN-BGCOLORSDAY TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF     (KANACHK-RC          =   ZERO  )  AND
+                      (KANACHK-SYUBETU     =   1     )
+      *            半角以外はエラー
+                   CONTINUE
+               ELSE
+                   MOVE    336             TO  SPA-GMN-CUR
+                   MOVE    "2026"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       4108-BGCOLORSDAY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    環境設定背景色（時間外）チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-BGCOLORJG-CHK-SEC      SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   8   )
+                          OR  (SPA-ERRCD   NOT =   SPACE )
+               IF      SPA-GMN-BGCOLORSJ (IDX) =   SPACE
+                   CONTINUE
+               ELSE
+                   INITIALIZE                  ORCSKANACHKAREA
+                   MOVE    "1"                 TO  KANACHK-SYORI
+                   MOVE    20                  TO  KANACHK-MAX-CNT
+                   MOVE    SPA-GMN-BGCOLORSJ (IDX)
+                                               TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"       USING
+                                               ORCSKANACHKAREA
+                   IF     (KANACHK-RC          =   ZERO  )  AND
+                          (KANACHK-SYUBETU     =   1     )
+      *                半角以外はエラー
+                       CONTINUE
+                   ELSE
+                       EVALUATE    IDX
+                       WHEN    1
+                           MOVE    337             TO  SPA-GMN-CUR
+                       WHEN    2
+                           MOVE    338             TO  SPA-GMN-CUR
+                       WHEN    3
+                           MOVE    339             TO  SPA-GMN-CUR
+                       WHEN    4
+                           MOVE    340             TO  SPA-GMN-CUR
+                       WHEN    5
+                           MOVE    341             TO  SPA-GMN-CUR
+                       WHEN    6
+                           MOVE    342             TO  SPA-GMN-CUR
+                       WHEN    7
+                           MOVE    343             TO  SPA-GMN-CUR
+                       WHEN    8
+                           MOVE    344             TO  SPA-GMN-CUR
+                       END-EVALUATE
+                       MOVE    "2026"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       4108-BGCOLORJG-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入金管理区分チェック処理（収納行為機能情報）
@@ -9329,6 +9569,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI-GMNHYOKBN (4)   TO  SYS-1038-GMNHYOKBN (4)
            MOVE    SPA-NAI-GMNHYOKBN (5)   TO  SYS-1038-GMNHYOKBN (5)
       *
+           MOVE    SPA-GMN-BGCOLORS        TO  SYS-1038-BGCOLORS
+           MOVE    SPA-GMN-BGLINEKBN       TO  SYS-1038-BGLINEKBN
+      *    環境設定背景色
+           MOVE    SPA-GMN-BGCOLORSJ0      TO  SYS-1038-BGCOLORSJ0
+           MOVE    SPA-GMN-BGCOLORSDAY     TO  SYS-1038-BGCOLORSDAY
+           MOVE    SPA-GMN-BGCOLORSJ-G     TO  SYS-1038-BGCOLORSJ-G
+      *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *
       *    ＤＢ更新処理
@@ -10328,6 +10575,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-GMNHYOKBN-MAX
                                        TO  W07-GMNHYOKBN5-COUNT
+      *    入力スクロール背景色
+           MOVE    SPA-GMN-BGCOLORS    TO  W07-BGCOLORS
+      *    入力スクロール背景行区分
+           MOVE    SPA-GMN-BGLINEKBN-G TO  W07-BGLINEKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-BGLINEKBN-MAX
+               MOVE    SPA-GMN-BGLINEKBN-LST (IDX)
+                                       TO  W07-BGLINEKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-BGLINEKBN-MAX
+                                       TO  W07-BGLINEKBN-COUNT
       *
       *    薬情・お薬手帳対象（診療行為機能情報）
            MOVE    SPA-GMN-YKJOKUKBN-G TO  W07-YKJOKUKBN
@@ -10367,6 +10625,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-YMDHENKBN-MAX
                                        TO  W07-YMDHENKBN-COUNT
+      *    環境設定背景色
+           MOVE    SPA-GMN-BGCOLORSJ0  TO  W07-BGCOLORSJ0
+           MOVE    SPA-GMN-BGCOLORSDAY TO  W07-BGCOLORSDAY
+      *    環境設定背景色（時間外）
+           MOVE    SPA-GMN-BGCOLORSJ (1)    TO  W07-BGCOLORSJ1
+           MOVE    SPA-GMN-BGCOLORSJ (2)    TO  W07-BGCOLORSJ2
+           MOVE    SPA-GMN-BGCOLORSJ (3)    TO  W07-BGCOLORSJ3
+           MOVE    SPA-GMN-BGCOLORSJ (4)    TO  W07-BGCOLORSJ4
+           MOVE    SPA-GMN-BGCOLORSJ (5)    TO  W07-BGCOLORSJ5
+           MOVE    SPA-GMN-BGCOLORSJ (6)    TO  W07-BGCOLORSJ6
+           MOVE    SPA-GMN-BGCOLORSJ (7)    TO  W07-BGCOLORSJ7
+           MOVE    SPA-GMN-BGCOLORSJ (8)    TO  W07-BGCOLORSJ8
       *
       *    入金管理区分（収納機能情報）
            MOVE    SPA-GMN-SYUNYKNKNRKBN-G TO  W07-SYUNYKNKNRKBN
@@ -11184,6 +11454,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2023"
                    MOVE    "リハビリ・患者情報表示区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "2024"
+                   STRING  "入力スクロール背景色は半角で入力して"
+                           "下さい。"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2025"
+                   STRING  "入力スクロール背景行区分がありません。"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2026"
+                   STRING  "背景色は半角で入力して"
+                           "下さい。"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
       *    収納情報
                WHEN    "3003"
                    MOVE    "登録時刻入力エラー"
@@ -11561,6 +11848,31 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "GMNHYOKBN4"      TO   MCP-WIDGET
                WHEN    334
                    MOVE  "GMNHYOKBN5"      TO   MCP-WIDGET
+      *ver.4.7
+               WHEN    335
+                   MOVE  "BGCOLORSJ0"      TO   MCP-WIDGET
+               WHEN    336
+                   MOVE  "BGCOLORSDAY"     TO   MCP-WIDGET
+               WHEN    337
+                   MOVE  "BGCOLORSJ1"      TO   MCP-WIDGET
+               WHEN    338
+                   MOVE  "BGCOLORSJ2"      TO   MCP-WIDGET
+               WHEN    339
+                   MOVE  "BGCOLORSJ3"      TO   MCP-WIDGET
+               WHEN    340
+                   MOVE  "BGCOLORSJ4"      TO   MCP-WIDGET
+               WHEN    341
+                   MOVE  "BGCOLORSJ5"      TO   MCP-WIDGET
+               WHEN    342
+                   MOVE  "BGCOLORSJ6"      TO   MCP-WIDGET
+               WHEN    343
+                   MOVE  "BGCOLORSJ7"      TO   MCP-WIDGET
+               WHEN    344
+                   MOVE  "BGCOLORSJ8"      TO   MCP-WIDGET
+               WHEN    345
+                   MOVE  "BGCOLORS"        TO   MCP-WIDGET
+               WHEN    346
+                   MOVE  "BGLINEKBN"       TO   MCP-WIDGET
       *収納情報
                WHEN    40
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
@@ -11937,6 +12249,32 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "NYKHNKKBN"
                    MOVE    328             TO  SPA-GMN-CUR
                WHEN    "YMDHENKBN"
+      ****         MOVE    999             TO  SPA-GMN-CUR
+                   MOVE    335             TO  SPA-GMN-CUR
+      *ver.4.7
+               WHEN    "BGCOLORSJ0"
+                   MOVE    336             TO  SPA-GMN-CUR
+               WHEN    "BGCOLORSDAY"
+                   MOVE    337             TO  SPA-GMN-CUR
+               WHEN    "BGCOLORSJ1"
+                   MOVE    338             TO  SPA-GMN-CUR
+               WHEN    "BGCOLORSJ2"
+                   MOVE    339             TO  SPA-GMN-CUR
+               WHEN    "BGCOLORSJ3"
+                   MOVE    340             TO  SPA-GMN-CUR
+               WHEN    "BGCOLORSJ4"
+                   MOVE    341             TO  SPA-GMN-CUR
+               WHEN    "BGCOLORSJ5"
+                   MOVE    342             TO  SPA-GMN-CUR
+               WHEN    "BGCOLORSJ6"
+                   MOVE    343             TO  SPA-GMN-CUR
+               WHEN    "BGCOLORSJ7"
+                   MOVE    344             TO  SPA-GMN-CUR
+               WHEN    "BGCOLORSJ8"
+                   MOVE    345             TO  SPA-GMN-CUR
+               WHEN    "BGCOLORS"
+                   MOVE    346             TO  SPA-GMN-CUR
+               WHEN    "BGLINEKBN"
                    MOVE    999             TO  SPA-GMN-CUR
       *
       *収納情報

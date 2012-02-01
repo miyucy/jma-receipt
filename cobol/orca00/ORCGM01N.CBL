@@ -1253,6 +1253,8 @@
            MOVE    SPA-HOSPNAME        TO  M01N-TITLE
            MOVE    SPA-GMN-GSEL        TO  M01N-SELNUM
       *
+      *ver.4.7
+           MOVE    SPA-M00-BGCOLORS    TO  M01N-BGCOLORS
       *----(01.00.04) LINE DEL START ----------------------------------
       ***     IF  ACC1-ST =  "01"
       ***         MOVE    "既に起動済み！"    TO  M01N-ALERT

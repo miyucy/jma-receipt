@@ -335,9 +335,8 @@
            03  FLG-SANTEI              PIC 9(01).
       *    クライアント印刷有
            03  FLG-CLIENT-OK           PIC 9(01).
-      *ito
-           03  FLG-BGCOLOR             PIC 9(01).
-      *
+      *    スクロール背景
+           03  FLG-BGCOLORS            PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -669,8 +668,6 @@
                05  WRK-TEIGEN-IN           PIC X(01).
       *
            03  WRK-SYOSINYMD-G         PIC X(09).
-      *ito
-           03  WRK-BGCOLOR-SW          PIC 9(01).
       *
       *    訂正時の内容保存
        01  WRK-ORCSC95AREA             PIC X(150).
@@ -1141,6 +1138,11 @@
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-K02         TO  SPA-FREE
+      *TEST
+           DISPLAY "K02-PANDATABLE1-TROWATTR:"  K02-PANDATABLE1-TROWATTR
+               ",K02-PANDATABLE1-TCOLUMN:" K02-PANDATABLE1-TCOLUMN
+               ",K02-PANDATABLE1-TROW:" K02-PANDATABLE1-TROW
+      *TEST
       *
            .
            EXIT    PROGRAM
@@ -4920,8 +4922,6 @@
       *
            MOVE    ZERO                TO  SPA-GMN-CUR
            MOVE    1                   TO  FLG-GMN-INIT
-      *ito
-           MOVE    SPA-BGCOLOR-SW      TO  WRK-BGCOLOR-SW
       *    ＳＰＡクリア処理
            INITIALIZE                  SPA-SCR-REC
            INITIALIZE                  SPA-K02
@@ -4931,8 +4931,6 @@
            INITIALIZE                  SPA-CONTFLG
            INITIALIZE                  SPA-KYOTUKEY
            INITIALIZE                  SPA-K02SET-AREA
-      *ito
-           MOVE    WRK-BGCOLOR-SW      TO  SPA-BGCOLOR-SW
       *    受付一覧からの時、ドクターを編集する
            IF      WRK-MOTOPG          =   "U01"
                MOVE    WRK-SPA-DRCD        TO  SPA-DRCD
@@ -4966,15 +4964,6 @@
                    MOVE    WRK-GMN-PTID        TO  SPA-GMN-PTID
       *        空白は患者取消と同様
                    PERFORM 2221-PTNUMCLEAR-SYORI-SEC
-      *ito ちょっと試し start
-               WHEN    SPA-GMN-PTNUM(1:2)  =   "CC" OR "cc"
-                   COMPUTE SPA-BGCOLOR-SW      =   SPA-BGCOLOR-SW
-                                               +   1
-                   IF      SPA-BGCOLOR-SW      =   3
-                       MOVE    ZERO                TO  SPA-BGCOLOR-SW
-                   END-IF
-                   MOVE    SPACE               TO  SPA-GMN-PTNUM
-      *ito ちょっと試し end
                WHEN    OTHER
       *        患者決定処理
                    PERFORM 410101-PTNUM-IN-SYORI-SEC
@@ -8011,8 +8000,12 @@
                GO      TO      510-TBLHEN-EXT
            END-IF
       *    禁忌チェックを行う
-           IF      SPA-ERRCD       =   SPACE
-           AND    (FLG-TOROKU          =   SPACE ) 
+           IF     (SPA-ERRCD           =   SPACE )
+           AND    (FLG-TOROKU          =   SPACE )
+      *TEST
+      *    訂正展開時はチェックなし
+           AND    (FLG-TEISEI          =   ZERO  )
+      *TEST
                PERFORM 51010-KNKCHK-SEC
                IF      FLG-KINKI           =   1
                    GO      TO      510-TBLHEN-EXT
@@ -8880,7 +8873,8 @@
            MOVE    SPACE               TO  SPA-GMN-DOSELNUM
       *
            MOVE    1                   TO  SPA-GMN-PAGE
-           MOVE    1                   TO  SPA-GMN-CUR
+      *??  MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    98                  TO  SPA-GMN-CUR
            MOVE    1                   TO  SPA-MAP-IDX
       *
       *    伝票番号がゼロの時エラーとする
@@ -10006,6 +10000,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   (FLG-END             =   1     )
                GO      TO      450-MAEGMN-EXT
            END-IF
+      *TEST
+      *    １行へカーソル移動
+           MOVE    "1"                 TO  SPA-COM-CUR (1)
+           GO      TO      450-MAEGMN-EXT
+      *TEST
       *
            IF      SPA-GMN-PAGE        =   1
                MOVE    1               TO  SPA-GMN-PAGE
@@ -10033,6 +10032,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      460-ATOGMN-EXT
            END-IF
       *
+      *TEST
+      *    最終行へカーソル移動
+           MOVE    "1"                 TO  SPA-COM-CUR (SPA-GMN-MAX + 1)
+           GO      TO      460-ATOGMN-EXT
+      *TEST
            IF      SPA-GMN-PAGE        =   MAX-PAGE
                MOVE    1                   TO  SPA-GMN-CUR
                MOVE    "7002"              TO  SPA-ERRCD
@@ -10478,7 +10482,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4102-UKETUKE-EXT.
            EXIT.
-      *TEST
+      *
       *****************************************************************
       *    メモ登録処理へ
       *****************************************************************
@@ -10567,7 +10571,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4199-HELP-SYORI-EXT.
            EXIT.
-      *TEST
       *
       *****************************************************************
       *    訂正処理
@@ -11648,6 +11651,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  WRK-PAGE
            MOVE    ZERO                TO  SPA-GMN-MAX
       *
+      *訂正展開時、１行目にカーソル移動
+           IF      SPA-GMN-CUR         =   98
+               MOVE    "1"             TO  SPA-COM-CUR (1)
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
       *
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
                    UNTIL       WRK-IDX     >   SPA-MAX-LINE
@@ -11756,7 +11764,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    2                   TO  SPA-GMN-CUR
                GO      TO      5002-GMNSPA-HEN-EXT
            END-IF
-      *
       *    カーソル指定のない時、次ぎの空白行へ
       *    後画面へ
            IF      SPA-GMN-CUR         =   88  OR  99
@@ -11827,35 +11834,48 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  WRK-PAGE
+           MOVE    ZERO                TO  FLG-BGCOLORS
+           MOVE    ZERO                TO  IDX2
       *
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
                    UNTIL      (WRK-IDX     >   SPA-MAX-LINE)  OR
                               (IDX         >=  MAX-GMN )
-      *ito ちょっと試し start
-               MOVE    "black"         TO
-                               K02-PANDATABLE1-FGCOLORS(IDX)
-               IF      FLG-BGCOLOR         =   ZERO
-                   MOVE    "white"         TO
-                               K02-PANDATABLE1-BGCOLORS(IDX)
-                   MOVE    1               TO  FLG-BGCOLOR
-               ELSE
-                   EVALUATE SPA-BGCOLOR-SW
-                       WHEN ZERO
-                   MOVE    "AntiqueWhite"  TO
-                               K02-PANDATABLE1-BGCOLORS(IDX)
-                       WHEN 1
-                   MOVE    "Lavender"      TO
-                               K02-PANDATABLE1-BGCOLORS(IDX)
-                       WHEN 2
-                   MOVE    "white"         TO
-                               K02-PANDATABLE1-BGCOLORS(IDX)
-                   END-EVALUATE
-                   MOVE    ZERO            TO  FLG-BGCOLOR
-               END-IF
-      *ito ちょっと試し end
       *        画面表示
                IF      SPA-COM-PAGE(WRK-IDX)   =   SPA-GMN-PAGE
-                   ADD     1               TO  IDX
+                   ADD     1                   TO  IDX
+      *            スクロール背景色（１行毎）
+                   IF      FLG-BGCOLORS        =   ZERO
+                       MOVE    "white"         TO
+                                       K02-PANDATABLE1-BGCOLORS(IDX)
+                       IF      SPA-BGLINEKBN       =   "1"
+      *                    剤毎
+                           IF     (SPA-COM-ZAIEND(WRK-IDX) =  "1"  )
+                            AND  ((WRK-IDX         <  MAX-GMN  )  AND
+                                  (SPA-GMN-INPUTCD(WRK-IDX + 1)
+                                                   NOT =  SPACE))
+                               MOVE    1               TO  FLG-BGCOLORS
+                           END-IF
+                       ELSE
+      *                    行毎
+                           MOVE    1               TO  FLG-BGCOLORS
+                       END-IF
+                   ELSE
+                       MOVE    SPA-BGCOLORS        TO
+                                       K02-PANDATABLE1-BGCOLORS(IDX)
+                       IF      SPA-BGLINEKBN       =   "1"
+      *                    剤毎
+                           IF     (SPA-COM-ZAIEND(WRK-IDX) =  "1"  )
+                             OR  ((WRK-IDX         <  MAX-GMN  )  AND
+                                  (SPA-GMN-INPUTCD(WRK-IDX + 1)
+                                                   =  SPACE))
+                               MOVE    ZERO            TO  FLG-BGCOLORS
+                           END-IF
+                       ELSE
+      *                    行毎
+                           MOVE    ZERO            TO  FLG-BGCOLORS
+                       END-IF
+                   END-IF
+      *
                    MOVE    SPA-GMN-SRYKBN (WRK-IDX)
                                                TO  K02-SRYKBN(IDX)
                    MOVE    SPA-GMN-INPUTCD(WRK-IDX)
@@ -11868,28 +11888,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF     (SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)
                       OR ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
                       AND (SPA-HKNCOMBINUM    NOT =   "9999" ))
-      *ito                 MOVE    "blue"         TO  K02-SRYKBN-STYLE(IDX)
-      *ito                 MOVE    "blue"         TO  K02-MEISYO-STYLE(IDX)
-                       MOVE    "blue"         TO
-                               K02-PANDATABLE1-FGCOLORS(IDX)
-                       IF       SPA-COM-HOUKATU-FLG2(WRK-IDX)   =   1
-      *ito                     MOVE    "red"      TO  K02-SRYKBN-STYLE(IDX)
-      *ito                     MOVE    "red"      TO  K02-MEISYO-STYLE(IDX)
+                           MOVE    "blue"         TO
+                                       K02-PANDATABLE1-FGCOLORS(IDX)
+                       IF      SPA-COM-HOUKATU-FLG2(WRK-IDX)   =   1
                            MOVE    "red"          TO
-                                   K02-PANDATABLE1-FGCOLORS(IDX)
+                                       K02-PANDATABLE1-FGCOLORS(IDX)
                        END-IF
                    ELSE
-      *ito                 MOVE    "black"        TO  K02-SRYKBN-STYLE(IDX)
-      *ito                 MOVE    "black"        TO  K02-MEISYO-STYLE(IDX)
                        MOVE    "black"       TO
-                               K02-PANDATABLE1-FGCOLORS(IDX)
+                                       K02-PANDATABLE1-FGCOLORS(IDX)
                    END-IF
       *
       *!!          禁忌薬剤
                    IF      SPA-COM-PTKINKI-ARI (WRK-IDX)   =   1
-      *ito                 MOVE    "red"          TO  K02-MEISYO-STYLE(IDX)
                        MOVE    "red"         TO
-                               K02-PANDATABLE1-FGCOLORS(IDX)
+                                       K02-PANDATABLE1-FGCOLORS(IDX)
                    END-IF
       *!
                    IF      SPA-GMN-INPUTCD(WRK-IDX)(1:1)   =   "#"
@@ -11902,6 +11915,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                         MOVE    ALL "="             TO  K02-SURYO (IDX)
                     END-IF
       *!
+      *             最終行
+                    IF      K02-INPUTCD (IDX)  NOT =   SPACE
+                        MOVE    IDX                TO  IDX2
+                    END-IF
                END-IF
       *
            END-PERFORM
@@ -11909,14 +11926,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "複数科保険"        TO  K02-B06S-LABEL
       *
       *    ページ表示
-           MOVE    SPACE               TO  WRK-HEN-PAGE
-           MOVE    "頁"                TO  WRK-HEN1
-           IF      WRK-MAP-MAXPAGE     >   ZERO
-               MOVE    SPA-GMN-PAGE        TO  WRK-HEN-PAGE1
-               MOVE    "/"                 TO  WRK-HEN2
-               MOVE    WRK-MAP-MAXPAGE     TO  WRK-HEN-PAGE2
-           END-IF
-           MOVE    WRK-HEN-PAGE        TO  K02-MODE
+      *    MOVE    SPACE               TO  WRK-HEN-PAGE
+      *    MOVE    "頁"                TO  WRK-HEN1
+      *    IF      WRK-MAP-MAXPAGE     >   ZERO
+      *        MOVE    SPA-GMN-PAGE        TO  WRK-HEN-PAGE1
+      *        MOVE    "/"                 TO  WRK-HEN2
+      *        MOVE    WRK-MAP-MAXPAGE     TO  WRK-HEN-PAGE2
+      *    END-IF
+      **   MOVE    WRK-HEN-PAGE        TO  K02-MODE
+      *ver.4.7
+      *    行数表示
+           MOVE    SPACE               TO  K02-MODE
+           MOVE    IDX2                TO  WRK-HEN-PAGE1
+           STRING  "行数 "
+                   WRK-HEN-PAGE1       DELIMITED  BY  SIZE
+                                       INTO      K02-MODE
+           END-STRING
       *
       *    前頁表示の時、１行目へ
            IF      SPA-GMN-CUR         =   99  OR  88
@@ -12116,31 +12141,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    リハビリ・患者情報編集
            PERFORM 5003-TABBOHEN-SEC
-      *    リハビリ発症日
-      *    MOVE    ZERO               TO  IDY
-      *    PERFORM  VARYING   IDX     FROM    1   BY  1
-      *             UNTIL     IDX         >   7
-      *        IF      SPA-GMN-RIHAYMD (IDX)  NOT =   SPACE
-      *            ADD     1                      TO  IDY
-      *            MOVE    SPA-GMN-RIHAYMD (IDX)  TO  K02-TABOO-ITEM
-      *                                                      (IDY)
-      *        END-IF
-      *    END-PERFORM
-      *    急性発症日
-      *    IF      SPA-GMN-KYUSEI     NOT =   SPACE
-      *        ADD     1                  TO  IDY
-      *        MOVE    SPA-GMN-KYUSEI     TO  K02-TABOO-ITEM(IDY)
-      *    END-IF
-      *    禁忌
-      *    PERFORM  VARYING   IDX     FROM    1   BY  1
-      *             UNTIL    (IDX         >   SPA-TABOO-MAX )
-      *                   OR (IDY         >=  40   )
-      *        ADD     1                      TO  IDY
-      *        MOVE    SPA-GMN-TABOO (IDX)    TO  K02-TABOO-ITEM
-      *                                                      (IDY)
-      **** END-PERFORM
-           MOVE    IDY                 TO  K02-TABOO-COUNT
-           MOVE    K02-TABOO-ITEM(1)   TO  K02-TABOO
       *
       *    小児科時間外
            IF      SPA-GMN-JIKANMSG    =   SPACE
@@ -12205,6 +12205,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE SPA-GMN-POPUP-STATUS
            END-IF
       *ito ちょっと試し END
+      *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
       *
@@ -12360,7 +12361,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ( SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)   OR
                  ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
               AND (SPA-HKNCOMBINUM           NOT =   "9999" ))
-      *ito        MOVE    "blue"         TO  K02-SURYO-STYLE(IDX)
               MOVE    "blue"         TO  K02-PANDATABLE1-FGCOLORS(IDX)
            END-IF
            .
@@ -12429,6 +12429,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-PERFORM
                END-EVALUATE
            END-PERFORM
+      *
+           MOVE    IDY                 TO  K02-TABOO-COUNT
+           MOVE    K02-TABOO-ITEM(1)   TO  K02-TABOO
            .
        5003-TABBOHEN-EXT.
            EXIT.
@@ -12466,28 +12469,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    00
                    MOVE    "PTNUM"         TO  MCP-WIDGET
                WHEN    01
-      *ito             MOVE    "INPUTCD"       TO  MCP-WIDGET
-      *ito             MOVE    WRK-IDX2        TO  MCP-WIDGET(8:2)
+      *            入力コード
+      *            MOVE    "INPUTCD"       TO  MCP-WIDGET
+      *            MOVE    WRK-IDX2        TO  MCP-WIDGET(8:2)
                    MOVE    "PANDATABLE1"   TO  MCP-WIDGET
-      *ito             MOVE    2               TO  K02-PANDATABLE1-TROWATTR
                    MOVE    4               TO  K02-PANDATABLE1-TROWATTR
                    MOVE    2               TO  K02-PANDATABLE1-TCOLUMN
                    MOVE    WRK-IDX2        TO  K02-PANDATABLE1-TROW
                WHEN    02
-      *ito             MOVE    "MEISYO"        TO  MCP-WIDGET
-      *ito             MOVE    WRK-IDX2        TO  MCP-WIDGET(7:2)
+      *            名称
+      *            MOVE    "MEISYO"        TO  MCP-WIDGET
+      *            MOVE    WRK-IDX2        TO  MCP-WIDGET(7:2)
                    MOVE    "PANDATABLE1"   TO  MCP-WIDGET
-      *ito             MOVE    2               TO  K02-PANDATABLE1-TROWATTR
                    MOVE    4               TO  K02-PANDATABLE1-TROWATTR
                    MOVE    3               TO  K02-PANDATABLE1-TCOLUMN
-                   MOVE    WRK-IDX2        TO  K02-PANDATABLE1-TROW
-               WHEN    03
-      *ito             MOVE    "KEI"           TO  MCP-WIDGET
-      *ito             MOVE    WRK-IDX2        TO  MCP-WIDGET(4:2)
-                   MOVE    "PANDATABLE1"   TO  MCP-WIDGET
-      *ito             MOVE    2               TO  K02-PANDATABLE1-TROWATTR
-                   MOVE    4               TO  K02-PANDATABLE1-TROWATTR
-                   MOVE    4               TO  K02-PANDATABLE1-TCOLUMN
                    MOVE    WRK-IDX2        TO  K02-PANDATABLE1-TROW
                WHEN    04
                    MOVE    "DOSELNUM"      TO  MCP-WIDGET

@@ -34,6 +34,9 @@
            03  SPA-SYS-1010-REC            PIC X(500).
       *
       *日付変更画面
+      *    背景色保存
+           03  SPA-M00-BGCOLORS        PIC X(20).
+      *
            03  SPA-M95GMN-AREA.
                05  SPA-M95-CUR         PIC 9(02).
                05  SPA-GMN-SYSYMD      PIC X(10).
@@ -54,4 +57,6 @@
                05  SPA-M95-SYORI       PIC 9(01).
                05  SPA-M95-INIT        PIC 9(01).
                05  SPA-M95-INIT-P3     PIC 9(01).
+      *        背景色保存
+               05  SPA-M95-BGCOLORS        PIC X(20).
       *
