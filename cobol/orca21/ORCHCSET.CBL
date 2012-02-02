@@ -55,7 +55,7 @@
       *
       *    印刷用データ
        FD  PRT-FILE.
-       01  PRT-REC                 PIC X(20000).
+       01  PRT-REC                 PIC X(30000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -212,7 +212,7 @@
            03  FILLER                  PIC X(01).
            03  H03-MIDASI              PIC X(12).
            03  FILLER                  PIC X(01).
-           03  H03-INPUTCD-G           PIC X(76).
+           03  H03-INPUTCD-G           PIC X(94).
       ***  03  H03-INPUTCD-G           OCCURS  5.
       *        05  H03-INPUTCD         PIC X(14).
       ***      05  H03-YOBI1           PIC X(01).
@@ -224,39 +224,41 @@
            03  H04-KARA                PIC X(02).
            03  H04-YUKOEDYMD           PIC X(12).
        01  BODY-01N.
-           03  B01N-YOBI1              PIC X(04).
+           03  B01N-YOBI1              PIC X(03).
            03  B01N-ZUMIFLG            PIC X(02).
-           03  B01N-YOBI2              PIC X(14).
+           03  B01N-YOBI2              PIC X(11).
            03  B01N-NAME-G.
                05  B01N-NAME               PIC X(80).
+               05  B01N-YOBI11             PIC X(12).
            03  B01N-NAME-G2            REDEFINES   B01N-NAME-G.
-               05  B01N-NAME2              PIC X(58).
-               05  B01N-YOBI3              PIC X(14).
+               05  B01N-NAME2              PIC X(66).
+               05  B01N-YOBI3              PIC X(12).
                05  B01N-TANINAME           PIC X(04).
-               05  B01N-YOBI4              PIC X(04).
+               05  B01N-YOBI4              PIC X(10).
            03  B01N-NAME-G3            REDEFINES   B01N-NAME-G.
-               05  B01N-NAME3              PIC X(58).
-               05  B01N-YOBI33             PIC X(08).
+               05  B01N-NAME3              PIC X(66).
+               05  B01N-YOBI33             PIC X(12).
                05  B01N-TANINAME3          PIC X(04).
                05  B01N-YOBI34             PIC X(10).
       *
        01  BODY-01.
            03  B01-YOBI1               PIC X(06).
            03  B01-SRYCD               PIC X(09).
+           03  B01-YOBI2               PIC X(01).
            03  B01-HENSYU.
-               05  B01-NAME-FIL1           PIC X(50).
+               05  B01-NAME-FIL1           PIC X(66).
                05  B01-HENSYU-I.
                    07  B01-SURYO-HEN           PIC X(11).
                    07  B01-KAISU-HEN           PIC X(05).
                    07  B01-INPUT-HEN           PIC X(10).
            03  B01-HENSYU-2            REDEFINES   B01-HENSYU.
-               05  B01-NAME-FIL2           PIC X(61).
+               05  B01-NAME-FIL2           PIC X(77).
                05  B01-KANSURYO-HEN        PIC X(15).
            03  B01-HENSYU-3            REDEFINES   B01-HENSYU.
-               05  B01-YOBI131             PIC X(20).
+               05  B01-YOBI131             PIC X(36).
                05  B01-HENSYU-4            PIC X(56).
            03  B01-HENSYU-5G           REDEFINES   B01-HENSYU.
-               05  B01-YOBI141             PIC X(31).
+               05  B01-YOBI141             PIC X(47).
                05  B01-HENSYU-5            PIC X(45).
       *
        01  WRK-B01-HENSYU.
@@ -299,7 +301,7 @@
       *    内容
        01  WRK-HEN-AREA.
       *    半角
-           03  WRK-TBL-REC             PIC X(90)   OCCURS   300.
+           03  WRK-TBL-REC             PIC X(108)  OCCURS   300.
       *    全角
            03  WRK-TBL-REC2            PIC X(108)  OCCURS   300.
       *
@@ -390,6 +392,7 @@
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
+           INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
            ACCEPT  SYS-TIME            FROM    TIME
@@ -469,7 +472,9 @@
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
+            MOVE   "セット登録一覧"    TO  MKPRT-INFO
             CALL   "ORCSMKPRT"         USING
+      ****  CALL   "ORCSMKPRT1"        USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
       *
@@ -721,30 +726,35 @@
                                            ORCSKANACHKAREA
                IF      IDX2                >   1
                   AND (H03-INPUTCD-G   NOT =   SPACE)
+      *VER.4.7
+                   MOVE    ","             TO  H03-INPUTCD-G
+                                                          (IDX3:)
+                   ADD     1               TO  IDX3
       *            全角
-                   IF      KANACHK-SYUBETU     =   2
-                       IF      FLG-HANKAKU     =   1
+      *            IF      KANACHK-SYUBETU     =   2
+      *                IF      FLG-HANKAKU     =   1
       *                    前に半角がある時、行を変える
-                           MOVE    ","            TO  H03-INPUTCD-G
-                                                          (IDX3:)
-                           MOVE    HEAD-03     TO  WRK-TBL-REC
-                                                       (WRK-HEN-MAX)
-                           ADD     1               TO  WRK-HEN-MAX
-                           MOVE    SPACE           TO  HEAD-03
-                           MOVE    1               TO  IDX3
-                           MOVE    ZERO            TO  FLG-HANKAKU
-                       ELSE
-                           MOVE    "　　，"        TO  H03-INPUTCD-G
-                                                          (IDX3:)
-                           ADD     6               TO  IDX3
-                       END-IF
-                   ELSE
-                       MOVE    ","            TO  H03-INPUTCD-G
-                                                          (IDX3:)
-                       ADD     1               TO  IDX3
-                   END-IF
+      *                    MOVE    ","            TO  H03-INPUTCD-G
+      *                                                   (IDX3:)
+      *                    MOVE    HEAD-03     TO  WRK-TBL-REC
+      *                                                (WRK-HEN-MAX)
+      *                    ADD     1               TO  WRK-HEN-MAX
+      *                    MOVE    SPACE           TO  HEAD-03
+      *                    MOVE    1               TO  IDX3
+      *                    MOVE    ZERO            TO  FLG-HANKAKU
+      *                ELSE
+      *                    MOVE    "　　，"        TO  H03-INPUTCD-G
+      *                                                   (IDX3:)
+      *                    ADD     6               TO  IDX3
+      *                END-IF
+      *            ELSE
+      *                MOVE    ","            TO  H03-INPUTCD-G
+      *                                                   (IDX3:)
+      *                ADD     1               TO  IDX3
+      *            END-IF
                END-IF
-               IF     (IDX3  +   KANACHK-MAX)  >   76
+      ****     IF     (IDX3  +   KANACHK-MAX)  >   76
+               IF     (IDX3  +   KANACHK-MAX)  >   94
                    MOVE    HEAD-03         TO  WRK-TBL-REC (WRK-HEN-MAX)
                    ADD     1                   TO  WRK-HEN-MAX
                    MOVE    SPACE               TO  HEAD-03
