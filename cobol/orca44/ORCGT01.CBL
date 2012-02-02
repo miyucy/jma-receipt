@@ -812,8 +812,45 @@ grpsys                                         SPA-AREA
                                        TO
                                        SPA-NAI-200501-RECEDEN-DISASTER
       *
-           MOVE    WIDGET-INSENSITIVE  TO  SPA-B15-STATE
+           MOVE    WIDGET-NORMAL       TO  SPA-DATAKBN1-STATE
+                                           SPA-DATAKBN2-STATE
+                                           SPA-DATAKBN3-STATE
+                                           SPA-DATAKBN4-STATE
+                                           SPA-DATAKBN5-STATE
+                                           SPA-DATAKBN6-STATE
+                                           SPA-DATAKBN7-STATE
+                                           SPA-DATAKBN8-STATE       
+                                           SPA-B06-STATE
+                                           SPA-B07-STATE
+                                           SPA-B08-STATE
+                                           SPA-B09-STATE
+                                           SPA-B10-STATE
+                                           SPA-B15-STATE
                                            SPA-B16-STATE
+                                           SPA-B19-STATE
+                                           SPA-B20-STATE
+                                           SPA-B21-STATE
+                                           SPA-B22-STATE
+                                           SPA-SYOKBN1-STATE
+      *
+           MOVE    "T"                 TO  SPA-SYOKBN1-VALUE  
+           MOVE    "F"                 TO  SPA-SYOKBN2-VALUE  
+           MOVE    "T"                 TO  SPA-DATAKBN1-VALUE  
+           MOVE    "T"                 TO  SPA-DATAKBN3-VALUE  
+           MOVE    "T"                 TO  SPA-DATAKBN4-VALUE  
+           MOVE    "T"                 TO  SPA-DATAKBN5-VALUE  
+           MOVE    "T"                 TO  SPA-DATAKBN6-VALUE  
+           MOVE    "F"                 TO  SPA-DATAKBN7-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN8-VALUE
+      *    ★
+           MOVE    "F"                 TO  SPA-DATAKBN2-VALUE  
+           MOVE    "T"                 TO  SPA-CHK11-VALUE
+                                           SPA-CHK12-VALUE
+                                           SPA-CHK21-VALUE
+                                           SPA-CHK22-VALUE
+                                           SPA-CHK31-VALUE
+                                           SPA-CHK32-VALUE
+      *
            IF      SYS-2005-SYARECEKBN =   "1" OR  "2" OR  "3"
                MOVE    WIDGET-NORMAL       TO  SPA-B06-STATE
                                                SPA-B15-STATE
@@ -853,16 +890,6 @@ grpsys                                         SPA-AREA
                                                SPA-NYUGAIKBN-STATE
                                                SPA-PRTKBN-STATE
            END-IF
-      *
-           MOVE    WIDGET-NORMAL       TO  SPA-DATAKBN4-STATE
-                                           SPA-DATAKBN5-STATE
-                                           SPA-DATAKBN3-STATE       
-                                           SPA-DATAKBN6-STATE       
-                                           SPA-DATAKBN7-STATE       
-                                           SPA-DATAKBN1-STATE       
-                                           SPA-DATAKBN2-STATE       
-                                           SPA-DATAKBN8-STATE       
-                                           SPA-B21-STATE
       *
       *    公害医療機関情報
            MOVE    SPACE               TO  SYS-4100-REC 
@@ -976,19 +1003,6 @@ grpsys                                         SPA-AREA
                END-IF
            END-IF
       *
-           MOVE    "T"                TO  SPA-SYOKBN1-VALUE  
-           MOVE    "F"                TO  SPA-SYOKBN2-VALUE  
-      *
-           MOVE    "T"                TO  SPA-DATAKBN1-VALUE  
-           MOVE    "T"                TO  SPA-DATAKBN4-VALUE  
-           MOVE    "T"                TO  SPA-DATAKBN5-VALUE  
-           MOVE    "T"                TO  SPA-DATAKBN3-VALUE  
-           MOVE    "T"                TO  SPA-DATAKBN6-VALUE  
-           MOVE    "F"                TO  SPA-DATAKBN7-VALUE
-           MOVE    "F"                TO  SPA-DATAKBN8-VALUE
-      *    ★
-           MOVE    "F"                TO  SPA-DATAKBN2-VALUE  
-      *
            IF      SPA-NAI-2005-KKHRECEKBN
                                       =   "1" OR  "2" OR  "3"
                CONTINUE
@@ -1007,13 +1021,6 @@ grpsys                                         SPA-AREA
       *
       *    ファイル保存情報チェック
            PERFORM 3102-FILE-INFO-CHECK-SEC
-      *
-           MOVE    "T"                 TO  SPA-CHK11-VALUE
-                                           SPA-CHK12-VALUE
-                                           SPA-CHK21-VALUE
-                                           SPA-CHK22-VALUE
-                                           SPA-CHK31-VALUE
-                                           SPA-CHK32-VALUE
       *
       *    診療年月によるシステム管理の取得処理
            PERFORM 3103-SYSKANRI-HENSYU-SEC
@@ -1427,6 +1434,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    2                   TO  SPA-GMN-PRTKBN-MAX
       *
                MOVE    SPACE               TO  SPA-GMN-TITLE
+      *
+               MOVE    WIDGET-NORMAL       TO  SPA-SYOKBN1-STATE
            ELSE
                MOVE    "2"                 TO  SPA-GMN-PRTKBNL       (1)
                MOVE    "点検用（院外処方含）"
@@ -1439,6 +1448,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                DELIMITED  BY  SIZE
                        "作成のみ可能です"      DELIMITED  BY  SIZE
                                                INTO  SPA-GMN-TITLE
+               END-STRING
+      *
+               MOVE    WIDGET-INSENSITIVE  TO  SPA-SYOKBN1-STATE
+                                               SPA-DATAKBN1-STATE
+                                               SPA-DATAKBN3-STATE
+                                               SPA-DATAKBN4-STATE
+                                               SPA-DATAKBN5-STATE
+                                               SPA-DATAKBN6-STATE
+                                               SPA-B09-STATE
+                                               SPA-B10-STATE
+                                               SPA-B21-STATE
+                                               SPA-B22-STATE
+               MOVE    "F"                 TO  SPA-SYOKBN1-VALUE
+                                               SPA-DATAKBN1-VALUE
+                                               SPA-DATAKBN3-VALUE
+                                               SPA-DATAKBN4-VALUE
+                                               SPA-DATAKBN5-VALUE
+                                               SPA-DATAKBN6-VALUE
            END-IF
       *
            MOVE    SPA-GMN-PRTKBNLST (1)
@@ -2431,9 +2458,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    END-IF
                WHEN    "DATAKBN7"
                    MOVE    T01-DATAKBN7-VALUE  TO  SPA-DATAKBN7-VALUE
-                   IF      SPA-DATAKBN7-VALUE  =   "T"
-                       MOVE    "T"             TO  SPA-SYOKBN1-VALUE
-                   END-IF
                WHEN    "DATAKBN1"
                    MOVE    T01-DATAKBN1-VALUE  TO  SPA-DATAKBN1-VALUE
                    IF      SPA-DATAKBN1-VALUE  =   "T"
@@ -2447,8 +2471,19 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    T01-DATAKBN8-VALUE  TO  SPA-DATAKBN8-VALUE
                    IF      SPA-DATAKBN8-VALUE  =   "T"
                        MOVE    "T"             TO  SPA-SYOKBN2-VALUE
+                   ELSE
+                       MOVE    "F"             TO  SPA-SYOKBN2-VALUE
                    END-IF
            END-EVALUATE
+      *
+           IF    ( SPA-DATAKBN1-VALUE  =   "F" )
+           AND   ( SPA-DATAKBN3-VALUE  =   "F" )
+           AND   ( SPA-DATAKBN4-VALUE  =   "F" )
+           AND   ( SPA-DATAKBN5-VALUE  =   "F" )
+           AND   ( SPA-DATAKBN6-VALUE  =   "F" )
+           AND   ( SPA-DATAKBN2-VALUE  =   "F" )
+               MOVE    "F"             TO  SPA-SYOKBN1-VALUE
+           END-IF
       *
            .
        400-DATAKBN-EXT.
@@ -2498,7 +2533,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                    SPA-DATAKBN3-VALUE
                                                    SPA-DATAKBN4-VALUE
                                                    SPA-DATAKBN5-VALUE
-                                                   SPA-DATAKBN7-VALUE
+      *********************************************SPA-DATAKBN7-VALUE
                        IF      SPA-NAI-PRTKBN3 NOT =   SPACE
                            MOVE    "T"             TO
                                                    SPA-DATAKBN6-VALUE
@@ -2509,7 +2544,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                    SPA-DATAKBN3-VALUE
                                                    SPA-DATAKBN4-VALUE
                                                    SPA-DATAKBN5-VALUE
-                                                   SPA-DATAKBN7-VALUE
+      *********************************************SPA-DATAKBN7-VALUE
                                                    SPA-DATAKBN6-VALUE
                    END-IF
                WHEN    "SYOKBN2"
@@ -2556,18 +2591,31 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *        診療年月によるシステム管理の取得処理
                PERFORM 3103-SYSKANRI-HENSYU-SEC
       *
-               MOVE    "T"                TO  SPA-SYOKBN1-VALUE  
-               MOVE    "F"                TO  SPA-SYOKBN2-VALUE  
+               MOVE    WIDGET-NORMAL       TO  SPA-DATAKBN1-STATE
+                                               SPA-DATAKBN3-STATE       
+                                               SPA-DATAKBN4-STATE       
+                                               SPA-DATAKBN5-STATE       
+                                               SPA-B09-STATE
+                                               SPA-B10-STATE
+                                               SPA-B21-STATE
+                                               SPA-B22-STATE
+                                               SPA-SYOKBN1-STATE
       *
-               MOVE    "T"                TO  SPA-DATAKBN1-VALUE  
-               MOVE    "T"                TO  SPA-DATAKBN4-VALUE  
-               MOVE    "T"                TO  SPA-DATAKBN5-VALUE  
-               MOVE    "T"                TO  SPA-DATAKBN3-VALUE  
-               MOVE    "T"                TO  SPA-DATAKBN6-VALUE  
-               MOVE    "F"                TO  SPA-DATAKBN7-VALUE
-               MOVE    "F"                TO  SPA-DATAKBN8-VALUE
-      *    ★
-               MOVE    "F"                TO  SPA-DATAKBN2-VALUE  
+               MOVE    "T"                 TO  SPA-SYOKBN1-VALUE  
+               MOVE    "F"                 TO  SPA-SYOKBN2-VALUE  
+               MOVE    "T"                 TO  SPA-DATAKBN1-VALUE  
+               MOVE    "T"                 TO  SPA-DATAKBN3-VALUE  
+               MOVE    "T"                 TO  SPA-DATAKBN4-VALUE  
+               MOVE    "T"                 TO  SPA-DATAKBN5-VALUE  
+               IF      SPA-NAI-PRTKBN3 NOT =   SPACE
+                   MOVE    WIDGET-NORMAL       TO  SPA-DATAKBN6-STATE
+                   MOVE    "T"                 TO  SPA-DATAKBN6-VALUE
+               ELSE
+                   MOVE    WIDGET-INSENSITIVE  TO  SPA-DATAKBN6-STATE
+                   MOVE    "F"                 TO  SPA-DATAKBN6-VALUE  
+               END-IF
+               MOVE    "F"                 TO  SPA-DATAKBN7-VALUE
+               MOVE    "F"                 TO  SPA-DATAKBN8-VALUE
       *
                IF      SPA-NAI-2005-KKHRECEKBN
                                           =   "1" OR  "2" OR  "3"
@@ -5621,33 +5669,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                T01-DATAKBN2-VALUE
            END-IF
       *****MOVE    WIDGET-INSENSITIVE  TO  T01-HKNJANUM1-STATE
-      *
-      *    ０点公費記載ありのとき
-           IF      SPA-NAI-RECEDEN-CHK  =   SPACE
-               CONTINUE
-           ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  T01-SYOKBN1-STATE
-                                               T01-DATAKBN1-STATE
-                                               T01-DATAKBN2-STATE
-                                               T01-DATAKBN3-STATE
-                                               T01-DATAKBN4-STATE
-                                               T01-DATAKBN5-STATE
-                                               T01-DATAKBN6-STATE
-      **************************************** T01-B06-STATE
-      **************************************** T01-B07-STATE
-      **************************************** T01-B08-STATE
-                                               T01-B09-STATE
-                                               T01-B10-STATE
-      **************************************** T01-B16-STATE
-                                               T01-B21-STATE
-                                               T01-B22-STATE
-               MOVE    "F"                 TO  T01-SYOKBN1-VALUE
-                                               T01-DATAKBN1-VALUE
-                                               T01-DATAKBN3-VALUE
-                                               T01-DATAKBN4-VALUE
-                                               T01-DATAKBN5-VALUE
-                                               T01-DATAKBN6-VALUE
-           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
