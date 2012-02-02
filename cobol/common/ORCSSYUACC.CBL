@@ -34,9 +34,6 @@
       *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
       *                                     kohid ÄÉ²Ã
       *  04.06.02    NACL-Æ£¸¶    11/12/12  ÅÀ¸¡¥ì¥»£°ÅÀ¸øÈñ°õ»úÂÐ±þ
-      *  04.06.02    NACL-Æ£¸¶    12/10/26  ÆÃµ­»ö¹à£°£·¡ÊÏ·Ê»¡ËµÚ¤Ó
-      *                                     £°£¸¡ÊÏ··ò¡Ë¤Î¥ì¥»¥×¥ÈÂÐ±þ
-      *                                     receipt_kbn ÄÉ²Ã 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -216,8 +213,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                    TO  LNK-SYUACC-IO-HOJOKBN     (IDX)
                            MOVE    SYUKA-KOHID
                                    TO  LNK-SYUACC-IO-KOHID       (IDX)
-                           MOVE    SYUKA-RECEIPT-KBN
-                                   TO  LNK-SYUACC-IO-RECEIPT-KBN (IDX)
                            MOVE    SYUKA-HKNNUM
                                    TO  LNK-SYUACC-IO-HKNNUM      (IDX)
                        END-IF
@@ -233,8 +228,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                    =   LNK-SYUACC-IO-HOJOKBN     (IDX) )
                        AND   ( SYUKA-KOHID
                                    =   LNK-SYUACC-IO-KOHID       (IDX) )
-                       AND   ( SYUKA-RECEIPT-KBN
-                                   =   LNK-SYUACC-IO-RECEIPT-KBN (IDX) )
       *
                            PERFORM 20011-KBN01-SYUACC-HENSYU-SEC
                        END-IF
@@ -602,8 +595,6 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                                        TO  SYUKA-HOJOKBN
                MOVE    LNK-SYUACC-IO-KOHID       (IDX)
                                        TO  SYUKA-KOHID
-               MOVE    LNK-SYUACC-IO-RECEIPT-KBN (IDX)
-                                       TO  SYUKA-RECEIPT-KBN
                MOVE    LNK-SYUACC-IO-RECESYUBETU (IDX)
                                        TO  SYUKA-RECESYUBETU
       *
@@ -642,8 +633,6 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                                                TO  SYUKA-HOJOKBN
                        MOVE    LNK-SYUACC-IO-KOHID       (IDX)
                                                TO  SYUKA-KOHID
-                       MOVE    LNK-SYUACC-IO-RECEIPT-KBN (IDX)
-                                               TO  SYUKA-RECEIPT-KBN
                        MOVE    SPACE           TO  SYUKA-SRYKA
                        MOVE    99999999        TO  SYUKA-TENSU
                        MOVE    999             TO  SYUKA-KAISU
@@ -711,8 +700,6 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                                                TO  SYUKA-HOJOKBN
                        MOVE    LNK-SYUACC-IO-KOHID       (IDX)
                                                TO  SYUKA-KOHID
-                       MOVE    LNK-SYUACC-IO-RECEIPT-KBN (IDX)
-                                               TO  SYUKA-RECEIPT-KBN
                        MOVE    LNK-SYUACC-IO-SRYKA (IDX IDY)
                                                TO  SYUKA-SRYKA
                    END-IF
@@ -804,8 +791,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                    =   LNK-SYUACC-IO-HOJOKBN     (IDX) )
                        AND   ( SYUKA-KOHID
                                    =   LNK-SYUACC-IO-KOHID       (IDX) )
-                       AND   ( SYUKA-RECEIPT-KBN
-                                   =   LNK-SYUACC-IO-RECEIPT-KBN (IDX) )
                          IF      SYUKA-SRYKA       =   SPACE  
                            MOVE    1           TO  FLG-DELETE
                            MOVE    100         TO  IDX
@@ -892,8 +877,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                                    TO  SYUKA-HOJOKBN
            MOVE    LNK-SYUACC-IO-KOHID       (1)
                                    TO  SYUKA-KOHID
-           MOVE    LNK-SYUACC-IO-RECEIPT-KBN (1)
-                                   TO  SYUKA-RECEIPT-KBN
            MOVE    LNK-SYUACC-IO-TEISYUTUSAKI (1)
                                    TO  SYUKA-TEISYUTUSAKI
            MOVE    SYUKA-REC       TO  MCPDATA-REC
@@ -1020,8 +1003,6 @@ grpsys             OR      LNK-IO2-SYU-HOSPNUM (IDW)   =   ZERO
                                    TO  LNK-SYUACC-IO-HOJOKBN     (IDX)
                            MOVE    SYUKA-KOHID
                                    TO  LNK-SYUACC-IO-KOHID       (IDX)
-                           MOVE    SYUKA-RECEIPT-KBN
-                                   TO  LNK-SYUACC-IO-RECEIPT-KBN (IDX)
                            MOVE    SYUKA-HKNNUM
                                    TO  LNK-SYUACC-IO-HKNNUM      (IDX)
                        END-IF
@@ -1037,8 +1018,6 @@ grpsys             OR      LNK-IO2-SYU-HOSPNUM (IDW)   =   ZERO
                                    =   LNK-SYUACC-IO-HOJOKBN     (IDX) )
                        AND   ( SYUKA-KOHID
                                    =   LNK-SYUACC-IO-KOHID       (IDX) )
-                       AND   ( SYUKA-RECEIPT-KBN
-                                   =   LNK-SYUACC-IO-RECEIPT-KBN (IDX) )
       *
                            PERFORM 20011-KBN01-SYUACC-HENSYU-SEC
                        END-IF

@@ -47,7 +47,7 @@
                 05  R02-TPRTFLG-STYLE   PIC X(20).
                 05  R02-TPRTFLG         PIC X(2).
               04  R02-FILEKBN.
-                05  R02-VALUE     PIC X(82).
+                05  R02-VALUE     PIC X(72).
               04  R02-MSG-STYLE   PIC X(20).
               04  R02-MSG         PIC X(42).
               04  R02-CREYMD.
@@ -56,8 +56,6 @@
                 05  R02-VALUE   PIC 9(4).
               04  R02-PAGE.
                 05  R02-VALUE   PIC 9(4).
-              04  R02-HKNJANAME-STYLE   PIC X(20).
-              04  R02-HKNJANAME         PIC X(50).
               04  R02-PRTJYUN-COMBO.
                 05  R02-PRTJYUN.
                   06  R02-VALUE   PIC X(33).
@@ -92,7 +90,7 @@
                 05  R02-SYUKA.
                   06  R02-VALUE   PIC X(21).
                 05  R02-SYUKA-COUNT   PIC S9(9)   BINARY.
-                05  R02-SYUKALST  PIC X(21)   OCCURS  100 TIMES.
+                05  R02-SYUKALST  PIC X(21)   OCCURS  50 TIMES.
               04  R02-LABEL1       PIC X(06).
               04  R02-LABEL2       PIC X(06).
               04  R02-LABEL3       PIC X(06).
