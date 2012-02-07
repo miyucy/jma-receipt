@@ -707,21 +707,21 @@
            PERFORM 250-HENSYU-SYORI-SEC
       *
       *    記号編集
-      *     IF      YAKUJYO-MARK    NOT =   SPACE
+           IF      YAKUJYO-MARK    NOT =   SPACE
       *        記号チェック
-      *         INITIALIZE                  ORCSKANACHKAREA
-      *         MOVE    "1"             TO  KANACHK-SYORI
-      *         MOVE    YAKUJYO-MARK    TO  KANACHK-MAE-INPUT
-      *         CALL    "ORCSKANACHK"       USING
-      *                                     ORCSKANACHKAREA
-      *         IF      KANACHK-SYUBETU =   1
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    YAKUJYO-MARK    TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      KANACHK-SYUBETU =   1
       *            半角なら文字数を減らす
-      *             MOVE    14              TO  KOU-MAX
-      *         END-IF
+                   MOVE    17              TO  KOU-MAX
+               END-IF
       *        記号編集
                MOVE    YAKUJYO-MARK    TO  WRK-HENSYUDATA
                PERFORM 250-HENSYU-SYORI-SEC
-      *     END-IF
+           END-IF
       *
            PERFORM VARYING IDX-GYO     FROM    1   BY  1
                    UNTIL   IDX-GYO     >   GYO-MAX
@@ -759,21 +759,21 @@
            PERFORM 250-HENSYU-SYORI-SEC
       *
       *    記号編集
-      *     IF      YAKUJYO-MARK    NOT =   SPACE
+           IF      YAKUJYO-MARK    NOT =   SPACE
       *        記号チェック
-      *         INITIALIZE                  ORCSKANACHKAREA
-      *         MOVE    "1"             TO  KANACHK-SYORI
-      *         MOVE    YAKUJYO-MARK    TO  KANACHK-MAE-INPUT
-      *         CALL    "ORCSKANACHK"       USING
-      *                                     ORCSKANACHKAREA
-      *         IF      KANACHK-SYUBETU =   1
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    YAKUJYO-MARK    TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               IF      KANACHK-SYUBETU =   1
       *            半角なら文字数を減らす
-      *             MOVE    14              TO  KOU-MAX
-      *         END-IF
+                   MOVE    17              TO  KOU-MAX
+               END-IF
       *        記号編集
                MOVE    YAKUJYO-MARK    TO  WRK-HENSYUDATA
                PERFORM 250-HENSYU-SYORI-SEC
-      *     END-IF
+           END-IF
       *
            PERFORM VARYING IDX-GYO     FROM    1   BY  1
                    UNTIL   IDX-GYO     >   GYO-MAX
