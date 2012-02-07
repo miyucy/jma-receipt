@@ -8988,6 +8988,12 @@
                                 LNK-ORCSJGNGET-GAIJGNGAK  *
                                 WK-GENGAKU-RITUX          /
                                 100
+                       COMPUTE  LNK-ORCSJGNGET-GAIJGNGAK =
+                                LNK-ORCSJGNGET-GAIJGNGAK +  5
+                       COMPUTE  LNK-ORCSJGNGET-GAIJGNGAK =
+                                LNK-ORCSJGNGET-GAIJGNGAK /  10
+                       COMPUTE  LNK-ORCSJGNGET-GAIJGNGAK =
+                                LNK-ORCSJGNGET-GAIJGNGAK *  10
                      END-IF
                    WHEN          2
                      CONTINUE
@@ -8995,12 +9001,6 @@
                    WHEN          4
                      MOVE     ZERO   TO   LNK-ORCSJGNGET-GAIJGNGAK
                  END-EVALUATE
-                 COMPUTE  LNK-ORCSJGNGET-GAIJGNGAK =
-                          LNK-ORCSJGNGET-GAIJGNGAK +  5
-                 COMPUTE  LNK-ORCSJGNGET-GAIJGNGAK =
-                          LNK-ORCSJGNGET-GAIJGNGAK /  10
-                 COMPUTE  LNK-ORCSJGNGET-GAIJGNGAK =
-                          LNK-ORCSJGNGET-GAIJGNGAK *  10
              END-IF
       *
            END-IF
@@ -19313,6 +19313,7 @@
            AND (COMB-KOHHKNNUM(KOH-IDX)  =  "010"  )
            AND (WK-GENGAKUKBN            =   3 OR 4)
            AND (FLG-SAIGAI-TAISYO        =   1     )
+                   MOVE     SPACE    TO    COMB-KOH-GAIJGNKBN(KOH-IDX)
                    MOVE     ZERO     TO    WK-GAIKFTNRATE
            END-IF.
       *
@@ -19890,9 +19891,7 @@
                      END-IF
                  END-IF
                END-IF
-      *        IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)       =  "027"
-               IF  (LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1)  =  "0")
-               OR  (WK-TOKATUKAI(KOH-IDX)             =   1 )
+               IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "027"
       *             ¸º³Û
                     EVALUATE  WK-GENGAKUKBN
                       WHEN        1
@@ -20539,9 +20538,7 @@
                  END-IF
                END-IF
       *
-      *        IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)       =  "027"
-               IF  (LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1)  =  "0")
-               OR  (WK-TOKATUKAI(KOH-IDX)             =   1 )
+               IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =  "027"
       *             ¸º³Û
                     EVALUATE  WK-GENGAKUKBN
                       WHEN        1
