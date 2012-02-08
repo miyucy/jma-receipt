@@ -3349,13 +3349,13 @@
                          END-IF
                          MOVE  WRK-SO-SRYCD(IDX1 IDX3) TO
                                     LNK-NYURECEDEN-SRYCD(1 IDX2 IDX3)
+                         MOVE   WRK-SO-KAISU(IDX1)   TO
+                                      LNK-NYURECEDEN-KAISU(1 IDX2 IDX3)
                          MOVE  ZERO     TO    IDX4
                          COMPUTE   IDX4 =    IDX3   +   1
                          IF    WRK-SO-SRYCD(IDX1 IDX4)    =   SPACE
                                MOVE   WRK-SO-TEN(IDX1)   TO
                                       LNK-NYURECEDEN-TEN(1 IDX2 IDX3)
-                               MOVE   WRK-SO-KAISU(IDX1)   TO
-                                      LNK-NYURECEDEN-KAISU(1 IDX2 IDX3)
                          END-IF
                      END-PERFORM
       *
@@ -3707,13 +3707,13 @@
                          END-IF
                          MOVE  WRK-SO-SRYCD(IDX1 IDX3) TO
                                     LNK-NYURECEDEN-SRYCD(2 IDX2 IDX3)
+                         MOVE   WRK-SO-KAISU(IDX1)   TO
+                                      LNK-NYURECEDEN-KAISU(2 IDX2 IDX3)
                          MOVE  ZERO     TO    IDX4
                          COMPUTE   IDX4 =    IDX3   +   1
                          IF    WRK-SO-SRYCD(IDX1 IDX4)    =    SPACE
                                MOVE   WRK-SO-TEN(IDX1)   TO
                                       LNK-NYURECEDEN-TEN(2 IDX2 IDX3)
-                               MOVE   WRK-SO-KAISU(IDX1)   TO
-                                      LNK-NYURECEDEN-KAISU(2 IDX2 IDX3)
                          END-IF
                      END-PERFORM
       *              外泊コメントセット処理
