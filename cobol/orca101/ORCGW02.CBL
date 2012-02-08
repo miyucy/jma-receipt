@@ -456,6 +456,8 @@
                            11  SPA-GMN-SRYNAIHYOJI-LST PIC X(20)
                                                        OCCURS  5.
                        09  SPA-SRYNAIHYOJI-MAX        PIC 9(02).
+                       09  SPA-1012-KFLG1         PIC 9(01).
+                       09  SPA-1012-KFLG2         PIC 9(01).
       *
                    07  SPA-GMN-1041-AREA.
                        09  SPA-GMN-NYKN-KBNCD     PIC X(02).
@@ -516,6 +518,8 @@
                            11  SPA-GMN-HYOJIKBN-LST    PIC X(20)
                                                        OCCURS  2.
                        09  SPA-HYOJIKBN-MAX        PIC 9(02).
+                       09  SPA-1028-KFLG1         PIC 9(01).
+                       09  SPA-1028-KFLG2         PIC 9(01).
       *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD           PIC 9(08).
@@ -2585,6 +2589,14 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-SRYNAIYO
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               IF      SPA-1012-KFLG1      =   ZERO
+                   MOVE    "K012"          TO  SPA-ERRCD
+                   MOVE    80              TO  SPA-GMN-CUR
+                   MOVE    1               TO  SPA-1012-KFLG1
+               END-IF
+           END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
@@ -2593,6 +2605,15 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-SRYNAIYODSP
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               IF     (SPA-1012-KFLG2      =   ZERO )  AND
+                      (SPA-ERRCD           =   SPACE)
+                   MOVE    "K012"          TO  SPA-ERRCD
+                   MOVE    81              TO  SPA-GMN-CUR
+                   MOVE    1               TO  SPA-1012-KFLG2
+               END-IF
+           END-IF
       *    初期表示
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -2627,6 +2648,14 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-YYKKBNNAME
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               IF      SPA-1028-KFLG1      =   ZERO
+                   MOVE    "K012"          TO  SPA-ERRCD
+                   MOVE    100             TO  SPA-GMN-CUR
+                   MOVE    1               TO  SPA-1028-KFLG1
+               END-IF
+           END-IF
       *
       *    予約内容一覧表示
            INITIALIZE                  ORCSKANACHKAREA
@@ -2636,6 +2665,15 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-YYKKBNNAME1
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               IF     (SPA-1028-KFLG2      =   ZERO )  AND
+                      (SPA-ERRCD           =   SPACE)
+                   MOVE    "K012"          TO  SPA-ERRCD
+                   MOVE    101             TO  SPA-GMN-CUR
+                   MOVE    1               TO  SPA-1028-KFLG2
+               END-IF
+           END-IF
       *
       *    表示区分
            MOVE    ZERO                TO  FLG-OK
@@ -5144,6 +5182,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "全角で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "K012"
+                   MOVE    "警告！全角で入力して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "請求金端数設定（減免有）入力エラー"
