@@ -3584,7 +3584,11 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-H01GMN-HENREIYM    TO  H01-HENREIYM
            MOVE    SPA-H01GMN-HENREIYM-KOHSKY
                                           TO  H01-HENREIYM-KOHSKY
-           MOVE    "° ∏¯»Ò¿¡µ·ΩÒ ¨°À"     TO  H01-LABEL-KOHSKY
+           IF      SPA-RECE10-TEISYUTUSAKI =   "3" OR  "4"
+               MOVE    SPACE                  TO  H01-LABEL-KOHSKY
+           ELSE
+               MOVE    "° ∏¯»Ò¿¡µ·ΩÒ ¨°À"     TO  H01-LABEL-KOHSKY
+           END-IF
            IF      SPA-H01NAI-KOHSKY-FLG  =   ZERO
                MOVE    WIDGET-INSENSITIVE  TO  H01-SKYYM-KOHSKY-STATE
                                                H01-HENREIYM-KOHSKY-STATE
@@ -3993,7 +3997,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    END-IF 
                WHEN    "SKYKBN"
                    IF      SPA-RECE10-TEISYUTUSAKI =   "3" OR  "4"
-                       MOVE    5               TO  SPA-H01GMN-CUR
+                       MOVE    4               TO  SPA-H01GMN-CUR
                    ELSE 
                        IF    ( SPA-H01NAI-KOHSKY-FLG   =   1   )
                        AND   ( SPA-H01GMN-SKYKBN   NOT =   "0" )
