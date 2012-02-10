@@ -15,10 +15,10 @@ def textview(file,f)
 
     name=""
     value=""
-    text_size=""
-    column_size=""
-    char_type1=""
-    char_type2=""
+    text_size="0"
+    column_size="0"
+    char_type1="0"
+    char_type2="0"
 
     if type=="Embed - Text" || type=="Standard - Text" || type=="ORCA - TextCircle"
       name=obj.scan(/<dia:attribute name="embed_id">.*?<dia:string>#(.*?)#/m).join
@@ -46,13 +46,13 @@ def textview(file,f)
         column_size = "0"
       end
 
-      puts "#{File.basename(file)},#{type},#{name},#{font},#{style},#{text_size},#{column_size},#{value.gsub(/\n/m,'\\n')},#{char_type1},#{char_type2}"
+      puts [File.basename(file),type,name,font,style,text_size,column_size,value.gsub(/\n/m,'\\n'),char_type1,char_type2].join("\t")
     end
   }
 end
 
 
-puts "redfile,object,id,font,style,text_size,column_size,text,text_type1,text_type2"
+puts ["redfile","object","id","font","style","text_size","column_size","text","text_type1","text_type2"].join("\t")
 
 ARGV.each{|file|
   begin
