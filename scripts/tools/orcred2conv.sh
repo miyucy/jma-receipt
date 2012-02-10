@@ -59,7 +59,7 @@ done
 
 if [ "$ERRFILES" != "" ]; then
    echo "#######################################################"
-   echo "#SOME FILES CAN'T CONVERT BECOUSE OF DATA CORRUPTION!!#"
+   echo "#SOME FILES CAN'T CONVERT BECAUSE OF DATA CORRUPTION!!#"
    echo "#######################################################"
    for f in $ERRFILES ; do
      echo $f
