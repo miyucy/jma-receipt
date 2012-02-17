@@ -169,13 +169,27 @@ K02	{
 				trowattr	int;
 				tcolumn	int;
 				tvalue	varchar(256);
-				fgcolors	varchar(20)[400];
-				bgcolors	varchar(20)[400];
-				tdata {
-					SRYKBN	varchar(2);
-					INPUTCD	varchar(54);
-					MEISYO	varchar(80);
-					SURYO	varchar(60);
+				rowdata {
+					SRYKBN {
+						celldata	varchar(2);
+						fgcolor	varchar(20);
+						bgcolor	varchar(20);
+					};
+					INPUTCD {
+						celldata	varchar(54);
+						fgcolor	varchar(20);
+						bgcolor	varchar(20);
+					};
+					MEISYO {
+						celldata	varchar(80);
+						fgcolor	varchar(20);
+						bgcolor	varchar(20);
+					};
+					SURYO {
+						celldata	varchar(60);
+						fgcolor	varchar(20);
+						bgcolor	varchar(20);
+					};
 				}[400];
 			};
 		};

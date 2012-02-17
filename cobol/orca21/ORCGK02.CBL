@@ -440,12 +440,9 @@
            03  WRK-FREE            PIC 9(04).
            03  WRK-IDX             PIC 9(03).
       *    ÆþÎÏ¹àÌÜÌ¾ÊÔ½¸ÍÑ 
-      *ito     03  WRK-IDX2            PIC 9(02).
-      *ito     03  WRK-IDX3            PIC 9(02).
            03  WRK-IDX2            PIC 9(03).
            03  WRK-IDX3            PIC 9(03).
            03  WRK-WIDGET          PIC X(20).
-      *ito     03  WRK-IN-MAP-IDX      PIC 9(02).
            03  WRK-IN-MAP-IDX      PIC 9(03).
       *    Ç¯ÎðÈ½ÄêÍÑ
            03  WRK-BIRTHDAY.
@@ -8002,10 +7999,9 @@
       *    ¶Ø´÷¥Á¥§¥Ã¥¯¤ò¹Ô¤¦
            IF     (SPA-ERRCD           =   SPACE )
            AND    (FLG-TOROKU          =   SPACE )
-      *TEST
+      *ver.4.7
       *    ÄûÀµÅ¸³«»þ¤Ï¥Á¥§¥Ã¥¯¤Ê¤·
            AND    (FLG-TEISEI          =   ZERO  )
-      *TEST
                PERFORM 51010-KNKCHK-SEC
                IF      FLG-KINKI           =   1
                    GO      TO      510-TBLHEN-EXT
@@ -11846,7 +11842,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            ¥¹¥¯¥í¡¼¥ëÇØ·Ê¿§¡Ê£±¹ÔËè¡Ë
                    IF      FLG-BGCOLORS        =   ZERO
                        MOVE    "white"         TO
-                                       K02-PANDATABLE1-BGCOLORS(IDX)
+                                       K02-SRYKBN-BGCOLORS(IDX)
+                                       K02-INPUTCD-BGCOLORS(IDX)
+                                       K02-MEISYO-BGCOLORS(IDX)
+                                       K02-SURYO-BGCOLORS(IDX)
                        IF      SPA-BGLINEKBN       =   "1"
       *                    ºÞËè
                            IF     (SPA-COM-ZAIEND(WRK-IDX) =  "1"  )
@@ -11861,7 +11860,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    ELSE
                        MOVE    SPA-BGCOLORS        TO
-                                       K02-PANDATABLE1-BGCOLORS(IDX)
+                                       K02-SRYKBN-BGCOLORS (IDX)
+                                       K02-INPUTCD-BGCOLORS(IDX)
+                                       K02-MEISYO-BGCOLORS (IDX)
+                                       K02-SURYO-BGCOLORS  (IDX)
                        IF      SPA-BGLINEKBN       =   "1"
       *                    ºÞËè
                            IF     (SPA-COM-ZAIEND(WRK-IDX) =  "1"  )
@@ -11889,20 +11891,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                       OR ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
                       AND (SPA-HKNCOMBINUM    NOT =   "9999" ))
                            MOVE    "blue"         TO
-                                       K02-PANDATABLE1-FGCOLORS(IDX)
+                                       K02-SRYKBN-FGCOLORS (IDX)
+                                       K02-MEISYO-FGCOLORS (IDX)
                        IF      SPA-COM-HOUKATU-FLG2(WRK-IDX)   =   1
                            MOVE    "red"          TO
-                                       K02-PANDATABLE1-FGCOLORS(IDX)
+                                       K02-SRYKBN-FGCOLORS (IDX)
+                                       K02-MEISYO-FGCOLORS (IDX)
                        END-IF
                    ELSE
                        MOVE    "black"       TO
-                                       K02-PANDATABLE1-FGCOLORS(IDX)
+                                       K02-SRYKBN-FGCOLORS (IDX)
+                                       K02-MEISYO-FGCOLORS (IDX)
                    END-IF
       *
       *!!          ¶Ø´÷ÌôºÞ
                    IF      SPA-COM-PTKINKI-ARI (WRK-IDX)   =   1
                        MOVE    "red"         TO
-                                       K02-PANDATABLE1-FGCOLORS(IDX)
+                                       K02-MEISYO-FGCOLORS (IDX)
                    END-IF
       *!
                    IF      SPA-GMN-INPUTCD(WRK-IDX)(1:1)   =   "#"
@@ -12361,7 +12366,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ( SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)   OR
                  ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
               AND (SPA-HKNCOMBINUM           NOT =   "9999" ))
-              MOVE    "blue"         TO  K02-PANDATABLE1-FGCOLORS(IDX)
+              MOVE    "blue"         TO  K02-SURYO-FGCOLORS(IDX)
            END-IF
            .
        5002-SURYO-HEN-EXT.
