@@ -1,5 +1,17 @@
 #!/bin/bash
 
+if test -z "$JMARECEIPT_ENV"; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+export PATH=${SITESCRIPTSDIR}/tools:${PATCHSCRIPTSDIR}/tools:${SCRIPTSDIR}/tools:$PATH
+
+
 BACKUP=false
 TEST=false
 ERRFILES=""
@@ -28,7 +40,7 @@ for f in $@ ; do
    if [ $TEST == true ]; then
      echo -n "$f testing..."
      [ -e $f.err.log ] && rm $f.err.log 
-     red2conv $f > /dev/null 2> $f.err.log
+     redinspector.rb  $f > /dev/null 2> $f.err.log && red2conv $f > /dev/null 2> $f.err.log
      if [ -s $f.err.log ]; then
          echo "NG"
          ERRFILES="$ERRFILES $f" 
@@ -40,7 +52,7 @@ for f in $@ ; do
      echo -n "$f converting..."
      [ -e $f.err.log ] && rm $f.err.log 
      [ $BACKUP == true ] && cp -a $f $f.bak
-     red2conv $f -o $TMPFILE 2> $f.err.log
+     redinspector.rb  $f > /dev/null 2> $f.err.log && red2conv $f -o $TMPFILE 2> $f.err.log
      if [ -s $f.err.log ]; then
          echo "FAILED"
          ERRFILES="$ERRFILES $f" 
