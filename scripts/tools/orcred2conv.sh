@@ -28,7 +28,7 @@ for f in $@ ; do
    if [ $TEST == true ]; then
      echo -n "$f testing..."
      [ -e $f.err.log ] && rm $f.err.log 
-     zcat -f $f > /dev/null 2> $f.err.log && red2conv $f > /dev/null 2> $f.err.log
+     red2conv $f > /dev/null 2> $f.err.log
      if [ -s $f.err.log ]; then
          echo "NG"
          ERRFILES="$ERRFILES $f" 
@@ -40,7 +40,7 @@ for f in $@ ; do
      echo -n "$f converting..."
      [ -e $f.err.log ] && rm $f.err.log 
      [ $BACKUP == true ] && cp -a $f $f.bak
-     zcat -f $f > /dev/null 2> $f.err.log && red2conv $f -o $TMPFILE 2> $f.err.log
+     red2conv $f -o $TMPFILE 2> $f.err.log
      if [ -s $f.err.log ]; then
          echo "FAILED"
          ERRFILES="$ERRFILES $f" 
