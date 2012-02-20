@@ -279,6 +279,7 @@
       *                                     組み立てへの移行を可能にする
       *  04.07.02    NACL-太田    11/09/15  データチェック業務からの病名
       *                                     引継ぎ対応
+      *  04.07.03    NACL-太田    12/02/20  前画面戻り時SPA-PTIDを初期化する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -8003,6 +8004,8 @@ grpsys                                       SPA-AREA
                INITIALIZE                  SPA-KYOTUKEY
                                            SPA-KYOTU-SET
            END-IF 
+           MOVE    SPACE               TO  SPA-PTNUM
+           MOVE    ZERO                TO  SPA-PTID
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
       ***  MOVE    "CHANGE"            TO  MCP-PUTTYPE
