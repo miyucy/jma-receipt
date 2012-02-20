@@ -1371,7 +1371,7 @@
                    AND   ( COMB-HKNNUM             =   SPACE )
                        CONTINUE
                    ELSE 
-      *                全国公費レセ記載判定（生保単独の不明分はしない）
+      *                全国公費レセ記載判定（公費単独の不明分はしない）
                        MOVE    ZERO        TO  FLG-KOHRECEDSP
                                                FLG-KOHSKY-HENSYU
                        INITIALIZE          ORCSFTNJGNCHKAREA
@@ -1860,7 +1860,7 @@
                    AND   ( COMB-HKNNUM             =   SPACE )
                        CONTINUE
                    ELSE 
-      *                全国公費レセ記載判定（生保単独の不明分はしない）
+      *                全国公費レセ記載判定（公費単独の不明分はしない）
                        MOVE    ZERO        TO  FLG-KOHRECEDSP
                                                FLG-KOHSKY-HENSYU
                        INITIALIZE          ORCSFTNJGNCHKAREA

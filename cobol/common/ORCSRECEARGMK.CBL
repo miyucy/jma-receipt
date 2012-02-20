@@ -326,9 +326,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
            IF      SYS-200501-ROUPRTKBN-N  =   SPACE
                MOVE    ZERO                TO  SYS-200501-ROUPRTKBN-N
            END-IF
-           IF      SYS-200501-ROUPRTKBN-N  =   SPACE
-               MOVE    ZERO                TO  SYS-200501-ROUPRTKBN-N
-           END-IF
            IF      SYS-200501-INSPECT-ZERO-KBN
                                            =   SPACE
                MOVE    "0"                 TO
