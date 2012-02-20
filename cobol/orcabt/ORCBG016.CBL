@@ -30,7 +30,6 @@
       *  03.05.01    NACL-森脇     07/06/06  グループ診療対応
       *  04.03.01    NACL-森脇     08/08/29  パラメタ増加
       *  04.05.01    NACL-森脇     08/09/18  病棟別集計対応
-      *  04.08.01    NACL-森脇     14/07/22  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -90,20 +89,13 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0161//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    診療会計ファイル
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0162//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
-      *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
-      *----(04.08.01)--ADD-END-----
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCG016.INC".
       *
@@ -156,15 +148,9 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *----(04.08.01)--UPD-START---
-      *     03  RECEERR             PIC X(100).
-      *----(04.08.01)--UPD-END-----
+           03  RECEERR             PIC X(100).
            03  WRK-PARA-SRYYM      PIC X(06).
-           03  WRK-PARA-NYUGAIKBN-G.
-               05  WRK-PARA-NYUGAIKBN
-                                   PIC X(01).
-               05  WRK-PARA-HOKATSUKBN
-                                   PIC X(01).
+           03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SRYKA      PIC X(02).
            03  WRK-PARA-SYORIKBN   PIC X(01).
            03  WRK-PARA-SRYCD      PIC X(20)
@@ -376,11 +362,6 @@
       *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
       *
-      *----(04.08.01)--ADD-START---
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -427,9 +408,6 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  TPTINF-AREA
            INITIALIZE                  TOTAL-AREA
 grpsys     INITIALIZE                  SPA-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -451,7 +429,7 @@ grpsys*DD                                      WRK-PARA-HOSPID
 grpsys                                         WRK-PARA-HOSPNUM
 grpsys                                         RECEERR
                                                WRK-PARA-SRYYM
-                                               WRK-PARA-NYUGAIKBN-G
+                                               WRK-PARA-NYUGAIKBN
                                                WRK-PARA-SRYKA
                                                WRK-PARA-SYORIKBN
                                                WRK-PARA-SRYCD (1)
@@ -492,20 +470,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0161-HOSPNUM
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  BG0162-TERMID
 grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    BG0161-BASENAME     TO  SGETTEMP-BASENAMES (1)
-           MOVE    BG0162-BASENAME     TO  SGETTEMP-BASENAMES (2)
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (3)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  BG0161-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  BG0162-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -531,13 +495,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
       *
           MOVE    SPACE                TO  WRK-KANACHK-INPUT
           MOVE    1                    TO  WRK-KANACHK-MAX
-          STRING  WRK-PARA-NYUGAIKBN-G DELIMITED   BY  SIZE
+          STRING  WRK-PARA-NYUGAIKBN   DELIMITED   BY  SIZE
           INTO    WRK-KANACHK-INPUT
           WITH    POINTER WRK-KANACHK-MAX
           END-STRING
           COMPUTE WRK-KANACHK-MAX      =   WRK-KANACHK-MAX -   1
           PERFORM 800-HANKAKU-CHK-SEC
-          MOVE    WRK-KANACHK-INPUT    TO  WRK-PARA-NYUGAIKBN-G
+          MOVE    WRK-KANACHK-INPUT    TO  WRK-PARA-NYUGAIKBN
       *
           MOVE    SPACE                TO  WRK-KANACHK-INPUT
           MOVE    1                    TO  WRK-KANACHK-MAX
@@ -572,12 +536,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
                CONTINUE
            ELSE
                MOVE    "2"             TO  WRK-PARA-NYUGAIKBN
-           END-IF
-      *
-           IF    ( WRK-PARA-HOKATSUKBN =   "1" )
-               CONTINUE
-           ELSE
-               MOVE    SPACE           TO  WRK-PARA-HOKATSUKBN
            END-IF
       *
       *    対象年月日編集
@@ -848,13 +806,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
            IF    ( ACCT-ZAIKBN     =   1 ) OR
                  ( ACCT-ZAIKBN     =   2 )
                GO  TO  20011-IN01-HEN-EXT
-           END-IF
-      *
-           IF    ( WRK-PARA-HOKATSUKBN   = "1" )
-               IF  ( ACCT-JIHOKBN        = "1"
-                OR   ACCT-HKNCOMBI       = 9999 )
-                   GO  TO  20011-IN01-HEN-EXT
-               END-IF
            END-IF
       *
            MOVE    SRY-PTID            TO  WRK-PTID
@@ -1166,11 +1117,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    "（入院）"      TO  HCG016-NYUGAIKBN
            ELSE
                MOVE    "（外来）"      TO  HCG016-NYUGAIKBN
-           END-IF
-      *
-           IF    ( WRK-PARA-HOKATSUKBN =   "1" )
-               MOVE    "（包括分を含まない）"
-                                       TO  HCG016-HOKATSUKBN
            END-IF
       *
            COMPUTE CNT-PAGE        =   CNT-PAGE        +   1
