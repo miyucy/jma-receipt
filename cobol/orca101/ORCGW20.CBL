@@ -493,8 +493,6 @@
       *
       *    エラー画面より
            IF    ( SPA-MOTOPG          =   "WERR" )
-               MOVE    SPA-GMN-W20-MOTOPG
-                                       TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *        初期画面セット
@@ -535,10 +533,10 @@
       *
            EVALUATE    SPA-MOTOPG
            WHEN    "W21"
-               IF    ( SPA-MOTOPG2     =   "W20" )
-                   MOVE    "W01"       TO  SPA-MOTOPG
-                   MOVE    SPACE       TO  SPA-MOTOPG2
-                                           SPA-MOTOPG3
+               IF    ( SPA-W20-W21-MOTOPG  =   "W20" )
+      *
+                   INITIALIZE  SPA-W20-W21-AREA
+      *
       *            病棟リストを再編集する
                    MOVE    SPA-GMN-W20-BTULST-SEL
                                        TO  WRK-BTULST-SEL
@@ -567,8 +565,6 @@
       *
                    GO  TO  300-SCREEN-EXT
            WHEN    "WID1"
-               MOVE    SPA-GMN-W20-MOTOPG
-                                       TO  SPA-MOTOPG
                PERFORM 330-WID1-SET-SEC
                GO  TO      300-SCREEN-EXT
            END-EVALUATE
@@ -1793,7 +1789,7 @@
                PERFORM 420-SAKUJO-SEC
       *    病室管理情報画面へ
            WHEN    "CLICKED"       ALSO    "B09"
-               IF  ( SPA-MOTOPG    =       "W01" OR "W201")
+               IF  ( SPA-W20-W21-MOTOPG    =   SPACE )
                    PERFORM 420-BYOSITU-KANRI-SEC
                END-IF
       *    入院料加算設定画面へ
@@ -2180,10 +2176,11 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    SPA-MOTOPG2         TO  SPA-MOTOPG3
-           MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
-           MOVE    "W01"               TO  SPA-SAKIPG
+           IF    ( SPA-W20-W21-MOTOPG  =   SPACE )
+               MOVE    "W01"               TO  SPA-SAKIPG
+           ELSE
+               MOVE    SPA-W20-W21-MOTOPG  TO  SPA-SAKIPG
+           END-IF
            MOVE    "W20"               TO  SPA-MOTOPG
       *
       ***  MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -2553,7 +2550,7 @@
       *
            MOVE    "W21"               TO  SPA-SAKIPG
            MOVE    "W20"               TO  SPA-MOTOPG
-           MOVE    "W01"               TO  SPA-MOTOPG2
+                                           SPA-W20-W21-MOTOPG
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
@@ -5254,11 +5251,8 @@
            INITIALIZE  SPA-GMN-W20-INPUT-AREA
                        SPA-NAI-W20-INPUT-AREA
       *
-           IF    ( SPA-MOTOPG      =   "W01" OR "W201")
+           IF    ( SPA-W20-W21-MOTOPG  =    SPACE )
                MOVE    "病室"      TO  SPA-GMN-W20-B09
-           END-IF
-           IF    ( SPA-MOTOPG      =   "W01" OR "W201")
-               MOVE    "入院料加算"      TO  SPA-GMN-W20-B10
            END-IF
       *
       *    有効期間の開始日と終了日を設定
@@ -7132,7 +7126,7 @@
            MOVE    SPA-GMN-W20-B09         TO  W20-B09
       *
       *    入院料加算ボタン
-           MOVE    SPA-GMN-W20-B10         TO  W20-B10
+           MOVE    "入院料加算"            TO  W20-B10
       *
       *    基準日
            MOVE    SPA-GMN-W20-KJNYMD      TO  W20-KJNYMD
@@ -7809,8 +7803,6 @@
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
-           MOVE    SPA-MOTOPG          TO  SPA-GMN-W20-MOTOPG
-      *
            MOVE    SPACE               TO  WERR
            MOVE    SPA-ERRCD           TO  WERR-ERRCODE
            MOVE    SPA-ERRMSG          TO  WERR-ERRMSG
@@ -7848,9 +7840,6 @@
                INTO    WRK-WIDMSG
                END-STRING
            END-EVALUATE
-      *
-      *
-           MOVE    SPA-MOTOPG           TO  SPA-GMN-W20-MOTOPG
       *
            MOVE    SPACE                TO  WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE

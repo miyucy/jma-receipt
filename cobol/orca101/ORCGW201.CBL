@@ -47,6 +47,8 @@
       *
       *    ²èÌÌÍÑ£Ó£Ð£Á
            COPY    "W20SCR-SPA".
+      *    ²èÌÌÍÑ£Ó£Ð£Á
+           COPY    "W25SCR-SPA".
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -56,176 +58,186 @@
       *
            03  FLG-CHK             PIC 9(01).
            03  FLG-SELNUM          PIC 9(01).
+           03  FLG-KENSAKU         PIC 9(01).
+           03  FLG-KANJI           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDXK                PIC 9(04).
            03  IDY                 PIC 9(04).
       *
       *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
        01  CONSTANT-AREA.
       *
+           03 CONS-KSN-VAL.
+      *      ¥·¥¹¥Æ¥à´ÉÍý¡Ê°åÎÅµ¡´Ø¾ðÊó¡ËÀßÄê²Ã»»
+      *        Áí¹çÆþ±¡ÂÎÀ©²Ã»»
+               05  CONS-KSN1           PIC X(11) VALUE "0 190098870".
+      *        ÃÏ°è°åÎÅ»Ù±çÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»
+               05  CONS-KSN2           PIC X(11) VALUE "0 190099870".
+      *        ¿ÇÎÅÏ¿´ÉÍýÂÎÀ©²Ã»»
+               05  CONS-KSN3           PIC X(11) VALUE "0 190100370".
+      *        ÆýÍÄ»ù²Ã»»¡ÊÉÂ±¡¡Ë
+               05  CONS-KSN4           PIC X(11) VALUE "0 190100470".
+      *        ÆýÍÄ»ù²Ã»»¡ÊÉÂ±¡¡Ë¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁÅù¡Ë
+               05  CONS-KSN5           PIC X(11) VALUE "0 190100570".
+      *        ÆýÍÄ»ù²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
+               05  CONS-KSN6           PIC X(11) VALUE "0 190100670".
+      *        ÍÄ»ù²Ã»»¡ÊÉÂ±¡¡Ë
+               05  CONS-KSN7           PIC X(11) VALUE "0 190100770".
+      *        ÍÄ»ù²Ã»»¡ÊÉÂ±¡¡Ë¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁÅù¡Ë
+               05  CONS-KSN8           PIC X(11) VALUE "0 190100870".
+      *        ÍÄ»ù²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
+               05  CONS-KSN9           PIC X(11) VALUE "0 190100970".
+      *        Àº¿ÀÉÂÅïÆþ±¡»þ°å³Ø´ÉÍý²Ã»»
+               05  CONS-KSN10          PIC X(11) VALUE "0 190107170".
+      *        ´ð´´·¿Î×¾²¸¦½¤ÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»
+               05  CONS-KSN11          PIC X(11) VALUE "0 190117170".
+      *        ¶¨ÎÏ·¿Î×¾²¸¦½¤ÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»
+               05  CONS-KSN12          PIC X(11) VALUE "0 190119910".
+      *        Î¥Åç²Ã»»
+               05  CONS-KSN13          PIC X(11) VALUE "0 190117270".
+      *        °åÎÅ°ÂÁ´ÂÐºö²Ã»»£±
+               05  CONS-KSN14          PIC X(11) VALUE "0 190120510".
+      *        °åÎÅ°ÂÁ´ÂÐºö²Ã»»£²
+               05  CONS-KSN15          PIC X(11) VALUE "0 190136910".
+      *        ´¶À÷ËÉ»ßÂÐºö²Ã»»
+               05  CONS-KSN16          PIC X(11) VALUE "0 190137070".
+      *        ±ÉÍÜ´ÉÍý¼Â»Ü²Ã»»
+               05  CONS-KSN17          PIC X(11) VALUE "0 190120410".
+      *        ¸åÈ¯°åÌôÉÊ»ÈÍÑÂÎÀ©²Ã»»
+               05  CONS-KSN18          PIC X(11) VALUE "0 190138010".
+      *        £±µéÃÏÃÏ°è²Ã»»
+               05  CONS-KSN19          PIC X(11) VALUE "0 190077070".
+      *        £²µéÃÏÃÏ°è²Ã»»
+               05  CONS-KSN20          PIC X(11) VALUE "0 190077170".
+      *        £³µéÃÏÃÏ°è²Ã»»
+               05  CONS-KSN21          PIC X(11) VALUE "0 190120010".
+      *        £´µéÃÏÃÏ°è²Ã»»
+               05  CONS-KSN22          PIC X(11) VALUE "0 190077270".
+      *        £µµéÃÏÃÏ°è²Ã»»
+               05  CONS-KSN23          PIC X(11) VALUE "0 190120110".
+      *        £¶µéÃÏÃÏ°è²Ã»»
+               05  CONS-KSN24          PIC X(11) VALUE "0 190077370".
       *
-      *  ¥·¥¹¥Æ¥à´ÉÍý¡Ê°åÎÅµ¡´Ø¾ðÊó¡ËÀßÄê²Ã»»
-      *    Áí¹çÆþ±¡ÂÎÀ©²Ã»»
-           03  CONS-KSN1                   PIC X(09) VALUE "190098870".
-      *    ÃÏ°è°åÎÅ»Ù±çÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»
-           03  CONS-KSN2                   PIC X(09) VALUE "190099870".
-      *    ¿ÇÎÅÏ¿´ÉÍýÂÎÀ©²Ã»»
-           03  CONS-KSN3                   PIC X(09) VALUE "190100370".
-      *    ÆýÍÄ»ù²Ã»»¡ÊÉÂ±¡¡Ë
-           03  CONS-KSN4                   PIC X(09) VALUE "190100470".
-      *    ÆýÍÄ»ù²Ã»»¡ÊÉÂ±¡¡Ë¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁÅù¡Ë
-           03  CONS-KSN5                   PIC X(09) VALUE "190100570".
-      *    ÆýÍÄ»ù²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
-           03  CONS-KSN6                   PIC X(09) VALUE "190100670".
-      *    ÍÄ»ù²Ã»»¡ÊÉÂ±¡¡Ë
-           03  CONS-KSN7                   PIC X(09) VALUE "190100770".
-      *    ÍÄ»ù²Ã»»¡ÊÉÂ±¡¡Ë¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁÅù¡Ë
-           03  CONS-KSN8                   PIC X(09) VALUE "190100870".
-      *    ÍÄ»ù²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
-           03  CONS-KSN9                   PIC X(09) VALUE "190100970".
-      *    Àº¿ÀÉÂÅïÆþ±¡»þ°å³Ø´ÉÍý²Ã»»
-           03  CONS-KSN10                  PIC X(09) VALUE "190107170".
-      *    ´ð´´·¿Î×¾²¸¦½¤ÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»
-           03  CONS-KSN11                  PIC X(09) VALUE "190117170".
-      *    ¶¨ÎÏ·¿Î×¾²¸¦½¤ÉÂ±¡Æþ±¡¿ÇÎÅ²Ã»»
-           03  CONS-KSN12                  PIC X(09) VALUE "190119910".
-      *    Î¥Åç²Ã»»
-           03  CONS-KSN13                  PIC X(09) VALUE "190117270".
-      *    °åÎÅ°ÂÁ´ÂÐºö²Ã»»£±
-           03  CONS-KSN14                  PIC X(09) VALUE "190120510".
-      *    °åÎÅ°ÂÁ´ÂÐºö²Ã»»£²
-           03  CONS-KSN15                  PIC X(09) VALUE "190136910".
-      *    ´¶À÷ËÉ»ßÂÐºö²Ã»»
-           03  CONS-KSN16                  PIC X(09) VALUE "190137070".
-      *    ±ÉÍÜ´ÉÍý¼Â»Ü²Ã»»
-           03  CONS-KSN17                  PIC X(09) VALUE "190120410".
-      *    ¸åÈ¯°åÌôÉÊ»ÈÍÑÂÎÀ©²Ã»»
-           03  CONS-KSN18                  PIC X(09) VALUE "190138010".
-      *    £±µéÃÏÃÏ°è²Ã»»
-           03  CONS-KSN19                  PIC X(09) VALUE "190077070".
-      *    £²µéÃÏÃÏ°è²Ã»»
-           03  CONS-KSN20                  PIC X(09) VALUE "190077170".
-      *    £³µéÃÏÃÏ°è²Ã»»
-           03  CONS-KSN21                  PIC X(09) VALUE "190120010".
-      *    £´µéÃÏÃÏ°è²Ã»»
-           03  CONS-KSN22                  PIC X(09) VALUE "190077270".
-      *    £µµéÃÏÃÏ°è²Ã»»
-           03  CONS-KSN23                  PIC X(09) VALUE "190120110".
-      *    £¶µéÃÏÃÏ°è²Ã»»
-           03  CONS-KSN24                  PIC X(09) VALUE "190077370".
+      *      ÉÂ±¡¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂÅï´ÉÍý¡ËÀßÄê²Ã»»
+      *        ´Ç¸îÊä½õ²Ã»»£±
+               05  CONS-KSN25          PIC X(11) VALUE "1 190103770".
+      *        ´Ç¸îÊä½õ²Ã»»£±¡Ê£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ë
+               05  CONS-KSN26          PIC X(11) VALUE "1 190103870".
+      *        ´Ç¸îÊä½õ²Ã»»£²
+               05  CONS-KSN27          PIC X(11) VALUE "1 190103970".
+      *        ´Ç¸îÊä½õ²Ã»»£³
+               05  CONS-KSN28          PIC X(11) VALUE "1 190104070".
+      *        ¥×¥ì¥¤¥ë¡¼¥à¡¢ÊÝ°é»ÎÅù²Ã»»
+               05  CONS-KSN29          PIC X(11) VALUE "1 190111370".
+      *        ÆñÉÂ´µ¼ÔÅùÆþ±¡¿ÇÎÅ²Ã»»
+               05  CONS-KSN30          PIC X(11) VALUE "1 190101770".
+      *        ÆÃ¼ì¼À´µÆþ±¡»ÜÀß´ÉÍý²Ã»»
+               05  CONS-KSN31          PIC X(11) VALUE "1 190101970".
+      *        »ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»
+               05  CONS-KSN32          PIC X(11) VALUE "1 190110170".
+      *        Àº¿À²Ê±þµÞÆþ±¡»ÜÀß´ÉÍý²Ã»»
+               05  CONS-KSN33          PIC X(11) VALUE "1 190106970".
+      *        ´Ç¸îÇÛÃÖ²Ã»»
+               05  CONS-KSN34          PIC X(11) VALUE "1 190102070".
+      *        £±£µÂÐ£±Êä½õÂÎÀ©²Ã»»
+               05  CONS-KSN35          PIC X(11) VALUE "1 190135710".
+      *        £²£°ÂÐ£±Êä½õÂÎÀ©²Ã»»
+               05  CONS-KSN36          PIC X(11) VALUE "1 190135810".
+      *        £²£µÂÐ£±Êä½õÂÎÀ©²Ã»»
+               05  CONS-KSN37          PIC X(11) VALUE "1 190127110".
+      *        £µ£°ÂÐ£±Êä½õÂÎÀ©²Ã»»
+               05  CONS-KSN38          PIC X(11) VALUE "1 190127210".
+      *        £·£µÂÐ£±Êä½õÂÎÀ©²Ã»»
+               05  CONS-KSN39          PIC X(11) VALUE "1 190127310".
+      *        £±£°£°ÂÐ£±Êä½õÂÎÀ©²Ã»»
+               05  CONS-KSN40          PIC X(11) VALUE "1 190127410".
+      *        ½Å¾É´µ¼Ô²óÉüÉÂÅï²Ã»»
+               05  CONS-KSN41          PIC X(11) VALUE "1 190129870".
+      *        µÞÀ­´ü´Ç¸îÊä½õÂÎÀ©²Ã»»£±
+               05  CONS-KSN42          PIC X(11) VALUE "1 190135910".
+      *        µÞÀ­´ü´Ç¸îÊä½õÂÎÀ©²Ã»»£²
+               05  CONS-KSN43          PIC X(11) VALUE "1 190136010".
+      *        Àº¿À²ÊÃÏ°è°Ü¹Ô¼Â»Ü²Ã»»
+               05  CONS-KSN44          PIC X(11) VALUE "1 190127810".
+      *        °ìÈÌÉÂÅï´Ç¸îÉ¬Í×ÅÙÉ¾²Á²Ã»»
+               05  CONS-KSN45          PIC X(11) VALUE "1 190131570".
+      *        °ìÈÌÉÂÅï´Ç¸îÉ¬Í×ÅÙÉ¾²Á²Ã»»¡ÊÀìÌçÉÂ±¡¡Ë
+               05  CONS-KSN46          PIC X(11) VALUE "1 190134970".
+      *        °ìÈÌÉÂÅï´Ç¸îÉ¬Í×ÅÙÉ¾²Á²Ã»»¡ÊÆÃÄêµ¡Ç½ÉÂ±¡¡Ë
+               05  CONS-KSN47          PIC X(11) VALUE "1 190134870".
+      *        µÙÆü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÄó¶¡ÂÎÀ©²Ã»»
+               05  CONS-KSN48          PIC X(11) VALUE "1 190140870".
       *
-      *  ÉÂ±¡¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂÅï´ÉÍý¡ËÀßÄê²Ã»»
-      *    ´Ç¸îÊä½õ²Ã»»£±
-           03  CONS-KSN25                  PIC X(09) VALUE "190103770".
-      *    ´Ç¸îÊä½õ²Ã»»£±¡Ê£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ë
-           03  CONS-KSN26                  PIC X(09) VALUE "190103870".
-      *    ´Ç¸îÊä½õ²Ã»»£²
-           03  CONS-KSN27                  PIC X(09) VALUE "190103970".
-      *    ´Ç¸îÊä½õ²Ã»»£³
-           03  CONS-KSN28                  PIC X(09) VALUE "190104070".
-      *    ¥×¥ì¥¤¥ë¡¼¥à¡¢ÊÝ°é»ÎÅù²Ã»»
-           03  CONS-KSN29                  PIC X(09) VALUE "190111370".
-      *    ÆñÉÂ´µ¼ÔÅùÆþ±¡¿ÇÎÅ²Ã»»
-           03  CONS-KSN30                  PIC X(09) VALUE "190101770".
-      *    ÆÃ¼ì¼À´µÆþ±¡»ÜÀß´ÉÍý²Ã»»
-           03  CONS-KSN31                  PIC X(09) VALUE "190101970".
-      *    »ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»
-           03  CONS-KSN32                  PIC X(09) VALUE "190110170".
-      *    Àº¿À²Ê±þµÞÆþ±¡»ÜÀß´ÉÍý²Ã»»
-           03  CONS-KSN33                  PIC X(09) VALUE "190106970".
-      *    ´Ç¸îÇÛÃÖ²Ã»»
-           03  CONS-KSN34                  PIC X(09) VALUE "190102070".
-      *    £±£µÂÐ£±Êä½õÂÎÀ©²Ã»»
-           03  CONS-KSN35                  PIC X(09) VALUE "190135710".
-      *    £²£°ÂÐ£±Êä½õÂÎÀ©²Ã»»
-           03  CONS-KSN36                  PIC X(09) VALUE "190135810".
-      *    £²£µÂÐ£±Êä½õÂÎÀ©²Ã»»
-           03  CONS-KSN37                  PIC X(09) VALUE "190127110".
-      *    £µ£°ÂÐ£±Êä½õÂÎÀ©²Ã»»
-           03  CONS-KSN38                  PIC X(09) VALUE "190127210".
-      *    £·£µÂÐ£±Êä½õÂÎÀ©²Ã»»
-           03  CONS-KSN39                  PIC X(09) VALUE "190127310".
-      *    £±£°£°ÂÐ£±Êä½õÂÎÀ©²Ã»»
-           03  CONS-KSN40                  PIC X(09) VALUE "190127410".
-      *    ½Å¾É´µ¼Ô²óÉüÉÂÅï²Ã»»
-           03  CONS-KSN41                  PIC X(09) VALUE "190129870".
-      *    µÞÀ­´ü´Ç¸îÊä½õÂÎÀ©²Ã»»£±
-           03  CONS-KSN42                  PIC X(09) VALUE "190135910".
-      *    µÞÀ­´ü´Ç¸îÊä½õÂÎÀ©²Ã»»£²
-           03  CONS-KSN43                  PIC X(09) VALUE "190136010".
-      *    Àº¿À²ÊÃÏ°è°Ü¹Ô¼Â»Ü²Ã»»
-           03  CONS-KSN44                  PIC X(09) VALUE "190127810".
-      *    °ìÈÌÉÂÅï´Ç¸îÉ¬Í×ÅÙÉ¾²Á²Ã»»
-           03  CONS-KSN45                  PIC X(09) VALUE "190131570".
-      *    °ìÈÌÉÂÅï´Ç¸îÉ¬Í×ÅÙÉ¾²Á²Ã»»¡ÊÀìÌçÉÂ±¡¡Ë
-           03  CONS-KSN46                  PIC X(09) VALUE "190134970".
-      *    °ìÈÌÉÂÅï´Ç¸îÉ¬Í×ÅÙÉ¾²Á²Ã»»¡ÊÆÃÄêµ¡Ç½ÉÂ±¡¡Ë
-           03  CONS-KSN47                  PIC X(09) VALUE "190134870".
-      *    µÙÆü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÄó¶¡ÂÎÀ©²Ã»»
-           03  CONS-KSN48                  PIC X(09) VALUE "190140870".
+      *      ÉÂ±¡¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂ¼¼´ÉÍý¡ËÀßÄê²Ã»»
+      *        Êü¼ÍÀþ¼£ÎÅÉÂ¼¼´ÉÍý²Ã»»
+               05  CONS-KSN49          PIC X(11) VALUE "2 190106670".
+      *        ÎÅÍÜ´Ä¶­²Ã»»
+               05  CONS-KSN50          PIC X(11) VALUE "2 190105570".
+      *        ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£±
+               05  CONS-KSN51          PIC X(11) VALUE "2 190120210".
+      *        ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£²
+               05  CONS-KSN52          PIC X(11) VALUE "2 190106070".
+      *        ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£³
+               05  CONS-KSN53          PIC X(11) VALUE "2 190106170".
+      *        ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£´
+               05  CONS-KSN54          PIC X(11) VALUE "2 190106270".
+      *        ½Å¾É¼ÔÅùÎÅÍÜ´Ä¶­ÆÃÊÌ²Ã»»¡Ê¸Ä¼¼¡Ë
+               05  CONS-KSN55          PIC X(11) VALUE "2 190105870".
+      *        ½Å¾É¼ÔÅùÎÅÍÜ´Ä¶­ÆÃÊÌ²Ã»»¡Ê£²¿ÍÉô²°¡Ë
+               05  CONS-KSN56          PIC X(11) VALUE "2 190105970".
+      *        Ìµ¶Ý¼£ÎÅ¼¼´ÉÍý²Ã»»
+               05  CONS-KSN57          PIC X(11) VALUE "2 190106570".
       *
-      *  ÉÂ±¡¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂ¼¼´ÉÍý¡ËÀßÄê²Ã»»
-      *    Êü¼ÍÀþ¼£ÎÅÉÂ¼¼´ÉÍý²Ã»»
-           03  CONS-KSN49                  PIC X(09) VALUE "190106670".
-      *    ÎÅÍÜ´Ä¶­²Ã»»
-           03  CONS-KSN50                  PIC X(09) VALUE "190105570".
-      *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£±
-           03  CONS-KSN51                  PIC X(09) VALUE "190120210".
-      *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£²
-           03  CONS-KSN52                  PIC X(09) VALUE "190106070".
-      *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£³
-           03  CONS-KSN53                  PIC X(09) VALUE "190106170".
-      *    ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£´
-           03  CONS-KSN54                  PIC X(09) VALUE "190106270".
-      *    ½Å¾É¼ÔÅùÎÅÍÜ´Ä¶­ÆÃÊÌ²Ã»»¡Ê¸Ä¼¼¡Ë
-           03  CONS-KSN55                  PIC X(09) VALUE "190105870".
-      *    ½Å¾É¼ÔÅùÎÅÍÜ´Ä¶­ÆÃÊÌ²Ã»»¡Ê£²¿ÍÉô²°¡Ë
-           03  CONS-KSN56                  PIC X(09) VALUE "190105970".
-      *    Ìµ¶Ý¼£ÎÅ¼¼´ÉÍý²Ã»»
-           03  CONS-KSN57                  PIC X(09) VALUE "190106570".
+      *      ¿ÇÎÅ½ê¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂÅï´ÉÍý¡ËÀßÄê²Ã»»
+      *        ÆñÉÂ´µ¼ÔÅùÆþ±¡¿ÇÎÅ²Ã»»
+               05  CONS-KSN58          PIC X(11) VALUE "1 190101770".
+      *        ÆÃ¼ì¼À´µÆþ±¡»ÜÀß´ÉÍý²Ã»»
+               05  CONS-KSN59          PIC X(11) VALUE "1 190101970".
+      *        °å»ÕÇÛÃÖ²Ã»»£±
+               05  CONS-KSN60          PIC X(11) VALUE "1 190135570".
+      *        °å»ÕÇÛÃÖ²Ã»»£²
+               05  CONS-KSN61          PIC X(11) VALUE "1 190117070".
+      *        Ìë´Ö¶ÛµÞÂÎÀ©³ÎÊÝ²Ã»»
+               05  CONS-KSN62          PIC X(11) VALUE "1 190126470".
+      *        ´Ç¸îÇÛÃÖ²Ã»»£±
+               05  CONS-KSN63          PIC X(11) VALUE "1 190109670".
+      *        ´Ç¸îÇÛÃÖ²Ã»»£²
+               05  CONS-KSN64          PIC X(11) VALUE "1 190126570".
+      *        Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£±
+               05  CONS-KSN65          PIC X(11) VALUE "1 190126770".
+      *        Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£²
+               05  CONS-KSN66          PIC X(11) VALUE "1 190126670".
       *
-      *  ¿ÇÎÅ½ê¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂÅï´ÉÍý¡ËÀßÄê²Ã»»
-      *    ÆñÉÂ´µ¼ÔÅùÆþ±¡¿ÇÎÅ²Ã»»
-           03  CONS-KSN58                  PIC X(09) VALUE "190101770".
-      *    ÆÃ¼ì¼À´µÆþ±¡»ÜÀß´ÉÍý²Ã»»
-           03  CONS-KSN59                  PIC X(09) VALUE "190101970".
-      *    °å»ÕÇÛÃÖ²Ã»»£±
-           03  CONS-KSN60                  PIC X(09) VALUE "190135570".
-      *    °å»ÕÇÛÃÖ²Ã»»£²
-           03  CONS-KSN61                  PIC X(09) VALUE "190117070".
-      *    Ìë´Ö¶ÛµÞÂÎÀ©³ÎÊÝ²Ã»»
-           03  CONS-KSN62                  PIC X(09) VALUE "190126470".
-      *    ´Ç¸îÇÛÃÖ²Ã»»£±
-           03  CONS-KSN63                  PIC X(09) VALUE "190109670".
-      *    ´Ç¸îÇÛÃÖ²Ã»»£²
-           03  CONS-KSN64                  PIC X(09) VALUE "190126570".
-      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£±
-           03  CONS-KSN65                  PIC X(09) VALUE "190126770".
-      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£²
-           03  CONS-KSN66                  PIC X(09) VALUE "190126670".
+      *      ¿ÇÎÅ½ê¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂ¼¼´ÉÍý¡ËÀßÄê²Ã»»
+      *        ¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»£±
+               05  CONS-KSN67          PIC X(11) VALUE "2 190106370".
+      *        ¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»£²
+               05  CONS-KSN68          PIC X(11) VALUE "2 190106470".
+      *        Êü¼ÍÀþ¼£ÎÅÉÂ¼¼´ÉÍý²Ã»»
+               05  CONS-KSN69          PIC X(11) VALUE "2 190106670".
+      *        Ìµ¶Ý¼£ÎÅ¼¼´ÉÍý²Ã»»
+               05  CONS-KSN70          PIC X(11) VALUE "2 190106570".
       *
-      *  ¿ÇÎÅ½ê¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂ¼¼´ÉÍý¡ËÀßÄê²Ã»»
-      *    ¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»£±
-           03  CONS-KSN67                  PIC X(09) VALUE "190106370".
-      *    ¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»£²
-           03  CONS-KSN68                  PIC X(09) VALUE "190106470".
-      *    Êü¼ÍÀþ¼£ÎÅÉÂ¼¼´ÉÍý²Ã»»
-           03  CONS-KSN69                  PIC X(09) VALUE "190106670".
-      *    Ìµ¶Ý¼£ÎÅ¼¼´ÉÍý²Ã»»
-           03  CONS-KSN70                  PIC X(09) VALUE "190106570".
-      *
-      *    ÆþÂà±¡ÅÐÏ¿»þ¤Ë»»Äê¤¹¤ë²Ã»»
-      *    êóáì´µ¼Ô´ÉÍý²Ã»»
-           03  CONS-KSN71                  PIC X(09) VALUE "190116990".
-      *    Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»
-           03  CONS-KSN72                  PIC X(09) VALUE "190135470".
-      *    µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
-           03  CONS-KSN73                  PIC X(09) VALUE "190135670".
-      *    µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¡ÊÉÂ±¡¡Ë
-           03  CONS-KSN74                  PIC X(09) VALUE "190134270".
+      *      ÆþÂà±¡ÅÐÏ¿»þ¤Ë»»Äê¤¹¤ë²Ã»»
+      *        êóáì´µ¼Ô´ÉÍý²Ã»»
+               05  CONS-KSN71          PIC X(11) VALUE "3 190116990".
+      *        Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»
+               05  CONS-KSN72          PIC X(11) VALUE "3 190135470".
+      *        µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
+               05  CONS-KSN73          PIC X(11) VALUE "3 190135670".
+      *        µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¡ÊÉÂ±¡¡Ë
+               05  CONS-KSN74          PIC X(11) VALUE "3 190134270".
+           03  CONS-KSN-R  REDEFINES CONS-KSN-VAL.
+               05  CONS-KSN-OCC            OCCURS    74.
+                   07  CONS-KSN-KBN        PIC X(01).
+                   07  CONS-KSN-FIL        PIC X(01).
+                   07  CONS-KSN-CD         PIC X(09).
+           03  CONS-KSN-MAX                PIC 9(05)   VALUE 74.
+        
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -235,6 +247,8 @@
            03  WRK-SELNUM              PIC 9(03).
            03  WRK-KBNCD               PIC 9(08).
            03  WRK-ZZ9                 PIC ZZ9.
+           03  WRK-CD-MCNT             PIC 9(02).
+           03  WRK-INPUTCD             PIC X(09).
       *
       *    ¥³¥é¥à¥ê¥¹¥È°ÌÃÖ
            03  WRK-W201-ROW            PIC S9(09).
@@ -423,6 +437,9 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG
+           EVALUATE    SPA-MOTOPG
+           WHEN    "W25"
+                   PERFORM 320-W25SPASET-SEC
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
                WHEN    OTHER
@@ -431,6 +448,20 @@
       *
            .
        300-SCREEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¥»¥Ã¥È½èÍý
+      *****************************************************************
+       320-W25SPASET-SEC           SECTION.
+      *
+           IF    ( SPA-W25-SRYCD   NOT =   SPACE )
+               MOVE    SPA-W25-SRYCD   TO  SPA-W201-KSNCD2
+               PERFORM 22022-KSNCD2-CHK-SEC
+           ELSE
+               MOVE    2               TO  SPA-W201-CUR
+           END-IF 
+           .
+       320-W25SPASET-EXT.
            EXIT.
       *****************************************************************
       *    ³ÎÇ§²èÌÌ¡Ê£Ã£É£Ä£±¡Ë£Ï£Ë½èÍý
@@ -819,191 +850,257 @@
       *****************************************************************
        2202-KSNCD2-CHK-SEC            SECTION.
       *
-           IF      SPA-W201-KSNCD2     =   SPACE
+           IF    ( SPA-W201-KSNCD2     =   SPACE )
                CONTINUE
            ELSE
-               INITIALIZE                      TNS-TENSU-REC
-               MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
-               MOVE    SPA-W201-KSNCD2     TO  TNS-SRYCD
-               MOVE    SPA-NAI-W20-YUKOSTYMD
-                                           TO  TNS-YUKOSTYMD
-               MOVE    SPA-NAI-W20-YUKOSTYMD
-                                           TO  TNS-YUKOEDYMD
-               MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_tensu"     TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM 900-TENSU-READ-SEC
-                   IF    FLG-TENSU         =   ZERO
-                       MOVE   MCPDATA-REC  TO  TNS-TENSU-REC
-                       MOVE   TNS-NAME     TO  SPA-W201-KSNNM2
-                   ELSE
-                       MOVE   SPACE        TO  SPA-W201-KSNNM2
-                   END-IF
+               MOVE    ZERO            TO  FLG-KENSAKU
+               MOVE    SPACE           TO  WRK-INPUTCD
+      *
+      *        "/" ÆþÎÏ¤Î»þ¡¢¸¡º÷²èÌÌ¤Ø
+               IF    ( SPA-W201-KSNCD2 (1 : 1)   =  "/" )
+                   MOVE    1           TO  FLG-KENSAKU
                ELSE
-                   MOVE    1               TO  FLG-TENSU
+                   PERFORM 22021-KSNCD2-CHK-SEC
                END-IF
-      *
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
-      *
-               IF      FLG-TENSU           NOT =   ZERO
-                   MOVE    "0002"          TO  SPA-ERRCD
-                   MOVE    2               TO  SPA-W201-CUR
-               END-IF
-      *
-               IF      FLG-TENSU           =   ZERO
-                  IF   TNS-HOSPSRYKBN      =   ZERO
-                      CONTINUE
-                  ELSE
-                      IF  (TNS-HOSPSRYKBN  =  1)   AND
-                          (SPA-HOSPSBT     =  2)
-                          MOVE    "0005"   TO  SPA-ERRCD
-                          MOVE    2        TO  SPA-W201-CUR
-                      END-IF
-                      IF  (TNS-HOSPSRYKBN  =  2)   AND
-                          (SPA-HOSPSBT     =  1)
-                          MOVE    "0006"   TO  SPA-ERRCD
-                          MOVE    2        TO  SPA-W201-CUR
-                      END-IF
-                  END-IF
-               END-IF
-      *
-      *        ¥·¥¹¥Æ¥à´ÉÍý¡Ê°åÎÅµ¡´Ø¾ðÊó¡Ë¤ÇÀßÄê¤¹¤ë²Ã»»
-      *        ¤Ç¤Ê¤¤¤³¤È¤Î¥Á¥§¥Ã¥¯
-               IF   SPA-ERRCD       =   SPACE
-                    IF   SPA-W201-KSNCD2  =   CONS-KSN1   OR
-                                              CONS-KSN2   OR
-                                              CONS-KSN3   OR
-                                              CONS-KSN4   OR
-                                              CONS-KSN5   OR
-                                              CONS-KSN6   OR
-                                              CONS-KSN7   OR
-                                              CONS-KSN8   OR
-                                              CONS-KSN9   OR
-                                              CONS-KSN10  OR
-                                              CONS-KSN11  OR
-                                              CONS-KSN12  OR
-                                              CONS-KSN13  OR
-                                              CONS-KSN14  OR
-                                              CONS-KSN15  OR
-                                              CONS-KSN16  OR
-                                              CONS-KSN17  OR
-                                              CONS-KSN18  OR
-                                              CONS-KSN19  OR
-                                              CONS-KSN20  OR
-                                              CONS-KSN21  OR
-                                              CONS-KSN22  OR
-                                              CONS-KSN23  OR
-                                              CONS-KSN24
-                        MOVE    "0007"   TO   SPA-ERRCD
-                        MOVE    2        TO   SPA-W201-CUR
-                    END-IF
-               END-IF
-      *
-      *        ÉÂ±¡¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂÅï´ÉÍý¾ðÊó¡Ë¤ÇÀßÄê¤¹¤ë²Ã»»
-      *        ¤Ç¤Ê¤¤¤³¤È¤Î¥Á¥§¥Ã¥¯
-               IF  (SPA-ERRCD       =   SPACE)   AND
-                   (SPA-HOSPSBT     =       1)
-                   IF   SPA-W201-KSNCD2  =    CONS-KSN25  OR
-                                              CONS-KSN26  OR
-                                              CONS-KSN27  OR
-                                              CONS-KSN28  OR
-                                              CONS-KSN29  OR
-                                              CONS-KSN30  OR
-                                              CONS-KSN31  OR
-                                              CONS-KSN32  OR
-                                              CONS-KSN33  OR
-                                              CONS-KSN34  OR
-                                              CONS-KSN35  OR
-                                              CONS-KSN36  OR
-                                              CONS-KSN37  OR
-                                              CONS-KSN38  OR
-                                              CONS-KSN39  OR
-                                              CONS-KSN40  OR
-                                              CONS-KSN41  OR
-                                              CONS-KSN42  OR
-                                              CONS-KSN43  OR
-                                              CONS-KSN44  OR
-                                              CONS-KSN45  OR
-                                              CONS-KSN46  OR
-                                              CONS-KSN47  OR
-                                              CONS-KSN48
-                        MOVE    "0008"   TO   SPA-ERRCD
-                        MOVE    2        TO   SPA-W201-CUR
+               IF    ( SPA-ERRCD       =   SPACE )
+                   IF    ( FLG-KENSAKU =   ZERO )
+                       PERFORM 22022-KSNCD2-CHK-SEC
+                   ELSE
+                       PERFORM 409-KENSAKU-SEC
                    END-IF
                END-IF
-      *
-      *        ÉÂ±¡¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂ¼¼´ÉÍý¾ðÊó¡Ë¤ÇÀßÄê¤¹¤ë²Ã»»
-      *        ¤Ç¤Ê¤¤¤³¤È¤Î¥Á¥§¥Ã¥¯
-               IF  (SPA-ERRCD       =   SPACE)   AND
-                   (SPA-HOSPSBT     =       1)
-                   IF   SPA-W201-KSNCD2  =    CONS-KSN49  OR
-                                              CONS-KSN50  OR
-                                              CONS-KSN51  OR
-                                              CONS-KSN52  OR
-                                              CONS-KSN53  OR
-                                              CONS-KSN54  OR
-                                              CONS-KSN55  OR
-                                              CONS-KSN56  OR
-                                              CONS-KSN57
-                        MOVE    "0009"   TO   SPA-ERRCD
-                        MOVE    2        TO   SPA-W201-CUR
-                   END-IF
-               END-IF
-      *
-      *        ¿ÇÎÅ½ê¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂÅï´ÉÍý¾ðÊó¡Ë¤ÇÀßÄê¤¹¤ë²Ã»»
-      *        ¤Ç¤Ê¤¤¤³¤È¤Î¥Á¥§¥Ã¥¯
-               IF  (SPA-ERRCD       =   SPACE)   AND
-                   (SPA-HOSPSBT     =       2)
-                   IF   SPA-W201-KSNCD2  =    CONS-KSN58  OR
-                                              CONS-KSN59  OR
-                                              CONS-KSN60  OR
-                                              CONS-KSN61  OR
-                                              CONS-KSN62  OR
-                                              CONS-KSN63  OR
-                                              CONS-KSN64  OR
-                                              CONS-KSN65  OR
-                                              CONS-KSN66
-                        MOVE    "0008"   TO   SPA-ERRCD
-                        MOVE    2        TO   SPA-W201-CUR
-                   END-IF
-               END-IF
-      *
-      *        ¿ÇÎÅ½ê¤Î¥·¥¹¥Æ¥à´ÉÍý¡ÊÉÂ¼¼´ÉÍý¾ðÊó¡Ë¤ÇÀßÄê¤¹¤ë²Ã»»
-      *        ¤Ç¤Ê¤¤¤³¤È¤Î¥Á¥§¥Ã¥¯
-               IF  (SPA-ERRCD       =   SPACE)   AND
-                   (SPA-HOSPSBT     =       2)
-                   IF   SPA-W201-KSNCD2  =    CONS-KSN67  OR
-                                              CONS-KSN68  OR
-                                              CONS-KSN69  OR
-                                              CONS-KSN70
-                        MOVE    "0009"   TO   SPA-ERRCD
-                        MOVE    2        TO   SPA-W201-CUR
-                   END-IF
-               END-IF
-      *
-      *        ÆþÂà±¡ÅÐÏ¿²èÌÌ¤ÇÀßÄê¤¹¤ë²Ã»»¤Ç¤Ê¤¤¤³¤È¤Î¥Á¥§¥Ã¥¯
-               IF  SPA-ERRCD       =   SPACE
-                   IF   SPA-W201-KSNCD2  =    CONS-KSN71  OR
-                                              CONS-KSN72  OR
-                                              CONS-KSN73  OR
-                                              CONS-KSN74
-                        MOVE    "0013"   TO   SPA-ERRCD
-                        MOVE    2        TO   SPA-W201-CUR
-                   END-IF
-               END-IF
-      *
            END-IF
       *
            .
        2202-KSNCD2-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    Æþ±¡ÎÁ²Ã»»¥³¡¼¥É¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       22021-KSNCD2-CHK-SEC            SECTION.
       *
+           MOVE    ZERO               TO  FLG-KENSAKU
+      *
+           MOVE    ZERO               TO  WRK-CD-MCNT
+           MOVE    ZERO               TO  FLG-KANJI
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-W201-KSNCD2     TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO
+                                       SPA-W201-KSNCD2
+           IF      KANACHK-RC      NOT =   ZERO
+      *        Á´³ÑÈ¾³Ñº®ºß¥¨¥é¡¼
+               MOVE    "0003"              TO  SPA-ERRCD
+           ELSE
+               MOVE    KANACHK-MAX         TO  WRK-CD-MCNT
+      *        Á´³Ñ
+               IF      KANACHK-SYUBETU     =   2
+                   MOVE    1           TO  FLG-KANJI
+                   MOVE    SPACE       TO  SPA-W201-KSNCD2(9:)
+               ELSE
+                   MOVE    ZERO        TO  FLG-KANJI
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+      *        È¾³Ñ¤Ç£¹Ê¸»ú¤Î»þ¡¢ÅÀ¿ô¥Þ¥¹¥¿¥Á¥§¥Ã¥¯¤Ø
+               IF     (WRK-CD-MCNT         =   9  )  AND
+                      (FLG-KANJI           =   ZERO )  AND
+                      (SPA-W201-KSNCD2 (1 : 9 )
+                                       IS  NUMERIC  )
+                   CONTINUE
+               ELSE
+                   MOVE    1          TO  FLG-KENSAKU
+                   MOVE    SPA-W201-KSNCD2
+                                      TO  WRK-INPUTCD
+               END-IF
+           END-IF
+      *
+           .
+       22021-KSNCD2-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡ÎÁ²Ã»»¥³¡¼¥É¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       22022-KSNCD2-CHK-SEC            SECTION.
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    SPA-W201-KSNCD2     TO  TNS-SRYCD
+           MOVE    SPA-NAI-W20-YUKOSTYMD
+                                       TO  TNS-YUKOSTYMD
+           MOVE    SPA-NAI-W20-YUKOSTYMD
+                                       TO  TNS-YUKOEDYMD
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu"     TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 900-TENSU-READ-SEC
+               IF    FLG-TENSU         =   ZERO
+                   MOVE   MCPDATA-REC  TO  TNS-TENSU-REC
+                   MOVE   TNS-NAME     TO  SPA-W201-KSNNM2
+               ELSE
+                   MOVE   SPACE        TO  SPA-W201-KSNNM2
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-TENSU
+           END-IF
+      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-TENSU           NOT =   ZERO
+               MOVE    "0002"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-W201-CUR
+           END-IF
+      *
+           IF      FLG-TENSU           =   ZERO
+              IF   TNS-HOSPSRYKBN      =   ZERO
+                  CONTINUE
+              ELSE
+                  IF  (TNS-HOSPSRYKBN  =  1)   AND
+                      (SPA-HOSPSBT     =  2)
+                      MOVE    "0005"   TO  SPA-ERRCD
+                      MOVE    2        TO  SPA-W201-CUR
+                  END-IF
+                  IF  (TNS-HOSPSRYKBN  =  2)   AND
+                      (SPA-HOSPSBT     =  1)
+                      MOVE    "0006"   TO  SPA-ERRCD
+                      MOVE    2        TO  SPA-W201-CUR
+                  END-IF
+              END-IF
+           END-IF
+      *
+      *        ¥·¥¹¥Æ¥à´ÉÍý¡Ê°åÎÅµ¡´Ø¾ðÊó¡Ë¤ÇÀßÄê¤¹¤ë²Ã»»
+      *        ¤Ç¤Ê¤¤¤³¤È¤Î¥Á¥§¥Ã¥¯
+           IF  SPA-ERRCD       =   SPACE
+               PERFORM VARYING IDXK    FROM    1   BY  1
+                       UNTIL ( IDXK    >   CONS-KSN-MAX )
+                        OR   ( SPA-ERRCD   NOT =   SPACE )
+                   IF    ( SPA-W201-KSNCD2     =   CONS-KSN-CD (IDXK))
+                       MOVE    2           TO  SPA-W201-CUR
+                       EVALUATE    CONS-KSN-KBN (IDXK)
+                       WHEN    "0"
+                           MOVE    "0007"  TO  SPA-ERRCD
+                       WHEN    "1"
+                           MOVE    "0008"  TO  SPA-ERRCD
+                       WHEN    "2"
+                           MOVE    "0009"  TO  SPA-ERRCD
+                       WHEN    "3"
+                           MOVE    "0013"  TO  SPA-ERRCD
+                       END-EVALUATE
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       22022-KSNCD2-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸¡º÷½èÍý
+      *****************************************************************
+       409-KENSAKU-SEC             SECTION.
+      *
+      *    ¶¦ÄÌ£Ó£Ð£ÁÊÔ½¸
+           INITIALIZE                  SPA-W25-AREA
+           MOVE    "2"                 TO  SPA-W25-TYPE
+      *
+           INITIALIZE                  SPA-W25GMN-AREA
+           IF      WRK-INPUTCD         NOT =   SPACE
+      *        ¿ÇÎÅ¹Ô°Ù¤Ç¸¡º÷¡Ê¥ª¥ê¥¸¥Ê¥ë¤Î£Ú£¹£¸¤ÏÆâÉþ¡Ë
+               MOVE    "8"                 TO  SPA-W25-GMN-SYORI
+      *        MOVE    "3"                 TO  SPA-W25-GMN-SYORI
+               MOVE    WRK-INPUTCD         TO  SPA-W25-INPUTCD
+               MOVE    "1"                 TO  SPA-W25-TYPE
+               IF      FLG-KANJI           =   1
+                   MOVE    "J"             TO  SPA-W25-CDSYUBETU
+               ELSE
+                   IF      WRK-INPUTCD(1:1)    NUMERIC
+                       EVALUATE    WRK-CD-MCNT
+                           WHEN    3
+                           WHEN    6
+                               MOVE    "6"     TO  SPA-W25-CDSYUBETU
+                           WHEN    4
+                               MOVE    "4"     TO  SPA-W25-CDSYUBETU
+                           WHEN    5
+                               MOVE    "5"     TO  SPA-W25-CDSYUBETU
+                       END-EVALUATE
+                   ELSE
+                       MOVE    "A"             TO  SPA-W25-CDSYUBETU
+                   END-IF
+               END-IF
+      *        ²èÌÌÊÔ½¸
+               PERFORM 41011-W25-SET-SEC
+      *        ÅÀ¿ô¥Þ¥¹¥¿ÊÔ½¸¤Ç¡¢ÂÐ¾Ý¥Ç¡¼¥¿¤Ê¤·¤Î»þ¡¢¿ÇÎÅ¹Ô°Ù¤Ç¸¡º÷¤¹¤ë
+               IF     (SPA-W25-GMN-MAX     =   ZERO )  AND
+                      (SPA-W25-CDSYUBETU   =   "J"  )
+                   INITIALIZE                  SPA-W25GMN-AREA
+                   MOVE    "8"                 TO  SPA-W25-GMN-SYORI
+      *            ²èÌÌÊÔ½¸
+                   PERFORM 41011-W25-SET-SEC
+               END-IF
+           ELSE
+      *        ²èÌÌÊÔ½¸
+               MOVE    "8"                 TO  SPA-W25-GMN-SYORI
+               PERFORM 41011-W25-SET-SEC
+           END-IF
+      *
+           MOVE    "W201"              TO  SPA-MOTOPG
+           MOVE    "W25"               TO  SPA-SAKIPG
+           MOVE    "W201"              TO  SPA-W25-MOTOPG
+      *
+           IF      SPA-W25-GMN-MAX     =   ZERO
+               MOVE    "INPUT"             TO  MCP-WIDGET
+           ELSE
+               MOVE    "SELNUM1"           TO  MCP-WIDGET
+           END-IF
+      *
+           MOVE   "NEW"                TO  MCP-PUTTYPE.
+           MOVE   "W25    "            TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       409-KENSAKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸¡º÷²èÌÌÊÔ½¸½èÍý
+      *****************************************************************
+       41011-W25-SET-SEC                           SECTION.
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-W01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-W25-GMN-AREA    TO  SPA-W25-KYOUTU
+           MOVE    SPA-W20FREE         TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGW25"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-WORK            TO  SPA-W01KYOUTU
+           MOVE    SPA-FREE            TO  SPA-W20FREE
+           MOVE    SPA-W25-KYOUTU      TO  SPA-W25-GMN-AREA
+      *
+           .
+       41011-W25-SET-EXT.
+           EXIT.
       *****************************************************************
       *    ¥¯¥ê¥¢½èÍý
       *****************************************************************
@@ -1119,7 +1216,7 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               MOVE    "1001"          TO  SPA-WIDCD
+               PERFORM 2201-TOUROKU-SYORI-SEC
            END-IF
       *
            .
@@ -1300,6 +1397,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE   "Æþ±¡ÎÁ²Ã»»¥³¡¼¥É¤¬ÅÀ¿ô¥Þ¥¹¥¿¤ËÂ¸ºß¤·¤Þ¤»¤ó¡£"
+                                       TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE   "Æþ±¡ÎÁ²Ã»»¥³¡¼¥É¤òÀµ¤·¤¯ÆþÎÏ¤·¤Æ¤¯¤À¤µ¤¤¡£"
                                        TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "ÁªÂòÈÖ¹æ¤òÆþÎÏ¤·¤Æ²¼¤µ¤¤¡£"

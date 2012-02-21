@@ -410,8 +410,6 @@
       *
       *    エラー画面より
            IF    ( SPA-MOTOPG      =   "WERR" )
-               MOVE    SPA-GMN-W21-MOTOPG
-                                       TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *        初期画面セット
@@ -452,10 +450,9 @@
       *
            EVALUATE    SPA-MOTOPG
            WHEN    "W20"
-               IF    ( SPA-MOTOPG2     =   "W21" )
-                   MOVE    "W01"       TO  SPA-MOTOPG
-                   MOVE    SPACE       TO  SPA-MOTOPG2
-                                           SPA-MOTOPG3
+               IF    ( SPA-W20-W21-MOTOPG  =   "W21" )
+      *
+                   INITIALIZE  SPA-W20-W21-AREA
       *
       *            病棟情報取得処理
                    PERFORM 3101-SYS-5001-GET-SEC
@@ -485,8 +482,6 @@
                    GO  TO  300-SCREEN-EXT
                END-IF
            WHEN    "WID1"
-               MOVE    SPA-GMN-W21-MOTOPG
-                                       TO  SPA-MOTOPG
                PERFORM 330-WID1-SET-SEC
                GO  TO      300-SCREEN-EXT
            END-EVALUATE
@@ -1926,7 +1921,7 @@
       *
       *    病棟管理情報画面へ
            WHEN    "CLICKED"       ALSO    "B09"
-               IF  ( SPA-MOTOPG    =       "W01" )
+               IF  ( SPA-W20-W21-MOTOPG    =       SPACE )
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 420-BYOTO-KANRI-SENI-SEC
                END-IF
@@ -2177,9 +2172,11 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    SPA-MOTOPG2         TO  SPA-MOTOPG3
-           MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
+           IF    ( SPA-W20-W21-MOTOPG  =   SPACE )
+               MOVE    "W01"               TO  SPA-SAKIPG
+           ELSE
+               MOVE    SPA-W20-W21-MOTOPG  TO  SPA-SAKIPG
+           END-IF
            MOVE    "W21"               TO  SPA-MOTOPG
       *
       ***  MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -2532,11 +2529,13 @@
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
+           INITIALIZE  SPA-W20-W21-AREA
+      *
            MOVE    SPA-GMN-W21-BTUNUM  TO  SPA-W20-W21-BTUNUM
       *
            MOVE    "W20"               TO  SPA-SAKIPG
            MOVE    "W21"               TO  SPA-MOTOPG
-           MOVE    "W01"               TO  SPA-MOTOPG2
+                                           SPA-W20-W21-MOTOPG
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
@@ -4561,7 +4560,7 @@
       *
            INITIALIZE                  W21
       *
-           IF    ( SPA-MOTOPG      =   "W01" )
+           IF    ( SPA-W20-W21-MOTOPG  =   SPACE )
                MOVE    "病棟"      TO  W21-B09
            END-IF
       *
@@ -5296,8 +5295,6 @@
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
-           MOVE    SPA-MOTOPG          TO  SPA-GMN-W21-MOTOPG
-      *
            MOVE    SPACE               TO  WERR
            MOVE    SPA-ERRCD           TO  WERR-ERRCODE
            MOVE    SPA-ERRMSG          TO  WERR-ERRMSG
@@ -5344,8 +5341,6 @@
                END-STRING
            END-EVALUATE
       *
-      *
-           MOVE    SPA-MOTOPG           TO  SPA-GMN-W21-MOTOPG
       *
            MOVE    SPACE                TO  WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
