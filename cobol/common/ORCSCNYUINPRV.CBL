@@ -35,8 +35,6 @@
       *                                     器材商品名コード対応
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値・関連コメント対応
-      *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
-      *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
       *****************************************************************
       *
       *
@@ -46,34 +44,34 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-      *                            ORGANIZATION    IS  SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-PARA.
+           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+                                   ORGANIZATION    IS  SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PARA-KEY.
-      *        05  PARA-FILEMEI         PIC X(08).
-      *        05  PARA-EDABAN          PIC 9(03).
-      *    03  PARA-DATA-REC            PIC X(60000).
+       FD  PARA-FILE.
+       01  PARA-REC.
+           03  PARA-KEY.
+               05  PARA-FILEMEI         PIC X(08).
+               05  PARA-EDABAN          PIC 9(03).
+           03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-      *01  FILE-NAME2.
-      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-      *    03  FILLER              PIC X(10)   VALUE   "PRVK01PARA".
-      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
+       01  FILE-NAME2.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(10)   VALUE   "PRVK01PARA".
+           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
-      *01  STS-AREA.
-      *    03  STS-PARA            PIC X(02).
+       01  STS-AREA.
+           03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -132,8 +130,6 @@
       *
            03  IDW                 PIC 9(04).
            03  IDW2                PIC 9(04).
-      *
-           03  IDX-D               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -337,11 +333,6 @@
            COPY    "CPJYURRK.INC"  REPLACING
                                      //JYURRK-// BY //TBL-JYURRK-//.
       *
-      *v4.8
-      *    パラメタテーブル
-       01  PARA-REC.
-           COPY    "CPPARA.INC". 
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -351,7 +342,7 @@
            COPY    "CPORCSLNK.INC".
       *
       *    診療行為入力項目変換パラメタ
-      **   COPY    "CPORCSC97.INC".
+           COPY    "CPORCSC97.INC".
       *
       *   算定履歴更新サブ
            COPY    "CPORCSSANTEI.INC".
@@ -482,39 +473,18 @@
            MOVE    ZERO                TO  IDX-KOUI
       *
       *    更新用ＤＢ読込み
-      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-      *    OPEN    INPUT               PARA-FILE
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+           OPEN    INPUT               PARA-FILE
       *
-      *    IF      STS-PARA           =  ZERO
-      *        PERFORM 980-PARA-READ-SEC
-      *    ELSE
-      *        MOVE    1               TO  FLG-PARA 
-      **** END-IF
-      *ver.4.8
-           MOVE    SPACE               TO  PARA-REC
-           INITIALIZE                      PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    "PVK8"              TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
-      *
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
+           IF      STS-PARA           =  ZERO
+               PERFORM 980-PARA-READ-SEC
            ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1                   TO  FLG-PARA
+               MOVE    1               TO  FLG-PARA 
            END-IF
-      *
            PERFORM     UNTIL      (FLG-PARA    =    1 )  OR
                                   (SPA-ERRCD   NOT =   SPACE )
-      ******   IF      PARA-FILEMEI        =   "WKSRYACT"
+               IF      PARA-FILEMEI        =   "WKSRYACT"
                    MOVE    PARA-DATA-REC       TO  WRK-WKSRYACT-REC
       *
                    IF     (IDX-KOUI        >   ZERO  )  AND
@@ -529,24 +499,20 @@
                    ADD     1               TO  IDX-KOUI
                    MOVE    PARA-DATA-REC   TO  LNK-WKSRYACT-REC
                                                             (IDX-KOUI)
-      ****     ELSE
+               ELSE
       *            剤毎に処理を行う
-      *            IF      IDX-KOUI        >   ZERO
-      *                PERFORM 100-SRYACT-KOU-SEC
-      *                PERFORM 200-JYURRK-SYORI-SEC
-      *                MOVE    SPACE           TO  LNK-WKSRYACT-AREA
-      *                MOVE    ZERO            TO  IDX-KOUI
-      *            END-IF
-      *****    END-IF
+                   IF      IDX-KOUI        >   ZERO
+                       PERFORM 100-SRYACT-KOU-SEC
+                       PERFORM 200-JYURRK-SYORI-SEC
+                       MOVE    SPACE           TO  LNK-WKSRYACT-AREA
+                       MOVE    ZERO            TO  IDX-KOUI
+                   END-IF
+               END-IF
       *
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
+               PERFORM 980-PARA-READ-SEC
            END-PERFORM
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
+           CLOSE                       PARA-FILE
       *
            IF      SPA-ERRCD           =   SPACE
       *    剤毎に処理を行う
@@ -752,15 +718,6 @@
                MOVE    SPA-SRYYMD(7:2)     TO  IDX-KAI2
                MOVE    1                   TO  TBL-DAY   (01 IDX-KAI2)
            END-IF
-      *!!!
-      *    同日再入院日判定
-           IF     (SPA-SRYYMD(1:6)     =   SPA-K02N-NYUINYMD (1:6))
-             AND  (SPA-K02N-DOUDAY     >   ZERO           )
-               MOVE    SPA-K02N-DOUDAY     TO  IDX-1
-           ELSE
-               MOVE    ZERO                TO  IDX-1
-           END-IF
-      *!!!
       *    算定日が重複した時、前の回数とする
            PERFORM VARYING     IDX-KAI1    FROM    1   BY  1
                    UNTIL       IDX-KAI1    >   10
@@ -774,13 +731,6 @@
                                                       (IDY IDX-KAI2)
                        END-PERFORM
                    END-IF
-      *!!!
-                   IF     (TBL-DAY (IDX-KAI1 IDX-KAI2) >   ZERO )
-                     AND  (IDX-1               =   IDX-KAI2  )
-                       MOVE    2               TO  TBL-DAY
-                                                  (IDX-KAI1 IDX-KAI2) 
-                   END-IF
-      *!!!
                END-PERFORM
            END-PERFORM
       *
@@ -1368,26 +1318,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                回数セット
                        ADD     TBL-KAISU(IDX-KAI1)
                                            TO  ACCT-DAY (1 IDX-KAI2)
-      *                ADD     TBL-KAISU(IDX-KAI1)
-      *                                    TO  ACCT-DAY (2 IDX-KAI2)
-      *!!!!
-      *                同日再入院分
-                       EVALUATE   TBL-DAY (IDX-KAI1 IDX-KAI2)
-                       WHEN    2
-                           MOVE    3           TO  IDX-1
-                       WHEN    OTHER
-                           MOVE    2           TO  IDX-1
-                       END-EVALUATE
                        ADD     TBL-KAISU(IDX-KAI1)
-                                           TO  ACCT-DAY (IDX-1 IDX-KAI2)
-      *!!
+                                           TO  ACCT-DAY (2 IDX-KAI2)
       *                自動算定分は集計しない
                        IF      LNK-WKSRY-AUTOKBN(01 01)  =   "3"
                            MOVE    TBL-KAISU(IDX-KAI1)
                                            TO  ACCT-DAY (1 IDX-KAI2)
                            MOVE    TBL-KAISU(IDX-KAI1)
-      ***                                  TO  ACCT-DAY (2 IDX-KAI2)
-                                           TO  ACCT-DAY (IDX-1 IDX-KAI2)
+                                           TO  ACCT-DAY (2 IDX-KAI2)
                        END-IF
                    END-IF
                END-PERFORM
@@ -1396,10 +1334,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  ACCT-ZAIKAISU
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL       IDX2    >   31
-               MOVE    ZERO                TO  ACCT-DAY (1 IDX2)
-               COMPUTE ACCT-DAY (1 IDX2)   =   ACCT-DAY (2 IDX2)
-                                           +   ACCT-DAY (3 IDX2)
-                                           +   ACCT-DAY (4 IDX2)
                ADD     ACCT-DAY (1 IDX2)   TO  ACCT-ZAIKAISU
            END-PERFORM
       *
@@ -1480,9 +1414,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF     (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =  "8")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "008")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "001")
-      *H30.4
-                      OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:7)
-                                                           =  "0992081")
                        PERFORM 45011-PTCOM-SYROI-SEC
                    END-IF
                END-IF
@@ -2143,10 +2074,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        ELSE
                            MOVE    "1"                 TO  JYURRK-HKNKBN
                        END-IF
-      *
-                   WHEN    "6"
-      *                自賠責（第三者行為）
-                       MOVE    "7"             TO  JYURRK-HKNKBN
                END-EVALUATE
            END-IF
       *    公害保険
@@ -2300,15 +2227,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM
                    UNTIL   (FLG-SRYACCT        =   1    ) OR
                            (FLG-OK             =   1    )
-      ***        投薬関係の有無
+      ****       投薬関係の有無
       *          IF      ACCT-SRYKBN(1:1)      =   "2"
       *              MOVE    1                 TO  FLG-TOUYAKU
-      **         END-IF
+      *          END-IF
       *
       *          入院調剤料と麻毒については後で一括変更するのでそのまま
       *          IF      ACCT-SRYKBN             =   "24"  OR "26"
       *                CONTINUE
-      ***        ELSE
+      ****       ELSE
       *
                    MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
                    EVALUATE    JYURRK-RENNUM
@@ -2325,10 +2252,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 4500113-TEISEI-SANTEI-SEC
       *
       *            剤回数　変更
+                   COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
+                                               -   ACCT-DAY
+                                                       (IDX-1 IDX-2)
+                   COMPUTE ACCT-DAY (1 IDX-2)  =   ACCT-DAY (1 IDX-2)
+                                               -   ACCT-DAY
+                                                       (IDX-1 IDX-2)
                    MOVE    ZERO                TO  ACCT-DAY
                                                        (IDX-1 IDX-2)
-      *            剤回数編集
-                   PERFORM 450140-ZAIKAISU-HEN-SEC
       *            回数がゼロの時、削除
                    IF      ACCT-ZAIKAISU       =   ZERO
                        PERFORM 45001121-ZAINUM-DELETE-SEC
@@ -2350,7 +2281,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
       *
-      ***         END-IF
+      *****       END-IF
       *
                    MOVE    "tbl_sryacct_prv"   TO  MCP-TABLE
                    MOVE    "key5"              TO  MCP-PATHNAME
@@ -2369,27 +2300,6 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4500112-TEISEI-SRYACCT-EXT.
            EXIT.
-      *****************************************************************
-      *   剤回数編集処理
-      *****************************************************************
-       450140-ZAIKAISU-HEN-SEC          SECTION.
-      *
-           COMPUTE ACCT-DAY (1 IDX-2)  =   ACCT-DAY (2 IDX-2)
-                                       +   ACCT-DAY (3 IDX-2)
-                                       +   ACCT-DAY (4 IDX-2)
-      *
-           MOVE    ZERO                TO  ACCT-ZAIKAISU
-           PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL       IDX-D   >   31
-              IF      ACCT-DAY (1 IDX-D)   >   ZERO
-      *            剤回数集計
-                   COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
-                                               +   ACCT-DAY
-                                                       (1  IDX-D)
-               END-IF
-           END-PERFORM
-           .
-       450140-ZAIKAISU-HEN-EXT.
       *
       *****************************************************************
       *    剤削除処理
@@ -2600,12 +2510,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "6"
       *            公害
                    MOVE    "2"             TO  SSANTEI-HKNKBN
-      *
-               WHEN    "7"
-      *            自賠責（第三者行為）
-                   MOVE    "1"             TO  SSANTEI-HKNKBN
-                   MOVE    "6"             TO  SSANTEI-RSI-HKNKBN
-                   MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
            END-EVALUATE
       * take mod st
       *    CALL    "ORCSSANTEI"        USING
@@ -3262,25 +3166,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        910-PTNYUINRRK-READ-EXT.
            EXIT.
-      *v.4.8
-      *****************************************************************
-      *    パラメタ情報読み込み
-      *****************************************************************
-       990-PARA-READ-SEC        SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PARA-REC
-               MOVE    ZERO            TO  FLG-PARA
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1               TO  FLG-PARA
-           END-IF
-      *
-           .
-       990-PARA-READ-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    テーブル検索処理
@@ -3322,6 +3207,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        990-DBCLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタデータ順読み
+      *****************************************************************
+       980-PARA-READ-SEC         SECTION.
+      *
+           READ    PARA-FILE 
+               AT  END
+                   MOVE    1           TO  FLG-PARA
+               NOT AT  END 
+                   MOVE    ZERO        TO  FLG-PARA
+           END-READ
+      *
+           .
+       980-PARA-READ-EXT.
            EXIT.
       *
       * take add st
