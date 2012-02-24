@@ -52,23 +52,17 @@
        01  SPA-W67.
            03  SPA-GMN-CUR                         PIC 9(03).
            03  SPA-GMN-AREA.
-               05  SPA-GMN-LBLNETCJIHI             PIC X(20)
-                                                   OCCURS  10.
-               05  SPA-GMN-LBLGETCJIHI             PIC X(20)
+               05  SPA-GMN-LBLETCJIHI              PIC X(20)
                                                    OCCURS  10.
                05  SPA-GMN-JIHILINK-AREA.
                    07  SPA-GMN-MEISAIKBN-G         OCCURS  16.
                        09  SPA-GMN-MEISAIKBN       PIC X(02).
                        09  SPA-GMN-MEISAIKBNF      PIC X(01).
                        09  SPA-GMN-MEISAIKBNMEI    PIC X(20).
-                   07  SPA-GMN-NETCJIHIKBN-G       OCCURS  10.
-                       09  SPA-GMN-NETCJIHIKBN     PIC X(02).
-                       09  SPA-GMN-NETCJIHIKBNF    PIC X(01).
-                       09  SPA-GMN-NETCJIHIKBNMEI  PIC X(20).
-                   07  SPA-GMN-GETCJIHIKBN-G       OCCURS  10.
-                       09  SPA-GMN-GETCJIHIKBN     PIC X(02).
-                       09  SPA-GMN-GETCJIHIKBNF    PIC X(01).
-                       09  SPA-GMN-GETCJIHIKBNMEI  PIC X(20).
+                   07  SPA-GMN-ETCJIHIKBN-G        OCCURS  10.
+                       09  SPA-GMN-ETCJIHIKBN      PIC X(02).
+                       09  SPA-GMN-ETCJIHIKBNF     PIC X(01).
+                       09  SPA-GMN-ETCJIHIKBNMEI   PIC X(20).
            03  SPA-GMN-COMBO-AREA.
                05  SPA-GMN-MEISAIKBNLST-G.
                    07  SPA-GMN-MEISAIKBN-MAX       PIC 9(03).
@@ -76,18 +70,12 @@
                        09  SPA-GMN-MEISAIKBNL      PIC X(02).
                        09  SPA-GMN-MEISAIKBNFL     PIC X(01).
                        09  SPA-GMN-MEISAIKBNMEIL   PIC X(20).
-               05  SPA-GMN-NETCJIHIKBNLST-G.
-                   07  SPA-GMN-NETCJIHIKBN-MAX      PIC 9(03).
-                   07  SPA-GMN-NETCJIHIKBNLST       OCCURS  20.
-                       09  SPA-GMN-NETCJIHIKBNL     PIC X(02).
-                       09  SPA-GMN-NETCJIHIKBNFL    PIC X(01).
-                       09  SPA-GMN-NETCJIHIKBNMEIL  PIC X(20).
-               05  SPA-GMN-GETCJIHIKBNLST-G.
-                   07  SPA-GMN-GETCJIHIKBN-MAX      PIC 9(03).
-                   07  SPA-GMN-GETCJIHIKBNLST       OCCURS  20.
-                       09  SPA-GMN-GETCJIHIKBNL     PIC X(02).
-                       09  SPA-GMN-GETCJIHIKBNFL    PIC X(01).
-                       09  SPA-GMN-GETCJIHIKBNMEIL  PIC X(20).
+               05  SPA-GMN-ETCJIHIKBNLST-G.
+                   07  SPA-GMN-ETCJIHIKBN-MAX      PIC 9(03).
+                   07  SPA-GMN-ETCJIHIKBNLST       OCCURS  20.
+                       09  SPA-GMN-ETCJIHIKBNL     PIC X(02).
+                       09  SPA-GMN-ETCJIHIKBNFL    PIC X(01).
+                       09  SPA-GMN-ETCJIHIKBNMEIL  PIC X(20).
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -112,8 +100,7 @@
       *
        01  CONST-AREA.
            03  CONST-MEISAI-MAX        PIC 9(03)   VALUE 16.
-           03  CONST-NETCJIHI-MAX      PIC 9(03)   VALUE 10.
-           03  CONST-GETCJIHI-MAX      PIC 9(03)   VALUE 10.
+           03  CONST-ETCJIHI-MAX       PIC 9(03)   VALUE 10.
            03  CONST-LBLMEISAI-VAL.
                05  CONST-LBLMEISAI01   PIC X(20)   VALUE "初・再診料".
                05  CONST-LBLMEISAI02   PIC X(20)   VALUE "医学管理等".
@@ -170,7 +157,58 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -328,62 +366,30 @@
            END-PERFORM
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-NETCJIHI-MAX )
+                   UNTIL ( IDX1    >   CONST-ETCJIHI-MAX )
       *
-               IF    ( SPA-GMN-LBLNETCJIHI (IDX1)   =   SPACE )
+               IF    ( SPA-GMN-LBLETCJIHI (IDX1)   =   SPACE )
                    IF    ( SYS-1046-ETCJIHIKBN (IDX1)
                                    =   SPACE OR "09" )
                        CONTINUE
                    ELSE
                        MOVE    SYS-1046-ETCJIHIKBN (IDX1)
-                                       TO  SPA-GMN-NETCJIHIKBN-G (IDX1)
+                                       TO  SPA-GMN-ETCJIHIKBN-G (IDX1)
                    END-IF
                ELSE
                    IF    ( SYS-1046-ETCJIHIKBN (IDX1)
                                    =   SPACE )
-                       MOVE    SPA-GMN-NETCJIHIKBNLST (9)
-                                       TO  SPA-GMN-NETCJIHIKBN-G (IDX1)
+                       MOVE    SPA-GMN-ETCJIHIKBNLST (9)
+                                       TO  SPA-GMN-ETCJIHIKBN-G (IDX1)
                    ELSE
                        MOVE    SYS-1046-ETCJIHIKBN (IDX1)
                                        TO  WRK-CMB-CD
-                       PERFORM 4200-NETCJIHIKBNLST-CHK-SEC
+                       PERFORM 4200-ETCJIHIKBNLST-CHK-SEC
                        IF    ( WRK-CMB-ITM     =   SPACE )
-                           MOVE    WRK-CMB-CD  TO  SPA-GMN-NETCJIHIKBN-G
+                           MOVE    WRK-CMB-CD  TO  SPA-GMN-ETCJIHIKBN-G
                                                                 (IDX1)
                        ELSE
-                           MOVE    WRK-CMB-ITM TO  SPA-GMN-NETCJIHIKBN-G
-                                                                (IDX1)
-                       END-IF
-                   END-IF
-               END-IF
-      *
-           END-PERFORM
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-GETCJIHI-MAX )
-      *
-               IF    ( SPA-GMN-LBLGETCJIHI (IDX1)   =   SPACE )
-                   IF    ( SYS-1046-GETCJIHIKBN (IDX1)
-                                   =   SPACE OR "09" )
-                       CONTINUE
-                   ELSE
-                       MOVE    SYS-1046-GETCJIHIKBN (IDX1)
-                                       TO  SPA-GMN-GETCJIHIKBN-G (IDX1)
-                   END-IF
-               ELSE
-                   IF    ( SYS-1046-GETCJIHIKBN (IDX1)
-                                   =   SPACE )
-                       MOVE    SPA-GMN-GETCJIHIKBNLST (9)
-                                       TO  SPA-GMN-GETCJIHIKBN-G (IDX1)
-                   ELSE
-                       MOVE    SYS-1046-GETCJIHIKBN (IDX1)
-                                       TO  WRK-CMB-CD
-                       PERFORM 4200-GETCJIHIKBNLST-CHK-SEC
-                       IF    ( WRK-CMB-ITM     =   SPACE )
-                           MOVE    WRK-CMB-CD  TO  SPA-GMN-GETCJIHIKBN-G
-                                                                (IDX1)
-                       ELSE
-                           MOVE    WRK-CMB-ITM TO  SPA-GMN-GETCJIHIKBN-G
+                           MOVE    WRK-CMB-ITM TO  SPA-GMN-ETCJIHIKBN-G
                                                                 (IDX1)
                        END-IF
                    END-IF
@@ -404,9 +410,7 @@
       *
            PERFORM 3101-MEISAIKBNLST-SEC
       *
-           PERFORM 3101-NETCJIHIKBNLST-SEC
-      *
-           PERFORM 3101-GETCJIHIKBNLST-SEC
+           PERFORM 3101-ETCJIHIKBNLST-SEC
       *
            .
        3100-COMBO-EDIT-EXT.
@@ -456,92 +460,48 @@
        3100-MEISAIKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    その他自費区分（入院）コンボ編集処理
+      *    その他自費区分コンボ編集処理
       *****************************************************************
-       3101-NETCJIHIKBNLST-SEC             SECTION.
+       3101-ETCJIHIKBNLST-SEC             SECTION.
       *
-           INITIALIZE              SPA-GMN-NETCJIHIKBNLST-G
+           INITIALIZE              SPA-GMN-ETCJIHIKBNLST-G
       *
-           MOVE    "01"        TO  SPA-GMN-NETCJIHIKBNL   (1)
-           MOVE    "入院料"    TO  SPA-GMN-NETCJIHIKBNMEIL(1)
+           MOVE    "01"        TO  SPA-GMN-ETCJIHIKBNL   (1)
+           MOVE    "入院料"    TO  SPA-GMN-ETCJIHIKBNMEIL(1)
       *
-           MOVE    "02"        TO  SPA-GMN-NETCJIHIKBNL   (2)
-           MOVE    "室料差額"  TO  SPA-GMN-NETCJIHIKBNMEIL(2)
+           MOVE    "02"        TO  SPA-GMN-ETCJIHIKBNL   (2)
+           MOVE    "室料差額"  TO  SPA-GMN-ETCJIHIKBNMEIL(2)
       *
-           MOVE    "03"        TO  SPA-GMN-NETCJIHIKBNL   (3)
+           MOVE    "03"        TO  SPA-GMN-ETCJIHIKBNL   (3)
            MOVE    "分娩介助料"
-                               TO SPA-GMN-NETCJIHIKBNMEIL(3)
+                               TO SPA-GMN-ETCJIHIKBNMEIL(3)
       *
-           MOVE    "04"        TO  SPA-GMN-NETCJIHIKBNL   (4)
-           MOVE    "分娩料"    TO  SPA-GMN-NETCJIHIKBNMEIL(4)
+           MOVE    "04"        TO  SPA-GMN-ETCJIHIKBNL   (4)
+           MOVE    "分娩料"    TO  SPA-GMN-ETCJIHIKBNMEIL(4)
       *
-           MOVE    "05"        TO  SPA-GMN-NETCJIHIKBNL   (5)
+           MOVE    "05"        TO  SPA-GMN-ETCJIHIKBNL   (5)
            MOVE    "新生児管理保育料"
-                               TO  SPA-GMN-NETCJIHIKBNMEIL(5)
+                               TO  SPA-GMN-ETCJIHIKBNMEIL(5)
       *
-           MOVE    "06"        TO  SPA-GMN-NETCJIHIKBNL   (6)
+           MOVE    "06"        TO  SPA-GMN-ETCJIHIKBNL   (6)
            MOVE    "検査・薬剤料"
-                               TO  SPA-GMN-NETCJIHIKBNMEIL(6)
+                               TO  SPA-GMN-ETCJIHIKBNMEIL(6)
       *
-           MOVE    "07"        TO  SPA-GMN-NETCJIHIKBNL   (7)
+           MOVE    "07"        TO  SPA-GMN-ETCJIHIKBNL   (7)
            MOVE    "処置・手当料"
-                               TO  SPA-GMN-NETCJIHIKBNMEIL(7)
+                               TO  SPA-GMN-ETCJIHIKBNMEIL(7)
       *
-           MOVE    "08"        TO  SPA-GMN-NETCJIHIKBNL   (8)
+           MOVE    "08"        TO  SPA-GMN-ETCJIHIKBNL   (8)
            MOVE    "産科医療補償制度"
-                               TO  SPA-GMN-NETCJIHIKBNMEIL(8)
+                               TO  SPA-GMN-ETCJIHIKBNMEIL(8)
       *
-           MOVE    "09"        TO  SPA-GMN-NETCJIHIKBNL   (9)
-           MOVE    "その他"    TO  SPA-GMN-NETCJIHIKBNMEIL(9)
+           MOVE    "09"        TO  SPA-GMN-ETCJIHIKBNL   (9)
+           MOVE    "その他"    TO  SPA-GMN-ETCJIHIKBNMEIL(9)
       *
-           MOVE    9           TO  SPA-GMN-NETCJIHIKBN-MAX
+           MOVE    9           TO  SPA-GMN-ETCJIHIKBN-MAX
       *
            .
-       3100-NETCJIHIKBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    その他自費区分（入院）コンボ編集処理
-      *****************************************************************
-       3101-GETCJIHIKBNLST-SEC             SECTION.
-      *
-           INITIALIZE              SPA-GMN-GETCJIHIKBNLST-G
-      *
-           MOVE    "01"        TO  SPA-GMN-GETCJIHIKBNL   (1)
-           MOVE    "入院料"    TO  SPA-GMN-GETCJIHIKBNMEIL(1)
-      *
-           MOVE    "02"        TO  SPA-GMN-GETCJIHIKBNL   (2)
-           MOVE    "室料差額"  TO  SPA-GMN-GETCJIHIKBNMEIL(2)
-      *
-           MOVE    "03"        TO  SPA-GMN-GETCJIHIKBNL   (3)
-           MOVE    "分娩介助料"
-                               TO SPA-GMN-GETCJIHIKBNMEIL(3)
-      *
-           MOVE    "04"        TO  SPA-GMN-GETCJIHIKBNL   (4)
-           MOVE    "分娩料"    TO  SPA-GMN-GETCJIHIKBNMEIL(4)
-      *
-           MOVE    "05"        TO  SPA-GMN-GETCJIHIKBNL   (5)
-           MOVE    "新生児管理保育料"
-                               TO  SPA-GMN-GETCJIHIKBNMEIL(5)
-      *
-           MOVE    "06"        TO  SPA-GMN-GETCJIHIKBNL   (6)
-           MOVE    "検査・薬剤料"
-                               TO  SPA-GMN-GETCJIHIKBNMEIL(6)
-      *
-           MOVE    "07"        TO  SPA-GMN-GETCJIHIKBNL   (7)
-           MOVE    "処置・手当料"
-                               TO  SPA-GMN-GETCJIHIKBNMEIL(7)
-      *
-           MOVE    "08"        TO  SPA-GMN-GETCJIHIKBNL   (8)
-           MOVE    "産科医療補償制度"
-                               TO  SPA-GMN-GETCJIHIKBNMEIL(8)
-      *
-           MOVE    "09"        TO  SPA-GMN-GETCJIHIKBNL   (9)
-           MOVE    "その他"    TO  SPA-GMN-GETCJIHIKBNMEIL(9)
-      *
-           MOVE    9           TO  SPA-GMN-GETCJIHIKBN-MAX
-      *
-           .
-       3100-GETCJIHIKBNLST-EXT.
+       3100-ETCJIHIKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    確認画面（ＣＩＤ１）ＯＫ処理
@@ -651,15 +611,9 @@
            END-PERFORM
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-NETCJIHI-MAX )
-               MOVE    W67-NETCJIHIKBN (IDX1)
-                                       TO  SPA-GMN-NETCJIHIKBN-G  (IDX1)
-           END-PERFORM
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-GETCJIHI-MAX )
-               MOVE    W67-GETCJIHIKBN (IDX1)
-                                       TO  SPA-GMN-GETCJIHIKBN-G  (IDX1)
+                   UNTIL ( IDX1    >   CONST-ETCJIHI-MAX )
+               MOVE    W67-ETCJIHIKBN (IDX1)
+                                       TO  SPA-GMN-ETCJIHIKBN-G  (IDX1)
            END-PERFORM
       *
            .
@@ -679,15 +633,9 @@
            END-PERFORM
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-NETCJIHI-MAX )
+                   UNTIL ( IDX1    >   CONST-ETCJIHI-MAX )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
-               PERFORM 4101-NETCJIHIKBN-CHK-SEC
-           END-PERFORM
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-GETCJIHI-MAX )
-                    OR   ( SPA-ERRCD   NOT =   SPACE )
-               PERFORM 4101-GETCJIHIKBN-CHK-SEC
+               PERFORM 4101-ETCJIHIKBN-CHK-SEC
            END-PERFORM
       *
            .
@@ -744,84 +692,52 @@
        4200-MEISAIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    その他自費区分（入院）チェック処理
+      *    その他自費区分チェック処理
       *****************************************************************
-       4101-NETCJIHIKBN-CHK-SEC        SECTION.
+       4101-ETCJIHIKBN-CHK-SEC         SECTION.
       *
            COMPUTE WRK-ERR-CUR =   IDX1    +    20
       *
            EVALUATE    TRUE
-           WHEN  ( SPA-GMN-LBLNETCJIHI (IDX1)           =   SPACE )
-               IF    ( SPA-GMN-NETCJIHIKBN (IDX1)   NOT =   SPACE )
+           WHEN  ( SPA-GMN-LBLETCJIHI (IDX1)           =   SPACE )
+               IF    ( SPA-GMN-ETCJIHIKBN (IDX1)   NOT =   SPACE )
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    WRK-ERR-CUR TO  SPA-GMN-CUR
                END-IF
-           WHEN  ( SPA-GMN-NETCJIHIKBN (IDX1)    =   SPACE )
-               MOVE    SPA-GMN-NETCJIHIKBNLST (9)
-                                       TO  SPA-GMN-NETCJIHIKBN-G (IDX1)
+           WHEN  ( SPA-GMN-ETCJIHIKBN (IDX1)    =   SPACE )
+               MOVE    SPA-GMN-ETCJIHIKBNLST (9)
+                                       TO  SPA-GMN-ETCJIHIKBN-G (IDX1)
            WHEN    OTHER
       *
-               MOVE    SPA-GMN-NETCJIHIKBN (IDX1)
+               MOVE    SPA-GMN-ETCJIHIKBN (IDX1)
                                        TO  WRK-CMB-CD
-               PERFORM 4200-NETCJIHIKBNLST-CHK-SEC
+               PERFORM 4200-ETCJIHIKBNLST-CHK-SEC
                IF    ( WRK-CMB-ITM     =   SPACE )
                    MOVE    "0002"      TO  SPA-ERRCD
                    MOVE    WRK-ERR-CUR TO  SPA-GMN-CUR
                ELSE
-                   MOVE    WRK-CMB-ITM TO  SPA-GMN-NETCJIHIKBN-G (IDX1)
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-ETCJIHIKBN-G (IDX1)
                END-IF
            END-EVALUATE
       *
            .
-       4101-NETCJIHIKBN-CHK-EXT.
+       4101-ETCJIHIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    その他自費区分（外来）チェック処理
+      *    その他自費区分コンボボックスチェック処理
       *****************************************************************
-       4101-GETCJIHIKBN-CHK-SEC        SECTION.
-      *
-           COMPUTE WRK-ERR-CUR =   IDX1    +    30
-      *
-           EVALUATE    TRUE
-           WHEN  ( SPA-GMN-LBLGETCJIHI (IDX1)           =   SPACE )
-               IF    ( SPA-GMN-GETCJIHIKBN (IDX1)   NOT =   SPACE )
-                   MOVE    "0003"      TO  SPA-ERRCD
-                   MOVE    WRK-ERR-CUR TO  SPA-GMN-CUR
-               END-IF
-           WHEN  ( SPA-GMN-GETCJIHIKBN (IDX1)    =   SPACE )
-               MOVE    SPA-GMN-GETCJIHIKBNLST (9)
-                                       TO  SPA-GMN-GETCJIHIKBN-G (IDX1)
-           WHEN    OTHER
-      *
-               MOVE    SPA-GMN-GETCJIHIKBN (IDX1)
-                                       TO  WRK-CMB-CD
-               PERFORM 4200-GETCJIHIKBNLST-CHK-SEC
-               IF    ( WRK-CMB-ITM     =   SPACE )
-                   MOVE    "0003"      TO  SPA-ERRCD
-                   MOVE    WRK-ERR-CUR TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    WRK-CMB-ITM TO  SPA-GMN-GETCJIHIKBN-G (IDX1)
-               END-IF
-           END-EVALUATE
-      *
-           .
-       4101-GETCJIHIKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    その他自費区分（入院）コンボボックスチェック処理
-      *****************************************************************
-       4200-NETCJIHIKBNLST-CHK-SEC      SECTION.
+       4200-ETCJIHIKBNLST-CHK-SEC      SECTION.
       *
            INITIALIZE                  WRK-CMB-ITM-G
       *
            PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-NETCJIHIKBN-MAX )
+                   UNTIL ( IDX-CMB >   SPA-GMN-ETCJIHIKBN-MAX )
                     OR   ( WRK-CMB-ITM NOT =   SPACE )
       *
-               IF    ( SPA-GMN-NETCJIHIKBNL (IDX-CMB)
+               IF    ( SPA-GMN-ETCJIHIKBNL (IDX-CMB)
                                        =   WRK-CMB-CD )
       *
-                   MOVE    SPA-GMN-NETCJIHIKBNLST (IDX-CMB)
+                   MOVE    SPA-GMN-ETCJIHIKBNLST (IDX-CMB)
                                    TO  WRK-CMB-ITM
       *
                END-IF
@@ -829,31 +745,7 @@
            END-PERFORM
       *
            .
-       4200-NETCJIHIKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    その他自費区分（外来）コンボボックスチェック処理
-      *****************************************************************
-       4200-GETCJIHIKBNLST-CHK-SEC      SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-GETCJIHIKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-GETCJIHIKBNL (IDX-CMB)
-                                       =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-GETCJIHIKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-GETCJIHIKBNLST-CHK-EXT.
+       4200-ETCJIHIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    戻る　処理
@@ -883,7 +775,7 @@
       *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "1013"          TO  SYS-KANRICD
-           MOVE    "%"             TO  SYS-KBNCD
+           MOVE    "1%"            TO  SYS-KBNCD
            MOVE    SPA-W01-STYUKYMD TO SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY-SEL-SEC
@@ -891,24 +783,15 @@
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
       *
                EVALUATE    SYS-1013-KBNCD
-               WHEN    "10"
-                   MOVE    SYS-1013-JIHINAME
-                                   TO  SPA-GMN-LBLNETCJIHI (10)
                WHEN    "11"        THRU    "19"
                    MOVE    SYS-1013-KBNCD
                                    TO  WRK-ETCJIHICD
                    MOVE    SYS-1013-JIHINAME
-                                   TO  SPA-GMN-LBLNETCJIHI
+                                   TO  SPA-GMN-LBLETCJIHI
                                          (WRK-ETCJIHICD - 10)
-               WHEN    "20"
+               WHEN    "10"
                    MOVE    SYS-1013-JIHINAME
-                                   TO  SPA-GMN-LBLGETCJIHI (10)
-               WHEN    "21"        THRU    "29"
-                   MOVE    SYS-1013-KBNCD
-                                   TO  WRK-ETCJIHICD
-                   MOVE    SYS-1013-JIHINAME
-                                   TO  SPA-GMN-LBLGETCJIHI
-                                         (WRK-ETCJIHICD - 20)
+                                   TO  SPA-GMN-LBLETCJIHI (10)
                END-EVALUATE
       *
                PERFORM 900-SYSKANRI-KEY-FET-SEC
@@ -929,21 +812,11 @@
            END-PERFORM
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-NETCJIHI-MAX )
+                   UNTIL ( IDX1    >   CONST-ETCJIHI-MAX )
       *
-               IF    ( SPA-GMN-LBLNETCJIHI (IDX1)   NOT =   SPACE )
-                   MOVE    SPA-GMN-NETCJIHIKBNLST (9)
-                                   TO  SPA-GMN-NETCJIHIKBN-G  (IDX1)
-               END-IF
-      *
-           END-PERFORM
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-GETCJIHI-MAX )
-      *
-               IF    ( SPA-GMN-LBLGETCJIHI (IDX1)   NOT =   SPACE )
-                   MOVE    SPA-GMN-GETCJIHIKBNLST (9)
-                                   TO  SPA-GMN-GETCJIHIKBN-G  (IDX1)
+               IF    ( SPA-GMN-LBLETCJIHI (IDX1)   NOT =   SPACE )
+                   MOVE    SPA-GMN-ETCJIHIKBNLST (9)
+                                   TO  SPA-GMN-ETCJIHIKBN-G  (IDX1)
                END-IF
       *
            END-PERFORM
@@ -1017,7 +890,6 @@
       *****************************************************************
        4801-TOUROKU-SEC                SECTION.
       *
-           MOVE    SPACE           TO  SYS-1046-REC
            INITIALIZE                  SYS-1046-REC
       *
            MOVE    SPA-HOSPNUM         TO  SYS-1046-HOSPNUM
@@ -1040,29 +912,17 @@
            END-PERFORM
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-NETCJIHI-MAX )
+                   UNTIL ( IDX1    >   CONST-ETCJIHI-MAX )
       *
-               IF    ( SPA-GMN-LBLNETCJIHI (IDX1)   =   SPACE )
+               IF    ( SPA-GMN-LBLETCJIHI (IDX1)   =   SPACE )
                    MOVE    "09"        TO  SYS-1046-ETCJIHIKBN (IDX1)
                ELSE
-                   MOVE    SPA-GMN-NETCJIHIKBN (IDX1)
+                   MOVE    SPA-GMN-ETCJIHIKBN (IDX1)
                                        TO  SYS-1046-ETCJIHIKBN (IDX1)
                END-IF
       *
            END-PERFORM
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-GETCJIHI-MAX )
-      *
-               IF    ( SPA-GMN-LBLGETCJIHI (IDX1)   =   SPACE )
-                   MOVE    "09"        TO  SYS-1046-GETCJIHIKBN (IDX1)
-               ELSE
-                   MOVE    SPA-GMN-GETCJIHIKBN (IDX1)
-                                       TO  SYS-1046-GETCJIHIKBN (IDX1)
-               END-IF
-      *
-           END-PERFORM
-      *
+
            MOVE    SYS-1046-REC        TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            IF    ( FLG-SYSKANRI        =   ZERO )
@@ -1184,42 +1044,21 @@
            END-PERFORM
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-NETCJIHI-MAX )
+                   UNTIL ( IDX1    >   CONST-ETCJIHI-MAX )
       *
-               MOVE    SPA-GMN-NETCJIHIKBN-G (IDX1)
-                                       TO  W67-NETCJIHIKBN (IDX1)
+               MOVE    SPA-GMN-ETCJIHIKBN-G (IDX1)
+                                       TO  W67-ETCJIHIKBN (IDX1)
       *
-               MOVE    SPA-GMN-LBLNETCJIHI (IDX1)
-                                       TO  W67-LBLNETCJIHI (IDX1)
+               MOVE    SPA-GMN-LBLETCJIHI (IDX1)
+                                       TO  W67-LBLETCJIHI (IDX1)
       *
-               IF    ( SPA-GMN-LBLNETCJIHI (IDX1)   NOT =   SPACE )
-                   MOVE    SPA-GMN-NETCJIHIKBN-MAX
-                                       TO  W67-NETCJIHIKBN-COUNT (IDX1)
+               IF    ( SPA-GMN-LBLETCJIHI (IDX1)   NOT =   SPACE )
+                   MOVE    SPA-GMN-ETCJIHIKBN-MAX
+                                       TO  W67-ETCJIHIKBN-COUNT (IDX1)
                    PERFORM VARYING IDX-CMB FROM    1   BY  1
-                           UNTIL ( IDX-CMB >   SPA-GMN-NETCJIHIKBN-MAX )
-                           MOVE    SPA-GMN-NETCJIHIKBNLST (IDX-CMB)
-                                       TO  W67-NETCJIHIKBN-ITEM
-                                                       (IDX1 IDX-CMB)
-                   END-PERFORM
-               END-IF
-           END-PERFORM
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-GETCJIHI-MAX )
-      *
-               MOVE    SPA-GMN-GETCJIHIKBN-G (IDX1)
-                                       TO  W67-GETCJIHIKBN (IDX1)
-      *
-               MOVE    SPA-GMN-LBLGETCJIHI (IDX1)
-                                       TO  W67-LBLGETCJIHI (IDX1)
-      *
-               IF    ( SPA-GMN-LBLGETCJIHI (IDX1)   NOT =   SPACE )
-                   MOVE    SPA-GMN-GETCJIHIKBN-MAX
-                                       TO  W67-GETCJIHIKBN-COUNT (IDX1)
-                   PERFORM VARYING IDX-CMB FROM    1   BY  1
-                           UNTIL ( IDX-CMB >   SPA-GMN-GETCJIHIKBN-MAX )
-                           MOVE    SPA-GMN-GETCJIHIKBNLST (IDX-CMB)
-                                       TO  W67-GETCJIHIKBN-ITEM
+                           UNTIL ( IDX-CMB >   SPA-GMN-ETCJIHIKBN-MAX )
+                           MOVE    SPA-GMN-ETCJIHIKBNLST (IDX-CMB)
+                                       TO  W67-ETCJIHIKBN-ITEM
                                                        (IDX1 IDX-CMB)
                    END-PERFORM
                END-IF
@@ -1295,45 +1134,25 @@
            WHEN    016
                MOVE    "MEISAIKBN16"       TO  MCP-WIDGET
            WHEN    021
-               MOVE    "NETCJIHIKBN01"      TO  MCP-WIDGET
+               MOVE    "ETCJIHIKBN01"      TO  MCP-WIDGET
            WHEN    022
-               MOVE    "NETCJIHIKBN02"      TO  MCP-WIDGET
+               MOVE    "ETCJIHIKBN02"      TO  MCP-WIDGET
            WHEN    023
-               MOVE    "NETCJIHIKBN03"      TO  MCP-WIDGET
+               MOVE    "ETCJIHIKBN03"      TO  MCP-WIDGET
            WHEN    024
-               MOVE    "NETCJIHIKBN04"      TO  MCP-WIDGET
+               MOVE    "ETCJIHIKBN04"      TO  MCP-WIDGET
            WHEN    025
-               MOVE    "NETCJIHIKBN05"      TO  MCP-WIDGET
+               MOVE    "ETCJIHIKBN05"      TO  MCP-WIDGET
            WHEN    026
-               MOVE    "NETCJIHIKBN06"      TO  MCP-WIDGET
+               MOVE    "ETCJIHIKBN06"      TO  MCP-WIDGET
            WHEN    027
-               MOVE    "NETCJIHIKBN07"      TO  MCP-WIDGET
+               MOVE    "ETCJIHIKBN07"      TO  MCP-WIDGET
            WHEN    028
-               MOVE    "NETCJIHIKBN08"      TO  MCP-WIDGET
+               MOVE    "ETCJIHIKBN08"      TO  MCP-WIDGET
            WHEN    029
-               MOVE    "NETCJIHIKBN09"      TO  MCP-WIDGET
+               MOVE    "ETCJIHIKBN09"      TO  MCP-WIDGET
            WHEN    030
-               MOVE    "NETCJIHIKBN10"      TO  MCP-WIDGET
-           WHEN    031
-               MOVE    "GETCJIHIKBN01"      TO  MCP-WIDGET
-           WHEN    032
-               MOVE    "GETCJIHIKBN02"      TO  MCP-WIDGET
-           WHEN    033
-               MOVE    "GETCJIHIKBN03"      TO  MCP-WIDGET
-           WHEN    034
-               MOVE    "GETCJIHIKBN04"      TO  MCP-WIDGET
-           WHEN    035
-               MOVE    "GETCJIHIKBN05"      TO  MCP-WIDGET
-           WHEN    036
-               MOVE    "GETCJIHIKBN06"      TO  MCP-WIDGET
-           WHEN    037
-               MOVE    "GETCJIHIKBN07"      TO  MCP-WIDGET
-           WHEN    038
-               MOVE    "GETCJIHIKBN08"      TO  MCP-WIDGET
-           WHEN    039
-               MOVE    "GETCJIHIKBN09"      TO  MCP-WIDGET
-           WHEN    040
-               MOVE    "GETCJIHIKBN10"      TO  MCP-WIDGET
+               MOVE    "ETCJIHIKBN10"      TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
@@ -1380,45 +1199,25 @@
                MOVE    016                 TO  SPA-GMN-CUR
            WHEN    "MEISAIKBN16"
                MOVE    021                 TO  SPA-GMN-CUR
-           WHEN    "NETCJIHIKBN01"
+           WHEN    "ETCJIHIKBN01"
                MOVE    022                 TO  SPA-GMN-CUR
-           WHEN    "NETCJIHIKBN02"
+           WHEN    "ETCJIHIKBN02"
                MOVE    023                 TO  SPA-GMN-CUR
-           WHEN    "NETCJIHIKBN03"
+           WHEN    "ETCJIHIKBN03"
                MOVE    024                 TO  SPA-GMN-CUR
-           WHEN    "NETCJIHIKBN04"
+           WHEN    "ETCJIHIKBN04"
                MOVE    025                 TO  SPA-GMN-CUR
-           WHEN    "NETCJIHIKBN05"
+           WHEN    "ETCJIHIKBN05"
                MOVE    026                 TO  SPA-GMN-CUR
-           WHEN    "NETCJIHIKBN06"
+           WHEN    "ETCJIHIKBN06"
                MOVE    027                 TO  SPA-GMN-CUR
-           WHEN    "NETCJIHIKBN07"
+           WHEN    "ETCJIHIKBN07"
                MOVE    028                 TO  SPA-GMN-CUR
-           WHEN    "NETCJIHIKBN08"
+           WHEN    "ETCJIHIKBN08"
                MOVE    029                 TO  SPA-GMN-CUR
-           WHEN    "NETCJIHIKBN09"
+           WHEN    "ETCJIHIKBN09"
                MOVE    030                 TO  SPA-GMN-CUR
-           WHEN    "NETCJIHIKBN10"
-               MOVE    031                 TO  SPA-GMN-CUR
-           WHEN    "GETCJIHIKBN01"
-               MOVE    032                 TO  SPA-GMN-CUR
-           WHEN    "GETCJIHIKBN02"
-               MOVE    033                 TO  SPA-GMN-CUR
-           WHEN    "GETCJIHIKBN03"
-               MOVE    034                 TO  SPA-GMN-CUR
-           WHEN    "GETCJIHIKBN04"
-               MOVE    035                 TO  SPA-GMN-CUR
-           WHEN    "GETCJIHIKBN05"
-               MOVE    036                 TO  SPA-GMN-CUR
-           WHEN    "GETCJIHIKBN06"
-               MOVE    037                 TO  SPA-GMN-CUR
-           WHEN    "GETCJIHIKBN07"
-               MOVE    038                 TO  SPA-GMN-CUR
-           WHEN    "GETCJIHIKBN08"
-               MOVE    039                 TO  SPA-GMN-CUR
-           WHEN    "GETCJIHIKBN09"
-               MOVE    040                 TO  SPA-GMN-CUR
-           WHEN    "GETCJIHIKBN10"
+           WHEN    "ETCJIHIKBN10"
                MOVE    212                 TO  SPA-GMN-CUR
            END-EVALUATE
       *
@@ -1432,27 +1231,12 @@
        5012-SKIP-CUR-SEC               SECTION.
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-NETCJIHI-MAX )
+                   UNTIL ( IDX1    >   CONST-ETCJIHI-MAX )
                IF    ( SPA-GMN-CUR =   IDX1 +  20 )
-                   IF    ( SPA-GMN-LBLNETCJIHI (IDX1)   =   SPACE )
-                    AND  ( SPA-GMN-NETCJIHIKBN (IDX1)   =   SPACE )
-                       IF    ( IDX1    =   CONST-NETCJIHI-MAX )
-                           MOVE    31  TO  SPA-GMN-CUR
-                       ELSE
-                           COMPUTE SPA-GMN-CUR
-                               =   SPA-GMN-CUR +   1
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   CONST-GETCJIHI-MAX )
-               IF    ( SPA-GMN-CUR =   IDX1 +  30 )
-                   IF    ( SPA-GMN-LBLGETCJIHI (IDX1)   =   SPACE )
-                    AND  ( SPA-GMN-GETCJIHIKBN (IDX1)   =   SPACE )
-                       IF    ( IDX1    =   CONST-GETCJIHI-MAX )
-                           MOVE    31  TO  SPA-GMN-CUR
+                   IF    ( SPA-GMN-LBLETCJIHI (IDX1)   =   SPACE )
+                    AND  ( SPA-GMN-ETCJIHIKBN (IDX1)   =   SPACE )
+                       IF    ( IDX1    =   CONST-ETCJIHI-MAX )
+                           MOVE    212 TO  SPA-GMN-CUR
                        ELSE
                            COMPUTE SPA-GMN-CUR
                                =   SPA-GMN-CUR +   1
@@ -1478,10 +1262,7 @@
                MOVE    "保険適用外設定入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0002"
-               MOVE    "その他自費（入院）設定入力エラー"
-                                       TO  SPA-ERRMSG
-           WHEN    "0003"
-               MOVE    "その他自費（外来）設定入力エラー"
+               MOVE    "その他自費設定入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "2001"
            WHEN    "2002"
@@ -1525,7 +1306,6 @@
       *
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

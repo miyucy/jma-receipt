@@ -51,33 +51,20 @@
       *
        01  SPA-W60.
            03  SPA-GMN-CUR                     PIC 9(03).
-           03  SPA-GMN-PAGENO                  PIC 9(03).
            03  SPA-GMN-AREA.
-               05  SPA-GMN-SEIHOJNUMCHKKBN-G.
-                   07  SPA-GMN-SEIHOJNUMCHKKBN     PIC X(01).
-                   07  SPA-GMN-SEIHOJNUMCHKKBNFL   PIC X(01).
-                   07  SPA-GMN-SEIHOJNUMCHKKBNMEI  PIC X(20).
                05  SPA-GMN-BYOSRYKAKBN-G.
                    07  SPA-GMN-BYOSRYKAKBN     PIC X(01).
                    07  SPA-GMN-BYOSRYKAKBNFL   PIC X(01).
                    07  SPA-GMN-BYOSRYKAKBNMEI  PIC X(08).
                05  SPA-GMN-SYUBYOCHK-G.
                    07  SPA-GMN-SYUBYOCHK       PIC X(01).
-                   07  SPA-GMN-SYUBYOCHKFL     PIC X(01).
+                   07                          PIC X(01).
                    07  SPA-GMN-SYUBYOCHKMEI    PIC X(08).
                05  SPA-GMN-UTAGAIKKN           PIC 9(01).
                05  SPA-GMN-KYUSEIKKNKBN-G.
                    07  SPA-GMN-KYUSEIKKNKBN    PIC X(01).
                    07  SPA-GMN-KYUSEIKKNKBNFL  PIC X(01).
                    07  SPA-GMN-KYUSEIKKNKBNMEI PIC X(08).
-               05  SPA-GMN-COMPBYONISSUKBN-G.
-                   07  SPA-GMN-COMPBYONISSUKBN    PIC X(01).
-                   07  SPA-GMN-COMPBYONISSUKBNFL  PIC X(01).
-                   07  SPA-GMN-COMPBYONISSUKBNMEI PIC X(20).
-               05  SPA-GMN-SRYSTTENKIKBN-G.
-                   07  SPA-GMN-SRYSTTENKIKBN     PIC X(01).
-                   07  SPA-GMN-SRYSTTENKIKBNFL   PIC X(01).
-                   07  SPA-GMN-SRYSTTENKIKBNMEI  PIC X(58).
                05  SPA-GMN-CHKMTRX-G.
                    07  SPA-GMN-CHKMTRX         PIC X(01)
                                                OCCURS  5.
@@ -85,62 +72,18 @@
                    07  SPA-GMN-TENKITEKBYOKBN  PIC X(01).
                    07  SPA-GMN-TENKITEKBYOKBNFL  PIC X(01).
                    07  SPA-GMN-TENKITEKBYOKBNMEI PIC X(18).
-               05  SPA-GMN-TEKBYOYKZKBN-G.
-                   07  SPA-GMN-TEKBYOYKZKBN    PIC X(01).
-                   07  SPA-GMN-TEKBYOYKZKBNFL  PIC X(01).
-                   07  SPA-GMN-TEKBYOYKZKBNMEI PIC X(58).
-               05  SPA-GMN-TEKBYOSRYKBN-G.
-                   07  SPA-GMN-TEKBYOSRYKBN    PIC X(01).
-                   07  SPA-GMN-TEKBYOSRYKBNFL  PIC X(01).
-                   07  SPA-GMN-TEKBYOSRYKBNMEI PIC X(58).
                05  SPA-GMN-YBKENSAYAKUKBN-G.
                    07  SPA-GMN-YBKENSAYAKUKBN  PIC X(01).
                    07  SPA-GMN-YBKENSAYAKUKBNFL PIC X(01).
                    07  SPA-GMN-YBKENSAYAKUKBNMEI PIC X(30).
-               05  SPA-GMN-YBSJTYKZKBN-G.
-                   07  SPA-GMN-YBSJTYKZKBN  PIC X(01).
-                   07  SPA-GMN-YBSJTYKZKBNFL PIC X(01).
-                   07  SPA-GMN-YBSJTYKZKBNMEI PIC X(30).
-               05  SPA-GMN-YBMSIYKZKBN-G.
-                   07  SPA-GMN-YBMSIYKZKBN  PIC X(01).
-                   07  SPA-GMN-YBMSIYKZKBNFL PIC X(01).
-                   07  SPA-GMN-YBMSIYKZKBNMEI PIC X(30).
-               05  SPA-GMN-YBSHOHOYKZKBN-G.
-                   07  SPA-GMN-YBSHOHOYKZKBN  PIC X(01).
-                   07  SPA-GMN-YBSHOHOYKZKBNFL PIC X(01).
-                   07  SPA-GMN-YBSHOHOYKZKBNMEI PIC X(30).
                05  SPA-GMN-YBUTAGAIKBN-G.
                    07  SPA-GMN-YBUTAGAIKBN     PIC X(01).
                    07  SPA-GMN-YBUTAGAIKBNFL   PIC X(01).
                    07  SPA-GMN-YBUTAGAIKBNMEI  PIC X(30).
-               05  SPA-GMN-YKZHEIMSTKBN-G.
-                   07  SPA-GMN-YKZHEIMSTKBN    PIC X(01).
-                   07  SPA-GMN-YKZHEIMSTKBNFL  PIC X(01).
-                   07  SPA-GMN-YKZHEIMSTKBNMEI PIC X(30).
                05  SPA-GMN-SRYHEIWRNKBN-G.
                    07  SPA-GMN-SRYHEIWRNKBN    PIC X(01).
-                   07  SPA-GMN-SRYHEIWRNKBNFL  PIC X(01).
+                   07                          PIC X(01).
                    07  SPA-GMN-SRYHEIWRNKBNMEI PIC X(30).
-               05  SPA-GMN-SRYHEIMSTKBN-G.
-                   07  SPA-GMN-SRYHEIMSTKBN    PIC X(01).
-                   07  SPA-GMN-SRYHEIMSTKBNFL  PIC X(01).
-                   07  SPA-GMN-SRYHEIMSTKBNMEI PIC X(30).
-               05  SPA-GMN-SRYHEIEXPKBN-G.
-                   07  SPA-GMN-SRYHEIEXPKBN    PIC X(01).
-                   07  SPA-GMN-SRYHEIEXPKBNFL  PIC X(01).
-                   07  SPA-GMN-SRYHEIEXPKBNMEI PIC X(30).
-               05  SPA-GMN-SRYMATERKKBN-G.
-                   07  SPA-GMN-SRYMATERKKBN    PIC X(01).
-                   07  SPA-GMN-SRYMATERKKBNFL  PIC X(01).
-                   07  SPA-GMN-SRYMATERKKBNMEI PIC X(30).
-               05  SPA-GMN-SRYKAISUMSTKBN-G.
-                   07  SPA-GMN-SRYKAISUMSTKBN    PIC X(01).
-                   07  SPA-GMN-SRYKAISUMSTKBNFL  PIC X(01).
-                   07  SPA-GMN-SRYKAISUMSTKBNMEI PIC X(20).
-               05  SPA-GMN-SRYKAISUWRNKBN-G.
-                   07  SPA-GMN-SRYKAISUWRNKBN    PIC X(01).
-                   07  SPA-GMN-SRYKAISUWRNKBNFL  PIC X(01).
-                   07  SPA-GMN-SRYKAISUWRNKBNMEI PIC X(20).
                05  SPA-GMN-REIGAICHKKBN-G.
                    07  SPA-GMN-REIGAICHKKBN    PIC X(01).
                    07  SPA-GMN-REIGAICHKKBNFL  PIC X(01).
@@ -157,28 +100,7 @@
                    07  SPA-GMN-ERR990009KBN    PIC X(01).
                    07  SPA-GMN-ERR990009KBNFL  PIC X(01).
                    07  SPA-GMN-ERR990009KBNMEI PIC X(20).
-               05  SPA-GMN-ERRA10001KBN-G.
-                   07  SPA-GMN-ERRA10001KBN    PIC X(01).
-                   07  SPA-GMN-ERRA10001KBNFL  PIC X(01).
-                   07  SPA-GMN-ERRA10001KBNMEI PIC X(20).
-               05  SPA-GMN-INGAITEN-G.
-                   07  SPA-GMN-SYA-INGAITEN    PIC 9(04).
-                   07  SPA-GMN-KOK-INGAITEN    PIC 9(04).
-                   07  SPA-GMN-KOU-INGAITEN    PIC 9(04).
-                   07  SPA-GMN-RSI-INGAITEN    PIC 9(04).
-                   07  SPA-GMN-JBI-INGAITEN    PIC 9(04).
-                   07  SPA-GMN-JIH-INGAITEN    PIC 9(04).
-                   07  SPA-GMN-KGI-INGAITEN    PIC 9(04).
-               05  SPA-GMN-INGAITEN-R REDEFINES SPA-GMN-INGAITEN-G.
-                   07  SPA-GMN-INGAITEN        PIC 9(04)
-                                               OCCURS  7.
            03  SPA-GMN-CMB-AREA.
-               05  SPA-GMN-SEIHOJNUMCHKKBNLST-G.
-                   07  SPA-GMN-SEIHOJNUMCHKKBN-MAX     PIC 9(03).
-                   07  SPA-GMN-SEIHOJNUMCHKKBNLST      OCCURS   2.
-                       09  SPA-GMN-SEIHOJNUMCHKKBNL    PIC X(01).
-                       09  SPA-GMN-SEIHOJNUMCHKKBNFLL  PIC X(01).
-                       09  SPA-GMN-SEIHOJNUMCHKKBNMEIL PIC X(20).
                05  SPA-GMN-BYOSRYKAKBNLST-G.
                    07  SPA-GMN-BYOSRYKAKBN-MAX     PIC 9(03).
                    07  SPA-GMN-BYOSRYKAKBNLST      OCCURS   2.
@@ -197,108 +119,30 @@
                        09  SPA-GMN-KYUSEIKKNKBNL   PIC X(01).
                        09  SPA-GMN-KYUSEIKKNKBNFLL PIC X(01).
                        09  SPA-GMN-KYUSEIKKNKBNMEIL PIC X(08).
-               05  SPA-GMN-COMPBYONISSUKBNLST-G.
-                   07  SPA-GMN-COMPBYONISSUKBN-MAX    PIC 9(03).
-                   07  SPA-GMN-COMPBYONISSUKBNLST     OCCURS   5.
-                       09  SPA-GMN-COMPBYONISSUKBNL   PIC X(01).
-                       09  SPA-GMN-COMPBYONISSUKBNFLL PIC X(01).
-                       09  SPA-GMN-COMPBYONISSUKBNMEIL PIC X(20).
-               05  SPA-GMN-SRYSTTENKIKBNLST-G.
-                   07  SPA-GMN-SRYSTTENKIKBN-MAX    PIC 9(03).
-                   07  SPA-GMN-SRYSTTENKIKBNLST     OCCURS   5.
-                       09  SPA-GMN-SRYSTTENKIKBNL   PIC X(01).
-                       09  SPA-GMN-SRYSTTENKIKBNFLL PIC X(01).
-                       09  SPA-GMN-SRYSTTENKIKBNMEIL PIC X(58).
                05  SPA-GMN-TENKITEKBYOKBNLST-G.
                    07  SPA-GMN-TENKITEKBYOKBN-MAX  PIC 9(03).
                    07  SPA-GMN-TENKITEKBYOKBNLST   OCCURS   2.
                        09  SPA-GMN-TENKITEKBYOKBNL PIC X(01).
                        09  SPA-GMN-TENKITEKBYOKBNFLL PIC X(01).
                        09  SPA-GMN-TENKITEKBYOKBNMEIL PIC X(18).
-               05  SPA-GMN-TEKBYOYKZKBNLST-G.
-                   07  SPA-GMN-TEKBYOYKZKBN-MAX  PIC 9(03).
-                   07  SPA-GMN-TEKBYOYKZKBNLST   OCCURS   3.
-                       09  SPA-GMN-TEKBYOYKZKBNL PIC X(01).
-                       09  SPA-GMN-TEKBYOYKZKBNFLL PIC X(01).
-                       09  SPA-GMN-TEKBYOYKZKBNMEIL PIC X(58).
-               05  SPA-GMN-TEKBYOSRYKBNLST-G.
-                   07  SPA-GMN-TEKBYOSRYKBN-MAX  PIC 9(03).
-                   07  SPA-GMN-TEKBYOSRYKBNLST   OCCURS   3.
-                       09  SPA-GMN-TEKBYOSRYKBNL PIC X(01).
-                       09  SPA-GMN-TEKBYOSRYKBNFLL PIC X(01).
-                       09  SPA-GMN-TEKBYOSRYKBNMEIL PIC X(58).
                05  SPA-GMN-YBKENSAYAKUKBNLST-G.
                    07  SPA-GMN-YBKENSAYAKUKBN-MAX  PIC 9(03).
                    07  SPA-GMN-YBKENSAYAKUKBNLST   OCCURS   2.
                        09  SPA-GMN-YBKENSAYAKUKBNL PIC X(01).
                        09  SPA-GMN-YBKENSAYAKUKBNFLL  PIC X(01).
                        09  SPA-GMN-YBKENSAYAKUKBNMEIL PIC X(30).
-               05  SPA-GMN-YBSJTYKZKBNLST-G.
-                   07  SPA-GMN-YBSJTYKZKBN-MAX  PIC 9(03).
-                   07  SPA-GMN-YBSJTYKZKBNLST   OCCURS   2.
-                       09  SPA-GMN-YBSJTYKZKBNL PIC X(01).
-                       09  SPA-GMN-YBSJTYKZKBNFLL  PIC X(01).
-                       09  SPA-GMN-YBSJTYKZKBNMEIL PIC X(30).
-               05  SPA-GMN-YBMSIYKZKBNLST-G.
-                   07  SPA-GMN-YBMSIYKZKBN-MAX  PIC 9(03).
-                   07  SPA-GMN-YBMSIYKZKBNLST   OCCURS   2.
-                       09  SPA-GMN-YBMSIYKZKBNL PIC X(01).
-                       09  SPA-GMN-YBMSIYKZKBNFLL  PIC X(01).
-                       09  SPA-GMN-YBMSIYKZKBNMEIL PIC X(30).
-               05  SPA-GMN-YBSHOHOYKZKBNLST-G.
-                   07  SPA-GMN-YBSHOHOYKZKBN-MAX  PIC 9(03).
-                   07  SPA-GMN-YBSHOHOYKZKBNLST   OCCURS   2.
-                       09  SPA-GMN-YBSHOHOYKZKBNL PIC X(01).
-                       09  SPA-GMN-YBSHOHOYKZKBNFLL  PIC X(01).
-                       09  SPA-GMN-YBSHOHOYKZKBNMEIL PIC X(30).
                05  SPA-GMN-YBUTAGAIKBNLST-G.
                    07  SPA-GMN-YBUTAGAIKBN-MAX     PIC 9(03).
                    07  SPA-GMN-YBUTAGAIKBNLST      OCCURS   2.
                        09  SPA-GMN-YBUTAGAIKBNL    PIC X(01).
                        09  SPA-GMN-YBUTAGAIKBNFLL  PIC X(01).
                        09  SPA-GMN-YBUTAGAIKBNMEIL PIC X(30).
-               05  SPA-GMN-YKZHEIMSTKBNLST-G.
-                   07  SPA-GMN-YKZHEIMSTKBN-MAX    PIC 9(03).
-                   07  SPA-GMN-YKZHEIMSTKBNLST     OCCURS   2.
-                       09  SPA-GMN-YKZHEIMSTKBNL   PIC X(01).
-                       09  SPA-GMN-YKZHEIMSTKBNFLL PIC X(01).
-                       09  SPA-GMN-YKZHEIMSTKBNMEIL PIC X(30).
                05  SPA-GMN-SRYHEIWRNKBNLST-G.
                    07  SPA-GMN-SRYHEIWRNKBN-MAX    PIC 9(03).
                    07  SPA-GMN-SRYHEIWRNKBNLST     OCCURS   2.
                        09  SPA-GMN-SRYHEIWRNKBNL   PIC X(01).
                        09  SPA-GMN-SRYHEIWRNKBNFLL PIC X(01).
                        09  SPA-GMN-SRYHEIWRNKBNMEIL PIC X(30).
-               05  SPA-GMN-SRYHEIMSTKBNLST-G.
-                   07  SPA-GMN-SRYHEIMSTKBN-MAX    PIC 9(03).
-                   07  SPA-GMN-SRYHEIMSTKBNLST     OCCURS   2.
-                       09  SPA-GMN-SRYHEIMSTKBNL   PIC X(01).
-                       09  SPA-GMN-SRYHEIMSTKBNFLL PIC X(01).
-                       09  SPA-GMN-SRYHEIMSTKBNMEIL PIC X(30).
-               05  SPA-GMN-SRYHEIEXPKBNLST-G.
-                   07  SPA-GMN-SRYHEIEXPKBN-MAX    PIC 9(03).
-                   07  SPA-GMN-SRYHEIEXPKBNLST     OCCURS   2.
-                       09  SPA-GMN-SRYHEIEXPKBNL   PIC X(01).
-                       09  SPA-GMN-SRYHEIEXPKBNFLL PIC X(01).
-                       09  SPA-GMN-SRYHEIEXPKBNMEIL PIC X(30).
-               05  SPA-GMN-SRYMATERKKBNLST-G.
-                   07  SPA-GMN-SRYMATERKKBN-MAX    PIC 9(03).
-                   07  SPA-GMN-SRYMATERKKBNLST     OCCURS   2.
-                       09  SPA-GMN-SRYMATERKKBNL   PIC X(01).
-                       09  SPA-GMN-SRYMATERKKBNFLL PIC X(01).
-                       09  SPA-GMN-SRYMATERKKBNMEIL PIC X(30).
-               05  SPA-GMN-SRYKAISUMSTKBNLST-G.
-                   07  SPA-GMN-SRYKAISUMSTKBN-MAX    PIC 9(03).
-                   07  SPA-GMN-SRYKAISUMSTKBNLST     OCCURS   2.
-                       09  SPA-GMN-SRYKAISUMSTKBNL   PIC X(01).
-                       09  SPA-GMN-SRYKAISUMSTKBNFLL PIC X(01).
-                       09  SPA-GMN-SRYKAISUMSTKBNMEIL PIC X(20).
-               05  SPA-GMN-SRYKAISUWRNKBNLST-G.
-                   07  SPA-GMN-SRYKAISUWRNKBN-MAX    PIC 9(03).
-                   07  SPA-GMN-SRYKAISUWRNKBNLST     OCCURS   2.
-                       09  SPA-GMN-SRYKAISUWRNKBNL   PIC X(01).
-                       09  SPA-GMN-SRYKAISUWRNKBNFLL PIC X(01).
-                       09  SPA-GMN-SRYKAISUWRNKBNMEIL PIC X(20).
                05  SPA-GMN-REIGAICHKKBNLST-G.
                    07  SPA-GMN-REIGAICHKKBN-MAX    PIC 9(03).
                    07  SPA-GMN-REIGAICHKKBNLST     OCCURS   2.
@@ -324,13 +168,6 @@
                        09  SPA-GMN-ERR990009KBNFLL PIC X(01).
                        09  SPA-GMN-ERR990009KBNMEIL
                                                    PIC X(20).
-               05  SPA-GMN-ERRA10001KBNLST-G.
-                   07  SPA-GMN-ERRA10001KBN-MAX    PIC 9(03).
-                   07  SPA-GMN-ERRA10001KBNLST     OCCURS   5.
-                       09  SPA-GMN-ERRA10001KBNL   PIC X(01).
-                       09  SPA-GMN-ERRA10001KBNFLL PIC X(01).
-                       09  SPA-GMN-ERRA10001KBNMEIL
-                                                   PIC X(20).
       *
       *    フラグエリア
        01  FLG-AREA.
@@ -342,7 +179,6 @@
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
            03  IDX1                        PIC 9(05).
-           03  IDX2                        PIC 9(05).
            03  IDX-CMB                     PIC 9(05).
            03  IDX-MTRX                    PIC 9(05).
       *
@@ -355,14 +191,12 @@
            03  WRK-CMB-CD                  PIC X(10).
            03  WRK-CMB-ITM-G.
                05  WRK-CMB-ITM             PIC X(200).
-           03  WRK-PAGENO                  PIC 9(03).
       *
        01  CONST-AREA.
            03  CONST-CHKMTRX-MAX           PIC 9(03)   VALUE 5.
            03  CONST-CHKMTRX-VAL           PIC X(05)   VALUE "1 111".
            03  CONST-CHKMTRX-R REDEFINES   CONST-CHKMTRX-VAL.
                05  CONST-CHKMTRX           PIC X(01)   OCCURS  5.
-           03  CONST-PAGE-MAX              PIC 9(03)   VALUE 2.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -399,7 +233,58 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -527,15 +412,6 @@
       *
            PERFORM 3102-SPASET-SEC
       *
-           MOVE    SPA-GMN-SEIHOJNUMCHKKBN TO  WRK-CMB-CD
-           PERFORM 4200-SEIHOJNUMCHKKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SEIHOJNUMCHKKBNLST (2)
-                                   TO  SPA-GMN-SEIHOJNUMCHKKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-SEIHOJNUMCHKKBN-G
-           END-IF
-      *
            MOVE    SPA-GMN-BYOSRYKAKBN TO  WRK-CMB-CD
            PERFORM 4200-BYOSRYKAKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
@@ -567,24 +443,6 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-KYUSEIKKNKBN-G
            END-IF
       *
-           MOVE    SPA-GMN-COMPBYONISSUKBN TO  WRK-CMB-CD
-           PERFORM 4200-COMPBYONISSUKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-COMPBYONISSUKBNLST (1)
-                                   TO  SPA-GMN-COMPBYONISSUKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-COMPBYONISSUKBN-G
-           END-IF
-      *
-           MOVE    SPA-GMN-SRYSTTENKIKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYSTTENKIKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYSTTENKIKBNLST (1)
-                                   TO  SPA-GMN-SRYSTTENKIKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-SRYSTTENKIKBN-G
-           END-IF
-      *
            MOVE    SPA-GMN-TENKITEKBYOKBN TO  WRK-CMB-CD
            PERFORM 4200-TENKITEKBYOKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
@@ -592,24 +450,6 @@
                                        TO  SPA-GMN-TENKITEKBYOKBN-G
            ELSE
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-TENKITEKBYOKBN-G
-           END-IF
-      *
-           MOVE    SPA-GMN-TEKBYOYKZKBN TO  WRK-CMB-CD
-           PERFORM 4200-TEKBYOYKZKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-TEKBYOYKZKBNLST (1)
-                                       TO  SPA-GMN-TEKBYOYKZKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-TEKBYOYKZKBN-G
-           END-IF
-      *
-           MOVE    SPA-GMN-TEKBYOSRYKBN TO  WRK-CMB-CD
-           PERFORM 4200-TEKBYOSRYKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-TEKBYOSRYKBNLST (1)
-                                       TO  SPA-GMN-TEKBYOSRYKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-TEKBYOSRYKBN-G
            END-IF
       *
            MOVE    SPA-GMN-YBKENSAYAKUKBN TO  WRK-CMB-CD
@@ -621,33 +461,6 @@
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-YBKENSAYAKUKBN-G
            END-IF
       *
-           MOVE    SPA-GMN-YBSJTYKZKBN TO  WRK-CMB-CD
-           PERFORM 4200-YBSJTYKZKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-YBSJTYKZKBNLST (1)
-                                       TO  SPA-GMN-YBSJTYKZKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-YBSJTYKZKBN-G
-           END-IF
-      *
-           MOVE    SPA-GMN-YBMSIYKZKBN TO  WRK-CMB-CD
-           PERFORM 4200-YBMSIYKZKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-YBMSIYKZKBNLST (1)
-                                       TO  SPA-GMN-YBMSIYKZKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-YBMSIYKZKBN-G
-           END-IF
-      *
-           MOVE    SPA-GMN-YBSHOHOYKZKBN TO  WRK-CMB-CD
-           PERFORM 4200-YBSHOHOYKZKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-YBSHOHOYKZKBNLST (1)
-                                       TO  SPA-GMN-YBSHOHOYKZKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-YBSHOHOYKZKBN-G
-           END-IF
-      *
            MOVE    SPA-GMN-YBUTAGAIKBN TO  WRK-CMB-CD
            PERFORM 4200-YBUTAGAIKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
@@ -655,15 +468,6 @@
                                        TO  SPA-GMN-YBUTAGAIKBN-G
            ELSE
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-YBUTAGAIKBN-G
-           END-IF
-      *
-           MOVE    SPA-GMN-YKZHEIMSTKBN TO  WRK-CMB-CD
-           PERFORM 4200-YKZHEIMSTKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-YKZHEIMSTKBNLST (2)
-                                       TO  SPA-GMN-YKZHEIMSTKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-YKZHEIMSTKBN-G
            END-IF
       *
            MOVE    SPA-GMN-SRYHEIWRNKBN TO  WRK-CMB-CD
@@ -675,51 +479,6 @@
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-SRYHEIWRNKBN-G
            END-IF
       *
-           MOVE    SPA-GMN-SRYHEIMSTKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYHEIMSTKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYHEIMSTKBNLST (2)
-                                       TO  SPA-GMN-SRYHEIMSTKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SRYHEIMSTKBN-G
-           END-IF
-      *
-           MOVE    SPA-GMN-SRYHEIEXPKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYHEIEXPKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYHEIEXPKBNLST (2)
-                                       TO  SPA-GMN-SRYHEIEXPKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SRYHEIEXPKBN-G
-           END-IF
-      *
-           MOVE    SPA-GMN-SRYMATERKKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYMATERKKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYMATERKKBNLST (2)
-                                       TO  SPA-GMN-SRYMATERKKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SRYMATERKKBN-G
-           END-IF
-      *
-           MOVE    SPA-GMN-SRYKAISUMSTKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYKAISUMSTKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYKAISUMSTKBNLST (2)
-                                       TO  SPA-GMN-SRYKAISUMSTKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SRYKAISUMSTKBN-G
-           END-IF
-      *
-           MOVE    SPA-GMN-SRYKAISUWRNKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYKAISUWRNKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYKAISUWRNKBNLST (2)
-                                       TO  SPA-GMN-SRYKAISUWRNKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-SRYKAISUWRNKBN-G
-           END-IF
-      *
            MOVE    SPA-GMN-ERR990009KBN TO  WRK-CMB-CD
            PERFORM 4200-ERR990009KBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
@@ -727,15 +486,6 @@
                                        TO  SPA-GMN-ERR990009KBN-G
            ELSE
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-ERR990009KBN-G
-           END-IF
-      *
-           MOVE    SPA-GMN-ERRA10001KBN TO  WRK-CMB-CD
-           PERFORM 4200-ERRA10001KBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-ERRA10001KBNLST (1)
-                                       TO  SPA-GMN-ERRA10001KBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-ERRA10001KBN-G
            END-IF
       *
            MOVE    SPA-GMN-REIGAICHKKBN TO  WRK-CMB-CD
@@ -765,7 +515,7 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-PRTPTLSTKBN-G
            END-IF
       *
-           MOVE    101             TO  SPA-GMN-CUR
+           MOVE    1               TO  SPA-GMN-CUR
       *
            .
        310-SPASET-EXT.
@@ -801,9 +551,6 @@
       *
                END-PERFORM
       *
-               MOVE    SYS-1101-SEIHOJNUMCHKKBN
-                                       TO  SPA-GMN-SEIHOJNUMCHKKBN
-      *
                MOVE    SYS-1101-BYOSRYKAKBN
                                        TO  SPA-GMN-BYOSRYKAKBN
       *
@@ -835,12 +582,6 @@
       *
                END-IF
       *
-               MOVE    SYS-1101-COMPBYONISSUKBN
-                                       TO  SPA-GMN-COMPBYONISSUKBN
-      *
-               MOVE    SYS-1101-SRYSTTENKIKBN
-                                       TO  SPA-GMN-SRYSTTENKIKBN
-      *
                MOVE    SYS-1101-PRTSRTKBN
                                        TO  SPA-GMN-PRTSRTKBN
       *
@@ -850,72 +591,16 @@
                MOVE    SYS-1101-YBUTAGAIKBN
                                        TO  SPA-GMN-YBUTAGAIKBN
       *
-               MOVE    SYS-1101-YKZHEIMSTKBN
-                                       TO  SPA-GMN-YKZHEIMSTKBN
-      *
                MOVE    SYS-1101-SRYHEIWRNKBN
                                        TO  SPA-GMN-SRYHEIWRNKBN
-      *
-               MOVE    SYS-1101-SRYHEIMSTKBN
-                                       TO  SPA-GMN-SRYHEIMSTKBN
-      *
-               MOVE    SYS-1101-SRYHEIEXPKBN
-                                       TO  SPA-GMN-SRYHEIEXPKBN
-      *
-               MOVE    SYS-1101-SRYMATERKKBN
-                                       TO  SPA-GMN-SRYMATERKKBN
-      *
-               MOVE    SYS-1101-SRYKAISUMSTKBN
-                                       TO  SPA-GMN-SRYKAISUMSTKBN
-      *
-               MOVE    SYS-1101-SRYKAISUWRNKBN
-                                       TO  SPA-GMN-SRYKAISUWRNKBN
       *
                MOVE    SYS-1101-REIGAICHKKBN
                                        TO  SPA-GMN-REIGAICHKKBN
       *
                MOVE    SYS-1101-YBKENSAYAKUKBN
                                        TO  SPA-GMN-YBKENSAYAKUKBN
-               MOVE    SYS-1101-YBSJTYKZKBN
-                                       TO  SPA-GMN-YBSJTYKZKBN
-               MOVE    SYS-1101-YBMSIYKZKBN
-                                       TO  SPA-GMN-YBMSIYKZKBN
-               MOVE    SYS-1101-YBSHOHOYKZKBN
-                                       TO  SPA-GMN-YBSHOHOYKZKBN
                MOVE    SYS-1101-TENKITEKBYOKBN
                                        TO  SPA-GMN-TENKITEKBYOKBN
-               MOVE    SYS-1101-TEKBYOYKZKBN
-                                       TO  SPA-GMN-TEKBYOYKZKBN
-               MOVE    SYS-1101-TEKBYOSRYKBN
-                                       TO  SPA-GMN-TEKBYOSRYKBN
-               IF    ( SYS-1101-SYA-INGAITEN   IS  NUMERIC )
-                   MOVE    SYS-1101-SYA-INGAITEN
-                                       TO  SPA-GMN-SYA-INGAITEN
-               END-IF
-               IF    ( SYS-1101-KOK-INGAITEN   IS  NUMERIC )
-                   MOVE    SYS-1101-KOK-INGAITEN
-                                       TO  SPA-GMN-KOK-INGAITEN
-               END-IF
-               IF    ( SYS-1101-KOU-INGAITEN   IS  NUMERIC )
-                   MOVE    SYS-1101-KOU-INGAITEN
-                                       TO  SPA-GMN-KOU-INGAITEN
-               END-IF
-               IF    ( SYS-1101-RSI-INGAITEN   IS  NUMERIC )
-                   MOVE    SYS-1101-RSI-INGAITEN
-                                       TO  SPA-GMN-RSI-INGAITEN
-               END-IF
-               IF    ( SYS-1101-JBI-INGAITEN   IS  NUMERIC )
-                   MOVE    SYS-1101-JBI-INGAITEN
-                                       TO  SPA-GMN-JBI-INGAITEN
-               END-IF
-               IF    ( SYS-1101-JIH-INGAITEN   IS  NUMERIC )
-                   MOVE    SYS-1101-JIH-INGAITEN
-                                       TO  SPA-GMN-JIH-INGAITEN
-               END-IF
-               IF    ( SYS-1101-KGI-INGAITEN   IS  NUMERIC )
-                   MOVE    SYS-1101-KGI-INGAITEN
-                                       TO  SPA-GMN-KGI-INGAITEN
-               END-IF
       *
                MOVE    SYS-1101-STYUKYMD
                                        TO  WRK-STYUKYMD
@@ -935,7 +620,7 @@
            MOVE    WRK-STYUKYMD            TO  CK4-1103-STYUKYMD
                                                CK4-1103-EDYUKYMD
            MOVE    CK4-1103-REC            TO  CHK004-REC
-           PERFORM 900-CHK004-KEY10-SEL-SEC
+           PERFORM 900-CHK004-KEY2-SEL-SEC
            MOVE    CHK004-REC              TO  CK4-1103-REC
       *
            PERFORM UNTIL ( FLG-CHK004      NOT =   ZERO )
@@ -944,18 +629,15 @@
                WHEN    "99"
                    MOVE    CK4-1103-ERRKBN (9)
                                            TO  SPA-GMN-ERR990009KBN
-               WHEN    "A1"
-                   MOVE    CK4-1103-ERRKBN (1)
-                                           TO  SPA-GMN-ERRA10001KBN
                END-EVALUATE
       *
-               PERFORM 900-CHK004-KEY10-FET-SEC
+               PERFORM 900-CHK004-KEY2-FET-SEC
                MOVE    CHK004-REC      TO  CK4-1103-REC
       *
            END-PERFORM
       *
            MOVE    "tbl_chk004"        TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -966,9 +648,6 @@
       *****************************************************************
        3101-COMBO-SYOKI-SEC            SECTION.
       *
-      *    生保受給者番号抜けチェック
-           PERFORM 3101-SEIHOJNUMCHKKBNLST-SEC
-      *
       *    診療科別チェックコンボ設定処理
            PERFORM 3101-BYOSRYKAKBNLST-SEC
       *
@@ -978,62 +657,20 @@
       *    急性病名期間チェックコンボ設定処理
            PERFORM 3101-KYUSEIKKNKBNLST-SEC
       *
-      *    診療開始日と実日数の比較区分コンボ設定処理
-           PERFORM 3101-COMPBYONISSUKBNLST-SEC
-      *
-      *    「中止」の取り扱いコンボ設定処理
-           PERFORM 3101-SRYSTTENKIKBNLST-SEC
-      *
       *    過月転帰済適応病名コンボ設定処理
            PERFORM 3101-TENKITEKBYOKBNLST-SEC
-      *
-      *    適応病名マスタ使用（薬剤と病名）コンボ設定処理
-           PERFORM 3101-TEKBYOYKZKBNLST-SEC
-      *
-      *    適応病名マスタ使用（診療行為と病名）コンボ設定処理
-           PERFORM 3101-TEKBYOSRYKBNLST-SEC
       *
       *    検査薬剤対象コンボ設定処理
            PERFORM 3101-YBKENSAYAKUKBNLST-SEC
       *
-      *    手術薬剤対象コンボ設定処理
-           PERFORM 3101-YBSJTYKZKBNLST-SEC
-      *
-      *    麻酔薬剤対象コンボ設定処理
-           PERFORM 3101-YBMSIYKZKBNLST-SEC
-      *
-      *    処方のみの薬剤対象コンボ設定処理
-           PERFORM 3101-YBSHOHOYKZKBNLST-SEC
-      *
       *    薬剤と病名疑いコンボ設定処理
            PERFORM 3101-YBUTAGAIKBNLST-SEC
-      *
-      *    相互作用マスタ参照コンボ設定処理
-           PERFORM 3101-YKZHEIMSTKBNLST-SEC
       *
       *    併用算定警告エラーコンボ設定処理
            PERFORM 3101-SRYHEIWRNKBNLST-SEC
       *
-      *    併用算定電子点数表参照コンボ設定処理
-           PERFORM 3101-SRYHEIMSTKBNLST-SEC
-      *
-      *    併用算定電子点数表特例コンボ設定処理
-           PERFORM 3101-SRYHEIEXPKBNLST-SEC
-      *
-      *    算定漏れ特定器材関連手技マスタ参照コンボ設定処理
-           PERFORM 3101-SRYMATERKKBNLST-SEC
-      *
-      *    電子点数表回数参照コンボ設定処理
-           PERFORM 3101-SRYKAISUMSTKBNLST-SEC
-      *
-      *    点数マスタ警告エラーコンボ設定処理
-           PERFORM 3101-SRYKAISUWRNKBNLST-SEC
-      *
       *    その他のチェックエラーコンボ設定処理
            PERFORM 3101-ERR990009KBNLST-SEC
-      *
-      *    「薬剤と病名」に未登録の薬剤チェックコンボ設定処理
-           PERFORM 3101-ERRA10001KBNLST-SEC
       *
       *    患者毎の例外設定使用コンボ設定処理
            PERFORM 3101-REIGAICHKKBNLST-SEC
@@ -1046,28 +683,6 @@
       *
            .
        3101-COMBO-SYOKI-EXT.
-           EXIT.
-      *****************************************************************
-      *    生保受給者番号抜けチェックコンボ設定処理
-      *****************************************************************
-       3101-SEIHOJNUMCHKKBNLST-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN-SEIHOJNUMCHKKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-SEIHOJNUMCHKKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-SEIHOJNUMCHKKBNL    (1)
-           MOVE    "チェックする"  TO  SPA-GMN-SEIHOJNUMCHKKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-SEIHOJNUMCHKKBNL    (2)
-           MOVE    "チェックしない"
-                                   TO  SPA-GMN-SEIHOJNUMCHKKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-SEIHOJNUMCHKKBNLST  (2)
-                                   TO  SPA-GMN-SEIHOJNUMCHKKBN-G
-      *
-           . 
-       3101-SEIHOJNUMCHKKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    診療科別チェックコンボ設定処理
@@ -1142,51 +757,6 @@
        3101-KYUSEIKKNKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    診療開始日と実日数の比較区分コンボ設定処理
-      *****************************************************************
-       3101-COMPBYONISSUKBNLST-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN-COMPBYONISSUKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-COMPBYONISSUKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-COMPBYONISSUKBNL    (1)
-           MOVE    "チェックする"  TO  SPA-GMN-COMPBYONISSUKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-COMPBYONISSUKBNL    (2)
-           MOVE    "チェックしない"
-                                   TO  SPA-GMN-COMPBYONISSUKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-COMPBYONISSUKBNLST  (1)
-                                   TO  SPA-GMN-COMPBYONISSUKBN-G
-      *
-           . 
-       3101-COMPBYONISSUKBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    「中止」の取り扱いコンボ設定処理
-      *****************************************************************
-       3101-SRYSTTENKIKBNLST-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN-SRYSTTENKIKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-SRYSTTENKIKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-SRYSTTENKIKBNL    (1)
-           MOVE    "転帰日から１ヶ月経過後に初診料算定可能"
-                                   TO  SPA-GMN-SRYSTTENKIKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-SRYSTTENKIKBNL    (2)
-           MOVE    "転帰日から１ヶ月以内でも初診料算定可能"
-                                   TO  SPA-GMN-SRYSTTENKIKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-SRYSTTENKIKBNLST  (1)
-                                   TO  SPA-GMN-SRYSTTENKIKBN-G
-      *
-           . 
-       3101-SRYSTTENKIKBNLST-EXT.
-           EXIT.
-      *****************************************************************
       *    過月転帰済適応病名コンボ設定処理
       *****************************************************************
        3101-TENKITEKBYOKBNLST-SEC      SECTION.
@@ -1208,60 +778,6 @@
       *
            . 
        3101-TENKITEKBYOKBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    適応病名マスタ使用（薬剤と病名）コンボ設定処理
-      *****************************************************************
-       3101-TEKBYOYKZKBNLST-SEC      SECTION.
-      *
-           INITIALIZE                  SPA-GMN-TEKBYOYKZKBNLST-G
-      *
-           MOVE    3               TO  SPA-GMN-TEKBYOYKZKBN-MAX
-      *
-           MOVE    "0"             TO  SPA-GMN-TEKBYOYKZKBNL    (1)
-           MOVE    "行わない"
-                                   TO  SPA-GMN-TEKBYOYKZKBNMEIL (1)
-      *
-           MOVE    "1"             TO  SPA-GMN-TEKBYOYKZKBNL    (2)
-           MOVE    "行う"
-                                   TO  SPA-GMN-TEKBYOYKZKBNMEIL (2)
-      *
-           MOVE    "2"             TO  SPA-GMN-TEKBYOYKZKBNL    (3)
-           MOVE    "チェックマスタにない薬剤のみ行う"
-                                   TO  SPA-GMN-TEKBYOYKZKBNMEIL (3)
-      *
-           MOVE    SPA-GMN-TEKBYOYKZKBNLST  (1)
-                                   TO  SPA-GMN-TEKBYOYKZKBN-G
-      *
-           . 
-       3101-TEKBYOYKZKBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    適応病名マスタ使用（薬剤と病名）コンボ設定処理
-      *****************************************************************
-       3101-TEKBYOSRYKBNLST-SEC      SECTION.
-      *
-           INITIALIZE                  SPA-GMN-TEKBYOSRYKBNLST-G
-      *
-           MOVE    3               TO  SPA-GMN-TEKBYOSRYKBN-MAX
-      *
-           MOVE    "0"             TO  SPA-GMN-TEKBYOSRYKBNL    (1)
-           MOVE    "行わない"
-                                   TO  SPA-GMN-TEKBYOSRYKBNMEIL (1)
-      *
-           MOVE    "1"             TO  SPA-GMN-TEKBYOSRYKBNL    (2)
-           MOVE    "行う"
-                                   TO  SPA-GMN-TEKBYOSRYKBNMEIL (2)
-      *
-           MOVE    "2"             TO  SPA-GMN-TEKBYOSRYKBNL    (3)
-           MOVE    "チェックマスタにない診療行為のみ行う"
-                                   TO  SPA-GMN-TEKBYOSRYKBNMEIL (3)
-      *
-           MOVE    SPA-GMN-TEKBYOSRYKBNLST  (1)
-                                   TO  SPA-GMN-TEKBYOSRYKBN-G
-      *
-           . 
-       3101-TEKBYOSRYKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    検査薬剤対象コンボ設定処理
@@ -1287,75 +803,6 @@
        3101-YBKENSAYAKUKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    検査薬剤対象コンボ設定処理
-      *****************************************************************
-       3101-YBSJTYKZKBNLST-SEC      SECTION.
-      *
-           INITIALIZE                  SPA-GMN-YBSJTYKZKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-YBSJTYKZKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-YBSJTYKZKBNL    (1)
-           MOVE    "チェックする"
-                                   TO  SPA-GMN-YBSJTYKZKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-YBSJTYKZKBNL    (2)
-           MOVE    "チェックしない"
-                                   TO  SPA-GMN-YBSJTYKZKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-YBSJTYKZKBNLST  (1)
-                                   TO  SPA-GMN-YBSJTYKZKBN-G
-      *
-           . 
-       3101-YBSJTYKZKBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    検査薬剤対象コンボ設定処理
-      *****************************************************************
-       3101-YBMSIYKZKBNLST-SEC      SECTION.
-      *
-           INITIALIZE                  SPA-GMN-YBMSIYKZKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-YBMSIYKZKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-YBMSIYKZKBNL    (1)
-           MOVE    "チェックする"
-                                   TO  SPA-GMN-YBMSIYKZKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-YBMSIYKZKBNL    (2)
-           MOVE    "チェックしない"
-                                   TO  SPA-GMN-YBMSIYKZKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-YBMSIYKZKBNLST  (1)
-                                   TO  SPA-GMN-YBMSIYKZKBN-G
-      *
-           . 
-       3101-YBMSIYKZKBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    検査薬剤対象コンボ設定処理
-      *****************************************************************
-       3101-YBSHOHOYKZKBNLST-SEC      SECTION.
-      *
-           INITIALIZE                  SPA-GMN-YBSHOHOYKZKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-YBSHOHOYKZKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-YBSHOHOYKZKBNL    (1)
-           MOVE    "チェックする"
-                                   TO  SPA-GMN-YBSHOHOYKZKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-YBSHOHOYKZKBNL    (2)
-           MOVE    "チェックしない"
-                                   TO  SPA-GMN-YBSHOHOYKZKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-YBSHOHOYKZKBNLST  (1)
-                                   TO  SPA-GMN-YBSHOHOYKZKBN-G
-      *
-           . 
-       3101-YBSHOHOYKZKBNLST-EXT.
-           EXIT.
-      *****************************************************************
       *    薬剤と病名疑いコンボ設定処理
       *****************************************************************
        3101-YBUTAGAIKBNLST-SEC           SECTION.
@@ -1377,29 +824,6 @@
       *
            . 
        3101-YBUTAGAIKBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    相互作用マスタ参照コンボ設定処理
-      *****************************************************************
-       3101-YKZHEIMSTKBNLST-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN-YKZHEIMSTKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-YKZHEIMSTKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-YKZHEIMSTKBNL    (1)
-           MOVE    "参照する"
-                                   TO  SPA-GMN-YKZHEIMSTKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-YKZHEIMSTKBNL    (2)
-           MOVE    "参照しない"
-                                   TO  SPA-GMN-YKZHEIMSTKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-YKZHEIMSTKBNLST  (2)
-                                   TO  SPA-GMN-YKZHEIMSTKBN-G
-      *
-           . 
-       3101-YKZHEIMSTKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    併用算定警告エラーコンボ設定処理
@@ -1425,117 +849,6 @@
        3101-SRYHEIWRNKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    併用算定電子点数表参照コンボ設定処理
-      *****************************************************************
-       3101-SRYHEIMSTKBNLST-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN-SRYHEIMSTKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-SRYHEIMSTKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-SRYHEIMSTKBNL    (1)
-           MOVE    "参照する"
-                                   TO  SPA-GMN-SRYHEIMSTKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-SRYHEIMSTKBNL    (2)
-           MOVE    "参照しない"
-                                   TO  SPA-GMN-SRYHEIMSTKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-SRYHEIMSTKBNLST  (2)
-                                   TO  SPA-GMN-SRYHEIMSTKBN-G
-      *
-           . 
-       3101-SRYHEIMSTKBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    併用算定電子点数表特例コンボ設定処理
-      *****************************************************************
-       3101-SRYHEIEXPKBNLST-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN-SRYHEIEXPKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-SRYHEIEXPKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-SRYHEIEXPKBNL    (1)
-           MOVE    "特例条件があるものも参照する"
-                                   TO  SPA-GMN-SRYHEIEXPKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-SRYHEIEXPKBNL    (2)
-           MOVE    "特例条件があるものは参照しない"
-                                   TO  SPA-GMN-SRYHEIEXPKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-SRYHEIEXPKBNLST  (2)
-                                   TO  SPA-GMN-SRYHEIEXPKBN-G
-      *
-           . 
-       3101-SRYHEIEXPKBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    算定漏れ特定器材関連手技マスタ参照コンボ設定処理
-      *****************************************************************
-       3101-SRYMATERKKBNLST-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN-SRYMATERKKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-SRYMATERKKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-SRYMATERKKBNL    (1)
-           MOVE    "参照する"
-                                   TO  SPA-GMN-SRYMATERKKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-SRYMATERKKBNL    (2)
-           MOVE    "参照しない"
-                                   TO  SPA-GMN-SRYMATERKKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-SRYMATERKKBNLST  (2)
-                                   TO  SPA-GMN-SRYMATERKKBN-G
-      *
-           . 
-       3101-SRYMATERKKBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    電子点数表回数参照コンボ設定処理
-      *****************************************************************
-       3101-SRYKAISUMSTKBNLST-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN-SRYKAISUMSTKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-SRYKAISUMSTKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-SRYKAISUMSTKBNL    (1)
-           MOVE    "参照する"      TO  SPA-GMN-SRYKAISUMSTKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-SRYKAISUMSTKBNL    (2)
-           MOVE    "参照しない"    TO  SPA-GMN-SRYKAISUMSTKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-SRYKAISUMSTKBNLST  (2)
-                                   TO  SPA-GMN-SRYKAISUMSTKBN-G
-      *
-           . 
-       3101-SRYKAISUMSTKBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    点数マスタ警告エラーコンボ設定処理
-      *****************************************************************
-       3101-SRYKAISUWRNKBNLST-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN-SRYKAISUWRNKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-SRYKAISUWRNKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-SRYKAISUWRNKBNL    (1)
-           MOVE    "チェックする"  TO  SPA-GMN-SRYKAISUWRNKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-SRYKAISUWRNKBNL    (2)
-           MOVE    "チェックしない" TO SPA-GMN-SRYKAISUWRNKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-SRYKAISUWRNKBNLST  (2)
-                                   TO  SPA-GMN-SRYKAISUWRNKBN-G
-      *
-           . 
-       3101-SRYKAISUWRNKBNLST-EXT.
-           EXIT.
-      *****************************************************************
       *    その他エラーコンボ設定処理
       *****************************************************************
        3101-ERR990009KBNLST-SEC           SECTION.
@@ -1557,29 +870,6 @@
       *
            . 
        3101-ERR990009KBNLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    「薬剤と病名」に未登録の薬剤チェックコンボ設定処理
-      *****************************************************************
-       3101-ERRA10001KBNLST-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN-ERRA10001KBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-ERRA10001KBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-ERRA10001KBNL    (1)
-           MOVE    "チェックする"
-                                   TO  SPA-GMN-ERRA10001KBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-ERRA10001KBNL    (2)
-           MOVE    "チェックしない"
-                                   TO  SPA-GMN-ERRA10001KBNMEIL (2)
-      *
-           MOVE    SPA-GMN-ERRA10001KBNLST  (2)
-                                   TO  SPA-GMN-ERRA10001KBN-G
-      *
-           . 
-       3101-ERRA10001KBNLST-EXT.
            EXIT.
       *****************************************************************
       *    患者毎の例外設定使用コンボ設定処理
@@ -1687,9 +977,6 @@
            WHEN    "CLICKED"       ALSO    "B03"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
                PERFORM 403-DEL-SEC
-      *    タブ切替
-           WHEN    "CLICKED"       ALSO    "B08"
-               PERFORM 480-TAB-SWITCH-SEC
       *    チェックマトリクス
            WHEN    "CLICKED"       ALSO    "CHKMTRX01"
            WHEN    "CLICKED"       ALSO    "CHKMTRX02"
@@ -1712,18 +999,15 @@
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
-           EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *    タブ切替
-           WHEN    "SWITCH"       ALSO    "nb1"
-               PERFORM 440-TAB-CHANGE-SEC
+      *    EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
       *
-           WHEN    OTHER
+      *    WHEN    "XXXX"
       *
       *        入力個所のセット
                PERFORM 400-GMN-INPUT-SEC
       *        入力チェック処理
                PERFORM 410-INPUT-CHK-SEC
-           END-EVALUATE
+      *    END-EVALUATE
       *
            .
       *
@@ -1780,10 +1064,15 @@
       *****************************************************************
        410-INPUT-CHK-SEC          SECTION.
       *
-      *    画面をＳＰＡにセット
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-           PERFORM 4101-INPUT-CHK-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+             OR  ( FLG-END     NOT =   ZERO  )
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
       *
            .
       *
@@ -1791,57 +1080,19 @@
            EXIT.
       *
       *****************************************************************
-      *    入力チェック処理
-      *****************************************************************
-       4101-INPUT-CHK-SEC          SECTION.
-      *
-           EVALUATE    SPA-GMN-PAGENO
-      *    設定１
-           WHEN    ZERO
-               PERFORM 4102-PAGE00-KIHON-CHK-SEC
-      *    設定２
-           WHEN    1
-               PERFORM 4102-PAGE01-KIHON-CHK-SEC
-           END-EVALUATE
-      *
-           .
-      *
-       4101-INPUT-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    画面ＳＰＡ編集処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
-           MOVE    W60-SEIHOJNUMCHKKBN TO  SPA-GMN-SEIHOJNUMCHKKBN-G
            MOVE    W60-BYOSRYKAKBN     TO  SPA-GMN-BYOSRYKAKBN-G
            MOVE    W60-SYUBYOCHK       TO  SPA-GMN-SYUBYOCHK-G
            MOVE    W60-UTAGAIKKN       TO  SPA-GMN-UTAGAIKKN
            MOVE    W60-KYUSEIKKNKBN    TO  SPA-GMN-KYUSEIKKNKBN-G
-           MOVE    W60-COMPBYONISSUKBN TO  SPA-GMN-COMPBYONISSUKBN-G
-           MOVE    W60-SRYSTTENKIKBN   TO  SPA-GMN-SRYSTTENKIKBN-G
            MOVE    W60-TENKITEKBYOKBN  TO  SPA-GMN-TENKITEKBYOKBN-G
-           MOVE    W60-TEKBYOYKZKBN    TO  SPA-GMN-TEKBYOYKZKBN-G
-           MOVE    W60-TEKBYOSRYKBN    TO  SPA-GMN-TEKBYOSRYKBN-G
            MOVE    W60-YBKENSAYAKUKBN  TO  SPA-GMN-YBKENSAYAKUKBN-G
-           MOVE    W60-YBSJTYKZKBN     TO  SPA-GMN-YBSJTYKZKBN-G
-           MOVE    W60-YBMSIYKZKBN     TO  SPA-GMN-YBMSIYKZKBN-G
-           MOVE    W60-YBSHOHOYKZKBN   TO  SPA-GMN-YBSHOHOYKZKBN-G
            MOVE    W60-YBUTAGAIKBN     TO  SPA-GMN-YBUTAGAIKBN-G
-           MOVE    W60-YKZHEIMSTKBN    TO  SPA-GMN-YKZHEIMSTKBN-G
            MOVE    W60-SRYHEIWRNKBN    TO  SPA-GMN-SRYHEIWRNKBN-G
-           MOVE    W60-SRYHEIMSTKBN    TO  SPA-GMN-SRYHEIMSTKBN-G
-           MOVE    W60-SRYHEIEXPKBN    TO  SPA-GMN-SRYHEIEXPKBN-G
-           MOVE    W60-SRYMATERKKBN    TO  SPA-GMN-SRYMATERKKBN-G
-           MOVE    W60-SRYKAISUMSTKBN  TO  SPA-GMN-SRYKAISUMSTKBN-G
-           MOVE    W60-SRYKAISUWRNKBN  TO  SPA-GMN-SRYKAISUWRNKBN-G
            MOVE    W60-ERR990009KBN    TO  SPA-GMN-ERR990009KBN-G
-           MOVE    W60-ERRA10001KBN    TO  SPA-GMN-ERRA10001KBN-G
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   7 )
-               MOVE    W60-INGAITEN (IDX0)
-                                       TO  SPA-GMN-INGAITEN (IDX0)
-           END-PERFORM
            MOVE    W60-REIGAICHKKBN    TO  SPA-GMN-REIGAICHKKBN-G
            MOVE    W60-PRTSRTKBN       TO  SPA-GMN-PRTSRTKBN-G
            MOVE    W60-PRTPTLSTKBN     TO  SPA-GMN-PRTPTLSTKBN-G
@@ -1852,148 +1103,73 @@
            EXIT.
       *
       *****************************************************************
-      *    設定１基本チェック処理
+      *    基本チェック処理
       *****************************************************************
-       4102-PAGE00-KIHON-CHK-SEC       SECTION.
+       4102-KIHON-CHK-SEC              SECTION.
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-SEIHOJNUMCHKKBN-CHK-SEC
+           PERFORM 4101-BYOSRYKAKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-BYOSRYKAKBN-CHK-SEC
+           PERFORM 4101-SYUBYOCHK-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-SYUBYOCHK-CHK-SEC
+           PERFORM 4101-UTAGAIKKN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-UTAGAIKKN-CHK-SEC
+           PERFORM 4101-KYUSEIKKNKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KYUSEIKKNKBN-CHK-SEC
+           PERFORM 4101-TENKITEKBYOKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-COMPBYONISSUKBN-CHK-SEC
+           PERFORM 4101-YBKENSAYAKUKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-SRYSTTENKIKBN-CHK-SEC
+           PERFORM 4101-YBUTAGAIKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-TENKITEKBYOKBN-CHK-SEC
+           PERFORM 4101-SRYHEIWRNKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-TEKBYOYKZKBN-CHK-SEC
+           PERFORM 4101-ERR990009KBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-TEKBYOSRYKBN-CHK-SEC
+           PERFORM 4101-REIGAICHKKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-YBKENSAYAKUKBN-CHK-SEC
+           PERFORM 4101-PRTSRTKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-YBSJTYKZKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-YBMSIYKZKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-YBSHOHOYKZKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-YBUTAGAIKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-YKZHEIMSTKBN-CHK-SEC
+           PERFORM 4101-PRTPTLSTKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
            .
       *
-       4102-PAGE00-KIHON-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    設定２基本チェック処理
-      *****************************************************************
-       4102-PAGE01-KIHON-CHK-SEC       SECTION.
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-SRYHEIWRNKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-SRYHEIMSTKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-SRYHEIEXPKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-SRYMATERKKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-SRYKAISUMSTKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-SRYKAISUWRNKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-ERR990009KBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-ERRA10001KBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-REIGAICHKKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-PRTSRTKBN-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-PRTPTLSTKBN-CHK-SEC
-           END-IF
-      *
-           .
-      *
-       4102-PAGE01-KIHON-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    生保受給者番号抜けチェック区分チェック処理
-      *****************************************************************
-       4101-SEIHOJNUMCHKKBN-CHK-SEC        SECTION.
-      *
-           MOVE    SPA-GMN-SEIHOJNUMCHKKBN TO  WRK-CMB-CD
-           PERFORM 4200-SEIHOJNUMCHKKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SEIHOJNUMCHKKBNLST (2)
-                                   TO  SPA-GMN-SEIHOJNUMCHKKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-SEIHOJNUMCHKKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-SEIHOJNUMCHKKBN-CHK-EXT.
+       4102-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療科別チェック区分チェック処理
@@ -2003,7 +1179,7 @@
            MOVE    SPA-GMN-BYOSRYKAKBN TO  WRK-CMB-CD
            PERFORM 4200-BYOSRYKAKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-BYOSRYKAKBNLST (2)
+               MOVE    SPA-GMN-BYOSRYKAKBNLST (1)
                                    TO  SPA-GMN-BYOSRYKAKBN-G
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-BYOSRYKAKBN-G
@@ -2041,7 +1217,7 @@
                CONTINUE
            ELSE
                MOVE    "0001"      TO  SPA-ERRCD
-               MOVE    104         TO  SPA-GMN-CUR
+               MOVE    2           TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -2067,42 +1243,6 @@
        4101-KYUSEIKKNKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    診療開始日と実日数の比較区分チェック処理
-      *****************************************************************
-       4101-COMPBYONISSUKBN-CHK-SEC       SECTION.
-      *
-           MOVE    SPA-GMN-COMPBYONISSUKBN TO  WRK-CMB-CD
-           PERFORM 4200-COMPBYONISSUKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-COMPBYONISSUKBNLST (1)
-                                   TO  SPA-GMN-COMPBYONISSUKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-COMPBYONISSUKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-COMPBYONISSUKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    「中止」の取り扱いチェック処理
-      *****************************************************************
-       4101-SRYSTTENKIKBN-CHK-SEC       SECTION.
-      *
-           MOVE    SPA-GMN-SRYSTTENKIKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYSTTENKIKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYSTTENKIKBNLST (1)
-                                   TO  SPA-GMN-SRYSTTENKIKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-SRYSTTENKIKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-SRYSTTENKIKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    過月転帰済適応病名区分チェック処理
       *****************************************************************
        4101-TENKITEKBYOKBN-CHK-SEC     SECTION.
@@ -2119,42 +1259,6 @@
            .
       *
        4101-TENKITEKBYOKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    適応病名マスタ使用（薬剤と病名）区分チェック処理
-      *****************************************************************
-       4101-TEKBYOYKZKBN-CHK-SEC     SECTION.
-      *
-           MOVE    SPA-GMN-TEKBYOYKZKBN TO  WRK-CMB-CD
-           PERFORM 4200-TEKBYOYKZKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-TEKBYOYKZKBNLST (1)
-                                   TO  SPA-GMN-TEKBYOYKZKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-TEKBYOYKZKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-TEKBYOYKZKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    適応病名マスタ使用（診療行為と病名）区分チェック処理
-      *****************************************************************
-       4101-TEKBYOSRYKBN-CHK-SEC     SECTION.
-      *
-           MOVE    SPA-GMN-TEKBYOSRYKBN TO  WRK-CMB-CD
-           PERFORM 4200-TEKBYOSRYKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-TEKBYOSRYKBNLST (1)
-                                   TO  SPA-GMN-TEKBYOSRYKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-TEKBYOSRYKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-TEKBYOSRYKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    検査薬剤対象区分チェック処理
@@ -2175,60 +1279,6 @@
        4101-YBKENSAYAKUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    手術薬剤対象区分チェック処理
-      *****************************************************************
-       4101-YBSJTYKZKBN-CHK-SEC     SECTION.
-      *
-           MOVE    SPA-GMN-YBSJTYKZKBN TO  WRK-CMB-CD
-           PERFORM 4200-YBSJTYKZKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-YBSJTYKZKBNLST (1)
-                                   TO  SPA-GMN-YBSJTYKZKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-YBSJTYKZKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-YBSJTYKZKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    麻酔薬剤対象区分チェック処理
-      *****************************************************************
-       4101-YBMSIYKZKBN-CHK-SEC     SECTION.
-      *
-           MOVE    SPA-GMN-YBMSIYKZKBN TO  WRK-CMB-CD
-           PERFORM 4200-YBMSIYKZKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-YBMSIYKZKBNLST (1)
-                                   TO  SPA-GMN-YBMSIYKZKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-YBMSIYKZKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-YBMSIYKZKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    処方のみの薬剤対象区分チェック処理
-      *****************************************************************
-       4101-YBSHOHOYKZKBN-CHK-SEC     SECTION.
-      *
-           MOVE    SPA-GMN-YBSHOHOYKZKBN TO  WRK-CMB-CD
-           PERFORM 4200-YBSHOHOYKZKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-YBSHOHOYKZKBNLST (1)
-                                   TO  SPA-GMN-YBSHOHOYKZKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-YBSHOHOYKZKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-YBSHOHOYKZKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    薬剤と病名疑い区分チェック処理
       *****************************************************************
        4101-YBUTAGAIKBN-CHK-SEC        SECTION.
@@ -2245,24 +1295,6 @@
            .
       *
        4101-YBUTAGAIKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    相互作用マスタ参照区分チェック処理
-      *****************************************************************
-       4101-YKZHEIMSTKBN-CHK-SEC        SECTION.
-      *
-           MOVE    SPA-GMN-YKZHEIMSTKBN TO  WRK-CMB-CD
-           PERFORM 4200-YKZHEIMSTKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-YKZHEIMSTKBNLST (2)
-                                   TO  SPA-GMN-YKZHEIMSTKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-YKZHEIMSTKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-YKZHEIMSTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    併用算定警告エラー区分チェック処理
@@ -2283,96 +1315,6 @@
        4101-SRYHEIWRNKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    併用算定電子点数表参照区分チェック処理
-      *****************************************************************
-       4101-SRYHEIMSTKBN-CHK-SEC        SECTION.
-      *
-           MOVE    SPA-GMN-SRYHEIMSTKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYHEIMSTKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYHEIMSTKBNLST (2)
-                                   TO  SPA-GMN-SRYHEIMSTKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-SRYHEIMSTKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-SRYHEIMSTKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    併用算定電子点数表特例区分チェック処理
-      *****************************************************************
-       4101-SRYHEIEXPKBN-CHK-SEC        SECTION.
-      *
-           MOVE    SPA-GMN-SRYHEIEXPKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYHEIEXPKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYHEIEXPKBNLST (2)
-                                   TO  SPA-GMN-SRYHEIEXPKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-SRYHEIEXPKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-SRYHEIEXPKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    特定器材関連手技参照チェック処理
-      *****************************************************************
-       4101-SRYMATERKKBN-CHK-SEC        SECTION.
-      *
-           MOVE    SPA-GMN-SRYMATERKKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYMATERKKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYMATERKKBNLST (2)
-                                   TO  SPA-GMN-SRYMATERKKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-SRYMATERKKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-SRYMATERKKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    電子点数表回数参照チェック処理
-      *****************************************************************
-       4101-SRYKAISUMSTKBN-CHK-SEC        SECTION.
-      *
-           MOVE    SPA-GMN-SRYKAISUMSTKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYKAISUMSTKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYKAISUMSTKBNLST (2)
-                                   TO  SPA-GMN-SRYKAISUMSTKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-SRYKAISUMSTKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-SRYKAISUMSTKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    点数マスタ警告エラーチェック処理
-      *****************************************************************
-       4101-SRYKAISUWRNKBN-CHK-SEC        SECTION.
-      *
-           MOVE    SPA-GMN-SRYKAISUWRNKBN TO  WRK-CMB-CD
-           PERFORM 4200-SRYKAISUWRNKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-SRYKAISUWRNKBNLST (2)
-                                   TO  SPA-GMN-SRYKAISUWRNKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-SRYKAISUWRNKBN-G
-           END-IF
-      *
-           .
-      *
-       4101-SRYKAISUWRNKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    その他エラー区分チェック処理
       *****************************************************************
        4101-ERR990009KBN-CHK-SEC        SECTION.
@@ -2389,24 +1331,6 @@
            .
       *
        4101-ERR990009KBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    「薬剤と病名」に未登録の薬剤チェック区分チェック処理
-      *****************************************************************
-       4101-ERRA10001KBN-CHK-SEC        SECTION.
-      *
-           MOVE    SPA-GMN-ERRA10001KBN TO  WRK-CMB-CD
-           PERFORM 4200-ERRA10001KBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-ERRA10001KBNLST (2)
-                                   TO  SPA-GMN-ERRA10001KBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-ERRA10001KBN-G
-           END-IF
-      *
-           .
-      *
-       4101-ERRA10001KBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    患者毎の例外設定チェック処理
@@ -2461,30 +1385,6 @@
            .
       *
        4101-PRTPTLSTKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    生保受給者番号抜けチェック区分コンボチェック処理
-      *****************************************************************
-       4200-SEIHOJNUMCHKKBNLST-CHK-SEC       SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-SEIHOJNUMCHKKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-SEIHOJNUMCHKKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-SEIHOJNUMCHKKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-SEIHOJNUMCHKKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療科別チェック区分コンボチェック処理
@@ -2559,54 +1459,6 @@
        4200-KYUSEIKKNKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    診療開始日と実日数の比較区分コンボチェック処理
-      *****************************************************************
-       4200-COMPBYONISSUKBNLST-CHK-SEC    SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-COMPBYONISSUKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-COMPBYONISSUKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-COMPBYONISSUKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-COMPBYONISSUKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    「中止」の取り扱い設定処理
-      *****************************************************************
-       4200-SRYSTTENKIKBNLST-CHK-SEC    SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-SRYSTTENKIKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-SRYSTTENKIKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-SRYSTTENKIKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-SRYSTTENKIKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    過月転帰済適応病名区分コンボチェック処理
       *****************************************************************
        4200-TENKITEKBYOKBNLST-CHK-SEC     SECTION.
@@ -2629,54 +1481,6 @@
       *
            .
        4200-TENKITEKBYOKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    適応病名マスタ使用（薬剤と病名）区分コンボチェック処理
-      *****************************************************************
-       4200-TEKBYOYKZKBNLST-CHK-SEC     SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-TEKBYOYKZKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-TEKBYOYKZKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-TEKBYOYKZKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-TEKBYOYKZKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    適応病名マスタ使用（診療行為と病名）区分コンボチェック処理
-      *****************************************************************
-       4200-TEKBYOSRYKBNLST-CHK-SEC     SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-TEKBYOSRYKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-TEKBYOSRYKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-TEKBYOSRYKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-TEKBYOSRYKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    検査薬剤対象区分コンボチェック処理
@@ -2703,78 +1507,6 @@
        4200-YBKENSAYAKUKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    手術薬剤対象区分コンボチェック処理
-      *****************************************************************
-       4200-YBSJTYKZKBNLST-CHK-SEC     SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-YBSJTYKZKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-YBSJTYKZKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-YBSJTYKZKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-YBSJTYKZKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    麻酔薬剤対象区分コンボチェック処理
-      *****************************************************************
-       4200-YBMSIYKZKBNLST-CHK-SEC     SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-YBMSIYKZKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-YBMSIYKZKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-YBMSIYKZKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-YBMSIYKZKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    処方のみの薬剤対象区分コンボチェック処理
-      *****************************************************************
-       4200-YBSHOHOYKZKBNLST-CHK-SEC     SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-YBSHOHOYKZKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-YBSHOHOYKZKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-YBSHOHOYKZKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-YBSHOHOYKZKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    薬剤と病名疑い区分コンボチェック処理
       *****************************************************************
        4200-YBUTAGAIKBNLST-CHK-SEC     SECTION.
@@ -2797,30 +1529,6 @@
       *
            .
        4200-YBUTAGAIKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    相互作用マスタ参照コンボチェック処理
-      *****************************************************************
-       4200-YKZHEIMSTKBNLST-CHK-SEC     SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB         >   SPA-GMN-YKZHEIMSTKBN-MAX)
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-YKZHEIMSTKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-YKZHEIMSTKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-YKZHEIMSTKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    併用算定警告エラー区分コンボチェック処理
@@ -2847,126 +1555,6 @@
        4200-SRYHEIWRNKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    併用算定電子点数表参照コンボチェック処理
-      *****************************************************************
-       4200-SRYHEIMSTKBNLST-CHK-SEC     SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB         >   SPA-GMN-SRYHEIMSTKBN-MAX)
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-SRYHEIMSTKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-SRYHEIMSTKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-SRYHEIMSTKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    併用算定電子点数表特例コンボチェック処理
-      *****************************************************************
-       4200-SRYHEIEXPKBNLST-CHK-SEC     SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB         >   SPA-GMN-SRYHEIEXPKBN-MAX)
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-SRYHEIEXPKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-SRYHEIEXPKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-SRYHEIEXPKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    特定器材関連手技参照コンボチェック処理
-      *****************************************************************
-       4200-SRYMATERKKBNLST-CHK-SEC     SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB         >   SPA-GMN-SRYMATERKKBN-MAX)
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-SRYMATERKKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-SRYMATERKKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-SRYMATERKKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    電子点数表回数参照コンボチェック処理
-      *****************************************************************
-       4200-SRYKAISUMSTKBNLST-CHK-SEC  SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-SRYKAISUMSTKBN-MAX)
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-SRYKAISUMSTKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-SRYKAISUMSTKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-SRYKAISUMSTKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    点数マスタ警告エラーコンボチェック処理
-      *****************************************************************
-       4200-SRYKAISUWRNKBNLST-CHK-SEC  SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-SRYKAISUWRNKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-SRYKAISUWRNKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-SRYKAISUWRNKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-SRYKAISUWRNKBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    その他エラー区分コンボチェック処理
       *****************************************************************
        4200-ERR990009KBNLST-CHK-SEC     SECTION.
@@ -2989,30 +1577,6 @@
       *
            .
        4200-ERR990009KBNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    「薬剤と病名」に未登録の薬剤チェック区分コンボチェック処理
-      *****************************************************************
-       4200-ERRA10001KBNLST-CHK-SEC     SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB         >   SPA-GMN-ERRA10001KBN-MAX)
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-ERRA10001KBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-ERRA10001KBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-ERRA10001KBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    患者毎の例外設定コンボチェック処理
@@ -3123,27 +1687,12 @@
       *    コンボボックス初期処理
            PERFORM 3101-COMBO-SYOKI-SEC
       *
+           MOVE    1               TO  SPA-GMN-CUR
+      *
            .
        220-CLEAR-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    タブ切替処理
-      *****************************************************************
-       480-TAB-SWITCH-SEC          SECTION.
-      *
-           EVALUATE    SPA-GMN-PAGENO
-           WHEN    0
-               MOVE    1           TO  W60-PAGENO
-           WHEN    1
-               MOVE    0           TO  W60-PAGENO
-           END-EVALUATE
-      *
-           PERFORM 440-TAB-CHANGE-SEC
-      *
-           .
-       480-TAB-SWITCH-EXT.
-           EXIT.
       *****************************************************************
       *    削除確認画面表示処理
       *****************************************************************
@@ -3227,67 +1776,21 @@
        40312-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    タブ編集処理
-      *****************************************************************
-       440-TAB-CHANGE-SEC              SECTION.
-      *
-      *    画面ＳＰＡ編集処理
-           PERFORM 4101-GMN-SPA-SET-SEC
-      *
-           EVALUATE    SPA-GMN-PAGENO
-           WHEN    0
-               PERFORM 4102-PAGE00-KIHON-CHK-SEC
-           WHEN    1
-               PERFORM 4102-PAGE01-KIHON-CHK-SEC
-           END-EVALUATE
-      *
-           IF    ( SPA-ERRCD           =   SPACE )
-               PERFORM 4801-KANREN-CHK
-           END-IF
-      *
-           IF    ( SPA-ERRCD           =   SPACE )
-      *
-               MOVE    W60-PAGENO      TO  SPA-GMN-PAGENO
-      *
-               EVALUATE    SPA-GMN-PAGENO
-               WHEN    0
-                   MOVE    101         TO  SPA-GMN-CUR
-               WHEN    1
-                   MOVE    215         TO  SPA-GMN-CUR
-               END-EVALUATE
-      *
-           END-IF
-      *
-           .
-       440-TAB-CHANGE-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    登録処理
       *****************************************************************
        480-TOUROKU-SEC             SECTION.
       *
-           MOVE    SPA-GMN-PAGENO  TO  WRK-PAGENO
-           PERFORM VARYING IDX2    FROM    1   BY  1
-                   UNTIL ( IDX2    >   CONST-PAGE-MAX )
-                    OR   ( SPA-ERRCD   NOT =   SPACE )
-      *
-               MOVE    IDX2        TO  SPA-GMN-PAGENO
-      *
-               IF    ( SPA-ERRCD       =   SPACE )
-                   PERFORM 4101-INPUT-CHK-SEC
-               END-IF
-      *
-               IF    ( SPA-ERRCD       =   SPACE )
-                   PERFORM 4801-KANREN-CHK
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-               MOVE    WRK-PAGENO  TO  SPA-GMN-PAGENO
-               MOVE    "1001"      TO  SPA-WIDCD
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  480-TOUROKU-EXT
            END-IF
+      *
+           PERFORM 4801-KANREN-CHK
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  480-TOUROKU-EXT
+           END-IF
+      *
+           MOVE    "1001"              TO  SPA-WIDCD
       *
            .
        480-TOUROKU-EXT.
@@ -3317,7 +1820,6 @@
        4901-KOUSHIN-SEC           SECTION.
       *
            IF    ( SPA-W01-SELNUM          >   ZERO )
-               MOVE    SPACE           TO  SYS-1101-REC
                INITIALIZE                  SYS-1101-REC
                MOVE    "1101"          TO  SYS-1101-KANRICD
                MOVE    "*"             TO  SYS-1101-KBNCD
@@ -3327,7 +1829,6 @@
                MOVE    SYS-1101-REC    TO  SYSKANRI-REC
                PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            ELSE
-               MOVE    SPACE           TO  SYS-1101-REC
                INITIALIZE                  SYS-1101-REC
                MOVE    "1101"          TO  SYS-1101-KANRICD
                MOVE    "*"             TO  SYS-1101-KBNCD
@@ -3343,9 +1844,6 @@
                                        TO  SYS-1101-BYOCHKPTN(IDX-MTRX)
       *
            END-PERFORM
-      *
-           MOVE    SPA-GMN-SEIHOJNUMCHKKBN
-                                       TO  SYS-1101-SEIHOJNUMCHKKBN
       *
            MOVE    SPA-GMN-BYOSRYKAKBN TO  SYS-1101-BYOSRYKAKBN
       *
@@ -3366,65 +1864,14 @@
                MOVE    4               TO  SYS-1101-KYUSEIKKN
            END-EVALUATE
       *
-           MOVE    SPA-GMN-COMPBYONISSUKBN
-                                       TO   SYS-1101-COMPBYONISSUKBN
-           MOVE    SPA-GMN-SRYSTTENKIKBN
-                                       TO   SYS-1101-SRYSTTENKIKBN
-      *
            MOVE    SPA-GMN-TENKITEKBYOKBN
                                        TO   SYS-1101-TENKITEKBYOKBN
       *
-           MOVE    SPA-GMN-TEKBYOYKZKBN
-                                       TO   SYS-1101-TEKBYOYKZKBN
-      *
-           MOVE    SPA-GMN-TEKBYOSRYKBN
-                                       TO   SYS-1101-TEKBYOSRYKBN
-      *
            MOVE    SPA-GMN-YBKENSAYAKUKBN  TO   SYS-1101-YBKENSAYAKUKBN
-      *
-           MOVE    SPA-GMN-YBSJTYKZKBN  TO   SYS-1101-YBSJTYKZKBN
-      *
-           MOVE    SPA-GMN-YBMSIYKZKBN  TO   SYS-1101-YBMSIYKZKBN
-      *
-           MOVE    SPA-GMN-YBSHOHOYKZKBN  TO   SYS-1101-YBSHOHOYKZKBN
       *
            MOVE    SPA-GMN-YBUTAGAIKBN TO   SYS-1101-YBUTAGAIKBN
       *
-           MOVE    SPA-GMN-YKZHEIMSTKBN TO   SYS-1101-YKZHEIMSTKBN
-      *
            MOVE    SPA-GMN-SRYHEIWRNKBN TO   SYS-1101-SRYHEIWRNKBN
-      *
-           MOVE    SPA-GMN-SRYHEIMSTKBN TO   SYS-1101-SRYHEIMSTKBN
-      *
-           IF    ( SPA-GMN-SRYHEIMSTKBN     =   "1" )
-               MOVE    SPA-GMN-SRYHEIEXPKBN
-                                       TO   SYS-1101-SRYHEIEXPKBN
-           ELSE
-               MOVE    "2"             TO   SYS-1101-SRYHEIEXPKBN
-           END-IF
-      *
-           MOVE    SPA-GMN-SRYMATERKKBN
-                                          TO SYS-1101-SRYMATERKKBN
-      *
-           MOVE    SPA-GMN-SRYKAISUMSTKBN TO SYS-1101-SRYKAISUMSTKBN
-      *
-           MOVE    SPA-GMN-SRYKAISUWRNKBN TO SYS-1101-SRYKAISUWRNKBN
-      *
-           MOVE    SPA-GMN-SYA-INGAITEN
-                                       TO  SYS-1101-SYA-INGAITEN
-           MOVE    SPA-GMN-KOK-INGAITEN
-                                       TO  SYS-1101-KOK-INGAITEN
-           MOVE    SPA-GMN-KOU-INGAITEN
-                                       TO  SYS-1101-KOU-INGAITEN
-           MOVE    SPA-GMN-RSI-INGAITEN
-                                       TO  SYS-1101-RSI-INGAITEN
-           MOVE    SPA-GMN-JBI-INGAITEN
-                                       TO  SYS-1101-JBI-INGAITEN
-           MOVE    SPA-GMN-JIH-INGAITEN
-                                       TO  SYS-1101-JIH-INGAITEN
-                                           SYS-1101-CKN-INGAITEN
-           MOVE    SPA-GMN-KGI-INGAITEN
-                                       TO  SYS-1101-KGI-INGAITEN
       *
            MOVE    SPA-GMN-REIGAICHKKBN TO   SYS-1101-REIGAICHKKBN
       *
@@ -3479,57 +1926,36 @@
       *
            IF    ( SPA-ERRCD      =    SPACE )
                INITIALIZE                  CK4-1103-REC
+               MOVE    SPA-HOSPNUM     TO  CK4-1103-HOSPNUM
+               MOVE    "1103"          TO  CK4-1103-KANRICD
                MOVE    "99"            TO  CK4-1103-KBNCD
+               MOVE    SPA-W01-STYUKYMD
+                                       TO  CK4-1103-STYUKYMD
+               MOVE    SPA-W01-EDYUKYMD
+                                       TO  CK4-1103-EDYUKYMD
                MOVE    SPA-GMN-ERR990009KBN
                                        TO  CK4-1103-ERRKBN (9)
-               PERFORM 49021-KOUSHIN-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD      =    SPACE )
-               INITIALIZE                  CK4-1103-REC
-               MOVE    "A1"            TO  CK4-1103-KBNCD
-               MOVE    SPA-GMN-ERRA10001KBN
-                                       TO  CK4-1103-ERRKBN (1)
-               PERFORM 49021-KOUSHIN-SEC
+               MOVE    CK4-1103-REC    TO  MCPDATA-REC
+               MOVE    "tbl_chk004"    TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    "4005"      TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            .
        4902-KOUSHIN-EXT.
            EXIT.
       *****************************************************************
-      *       登録処理（CHK004 1103)
-      *****************************************************************
-       49021-KOUSHIN-SEC               SECTION.
-      *
-           MOVE    SPA-HOSPNUM     TO  CK4-1103-HOSPNUM
-           MOVE    "1103"          TO  CK4-1103-KANRICD
-           MOVE    SPA-W01-STYUKYMD
-                                   TO  CK4-1103-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMD
-                                   TO  CK4-1103-EDYUKYMD
-           MOVE    CK4-1103-REC    TO  MCPDATA-REC
-           MOVE    "tbl_chk004"    TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBINSERT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    "4005"      TO  SPA-ERRCD
-           END-IF
-      *
-           .
-       49021-KOUSHIN-EXT.
-           EXIT.
-      *****************************************************************
       *    関連チェック
       *****************************************************************
        4801-KANREN-CHK                 SECTION.
       *
-           EVALUATE    SPA-GMN-PAGENO
-           WHEN    ZERO
-               IF    ( SPA-GMN-CHKMTRX-G   =   SPACE )
-                   MOVE    "0101"      TO  SPA-ERRCD
-                   MOVE    107         TO  SPA-GMN-CUR
-               END-IF
-           END-EVALUATE
+           IF    ( SPA-GMN-CHKMTRX-G   =   SPACE )
+               MOVE    "0101"      TO  SPA-ERRCD
+               MOVE    3           TO  SPA-GMN-CUR
+           END-IF
       *
            .
        4801-KANREN-EXT.
@@ -3564,14 +1990,7 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-           MOVE    SPACE           TO  W60
            INITIALIZE                  W60
-      *
-      *    タブページ番号
-           MOVE    SPA-GMN-PAGENO  TO  W60-PAGENO
-      *
-           MOVE    SPA-W01-STYUKYMDH   TO  W60-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMDH   TO  W60-EDYUKYMD
       *
            PERFORM VARYING IDX-MTRX    FROM    1   BY  1
                    UNTIL ( IDX-MTRX    >   4 )
@@ -3594,19 +2013,6 @@
                ELSE
                    MOVE    "×"    TO  W60-MTRX    (IDX-MTRX)
                END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-SEIHOJNUMCHKKBN-G
-                                       TO  W60-SEIHOJNUMCHKKBN
-           MOVE    SPA-GMN-SEIHOJNUMCHKKBN-MAX
-                                       TO  W60-SEIHOJNUMCHKKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-SEIHOJNUMCHKKBN-MAX )
-      *
-               MOVE    SPA-GMN-SEIHOJNUMCHKKBNLST (IDX0)
-                                       TO  W60-SEIHOJNUMCHKKBN-ITEM
-                                                                  (IDX0)
       *
            END-PERFORM
       *
@@ -3648,30 +2054,6 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-COMPBYONISSUKBN-G   TO  W60-COMPBYONISSUKBN
-      *
-           MOVE    SPA-GMN-COMPBYONISSUKBN-MAX
-                                           TO  W60-COMPBYONISSUKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-COMPBYONISSUKBN-MAX )
-      *
-               MOVE    SPA-GMN-COMPBYONISSUKBNLST (IDX0)
-                                   TO  W60-COMPBYONISSUKBN-ITEM (IDX0)
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-SRYSTTENKIKBN-G   TO  W60-SRYSTTENKIKBN
-      *
-           MOVE    SPA-GMN-SRYSTTENKIKBN-MAX
-                                           TO  W60-SRYSTTENKIKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-SRYSTTENKIKBN-MAX )
-      *
-               MOVE    SPA-GMN-SRYSTTENKIKBNLST (IDX0)
-                                   TO  W60-SRYSTTENKIKBN-ITEM (IDX0)
-      *
-           END-PERFORM
-      *
            MOVE    SPA-GMN-TENKITEKBYOKBN-G   TO  W60-TENKITEKBYOKBN
       *
            MOVE    SPA-GMN-TENKITEKBYOKBN-MAX
@@ -3681,30 +2063,6 @@
       *
                MOVE    SPA-GMN-TENKITEKBYOKBNLST (IDX0)
                                        TO  W60-TENKITEKBYOKBN-ITEM(IDX0)
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-TEKBYOYKZKBN-G   TO  W60-TEKBYOYKZKBN
-      *
-           MOVE    SPA-GMN-TEKBYOYKZKBN-MAX
-                                       TO  W60-TEKBYOYKZKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-TEKBYOYKZKBN-MAX )
-      *
-               MOVE    SPA-GMN-TEKBYOYKZKBNLST (IDX0)
-                                       TO  W60-TEKBYOYKZKBN-ITEM(IDX0)
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-TEKBYOSRYKBN-G   TO  W60-TEKBYOSRYKBN
-      *
-           MOVE    SPA-GMN-TEKBYOSRYKBN-MAX
-                                       TO  W60-TEKBYOSRYKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-TEKBYOSRYKBN-MAX )
-      *
-               MOVE    SPA-GMN-TEKBYOSRYKBNLST (IDX0)
-                                       TO  W60-TEKBYOSRYKBN-ITEM(IDX0)
       *
            END-PERFORM
       *
@@ -3720,42 +2078,6 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-YBSJTYKZKBN-G   TO  W60-YBSJTYKZKBN
-      *
-           MOVE    SPA-GMN-YBSJTYKZKBN-MAX
-                                       TO  W60-YBSJTYKZKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-YBSJTYKZKBN-MAX )
-      *
-               MOVE    SPA-GMN-YBSJTYKZKBNLST (IDX0)
-                                       TO  W60-YBSJTYKZKBN-ITEM(IDX0)
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-YBMSIYKZKBN-G   TO  W60-YBMSIYKZKBN
-      *
-           MOVE    SPA-GMN-YBMSIYKZKBN-MAX
-                                       TO  W60-YBMSIYKZKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-YBMSIYKZKBN-MAX )
-      *
-               MOVE    SPA-GMN-YBMSIYKZKBNLST (IDX0)
-                                       TO  W60-YBMSIYKZKBN-ITEM(IDX0)
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-YBSHOHOYKZKBN-G   TO  W60-YBSHOHOYKZKBN
-      *
-           MOVE    SPA-GMN-YBSHOHOYKZKBN-MAX
-                                       TO  W60-YBSHOHOYKZKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-YBSHOHOYKZKBN-MAX )
-      *
-               MOVE    SPA-GMN-YBSHOHOYKZKBNLST (IDX0)
-                                       TO  W60-YBSHOHOYKZKBN-ITEM(IDX0)
-      *
-           END-PERFORM
-      *
            MOVE    SPA-GMN-YBUTAGAIKBN-G   TO  W60-YBUTAGAIKBN
       *
            MOVE    SPA-GMN-YBUTAGAIKBN-MAX
@@ -3767,19 +2089,6 @@
                                        TO  W60-YBUTAGAIKBN-ITEM (IDX0)
       *
            END-PERFORM
-      *
-           MOVE    SPA-GMN-YKZHEIMSTKBN-G   TO  W60-YKZHEIMSTKBN
-      *
-           MOVE    SPA-GMN-YKZHEIMSTKBN-MAX
-                                       TO  W60-YKZHEIMSTKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-YKZHEIMSTKBN-MAX )
-      *
-               MOVE    SPA-GMN-YKZHEIMSTKBNLST (IDX0)
-                                       TO  W60-YKZHEIMSTKBN-ITEM (IDX0)
-      *
-           END-PERFORM
-      *
       *
            MOVE    SPA-GMN-SRYHEIWRNKBN-G   TO  W60-SRYHEIWRNKBN
       *
@@ -3793,70 +2102,6 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-SRYHEIMSTKBN-G   TO  W60-SRYHEIMSTKBN
-      *
-           MOVE    SPA-GMN-SRYHEIMSTKBN-MAX
-                                       TO  W60-SRYHEIMSTKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-SRYHEIMSTKBN-MAX )
-      *
-               MOVE    SPA-GMN-SRYHEIMSTKBNLST (IDX0)
-                                       TO  W60-SRYHEIMSTKBN-ITEM (IDX0)
-      *
-           END-PERFORM
-      *
-           IF    ( SPA-GMN-SRYHEIMSTKBN     =   "1" )
-               MOVE    SPA-GMN-SRYHEIEXPKBN-G
-                                       TO  W60-SRYHEIEXPKBN
-      *
-               MOVE    SPA-GMN-SRYHEIEXPKBN-MAX
-                                       TO  W60-SRYHEIEXPKBN-COUNT
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   SPA-GMN-SRYHEIEXPKBN-MAX )
-      *
-                   MOVE    SPA-GMN-SRYHEIEXPKBNLST (IDX0)
-                                       TO  W60-SRYHEIEXPKBN-ITEM (IDX0)
-      *
-               END-PERFORM
-           END-IF
-      *
-           MOVE    SPA-GMN-SRYMATERKKBN-G
-                                       TO  W60-SRYMATERKKBN
-      *
-           MOVE    SPA-GMN-SRYMATERKKBN-MAX
-                                       TO  W60-SRYMATERKKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SPA-GMN-SRYMATERKKBN-MAX )
-      *
-               MOVE    SPA-GMN-SRYMATERKKBNLST (IDX0)
-                                       TO  W60-SRYMATERKKBN-ITEM (IDX0)
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-SRYKAISUMSTKBN-G   TO  W60-SRYKAISUMSTKBN
-      *
-           MOVE    SPA-GMN-SRYKAISUMSTKBN-MAX
-                                   TO  W60-SRYKAISUMSTKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SPA-GMN-SRYKAISUMSTKBN-MAX )
-      *
-               MOVE    SPA-GMN-SRYKAISUMSTKBNLST (IDX0)
-                                   TO  W60-SRYKAISUMSTKBN-ITEM (IDX0)
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-SRYKAISUWRNKBN-G   TO  W60-SRYKAISUWRNKBN
-      *
-           MOVE    SPA-GMN-SRYKAISUWRNKBN-MAX
-                                   TO  W60-SRYKAISUWRNKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SPA-GMN-SRYKAISUWRNKBN-MAX )
-      *
-               MOVE    SPA-GMN-SRYKAISUWRNKBNLST (IDX0)
-                                   TO  W60-SRYKAISUWRNKBN-ITEM (IDX0)
-      *
-           END-PERFORM
-      *
            MOVE    SPA-GMN-ERR990009KBN-G   TO  W60-ERR990009KBN
       *
            MOVE    SPA-GMN-ERR990009KBN-MAX
@@ -3866,26 +2111,6 @@
       *
                MOVE    SPA-GMN-ERR990009KBNLST (IDX0)
                                        TO  W60-ERR990009KBN-ITEM (IDX0)
-      *
-           END-PERFORM
-      *
-           MOVE    SPA-GMN-ERRA10001KBN-G   TO  W60-ERRA10001KBN
-      *
-           MOVE    SPA-GMN-ERRA10001KBN-MAX
-                                       TO  W60-ERRA10001KBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-ERRA10001KBN-MAX )
-      *
-               MOVE    SPA-GMN-ERRA10001KBNLST (IDX0)
-                                       TO  W60-ERRA10001KBN-ITEM (IDX0)
-      *
-           END-PERFORM
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   7 )
-      *
-               MOVE    SPA-GMN-INGAITEN (IDX0)
-                                       TO  W60-INGAITEN (IDX0)
       *
            END-PERFORM
       *
@@ -3941,8 +2166,6 @@
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
            MOVE    WIDGET-NORMAL   TO  W60-B03-STATE
-                                       W60-SRYHEIEXPKBN-STATE
-                                       W60-SRYHEIEXPKBN-ITEM-STATE
       *
            IF    ( SPA-W01-SELNUM         <=   ZERO )
                MOVE    WIDGET-INSENSITIVE
@@ -3952,14 +2175,6 @@
            IF    ( SPA-W01-SEL-STYUKYMD    =   ZERO )
                MOVE    WIDGET-INSENSITIVE
                                    TO  W60-B03-STATE
-           END-IF
-      *
-           IF    ( SPA-GMN-SRYHEIMSTKBN    =   "1" )
-               CONTINUE
-           ELSE
-               MOVE    WIDGET-INSENSITIVE
-                                   TO  W60-SRYHEIEXPKBN-STATE
-                                       W60-SRYHEIEXPKBN-ITEM-STATE
            END-IF
       *
            .
@@ -3976,93 +2191,42 @@
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
       *
-           PERFORM 5012-SKIP-CUR-SEC
-      *
            EVALUATE    SPA-GMN-CUR
-           WHEN    101
-               MOVE    "SEIHOJNUMCHKKBN" TO MCP-WIDGET
-           WHEN    102
+           WHEN    001
                MOVE    "BYOSRYKAKBN"   TO  MCP-WIDGET
-           WHEN    103
-               MOVE    "SYUBYOCHK"     TO  MCP-WIDGET
-           WHEN    104
+           WHEN    002
                MOVE    "UTAGAIKKN"     TO  MCP-WIDGET
-           WHEN    105
-               MOVE    "KYUSEIKKNKBN"  TO  MCP-WIDGET
-           WHEN    106
-               MOVE    "COMPBYONISSUKBN"
-                                       TO  MCP-WIDGET
-           WHEN    107
+           WHEN    003
                MOVE    "CHKMTRX01"     TO  MCP-WIDGET
-           WHEN    108
+           WHEN    004
                MOVE    "CHKMTRX02"     TO  MCP-WIDGET
-           WHEN    109
+           WHEN    005
                MOVE    "CHKMTRX03"     TO  MCP-WIDGET
-           WHEN    110
+           WHEN    006
                MOVE    "CHKMTRX04"     TO  MCP-WIDGET
-           WHEN    111
+           WHEN    007
                MOVE    "CHKMTRX05"     TO  MCP-WIDGET
-           WHEN    112
-               MOVE    "TENKITEKBYOKBN" TO MCP-WIDGET
-           WHEN    113
-               MOVE    "TEKBYOYKZKBN" TO MCP-WIDGET
-           WHEN    114
-               MOVE    "TEKBYOSRYKBN" TO MCP-WIDGET
-           WHEN    115
-               MOVE    "YBKENSAYAKUKBN" TO MCP-WIDGET
-           WHEN    116
-               MOVE    "YBSJTYKZKBN"   TO  MCP-WIDGET
-           WHEN    117
-               MOVE    "YBMSIYKZKBN"   TO  MCP-WIDGET
-           WHEN    118
-               MOVE    "YBSHOHOYKZKBN" TO  MCP-WIDGET
-           WHEN    119
-               MOVE    "YBUTAGAIKBN"   TO  MCP-WIDGET
-           WHEN    120
-               MOVE    "SRYSTTENKIKBN"  TO  MCP-WIDGET
-           WHEN    123
-               MOVE    "YKZHEIMSTKBN"   TO  MCP-WIDGET
-           WHEN    201
-               MOVE    "ERR990009KBN"   TO  MCP-WIDGET
-           WHEN    202
-               MOVE    "SYA_INGAITEN"  TO MCP-WIDGET
-           WHEN    203
-               MOVE    "KOK_INGAITEN"  TO MCP-WIDGET
-           WHEN    204
-               MOVE    "KOU_INGAITEN"  TO MCP-WIDGET
-           WHEN    205
-               MOVE    "RSI_INGAITEN"  TO MCP-WIDGET
-           WHEN    206
-               MOVE    "JBI_INGAITEN"  TO MCP-WIDGET
-           WHEN    207
-               MOVE    "KGI_INGAITEN"  TO MCP-WIDGET
-           WHEN    208
-               MOVE    "JIH_INGAITEN"  TO MCP-WIDGET
-           WHEN    209
-               MOVE    "ERRA10001KBN"  TO MCP-WIDGET
-           WHEN    210
-               MOVE    "REIGAICHKKBN"   TO  MCP-WIDGET
-           WHEN    211
+           WHEN    008
                MOVE    "PRTSRTKBN"     TO  MCP-WIDGET
-           WHEN    212
+           WHEN    009
                MOVE    "PRTPTLSTKBN"   TO  MCP-WIDGET
-           WHEN    213
-               MOVE    "SRYKAISUMSTKBN"
-                                       TO  MCP-WIDGET
-           WHEN    214
-               MOVE    "SRYKAISUWRNKBN"
-                                       TO  MCP-WIDGET
-           WHEN    215
-               MOVE    "SRYHEIMSTKBN"   TO  MCP-WIDGET
-           WHEN    216
-               MOVE    "SRYHEIEXPKBN"   TO  MCP-WIDGET
-           WHEN    217
+           WHEN    010
+               MOVE    "YBUTAGAIKBN"   TO  MCP-WIDGET
+           WHEN    011
+               MOVE    "SYUBYOCHK"     TO  MCP-WIDGET
+           WHEN    012
+               MOVE    "YBKENSAYAKUKBN" TO MCP-WIDGET
+           WHEN    013
+               MOVE    "TENKITEKBYOKBN" TO MCP-WIDGET
+           WHEN    014
                MOVE    "SRYHEIWRNKBN"   TO  MCP-WIDGET
-           WHEN    218
-               MOVE    "SRYMATERKKBN"   TO  MCP-WIDGET
-           WHEN    908
-               MOVE    "B08"           TO  MCP-WIDGET
-           WHEN    912
+           WHEN    015
+               MOVE    "KYUSEIKKNKBN"  TO  MCP-WIDGET
+           WHEN    016
+               MOVE    "REIGAICHKKBN"   TO  MCP-WIDGET
+           WHEN    017
+               MOVE    "ERR990009KBN"   TO  MCP-WIDGET
+           WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -4076,84 +2240,40 @@
        5011-INPUT-CUR-SEC          SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
-           WHEN    "SEIHOJNUMCHKKBN"
-               MOVE    102         TO  SPA-GMN-CUR
            WHEN    "BYOSRYKAKBN"
-               MOVE    103         TO  SPA-GMN-CUR
+               MOVE    11              TO  SPA-GMN-CUR
            WHEN    "SYUBYOCHK"
-               MOVE    104         TO  SPA-GMN-CUR
+               MOVE    02              TO  SPA-GMN-CUR
            WHEN    "UTAGAIKKN"
-               MOVE    105         TO  SPA-GMN-CUR
+               MOVE    15              TO  SPA-GMN-CUR
            WHEN    "KYUSEIKKNKBN"
-               MOVE    106         TO  SPA-GMN-CUR
-           WHEN    "COMPBYONISSUKBN"
-               MOVE    120         TO  SPA-GMN-CUR
-           WHEN    "SRYSTTENKIKBN"
-               MOVE    107         TO  SPA-GMN-CUR
+               MOVE    13              TO  SPA-GMN-CUR
            WHEN    "CHKMTRX01"
-               MOVE    108         TO  SPA-GMN-CUR
+               MOVE    04              TO  SPA-GMN-CUR
            WHEN    "CHKMTRX02"
-               MOVE    109         TO  SPA-GMN-CUR
+               MOVE    05              TO  SPA-GMN-CUR
            WHEN    "CHKMTRX03"
-               MOVE    110         TO  SPA-GMN-CUR
+               MOVE    06              TO  SPA-GMN-CUR
            WHEN    "CHKMTRX04"
-               MOVE    111         TO  SPA-GMN-CUR
+               MOVE    07              TO  SPA-GMN-CUR
            WHEN    "CHKMTRX05"
-               MOVE    112         TO  SPA-GMN-CUR
+               MOVE    13              TO  SPA-GMN-CUR
            WHEN    "TENKITEKBYOKBN"
-               MOVE    113         TO SPA-GMN-CUR
-           WHEN    "TEKBYOYKZKBN"
-               MOVE    114         TO SPA-GMN-CUR
-           WHEN    "TEKBYOSRYKBN"
-               MOVE    115         TO SPA-GMN-CUR
+               MOVE    12              TO  SPA-GMN-CUR
            WHEN    "YBKENSAYAKUKBN"
-               MOVE    116         TO SPA-GMN-CUR
-           WHEN    "YBSJTYKZKBN"
-               MOVE    117         TO  SPA-GMN-CUR
-           WHEN    "YBMSIYKZKBN"
-               MOVE    118         TO  SPA-GMN-CUR
-           WHEN    "YBSHOHOYKZKBN"
-               MOVE    119         TO  SPA-GMN-CUR
+               MOVE    10              TO  SPA-GMN-CUR
            WHEN    "YBUTAGAIKBN"
-               MOVE    123         TO  SPA-GMN-CUR
-           WHEN    "YKZHEIMSTKBN"
-               MOVE    908         TO  SPA-GMN-CUR
-           WHEN    "SRYHEIMSTKBN"
-               MOVE    216         TO  SPA-GMN-CUR
-           WHEN    "SRYHEIEXPKBN"
-               MOVE    217         TO  SPA-GMN-CUR
+               MOVE    14              TO  SPA-GMN-CUR
            WHEN    "SRYHEIWRNKBN"
-               MOVE    218         TO  SPA-GMN-CUR
-           WHEN    "SRYMATERKKBN"
-               MOVE    213         TO  SPA-GMN-CUR
-           WHEN    "SRYKAISUMSTKBN"
-               MOVE    214         TO  SPA-GMN-CUR
-           WHEN    "SRYKAISUWRNKBN"
-               MOVE    201         TO  SPA-GMN-CUR
+               MOVE    17              TO  SPA-GMN-CUR
            WHEN    "ERR990009KBN"
-               MOVE    202         TO  SPA-GMN-CUR
-           WHEN    "SYA_INGAITEN"
-               MOVE    203         TO SPA-GMN-CUR
-           WHEN    "KOK_INGAITEN"
-               MOVE    204         TO SPA-GMN-CUR
-           WHEN    "KOU_INGAITEN"
-               MOVE    205         TO SPA-GMN-CUR
-           WHEN    "RSI_INGAITEN"
-               MOVE    206         TO SPA-GMN-CUR
-           WHEN    "JBI_INGAITEN"
-               MOVE    207         TO SPA-GMN-CUR
-           WHEN    "KGI_INGAITEN"
-               MOVE    208         TO SPA-GMN-CUR
-           WHEN    "JIH_INGAITEN"
-               MOVE    209         TO SPA-GMN-CUR
-           WHEN    "ERRA10001KBN"
-               MOVE    210         TO SPA-GMN-CUR
+               MOVE    16              TO  SPA-GMN-CUR
            WHEN    "REIGAICHKKBN"
-               MOVE    211         TO  SPA-GMN-CUR
+               MOVE    08              TO  SPA-GMN-CUR
            WHEN    "PRTSRTKBN"
-               MOVE    212         TO  SPA-GMN-CUR
+               MOVE    09              TO  SPA-GMN-CUR
            WHEN    "PRTPTLSTKBN"
-               MOVE    912         TO  SPA-GMN-CUR
+               MOVE    212             TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .
@@ -4161,21 +2281,6 @@
        5011-INPUT-CUR-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    カーソルスキップ処理
-      *****************************************************************
-       5012-SKIP-CUR-SEC          SECTION.
-      *
-           IF    ( SPA-GMN-CUR        =    216 )
-               IF    ( W60-SRYHEIEXPKBN-STATE =   WIDGET-INSENSITIVE )
-                   COMPUTE SPA-GMN-CUR        =   217
-               END-IF
-           END-IF
-      *
-           .
-      *
-       5012-SKIP-CUR-EXT.
-           EXIT.
       *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
@@ -4233,7 +2338,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -4317,14 +2421,14 @@
       *****************************************************************
       *    チェックマスタ４検索処理
       *****************************************************************
-       900-CHK004-KEY10-SEL-SEC         SECTION.
+       900-CHK004-KEY2-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK004
       *
            MOVE    SPA-HOSPNUM         TO  CHK004-HOSPNUM
            MOVE    CHK004-REC          TO  MCPDATA-REC
            MOVE    "tbl_chk004"        TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      =   ZERO )
                MOVE    MCPDATA-REC     TO  CHK004-REC
@@ -4334,17 +2438,17 @@
            END-IF
       *
            .
-       900-CHK004-KEY10-SEL-EXT.
+       900-CHK004-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ４検索処理
       *****************************************************************
-       900-CHK004-KEY10-FET-SEC         SECTION.
+       900-CHK004-KEY2-FET-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK004
       *
            MOVE    "tbl_chk004"        TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC      =   ZERO )
                MOVE    MCPDATA-REC     TO  CHK004-REC
@@ -4354,7 +2458,7 @@
            END-IF
       *
            .
-       900-CHK004-KEY10-FET-EXT.
+       900-CHK004-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理

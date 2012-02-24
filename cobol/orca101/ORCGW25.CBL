@@ -31,7 +31,6 @@
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/02  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.00    NACL-Â¿¡¹Ç¼  08/01/30  ¼¡ÊÇÉ½¼¨¤ÎÄÉ²Ã
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/24  ¿ÇÎÅ¹Ô°Ù°ìÍ÷¤ÈÆ±´ü
-      *  04.07.00    NACL-Â¿¡¹Ç¼  12/07/09  Ï«ºÒÅùÌ¾¾ÎÊÔ½¸ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -364,7 +363,58 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -461,9 +511,6 @@
            MOVE    SPA-W25-INPUTCD     TO  SPA-W25-GMN-INPUT
            MOVE    ZERO                TO  SPA-W25-NEXT
            MOVE    1                   TO  SPA-W25-PAGE
-           IF    ( SPA-W25-SYSYMD      =   SPACE )
-               MOVE    SPA-SYSYMD      TO  SPA-W25-SYSYMD
-           END-IF
       *
       *    ¥ê¥¹¥È¥Ü¥Ã¥¯¥¹
            MOVE    "1:ÆâÉþÌô"          TO  SPA-W25-JIINLST (1)
@@ -1379,8 +1426,8 @@
            INITIALIZE                      INPUTSET-REC
            MOVE    SPA-HOSPNUM         TO  ISET-HOSPNUM
            MOVE    ICD-SRYCD           TO  ISET-SETCD
-           MOVE    SPA-W25-SYSYMD      TO  ISET-YUKOSTYMD
-           MOVE    SPA-W25-SYSYMD      TO  ISET-YUKOEDYMD
+           MOVE    SPA-SYSYMD          TO  ISET-YUKOSTYMD
+           MOVE    SPA-SYSYMD          TO  ISET-YUKOEDYMD
       *
            MOVE    INPUTSET-REC        TO  MCPDATA-REC
            MOVE    "tbl_inputset"      TO  MCP-TABLE
@@ -1401,8 +1448,8 @@
            MOVE    ZERO                TO  FLG-KIKAN
            PERFORM
                UNTIL    FLG-INPUTSET    =   1
-               IF      (ISET-YUKOSTYMD     <=  SPA-W25-SYSYMD ) AND
-                       (ISET-YUKOEDYMD     >=  SPA-W25-SYSYMD )
+               IF      (ISET-YUKOSTYMD     <=  SPA-SYSYMD ) AND
+                       (ISET-YUKOEDYMD     >=  SPA-SYSYMD )
                    MOVE    1               TO  FLG-KIKAN
                    MOVE    1               TO  FLG-INPUTSET
                ELSE
@@ -1482,43 +1529,6 @@
            END-IF
       *!!
       *    ¸¡ººÀµ¼°Ì¾¾Î
-      *    IF     (TNS-SRYCD(1:1)      =   "1") AND
-      *           (TNS-SRYKBN          =   "60"
-      *                                OR  "64"  )  AND
-      *           (TNS-FORMALNAME  NOT =   SPACE )  AND
-      *           (TNS-FORMALNAME  NOT =   TNS-NAME )
-      *         MOVE    SPACE              TO  SPA-W25-GMN-NAME (IDX)
-      *         STRING  TNS-NAME           DELIMITED   BY  SPACE
-      *                 "¡¡¡Ú"             DELIMITED   BY  SIZE
-      *                 TNS-FORMALNAME     DELIMITED   BY  SPACE
-      *                 "¡Û"               DELIMITED   BY  SIZE
-      *                        INTO        SPA-W25-GMN-NAME(IDX)
-      *         END-STRING
-      *         PERFORM 310211-KENSA-NAME-SEC
-      **** END-IF
-      *
-      *H24.6
-      *    ¶¦ÄÌÊÔ½¸½èÍý
-           PERFORM 310211-TENSU-KYOHEN-SEC
-      *
-      *    ÆþÎÏ£Ã£Ä
-           IF      ICD-DSPSEQ          =   1
-               MOVE    ICD-INPUTCD         TO  SPA-W25-GMN-SETCD (IDX)
-           ELSE
-               PERFORM 3200-SETCD-HEN-SEC
-           END-IF
-      *
-           .
-       31012-INPUTCD-HEN-EXT.
-           EXIT.
-      *
-      *H24.6
-      *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¶¦ÄÌÊÔ½¸½èÍý
-      *****************************************************************
-       310211-TENSU-KYOHEN-SEC             SECTION.
-      *
-      *    ¸¡ººÀµ¼°Ì¾¾Î
            IF     (TNS-SRYCD(1:1)      =   "1") AND
                   (TNS-SRYKBN          =   "60"
                                        OR  "64"  )  AND
@@ -1534,43 +1544,15 @@
                 PERFORM 310211-KENSA-NAME-SEC
            END-IF
       *
-      *    °åÎÅ´Ñ»¡¥³¡¼¥ÉÌ¾¾ÎÊÔ½¸
-           IF      (TNS-SRYCD(1:1)     =   "1"  )  AND
-                   (TNS-IRYOKANSATUKBN =   4    )
-      *        °åÎÅ´Ñ»¡¶èÊ¬
-               MOVE    SPACE               TO  SPA-W25-GMN-NAME (IDX)
-               STRING  "¡Ú°å´Ñ¡Û"          DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-W25-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *
-      *    Ï«ºÒ¥³¡¼¥ÉÌ¾¾ÎÊÔ½¸
-           IF      (TNS-SRYCD(1:3)     =   "101")
-      *    Ï«ºÒ¡Ê´ïºà¡Ë
-           OR     ((TNS-SRYCD(1:1)     =   "7"    )  AND
-                   (TNS-SRYCD(2:5)     =   "88888"))
-      *    Ï«ºÒ¡Ê¥³¥á¥ó¥È¡Ë
-           OR     ((TNS-SRYCD(1:1)     =   "8"  )  AND
-                   (TNS-SRYCD(4:1)     =   "8"  ))
-               MOVE    SPACE               TO  SPA-W25-GMN-NAME (IDX)
-               STRING  "¡ÚÏ«¡Û"            DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-W25-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *
-      *    ¸ø³²¤Î¥³¡¼¥É
-           IF      (TNS-SRYCD (1:3)    =   "102")
-               MOVE    SPACE               TO  SPA-W25-GMN-NAME (IDX)
-               STRING  "¡Ú¸ø³²¡Û"          DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-W25-GMN-NAME(IDX)
-               END-STRING
+      *    ÆþÎÏ£Ã£Ä
+           IF      ICD-DSPSEQ          =   1
+               MOVE    ICD-INPUTCD         TO  SPA-W25-GMN-SETCD (IDX)
+           ELSE
+               PERFORM 3200-SETCD-HEN-SEC
            END-IF
       *
            .
-       310211-TENSU-KYOHEN-EXT.
+       31012-INPUTCD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1993,12 +1975,6 @@
       *    ÉÂ±¡¿ÇÎÅ½ê¶èÊ¬È½Äê
            IF      (TNS-HOSPSRYKBN     =   ZERO        )  OR
                    (TNS-HOSPSRYKBN     =   SPA-HOSPSBT )
-      *H30.4
-      *       Ã»´üÂÚºß¼ê½Ñ´ðËÜ£²¡ÊÉÂ±¡¡¦¿ÇÎÅ½ê¡Ë
-              OR   (TNS-HOSPSRYKBN     =   3   )
-      *       Ã»´üÂÚºß¼ê½Ñ´ðËÜ£³¡ÊÉÂ±¡¤Î¤ß¡Ë
-              OR  ((TNS-HOSPSRYKBN     =   4   )   AND
-                   (SPA-HOSPSBT        =   1   ))
                CONTINUE
            ELSE
                MOVE   1                TO  FLG-CHK
@@ -2097,24 +2073,20 @@
            END-IF
       *!!
       *    ¸¡ººÀµ¼°Ì¾¾Î
-      *    IF     (TNS-SRYCD(1:1)      =   "1") AND
-      *           (TNS-SRYKBN          =   "60"
-      *                                OR  "64" )  AND
-      *           (TNS-FORMALNAME  NOT =   SPACE )  AND
-      *           (TNS-FORMALNAME  NOT =   TNS-NAME )
-      *         MOVE    SPACE              TO  SPA-W25-GMN-NAME (IDX)
-      *         STRING  TNS-NAME           DELIMITED   BY  SPACE
-      *                 "¡¡¡Ú"             DELIMITED   BY  SIZE
-      *                 TNS-FORMALNAME     DELIMITED   BY  SPACE
-      *                 "¡Û"               DELIMITED   BY  SIZE
-      *                        INTO        SPA-W25-GMN-NAME(IDX)
-      *         END-STRING
-      *         PERFORM 310211-KENSA-NAME-SEC
-      **** END-IF
-      *H24.6
-      *    ¶¦ÄÌÊÔ½¸½èÍý
-           PERFORM 310211-TENSU-KYOHEN-SEC
-      *
+           IF     (TNS-SRYCD(1:1)      =   "1") AND
+                  (TNS-SRYKBN          =   "60"
+                                       OR  "64" )  AND
+                  (TNS-FORMALNAME  NOT =   SPACE )  AND
+                  (TNS-FORMALNAME  NOT =   TNS-NAME )
+                MOVE    SPACE              TO  SPA-W25-GMN-NAME (IDX)
+                STRING  TNS-NAME           DELIMITED   BY  SPACE
+                        "¡¡¡Ú"             DELIMITED   BY  SIZE
+                        TNS-FORMALNAME     DELIMITED   BY  SPACE
+                        "¡Û"               DELIMITED   BY  SIZE
+                               INTO        SPA-W25-GMN-NAME(IDX)
+                END-STRING
+                PERFORM 310211-KENSA-NAME-SEC
+           END-IF
       *    ÆþÎÏ£Ã£Ä
            PERFORM 3200-SETCD-HEN-SEC
       *
@@ -2615,12 +2587,10 @@
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "¡Ê¼«±¡¡Ë"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
-               END-STRING
            ELSE
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "¡ÊÁ´ÂÎ¡Ë"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
-               END-STRING
            END-IF
       *
            .
@@ -4198,8 +4168,8 @@
       *****************************************************************
        910-TENSU-SELECT-SEC         SECTION.
       *
-           MOVE    SPA-W25-SYSYMD      TO  TNS-YUKOSTYMD
-           MOVE    SPA-W25-SYSYMD      TO  TNS-YUKOEDYMD
+           MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
+           MOVE    SPA-SYSYMD          TO  TNS-YUKOEDYMD
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
       *
@@ -4237,8 +4207,8 @@
       *****************************************************************
        9110-TENSU-KEYREAD-SEC         SECTION.
       *
-           MOVE    SPA-W25-SYSYMD      TO  TNS-YUKOSTYMD
-           MOVE    SPA-W25-SYSYMD      TO  TNS-YUKOEDYMD
+           MOVE    SPA-SYSYMD          TO  TNS-YUKOSTYMD
+           MOVE    SPA-SYSYMD          TO  TNS-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
