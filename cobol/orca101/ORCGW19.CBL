@@ -65,7 +65,6 @@
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
            03  IDX1                        PIC 9(05).
-           03  IDXL                        PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -80,8 +79,6 @@
                05  WRK-PGSRH-OCC           OCCURS  200.
                    07  WRK-PGSRH-PGNAME    PIC X(20).
            03  WRK-PATHNAME                PIC X(64).
-           03  WRK-KBNCD-G.
-               05  WRK-KBNCD               PIC 9(03).
       *
        01  WRK-ROW.
            05  WRK-TYOHYOLST-ROW           PIC S9(9)   BINARY.
@@ -124,7 +121,59 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W321.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -343,7 +392,6 @@
                EVALUATE    WRK-KANRICD
                WHEN    "0043"
                    MOVE  SYSKANRI-REC    TO  SYS-0043-REC
-                   MOVE  IDX1            TO  SPA-GMN-W19-TNUM    (IDX1)
                    MOVE  SYS-0043-KANRICD
                                          TO  SPA-NAI-W19-TKANRICD(IDX1)
                    MOVE  SYS-0043-KBNCD  TO  SPA-NAI-W19-TKBNCD  (IDX1)
@@ -357,7 +405,6 @@
                    END-IF
                WHEN    "0044"
                    MOVE  SYSKANRI-REC    TO  SYS-0044-REC
-                   MOVE  IDX1            TO  SPA-GMN-W19-TNUM    (IDX1)
                    MOVE  SYS-0044-KANRICD
                                          TO  SPA-NAI-W19-TKANRICD(IDX1)
                    MOVE  SYS-0044-KBNCD  TO  SPA-NAI-W19-TKBNCD  (IDX1)
@@ -371,8 +418,6 @@
                    END-IF
                WHEN    "3001"
                    MOVE  SYSKANRI-REC    TO  SYS-3001-REC
-                   MOVE  SYS-3001-KBNCD  TO  WRK-KBNCD-G
-                   MOVE  WRK-KBNCD       TO  SPA-GMN-W19-TNUM    (IDX1)
                    MOVE  SYS-3001-KANRICD
                                          TO  SPA-NAI-W19-TKANRICD(IDX1)
                    MOVE  SYS-3001-KBNCD  TO  SPA-NAI-W19-TKBNCD  (IDX1)
@@ -382,8 +427,6 @@
                    MOVE    1             TO  SPA-GMN-W19-TSTATUS (IDX1)
                WHEN    "3002"
                    MOVE  SYSKANRI-REC    TO  SYS-3002-REC
-                   MOVE  SYS-3002-KBNCD  TO  WRK-KBNCD-G
-                   MOVE  WRK-KBNCD       TO  SPA-GMN-W19-TNUM    (IDX1)
                    MOVE  SYS-3002-KANRICD
                                          TO  SPA-NAI-W19-TKANRICD(IDX1)
                    MOVE  SYS-3002-KBNCD  TO  SPA-NAI-W19-TKBNCD  (IDX1)
@@ -636,16 +679,16 @@
            IF    ( IDX0    >   SPA-GMN-W19-TYOHYOKBN-MAX )
                MOVE    2               TO  SPA-GMN-W19-CUR
                MOVE    "0002"          TO  SPA-ERRCD
-           ELSE
-               MOVE    SPA-GMN-W19-TYOHYOKBNLST (IDX0)
-                                       TO  SPA-GMN-W19-TYOHYOKBN-G
-      *
-               PERFORM 3101-TYOHYOLST-HEN-SEC
+               GO  TO  4100-SELNUM-CHK-EXT
            END-IF
       *
+           MOVE    SPA-GMN-W19-TYOHYOKBNLST (IDX0)
+                                       TO  SPA-GMN-W19-TYOHYOKBN-G
+      *
+           PERFORM 3101-TYOHYOLST-HEN-SEC
       *
            .
-       4100-TYOHYOKBN-CHK-EXT.
+       4100-SELNUM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    帳票リストチェック処理
@@ -659,9 +702,8 @@
                    UNTIL ( IDX0    >   SPA-GMN-W19-TYOHYOLST-MAX )
       *
                IF    ( W19-LIST-SELECT (IDX0)  =   "T" )
-                   MOVE    SPA-GMN-W19-TNUM (IDX0)
-                                   TO  SPA-GMN-W19-SELNUM
-                   MOVE    IDX0    TO  SPA-GMN-W19-TYOHYOLST-SEL
+                   MOVE    IDX0    TO  SPA-GMN-W19-SELNUM
+                                       SPA-GMN-W19-TYOHYOLST-SEL
                    MOVE    SPA-NAI-W19-TKANRICD(IDX0)
                                    TO  SPA-NAI-W19-KANRICD
                    MOVE    SPA-NAI-W19-TKBNCD  (IDX0)
@@ -685,28 +727,21 @@
       *
            MOVE    ZERO                TO  SPA-GMN-W19-CUR
       *
-           MOVE    ZERO                TO  IDXL
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SPA-GMN-W19-TYOHYOLST-MAX )
-                    OR   ( IDXL    >   ZERO )
-      *
-               IF    ( SPA-GMN-W19-SELNUM  =   SPA-GMN-W19-TNUM (IDX0))
-                   MOVE    IDX0        TO  IDXL
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( IDXL                >   ZERO )
-               MOVE    IDXL            TO  SPA-GMN-W19-TYOHYOLST-SEL
-      *
-               MOVE    SPA-NAI-W19-TKANRICD(IDXL)
-                                       TO  SPA-NAI-W19-KANRICD
-               MOVE    SPA-NAI-W19-TKBNCD  (IDXL)
-                                       TO  SPA-NAI-W19-KBNCD
+           IF    ( SPA-GMN-W19-SELNUM  >   ZERO )
+            AND  ( SPA-GMN-W19-SELNUM <=   SPA-GMN-W19-TYOHYOLST-MAX )
+               CONTINUE
            ELSE
                MOVE    1               TO  SPA-GMN-W19-CUR
                MOVE    "0001"          TO  SPA-ERRCD
+               GO  TO  4101-SELNUM-CHK-EXT
            END-IF
+      *
+           MOVE    SPA-GMN-W19-SELNUM  TO  SPA-GMN-W19-TYOHYOLST-SEL
+      *
+           MOVE    SPA-NAI-W19-TKANRICD(SPA-GMN-W19-SELNUM)
+                                       TO  SPA-NAI-W19-KANRICD
+           MOVE    SPA-NAI-W19-TKBNCD  (SPA-GMN-W19-SELNUM)
+                                       TO  SPA-NAI-W19-KBNCD
       *
            .
        4101-SELNUM-CHK-EXT.
@@ -829,8 +864,7 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   SPA-GMN-W19-TYOHYOLST-MAX )
       *
-               MOVE    SPA-GMN-W19-TNUM(IDX0)
-                                       TO  WRK-ZZ9
+               MOVE    IDX0            TO  WRK-ZZ9
                MOVE    WRK-ZZ9         TO  W19-LIST-TNUM (IDX0)
       *
                MOVE    SPA-GMN-W19-THCNAME (IDX0)
