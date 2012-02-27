@@ -5461,10 +5461,11 @@
                        MOVE    ZERO    TO  FLG-HIT
                    END-IF
                ELSE
-      *            êóáì´µ¼Ô´ÉÍý²Ã»»
+      *            êóáì´µ¼Ô´ÉÍý²Ã»»¤ÏÊ¿À®£²£´Ç¯£³·î¤Þ¤Ç
                    IF    ( CONST-KSNCD (IDX-KSN)
                                   =   CONST-KSNCD-190116990)  AND
-                         (WRK-KJNYMD     >=  "20040401" )
+                         (WRK-KJNYMD     >=  "20040401" )     AND
+                         (WRK-KJNYMD     <=  "20120331" )
                        CONTINUE
                    ELSE
                        MOVE    ZERO    TO  FLG-HIT
