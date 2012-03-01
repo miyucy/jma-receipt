@@ -1587,6 +1587,8 @@
       ***     DISPLAY  "LF04-IJICD(IDX1 IDX2)(1:9) = "  
       ***               LF04-IJICD(IDX1 IDX2)(1:9)
                    DISPLAY "    " IDX2 " " LF04-IJICD(IDX1 IDX2)(1:9)
+                           " " LF04-SURYOCD (IDX1 IDX2)
+      *????
                    INITIALIZE                      ORCSNUMAREA
                    MOVE    LF04-IJICD(IDX1 IDX2)(1:9)
                                                TO  SNUM-INX
