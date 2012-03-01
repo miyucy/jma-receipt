@@ -96,6 +96,8 @@
            03  FLG-TENSUPLUS2      PIC 9(01).
            03  FLG-CHKMST          PIC 9(01).
            03  FLG-PTKINKI         PIC 9(01).
+      *H24.4
+           03  FLG-GENERICPRICE    PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-SST             PIC 9(01).
@@ -165,6 +167,7 @@
       *
            03  WRK-MEISYO          PIC X(80).
            03  WRK-MEISYO-2        PIC X(80).
+           03  WRK-MSG1            PIC X(04).
       *   きざみ値行為再計算用
            03  WRK-KEI-TEN         PIC 9(08)V9(03).
            03  WRK-KEI-TEN1        PIC 9(08)V9(03).
@@ -246,6 +249,20 @@
       *
       *    商品名称の金額
            03  WRK-SYOHIN-TEN          PIC 9(09)V99.
+      *TEST
+      *H24.4テスト
+           03  WRK-NEN-03.
+               05  WRK-NEN03-YM.
+                   07  WRK-NEN03-YY        PIC 9(04).
+                   07  WRK-NEN03-MM        PIC 9(02).
+               05  WRK-NEN03-DD            PIC 9(02).
+           03  WRK-NEN-15.
+               05  WRK-NEN15-YM.
+                   07  WRK-NEN15-YY        PIC 9(04).
+                   07  WRK-NEN15-MM        PIC 9(02).
+               05  WRK-NEN15-DD            PIC 9(02).
+      *TEST
+      *H24.4テスト
       *
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
@@ -308,6 +325,9 @@
                05  WRK-SRYCDCHG        PIC X(09)   OCCURS  5.
            03  WRK-NAIYOU              PIC X(54).
            03  WRK-PATH                PIC X(64).
+      *H24.4
+      *    最低薬価
+           03  WRK-CHKTEN               PIC 9(09)V9(2).
       *
       *    施設規準テーブル
        01  WRK-TBL-SSTKIJUN-AREA.
@@ -392,6 +412,10 @@
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *
+      *    最低薬価マスタ
+       01  GENERICPRICE-REC.
+           COPY    "CPGENERICPRICE.INC".
       *
       *    患者禁忌薬剤マスタ
        01  PTKINKI-REC.
@@ -1684,6 +1708,28 @@
            MOVE    WRK-TNS-KGNAGE      TO  WRK-KGNAGE(2:2)
            MOVE    WRK-TNS-JGNAGE      TO  WRK-JGNAGE(2:2)
       *
+      *TEST
+      *H24.4テスト
+           MOVE    SPA-BIRTHDAY        TO  WRK-NEN-03
+           MOVE    SPA-BIRTHDAY        TO  WRK-NEN-15
+           COMPUTE WRK-NEN03-YY        =   WRK-NEN03-YY  +  3
+           COMPUTE WRK-NEN15-YY        =   WRK-NEN15-YY  +  15
+      *    １日以外の誕生日の時は、翌月１日を基準とする
+           IF      WRK-NEN03-DD        >   01
+               COMPUTE WRK-NEN03-MM        =   WRK-NEN03-MM  +  1
+               IF      WRK-NEN03-MM        >   12
+                   COMPUTE WRK-NEN03-YY    =   WRK-NEN03-YY  +   1
+                   MOVE    01              TO  WRK-NEN03-MM
+               END-IF
+               COMPUTE WRK-NEN15-MM        =   WRK-NEN15-MM  +  1
+               IF      WRK-NEN15-MM        >   12
+                   COMPUTE WRK-NEN15-YY    =   WRK-NEN15-YY  +   1
+                   MOVE    01              TO  WRK-NEN15-MM
+               END-IF
+           END-IF
+      *TEST
+      *H24.4テスト
+      *
       *    下限年齢チェック
            IF      WRK-TNS-KGNAGE          =   SPACE  OR  ZERO
                CONTINUE
@@ -1702,7 +1748,36 @@
                        MOVE    "0032"              TO  LNK-SC92-ERRCD5
                    END-IF
                END-IF
-           END-IF
+      *TEST
+      *H24.4テスト
+               EVALUATE    WRK-TNS-KGNAGE
+               WHEN    "AA"
+      *            新生児判定（２８日まで新生児）
+                   IF     (LNK-SC92-NENREI-YY   =   ZERO )  AND
+                          (LNK-SC92-NENREI-MM   =   ZERO )  AND
+                          (LNK-SC92-NENREI-DD   <=  28   )
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                   END-IF
+               WHEN    "B3"
+      *            ３歳未満（３歳になった日の翌月）
+                   IF     (WRK-NEN03-YM         >   SPA-SRYYMD(1:6) )
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                   END-IF
+               WHEN    "BF"
+      *            １５歳未満（１５歳になった日の翌月）
+                   IF     (WRK-NEN15-YM         >   SPA-SRYYMD(1:6) )
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                   END-IF
+               WHEN    OTHER
+      *            年齢判定
+                   IF      LNK-SC92-NENREI-YY   >=  WRK-KGNAGE
+                      CONTINUE
+                   ELSE
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                   END-IF
+               END-EVALUATE
+      *H24.4テスト
+          END-IF
       *
       *    上限年齢チェック
            IF      WRK-TNS-JGNAGE          =   SPACE  OR  ZERO
@@ -1734,6 +1809,52 @@
                        END-IF
                    END-IF
                END-IF
+      *TEST
+      *H24.4テスト
+               EVALUATE    WRK-TNS-JGNAGE
+               WHEN    "AA"
+      *            新生児判定（２８日まで新生児）
+                   IF     (LNK-SC92-NENREI-YY   =   ZERO )  AND
+                          (LNK-SC92-NENREI-MM   =   ZERO )  AND
+                          (LNK-SC92-NENREI-DD   <=  28   )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                   END-IF
+               WHEN    "B3"
+      *            ３歳未満（３歳になった日の翌月）
+                   IF     (WRK-NEN03-YM         <=  SPA-SRYYMD(1:6) )
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+      *???
+      ********    ３歳までに当月の受診があった時にのみ可能だった場合
+                       IF     (LNK-SC92-NENREI-YY      =   3  )
+                          AND (LNK-SC92-15MIMAN-ARI    =   2  )
+                           MOVE    SPACE          TO  LNK-SC92-ERRCD5
+                       END-IF
+                   END-IF
+               WHEN    "BF"
+      *            １５歳未満（１５歳になった日の翌月）
+                   IF     (WRK-NEN15-YM         <=  SPA-SRYYMD(1:6) )
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                   END-IF
+      *???
+      ********    １５歳までに当月の受診があった時にのみ可能だった場合
+                   IF     (LNK-SC92-NENREI-YY   >=    15    )
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                       IF     (LNK-SC92-NENREI-YY      =   15  )
+                          AND (LNK-SC92-15MIMAN-ARI    =   1  )
+                           MOVE    SPACE          TO  LNK-SC92-ERRCD5
+                       END-IF
+                   END-IF
+               WHEN    OTHER
+      *            年齢判定
+                   IF      LNK-SC92-NENREI-YY    <   WRK-JGNAGE
+                       CONTINUE
+                   ELSE
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                   END-IF
+               END-EVALUATE
+      *H24.4テスト
            END-IF
       *
            .
@@ -3470,6 +3591,10 @@
               IF      SPA-COM-INPUTCD (IDX-T)  =   "099209903"
                                                OR  "099209905"
                                                OR  "099209906"
+      *H24.4 改正
+                                               OR  "099209907"
+                                               OR  "099209908"
+      *H24.4 改正
                    PERFORM 30021-KOUHEN-MEISYO-SEC
                    MOVE    WRK-MEISYO    TO  SPA-GMN-MEISYO (IDX-T)
                END-IF
@@ -3733,8 +3858,75 @@
              AND  (LNK-SC92-PG     NOT =   "K05")
                PERFORM 3008-PTKINKI-CHK-SEC
            END-IF
+      *TEST
+      *TEST
+      *H24.4
+      *    処方箋一般名記載区分（告示識別区分を使用）
+           IF      SPA-SRYYMD          >=  "20120401"
+               IF     (TNS-SRYCD(1:1)      =   "6"  )
+                 AND ((TNS-KOUHATUKBN      =   1  OR  2 )  OR
+                      (TNSP-IPN-KISAIKBN   =   "1"  ))
+      *            後発品・後発のある先発品の最低薬価
+                   IF      TNSP-IPN-KISAIKBN   =   "1"
+                       MOVE    9               TO  SPA-COM-KOKUJISKBKBN2
+                                                               (IDX-T)
+                   END-IF
+      *            最低金額の編集（きざみ値を流用する）ver.4.7は追加）
+      *            最低薬価編集
+                   PERFORM 300001-GENERICPRICE-CHEK-SEC
+                   MOVE    WRK-CHKTEN      TO  SPA-COM-KZMTEN (IDX-T)
+               END-IF
+           END-IF
+      *!!
            .
        300-TENSU-HENSYU-EXT.
+           EXIT.
+      *
+      *H24.4
+      *****************************************************************
+      *     最低薬価の編集処理
+      *****************************************************************
+       300001-GENERICPRICE-CHEK-SEC        SECTION.
+      *
+           MOVE    TNS-TEN             TO  WRK-CHKTEN
+      *    薬価基準コードの最低薬価
+           IF      TNS-YAKKAKJNCD      =   SPACE
+               GO      TO    300001-GENERICPRICE-CHEK-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  GENERICPRICE-REC
+           INITIALIZE                      GENERICPRICE-REC
+           MOVE    TNS-YAKKAKJNCD(1:9) TO  GENERICPRICE-YAKKAKJNCD
+           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOSTYMD
+           MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOEDYMD
+           MOVE    GENERICPRICE-REC    TO  MCPDATA-REC
+           MOVE    "tbl_generic_price"
+                                      TO  MCP-TABLE
+           MOVE    "key"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_generic_price"
+                                          TO  MCP-TABLE
+               MOVE    "key"              TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  GENERICPRICE-REC
+      *            薬価
+                   MOVE    GENERICPRICE-PRICE  TO  WRK-CHKTEN
+               ELSE
+                   INITIALIZE                  GENERICPRICE-REC
+                   MOVE    1                   TO  FLG-GENERICPRICE
+               END-IF
+           ELSE
+               INITIALIZE                  GENERICPRICE-REC
+               MOVE    1                   TO  FLG-GENERICPRICE
+           END-IF
+           MOVE    "tbl_generic_price"
+                                      TO  MCP-TABLE
+           MOVE    "key"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       300001-GENERICPRICE-CHEK-EXT.
            EXIT.
       *
       *
@@ -3821,24 +4013,37 @@
       *****************************************************************
        3002-KOUHATU-MEISYO-SEC        SECTION.
       *
+      *H24.4
+           MOVE    SPACE               TO  WRK-MSG1
+           IF      SPA-SRYYMD          >=  "20120401"
+               IF     (TNSP-IPN-KISAIKBN   =   "1"  )
+      *            一般名記載あり
+                   MOVE    "般"                TO  WRK-MSG1
+               END-IF
+           END-IF
+      *
            MOVE    TNS-NAME            TO  WRK-MEISYO
            EVALUATE    TNS-KOUHATUKBN
                WHEN    1
       *            後発品
-                   MOVE    SPACE               TO  WRK-MEISYO
-                   STRING      "【後】"         DELIMITED   BY  SIZE
+                   MOVE    SPACE                TO  WRK-MEISYO
+                   STRING      "【"             DELIMITED   BY  SIZE
+                               WRK-MSG1         DELIMITED   BY  SPACE
+                               "後】"           DELIMITED   BY  SIZE
                                TNS-NAME         DELIMITED   BY  SIZE
                                INTO             WRK-MEISYO
                    END-STRING
                WHEN    2
       *            後発品のある先発品
                    MOVE    SPACE               TO  WRK-MEISYO
-                   STRING      "【先】"         DELIMITED   BY  SIZE
+                   STRING      "【"             DELIMITED   BY  SIZE
+                               WRK-MSG1         DELIMITED   BY  SPACE
+                               "先】"           DELIMITED   BY  SIZE
                                TNS-NAME         DELIMITED   BY  SIZE
                                INTO             WRK-MEISYO
                    END-STRING
            END-EVALUATE
-      *TEST
+      *!!!!
       *ver.4.5（削除かも〜）
       *    換算値あり
            IF     (TNSP-KANZANTANINAME =   SPACE )

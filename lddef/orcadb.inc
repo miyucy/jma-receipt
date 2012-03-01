@@ -173,4 +173,5 @@ db	{
 	tbl_prtctrl;
 	tbl_pthknrrk;
 	tbl_labor_sio;
+        tbl_generic_price;
 };

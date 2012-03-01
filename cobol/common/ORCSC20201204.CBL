@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCSC20201004.
+       PROGRAM-ID.                 ORCSC20201204.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 診療行為入力
       *  コンポーネント名  : 診療行為チェック、算定（薬剤）
-      *                      Ｈ２２年４月対応
+      *                      Ｈ２４年４月対応
       *  管理者            : 
       *  作成日付    作業者        記述
       *  04/03/09    NACL−多々納  新規作成
@@ -54,6 +54,7 @@
       *  04.06.00    NACL-多々納  10/08/18  手帳記載加算確認追加
       *  04.06.00    NACL-多々納  10/11/02  難病外来疾患区分対応
       *  04.07.00    NACL-多々納  11/11/XX  訂正処方せん料展開対応
+      *  04.07.00    NACL-多々納  12/03/XX  Ｈ２４年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -137,6 +138,12 @@
            03  FLG-TENSUPLUS            PIC 9(01).
       *
            03  FLG-CHK3                 PIC 9(01).
+      *H24.4
+      *    一般名処方加算
+           03  FLG-IPPANKSN            PIC 9(01).
+      *    一般名あり
+           03  FLG-GENERIC-OK           PIC 9(01).
+           03  FLG-CHK-P                PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -173,6 +180,7 @@
       *
            03  IDX-A1              PIC 9(04).
            03  IDX-A2              PIC 9(04).
+           03  IDX-IP              PIC 9(04).
       *
            03  IDZ5                PIC 9(04).
            03  IDZ6                PIC 9(04).
@@ -281,6 +289,9 @@
                05  WRK-CHOU-CHIKENKBN      PIC X(01).
                05  WRK-SYO-CHIKENKBN       PIC X(01).
       *
+           03  WRK-YAKKAKJNCD           PIC X(12).
+           03  WRK-KEI-KISOTEN          PIC 9(07)V9(2).
+      *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
            03  WRK-CONTCHK-OCC         OCCURS  30.
@@ -336,6 +347,10 @@
       *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
+      *
+      *    一般名テーブル
+       01  GENERICNAME-REC.
+           COPY    "CPGENERICNAME.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -559,6 +574,21 @@
                    END-PERFORM
                    IF      FLG-CHK3            =   ZERO
                        MOVE    "0267"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-Z)
+                   END-IF
+      *H24.4
+      *        一般名記載不可
+               WHEN    "099209907"
+      *        一般名記載可
+               WHEN    "099209908"
+      *            前行に薬剤があること
+                   IF      (IDX-Z          >   1   ) AND
+                           (WRK-COM-INPUTCD(IDX-Z - 1)(1:1)
+                                               =   "6"  )
+                       CONTINUE
+                   ELSE
+                       MOVE    "2071"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR
                                                              (IDX-Z)
                    END-IF
@@ -1014,6 +1044,46 @@
            END-EVALUATE
       *    回数
            MOVE    WRK-KAISU           TO  WRK-COM-KAISU (IDX-Z)
+      *TEST
+      *TEST
+      *H24.4改正
+           IF      (WRK-MOJI           =   "6"  )  AND
+                   (WRK-COM-SRYKBN (IDX-Z)     =   "21" )
+      *        院外内服投薬
+               IF    (WRK-COM-SRYSYUKBN(IDX-Z) =   "212"
+                                               OR  "292" )  OR
+                    ((WRK-COM-SRYSYUKBN(IDX-Z)  =   SPACE
+                                                OR  "210"
+                                                OR  "290" ) AND
+                     (LNK-ORCSC-INGAIKBN       =   "1"   ))
+      *            一般名記載有無
+                   MOVE    ZERO                TO  FLG-CHK-P
+                   IF     (WRK-COM-KOKUJISKBKBN2(IDX-Z)  =   9  )
+                       MOVE    1                   TO  FLG-CHK-P
+                       IF      (WRK-COM-INPUTCD (IDX-Z + 1)
+                                                   =   "099209907"
+                                                   OR  "099209903"  )
+      *                    一般名記載なし、後発品変更不可
+                           MOVE    ZERO                TO  FLG-CHK-P
+                       END-IF
+                   END-IF
+                   IF     ( WRK-COM-INPUTCD (IDX-Z + 1)
+                                                   =   "099209908"  )
+      *                 一般名記載あり
+                       MOVE    1                   TO  FLG-CHK-P
+                   END-IF
+                   IF      (FLG-CHK-P          =   1   )  AND
+                           (WRK-COM-KOUHATUKBN (IDX-Z) =   "1"
+                                                       OR  "2" )
+      *            院外投薬の点数を最小金額とする（きざみ値を流用）
+      *                後発品・後発のある先発のみ
+                       MOVE    WRK-COM-KZMTEN(IDX-Z)
+                                               TO  WRK-COM-KISOTEN
+                                                             (IDX-Z)
+                   END-IF
+               END-IF
+           END-IF
+      *TEST
       *
            .
        10021-KEISAN-EXT.
@@ -1277,6 +1347,9 @@
       *    抗悪性腫瘍剤処方管理加算
            MOVE    ZERO                TO  FLG-AKUSKSN1
            MOVE    ZERO                TO  FLG-AKUSKSN2
+           MOVE    ZERO                TO  FLG-IPPANKSN
+      *
+           MOVE    ZERO                TO  FLG-GENERIC-OK
       *
            INITIALIZE                  WRK-HKNCOMBI-AREA
       *
@@ -1419,6 +1492,12 @@
                IF      WRK-COM-INPUTCD (IDX)   =   "120003470"
                    MOVE    1                   TO  FLG-AKUSKSN1
                    MOVE    IDX                 TO  IDX-A1
+               END-IF
+      *H24.4　改正
+      *        一般名処方加算（処方せん料）
+               IF      WRK-COM-INPUTCD (IDX)   =   "120003570"
+                   MOVE    1                   TO  FLG-IPPANKSN
+                   MOVE    IDX                 TO  IDX-IP
                END-IF
       *
       *        投薬で入院回数の時、回数集計
@@ -1715,6 +1794,29 @@
                    END-IF
                END-IF
            END-IF
+      *
+      *H24.4　改正
+      *    一般名処方加算（処方せん料）処方箋料があること
+           IF      FLG-IPPANKSN        =   1
+               IF      FLG-SYOHOSENN       =   ZERO
+                   MOVE    "0234"              TO  SPA-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-CUR (IDX-IP)
+      *            処方料もない時、警告とする
+                   IF      FLG-SYOHORYO        =   ZERO
+                       MOVE    SPACE           TO  SPA-ERRCD
+                       MOVE    SPACE           TO  WRK-COM-CUR (IDX-IP)
+                       IF     (WRK-COM-KZMFLG (IDX-IP) =   SPACE) AND
+                              (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    "K234"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                              (IDX-IP)
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-IP)
+                           MOVE    IDX-IP          TO  LNK-ORCSC-KEI-IDX
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
       *!!
       *ver.4.7
       *    処方せん料と投薬チェック
@@ -1843,16 +1945,17 @@
                END-IF
            END-IF
       *
-           EVALUATE    WRK-CHK-SRYSYUKBN
-               WHEN    "211"
-               WHEN    "221"
-               WHEN    "231"
-               WHEN    "291"
-      *            麻毒区分判定
-                   IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
-      *----(01.00.01) LINE UPD START ----------------------------------
+           IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
+      *
+               MOVE    WRK-COM-KISOTEN(IDX)    TO  WRK-KEI-KISOTEN
+      *
+               EVALUATE    WRK-CHK-SRYSYUKBN
+                   WHEN    "211"
+                   WHEN    "221"
+                   WHEN    "231"
+                   WHEN    "291"
+      *            内服　麻毒区分判定
                       IF      WRK-COM-MADOKUKBN (IDX) NOT =   ZERO
-      *----(01.00.01) LINE UPD END   ----------------------------------
                            MOVE    1           TO  FLG-MADOKU
                            MOVE    1           TO  FLG-MADOKU-ARI
                            IF      WRK-CHK-SRYSYUKBN   =   "231"
@@ -1871,8 +1974,34 @@
                                END-IF
                            END-IF
                        END-IF
-                   END-IF
-           END-EVALUATE
+      *平成２４年４月
+                   WHEN    "212"
+                   WHEN    "222"
+                   WHEN    "232"
+                   WHEN    "292"
+      *                院外処方　一般名記載判定
+                       MOVE    ZERO                TO  FLG-CHK-P
+                       IF     (WRK-COM-KOKUJISKBKBN2(IDX)  =   9  )
+                           MOVE    1                   TO  FLG-CHK-P
+                           IF      (WRK-COM-INPUTCD (IDX + 1)
+                                                   =   "099209907"
+                                                   OR  "099209903"  )
+      *                        一般名記載なし、後発品変更不可
+                               MOVE    ZERO                TO  FLG-CHK-P
+                           END-IF
+                       END-IF
+                       IF     ( WRK-COM-INPUTCD (IDX + 1)
+                                                   =   "099209908"  )
+      *                 一般名記載あり
+                           MOVE    1                   TO  FLG-CHK-P
+                       END-IF
+                       IF      (FLG-CHK-P          =   1   )  AND
+                               (WRK-COM-KOUHATUKBN (IDX) =   "1"
+                                                         OR  "2" )
+                           MOVE    1               TO  FLG-GENERIC-OK
+                       END-IF
+               END-EVALUATE
+           END-IF
       *
       *    内服薬チェック
       *      臨時で１４日以内の時は対象外
@@ -1903,7 +2032,8 @@
                    END-IF
                END-IF
       *        点数
-               COMPUTE WRK-SYOKEIS2        =   WRK-COM-KISOTEN(IDX)
+      *******  COMPUTE WRK-SYOKEIS2        =   WRK-COM-KISOTEN(IDX)
+               COMPUTE WRK-SYOKEIS2        =   WRK-KEI-KISOTEN
                                            *   WRK-COM-SURYO  (IDX)
                ADD     WRK-SYOKEIS2        TO  WRK-ZAITEN-G
       *
@@ -1954,38 +2084,38 @@
                MOVE    ZERO            TO  WRK-ZAITEN-G
            END-IF
       *
-      *    後発医薬品チェック
-           IF     (WRK-COM-INPUTCD(IDX)(1:1) =   "6"  )  AND
-                  (WRK-CHK-SRYSYUKBN   =   "212"  OR
-                                           "222"  OR
-                                           "232"  OR
-                                           "292"     )
-               IF      (WRK-COM-KOUHATUKBN (IDX)
-                                           =   1     )
-                   MOVE    1                   TO  FLG-KOUHATU
-               ELSE
+      **** 後発医薬品チェック
+      *    IF     (WRK-COM-INPUTCD(IDX)(1:1) =   "6"  )  AND
+      *           (WRK-CHK-SRYSYUKBN   =   "212"  OR
+      *                                    "222"  OR
+      *                                    "232"  OR
+      *                                    "292"     )
+      *        IF      (WRK-COM-KOUHATUKBN (IDX)
+      *                                    =   1     )
+      *            MOVE    1                   TO  FLG-KOUHATU
+      *        ELSE
       *            後発医薬品変更不可
-                   IF     (IDX                 <   SPA-MAX-LINE )  AND
-                          (WRK-COM-INPUTCD(IDX + 1)  =   "099209903")
-                       CONTINUE
-                   ELSE
+      *            IF     (IDX                 <   SPA-MAX-LINE )  AND
+      *                   (WRK-COM-INPUTCD(IDX + 1)  =   "099209903")
+      *                CONTINUE
+      *            ELSE
       *              マスタ更新後
-                     IF      SPA-DBUPDKBN        =   1
+      *              IF      SPA-DBUPDKBN        =   1
       *                先発品のみ
-                       IF      (WRK-COM-KOUHATUKBN (IDX)
-                                               =   0   )
-                           CONTINUE
-                       ELSE
-                           MOVE    1               TO  FLG-KOUHATU-HEN2
-                       END-IF
-                     ELSE
+      *                IF      (WRK-COM-KOUHATUKBN (IDX)
+      *                                        =   0   )
+      *                    CONTINUE
+      *                ELSE
+      *                    MOVE    1               TO  FLG-KOUHATU-HEN2
+      *                END-IF
+      *              ELSE
       *              マスタ更新前
       *                  すべて後発品ありの判定とする
-                         MOVE    1               TO  FLG-KOUHATU-HEN2
-                     END-IF
-                   END-IF
-               END-IF
-           END-IF
+      *                  MOVE    1               TO  FLG-KOUHATU-HEN2
+      *              END-IF
+      *            END-IF
+      *        END-IF
+      *****END-IF
       *
       *    長期投薬品チェック（内服と外用のみ）
            IF      (WRK-COM-INPUTCD(IDX)(1:1) =   "6"  )  AND
@@ -2296,6 +2426,21 @@
                MOVE    1               TO  FLG-SYOHOSENN
            END-IF
       *
+      *処方せん料の次に別剤として追加。加算での追加はできない
+      *H24.4
+      *     一般名記載加算
+           IF     (FLG-ERR             =   ZERO )
+             AND  (FLG-GENERIC-OK      =   1    )
+               MOVE    "120003570"         TO  WRK-SRYCD
+               MOVE    SPACE               TO  WRK-SRYCD2
+               PERFORM 3002-KASAN-SYORI-SEC
+               IF      FLG-ERR             =   ZERO
+                   MOVE    "820"           TO  LNK-ORCSC-SRYSYUKBN
+                                                         (02 IDXS)
+                   MOVE    "80"            TO  LNK-ORCSC-SRYKBN
+                                                         (02 IDXS)
+               END-IF
+           END-IF
            .
        30011-SYOHOUSEN-SYORI-EXT.
            EXIT.
@@ -2889,26 +3034,9 @@
                     MOVE    SPACE               TO  WRK-SRYCD2
                END-IF
            ELSE
-      *******  老人の時、手帳記載あり、なしの両方の算定チェック
-      *        MOVE    "113701310"         TO  WRK-SRYCD
-      *        PERFORM 3003-YAKJYO-CHK-SEC
-      *        IF      FLG-YAKJYO          =   ZERO
-      *            MOVE    "113701410"         TO  WRK-SRYCD
-      *            PERFORM 3003-YAKJYO-CHK-SEC
-      ******** END-IF
                MOVE    SPACE               TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD2
                IF      FLG-YAKUJYO         =   ZERO
-      *****        IF      LNK-ORCSC-YAKJYO-2  =    1
-      *                                        OR   2
-      *                MOVE    "113701310"         TO  WRK-SRYCD
-      *                MOVE    "120002370"         TO  WRK-SRYCD2
-      *            END-IF
-      *            IF      LNK-ORCSC-YAKJYO-3  =   1
-      *                                        OR   2
-      *                MOVE    "120002370"         TO  WRK-SRYCD
-      *                MOVE    "113701310"         TO  WRK-SRYCD2
-      ******       END-IF
       *            いずれかの区分が自動発生ありの時
                    IF     (LNK-ORCSC-YAKJYO-2      =    1
                                                    OR   2  )
@@ -2926,7 +3054,6 @@
            MOVE    1                   TO  FLG-ALL
            PERFORM 3003-YAKJYO-CHK-SEC
            MOVE    ZERO                TO  FLG-ALL
-      *****PERFORM 3002-KASAN-SYORI-SEC
            IF      FLG-ERR             =   ZERO 
            AND     LNK-ORCSC-KIDCD     =   SPACE
                MOVE    "130"           TO  LNK-ORCSC-SRYSYUKBN(02 IDXS)
