@@ -131,7 +131,11 @@
       *  04.05.03    NACL-藤原    09/08/19  全件印刷時の自費レセプトの
       *                                     印刷指定対応
       *
+      *  04.06.01    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *
       *  04.07.01    NACL-藤原    11/09/02  起動方法の変更
+      *  04.07.02    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -169,11 +173,11 @@
                05  WRK-RECE09-NYUGAIKBN    PIC X(01).
            03  WRK-RECE09-PRTJYUN          PIC X(02).
            03  WRK-RECE09-DATA.
+               05  WRK-RECE09-HKNJANUM     PIC X(08).
                05  WRK-RECE09-CHOUKI       PIC X(01).
                05  WRK-RECE09-ZAITAKU      PIC X(01).
                05  WRK-RECE09-KOUGAKU      PIC X(01).
                05  WRK-RECE09-SRT-LAST     PIC X(01).
-               05  WRK-RECE09-HKNJANUM     PIC X(08).
            03  WRK-RECE09-DATA-R           REDEFINES    WRK-RECE09-DATA.
                05  WRK-RECE09-DRCD         PIC X(05).
                05  WRK-RECE09-DRCD-PRTJYUNKBN
@@ -227,6 +231,8 @@
       *
            03  IDXX                PIC 9(04).
            03  IDXY                PIC 9(04).
+           03  IDYY                PIC 9(04).
+           03  IDWW                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -265,6 +271,7 @@
            03  WRK-STYMD           PIC X(22).
            03  WRK-EDYMD           PIC X(22).
            03  WRK-PRTJYUN         PIC X(02).
+           03  WRK-PAGE-MAX        PIC 9(02).
       *  
       *    入力項目名
            03  WRK-MCP-WIDGET      PIC X(64).
@@ -1679,7 +1686,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    "F"         TO  SPA-GMN-TCHK-VALUE (IDW IDX)
                END-PERFORM
            END-PERFORM
-      *    
+      *
       *    社保分
            MOVE    "1"                 TO  WRK-TEISYUTUSAKI
            EVALUATE    SPA-GMN-PRTJYUN
@@ -1702,6 +1709,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "12"
                    PERFORM 3101-PAGE-HENSYU-06-SEC     
            END-EVALUATE
+      *
+           EVALUATE    SPA-GMN-PRTJYUN
+               WHEN    "01"
+               WHEN    "02"
+               WHEN    "06"
+               WHEN    "09"
+               WHEN    "10"
+                   CONTINUE
+               WHEN    "05"
+                   MOVE    1           TO  SPA-GMN-PAGE-MAX
+               WHEN    OTHER
+                   MOVE    1           TO  SPA-GMN-PAGE-MAX
+           END-EVALUATE 
       *    
       *    国保分
            MOVE    "2"                 TO  WRK-TEISYUTUSAKI
@@ -1748,14 +1768,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE    
                EVALUATE    SPA-GMN-PRTJYUN ALSO    SPA-GMN-PRTJYUN1
                                              ALSO    SPA-GMN-PRTJYUN2
-                   WHEN    "11"            ALSO    ANY     ALSO    ANY
-                   WHEN    "12"            ALSO    ANY     ALSO    ANY
-                       CONTINUE
-                   WHEN    ANY             ALSO    "06"    ALSO    ANY
-                       ADD     1                   TO  SPA-GMN-PAGE-MAX
-                   WHEN    "07"            ALSO    ANY     ALSO    ANY
-                   WHEN    "08"            ALSO    ANY     ALSO    ANY
-                       MOVE    1                   TO  SPA-GMN-PAGE-MAX
                    WHEN    "03"            ALSO    "01"    ALSO    ANY
                    WHEN    "03"            ALSO    "02"    ALSO    ANY
                    WHEN    "03"            ALSO    "09"    ALSO    ANY
@@ -1764,6 +1776,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "04"            ALSO    "02"    ALSO    ANY
                    WHEN    "04"            ALSO    "09"    ALSO    ANY
                    WHEN    "04"            ALSO    "10"    ALSO    ANY
+      *************    MOVE    3                   TO  SPA-GMN-PAGE-MAX
+                       CONTINUE
+                   WHEN    "05"            ALSO    ANY    ALSO     ANY
                        MOVE    3                   TO  SPA-GMN-PAGE-MAX
                    WHEN    "03"            ALSO    "03"    ALSO    "03"
                    WHEN    "03"            ALSO    "04"    ALSO    "03"
@@ -1773,29 +1788,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "04"            ALSO    "04"    ALSO    "03"
                    WHEN    "04"            ALSO    "03"    ALSO    "04"
                    WHEN    "04"            ALSO    "04"    ALSO    "04"
-                   WHEN    "06"            ALSO    "03"    ALSO    "03"
-                   WHEN    "06"            ALSO    "04"    ALSO    "03"
-                   WHEN    "06"            ALSO    "03"    ALSO    "04"
-                   WHEN    "06"            ALSO    "04"    ALSO    "04"
+                   WHEN    "07"            ALSO    ANY     ALSO    ANY
+                   WHEN    "08"            ALSO    ANY     ALSO    ANY
                        MOVE    1                   TO  SPA-GMN-PAGE-MAX
-                   WHEN    "03"            ALSO    ANY    ALSO     ANY
-                   WHEN    "04"            ALSO    ANY    ALSO     ANY
-                       MOVE    2                   TO  SPA-GMN-PAGE-MAX
-                   WHEN    "05"            ALSO    ANY    ALSO     ANY
-                       MOVE    3                   TO  SPA-GMN-PAGE-MAX
-                   WHEN    ANY             ALSO    "01"    ALSO    ANY
-                   WHEN    ANY             ALSO    "02"    ALSO    ANY
-                   WHEN    ANY             ALSO    "09"    ALSO    ANY
-                   WHEN    ANY             ALSO    "10"    ALSO    ANY
-                       MOVE    3                   TO  SPA-GMN-PAGE-MAX
-                   WHEN    ANY             ALSO    "03"    ALSO    "03"
-                   WHEN    ANY             ALSO    "04"    ALSO    "03"
-                   WHEN    ANY             ALSO    "03"    ALSO    "04"
-                   WHEN    ANY             ALSO    "04"    ALSO    "04"
-                       MOVE    2                   TO  SPA-GMN-PAGE-MAX
-                   WHEN    ANY             ALSO    "03"    ALSO    ANY
-                   WHEN    ANY             ALSO    "04"    ALSO    ANY
-                       MOVE    3                   TO  SPA-GMN-PAGE-MAX
                END-EVALUATE
       *
       *        広域連合
@@ -1833,9 +1828,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "1"
                    MOVE    1               TO  IDW
                WHEN    "2"
-                   MOVE    2               TO  IDW
+      *************MOVE    2               TO  IDW
+                   MOVE    SPA-GMN-PAGE-MAX
+                                           TO  IDW
+                   ADD     1               TO  IDW 
                WHEN    "6"
-                   MOVE    SPA-GMN-PAGE-MAX    TO  IDW
+                   MOVE    SPA-GMN-PAGE-MAX
+                                           TO  IDW
+                   ADD     1               TO  IDW 
            END-EVALUATE
       *
       *    レセプト作成指示（印刷順）読み込み
@@ -1893,15 +1893,68 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME     
            PERFORM 900-CLOSE-SEC
+      *
+      *    社保の直接請求分があればページを分けて表示
+           IF      WRK-TEISYUTUSAKI    =   "1"
+               PERFORM VARYING IDYY    FROM    1   BY  1
+                       UNTIL   IDYY    >
+                                       SPA-R01-RECE07-HKNJANUM-SYAHO-MAX
+                   IF      IDW             =   1
+                       MOVE    SPA-R01-RECE07-HKNJANUM-SYAHO (IDYY)
+                                                   TO
+                                           SPA-NAI-THKNJANUM-SYAHO (IDW)
+                       IF      SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+                                                   =   "8"
+                           MOVE    "直接請求する保険者以外"
+                                                       TO
+                                           SPA-GMN-THKNJANAME-SYAHO(IDW)
+                       END-IF
+                   ELSE
+                       MOVE    SPA-NAI-TBL-OCC (1) TO
+                                                   SPA-NAI-TBL-OCC (IDW)
+                       MOVE    SPA-GMN-TBL-OCC (1) TO
+                                                   SPA-GMN-TBL-OCC (IDW)
+                       MOVE    SPA-GMN-TBL-OCC1(1) TO
+                                                   SPA-GMN-TBL-OCC1(IDW)
+                       MOVE    SPA-R01-RECE07-HKNJANUM-SYAHO (IDYY)
+                                                   TO
+                                           SPA-NAI-THKNJANUM-SYAHO (IDW)
+                       INITIALIZE                      HKNJAINF-REC
+                       MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+                       MOVE    SPA-NAI-THKNJANUM-SYAHO (IDW)
+                                                   TO  HKNJA-HKNJANUM
+                       MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+                       PERFORM 900-HKNJAINF-READ-SEC
+                       MOVE    HKNJA-HKNJANAME     TO
+                                           SPA-GMN-THKNJANAME-SYAHO(IDW)
+                   END-IF
       * 
+                   PERFORM 31011-PAGE-HENSYU-01-KENSU-SEC
+      *
+                   ADD     1               TO  IDW
+               END-PERFORM
+           ELSE
+               PERFORM 31011-PAGE-HENSYU-01-KENSU-SEC
+           END-IF    
+           .
+       3101-PAGE-HENSYU-01-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    頁・件数の編集処理（社保・国保別）
+      *****************************************************************
+       31011-PAGE-HENSYU-01-KENSU-SEC  SECTION.
+      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-CONS-LINE-MAX
                    OR      SPA-NAI-PRTJYUNI(IDW IDX)   =   SPACE
                MOVE    ZERO                TO  SPA-GMN-TPAGE  (IDW IDX)
                MOVE    ZERO                TO  SPA-GMN-TKENSU (IDW IDX)
+               INITIALIZE                      SPA-NAI-TPAGE-G(IDW IDX)
       *
                PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       5
+      *****            UNTIL   IDY >       5
+                       UNTIL   IDY >       1
                        OR      SPA-NAI-SYUBETU (IDW IDX IDY)   =   SPACE 
                    INITIALIZE                  RECE07-REC
                    MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
@@ -1955,6 +2008,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                    END-IF 
                            END-EVALUATE
                    END-EVALUATE
+                   IF      WRK-TEISYUTUSAKI    =   "1"
+                       MOVE    SPA-NAI-THKNJANUM-SYAHO (IDW)
+                                                   TO  RECE07-HKNJANUM
+                   ELSE
+                       MOVE    "%%%%%%%%"          TO  RECE07-HKNJANUM
+                   END-IF
                    MOVE    RECE07-REC          TO  MCPDATA-REC                             
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key9"              TO  WRK-MCP-PATHNAME
@@ -1993,9 +2052,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-EVALUATE
                END-IF
            END-PERFORM
-               
+      *
+           MOVE    IDW             TO  SPA-GMN-PAGE-MAX
            .
-       3101-PAGE-HENSYU-01-EXT.
+       31011-PAGE-HENSYU-01-KENSU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2013,42 +2073,55 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "2"                 ALSO    "05"
                WHEN    "2"                 ALSO    "09"
                WHEN    "2"                 ALSO    "10"
-                   MOVE    2               TO  IDW
+                   COMPUTE IDW =   SPA-GMN-PAGE-MAX    +   1
                    MOVE    1               TO  IDX 
                WHEN    "2"                 ALSO    "03"
                WHEN    "2"                 ALSO    "04"
                    MOVE    1               TO  IDW
                    MOVE    2               TO  IDX
                WHEN    "2"                 ALSO    "06"
-                   MOVE    1               TO  IDW
-                   IF      SPA-R01-NYUGAIKBN   =   "1"
-                       MOVE    2               TO  IDX
-                   ELSE 
-                       MOVE    3               TO  IDX
+                   IF      SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+                                               =   "9"
+                       MOVE    1                   TO  IDW
+                       IF      SPA-R01-NYUGAIKBN   =   "1"
+                           MOVE    2                   TO  IDX
+                       ELSE 
+                           MOVE    3                   TO  IDX
+                       END-IF
+                   ELSE
+                       COMPUTE IDW =   SPA-GMN-PAGE-MAX    +   1
+                       MOVE    1               TO  IDX
                    END-IF
-               WHEN    "6"                 ALSO    "06"
-                   MOVE    SPA-GMN-PAGE-MAX    TO  IDW
-                   EVALUATE    SPA-GMN-PAGE-MAX
-                       WHEN    1
-                           IF      SPA-R01-NYUGAIKBN   =   "1"
-                               MOVE    3               TO  IDX
-                           ELSE 
-                               MOVE    4               TO  IDX
-                           END-IF
-                       WHEN    2
-                           MOVE    2               TO  IDX 
-                       WHEN    3
-                           MOVE    1               TO  IDX 
-                   END-EVALUATE
                WHEN    "6"                 ALSO    ANY
-                   MOVE    SPA-GMN-PAGE-MAX    TO  IDW
-                   EVALUATE    SPA-GMN-PAGE-MAX
-                       WHEN    1
-                           MOVE    3               TO  IDX
-                       WHEN    2
-                           MOVE    2               TO  IDX 
-                       WHEN    3
+                   EVALUATE    SPA-GMN-PRTJYUN1
+                       WHEN    "01"
+                       WHEN    "02"
+                       WHEN    "05"
+                       WHEN    "09"
+                       WHEN    "10"
+      ***                  MOVE    SPA-GMN-PAGE-MAX    TO  IDW
+      ***                  MOVE    1               TO  IDX 
+                       WHEN    "06"
+                           COMPUTE IDW =   SPA-GMN-PAGE-MAX    +   1
                            MOVE    1               TO  IDX 
+                       WHEN    "03"
+                       WHEN    "04"
+                           MOVE    SPA-GMN-PAGE-MAX    TO  IDW
+                           EVALUATE    SPA-GMN-PAGE-MAX
+                               WHEN    1
+                                   IF      SPA-GMN-PRTJYUN =   "06"
+                                       IF      SPA-R01-NYUGAIKBN
+                                                               =   "1"
+                                           MOVE    3           TO  IDX
+                                       ELSE
+                                           MOVE    4           TO  IDX
+                                       END-IF
+                                   ELSE
+                                       MOVE    3           TO  IDX
+                                   END-IF
+                               WHEN    OTHER
+                                   MOVE    2               TO  IDX
+                           END-EVALUATE
                    END-EVALUATE
            END-EVALUATE
       *
@@ -2170,6 +2243,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TO  SPA-GMN-TPRTNM-N-G (IDW IDX)
                END-EVALUATE
            END-IF
+      *
+           MOVE    IDW             TO  SPA-GMN-PAGE-MAX
            .
        3101-PAGE-HENSYU-02-EXT.
            EXIT.
@@ -2214,7 +2289,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            MOVE    ZERO                TO  IDX
-           MOVE    1                   TO  IDW
+      *****MOVE    1                   TO  IDW
+           MOVE    SPA-GMN-PAGE-MAX    TO  IDW
            PERFORM         UNTIL   FLG-RECE07  =   1
                            OR      IDW         >=  WRK-CONS-PAGE-MAX
                ADD     1                   TO  IDW
@@ -2373,14 +2449,15 @@ grpsys                     MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                MOVE    "0100"              TO  SPA-ERRCD
            END-IF
       *
-           IF      IDW                 =   1
+           IF      IDW                 =   SPA-GMN-PAGE-MAX
+               ADD     1                   TO  IDW
                MOVE    "該当なし"          TO  SPA-GMN-TSYURUINAME
-                                                        (2 1)
+                                                        (IDW 1)
                PERFORM VARYING IDX     FROM    2   BY  1
                        UNTIL   IDX     >       WRK-CONS-PAGE-MAX
                    INITIALIZE                  SPA-GMN-TBL-OCC2 (IDX)
                END-PERFORM
-               MOVE    2                   TO  SPA-GMN-PAGE-MAX
+               MOVE    IDW                 TO  SPA-GMN-PAGE-MAX
                                                SPA-GMN-PAGE-MAX1
                                                SPA-GMN-PAGE
            ELSE
@@ -2776,7 +2853,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "9999"          TO  SPA-NAI-SYUBETU     (IDW IDX 1)
            MOVE    "編綴順"        TO  SPA-GMN-TSYURUINAME (IDW IDX)
            MOVE    "T"             TO  SPA-GMN-TCHK-VALUE  (IDW IDX)
-           PERFORM 31011-PAGE-HENSYU-07-KENSU-SEC
       *
            IF      SPA-R01-NYUGAIKBN   =   "2"
                ADD     1               TO  IDX 
@@ -2786,8 +2862,46 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    "編綴順（在医総管または在医総）"
                                        TO  SPA-GMN-TSYURUINAME (IDW IDX)
                MOVE    "T"             TO  SPA-GMN-TCHK-VALUE  (IDW IDX)
-               PERFORM 31011-PAGE-HENSYU-07-KENSU-SEC
            END-IF
+      *
+           PERFORM VARYING IDYY    FROM    1   BY  1
+                   UNTIL   IDYY    >   SPA-R01-RECE07-HKNJANUM-SYAHO-MAX
+               IF      IDW             =   1
+                   MOVE    SPA-R01-RECE07-HKNJANUM-SYAHO (IDYY)
+                                               TO
+                                           SPA-NAI-THKNJANUM-SYAHO (IDW)
+                   IF      SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+                                               =   "8"
+                       MOVE    "直接請求する保険者以外"
+                                                   TO
+                                           SPA-GMN-THKNJANAME-SYAHO(IDW)
+                   END-IF
+               ELSE
+                   MOVE    SPA-NAI-TBL-OCC (1) TO  SPA-NAI-TBL-OCC (IDW)
+                   MOVE    SPA-GMN-TBL-OCC (1) TO  SPA-GMN-TBL-OCC (IDW)
+                   MOVE    SPA-GMN-TBL-OCC1(1) TO  SPA-GMN-TBL-OCC1(IDW)
+                   MOVE    SPA-R01-RECE07-HKNJANUM-SYAHO (IDYY)
+                                               TO
+                                           SPA-NAI-THKNJANUM-SYAHO (IDW)
+                   INITIALIZE                      HKNJAINF-REC
+                   MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+                   MOVE    SPA-NAI-THKNJANUM-SYAHO (IDW)
+                                               TO  HKNJA-HKNJANUM
+                   MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+                   PERFORM 900-HKNJAINF-READ-SEC
+                   MOVE    HKNJA-HKNJANAME     TO
+                                           SPA-GMN-THKNJANAME-SYAHO(IDW)
+               END-IF
+      *
+               MOVE    1               TO  IDX 
+               PERFORM 31011-PAGE-HENSYU-07-KENSU-SEC
+               IF      SPA-R01-NYUGAIKBN   =   "2"
+                   ADD     1               TO  IDX 
+                   PERFORM 31011-PAGE-HENSYU-07-KENSU-SEC
+               END-IF
+      *
+               ADD     1               TO  IDW
+           END-PERFORM
            .
        3101-PAGE-HENSYU-07-EXT.
            EXIT.
@@ -2796,6 +2910,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    社保遍綴順頁編集処理
       *****************************************************************
        31011-PAGE-HENSYU-07-KENSU-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  SPA-GMN-TPAGE  (IDW IDX)
+                                       SPA-GMN-TKENSU (IDW IDX)
+           INITIALIZE                  SPA-NAI-TPAGE-G(IDW IDX)
       *
       *    ページ数設定
            INITIALIZE                  QUERY-RECE08-REC
@@ -2827,6 +2945,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       MOVE    "%%"             TO  QUERY-RECE08-SRYKA
                    END-IF 
            END-EVALUATE
+           MOVE    SPA-R01-RECE07-HKNJANUM-SYAHO (IDYY)
+                                       TO  QUERY-RECE08-HKNJANUM-S
            MOVE    QUERY-RECE08-REC    TO  MCPDATA-REC
            MOVE    "query_receprt"     TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
@@ -2895,6 +3015,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    "%%"            TO  QUERY-RECE08-SRYKA
                    END-IF 
            END-EVALUATE
+           MOVE    SPA-R01-RECE07-HKNJANUM-SYAHO (IDYY)
+                                       TO  QUERY-RECE08-HKNJANUM-S
            MOVE    QUERY-RECE08-REC    TO  MCPDATA-REC
            MOVE    "query_receprt"     TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -2927,6 +3049,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SPA-NAI-PRTNM-G (2)
                                        TO  SPA-GMN-TPRTNM-N-G (IDW IDX)
            END-IF
+      *
+           MOVE    IDW                 TO  SPA-GMN-PAGE-MAX
            .
        31011-PAGE-HENSYU-07-KENSU-EXT.
            EXIT.
@@ -5275,10 +5399,18 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                END-PERFORM
              WHEN   OTHER
       *        社保出力
-               IF      SPA-R01-RECE07-SRYKA    =   "00"
+               IF      SPA-GMN-PRTJYUN =   "03"    OR  "04"
+                   MOVE    1               TO  WRK-PAGE-MAX
+               ELSE
+                   MOVE    SPA-R01-RECE07-HKNJANUM-SYAHO-MAX
+                                           TO  WRK-PAGE-MAX
+               END-IF
+               PERFORM VARYING IDW     FROM    1   BY  1
+                       UNTIL   IDW     >       WRK-PAGE-MAX
+                 IF      SPA-R01-RECE07-SRYKA    =   "00"
                    MOVE    "%%"             TO  WRK-SYUKA
                    PERFORM 4501-SYAHO-PRTJYUN-PRINT-SEC
-               ELSE
+                 ELSE
                    EVALUATE    SPA-GMN-SYUKA
                        WHEN    "00"
                            PERFORM VARYING IDXX    FROM    2   BY  1
@@ -5303,7 +5435,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                END-IF
                            END-PERFORM
                    END-EVALUATE
-               END-IF              
+                 END-IF              
+               END-PERFORM
       *
       *        国保出力
                IF      SPA-ERRCD           =   SPACE
@@ -5551,7 +5684,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        4501-SYAHO-PRTJYUN-PRINT-SEC    SECTION.
       *
-           MOVE    1                TO  IDW 
+      **** MOVE    1                TO  IDW 
            MOVE    "1"              TO  WRK-TEISYUTUSAKI
            MOVE    "0"              TO  WRK-PREFKBN
            IF      SPA-GMN-PRTJYUN     =   "06"
@@ -5572,6 +5705,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    編綴順指定
            IF      SPA-GMN-PRTJYUN1    =   "06"
+               COMPUTE IDWW    =   SPA-R01-RECE07-HKNJANUM-SYAHO-MAX
+                               +   1
                MOVE    "2"              TO  WRK-TEISYUTUSAKI
                IF      SPA-NAI-2008-HYOUJI =   1
                    PERFORM 4503-RECEPRT-INPUT-HENSYU-SEC
@@ -5580,14 +5715,21 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
            ELSE
       *        国保対象頁設定
-               IF    ( SPA-GMN-PRTJYUN1    =   "01"   OR  "02"   OR
-                                               "09"   OR  "10"      )
-               OR    ( SPA-GMN-PRTJYUN     =   "01"   OR  "02"   OR
-                                               "09"   OR  "10"      )
-                   MOVE    2               TO  IDW
+               IF    ( SPA-GMN-PRTJYUN     =   "03"   OR  "04" )
+               OR    ( SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+                                           =   "9"             )
+                   IF    ( SPA-GMN-PRTJYUN1    =   "01"   OR  "02"   OR
+                                                   "09"   OR  "10"     )
+                   OR    ( SPA-GMN-PRTJYUN     =   "01"   OR  "02"   OR
+                                                   "09"   OR  "10"     )
+                       MOVE    2               TO  IDW
+                   ELSE
+                       MOVE    1               TO  IDW
+                   END-IF
                ELSE
-                   MOVE    1               TO  IDW
-               END-IF 
+                   COMPUTE IDW =   SPA-R01-RECE07-HKNJANUM-SYAHO-MAX
+                               +   1
+               END-IF
       *
                MOVE    "2"             TO  WRK-TEISYUTUSAKI
       *        国保（県内・県外混在）出力
@@ -5688,7 +5830,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    ELSE
       *★★    
                        PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       5
+      **                       UNTIL   IDY >       5
+                               UNTIL   IDY >       1
                                OR      SPA-NAI-SYUBETU (IDW IDX IDY)
                                                            =   SPACE
                                OR      SPA-ERRCD       NOT =   SPACE
@@ -5750,7 +5893,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    END-IF
                END-IF
            END-IF
-      * 
+      *
+           IF    ( WRK-TEISYUTUSAKI    =   "1" )
+           AND   ( SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+                                       =   "8" ) 
+               MOVE    SPA-NAI-THKNJANUM-SYAHO (IDW)
+                                           TO  WRK-RECE09-HKNJANUM
+           ELSE
+               MOVE    "%%%%%%%%"          TO  WRK-RECE09-HKNJANUM
+           END-IF
+      *
            MOVE    SPA-GMN-TSTDATA (IDW IDX)
                                        TO  WRK-RECE09-STDATA
            MOVE    SPA-GMN-TEDDATA (IDW IDX)
@@ -5852,6 +6004,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        MOVE    WRK-SRT-LAST    TO  WRK-RECE09-SRT-LAST
                        MOVE    "%"             TO  WRK-RECE09-KOUGAKU
                                                    WRK-RECE09-CHOUKI
+                       IF      SPA-R01-RECE07-HKNJANUM-SRT-SYAHO
+                                               =   "8" 
+                           MOVE    SPA-NAI-THKNJANUM-SYAHO (IDW)
+                                               TO  WRK-RECE09-HKNJANUM
+                       ELSE
+                           MOVE    "%%%%%%%%"  TO  WRK-RECE09-HKNJANUM
+                       END-IF
                END-EVALUATE 
            END-IF
       *
@@ -6208,7 +6367,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        45031-RECEPRT-HENSYU-SEC             SECTION.
       *
-           PERFORM VARYING IDW FROM    2   BY  1
+           PERFORM VARYING IDW FROM    IDWW    BY  1
                    UNTIL   IDW >       SPA-GMN-PAGE-MAX1
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-CONS-LINE-MAX
@@ -6880,6 +7039,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    SPA-GMN-PAGE        TO  IDW
       *
+           MOVE    SPA-GMN-THKNJANAME-SYAHO (IDW)
+                                       TO  R02-HKNJANAME
+           MOVE    "blue"              to  R02-HKNJANAME-STYLE
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       WRK-CONS-LINE-MAX
                IF      SPA-NAI-PRTJYUNI (IDW IDX)  =   SPACE
@@ -8033,7 +8195,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        900-RECE07-NEXT-SEC             SECTION.
       *
-grpsys         PERFORM 900-DBFETCH-SEC
+           PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-RECE07
                MOVE    MCPDATA-REC         TO  RECE07-REC

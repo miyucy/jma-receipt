@@ -152,6 +152,8 @@
       *  04.06.02    NACL-藤原    11/12/12  点検レセ０点公費印字対応
       *
       *  04.07.01    NACL-藤原    11/10/26  労災請求書作成対応
+      *  04.07.02    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -198,6 +200,13 @@
                                    PIC X(02).
            03  SPA-RECE07-FUMEI-PAGE
                                    PIC 9(05).
+           03  SPA-RECE07-HKNJANUM-SYAHO-T.
+               05  SPA-RECE07-HKNJANUM-SRT-SYAHO
+                                   PIC X(01).
+               05  SPA-RECE07-HKNJANUM-SYAHO-MAX
+                                   PIC  9(02).
+               05  SPA-RECE07-HKNJANUM-SYAHO
+                                   PIC X(08)   OCCURS  10.
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -3863,6 +3872,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                                                SPA-RECE07-SRYKA-KOKUHO
                                                SPA-RECE07-SRYKA-KOUIKI
                MOVE    ZERO                TO  SPA-RECE07-FUMEI-PAGE
+               INITIALIZE                  SPA-RECE07-HKNJANUM-SYAHO-T
+               MOVE    "%%%%%%%%"      TO  SPA-RECE07-HKNJANUM-SYAHO (1)
+               MOVE    1               TO  SPA-RECE07-HKNJANUM-SYAHO-MAX
+               MOVE    "9"             TO  SPA-RECE07-HKNJANUM-SRT-SYAHO
       *
       *        一括作成のとき主科設定の有無チェック
                IF    ( SPA-SYUKA-KBN           =   "1"         )
@@ -4590,6 +4603,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                           SPA-R01-RECE08-RECESYUBETU-SRT
                            MOVE    SPA-RECE07-FUMEI-PAGE
                                            TO  SPA-R01-RECE07-FUMEI-PAGE
+                           MOVE    SPA-RECE07-HKNJANUM-SYAHO-T
+                                          TO
+                                       SPA-R01-RECE07-HKNJANUM-SYAHO-T
                        END-IF
                      END-IF
                    ELSE

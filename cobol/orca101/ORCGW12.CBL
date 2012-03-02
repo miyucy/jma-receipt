@@ -1,4 +1,4 @@
-      *******************************************************************
+      ********************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
@@ -141,6 +141,8 @@
       *                                     成区分との関連チェックを追加
       *                                     広域連合作成区分のデフォルト
       *                                     表示を国保分とまとめるに変更
+      *  04.07.03    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -473,6 +475,11 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-JIHI-PRTKBNMEI
                                               PIC X(24).
+                       09  SPA-GMN-SELNUM     PIC 9(02).
+                       09  SPA-GMN-HKNJANUM1  PIC X(08).
+                       09  SPA-GMN-HKNJANUM1-63
+                                              PIC X(08).
+                       09  SPA-GMN-HKNJANAME1 PIC X(50).
       *
                        09  SPA-GMN-FRAME-ROUPRTKBN-G.
                            11  SPA-GMN-FRAME-ROUPRTKBN
@@ -698,6 +705,19 @@
                        09  SPA-GMN-NI-JYOKEN4 PIC 9(08).
                        09  SPA-GMN-NI-JYOKEN5 PIC 9(08).
                        09  SPA-GMN-NI-JYOKEN6 PIC 9(08).
+      *
+                       09  SPA-GMN-HKNJANUMLIST.
+                           11  SPA-GMN-HKNJANUMLIST-TBL OCCURS  10.
+                               13  SPA-GMN-HKNJANUMLIST-TNO
+                                               PIC 9(02).
+                               13  SPA-GMN-HKNJANUMLIST-THKNJANUM
+                                               PIC X(08).
+                               13  SPA-GMN-HKNJANUMLIST-THKNJANAME
+                                               PIC X(50).
+                               13  SPA-GMN-HKNJANUMLIST-THKNJANUM-63
+                                               PIC X(08).
+                           11  SPA-GMN-HKNJANUMLIST-MAX
+                                               PIC 9(02).
       *                                        
                    07  SPA-GMN-BYOMEIHENKBNLST        OCCURS  2.
                        09  SPA-GMN-BYOMEIHENKBNL
@@ -1386,10 +1406,12 @@
       *
                05  SPA-WIDCD-1004-FLG         PIC 9(01).
       *
-               05  SPA-GMN-KKHRECEKBN-O             PIC X(01).
-               05  SPA-GMN-SYARECEKBN-O             PIC X(01).
-               05  SPA-GMN-KOUIKIRECEKBN-O          PIC X(01).
-               05  SPA-GMN-KOUIKIKBN-O              PIC X(01).
+               05  SPA-GMN-KKHRECEKBN-O       PIC X(01).
+               05  SPA-GMN-SYARECEKBN-O       PIC X(01).
+               05  SPA-GMN-KOUIKIRECEKBN-O    PIC X(01).
+               05  SPA-GMN-KOUIKIKBN-O        PIC X(01).
+      *
+               05  SPA-GMN-SELNUM-O           PIC 9(02). 
       *
            COPY    "ENUM-VALUE".
       *
@@ -1403,11 +1425,9 @@
       *
            03  FLG-ROW             PIC 9(01).
            03  FLG-UPDFLG          PIC 9(01).
-      *
-      *    カウント領域
-      *
-       01  CNT-AREA.
-           03  CNT-ERR             PIC 9(06).
+           03  FLG-IN-SELNUM       PIC 9(01).
+           03  FLG-HKNJANUMLIST-ROW
+                                   PIC 9(01).
       *
       *    添字領域
       *
@@ -1439,6 +1459,12 @@
            03  WRK-KBNCD.
                05  WRK-KBNCD-9     PIC 9(08).
       *
+           03  WRK-SELNUM          PIC 9(02).
+           03  WRK-Z9              PIC Z9.
+      *
+           03  WRK-HKNJANUMLIST-ROW
+                                   PIC S9(09).
+      *
        01  WRKPARA                 PIC X(40).
       *
        01  WRK-HEN-AREA.
@@ -1454,6 +1480,9 @@
        01  WRK-CONST-AREA.
            03  WRK-CONS-JYOKEN-TENSU
                                    PIC 9(08)   VALUE   350000.
+      *    直接請求する保険者番号の最大数
+           03  WRK-CONS-200505-HKNJANUM-MAX
+                                   PIC 9(02)   VALUE   5.
       *         
       *****************************************************************
       *    ファイルレイアウト
@@ -1468,6 +1497,7 @@
       *    レセプト印刷情報
            COPY  "CPSK2005.INC".
            COPY  "CPSK200501.INC".
+           COPY  "CPSK200505.INC".
       *
       *    レセプト印刷情報（編綴順）
            COPY  "CPSK2008.INC".
@@ -1578,6 +1608,10 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  WRK-AREA
+           INITIALIZE                  IDX-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-W01KYOUTU
            MOVE    SPA-FREE        TO  SPA-W12
@@ -1612,9 +1646,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "WERR"
@@ -1720,7 +1751,19 @@
                        MOVE    SPA-GMN-KOUIKIKBNLST (2)
                                            TO  SPA-GMN-KOUIKIKBN-G
                END-EVALUATE
+           ELSE
+               EVALUATE    SPA-WIDCD2
+                   WHEN    "1005"
+      *                特定健康保険組合は対象としない
+                       MOVE    SPACE       TO   SPA-GMN-HKNJANUM1-63
+               END-EVALUATE
            END-IF
+      *
+           EVALUATE    SPA-WIDCD2
+               WHEN    "1005"
+      *            直接請求する保険者の更新処理
+                   PERFORM 4901-HKNJANUM-UPDATE-01-SEC
+           END-EVALUATE
       *
       **** MOVE    0               TO  SPA-WIDCD2-1004-FLG 
            MOVE    SPACE           TO  SPA-WID2-FLG
@@ -3047,7 +3090,7 @@
                END-PERFORM
            END-IF
       *
-      *    区分コード０１のデータ読み込み
+      *    レセプト・総括編集情報（区分コード０１のデータ読み込み）
            MOVE    SPACE               TO  SYS-200501-REC
            INITIALIZE                      SYS-200501-REC
            MOVE    "2005"              TO  SYS-200501-KANRICD
@@ -3498,6 +3541,53 @@
                    MOVE    SPA-GMN-ROUPRTKBN-N-MAX
                                        TO  IDY
                END-IF
+           END-PERFORM
+      *
+      *    レセプト・総括編集情報（区分コード１０のデータ読込）
+           MOVE    SPACE               TO  SYS-200505-REC
+           INITIALIZE                      SYS-200505-REC
+           MOVE    "2005"              TO  SYS-200505-KANRICD
+           MOVE    "05"                TO  SYS-200505-KBNCD
+           MOVE    SPA-W01-SEL-STYUKYMD
+                                       TO  SYS-200505-STYUKYMD
+           MOVE    SPA-W01-SEL-EDYUKYMD
+                                       TO  SYS-200505-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-200505-HOSPNUM
+           MOVE    SYS-200505-REC      TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-200505-REC
+           ELSE
+               INITIALIZE                      SYS-200505-REC
+           END-IF
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       WRK-CONS-200505-HKNJANUM-MAX
+                   OR      SYS-200505-HKNJANUM (IDX)
+                               =   SPACE
+               MOVE    IDX                 TO
+                                   SPA-GMN-HKNJANUMLIST-TNO       (IDX)
+               MOVE    SYS-200505-HKNJANUM (IDX)
+                                           TO
+                                   SPA-GMN-HKNJANUMLIST-THKNJANUM (IDX)
+               MOVE    SYS-200505-HKNJANUM-63 (IDX)
+                                           TO
+                                   SPA-GMN-HKNJANUMLIST-THKNJANUM-63
+                                                                  (IDX)
+      *
+               MOVE    SPACE               TO  HKNJAINF-REC
+               INITIALIZE                      HKNJAINF-REC
+               MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+               MOVE    SPA-GMN-HKNJANUMLIST-THKNJANUM (IDX)
+                                           TO  HKNJA-HKNJANUM
+               MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+               PERFORM 900-HKNJAINF-READ-SEC
+               MOVE    HKNJA-HKNJANAME     TO
+                                   SPA-GMN-HKNJANUMLIST-THKNJANAME(IDX)
+      *
+               MOVE    IDX                 TO  SPA-GMN-HKNJANUMLIST-MAX
            END-PERFORM
       *
       *    レセプト（編綴順）情報
@@ -4116,9 +4206,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-KOUIKIRECEKBN-O
            MOVE    SPA-GMN-KOUIKIKBN   TO  SPA-GMN-KOUIKIKBN-O
       *
+           MOVE    1                   TO  FLG-HKNJANUMLIST-ROW
+      *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
-       31O-SPASET-EXT.
+       310-SPASET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4131,12 +4223,18 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *    登録
+      *    詳細設定
                WHEN    "CLICKED"       ALSO    "B36"
                    PERFORM 490-SYOUSAI-SETTEI-SEC
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
+      *    削除（直接請求する保険者）
+               WHEN    "CLICKED"       ALSO    "HKNJANUM_DEL"
+                   PERFORM 490-HKNJANUM-DELETE-SEC
+      *    更新（直接請求する保険者）
+               WHEN    "CLICKED"       ALSO    "HKNJANUM_UPD"
+                   PERFORM 490-HKNJANUM-UPDATE-SEC
       *    タグ
                WHEN    "CLICKED"       ALSO    "B08"
                WHEN    "CLICKED"       ALSO    "N01"
@@ -4160,6 +4258,12 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        選択番号選択（直接請求する保険者）
+               WHEN    ANY             ALSO    "HKNJANUMLIST"
+                   PERFORM 420-HKNJANUMLIST-SEC
+           END-EVALUATE
       *
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
@@ -4190,6 +4294,13 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
+      *    選択番号
+           IF      W12-SELNUM          =   SPA-GMN-SELNUM-O
+               MOVE    ZERO                TO  FLG-IN-SELNUM
+           ELSE
+               MOVE    1                   TO  FLG-IN-SELNUM
+           END-IF
+       *
            MOVE    W12-BYOMEIHENKBN    TO  SPA-GMN-BYOMEIHENKBN-G 
            MOVE    W12-KKHRECEKBN      TO  SPA-GMN-KKHRECEKBN-G 
            MOVE    W12-SYARECEKBN      TO  SPA-GMN-SYARECEKBN-G 
@@ -4265,12 +4376,14 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-KOUIKIPRTNM-N   TO  SPA-GMN-KOUIKIPRTNM-N
            MOVE    W12-KOUIKIPRTNM-NEXT-N
                                        TO  SPA-GMN-KOUIKIPRTNM-NEXT-N
+           MOVE    W12-SELNUM          TO  SPA-GMN-SELNUM
+           MOVE    W12-HKNJANUM1       TO  SPA-GMN-HKNJANUM1
       *
            MOVE    W12-FRAME-ROU       TO  SPA-GMN-FRAME-ROUPRTKBN-G
            MOVE    W12-FRAME-ROU-N     TO  SPA-GMN-FRAME-ROUPRTKBN-N-G
            MOVE    W12-COMMENT-ROU     TO  SPA-GMN-COMMENT-ROU-G
-           MOVE    W12-ROUPRTKBN     TO  SPA-GMN-ROUPRTKBN-G
-           MOVE    W12-ROUPRTKBN-N   TO  SPA-GMN-ROUPRTKBN-N-G
+           MOVE    W12-ROUPRTKBN       TO  SPA-GMN-ROUPRTKBN-G
+           MOVE    W12-ROUPRTKBN-N     TO  SPA-GMN-ROUPRTKBN-N-G
            MOVE    W12-FRAME-JIBAI     TO  SPA-GMN-FRAME-JIBAIPRTKBN-G
            MOVE    W12-FRAME-JIBAI-N   TO  SPA-GMN-FRAME-JIBAIPRTKBN-N-G
            MOVE    W12-JIBAIPRTKBN     TO  SPA-GMN-JIBAIPRTKBN-G
@@ -4442,6 +4555,16 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
       *
            PERFORM 4173-SEIHO-DSPKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4185-SELNUM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4186-HKNJANUM1-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -5550,6 +5673,119 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            .
        4173-SEIHO-DSPKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    選択番号入力処理
+      *****************************************************************
+       4185-SELNUM-CHK-SEC             SECTION.
+      *
+           IF      SPA-GMN-SELNUM  =   ZERO
+               MOVE    SPA-GMN-SELNUM  TO  SPA-GMN-SELNUM-O
+               GO  TO  4185-SELNUM-CHK-EXT
+           END-IF
+      *
+           IF      FLG-IN-SELNUM   =   ZERO
+               GO  TO  4185-SELNUM-CHK-EXT
+            END-IF
+      *
+      *    選択番号チェック
+           IF    ( SPA-GMN-SELNUM  >=  1                        )
+           AND   ( SPA-GMN-SELNUM  <=  SPA-GMN-HKNJANUMLIST-MAX )
+               PERFORM 41851-SELNUM-HENSYU-SEC
+           ELSE
+               MOVE    SPACE           TO  SPA-GMN-HKNJANUM1
+                                           SPA-GMN-HKNJANUM1-63
+                                           SPA-GMN-HKNJANAME1
+               MOVE    ZERO            TO  SPA-GMN-SELNUM 
+               MOVE    "0071"          TO  SPA-ERRCD
+               MOVE    68              TO  SPA-GMN-CUR
+           END-IF
+           .
+       4185-SELNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    選択番号編集処理
+      *****************************************************************
+       41851-SELNUM-HENSYU-SEC         SECTION.
+      *
+           MOVE    SPA-GMN-SELNUM      TO  SPA-GMN-SELNUM-O
+           MOVE    SPA-GMN-HKNJANUMLIST-THKNJANUM (SPA-GMN-SELNUM)
+                                       TO  SPA-GMN-HKNJANUM1
+           MOVE    SPA-GMN-HKNJANUMLIST-THKNJANUM-63 (SPA-GMN-SELNUM)
+                                       TO  SPA-GMN-HKNJANUM1-63
+           MOVE    SPA-GMN-HKNJANUMLIST-THKNJANAME(SPA-GMN-SELNUM)
+                                       TO  SPA-GMN-HKNJANAME1
+      *
+           MOVE    SPA-GMN-SELNUM  TO  W12-HKNJANUMLIST-ROW
+           .
+       41851-SELNUM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    直接請求する保険者番号チェック
+      *****************************************************************
+       4186-HKNJANUM1-CHK-SEC   SECTION.
+      *
+           MOVE    SPACE               TO  SPA-GMN-HKNJANAME1
+                                           SPA-GMN-HKNJANUM1-63
+      *
+           IF      SPA-GMN-HKNJANUM1   =   SPACE
+               MOVE    69                  TO  SPA-GMN-CUR
+           ELSE
+               MOVE    SPACE               TO  HKNJAINF-REC
+               INITIALIZE                      HKNJAINF-REC
+               MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+               MOVE    SPA-GMN-HKNJANUM1   TO  HKNJA-HKNJANUM
+               MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+               PERFORM 900-HKNJAINF-READ-SEC
+               IF      FLG-HKNJAINF        =   ZERO
+                   MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME1
+      *            健康保険組合かチェック
+                   IF      HKNJA-HKNJANUM(1:2) =   "06"
+                       CONTINUE
+                   ELSE
+                       MOVE    69                  TO  SPA-GMN-CUR
+                       MOVE    "0074"              TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    69                  TO  SPA-GMN-CUR
+                   MOVE    "0072"              TO  SPA-ERRCD
+               END-IF
+      *
+               IF      SPA-ERRCD           =   SPACE
+                   IF      SPA-GMN-SELNUM      =   ZERO
+      *                既に登録済かチェック
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >   SPA-GMN-HKNJANUMLIST-MAX
+                           IF      SPA-GMN-HKNJANUM1   =
+                                       SPA-GMN-HKNJANUMLIST-THKNJANUM
+                                                                  (IDX)
+                               MOVE    IDX         TO  SPA-GMN-SELNUM
+                               PERFORM 41851-SELNUM-HENSYU-SEC
+                           END-IF
+                       END-PERFORM
+                   END-IF
+      *            特定健康保険組合の存在チェック
+                   IF      SPA-GMN-HKNJAnUM1-63    =   SPACE
+                       MOVE    SPACE               TO  HKNJAINF-REC
+                       INITIALIZE                      HKNJAINF-REC
+                       MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+                       MOVE    SPA-GMN-HKNJANUM1   TO  HKNJA-HKNJANUM
+                       MOVE    "63"                TO  HKNJA-HKNJANUM
+                                                                  (1:2)
+                       MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+                       PERFORM 900-HKNJAINF-READ-SEC
+                       IF      FLG-HKNJAINF        =   ZERO
+                           MOVE    HKNJA-HKNJANUM      TO
+                                                   SPA-GMN-HKNJANUM1-63
+                       END-IF 
+                   END-IF
+               END-IF
+           END-IF
+           .
+       4186-HKNJANUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7328,6 +7564,39 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    行選択処理
+      *****************************************************************
+       420-HKNJANUMLIST-SEC        SECTION.
+      *
+           MOVE    ZERO            TO  WRK-SELNUM
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       SPA-GMN-HKNJANUMLIST-MAX
+               IF      W12-HKNJANUMLIST-SELECT (IDX)
+                                           =   "T"
+                   IF      IDX                 =   SPA-GMN-SELNUM
+                       CONTINUE
+                   ELSE
+                       MOVE    IDX                 TO  WRK-SELNUM
+                       MOVE    SPA-GMN-HKNJANUMLIST-MAX
+                                                   TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SELNUM         >   ZERO
+               MOVE    WRK-SELNUM         TO  SPA-GMN-SELNUM
+           END-IF
+      *
+           IF      SPA-GMN-SELNUM     >   ZERO
+               MOVE    SPA-GMN-SELNUM     TO  W12-SELNUM
+               MOVE    69                 TO  SPA-GMN-CUR
+           END-IF
+           .
+       420-HKNJANUMLIST-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    タグ編集処理
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
@@ -7879,6 +8148,77 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  490-KOUSHIN-EXT
            END-IF      
       *
+      *    レセプト（基本・特別療養費）総括編集情報
+      *    区分コード０５
+           MOVE    SPACE               TO  SYS-200505-REC
+           INITIALIZE                      SYS-200505-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-200505-HOSPNUM
+           MOVE    "2005"              TO  SYS-200505-KANRICD
+           MOVE    "05"                TO  SYS-200505-KBNCD
+           MOVE    SPA-W01-SEL-STYUKYMD
+                                       TO  SYS-200505-STYUKYMD
+           MOVE    SPA-W01-SEL-EDYUKYMD
+                                       TO  SYS-200505-EDYUKYMD
+           MOVE    SYS-200505-REC      TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-200505-REC
+           ELSE
+               MOVE    SPACE               TO  SYS-200505-REC
+               INITIALIZE                      SYS-200505-REC
+               MOVE    "2005"              TO  SYS-200505-KANRICD
+               MOVE    "05"                TO  SYS-200505-KBNCD
+           END-IF
+      *
+           IF    ( FLG-SYSKANRI        =   1    )
+           AND   ( SPA-GMN-HKNJANUMLIST-MAX
+                                       =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    SPA-W01-STYUKYMD        TO  SYS-200505-STYUKYMD
+               MOVE    SPA-W01-EDYUKYMD        TO  SYS-200505-EDYUKYMD
+               INITIALIZE                      SYS-200505-HKNJANUM-T
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-HKNJANUMLIST-MAX
+                   MOVE    SPA-GMN-HKNJANUMLIST-THKNJANUM      (IDX)
+                                           TO  SYS-200505-HKNJANUM (IDX)
+                   MOVE    SPA-GMN-HKNJANUMLIST-THKNJANUM-63   (IDX)
+                                           TO  SYS-200505-HKNJANUM-63
+                                                                   (IDX)
+               END-PERFORM
+               MOVE    SYS-200505-REC          TO  SYSKANRI-REC
+      *     
+               PERFORM 800-MCNDATE-SEC
+               IF      FLG-SYSKANRI            =   ZERO
+                   MOVE    SMCNDATE-YMD            TO  SYS-UPYMD
+                   MOVE    SMCNDATE-HMS            TO  SYS-UPHMS
+                   MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
+                   MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
+                   MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
+                   MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
+                   MOVE    SPA-HOSPNUM             TO  SYSUP-HOSPNUM
+                   MOVE    "tbl_syskanri"          TO  MCP-TABLE
+                   MOVE    "upd1"                  TO  MCP-PATHNAME
+                   MOVE    "DBUPDATE"              TO  MCP-FUNC
+               ELSE
+                   MOVE    SMCNDATE-YMD            TO  SYS-CREYMD
+                   MOVE    "tbl_syskanri"          TO  MCP-TABLE
+                   MOVE    "key"                   TO  MCP-PATHNAME
+                   MOVE    "DBINSERT"              TO  MCP-FUNC
+               END-IF
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+               IF      MCP-RC              NOT =   ZERO 
+                   MOVE    "1003"                  TO  SPA-ERRCD
+                   GO  TO  490-KOUSHIN-EXT
+               END-IF
+           END-IF
+      *
       *    レセプト・総括編集情報（主科設定）
            MOVE    SPACE               TO  SYS-2009-REC
            INITIALIZE                      SYS-2009-REC
@@ -8134,6 +8474,137 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    直接請求する保険者の更新
+      *****************************************************************
+       490-HKNJANUM-UPDATE-SEC           SECTION.
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF  SPA-ERRCD           NOT =   SPACE
+               GO  TO  490-HKNJANUM-UPDATE-EXT
+           END-IF
+      *
+      *    既に登録済かチェック
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       SPA-GMN-HKNJANUMLIST-MAX
+               IF    ( SPA-GMN-SELNUM      >   ZERO )
+               AND   ( SPA-GMN-SELNUM      =   IDX  )
+                   CONTINUE
+               ELSE
+                   IF      SPA-GMN-HKNJANUM1   =
+                                   SPA-GMN-HKNJANUMLIST-THKNJANUM (IDX)
+                       MOVE    "0075"              TO  SPA-ERRCD
+                       MOVE    69                  TO  SPA-GMN-CUR
+                       GO  TO  490-HKNJANUM-UPDATE-EXT
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+      *    追加可能かチェック
+           IF      SPA-GMN-SELNUM      =   ZERO
+               IF      SPA-GMN-HKNJANUMLIST-MAX
+                                       >=  WRK-CONS-200505-HKNJANUM-MAX
+                   MOVE    "0073"              TO  SPA-ERRCD
+                   MOVE    69                  TO  SPA-GMN-CUR
+                   GO  TO  490-HKNJANUM-UPDATE-EXT
+               END-IF
+           END-IF
+      *
+      *    特定健康保険組合の更新チェック  
+           IF      SPA-GMN-HKNJANUM1-63
+                                   NOT =   SPACE     
+      *****    IF (    SPA-GMN-SELNUM      =   ZERO                  )
+      *****    OR (   (SPA-GMN-SELNUM      >   ZERO                 )
+      *****       AND (SPA-GMN-HKNJANUM1
+      *****                            NOT =
+      *****                        SPA-GMN-HKNJANUMLIST-THKNJANUM-63
+      *****                                        (SPA-GMN-SELNUM) ))
+                   MOVE    "1005"              TO  SPA-WIDCD2
+                   GO  TO  490-HKNJANUM-UPDATE-EXT
+      *****    END-IF
+           END-IF
+      *
+      *    直接請求する保険者の更新処理
+           PERFORM 4901-HKNJANUM-UPDATE-01-SEC
+           .
+       490-HKNJANUM-UPDATE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    直接請求する保険者の更新処理
+      *****************************************************************
+       4901-HKNJANUM-UPDATE-01-SEC          SECTION.
+      *
+           IF      SPA-GMN-SELNUM      =   ZERO
+               ADD     1                   TO  SPA-GMN-HKNJANUMLIST-MAX
+               MOVE    SPA-GMN-HKNJANUMLIST-MAX
+                                           TO  SPA-GMN-SELNUM
+           END-IF
+      *
+           MOVE    SPA-GMN-SELNUM      TO
+                       SPA-GMN-HKNJANUMLIST-TNO        (SPA-GMN-SELNUM) 
+           MOVE    SPA-GMN-HKNJANUM1   TO
+                       SPA-GMN-HKNJANUMLIST-THKNJANUM  (SPA-GMN-SELNUM)
+           MOVE    SPA-GMN-HKNJANUM1-63
+                                       TO
+                       SPA-GMN-HKNJANUMLIST-THKNJANUM-63
+                                                       (SPA-GMN-SELNUM)
+           MOVE    SPA-GMN-HKNJANAME1  TO
+                       SPA-GMN-HKNJANUMLIST-THKNJANAME (SPA-GMN-SELNUM)
+      *
+           MOVE    SPA-GMN-SELNUM  TO  W12-HKNJANUMLIST-ROW
+      *
+           INITIALIZE                  SPA-GMN-SELNUM
+                                       SPA-GMN-HKNJANUM1
+                                       SPA-GMN-HKNJANUM1-63
+                                       SPA-GMN-HKNJANAME1
+                                       SPA-GMN-SELNUM-O
+      *
+           MOVE    68                  TO  SPA-GMN-CUR
+      *
+           .
+       4901-HKNJANUM-UPDATE-01-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    直接請求する保険者の削除
+      *****************************************************************
+       490-HKNJANUM-DELETE-SEC          SECTION.
+      *
+           IF      SPA-GMN-SELNUM      =   ZERO
+               MOVE    69                  TO  SPA-GMN-CUR
+               GO  TO  490-HKNJANUM-DELETE-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX     FROM    SPA-GMN-SELNUM  BY  1
+                   UNTIL   IDX     >       SPA-GMN-HKNJANUMLIST-MAX
+               INITIALIZE                  SPA-GMN-HKNJANUMLIST-TBL(IDX)
+               IF      IDX                 <   SPA-GMN-HKNJANUMLIST-MAX
+                   COMPUTE IDY     =   IDX     +   1
+                   MOVE    SPA-GMN-HKNJANUMLIST-TBL (IDY)
+                                               TO
+                                       SPA-GMN-HKNJANUMLIST-TBL (IDX)
+                   MOVE    IDX                 TO
+                                       SPA-GMN-HKNJANUMLIST-TNO (IDX)
+               END-IF
+           END-PERFORM
+           COMPUTE SPA-GMN-HKNJANUMLIST-MAX
+                                       =   SPA-GMN-HKNJANUMLIST-MAX  -
+                                           1
+      *
+           INITIALIZE                  SPA-GMN-SELNUM
+                                       SPA-GMN-HKNJANUM1
+                                       SPA-GMN-HKNJANAME1
+                                       SPA-GMN-SELNUM-O
+      *
+           MOVE    68                  TO  SPA-GMN-CUR
+      *
+           .
+       490-HKNJANUM-DELETE-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
@@ -8171,7 +8642,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           INITIALIZE                       W12
+           IF      FLG-HKNJANUMLIST-ROW    =   1
+               MOVE    ZERO                    TO  WRK-HKNJANUMLIST-ROW
+           ELSE
+               MOVE    W12-HKNJANUMLIST-ROW    TO  WRK-HKNJANUMLIST-ROW
+           END-IF
+      *
+           INITIALIZE                      W12
       *
            MOVE    SPA-GMN-HSTYUKYMD        TO  W12-YUKOSTYMD
            MOVE    SPA-GMN-HEDYUKYMD        TO  W12-YUKOEDYMD
@@ -8277,6 +8754,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-NUM-DELIMITER-HKNJANUM-FLG-G
                                             TO
                                         W12-NUM-DELIMITER-HKNJANUM-FLG
+           MOVE    SPA-GMN-SELNUM           TO  W12-SELNUM
+           MOVE    SPA-GMN-HKNJANUM1        TO  W12-HKNJANUM1
+           MOVE    SPA-GMN-HKNJANAME1       TO  W12-HKNJANAME1
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-BYOMEIHENKBN-MAX
@@ -9003,6 +9483,38 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-INSENSITIVE  TO  W12-PREFPRGID1-STATE
            END-IF
       *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       SPA-GMN-HKNJANUMLIST-MAX
+               MOVE    SPA-GMN-HKNJANUMLIST-TNO  (IDX) 
+                                       TO  WRK-Z9
+               MOVE    WRK-Z9          TO  W12-HKNJANUMLIST-TNO  (IDX)
+               MOVE    SPA-GMN-HKNJANUMLIST-THKNJANUM (IDX)
+                                       TO
+                                       W12-HKNJANUMLIST-THKNJANUM (IDX)
+               IF      SPA-GMN-HKNJANUMLIST-THKNJANUM-63 (IDX)
+                                   NOT =   SPACE
+                   MOVE    "◎"        TO
+                                       W12-HKNJANUMLIST-THKNJANUM-63
+                                                                  (IDX)
+               END-IF
+               MOVE    SPA-GMN-HKNJANUMLIST-THKNJANAME(IDX)
+                                       TO
+                                       W12-HKNJANUMLIST-THKNJANAME(IDX)
+      *
+               IF      IDX             =   SPA-GMN-SELNUM
+                   MOVE    "T"         TO  W12-HKNJANUMLIST-SELECT (IDX)
+               ELSE
+                   MOVE    "F"         TO  W12-HKNJANUMLIST-SELECT (IDX)
+               END-IF
+           END-PERFORM
+           MOVE    SPA-GMN-HKNJANUMLIST-MAX
+                                       TO  W12-HKNJANUMLIST-COUNT
+           MOVE    ZERO                TO  W12-HKNJANUMLIST-ROW
+           IF      WRK-HKNJANUMLIST-ROW    >   ZERO
+               MOVE    WRK-HKNJANUMLIST-ROW
+                                           TO  W12-HKNJANUMLIST-ROW
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -9215,6 +9727,21 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0070"
                    MOVE    "点検用レセプト０点公費記載入力エラー"
                                                          TO  SPA-ERRMSG
+               WHEN    "0071"
+                   MOVE    "選択番号入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0072"
+                   MOVE    "保険者番号入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0073"
+                   MOVE    "これ以上保険者を追加できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0074"
+                   MOVE    "健康保険組合ではありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0075"
+                   MOVE    "既に入力済の保険者番号です"
+                                               TO  SPA-ERRMSG
       *
                WHEN    "0096"
                    STRING  "一括作成出力順（国保）の指定が編綴順です。"
@@ -9370,6 +9897,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                            DELIMITED  BY  SIZE
                                            INTO  WRK-WIDMSG
                    END-STRING
+               WHEN    "1005"
+                   STRING  "特定健康保険組合も一緒に直接請求しますか"
+                                           DELIMITED  BY  SIZE
+                           "　保険者番号："
+                                           DELIMITED  BY  SIZE
+                           SPA-GMN-HKNJANUM1-63
+                                           DELIMITED  BY  SIZE
+                                           INTO  WRK-WIDMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE               TO  WID2
@@ -9449,6 +9985,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "INSPECT_ZERO"     TO   MCP-WIDGET
                 WHEN    62
                     MOVE  "SEIHO_DSPKBN"     TO   MCP-WIDGET
+                WHEN    68
+                    MOVE  "SELNUM"           TO   MCP-WIDGET
+                WHEN    69
+                    MOVE  "HKNJANUM1"        TO   MCP-WIDGET
+                WHEN    300
+                    MOVE  "HKNJANUM_UPD"     TO   MCP-WIDGET
       *
                 WHEN    9
                     MOVE  "SYAPRTNM"         TO   MCP-WIDGET
@@ -9647,7 +10189,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    43  THRU    44
                 WHEN    60
                 WHEN    62
-                WHEN    64  THRU    67
+                WHEN    64  THRU    69
+                WHEN    300
                     MOVE    0                TO  W12-PAGENO
                 WHEN    9
                 WHEN    10
@@ -9747,6 +10290,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    62          TO  SPA-GMN-CUR
                WHEN    "SEIHO_DSPKBN"
                    MOVE    99          TO  SPA-GMN-CUR
+               WHEN    "SELNUM"
+                   MOVE    69          TO  SPA-GMN-CUR
+               WHEN    "HKNJANUM1"
+                   MOVE    300         TO  SPA-GMN-CUR
+               WHEN    "HKNJANUM_UPD"
+                   MOVE    68          TO  SPA-GMN-CUR
       *
                WHEN    "PRT_CHECKKBN"
                    MOVE    63          TO  SPA-GMN-CUR

@@ -11,6 +11,7 @@ query_receprt     {
 	DRCD_SRYKA			char(2);
 	SORT_1				char(10);
 	SRYKA				char(2);
+	HKNJANUM_S			char(8);
 	KENSU				number(6);
 	PAGE				number(6);
 #-----> 検索キー用項目
@@ -114,6 +115,7 @@ path    key4             {
                     AND     TEISYUTUSAKI =   :TEISYUTUSAKI
                     AND     ZAITAKU      LIKE  :ZAITAKU  
                     AND     SRYKA        LIKE  :SRYKA  
+                    AND     HKNJANUM_S   LIKE  :HKNJANUM_S
                     AND     RECESYUBETU  <>  '0000'
                     AND     RECESYUBETU  <>  '8888' 
                     AND     RECESYUBETU  <>  '6666'
@@ -138,6 +140,7 @@ path    key5            {
                     AND     TEISYUTUSAKI =   :TEISYUTUSAKI
                     AND     ZAITAKU      =   :ZAITAKU  
                     AND     SRYKA        LIKE  :SRYKA
+                    AND     HKNJANUM_S   LIKE  :HKNJANUM_S
                     AND     RECESYUBETU  <>  '0000'
                     AND     RECESYUBETU  <>  '8888' 
                     AND     RECESYUBETU  <>  '6666' 

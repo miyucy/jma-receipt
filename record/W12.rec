@@ -163,6 +163,29 @@ W12	{
 					count	int;
 					item	varchar(34)[5];
 				};
+				scr4	{
+					HKNJANUMLIST	{
+						count	int;
+						row	int;
+						rowattr int;
+						item	{
+							value0	varchar(2);
+							value1	varchar(8);
+							value2	varchar(2);
+							value3	varchar(50);
+						}	[10];
+						select	bool[10];
+					};
+				};
+				SELNUM	{
+					value	number(2);
+				};
+				HKNJANUM1	{
+					value	varchar(8);
+				};
+				HKNJANAME1	{
+					value	varchar(50);
+				};
 			};
 			fi30	{
 				SYAPRTNM	{

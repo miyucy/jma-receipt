@@ -244,6 +244,7 @@ path	key9		{
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     RECESYUBETU  =   :RECESYUBETU
                     AND     SRYKA        like :SRYKA
+                    AND     HKNJANUM     like :HKNJANUM
                     GROUP BY RECESYUBETU,SRYKA
 		;
 	};
@@ -317,6 +318,27 @@ path	key13		{
                     AND     TEISYUTUSAKI like   :TEISYUTUSAKI
                     AND     RECESYUBETU  like   :RECESYUBETU
                     AND     SRYKA        like   :SRYKA
+		;
+	};
+};
+
+path	key14		{ 	
+	DBSELECT	{
+		DECLARE tbl_recekanri_key14_csr CURSOR FOR
+		SELECT HKNJANUM,HKNJANUM_SRT
+		FROM tbl_recekanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND     PRTID        =   :PRTID
+                    AND     SRYYM        =   :SRYYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '6666'
+                    AND     RECESYUBETU  <>  '8888'
+                    GROUP BY  HKNJANUM_SRT,HKNJANUM
+                    ORDER BY  HKNJANUM_SRT,HKNJANUM
 		;
 	};
 };

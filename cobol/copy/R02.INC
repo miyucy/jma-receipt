@@ -56,6 +56,8 @@
                 05  R02-VALUE   PIC 9(4).
               04  R02-PAGE.
                 05  R02-VALUE   PIC 9(4).
+              04  R02-HKNJANAME-STYLE   PIC X(20).
+              04  R02-HKNJANAME         PIC X(50).
               04  R02-PRTJYUN-COMBO.
                 05  R02-PRTJYUN.
                   06  R02-VALUE   PIC X(33).

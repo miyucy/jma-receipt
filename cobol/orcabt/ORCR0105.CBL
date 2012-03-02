@@ -156,6 +156,8 @@
       *                                     「2自費分は含まない」を追加
       *  04.07.02    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *  04.07.03    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *  04.07.04    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1132,6 +1134,7 @@
       *
            COPY    "CPSK2005.INC".
            COPY    "CPSK200501.INC".
+           COPY    "CPSK200505.INC".
       *
            COPY    "CPSK2008.INC".
       *
@@ -1775,6 +1778,30 @@
            END-IF
            DISPLAY "SYS-200501-INSPECT-CHARACTER-KBN="
                                     SYS-200501-INSPECT-CHARACTER-KBN
+      *
+      *    レセプト・総括編集情報（区分コード０５のデータ読込）
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "2005"           TO  SYS-KANRICD
+           MOVE    "05"             TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM   TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+           MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-200505-REC
+           ELSE
+               INITIALIZE                      SYS-200505-REC
+           END-IF
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       50
+                   OR      SYS-200505-HKNJANUM (IDX)
+                               =   SPACE
+               DISPLAY "SYS-200505-HKNJANUM="  IDX " "
+                                               SYS-200505-HKNJANUM (IDX)
+           END-PERFORM
       *         
       *    レセプト編綴順情報
            MOVE    SPACE               TO  SYSKANRI-REC
@@ -8520,6 +8547,29 @@
            IF      RECE02-ZAITAKU   =   "1"   
                MOVE    "1"              TO  RECE08-ZAITAKU
            END-IF
+      *
+      *    検索用保険者番号（直接請求する健保組合）
+           IF      SYS-200505-HKNJANUM (1)
+                               NOT =   SPACE
+               MOVE    "8"             TO  RECE08-HKNJANUM-SRT
+      *
+               IF       RECE08-HKNJANUM (1:2)
+                                        =   "06"    OR  "63"
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       5
+                           OR      SYS-200505-HKNJANUM (IDX)
+                                       =   SPACE
+                       IF      RECE08-HKNJANUM =
+                                               SYS-200505-HKNJANUM (IDX)
+                                           OR  SYS-200505-HKNJANUM-63
+                                                                   (IDX)
+                           MOVE    SYS-200505-HKNJANUM (IDX)
+                                                   TO  RECE08-HKNJANUM-S
+                           MOVE    5               TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
      *
            .
        39012-SYAHO-HENTETU-HENSYU-EXT.
@@ -8547,11 +8597,11 @@
            MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN
            MOVE    RECE08-SRYKA        TO  RECE07-SRYKA
            IF      RECE08-TEISYUTUSAKI =   "1"
-               MOVE    "99999999"          TO  RECE08-HKNJANUM-S
+      ******** MOVE    "99999999"          TO  RECE08-HKNJANUM-S
                MOVE    "999"               TO  RECE08-RECESYUBETU-SRT
                MOVE    "99"                TO  RECE08-PREFKBN-SRT
-               MOVE    "9"                 TO  RECE08-HKNJANUM-SRT
-                                               RECE08-ZAITAKU
+      ******** MOVE    "9"                 TO  RECE08-HKNJANUM-SRT
+               MOVE    "9"                 TO  RECE08-ZAITAKU
                                                RECE08-CHOUKI
                MOVE    RECE08-HKNJANUM-S   TO  RECE07-HKNJANUM
                MOVE    RECE08-PREFKBN-SRT  TO  RECE07-PREFKBN-SRT

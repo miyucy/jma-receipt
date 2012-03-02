@@ -88,6 +88,9 @@
       *  04.05.01    NACL-Æ£¸¶    09/06/11  ÉÂÅïÊÌ½ÐÎÏÂÐ±þ
       *                                     ¡Ö£±£²¡×¤ÎÄÉ²Ã
       *  04.05.02    NACL-Æ£¸¶    09/06/18  ¼ÒÊÝ¥ì¥»¥×¥ÈÊ×ÄÖ½çÂÐ±þ
+      *
+      *  04.07.01    NACL-Æ£¸¶    12/02/13  ·òÊÝÁÈ¹ç¤Ø¤ÎÄ¾ÀÜÀÁµá¤È¿³ºº
+      *                                     »ÙÊ§µ¡´ØÀÁµáÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -158,11 +161,11 @@ grpsys     COPY    "COMMON-SPA".
                        09  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).
                    07  WRK-PARA-RECE09-PRTJYUN       PIC X(02).
                    07  WRK-PARA-RECE09-DATA.
+                       09  WRK-PARA-RECE09-HKNJANUM  PIC X(08).
                        09  WRK-PARA-RECE09-CHOUKI    PIC X(01).
                        09  WRK-PARA-RECE09-ZAITAKU   PIC X(01).
                        09  WRK-PARA-RECE09-KOUGAKU   PIC X(01).
                        09  WRK-PARA-RECE09-SRT-LAST  PIC X(01).
-                       09  WRK-PARA-RECE09-HKNJANUM  PIC X(08).
                    07  WRK-PARA-RECE09-DATA-R        REDEFINES
                                                  WRK-PARA-RECE09-DATA.
                        09  WRK-PARA-RECE09-DRCD      PIC X(05).
@@ -591,7 +594,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *            °å»ÕÊÌ½ç°õºþ
                    PERFORM 9002-DRCD-RECEPRT-KEY-HENSYU-SEC
                WHEN    "12"                    ALSO    ANY
-      *            °å»ÕÊÌ½ç°õºþ
+      *            ÉÂÅïÊÌ½ç°õºþ
                    PERFORM 9003-BTUNUM-RECEPRT-KEY-HENSYU-SEC
                WHEN    ANY                     ALSO    "4"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
@@ -719,6 +722,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    WRK-PARA-RECE09-DRCD TO  RECE08-DRCD
            END-IF
            MOVE    WRK-PARA-SRYKA       TO  RECE08-DRCD-SRYKA
+           MOVE    "%%%%%%%%"           TO  RECE08-HKNJANUM-S
       *
            EVALUATE    WRK-PARA-RECE09-DRCD-PRTJYUNKBN
                                ALSO    WRK-PARA-RECE09-RECESYUBETU
@@ -754,6 +758,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                             TO  RECE08-SORT-1
            END-IF
            MOVE    WRK-PARA-SRYKA       TO  RECE08-SRYKA
+           MOVE    "%%%%%%%%"           TO  RECE08-HKNJANUM-S
       *
            EVALUATE    WRK-PARA-RECE09-BTUNUM-PRTJYUNKBN
                                ALSO    WRK-PARA-RECE09-RECESYUBETU

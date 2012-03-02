@@ -138,6 +138,24 @@
                     06  W12-SEIHO-DSPKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-SEIHO-DSPKBNLST
                             PIC X(34)   OCCURS  5 TIMES.
+                  05  W12-SCR.
+                    06  W12-HKNJANUMLIST.
+                      07  W12-HKNJANUMLIST-COUNT  PIC S9(9)   BINARY.
+                      07  W12-HKNJANUMLIST-ROW    PIC S9(9)   BINARY.
+                      07  W12-HKNJANUMLIST-ROWATTR PIC S9(9)   BINARY.
+                      07  W12-HKNJANUMLIST-ITEM    OCCURS  10 TIMES.
+                        08  W12-HKNJANUMLIST-TNO PIC X(2).
+                        08  W12-HKNJANUMLIST-THKNJANUM PIC X(8).
+                        08  W12-HKNJANUMLIST-THKNJANUM-63 PIC X(2).
+                        08  W12-HKNJANUMLIST-THKNJANAME PIC X(50).
+                      07  W12-HKNJANUMLIST-SELECT
+                              PIC X       OCCURS  10 TIMES.
+                  05  W12-SELNUM.
+                    06  W12-VALUE  PIC S9(2).
+                  05  W12-HKNJANUM1.
+                    06  W12-VALUE  PIC X(8).
+                  05  W12-HKNJANAME1.
+                    06  W12-VALUE  PIC X(50).
                 04  W12-FI30.
                   05  W12-SYAPRTNM.
                     06  W12-VALUE   PIC X(16).

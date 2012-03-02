@@ -243,6 +243,7 @@ path	key10		{
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
+                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
@@ -267,6 +268,7 @@ path	key11	{
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
+                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  PREFKBN,PREFNUM,HKNKBN,HKNJANUM,PTNUM,SRYYM,RECENUM,RENNUM
@@ -325,6 +327,7 @@ path	key14		{
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
+                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY PREFKBN,PREFNUM,KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
@@ -349,6 +352,7 @@ path	key15	{
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
+                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY PREFKBN,PREFNUM,PTNUM,SRYYM,RECENUM,RENNUM
@@ -766,6 +770,7 @@ path	key31		{
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
+                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  HKNKBN,HKNJANUM,KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
@@ -790,6 +795,7 @@ path	key32	{
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
+                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY  HKNKBN,HKNJANUM,PTNUM,SRYYM,RECENUM,RENNUM
@@ -814,6 +820,7 @@ path	key33		{
                     AND     KANANAME     <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
+                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
@@ -838,6 +845,7 @@ path	key34	{
                     AND     PTNUM        <=  :EDKANANAME 
                     AND     NYUGAIKBN    =   :NYUGAIKBN
                     AND     SRYKA        LIKE :SRYKA
+                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                    ORDER BY PTNUM,SRYYM,RECENUM,RENNUM
@@ -944,6 +952,7 @@ path	key38		{
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
                     AND     RECESYUBETU  =   :RECESYUBETU
                     AND     SRYKA        LIKE :SRYKA
+                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                     ORDER BY  KANANAME,PTNUM,SRYYM,RECENUM,RENNUM
@@ -968,6 +977,7 @@ path	key39	{
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
                     AND     RECESYUBETU  =   :RECESYUBETU
                     AND     SRYKA        LIKE :SRYKA
+                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                     AND     RENNUM       >=  :STRENNUM
                     AND     RENNUM       <=  :EDRENNUM
                     ORDER BY  PTNUM,SRYYM,RECENUM,RENNUM
@@ -1311,6 +1321,7 @@ path	key51	{
                     AND     CHOUKI       LIKE :CHOUKI
                     AND     ZAITAKU      LIKE :ZAITAKU
                     AND     SRYKA        LIKE :SRYKA
+                    AND     HKNJANUM_S   LIKE :HKNJANUM_S
                    ORDER BY RECESYUBETU_SRT,SYUBETU_SRT1,GRP_NO1,CHOUKI,GRP_NO2,KOUHI_NO,HKNJANUM,PTNUM,RECENUM,RENNUM
 		;
 	};

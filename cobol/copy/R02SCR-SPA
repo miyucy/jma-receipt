@@ -43,6 +43,9 @@
       *                                     °õºþ»ØÄêÂÐ±þ
       *
       *  04.06.01    NACL-Æ£¸¶    11/12/12  ÅÀ¸¡¥ì¥»£°ÅÀ¸øÈñ°õ»úÂÐ±þ
+      *
+      *  04.07.01    NACL-Æ£¸¶    12/02/13  ·òÊÝÁÈ¹ç¤Ø¤ÎÄ¾ÀÜÀÁµá¤È¿³ºº
+      *                                     »ÙÊ§µ¡´ØÀÁµáÂÐ±þ
       *****************************************************************
       *
        01  SPA-R02.
@@ -132,6 +135,8 @@
                                13  SPA-GMN-TPRTFLG PIC X(01).
                    07  SPA-GMN-TBL1.
                        09  SPA-GMN-TBL-OCC1        OCCURS   19.
+                           11  SPA-GMN-THKNJANAME-SYAHO
+                                                   PIC X(30).
                            11  SPA-GMN-TBL-G1      OCCURS   36.
                                13  SPA-GMN-TPAGE   PIC 9(04).
                                13  SPA-GMN-TKENSU  PIC 9(04).
@@ -223,6 +228,8 @@
       *
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBL-OCC         OCCURS   19.
+                           11  SPA-NAI-THKNJANUM-SYAHO
+                                                   PIC X(08).
                            11  SPA-NAI-TBL-G       OCCURS   36.
                                13  SPA-NAI-PRTJYUNI
                                                    PIC X(02).
@@ -236,22 +243,23 @@
                                                    PIC X(01).
                                13  SPA-NAI-TPREFKBN-SRT
                                                    PIC X(01).
-                               13  SPA-NAI-TPAGE-CHOUKI
+                               13  SPA-NAI-TPAGE-G.
+                                   15  SPA-NAI-TPAGE-CHOUKI
                                                    PIC 9(04).
-                               13  SPA-NAI-TPAGE-ZAITAKU
+                                   15  SPA-NAI-TPAGE-ZAITAKU
                                                    PIC 9(04).
-                               13  SPA-NAI-TPAGE-KOUGAKU
+                                   15  SPA-NAI-TPAGE-KOUGAKU
                                                    PIC 9(04).
-                               13  SPA-NAI-TPAGE-SYUKA
+                                   15  SPA-NAI-TPAGE-SYUKA
                                                    PIC 9(04)
                                                    OCCURS 50.
-                               13  SPA-NAI-TPAGE-CHOUKI-SYUKA
+                                   15  SPA-NAI-TPAGE-CHOUKI-SYUKA
                                                    PIC 9(01)
                                                    OCCURS 50.
-                               13  SPA-NAI-TPAGE-ZAITAKU-SYUKA
+                                   15  SPA-NAI-TPAGE-ZAITAKU-SYUKA
                                                    PIC 9(01)
                                                    OCCURS 50.
-                               13  SPA-NAI-TPAGE-KOUGAKU-SYUKA
+                                   15  SPA-NAI-TPAGE-KOUGAKU-SYUKA
                                                    PIC 9(01)
                                                    OCCURS 50.
                                13  SPA-NAI-SYUBETU-G.

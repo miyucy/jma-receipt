@@ -1546,6 +1546,10 @@ R02	{
 		PAGE	{
 			value	number(4);
 		};
+		HKNJANAME	{
+			style   varchar(20);
+			value	varchar(50);
+		};
 		PRTJYUN_COMBO	{
 			PRTJYUN	{
 				value	varchar(33);

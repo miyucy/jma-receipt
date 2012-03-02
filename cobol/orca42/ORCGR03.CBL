@@ -115,6 +115,9 @@
       *                                     不明分ありのとき赤字でエラー
       *                                     表示を行う
       *  04.06.02    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *
+      *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -210,6 +213,7 @@
                    07  SPA-NAI-2005-AUTODSPKBN     PIC X(01).
                    07  SPA-NAI-200501-INSPECT-ZERO-KBN
                                                    PIC X(01).
+                   07  SPA-NAI-200505-HKNJANUM     PIC X(08).
       *
        01  SPA-RECE07-REC. 
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
@@ -234,6 +238,13 @@
                                    PIC X(03).
            03  SPA-RECE07-FUMEI-PAGE
                                    PIC 9(05).
+           03  SPA-RECE07-HKNJANUM-SYAHO-T.
+               05  SPA-RECE07-HKNJANUM-SRT-SYAHO
+                                   PIC X(01).
+               05  SPA-RECE07-HKNJANUM-SYAHO-MAX
+                                   PIC  9(02).
+               05  SPA-RECE07-HKNJANUM-SYAHO
+                                   PIC X(08)   OCCURS  10.
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -294,6 +305,10 @@
              05  WRK-SHELL-TERMID  PIC  X(16).
              05  WRK-SHELL-SYSYMD  PIC  X(08).  
       *
+       01  WRK-RECE07-REC. 
+           COPY    "CPRCF007.INC"  REPLACING  //RECE07//
+                                   BY         //WRK-RECE07//.
+      *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMDG3        PIC X(22).
@@ -349,6 +364,7 @@
       *
            COPY    "CPSK2005.INC".
            COPY    "CPSK200501.INC".
+           COPY    "CPSK200505.INC".
       *
            COPY    "CPSK2006.INC".
       *
@@ -714,6 +730,23 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
            END-IF
            MOVE    SYS-200501-INSPECT-ZERO-KBN
                                    TO  SPA-NAI-200501-INSPECT-ZERO-KBN
+      *
+      *    レセプト・総括編集情報（区分コード０５のデータ読込）
+           INITIALIZE                  SYS-200505-REC
+           MOVE    "2005"          TO  SYS-200505-KANRICD
+           MOVE    "05"            TO  SYS-200505-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-200505-STYUKYMD
+                                       SYS-200505-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
+           MOVE    SYS-200505-REC  TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-200505-REC
+           ELSE
+               INITIALIZE                  SYS-200505-REC
+           END-IF
+           MOVE    SYS-200505-HKNJANUM (1)
+                                   TO  SPA-NAI-200505-HKNJANUM
       *
            IF      SPA-BEDSU           >   ZERO
                MOVE    3                   TO  SPA-GMN-CUR
@@ -1825,6 +1858,9 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                                           SPA-R01-RECE08-RECESYUBETU-SRT
                        MOVE    SPA-RECE07-FUMEI-PAGE
                                           TO  SPA-R01-RECE07-FUMEI-PAGE
+                       MOVE    SPA-RECE07-HKNJANUM-SYAHO-T
+                                          TO
+                                       SPA-R01-RECE07-HKNJANUM-SYAHO-T
       *
                        EVALUATE    SPA-RECE07-PRTKBN
                            WHEN    SPACE
@@ -2007,6 +2043,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                                                SPA-RECE08-SORT-1
                                               SPA-RECE08-RECESYUBETU-SRT
                MOVE    ZERO                TO  SPA-RECE07-FUMEI-PAGE
+               INITIALIZE                  SPA-RECE07-HKNJANUM-SYAHO-T
+               MOVE    "%%%%%%%%"      TO  SPA-RECE07-HKNJANUM-SYAHO (1)
+               MOVE    1               TO  SPA-RECE07-HKNJANUM-SYAHO-MAX
+               MOVE    "9"             TO  SPA-RECE07-HKNJANUM-SRT-SYAHO
       *
       *        一括作成で社保処理のとき編綴順設定の有無チェック
                IF    ( SPA-R01-FILEKBN         =   "1"         )
@@ -2136,6 +2176,52 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                                                SPA-RECE08-SORT-1
                    END-IF
                END-IF
+      *
+      *        一括作成で社保処理のとき直接請求する保険者のチェックと取得
+               IF    ( SPA-R01-FILEKBN         =   "1"         )
+               AND   ( SPA-R01-RECEKBN         =   "0" OR  "1" )
+                   MOVE    "99999999"          TO
+                                           SPA-RECE07-HKNJANUM-SYAHO (1)
+                   MOVE    "9"                 TO
+                                           SPA-RECE07-HKNJANUM-SRT-SYAHO
+                   MOVE    1                   TO  IDXX
+      *
+                   MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+                   MOVE    "key14"             TO  WRK-MCP-PATHNAME
+                   MOVE    "1"                 TO  RECE07-TEISYUTUSAKI
+                   MOVE    SPA-RECE07-REC      TO  MCPDATA-REC
+                   PERFORM 900-RECE07-SELECT-SEC
+                   PERFORM             UNTIL   FLG-RECE07  =   1
+                                       OR      IDXX        =   10
+                                       OR      RECE07-HKNJANUM-SRT
+                                                           =   "9"
+                       IF      IDXX            =   1
+                           MOVE    RECE07-HKNJANUM-SRT TO
+                                       SPA-RECE07-HKNJANUM-SRT-SYAHO
+                       END-IF                                        
+                       IF      RECE07-HKNJANUM NOT =   "99999999"
+                           ADD     1                   TO  IDXX
+                           MOVE    RECE07-HKNJANUM     TO
+                                       SPA-RECE07-HKNJANUM-SYAHO (IDXX)
+                       END-IF
+      *
+                       MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                       MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                       PERFORM 900-RECE07-FETCH-SEC
+                   END-PERFORM
+      *
+                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
+      *
+                   IF      IDXX                =   1
+                       MOVE    "%%%%%%%%"          TO  
+                                           SPA-RECE07-HKNJANUM-SYAHO (1)
+                   END-IF
+      *
+                   MOVE    IDXX                TO
+                                           SPA-RECE07-HKNJANUM-SYAHO-MAX
+               END-IF  
       *
       *        不明分の有無チェック
                MOVE    SPA-RECE07-KEY      TO  RECE07-KEY
@@ -2780,6 +2866,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                           TO SPA-R01-RECE08-SORT-1
                            MOVE    SPA-RECE07-FUMEI-PAGE
                                           TO  SPA-R01-RECE07-FUMEI-PAGE
+                           MOVE    SPA-RECE07-HKNJANUM-SYAHO-T
+                                          TO
+                                       SPA-R01-RECE07-HKNJANUM-SYAHO-T
                        END-IF
                      END-IF 
                    ELSE
@@ -3324,6 +3413,43 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-RECE07-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト管理（ＳＥＬＥＣＴ）
+      *****************************************************************
+       900-RECE07-SELECT-SEC           SECTION.
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-RECE07-FETCH-SEC
+           ELSE
+               MOVE    1                   TO  FLG-RECE07
+           END-IF
+      *
+           .
+       900-RECE07-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト管理（ＦＥＴＣＨ）
+      *****************************************************************
+       900-RECE07-FETCH-SEC            SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-RECE07
+               MOVE    MCPDATA-REC         TO  RECE07-REC
+           ELSE
+               MOVE    1                   TO  FLG-RECE07
+           END-IF
+      *
+           .
+       900-RECE07-FETCH-EXT.
            EXIT.
       *
       *****************************************************************
