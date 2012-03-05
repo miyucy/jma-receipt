@@ -543,6 +543,8 @@
       *  04.05.40    NACL-門脇    12/01/23  長崎県地方公費対応
       *  04.05.41    NACL-門脇    12/02/13  回数欄編集修正（処方、麻毒）
       *  04.05.42    NACL-門脇    12/03/05  ７０歳代前半の特例措置延長対応
+      *  04.05.43    NACL-門脇    12/03/05  特定保険者＋精神、結核対応
+      *                                     平成２４年３月まで
       *
       *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料の
       *                                     レセプトコメント自動記載（重複時）
@@ -5820,15 +5822,7 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
       *****************************************************************
        211Q2-HBTNUMKBN-SET2-SEC               SECTION.
       *
-           IF   RECE02-HKNJANUM(1:6)  =
-                "133041" OR "133074" OR "133090" OR "133116" OR
-                "133132" OR "133140" OR "133157" OR "133165" OR
-                "133173" OR "133181" OR "133207" OR "133223" OR
-                "133249" OR "133256" OR "133272"
-                IF  RECE02-KOHNUM(KOHFTN-IDX) = "010" OR "021"
-                   MOVE    1     TO   WRK-FTNJYOSEI(KOHFTN-IDX)
-                END-IF
-           END-IF
+           CONTINUE
       *
            .
        211Q2-HBTNUMKBN-SET2-EXT.
@@ -5843,8 +5837,12 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
                (RECE02-SRYYM        <= "201103"            ))
            OR ((RECE02-HKNJANUM(1:6) = "283077"            ) AND
                (RECE02-SRYYM        <= "201111"            ))
-           OR ((RECE02-HKNJANUM(1:6) = "133033" OR "133066"
-                                                OR "133199") AND
+           OR ((RECE02-HKNJANUM(1:6) =
+                "133033" OR "133041" OR "133066" OR "133074" OR
+                "133090" OR "133116" OR "133132" OR "133140" OR
+                "133157" OR "133165" OR "133173" OR "133181" OR
+                "133199" OR "133207" OR "133223" OR "133249" OR
+                "133256" OR "133272"                       ) AND
                (RECE02-SRYYM        <= "201203"            ))
               IF  (SYS-1001-PREFNUM     = "29"    )
               AND (RECE02-HKNJANUM(1:6) = "133033")
