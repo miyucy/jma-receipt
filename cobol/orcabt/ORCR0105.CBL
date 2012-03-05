@@ -1796,7 +1796,7 @@
                INITIALIZE                      SYS-200505-REC
            END-IF
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       50
+                   UNTIL   IDX >       5
                    OR      SYS-200505-HKNJANUM (IDX)
                                =   SPACE
                DISPLAY "SYS-200505-HKNJANUM="  IDX " "
