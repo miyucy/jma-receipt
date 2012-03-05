@@ -1664,30 +1664,6 @@
                                            SPA-NAI-HKNJAFUKA-AREA
                    PERFORM 42011-COMBO-SET-DEFAULT-SEC
       *
-                   EVALUATE    SPA-GMN-HKNJANUM
-      *            WHEN    "133033"
-                   WHEN    "133041"
-      *            WHEN    "133066"
-                   WHEN    "133074"
-                   WHEN    "133090"
-                   WHEN    "133116"
-                   WHEN    "133132"
-                   WHEN    "133140"
-                   WHEN    "133157"
-                   WHEN    "133165"
-                   WHEN    "133173"
-                   WHEN    "133181"
-      *            WHEN    "133199"
-                   WHEN    "133207"
-                   WHEN    "133223"
-                   WHEN    "133249"
-                   WHEN    "133256"
-                   WHEN    "133272"
-                       MOVE    "1"       TO  SPA-GMN-HBTNUM10KBN
-                       MOVE    "0"       TO  SPA-GMN-HBTNUM10TAIKBN
-                       MOVE    "1"       TO  SPA-GMN-HBTNUM21KBN
-                       MOVE    "0"       TO  SPA-GMN-HBTNUM21TAIKBN
-                   END-EVALUATE
                END-IF
       *
                MOVE    SPA-GMN-HKNJANUM  TO  SPA-NAI-HKNJANUM
