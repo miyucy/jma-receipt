@@ -331,7 +331,7 @@
       *
       *    施設規準テーブル
        01  WRK-TBL-SSTKIJUN-AREA.
-           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  1000.
+           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  3500.
                05  WRK-TBL-SSTKIJUN       PIC 9(01).
       *
       *   日本語数字
@@ -1648,8 +1648,18 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL   (FLG-SYSKANRI   =   1    )
-                   OR      (IDX            >=  1000 )
+                   OR      (IDX            >=  3500 )
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
+      *H2.4
+               EVALUATE    SYS-1006-KBNCD
+                   WHEN    "1"
+                       MOVE    0               TO  IDX
+                   WHEN    "2"
+                       MOVE    500             TO  IDX
+                   WHEN    "7"
+                       MOVE    3000            TO  IDX
+                   END-EVALUATE
+      *H2.4
                PERFORM VARYING IDY         FROM    1   BY  1
                        UNTIL   IDY         >       500
                    ADD     1               TO  IDX
@@ -1708,27 +1718,11 @@
            MOVE    WRK-TNS-KGNAGE      TO  WRK-KGNAGE(2:2)
            MOVE    WRK-TNS-JGNAGE      TO  WRK-JGNAGE(2:2)
       *
-      *TEST
-      *H24.4テスト
+      *H24.4
            MOVE    SPA-BIRTHDAY        TO  WRK-NEN-03
            MOVE    SPA-BIRTHDAY        TO  WRK-NEN-15
            COMPUTE WRK-NEN03-YY        =   WRK-NEN03-YY  +  3
            COMPUTE WRK-NEN15-YY        =   WRK-NEN15-YY  +  15
-      *    １日以外の誕生日の時は、翌月１日を基準とする
-           IF      WRK-NEN03-DD        >   01
-               COMPUTE WRK-NEN03-MM        =   WRK-NEN03-MM  +  1
-               IF      WRK-NEN03-MM        >   12
-                   COMPUTE WRK-NEN03-YY    =   WRK-NEN03-YY  +   1
-                   MOVE    01              TO  WRK-NEN03-MM
-               END-IF
-               COMPUTE WRK-NEN15-MM        =   WRK-NEN15-MM  +  1
-               IF      WRK-NEN15-MM        >   12
-                   COMPUTE WRK-NEN15-YY    =   WRK-NEN15-YY  +   1
-                   MOVE    01              TO  WRK-NEN15-MM
-               END-IF
-           END-IF
-      *TEST
-      *H24.4テスト
       *
       *    下限年齢チェック
            IF      WRK-TNS-KGNAGE          =   SPACE  OR  ZERO
@@ -1748,51 +1742,74 @@
                        MOVE    "0032"              TO  LNK-SC92-ERRCD5
                    END-IF
                END-IF
-      *TEST
-      *H24.4テスト
-               EVALUATE    WRK-TNS-KGNAGE
-               WHEN    "AA"
-      *            新生児判定（２８日まで新生児）
-                   IF     (LNK-SC92-NENREI-YY   =   ZERO )  AND
-                          (LNK-SC92-NENREI-MM   =   ZERO )  AND
-                          (LNK-SC92-NENREI-DD   <=  28   )
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-                   END-IF
-               WHEN    "B3"
-      *            ３歳未満（３歳になった日の翌月）
-                   IF     (WRK-NEN03-YM         >   SPA-SRYYMD(1:6) )
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-                   END-IF
-               WHEN    "BF"
-      *            １５歳未満（１５歳になった日の翌月）
-                   IF     (WRK-NEN15-YM         >   SPA-SRYYMD(1:6) )
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-                   END-IF
-               WHEN    OTHER
-      *            年齢判定
-                   IF      LNK-SC92-NENREI-YY   >=  WRK-KGNAGE
-                      CONTINUE
-                   ELSE
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-                   END-IF
-               END-EVALUATE
-      *H24.4テスト
           END-IF
       *
       *    上限年齢チェック
            IF      WRK-TNS-JGNAGE          =   SPACE  OR  ZERO
                CONTINUE
            ELSE
-               IF      WRK-TNS-JGNAGE          =   "AA"
+      *        IF      WRK-TNS-JGNAGE          =   "AA"
       *            新生児判定（２８日まで新生児）
-                   IF     (LNK-SC92-NENREI-YY    =   ZERO )  AND
-                          (LNK-SC92-NENREI-MM    =   ZERO )  AND
-                          (LNK-SC92-NENREI-DD    <=  28   )
+      *            IF     (LNK-SC92-NENREI-YY    =   ZERO )  AND
+      *                   (LNK-SC92-NENREI-MM    =   ZERO )  AND
+      *                   (LNK-SC92-NENREI-DD    <=  28   )
+      *                CONTINUE
+      *            ELSE
+      *                MOVE    "0032"              TO  LNK-SC92-ERRCD5
+      *            END-IF
+      *        ELSE
+      *            IF      LNK-SC92-NENREI-YY    <   WRK-JGNAGE
+      *                CONTINUE
+      *            ELSE
+      *                MOVE    "0032"              TO  LNK-SC92-ERRCD5
+      *            END-IF
+      *            １５歳未満で、１５歳到達月の判定
+      *            IF      (WRK-JGNAGE             =   15  )  AND
+      *                    (LNK-SC92-NENREI-YY     =   15  )  AND
+      *                    (LNK-SC92-15MIMAN-ARI   =   1   )
+      *                初診・再診で手技料の時、エラーとしない
+      *                IF     (TNS-DATAKBN             =   1  )  AND
+      *                       (TNS-SRYKBN              =   11  OR  12 )
+      *                    MOVE    SPACE           TO  LNK-SC92-ERRCD5
+      *                END-IF
+      *            END-IF
+      ***      END-IF
+      *
+      *H24.4
+               EVALUATE    WRK-TNS-JGNAGE
+               WHEN    "AA"
+      *            新生児判定（２８日まで新生児）
+                   IF     (LNK-SC92-NENREI-YY   =   ZERO )  AND
+                          (LNK-SC92-NENREI-MM   =   ZERO )  AND
+                          (LNK-SC92-NENREI-DD   <=  28   )
                        CONTINUE
                    ELSE
                        MOVE    "0032"              TO  LNK-SC92-ERRCD5
                    END-IF
-               ELSE
+               WHEN    "B3"
+      *            ３歳までに受診があった時にのみ可能（H24.4改正）
+                   IF     (LNK-SC92-NENREI-YY      >=  3  )
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                       IF     (LNK-SC92-NENREI-YY  =   3  )
+                          AND (SPA-SRYYMD(1:6)     =   WRK-NEN03-YM )
+                          AND (LNK-SC92-15MIMAN-ARI    =   2  )
+      *                    同じコードの算定チェック
+                           PERFORM 20032-NENREI-RRKCHK-SEC
+                       END-IF
+                   END-IF
+               WHEN    "BF"
+      *           １５歳までに受診があった時にのみ可能（H24.4改正）
+                   IF     (LNK-SC92-NENREI-YY   >=    15    )
+                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
+                       IF     (LNK-SC92-NENREI-YY  =   15  )
+                          AND (SPA-SRYYMD(1:6)     =   WRK-NEN15-YM )
+                          AND (LNK-SC92-15MIMAN-ARI    =   1  )
+      *                    同じコードの算定チェック
+                           PERFORM 20032-NENREI-RRKCHK-SEC
+                       END-IF
+                   END-IF
+               WHEN    OTHER
+      *            年齢判定
                    IF      LNK-SC92-NENREI-YY    <   WRK-JGNAGE
                        CONTINUE
                    ELSE
@@ -1808,57 +1825,29 @@
                            MOVE    SPACE           TO  LNK-SC92-ERRCD5
                        END-IF
                    END-IF
-               END-IF
-      *TEST
-      *H24.4テスト
-               EVALUATE    WRK-TNS-JGNAGE
-               WHEN    "AA"
-      *            新生児判定（２８日まで新生児）
-                   IF     (LNK-SC92-NENREI-YY   =   ZERO )  AND
-                          (LNK-SC92-NENREI-MM   =   ZERO )  AND
-                          (LNK-SC92-NENREI-DD   <=  28   )
-                       CONTINUE
-                   ELSE
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-                   END-IF
-               WHEN    "B3"
-      *            ３歳未満（３歳になった日の翌月）
-                   IF     (WRK-NEN03-YM         <=  SPA-SRYYMD(1:6) )
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-      *???
-      ********    ３歳までに当月の受診があった時にのみ可能だった場合
-                       IF     (LNK-SC92-NENREI-YY      =   3  )
-                          AND (LNK-SC92-15MIMAN-ARI    =   2  )
-                           MOVE    SPACE          TO  LNK-SC92-ERRCD5
-                       END-IF
-                   END-IF
-               WHEN    "BF"
-      *            １５歳未満（１５歳になった日の翌月）
-                   IF     (WRK-NEN15-YM         <=  SPA-SRYYMD(1:6) )
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-                   END-IF
-      *???
-      ********    １５歳までに当月の受診があった時にのみ可能だった場合
-                   IF     (LNK-SC92-NENREI-YY   >=    15    )
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-                       IF     (LNK-SC92-NENREI-YY      =   15  )
-                          AND (LNK-SC92-15MIMAN-ARI    =   1  )
-                           MOVE    SPACE          TO  LNK-SC92-ERRCD5
-                       END-IF
-                   END-IF
-               WHEN    OTHER
-      *            年齢判定
-                   IF      LNK-SC92-NENREI-YY    <   WRK-JGNAGE
-                       CONTINUE
-                   ELSE
-                       MOVE    "0032"              TO  LNK-SC92-ERRCD5
-                   END-IF
                END-EVALUATE
-      *H24.4テスト
+      *H24.4
            END-IF
       *
            .
        2003-NENREI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同じコードの算定チェック
+      *****************************************************************
+       20032-NENREI-RRKCHK-SEC      SECTION.
+      *
+      *    小児科外来診察料は別チェックとする
+           IF     (TNS-CDKBN-KBN       =   "B" )
+              AND (TNS-CDKBN-KBNNUM    =   001 )
+              AND (TNS-CDKBN-KBNNUM-EDA    =   2 )
+               GO      TO      20032-NENREI-RRKCHK-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  LNK-SC92-ERRCD5
+           .
+       20032-NENREI-RRKCHK-EXT.
            EXIT.
       *
       *****************************************************************

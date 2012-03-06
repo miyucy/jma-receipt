@@ -2642,8 +2642,12 @@
            MOVE    ZERO                TO  FLG-AUTOERR
       *    外来で後期高齢者診療料算定中の判定
            IF     (SPA-NYUGAIKBN       =   "2"  )  AND
-                 ((SPA-KOURESRY-ARI    NOT =   ZERO ) OR
-                 ( SPA-KOURESRY-ARI2   NOT =   ZERO ))
+      *          ((SPA-KOURESRY-ARI    NOT =   ZERO ) OR
+      *          ( SPA-KOURESRY-ARI2   NOT =   ZERO ))
+      *H24.4
+      *    外来リハビリ診察料等で２を使用
+                 ((SPA-KOURESRY-ARI        =   1    ) OR
+                 ( SPA-KOURESRY-ARI2       =   1    ))
                PERFORM 30011-AUTO-KOURESRY-SEC
            END-IF
            IF      FLG-AUTOERR         =   ZERO

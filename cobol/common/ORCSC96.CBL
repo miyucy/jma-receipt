@@ -2615,7 +2615,7 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2102"
-                   STRING  "初診算定日です。"
+                   STRING  "初診料が算定されています。"
                            "再診料（同一２科目）は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
@@ -2623,6 +2623,24 @@
                WHEN    "2103"
                    STRING  "電話再診の算定がありません。"
                            "電話再診（同一２科目）は算定できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2106"
+                   STRING  "電話再診が算定されています。"
+                           "再診料（同一２科目）は算定できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2104"
+                   STRING  "外来リハビリテーション診察料が算定中です。"
+                           "診察料は算定できません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2105"
+                   STRING  "外来放射線照射診察料が算定中です。"
+                           "診察料は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
