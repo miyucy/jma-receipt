@@ -4554,6 +4554,11 @@
            IF     (TNSP-IPN-KISAIKBN   =   1  )
              OR   (WRK-IPNMEI          =   2  )
                PERFORM 9102-GENERICNAME-READ-SEC
+      *        一般名マスタなし
+               IF      FLG-GENERICNAME     =   1
+                   MOVE    ZERO            TO  TNSP-IPN-KISAIKBN
+                   MOVE    ZERO            TO  WRK-IPNMEI
+               END-IF
            END-IF
       *---(03.04.00) LINE ADD END   ------------------------------------
       *
