@@ -777,7 +777,7 @@
            MOVE    SPA-BIRTHDAY        TO  WRK-BIRTHDAY03
            COMPUTE WRK-BIRTH-YY03      =   WRK-BIRTH-YY03  +  3 
       *
-      *    平成１５年９月１日から逓減廃止の為、当日に診療がある時のみ
+      *    当日に診療がある時のみ
            MOVE    ZERO                TO  FLG-DOUJITU-ARI
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL       IDX2    >   SPA-GMN-MAX1
@@ -815,6 +815,8 @@
            IF      FLG-DOUJITU-ARI     =   ZERO
                GO      TO      1000-SINSATU-KAISU-EXT
            END-IF
+      *H24.4
+      *!
       *
       *    受診履歴より当日の受診回数を求める
            MOVE    SPACE               TO  JYURRK-REC
@@ -3117,6 +3119,7 @@
       *****************************************************************
        33013-SAISINKSN-SEC                  SECTION.
       *
+      *H24.4
       *    時間外対応加算（地域医療貢献加算）
            EVALUATE    SPA-CHIIKKBN
                WHEN    1
@@ -4383,6 +4386,7 @@
        3307-ZAIMATU-SET-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-SRYCD
+      *H24.4
            IF      SPA-INGAIKBN        =   "1"
       *        院外処方
                EVALUATE    SPA-COM-INPUTCD (WRK-IDX-IN)
@@ -4470,8 +4474,8 @@
                        MOVE    "114019110"         TO  WRK-SRYCD
                    WHEN    "114019410"
                        MOVE    "114019310"         TO  WRK-SRYCD
-               END-EVALUATE
       *H24.4
+               END-EVALUATE
            ELSE
       *        院内へ
                EVALUATE    SPA-COM-INPUTCD (WRK-IDX-IN)
@@ -4491,6 +4495,7 @@
                        MOVE    "114019210"         TO  WRK-SRYCD
                    WHEN    "114019310"
                        MOVE    "114019040"         TO  WRK-SRYCD
+      *H24.4
                END-EVALUATE
            END-IF
            IF      WRK-SRYCD       NOT =   SPACE
@@ -4802,6 +4807,7 @@
       *                電話再診、同日電話再診
                        WHEN    "T"
                        WHEN    "S"
+      *H24.4
                        WHEN    "J"
                            MOVE    1               TO  SPA-TELSAI-ARI
       **************** WHEN    SPACE
@@ -4957,6 +4963,7 @@
                            IF     (SPA-SYONIKA-ARI NOT =   2 )
                              AND  (SPA-SYONIKA-ARI2    =   ZERO)
                              AND  (WRK-KBN             =   "T"
+      *H24.4
                                                        OR  "J"
                                                        OR  "S"  )
                                MOVE    1           TO  FLG-KBN
@@ -5714,6 +5721,12 @@
                                        OR  "J"  )
                MOVE    ZERO                TO  FLG-HENKAN
            END-IF
+      *H24.4
+      *    再診同一日２科目の時
+           IF     (WRK-KBN3            =   "K"   )
+               MOVE    ZERO                TO  FLG-HENKAN
+           END-IF
+      *
       *    初診料算定で、既に当日受診がある時は対象
            IF     (FLG-SYOSIN2         =   1    )
       *        初診料以外の時、自動発生あり
@@ -6130,7 +6143,8 @@
            IF     WRK-SRYCD            =   "111000470"
                MOVE    1               TO  FLG-ARI
            END-IF
-      *    地域医療貢献加算
+      *H24.4
+      *    時間外対応加算
            IF     WRK-SRYCD            =   TBL-CHISRYCD1
                                        OR  TBL-CHISRYCD2
                                        OR  TBL-CHISRYCD3
@@ -6444,6 +6458,13 @@
                    IF      SPA-COM-INPUTCD (IDX)   =   "111011810"
       *TE 
                                                    OR  "101110040"
+                       MOVE    1               TO  FLG-DOUSYOSIN
+                   END-IF
+      *H24.4
+      *            再診料２科目
+                   IF      SPA-COM-INPUTCD (IDX)   =   "112015810"
+                                                   OR  "112015950"
+                                                   OR  "112016210"
                        MOVE    1               TO  FLG-DOUSYOSIN
                    END-IF
                END-IF

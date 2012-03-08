@@ -1148,6 +1148,15 @@
        100115-KOURESRY-CHK-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-DEL
+      *
+           EVALUATE    WRK-COM-INPUTCD(IDX-Z)
+      *        外来リハビリテーション診察料
+               WHEN    "113013910"
+               WHEN    "113014010"
+      *        外来放射線照射診察料
+               WHEN    "113014110"
+                   MOVE    1               TO  FLG-TBL
+           END-EVALUATE
            IF      FLG-TBL             =   1
       *        外来リハビリ診察料算定中
                IF     SPA-KOURESRY-ARI2    =   2
@@ -4512,9 +4521,6 @@
                END-IF
       *
            END-PERFORM
-      *TEST
-            DISPLAY "2 SPA-ERRCD:"  SPA-ERRCD
-      *TEST
       *
       *    診察料以外チェック
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
