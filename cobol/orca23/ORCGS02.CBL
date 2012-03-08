@@ -106,6 +106,8 @@
       *  04.04.00    NACL-太田    08/12/08  収納検索画面を吸収
       *
       *  04.05.01    NACL-門脇    09/06/16  一括再計算方法選択機能対応
+      *  04.05.02    NACL-門脇    12/03/09  改正対応：外来現物給付対応
+      *
       *  04.06.01    NACL-門脇    10/06/25  会計照会【収納更新】未処理分
       *                                     メッセージ対応
       *****************************************************************
@@ -195,8 +197,7 @@
                            11  SPA-GMN-TNYUKIN     PIC S9(10).
                            11  SPA-GMN-TMISYU      PIC S9(10).
                            11  SPA-GMN-TJYOTAI     PIC X(16).
-      ***                  11  SPA-GMN-FTNHENFLG   PIC 9(02).
-      ***                  11  SPA-GMN-SIKIBETUFLG PIC X(01).
+                           11  SPA-GMN-SIKIBETUFLG PIC X(01).
                        09  SPA-GMN-TBL-SEL         PIC 9(05).
       *
                    07  SPA-GMN-INPUT.
@@ -381,8 +382,12 @@
            03  FLG-MEISAI-PRT      PIC 9(01).
            03  FLG-PARA            PIC 9(01).
            03  FLG-MISYORI         PIC 9(01).
+           03  FLG-MISYORI2        PIC 9(01).
            03  FLG-BUNBENCHK       PIC 9(01).
            03  FLG-ORCSNUMERR      PIC 9(01).
+           03  FLG-GENBUTU         PIC 9(01).
+           03  FLG-GENBUTU2        PIC 9(01).
+           03  FLG-GENBUTU3        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -2499,6 +2504,9 @@
            END-EVALUATE
       *
            IF      SYU-DENPJTIKBN  NOT =   "3"
+                IF  SYU-SECMONEY        =  1
+                   MOVE   "1"     TO   SPA-GMN-SIKIBETUFLG(IDXL)
+                END-IF
                 IF  SYU-ACCT-UPDKBN NOT = SPACE
                    MOVE   "☆"    TO   SPA-GMN-TNYUGAIKBN(IDXL)(3:2)
                 END-IF
@@ -2930,6 +2938,7 @@
            MOVE    "請求取消"          TO  S02-B03S-LABEL
       *
            MOVE    ZERO                TO  FLG-MISYORI
+           MOVE    ZERO                TO  FLG-MISYORI2
       *
            PERFORM VARYING     IDXL     FROM    1   BY  1
                    UNTIL     ( IDXL     >       SPA-GMN-MAX )
@@ -2991,6 +3000,9 @@
                IF    SPA-GMN-TNYUGAIKBN(IDXL)(3:2) = "☆"
                    MOVE     1          TO  FLG-MISYORI
                END-IF
+               IF    SPA-GMN-SIKIBETUFLG(IDXL)     = "1"
+                   MOVE     1          TO  FLG-MISYORI2
+               END-IF
       *
            END-PERFORM
       *
@@ -2999,10 +3011,16 @@
            MOVE    SPA-GMN-SELBAN              TO  WRK-SELBAN-W
            MOVE    WRK-SELBAN-W                TO  S02-SELNUM
       *
-           IF      FLG-MISYORI   =    1
+           IF      FLG-MISYORI2  =    1
+              MOVE    "red"    TO    S02-LBLMSG-STYLE
+       MOVE "★★　【現物給付窓口計算】　一括再計算を行って下さい　★★"
+                               TO    S02-LBLMSG
+           ELSE
+            IF     FLG-MISYORI   =    1
               MOVE    "blue"   TO    S02-LBLMSG-STYLE
               MOVE    "☆　会計照会【収納更新】未処理分"
                                TO    S02-LBLMSG
+            END-IF
            END-IF
       *
            MOVE    WIDGET-NORMAL       TO  S02-B06-STATE
@@ -5585,6 +5603,46 @@
       ***  END-IF
            MOVE    "2"                 TO  WRK-NYUGAIKBN
       *
+      *    現物給付計算：一括再計算対象の収納データがあるかチェック
+      *
+           MOVE    ZERO                TO  FLG-GENBUTU
+           MOVE    ZERO                TO  FLG-GENBUTU2
+           MOVE    ZERO                TO  FLG-GENBUTU3
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+           INITIALIZE                      SYUNOU-REC
+           MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
+           MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  SYU-PTID
+           MOVE    WRK-SKYYM           TO  SYU-SRYYMD (1:6)
+           MOVE    "__"                TO  SYU-SRYYMD (7:)
+           MOVE    "tbl_syunou"        TO  WRK-TABLE
+           MOVE    "key35"             TO  WRK-PATHNAME
+           PERFORM 900-SYUNOU-SEL-IKT-SEC
+           PERFORM   UNTIL   FLG-SYUNOU  =  1
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+               IF    SYU-DENPJTIKBN  NOT =  "3"
+                 IF   SYU-SAIKEISANKBN    =  "1"
+                    MOVE    1     TO  FLG-GENBUTU2
+                 END-IF
+                 IF  (SYU-SYUHKNNUM   NOT = SPACE)
+                 AND (SYU-KOH1HKNNUM  NOT = SPACE)
+                    MOVE    1     TO  FLG-GENBUTU3
+                 END-IF
+               END-IF
+               MOVE    "tbl_syunou"    TO  WRK-TABLE
+               MOVE    "key35"         TO  WRK-PATHNAME
+               PERFORM 900-SYUNOU-FET-SEC
+           END-PERFORM
+           MOVE    "tbl_syunou"   TO  MCP-TABLE
+           MOVE    "key35"        TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           IF   FLG-GENBUTU2  =   1
+           AND  FLG-GENBUTU3  =   1
+                    MOVE    1     TO  FLG-GENBUTU
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-SYUNOU
            INITIALIZE                      SYUNOU-REC
            MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
@@ -5592,11 +5650,24 @@
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
            MOVE    WRK-SKYYM           TO  SYU-SRYYMD (1:6)
            MOVE    "__"                TO  SYU-SRYYMD (7:)
-           IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
-              PERFORM 900-SYUNOU-KEY35-SEL-SEC
+           IF   FLG-GENBUTU = ZERO
+             IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
+                MOVE    "tbl_syunou"   TO  WRK-TABLE
+                MOVE    "key35"        TO  WRK-PATHNAME
+             ELSE
+                MOVE    "tbl_syunou"   TO  WRK-TABLE
+                MOVE    "key69"        TO  WRK-PATHNAME
+             END-IF
            ELSE
-              PERFORM 900-SYUNOU-KEY69-SEL-SEC
+             IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
+                MOVE    "tbl_syunou"   TO  WRK-TABLE
+                MOVE    "key82"        TO  WRK-PATHNAME
+             ELSE
+                MOVE    "tbl_syunou"   TO  WRK-TABLE
+                MOVE    "key83"        TO  WRK-PATHNAME
+             END-IF
            END-IF
+           PERFORM 900-SYUNOU-SEL-IKT-SEC
       *
            PERFORM   UNTIL ( FLG-SYUNOU  =   1 )
       *
@@ -5625,6 +5696,10 @@
                                           TO   LNK-ORCSSKS-IKTSORTKBN
                   MOVE     SYS-1039-IKTKEISANKBN
                                           TO   LNK-ORCSSKS-IKTKEISANKBN
+                  IF   FLG-GENBUTU  =  1
+                    MOVE     "1"          TO   LNK-ORCSSKS-IKTKEISANKBN
+                    MOVE     "1"          TO   LNK-ORCSSKS-IKTGENKEIFLG
+                  END-IF
       *
                   CALL    "ORCSSAIKEISAN"     USING
                                               SPA-AREA
@@ -5640,11 +5715,24 @@
       *
                END-IF
       *
-               IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
-                  PERFORM 900-SYUNOU-KEY35-FET-SEC
+               IF   FLG-GENBUTU = ZERO
+                 IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
+                    MOVE    "tbl_syunou"   TO  WRK-TABLE
+                    MOVE    "key35"        TO  WRK-PATHNAME
+                 ELSE
+                    MOVE    "tbl_syunou"   TO  WRK-TABLE
+                    MOVE    "key69"        TO  WRK-PATHNAME
+                 END-IF
                ELSE
-                  PERFORM 900-SYUNOU-KEY69-FET-SEC
+                 IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
+                    MOVE    "tbl_syunou"   TO  WRK-TABLE
+                    MOVE    "key82"        TO  WRK-PATHNAME
+                 ELSE
+                    MOVE    "tbl_syunou"   TO  WRK-TABLE
+                    MOVE    "key83"        TO  WRK-PATHNAME
+                 END-IF
                END-IF
+               PERFORM 900-SYUNOU-FET-SEC
       *
                IF    SPA-ERRCD   NOT =  SPACE
                    MOVE    1           TO  FLG-SYUNOU
@@ -5652,15 +5740,24 @@
       *
            END-PERFORM
       *
-           IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
-             MOVE    "tbl_syunou"   TO  MCP-TABLE
-             MOVE    "key35"        TO  MCP-PATHNAME
-             PERFORM 910-DBCLOSECURSOR-SEC
+           IF   FLG-GENBUTU = ZERO
+             IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
+               MOVE    "tbl_syunou"   TO  MCP-TABLE
+               MOVE    "key35"        TO  MCP-PATHNAME
+             ELSE
+               MOVE    "tbl_syunou"   TO  MCP-TABLE
+               MOVE    "key69"        TO  MCP-PATHNAME
+             END-IF
            ELSE
-             MOVE    "tbl_syunou"   TO  MCP-TABLE
-             MOVE    "key69"        TO  MCP-PATHNAME
-             PERFORM 910-DBCLOSECURSOR-SEC
+             IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
+               MOVE    "tbl_syunou"   TO  MCP-TABLE
+               MOVE    "key82"        TO  MCP-PATHNAME
+             ELSE
+               MOVE    "tbl_syunou"   TO  MCP-TABLE
+               MOVE    "key83"        TO  MCP-PATHNAME
+             END-IF
            END-IF
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    SPA-ERRCD   NOT =  SPACE
                   MOVE    "0064"       TO  SPA-ERRCD
@@ -8368,6 +8465,27 @@
        800-KINGAKU-HEN-EXT.
            EXIT.
       **************************************************************
+      *    収納マスター検索処理（一括再計算）
+      **************************************************************
+       900-SYUNOU-SEL-IKT-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYUNOU
+      *
+           MOVE    SYUNOU-REC          TO  MCPDATA-REC
+           MOVE    WRK-TABLE           TO  MCP-TABLE
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUNOU-REC
+           ELSE
+               INITIALIZE                  SYUNOU-REC
+               MOVE    1               TO  FLG-SYUNOU
+           END-IF
+      *
+           .
+       900-SYUNOU-SEL-IKT-EXT.
+           EXIT.
+      **************************************************************
       *    収納マスター読込（主キー）
       **************************************************************
        900-SYUNOU-KEY-SEL-SEC          SECTION.
@@ -8479,88 +8597,6 @@
       *
            .
        900-SYUNOU-FET-EXT.
-           EXIT.
-      **************************************************************
-      *    収納マスター検索処理
-      **************************************************************
-       900-SYUNOU-KEY35-SEL-SEC        SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SYUNOU
-      *
-           MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key35"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-           ELSE
-               INITIALIZE                  SYUNOU-REC
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
-      *
-           .
-       900-SYUNOU-KEY35-SEL-EXT.
-           EXIT.
-      **************************************************************
-      *    収納マスターFETCH処理
-      **************************************************************
-       900-SYUNOU-KEY35-FET-SEC        SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SYUNOU
-      *
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key35"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-           ELSE
-               INITIALIZE                  SYUNOU-REC
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
-      *
-           .
-       900-SYUNOU-KEY35-FET-EXT.
-           EXIT.
-      **************************************************************
-      *    収納マスター検索処理
-      **************************************************************
-       900-SYUNOU-KEY69-SEL-SEC        SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SYUNOU
-      *
-           MOVE    SYUNOU-REC          TO  MCPDATA-REC
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key69"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-           ELSE
-               INITIALIZE                  SYUNOU-REC
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
-      *
-           .
-       900-SYUNOU-KEY69-SEL-EXT.
-           EXIT.
-      **************************************************************
-      *    収納マスターFETCH処理
-      **************************************************************
-       900-SYUNOU-KEY69-FET-SEC        SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SYUNOU
-      *
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key69"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-           ELSE
-               INITIALIZE                  SYUNOU-REC
-               MOVE    1               TO  FLG-SYUNOU
-           END-IF
-      *
-           .
-       900-SYUNOU-KEY69-FET-EXT.
            EXIT.
       **************************************************************
       *    収納マスター検索処理
