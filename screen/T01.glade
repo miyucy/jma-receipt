@@ -483,15 +483,6 @@
     </widget>
 
     <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator5</name>
-      <x>160</x>
-      <y>584</y>
-      <width>16</width>
-      <height>95</height>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B19</name>
       <x>512</x>
@@ -751,24 +742,40 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>HKNJANUM_TITLE</name>
+      <x>552</x>
+      <y>614</y>
+      <width>100</width>
+      <height>18</height>
+      <label>忡萵樊�砦�</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkPandaCombo</class>
-      <name>NYUGAIKBN_COMBO</name>
+      <name>DIRECT_HKNJANUM_COMBO</name>
       <x>660</x>
-      <y>640</y>
-      <width>125</width>
+      <y>610</y>
+      <width>305</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
       <case_sensitive>False</case_sensitive>
       <use_arrows>True</use_arrows>
       <use_arrows_always>False</use_arrows_always>
-      <items>0 ェ情’ェ情陸
+      <items>00000000 躂濤擱菲允月忡萵樊動陸ㄡㄢㄣㄤ
 </items>
 
       <widget>
 	<class>GtkPandaEntry</class>
 	<child_name>GtkPandaCombo:entry</child_name>
-	<name>NYUGAIKBN</name>
+	<name>DIRECT_HKNJANUM</name>
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>activate</name>
@@ -784,8 +791,8 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>14</text_max_length>
-	<text>0 ェ情’ェ情陸</text>
+	<text_max_length>39</text_max_length>
+	<text>00000000 躂濤擱菲允月忡萵樊動陸ㄡㄢㄣㄤ</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -1561,39 +1568,12 @@
     </widget>
 
     <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator6</name>
-      <x>792</x>
-      <y>584</y>
-      <width>16</width>
-      <height>95</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator15</name>
-      <x>598</x>
-      <y>576</y>
-      <width>203</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator5</name>
       <x>168</x>
       <y>542</y>
       <width>633</width>
       <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator13</name>
-      <x>168</x>
-      <y>672</y>
-      <width>633</width>
-      <height>16</height>
     </widget>
 
     <widget>
@@ -1642,6 +1622,83 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator15</name>
+      <x>598</x>
+      <y>576</y>
+      <width>394</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator13</name>
+      <x>168</x>
+      <y>672</y>
+      <width>823</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator5</name>
+      <x>160</x>
+      <y>584</y>
+      <width>16</width>
+      <height>95</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator6</name>
+      <x>984</x>
+      <y>584</y>
+      <width>16</width>
+      <height>95</height>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>NYUGAIKBN_COMBO</name>
+      <x>660</x>
+      <y>640</y>
+      <width>130</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>0 ェ情’ェ情陸
+</items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>NYUGAIKBN</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>14</text_max_length>
+	<text>0 ェ情’ェ情陸</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
     </widget>
   </widget>
 </widget>

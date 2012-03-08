@@ -38,6 +38,9 @@
       *                                     保険組合せ情報
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
+      *  04.07.02    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
+      *                                     直接請求フラグの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -276,6 +279,7 @@
            MOVE    RECE10-FLG   (5)        TO  SKYMAIN-FLG   (5)
            MOVE    RECE10-RESERVE-AREA     TO  SKYMAIN-RESERVE-AREA
            MOVE    RECE10-HENREI-SIJI-FLG  TO  SKYMAIN-HENREI-SIJI-FLG
+           MOVE    RECE10-DIRECT-FLG       TO  SKYMAIN-DIRECT-FLG
            MOVE    RECE10-HKNNUM-S         TO  SKYMAIN-HKNNUM-S
            MOVE    RECE10-HKNJANUM-S       TO  SKYMAIN-HKNJANUM-S
            MOVE    RECE10-CREYMD           TO  SKYMAIN-CREYMD
@@ -399,6 +403,7 @@
            MOVE    SKYMAIN-FLG   (5)       TO  RECE10-FLG   (5)
            MOVE    SKYMAIN-RESERVE-AREA    TO  RECE10-RESERVE-AREA
            MOVE    SKYMAIN-HENREI-SIJI-FLG TO  RECE10-HENREI-SIJI-FLG
+           MOVE    SKYMAIN-DIRECT-FLG      TO  RECE10-DIRECT-FLG
            MOVE    SKYMAIN-HKNNUM-S        TO  RECE10-HKNNUM-S
            MOVE    SKYMAIN-HKNJANUM-S      TO  RECE10-HKNJANUM-S
            MOVE    SKYMAIN-CREYMD          TO  RECE10-CREYMD

@@ -30,6 +30,9 @@
       *  04.04.01    NACL-藤原    09/12/10  返戻対応
       *  04.04.02    NACL-藤原    09/03/31  主科設定時の主科未設定データ
       *                                     の有無チェック
+      *
+      *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -66,6 +69,7 @@
            03  IDZ                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDXX                PIC 9(04).
+           03  IDYY                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -629,6 +633,42 @@
                GO  TO  410211-SELNUM-HENSYU-EXT
            END-IF
       *
+      *    直接請求する保険者とのチェック（社保）
+           IF    ( SPA-GMN-T06-TEISYUTUSAKI1
+                                       =   "T"   )
+           AND   ( SPA-NAI-T06-DIRECT-HKNJANUM
+                                   NOT =   SPACE )
+               EVALUATE    SPA-NAI-T06-DIRECT-HKNJANUM
+                   WHEN    "00000000"
+                       PERFORM VARYING IDYY    FROM    1   BY  1
+                               UNTIL   IDYY    >       10
+                               OR      SPA-NAI-T06-DIRECT-HKNJANUML
+                                                               (IDYY)
+                                               =   SPACE
+                           IF      SPA-NAI-T09-THKNJANUM-S (WRK-SELNO)
+                                           =
+                                       SPA-NAI-T06-DIRECT-HKNJANUML
+                                                               (IDYY)
+                               MOVE    "0027"              TO  SPA-ERRCD
+                               MOVE    ZERO                TO
+                                               SPA-GMN-T09-SELNUM (IDX)
+                               GO  TO  410211-SELNUM-HENSYU-EXT
+                           END-IF
+                       END-PERFORM
+                   WHEN    OTHER
+                       IF      SPA-NAI-T09-THKNJANUM-S (WRK-SELNO)
+                                           =
+                                           SPA-NAI-T06-DIRECT-HKNJANUM
+                           CONTINUE
+                       ELSE
+                           MOVE    "0027"              TO  SPA-ERRCD
+                           MOVE    ZERO                TO
+                                               SPA-GMN-T09-SELNUM (IDX)
+                           GO  TO  410211-SELNUM-HENSYU-EXT
+                       END-IF
+               END-EVALUATE
+           END-IF
+      *
       *    レセ電データ存在チェック
            IF      SPA-NAI-T09-TRECEDEN (WRK-SELNO)
                                    =   "1"
@@ -1145,6 +1185,8 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0018"
                    MOVE    "主科未設定データです"      TO  SPA-ERRMSG
+               WHEN    "0027"
+                   MOVE    "選択した保険者と違います"  TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "選択したデータを全て追加できません"
                                                        TO  SPA-ERRMSG

@@ -26,6 +26,15 @@
                 04  T01-PRTKBN-COUNT PIC S9(9)   BINARY.
                 04  T01-PRTKBN-ITEM
                         PIC X(32)   OCCURS  5 TIMES.
+              03  T01-HKNJANUM-TITLE-VISIBLE  PIC X(01).
+              03  T01-HKNJANUM-TITLE          PIC X(10).
+              03  T01-DIRECT-HKNJANUM-COMBO.
+                04  T01-DIRECT-HKNJANUM-COMBO-VISIBLE  PIC X(01).
+                04  T01-DIRECT-HKNJANUM.
+                  05  T01-VALUE    PIC X(39).
+                04  T01-DIRECT-HKNJANUM-COUNT PIC S9(9)   BINARY.
+                04  T01-DIRECT-HKNJANUM-ITEM
+                        PIC X(39)   OCCURS  10 TIMES.
               03  T01-DATA-COMBO.
                 04  T01-DATA-STATE PIC S9(9)   BINARY.
                 04  T01-DATA.

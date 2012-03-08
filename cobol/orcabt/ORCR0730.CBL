@@ -1867,7 +1867,8 @@
                    OR      SYS-200505-HKNJANUM (IDX)
                                =   SPACE
                DISPLAY "SYS-200505-HKNJANUM="  IDX " "
-                                               SYS-200505-HKNJANUM (IDX)
+                                        SYS-200505-HKNJANUM (IDX) " "
+                                        SYS-200505-HKNJANUM-63 (IDX)
            END-PERFORM
       *         
       *    レセプト編綴順情報
@@ -10144,6 +10145,17 @@
                MOVE    "1"                 TO  RECE10-SKYKBN-RECEDEN
            ELSE
                MOVE    SPACE               TO  RECE10-SKYKBN-RECEDEN
+           END-IF
+      *
+      *    直接請求フラグ
+           IF    ( RECE62-TEISYUTUSAKI =   "1"        )
+           AND   ( RECE08-HKNJANUM-SRT =   "8"        )
+           AND   ( RECE08-HKNJANUM-S
+                                   NOT =   "99999999" )
+               MOVE    "1"                 TO  RECE10-DIRECT-FLG
+               MOVE    RECE08-HKNJANUM-S   TO  RECE10-HKNJANUM-S
+           ELSE
+               MOVE    "0"                 TO  RECE10-DIRECT-FLG
            END-IF
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC

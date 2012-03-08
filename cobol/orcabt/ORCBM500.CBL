@@ -80,6 +80,9 @@
       *
       *  04.06.01    NACL-Æ£¸¶    10/10/12  ¸øÈñÃ±ÆÈ¤Î¥ì¥»Ê¬Î¥ÂÐ±þ
       *                                     ¥­¡¼¤Ëkohid ÄÉ²Ã
+      *
+      *  04.07.01    NACL-Æ£¸¶    12/02/13  ·òÊÝÁÈ¹ç¤Ø¤ÎÄ¾ÀÜÀÁµá¤È¿³ºº
+      *                                     »ÙÊ§µ¡´ØÀÁµáÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -184,6 +187,7 @@ grpsys COPY    "COMMON-SPA".
            05  WRK-PARA-FIXEDSIZE      PIC 9(07).
            05  WRK-PARA-HOSPNUM        PIC 9(02).
            05  WRK-PARA-PRTKBN         PIC X(01).
+           05  WRK-PARA-HKNJANUM       PIC X(08).
       *
            03  WRK-RECEERR             PIC X(200). 
            03  WRK-MCP-RC              PIC 9(9).
@@ -402,6 +406,7 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-DATAKBN
                                                WRK-PARA-FIXEDSIZE
                                                WRK-PARA-PRTKBN
+                                               WRK-PARA-HKNJANUM
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -479,6 +484,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "4" ALSO    ANY
                    MOVE    "key67"                 TO  WRK-MCP-PATHNAME
            END-EVALUATE
+           MOVE    "key80"             TO  WRK-MCP-PATHNAME
            MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
            PERFORM 900-SEIKYU-SELECT-SEC
            .
@@ -608,6 +614,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                        " HENREI-SIJI-FLG="  RECE10-HENREI-SIJI-FLG
                        " ETC-YKZFTN1="  RECE10-ETC-YKZFTN (1)
                        " SKYKBN-RECEDEN="  RECE10-SKYKBN-RECEDEN
+                       " HKNJANUM-S="  RECE10-HKNJANUM-S
+                       " DIRECT-FLG="  RECE10-DIRECT-FLG
       *???
                PERFORM 900-RECEDEN-SELECT-SEC
                PERFORM     UNTIL   FLG-RECEDEN =   1
@@ -1784,23 +1792,35 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
            EVALUATE    WRK-PARA-TEISYUTUSAKI
-                           ALSO    WRK-PARA-NYUGAIKBN   
-               WHEN    "3" ALSO    ZERO
+               WHEN    "1"
+                   MOVE    1                   TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI 
+               WHEN    "2"
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI 
+               WHEN    "3"
                    MOVE    6                   TO  RECE10-TEISYUTUSAKI
                                                    RECE10-XXTEISYUTUSAKI 
-                   MOVE    "%"                 TO  RECE10-NYUGAIKBN
-               WHEN    "3" ALSO    ANY
-                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
-                                                   RECE10-XXTEISYUTUSAKI 
-                   MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
-               WHEN    "4" ALSO    ZERO
+               WHEN    "4"
                    MOVE    2                   TO  RECE10-TEISYUTUSAKI
                    MOVE    6                   TO  RECE10-XXTEISYUTUSAKI 
+           END-EVALUATE
+           EVALUATE    WRK-PARA-NYUGAIKBN
+               WHEN    ZERO
                    MOVE    "%"                 TO  RECE10-NYUGAIKBN
-               WHEN    "4" ALSO    ANY
-                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
-                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI 
+               WHEN    ANY
                    MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+           END-EVALUATE
+           EVALUATE    WRK-PARA-HKNJANUM
+               WHEN    "99999999"
+                   MOVE    "%%%%%%%%"          TO  RECE10-HKNJANUM-S
+                   MOVE    "%"                 TO  RECE10-DIRECT-FLG
+               WHEN    "00000000"
+                   MOVE    "%%%%%%%%"          TO  RECE10-HKNJANUM-S
+                   MOVE    "0"                 TO  RECE10-DIRECT-FLG
+               WHEN    ANY
+                   MOVE    WRK-PARA-HKNJANUM   TO  RECE10-HKNJANUM-S
+                   MOVE    "1"                 TO  RECE10-DIRECT-FLG
            END-EVALUATE
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE

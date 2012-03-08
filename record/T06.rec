@@ -33,6 +33,10 @@ T06	{
 		SKYYMD_H	{
 			value	varchar(10);
 		};
+		HKNJANAME	{
+			style	varchar(20);
+			value	varchar(30);
+		};
 		TEISYUTUSAKI1	{
                         state   int;
 			value	bool;

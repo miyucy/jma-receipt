@@ -17,6 +17,8 @@
                 04  T06-VALUE   PIC X(7).
               03  T06-SKYYMD-H.
                 04  T06-VALUE   PIC X(10).
+              03  T06-HKNJANAME-STYLE    PIC X(20).
+              03  T06-HKNJANAME          PIC X(30).
               03  T06-TEISYUTUSAKI1-STATE   PIC S9(9)   BINARY.
               03  T06-TEISYUTUSAKI1.
                 04  T06-VALUE   PIC X.

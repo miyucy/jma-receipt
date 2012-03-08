@@ -44,10 +44,17 @@
       *                                     システム管理の設定に従い、災
       *                                     害該当レセプトのレセ電データ
       *                                     の作成のチェックを追加
+      *  04.05.05    NACL-藤原    12/02/08  算定日情報に係る記録条件仕様
+      *                                     の変更
+      *                                     平成２４年３月以前の月遅れ分
+      *                                     のチェックを追加
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
       *  04.06.02    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *
+      *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -127,6 +134,7 @@
            03  IDX2                PIC 9(04).
            03  IDXX                PIC 9(04).
            03  IDXY                PIC 9(04).
+           03  IDYY                PIC 9(04).
            03  IDZZ                PIC 9(04).
       *
       *    一時領域
@@ -549,6 +557,11 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE                  SPA-T06-AREA
+      *
+      *    直接請求する保険者番号                                             
+           MOVE    SPA-T01-DIRECT-HKNJANUM-AREA
+                                       TO
+                                       SPA-NAI-T06-DIRECT-HKNJANUM-AREA
       *
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
@@ -2514,6 +2527,11 @@
                                    TO
                                    SPA-NAI-T09-RECE10-THENREI-SIJI-FLG
                                                                   (IDX)
+           IF      RECE10-TEISYUTUSAKI =   "1"
+               MOVE    RECE10-HKNJANUM-S
+                                   TO  SPA-NAI-T09-THKNJANUM-S
+                                                                  (IDX)
+           END-IF
       *
            MOVE    IDX             TO  SPA-GMN-T09-TRENNUM        (IDX)
            MOVE    RECE10-PTNUM    TO  SPA-GMN-T09-TPTNUM         (IDX)
@@ -2973,6 +2991,36 @@
       *****************************************************************
        42031-SEIKYU-CHK-SEC         SECTION.
       *
+      *    直接請求する保険者とのチェック（社保）
+           IF    ( SPA-GMN-T06-TEISYUTUSAKI1
+                                       =   "T"   )
+           AND   ( SPA-NAI-T06-DIRECT-HKNJANUM
+                                   NOT =   SPACE )
+               EVALUATE    SPA-NAI-T06-DIRECT-HKNJANUM
+                   WHEN    "00000000"
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       10
+                               OR      SPA-NAI-T06-DIRECT-HKNJANUML(IDX)
+                                           =   SPACE
+                           IF      SPA-NAI-T09-THKNJANUM-S (1)
+                                           =
+                                       SPA-NAI-T06-DIRECT-HKNJANUML(IDX)
+                               MOVE    "0027"              TO  SPA-ERRCD
+                               GO  TO  42031-SEIKYU-CHK-EXT
+                           END-IF
+                       END-PERFORM
+                   WHEN    OTHER
+                       IF      SPA-NAI-T09-THKNJANUM-S (1)
+                                           =
+                                           SPA-NAI-T06-DIRECT-HKNJANUM
+                           CONTINUE
+                       ELSE
+                           MOVE    "0027"              TO  SPA-ERRCD
+                           GO  TO  42031-SEIKYU-CHK-EXT
+                       END-IF
+               END-EVALUATE
+           END-IF
+      *
       *    レセ電請求一覧とのチェック
            IF      SPA-GMN-T09-TCHK(1) =   "1"
                MOVE    "0008"              TO  SPA-ERRCD
@@ -3413,6 +3461,39 @@
            IF      FLG-ONRECE-B    =   1
                MOVE    "0025"          TO  SPA-ERRCD
                GO  TO  480-ZENKAI-HYOUJI-TID-EXT
+           END-IF
+      *
+      *    直接請求する保険者とのチェック（社保）
+           IF    ( SPA-GMN-T06-TEISYUTUSAKI1
+                                       =   "T"   )
+           AND   ( SPA-NAI-T06-DIRECT-HKNJANUM
+                                   NOT =   SPACE )
+               EVALUATE    SPA-NAI-T06-DIRECT-HKNJANUM
+                   WHEN    "00000000"
+                       PERFORM VARYING IDYY    FROM    1   BY  1
+                               UNTIL   IDYY    >       10
+                               OR      SPA-NAI-T06-DIRECT-HKNJANUML
+                                                               (IDYY)
+                                               =   SPACE
+                           IF      ONRECE-B-HKNJANUM   =
+                                       SPA-NAI-T06-DIRECT-HKNJANUML
+                                                               (IDYY)
+                                   OR  SPA-NAI-T06-DIRECT-HKNJANUM-63L
+                                                               (IDYY)
+                               MOVE    "0027"              TO  SPA-ERRCD
+                               GO  TO  480-ZENKAI-HYOUJI-TID-EXT
+                           END-IF
+                       END-PERFORM
+                   WHEN    OTHER
+                       IF      ONRECE-B-HKNJANUM   =
+                                       SPA-NAI-T06-DIRECT-HKNJANUM
+                                   OR  SPA-NAI-T06-DIRECT-HKNJANUM-63
+                           CONTINUE
+                       ELSE
+                           MOVE    "0027"              TO  SPA-ERRCD
+                           GO  TO  480-ZENKAI-HYOUJI-TID-EXT
+                       END-IF
+               END-EVALUATE
            END-IF
       *
       *    未処理分があるときのチェック 
@@ -4823,8 +4904,8 @@
            MOVE    SPA-GMN-T06-RECE-MAX
                                        TO  T06-RECE-LIST-COUNT
            MOVE    ZERO                TO  T06-RECE-LIST-ROW
-           IF      WRK-T06-RECE-ROW         >   ZERO
-               MOVE    WRK-T06-RECE-ROW         TO  T06-RECE-LIST-ROW
+           IF      WRK-T06-RECE-ROW        >   ZERO
+               MOVE    WRK-T06-RECE-ROW        TO  T06-RECE-LIST-ROW
            END-IF
       *
       *
@@ -4835,6 +4916,17 @@
            MOVE    SPA-GMN-T06-NAME        TO  T06-NAME
            MOVE    SPA-GMN-T06-SRYYM       TO  T06-SRYYM
            MOVE    SPA-GMN-T06-NYUGAIKBN   TO  T06-NYUGAIKBN
+      *
+           MOVE    "blue"                  TO  T06-HKNJANAME-STYLE
+           IF      SPA-GMN-T06-TEISYUTUSAKI1
+                                           =   "T"
+               IF      SPA-NAI-T06-DIRECT-HKNJANUM =   SPACE
+                   CONTINUE   
+               ELSE
+                   MOVE    SPA-NAI-T06-DIRECT-HKNJANAME
+                                                   TO  T06-HKNJANAME
+               END-IF
+           END-IF
            MOVE    SPA-GMN-T06-TEISYUTUSAKI1
                                            TO  T06-TEISYUTUSAKI1
            MOVE    SPA-GMN-T06-TEISYUTUSAKI2
@@ -5004,6 +5096,8 @@
                WHEN    "0026"
                    MOVE    "作成対象となるデータがありません"
                                                        TO  SPA-ERRMSG
+               WHEN    "0027"
+                   MOVE    "選択した保険者と違います"  TO  SPA-ERRMSG
                WHEN    "0041"
                    MOVE    "データが入力してあるので遷移できません"
                                                        TO  SPA-ERRMSG

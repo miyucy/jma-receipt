@@ -216,6 +216,7 @@ FLG4				number(1,0);
 FLG5				number(1,0);
 RESERVE_AREA			char(50);
 HENREI_SIJI_FLG			number(1,0);
+DIRECT_FLG			char(1);
 ETCCREATEFLG			number(1,0);
 HKNNUM_S			char(3); 
 HKNJANUM_S			char(8);
@@ -2410,4 +2411,27 @@ path	key79	{
 	};
 };
 
+path	key80	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_main_key80_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu_main
+                WHERE (      HOSPNUM      =   :HOSPNUM        )
+                  AND (      NYUGAIKBN   like   :NYUGAIKBN    )
+                  AND (      TEISYUTUSAKI =   :TEISYUTUSAKI
+                        OR   TEISYUTUSAKI =   :XXTEISYUTUSAKI )
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      ))      )
+                  AND (   (  HENREIYM    =   '000000'  )
+                       OR (( HENREIYM    <>  '000000' )
+                       AND ( HENREI_SIJI_FLG =  1     ))      )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S     )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG     )
+                ORDER  BY  RECEKA,PTNUM,SRYYM
+		;
+	};
+};
 

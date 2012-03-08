@@ -54,6 +54,18 @@ T01	{
 			count	int;
 			item	varchar(32)[5];
 		};
+		HKNJANUM_TITLE	{
+			visible bool;
+			value	varchar(10);
+		};
+		DIRECT_HKNJANUM_COMBO	{
+			visible bool;
+			DIRECT_HKNJANUM	{
+				value	varchar(39);
+			};
+			count	int;
+			item	varchar(39)[10];
+		};
 		DATA_COMBO	{
 			state   int;
 			DATA	{

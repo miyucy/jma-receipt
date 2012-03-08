@@ -50,6 +50,9 @@
       *                                     システム管理の設定に従い、災
       *                                     害該当レセプトのレセ電データ
       *                                     のチェックを行う
+      *
+      *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -123,6 +126,7 @@
       *----(04.02.01)--ADD-START---
            05  RECEERR                 PIC X(100).
       *----(04.02.01)--ADD-END-----
+           05  WRK-PARA-HKNJANUM       PIC X(08).
       *
       *    一時領域
        01  WRK-AREA.
@@ -334,6 +338,7 @@
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-NYUGAIKBN
+                                               WRK-PARA-HKNJANUM
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -436,6 +441,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "key67"     TO  WRK-PATH
       *----(04.02.01)--ADD-END-----
            END-EVALUATE
+           MOVE    "key80"         TO  WRK-PATH
            MOVE    "tbl_seikyu"    TO  WRK-TABLE
            PERFORM 900-SEIKYU-SELECT-SEC
       *
@@ -449,6 +455,18 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
        200-MAIN-SEC                SECTION.
       *
            PERFORM UNTIL   FLG-END     =   1
+      *???
+               DISPLAY "PTNUM=" RECE10-PTNUM
+                       " TEISYUTUSAKI=" RECE10-TEISYUTUSAKI 
+                       " SRYYM="        RECE10-SRYYM 
+                       " RECESYUBETU="  RECE10-RECESYUBETU 
+                       " HENREIYM="     RECE10-HENREIYM
+                       " HENREI-SIJI-FLG="  RECE10-HENREI-SIJI-FLG
+                       " ETC-YKZFTN1="  RECE10-ETC-YKZFTN (1)
+                       " SKYKBN-RECEDEN="  RECE10-SKYKBN-RECEDEN
+                       " HKNJANUM-S="  RECE10-HKNJANUM-S
+                       " DIRECT-FLG="  RECE10-DIRECT-FLG
+      *???
       *        レセプト電算情報読み込み
                PERFORM 900-RECEDEN-SELECT-SEC
       *
@@ -1162,27 +1180,37 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
-      *----(04.02.01)--ADD-START---
            EVALUATE    WRK-PARA-TEISYUTUSAKI
-                           ALSO    WRK-PARA-NYUGAIKBN
-               WHEN    "3" ALSO    ZERO
-                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
-                                                   RECE10-XXTEISYUTUSAKI
-                   MOVE    "%"                 TO  RECE10-NYUGAIKBN
-               WHEN    "3" ALSO    ANY
-                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
-                                                   RECE10-XXTEISYUTUSAKI
-                   MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
-               WHEN    "4" ALSO    ZERO
+               WHEN    "1"
+                   MOVE    1                   TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI 
+               WHEN    "2"
                    MOVE    2                   TO  RECE10-TEISYUTUSAKI
-                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI
-                   MOVE    "%"                 TO  RECE10-NYUGAIKBN
-               WHEN    "4" ALSO    ANY
+                                                   RECE10-XXTEISYUTUSAKI 
+               WHEN    "3"
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI 
+               WHEN    "4"
                    MOVE    2                   TO  RECE10-TEISYUTUSAKI
-                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI 
+           END-EVALUATE
+           EVALUATE    WRK-PARA-NYUGAIKBN
+               WHEN    ZERO
+                   MOVE    "%"                 TO  RECE10-NYUGAIKBN
+               WHEN    ANY
                    MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
            END-EVALUATE
-      *----(04.02.01)--ADD-END-----
+           EVALUATE    WRK-PARA-HKNJANUM
+               WHEN    "99999999"
+                   MOVE    "%%%%%%%%"          TO  RECE10-HKNJANUM-S
+                   MOVE    "%"                 TO  RECE10-DIRECT-FLG
+               WHEN    "00000000"
+                   MOVE    "%%%%%%%%"          TO  RECE10-HKNJANUM-S
+                   MOVE    "0"                 TO  RECE10-DIRECT-FLG
+               WHEN    ANY
+                   MOVE    WRK-PARA-HKNJANUM   TO  RECE10-HKNJANUM-S
+                   MOVE    "1"                 TO  RECE10-DIRECT-FLG
+           END-EVALUATE
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    WRK-TABLE       TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME

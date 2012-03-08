@@ -146,10 +146,16 @@
       *                                     システム管理の設定に従い、災
       *                                     害該当レセプトのレセ電データ
       *                                     のチェックを追加
+      *  04.05.30    NACL-藤原    12/02/08  算定日情報に係る記録条件仕様
+      *                                     の変更
+      *                                     平成２４年３月以前の月遅れ分
+      *                                     のチェックを追加
       *
       *  04.06.01    NACL-藤原    11/12/12  点検レセ０点公費印字対応
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
+      *  04.07.02    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -383,6 +389,7 @@
       *
            COPY    "CPSK2005.INC".
            COPY    "CPSK200501.INC".
+           COPY    "CPSK200505.INC".
       *
            COPY    "CPSK2009.INC".
       *
@@ -812,6 +819,58 @@ grpsys                                         SPA-AREA
                                        TO
                                        SPA-NAI-200501-RECEDEN-DISASTER
       *
+           INITIALIZE                      SYS-200505-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-200505-HOSPNUM
+           MOVE    "2005"              TO  SYS-200505-KANRICD
+           MOVE    "05"                TO  SYS-200505-KBNCD
+           MOVE    SPA-NAI-SKYYM       TO  SYS-200505-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-200505-STYUKYMD (7:2)
+           MOVE    SYS-200505-STYUKYMD TO  SYS-200505-EDYUKYMD
+           MOVE    SYS-200505-REC      TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE   MCPDATA-REC          TO  SYS-200505-REC
+           ELSE
+               INITIALIZE                      SYS-200505-REC
+           END-IF
+           MOVE    ZERO                TO  IDXY
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       5
+                   OR      SYS-200505-HKNJANUM (IDX)
+                               =   SPACE
+               IF      IDXY            =   ZERO
+                   MOVE    1               TO  IDXY
+                   MOVE    "00000000"      TO  SPA-GMN-DIRECT-HKNJANUML
+                                                                  (IDXY)
+                   MOVE    "直接請求する保険者以外"
+                                           TO  SPA-GMN-DIRECT-HKNJANAMEL
+                                                                  (IDXY)
+               END-IF
+               ADD     1               TO  IDXY
+               MOVE    SYS-200505-HKNJANUM    (IDX)
+                                       TO  SPA-GMN-DIRECT-HKNJANUML
+                                                                  (IDXY)
+               MOVE    SYS-200505-HKNJANUM-63 (IDX)
+                                       TO  SPA-NAI-DIRECT-HKNJANUM-63L
+                                                                  (IDXY)
+               INITIALIZE                  HKNJAINF-REC
+               MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
+               MOVE    SPA-GMN-DIRECT-HKNJANUML (IDXY)
+                                       TO  HKNJA-HKNJANUM
+               MOVE    HKNJAINF-REC    TO  MCPDATA-REC
+               PERFORM 900-HKNJAINF-INV-SEC
+               MOVE    HKNJA-HKNJANAME TO  SPA-GMN-DIRECT-HKNJANAMEL
+                                                                  (IDXY)
+           END-PERFORM
+           MOVE    IDXY                TO  SPA-GMN-DIRECT-HKNJANUM-MAX
+           IF      SPA-GMN-DIRECT-HKNJANUM-MAX
+                                       >   ZERO
+               MOVE    SPA-GMN-DIRECT-HKNJANUMLST (1)
+                                           TO  SPA-GMN-DIRECT-HKNJANUM-G
+               MOVE    SPACE               TO
+                                           SPA-NAI-DIRECT-HKNJANUM-63
+           END-IF
+      *
            MOVE    WIDGET-NORMAL       TO  SPA-DATAKBN1-STATE
                                            SPA-DATAKBN2-STATE
                                            SPA-DATAKBN3-STATE
@@ -819,7 +878,7 @@ grpsys                                         SPA-AREA
                                            SPA-DATAKBN5-STATE
                                            SPA-DATAKBN6-STATE
                                            SPA-DATAKBN7-STATE
-                                           SPA-DATAKBN8-STATE       
+                                           SPA-DATAKBN8-STATE
                                            SPA-B06-STATE
                                            SPA-B07-STATE
                                            SPA-B08-STATE
@@ -2380,6 +2439,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    T01-DATA            TO  SPA-GMN-DATAKBN-G
            MOVE    T01-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN-G
            MOVE    T01-PRTKBN          TO  SPA-GMN-PRTKBN-G
+           MOVE    T01-DIRECT-HKNJANUM TO  SPA-GMN-DIRECT-HKNJANUM-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -2421,6 +2481,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
            PERFORM 4106-PRTKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4107-DIRECT-HKNJANUM-CHK-SEC
       *
            .
        4102-KIHON-CHK-EXT.
@@ -2841,6 +2906,48 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
            END-IF
            .
        4106-PRTKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    直接請求する保険者番号  入力処理
+      *****************************************************************
+       4107-DIRECT-HKNJANUM-CHK-SEC          SECTION.
+      *
+           IF      SPA-GMN-DIRECT-HKNJANUM-MAX
+                                       =   ZERO
+               GO  TO  4107-DIRECT-HKNJANUM-CHK-EXT
+           END-IF
+      *
+           IF      SPA-GMN-DIRECT-HKNJANUM
+                                       =   SPACE
+               MOVE    SPA-GMN-DIRECT-HKNJANUMLST (1)
+                                           TO  SPA-GMN-DIRECT-HKNJANUM-G
+               MOVE    SPACE               TO
+                                           SPA-NAI-DIRECT-HKNJANUM-63
+           ELSE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-DIRECT-HKNJANUM-MAX
+                   IF        SPA-GMN-DIRECT-HKNJANUM
+                                       =   SPA-GMN-DIRECT-HKNJANUML(IDX)
+                       MOVE    SPA-GMN-DIRECT-HKNJANUMLST (IDX)
+                                           TO  SPA-GMN-DIRECT-HKNJANUM-G
+                       MOVE    SPA-NAI-DIRECT-HKNJANUM-63L(IDX)
+                                           TO
+                                           SPA-NAI-DIRECT-HKNJANUM-63
+                       MOVE    SPA-GMN-DIRECT-HKNJANUM-MAX
+                                           TO  IDX
+                   END-IF
+               END-PERFORM
+               IF      SPA-GMN-DIRECT-HKNJANAME
+                                       =   SPACE
+                   MOVE    SPA-GMN-DIRECT-HKNJANUMLST (1)
+                                           TO  SPA-GMN-DIRECT-HKNJANUM-G
+                   MOVE    SPACE           TO
+                                           SPA-NAI-DIRECT-HKNJANUM-63
+               END-IF
+           END-IF
+           .
+       4107-DIRECT-HKNJANUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4727,6 +4834,15 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
                                    TO  SHELLTBL-ARG23
            MOVE    SPA-NAI-200501-RECEDEN-RIREKIKBN
                                    TO  SHELLTBL-ARG24
+           MOVE    "99999999"      TO  SHELLTBL-ARG25
+           EVALUATE    SPA-NAI-WIDGET     
+               WHEN    "B06"
+                   IF      SPA-GMN-DIRECT-HKNJANUM-MAX
+                                               >   ZERO
+                       MOVE    SPA-GMN-DIRECT-HKNJANUM
+                                                   TO  SHELLTBL-ARG25
+                   END-IF
+           END-EVALUATE
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -5180,6 +5296,31 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *    レセ電データ個別指示画面
       *****************************************************************
        480-RECEDEN-KOBETU-SEC             SECTION.
+      *
+           IF      SPA-GMN-DIRECT-HKNJANUM-MAX
+                                       >   ZERO
+               MOVE    SPA-GMN-DIRECT-HKNJANUM
+                                           TO  SPA-T01-DIRECT-HKNJANUM
+               MOVE    SPA-GMN-DIRECT-HKNJANAME
+                                           TO  SPA-T01-DIRECT-HKNJANAME
+               MOVE    SPA-NAI-DIRECT-HKNJANUM-63
+                                           TO
+                                           SPA-T01-DIRECT-HKNJANUM-63
+               MOVE    ZERO                TO  IDY 
+               PERFORM VARYING IDX FROM    2   BY  1
+                       UNTIL   IDX >       SPA-GMN-DIRECT-HKNJANUM-MAX
+                   ADD     1               TO  IDY
+                   MOVE    SPA-GMN-DIRECT-HKNJANUML (IDX)
+                                           TO  SPA-T01-DIRECT-HKNJANUML
+                                                                   (IDY)
+                   MOVE    SPA-NAI-DIRECT-HKNJANUM-63L (IDX)
+                                           TO
+                                           SPA-T01-DIRECT-HKNJANUM-63L
+                                                                   (IDY)
+               END-PERFORM
+           ELSE
+               INITIALIZE                  SPA-T01-DIRECT-HKNJANUM-AREA
+           END-IF
       *
            MOVE    SPA-T01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -5673,6 +5814,25 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *****MOVE    WIDGET-INSENSITIVE  TO  T01-HKNJANUM1-STATE
       *
+           IF      SPA-GMN-DIRECT-HKNJANUM-MAX
+                                       =   ZERO
+               MOVE    "F"         TO  T01-DIRECT-HKNJANUM-COMBO-VISIBLE
+                                       T01-HKNJANUM-TITLE-VISIBLE
+           ELSE
+               MOVE    "T"         TO  T01-DIRECT-HKNJANUM-COMBO-VISIBLE
+                                       T01-HKNJANUM-TITLE-VISIBLE
+               MOVE    "保険者番号"
+                                   TO   T01-HKNJANUM-TITLE
+               MOVE    SPA-GMN-DIRECT-HKNJANUM-G
+                                   TO  T01-DIRECT-HKNJANUM
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-DIRECT-HKNJANUM-MAX
+                   MOVE    SPA-GMN-DIRECT-HKNJANUMLST (IDX)
+                                       TO  T01-DIRECT-HKNJANUM-ITEM(IDX)
+               END-PERFORM
+           END-IF
+           MOVE    SPA-GMN-DIRECT-HKNJANUM-MAX
+                                   TO  T01-DIRECT-HKNJANUM-COUNT
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -5707,6 +5867,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                     MOVE  "B12"        TO  MCP-WIDGET   
              WHEN    8
                     MOVE  "HKNJANUM1"  TO  MCP-WIDGET   
+             WHEN    9
+                    MOVE  "DIRECT_HKNJANUM"
+                                       TO  MCP-WIDGET   
          END-EVALUATE
       *
            .
@@ -5732,6 +5895,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "HKNJANUM1"
                    MOVE    7               TO  SPA-GMN-CUR
                WHEN    "PRTKBN"
+                   MOVE    7               TO  SPA-GMN-CUR
+               WHEN    "DIRECT_HKNJANUM"
                    MOVE    7               TO  SPA-GMN-CUR
            END-EVALUATE
            .
@@ -6098,6 +6263,20 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    IF      SPA-GMN-PRTKBN      =   "2"
                        MOVE    "【点検用】"        TO  TID2-LABEL
                    END-IF
+      *
+                   EVALUATE    SPA-TIDCD
+                       WHEN    "1010"
+                       WHEN    "1015"
+                       WHEN    "1016"
+                           IF      SPA-GMN-DIRECT-HKNJANUM-MAX
+                                                       >   ZERO
+                               STRING   TID2-LABEL DELIMITED  BY  SPACE
+                                        SPA-GMN-DIRECT-HKNJANAME
+                                                   DELIMITED  BY  SPACE
+                                                   INTO       TID2-LABEL
+                               END-STRING  
+                           END-IF
+                   END-EVALUATE
                WHEN    OTHER
                    MOVE    WRK-TIDMSG      TO  TID2-ID1MSG
            END-EVALUATE

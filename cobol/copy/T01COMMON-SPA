@@ -22,6 +22,8 @@
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
        01  SPA-T01KYOUTU.
       *
@@ -52,3 +54,19 @@
       *
       *戻り表示画面フラグ（１：確認ダイアログ）
            05  SPA-T07-FLG                 PIC X(01).
+      *
+      *直接請求する保険者番号                                             
+           05  SPA-T01-DIRECT-HKNJANUM-AREA.
+               07  SPA-T01-DIRECT-HKNJANUM-G.
+                    09  SPA-T01-DIRECT-HKNJANUM
+                                           PIC X(08).
+                    09  SPA-T01-DIRECT-HKNJANAME
+                                           PIC X(30).
+               07  SPA-T01-DIRECT-HKNJANUM-63
+                                           PIC X(08).                   
+               07  SPA-T01-DIRECT-HKNJANUMLST  OCCURS  10.
+                   09  SPA-T01-DIRECT-HKNJANUML
+                                           PIC X(08).
+                   09  SPA-T01-DIRECT-HKNJANUM-63L
+                                           PIC X(08).
+
