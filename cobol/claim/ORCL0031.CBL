@@ -1836,6 +1836,11 @@
                    MOVE    1               TO  FLG-CHUSIN
                END-IF
            END-IF
+      *H24.4
+      *    一般名処方加算（処方せん料）
+           IF      WRK-SRYCD           =   "120003570"
+               MOVE    1               TO  FLG-CHK
+           END-IF
       *
            .
        20021-SRYCD-CHK-EXT.
