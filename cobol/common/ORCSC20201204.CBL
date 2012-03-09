@@ -348,10 +348,6 @@
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    一般名テーブル
-       01  GENERICNAME-REC.
-           COPY    "CPGENERICNAME.INC".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -1065,7 +1061,7 @@
                        IF      (WRK-COM-INPUTCD (IDX-Z + 1)
                                                    =   "099209907"
                                                    OR  "099209903"  )
-      *                    一般名記載なし、後発品変更不可
+      *                    銘柄名記載、後発品変更不可
                            MOVE    ZERO                TO  FLG-CHK-P
                        END-IF
                    END-IF
@@ -1947,6 +1943,7 @@
                END-IF
            END-IF
       *
+      *H24.4
            IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
       *
                MOVE    WRK-COM-KISOTEN(IDX)    TO  WRK-KEI-KISOTEN
@@ -1988,13 +1985,13 @@
                            IF      (WRK-COM-INPUTCD (IDX + 1)
                                                    =   "099209907"
                                                    OR  "099209903"  )
-      *                        一般名記載なし、後発品変更不可
+      *                        銘柄名記載、後発品変更不可
                                MOVE    ZERO                TO  FLG-CHK-P
                            END-IF
                        END-IF
                        IF     ( WRK-COM-INPUTCD (IDX + 1)
                                                    =   "099209908"  )
-      *                 一般名記載あり
+      *                 一般名記載
                            MOVE    1                   TO  FLG-CHK-P
                        END-IF
                        IF      (FLG-CHK-P          =   1   )  AND
@@ -2034,6 +2031,7 @@
                    END-IF
                END-IF
       *        点数
+      *H24.4
       *******  COMPUTE WRK-SYOKEIS2        =   WRK-COM-KISOTEN(IDX)
                COMPUTE WRK-SYOKEIS2        =   WRK-KEI-KISOTEN
                                            *   WRK-COM-SURYO  (IDX)
