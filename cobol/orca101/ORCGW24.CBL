@@ -734,9 +734,6 @@
       *
       *    救急・在宅等支援療養病床初期加算区分コンボ
            PERFORM 310-KYUKYUKSNLST-SET-SEC
-      *
-      *    栄養管理実施加算区分コンボ
-           PERFORM 310-EIYOUKSNLST-SET-SEC
       *!!
       *    退院時院外処方せん発行区分コンボ
            PERFORM 310-SHOHOUKBNLST-SET-SEC
@@ -1284,25 +1281,6 @@
        310-KYUKYUKSNLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    栄養管理実施加算区分コンボ
-      *****************************************************************
-       310-EIYOUKSNLST-SET-SEC    SECTION.
-      *
-           MOVE    2               TO  SPA-GMN-W24-EIYOUKSN-MAX
-      *
-           MOVE    "0"             TO  SPA-GMN-W24-EIYOUKSNL    (1)
-           MOVE    "食無し日も算定する"
-                                   TO  SPA-GMN-W24-EIYOUKSNMEIL (1)
-      *
-           MOVE    "1"             TO  SPA-GMN-W24-EIYOUKSNL    (2)
-           MOVE    "食無し日は算定しない"
-                                   TO  SPA-GMN-W24-EIYOUKSNMEIL (2)
-      *
-      *
-           .
-       310-EIYOUKSNLST-SET-EXT.
-           EXIT.
-      *****************************************************************
       *    入力情報編集処理
       *****************************************************************
        310-INPUT-AREA-EDIT-SEC     SECTION.
@@ -1477,16 +1455,6 @@
            ELSE
                MOVE    SPA-GMN-W24-KYUKYUKSNLST (1)
                                        TO  SPA-GMN-W24-KYUKYUKSN-G
-           END-IF
-      *
-      *    栄養管理実施加算区分
-           MOVE    SYS-5000-EIYOUKSNKBN  TO  WRK-CMB-CD
-           PERFORM 4200-EIYOUKSNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     NOT =   SPACE )
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-EIYOUKSN-G
-           ELSE
-               MOVE    SPA-GMN-W24-EIYOUKSNLST (1)
-                                       TO  SPA-GMN-W24-EIYOUKSN-G
            END-IF
       *
       *    入院料加算情報
@@ -2045,9 +2013,6 @@
       *    救急・在宅等支援療養病床初期加算区分
            MOVE    W24-KYUKYUKSN       TO  SPA-GMN-W24-KYUKYUKSN-G
       *
-      *    栄養管理実施加算区分
-           MOVE    W24-EIYOUKSN        TO  SPA-GMN-W24-EIYOUKSN-G
-      *
       *    退院時院外処方せん区分
            MOVE    W24-SHOHOUKBN       TO  SPA-GMN-W24-SHOHOUKBN-G
       *
@@ -2270,12 +2235,6 @@
       *
       *    救急・在宅等支援療養病床初期加算区分チェック処理
            PERFORM 4100-KYUKYUKSN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4102-KIHON-CHK-EXT
-           END-IF
-      *
-      *    栄養管理実施加算区分チェック処理
-           PERFORM 4100-EIYOUKSN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2748,10 +2707,6 @@
       *    救急・在宅等支援療養病床初期加算区分
            MOVE    SPA-GMN-W24-KYUKYUKSN
                                    TO  SYS-5000-KYUKYUKSNKBN
-      *
-      *    栄養管理実施加算区分
-           MOVE    SPA-GMN-W24-EIYOUKSN
-                                   TO  SYS-5000-EIYOUKSNKBN
       *
       *    減算情報
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -3623,25 +3578,6 @@
        4100-KYUKYUKSN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    栄養管理実施加算区分チェック処理
-      *****************************************************************
-       4100-EIYOUKSN-CHK-SEC          SECTION.
-      *
-           MOVE    SPA-GMN-W24-EIYOUKSN
-                                       TO  WRK-CMB-CD
-           PERFORM 4200-EIYOUKSNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM         =   SPACE )
-               MOVE    SPA-GMN-W24-EIYOUKSNLST (1)
-                                       TO  SPA-GMN-W24-EIYOUKSN-G
-           ELSE
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-EIYOUKSN-G
-           END-IF
-      *
-           .
-      *
-       4100-EIYOUKSN-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    入院時食事療養コンボチェック処理
       *****************************************************************
        4200-SKJRYOYOLST-CHK-SEC    SECTION.
@@ -4278,29 +4214,6 @@
        4200-KYUKYUKSNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    栄養管理実施加算区分コンボチェック処理
-      *****************************************************************
-       4200-EIYOUKSNLST-CHK-SEC   SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-W24-EIYOUKSN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-W24-EIYOUKSNL (IDX-CMB)
-                                       =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-W24-EIYOUKSNLST (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-EIYOUKSNLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    入力情報領域初期化処理
       *****************************************************************
        4201-INPUT-AREA-INIT-SEC        SECTION.
@@ -4439,8 +4352,6 @@
                                    TO  SPA-GMN-W24-IPPANKSN-G
            MOVE    SPA-GMN-W24-KYUKYUKSNLST (1)
                                    TO  SPA-GMN-W24-KYUKYUKSN-G
-           MOVE    SPA-GMN-W24-EIYOUKSNLST (1)
-                                   TO  SPA-GMN-W24-EIYOUKSN-G
       *
            MOVE    SPA-GMN-W24-SHOHOUKBNLST    (1)
                                    TO  SPA-GMN-W24-SHOHOUKBN-G
@@ -5103,21 +5014,6 @@
       *
            END-PERFORM
       *
-      *    栄養管理実施加算区分
-           MOVE    SPA-GMN-W24-EIYOUKSN-G
-                                       TO  W24-EIYOUKSN
-           MOVE    SPA-GMN-W24-EIYOUKSN-MAX
-                                       TO  W24-EIYOUKSN-CNT
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   W24-EIYOUKSN-CNT )
-      *
-      *
-               MOVE    SPA-GMN-W24-EIYOUKSNLST (IDX0)
-                                       TO  W24-EIYOUKSN-ITM (IDX0)
-      *
-           END-PERFORM
-      *
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
                MOVE    "入院加算情報"          TO  W24-FRAME3-LABEL
       *
@@ -5139,8 +5035,6 @@
            MOVE    "食事情報"                  TO  W24-FRAME1-LABEL
            MOVE    "入院会計表示情報"          TO  W24-FRAME4-LABEL
            MOVE    "選定入院料"                TO  W24-FRAME5-LABEL
-      *
-           MOVE    "栄養管理実施加算"          TO  W24-LBLEIYOUKSN
       *
       *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
@@ -5227,8 +5121,6 @@
                MOVE    "SYOKUJI01"     TO  MCP-WIDGET
            WHEN    003
                MOVE    "SYOKUJI02"     TO  MCP-WIDGET
-           WHEN    004
-               MOVE    "EIYOUKSN"      TO  MCP-WIDGET
            WHEN    008
                MOVE    "CHK_NYUKSN01"  TO  MCP-WIDGET
            WHEN    009
@@ -5366,8 +5258,6 @@
            WHEN    "SYOKUJI01"
                MOVE    003             TO  SPA-GMN-W24-CUR
            WHEN    "SYOKUJI02"
-               MOVE    004             TO  SPA-GMN-W24-CUR
-           WHEN    "EIYOUKSN"
                MOVE    046             TO  SPA-GMN-W24-CUR
            WHEN    "CHK_NYUKSN01"
                MOVE    009             TO  SPA-GMN-W24-CUR

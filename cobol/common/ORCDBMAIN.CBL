@@ -208,17 +208,6 @@
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
-               WHEN    "tbl_nyuinacct"
-                   IF    MCP-FUNC    =   "DBFETCH"
-                       CALL    "ORCDBNACCT" USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-                   ELSE
-                       CALL    "MONFUNC"   USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                   END-IF
                WHEN    OTHER
       *
                    CALL    "MONFUNC"   USING
