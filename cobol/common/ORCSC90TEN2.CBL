@@ -33,7 +33,6 @@
       *  04.05.00    NACL-¬ø°π«º  10/01/XX  ÃÙ…æ¬–±˛
       *  04.05.00    NACL-¬ø°π«º  10/03/XX   ø¿Æ£≤£≤«Ø£¥∑Ó≤˛¿µ¬–±˛
       *  04.07.00    NACL-¬ø°π«º  12/03/XX   ø¿Æ£≤£¥«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.07.00    NACL-¬ø°π«º  12/08/28  ÃÙ∫ﬁŒ¡∏∫≈¿¬–±˛
       *****************************************************************
       *
       *
@@ -120,8 +119,6 @@
            03  WRK-MOJI            PIC X(01).
       *
            03  WRK-MAISU           PIC 9(05).
-      *ver.4.7
-           03  WRK-GENTEN          PIC 9(08).
       *
       *ø«Œ≈π‘∞ŸΩËÕ˝∫«¬Áπ‘
        01  MAX-LINE                PIC 9(03)   VALUE   400.
@@ -198,28 +195,19 @@
                ELSE
                    MOVE    LNK-COM-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
                END-IF
-      *
-               MOVE    IDX                 TO  IDX-MAX
       *        ÃÙ…æ§œ¬–æ›≥∞
                IF      LNK-COM-YAKUHYO (IDX)   =   "1"
                    CONTINUE
                ELSE
       *
-      *****    MOVE    IDX                 TO  IDX-MAX
+               MOVE    IDX                 TO  IDX-MAX
                EVALUATE    WRK-MOJI
       *        ÃÙ∫ﬁ
                WHEN    "6"
                    EVALUATE    LNK-COM-YKZKBN(IDX)
                        WHEN    "4"
       *                    √ÌºÕÃÙ
-      *H27.9               ≥∞Õ—ÃÙ§ŒªƒŒÃ«—¥˛¬–±˛
-                       WHEN    "6"
                            PERFORM 1002-CHUUSYA-SET-SEC
-      *ver.4.7
-                       WHEN    "3"
-      *                    §Ω§Œ¬æ
-                           PERFORM 10021-SONOTA-SET-SEC
-      *
                        WHEN    OTHER
       *                    ∆‚…˛ÃÙ
                            PERFORM 1001-YAKUZAI-SET-SEC
@@ -255,13 +243,6 @@
       *        ºÍµªÀË
                MOVE    1                   TO  LNK-COM-SYUFLG(IDX-SYU)
            END-IF
-      *ver.4.7
-      *    ÃÙ∫ﬁŒ¡∏∫≈¿
-           IF      WRK-GENTEN          >   ZERO
-               MOVE    WRK-GENTEN          TO  WRK-SC90-YKZTEN
-           END-IF
-      *
-      *
       *    ºÍµª≈¿øÙ
            MOVE    LNK-SC90-TENSU      TO  LNK-COM-SYUTEN-M (IDX-SYU)
            ADD     LNK-SC90-TENSU      TO  LNK-SC90-TENSUKEI
@@ -313,46 +294,14 @@
                COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN (IDX)
                                            *   WRK-SURYO-CHU
            ELSE
-      *H28.4
-      *        ºæ…€ÃÙ§ŒÀÁøÙ —ππ
-               IF     (LNK-COM-SIPPUKBN (IDX)  =   "1" )
-                  AND (LNK-COM-SIPGEN (IDX)    =   "1"
-                                               OR  "2" )
-                   MOVE    LNK-COM-SIP-SURYO (IDX) TO  WRK-SURYO
-               ELSE
-                   MOVE    LNK-COM-SURYO  (IDX)    TO  WRK-SURYO
-               END-IF
-      *§ §§
-               MOVE    LNK-COM-SURYO  (IDX)    TO  WRK-SURYO
-      *
       *        ≈¿øÙ
                COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN(IDX)
-                                           *   WRK-SURYO
-      *???                                 *   LNK-COM-SURYO  (IDX)
+                                           *   LNK-COM-SURYO  (IDX)
            END-IF
       *
            ADD     WRK-SYOKEIS2        TO  WRK-ZAIKEI
            .
        1002-CHUUSYA-SET-EXT.
-           EXIT.
-      *ver.4.7
-      *****************************************************************
-      *    §Ω§Œ¬æ° ∏∫≈¿°À ‘Ω∏ΩËÕ˝
-      *****************************************************************
-       10021-SONOTA-SET-SEC           SECTION.
-      *
-           IF     (LNK-COM-TENSIKIBETU (IDX) =   7 )
-             AND  (LNK-COM-TEN (IDX)     =   ZERO  )
-      *!!!!!
-      *      ÃÙ∫ﬁŒ¡∏∫≈¿°¢º£∏≥ Ò≥Á ¨§Œ§ﬂ
-             AND  (LNK-COM-INPUTCD (IDX)   =   "630010001")
-      *!!!!!
-               MOVE    LNK-COM-SURYO(IDX)  TO  WRK-GENTEN
-               MOVE    LNK-COM-SURYO(IDX)  TO  LNK-COM-KISOTEN (IDX)
-               MOVE    1                   TO  LNK-COM-PLUSKBN(IDX)
-           END-IF
-           .
-       10021-SONOTA-SET-EXT.
            EXIT.
       *
       *****************************************************************
