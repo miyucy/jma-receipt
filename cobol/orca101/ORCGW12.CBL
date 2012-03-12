@@ -5732,7 +5732,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            SPA-GMN-HKNJANUM1-63
       *
            IF      SPA-GMN-HKNJANUM1   =   SPACE
-               MOVE    69                  TO  SPA-GMN-CUR
+               IF      WRK-MCP-WIDGET      =   "HKNJANUM1"
+                   MOVE    69                  TO  SPA-GMN-CUR
+               END-IF
            ELSE
                MOVE    SPACE               TO  HKNJAINF-REC
                INITIALIZE                      HKNJAINF-REC
