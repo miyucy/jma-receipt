@@ -24,8 +24,6 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.03.00    NACL-多々納  08/08/28  退院時院外処方せん区分追加
-      *
-      *  04.08.01    NACL-藤原    17/11/21  次回作成時の食事区分追加
       ************************************************************
        01  SYS-5000-REC.
            03  SYS-5000-KEY.
@@ -61,21 +59,12 @@
       *入院会計テーブル表示情報
                05  SYS-5000-GENSAN-INF     OCCURS  10.
                    07  SYS-5000-DSPCD      PIC  X(09).
-      *有床診療所一般病床初期加算区分
-               05  SYS-5000-IPPANKSNKBN    PIC  X(01).
       *栄養管理経過措置区分
                05  SYS-5000-EIYOUKSNKBN    PIC  X(01).
-      *救急・在宅等支援療養病床初期加算区分
-               05  SYS-5000-KYUKYUKSNKBN   PIC  X(01).
-      *次月作成時の食事区分
-               05  SYS-5000-SKJ-CREATEKBN  PIC  X(01).
       *予備（１）
       ******   05                          PIC  X(60).
       ******   05                          PIC  X(56).
-      ******   05  SYS-5000-YOBI           PIC  X(55).
-      ******   05  SYS-5000-YOBI           PIC  X(54).
-      ******   05  SYS-5000-YOBI           PIC  X(53).
-               05  SYS-5000-YOBI           PIC  X(52).
+               05                          PIC  X(55).
       *入院時の食事
                05  SYS-5000-SKJKBN         PIC  X(01).
       *入院時の選定入院
@@ -175,10 +164,3 @@
            03  SYS-5000-UPYMD              PIC  X(08).
       *更新時間
            03  SYS-5000-UPHMS              PIC  X(06).
-      *主キー更新用項目
-           03  SYS-5000-UPD-KEY.
-               05  SYS-5000-UPD-HOSPNUM     PIC 9(2).
-               05  SYS-5000-UPD-KANRICD     PIC X(04).
-               05  SYS-5000-UPD-KBNCD       PIC X(08).
-               05  SYS-5000-UPD-STYUKYMD    PIC X(08).
-               05  SYS-5000-UPD-EDYUKYMD    PIC X(08).
