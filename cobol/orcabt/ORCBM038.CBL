@@ -36,6 +36,8 @@
       *                                     ³ÎÄêÊ¬¤Îµ­ºÜ¤òÃæ»ß
       *
       *  04.07.01    NACL-Æ£¸¶    12/01/24  monpe-0.6.20ÂÐ±þ
+      *  04.07.02    NACL-Æ£¸¶    12/02/13  ·òÊÝÁÈ¹ç¤Ø¤ÎÄ¾ÀÜÀÁµá¤È¿³ºº
+      *                                     »ÙÊ§µ¡´ØÀÁµáÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,6 +77,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
+      *
            03  FLG-MF01-END        PIC 9(01).
            03  FLG-PRTKBN          PIC 9(01).
       *
@@ -299,6 +302,10 @@
            03  WRK-PARA-MARUCHO    PIC X(01).
            03  WRK-PARA-GENMENKBN  PIC X(01).
       *
+       01  WRK-PARA1.
+           03  WRK-PARA-HKNJANUM-S PIC X(08).
+           03  WRK-PARA-HKNJANAME  PIC X(30).
+      *
        01  WRK-NYUGAIKBN           PIC X(01).
       *
        01  WRK-SYOKBN              PIC X(01).
@@ -321,6 +328,7 @@
                                                WRK-PRTFLG
                                                SPA-AREA
                                                LNK-RECEERR
+                                               WRK-PARA1
            .
       *
       *****************************************************************
@@ -1185,7 +1193,19 @@
                        WRK-SPRT-TITLE      DELIMITED  BY  SPACE
                                            INTO    SPRT-TITLE
                END-STRING
-           END-IF 
+           END-IF
+      *
+           IF      WRK-PARA-HKNJANAME  NOT =   SPACE    
+               MOVE    SPRT-TITLE          TO  WRK-SPRT-TITLE
+               MOVE    SPACE               TO  SPRT-TITLE
+               STRING  "¡Ú"                DELIMITED  BY  SIZE
+                       WRK-PARA-HKNJANAME  DELIMITED  BY  SPACE
+                       "¡Û"                DELIMITED  BY  SIZE
+                       WRK-SPRT-TITLE      DELIMITED  BY  SPACE
+                                           INTO    SPRT-TITLE
+               END-STRING
+           END-IF
+      *
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
            MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM

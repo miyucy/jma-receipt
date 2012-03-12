@@ -88,6 +88,9 @@
       *                                     備考欄の記載等追加
       *  04.05.03    NACL-藤原    11/04/18  災害対応
       *                                     未確定分のみ別集計とする
+      *
+      *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -143,6 +146,7 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-PTINF           PIC 9(01).
            03  FLG-RECE10          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-HKNJAINF        PIC 9(01).
       *
            03  FLG-UPD             PIC 9(01).
            03  FLG-UPDFILE         PIC 9(01). 
@@ -181,6 +185,10 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-PARA-SYOKBN     PIC X(01).
            03  WRK-PARA-MARUCHO    PIC X(01).
            03  WRK-PARA-GENMENKBN  PIC X(01).
+      *
+       01  WRK-PARA1.
+           03  WRK-PARA-HKNJANUM-S PIC X(08).
+           03  WRK-PARA-HKNJANAME  PIC X(30).
       *          
       *    一時領域
        01  WRK-AREA.
@@ -199,6 +207,8 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-SYOKBN          PIC X(01).
       *
            03  WRK-MEISYO          PIC X(44).
+      *
+           03  WRK-JOB-SHELLMSG    PIC X(100).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -317,6 +327,10 @@ grpsys     COPY    "COMMON-SPA".
       *
            COPY    "CPRCF010.INC".
       *
+      *    保険者
+       01  HKNJAINF-REC.
+           COPY    "CPHKNJAINF.INC".
+      *
       *    医療機関情報情報
            COPY    "CPSK1001.INC".
       *
@@ -371,6 +385,8 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE              SUM-AREA
            INITIALIZE              WRK-PARA
                                    SPA-AREA
+                                   WRK-PARA
+                                   WRK-PARA1
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -393,9 +409,29 @@ grpsys     COPY    "COMMON-SPA".
                                                WRK-PARA-SYOKBN
                                                WRK-PARA-MARUCHO
                                                WRK-PARA-GENMENKBN 
+                                               WRK-PARA-HKNJANUM-S
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           DISPLAY "WRK-PARA-HKNJANUM-S="  WRK-PARA-HKNJANUM-S
+      *
+           EVALUATE    WRK-PARA-HKNJANUM-S
+               WHEN    "99999999"
+                   INITIALIZE                      HKNJAINF-REC
+               WHEN    "00000000"
+                   INITIALIZE                      HKNJAINF-REC
+                   MOVE    "直接請求する保険者以外"
+                                                TO  HKNJA-HKNJANAME
+               WHEN    OTHER
+                   MOVE    SPACE               TO  HKNJAINF-REC
+                   INITIALIZE                      HKNJAINF-REC
+                   MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+                   MOVE    WRK-PARA-HKNJANUM-S TO  HKNJA-HKNJANUM
+                   MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+                   PERFORM 900-HKNJAINF-READ-SEC
+           END-EVALUATE
+           MOVE    HKNJA-HKNJANAME TO  WRK-PARA-HKNJANAME
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -408,6 +444,16 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    "未確定分・社保総括表（改正版）"
                                    TO  JOB-SHELLMSG
            END-IF
+           IF      HKNJA-HKNJANAME NOT =   SPACE
+               MOVE    JOB-SHELLMSG        TO  WRK-JOB-SHELLMSG
+               STRING  "【"                DELIMITED   BY  SIZE
+                       WRK-PARA-HKNJANAME  DELIMITED   BY  SPACE
+                       "】"                DELIMITED   BY  SIZE
+                       WRK-JOB-SHELLMSG    DELIMITED   BY  SPACE
+                                           INTO    JOB-SHELLMSG
+               END-STRING
+           END-IF
+      *
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    "RECEUPD"           TO  RECEUPD-FILE-ID
@@ -641,6 +687,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                                            WRK-PRTFLG
                                                            SPA-AREA
                                                            RECEERR
+                                                           WRK-PARA1
                                        ELSE
                                            CALL    "ORCBM037"
                                                            USING 
@@ -650,6 +697,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                                            WRK-PRTFLG
                                                            SPA-AREA
                                                            RECEERR
+                                                           WRK-PARA1
                                        END-IF
                                    END-IF
                                END-IF
@@ -714,6 +762,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                                            WRK-PRTFLG
                                                            SPA-AREA
                                                            RECEERR
+                                                           WRK-PARA1
                                    END-IF 
                                END-IF
                            END-IF
@@ -1784,6 +1833,17 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                    MOVE    999999              TO  RECE10-XXSRYYM
            END-EVALUATE
            MOVE    WRK-NYUGAIKBN        TO  RECE10-NYUGAIKBN
+           EVALUATE    WRK-PARA-HKNJANUM-S
+               WHEN    "99999999"
+                   MOVE    "%%%%%%%%"          TO  RECE10-HKNJANUM-S
+                   MOVE    "%"                 TO  RECE10-DIRECT-FLG
+               WHEN    "00000000"
+                   MOVE    "%%%%%%%%"          TO  RECE10-HKNJANUM-S
+                   MOVE    "0"                 TO  RECE10-DIRECT-FLG
+               WHEN    OTHER
+                   MOVE    WRK-PARA-HKNJANUM-S TO  RECE10-HKNJANUM-S
+                   MOVE    "1"                 TO  RECE10-DIRECT-FLG
+           END-EVALUATE
       *
       *###
            DISPLAY "SYOKBN=" WRK-SYOKBN
@@ -1994,6 +2054,37 @@ grpsys         PERFORM 900-DBFETCH-SEC
            END-IF
            .
        900-SYSKANRI-READ-N-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険者読込
+      *****************************************************************
+       900-HKNJAINF-READ-SEC           SECTION.
+      *
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-HKNJAINF
+                   MOVE    MCPDATA-REC         TO  HKNJAINF-REC
+               ELSE
+                   MOVE    1                   TO  FLG-HKNJAINF
+                   INITIALIZE                      HKNJAINF-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-HKNJAINF
+               INITIALIZE                      HKNJAINF-REC
+           END-IF
+      *
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-HKNJAINF-READ-EXT.
            EXIT.
       *
       *****************************************************************

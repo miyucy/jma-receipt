@@ -996,6 +996,8 @@ path	key27	{
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      ZAITAKU     <>   '1'         )
                   AND (      HENREIYM    <>   '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG )
                   ORDER BY RECEKA
 		;
 	};
@@ -1027,6 +1029,8 @@ path	key28	{
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      ZAITAKU     <>   '1'         )
                   AND (      HENREIYM    =    '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG )
                   ORDER BY RECEKA
 		;
 	};
@@ -1058,6 +1062,8 @@ path	key29	{
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      ZAITAKU     =    '1'         )
                   AND (      HENREIYM    <>   '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG )
                   ORDER BY RECEKA
 		;
 	};
@@ -1089,6 +1095,8 @@ path	key30	{
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      ZAITAKU     =    '1'         )
                   AND (      HENREIYM    =    '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG )
                   ORDER BY RECEKA
 		;
 	};
@@ -1119,6 +1127,8 @@ path	key31	{
                   AND (      SRYYM       <    :XXSRYYM    )
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      HENREIYM    <>   '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG )
                   ORDER BY RECEKA
 		;
 	};
@@ -1149,6 +1159,8 @@ path	key32	{
                   AND (      SRYYM       <    :XXSRYYM    )
                   AND (      NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      HENREIYM    =    '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG )
                   ORDER BY RECEKA
 		;
 	};
@@ -1454,6 +1466,8 @@ path	key45	{
                   AND (       a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (       a.ZAITAKU     <>   '1'         )
                   AND (       a.HENREIYM    <>   '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S    )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG    )
                   AND ((   (  b.ETC_KOHNUM1 <>   '972'    )
                        AND (  b.ETC_KOHNUM2 <>   '972'    )  
                        AND (  b.ETC_KOHNUM3 <>   '972'    )  
@@ -1494,6 +1508,8 @@ path	key46	{
                   AND (      a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      a.ZAITAKU     <>   '1'         )
                   AND (      a.HENREIYM    =    '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S   )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG   )
                   AND ((   (  b.ETC_KOHNUM1 <>   '972'    )
                        AND (  b.ETC_KOHNUM2 <>   '972'    )  
                        AND (  b.ETC_KOHNUM3 <>   '972'    )  
@@ -1534,6 +1550,8 @@ path	key47	{
                   AND (      a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      a.ZAITAKU     =    '1'         )
                   AND (      a.HENREIYM    <>   '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S   )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG   )
                   AND ((   (  b.ETC_KOHNUM1 <>   '972'    )
                        AND (  b.ETC_KOHNUM2 <>   '972'    )  
                        AND (  b.ETC_KOHNUM3 <>   '972'    )  
@@ -1574,6 +1592,8 @@ path	key48	{
                   AND (      a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      a.ZAITAKU     =    '1'         )
                   AND (      a.HENREIYM    =    '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S   )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG   )
                   AND ((   (  b.ETC_KOHNUM1 <>   '972'    )
                        AND (  b.ETC_KOHNUM2 <>   '972'    )  
                        AND (  b.ETC_KOHNUM3 <>   '972'    )  
@@ -1613,6 +1633,8 @@ path	key49	{
                   AND (      a.SRYYM       <    :XXSRYYM    )
                   AND (      a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      a.HENREIYM    <>   '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S   )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG   )
                   AND ((   (  b.ETC_KOHNUM1 <>   '972'    )
                        AND (  b.ETC_KOHNUM2 <>   '972'    )  
                        AND (  b.ETC_KOHNUM3 <>   '972'    )  
@@ -1652,6 +1674,8 @@ path	key50	{
                   AND (      a.SRYYM       <    :XXSRYYM    )
                   AND (      a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      a.HENREIYM    =    '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S   )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG   )
                   AND ((   (  b.ETC_KOHNUM1 <>   '972'    )
                        AND (  b.ETC_KOHNUM2 <>   '972'    )  
                        AND (  b.ETC_KOHNUM3 <>   '972'    )  
@@ -1692,6 +1716,8 @@ path	key51	{
                   AND (      a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      a.ZAITAKU     <>   '1'         )
                   AND (      a.HENREIYM    <>   '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S   )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG   )
                   AND (    ( b.ETC_KOHNUM1 =    '972'    )
                         OR ( b.ETC_KOHNUM2 =    '972'    )  
                         OR ( b.ETC_KOHNUM3 =    '972'    )  
@@ -1731,6 +1757,8 @@ path	key52	{
                   AND (      a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      a.ZAITAKU     <>   '1'         )
                   AND (      a.HENREIYM    =    '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S   )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG   )
                   AND (    ( b.ETC_KOHNUM1 =    '972'    )
                         OR ( b.ETC_KOHNUM2 =    '972'    )  
                         OR ( b.ETC_KOHNUM3 =    '972'    )  
@@ -1770,6 +1798,8 @@ path	key53	{
                   AND (      a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      a.ZAITAKU     =    '1'         )
                   AND (      a.HENREIYM    <>   '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S   )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG   )
                   AND (    ( b.ETC_KOHNUM1 =    '972'    )
                         OR ( b.ETC_KOHNUM2 =    '972'    )  
                         OR ( b.ETC_KOHNUM3 =    '972'    )  
@@ -1809,6 +1839,8 @@ path	key54	{
                   AND (      a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      a.ZAITAKU     =    '1'         )
                   AND (      a.HENREIYM    =    '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S   )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG   )
                   AND (    ( b.ETC_KOHNUM1 =    '972'    )
                         OR ( b.ETC_KOHNUM2 =    '972'    )  
                         OR ( b.ETC_KOHNUM3 =    '972'    )  
@@ -1847,6 +1879,8 @@ path	key55	{
                   AND (      a.SRYYM       <    :XXSRYYM    )
                   AND (      a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      a.HENREIYM    <>   '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S   )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG   )
                   AND (    ( b.ETC_KOHNUM1 =    '972'    )
                         OR ( b.ETC_KOHNUM2 =    '972'    )  
                         OR ( b.ETC_KOHNUM3 =    '972'    )  
@@ -1885,6 +1919,8 @@ path	key56	{
                   AND (      a.SRYYM       <    :XXSRYYM    )
                   AND (      a.NYUGAIKBN   LIKE :NYUGAIKBN  )
                   AND (      a.HENREIYM    =    '000000'    )
+                  AND (      HKNJANUM_S  like :HKNJANUM_S   )
+                  AND (      DIRECT_FLG  like :DIRECT_FLG   )
                   AND (    ( b.ETC_KOHNUM1 =    '972'    )
                         OR ( b.ETC_KOHNUM2 =    '972'    )  
                         OR ( b.ETC_KOHNUM3 =    '972'    )  
@@ -2431,6 +2467,30 @@ path	key80	{
                   AND (      HKNJANUM_S  like :HKNJANUM_S     )
                   AND (      DIRECT_FLG  like :DIRECT_FLG     )
                 ORDER  BY  RECEKA,PTNUM,SRYYM
+		;
+	};
+};
+
+path	key81	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_main_key81_csr CURSOR FOR
+		SELECT HKNJANUM_S
+		FROM tbl_seikyu_main
+                WHERE (      HOSPNUM      =   :HOSPNUM        )
+                  AND (      NYUGAIKBN   like   :NYUGAIKBN    )
+                  AND (      TEISYUTUSAKI =   :TEISYUTUSAKI
+                        OR   TEISYUTUSAKI =   :XXTEISYUTUSAKI )
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      ))      )
+                  AND (   (  HENREIYM    =   '000000'  )
+                       OR (( HENREIYM    <>  '000000' )
+                       AND ( HENREI_SIJI_FLG =  1     ))      )
+                  AND (      DIRECT_FLG  =   :DIRECT_FLG      )
+                GROUP  BY  HKNJANUM_S
+                ORDER  BY  HKNJANUM_S
 		;
 	};
 };

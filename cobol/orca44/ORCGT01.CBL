@@ -222,6 +222,7 @@
       *
            03  IDXX                PIC 9(04).
            03  IDXY                PIC 9(04).
+           03  IDYY                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -279,6 +280,10 @@
                05  WRK-BTPARA-STNO PIC 9(02).
                05  WRK-BTPARA-EDNO PIC 9(02).
                05  WRK-BTPARA-WRNO PIC 9(02).
+      *
+      *    直接請求する保険者番号
+       01  WRK-HKNJANUM-AREA.
+           03  WRK-HKNJANUM-S      PIC X(08)   OCCURS  10.  
       *
        01  WRK-MSG.
            03  WRK-MSG1.
@@ -2550,6 +2555,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "F"             TO  SPA-SYOKBN1-VALUE
            END-IF
       *
+      *??
+           DISPLAY "400 DATAKBN=" SPA-DATAKBN "#"
+      *??
            .
        400-DATAKBN-EXT.
            EXIT.
@@ -3122,6 +3130,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                =   "F" 
                            MOVE    "1002"              TO  SPA-TIDCD
                    END-EVALUATE
+      *??
+           DISPLAY "SPA-DATAKBN=" SPA-DATAKBN "#" SPA-TIDCD "#"
+      *??
                END-IF
            END-IF
            .
@@ -3327,7 +3338,58 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *    総括表印刷（社保）
            EVALUATE    TRUE
                WHEN    T01-DATAKBN4-VALUE    =   "T"
-                   IF      SPA-NAI-PRTKBN1       =   SPACE  
+                   IF      SPA-NAI-PRTKBN1       =   SPACE
+      *              直接請求する保険者の有無チェック
+                     INITIALIZE                    WRK-HKNJANUM-AREA
+                     MOVE    1                 TO  IDX
+                     MOVE    "99999999"        TO
+                                               WRK-HKNJANUM-S (IDX)
+      *
+                     IF      SPA-NAI-SKYYM     >=  200804
+                       MOVE    SPACE             TO  RECE10-REC
+                       INITIALIZE                    RECE10-REC
+                       MOVE    SPA-HOSPNUM       TO  RECE10-HOSPNUM
+                       MOVE    SPA-NAI-SKYYM     TO  RECE10-SKYYM
+                       MOVE    "%"               TO  RECE10-NYUGAIKBN
+                       MOVE    1                 TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI 
+                       MOVE    "1"               TO  RECE10-DIRECT-FLG
+                       MOVE    RECE10-REC        TO  MCPDATA-REC
+                       MOVE    "tbl_seikyu"      TO  MCP-TABLE
+                       MOVE    "key81"           TO  MCP-PATHNAME
+                       PERFORM 900-DBSELECT-SEC
+                       IF      MCP-RC        =   ZERO
+                           MOVE    "tbl_seikyu"        TO  MCP-TABLE
+                           MOVE    "key81"             TO  MCP-PATHNAME
+                           PERFORM 900-SEIKYU-READ-N-SEC
+                       ELSE
+                           MOVE    1                   TO  FLG-RECE10
+                       END-IF
+      *
+                       PERFORM     UNTIL   FLG-RECE10  =   1
+                           IF      IDX             =   1
+                               MOVE    "00000000"      TO
+                                                     WRK-HKNJANUM-S (1)
+                           END-IF
+                           ADD     1                   TO  IDX 
+                           MOVE    RECE10-HKNJANUM-S   TO
+                                                   WRK-HKNJANUM-S (IDX)
+      *??
+            DISPLAY "IDX=" IDX  " " WRK-HKNJANUM-S (IDX) "#" 
+      *??
+                           MOVE    "tbl_seikyu"        TO  MCP-TABLE
+                           MOVE    "key81"             TO  MCP-PATHNAME
+                           PERFORM 900-SEIKYU-READ-N-SEC
+                       END-PERFORM    
+                       MOVE    "tbl_seikyu"        TO  MCP-TABLE
+                       MOVE    "key81"             TO  MCP-PATHNAME
+                       PERFORM 900-CLOSE-SEC
+                     END-IF
+      *
+                     PERFORM VARYING IDYY    FROM    1   BY  1
+                             UNTIL   IDYY    >       10
+                             OR      WRK-HKNJANUM-S (IDYY)
+                                               =   SPACE
                        MOVE    "1"                 TO  WRK-SHELL-RECEKBN
                        MOVE    "1"                 TO  WRK-SHELL-SYOKBN
                        PERFORM 45013-SOKATU-SYORI-SEC
@@ -3356,6 +3418,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                            MOVE    "2"             TO  WRK-SHELL-SYOKBN
                            PERFORM 45013-SOKATU-SYORI-SEC
                        END-IF
+                     END-PERFORM
                    END-IF     
            END-EVALUATE                                               
            MOVE    SPACE               TO  WRK-SHELL-SYOKBN
@@ -3760,6 +3823,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
                    MOVE    "1"             TO  SHELLTBL-ARG26
                WHEN    "F"             ALSO    "T"
                    MOVE    "2"             TO  SHELLTBL-ARG26
+           END-EVALUATE
+      *
+           EVALUATE    WRK-SHELL-RECEKBN
+               WHEN    "1"
+                   MOVE    WRK-HKNJANUM-S (IDYY)  TO  SHELLTBL-ARG27
+               WHEN    OTHER
+                   MOVE    "00000000"             TO  SHELLTBL-ARG27
            END-EVALUATE
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
