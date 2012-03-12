@@ -49,6 +49,9 @@
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *
       *  04.02.01    NACL-藤原    08/05/09  エラー時終了処理の追加
+      *
+      *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -256,6 +259,7 @@ grpsys     MOVE    SPA-HOSPNUM                  TO  RECE08-HOSPNUM
            MOVE    WRK-PARA-RECE09-RECESYUBETU  TO  RECE08-RECESYUBETU
            MOVE    WRK-PARA-RECE09-NYUGAIKBN    TO  RECE08-NYUGAIKBN
            MOVE    "%%"                         TO  RECE08-SRYKA
+           MOVE    "%%%%%%%%"                   TO  RECE08-HKNJANUM-S
       *
            MOVE    WRK-PARA-RECE09-STDATA       TO  RECE08-STKANANAME
            MOVE    WRK-PARA-RECE09-EDDATA       TO  RECE08-EDKANANAME
@@ -444,7 +448,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *     レセプト管理を主キーで読み込む
       *****************************************************************
        900-RECEPRT-SELECT-SEC          SECTION.
-      *
       *
            MOVE    RECE08-REC          TO  MCPDATA-REC
       *
