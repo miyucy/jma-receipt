@@ -47,9 +47,7 @@
       * 04.05.00     NACL-多々納  10/03/XX  平成２２年４月改正対応
       * 04.06.00     NACL-多々納  10/07/01  残量廃棄自動算定対応
       * 04.06.00     NACL-多々納  10/09/XX  精神療法２０歳未満加算未対応
-      * 04.07.00     NACL-多々納  11/08/XX  リハビリ算定日毎終了日付対応
-      * 04.07.00     NACL-多々納  11/09/XX  精神科ケア早期加算チェック対応
-      * 04.07.00     NACL-多々納  12/03/XX  Ｈ２４．４改正対応
+      * 04.06.00     NACL-多々納  12/03/XX  Ｈ２４．４改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -73,7 +71,6 @@
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
-           03  FLG-SANTEIPLUS      PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -121,8 +118,6 @@
       *    他院退院日
            03  FLG-TAITAIIN            PIC 9(01).
            03  FLG-NINCHI              PIC 9(01).
-      *
-           03  FLG-CHK-END             PIC 9(01).
       *H24.4
            03  FLG-NENREI2             PIC 9(01).
            03  FLG-KAIGO               PIC 9(01).
@@ -246,11 +241,6 @@
                 05   WRK-SYO2-YY    PIC 9(04).
                 05   WRK-SYO2-MM    PIC 9(02).
                 05   WRK-SYO2-DD    PIC 9(02).
-      *H24.4
-           03   WRK-SYOYMD3.
-                05   WRK-SYO3-YY    PIC 9(04).
-                05   WRK-SYO3-MM    PIC 9(02).
-                05   WRK-SYO3-DD    PIC 9(02).
       *    診療日
            03   WRK-SRYYMD         PIC X(08).
            03   WRK-EDSRYYMD       PIC X(08).
@@ -272,9 +262,9 @@
                    07   WRK-MM             PIC X(02).
                05  WRK-DD                  PIC X(02).
            03  WRK-SDD             PIC 9(02).
-           03  WRK-EDMM            PIC X(02).
-           03  WRK-EDDD            PIC X(02).
-           03  WRK-KYUSEI-MSG      PIC X(80).
+           03   WRK-EDMM           PIC X(02).
+           03   WRK-EDDD           PIC X(02).
+           03   WRK-KYUSEI-MSG     PIC X(80).
       *
            03   WRK-RIHA-KBN       PIC X(01).
            03   WRK-RIHA-KBN2      PIC X(01).
@@ -319,18 +309,12 @@
       *    発症日＋１４日
            03  WRK-KYUSEI-14               PIC X(08).
            03  WRK-KYUSEI-14-MSG           PIC X(80).
-           03  WRK-KYUSEI-MSG02            PIC X(80).
       *
            03  WRK-SURYO               PIC 9(07)V9(05).
            03  WRK-SURYO-R             REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1        PIC 9(07).
                05  WRK-SURYO-S2        PIC 9(05).
       *
-      *    精神科ケア開始日
-           03  WRK-KEASTRYMD.
-               05  WRK-KEASTR-YY       PIC 9(04).
-               05  WRK-KEASTR-MM       PIC 9(02).
-               05  WRK-KEASTR-DD       PIC 9(02).
       *    リハビリ回数集計
        01  WRK-RIGAKU-NCNT-AREA.
            03  WRK-RIGAKU-INT2             PIC X(01).
@@ -374,9 +358,6 @@
                    07  WRK-DOU-SRYYMD      PIC X(08).
       *    初期区分
            03  WRK-RIGAKU-INT              PIC X(01).
-      *    精神科ケア早期加算開始日
-           03  WRK-KEASOKI-INT             PIC X(01).
-           03  WRK-KEASOKI-YMD             PIC X(08).
       *
        01  WRK-ERRCD-AREA.
            03  WRK-ERRCD-H                 PIC X(04). 
@@ -400,19 +381,6 @@
        01  CON-TANKIKSN1               PIC X(09)   VALUE    "180032970".
        01  CON-TANKIKSN2               PIC X(09)   VALUE    "180033070".
       *
-      *ver.4.7
-      *精神科ケア早期加算テーブル
-      *    精神科ショート・ケア早期
-       01  CON-KEAKSN1                 PIC X(09)   VALUE    "180033370".
-      *    精神科デイ・ケア早期
-       01  CON-KEAKSN2                 PIC X(09)   VALUE    "180033470".
-      *    精神科ナイト・ケア早期
-       01  CON-KEAKSN3                 PIC X(09)   VALUE    "180036270".
-      *    精神科デイ・ナイト・ケア早期
-       01  CON-KEAKSN4                 PIC X(09)   VALUE    "180036370".
-      *    重度認知症デイ・ケア早期
-       01  CON-KEAKSN5                 PIC X(09)   VALUE    "180039670".
-      *
       *    酸素コードテーブル
            COPY     "CMSANSOTBL.INC".
       *
@@ -425,15 +393,11 @@
       *
       *    点数マスタ−
       *01  TENSU-REC.
-      *    COPY    "CPTENSU.INC".
+           COPY    "CPTENSU.INC".
       *
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
-      *    算定履歴付加
-       01  SANTEIPLUS-REC.
-           COPY    "CPSANTEIPLUS.INC".
-      *
       *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
@@ -442,8 +406,8 @@
            COPY    "CPSRYACCT.INC".
       *
       *    チェックマスタ−
-      *01  CHK-REC.
-      *    COPY    "CPCHK.INC".
+       01  CHK-REC.
+           COPY    "CPCHK.INC".
       *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
@@ -526,7 +490,6 @@
                IF      WRK-RIGAKU-INT2     =   SPACE
       *            今回算定回数クリア
                    INITIALIZE  WRK-RIHA-CNT-G
-                   MOVE    SPACE           TO  WRK-KEASOKI-INT
       ************ INITIALIZE  WRK-KYUSEI-INP-G
                    MOVE    "1"             TO  WRK-RIGAKU-INT2
                END-IF
@@ -591,11 +554,11 @@
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key1"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key1"              TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
@@ -622,14 +585,12 @@
                END-PERFORM
            END-IF
            MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key1"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    各急性発生日
-      *    心大血管疾患リハビリテーション
            MOVE    "099800111"         TO  WRK-SRYCD
-      *****PERFORM 10001-KYUSEI-YMD-SEC
-           PERFORM 10001-RIHA-STRYMD-SEC
+           PERFORM 10001-KYUSEI-YMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI1-YMD
       *    終了日判定
            IF      WRK-KYUSEI1-YMD NOT =   SPACE
@@ -641,10 +602,9 @@
                    END-IF
                END-IF
            END-IF
-      *    脳血管疾患リハビリテーション
+      *
            MOVE    "099800121"         TO  WRK-SRYCD
-      *****PERFORM 10001-KYUSEI-YMD-SEC
-           PERFORM 10001-RIHA-STRYMD-SEC
+           PERFORM 10001-KYUSEI-YMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI2-YMD
            IF      WRK-KYUSEI2-YMD NOT =   SPACE
                MOVE    "099800122"         TO  WRK-SRYCD
@@ -655,10 +615,9 @@
                    END-IF
                END-IF
            END-IF
-      *    運動器リハビリテーション
+      *
            MOVE    "099800131"         TO  WRK-SRYCD
-      *****PERFORM 10001-KYUSEI-YMD-SEC
-           PERFORM 10001-RIHA-STRYMD-SEC
+           PERFORM 10001-KYUSEI-YMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI3-YMD
            IF      WRK-KYUSEI3-YMD NOT =   SPACE
                MOVE    "099800132"         TO  WRK-SRYCD
@@ -669,10 +628,9 @@
                    END-IF
                END-IF
            END-IF
-      *    呼吸器リハビリテーション
+      *
            MOVE    "099800141"         TO  WRK-SRYCD
-      *****PERFORM 10001-KYUSEI-YMD-SEC
-           PERFORM 10001-RIHA-STRYMD-SEC
+           PERFORM 10001-KYUSEI-YMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI4-YMD
            IF      WRK-KYUSEI4-YMD NOT =   SPACE
                MOVE    "099800142"         TO  WRK-SRYCD
@@ -703,7 +661,7 @@
       *****************************************************************
        10001-KYUSEI-YMD-SEC                SECTION.
       *
-      *    MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
       *    訂正時
            MOVE    ZERO                TO  FLG-TOUJITU
            IF      LNK-ORCSC-SYORIFLG      =   1
@@ -795,163 +753,19 @@
            EXIT.
       *
       *****************************************************************
-      *    リハビリ開始日設定処理
-      *****************************************************************
-       10001-RIHA-STRYMD-SEC            SECTION.
-      *
-      *    MOVE    WRK-SRYCD           TO  TNS-SRYCD
-      *    訂正時
-           MOVE    ZERO                TO  FLG-TOUJITU
-           IF      LNK-ORCSC-SYORIFLG      =   1
-               PERFORM VARYING     IDZ     FROM    1   BY  1
-                       UNTIL      (IDZ     >   100 )  OR
-                                  (LNK-ORCSC-TEI-SRYCD(IDZ)
-                                           =   SPACE )
-                   IF      LNK-ORCSC-TEI-SRYCD(IDZ)
-                                           =   WRK-SRYCD
-                       MOVE    1           TO  FLG-TOUJITU
-                   END-IF
-               END-PERFORM
-           END-IF
-      *    算定履歴検索
-           MOVE    SPACE               TO  SANTEI-REC
-           INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
-           MOVE    SPA-PTID            TO  SANTEI-PTID
-           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-           MOVE    ZERO                TO  SANTEI-SRYKA
-      *
-      *    労災毎とする
-           IF     (SPA-HKNKBN          =   1
-                                       OR  2   )
-               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
-           ELSE
-               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-           END-IF
-      *
-           MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 920-SANTEI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SANTEI
-           END-IF
-      *
-           MOVE    SPACE               TO  WRK-YMD
-           PERFORM
-               UNTIL       FLG-SANTEI      =   1
-               IF     (SANTEI-MSANTEICNT   >   ZERO )  AND
-                      (SANTEI-SRYYM        <=  SPA-SRYYMD(1:6))
-      *            最後の発生日、当日以降は対象外
-                   IF      SANTEI-SRYYM        =   SPA-SRYYMD(1:6)
-                       MOVE    SPA-SRYYMD(7:2)     TO  IDD2
-      *                訂正分は対象外
-                       IF      FLG-TOUJITU         =   1
-                           COMPUTE IDD2            =   IDD2   -  1
-                       END-IF
-                   ELSE
-                       MOVE    31                  TO  IDD2
-                   END-IF
-                   MOVE    ZERO                TO  WRK-SDD
-                   PERFORM VARYING     IDD     FROM    IDD2  BY  -1
-                           UNTIL       IDD     <   1
-                       IF      SANTEI-DAY (IDD)    >   ZERO
-                           MOVE    IDD             TO  WRK-SDD
-      *                    終了日付検索
-                           MOVE    ZERO            TO  FLG-CHK-END
-                           PERFORM 100011-RIHA-SANTEIPLUS-SEC
-                           IF      FLG-CHK-END     =   ZERO
-                               MOVE    1               TO  IDD
-                           END-IF
-                       END-IF
-                   END-PERFORM
-                   IF      WRK-SDD             >   ZERO
-                       MOVE    SANTEI-SRYYM    TO  WRK-YYMM
-                       MOVE    WRK-SDD         TO  WRK-DD
-                       MOVE    1               TO  FLG-SANTEI
-                   END-IF
-               END-IF
-      *
-               IF     FLG-SANTEI           =   ZERO
-                   MOVE    "tbl_santei"        TO  MCP-TABLE
-                   MOVE    "key3"              TO  MCP-PATHNAME
-                   PERFORM 920-SANTEI-READ-SEC
-               END-IF
-           END-PERFORM
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       10001-RIHA-STRYMD-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    リハビリ開始日算定履歴付加情報編集処理
-      *****************************************************************
-       100011-RIHA-SANTEIPLUS-SEC                SECTION.
-      *
-      *
-           INITIALIZE                  SANTEIPLUS-REC
-           MOVE    SANTEI-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
-           MOVE    SANTEI-PTID         TO  SANTEIPLUS-PTID
-           MOVE    SANTEI-SRYCD        TO  SANTEIPLUS-SRYCD
-           MOVE    SANTEI-SRYYM        TO  SANTEIPLUS-SRYYM
-           MOVE    SANTEI-SRYKA        TO  SANTEIPLUS-SRYKA
-           MOVE    SANTEI-NYUGAIKBN    TO  SANTEIPLUS-NYUGAIKBN
-           MOVE    SANTEI-HKNCOMBINUM  TO  SANTEIPLUS-HKNCOMBINUM
-           MOVE    WRK-SDD             TO  SANTEIPLUS-DAYKEY
-           MOVE    ZERO                TO  SANTEIPLUS-RENNUM
-      *
-           MOVE    SANTEIPLUS-REC      TO  MCPDATA-REC
-           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_santeiplus"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 921-SANTEIPLUS-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SANTEIPLUS
-           END-IF
-           MOVE    "tbl_santeiplus"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           IF      FLG-SANTEIPLUS      =   ZERO
-               IF      SANTEIPLUS-ENDYMD   <   SPA-SRYYMD
-      *            システム日付より前の終了
-                   MOVE    1                   TO  FLG-CHK-END
-                   MOVE    ZERO                TO  WRK-SDD
-               END-IF
-           END-IF
-      *
-           .
-       100011-RIHA-SANTEIPLUS-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    精神通院の同日初診編集処理
       *****************************************************************
        10002-DOUJIT-YMD-SEC                SECTION.
       *
       *    同日初診の診療科設定
            MOVE    SPA-SRYYMD          TO  WRK-SRYYMD-1
-      **   IF      WRK-SRYMM           <=  6
-      **       COMPUTE WRK-SRYMM       =  (WRK-SRYMM   +   12 )
-      *                                                -   6
-      *        COMPUTE WRK-SRYYY       =   WRK-SRYYY   -   1
-      *    ELSE
-      *        COMPUTE WRK-SRYMM       =   WRK-SRYMM   -   6
-      ***  END-IF
-      *H25.3
-      *    診療日付から前２年間で判定する
-           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD-1
-           COMPUTE WRK-SRYYY           =   WRK-SRYYY   -   2
-      *
+           IF      WRK-SRYMM           <=  6
+               COMPUTE WRK-SRYMM       =  (WRK-SRYMM   +   12 )
+                                                       -   6
+               COMPUTE WRK-SRYYY       =   WRK-SRYYY   -   1
+           ELSE
+               COMPUTE WRK-SRYMM       =   WRK-SRYMM   -   6
+           END-IF
            IF      WRK-SRYYM-1         <   "200604"
                MOVE    "200604"        TO  WRK-SRYYM-1
            END-IF
@@ -966,9 +780,6 @@
                PERFORM 10021-DOUSYOSIN-SRYKA-SEC
       *        同日初診（労災）
                MOVE    "101110040"         TO  WRK-SRYCD
-               PERFORM 10021-DOUSYOSIN-SRYKA-SEC
-      *        同日初診（紹介なし）
-               MOVE    "111012610"         TO  WRK-SRYCD
                PERFORM 10021-DOUSYOSIN-SRYKA-SEC
            END-IF
            .
@@ -1254,15 +1065,13 @@
                        MOVE    IDX-Z           TO  IDX-ZS
                        MOVE    IDX-Z           TO  IDX-ZS2
                    END-IF
+      *            乳幼児の自動加算を追加する
+      *****        PERFORM 10011-NENREI-SET-SEC
       *            施設基準不適合チェック
                    IF      WRK-COM-KIJUNTEIGENKBN(IDX-Z)
                                                NOT =   ZERO
                        PERFORM 100111-KIJUNN-CHK-SEC
                    END-IF
-      *
-      *            精神通院の乳幼児の自動加算を追加する
-      *****        PERFORM 10011-NENREI-SET-SEC
-      *
       *            労災の時、労災加算の算定
                    IF      SPA-HKNKBN          =   1
                      AND  (SPA-RSI-JUNKYO  NOT =   "1" )
@@ -1281,7 +1090,7 @@
                    IF      LNK-ORCSC-PG        =   "K02"
                        PERFORM 100113-SEISIN-CHK-SEC
                    END-IF
-      *ver.4.7
+      *
       *            加算チェック
                    IF      WRK-COM-DATAKBN (IDX-Z) =   "2"
                        PERFORM 1005-KASAN-CHK-SEC
@@ -1430,13 +1239,6 @@
                END-IF
            END-IF
       *
-      *ver.4.7
-      *    精神科ケア開始日
-           IF     (LNK-ORCSC-PG        =   "K02"  )  AND
-                  (WRK-COM-INPUTCD (IDX-Z) =   "099830101" )
-               MOVE    "2"                 TO  WRK-KEASOKI-INT
-           END-IF
-      *
            .
        10012-CHK2-EXT.
            EXIT.
@@ -1538,8 +1340,7 @@
                WHEN    "099800152"
                    IF      WRK-KYUSEI5-CHK     =   SPACE
                        MOVE    "099800151"         TO  WRK-SRYCD
-      ************     PERFORM 10001-KYUSEI-YMD-SEC
-                       PERFORM 10001-RIHA-STRYMD-SEC
+                       PERFORM 10001-KYUSEI-YMD-SEC
                        MOVE    WRK-YMD             TO  WRK-KYUSEI5-YMD
                        MOVE    "1"                 TO  WRK-KYUSEI5-CHK
                    END-IF
@@ -1561,8 +1362,7 @@
                    MOVE    "1"             TO  WRK-KYUSEI-ED (6)
                    IF      WRK-KYUSEI6-CHK     =   SPACE
                        MOVE    "099800161"         TO  WRK-SRYCD
-      ************     PERFORM 10001-KYUSEI-YMD-SEC
-                       PERFORM 10001-RIHA-STRYMD-SEC
+                       PERFORM 10001-KYUSEI-YMD-SEC
                        MOVE    WRK-YMD             TO  WRK-KYUSEI6-YMD
                        MOVE    "1"                 TO  WRK-KYUSEI6-CHK
                    END-IF
@@ -1584,8 +1384,7 @@
                    MOVE    "1"             TO  WRK-KYUSEI-ED (7)
                    IF      WRK-KYUSEI7-CHK     =   SPACE
                        MOVE    "099800171"         TO  WRK-SRYCD
-      ************     PERFORM 10001-KYUSEI-YMD-SEC
-                       PERFORM 10001-RIHA-STRYMD-SEC
+                       PERFORM 10001-KYUSEI-YMD-SEC
                        MOVE    WRK-YMD             TO  WRK-KYUSEI7-YMD
                        MOVE    "1"                 TO  WRK-KYUSEI7-CHK
                    END-IF
@@ -1608,8 +1407,7 @@
                    MOVE    "1"             TO  WRK-KYUSEI-ED (8)
                    IF      WRK-KYUSEI8-CHK     =   SPACE
                        MOVE    "099800181"         TO  WRK-SRYCD
-      ************     PERFORM 10001-KYUSEI-YMD-SEC
-                       PERFORM 10001-RIHA-STRYMD-SEC
+                       PERFORM 10001-KYUSEI-YMD-SEC
                        MOVE    WRK-YMD             TO  WRK-KYUSEI8-YMD
                        MOVE    "1"                 TO  WRK-KYUSEI8-CHK
                    END-IF
@@ -1675,17 +1473,6 @@
            END-IF
       *
       *
-      *ver.4.7
-      *    精神科ケア早期加算チェック
-           IF     (SPA-ERRCD           =   SPACE  )
-             AND  (LNK-ORCSC-PG        =   "K02"  )
-             AND  (WRK-COM-INPUTCD (IDX-Z) =   CON-KEAKSN1
-                                           OR  CON-KEAKSN2
-                                           OR  CON-KEAKSN3
-                                           OR  CON-KEAKSN4
-                                           OR  CON-KEAKSN5)
-               PERFORM 10053-KEAKASAN-CHK-SEC
-           END-IF
            .
        1005-KASAN-CHK-EXT.
            EXIT.
@@ -1841,49 +1628,6 @@
            .
        20011-SYOKIKSN-CHK-EXT.
            EXIT.
-      *****************************************************************
-      *    精神科ケア早期加算チェック処理
-      *****************************************************************
-       10053-KEAKASAN-CHK-SEC                SECTION.
-      *
-           IF      WRK-KEASOKI-INT         =   SPACE
-      *        開始日検索
-               MOVE    "099830101"         TO  WRK-SRYCD
-               PERFORM 10001-KYUSEI-YMD-SEC
-               MOVE    WRK-YMD             TO  WRK-KEASOKI-YMD
-               MOVE    "1"                 TO  WRK-KEASOKI-INT
-           END-IF
-      *
-           IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
-           AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
-           AND    (WRK-KEASOKI-INT         =   "1"  )
-           AND    (WRK-KEASOKI-YMD     NOT =   SPACE)
-      *        開始日から１年後はエラー
-               MOVE    WRK-KEASOKI-YMD         TO  WRK-KEASTRYMD
-               COMPUTE WRK-KEASTR-YY       =   WRK-KEASTR-YY   +   1
-               IF      WRK-KEASTRYMD       <=  SPA-SRYYMD
-                   MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"                 TO  WRK-COM-KZMFLG
-                                                           (IDX-Z)
-                   MOVE    "K270"              TO  WRK-ERRCD
-      *            発生日
-                   INITIALIZE                      STS-AREA-DAY
-                   INITIALIZE                      LNK-DAY2-AREA
-                   MOVE    "21"                TO  LNK-DAY2-IRAI
-                   MOVE    WRK-KEASOKI-YMD     TO  LNK-DAY2-YMD
-                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                       LNK-DAY2-AREA
-                   MOVE    SPACE               TO  LNK-ORCSC-ERRMSG
-                   STRING  "精神科ケア早期加算開始日："
-                                                   DELIMITED  BY  SIZE
-                           LNK-DAY2-EDTYMD3        DELIMITED  BY  SIZE
-                           INTO                    LNK-ORCSC-ERRMSG
-                   END-STRING
-               END-IF
-           END-IF
-           .
-       10053-KEAKASAN-CHK-EXT.
-           EXIT.
       *
       *****************************************************************
       *    施設基準不適合チェック加算処理
@@ -1909,6 +1653,7 @@
                    IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
                        CONTINUE
                    ELSE
+                       MOVE    IDX-Z           TO  IDX-S
                        MOVE    ZERO            TO  FLG-ARI
                        PERFORM 1002-KASAN-SET-SEC
                   END-IF
@@ -1939,6 +1684,7 @@
       *    施設基準情報検索
            MOVE    SPACE               TO  SYS-1006-REC
            MOVE    "1006"              TO  SYS-1006-KANRICD
+      *H24.4
            EVALUATE    TRUE
                WHEN    IDY             <=  500
                    MOVE    "1"                 TO  SYS-1006-KBNCD
@@ -1973,7 +1719,7 @@
            ELSE
                INITIALIZE                  SYS-1006-REC
            END-IF
-      *
+      *H24.4
       *    基準不適合逓減対象施設基準
            IF      SYS-1006-SSTKIJUN (IDY - IDS)   =   1
                CONTINUE
@@ -2158,25 +1904,6 @@
                        LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
                       INTO                 WRK-KYUSEI-MSG
                END-STRING
-      *        要介護開始日
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY6-AREA
-               MOVE    "61"                TO  LNK-DAY6-IRAI
-               MOVE    WRK-KYUSEI-YMD      TO  LNK-DAY6-KIJUN
-               MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-               MOVE    1                   TO  LNK-DAY6-ZOGEN
-               CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY6-AREA
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY2-AREA
-               MOVE    "21"                TO  LNK-DAY2-IRAI
-               MOVE    LNK-DAY6-KEISAN     TO  LNK-DAY2-YMD
-               CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY2-AREA
-               STRING  "算定開始日："      DELIMITED  BY  SIZE
-                       LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
-                      INTO                 WRK-KYUSEI-MSG02
-               END-STRING
            END-IF
       *
            .
@@ -2241,27 +1968,26 @@
                MOVE    SPA-SRYYMD          TO  WRK-SYOYMD
            END-IF
            MOVE    WRK-SYOYMD          TO  WRK-SYOYMD2
-           MOVE    WRK-SYOYMD          TO  WRK-SYOYMD3
       *    初診料算定日＋６月後
-      *    INITIALIZE                      STS-AREA-DAY
-      *    INITIALIZE                      LNK-DAY6-AREA
-      *    MOVE    "61"                TO  LNK-DAY6-IRAI
-      *    MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
-      *    MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
-      *    MOVE    6                   TO  LNK-DAY6-ZOGEN
-      *    CALL    "ORCSDAY"           USING   STS-AREA-DAY
-      *                                        LNK-DAY6-AREA
-      *    MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYOYMD
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-SYOYMD          TO  LNK-DAY6-KIJUN
+           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    6                   TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KOYOMI     TO  WRK-SYOYMD
       *    ６ヶ月以上
       *    IF      SPA-SRYYMD          >   WRK-SYOYMD
       *        MOVE    1               TO  FLG-NENREI
       **** END-IF
       *    Ｈ２０．４から１年未満とする
            COMPUTE WRK-SYO2-YY         =   WRK-SYO2-YY   +   1
-           COMPUTE WRK-SYO3-YY         =   WRK-SYO3-YY   +   2
            IF      SPA-SRYYMD          >=  WRK-SYOYMD2
       *H24.4
-               IF      SPA-SRYYMD          <   WRK-SYOYMD3
+               COMPUTE WRK-SYO2-YY         =   WRK-SYO2-YY   +   1
+               IF      SPA-SRYYMD          <   WRK-SYOYMD2
       *            ２年未満であれば、施設基準の判定
                    PERFORM 10011321-GAIRI-SEISINCHK-SEC
                    IF      FLG-NENREI          =   ZERO
@@ -2292,15 +2018,7 @@
                                                OR  "180031110"
                                                OR  "180031210"
                                                OR  "180031310"
-                       IF     (SPA-SRYYMD      >=  WRK-SYOYMD2 )
-      *H24.4
-      *                 １年以上で２年未満で算定不可
-                         IF     (SPA-SRYYMD      <   WRK-SYOYMD3 ) AND
-                                (FLG-NENREI2     =   1           )
-                           CONTINUE
-                         ELSE
-      *H24.4
-      *
+                       IF      SPA-SRYYMD      >=  WRK-SYOYMD2
                            IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)
                            AND    (LNK-ORCSC-KEI-IDX        =   ZERO )
                                MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX
@@ -2308,11 +2026,12 @@
                                                            (IDX-Z)
                                MOVE    "0215"      TO  WRK-ERRCD
       *H24.4
-                               MOVE    "K873"      TO  WRK-ERRCD
+                               IF      FLG-NENREI2     =   1
+                                   MOVE    "8071"      TO  WRK-ERRCD
+                               END-IF
                                MOVE    "1"         TO  WRK-COM-CUR
                                                            (IDX-Z)
                            END-IF
-                         END-IF
                        END-IF
                    ELSE
                        MOVE    "0083"      TO  WRK-ERRCD
@@ -2358,9 +2077,7 @@
            END-IF
       *
       *    対象施設基準(3039)（児童・思春期精神科入院管理料）
-      *                (3146)（〃（栄養管理経過措置））追加
-           IF    ((SYS-1006-SSTKIJUN (039)  =   1  )  OR 
-                  (SYS-1006-SSTKIJUN (146)  =   1  )) AND
+           IF     (SYS-1006-SSTKIJUN (039)  =   1  )  AND
       *           １６歳未満
                   (LNK-ORCSC-NENREI-YY      <   16 )
                CONTINUE
@@ -2476,29 +2193,6 @@
       *****************************************************************
        10011310-NYUINYMD-HEN-SEC        SECTION.
       *
-      *ver.4.7
-           IF     (FLG-SEISIN          =   1   )
-             AND  (SPA-STR-NYUINYMD    NOT =   SPACE )
-      *        継続入院日ありの時、家族は算定不可
-               IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
-               AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
-                   MOVE    "K844"              TO  WRK-ERRCD
-                   MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"                 TO  WRK-COM-KZMFLG
-                                                           (IDX-Z)
-                   MOVE    "1"                 TO  WRK-COM-CUR
-                                                           (IDX-Z)
-               END-IF
-           END-IF
-      *    継続初回入院日
-           IF     (SPA-STR-NYUINYMD    NOT =   SPACE)
-           AND    (FLG-SEISIN              =   ZERO )
-               MOVE    SPA-STR-NYUINYMD    TO  WRK-NYUINYMD
-           END-IF
-      *
-           GO      TO      10011310-NYUINYMD-HEN-EXT
-      *!!
-      *!!
            INITIALIZE                  PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
@@ -2649,9 +2343,8 @@
                    WHEN    "001"
                    WHEN    "002"
                    WHEN    "003"
-      *疾患別リハビリのみ対象
-      *********    WHEN    "004"
-      *********    WHEN    "005"
+                   WHEN    "004"
+                   WHEN    "005"
                        EVALUATE    SPA-RSI-SISIKBN
                            WHEN    1
                            WHEN    2
@@ -3226,10 +2919,11 @@
                END-IF
            END-PERFORM
       *
+      **** COMPUTE LNK-SC90-TENSU      =   WRK-SUM-TENSUKEI
            COMPUTE WRK-SUM-TENSUKEI    =   WRK-SUM-TENSUKEI
                                        +   WRK-TENSUKEI-K
                                        -   WRK-TENSUKEI-G
-      *
+      *H24.4
       *    放射線の乳幼児加算計算
            MOVE    ZERO                TO  WRK-TENSUKEI-K
            PERFORM VARYING     IDX     FROM    IDX-SYU  BY  1
@@ -3443,6 +3137,8 @@
       *        上限日数越えで 月１３単位以上
                IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)  AND
                       (LNK-ORCSC-KEI-IDX        =   ZERO )
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
                    EVALUATE    WRK-RIHA-KBN
                        WHEN    "2"
       *                    脳血管疾患
@@ -3464,13 +3160,8 @@
                                MOVE    "K872"          TO  SPA-ERRCD
                            END-IF
                    END-EVALUATE
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
-                       MOVE    "1"             TO  WRK-COM-KZMFLG(IDX-Z)
-                       MOVE    WRK-KYUSEI-MSG02
-                                               TO  LNK-ORCSC-ERRMSG
-                       MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
-                   END-IF
+                   MOVE    WRK-KYUSEI-MSG  TO  LNK-ORCSC-ERRMSG
+                   MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                END-IF
            END-IF
       *
@@ -3686,8 +3377,8 @@
                        MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                    END-IF
                END-IF
-      *
            END-IF
+      *
            END-PERFORM
            .
        200-ALL-SYORI-EXT.
@@ -3927,23 +3618,6 @@
            END-IF
            .
        910-PTNYUINRRK-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    算定歴付加マスタ読み込み
-      *****************************************************************
-       921-SANTEIPLUS-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SANTEIPLUS-REC
-               MOVE    ZERO                TO  FLG-SANTEIPLUS
-           ELSE
-               INITIALIZE                      SANTEIPLUS-REC
-               MOVE    1                   TO  FLG-SANTEIPLUS
-           END-IF
-      *
-           .
-       921-SANTEIPLUS-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
