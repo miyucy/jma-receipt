@@ -4449,7 +4449,14 @@
                                            NOT =   "95" AND "96") AND
                        (WRK-COM-GAIKANRIKBN(IDX-Z)
                                                =   1   )
-                   MOVE    1               TO  FLG-GAIKAN
+      *H24.4
+      *            同一日２科目以外
+                   IF     (IDX-Z           =   IDX-SINSATU2-S )
+                      OR  (IDX-Z           =   IDX-SINSATU2-T )
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-GAIKAN
+                   END-IF
                 END-IF
       *
       *        他保険算定済み
@@ -5100,15 +5107,6 @@
                END-IF
            END-IF
       *
-      *TEST
-            DISPLAY "IDX-CHK:" IDX-CHK
-               ",KA:" WRK-COM-SRYKA(IDX-CHK)
-                   ",COM:"  WRK-COM-INPUTCD (IDX-CHK)  
-                ",FLG-TAKA:" FLG-TAKA
-                ",IDX-SYU2:" IDX-SYU2
-               ",KA:" WRK-COM-SRYKA(IDX-SYU2)
-            ",LNK-ORCSC-SYOSIN2:" LNK-ORCSC-SYOSIN2
-      *TEST
       *    同日２科目は科が違うこと
            IF      IDX-SYU2        >   ZERO
                 IF      WRK-COM-SRYKA(IDX-SYU2)
@@ -6025,12 +6023,6 @@
                   (SPA-HOSPSBT         =   1   )
                GO      TO      20012-GAIKAN-SYORI-EXT
            END-IF
-      *TEST
-           DISPLAY "FLG-GAIKAN:"  FLG-GAIKAN
-               ",IDX-SYU:"  IDX-SYU
-               ",LNK-ORCSC-GAIFLG:"  LNK-ORCSC-GAIFLG
-               ",LNK-ORCSC-GAIRAI-NASI:"  LNK-ORCSC-GAIRAI-NASI
-      *TEST
       *
            IF      FLG-GAIKAN          =   1
       *        訂正の時、登録時に判定する
