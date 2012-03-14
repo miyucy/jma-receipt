@@ -406,7 +406,7 @@
       *
       *    点数マスタ−
       *01  TENSU-REC.
-           COPY    "CPTENSU.INC".
+      *    COPY    "CPTENSU.INC".
       *
       *    算定履歴
        01  SANTEI-REC.
@@ -423,8 +423,8 @@
            COPY    "CPSRYACCT.INC".
       *
       *    チェックマスタ−
-       01  CHK-REC.
-           COPY    "CPCHK.INC".
+      *01  CHK-REC.
+      *    COPY    "CPCHK.INC".
       *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
@@ -684,7 +684,7 @@
       *****************************************************************
        10001-KYUSEI-YMD-SEC                SECTION.
       *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *    MOVE    WRK-SRYCD           TO  TNS-SRYCD
       *    訂正時
            MOVE    ZERO                TO  FLG-TOUJITU
            IF      LNK-ORCSC-SYORIFLG      =   1
@@ -780,7 +780,7 @@
       *****************************************************************
        10001-RIHA-STRYMD-SEC            SECTION.
       *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *    MOVE    WRK-SRYCD           TO  TNS-SRYCD
       *    訂正時
            MOVE    ZERO                TO  FLG-TOUJITU
            IF      LNK-ORCSC-SYORIFLG      =   1

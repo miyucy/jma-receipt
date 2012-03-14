@@ -341,8 +341,8 @@
            COPY    "CPSRYACCT.INC".
       *
       *    チェックマスタ−
-       01  CHK-REC.
-           COPY    "CPCHK.INC".
+      *01  CHK-REC.
+      *    COPY    "CPCHK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -589,7 +589,7 @@
       *****************************************************************
        10001-KYUSEI-YMD-SEC                SECTION.
       *
-           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+      *    MOVE    WRK-SRYCD           TO  TNS-SRYCD
       *    訂正時
            MOVE    ZERO                TO  FLG-TOUJITU
            IF      LNK-ORCSC-SYORIFLG      =   1

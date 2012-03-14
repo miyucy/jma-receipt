@@ -235,15 +235,15 @@
       *
       *    点数マスタ−
       *01  TENSU-REC.
-           COPY    "CPTENSU.INC".
+      *    COPY    "CPTENSU.INC".
       *
       *    算定履歴
-       01  SANTEI-REC.
-           COPY    "CPSANTEI.INC".
+      *01  SANTEI-REC.
+      *    COPY    "CPSANTEI.INC".
       *
       *    チェックマスタ−
-       01  CHK-REC.
-           COPY    "CPCHK.INC".
+      *01  CHK-REC.
+      *    COPY    "CPCHK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
