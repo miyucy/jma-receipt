@@ -450,6 +450,7 @@ RECORD_files = \
 	_KADMY01.rec \
 	_PDMY01.rec \
 	_UDMY01.rec \
+	S10.rec \
 	
 
 DEF_files = \
