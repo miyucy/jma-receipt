@@ -72,7 +72,20 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA23SCRAREA.INC".
+           COPY    "S02.INC".
+           COPY    "S03.INC".
+           COPY    "S03N.INC".
+           COPY    "S04.INC".
+           COPY    "S06.INC".
+           COPY    "S07.INC".
+           COPY    "S08.INC".
+           COPY    "S09.INC".
+           COPY    "S10.INC".
+           COPY    "S99.INC".
+           COPY    "SERR.INC".
+           COPY    "SID1.INC".
+           COPY    "SID2.INC".
+           COPY    "SID3.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -132,10 +145,6 @@
       *        ¿¡µ·ΩÒ°¶Ã¿∫ŸΩÒ
                WHEN    "CLICKED"                 ALSO    "B12"
                    MOVE    "OK"                  TO  SPA-SID1-FLG
-                   PERFORM 210-BACK
-      *        ¿¡µ·≥€ —ππ
-               WHEN    "CLICKED"                 ALSO    "B12S"
-                   MOVE    "SID4"                TO  SPA-SID1-FLG
                    PERFORM 210-BACK
            END-EVALUATE
       *

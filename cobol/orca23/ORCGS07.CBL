@@ -170,7 +170,20 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA23SCRAREA.INC".
+           COPY    "S02.INC".
+           COPY    "S03.INC".
+           COPY    "S03N.INC".
+           COPY    "S04.INC".
+           COPY    "S06.INC".
+           COPY    "S07.INC".
+           COPY    "S08.INC".
+           COPY    "S09.INC".
+           COPY    "S10.INC".
+           COPY    "S99.INC".
+           COPY    "SERR.INC".
+           COPY    "SID1.INC".
+           COPY    "SID2.INC".
+           COPY    "SID3.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -190,7 +203,7 @@
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-FREE2       TO  SPA-S07
+           MOVE    SPA-FREE        TO  SPA-S07
            MOVE    SPA-WORK        TO  SPA-S01KYOUTU
       *
            MOVE    SPACE           TO  SPA-ERRCD
@@ -214,7 +227,7 @@
       *
            MOVE    SPA-S01KYOUTU    TO  SPA-WORK
            MOVE    SPA-AREA         TO  SPA-COMMON.
-           MOVE    SPA-S07          TO  SPA-FREE2
+           MOVE    SPA-S07          TO  SPA-FREE
            .
       *
        000-PROC-SEC-EXT.
@@ -394,9 +407,9 @@
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
            WHEN    "CLICKED"       ALSO    "B01"
-               INITIALIZE              SPA-S01-TUKI-G
+               MOVE    SPACE           TO  SPA-S01-TUKI-SKYPRT
+                                           SPA-S01-TUKI-SRYPRT
                PERFORM 210-BACK
-           WHEN    "CLICKED"       ALSO    "B12S"
            WHEN    "CLICKED"       ALSO    "B10"
            WHEN    "CLICKED"       ALSO    "B11"
            WHEN    "CLICKED"       ALSO    "B12"
@@ -666,7 +679,6 @@
       *
                MOVE    1           TO  FLG-HIT
                MOVE    SYU-DENPNUM TO  WRK-DENPNUM
-               MOVE    SYU-SRYYMD  TO  WRK-SRYYMD
       *
                IF    ( SPA-GMN-KIKANKBN    =   "1" )
                    MOVE    SPA-NAI-SRYYM   TO  WRK-STYM
@@ -717,7 +729,7 @@
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
-           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
@@ -738,8 +750,6 @@
       *
            IF    ( SPA-ERRCD           =   SPACE )
       *
-               INITIALIZE              SPA-S01-TUKI-G
-      *
                MOVE    WRK-DENPNUM     TO  SPA-S01-TUKI-DENPNUM
       *
                MOVE    SPA-NAI-SRYYM   TO  SPA-S01-TUKI-SRYYM
@@ -758,9 +768,6 @@
                                            TO  SPA-S01-TUKI-GRPKBN
       *
                EVALUATE    WRK-MCP-WIDGET
-               WHEN    "B12S"
-                   MOVE    "2"             TO  SPA-S01-TUKI-SKYPRT
-                   MOVE    "2"             TO  SPA-S01-TUKI-SRYPRT
                WHEN    "B10"
                    MOVE    "1"             TO  SPA-S01-TUKI-SKYPRT
                WHEN    "B11"
@@ -972,7 +979,7 @@
                MOVE    "期間指定が開始日＞終了日となっています"
                                        TO  SPA-ERRMSG
            WHEN    "1002"
-               MOVE "対象となる外来収納データが存在しません"
+               MOVE "対象となる収納データが存在しません"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
