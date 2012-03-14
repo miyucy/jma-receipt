@@ -2504,12 +2504,15 @@
            END-EVALUATE
       *
            IF      SYU-DENPJTIKBN  NOT =   "3"
-                EVALUATE  SYU-SECMONEY
-                  WHEN      1
-                     MOVE      "1"     TO  SPA-GMN-SIKIBETUFLG(IDXL)
-                  WHEN      2
-                     MOVE      "2"     TO  SPA-GMN-SIKIBETUFLG(IDXL)
-                END-EVALUATE
+                IF  (SPA-NAI-SRYYM(1:6)  IS  NUMERIC     )
+                OR  (SYU-SRYYMD(1:6)  =   SPA-SYSYMD(1:6))
+                  EVALUATE  SYU-SECMONEY
+                    WHEN      1
+                       MOVE      "1"   TO  SPA-GMN-SIKIBETUFLG(IDXL)
+                    WHEN      2
+                       MOVE      "2"   TO  SPA-GMN-SIKIBETUFLG(IDXL)
+                  END-EVALUATE
+                END-IF
                 IF  SYU-ACCT-UPDKBN NOT = SPACE
                    MOVE   "¡ù"    TO   SPA-GMN-TNYUGAIKBN(IDXL)(3:2)
                 END-IF
