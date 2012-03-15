@@ -5455,6 +5455,13 @@
                            MOVE  ZERO  TO  FLG-TARGET
                        END-IF
                    END-IF
+                   IF   (  FLG-RYOYOKHN    =   4 )
+                       IF    ( SYS-5111-SRYCD
+                                  =        "190122510"
+                                  OR       "190124810" )
+                           MOVE  ZERO  TO  FLG-TARGET
+                       END-IF
+                   END-IF
                END-IF
       *
                IF    ( FLG-TARGET  =   1 )
@@ -14405,34 +14412,6 @@
                                   IF    FLG-IPPAN2    =   2
                                      MOVE   "3"    TO
                                       LNK-SCNYUACCT-NYUKHNKSN-KBN(IDX9)
-                                  END-IF
-      *                           ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¤Î¤È¤­²Ã»»¥³¡¼¥ÉÃÖ¤­´¹¤¨
-                                  IF     WRK-YUKYMD  >=  "20120401"
-                                    IF   PTNYUINRRK-TOKUTEI-KBN  =  "3"
-                                      IF PTNYUINRRK-TOKUTEI-NYUIN
-                                                             = "25" OR
-                                                               "26" OR
-                                                               "27" OR
-                                                               "28" OR
-                                                               "29" OR
-                                                               "37" OR
-                                                               "38" OR
-                                                               "39" OR
-                                                               "40" OR
-                                                               "41" OR
-                                                               "63" OR
-                                                               "64" OR
-                                                               "65" OR
-                                                               "66" OR
-                                                               "67" OR
-                                                               "68" OR
-                                                               "69" OR
-                                                               "70"
-                                        MOVE  "190143370"  TO
-                                          LNK-SCNYUACCT-NYUKHNKSN-SRYCD
-                                                                 (IDX9)
-                                      END-IF
-                                    END-IF
                                   END-IF
                              END-IF
       *                      µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¡Ê¿ÇÎÅ½ê¡Ë¤Î¥Õ¥é¥°¥»¥Ã¥È
