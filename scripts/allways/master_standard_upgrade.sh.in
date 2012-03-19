@@ -372,6 +372,8 @@ if [ ${UPDCOUNT} -ge ${VACUUMCOUNT} ] ; then
 		                echo "vacuum analyze tbl_etensu_5;"     | psql ${DBNAME} ;;
 		'23')
 		                echo "vacuum analyze tbl_labor_sio;"    | psql ${DBNAME} ;;
+		'24')
+		                echo "vacuum analyze tbl_generic_price;"      | psql ${DBNAME} ;;
 		esac
 	done
 fi

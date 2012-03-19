@@ -40,6 +40,7 @@
       *  04.03.00    NACL-太田    08/05/27  エラー処理強化
       *  04.06.00    NACL-伊藤    11/03/10  新マスター追加
       *  04.07.00    NACL-伊藤    11/10/12  新マスター追加
+      *  04.07.00    NACL-伊藤    12/03/19  新マスター追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -701,6 +702,9 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                                           TO  SPA-GMN-MASTNAME(IDX2)
                WHEN    "ORCADB23"
                    MOVE    "労働基準監督署マスタ"
+                                          TO  SPA-GMN-MASTNAME(IDX2)
+               WHEN    "ORCADB24"
+                   MOVE    "最低薬価マスタ"
                                           TO  SPA-GMN-MASTNAME(IDX2)
                WHEN    OTHER
                    MOVE    MSTKANRI-KANRICD

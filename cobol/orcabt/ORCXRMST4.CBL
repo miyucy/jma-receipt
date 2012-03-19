@@ -776,6 +776,8 @@ grpsys                                 SPA-AREA
                MOVE    "電子点数表マスタ"      TO  WRK-MSTNAME
            WHEN    "23"
                MOVE    "労働基準監督署マスタ"  TO  WRK-MSTNAME
+           WHEN    "24"
+               MOVE    "最低薬価マスタ"        TO  WRK-MSTNAME
            WHEN    OTHER
                MOVE    PARA-MASTER-KBN         TO  WRK-MSTNAME
            END-EVALUATE
