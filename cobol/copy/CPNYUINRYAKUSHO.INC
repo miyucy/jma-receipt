@@ -46,7 +46,7 @@
            03  NYURYAKUSHO-UPHMS        PIC  X(06).
       *¹¹¿·ÍÑ
            03  NYURYAKUSHO-UP-KEY.
-               05  NYURYAKUSHO-UPSRYCD     PIC  X(09).
-               05  NYURYAKUSHO-UPYUKOSTYMD PIC  X(08).
-               05  NYURYAKUSHO-UPYUKOEDYMD PIC  X(08).
+               05  NYURYAKUSHO-UPSRYCD      PIC  X(09).
+               05  NYURYAKUSHO-UPYUKOSTYMD  PIC  X(08).
+               05  NYURYAKUSHO-UPYUKOEDYMD  PIC  X(08).
       *

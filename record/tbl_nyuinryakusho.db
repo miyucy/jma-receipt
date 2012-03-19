@@ -9,9 +9,9 @@ tbl_nyuinryakusho	{
 	CREYMD		char(8);
 	UPYMD		char(8);
 	UPHMS		char(6);
-#-----> 荳ｻ繧ｭ繝ｼ譖ｴ譁ｰ逕ｨ鬆�逶ｮ
-	UPSRYCD		char(9),virtual;
-	UPYUKOSTYMD	char(8),virtual;
+#-----> 主キー更新用項目
+	UPSRYCD		char(9);
+	UPYUKOSTYMD	char(8);
 	UPYUKOEDYMD 	char(8),virtual;
 };
 
@@ -52,7 +52,7 @@ path	key2	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE tbl_nyuinryakusho
+		UPDATE	tbl_nyuinryakusho
 				SET
 				SRYCD      = :SRYCD,
 				YUKOSTYMD      = :YUKOSTYMD,
