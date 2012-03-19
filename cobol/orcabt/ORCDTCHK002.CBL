@@ -9047,7 +9047,8 @@
                    UNTIL ( IDX0    >   31 )
       *
                IF    ( TNACCT-GAIHAKU-DAY (IDX0)
-                                           =   ZERO OR 4 OR 5 )
+                                           =   ZERO OR 4 OR 5
+                                                    OR 6 OR 7 )
                    CONTINUE
                ELSE
                    IF    ( TNYUIN-CHOZAI-DAY (IDX0)    =   1 )
