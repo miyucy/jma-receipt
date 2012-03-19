@@ -9,7 +9,7 @@ tbl_nyuksnchk	{
 	CREYMD  		char(8);
 	UPYMD   		char(8);
 	UPHMS			char(6);
-#-----> ‰∏ª„Ç≠„ÉºÊõ¥Êñ∞Áî®È†ÖÁõÆ
+#-----> ºÁ•≠°ºππø∑Õ—π‡Ã‹
 	UPNYUINKBN		char(3),virtual;
 	UPKSNKBN   		char(3),virtual;
 	UPYUKOSTYMD 		char(8),virtual;
@@ -56,7 +56,7 @@ path	key2	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE tbl_nyuksnchk
+		UPDATE	tbl_nyuksnchk
 				SET
 				NYUINKBN      = :NYUINKBN,
 				KSNKBN      = :KSNKBN,

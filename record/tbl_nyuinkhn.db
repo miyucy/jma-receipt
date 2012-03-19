@@ -22,7 +22,7 @@ tbl_nyuinkhn	{
 	CREYMD		char(8);
 	UPYMD		char(8);
 	UPHMS		char(6);
-#-----> 荳ｻ繧ｭ繝ｼ譖ｴ譁ｰ逕ｨ鬆�逶ｮ
+#-----> 主キー更新用項目
 	UPKHN_SRYCD	char(9),virtual;
 	UPYUKOSTYMD	char(8),virtual;
 	UPYUKOEDYMD	char(8),virtual;
@@ -86,7 +86,7 @@ path	key3	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE tbl_nyuinkhn
+		UPDATE	tbl_nyuinkhn
 				SET
 				KHN_SRYCD      = :KHN_SRYCD,
 				YUKOSTYMD      = :YUKOSTYMD,
