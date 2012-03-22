@@ -186,6 +186,8 @@
            END-IF
       *
            EVALUATE    TRUE
+           WHEN  ( SNYUKSNCHK-BTUSBT   =   SPACE )
+               CONTINUE
            WHEN  ( SNYUKSNCHK-BTUSBT   =   "01" )
                IF    ( SNYUKSNCHK-RYOYOKBN     =   "1" )
                 OR   ( SNYUKSNCHK-BTU-TOKKBN   =   "33"
