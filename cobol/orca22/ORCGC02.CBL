@@ -275,6 +275,8 @@
       *  04.06.12    NACL-藤原    11/12/19  自院病名検索時のチェックと
       *                                     自院病名検索から戻り時の表示の修正
       *  04.06.13    NACL-藤原    12/02/29  補足コメントの登録前チェック追加
+      *  04.06.14    NACL-藤原    12/03/22  補足コメントの登録前チェック
+      *                                     を複数病名登録時には行わない
       *
       *  04.07.01    NACL-藤原    11/06/10  未コード化病名となる病名の別
       *                                     組み立てへの移行を可能にする
@@ -8302,12 +8304,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      SPA-ERRCD           NOT =   SPACE         
                GO  TO  450-TOUROKU-EXT
            END-IF
-           MOVE    SPA-GMN-C02-HOSOKU-COMMENT
-                                         TO  C02-HOSOKU-COMMENT
-           PERFORM 41025-HOSOKU-COMMENT-CHK-SEC
-           IF      SPA-ERRCD           NOT =   SPACE         
-               GO  TO  450-TOUROKU-EXT
-           END-IF
            IF      SPA-NAI-C02-BYOMEICD-MAX    =   1
                MOVE    SPA-GMN-C02-UTAGAIFLG-G TO  C02-UTAGAIFLG
                    PERFORM 4104-UTAGAI-CHK-SEC
@@ -8346,6 +8342,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
                MOVE    SPA-GMN-C02-HKNBYOMEIFLG-G TO  C02-HKNBYOMEIFLG
                PERFORM 41014-HKNBYOMEIFLG-CHK-SEC
+               IF      SPA-ERRCD           NOT =   SPACE         
+                   GO  TO  450-TOUROKU-EXT
+               END-IF
+               MOVE    SPA-GMN-C02-HOSOKU-COMMENT
+                                             TO  C02-HOSOKU-COMMENT
+               PERFORM 41025-HOSOKU-COMMENT-CHK-SEC
                IF      SPA-ERRCD           NOT =   SPACE         
                    GO  TO  450-TOUROKU-EXT
                END-IF
