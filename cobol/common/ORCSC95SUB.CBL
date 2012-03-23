@@ -828,6 +828,10 @@
       *            ÃÏ°è°åÎÅ¹×¸¥²Ã»»(754 - 500)
                    IF      SYS-1006-SSTKIJUN (254) =   1
                        MOVE    1               TO  SPA-CHIIKKBN
+      *H24.4²þÀµ
+                       IF      SPA-SRYYMD      >=  "20120401"
+                           MOVE    2               TO  SPA-CHIIKKBN
+                       END-IF
                    ELSE
                        MOVE    0               TO  SPA-CHIIKKBN
                    END-IF
@@ -840,11 +844,8 @@
                END-IF
       *H24.4²þÀµ
                IF      SYS-1006-KBNCD      =   "7"
-      *            »þ´Ö³°ÂÐ±þ²Ã»»
                    IF      SPA-SRYYMD      >=  "20120401"
-                       IF      SPA-CHIIKKBN    =   1
-                           MOVE    2               TO  SPA-CHIIKKBN
-                       END-IF
+      *            »þ´Ö³°ÂÐ±þ²Ã»»
                        EVALUATE    TRUE
       *                    »þ´Ö³°ÂÐ±þ²Ã»»£±(3001)
                            WHEN    SYS-1006-SSTKIJUN (001) =   1
