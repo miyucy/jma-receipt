@@ -327,6 +327,7 @@
       *  04.05.29    NACL-Æ£¸¶    11/12/16  ÅìÂçºå»Ô¹ñÊÝ¤Î¸ºÌÈÂÐ±þ
       *  04.05.30    NACL-Æ£¸¶    12/02/08  »»ÄêÆü¾ðÊó¤Ë·¸¤ëµ­Ï¿¾ò·ï»ÅÍÍ
       *                                     ¤ÎÊÑ¹¹
+      *  04.05.31    NACL-ÌçÏÆ    12/03/23  ºÒ³²ÂÐ±þ¡Ê¸øÈñÍóÀÁµáÅÀ£°ÅÀÂÐ±þ¡Ë
       *
       *  04.06.01    NACL-Æ£¸¶    10/10/04  ¥ì¥»¥×¥È¥³¥á¥ó¥ÈÊ¸»ú¿ôÁýÂÐ±þ
       *  04.06.02    NACL-Æ£¸¶    10/11/04  ÊäÂ­¥³¥á¥ó¥ÈÂÐ±þ
@@ -3378,6 +3379,15 @@
                          ( RECE62-FTNMONEY (IDX)      =   ZERO ) AND
                          ( RECE62-ZEROKISAIFLG (IDX)  =   "1"  ))
                    OR   (( RECE62-FUKUSHIFLG(IDX)     =   "1"  ) AND
+                         ( RECE62-TOTALTEN (IDX)      =   ZERO ) AND
+                         ( RECE62-FTNMONEY (IDX)      >   ZERO ))
+                   OR   (( RECE62-HKNNUM        NOT =   SPACE  ) AND
+                         ( RECE62-GENMENKBN         =   2 OR 3 ) AND
+                         ( RECE62-TOTALTEN (IDX)      =   ZERO ) AND
+                         ( RECE62-FTNMONEY (IDX)      =   ZERO ) AND
+                         ( RECE62-ZEROKISAIFLG (IDX)  =   "1"  ))
+                   OR   (( RECE62-HKNNUM        NOT =   SPACE  ) AND
+                         ( RECE62-GENMENKBN         =   2 OR 3 ) AND
                          ( RECE62-TOTALTEN (IDX)      =   ZERO ) AND
                          ( RECE62-FTNMONEY (IDX)      >   ZERO ))
                        MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
