@@ -3439,7 +3439,7 @@
                MOVE   ZERO     TO     FLG-NYUKSN
            END-IF
       *
-      *    表用番号が同一であることの判定
+      *    注加算の表用番号が同一であることの判定
            IF   WRK-KSN-CDKBN-KBNNUM    NOT =    ZERO
               IF  (WRK-BTU-CDKBN-KBNNUM  = WRK-KSN-CDKBN-KBNNUM)  AND
                   (WRK-BTU-CDKBN-KBNNUM-EDA = WRK-KSN-CDKBN-KBNNUM-EDA)
@@ -3524,6 +3524,9 @@
                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
            END-EVALUATE
            IF  TNS-SRYCD      =    "190121810"
+                   MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+           END-IF
+           IF  TNS-SRYCD      =    "190799510"
                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
            END-IF
            .
