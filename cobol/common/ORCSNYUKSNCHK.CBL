@@ -59,6 +59,7 @@
                    07  WRK-KHN-KSNKBN9         PIC 9(03).
                05  WRK-KHN-KHNKBN              PIC 9(02).
                05  WRK-KHN-CDKBN-KBNNUM        PIC 9(03).
+               05  WRK-KHN-CDKBN-KBNNUM-EDA    PIC 9(02).
       *
            03  WRK-KSN-G.
                05  WRK-KSN-SRYCD               PIC X(09).
@@ -66,6 +67,7 @@
                    07  WRK-KSN-KSNKBN9         PIC 9(03).
                05  WRK-KSN-KHNKBN              PIC 9(02).
                05  WRK-KSN-CDKBN-KBNNUM        PIC 9(03).
+               05  WRK-KSN-CDKBN-KBNNUM-EDA    PIC 9(02).
       *
        01  CONST-AREA.
            03  CONST-H240401       PIC X(08)   VALUE   "20120401".
@@ -236,6 +238,7 @@
                MOVE    TNS-NYUKHNKSNKBN    TO  WRK-KSN-KSNKBN9
                MOVE    TNS-NYUKHNKBN       TO  WRK-KSN-KHNKBN
                MOVE    TNS-CDKBN-KBNNUM    TO  WRK-KSN-CDKBN-KBNNUM
+               MOVE    TNS-CDKBN-KBNNUM-EDA TO WRK-KSN-CDKBN-KBNNUM-EDA
            ELSE
                MOVE    1                   TO  SNYUKSNCHK-ERR
            END-IF
@@ -260,6 +263,24 @@
                                                           (WRK-KHN-MAX)
                MOVE    TNS-CDKBN-KBNNUM    TO  WRK-KHN-CDKBN-KBNNUM
                                                           (WRK-KHN-MAX)
+               MOVE    TNS-CDKBN-KBNNUM-EDA TO WRK-KHN-CDKBN-KBNNUM-EDA
+                                                          (WRK-KHN-MAX)
+               IF    ( SNYUKSNCHK-SRYYMD   >=  CONST-H240401 )
+                   EVALUATE    TRUE
+                   WHEN  ( TNS-CDKBN-KBNNUM    =   108 )
+                    AND  ( TNS-CDKBN-KOUBAN    =    10 )
+                       MOVE    109         TO  WRK-KHN-CDKBN-KBNNUM
+                                                          (WRK-KHN-MAX)
+                       MOVE    ZERO        TO  WRK-KHN-CDKBN-KBNNUM-EDA
+                                                          (WRK-KHN-MAX)
+                   WHEN  ( TNS-CDKBN-KBNNUM    =   109 )
+                    AND  ( TNS-CDKBN-KOUBAN    =    11 )
+                       MOVE    108         TO  WRK-KHN-CDKBN-KBNNUM
+                                                          (WRK-KHN-MAX)
+                       MOVE    ZERO        TO  WRK-KHN-CDKBN-KBNNUM-EDA
+                                                          (WRK-KHN-MAX)
+                   END-EVALUATE
+               END-IF
            END-IF
       *
            .
@@ -325,6 +346,8 @@
       *
            IF    ( WRK-KHN-CDKBN-KBNNUM (IDX-KHN)
                                    =   WRK-KSN-CDKBN-KBNNUM )
+            AND  ( WRK-KHN-CDKBN-KBNNUM-EDA (IDX-KHN)
+                                   =   WRK-KSN-CDKBN-KBNNUM-EDA )
                MOVE    ZERO        TO  SNYUKSNCHK-ERR
                IF    ( WRK-KHN-KHNKBN  (IDX-KHN)
                                        >   ZERO )
