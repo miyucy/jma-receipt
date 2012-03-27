@@ -28,7 +28,7 @@
               03  Z04-KANANAME.
                 04  Z04-VALUE   PIC X(100).
               03  Z04-SHONAME.
-                04  Z04-VALUE   PIC X(200).
+                04  Z04-VALUE   PIC X(100).
               03  Z04-NAME.
                 04  Z04-VALUE   PIC X(100).
               03  Z04-TEN.
@@ -78,14 +78,14 @@
                 04  Z04-VALUE   PIC S9(1).
               03  Z04-TENSIKIBETU-COMBO.
                 04  Z04-TENSIKIBETU.
-                  05  Z04-VALUE   PIC X(42).
+                  05  Z04-VALUE   PIC X(20).
                 04  Z04-TENSIKIBETU-COUNT   PIC S9(9)   BINARY.
-                04  Z04-TENSIKIBETULST  PIC X(42)   OCCURS  9 TIMES.
+                04  Z04-TENSIKIBETULST  PIC X(20)   OCCURS  4 TIMES.
               03  Z04-OLDTENSKB-COMBO.
                 04  Z04-OLDTENSKB.
-                  05  Z04-VALUE   PIC X(42).
+                  05  Z04-VALUE   PIC X(20).
                 04  Z04-OLDTENSKB-COUNT   PIC S9(9)   BINARY.
-                04  Z04-OLDTENSKBLST   PIC X(42)   OCCURS  9 TIMES.
+                04  Z04-OLDTENSKBLST   PIC X(20)   OCCURS  4 TIMES.
               03  Z04-SYUSAISKB.
                 04  Z04-VALUE   PIC S9(1).
               03  Z04-FORMALNAME.
@@ -101,7 +101,7 @@
                 04  Z04-KOUHATUKBN.
                   05  Z04-VALUE   PIC X(34).
                 04  Z04-KOUHATUKBN-COUNT   PIC S9(9)   BINARY.
-                04  Z04-KOUHATUKBN-ITEM   PIC X(34)   OCCURS  9 TIMES.
+                04  Z04-KOUHATUKBN-ITEM   PIC X(34)   OCCURS  3 TIMES.
               03  Z04-TANICD-COMBO.
                 04  Z04-TANICD.
                   05  Z04-VALUE   PIC X(28).
@@ -127,10 +127,6 @@
               03  Z04-CHNGCD.
                 04  Z04-VALUE   PIC X(9).
               03  Z04-CHNGENAME.
-                04  Z04-VALUE   PIC X(100).
-              03  Z04-CHNGCDU.
-                04  Z04-VALUE   PIC X(9).
-              03  Z04-CHNGENAMEU.
                 04  Z04-VALUE   PIC X(100).
               03  Z04-CHOKINISSU.
                 04  Z04-VALUE   PIC S9(3).
@@ -172,33 +168,13 @@
                   05  Z04-VALUE   PIC X(28).
                 04  Z04-IPNTANICD-COUNT   PIC S9(9)   BINARY.
                 04  Z04-IPNTANICD-ITEM
-                        PIC X(28)   OCCURS  200 TIMES.
+                        PIC X(28)   OCCURS 200 TIMES.
               03  Z04-IPNKANZANCHI.
                 04  Z04-VALUE   PIC S9(5)V9(5).
               03  Z04-GENERICHEN.
                 04  Z04-VALUE   PIC X(80).
               03  Z04-GENERICNAME.
-                04  Z04-VALUE   PIC X(200).
+                04  Z04-VALUE   PIC X(100).
               03  Z04-TUKIJGNKAISU  PIC S9(3).
               03  Z04-TUKIJGNTOUYORYO  PIC S9(5)V9(3).
-              03  Z04-KIKAKUTANI.
-                04  Z04-NUMDATA PIC S9(5).
-              03  Z04-SIPPKBN.
-                04  Z04-NUMDATA PIC S9(1).
-              03  Z04-SIPRYOU1.
-                04  Z04-NUMDATA PIC S9(3).
-              03  Z04-SIPIRISU1.
-                04  Z04-NUMDATA PIC S9(3).
-              03  Z04-SIPRYOU2.
-                04  Z04-NUMDATA PIC S9(3).
-              03  Z04-SIPIRISU2.
-                04  Z04-NUMDATA PIC S9(3).
-              03  Z04-B03.
-                04  Z04-B03-STATE   PIC S9(9)   BINARY.
-              03  Z04-B12.
-                04  Z04-B12-STATE   PIC S9(9)   BINARY.
-              04  Z04-MIDASHI.
-                05  Z04-MIDASHI-STYLE  PIC X(20).
-                05  Z04-MIDASHI-DATA   PIC X(80).
-
 
