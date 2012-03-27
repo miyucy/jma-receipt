@@ -480,7 +480,7 @@
                    MOVE    1000            TO  IDX
                END-IF
            END-IF
-      *H24.4  2000 とする
+      *H24.4  3500 とする
            IF      SPA-W01-EDYUKYMD    >=  "20120401"
                IF      IDX                 <   3500
                    MOVE    3500            TO  IDX
@@ -567,6 +567,13 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key17"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+
+      *H24.4
+           IF      SPA-W01-EDYUKYMD    >=  "20120401"
+               IF      IDX                 <   3500
+                   MOVE    3500            TO  IDX
+               END-IF
+           END-IF
       *
       *    施設基準があるかの判定
            PERFORM VARYING IDY         FROM    1   BY  1
