@@ -3374,9 +3374,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                            ADD     1                   TO  IDX 
                            MOVE    RECE10-HKNJANUM-S   TO
                                                    WRK-HKNJANUM-S (IDX)
-      *??
-            DISPLAY "IDX=" IDX  " " WRK-HKNJANUM-S (IDX) "#" 
-      *??
                            MOVE    "tbl_seikyu"        TO  MCP-TABLE
                            MOVE    "key81"             TO  MCP-PATHNAME
                            PERFORM 900-SEIKYU-READ-N-SEC
