@@ -40,7 +40,9 @@
       *  03.05.02    NACL−竹田    07/06/22  労災自賠対応
       *
       *  04.06.01    NACL-藤原     10/10/12  設定による初期表示の変更
+      *
       *  04.07.01    NACL-太田     11/11/08  コラムリスト選択行表示制御変更
+      *  04.07.02    NACL-藤原     12/03/30  タイトル表示の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -74,7 +76,7 @@
        01  PREVIEW              PIC X(512).
        01  OTPREVIEW            PIC X(512).
        01  WORK-KEY-AREA.
-           03 WRK-TITLE         PIC X(40).
+           03 WRK-TITLE         PIC X(60).
            03 WRK-PTNUM         PIC X(20).
            03 WRK-SRYYM         PIC X(10).
            03 WRK-PRTID         PIC X(20).
