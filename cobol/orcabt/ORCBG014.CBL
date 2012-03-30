@@ -44,6 +44,8 @@
       *  04.05.00    NACL-太田     10/01/29  拡張漢字対応
       *  04.07.00    NACL-森脇     11/10/04  労災、アフターケア対応
       *  04.07.00    NACL-森脇     12/02/07  新モンペ、０点公費記載対応
+      *  04.07.01    NACL-森脇     12/03/30  健保組合への直接請求と審査
+      *                                      支払機関請求対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -97,7 +99,7 @@
       *        SKYKBN      請求区分    1:請求済、未請求、2:請求しない、3:未請求患者分
       *        TEISYUTU    提出先区分  1:社保、2:国保、3:特別療養費、4:未請求設定、5:未請求解除、6:広域連合、
       *                                7:労災、8:アフターケア、9:公害
-      *        HKNJANUM    保険者番号  国保と広域連合と労災の時だけ使用、社保＆請求しない場合はオールゼロ
+      *        HKNJANUM    保険者番号  国保と広域連合と労災と直接請求の時だけ使用、社保＆請求しない場合はオールゼロ
       *        SYOKBN      処理区分    1:通常分、2:返戻分、3:オンライン返戻分、4:月遅れ分
       *        HKNJANUM2   保険者番号  広域の時と労災の時だけ使用、それ以外はオールゼロ
       *        NYUGAIKBN   入外区分    1:外来分、2:入院分
@@ -185,6 +187,7 @@
            03  FLG-PTNUM               PIC 9(01).
            03  FLG-LABOR-SIO           PIC 9(01).
            03  FLG-OK                  PIC 9(01).
+           03  FLG-DIRECT              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -781,6 +784,9 @@
       *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
+      *
+      *    直接請求フラグクリア
+           MOVE    0               TO  FLG-DIRECT
       *
       *    統計用ファイルをクリアする
            OPEN    OUTPUT              TOKEI-FILE
@@ -2148,36 +2154,44 @@
                    MOVE    "3"         TO  CSV-SYOKBN
            END-EVALUATE
       *
-      *    国保分、特別療養費分の場合は保険者名セット
+      *    国保分、特別療養費分、社保直接請求分は保険者名セット
            IF        ( WRK-TEISYUTU    =   "2" )
                OR    ( WRK-TEISYUTU    =   "3" )
-           IF      WRK-HKNJANUM    =   "00000000"
-               MOVE    WRK-HKNJANUM    TO  WRK-PRT2-HKNJANUM
-               MOVE    SPACE           TO  WRK-PRT2-FILLER
-               MOVE     "保険者番号入力なし"
-                                       TO  WRK-PRT2-HKNJANAME
-           ELSE
-               MOVE    SPACE           TO  HKNJAINF-REC
-               INITIALIZE                  HKNJAINF-REC
-               MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
-               MOVE    WRK-HKNJANUM    TO  HKNJA-HKNJANUM
-               MOVE    HKNJAINF-REC    TO  MCPDATA-REC
-               PERFORM 900-HKNJAINF-READ-SEC
-               IF      FLG-HKNJAINF        =   ZERO
-                   INITIALIZE                  ORCSKANACHKAREA
-                   MOVE    "2"             TO  KANACHK-SYORI
-                   MOVE    HKNJA-HKNJANAME TO  KANACHK-MAE-INPUT
-                   CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                   IF      KANACHK-RC      =   0
-                       MOVE    KANACHK-OUT-INPUT
-                                           TO  WRK-PRT2-HKNJANAME
-                                               CSV-HKNJANAME
+               OR   (( WRK-TEISYUTU    =   "1" )
+               AND   ( FLG-DIRECT      =   1 ))
+               IF      WRK-HKNJANUM    =   "00000000"
+                   IF      WRK-TEISYUTU    =   "1"
+                       MOVE    "直接請求する保険者以外"
+                                               TO  WRK-PRT2-HKNJANAME
+                                                   CSV-HKNJANAME
+                   ELSE
+                       MOVE    WRK-HKNJANUM    TO  WRK-PRT2-HKNJANUM
+                       MOVE    SPACE           TO  WRK-PRT2-FILLER
+                       MOVE    "保険者番号入力なし"
+                                               TO  WRK-PRT2-HKNJANAME
                    END-IF
+               ELSE
+                   MOVE    SPACE           TO  HKNJAINF-REC
+                   INITIALIZE                  HKNJAINF-REC
+                   MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
+                   MOVE    WRK-HKNJANUM    TO  HKNJA-HKNJANUM
+                   MOVE    HKNJAINF-REC    TO  MCPDATA-REC
+                   PERFORM 900-HKNJAINF-READ-SEC
+                   IF      FLG-HKNJAINF        =   ZERO
+                       INITIALIZE                  ORCSKANACHKAREA
+                       MOVE    "2"             TO  KANACHK-SYORI
+                       MOVE    HKNJA-HKNJANAME TO  KANACHK-MAE-INPUT
+                       CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                       IF      KANACHK-RC      =   0
+                           MOVE    KANACHK-OUT-INPUT
+                                               TO  WRK-PRT2-HKNJANAME
+                                                   CSV-HKNJANAME
+                       END-IF
+                   END-IF
+                   MOVE    WRK-HKNJANUM    TO  WRK-PRT2-HKNJANUM
+                                               CSV-HKNJANUM
+                   MOVE    SPACE           TO  WRK-PRT2-FILLER
                END-IF
-               MOVE    WRK-HKNJANUM    TO  WRK-PRT2-HKNJANUM
-                                           CSV-HKNJANUM
-               MOVE    SPACE           TO  WRK-PRT2-FILLER
-           END-IF
            END-IF
       *
       *    医療機関名セット
@@ -5363,6 +5377,18 @@
       *                短期、傷病区分
                        MOVE    RECE10-HKNKBN   TO  WRK-HKNJANUM2(1:1)
                        MOVE    "0000000"       TO  WRK-HKNJANUM2(2:7)
+      *            社保
+                   WHEN    "1"
+      *                直接請求分
+                       IF      RECE10-DIRECT-FLG   =   "1"
+                           MOVE    1               TO  FLG-DIRECT
+                           MOVE    RECE10-HKNJANUM-S
+                                                   TO  WRK-HKNJANUM
+                           MOVE    "00000000"      TO  WRK-HKNJANUM2
+                       ELSE
+                           MOVE    "00000000"      TO  WRK-HKNJANUM
+                           MOVE    "00000000"      TO  WRK-HKNJANUM2
+                       END-IF
                    WHEN    OTHER
                        MOVE    "00000000"      TO  WRK-HKNJANUM
                        MOVE    "00000000"      TO  WRK-HKNJANUM2
