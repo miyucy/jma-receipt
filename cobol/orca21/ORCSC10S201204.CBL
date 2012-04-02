@@ -1069,6 +1069,9 @@
                    WHEN    "114001110"
       *            在宅患者訪問診察料（住居系施設入居者）
                    WHEN    "114012910"
+      *H24.4
+      *            在宅患者訪問診察料（同一建物）（特定施設入居）
+                   WHEN    "114018010"
       *            在宅末期医療総合診察料
                    WHEN    "114007610"
                    WHEN    "114007710"
@@ -4657,6 +4660,9 @@
                    WHEN    "114001110"
       *            在宅患者訪問診察料（住居系施設入居者）
                    WHEN    "114012910"
+      *H24.4
+      *            在宅患者訪問診察料（同一建物）（特定施設入居）
+                   WHEN    "114018010"
                        MOVE    1               TO  SPA-HOUMON-ARI
       *
       *            在宅末期医療総合診察料
@@ -5516,7 +5522,7 @@
       *                    処方のみはＯＫ
                            IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
                                                    NOT =   "3" 
-                               MOVE    "1401"          TO  SPA-ERRCD
+                               MOVE    "1421"          TO  SPA-ERRCD
                                MOVE    "1"             TO  SPA-COM-CUR
                                                              (IDX)
                            END-IF
@@ -5526,7 +5532,7 @@
                            CONTINUE
                        WHEN    OTHER
       *                    算定エラー
-                           MOVE    "1401"          TO  SPA-ERRCD
+                           MOVE    "1421"          TO  SPA-ERRCD
                            MOVE    "1"             TO  SPA-COM-CUR (IDX)
                    END-EVALUATE
                END-IF
