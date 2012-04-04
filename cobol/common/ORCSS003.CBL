@@ -28,9 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-太田    07/06/05  グループ診療対応
-      *
-      *  04.06.01    NACL-門脇    13/02/18  労災レセ電対応
-      *                                     （新診療行為コード対応）
       *****************************************************************
       *
       *
@@ -53,7 +50,6 @@
            03  FLG-PTNYUINRRK                  PIC 9(01).
            03  FLG-TENSU                       PIC 9(01).
            03  FLG-END                         PIC 9(01).
-           03  FLG-OK                          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -71,7 +67,6 @@
                05  WRK-SYOSAISIN-KBN           PIC X(01).
                05  WRK-JNISSUGEN-KBN           PIC X(01).
                05  WRK-JIKANGAI-KBN            PIC X(01).
-           03  WRK-DAY                         PIC S9(05).
       *
        01  CONST-AREA.
            03  CONST-ZAINUM-MAX            PIC 9(05)   VALUE 15.
@@ -80,8 +75,6 @@
       *
       *
            COPY    "CPTTNS.INC".
-      *
-           COPY    "ENUM-VALUE".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -113,8 +106,6 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    入院会計作成パラ
            COPY    "CPORCHCM34S01.INC".
@@ -154,10 +145,6 @@
       *
            INITIALIZE                      SS003-OT
       *
-           INITIALIZE                      SGETTEMP-AREA
-           CALL    "ORCSGETTEMP"           USING
-                                           SGETTEMP-AREA
-      *
       *    初期処理
            PERFORM 100-INIT-SEC
       *    主処理
@@ -186,12 +173,9 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           IF    ( SS003-SYORIKBN      =   "0" OR "2" )
-            OR   ( SGETTEMP-MW         =   SPA-GINBEE )
+           IF    ( SS003-SYORIKBN  =   ZERO )
                INITIALIZE              TTNS-AREA
-           END-IF
-      *
-           IF    ( SS003-SYORIKBN      =   "1" OR "2" )
+           ELSE
                IF    ( SS003-NYUGAIKBN =   "1" )
                    PERFORM 2001-SYUNOU-CHK-SEC
                ELSE
@@ -243,20 +227,16 @@
       *****************************************************************
        2001-JYURRK-CHK-SEC             SECTION.
       *
-           PERFORM 900-SYUNOU-KEY-SEL-SEC
-      *
       *    受診履歴検索処理
            MOVE    ZERO                TO  FLG-JYURRK
            INITIALIZE                      JYURRK-REC
-           MOVE    SYU-HOSPNUM         TO  JYURRK-HOSPNUM
-           MOVE    SYU-PTID            TO  JYURRK-PTID
-           MOVE    SYU-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-           MOVE    SYU-SRYYMD          TO  JYURRK-SRYYMD
-           MOVE    SYU-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
-           MOVE    SYU-DENPNUM         TO  JYURRK-DENPNUM
+           MOVE    SS003-HOSPNUM        TO  JYURRK-HOSPNUM
+           MOVE    SS003-PTID          TO  JYURRK-PTID
+           MOVE    SS003-NYUGAIKBN     TO  JYURRK-NYUGAIKBN
+           MOVE    SS003-DENPNUM       TO  JYURRK-DENPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key47"             TO  MCP-PATHNAME
+           MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  JYURRK-REC
@@ -282,7 +262,7 @@
                END-PERFORM
       *
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    "key47"             TO  MCP-PATHNAME
+               MOVE    "key6"              TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC TO  JYURRK-REC
@@ -294,7 +274,7 @@
            END-PERFORM
       *
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key47"             TO  MCP-PATHNAME
+           MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -307,6 +287,9 @@
       *
            MOVE    JYURRK-SRYYMD       TO  WRK-SRYYMD
            COMPUTE IDX-KAISU   =   JYURRK-RENNUM   +   1
+           IF    ( IDX-KAISU   >   4 )
+               MOVE    4               TO  IDX-KAISU
+           END-IF
       *
       *    診療会計検索
            MOVE    ZERO                TO  FLG-SRYACCT
@@ -467,26 +450,6 @@
       *****************************************************************
        20011-SRYACCT-CHK-SEC            SECTION.
       *
-           EVALUATE    SS003-SYORIKBN
-           WHEN    "1"
-               PERFORM 200111-SRYACCT-CHK-SEC
-               IF    ( FLG-OK     =    1 )
-                   PERFORM 2001-SRYACT-CHK-SEC
-               END-IF
-           WHEN    "2"
-               PERFORM 2001-SRYACT-CHK-SEC
-           END-EVALUATE
-      *
-           .
-       20011-SRYACCT-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療会計チェック処理
-      *****************************************************************
-       200111-SRYACCT-CHK-SEC            SECTION.
-      *
-           MOVE    ZERO            TO  FLG-OK
-      *
            IF   (( ACCT-ZAITEN     NOT =   ZERO )
              AND ( ACCT-DAY (IDX-KAISU WRK-SRYDAY)
                                    NOT =   ZERO )
@@ -501,12 +464,13 @@
                                        OR  "12"
                                        OR  "99" ))
       *
-               MOVE    1           TO  FLG-OK
+               PERFORM 2001-SRYACT-CHK-SEC
       *
            END-IF
       *
+      *
            .
-       200111-SRYACCT-CHK-EXT.
+       20011-SRYACCT-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療行為チェック処理
@@ -542,13 +506,10 @@
                         OR   ( SRY-SRYCD (IDX-SRYCD)   =   SPACE)
                         OR   ( FLG-END             NOT =   ZERO )
       *
-                   PERFORM 200111-SRYACCT-CHK-SEC
-                   IF    ( FLG-OK          =   1 )
-                       PERFORM 2001-SYOSAISIN-CHK-SEC
-                   END-IF
+                   PERFORM 2001-SYOSAISIN-CHK-SEC
       *
                    PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   100 )
+                           UNTIL ( IDX0    >   20 )
       *
                        IF    ( SRY-SRYCD (IDX-SRYCD)
                                            =   SS003-SRYCD (IDX0) )
@@ -595,18 +556,16 @@
       *    初診チェック
            IF   (( TNS-JITUDAY             =   2 )
              AND ( TNS-DAYCNT              =   1 ))
-            OR  (  SRY-SRYCD (IDX-SRYCD)   =   "099110001"
-                                            OR "111011810"
-                                            OR "111012810"
-                                            OR "111012610"
-                                            OR "101110040" )
+            OR  (  SRY-SRYCD (IDX-SRYCD)   =   "099110001" )
+            OR  (  SRY-SRYCD (IDX-SRYCD)   =   "111011810" )
+            OR  (  SRY-SRYCD (IDX-SRYCD)   =   "101110040" )
                MOVE    "1"                 TO  WRK-SYOSAISIN-KBN
            END-IF
       *
       *    再診チェック
-           IF   (( TNS-JITUDAY             =   2          ) AND
-                 ( TNS-DAYCNT              =   2          ))
-           OR   (  SRY-SRYCD (IDX-SRYCD)   =   "112700850"
+           IF   (( TNS-JITUDAY             =   2 )
+             AND ( TNS-DAYCNT              =   2 ))
+            OR  (  SRY-SRYCD (IDX-SRYCD)   =   "112700850"
                                            OR  "099120001"
                                            OR  "099409901"
                                            OR  "099999902"
@@ -625,33 +584,14 @@
                                            OR  "112704450"
                                            OR  "112704850"
                                            OR  "112705850"
+                                           OR  "101120100"
                                            OR  "113013910"
                                            OR  "113014010"
                                            OR  "113014110"
                                            OR  "112015810"
                                            OR  "112015950"
                                            OR  "112016210"
-                                           OR  "112017610"
-                                           OR  "112016410"
-                                           OR  "112016550"
-                                           OR  "113015810"
-                                           OR  "113018410"
-      *
-                                           OR  "112016850"
-                                           OR  "112016950"
-                                           OR  "112017010"
-                                           OR  "112017150"
-                                           OR  "112017450"
                                                            )
-           OR   (( SRY-SRYCD (IDX-SRYCD)   =   "101120100") AND
-                 ( SRY-SRYYM              <=   "201306"   ))
-           OR   (( SRY-SRYCD (IDX-SRYCD)   =   "101120040"
-                                           OR  "101120050"
-                                           OR  "101120060"
-                                           OR  "101120070"
-                                           OR  "101120080"
-                                                          ) AND
-                 ( SRY-SRYYM              >=   "201307"   ))
                IF    ( WRK-SYOSAISIN-KBN   =   "1" )
                    CONTINUE
                ELSE
@@ -666,7 +606,7 @@
            IF   (( TNS-DATAKBN             =  "2" )
              AND ( TNS-SRYKBN              =  "11" OR "12" OR "13" )
              AND ( TNS-TIMEKSNKBN          =  1 OR 2 OR 3
-                                           OR 4 OR 5 OR 6 OR 7))
+                                           OR 4 OR 5 OR 6 ))
             OR  (  SRY-SRYCD (IDX-SRYCD)   =  "113005570"
                                            OR "113007770"
                                            OR "113009870"
