@@ -7041,6 +7041,10 @@
                   (FLG-END             =   1     )
                GO      TO      480-DOSYORI-EXT
            END-IF
+      *    行挿入行をなくす
+           IF      FLG-INS             =   1
+               PERFORM 420-SYOKYO-SEC
+           END-IF
       *
            MOVE    1                   TO  SPA-NAI-DOSELNUM
            MOVE    SPA-GMN-NO (1)      TO  SPA-NAI-SELNUM
