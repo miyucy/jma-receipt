@@ -24,6 +24,7 @@
       *                                     載を行なう対応
       *  04.05.01    NACL-門脇    10/02/16  予備項目追加
       *  04.05.02    NACL-藤原    11/11/22  同日再入院対応
+      *  04.05.03    NACL-門脇    12/04/09  入院略称の文字数拡張
       ********************************************************************
       *01  RECE200-REC.
            03  RECE200-KEY.
@@ -117,7 +118,7 @@
       *入院基本料種別情報
            03  RECE200-NYUSYUINF           OCCURS  20.
       *入院基本料種別
-               05  RECE200-NYUSYUBETU      PIC X(12).
+               05  RECE200-NYUSYUBETU      PIC X(20).
       *
       *入院基本料情報
            03  RECE200-NYUKHNINF           OCCURS  10.
@@ -138,7 +139,7 @@
       *特定入院料・その他（点）
                05  RECE200-NYUTOKRYO       PIC 9(09).
       *特定入院料・その他（略称）
-               05  RECE200-NYUTOKRYO-RYAKU PIC X(14).
+               05  RECE200-NYUTOKRYO-RYAKU PIC X(20).
       *入院日数
                05  RECE200-NYUTOKNISSU     PIC 9(02).
       *合計金額
