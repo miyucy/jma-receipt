@@ -43,12 +43,6 @@
       *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  04.05.03    NACL-門脇    12/04/11  平成２４年４月改正
-      *
-      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
-      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.03    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.04    NACL-門脇    16/11/07  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -232,8 +226,6 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -276,7 +268,6 @@
                                        WRK-AREA
                                        FLG-AREA
                                        SPA-AREA
-                                       RECEERR 
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -286,58 +277,25 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE41PARA
-           INITIALIZE                      RECE41PARA
            MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE41PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE44PARA
-           INITIALIZE                      RECE44PARA
            MOVE    "RECE441"           TO  RECE44PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE44PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE45PARA
-           INITIALIZE                      RECE45PARA
            MOVE    "RECE451"           TO  RECE45PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE45PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE45PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE443PARA
-           INITIALIZE                      RECE443PARA
            MOVE    "RECE443"           TO  RECE443PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE443PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE443PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE44XPARA
-           INITIALIZE                      RECE44XPARA
            MOVE    "RECE44X"           TO  RECE44XPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44XPARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE44XPARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE41PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE44PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           MOVE    RECE45PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
-           MOVE    RECE443PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (5)
-           MOVE    RECE44XPARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (6)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE41PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE44PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE45PARA
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  RECE443PARA
-           MOVE    SGETTEMP-FULLNAMES (6)
-                                       TO  RECE44XPARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
@@ -459,7 +417,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    RECE44-MEISAISU     TO  RECE443-MEISAISU 
                MOVE    RECE44-FLG-HOUTEN-COMMENT
                                   TO  RECE443-FLG-HOUTEN-COMMENT
-               MOVE    RECE44-JIHOKBN      TO  RECE443-JIHOKBN
                IF      RECE44-COMCDFLG   =   "2"
                  ADD     1                 TO  WRK-COMRENNUM
                  MOVE    WRK-COMRENNUM     TO  RECE443-COMRENNUM
@@ -474,7 +431,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *          剤回数・日数回数テーブルの加算
                  ADD     RECE44-ZAIKAISU     TO  RECE443-ZAIKAISU
                  PERFORM VARYING IDX FROM    1   BY  1
-                         UNTIL   IDX >      10
+                         UNTIL   IDX >       4
                      PERFORM VARYING IDY FROM    1   BY  1
                              UNTIL   IDY >       31
                          ADD     RECE44-KAISU (IDX IDY)
@@ -533,7 +490,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *          剤回数・日数回数テーブルの加算
                  ADD     RECE44-ZAIKAISU     TO  RECE443-ZAIKAISU
                  PERFORM VARYING IDX FROM    1   BY  1
-                         UNTIL   IDX >      10
+                         UNTIL   IDX >       4
                      PERFORM VARYING IDY FROM    1   BY  1
                              UNTIL   IDY >       31
                          ADD     RECE44-KAISU (IDX IDY)
@@ -638,15 +595,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                      IF  (RECE45-SRYCD(IDZ)(1:1)  =   "8"  )  OR
                          (RECE45-SRYCD(IDZ)(1:3)  =   "008")
-                       IF   (RECE45-RECEPTFLG(IDZ)   =  "1")
-                       AND  (RECE45-RECEDENFLG(IDZ)  =  "1")
-                         CONTINUE
-                       ELSE
                          ADD       1                 TO  IDZ2
                          IF   IDZ2  <=  10
                             MOVE   RECE45-NAME(IDZ)  TO  WRK-COM(IDZ2)
                          END-IF
-                       END-IF
                      END-IF
       *
                   END-PERFORM
@@ -890,7 +842,6 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE44-MEISAISU     TO  RECE443-MEISAISU
            MOVE    RECE44-FLG-HOUTEN-COMMENT
                                        TO  RECE443-FLG-HOUTEN-COMMENT
-           MOVE    RECE44-JIHOKBN      TO  RECE443-JIHOKBN
            START   RECE443-FILE
                KEY IS    >=   RECE443-KEY
                INVALID
@@ -915,7 +866,6 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
                   (RECE44-MEISAISU     NOT =  RECE443-MEISAISU)     OR
                   (RECE44-FLG-HOUTEN-COMMENT
                                 NOT =  RECE443-FLG-HOUTEN-COMMENT)  OR
-                  (RECE44-JIHOKBN      NOT =  RECE443-JIHOKBN)      OR
                   (FLG-RECE443             =  1)
       *
                   MOVE     ZERO     TO     FLG-NASHI

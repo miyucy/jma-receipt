@@ -50,24 +50,6 @@
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-門脇    12/04/11  平成２４年４月改正
-      *
-      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *
-      *  04.07.01    NACL-門脇    15/04/27  特記事項０９施がある場合の
-      *                                     【配】回数記載対応
-      *  04.07.02    NACL-門脇    15/08/11  特記事項０９施がある場合の
-      *                                     【配】回数記載対応修正
-      *
-      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
-      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.03    NACL-門脇    14/07/29  ３２文字以上の文字列修正
-      *                                     （コンパイル時のワーニング修正）
-      *  04.08.04    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.05    NACL-門脇    16/02/05  医保レセプト「他保険にて診察料算定
-      *                                     済」コメント不記載対応
-      *  04.08.06    NACL-門脇    16/11/07  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -94,10 +76,20 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE042-KEY
                                    FILE    STATUS  IS  STS-RECE042.
+           SELECT  RECE042X-FILE   ASSIGN  RECE042PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE042X-KEY
+                                   FILE    STATUS  IS  STS-RECE042.
            SELECT  RECE04W-FILE    ASSIGN  RECE04WPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE04W-KEY
+                                   FILE    STATUS  IS  STS-RECE04W.
+           SELECT  RECE04WX-FILE   ASSIGN  RECE04WPARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE04WX-KEY
                                    FILE    STATUS  IS  STS-RECE04W.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
@@ -122,10 +114,20 @@
        01  RECE042-REC. 
            COPY    "CPRCF0042.INC".
       *
+       FD  RECE042X-FILE.
+       01  RECE042X-REC. 
+           COPY    "CPRCF0042.INC" REPLACING  //RECE042//
+                                   BY         //RECE042X//.
+      *
        FD  RECE04W-FILE.
        01  RECE04W-REC. 
            COPY    "CPRCF004.INC"  REPLACING  //RECE04//
                                    BY         //RECE04W//.
+      *
+       FD  RECE04WX-FILE.
+       01  RECE04WX-REC. 
+           COPY    "CPRCF004.INC"  REPLACING  //RECE04//
+                                   BY         //RECE04WX//.
       * 
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -135,28 +137,29 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE02PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE02//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE04PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE04//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE05PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE05//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE042PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE042//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE04WPARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE04W//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名取得
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -207,7 +210,6 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-COMRENNUM           PIC 9(05).
       *
            03  WRK-KOHBUNRI-MIN        PIC 9(01).
-           03  WRK-KOHBUNRI-MAX        PIC 9(01).
       *    剤番号の退避
            03  WRK-ZAINUM              PIC 9(08).
       *    剤番号の退避
@@ -239,8 +241,6 @@ grpsys     COPY    "COMMON-SPA".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -291,45 +291,25 @@ grpsys     COPY    "COMMON-SPA".
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    "RECE020"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    "RECE040"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           MOVE    "RECE050"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (4)
-           MOVE    "RECE042"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (5)
-           MOVE    "RECE04W"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (6)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE02PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE04PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE05PARA
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  RECE042PARA
-           MOVE    SGETTEMP-FULLNAMES (6)
-                                       TO  RECE04WPARA
+           MOVE    "RECE020"           TO  RECE02PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE02PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE02PARA-HOSPNUM
       *
-      **   MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+           MOVE    "RECE040"           TO  RECE04PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE04PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE04PARA-HOSPNUM
       *
+           MOVE    "RECE050"           TO  RECE05PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE05PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE05PARA-HOSPNUM
+      *
+           MOVE    "RECE042"           TO  RECE042PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE042PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE042PARA-HOSPNUM
+      *
+           MOVE    "RECE04W"           TO  RECE04WPARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE04WPARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE04WPARA-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ＤＢオープン処理
@@ -347,11 +327,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
-           OPEN    OUTPUT              RECE042-FILE
-           CLOSE                       RECE042-FILE
+           OPEN    OUTPUT              RECE042X-FILE
+           CLOSE                       RECE042X-FILE
       *
-           OPEN    OUTPUT              RECE04W-FILE
-           CLOSE                       RECE04W-FILE
+           OPEN    OUTPUT              RECE04WX-FILE
+           CLOSE                       RECE04WX-FILE
       *
           .
        100-INIT-EXT.
@@ -402,12 +382,20 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
        210-RECE042-WRITE-SEC                SECTION.
       *
            MOVE       9                TO  WRK-KOHBUNRI-MIN
-           MOVE       0                TO  WRK-KOHBUNRI-MAX
       *
            MOVE    ZERO                TO  WRK-COMRENNUM
       *
            INITIALIZE                      RECE04-REC
-           MOVE    RECE02-KEY          TO  RECE04-KEY1
+grpsys     MOVE    RECE02-HOSPNUM      TO  RECE04-HOSPNUM
+           MOVE    RECE02-SRYYM        TO  RECE04-SRYYM
+           MOVE    RECE02-NYUGAIKBN    TO  RECE04-NYUGAIKBN
+           MOVE    RECE02-PTID         TO  RECE04-PTID
+           MOVE    RECE02-RECEKA       TO  RECE04-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI TO  RECE04-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU  TO  RECE04-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY TO  RECE04-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY  TO  RECE04-HOJOKBN
+           MOVE    RECE02-TEKSTYMD     TO  RECE04-TEKSTYMD
            MOVE    ZERO                TO  RECE04-ZAINUM
       *
            START   RECE04-FILE
@@ -418,14 +406,25 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    PERFORM 900-RECE04-READ-SEC
            END-START
            PERFORM
-               UNTIL  ( FLG-END              =   1           )
-               OR     ( FLG-RECE04           =   1           )
-               OR     ( RECE02-KEY       NOT =   RECE04-KEY1 )
+               UNTIL  ( FLG-END              =   1                   )
+               OR     ( FLG-RECE04           =   1                   )
+grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE04-HOSPNUM      )
+               OR     ( RECE02-SRYYM     NOT =   RECE04-SRYYM        )
+               OR     ( RECE02-NYUGAIKBN NOT =   RECE04-NYUGAIKBN    )
+               OR     ( RECE02-PTID      NOT =   RECE04-PTID         )
+               OR     ( RECE02-RECEKA    NOT =   RECE04-RECEKA       )
+               OR     ( RECE02-TEISYUTUSAKI
+                                         NOT =   RECE04-TEISYUTUSAKI )
+               OR     ( RECE02-RECESYUBETU
+                                         NOT =   RECE04-RECESYUBETU  )
+               OR     ( RECE02-HKNJANUM-KEY  NOT =  RECE04-HKNJANUM    )
+               OR     ( RECE02-HOJOKBN-KEY   NOT =  RECE04-HOJOKBN     )
+               OR     ( RECE02-TEKSTYMD  NOT =   RECE04-TEKSTYMD     )
       *
                MOVE    RECE04-ZAINUM     TO      WRK-ZAINUM
                MOVE    SPACE             TO      WRK-SRYSYUKBN
                IF       RECE04-SRYKBN  =  "60" OR "64" OR "99"
-                   PERFORM   2101-RECE05-SRYSYUKBN-HEN-SEC
+                   PERFORM   2101-RECE05-SRYSYUKBN-HENSYU-SEC
                END-IF
       *
                INITIALIZE          WRK-COM-AREA
@@ -436,7 +435,16 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF      RECE04-COMCDFLG     =   "2"
                    MOVE    SPACE               TO  RECE042-REC
                    INITIALIZE                      RECE042-REC
-                   MOVE    RECE04-KEY1         TO  RECE042-KEY1
+grpsys             MOVE    RECE04-HOSPNUM      TO  RECE042-HOSPNUM
+                   MOVE    RECE04-SRYYM        TO  RECE042-SRYYM
+                   MOVE    RECE04-NYUGAIKBN    TO  RECE042-NYUGAIKBN
+                   MOVE    RECE04-PTID         TO  RECE042-PTID
+                   MOVE    RECE04-RECEKA       TO  RECE042-RECEKA
+                   MOVE    RECE04-TEISYUTUSAKI TO  RECE042-TEISYUTUSAKI
+                   MOVE    RECE04-RECESYUBETU  TO  RECE042-RECESYUBETU
+                   MOVE    RECE04-HKNJANUM     TO  RECE042-HKNJANUM
+                   MOVE    RECE04-HOJOKBN      TO  RECE042-HOJOKBN
+                   MOVE    RECE04-TEKSTYMD     TO  RECE042-TEKSTYMD
                    MOVE    RECE04-KOHBUNRI     TO  RECE042-KOHBUNRI
                    MOVE    RECE04-SRYKBN       TO  RECE042-SRYKBN
                    MOVE    SPACE               TO  RECE042-SRYSYUKBN
@@ -447,14 +455,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    RECE04-MEISAISU     TO  RECE042-MEISAISU 
                    MOVE    RECE04-FLG-HOUTEN-COMMENT
                                       TO  RECE042-FLG-HOUTEN-COMMENT
-                   MOVE    RECE04-TAHOKENNGFLG
-                                      TO  RECE042-TAHOKENNGFLG
-                   MOVE    RECE04-JIHOKBN      TO  RECE042-JIHOKBN
                    ADD     1                   TO  WRK-COMRENNUM
                    MOVE    WRK-COMRENNUM       TO  RECE042-COMRENNUM
                    MOVE    RECE04-ZAIKAISU     TO  RECE042-ZAIKAISU
                    PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >      10
+                           UNTIL   IDX >       4
                        PERFORM VARYING IDY FROM    1   BY  1
                                UNTIL   IDY >       31
                            MOVE    RECE04-KAISU (IDX IDY)
@@ -467,7 +472,16 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                ELSE
                    MOVE    SPACE               TO  RECE042-REC
                    INITIALIZE                      RECE042-REC
-                   MOVE    RECE04-KEY1         TO  RECE042-KEY1
+grpsys             MOVE    RECE04-HOSPNUM      TO  RECE042-HOSPNUM
+                   MOVE    RECE04-SRYYM        TO  RECE042-SRYYM
+                   MOVE    RECE04-NYUGAIKBN    TO  RECE042-NYUGAIKBN
+                   MOVE    RECE04-PTID         TO  RECE042-PTID
+                   MOVE    RECE04-RECEKA       TO  RECE042-RECEKA
+                   MOVE    RECE04-TEISYUTUSAKI TO  RECE042-TEISYUTUSAKI
+                   MOVE    RECE04-RECESYUBETU  TO  RECE042-RECESYUBETU
+                   MOVE    RECE04-HKNJANUM     TO  RECE042-HKNJANUM
+                   MOVE    RECE04-HOJOKBN      TO  RECE042-HOJOKBN
+                   MOVE    RECE04-TEKSTYMD     TO  RECE042-TEKSTYMD
                    MOVE    RECE04-KOHBUNRI     TO  RECE042-KOHBUNRI
                    MOVE    RECE04-SRYKBN       TO  RECE042-SRYKBN
                    MOVE    WRK-SRYSYUKBN       TO  RECE042-SRYSYUKBN
@@ -478,9 +492,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    RECE04-MEISAISU     TO  RECE042-MEISAISU 
                    MOVE    RECE04-FLG-HOUTEN-COMMENT
                                       TO  RECE042-FLG-HOUTEN-COMMENT
-                   MOVE    RECE04-TAHOKENNGFLG
-                                      TO  RECE042-TAHOKENNGFLG
-                   MOVE    RECE04-JIHOKBN      TO  RECE042-JIHOKBN
                    IF      RECE04-COMCDFLG   =   "1"
                      ADD     1                 TO  WRK-COMRENNUM
                      MOVE    WRK-COMRENNUM     TO  RECE042-COMRENNUM
@@ -495,7 +506,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *              剤回数・日数回数テーブルの加算
                      ADD     RECE04-ZAIKAISU     TO  RECE042-ZAIKAISU
                      PERFORM VARYING IDX FROM    1   BY  1
-                             UNTIL   IDX >      10
+                             UNTIL   IDX >       4
                          PERFORM VARYING IDY FROM    1   BY  1
                                  UNTIL   IDY >       31
                              ADD     RECE04-KAISU (IDX IDY)
@@ -554,7 +565,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *              剤回数・日数回数テーブルの加算
                      ADD     RECE04-ZAIKAISU     TO  RECE042-ZAIKAISU
                      PERFORM VARYING IDX FROM    1   BY  1
-                             UNTIL   IDX >      10
+                             UNTIL   IDX >       4
                          PERFORM VARYING IDY FROM    1   BY  1
                                  UNTIL   IDY >       31
                              ADD     RECE04-KAISU (IDX IDY)
@@ -607,15 +618,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
       *
                IF   WRK-KOHBUNRI-MIN  >  RECE04-KOHBUNRI
-                 IF   RECE04-ZAITEN  NOT = ZERO
                    MOVE   RECE04-KOHBUNRI  TO  WRK-KOHBUNRI-MIN
-                 END-IF
-               END-IF
-      *
-               IF   WRK-KOHBUNRI-MAX  <  RECE04-KOHBUNRI
-                 IF   RECE04-ZAITEN  NOT = ZERO
-                   MOVE   RECE04-KOHBUNRI  TO  WRK-KOHBUNRI-MAX
-                 END-IF
                END-IF
       *
                PERFORM     900-RECE04-READ-SEC
@@ -629,7 +632,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            IF      FLG-END             =   ZERO
                MOVE      WRK-KOHBUNRI-MIN   TO   RECE02-KOHBUNRI-MIN
-               MOVE      WRK-KOHBUNRI-MAX   TO   RECE02-KOHBUNRI-MAX
                REWRITE   RECE02-REC
       *
       *
@@ -642,10 +644,19 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
       *    診療種別区分取得
       *****************************************************************
-       2101-RECE05-SRYSYUKBN-HEN-SEC         SECTION.
+       2101-RECE05-SRYSYUKBN-HENSYU-SEC         SECTION.
       *
            INITIALIZE                           RECE05-REC
-           MOVE    RECE02-KEY           TO      RECE05-KEY1
+grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
+           MOVE    RECE02-SRYYM         TO      RECE05-SRYYM
+           MOVE    RECE02-NYUGAIKBN     TO      RECE05-NYUGAIKBN
+           MOVE    RECE02-PTID          TO      RECE05-PTID
+           MOVE    RECE02-RECEKA        TO      RECE05-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI  TO      RECE05-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU   TO      RECE05-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY  TO      RECE05-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY   TO      RECE05-HOJOKBN
+           MOVE    RECE02-TEKSTYMD      TO      RECE05-TEKSTYMD
            MOVE    WRK-ZAINUM           TO      RECE05-ZAINUM
            START   RECE05-FILE
                KEY IS    >=   RECE05-KEY
@@ -655,7 +666,16 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    PERFORM  900-RECE05-READ-SEC
            END-START
            PERFORM   UNTIL
-                  (RECE02-KEY           NOT =  RECE05-KEY1  )    OR
+grpsys            (RECE02-HOSPNUM       NOT =  RECE05-HOSPNUM)   OR
+                  (RECE02-SRYYM         NOT =  RECE05-SRYYM)     OR
+                  (RECE02-NYUGAIKBN     NOT =  RECE05-NYUGAIKBN) OR
+                  (RECE02-PTID          NOT =  RECE05-PTID)      OR
+                  (RECE02-RECEKA        NOT =  RECE05-RECEKA)    OR
+                  (RECE02-TEISYUTUSAKI  NOT =  RECE05-TEISYUTUSAKI) OR
+                  (RECE02-RECESYUBETU   NOT =  RECE05-RECESYUBETU)  OR
+                  (RECE02-HKNJANUM-KEY  NOT =  RECE05-HKNJANUM)  OR
+                  (RECE02-HOJOKBN-KEY   NOT =  RECE05-HOJOKBN )  OR
+                  (RECE02-TEKSTYMD      NOT =  RECE05-TEKSTYMD)  OR
                   (WRK-ZAINUM           NOT =  RECE05-ZAINUM)    OR
                   (FLG-RECE05               =      1        )
       *
@@ -666,7 +686,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-PERFORM
       *
            .
-       2101-RECE05-SRYSYUKBN-HEN-EXT.
+       2101-RECE05-SRYSYUKBN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -677,7 +697,16 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    ZERO                 TO      IDZ2
       *
            INITIALIZE                           RECE05-REC
-           MOVE    RECE02-KEY           TO      RECE05-KEY1
+grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
+           MOVE    RECE02-SRYYM         TO      RECE05-SRYYM
+           MOVE    RECE02-NYUGAIKBN     TO      RECE05-NYUGAIKBN
+           MOVE    RECE02-PTID          TO      RECE05-PTID
+           MOVE    RECE02-RECEKA        TO      RECE05-RECEKA
+           MOVE    RECE02-TEISYUTUSAKI  TO      RECE05-TEISYUTUSAKI
+           MOVE    RECE02-RECESYUBETU   TO      RECE05-RECESYUBETU
+           MOVE    RECE02-HKNJANUM-KEY  TO      RECE05-HKNJANUM
+           MOVE    RECE02-HOJOKBN-KEY   TO      RECE05-HOJOKBN
+           MOVE    RECE02-TEKSTYMD      TO      RECE05-TEKSTYMD
            MOVE    WRK-ZAINUM           TO      RECE05-ZAINUM
            START   RECE05-FILE
                KEY IS    >=   RECE05-KEY
@@ -687,7 +716,16 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    PERFORM  900-RECE05-READ-SEC
            END-START
            PERFORM   UNTIL
-                  (RECE02-KEY           NOT =  RECE05-KEY1  )    OR
+grpsys            (RECE02-HOSPNUM       NOT =  RECE05-HOSPNUM)   OR
+                  (RECE02-SRYYM         NOT =  RECE05-SRYYM)     OR
+                  (RECE02-NYUGAIKBN     NOT =  RECE05-NYUGAIKBN) OR
+                  (RECE02-PTID          NOT =  RECE05-PTID)      OR
+                  (RECE02-RECEKA        NOT =  RECE05-RECEKA)    OR
+                  (RECE02-TEISYUTUSAKI  NOT =  RECE05-TEISYUTUSAKI) OR
+                  (RECE02-RECESYUBETU   NOT =  RECE05-RECESYUBETU)  OR
+                  (RECE02-HKNJANUM-KEY  NOT =  RECE05-HKNJANUM)  OR
+                  (RECE02-HOJOKBN-KEY   NOT =  RECE05-HOJOKBN )  OR
+                  (RECE02-TEKSTYMD      NOT =  RECE05-TEKSTYMD)  OR
                   (WRK-ZAINUM           NOT =  RECE05-ZAINUM)    OR
                   (FLG-RECE05               =      1        )
       *
@@ -697,15 +735,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                      IF  (RECE05-SRYCD(IDZ)(1:1)  =   "8"  )  OR
                          (RECE05-SRYCD(IDZ)(1:3)  =   "008")
-                       IF   (RECE05-RECEPTFLG(IDZ)   =  "1")
-                       AND  (RECE05-RECEDENFLG(IDZ)  =  "1")
-                         CONTINUE
-                       ELSE
                          ADD       1                 TO  IDZ2
                          IF   IDZ2  <=  10
                             MOVE   RECE05-NAME(IDZ)  TO  WRK-COM(IDZ2)
                          END-IF
-                       END-IF
                      END-IF
       *
                   END-PERFORM
@@ -849,17 +882,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           .
-       800-FILENM-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    レセプト０２データ読込処理
       *****************************************************************
        900-RECE02-READ-SEC           SECTION.
@@ -947,7 +969,16 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    ZERO                TO  FLG-MATOME
       *
            INITIALIZE                      RECE042-REC
-           MOVE    RECE04-KEY1         TO  RECE042-KEY1
+grpsys     MOVE    RECE04-HOSPNUM      TO  RECE042-HOSPNUM
+           MOVE    RECE04-SRYYM        TO  RECE042-SRYYM
+           MOVE    RECE04-NYUGAIKBN    TO  RECE042-NYUGAIKBN
+           MOVE    RECE04-PTID         TO  RECE042-PTID
+           MOVE    RECE04-RECEKA       TO  RECE042-RECEKA
+           MOVE    RECE04-TEISYUTUSAKI TO  RECE042-TEISYUTUSAKI
+           MOVE    RECE04-RECESYUBETU  TO  RECE042-RECESYUBETU
+           MOVE    RECE04-HKNJANUM     TO  RECE042-HKNJANUM
+           MOVE    RECE04-HOJOKBN      TO  RECE042-HOJOKBN
+           MOVE    RECE04-TEKSTYMD     TO  RECE042-TEKSTYMD
            MOVE    RECE04-KOHBUNRI     TO  RECE042-KOHBUNRI
            MOVE    RECE04-SRYKBN       TO  RECE042-SRYKBN
            MOVE    WRK-SRYSYUKBN       TO  RECE042-SRYSYUKBN
@@ -958,8 +989,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE04-MEISAISU     TO  RECE042-MEISAISU
            MOVE    RECE04-FLG-HOUTEN-COMMENT
                                        TO  RECE042-FLG-HOUTEN-COMMENT
-           MOVE    RECE04-TAHOKENNGFLG TO  RECE042-TAHOKENNGFLG
-           MOVE    RECE04-JIHOKBN      TO  RECE042-JIHOKBN
            START   RECE042-FILE
                KEY IS    >=   RECE042-KEY
                INVALID
@@ -968,7 +997,16 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    PERFORM  900-RECE042-READ-SEC
            END-START
            PERFORM   UNTIL
-                  (RECE04-KEY1         NOT =  RECE042-KEY1    )     OR
+grpsys            (RECE04-HOSPNUM      NOT =  RECE042-HOSPNUM)      OR
+                  (RECE04-SRYYM        NOT =  RECE042-SRYYM)        OR
+                  (RECE04-NYUGAIKBN    NOT =  RECE042-NYUGAIKBN)    OR
+                  (RECE04-PTID         NOT =  RECE042-PTID)         OR
+                  (RECE04-RECEKA       NOT =  RECE042-RECEKA)       OR
+                  (RECE04-TEISYUTUSAKI NOT =  RECE042-TEISYUTUSAKI) OR
+                  (RECE04-RECESYUBETU  NOT =  RECE042-RECESYUBETU)  OR
+                  (RECE04-HKNJANUM     NOT =  RECE042-HKNJANUM)     OR
+                  (RECE04-HOJOKBN      NOT =  RECE042-HOJOKBN)      OR
+                  (RECE04-TEKSTYMD     NOT =  RECE042-TEKSTYMD)     OR
                   (RECE04-KOHBUNRI     NOT =  RECE042-KOHBUNRI)     OR
                   (RECE04-SRYKBN       NOT =  RECE042-SRYKBN)       OR
                   (WRK-SRYSYUKBN       NOT =  RECE042-SRYSYUKBN)    OR
@@ -979,9 +1017,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                   (RECE04-MEISAISU     NOT =  RECE042-MEISAISU)     OR
                   (RECE04-FLG-HOUTEN-COMMENT
                                 NOT =  RECE042-FLG-HOUTEN-COMMENT)  OR
-                  (RECE04-TAHOKENNGFLG
-                                NOT =  RECE042-TAHOKENNGFLG)        OR
-                  (RECE04-JIHOKBN      NOT =  RECE042-JIHOKBN)      OR
                   (FLG-RECE042             =  1)
       *
                   MOVE     ZERO     TO     FLG-NASHI
