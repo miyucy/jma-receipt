@@ -1503,7 +1503,7 @@
                    (TNS-IRYOKANSATUKBN =   4    )
       *        °åÎÅ´Ñ»¡¶èÊ¬
                MOVE    SPACE               TO  SPA-KT98-GMN-NAME (IDX)
-               STRING  "¡Ú°åÎÅ´Ñ»¡¡Û"      DELIMITED   BY  SIZE
+               STRING  "¡Ú°å´Ñ¡Û"          DELIMITED   BY  SIZE
                       TNS-NAME             DELIMITED   BY  SPACE
                       INTO                 SPA-KT98-GMN-NAME(IDX)
                END-STRING
@@ -2059,7 +2059,7 @@
                    (TNS-IRYOKANSATUKBN =   4    )
       *        °åÎÅ´Ñ»¡¶èÊ¬
                MOVE    SPACE               TO  SPA-KT98-GMN-NAME (IDX)
-               STRING  "¡Ú°åÎÅ´Ñ»¡¡Û"      DELIMITED   BY  SIZE
+               STRING  "¡Ú°å´Ñ¡Û"          DELIMITED   BY  SIZE
                       TNS-NAME             DELIMITED   BY  SPACE
                       INTO                 SPA-KT98-GMN-NAME(IDX)
                END-STRING

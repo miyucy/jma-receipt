@@ -3864,6 +3864,7 @@
       *            ºÇÄãÌô²ÁÊÔ½¸
                    PERFORM 300001-GENERICPRICE-CHEK-SEC
                    MOVE    WRK-CHKTEN      TO  SPA-COM-KZMTEN (IDX-T)
+      *
                END-IF
            END-IF
       *!!
@@ -5278,7 +5279,7 @@
                    (TNS-IRYOKANSATUKBN =   4    )
       *        °åÎÅ´Ñ»¡¶èÊ¬
                MOVE    SPACE               TO  WRK-MEISYO
-               STRING  "¡Ú°åÎÅ´Ñ»¡¡Û"      DELIMITED   BY  SIZE
+               STRING  "¡Ú°å´Ñ¡Û"          DELIMITED   BY  SIZE
                       TNS-NAME             DELIMITED   BY  SPACE
                       INTO             WRK-MEISYO
                END-STRING
@@ -5440,7 +5441,7 @@
                    (TNS-IRYOKANSATUKBN =   4    )
       *        °åÎÅ´Ñ»¡¶èÊ¬
                MOVE    SPACE               TO  WRK-MEISYO
-               STRING  "¡Ú°åÎÅ´Ñ»¡¡Û"      DELIMITED   BY  SIZE
+               STRING  "¡Ú°å´Ñ¡Û"          DELIMITED   BY  SIZE
                       TNS-NAME             DELIMITED   BY  SPACE
                       INTO             WRK-MEISYO
                END-STRING
