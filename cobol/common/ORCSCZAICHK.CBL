@@ -32,7 +32,6 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.05.00    NACL-多々納  09/10/XX  多剤投与・換算値等対応
       *  04.07.00    NACL-多々納  12/04/12  後発品変更不可等対応
-      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年０４月改正対応
       *****************************************************************
       *
       *
@@ -367,17 +366,11 @@
                            WHEN    "3"
                                MOVE    "2"         TO  TBL-MAE-INPUTKBN
                                                              (IDX-SIN)
-      *H25.3
-                           WHEN    "R"
-                               MOVE    "R"         TO  TBL-MAE-INPUTKBN
-                                                             (IDX-SIN)
                        END-EVALUATE
       *
                        IF     (SRY-SRYCD (IDX2)(1:1)   =   "8" ) OR
                               (SRY-SRYCD (IDX2)(1:3)   =   "008")
                        OR     (SRY-SRYCD (IDX2)(1:3)   =   "001")
-      *H30.4
-                       OR     (SRY-SRYCD (IDX2)(1:7)   =   "0992081")
                            MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
                            MOVE    SRY-PTID            TO  PTCOM-PTID
                            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
