@@ -734,6 +734,7 @@
            03  FLG-TOKUSITU                            PIC 9(01).
            03  FLG-TOKUSITU-TASU                       PIC 9(01).
            03  FLG-KOUGAKU                             PIC 9(01).
+           03  FLG-KOUGAKU2                            PIC 9(01).
            03  FLG-KISAIOK                             PIC 9(01).
            03  FLG-GENGAKU-OKIKAE                      PIC 9(01).
            03  FLG-KOHYONKAIME-NO                      PIC 9(01).
@@ -14849,6 +14850,7 @@
                            (( WRK-CHIHOU-KIN -  361500 ) * 0.01 )
                                                          + 0.5
                      COMPUTE  WRK-KINGAKU  =  72300  +  WRK-KINGAKU2
+                     MOVE     1      TO   FLG-KOUGAKU
                   ELSE
                      MOVE     72300  TO   WRK-KINGAKU
                   END-IF
@@ -15184,9 +15186,11 @@
                 WHEN        4
                       MOVE   ZERO     TO   WRK-FTNKEI
               END-EVALUATE
-              COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
-              COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
-              COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
+              IF   FLG-WRKFILE-CLEAR   =   ZERO
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
+                COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
+              END-IF
       *
               EVALUATE   WK-GENGAKUKBN
                 WHEN        1
@@ -15208,6 +15212,11 @@
                 WHEN        4
                       MOVE   ZERO     TO   WRK-KINGAKU
               END-EVALUATE
+              IF  FLG-KOUGAKU = ZERO
+                COMPUTE  WRK-KINGAKU  = WRK-KINGAKU  +  5
+                COMPUTE  WRK-KINGAKU  = WRK-KINGAKU  / 10
+                COMPUTE  WRK-KINGAKU  = WRK-KINGAKU  * 10
+              END-IF
       *
            END-IF
       *
@@ -17573,7 +17582,43 @@
                     WHEN        4
                          MOVE   ZERO     TO   WRK-KINGAKU-GENBUTU3
                   END-EVALUATE
+                  IF  FLG-KOUGAKU2 = ZERO
+                    COMPUTE  WRK-KINGAKU-GENBUTU3 =
+                             WRK-KINGAKU-GENBUTU3 +  5
+                    COMPUTE  WRK-KINGAKU-GENBUTU3 =
+                             WRK-KINGAKU-GENBUTU3 / 10
+                    COMPUTE  WRK-KINGAKU-GENBUTU3 =
+                             WRK-KINGAKU-GENBUTU3 * 10
+                  END-IF
       *
+                  EVALUATE   WK-GENGAKUKBN
+                    WHEN        1
+                     IF  WK-GENGAKU-RITU = 100
+                         MOVE   ZERO     TO   WRK-HOKENICHIBUGAK
+                     ELSE
+                         COMPUTE  WK-GENGAKU-RITUX =
+                                  100 - WK-GENGAKU-RITU
+                         IF    WRK-HOKENICHIBUGAK  NOT = ZERO
+                           COMPUTE  WRK-HOKENICHIBUGAK    =
+                                   (WRK-HOKENICHIBUGAK    *
+                                    WK-GENGAKU-RITUX      /
+                                    100) + 0.5
+                         END-IF
+                     END-IF
+                    WHEN        2
+                     CONTINUE
+                    WHEN        3
+                    WHEN        4
+                         MOVE   ZERO     TO   WRK-HOKENICHIBUGAK
+                  END-EVALUATE
+                  IF   FLG-WRKFILE-CLEAR   =   ZERO
+                    COMPUTE  WRK-HOKENICHIBUGAK =
+                             WRK-HOKENICHIBUGAK +  5
+                    COMPUTE  WRK-HOKENICHIBUGAK =
+                             WRK-HOKENICHIBUGAK / 10
+                    COMPUTE  WRK-HOKENICHIBUGAK =
+                             WRK-HOKENICHIBUGAK * 10
+                  END-IF
                END-IF
       *
                MOVE    9999999    TO   WRK-CHK-KINGAKU
@@ -19323,6 +19368,8 @@
       *****************************************************************
        210464-JYOGENGAKU-HENSYU-SEC               SECTION.
       *
+           MOVE     ZERO     TO   FLG-KOUGAKU2
+      *
            EVALUATE   RECE62-KOUREI
             WHEN        "1"
              IF     RECE62-TEISYOTOKU  NOT =  SPACE
@@ -19354,6 +19401,7 @@
                            (( WRK-CHIHOU-KIN6 - 133500 ) * 0.01 )
                                                          + 0.5
                      COMPUTE  WRK-KINGAKU3 = 40050 + WRK-KINGAKU2
+                     MOVE   1       TO   FLG-KOUGAKU2
                    ELSE
                      MOVE   40050   TO   WRK-KINGAKU3
                    END-IF
@@ -19363,6 +19411,7 @@
                            (( WRK-CHIHOU-KIN6 - 267000 ) * 0.01 )
                                                          + 0.5
                      COMPUTE  WRK-KINGAKU3 = 80100 + WRK-KINGAKU2
+                     MOVE   1       TO   FLG-KOUGAKU2
                    ELSE
                      MOVE   80100   TO   WRK-KINGAKU3
                    END-IF
@@ -19374,6 +19423,7 @@
                           (( WRK-CHIHOU-KIN6 - 361500 ) * 0.01 )
                                                         + 0.5
                     COMPUTE  WRK-KINGAKU3 = 72300 + WRK-KINGAKU2
+                    MOVE   1       TO   FLG-KOUGAKU2
                   ELSE
                     MOVE   72300   TO   WRK-KINGAKU3
                   END-IF
@@ -19408,6 +19458,7 @@
                             (( WRK-CHIHOU-KIN6 - 250000 ) * 0.01 )
                                                           + 0.5
                       COMPUTE  WRK-KINGAKU3 = 75000  + WRK-KINGAKU2
+                      MOVE   1       TO   FLG-KOUGAKU2
                     ELSE
                       MOVE   75000   TO   WRK-KINGAKU3
                     END-IF
@@ -19417,6 +19468,7 @@
                             (( WRK-CHIHOU-KIN6 - 500000 ) * 0.01 )
                                                           + 0.5
                       COMPUTE  WRK-KINGAKU3 = 150000 + WRK-KINGAKU2
+                      MOVE   1       TO   FLG-KOUGAKU2
                     ELSE
                       MOVE   150000  TO   WRK-KINGAKU3
                     END-IF
@@ -19437,6 +19489,7 @@
                             (( WRK-CHIHOU-KIN6 - 135000 ) * 0.01 )
                                                           + 0.5
                       COMPUTE  WRK-KINGAKU3 = 40050  + WRK-KINGAKU2
+                      MOVE   1       TO   FLG-KOUGAKU2
                     ELSE
                       MOVE   40050   TO   WRK-KINGAKU3
                     END-IF
@@ -19446,6 +19499,7 @@
                             (( WRK-CHIHOU-KIN6 - 267000 ) * 0.01 )
                                                           + 0.5
                       COMPUTE  WRK-KINGAKU3 = 80100  + WRK-KINGAKU2
+                      MOVE   1       TO   FLG-KOUGAKU2
                     ELSE
                       MOVE   80100   TO   WRK-KINGAKU3
                     END-IF
@@ -19487,6 +19541,11 @@
                WHEN        4
                  MOVE   ZERO     TO   WRK-KINGAKU3
              END-EVALUATE
+             IF  FLG-KOUGAKU2 = ZERO
+               COMPUTE  WRK-KINGAKU3 = WRK-KINGAKU3 +  5
+               COMPUTE  WRK-KINGAKU3 = WRK-KINGAKU3 / 10
+               COMPUTE  WRK-KINGAKU3 = WRK-KINGAKU3 * 10
+             END-IF
            END-IF
       *
            .
@@ -19793,6 +19852,7 @@
       *
            MOVE     ZERO     TO   WRK-KINGAKU-GENBUTU3
            MOVE     ZERO     TO   WRK-CHIHOU-KIN3
+           MOVE     ZERO     TO   FLG-KOUGAKU2
       *
            EVALUATE   FLG-GENBUTU70
              WHEN       1
@@ -19813,6 +19873,7 @@
                                                       + 0.5
                        COMPUTE WRK-KINGAKU-GENBUTU3 =
                                75000   +   WRK-KINGAKU2
+                       MOVE    1       TO  FLG-KOUGAKU2
                    ELSE
                        MOVE    75000   TO  WRK-KINGAKU-GENBUTU3
                    END-IF
@@ -19823,6 +19884,7 @@
                                                       + 0.5
                        COMPUTE WRK-KINGAKU-GENBUTU3 =
                                150000  +   WRK-KINGAKU2
+                       MOVE    1       TO  FLG-KOUGAKU2
                    ELSE
                        MOVE    150000  TO  WRK-KINGAKU-GENBUTU3
                    END-IF
@@ -19846,6 +19908,7 @@
                                                       + 0.5
                        COMPUTE WRK-KINGAKU-GENBUTU3 =
                                40050   +   WRK-KINGAKU2
+                       MOVE    1       TO  FLG-KOUGAKU2
                    ELSE
                        MOVE    40050   TO  WRK-KINGAKU-GENBUTU3
                    END-IF
@@ -19856,6 +19919,7 @@
                                                       + 0.5
                        COMPUTE WRK-KINGAKU-GENBUTU3 =
                                80100   +   WRK-KINGAKU2
+                       MOVE    1       TO  FLG-KOUGAKU2
                    ELSE
                        MOVE    80100   TO  WRK-KINGAKU-GENBUTU3
                    END-IF
