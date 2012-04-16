@@ -55,6 +55,8 @@
       *                                     の保険の記号番号を更新する
       *  04.05.07    NACL-藤原    11/10/24  「請求しない」設定の請求管理
       *                                     の削除処理の有無対応
+      *  04.05.08    NACL-藤原    12/04/11  平成２４年４月改正対応
+      *                                     入院略称の変更
       *
       *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *  04.06.02    NACL-藤原    10/10/12  公費単独のレセ分離対応
@@ -143,7 +145,8 @@
                                    BY         //RECEERR//.
       *
       *****COPY    "HCN58V01.INC"  REPLACING  //HCN58V01//
-           COPY    "HCN58V02.INC"  REPLACING  //HCN58V02//
+      *****COPY    "HCN58V02.INC"  REPLACING  //HCN58V02//
+           COPY    "HCN58V03.INC"  REPLACING  //HCN58V03//
                                    BY         //HCN58//.
       *****COPY    "HCN59V01.INC"  REPLACING  //HCN59V01//
            COPY    "HCM59V02.INC"  REPLACING  //HCM59V02//
@@ -1854,8 +1857,14 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       5
                    OR      RECE200-NYUSYUBETU (IDX) =   SPACE
-               MOVE    RECE200-NYUSYUBETU (IDX)
-                                       TO  HCN58-NYUSYUBETU (IDX)
+               IF      RECE200-NYUSYUBETU (IDX) (13:)
+                                       =   SPACE
+                   MOVE    RECE200-NYUSYUBETU (IDX)
+                                         TO  HCN58-NYUSYUBETU (IDX)
+               ELSE
+                   MOVE    RECE200-NYUSYUBETU (IDX)
+                                         TO  HCN58-NYUSYUBETU2(IDX)
+               END-IF
            END-PERFORM
       *
       *    入院基本料
@@ -2657,7 +2666,8 @@
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
       *********MOVE    "HCN58V01.red"      TO
-               MOVE    "HCN58V02.red"      TO
+      *********MOVE    "HCN58V02.red"      TO
+               MOVE    "HCN58V03.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HCN58               TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -2797,7 +2807,8 @@
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
       *****************WHEN    "HCN58V01.red"
-                       WHEN    "HCN58V02.red"
+      *****************WHEN    "HCN58V02.red"
+                       WHEN    "HCN58V03.red"
                            MOVE    RECE08-PRTDATA  TO HCN58
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HCN58-PAGE

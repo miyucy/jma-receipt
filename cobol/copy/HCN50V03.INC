@@ -1,153 +1,151 @@
-        01  HCN66.
-            02  HCN66-SAIGAIKBN
+        01  HCN50V03.
+            02  HCN50V03-SAIGAIKBN
                         PIC X(8).
-            02  HCN66-PTNUM
+            02  HCN50V03-PTNUM
                         PIC X(20).
-            02  HCN66-RSIIRYOCD
+            02  HCN50V03-RSIIRYOCD
                         PIC X(30).
-            02  HCN66-HOSPNAME
-                        PIC X(64).
-            02  HCN66-RENNUM
+            02  HCN50V03-HOSPNAME
+                        PIC X(90).
+            02  HCN50V03-RENNUM
                         PIC X(7).
-            02  HCN66-SINKEI
+            02  HCN50V03-SINKEI
                         PIC X(1).
-            02  HCN66-TENKI
+            02  HCN50V03-TENKI
                         PIC X(1).
-            02  HCN66-KOFUNUM.
-              03  HCN66-KOFUNUM-S
+            02  HCN50V03-KOFUNUM.
+              03  HCN50V03-KOFUNUM-S
                         PIC X(1)        OCCURS 14 TIMES.
-            02  HCN66-TANJYOYMD.
-              03  HCN66-TANJYOYMD-S
+            02  HCN50V03-TANJYOYMD.
+              03  HCN50V03-TANJYOYMD-S
                         PIC X(1)        OCCURS 7 TIMES.
-            02  HCN66-SYOBYOYMD.
-              03  HCN66-SYOBYOYMD-S
+            02  HCN50V03-SYOBYOYMD.
+              03  HCN50V03-SYOBYOYMD-S
                         PIC X(1)        OCCURS 6 TIMES.
-            02  HCN66-STRYMD.
-              03  HCN66-STRYMD-S
+            02  HCN50V03-STRYMD.
+              03  HCN50V03-STRYMD-S
                         PIC X(1)        OCCURS 6 TIMES.
-            02  HCN66-ENDYMD.
-              03  HCN66-ENDYMD-S
+            02  HCN50V03-ENDYMD.
+              03  HCN50V03-ENDYMD-S
                         PIC X(1)        OCCURS 6 TIMES.
-            02  HCN66-NISSU.
-              03  HCN66-NISSU-S
+            02  HCN50V03-NISSU.
+              03  HCN50V03-NISSU-S
                         PIC X(1)        OCCURS 3 TIMES.
-            02  HCN66-GOKEI.
-              03  HCN66-GOKEI-S
+            02  HCN50V03-GOKEI.
+              03  HCN50V03-GOKEI-S
                         PIC X(1)        OCCURS 7 TIMES.
-            02  HCN66-KANANAME
+            02  HCN50V03-KANANAME
                         PIC X(50).
-            02  HCN66-NAME
+            02  HCN50V03-NAME
                         PIC X(26).
-            02  HCN66-NAME2
+            02  HCN50V03-NAME2
                         PIC X(50).
-            02  HCN66-NENREI
+            02  HCN50V03-NENREI
                         PIC X(3).
-            02  HCN66-JIGYOUNAME
+            02  HCN50V03-JIGYOUNAME
                         PIC X(80).
-            02  HCN66-TODOFUKEN
+            02  HCN50V03-TODOFUKEN
                         PIC X(6).
-            02  HCN66-TODOFUKENKBN1
+            02  HCN50V03-TODOFUKENKBN1
                         PIC X(2).
-            02  HCN66-TODOFUKENKBN2
+            02  HCN50V03-TODOFUKENKBN2
                         PIC X(2).
-            02  HCN66-TODOFUKENKBN3
+            02  HCN50V03-TODOFUKENKBN3
                         PIC X(2).
-            02  HCN66-TODOFUKENKBN4
+            02  HCN50V03-TODOFUKENKBN4
                         PIC X(2).
-            02  HCN66-GUNSIKU
+            02  HCN50V03-GUNSIKU
                         PIC X(20).
-            02  HCN66-GUNSIKUKBN1
+            02  HCN50V03-GUNSIKUKBN1
                         PIC X(2).
-            02  HCN66-GUNSIKUKBN2
+            02  HCN50V03-GUNSIKUKBN2
                         PIC X(2).
-            02  HCN66-GUNSIKUKBN3
+            02  HCN50V03-GUNSIKUKBN3
                         PIC X(2).
-            02  HCN66-SYOBYOMEI
+            02  HCN50V03-SYOBYOMEI
                         PIC X(44)       OCCURS 3 TIMES.
-            02  HCN66-KEIKA
+            02  HCN50V03-KEIKA
                         PIC X(54)       OCCURS 4 TIMES.
-            02  HCN66-SYOSHIN1
+            02  HCN50V03-SYOSHIN1
                         PIC X(2).
-            02  HCN66-SYOSHIN2
+            02  HCN50V03-SYOSHIN2
                         PIC X(2).
-            02  HCN66-SYOSHIN3
+            02  HCN50V03-SYOSHIN3
                         PIC X(2).
-            02  HCN66-KAISU
+            02  HCN50V03-KAISU
                         PIC X(3)        OCCURS 22 TIMES.
-            02  HCN66-TENSU
+            02  HCN50V03-TENSU
                         PIC X(7)        OCCURS 22 TIMES.
-            02  HCN66-NYUINYMD.
-              03  HCN66-NYUINYY
+            02  HCN50V03-NYUINYMD.
+              03  HCN50V03-NYUINYY
                         PIC X(2).
-              03  HCN66-NYUINMM
+              03  HCN50V03-NYUINMM
                         PIC X(2).
-              03  HCN66-NYUINDD
+              03  HCN50V03-NYUINDD
                         PIC X(2).
-            02  HCN66-HOSPSBT
+            02  HCN50V03-HOSPSBT
                         PIC X(2)        OCCURS 3 TIMES.
-            02  HCN66-NYUSYUBETSU
+            02  HCN50V03-NYUSYUBETSU
                         PIC X(10)       OCCURS 11 TIMES.
-            02  HCN66-NYUKHNTEN
+            02  HCN50V03-NYUKHNTEN
                         PIC X(7)        OCCURS 9 TIMES.
-            02  HCN66-NYUKHNTENN
+            02  HCN50V03-NYUKHNTENN
                         PIC X(10)       OCCURS 9 TIMES.
-            02  HCN66-NYUKAISU
+            02  HCN50V03-NYUKAISU
                         PIC X(3)        OCCURS 9 TIMES.
-            02  HCN66-NYUTENSU
+            02  HCN50V03-NYUTENSU
                         PIC X(7)        OCCURS 9 TIMES.
-            02  HCN66-NYUTENSUN-G
+            02  HCN50V03-NYUTENSUN-G
                                         OCCURS 9 TIMES.
-              03  HCN66-NYUTENSUN
+              03  HCN50V03-NYUTENSUN
                         PIC X(2)        OCCURS 6 TIMES.
-            02  HCN66-KAKERU
+            02  HCN50V03-KAKERU
                         PIC X(2)        OCCURS 4 TIMES.
-            02  HCN66-NICHI
+            02  HCN50V03-NICHI
                         PIC X(4)        OCCURS 4 TIMES.
-            02  HCN66-TOTALTEN
+            02  HCN50V03-TOTALTEN
                         PIC X(10).
-            02  HCN66-TOTALMONEY
+            02  HCN50V03-TOTALMONEY
                         PIC X(10).
-            02  HCN66-SONOTA
+            02  HCN50V03-SONOTA
                         PIC X(12)       OCCURS 4 TIMES.
-            02  HCN66-KINGAKU
+            02  HCN50V03-KINGAKU
                         PIC X(7)        OCCURS 5 TIMES.
-            02  HCN66-SYOKEI
+            02  HCN50V03-SYOKEI
                         PIC X(7).
-            02  HCN66-SYOKJN
+            02  HCN50V03-SYOKJN
                         PIC X(4)        OCCURS 4 TIMES.
-            02  HCN66-SYOKAKERU
+            02  HCN50V03-SYOKAKERU
                         PIC X(4).
-            02  HCN66-SYOKHNTEN
+            02  HCN50V03-SYOKHNTEN
                         PIC X(7)        OCCURS 4 TIMES.
-            02  HCN66-SYONICHI
+            02  HCN50V03-SYONICHI
                         PIC X(4).
-            02  HCN66-SYOKAISU
+            02  HCN50V03-SYOKAISU
                         PIC X(3)        OCCURS 4 TIMES.
-            02  HCN66-SYONISSU
+            02  HCN50V03-SYONISSU
                         PIC X(2).
-            02  HCN66-TEKIYO1
+            02  HCN50V03-TEKIYO1
                         PIC X(28)       OCCURS 7 TIMES.
-            02  HCN66-BIKOU
+            02  HCN50V03-BIKOU
                         PIC X(28)       OCCURS 5 TIMES.
-            02  HCN66-SYOMONEY
+            02  HCN50V03-SYOMONEY
                         PIC X(10).
-            02  HCN66-SRYKBN
+            02  HCN50V03-SRYKBN
                         PIC X(2)        OCCURS 22 TIMES.
-            02  HCN66-TEKIYO2
+            02  HCN50V03-TEKIYO2
                         PIC X(52)       OCCURS 22 TIMES.
-            02  HCN66-KAI
+            02  HCN50V03-KAI
                         PIC X(3).
-            02  HCN66-PAGE
+            02  HCN50V03-PAGE
                         PIC X(5).
-            02  HCN66-LABEL
+            02  HCN50V03-LABEL
                         PIC X(14).
-            02  HCN66-SYOCD
+            02  HCN50V03-SYOCD
                         PIC X(5).
-            02  HCN66-HOSPNAME2
-                        PIC X(94).
-            02  HCN66-NYUSYUBETSU2
+            02  HCN50V03-NYUSYUBETSU2
                         PIC X(14)       OCCURS 11 TIMES.
-            02  HCN66-NYUKHNTENN2
+            02  HCN50V03-NYUKHNTENN2
                         PIC X(14)       OCCURS 9 TIMES.
-            02  HCN66-LOPTION
+            02  HCN50V03-LOPTION
                         PIC X(100).
