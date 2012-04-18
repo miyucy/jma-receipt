@@ -33,20 +33,6 @@
       *
       *  04.05.01    NACL-藤原    12/03/27  算定日情報に係る記録条件仕様
       *                                     の変更に伴う月後れ分のチェック
-      *
-      *  04.06.01    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
-      *                                     receipt_kbn 追加 
-      *
-      *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
-      *                                     支払機関請求対応
-      *  04.07.02    NACL-藤原    12/08/01  レセ電データチェック機能対応
-      *  04.07.03    NACL-藤原    13/10/07  労災レセ電対応
-      *
-      *  04.08.04    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
-      *                                     レセプトの分割対応
-      *
-      *  05.00.01    NACL-藤原    17/12/19  ＨＡＯＲＩ対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -83,7 +69,6 @@
            03  IDZ                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDXX                PIC 9(04).
-           03  IDYY                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -96,7 +81,6 @@
            03  WRK-Z9              PIC Z9.
            03  WRK-ZZ9             PIC ZZ9.
       *
-      *    SPA-GMN-T09-SELNUM-OCCにあわせる
            03  WRK-GKN-T09.
                05  WRK-GMN-T09-SELNUM-OCC.
                    07  WRK-GMN-T09-SELNUM
@@ -172,7 +156,23 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA44SCRAREA.INC".
+           COPY    "T01.INC".
+           COPY    "T02.INC".
+           COPY    "T03.INC".
+           COPY    "T04.INC".
+           COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T08.INC".
+           COPY    "T09.INC".
+           COPY    "T91.INC".
+           COPY    "T98.INC".
+           COPY    "T99.INC".
+           COPY    "TERR.INC".
+           COPY    "TID1.INC".
+           COPY    "TID2.INC".
+           COPY    "TID3.INC".
+           COPY    "TFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -389,7 +389,7 @@
                                                (SPA-NAI-T09-SELNUM)
            MOVE    ZERO            TO  SPA-NAI-T09-SELNUM
       *
-           MOVE    4               TO  SPA-GMN-T09-CUR
+           MOVE    4               TO  SPA-GMN-T06-CUR
            .
        340-TID2-SET-EXT.
            EXIT.
@@ -628,45 +628,8 @@
       *
            IF      SPA-GMN-T09-TCHK (WRK-SELNO)
                                    =   "1"
-               MOVE    "0008"              TO  SPA-ERRCD
                MOVE    ZERO            TO  SPA-GMN-T09-SELNUM (IDX)
                GO  TO  410211-SELNUM-HENSYU-EXT
-           END-IF
-      *
-      *    直接請求する保険者とのチェック（社保）
-           IF    ( SPA-GMN-T06-TEISYUTUSAKI1
-                                       =   "T"   )
-           AND   ( SPA-NAI-T06-DIRECT-HKNJANUM
-                                   NOT =   SPACE )
-               EVALUATE    SPA-NAI-T06-DIRECT-HKNJANUM
-                   WHEN    "00000000"
-                       PERFORM VARYING IDYY    FROM    1   BY  1
-                               UNTIL   IDYY    >       10
-                               OR      SPA-NAI-T06-DIRECT-HKNJANUML
-                                                               (IDYY)
-                                               =   SPACE
-                           IF      SPA-NAI-T09-THKNJANUM-S (WRK-SELNO)
-                                           =
-                                       SPA-NAI-T06-DIRECT-HKNJANUML
-                                                               (IDYY)
-                               MOVE    "0027"              TO  SPA-ERRCD
-                               MOVE    ZERO                TO
-                                               SPA-GMN-T09-SELNUM (IDX)
-                               GO  TO  410211-SELNUM-HENSYU-EXT
-                           END-IF
-                       END-PERFORM
-                   WHEN    OTHER
-                       IF      SPA-NAI-T09-THKNJANUM-S (WRK-SELNO)
-                                           =
-                                           SPA-NAI-T06-DIRECT-HKNJANUM
-                           CONTINUE
-                       ELSE
-                           MOVE    "0027"              TO  SPA-ERRCD
-                           MOVE    ZERO                TO
-                                               SPA-GMN-T09-SELNUM (IDX)
-                           GO  TO  410211-SELNUM-HENSYU-EXT
-                       END-IF
-               END-EVALUATE
            END-IF
       *
       *    レセ電データ存在チェック
@@ -715,7 +678,7 @@
                MOVE    "1006"          TO  SPA-TIDCD
                MOVE    IDX             TO  SPA-NAI-T09-SELNUM
                GO  TO  410211-SELNUM-HENSYU-EXT
-           END-IF 
+         END-IF 
       *
       *    返戻年月未入力のときの返戻データ存在チェック
            IF      SPA-NAI-T09-THENREIYM (WRK-SELNO)
@@ -890,12 +853,7 @@
                                        =   "T"
                MOVE    "社保"              TO  T07-TEISYUTUSAKI
            ELSE
-               IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                           =   "T"
-                   MOVE    "労災"              TO  T07-TEISYUTUSAKI
-               ELSE
-                   MOVE    "国保"              TO  T07-TEISYUTUSAKI
-               END-IF
+               MOVE    "国保"              TO  T07-TEISYUTUSAKI
            END-IF
       *
            MOVE    ZERO            TO  IDX
@@ -908,18 +866,12 @@
            MOVE    SPA-NAI-T09-RECE10-TPTID (SPA-NAI-T09-SELNUM)
                                    TO  ONRECE-B-PTID
            IF      SPA-GMN-T06-TEISYUTUSAKI1
-                                       =   "T"
+                                      =   "T"
                MOVE    "1"                 TO  ONRECE-B-TEISYUTUSAKI
                                                ONRECE-B-XXTEISYUTUSAKI
            ELSE
-               IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                           =   "T"
-                   MOVE    "3"             TO  ONRECE-B-TEISYUTUSAKI
-                                               ONRECE-B-XXTEISYUTUSAKI
-               ELSE
-                   MOVE    "6"             TO  ONRECE-B-TEISYUTUSAKI
-                   MOVE    "2"             TO  ONRECE-B-XXTEISYUTUSAKI
-               END-IF
+               MOVE    "6"                 TO  ONRECE-B-TEISYUTUSAKI
+               MOVE    "2"                 TO  ONRECE-B-XXTEISYUTUSAKI
            END-IF
            MOVE    SPA-NAI-T09-RECE10-TNYUGAIKBN (SPA-NAI-T09-SELNUM)
                                    TO  ONRECE-B-NYUGAIKBN
@@ -1090,10 +1042,6 @@
                                        TO  T09-THOJOKBN     (IDX)
                MOVE    SPA-GMN-T09-TKIGO        (IDX)
                                        TO  T09-TKIGO        (IDX)
-               MOVE    SPA-GMN-T09-TRECEIPT-KBN (IDX)
-                                       TO  T09-TRECEIPT-KBN (IDX)
-               MOVE    SPA-GMN-T09-TDISASTER (IDX)
-                                       TO  T09-TDISASTER    (IDX)
                MOVE    SPA-GMN-T09-TCREYMD      (IDX)
                                        TO  T09-TCREYMD      (IDX)
                IF      SPA-GMN-T09-TCHK (IDX)  =   "1"
@@ -1111,13 +1059,6 @@
                                    TO  SPA-NAI-T09-TSELECT (IDX)
            END-PERFORM
            MOVE    IDX             TO  T09-COUNT
-      *
-           IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                       =   "T"
-               MOVE    "年金証書番号等"    TO  T09-HYODAI1
-           ELSE
-               MOVE    "記号・番号"        TO  T09-HYODAI1
-           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1191,57 +1132,50 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
-      *
            MOVE    SPACE               TO  SPA-ERRMSG
-      *
-           MOVE    SPACE                TO  TERR
-           MOVE    SPA-ERRCD            TO  TERR-ERRCODE
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "選択番号入力エラー"        TO  TERR-ERRMSG
+                   MOVE    "選択番号入力エラー"        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "選択番号が重複しています"  TO  TERR-ERRMSG
+                   MOVE    "選択番号が重複しています"  TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "複数の患者は、同時に選択できません。"
-                                                       TO  TERR-ERRMSG
+                                                       TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "これ以上データの追加はできません"
-                                                       TO  TERR-ERRMSG
+                                                       TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE    "データが選択してありません"
-                                                       TO  TERR-ERRMSG
-               WHEN    "0008"
-                   MOVE    "個別指示一覧に選択済です"  TO  TERR-ERRMSG
+                                                       TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "対象のレセ電データがありません"
-                                                       TO  TERR-ERRMSG
+                                                       TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE    "返戻データが設定されていません"
-                                                       TO  TERR-ERRMSG
+                                                       TO  SPA-ERRMSG
                WHEN    "0018"
-                   MOVE    "主科未設定データです"      TO  TERR-ERRMSG
+                   MOVE    "主科未設定データです"      TO  SPA-ERRMSG
                WHEN    "0020"
                    STRING  "改正パッチ提供以降に平成２４年３月以前の"
                                                    DELIMITED  BY  SIZE
-                     "月遅れ分についてレセプト再処理が行われていません"
+                           "月遅れ分の再作成が行われていません"
                                                    DELIMITED  BY  SIZE
-                                                   INTO    TERR-ERRMSG
-                   END-STRING
-               WHEN    "0027"
-                   MOVE    "選択した保険者と違います"  TO  TERR-ERRMSG
+                                                   INTO    SPA-ERRMSG
+                       END-STRING
                WHEN    "0099"
                    MOVE    "選択したデータを全て追加できません"
-                                                       TO  TERR-ERRMSG
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
-                                               TO  TERR-ERRMSG
-                   MOVE    SLOCK-MSG           TO  TERR-ERRMSG(21:)
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
            END-EVALUATE
       *
-           MOVE    TERR-ERRMSG          TO  SPA-ERRMSG
-      *
+           MOVE    SPACE                TO  TERR
+           MOVE    SPA-ERRCD            TO  TERR-ERRCODE
+           MOVE    SPA-ERRMSG           TO  TERR-ERRMSG
            MOVE    "B01"                TO  MCP-WIDGET
       *
            MOVE    "T09"                TO  SPA-MOTOPG
@@ -1264,7 +1198,6 @@
        520-TIDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  TID1
-           INITIALIZE                      TID1
            MOVE    SPA-TIDCD           TO  TID1-ID1CODE
       *
            EVALUATE    SPA-TIDCD
@@ -1318,7 +1251,6 @@
        530-TID2SET-SEC              SECTION.
       *
            MOVE    SPACE                TO  TID2
-           INITIALIZE                       TID2
            MOVE    SPA-TIDCD            TO  TID2-ID1CODE
       *
            EVALUATE    SPA-TIDCD
@@ -1327,8 +1259,6 @@
                                            TO  TID2-ID1MSG
            END-EVALUATE
       *
-           MOVE    "F"                  TO  TID2-B10-VISIBLE
-           MOVE    "T"                  TO  TID2-B11-VISIBLE
            MOVE    "F11:個人履歴"       TO  TID2-B11-LABEL
            MOVE    "F12:作成する"       TO  TID2-B12-LABEL
            MOVE    "blue"               TO  TID2-LABEL-STYLE
