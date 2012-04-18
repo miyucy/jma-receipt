@@ -26,7 +26,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.07.01    NACL-藤原    13/10/07  労災レセ電対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -72,7 +71,7 @@
                05  WRK-SDD         PIC 9(02).
            03  WRK-HENYMDG.
                05  WRK-HENYM       PIC X(06).
-               05  WRK-HENYM-FIL   PIC X(03).
+               05  FILLER          PIC X(03).
            03  WRK-HENYMDG3        PIC X(22).
            03  WRK-HENYMD.
                05  WRK-HGO         PIC X(01).
@@ -125,7 +124,23 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA44SCRAREA.INC".
+           COPY    "T01.INC".
+           COPY    "T02.INC".
+           COPY    "T03.INC".
+           COPY    "T04.INC".
+           COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T08.INC".
+           COPY    "T09.INC".
+           COPY    "T91.INC".
+           COPY    "T98.INC".
+           COPY    "T99.INC".
+           COPY    "TERR.INC".
+           COPY    "TID1.INC".
+           COPY    "TID2.INC".
+           COPY    "TID3.INC".
+           COPY    "TFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -211,12 +226,7 @@
                                    =   "T"
                MOVE    "社保"          TO  T08-TEISYUTUSAKI
            ELSE
-               IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                       =   "T"
-                   MOVE    "労災"          TO  T08-TEISYUTUSAKI
-               ELSE
-                   MOVE    "国保"          TO  T08-TEISYUTUSAKI
-               END-IF
+               MOVE    "国保"          TO  T08-TEISYUTUSAKI
            END-IF
       *
            MOVE    ZERO            TO  IDX
@@ -228,12 +238,7 @@
                                    =   "T"
                MOVE    "1"             TO  ONRECE-K-TEISYUTUSAKI
            ELSE
-               IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                       =   "T"
-                   MOVE    "3"             TO  ONRECE-K-TEISYUTUSAKI
-               ELSE
-                   MOVE    "2"             TO  ONRECE-K-TEISYUTUSAKI
-               END-IF
+               MOVE    "2"             TO  ONRECE-K-TEISYUTUSAKI
            END-IF
       *
            MOVE    "tbl_onrece_kanri"
@@ -295,12 +300,7 @@
                                       =   "T"
                MOVE    "1"                 TO  ONRECE-B-TEISYUTUSAKI
            ELSE
-               IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                          =   "T"
-                   MOVE    "3"                 TO  ONRECE-B-TEISYUTUSAKI
-               ELSE
-                   MOVE    "2"                 TO  ONRECE-B-TEISYUTUSAKI
-               END-IF
+               MOVE    "2"                 TO  ONRECE-B-TEISYUTUSAKI
            END-IF
            MOVE    SPA-NAI-T08-TRENNUM (SPA-NAI-T08-SELNUM)
                                    TO  ONRECE-B-RENNUM
@@ -334,35 +334,8 @@
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG (1:6)
                                        TO  T08-RECE-TSRYYM       (IDX)
-      *
-               EVALUATE    ONRECE-B-TEISYUTUSAKI
-                   WHEN    "3"
-                       EVALUATE    ONRECE-B-RECESYUBETU
-                           WHEN    "7101"
-                           WHEN    "7091"
-                               MOVE    "傷病・業務"        TO
-                                           T08-RECE-TRECESYUBETU (IDX)
-                           WHEN    "7102"
-                           WHEN    "7092"
-                               MOVE    "傷病・通勤"        TO
-                                           T08-RECE-TRECESYUBETU (IDX)
-                           WHEN    "7071"
-                           WHEN    "7081"
-                               MOVE    "短期・業務"        TO
-                                           T08-RECE-TRECESYUBETU (IDX)
-                           WHEN    "7072"
-                           WHEN    "7082"
-                               MOVE    "短期・通勤"        TO
-                                           T08-RECE-TRECESYUBETU (IDX)
-                           WHEN    OTHER
-                               MOVE    ONRECE-B-RECESYUBETU    TO
-                                           T08-RECE-TRECESYUBETU (IDX)
-                       END-EVALUATE
-                   WHEN    OTHER
-                       MOVE    ONRECE-B-RECESYUBETU
+               MOVE    ONRECE-B-RECESYUBETU
                                        TO  T08-RECE-TRECESYUBETU (IDX)
-               END-EVALUATE
-      *    
                IF     ONRECE-B-HKNJANUM
                                        NOT =   "00000000"
                    MOVE    ONRECE-B-HKNJANUM
@@ -417,13 +390,6 @@
                    MOVE    "F"         TO  T08-KANRI-LIST-SELECT (IDX)
                END-IF
            END-PERFORM 
-      *
-           IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                       =   "T"
-               MOVE    "年金証書番号等"    TO  T08-RECE-LIST-HYODAI1
-           ELSE
-               MOVE    "記号・番号"        TO  T08-RECE-LIST-HYODAI1
-           END-IF
            .
        3101-RECE-LIST-HENSYU-EXT.
            EXIT.
