@@ -3854,9 +3854,15 @@
            IF      SPA-SRYYMD          >=  "20120401"
                IF     (TNS-SRYCD(1:1)      =   "6"  )
                  AND ((TNS-KOUHATUKBN      =   1  OR  2 )  OR
+      *H24.?
+                      (TNSP-IPN-KISAIKBN   =   3    )  OR
+      *H24.?
                       (TNSP-IPN-KISAIKBN   =   1    ))
       *            後発品・後発のある先発品の最低薬価
                    IF      TNSP-IPN-KISAIKBN   =   1
+      *H24.?
+                                               OR  3
+      *H24.?
                        MOVE    9               TO  SPA-COM-KOKUJISKBKBN2
                                                                (IDX-T)
                    END-IF
@@ -4010,6 +4016,12 @@
       *            一般名記載あり
                    MOVE    "般"                TO  WRK-MSG1
                END-IF
+      *H24.?
+               IF     (TNSP-IPN-KISAIKBN   =   3    )
+      *            一般名記載あり
+                   MOVE    "処"                TO  WRK-MSG1
+               END-IF
+      *H24.?
            END-IF
       *
            MOVE    TNS-NAME            TO  WRK-MEISYO
@@ -5300,6 +5312,9 @@
                  AND  (TNS-SRYCD(1:1)      =   "6"         )
                    IF     (TNSP-IPN-KISAIKBN   =   2    )   OR
                           (TNS-KOUHATUKBN      =   ZERO )
+      *H24.?
+                   OR     (TNSP-IPN-KISAIKBN   =   3    )
+      *H24.?
       *                処方名記載、先発品は変更なし
                        CONTINUE
                    ELSE

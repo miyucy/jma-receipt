@@ -388,7 +388,7 @@
       </signal>
       <editable>True</editable>
       <text_visible>True</text_visible>
-      <text_max_length>100</text_max_length>
+      <text_max_length>200</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>

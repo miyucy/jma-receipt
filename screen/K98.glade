@@ -970,8 +970,8 @@
       <class>GtkButton</class>
       <name>B02S</name>
       <x>288</x>
-      <y>520</y>
-      <width>108</width>
+      <y>524</y>
+      <width>110</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
