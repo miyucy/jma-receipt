@@ -6,7 +6,7 @@ tbl_etensu_3_1 {
 	HAIHAN				number(1,0);
 	TOKUREI				number(1,0);
 	CHGYMD   			char(8);
-#-----> 荳ｻ繧ｭ繝ｼ譖ｴ譁ｰ逕ｨ鬆�逶ｮ
+#-----> 主キー更新用項目
 	UPSRYCD1			char(9),virtual;
 	UPSRYCD2			char(9),virtual;
 	UPYUKOSTYMD			char(8),virtual;
@@ -55,7 +55,7 @@ path	key2 	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE tbl_etensu_3_1
+		UPDATE	tbl_etensu_3_1
 				SET
 				SRYCD1      = :SRYCD1,
 				SRYCD2      = :SRYCD2,
@@ -71,16 +71,3 @@ path	upd1	{
 		;
 	};
 };
-
-path	key3 	{
-	DBSELECT	{
-		DECLARE tbl_etensu_3_1_key3_csr CURSOR FOR
-		SELECT *
-		FROM tbl_etensu_3_1
-		WHERE   SRYCD1   =   :SRYCD1
- 		AND   YUKOSTYMD  <=  :YUKOSTYMD
-		AND   YUKOEDYMD  >=  :YUKOEDYMD
-		;
-	};
-};
-

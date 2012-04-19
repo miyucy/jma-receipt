@@ -5,7 +5,7 @@ tbl_etensu_4 {
 	YUKOEDYMD			char(8);
 	KASAN				number(2,0);
 	CHGYMD   			char(8);
-#-----> 荳ｻ繧ｭ繝ｼ譖ｴ譁ｰ逕ｨ鬆�逶ｮ
+#-----> 主キー更新用項目
 	UPN_GROUP			number(3,0),virtual;
 	UPSRYCD				char(9),virtual;
 	UPYUKOSTYMD			char(8),virtual;
@@ -66,7 +66,7 @@ path	key3 	{
 
 path	upd1	{
 	DBUPDATE		{
-		UPDATE tbl_etensu_4
+		UPDATE	tbl_etensu_4
 				SET
 				N_GROUP      = :N_GROUP,
 				SRYCD      = :SRYCD,

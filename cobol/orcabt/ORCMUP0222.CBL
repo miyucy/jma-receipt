@@ -132,9 +132,8 @@
       *
            03  WRK-IN                  PIC X(01).
       *
-           03  WRK-TABLE               PIC X(64).
-           03  WRK-PATHNAME            PIC X(64).
-           03  WRK-HOMEDIR             PIC X(128).
+           03  WRK-TABLE               PIC X(20).
+           03  WRK-PATHNAME            PIC X(05).
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -156,9 +155,11 @@
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  WRK-SYORIKBN            PIC X(01).
       *
-       01  CONST-AREA.
-           03  CONST-HOMEDIR           PIC X(28)  VALUE
+       01  WRK-HOMEDIR.
+           03  FILLER                  PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
+           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
+           03  FILLER                  PIC X(01)  VALUE "/".
       *****************************************************************
       *    ファイル定義
       *****************************************************************
@@ -202,10 +203,6 @@
            COPY    "CPETENSU4.INC".
        01  ETENSU5-REC.
            COPY    "CPETENSU5.INC".
-      *
-           COPY    "ENUM-VALUE".
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ジョブ管理情報
        01  JOBKANRI-REC.
@@ -285,25 +282,17 @@
            .
        100-INIT-EXT.
            EXIT.
+      *
       *****************************************************************
       *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
-           INITIALIZE                      SGETTEMP-AREA
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-      *
-           IF      SGETTEMP-MW         =   SPA-PANDA
-               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
-           ELSE
-               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
-           END-IF
+           MOVE    SPA-HOSPNUM     TO  WRK-HOMEDIR-HOSPNUM
       *
       *    入力ファイル
            MOVE    SPACE           TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    LNK-DBFILE          DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
@@ -313,8 +302,6 @@
       *    エラーファイル
            MOVE    SPACE           TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
@@ -324,8 +311,6 @@
       *    プルーフファイル
            MOVE    SPACE           TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
@@ -335,6 +320,7 @@
            .
        101-ASSIN-GET-EXT.
            EXIT.
+      *
       *****************************************************************
       *    メイン処理
       *****************************************************************
@@ -373,36 +359,34 @@
       *
            EVALUATE    ETENSUWK-TBLKBN
                WHEN    10
-                   MOVE    "tbl_etensu_1_master"   TO  WRK-TABLE
+                   MOVE    "tbl_etensu_1"          TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    20
-                   MOVE    "tbl_etensu_2_master"   TO  WRK-TABLE
-                   MOVE    "key2"                  TO  WRK-PATHNAME
+                   MOVE    "tbl_etensu_2"          TO  WRK-TABLE
+                   MOVE    "key6"                  TO  WRK-PATHNAME
                WHEN    21
-                   MOVE    "tbl_etensu_2_jma_master"
-                                                   TO  WRK-TABLE
-                   MOVE    "key2"                  TO  WRK-PATHNAME
+                   MOVE    "tbl_etensu_2_jma"      TO  WRK-TABLE
+                   MOVE    "key6"                  TO  WRK-PATHNAME
                WHEN    22
-                   MOVE    "tbl_etensu_2_sample_master"
-                                                   TO  WRK-TABLE
-                   MOVE    "key2"                  TO  WRK-PATHNAME
+                   MOVE    "tbl_etensu_2_sample"   TO  WRK-TABLE
+                   MOVE    "key4"                  TO  WRK-PATHNAME
                WHEN    31
-                   MOVE    "tbl_etensu_3_1_master" TO  WRK-TABLE
+                   MOVE    "tbl_etensu_3_1"        TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    32
-                   MOVE    "tbl_etensu_3_2_master" TO  WRK-TABLE
+                   MOVE    "tbl_etensu_3_2"        TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    33
-                   MOVE    "tbl_etensu_3_3_master" TO  WRK-TABLE
+                   MOVE    "tbl_etensu_3_3"        TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    34
-                   MOVE    "tbl_etensu_3_4_master" TO  WRK-TABLE
+                   MOVE    "tbl_etensu_3_4"        TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
                WHEN    40
-                   MOVE    "tbl_etensu_4_master"   TO  WRK-TABLE
-                   MOVE    "key2"                  TO  WRK-PATHNAME
+                   MOVE    "tbl_etensu_4"          TO  WRK-TABLE
+                   MOVE    "key3"                  TO  WRK-PATHNAME
                WHEN    50
-                   MOVE    "tbl_etensu_5_master"   TO  WRK-TABLE
+                   MOVE    "tbl_etensu_5"          TO  WRK-TABLE
                    MOVE    "key2"                  TO  WRK-PATHNAME
            END-EVALUATE
       *
@@ -871,7 +855,7 @@
       *
            MOVE    "DBUPDATE"      TO  MCP-FUNC
            MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "upd1"          TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO
                MOVE    2               TO  LNK-RC
@@ -1072,9 +1056,6 @@
                    WHEN    21
                        INITIALIZE                  ETENSU2WK-REC
                        MOVE    IN-REC(12:)     TO  ETENSU2WK-REC
-                       IF      LNK-DBRVERSION (3:6)    <   "040800"
-                           MOVE    ZERO        TO  ETENSU2WK-TOKUREI
-                       END-IF
                    WHEN    22
                        INITIALIZE                  ETNSSMPWK-REC
                        MOVE    IN-REC(12:)     TO  ETNSSMPWK-REC
