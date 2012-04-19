@@ -67,6 +67,8 @@
       *
       *  04.05.01    NACL-Æ£¸¶    09/07/08  ¸øÈñºÆ·ÇÍó¤Ø¤ÎÃÏÊý¸øÈñµ­ºÜ
       *                                     ÀßÄêÂÐ±þ
+      *  04.05.02    NACL-Æ£¸¶    12/04/17  Ê¿À®£²£´Ç¯£´·î²þÀµÂÐ±þ
+      *                                     Ê¿À®£²£´Ç¯£´·îÊ¬°Ê¹ß¤Ï¤Þ¤È¤á¤ë
       *
       *  04.07.01    NACL-Æ£¸¶    12/01/24  monpe-0.6.20ÂÐ±þ
       *****************************************************************
@@ -288,6 +290,8 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-CONS-SRYYM-200610   PIC X(06)   VALUE   "200610".
       *    £²£°£°£¸Ç¯£´·î²þÀµ
            03  WRK-CONS-SRYYM-200804   PIC X(06)   VALUE   "200804".
+      *    £²£°£±£²Ç¯£´·î²þÀµ
+           03  WRK-CONS-SRYYM-201204   PIC X(06)   VALUE   "201204".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -627,10 +631,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
       *****************************************************************
        2001-SYOKBN-SYUKEI-SEC         SECTION.
       *
-      *    1:-200603 2:200604-200609 3:200610-200803 4:200804-   
+      *    1:-200603 2:200604-200609 3:200610-200803 4:200804-201203
+      *    5:201204-   
            PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
-                   UNTIL   WRK-PRTFLG  >       4
+                   UNTIL   WRK-PRTFLG  >       5
       *
+            IF    ( WRK-PRTFLG          =   5                     )
+            AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-201204 )
+                 CONTINUE
+            ELSE
              IF    ( WRK-PRTFLG          =   4                     )
              AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200804 )
                  CONTINUE
@@ -649,7 +658,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                    MOVE    LOW-VALUE           TO  KEY-AREA
                    MOVE    1                   TO  WRK-INDEX
       *     
-                   EVALUATE    WRK-SYOKBN      ALSO    WRK-PARA-SYOKBN1
+                   IF      WRK-PRTFLG          <   5
+                     EVALUATE    WRK-SYOKBN    ALSO    WRK-PARA-SYOKBN1
                        WHEN    "1"             ALSO    "1"
                            MOVE    "key34"         TO  WRK-MCP-PATHNAME
                        WHEN    "2"             ALSO    "1"
@@ -658,7 +668,19 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                            MOVE    "key40"         TO  WRK-MCP-PATHNAME
                        WHEN    "2"             ALSO    "2"
                            MOVE    "key39"         TO  WRK-MCP-PATHNAME
-                   END-EVALUATE  
+                     END-EVALUATE  
+                   ELSE
+                     EVALUATE    WRK-SYOKBN    ALSO    WRK-PARA-SYOKBN1
+                       WHEN    "1"             ALSO    "1"
+                           MOVE    "key66"         TO  WRK-MCP-PATHNAME
+                       WHEN    "2"             ALSO    "1"
+                           MOVE    "key65"         TO  WRK-MCP-PATHNAME
+                       WHEN    "1"             ALSO    "2"
+                           MOVE    "key40"         TO  WRK-MCP-PATHNAME
+                       WHEN    "2"             ALSO    "2"
+                           MOVE    "key39"         TO  WRK-MCP-PATHNAME
+                     END-EVALUATE
+                   END-IF
                    MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
                    PERFORM 900-SEIKYU-SELECT-SEC
       *
@@ -671,8 +693,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
       *
       *            Æþ±¡³°½¸·×¡ÊºßÁí¿Ç¤Þ¤¿¤Ïºß°åÁí¤ò»»Äê¤·¤¿¥ì¥»¡Ë
       *            ÆÃÊÌÎÅÍÜÈñ¤Î¾ì¹ç¤ÏºßÁí¿Ç¤Ï¤Ê¤·
+      *            Ê¿À®£²£´Ç¯£´·î°Ê¹ß¤Ï¤Ê¤·
                    IF    ( FLG-ERR             =   ZERO )
                    AND   ( WRK-PARA-SYOKBN1    =   "1"  )
+                   AND   ( WRK-PRTFLG          <   5    )
                        MOVE    LOW-VALUE           TO  KEY-AREA
                        MOVE    2                   TO  WRK-INDEX
       *         
@@ -694,7 +718,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                    END-IF
                  END-IF
                END-IF
-             END-IF    
+             END-IF
+            END-IF
            END-PERFORM 
       *     
            MOVE    1                   TO  FLG-END
@@ -717,7 +742,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
       *
            IF      FLG-UPD        =   1
            AND     FLG-ERR        =   ZERO 
-               IF      WRK-PRTFLG          =   4
+               IF      WRK-PRTFLG          >=  4
                    CALL    "ORCBM039"  USING 
                                        SUM-AREA
                                        WRK-PARA
@@ -1722,7 +1747,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                WHEN    "4"
                    MOVE    WRK-CONS-SRYYM-200804
                                                TO  RECE10-SRYYM
+                   MOVE    WRK-CONS-SRYYM-201204
+                                               
+                                               TO  RECE10-XXSRYYM
+               WHEN    "5"
+                   MOVE    WRK-CONS-SRYYM-201204
+                                               TO  RECE10-SRYYM
                    MOVE    999999              TO  RECE10-XXSRYYM
+                   MOVE    "060"               TO  RECE10-HKNNUM
+                   MOVE    "067"               TO  RECE10-HKNNUM-S
            END-EVALUATE
            IF      WRK-PARA-HKNJANUM   NOT =   ZERO
                MOVE    WRK-PARA-HKNJANUM   TO  RECE10-XXSTHKNJANUM
