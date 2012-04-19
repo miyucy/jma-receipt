@@ -2038,6 +2038,11 @@
                    MOVE    1                   TO  WRK-PAGE-MAX
                    MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
                    INITIALIZE                  ORCSQRCSVAREA
+      *H24.4
+      *            頭書の時、システム管理よって保険名を記載
+                   IF     (SYS-1030-KOUHATUKA  =   "0" )
+                       MOVE    1               TO  FLG-KOUHATUFUKA-IN
+                   END-IF
                    PERFORM 400-PRINT-SYORI-SEC
                WHEN    "4"
                WHEN    "5"
@@ -3058,9 +3063,10 @@
       *
       *        システム管理の後発品変更不可の判定
                IF      FLG-FUKACHK         =   2
-      *            先発品のみは、変更不可記載なし
-                   IF     (TNS-KOUHATUKBN      =   ZERO )
-                     OR   (TNSP-IPN-KISAIKBN   =   1    )
+      ****         先発品のみは、変更不可記載なし
+      ****         IF     (TNS-KOUHATUKBN      =   ZERO )
+      *            先発品も変更不可とする
+                   IF     (TNSP-IPN-KISAIKBN   =   1    )
                      OR   (TNSP-IPN-KISAIKBN   =   3    )
                        MOVE    SPACE           TO  WRK-KOU-SRYCD (1)
                        MOVE    SPACE           TO  WRK-KOU-TNSNAME(1)

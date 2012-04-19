@@ -538,6 +538,7 @@
            03  WRK-SYO-TANINAME        PIC X(12).
       *
       *H24.4
+           03  WRK-KOUMEI              PIC X(02).
            03  WRK-IPNMEI              PIC 9(01).
            03  IDG-Z                   PIC 9(04).
            03  IDG-X                   PIC 9(04).
@@ -2929,6 +2930,15 @@
                MOVE    1               TO  TNSP-IPN-KISAIKBN
            END-IF
       *
+           EVALUATE    TNS-KOUHATUKBN
+               WHEN    1
+                   MOVE    "¸å"            TO  WRK-KOUMEI
+               WHEN    2
+                   MOVE    "Àè"            TO  WRK-KOUMEI
+               WHEN    OTHER
+                   MOVE    SPACE           TO  WRK-KOUMEI
+           END-EVALUATE
+      *
       *    °ìÈÌÌ¾µ­ºÜ¤¢¤ê
            IF     (TNSP-IPN-KISAIKBN   =   1  )
              OR   (WRK-IPNMEI          =   1  )
@@ -2936,7 +2946,9 @@
       *        °ìÈÌÌ¾
                IF      FLG-GENERICNAME     =   ZERO
                    MOVE    SPACE               TO  WRK-MEISYO
-                   STRING  "¡ÚÈÌ¡Û"                DELIMITED  BY  SIZE
+                   STRING  "¡ÚÈÌ"                  DELIMITED  BY  SIZE
+                           WRK-KOUMEI              DELIMITED  BY  SPACE
+                           "¡Û"                    DELIMITED  BY  SIZE
                            GENERIC-GENERICNAME     DELIMITED  BY  SPACE
                                                INTO    WRK-MEISYO
                    END-STRING
@@ -2947,7 +2959,9 @@
            IF     (TNSP-IPN-KISAIKBN   =   2   )
              AND  (WRK-IPNMEI          =   ZERO)
                MOVE    SPACE               TO  WRK-MEISYO
-               STRING  "¡Ú½è¡Û"                DELIMITED  BY  SIZE
+               STRING  "¡Ú½è"                  DELIMITED  BY  SIZE
+                       WRK-KOUMEI              DELIMITED  BY  SPACE
+                       "¡Û"                    DELIMITED  BY  SIZE
                        TNSP-SHONAME            DELIMITED  BY  SPACE
                                                INTO    WRK-MEISYO
                END-STRING
@@ -2956,7 +2970,9 @@
       *    ½èÊýÌ¾µ­ºÜ
            IF     (TNSP-IPN-KISAIKBN   =   3   )
                MOVE    SPACE               TO  WRK-MEISYO
-               STRING  "¡ÚÈÌ¡Û"                DELIMITED  BY  SIZE
+               STRING  "¡ÚÈÌ"                  DELIMITED  BY  SIZE
+                       WRK-KOUMEI              DELIMITED  BY  SPACE
+                       "¡Û"                    DELIMITED  BY  SIZE
                        TNSP-SHONAME            DELIMITED  BY  SPACE
                                                INTO    WRK-MEISYO
                END-STRING
