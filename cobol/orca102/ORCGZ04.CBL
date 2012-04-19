@@ -689,7 +689,7 @@
                                        TO  SPA-GMN-IPN-KISAIKBN-LST(2)
            MOVE    "2 処方名称を記載する"
                                        TO  SPA-GMN-IPN-KISAIKBN-LST(3)
-           MOVE    "3 処方名称（一般名）記載する"
+           MOVE    "3 処方名称（一般名）を記載"
                                        TO  SPA-GMN-IPN-KISAIKBN-LST(4)
            MOVE    4                   TO  SPA-GMN-IPN-KISAI-MAX
       *
