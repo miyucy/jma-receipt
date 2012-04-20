@@ -70,6 +70,7 @@
       *  04.06.00    NACL-多々納  10/12/20  患者禁忌薬剤経過措置対応
       *  04.07.00    NACL-多々納  11/12/20  商品名コード金額単位対応
       *  04.07.00    NACL-多々納  12/01/10  新生児２８日判定修正
+      *  04.07.00    NACL-多々納  12/03/XX  平成２４年４月改正対応
       *****************************************************************
       *
       *
@@ -249,8 +250,8 @@
       *
       *    商品名称の金額
            03  WRK-SYOHIN-TEN          PIC 9(09)V99.
-      *TEST
-      *H24.4テスト
+      *
+      *H24.4
            03  WRK-NEN-03.
                05  WRK-NEN03-YM.
                    07  WRK-NEN03-YY        PIC 9(04).
@@ -261,8 +262,7 @@
                    07  WRK-NEN15-YY        PIC 9(04).
                    07  WRK-NEN15-MM        PIC 9(02).
                05  WRK-NEN15-DD            PIC 9(02).
-      *TEST
-      *H24.4テスト
+      *H24.4
       *
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
@@ -413,6 +413,7 @@
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
+      *H24.4
       *    最低薬価マスタ
        01  GENERICPRICE-REC.
            COPY    "CPGENERICPRICE.INC".
@@ -1650,7 +1651,7 @@
            PERFORM UNTIL   (FLG-SYSKANRI   =   1    )
                    OR      (IDX            >=  3500 )
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
-      *H2.4
+      *H24.4
                EVALUATE    SYS-1006-KBNCD
                    WHEN    "1"
                        MOVE    0               TO  IDX
@@ -1659,7 +1660,7 @@
                    WHEN    "7"
                        MOVE    3000            TO  IDX
                    END-EVALUATE
-      *H2.4
+      *H24.4
                PERFORM VARYING IDY         FROM    1   BY  1
                        UNTIL   IDY         >       500
                    ADD     1               TO  IDX
@@ -3854,15 +3855,11 @@
            IF      SPA-SRYYMD          >=  "20120401"
                IF     (TNS-SRYCD(1:1)      =   "6"  )
                  AND ((TNS-KOUHATUKBN      =   1  OR  2 )  OR
-      *H24.?
                       (TNSP-IPN-KISAIKBN   =   3    )  OR
-      *H24.?
                       (TNSP-IPN-KISAIKBN   =   1    ))
       *            後発品・後発のある先発品の最低薬価
                    IF      TNSP-IPN-KISAIKBN   =   1
-      *H24.?
                                                OR  3
-      *H24.?
                        MOVE    9               TO  SPA-COM-KOKUJISKBKBN2
                                                                (IDX-T)
                    END-IF
@@ -4016,18 +4013,16 @@
       *            一般名記載あり
                    MOVE    "般"                TO  WRK-MSG1
                END-IF
-      *H24.?
                IF     (TNSP-IPN-KISAIKBN   =   3    )
-      *            一般名記載あり
-                   MOVE    "処"                TO  WRK-MSG1
+      *            処方名称（一般名）記載
+                   MOVE    "般"                TO  WRK-MSG1
                END-IF
-      *H24.?
            END-IF
       *
            MOVE    TNS-NAME            TO  WRK-MEISYO
            EVALUATE    TNS-KOUHATUKBN
                WHEN    1
-      *            後発品
+      *            後発品（先発品のある後発品）
                    MOVE    SPACE                TO  WRK-MEISYO
                    STRING      "【"             DELIMITED   BY  SIZE
                                WRK-MSG1         DELIMITED   BY  SPACE
@@ -4056,6 +4051,16 @@
                                INTO             WRK-MEISYO
                        END-STRING
                    END-IF
+      *
+               WHEN    7
+      *            先発品のない後発品
+                   MOVE    SPACE                TO  WRK-MEISYO
+                   STRING      "【"             DELIMITED   BY  SIZE
+                               WRK-MSG1         DELIMITED   BY  SPACE
+                               "無】"           DELIMITED   BY  SIZE
+                               TNS-NAME         DELIMITED   BY  SIZE
+                               INTO             WRK-MEISYO
+                   END-STRING
            END-EVALUATE
       *!!!!
       *ver.4.5（削除かも〜）
@@ -5298,7 +5303,6 @@
                MOVE    WRK-MEISYO          TO  TNS-NAME
            END-IF
       *!!
-      *
       *!
       *    附加情報の上限回数設定
            IF     (TNS-SRYCD(1:1)      =   "1"
@@ -5310,11 +5314,9 @@
                IF     (SPA-SRYYMD          >=  "20120401"  )
                  AND  (SPA-KOUHATUKA       =   "1"         )
                  AND  (TNS-SRYCD(1:1)      =   "6"         )
-                   IF     (TNSP-IPN-KISAIKBN   =   2    )   OR
-                          (TNS-KOUHATUKBN      =   ZERO )
-      *H24.?
+                   IF     (TNSP-IPN-KISAIKBN   =   2    )
+                   OR     (TNS-KOUHATUKBN      =   ZERO )
                    OR     (TNSP-IPN-KISAIKBN   =   3    )
-      *H24.?
       *                処方名記載、先発品は変更なし
                        CONTINUE
                    ELSE

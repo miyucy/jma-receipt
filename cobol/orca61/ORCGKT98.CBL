@@ -2182,6 +2182,16 @@
                 END-STRING
            END-IF
       *H24.4
+      *    後発医薬品再編集
+           IF     (TNS-SRYCD(1:1)      =   "6") AND
+                  (TNS-KOUHATUKBN      =   7  )
+                MOVE    SPACE              TO  SPA-KT98-GMN-NAME (IDX)
+                STRING  "【先発無】"  DELIMITED   BY  SIZE
+                        TNS-NAME      DELIMITED   BY  SIZE
+                               INTO        SPA-KT98-GMN-NAME(IDX)
+                END-STRING
+           END-IF
+      *H24.4
       *    薬価基準コード
            IF      TNS-SRYCD (1:1)     =   "6"
                MOVE    TNS-YAKKAKJNCD      TO  SPA-KT98-GMN-INPUTCD(IDX)
@@ -2556,6 +2566,11 @@
                END-IF
       *
                MOVE    "F"             TO  KT98-SELECT  (IDX)
+      *H24.4
+               IF      SPA-KT98-GMN-NO-X(IDX)   =   "G"
+                   CONTINUE
+               ELSE
+      *
                PERFORM VARYING     IDS     FROM    1   BY  1
                        UNTIL       IDS     >   10
                    IF      SPA-KT98-NAI-SELNUM(IDS) NOT =   ZERO
@@ -2565,6 +2580,9 @@
                        END-IF
                    END-IF
                END-PERFORM
+      *H24.4
+               END-IF
+      *H24.4
            END-PERFORM
       *
            MOVE    SPA-KT98-GMN-MAX     TO  KT98-COUNT
@@ -3036,11 +3054,35 @@
                                            TO  WRK-NOZ
                    MOVE    WRK-NOZ         TO  SPA-KT98-GMN-SELNUM
                                                               (IDX-1)
+      *H24.4
+                   IF     (SPA-KT98-GMN-SYORI   =   "G"  )  AND
+                          (SPA-KT98-GMN-SYORI2  =   "1"  )
+                       MOVE    SNUM-OUTNUM         TO  WRK-SELNO
+                       PERFORM 4101101-SELNUM-NAIHEN-SEC
+                   END-IF
                END-IF
            END-IF
       *
            .
        410110-GMN-SPA-EXT.
+           EXIT.
+      *
+      *H24.4
+      *****************************************************************
+      *    番号選択　処理
+      *****************************************************************
+       4101101-SELNUM-NAIHEN-SEC                SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-KT98-GMN-MAX
+               IF      SPA-KT98-NAI-NO (IDX)   =   WRK-SELNO
+                   MOVE    IDX                 TO  SPA-KT98-NAI-SELNUM
+                                                     (IDX-1)
+                   MOVE    SPA-KT98-GMN-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+           .
+       4101101-SELNUM-NAIHEN-EXT.
            EXIT.
       *****************************************************************
       *    番号選択　処理
@@ -3104,10 +3146,20 @@
            MOVE    ZERO                TO  WRK-SELNO
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-KT98-GMN-MAX
-               IF      SPA-KT98-NAI-NO (IDX)    =   SPA-KT98-NAI-SELNUM
+      *24.4
+      *        一般名からの検索時
+               IF      SPA-KT98-GMN-NO-X(IDX)  =   "G"
+                   MOVE    SPA-KT98-NAI-SELNUM (IDX-1)
+                                               TO  WRK-SELNO
+                   MOVE    SPA-KT98-GMN-MAX    TO  IDX
+               ELSE
+      *
+               IF      SPA-KT98-NAI-NO (IDX)   =   SPA-KT98-NAI-SELNUM
                                                             (IDX-1)
                    MOVE    IDX                 TO  WRK-SELNO
-                   MOVE    SPA-KT98-GMN-MAX     TO  IDX
+                   MOVE    SPA-KT98-GMN-MAX    TO  IDX
+               END-IF
+      *24.4
                END-IF
            END-PERFORM
       *H24.4
