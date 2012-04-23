@@ -31,6 +31,9 @@
       *  04.04.02    NACL-藤原    09/03/31  主科設定時の主科未設定データ
       *                                     の有無チェック
       *
+      *  04.05.01    NACL-藤原    12/03/27  算定日情報に係る記録条件仕様
+      *                                     の変更に伴う月後れ分のチェック
+      *
       *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
       *****************************************************************
@@ -677,6 +680,14 @@
                GO  TO  410211-SELNUM-HENSYU-EXT
            END-IF
       *
+      *    平成２４年３月以前の月後れ分が改正パッチ後に再作成されているか
+           IF      SPA-NAI-T09-TRECEDEN (WRK-SELNO)
+                                       =   "9"
+               MOVE    "0020"              TO  SPA-ERRCD
+               MOVE    ZERO                TO  SPA-GMN-T09-SELNUM (IDX)
+               GO  TO  410211-SELNUM-HENSYU-EXT
+           END-IF
+      *
       *    返戻指示設定時に返戻データに設定されているか
            IF      SPA-NAI-T09-THENREI (WRK-SELNO)
                                        =   "1"
@@ -1163,43 +1174,49 @@
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
+           MOVE    SPACE                TO  TERR
+           MOVE    SPA-ERRCD            TO  TERR-ERRCODE
+      *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "選択番号入力エラー"        TO  SPA-ERRMSG
+                   MOVE    "選択番号入力エラー"        TO  TERR-ERRMSG
                WHEN    "0002"
-                   MOVE    "選択番号が重複しています"  TO  SPA-ERRMSG
+                   MOVE    "選択番号が重複しています"  TO  TERR-ERRMSG
                WHEN    "0003"
                    MOVE    "複数の患者は、同時に選択できません。"
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
                WHEN    "0004"
                    MOVE    "これ以上データの追加はできません"
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
                WHEN    "0005"
                    MOVE    "データが選択してありません"
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
                WHEN    "0010"
                    MOVE    "対象のレセ電データがありません"
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
                WHEN    "0011"
                    MOVE    "返戻データが設定されていません"
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
                WHEN    "0018"
-                   MOVE    "主科未設定データです"      TO  SPA-ERRMSG
+                   MOVE    "主科未設定データです"      TO  TERR-ERRMSG
+               WHEN    "0020"
+                   STRING  "改正パッチ提供以降に平成２４年３月以前の"
+                                                   DELIMITED  BY  SIZE
+                     "月遅れ分についてレセプト再処理が行われていません"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    TERR-ERRMSG
+                   END-STRING
                WHEN    "0027"
-                   MOVE    "選択した保険者と違います"  TO  SPA-ERRMSG
+                   MOVE    "選択した保険者と違います"  TO  TERR-ERRMSG
                WHEN    "0099"
                    MOVE    "選択したデータを全て追加できません"
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
-                                               TO  SPA-ERRMSG
-                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+                                               TO  TERR-ERRMSG
+                   MOVE    SLOCK-MSG           TO  TERR-ERRMSG(21:)
            END-EVALUATE
-      *
-           MOVE    SPACE                TO  TERR
-           MOVE    SPA-ERRCD            TO  TERR-ERRCODE
-           MOVE    SPA-ERRMSG           TO  TERR-ERRMSG
            MOVE    "B01"                TO  MCP-WIDGET
       *
            MOVE    "T09"                TO  SPA-MOTOPG

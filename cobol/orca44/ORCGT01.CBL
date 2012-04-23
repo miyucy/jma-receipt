@@ -146,10 +146,8 @@
       *                                     システム管理の設定に従い、災
       *                                     害該当レセプトのレセ電データ
       *                                     のチェックを追加
-      *  04.05.30    NACL-藤原    12/02/08  算定日情報に係る記録条件仕様
-      *                                     の変更
-      *                                     平成２４年３月以前の月遅れ分
-      *                                     のチェックを追加
+      *  04.05.11    NACL-藤原    12/03/27  算定日情報に係る記録条件仕様
+      *                                     の変更に伴う月後れ分のチェック
       *
       *  04.06.01    NACL-藤原    11/12/12  点検レセ０点公費印字対応
       *
@@ -212,6 +210,8 @@
            03  FLG-3004-PARAKBN    PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-RECEDEN-CHK     PIC 9(01).
+           03  FLG-RECEDEN-201203-CHK
+                                   PIC 9(01).
            03  FLG-SYUKA-CHK      PIC 9(01).
       *
       *    添字領域
@@ -4465,6 +4465,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    
       *    月遅れ分のレセ電データの存在チェック
            MOVE    ZERO                TO  FLG-RECEDEN-CHK
+                                           FLG-RECEDEN-201203-CHK
       *   
            MOVE    SPACE               TO  RECE10-REC
            INITIALIZE                      RECE10-REC
@@ -4642,6 +4643,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    PERFORM 900-RECEDEN-READ-SEC
                    IF      FLG-RECEDEN         =   1
                        MOVE    1                   TO  FLG-RECEDEN-CHK
+                   ELSE
+      *                平成２４年３月以前の月後れ分が改正パッチ前の作成か
+                       IF    ( SPA-NAI-SKYYM   >   201203     )
+                       AND   ( RECE10-SRYYM    <=  201203     )
+                       AND   ( RECE10-CREYMD   <   "20120423" )
+                           MOVE    1               TO
+                                               FLG-RECEDEN-201203-CHK
+                       END-IF
                    END-IF
                END-IF
       *
@@ -4652,6 +4661,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
            MOVE    "key69"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
+      *    平成２４年３月以前の月後れ分が改正パッチ後に再作成されているか
+           IF      FLG-RECEDEN-201203-CHK
+                                       =   1
+               MOVE    "0020"              TO  SPA-ERRCD
+           END-IF
            .
        4601-RECEDEN-CHK-EXT.
            EXIT.
@@ -5977,80 +5992,86 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
+           MOVE    SPACE                TO  TERR
+           MOVE    SPA-ERRCD            TO  TERR-ERRCODE
+      *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "診療年月が未入力です" 
-                                               TO  SPA-ERRMSG
+                                               TO  TERR-ERRMSG
                WHEN    "0002"
                    MOVE    "請求年月日が未入力です" 
-                                               TO  SPA-ERRMSG
+                                               TO  TERR-ERRMSG
                WHEN    "0003"
                    MOVE    "診療年月入力エラー" 
-                                               TO  SPA-ERRMSG
+                                               TO  TERR-ERRMSG
                WHEN    "0004"
                    MOVE    "請求年月日入力エラー" 
-                                               TO  SPA-ERRMSG
+                                               TO  TERR-ERRMSG
                WHEN    "0005"
                    MOVE    "保険者番号入力エラー" 
-                                               TO  SPA-ERRMSG
+                                               TO  TERR-ERRMSG
                WHEN    "0006"
                    MOVE    "処理対象の帳票が選択してありません" 
-                                               TO  SPA-ERRMSG
+                                               TO  TERR-ERRMSG
                WHEN    "0007"
                    MOVE
                       "総括表・社保の処理対象データが選択してありません"
-                                               TO  SPA-ERRMSG
+                                               TO  TERR-ERRMSG
                WHEN    "0008"
                    MOVE
                       "総括表・国保の処理対象データが選択してありません"
-                                               TO  SPA-ERRMSG
+                                               TO  TERR-ERRMSG
                WHEN    "0009"
                    MOVE
                   "総括表・広域の処理対象データが選択してありません"
-                                               TO  SPA-ERRMSG
+                                               TO  TERR-ERRMSG
                WHEN    "0011"
                    STRING  "主科未設定データがあります"
                                                DELIMITED  BY  SIZE
                            "（主科未設定リストで確認可能です）"
                                                DELIMITED  BY  SIZE
-                                               INTO  SPA-ERRMSG
+                                               INTO  TERR-ERRMSG
                    END-STRING
                WHEN    "0012"
-                   MOVE    "再印刷できない帳票です"    TO  SPA-ERRMSG
+                   MOVE    "再印刷できない帳票です"    TO  TERR-ERRMSG
+               WHEN    "0020"
+                   STRING  "改正パッチ提供以降に平成２４年３月以前の"
+                                                   DELIMITED  BY  SIZE
+                     "月遅れ分についてレセプト再処理が行われていません"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    TERR-ERRMSG
+                   END-STRING
       *
                WHEN    "0200"
                    MOVE
                        "平成２０年４月改正未対応のため処理できません"
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
       *
                WHEN    "1001"
                    MOVE    "パラメタＤＢの削除処理でエラーとなりました" 
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
                WHEN    "1002"
                    MOVE    "パラメタＤＢの更新処理でエラーとなりました" 
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
                WHEN    "1003"
                    MOVE    "パラメタＤＢが存在しません" 
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
                WHEN    "1004"
                    MOVE    "ジョブ管理ＤＢが削除できませんでした"
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
                WHEN    "1005"
                    MOVE
                    "システム管理ＤＢ（３００３）が削除できませんでした"
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
                WHEN    "1006"
                    MOVE    "システム管理の更新処理でエラーとなりました"
-                                                       TO  SPA-ERRMSG
+                                                       TO  TERR-ERRMSG
                WHEN    "7777"
-                   MOVE    WRK-RECEERR                 TO  SPA-ERRMSG
+                   MOVE    WRK-RECEERR                 TO  TERR-ERRMSG
                WHEN    "9999"
-                   MOVE    WRK-RECEERR                 TO  SPA-ERRMSG
+                   MOVE    WRK-RECEERR                 TO  TERR-ERRMSG
            END-EVALUATE
-      *
-           MOVE    SPACE                TO  TERR
-           MOVE    SPA-ERRCD            TO  TERR-ERRCODE
-           MOVE    SPA-ERRMSG           TO  TERR-ERRMSG
            MOVE    "B01"                TO  MCP-WIDGET
       *
            MOVE    "T01"                TO  SPA-MOTOPG
