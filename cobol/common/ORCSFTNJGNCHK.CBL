@@ -462,9 +462,9 @@
                 PERFORM      910-DB-CLOSE-SEC
              ELSE
                 EVALUATE  LNK-FTNJGNCHK-PREFNUM
-                  WHEN      12
-                      MOVE  "2"  TO WRK-CHKJGNFLG-G
-                      MOVE  "1"  TO WRK-CHKJGNFLG-N
+      **>         WHEN      12
+      **>             MOVE  "2"  TO WRK-CHKJGNFLG-G
+      **>             MOVE  "1"  TO WRK-CHKJGNFLG-N
                   WHEN      25
                     IF   LNK-FTNJGNCHK-SRYYM   >= "200508"
                       MOVE  "1"  TO WRK-CHKJGNFLG-N
@@ -547,8 +547,8 @@
            EVALUATE  SYS-2010-CHKJGNKBN-G
              WHEN      SPACE
                EVALUATE   LNK-FTNJGNCHK-PREFNUM
-                 WHEN      12
-                    MOVE  "2"  TO WRK-CHKJGNFLG-G
+      **>        WHEN      12
+      **>           MOVE  "2"  TO WRK-CHKJGNFLG-G
                  WHEN      13
                   IF   LNK-FTNJGNCHK-KOHNUM  = "588"
                   AND  LNK-FTNJGNCHK-SRYYM  >= "200910"
@@ -567,11 +567,13 @@
              WHEN      SPACE
                EVALUATE   LNK-FTNJGNCHK-PREFNUM
                  WHEN      11
-                  IF   LNK-FTNJGNCHK-KOHNUM  = "783"
-                  AND  LNK-FTNJGNCHK-SRYYM  >= "201004"
+                  IF ((LNK-FTNJGNCHK-KOHNUM  = "783"   ) AND
+                      (LNK-FTNJGNCHK-SRYYM  >= "201004"))
+                  OR ((LNK-FTNJGNCHK-KOHNUM  = "683"   ) AND
+                      (LNK-FTNJGNCHK-SRYYM  >= "200904"))
                     MOVE  "1"  TO WRK-CHKJGNFLG-N
                   END-IF
-                 WHEN      12
+      **>        WHEN      12
                  WHEN      25
                  WHEN      40
                     MOVE  "1"  TO WRK-CHKJGNFLG-N
@@ -849,11 +851,6 @@
                         MOVE  HKN-HON-NYUDJGNGAK TO  WRK-HKNMST-JGNGAK
                       END-IF
                    END-EVALUATE
-      *@@@         IF    (LNK-FTNJGNCHK-PREFNUM   =     11  )
-      *@@@         AND   (LNK-FTNJGNCHK-KOHNUM    =    "683")
-      *@@@         AND   (LNK-FTNJGNCHK-SRYYM    >= "200904")
-      *@@@              MOVE  HKN-HON-NYUDJGNGAK TO  WRK-HKNMST-JGNGAK
-      *@@@         END-IF
                    MOVE   HKN-HON-NYUKFTNRATE    TO  WRK-KOHFTN-RITU
                  WHEN     "1"
                  WHEN     "4"
