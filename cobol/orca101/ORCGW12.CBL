@@ -143,7 +143,8 @@
       *                                     表示を国保分とまとめるに変更
       *  04.07.03    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
-      *****************************************************************
+      *  04.07.04    NACL-藤原    12/03/25  公費記載順設定対応
+     *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
@@ -1556,6 +1557,7 @@
            COPY    "W111.INC".
            COPY    "W12.INC".
            COPY    "W121.INC".
+           COPY    "W122.INC".
            COPY    "W13.INC".
            COPY    "W14.INC".
            COPY    "W15.INC".
@@ -4223,6 +4225,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 210-BACK
+      *    公費記載順設定
+               WHEN    "CLICKED"       ALSO    "B34"
+                   PERFORM 490-KOUHI-PRTJYUN-SETTEI-SEC
       *    詳細設定
                WHEN    "CLICKED"       ALSO    "B36"
                    PERFORM 490-SYOUSAI-SETTEI-SEC
@@ -7687,7 +7692,26 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *       登録前処理
+      *       公費記載順設定処理
+      *****************************************************************
+       490-KOUHI-PRTJYUN-SETTEI-SEC        SECTION.
+      *
+           MOVE    "W12"               TO  SPA-MOTOPG
+           MOVE    "W122"              TO  SPA-SAKIPG
+      *
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       490-KOUHI-PRTJYUN-SETTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       詳細設定処理
       *****************************************************************
        490-SYOUSAI-SETTEI-SEC              SECTION.
       *

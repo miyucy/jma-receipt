@@ -1,0 +1,54 @@
+W122	{
+	fi6	{
+		SELNUM	{
+			value	number(2);
+		};
+		STYUKYMD	{
+			value	varchar(10);
+		};
+		EDYUKYMD	{
+			value	varchar(10);
+		};
+		GRP_NO	{
+			value	number(2);
+		};
+		KOHNUM	{
+			value	varchar(3);
+		};
+		SEIDONAME       {
+			value   varchar(50);
+		};
+		scr1	{
+			HEADLIST	{
+				count	int;
+				row	int;
+				rowattr int;
+				item	{
+					value0	varchar(2);
+					value1	varchar(10);
+					value2	varchar(10);
+				}	[10];
+				select	bool[10];
+			};
+		};
+		scr3	{
+			BODYLIST	{
+				count	int;
+				row	int;
+				rowattr int;
+				item	{
+					value0	varchar(2);
+					value1	varchar(3);
+					value2	varchar(50);
+				}	[50];
+				select	bool[50];
+			};
+		};
+		KOHNUM_UP  {
+			state   int;
+		};
+		KOHNUM_DOWN        {
+			state   int;
+		};
+	};
+};
