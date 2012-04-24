@@ -951,6 +951,8 @@
            03  FTN-KOH-YY6                             PIC 9(09).
            03  FTN-KOH-YY7                             PIC 9(09).
            03  FLG-KOH                                 PIC 9(01).
+           03  FLG-GENBUTU-HANTEI                      PIC 9(01).
+           03  FLG-GENBUTU-HANTEI2                     PIC 9(01).
            03  WRK-FTNKEI                              PIC 9(09).
            03  WRK-FTNKEI-OKIKAE                       PIC 9(09).
            03  WRK-FTNKEI-SAGAKU                       PIC S9(09).
@@ -1241,6 +1243,7 @@
            03  WRK-CHK-IDOU                            PIC 9(01).
            03  WRK-CHK-TAISYO                          PIC 9(01).
            03  WRK-CHK-TAISYO2                         PIC 9(01).
+           03  WRK-CHK-TAISYO3                         PIC 9(01).
            03  WRK-CHK-TOKU75-MAE                      PIC 9(01).
            03  WRK-CHK-CNT                             PIC 9(07).
            03  WRK-CHK-HKNID                           PIC 9(10).
@@ -13457,6 +13460,7 @@
                                            WRK-CHK-TAISYO2
                                            WRK-CHK-TOKU75-MAE
                                            FLG-TOKU75-XXX
+                                           WRK-CHK-TAISYO3
       *
            INITIALIZE                      RECE69-REC
            MOVE    RECE62-HOSPNUM      TO  RECE69-HOSPNUM
@@ -14298,6 +14302,10 @@
       *
            IF   SYU-SYUHKNNUM  NOT = SPACE
               ADD   SYU-KOH-FTN         TO   WRK-KOH-FTN
+              IF  (SYU-SKJ-FTNGAKU(1)  =     1   )
+              AND (RECE62-SRYYM       >= "201204")
+                 MOVE    1   TO   FLG-GENBUTU-HANTEI
+              END-IF
            END-IF
       *
            .
@@ -14619,6 +14627,10 @@
       *
            IF   SYU-SYUHKNNUM  NOT = SPACE
               ADD   SYU-KOH-FTN         TO   WRK-KOH-FTN
+              IF  (SYU-SKJ-FTNGAKU(1)  =     1   )
+              AND (RECE62-SRYYM       >= "201204")
+                 MOVE    1   TO   FLG-GENBUTU-HANTEI
+              END-IF
            END-IF
       *
            .
@@ -17902,6 +17914,12 @@
                 END-IF
                END-IF
                IF  (WRK-KEISAN-YYY    NOT =  ZERO)
+               AND (RECE62-KOUREI         =  "3" )
+                    MOVE    "2"      TO   RECE62-KOUREI
+               END-IF
+      *
+               IF  (FLG-GENBUTU-HANTEI    =   1  )
+               AND (FLG-GENBUTU-HANTEI2   =   1  )
                AND (RECE62-KOUREI         =  "3" )
                     MOVE    "2"      TO   RECE62-KOUREI
                END-IF
