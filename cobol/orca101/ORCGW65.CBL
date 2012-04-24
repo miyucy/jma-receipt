@@ -5644,15 +5644,11 @@
                 AND  ( SPA-GMN-KOHNUM  =   "588" )
                    MOVE    "1"         TO  SPA-GMN-CHKJGNKBNG
                    MOVE    "0"         TO  SPA-GMN-CHKJGNTAIKBNG
-               WHEN  ( SPA-PREFNUM     =   CONST-CHIBA )
-                   MOVE    "2"         TO  SPA-GMN-CHKJGNKBNG
-                   MOVE    "0"         TO  SPA-GMN-CHKJGNTAIKBNG
                END-EVALUATE
       *
                EVALUATE    TRUE
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
-                AND  ( SPA-GMN-KOHNUM  =   "783" )
-               WHEN  ( SPA-PREFNUM     =   CONST-CHIBA )
+                AND  ( SPA-GMN-KOHNUM  =   "683" OR "783" )
                WHEN  ( SPA-PREFNUM     =   CONST-SHIGA )
                WHEN  ( SPA-PREFNUM     =   CONST-FUKUOKA )
                WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
