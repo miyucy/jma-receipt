@@ -5821,6 +5821,14 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
                        MOVE "1" TO
                           RECE02-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
                    END-IF
+                 WHEN     "40"
+                   IF    (RECE02-TEISYUTUSAKI   =   1              )
+                   AND   (RECE02-SRYYM         >=  "201204"        )
+                   AND   (RECE02-KOHNUM(KOHFTN-IDX) =
+                          "251" OR "450" OR "260" OR "360" OR "460")
+                       MOVE "1" TO
+                          RECE02-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
+                   END-IF
                  WHEN     "42"
                    IF     RECE02-KOHNUM(KOHFTN-IDX) =  "186"
                        MOVE "1" TO
@@ -5881,6 +5889,14 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
                  WHEN     "34"
                    IF    (RECE02-TEISYUTUSAKI   =   1      )
                    AND   (RECE02-SRYYM         >=  "201004") 
+                       MOVE "1" TO
+                          RECE02-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
+                   END-IF
+                 WHEN     "40"
+                   IF    (RECE02-TEISYUTUSAKI   =   1              )
+                   AND   (RECE02-SRYYM         >=  "201204"        )
+                   AND   (RECE02-KOHNUM(KOHFTN-IDX) =
+                          "251" OR "450" OR "260" OR "360" OR "460")
                        MOVE "1" TO
                           RECE02-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
                    END-IF
