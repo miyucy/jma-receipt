@@ -516,7 +516,7 @@
                    PERFORM 210-BACK
       *    ¥¯¥ê¥¢
                WHEN    "CLICKED"       ALSO    "B02"
-                   PERFORM 490-CLEAR-GID-SEC
+                   PERFORM 490-CLEAR-SEC
       *    ÅÐÏ¿
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
@@ -1308,16 +1308,20 @@
       *****************************************************************
        490-CLEAR-SEC              SECTION.
       *
-           INITIALIZE                  SPA-GMN-HEAD-KOUMOKU
-                                       SPA-GMN-BODY-KOUMOKU
-                                       SPA-NAI-HEAD-KOUMOKU
-                                       SPA-NAI-BODY-KOUMOKU
-                                       SPA-GMN-BODYLIST
-      *
-           MOVE    1                   TO  FLG-HEADLIST-ROW
-                                           FLG-BODYLIST-ROW
-      *
-           MOVE    1               TO  SPA-GMN-CUR
+           IF    ( SPA-GMN-GRP     >   ZERO  )
+           OR    ( SPA-GMN-KOHNUM
+                               NOT =   SPACE )
+               INITIALIZE                  SPA-GMN-BODY-KOUMOKU
+                                           SPA-NAI-BODY-KOUMOKU
+               MOVE    1                   TO  FLG-BODYLIST-ROW
+               MOVE    4               TO  SPA-GMN-CUR
+           ELSE
+               INITIALIZE                  SPA-GMN-HEAD-KOUMOKU
+                                           SPA-NAI-HEAD-KOUMOKU
+                                           SPA-GMN-BODYLIST
+               MOVE    1                   TO  FLG-HEADLIST-ROW
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
            .
        490-CLEAR-EXT.
            EXIT.
