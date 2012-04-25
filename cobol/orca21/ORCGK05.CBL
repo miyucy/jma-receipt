@@ -2415,7 +2415,8 @@
       *            END-IF
       ***      END-IF
       *        開始日＞システム日付は開始日を診療日
-               IF      (SPA-K05-NAI-YUKOSTYMD  >   SPA-K05-MAE-SRYYMD)
+      ******** IF      (SPA-K05-NAI-YUKOSTYMD  >   SPA-K05-MAE-SRYYMD)
+               IF      (SPA-K05-NAI-YUKOSTYMD  NOT =   "00000000" )
                     IF      SPA-K05-NAI-YUKOSTYMD  NOT =   SPA-SRYYMD
                         MOVE    SPA-K05-NAI-YUKOSTYMD  TO  SPA-SRYYMD
                         PERFORM 410121-SAIHEN-SEC
@@ -2439,7 +2440,7 @@
       *D               MOVE    12              TO  SPA-GMN5-CUR
       *D           ELSE
                        IF      SPA-K05-NAI-YUKOEDYMD
-                                           NOT =   SPA-K05-MAE-SRYYMD
+                                           NOT =   SPA-SRYYMD
                            MOVE    SPA-K05-NAI-YUKOEDYMD
                                                TO  SPA-SRYYMD
                            PERFORM 410121-SAIHEN-SEC
@@ -2473,10 +2474,10 @@
            END-PERFORM
       *
            MOVE    1                      TO  FLG-SAIHEN
-           MOVE    ZERO                   TO  WRK-STR
+      **   MOVE    ZERO                   TO  WRK-STR
       *    画面ＳＰＡチェック処理
-           PERFORM 410112-KOUI-SPACHK-SEC
-           MOVE    ZERO                   TO  FLG-SAIHEN
+      *    PERFORM 410112-KOUI-SPACHK-SEC
+      ***  MOVE    ZERO                   TO  FLG-SAIHEN
            .
        410121-SAIHEN-EXT.
            EXIT.
