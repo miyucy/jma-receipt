@@ -1400,14 +1400,8 @@
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
-      *    公費が１件のときの警告
-           IF      SPA-GMN-BODYLIST-MAX
-                                       =   1
-               MOVE    "1009"              TO  SPA-WIDCD
-               GO  TO  4900-KANRENCHK-EXT
-           END-IF
-      *
-      *    重複チェック
+      *    別グループとの重複チェック
+      *    グループ内の公費が１件のときの警告チェック
            INITIALIZE              WRK-CHK-KOHNUM-AREA
                                    WRK-CHK1-KOHNUM-AREA
            MOVE    1               TO  IDX
@@ -1430,6 +1424,9 @@
                    MOVE    IDY             TO  IDXX
                                                IDYY
                END-PERFORM
+               IF      WRK-CHK-KOHNUM-MAX  =   1
+                   MOVE    "1009"              TO  SPA-WIDCD
+               END-IF
       *
                PERFORM     UNTIL   IDXX    >=  SPA-GMN-BODYLIST-MAX
                            OR      SPA-ERRCD
@@ -1448,6 +1445,9 @@
       *
                        MOVE    IDY             TO  IDXX
                    END-PERFORM
+                   IF      WRK-CHK1-KOHNUM-MAX =   1
+                       MOVE    "1009"              TO  SPA-WIDCD
+                   END-IF
       *
       *            重複チェック             
                    PERFORM VARYING IDY FROM    1   BY  1
@@ -1467,14 +1467,21 @@
       *            全て重複したとき
                    IF      WRK-CHK1-KOHNUM-OCC     =   SPACE
                        MOVE    "0043"              TO  SPA-ERRCD
-                       GO  TO  4900-KANRENCHK-EXT
+      *****            GO  TO  4900-KANRENCHK-EXT
                    END-IF
                END-PERFORM
       *
                COMPUTE IDX     =   IDYY    +   1
            END-PERFORM
-      *    
-           MOVE    "1001"              TO  SPA-WIDCD
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    4                   TO  SPA-GMN-CUR
+               MOVE    SPACE               TO  SPA-WIDCD
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
+           IF      SPA-WIDCD       =   SPACE     
+               MOVE    "1001"              TO  SPA-WIDCD
+           END-IF
       *
            .
        4900-KANRENCHK-EXT.
@@ -1841,7 +1848,7 @@
                                                 TO  WID1-ID1MSG
                    MOVE    "B01"                TO  MCP-WIDGET
                WHEN    "1009"
-                   STRING   "公費の登録が一件ですが、"
+                   STRING   "グループ内の公費の登録が１件ですが、"
                                                 DELIMITED  BY  SIZE
                             "公費記載順設定情報を登録しますか"
                                                 DELIMITED  BY  SIZE
