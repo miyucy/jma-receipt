@@ -37,10 +37,10 @@
            03  SYS-2013-TBL.
       *¸øÈñÈÖ¹æ
                05  SYS-2013-KOHNUM-T   OCCURS  50.
-                   07  SYS-2013-GRP    PIC 9(02).
+      *****        07  SYS-2013-GRP    PIC 9(02).
                    07  SYS-2013-KOHNUM PIC X(03).
       *Í½È÷
-           03  SYS-2013-YOBI           PIC X(250).
+           03  SYS-2013-YOBI           PIC X(350).
       *Ã¼Ëö£É£Ä
            03  SYS-2013-TERMID         PIC X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

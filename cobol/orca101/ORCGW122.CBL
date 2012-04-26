@@ -156,6 +156,9 @@
                                    PIC S9(09).
       *
            03  WRK-GRP             PIC 9(02).
+           03  WRK-GRP-9           PIC 9(02).
+           03  WRK-GRP-X           REDEFINES   WRK-GRP-9
+                                   PIC X(02).
       *
       *    公費編集用ワーク
            03  WRK-GMN-BODYLIST-AREA.
@@ -447,17 +450,16 @@
            INITIALIZE                  SYS-2013-REC
            MOVE    SPA-HOSPNUM     TO  SYS-2013-HOSPNUM
            MOVE    "2013"          TO  SYS-2013-KANRICD
-           MOVE    "*"             TO  SYS-2013-KBNCD
            MOVE    SYS-2013-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key8"          TO  MCP-PATHNAME
+           MOVE    "key12"         TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
                                            SPA-AREA
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key8"          TO  MCP-PATHNAME
+               MOVE    "key12"         TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-N-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
@@ -489,12 +491,12 @@
                                        SPA-GMN-HEADLIST-TEDYUKYMD (IDX)
       *
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key8"          TO  MCP-PATHNAME
+               MOVE    "key12"         TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-N-SEC
            END-PERFORM
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key8"          TO  MCP-PATHNAME
+           MOVE    "key12"         TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            MOVE    IDX             TO  SPA-GMN-HEADLIST-MAX
@@ -612,30 +614,45 @@
            INITIALIZE                  SYS-2013-REC
            MOVE    SPA-HOSPNUM     TO  SYS-2013-HOSPNUM
            MOVE    "2013"          TO  SYS-2013-KANRICD
-           MOVE    "*"             TO  SYS-2013-KBNCD
            MOVE    SPA-NAI-STYUKYMD
                                    TO  SYS-2013-STYUKYMD
            MOVE    SPA-NAI-EDYUKYMD
                                    TO  SYS-2013-EDYUKYMD
            MOVE    SYS-2013-REC    TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
-           MOVE    "key10"         TO  WRK-MCP-PATHNAME
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI     =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-2013-REC
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-N-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
       *
-               PERFORM VARYING IDZ     FROM    1   BY  1
-                       UNTIL   IDZ     >       WRK-CONS-BODYLIST-MAX
-                       OR      SYS-2013-KOHNUM (IDZ)
-                                       =       SPACE
-                   MOVE    SYS-2013-GRP    (IDZ)
-                                       TO  SPA-GMN-BODYLIST-TGRP   (IDZ)
-                   MOVE    SYS-2013-KOHNUM (IDZ)
+           MOVE    ZERO            TO  IDZ
+           PERFORM     UNTIL   FLG-SYSKANRI
+                                       =   1
+                       OR      IDZ     >=  WRK-CONS-BODYLIST-MAX
+               MOVE    MCPDATA-REC     TO  SYS-2013-REC
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   SYS-2013-KOHNUM (IDX)
+                                           =       SPACE
+                       OR      IDZ         >=  WRK-CONS-BODYLIST-MAX
+                   ADD     1               TO  IDZ
+                   MOVE    SYS-2013-KBNCD (1:2)
+                                           TO  WRK-GRP-X
+                   MOVE    WRK-GRP-9       TO  SPA-GMN-BODYLIST-TGRP
+                                                                   (IDZ)
+                   MOVE    SYS-2013-KOHNUM (IDX)
                                            TO  
                                            SPA-GMN-BODYLIST-TKOHNUM(IDZ)
                    INITIALIZE                  HKNNUM-REC
                    MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
-                   MOVE    SYS-2013-KOHNUM (IDZ)
+                   MOVE    SYS-2013-KOHNUM (IDX)
                                            TO  HKN-HKNNUM
                    MOVE    "00"            TO  HKN-PAYKBN
                    MOVE    HKNNUM-REC      TO  MCPDATA-REC
@@ -644,10 +661,17 @@
                                            TO
                                            SPA-GMN-BODYLIST-TSEIDONAME
                                                                    (IDZ)
-      *
-                   MOVE    IDZ             TO  SPA-GMN-BODYLIST-MAX
                END-PERFORM
-           END-IF
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-N-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           MOVE    IDZ             TO  SPA-GMN-BODYLIST-MAX
       *
            MOVE    SPA-GMN-SELNUM1 TO  W122-HEADLIST-ROW
            MOVE    ZERO            TO  FLG-HEADLIST-ROW
@@ -1256,6 +1280,8 @@
       *****************************************************************
        490-KOHNUM-DELETE-SEC          SECTION.
       *
+           MOVE    4               TO  SPA-GMN-CUR
+      *
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD   NOT =   SPACE
@@ -1497,98 +1523,79 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
+      *    元のデータを削除
            IF      SPA-GMN-SELNUM1 >   ZERO
                MOVE    SPACE           TO  SYS-2013-REC
                INITIALIZE                  SYS-2013-REC
                MOVE    SPA-HOSPNUM     TO  SYS-2013-HOSPNUM
                MOVE    "2013"          TO  SYS-2013-KANRICD
-               MOVE    "*"             TO  SYS-2013-KBNCD
                MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
                                        TO  SYS-2013-STYUKYMD
                MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
                                        TO  SYS-2013-EDYUKYMD
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "del11"         TO  MCP-PATHNAME
+               MOVE    "DBDELETE"      TO  MCP-FUNC
                MOVE    SYS-2013-REC    TO  MCPDATA-REC
-               MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
-               MOVE    "key10"         TO  WRK-MCP-PATHNAME
-               PERFORM 900-SYSKANRI-INV-SEC
-               IF      FLG-SYSKANRI    =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-2013-REC
-               ELSE
-                   MOVE    "0101"          TO  SPA-ERRCD
+               CALL    "ORCDBMAIN"     USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+               IF      MCP-RC      NOT =   ZERO
+                   MOVE    "1003"          TO  SPA-ERRCD
                    GO  TO  490-KOUSHIN-EXT
                END-IF
-           ELSE
-               MOVE    SPACE           TO  SYS-2013-REC
-               INITIALIZE                  SYS-2013-REC
-               MOVE    SPA-HOSPNUM     TO  SYS-2013-HOSPNUM
-               MOVE    "2013"          TO  SYS-2013-KANRICD
-               MOVE    "*"             TO  SYS-2013-KBNCD
            END-IF
-      *
+      * 
            IF      SPA-GMN-BODYLIST-MAX
-                                   =   ZERO
-               IF      SPA-GMN-SELNUM1     =   ZERO
-                   CONTINUE
-               ELSE
-      *            対象の公費がないときは削除する
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   MOVE    SYS-2013-REC        TO  MCPDATA-REC
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO
-                       MOVE    "1003"              TO  SPA-ERRCD
-                   END-IF
-               END-IF
-           ELSE
-               PERFORM VARYING IDXX    FROM    1   BY  1
-                       UNTIL   IDXX    >       SPA-GMN-BODYLIST-MAX
+                                   >   ZERO
+               MOVE    ZERO            TO  WRK-GRP
+               MOVE    1               TO  IDXX
+               PERFORM UNTIL   IDXX    >   SPA-GMN-BODYLIST-MAX
                    MOVE    SPA-GMN-BODYLIST-TGRP (IDXX)
-                                           TO  SYS-2013-GRP    (IDXX)
-                   MOVE    SPA-GMN-BODYLIST-TKOHNUM (IDXX)
-                                           TO  SYS-2013-KOHNUM (IDXX)
-               END-PERFORM
+                                           TO  WRK-GRP
+                   MOVE    ZERO            TO  IDYY
+      * 
+                   MOVE    SPACE           TO  SYS-2013-REC
+                   INITIALIZE                  SYS-2013-REC
+                   MOVE    SPA-HOSPNUM     TO  SYS-2013-HOSPNUM
+                   MOVE    "2013"          TO  SYS-2013-KANRICD
+                   MOVE    SPA-GMN-BODYLIST-TGRP (IDXX)
+                                           TO  WRK-GRP-9
+                   MOVE    WRK-GRP-X       TO  SYS-2013-KBNCD
+                   MOVE    SPA-NAI-STYUKYMD
+                                           TO  SYS-2013-STYUKYMD
+                   MOVE    SPA-NAI-EDYUKYMD
+                                           TO  SYS-2013-EDYUKYMD
+                   MOVE    ZERO            TO  IDZZ
+      *            グループ別公費設定
+                   PERFORM UNTIL   IDXX    >   SPA-GMN-BODYLIST-MAX
+                           OR      SPA-GMN-BODYLIST-TGRP (IDXX)
+                                       NOT =   WRK-GRP
+                       ADD     1               TO  IDZZ
+                       MOVE    SPA-GMN-BODYLIST-TKOHNUM (IDXX)
+                                               TO  SYS-2013-KOHNUM(IDZZ)
       *
-               MOVE    SPA-TERMID          TO  SYS-2013-TERMID
-               MOVE    SPA-OPID            TO  SYS-2013-OPID
-               MOVE    SPA-NAI-STYUKYMD    TO  SYS-2013-STYUKYMD
-               MOVE    SPA-NAI-EDYUKYMD    TO  SYS-2013-EDYUKYMD
+                       ADD     1               TO  IDXX
+                   END-PERFORM
       *
-               IF      SPA-GMN-SELNUM1     =   ZERO
-                   MOVE    SMCNDATE-YMD        TO  SYS-2013-CREYMD
-                                                   SYS-2013-UPYMD
-                   MOVE    SMCNDATE-HMS        TO  SYS-2013-UPHMS
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   MOVE    "DBINSERT"          TO  MCP-FUNC
-               ELSE 
-                   MOVE    SMCNDATE-YMD        TO  SYS-2013-UPYMD
-                   MOVE    SMCNDATE-HMS        TO  SYS-2013-UPHMS
-                   MOVE    SYS-2013-HOSPNUM    TO  SYS-2013-UPD-HOSPNUM
-                   MOVE    SYS-2013-KANRICD    TO  SYS-2013-UPD-KANRICD
-                   MOVE    SYS-2013-KBNCD      TO  SYS-2013-UPD-KBNCD
-                   MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
-                                               TO  SYS-2013-UPD-STYUKYMD
-                   MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
-                                               TO  SYS-2013-UPD-EDYUKYMD
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "upd1"              TO  MCP-PATHNAME
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-               END-IF
-               MOVE    SYS-2013-REC        TO  MCPDATA-REC
-               CALL    "ORCDBMAIN"         USING   MCPAREA
+      *            更新処理
+                   MOVE    SPA-TERMID      TO  SYS-2013-TERMID
+                   MOVE    SPA-OPID        TO  SYS-2013-OPID
+                   MOVE    SMCNDATE-YMD    TO  SYS-2013-CREYMD
+                                               SYS-2013-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  SYS-2013-UPHMS
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   MOVE    "DBINSERT"      TO  MCP-FUNC
+                   MOVE    SYS-2013-REC    TO  MCPDATA-REC
+                   CALL    "ORCDBMAIN"     USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
-               IF      MCP-RC          NOT =   ZERO
-                   IF      SPA-GMN-SELNUM1     =   ZERO
-                       MOVE    "1001"              TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "1002"              TO  SPA-ERRCD
+                   IF      MCP-RC      NOT =   ZERO
+                       MOVE    "1001"          TO  SPA-ERRCD
+                       GO  TO  490-KOUSHIN-EXT
                    END-IF
-                   GO  TO  490-KOUSHIN-EXT
-               END-IF
+               END-PERFORM
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -1848,9 +1855,9 @@
                                                 TO  WID1-ID1MSG
                    MOVE    "B01"                TO  MCP-WIDGET
                WHEN    "1009"
-                   STRING   "グループ内の公費の登録が１件ですが、"
+                   STRING   "公費の登録が１件のグループがあります。"
                                                 DELIMITED  BY  SIZE
-                            "公費記載順設定情報を登録しますか"
+                            "このまま公費記載順設定情報を登録しますか"
                                                 DELIMITED  BY  SIZE
                                                 INTO  WID1-ID1MSG
                    END-STRING
