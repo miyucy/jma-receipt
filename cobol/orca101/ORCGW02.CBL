@@ -195,7 +195,7 @@
                            11  SPA-GMN-DISCOUNT-HASU-KBNJMEIL
                                                       PIC X(30).
                        09  SPA-GMN-GENTAIKBNLST
-                                                      OCCURS  2.
+                                                      OCCURS  3.
                            11  SPA-GMN-GENTAIKBNL
                                                       PIC X(01).
                            11  SPA-GMN-GENTAIKBNL-FL  PIC X(01).
@@ -1144,6 +1144,9 @@
            MOVE    "2"         TO  SPA-GMN-GENTAIKBNL    (2)
            MOVE    "¼«ÈñÊ¬¤ò½ü¤¯" 
                                TO  SPA-GMN-GENTAIKBNMEIL (2)
+           MOVE    "3"         TO  SPA-GMN-GENTAIKBNL    (3)
+           MOVE    "¼«ÈñÊ¬¤Î¤ß"
+                               TO  SPA-GMN-GENTAIKBNMEIL (3)
       *
            MOVE    "1"         TO  SPA-GMN-TAX-HASU-KBNL    (1)
            MOVE    "£±±ßÌ¤Ëþ»Í¼Î¸ÞÆþ"  
@@ -1893,12 +1896,12 @@
                MOVE    "1"             TO  SYS-1001-GENTAIKBN
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       2
+                   UNTIL   IDY     >       3
                IF      SYS-1001-GENTAIKBN
                                    =   SPA-GMN-GENTAIKBNL (IDY)
                    MOVE    SPA-GMN-GENTAIKBNLST (IDY)
                                        TO  SPA-GMN-GENTAIKBN-G
-                   MOVE    2               TO  IDY
+                   MOVE    3               TO  IDY
                 END-IF
            END-PERFORM
       *
@@ -3439,7 +3442,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       2
+                   UNTIL   IDY     >       3
                IF      SPA-GMN-GENTAIKBN
                                    =   SPA-GMN-GENTAIKBNL
                                                               (IDY)
@@ -4896,11 +4899,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              END-IF
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       2
+                   UNTIL   IDX >       3
                MOVE    SPA-GMN-GENTAIKBNLST(IDX)
                                        TO  W02-GENTAIKBNLST (IDX)
            END-PERFORM    
-           MOVE    2                   TO  W02-GENTAIKBN-COUNT     
+           MOVE    3                   TO  W02-GENTAIKBN-COUNT     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       2
                MOVE    SPA-GMN-TAX-HASU-KBNLST(IDX)
