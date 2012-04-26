@@ -370,6 +370,7 @@
       *
       *  04.07.01    NACL-ÌçÏÆ    11/09/01  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *  04.07.02    NACL-ÌçÏÆ    11/10/17  Ë¡Äê³°¸½ÊªµëÉÕÂÐ±þ¡ÊË¡ÊÌ£±£°¡¢£²£±¡Ë
+      *  04.07.03    NACL-ÌçÏÆ    12/04/26  ¸ºÌÈ·×»»ÂÐ¾Ý¶èÊ¬¡Ê¼«ÈñÊ¬¤Î¤ß¡ËÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -611,6 +612,8 @@
            03  WK-HASU1001-KBN4J       PIC X(1).
       *    ÀÁµá³Û¶â³ÛÃ¼¿ô¶èÊ¬¡§¸ø³²¡¡¡Ê¸ºÌÈÌµ¤·¡¦¼«ÈñÊ¬¡Ë
            03  WK-HASU1001-KBN5J       PIC X(1).
+      *
+           03  WK-HASU-KBN             PIC X(1).
       *
       *    ¾ÃÈñÀÇÃ¼¿ô¶èÊ¬
            03  WK-TAX1001-KBN          PIC X(1).
@@ -2351,6 +2354,12 @@
                                               -    WK-GENTAI-SKYMONEY
            END-IF
       *
+           IF   WK-1001-GENTAIKBN  =  "3"
+              COMPUTE LNK-SYU-SKYMONEY        =    WK-GENTAI-SKYMONEY2
+                                              -    WK-GENTAI-SKYMONEY
+              MOVE    WK-GENTAI-SKYMONEY      TO   WK-GENTAI-SKYMONEY3
+           END-IF
+      *
            EVALUATE  SYS-1027-TEIRITU
               WHEN  "1"
                   MOVE    ZERO    TO   WK-RATE
@@ -2374,7 +2383,7 @@
                   END-IF
            END-EVALUATE
       *
-           IF    WK-1001-GENTAIKBN  =  "2"
+           IF    WK-1001-GENTAIKBN  =  "2" OR "3"
              IF  (WK-HASU1001-KBN    =  WK-HASU1001-KBN2)
              AND (WK-HASU1001-KBN2J  =  "0"             )
                COMPUTE  LNK-SYU-SKYMONEY =  LNK-SYU-SKYMONEY
@@ -2408,13 +2417,23 @@
                END-EVALUATE
            END-IF
       *
-           IF    WK-1001-GENTAIKBN  =  "2"
+           IF    WK-1001-GENTAIKBN  =  "2" OR "3"
              IF  (WK-HASU1001-KBN    =  WK-HASU1001-KBN2)
              AND (WK-HASU1001-KBN2J  =  "0"             )
               CONTINUE
              ELSE
               IF   WK-GENTAI-SKYMONEY3   NOT =  ZERO
-                  EVALUATE   WK-HASU1001-KBN2J
+                  EVALUATE   WK-1001-GENTAIKBN
+                     WHEN  "2"
+                        IF   WK-HASU1001-KBN2J = "0"
+                          MOVE  WK-HASU1001-KBN2   TO  WK-HASU-KBN
+                        ELSE
+                          MOVE  WK-HASU1001-KBN2J  TO  WK-HASU-KBN
+                        END-IF
+                     WHEN  "3"
+                        MOVE    WK-HASU1001-KBN2   TO  WK-HASU-KBN
+                  END-EVALUATE
+                  EVALUATE   WK-HASU-KBN
                      WHEN  "1"
                         COMPUTE    WK-GENTAI-SKYMONEY3  =
                                    WK-GENTAI-SKYMONEY3  + 5
