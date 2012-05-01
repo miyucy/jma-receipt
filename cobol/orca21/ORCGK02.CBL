@@ -1136,9 +1136,9 @@
            MOVE    SPA-AREA        TO  SPA-COMMON
            MOVE    SPA-K02         TO  SPA-FREE
       *TEST
-           DISPLAY "K02-PANDATABLE1-TROWATTR:"  K02-PANDATABLE1-TROWATTR
-               ",K02-PANDATABLE1-TCOLUMN:" K02-PANDATABLE1-TCOLUMN
-               ",K02-PANDATABLE1-TROW:" K02-PANDATABLE1-TROW
+      *    DISPLAY "K02-PANDATABLE1-TROWATTR:"  K02-PANDATABLE1-TROWATTR
+      *        ",K02-PANDATABLE1-TCOLUMN:" K02-PANDATABLE1-TCOLUMN
+      *        ",K02-PANDATABLE1-TROW:" K02-PANDATABLE1-TROW
       *TEST
       *
            .
@@ -3991,6 +3991,7 @@
       *    診療行為、計計算処理、編集
            MOVE    1                   TO  FLG-INIT
            MOVE    SPACE               TO  FLG-TOROKU
+      *
            PERFORM 510-TBLHEN-SEC
            MOVE    SPACE               TO  FLG-TOROKU
       *    訂正時点数変更チェック
@@ -5548,6 +5549,15 @@
                MOVE    "0190"              TO  SPA-KIDCD
                GO      TO      410121-HKNCOMBI-SAI-EXT
            END-IF
+      *
+      *!!!!
+      *H24.5
+           IF     (SPA-MAE-HKNCOMBINUM =   "0000" )
+             AND  (SPA-SRYYMD          >=  "20120401" )
+      *    前保険組合せがゼロの時、老人区分の変更なし
+               MOVE    SPA-NAI-ROUJIN      TO  SPA-MAE-ROUJIN
+           END-IF
+      *!!
       *
       *    保険区分が変更された時、再編集を行う
            IF     (SPA-HKNKBN          =   SPA-MAE-HKNKBN  )  AND

@@ -182,6 +182,15 @@
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HZN-//.
       *
+      *H24.5
+       01  CONS-AREA.
+      *    時間外対応加算２（地域医療貢献加算２）
+           03  TBL-CHISRYCD2       PIC X(09)   VALUE   "112015670".
+      *    時間外対応加算１
+           03  TBL-CHISRYCD1       PIC X(09)   VALUE   "112016070".
+      *    時間外対応加算３
+           03  TBL-CHISRYCD3       PIC X(09)   VALUE   "112016170".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -971,13 +980,10 @@
                    END-IF
                WHEN    "6"
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN(IDX)
-      *TEST
-      *TEST
+      *
       *H24.4改正
       *点数を戻す
                    MOVE    SPA-COM-TEN (IDX)   TO  SPA-COM-KISOTEN(IDX)
-      *TEST
-      *TEST
       *
       *
       *            薬剤の時、内服・外用を決定する
@@ -2450,6 +2456,23 @@
                        END-IF
                    END-IF
       *********END-IF
+      *H24.5
+               IF     (SPA-HKNKBN          =   1   )
+                 AND  (SPA-RSI-HKNKBN      =   "4" )
+      *        自賠責の地域医療貢献加算
+                   IF     (SPA-COM-INPUTCD(IDX)    =   TBL-CHISRYCD1
+                                                   OR  TBL-CHISRYCD2
+                                                   OR  TBL-CHISRYCD3 )
+                       IF     (IDX             >   1 )  AND
+                              (SPA-GMN-INPUTCD(IDX - 1)(1:4)
+                                               =   ".120")
+                           MOVE    1           TO  FLG-ARI
+      *                    手技料とする
+                           MOVE    1               TO  FLG-SYUGI
+                       END-IF
+                   END-IF
+               END-IF
+      *!!
       *        入院点滴で診療種別が入力されていること
                IF      SPA-NYUGAIKBN           =   "1"
                    IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "300" OR
