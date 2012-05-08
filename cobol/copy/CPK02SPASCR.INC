@@ -401,6 +401,15 @@
       *ver.4.6
       *                用法の数量埋め込み区分
                        09  SPA-COM-YCOMKBN             PIC  9(01).
+      *ver.4.7
+      *H24.4 改正分（ver.4.7.0　から使用）
+      *                一般名記載区分（１：一般名）
+                       09  SPA-COM-IPN-KISAIKBN        PIC  9(01).
+      *                最低薬価
+                       09  SPA-COM-GEN-PRICE           PIC  9(09)V99.
+      *                薬価基準コード
+                       09  SPA-COM-YAKKAKJNCD          PIC  X(12).
+      *
       *    点数マスタ付加情報より
       *                採血区分
                        09  SPA-COM-SAIKETUKBN          PIC 9(01).

@@ -1042,8 +1042,7 @@
            END-EVALUATE
       *    回数
            MOVE    WRK-KAISU           TO  WRK-COM-KAISU (IDX-Z)
-      *TEST
-      *TEST
+      *
       *H24.4改正
            IF      (WRK-MOJI           =   "6"  )  AND
                    (WRK-COM-SRYKBN (IDX-Z)     =   "21" )
@@ -1056,7 +1055,8 @@
                      (LNK-ORCSC-INGAIKBN       =   "1"   ))
       *            一般名記載有無
                    MOVE    ZERO                TO  FLG-CHK-P
-                   IF     (WRK-COM-KOKUJISKBKBN2(IDX-Z)  =   9  )
+      ************ IF     (WRK-COM-KOKUJISKBKBN2(IDX-Z)  =   9  )
+                   IF     (WRK-COM-IPN-KISAIKBN (IDX-Z)  =   1  )
                        MOVE    1                   TO  FLG-CHK-P
                        IF      (WRK-COM-INPUTCD (IDX-Z + 1)
                                                    =   "099209907"
@@ -1075,13 +1075,14 @@
                                                        OR  "2" )
       *            院外投薬の点数を最小金額とする（きざみ値を流用）
       *                後発品・後発のある先発のみ
-                       MOVE    WRK-COM-KZMTEN(IDX-Z)
+      ***************  MOVE    WRK-COM-KZMTEN(IDX-Z)
+      *                最低薬価
+                       MOVE    WRK-COM-GEN-PRICE(IDX-Z)
                                                TO  WRK-COM-KISOTEN
                                                              (IDX-Z)
                    END-IF
                END-IF
            END-IF
-      *TEST
       *
            .
        10021-KEISAN-EXT.
@@ -1980,7 +1981,8 @@
                    WHEN    "292"
       *                院外処方　一般名記載判定
                        MOVE    ZERO                TO  FLG-CHK-P
-                       IF     (WRK-COM-KOKUJISKBKBN2(IDX)  =   9  )
+      ***************  IF     (WRK-COM-KOKUJISKBKBN2(IDX)  =   9  )
+                       IF     (WRK-COM-IPN-KISAIKBN (IDX)  =   1  )
                            MOVE    1                   TO  FLG-CHK-P
                            IF      (WRK-COM-INPUTCD (IDX + 1)
                                                    =   "099209907"

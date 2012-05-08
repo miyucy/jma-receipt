@@ -646,6 +646,13 @@ W07	{
 				BGCOLORSJ8	{
 					value	varchar(20);
 				};
+				GENERIC_FLG_COMB	{
+					GENERIC_FLG	{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[05];
+				};
 			};
 			TAGNAME3    {
 			  	state   int;

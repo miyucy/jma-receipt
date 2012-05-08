@@ -3865,16 +3865,24 @@
       *            後発品・後発のある先発品の最低薬価
                    IF      TNSP-IPN-KISAIKBN   =   1
                                                OR  3
-                       MOVE    9               TO  SPA-COM-KOKUJISKBKBN2
+      *ver.4.7.0
+      ***********      MOVE    9               TO  SPA-COM-KOKUJISKBKBN2
+      **********                                               (IDX-T)
+                       MOVE    1               TO  SPA-COM-IPN-KISAIKBN
                                                                (IDX-T)
                    END-IF
       *            最低金額の編集（きざみ値を流用する）ver.4.7は追加）
       *            最低薬価編集
                    PERFORM 300001-GENERICPRICE-CHEK-SEC
-                   MOVE    WRK-CHKTEN      TO  SPA-COM-KZMTEN (IDX-T)
+      *ver.4.7.0
+      ************ MOVE    WRK-CHKTEN      TO  SPA-COM-KZMTEN (IDX-T)
+                   MOVE    WRK-CHKTEN      TO  SPA-COM-GEN-PRICE(IDX-T)
       *
                END-IF
            END-IF
+      *ver.4.7.0
+      *    薬価基準コード
+           MOVE    TNS-YAKKAKJNCD      TO  SPA-COM-YAKKAKJNCD (IDX-T)
       *!!
            .
        300-TENSU-HENSYU-EXT.
@@ -3894,7 +3902,7 @@
       *
            MOVE    SPACE               TO  GENERICPRICE-REC
            INITIALIZE                      GENERICPRICE-REC
-           MOVE    TNS-YAKKAKJNCD(1:9) TO  GENERICPRICE-YAKKAKJNCD
+           MOVE    TNS-YAKKAKJNCD      TO  GENERICPRICE-YAKKAKJNCD
            MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOSTYMD
            MOVE    SPA-SRYYMD          TO  GENERICPRICE-YUKOEDYMD
            MOVE    GENERICPRICE-REC    TO  MCPDATA-REC

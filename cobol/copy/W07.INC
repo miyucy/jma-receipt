@@ -501,6 +501,12 @@
                     06  W07-VALUE   PIC X(20).
                   05  W07-BGCOLORSJ8.
                     06  W07-VALUE   PIC X(20).
+                  05  W07-GENERIC-FLG-COMB.
+                    06  W07-GENERIC-FLG.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-GENERIC-FLG-COUNT   PIC S9(9)   BINARY.
+                    06  W07-GENERIC-FLG-ITEM
+                            PIC X(40)   OCCURS  5 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.
