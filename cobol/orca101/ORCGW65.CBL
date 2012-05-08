@@ -5602,17 +5602,7 @@
                 AND  ( SPA-GMN-KOHNUM  =   "186" )
                    MOVE    "1"         TO  SPA-GMN-HKNFTNKBNK
                    MOVE    "0"         TO  SPA-GMN-HKNFTNTAIKBNK
-               WHEN  ( SPA-PREFNUM     =   CONST-AKITA )
-               WHEN  ( SPA-PREFNUM     =   CONST-IBARAKI )
-               WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
-               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
-               WHEN  ( SPA-PREFNUM     =   CONST-OSAKA )
-               WHEN  ( SPA-PREFNUM     =   CONST-HIROSHIMA )
-               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
-                AND  ( SPA-GMN-KOHNUM  NOT =   "186" )
-               WHEN  ( SPA-PREFNUM     =   CONST-FUKUOKA )
-                AND  ( SPA-GMN-KOHNUM  =   "251" OR "450" OR "260"
-                                        OR "360" OR "460" )
+               WHEN    OTHER
                    MOVE    "1"         TO  SPA-GMN-HKNFTNKBNK
                    MOVE    "2"         TO  SPA-GMN-HKNFTNTAIKBNK
                END-EVALUATE
@@ -5623,17 +5613,7 @@
                 AND  ( SPA-GMN-KOHNUM  =   "186" )
                    MOVE    "1"         TO  SPA-GMN-HKNFTNKBNY
                    MOVE    "0"         TO  SPA-GMN-HKNFTNTAIKBNY
-               WHEN  ( SPA-PREFNUM     =   CONST-AKITA )
-               WHEN  ( SPA-PREFNUM     =   CONST-IBARAKI )
-               WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
-               WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
-               WHEN  ( SPA-PREFNUM     =   CONST-OSAKA )
-               WHEN  ( SPA-PREFNUM     =   CONST-HIROSHIMA )
-               WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
-                AND  ( SPA-GMN-KOHNUM  NOT =   "186" )
-               WHEN  ( SPA-PREFNUM     =   CONST-FUKUOKA )
-                AND  ( SPA-GMN-KOHNUM  =   "251" OR "450" OR "260"
-                                        OR "360" OR "460" )
+               WHEN    OTHER
                    MOVE    "1"         TO  SPA-GMN-HKNFTNKBNY
                    MOVE    "2"         TO  SPA-GMN-HKNFTNTAIKBNY
                END-EVALUATE
