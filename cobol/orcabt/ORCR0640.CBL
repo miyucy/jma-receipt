@@ -3737,35 +3737,27 @@
                                 RECE62-EKF-FTNKEIFLG(KOHFTN-IDX + 1)
                         END-IF
                     END-EVALUATE
-                    EVALUATE   WRK-PREFNUM
-                      WHEN     "01"
-                        IF  (RECE62-TEISYUTUSAKI   =   1         )
-                        AND (RECE62-KOHNUM(KOHFTN-IDX)
-                                                =  "141" OR "241")
-                          MOVE "1" TO
-                                RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
-                        END-IF
-                      WHEN     "08"
-                      WHEN     "13"
-                      WHEN     "15"
-                      WHEN     "27"
-                        IF   RECE62-TEISYUTUSAKI   =   1
-                          MOVE "1" TO
-                                RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
-                          MOVE "1" TO
-                                RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
-                        END-IF
-                      WHEN     "33"
-                          MOVE "1" TO
-                                RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
-                      WHEN     "42"
-                        IF   RECE62-KOHNUM(KOHFTN-IDX) =  "186"
-                          MOVE "1" TO
-                                RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
-                          MOVE "1" TO
-                                RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
-                        END-IF
-                    END-EVALUATE
+                    IF  (WRK-PREFNUM               =  "42" )
+                    AND (RECE62-KOHNUM(KOHFTN-IDX) =  "186")
+                        MOVE "1" TO
+                              RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
+                    ELSE
+                      IF   RECE62-TEISYUTUSAKI   =   1
+                        MOVE "1" TO
+                              RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
+                      END-IF
+                    END-IF
+                    IF ((WRK-PREFNUM               =  "42" ) AND
+                        (RECE62-KOHNUM(KOHFTN-IDX) =  "186"))
+                    OR ( WRK-PREFNUM               =  "33"  )
+                        MOVE "1" TO
+                              RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
+                    ELSE
+                      IF   RECE62-TEISYUTUSAKI   =   1
+                        MOVE "1" TO
+                              RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
+                      END-IF
+                    END-IF
                  END-IF
       *
               END-IF
@@ -4134,47 +4126,14 @@
       *
            EVALUATE  SYS-2010-HKNFTNKBN-K
              WHEN      SPACE
-               EVALUATE   WRK-PREFNUM
-                 WHEN     "05"
-                   IF    (RECE62-TEISYUTUSAKI   =   1      )
-                   AND   (RECE62-SRYYM         >=  "201008") 
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
-                   END-IF
-                 WHEN     "08"
-                 WHEN     "13"
-                 WHEN     "15"
-                 WHEN     "27"
-                   IF     RECE62-TEISYUTUSAKI   =   1
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
-                   END-IF
-                 WHEN     "34"
-                   IF    (RECE62-TEISYUTUSAKI   =   1      )
-                   AND   (RECE62-SRYYM         >=  "201004") 
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
-                   END-IF
-                 WHEN     "40"
-                   IF    (RECE62-TEISYUTUSAKI   =   1              )
-                   AND   (RECE62-SRYYM         >=  "201204"        )
-                   AND   (RECE62-KOHNUM(KOHFTN-IDX) =
-                          "251" OR "450" OR "260" OR "360" OR "460")
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
-                   END-IF
-                 WHEN     "42"
-                   IF     RECE62-KOHNUM(KOHFTN-IDX) =  "186"
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
-                   ELSE
-                     IF  (RECE62-TEISYUTUSAKI   =   1      )
-                     AND (RECE62-SRYYM         >=  "201010") 
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
-                     END-IF
-                   END-IF
-               END-EVALUATE
+               IF  (WRK-PREFNUM               =  "42" )
+               AND (RECE62-KOHNUM(KOHFTN-IDX) =  "186")
+                    MOVE  "1"  TO RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
+               ELSE
+                 IF   RECE62-TEISYUTUSAKI   =   1
+                    MOVE  "1"  TO RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
+                 END-IF
+               END-IF
              WHEN      "0"
                     MOVE SPACE TO RECE62-EKF-HKNFTNFLG-K(KOHFTN-IDX + 1)
              WHEN      "1"
@@ -4202,50 +4161,15 @@
       *
            EVALUATE  SYS-2010-HKNFTNKBN-Y
              WHEN      SPACE
-               EVALUATE   WRK-PREFNUM
-                 WHEN     "05"
-                   IF    (RECE62-TEISYUTUSAKI   =   1      )
-                   AND   (RECE62-SRYYM         >=  "201008") 
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
-                   END-IF
-                 WHEN     "08"
-                 WHEN     "13"
-                 WHEN     "15"
-                 WHEN     "27"
-                   IF     RECE62-TEISYUTUSAKI   =   1
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
-                   END-IF
-                 WHEN     "33"
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
-                 WHEN     "34"
-                   IF    (RECE62-TEISYUTUSAKI   =   1      )
-                   AND   (RECE62-SRYYM         >=  "201004") 
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
-                   END-IF
-                 WHEN     "40"
-                   IF    (RECE62-TEISYUTUSAKI   =   1              )
-                   AND   (RECE62-SRYYM         >=  "201204"        )
-                   AND   (RECE62-KOHNUM(KOHFTN-IDX) =
-                          "251" OR "450" OR "260" OR "360" OR "460")
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
-                   END-IF
-                 WHEN     "42"
-                   IF     RECE62-KOHNUM(KOHFTN-IDX) =  "186"
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
-                   ELSE
-                     IF  (RECE62-TEISYUTUSAKI   =   1      )
-                     AND (RECE62-SRYYM         >=  "201010") 
-                       MOVE "1" TO
-                          RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
-                     END-IF
-                   END-IF
-               END-EVALUATE
+               IF ((WRK-PREFNUM               =  "42" ) AND
+                   (RECE62-KOHNUM(KOHFTN-IDX) =  "186"))
+               OR ( WRK-PREFNUM               =  "33"  )
+                    MOVE  "1"  TO RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
+               ELSE
+                 IF   RECE62-TEISYUTUSAKI   =   1
+                    MOVE  "1"  TO RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
+                 END-IF
+               END-IF
              WHEN      "0"
                     MOVE SPACE TO RECE62-EKF-HKNFTNFLG-Y(KOHFTN-IDX + 1)
              WHEN      "1"
