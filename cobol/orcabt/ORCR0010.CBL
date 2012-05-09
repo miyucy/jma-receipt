@@ -608,10 +608,6 @@
            COPY    "CPRCF001.INC"  REPLACING  //RECE01//
                                    BY         //WRK-CONTKBN//.
       *
-      *    给锐淡很界肋年攫鼠
-           COPY    "CPSK2013.INC"  REPLACING  //SYS-2013//
-                                   BY         //WRK-SYS-2013//.
-      *
            COPY    "MCPAREA".
       *
       *****************************************************************

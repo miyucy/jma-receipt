@@ -177,6 +177,7 @@
                    07  WRK-CHK-KOHNUM          PIC X(03)
                                                    OCCURS  50.
                05  WRK-CHK-KOHNUM-MAX          PIC 9(02).
+               05  WRK-CHK-KOHNUM-MAX9         PIC 9(02).
            03  WRK-CHK1-KOHNUM-AREA.
                05  WRK-CHK1-KOHNUM-OCC.
                    07  WRK-CHK1-KOHNUM         PIC X(03)
@@ -1245,8 +1246,11 @@
                                            TO
                                SPA-GMN-BODYLIST-TSEIDONAME
                                                (SPA-GMN-BODYLIST-MAX)
+       *
                    INITIALIZE                  SPA-GMN-BODY-KOUMOKU
                                                SPA-NAI-BODY-KOUMOKU
+                   MOVE    SPA-GMN-BODYLIST-MAX
+                                           TO  W122-BODYLIST-ROW
        *
                    ADD     1               TO  SPA-GMN-BODYLIST-MAX
                    MOVE    WRK-GMN-BODYLIST-TBL (IDX)
@@ -1270,7 +1274,14 @@
                MOVE    SPA-GMN-SEIDONAME
                                        TO  SPA-GMN-BODYLIST-TSEIDONAME
                                                (SPA-GMN-BODYLIST-MAX)
+       *
+               INITIALIZE                  SPA-GMN-BODY-KOUMOKU
+                                           SPA-NAI-BODY-KOUMOKU
+               MOVE    SPA-GMN-BODYLIST-MAX
+                                       TO  W122-BODYLIST-ROW
            END-IF
+      *
+           MOVE    ZERO            TO  FLG-BODYLIST-ROW
            .
        4901-KOHNUM-HENSYU-EXT.
            EXIT.
@@ -1427,7 +1438,6 @@
            END-IF
       *
       *    別グループとの重複チェック
-      *    グループ内の公費が１件のときの警告チェック
            INITIALIZE              WRK-CHK-KOHNUM-AREA
                                    WRK-CHK1-KOHNUM-AREA
            MOVE    1               TO  IDX
@@ -1443,15 +1453,24 @@
                        OR      SPA-GMN-BODYLIST-TGRP (IDX)
                                    NOT =   SPA-GMN-BODYLIST-TGRP (IDY)
                    ADD     1               TO  WRK-CHK-KOHNUM-MAX
-                   MOVE    SPA-GMN-BODYLIST-TKOHNUM(IDY)
+                   IF      SPA-GMN-BODYLIST-TKOHNUM (IDY) (1:1)
+                                           =   "0" OR  "9"
+                       ADD     1               TO  WRK-CHK-KOHNUM-MAX9
+                   END-IF    
+                   MOVE    SPA-GMN-BODYLIST-TKOHNUM (IDY)
                                            TO  WRK-CHK-KOHNUM
                                                   (WRK-CHK-KOHNUM-MAX)
       *
                    MOVE    IDY             TO  IDXX
                                                IDYY
                END-PERFORM
+      *        グループ内の公費が１件のときの警告チェック
                IF      WRK-CHK-KOHNUM-MAX  =   1
                    MOVE    "1009"              TO  SPA-WIDCD
+               END-IF
+      *        グループ内の公費が全て全国公費のとき
+               IF      WRK-CHK-KOHNUM-MAX  =   WRK-CHK-KOHNUM-MAX9
+                   MOVE    "0045"              TO  SPA-ERRCD
                END-IF
       *
                PERFORM     UNTIL   IDXX    >=  SPA-GMN-BODYLIST-MAX
@@ -1648,12 +1667,12 @@
                MOVE    W122-HEADLIST-ROW
                                        TO  WRK-W122-HEADLIST-ROW
            END-IF
-          IF      FLG-BODYLIST-ROW =   1
-               MOVE    ZERO            TO  WRK-W122-BODYLIST-ROW
-           ELSE
+      **    IF      FLG-BODYLIST-ROW =   1
+      **         MOVE    ZERO            TO  WRK-W122-BODYLIST-ROW
+      **     ELSE
                MOVE    W122-BODYLIST-ROW
                                        TO  WRK-W122-BODYLIST-ROW
-           END-IF
+      **     END-IF
       *
            INITIALIZE                  W122
       *
@@ -1796,6 +1815,9 @@
                                            TO  WERR-ERRMSG
                WHEN    "0044"
                    MOVE    "対象の公費が選択されていません"
+                                           TO  WERR-ERRMSG
+               WHEN    "0045"
+                   MOVE    "全国公費のみ設定されたグループがあります"
                                            TO  WERR-ERRMSG
                WHEN    "0101"
                    MOVE

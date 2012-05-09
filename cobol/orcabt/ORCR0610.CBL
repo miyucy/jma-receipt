@@ -175,6 +175,7 @@
       *  04.06.03    NACL-藤原    11/12/12  点検レセ０点公費印字対応
       *
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
+      *  04.07.02    NACL-藤原    12/03/25  公費記載順設定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -242,6 +243,7 @@
            03  FLG-END                                 PIC 9(01).
            03  FLG-SRYACCT                             PIC 9(01).
            03  FLG-SYSKANRI                            PIC 9(01).
+           03  FLG-SYSKANRI-2013                       PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01). 
            03  FLG-HKNNUM                              PIC 9(01). 
            03  FLG-RECE61                              PIC 9(01).
@@ -279,8 +281,13 @@
            03  IDY                                     PIC 9(03). 
            03  IDZ                                     PIC 9(03).
            03  IDXX                                    PIC 9(03).
+           03  IDYY                                    PIC 9(03).
+           03  IDZZ                                    PIC 9(03).
+           03  IDY1                                    PIC 9(03).
+           03  IDY2                                    PIC 9(03).
            03  TBL-MAX                                 PIC 9(03).
            03  SYSKAN-IDX                              PIC 9(03).
+           03  WRK-SYS2013-IDX                         PIC 9(03).
       *
        01  KEY-AREA                            VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -296,6 +303,17 @@
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC                         OCCURS  100.
                05  TBL-SYS1001                         PIC X(610).
+      *
+      *    公費記載順設定情報退避用領域
+       01  TBL-SYS2013-T.
+           03  TBL-SYS2013-OCC         OCCURS  100.
+               05  TBL-SYS2013-STYUKYMD
+                                       PIC X(06).
+               05  TBL-SYS2013-EDYUKYMD
+                                       PIC X(06).
+               05  TBL-SYS2013-TBL     OCCURS  50.
+                   07  TBL-SYS2013     PIC X(610).
+           03  TBL-SYS2013-MAX         PIC 9(03).
       *
       *    パラメタ領域
        01  WRK-PARA.
@@ -586,6 +604,9 @@
            COPY    "CPSK2002.INC".
       *     
            COPY    "CPSK2005.INC".
+      *
+      *    公費記載順設定情報
+           COPY    "CPSK2013.INC".
       *     
       *    県内扱い保険者情報
            COPY    "CPSK1033.INC".
@@ -880,20 +901,95 @@
                IF      SYS-2005-RJNGNBKKBN =   SPACE
                    MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
                END-IF
+      *     
+      *        公費記載順設定情報
+               MOVE     ZERO               TO  TBL-SYS2013-MAX
+               MOVE     SPACE              TO  TBL-SYS2013-T
+               INITIALIZE                      TBL-SYS2013-T
       *
-             IF        WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        パラメタＤＢ読み込み
-               INITIALIZE                  BTPARA-REC
-               MOVE    WRK-PARA-SHELLID
-                                       TO  BTPARA-SHELLID
-               MOVE    WRK-PARA-JOBID  TO  BTPARA-JOBID
-               PERFORM 900-BTPARA-READ-SEC
-               IF      FLG-BTPARA      NOT =   ZERO
-                   MOVE    "パラメタ情報が取得できませんでした。"
-                                           TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
+               INITIALIZE                      SYS-2013-REC
+               MOVE    SPA-HOSPNUM         TO  SYS-2013-HOSPNUM
+               MOVE    "2013"              TO  SYS-2013-KANRICD
+               MOVE    SYS-2013-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key12"             TO  MCP-PATHNAME
+               PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key12"             TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+                   MOVE    FLG-SYSKANRI        TO  FLG-SYSKANRI-2013 
+                   PERFORM UNTIL   FLG-SYSKANRI-2013   =   1
+                           OR      TBL-SYS2013-MAX     >=  100
+                       MOVE    MCPDATA-REC         TO  SYS-2013-REC
+                       MOVE    ZERO                TO  IDX
+      *
+                       MOVE    SPA-HOSPNUM         TO  SYS-2013-HOSPNUM
+                       MOVE    SYS-2013-REC        TO  MCPDATA-REC
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "key7"              TO  MCP-PATHNAME
+                       PERFORM 900-DBSELECT-SEC
+                       IF      MCP-RC              =   ZERO
+                           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                           MOVE    "key7"              TO  MCP-PATHNAME
+                           PERFORM 900-SYSKANRI-READ-SEC
+                           PERFORM UNTIL ( FLG-SYSKANRI    =   1  )
+                                   OR    ( IDX             >=  50 )
+                               MOVE    MCPDATA-REC     TO  SYS-2013-REC
+      *                        グループ内の公費が２つ以上のみ対象とする
+                               IF      SYS-2013-KOHNUM (2) =   SPACE
+                                   CONTINUE
+                               ELSE
+                                   IF      IDX             =   ZERO
+                                       ADD     1       TO
+                                                       TBL-SYS2013-MAX
+                                       MOVE    SYS-2013-STYUKYMD
+                                                       TO
+                                                   TBL-SYS2013-STYUKYMD
+                                                       (TBL-SYS2013-MAX)
+                                       MOVE    SYS-2013-EDYUKYMD
+                                                       TO
+                                                   TBL-SYS2013-EDYUKYMD
+                                                       (TBL-SYS2013-MAX)
+                                   END-IF
+                                   ADD     1           TO  IDX
+                                   MOVE    SYS-2013-REC
+                                                       TO  TBL-SYS2013
+                                                   (TBL-SYS2013-MAX IDX)
+                               END-IF
+      *
+                               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                               MOVE    "key7"          TO  MCP-PATHNAME
+                               PERFORM 900-SYSKANRI-READ-SEC
+                           END-PERFORM
+                       END-IF     
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "key7"              TO  MCP-PATHNAME
+                       PERFORM 900-CLOSE-SEC
+      *
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "key12"             TO  MCP-PATHNAME
+                       PERFORM 900-SYSKANRI-READ-SEC
+                       MOVE    FLG-SYSKANRI        TO  FLG-SYSKANRI-2013 
+                   END-PERFORM
                END-IF
-             END-IF
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key12"             TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+      *
+               IF        WRK-PARA-SHELLID    NOT =   "RECEPTX"
+      *            パラメタＤＢ読み込み
+                   INITIALIZE                  BTPARA-REC
+                   MOVE    WRK-PARA-SHELLID
+                                           TO  BTPARA-SHELLID
+                   MOVE    WRK-PARA-JOBID  TO  BTPARA-JOBID
+                   PERFORM 900-BTPARA-READ-SEC
+                   IF      FLG-BTPARA      NOT =   ZERO
+                       MOVE    "パラメタ情報が取得できませんでした。"
+                                               TO  WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                   END-IF
+               END-IF
            END-IF
       *
            OPEN    OUTPUT              RECE61-FILE
@@ -2887,6 +2983,28 @@
            END-IF
       *
       *    地方公費の並び替え
+           MOVE  ZERO                  TO  WRK-SYS2013-IDX
+           IF      TBL-SYS2013-MAX     >   ZERO
+               MOVE    WRK-RECE61-SRYYM    TO  WRK-SYS-SRYYMD (1:6)
+               MOVE    "01"                TO  WRK-SYS-SRYYMD (7:2)
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX         >   TBL-SYS2013-MAX
+                       OR      WRK-SYS2013-IDX
+                                           >   0
+                   IF    ( TBL-SYS2013-STYUKYMD (IDX)
+                                               <=  WRK-SYS-SRYYMD    )
+                   AND   ( WRK-SYS-SRYYMD      <=  TBL-SYS2013-EDYUKYMD
+                                                               (IDX) )
+                       MOVE    IDX             TO    WRK-SYS2013-IDX
+                   END-IF
+               END-PERFORM
+           END-IF
+           IF     WRK-SYS2013-IDX      >   ZERO
+      *        公費記載順設定情報による並び替え処理
+               PERFORM 200121-KOHID-HENSYU-SYS2013-SEC
+               GO  TO  20012-KOHID-HENSYU-EXT
+           END-IF
+      *
            PERFORM VARYING IDX FROM    1    BY  1
                    UNTIL   IDX >       3
                COMPUTE IDX1    =   IDX     +   1
@@ -3188,6 +3306,152 @@
            END-PERFORM
            .
        200121-KOHID-TBL-HENSYU-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *        公費記載順設定情報による並び替え処理
+      *****************************************************************
+       200121-KOHID-HENSYU-SYS2013-SEC     SECTION.
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       3
+               COMPUTE IDX1    =   IDX     +   1
+               PERFORM VARYING IDY FROM    IDX1    BY  1
+                       UNTIL   IDY >       4
+                   IF     WRK-KOHHKNNUM-O (IDY)    =   SPACE
+                       CONTINUE
+                   ELSE 
+                       IF      WRK-KOHHKNNUM-O (IDX)   =   SPACE
+                           MOVE    WRK-KOHI-TBL(IDX)
+                                                   TO  WRK-KOHI
+                           MOVE    WRK-KOHI-TBL(IDY)
+                                                   TO  WRK-KOHI-TBL(IDX)
+                           MOVE    WRK-KOHI        TO  WRK-KOHI-TBL(IDY)
+                       ELSE
+      *                    徳島県の地方公費（法別４５、４８）
+                           IF    ( SYS-1001-PREFNUM    =   "36"    ) 
+                           AND   ( WRK-KOHHKNNUM-O (IDX) (2:2)
+                                               =   "45"    OR "48" )
+                           AND   ( WRK-KOHHKNNUM-O (IDY) (2:2)
+                                               =   "45"    OR "48" )
+                               IF      WRK-KOHTEKSTYMD-O (IDX)
+                                                   <   WRK-KOHTEKSTYMD-O
+                                                                (IDY)
+                                   CONTINUE
+                               ELSE
+                                   IF      WRK-KOHTEKSTYMD-O (IDX)
+                                                   >   WRK-KOHTEKSTYMD-O
+                                                                (IDY)
+                                       MOVE    WRK-KOHI-TBL(IDX)
+                                                   TO  WRK-KOHI
+                                       MOVE    WRK-KOHI-TBL(IDY)
+                                                   TO  WRK-KOHI-TBL(IDX)
+                                       MOVE    WRK-KOHI
+                                                   TO  WRK-KOHI-TBL(IDY)
+                                   ELSE
+                                       IF    ( WRK-KOHHKNNUM-O (IDX)
+                                                   >   WRK-KOHHKNNUM-O
+                                                                (IDY) )
+                                           MOVE    WRK-KOHI-TBL(IDX)
+                                                   TO  WRK-KOHI
+                                           MOVE    WRK-KOHI-TBL(IDY)
+                                                   TO  WRK-KOHI-TBL(IDX)
+                                           MOVE    WRK-KOHI
+                                                   TO  WRK-KOHI-TBL(IDY)
+                                       END-IF
+                                   END-IF
+                               END-IF
+                           ELSE
+      *                        同じ公費のとき適用開始日の古い順にする
+                               IF      WRK-KOHHKNNUM-O (IDX) 
+                                               =   WRK-KOHHKNNUM-O (IDY)
+                                   IF      WRK-KOHTEKSTYMD-O (IDX)
+                                                  >   WRK-KOHTEKSTYMD-O
+                                                                (IDY)
+                                       MOVE    WRK-KOHI-TBL(IDX)
+                                                   TO  WRK-KOHI
+                                       MOVE    WRK-KOHI-TBL(IDY)
+                                                   TO  WRK-KOHI-TBL(IDX)
+                                       MOVE    WRK-KOHI
+                                                   TO  WRK-KOHI-TBL(IDY)
+                                   END-IF    
+                               ELSE
+                                   IF      WRK-KOHHKNNUM-O (IDX)
+                                               >   WRK-KOHHKNNUM-O (IDY)
+                                       MOVE    WRK-KOHI-TBL(IDX)
+                                                   TO  WRK-KOHI
+                                       MOVE    WRK-KOHI-TBL(IDY)
+                                                   TO  WRK-KOHI-TBL(IDX)
+                                       MOVE    WRK-KOHI
+                                                   TO  WRK-KOHI-TBL(IDY)
+                                   END-IF
+                               END-IF
+                           END-IF
+                       END-IF    
+                   END-IF    
+               END-PERFORM
+           END-PERFORM
+      *
+      *    地方公費の追加
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX         >   4
+                   OR      TBL-MAX     =   4 
+               IF      WRK-KOHID-O (IDX)   >   ZERO
+                   ADD     1                   TO  TBL-MAX
+                   MOVE    WRK-KOHI-TBL (IDX)  TO 
+                                           WRK-RECE61-KOHI-TBL(TBL-MAX)
+               END-IF    
+           END-PERFORM
+      *
+      *    公費記載順設定情報による並び替え
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       50
+                   OR      TBL-SYS2013 (WRK-SYS2013-IDX IDX)
+                                   =       SPACE
+               MOVE    TBL-SYS2013 (WRK-SYS2013-IDX IDX)
+                                       TO  SYS-2013-REC
+      *
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       49
+                       OR      SYS-2013-KOHNUM (IDXX)
+                                       =       SPACE
+                   COMPUTE IDX1    =   IDXX    +   1
+                   PERFORM VARYING IDYY    FROM    IDX1    BY  1
+                           UNTIL   IDYY    >       50
+                           OR      SYS-2013-KOHNUM (IDYY)
+                                           =       SPACE
+                       MOVE    ZERO            TO  IDY1
+                                                   IDY2
+                       PERFORM VARYING IDZZ    FROM    1   BY  1
+                               UNTIL   IDZZ    >       4
+                               OR      WRK-RECE61-KOHHKNNUM-O (IDZZ)
+                                               =       SPACE
+                           IF      WRK-RECE61-KOHHKNNUM-O (IDZZ)
+                                               =   SYS-2013-KOHNUM(IDXX)
+                               MOVE    IDZZ            TO  IDY1
+                           END-IF
+                           IF      WRK-RECE61-KOHHKNNUM-O (IDZZ)
+                                               =   SYS-2013-KOHNUM(IDYY)
+                               MOVE    IDZZ            TO  IDY2
+                           END-IF
+                       END-PERFORM
+      *
+                       IF    ( IDY1            >   0    )
+                       AND   ( IDY2            >   0    )
+                       AND   ( IDY1            >   IDY2 )
+                           MOVE    WRK-RECE61-KOHI-TBL(IDY1)
+                                               TO  WRK-KOHI
+                           MOVE    WRK-RECE61-KOHI-TBL (IDY2)
+                                               TO  WRK-RECE61-KOHI-TBL
+                                                               (IDY1)
+                           MOVE    WRK-KOHI    TO  WRK-RECE61-KOHI-TBL
+                                                               (IDY2)
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+           END-PERFORM
+           .
+       200121-KOHID-HENSYU-SYS2013-EXT.
            EXIT.
       * 
       *****************************************************************
