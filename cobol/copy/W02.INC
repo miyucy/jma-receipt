@@ -88,18 +88,12 @@
                                              PIC S9(9)   BINARY.
                     06  W02-YAKUJYOFLGLST PIC X(30)   OCCURS  3.
                   05  W02-DISCOUNTHASU-CMB-G.
-                    06  W02-DISCOUNTHASU-CMB-OCC      OCCURS  10.
+                    06  W02-DISCOUNTHASU-CMB-OCC      OCCURS  8.
                       07  W02-DISCOUNTHASU-CMB.
                         08  W02-DISCOUNTHASU     PIC X(32).
                         08  W02-DISCOUNTHASU-COUNT
                                              PIC S9(9)   BINARY.
                         08  W02-DISCOUNTHASULST  PIC X(32)
-                                                      OCCURS  5.
-                  05  W02-DAISANKBN-CMB.
-                    06  W02-DAISANKBN        PIC X(32).
-                    06  W02-DAISANKBN-COUNT
-                                             PIC S9(9)   BINARY.
-                    06  W02-DAISANKBNLST     PIC X(32)
                                                       OCCURS  5.
                   05  W02-GENTAIKBN-CMB.
                     06  W02-GENTAIKBN        PIC X(22).
@@ -112,7 +106,7 @@
                     06  W02-TAXHASU-COUNT
                                              PIC S9(9)   BINARY.
                     06  W02-TAXHASULST       PIC X(32)
-                                                      OCCURS  3.
+                                                      OCCURS  2.
                   05  W02-HIWARIKBN-COMBO.
                     06  W02-HIWARIKBN        PIC X(20).
                     06  W02-HIWARIKBN-COUNT
@@ -167,12 +161,6 @@
                     06  W02-YYKHYOFLG-COUNT   PIC S9(9)   BINARY.
                     06  W02-YYKHYOFLG-ITEM
                             PIC X(20)   OCCURS  5 TIMES.
-                  05  W02-JIHIHASUKBN-COMB.
-                    06  W02-JIHIHASUKBN.
-                      07  W02-VALUE   PIC X(40).
-                    06  W02-JIHIHASUKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W02-JIHIHASUKBN-ITEM
-                            PIC X(40)   OCCURS  5 TIMES.
                 04  W02-N01-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED24.
                   05  W02-POST.
@@ -222,8 +210,8 @@
                     06  W02-VALUE   PIC X(100).
                 04  W02-N06-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED29.
-                  05  W02-GJIHINAME PIC X(20)   OCCURS 10.
-                  05  W02-NJIHINAME PIC X(20)   OCCURS 10.
+                  05  W02-JIHINAME.
+                    06  W02-VALUE   PIC X(20).
                 04  W02-N07-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED30.
                   05  W02-SRYNAIYO.
