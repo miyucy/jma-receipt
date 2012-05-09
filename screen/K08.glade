@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(K08)Ë®∫ÁôÇË°åÁÇ∫ÂÖ•Âäõ‚àíË®∫ÁôÇË°åÁÇ∫Á¢∫Ë™ç</title>
+  <title>(K08)ø«Œ≈π‘∞Ÿ∆˛Œœ°›ø«Œ≈π‘∞Ÿ≥Œ«ß</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -136,7 +136,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>8</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -151,7 +151,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
       </signal>
-      <label>Êàª„Çã</label>
+      <label>Ã·§Î</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -159,7 +159,7 @@
       <class>GtkButton</class>
       <name>B12</name>
       <x>936</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -174,7 +174,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:01:47 GMT</last_modification_time>
       </signal>
-      <label>ÁôªÈå≤</label>
+      <label>≈–œø</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -716,7 +716,7 @@
       <class>GtkButton</class>
       <name>button1</name>
       <x>88</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -739,7 +739,7 @@
       <class>GtkButton</class>
       <name>button2</name>
       <x>168</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -762,7 +762,7 @@
       <class>GtkButton</class>
       <name>B04</name>
       <x>248</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -777,15 +777,15 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
       </signal>
-      <label>ÂêçÁß∞ÂàáÊõø</label>
+      <label>ÃææŒ¿⁄¬ÿ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
       <class>GtkButton</class>
-      <name>B05</name>
+      <name>button4</name>
       <x>352</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -808,7 +808,7 @@
       <class>GtkButton</class>
       <name>button5</name>
       <x>432</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -831,7 +831,7 @@
       <class>GtkButton</class>
       <name>button6</name>
       <x>512</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -849,7 +849,7 @@
       <class>GtkButton</class>
       <name>button7</name>
       <x>592</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -867,7 +867,7 @@
       <class>GtkButton</class>
       <name>button8</name>
       <x>696</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -885,7 +885,7 @@
       <class>GtkButton</class>
       <name>B10</name>
       <x>776</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -908,7 +908,7 @@
       <class>GtkButton</class>
       <name>button10</name>
       <x>856</x>
-      <y>718</y>
+      <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -929,7 +929,7 @@
       <y>80</y>
       <width>844</width>
       <height>600</height>
-      <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
       <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
@@ -976,7 +976,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label27</name>
-	  <label>Áï™Âè∑</label>
+	  <label>»÷πÊ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -989,7 +989,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label28</name>
-	  <label>ÂâäÈô§</label>
+	  <label>∫ÔΩ¸</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -999,16 +999,73 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
+	  <class>GtkFixed</class>
 	  <child_name>CList:title</child_name>
-	  <name>label39</name>
-	  <label>„ÄÄË®∫ÁôÇÂå∫ÂàÜ„ÄÄ„ÄÄË®∫ÁôÇË°åÁÇ∫„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄÁÇπÊï∞√óÂõûÊï∞„ÄÄ„ÄÄ„ÄÄË®à </label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
+	  <name>fixed2</name>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label32</name>
+	    <x>96</x>
+	    <y>0</y>
+	    <width>60</width>
+	    <height>18</height>
+	    <label>ø«Œ≈π‘∞Ÿ</label>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label31</name>
+	    <x>8</x>
+	    <y>0</y>
+	    <width>60</width>
+	    <height>18</height>
+	    <label>ø«Œ≈∂Ë ¨</label>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label33</name>
+	    <x>520</x>
+	    <y>0</y>
+	    <width>80</width>
+	    <height>18</height>
+	    <label>≈¿øÙX≤ÛøÙ</label>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label34</name>
+	    <x>635</x>
+	    <y>0</y>
+	    <width>45</width>
+	    <height>18</height>
+	    <label>∑◊</label>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.5</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
 	</widget>
       </widget>
     </widget>
@@ -1020,7 +1077,7 @@
       <y>692</y>
       <width>84</width>
       <height>20</height>
-      <label>ÂâäÈô§Ââ§Áï™Âè∑</label>
+      <label>∫ÔΩ¸∫ﬁ»÷πÊ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1033,7 +1090,7 @@
       <class>GtkButton</class>
       <name>B01S</name>
       <x>8</x>
-      <y>694</y>
+      <y>696</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -1048,7 +1105,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
       </signal>
-      <label>„Éó„É¨„Éì„É•„Éº</label>
+      <label>•◊•Ï•”•Â°º</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1059,7 +1116,7 @@
       <y>84</y>
       <width>136</width>
       <height>16</height>
-      <label>ÂàùË®∫ÁÆóÂÆöÊó•</label>
+      <label>ΩÈø«ªªƒÍ∆¸</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1222,7 +1279,7 @@
       <y>132</y>
       <width>136</width>
       <height>16</height>
-      <label>ÊúÄÁµÇÊù•Èô¢Êó•</label>
+      <label>∫«Ω™ÕË±°∆¸</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1238,7 +1295,7 @@
       <y>176</y>
       <width>136</width>
       <height>16</height>
-      <label>Êú™ÂèéÈáë</label>
+      <label>Ã§º˝∂‚</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1254,7 +1311,7 @@
       <y>220</y>
       <width>136</width>
       <height>16</height>
-      <label>ÂêàË®àÁÇπÊï∞</label>
+      <label>πÁ∑◊≈¿øÙ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1270,7 +1327,7 @@
       <y>264</y>
       <width>136</width>
       <height>16</height>
-      <label>ÂΩìÊúàÁÇπÊï∞Á¥ØË®à</label>
+      <label>≈ˆ∑Ó≈¿øÙŒﬂ∑◊</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1286,7 +1343,7 @@
       <y>312</y>
       <width>136</width>
       <height>16</height>
-      <label>‰øùÈô∫ÈÅ©Áî®ÁÇπÊï∞</label>
+      <label> ›∏±≈¨Õ—≈¿øÙ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1317,7 +1374,7 @@
       <y>332</y>
       <width>60</width>
       <height>20</height>
-      <label>Ë®∫ÂØüÊñô</label>
+      <label>ø«ª°Œ¡</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1333,7 +1390,7 @@
       <y>360</y>
       <width>60</width>
       <height>20</height>
-      <label>ÁÆ°ÁêÜÊñô</label>
+      <label>¥…Õ˝Œ¡</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1349,7 +1406,7 @@
       <y>382</y>
       <width>60</width>
       <height>20</height>
-      <label>Âú®ÂÆÖÊñô</label>
+      <label>∫ﬂ¬Œ¡</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1365,7 +1422,7 @@
       <y>406</y>
       <width>60</width>
       <height>20</height>
-      <label>ÊäïËñ¨Êñô</label>
+      <label>≈ÍÃÙŒ¡</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1381,7 +1438,7 @@
       <y>430</y>
       <width>60</width>
       <height>20</height>
-      <label>Ê≥®Â∞ÑÊñô</label>
+      <label>√ÌºÕŒ¡</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1397,7 +1454,7 @@
       <y>454</y>
       <width>60</width>
       <height>20</height>
-      <label>Âá¶ÁΩÆÊñô</label>
+      <label>ΩË√÷Œ¡</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1413,7 +1470,7 @@
       <y>478</y>
       <width>60</width>
       <height>20</height>
-      <label>ÊâãË°ìÊñô</label>
+      <label>ºÍΩ—Œ¡</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1429,7 +1486,7 @@
       <y>501</y>
       <width>60</width>
       <height>20</height>
-      <label>È∫ªÈÖîÊñô</label>
+      <label>À„øÏŒ¡</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1445,7 +1502,7 @@
       <y>526</y>
       <width>60</width>
       <height>20</height>
-      <label>Ê§úÊüªÊñô</label>
+      <label>∏°∫∫Œ¡</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1461,7 +1518,7 @@
       <y>550</y>
       <width>66</width>
       <height>20</height>
-      <label>ÁîªÂÉèË®∫Êñ≠</label>
+      <label>≤Ë¡¸ø«√«</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1477,7 +1534,7 @@
       <y>574</y>
       <width>66</width>
       <height>20</height>
-      <label>„É™„Éè„Éì„É™</label>
+      <label>•Í•œ•”•Í</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1493,7 +1550,7 @@
       <y>597</y>
       <width>66</width>
       <height>20</height>
-      <label>Á≤æÁ•ûÂ∞ÇÈñÄ</label>
+      <label>¿∫ø¿¿ÏÃÁ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1509,7 +1566,7 @@
       <y>645</y>
       <width>66</width>
       <height>20</height>
-      <label>ÁóÖÁêÜË®∫Êñ≠</label>
+      <label>…¬Õ˝ø«√«</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1525,7 +1582,7 @@
       <y>621</y>
       <width>60</width>
       <height>20</height>
-      <label>ÊîæÂ∞ÑÁ∑ö</label>
+      <label> ¸ºÕ¿˛</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

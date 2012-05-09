@@ -32,15 +32,7 @@
       *  04.03.00    NACL-多々納  08/07/04  お薬手帳連動追加
       *  04.03.00    NACL-多々納  08/08/20  レセプトブレビュー区分追加
       *  04.03.00    NACL-多々納  08/11/04  薬情・お薬手帳対象区分追加
-      *  04.06.00    NACL-多々納  10/07/01  残量廃棄区分追加
-      *  04.06.00    NACL-多々納  10/08/03  入金・返金額設定区分追加
-      *  04.06.00    NACL-多々納  10/11/10  発行日変更区分追加
-      *  04.07.00    NACL-多々納  11/07/10  リハビリ・患者情報表示区分追加
-      *  04.07.00    NACL-多々納  12/01/25  入力スクロール背景色追加
-      *  04.07.00    NACL-多々納  12/04/27  確認画面名称表示追加
-      *  04.07.00    NACL-多々納  12/11/21  レセプトプレビューレイアウト追加
-      *  04.08.00    NACL-多々納  16/06/XX  セット展開区分追加
-      *  04.08.00    NACL-多々納  17/07/XX  心身療法２０未満加算区分追加
+      *  04.06.00    NACL-多々納  12/05/08  確認画面名称表示追加
       ************************************************************
        01  SYS-1038-REC.
            03  SYS-1038-KEY.
@@ -85,6 +77,7 @@
                05  SYS-1038-RESPRVFLG     PIC  X(01).
       *薬情・お薬手帳対象
                05  SYS-1038-YKJOKUKBN     PIC  X(01).
+      *ver.4.6の追加項目を設定する
       *残量廃棄区分
                05  SYS-1038-HAIKIKBN      PIC  X(01).
       *入金・返金額設定区分
@@ -96,47 +89,9 @@
       *H24.4
       *確認画面名称表示区分
                05  SYS-1038-GENERICFLG    PIC  X(01).
-      *
-      *リハビリ・患者情報表示区分
-               05  SYS-1038-GMNHYOKBN-G.
-                   07  SYS-1038-GMNHYOKBN     PIC  X(01)
-                                              OCCURS   5.
-      *入力スクロール背景色
-               05  SYS-1038-BGCOLORS       PIC  X(16).
-      *入力スクロール背景行区分
-               05  SYS-1038-BGLINEKBN      PIC  X(01).
-      *環境設定背景色変更
-               05  SYS-1038-M95BGCOLORS-G.
-      *            標準
-                   07  SYS-1038-BGCOLORSJ0      PIC  X(16).
-      *            システム日付変更
-                   07  SYS-1038-BGCOLORSDAY     PIC  X(16).
-      *            時間外区分
-                   07  SYS-1038-BGCOLORSJ-G.
-                       09 SYS-1038-BGCOLORSJ   PIC  X(16)
-                                               OCCURS   8.
-      *エラー背景色
-               05  SYS-1038-ERRCOLORS       PIC  X(16).
-      *警告背景色
-               05  SYS-1038-KEICOLORS       PIC  X(16).
-      *レセプトブレビュー　レイアウト
-               05  SYS-1038-PRVLAYOUT       PIC  X(01).
-      *セット展開区分
-               05  SYS-1038-SETALLKBN       PIC  X(01).
-      *H28.10
-      *リハビリ・患者情報・介護表示区分６
-               05  SYS-1038-GMNHYOKBN-6    PIC  X(01).
-      *H29.7
-      *心身療法２０未満加算区分
-               05  SYS-1038-SIN20KSNKBN   PIC  X(01).
-      *予備 
-      ******   05                          PIC  X(488).
-      ******   05  SYS-1038-YOBI           PIC  X(480).
-      ****     05  SYS-1038-YOBI           PIC  X(454).
-      ****     05  SYS-1038-YOBI           PIC  X(253).
-      *****    05  SYS-1038-YOBI           PIC  X(213).
-      ****     05  SYS-1038-YOBI           PIC  X(259).
-               05  SYS-1038-YOBI           PIC  X(257).
+      *予備
+      *******  05                          PIC  X(488).
+               05  SYS-1038-YOBI           PIC  X(479).
       *端末ＩＤ
            03  SYS-1038-TERMID          PIC  X(16).
       *オペーレータＩＤ
@@ -147,10 +102,3 @@
            03  SYS-1038-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1038-UPHMS           PIC  X(06).
-      *主キー更新用項目
-           03  SYS-1038-UPD-KEY.
-               05  SYS-1038-UPD-HOSPNUM     PIC 9(2).
-               05  SYS-1038-UPD-KANRICD     PIC X(04).
-               05  SYS-1038-UPD-KBNCD       PIC X(08).
-               05  SYS-1038-UPD-STYUKYMD    PIC X(08).
-               05  SYS-1038-UPD-EDYUKYMD    PIC X(08).
