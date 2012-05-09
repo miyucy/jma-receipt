@@ -5608,7 +5608,6 @@
                END-EVALUATE
       *
                EVALUATE    TRUE
-               WHEN  ( SPA-PREFNUM     =   CONST-OKAYAMA )
                WHEN  ( SPA-PREFNUM     =   CONST-NAGASAKI )
                 AND  ( SPA-GMN-KOHNUM  =   "186" )
                    MOVE    "1"         TO  SPA-GMN-HKNFTNKBNY
