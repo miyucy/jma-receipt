@@ -400,6 +400,19 @@
        01  CON-TANKIKSN1               PIC X(09)   VALUE    "180032970".
        01  CON-TANKIKSN2               PIC X(09)   VALUE    "180033070".
       *
+      *ver.4.7
+      *精神科ケア早期加算テーブル
+      *    精神科ショート・ケア早期
+       01  CON-KEAKSN1                 PIC X(09)   VALUE    "180033370".
+      *    精神科デイ・ケア早期
+       01  CON-KEAKSN2                 PIC X(09)   VALUE    "180033470".
+      *    精神科ナイト・ケア早期
+       01  CON-KEAKSN3                 PIC X(09)   VALUE    "180036270".
+      *    精神科デイ・ナイト・ケア早期
+       01  CON-KEAKSN4                 PIC X(09)   VALUE    "180036370".
+      *    重度認知症デイ・ケア早期
+       01  CON-KEAKSN5                 PIC X(09)   VALUE    "180039670".
+      *
       *    酸素コードテーブル
            COPY     "CMSANSOTBL.INC".
       *
@@ -1658,8 +1671,11 @@
       *    精神科ケア早期加算チェック
            IF     (SPA-ERRCD           =   SPACE  )
              AND  (LNK-ORCSC-PG        =   "K02"  )
-             AND  (WRK-COM-INPUTCD (IDX-Z) =   "180033370"
-                                           OR  "180033470")
+             AND  (WRK-COM-INPUTCD (IDX-Z) =   CON-KEAKSN1
+                                           OR  CON-KEAKSN2
+                                           OR  CON-KEAKSN3
+                                           OR  CON-KEAKSN4
+                                           OR  CON-KEAKSN5)
                PERFORM 10053-KEAKASAN-CHK-SEC
            END-IF
            .
