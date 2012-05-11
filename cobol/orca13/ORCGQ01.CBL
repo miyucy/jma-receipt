@@ -210,6 +210,7 @@
                05  WRK-RECECOM          PIC X(50)
                                         OCCURS     5.
            03  WRK-STSRYYMD             PIC X(08).
+           03  WRK-EDSRYYMD             PIC X(08).
            03  WRK-ORCSSTR-NUM1         PIC 9(03).
            03  WRK-TOKKICD.
                05  WRK-TOKKICD9         PIC 9(02).
@@ -7584,6 +7585,8 @@
                END-IF
            END-IF
       *
+           GO TO 4901-ALL-INPUT-CHK-EXT
+      *
            IF    ( SPA-ERRCD   =   SPACE )
              IF   (  SPA-GMN-Q01-JKNHKNJANUM =   "9" )
                OR (  SPA-GMN-Q01-JKNHKNNUM   =   "9" )
@@ -7631,9 +7634,6 @@
                    CONTINUE
                ELSE
                    EVALUATE    TRUE
-                   WHEN  ( SPA-GMN-Q01-SRYVALITEM  NOT =   SPACE )
-                       MOVE    "1018"      TO  SPA-ERRCD
-                       MOVE    1           TO  SPA-GMN-Q01-CUR
                    WHEN  ( SPA-GMN-Q01-JKNBYOMEI       =   "9" )
                     AND  ( SPA-GMN-Q01-BYOMEINMTBL NOT =   SPACE )
                        MOVE    "1020"      TO  SPA-ERRCD
@@ -7642,6 +7642,32 @@
                        MOVE    "1020"      TO  SPA-ERRCD
                        MOVE    1           TO  SPA-GMN-Q01-CUR
                    END-EVALUATE
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               IF    ( SPA-GMN-Q01-SRYVALITEM  NOT =   SPACE )
+      *
+                   MOVE    SPA-NAI-Q01-STSRYYMD    TO  WRK-KEISANYMD
+                   IF    ( WRK-KEISANYMD           =   SPACE )
+                       MOVE    "00000000"          TO  WRK-KEISANYMD
+                   ELSE
+                       MOVE    WRK-KEISANYMD       TO  WRK-YMD
+                       MOVE    11                  TO  WRK-ZOGEN
+                       MOVE    "2"                 TO  WRK-ZOGENPTN
+                       PERFORM 800-CALENDAR-SEC
+                   END-IF
+      *
+                   MOVE    SPA-NAI-Q01-EDSRYYMD    TO  WRK-EDSRYYMD
+                   IF    ( WRK-EDSRYYMD            =   SPACE )
+                       MOVE    "99999999"          TO  WRK-EDSRYYMD
+                   END-IF
+                   IF   (  WRK-KEISANYMD (1:6) >=  WRK-EDSRYYMD (1:6))
+                       CONTINUE
+                   ELSE
+                       MOVE    "1018"      TO  SPA-ERRCD
+                       MOVE    1           TO  SPA-GMN-Q01-CUR
+                   END-IF
                END-IF
            END-IF
       *
@@ -10661,8 +10687,10 @@
                MOVE    SPACE           TO  SPA-ERRMSG
                STRING  "診療行為の数値指定を行う場合、"
                                            DELIMITED BY SIZE
-                       "診療月ボタンより診療月を指定してください"
-                                                       DELIMITED BY SIZE
+                       "診療年月日の期間指定をしてください"
+                                           DELIMITED BY SIZE
+                       "（最大１２ケ月）"
+                                           DELIMITED BY SIZE
                INTO    SPA-ERRMSG
                END-STRING
            WHEN    "1019"
