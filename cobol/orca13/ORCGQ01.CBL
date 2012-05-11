@@ -99,6 +99,7 @@
            03  FLG-SHOUKAIDATA                     PIC 9(01).
            03  FLG-KANJI                           PIC 9(01).
            03  FLG-CHGSRYYMD                       PIC 9(01).
+           03  FLG-KIKANOVER                        PIC 9(01).
            03  FLG-PAGENO-G.
                05  FLG-PAGENO-00                   PIC 9(01).
                05  FLG-PAGENO-01                   PIC 9(01).
@@ -7585,7 +7586,26 @@
                END-IF
            END-IF
       *
-           GO TO 4901-ALL-INPUT-CHK-EXT
+           MOVE    ZERO        TO  FLG-KIKANOVER
+           MOVE    SPA-NAI-Q01-STSRYYMD    TO  WRK-KEISANYMD
+           IF    ( WRK-KEISANYMD           =   SPACE )
+               MOVE    "00000000"          TO  WRK-KEISANYMD
+           ELSE
+               MOVE    WRK-KEISANYMD       TO  WRK-YMD
+               MOVE    11                  TO  WRK-ZOGEN
+               MOVE    "2"                 TO  WRK-ZOGENPTN
+               PERFORM 800-CALENDAR-SEC
+           END-IF
+      *
+           MOVE    SPA-NAI-Q01-EDSRYYMD    TO  WRK-EDSRYYMD
+           IF    ( WRK-EDSRYYMD            =   SPACE )
+               MOVE    "99999999"          TO  WRK-EDSRYYMD
+           END-IF
+           IF   (  WRK-KEISANYMD (1:6) >=  WRK-EDSRYYMD (1:6))
+               CONTINUE
+           ELSE
+               MOVE    1               TO  FLG-KIKANOVER
+           END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
              IF   (  SPA-GMN-Q01-JKNHKNJANUM =   "9" )
@@ -7601,12 +7621,7 @@
                       AND( SPA-GMN-Q01-HKNNUM  (IDX1) NOT =   SPACE ))
                     OR  (( SPA-GMN-Q01-JKNKOHNUM          =   "9" )
                       AND( SPA-GMN-Q01-KOHNUM  (IDX1) NOT =   SPACE ))
-                       IF   ( SPA-NAI-Q01-STSRYYMD
-                               NOT =   SPACE )
-                         AND ( SPA-NAI-Q01-STSRYYMD(1:6)
-                                   =   SPA-NAI-Q01-EDSRYYMD(1:6))
-                           CONTINUE
-                       ELSE
+                       IF   ( FLG-KIKANOVER  =   1  )
                            MOVE    "1020"  TO  SPA-ERRCD
                            MOVE    1       TO  SPA-GMN-Q01-CUR
                        END-IF
@@ -7627,13 +7642,11 @@
            END-PERFORM
       *
            IF    ( SPA-ERRCD   =   SPACE )
-               IF   ( SPA-NAI-Q01-STSRYYMD
-                               NOT =   SPACE )
-                 AND ( SPA-NAI-Q01-STSRYYMD(1:6)
-                                   =   SPA-NAI-Q01-EDSRYYMD(1:6))
-                   CONTINUE
-               ELSE
+               IF   ( FLG-KIKANOVER  =   1  )
                    EVALUATE    TRUE
+                   WHEN  ( SPA-GMN-Q01-SRYVALITEM  NOT =   SPACE )
+                       MOVE    "1018"      TO  SPA-ERRCD
+                       MOVE    1           TO  SPA-GMN-Q01-CUR
                    WHEN  ( SPA-GMN-Q01-JKNBYOMEI       =   "9" )
                     AND  ( SPA-GMN-Q01-BYOMEINMTBL NOT =   SPACE )
                        MOVE    "1020"      TO  SPA-ERRCD
@@ -7642,32 +7655,6 @@
                        MOVE    "1020"      TO  SPA-ERRCD
                        MOVE    1           TO  SPA-GMN-Q01-CUR
                    END-EVALUATE
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               IF    ( SPA-GMN-Q01-SRYVALITEM  NOT =   SPACE )
-      *
-                   MOVE    SPA-NAI-Q01-STSRYYMD    TO  WRK-KEISANYMD
-                   IF    ( WRK-KEISANYMD           =   SPACE )
-                       MOVE    "00000000"          TO  WRK-KEISANYMD
-                   ELSE
-                       MOVE    WRK-KEISANYMD       TO  WRK-YMD
-                       MOVE    11                  TO  WRK-ZOGEN
-                       MOVE    "2"                 TO  WRK-ZOGENPTN
-                       PERFORM 800-CALENDAR-SEC
-                   END-IF
-      *
-                   MOVE    SPA-NAI-Q01-EDSRYYMD    TO  WRK-EDSRYYMD
-                   IF    ( WRK-EDSRYYMD            =   SPACE )
-                       MOVE    "99999999"          TO  WRK-EDSRYYMD
-                   END-IF
-                   IF   (  WRK-KEISANYMD (1:6) >=  WRK-EDSRYYMD (1:6))
-                       CONTINUE
-                   ELSE
-                       MOVE    "1018"      TO  SPA-ERRCD
-                       MOVE    1           TO  SPA-GMN-Q01-CUR
-                   END-IF
                END-IF
            END-IF
       *
@@ -10705,8 +10692,10 @@
                MOVE    SPACE           TO  SPA-ERRMSG
                STRING  "ＮＯＴ検索を行う場合、"
                                            DELIMITED BY SIZE
-                       "診療月ボタンより診療月を指定してください"
-                                                       DELIMITED BY SIZE
+                       "診療年月日の期間指定をしてください"
+                                           DELIMITED BY SIZE
+                       "（最大１２ケ月）"
+                                           DELIMITED BY SIZE
                INTO    SPA-ERRMSG
                END-STRING
            WHEN    "4001"      THRU    "4999"
