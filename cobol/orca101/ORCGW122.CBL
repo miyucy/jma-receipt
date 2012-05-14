@@ -1040,9 +1040,10 @@
                    IF      HKN-HKNKOHSBTKBN
                                            =   "5" OR  "6" OR  "7"
       *                レセプト記載を行うか
-                       IF      HKN-RECESKYKBN  =   "3"
-                           MOVE    "0012"          TO  SPA-ERRCD
-                       END-IF
+      *****************IF      HKN-RECESKYKBN  =   "3"
+      *****************    MOVE    "0012"          TO  SPA-ERRCD
+      *****************END-IF
+                       CONTINUE
                    ELSE
                        MOVE    "0011"          TO  SPA-ERRCD
                    END-IF
