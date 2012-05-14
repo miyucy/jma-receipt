@@ -293,6 +293,8 @@
       *
            PERFORM 300-END-SEC
       *
+           MOVE    ZERO            TO  RETURN-CODE
+      *
            EXIT    PROGRAM
            .
       *****************************************************************
