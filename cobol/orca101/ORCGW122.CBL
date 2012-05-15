@@ -851,6 +851,7 @@
            AND   ( SPA-GMN-KOHNUM
                                NOT =   SPACE )
                MOVE    "0010"          TO  SPA-ERRCD
+               GO  TO  4103-KANREN-CHK-EXT
            END-IF
       *
            IF    ( SPA-GMN-KOHNUM  =   SPACE )
