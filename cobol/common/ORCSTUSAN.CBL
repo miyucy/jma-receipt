@@ -301,6 +301,8 @@
                    =   STUSAN-NISSU06 +    WRK-ACCT-TOK-NISSU1
                COMPUTE STUSAN-NISSU07
                    =   STUSAN-NISSU07 +    WRK-ACCT-TOK-NISSU2
+               COMPUTE STUSAN-NISSU08
+                   =   STUSAN-NISSU08 +    WRK-ACCT-TOK-NISSU1
            ELSE
                PERFORM 2110-TUSAN-SYUKEI-SEC
                IF    ( STUSAN-RC       NOT  =   ZERO )
@@ -460,6 +462,8 @@
                    =   STUSAN-NISSU04  +   PTNYUINRRK-TAISYONISSU
                COMPUTE STUSAN-NISSU05
                    =   STUSAN-NISSU05  +   PTNYUINRRK-TAISYONISSU
+               COMPUTE STUSAN-NISSU08
+                   =   STUSAN-NISSU08  +   PTNYUINRRK-TAISYONISSU
                IF    ( PTNYUINRRK-NYUINCHUKBN  =   "1" )
                    MOVE   PTNYUINRRK-TAIINYMD
                                        TO  WRK-YMD
@@ -491,6 +495,8 @@
                    =   STUSAN-NISSU04 +    WRK-ACCT-NISSU
                COMPUTE STUSAN-NISSU05
                    =   STUSAN-NISSU05 +    WRK-ACCT-NISSU
+               COMPUTE STUSAN-NISSU08
+                   =   STUSAN-NISSU08 +    WRK-ACCT-TOK-NISSU1
            END-EVALUATE
            .
       *
@@ -968,6 +974,7 @@
            DISPLAY "STUSAN-NISSU05 = " STUSAN-NISSU05
            DISPLAY "STUSAN-NISSU06 = " STUSAN-NISSU06
            DISPLAY "STUSAN-NISSU07 = " STUSAN-NISSU07
+           DISPLAY "STUSAN-NISSU08 = " STUSAN-NISSU08
            DISPLAY "STUSAN-TAINREL-NISSU = " STUSAN-TAINREL-NISSU
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
