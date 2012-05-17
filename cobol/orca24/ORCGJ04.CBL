@@ -6964,7 +6964,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL       FLG-JYURRK      =   1
                IF      JYURRK-SRYYMD(1:6)  =   SPA-J02-SRYYMD(1:6)
       *            収納の会計変更区分変更
-                   IF      SPA-NYUGAIKBN       =   "2"
+                   IF     (SPA-NYUGAIKBN       =   "2"  )
+                   AND    (JYURRK-HKNCOMBINUM  NOT =   "9999")
                        PERFORM 450431-SYUNOU-UPD-SEC
                    END-IF
                END-IF
@@ -7296,17 +7297,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-J01-SRYKA       TO  JYURRK-SRYKA
-           IF      SPA-NYUGAIKBN       =   "2"
+      **** IF      SPA-NYUGAIKBN       =   "2"
       *        外来の時、伝票番号
-               MOVE    SPA-SEL-DENPNUM     TO  JYURRK-DENPNUM
-               MOVE    "key6"              TO  WRK-PATH
-           ELSE
+      *        MOVE    SPA-SEL-DENPNUM     TO  JYURRK-DENPNUM
+      *        MOVE    "key6"              TO  WRK-PATH
+      **** ELSE
+      *H24.5   伝票番号重複対応（伝票番号検索廃止）
       *        入院の時、診療年月日、保険組合せ
                MOVE    SPA-SEL-RRKYMD      TO  JYURRK-SRYYMD
                MOVE    SPA-SEL-RENNUM      TO  JYURRK-RENNUM
                MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
                MOVE    "key19"             TO  WRK-PATH
-           END-IF
+      **** END-IF
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
@@ -7323,6 +7325,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM
                    UNTIL      (FLG-JYURRK      =   1  )  OR
                               (FLG-UPD         =   1  )
+      *        外来の時、伝票番号の一致のチェック
+           IF      (JYURRK-NYUGAIKBN     =  "2"  )  AND
+                   (SPA-SEL-DENPNUM  NOT =  ZERO )  AND
+                   (SPA-SEL-DENPNUM  NOT =  JYURRK-DENPNUM )
+               CONTINUE
+           ELSE
+      *
                IF     (SPA-SEL-RENNUM          =   JYURRK-RENNUM )  AND
                       (SPA-SEL-DOUJI-RENNUM    =   JYURRK-DOUJI-RENNUM)
                    PERFORM VARYING     IDX     FROM    1   BY  1
@@ -7338,7 +7347,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                IF      FLG-UPD             =   1
       *            収納の会計変更区分変更
-                   IF      SPA-NYUGAIKBN       =   "2"
+                   IF     (SPA-NYUGAIKBN       =   "2"   )
+                   AND    (JYURRK-HKNCOMBINUM  NOT =   "9999")
                        PERFORM 450431-SYUNOU-UPD-SEC
                    END-IF
       *
@@ -7353,6 +7363,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
+               END-IF
+      *
                END-IF
       *
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE

@@ -5526,6 +5526,9 @@
       *
       ******   IF      SPA-GMN-TMEISYO (IDX)(1:2)  =  "¡Ý"
                IF      SPA-GMN-TMEISYO (IDX)(1:1)  =  "-"
+                   MOVE    SPACE                   TO  KT02-MEISAI (IDX)
+                   MOVE    ALL "-"                 TO  KT02-MEISAI (IDX)
+                                                               (1:120)
                    MOVE    ALL "-"                 TO  KT02-BANGO (IDX)
                    MOVE    ALL "-"                 TO  KT02-DELFLG(IDX)
                END-IF
