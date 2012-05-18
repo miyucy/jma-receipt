@@ -231,16 +231,20 @@
       *****************************************************************
        2001-JYURRK-CHK-SEC             SECTION.
       *
+           PERFORM 900-SYUNOU-KEY-SEL-SEC
+      *
       *    ¼õ¿ÇÍúÎò¸¡º÷½èÍý
            MOVE    ZERO                TO  FLG-JYURRK
            INITIALIZE                      JYURRK-REC
-           MOVE    SS003-HOSPNUM        TO  JYURRK-HOSPNUM
-           MOVE    SS003-PTID          TO  JYURRK-PTID
-           MOVE    SS003-NYUGAIKBN     TO  JYURRK-NYUGAIKBN
-           MOVE    SS003-DENPNUM       TO  JYURRK-DENPNUM
+           MOVE    SYU-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SYU-PTID            TO  JYURRK-PTID
+           MOVE    SYU-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SYU-SRYYMD          TO  JYURRK-SRYYMD
+           MOVE    SYU-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
+           MOVE    SYU-DENPNUM         TO  JYURRK-DENPNUM
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key47"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  JYURRK-REC
@@ -266,7 +270,7 @@
                END-PERFORM
       *
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
+               MOVE    "key47"             TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC TO  JYURRK-REC
@@ -278,7 +282,7 @@
            END-PERFORM
       *
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key47"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
