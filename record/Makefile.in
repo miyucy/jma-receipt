@@ -452,6 +452,7 @@ RECORD_files = \
 	_UDMY01.rec \
 	S10.rec \
 	W122.rec \
+	_SDMY01.rec \
 	
 
 DEF_files = \
