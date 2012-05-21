@@ -183,6 +183,11 @@
                    07  WRK-CHK1-KOHNUM         PIC X(03)
                                                    OCCURS  50.
                05  WRK-CHK1-KOHNUM-MAX         PIC 9(02).
+           03  WRK-CHK2-KOHNUM-AREA.
+               05  WRK-CHK2-KOHNUM-OCC.
+                   07  WRK-CHK2-KOHNUM         PIC X(03)
+                                                   OCCURS  50.
+               05  WRK-CHK2-KOHNUM-MAX         PIC 9(02).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1442,12 +1447,14 @@
       *    別グループとの重複チェック
            INITIALIZE              WRK-CHK-KOHNUM-AREA
                                    WRK-CHK1-KOHNUM-AREA
+                                   WRK-CHK2-KOHNUM-AREA
            MOVE    1               TO  IDX
       *
            PERFORM     UNTIL   IDX     >   SPA-GMN-BODYLIST-MAX
                        OR      SPA-ERRCD
                                    NOT =   SPACE
                INITIALIZE              WRK-CHK-KOHNUM-AREA
+                                       WRK-CHK2-KOHNUM-AREA
       *
       *        チェック元のグループ情報
                PERFORM VARYING IDY     FROM    IDX BY  1
@@ -1479,6 +1486,8 @@
                            OR      SPA-ERRCD
                                        NOT =   SPACE
                    COMPUTE IDXX    =   IDXX    +   1
+                   MOVE    WRK-CHK-KOHNUM-AREA
+                                       TO  WRK-CHK2-KOHNUM-AREA
                    INITIALIZE              WRK-CHK1-KOHNUM-AREA
       *            チェック先のグループ情報
                    PERFORM VARYING IDY     FROM    IDXX    BY  1
@@ -1498,11 +1507,13 @@
       *
       *            重複チェック             
                    PERFORM VARYING IDY FROM    1   BY  1
-                           UNTIL   IDY >       WRK-CHK-KOHNUM-MAX
+                           UNTIL   IDY >       WRK-CHK2-KOHNUM-MAX
                        PERFORM VARYING IDZ FROM    1   BY  1
                                UNTIL   IDZ >       WRK-CHK1-KOHNUM-MAX
-                           IF      WRK-CHK-KOHNUM (IDY)
+                           IF      WRK-CHK2-KOHNUM (IDY)
                                            =   WRK-CHK1-KOHNUM (IDZ)
+                               MOVE    SPACE       TO
+                                               WRK-CHK2-KOHNUM (IDY)
                                MOVE    SPACE       TO
                                                WRK-CHK1-KOHNUM (IDZ)
                                MOVE    WRK-CHK1-KOHNUM-MAX
@@ -1512,7 +1523,8 @@
                    END-PERFORM
       *
       *            全て重複したとき
-                   IF      WRK-CHK1-KOHNUM-OCC     =   SPACE
+                   IF    ( WRK-CHK1-KOHNUM-OCC     =   SPACE )
+                   OR    ( WRK-CHK2-KOHNUM-OCC     =   SPACE )
                        MOVE    "0043"              TO  SPA-ERRCD
       *****            GO  TO  4900-KANRENCHK-EXT
                    END-IF
