@@ -235,6 +235,7 @@
            03  FLG-NYU-SKYPRT                      PIC 9(01).
            03  FLG-SORT                            PIC 9(01).
            03  FLG-TARGET                          PIC 9(01).
+           03  FLG-CLIENT-OK                       PIC 9(01).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -392,6 +393,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
+      *
            COPY    "CPORCHC03S02.INC".
       *
       *    マシン日付取得サブ
@@ -423,6 +427,7 @@
            COPY    "SID2.INC".
            COPY    "SID3.INC".
            COPY    "SID4.INC".
+           COPY    "SDMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -461,6 +466,11 @@
       *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
+           END-IF
+      *
+      *    クライアント印刷
+           IF    ( FLG-CLIENT-OK   =   1 )
+               PERFORM 600-CLIENT-DMY-SEC
            END-IF
       *
            MOVE    SPA-S01KYOUTU   TO  SPA-WORK
@@ -2566,6 +2576,14 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"  USING   SPA-AREA
+           IF   (( FLG-GAI-SKYPRT      =   1 )
+              AND( SPA-GMN-SKYPRTKBN   =   "1" ))
+            OR  (( FLG-NYU-SKYPRT      =   1 )
+              AND( SPA-GMN-SKYPRTKBN   =   "1" ))
+      *
+               PERFORM 800-CLIENT-PRT-SEC
+      *
+           END-IF
       *
            IF    ( FLG-GAI-SKYPRT      =   1 )
             AND  ( SPA-GMN-SKYPRTKBN   =   "1" )
@@ -2578,6 +2596,8 @@
                    PERFORM 4801-NYU-SKYPRT-SEC
                END-IF
            END-IF
+      *
+           PERFORM 800-CLIENT-DUMMY-PRT-SEC
       *
            .
        4801-SEIKYUSYO-OUT-EXT.
@@ -3495,6 +3515,57 @@
            .
       *
        50012-CUR-SKIP-EXT.
+           EXIT.
+      *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC              SECTION.
+      *
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+           MOVE    "_SDMY01"           TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       800-CLIENT-PRT-SEC         SECTION.
+      *
+           INITIALIZE                      SDMY01
+           MOVE    SPACE               TO  SDMY01-PANDAPRINT1
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                          ORCSPRTCLTRAREA
+           MOVE    "外来請求書兼領収書"    TO  ORCSPRTCLTR-TITLE-I(01)
+           MOVE    "入院請求書兼領収書"    TO  ORCSPRTCLTR-TITLE-I(02)
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCLTRAREA
+                                               MCPAREA
+           MOVE    ORCSPRTCLTR-OUT     TO  SDMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
+      *
+           .
+       800-CLIENT-PRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    クライアントダミー印刷　処理
+      *****************************************************************
+       800-CLIENT-DUMMY-PRT-SEC        SECTION.
+      *
+           IF      (SPA-CLIENT-PRT-FLG =   1  )
+      *        印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+           END-IF
+      *
+           .
+       800-CLIENT-DUMMY-PRT-EXT.
            EXIT.
       *****************************************************************
       *    西暦日本語変換処理

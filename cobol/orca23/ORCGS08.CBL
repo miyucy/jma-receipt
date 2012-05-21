@@ -65,6 +65,7 @@
            03  FLG-KYUSEIRRK               PIC 9(01).
            03  FLG-SYUNOU                  PIC 9(01).
            03  FLG-SAIKEISAN               PIC 9(01).
+           03  FLG-CLIENT-OK               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -154,6 +155,9 @@
            COPY    "CPORCHCN63.INC".
            COPY    "CPONPRTDATA.INC".
       *
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -184,6 +188,7 @@
            COPY    "SID2.INC".
            COPY    "SID3.INC".
            COPY    "SID4.INC".
+           COPY    "SDMY01.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -223,6 +228,11 @@
            IF  FLG-END   =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF.
+      *
+      *    クライアント印刷
+           IF    ( FLG-CLIENT-OK   =   1 )
+               PERFORM 600-CLIENT-DMY-SEC
+           END-IF
       *
            MOVE    SPA-S01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -2141,19 +2151,14 @@
                IF    ( SPA-GMN-MEIPRTKBN   =   "1" )
       *
                    CALL    "ORCSONPRTSET"  USING   SPA-AREA
+                   IF    ( SPA-S08-MOTOPG  =   "I04" )
+                       PERFORM 22011-PRINT-SEC
+                   ELSE
+                       PERFORM 800-CLIENT-PRT-SEC
+                       PERFORM 22011-PRINT-SEC
+                       PERFORM 800-CLIENT-DUMMY-PRT-SEC
+                   END-IF
       *
-                   INITIALIZE                      ONPRTDATA
-                                                   ORCHCN63AREA
-                   MOVE    SPA-PTID            TO  ORCHCN63-PTID
-                   MOVE    SPA-S08-NYUGAIKBN   TO  ORCHCN63-NYUGAIKBN
-                   MOVE    SPA-S08-RRKNUM      TO  ORCHCN63-RRKNUM
-                   MOVE    ORCHCN63AREA        TO  ONPRTDATA-DATA
-                   MOVE    "ORCHCN63"          TO  ONPRTDATA-PGID
-                   MOVE    "01"                TO  SPA-PRT-FLG
-                   CALL    "ORCHCOMMON"        USING
-                                               SPA-AREA
-                                               ONPRTDATA
-                   MOVE    SPACE               TO  SPA-PRT-FLG
                END-IF
       *
                IF    ( SPA-S08-MOTOPG  =   "I04" )
@@ -2167,6 +2172,27 @@
            .
       *
        2201-TOUROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷処理
+      *****************************************************************
+       22011-PRINT-SEC                 SECTION.
+      *
+           INITIALIZE                      ONPRTDATA
+                                           ORCHCN63AREA
+           MOVE    SPA-PTID            TO  ORCHCN63-PTID
+           MOVE    SPA-S08-NYUGAIKBN   TO  ORCHCN63-NYUGAIKBN
+           MOVE    SPA-S08-RRKNUM      TO  ORCHCN63-RRKNUM
+           MOVE    ORCHCN63AREA        TO  ONPRTDATA-DATA
+           MOVE    "01"                TO  SPA-PRT-FLG
+           CALL    "ORCHCN63"              USING
+                                           SPA-AREA
+                                           ONPRTDATA
+           MOVE    SPACE               TO  SPA-PRT-FLG
+      *
+           .
+      *
+       22011-PRINT-EXT.
            EXIT.
       *****************************************************************
       *    自画面編集処理
@@ -2850,6 +2876,56 @@
       *
            .
        520-SIDSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC              SECTION.
+      *
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+           MOVE    "_SDMY01"           TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       800-CLIENT-PRT-SEC         SECTION.
+      *
+           INITIALIZE                      SDMY01
+           MOVE    SPACE               TO  SDMY01-PANDAPRINT1
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                          ORCSPRTCLTRAREA
+           MOVE    "分娩費用明細書"    TO  ORCSPRTCLTR-TITLE-I(01)
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCLTRAREA
+                                               MCPAREA
+           MOVE    ORCSPRTCLTR-OUT     TO  SDMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
+      *
+           .
+       800-CLIENT-PRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    クライアントダミー印刷　処理
+      *****************************************************************
+       800-CLIENT-DUMMY-PRT-SEC        SECTION.
+      *
+           IF      (SPA-CLIENT-PRT-FLG =   1  )
+      *        印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+           END-IF
+      *
+           .
+       800-CLIENT-DUMMY-PRT-EXT.
            EXIT.
       *****************************************************************
       *    分娩負担金サブ

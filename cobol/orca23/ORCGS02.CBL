@@ -388,6 +388,7 @@
            03  FLG-GENBUTU         PIC 9(01).
            03  FLG-GENBUTU2        PIC 9(01).
            03  FLG-GENBUTU3        PIC 9(01).
+           03  FLG-CLIENT-OK       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -703,6 +704,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
+      *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *
@@ -766,6 +770,7 @@
            COPY    "SID2.INC".
            COPY    "SID3.INC".
            COPY    "SID4.INC".
+           COPY    "SDMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -804,6 +809,11 @@
       *    画面遷移がない時、画面表示へ
            IF    ( FLG-END             =   ZERO )
               PERFORM 500-SET-SCREEN
+           END-IF
+      *
+      *    クライアント印刷
+           IF    ( FLG-CLIENT-OK   =   1 )
+               PERFORM 600-CLIENT-DMY-SEC
            END-IF
       *
            MOVE    SPA-S01KYOUTU   TO  SPA-WORK
@@ -4614,14 +4624,20 @@
       **************************************************************
        420-SAIHAKKOU-SEC           SECTION.
       *
+           MOVE    ZERO                TO  FLG-CLIENT-OK
+      *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"  USING   SPA-AREA
+           PERFORM 800-CLIENT-PRT-SEC
+      *
            IF    ( SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
                                        =   "1" )
                PERFORM 4201-NYU-SAIHAKKOU-SEC
            ELSE
                PERFORM 4201-GAI-SAIHAKKOU-SEC
            END-IF
+      *
+           PERFORM 800-CLIENT-DUMMY-PRT-SEC
       *
            .
        420-SAIHAKKOU-EXT.
@@ -4634,12 +4650,15 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"  USING   SPA-AREA
+           PERFORM 800-CLIENT-PRT-SEC
       *
            MOVE    SPA-NAI-GYOUMUID
                                    TO      WRK-GYOUMUID
            MOVE    SPA-NAI-UID     TO      WRK-UID
            MOVE    SPA-NAI-FILEMEI TO      WRK-FILEMEI
            PERFORM 42011-GAI-SAIHAKKOU-SEC
+      *
+           PERFORM 800-CLIENT-DUMMY-PRT-SEC
       *
            .
        421-SAIHAKKOU-EXT.
@@ -4651,12 +4670,15 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"  USING   SPA-AREA
+           PERFORM 800-CLIENT-PRT-SEC
       *
            MOVE    SPA-NAI-GYOUMUID
                                    TO      WRK-GYOUMUID
            MOVE    SPA-NAI-UID     TO      WRK-UID
            MOVE    SPA-NAI-FILEMEI TO      WRK-FILEMEI
            PERFORM 49012-GAI-TUKISKYPRT-SEC
+      *
+           PERFORM 800-CLIENT-DUMMY-PRT-SEC
       *
            .
        422-GAI-TUKISKYPRT-EXT.
@@ -4725,8 +4747,8 @@
                MOVE    1               TO  ORCHCN03-MOTOID
       *
                IF    ( FLG-SEIKYU-PRT  =   1 )
-                   MOVE    "01"            TO      WRK-SPA-PRT-FLG
-                   CALL    "ORCHCN03OP"    USING   ORCHCN03AREA
+                   MOVE    "03"            TO      WRK-SPA-PRT-FLG
+                   CALL    "ORCHCN03"      USING   ORCHCN03AREA
                                                    WRK-SPA-AREA
                    MOVE    SPACE           TO  WRK-SPA-PRT-FLG
                END-IF
@@ -4771,7 +4793,7 @@
       *
                END-PERFORM
       *
-               MOVE    "05"            TO  WRK-SPA-PRT-FLG
+               MOVE    "04"            TO  WRK-SPA-PRT-FLG
                CALL    WRK-MEISAI-PG    USING
                                         WRK-SPA-AREA
                                         ORCHCN04AREA
@@ -4882,7 +4904,7 @@
            MOVE    WRK-UID             TO  ORCHC03-PARA-TERMID
            MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
            MOVE    1                   TO  ORCHC03-MOTOID
-           MOVE    "02"                TO  WRK-SPA-PRT-FLG
+           MOVE    "01"                TO  WRK-SPA-PRT-FLG
            CALL    WRK-SEIKYU-PG       USING
                                            WRK-SPA-AREA
                                            ORCHC03AREA
@@ -4923,7 +4945,7 @@
                MOVE    WRK-PAGE-CNT
                                        TO  ORCHC04-PAGE-CNT
       *
-               MOVE    "04"        TO  WRK-SPA-PRT-FLG
+               MOVE    "02"        TO  WRK-SPA-PRT-FLG
                CALL    WRK-MEISAI-PG       USING
                                            WRK-SPA-AREA
                                            ORCHC04AREA
@@ -5187,7 +5209,7 @@
            MOVE    WRK-UID             TO  ORCHC03-PARA-TERMID
            MOVE    WRK-FILEMEI         TO  ORCHC03-PARA-FILEMEI
            MOVE    2                   TO  ORCHC03-MOTOID
-           MOVE    "03"                TO  WRK-SPA-PRT-FLG
+           MOVE    "01"                TO  WRK-SPA-PRT-FLG
       *
            CALL    WRK-SEIKYU-PG           USING
                                            WRK-SPA-AREA
@@ -5227,7 +5249,7 @@
                END-PERFORM
       *
                MOVE    WRK-PAGE-CNT    TO  ORCHC04-PAGE-CNT
-               MOVE    "04"            TO  WRK-SPA-PRT-FLG
+               MOVE    "02"            TO  WRK-SPA-PRT-FLG
                CALL    WRK-MEISAI-PG       USING
                                            WRK-SPA-AREA
                                            ORCHC04AREA
@@ -8310,6 +8332,21 @@
            .
        520-SID4SET-EXT.
            EXIT.
+      *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC              SECTION.
+      *
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+           MOVE    "_SDMY01"           TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
       **************************************************************
       *    分娩チェック
       **************************************************************
@@ -8561,6 +8598,44 @@
       *
            .
        800-KINGAKU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       800-CLIENT-PRT-SEC         SECTION.
+      *
+           INITIALIZE                      SDMY01
+           MOVE    SPACE               TO  SDMY01-PANDAPRINT1
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                          ORCSPRTCLTRAREA
+           MOVE    "外来請求書兼領収書"    TO  ORCSPRTCLTR-TITLE-I(01)
+           MOVE    "外来診療費明細書"      TO  ORCSPRTCLTR-TITLE-I(02)
+           MOVE    "入院請求書兼領収書"    TO  ORCSPRTCLTR-TITLE-I(03)
+           MOVE    "入院診療費明細書"      TO  ORCSPRTCLTR-TITLE-I(04)
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCLTRAREA
+                                               MCPAREA
+           MOVE    ORCSPRTCLTR-OUT     TO  SDMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
+      *
+           .
+       800-CLIENT-PRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    クライアントダミー印刷　処理
+      *****************************************************************
+       800-CLIENT-DUMMY-PRT-SEC        SECTION.
+      *
+           IF      (SPA-CLIENT-PRT-FLG =   1  )
+      *        印刷ダミー処理
+               MOVE    "99"                TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"    USING   SPA-AREA
+           END-IF
+      *
+           .
+       800-CLIENT-DUMMY-PRT-EXT.
            EXIT.
       **************************************************************
       *    収納マスター検索処理（一括再計算）
