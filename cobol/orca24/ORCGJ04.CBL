@@ -5098,15 +5098,16 @@
       *        GO      TO      4100-TOROKU-EXT
       *****END-IF
       *
-      *    禁忌更新前のチェック
-           PERFORM 41001-YAKKNK-CHK-SEC
+      *H24.5 すべてのチェック後へ
+      **** 禁忌更新前のチェック
+      *    PERFORM 41001-YAKKNK-CHK-SEC
       *
       *     禁忌エラーの時、エラー表示へ
-           IF      WRK-KNKCHK-AREA     NOT =   SPACE
-               MOVE    "J03"               TO  SPA-J041-SAKI
-               PERFORM 410019-POP-J041-SEC
-               GO      TO      4100-TOROKU-EXT
-           END-IF
+      *    IF      WRK-KNKCHK-AREA     NOT =   SPACE
+      *        MOVE    "J03"               TO  SPA-J041-SAKI
+      *        PERFORM 410019-POP-J041-SEC
+      *        GO      TO      4100-TOROKU-EXT
+      **** END-IF
       *
       *    剤のチェック
            PERFORM 45011-NAIYOU-CHK-SEC
@@ -5142,6 +5143,16 @@
                    GO      TO      4100-TOROKU-EXT
                END-IF
            END-IF
+      *
+      *    禁忌更新前のチェック
+           PERFORM 41001-YAKKNK-CHK-SEC
+      *     禁忌エラーの時、エラー表示へ
+           IF      WRK-KNKCHK-AREA     NOT =   SPACE
+               MOVE    "J03"               TO  SPA-J041-SAKI
+               PERFORM 410019-POP-J041-SEC
+               GO      TO      4100-TOROKU-EXT
+           END-IF
+      *
       *
            IF      SPA-J04-SYORI       =   ZERO
                MOVE    "0101"              TO  SPA-JIDCD
@@ -5286,20 +5297,6 @@
       *    診療行為マスタ更新処理
       *****************************************************************
        4501-SINKOUI-KOU-SEC            SECTION.
-      *
-      *    剤のチェック
-      *    PERFORM 45011-NAIYOU-CHK-SEC
-      *    同一剤が存在している時、エラーとする
-      *    IF      FLG-OK              =   1
-      *        MOVE    "1025"              TO  SPA-ERRCD
-      *        GO      TO      4501-SINKOUI-KOU-EXT
-      *    END-IF
-      *
-      *    IF     (FLG-OK2             =   1   )  AND
-      *           (WRK-ZAINUM          =   ZERO )
-      *        剤変更なしとして、処理を終了する
-      *        GO      TO      4501-SINKOUI-KOU-EXT
-      *****END-IF
       *
            MOVE    ZERO                TO  FLG-NAIBUN
       *
@@ -5863,7 +5860,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    患者マスターより、最終剤番号を再番し、患者マスターを更新する
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            PERFORM 940-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
@@ -7203,7 +7200,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        45042-SRYACCT-INS-SEC          SECTION.
       *
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  ACCT-PTID
            MOVE    SPA-J01-SRYKA       TO  ACCT-SRYKA
