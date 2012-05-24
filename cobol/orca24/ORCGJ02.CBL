@@ -9696,7 +9696,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF     (SPA-NYUGAIKBN       =   "1" )
                        IF     (WRK-D-RENNUM        =   ZERO   )
                          AND  (SPA-RRK-DOUJI-RENNUM(IDR)
-                                               >  WRK-RRK-DOUJI-RENNUM)
+                                               >= WRK-RRK-DOUJI-RENNUM)
                            MOVE    SPA-RRK-DOUJI-RENNUM(IDR)
                                               TO  WRK-RRK-DOUJI-RENNUM
                            MOVE    IDR        TO  WRK-D-IDX
