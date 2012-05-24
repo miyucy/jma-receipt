@@ -16,7 +16,7 @@
 #                  '2011-02-09
 # version 1.4.4 ソケットオープン失敗時の無限ループを修正.
 #               ログ出力を追加.
-#                  '2011-11-30 
+#                  '2011-11-30
 
 $DEBUG = false
 
@@ -310,13 +310,8 @@ class ClaimRcv
     rescue Errno::EADDRINUSE => error
       Log("Error:#{error}\n")
     rescue => error
-<<<<<<< clm_rcv.rb
-      Log("Error:#{error}\n")
-      # retry
-=======
       Log("Error:#{error}\n")
       retry
->>>>>>> 1.9
     end
     @gsock.close if @gsock != nil
   end
