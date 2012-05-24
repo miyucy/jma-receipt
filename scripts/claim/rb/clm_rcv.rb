@@ -310,8 +310,13 @@ class ClaimRcv
     rescue Errno::EADDRINUSE => error
       Log("Error:#{error}\n")
     rescue => error
+<<<<<<< clm_rcv.rb
+      Log("Error:#{error}\n")
+      # retry
+=======
       Log("Error:#{error}\n")
       retry
+>>>>>>> 1.9
     end
     @gsock.close if @gsock != nil
   end

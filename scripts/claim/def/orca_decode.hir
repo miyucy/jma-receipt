@@ -426,6 +426,7 @@ $LineTargetStart, LT_4,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMod
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_4
 $LineTargetStart, LT_5,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,2,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -464,6 +465,7 @@ $LineTargetStart, LT_5,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMod
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_5
 $LineTargetStart, LT_6,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,3,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -502,6 +504,7 @@ $LineTargetStart, LT_6,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMod
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_6
 $LineTargetStart, LT_7,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,4,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -540,6 +543,7 @@ $LineTargetStart, LT_7,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMod
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_7
 $LineTargetStart, LT_8,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,5,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -578,6 +582,7 @@ $LineTargetStart, LT_8,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMod
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_8
 $LineTargetStart, LT_9,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,6,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -616,6 +621,7 @@ $LineTargetStart, LT_9,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMod
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_9
 $LineTargetStart, LT_10,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,7,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -654,6 +660,7 @@ $LineTargetStart, LT_10,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_10
 $LineTargetStart, LT_11,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,8,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -692,6 +699,7 @@ $LineTargetStart, LT_11,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_11
 $LineTargetStart, LT_12,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,9,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -730,6 +738,7 @@ $LineTargetStart, LT_12,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_12
 $LineTargetStart, LT_13,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,10,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -768,6 +777,7 @@ $LineTargetStart, LT_13,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_13
 $LineTargetStart, LT_14,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,11,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -806,6 +816,7 @@ $LineTargetStart, LT_14,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_14
 $LineTargetStart, LT_15,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,12,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -844,6 +855,7 @@ $LineTargetStart, LT_15,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_15
 $LineTargetStart, LT_16,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,13,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -882,6 +894,7 @@ $LineTargetStart, LT_16,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_16
 $LineTargetStart, LT_17,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,14,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -920,6 +933,7 @@ $LineTargetStart, LT_17,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_17
 $LineTargetStart, LT_18,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,15,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -958,6 +972,7 @@ $LineTargetStart, LT_18,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_18
 $LineTargetStart, LT_19,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,16,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -996,6 +1011,7 @@ $LineTargetStart, LT_19,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_19
 $LineTargetStart, LT_20,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,17,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1034,6 +1050,7 @@ $LineTargetStart, LT_20,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_20
 $LineTargetStart, LT_21,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,18,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1072,6 +1089,7 @@ $LineTargetStart, LT_21,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_21
 $LineTargetStart, LT_22,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,19,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1110,6 +1128,7 @@ $LineTargetStart, LT_22,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_22
 $LineTargetStart, LT_23,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,20,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1148,6 +1167,7 @@ $LineTargetStart, LT_23,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_23
 $LineTargetStart, LT_24,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,21,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1186,6 +1206,7 @@ $LineTargetStart, LT_24,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_24
 $LineTargetStart, LT_25,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,22,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1224,6 +1245,7 @@ $LineTargetStart, LT_25,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_25
 $LineTargetStart, LT_26,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,23,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1262,6 +1284,7 @@ $LineTargetStart, LT_26,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_26
 $LineTargetStart, LT_27,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,24,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1300,6 +1323,7 @@ $LineTargetStart, LT_27,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_27
 $LineTargetStart, LT_28,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,25,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1338,6 +1362,7 @@ $LineTargetStart, LT_28,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_28
 $LineTargetStart, LT_29,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,26,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1376,6 +1401,7 @@ $LineTargetStart, LT_29,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_29
 $LineTargetStart, LT_30,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,27,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1414,6 +1440,7 @@ $LineTargetStart, LT_30,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_30
 $LineTargetStart, LT_31,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,28,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1452,6 +1479,7 @@ $LineTargetStart, LT_31,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_31
 $LineTargetStart, LT_32,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,29,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1490,6 +1518,7 @@ $LineTargetStart, LT_32,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_32
 $LineTargetStart, LT_33,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,30,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1528,6 +1557,7 @@ $LineTargetStart, LT_33,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_33
 $LineTargetStart, LT_34,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,31,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1566,6 +1596,7 @@ $LineTargetStart, LT_34,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_34
 $LineTargetStart, LT_35,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,32,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1604,6 +1635,7 @@ $LineTargetStart, LT_35,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_35
 $LineTargetStart, LT_36,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,33,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1642,6 +1674,7 @@ $LineTargetStart, LT_36,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_36
 $LineTargetStart, LT_37,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,34,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1680,6 +1713,7 @@ $LineTargetStart, LT_37,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_37
 $LineTargetStart, LT_38,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,35,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1718,6 +1752,7 @@ $LineTargetStart, LT_38,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_38
 $LineTargetStart, LT_39,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,36,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1756,6 +1791,7 @@ $LineTargetStart, LT_39,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_39
 $LineTargetStart, LT_40,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,37,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1794,6 +1830,7 @@ $LineTargetStart, LT_40,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_40
 $LineTargetStart, LT_41,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,38,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1832,6 +1869,7 @@ $LineTargetStart, LT_41,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_41
 $LineTargetStart, LT_42,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,39,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1870,6 +1908,7 @@ $LineTargetStart, LT_42,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_42
 $LineTargetStart, LT_43,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,40,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1908,6 +1947,7 @@ $LineTargetStart, LT_43,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_43
 $LineTargetStart, LT_44,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,41,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1946,6 +1986,7 @@ $LineTargetStart, LT_44,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_44
 $LineTargetStart, LT_45,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,42,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -1984,6 +2025,7 @@ $LineTargetStart, LT_45,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_45
 $LineTargetStart, LT_46,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,43,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -2022,6 +2064,7 @@ $LineTargetStart, LT_46,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_46
 $LineTargetStart, LT_47,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,44,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -2060,6 +2103,7 @@ $LineTargetStart, LT_47,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_47
 $LineTargetStart, LT_48,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,45,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -2098,6 +2142,7 @@ $LineTargetStart, LT_48,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_48
 $LineTargetStart, LT_49,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,46,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -2136,6 +2181,7 @@ $LineTargetStart, LT_49,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_49
 $LineTargetStart, LT_50,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,47,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -2174,6 +2220,7 @@ $LineTargetStart, LT_50,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_50
 $LineTargetStart, LT_51,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,48,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -2212,6 +2259,7 @@ $LineTargetStart, LT_51,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_51
 $LineTargetStart, LT_52,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,49,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -2250,6 +2298,7 @@ $LineTargetStart, LT_52,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_52
 $LineTargetStart, LT_53,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis,50,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36
@@ -2288,6 +2337,7 @@ $LineTargetStart, LT_53,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentMo
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:outcome[1] = 20
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:firstEncounterDate[1] = 10
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]/mmlRd:InOutPatient[1] = 20
 $LineTargetEnd,  LT_53
 $LineTargetStart, LT_54,/Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = claim,1,/Mml[1]/MmlBody[1]/MmlModuleItem[X]
 /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/docId[1]/uid[1] = 36

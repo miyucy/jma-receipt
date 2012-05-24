@@ -1187,6 +1187,8 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 		mmlRd:firstEncounterDate[1] = 10
 		# 疾患に関する保険の健康保険モジュールのUID[単独タグ]
 		mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
+		# 入外区分
+		mmlRd:InOutPatient[1] = 20
 
 	$BaseEnd
 
