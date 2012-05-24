@@ -872,16 +872,6 @@
                  AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200810")
                    MOVE     1     TO   LNK-ORCSJGNGET-TAISYOKBN
                  END-IF
-               WHEN       "07"
-                 IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "281"   )
-                 AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200702")
-                   MOVE     2     TO   LNK-ORCSJGNGET-TAISYOKBN
-                 END-IF
-               WHEN       "08"
-                 IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "152"   )
-                 AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200904")
-                   MOVE     1     TO   LNK-ORCSJGNGET-TAISYOKBN
-                 END-IF
                WHEN       "13"
                  IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "151"   )
                  AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200310")
@@ -900,11 +890,6 @@
                  IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "152"   )
                  AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "201104")
                    MOVE     2     TO   LNK-ORCSJGNGET-TAISYOKBN
-                 END-IF
-               WHEN       "28"
-                 IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "186"   )
-                 AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200310")
-                   MOVE     1     TO   LNK-ORCSJGNGET-TAISYOKBN
                  END-IF
              END-EVALUATE
       *
@@ -937,6 +922,24 @@
                END-IF
                EVALUATE  SYS-2010-PTJGNKBN
                  WHEN      SPACE
+                    MOVE   ZERO   TO   LNK-ORCSJGNGET-TAISYOKBN
+                    EVALUATE   LNK-ORCSJGNGET-PREFNUM
+                     WHEN       "07"
+                       IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "281"   )
+                       AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200702")
+                         MOVE     2     TO   LNK-ORCSJGNGET-TAISYOKBN
+                       END-IF
+                     WHEN       "08"
+                       IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "152"   )
+                       AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200904")
+                         MOVE     1     TO   LNK-ORCSJGNGET-TAISYOKBN
+                       END-IF
+                     WHEN       "28"
+                       IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "186"   )
+                       AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200310")
+                         MOVE     1     TO   LNK-ORCSJGNGET-TAISYOKBN
+                       END-IF
+                    END-EVALUATE
                  WHEN      "0"
                     MOVE   ZERO   TO   LNK-ORCSJGNGET-TAISYOKBN
                  WHEN      "1"
