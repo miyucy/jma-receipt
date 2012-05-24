@@ -439,6 +439,8 @@
                05  LF041-SND-SKNSHOSHINDATE  PIC X(10).
       * 疾患な関する保険の健康保険モジュールのUID (単独タグ) (mmlRd:uid)
                05  LF041-SND-SKNHLTUID       PIC X(36).
+      * 入外区分 (mmlRd:InOutPatient)
+               05  LF04-SND-NYUGAIKBN        PIC X(20).
       *
       *
       * [予約請求(Claim)モジュール]
