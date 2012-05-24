@@ -370,6 +370,7 @@
       *                                     ・低所得者の計算修正
       *                                     ・一括再計算メッセージ表示の対
       *                                       象外とする
+      *  04.05.39    NACL-門脇    12/05/16  愛知・三重県地方公費対応
       *
       *  04.06.01    NACL-門脇    10/09/02  出産育児一時金直接支払制度（外来）
       *  04.06.02    NACL-門脇    10/11/08  主保険＋マル長の請求対応
@@ -3846,6 +3847,9 @@
            OR ((WK-1001-PREFNUM      =  23     ) AND
                (COMB-KOH1HKNNUM      = "191"   ) AND
                (LNK-SYU-SRYYMD(1:6) >= "200910"))
+           OR ((WK-1001-PREFNUM   =  23 OR 24  ) AND
+               (COMB-KOH1HKNNUM      = "152"   ) AND
+               (LNK-SYU-SRYYMD(1:6) >= "201104"))
                MOVE    1     TO    WK-TOKATUKAI(1)
            END-IF
       *
@@ -5158,6 +5162,9 @@
                    ( WK-KOH-FTNJANUM(5:3) = "601" OR "602"      ) AND
                    ( WK-KOH-FTNJANUM(1:2) = "51"  OR "52"       ))
                OR (( COMB-KOH1HKNNUM = "052"                    ) AND
+                   ( WK-KOH-FTNJANUM(5:2) = "60"                ) AND
+                   ( WK-KOH-FTNJANUM(1:2) = "52"                ))
+               OR (( WK-TOKATUKAI(1) =  1                       ) AND
                    ( WK-KOH-FTNJANUM(5:2) = "60"                ) AND
                    ( WK-KOH-FTNJANUM(1:2) = "52"                ))
                  IF     FLG-KOUREI-KBN   =   "1"

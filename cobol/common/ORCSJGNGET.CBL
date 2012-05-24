@@ -36,6 +36,7 @@
       *  04.02.01    NACL-ÌçÏÆ    08/03/21  ´Î±ê¼£ÎÅÂÐ±þ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/07/28  ½êÆÀ¼Ô¾ðÊó¤Î¸øÈñÆþÎÏµ¡Ç½¸þ¾å
+      *  04.05.02    NACL-ÌçÏÆ    12/05/16  °¦ÃÎ¡¦»°½Å¸©ÃÏÊý¸øÈñÂÐ±þ
       *
       *  04.07.01    NACL-ÌçÏÆ    11/09/01  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *****************************************************************
@@ -890,6 +891,15 @@
                  IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "191"   )
                  AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "200910")
                    MOVE     1     TO   LNK-ORCSJGNGET-TAISYOKBN
+                 END-IF
+                 IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "152"   )
+                 AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "201104")
+                   MOVE     2     TO   LNK-ORCSJGNGET-TAISYOKBN
+                 END-IF
+               WHEN       "24"
+                 IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "152"   )
+                 AND (LNK-ORCSJGNGET-TEKSTYMD(1:6) >= "201104")
+                   MOVE     2     TO   LNK-ORCSJGNGET-TAISYOKBN
                  END-IF
                WHEN       "28"
                  IF  (LNK-ORCSJGNGET-KOHHKNNUM      = "186"   )

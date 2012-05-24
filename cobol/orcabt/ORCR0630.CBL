@@ -102,6 +102,7 @@
       *  04.05.07    NACL-ÌçÏÆ    12/04/02  Ê¿À®£²£´Ç¯£´·î²þÀµ
       *                                     ³°Çñ¶èÊ¬£¶¡¥£·¤ÎÂÐ±þ
       *                                     Æþ±¡Î¬¾Î¤ÎÊ¸»ú¿ô³ÈÄ¥ÂÐ±þ
+      *  04.05.08    NACL-ÌçÏÆ    12/05/16  °¦ÃÎ¡¦»°½Å¸©ÃÏÊý¸øÈñÂÐ±þ
       *
       *  04.06.01    NACL-ÌçÏÆ    10/12/13  ÊÝ¸±ÊÌÀÁµá¥Á¥§¥Ã¥¯É½¤ÎËÜÂÎ¼è¹þ¤ß
       *****************************************************************
@@ -3933,6 +3934,11 @@
                   (RECE62-HKNNUMHC(IDX11)     NOT = SPACE          ) AND
                   (RECE62-KOHNUMHC(IDX11 1)       = "191"          ) AND
                   (RECE62-KOHNUMHC(IDX11 2)(1:1) >= "1" AND <= "8" ))
+              OR ((WRK-PREFNUM                    = "23" OR "24"   ) AND
+                  (RECE62-SRYYM                  >= "201104"       ) AND
+                  (RECE62-HKNNUMHC(IDX11)     NOT = SPACE          ) AND
+                  (RECE62-KOHNUMHC(IDX11 1)       = "152"          ) AND
+                  (RECE62-KOHNUMHC(IDX11 2)(1:1) >= "1" AND <= "8" ))
       *
                 IF ((RECE62-KOHNUMHC(IDX11 2) =  RECE62-KOHNUM(2)) AND
                     (RECE62-KOHIDHC(IDX11 2)  =  RECE62-KOHID(2) ))
@@ -3993,6 +3999,10 @@
                   OR ((WRK-PREFNUM               =  "23"    ) AND
                       (RECE62-KOHNUMHC(IDX11 2)  =  "191"   ) AND
                       (RECE62-SRYYM             >=  "200910"))
+                  OR ((WRK-PREFNUM               =  "23"
+                                                 OR "24"    ) AND
+                      (RECE62-KOHNUMHC(IDX11 2)  =  "152"   ) AND
+                      (RECE62-SRYYM             >=  "201104"))
                           MOVE "0" TO RECE62-SYUKEIKBN(IDX11 2)
                           MOVE "0" TO RECE62-SYUKEI-TAIKBN(IDX11 2)
                   END-IF
