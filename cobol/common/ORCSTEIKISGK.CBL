@@ -146,7 +146,7 @@
            MOVE    ZERO            TO  STEIKISGK-RC
                                        STEIKISGK-S02-RC
       *
-           PERFORM 900-SYUNOU-DEL6-SEC
+           PERFORM 900-SYUNOU-DEL2-SEC
            IF    ( FLG-SYUNOU     NOT  =   ZERO )
                MOVE    -3         TO   STEIKISGK-RC
                PERFORM 800-ABORT-SEC
@@ -228,7 +228,7 @@
            MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           MOVE    "3"                TO   WRK-UPDNYUGAIKBN
+           MOVE    "0"                TO   WRK-UPDNYUGAIKBN
            MOVE    "1"                TO   WRK-NYUGAIKBN
       *
            PERFORM 900-SYUNOU-UPD1-SEC
@@ -375,19 +375,10 @@
                                    TO  LNK-S02-TIMEKBN-ED
            END-IF
            MOVE    SPA-SYSYMD      TO  LNK-S02-SYSYMD
-           IF    ( WRK-SKYKBN          =   "1" )
-               IF    ( SBUNBENCHK-BUNBEN   =   ZERO )
-                   MOVE    "1"     TO  LNK-S02-SYORI-KBN
-               ELSE
-                   MOVE    "8"     TO  LNK-S02-SYORI-KBN
-               END-IF
+           IF    ( SBUNBENCHK-BUNBEN   =   ZERO )
+               MOVE    "1"         TO  LNK-S02-SYORI-KBN
            ELSE
-               MOVE    "A"         TO  LNK-S02-TEIKI-KBN
-               IF    ( SBUNBENCHK-BUNBEN   =   ZERO )
-                   MOVE    "2"     TO  LNK-S02-SYORI-KBN
-               ELSE
-                   MOVE    "9"     TO  LNK-S02-SYORI-KBN
-               END-IF
+               MOVE    "8"         TO  LNK-S02-SYORI-KBN
            END-IF
            CALL    "ORCSNYUFTN"    USING
                                    SPA-AREA
@@ -455,7 +446,7 @@
       *****************************************************************
        300-END-SEC                    SECTION.
       *
-           PERFORM 900-SYUNOU-DEL6-SEC
+           PERFORM 900-SYUNOU-DEL2-SEC
            IF    ( FLG-SYUNOU     NOT  =   ZERO )
                MOVE    -7         TO   STEIKISGK-RC
                PERFORM 800-ABORT-SEC
@@ -468,7 +459,7 @@
            END-IF
       *
            MOVE    "1"            TO   WRK-UPDNYUGAIKBN
-           MOVE    "3"            TO   WRK-NYUGAIKBN
+           MOVE    "0"            TO   WRK-NYUGAIKBN
       *
            PERFORM 900-SYUNOU-UPD1-SEC
            IF    ( FLG-SYUNOU     NOT  =   ZERO )
@@ -514,7 +505,7 @@
            MOVE    SPA-HOSPNUM    TO   SYU-HOSPNUM
            MOVE    WRK-UPDNYUGAIKBN
                                   TO   SYU-NYUGAIKBN
-           MOVE    WRK-NYUGAIKBN  TO   SYU-SELNYUGAIKBN
+           MOVE    WRK-NYUGAIKBN  TO   SYU-DENPJTIKBN
            MOVE    STEIKISGK-PTID TO   SYU-PTID
            MOVE    "2"            TO   SYU-CREATEKBN
            MOVE    STEIKISGK-SRYYMD(1:6)
@@ -564,7 +555,7 @@
       *****************************************************************
       *    ¼ýÇ¼ºï½ü½èÍý
       *****************************************************************
-       900-SYUNOU-DEL6-SEC             SECTION.
+       900-SYUNOU-DEL2-SEC             SECTION.
       *
            MOVE    ZERO            TO  FLG-SYUNOU
       *
@@ -575,7 +566,7 @@
            MOVE    CONST-DENPNUM  TO   SYU-DENPNUM
            MOVE    SYUNOU-REC     TO   MCPDATA-REC
            MOVE    "tbl_syunou"   TO   MCP-TABLE
-           MOVE    "del6"         TO   MCP-PATHNAME
+           MOVE    "del2"         TO   MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC         NOT  =   ZERO )
                MOVE    1          TO   FLG-SYUNOU
@@ -583,7 +574,7 @@
       *
            .
       *
-       900-SYUNOU-DEL6-EXT.
+       900-SYUNOU-DEL2-EXT.
            EXIT.
       *****************************************************************
       *    ÆüÊÌ¼ýÇ¼ºï½ü½èÍý
