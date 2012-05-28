@@ -1434,8 +1434,6 @@
                END-IF
       *    タグ切替え
            WHEN    "CLICKED"       ALSO    "B08"
-           WHEN    "CLICKED"       ALSO    "N0101"
-           WHEN    "CLICKED"       ALSO    "N0102"
                IF      SPA-W01-KANRICD     =   "1031"
                    PERFORM 460-TAGUCHG-SEC
                END-IF
@@ -1473,6 +1471,11 @@
       *        選択番号
                WHEN    "ACTIVATE"       ALSO    "SELNUM"
                    PERFORM  4101-SELNUM-CHK-SEC
+      *        タブ変更
+               WHEN    "SWITCH"        ALSO   "n4"
+                   IF      SPA-W01-KANRICD     =   "1031"
+                       PERFORM 460-TAGUCHG-SEC
+                   END-IF
       *        行選択
                WHEN    ANY              ALSO    "USERLST"
                    PERFORM  4105-USERLST-SEC
@@ -2343,11 +2346,9 @@
                GO      TO      460-TAGUCHG-EXT
            END-IF
       *
-           IF      WRK-MCP-WIDGET      =   "N0101"
-            OR   ( WRK-MCP-WIDGET      =   "B08"
-             AND   SPA-GMN-PAGENO      =   2 )
+           IF     SPA-GMN-PAGENO      =   2
       *        外来画面へ
-               MOVE    01                  TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-GMN-CUR
                MOVE    1                   TO  SPA-GMN-PAGENO
            ELSE
       *        入院画面へ
