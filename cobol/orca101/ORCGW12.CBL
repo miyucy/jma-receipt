@@ -145,6 +145,7 @@
       *  04.07.03    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
       *  04.07.04    NACL-藤原    12/03/25  公費記載順設定対応
+      *  04.07.05    NACL-藤原    12/05/28  タブラベル対応
      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4244,14 +4245,6 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    PERFORM 490-HKNJANUM-UPDATE-SEC
       *    タグ
                WHEN    "CLICKED"       ALSO    "B08"
-               WHEN    "CLICKED"       ALSO    "N01"
-               WHEN    "CLICKED"       ALSO    "N02"
-               WHEN    "CLICKED"       ALSO    "N03"
-               WHEN    "CLICKED"       ALSO    "N04"
-               WHEN    "CLICKED"       ALSO    "N05"
-               WHEN    "CLICKED"       ALSO    "N06"
-               WHEN    "CLICKED"       ALSO    "N07"
-               WHEN    "CLICKED"       ALSO    "N08"
                    PERFORM 440-TAG-CHANGE-SEC
            END-EVALUATE
       *
@@ -4270,6 +4263,10 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *        選択番号選択（直接請求する保険者）
                WHEN    ANY             ALSO    "HKNJANUMLIST"
                    PERFORM 420-HKNJANUMLIST-SEC
+      *        タグ
+               WHEN    "SWITCH"        ALSO    "note3"
+                   PERFORM 440-TAG-CHANGE-SEC
+                   GO  TO  200-ENTRY-EXT
            END-EVALUATE
       *
       *    入力チェック処理
@@ -7617,26 +7614,12 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    ELSE
                        COMPUTE IDX =   W12-PAGENO  +   1
                    END-IF
-               WHEN    "N01"
-                   MOVE   0            TO  IDX
-               WHEN    "N08"
-                   MOVE   1            TO  IDX
-               WHEN    "N07"
-                  MOVE    2            TO  IDX
-               WHEN    "N06"
-                  MOVE    3            TO  IDX
-               WHEN    "N04"
-                  MOVE    4            TO  IDX
-               WHEN    "N02"
-                  MOVE    5            TO  IDX
-               WHEN    "N03"
-                  MOVE    6            TO  IDX
-               WHEN    "N05"
-                  MOVE    7            TO  IDX
+               WHEN    OTHER
+                   MOVE   W12-PAGENO   TO  IDX
            END-EVALUATE
       *
-      *    タグが変わったとき項目チェック
-           IF      IDX              NOT =   W12-PAGENO
+      ***  タグが変わったとき項目チェック
+      ***  IF      IDX              NOT =   W12-PAGENO
                MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
                MOVE    ZERO                TO  SPA-GMN-CUR
       *
@@ -7668,7 +7651,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                        END-EVALUATE
                    END-IF
                END-IF
-           END-IF        
+      ***  END-IF
            .
        440-TAG-CHANGE-EXT.
            EXIT.
