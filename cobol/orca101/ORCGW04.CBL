@@ -433,10 +433,10 @@
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
       *    タグ
-               WHEN    "CLICKED"       ALSO    "N01"
-               WHEN    "CLICKED"       ALSO    "N02"
-               WHEN    "CLICKED"       ALSO    "N03"
-                   PERFORM 440-TAG-CHANGE-SEC
+      *        WHEN    "CLICKED"       ALSO    "N01"
+      *        WHEN    "CLICKED"       ALSO    "N02"
+      *        WHEN    "CLICKED"       ALSO    "N03"
+      **           PERFORM 440-TAG-CHANGE-SEC
       *    患者番号変更
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 409-PTNUM-HENKOU-SEC
@@ -451,6 +451,11 @@
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *ver.4.7
+      *        タグ切替え
+               WHEN    "SWITCH"       ALSO    "not1"
+                   PERFORM 440-TAG-CHANGE-SEC
+      *
       *        患者番号構成区分
                WHEN    "ACTIVATE"      ALSO    "PTNUMKSIKBN"
                    PERFORM 4101-PTNUMKSIKBN-CHK-SEC
@@ -783,14 +788,17 @@
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "N01"
-                   MOVE   0            TO  IDX
-               WHEN    "N02"
-                  MOVE    1            TO  IDX
-               WHEN    "N03"
-                   MOVE   2            TO  IDX
-           END-EVALUATE
+      *ver.4.7
+           MOVE    W04-PAGENO          TO   IDX
+      *
+      *    EVALUATE    MCP-WIDGET
+      *        WHEN    "N01"
+      *            MOVE   0            TO  IDX
+      *        WHEN    "N02"
+      *           MOVE    1            TO  IDX
+      *        WHEN    "N03"
+      *            MOVE   2            TO  IDX
+      *****END-EVALUATE
       *
       *    タグが変わったとき関連チェック
            IF      IDX              NOT =   SPA-GMN-PAGENO
