@@ -1525,16 +1525,17 @@
       *    前・次切替え
                WHEN    "CLICKED"       ALSO    "B02S"
                    PERFORM 4034-NEXTCHG-SEC
+      *ver.4.7
       *    タグ切り替え
-               WHEN    "CLICKED"       ALSO    "N01"
-               WHEN    "CLICKED"       ALSO    "N02"
-               WHEN    "CLICKED"       ALSO    "N03"
-               WHEN    "CLICKED"       ALSO    "N04"
+      *        WHEN    "CLICKED"       ALSO    "N01"
+      *        WHEN    "CLICKED"       ALSO    "N02"
+      *        WHEN    "CLICKED"       ALSO    "N03"
+      *        WHEN    "CLICKED"       ALSO    "N04"
       *********WHEN    "CLICKED"       ALSO    "N06"
-               WHEN    "CLICKED"       ALSO    "N07"
-               WHEN    "CLICKED"       ALSO    "N08"
-               WHEN    "CLICKED"       ALSO    "N09"
-                   PERFORM 460-TAGUCHG-SEC
+      *        WHEN    "CLICKED"       ALSO    "N07"
+      *        WHEN    "CLICKED"       ALSO    "N08"
+      *        WHEN    "CLICKED"       ALSO    "N09"
+      *****        PERFORM 460-TAGUCHG-SEC
       *    各画面へ
                WHEN    OTHER
                    MOVE    ZERO                TO  SPA-TAGU-FLG
@@ -1688,6 +1689,23 @@
        460-TAGUCHG-SEC           SECTION.
       *
            MOVE    MCP-WIDGET          TO  WRK-WIDGET
+      *ver.4.7
+           EVALUATE    P02-PAGENO
+               WHEN    0
+                   MOVE    "N01"               TO  WRK-WIDGET
+               WHEN    1
+                   MOVE    "N02"               TO  WRK-WIDGET
+               WHEN    2
+                   MOVE    "N03"               TO  WRK-WIDGET
+               WHEN    3
+                   MOVE    "N04"               TO  WRK-WIDGET
+               WHEN    4
+                   MOVE    "N07"               TO  WRK-WIDGET
+               WHEN    5
+                   MOVE    "N08"               TO  WRK-WIDGET
+               WHEN    6
+                   MOVE    "N09"               TO  WRK-WIDGET
+           END-EVALUATE
       *
       *    患者指定がない時、チェックなし
            IF      SPA-GMN-PTNUM       =   SPACE
@@ -1757,6 +1775,10 @@
       *        患者番号入力
                WHEN    "ACTIVATE"      ALSO    "PTNUM"
                    PERFORM 4100-PTNUM-SYORI-SEC
+      *ver.4.7
+      *    タグ切り替え
+               WHEN    "SWITCH"       ALSO    "nb2"
+                   PERFORM 460-TAGUCHG-SEC
       *        各画面へ
                WHEN    OTHER
                    IF     (SPA-GMN-PTNUM   NOT =   SPACE  )  AND

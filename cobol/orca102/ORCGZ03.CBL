@@ -1593,34 +1593,34 @@
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM  412-TOUROKU-SEC
-      *        基本情報
-               WHEN    "CLICKED"       ALSO    "BJ1"
-                   PERFORM 420-KIRIKAE-SEC
-                   IF      SPA-ERRCD       =   SPACE
-                       MOVE    0               TO  SPA-GMN-PAGENO
-                       MOVE    ZERO            TO  SPA-GMN-CUR
-                   END-IF
+      *ver.4.7 基本情報
+      *        WHEN    "CLICKED"       ALSO    "BJ1"
+      *            PERFORM 420-KIRIKAE-SEC
+      *            IF      SPA-ERRCD       =   SPACE
+      *                MOVE    0               TO  SPA-GMN-PAGENO
+      *                MOVE    ZERO            TO  SPA-GMN-CUR
+      *            END-IF
       *        回数、年齢
-               WHEN    "CLICKED"       ALSO    "BJ2"
-                   PERFORM 420-KIRIKAE-SEC
-                   IF      SPA-ERRCD       =   SPACE
-                       MOVE    1               TO  SPA-GMN-PAGENO
-                       MOVE    ZERO            TO  SPA-GMN-CUR
-                   END-IF
+      *        WHEN    "CLICKED"       ALSO    "BJ2"
+      *            PERFORM 420-KIRIKAE-SEC
+      *            IF      SPA-ERRCD       =   SPACE
+      *                MOVE    1               TO  SPA-GMN-PAGENO
+      *                MOVE    ZERO            TO  SPA-GMN-CUR
+      *            END-IF
       *        手術、検査、入院
-               WHEN    "CLICKED"       ALSO    "BJ3"
-                   PERFORM 420-KIRIKAE-SEC
-                   IF      SPA-ERRCD       =   SPACE
-                       MOVE    2               TO  SPA-GMN-PAGENO
-                       MOVE    ZERO            TO  SPA-GMN-CUR
-                   END-IF
+      *        WHEN    "CLICKED"       ALSO    "BJ3"
+      *            PERFORM 420-KIRIKAE-SEC
+      *            IF      SPA-ERRCD       =   SPACE
+      *                MOVE    2               TO  SPA-GMN-PAGENO
+      *                MOVE    ZERO            TO  SPA-GMN-CUR
+      *            END-IF
       *        各種番号等
-               WHEN    "CLICKED"       ALSO    "BJ4"
-                   PERFORM 420-KIRIKAE-SEC
-                   IF      SPA-ERRCD       =   SPACE
-                       MOVE    3               TO  SPA-GMN-PAGENO
-                       MOVE    ZERO            TO  SPA-GMN-CUR
-                   END-IF
+      *        WHEN    "CLICKED"       ALSO    "BJ4"
+      *            PERFORM 420-KIRIKAE-SEC
+      *            IF      SPA-ERRCD       =   SPACE
+      *                MOVE    3               TO  SPA-GMN-PAGENO
+      *                MOVE    ZERO            TO  SPA-GMN-CUR
+      *******      END-IF
       *        タブ切替
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 480-BETUGAMEN-SEC
@@ -1638,11 +1638,19 @@
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
            MOVE    ZERO                TO  FLG-TOUROKU
-      *    入力チェック処理
-           PERFORM 410-INPUT-CHK-SEC
+      *
+      *ver.4.7 
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        基本情報
+               WHEN    "SWITCH"       ALSO    "not1"
+                   PERFORM 420-KIRIKAE-SEC
+      *
+               WHEN    OTHER
+      *            入力チェック処理
+                   PERFORM 410-INPUT-CHK-SEC
+           END-EVALUATE
       *
            .
-      *
        200-ENTRY-EXT.
            EXIT.
       *
@@ -3159,6 +3167,7 @@
            MOVE    SPACE               TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-CUR
            MOVE    ZERO                TO  FLG-TOUROKU
+      *
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *****入力チェック処理
