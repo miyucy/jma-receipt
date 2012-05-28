@@ -891,10 +891,10 @@
                    PERFORM 490-TOUROKU-SEC
       *    タグ
                WHEN    "CLICKED"       ALSO    "B08"
-               WHEN    "CLICKED"       ALSO    "N01"
-               WHEN    "CLICKED"       ALSO    "N02"
-               WHEN    "CLICKED"       ALSO    "N03"
-               WHEN    "CLICKED"       ALSO    "N04"
+      *        WHEN    "CLICKED"       ALSO    "N01"
+      *        WHEN    "CLICKED"       ALSO    "N02"
+      *        WHEN    "CLICKED"       ALSO    "N03"
+      *        WHEN    "CLICKED"       ALSO    "N04"
                    PERFORM 440-TAG-CHANGE-SEC
            END-EVALUATE
       *
@@ -910,8 +910,18 @@
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
            MOVE    1                   TO  FLG-KOUSIN
-      *    入力チェック処理
-           PERFORM 410-INPUT-CHK-SEC
+      *
+      *
+           EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
+           WHEN    "SWITCH"        ALSO    "not3"
+                   PERFORM 440-TAG-CHANGE-SEC
+           WHEN    OTHER
+      *
+      *        入力チェック処理
+               PERFORM 410-INPUT-CHK-SEC
+      *
+           END-EVALUATE
+           
            .
        200-ENTRY-EXT.
            EXIT.
@@ -1832,14 +1842,8 @@
                        COMPUTE WRK-PAGENO
                             =  SPA-GMN-PAGENO   +  1
                    END-IF
-               WHEN    "N01"
-                   MOVE   0            TO  WRK-PAGENO
-               WHEN    "N02"
-                  MOVE    1            TO  WRK-PAGENO
-               WHEN    "N03"
-                   MOVE   2            TO  WRK-PAGENO
-               WHEN    "N04"
-                   MOVE   3            TO  WRK-PAGENO
+               WHEN     OTHER
+                   MOVE   V02-PAGENO   TO  WRK-PAGENO
            END-EVALUATE
       *
       *    タグが変わったとき関連チェック
