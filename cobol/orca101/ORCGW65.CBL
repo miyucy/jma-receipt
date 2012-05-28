@@ -1967,18 +1967,18 @@
       *
       *
       *    タブ切替
-           WHEN    "CLICKED"       ALSO    "NPAGE00"
-              MOVE    0            TO      WRK-PAGENO
-              PERFORM 420-SWITCH-PAGE-SEC
-           WHEN    "CLICKED"       ALSO    "NPAGE01"
-              MOVE    1            TO      WRK-PAGENO
-              PERFORM 420-SWITCH-PAGE-SEC
-           WHEN    "CLICKED"       ALSO    "NPAGE02"
-              MOVE    2            TO      WRK-PAGENO
-              PERFORM 420-SWITCH-PAGE-SEC
-           WHEN    "CLICKED"       ALSO    "NPAGE03"
-              MOVE    3            TO      WRK-PAGENO
-              PERFORM 420-SWITCH-PAGE-SEC
+      *    WHEN    "CLICKED"       ALSO    "NPAGE00"
+      *       MOVE    0            TO      WRK-PAGENO
+      *       PERFORM 420-SWITCH-PAGE-SEC
+      *    WHEN    "CLICKED"       ALSO    "NPAGE01"
+      *       MOVE    1            TO      WRK-PAGENO
+      *       PERFORM 420-SWITCH-PAGE-SEC
+      *    WHEN    "CLICKED"       ALSO    "NPAGE02"
+      *       MOVE    2            TO      WRK-PAGENO
+      *       PERFORM 420-SWITCH-PAGE-SEC
+      *    WHEN    "CLICKED"       ALSO    "NPAGE03"
+      *       MOVE    3            TO      WRK-PAGENO
+      *       PERFORM 420-SWITCH-PAGE-SEC
            WHEN    "CLICKED"       ALSO    "B09"
               COMPUTE WRK-PAGENO
                   =   SPA-GMN-PAGENO   +   1
@@ -2011,6 +2011,10 @@
       *    履歴リスト
            WHEN    ANY             ALSO    "RIREKILST"
                PERFORM 4100-RIREKILST-CHK-SEC
+      *    タブ切替
+           WHEN    "SWITCH"        ALSO    "nb1"
+               MOVE    W65-NB1-PAGENO  TO  WRK-PAGENO
+               PERFORM 420-SWITCH-PAGE-SEC
            WHEN    OTHER
       *
       *        入力個所のセット
