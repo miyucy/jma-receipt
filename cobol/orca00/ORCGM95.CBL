@@ -37,6 +37,7 @@
       *  04.04.00    NACL-森脇    09/01/30  他院切替機能追加、MID2の追加
       *  04.05.00    NACL-多々納  09/07/15  小児科特例時間外区分追加
       *  04.07.00    NACL-多々納  12/01/26  背景色変更追加
+      *  04.07.00    NACL-多々納  12/05/28  タブラベル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -173,6 +174,7 @@
                05  WRK-DRCDMEI         PIC X(24).
            03  WRK-SYU-DRCD            PIC X(05).
            03  WRK-MCP-WIDGET          PIC X(10).
+           03  WRK-PAGENO              PIC 9(03).
            03  WRK-YAKANKBN            PIC 9(01).
            03  WRK-JIKANTOKU-NYU       PIC 9(01).
       *
@@ -716,10 +718,10 @@
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 208-BETUGAMEN-SEC
       *        タグ切り替え
-               WHEN    "CLICKED"       ALSO    "N01"
-               WHEN    "CLICKED"       ALSO    "N02"
-               WHEN    "CLICKED"       ALSO    "N03"
-                   PERFORM 430-TAGUCHG-SEC
+      *        WHEN    "CLICKED"       ALSO    "N01"
+      *        WHEN    "CLICKED"       ALSO    "N02"
+      *        WHEN    "CLICKED"       ALSO    "N03"
+      *            PERFORM 430-TAGUCHG-SEC
       *        カレンダー選択
                WHEN    "CLICKED"       ALSO    "C01"
                WHEN    "CLICKED"       ALSO    "CALENDAR1"
@@ -752,6 +754,8 @@
                    PERFORM 4130-SYSLIST-SEC
                WHEN    ANY             ALSO    "TAINLIST"
                    PERFORM 4130-TAINLIST-SEC
+               WHEN    "SWITCH"       ALSO     "nt1"
+                   PERFORM 430-TAGUCHG-SEC
           END-EVALUATE
       *
           .
@@ -1158,7 +1162,7 @@
       *****************************************************************
        430-TAGUCHG-SEC                 SECTION.
       *
-           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    M95-PAGENO          TO  WRK-PAGENO
       *
            EVALUATE    SPA-M95-PAGE
                WHEN    1
@@ -1172,22 +1176,26 @@
                    CONTINUE
            END-EVALUATE
            IF      SPA-ERRCD           =   SPACE
-               IF      WRK-MCP-WIDGET      =   "N01"
+               IF      WRK-PAGENO          =   0
                    MOVE    1               TO  SPA-M95-PAGE
                    MOVE    1               TO  SPA-M95-CUR
                ELSE
-                 IF    WRK-MCP-WIDGET      =   "N02"
+                   IF      WRK-PAGENO          =   1
                    MOVE    2               TO  SPA-M95-PAGE
                    IF      SPA-M95-INIT    =   ZERO
                        PERFORM 4200-DRCDMGN-INIT-SEC
                    END-IF
                    MOVE    10              TO  SPA-M95-CUR
                  ELSE
-                   MOVE    3               TO  SPA-M95-PAGE
-                   IF      SPA-M95-INIT-P3 =   ZERO
-                       PERFORM 4300-TAIN-SET-SEC
+                   IF    ( SPA-GRPHOSPKBN      =   1 )
+                       MOVE    3               TO  SPA-M95-PAGE
+                       IF      SPA-M95-INIT-P3 =   ZERO
+                           PERFORM 4300-TAIN-SET-SEC
+                       END-IF
+                       MOVE    31              TO  SPA-M95-CUR
+                   ELSE
+                       MOVE    "0110"          TO  SPA-ERRCD
                    END-IF
-                   MOVE    31              TO  SPA-M95-CUR
                  END-IF
                END-IF
            END-IF
@@ -2218,7 +2226,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                            "これ以上登録できません。"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
-                   END-STRING
+               WHEN    "0110"
+                   MOVE    "本院・分院機能が有効な場合に設定可能です。"
+                                               TO  SPA-ERRMSG
                WHEN    "9000"
                    MOVE    "ＤＢ削除エラーです。"
                                                TO  SPA-ERRMSG

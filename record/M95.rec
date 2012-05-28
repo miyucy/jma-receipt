@@ -1,7 +1,7 @@
 M95	{
 	bgcolor		varchar(20);
 	fixed1	{
-		notebook1	{
+		nt1	{
 			pageno	int;
 			fixed2	{
 				SYSYMD	{

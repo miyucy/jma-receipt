@@ -53,6 +53,7 @@
       * 04.04.00     NACL-太田    08/01/27  他院設定追加
       * 04.04.01     NACL-森脇    09/03/13  外部まとめ追加
       * 04.05.00     NACL-多々納  10/03/XX  平成２２年４月改正対応
+      * 04.07.00     NACL-太田    12/05/27  タブラベル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -312,7 +313,7 @@
       *    一時領域
       *
        01  WRK-AREA.
-           03  WRK-GMN-CUR         PIC 9(02).
+           03  WRK-GMN-CUR         PIC 9(03).
            03  WRK-PATH            PIC X(64).
            03  WRK-WIDMSG          PIC X(70). 
            03  WRK-YMD             PIC X(09). 
@@ -335,6 +336,7 @@
       *
            03  WRK-CD              PIC X(02).
            03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-PAGENO          PIC 9(03).
       *
            03  WRK-MAE-USERID      PIC X(16).
            03  WRK-GRPUSERID-WIDGET.
@@ -1059,10 +1061,10 @@
                WHEN    "CLICKED"      ALSO    "CHK36"
                    PERFORM 4119-GSRAUTH-CHK-SEC
       *    タグ切替え
-           WHEN    "CLICKED"       ALSO    "TGN1"
-           WHEN    "CLICKED"       ALSO    "TGN2"
-           WHEN    "CLICKED"       ALSO    "TGN3"
-               PERFORM 460-TAGUCHG-SEC
+      *    WHEN    "CLICKED"       ALSO    "TGN1"
+      *    WHEN    "CLICKED"       ALSO    "TGN2"
+      *    WHEN    "CLICKED"       ALSO    "TGN3"
+      *        PERFORM 460-TAGUCHG-SEC
            END-EVALUATE
       *
            .
@@ -1074,6 +1076,7 @@
        200-ENTRY                   SECTION.
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    SPA-GMN-CUR         TO  WRK-GMN-CUR
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
@@ -1089,6 +1092,9 @@
       *        明細選択
                WHEN    ANY             ALSO    "KIKAN_LIST"
                    PERFORM 2004-KIKANLIST-SEC
+      *       タブ切替え
+               WHEN    "SWITCH"        ALSO    "nt1"
+                   PERFORM 460-TAGUCHG-SEC
       *
                WHEN    OTHER
       *            入力チェック処理
@@ -2812,6 +2818,8 @@
        460-TAGUCHG-SEC           SECTION.
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    W06-PAGENO          TO  WRK-PAGENO
+      *
            MOVE    1                   TO  FLG-TOUROKU
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
@@ -2819,8 +2827,8 @@
            PERFORM 4102-KIHON-CHK-SEC
       *
            IF      SPA-ERRCD           =   SPACE
-               EVALUATE    WRK-MCP-WIDGET
-                   WHEN    "TGN1"
+               EVALUATE    WRK-PAGENO
+                   WHEN    0
       *                基本画面
                        IF      SPA-GMN-SYOKUKBN    =   "1"
                            MOVE    9               TO  SPA-GMN-CUR
@@ -2828,14 +2836,19 @@
                            MOVE    31              TO  SPA-GMN-CUR
                        END-IF
                        MOVE    1                   TO  SPA-GMN-PAGENO
-                   WHEN    "TGN2"
+                   WHEN    1
       *                個別設定
                        MOVE    21                  TO  SPA-GMN-CUR
                        MOVE    2                   TO  SPA-GMN-PAGENO
-                   WHEN    "TGN3"
-      *                他院設定
-                       MOVE    201                 TO  SPA-GMN-CUR
-                       MOVE    3                   TO  SPA-GMN-PAGENO
+                   WHEN    2
+                       IF    ( SPA-GRPHOSPKBN      =   1 )
+      *                    他院設定
+                           MOVE    201             TO  SPA-GMN-CUR
+                           MOVE    3               TO  SPA-GMN-PAGENO
+                       ELSE
+                           MOVE    WRK-GMN-CUR     TO  SPA-GMN-CUR
+                           MOVE    "0031"          TO  SPA-ERRCD
+                       END-IF
                END-EVALUATE
            END-IF
       *
@@ -4012,6 +4025,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "ダイアログ表示フラグ入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0031"
+                   MOVE    "本院・分院機能が有効な場合に設定可能です。"
                                                TO  SPA-ERRMSG
                WHEN    "0100"
                    MOVE
