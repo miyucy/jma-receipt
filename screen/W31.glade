@@ -1309,17 +1309,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>NB01</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <last_modification_time>Thu, 16 Aug 2007 06:13:33 GMT</last_modification_time>
-	</signal>
 	<label>∞ÂŒ≈∂Ë ¨…Ωº®</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
 
       <widget>
@@ -1472,17 +1471,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>NB02</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <last_modification_time>Thu, 16 Aug 2007 05:57:01 GMT</last_modification_time>
-	</signal>
 	<label>∞ÂŒ≈∂Ë ¨°¶£¡£ƒ£Ã≈¿øÙ</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
     </widget>
   </widget>

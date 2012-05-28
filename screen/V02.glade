@@ -1220,18 +1220,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N01</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <data>CLICKED</data>
-	  <last_modification_time>Tue, 27 Feb 2001 06:00:02 GMT</last_modification_time>
-	</signal>
 	<label>本人</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
 
       <widget>
@@ -2104,18 +2102,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N02</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <data>CLICKED</data>
-	  <last_modification_time>Tue, 27 Feb 2001 06:00:18 GMT</last_modification_time>
-	</signal>
 	<label>家族</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
 
       <widget>
@@ -2988,18 +2984,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N03</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <data>CLICKED</data>
-	  <last_modification_time>Tue, 27 Feb 2001 06:00:33 GMT</last_modification_time>
-	</signal>
 	<label>低所得</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
 
       <widget>
@@ -3872,18 +3866,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N04</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <data>CLICKED</data>
-	  <last_modification_time>Fri, 16 Mar 2001 04:53:15 GMT</last_modification_time>
-	</signal>
 	<label>低年金</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
     </widget>
 

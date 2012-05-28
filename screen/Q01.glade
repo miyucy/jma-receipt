@@ -357,7 +357,7 @@
       <can_focus>True</can_focus>
       <signal>
 	<name>switch_page</name>
-	<handler>switch_page</handler>
+	<handler>notebook_send_event</handler>
 	<data>Switch_Page</data>
       </signal>
       <show_tabs>True</show_tabs>
@@ -3299,17 +3299,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N01</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <data>CLICKED</data>
-	</signal>
 	<label>答塑攫鼠</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
 
       <widget>
@@ -4982,17 +4981,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N02</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <data>CLICKED</data>
-	</signal>
 	<label>瘦副　给锐</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
 
       <widget>
@@ -7556,17 +7554,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N03</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <data>CLICKED</data>
-	</signal>
 	<label>陕叹　壳闻乖百</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
 
       <widget>
@@ -8699,17 +8696,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N04</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <data>CLICKED</data>
-	</signal>
 	<label>事び界</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
     </widget>
 

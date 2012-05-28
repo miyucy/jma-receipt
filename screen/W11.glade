@@ -2950,19 +2950,17 @@
 	  </widget>
 
 	  <widget>
-	    <class>GtkButton</class>
+	    <class>GtkLabel</class>
 	    <child_name>Notebook:tab</child_name>
 	    <name>N0101</name>
 	    <width>34</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>send_event</handler>
-	      <data>CLICKED</data>
-	      <last_modification_time>Mon, 11 Aug 2003 07:47:08 GMT</last_modification_time>
-	    </signal>
 	    <label>一般</label>
-	    <relief>GTK_RELIEF_NORMAL</relief>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
 	  </widget>
 
 	  <widget>
@@ -5241,18 +5239,16 @@
 	  </widget>
 
 	  <widget>
-	    <class>GtkButton</class>
+	    <class>GtkLabel</class>
 	    <child_name>Notebook:tab</child_name>
 	    <name>N0102</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>clicked</name>
-	      <handler>send_event</handler>
-	      <data>CLICKED</data>
-	      <last_modification_time>Mon, 11 Aug 2003 07:47:18 GMT</last_modification_time>
-	    </signal>
 	    <label>入院</label>
-	    <relief>GTK_RELIEF_NORMAL</relief>
+	    <justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
 	  </widget>
 	</widget>
 
@@ -5338,18 +5334,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N01</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <data>CLICKED</data>
-	  <last_modification_time>Tue, 27 Feb 2001 06:00:33 GMT</last_modification_time>
-	</signal>
 	<label>出力先プリンタ割り当て情報</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
 
       <widget>
@@ -5614,18 +5608,16 @@
       </widget>
 
       <widget>
-	<class>GtkButton</class>
+	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N02</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>clicked</name>
-	  <handler>send_event</handler>
-	  <data>CLICKED</data>
-	  <last_modification_time>Tue, 27 Feb 2001 06:00:33 GMT</last_modification_time>
-	</signal>
 	<label>帳票編集区分情報</label>
-	<relief>GTK_RELIEF_NORMAL</relief>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
       </widget>
     </widget>
 

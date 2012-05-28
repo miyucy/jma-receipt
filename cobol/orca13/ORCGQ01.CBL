@@ -515,6 +515,8 @@
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-Q01FREE
       *
+           DISPLAY "000-PROC-SEC Q01-PAGENO [" Q01-PAGENO "]"
+      *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
@@ -2174,14 +2176,6 @@
            WHEN    "CLICKED"       ALSO    "SRDIO31"
            WHEN    "CLICKED"       ALSO    "SRDIO32"
                PERFORM 450-SRDIO-SET-SEC
-      *    タブ
-           WHEN    "CLICKED"       ALSO    "N01"
-           WHEN    "CLICKED"       ALSO    "N02"
-           WHEN    "CLICKED"       ALSO    "N03"
-           WHEN    "CLICKED"       ALSO    "N04"
-               MOVE    MCP-WIDGET   TO  WRK-WIDGET
-      *
-               PERFORM 440-TAB-CHANGE-SEC
            WHEN    "CLICKED"       ALSO    "RDHKNKOH_AND"
            WHEN    "CLICKED"       ALSO    "RDHKNKOH_OR"
       *        画面をＳＰＡにセット
@@ -2241,6 +2235,8 @@
       *    病名診療行為リスト選択チェック
            WHEN    "ACTIVATE"      ALSO   "SRYACTSEL"
                PERFORM 4120-SRYACTSEL-CHK-SEC
+           WHEN    "SWITCH"        ALSO   "not3"
+               PERFORM 440-TAB-CHANGE-SEC
       *
            WHEN    OTHER
       *
@@ -6677,10 +6673,6 @@
       *****************************************************************
        440-TAB-CHANGE-SEC              SECTION.
       *
-           MOVE    WRK-WIDGET2         TO  WRK-PAGENO
-      *
-           COMPUTE WRK-PAGENO  =   WRK-PAGENO  -   1
-      *
       *    画面ＳＰＡ編集処理
            PERFORM 4101-GMN-SPA-SET-SEC
       *
@@ -6704,9 +6696,9 @@
                GO  TO  440-TAB-CHANGE-EXT
            END-IF
       *
-           MOVE    WRK-PAGENO          TO  SPA-GMN-Q01-PAGENO
+           MOVE    Q01-PAGENO          TO  SPA-GMN-Q01-PAGENO
       *
-           EVALUATE    WRK-PAGENO
+           EVALUATE    SPA-GMN-Q01-PAGENO
            WHEN    0
                    MOVE    101         TO  SPA-GMN-Q01-CUR
            WHEN    1
@@ -7365,13 +7357,13 @@
       *
            EVALUATE    SPA-GMN-Q01-PAGENO
            WHEN    0
-               MOVE    "N02"       TO  WRK-WIDGET
+               MOVE    1           TO  Q01-PAGENO
            WHEN    1
-               MOVE    "N03"       TO  WRK-WIDGET
+               MOVE    2           TO  Q01-PAGENO
            WHEN    2
-               MOVE    "N04"       TO  WRK-WIDGET
+               MOVE    3           TO  Q01-PAGENO
            WHEN    3
-               MOVE    "N01"       TO  WRK-WIDGET
+               MOVE    0           TO  Q01-PAGENO
            END-EVALUATE
       *
            PERFORM 440-TAB-CHANGE-SEC
@@ -8884,7 +8876,6 @@
       *
       *    タブページ番号
            MOVE    SPA-GMN-Q01-PAGENO      TO  Q01-PAGENO
-      *
       *    入外区分
            MOVE    SPA-GMN-Q01-SELPATTERN-G TO  Q01-SELPATTERN
            MOVE    SPA-GMN-Q01-SELPATTERNLST-MAX
