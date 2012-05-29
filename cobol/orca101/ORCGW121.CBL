@@ -35,6 +35,8 @@
       * 
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *  04.03.00    NACL-太田    08/06/17  タブ切替ボタン追加
+      *
+      *  04.07.01    NACL-藤原    12/05/28  タブラベル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1224,7 +1226,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        200-GMNSENI                   SECTION.  
       *
-           IF      W121-PAGENO       =   0
+           IF      SPA-W121-PAGENO     =   0
                MOVE    1           TO  WRK-PAGENO
            ELSE
                MOVE    2           TO  WRK-PAGENO
@@ -1291,8 +1293,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 490-KOH-DELETE-SEC
       *    タグ
                WHEN    "CLICKED"       ALSO    "B08"
-               WHEN    "CLICKED"       ALSO    "N01"
-               WHEN    "CLICKED"       ALSO    "N02"
                    PERFORM 440-TAG-CHANGE-SEC
            END-EVALUATE
       *
@@ -1304,7 +1304,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           IF      W121-PAGENO       =   0
+           IF      SPA-W121-PAGENO     =   0
                MOVE    1           TO  WRK-PAGENO
            ELSE
                MOVE    2           TO  WRK-PAGENO
@@ -1336,6 +1336,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "ACTIVATE"       ALSO    "GRP2_NO"
                WHEN    "ACTIVATE"       ALSO    "GRP2_NO_1"
                    PERFORM 41021-GRP2-NO-CHK-SEC
+      *        タグ
+               WHEN    "SWITCH"        ALSO    "nt1"
+                   PERFORM 440-TAG-CHANGE-SEC
       *        一括分
                WHEN    OTHER
                    PERFORM 400-ENTRY-SYORI-SEC
@@ -3523,14 +3526,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    ELSE
                        MOVE    0       TO  IDYY
                    END-IF
-               WHEN    "N01"
-                   MOVE   0            TO  IDYY
-               WHEN    "N02"
-                  MOVE    1            TO  IDYY
+               WHEN    OTHER
+                   MOVE   W121-PAGENO  TO  IDYY
            END-EVALUATE
       *
       *    タグが変わったとき項目チェック
-           IF      IDYY              NOT =   W121-PAGENO
+      *****IF      IDYY              NOT =   W121-PAGENO
                MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
                MOVE    ZERO                TO  SPA-GMN-CUR
       *
@@ -3555,7 +3556,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-EVALUATE
                    END-IF
                END-IF
-           END-IF        
+      *****END-IF        
            .
        440-TAG-CHANGE-EXT.
            EXIT.

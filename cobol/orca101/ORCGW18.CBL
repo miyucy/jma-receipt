@@ -38,6 +38,8 @@
       *  04.06.00    NACL-多々納  10/06/28  予約票追加
       *  04.06.01    NACL-森脇    11/09/12  削除ボタン追加
       *  04.06.02    NACL-森脇    11/09/28  診療報酬請求書（労災）追加
+      *
+      *  04.07.01    NACL-藤原    12/05/28  タブラベル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -552,10 +554,6 @@
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-KOUSHIN-MAE-SEC
-      *    タグ
-               WHEN    "CLICKED"       ALSO    "N01"
-               WHEN    "CLICKED"       ALSO    "N02"
-                   PERFORM 440-TAG-CHANGE-SEC
            END-EVALUATE
       *
            .
@@ -571,6 +569,9 @@
       *        区分コード
                WHEN    "ACTIVATE"       ALSO    "KBNCD"
                    PERFORM 4100-KBNCD-CHK-SEC
+      *        タグ
+               WHEN    "SWITCH"        ALSO    "note3"
+                   PERFORM 440-TAG-CHANGE-SEC
       *        一括分
                WHEN    "ACTIVATE"       ALSO    ANY
                    PERFORM 400-ENTRY-SYORI-SEC
@@ -1044,15 +1045,10 @@
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
       *
-           EVALUATE    MCP-WIDGET
-               WHEN    "N01"
-                   MOVE   ZERO         TO  IDX
-               WHEN    "N02"
-                  MOVE    1            TO  IDX
-           END-EVALUATE
+           MOVE   W18-PAGENO           TO  IDX
       *
       *    タグが変わったとき項目チェック
-           IF      IDX              NOT =   W18-PAGENO
+      *****IF      IDX              NOT =   W18-PAGENO
                MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
                MOVE    ZERO                TO  SPA-GMN-CUR
       *
@@ -1060,8 +1056,8 @@
                MOVE    2                   TO  FLG-TOUROKU
                PERFORM 410-INPUT-CHK-SEC
                IF      SPA-ERRCD            =   SPACE
-                   EVALUATE    WRK-MCP-WIDGET
-                       WHEN    "N01"
+                   EVALUATE    IDX
+                       WHEN    0
                            IF      SPA-GMN-KOUMOKU2 =   SPACE
                                MOVE    1            TO  SPA-GMN-CUR
                            ELSE
@@ -1076,7 +1072,7 @@
                                    MOVE    "1004"       TO  SPA-WIDCD2
                                END-IF
                            END-IF
-                       WHEN    "N02"
+                       WHEN    1
                            IF      SPA-GMN-KBNCD    =   SPACE
                                MOVE    101          TO  SPA-GMN-CUR
                            ELSE 
@@ -1093,7 +1089,7 @@
                            END-IF 
                    END-EVALUATE
                END-IF
-           END-IF        
+      *****END-IF        
            .
        440-TAG-CHANGE-EXT.
            EXIT.
