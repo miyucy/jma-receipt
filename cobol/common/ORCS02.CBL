@@ -3608,6 +3608,8 @@
       *
            INITIALIZE    WK-SYUHKN-TAIHI-AREA
       *
+           PERFORM       2101-PTHKNINF-KENSAKU-SEC
+      *
       *    公費単独で老人保険入力があるかチェック
            IF      COMB-HKNNUM          =   SPACE
            AND     COMB-KOH1HKNNUM  NOT =   SPACE
@@ -3994,9 +3996,13 @@
                    MOVE     ZERO    TO    WK-GENGAKUKBN
               END-IF
             END-IF
-      ***   IF   COMB-HKNNUM  =  "004"
-      ***          MOVE     ZERO    TO    WK-GENGAKUKBN
-      ***   END-IF
+            IF   COMB-HKNNUM  =  "004"
+              IF  WK-HKNJANUM(1:4) = "0404"
+                   CONTINUE
+              ELSE
+                   MOVE     ZERO    TO    WK-GENGAKUKBN
+              END-IF
+            END-IF
             IF   (FLG-SAIGAI-TAISYO     =    1     )
             AND  (WK-GENGAKUKBN         =    3 OR 4)
             AND  (LNK-SYU-SRYYMD(1:6)  <=  "201202")
@@ -5181,7 +5187,6 @@
       *
            INITIALIZE         WK-CHIHOU-FLG-TAIHI-AREA.
       *
-           PERFORM    2101-PTHKNINF-KENSAKU-SEC.
            PERFORM    2111-TOKU75-SETTEI-SEC.
            PERFORM    2112-TAISYOKBN-HENSYU-SEC.
            PERFORM    2113-SYSKAN2010-HENSYU-SEC.
