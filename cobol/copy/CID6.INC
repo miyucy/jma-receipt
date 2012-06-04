@@ -43,9 +43,12 @@
                 04  CID6-VALUE  PIC X(60).
               03  CID6-MSG.
                 04  CID6-VALUE  PIC X(120).
-              03  CID6-BYOMEICD PIC X(07)  OCCURS  6.
+              03  CID6-BYOMEICD-T  OCCURS  6.
+                  05  CID6-BYOMEICD-STYLE   PIC X(20).
+                  05  CID6-BYOMEICD PIC X(07).
+              03  CID6-BYOMEI10-STYLE   PIC X(20).
               03  CID6-BYOMEI10.
-                04  CID6-VALUE  PIC X(90).
+                04  CID6-VALUE  PIC X(800).
               03  CID6-MSG1.
                 04  CID6-VALUE  PIC X(80).
               03  CID6-MSG2-STYLE   PIC X(20).

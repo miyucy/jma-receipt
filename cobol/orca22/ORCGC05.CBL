@@ -122,6 +122,7 @@
            03  WRK-CIDMSG          PIC X(100).
            03  WRK-BYOKEN          PIC X(30).
            03  WRK-BYOMEI          PIC X(100).
+           03  WRK-BYOMEI1         PIC X(800).
       *
       *    並びかえ用ワーク
            03  WRK-GMN-BYOMEICD-G.
@@ -138,6 +139,16 @@
            03  WRK-HENYMDG         PIC X(09).
       *
            03  WRK-ERRMSG          PIC X(40).
+      *
+       01  SPAN-COLOR-AREA.
+           03  SPAN-COLOR-RED      PIC X(18)    VALUE
+                                                "<span color=""red"">".  
+           03  SPAN-COLOR-BLUE     PIC X(19)    VALUE
+                                                "<span color=""blue"">".  
+           03  SPAN-COLOR-GREEN    PIC X(20)    VALUE
+                                               "<span color=""green"">".  
+           03  SPAN-COLOR-END      PIC X(07)    VALUE
+                                               "</span>".  
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMD.
@@ -1743,17 +1754,55 @@ grpsys                                       SPA-AREA
                    UNTIL       IDX     >   6
                MOVE    SPA-C05-CHANGE-BYOMEICD (IDX)
                                        TO  CID6-BYOMEICD (IDX)
+               MOVE    "black"         TO  CID6-BYOMEICD-STYLE (IDX)
+               IF      SPA-C05-CHANGE-MAX  <=  6
+                   EVALUATE    IDX
+                       WHEN    1
+                       WHEN    3
+                       WHEN    5
+                           MOVE    "black" TO  CID6-BYOMEICD-STYLE (IDX)
+                       WHEN    OTHER
+                           MOVE    "blue"  TO  CID6-BYOMEICD-STYLE (IDX)
+                   END-EVALUATE
+               END-IF
            END-PERFORM
-           MOVE    SPA-C05-CHANGE-BYOMEI (1)
-                                       TO  WRK-BYOMEI
-           PERFORM VARYING IDX FROM    2   BY  1
-                   UNTIL   IDX >       SPA-C05-CHANGE-MAX
-               STRING  WRK-BYOMEI                  DELIMITED   BY  SPACE
-                       SPA-C05-CHANGE-BYOMEI (IDX) DELIMITED   BY  SPACE
-                                       INTO    WRK-BYOMEI
+      *
+           MOVE    SPACE               TO  WRK-BYOMEI1
+           MOVE    "black"             TO  CID6-BYOMEI10-STYLE
+           IF      SPA-C05-CHANGE-MAX  <=  6
+               STRING  SPA-C05-CHANGE-BYOMEI (1)
+                                           DELIMITED   BY  SPACE
+                       SPAN-COLOR-BLUE     DELIMITED   BY  SIZE
+                       SPA-C05-CHANGE-BYOMEI (2)
+                                           DELIMITED   BY  SPACE
+                       SPAN-COLOR-END      DELIMITED   BY  SIZE
+                       SPA-C05-CHANGE-BYOMEI (3)
+                                           DELIMITED   BY  SPACE
+                       SPAN-COLOR-BLUE     DELIMITED   BY  SIZE
+                       SPA-C05-CHANGE-BYOMEI (4)
+                                           DELIMITED   BY  SPACE
+                       SPAN-COLOR-END      DELIMITED   BY  SIZE
+                       SPA-C05-CHANGE-BYOMEI (5)
+                                           DELIMITED   BY  SPACE
+                       SPAN-COLOR-BLUE     DELIMITED   BY  SIZE
+                       SPA-C05-CHANGE-BYOMEI (6)
+                                           DELIMITED   BY  SPACE
+                       SPAN-COLOR-END      DELIMITED   BY  SIZE
+                                           INTO    WRK-BYOMEI1
                END-STRING
-           END-PERFORM
-           MOVE    WRK-BYOMEI          TO  CID6-BYOMEI10
+           ELSE    
+               MOVE    SPA-C05-CHANGE-BYOMEI (1)
+                                           TO  WRK-BYOMEI1
+               PERFORM VARYING IDX FROM    2   BY  1
+                       UNTIL   IDX >       SPA-C05-CHANGE-MAX
+                   STRING  WRK-BYOMEI1         DELIMITED   BY  SPACE
+                           SPA-C05-CHANGE-BYOMEI (IDX)
+                                               DELIMITED   BY  SPACE
+                                               INTO    WRK-BYOMEI1
+                   END-STRING
+               END-PERFORM
+           END-IF
+           MOVE    WRK-BYOMEI1         TO  CID6-BYOMEI10
       *
            MOVE    SPACE               TO  WRK-BYOMEI
            PERFORM VARYING IDX FROM    1   BY  1
