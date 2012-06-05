@@ -1182,7 +1182,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    1               TO  FLG-OK
                        END-IF
                        IF     (FLG-OK              =   1   )
-                         AND  (SPA-GMN-KOHMAX      <   100 )
+                         AND  (SPA-GMN-KOHMAX      <   200 )
       *                    ¸øÈñ¾ðÊóÊÔ½¸
                            PERFORM 10042-KOHHEN-SEC
                        END-IF

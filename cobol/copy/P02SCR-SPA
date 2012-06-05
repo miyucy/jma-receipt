@@ -41,6 +41,7 @@
       *  04.05.00    NACL-多々納  09/07/XX  患者公費負担額機能追加
       *  04.06.00    NACL-多々納  11/02/XX  京都府通り名称編集機能追加
       *  04.07.00    NACL-多々納  11/08/XX  保険確認年月日履歴対応
+      *  04.07.00    NACL-多々納  12/06/XX  公費種別２００件対応
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -376,7 +377,7 @@
                    07  SPA-KOH-AREA.
                        09  SPA-GMN-HOKNUM-LIST.
       ******************** 11  SPA-GMN-KOHNUMLST       OCCURS 50.
-                           11  SPA-GMN-KOHNUMLST       OCCURS 100.
+                           11  SPA-GMN-KOHNUMLST       OCCURS 200.
                                13  SPA-GMN-KOHNUML     PIC X(03).
       ************************ 13  SPA-GMM-HL1         PIC X(01).
                                13  SPA-GMN-KOHKBNL     PIC X(01).
@@ -384,7 +385,7 @@
                        09  SPA-GMN-KOHMAX              PIC 9(04).
                        09  SPA-NAI-KOHNUM-LIST.
       *****************    11  SPA-NAI-KOHNUMLST       OCCURS 50.
-                           11  SPA-NAI-KOHNUMLST       OCCURS 100.
+                           11  SPA-NAI-KOHNUMLST       OCCURS 200.
                                13  SPA-NAI-KOHSBTKBN     PIC X(01).
       *                        検証番号チェック区分
                                13  SPA-NAI-KENSNUMCHKKBN    PIC X(01).
@@ -1695,7 +1696,7 @@
                05  SPA-P02H-HBTNUM             PIC X(02).
                05  SPA-P02H-KOHIDX             PIC 9(02).
                05  SPA-P02H-KOHNUM-LST.
-                   07  SPA-P02H-KOHNUM-OCC     OCCURS   10.
+                   07  SPA-P02H-KOHNUM-OCC     OCCURS   50.
                        09  SPA-P02H-TKOHNUM        PIC X(03).
                        09  SPA-P02H-TKOHNUMMEI     PIC X(16).
                05  SPA-P02H-MAX                PIC 9(03).

@@ -276,7 +276,7 @@
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-GMN-KOHMAX )
-                          OR  (IDY     >=  10             )
+                          OR  (IDY     >=  50             )
                IF      SPA-NAI-HBTNUM (IDX)    =   SPA-P02H-HBTNUM
                    ADD     1                   TO  IDY
                    MOVE    SPA-GMN-KOHNUML (IDX)

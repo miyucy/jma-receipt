@@ -195,7 +195,7 @@
                     06  P02-P02-KOHNUM1.
                       07  P02-VALUE   PIC X(20).
                     06  P02-KOHNUM1-COUNT   PIC S9(9)   BINARY.
-                    06  P02-KOHNUM1-ITEM    PIC X(20)   OCCURS  100.
+                    06  P02-KOHNUM1-ITEM    PIC X(20)   OCCURS  200.
                   05  P02-P02-JKYSNUM1.
                     06  P02-VALUE   PIC X(20).
                   05  P02-P02-KTEKSTYMD1.
@@ -216,7 +216,7 @@
                     06  P02-P02-KOHNUM2.
                       07  P02-VALUE   PIC X(20).
                     06  P02-KOHNUM2-COUNT   PIC S9(9)   BINARY.
-                    06  P02-KOHNUM2-ITEM    PIC X(20)   OCCURS  100.
+                    06  P02-KOHNUM2-ITEM    PIC X(20)   OCCURS  200.
                   05  P02-P02-JKYSNUM2.
                     06  P02-VALUE   PIC X(20).
                   05  P02-P02-KTEKSTYMD2.
@@ -237,7 +237,7 @@
                     06  P02-P02-KOHNUM3.
                       07  P02-VALUE   PIC X(20).
                     06  P02-KOHNUM3-COUNT   PIC S9(9)   BINARY.
-                    06  P02-KOHNUM3-ITEM    PIC X(20)   OCCURS  100.
+                    06  P02-KOHNUM3-ITEM    PIC X(20)   OCCURS  200.
                   05  P02-P02-JKYSNUM3.
                     06  P02-VALUE   PIC X(20).
                   05  P02-P02-KTEKSTYMD3.
