@@ -77,6 +77,7 @@
       *                                     システム管理の設定に従い、災
       *                                     害該当レセプトのレセ電データ
       *                                     の作成を行う
+      *  04.05.03    NACL-藤原    12/06/05  レセ電データ無し時のエラー処理
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
@@ -618,6 +619,18 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                        " DIRECT-FLG="  RECE10-DIRECT-FLG
       *???
                PERFORM 900-RECEDEN-SELECT-SEC
+               IF      FLG-RECEDEN     =   1
+                   STRING
+                       "該当患者のレセ電データが存在しません"
+                                               DELIMITED  BY  SIZE
+                        "　患者番号＝"         DELIMITED  BY  SIZE
+                        RECE10-PTNUM           DELIMITED  BY  SIZE
+                                               INTO  WRK-RECEERR
+                   END-STRING
+                   PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
+               END-IF
+      *
                PERFORM     UNTIL   FLG-RECEDEN =   1
                    PERFORM 2002-HENSYU-SEC
                END-PERFORM
@@ -1446,6 +1459,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            PERFORM 900-DBDISCONNECT-SEC
            DISPLAY "RECE300  IN   " CNT-RECE10
            DISPLAY "RECE300  OUT  " CNT-OUT
+           DISPLAY "RECE300  RE   " WRK-RECENUM
            DISPLAY "RECE300  FILE " WRK-FILE-RENNUM  
            DISPLAY "*** ORCBM500 END ***"
            .
