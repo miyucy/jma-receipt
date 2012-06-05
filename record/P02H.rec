@@ -16,8 +16,8 @@ P02H	{
 					value0	varchar(2);
 					value1	varchar(3);
 					value2	varchar(20);
-				}	[10];
-				select	bool[10];
+				}	[50];
+				select	bool[50];
 			};
 		};
 	};
