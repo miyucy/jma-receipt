@@ -55,9 +55,6 @@
               03  P02-B03S.
                 04  P02-B03S-STATE   PIC S9(9)   BINARY.
                 04  P02-B03S-LABEL   PIC X(20).
-              03  P02-B02S.
-                04  P02-B02S-STATE   PIC S9(9)   BINARY.
-                04  P02-B02S-LABEL   PIC X(20).
               03  P02-NB2.
                 04  P02-PAGENO  PIC S9(9)   BINARY.
                 04  P02-FIXPAGE1.
@@ -87,7 +84,7 @@
                     06  P02-P020-SRYKA.
                       07  P02-VALUE   PIC X(21).
                     06  P02-P020-SRYKA-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P020-SRYKA-ITEM    PIC X(21)   OCCURS  99.
+                    06  P02-P020-SRYKA-ITEM    PIC X(21)   OCCURS  40.
                   05  P02-P020-DRNAME-COMBO.
                     06  P02-P020-DRNAME.
                       07  P02-VALUE   PIC X(29).
@@ -100,14 +97,14 @@
                     06  P02-P020-SRYNAIYO-ITEM    PIC X(21)   OCCURS 99.
                   05  P02-P020-KARUTE-COB.
                     06  P02-P020-KARUTE.
-                      07  P02-VALUE   PIC X(30).
+                      07  P02-VALUE   PIC X(16).
                     06  P02-P020-KARUTE-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P020-KARUTE-ITEM    PIC X(30)   OCCURS  5.
+                    06  P02-P020-KARUTE-ITEM    PIC X(16)   OCCURS  3.
                   05  P02-P020-SYOHOU-COB.
                     06  P02-P020-SYOHOU.
                       07  P02-VALUE   PIC X(16).
                     06  P02-P020-SYOHOU-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P020-SYOHOU-ITEM    PIC X(16)   OCCURS  5.
+                    06  P02-P020-SYOHOU-ITEM    PIC X(16)   OCCURS  3.
                   05  P02-P020-HKNKUMI.
                     06  P02-VALUE   PIC X(4).
                   05  P02-SCROLLEDWINDOW9.
@@ -115,12 +112,12 @@
                       07  P02-P020-HKNCOMBI-COUNT   PIC S9(9)   BINARY.
                       07  P02-P020-HKNCOMBI-ROW     PIC S9(9)   BINARY.
                       07  P02-P020-HKNCOMBI-ROWATTR PIC S9(9)   BINARY.
-                      07  P02-ITEM        OCCURS  30 TIMES.
+                      07  P02-ITEM        OCCURS  15 TIMES.
                         08  P02-P020-HKNCOBNUM    PIC X(4).
                         08  P02-P020-HKNCOBMEI    PIC X(60).
                         08  P02-P020-TEKSTYMD     PIC X(10).
                         08  P02-P020-TEKEDYMD     PIC X(10).
-                      07  P02-P020-HKNCOMBI-SELECT  PIC X  OCCURS  30.
+                      07  P02-P020-HKNCOMBI-SELECT  PIC X  OCCURS  15.
                 04  P02-FIXPAGE2.
                   05  P02-P02-KANANAME.
                     06  P02-VALUE   PIC X(50).
@@ -142,9 +139,9 @@
                     06  P02-VALUE   PIC X(8).
                   05  P02-P02-HAKKOCOB.
                     06  P02-P02-HAKKO.
-                      07  P02-VALUE   PIC X(30).
+                      07  P02-VALUE   PIC X(16).
                     06  P02-P02-HAKKO-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P02-HAKKO-ITEM    PIC X(30)   OCCURS  5.
+                    06  P02-P02-HAKKO-ITEM    PIC X(16)   OCCURS  2.
                   05  P02-TSTPTNUMKBN-COB.
                     06  P02-TSTPTNUMKBN.
                       07  P02-VALUE   PIC X(16).
@@ -258,7 +255,7 @@
                     06  P02-P02-SRYKA.
                       07  P02-VALUE   PIC X(21).
                     06  P02-SRYKA-COUNT   PIC S9(9)   BINARY.
-                    06  P02-SRYKA-ITEM    PIC X(21)   OCCURS  99.
+                    06  P02-SRYKA-ITEM    PIC X(21)   OCCURS  40.
                   05  P02-P02-POST.
                     06  P02-VALUE   PIC X(7).
                   05  P02-P02-ADRS.
@@ -320,23 +317,20 @@
                       07  P02-HKNLIST-COUNT   PIC S9(9)   BINARY.
                       07  P02-HKNLIST-ROW     PIC S9(9)   BINARY.
                       07  P02-HKNLIST-ROWATTR PIC S9(9)   BINARY.
-                      07  P02-ITEM        OCCURS  60 TIMES.
+                      07  P02-ITEM        OCCURS  30 TIMES.
                         08  P02-HKNCOBNUM     PIC X(4).
-                        08  P02-HKNCOBNAME    PIC X(60).
-                      07  P02-HKNLIST-SELECT  PIC X   OCCURS  60 TIMES.
+                        08  P02-HKNCOBNAME    PIC X(40).
+                      07  P02-HKNLIST-SELECT  PIC X   OCCURS  30 TIMES.
                   05  P02-P02-HKNNAME.
                     06  P02-VALUE   PIC X(30).
                   05  P02-P02-HKNNAME2.
                     06  P02-VALUE   PIC X(30).
                   05  P02-P02-HKNJAADRS.
-                    06  P02-VALUE   PIC X(40).
+                    06  P02-VALUE   PIC X(30).
                   05  P02-P02-HKNJAADRS2.
-                    06  P02-VALUE   PIC X(40).
+                    06  P02-VALUE   PIC X(30).
                   05  P02-P02-HKNJATEL.
                     06  P02-VALUE   PIC X(16).
-                  05  P02-P02-HKNJA-IDOMSG.
-                    06  P02-HKNJA-IDOMSG-STYLE   PIC X(20).
-                    06  P02-HKNJA-IDOMSG-VALUE   PIC X(36).
                   05  P02-P02-NYUKIN-COB.
                     06  P02-P02-NYUKIN.
                       07  P02-VALUE   PIC X(23).
@@ -344,7 +338,6 @@
                     06  P02-P02-NYUKIN-ITEM
                             PIC X(23)   OCCURS  99 TIMES.
                   05  P02-P02-USERPG-COB.
-                    06  P02-P02-USERPG-STATE   PIC S9(9)   BINARY.
                     06  P02-P02-USERPG.
                       07  P02-VALUE   PIC X(20).
                     06  P02-P02-USERPG-COUNT   PIC S9(9)   BINARY.
@@ -355,21 +348,13 @@
                       07  P02-VALUE   PIC X(50).
                     06  P02-P02-SKYPRTFLG-COUNT   PIC S9(9)   BINARY.
                     06  P02-P02-SKYPRTFLG-ITEM
-                            PIC X(50)   OCCURS  15 TIMES.
-                  05  P02-P02-BIRTHWEIGHT.
-                    06  P02-VALUE   PIC S9(4).
+                            PIC X(50)   OCCURS  10 TIMES.
                   05  P02-TEIMSG.
                     06  P02-TEIMSG-STYLE   PIC X(20).
                     06  P02-TEIMSG-VALUE   PIC X(20).
                   05  P02-TEIMSG2.
                     06  P02-TEIMSG2-STYLE   PIC X(20).
                     06  P02-TEIMSG2-VALUE   PIC X(10).
-                  05  P02-TEIMSG3.
-                    06  P02-TEIMSG3-STYLE   PIC X(20).
-                    06  P02-TEIMSG3-VALUE   PIC X(10).
-                  05  P02-BHR.
-                    06  P02-BHR-STATE   PIC S9(9)   BINARY.
-                    06  P02-BHR-LABEL   PIC X(4).
                 04 P02-FP3.
                   05  P02-P027-SELNUM.
                     06  P02-VALUE   PIC X(4).
@@ -466,21 +451,6 @@
                   05  P02-BHO5.
                     06  P02-BHO5-VALUE   PIC X.
                     06  P02-BHO5-LABEL   PIC X(2).
-                  05  P02-BHR1.
-                    06  P02-BHR1-STATE   PIC S9(9)   BINARY.
-                    06  P02-BHR1-LABEL   PIC X(2).
-                  05  P02-BHR2.
-                    06  P02-BHR2-STATE   PIC S9(9)   BINARY.
-                    06  P02-BHR2-LABEL   PIC X(2).
-                  05  P02-BHR3.
-                    06  P02-BHR3-STATE   PIC S9(9)   BINARY.
-                    06  P02-BHR3-LABEL   PIC X(2).
-                  05  P02-BHR4.
-                    06  P02-BHR4-STATE   PIC S9(9)   BINARY.
-                    06  P02-BHR4-LABEL   PIC X(2).
-                  05  P02-BHR5.
-                    06  P02-BHR5-STATE   PIC S9(9)   BINARY.
-                    06  P02-BHR5-LABEL   PIC X(2).
                   05  P02-P027-HKNLIST.
                       07  P02-P027-HKNLIST-COUNT   PIC S9(9)   BINARY.
                       07  P02-P027-HKNLIST-ROW     PIC S9(9)   BINARY.
@@ -595,7 +565,6 @@
                         08  P02-P024-TSYLHKNKBN PIC X(12).
                         08  P02-P024-TSYLNINYMD PIC X(10).
                         08  P02-P024-TSYLSKJGNSTYMD PIC X(10).
-                        08  P02-P024-TSYLKYOUKAI PIC X(20).
                       07  P02-P024-TSYLIST-SELECT PIC X
                                                 OCCURS  20 TIMES.
                   05  P02-SC105.
@@ -610,7 +579,6 @@
                         08  P02-P024-TNKLHKNKBN PIC X(12).
                         08  P02-P024-TNKLNINYMD PIC X(10).
                         08  P02-P024-TNKLFUKUSHI PIC X(10).
-                        08  P02-P024-TNKLKYOUKAI  PIC X(20).
                       07  P02-P024-TNKLIST-SELECT PIC X
                                                OCCURS  20 TIMES.
                   05  P02-P024-FUKUSHI-COMB.
@@ -627,12 +595,6 @@
                     06  P02-P024-TSYTEKK-COUNT   PIC S9(9)   BINARY.
                     06  P02-P024-TSYTEKK-ITEM
                             PIC X(30)   OCCURS  5 TIMES.
-                  05  P02-P024-TSYKYOUKAI-COB.
-                    06  P02-P024-TSYKYOUKAI.
-                      07  P02-TEXTDATA    PIC X(30).
-                    06  P02-P024-TSYKYOUKAI-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P024-TSYKYOUKAI-ITEM
-                            PIC X(30)   OCCURS  5 TIMES.
                   05  P02-P024-TNKNINSTYMD.
                     06  P02-VALUE   PIC X(10).
                   05  P02-P024-TNKTEKK-COB.
@@ -640,12 +602,6 @@
                       07  P02-VALUE   PIC X(30).
                     06  P02-P024-TNKTEKK-COUNT   PIC S9(9)   BINARY.
                     06  P02-P024-TNKTEKK-ITEM
-                            PIC X(30)   OCCURS  5 TIMES.
-                  05  P02-P024-TNKKYOUKAI-COB.
-                    06  P02-P024-TNKKYOUKAI.
-                      07  P02-TEXTDATA    PIC X(30).
-                    06  P02-P024-TNKKYOUKAI-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P024-TNKKYOUKAI-ITEM
                             PIC X(30)   OCCURS  5 TIMES.
                   05  P02-P024-FTNTEKSTYMD.
                     06  P02-VALUE   PIC X(10).
@@ -661,12 +617,12 @@
                       07  P02-P024-HFTNLST-COUNT    PIC S9(9)   BINARY.
                       07  P02-P024-HFTNLST-ROW      PIC S9(9)   BINARY.
                       07  P02-P024-HFTNLST-ROWATTR  PIC S9(9)   BINARY.
-                      07  P02-ITEM        OCCURS  60 TIMES.
+                      07  P02-ITEM        OCCURS  40 TIMES.
                         08  P02-P024-TFTNNUM  PIC X(3).
                         08  P02-P024-TFTNKOH  PIC X(20).
                         08  P02-P024-TKOHSTYMD    PIC X(09).
                         08  P02-P024-TKOHEDYMD    PIC X(9).
-                      07  P02-P024-HFTNLST-SELECT  PIC X   OCCURS  60.
+                      07  P02-P024-HFTNLST-SELECT  PIC X   OCCURS  40.
                   05  P02-P024-PTKOHFTNLST2.
                     06  P02-P024-PTKOHFTN2.
                       07  P02-P024-LABL1.
@@ -678,14 +634,14 @@
                       07  P02-P024-HFTNLST2-COUNT   PIC S9(9)   BINARY.
                       07  P02-P024-HFTNLST2-ROW      PIC S9(9)   BINARY.
                       07  P02-P024-HFTNLST2-ROWATTR  PIC S9(9)   BINARY.
-                      07  P02-ITEM        OCCURS 300 TIMES.
+                      07  P02-ITEM        OCCURS 100 TIMES.
                         08  P02-P024-TFTNNUM2  PIC X(3).
                         08  P02-P024-TFTNSTYMD  PIC X(9).
                         08  P02-P024-TFTNEDYMD  PIC X(9).
                         08  P02-P024-TGAIJGNGAK PIC X(9).
                         08  P02-P024-TNYUJGNGAK PIC X(9).
                         08  P02-P024-TFTNETC    PIC X(4).
-                      07  P02-P024-HFTNLST2-SELECT  PIC X   OCCURS 300.
+                      07  P02-P024-HFTNLST2-SELECT  PIC X   OCCURS 100.
                   05  P02-P024-FTNSELNUM.
                     06  P02-VALUE   PIC S9(3).
                   05  P02-P024-FTNSELNUM2.
@@ -783,218 +739,4 @@
                     06  P02-P026-TOKCD-COUNT   PIC S9(9)   BINARY.
                     06  P02-P026-TOKCD-ITEM
                             PIC X(20)   OCCURS  50 TIMES.
-                  05  P02-SCROLLEDWINDOW1.
-                    06  P02-HPOS    PIC S9(9)   BINARY.
-                    06  P02-VPOS    PIC S9(9)   BINARY.
-                    06  P02-P026-HDLST.
-                      07  P02-P026-HDLST-COUNT   PIC S9(9)   BINARY.
-                      07  P02-P026-HDLST-ROW PIC S9(9)   BINARY.
-                      07  P02-ITEM        OCCURS  50 TIMES.
-                        08  P02-P026-THDNUM PIC X(3).
-                        08  P02-P026-THDSRYYM  PIC X(10).
-                        08  P02-P026-THDDAY    PIC X(2).
-                        08  P02-P026-TDNYUGAI  PIC X(20).
-                        08  P02-P026-TDRESEKBN  PIC X(20).
-                      07  P02-P026-HDLST-SELECT
-                              PIC X       OCCURS  50 TIMES.
-                  05  P02-P026-HDSELNUM.
-                    06  P02-VALUE   PIC S9(3).
-                  05  P02-P026-HD-NYUGAI-COMB.
-                    06  P02-P026-HD-NYUGAI.
-                      07  P02-VALUE   PIC X(20).
-                    06  P02-P026-HD-NYUGAI-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P026-HD-NYUGAI-ITEM
-                            PIC X(20)   OCCURS  5 TIMES.
-                  05  P02-P026-HDSRYYM.
-                    06  P02-VALUE   PIC X(8).
-                  05  P02-P026-HDDAY.
-                    06  P02-VALUE   PIC X(2).
-                  05  P02-P026-HD-RESEKBN-COMB.
-                    06  P02-P026-HD-RESEKBN.
-                      07  P02-VALUE   PIC X(20).
-                    06  P02-P026-HD-RESEKBN-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P026-HD-RESEKBN-ITEM
-                            PIC X(20)   OCCURS  5 TIMES.
-                  05  P02-SCROLLEDWINDOW2.
-                    06  P02-HPOS    PIC S9(9)   BINARY.
-                    06  P02-VPOS    PIC S9(9)   BINARY.
-                    06  P02-P026-HDHKNLST1.
-                      07  P02-P026-HDHKNLST1-COUNT  PIC S9(9)   BINARY.
-                      07  P02-P026-HDHKNLST1-ROW PIC S9(9)   BINARY.
-                      07  P02-ITEM        OCCURS  20 TIMES.
-                        08  P02-P026-THKNNUM1  PIC X(4).
-                        08  P02-P026-TDELKBN1  PIC X(2).
-                        08  P02-P026-THKNMEI1  PIC X(60).
-                      07  P02-P026-HDHKNLST1-SELECT
-                              PIC X       OCCURS  20 TIMES.
-                  05  P02-SCROLLEDWINDOW3.
-                    06  P02-HPOS    PIC S9(9)   BINARY.
-                    06  P02-VPOS    PIC S9(9)   BINARY.
-                    06  P02-P026-HDHKNLST2.
-                      07  P02-P026-HDHKNLST2-COUNT PIC S9(9)   BINARY.
-                      07  P02-P026-HDHKNLST2-ROW PIC S9(9)   BINARY.
-                      07  P02-ITEM        OCCURS  20 TIMES.
-                        08  P02-P026-THKNNUM2  PIC X(4).
-                        08  P02-P026-TDELKBN2  PIC X(2).
-                        08  P02-P026-THKNMEI2  PIC X(60).
-                      07  P02-P026-HDHKNLST2-SELECT
-                              PIC X       OCCURS  20 TIMES.
-                  05  P02-P026-HDMIDAS1.
-                    06  P02-VALUE   PIC X(20).
-                  05  P02-P026-HDMIDAS2.
-                    06  P02-VALUE   PIC X(20).
-                  05  P02-P026-DELSEL1.
-                    06  P02-VALUE   PIC S9(4).
-                  05  P02-P026-DELSEL2.
-                    06  P02-VALUE   PIC S9(4).
-                04  P02-FP10.
-                  05  P02-P028-MNOTE-QRKBN-COMB.
-                    06  P02-P028-MNOTE-QRKBN.
-                      07  P02-VALUE   PIC X(30).
-                    06  P02-P028-MNOTE-QRKBN-COUNT   PIC S9(9) BINARY.
-                    06  P02-P028-MNOTE-QRKBN-ITEM
-                            PIC X(30)   OCCURS  9 TIMES.
-                  05  P02-P028-MNOTE-CSV-COMB.
-                    06  P02-P028-MNOTE-CSV.
-                      07  P02-VALUE   PIC X(50).
-                    06  P02-P028-MNOTE-CSV-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P028-MNOTE-CSV-ITEM
-                            PIC X(50)   OCCURS  20 TIMES.
-                  05  P02-P028-PATIENTID1.
-                    06  P02-VALUE   PIC X(20).
-                  05  P02-P028-AGREEMENT-COMB.
-                    06  P02-P028-AGREEMENT.
-                      07  P02-VALUE   PIC X(20).
-                    06  P02-P028-AGREEMENT-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P028-AGREEMENT-ITEM
-                            PIC X(20)   OCCURS  5 TIMES.
-                  05  P02-P028-JMAMRVER-COMB.
-                    06  P02-P028-JMAMRVER.
-                      07  P02-VALUE   PIC X(50).
-                    06  P02-P028-JMAMRVER-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P028-JMAMRVER-ITEM
-                            PIC X(50)   OCCURS  20 TIMES.
-                  05  P02-P028-CRHKNJANUM.
-                    06  P02-VALUE   PIC X(6).
-                  05  P02-P028-CRHIHKNJANUM.
-                    06  P02-VALUE   PIC X(10).
-                  05  P02-SCROLLEDWINDOW4.
-                    06  P02-HPOS    PIC S9(9)   BINARY.
-                    06  P02-VPOS    PIC S9(9)   BINARY.
-                    06  P02-P028-CARENINLST.
-                      07  P02-P028-CARELST-COUNT   PIC S9(9)   BINARY.
-                      07  P02-P028-CARELST-ROW PIC S9(9)   BINARY.
-                      07  P02-P028-CARLST-ITEM        OCCURS  50 TIMES.
-                        08  P02-P028-TCRNUM  PIC X(3).
-                        08  P02-P028-TCAREJOTAI  PIC X(30).
-                        08  P02-P028-TCRNINYMD   PIC X(9).
-                        08  P02-P028-TCRTEKSTYMD  PIC X(9).
-                        08  P02-P028-TCRTEKEDYMD  PIC X(9).
-                      07  P02-P028-CARELST-SELECT
-                              PIC X       OCCURS  50 TIMES.
-                      07  P02-P028-CARELST-FGCOLOR
-                              PIC X(16)   OCCURS  50 TIMES.
-                      07  P02-P028-CARELST-BGCOLOR
-                              PIC X(16)   OCCURS  50 TIMES.
-                  05  P02-P028-CRNINYMD.
-                    06  P02-VALUE   PIC X(10).
-                  05  P02-P028-CRTEKSTYMD.
-                    06  P02-VALUE   PIC X(10).
-                  05  P02-P028-CRTEKEDYMD.
-                    06  P02-VALUE   PIC X(10).
-                  05  P02-P028-CAREJOTAI-COMB.
-                    06  P02-P028-CAREJOTAI.
-                      07  P02-VALUE   PIC X(50).
-                    06  P02-P028-CAREJOTAI-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P028-CAREJOTAI-ITEM
-                            PIC X(50)   OCCURS  99 TIMES.
-                  05  P02-P028-CRSELNUM.
-                    06  P02-VALUE   PIC S9(3).
-                  05  P02-P028-CAREHKNMEI.
-                    06  P02-VALUE   PIC X(50).
-                  05  P02-P028-CAREHKNJAMEI.
-                    06  P02-VALUE   PIC X(50).
-                  05  P02-P028-CAREHKNJAADRS.
-                    06  P02-VALUE   PIC X(80).
-                  05  P02-P028-CAREHKNJAADRS2.
-                    06  P02-VALUE   PIC X(80).
-                  05  P02-P028-CAREHKNJATEL.
-                    06  P02-VALUE   PIC X(16).
-                  05  P02-P028-CRHSELNUM.
-                    06  P02-VALUE   PIC S9(2).
-                  05  P02-P028-CHTEKSTYMD.
-                    06  P02-VALUE   PIC X(10).
-                  05  P02-P028-CHTEKEDYMD.
-                    06  P02-VALUE   PIC X(10).
-                  05  P02-SCROLLEDWINDOW5.
-                    06  P02-HPOS    PIC S9(9)   BINARY.
-                    06  P02-VPOS    PIC S9(9)   BINARY.
-                    06  P02-P028-CAREHKNLST.
-                      07  P02-P028-CRHKNLST-COUNT   PIC S9(9)  BINARY.
-                      07  P02-P028-CRHKNLST-ROW PIC S9(9)   BINARY.
-                      07  P02-P028-ITEM        OCCURS  10 TIMES.
-                        08  P02-P028-TCHNUM    PIC X(2).
-                        08  P02-P028-TCRHKNJANUM  PIC X(6).
-                        08  P02-P028-TCRHIHKNJANUM  PIC X(10).
-                        08  P02-P028-TCRHSTRYMD     PIC X(9).
-                        08  P02-P028-TCRHENDYMD     PIC X(9).
-                      07  P02-P028-CRHKNLST-SELECT
-                              PIC X       OCCURS  10 TIMES.
-                      07  P02-P028-CRHKNLST-FGCOLOR
-                              PIC X(16)   OCCURS  10 TIMES.
-                      07  P02-P028-CRHKNLST-BGCOLOR
-                              PIC X(16)   OCCURS  10 TIMES.
-                  05  P02-P028-CHKHKTBYO1.
-                    06  P02-VALUE   PIC X.
-                  05  P02-P028-CHKHKTBYO2.
-                    06  P02-VALUE   PIC X.
-                  05  P02-P028-CHKHKTBYO3.
-                    06  P02-VALUE   PIC X.
-                  05  P02-P028-CHKHKTBYO4.
-                    06  P02-VALUE   PIC X.
-                  05  P02-P028-NNCHIKBN.
-                    06  P02-VALUE   PIC X.
-                  05  P02-P028-SYOUNIKBN.
-                    06  P02-VALUE   PIC X.
-                  05  P02-SCROLLEDWINDOW7.
-                    06  P02-P028-MYLIST.
-                      07  P02-P028-MYLIST-COUNT   PIC S9(9)   BINARY.
-                      07  P02-P028-MYLIST-ROW PIC S9(9)   BINARY.
-                      07  P02-P028-MYLIST-SELECT
-                              PIC X       OCCURS  20 TIMES.
-                      07  P02-P028-MYLIST-FGCOLOR
-                              PIC X(16)   OCCURS  20 TIMES.
-                      07  P02-P028-MYLIST-BGCOLOR
-                              PIC X(16)   OCCURS  20 TIMES.
-                      07  P02-ITEM        OCCURS  20 TIMES.
-                        08  P02-P028-TMYNUM PIC X(2).
-                        08  P02-P028-TMYIDKEY PIC X(10).
-                        08  P02-P028-TMYNUMBER    PIC X(20).
-                        08  P02-P028-TMYDESCRIP PIC X(100).
-                  05  P02-BCMY1.
-                    06  P02-STATE   PIC S9(9)   BINARY.
-                  05  P02-BCMY2.
-                    06  P02-STATE   PIC S9(9)   BINARY.
-                  05  P02-P028-MYSELNUM-G.
-                    06  P02-P028-MYSELNUM PIC 9(2).
-                  05  P02-P028-MYIDKEY.
-                    06  P02-TEXTDATA    PIC X(10).
-                  05  P02-P028-MY-NUMBER.
-                    06  P02-TEXTDATA    PIC X(20).
-                  05  P02-P028-MY-DESCRIP.
-                    06  P02-TEXTDATA    PIC X(100).
-                  05  P02-P028-AUTOSRYCD1.
-                    06  P02-TEXTDATA    PIC X(9).
-                  05  P02-P028-AUTOSRYCD2.
-                    06  P02-TEXTDATA    PIC X(9).
-                  05  P02-P028-AUTOSRYCD3.
-                    06  P02-TEXTDATA    PIC X(9).
-                  05  P02-P028-AUTONAME1.
-                    06  P02-TEXTDATA    PIC X(40).
-                  05  P02-P028-AUTONAME2.
-                    06  P02-TEXTDATA    PIC X(40).
-                  05  P02-P028-AUTONAME3.
-                    06  P02-TEXTDATA    PIC X(40).
-                  05  P02-P028-NINPUKBN.
-                    06  P02-VALUE   PIC X.
 
