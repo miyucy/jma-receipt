@@ -45,36 +45,36 @@ DBVERSIONMICRO=`echo ${DBVERSION}|sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\3/'`
 # echo $DBVERSIONMINOR
 # echo $DBVERSIONMICRO
 
-if [ $DBVERSIONMAJOR -ge 8 ] && [ $DBVERSIONMINOR -ge 4 ];
-then
-  echo ""
-else
-  if test  X`su - postgres -c "psql template1 -t -P format=unaligned -c \"${LOCALECHECKSQL}\""` != "XC"
-  then
-    echo "Error, PostgreSQL locale should be C. " | tee -a $INSTALLLOG
-    echo "Please set locale C and execute initdb or createcluster. " | tee -a $INSTALLLOG
-    exit 1
-  fi
-fi
+#if [ $DBVERSIONMAJOR -ge 8 ] && [ $DBVERSIONMINOR -ge 4 ];
+#then
+#  echo ""
+#else
+#  if test  X`su - postgres -c "psql template1 -t -P format=unaligned -c \"${LOCALECHECKSQL}\""` != "XC"
+#  then
+#    echo "Error, PostgreSQL locale should be C. " | tee -a $INSTALLLOG
+#    echo "Please set locale C and execute initdb or createcluster. " | tee -a $INSTALLLOG
+#    exit 1
+#  fi
+#fi
 
 if [ -z `su - postgres -c "psql template1 -t -c \"${USERCHECKSQL}\""` ]
 then
-  if [ $DBVERSIONMAJOR -ge 8 ]
-  then
+#  if [ $DBVERSIONMAJOR -ge 8 ]
+#  then
     su - postgres -c "createuser --createdb --no-superuser --no-createrole ${DBUSER}"
-  else
-    su - postgres -c "createuser --createdb --no-adduser ${DBUSER}"
-  fi
+#  else
+#    su - postgres -c "createuser --createdb --no-adduser ${DBUSER}"
+#  fi
 fi
 
 if [ -z `su - postgres -c "psql template1 -t -c \"${DBCHECKSQL}\""` ]
 then
-  if [ $DBVERSIONMAJOR -ge 8 ] && [ $DBVERSIONMINOR -ge 4 ];
-  then
+#  if [ $DBVERSIONMAJOR -ge 8 ] && [ $DBVERSIONMINOR -ge 4 ];
+#  then
     su - ${DBUSER} -c "createdb -lC -Ttemplate0 -E${DBENCODING} \"${DBNAME}\""
-  else
-    su - ${DBUSER} -c "createdb -E${DBENCODING} \"${DBNAME}\""
-  fi
+#  else
+#    su - ${DBUSER} -c "createdb -E${DBENCODING} \"${DBNAME}\""
+#  fi
   su - ${DBUSER} -c "psql -e ${DBNAME} < ${INITDIR}/orca_dbkanri_orig.dump 2>&1 | tee -a $INSTALLLOG"
 else
   echo "Database exist." 2>&1 | tee -a $INSTALLLOG
