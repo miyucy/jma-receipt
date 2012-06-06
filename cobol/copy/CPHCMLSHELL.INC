@@ -42,4 +42,4 @@
       *----(02.00.01)--ADD-START---
           03  SHELL-KBN           PIC 9(01).
       *----(02.00.01)--ADD-END-----
-
+          03  SHELL-IPN           PIC 9(01).
