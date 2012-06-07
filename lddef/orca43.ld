@@ -39,6 +39,7 @@ db	{
 	tbl_ptinf;
 	tbl_ptkohinf;
 	tbl_henrei_body;
+	tbl_receden;
 };
 
 /* #include "orcadb.inc" */
