@@ -2726,6 +2726,32 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
+      *H24.6
+               WHEN    "K235"
+                   STRING  "警告！"
+                           "一般名処方加算の対象薬剤がありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K236"
+                   STRING  "警告！"
+                           "一般名処方加算（処方せん料）算定可能です。"
+                           "処方せん料削除で自動算定します"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K160"
+                   STRING  "警告！"
+                           "時間外緊急院内検査加算が算定できます。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K161"
+                   STRING  "警告！"
+                           "時間外緊急院内画像診断加算が算定できます。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG
