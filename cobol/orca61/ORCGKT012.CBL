@@ -3383,7 +3383,7 @@
                IF      SPA-GMN-TMEISYO(IDX)(1:1)   =   "-"
                    MOVE    ALL "-"             TO  KT012-MNO (IDX)
       **********   MOVE    ALL "¡Ý"            TO  KT012-MEISAI (IDX)
-                   MOVE    ALL "-"             TO  KT012-MEISAI (IDX)
+                   MOVE    ALL "¡½"            TO  KT012-MEISAI (IDX)
                ELSE
                    IF      SPA-GMN-TBANGO (IDX)    NOT =   ZERO
                        MOVE    SPA-GMN-TBANGO (IDX)    TO  WRK-ZZ

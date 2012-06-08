@@ -3621,7 +3621,7 @@
                MOVE    "F"             TO  K09-MEILIST-SELECT  (IDX)
                IF      SPA-GMN-TMEISYO(IDX)(1:1)   =   "-"
                    MOVE    ALL "-"             TO  K09-MNO (IDX)
-                   MOVE    ALL "¡Ý"            TO  K09-MEISAI (IDX)
+                   MOVE    ALL "¡½"            TO  K09-MEISAI (IDX)
                ELSE
                    IF      SPA-GMN-TBANGO (IDX)    NOT =   ZERO
                        MOVE    SPA-GMN-TBANGO (IDX)    TO  WRK-ZZ

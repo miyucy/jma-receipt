@@ -12494,6 +12494,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    4               TO  K02-PANDATABLE1-TROWATTR
                    MOVE    2               TO  K02-PANDATABLE1-TCOLUMN
                    MOVE    WRK-IDX2        TO  K02-PANDATABLE1-TROW
+      *
+      *            エラー位置の背景色
+                   IF     (SPA-ERRCD       =   SPACE )
+                   OR     (SPA-ERRCD       =   "K999")
+                   OR    ((WRK-MAP-CUR     =   ZERO  )   AND
+                          (WRK-MAP-CUR2    =   ZERO  ))
+                   OR     (K02-INPUTCD (WRK-IDX2)  =   SPACE )
+                       CONTINUE
+                   ELSE
+                       IF      SPA-ERRCD(1:1)  =   "K"
+                           MOVE    "pink1"
+                                   TO  K02-INPUTCD-BGCOLORS(WRK-IDX2) 
+                       ELSE
+                           MOVE    "pink1"
+                                   TO  K02-INPUTCD-BGCOLORS(WRK-IDX2) 
+                       END-IF
+                   END-IF
+      *
                WHEN    02
       *            名称
       *            MOVE    "MEISYO"        TO  MCP-WIDGET

@@ -167,14 +167,17 @@
                    07  SPA-GMN-TBLREC-G    OCCURS  800.
                        09  SPA-GMN-TBANGO      PIC 9(03).
                        09  SPA-GMN-TDELFLG     PIC 9(01).
-                       09  SPA-GMN-TMEISYO     PIC X(200).
+      **               09  SPA-GMN-TMEISYO     PIC X(200).
+                       09  SPA-GMN-TMEISYO     PIC X(150).
                        09  SPA-GMN-TMEISYO-1   REDEFINES
                                                    SPA-GMN-TMEISYO.
-                           11  SPA-GMN-TMEISYO1    PIC X(200).
+      **                   11  SPA-GMN-TMEISYO1    PIC X(200).
+                           11  SPA-GMN-TMEISYO1    PIC X(150).
                        09  SPA-GMN-TMEISYO-3   REDEFINES
                                                    SPA-GMN-TMEISYO.
                            11  SPA-GMN-TYOBI3      PIC X(02).
-                           11  SPA-GMN-TMEISYO3    PIC X(198).
+      *                    11  SPA-GMN-TMEISYO3    PIC X(198).
+                           11  SPA-GMN-TMEISYO3    PIC X(148).
                        09  SPA-GMN-TMEISYO-2   REDEFINES
                                                SPA-GMN-TMEISYO.
                            11  SPA-GMN-TBANGO2     PIC X(02).
@@ -2000,7 +2003,8 @@
            IF      IDG                 >   MAX-GMN
                GO      TO      31013-SRYKA-HEN-EXT
            END-IF
-           MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
+     ***** MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
+           MOVE    ALL "¡½"            TO  SPA-GMN-TMEISYO (IDG)
       *
             .
        31013-SRYKA-HEN-EXT.
