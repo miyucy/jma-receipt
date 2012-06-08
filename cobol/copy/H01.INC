@@ -17,7 +17,6 @@
       ********************************************************************
             02  H01.
               03  H01-B10-STATE   PIC S9(09) BINARY.
-              03  H01-B12-STATE   PIC S9(09) BINARY.
               03  H01-PTNUM.
                 04  H01-VALUE   PIC X(20).
               03  H01-SRYYM.
@@ -52,7 +51,7 @@
                 04  H01-YKZFTN   PIC 9(8).
               03  H01-JNISSU-G  OCCURS  5.
                 04  H01-JNISSU-STATE   PIC S9(9)   BINARY.
-                04  H01-JNISSU   PIC 9(8).
+                04  H01-JNISSU   PIC 9(2).
               03  H01-SHORYOYOHI-G  OCCURS  5.
                 04  H01-SHORYOYOHI-STATE   PIC S9(9)   BINARY.
                 04  H01-SHORYOYOHI   PIC 9(8).
@@ -63,27 +62,21 @@
                 04  H01-SHONISSU-STATE   PIC S9(9)   BINARY.
                 04  H01-SHONISSU   PIC 9(2).
               03  H01-NKHNTEN-G  OCCURS  38.
-                04  H01-NKHNTEN-STATE   PIC S9(09) BINARY.
                 04  H01-NKHNTEN   PIC 9(8).
               03  H01-NKAISU-G  OCCURS  38.
-                04  H01-NKAISU-STATE   PIC S9(09) BINARY.
                 04  H01-NKAISU   PIC 9(5).
               03  H01-NTENSU-G  OCCURS  3.
                 04  H01-NTENSU-TBL  OCCURS  38.
-                  05  H01-NTENSU-STATE   PIC S9(09) BINARY.
                   05  H01-NTENSU   PIC S9(8).
               03  H01-NTOTALTEN-G OCCURS  5.
                 04  H01-NTOTALTEN-STATE   PIC S9(9)   BINARY.
                 04  H01-NTOTALTEN   PIC 9(8).
               03  H01-NFTNMONEY-G OCCURS  5.
-                04  H01-NFTNMONEY-STATE   PIC S9(09) BINARY.
                 04  H01-NFTNMONEY   PIC 9(8).
               03  H01-NYKZFTN-G   OCCURS  5.
-                04  H01-NYKZFTN-STATE   PIC S9(09) BINARY.
                 04  H01-NYKZFTN   PIC 9(8).
               03  H01-NJNISSU-G   OCCURS  5.
-                04  H01-NJNISSU-STATE   PIC S9(09) BINARY.
-                04  H01-NJNISSU   PIC 9(8).
+                04  H01-NJNISSU   PIC 9(2).
               03  H01-NSHORYOYOHI-G  OCCURS  5.
                 04  H01-NSHORYOYOHI-STATE   PIC S9(9)   BINARY.
                 04  H01-NSHORYOYOHI   PIC 9(8).
@@ -139,34 +132,27 @@
                 04  H01-HTEISYUTUSAKI-VALUE   PIC X(10).
               03  H01-HRECESYUBETU.
                 04  H01-HRECESYUBETU-STYLE   PIC X(20).
-                04  H01-HRECESYUBETU-VALUE   PIC X(14).
+                04  H01-HRECESYUBETU-VALUE   PIC X(10).
               03  H01-HHKNJANUM.
                 04  H01-HHKNJANUM-STYLE   PIC X(20).
-                04  H01-HHKNJANUM-VALUE   PIC X(14).
+                04  H01-HHKNJANUM-VALUE   PIC X(8).
               03  H01-HHOJOKBN.
                 04  H01-HHOJOKBN-STYLE   PIC X(20).
                 04  H01-HHOJOKBN-VALUE   PIC X(6).
               03  H01-HKIGO.
                 04  H01-HKIGO-STYLE   PIC X(20).
                 04  H01-HKIGO-VALUE   PIC X(20).
-              03  H01-HRECEIPT-KBN.
-                04  H01-HRECEIPT-KBN-STYLE   PIC X(20).
-                04  H01-HRECEIPT-KBN-VALUE   PIC X(10).
               03  H01-HENREI-MSG.
                 04  H01-HENREI-MSG-STYLE   PIC X(20).
                 04  H01-HENREI-MSG-VALUE   PIC X(14).
               03  H01-HCREYMD.
                 04  H01-HCREYMD-STYLE   PIC X(20).
-                04  H01-HCREYMD-VALUE   PIC X(19).
+                04  H01-HCREYMD-VALUE   PIC X(13).
               03  H01-AGE.
                 04  H01-VALUE   PIC 9(3).
               03  H01-KYURATE.
                 04  H01-VALUE   PIC 9(3).
               03  H01-ZAITAKU.
-                04  H01-VALUE   PIC X(20).
+                04  H01-VALUE   PIC X(14).
               03  H01-HONKZKKBN.
                 04  H01-VALUE   PIC X(4).
-              03  H01-TITLE-HKNJANUM.
-                04  H01-VALUE   PIC X(16).
-              03  H01-TITLE-KIGO.
-                04  H01-VALUE   PIC X(10).
