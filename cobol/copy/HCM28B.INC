@@ -28,17 +28,17 @@
             02  HCM28B-SRYCD
                         PIC X(9)        OCCURS 30 TIMES.
             02  HCM28B-SRYNAME
-                        PIC X(40)       OCCURS 30 TIMES.
+                        PIC X(32)       OCCURS 30 TIMES.
             02  HCM28B-SRYNAME2
-                        PIC X(80)       OCCURS 30 TIMES.
+                        PIC X(68)       OCCURS 30 TIMES.
             02  HCM28B-SRYSURYO
                         PIC X(11)       OCCURS 30 TIMES.
             02  HCM28B-ZAIKAISU
                         PIC X(5)        OCCURS 30 TIMES.
-            02  HCM28B-SRYYM
-                        PIC X(6)        OCCURS 30 TIMES.
             02  HCM28B-SURYOTOTAL
                         PIC X(13)       OCCURS 30 TIMES.
+            02  HCM28B-SRYYM
+                        PIC X(6)        OCCURS 30 TIMES.
             02  HCM28B-SRYYMD
                         PIC X(46)       OCCURS 30 TIMES.
             02  HCM28B-SRYYMD2
