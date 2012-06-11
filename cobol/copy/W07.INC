@@ -507,6 +507,10 @@
                     06  W07-GENERIC-FLG-COUNT   PIC S9(9)   BINARY.
                     06  W07-GENERIC-FLG-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
+                  05  W07-ERRCOLORS.
+                    06  W07-VALUE   PIC X(20).
+                  05  W07-KEICOLORS.
+                    06  W07-VALUE   PIC X(20).
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.

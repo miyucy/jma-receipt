@@ -189,6 +189,8 @@
       *入力スクロール背景色
                05  SPA-BGCOLORS               PIC X(20).
                05  SPA-BGLINEKBN              PIC X(01).
+               05  SPA-ERRCOLORS              PIC X(20).
+               05  SPA-KEICOLORS              PIC X(20).
       *
       *前回保険組合せ相違チェック
                05  SPA-ZENHKNCHK-FLG       PIC X(01).
@@ -521,6 +523,11 @@
                05  SPA-SYOHOU-CHK          PIC  9(01).
       *手帳加算確認
                05  SPA-TECHOKBN-CHK        PIC  9(01).
+      *ver.4.7
+      *緊急時間外加算チェック
+               05  SPA-KENJIKAN-CHK        PIC  9(01).
+               05  SPA-GAZJIKAN-CHK        PIC  9(01).
+      *
       *外来複数保険組合せ
                05  SPA-TBL-HKNCOMBI-AREA.
                    07  SPA-TBL-HKNCOMBI-OCC     OCCURS   15.

@@ -12504,10 +12504,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        CONTINUE
                    ELSE
                        IF      SPA-ERRCD(1:1)  =   "K"
-                           MOVE    "pink1"
+                           MOVE    SPA-KEICOLORS
                                    TO  K02-INPUTCD-BGCOLORS(WRK-IDX2) 
                        ELSE
-                           MOVE    "pink1"
+                           MOVE    SPA-ERRCOLORS
                                    TO  K02-INPUTCD-BGCOLORS(WRK-IDX2) 
                        END-IF
                    END-IF

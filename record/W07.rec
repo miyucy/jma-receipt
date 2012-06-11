@@ -653,6 +653,12 @@ W07	{
 					count	int;
 					item	varchar(40)[05];
 				};
+				ERRCOLORS	{
+					value	varchar(20);
+				};
+				KEICOLORS	{
+					value	varchar(20);
+				};
 			};
 			TAGNAME3    {
 			  	state   int;

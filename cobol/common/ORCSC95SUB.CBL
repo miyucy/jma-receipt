@@ -664,6 +664,10 @@
                MOVE    SYS-1038-BGCOLORS       TO  SPA-BGCOLORS
       *        入力スクロール背景色
                MOVE    SYS-1038-BGLINEKBN      TO  SPA-BGLINEKBN
+      *        エラー背景色
+               MOVE    SYS-1038-ERRCOLORS      TO  SPA-ERRCOLORS
+      *        警告背景色
+               MOVE    SYS-1038-KEICOLORS      TO  SPA-KEICOLORS
            END-IF
            IF      SPA-KAGRPFLG        =   SPACE
                MOVE    "0"                 TO  SPA-KAGRPFLG
@@ -716,6 +720,14 @@
       *    入力スクロール背景色
            IF      SPA-BGLINEKBN       =   SPACE
                MOVE    "0"                 TO  SPA-BGLINEKBN
+           END-IF
+      *    入力スクロール背景色
+           IF      SPA-ERRCOLORS       =   SPACE
+               MOVE    "pink1"             TO  SPA-ERRCOLORS
+           END-IF
+      *    警告背景色
+           IF      SPA-KEICOLORS       =   SPACE
+               MOVE    "pink1"             TO  SPA-KEICOLORS
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

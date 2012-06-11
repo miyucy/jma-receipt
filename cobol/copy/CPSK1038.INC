@@ -112,11 +112,16 @@
                    07  SYS-1038-BGCOLORSJ-G.
                        09 SYS-1038-BGCOLORSJ   PIC  X(20)
                                                OCCURS   8.
+      *¥¨¥é¡¼ÇØ·Ê¿§
+               05  SYS-1038-ERRCOLORS       PIC  X(20).
+      *·Ù¹ðÇØ·Ê¿§
+               05  SYS-1038-KEICOLORS       PIC  X(20).
       *Í½È÷ 
       *******  05                          PIC  X(488).
       ******   05  SYS-1038-YOBI           PIC  X(480).
       ****     05  SYS-1038-YOBI           PIC  X(454).
-               05  SYS-1038-YOBI           PIC  X(253).
+      ****     05  SYS-1038-YOBI           PIC  X(253).
+               05  SYS-1038-YOBI           PIC  X(213).
       *Ã¼Ëö£É£Ä
            03  SYS-1038-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
