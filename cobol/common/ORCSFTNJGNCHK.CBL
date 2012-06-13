@@ -81,6 +81,7 @@
       *  04.05.03    NACL-ÌçÏÆ    11/11/17  ºë¶Ì¸©ÃÏÊý¸øÈñÂÐ±þ¡Ê¾¾ÉúÄ®¡Ë
       *  04.05.04    NACL-ÌçÏÆ    12/04/27  ÂçºåÉÜÃÏÊý¸øÈñ¡ÜÄ¹´üÂÐ±þ
       *  04.05.05    NACL-ÌçÏÆ    12/06/04  À¸ÊÝ¤Î£²£´Ê»ÍÑ»þ¤ÎÂÐ±þ
+      *  04.05.06    NACL-ÌçÏÆ    12/06/11  Ä¹´ü¤ÎÈ½Äê½¤Àµ
       *
       *  04.07.01    NACL-ÌçÏÆ    11/09/01  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *  04.07.02    NACL-ÌçÏÆ    11/12/13  ±¡³°½èÊý¤Î¤ß¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥ÈÂÐ±þ
@@ -133,6 +134,7 @@
        01  WRK-AREA.
            03  WRK-HKNMST-JGNGAK  PIC 9(06).
            03  WRK-KOHFTN         PIC 9(10).
+           03  WRK-KOHFTN-EN      PIC 9(10)V9(01).
            03  WRK-KOHFTN-H       PIC 9(10)V9(01).
            03  WRK-KOHFTN9-H      PIC 9(10)V9(01).
            03  WRK-KOHFTN9-X      PIC 9(10).
@@ -1302,6 +1304,7 @@
       *
       *    ´µ¼ÔÉéÃ´¶â¤Î½¸·×
            MOVE      ZERO          TO      WRK-KOHFTN
+           MOVE      ZERO          TO      WRK-KOHFTN-EN
            MOVE      ZERO          TO      WRK-KOHFTN-H
            MOVE      ZERO          TO      WRK-KOHFTN9-H
            MOVE      ZERO          TO      WRK-KOHFTN9-X
@@ -1334,6 +1337,8 @@
                        AND (FLG-ZENKI-TOKUREI       =   1           )
                          COMPUTE  SYU-KOH-COMPFTN(1) =
                                   SYU-TOTAL-HKNTEN * 10 * 0.2
+                         MOVE     SYU-KOH-COMPFTN(1)  TO
+                                           SYU-KOH-COMPFTN-ENTANI(1)
                          COMPUTE  SYU-KOH-COMPFTN(1)  =
                                   SYU-KOH-COMPFTN(1)  + 5
                          COMPUTE  SYU-KOH-COMPFTN(1)  =
@@ -1344,6 +1349,7 @@
                        ADD  SYU-KOH-HKNFTNMONEY(1)
                                        TO  WRK-KOHFTN-HKNFTNMONEY
                        ADD  SYU-KOH-COMPFTN(1)     TO  WRK-KOHFTN
+                       ADD  SYU-KOH-COMPFTN-ENTANI(1) TO WRK-KOHFTN-EN
                        IF  (LNK-FTNJGNCHK-KOHNUM(1:1) >= "1" AND <= "8")
                        AND (WRK-HKNCOMBINUM-HKNID(IDX1)
                                                   = LNK-FTNJGNCHK-HKNID)
@@ -1357,7 +1363,8 @@
                        END-IF
                        IF  (LNK-FTNJGNCHK-KOHNUM = "972" OR "974")
                        AND (SYU-SKJ-FTNDAY(1)  NOT = ZERO        )
-                          MOVE SYU-KOH-COMPFTN(1)  TO  WRK-COMPFTN
+      **>                 MOVE SYU-KOH-COMPFTN(1)  TO  WRK-COMPFTN
+                          MOVE SYU-KOH-COMPFTN-ENTANI(1) TO WRK-COMPFTN
                           PERFORM  2004111-CYOKI-HENSYU-SEC
                        END-IF
                     WHEN   SYU-KOH-HKNNUM(2)
@@ -1365,6 +1372,8 @@
                        AND (FLG-ZENKI-TOKUREI       =   1           )
                          COMPUTE  SYU-KOH-COMPFTN(2) =
                                   SYU-TOTAL-HKNTEN * 10 * 0.2
+                         MOVE     SYU-KOH-COMPFTN(2)  TO
+                                           SYU-KOH-COMPFTN-ENTANI(2)
                          COMPUTE  SYU-KOH-COMPFTN(2)  =
                                   SYU-KOH-COMPFTN(2)  + 5
                          COMPUTE  SYU-KOH-COMPFTN(2)  =
@@ -1375,6 +1384,7 @@
                        ADD  SYU-KOH-HKNFTNMONEY(2)
                                        TO  WRK-KOHFTN-HKNFTNMONEY
                        ADD  SYU-KOH-COMPFTN(2)     TO  WRK-KOHFTN
+                       ADD  SYU-KOH-COMPFTN-ENTANI(2) TO WRK-KOHFTN-EN
                        IF  (LNK-FTNJGNCHK-KOHNUM(1:1) >= "1" AND <= "8")
                        AND (WRK-HKNCOMBINUM-HKNID(IDX1)
                                                   = LNK-FTNJGNCHK-HKNID)
@@ -1394,7 +1404,8 @@
                        END-IF
                        IF  (LNK-FTNJGNCHK-KOHNUM = "972" OR "974")
                        AND (SYU-SKJ-FTNDAY(1)  NOT = ZERO        )
-                          MOVE SYU-KOH-COMPFTN(2)  TO  WRK-COMPFTN
+      **>                 MOVE SYU-KOH-COMPFTN(2)  TO  WRK-COMPFTN
+                          MOVE SYU-KOH-COMPFTN-ENTANI(2) TO WRK-COMPFTN
                           PERFORM  2004111-CYOKI-HENSYU-SEC
                        END-IF
                     WHEN   SYU-KOH-HKNNUM(3)
@@ -1402,6 +1413,8 @@
                        AND (FLG-ZENKI-TOKUREI       =   1           )
                          COMPUTE  SYU-KOH-COMPFTN(3) =
                                   SYU-TOTAL-HKNTEN * 10 * 0.2
+                         MOVE     SYU-KOH-COMPFTN(3)  TO
+                                           SYU-KOH-COMPFTN-ENTANI(3)
                          COMPUTE  SYU-KOH-COMPFTN(3)  =
                                   SYU-KOH-COMPFTN(3)  + 5
                          COMPUTE  SYU-KOH-COMPFTN(3)  =
@@ -1412,6 +1425,7 @@
                        ADD  SYU-KOH-HKNFTNMONEY(3)
                                        TO  WRK-KOHFTN-HKNFTNMONEY
                        ADD  SYU-KOH-COMPFTN(3)     TO  WRK-KOHFTN
+                       ADD  SYU-KOH-COMPFTN-ENTANI(3) TO WRK-KOHFTN-EN
                        IF  (LNK-FTNJGNCHK-KOHNUM(1:1) >= "1" AND <= "8")
                        AND (WRK-HKNCOMBINUM-HKNID(IDX1)
                                                   = LNK-FTNJGNCHK-HKNID)
@@ -1425,7 +1439,8 @@
                        END-IF
                        IF  (LNK-FTNJGNCHK-KOHNUM = "972" OR "974")
                        AND (SYU-SKJ-FTNDAY(1)  NOT = ZERO        )
-                          MOVE SYU-KOH-COMPFTN(3)  TO  WRK-COMPFTN
+      **>                 MOVE SYU-KOH-COMPFTN(3)  TO  WRK-COMPFTN
+                          MOVE SYU-KOH-COMPFTN-ENTANI(3) TO WRK-COMPFTN
                           PERFORM  2004111-CYOKI-HENSYU-SEC
                        END-IF
                     WHEN   SYU-KOH-HKNNUM(4)
@@ -1433,6 +1448,8 @@
                        AND (FLG-ZENKI-TOKUREI       =   1           )
                          COMPUTE  SYU-KOH-COMPFTN(4) =
                                   SYU-TOTAL-HKNTEN * 10 * 0.2
+                         MOVE     SYU-KOH-COMPFTN(4)  TO
+                                           SYU-KOH-COMPFTN-ENTANI(4)
                          COMPUTE  SYU-KOH-COMPFTN(4)  =
                                   SYU-KOH-COMPFTN(4)  + 5
                          COMPUTE  SYU-KOH-COMPFTN(4)  =
@@ -1443,6 +1460,7 @@
                        ADD  SYU-KOH-HKNFTNMONEY(4)
                                        TO  WRK-KOHFTN-HKNFTNMONEY
                        ADD  SYU-KOH-COMPFTN(4)     TO  WRK-KOHFTN
+                       ADD  SYU-KOH-COMPFTN-ENTANI(4) TO WRK-KOHFTN-EN
                        IF  (LNK-FTNJGNCHK-KOHNUM(1:1) >= "1" AND <= "8")
                        AND (WRK-HKNCOMBINUM-HKNID(IDX1)
                                                   = LNK-FTNJGNCHK-HKNID)
@@ -1456,7 +1474,8 @@
                        END-IF
                        IF  (LNK-FTNJGNCHK-KOHNUM = "972" OR "974")
                        AND (SYU-SKJ-FTNDAY(1)  NOT = ZERO        )
-                          MOVE SYU-KOH-COMPFTN(4)  TO  WRK-COMPFTN
+      **>                 MOVE SYU-KOH-COMPFTN(4)  TO  WRK-COMPFTN
+                          MOVE SYU-KOH-COMPFTN-ENTANI(4) TO WRK-COMPFTN
                           PERFORM  2004111-CYOKI-HENSYU-SEC
                        END-IF
                   END-EVALUATE
@@ -1818,7 +1837,8 @@
                      CONTINUE
                    ELSE
                      IF   FLG-TOKU75  =  1
-                       IF   WRK-HKNMST-JGNGAK   >   WRK-KOHFTN
+      **>              IF   WRK-HKNMST-JGNGAK   >   WRK-KOHFTN
+                       IF   WRK-HKNMST-JGNGAK   >   WRK-KOHFTN-EN
                          EVALUATE  LNK-FTNJGNCHK-KOHNUM
                            WHEN      "972"
                               IF  WRK-KOHFTN-TOKU75  <  5000
@@ -1831,7 +1851,8 @@
                          END-EVALUATE
                        END-IF
                      ELSE
-                       IF   WRK-HKNMST-JGNGAK   >   WRK-KOHFTN
+      **>              IF   WRK-HKNMST-JGNGAK   >   WRK-KOHFTN
+                       IF   WRK-HKNMST-JGNGAK   >   WRK-KOHFTN-EN
                          MOVE   01        TO  LNK-FTNJGNCHK-RC
                        END-IF
                      END-IF
