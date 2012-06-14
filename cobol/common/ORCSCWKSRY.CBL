@@ -1048,6 +1048,9 @@
       *
            IF      WRK-ERRCD1      NOT =   SPACE
                MOVE    WRK-ERRCD1          TO  ORCSCWKSRY-ERRCD
+               IF      ORCSCWKSRY-SYORIFLG =   1
+                   MOVE    "7004"          TO  ORCSCWKSRY-ERRCD
+               END-IF
                IF      ORCSCWKSRY-K09TUIKA =   1
                    MOVE    "7004"          TO  ORCSCWKSRY-ERRCD
                END-IF
@@ -2030,7 +2033,8 @@
            INITIALIZE                      SPA-SCR-REC
       *
            PERFORM VARYING     IDX-1     FROM    1   BY  1
-                   UNTIL       IDX-1     >=  SPA-MAX-LINE
+     ***********   UNTIL       IDX-1     >=  SPA-MAX-LINE
+                   UNTIL       IDX-1     >   SPA-MAX-LINE
                IF     (WRK-HZN-GMN-INPUTCD(IDX-1)    =   SPACE ) AND
                       (WRK-HZN-COM-INPUTCD(IDX-1)    =   SPACE )
                    CONTINUE

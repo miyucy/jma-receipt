@@ -4127,6 +4127,7 @@
                                        SPA-K02
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
+      *
            .
        3104-WKSRYACT-HEN-EXT.
            EXIT.
@@ -8234,7 +8235,8 @@
                GO      TO      41014-GYOINSN-EXT
            END-IF
       *
-           IF      SPA-GMN-IDX         >=  SPA-MAX-LINE
+      *    IF      SPA-GMN-IDX         >=  SPA-MAX-LINE
+           IF      SPA-GMN-IDX         =   SPA-MAX-LINE
                MOVE    "0007"              TO  SPA-ERRCD
                GO      TO      41014-GYOINSN-EXT
            END-IF
@@ -10040,7 +10042,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *TEST
       *    最終行へカーソル移動
-           MOVE    "1"                 TO  SPA-COM-CUR (SPA-GMN-MAX + 1)
+           IF      SPA-GMN-MAX         <   SPA-MAX-LINE
+               MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-MAX + 1)
+           ELSE
+               MOVE    "1"             TO  SPA-COM-CUR (SPA-MAX-LINE)
+           END-IF
            GO      TO      460-ATOGMN-EXT
       *TEST
            IF      SPA-GMN-PAGE        =   MAX-PAGE
@@ -11659,7 +11665,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-MAP-PAGE3
            MOVE    1                   TO  WRK-PAGE
            MOVE    ZERO                TO  SPA-GMN-MAX
-      *
+      *ver.4.7
       *訂正展開時、１行目にカーソル移動
            IF      SPA-GMN-CUR         =   98
                MOVE    "1"             TO  SPA-COM-CUR (1)
@@ -11789,7 +11795,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            初期表示の時１ページ目へ
                    IF     (SPA-MAP-IDX         >   MAX-GMN )
                        OR (SPA-GMN-PAGE        <   WRK-MAP-MAXPAGE)
-                       MOVE    99                  TO  SPA-MAP-IDX
+      *ver.4.7 ******  MOVE    99                  TO  SPA-MAP-IDX
+                       MOVE    MAX-GMN             TO  SPA-MAP-IDX
                    ELSE
                        IF      SPA-GMN-PAGE    >   WRK-MAP-MAXPAGE
                            MOVE    WRK-MAP-MAXPAGE     TO  SPA-GMN-PAGE
@@ -11799,7 +11806,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    ZERO            TO  SPA-SINSATU-SAI
       *            最終行へ
                    IF      SPA-MAP-IDX         >   MAX-GMN
-                       MOVE    99                  TO  SPA-MAP-IDX
+      *ver.4.7 ******* MOVE    99                  TO  SPA-MAP-IDX
+                       MOVE    MAX-GMN             TO  SPA-MAP-IDX
                    ELSE
                        MOVE    WRK-MAP-MAXPAGE     TO  SPA-GMN-PAGE
                    END-IF
@@ -12497,7 +12505,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *            エラー位置の背景色
                    IF     (SPA-ERRCD       =   SPACE )
-                   OR     (SPA-ERRCD       =   "K999")
+                   OR     (SPA-ERRCD       =   "K999"
+                                           OR  "9100"
+                                           OR  "7001"
+                                           OR  "7007"
+                                           OR  "7004")
                    OR    ((WRK-MAP-CUR     =   ZERO  )   AND
                           (WRK-MAP-CUR2    =   ZERO  ))
                    OR     (K02-INPUTCD (WRK-IDX2)  =   SPACE )
