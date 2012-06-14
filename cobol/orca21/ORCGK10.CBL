@@ -1098,6 +1098,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       **** END-IF
            MOVE    SPACE               TO  SPA-K10-GMN-SELNUM
            MOVE    ZERO                TO  SPA-K10-SELNUM
+           MOVE    1                   TO  SPA-K10GMN-CUR
       *
            .
         30011-WKSRYCD-DEL-EXT.

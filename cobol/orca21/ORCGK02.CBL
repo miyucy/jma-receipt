@@ -1625,6 +1625,14 @@
       *                追加
                            PERFORM 30092-SAIHEN3-SEC
                        END-IF
+      *!!!
+      *                ４００行以上はエラーメッセージ表示
+                       IF      SPA-ERRCD       =   "0007"
+                                               OR  "7004"
+                           MOVE    01              TO  SPA-GMN-CUR
+                           PERFORM 500-GMNHEN-SEC
+                           PERFORM 510-ERRSET-SEC
+                       END-IF
                    END-IF
       *
                WHEN    OTHER
