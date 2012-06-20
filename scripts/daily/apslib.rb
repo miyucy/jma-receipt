@@ -93,6 +93,9 @@ class PandaCore
 	  "";
 	end
   end
+  def values
+	@values
+  end
   def clear(rec)
 	@values.each { | key, value |
 	  if key =~ rec
