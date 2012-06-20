@@ -6,9 +6,8 @@ CSRCS = \
 	orcfileio.c \
 	cobabort.c \
 	coblog.c \
-	cobsleep.c
-
-CJSRCS = orcsjistoeuc.c
+	cobsleep.c \
+	orcsjistoeuc.c
 
 CJQSRCS = orcqrencode.c
 
@@ -17,8 +16,6 @@ CJKANJIOBJS = kanaconv.so orcsstring.so fixreddata.so
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 CC = @CC@
-have_jconv = @have_jconv@
-JCONV_LIB = @JCONV_LIB@
 have_qrencode = @have_qrencode@
 QRENCODE_LIB = @QRENCODE_LIB@
 PNG_CFLAGS = @png_CFLAGS@
@@ -27,14 +24,10 @@ XML2_CFLAGS = @xml2_CFLAGS@
 XML2_LIBS = @xml2_LIBS@
 
 COBJS = ${CSRCS:.c=.so}
-CJOBJS = ${CJSRCS:.c=.so}  
 CJQOBJS = ${CJQSRCS:.c=.so}  
 
-ifeq ($(have_jconv), yes)
-  COBJS += $(CJOBJS)
-  ifeq ($(have_qrencode), yes)
-    COBJS += $(CJQOBJS)
-  endif
+ifeq ($(have_qrencode), yes)
+  COBJS += $(CJQOBJS)
 endif
 COBJS += $(CJKANJIOBJS)
 
@@ -54,11 +47,8 @@ install: all installdirs
 installdirs:
 	$(INSTALL) -d $(orcalibdir)
 
-orcsjistoeuc.so: orcsjistoeuc.c
-	$(CC) $(JCONV_LIB) -fPIC -shared $< -o $@
-
 orcqrencode.so: orcqrencode.c
-	$(CC) $(JCONV_LIB) $(QRENCODE_LIB) $(PNG_CFLAGS) $(PNG_LIBS) -fPIC -shared $< -o $@
+	$(CC) $(QRENCODE_LIB) $(PNG_CFLAGS) $(PNG_LIBS) -fPIC -shared $< -o $@
 
 fixreddata.so: fixreddata.c euc.c
 	$(CC) $(XML2_CFLAGS) $(XML2_LIBS) -fPIC -shared -Wl,-soname,$@ $? -o $@

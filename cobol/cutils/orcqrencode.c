@@ -8,7 +8,7 @@
 #include <string.h>
 #include <qrencode.h>
 #include <png.h>
-#include <jconv.h>
+#include <iconv.h>
 
 /*#define DEBUG*/
 #ifdef DEBUG
@@ -174,23 +174,31 @@ euc2sjis(char *file,
 	char *out)
 {
 	FILE *fp;
-	char *sjis;
 	char src[MAX_DATA_SIZE];
-	int ret;
+	char dst[MAX_DATA_SIZE];
+	char *ip,*op;
+	size_t sib;
+	size_t sob;
+	iconv_t cd;
+	int rc;
 
 	if((fp = fopen(file, "r")) == NULL)return -1;
-	ret = fread(src, 1, MAX_DATA_SIZE, fp);
-	if(ret == 0){
+	sib = fread(src, 1, MAX_DATA_SIZE, fp);
+	if(sib == 0){
 		return -1;	
 	}
-	src[ret] = '\0';
 	fclose(fp);
 
-	if((sjis = convert_kanji_strict(src, "SJIS", "EUCJP")) == NULL){
-		return -1;	
+	ip = src;
+	op = dst;
+	sob = MAX_DATA_SIZE;
+	memset(dst,0,MAX_DATA_SIZE);
+	cd = iconv_open("cp932","euc-jp");
+	rc = iconv(cd,&ip,&sib,&op,&sob);
+	if (rc != 0) {
+		return -1;
 	}
-	strncpy(out, sjis, MAX_DATA_SIZE);
-	free(sjis);
+	strncpy(out,dst,MAX_DATA_SIZE);
 	return 0;
 }
 

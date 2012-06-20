@@ -65,22 +65,6 @@ AC_SUBST(PGCLUSTER)
 AC_SUBST(PGVERSION)
 AC_SUBST(PGPATH)
 
-AC_ARG_ENABLE(jconv,
-	    [  --enable-jconv  Enable jconv extention [default=yes]],
-    	    [if test "$enableval" = "yes"
-		    then
-		    	have_jconv=yes
-		    else
-			have_jconv=no
-		    fi])
-
-AC_CHECK_HEADERS(jconv.h)
-AC_CHECK_LIB(jconv,convert_kanji_strict, 
-	[have_jconv=yes JCONV_LIB="-ljconv"], 
-	have_jconv=no)
-AC_SUBST(have_jconv)
-AC_SUBST(JCONV_LIB)
-
 PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES(png, "libpng12")
 PKG_CHECK_MODULES(xml2,
