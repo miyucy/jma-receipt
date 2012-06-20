@@ -2268,6 +2268,32 @@
                END-STRING
            END-IF
       *!!
+      *!!
+      *H24.6
+      *    Ï«ºÒ¥³¡¼¥ÉÌ¾¾ÎÊÔ½¸
+           IF      (TNS-SRYCD(1:3)     =   "101")
+      *    Ï«ºÒ¡Ê´ïºà¡Ë
+           OR     ((TNS-SRYCD(1:1)     =   "7"    )  AND
+                   (TNS-SRYCD(2:5)     =   "88888"))
+      *    Ï«ºÒ¡Ê¥³¥á¥ó¥È¡Ë
+           OR     ((TNS-SRYCD(1:1)     =   "8"  )  AND
+                   (TNS-SRYCD(4:1)     =   "8"  ))
+               MOVE    SPACE               TO  SPA-J98-GMN-NAME (IDX)
+               STRING  "¡ÚÏ«¡Û"            DELIMITED   BY  SIZE
+                      TNS-NAME             DELIMITED   BY  SPACE
+                      INTO                 SPA-J98-GMN-NAME(IDX)
+               END-STRING
+           END-IF
+      *
+      *    ¸ø³²¤Î¥³¡¼¥É
+           IF      (TNS-SRYCD (1:3)    =   "102")
+               MOVE    SPACE               TO  SPA-J98-GMN-NAME (IDX)
+               STRING  "¡Ú¸ø³²¡Û"          DELIMITED   BY  SIZE
+                      TNS-NAME             DELIMITED   BY  SPACE
+                      INTO                 SPA-J98-GMN-NAME(IDX)
+               END-STRING
+           END-IF
+      *!!
       *
            .
        310211-TENSU-KYOHEN-EXT.

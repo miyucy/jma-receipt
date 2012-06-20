@@ -2003,8 +2003,7 @@
            IF      IDG                 >   MAX-GMN
                GO      TO      31013-SRYKA-HEN-EXT
            END-IF
-     ***** MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
-           MOVE    ALL "―"            TO  SPA-GMN-TMEISYO (IDG)
+           MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
       *
             .
        31013-SRYKA-HEN-EXT.
@@ -6670,7 +6669,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-K08-MAX
       *********MOVE    SPA-GMN-TMEISYO (IDX)   TO  K08-ITEM(IDX)
-               MOVE    SPA-GMN-TMEISYO (IDX)   TO  K08-MEISAI (IDX)
+               IF      SPA-GMN-TMEISYO (IDX)(1:1)  =  "-"
+                   MOVE    ALL "―"                TO  K08-MEISAI (IDX)
+               ELSE
+                   MOVE    SPA-GMN-TMEISYO (IDX)   TO  K08-MEISAI (IDX)
+               END-IF
       *        番号
                IF      SPA-GMN-TBANGO  (IDX)   NOT =   ZERO
                    MOVE    SPA-GMN-TBANGO  (IDX)   TO  WRK-ZZ
