@@ -5833,6 +5833,24 @@
                        END-IF
                    END-IF
       *
+      *            救急・在宅等支援病床初期加算（一般病棟入院基本料）
+                   IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190142970"
+                       IF    SYS-5000-KYUKYUKSNKBN   =   SPACE  OR  "0"
+                           MOVE   "1"         TO  WRK-CMB-CD
+                       ELSE
+                           MOVE   "2"         TO  WRK-CMB-CD
+                       END-IF
+                   END-IF
+      *
+      *            救急・在宅等支援病床初期加算（特定一般病棟入院料）
+                   IF      SPA-GMN-I01-KSN-SRYCD(IDX-KSN) = "190152470"
+                       IF    SYS-5000-KYUKYUKSNKBN   =   SPACE  OR  "0"
+                           MOVE   "1"         TO  WRK-CMB-CD
+                       ELSE
+                           MOVE   "2"         TO  WRK-CMB-CD
+                       END-IF
+                   END-IF
+      *
                    PERFORM 4103-CMB-KSN-CHK-SEC
                    MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-KSN (IDX-KSN)
                ELSE
