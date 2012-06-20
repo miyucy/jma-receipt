@@ -1,138 +1,154 @@
-/*
- * orcsjistoeuc - convert from SJIS(CP932) to EUC-JP
- *
- */
-
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <iconv.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
+#include <jconv.h>
 
-#if 0
-#define DEBUG 1
-#endif
-#ifdef DEBUG
-#include <syslog.h>
-#define OPENLOG	openlog("orcsjistoeuc", LOG_PID, LOG_DAEMON)
-#define SYSLOG(msg)	syslog(LOG_INFO, (msg))
-#else
-#define OPENLOG	/**/
-#define SYSLOG(msg)	/**/
-#endif
+//渡されてきたデータを読み取り変換を実行するメソッド
+//入力：順番に、「入力文字MAX、入力文字」変換後文字、変換文字MAX、変換後のバイト数、リターンコード」（文字列型）
+//出力：順番に、「変換後の文字、変換後のバイト数、リターンコード」（文字列型）
+extern int orcsjistoeuc(char *args){
+        int inlen, outlen;
+        int *maxlen;
+        char *indata;char *outdata;int *ret;
+int count = 0;
 
-/*	struct orcsjistoeuc
- *		int inlength;
- *		int outlen;
- *		int ret;
- *		char inbuf[inlen];
- *		char outbuf[outlen];
- */
+inlen = *((int *)(args + count));
+count += sizeof(int *);
 
-void
-orcsjistoeuc(char *ctx)
-{
-	int 	inlen;
-	int 	outlen;
-	int 	*ret;
-	int		rc;
-	char	*inbuf;
-	char	*outbuf;
-	char	*p;
-	size_t	sib;
-	size_t	sob;
-	iconv_t	cd;
+indata = (args + count);
+count += 1500;
 
-OPENLOG;
-	p = ctx;
-	inlen = *(int*)p;
-	p += sizeof(int);
-	
-	outlen = *(int*)p;
-	p += sizeof(int);
+outdata = (args + count);
+count += 3000;
 
-	ret = (int*)p;
-	p += sizeof(int);
+outlen = *((int *)(args + count));
+count += sizeof(int *);
 
-	inbuf = p;
-	p += inlen;
+maxlen = ((int *)(args + count));
+count += sizeof(int *);
 
-	outbuf = p;
-	p += outlen;
+ret = ((int *)(args + count));
 
-	sib = inlen;
-	sob = outlen;
-	memset(outbuf,' ',sob);
-	*ret = 0;
+        sjis_to_euc(inlen, indata, outdata, outlen, maxlen, ret);
 
-	cd = iconv_open("euc-jp","shift-jis");
-	rc = iconv(cd,&inbuf,&sib,&outbuf,&sob);
-	if (rc != 0) {
-		switch(errno) {
-		case EILSEQ:
-			*ret = 1;
-			fprintf(stderr,"[%d][%02x%02x]\n",(int)sib,
-			*(unsigned char*)(inbuf),
-			*(unsigned char*)(inbuf+1));
-			SYSLOG("invalid sequence");
-			break;
-		case E2BIG:
-			*ret = 2;
-			SYSLOG("buffer size overflow");
-			break;
-		default:
-			*ret = 3;
-			SYSLOG("other error");
-			break;
-		}
-	}
-SYSLOG("end");
-	return;
+
+return 0;
 }
 
-#if 1
-int
-main(int argc, 
-	char *argv[])
-{
-	FILE *fp;
-	struct stat st;
-	char *buf;
-	int *ip;
-	size_t size;
-
-	if(argc < 2){
-		printf("\nusage:orcsjistoeuc2 <infile>\n");
-		exit(0);
-	}
-	if(stat(argv[1],&st)!=0) {
-		printf("stat failed:%s\n",argv[1]);
-		exit(1);
-	}
-	size = st.st_size*2+sizeof(int)*3;
-	buf = malloc(size);
-	if((fp = fopen(argv[1],"r")) == NULL) {
-		printf("fopen failed:%s\n",argv[1]);
-		exit(1);
-	}
-	fread(buf+sizeof(int)*3,st.st_size,1,fp);
-	fclose(fp);
-
-	ip = (int*)buf;
-	*ip = (int)st.st_size;
-	ip = (int*)(buf+sizeof(int));
-	*ip = (int)st.st_size;
-	orcsjistoeuc(buf);
-	ip = (int*)(buf+sizeof(int)*2);
-	fprintf(stderr,"result:%d\n",*ip);
-
-	fp = fopen("out.txt","w");
-	fwrite(buf+sizeof(int)*3+st.st_size,st.st_size,1,fp);
-	fclose(fp);
-	free(buf);
-	return 0;
+//SJISコードで書かれた文字列をEUCコードに変換するメソッド
+//入力：左から順番に「inlen(入力文字MAX),indata(入力文字),outdata(変換後の文字),outlen(変換文字MAX),maxlen(変換後のバイト数),ret(リターンコード)」
+int sjis_to_euc(int inlen, char *indata, char *outdata,
+         int outlen, int *maxlen,int *ret){
+ char *euc_data;
+ int count = 0;
+ int count2 = 0;
+ int i = 0;
+ int ret_flag = 0;
+ int str_len;
+ unsigned char str1,str2;
+ unsigned char *str;
+ unsigned char tr_str[4];
+ unsigned char str_data[3000];
+ char strdata[3];
+ unsigned char *pnt_str1,*pnt_str2;  
+ 
+   StringCobol2C(indata, inlen);
+         *maxlen = strlen(indata);
+ while(i <= *maxlen){
+ str1 = *(indata + count);
+ str2 = *(indata + count + 1);
+ if(((0x00 < str1) && (str1 <= 0x7F)) || ((0xA0 <= str1) && (str1 <= 0xDF))){
+count += 1;
+ }else if(((str1 >= 0x80) && (str1 <= 0x9F)) || ((str1 >= 0xE0) && (str1 <= 0xFC))){
+count += 2;
+ret_flag = 1;
+break;
+}else{
+str1 = 0x20;
+count += 2;
 }
-#endif
+i++;
+ }
+         euc_data = convert_kanji_strict(indata, "EUCJP", "SJIS");
+ if((!strcmp(euc_data,indata)) && (ret_flag == 1)){
+ *ret = 1;
+ count = 0;
+ count2 = 0;
+ while(count <= *maxlen){
+ ret_flag = 0;
+  count2 = count;
+  str1 = *(indata + count);
+ str2 = *(indata + count + 1);
+ if(((0x00 < str1) && (str1 <= 0x7F)) || ((0xA0 <= str1) && (str1 <= 0xDF))){
+ count += 1;
+ }else if(((0x80 <= str1) && (str1 <= 0x9F)) || ((0xE0 <= str1) && (str1 <= 0xFC))){
+if((str1 == 0x87) && ((0x40 <= str2) && (str2 <= 0x9C))){
+str1 = 0x20;
+str2 = 0x20;
+}
+strdata[0] = str1;
+strdata[1] = str2;
+strdata[2] = '\0';
+ret_flag = 1;
+ count += 2;
+ }else{
+ str1 = 0x20;
+ count += 2;
+ }
+ if(ret_flag == 0){
+ str = convert_kanji_strict(&str1, "EUCJP", "SJIS");
+ }else{
+ str = convert_kanji_strict(&strdata[0], "EUCJP", "SJIS");
+ }
+ str_len = strlen(str);
+ memcpy((char *)(str_data + count2), str, str_len);
+ free(str);
+ }
+ strcpy(outdata, str_data);
+ }else{
+ *ret = 0;
+ strcpy(outdata, euc_data);
+ }
+ free(euc_data);
+// StringC2Cobol(outdata, outlen);
+*maxlen = StringC2Cobol(outdata, outlen);
+}
+
+
+//COBOL形式の文字列データをC形式に変換するメソッド
+//入力：左から順番に「str(変換する文字列),size(文字列MAX)」
+int StringCobol2C(char *str, size_t size){
+         char *p;
+         for( p = str + size - 1 ; p >= str ; p -- ) {
+                   if (  *p  ==  ' '  ) {
+                            *p = 0;
+                   } else if (  *p  ==  0  ) {
+                            /*      */
+                   } else {
+                            break;
+                   }
+         }
+ return 0;
+}
+
+
+//C形式の文字列データをC形式に変換するメソッド
+////入力：左から順番に「str(変換する文字列),size(文字列MAX)」
+int StringC2Cobol(char *str, size_t size){
+	int i;
+	int cnt;
+	int fEnd;
+	fEnd = 0;
+	cnt = 0;
+	for( i = 0 ; i < size ; i ++, str ++ ) {
+		if( fEnd ) {
+			*str = ' ';
+		} else if(*str == 0) {
+			fEnd = 1;
+		} else {
+			cnt++ ;
+			}
+	}
+	return cnt;
+}
+
