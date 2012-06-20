@@ -45,6 +45,7 @@ xml_medicalreq {
 		}[40] ;
 		Disease_Information  {
 			Disease_Code			varchar(50);
+			Disease_InOut			varchar(1);
 			Disease_Name			varchar(80);
 			Disease_Single	{
 				Disease_Single_Code	varchar(10);

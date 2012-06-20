@@ -108,6 +108,9 @@
       *         病名
                 04  MDCREQ-DIAGNOSIS-INFO           OCCURS  50 TIMES.
                   05  MDCREQ-DIAGNOSIS-NUMBER        PIC X(50).
+      *ver.4.7    入外区分
+                  05  MDCREQ-DIAGNOSIS-INOUT         PIC X(01).
+      *
                   05  MDCREQ-DIAGNOSIS-NAME          PIC X(80).
                   05  MDCREQ-DIAGNOSIS-SINGLE       OCCURS  6  TIMES.
                     07 MDCREQ-DIAGNOSIS-SINGLE-NUMBER

@@ -177,9 +177,10 @@
            COPY    "CPORCSLOCK.INC".
       *    ユーザプログラム起動チェックサブパラメタ
            COPY    "CPORCSUSERCHK.INC".
+      *
       *    API XML読み込み用定義体
            COPY    "CPMDCXMLREQ.INC".
-      *01  FIL-REC        PIC X(50).
+      *
       *    API XML書き込み用定義体
            COPY    "CPMDCXMLRES.INC".
       *
@@ -194,6 +195,10 @@
            03  C-RET               PIC X(2).
            03  C-UID               PIC X(36).
        01  ST                      PIC 9(2).
+      *
+      *ver.4.7
+      *    API XML読み込み共通定義
+           COPY    "CPAPIREQ.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -405,15 +410,17 @@
            IF      API-BODY        NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
+           INITIALIZE                      XML-MEDICALREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_medicalreq"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    API-BODY            TO  MDCREQ-OBJECT
            MOVE    ZERO                TO  MDCREQ-MODE
+           MOVE    XML-MEDICALREQ      TO  XML-APIREQ
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-MEDICALREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
                CONTINUE
@@ -427,11 +434,13 @@
            MOVE    "xml_medicalreq"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  MDCREQ-OBJECT
+           MOVE    XML-MEDICALREQ      TO  XML-APIREQ
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-MEDICALREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
+               MOVE    XML-APIREQ      TO  XML-MEDICALREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
@@ -442,9 +451,10 @@
            MOVE    "xml_medicalreq"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  MDCREQ-OBJECT
+           MOVE    XML-MEDICALREQ      TO  XML-APIREQ
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-MEDICALREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF (MCP-RC = ZERO OR 1)
                CONTINUE
@@ -1070,6 +1080,18 @@
                                            TO  LF04-SND-SPICOD1(IDY)
                MOVE    MDCREQ-DIAGNOSIS-NAME (IDY)
                                            TO  LF04-SND-SPINAME1(IDY)
+      *ver.4.7
+               EVALUATE    MDCREQ-DIAGNOSIS-INOUT (IDY)
+               WHEN    "I"
+      *            入院
+                   MOVE    "inpatient"     TO  LF04-SND-NYUGAIKBN (IDY)
+               WHEN    "O"
+      *            外来
+                   MOVE    "outpatient"    TO  LF04-SND-NYUGAIKBN (IDY)
+               WHEN    OTHER
+                   MOVE    SPACE           TO  LF04-SND-NYUGAIKBN (IDY)
+               END-EVALUATE
+      *
                PERFORM VARYING   IDZ   FROM    1   BY  1
                        UNTIL    (IDZ           >   6)
                    MOVE    MDCREQ-DIAGNOSIS-SINGLE-NUMBER(IDY IDZ)
@@ -1368,6 +1390,7 @@
                                        LNK-DAY2-AREA
            IF      STS-DAY-RC1     NOT =   ZERO
                MOVE    "17"                TO  WRK-ERRCD
+               DISPLAY "Accept Ymd =  " WRK-SYMD
                GO      TO   200211-BYOMEI-YMD-EXT
            END-IF
       *    終了日
