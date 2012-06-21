@@ -23,17 +23,6 @@
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     kohid 追加
       *  04.06.02    NACL-藤原    10/12/20  保険者からの返戻対応
-      *  04.06.03    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
-      *                                     receipt_kbn 追加
-      *
-      *  04.08.01    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
-      *                                     レセプトの分割対応
-      *                                     disaster s_disaster 1-10 追加
-      *
-      *  04.08.02    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
-      *                                     データ等の作成対応
-      *                                      （１日からの変更のみ）
       ************************************************************
       *01  HENREI-BODY-REC.
            03  HENREI-B-HOSPNUM    PIC 9(2).
@@ -41,7 +30,6 @@
                                    PIC X(1).
            03  HENREI-B-TEISYUTUSAKI2
                                    PIC X(1).
-           03  HENREI-B-HOSPCD     PIC X(7).
            03  HENREI-B-SYORIYM    PIC X(6).
            03  HENREI-B-RECEIPT-NO PIC X(6).
            03  HENREI-B-PT-RENNUM  PIC 9(4).
@@ -60,13 +48,10 @@
            03  HENREI-B-HKNJANUM   PIC X(8).
            03  HENREI-B-KIGO       PIC X(40).
            03  HENREI-B-NUM        PIC X(40).
-           03  HENREI-B-RECEIPT-KBN
-                                   PIC X(10).
            03  HENREI-B-KO-AREA.
                05  HENREI-B-KO-OCC OCCURS  4.
                    07  HENREI-B-FTNNUM PIC X(8).
                    07  HENREI-B-JKYNUM PIC X(7).
-           03  HENREI-B-DISASTER   PIC X(2).
       *
            03  HENREI-B-SEARCH-NO  PIC X(30).
            03  HENREI-B-CHECK-NO   PIC X(100).
@@ -94,10 +79,8 @@
                    07  HENREI-B-S-HOJOKBN-KEY  PIC X(01).
                    07  HENREI-B-S-KOHID-KEY    PIC 9(10).
                    07  HENREI-B-S-TEKSTYMD     PIC X(08).
-                   07  HENREI-B-S-RECEIPT-KBN  PIC X(10).
       *
                    07  HENREI-B-S-KIGO         PIC X(40).
-                   07  HENREI-B-S-DISASTER     PIC X(02).
       *端末ＩＤ
            03  HENREI-B-TERMID     PIC X(64).
       *オペーレータＩＤ
