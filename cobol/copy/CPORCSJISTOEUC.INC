@@ -27,14 +27,11 @@
        01  ORCSJISTOEUC.
       *   変換文字列数(バイト)
            03 SJISTOEUC-INLEN           PIC S9(9) BINARY.
-      *   入力文字列
-           03 SJISTOEUC-INDATA          PIC X(1000).
-      *   出力文字列
-           03 SJISTOEUC-OUTDATA         PIC X(2000).
       *   出力バイト数
            03 SJISTOEUC-OUTLEN          PIC S9(9) BINARY.
-      *   変換文字列数(バイト)
-           03 SJISTOEUC-MAXLEN          PIC S9(9) BINARY.
       *   返り値( 0: 正常 1: 範囲外文字 )
            03 SJISTOEUC-RETURN          PIC S9(9) BINARY.
-      *
+      *   入力文字列
+           03 SJISTOEUC-INDATA          PIC X(10000).
+      *   出力文字列
+           03 SJISTOEUC-OUTDATA         PIC X(10000).
