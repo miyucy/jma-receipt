@@ -68,12 +68,15 @@ OPENLOG;
 	memset(outbuf,' ',sob);
 	*ret = 0;
 
-	cd = iconv_open("euc-jp","cp932");
+	cd = iconv_open("euc-jp","shift-jis");
 	rc = iconv(cd,&inbuf,&sib,&outbuf,&sob);
 	if (rc != 0) {
 		switch(errno) {
 		case EILSEQ:
 			*ret = 1;
+			fprintf(stderr,"[%d][%02x%02x]\n",(int)sib,
+			*(unsigned char*)(inbuf),
+			*(unsigned char*)(inbuf+1));
 			SYSLOG("invalid sequence");
 			break;
 		case E2BIG:
