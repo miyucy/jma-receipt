@@ -782,6 +782,7 @@
                                        TO  SPA-GMN-THKNCOMBINUM (IDX)
                MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX)
                                        TO  SPA-GMN-THKNCOMBIMEI (IDX)
+               MOVE    IDX             TO  SPA-HKNCOMBI-MAX
            END-PERFORM
       *
       *    ÉÂÅï¡¦ÉÂ¼¼ÊÔ½¸
@@ -1306,6 +1307,7 @@
                                        TO  SPA-GMN-THKNCOMBINUM (IDX-T)
                MOVE    ORCSHKN-GMN-HKNCOMBIMEI (IDX-T)
                                        TO  SPA-GMN-THKNCOMBIMEI (IDX-T)
+               MOVE    IDX-T           TO  SPA-HKNCOMBI-MAX
            END-PERFORM
       *    ÆþÂà±¡ÆüÊÔ½¸
            PERFORM 30011-NYUINRRK-HEN-SEC
@@ -1803,6 +1805,10 @@
            IF      LNK-WKSRY-SRYCD (IDX IDZ)   =   "099209903"
                                                OR  "099209905"
                                                OR  "099209906"
+      *H24.4 ²þÀµ
+                                               OR  "099209907"
+                                               OR  "099209908"
+      *H24.4 ²þÀµ
                 PERFORM 3100122-KOUHATU-MEISYO-SEC
                 MOVE    WRK-MEISYO    TO  SPA-GMN-TMEISYO2(IDG)
            END-IF
