@@ -80,6 +80,8 @@
       *  04.05.03    NACL-藤原    12/06/05  レセ電データ無し時のエラー処理
       *                                     月後れ分については画面より確認
       *                                     済なのでチェックしない 
+      *  04.05.04    NACL-藤原    12/06/25  返戻ファイル取り込み時のレコ
+      *                                     ード長変更
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
@@ -1282,7 +1284,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-PERFORM
       *
            MOVE    ZERO            TO  IDZZ
-           PERFORM VARYING IDZZ    FROM    2200    BY  -1
+           PERFORM VARYING IDZZ    FROM    3000    BY  -1
                    UNTIL   IDZZ   <        1
                IF      HENREI-B-HENREI-INFO2 (IDZZ:1)
                                        NOT =   SPACE

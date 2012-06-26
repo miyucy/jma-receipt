@@ -35,7 +35,9 @@
       *  04.05.01    NACL-藤原    10/03/23  平成２２年４月改正対応
       *                                     請求に係わる記録条件仕様の
       *                                     変更に伴う修正
-      *  04.05.03    NACL-藤原    12/06/05  レセ電データ無し時のエラー処理
+      *  04.05.02    NACL-藤原    12/06/05  レセ電データ無し時のエラー処理
+      *  04.05.03    NACL-藤原    12/06/25  返戻ファイル取り込み時のレコ
+      *                                     ード長変更
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
@@ -1149,7 +1151,7 @@
            END-PERFORM
       *
            MOVE    ZERO            TO  IDZZ
-           PERFORM VARYING IDZZ    FROM    2200    BY  -1
+           PERFORM VARYING IDZZ    FROM    3000    BY  -1
                    UNTIL   IDZZ   <        1
                IF      HENREI-B-HENREI-INFO2 (IDZZ:1)
                                        NOT =   SPACE
