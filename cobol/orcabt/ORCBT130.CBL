@@ -32,11 +32,8 @@
       *
       *  04.05.01    NACL-藤原    10/02/12  拡張漢字対応
       *  04.05.02    NACL-藤原    12/06/22  処理結果画面への件数表示
-      *  04.05.03    NACL-藤原    12/07/02  住所欄に番地方書を追加
       *
       *  04.06.01    NACL-藤原    10/06/21  日本語化（見出し）対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,15 +82,12 @@ grpsys COPY    "COMMON-SPA".
                                    BY         //TOUKEI04PARA//.
       *
       *    ＣＳＶデータ（診療情報）
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //TOUKEI05PARA//.
-      *01  TOUKEI05PARA.
-      *****03  FILLER                  PIC  X(05) VALUE "/tmp/".
-       01  TOUKEI05PARA-BASENAME.
+       01  TOUKEI05PARA.
+           03  FILLER                  PIC  X(05) VALUE "/tmp/".
            03  TOUKEI05PARA-HOSPNUM    PIC  9(02).
            03  TOUKEI05PARA-FILE-ID    PIC  X(12) VALUE "toukei11.dat".
       *
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TOUKEIERR//.
       *
       *    フラグ領域
@@ -135,7 +129,7 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-TOUKEIERR           PIC X(200). 
            03  WRK-RENNUM              PIC 9(03).
       *
-      *     右づめ編集用     
+      *     右ずめ編集用     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
@@ -143,14 +137,12 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-REC                 PIC X(3000).
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-HENSYU-AREA.
-               05  WRK-DATA            PIC X(400).
+               05  WRK-DATA            PIC X(200).
                05  WRK-NUM             PIC ZZZZZZZZZ9.999. 
                05  WRK-NAGASA          PIC 9(03).
                05  WRK-ST              PIC 9(02). 
                05  WRK-SYOSUU          PIC 9(01).
                05  WRK-END             PIC 9(01).
-      *
-       01  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
       *
       *    ヘッダー情報
        01  CSV-HEAD-01.
@@ -323,8 +315,6 @@ grpsys COPY    "COMMON-SPA".
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -374,29 +364,6 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-FILENM1-FOLDER
            END-UNSTRING 
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *     
-           MOVE    "TOKEI110"          TO  TOUKEI04PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI04PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI05PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TOUKEIERR           TO  SGETTEMP-BASENAMES  (1)
-           MOVE    TOUKEI04PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    TOUKEI05PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  TOUKEI04PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  TOUKEI05PARA
-      *
-           MOVE   SGETTEMP-TEMPDIR     TO  WRK-SGETTEMP-TEMPDIR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -407,6 +374,12 @@ grpsys COPY    "COMMON-SPA".
            MOVE    "ＣＳＶデータ作成"
                                    TO  JOB-SHELLMSG
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
+      *
+           MOVE    "TOKEI110"          TO  TOUKEI04PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI04PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
+      *
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI05PARA-HOSPNUM
       *
            OPEN    INPUT               TOUKEI04-FILE
                    OUTPUT              TOUKEI05-FILE
@@ -718,7 +691,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    住所
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI04-HOME-ADRS      TO  WRK-DATA
-               MOVE    400                     TO  WRK-NAGASA
+               MOVE    200                     TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    電話番号
@@ -973,9 +946,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                             (WRK-RENNUM)
                MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
       *********MOVE    WRK-PARA-SRYYM  TO  SFILESV-SRYYM    (WRK-RENNUM)
-      *********MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
-               MOVE    WRK-SGETTEMP-TEMPDIR
-                                       TO  SFILESV-FOR-FOLDER
+               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
                                                             (WRK-RENNUM)
                MOVE    WRK-PARA-FILENM1
                                        TO  SFILESV-FOR-DATA (WRK-RENNUM)
@@ -987,7 +958,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    CNT-TOUKEI05    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
                MOVE    "日次統計データ"
                                        TO  SFILESV-TITLE    (WRK-RENNUM)
-               MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM)
+               MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
            END-IF
       *
            IF      WRK-RENNUM          >   ZERO   
