@@ -32,11 +32,6 @@
       *
       *  04.05.01    NACL-Æ£¸¶    10/02/12  ³ÈÄ¥´Á»úÂÐ±þ
       *  04.05.02    NACL-Æ£¸¶    12/06/22  ½èÍý·ë²Ì²èÌÌ¤Ø¤Î·ï¿ôÉ½¼¨
-      *  04.05.03    NACL-Æ£¸¶    12/07/02  ½»½êÍó¤ËÈÖÃÏÊý½ñ¤òÄÉ²Ã
-      *
-      *  04.06.01    NACL-Æ£¸¶    10/06/21  ÆüËÜ¸ì²½¡Ê¸«½Ð¤·¡ËÂÐ±þ
-      *
-      *  04.08.01    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,15 +80,12 @@ grpsys COPY    "COMMON-SPA".
                                    BY         //TOUKEI04PARA//.
       *
       *    £Ã£Ó£Ö¥Ç¡¼¥¿¡Ê¿ÇÎÅ¾ðÊó¡Ë
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //TOUKEI05PARA//.
-      *01  TOUKEI05PARA.
-      *****03  FILLER                  PIC  X(05) VALUE "/tmp/".
-       01  TOUKEI05PARA-BASENAME.
+       01  TOUKEI05PARA.
+           03  FILLER                  PIC  X(05) VALUE "/tmp/".
            03  TOUKEI05PARA-HOSPNUM    PIC  9(02).
            03  TOUKEI05PARA-FILE-ID    PIC  X(12) VALUE "toukei11.dat".
       *
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TOUKEIERR//.
       *
       *    ¥Õ¥é¥°ÎÎ°è
@@ -135,7 +127,7 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-TOUKEIERR           PIC X(200). 
            03  WRK-RENNUM              PIC 9(03).
       *
-      *     ±¦¤Å¤áÊÔ½¸ÍÑ     
+      *     ±¦¤º¤áÊÔ½¸ÍÑ     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
@@ -143,159 +135,12 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-REC                 PIC X(3000).
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-HENSYU-AREA.
-               05  WRK-DATA            PIC X(400).
+               05  WRK-DATA            PIC X(200).
                05  WRK-NUM             PIC ZZZZZZZZZ9.999. 
                05  WRK-NAGASA          PIC 9(03).
                05  WRK-ST              PIC 9(02). 
                05  WRK-SYOSUU          PIC 9(01).
                05  WRK-END             PIC 9(01).
-      *
-       01  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
-      *
-      *    ¥Ø¥Ã¥À¡¼¾ðÊó
-       01  CSV-HEAD-01.
-           03  FILLER              PIC X(12)   VALUE   "°åÎÅµ¡´Ø£É£Ä".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "°åÎÅµ¡´Ø¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¿ÇÎÅÇ¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¥ì¥³¡¼¥É¼±ÊÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "¥ì¥»¥×¥È¼ïÊÌ¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Æþ³°¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "¥ì¥»ÅÅ¿ÇÎÅ²Ê¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´µ¼ÔÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´µ¼Ô£É£Ä".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¥«¥Ê»áÌ¾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´Á»ú»áÌ¾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "À­ÊÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "À¸Ç¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "´ðËÜÎÁ¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "»þ´Ö³°¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "±ý¿Ç¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¾Ò²ð¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "Æþ³°Ãæ³°Íè¼±ÊÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "°å»Õ¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "ÆþÂà±¡¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÉÂÅïÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÉÂ¼¼ÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "³°Çñ¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¿©»ö¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Âà±¡»öÍ³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Á°Æü¿ÇÎÅ²Ê¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(22)   VALUE
-               "Á°Æü¥ì¥»ÅÅ¿ÇÎÅ²Ê¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "Á°ÆüÉÂÅïÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "Á°ÆüÉÂ¼¼ÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÅÁÉ¼ÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÅÁÉ¼¾õÂÖ¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÅÁÉ¼ºîÀ®¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÊÝ¸±ÅÀ¿ô".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÊÝ¸±ÉéÃ´¶â³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÊÝ¸±Å¬ÍÑ³°¶â³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÊÝ¸±Å¬ÍÑ³°ÀÇ³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¼«Èñ¶â³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¼«ÈñÀÇ³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¿©»öÉéÃ´¶â³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¾ÃÈñÀÇ³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¼¼ÎÁº¹³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¼¼ÎÁº¹³ÛÀÇ³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÀÁµá¶â³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÊÝ¸±ÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÊÝ¸±£É£Ä".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "ÊÝ¸±¼ÔÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ËÜ¿Í²ÈÂ²¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Êä½õ¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "·ÑÂ³¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñÈÖ¹æ£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñ£É£Ä£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "»ÙÊ§¶èÊ¬£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñÈÖ¹æ£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñ£É£Ä£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "»ÙÊ§¶èÊ¬£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñÈÖ¹æ£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñ£É£Ä£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "»ÙÊ§¶èÊ¬£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñÈÖ¹æ£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñ£É£Ä£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "»ÙÊ§¶èÊ¬£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "Ï«ºÒÊÝ¸±¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "¼«ÇåÀÕÀÁµá¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Í¹ÊØÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "ÃÏÊý¸ø¶¦ÃÄÂÎ¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "½»½ê".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÅÅÏÃÈÖ¹æ".
       *  
        01  WRK-CONS-AREA.
       *    ¥³¥ó¥Þ
@@ -322,8 +167,6 @@ grpsys COPY    "COMMON-SPA".
       *
       *    ¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸£Ä£ÂÀ©¸æ¥µ¥Ö
            COPY    "CPORCSFILESV.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -374,29 +217,6 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-FILENM1-FOLDER
            END-UNSTRING 
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *     
-           MOVE    "TOKEI110"          TO  TOUKEI04PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI04PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
-      *
-           MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI05PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TOUKEIERR           TO  SGETTEMP-BASENAMES  (1)
-           MOVE    TOUKEI04PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    TOUKEI05PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  TOUKEI04PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  TOUKEI05PARA
-      *
-           MOVE   SGETTEMP-TEMPDIR     TO  WRK-SGETTEMP-TEMPDIR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -407,6 +227,12 @@ grpsys COPY    "COMMON-SPA".
            MOVE    "£Ã£Ó£Ö¥Ç¡¼¥¿ºîÀ®"
                                    TO  JOB-SHELLMSG
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
+      *
+           MOVE    "TOKEI110"          TO  TOUKEI04PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI04PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
+      *
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI05PARA-HOSPNUM
       *
            OPEN    INPUT               TOUKEI04-FILE
                    OUTPUT              TOUKEI05-FILE
@@ -420,9 +246,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    ¼ç½èÍý
       *****************************************************************
        200-MAIN-SEC                SECTION.
-      *
-      *    £Ã£Ó£Ö¡Ê£È£Å£Á£Ä¥ì¥³¡¼¥É¡ËÊÔ½¸½èÍý
-           PERFORM 2002-CSV-HEAD-HENSYU-SEC
       *     
       *    £Ã£Ó£Ö¥Õ¥¡¥¤¥ë¡Ê¿ÇÎÅ¥Ç¡¼¥¿¡Ë½èÍý
            PERFORM 2001-FILE-HENSYU-SEC
@@ -718,7 +541,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    ½»½ê
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI04-HOME-ADRS      TO  WRK-DATA
-               MOVE    400                     TO  WRK-NAGASA
+               MOVE    200                     TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ÅÅÏÃÈÖ¹æ
@@ -733,29 +556,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            .
        2001-FILE-SYORI-EXT.
            EXIT. 
-      *
-      *****************************************************************
-      *    £Ã£Ó£Ö¡Ê£È£Å£Á£Ä¥ì¥³¡¼¥É¡ËÊÔ½¸½èÍý
-      *****************************************************************
-       2002-CSV-HEAD-HENSYU-SEC                SECTION.
-      *
-           IF      CNT-TOUKEI05        >   ZERO
-               GO  TO  2002-CSV-HEAD-HENSYU-EXT
-           END-IF
-      *
-           INITIALIZE                  WRK-REC
-                                       WRK-REC-LENGTH
-      *
-           STRING  CSV-HEAD-01         DELIMITED  BY  SIZE
-                   WRK-KAIGYO          DELIMITED  BY  SIZE
-                   INTO                WRK-REC
-           END-STRING
-      *
-           MOVE    WRK-REC             TO  TOUKEI05-REC  
-           WRITE   TOUKEI05-REC 
-           .
-       2002-CSV-HEAD-HENSYU-EXT.
-           EXIT.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
@@ -973,9 +773,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                             (WRK-RENNUM)
                MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
       *********MOVE    WRK-PARA-SRYYM  TO  SFILESV-SRYYM    (WRK-RENNUM)
-      *********MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
-               MOVE    WRK-SGETTEMP-TEMPDIR
-                                       TO  SFILESV-FOR-FOLDER
+               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
                                                             (WRK-RENNUM)
                MOVE    WRK-PARA-FILENM1
                                        TO  SFILESV-FOR-DATA (WRK-RENNUM)
@@ -987,7 +785,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    CNT-TOUKEI05    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
                MOVE    "Æü¼¡Åý·×¥Ç¡¼¥¿"
                                        TO  SFILESV-TITLE    (WRK-RENNUM)
-               MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM)
+               MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
            END-IF
       *
            IF      WRK-RENNUM          >   ZERO   

@@ -41,12 +41,6 @@
       *
       *  04.05.01    NACL-Æ£¸¶    10/02/12  ³ÈÄ¥´Á»úÂÐ±þ
       *  04.05.02    NACL-Æ£¸¶    12/06/22  ½èÍý·ë²Ì²èÌÌ¤Ø¤Î·ï¿ôÉ½¼¨
-      *  04.05.03    NACL-Æ£¸¶    12/07/02  ½»½êÍó¤ËÈÖÃÏÊý½ñ¤òÄÉ²Ã
-      *  04.05.04    NACL-Æ£¸¶    12/11/15  ºÞÅÀ¿ôÅù¤Î¥Þ¥¤¥Ê¥¹É½µ­ÂÐ±þ
-      *
-      *  04.06.01    NACL-Æ£¸¶    10/06/21  ÆüËÜ¸ì²½¡Ê¸«½Ð¤·¡ËÂÐ±þ
-      *
-      *  04.08.01    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -141,24 +135,18 @@
                                    BY         //TOUKEI03PARA//.
       *
       *    £Ã£Ó£Ö¥Ç¡¼¥¿¡Ê¿ÇÎÅ¾ðÊó¡Ë
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //TOUKEI04PARA//.
-      *01  TOUKEI04PARA.
-      *****03  FILLER                  PIC  X(05) VALUE "/tmp/".
-       01  TOUKEI04PARA-BASENAME.
+       01  TOUKEI04PARA.
+           03  FILLER                  PIC  X(05) VALUE "/tmp/".
            03  TOUKEI04PARA-HOSPNUM    PIC  9(02).
            03  TOUKEI04PARA-FILE-ID    PIC  X(12) VALUE "toukei01.dat".
       *
       *    £Ã£Ó£Ö¥Ç¡¼¥¿¡ÊÉÂÌ¾¾ðÊó¡Ë
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //TOUKEI05PARA//.
-      *01  TOUKEI05PARA.
-      *****03  FILLER                  PIC  X(05) VALUE "/tmp/".
-       01  TOUKEI05PARA-BASENAME.
+       01  TOUKEI05PARA.
+           03  FILLER                  PIC  X(05) VALUE "/tmp/".
            03  TOUKEI05PARA-HOSPNUM    PIC  9(02).
            03  TOUKEI05PARA-FILE-ID    PIC  X(12) VALUE "toukei02.dat".
       *
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TOUKEIERR//.
       *
       *    ¥Õ¥é¥°ÎÎ°è
@@ -210,7 +198,6 @@
                05  WRK-PARA-FILE2              PIC X(20).
                05  WRK-PARA-FILENM1-FOLDER     PIC X(150).
                05  WRK-PARA-FILENM2-FOLDER     PIC X(150).
-      *
            03  WRK-TOUKEIERR               PIC X(200). 
       * 
            03  WRK-YMD.
@@ -235,9 +222,8 @@
            03  WRK-REC                 PIC X(3000).
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-HENSYU-AREA.
-               05  WRK-DATA            PIC X(400).
-      *********05  WRK-NUM             PIC ZZZZZZZZZ9.99999. 
-               05  WRK-NUM             PIC ---------9.99999. 
+               05  WRK-DATA            PIC X(200).
+               05  WRK-NUM             PIC ZZZZZZZZZ9.99999. 
                05  WRK-NAGASA          PIC 9(03).
                05  WRK-ST              PIC 9(02). 
                05  WRK-SYOSUU          PIC 9(01).
@@ -287,404 +273,6 @@
                07  WRK-KOHTEKSTYMD    PIC  X(08).
       *        Å¬ÍÑ½ªÎ»Ç¯·îÆü
                07  WRK-KOHTEKEDYMD    PIC  X(08).
-      *
-       01  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
-      *
-      *    ¥Ø¥Ã¥À¡¼¾ðÊó
-       01  CSV-HEAD-01.
-           03  FILLER              PIC X(12)   VALUE   "°åÎÅµ¡´Ø£É£Ä".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "°åÎÅµ¡´Ø¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¿ÇÎÅÇ¯·î".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¥ì¥³¡¼¥É¼±ÊÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "¥ì¥»¥×¥È¼ïÊÌ¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Æþ³°¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´µ¼ÔÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´µ¼Ô£É£Ä".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¥«¥Ê»áÌ¾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´Á»ú»áÌ¾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "À­ÊÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "À¸Ç¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "¥ì¥»ÅÅ¿ÇÎÅ²Ê¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "ºÞÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ºÞÆâÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¿ÇÎÅ¹Ô°Ù¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¿ÇÎÅ¼ïÊÌ¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "ºÞÅÀ¿ô¼±ÊÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "ºÞÅÀ¿ô".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "ºÞ²ó¿ô".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¼êµ»ÅÀ¿ô£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¼êµ»ÅÀ¿ô£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÌôºÞÅÀ¿ô".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ºàÎÁÅÀ¿ô".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "ÌÀºÙ¿ô".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "ÌÀºÙ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÌÀºÙ¿ôÎÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÌÀºÙ²ó¿ô".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÅÀ¿ô¼±ÊÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÅÀ¿ô¶â³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "ÌÀºÙÌ¾¾ÎÆþÎÏÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÌÀºÙ¼«Èñ¶â³Û".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÌÀºÙÃ±°Ì¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÌÀºÙÃ±°ÌÌ¾¾Î".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÌÀºÙÌ¾¾Î".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÌÀºÙÀµ¼°Ì¾¾Î".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "Ìô²Á´ð½à¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "Æþ³°Ãæ³°Íè¼±ÊÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "°å»Õ¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "£±Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "£²Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "£³Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "£´Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "£µÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "£¶Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "£·Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "£¸Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "£¹Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£±£°Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£±£±Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£±£²Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£±£³Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£±£´Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£±£µÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£±£¶Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£±£·Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£±£¸Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£±£¹Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£²£°Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£²£±Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£²£²Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£²£³Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£²£´Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£²£µÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£²£¶Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£²£·Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£²£¸Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£²£¹Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£³£°Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "£³£±Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÊÝ¸±ÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÊÝ¸±£É£Ä".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "ÊÝ¸±¼ÔÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ËÜ¿Í²ÈÂ²¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Êä½õ¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "·ÑÂ³¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "µ­¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "ÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "»ñ³Ê¼èÆÀÇ¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "Å¬ÍÑ³«»ÏÇ¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "Å¬ÍÑ½ªÎ»Ç¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "ÈïÊÝ¸±¼ÔÌ¾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñÈÖ¹æ£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñ£É£Ä£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "»ÙÊ§¶èÊ¬£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉéÃ´¼ÔÈÖ¹æ£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¼õµë¼ÔÈÖ¹æ£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Å¬ÍÑ³«»ÏÇ¯·îÆü£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Å¬ÍÑ½ªÎ»Ç¯·îÆü£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñÈÖ¹æ£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñ£É£Ä£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "»ÙÊ§¶èÊ¬£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉéÃ´¼ÔÈÖ¹æ£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¼õµë¼ÔÈÖ¹æ£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Å¬ÍÑ³«»ÏÇ¯·îÆü£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Å¬ÍÑ½ªÎ»Ç¯·îÆü£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñÈÖ¹æ£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñ£É£Ä£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "»ÙÊ§¶èÊ¬£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉéÃ´¼ÔÈÖ¹æ£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¼õµë¼ÔÈÖ¹æ£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Å¬ÍÑ³«»ÏÇ¯·îÆü£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Å¬ÍÑ½ªÎ»Ç¯·îÆü£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñÈÖ¹æ£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¸øÈñ£É£Ä£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "»ÙÊ§¶èÊ¬£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉéÃ´¼ÔÈÖ¹æ£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¼õµë¼ÔÈÖ¹æ£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Å¬ÍÑ³«»ÏÇ¯·îÆü£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Å¬ÍÑ½ªÎ»Ç¯·îÆü£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "Ï«ºÒÊÝ¸±¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Ï«ºÒ´µ¼Ô¸òÉÕÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "Ï«ºÒ»ö¶È½êÌ¾¾Î".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "Ï«ºÒ¿··ÑºÆÊÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "Ï«ºÒÅ¾µ¢»öÍ³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "Ï«ºÒ½ýÉÂÇ¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Ï«ºÒ»Í»èÆÃÎã¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "Ï«ºÒÎÅÍÜ³«»ÏÇ¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "Ï«ºÒÎÅÍÜ½ªÎ»Ç¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "Ï«ºÒÂ»½ý¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Ï«ºÒÂ»½ý¶èÊ¬»ÞÈÖ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(26)   VALUE
-               "Ï«ºÒ¥¢¥Õ¥¿¡¼ÎÅÍÜ³«»ÏÇ¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(26)   VALUE
-               "Ï«ºÒ¥¢¥Õ¥¿¡¼ÎÅÍÜ½ªÎ»Ç¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "Ï«ºÒºÒ³²¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "Ï«ºÒ¼«ÇåÀÕÀÁµá¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Í¹ÊØÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "ÃÏÊý¸ø¶¦ÃÄÂÎ¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "½»½ê".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÅÅÏÃÈÖ¹æ".
-      *
-       01  CSV-HEAD-02.
-           03  FILLER              PIC X(12)   VALUE   "°åÎÅµ¡´Ø£É£Ä".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "°åÎÅµ¡´Ø¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¿ÇÎÅÇ¯·î".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¥ì¥³¡¼¥É¼±ÊÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "¥ì¥»¥×¥È¼ïÊÌ¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Æþ³°¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´µ¼ÔÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´µ¼Ô£É£Ä".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "¥«¥Ê»áÌ¾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´Á»ú»áÌ¾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "À­ÊÌ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "À¸Ç¯·îÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "¥ì¥»ÅÅ¿ÇÎÅ²Ê¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "¿ÇÎÅ³«»ÏÆü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ï¢ÈÖ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "ÉÂÌ¾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "ÉÂÌ¾Ê¸»ú¿ô".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "µ¿¤¤¥Õ¥é¥°".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "¼çÉÂÌ¾¥Õ¥é¥°".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ËýÀ­¼À´µ¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "¥ì¥»¥×¥ÈÉ½¼¨¥Õ¥é¥°".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Å¾µ¢¶èÊ¬".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "Å¾µ¢Æü".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾ÊÔ½¸¥Õ¥é¥°".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÊÝ¸±ÉÂÌ¾¥Õ¥é¥°".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉÂÌ¾¥³¡¼¥É¿ô".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉÂÌ¾¥³¡¼¥É£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉÂÌ¾¥³¡¼¥É£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉÂÌ¾¥³¡¼¥É£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉÂÌ¾¥³¡¼¥É£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉÂÌ¾¥³¡¼¥É£µ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉÂÌ¾¥³¡¼¥É£¶".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉÂÌ¾¥³¡¼¥É£·".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉÂÌ¾¥³¡¼¥É£¸".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ÉÂÌ¾¥³¡¼¥É£¹".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£±£°".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£±£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£±£²".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£±£³".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£±£´".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£±£µ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£±£¶".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£±£·".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£±£¸".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£±£¹".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£²£°".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ÉÂÌ¾¥³¡¼¥É£²£±".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Í¹ÊØÈÖ¹æ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "ÃÏÊý¸ø¶¦ÃÄÂÎ¥³¡¼¥É".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "½»½ê".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÅÅÏÃÈÖ¹æ".
       *  
        01  WRK-CONS-AREA.
       *    ¥³¥ó¥Þ
@@ -725,8 +313,6 @@
       *    ¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸£Ä£ÂÀ©¸æ¥µ¥Ö
            COPY    "CPORCSFILESV.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *
@@ -735,7 +321,7 @@
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(400).
+           02  FILLER      PIC X(1000).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -809,35 +395,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI02PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  TOUKEI03PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TOUKEIERR           TO  SGETTEMP-BASENAMES  (1)
-           MOVE    TOUKEI01PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    TOUKEI02PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           MOVE    TOUKEI03PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (4)
-           MOVE    TOUKEI04PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (5)
-           MOVE    TOUKEI05PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (6)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  TOUKEI01PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  TOUKEI02PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  TOUKEI03PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  TOUKEI04PARA
-           MOVE    SGETTEMP-FULLNAMES (6)
-                                       TO  TOUKEI05PARA
-      *
-           MOVE   SGETTEMP-TEMPDIR     TO  WRK-SGETTEMP-TEMPDIR
-      *
            OPEN    I-O                 TOUKEI01-FILE
                                        TOUKEI02-FILE
                                        TOUKEI03-FILE
@@ -861,6 +418,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                INITIALIZE                      TOUKEI02-REC
                MOVE    TOUKEI01-KEY        TO  TOUKEI02-KEY1
       *
+      *??
+               DISPLAY "TOUKEI01-KEY=" TOUKEI01-KEY "#"
+      *??
                START   TOUKEI02-FILE
                        KEY IS    >=   TOUKEI02-KEY
                    INVALID
@@ -884,6 +444,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                    INITIALIZE                      TOUKEI02-REC
                    MOVE    TOUKEI01-SEIHO-KEY (IDXX)
                                                TO  TOUKEI02-KEY1
+      *??
+               DISPLAY "TOUKEI01-SEIHO-KEY=" IDXX "#" 
+                               TOUKEI01-SEIHO-KEY (IDXX) "#"
+      *??
       *
                    START   TOUKEI02-FILE
                            KEY IS    >=   TOUKEI02-KEY
@@ -911,8 +475,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                MOVE    TOUKEI01-SRYYM      TO  TOUKEI03-SRYYM
                MOVE    TOUKEI01-NYUGAIKBN  TO  TOUKEI03-NYUGAIKBN
                MOVE    TOUKEI01-PTID       TO  TOUKEI03-PTID
-               MOVE    TOUKEI01-RECEIPT-KBN
-                                           TO  TOUKEI03-RECEIPT-KBN
                MOVE    TOUKEI01-RECEKA     TO  TOUKEI03-RECEKA
       *
                START   TOUKEI03-FILE
@@ -924,8 +486,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                END-START
       *     
                PERFORM UNTIL   FLG-TOUKEI03    =   1
-                       OR      TOUKEI01-KEY (1:31)
-                                           NOT =   TOUKEI03-KEY (1:31)
+                       OR      TOUKEI01-KEY (1:21)
+                                           NOT =   TOUKEI03-KEY (1:21)
                    PERFORM 2002-FILE-HENSYU-SEC
                    PERFORM 900-TOUKEI03-READ-SEC
                END-PERFORM
@@ -941,11 +503,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *****************************************************************
        2001-FILE-HENSYU-SEC         SECTION.
       *
-      *    £Ã£Ó£Ö¡Ê£È£Å£Á£Ä¥ì¥³¡¼¥É¡ËÊÔ½¸½èÍý
-           IF      CNT-TOUKEI04        =   ZERO
-               PERFORM 2003-CSV-HEAD-HENSYU-SEC
-           END-IF
-      * 
       *    ´ðËÜ¾ðÊó¼èÆÀ
       *
            MOVE    SPACE               TO  WRK-REC
@@ -1347,7 +904,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *    ½»½ê
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-HOME-ADRS      TO  WRK-DATA
-               MOVE    400                     TO  WRK-NAGASA
+               MOVE    200                     TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ÅÅÏÃÈÖ¹æ
@@ -1391,11 +948,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                MOVE    20                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    Å¬ÍÑ³«»ÏÆü
+      *    Å¦Í×³«»ÏÆü
            MOVE    WRK-KOHTEKSTYMD     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    Å¬ÍÑ½ªÎ»Æü
+      *    Å¦Í×½ªÎ»Æü
            MOVE    WRK-KOHTEKEDYMD     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
@@ -1433,12 +990,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                        GO  TO  2002-FILE-HENSYU-EXT
                    END-IF
            END-EVALUATE 
-      *
-      *    £Ã£Ó£Ö¡Ê£È£Å£Á£Ä¥ì¥³¡¼¥É¡ËÊÔ½¸½èÍý
-           IF      CNT-TOUKEI05        =   ZERO
-               PERFORM 2003-CSV-HEAD-HENSYU-SEC
-           END-IF
-      *            
+                   
       *´ðËÜ¾ðÊó
       *
            MOVE    SPACE               TO  WRK-REC
@@ -1606,34 +1158,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            .
        2002-FILE-HENSYU-EXT.
            EXIT. 
-      *
-      *****************************************************************
-      *    £Ã£Ó£Ö¡Ê£È£Å£Á£Ä¥ì¥³¡¼¥É¡ËÊÔ½¸½èÍý
-      *****************************************************************
-       2003-CSV-HEAD-HENSYU-SEC                SECTION.
-      *
-           INITIALIZE                  WRK-REC
-                                       WRK-REC-LENGTH
-      *
-           EVALUATE    WRK-SYOKBN
-               WHEN    "1"
-                   STRING  CSV-HEAD-01         DELIMITED  BY  SIZE
-                           WRK-KAIGYO          DELIMITED  BY  SIZE
-                           INTO                WRK-REC
-                   END-STRING
-                   MOVE    WRK-REC             TO  TOUKEI04-REC  
-                   WRITE   TOUKEI04-REC 
-               WHEN    "2"
-                   STRING  CSV-HEAD-02         DELIMITED  BY  SIZE
-                           WRK-KAIGYO          DELIMITED  BY  SIZE
-                           INTO                WRK-REC
-                   END-STRING
-                   MOVE    WRK-REC             TO  TOUKEI05-REC  
-                   WRITE   TOUKEI05-REC 
-           END-EVALUATE
-           .
-       2003-CSV-HEAD-HENSYU-EXT.
-           EXIT.
+      *            
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
@@ -1864,9 +1389,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                             (WRK-RENNUM)
                MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
                MOVE    WRK-PARA-SRYYM  TO  SFILESV-SRYYM    (WRK-RENNUM)
-      *********MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
-               MOVE    WRK-SGETTEMP-TEMPDIR
-                                       TO  SFILESV-FOR-FOLDER
+               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
                                                             (WRK-RENNUM)
                MOVE    WRK-PARA-FILENM1
                                        TO  SFILESV-FOR-DATA (WRK-RENNUM)
@@ -1892,9 +1415,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                             (WRK-RENNUM)
                MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
                MOVE    WRK-PARA-SRYYM  TO  SFILESV-SRYYM    (WRK-RENNUM)
-      *********MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
-               MOVE    WRK-SGETTEMP-TEMPDIR
-                                       TO  SFILESV-FOR-FOLDER
+               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
                                                             (WRK-RENNUM)
                MOVE    WRK-PARA-FILENM2
                                        TO  SFILESV-FOR-DATA (WRK-RENNUM)
