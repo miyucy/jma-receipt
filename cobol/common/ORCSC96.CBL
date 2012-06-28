@@ -2736,10 +2736,15 @@
                    END-STRING
                WHEN    "K236"
                    STRING  "警告！"
-      ***************      "一般名処方加算（処方せん料）算定可能です。"
-      ***************      "処方せん料削除で自動算定します"
                            "一般名処方加算（処方せん料）の算定が可能"
                            "です。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K237"
+                   STRING  "警告！"
+                           "処方せん料が包括されます。"
+                           "算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
