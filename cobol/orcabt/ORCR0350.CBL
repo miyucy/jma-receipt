@@ -330,6 +330,8 @@
       *  04.05.31    NACL-ÌçÏÆ    12/03/23  ºÒ³²ÂÐ±þ¡Ê¸øÈñÍóÀÁµáÅÀ£°ÅÀÂÐ±þ¡Ë
       *  04.05.32    NACL-ÌçÏÆ    12/05/23  °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´
       *                                     ³Û¶èÊ¬ÊÔ½¸½¤Àµ
+      *  04.05.33    NACL-Æ£¸¶    12/06/25  ¼ê½Ñ¤Ë¥³¥á¥ó¥È¤¬¤¢¤Ã¤¿¾ì¹ç¤Î
+      *                                     µ­Ï¿½ç¤Î½¤Àµ 
       *
       *  04.06.01    NACL-Æ£¸¶    10/10/04  ¥ì¥»¥×¥È¥³¥á¥ó¥ÈÊ¸»ú¿ôÁýÂÐ±þ
       *  04.06.02    NACL-Æ£¸¶    10/11/04  ÊäÂ­¥³¥á¥ó¥ÈÂÐ±þ
@@ -5542,10 +5544,6 @@
                MOVE    SPACE               TO  WRK-CHUKSNCD
                MOVE    ZERO                TO  FLG-KOUI
                PERFORM UNTIL   IDX >   WRK-TBLMAX1
-      ****           IF      TBL-KOUI-SRYCD (IDX) = "150268970"
-      ****                MOVE    1      TO  TBL-KOUI-KOKUJISKBKBN1 (IDX)
-      ****                                   TBL-KOUI-KOKUJISKBKBN2 (IDX) 
-      ****           END-IF
                  IF    ( TBL-KOUI-SRYCD (IDX)  =   SPACE       )
                  OR    ( TBL-KOUI-SRYCD (IDX) (1:1)
                                                =   "0" OR  "8" )
@@ -5610,11 +5608,10 @@
                    END-EVALUATE
       *    
                    COMPUTE IDX     =   IDX     +   1
-                   IF      IDX     <=  WRK-TBLMAX1
-      ****               IF      TBL-KOUI-SRYCD (IDX) = "150268970"
-      ****                 MOVE    1      TO  TBL-KOUI-KOKUJISKBKBN1 (IDX)
-      ****                                    TBL-KOUI-KOKUJISKBKBN2 (IDX) 
-      ****               END-IF
+                 END-IF
+      *    
+                 IF    ( IDX       <=  WRK-TBLMAX1 )
+                 AND   ( IDYY      >   ZERO        )
                      IF    ( TBL-KOUI-SRYCD (IDX) (1:1)
                                    =   "1"                 )
                      AND   ( TBL-KOUI-KOKUJISKBKBN1 (IDX)
@@ -5626,7 +5623,6 @@
                              MOVE    9                 TO  FLG-KOUI
                          END-IF 
                      END-IF
-                   END-IF
                  END-IF
                END-PERFORM
       *
