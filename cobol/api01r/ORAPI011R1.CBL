@@ -347,9 +347,8 @@
            MOVE   "XMLOPEN"            TO  MCP-FUNC
            MOVE    "xml_acceptlstreq"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST-BODY         TO  ACPLSTREQ-OBJECT
-           MOVE    ZERO                TO  ACPLSTREQ-MODE
-           MOVE    XML-ACCEPTLSTREQ    TO  XML-APIREQ
+           MOVE    APILST-BODY         TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -365,8 +364,7 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_acceptlstreq"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  ACPLSTREQ-OBJECT
-           MOVE    XML-ACCEPTLSTREQ    TO  XML-APIREQ
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -382,8 +380,7 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_acceptlstreq"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  ACPLSTREQ-OBJECT
-           MOVE    XML-ACCEPTLSTREQ    TO  XML-APIREQ
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ

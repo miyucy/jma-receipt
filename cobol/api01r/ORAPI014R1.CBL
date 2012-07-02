@@ -138,6 +138,9 @@
            COPY    "CPAPPTLSTREQ.INC".
       *    API XML読み込み用定義体
            COPY    "CPAPPTLSTRES.INC".
+      *ver.4.7
+      *    API XML読み込み共通定義
+           COPY    "CPAPIREQ.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -341,11 +344,11 @@
            MOVE   "XMLOPEN"            TO  MCP-FUNC
            MOVE    "xml_appointlstreq" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    API-BODY            TO  APLSTREQ-OBJECT
-           MOVE    ZERO                TO  APLSTREQ-MODE
+           MOVE    API-BODY            TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APPOINTLSTREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
                CONTINUE
@@ -358,12 +361,13 @@
            MOVE   "XMLREAD"            TO  MCP-FUNC
            MOVE    "xml_appointlstreq" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APLSTREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APPOINTLSTREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
+               MOVE    XML-APIREQ          TO  XML-APPOINTLSTREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
@@ -373,10 +377,10 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_appointlstreq" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APLSTREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APPOINTLSTREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                CONTINUE

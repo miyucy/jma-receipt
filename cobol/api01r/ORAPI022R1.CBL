@@ -128,6 +128,9 @@
       *
       *    病名一覧返却用パラメタ
            COPY    "CPORCSBYOINFO.INC".
+      *ver.4.7
+      *    API XML読み込み共通定義
+           COPY    "CPAPIREQ.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -311,11 +314,11 @@
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_disease_inforeq"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST7-BODY        TO  DISEREQ-OBJECT
-           MOVE    ZERO                TO  DISEREQ-MODE
+           MOVE    APILST7-BODY        TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-DISEASE-INFREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
                CONTINUE
@@ -328,12 +331,13 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_disease_inforeq"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  DISEREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-DISEASE-INFREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
+               MOVE    XML-APIREQ          TO  XML-DISEASE-INFREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
@@ -343,10 +347,10 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_disease_inforeq"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  DISEREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-DISEASE-INFREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF (MCP-RC = ZERO OR 1)
                CONTINUE
@@ -627,8 +631,19 @@
        20021-BYOMEI-HEN-SEC                SECTION.
       *
       *    入外区分
-           MOVE    SBYOINFO-NYUGAIKBN(IDX) TO  DISERES-NYUGAIKBN
+      *    MOVE    SBYOINFO-NYUGAIKBN(IDX) TO  DISERES-NYUGAIKBN
+      *                                                       (IDX)
+      *ver.4.7
+           EVALUATE    SBYOINFO-NYUGAIKBN(IDX)
+               WHEN    "1"
+      *            入院
+                   MOVE    "I"             TO  DISERES-NYUGAIKBN
                                                               (IDX)
+               WHEN    "2"
+      *            外来
+                   MOVE    "O"             TO  DISERES-NYUGAIKBN
+                                                              (IDX)
+           END-EVALUATE
       *    診療科
            MOVE    SBYOINFO-SRYKA (IDX)    TO  DISERES-SRYKA (IDX)
       *    保険組合せ番号

@@ -108,6 +108,9 @@
       *    API XML書き込み用定義体（ドクター）
            COPY    "CPPHYSICIANRES.INC".
       *
+      *ver.4.7
+      *    API XML読み込み共通定義
+           COPY    "CPAPIREQ.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -305,11 +308,11 @@
            MOVE    "xml_system01_managereq"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST5-BODY        TO  SYS01REQ-OBJECT
-           MOVE    ZERO                TO  SYS01REQ-MODE
+           MOVE    APILST5-BODY        TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-SYSTEM01MANAGEREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
                CONTINUE
@@ -323,12 +326,13 @@
            MOVE    "xml_system01_managereq"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  SYS01REQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-SYSTEM01MANAGEREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
+               MOVE    XML-APIREQ          TO  XML-SYSTEM01MANAGEREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                MOVE   "98"             TO  WRK-ERRCD
@@ -339,10 +343,10 @@
            MOVE    "xml_system01_managereq"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  SYS01REQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-SYSTEM01MANAGEREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                CONTINUE

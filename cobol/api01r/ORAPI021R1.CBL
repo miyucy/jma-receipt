@@ -238,6 +238,9 @@
            COPY    "CPMDCGET02RES.INC".
       *    API XML書き込み用定義体（月診療行為）
            COPY    "CPMDCGET03RES.INC".
+      *ver.4.7
+      *    API XML読み込み共通定義
+           COPY    "CPAPIREQ.INC".
       *
       *    保険組合せセット領域
            COPY    "CPORCSAPIHKN.INC".
@@ -477,11 +480,11 @@
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_medicalgetreq" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST6-BODY        TO  MDCREQ-OBJECT
-           MOVE    ZERO                TO  MDCREQ-MODE
+           MOVE    APILST6-BODY        TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-MEDICALGETREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
                CONTINUE
@@ -494,12 +497,13 @@
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_medicalgetreq"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  MDCREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-MEDICALGETREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
+               MOVE    XML-APIREQ          TO  XML-MEDICALGETREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
@@ -509,10 +513,10 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_medicalgetreq"    TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  MDCREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-MEDICALGETREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF (MCP-RC = ZERO OR 1)
                CONTINUE
@@ -913,7 +917,6 @@
            .
        20011-SRYKA-CHK-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    受診履歴編集処理

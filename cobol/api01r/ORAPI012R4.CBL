@@ -154,9 +154,12 @@
       *    API XML読み込み用定義体
            COPY    "CPPATIENTLST2RES.INC".
       *
+      *ver.4.7
+      *    API XML読み込み共通定義
+           COPY    "CPAPIREQ.INC".
+      *
       *    保険組合せセット領域
       **   COPY    "CPORCSAPIHKN.INC".
-      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -353,11 +356,11 @@
            MOVE    "xml_patientlst3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APILST4-BODY        TO  PATLSTREQ-OBJECT
-           MOVE    ZERO                TO  PATLSTREQ-MODE
+           MOVE    APILST4-BODY        TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-PATIENTLST3REQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
                CONTINUE
@@ -371,12 +374,13 @@
            MOVE    "xml_patientlst3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  PATLSTREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-PATIENTLST3REQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
+               MOVE    XML-APIREQ          TO  XML-PATIENTLST3REQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                MOVE   "98"             TO  WRK-ERRCD
@@ -387,10 +391,10 @@
            MOVE    "xml_patientlst3req"
                                        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  PATLSTREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-PATIENTLST3REQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                CONTINUE
