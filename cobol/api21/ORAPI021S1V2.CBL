@@ -16,20 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION      DIVISION.
-       PROGRAM-ID.         ORAPI021S1.
+       PROGRAM-ID.         ORAPI021S1V2.
       *****************************************************************
       *  システム名        : 日医標準レセプトソフト
-      *  サブシステム名    : API連携用モジュール(サンプル)
-      *  コンポーネント名  : 診療行為
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 診療行為　登録　（xml2）
       *  管理者            :
       *  作成日付    作業者        記述
-      *  09/04/07    NACL−竹田　　新規作成
+      *  12/06/29    NACL−多々納　新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.07.00    NACL-多々納  11/10/XX  削除・置換え対応
-      *  04.07.00    NACL-多々納  11/11/XX  同日再入院対応
-      *  04.07.00    NACL=多々納  12/03/XX  平成２４年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -179,10 +176,10 @@
            COPY    "CPORCSUSERCHK.INC".
       *
       *    API XML読み込み用定義体
-           COPY    "CPMDCXMLREQ.INC".
+           COPY    "CPMDCXMLV2REQ.INC".
       *
       *    API XML書き込み用定義体
-           COPY    "CPMDCXMLRES.INC".
+           COPY    "CPMDCXMLV2RES.INC".
       *
       *    保険組合せセット領域
            COPY    "CPORCSAPIHKN.INC".
@@ -198,7 +195,7 @@
       *
       *ver.4.7
       *    API XML読み込み共通定義
-           COPY    "CPAPIREQ.INC".
+           COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -252,6 +249,7 @@
             COPY    "LINKAREA".
        01  SCRAREA.
            COPY    "CPAPIMOD.INC".
+           COPY    "CPAPILSTV2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -360,7 +358,7 @@
            MOVE    SPACE               TO  WRK-KEICD
       *
            MOVE    ZERO                TO  FLG-SYORI
-           EVALUATE    APIREQ-CLASS
+           EVALUATE    APILST-CLASS
            WHEN    "01"
       *        登録
                MOVE    1                   TO  FLG-SYORI
@@ -386,7 +384,7 @@
                GO      TO      200-MAIN-EXT
            END-IF
       *
-           EVALUATE    APIREQ-CLASS
+           EVALUATE    APILST-CLASS
            WHEN    "01"
       *        登録処理
                PERFORM 2002-WKSRYACT-ADD-SEC
@@ -407,16 +405,17 @@
       *****************************************************************
        1000-APTXMLREAD-SEC   SECTION.
       *
-           IF      API-BODY        NOT =   LOW-VALUE
+           IF      APILST-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
            INITIALIZE                      XML-MEDICALREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_medicalreq"    TO  MCP-TABLE
+           MOVE    "xml_medicalv2req"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    API-BODY            TO  APIREQ-OBJECT
+           MOVE    APILST-BODY         TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
+           MOVE    "medicalreq"        TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -430,9 +429,10 @@
            END-IF
       *
            MOVE    "XMLREAD"           TO  MCP-FUNC
-           MOVE    "xml_medicalreq"    TO  MCP-TABLE
+           MOVE    "xml_medicalv2req"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    "medicalreq"        TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -446,7 +446,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_medicalreq"    TO  MCP-TABLE
+           MOVE    "xml_medicalv2req"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
@@ -494,14 +494,15 @@
                MOVE    WRK-ERRMSG          TO  MDCRES-API-RESULT-MSG
            END-IF
       *
-           IF      API-BODY        NOT =   LOW-VALUE
+           IF      APILST-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
            MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_medicalres"    TO  MCP-TABLE
+           MOVE    "xml_medicalv2res"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    1                   TO  MDCRES-MODE
+           MOVE    "medicalres"        TO  MDCRES-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-MEDICALRES
@@ -513,7 +514,7 @@
            END-IF
       *
            MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_medicalres"    TO  MCP-TABLE
+           MOVE    "xml_medicalv2res"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
@@ -526,15 +527,15 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_medicalres"    TO  MCP-TABLE
+           MOVE    "xml_medicalv2res"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-MEDICALRES
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE  MDCRES-OBJECT     TO  API-BODY 
-               MOVE  "application/xml" TO  APIREQ-CONTENT-TYPE
+               MOVE  MDCRES-OBJECT     TO  APILST-BODY 
+               MOVE  "application/xml" TO  APILST-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
                DISPLAY "appoint xml write failure "
@@ -1479,7 +1480,7 @@
                MOVE    WKSRY-HKNCOMBI      TO  WRK-HKNCOMBI
            ELSE
                PERFORM 200311-WKSRYACT-CHK-SEC
-               IF      APIREQ-CLASS        =   "02"
+               IF      APILST-CLASS        =   "02"
                    IF      FLG-CHKWK           =   ZERO
                        MOVE    "30"                TO  WRK-ERRCD
                    ELSE

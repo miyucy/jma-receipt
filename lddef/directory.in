@@ -33,6 +33,9 @@ db_group    "blob_body" {
 db_group "xml" {
  type "XMLIO";
 };
+db_group "xml2" {
+ type    "XMLIO2";
+  };
 
 ld	{
 	orca00	 1;

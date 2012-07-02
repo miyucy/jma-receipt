@@ -453,6 +453,7 @@ RECORD_files = \
 	S10.rec \
 	W122.rec \
 	_SDMY01.rec \
+	medicalgetv2.rec \
 	
 
 DEF_files = \
@@ -671,6 +672,8 @@ DB_files = \
 	tbl_labor_sio.db \
 	tbl_seikyu_rsi.db \
 	tbl_generic_price.db \
+	xml_medicalv2res.db \
+	xml_medicalv2req.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
