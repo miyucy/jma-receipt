@@ -78,6 +78,7 @@ ld	{
 	sessionend   1;
 	api21	 1; 
 	api01r	 1; 
+	api01rv2 1; 
 };
 bd	{
         orcabt;

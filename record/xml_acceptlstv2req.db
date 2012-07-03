@@ -1,0 +1,12 @@
+xml_acceptlstv2req {
+    context	int;
+    object	object;
+    mode	int;
+    recordname	varchar(128);
+	acceptlstreq {
+		Acceptance_Date			varchar(10);
+		Department_Code			varchar(2);
+		Physician_Code			varchar(5);
+		Medical_Information		varchar(2);
+	};
+};

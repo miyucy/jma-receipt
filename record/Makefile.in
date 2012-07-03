@@ -454,6 +454,15 @@ RECORD_files = \
 	W122.rec \
 	_SDMY01.rec \
 	medicalgetv2.rec \
+	patientgetv2.rec \
+	acceptlstv2.rec \
+	patientlst1v2.rec \
+	patientlst2v2.rec \
+	patientlst3v2.rec \
+	appointlstv2.rec \
+	medicalgetv2.rec \
+	diseasegetv2.rec \
+	system01lstv2.rec \
 	
 
 DEF_files = \
@@ -674,6 +683,25 @@ DB_files = \
 	tbl_generic_price.db \
 	xml_medicalv2res.db \
 	xml_medicalv2req.db \
+	xml_acceptv2req.db \
+	xml_acceptv2res.db \
+	xml_patientinfov2res.db \
+	xml_patientlst1v2req.db \
+	xml_patientlst1v2res.db \
+	xml_patientlst2v2req.db \
+	xml_patientlst2v2res.db \
+	xml_patientlst3v2req.db \
+	xml_appointlstv2req.db \
+	xml_appointlstv2res.db \
+	xml_medicalgetv2req.db \
+	xml_medicalget01v2res.db \
+	xml_medicalget02v2res.db \
+	xml_medicalget03v2res.db \
+	xml_disease_infov2req.db \
+	xml_disease_infov2res.db \
+	xml_system01_managev2req.db \
+	xml_departmentv2res.db \
+	xml_physicianv2res.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
