@@ -70,6 +70,7 @@
       *  04.07.00    NACL-多々納  11/10/13  ＵＩＤ編集対応
       *  04.07.00    NACL-多々納  11/11/02  同日再入院対応
       *  04.07.00    NACL=多々納  12/03/XX  平成２４年４月改正対応
+      *  04.07.02    NACL-藤原    12/05/31  病名の入外区分対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -191,6 +192,9 @@
            03  IDK1                PIC 9(04).
            03  HZN-IDK             PIC 9(04).
            03  IDX-IMAX            PIC 9(04).
+      *
+           03  PTBYOMEI-CNT        PIC 9(02).
+           03  PTBYOMEI-SRYKA-CNT  PIC 9(02).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -2261,7 +2265,6 @@
                                                       (TBL-MAX IDX-S)
            MOVE    1                   TO  TBL-WKSRY-SRYSURYO
                                                      (TBL-MAX IDX-S)
-      *
       *    次行は削除
            IF      LF04-IJICD(IDX1 IDX2 + 1)   =   "099209908"
                                                OR  "099209907"
@@ -2560,9 +2563,9 @@
            IF     (TBL-WKSRY-SRYKBN(01)    =   "23" )  AND
                   (IDX-S                   >   1    )
       *H24.7
-      ******** MOVE    TBL-WKSRY-SRYKAISU  (TBL-MAX IDX-S - 1)
+      *******  MOVE    TBL-WKSRY-SRYKAISU  (TBL-MAX IDX-S - 1)
       *                                TO  TBL-WKSRY-SRYKAISU
-      ********                                         (TBL-MAX IDX-S)
+      *******                                          (TBL-MAX IDX-S)
                IF      WRK-GAIYO-KAISU     =   ZERO
                    MOVE    1               TO  WRK-GAIYO-KAISU
                END-IF
@@ -2862,6 +2865,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        2006-BYOMEI-SET-SEC                 SECTION.
       *
+           DISPLAY "病名情報 ================== " 
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   50
       *
@@ -2869,6 +2874,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            FLG-BYOMEI-CHK
                                            WRK-TOKSKNCD
                                            WRK-BYOMEI
+      *
+               DISPLAY "--------------------------- " 
+               DISPLAY "IDX=" IDX 
       *
                IF    ( LF04-SNDSPITBL-SPICOD2 (IDX 1)  =   SPACE )
                AND   ( LF04-SNDSPITBL-SPINAME2(IDX 1)  =   SPACE )
@@ -2902,6 +2910,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    連結式病名編集処理
       *****************************************************************
        20061-SPICOD1-HENSYU-SEC                 SECTION.
+      *
+           DISPLAY " diagnosis code =" LF04-SND-SPICOD1 (IDX)
+           DISPLAY " diagnosis name =" LF04-SND-SPINAME1(IDX)
       *
       *    疾患コードが設定されていないとき
            IF         LF04-SND-SPICOD1 (IDX)  =   SPACE
@@ -2948,7 +2959,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL   IDY >       6
                    OR      LF04-SNDSPITBL-SPINAME2(IDX IDY) 
                                                =   SPACE
-                   OR      FLG-BYOMEI-CHK      =   1 
+                   OR      FLG-BYOMEI-CHK      =   1
+      *
+               DISPLAY " IDY="                     IDY
+               DISPLAY " diagnosis dxItem code ="
+                                     LF04-SNDSPITBL-SPICOD2 (IDX IDY)
+               DISPLAY " diagnosis dxItem name ="
+                                     LF04-SNDSPITBL-SPINAME2(IDX IDY)
+      *
                IF      LF04-SNDSPITBL-SPICOD2 (IDX IDY)
                                            =   SPACE
                    MOVE    1                   TO  FLG-BYOMEI-CHK 
@@ -3143,6 +3161,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        200612-BYOMEI-HEN-SEC                 SECTION.
       *
+           DISPLAY " diagnosis connectname ="  WRK-BYOMEI
+           DISPLAY " diagnosis check flag  ="  FLG-BYOMEI-CHK
+      *
       *    病名全角チェック
            IF      WRK-BYOMEI      NOT =   SPACE    
                INITIALIZE                  ORCSKANACHKAREA
@@ -3158,6 +3179,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    疾患開始日
+           DISPLAY "startDate ="      LF04-SND-SKNSTARTDATE(IDX)
+      *
            MOVE    LF04-SND-SKNSTARTDATE(IDX)(1:4)
                                        TO  WRK-BYOYY
            MOVE    LF04-SND-SKNSTARTDATE(IDX)(6:2)
@@ -3165,6 +3188,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LF04-SND-SKNSTARTDATE(IDX)(9:2)
                                        TO  WRK-BYODD
       *    疾患終了日
+           DISPLAY "endDate   ="       LF04-SND-SKNENDDATE(IDX)
+      *
            MOVE    LF04-SND-SKNENDDATE(IDX)(1:4)
                                        TO  WRK-TENKIYY
            MOVE    LF04-SND-SKNENDDATE(IDX)(6:2)
@@ -3172,6 +3197,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LF04-SND-SKNENDDATE(IDX)(9:2)
                                        TO  WRK-TENKIDD
       *    転帰
+           DISPLAY "outcome ="        LF04-SND-TENKI(IDX)
+      *
            MOVE    SPACE               TO  WRK-TENKI
            IF      LF04-SND-TENKI  (IDX)   =   "delete"
                MOVE    1                   TO  FLG-BYOMEI-DELETE
@@ -3189,9 +3216,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  WRK-SYUBYOFLG
                                            WRK-UTAGAIFLG
+                                           WRK-NYUGAIKBN
       *    疑いフラグ・主病名フラグ
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       4
+               DISPLAY " IDY " IDY
+               DISPLAY " categories id   ="
+                                       LF04-SNDBNRTBL-BNRTBL1 (IDX IDY)
+               DISPLAY " categories name ="
+                                       LF04-SNDBNRTBL-BNRNAME1(IDX IDY)
+      *
                IF    ( LF04-SNDBNRTBL-BNRTBL1 (IDX IDY)
                                        =   "MML0012"       )
                AND   ( LF04-SNDBNRTBL-BNRNAME1 (IDX IDY)
@@ -3206,12 +3240,26 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
+      *    入外区分
+           DISPLAY " "
+           DISPLAY " InOutPatient ="   LF04-SND-NYUGAIKBN (IDX)
+      *
+           EVALUATE    LF04-SND-NYUGAIKBN (IDX)
+               WHEN    "inpatient"
+                   MOVE    "1"         TO  WRK-NYUGAIKBN
+               WHEN    "outpatient"
+                   MOVE    "2"         TO  WRK-NYUGAIKBN
+               WHEN    OTHER
+                   MOVE    SPACE       TO  WRK-NYUGAIKBN
+           END-EVALUATE
+      *
       *    更新処理
            INITIALIZE                  FLG-PTBYOMEI-UMU
                                        WRK-PTBYOMEI-REC
                                        WRK-PTBYOMEI-SRYKA-REC
                                        WRK-PTBYOMEI-DOUKI-REC
-                                       WRK-UTAGAIFLG-KETASU  
+                                       WRK-UTAGAIFLG-KETASU
+                                       PTBYOMEI-CNT
       *
       *    「の疑い」を検索
            PERFORM VARYING IDY FROM    1  BY  2
@@ -3297,6 +3345,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  FLG-PTBYOMEI
            END-IF
            PERFORM             UNTIL   FLG-PTBYOMEI        =   1
+      *
+               IF      FLG-BYOMEI-DELETE   =   1
+                   IF      WRK-NYUGAIKBN       =   WRK-PTBYO-NYUGAIKBN
+                       ADD     1                   TO  PTBYOMEI-CNT
+                   END-IF
+               ELSE
+                   ADD     1                   TO  PTBYOMEI-CNT
+               END-IF
+      *
       *        最小診療科の病名情報を取得
                IF      WRK-PTBYO-SRYKA     =   SPACE
                    MOVE    PTBYOMEI-REC        TO  WRK-PTBYOMEI-REC
@@ -3308,6 +3365,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
       *        同一診療科の病名情報を取得
                IF      PTBYO-SRYKA         =   WRK-SRYKA
+                   IF      FLG-BYOMEI-DELETE   =   1
+                       IF      WRK-NYUGAIKBN   =   WRK-PTBYO-NYUGAIKBN
+                           ADD     1           TO  PTBYOMEI-SRYKA-CNT
+                       END-IF
+                   ELSE
+                       ADD     1               TO  PTBYOMEI-SRYKA-CNT
+                   END-IF
+      *
                    IF      FLG-PTBYOMEI-UMU    >   2
                        CONTINUE
                    ELSE 
@@ -3341,6 +3406,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        同一開始日・病名で存在しないとき
                PERFORM 2006123-KOUSIN-01-SEC
            ELSE
+             IF      PTBYOMEI-CNT        =   1
+               MOVE    WRK-PTBYOMEI-REC  TO  PTBYOMEI-REC
+               PERFORM 2006124-KOUSIN-02-SEC
+               GO  TO  200612-BYOMEI-HEN-EXT
+      *
                IF    ( SYS-9000-BYOMEI-SYU-FLG
                                             =   SPACE )
                AND   ( SYS-9000-BYOMEI-DOUKI-FLG
@@ -3349,7 +3419,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      WRK-PTBYO-SRYKA-RENNUM   =   ZERO
                        PERFORM 2006123-KOUSIN-01-SEC
                    ELSE
-                       MOVE    WRK-PTBYOMEI-SRYKA-REC   TO  PTBYOMEI-REC
+                       MOVE    WRK-PTBYOMEI-SRYKA-REC  TO  PTBYOMEI-REC
                        PERFORM 2006124-KOUSIN-02-SEC
                    END-IF
                ELSE
@@ -3376,6 +3446,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                END-IF
+             END-IF
            END-IF
            .
        200612-BYOMEI-HEN-EXT.
@@ -3475,6 +3546,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    疑いフラグ・主病名フラグ
            MOVE    WRK-UTAGAIFLG   TO  PTBYO-UTAGAIFLG
            MOVE    WRK-SYUBYOFLG   TO  PTBYO-SYUBYOFLG
+      *    入外区分
+           MOVE    WRK-NYUGAIKBN   TO  PTBYO-NYUGAIKBN
       *
       *    疾患コードがエラー又は未コード化傷病名コード以外のとき
            IF      FLG-BYOMEI-CHK      NOT =   1   AND 5
@@ -3690,6 +3763,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    主病名フラグ
            MOVE    WRK-SYUBYOFLG       TO  PTBYO-SYUBYOFLG
+      *
+      *    入外区分
+           MOVE    WRK-NYUGAIKBN       TO  PTBYO-NYUGAIKBN
       *
       *    疑いフラグ
            EVALUATE    PTBYO-UTAGAIFLG ALSO    WRK-UTAGAIFLG
