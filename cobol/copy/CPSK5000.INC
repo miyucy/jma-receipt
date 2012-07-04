@@ -61,10 +61,10 @@
                    07  SYS-5000-DSPCD      PIC  X(09).
       *有床診療所一般病床初期加算区分
                05  SYS-5000-IPPANKSNKBN    PIC  X(01).
-      *救急・在宅等支援療養病床初期加算区分
-               05  SYS-5000-KYUKYUKSNKBN   PIC  X(01).
       *栄養管理経過措置区分
                05  SYS-5000-EIYOUKSNKBN    PIC  X(01).
+      *救急・在宅等支援療養病床初期加算区分
+               05  SYS-5000-KYUKYUKSNKBN   PIC  X(01).
       *予備（１）
       ******   05                          PIC  X(60).
       ******   05                          PIC  X(56).
