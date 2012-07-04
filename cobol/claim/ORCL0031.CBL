@@ -227,6 +227,8 @@
            03  WRK-SRYSYUKBN       PIC X(03).
            03  WRK-SRYKBN          PIC X(02).
            03  WRK-SRYCD           PIC X(09).
+      *H24.7
+           03  WRK-GAIYO-KAISU     PIC 9(05).
       *
            03  WRK-PTID            PIC 9(10).
            03  WRK-SRYKA           PIC X(02).
@@ -1877,6 +1879,8 @@
            MOVE    ZERO                TO  IDX-S
            MOVE    ZERO                TO  WRK-RENNUM
       *
+           MOVE    ZERO                TO  WRK-GAIYO-KAISU
+      *
            PERFORM VARYING     IDX2     FROM    1   BY  1
                    UNTIL       IDX2     >   20
                IF      LF04-IJICD(IDX1 IDX2)   NOT =   SPACE
@@ -2204,6 +2208,8 @@
                END-IF
                MOVE    WRK-KAISU       TO  TBL-WKSRY-SRYKAISU
                                                        (TBL-MAX IDX-S)
+      *H24.7
+               MOVE    WRK-KAISU       TO  WRK-GAIYO-KAISU
            END-IF
       *
       *H24.4
@@ -2255,6 +2261,7 @@
                                                       (TBL-MAX IDX-S)
            MOVE    1                   TO  TBL-WKSRY-SRYSURYO
                                                      (TBL-MAX IDX-S)
+      *
       *    次行は削除
            IF      LF04-IJICD(IDX1 IDX2 + 1)   =   "099209908"
                                                OR  "099209907"
@@ -2552,7 +2559,14 @@
       *    外用の時、回数を設定
            IF     (TBL-WKSRY-SRYKBN(01)    =   "23" )  AND
                   (IDX-S                   >   1    )
-               MOVE    TBL-WKSRY-SRYKAISU  (TBL-MAX IDX-S - 1)
+      *H24.7
+      ******** MOVE    TBL-WKSRY-SRYKAISU  (TBL-MAX IDX-S - 1)
+      *                                TO  TBL-WKSRY-SRYKAISU
+      ********                                         (TBL-MAX IDX-S)
+               IF      WRK-GAIYO-KAISU     =   ZERO
+                   MOVE    1               TO  WRK-GAIYO-KAISU
+               END-IF
+               MOVE    WRK-GAIYO-KAISU
                                        TO  TBL-WKSRY-SRYKAISU
                                                        (TBL-MAX IDX-S)
            END-IF
