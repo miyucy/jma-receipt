@@ -52,6 +52,7 @@
       *  04.04.00    NACL-¿¹ÏÆ    08/11/20  °õºþºï½ü¥Ü¥¿¥óÄÉ²Ã
       *  04.04.00    NACL-¿¹ÏÆ    09/01/27  ÇÓÂ¾£Ó£Ð£Á¶¦ÄÌÂÐ±þ
       *  04.04.00    NACL-¿¹ÏÆ    09/01/30  Â¾±¡ÀÚÂØÂÐ±þ
+      *  04.07.00    NACL-¿¹ÏÆ    12/07/04  ¥æ¡¼¥¶¡¼£É£ÄÉ½¼¨
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1245,7 +1246,16 @@
       *
            INITIALIZE                  M01
       *
-           MOVE    SPA-HOSPNAME        TO  M01-TITLE
+      *----(04.07.00) LINE UPD START ----------------------------------
+      *     MOVE    SPA-HOSPNAME        TO  M01-TITLE
+           MOVE    SPACE           TO  M01-TITLE
+           STRING  SPA-HOSPNAME        DELIMITED BY SPACE
+                   "  ["               DELIMITED BY SIZE
+                   SPA-OPID            DELIMITED BY SPACE
+                   "]"                 DELIMITED BY SIZE
+                                 INTO  M01-TITLE
+           END-STRING
+      *----(04.07.00) LINE UPD END   ----------------------------------
            MOVE    SPA-GMN-GSEL        TO  M01-SELNUM
       *ver.4.7
            MOVE    SPA-M00-BGCOLORS    TO  M01-BGCOLORS

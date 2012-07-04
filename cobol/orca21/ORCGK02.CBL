@@ -100,6 +100,7 @@
       *  04.06.00    NACL-多々納  11/02/16  用法コメント対応
       *  04.07.00    NACL-多々納  11/09/XX  院外処方点数表示対応
       *  04.07.00    NACL-多々納  12/01/05  クライアント印刷対応
+      *  04.07.00    NACL-森脇    12/07/04  ユーザーＩＤ表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -12226,8 +12227,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE               TO  K02-GRPMEI-VALUE
            END-IF
       *
+      *----(04.07.00) LINE UPD START ----------------------------------
       *    医院名称
-           MOVE    SPA-HOSPNAME        TO  K02-TITLE
+      *     MOVE    SPA-HOSPNAME        TO  K02-TITLE
+           MOVE    SPACE           TO  K02-TITLE
+           STRING  SPA-HOSPNAME        DELIMITED BY SPACE
+                   "  ["               DELIMITED BY SIZE
+                   SPA-OPID            DELIMITED BY SPACE
+                   "]"                 DELIMITED BY SIZE
+                                 INTO  K02-TITLE
+           END-STRING
+      *----(04.07.00) LINE UPD END   ----------------------------------
       *
       *ito ちょっと試し start
            MOVE    SPA-GMN-POPUP-SUMMARY   TO  K02-POPUP-SUMMARY
