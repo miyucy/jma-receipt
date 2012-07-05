@@ -14,7 +14,7 @@
   <class>GtkWindow</class>
   <name>L04</name>
   <width>680</width>
-  <height>420</height>
+  <height>440</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(L04)Æü¼¡Åý·×¡ÝÄù¤á»þ¹ïÅÐÏ¿</title>
+  <title>(L04)Æü¼¡Åý·×¡ÝÄù¤á»þ¹ïÅÐÏ¿¾ÜºÙÀßÄê</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -47,7 +47,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>8</x>
-      <y>390</y>
+      <y>404</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -70,7 +70,7 @@
       <class>GtkButton</class>
       <name>B02</name>
       <x>88</x>
-      <y>390</y>
+      <y>404</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -93,7 +93,7 @@
       <class>GtkButton</class>
       <name>B03</name>
       <x>168</x>
-      <y>390</y>
+      <y>404</y>
       <width>80</width>
       <height>24</height>
       <accelerator>
@@ -115,7 +115,7 @@
       <class>GtkButton</class>
       <name>B04</name>
       <x>248</x>
-      <y>390</y>
+      <y>404</y>
       <width>80</width>
       <height>24</height>
       <accelerator>
@@ -136,8 +136,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B09</name>
-      <x>355</x>
-      <y>390</y>
+      <x>356</x>
+      <y>404</y>
       <width>80</width>
       <height>24</height>
       <accelerator>
@@ -158,8 +158,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B10</name>
-      <x>435</x>
-      <y>390</y>
+      <x>436</x>
+      <y>404</y>
       <width>80</width>
       <height>24</height>
       <accelerator>
@@ -180,8 +180,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B11</name>
-      <x>515</x>
-      <y>390</y>
+      <x>516</x>
+      <y>404</y>
       <width>80</width>
       <height>24</height>
       <accelerator>
@@ -202,8 +202,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
-      <x>595</x>
-      <y>390</y>
+      <x>596</x>
+      <y>404</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -225,10 +225,10 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>STSRYYMD</name>
-      <x>115</x>
-      <y>345</y>
+      <x>136</x>
+      <y>44</y>
       <width>80</width>
-      <height>25</height>
+      <height>24</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>changed</name>
@@ -253,10 +253,10 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>EDSRYYMD</name>
-      <x>315</x>
-      <y>345</y>
+      <x>340</x>
+      <y>44</y>
       <width>80</width>
-      <height>25</height>
+      <height>24</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>changed</name>
@@ -281,10 +281,10 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>STNO</name>
-      <x>90</x>
-      <y>345</y>
-      <width>25</width>
-      <height>25</height>
+      <x>108</x>
+      <y>44</y>
+      <width>24</width>
+      <height>24</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>changed</name>
@@ -305,10 +305,10 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>EDNO</name>
-      <x>290</x>
-      <y>345</y>
-      <width>25</width>
-      <height>25</height>
+      <x>312</x>
+      <y>44</y>
+      <width>24</width>
+      <height>24</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>changed</name>
@@ -327,60 +327,12 @@
     </widget>
 
     <widget>
-      <class>GtkNumberEntry</class>
-      <name>EDHR</name>
-      <x>395</x>
-      <y>345</y>
-      <width>30</width>
-      <height>25</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <format>99</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>EDMIN</name>
-      <x>435</x>
-      <y>345</y>
-      <width>30</width>
-      <height>25</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <format>99</format>
-    </widget>
-
-    <widget>
       <class>GtkPandaEntry</class>
       <name>STHR</name>
-      <x>195</x>
-      <y>345</y>
-      <width>30</width>
-      <height>25</height>
+      <x>216</x>
+      <y>44</y>
+      <width>28</width>
+      <height>24</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>changed</name>
@@ -405,10 +357,10 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>STMIN</name>
-      <x>235</x>
-      <y>345</y>
-      <width>30</width>
-      <height>25</height>
+      <x>260</x>
+      <y>44</y>
+      <width>28</width>
+      <height>24</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>changed</name>
@@ -431,702 +383,12 @@
     </widget>
 
     <widget>
-      <class>GtkNumberEntry</class>
-      <name>NO01</name>
-      <x>53</x>
-      <y>80</y>
-      <width>25</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <format>ZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>NO02</name>
-      <x>53</x>
-      <y>105</y>
-      <width>25</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <format>ZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>NO03</name>
-      <x>53</x>
-      <y>130</y>
-      <width>25</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <format>ZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>NO04</name>
-      <x>53</x>
-      <y>155</y>
-      <width>25</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <format>ZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>NO05</name>
-      <x>53</x>
-      <y>180</y>
-      <width>25</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <format>ZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>NO06</name>
-      <x>53</x>
-      <y>205</y>
-      <width>25</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <format>ZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>NO07</name>
-      <x>53</x>
-      <y>230</y>
-      <width>25</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <format>ZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>NO08</name>
-      <x>53</x>
-      <y>255</y>
-      <width>25</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <format>ZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>NO09</name>
-      <x>53</x>
-      <y>280</y>
-      <width>25</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <format>ZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkNumberEntry</class>
-      <name>NO10</name>
-      <x>53</x>
-      <y>305</y>
-      <width>25</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <format>ZZ</format>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
-      <name>label12</name>
-      <x>220</x>
-      <y>305</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label11</name>
-      <x>220</x>
-      <y>280</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label10</name>
-      <x>220</x>
-      <y>255</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label9</name>
-      <x>220</x>
-      <y>230</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label8</name>
-      <x>220</x>
-      <y>205</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label7</name>
-      <x>220</x>
-      <y>180</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label6</name>
-      <x>220</x>
-      <y>155</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label5</name>
-      <x>220</x>
-      <y>130</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label4</name>
-      <x>220</x>
-      <y>105</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LBL_KKNMID</name>
-      <x>220</x>
-      <y>80</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MARK10</name>
-      <x>390</x>
-      <y>305</y>
-      <width>20</width>
-      <height>25</height>
-      <label>¡ý</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MARK09</name>
-      <x>390</x>
-      <y>280</y>
-      <width>20</width>
-      <height>25</height>
-      <label>¡ý</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MARK08</name>
-      <x>390</x>
-      <y>255</y>
-      <width>20</width>
-      <height>25</height>
-      <label>¡ý</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MARK07</name>
-      <x>390</x>
-      <y>230</y>
-      <width>20</width>
-      <height>25</height>
-      <label>¡ý</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MARK06</name>
-      <x>390</x>
-      <y>205</y>
-      <width>20</width>
-      <height>25</height>
-      <label>¡ý</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MARK05</name>
-      <x>390</x>
-      <y>180</y>
-      <width>20</width>
-      <height>25</height>
-      <label>¡ý</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MARK04</name>
-      <x>390</x>
-      <y>155</y>
-      <width>20</width>
-      <height>25</height>
-      <label>¡ý</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MARK03</name>
-      <x>390</x>
-      <y>130</y>
-      <width>20</width>
-      <height>25</height>
-      <label>¡ý</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MARK02</name>
-      <x>390</x>
-      <y>105</y>
-      <width>20</width>
-      <height>25</height>
-      <label>¡ý</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MARK01</name>
-      <x>390</x>
-      <y>80</y>
-      <width>20</width>
-      <height>25</height>
-      <label>¡ý</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LBL_KIKAN1</name>
-      <x>55</x>
-      <y>345</y>
-      <width>35</width>
-      <height>25</height>
-      <label>´ü´Ö</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label1</name>
-      <x>225</x>
-      <y>345</y>
-      <width>10</width>
-      <height>25</height>
-      <label>¡§</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label2</name>
-      <x>425</x>
-      <y>345</y>
-      <width>10</width>
-      <height>25</height>
-      <label>¡§</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>CMB_HOURSKBN</name>
-      <x>465</x>
-      <y>345</y>
-      <width>88</width>
-      <height>25</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items></items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>HOURSKBN</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Wed, 13 Jul 2005 07:53:59 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Wed, 13 Jul 2005 07:54:19 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>10</text_max_length>
-	<text></text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator2</name>
-      <x>5</x>
-      <y>15</y>
-      <width>0</width>
-      <height>50</height>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>MESPROC</name>
-      <x>68</x>
-      <y>30</y>
-      <width>70</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LBL_KIKAN2</name>
-      <x>265</x>
-      <y>345</y>
-      <width>25</width>
-      <height>25</height>
-      <label>¡Á</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label14</name>
-      <x>10</x>
-      <y>105</y>
-      <width>45</width>
-      <height>25</height>
+      <name>label15</name>
+      <x>20</x>
+      <y>108</y>
+      <width>104</width>
+      <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
@@ -1137,12 +399,692 @@
     </widget>
 
     <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD011</name>
+      <x>136</x>
+      <y>128</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME011</name>
+      <x>216</x>
+      <y>128</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD021</name>
+      <x>136</x>
+      <y>152</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME021</name>
+      <x>216</x>
+      <y>152</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME031</name>
+      <x>216</x>
+      <y>176</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME041</name>
+      <x>216</x>
+      <y>200</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME051</name>
+      <x>216</x>
+      <y>224</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME061</name>
+      <x>216</x>
+      <y>248</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME071</name>
+      <x>216</x>
+      <y>272</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME081</name>
+      <x>216</x>
+      <y>296</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME091</name>
+      <x>216</x>
+      <y>320</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME101</name>
+      <x>216</x>
+      <y>344</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD031</name>
+      <x>136</x>
+      <y>176</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD041</name>
+      <x>136</x>
+      <y>200</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD051</name>
+      <x>136</x>
+      <y>224</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD061</name>
+      <x>136</x>
+      <y>248</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD071</name>
+      <x>136</x>
+      <y>272</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD081</name>
+      <x>136</x>
+      <y>296</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD091</name>
+      <x>136</x>
+      <y>320</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD101</name>
+      <x>136</x>
+      <y>344</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD012</name>
+      <x>340</x>
+      <y>128</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD022</name>
+      <x>340</x>
+      <y>152</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD032</name>
+      <x>340</x>
+      <y>176</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD102</name>
+      <x>340</x>
+      <y>344</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD092</name>
+      <x>340</x>
+      <y>320</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD082</name>
+      <x>340</x>
+      <y>296</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD072</name>
+      <x>340</x>
+      <y>272</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD062</name>
+      <x>340</x>
+      <y>248</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD052</name>
+      <x>340</x>
+      <y>224</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD042</name>
+      <x>340</x>
+      <y>200</y>
+      <width>80</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME012</name>
+      <x>420</x>
+      <y>128</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME102</name>
+      <x>420</x>
+      <y>344</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME092</name>
+      <x>420</x>
+      <y>320</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME082</name>
+      <x>420</x>
+      <y>296</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME072</name>
+      <x>420</x>
+      <y>272</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME062</name>
+      <x>420</x>
+      <y>248</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME052</name>
+      <x>420</x>
+      <y>224</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME042</name>
+      <x>420</x>
+      <y>200</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME032</name>
+      <x>420</x>
+      <y>176</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME022</name>
+      <x>420</x>
+      <y>152</y>
+      <width>72</width>
+      <height>24</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
-      <name>label15</name>
-      <x>10</x>
-      <y>130</y>
-      <width>45</width>
-      <height>25</height>
+      <name>label13</name>
+      <x>32</x>
+      <y>52</y>
+      <width>72</width>
+      <height>28</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
@@ -1155,10 +1097,10 @@
     <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_PROCKBN</name>
-      <x>500</x>
-      <y>30</y>
-      <width>150</width>
-      <height>25</height>
+      <x>504</x>
+      <y>12</y>
+      <width>148</width>
+      <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
       <case_sensitive>False</case_sensitive>
@@ -1193,12 +1135,52 @@
     </widget>
 
     <widget>
+      <class>GtkPandaCombo</class>
+      <name>CMB_HOURSKBN</name>
+      <x>504</x>
+      <y>44</y>
+      <width>148</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items></items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>HOURSKBN</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Wed, 13 Jul 2005 07:53:59 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Wed, 13 Jul 2005 07:54:19 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>10</text_max_length>
+	<text></text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
-      <name>label18</name>
-      <x>280</x>
-      <y>30</y>
-      <width>25</width>
-      <height>25</height>
+      <name>LBLKIKAN2</name>
+      <x>288</x>
+      <y>44</y>
+      <width>24</width>
+      <height>24</height>
       <label>¡Á</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
@@ -1209,788 +1191,614 @@
     </widget>
 
     <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator1</name>
-      <x>450</x>
-      <y>15</y>
-      <width>0</width>
-      <height>50</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator2</name>
-      <x>5</x>
-      <y>15</y>
-      <width>445</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator1</name>
-      <x>5</x>
-      <y>65</y>
-      <width>445</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD011</name>
-      <x>80</x>
-      <y>80</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME011</name>
-      <x>160</x>
-      <y>80</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD021</name>
-      <x>80</x>
-      <y>105</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME021</name>
-      <x>160</x>
-      <y>105</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME031</name>
-      <x>160</x>
-      <y>130</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME041</name>
-      <x>160</x>
-      <y>155</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME051</name>
-      <x>160</x>
-      <y>180</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME061</name>
-      <x>160</x>
-      <y>205</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME071</name>
-      <x>160</x>
-      <y>230</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME081</name>
-      <x>160</x>
-      <y>255</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME091</name>
-      <x>160</x>
-      <y>280</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME101</name>
-      <x>160</x>
-      <y>305</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD031</name>
-      <x>80</x>
-      <y>130</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD041</name>
-      <x>80</x>
-      <y>155</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD051</name>
-      <x>80</x>
-      <y>180</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD061</name>
-      <x>80</x>
-      <y>205</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD071</name>
-      <x>80</x>
-      <y>230</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD081</name>
-      <x>80</x>
-      <y>255</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD091</name>
-      <x>80</x>
-      <y>280</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD101</name>
-      <x>80</x>
-      <y>305</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD012</name>
-      <x>245</x>
-      <y>80</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD022</name>
-      <x>245</x>
-      <y>105</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD032</name>
-      <x>245</x>
-      <y>130</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD102</name>
-      <x>245</x>
-      <y>305</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD092</name>
-      <x>245</x>
-      <y>280</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD082</name>
-      <x>245</x>
-      <y>255</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD072</name>
-      <x>245</x>
-      <y>230</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD062</name>
-      <x>245</x>
-      <y>205</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD052</name>
-      <x>245</x>
-      <y>180</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_SRYYMD042</name>
-      <x>245</x>
-      <y>155</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME012</name>
-      <x>325</x>
-      <y>80</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME102</name>
-      <x>325</x>
-      <y>305</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME092</name>
-      <x>325</x>
-      <y>280</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME082</name>
-      <x>325</x>
-      <y>255</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME072</name>
-      <x>325</x>
-      <y>230</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME062</name>
-      <x>325</x>
-      <y>205</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME052</name>
-      <x>325</x>
-      <y>180</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME042</name>
-      <x>325</x>
-      <y>155</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME032</name>
-      <x>325</x>
-      <y>130</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_TIME022</name>
-      <x>325</x>
-      <y>105</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_MESEDSRYYMD</name>
-      <x>305</x>
-      <y>30</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_MESSTSRYYMD</name>
-      <x>140</x>
-      <y>30</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_MESEDTIME</name>
-      <x>385</x>
-      <y>30</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>CHK_MESSTTIME</name>
-      <x>220</x>
-      <y>30</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <relief>GTK_RELIEF_NORMAL</relief>
+      <x>4</x>
+      <y>72</y>
+      <width>668</width>
+      <height>16</height>
     </widget>
 
     <widget>
       <class>GtkLabel</class>
-      <name>label13</name>
-      <x>10</x>
-      <y>80</y>
-      <width>35</width>
-      <height>25</height>
-      <label></label>
+      <name>LBLNO012</name>
+      <x>312</x>
+      <y>128</y>
+      <width>24</width>
+      <height>23</height>
+      <label>1</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO022</name>
+      <x>312</x>
+      <y>152</y>
+      <width>24</width>
+      <height>23</height>
+      <label>2</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO032</name>
+      <x>312</x>
+      <y>176</y>
+      <width>24</width>
+      <height>24</height>
+      <label>3</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO042</name>
+      <x>312</x>
+      <y>200</y>
+      <width>24</width>
+      <height>23</height>
+      <label>4</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO052</name>
+      <x>312</x>
+      <y>224</y>
+      <width>24</width>
+      <height>23</height>
+      <label>5</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO062</name>
+      <x>312</x>
+      <y>248</y>
+      <width>24</width>
+      <height>23</height>
+      <label>6</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO072</name>
+      <x>312</x>
+      <y>272</y>
+      <width>24</width>
+      <height>23</height>
+      <label>7</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO092</name>
+      <x>312</x>
+      <y>320</y>
+      <width>24</width>
+      <height>24</height>
+      <label>9</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMID10</name>
+      <x>288</x>
+      <y>344</y>
+      <width>24</width>
+      <height>24</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMID09</name>
+      <x>288</x>
+      <y>320</y>
+      <width>24</width>
+      <height>24</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMID08</name>
+      <x>288</x>
+      <y>296</y>
+      <width>24</width>
+      <height>24</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMID07</name>
+      <x>288</x>
+      <y>272</y>
+      <width>24</width>
+      <height>24</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMID06</name>
+      <x>288</x>
+      <y>248</y>
+      <width>24</width>
+      <height>24</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMID05</name>
+      <x>288</x>
+      <y>224</y>
+      <width>24</width>
+      <height>24</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMID04</name>
+      <x>288</x>
+      <y>200</y>
+      <width>24</width>
+      <height>24</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMID03</name>
+      <x>288</x>
+      <y>176</y>
+      <width>24</width>
+      <height>24</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMID02</name>
+      <x>288</x>
+      <y>152</y>
+      <width>24</width>
+      <height>24</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMID01</name>
+      <x>288</x>
+      <y>128</y>
+      <width>24</width>
+      <height>23</height>
+      <label>¡Á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO102</name>
+      <x>312</x>
+      <y>344</y>
+      <width>24</width>
+      <height>23</height>
+      <label>10</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO082</name>
+      <x>312</x>
+      <y>296</y>
+      <width>24</width>
+      <height>23</height>
+      <label>8</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO021</name>
+      <x>16</x>
+      <y>152</y>
+      <width>112</width>
+      <height>24</height>
+      <label>2</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO041</name>
+      <x>16</x>
+      <y>200</y>
+      <width>112</width>
+      <height>24</height>
+      <label>4</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO051</name>
+      <x>16</x>
+      <y>224</y>
+      <width>112</width>
+      <height>24</height>
+      <label>5</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO061</name>
+      <x>16</x>
+      <y>248</y>
+      <width>112</width>
+      <height>24</height>
+      <label>6</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO071</name>
+      <x>16</x>
+      <y>272</y>
+      <width>112</width>
+      <height>24</height>
+      <label>7</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO081</name>
+      <x>16</x>
+      <y>296</y>
+      <width>112</width>
+      <height>24</height>
+      <label>8</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO091</name>
+      <x>16</x>
+      <y>320</y>
+      <width>112</width>
+      <height>24</height>
+      <label>9</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO101</name>
+      <x>16</x>
+      <y>344</y>
+      <width>112</width>
+      <height>24</height>
+      <label>10</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO031</name>
+      <x>16</x>
+      <y>176</y>
+      <width>112</width>
+      <height>24</height>
+      <label>3</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLNO011</name>
+      <x>16</x>
+      <y>128</y>
+      <width>112</width>
+      <height>24</height>
+      <label>1</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLKIKAN1</name>
+      <x>4</x>
+      <y>44</y>
+      <width>96</width>
+      <height>24</height>
+      <label>ÂÐ¾Ý´ü´Ö</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMES01</name>
+      <x>136</x>
+      <y>100</y>
+      <width>204</width>
+      <height>24</height>
+      <label>Á°²óËÜÄù¤á</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>EDMIN</name>
+      <x>464</x>
+      <y>44</y>
+      <width>28</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>99</format>
+    </widget>
+
+    <widget>
+      <class>GtkNumberEntry</class>
+      <name>EDHR</name>
+      <x>420</x>
+      <y>44</y>
+      <width>28</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>changed</name>
+	<handler>entry_changed</handler>
+	<data>CHANGED</data>
+	<last_modification_time>Wed, 13 Jul 2005 07:57:13 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>activate</name>
+	<handler>send_event</handler>
+	<data>ACTIVATE</data>
+	<last_modification_time>Wed, 13 Jul 2005 07:57:41 GMT</last_modification_time>
+      </signal>
+      <editable>True</editable>
+      <format>99</format>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1</name>
+      <x>244</x>
+      <y>44</y>
+      <width>16</width>
+      <height>24</height>
+      <label>¡§</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label2</name>
+      <x>448</x>
+      <y>44</y>
+      <width>16</width>
+      <height>24</height>
+      <label>¡§</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMARK02</name>
+      <x>500</x>
+      <y>152</y>
+      <width>120</width>
+      <height>24</height>
+      <label>¡ý</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2001,12 +1809,140 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label16</name>
-      <x>10</x>
-      <y>30</y>
-      <width>60</width>
-      <height>25</height>
-      <label>Á°²ó´ü´Ö</label>
+      <name>LBLMARK03</name>
+      <x>500</x>
+      <y>176</y>
+      <width>120</width>
+      <height>24</height>
+      <label>¡ý</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMARK04</name>
+      <x>500</x>
+      <y>200</y>
+      <width>120</width>
+      <height>24</height>
+      <label>¡ý</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMARK05</name>
+      <x>500</x>
+      <y>224</y>
+      <width>120</width>
+      <height>24</height>
+      <label>¡ý</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMARK06</name>
+      <x>500</x>
+      <y>248</y>
+      <width>120</width>
+      <height>24</height>
+      <label>¡ý</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMARK07</name>
+      <x>500</x>
+      <y>272</y>
+      <width>120</width>
+      <height>24</height>
+      <label>¡ý</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMARK08</name>
+      <x>500</x>
+      <y>296</y>
+      <width>120</width>
+      <height>24</height>
+      <label>¡ý</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMARK09</name>
+      <x>500</x>
+      <y>320</y>
+      <width>120</width>
+      <height>24</height>
+      <label>¡ý</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMARK10</name>
+      <x>500</x>
+      <y>344</y>
+      <width>120</width>
+      <height>24</height>
+      <label>¡ý</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LBLMARK01</name>
+      <x>500</x>
+      <y>128</y>
+      <width>120</width>
+      <height>24</height>
+      <label>¡ý</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

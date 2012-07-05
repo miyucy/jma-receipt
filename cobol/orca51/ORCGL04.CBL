@@ -57,6 +57,7 @@
            03  FLG-ERR                     PIC 9(01).
            03  FLG-HOURS                   PIC 9(01).
            03  FLG-KARITIME                PIC 9(01).
+           03  FLG-EDIT                    PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
@@ -68,6 +69,7 @@
            03  IDX-TERM                    PIC 9(05).
            03  IDX-CMB                     PIC 9(05).
            03  IDX-CHK                     PIC 9(05).
+           03  IDXL                        PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-MCP-WIDGET              PIC X(64).
@@ -92,6 +94,12 @@
            03  WRK-KJNHM.
                05  WRK-KJNHM-HH            PIC 9(02).
                05  WRK-KJNHM-MM            PIC 9(02).
+           03  WRK-STTIME.
+               05  WRK-STHR                PIC 9(02).
+               05  WRK-STMIN               PIC 9(02).
+           03  WRK-EDTIME.
+               05  WRK-EDHR                PIC 9(02).
+               05  WRK-EDMIN               PIC 9(02).
            03  WRK-Z                       PIC Z.
            03  WRK-Z9                      PIC Z9.
            03  WRK-CMB-CD                  PIC X(10).
@@ -112,12 +120,15 @@
                05  WRK-TIME-SEP            PIC X.
                05  WRK-TIME-MM             PIC 99.
            03  WRK-SRYYMD                  PIC X(08).
+           03  WRK-NUM                     PIC 9(10).
+           03  WRK-NUMX                    PIC X(10).
       *
        01  CONST-AREA.
            03  CONST-TERM-MAX              PIC 9(03)   VALUE   10.
            03  CONST-GOBACK-DAYS           PIC S9(03)  VALUE   -10.
            03  CONST-GOBACK-MONTH          PIC S9(03)  VALUE   -1.
            03  CONST-PROCKBN-G.
+               05  CONST-VIEW              PIC X(01)   VALUE   "0".
                05  CONST-SIME              PIC X(01)   VALUE   "1".
                05  CONST-SIME-KARI         PIC X(01)   VALUE   "2".
                05  CONST-SELTERM           PIC X(01)   VALUE   "3".
@@ -151,6 +162,9 @@
            COPY    "CPORCSLNK.INC".
            COPY    "CPORCSGDAY.INC".
       *
+      *    数値変換サブ
+           COPY    "CPORCSNUM.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -172,6 +186,7 @@
            COPY    "L02.INC".
            COPY    "L03.INC".
            COPY    "L04.INC".
+           COPY    "L06.INC".
            COPY    "L99.INC".
            COPY    "LERR.INC".
            COPY    "LID1.INC".
@@ -313,45 +328,8 @@
       *
            PERFORM 3101-COMBO-SYOKI-SEC
       *
-           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
-           PERFORM 800-YOBI-HEN-SEC
-      *
-           MOVE    ZERO                TO  FLG-KARITIME
-           PERFORM VARYING IDX3    FROM    1   BY  1
-                   UNTIL ( IDX3    >   2 )
-                    OR   ( FLG-KARITIME    =   1 )
-      *
-               IF    ( SYS-1039-KARIDAY (IDX3 WRK-YOBI)
-                                       =   "1" )
-                   PERFORM VARYING IDX4    FROM    1   BY  1
-                       UNTIL ( IDX4    >   2 )
-                        OR   ( FLG-KARITIME    =   1 )
-                       IF    ( SYS-1039-KARISTTIME (IDX3 IDX4)
-                                           =   SPACE OR ZERO )
-                        AND  ( SYS-1039-KARIEDTIME (IDX3 IDX4)
-                                           =   SPACE OR ZERO )
-                           CONTINUE
-                       ELSE
-                           IF    ( SMCNDATE-HMS (1:4)
-                                  >=  SYS-1039-KARISTTIME (IDX3 IDX4))
-                            AND  ( SMCNDATE-HMS (1:4)
-                                  <=  SYS-1039-KARIEDTIME (IDX3 IDX4))
-                               MOVE    1   TO  FLG-KARITIME
-                           END-IF
-                       END-IF
-                   END-PERFORM
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( FLG-KARITIME    =   ZERO )
-               MOVE    SPA-GMN-L04-PROCKBNLST (1)
+           MOVE    SPA-GMN-L04-PROCKBNLST (1)
                                        TO  SPA-GMN-L04-PROCKBN-G
-           ELSE
-               MOVE    SPA-GMN-L04-PROCKBNLST (2)
-                                       TO  SPA-GMN-L04-PROCKBN-G
-           END-IF
-      *
            PERFORM 41001-PROCKBN-CHK-SEC
       *
            MOVE    1               TO  SPA-GMN-L04-CUR
@@ -385,6 +363,7 @@
                WHEN    CONST-SELTERM
                    MOVE    "期間指定"    TO  SPA-GMN-L04-MESPROC
                END-EVALUATE
+               MOVE    SYS-3005-PROCKBN  TO  SPA-NAI-L04-MESPROCKBN
       *
                MOVE    SYS-3005-STSRYYMD   TO  WRK-SYMD
                PERFORM 800-HIZUKE-HEN-SEC
@@ -421,25 +400,28 @@
       *
            INITIALIZE                  SPA-GMN-L04-PROCKBNLST-G
       *
-           MOVE    6               TO  SPA-GMN-L04-PROCKBN-MAX
+           MOVE    7               TO  SPA-GMN-L04-PROCKBN-MAX
       *
-           MOVE    "1"             TO  SPA-GMN-L04-PROCKBNL   (1)
-           MOVE    "本締め"        TO  SPA-GMN-L04-PROCKBNMEIL(1)
+           MOVE    "0"             TO  SPA-GMN-L04-PROCKBNL   (1)
+           MOVE    "履歴表示"      TO  SPA-GMN-L04-PROCKBNMEIL(1)
       *
-           MOVE    "2"             TO  SPA-GMN-L04-PROCKBNL   (2)
-           MOVE    "仮締め"        TO  SPA-GMN-L04-PROCKBNMEIL(2)
+           MOVE    "1"             TO  SPA-GMN-L04-PROCKBNL   (2)
+           MOVE    "本締め"        TO  SPA-GMN-L04-PROCKBNMEIL(2)
       *
-           MOVE    "3"             TO  SPA-GMN-L04-PROCKBNL   (3)
-           MOVE    "期間指定"      TO  SPA-GMN-L04-PROCKBNMEIL(3)
+           MOVE    "2"             TO  SPA-GMN-L04-PROCKBNL   (3)
+           MOVE    "仮締め"        TO  SPA-GMN-L04-PROCKBNMEIL(3)
       *
-           MOVE    "4"             TO  SPA-GMN-L04-PROCKBNL   (4)
-           MOVE    "追加"          TO  SPA-GMN-L04-PROCKBNMEIL(4)
+           MOVE    "3"             TO  SPA-GMN-L04-PROCKBNL   (4)
+           MOVE    "期間指定"      TO  SPA-GMN-L04-PROCKBNMEIL(4)
       *
-           MOVE    "5"             TO  SPA-GMN-L04-PROCKBNL   (5)
-           MOVE    "削除"          TO  SPA-GMN-L04-PROCKBNMEIL(5)
+           MOVE    "4"             TO  SPA-GMN-L04-PROCKBNL   (5)
+           MOVE    "追加"          TO  SPA-GMN-L04-PROCKBNMEIL(5)
       *
-           MOVE    "6"             TO  SPA-GMN-L04-PROCKBNL   (6)
-           MOVE    "締め変更"      TO  SPA-GMN-L04-PROCKBNMEIL(6)
+           MOVE    "5"             TO  SPA-GMN-L04-PROCKBNL   (6)
+           MOVE    "削除"          TO  SPA-GMN-L04-PROCKBNMEIL(6)
+      *
+           MOVE    "6"             TO  SPA-GMN-L04-PROCKBNL   (7)
+           MOVE    "締め変更"      TO  SPA-GMN-L04-PROCKBNMEIL(7)
       *
            .
        31011-PROCKBNLST-SET-EXT.
@@ -474,6 +456,31 @@
                                        WRK-FROMYMD
                                        WRK-FROMTIME
       *
+           MOVE    ZERO                TO  IDX-TERM
+      *
+           IF    ( SPA-GMN-L04-VIEW-MODE   =   3 )
+               IF ( SPA-NAI-L04-MESSTSRYYMD    NOT =   SPACE )
+                   COMPUTE IDX-TERM    =   IDX-TERM    +   1
+                   MOVE    SPA-NAI-L04-MESSTSRYYMD
+                                   TO  SPA-NAI-L04-SRYYMD (IDX-TERM 1)
+                   MOVE    SPA-GMN-L04-MESSTSRYYMD
+                                   TO  SPA-GMN-L04-SRYYMD (IDX-TERM 1)
+                   MOVE    SPA-GMN-L04-MESSTTIME
+                                   TO  SPA-GMN-L04-TIME   (IDX-TERM 1)
+                   MOVE    SPA-NAI-L04-MESEDSRYYMD
+                                   TO  SPA-NAI-L04-SRYYMD (IDX-TERM 2)
+                   MOVE    SPA-GMN-L04-MESEDSRYYMD
+                                   TO  SPA-GMN-L04-SRYYMD (IDX-TERM 2)
+                   MOVE    SPA-GMN-L04-MESEDTIME
+                                   TO  SPA-GMN-L04-TIME   (IDX-TERM 2)
+                   MOVE    "3"     TO  SPA-NAI-L04-HOURSKBN(IDX-TERM)
+                   MOVE    SPA-GMN-L04-MESEDSRYYMD
+                                   TO  SPA-NAI-L04-ID (IDX-TERM)
+                   MOVE    SPA-GMN-L04-MESEDTIME
+                                   TO  SPA-NAI-L04-ID (IDX-TERM)(9:)
+               END-IF
+           END-IF
+      *
            INITIALIZE                  HOURS-REC
       *
            MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
@@ -486,8 +493,6 @@
            MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
            MOVE    "key5"              TO  WRK-MCP-PATHNAME
            PERFORM 900-HOURS-SEL-SEC
-      *
-           MOVE    ZERO                TO  IDX-TERM
       *
            PERFORM UNTIL ( IDX-TERM        >=  CONST-TERM-MAX )
                     OR   ( FLG-HOURS   NOT =   ZERO )
@@ -522,7 +527,6 @@
            MOVE    WRK-MCP-PATHNAME TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
-      *
            INITIALIZE                  HOURS-REC
       *
            MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
@@ -543,6 +547,11 @@
            PERFORM 900-HOURS-SEL-SEC
       *
            MOVE    1                   TO  IDX-TERM
+      *
+           IF    ( SPA-GMN-L04-VIEW-MODE   =   3 )
+            AND  ( SPA-NAI-L04-MESSTSRYYMD NOT =   SPACE )
+                   MOVE    2           TO  IDX-TERM
+           END-IF
       *
            PERFORM UNTIL ( IDX-TERM        >   SPA-GMN-L04-TERM-MAX )
                     OR   ( FLG-HOURS   NOT =   ZERO )
@@ -726,7 +735,9 @@
                PERFORM 240-VIEW-MODE-CHK-SEC
       *    登録
            WHEN    "CLICKED"       ALSO    "B12"
-               PERFORM 212-TOUROKU-SEC
+               IF    ( SPA-GMN-L04-PROCKBN NOT =   CONST-VIEW )
+                   PERFORM 212-TOUROKU-SEC
+               END-IF
            END-EVALUATE
       *
            .
@@ -801,6 +812,22 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
+           MOVE    L04-STHR        TO  WRK-NUMX
+           PERFORM 800-NUM-SEC
+           MOVE    WRK-NUM         TO  WRK-STHR
+      *
+           MOVE    L04-STMIN       TO  WRK-NUMX
+           PERFORM 800-NUM-SEC
+           MOVE    WRK-NUM         TO  WRK-STMIN
+      *
+           MOVE    L04-EDHR        TO  WRK-NUMX
+           PERFORM 800-NUM-SEC
+           MOVE    WRK-NUM         TO  WRK-EDHR
+      *
+           MOVE    L04-EDMIN       TO  WRK-NUMX
+           PERFORM 800-NUM-SEC
+           MOVE    WRK-NUM         TO  WRK-EDMIN
+      *
            EVALUATE    SPA-GMN-L04-PROCKBN
            WHEN    CONST-SIME
            WHEN    CONST-SIME-KARI
@@ -809,18 +836,16 @@
                MOVE    L04-EDMIN       TO  SPA-GMN-L04-EDMIN
            WHEN    CONST-SELTERM
                MOVE    L04-STSRYYMD    TO  SPA-GMN-L04-STSRYYMD
-               MOVE    L04-STHR        TO  SPA-GMN-L04-STHR
-               MOVE    L04-STMIN       TO  SPA-GMN-L04-STMIN
+               MOVE    WRK-STTIME      TO  SPA-GMN-L04-STTIME
                MOVE    L04-EDSRYYMD    TO  SPA-GMN-L04-EDSRYYMD
-               MOVE    L04-EDHR        TO  SPA-GMN-L04-EDHR
-               MOVE    L04-EDMIN       TO  SPA-GMN-L04-EDMIN
+               MOVE    WRK-EDTIME      TO  SPA-GMN-L04-EDTIME
            WHEN    CONST-INS
                MOVE    L04-EDSRYYMD    TO  SPA-GMN-L04-EDSRYYMD
-               MOVE    L04-EDHR        TO  SPA-GMN-L04-EDHR
-               MOVE    L04-EDMIN       TO  SPA-GMN-L04-EDMIN
+               MOVE    WRK-EDTIME      TO  SPA-GMN-L04-EDTIME
                MOVE    L04-HOURSKBN    TO  SPA-GMN-L04-HOURSKBN-G
            WHEN    CONST-UPD
                MOVE    L04-HOURSKBN    TO  SPA-GMN-L04-HOURSKBN-G
+           WHEN    CONST-VIEW
            WHEN    CONST-DEL
                CONTINUE
            END-EVALUATE
@@ -836,6 +861,8 @@
        4102-KIHON-CHK-SEC              SECTION.
       *
            EVALUATE    SPA-GMN-L04-PROCKBN
+           WHEN    CONST-VIEW
+               PERFORM 4102-VIEW-KIHON-CHK-SEC
            WHEN    CONST-SIME
            WHEN    CONST-SIME-KARI
                PERFORM 4102-SIME-KIHON-CHK-SEC
@@ -852,6 +879,16 @@
            .
       *
        4102-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    履歴表示基本チェック処理
+      *****************************************************************
+       4102-VIEW-KIHON-CHK-SEC           SECTION.
+      *
+      *
+           .
+      *
+       4102-VIEW-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
       *    締め処理基本チェック処理
@@ -993,6 +1030,8 @@
                                        SPA-GMN-L04-HOURSKBN-G
       *
            EVALUATE    SPA-GMN-L04-PROCKBN
+           WHEN    CONST-VIEW
+               PERFORM 41011-VIEW-SYOKI-SEC
            WHEN    CONST-SIME
            WHEN    CONST-SIME-KARI
                PERFORM 41011-SIME-SYOKI-SEC
@@ -1017,24 +1056,18 @@
        4100-CHK-FROM-CHK-SEC       SECTION.
       *
            IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM )
-               CONTINUE
-           ELSE
-               GO  TO  4100-CHK-FROM-CHK-EXT
-           END-IF
-      *
-           IF    ( IDX-CHK             >=  1 )
-            AND  ( IDX-CHK             <=  SPA-GMN-L04-TERM-MAX )
-               IF    ( SPA-NAI-L04-SRYYMD (IDX-CHK 1)
-                                   NOT  =   SPACE )
-                   MOVE    IDX-CHK      TO  SPA-GMN-L04-STNO
-                   PERFORM 41001-STNO-CHK-SEC
-      *
-                   IF    ( SPA-NAI-L04-EDSRYYMD    =   SPACE )
-                    AND  ( SPA-GMN-L04-EDTIME      =   ZERO  )
-                       MOVE    IDX-CHK      TO  SPA-GMN-L04-EDNO
-                       PERFORM 41001-EDNO-CHK-SEC
+               IF    ( IDX-CHK             >=  1 )
+                AND  ( IDX-CHK             <=  SPA-GMN-L04-TERM-MAX )
+                   IF    ( SPA-NAI-L04-SRYYMD (IDX-CHK 1)
+                                       NOT  =   SPACE )
+                       MOVE    IDX-CHK      TO  SPA-GMN-L04-STNO
+                       PERFORM 41001-STNO-CHK-SEC
+                       IF    ( SPA-NAI-L04-EDSRYYMD    =   SPACE )
+                        AND  ( SPA-GMN-L04-EDTIME      =   ZERO  )
+                           MOVE    IDX-CHK  TO  SPA-GMN-L04-EDNO
+                           PERFORM 41001-EDNO-CHK-SEC
+                       END-IF
                    END-IF
-      *
                END-IF
            END-IF
       *
@@ -1049,15 +1082,12 @@
            IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM
                                         OR CONST-UPD 
                                         OR CONST-DEL )
-               CONTINUE
-           ELSE
-               GO  TO  4100-CHK-TO-CHK-EXT
-           END-IF
       *
-           IF    ( IDX-CHK             >=  1 )
-            AND  ( IDX-CHK             <=  SPA-GMN-L04-TERM-MAX )
-               MOVE    IDX-CHK      TO  SPA-GMN-L04-EDNO
-               PERFORM 41001-EDNO-CHK-SEC
+               IF    ( IDX-CHK         >=  1 )
+                AND  ( IDX-CHK         <=  SPA-GMN-L04-TERM-MAX )
+                   MOVE    IDX-CHK  TO  SPA-GMN-L04-EDNO
+                   PERFORM 41001-EDNO-CHK-SEC
+               END-IF
            END-IF
       *
            .
@@ -1072,28 +1102,23 @@
            MOVE    ZERO            TO  SPA-GMN-L04-TERM-STSEL
       *
            IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM )
-               CONTINUE
-           ELSE
-               GO  TO  4100-STNO-CHK-EXT
-           END-IF
       *
-           MOVE    L04-STNO        TO  SPA-GMN-L04-STNO
+               MOVE    L04-STNO        TO  SPA-GMN-L04-STNO
       *
-           IF    ( SPA-GMN-L04-STNO    =   ZERO )
-               GO  TO  4100-STNO-CHK-EXT
-           END-IF
+               IF    ( SPA-GMN-L04-STNO    NOT =   ZERO )
+                   PERFORM 4101-STNO-CHK-SEC
+                   IF    ( SPA-ERRCD       =   SPACE )
       *
-           PERFORM 4101-STNO-CHK-SEC
-           IF    ( SPA-ERRCD       =   SPACE )
+                       PERFORM 41001-STNO-CHK-SEC
       *
-               PERFORM 41001-STNO-CHK-SEC
-      *
-               IF    ( SPA-NAI-L04-EDSRYYMD    =   SPACE )
-                AND  ( SPA-GMN-L04-EDTIME      =   ZERO  )
-                   MOVE    SPA-GMN-L04-STNO    TO  SPA-GMN-L04-EDNO
-                   PERFORM 41001-EDNO-CHK-SEC
+                       IF    ( SPA-NAI-L04-EDSRYYMD    =   SPACE )
+                        AND  ( SPA-GMN-L04-EDTIME      =   ZERO  )
+                           MOVE    SPA-GMN-L04-STNO
+                                       TO  SPA-GMN-L04-EDNO
+                           PERFORM 41001-EDNO-CHK-SEC
+                       END-IF
+                   END-IF
                END-IF
-      *
            END-IF
       *
            .
@@ -1130,23 +1155,15 @@
            IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM
                                         OR CONST-UPD 
                                         OR CONST-DEL )
-               CONTINUE
-           ELSE
-               GO  TO  4100-EDNO-CHK-EXT
+               MOVE    L04-EDNO    TO  SPA-GMN-L04-EDNO
+               IF    ( SPA-GMN-L04-EDNO    NOT =   ZERO )
+                   PERFORM 4101-EDNO-CHK-SEC
+                   IF    ( SPA-ERRCD       =   SPACE )
+                       PERFORM 41001-EDNO-CHK-SEC
+                   END-IF
+               END-IF
            END-IF
       *
-           MOVE    L04-EDNO        TO  SPA-GMN-L04-EDNO
-      *
-           IF    ( SPA-GMN-L04-EDNO    =   ZERO )
-               GO  TO  4100-EDNO-CHK-EXT
-           END-IF
-      *
-           PERFORM 4101-EDNO-CHK-SEC
-           IF    ( SPA-ERRCD       =   SPACE )
-      *
-               PERFORM 41001-EDNO-CHK-SEC
-      *
-           END-IF
       *
            .
        4100-EDNO-CHK-EXT.
@@ -1181,31 +1198,26 @@
        4101-CHK-FROM-CHK-SEC       SECTION.
       *
            IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM )
-               CONTINUE
-           ELSE
-               GO  TO  4101-CHK-FROM-CHK-EXT
-           END-IF
       *
-           IF    ( SPA-NAI-L04-MESSTSRYYMD
+               IF    ( SPA-NAI-L04-MESSTSRYYMD
                                    NOT  =   SPACE )
       *
-               MOVE    ZERO            TO  SPA-GMN-L04-STNO
+                   MOVE    ZERO        TO  SPA-GMN-L04-STNO
                                            SPA-GMN-L04-TERM-STSEL
       *
-               MOVE    SPA-GMN-L04-MESSTSRYYMD
+                   MOVE    SPA-GMN-L04-MESSTSRYYMD
                                        TO  SPA-GMN-L04-STSRYYMD
-               MOVE    SPA-NAI-L04-MESSTSRYYMD
+                   MOVE    SPA-NAI-L04-MESSTSRYYMD
                                        TO  SPA-NAI-L04-STSRYYMD
-               MOVE    SPA-GMN-L04-MESSTTIME
+                   MOVE    SPA-GMN-L04-MESSTTIME
                                        TO  WRK-HMS-G
-               MOVE    WRK-HMS-HH  TO  SPA-GMN-L04-STHR
-               MOVE    WRK-HMS-MM  TO  SPA-GMN-L04-STMIN
+                   MOVE    WRK-HMS-HH  TO  SPA-GMN-L04-STHR
+                   MOVE    WRK-HMS-MM  TO  SPA-GMN-L04-STMIN
       *
-               IF    ( SPA-NAI-L04-EDSRYYMD    =   SPACE )
-                AND  ( SPA-GMN-L04-EDTIME      =   ZERO  )
-      *
-                   PERFORM 4101-CHK-TO-CHK-SEC
-      *
+                   IF    ( SPA-NAI-L04-EDSRYYMD    =   SPACE )
+                    AND  ( SPA-GMN-L04-EDTIME      =   ZERO  )
+                       PERFORM 4101-CHK-TO-CHK-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -1218,27 +1230,23 @@
        4101-CHK-TO-CHK-SEC         SECTION.
       *
            IF    ( SPA-GMN-L04-PROCKBN =   CONST-SELTERM )
-               CONTINUE
-           ELSE
-               GO  TO  4101-CHK-TO-CHK-EXT
-           END-IF
       *
-           IF    ( SPA-NAI-L04-MESEDSRYYMD
+               IF    ( SPA-NAI-L04-MESEDSRYYMD
                                    NOT  =   SPACE )
-      *
-               MOVE    ZERO            TO  SPA-GMN-L04-EDNO
+                   MOVE    ZERO        TO  SPA-GMN-L04-EDNO
                                            SPA-GMN-L04-TERM-EDSEL
       *
-               MOVE    SPA-GMN-L04-MESEDSRYYMD
+                   MOVE    SPA-GMN-L04-MESEDSRYYMD
                                        TO  SPA-GMN-L04-EDSRYYMD
-               MOVE    SPA-NAI-L04-MESEDSRYYMD
+                   MOVE    SPA-NAI-L04-MESEDSRYYMD
                                        TO  SPA-NAI-L04-EDSRYYMD
-               MOVE    SPA-GMN-L04-MESEDTIME
+                   MOVE    SPA-GMN-L04-MESEDTIME
                                        TO  WRK-HMS-G
-               MOVE    WRK-HMS-HH  TO  SPA-GMN-L04-EDHR
-               MOVE    WRK-HMS-MM  TO  SPA-GMN-L04-EDMIN
-      *
+                   MOVE    WRK-HMS-HH  TO  SPA-GMN-L04-EDHR
+                   MOVE    WRK-HMS-MM  TO  SPA-GMN-L04-EDMIN
+               END-IF
            END-IF
+      *
       *
            .
        4101-CHK-TO-CHK-EXT.
@@ -1259,6 +1267,35 @@
       *
            .
        4101-PROCKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    締め初期処理
+      *****************************************************************
+       41011-VIEW-SYOKI-SEC            SECTION.
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
+           IF    ( SPA-NAI-L04-MESSTSRYYMD NOT =   SPACE )
+               MOVE    SPA-NAI-L04-MESSTSRYYMD
+                                       TO  SPA-NAI-L04-STSRYYMD
+               MOVE    SPA-GMN-L04-MESSTSRYYMD
+                                       TO  SPA-GMN-L04-STSRYYMD
+               MOVE    SPA-GMN-L04-MESSTTIME
+                                       TO  SPA-GMN-L04-STTIME
+               MOVE    SPA-NAI-L04-MESEDSRYYMD
+                                       TO  SPA-NAI-L04-EDSRYYMD
+               MOVE    SPA-GMN-L04-MESEDSRYYMD
+                                       TO  SPA-GMN-L04-EDSRYYMD
+               MOVE    SPA-GMN-L04-MESEDTIME
+                                       TO  SPA-GMN-L04-EDTIME
+           END-IF
+      *
+           MOVE    2                   TO  SPA-GMN-L04-VIEW-MODE
+      *
+           MOVE    1                   TO  SPA-GMN-L04-CUR
+      *
+           .
+       41011-VIEW-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    締め初期処理
@@ -1298,19 +1335,9 @@
            MOVE    WRK-HMS-HH          TO  SPA-GMN-L04-EDHR
            MOVE    WRK-HMS-MM          TO  SPA-GMN-L04-EDMIN
       *
-      *    IF    ( SPA-GMN-L04-PROCKBN =  CONST-SIME )
-      *        MOVE    "1"             TO  WRK-CMB-CD
-      *        PERFORM 4200-HOURSKBNLST-CHK-SEC
-      *        MOVE    WRK-CMB-ITM     TO  SPA-GMN-L04-HOURSKBN-G
-      *    ELSE
-      *        MOVE    "2"             TO  WRK-CMB-CD
-      *        PERFORM 4200-HOURSKBNLST-CHK-SEC
-      *        MOVE    WRK-CMB-ITM     TO  SPA-GMN-L04-HOURSKBN-G
-      *    END-IF
-      *
            MOVE    2                   TO  SPA-GMN-L04-VIEW-MODE
       *
-           MOVE    212                 TO  SPA-GMN-L04-CUR
+           MOVE    7                   TO  SPA-GMN-L04-CUR
       *
            .
        41011-SIME-SYOKI-EXT.
@@ -1343,6 +1370,10 @@
            PERFORM 800-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-L04-EDSRYYMD
       *
+           MOVE    SMCNDATE-HMS        TO  WRK-HMS-G
+           MOVE    WRK-HMS-HH          TO  SPA-GMN-L04-EDHR
+           MOVE    WRK-HMS-MM          TO  SPA-GMN-L04-EDMIN
+      *
            MOVE    7                   TO  SPA-GMN-L04-CUR
       *
            .
@@ -1352,6 +1383,8 @@
       *    削除初期処理
       *****************************************************************
        41011-DEL-SYOKI-SEC             SECTION.
+      *
+           PERFORM 31011-HOURSKBNLST-SET-SEC
       *
            MOVE    6                   TO  SPA-GMN-L04-CUR
       *
@@ -1375,20 +1408,18 @@
       *****************************************************************
        4101-STNO-CHK-SEC           SECTION.
       *
-           IF    ( SPA-GMN-L04-STNO    =   ZERO )
-               GO  TO  4101-STNO-CHK-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-L04-STNO    >=  1 )
-            AND  ( SPA-GMN-L04-STNO    <=  SPA-GMN-L04-TERM-MAX )
-               IF    ( SPA-NAI-L04-SRYYMD (SPA-GMN-L04-STNO 1)
+           IF    ( SPA-GMN-L04-STNO    NOT =   ZERO )
+               IF    ( SPA-GMN-L04-STNO    >=  1 )
+                AND  ( SPA-GMN-L04-STNO    <=  SPA-GMN-L04-TERM-MAX )
+                   IF    ( SPA-NAI-L04-SRYYMD (SPA-GMN-L04-STNO 1)
                                         =  SPACE )
-                   MOVE    "0005"      TO  SPA-ERRCD
-                   MOVE    2           TO  SPA-GMN-L04-CUR
+                       MOVE    "0005"      TO  SPA-ERRCD
+                       MOVE    2           TO  SPA-GMN-L04-CUR
+                   END-IF
+               ELSE
+                       MOVE    "0005"      TO  SPA-ERRCD
+                       MOVE    2           TO  SPA-GMN-L04-CUR
                END-IF
-           ELSE
-                   MOVE    "0005"      TO  SPA-ERRCD
-                   MOVE    2           TO  SPA-GMN-L04-CUR
            END-IF
       *
            .
@@ -1399,16 +1430,14 @@
       *****************************************************************
        4101-EDNO-CHK-SEC           SECTION.
       *
-           IF    ( SPA-GMN-L04-EDNO    =   ZERO )
-               GO  TO  4101-EDNO-CHK-EXT
-           END-IF
-      *
-           IF    ( SPA-GMN-L04-EDNO    >=  1 )
-            AND  ( SPA-GMN-L04-EDNO    <=  SPA-GMN-L04-TERM-MAX )
-               CONTINUE
-           ELSE
-               MOVE    "0005"          TO  SPA-ERRCD
-               MOVE    6               TO  SPA-GMN-L04-CUR
+           IF    ( SPA-GMN-L04-EDNO    NOT =   ZERO )
+               IF    ( SPA-GMN-L04-EDNO    >=  1 )
+                AND  ( SPA-GMN-L04-EDNO    <=  SPA-GMN-L04-TERM-MAX )
+                   CONTINUE
+               ELSE
+                   MOVE    "0005"          TO  SPA-ERRCD
+                   MOVE    6               TO  SPA-GMN-L04-CUR
+               END-IF
            END-IF
       *
            .
@@ -1643,8 +1672,9 @@
       *****************************************************************
        240-VIEW-MODE-CHK-SEC           SECTION.
       *
-           IF    ( SPA-GMN-L04-PROCKBN =   CONST-SIME
-                                       OR  CONST-SIME-KARI )
+           IF    ( SPA-GMN-L04-PROCKBN =   CONST-VIEW
+                                        OR CONST-SIME
+                                        OR CONST-SIME-KARI    )
                EVALUATE    SPA-GMN-L04-VIEW-MODE
                WHEN    ZERO
                    MOVE    2           TO  SPA-GMN-L04-VIEW-MODE
@@ -1670,26 +1700,20 @@
        212-TOUROKU-SEC                 SECTION.
       *
            PERFORM 410-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  212-TOUROKU-EXT
-           END-IF
-      *
-           EVALUATE    SPA-GMN-L04-PROCKBN
-           WHEN    CONST-SIME
-           WHEN    CONST-SIME-KARI
-               PERFORM 212-TOUROKU-SIME-CHK-SEC
-           WHEN    CONST-SELTERM
-               PERFORM 212-TOUROKU-SELTERM-CHK-SEC
-           WHEN    CONST-INS
-               PERFORM 212-TOUROKU-INS-CHK-SEC
-           WHEN    CONST-UPD
-               PERFORM 212-TOUROKU-UPD-CHK-SEC
-           WHEN    CONST-DEL
-               PERFORM 212-TOUROKU-DEL-CHK-SEC
-           END-EVALUATE
-      *
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  212-TOUROKU-EXT
+           IF    ( SPA-ERRCD   =   SPACE )
+               EVALUATE    SPA-GMN-L04-PROCKBN
+               WHEN    CONST-SIME
+               WHEN    CONST-SIME-KARI
+                   PERFORM 212-TOUROKU-SIME-CHK-SEC
+               WHEN    CONST-SELTERM
+                   PERFORM 212-TOUROKU-SELTERM-CHK-SEC
+               WHEN    CONST-INS
+                   PERFORM 212-TOUROKU-INS-CHK-SEC
+               WHEN    CONST-UPD
+                   PERFORM 212-TOUROKU-UPD-CHK-SEC
+               WHEN    CONST-DEL
+                   PERFORM 212-TOUROKU-DEL-CHK-SEC
+              END-EVALUATE
            END-IF
       *
            .
@@ -1703,45 +1727,47 @@
            IF    ( SPA-NAI-L04-STSRYYMD =   SPACE )
                MOVE    "1001"      TO  SPA-ERRCD
                MOVE    1           TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-SIME-CHK-EXT
            END-IF
       *
-           PERFORM 900-HOURS-KEY2-SEL-SEC
-           IF    ( FLG-HOURS       =   ZERO )
-               IF    ( SPA-NAI-L04-EDSRYYMD    <   HOURS-SRYYMD )
-                   MOVE    "1002"      TO  SPA-ERRCD
-                   MOVE    7           TO  SPA-GMN-L04-CUR
-                   GO  TO  212-TOUROKU-SIME-CHK-EXT
-               END-IF
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 900-HOURS-KEY2-SEL-SEC
+               IF    ( FLG-HOURS       =   ZERO )
+                   IF    ( SPA-NAI-L04-EDSRYYMD    <   HOURS-SRYYMD )
+                       MOVE    "1002"      TO  SPA-ERRCD
+                       MOVE    7           TO  SPA-GMN-L04-CUR
+                   END-IF
       *
-               IF    ( SPA-NAI-L04-EDSRYYMD    =   HOURS-SRYYMD )
-                   IF    ( SPA-GMN-L04-EDTIME <=   HOURS-TIME   )
-                       MOVE    "1003"  TO  SPA-ERRCD
-                       MOVE    8       TO  SPA-GMN-L04-CUR
-                       GO  TO  212-TOUROKU-SIME-CHK-EXT
+                   IF    ( SPA-ERRCD       =   SPACE )
+                       IF    ( SPA-NAI-L04-EDSRYYMD  = HOURS-SRYYMD )
+                           IF    ( SPA-GMN-L04-EDTIME <=   HOURS-TIME )
+                               MOVE    "1003"  TO  SPA-ERRCD
+                               MOVE    8       TO  SPA-GMN-L04-CUR
+                           END-IF
+                       END-IF
                    END-IF
                END-IF
            END-IF
       *
-           PERFORM 900-HOURS-KEY-SEL-SEC
-           IF    ( FLG-HOURS       =   ZERO )
-               MOVE    "1008"      TO  SPA-ERRCD
-               MOVE    7           TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-SIME-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 900-HOURS-KEY-SEL-SEC
+               IF    ( FLG-HOURS       =   ZERO )
+                   MOVE    "1008"      TO  SPA-ERRCD
+                   MOVE    7           TO  SPA-GMN-L04-CUR
+               END-IF
            END-IF
       *
-           PERFORM 2121-HOURS-INS-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  212-TOUROKU-SIME-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 2121-HOURS-INS-SEC
            END-IF
       *
-           PERFORM 2121-SYS3005-UPD-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  212-TOUROKU-SIME-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 2121-SYS3005-UPD-SEC
            END-IF
       *
-           MOVE    "CHANGE"    TO  MCP-PUTTYPE
-           PERFORM 210-BACK
+           IF    ( SPA-ERRCD       =   SPACE )
+               MOVE    "CHANGE"    TO  MCP-PUTTYPE
+               PERFORM 210-BACK
+           END-IF
       *
            .
        212-TOUROKU-SIME-CHK-EXT.
@@ -1754,36 +1780,43 @@
            IF    ( SPA-GMN-L04-STSRYYMD    =   SPACE )
                MOVE    "1013"      TO  SPA-ERRCD
                MOVE    3           TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-SELTERM-CHK-EXT
            END-IF
       *
-           IF    ( SPA-GMN-L04-EDSRYYMD    =   SPACE )
-               MOVE    "1013"      TO  SPA-ERRCD
-               MOVE    7           TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-SELTERM-CHK-EXT
-           END-IF
-      *
-           IF    ( SPA-NAI-L04-STSRYYMD    >   SPA-NAI-L04-EDSRYYMD )
-               MOVE    "1010"      TO  SPA-ERRCD
-               MOVE    3           TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-SELTERM-CHK-EXT
-           END-IF
-      *
-           IF    ( SPA-NAI-L04-STSRYYMD    =   SPA-NAI-L04-EDSRYYMD )
-               IF    ( SPA-GMN-L04-STTIME  >   SPA-GMN-L04-EDTIME )
-                   MOVE    "1011"  TO  SPA-ERRCD
-                   MOVE    4       TO  SPA-GMN-L04-CUR
-                   GO  TO  212-TOUROKU-SELTERM-CHK-EXT
+           IF    ( SPA-ERRCD               =   SPACE )
+               IF    ( SPA-GMN-L04-EDSRYYMD
+                                           =   SPACE )
+                   MOVE    "1013"      TO  SPA-ERRCD
+                   MOVE    7           TO  SPA-GMN-L04-CUR
                END-IF
            END-IF
       *
-           PERFORM 2121-SYS3005-UPD-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  212-TOUROKU-SELTERM-CHK-EXT
+           IF    ( SPA-ERRCD               =   SPACE )
+               IF    ( SPA-NAI-L04-STSRYYMD
+                                           >   SPA-NAI-L04-EDSRYYMD )
+                   MOVE    "1010"      TO  SPA-ERRCD
+                   MOVE    3           TO  SPA-GMN-L04-CUR
+               END-IF
            END-IF
       *
-           MOVE    "CHANGE"    TO  MCP-PUTTYPE
-           PERFORM 210-BACK
+           IF    ( SPA-ERRCD               =   SPACE )
+               IF    ( SPA-NAI-L04-STSRYYMD
+                                           =   SPA-NAI-L04-EDSRYYMD )
+                   IF    ( SPA-GMN-L04-STTIME
+                                           >   SPA-GMN-L04-EDTIME )
+                       MOVE    "1011"  TO  SPA-ERRCD
+                       MOVE    4       TO  SPA-GMN-L04-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD               =   SPACE )
+               PERFORM 2121-SYS3005-UPD-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD               =   SPACE )
+               MOVE    "CHANGE"    TO  MCP-PUTTYPE
+               PERFORM 210-BACK
+           END-IF
       *
            .
        212-TOUROKU-SELTERM-CHK-EXT.
@@ -1798,36 +1831,43 @@
            IF    ( SPA-GMN-L04-HOURSKBN    =   SPACE )
                MOVE    "1004"          TO  SPA-ERRCD
                MOVE    10              TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-INS-CHK-EXT
            END-IF
       *
-           IF    ( SPA-NAI-L04-EDSRYYMD    >   SMCNDATE-YMD )
-               MOVE    "1006"      TO  SPA-ERRCD
-               MOVE    7           TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-INS-CHK-EXT
-           END-IF
-      *
-           IF    ( SPA-NAI-L04-EDSRYYMD    =   SMCNDATE-YMD)
-               IF    ( SPA-GMN-L04-EDTIME  >   SMCNDATE-HMS)
-                   MOVE    "1007"  TO  SPA-ERRCD
-                   MOVE    8       TO  SPA-GMN-L04-CUR
-                   GO  TO  212-TOUROKU-INS-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-NAI-L04-EDSRYYMD
+                                           >   SMCNDATE-YMD )
+                   MOVE    "1006"      TO  SPA-ERRCD
+                   MOVE    7           TO  SPA-GMN-L04-CUR
                END-IF
            END-IF
       *
-           PERFORM 900-HOURS-KEY-SEL-SEC
-           IF    ( FLG-HOURS       =   ZERO )
-               MOVE    "1008"      TO  SPA-ERRCD
-               MOVE    7           TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-INS-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-NAI-L04-EDSRYYMD
+                                           =   SMCNDATE-YMD)
+                   IF    ( SPA-GMN-L04-EDTIME
+                                           >   SMCNDATE-HMS)
+                       MOVE    "1007"  TO  SPA-ERRCD
+                       MOVE    8       TO  SPA-GMN-L04-CUR
+                   END-IF
+               END-IF
            END-IF
       *
-           PERFORM 2121-HOURS-INS-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  212-TOUROKU-INS-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 900-HOURS-KEY-SEL-SEC
+               IF    ( FLG-HOURS       =   ZERO )
+                   MOVE    "1008"      TO  SPA-ERRCD
+                   MOVE    7           TO  SPA-GMN-L04-CUR
+               END-IF
            END-IF
       *
-           PERFORM 230-CLEAR-SEC
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 2121-HOURS-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 230-CLEAR-SEC
+           END-IF
+      *
       *
            .
        212-TOUROKU-INS-CHK-EXT.
@@ -1838,28 +1878,28 @@
        212-TOUROKU-UPD-CHK-SEC         SECTION.
       *
            IF    ( SPA-GMN-L04-EDNO    =   ZERO )
-               MOVE    "1009"          TO  SPA-ERRCD
-               MOVE    06              TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-UPD-CHK-EXT
+               MOVE    "1009"      TO  SPA-ERRCD
+               MOVE    06          TO  SPA-GMN-L04-CUR
            END-IF
       *
-           IF    ( SPA-GMN-L04-HOURSKBN    =   SPACE )
-               MOVE    "1004"          TO  SPA-ERRCD
-               MOVE    10              TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-UPD-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-GMN-L04-HOURSKBN    =   SPACE )
+                   MOVE    "1004"  TO  SPA-ERRCD
+                   MOVE    10      TO  SPA-GMN-L04-CUR
+               END-IF
            END-IF
       *
-           PERFORM 2121-HOURS-DEL-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  212-TOUROKU-UPD-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 2121-HOURS-DEL-SEC
            END-IF
       *
-           PERFORM 2121-HOURS-INS-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  212-TOUROKU-UPD-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 2121-HOURS-INS-SEC
            END-IF
       *
-           PERFORM 230-CLEAR-SEC
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 230-CLEAR-SEC
+           END-IF
       *
            .
        212-TOUROKU-UPD-CHK-EXT.
@@ -1869,18 +1909,20 @@
       *****************************************************************
        212-TOUROKU-DEL-CHK-SEC         SECTION.
       *
-           IF    ( SPA-GMN-L04-EDNO    =   ZERO )
-               MOVE    "1009"          TO  SPA-ERRCD
-               MOVE    06              TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-DEL-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-GMN-L04-EDNO    =   ZERO )
+                   MOVE    "1009"          TO  SPA-ERRCD
+                   MOVE    06              TO  SPA-GMN-L04-CUR
+               END-IF
            END-IF
       *
-           PERFORM 2121-HOURS-DEL-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  212-TOUROKU-DEL-CHK-EXT
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 2121-HOURS-DEL-SEC
            END-IF
       *
-           PERFORM 230-CLEAR-SEC
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 230-CLEAR-SEC
+           END-IF
       *
            .
        212-TOUROKU-DEL-CHK-EXT.
@@ -2027,28 +2069,9 @@
            MOVE    SPACE                   TO  L04
            INITIALIZE                          L04
       *
-           MOVE    "whitebutton"           TO  L04-CHK-MESSTSRYYMD-STYLE
-                                               L04-CHK-MESSTTIME-STYLE
-                                               L04-CHK-MESEDSRYYMD-STYLE
-                                               L04-CHK-MESEDTIME-STYLE
-      *
-           MOVE    SPA-GMN-L04-MESPROC     TO  L04-MESPROC
-           MOVE    SPA-GMN-L04-MESSTSRYYMD TO  L04-MESSTSRYYMD
-           MOVE    SPACE                   TO  WRK-TIME-G
-      *
-           MOVE    SPA-GMN-L04-MESSTTIME   TO  WRK-KJNHM
-           MOVE    WRK-KJNHM-HH            TO  WRK-TIME-HH
-           MOVE    ":"                     TO  WRK-TIME-SEP
-           MOVE    WRK-KJNHM-MM            TO  WRK-TIME-MM
-           MOVE    WRK-TIME-G              TO  L04-MESSTTIME
-      *
-           MOVE    SPA-GMN-L04-MESEDSRYYMD TO  L04-MESEDSRYYMD
-      *
-           MOVE    SPA-GMN-L04-MESEDTIME   TO  WRK-KJNHM
-           MOVE    WRK-KJNHM-HH            TO  WRK-TIME-HH
-           MOVE    ":"                     TO  WRK-TIME-SEP
-           MOVE    WRK-KJNHM-MM            TO  WRK-TIME-MM
-           MOVE    WRK-TIME-G              TO  L04-MESEDTIME
+           MOVE    "black"             TO      L04-STSRYYMD-STYLE
+                                               L04-STHR-STYLE
+                                               L04-STMIN-STYLE
       *
            MOVE    SPA-GMN-L04-PROCKBN-G   TO  L04-PROCKBN
            MOVE    SPA-GMN-L04-PROCKBN-MAX TO  L04-PROCKBN-COUNT
@@ -2063,37 +2086,379 @@
       *
            PERFORM VARYING IDX-TERM    FROM    1   BY  1
                    UNTIL ( IDX-TERM    >   CONST-TERM-MAX )
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   2 )
+                   MOVE    "whitebutton"   TO  L04-CHK-SRYYMD-STYLE
+                                                         (IDX-TERM IDX1)
+                   MOVE    "whitebutton"   TO  L04-CHK-TIME-STYLE
+                                                         (IDX-TERM IDX1)
+               END-PERFORM
+           END-PERFORM
       *
-               MOVE    IDX-TERM        TO  WRK-Z9
-               MOVE    WRK-Z9          TO  L04-NO (IDX-TERM)
+           EVALUATE SPA-GMN-L04-PROCKBN
+           WHEN    CONST-VIEW
+               PERFORM 5001-GMNHEN-VIEW-SEC
+           WHEN    CONST-SIME
+           WHEN    CONST-SIME-KARI
+               PERFORM 5001-GMNHEN-SIME-SEC
+           WHEN    CONST-SELTERM
+               PERFORM 5001-GMNHEN-SELTERM-SEC
+           WHEN    CONST-INS
+           WHEN    CONST-UPD
+           WHEN    CONST-DEL
+               PERFORM 5001-GMNHEN-UPD-SEC
+           END-EVALUATE
+      *
+      *    カーソル位置
+           PERFORM 5001-MAPCUR-SEC
+      *
+           .
+       500-GMNHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面編集処理（履歴表示）
+      *****************************************************************
+       5001-GMNHEN-VIEW-SEC            SECTION.
+      *
+           PERFORM 50011-GMNHEN-VIEW-SEC
+      *
+           MOVE    "前回"              TO      L04-LBLKIKAN1
+           MOVE    "〜"                TO      L04-LBLKIKAN2
+      *
+           MOVE    WIDGET-NORMAL       TO      L04-STSRYYMD-STATE
+                                               L04-STHR-STATE
+                                               L04-STMIN-STATE
+                                               L04-EDSRYYMD-STATE
+                                               L04-EDHR-STATE
+                                               L04-EDMIN-STATE
+                                               L04-HOURSKBN-STATE
+                                               L04-HOURSKBN-ITEM-STATE
+      *
+           MOVE    WIDGET-INSENSITIVE  TO      L04-STNO-STATE
+                                               L04-EDNO-STATE
+      *
+           EVALUATE   SPA-NAI-L04-MESPROCKBN
+           WHEN    "1"
+               MOVE    "本締め"
+                                   TO  L04-HOURSKBN
+                                       L04-HOURSKBN-ITEM (1)
+               MOVE    1           TO  L04-HOURSKBN-COUNT
+           WHEN    "2"
+               MOVE    "仮締め"
+                                   TO  L04-HOURSKBN
+                                       L04-HOURSKBN-ITEM (1)
+               MOVE    1           TO  L04-HOURSKBN-COUNT
+           WHEN    "3"
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  L04-HOURSKBN-STATE
+                                       L04-HOURSKBN-ITEM-STATE
+           END-EVALUATE
+      *
+           .
+       5001-GMNHEN-VIEW-EXT.
+           EXIT.
+      *****************************************************************
+      *    画面編集処理（履歴表示）
+      *****************************************************************
+       50011-GMNHEN-VIEW-SEC            SECTION.
+      *
+           MOVE    ZERO            TO  IDXL
+           PERFORM VARYING IDX-TERM    FROM    1   BY  1
+                   UNTIL ( IDX-TERM    >   CONST-TERM-MAX )
+                    OR   ( SPA-NAI-L04-SRYYMD (IDX-TERM 2)
+                                       =   SPACE )
       *
                PERFORM VARYING IDX1    FROM    1   BY  1
                        UNTIL ( IDX1    >   2 )
-                   MOVE    SPA-GMN-L04-SRYYMD (IDX-TERM IDX1)
+      *
+                   MOVE    1           TO  FLG-EDIT
+                   IF    ( IDX1    =   1 )
+                       IF    ( SPA-NAI-L04-HOURSKBN (IDX-TERM)
+                                           =   "1" )
+                         OR  ( IDX-TERM    =   1 )
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO    TO  FLG-EDIT
+                       END-IF
+                   END-IF
+      *
+                   IF    ( FLG-EDIT    =   1 )
+                       MOVE    SPA-GMN-L04-SRYYMD (IDX-TERM IDX1)
                                        TO  L04-SRYYMD (IDX-TERM IDX1)
-                   IF    ( SPA-GMN-L04-TIME (IDX-TERM IDX1)
+                       IF    ( L04-SRYYMD (IDX-TERM IDX1)
+                                       NOT =   SPACE )
+                           MOVE    SPA-GMN-L04-TIME (IDX-TERM IDX1)
+                                       TO  WRK-KJNHM
+                           MOVE    SPACE   TO  WRK-TIME-G
+                           MOVE    WRK-KJNHM-HH
+                                       TO  WRK-TIME-HH
+                           MOVE    ":" TO  WRK-TIME-SEP
+                           MOVE    WRK-KJNHM-MM
+                                       TO  WRK-TIME-MM
+                           MOVE    WRK-TIME-G
+                                       TO  L04-TIME (IDX-TERM IDX1)
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+      *
+               IF    ( L04-TIME (IDX-TERM 1)   NOT =   SPACE )
+                   COMPUTE IDXL    =   IDXL    +   1
+                   MOVE    IDXL        TO  WRK-Z9
+                   MOVE    WRK-Z9      TO  L04-LBLNO (IDX-TERM 1)
+      *
+                   MOVE    "〜"        TO  L04-LBLMID (IDX-TERM)
+               END-IF
+      *
+               EVALUATE    SPA-NAI-L04-HOURSKBN (IDX-TERM)
+               WHEN    "1"
+                   MOVE    "red"       TO  L04-LBLMARK-STYLE (IDX-TERM)
+                   MOVE    "本締め"    TO  L04-LBLMARK       (IDX-TERM)
+               WHEN    "2"
+                   MOVE    "blue"      TO  L04-LBLMARK-STYLE (IDX-TERM)
+                   MOVE    "仮締め"    TO  L04-LBLMARK       (IDX-TERM)
+               END-EVALUATE
+      *
+           END-PERFORM
+      *
+           EVALUATE    SPA-GMN-L04-VIEW-MODE
+           WHEN    1
+               MOVE    "本締めの履歴"
+                                       TO  L04-LBLMES01
+               MOVE    "全て表示"
+                                       TO  L04-B04-LABEL
+           WHEN    ZERO
+               MOVE    "本締め・仮締めの履歴"
+                                       TO  L04-LBLMES01
+               MOVE    "前回本締め"    TO  L04-B04-LABEL
+           WHEN    2
+                MOVE    "前回の本締め"
+                                       TO  L04-LBLMES01
+                MOVE    "本締めのみ"   TO  L04-B04-LABEL
+           END-EVALUATE
+      *
+           MOVE    SPA-GMN-L04-STSRYYMD    TO  L04-STSRYYMD
+           MOVE    SPA-GMN-L04-STNO        TO  L04-STNO
+           MOVE    SPA-GMN-L04-STHR        TO  L04-STHR
+           MOVE    SPA-GMN-L04-STMIN       TO  L04-STMIN
+           MOVE    SPA-GMN-L04-EDSRYYMD    TO  L04-EDSRYYMD
+           MOVE    SPA-GMN-L04-EDNO        TO  L04-EDNO
+           MOVE    SPA-GMN-L04-EDHR        TO  L04-EDHR
+           MOVE    SPA-GMN-L04-EDMIN       TO  L04-EDMIN
+      *
+           .
+       50011-GMNHEN-VIEW-EXT.
+           EXIT.
+      *****************************************************************
+      *    画面編集処理（本締め・仮締め）
+      *****************************************************************
+       5001-GMNHEN-SIME-SEC            SECTION.
+      *
+           PERFORM 50011-GMNHEN-VIEW-SEC
+      *
+           MOVE    "期間"              TO      L04-LBLKIKAN1
+      *
+           MOVE    "〜"                TO      L04-LBLKIKAN2
+      *
+           MOVE    WIDGET-NORMAL       TO      L04-STSRYYMD-STATE
+                                               L04-STHR-STATE
+                                               L04-STMIN-STATE
+                                               L04-EDSRYYMD-STATE
+                                               L04-EDHR-STATE
+                                               L04-EDMIN-STATE
+                                               L04-HOURSKBN-STATE
+                                               L04-HOURSKBN-ITEM-STATE
+      *
+           MOVE    WIDGET-INSENSITIVE  TO      L04-STNO-STATE
+                                               L04-EDNO-STATE
+      *
+           MOVE    "darkgray"          TO      L04-STSRYYMD-STYLE
+                                               L04-STHR-STYLE
+                                               L04-STMIN-STYLE
+      *
+           EVALUATE   SPA-GMN-L04-PROCKBN
+           WHEN    "1"
+               MOVE    "本締め"
+                                   TO  L04-HOURSKBN
+                                       L04-HOURSKBN-ITEM (1)
+               MOVE    1           TO  L04-HOURSKBN-COUNT
+           WHEN    "2"
+               MOVE    "仮締め"
+                                   TO  L04-HOURSKBN
+                                       L04-HOURSKBN-ITEM (1)
+               MOVE    1           TO  L04-HOURSKBN-COUNT
+           END-EVALUATE
+      *
+           MOVE    "登録"                  TO  L04-B12-LABEL
+      *
+           .
+       5001-GMNHEN-SIME-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面編集処理（期間指定）
+      *****************************************************************
+       5001-GMNHEN-SELTERM-SEC     SECTION.
+      *
+           MOVE    ZERO            TO  IDXL
+           PERFORM VARYING IDX-TERM    FROM    1   BY  1
+                   UNTIL ( IDX-TERM    >   CONST-TERM-MAX )
+                    OR   ( SPA-NAI-L04-SRYYMD (IDX-TERM 2)
+                                       =   SPACE )
+      *
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   2 )
+      *
+                   MOVE    SPA-GMN-L04-SRYYMD (IDX-TERM IDX1)
+                                   TO  L04-SRYYMD (IDX-TERM IDX1)
+      *
+                   IF    ( L04-SRYYMD (IDX-TERM IDX1)
                                        NOT =   SPACE )
                        MOVE    SPA-GMN-L04-TIME (IDX-TERM IDX1)
-                                       TO  WRK-KJNHM
+                                   TO  WRK-KJNHM
                        MOVE    SPACE   TO  WRK-TIME-G
-                       MOVE    WRK-KJNHM-HH    TO  WRK-TIME-HH
-                       MOVE    ":"             TO  WRK-TIME-SEP
-                       MOVE    WRK-KJNHM-MM    TO  WRK-TIME-MM
+                       MOVE    WRK-KJNHM-HH
+                                       TO  WRK-TIME-HH
+                       MOVE    ":"     TO  WRK-TIME-SEP
+                       MOVE    WRK-KJNHM-MM
+                                       TO  WRK-TIME-MM
                        MOVE    WRK-TIME-G
                                        TO  L04-TIME (IDX-TERM IDX1)
                    END-IF
       *
-                   MOVE    "whitebutton" 
-                                   TO  L04-CHK-SRYYMD-STYLE
-                                                         (IDX-TERM IDX1)
-                   MOVE    "whitebutton" 
-                                   TO  L04-CHK-TIME-STYLE(IDX-TERM IDX1)
                END-PERFORM
       *
-               IF    ( SPA-NAI-L04-HOURSKBN (IDX-TERM) =   "1" )
-                   MOVE    "red"       TO  L04-MARK-STYLE (IDX-TERM)
-                   MOVE    "◎"        TO  L04-MARK       (IDX-TERM)
+               IF    ( L04-TIME (IDX-TERM 2)   NOT =   SPACE )
+                   COMPUTE IDXL    =   IDXL    +   1
+                   MOVE    IDXL        TO  WRK-Z9
+                   MOVE    WRK-Z9      TO  L04-LBLNO (IDX-TERM 1)
+                   MOVE    "〜"        TO  L04-LBLMID (IDX-TERM)
                END-IF
+      *
+               EVALUATE    SPA-NAI-L04-HOURSKBN (IDX-TERM)
+               WHEN    "1"
+                   MOVE    "red"       TO  L04-LBLMARK-STYLE (IDX-TERM)
+                   MOVE    "本締め"    TO  L04-LBLMARK       (IDX-TERM)
+               WHEN    "2"
+                   MOVE    "blue"      TO  L04-LBLMARK-STYLE (IDX-TERM)
+                   MOVE    "仮締め"    TO  L04-LBLMARK       (IDX-TERM)
+               WHEN    "3"
+                   MOVE    "blue"      TO  L04-LBLMARK-STYLE (IDX-TERM)
+                   EVALUATE   SPA-NAI-L04-MESPROCKBN
+                   WHEN    "1"
+                       MOVE    "red"   TO  L04-LBLMARK-STYLE (IDX-TERM)
+                       MOVE    "前回（本締め）"
+                                       TO  L04-LBLMARK       (IDX-TERM)
+                   WHEN    "2"
+                       MOVE    "前回（仮締め）"
+                                       TO  L04-LBLMARK       (IDX-TERM)
+                   WHEN    "3"
+                       MOVE    "前回"
+                                       TO  L04-LBLMARK       (IDX-TERM)
+                   END-EVALUATE
+               END-EVALUATE
+      *
+               IF    ( SPA-GMN-L04-TERM-STSEL  =   IDX-TERM )
+                   IF    ( SPA-NAI-L04-SRYYMD (IDX-TERM 1)
+                                           =   SPA-NAI-L04-STSRYYMD )
+                    AND  ( SPA-GMN-L04-TIME   (IDX-TERM 1)
+                                           =   SPA-GMN-L04-STTIME )
+                       MOVE    "blue-revbutton"
+                                       TO  L04-CHK-SRYYMD-STYLE
+                                                            (IDX-TERM 1)
+                       MOVE    "blue-revbutton"
+                                       TO  L04-CHK-TIME-STYLE  
+                                                            (IDX-TERM 1)
+                   END-IF
+               END-IF
+      *
+               IF    ( SPA-GMN-L04-TERM-EDSEL  =   IDX-TERM )
+                   IF    ( SPA-NAI-L04-SRYYMD (IDX-TERM 2)
+                                       =   SPA-NAI-L04-EDSRYYMD )
+                    AND  ( SPA-GMN-L04-TIME   (IDX-TERM 2)
+                                       =   SPA-GMN-L04-EDTIME )
+                       MOVE    "blue-revbutton"
+                                   TO  L04-CHK-SRYYMD-STYLE 
+                                                            (IDX-TERM 2)
+                       MOVE    "blue-revbutton"
+                                   TO  L04-CHK-TIME-STYLE
+                                                        (IDX-TERM 2)
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "期間"                  TO  L04-LBLKIKAN1
+           MOVE    "〜"                    TO  L04-LBLKIKAN2
+      *
+           MOVE    WIDGET-NORMAL           TO  L04-STSRYYMD-STATE
+                                               L04-STNO-STATE
+                                               L04-STHR-STATE
+                                               L04-STMIN-STATE
+                                               L04-EDSRYYMD-STATE
+                                               L04-EDNO-STATE
+                                               L04-EDHR-STATE
+                                               L04-EDMIN-STATE
+      *
+           MOVE    WIDGET-INSENSITIVE      TO  L04-HOURSKBN-STATE
+                                               L04-HOURSKBN-ITEM-STATE
+      *
+           MOVE    SPA-GMN-L04-STSRYYMD    TO  L04-STSRYYMD
+           MOVE    SPA-GMN-L04-STNO        TO  L04-STNO
+           MOVE    SPA-GMN-L04-STHR        TO  L04-STHR
+           MOVE    SPA-GMN-L04-STMIN       TO  L04-STMIN
+           MOVE    SPA-GMN-L04-EDSRYYMD    TO  L04-EDSRYYMD
+           MOVE    SPA-GMN-L04-EDNO        TO  L04-EDNO
+           MOVE    SPA-GMN-L04-EDHR        TO  L04-EDHR
+           MOVE    SPA-GMN-L04-EDMIN       TO  L04-EDMIN
+      *
+           MOVE    "登録"                  TO  L04-B12-LABEL
+      *
+           .
+       5001-GMNHEN-SELTERM-EXT.
+           EXIT.
+      *****************************************************************
+      *    画面編集処理（追加・変更・削除）
+      *****************************************************************
+       5001-GMNHEN-UPD-SEC             SECTION.
+      *
+      *
+           MOVE    ZERO            TO  IDXL
+           PERFORM VARYING IDX-TERM    FROM    1   BY  1
+                   UNTIL ( IDX-TERM    >   CONST-TERM-MAX )
+                    OR   ( SPA-NAI-L04-SRYYMD (IDX-TERM 2)
+                                       =   SPACE )
+      *
+               MOVE    SPA-GMN-L04-SRYYMD (IDX-TERM 2)
+                                       TO  L04-SRYYMD (IDX-TERM 2)
+               IF    ( L04-SRYYMD (IDX-TERM 2)
+                                       NOT =   SPACE )
+                   MOVE    SPA-GMN-L04-TIME (IDX-TERM 2)
+                                       TO  WRK-KJNHM
+                   MOVE    SPACE       TO  WRK-TIME-G
+                   MOVE    WRK-KJNHM-HH
+                                       TO  WRK-TIME-HH
+                   MOVE    ":"         TO  WRK-TIME-SEP
+                   MOVE    WRK-KJNHM-MM
+                                       TO  WRK-TIME-MM
+                   MOVE    WRK-TIME-G  TO  L04-TIME (IDX-TERM 2)
+               END-IF
+      *
+               IF    ( L04-TIME (IDX-TERM 2)   NOT =   SPACE )
+                   COMPUTE IDXL    =   IDXL    +   1
+                   MOVE    IDXL        TO  WRK-Z9
+                   MOVE    WRK-Z9      TO  L04-LBLNO (IDX-TERM 2)
+               END-IF
+      *
+               EVALUATE    SPA-NAI-L04-HOURSKBN (IDX-TERM)
+               WHEN    "1"
+                   MOVE    "red"       TO  L04-LBLMARK-STYLE (IDX-TERM)
+                   MOVE    "本締め"    TO  L04-LBLMARK       (IDX-TERM)
+               WHEN    "2"
+                   MOVE    "blue"      TO  L04-LBLMARK-STYLE (IDX-TERM)
+                   MOVE    "仮締め"    TO  L04-LBLMARK       (IDX-TERM)
+               END-EVALUATE
       *
                IF    ( SPA-GMN-L04-TERM-EDSEL  =   IDX-TERM )
                    EVALUATE    SPA-GMN-L04-PROCKBN
@@ -2114,53 +2479,23 @@
                    END-EVALUATE
                END-IF
       *
-               IF    ( SPA-GMN-L04-PROCKBN         =   CONST-SELTERM )
-                   IF    ( SPA-GMN-L04-TERM-STSEL  =   IDX-TERM )
-                       IF    ( SPA-NAI-L04-SRYYMD (IDX-TERM 1)
-                                           =   SPA-NAI-L04-STSRYYMD )
-                        AND  ( SPA-GMN-L04-TIME   (IDX-TERM 1)
-                                           =   SPA-GMN-L04-STTIME )
-                           MOVE    "blue-revbutton"
-                                       TO  L04-CHK-SRYYMD-STYLE
-                                                            (IDX-TERM 1)
-                           MOVE    "blue-revbutton"
-                                       TO  L04-CHK-TIME-STYLE  
-                                                            (IDX-TERM 1)
-                       END-IF
-                   END-IF
-      *
-                   IF    ( SPA-GMN-L04-TERM-EDSEL  =   IDX-TERM )
-                       IF    ( SPA-NAI-L04-SRYYMD (IDX-TERM 2)
-                                           =   SPA-NAI-L04-EDSRYYMD )
-                        AND  ( SPA-GMN-L04-TIME   (IDX-TERM 2)
-                                           =   SPA-GMN-L04-EDTIME )
-                           MOVE    "blue-revbutton"
-                                       TO  L04-CHK-SRYYMD-STYLE 
-                                                            (IDX-TERM 2)
-                           MOVE    "blue-revbutton"
-                                       TO  L04-CHK-TIME-STYLE
-                                                            (IDX-TERM 2)
-                       END-IF
-                   END-IF
-               END-IF
-      *
            END-PERFORM
       *
+           MOVE    WIDGET-INSENSITIVE  TO  L04-STSRYYMD-STATE
+                                           L04-STNO-STATE
+                                           L04-STHR-STATE
+                                           L04-STMIN-STATE
+           MOVE    WIDGET-NORMAL       TO  L04-EDSRYYMD-STATE
+                                           L04-EDNO-STATE
+                                           L04-EDHR-STATE
+                                           L04-EDMIN-STATE
+                                           L04-HOURSKBN-STATE
+                                           
+           EVALUATE    SPA-GMN-L04-PROCKBN
+           WHEN    CONST-INS
+               MOVE    WIDGET-INSENSITIVE  TO  L04-EDNO-STATE
+           END-EVALUATE
       *
-           IF    ( SPA-GMN-L04-PROCKBN     =   CONST-SIME
-                                           OR  CONST-SIME-KARI
-                                           OR  CONST-SELTERM  )
-      *
-               MOVE    "期間"              TO  L04-LBL-KIKAN1
-               MOVE    "〜"                TO  L04-LBL-KIKAN2
-           END-IF
-      *
-           MOVE    SPA-GMN-L04-STSRYYMD    TO  L04-STSRYYMD
-           MOVE    SPA-GMN-L04-STNO        TO  L04-STNO
-           IF    ( SPA-NAI-L04-STSRYYMD    NOT =   SPACE )
-               MOVE    SPA-GMN-L04-STHR    TO  L04-STHR
-               MOVE    SPA-GMN-L04-STMIN   TO  L04-STMIN
-           END-IF
            MOVE    SPA-GMN-L04-EDSRYYMD    TO  L04-EDSRYYMD
            MOVE    SPA-GMN-L04-EDNO        TO  L04-EDNO
            MOVE    SPA-GMN-L04-EDHR        TO  L04-EDHR
@@ -2168,67 +2503,21 @@
       *
            MOVE    SPA-GMN-L04-HOURSKBN-G  TO  L04-HOURSKBN
       *
-           IF    ( SPA-GMN-L04-PROCKBN     =   CONST-SELTERM )
-               IF    ( SPA-GMN-L04-TERM-EDSEL  >   ZERO )
-                   MOVE    SPA-GMN-L04-TERM-EDSEL  TO  IDX-TERM
-                   IF    ( SPA-NAI-L04-SRYYMD (IDX-TERM 2)
-                                           =   SPA-NAI-L04-EDSRYYMD )
-                     AND ( SPA-GMN-L04-TIME (IDX-TERM 2)
-                                           =   SPA-GMN-L04-EDTIME )
-                       CONTINUE
-                   ELSE
-                       MOVE    SPACE       TO  L04-HOURSKBN
-                   END-IF
-               END-IF
-           END-IF
-      *
            MOVE    SPA-GMN-L04-HOURSKBN-MAX TO  L04-HOURSKBN-COUNT
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   SPA-GMN-L04-HOURSKBN-MAX )
       *
                MOVE    SPA-GMN-L04-HOURSKBNLST (IDX1)
-                                   TO  L04-HOURSKBN-ITEM (IDX1)
+                                       TO  L04-HOURSKBN-ITEM (IDX1)
       *
            END-PERFORM
       *
-           IF    ( SPA-GMN-L04-PROCKBN     =   CONST-SIME
-                                           OR  CONST-SIME-KARI )
-               EVALUATE    SPA-GMN-L04-VIEW-MODE
-               WHEN    1
-                   MOVE    "全て表示"      TO  L04-B04-LABEL
-               WHEN    ZERO
-                   MOVE    "前回本締め"    TO  L04-B04-LABEL
-               WHEN    2
-                   MOVE    "本締めのみ"    TO  L04-B04-LABEL
-               END-EVALUATE
-           END-IF
-      *
-           EVALUATE    SPA-GMN-L04-PROCKBN
-           WHEN    CONST-UPD
-               MOVE    "変更"              TO  L04-B12-LABEL
-           WHEN    CONST-DEL
-               MOVE    "削除"              TO  L04-B12-LABEL
-           WHEN    OTHER
-               MOVE    "登録"              TO  L04-B12-LABEL
-           END-EVALUATE
-      *
-           MOVE    WIDGET-NORMAL           TO  L04-EDSRYYMD-STATUS
-                                               L04-EDHR-STATUS
-                                               L04-EDMIN-STATUS
-           IF    ( SPA-GMN-L04-PROCKBN     =   CONST-UPD )
-               MOVE    WIDGET-INSENSITIVE  TO  L04-EDSRYYMD-STATUS
-                                               L04-EDHR-STATUS
-                                               L04-EDMIN-STATUS
-           END-IF
-      *
-      *    カーソル位置
-           PERFORM 5001-MAPCUR-SEC
+           MOVE    "登録"              TO  L04-B12-LABEL
       *
            .
-       500-GMNHEN-EXT.
+       5001-GMNHEN-UPD-EXT.
            EXIT.
-      *
       *****************************************************************
       *    カーソル位置処理
       *****************************************************************
@@ -2310,6 +2599,8 @@
        5012-CUR-SKIP-SEC               SECTION.
       *
            EVALUATE    SPA-GMN-L04-PROCKBN
+           WHEN    CONST-VIEW
+               MOVE    1           TO  SPA-GMN-L04-CUR
            WHEN    CONST-SIME
            WHEN    CONST-SIME-KARI
                IF    ( SPA-GMN-L04-CUR     = 2 OR 3 OR 4 OR 5 OR 6)
@@ -2327,12 +2618,18 @@
                    MOVE    212     TO  SPA-GMN-L04-CUR
                END-IF
            WHEN    CONST-UPD
-           WHEN    CONST-DEL
                IF    ( SPA-GMN-L04-CUR     = 2 OR 3 OR 4 OR 5 )
                    MOVE    6       TO  SPA-GMN-L04-CUR
                END-IF
                IF    ( SPA-GMN-L04-CUR     = 7 OR 8 OR 9  )
                    MOVE    10      TO  SPA-GMN-L04-CUR
+               END-IF
+           WHEN    CONST-DEL
+               IF    ( SPA-GMN-L04-CUR     = 2 OR 3 OR 4 OR 5 )
+                   MOVE    6       TO  SPA-GMN-L04-CUR
+               END-IF
+               IF    ( SPA-GMN-L04-CUR NOT = 6 )
+                   MOVE    212     TO  SPA-GMN-L04-CUR
                END-IF
            END-EVALUATE
       *
@@ -2503,6 +2800,24 @@
       *
            .
        800-HIZUKE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    数値変換処理
+      *****************************************************************
+       800-NUM-SEC                     SECTION.
+      *
+           MOVE    ZERO            TO  WRK-NUM
+      *
+           INITIALIZE                  ORCSNUMAREA
+           MOVE    WRK-NUMX        TO  SNUM-INX
+           CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+           IF    ( SNUM-RC         =   ZERO  )
+               MOVE    SNUM-OUTNUM TO  WRK-NUM
+           END-IF
+      *
+           .
+       800-NUM-EXT.
            EXIT.
       *****************************************************************
       *    マシン日付取得サブ

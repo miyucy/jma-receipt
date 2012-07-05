@@ -48,9 +48,8 @@ path	key3 	{
 		SELECT *
 		FROM tbl_hours
 		WHERE 	HOSPNUM	= :HOSPNUM
-			AND SRYYMD      >=   :STSRYYMD
-			 AND  SRYYMD      <=   :EDSRYYMD
-			 AND  ID          <     ID
+			 AND  ID           <   :ID
+			 AND  HOURSKBN     =   :HOURSKBN
 			ORDER BY   ID     DESC
 		;
 	};

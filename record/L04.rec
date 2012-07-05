@@ -6,24 +6,8 @@ L04	{
 		B12	{
 			label	varchar(10);
 		};
-		MESPROC	{
-			value	varchar(10);
-		};
-		CHK_MESSTSRYYMD	{
-			style	varchar(20);
-			label	varchar(10);
-		};
-		CHK_MESSTTIME	{
-			style	varchar(20);
-			label	varchar(10);
-		};
-		CHK_MESEDSRYYMD	{
-			style	varchar(20);
-			label	varchar(10);
-		};
-		CHK_MESEDTIME	{
-			style	varchar(20);
-			label	varchar(10);
+		LBLMES01	{
+			value	varchar(40);
 		};
 		CMB_PROCKBN	{
 			PROCKBN	{
@@ -32,8 +16,18 @@ L04	{
 			count	int;
 			item	varchar(50)[10];
 		};
-		NO01	{
-			value	number (2);
+		LBLNO011	{
+			value	varchar(02);
+		};
+		LBLNO012	{
+			value	varchar(02);
+		};
+		LBLMID01	{
+			value	varchar(02);
+		};
+		LBLMARK01	{
+			style   varchar(20);
+			value	varchar(30);
 		};
 		CHK_SRYYMD011	{
 			style	varchar(20);
@@ -51,12 +45,18 @@ L04	{
 			style	varchar(20);
 			label	varchar(10);
 		};
-		MARK01	{
-			style   varchar(20);
+		LBLNO021	{
 			value	varchar(02);
 		};
-		NO02	{
-			value	number (2);
+		LBLNO022	{
+			value	varchar(02);
+		};
+		LBLMID02	{
+			value	varchar(02);
+		};
+		LBLMARK02	{
+			style   varchar(20);
+			value	varchar(30);
 		};
 		CHK_SRYYMD021	{
 			style	varchar(20);
@@ -74,12 +74,18 @@ L04	{
 			style	varchar(20);
 			label	varchar(10);
 		};
-		MARK02	{
-			style   varchar(20);
+		LBLNO031	{
 			value	varchar(02);
 		};
-		NO03	{
-			value	number (2);
+		LBLNO032	{
+			value	varchar(02);
+		};
+		LBLMID03	{
+			value	varchar(02);
+		};
+		LBLMARK03	{
+			style   varchar(20);
+			value	varchar(30);
 		};
 		CHK_SRYYMD031	{
 			style	varchar(20);
@@ -97,12 +103,18 @@ L04	{
 			style	varchar(20);
 			label	varchar(10);
 		};
-		MARK03	{
-			style   varchar(20);
+		LBLNO041	{
 			value	varchar(02);
 		};
-		NO04	{
-			value	number (2);
+		LBLNO042	{
+			value	varchar(02);
+		};
+		LBLMID04	{
+			value	varchar(02);
+		};
+		LBLMARK04	{
+			style   varchar(20);
+			value	varchar(30);
 		};
 		CHK_SRYYMD041	{
 			style	varchar(20);
@@ -120,12 +132,18 @@ L04	{
 			style	varchar(20);
 			label	varchar(10);
 		};
-		MARK04	{
-			style   varchar(20);
+		LBLNO051	{
 			value	varchar(02);
 		};
-		NO05	{
-			value	number (2);
+		LBLNO052	{
+			value	varchar(02);
+		};
+		LBLMID05	{
+			value	varchar(02);
+		};
+		LBLMARK05	{
+			style   varchar(20);
+			value	varchar(30);
 		};
 		CHK_SRYYMD051	{
 			style	varchar(20);
@@ -143,12 +161,18 @@ L04	{
 			style	varchar(20);
 			label	varchar(10);
 		};
-		MARK05	{
-			style   varchar(20);
+		LBLNO061	{
 			value	varchar(02);
 		};
-		NO06	{
-			value	number (2);
+		LBLNO062	{
+			value	varchar(02);
+		};
+		LBLMID06	{
+			value	varchar(02);
+		};
+		LBLMARK06	{
+			style   varchar(20);
+			value	varchar(30);
 		};
 		CHK_SRYYMD061	{
 			style	varchar(20);
@@ -166,12 +190,18 @@ L04	{
 			style	varchar(20);
 			label	varchar(10);
 		};
-		MARK06	{
-			style   varchar(20);
+		LBLNO071	{
 			value	varchar(02);
 		};
-		NO07	{
-			value	number (2);
+		LBLNO072	{
+			value	varchar(02);
+		};
+		LBLMID07	{
+			value	varchar(02);
+		};
+		LBLMARK07	{
+			style   varchar(20);
+			value	varchar(30);
 		};
 		CHK_SRYYMD071	{
 			style	varchar(20);
@@ -189,12 +219,18 @@ L04	{
 			style	varchar(20);
 			label	varchar(10);
 		};
-		MARK07	{
-			style   varchar(20);
+		LBLNO081	{
 			value	varchar(02);
 		};
-		NO08	{
-			value	number (2);
+		LBLNO082	{
+			value	varchar(02);
+		};
+		LBLMID08	{
+			value	varchar(02);
+		};
+		LBLMARK08	{
+			style   varchar(20);
+			value	varchar(30);
 		};
 		CHK_SRYYMD081	{
 			style	varchar(20);
@@ -212,12 +248,18 @@ L04	{
 			style	varchar(20);
 			label	varchar(10);
 		};
-		MARK08	{
-			style   varchar(20);
+		LBLNO091	{
 			value	varchar(02);
 		};
-		NO09	{
-			value	number (2);
+		LBLNO092	{
+			value	varchar(02);
+		};
+		LBLMID09	{
+			value	varchar(02);
+		};
+		LBLMARK09	{
+			style   varchar(20);
+			value	varchar(30);
 		};
 		CHK_SRYYMD091	{
 			style	varchar(20);
@@ -235,12 +277,18 @@ L04	{
 			style	varchar(20);
 			label	varchar(10);
 		};
-		MARK09	{
-			style   varchar(20);
+		LBLNO101	{
 			value	varchar(02);
 		};
-		NO10	{
-			value	number (2);
+		LBLNO102	{
+			value	varchar(02);
+		};
+		LBLMID10	{
+			value	varchar(02);
+		};
+		LBLMARK10	{
+			style   varchar(20);
+			value	varchar(30);
 		};
 		CHK_SRYYMD101	{
 			style	varchar(20);
@@ -258,49 +306,55 @@ L04	{
 			style	varchar(20);
 			label	varchar(10);
 		};
-		MARK10	{
-			style   varchar(20);
-			value	varchar(02);
-		};
 		STSRYYMD	{
+	        state	int;
+			style	varchar(20);
 			value	varchar(10);
 		};
 		STNO	{
+	        state	int;
 			value	number (2);
 		};
 		STHR	{
+	        state	int;
+			style	varchar(20);
 			value	varchar(2);
 		};
 		STMIN	{
+	        state	int;
+			style	varchar(20);
 			value	varchar(2);
 		};
 		EDSRYYMD	{
-	           	state	int;
+	        state	int;
 			value	varchar(10);
 		};
 		EDNO	{
+	        state	int;
 			value	number (2);
 		};
 		EDHR	{
-	           	state	int;
+	        state	int;
 			value	number (2);
 		};
 		EDMIN	{
-	           	state	int;
+	        state	int;
 			value	number (2);
 		};
-		LBL_KIKAN1	{
-			value	varchar(8);
+		LBLKIKAN1	{
+			value	varchar(20);
 		};
-		LBL_KIKAN2	{
+		LBLKIKAN2	{
 			value	varchar(2);
 		};
 		CMB_HOURSKBN	{
 			HOURSKBN	{
 				value	varchar(10);
+		        state	int;
 			};
 			count	int;
 			item	varchar(10)[10];
+	        state	int;
 		};
 	};
 };

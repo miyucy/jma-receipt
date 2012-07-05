@@ -266,6 +266,7 @@
            COPY    "L02.INC".
            COPY    "L03.INC".
            COPY    "L04.INC".
+           COPY    "L06.INC".
            COPY    "L99.INC".
            COPY    "LERR.INC".
            COPY    "LID1.INC".
@@ -385,24 +386,25 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG
-           WHEN    "L04"
-               GO  TO  300-SCREEN-EXT
+           WHEN    "L06"
+               IF    ( SPA-L01-SAKIPG      =   "L04" )
+                   PERFORM 480-L04-SENI-SEC
+               END-IF
            WHEN    "L03"
                PERFORM 350-L03-SET-SEC
-               GO  TO  300-SCREEN-EXT
            WHEN    "L99"
                PERFORM 340-L99-SET-SEC
-               GO  TO  300-SCREEN-EXT
       *    作表処理
            WHEN    "LID1"
                PERFORM 330-LID1-SET-SEC
-               GO  TO  300-SCREEN-EXT
            WHEN    "LID2"
                PERFORM 340-LID2-SET-SEC
-               GO      TO      300-SCREEN-EXT
+           WHEN    OTHER
+      *
+               PERFORM 310-SPASET-SEC
+      *
            END-EVALUATE
       *
-           PERFORM 310-SPASET-SEC
       *
            .
        300-SCREEN-EXT.
@@ -740,7 +742,7 @@
                PERFORM 470-ATOGMN-SEC
       *    締め処理
            WHEN    "CLICKED"       ALSO    "B08"
-               PERFORM 480-L04-SENI-SEC
+               PERFORM 480-L06-SENI-SEC
       *    ＣＳＶ出力
            WHEN    "CLICKED"       ALSO    "B10"
                PERFORM 490-PUTCSV-SEC
@@ -1892,6 +1894,44 @@
       *
            .
        480-L03-SENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    締め処理画面遷移処理
+      *****************************************************************
+       480-L06-SENI-SEC                SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    SPA-L01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-L01FREE     TO  SPA-FREE
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGL06"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-L01FREE
+           MOVE    SPA-WORK        TO  SPA-L01KYOUTU
+      *
+           MOVE    "L01"           TO  SPA-MOTOPG
+           MOVE    "L06"           TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "L06"           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       480-L06-SENI-EXT.
            EXIT.
       *****************************************************************
       *    締め処理画面遷移処理
