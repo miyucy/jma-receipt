@@ -357,7 +357,6 @@
            COPY    "Q100.INC".
            COPY    "QERR.INC".
            COPY    "QID1.INC".
-           COPY    "QFIL.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA

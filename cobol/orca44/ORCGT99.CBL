@@ -181,7 +181,6 @@
            COPY    "TID1.INC".
            COPY    "TID2.INC".
            COPY    "TID3.INC".
-           COPY    "TFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -237,16 +236,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-           IF    ( SPA-MOTOPG          =   "TFIL" )
-           AND   ( SPA-T99-MOTOPG  NOT =   "T04"  )
-      *        ファイルエントリ処理(クライアント保存)
-               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
-                   ADD     1                   TO  SPA-SFILESV-IDX
-                   PERFORM 3001-FILEENTRY-SEC
-                  GO  TO  100-INIT-EXT
-               END-IF
-           END-IF
       *
            MOVE    "B01"               TO  MCP-WIDGET
            MOVE    SPACE               TO  LINKAREA
@@ -597,19 +586,9 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                            ORCA-BLOB
                                            SPA-AREA
       *
-               INITIALIZE                      TFIL 
-               MOVE    ORCA-BLOB-OBJECT    TO  TFIL-OBJECTDATA
-               STRING  SPA-NAI-T04-TTO-FOLDER   (SPA-NAI-T04-SELNUM)
-                                           DELIMITED  BY  SPACE
-                       SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
-                                           DELIMITED  BY  SPACE
-                                           INTO  TFIL-ENTRY1
-               END-STRING
-               MOVE    SPA-GMN-T04-TTITLE   (SPA-NAI-T04-SELNUM)
-                                           TO  TFIL-TITLE
-               MOVE    SPA-GMN-T04-TCNT-ALL (SPA-NAI-T04-SELNUM)
-                                           TO  WRK-KENSU-Z
-               MOVE    WRK-KENSU-Z         TO  TFIL-KENSU
+               MOVE    ORCA-BLOB-OBJECT    TO  T99-OBJECTDATA
+               MOVE    SPA-NAI-T04-TTO-DATA    (SPA-NAI-T04-SELNUM)
+                                           TO  T99-FILENAME
            ELSE
                INITIALIZE                      ORCA-BLOB
                MOVE    "BLOBIMPORT"        TO  MCP-FUNC
@@ -626,25 +605,15 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                            ORCA-BLOB
                                            SPA-AREA
       *
-               INITIALIZE                      TFIL 
-               MOVE    ORCA-BLOB-OBJECT    TO  TFIL-OBJECTDATA
-               STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
-                                           DELIMITED  BY  SPACE
-                       SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
-                                           DELIMITED  BY  SPACE
-                                           INTO  TFIL-ENTRY1
-               END-STRING
-               MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
-                                           TO  TFIL-TITLE
-               MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
-                                           TO  WRK-KENSU-Z
-               MOVE    WRK-KENSU-Z         TO  TFIL-KENSU
+               MOVE    ORCA-BLOB-OBJECT    TO  T99-OBJECTDATA
+               MOVE    SPA-SFILESV-TO-DATA     (SPA-SFILESV-IDX)
+                                           TO  T99-FILENAME
            END-IF
       *
            MOVE    ZERO                TO  T99-DURATION
       *
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "TFIL"              TO  MCP-WINDOW
+      *     MOVE    "NEW"               TO  MCP-PUTTYPE
+      *     MOVE    "TFIL"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  FLG-END

@@ -88,7 +88,6 @@
            COPY    "TID1.INC".
            COPY    "TID2.INC".
            COPY    "TID3.INC".
-           COPY    "TFIL.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA

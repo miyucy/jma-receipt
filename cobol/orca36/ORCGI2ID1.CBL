@@ -78,7 +78,6 @@
            COPY    "I23.INC".
            COPY    "I2ERR.INC".
            COPY    "I2ID1.INC".
-           COPY    "I2FIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

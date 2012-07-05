@@ -124,7 +124,6 @@
            COPY    "I23.INC".
            COPY    "I2ERR.INC".
            COPY    "I2ID1.INC".
-           COPY    "I2FIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -160,15 +159,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-           IF      SPA-MOTOPG          =   "I2FIL"
-      *        ファイルエントリ処理(クライアント保存)
-               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
-                   ADD     1                   TO  SPA-SFILESV-IDX 
-                   PERFORM 3001-FILEENTRY-SEC
-                   GO  TO  100-INIT-EXT
-               END-IF
-           END-IF
       *
            PERFORM 490-KAKUNIN-SEC
       *
@@ -434,24 +424,10 @@
                                        ORCA-BLOB
                                        SPA-AREA
       *
-           INITIALIZE                      I2FIL 
-           MOVE    ORCA-BLOB-OBJECT    TO  I2FIL-OBJECTDATA
-           STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
-                                       DELIMITED  BY  SPACE
-                   SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
-                                       DELIMITED  BY  SPACE
-                                       INTO  I2FIL-ENTRY1
-           END-STRING
-           MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
-                                       TO  I2FIL-TITLE
-           MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
-                                       TO  WRK-KENSU-Z
-           MOVE    WRK-KENSU-Z         TO  I2FIL-KENSU
-      *
+           MOVE    ORCA-BLOB-OBJECT    TO  I23-OBJECTDATA
+           MOVE    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                       TO  I23-FILENAME
            MOVE    ZERO                TO  I23-DURATION
-      *
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "I2FIL"             TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  FLG-END
