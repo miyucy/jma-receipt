@@ -22,7 +22,6 @@ bind	"ZID1"		"OpenCOBOL"	"ORCGZID1";
 bind	"ZID2"		"OpenCOBOL"	"ORCGZID2";
 bind	"ZID3"		"OpenCOBOL"	"ORCGZID3";
 bind	"Z100"		"OpenCOBOL"	"ORCGZ100";
-bind	"ZFIL"		"OpenCOBOL"	"ORCGZFIL";
 bindapi	"medicatonmod"	"OpenCOBOL"	"ORAPI102S1";
 
 multiplex_group	orca102;
@@ -49,7 +48,6 @@ data	{
 		ZID2;
 		ZID3;
 		Z100;
-		ZFIL;
 		medicatonmod;
 	};
 };

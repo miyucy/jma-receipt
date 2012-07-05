@@ -16,3 +16,6 @@
                     06  T99-ERRMSG    PIC X(100).
                   05  T99-SELECT  PIC X       OCCURS  30 TIMES.
               03  T99-DURATION   PIC S9(09) BINARY.
+              03  T99-DOWNLOAD1.
+                  05  T99-OBJECTDATA   PIC X(8).
+                  05  T99-FILENAME     PIC X(1024).

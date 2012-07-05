@@ -17,3 +17,6 @@
               03  Z97-DURATION    PIC S9(09) BINARY.
               03  Z97-B12-STATE   PIC S9(9)   BINARY.
               03  Z97-B12-LABEL   PIC X(14).
+              03  Z97-DOWNLOAD1.
+                  05  Z97-OBJECTDATA   PIC X(8).
+                  05  Z97-FILENAME     PIC X(1024).

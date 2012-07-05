@@ -65,7 +65,6 @@
            COPY    "XG01.INC".
            COPY    "XG02.INC".
            COPY    "XG99.INC".
-           COPY    "XGFIL.INC".
            COPY    "XGERR.INC".
            COPY    "XGID1.INC".
       *

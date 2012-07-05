@@ -17,7 +17,6 @@ bind	"Q99"		"OpenCOBOL"	"ORCGQ99";
 bind	"Q100"		"OpenCOBOL"	"ORCGQ100";
 bind	"QERR"		"OpenCOBOL"	"ORCGQERR";
 bind	"QID1"		"OpenCOBOL"	"ORCGQID1";
-bind	"QFIL"		"OpenCOBOL"	"ORCGQFIL";
 
 multiplex_group	orca13;
 
@@ -37,7 +36,6 @@ data	{
 		Q100;
                 QERR;
                 QID1;
-		QFIL;
 	};
 };
 

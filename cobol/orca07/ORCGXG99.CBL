@@ -113,7 +113,6 @@
            COPY    "XG01.INC".
            COPY    "XG02.INC".
            COPY    "XG99.INC".
-           COPY    "XGFIL.INC".
            COPY    "XGERR.INC".
            COPY    "XGID1.INC".
       *
@@ -152,15 +151,6 @@
       *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-           IF      SPA-MOTOPG          =   "XGFIL"
-      *        ファイルエントリ処理(クライアント保存)
-               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
-                   ADD     1                   TO  SPA-SFILESV-IDX 
-                   PERFORM 3001-FILEENTRY-SEC
-                   GO  TO  100-INIT-EXT
-               END-IF
-           END-IF
       *
            MOVE    "B01"               TO  MCP-WIDGET
       *****MOVE    SPACE               TO  LINKAREA
@@ -396,26 +386,10 @@
                                        ORCA-BLOB
                                        SPA-AREA
       *
-           INITIALIZE                      XGFIL 
            MOVE    ORCA-BLOB-OBJECT    TO  XG99-OBJECTDATA
-      *****STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
-      *****                            DELIMITED  BY  SPACE
-      *****        SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
-      *****                            DELIMITED  BY  SPACE
-      *****                            INTO  XGFIL-ENTRY1
-      *****END-STRING
            MOVE    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
                                        TO  XG99-FILENAME
-           MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
-                                       TO  XGFIL-TITLE
-           MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
-                                       TO  WRK-KENSU-Z
-           MOVE    WRK-KENSU-Z         TO  XGFIL-KENSU
-      *
            MOVE    ZERO                TO  XG99-DURATION
-      *
-      *    MOVE    "NEW"               TO  MCP-PUTTYPE
-      *    MOVE    "XGFIL"             TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  FLG-END

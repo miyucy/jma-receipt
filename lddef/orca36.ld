@@ -10,7 +10,6 @@ bind	"I22"		"OpenCOBOL"	"ORCGI22";
 bind	"I23"		"OpenCOBOL"	"ORCGI23";
 bind	"I2ERR"		"OpenCOBOL"	"ORCGI2ERR";
 bind	"I2ID1"		"OpenCOBOL"	"ORCGI2ID1";
-bind	"I2FIL"		"OpenCOBOL"	"ORCGI2FIL";
 
 multiplex_group	orca36;
 
@@ -24,7 +23,6 @@ data	{
 		I23;
 		I2ERR;
                 I2ID1;
-		I2FIL;
 	};
 };
 

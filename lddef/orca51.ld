@@ -13,7 +13,6 @@ bind	"L99"		"OpenCOBOL"	"ORCGL99";
 bind	"LERR"		"OpenCOBOL"	"ORCGLERR";
 bind	"LID1"		"OpenCOBOL"	"ORCGLID1";
 bind	"LID2"		"OpenCOBOL"	"ORCGLID2";
-bind	"LFIL"		"OpenCOBOL"	"ORCGLFIL";
 bind	"G01"		"OpenCOBOL"	"ORCGG01";
 bind	"G02"		"OpenCOBOL"	"ORCGG02";
 bind	"G03"		"OpenCOBOL"	"ORCGG03";
@@ -22,7 +21,6 @@ bind	"G99"		"OpenCOBOL"	"ORCGG99";
 bind	"GERR"		"OpenCOBOL"	"ORCGGERR";
 bind	"GID1"		"OpenCOBOL"	"ORCGGID1";
 bind	"GID2"		"OpenCOBOL"	"ORCGGID2";
-bind	"GFIL"		"OpenCOBOL"	"ORCGGFIL";
 
 multiplex_group	orca51;
 
@@ -39,7 +37,6 @@ data	{
 		LERR;
 		LID1;
 		LID2;
-		LFIL;
 		G01;
 		G02;
 		G03;
@@ -48,7 +45,6 @@ data	{
 		GERR;
 		GID1;
 		GID2;
-		GFIL;
 	};
 };
 

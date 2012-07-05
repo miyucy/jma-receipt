@@ -145,36 +145,26 @@
     </widget>
 
     <widget>
-      <class>GnomeFileEntry</class>
+      <class>GtkFileChooserButton</class>
       <name>fileentry1</name>
       <x>315</x>
       <y>10</y>
       <width>470</width>
       <height>24</height>
-      <max_saved>10</max_saved>
-      <directory>False</directory>
-      <modal>False</modal>
-
-      <widget>
-	<class>GtkEntry</class>
-	<child_name>GnomeEntry:entry</child_name>
-	<name>entry1</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>fileentry_changed</handler>
-	  <last_modification_time>Tue, 05 Aug 2008 01:09:03 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>fileentry_changed</handler>
-	  <last_modification_time>Tue, 05 Aug 2008 01:09:03 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>100</text_max_length>
-	<text></text>
-      </widget>
+      <visible>True</visible>
+      <sensitive>True</sensitive>
+      <can_focus>False</can_focus>
+      <has_focus>False</has_focus>
+      <border_width>0</border_width>
+      <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+      <homogeneous>False</homogeneous>
+      <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+      <title>ファイルの選択</title>
+      <signal>
+        <name>file_set</name>
+        <handler>changed</handler>
+        <data>data</data>
+      </signal>
     </widget>
 
     <widget>

@@ -26,5 +26,9 @@ Z97	{
 	       	state	int;
 			label	varchar(14);
 		};
+                download1 {
+                        objectdata      object;
+                        filename        varchar(1024);
+                };
 	};
 };

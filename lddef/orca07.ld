@@ -7,7 +7,6 @@ bind	""		"OpenCOBOL"	"ORCGXG01";
 bind	"XG01"		"OpenCOBOL"	"ORCGXG01";
 bind	"XG02"		"OpenCOBOL"	"ORCGXG02";
 bind	"XG99"		"OpenCOBOL"	"ORCGXG99";
-bind	"XGFIL"		"OpenCOBOL"	"ORCGXGFIL";
 bind	"XGERR"		"OpenCOBOL"	"ORCGXGERR";
 bind	"XGID1"		"OpenCOBOL"	"ORCGXGID1";
 
@@ -20,7 +19,6 @@ data	{
 		XG01;
 		XG02;
 		XG99;
-		XGFIL;
 		XGERR;
 		XGID1;
 	};

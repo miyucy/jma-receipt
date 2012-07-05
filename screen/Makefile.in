@@ -41,7 +41,6 @@ SCREEN_screen = \
 	GERR.glade \
 	GID1.glade \
 	GID2.glade \
-	GFIL.glade \
 	I01.glade \
 	I02.glade \
 	I03.glade \
@@ -103,7 +102,6 @@ SCREEN_screen = \
 	LERR.glade \
 	LID1.glade \
 	LID2.glade \
-	LFIL.glade \
 	M01.glade \
 	M01N.glade \
 	M02.glade \
@@ -184,7 +182,6 @@ SCREEN_screen = \
 	TID1.glade \
 	TID2.glade \
 	TID3.glade \
-	TFIL.glade \
 	U01.glade \
 	U02.glade \
 	U1ERR.glade \
@@ -360,14 +357,11 @@ SCREEN_screen = \
 	MUID.glade \
 	P02Y.glade \
 	P02Y1.glade \
-	I2FIL.glade \
-	QFIL.glade \
 	W64.glade \
 	Z08.glade \
 	W34.glade \
 	XF01X.glade \
 	Z100.glade \
-	ZFIL.glade \
 	U012.glade \
 	N21FIL.glade \
 	W35.glade \
@@ -407,7 +401,6 @@ SCREEN_screen = \
 	XG99.glade \
 	XGERR.glade \
 	XGID1.glade \
-	XGFIL.glade \
 	K061.glade \
 	K062.glade \
 	MDAS.glade \

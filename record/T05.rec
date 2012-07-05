@@ -5,9 +5,7 @@ T05	{
 		};
 		fileentry1	{
 			objectdata	object;
-			 entry1 {
-				 value varchar(200);
-			};
+			filename	varchar(200);
 		};
 		ERRMSG1	{
 			style	varchar(20);

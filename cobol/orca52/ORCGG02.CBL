@@ -245,7 +245,6 @@
            COPY    "LERR.INC".
            COPY    "LID1.INC".
            COPY    "LID2.INC".
-           COPY    "LFIL.INC".
            COPY    "G01.INC".
            COPY    "G02.INC".
            COPY    "G03.INC".
@@ -254,7 +253,6 @@
            COPY    "GERR.INC".
            COPY    "GID1.INC".
            COPY    "GID2.INC".
-           COPY    "GFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

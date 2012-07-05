@@ -47,7 +47,6 @@ XF01X.glade	orca06	(XF01X)メモＣＬＡＩＭ送信選択サブ
 XG01.glade	orca07	(XG01)ＣＳＶ出力選択画面
 XG02.glade	orca07	(XG02)ＣＳＶ出力指示画面
 XG99.glade	orca07	(XG99)処理結果
-XGFIL.glade	orca07	(XGFIL)クライアント保存画面
 XGERR.glade	orca07	(XGERR)エラー情報
 XGID1.glade	orca07	(XGID1)確認画面
 
@@ -99,7 +98,6 @@ Q99.glade	orca13	(Q99)住所検索−町域選択画面
 Q100.glade	orca13	(Q100)出力指示画面
 QERR.glade	orca13	(QERR)エラー情報
 QID1.glade	orca13	(QID1)確認画面
-QFIL.glade	orca13	(QFIL)クライアント保存画面
 
 Y01.glade	orca14	(Y01)予約登録−予約状況
 Y011.glade	orca14	(Y011)予約−予約メモ入力
@@ -251,7 +249,6 @@ I22.glade	orca36	(I22)出力指示画面
 I23.glade	orca36	(I23)処理結果
 I2ERR.glade	orca36	(I2ERR)エラー情報
 I2ID1.glade	orca36	(I2ID1)確認画面
-I2FIL.glade	orca36	(I2FIL)クライアント保存画面
 
 D01.glade	orca41	(D01)レセプトチェック指示
 D02.glade	orca41	(D02)データチェック−個別指示
@@ -293,7 +290,6 @@ T99.glade	orca44	(T99)処理結果
 TERR.glade	orca44	(TERR)エラー情報
 TID1.glade	orca44	(TID1)確認画面
 TID2.glade	orca44	(TID2)確認画面
-TFIL.glade	orca44	(TFIL)クライアント保存画面
 
 L01.glade	orca51	(L01)日次統計
 L02.glade	orca51	(L02)日次統計データ作成
@@ -303,7 +299,6 @@ L99.glade	orca51	(L99)処理結果
 LERR.glade	orca51	(LERR)エラー情報
 LID1.glade	orca51	(LID1)確認画面
 LID2.glade	orca51	(LID2)確認画面
-LFIL.glade	orca51	(LFIL)クライアント保存画面
 
 G01.glade	orca51	(G01)月次統計
 G02.glade	orca51	(G02)月次統計データ作成
@@ -312,7 +307,6 @@ G99.glade	orca51	(G99)処理結果
 GERR.glade	orca51	(GERR)エラー情報
 GID1.glade	orca51	(GID1)確認画面
 GID2.glade	orca51	(GID2)確認画面
-GFIL.glade	orca51	(GFIL)クライアント保存画面
 
 KT01.glade	orca61	(KT01)外来まとめ入力−診療行為入力
 KT011.glade	orca61	(KT011)外来まとめ−禁忌薬剤一覧
@@ -410,7 +404,6 @@ ZID1.glade	orca102	(ZID1)確認画面
 ZID2.glade	orca102	(ZID2)確認画面
 ZID3.glade	orca102	(ZID3)確認画面
 Z100.glade	orca102	(Z100)出力指示画面
-ZFIL.glade	orca102	(ZFIL)クライアント保存画面
 
 X01.glade	orca103	(X01)チェックマスタ設定
 X02.glade	orca103	(X02)チェックマスタ設定−適用コード設定

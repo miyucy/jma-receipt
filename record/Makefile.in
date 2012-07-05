@@ -37,7 +37,6 @@ RECORD_files = \
 	GERR.rec \
 	GID1.rec \
 	GID2.rec \
-	GFIL.rec \
 	H01.rec \
 	H02.rec \
 	H99.rec \
@@ -104,7 +103,6 @@ RECORD_files = \
 	LERR.rec \
 	LID1.rec \
 	LID2.rec \
-	LFIL.rec \
 	M00.rec \
 	M01.rec \
 	M01N.rec \
@@ -187,7 +185,6 @@ RECORD_files = \
 	TID1.rec \
 	TID2.rec \
 	TID3.rec \
-	TFIL.rec \
 	U01.rec \
 	U02.rec \
 	U02X.rec \
@@ -362,14 +359,11 @@ RECORD_files = \
  	MUID.rec \
  	P02Y.rec \
  	P02Y1.rec \
- 	I2FIL.rec \
- 	QFIL.rec \
  	W64.rec \
  	Z08.rec \
 	W34.rec \
 	XF01X.rec \
 	Z100.rec \
-	ZFIL.rec \
 	U012.rec \
 	N21FIL.rec \
 	W35.rec \
@@ -411,7 +405,6 @@ RECORD_files = \
 	XG99.rec \
 	XGERR.rec \
 	XGID1.rec \
-	XGFIL.rec \
 	K061.rec \
 	K062.rec \
 	MDAS.rec \
