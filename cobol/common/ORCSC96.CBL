@@ -2651,7 +2651,7 @@
                WHEN    "K232"
                    STRING  "警告！"
                            "内服薬剤が７種類以上となります。"
-                           "７種類以上の処方せん料が算定できます。"
+                           "処方せん料を確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
