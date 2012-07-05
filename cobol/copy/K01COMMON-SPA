@@ -570,7 +570,7 @@
                05  SPA-KID2-AREA.
       *        メッセージ
                    07  SPA-KID2-FLG        PIC  X(02).
-                   07  SPA-KID2-KIDMSG     PIC  X(80).
+                   07  SPA-KID2-KIDMSG     PIC  X(100).
                    07  SPA-KID2GMN-CUR     PIC  9(02).
       *
       *Ｐ入力画面より

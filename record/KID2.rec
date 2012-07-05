@@ -4,7 +4,7 @@ KID2	{
 			value	varchar(10);
 		};
 		ID2MSG	{
-			value	varchar(80);
+			value	varchar(100);
 		};
 		USERPG_COMB	{
 			USERPG	{

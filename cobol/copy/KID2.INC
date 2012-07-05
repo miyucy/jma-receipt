@@ -20,7 +20,7 @@
               03  KID2-ID2CODE.
                 04  KID2-VALUE  PIC X(10).
               03  KID2-ID2MSG.
-                04  KID2-VALUE  PIC X(80).
+                04  KID2-VALUE  PIC X(100).
               03  KID2-USERPG-COMB.
                 04  KID2-USERPG.
                   05  KID2-VALUE  PIC X(20).

@@ -55,6 +55,7 @@
       *  04.06.00    NACL-多々納  10/11/02  難病外来疾患区分対応
       *  04.07.00    NACL-多々納  11/11/XX  訂正処方せん料展開対応
       *  04.07.00    NACL-多々納  12/03/XX  Ｈ２４年４月改正対応
+      *  04.07.00    NACL-多々納  12/07/04  処方せん料判定用法対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -115,6 +116,8 @@
            03  FLG-JYURRK-END       PIC 9(01).
       *    長期あり
            03  FLG-CHOUKI           PIC 9(01).
+      *H24.4
+           03  FLG-CHOUKI2          PIC 9(01).
       *
            03  FLG-CHOKIKA1         PIC 9(01).
            03  FLG-CHOKIKA2         PIC 9(01).
@@ -142,8 +145,8 @@
       *    一般名処方加算
            03  FLG-IPPANKSN            PIC 9(01).
       *    一般名あり
-           03  FLG-GENERIC-OK           PIC 9(01).
-           03  FLG-CHK-P                PIC 9(01).
+           03  FLG-GENERIC-OK          PIC 9(01).
+           03  FLG-CHK-P               PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -319,6 +322,51 @@
        01  HOZ-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HOZ-//.
+      *
+      *ver.4.7
+      * 院外投薬用法毎編集
+        01 TBL-YOUHO-HEN-AREA.
+           03  TBL-YOUHO-ZAI-OCC        OCCURS   50.
+               05  TBL-YOUHO-MAX           PIC 9(02).
+               05  TBL-YOUHO-SRYSYUKBN     PIC X(03).
+               05  TBL-YOUHO-ZAI-OCCURS    OCCURS   50.
+                   07  TBL-YOUHO-SRYCD         PIC X(09).
+                   07  TBL-YOUHO-KISOTEN       PIC 9(08)V99.
+                   07  TBL-YOUHO-SURYO         PIC 9(05)V9(05).
+      *            内服１種類区分
+                   07  TBL-YOUHO-TANDKKBN      PIC X(01).
+                   07  TBL-YOUHO-ZAIGATAKBN    PIC 9(01).
+                   07  TBL-YOUHO-INPUTCHI-G.
+                       09  TBL-YOUHO-ATAI      PIC X(08)
+                                                     OCCURS  5.
+                   07  TBL-YOUHO-KEI       PIC 9(08).
+           03  IDG1                        PIC 9(03).
+           03  IDG2                        PIC 9(03).
+           03  IDG3                        PIC 9(03).
+           03  IDG4                        PIC 9(03).
+           03  IDG5                        PIC 9(03).
+      *
+           03  TBL-YOUHO-HEN02-AREA.
+               05  TBL-Y2-SRYSYUKBN        PIC X(03).
+               05  TBL-Y2-YOUHOU           PIC X(09).
+               05  TBL-Y2-KINPUTCHI-G.
+                   07  TBL-Y2-KATAI        PIC X(08)  OCCURS  5.
+               05  TBL-Y2-ZAI-REC          OCCURS   50.
+                   07  TBL-Y2-SRYCD        PIC X(09).
+                   07  TBL-Y2-KISOTEN      PIC 9(08)V99.
+                   07  TBL-Y2-SURYO        PIC 9(05)V9(05).
+      *            内服１種類区分
+                   07  TBL-Y2-TANDKKBN     PIC X(01).
+                   07  TBL-Y2-ZAIGATAKBN   PIC 9(01).
+                   07  TBL-Y2-INPUTCHI-G.
+                       09  TBL-Y2-ATAI     PIC X(08)
+                                                     OCCURS  5.
+                   07  TBL-Y2-KEI          PIC 9(08).
+      *
+           03  WRK-ZAICNT-AL           PIC 9(08).
+           03  WRK-ZAICNT2-AL          PIC 9(08).
+           03  FLG-SYORI-END           PIC 9(01).
+      ****
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1075,10 +1123,10 @@
                    IF      (FLG-CHK-P          =   1   )  AND
                            (WRK-COM-KOUHATUKBN (IDX-Z) =   "1"
                                                        OR  "2" )
-      *            院外投薬の点数を最小金額とする（きざみ値を流用）
+      ************ 院外投薬の点数を最小金額とする（きざみ値を流用）
       *                後発品・後発のある先発のみ
       ***************  MOVE    WRK-COM-KZMTEN(IDX-Z)
-      *                最低薬価
+      *ver.4.7         最低薬価を金額へ
                        MOVE    WRK-COM-GEN-PRICE(IDX-Z)
                                                TO  WRK-COM-KISOTEN
                                                              (IDX-Z)
@@ -1337,6 +1385,7 @@
            MOVE    ZERO                TO  FLG-MADOKU-ARI
            MOVE    ZERO                TO  FLG-SINSATU
            MOVE    ZERO                TO  FLG-CHOUKI 
+           MOVE    ZERO                TO  FLG-CHOUKI2
       *
            MOVE    ZERO                TO  FLG-TOKUSYO1
            MOVE    ZERO                TO  FLG-TOKUSYO2
@@ -1359,6 +1408,8 @@
            MOVE    SPACE               TO  WRK-HENSYU-MEISYO
       *
            INITIALIZE                  WRK-HKNKEI-G
+      *ver.4.7
+           INITIALIZE                  TBL-YOUHO-HEN-AREA
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
@@ -1711,6 +1762,7 @@
            END-IF
       *!!!
       *
+      *
            MOVE    ZERO                TO  FLG-SYOHOSENN
       *    処方箋料算定
            IF    ((FLG-NAIYAK2         =   1    )  OR
@@ -1806,7 +1858,8 @@
                    END-IF
                ELSE
       *            長期投薬があること
-                  IF      FLG-CHOUKI          =   ZERO
+      **           IF      FLG-CHOUKI          =   ZERO
+                   IF      FLG-CHOUKI2         =   ZERO
                       IF     (WRK-COM-KZMFLG (IDX-T1)  =   SPACE) AND
                              (LNK-ORCSC-KEI-IDX        =   ZERO )
                            MOVE    "K021"          TO  SPA-ERRCD
@@ -1923,6 +1976,16 @@
            END-IF
       *!!
       *ver.4.7
+      *    院外投薬の用法まとめ対応
+           IF     (SPA-ERRCD           =   SPACE)  AND
+                 ((FLG-NAIYAK2         =   1    )  OR
+                  (FLG-TONPUK2         =   1    )  OR
+                  (FLG-GAIYAK2         =   1    ))
+      *        用法まとめ内服種類チェック処理
+               PERFORM 30030-YOUHOU-HEN-SEC
+           END-IF
+      *
+      *ver.4.7
       *    処方せん料と投薬チェック
            IF     (IDX-SYOHOU      NOT =   ZERO )  AND
                   (FLG-NAIYAK2         =   ZERO )  AND
@@ -1932,11 +1995,19 @@
                IF     (FLG-NAIYAK          =   1    )  OR
                       (FLG-TONPUK          =   1    )  OR
                       (FLG-GAIYAK          =   1    )
-      *            処方せん料と院内投薬のみはエラー
-                   MOVE    "0122"          TO  SPA-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR (IDX-SYOHOU)
+      *            処方せん料と院内投薬のみは警告
+                   IF     (WRK-COM-KZMFLG (IDX-SYOHOU) =   SPACE) AND
+                          (LNK-ORCSC-KEI-IDX           =   ZERO )
+                       MOVE    "K122"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                          (IDX-SYOHOU)
+                       MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                          (IDX-SYOHOU)
+                       MOVE    IDX-SYOHOU      TO  LNK-ORCSC-KEI-IDX
+                   END-IF
                END-IF
            END-IF
+      *
       *    処方せん料と投薬チェック
            IF     (IDX-SYOHOU      NOT =   ZERO )  AND
                   (SPA-ERRCD           =   SPACE)  AND
@@ -1949,14 +2020,41 @@
                    IF      WRK-COM-INPUTCD (IDX-SYOHOU)
                                            NOT =   "120002710"
                        MOVE    "K232"          TO  SPA-ERRCD
+      *                用法まとめ分
+                       IF      WRK-ZAICNT2-AL      <    7
+                           STRING  "用法まとめでは"
+                                   "内服薬剤が７種類未満です。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  LNK-ORCSC-ERRMSG
+                           END-STRING
+                       END-IF
+                   ELSE
+                       IF      WRK-ZAICNT2-AL      <    7
+      *                用法まとめ分
+                           MOVE    "K238"          TO  SPA-ERRCD
+                       END-IF
                    END-IF
                ELSE
       *            ７種類以内
                    IF     (WRK-COM-INPUTCD (IDX-SYOHOU)
                                                =   "120002710" )
                        MOVE    "K233"          TO  SPA-ERRCD
+      *                用法まとめ分
+                       IF      WRK-ZAICNT2-AL      >=   7
+                           STRING  "用法まとめでは"
+                                   "内服薬剤が７種類以上となります。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  LNK-ORCSC-ERRMSG
+                           END-STRING
+                       END-IF
+                   ELSE
+      *                用法まとめ分
+                       IF      WRK-ZAICNT2-AL      >=   7
+                           MOVE    "K239"          TO  SPA-ERRCD
+                       END-IF
                    END-IF
                END-IF
+      *
                IF      SPA-ERRCD       NOT =   SPACE
                    IF     (WRK-COM-KZMFLG (IDX-SYOHOU) =   SPACE) AND
                           (LNK-ORCSC-KEI-IDX           =   ZERO )
@@ -1967,6 +2065,7 @@
                        MOVE    IDX-SYOHOU      TO  LNK-ORCSC-KEI-IDX
                    ELSE
                        MOVE    SPACE               TO  SPA-ERRCD
+                       MOVE    SPACE               TO  LNK-ORCSC-ERRMSG
                    END-IF
                END-IF
       *!!!!
@@ -2029,6 +2128,156 @@
            .
        3003-CHEK-SYORI-EXT.
            EXIT.
+      *
+      *ver.4.7
+      *****************************************************************
+      *   用法まとめ毎内服種類チェック処理
+      *****************************************************************
+       30030-YOUHOU-HEN-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  WRK-ZAICNT-AL
+           MOVE    ZERO                TO  WRK-ZAICNT2-AL
+           MOVE    ZERO                TO  FLG-SYORI-END
+           PERFORM
+                   UNTIL      (FLG-SYORI-END   =   1  )
+               INITIALIZE                  TBL-YOUHO-HEN02-AREA
+               MOVE    ZERO                TO  IDG1
+               MOVE    ZERO                TO  IDG2
+               MOVE    ZERO                TO  IDG3
+               MOVE    ZERO                TO  IDG4
+               PERFORM VARYING    IDG2     FROM    1   BY  1
+                       UNTIL     (IDG2    >   50  )
+                   IF     (TBL-YOUHO-MAX(IDG2) >   ZERO  )
+                       MOVE    TBL-YOUHO-MAX(IDG2) TO  IDG4
+                       IF     ( IDG3               =   ZERO   )
+      *                    用法編集
+                           MOVE    TBL-YOUHO-SRYCD(IDG2 IDG4)
+                                                   TO  TBL-Y2-YOUHOU
+                           MOVE    TBL-YOUHO-INPUTCHI-G(IDG2 IDG4)
+                                               TO  TBL-Y2-KINPUTCHI-G
+                           MOVE    TBL-YOUHO-SRYSYUKBN (IDG2)
+                                                   TO  TBL-Y2-SRYSYUKBN
+                           PERFORM VARYING    IDG5     FROM    1   BY  1
+                                   UNTIL     (IDG5    >   50  )
+                                     OR   (TBL-YOUHO-SRYCD (IDG2 IDG5)
+                                                      =   SPACE )
+                                ADD     1               TO  IDG3
+                                MOVE    TBL-YOUHO-ZAI-OCCURS (IDG2 IDG5)
+                                                TO  TBL-Y2-ZAI-REC(IDG3)
+                           END-PERFORM
+                           MOVE    ZERO         TO  TBL-YOUHO-MAX(IDG2)
+      *
+                       ELSE
+      *                    同一用法コード判定
+                           IF     (TBL-YOUHO-SRYCD (IDG2 IDG4)(1:3)
+                                                   =   "001" )
+                           AND    (TBL-YOUHO-SRYCD (IDG2 IDG4)
+                                                   =   TBL-Y2-YOUHOU )
+                           AND    (TBL-YOUHO-INPUTCHI-G (IDG2 IDG4)
+                                               =   TBL-Y2-KINPUTCHI-G)
+                           AND    (TBL-YOUHO-SRYSYUKBN (IDG2)
+                                               =   TBL-Y2-SRYSYUKBN  )
+                           PERFORM VARYING    IDG5     FROM    1   BY  1
+                                   UNTIL     (IDG5    >   50  )
+                                     OR   (TBL-YOUHO-SRYCD (IDG2 IDG5)
+                                                      =   SPACE )
+                                ADD     1               TO  IDG3
+                                MOVE    TBL-YOUHO-ZAI-OCCURS (IDG2 IDG5)
+                                                TO  TBL-Y2-ZAI-REC(IDG3)
+                               END-PERFORM
+                               MOVE    ZERO     TO  TBL-YOUHO-MAX(IDG2)
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF      IDG3            =   ZERO
+                   MOVE    1               TO  FLG-SYORI-END
+               ELSE
+                   PERFORM 300301-YOUHO-HENSUB-SEC
+               END-IF
+           END-PERFORM
+      *TEST
+           DISPLAY "WRK-ZAICNT2-AL:" WRK-ZAICNT2-AL
+                 ",WRK-ZAICNT-AL:"  WRK-ZAICNT-AL
+      *TEST
+           .
+       30030-YOUHOU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   処方内容チェク処理
+      *****************************************************************
+       300301-YOUHO-HENSUB-SEC              SECTION.
+      *
+           MOVE    ZERO            TO  WRK-KONGO
+           MOVE    ZERO            TO  WRK-SONOTA
+           MOVE    ZERO            TO  WRK-ZAITEN
+           MOVE    ZERO            TO  WRK-ZAITEN-G
+           PERFORM VARYING    IDG3     FROM    1   BY  1
+                   UNTIL     (IDG3    >   50  )
+                         OR  (TBL-Y2-SRYCD (IDG3)  =   SPACE )
+           IF      TBL-Y2-SRYCD (IDG3)(1:1)    =   "6"
+      *        剤数加算
+               IF     (TBL-Y2-ZAIGATAKBN (IDG3)    =   1  OR
+                                                       2  OR
+                                                       3   )
+      *            種類数指示入力なし
+               AND    (TBL-Y2-TANDKKBN (IDG3)  NOT =  "1"  )
+                   MOVE    1               TO  WRK-KONGO
+               ELSE
+      *            粉砕コードがある時、混合とする
+                   IF      (IDG3            >   1   )  AND
+                           (TBL-Y2-SRYCD (IDG3  - 1)
+                                           =   "099209901" )
+                       MOVE    1               TO  WRK-KONGO
+                   ELSE
+                       ADD     1               TO  WRK-SONOTA
+                   END-IF
+               END-IF
+      *        点数
+               COMPUTE WRK-SYOKEIS2        =   TBL-Y2-KISOTEN(IDG3)
+                                           *   TBL-Y2-SURYO  (IDG3)
+               ADD     WRK-SYOKEIS2        TO  WRK-ZAITEN-G
+               MOVE    WRK-ZAITEN-G        TO  WRK-ZAITEN
+            END-IF
+           END-PERFORM
+      *TEST
+            DISPLAY "TBL-Y2-YOUHOU:" TBL-Y2-YOUHOU
+                 ",WRK-ZAITEN-G:" WRK-ZAITEN-G
+               ",WRK-KONGO:" WRK-KONGO
+               ",WRK-SONOTA:" WRK-SONOTA
+      *TEST
+           IF      WRK-ZAITEN-G        <=  205
+               IF      WRK-ZAITEN-G        =   ZERO
+                   CONTINUE
+               ELSE
+                   IF      TBL-Y2-SRYSYUKBN    =   "211"
+                                               OR  "291"
+      *            院内
+                       ADD     1               TO  WRK-ZAICNT-AL
+                   ELSE
+      *            院外
+                       ADD     1               TO  WRK-ZAICNT2-AL
+                   END-IF
+      *
+               END-IF
+           ELSE
+               IF      TBL-Y2-SRYSYUKBN    =   "211"
+                                           OR  "291"
+                   COMPUTE WRK-ZAICNT-AL   =   WRK-ZAICNT-AL
+                                           +   WRK-KONGO
+                                           +   WRK-SONOTA
+               ELSE
+                   COMPUTE WRK-ZAICNT2-AL  =   WRK-ZAICNT2-AL
+                                           +   WRK-KONGO
+                                           +   WRK-SONOTA
+               END-IF
+           END-IF
+           .
+       300301-YOUHO-HENSUB-EXT.
+           EXIT.
+      *ver.4.7
+      *
       *
       *****************************************************************
       *   処方内容チェク処理
@@ -2268,7 +2517,14 @@
                                               OR  "23"
                                               OR  "29" )  AND
                    (WRK-COM-KAISU (IDX)       >=  28   )
-               MOVE    1                   TO  FLG-CHOUKI
+      *****    MOVE    1                   TO  FLG-CHOUKI
+               IF      WRK-CHK-SRYSYUKBN(3:1)  =   "1"
+      *            院内
+                   MOVE    1                   TO  FLG-CHOUKI
+               ELSE
+      *            院外
+                   MOVE    1                   TO  FLG-CHOUKI2
+               END-IF
                IF      WRK-CHOU-HKNCOMBI   =   SPACE
                    MOVE    WRK-COM-HKNCOMBI (IDX)
                                                TO  WRK-CHOU-HKNCOMBI
@@ -2280,7 +2536,14 @@
            IF      (WRK-COM-INPUTCD(IDX)(1:1) =   "6"  )  AND
                    (WRK-CHK-SRYSYUKBN (1:2)   =   "23" )  AND
                    (WRK-COM-KAISU2(IDX)       >=  28   )
-               MOVE    1                   TO  FLG-CHOUKI
+      ******** MOVE    1                   TO  FLG-CHOUKI
+               IF      WRK-CHK-SRYSYUKBN(3:1)  =   "1"
+      *            院内
+                   MOVE    1                   TO  FLG-CHOUKI
+               ELSE
+      *            院外
+                   MOVE    1                   TO  FLG-CHOUKI2
+               END-IF
                IF      WRK-CHOU-HKNCOMBI   =   SPACE
                    MOVE    WRK-COM-HKNCOMBI (IDX)
                                                TO  WRK-CHOU-HKNCOMBI
@@ -2288,6 +2551,41 @@
                                                TO  WRK-CHOU-CHIKENKBN
                END-IF
            END-IF
+      *!!!!!!!!!!!!!!!!!!!!!!1
+      *ver.4.7
+      *    用法毎まとめ対応
+           IF      (FLG-NAIFUKU        =   1  )
+              AND  (IDG1               <=  50 )
+              AND  (WRK-COM-INPUTCD(IDX)   NOT =   SPACE )
+               ADD     1               TO  IDG2
+               IF      IDG1            =   ZERO
+                   ADD     1               TO  IDG1
+               END-IF
+               MOVE    WRK-COM-INPUTCD(IDX)  TO  TBL-YOUHO-SRYCD
+                                                          (IDG1 IDG2)
+               MOVE    WRK-COM-KISOTEN(IDX)  TO  TBL-YOUHO-KISOTEN
+                                                          (IDG1 IDG2)
+               MOVE    WRK-COM-SURYO  (IDX)  TO  TBL-YOUHO-SURYO
+                                                          (IDG1 IDG2)
+               MOVE    WRK-COM-ZAIGATAKBN (IDX)
+                                             TO  TBL-YOUHO-ZAIGATAKBN
+                                                          (IDG1 IDG2)
+               MOVE    WRK-COM-TANDKKBN(IDX) TO  TBL-YOUHO-TANDKKBN
+                                                          (IDG1 IDG2)
+               MOVE    WRK-COM-INPUTCHI-G(IDX)
+                                             TO  TBL-YOUHO-INPUTCHI-G
+                                                          (IDG1 IDG2)
+               MOVE    WRK-COM-KEI (IDX)     TO  TBL-YOUHO-KEI
+                                                          (IDG1 IDG2)
+               IF    (WRK-COM-ZAIEND (IDX)   =   "1")
+                   MOVE    IDG2              TO  TBL-YOUHO-MAX (IDG1)
+                   MOVE    WRK-CHK-SRYSYUKBN TO  TBL-YOUHO-SRYSYUKBN
+                                                               (IDG1)
+                   ADD     1                 TO  IDG1
+                   MOVE    ZERO              TO  IDG2
+               END-IF
+           END-IF
+      *ver.4.7
       *
            .
        3000-SYOHOU-CHK-EXT.
@@ -2412,12 +2710,40 @@
                END-IF
                IF     (SPA-NAIFUKU-CHK     =   ZERO  )  AND
                       (SPA-ERRCD           =   SPACE )
-      *            ７種類以上の場合、確認
-                   IF      WRK-ZAICNT2         >=  7
+      *ver.4.7
+      ******       ７種類以上の場合、確認
+      *            IF      WRK-ZAICNT2         >=  7
       *            内服の薬剤逓減有りチェック
+      *                MOVE    1               TO  SPA-NAIFUKU-CHK
+      *                MOVE    "2002"          TO  LNK-ORCSC-KIDCD
+      ********     END-IF
+      *            ７種類以上の場合、確認
+                   EVALUATE    TRUE
+                   WHEN   (WRK-ZAICNT2         >=  7 )  AND
+                          (WRK-ZAICNT2-AL      >=  7 )
+      *                内服の薬剤逓減有りチェック
                        MOVE    1               TO  SPA-NAIFUKU-CHK
                        MOVE    "2002"          TO  LNK-ORCSC-KIDCD
+                   WHEN   (WRK-ZAICNT2         >=  7 )  AND
+                          (WRK-ZAICNT2-AL      <   7 )
+      *                用法まとめは７種類以下
+                       MOVE    1               TO  SPA-NAIFUKU-CHK
+                       MOVE    "2004"          TO  LNK-ORCSC-KIDCD
+                   WHEN   (WRK-ZAICNT2         <   7 )  AND
+                          (WRK-ZAICNT2-AL      >=  7 )
+      *                用法まとめで７種類以上
+                       MOVE    1               TO  SPA-NAIFUKU-CHK
+                       MOVE    "2005"          TO  LNK-ORCSC-KIDCD
+                       MOVE    WRK-ZAICNT2-AL  TO  WRK-ZAICNT2
+                   END-EVALUATE
+               ELSE
+                   IF     (WRK-ZAICNT2         <   7 )  AND
+                          (WRK-ZAICNT2-AL      >=  7 )
+      *                用法まとめで７種類以上
+                       MOVE    WRK-ZAICNT2-AL  TO  WRK-ZAICNT2
                    END-IF
+      *ver.4.7
+      *!!!
                END-IF
                IF     (LNK-ORCSC-KIDCD     =   SPACE )  AND
                       (SPA-ERRCD           =   SPACE )
@@ -2630,7 +2956,8 @@
                GO      TO      30011-INGAITOKUTEIKSN-CHK-EXT
            END-IF
       *
-           IF     (FLG-CHOUKI          =   1   )  AND
+      **** IF     (FLG-CHOUKI          =   1   )  AND
+           IF     (FLG-CHOUKI2         =   1   )  AND
                   (SPA-CHOKITOFLG      =   ZERO)
       *        長期投薬加算チェック
                MOVE    "120003270"         TO  WRK-SRYCD

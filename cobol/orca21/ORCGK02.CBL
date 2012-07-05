@@ -100,7 +100,6 @@
       *  04.06.00    NACL-多々納  11/02/16  用法コメント対応
       *  04.07.00    NACL-多々納  11/09/XX  院外処方点数表示対応
       *  04.07.00    NACL-多々納  12/01/05  クライアント印刷対応
-      *  04.07.00    NACL-森脇    12/07/04  ユーザーＩＤ表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -532,7 +531,7 @@
       *
            03  FLG-TUIKA               PIC 9(01).
       *
-           03  WRK-KIDMSG          PIC X(80).
+           03  WRK-KIDMSG          PIC X(100).
            03  WRK-KID-SRYCD       PIC X(09).
       *
            03  WRK-MOTOPG          PIC X(08).
@@ -12227,17 +12226,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE               TO  K02-GRPMEI-VALUE
            END-IF
       *
-      *----(04.07.00) LINE UPD START ----------------------------------
+      *ver.4.7
       *    医院名称
-      *     MOVE    SPA-HOSPNAME        TO  K02-TITLE
-           MOVE    SPACE           TO  K02-TITLE
+      *****MOVE    SPA-HOSPNAME        TO  K02-TITLE
+           MOVE    SPACE               TO  K02-TITLE
            STRING  SPA-HOSPNAME        DELIMITED BY SPACE
                    "  ["               DELIMITED BY SIZE
                    SPA-OPID            DELIMITED BY SPACE
                    "]"                 DELIMITED BY SIZE
-                                 INTO  K02-TITLE
+                                       INTO  K02-TITLE
            END-STRING
-      *----(04.07.00) LINE UPD END   ----------------------------------
       *
       *ito ちょっと試し start
            MOVE    SPA-GMN-POPUP-SUMMARY   TO  K02-POPUP-SUMMARY
@@ -12901,7 +12899,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2004"
                    STRING  "内服薬剤が７種類以上ですが、"
                            "用法まとめで７種類以下です。"
-                           "ＯＫで７種類以上にします"
+                           "７種類以上の処方せん料にしますか？"
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING

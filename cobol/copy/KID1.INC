@@ -20,7 +20,7 @@
               03  KID1-ID1CODE.
                 04  KID1-VALUE  PIC X(10).
               03  KID1-ID1MSG.
-                04  KID1-VALUE  PIC X(80).
+                04  KID1-VALUE  PIC X(100).
               03  KID1-B01.
                 04  KID1-LABEL  PIC X(4).
               03  KID1-B12.

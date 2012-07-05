@@ -4,7 +4,7 @@ KID1	{
 			value	varchar(10);
 		};
 		ID1MSG	{
-			value	varchar(80);
+			value	varchar(100);
 		};
 		B01	{
 			label	varchar(4);
