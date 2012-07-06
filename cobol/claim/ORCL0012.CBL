@@ -202,7 +202,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_uketuke"       TO  MCP-TABLE
-                       MOVE    "key"               TO  MCP-PATHNAME
+      *****            MOVE    "key"               TO  MCP-PATHNAME
+      *ver.4.7   SRFLGのみ更新
+                       MOVE    "upd1"               TO  MCP-PATHNAME
 grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            MCPDATA-REC
                                                            SPA-AREA

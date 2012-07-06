@@ -201,3 +201,16 @@ path	del10 	{
 		;
 	};
 };
+path	upd1	{
+	DBUPDATE	{
+		UPDATE	tbl_uketuke
+		SET	SRFLG			= :SRFLG,
+			UPYMD    		= :UPYMD,
+			UPHMS			= :UPHMS
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   UKEYMD      =   :UKEYMD
+			AND   UKEID       =   :UKEID
+		;
+	};
+};
+
