@@ -229,6 +229,10 @@
       *
       *    保険組合せ決定関数サブ
            COPY    "CPORCSAPIHKN.INC".
+      *ver.4.7
+      *    API XML読み込み共通定義
+           COPY    "CPAPIREQ.INC".
+      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -308,33 +312,34 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "P02.INC".
-           COPY    "P02A.INC".
-           COPY    "P02D.INC".
-           COPY    "P02E.INC".
-           COPY    "P02F.INC".
-           COPY    "P014.INC".
-           COPY    "P015.INC".
-           COPY    "P98.INC".
-           COPY    "P981.INC".
-           COPY    "P0201.INC".
-           COPY    "P982.INC".
-           COPY    "P100.INC".
-           COPY    "P02X.INC".
-           COPY    "P02S.INC".
-           COPY    "P02Q.INC".
-           COPY    "P02Q1.INC".
-           COPY    "P02Y.INC".
-           COPY    "P02Y1.INC".
-           COPY    "P02G.INC".
-           COPY    "P02G2.INC".
-           COPY    "P02K.INC".
-           COPY    "P02H.INC".
-           COPY    "P02T.INC".
-           COPY    "PERR.INC".
-           COPY    "PID1.INC".
-           COPY    "PDMY01.INC".
-           COPY    "CPAPIMOD.INC".
+           COPY    "ORCA12SCRAREA.INC".
+      *    COPY    "P02.INC".
+      *    COPY    "P02A.INC".
+      *    COPY    "P02D.INC".
+      *    COPY    "P02E.INC".
+      *    COPY    "P02F.INC".
+      *    COPY    "P014.INC".
+      *    COPY    "P015.INC".
+      *    COPY    "P98.INC".
+      *    COPY    "P981.INC".
+      *    COPY    "P0201.INC".
+      *    COPY    "P982.INC".
+      *    COPY    "P100.INC".
+      *    COPY    "P02X.INC".
+      *    COPY    "P02S.INC".
+      *    COPY    "P02Q.INC".
+      *    COPY    "P02Q1.INC".
+      *    COPY    "P02Y.INC".
+      *    COPY    "P02Y1.INC".
+      *    COPY    "P02G.INC".
+      *    COPY    "P02G2.INC".
+      *    COPY    "P02K.INC".
+      *    COPY    "P02H.INC".
+      *    COPY    "P02T.INC".
+      *    COPY    "PERR.INC".
+      *    COPY    "PID1.INC".
+      *    COPY    "PDMY01.INC".
+      *    COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -501,11 +506,11 @@
            MOVE   "XMLOPEN"            TO  MCP-FUNC
            MOVE    "xml_patientmodreq"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    API-BODY            TO  PTMODREQ-OBJECT
-           MOVE    ZERO                TO  PTMODREQ-MODE
+           MOVE    API-BODY            TO  APIREQ-OBJECT
+           MOVE    ZERO                TO  APIREQ-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-PATIENTMODREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
                CONTINUE
@@ -519,12 +524,13 @@
            MOVE   "XMLREAD"            TO  MCP-FUNC
            MOVE    "xml_patientmodreq"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  PTMODREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-PATIENTMODREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
+               MOVE    XML-APIREQ      TO  XML-PATIENTMODREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
@@ -534,10 +540,10 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_patientmodreq"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  PTMODREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-PATIENTMODREQ
+                                       XML-APIREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                CONTINUE
