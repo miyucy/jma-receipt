@@ -30,7 +30,8 @@ bind	"P02T"		"OpenCOBOL"	"ORCGP02T";
 bind	"PERR"		"OpenCOBOL"	"ORCGPERR";
 bind	"PID1"		"OpenCOBOL"	"ORCGPID1";
 bind	"_PDMY01"	"OpenCOBOL"	"ORCGPDMY01";
-bindapi "patientmod"    "OpenCOBOL" "ORAPI012S1"; 
+bindapi "patientmod"    "OpenCOBOL"	"ORAPI012S1"; 
+bindapi "patientmodv2"  "OpenCOBOL"	"ORAPI012S1V2"; 
 
 
 multiplex_group	orca12;
@@ -66,6 +67,7 @@ data	{
 		PID1;
 		_PDMY01;
 		patientmod;
+		patientmodv2;
 	};
 };
 
@@ -132,6 +134,11 @@ db	{
 db "xml" {
  xml_patientmodreq;
  xml_patientmodres;
+};
+
+db "xml2" {
+ xml_patientmodv2req;
+ xml_patientmodv2res;
 };
 
 #include "orcadb.inc"

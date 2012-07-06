@@ -44,3 +44,4 @@
            COPY    "PID1.INC".
            COPY    "PDMY01.INC".
            COPY    "CPAPIMOD.INC".
+           COPY    "CPAPIMODV2.INC".
