@@ -31,7 +31,7 @@
       *  03.04.00    NACL-多々納  06/11/14  検査正式名称表示追加
       *  03.05.00    NACL-太田    07.05.23  グループ診療対応
       *  04.01.00    NACL-太田    08/01/30  次頁表示の追加
-      *  04.07.00    NACL-多々納  12/07/09  労災等名称編集追加
+      *  04.06.00    NACL-多々納  12/07/09  労災等名称編集追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -343,7 +343,20 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA13SCRAREA.INC".
+           COPY    "Q01.INC".
+           COPY    "Q02.INC".
+           COPY    "Q02A.INC".
+           COPY    "Q02B.INC".
+           COPY    "Q03.INC".
+           COPY    "Q04.INC".
+           COPY    "Q96.INC".
+           COPY    "Q97.INC".
+           COPY    "Q98.INC".
+           COPY    "Q99.INC".
+           COPY    "Q100.INC".
+           COPY    "QERR.INC".
+           COPY    "QID1.INC".
+           COPY    "QFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1568,6 +1581,7 @@
            .
        310211-TENSU-KYOHEN-EXT.
            EXIT.
+      *
       *****************************************************************
       *    検査名称再編集処理
       *****************************************************************
@@ -1956,12 +1970,10 @@
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "（自院）"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
-               END-STRING
            ELSE
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "（全体）"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
-               END-STRING
            END-IF
       *
            .

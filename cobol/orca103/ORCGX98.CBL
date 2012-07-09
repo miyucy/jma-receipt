@@ -364,8 +364,6 @@
            COPY    "X04.INC".
            COPY    "X05.INC".
            COPY    "X06.INC".
-           COPY    "X07.INC".
-           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -982,34 +980,6 @@
            END-IF
       *!!
       *    ¸¡ººÀµ¼°Ì¾¾Î
-      *    IF     (TNS-SRYCD(1:1)      =   "1") AND
-      *           (TNS-SRYKBN          =   "60"
-      *                                OR  "64"   )  AND
-      *           (TNS-FORMALNAME  NOT =   SPACE )  AND
-      *           (TNS-FORMALNAME  NOT =   TNS-NAME )
-      *         MOVE    SPACE              TO  SPA-X98-GMN-NAME (IDX)
-      *         STRING  TNS-NAME           DELIMITED   BY  SPACE
-      *                 "¡¡¡Ú"             DELIMITED   BY  SIZE
-      *                 TNS-FORMALNAME     DELIMITED   BY  SPACE
-      *                 "¡Û"               DELIMITED   BY  SIZE
-      *                        INTO        SPA-X98-GMN-NAME(IDX)
-      *         END-STRING
-      *         PERFORM 310211-KENSA-NAME-SEC
-      *    END-IF
-      *H24.7
-      *    ¶¦ÄÌÊÔ½¸½èÍý
-           PERFORM 310211-TENSU-KYOHEN-SEC
-      *
-           .
-       31012-INPUTCD-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¶¦ÄÌÊÔ½¸½èÍý
-      *****************************************************************
-       310211-TENSU-KYOHEN-SEC             SECTION.
-      *
-      *    ¸¡ººÀµ¼°Ì¾¾Î
            IF     (TNS-SRYCD(1:1)      =   "1") AND
                   (TNS-SRYKBN          =   "60"
                                        OR  "64"   )  AND
@@ -1024,46 +994,13 @@
                 END-STRING
                 PERFORM 310211-KENSA-NAME-SEC
            END-IF
-      *
-      *    °åÎÅ´Ñ»¡¥³¡¼¥ÉÌ¾¾ÎÊÔ½¸
-           IF      (TNS-SRYCD(1:1)     =   "1"  )  AND
-                   (TNS-IRYOKANSATUKBN =   4    )
-      *        °åÎÅ´Ñ»¡¶èÊ¬
-               MOVE    SPACE               TO  SPA-X98-GMN-NAME (IDX)
-               STRING  "¡Ú°å´Ñ¡Û"          DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-X98-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *
-      *    Ï«ºÒ¥³¡¼¥ÉÌ¾¾ÎÊÔ½¸
-           IF      (TNS-SRYCD(1:3)     =   "101")
-      *    Ï«ºÒ¡Ê´ïºà¡Ë
-           OR     ((TNS-SRYCD(1:1)     =   "7"    )  AND
-                   (TNS-SRYCD(2:5)     =   "88888"))
-      *    Ï«ºÒ¡Ê¥³¥á¥ó¥È¡Ë
-           OR     ((TNS-SRYCD(1:1)     =   "8"  )  AND
-                   (TNS-SRYCD(4:1)     =   "8"  ))
-               MOVE    SPACE               TO  SPA-X98-GMN-NAME (IDX)
-               STRING  "¡ÚÏ«¡Û"            DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-X98-GMN-NAME(IDX)
-               END-STRING
-           END-IF
-      *
-      *    ¸ø³²¤Î¥³¡¼¥É
-           IF      (TNS-SRYCD (1:3)    =   "102")
-               MOVE    SPACE               TO  SPA-X98-GMN-NAME (IDX)
-               STRING  "¡Ú¸ø³²¡Û"          DELIMITED   BY  SIZE
-                      TNS-NAME             DELIMITED   BY  SPACE
-                      INTO                 SPA-X98-GMN-NAME(IDX)
-               END-STRING
-           END-IF
+      *H24.7
+      *    ¶¦ÄÌÊÔ½¸½èÍý
+           PERFORM 310211-TENSU-KYOHEN-SEC
       *
            .
-       310211-TENSU-KYOHEN-EXT.
+       31012-INPUTCD-HEN-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    Æ±°ì¥³¡¼¥É¥Á¥§¥Ã¥¯½èÍý
@@ -1527,20 +1464,20 @@
            END-IF
       *!!
       *    ¸¡ººÀµ¼°Ì¾¾Î
-      *    IF     (TNS-SRYCD(1:1)      =   "1") AND
-      *           (TNS-SRYKBN          =   "60"
-      *                                OR  "64"   )  AND
-      *           (TNS-FORMALNAME  NOT =   SPACE )  AND
-      *           (TNS-FORMALNAME  NOT =   TNS-NAME )
-      *         MOVE    SPACE              TO  SPA-X98-GMN-NAME (IDX)
-      *         STRING  TNS-NAME           DELIMITED   BY  SPACE
-      *                 "¡¡¡Ú"             DELIMITED   BY  SIZE
-      *                 TNS-FORMALNAME     DELIMITED   BY  SPACE
-      *                 "¡Û"               DELIMITED   BY  SIZE
-      *                        INTO        SPA-X98-GMN-NAME(IDX)
-      *         END-STRING
-      *         PERFORM 310211-KENSA-NAME-SEC
-      *    END-IF
+           IF     (TNS-SRYCD(1:1)      =   "1") AND
+                  (TNS-SRYKBN          =   "60"
+                                       OR  "64"   )  AND
+                  (TNS-FORMALNAME  NOT =   SPACE )  AND
+                  (TNS-FORMALNAME  NOT =   TNS-NAME )
+                MOVE    SPACE              TO  SPA-X98-GMN-NAME (IDX)
+                STRING  TNS-NAME           DELIMITED   BY  SPACE
+                        "¡¡¡Ú"             DELIMITED   BY  SIZE
+                        TNS-FORMALNAME     DELIMITED   BY  SPACE
+                        "¡Û"               DELIMITED   BY  SIZE
+                               INTO        SPA-X98-GMN-NAME(IDX)
+                END-STRING
+                PERFORM 310211-KENSA-NAME-SEC
+           END-IF
       *H24.7
       *    ¶¦ÄÌÊÔ½¸½èÍý
            PERFORM 310211-TENSU-KYOHEN-SEC
@@ -1615,6 +1552,50 @@
       *
            .
        31021-TENSU-HEN-EXT.
+           EXIT.
+      *H24.7
+      *****************************************************************
+      *    ÅÀ¿ô¥Þ¥¹¥¿¶¦ÄÌÊÔ½¸½èÍý
+      *****************************************************************
+       310211-TENSU-KYOHEN-SEC             SECTION.
+      *
+      *    °åÎÅ´Ñ»¡¥³¡¼¥ÉÌ¾¾ÎÊÔ½¸
+           IF      (TNS-SRYCD(1:1)     =   "1"  )  AND
+                   (TNS-IRYOKANSATUKBN =   4    )
+      *        °åÎÅ´Ñ»¡¶èÊ¬
+               MOVE    SPACE               TO  SPA-X98-GMN-NAME (IDX)
+               STRING  "¡Ú°å´Ñ¡Û"          DELIMITED   BY  SIZE
+                      TNS-NAME             DELIMITED   BY  SPACE
+                      INTO                 SPA-X98-GMN-NAME(IDX)
+               END-STRING
+           END-IF
+      *
+      *    Ï«ºÒ¥³¡¼¥ÉÌ¾¾ÎÊÔ½¸
+           IF      (TNS-SRYCD(1:3)     =   "101")
+      *    Ï«ºÒ¡Ê´ïºà¡Ë
+           OR     ((TNS-SRYCD(1:1)     =   "7"    )  AND
+                   (TNS-SRYCD(2:5)     =   "88888"))
+      *    Ï«ºÒ¡Ê¥³¥á¥ó¥È¡Ë
+           OR     ((TNS-SRYCD(1:1)     =   "8"  )  AND
+                   (TNS-SRYCD(4:1)     =   "8"  ))
+               MOVE    SPACE               TO  SPA-X98-GMN-NAME (IDX)
+               STRING  "¡ÚÏ«¡Û"            DELIMITED   BY  SIZE
+                      TNS-NAME             DELIMITED   BY  SPACE
+                      INTO                 SPA-X98-GMN-NAME(IDX)
+               END-STRING
+           END-IF
+      *
+      *    ¸ø³²¤Î¥³¡¼¥É
+           IF      (TNS-SRYCD (1:3)    =   "102")
+               MOVE    SPACE               TO  SPA-X98-GMN-NAME (IDX)
+               STRING  "¡Ú¸ø³²¡Û"          DELIMITED   BY  SIZE
+                      TNS-NAME             DELIMITED   BY  SPACE
+                      INTO                 SPA-X98-GMN-NAME(IDX)
+               END-STRING
+           END-IF
+      *
+           .
+       310211-TENSU-KYOHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2007,12 +1988,10 @@
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "¡Ê¼«±¡¡Ë"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
-               END-STRING
            ELSE
                STRING      WRK-GRP-MEI     DELIMITED  BY  SPACE
                            "¡ÊÁ´ÂÎ¡Ë"      DELIMITED  BY  SIZE
                            INTO            WRK-GRP-MEI-X
-               END-STRING
            END-IF
       *
            .
@@ -2116,8 +2095,7 @@
                WHEN    "ACTIVATE"      ALSO    "SELNUM3"
                WHEN    "ACTIVATE"      ALSO    "SELNUM4"
                WHEN    "ACTIVATE"      ALSO    "SELNUM5"
-                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06"
-                                           OR  "X08"  )
+                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
                        MOVE    MCP-WIDGET(7:1)     TO  IDX-N
                        MOVE    ZERO                TO  FLG-TOUROKU
                        PERFORM 41011-SELNUM-ALLCHK-SEC
@@ -2391,8 +2369,7 @@
                IF      SPA-X98-GMN-SYORI2  =   SPACE
                    PERFORM 41013-KENSA-GRP-SEC
                ELSE
-                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06"
-                                           OR  "X08" )
+                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
                        PERFORM 41014-KENSA-SEL-SEC
                    ELSE
                        PERFORM 41012-SRYCD-SEL-SEC
@@ -2401,7 +2378,6 @@
            ELSE
       *********PERFORM 41014-KENSA-SEL-SEC
                IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
-                OR   ( SPA-X98-MOTOPG  =   "X08" )
                    PERFORM 41014-KENSA-SEL-SEC
                ELSE
                    PERFORM 41012-SRYCD-SEL-SEC
@@ -2635,7 +2611,6 @@
                    PERFORM 41013-KENSA-GRP-SEC
                ELSE
                    IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
-                    OR   ( SPA-X98-MOTOPG  =   "X08" )
                        PERFORM 41014-KENSA-SEL-SEC
                    ELSE
                        PERFORM 41012-SRYCD-SEL-SEC
@@ -2643,7 +2618,6 @@
                END-IF
            ELSE
                IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
-                OR   ( SPA-X98-MOTOPG  =   "X08" )
                    PERFORM 41014-KENSA-SEL-SEC
                ELSE
                    PERFORM 41012-SRYCD-SEL-SEC
