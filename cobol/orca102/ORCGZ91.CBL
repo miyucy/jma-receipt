@@ -49,9 +49,6 @@
       *  04.01.01    NACL-森脇    08/01/17  器材商品追加
       *  04.02.01    NACL-森脇    08/03/13  病理診療追加
       *  04.03.01    NACL-森脇    08/06/13  ＣＳＶ出力対応
-      *  04.08.01    NACL-森脇    14/08/21  一時ファイルディレクトリ設定
-      *                           14/09/03  GINBEE対応
-      *  05.00.00    NACL-森脇    17/11/29  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -105,6 +102,9 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
+      *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
       *    印刷用呼出SHELL
            COPY    "CPHCMLSHELL.INC".
@@ -196,10 +196,6 @@
       *
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
-      *----(04.08.01)--ADD-START---
-      *    クライアント保存可否情報取得サブ
-           COPY    "CPORCSCLIENTSV.INC".
-      *----(04.08.01)--ADD-END-----
       *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -221,10 +217,6 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *----(05.00.00)--ADD-START---
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -235,7 +227,26 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA102SCRAREA.INC".
+           COPY    "Z01.INC".
+           COPY    "Z02.INC".
+           COPY    "Z03.INC".
+           COPY    "Z04.INC".
+           COPY    "Z05.INC".
+           COPY    "Z06.INC".
+           COPY    "Z07.INC".
+           COPY    "Z08.INC".
+           COPY    "Z90.INC".
+           COPY    "Z91.INC".
+           COPY    "Z97.INC".
+           COPY    "Z98.INC".
+           COPY    "Z99.INC".
+           COPY    "ZERR.INC".
+           COPY    "ZID1.INC".
+           COPY    "ZID2.INC".
+           COPY    "ZID3.INC".
+           COPY    "Z100.INC".
+           COPY    "ZFIL.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE               DIVISION    USING
            MCPAREA
@@ -448,18 +459,10 @@
       *
            MOVE    1               TO  SPA-Z91-GMN-CUR
       *
-      *----(04.08.01)--ADD-START---
-      *    クライアント保存可否情報取得サブ
-           INITIALIZE                      ORCSCLIENTSVAREA
-           CALL    "ORCSCLIENTSV"          USING
-                                           ORCSCLIENTSVAREA
-                                           SPA-AREA
-           MOVE    SCLIENTSV-CLIENT-SAVE
-                                       TO  SPA-Z100-CLIENT-SAVE
-      *----(04.08.01)--ADD-END-----
            .
        310-SPASET-EXT.
            EXIT.
+      *
       *****************************************************************
       *    確認画面ＯＫ処理
       *****************************************************************
@@ -1238,9 +1241,8 @@
                            MOVE    SPACE           TO  WRK-SHORIERR
                            STRING  "処理中です【"  DELIMITED  BY  SIZE
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "】"            DELIMITED  BY  SIZE
+                                   "】"            DELIMITED  BY  SIZE      
                                                    INTO  WRK-SHORIERR
-                           END-STRING
                            MOVE    SYS-3003-JOBID  TO  IDX
                        END-IF
                    END-IF    
@@ -1801,7 +1803,11 @@
       *****    MOVE    "/usr/local/orca/scripts/allways/print.sh"
       *****                                TO  SHELLTBL-NAME
       *        ファイルデイレクトリ位置指定
-               MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
+               INITIALIZE                  ORCSMKPASSAREA
+               MOVE    "scripts/allways/print_prv.sh"
+                                           TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
                MOVE    SPACE               TO  LNK-PRTKANRI-AREA
                INITIALIZE                      LNK-PRTKANRI-AREA
                MOVE    WRK-CONS-PRTKANRI-TBL-KEY
@@ -1832,10 +1838,7 @@
                MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10
                MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11
       *                 
-      *----(04.08.01)--UPD-START---
-      *         MOVE    TENSUERR            TO  SHELLTBL-ARG12
-               MOVE    TENSUERR-BASENAME   TO  SHELLTBL-ARG12
-      *----(04.08.01)--UPD-END-----
+               MOVE    TENSUERR            TO  SHELLTBL-ARG12
                MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG13
                MOVE    WRK-CONS-JOB-SHELLID
                                            TO  SHELLTBL-ARG14
@@ -1846,24 +1849,16 @@
                    MOVE    "3"             TO  SHELLTBL-ARG17
       *         WHEN    "NO"
       *             MOVE    "3"             TO  SHELLTBL-ARG17
-      *----(05.00.00)--ADD-START---
                WHEN    "OK"
-                   IF      SPA-CLIENT-PRT-FLG  =  2
-                       MOVE    "5"         TO  SHELLTBL-ARG17
-                   ELSE
-                       MOVE    "2"         TO  SHELLTBL-ARG17
-                   END-IF
+                   MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
-               MOVE    SPA-CLIENT-SHOWDIALOG
-                                           TO  SHELLTBL-ARG22
-      *----(05.00.00)--ADD-END-----
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SPACE               TO  SHELLTBL-ARG19
                MOVE    SPACE               TO  SHELLTBL-ARG20
                MOVE    SHELLTBL            TO  MCPDATA-REC
                MOVE    "SHELL"             TO  MCP-FUNC
                MOVE    "shell"             TO  MCP-TABLE
-               MOVE    "allways"           TO  MCP-PATHNAME
+               MOVE    "shell"             TO  MCP-PATHNAME
                CALL    "ORCDBMAIN"         USING
                                                MCPAREA
                                                MCPDATA-REC
@@ -1908,7 +1903,11 @@
            MOVE    SPACE               TO  SHELLTBL 
       *****MOVE    WRK-SHELL           TO  SHELLTBL-NAME
       *    ファイルデイレクトリ位置指定
-           MOVE    "tensu.sh"      TO  SHELLTBL-NAME
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    "scripts/allways/tensu.sh"
+                                   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
            MOVE    LNK-PRTKANRI-RENNUM
                                    TO  SHELLTBL-ARG1       
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -1948,8 +1947,8 @@
       *             
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "allways"       TO  MCP-PATHNAME
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                            MCPAREA
                                            MCPDATA-REC
@@ -2060,7 +2059,6 @@
            MOVE    SPA-Z91-JOB-JOBID   TO  SPA-Z97-JOB-JOBID
       *
            MOVE    SPACE               TO  Z97
-           INITIALIZE                      Z97
            MOVE    ZERO                TO  Z97-COUNT
            MOVE    WIDGET-INSENSITIVE  TO  Z97-B12-STATE
            MOVE    ZERO                TO  WRK-PRT-PAGE
@@ -2122,7 +2120,6 @@
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
                                       "】"         DELIMITED  BY  SIZE
                                                    INTO  Z97-MSG
-                               END-STRING
                            END-IF                          
                        END-IF    
                        MOVE    IDX                     TO  Z97-COUNT    
@@ -2205,7 +2202,6 @@
       *
            MOVE  SPACE              TO  Z91
       *
-           INITIALIZE                   Z91
            MOVE  SPA-GMN-MSTYMD     TO  Z91-MSTYMD
            MOVE  SPA-GMN-SRYCHK     TO  Z91-SRYCHK
            MOVE  SPA-GMN-TOKCHK     TO  Z91-TOKCHK
@@ -2298,20 +2294,7 @@
                                                Z91-IYKCHK6-STATE
                                                Z91-IYKCHK7-STATE
            END-IF
-      *----(04.08.01)--ADD-START---
-      *    GINBEEのとき
-           IF      SPA-MW      =   SPA-GINBEE
-      *        クライアント保存可能であればＣＳＶボタン活性化
-               IF      SPA-Z100-CLIENT-SAVE    =   "1"
-                   MOVE    WIDGET-NORMAL       TO  Z91-B11-STATE
-               ELSE
-                   MOVE    WIDGET-INSENSITIVE  TO  Z91-B11-STATE
-               END-IF
-           ELSE
-               MOVE    WIDGET-NORMAL       TO  Z91-B11-STATE
-           END-IF
-      *----(04.08.01)--ADD-END-----
-      *
+      *             
       *    カーソル位置
            PERFORM 5001-MAPCUR-SEC
            .
@@ -2473,7 +2456,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  ZID1
-           INITIALIZE                       ZID1
            MOVE    SPA-ZIDCD            TO  ZID1-ID1CODE
            MOVE    WRK-ZIDMSG           TO  ZID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2493,6 +2475,37 @@
            EXIT.
       *
       *****************************************************************
+      *    エラーメッセージ表示理
+      *****************************************************************
+      * 530-ZIDSET2-SEC              SECTION.
+      *
+      *     MOVE    SPACE               TO  WRK-ZIDMSG
+      *
+      *     EVALUATE    SPA-ZIDCD2
+      *         WHEN    "8888"
+      *             MOVE    "印刷が終了しました"        TO  WRK-ZIDMSG
+      *     END-EVALUATE
+      *
+      *     MOVE    SPACE                TO  ZID2
+      *     MOVE    SPA-ZIDCD2           TO  ZID2-ID1CODE
+      *     MOVE    WRK-ZIDMSG           TO  ZID2-ID1MSG
+      *     MOVE    "B12"                TO  MCP-WIDGET
+      *
+      *     MOVE    "Z91"                TO  SPA-MOTOPG
+      *     MOVE    "RID2"               TO  SPA-SAKIPG
+      *
+      *     MOVE    "NEW"                TO  MCP-PUTTYPE
+      *     MOVE    "ZID2"               TO  MCP-WINDOW
+      *
+      *     PERFORM 900-PUT-WINDOW
+      *
+      *     MOVE    1                    TO  FLG-END              
+      *
+      *     .
+      * 530-ZIDSET2-EXT.
+      *     EXIT.
+      *
+      *****************************************************************
       *    ガイドメッセージ表示
       *****************************************************************
        540-ZID3SET-SEC                 SECTION.
@@ -2509,7 +2522,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  ZID3
-           INITIALIZE                      ZID3
            MOVE    SPA-ZIDCD           TO  ZID3-ID1CODE
            MOVE    WRK-ZIDMSG          TO  ZID3-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
@@ -2527,6 +2539,10 @@
            .
        540-ZID3SET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    日付変換　処理
+      *****************************************************************
       *
       *****************************************************************
       *   和暦年月日→西暦年月日（機能１２）
