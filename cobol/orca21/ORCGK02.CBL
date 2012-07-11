@@ -2335,6 +2335,7 @@
                MOVE    SPACE           TO  SPA-COM-KZMFLG3(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
+               MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
                MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1(IDX)
@@ -4031,6 +4032,7 @@
                MOVE    SPACE           TO  SPA-COM-KZMFLG3(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
+               MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
                MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1(IDX)
@@ -12897,15 +12899,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
       *ver.4.7
                WHEN    "2004"
-                   STRING  "内服薬剤が７種類以上ですが、"
-                           "用法まとめで７種類以下です。"
+      *********    STRING  "内服薬剤が７種類以上ですが、"
+      *                    "用法まとめで７種類以下です。"
+      *                    "７種類以上の処方せん料にしますか？"
+      *                                DELIMITED   BY  SIZE
+      *                                INTO    WRK-KIDMSG
+      *            END-STRING
+      ***********  MOVE    SPACE       TO  WRK-KIDMSG
+                   STRING  "用法まとめでは内服薬剤は７種類未満です。"
                            "７種類以上の処方せん料にしますか？"
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
                WHEN    "2005"
-                   STRING  "用法まとめで内服薬剤が７種類以上になります"
-                           "。"
+                   STRING  "用法まとめでは内服薬剤が７種類以上に"
+                           "なります。"
                            "７種類以上の処方せん料にしますか？"
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG

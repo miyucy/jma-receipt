@@ -173,6 +173,8 @@
                            11  SPA-COM-TIMEFLG       PIC 9(01).
       *                    ´µ¼Ô¶Ø´÷ÌôºÞ¥Á¥§¥Ã¥¯ºÑ¥Õ¥é¥°
                            11  SPA-COM-KINKIFLG      PIC X(01).
+      *ver.4.7             ½èÊý¤»¤óÎÁ·Ù¹ð£²
+                           11  SPA-COM-KZMFLG6       PIC X(01).
       *                ¼«Æ°È¯À¸ºÑ¥Õ¥é¥°
                        09  SPA-COM-AUTOFLG           PIC X(01).
       *                »ÄÎÌÇÑ´þ¼«Æ°È¯À¸ºÑ¥Õ¥é¥°
@@ -445,4 +447,7 @@
                        09  SPA-COM-KINKSTYMD           PIC X(08).
                        09  SPA-COM-TOUYOYMD            PIC X(08).
                        09  SPA-COM-PTKINKICD           PIC 9(01).
+      *ver.4.7 ¤«¤éÍ½È÷
+                       09  SPA-COM-YOBI1               PIC X(10).
+                       09  SPA-COM-YOBI2               PIC X(10).
       * 

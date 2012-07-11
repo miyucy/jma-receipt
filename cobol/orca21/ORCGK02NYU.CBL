@@ -2780,6 +2780,7 @@
                MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
                MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
+               MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
                MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-NYU-KZMFLG-G(IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG (IDX)

@@ -1755,6 +1755,9 @@
       *        内服７種類以上逓減確認
                WHEN    "2001"
                WHEN    "2002"
+      *ver.4.7
+               WHEN    "2004"
+               WHEN    "2005"
                    MOVE    SPACE               TO  SPA-KIDCD
                    IF      SPA-KID1-FLG        =   "OK"
                       MOVE    1                TO  SPA-NAIFUKU-OK
@@ -9177,6 +9180,21 @@
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
+      *ver.4.7
+               WHEN    "2004"
+                   STRING  "用法まとめでは内服薬剤は７種類未満です。"
+                           "７種類以上の処方せん料にしますか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+               WHEN    "2005"
+                   STRING  "用法まとめでは内服薬剤が７種類以上に"
+                           "なります。"
+                           "７種類以上の処方せん料にしますか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+      *ver.4.7
       *!!
                WHEN    OTHER
                    MOVE    SPA-KIDCD
@@ -9200,12 +9218,17 @@
                WHEN    "0213"
                WHEN    "2003"
                WHEN    "0138"
+      *ver.4.7
+               WHEN    "2004"
+               WHEN    "2005"
                    MOVE    "ＮＯ"            TO  KTID1-B01
            END-EVALUATE
       *
            MOVE    "B12"               TO  MCP-WIDGET
            EVALUATE    SPA-KIDCD
                WHEN    "3004"
+      *ver.4.7
+               WHEN    "2004"
                    MOVE    "B01"               TO  MCP-WIDGET
            END-EVALUATE
       *

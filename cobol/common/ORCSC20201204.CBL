@@ -116,7 +116,7 @@
            03  FLG-JYURRK-END       PIC 9(01).
       *    長期あり
            03  FLG-CHOUKI           PIC 9(01).
-      *H24.4
+      *H24.7
            03  FLG-CHOUKI2          PIC 9(01).
       *
            03  FLG-CHOKIKA1         PIC 9(01).
@@ -1858,7 +1858,7 @@
                    END-IF
                ELSE
       *            長期投薬があること
-      **           IF      FLG-CHOUKI          =   ZERO
+      *H24.7       IF      FLG-CHOUKI          =   ZERO
                    IF      FLG-CHOUKI2         =   ZERO
                       IF     (WRK-COM-KZMFLG (IDX-T1)  =   SPACE) AND
                              (LNK-ORCSC-KEI-IDX        =   ZERO )
@@ -1996,12 +1996,12 @@
                       (FLG-TONPUK          =   1    )  OR
                       (FLG-GAIYAK          =   1    )
       *            処方せん料と院内投薬のみは警告
-                   IF     (WRK-COM-KZMFLG (IDX-SYOHOU) =   SPACE) AND
+                   IF     (WRK-COM-KZMFLG6 (IDX-SYOHOU) =   SPACE) AND
                           (LNK-ORCSC-KEI-IDX           =   ZERO )
                        MOVE    "K122"          TO  SPA-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR
                                                           (IDX-SYOHOU)
-                       MOVE    "1"             TO  WRK-COM-KZMFLG
+                       MOVE    "1"             TO  WRK-COM-KZMFLG6
                                                           (IDX-SYOHOU)
                        MOVE    IDX-SYOHOU      TO  LNK-ORCSC-KEI-IDX
                    END-IF
@@ -2197,8 +2197,8 @@
                END-IF
            END-PERFORM
       *TEST
-           DISPLAY "WRK-ZAICNT2-AL:" WRK-ZAICNT2-AL
-                 ",WRK-ZAICNT-AL:"  WRK-ZAICNT-AL
+      *    DISPLAY "WRK-ZAICNT2-AL:" WRK-ZAICNT2-AL
+      *          ",WRK-ZAICNT-AL:"  WRK-ZAICNT-AL
       *TEST
            .
        30030-YOUHOU-HEN-EXT.
@@ -2242,10 +2242,10 @@
             END-IF
            END-PERFORM
       *TEST
-            DISPLAY "TBL-Y2-YOUHOU:" TBL-Y2-YOUHOU
-                 ",WRK-ZAITEN-G:" WRK-ZAITEN-G
-               ",WRK-KONGO:" WRK-KONGO
-               ",WRK-SONOTA:" WRK-SONOTA
+      *     DISPLAY "TBL-Y2-YOUHOU:" TBL-Y2-YOUHOU
+      *          ",WRK-ZAITEN-G:" WRK-ZAITEN-G
+      *        ",WRK-KONGO:" WRK-KONGO
+      *        ",WRK-SONOTA:" WRK-SONOTA
       *TEST
            IF      WRK-ZAITEN-G        <=  205
                IF      WRK-ZAITEN-G        =   ZERO
@@ -2517,7 +2517,7 @@
                                               OR  "23"
                                               OR  "29" )  AND
                    (WRK-COM-KAISU (IDX)       >=  28   )
-      *****    MOVE    1                   TO  FLG-CHOUKI
+      *H24.7   MOVE    1                   TO  FLG-CHOUKI
                IF      WRK-CHK-SRYSYUKBN(3:1)  =   "1"
       *            院内
                    MOVE    1                   TO  FLG-CHOUKI
