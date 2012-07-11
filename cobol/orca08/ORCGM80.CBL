@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.00    NACL-多々納  11/12/06  upgrade非活性対応
+      *  04.07.00    NACL-多々納  12/07/11  ベンダー毎対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -105,6 +106,11 @@
                05  SPA-SHELL-RC                PIC 9(01).
       *
                05  SPA-GMN-DURATION            PIC 9(01).
+      *        ベンダー一覧
+               05  SPA-NAI-VENDFLG             PIC 9(01).
+      *        ベンダー
+               05  SPA-NAI-VENDOR              PIC X(20).
+               05  SPA-NAI-VENDORALL           PIC X(01).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -114,6 +120,7 @@
            03  FLG-NO              PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-SYORI-END       PIC 9(01).
+           03  FLG-HENOK           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -139,6 +146,24 @@
       *    コラムリスト位置
            03  WRK-M80-LIST-ROW        PIC S9(09).
            03  FLG-GMN-INIT            PIC  9(01).
+      *
+           03  WRK-VENDOR              PIC X(20).
+      *
+      *H24.7
+      *    保存
+       01  WRK-GMN-HZN-AREA.
+           07  WRK-GMN-TBLREC.
+               09  WRK-GMN-TNUM          PIC 9(04).
+               09  WRK-GMN-TPGMEISYO     PIC X(100).
+               09  WRK-GMN-TPGNAME       PIC X(50).
+               09  WRK-GMN-TVERSION      PIC X(20).
+               09  WRK-GMN-TVENDOR       PIC X(20).
+               09  WRK-GMN-TINS          PIC X(10).
+               09  WRK-GMN-TLINK         PIC X(10).
+      *
+               09  WRK-GMN-TDATE         PIC X(10).
+               09  WRK-NAI-TINS          PIC X(10).
+               09  WRK-NAI-TLINK         PIC X(10).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -397,6 +422,9 @@
       *        一覧更新
                WHEN    "CLICKED"       ALSO    "B04"
                     PERFORM 404-LIST-INIT-SEC
+      *        ベンダー
+               WHEN    "CLICKED"       ALSO    "B05"
+                    PERFORM 405-VENDOR-INIT-SEC
       *        前頁
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 406-MAE-PAGE-SEC
@@ -478,6 +506,8 @@
            MOVE    1                   TO  FLG-GMN-INIT
            INITIALIZE                  SPA-GMN-LIST-AREA
            MOVE    ZERO                TO  SPA-GMN-NEXT
+      *H24.7
+           INITIALIZE                  WRK-GMN-HZN-AREA
       *
            MOVE    ZERO                TO  FLG-DATAEND
            MOVE    ZERO                TO  IDX
@@ -495,7 +525,26 @@
                MOVE    1                   TO  FLG-DATAEND
            END-IF
            PERFORM     UNTIL       FLG-DATAEND  =   1
-               PERFORM 4042-LIST-HEN-SEC
+      *******  PERFORM 4042-LIST-HEN-SEC
+      *H24.7
+      *        一覧表編集
+               EVALUATE    SPA-NAI-VENDFLG
+                   WHEN    ZERO
+      *                全体
+                       PERFORM 4042-LIST-HEN-SEC
+                   WHEN    1
+      *                べンダー一覧
+                       PERFORM 40422-LIST-HEN02-SEC
+                   WHEN    2
+      *                ベンダー毎
+                       IF      SPA-NAI-VENDORALL   =   "1"
+      *                    全体
+                           PERFORM 4042-LIST-HEN-SEC
+                       ELSE
+      *                    ベンダー毎
+                           PERFORM 40423-LIST-HEN03-SEC
+                       END-IF
+               END-EVALUATE
            END-PERFORM
       *
            CLOSE                       PLUGINLIST-FILE
@@ -675,6 +724,178 @@
            EXIT.
       *
       *****************************************************************
+      *    ベンダー一覧編集処理
+      *****************************************************************
+       40422-LIST-HEN02-SEC             SECTION.
+      *
+           IF      PLUGIN-ID           =   "vendor "
+               IF      IDX             =   ZERO
+                   MOVE    SPACE           TO  WRK-VENDOR
+               END-IF
+               IF     (PLUGIN-DATA     NOT =   SPACE     )
+                AND   (PLUGIN-DATA     NOT =   WRK-VENDOR)
+                   MOVE    PLUGIN-DATA         TO  WRK-VENDOR
+                   ADD     1                   TO  IDX
+                   IF      IDX                 <   IDX-STR
+      *                読み飛ばし
+                       MOVE    1               TO  FLG-NO
+                   ELSE
+                       MOVE    ZERO            TO  FLG-NO
+                       ADD     1               TO  SPA-TBL-MAX
+                       ADD     1               TO  IDY
+                       IF      SPA-TBL-MAX     >   MAX-LINE
+                           MOVE    MAX-LINE        TO  SPA-TBL-MAX
+                           MOVE    1               TO  SPA-GMN-NEXT
+                           MOVE    1               TO  FLG-DATAEND
+                       END-IF
+                   END-IF
+               END-IF
+               IF     (FLG-NO              =   ZERO )
+                 AND  (FLG-DATAEND         =   ZERO )
+      *            テーブル編集
+                   MOVE    IDX             TO  SPA-GMN-TNUM    (IDY)
+      *            ベンダー
+                   MOVE    PLUGIN-DATA     TO  SPA-GMN-TVENDOR(IDY)
+               END-IF
+           END-IF
+      *
+           IF      FLG-DATAEND          =   ZERO
+               PERFORM 900-PLUGNDATA-READ-SEC
+           END-IF
+      *
+      *    最終行
+           IF      FLG-DATAEND          =   1
+               IF     (SPA-GMN-NEXT     =   ZERO )
+               AND    (SPA-TBL-MAX      <   MAX-LINE )
+                   ADD     1                TO  IDY
+                   ADD     1                TO  SPA-TBL-MAX
+                   ADD     1                TO  IDX
+      *            テーブル編集
+                   MOVE    IDX             TO  SPA-GMN-TNUM    (IDY)
+      *            ベンダー
+                   MOVE    "全部"          TO  SPA-GMN-TVENDOR(IDY)
+               END-IF
+           END-IF
+           .
+       40422-LIST-HEN02-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ベンダー毎編集処理
+      *****************************************************************
+       40423-LIST-HEN03-SEC             SECTION.
+      *
+      *
+           IF      PLUGIN-ID           =   "id  "
+               PERFORM 40423-LIST03-INIT-SEC
+           END-IF
+      *
+           EVALUATE    PLUGIN-ID
+               WHEN    "id "
+      *            番号
+                   MOVE    1               TO  WRK-GMN-TNUM
+               WHEN    "name "
+      *            プログラムＩＤ
+                   MOVE    PLUGIN-DATA     TO  WRK-GMN-TPGNAME
+               WHEN    "version "
+      *            バージョン
+                   MOVE    PLUGIN-DATA     TO  WRK-GMN-TVERSION
+               WHEN    "description "
+      *            プログラム名称
+                   MOVE    PLUGIN-DATA     TO  WRK-GMN-TPGMEISYO
+               WHEN    "vendor "
+      *            ベンダー
+                   MOVE    PLUGIN-DATA     TO  WRK-GMN-TVENDOR
+               WHEN    "date "
+      *            日付
+                   MOVE    PLUGIN-DATA     TO  WRK-GMN-TDATE
+               WHEN    "install "
+      *            INS
+                   MOVE    PLUGIN-DATA     TO  WRK-NAI-TINS
+                   IF      WRK-NAI-TINS    =   "FALSE"
+                       MOVE    "NO"            TO  WRK-GMN-TINS
+                   ELSE
+                       MOVE    "YES"           TO  WRK-GMN-TINS
+                   END-IF
+               WHEN    "link "
+      *            LINK
+                   MOVE    PLUGIN-DATA     TO  WRK-NAI-TLINK
+                   IF      WRK-NAI-TLINK   =   "FALSE"
+                       MOVE    "disable"       TO  WRK-GMN-TLINK
+                   ELSE
+                       MOVE    "enable"        TO  WRK-GMN-TLINK
+                   END-IF
+           END-EVALUATE
+      *
+           IF      FLG-DATAEND          =   ZERO
+               PERFORM 900-PLUGNDATA-READ-SEC
+           END-IF
+      *
+           IF     (FLG-DATAEND      NOT =   ZERO )
+           AND    (SPA-GMN-NEXT         =   ZERO )
+               PERFORM 40423-LIST03-INIT-SEC
+           END-IF
+           .
+       40423-LIST-HEN03-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ベンダー一覧
+      *****************************************************************
+       40423-LIST03-INIT-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HENOK
+           IF      WRK-GMN-TNUM        NOT =   ZERO
+               IF     (SPA-NAI-VENDOR      =   WRK-GMN-TVENDOR)
+      *            対象
+                   MOVE    1               TO  FLG-HENOK
+               END-IF
+           END-IF
+      *
+           IF      FLG-HENOK           =   1
+      *        編集対象
+               ADD     1                   TO  IDX
+               IF      IDX                 <   IDX-STR
+      *            読み飛ばし
+                   MOVE    1               TO  FLG-NO
+               ELSE
+                   MOVE    ZERO            TO  FLG-NO
+                   ADD     1               TO  SPA-TBL-MAX
+                   ADD     1               TO  IDY
+                   IF      SPA-TBL-MAX     >   MAX-LINE
+                       MOVE    MAX-LINE        TO  SPA-TBL-MAX
+                       MOVE    1               TO  SPA-GMN-NEXT
+                       MOVE    1               TO  FLG-DATAEND
+                   END-IF
+               END-IF
+               IF     (FLG-NO              =   ZERO )
+                 AND  (FLG-DATAEND         =   ZERO )
+                   MOVE    IDX             TO  WRK-GMN-TNUM
+                   MOVE    WRK-GMN-TBLREC  TO  SPA-GMN-TBLREC (IDY)
+               END-IF
+           END-IF
+      *    クリア
+           INITIALIZE                  WRK-GMN-HZN-AREA
+           .
+       40423-LIST03-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ベンダー一覧
+      *****************************************************************
+       405-VENDOR-INIT-SEC          SECTION.
+      *
+      *    ベンダー一覧
+           MOVE    1                   TO  SPA-NAI-VENDFLG
+           MOVE    SPACE               TO  SPA-NAI-VENDOR
+           MOVE    SPACE               TO  SPA-NAI-VENDORALL
+           PERFORM 404-LIST-INIT-SEC
+           .
+       405-VENDOR-INIT-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    選択番号チェック処理
       *****************************************************************
        4001-SELNUM-CHK-SEC          SECTION.
@@ -699,8 +920,15 @@
                    MOVE    1                   TO  SPA-GMN-CUR
                END-IF
            ELSE
-      *        内容編集
-               PERFORM 40011-SEL-SYORI-SEC
+      *H24.7
+      *        ベンダー選択一覧
+               IF      SPA-NAI-VENDFLG         =   1
+      *            ベンダー選択
+                   PERFORM 40012-SEL-VENDER-SYORI-SEC
+               ELSE
+      *            内容編集
+                   PERFORM 40011-SEL-SYORI-SEC
+               END-IF
            END-IF
       *
            .
@@ -763,6 +991,26 @@
       *
            .
        4003-LIST-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ベンダー選択処理
+      *****************************************************************
+       40012-SEL-VENDER-SYORI-SEC          SECTION.
+      *
+           MOVE    2                   TO  SPA-NAI-VENDFLG
+           IF      SPA-GMN-TVENDOR (SPA-NAI-IDX)   =   "全部"
+               MOVE    SPACE               TO  SPA-NAI-VENDOR
+               MOVE    "1"                 TO  SPA-NAI-VENDORALL
+           ELSE
+               MOVE    SPA-GMN-TVENDOR (SPA-NAI-IDX)
+                                           TO  SPA-NAI-VENDOR
+               MOVE    SPACE               TO  SPA-NAI-VENDORALL
+           END-IF
+           PERFORM 404-LIST-INIT-SEC
+      *
+           .
+       40012-SEL-VENDER-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -835,6 +1083,9 @@
            INITIALIZE                      SPA-NAI-AREA
            MOVE    SPACE               TO  SPA-GMN-SYORIMSG
            MOVE    ZERO                TO  SPA-NAI-SYORIERR
+           MOVE    ZERO                TO  SPA-NAI-VENDFLG
+           MOVE    SPACE               TO  SPA-NAI-VENDOR
+           MOVE    SPACE               TO  SPA-NAI-VENDORALL
       *
            MOVE    1                   TO  SPA-GMN-CUR
            .
