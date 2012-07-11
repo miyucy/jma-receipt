@@ -2068,24 +2068,24 @@
                        MOVE    SPACE               TO  LNK-ORCSC-ERRMSG
                    END-IF
                END-IF
-      *!!!!
-      *        一般名処方加算チェック
-               IF     (FLG-IPPANKSN        =   ZERO )
-                 AND  (SPA-ERRCD           =   SPACE)
-                 AND  (FLG-GENERIC-OK      =   1    )
-      *            処方せん料の入力があり、一般名加算対象
-                   IF     (WRK-COM-KZMFLG2 (IDX-SYOHOU) =   SPACE) AND
-                          (LNK-ORCSC-KEI-IDX       =   ZERO )
-                       MOVE    "K236"          TO  SPA-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR
-                                                        (IDX-SYOHOU)
-                       MOVE    "1"             TO  WRK-COM-KZMFLG2
-                                                        (IDX-SYOHOU)
-                       MOVE    IDX-SYOHOU      TO  LNK-ORCSC-KEI-IDX
-                    END-IF
-               END-IF
            END-IF
-      *!!
+      *H24.6
+      *    処方せん料の入力があり一般名処方加算なし
+           IF     (IDX-SYOHOU      NOT =   ZERO )
+             AND  (FLG-IPPANKSN        =   ZERO )
+             AND  (SPA-ERRCD           =   SPACE)
+             AND  (FLG-GENERIC-OK      =   1    )
+      *        処方せん料の入力があり、一般名加算対象
+               IF     (WRK-COM-KZMFLG2 (IDX-SYOHOU) =   SPACE) AND
+                      (LNK-ORCSC-KEI-IDX       =   ZERO )
+                   MOVE    "K236"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR
+                                                        (IDX-SYOHOU)
+                   MOVE    "1"             TO  WRK-COM-KZMFLG2
+                                                        (IDX-SYOHOU)
+                   MOVE    IDX-SYOHOU      TO  LNK-ORCSC-KEI-IDX
+                END-IF
+           END-IF
       *H24.6
       *    一般名加算の対象チェック
            IF     (FLG-IPPANKSN        =   1   )
