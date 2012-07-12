@@ -889,7 +889,7 @@
                    END-IF
                END-IF
                IF     (FLG-NO              =   ZERO )
-                 AND  (FLG-DATAEND         =   ZERO )
+                 AND  (SPA-GMN-NEXT        =   ZERO )
                    MOVE    IDX             TO  WRK-GMN-TNUM
                    MOVE    WRK-GMN-TBLREC  TO  SPA-GMN-TBLREC (IDY)
                END-IF
