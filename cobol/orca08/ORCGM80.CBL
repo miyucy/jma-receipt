@@ -751,13 +751,13 @@
                            MOVE    1               TO  FLG-DATAEND
                        END-IF
                    END-IF
-               END-IF
-               IF     (FLG-NO              =   ZERO )
-                 AND  (FLG-DATAEND         =   ZERO )
-      *            テーブル編集
-                   MOVE    IDX             TO  SPA-GMN-TNUM    (IDY)
-      *            ベンダー
-                   MOVE    PLUGIN-DATA     TO  SPA-GMN-TVENDOR (IDY)
+                   IF     (FLG-NO              =   ZERO )
+                     AND  (FLG-DATAEND         =   ZERO )
+      *                テーブル編集
+                       MOVE    IDX             TO  SPA-GMN-TNUM   (IDY)
+      *                ベンダー
+                       MOVE    PLUGIN-DATA     TO  SPA-GMN-TVENDOR(IDY)
+                   END-IF
                END-IF
            END-IF
       *
