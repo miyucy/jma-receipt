@@ -128,6 +128,7 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDX-STR             PIC 9(04).
+           03  IDX-V               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -729,12 +730,13 @@
        40422-LIST-HEN02-SEC             SECTION.
       *
            IF      PLUGIN-ID           =   "vendor "
-               IF      IDX             =   ZERO
-                   MOVE    SPACE           TO  WRK-VENDOR
+               MOVE    ZERO                TO  FLG-HENOK
+               IF      IDX                 =   ZERO
+                   MOVE    1                   TO  FLG-HENOK
+               ELSE
+                   PERFORM 404221-LIST02-INIT-SEC
                END-IF
-               IF     (PLUGIN-DATA     NOT =   SPACE     )
-                AND   (PLUGIN-DATA     NOT =   WRK-VENDOR)
-                   MOVE    PLUGIN-DATA         TO  WRK-VENDOR
+               IF     (FLG-HENOK           =   1     )
                    ADD     1                   TO  IDX
                    IF      IDX                 <   IDX-STR
       *                読み飛ばし
@@ -755,7 +757,7 @@
       *            テーブル編集
                    MOVE    IDX             TO  SPA-GMN-TNUM    (IDY)
       *            ベンダー
-                   MOVE    PLUGIN-DATA     TO  SPA-GMN-TVENDOR(IDY)
+                   MOVE    PLUGIN-DATA     TO  SPA-GMN-TVENDOR (IDY)
                END-IF
            END-IF
       *
@@ -778,6 +780,24 @@
            END-IF
            .
        40422-LIST-HEN02-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ベンダー判定処理
+      *****************************************************************
+       404221-LIST02-INIT-SEC             SECTION.
+      *
+           MOVE    1                   TO  FLG-HENOK
+           MOVE    PLUGIN-DATA         TO  WRK-VENDOR
+           PERFORM VARYING     IDX-V   FROM    1   BY  1
+                   UNTIL       IDX-V   >   SPA-TBL-MAX
+               IF      WRK-VENDOR      =   SPA-GMN-TVENDOR (IDX-V)
+                   MOVE    ZERO                TO  FLG-HENOK
+                   MOVE    SPA-TBL-MAX         TO  IDX-V
+               END-IF
+           END-PERFORM
+           .
+       404221-LIST02-INIT-EXT.
            EXIT.
       *
       *****************************************************************
