@@ -72,6 +72,10 @@
            03  POS3                    PIC 9(04).
            03  POS4                    PIC 9(04).
            03  POS5                    PIC 9(04).
+           03  POS10                   PIC 9(04).
+           03  POS11                   PIC 9(04).
+           03  POS12                   PIC 9(04).
+           03  MOJI-CNT                PIC 9(04).
       *    一時領域
        01  WRK-AREA.
            03  WK-CONT-FLG         PIC 9(02).
@@ -473,6 +477,8 @@
                  MOVE  43              TO  POS5
            END-IF
       *
+           PERFORM 2201-BTCH-POS-SEC
+      *
            INITIALIZE  PRTCTRL-REC
                        WKPRTCTRL-REC
            MOVE    SPA-HOSPNUM         TO  PRTCTRL-HOSPNUM
@@ -514,17 +520,17 @@
                   INTO   WK-FILE-NAME
            END-STRING
       *
-      *    DISPLAY "----------- Batch ---------------------- " 
-      *    DISPLAY "MPRT-FILENAME(POS4:4) = " MPRT-FILENAME(POS4:4)
-      *    DISPLAY "WPRTCTRL-HOSPNUM = " WPRTCTRL-HOSPNUM
-      *    DISPLAY "WPRTCTRL-TBL-KEY = " WPRTCTRL-TBL-KEY
-      *    DISPLAY "WPRTCTRL-RENNUM = "  WPRTCTRL-RENNUM
-      *    DISPLAY "WPRTCTRL-TBL-GROUP = "  WPRTCTRL-TBL-GROUP
-      *    DISPLAY "WPRTCTRL-TBL-UUID     = " WPRTCTRL-TBL-UUID
-      *    DISPLAY "WPRTCTRL-SHORI-RENNUM = " WPRTCTRL-SHORI-RENNUM
-      *    DISPLAY "WK-ST-PAGE            = " WK-ST-PAGE
-      *    DISPLAY "bt WK-FILE-NAME = " WK-FILE-NAME
-      *    DISPLAY "--------------------------------- " 
+           DISPLAY "----------- Batch ---------------------- " 
+           DISPLAY "MPRT-FILENAME(POS4:4) = " MPRT-FILENAME(POS4:4)
+           DISPLAY "WPRTCTRL-HOSPNUM = " WPRTCTRL-HOSPNUM
+           DISPLAY "WPRTCTRL-TBL-KEY = " WPRTCTRL-TBL-KEY
+           DISPLAY "WPRTCTRL-RENNUM = "  WPRTCTRL-RENNUM
+           DISPLAY "WPRTCTRL-TBL-GROUP = "  WPRTCTRL-TBL-GROUP
+           DISPLAY "WPRTCTRL-TBL-UUID     = " WPRTCTRL-TBL-UUID
+           DISPLAY "WPRTCTRL-SHORI-RENNUM = " WPRTCTRL-SHORI-RENNUM
+           DISPLAY "WK-ST-PAGE            = " WK-ST-PAGE
+           DISPLAY "bt WK-FILE-NAME = " WK-FILE-NAME
+           DISPLAY "--------------------------------- " 
       *==================== 一旦以下のロジックを保留とする(開始) ====================
       **    コントロールレコードの存在チェック
       *     PERFORM 1101-CTRLDATA-READ-SEC
@@ -550,6 +556,60 @@
            END-IF
            .
        220-BATCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ダミー情報処理メイン(バッチ)
+      *****************************************************************
+       2201-BTCH-POS-SEC          SECTION.
+      *  POS1:TBL_KEY の長さ
+      *  POS2:RENNUMの開始位置
+      *  POS3:GROUPの開始位置
+      *  POS4:開始ページの開始位置
+      *  POS5:拡張子の開始位置
+      *
+      *
+           COMPUTE MOJI-CNT  =  MOJI-CNT  -  1
+           DISPLAY "MOJI-CNT = " MOJI-CNT
+           EVALUATE    MOJI-CNT
+           WHEN        43
+               MOVE  5               TO  POS1
+               MOVE  8               TO  POS2
+               MOVE  12              TO  POS3
+               MOVE  28              TO  POS4
+               MOVE  40              TO  POS5
+               MOVE  35              TO  POS10
+               MOVE  13              TO  POS11
+               MOVE  35              TO  POS12
+           WHEN        44
+               MOVE  6               TO  POS1
+               MOVE  9               TO  POS2
+               MOVE  13              TO  POS3
+               MOVE  29              TO  POS4
+               MOVE  41              TO  POS5
+               MOVE  36              TO  POS10
+               MOVE  14              TO  POS11
+               MOVE  36              TO  POS12
+           WHEN        45
+               MOVE  7               TO  POS1
+               MOVE  10              TO  POS2
+               MOVE  14              TO  POS3
+               MOVE  30              TO  POS4
+               MOVE  42              TO  POS5
+               MOVE  37              TO  POS10
+               MOVE  15              TO  POS11
+               MOVE  37              TO  POS12
+           WHEN        46
+               MOVE  8               TO  POS1
+               MOVE  11              TO  POS2
+               MOVE  15              TO  POS3
+               MOVE  31              TO  POS4
+               MOVE  43              TO  POS5
+               MOVE  38              TO  POS10
+               MOVE  16              TO  POS11
+               MOVE  38              TO  POS12
+           END-EVALUATE
+           .
+       2201-BTCH-POS-EXT.
            EXIT.
       *****************************************************************
       *    ダミー情報処理メイン(バッチ)
@@ -581,7 +641,8 @@
       *****************************************************************
        2202-BTPRT-SEC          SECTION.
       * 印刷データセット名生成
-           MOVE    "0000100001"        TO  WK-FILE-NAME(35:10) 
+      *    MOVE    "0000100001"        TO  WK-FILE-NAME(35:10) 
+           MOVE    "0000100001"        TO  WK-FILE-NAME(POS10:10) 
            DISPLAY "bt2 WK-FILE-NAME = " WK-FILE-NAME
       * dummyコントロール存在チェック take2
            PERFORM 1101-CTRLDATA-READ-SEC
@@ -657,8 +718,10 @@
            DISPLAY "batch FLG-PRTKANRI = " FLG-PRTKANRI
            IF      FLG-PRTKANRI        =   ZERO
            DISPLAY "bt prtkanri exist!! rennum = " PRTKANRI-RENNUM
-             MOVE    PRTKANRI-RENNUM   TO  WK-FILE-NAME(13:4) 
-             MOVE    PRTKANRI-PAGE     TO  WK-FILE-NAME(35:5) 
+      *      MOVE    PRTKANRI-RENNUM   TO  WK-FILE-NAME(13:4) 
+      *      MOVE    PRTKANRI-PAGE     TO  WK-FILE-NAME(35:5) 
+             MOVE    PRTKANRI-RENNUM   TO  WK-FILE-NAME(POS11:4) 
+             MOVE    PRTKANRI-PAGE     TO  WK-FILE-NAME(POS12:5) 
              DISPLAY "bt3 WK-FILE-NAME = " WK-FILE-NAME
       *    印刷データ用PRTKANRIあり
       *      印刷実データが存在するかどうかチェックする
@@ -986,6 +1049,7 @@
                END-IF
            END-PERFORM
       *
+           MOVE    IDZ                 TO  MOJI-CNT
            IF      IDZ                 <   75
                MOVE  1                 TO  FLG-BATCH
                GO  TO                  110-FILE-CHECK-EXT
