@@ -222,8 +222,9 @@ grpsys COPY    "COMMON-SPA".
       *
            PERFORM 100-INIT-SEC
       *
-           DISPLAY "take flg-prtdata = " FLG-PRTDATA
-           DISPLAY "take flg-end     = " FLG-END
+               DISPLAY "------------- ORCBPRT1 start ----------------"
+               DISPLAY "FLG-END = " FLG-END
+               DISPLAY "------------- ORCBPRT1 end   ----------------"
            PERFORM 200-MAIN-SEC
                    UNTIL       FLG-END     =   1
       *
@@ -268,7 +269,6 @@ grpsys COPY    "COMMON-SPA".
                                                LNK-PRTKANRI-GYOUMU-CD
                                                WRK-FILENAME2
            END-UNSTRING
-           DISPLAY "ORCBPRT1 WRK-FILENAME2 = " WRK-FILENAME2
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            IF      LNK-PRTKANRI-GYOUMU-CD NOT NUMERIC
                    MOVE  ZERO          TO
@@ -293,15 +293,35 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            PERFORM 900-PRTKANRI-SELECT-SEC
       *
       *    プレビュー用前処理
-           DISPLAY "bprt1 WRK-PARA-PRTFLG  = [" WRK-PARA-PRTFLG  "]"
-           DISPLAY "bprt1 WRK-PARA-STPAGE   = [" WRK-PARA-STPAGE "]"
-           DISPLAY "bprt1  WRK-PARA-EDPAGE  = [" WRK-PARA-EDPAGE "]"
            MOVE    ZERO            TO  WRK-MOJISU
            IF      WRK-PARA-PRTFLG     =   "3"
              IF    WRK-PARA-STPAGE     NOT =   ZERO   AND
                    WRK-PARA-EDPAGE     NOT =   99999
                PERFORM 900-PRVKANRI-SELECT1-SEC
              END-IF
+           END-IF
+      *
+           IF      FLG-END             =   1
+                IF  WRK-PARA-PRTFLG     =  "5"
+                 AND (LNK-PRTKANRI-TBL-KEY NOT = "ONLINE")
+                 DISPLAY "------------- ORCBPRT1 start ----------------"
+                 DISPLAY "WRK-PARA-PRTFLG = " WRK-PARA-PRTFLG
+                 DISPLAY "------------- ORCBPRT1 end   ----------------"
+                 MOVE    SPACE           TO  SHELLTBL
+                 MOVE    "orc_print_dmy.sh"  TO  SHELLTBL-NAME
+                 MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
+grpsys           MOVE    LNK-PRTKANRI-TBL-KEY    TO  SHELLTBL-ARG2
+                 MOVE    LNK-PRTKANRI-TBL-GROUP  TO  SHELLTBL-ARG3
+                 MOVE    LNK-PRTKANRI-SHORI-RENNUM   TO  SHELLTBL-ARG4
+                 MOVE    WRK-PARA-HOSPNUM    TO  SHELLTBL-ARG5
+                 MOVE    "88888"             TO  SHELLTBL-ARG6
+                 MOVE    "88888"             TO  SHELLTBL-ARG7
+                 MOVE    SHELLTBL        TO  MCPDATA-REC
+                 MOVE    "SHELL"         TO  MCP-FUNC
+                 MOVE    "shell"         TO  MCP-TABLE
+                 MOVE    "allways"       TO  MCP-PATHNAME
+grpsys           PERFORM 900-ORCDBMAIN-SEC
+              END-IF
            END-IF
       *
            .
@@ -345,6 +365,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *     
       *   印刷用スクリプト処理
       *
+               DISPLAY "------------- ORCBPRT1 start ----------------"
+               DISPLAY "CNT-OUT = " CNT-OUT
+               DISPLAY "FLG-ERR = " FLG-ERR
+               DISPLAY "------------- ORCBPRT1 end   ----------------"
            IF      CNT-OUT             >   ZERO
            AND     FLG-ERR             =   ZERO 
       *
@@ -359,6 +383,47 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                MOVE    "shell"         TO  MCP-TABLE
                MOVE    "daily"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
+      * クライアント印刷処理
+               IF  WRK-PARA-PRTFLG     =  "5"
+                 AND (LNK-PRTKANRI-TBL-KEY NOT = "ONLINE")
+               DISPLAY "------------- ORCBPRT1 start ----------------"
+               DISPLAY "WRK-PARA-PRTFLG = " WRK-PARA-PRTFLG
+               DISPLAY "------------- ORCBPRT1 end   ----------------"
+                 MOVE    SPACE           TO  SHELLTBL
+                 MOVE    "orc_print_dmy.sh"  TO  SHELLTBL-NAME
+                 MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
+grpsys           MOVE    LNK-PRTKANRI-TBL-KEY    TO  SHELLTBL-ARG2
+                 MOVE    LNK-PRTKANRI-TBL-GROUP  TO  SHELLTBL-ARG3
+                 MOVE    LNK-PRTKANRI-SHORI-RENNUM   TO  SHELLTBL-ARG4
+                 MOVE    WRK-PARA-HOSPNUM    TO  SHELLTBL-ARG5
+                 MOVE    "99999"             TO  SHELLTBL-ARG6
+                 MOVE    "99999"             TO  SHELLTBL-ARG7
+                 MOVE    SHELLTBL        TO  MCPDATA-REC
+                 MOVE    "SHELL"         TO  MCP-FUNC
+                 MOVE    "shell"         TO  MCP-TABLE
+                 MOVE    "allways"       TO  MCP-PATHNAME
+grpsys           PERFORM 900-ORCDBMAIN-SEC
+               END-IF
+             ELSE
+                IF  WRK-PARA-PRTFLG     =  "5"
+                 DISPLAY "------------- ORCBPRT1 start ----------------"
+                 DISPLAY "WRK-PARA-PRTFLG = " WRK-PARA-PRTFLG
+                 DISPLAY "------------- ORCBPRT1 end   ----------------"
+                 MOVE    SPACE           TO  SHELLTBL
+                 MOVE    "orc_print_dmy.sh"  TO  SHELLTBL-NAME
+                 MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1
+grpsys           MOVE    LNK-PRTKANRI-TBL-KEY    TO  SHELLTBL-ARG2
+                 MOVE    LNK-PRTKANRI-TBL-GROUP  TO  SHELLTBL-ARG3
+                 MOVE    LNK-PRTKANRI-SHORI-RENNUM   TO  SHELLTBL-ARG4
+                 MOVE    WRK-PARA-HOSPNUM    TO  SHELLTBL-ARG5
+                 MOVE    "88888"             TO  SHELLTBL-ARG6
+                 MOVE    "88888"             TO  SHELLTBL-ARG7
+                 MOVE    SHELLTBL        TO  MCPDATA-REC
+                 MOVE    "SHELL"         TO  MCP-FUNC
+                 MOVE    "shell"         TO  MCP-TABLE
+                 MOVE    "allways"       TO  MCP-PATHNAME
+grpsys           PERFORM 900-ORCDBMAIN-SEC
+              END-IF
            END-IF                                                
       *
            MOVE    1                   TO  FLG-END     
@@ -373,7 +438,6 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
        2001-PRTDATA-PRINT-SEC          SECTION.
       *
       * プレビュー処理の場合管理DBがあれば以降スキップ
-           DISPLAY "take 2001-prtdata st"
            IF      WRK-PARA-PRTFLG        =    "3"
                    PERFORM 900-PRVKANRI-INV-SEC
              IF    FLG-PRVKANRI           =    ZERO

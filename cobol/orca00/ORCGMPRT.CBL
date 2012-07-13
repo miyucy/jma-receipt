@@ -61,11 +61,17 @@
            03  FLG-OK                  PIC 9(01).
            03  FLG-ONLINE              PIC 9(01).
            03  FLG-CANCEL              PIC 9(01).
+           03  FLG-BATCH               PIC 9(01).
       *
        01  INDEX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDZ                     PIC 9(04).
+           03  POS1                    PIC 9(04).
+           03  POS2                    PIC 9(04).
+           03  POS3                    PIC 9(04).
+           03  POS4                    PIC 9(04).
+           03  POS5                    PIC 9(04).
       *    一時領域
        01  WRK-AREA.
            03  WK-CONT-FLG         PIC 9(02).
@@ -73,6 +79,7 @@
            03  WK-ED-PAGE          PIC 9(05).
            03  WK-FILE-NAME        PIC X(256).
            03  WK-FILE-NAME2       PIC X(256).
+           03  WK-FILE-NAME3       PIC X(256).
            03  WK-FILE-NAME-CK     PIC X(256).
            03  WK-FILE-OC-AREA.
              05 WK-FILE-OC         PIC X(01) OCCURS 256.
@@ -282,6 +289,9 @@
              ELSE
                PERFORM 210-PRTDATA-EXIST-SEC
              END-IF
+           ELSE
+               PERFORM 220-BATCH-SEC
+               GO              TO  200-MAIN-EXT
            END-IF
       * 
       *    IF      FLG-CANCEL      =   1
@@ -353,6 +363,526 @@
       *
            .
        200-MAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    バッチ処理クライアント印刷処理メイン
+      *****************************************************************
+       220-BATCH-SEC               SECTION.
+      *--------------------- 20120711 ver4  take ---------------------
+      * A.urlの連番9999(dmy情報)の場合
+      *   1./tmp/のコントロールファイルの存在をチェックする。
+      *    1-1.存在しない場合は、何もせず抜ける(印刷処理が完了していない)
+      *    1-2.存在した場合
+      *      1-2-1.開始、終了が88888の場合は、印刷データ無なので後処理して終了
+      *      1-2-2.dmy情報のctrlレコードを読み込む。
+      *        1-2-2-1.存在しない場合は、ctrlレコードの追加
+      *        1-2-3-2.存在する場合は、連続情報かどうかをチェック
+      *          1-2-3-2-1.連続情報の場合は、全て終了なので後処理
+      * B.urlの連番9999(dmy情報)以外の場合
+      *   1.dmy情報のctrlレコードを読み込む。
+      *    1-1.存在しない場合は、印刷処理が終了していないのでそのまま抜ける
+      *    1-2.存在する場合は、prtkanriレコードを読み込む(とりあえずkey10を使用。最後のレコードを使用)
+      *      1-2-1.存在しない場合は、印刷データなしとしてキャンセル処理
+      *      1-2-2.存在する場合は、/tmp/の該当のレコードを返却しprtctrlレコードを削除
+      *
+      *
+      *  ※dmy以外のctrlレコードは不要か(urlキャンセル等で使用するのではないか)
+      *  ※本物の印刷データは、どうやって見つける?(rennum ZERO start_page ZEROが存在する)
+      *    バッチ処理は、satar_page,end_pageいずれも「1」で設定されている。
+      *    処理連番は、prtkanriから取得か?
+      *
+      *--------------------- 20120711 ver4  end  ---------------------
+      *--------------------- 20120710 ver3  take ---------------------
+      * prtctrlを読み込む必要があるのか
+      * 取り合えず上記dbへの書き込みは、行わない。
+      * 日次(月次)統計処理は、全ての処理が一つの印刷データとして作成される
+      * このことから
+      *   1.印刷urlは、二つ(一つはdummy)とする。
+      *   2.印刷データが存在するかどうかは、dummyファイルの開始、終了ページで判断する
+      *   3.このファイル作成時には、印刷データ作成処理は、完了しているはず。
+      *   4.この処理は、tbl_keyにより若干挙動が変更となる可能性があるので
+      *     頭でtbl_keyによる振り分けをしておく。
+      *   5.urlでtbl_keyが判断つくか????? つけてるはずだ、全体の長さから
+      *
+      *
+      *
+      *
+      *--------------------- 20120710 ver3  end  ---------------------
+      *--------------------- 20120709 ver2  take ---------------------
+      * prtctrlを読み込む必要があるのか
+      * dummyを書く必要があるのか
+      * 印刷データがない場合の判断をどうやってするのか
+      *(最後にdummy印刷がないとつらそうな気がするが…)
+      * やはり上のdummy印刷が必要だと思う。 uidの問題(uidを振るとオンライン処理に
+      * なってしまう。どうする。(安直に考えると最後にdummy印刷のスクリプトを流す。
+      *--------------------- 20120709 ver2 ---------------------------
+      * prtctrlを読み込む--> shori_rennum = 99 のものをです。
+      *    ある場合
+      *      全ての印刷処理(DBの作成)は完了ているはず。
+      *     (印刷処理そのものが終了しているとは、限らない)
+      *      urlのshori_rennum = 99 の場合
+      *         cont_flg=1ならば全てのクライアント処理が完了
+      *         (即ちこの処理は、終了。)
+      *      urlのshori_rennum = 99 以外の場合
+      *         urlの情報から、prtkanriを読み込む
+      *              prtkanri が存在した場合
+      *                  印刷データが存在するはずなのでそれを探す。
+      *                  存在しなければ、一度迂回して抜け出る。
+      *              prtkanri が存在しない場合
+      *                  該当処理の印刷データは存在しないのでキャンセル
+      *
+      *    ない場合
+      *      urlのshori_rennum = 99 の場合
+      *         なにもせずに抜ける
+      *      urlのshori_rennum = 99 以外の場合
+      *         urlの情報から、prtkanriを読み込む
+      *              prtkanri が存在した場合
+      *                  印刷データが存在するはずなのでそれを探す。
+      *                  存在しなければ、一度迂回して抜け出る。
+      *              prtkanri が存在しない場合
+      *                  なにもせずに抜ける
+      *
+      *                   1101-CTRLDATA-READ-SEC  がprtctrlを読む関数
+      *    処理連番99の制御レコードの読み込み
+           IF      MPRT-FILENAME(8:4)  =   "9999"
+                 MOVE  5               TO  POS1
+                 MOVE  8               TO  POS2
+                 MOVE  12              TO  POS3
+                 MOVE  28              TO  POS4
+                 MOVE  40              TO  POS5
+           END-IF
+           IF      MPRT-FILENAME(9:4)  =   "9999"
+                 MOVE  6               TO  POS1
+                 MOVE  9               TO  POS2
+                 MOVE  13              TO  POS3
+                 MOVE  29              TO  POS4
+                 MOVE  41              TO  POS5
+           END-IF
+           IF      MPRT-FILENAME(10:4) =   "9999"
+                 MOVE  7               TO  POS1
+                 MOVE  10              TO  POS2
+                 MOVE  14              TO  POS3
+                 MOVE  30              TO  POS4
+                 MOVE  42              TO  POS5
+           END-IF
+           IF      MPRT-FILENAME(11:4) =   "9999"
+                 MOVE  8               TO  POS1
+                 MOVE  11              TO  POS2
+                 MOVE  15              TO  POS3
+                 MOVE  31              TO  POS4
+                 MOVE  43              TO  POS5
+           END-IF
+      *
+           INITIALIZE  PRTCTRL-REC
+                       WKPRTCTRL-REC
+           MOVE    SPA-HOSPNUM         TO  PRTCTRL-HOSPNUM
+                                           WPRTCTRL-HOSPNUM
+           MOVE    SPA-TERMID          TO  PRTCTRL-TERMID
+                                           WPRTCTRL-TERMID
+           MOVE    2                   TO  PRTCTRL-DATA-KBN
+                                           WPRTCTRL-DATA-KBN
+           MOVE    MPRT-FILENAME(3:POS1)
+                                       TO  PRTCTRL-TBL-KEY
+                                           WPRTCTRL-TBL-KEY
+           MOVE    9999
+                                       TO  PRTCTRL-RENNUM
+           MOVE    MPRT-FILENAME(POS2:4)
+                                       TO  WPRTCTRL-RENNUM
+           MOVE    MPRT-FILENAME(POS3:14)
+                                       TO  PRTCTRL-TBL-GROUP
+                                           WPRTCTRL-TBL-GROUP
+           MOVE    99
+                                       TO  PRTCTRL-SHORI-RENNUM
+           COMPUTE IDX = POS4 - 2
+      *    MOVE    MPRT-FILENAME(POS4:4)
+           MOVE    MPRT-FILENAME(IDX:4)
+                                       TO  WPRTCTRL-SHORI-RENNUM
+      *    MOVE    MPRT-FILENAME(POS5:5)
+      *                                TO  WK-ST-PAGE
+      * ファイル名の決定
+           IF    MPRT-FILENAME(POS5:3)  =   ".ps"
+                 MOVE  ".ps"           TO  WRK-FILE-TYPE
+                 DISPLAY "ps hit !!"
+           ELSE
+                 DISPLAY "pdf hit !!"
+                 MOVE  ".pdf"          TO  WRK-FILE-TYPE
+           END-IF
+      *
+           STRING "/tmp/"      DELIMITED   BY  SIZE
+                  MPRT-FILENAME
+                               DELIMITED   BY  SPACE
+                  INTO   WK-FILE-NAME
+           END-STRING
+      *
+      *    DISPLAY "----------- Batch ---------------------- " 
+      *    DISPLAY "MPRT-FILENAME(POS4:4) = " MPRT-FILENAME(POS4:4)
+      *    DISPLAY "WPRTCTRL-HOSPNUM = " WPRTCTRL-HOSPNUM
+      *    DISPLAY "WPRTCTRL-TBL-KEY = " WPRTCTRL-TBL-KEY
+      *    DISPLAY "WPRTCTRL-RENNUM = "  WPRTCTRL-RENNUM
+      *    DISPLAY "WPRTCTRL-TBL-GROUP = "  WPRTCTRL-TBL-GROUP
+      *    DISPLAY "WPRTCTRL-TBL-UUID     = " WPRTCTRL-TBL-UUID
+      *    DISPLAY "WPRTCTRL-SHORI-RENNUM = " WPRTCTRL-SHORI-RENNUM
+      *    DISPLAY "WK-ST-PAGE            = " WK-ST-PAGE
+      *    DISPLAY "bt WK-FILE-NAME = " WK-FILE-NAME
+      *    DISPLAY "--------------------------------- " 
+      *==================== 一旦以下のロジックを保留とする(開始) ====================
+      **    コントロールレコードの存在チェック
+      *     PERFORM 1101-CTRLDATA-READ-SEC
+      *     IF      FLG-PRTCTRL         = ZERO
+      **    コントロールレコードあり
+      *         DISPLAY "batch prtctrl hit !!"
+      *         PERFORM 2201-BTCTRLEXT-SEC
+      *     ELSE
+      *    コントロールレコードなし
+      *      この場合は、prtkanriがある場合のみ実データの存在チェック
+      *      をおこなう
+      *         DISPLAY "batch prtctrl not found "
+      *         PERFORM 2202-BTCTRLNOT-SEC
+      *     END-IF
+      *==================== 一旦以下のロジックを保留とする(終了) ====================
+      *  urlの連番9999(dmy情報)の場合
+           IF  WPRTCTRL-RENNUM         = 9999
+             DISPLAY "batch dmy start"
+               PERFORM 2201-BTDMY-SEC
+           ELSE
+             DISPLAY "batch prt start"
+               PERFORM 2202-BTPRT-SEC
+           END-IF
+           .
+       220-BATCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ダミー情報処理メイン(バッチ)
+      *****************************************************************
+       2201-BTDMY-SEC          SECTION.
+      *
+           PERFORM 110-FILE-ID
+           IF    ORCF-RET            =   ZERO
+               DISPLAY "bt dmy data hit!!"
+               PERFORM 1101-CTRLDATA-READ-SEC
+               IF  FLG-PRTCTRL         = ZERO
+                   DISPLAY "bt dmy prtctrl hit!!"
+                   PERFORM 2201-BTCTRLEXT-SEC
+               ELSE
+                   DISPLAY "bt dmy prtctrl not found!!"
+                   MOVE    1           TO  PRTCTRL-CONT-FLG
+                   PERFORM 1101-CTRLDATA-INSERT-SEC
+                   DISPLAY "bt dmy prtctrl insert " FLG-PRTCTRL
+               END-IF
+           ELSE
+               DISPLAY "bt dmy data not found!!"
+           END-IF
+      *
+           .
+       2201-BTDMY-EXT.
+           EXIT.
+      *****************************************************************
+      *    データ情報処理メイン(バッチ)
+      *****************************************************************
+       2202-BTPRT-SEC          SECTION.
+      * 印刷データセット名生成
+           MOVE    "0000100001"        TO  WK-FILE-NAME(35:10) 
+           DISPLAY "bt2 WK-FILE-NAME = " WK-FILE-NAME
+      * dummyコントロール存在チェック take2
+           PERFORM 1101-CTRLDATA-READ-SEC
+           IF  FLG-PRTCTRL         = ZERO
+               DISPLAY "bt dmy prtctrl hit!!"
+               PERFORM 2201-BTCTRLEXT-SEC
+           ELSE
+               DISPLAY "bt dmy prtctrl not found!!"
+      *        MOVE    1           TO  PRTCTRL-CONT-FLG
+      *        PERFORM 1101-CTRLDATA-INSERT-SEC
+      *        DISPLAY "bt dmy prtctrl insert " FLG-PRTCTRL
+           END-IF
+           .
+       2202-BTPRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    コントロールレコードありの場合の処理
+      *****************************************************************
+       2201-BTCTRLEXT-SEC          SECTION.
+      *
+           IF      WPRTCTRL-RENNUM      =   9999
+      *    制御用urlが連続した来た場合
+             IF    PRTCTRL-CONT-FLG    =   1
+      *    全ての処理が終了
+             DISPLAY "no01"
+                   MOVE  204            TO  MPRT-HTTPSTATUS
+                   PERFORM 800-PRTCTRlDEL-SEC
+           DISPLAY "bt dmy WK-FILE-NAME = " WK-FILE-NAME
+                   MOVE    WK-FILE-NAME    TO  IF-FILENAME
+                   CALL    "orcfiledel"    USING
+                                           ORCSFDELAREA
+             ELSE
+             DISPLAY "no02 PRTCTRL-CONT-FLG = " PRTCTRL-CONT-FLG
+                   MOVE  1              TO  PRTCTRL-CONT-FLG
+                   PERFORM 1101-CTRLDATA-UPDATE-SEC
+             DISPLAY "no04 PRTCTRL-CONT-FLG = " PRTCTRL-CONT-FLG
+             END-IF
+           ELSE
+             DISPLAY "no03"
+                   MOVE  ZERO           TO  PRTCTRL-CONT-FLG
+                   PERFORM 1101-CTRLDATA-UPDATE-SEC
+                   PERFORM 22011-BTKANRIDATA-SEC
+           END-IF
+      *
+           .
+       2201-BTCTRLEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    コントロールレコードなしの場合の処理
+      *****************************************************************
+       2202-BTCTRLNOT-SEC          SECTION.
+      *
+           PERFORM 22011-BTKANRIDATA-SEC
+      *
+           .
+       2202-BTCTRLNOT-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷データ存在チェック
+      *****************************************************************
+       22011-BTKANRIDATA-SEC       SECTION.
+      *
+      *    印刷データ用PRTKANRI存在チェック
+           INITIALIZE                  PRTKANRI-REC
+           MOVE    WPRTCTRL-HOSPNUM    TO  PRTKANRI-HOSPNUM
+           MOVE    WPRTCTRL-TBL-KEY    TO  PRTKANRI-TBL-KEY
+           MOVE    WPRTCTRL-RENNUM     TO  PRTKANRI-RENNUM
+           MOVE    WPRTCTRL-TBL-GROUP  TO  PRTKANRI-TBL-GROUP
+           MOVE    WPRTCTRL-TBL-UUID   TO  PRTKANRI-TBL-UUID
+           MOVE    WPRTCTRL-SHORI-RENNUM
+                                       TO  PRTKANRI-SHORI-RENNUM
+           PERFORM 1101-PRTKANRI-READ-SEC
+           DISPLAY "batch FLG-PRTKANRI = " FLG-PRTKANRI
+           IF      FLG-PRTKANRI        =   ZERO
+           DISPLAY "bt prtkanri exist!! rennum = " PRTKANRI-RENNUM
+             MOVE    PRTKANRI-RENNUM   TO  WK-FILE-NAME(13:4) 
+             MOVE    PRTKANRI-PAGE     TO  WK-FILE-NAME(35:5) 
+             DISPLAY "bt3 WK-FILE-NAME = " WK-FILE-NAME
+      *    印刷データ用PRTKANRIあり
+      *      印刷実データが存在するかどうかチェックする
+               PERFORM 220111-BTDATAEXT-SEC
+           ELSE
+      *    コントロールファイルが存在していて該当のprtkanriがない
+      *    印刷データはないのでキャンセル
+             IF    FLG-PRTCTRL         = ZERO
+           DISPLAY "bt prtkanri no!!"
+               MOVE  204               TO  MPRT-HTTPSTATUS
+             END-IF
+           END-IF
+      *
+           IF    MPRT-FILENAME(IDX:3)  =   ".ps"
+                 MOVE  ".ps"           TO  WRK-FILE-TYPE
+                 DISPLAY "ps hit !!"
+           ELSE
+                 DISPLAY "pdf hit !!"
+                 MOVE  ".pdf"          TO  WRK-FILE-TYPE
+           END-IF
+           .
+       22011-BTKANRIDATA-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷データ存在チェック
+      *****************************************************************
+       220111-BTDATAEXT-SEC        SECTION.
+      *
+      **   IF    MPRT-FILENAME(POS5:3)  =   ".ps"
+      **         MOVE  ".ps"           TO  WRK-FILE-TYPE
+      **         DISPLAY "ps hit !!"
+      **   ELSE
+      **         DISPLAY "pdf hit !!"
+      **         MOVE  ".pdf"          TO  WRK-FILE-TYPE
+      **   END-IF
+      *
+      **   STRING "/tmp/"      DELIMITED   BY  SIZE
+      **          MPRT-FILENAME
+      **                       DELIMITED   BY  SPACE
+      **          INTO   WK-FILE-NAME
+      **   END-STRING
+           DISPLAY "bt4 WK-FILE-NAME = " WK-FILE-NAME
+      *
+           PERFORM 110-FILE-ID
+           DISPLAY "bt5 WK-FILE-NAME = " WK-FILE-NAME
+           INSPECT WK-FILE-NAME REPLACING  ALL "api" BY  "pdf"
+           DISPLAY "bt6 WK-FILE-NAME = " WK-FILE-NAME
+      *    印刷実データあり
+           IF    ORCF-RET            =   ZERO
+      *       MOVE MPRT-FILENAME     TO  WK-FILE-NAME
+              DISPLAY "batch print file ok"
+              PERFORM 2201111-BTBLOB-SEC
+           ELSE
+              DISPLAY "batch print file not found"
+           END-IF
+      *
+           .
+       220111-BTDATAEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    バッチBLOB処理
+      *****************************************************************
+       2201111-BTBLOB-SEC          SECTION.
+      *
+           MOVE   'BLOBLOOKUP'     TO  MCP-FUNC
+           MOVE   'blob'           TO  MCP-TABLE
+           MOVE   'key'            TO  MCP-PATHNAME
+           MOVE   MPRT-FILENAME    TO  ORCA-BLOB-FILE
+           MOVE   LOW-VALUE        TO  ORCA-BLOB-OBJECT
+           CALL   'ORCDBMAIN'      USING
+                                   MCPAREA
+                                   ORCA-BLOB
+                                   SPA-AREA
+           IF ORCA-BLOB-OBJECT     = LOW-VALUE
+             MOVE   'BLOBIMPORT' TO  MCP-FUNC
+             STRING "/tmp/"      DELIMITED   BY  SIZE
+                    MPRT-FILENAME
+                                 DELIMITED   BY  SPACE
+             INTO   ORCA-BLOB-FILE 
+             END-STRING
+             MOVE  WK-FILE-NAME      TO  ORCA-BLOB-FILE
+             MOVE  ORCA-BLOB-FILE    TO  WK-FILE-NAME
+                                         WK-FILE-NAME2
+             MOVE   LOW-VALUE        TO  ORCA-BLOB-OBJECT
+             CALL   'ORCDBMAIN'      USING
+                                     MCPAREA
+                                     ORCA-BLOB
+                                     SPA-AREA
+      *
+             IF ORCA-BLOB-OBJECT     = LOW-VALUE
+                DISPLAY "imp ORCA-BLOB-OBJECT is LOW-VALUE " 
+             ELSE
+                DISPLAY "imp ORCA-BLOB-OBJECT is not LOW-VALUE " 
+             END-IF
+      *
+           IF ORCA-BLOB-OBJECT    NOT = LOW-VALUE
+      *      PERFORM 110-CTRLFILE-CHECK
+             MOVE   'blob'         TO  MCP-TABLE
+             MOVE   'key'          TO  MCP-PATHNAME
+             MOVE   MPRT-FILENAME  TO  ORCA-BLOB-FILE
+             MOVE   'BLOBREGISTER' TO  MCP-FUNC
+             CALL   'ORCDBMAIN'      USING
+                                     MCPAREA
+                                     ORCA-BLOB
+                                     SPA-AREA
+             PERFORM 110-FILE-DEL
+      *      PERFORM 11011-DBDEL-SEC
+           END-IF
+           ELSE
+             STRING "/tmp/"      DELIMITED   BY  SIZE
+                    MPRT-FILENAME
+                                 DELIMITED   BY  SPACE
+             INTO   ORCA-BLOB-FILE 
+             END-STRING
+             MOVE  ORCA-BLOB-FILE    TO  WK-FILE-NAME
+                                         WK-FILE-NAME2
+      *      PERFORM 110-FILE-DEL
+      *      PERFORM 11011-DBDEL-SEC
+           END-IF
+           MOVE ORCA-BLOB-OBJECT   TO MPRT-BODY
+      *
+           MOVE    SPA-AREA        TO  SPA-COMMON
+      *
+           .
+       2201111-BTBLOB-EXT.
+           EXIT.
+      *****************************************************************
+      *    印刷データ存在チェック
+      *****************************************************************
+       220111-BTDATAEXT1-SEC        SECTION.
+      *
+           IF    MPRT-FILENAME(POS5:3)  =   ".ps"
+                 MOVE  ".ps"           TO  WRK-FILE-TYPE
+                 DISPLAY "ps hit !!"
+           ELSE
+                 DISPLAY "pdf hit !!"
+                 MOVE  ".pdf"          TO  WRK-FILE-TYPE
+           END-IF
+      *
+           STRING "/tmp/"      DELIMITED   BY  SIZE
+                  MPRT-FILENAME
+                               DELIMITED   BY  SPACE
+                  INTO   WK-FILE-NAME
+           END-STRING
+           DISPLAY "bt4 WK-FILE-NAME = " WK-FILE-NAME
+      *
+           PERFORM 110-FILE-ID
+      *    印刷実データあり
+           IF    ORCF-RET            =   ZERO
+              MOVE MPRT-FILENAME     TO  WK-FILE-NAME
+              DISPLAY "batch print file ok"
+              PERFORM 2201111-BTBLOB-SEC
+           ELSE
+              DISPLAY "batch print file not found"
+           END-IF
+      *
+           .
+       220111-BTDATAEXT1-EXT.
+           EXIT.
+      *****************************************************************
+      *    バッチBLOB処理
+      *****************************************************************
+       2201111-BTBLOB1-SEC          SECTION.
+      *
+           MOVE   'BLOBLOOKUP'     TO  MCP-FUNC
+           MOVE   'blob'           TO  MCP-TABLE
+           MOVE   'key'            TO  MCP-PATHNAME
+           MOVE   MPRT-FILENAME    TO  ORCA-BLOB-FILE
+           MOVE   LOW-VALUE        TO  ORCA-BLOB-OBJECT
+           CALL   'ORCDBMAIN'      USING
+                                   MCPAREA
+                                   ORCA-BLOB
+                                   SPA-AREA
+           IF ORCA-BLOB-OBJECT     = LOW-VALUE
+             MOVE   'BLOBIMPORT' TO  MCP-FUNC
+             STRING "/tmp/"      DELIMITED   BY  SIZE
+                    MPRT-FILENAME
+                                 DELIMITED   BY  SPACE
+             INTO   ORCA-BLOB-FILE 
+             END-STRING
+             MOVE  ORCA-BLOB-FILE    TO  WK-FILE-NAME
+                                         WK-FILE-NAME2
+             MOVE   LOW-VALUE        TO  ORCA-BLOB-OBJECT
+             CALL   'ORCDBMAIN'      USING
+                                     MCPAREA
+                                     ORCA-BLOB
+                                     SPA-AREA
+      *
+             IF ORCA-BLOB-OBJECT     = LOW-VALUE
+                DISPLAY "imp ORCA-BLOB-OBJECT is LOW-VALUE " 
+             ELSE
+                DISPLAY "imp ORCA-BLOB-OBJECT is not LOW-VALUE " 
+             END-IF
+      *
+           IF ORCA-BLOB-OBJECT    NOT = LOW-VALUE
+      *      PERFORM 110-CTRLFILE-CHECK
+             MOVE   'blob'         TO  MCP-TABLE
+             MOVE   'key'          TO  MCP-PATHNAME
+             MOVE   MPRT-FILENAME  TO  ORCA-BLOB-FILE
+             MOVE   'BLOBREGISTER' TO  MCP-FUNC
+             CALL   'ORCDBMAIN'      USING
+                                     MCPAREA
+                                     ORCA-BLOB
+                                     SPA-AREA
+             PERFORM 110-FILE-DEL
+      *      PERFORM 11011-DBDEL-SEC
+           END-IF
+           ELSE
+             STRING "/tmp/"      DELIMITED   BY  SIZE
+                    MPRT-FILENAME
+                                 DELIMITED   BY  SPACE
+             INTO   ORCA-BLOB-FILE 
+             END-STRING
+             MOVE  ORCA-BLOB-FILE    TO  WK-FILE-NAME
+                                         WK-FILE-NAME2
+      *      PERFORM 110-FILE-DEL
+      *      PERFORM 11011-DBDEL-SEC
+           END-IF
+           MOVE ORCA-BLOB-OBJECT   TO MPRT-BODY
+      *
+           MOVE    SPA-AREA        TO  SPA-COMMON
+      *
+           .
+       2201111-BTBLOB1-EXT.
            EXIT.
       *****************************************************************
       *    印刷データ存在チェック
@@ -457,6 +987,7 @@
            END-PERFORM
       *
            IF      IDZ                 <   75
+               MOVE  1                 TO  FLG-BATCH
                GO  TO                  110-FILE-CHECK-EXT
            END-IF
            MOVE    1                   TO  FLG-ONLINE
@@ -520,6 +1051,8 @@
            END-PERFORM
       *
            IF      IDZ                 <   75
+               MOVE  1                 TO  FLG-BATCH
+               DISPLAY "Batch data !!"
                GO  TO                  110-CTRLFILE-CHECK-EXT
            END-IF
       *  MPRT-FILENAME を分割してキーを生成
@@ -675,6 +1208,46 @@
            EXIT.
       *
       *****************************************************************
+      *    印刷管理データ検索　処理
+      *****************************************************************
+       1101-PRTKANRI-READ-SEC        SECTION.
+      *
+           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+      *    MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    PRTKANRI-REC        TO  MCPDATA-REC
+           PERFORM 900-DBSELECT-SEC
+      *
+           IF      MCP-RC              =   ZERO
+      *        MOVE    MCPDATA-REC         TO  PRTKANRI-REC
+               MOVE    ZERO                TO  FLG-PRTKANRI
+           ELSE
+               MOVE    1                   TO  FLG-PRTKANRI
+               DISPLAY "SYSTEM ERR !!"
+               GO                          TO  1101-PRTKANRI-READ-EXT
+           END-IF
+           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+      *    MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    PRTKANRI-REC        TO  MCPDATA-REC
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PRTKANRI-REC
+               MOVE    ZERO            TO  FLG-PRTKANRI
+           ELSE
+               MOVE    1               TO  FLG-PRTKANRI
+           END-IF
+           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+      *    MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    PRTKANRI-REC        TO  MCPDATA-REC
+           PERFORM 900-DBCLOSE-SEC
+      *
+           .
+       1101-PRTKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    印刷データ検索　処理
       *****************************************************************
        1101-CTRLDATA-READ-SEC        SECTION.
@@ -734,7 +1307,29 @@
            EXIT.
       *
       *****************************************************************
-      *    印刷データ検索　処理
+      *    印刷制御データ追加 処理
+      *****************************************************************
+       1101-CTRLDATA-INSERT-SEC        SECTION.
+      *
+           MOVE    "tbl_prtctrl"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    PRTCTRL-REC         TO  MCPDATA-REC
+           PERFORM 900-DBINSERT-SEC
+      *
+           IF      MCP-RC              =   ZERO
+      *        MOVE    MCPDATA-REC         TO  PRTCTRL-REC
+               MOVE    ZERO                TO  FLG-PRTCTRL
+           ELSE
+               MOVE    1                   TO  FLG-PRTCTRL
+               DISPLAY "SYSTEM ERR !!"
+           END-IF
+      *
+           .
+       1101-CTRLDATA-INSERT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    印刷制御データ更新 処理
       *****************************************************************
        1101-CTRLDATA-UPDATE-SEC        SECTION.
       *
@@ -988,6 +1583,19 @@
        100-AGENTGET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    テーブル追加処理
+      *****************************************************************
+       900-DBINSERT-SEC            SECTION.
+      *
+           MOVE    "DBINSERT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+       900-DBINSERT-EXT.
+           EXIT.
       *****************************************************************
       *    テーブル更新処理
       *****************************************************************

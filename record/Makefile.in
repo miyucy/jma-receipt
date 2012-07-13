@@ -458,6 +458,7 @@ RECORD_files = \
 	system01lstv2.rec \
 	L06.rec \
 	patientmodv2.rec \
+	_LDMY01.rec \
 	
 
 DEF_files = \

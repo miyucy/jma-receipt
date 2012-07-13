@@ -188,6 +188,7 @@
            COPY    "GERR.INC".
            COPY    "GID1.INC".
            COPY    "GID2.INC".
+           COPY    "LDMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

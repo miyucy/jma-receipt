@@ -55,6 +55,7 @@
       *
        01  INDEX-AREA.
            03  IDX                     PIC 9(04). 
+           03  IDY                     PIC 9(04). 
       *
        01  IN-ASS.
            03  FILLER              PIC X(512).
@@ -129,7 +130,9 @@
                PERFORM 100-CANCEL-SEC
            ELSE
                PERFORM 100-APIADD-SEC
-               MOVE  1                 TO  SPA-CLIENT-PRT-FLG
+             IF    ORCSPRTCLTR-BATCH-FLG NOT = 1
+               MOVE    1               TO  SPA-CLIENT-PRT-FLG
+             END-IF
            END-IF
       *
       *
@@ -181,6 +184,9 @@
       *****************************************************************
        100-CANCEL-SEC              SECTION.
       *    
+           IF    ORCSPRTCLTR-BATCH-FLG NOT = 1
+             MOVE    2                   TO  SPA-CLIENT-PRT-FLG
+           END-IF
            STRING  "/tmp/"             DELIMITED   BY  SIZE
                    SPA-HOSPNUM         DELIMITED   BY  SPACE
                    "ONLINE"            DELIMITED   BY  SIZE
@@ -218,6 +224,96 @@
       *    API情報設定処理
       *****************************************************************
        100-APIADD-SEC              SECTION.
+      *
+           IF      ORCSPRTCLTR-BATCH-FLG = 1
+               PERFORM 1001-BATCH-SEC
+           ELSE
+               PERFORM 1001-ONLINE-SEC
+           END-IF
+           .
+       100-APIADD-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     バッチ設定
+      *****************************************************************
+       1001-BATCH-SEC              SECTION.
+      *
+      * バッチの場合は、GROUP id は、親側で設定
+      * UIDは、使わない
+           MOVE    SPA-SYSYMD      TO  LNK-PRTKANRI-SKYYMD
+                                       LNK-PRTKANRI-SRYYM
+           MOVE    1               TO  LNK-PRTKANRI-PRIORITY
+           MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
+      *    
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   10
+               IF  ORCSPRTCLTR-TITLE-I(IDX)  =  SPACE
+                 COMPUTE IDY           = IDX - 1
+                 STRING  "orca00/print?filename="
+                                           DELIMITED   BY  SIZE
+                         SPA-HOSPNUM       DELIMITED   BY  SPACE
+                         ORCSPRTCLTR-TBL-KEY(IDY)
+                                           DELIMITED   BY  SPACE
+                         "9999"
+                                           DELIMITED   BY  SPACE
+                         ORCSPRTCLTR-TBL-GROUP(IDY)
+                                           DELIMITED   BY  SPACE
+                         "0099" 
+                                           DELIMITED   BY  SIZE
+                         "99999"
+                                           DELIMITED   BY  SIZE
+                         "00001"
+                                           DELIMITED   BY  SIZE
+                         WRK-FILE-TYPE
+                                           DELIMITED   BY  SPACE
+                 INTO    ORCSPRTCLTR-PATH-O(IDX)
+                 MOVE    "印刷ダミー"      TO
+                                       ORCSPRTCLTR-TITLE-O(IDX)
+                 MOVE    SPA-CLIENT-SHOWDIALOG   TO
+                                       ORCSPRTCLTR-SHOWDIALOG(IDX)
+                 MOVE    100               TO
+                                       ORCSPRTCLTR-NRETRY(IDX)
+      *
+                   MOVE  11            TO  IDX
+               ELSE
+                 STRING  "orca00/print?filename="
+                                           DELIMITED   BY  SIZE
+                         SPA-HOSPNUM       DELIMITED   BY  SPACE
+                         ORCSPRTCLTR-TBL-KEY(IDX)
+                                           DELIMITED   BY  SPACE
+                         ORCSPRTCLTR-RENNUM(IDX)
+                                           DELIMITED   BY  SPACE
+                         ORCSPRTCLTR-TBL-GROUP(IDX)
+                                           DELIMITED   BY  SPACE
+                         IDX    
+                                           DELIMITED   BY  SPACE
+                         ORCSPRTCLTR-EDPAGE(IDX)
+                                           DELIMITED   BY  SIZE
+                         ORCSPRTCLTR-STPAGE(IDX)
+                                           DELIMITED   BY  SIZE
+                         WRK-FILE-TYPE
+                                           DELIMITED   BY  SPACE
+                 INTO    ORCSPRTCLTR-PATH-O(IDX)
+                 MOVE    ORCSPRTCLTR-TITLE-I(IDX)      TO
+                                       ORCSPRTCLTR-TITLE-O(IDX)
+                 MOVE    SPA-CLIENT-SHOWDIALOG   TO
+                                       ORCSPRTCLTR-SHOWDIALOG(IDX)
+                 MOVE    100               TO
+                                       ORCSPRTCLTR-NRETRY(IDX)
+               END-IF
+           END-PERFORM
+      *
+           .
+       1001-BATCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     オンライン設定
+      *****************************************************************
+       1001-ONLINE-SEC             SECTION.
+      *
            ACCEPT  SYS-YMD         FROM    DATE
            COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
            MOVE    SYS-MM              TO  WRK-SYSMM
@@ -261,9 +357,10 @@
                  INTO    ORCSPRTCLTR-PATH-O(IDX)
                  MOVE    "印刷ダミー"      TO
                                        ORCSPRTCLTR-TITLE-O(IDX)
-                 MOVE    SPA-CLIENT-SHOWDIALOG
-                                       TO  ORCSPRTCLTR-SHOWDIALOG (IDX)
-                 MOVE    100           TO  ORCSPRTCLTR-NRETRY  (IDX)
+                 MOVE    SPA-CLIENT-SHOWDIALOG   TO
+                                       ORCSPRTCLTR-SHOWDIALOG(IDX)
+                 MOVE    100               TO
+                                       ORCSPRTCLTR-NRETRY(IDX)
       *
                    MOVE  11            TO  IDX
                ELSE
@@ -287,15 +384,15 @@
                  INTO    ORCSPRTCLTR-PATH-O(IDX)
                  MOVE    ORCSPRTCLTR-TITLE-I(IDX)      TO
                                        ORCSPRTCLTR-TITLE-O(IDX)
-      *
-                 MOVE    SPA-CLIENT-SHOWDIALOG
-                                       TO  ORCSPRTCLTR-SHOWDIALOG (IDX)
-                 MOVE    100           TO  ORCSPRTCLTR-NRETRY  (IDX)
+                 MOVE    SPA-CLIENT-SHOWDIALOG   TO
+                                       ORCSPRTCLTR-SHOWDIALOG(IDX)
+                 MOVE    100               TO
+                                       ORCSPRTCLTR-NRETRY(IDX)
                END-IF
            END-PERFORM
       *
            .
-       100-APIADD-EXT.
+       1001-ONLINE-EXT.
            EXIT.
       *
       *****************************************************************
