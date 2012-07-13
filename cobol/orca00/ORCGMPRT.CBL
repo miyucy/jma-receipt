@@ -570,44 +570,63 @@
       *
            COMPUTE MOJI-CNT  =  MOJI-CNT  -  1
            DISPLAY "MOJI-CNT = " MOJI-CNT
-           EVALUATE    MOJI-CNT
-           WHEN        43
-               MOVE  5               TO  POS1
-               MOVE  8               TO  POS2
-               MOVE  12              TO  POS3
-               MOVE  28              TO  POS4
-               MOVE  40              TO  POS5
-               MOVE  35              TO  POS10
-               MOVE  13              TO  POS11
-               MOVE  35              TO  POS12
-           WHEN        44
-               MOVE  6               TO  POS1
-               MOVE  9               TO  POS2
-               MOVE  13              TO  POS3
-               MOVE  29              TO  POS4
-               MOVE  41              TO  POS5
-               MOVE  36              TO  POS10
-               MOVE  14              TO  POS11
-               MOVE  36              TO  POS12
-           WHEN        45
-               MOVE  7               TO  POS1
-               MOVE  10              TO  POS2
-               MOVE  14              TO  POS3
-               MOVE  30              TO  POS4
-               MOVE  42              TO  POS5
-               MOVE  37              TO  POS10
-               MOVE  15              TO  POS11
-               MOVE  37              TO  POS12
-           WHEN        46
-               MOVE  8               TO  POS1
-               MOVE  11              TO  POS2
-               MOVE  15              TO  POS3
-               MOVE  31              TO  POS4
-               MOVE  43              TO  POS5
-               MOVE  38              TO  POS10
-               MOVE  16              TO  POS11
-               MOVE  38              TO  POS12
-           END-EVALUATE
+      *    EVALUATE    MOJI-CNT
+      *    WHEN        43
+      *        MOVE  5               TO  POS1
+      *        MOVE  8               TO  POS2
+      *        MOVE  12              TO  POS3
+      *        MOVE  28              TO  POS4
+      *        MOVE  40              TO  POS5
+      *        MOVE  35              TO  POS10
+      *        MOVE  13              TO  POS11
+      *        MOVE  35              TO  POS12
+      *    WHEN        44
+      *        MOVE  6               TO  POS1
+      *        MOVE  9               TO  POS2
+      *        MOVE  13              TO  POS3
+      *        MOVE  29              TO  POS4
+      *        MOVE  41              TO  POS5
+      *        MOVE  36              TO  POS10
+      *        MOVE  14              TO  POS11
+      *        MOVE  36              TO  POS12
+      *    WHEN        45
+      *        MOVE  7               TO  POS1
+      *        MOVE  10              TO  POS2
+      *        MOVE  14              TO  POS3
+      *        MOVE  30              TO  POS4
+      *        MOVE  42              TO  POS5
+      *        MOVE  37              TO  POS10
+      *        MOVE  15              TO  POS11
+      *        MOVE  37              TO  POS12
+      *    WHEN        46
+      *        MOVE  8               TO  POS1
+      *        MOVE  11              TO  POS2
+      *        MOVE  15              TO  POS3
+      *        MOVE  31              TO  POS4
+      *        MOVE  43              TO  POS5
+      *        MOVE  38              TO  POS10
+      *        MOVE  16              TO  POS11
+      *        MOVE  38              TO  POS12
+      *    END-EVALUATE
+      *
+           COMPUTE POS1  =  MOJI-CNT   -   38
+           COMPUTE POS2  =  POS1       +   3
+           COMPUTE POS3  =  POS2       +   4
+           COMPUTE POS4  =  POS3       +   18
+           COMPUTE POS5  =  POS4       +   10
+           COMPUTE POS10 =  POS4       +   5
+           COMPUTE POS11 =  POS2       +   5
+           COMPUTE POS12 =  POS4       +   5
+      *
+      *    DISPLAY "POS1  = " POS1
+      *    DISPLAY "POS2  = " POS2
+      *    DISPLAY "POS3  = " POS3
+      *    DISPLAY "POS4  = " POS4
+      *    DISPLAY "POS5  = " POS5
+      *    DISPLAY "POS10 = " POS10
+      *    DISPLAY "POS11 = " POS11
+      *    DISPLAY "POS12 = " POS12
+      *
            .
        2201-BTCH-POS-EXT.
            EXIT.
