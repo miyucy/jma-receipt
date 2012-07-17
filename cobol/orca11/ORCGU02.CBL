@@ -514,6 +514,7 @@
            COPY    "U2ID1.INC".
            COPY    "UDMY01.INC".
            COPY    "CPAPIMOD.INC".
+           COPY    "CPAPIMODV2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1920,11 +1921,6 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    U02-USERPG          TO  SPA-GMN-USERPG-G
       *
            MOVE    U02-SELNUM          TO  SPA-GMN-SELNUM
-      *TEST
-           DISPLAY "U02-SELNUM:"  U02-SELNUM
-                   ",SPA-GMN-SELNUM:"  SPA-GMN-SELNUM
-           DISPLAY "U02-HKNCOMBI:"  U02-HKNCOMBI
-                   ",SPA-GMN-HKNCOMBI:"  SPA-GMN-COMBINUM
            .
       *
        4101-GMN-SPA-SET-EXT.

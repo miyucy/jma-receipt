@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION      DIVISION.
-       PROGRAM-ID.         ORAPI011S1.
+       PROGRAM-ID.         ORAPI011S1V2.
       *****************************************************************
       *  システム名        : 日医標準レセプトソフト
       *  サブシステム名    : API連携用モジュール(サンプル)
-      *  コンポーネント名  : 受付登録
+      *  コンポーネント名  : 受付登録  (xml2)
       *  管理者            :
       *  作成日付    作業者        記述
-      *  10/10/20    NACL−多々納　新規作成
+      *  12/07/12    NACL−多々納　新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -194,14 +194,14 @@
       *    ユーザプログラム起動チェックサブパラメタ
            COPY    "CPORCSUSERCHK.INC".
       *    API XML読み込み用定義体
-           COPY    "CPACCPTXMLREQ.INC".
+           COPY    "CPACCPTXMLV2REQ.INC".
       *    API XML読み込み用定義体
-           COPY    "CPACCPTXMLRES.INC".
+           COPY    "CPACCPTXMLV2RES.INC".
       *    保険組合せ決定関数サブ
            COPY    "CPORCSAPIHKN.INC".
       *ver.4.7
       *    API XML読み込み共通定義
-           COPY    "CPAPIREQ.INC".
+           COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -394,7 +394,7 @@
            MOVE    SPACE               TO  WRK-KEICD
       *
            MOVE    ZERO                TO  FLG-SYORI
-           EVALUATE    APIREQ-CLASS
+           EVALUATE    APIMOD-CLASS
            WHEN    "01"
       *        受付登録
                MOVE    1                   TO  FLG-SYORI
@@ -417,7 +417,7 @@
                GO      TO      200-MAIN-EXT
            END-IF
       *
-           EVALUATE    APIREQ-CLASS
+           EVALUATE    APIMOD-CLASS
            WHEN    "01"
       *TEST
                DISPLAY "受付登録"    
@@ -442,11 +442,12 @@
        1000-RGTXMLREAD-SEC   SECTION.
       *
       * XML情報取り出し
-           MOVE   "XMLOPEN"            TO  MCP-FUNC
-           MOVE    "xml_acceptreq"     TO  MCP-TABLE
+           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "xml_acceptv2req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    API-BODY            TO  APIREQ-OBJECT
+           MOVE    APIMOD-BODY         TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
+           MOVE    "acceptreq"         TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -459,10 +460,11 @@
            END-IF
       *
       *
-           MOVE   "XMLREAD"            TO  MCP-FUNC
-           MOVE    "xml_acceptreq"     TO  MCP-TABLE
+           MOVE    "XMLREAD"           TO  MCP-FUNC
+           MOVE    "xml_acceptv2req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    "acceptreq"         TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -476,7 +478,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_acceptreq"     TO  MCP-TABLE
+           MOVE    "xml_acceptv2req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
@@ -519,15 +521,16 @@
                MOVE    WRK-ERRMSG          TO  ACCPTRES-API-RESULT-MSG
            END-IF
       *
-           IF      API-BODY        NOT =   LOW-VALUE
+           IF      APIMOD-BODY        NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
-           MOVE   "XMLOPEN"            TO  MCP-FUNC
-           MOVE    "xml_acceptres"     TO  MCP-TABLE
+           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "xml_acceptv2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE   1                    TO  ACCPTRES-MODE
-           CALL   "ORCDBMAIN"          USING
+           MOVE    1                   TO  ACCPTRES-MODE
+           MOVE    "acceptres"         TO  ACCPTRES-RECORDNAME
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-ACCEPTRES
                                        SPA-AREA
@@ -537,10 +540,11 @@
                DISPLAY "XMLOPEN failure = " MCP-RC
            END-IF
       *
-           MOVE   "XMLWRITE"           TO  MCP-FUNC
-           MOVE    "xml_acceptres"     TO  MCP-TABLE
+           MOVE    "XMLWRITE"          TO  MCP-FUNC
+           MOVE    "xml_acceptv2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL   "ORCDBMAIN"          USING
+           MOVE    "acceptres"         TO  ACCPTRES-RECORDNAME
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-ACCEPTRES
                                        SPA-AREA
@@ -551,15 +555,16 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_acceptres"     TO  MCP-TABLE
+           MOVE    "xml_acceptv2res"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "acceptres"         TO  ACCPTRES-RECORDNAME
            CALL   "ORCDBMAIN"          USING
                                        MCPAREA
                                        XML-ACCEPTRES
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
-               MOVE  ACCPTRES-OBJECT   TO  API-BODY
-               MOVE  "application/xml" TO  APIREQ-CONTENT-TYPE
+               MOVE  ACCPTRES-OBJECT   TO  APIMOD-BODY
+               MOVE  "application/xml" TO  APIMOD-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
                DISPLAY "accept xml write failure "

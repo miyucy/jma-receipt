@@ -11,6 +11,7 @@ bind	"U2ERR"		"OpenCOBOL"	"ORCGU2ERR";
 bind	"U2ID1"		"OpenCOBOL"	"ORCGU2ID1";
 bind	"_UDMY01"	"OpenCOBOL"	"ORCGUDMY01";
 bindapi	"acceptmod"	"OpenCOBOL"	"ORAPI011S1";
+bindapi	"acceptmodv2"	"OpenCOBOL"	"ORAPI011S1V2";
 
 multiplex_group	orca11;
 
@@ -25,6 +26,7 @@ data	{
 		U2ID1;
 		_UDMY01;
 		acceptmod;
+		acceptmodv2;
 	};
 };
 
@@ -33,6 +35,10 @@ db "xml" {
  xml_acceptres;
 };
 
+db "xml2" {
+ xml_acceptv2req;
+ xml_acceptv2res;
+};
 /*
 db	{
 	tbl_syskanri;
