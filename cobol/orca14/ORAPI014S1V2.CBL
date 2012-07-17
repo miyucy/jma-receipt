@@ -16,18 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION      DIVISION.
-       PROGRAM-ID.         ORAPI014S1.
+       PROGRAM-ID.         ORAPI014S1V2.
       *****************************************************************
       *  システム名        : 日医標準レセプトソフト
-      *  サブシステム名    : API連携用モジュール(サンプル)
-      *  コンポーネント名  : 予約登録
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 予約登録 (xml2)
       *  管理者            :
       *  作成日付    作業者        記述
-      *  09/04/07    NACL−竹田　　新規作成
+      *  11/07/17    NACL−多々納　新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 04.05.00     NACL-多々納  10/11/15  予約内容変更
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -171,15 +170,15 @@
       *    ユーザプログラム起動チェックサブパラメタ
            COPY    "CPORCSUSERCHK.INC".
       *    API XML読み込み用定義体
-           COPY    "CPAPPTXMLREQ.INC".
+           COPY    "CPAPPTXMLV2REQ.INC".
       *    API XML読み込み用定義体
-           COPY    "CPAPPTXMLRES.INC".
+           COPY    "CPAPPTXMLV2RES.INC".
       *
       *    保険組合せ決定関数サブ
            COPY    "CPORCSAPIHKN.INC".
       *ver.4.7
       *    API XML読み込み共通定義
-           COPY    "CPAPIREQ.INC".
+           COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -366,7 +365,7 @@
            MOVE    SPACE               TO  WRK-KEICD
       *
            MOVE    ZERO                TO  FLG-SYORI
-           EVALUATE    APNTREQ-CLASS
+           EVALUATE    APIMOD-CLASS
            WHEN    "01"
       *        予約登録
                MOVE    1                   TO  FLG-SYORI
@@ -387,7 +386,7 @@
                GO      TO      200-MAIN-EXT
            END-IF
       *
-           EVALUATE    APNTREQ-CLASS
+           EVALUATE    APIMOD-CLASS
            WHEN    "01"
       *TEST
                DISPLAY "予約登録"    
@@ -411,15 +410,16 @@
       *****************************************************************
        1000-APTXMLREAD-SEC   SECTION.
       *
-      *    IF      APNTRES-OBJECT      NOT =   LOW-VALUE
-      *        DISPLAY "APNTRES-OBJECT not low_value"
-      *    END-IF
+           IF      APIMOD-BODY         NOT =   LOW-VALUE
+               DISPLAY "APNTRES-OBJECT not low_value"
+           END-IF
       * XML情報取り出し
-           MOVE   "XMLOPEN"            TO  MCP-FUNC
-           MOVE    "xml_appointreq"    TO  MCP-TABLE
+           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "xml_appointv2req"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    APNT-BODY           TO  APIREQ-OBJECT
+           MOVE    APIMOD-BODY         TO  APIREQ-OBJECT
            MOVE    ZERO                TO  APIREQ-MODE
+           MOVE    "appointreq"        TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -432,10 +432,11 @@
            END-IF
       *
       *
-           MOVE   "XMLREAD"            TO  MCP-FUNC
-           MOVE    "xml_appointreq"    TO  MCP-TABLE
+           MOVE    "XMLREAD"           TO  MCP-FUNC
+           MOVE    "xml_appointv2req"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    "appointreq"        TO  APIREQ-RECORDNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APIREQ
@@ -449,7 +450,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_appointreq"    TO  MCP-TABLE
+           MOVE    "xml_appointv2req"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
@@ -492,15 +493,16 @@
                MOVE    WRK-ERRMSG          TO  APNTRES-API-RESULT-MSG
            END-IF
       *
-           IF      APNT-BODY       NOT =   LOW-VALUE
+           IF      APIMOD-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
       *
-           MOVE   "XMLOPEN"            TO  MCP-FUNC
-           MOVE    "xml_appointres"    TO  MCP-TABLE
+           MOVE    "XMLOPEN"           TO  MCP-FUNC
+           MOVE    "xml_appointv2res"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE   1                    TO  APNTRES-MODE
-           CALL   "ORCDBMAIN"          USING
+           MOVE    1                   TO  APNTRES-MODE
+           MOVE    "appointres"        TO  APNTRES-RECORDNAME
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APPOINTRES
                                        SPA-AREA
@@ -511,9 +513,10 @@
            END-IF
       *
            MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_appointres"    TO  MCP-TABLE
+           MOVE    "xml_appointv2res"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL   "ORCDBMAIN"          USING
+           MOVE    "appointres"        TO  APNTRES-RECORDNAME
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        XML-APPOINTRES
                                        SPA-AREA
@@ -525,7 +528,7 @@
            END-IF
       *
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_appointres"    TO  MCP-TABLE
+           MOVE    "xml_appointv2res"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL   "ORCDBMAIN"          USING
                                        MCPAREA
@@ -533,8 +536,8 @@
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                DISPLAY "XMLCLOSE OK     = " MCP-RC
-               MOVE  APNTRES-OBJECT    TO  APNT-BODY 
-               MOVE  "application/xml" TO  APNTREQ-CONTENT-TYPE 
+               MOVE    APNTRES-OBJECT      TO  APIMOD-BODY 
+               MOVE    "application/xml"   TO  APIMOD-CONTENT-TYPE 
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
                DISPLAY "appoint xml write failure "
