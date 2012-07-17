@@ -37,6 +37,13 @@ W12	{
 					count	int;
 					item	varchar(20)[2];
 				};
+				TENKIBYOMEI_KBN_COMBO	{
+					TENKIBYOMEI_KBN	{
+						value	varchar(52);
+					};
+					count	int;
+					item	varchar(52)[3];
+				};
 				SYAOCRKBN_COMBO	{
 					SYAOCRKBN	{
 						value	varchar(24);

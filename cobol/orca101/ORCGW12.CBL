@@ -135,6 +135,8 @@
       *                                     種別不明レセ対応
       *  04.06.02    NACL-藤原    10/07/10  病名記載順設定対応
       *  04.06.03    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *  04.06.04    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
+      *                                     転帰済傷病名記載区分の追加
       *
       *  04.07.01    NACL-藤原    11/06/02  入退院履歴の記載区分に
       *                                     自費入院分の記載設定を追加
@@ -209,6 +211,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-TENKIHENKBNMEI
                                               PIC X(18).
+                       09  SPA-GMN-TENKIBYOMEI-KBN-G.
+                           11  SPA-GMN-TENKIBYOMEI-KBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-TENKIBYOMEI-KBNMEI
+                                              PIC X(50).
                        09  SPA-GMN-KKHRECEKBN-G.
                            11  SPA-GMN-KKHRECEKBN
                                               PIC X(01).
@@ -756,6 +764,15 @@
                        09  SPA-GMN-TENKIHENKBNMEIL
                                               PIC X(18).
                    07  SPA-GMN-TENKIHENKBN-MAX
+                                              PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-TENKIBYOMEI-KBNLST     OCCURS  3.
+                       09  SPA-GMN-TENKIBYOMEI-KBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-TENKIBYOMEI-KBNMEIL
+                                              PIC X(50).
+                   07  SPA-GMN-TENKIBYOMEI-KBN-MAX
                                               PIC 9(02).    
       *                                        
                    07  SPA-GMN-KKHRECEKBNLST          OCCURS  4.
@@ -1821,6 +1838,20 @@
            MOVE    "1"                 TO  SPA-GMN-TENKIHENKBNL     (2)
            MOVE    "転帰日を記載する"  TO  SPA-GMN-TENKIHENKBNMEIL  (2)
            MOVE    2                   TO  SPA-GMN-TENKIHENKBN-MAX 
+      *     
+           MOVE    "0"                 TO  SPA-GMN-TENKIBYOMEI-KBNL  (1)
+           MOVE    "転帰日を優先して記載（転帰日以前は表示期間を優先）"
+                                       TO  SPA-GMN-TENKIBYOMEI-KBNMEIL
+                                                                     (1)
+           MOVE    "1"                 TO  SPA-GMN-TENKIBYOMEI-KBNL  (2)
+           MOVE    "転帰日を優先して記載"
+                                       TO  SPA-GMN-TENKIBYOMEI-KBNMEIL
+                                                                     (2)
+           MOVE    "2"                 TO  SPA-GMN-TENKIBYOMEI-KBNL  (3)
+           MOVE    "表示期間を優先して記載"
+                                       TO  SPA-GMN-TENKIBYOMEI-KBNMEIL
+                                                                     (3)
+           MOVE    3                   TO  SPA-GMN-TENKIBYOMEI-KBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHRECEKBNL      (1)
            MOVE    "出力なし"          TO  SPA-GMN-KKHRECEKBNMEIL   (1)
@@ -3547,6 +3578,19 @@
                                        TO  IDY
                END-IF
            END-PERFORM
+      *         
+           MOVE    SYS-200501-TENKIBYOMEI-KBN
+                                       TO  SPA-GMN-TENKIBYOMEI-KBN
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-TENKIBYOMEI-KBN-MAX
+               IF      SPA-GMN-TENKIBYOMEI-KBN 
+                               =   SPA-GMN-TENKIBYOMEI-KBNL (IDY)
+                   MOVE    SPA-GMN-TENKIBYOMEI-KBNLST (IDY)
+                                       TO  SPA-GMN-TENKIBYOMEI-KBN-G
+                   MOVE    SPA-GMN-TENKIBYOMEI-KBN-MAX
+                                       TO  IDY
+               END-IF                                     
+           END-PERFORM
       *
       *    レセプト・総括編集情報（区分コード１０のデータ読込）
            MOVE    SPACE               TO  SYS-200505-REC
@@ -3959,6 +4003,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    SPA-GMN-TENKIHENKBNLST (1)
                                            TO  SPA-GMN-TENKIHENKBN-G
            END-IF                                              
+           IF     SPA-GMN-TENKIBYOMEI-KBN-G
+                                           =   SPACE
+               MOVE    SPA-GMN-TENKIBYOMEI-KBNLST (1)
+                                           TO  SPA-GMN-TENKIBYOMEI-KBN-G
+           END-IF                                              
            IF     SPA-GMN-KKHRECEKBN-G     =   SPACE
                MOVE    SPA-GMN-KKHRECEKBNLST (1)
                                            TO  SPA-GMN-KKHRECEKBN-G
@@ -4322,6 +4371,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-BYOMEIHENKBN1   TO  SPA-GMN-BYOMEIHENKBN1-G 
            MOVE    W12-SYUBYOHENFLG    TO  SPA-GMN-SYUBYOHENFLG-G 
            MOVE    W12-TENKIHENKBN     TO  SPA-GMN-TENKIHENKBN-G 
+           MOVE    W12-TENKIBYOMEI-KBN TO  SPA-GMN-TENKIBYOMEI-KBN-G 
            MOVE    W12-SYAPRTNM        TO  SPA-GMN-SYAPRTNM
            MOVE    W12-KKHPRTNM        TO  SPA-GMN-KKHPRTNM
            MOVE    W12-RENNUMHENKBN    TO  SPA-GMN-RENNUMHENKBN-G 
@@ -4464,6 +4514,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
       *
            PERFORM 4108-TENKIHENKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4187-TENKIBYOMEI-KBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -5263,7 +5318,6 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        4114-SYUBYOHENFLG-CHK-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    転帰日編集区分チェック
       *****************************************************************
@@ -5792,6 +5846,35 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
            .
        4186-HKNJANUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    転帰済傷病名記載区分チェック
+      *****************************************************************
+       4187-TENKIBYOMEI-KBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-TENKIBYOMEI-KBN =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-TENKIBYOMEI-KBN-MAX
+                   IF      SPA-GMN-TENKIBYOMEI-KBN 
+                                   =   SPA-GMN-TENKIBYOMEI-KBNL (IDY)
+                       MOVE    SPA-GMN-TENKIBYOMEI-KBNLST (IDY)
+                                           TO  SPA-GMN-TENKIBYOMEI-KBN-G
+                       MOVE    SPA-GMN-TENKIBYOMEI-KBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *      
+               IF      SPA-GMN-TENKIBYOMEI-KBNMEI  =   SPACE
+                   MOVE    301                 TO  SPA-GMN-CUR
+                   MOVE    "0114"              TO  SPA-ERRCD
+               END-IF
+           END-IF    
+      *
+           .
+       4187-TENKIBYOMEI-KBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8127,6 +8210,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            SYS-200501-INSPECT-ZERO-KBN
            MOVE    SPA-GMN-ROUPRTKBN       TO  SYS-200501-ROUPRTKBN
            MOVE    SPA-GMN-ROUPRTKBN-N     TO  SYS-200501-ROUPRTKBN-N
+           MOVE    SPA-GMN-TENKIBYOMEI-KBN TO
+                                           SYS-200501-TENKIBYOMEI-KBN
            MOVE    SYS-200501-REC          TO  SYSKANRI-REC
       *     
            PERFORM 800-MCNDATE-SEC
@@ -8668,6 +8753,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-BYOMEIHENKBN1-G  TO  W12-BYOMEIHENKBN1
            MOVE    SPA-GMN-SYUBYOHENFLG-G   TO  W12-SYUBYOHENFLG
            MOVE    SPA-GMN-TENKIHENKBN-G    TO  W12-TENKIHENKBN
+           MOVE    SPA-GMN-TENKIBYOMEI-KBN-G
+                                            TO  W12-TENKIBYOMEI-KBN
            MOVE    SPA-GMN-KKHRECEKBN-G     TO  W12-KKHRECEKBN
            MOVE    SPA-GMN-SYARECEKBN-G     TO  W12-SYARECEKBN
            MOVE    SPA-GMN-KOUIKIRECEKBN-G  TO  W12-KOUIKIRECEKBN
@@ -8800,6 +8887,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-TENKIHENKBN-MAX
                                        TO  W12-TENKIHENKBN-COUNT 
+      *
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-TENKIBYOMEI-KBN-MAX
+               MOVE    SPA-GMN-TENKIBYOMEI-KBNLST (IDY)
+                                       TO  W12-TENKIBYOMEI-KBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-TENKIBYOMEI-KBN-MAX
+                                       TO  W12-TENKIBYOMEI-KBN-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-KKHRECEKBN-MAX
@@ -9818,6 +9913,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0113"
                    MOVE    "災害該当レセプトのレセ電記録区分入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0114"
+                   MOVE    "転帰済傷病名記載区分入力エラー"
+                                               TO  SPA-ERRMSG
       *
                WHEN    "1003"
                    MOVE    "更新ができませんでした"
@@ -9956,6 +10054,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "BYOMEIHENKBN1"    TO   MCP-WIDGET
                 WHEN    3
                     MOVE  "TENKIHENKBN"      TO   MCP-WIDGET
+                WHEN    301
+                    MOVE  "TENKIBYOMEI_KBN"  TO   MCP-WIDGET
                 WHEN    4
                     MOVE  "NYUTAIINREKI"     TO   MCP-WIDGET
                 WHEN    7
@@ -10201,7 +10301,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    60
                 WHEN    62
                 WHEN    64  THRU    69
-                WHEN    300
+                WHEN    300 THRU    301
                     MOVE    0                TO  W12-PAGENO
                 WHEN    9
                 WHEN    10
@@ -10250,7 +10350,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "SYUBYOHENFLG"
                    MOVE    3           TO  SPA-GMN-CUR
                WHEN    "TENKIHENKBN"
-                   MOVE    21           TO  SPA-GMN-CUR
+                   MOVE    301         TO  SPA-GMN-CUR
+               WHEN    "TENKIBYOMEI_KBN"
+                   MOVE    21          TO  SPA-GMN-CUR
                WHEN    "SYAOCRKBN"
                    MOVE    7           TO  SPA-GMN-CUR
                WHEN    "KKHOCRKBN"
