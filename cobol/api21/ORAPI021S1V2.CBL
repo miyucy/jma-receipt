@@ -139,6 +139,7 @@
       *    claim連携リターンエリア
        01  WRK-ERROR-AREA.
            03  WRK-KBN-CODE            PIC X(01).
+           03  WRK-KBN-CODE2           PIC X(01).
            03  WRK-ERR-CODE            PIC 9(02).
            03  WRK-ERR-MSG             PIC X(100).
            03  WRK-OUT-HKNCOMBI        PIC X(04).
@@ -478,6 +479,11 @@
                    WHEN    1
                        MOVE    "登録処理終了"
                                            TO  MDCRES-API-RESULT-MSG
+                       IF     (WRK-OUT-CNT1        =   ZERO )
+                         AND  (WRK-OUT-CNT2        >   ZERO )
+                           MOVE    "病名登録処理終了"
+                                           TO  MDCRES-API-RESULT-MSG
+                       END-IF
                    WHEN    2
                        MOVE    "削除処理終了"
                                            TO  MDCRES-API-RESULT-MSG
@@ -993,11 +999,7 @@
        20021-CLAIM-CALL-SEC        SECTION.
       *
       *    UIDコード取得処理
-           INITIALIZE                  UIDIO-AREA
-           CALL    "orcuidset"         USING
-                                       ST
-                                       UIDIO-AREA
-           MOVE    C-UID               TO  MDCRES-MEDICAL-UID
+           PERFORM 200211-UID-GET-SEC
       *
            MOVE    SPACE               TO  LF04-REC
            INITIALIZE                  LF04-REC
@@ -1078,6 +1080,13 @@
                                            TO  LF04-SND-SPICOD1(IDY)
                MOVE    MDCREQ-DIAGNOSIS-NAME (IDY)
                                            TO  LF04-SND-SPINAME1(IDY)
+      *
+               IF     (MDCREQ-DIAGNOSIS-NUMBER(IDY)
+                                               NOT =   SPACE )
+                 OR   (MDCREQ-DIAGNOSIS-NAME (IDY)
+                                               NOT =   SPACE )
+                   ADD     1                   TO  CNT-BYOCNT
+               END-IF
       *ver.4.7
                EVALUATE    MDCREQ-DIAGNOSIS-INOUT (IDY)
                WHEN    "I"
@@ -1098,8 +1107,11 @@
                    MOVE    MDCREQ-DIAGNOSIS-SINGLE-NAME (IDY IDZ)
                                            TO  LF04-SNDSPITBL-SPINAME2
                                                            (IDY IDZ)
-                   IF      MDCREQ-DIAGNOSIS-SINGLE-NUMBER(IDY IDZ)
-                                               NOT =   SPACE
+      *
+                   IF     (MDCREQ-DIAGNOSIS-SINGLE-NUMBER(IDY IDZ)
+                                               NOT =   SPACE  )
+                     OR   (MDCREQ-DIAGNOSIS-SINGLE-NAME (IDY IDZ)
+                                               NOT =   SPACE  )
                        ADD     1               TO  CNT-BYOCNT
                    END-IF
                END-PERFORM
@@ -1163,8 +1175,13 @@
       *
            INITIALIZE                  WRK-ERROR-AREA
            MOVE    "1"                 TO  WRK-KBN-CODE
+      *    診療行為なし
+           IF     (CNT-SRYCNT          =   ZERO )
+               MOVE    "1"                 TO  WRK-KBN-CODE2
+           END-IF
            CALL    "ORCL0031"          USING LF04-REC
                                              WRK-ERROR-AREA
+      *
            IF      WRK-OUT-HKNCOMBI    NOT =   ZERO
       *        対象保険組合せ情報編集
                PERFORM 200210-HKNCOMBI-HEN-SEC
@@ -1174,8 +1191,9 @@
                MOVE    "80"                TO  WRK-ERRCD
                MOVE    WRK-ERR-MSG         TO  WRK-ERRMSG
            ELSE
-               IF      WRK-OUT-HKNCOMBI    =   ZERO
-                                           OR  SPACE
+               IF     (WRK-OUT-HKNCOMBI    =   ZERO
+                                           OR  SPACE )
+               AND    (CNT-SRYCNT          >   ZERO )
                    MOVE    "K2"                TO  WRK-KEICD
                END-IF
                IF     (CNT-SRYCNT          >   ZERO )  AND
@@ -1199,6 +1217,22 @@
       *
            .
        20021-CLAIM-CALL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    UIDコード取得処理
+      *****************************************************************
+       200211-UID-GET-SEC     SECTION.
+      *
+      *    UIDコード取得処理
+           INITIALIZE                  UIDIO-AREA
+           CALL    "orcuidset"         USING
+                                       ST
+                                       UIDIO-AREA
+           MOVE    C-UID               TO  MDCRES-MEDICAL-UID
+      *
+           .
+       200211-UID-GET-EXT.
            EXIT.
       *
       *****************************************************************

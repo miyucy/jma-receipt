@@ -71,6 +71,7 @@
       *  04.07.00    NACL-多々納  11/11/02  同日再入院対応
       *  04.07.00    NACL=多々納  12/03/XX  平成２４年４月改正対応
       *  04.07.02    NACL-藤原    12/05/31  病名の入外区分対応
+      *  04.07.00    NACL=多々納  12/07/18  API病名のみ登録対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -502,6 +503,7 @@
       *    claim連携リターンエリア
        01  LNK-ERROR-AREA.
            03  LNK-KBN-CODE            PIC X(01).
+           03  LNK-KBN-CODE2           PIC X(01).
            03  LNK-ERR-CODE            PIC 9(02).
            03  LNK-ERR-MSG             PIC X(100).
            03  LNK-OUT-HKNCOMBI        PIC X(04).
@@ -807,6 +809,21 @@
       *    剤毎の処理
            MOVE    ZERO                TO  WRK-ZAINUM
            MOVE    ZERO                TO  FLG-ERR
+      *
+      *H24.7
+      *    API　診療行為なし 　病名のみ行う
+           IF     (LNK-KBN-CODE        =   "1" )   AND
+                  (LNK-KBN-CODE2       =   "1" )
+      *        病名セット処理
+               PERFORM 2006-BYOMEI-SET-SEC
+               IF      LNK-ERR-CODE        =   ZERO
+      *            登録あり
+                   MOVE    CNT-OUT01           TO  LNK-OUT-CNT1
+                   MOVE    CNT-OUT02           TO  LNK-OUT-CNT2
+               END-IF
+               GO      TO      200-MAIN-EXT
+           END-IF
+      *
       *    入院の時、同じワーク診療行為の判定
            IF      WRK-NYUGAIKBN       =   "1"
                PERFORM 2009-WKSRYACT-CHK-SEC
@@ -878,6 +895,7 @@
            END-IF
       *
            IF      LNK-ERR-CODE        =   ZERO
+                                       OR  02
       *        登録あり
                MOVE    CNT-OUT01           TO  LNK-OUT-CNT1
                MOVE    CNT-OUT02           TO  LNK-OUT-CNT2
