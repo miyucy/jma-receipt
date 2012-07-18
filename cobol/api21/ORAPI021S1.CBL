@@ -480,6 +480,11 @@
                    WHEN    1
                        MOVE    "ÅÐÏ¿½èÍý½ªÎ»"
                                            TO  MDCRES-API-RESULT-MSG
+                       IF     (WRK-OUT-CNT1        =   ZERO )
+                         AND  (WRK-OUT-CNT2        >   ZERO )
+                           MOVE    "ÉÂÌ¾ÅÐÏ¿½èÍý½ªÎ»"
+                                           TO  MDCRES-API-RESULT-MSG
+                       END-IF
                    WHEN    2
                        MOVE    "ºï½ü½èÍý½ªÎ»"
                                            TO  MDCRES-API-RESULT-MSG
