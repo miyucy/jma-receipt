@@ -816,7 +816,7 @@
                   (LNK-KBN-CODE2       =   "1" )
       *        病名セット処理
                PERFORM 2006-BYOMEI-SET-SEC
-               IF      LNK-ERR-CODE        =   ZERO
+               IF      FLG-ERR             =   ZERO
       *            登録あり
                    MOVE    CNT-OUT01           TO  LNK-OUT-CNT1
                    MOVE    CNT-OUT02           TO  LNK-OUT-CNT2
@@ -894,8 +894,7 @@
                PERFORM 2010-UKETUKE-CHK-SEC
            END-IF
       *
-           IF      LNK-ERR-CODE        =   ZERO
-                                       OR  02
+           IF      FLG-ERR             =   ZERO
       *        登録あり
                MOVE    CNT-OUT01           TO  LNK-OUT-CNT1
                MOVE    CNT-OUT02           TO  LNK-OUT-CNT2
@@ -2692,6 +2691,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    DISPLAY "L0031 WKSRYACT INS ERR:"  MCP-RC
                            ",KEY:"   WKSRY-KEY  "!!!"
                    MOVE    1                   TO  FLG-END
+                   MOVE    1                   TO  FLG-ERR
                    MOVE    10                  TO  LNK-ERR-CODE
                    MOVE    "中途終了データ登録エラー"
                                                TO  LNK-ERR-MSG
@@ -3549,6 +3549,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    11                  TO  LNK-ERR-CODE
                MOVE    "患者病名登録エラー"
                                            TO  LNK-ERR-MSG 
+               MOVE    1                   TO  FLG-ERR
            ELSE
                ADD     1                   TO  CNT-OUT02
            END-IF
@@ -4150,7 +4151,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_uketuke"       TO  MCP-TABLE
-                       MOVE    "key"               TO  MCP-PATHNAME
+      *************    MOVE    "key"               TO  MCP-PATHNAME
+      *ver.4.7   SRFLGのみ更新
+                       MOVE    "upd1"               TO  MCP-PATHNAME
 grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            MCPDATA-REC
                                                            SPA-AREA
@@ -4177,7 +4180,9 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_uketuke"       TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
+      ***********  MOVE    "key"               TO  MCP-PATHNAME
+      *ver.4.7   SRFLGのみ更新
+                   MOVE    "upd1"               TO  MCP-PATHNAME
 grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        MCPDATA-REC
                                                        SPA-AREA
