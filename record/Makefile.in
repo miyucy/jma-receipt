@@ -461,6 +461,7 @@ RECORD_files = \
 	_LDMY01.rec \
 	acceptmodv2.rec \
 	appointmodv2.rec \
+	medicatonmodv2.rec \
 	
 
 DEF_files = \
@@ -706,6 +707,8 @@ DB_files = \
 	xml_acceptv2res.db \
 	xml_appointv2req.db \
 	xml_appointv2res.db \
+	xml_medicationv2req.db \
+	xml_medicationv2res.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
