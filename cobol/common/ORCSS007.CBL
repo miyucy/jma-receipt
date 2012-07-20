@@ -358,7 +358,9 @@
        200-MAIN-SEC                    SECTION.
       *
       *    療養病床入院チェック
-           PERFORM 2001-RYOYO-MAECHK-SEC
+           IF      SS007-SRYYM     >=  "201204"
+              PERFORM 2001-RYOYO-MAECHK-SEC
+           END-IF
       *
            MOVE    ZERO            TO  FLG-UNMATCH
       *
@@ -629,7 +631,8 @@
       *
       *            生活療養となる患者が、生活療養以外の入院料を算定
       *            していた場合のチェック
-                   IF   (IDX-NSRY     =     1)    AND
+                   IF      SS007-SRYYM     >=  "201204"
+                     IF   (IDX-NSRY     =     1)    AND
                         ( NSRY-SRYCD (IDX-NSRY)   NOT =   SPACE )
                        PERFORM    VARYING   IDX-SEI   FROM  1  BY  1
                          UNTIL   (IDX-SEI    >   84)
@@ -645,6 +648,7 @@
                              END-PERFORM
                            END-IF
                        END-PERFORM
+                     END-IF
                    END-IF
       *
                END-PERFORM
