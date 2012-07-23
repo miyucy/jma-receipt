@@ -1332,10 +1332,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SYS-200501-TENKIBYOMEI-KBN
                                        TO
                                        SPA-C02-200501-TENKIBYOMEI-KBN
-      *??
-           DISPLAY "SPA-C02-200501-TENKIBYOMEI-KBN=" 
-                                  SPA-C02-200501-TENKIBYOMEI-KBN
-      *??
       *    
            MOVE    SPACE           TO  SYSKANRI-REC
            INITIALIZE                  SYSKANRI-REC
