@@ -1538,7 +1538,7 @@
       *    クライアント印刷前処理 take
            IF     ( SPA-LID1-FLG        =  "OK" )
              AND  ( SPA-CLIENT-PRT-FLG  =  2)
-               INITIALIZE                  ORCSPRTCLTRAREA 
+               INITIALIZE                  ORCSPRTCTRLAREA 
            END-IF
       *
            PERFORM VARYING IDY FROM    1       BY  1
@@ -1637,11 +1637,11 @@
                   ADD     1                TO  IDW
       *           MOVE    L01-CHK-LABEL(IDY)   TO
                   MOVE    "日次統計"       TO 
-                                           ORCSPRTCLTR-TITLE-I(1)
+                                           ORCSPRTCTRL-TITLE-I(1)
                   MOVE    LNK-PRTKANRI-TBL-KEY TO
-                                           ORCSPRTCLTR-TBL-KEY(1)
+                                           ORCSPRTCTRL-TBL-KEY(1)
                   MOVE    LNK-PRTKANRI-TBL-GROUP TO
-                                           ORCSPRTCLTR-TBL-GROUP(1)
+                                           ORCSPRTCTRL-TBL-GROUP(1)
       *
                END-IF
            END-PERFORM
@@ -1732,12 +1732,12 @@
              AND  ( SPA-CLIENT-PRT-FLG  =  2)
       *    クライアント印刷制御情報取得サブ
                MOVE    SPACE             TO  LDMY01-PANDAPRINT1
-               MOVE    1                 TO  ORCSPRTCLTR-BATCH-FLG
-      *        INITIALIZE                ORCSPRTCLTRAREA
+               MOVE    1                 TO  ORCSPRTCTRL-BATCH-FLG
+      *        INITIALIZE                ORCSPRTCTRLAREA
                CALL    "ORCSPRTCTRL"     USING   SPA-AREA
-                                                 ORCSPRTCLTRAREA
+                                                 ORCSPRTCTRLAREA
                                                  MCPAREA
-               MOVE    ORCSPRTCLTR-OUT   TO  LDMY01-PANDAPRINT1
+               MOVE    ORCSPRTCTRL-OUT   TO  LDMY01-PANDAPRINT1
       *
                MOVE    1                 TO  FLG-CLIENT-OK
            END-IF
