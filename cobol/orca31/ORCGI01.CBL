@@ -18214,6 +18214,11 @@
                  MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
       *
+      *        »ÃÄêÂÐ½è
+               IF    LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)  = "99999999"
+                   CONTINUE
+               ELSE
+      *
                DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
                DISPLAY "STUSAN-TAINREL-NISSU = " STUSAN-TAINREL-NISSU
                IF     STUSAN-NISSU03      NOT =    ZERO
@@ -18297,6 +18302,10 @@
                  DISPLAY "LNK-SCNYUACCT-KAGEN-STYUKYMD(3) = "
                           LNK-SCNYUACCT-KAGEN-STYUKYMD(3)
                END-IF
+      *
+      *        »ÃÄêÂÐ½è
+               END-IF
+      *
       *
            END-IF
       *
@@ -18334,6 +18343,11 @@
                  MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
       *
+      *        »ÃÄêÂÐ½è
+               IF    LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)  = "99999999"
+                   CONTINUE
+               ELSE
+      *
                DISPLAY "STUSAN-NISSU03 = " STUSAN-NISSU03
                DISPLAY "STUSAN-TAINREL-NISSU = " STUSAN-TAINREL-NISSU
                IF     STUSAN-NISSU03      NOT =    ZERO
@@ -18417,6 +18431,10 @@
                  DISPLAY "LNK-SCNYUACCT-KAGEN-STYUKYMD(3) = "
                           LNK-SCNYUACCT-KAGEN-STYUKYMD(3)
                END-IF
+      *
+      *        »ÃÄêÂÐ½è
+               END-IF
+      *
       *
            END-IF
       *
@@ -25294,13 +25312,13 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU03      <=  30
+                 IF     STUSAN-NISSU07      <=  29
                      ADD    1           TO  TN-IDX
                      MOVE   "190121110" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Àº¿À²ÊµÞÀ­´ü¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±¤Î£³£°Æü°ÊÆâ¤Î½ªÆü¤òºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  30  - STUSAN-NISSU03
+                     COMPUTE  WK-TOKUTEI-DAY  =  29  - STUSAN-NISSU07
                      MOVE   SPA-NAI-I01-MAEIDOYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
@@ -25349,13 +25367,13 @@
                  MOVE   SPACE       TO   SYOKIKSN-IN-KHNSRYCD
                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                  MOVE   ZERO            TO  TN-IDX
-                 IF     STUSAN-NISSU03      <=  30
+                 IF     STUSAN-NISSU07      <=  29
                      ADD    1           TO  TN-IDX
                      MOVE   "190121210" TO   LNK-SCNYUACCT-KAGEN-SRYCD
                                                                (TN-IDX)
       *              Àº¿À²ÊµÞÀ­´ü¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²¤Î£³£°Æü°ÊÆâ¤Î½ªÆü¤òºÆ·×»»
                      MOVE     ZERO      TO   WK-TOKUTEI-DAY
-                     COMPUTE  WK-TOKUTEI-DAY  =  30  - STUSAN-NISSU03
+                     COMPUTE  WK-TOKUTEI-DAY  =  29  - STUSAN-NISSU07
                      MOVE   SPA-NAI-I01-MAEIDOYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
                                                                (TN-IDX)
