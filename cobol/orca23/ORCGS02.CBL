@@ -1995,6 +1995,9 @@
       *    帳票発行プログラム名取得
            PERFORM 3401-PGNAME-SHIHARAI-SEC
       *
+      *    クライアント印刷情報編集
+           PERFORM 801-CLIENT-PRT-SEC
+      *
            PERFORM VARYING IDX2 FROM   1   BY  1
                    UNTIL ( IDX2 >      3 )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
@@ -2004,7 +2007,6 @@
            END-PERFORM
       *
       *    印刷処理
-      *
            IF     ( SPA-S01-SHR-ORDER  =  "OK"  OR "PV" )
                PERFORM 45011-JOBKANRI-HENSYU-SEC
       *
@@ -2062,7 +2064,11 @@
                WHEN    "PV"
                    MOVE    "3"             TO  SHELLTBL-ARG17
                WHEN    "OK"
-                   MOVE    "2"             TO  SHELLTBL-ARG17
+                   IF      (SPA-CLIENT-PRT-FLG =   2  )
+                       MOVE    "5"         TO  SHELLTBL-ARG17
+                   ELSE
+                       MOVE    "2"         TO  SHELLTBL-ARG17
+                   END-IF
                END-EVALUATE
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                MOVE    SHELLTBL            TO  MCPDATA-REC
@@ -8636,6 +8642,34 @@
       *
            .
        800-CLIENT-DUMMY-PRT-EXT.
+           EXIT.
+      *****************************************************************
+      *    クライアント印刷前　処理（バッチ帳票）
+      *****************************************************************
+       801-CLIENT-PRT-SEC         SECTION.
+      *
+           INITIALIZE                      SDMY01
+           MOVE    SPACE               TO  SDMY01-PANDAPRINT1
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                      ORCSPRTCTRLAREA
+           MOVE    CONST-PRTKANRI-TBL-KEY
+                                       TO  ORCSPRTCTRL-TBL-KEY (1)
+           MOVE    ZERO                TO  ORCSPRTCTRL-RENNUM  (1)
+           MOVE    CONST-PRTKANRI-TBL-GROUP
+                                       TO  ORCSPRTCTRL-TBL-GROUP  (1)
+           MOVE    ZERO                TO  ORCSPRTCTRL-SHORI-RENNUM  (1)
+           MOVE    1                   TO  ORCSPRTCTRL-BATCH-FLG
+           MOVE    "支払証明書"        TO  ORCSPRTCTRL-TITLE-I(01)
+           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
+                                               ORCSPRTCTRLAREA
+                                               MCPAREA
+           MOVE    ORCSPRTCTRL-OUT     TO  SDMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
+      *
+           .
+       801-CLIENT-PRT-EXT.
            EXIT.
       **************************************************************
       *    収納マスター検索処理（一括再計算）
