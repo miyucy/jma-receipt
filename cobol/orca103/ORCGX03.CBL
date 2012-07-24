@@ -2250,6 +2250,7 @@
       *
                        EVALUATE    SPA-X03-GMN-CHKKBN
                        WHEN    "1"
+                       WHEN    "2"
                            IF    ( SPA-X03-GMN-TRCHK-NAME  (IDX0)
                                =   SPA-X03-GMN-TLCHK-NAME  (IDX6) )
                             AND  ( SPA-X03-GMN-TRCHK-JYKN  (IDX0)
@@ -2258,7 +2259,6 @@
                                =   SPA-X03-GMN-TLCHK-GRPID (IDX6) )
                                MOVE    1   TO  FLG-HIT
                            END-IF
-                       WHEN    "2"
                        WHEN    "6"
                        WHEN    "M"
                            IF    ( SPA-X03-GMN-TRCHK-NAME  (IDX0)
@@ -2361,7 +2361,7 @@
                                        TO  SPA-X03-NAI-TLCHK-SRYCD(IDXA)
                MOVE    WRK-LCHKLST-JYKN (IDX0)
                                        TO  SPA-X03-GMN-TLCHK-JYKN (IDXA)
-               IF    ( SPA-X03-GMN-CHKKBN  =   "1" )
+               IF    ( SPA-X03-GMN-CHKKBN  =   "1" OR "2" )
                    MOVE    WRK-LCHKLST-GRPID(IDX0)
                                        TO  SPA-X03-GMN-TLCHK-GRPID(IDXA)
                END-IF
@@ -2387,7 +2387,7 @@
       *
            END-PERFORM
       *
-           IF    ( SPA-X03-GMN-CHKKBN  =   "1" )
+           IF    ( SPA-X03-GMN-CHKKBN  =   "1" OR "2" )
       *
                COMPUTE IDXS = SPA-X03-GMN-LCHKLST-MAX  +   1
                PERFORM VARYING IDX0    FROM    1   BY  1
@@ -2454,6 +2454,7 @@
       *
                        EVALUATE    SPA-X03-GMN-CHKKBN
                        WHEN    "1"
+                       WHEN    "2"
                            IF    ( SPA-X03-GMN-TRCHK-NAME  (IDX0)
                                =   SPA-X03-GMN-TLCHK-NAME  (IDX6) )
                             AND  ( SPA-X03-GMN-TRCHK-JYKN  (IDX0)
@@ -2462,7 +2463,6 @@
                                =   SPA-X03-GMN-TLCHK-GRPID (IDX6) )
                                MOVE    1   TO  FLG-HIT
                            END-IF
-                       WHEN    "2"
                        WHEN    "6"
                        WHEN    "M"
                            IF    ( SPA-X03-GMN-TRCHK-NAME  (IDX0)

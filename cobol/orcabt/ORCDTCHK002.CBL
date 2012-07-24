@@ -6990,6 +6990,8 @@
                MOVE    ORCBSD01-NYUGAIKBN
                                        TO  SDTCHK01-NYUGAIKBN
                MOVE    DTCHK003-HKNKBN TO  SDTCHK01-HKNKBN
+               MOVE    CHKSND-GRPCHKKBN
+                                           TO  SDTCHK01-GRPCHKKBN
                MOVE    TSRYKA-SRYCD-DAY-G (IDX6 IDX7)
                                        TO  SDTCHK01-CHKDAY-G
                CALL    "ORCSDTCHK01"   USING   SDTCHK01AREA
@@ -7122,6 +7124,8 @@
                    MOVE    ORCBSD01-NYUGAIKBN
                                            TO  SDTCHK01-NYUGAIKBN
                    MOVE    DTCHK003-HKNKBN TO  SDTCHK01-HKNKBN
+                   MOVE    CHKSND-GRPCHKKBN
+                                           TO  SDTCHK01-GRPCHKKBN
                    MOVE    TPSET-DAY-G     TO  SDTCHK01-CHKDAY-G
                    CALL    "ORCSDTCHK01"   USING   SDTCHK01AREA
                                                    SYS-1101-REC
