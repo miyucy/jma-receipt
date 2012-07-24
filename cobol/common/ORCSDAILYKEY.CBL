@@ -132,7 +132,6 @@ grpsys*
        200-MAIN-SEC                    SECTION.
       *
            IF    ( SDAILYKEY-CREYMD    =   SDAILYKEY-BASEYMD )
-            OR   ( SDAILYKEY-BASEYMD   =   "FORCE" )
                MOVE    SDAILYKEY-CREYMD    TO  WRK-DAILYKEY-YMD
                MOVE    SDAILYKEY-CREHMS    TO  WRK-DAILYKEY-HM
                PERFORM 900-HOURS-KEY-SEL-SEC
