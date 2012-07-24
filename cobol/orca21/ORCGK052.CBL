@@ -615,12 +615,12 @@
            INITIALIZE                  KDMY01
            MOVE    SPACE               TO  KDMY01-PANDAPRINT1
       *    クライアント印刷制御情報取得サブ
-           INITIALIZE                  ORCSPRTCLTRAREA
-           MOVE    "セット一覧表"      TO  ORCSPRTCLTR-TITLE-I(01)
+           INITIALIZE                  ORCSPRTCTRLAREA
+           MOVE    "セット一覧表"      TO  ORCSPRTCTRL-TITLE-I(01)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCLTRAREA
+                                               ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCLTR-OUT     TO  KDMY01-PANDAPRINT1
+           MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
       *
            MOVE    1                   TO  FLG-CLIENT-OK
            .

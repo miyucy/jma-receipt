@@ -8608,15 +8608,15 @@
            MOVE    SPACE               TO  SDMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
-           INITIALIZE                          ORCSPRTCLTRAREA
-           MOVE    "外来請求書兼領収書"    TO  ORCSPRTCLTR-TITLE-I(01)
-           MOVE    "外来診療費明細書"      TO  ORCSPRTCLTR-TITLE-I(02)
-           MOVE    "入院請求書兼領収書"    TO  ORCSPRTCLTR-TITLE-I(03)
-           MOVE    "入院診療費明細書"      TO  ORCSPRTCLTR-TITLE-I(04)
+           INITIALIZE                          ORCSPRTCTRLAREA
+           MOVE    "外来請求書兼領収書"    TO  ORCSPRTCTRL-TITLE-I(01)
+           MOVE    "外来診療費明細書"      TO  ORCSPRTCTRL-TITLE-I(02)
+           MOVE    "入院請求書兼領収書"    TO  ORCSPRTCTRL-TITLE-I(03)
+           MOVE    "入院診療費明細書"      TO  ORCSPRTCTRL-TITLE-I(04)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCLTRAREA
+                                               ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCLTR-OUT     TO  SDMY01-PANDAPRINT1
+           MOVE    ORCSPRTCTRL-OUT     TO  SDMY01-PANDAPRINT1
       *
            MOVE    1                   TO  FLG-CLIENT-OK
       *

@@ -3540,13 +3540,13 @@
            MOVE    SPACE               TO  SDMY01-PANDAPRINT1
       *
       *    ¥¯¥é¥¤¥¢¥ó¥È°õºþÀ©¸æ¾ðÊó¼èÆÀ¥µ¥Ö
-           INITIALIZE                          ORCSPRTCLTRAREA
-           MOVE    "³°ÍèÀÁµá½ñ·óÎÎ¼ý½ñ"    TO  ORCSPRTCLTR-TITLE-I(01)
-           MOVE    "Æþ±¡ÀÁµá½ñ·óÎÎ¼ý½ñ"    TO  ORCSPRTCLTR-TITLE-I(02)
+           INITIALIZE                          ORCSPRTCTRLAREA
+           MOVE    "³°ÍèÀÁµá½ñ·óÎÎ¼ý½ñ"    TO  ORCSPRTCTRL-TITLE-I(01)
+           MOVE    "Æþ±¡ÀÁµá½ñ·óÎÎ¼ý½ñ"    TO  ORCSPRTCTRL-TITLE-I(02)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCLTRAREA
+                                               ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCLTR-OUT     TO  SDMY01-PANDAPRINT1
+           MOVE    ORCSPRTCTRL-OUT     TO  SDMY01-PANDAPRINT1
       *
            MOVE    1                   TO  FLG-CLIENT-OK
       *

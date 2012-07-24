@@ -2901,12 +2901,12 @@
            MOVE    SPACE               TO  SDMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
-           INITIALIZE                          ORCSPRTCLTRAREA
-           MOVE    "分娩費用明細書"    TO  ORCSPRTCLTR-TITLE-I(01)
+           INITIALIZE                          ORCSPRTCTRLAREA
+           MOVE    "分娩費用明細書"    TO  ORCSPRTCTRL-TITLE-I(01)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCLTRAREA
+                                               ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCLTR-OUT     TO  SDMY01-PANDAPRINT1
+           MOVE    ORCSPRTCTRL-OUT     TO  SDMY01-PANDAPRINT1
       *
            MOVE    1                   TO  FLG-CLIENT-OK
       *

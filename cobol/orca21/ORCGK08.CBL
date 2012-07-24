@@ -6090,14 +6090,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  KDMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
-           INITIALIZE                  ORCSPRTCLTRAREA
-           MOVE    "入院処方箋"        TO  ORCSPRTCLTR-TITLE-I(01)
-           MOVE    "注射処方箋"        TO  ORCSPRTCLTR-TITLE-I(02)
-           MOVE    "入院指示箋"        TO  ORCSPRTCLTR-TITLE-I(03)
+           INITIALIZE                  ORCSPRTCTRLAREA
+           MOVE    "入院処方箋"        TO  ORCSPRTCTRL-TITLE-I(01)
+           MOVE    "注射処方箋"        TO  ORCSPRTCTRL-TITLE-I(02)
+           MOVE    "入院指示箋"        TO  ORCSPRTCTRL-TITLE-I(03)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCLTRAREA
+                                               ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCLTR-OUT     TO  KDMY01-PANDAPRINT1
+           MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
       *
            MOVE    1                   TO  FLG-CLIENT-OK
            .

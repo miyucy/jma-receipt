@@ -3027,13 +3027,13 @@
            MOVE    SPACE               TO  PDMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
-           INITIALIZE                  ORCSPRTCLTRAREA
-           MOVE    "カルテ"            TO  ORCSPRTCLTR-TITLE-I(01)
-           MOVE    "処方箋"            TO  ORCSPRTCLTR-TITLE-I(02)
+           INITIALIZE                  ORCSPRTCTRLAREA
+           MOVE    "カルテ"            TO  ORCSPRTCTRL-TITLE-I(01)
+           MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCLTRAREA
+                                               ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCLTR-OUT     TO  PDMY01-PANDAPRINT1
+           MOVE    ORCSPRTCTRL-OUT     TO  PDMY01-PANDAPRINT1
       *
       *    再印刷指示なし
            MOVE    2                   TO  SPA-CLIENT-TEMP-FLG

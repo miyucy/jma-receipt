@@ -6596,17 +6596,17 @@
            MOVE    SPACE               TO  KDMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
-           INITIALIZE                  ORCSPRTCLTRAREA
-           MOVE    "処方箋"            TO  ORCSPRTCLTR-TITLE-I(01)
-           MOVE    "請求書兼領収書"    TO  ORCSPRTCLTR-TITLE-I(02)
-           MOVE    "お薬情報"          TO  ORCSPRTCLTR-TITLE-I(03)
-           MOVE    "診療費明細書"      TO  ORCSPRTCLTR-TITLE-I(04)
-           MOVE    "お薬手帳"          TO  ORCSPRTCLTR-TITLE-I(05)
-           MOVE    "予約票"            TO  ORCSPRTCLTR-TITLE-I(06)
+           INITIALIZE                  ORCSPRTCTRLAREA
+           MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(01)
+           MOVE    "請求書兼領収書"    TO  ORCSPRTCTRL-TITLE-I(02)
+           MOVE    "お薬情報"          TO  ORCSPRTCTRL-TITLE-I(03)
+           MOVE    "診療費明細書"      TO  ORCSPRTCTRL-TITLE-I(04)
+           MOVE    "お薬手帳"          TO  ORCSPRTCTRL-TITLE-I(05)
+           MOVE    "予約票"            TO  ORCSPRTCTRL-TITLE-I(06)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCLTRAREA
+                                               ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCLTR-OUT     TO  KDMY01-PANDAPRINT1
+           MOVE    ORCSPRTCTRL-OUT     TO  KDMY01-PANDAPRINT1
       *
            MOVE    1                   TO  FLG-CLIENT-OK
       *

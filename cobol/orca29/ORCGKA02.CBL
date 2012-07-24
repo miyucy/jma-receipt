@@ -2251,14 +2251,14 @@
            MOVE    SPACE               TO  KADMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
-           INITIALIZE                  ORCSPRTCLTRAREA
-           MOVE    "お薬情報"          TO  ORCSPRTCLTR-TITLE-I(01)
-           MOVE    "処方箋"            TO  ORCSPRTCLTR-TITLE-I(02)
-           MOVE    "お薬手帳"          TO  ORCSPRTCLTR-TITLE-I(03)
+           INITIALIZE                  ORCSPRTCTRLAREA
+           MOVE    "お薬情報"          TO  ORCSPRTCTRL-TITLE-I(01)
+           MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
+           MOVE    "お薬手帳"          TO  ORCSPRTCTRL-TITLE-I(03)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCLTRAREA
+                                               ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCLTR-OUT     TO  KADMY01-PANDAPRINT1
+           MOVE    ORCSPRTCTRL-OUT     TO  KADMY01-PANDAPRINT1
       *
            MOVE    1                   TO  FLG-CLIENT-OK
       *

@@ -4543,13 +4543,13 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            INITIALIZE                  UDMY01
            MOVE    SPACE               TO  UDMY01-PANDAPRINT1
       *    クライアント印刷制御情報取得サブ
-           INITIALIZE                  ORCSPRTCLTRAREA
-           MOVE    "カルテ"            TO  ORCSPRTCLTR-TITLE-I(01)
-           MOVE    "処方箋"            TO  ORCSPRTCLTR-TITLE-I(02)
+           INITIALIZE                  ORCSPRTCTRLAREA
+           MOVE    "カルテ"            TO  ORCSPRTCTRL-TITLE-I(01)
+           MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCLTRAREA
+                                               ORCSPRTCTRLAREA
                                                MCPAREA
-           MOVE    ORCSPRTCLTR-OUT     TO  UDMY01-PANDAPRINT1
+           MOVE    ORCSPRTCTRL-OUT     TO  UDMY01-PANDAPRINT1
       *
            MOVE    1                   TO  FLG-CLIENT-OK
            .
