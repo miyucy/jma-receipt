@@ -17,49 +17,49 @@
       ********************************************************************
       ************************************************************
       *    クライアント印刷情報取得                              *
-      *                         COPY  (CPORCSPRTCLTR.INC)        *
+      *                         COPY  (CPORCSPRTCTRL.INC)        *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  ORCSPRTCLTRAREA.
+       01  ORCSPRTCTRLAREA.
       *モード
-           03  ORCSPRTCLTR-MODE          PIC X(01).
+           03  ORCSPRTCTRL-MODE          PIC X(01).
       *バッチ処理判定
-           03  ORCSPRTCLTR-BATCH-FLG     PIC 9(01).
+           03  ORCSPRTCTRL-BATCH-FLG     PIC 9(01).
       *入力値
-           03  ORCSPRTCLTR-IN            OCCURS   10.
+           03  ORCSPRTCTRL-IN            OCCURS   10.
       *    帳票タイトル
-             05  ORCSPRTCLTR-TITLE-I     PIC X(256).
+             05  ORCSPRTCTRL-TITLE-I     PIC X(256).
       *ＫＥＹ
-             05  ORCSPRTCLTR-TBL-KEY     PIC X(08).
+             05  ORCSPRTCTRL-TBL-KEY     PIC X(08).
       *連番
-             05  ORCSPRTCLTR-RENNUM      PIC 9(04).
+             05  ORCSPRTCTRL-RENNUM      PIC 9(04).
       *グループ
-             05  ORCSPRTCLTR-TBL-GROUP   PIC X(14).
+             05  ORCSPRTCTRL-TBL-GROUP   PIC X(14).
       *UUID
-             05  ORCSPRTCLTR-TBL-UUID    PIC X(36).
+             05  ORCSPRTCTRL-TBL-UUID    PIC X(36).
       *処理内連番
-             05  ORCSPRTCLTR-SHORI-RENNUM
+             05  ORCSPRTCTRL-SHORI-RENNUM
                                          PIC 9(04).
       *開始頁
-             05  ORCSPRTCLTR-STPAGE
+             05  ORCSPRTCTRL-STPAGE
                                          PIC 9(05).
       *終了頁
-             05  ORCSPRTCLTR-EDPAGE
+             05  ORCSPRTCTRL-EDPAGE
                                          PIC 9(05).
       *
       *出力値
-           03  ORCSPRTCLTR-OUT.
-             05  ORCSPRTCLTR-O           OCCURS   10.
+           03  ORCSPRTCTRL-OUT.
+             05  ORCSPRTCTRL-O           OCCURS   10.
       *    帳票パス
-               07  ORCSPRTCLTR-PATH-O    PIC X(256).
+               07  ORCSPRTCTRL-PATH-O    PIC X(256).
       *    帳票タイトル
-               07  ORCSPRTCLTR-TITLE-O   PIC X(256).
+               07  ORCSPRTCTRL-TITLE-O   PIC X(256).
       *    表示有無フラグ
-               07  ORCSPRTCLTR-SHOWDIALOG  PIC S9(9)   BINARY.
+               07  ORCSPRTCTRL-SHOWDIALOG  PIC S9(9)   BINARY.
       *    リトライ回数
-               07  ORCSPRTCLTR-NRETRY   PIC S9(9)   BINARY.
+               07  ORCSPRTCTRL-NRETRY   PIC S9(9)   BINARY.
       *
       *

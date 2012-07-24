@@ -107,7 +107,7 @@
        PROCEDURE           DIVISION
                USING
                SPA-AREA
-               ORCSPRTCLTRAREA
+               ORCSPRTCTRLAREA
                MCPAREA.
       *
       *****************************************************************
@@ -126,11 +126,11 @@
 
       *
            PERFORM 100-AGENTGET-SEC
-           IF      ORCSPRTCLTR-MODE    = "C"
+           IF      ORCSPRTCTRL-MODE    = "C"
                PERFORM 100-CANCEL-SEC
            ELSE
                PERFORM 100-APIADD-SEC
-             IF    ORCSPRTCLTR-BATCH-FLG NOT = 1
+             IF    ORCSPRTCTRL-BATCH-FLG NOT = 1
                MOVE    1               TO  SPA-CLIENT-PRT-FLG
              END-IF
            END-IF
@@ -184,7 +184,7 @@
       *****************************************************************
        100-CANCEL-SEC              SECTION.
       *    
-           IF    ORCSPRTCLTR-BATCH-FLG NOT = 1
+           IF    ORCSPRTCTRL-BATCH-FLG NOT = 1
              MOVE    2                   TO  SPA-CLIENT-PRT-FLG
            END-IF
            STRING  "/tmp/"             DELIMITED   BY  SIZE
@@ -225,7 +225,7 @@
       *****************************************************************
        100-APIADD-SEC              SECTION.
       *
-           IF      ORCSPRTCLTR-BATCH-FLG = 1
+           IF      ORCSPRTCTRL-BATCH-FLG = 1
                PERFORM 1001-BATCH-SEC
            ELSE
                PERFORM 1001-ONLINE-SEC
@@ -249,16 +249,16 @@
       *    
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
-               IF  ORCSPRTCLTR-TITLE-I(IDX)  =  SPACE
+               IF  ORCSPRTCTRL-TITLE-I(IDX)  =  SPACE
                  COMPUTE IDY           = IDX - 1
                  STRING  "orca00/print?filename="
                                            DELIMITED   BY  SIZE
                          SPA-HOSPNUM       DELIMITED   BY  SPACE
-                         ORCSPRTCLTR-TBL-KEY(IDY)
+                         ORCSPRTCTRL-TBL-KEY(IDY)
                                            DELIMITED   BY  SPACE
                          "9999"
                                            DELIMITED   BY  SPACE
-                         ORCSPRTCLTR-TBL-GROUP(IDY)
+                         ORCSPRTCTRL-TBL-GROUP(IDY)
                                            DELIMITED   BY  SPACE
                          "0099" 
                                            DELIMITED   BY  SIZE
@@ -268,40 +268,40 @@
                                            DELIMITED   BY  SIZE
                          WRK-FILE-TYPE
                                            DELIMITED   BY  SPACE
-                 INTO    ORCSPRTCLTR-PATH-O(IDX)
+                 INTO    ORCSPRTCTRL-PATH-O(IDX)
                  MOVE    "°õºþ¥À¥ß¡¼"      TO
-                                       ORCSPRTCLTR-TITLE-O(IDX)
+                                       ORCSPRTCTRL-TITLE-O(IDX)
                  MOVE    SPA-CLIENT-SHOWDIALOG   TO
-                                       ORCSPRTCLTR-SHOWDIALOG(IDX)
+                                       ORCSPRTCTRL-SHOWDIALOG(IDX)
                  MOVE    100               TO
-                                       ORCSPRTCLTR-NRETRY(IDX)
+                                       ORCSPRTCTRL-NRETRY(IDX)
       *
                    MOVE  11            TO  IDX
                ELSE
                  STRING  "orca00/print?filename="
                                            DELIMITED   BY  SIZE
                          SPA-HOSPNUM       DELIMITED   BY  SPACE
-                         ORCSPRTCLTR-TBL-KEY(IDX)
+                         ORCSPRTCTRL-TBL-KEY(IDX)
                                            DELIMITED   BY  SPACE
-                         ORCSPRTCLTR-RENNUM(IDX)
+                         ORCSPRTCTRL-RENNUM(IDX)
                                            DELIMITED   BY  SPACE
-                         ORCSPRTCLTR-TBL-GROUP(IDX)
+                         ORCSPRTCTRL-TBL-GROUP(IDX)
                                            DELIMITED   BY  SPACE
                          IDX    
                                            DELIMITED   BY  SPACE
-                         ORCSPRTCLTR-EDPAGE(IDX)
+                         ORCSPRTCTRL-EDPAGE(IDX)
                                            DELIMITED   BY  SIZE
-                         ORCSPRTCLTR-STPAGE(IDX)
+                         ORCSPRTCTRL-STPAGE(IDX)
                                            DELIMITED   BY  SIZE
                          WRK-FILE-TYPE
                                            DELIMITED   BY  SPACE
-                 INTO    ORCSPRTCLTR-PATH-O(IDX)
-                 MOVE    ORCSPRTCLTR-TITLE-I(IDX)      TO
-                                       ORCSPRTCLTR-TITLE-O(IDX)
+                 INTO    ORCSPRTCTRL-PATH-O(IDX)
+                 MOVE    ORCSPRTCTRL-TITLE-I(IDX)      TO
+                                       ORCSPRTCTRL-TITLE-O(IDX)
                  MOVE    SPA-CLIENT-SHOWDIALOG   TO
-                                       ORCSPRTCLTR-SHOWDIALOG(IDX)
+                                       ORCSPRTCTRL-SHOWDIALOG(IDX)
                  MOVE    100               TO
-                                       ORCSPRTCLTR-NRETRY(IDX)
+                                       ORCSPRTCTRL-NRETRY(IDX)
                END-IF
            END-PERFORM
       *
@@ -336,7 +336,7 @@
       *    
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
-               IF  ORCSPRTCLTR-TITLE-I(IDX)  =  SPACE
+               IF  ORCSPRTCTRL-TITLE-I(IDX)  =  SPACE
                  STRING  "orca00/print?filename="
                                            DELIMITED   BY  SIZE
                          SPA-HOSPNUM       DELIMITED   BY  SPACE
@@ -354,13 +354,13 @@
                          SPA-PRT-UUID      DELIMITED   BY  SPACE
                          WRK-FILE-TYPE
                                            DELIMITED   BY  SPACE
-                 INTO    ORCSPRTCLTR-PATH-O(IDX)
+                 INTO    ORCSPRTCTRL-PATH-O(IDX)
                  MOVE    "°õºþ¥À¥ß¡¼"      TO
-                                       ORCSPRTCLTR-TITLE-O(IDX)
+                                       ORCSPRTCTRL-TITLE-O(IDX)
                  MOVE    SPA-CLIENT-SHOWDIALOG   TO
-                                       ORCSPRTCLTR-SHOWDIALOG(IDX)
+                                       ORCSPRTCTRL-SHOWDIALOG(IDX)
                  MOVE    100               TO
-                                       ORCSPRTCLTR-NRETRY(IDX)
+                                       ORCSPRTCTRL-NRETRY(IDX)
       *
                    MOVE  11            TO  IDX
                ELSE
@@ -381,13 +381,13 @@
                          SPA-PRT-UUID      DELIMITED   BY  SPACE
                          WRK-FILE-TYPE
                                            DELIMITED   BY  SPACE
-                 INTO    ORCSPRTCLTR-PATH-O(IDX)
-                 MOVE    ORCSPRTCLTR-TITLE-I(IDX)      TO
-                                       ORCSPRTCLTR-TITLE-O(IDX)
+                 INTO    ORCSPRTCTRL-PATH-O(IDX)
+                 MOVE    ORCSPRTCTRL-TITLE-I(IDX)      TO
+                                       ORCSPRTCTRL-TITLE-O(IDX)
                  MOVE    SPA-CLIENT-SHOWDIALOG   TO
-                                       ORCSPRTCLTR-SHOWDIALOG(IDX)
+                                       ORCSPRTCTRL-SHOWDIALOG(IDX)
                  MOVE    100               TO
-                                       ORCSPRTCLTR-NRETRY(IDX)
+                                       ORCSPRTCTRL-NRETRY(IDX)
                END-IF
            END-PERFORM
       *
