@@ -8,6 +8,7 @@ bind	"C50"		"OpenCOBOL"	"ORCGC50";
 bind	"C501"		"OpenCOBOL"	"ORCGC501";
 bind	"C50ERR"	"OpenCOBOL"	"ORCGC50ERR";
 bind	"C50ID1"	"OpenCOBOL"	"ORCGC50ID1";
+bindapi	"subjectivesv2"	"OpenCOBOL"	"ORAPI025S1V2";
 
 multiplex_group	orca25;
 
@@ -20,9 +21,16 @@ data	{
 		C501;
                 C50ERR;
                 C50ID1;
+		subjectivesv2;
 	};
 };
 
+db "xml2" {
+ xml_subjectivesmodv2req;
+ xml_subjectivesmodv2res;
+};
+
+/*
 db	{
 	tbl_syskanri;
 	tbl_hkncombi;
@@ -40,6 +48,8 @@ db	{
 	tbl_sryacct_main;
 	tbl_sryacct_sub;
 };
+*/
 
-/* #include "orcadb.inc" */
+
+#include "orcadb.inc"
 #include "orcadbh.inc"

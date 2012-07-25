@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.07.00     NACL-多々納  12/07/24  労災区分追加対応
       *****************************************************************
       *
       *
@@ -317,16 +318,35 @@
                MOVE    ZERO                TO  FLG-CHK-OK
                IF     (COMB-DELKBN         =   SPACE     ) AND
                       (COMB-HYOJIKBN   NOT =   "1"       )
-                   IF      ORCSAPIHKN-KBN2     =   "1"
+      *ver.4.7     IF      ORCSAPIHKN-KBN2     =   "1"
+      *                新規登録時すべて
+      *                MOVE    1                   TO  FLG-CHK-OK
+      *            ELSE
+      *                当日有効
+      *                IF     (SPA-SYSYMD      >=  COMB-TEKSTYMD ) AND
+      *                       (SPA-SYSYMD      <=  COMB-TEKEDYMD )
+      *                    MOVE    1               TO  FLG-CHK-OK
+      *                END-IF
+      *****        END-IF
+                   EVALUATE    ORCSAPIHKN-KBN2
+                   WHEN    "1"
       *                新規登録時すべて
                        MOVE    1                   TO  FLG-CHK-OK
-                   ELSE
-      *                当日有効
-                       IF     (SPA-SYSYMD      >=  COMB-TEKSTYMD ) AND
-                              (SPA-SYSYMD      <=  COMB-TEKEDYMD )
+                   WHEN    "2"
+      *                年月で有効であること
+                       IF     (COMB-TEKSTYMD(1:6)
+                                               <=  SPA-SYSYMD(1:6)) AND
+                              (COMB-TEKEDYMD(1:6)
+                                               >=  SPA-SYSYMD(1:6))
                            MOVE    1               TO  FLG-CHK-OK
                        END-IF
-                   END-IF
+                   WHEN    OTHER
+      *                当日有効であること
+                       IF     (COMB-TEKSTYMD   <=  SPA-SYSYMD )  AND
+                              (COMB-TEKEDYMD   >=  SPA-SYSYMD )
+                           MOVE    1               TO  FLG-CHK-OK
+                       END-IF
+                   END-EVALUATE
                END-IF
                IF      FLG-CHK-OK            =   1
                    ADD     1                 TO  IDX-MAX
@@ -364,16 +384,35 @@
                                ( IDH-MAX       >=  40)
                MOVE    ZERO                TO  FLG-CHK-OK
                IF     (PTHKN-SAKJOKBN      =   SPACE )
-                   IF      ORCSAPIHKN-KBN2     =   "1"
+      *ver.4.7     IF      ORCSAPIHKN-KBN2     =   "1"
+      *                新規登録時すべて
+      *                MOVE    1                   TO  FLG-CHK-OK
+      *            ELSE
+      *                当日有効であること
+      *                IF     (PTHKN-TEKSTYMD    <=  SPA-SYSYMD )  AND
+      *                       (PTHKN-TEKEDYMD    >=  SPA-SYSYMD )
+      *                    MOVE    1               TO  FLG-CHK-OK
+      *                END-IF
+      *****        END-IF
+                   EVALUATE    ORCSAPIHKN-KBN2
+                   WHEN    "1"
       *                新規登録時すべて
                        MOVE    1                   TO  FLG-CHK-OK
-                   ELSE
+                   WHEN    "2"
+      *                年月で有効であること
+                       IF     (PTHKN-TEKSTYMD(1:6)
+                                               <=  SPA-SYSYMD(1:6)) AND
+                              (PTHKN-TEKEDYMD(1:6)
+                                               >=  SPA-SYSYMD(1:6))
+                           MOVE    1               TO  FLG-CHK-OK
+                       END-IF
+                   WHEN    OTHER
       *                当日有効であること
                        IF     (PTHKN-TEKSTYMD    <=  SPA-SYSYMD )  AND
                               (PTHKN-TEKEDYMD    >=  SPA-SYSYMD )
                            MOVE    1               TO  FLG-CHK-OK
                        END-IF
-                   END-IF
+                   END-EVALUATE
                END-IF
                IF      FLG-CHK-OK            =   1
                    ADD     1                   TO  IDH-MAX 
@@ -411,16 +450,35 @@
                                ( IDK-MAX       >=  40)
                MOVE    ZERO                TO  FLG-CHK-OK
                IF     (PTKOH-SAKJOKBN      =   SPACE )
-                   IF      ORCSAPIHKN-KBN2     =   "1"
+      *ver.4.7**   IF      ORCSAPIHKN-KBN2     =   "1"
+      *                新規登録時すべて
+      *                MOVE    1                   TO  FLG-CHK-OK
+      *            ELSE
+      *                当日有効であること
+      *                IF     (PTKOH-TEKSTYMD    <=  SPA-SYSYMD )  AND
+      *                       (PTKOH-TEKEDYMD    >=  SPA-SYSYMD )
+      *                    MOVE    1               TO  FLG-CHK-OK
+      *                END-IF
+      *******      END-IF
+                   EVALUATE    ORCSAPIHKN-KBN2
+                   WHEN    "1"
       *                新規登録時すべて
                        MOVE    1                   TO  FLG-CHK-OK
-                   ELSE
+                   WHEN    "2"
+      *                年月で有効であること
+                       IF     (PTKOH-TEKSTYMD(1:6)
+                                               <=  SPA-SYSYMD(1:6)) AND
+                              (PTKOH-TEKEDYMD(1:6)
+                                               >=  SPA-SYSYMD(1:6))
+                           MOVE    1               TO  FLG-CHK-OK
+                       END-IF
+                   WHEN    OTHER
       *                当日有効であること
                        IF     (PTKOH-TEKSTYMD    <=  SPA-SYSYMD )  AND
                               (PTKOH-TEKEDYMD    >=  SPA-SYSYMD )
                            MOVE    1               TO  FLG-CHK-OK
                        END-IF
-                   END-IF
+                   END-EVALUATE
                END-IF
                IF      FLG-CHK-OK            =   1
                    ADD     1                   TO  IDK-MAX 
@@ -596,7 +654,7 @@
       *        治験・自費は他の保険がない時に有効とする
                IF     (TBL-COMB-HKNNUM (IDX)(1:2)  =   "98"
                                                    OR  "90"
-                                                  OR  "91" )
+                                                   OR  "91" )
                    IF      WRK-IDXH2           =   ZERO
                        MOVE    IDX             TO  WRK-IDXH2
                    END-IF
@@ -906,9 +964,12 @@
       *    補助区分
            MOVE    TBL-COMB-HOJOKBN (IDX)
                                        TO  ORCSAPIHKN-HOJOKBN (IDX)
+           PERFORM 29013-HOJOKBN-NAME-HEN-SEC
+      *
       *    継続区分
            MOVE    TBL-COMB-CONTKBN (IDX)
                                        TO  ORCSAPIHKN-CONTKBN (IDX)
+      *
       *    保険情報
            PERFORM VARYING     IDH     FROM    1   BY  1
                    UNTIL      (IDH         >   IDH-MAX  )
@@ -946,10 +1007,14 @@
                    MOVE    TBL-PTHKN-SKKGETYMD (IDH)
                                            TO  ORCSAPIHKN-NAI-SKKGETYMD
                                                                 (IDX)
-      *
                    MOVE    IDH-MAX         TO  IDH
                END-IF
            END-PERFORM
+      *    労災・自賠責区分
+           IF      TBL-COMB-HKNNUM (IDX)   =   "971"  OR  "973"
+               PERFORM 29013-PTRSIINF-HEN-SEC
+           END-IF
+      *
       *    公費情報
            IF      TBL-COMB-KOHHKNNUM (IDX 1)  NOT =   SPACE
       *         公費ＯＲＴ
@@ -962,6 +1027,163 @@
            END-IF
            .
        2901-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    補助区分名称編集
+      *****************************************************************
+       29013-HOJOKBN-NAME-HEN-SEC             SECTION.
+      *
+           EVALUATE    TBL-COMB-HKNNUM (IDX)
+      *    船員
+               WHEN    "002"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "1"
+                       MOVE    "職務" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "2"
+                       MOVE    "下船" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "3"
+                       MOVE    "通勤" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "7"
+                       MOVE    "３割" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "9"
+                       MOVE    "１割" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "A"
+                       MOVE    "１割職務" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "B"
+                       MOVE    "１割下船" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "C"
+                       MOVE    "１割通勤" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "G"
+                       MOVE    "３割職務" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "H"
+                       MOVE    "３割下船" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "I"
+                       MOVE    "３割通勤" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+               END-EVALUATE
+      *    後期高齢者
+               WHEN    "039"
+               WHEN    "040"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "1"
+                       MOVE    "１割" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "3"
+                       MOVE    "３割" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+               END-EVALUATE
+      *        共済
+               WHEN    "031"
+               WHEN    "032"
+               WHEN    "033"
+               WHEN    "034"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "2"
+                       MOVE    "下船３月"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "7"
+                       MOVE    "３割" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "9"
+                       MOVE    "１割" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "B"
+                       MOVE    "１割下船" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "H"
+                       MOVE    "３割下船" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+               END-EVALUATE
+      *        国保
+               WHEN    "060"
+               WHEN    "068"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "0"
+                       MOVE    "無し"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "1"
+                       MOVE    "１割"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "2"
+                       MOVE    "２割"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "3"
+                       MOVE    "３割"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "4"
+                       MOVE    "外１割 入０割"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "5"
+                       MOVE    "外２割 入１割"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "6"
+                       MOVE    "外３割 入２割"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+               END-EVALUATE
+      *
+               WHEN    OTHER
+                   IF      TBL-COMB-HKNNUM (IDX)(1:1)  =   "9"
+                       CONTINUE
+                   ELSE
+      *            協会等
+                   EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                       WHEN    "9"
+                           MOVE    "１割" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                       WHEN    "7"
+                           MOVE    "３割" 
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   END-EVALUATE
+                   END-IF
+           END-EVALUATE
+           .
+       29013-HOJOKBN-NAME-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災・自賠責区分処理
+      *****************************************************************
+       29013-PTRSIINF-HEN-SEC             SECTION.
+      *
+           INITIALIZE                      PTRSIINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
+           MOVE    SPA-PTID            TO  PTRSI-PTID
+           MOVE    TBL-COMB-HKNID (IDX)    TO  PTRSI-HKNID
+           MOVE    PTRSIINF-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptrsiinf"     TO  MCP-TABLE
+               MOVE    "key"              TO  MCP-PATHNAME
+               PERFORM 993-PTRSIINF-NEXT-SEC
+           ELSE
+               INITIALIZE                      PTRSIINF-REC
+               MOVE    1                   TO  FLG-PTRSIINF
+           END-IF
+           MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PTRSIINF        =   ZERO
+      *        労災区分
+               MOVE    PTRSI-HKNKBN        TO  ORCSAPIHKN-RSI-HKNKBN
+                                                              (IDX)
+           END-IF
+           .
+       29013-PTRSIINF-HEN-EXT.
            EXIT.
       *
       *****************************************************************

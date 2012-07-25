@@ -284,6 +284,7 @@
            COPY    "C501.INC".
            COPY    "C50ERR.INC".
            COPY    "C50ID1.INC".
+           COPY    "CPAPIMODV2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
