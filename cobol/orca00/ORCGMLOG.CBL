@@ -763,17 +763,15 @@
       *
            INITIALIZE                  ORCA-SYSTEM
            MOVE    "SETVALUE"      TO  MCP-FUNC
-           MOVE    2               TO  ORCA-SYSTEM-NUM
+           MOVE    1               TO  ORCA-SYSTEM-NUM
            MOVE    SPA-NAI-TERMID(SPA-GMN-SELNUM)
                                    TO  ORCA-SYSTEM-ID
-           MOVE    "message"       TO  ORCA-SYSTEM-KEY(1)
+           MOVE    "abort"         TO  ORCA-SYSTEM-KEY(1)
            STRING  WRK-CONST-STOP1     DELIMITED  BY  SIZE
                    MCP-USER            DELIMITED  BY  SPACE
                    WRK-CONST-STOP2     DELIMITED  BY  SIZE
                                INTO    ORCA-SYSTEM-VALUE(1)
            END-STRING
-           MOVE    "abort"         TO  ORCA-SYSTEM-KEY(2)
-           MOVE    "T"             TO  ORCA-SYSTEM-VALUE(2)
            PERFORM 900-SYSDB-INV-SEC
            IF    ( MCP-RC              =   ZERO    OR  1 )
                MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
@@ -796,17 +794,15 @@
                      ( SPA-NAI-TERMID(IDX) NOT =   MCP-TERM )
                    INITIALIZE                  ORCA-SYSTEM
                    MOVE    "SETVALUE"      TO  MCP-FUNC
-                   MOVE    2               TO  ORCA-SYSTEM-NUM
+                   MOVE    1               TO  ORCA-SYSTEM-NUM
                    MOVE    SPA-NAI-TERMID(IDX)
                                            TO  ORCA-SYSTEM-ID
-                   MOVE    "message"       TO  ORCA-SYSTEM-KEY(1)
+                   MOVE    "abort"         TO  ORCA-SYSTEM-KEY(1)
                    STRING  WRK-CONST-STOP1     DELIMITED  BY  SIZE
-                     MCP-USER            DELIMITED  BY  SPACE
-                     WRK-CONST-STOP2     DELIMITED  BY  SIZE
-                                 INTO    ORCA-SYSTEM-VALUE(1)
+                           MCP-USER            DELIMITED  BY  SPACE
+                           WRK-CONST-STOP2     DELIMITED  BY  SIZE
+                                       INTO    ORCA-SYSTEM-VALUE(1)
                    END-STRING
-                   MOVE    "abort"         TO  ORCA-SYSTEM-KEY(2)
-                   MOVE    "T"             TO  ORCA-SYSTEM-VALUE(2)
                    PERFORM 900-SYSDB-INV-SEC
                    IF    ( MCP-RC          =   ZERO    OR  1 )
                        MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
@@ -833,7 +829,7 @@
            MOVE    1               TO  ORCA-SYSTEM-NUM
            MOVE    SPA-NAI-TERMID(SPA-GMN-SELNUM)
                                    TO  ORCA-SYSTEM-ID
-           MOVE    "message"       TO  ORCA-SYSTEM-KEY(1)
+           MOVE    "dialog"        TO  ORCA-SYSTEM-KEY(1)
            MOVE    MLOG-MES1       TO  ORCA-SYSTEM-VALUE(1)
            PERFORM 900-SYSDB-INV-SEC
            IF    ( MCP-RC              =   ZERO    OR  1 )
@@ -856,7 +852,7 @@
            MOVE    1               TO  ORCA-SYSTEM-NUM
            MOVE    SPA-NAI-TERMID(SPA-GMN-SELNUM)
                                    TO  ORCA-SYSTEM-ID
-           MOVE    "message"       TO  ORCA-SYSTEM-KEY(1)
+           MOVE    "dialog"        TO  ORCA-SYSTEM-KEY(1)
            MOVE    MLOG-MES1       TO  ORCA-SYSTEM-VALUE(1)
            PERFORM 900-SYSDB-INV-SEC
            IF    ( MCP-RC              =   ZERO    OR  1 )

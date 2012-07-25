@@ -876,7 +876,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "SETVALUEALL"   TO  MCP-FUNC
            MOVE    1               TO  ORCA-SYSTEM-NUM
            MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           MOVE    "message"       TO  ORCA-SYSTEM-KEY(1)
+           MOVE    "dialog"        TO  ORCA-SYSTEM-KEY(1)
            MOVE    SPACE           TO  ORCA-SYSTEM-VALUE(1)
            STRING  "プログラム更新処理を行います。"    DELIMITED BY SIZE
                    "入力作業を完了し速やかにログアウトしてください。"
