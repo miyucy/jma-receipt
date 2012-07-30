@@ -379,6 +379,7 @@
       *
       *  04.06.01    NACL-門脇    10/09/02  出産育児一時金直接支払制度（外来）
       *  04.06.02    NACL-門脇    10/11/08  主保険＋マル長の請求対応
+      *  04.06.03    NACL-門脇    12/07/30  高額委任払い制度上限額０円対応
       *
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *  04.07.02    NACL-門脇    11/10/17  法定外現物給付対応（法別１０、２１）
@@ -9663,9 +9664,9 @@
                                      SPA-AREA
       *
            IF    LNK-ORCSJGNGET-RC   =   ZERO
-              IF      LNK-ORCSJGNGET-GAIJGNGAK  =  ZERO
-                 MOVE    ZERO        TO  FLG-KOHININBARAI
-              ELSE
+      ***     IF      LNK-ORCSJGNGET-GAIJGNGAK  =  ZERO
+      ***        MOVE    ZERO        TO  FLG-KOHININBARAI
+      ***     ELSE
                  IF   COMB-KOH1HKNNUM      =  "027"
                    MOVE    "1"       TO  COMB-KOH1-GAIJGNKBN
                    MOVE    LNK-ORCSJGNGET-GAIJGNGAK
@@ -9676,7 +9677,7 @@
                                      TO  MAX-KIN-SYU-M
                  END-IF
                  MOVE    1           TO  FLG-KOUGAKUCYO-ININ
-              END-IF
+      ***     END-IF
            ELSE
                  MOVE    ZERO        TO  FLG-KOHININBARAI
            END-IF

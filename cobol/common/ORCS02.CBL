@@ -339,6 +339,7 @@
       *  04.05.39    NACL-門脇    12/07/19  高齢者他保険入院対応
       *
       *  04.06.01    NACL-門脇    10/11/08  主保険＋マル長の請求対応
+      *  04.06.02    NACL-門脇    12/07/30  高額委任払い制度上限額０円対応
       *
       *  04.07.01    NACL-門脇    11/09/01  保険・公費有効期間チェック
       *  04.07.02    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
@@ -9470,13 +9471,13 @@
                                      SPA-AREA
       *
            IF    LNK-ORCSJGNGET-RC   =   ZERO
-              IF      LNK-ORCSJGNGET-NYUJGNGAK  =  ZERO
-                 MOVE    ZERO        TO  FLG-KOHININBARAI
-              ELSE
+      ***     IF      LNK-ORCSJGNGET-NYUJGNGAK  =  ZERO
+      ***        MOVE    ZERO        TO  FLG-KOHININBARAI
+      ***     ELSE
                  MOVE    LNK-ORCSJGNGET-NYUJGNGAK
                                      TO  MAX-KIN-SYU-M
                  MOVE    1           TO  FLG-KOUGAKUCYO-ININ
-              END-IF
+      ***     END-IF
            ELSE
                  MOVE    ZERO        TO  FLG-KOHININBARAI
            END-IF
