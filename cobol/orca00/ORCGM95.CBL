@@ -1974,6 +1974,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        4021-SYS1011-HEN-SEC             SECTION.
       *
            MOVE    ZERO                TO  IDX2
+           MOVE    SPACE               TO  SYS-1011-TBL
+           INITIALIZE                      SYS-1011-TBL
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-M95GMN-MAX
                IF      SPA-M95GMN-TDRCD (IDX)  =   SPACE
