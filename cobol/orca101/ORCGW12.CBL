@@ -1844,14 +1844,10 @@
                                        TO  SPA-GMN-TENKIBYOMEI-KBNMEIL
                                                                      (1)
            MOVE    "1"                 TO  SPA-GMN-TENKIBYOMEI-KBNL  (2)
-           MOVE    "転帰日を優先して記載"
-                                       TO  SPA-GMN-TENKIBYOMEI-KBNMEIL
-                                                                     (2)
-           MOVE    "2"                 TO  SPA-GMN-TENKIBYOMEI-KBNL  (3)
            MOVE    "表示期間を優先して記載"
                                        TO  SPA-GMN-TENKIBYOMEI-KBNMEIL
-                                                                     (3)
-           MOVE    3                   TO  SPA-GMN-TENKIBYOMEI-KBN-MAX 
+                                                                     (2)
+           MOVE    2                   TO  SPA-GMN-TENKIBYOMEI-KBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHRECEKBNL      (1)
            MOVE    "出力なし"          TO  SPA-GMN-KKHRECEKBNMEIL   (1)

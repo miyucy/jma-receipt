@@ -277,7 +277,7 @@
       *  04.06.13    NACL-藤原    12/02/29  補足コメントの登録前チェック追加
       *  04.06.14    NACL-藤原    12/03/22  補足コメントの登録前チェック
       *                                     を複数病名登録時には行わない
-      *  04.06.15    NAcl-藤原    12/07/04  表示期間によるレセプト記載対応
+      *  04.06.15    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
       *
       *  04.07.01    NACL-藤原    11/06/10  未コード化病名となる病名の別
       *                                     組み立てへの移行を可能にする
@@ -1706,16 +1706,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          ELSE
                            IF      SPA-C02-200501-TENKIBYOMEI-KBN
                                                    =   "1"
-                               IF      PTBYO-TENKIYMD(1:6)
-                                                   >=  WRK-SYSYMD (1:6)
-                                   CONTINUE
-                               ELSE
-                                   MOVE    1           TO  FLG-CHK
-                               END-IF
-                           END-IF    
-      *
-                           IF      SPA-C02-200501-TENKIBYOMEI-KBN
-                                                   =   "2"
                                IF      WRK-YM      >=  WRK-SYSYMD (1:6)
                                    CONTINUE
                                ELSE

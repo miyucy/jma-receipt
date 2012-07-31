@@ -425,15 +425,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                ELSE
                    IF      SYS-200501-TENKIBYOMEI-KBN
                                                =   "1"
-                       IF      PTBYO-TENKIYMD(1:6) >=  RECE200-SRYYM
-                           CONTINUE
-                       ELSE
-                           GO  TO  2001-PTBYO-CHK-EXT
-                       END-IF
-                   END-IF    
-      *
-                   IF      SYS-200501-TENKIBYOMEI-KBN
-                                               =   "2"
                        IF      WRK-YM              >=  RECE200-SRYYM
                            CONTINUE
                        ELSE
