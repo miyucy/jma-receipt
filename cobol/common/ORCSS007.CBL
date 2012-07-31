@@ -63,7 +63,6 @@
            03  IDX-ST                          PIC 9(05).
            03  IDX-ED                          PIC 9(05).
            03  IDX-SEI                         PIC 9(05).
-           03  IDX-KSN                         PIC 9(05).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -108,7 +107,7 @@
            03   FILLER                     PIC X(09) VALUE "190130410".
       *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Á
            03   FILLER                     PIC X(09) VALUE "190122010".
-      *10  Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Á¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Á¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
            03   FILLER                     PIC X(09) VALUE "190711410".
       *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Â
            03   FILLER                     PIC X(09) VALUE "190122110".
@@ -128,7 +127,7 @@
            03   FILLER                     PIC X(09) VALUE "190712210".
       *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Á
            03   FILLER                     PIC X(09) VALUE "190155210".
-      *20  ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Á¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Á¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
            03   FILLER                     PIC X(09) VALUE "190155310".
       *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Â
            03   FILLER                     PIC X(09) VALUE "190155610".
@@ -148,7 +147,7 @@
            03   FILLER                     PIC X(09) VALUE "190156910".
       *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë
            03   FILLER                     PIC X(09) VALUE "190121310".
-      *30  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
            03   FILLER                     PIC X(09) VALUE "190700910".
       *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë
            03   FILLER                     PIC X(09) VALUE "190121410".
@@ -168,7 +167,7 @@
            03   FILLER                     PIC X(09) VALUE "190701710".
       *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë
            03   FILLER                     PIC X(09) VALUE "190131610".
-      *40  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
            03   FILLER                     PIC X(09) VALUE "190701910".
       *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë
            03   FILLER                     PIC X(09) VALUE "190131810".
@@ -188,7 +187,7 @@
            03   FILLER                     PIC X(09) VALUE "190702710".
       *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë
            03   FILLER                     PIC X(09) VALUE "190132610".
-      *50  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
            03   FILLER                     PIC X(09) VALUE "190702910".
       *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë
            03   FILLER                     PIC X(09) VALUE "190132810".
@@ -206,9 +205,9 @@
            03   FILLER                     PIC X(09) VALUE "190133410".
       *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
            03   FILLER                     PIC X(09) VALUE "190703710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë
+      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë
            03   FILLER                     PIC X(09) VALUE "190133610".
-      *60  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
            03   FILLER                     PIC X(09) VALUE "190703910".
       *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë
            03   FILLER                     PIC X(09) VALUE "190133810".
@@ -228,7 +227,7 @@
            03   FILLER                     PIC X(09) VALUE "190157710".
       *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Ã¡Ë
            03   FILLER                     PIC X(09) VALUE "190158010".
-      *70  ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Ã¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Ã¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
            03   FILLER                     PIC X(09) VALUE "190158110".
       *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Ä¡Ë
            03   FILLER                     PIC X(09) VALUE "190158410".
@@ -248,7 +247,7 @@
            03   FILLER                     PIC X(09) VALUE "190159710".
       *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£È¡Ë
            03   FILLER                     PIC X(09) VALUE "190160010".
-      *80  ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£È¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£È¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
            03   FILLER                     PIC X(09) VALUE "190160110".
       *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£É¡Ë
            03   FILLER                     PIC X(09) VALUE "190160410".
@@ -263,176 +262,6 @@
        01  TBL-H24-SEIKATSU-R     REDEFINES  TBL-H24-SEIKATSU-AREA.
            03   TBL-H24-SEISRYCD           PIC X(09)  OCCURS  84.
       *
-      *
-      *    À¸³èÎÅÍÜÈ½ÄêÍÑ¡ÊÊ¿À®£²£¶Ç¯ÄÉ²ÃÊ¬¡Ë
-       01  TBL-H26-SEIKATSU-AREA.
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£±
-           03   FILLER                     PIC X(09) VALUE "190175310".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£±¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190176110".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£²
-           03   FILLER                     PIC X(09) VALUE "190175710".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£²¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190176510".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£±
-           03   FILLER                     PIC X(09) VALUE "190175510".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£±¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190176310".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£²
-           03   FILLER                     PIC X(09) VALUE "190175910".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£²¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190176710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-           03   FILLER                     PIC X(09) VALUE "190166110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-           03   FILLER                     PIC X(09) VALUE "190166310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-           03   FILLER                     PIC X(09) VALUE "190166510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-           03   FILLER                     PIC X(09) VALUE "190166710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-           03   FILLER                     PIC X(09) VALUE "190166910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-           03   FILLER                     PIC X(09) VALUE "190167110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-           03   FILLER                     PIC X(09) VALUE "190167310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-           03   FILLER                     PIC X(09) VALUE "190167510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-           03   FILLER                     PIC X(09) VALUE "190167710".
-      *
-       01  TBL-H26-SEIKATSU-R     REDEFINES  TBL-H26-SEIKATSU-AREA.
-           03   TBL-H26-SEISRYCD           PIC X(09)  OCCURS  17.
-      *
-      *    À¸³èÎÅÍÜÈ½ÄêÍÑ¡ÊÊ¿À®£²£¸Ç¯ÄÉ²ÃÊ¬¡Ë
-       01  TBL-H28-SEIKATSU-AREA.
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190185510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190183710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190185710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190183910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190185910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190184110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190186110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190184310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190186310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190184510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190186510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190184710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190186710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190184910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190186910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190185110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡ÊÌë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190187110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡Ê´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¡Ë
-           03   FILLER                     PIC X(09) VALUE "190185310".
-      *
-       01  TBL-H28-SEIKATSU-R     REDEFINES  TBL-H28-SEIKATSU-AREA.
-           03   TBL-H28-SEISRYCD           PIC X(09)  OCCURS  18.
-      *
-      *    À¸³èÎÅÍÜÈ½ÄêÍÑ¡ÊÊ¿À®£³£°Ç¯ÄÉ²ÃÊ¬¡Ë
-       01  TBL-H30-SEIKATSU-AREA.
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£±
-           03   FILLER                     PIC X(09) VALUE "190209110".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£±
-           03   FILLER                     PIC X(09) VALUE "190209310".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£²
-           03   FILLER                     PIC X(09) VALUE "190209510".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£²
-           03   FILLER                     PIC X(09) VALUE "190209710".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£³
-           03   FILLER                     PIC X(09) VALUE "190209910".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£³
-           03   FILLER                     PIC X(09) VALUE "190210110".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£´
-           03   FILLER                     PIC X(09) VALUE "190210310".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£´
-           03   FILLER                     PIC X(09) VALUE "190210510".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£±¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190210710".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£±¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190210910".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£²¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190211110".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£²¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190211310".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£³¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190211510".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£³¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190211710".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£´¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190211910".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£´¡ÊÆÃÄêÃÏ°è¡Ë
-           03   FILLER                     PIC X(09) VALUE "190212110".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£±
-           03   FILLER                     PIC X(09) VALUE "190207910".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£²
-           03   FILLER                     PIC X(09) VALUE "190208110".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£³
-           03   FILLER                     PIC X(09) VALUE "190208310".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£´
-           03   FILLER                     PIC X(09) VALUE "190208510".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£µ
-           03   FILLER                     PIC X(09) VALUE "190208710".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£¶
-           03   FILLER                     PIC X(09) VALUE "190208910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Á¡Ë¡Ê·Ð²áÁ¼ÃÖ£±¡Ë
-           03   FILLER                     PIC X(09) VALUE "190215110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Â¡Ë¡Ê·Ð²áÁ¼ÃÖ£±¡Ë
-           03   FILLER                     PIC X(09) VALUE "190215310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Ã¡Ë¡Ê·Ð²áÁ¼ÃÖ£±¡Ë
-           03   FILLER                     PIC X(09) VALUE "190215510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Ä¡Ë¡Ê·Ð²áÁ¼ÃÖ£±¡Ë
-           03   FILLER                     PIC X(09) VALUE "190215710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Å¡Ë¡Ê·Ð²áÁ¼ÃÖ£±¡Ë
-           03   FILLER                     PIC X(09) VALUE "190215910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Æ¡Ë¡Ê·Ð²áÁ¼ÃÖ£±¡Ë
-           03   FILLER                     PIC X(09) VALUE "190216110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Ç¡Ë¡Ê·Ð²áÁ¼ÃÖ£±¡Ë
-           03   FILLER                     PIC X(09) VALUE "190216310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£È¡Ë¡Ê·Ð²áÁ¼ÃÖ£±¡Ë
-           03   FILLER                     PIC X(09) VALUE "190216510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£É¡Ë¡Ê·Ð²áÁ¼ÃÖ£±¡Ë
-           03   FILLER                     PIC X(09) VALUE "190216710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Á¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
-           03   FILLER                     PIC X(09) VALUE "190202510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Â¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
-           03   FILLER                     PIC X(09) VALUE "190202710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Ã¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
-           03   FILLER                     PIC X(09) VALUE "190202910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Ä¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
-           03   FILLER                     PIC X(09) VALUE "190203110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Å¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
-           03   FILLER                     PIC X(09) VALUE "190203310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Æ¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
-           03   FILLER                     PIC X(09) VALUE "190203510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£Ç¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
-           03   FILLER                     PIC X(09) VALUE "190203710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£È¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
-           03   FILLER                     PIC X(09) VALUE "190203910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£É¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡Ë
-           03   FILLER                     PIC X(09) VALUE "190204110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¡Ê£É¡Ë¡Ê·Ð²áÁ¼ÃÖ£²¡¦ÄÌÂ§£¸¡Ë
-           03   FILLER                     PIC X(09) VALUE "190204310".
-      *
-       01  TBL-H30-SEIKATSU-R     REDEFINES  TBL-H30-SEIKATSU-AREA.
-           03   TBL-H30-SEISRYCD           PIC X(09)  OCCURS  41.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -554,9 +383,6 @@
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key17"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
-      *
-      *    ¿©Æ²²Ã»»»»Äê²ÄÇ½ÉÂÅï¤ÎÆþ±¡ÂÐ¾ÝÆü¼èÆÀ
-           PERFORM   2002-SHOKUDOU-CHK-SEC
       *
            .
        200-MAIN-EXT.
@@ -824,63 +650,6 @@
                        END-PERFORM
                      END-IF
                    END-IF
-                   IF      SS007-SRYYM     >=  "201404"
-                     IF   (IDX-NSRY     =     1)    AND
-                        ( NSRY-SRYCD (IDX-NSRY)   NOT =   SPACE )
-                       PERFORM    VARYING   IDX-SEI   FROM  1  BY  1
-                         UNTIL   (IDX-SEI    >   17)
-                           IF  NSRY-SRYCD (IDX-NSRY)
-                                       =  TBL-H26-SEISRYCD(IDX-SEI)
-                             PERFORM   VARYING  IDX FROM  1  BY  1
-                                UNTIL    (IDX   >     31)
-                                  IF   (NACCT-DAY(IDX)      =   1 ) AND
-                                       (WRK-RYOYO-TBL(IDX)  =  "1") AND
-                                       (WRK-RSI-TBL(IDX)    =  SPACE)
-                                           MOVE    1    TO  SS007-RC2
-                                  END-IF
-                             END-PERFORM
-                           END-IF
-                       END-PERFORM
-                     END-IF
-                   END-IF
-                   IF      SS007-SRYYM     >=  "201604"
-                     IF   (IDX-NSRY     =     1)    AND
-                        ( NSRY-SRYCD (IDX-NSRY)   NOT =   SPACE )
-                       PERFORM    VARYING   IDX-SEI   FROM  1  BY  1
-                         UNTIL   (IDX-SEI    >   18)
-                           IF  NSRY-SRYCD (IDX-NSRY)
-                                       =  TBL-H28-SEISRYCD(IDX-SEI)
-                             PERFORM   VARYING  IDX FROM  1  BY  1
-                                UNTIL    (IDX   >     31)
-                                  IF   (NACCT-DAY(IDX)      =   1 ) AND
-                                       (WRK-RYOYO-TBL(IDX)  =  "1") AND
-                                       (WRK-RSI-TBL(IDX)    =  SPACE)
-                                           MOVE    1    TO  SS007-RC2
-                                  END-IF
-                             END-PERFORM
-                           END-IF
-                       END-PERFORM
-                     END-IF
-                   END-IF
-                   IF      SS007-SRYYM     >=  "201804"
-                     IF   (IDX-NSRY     =     1)    AND
-                        ( NSRY-SRYCD (IDX-NSRY)   NOT =   SPACE )
-                       PERFORM    VARYING   IDX-SEI   FROM  1  BY  1
-                         UNTIL   (IDX-SEI    >   41)
-                           IF  NSRY-SRYCD (IDX-NSRY)
-                                       =  TBL-H30-SEISRYCD(IDX-SEI)
-                             PERFORM   VARYING  IDX FROM  1  BY  1
-                                UNTIL    (IDX   >     31)
-                                  IF   (NACCT-DAY(IDX)      =   1 ) AND
-                                       (WRK-RYOYO-TBL(IDX)  =  "1") AND
-                                       (WRK-RSI-TBL(IDX)    =  SPACE)
-                                           MOVE    1    TO  SS007-RC2
-                                  END-IF
-                             END-PERFORM
-                           END-IF
-                       END-PERFORM
-                     END-IF
-                   END-IF
       *
                END-PERFORM
       *
@@ -899,7 +668,7 @@
                    +  0.5
            END-IF
       *
-      **     DISPLAY "WRK-ZAITEN = " WRK-ZAITEN
+           DISPLAY "WRK-ZAITEN = " WRK-ZAITEN
       *
            IF    ( NACCT-ZAITEN    NOT =   WRK-ZAITEN )
                MOVE    1               TO  FLG-UNMATCH
@@ -908,84 +677,6 @@
            .
        2001-NYUINACT-CHK-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    ¿©Æ²²Ã»»»»Äê²ÄÇ½ÉÂÅï¤ÎÆþ±¡ÂÐ¾ÝÆü¼èÆÀ
-      *****************************************************************
-       2002-SHOKUDOU-CHK-SEC                    SECTION.
-      *
-           MOVE    ZERO                TO  FLG-RYOYO-CHK
-      *
-           INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-      *    Å¾ÆþÆü¥»¥Ã¥È¡Ê·îËöÆü¡Ë
-           MOVE    SS007-SRYYM         TO  PTNYUINRRK-TENNYUYMD(1:6)
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY7-AREA
-           MOVE    "71"                TO  LNK-DAY7-IRAI
-           MOVE    SS007-SRYYM         TO  LNK-DAY7-YM
-           CALL    "ORCSDAY"   USING       STS-AREA-DAY
-                                           LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI     TO  WRK-MATSUYMD
-           MOVE    WRK-MATSUDD         TO  PTNYUINRRK-TENNYUYMD(7:2)
-      *    Å¾½ÐÆü¥»¥Ã¥È¡Ê£±Æü¡Ë
-           MOVE    SS007-SRYYM         TO  PTNYUINRRK-TENSTUYMD(1:6)
-           MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD(7:2)
-      *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key44"             TO  MCP-PATHNAME
-           PERFORM 900-PTNYUINRRK-SELECT-SEC
-           IF      FLG-PTNYUINRRK      =   ZERO
-             MOVE  "tbl_ptnyuinrrk"    TO  MCP-TABLE
-             MOVE  "key44"             TO  MCP-PATHNAME
-             PERFORM 900-PTNYUINRRK-READ-SEC
-             IF  FLG-PTNYUINRRK        =   ZERO
-                 PERFORM UNTIL  FLG-PTNYUINRRK  =  1
-      *              ÉÂÅï¼ïÊÌ¤Î¼èÆÀ
-                     PERFORM    20011-BTUSEL-SEC
-      *
-                     IF     PTNYUINRRK-TENNYUYMD(1:6) <  SS007-SRYYM
-                         MOVE     1  TO  IDX-ST
-                     END-IF
-                     IF     PTNYUINRRK-TENNYUYMD(1:6) =  SS007-SRYYM
-                         MOVE  PTNYUINRRK-TENNYUYMD(7:2)  TO  IDX-ST
-                     END-IF
-                     IF     PTNYUINRRK-TENSTUYMD(1:6) >  SS007-SRYYM
-                         MOVE     WRK-MATSUDD  TO  IDX-ED
-                     END-IF
-                     IF     PTNYUINRRK-TENSTUYMD(1:6) =  SS007-SRYYM
-                         MOVE  PTNYUINRRK-TENSTUYMD(7:2)  TO  IDX-ED
-                     END-IF
-      **               DISPLAY   "---------------------"
-      **               DISPLAY   "IDX-ST = " IDX-ST
-      **               DISPLAY   "IDX-ED = " IDX-ED
-                     PERFORM   VARYING   IDX   FROM  IDX-ST  BY  1
-                               UNTIL    (IDX   >     IDX-ED)
-                         IF  SYS-5001-BTU-SYOKUDOKBN    =   '2'
-                             MOVE   "1"     TO  SS007-RC3(IDX)
-                         ELSE
-                             MOVE   SPACE   TO  SS007-RC3(IDX)
-                         END-IF
-                     END-PERFORM
-      **               DISPLAY  "----5----0----5----0----5----0-"
-      **               DISPLAY  SS007-RC3-TBL
-                     MOVE  "tbl_ptnyuinrrk"  TO  MCP-TABLE
-                     MOVE  "key44"           TO  MCP-PATHNAME
-                     PERFORM 900-PTNYUINRRK-READ-SEC
-                 END-PERFORM
-             END-IF
-           END-IF
-      *
-             MOVE    "tbl_ptnyuinrrk"  TO  MCP-TABLE
-             MOVE    "key44"           TO  MCP-PATHNAME
-             PERFORM  910-DBCLOSECURSOR-SEC
-      *
-      *
-           .
-       2002-SHOKUDOU-CHK-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    ½ªÎ»½èÍý
       *****************************************************************
