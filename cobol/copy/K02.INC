@@ -108,8 +108,6 @@
                 04  K02-B09S-STATE   PIC S9(9)   BINARY.
               03  K02-B06S.
                 04  K02-B06S-LABEL   PIC X(10).
-              03  K02-DRNAME.
-                04  K02-VALUE   PIC X(50).
               03  K02-SCROLLEDWINDOW2.
                 04  K02-BYOMEILST.
                   05  K02-BYOMEI-COUNT   PIC S9(9)   BINARY.
@@ -161,3 +159,10 @@
                         08  K02-SURYO   PIC X(60).
                         08  K02-SURYO-FGCOLORS   PIC X(20).
                         08  K02-SURYO-BGCOLORS   PIC X(20).
+              03  K02-DRCDCOMB.
+                04  K02-DRCD.
+                  05  K02-VALUE   PIC X(29).
+                04  K02-DRCD-COUNT   PIC S9(9)   BINARY.
+                04  K02-DRCD-ITEM
+                        PIC X(29)   OCCURS  99 TIMES.
+

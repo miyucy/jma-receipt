@@ -1,4 +1,4 @@
-<?xml version="1.0"  standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <GTK-Interface>
   <project>
     <name>K02</name>
@@ -17,7 +17,7 @@
     <has_focus>False</has_focus>
     <border_width>0</border_width>
     <type>GTK_WINDOW_TOPLEVEL</type>
-    <title>(K02)¿ÇÎÅ¹Ô°ÙÆþÎÏ¡Ý¿ÇÎÅ¹Ô°ÙÆþÎÏ</title>
+    <title>(K02)è¨ºç™‚è¡Œç‚ºå…¥åŠ›âˆ’è¨ºç™‚è¡Œç‚ºå…¥åŠ›</title>
     <modal>False</modal>
     <position>GTK_WIN_POS_CENTER</position>
     <wmclass_class></wmclass_class>
@@ -152,7 +152,7 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>Ìá¤ë</label>
+        <label>æˆ»ã‚‹</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -179,7 +179,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>ÃæÅÓ½ªÎ»</label>
+        <label>ä¸­é€”çµ‚äº†</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -206,7 +206,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>¥»¥Ã¥ÈÅÐÏ¿</label>
+        <label>ã‚»ãƒƒãƒˆç™»éŒ²</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -233,7 +233,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>²ñ·×¾È²ñ</label>
+        <label>ä¼šè¨ˆç…§ä¼š</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -260,7 +260,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>ÆþÎÏ£Ã£Ä</label>
+        <label>å…¥åŠ›ï¼£ï¼¤</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -287,7 +287,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>Á°ÊÇ</label>
+        <label>å‰é </label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -314,7 +314,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>¼¡ÊÇ</label>
+        <label>æ¬¡é </label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -341,7 +341,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>£Ä£Ï</label>
+        <label>ï¼¤ï¼¯</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -368,7 +368,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>ÄûÀµ</label>
+        <label>è¨‚æ­£</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -395,7 +395,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>Í½ÌóÅÐÏ¿</label>
+        <label>äºˆç´„ç™»éŒ²</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -422,7 +422,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>¼õÉÕ°ìÍ÷</label>
+        <label>å—ä»˜ä¸€è¦§</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -449,7 +449,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>ÅÐÏ¿</label>
+        <label>ç™»éŒ²</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -591,7 +591,7 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>¥¯¥ê¥¢</label>
+        <label>ã‚¯ãƒªã‚¢</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -618,7 +618,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>»»ÄêÍúÎò</label>
+        <label>ç®—å®šå±¥æ­´</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -679,7 +679,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>Êñ³ç¿ÇÎÅ</label>
+        <label>åŒ…æ‹¬è¨ºç™‚</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -731,7 +731,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>»áÌ¾¸¡º÷</label>
+        <label>æ°åæ¤œç´¢</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -758,7 +758,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>Á°²ó´µ¼Ô</label>
+        <label>å‰å›žæ‚£è€…</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -785,7 +785,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>´µ¼ÔÅÐÏ¿</label>
+        <label>æ‚£è€…ç™»éŒ²</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -812,7 +812,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>¿ÇÎÅÁªÂò</label>
+        <label>è¨ºç™‚é¸æŠž</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -839,7 +839,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>ÉÂÌ¾ÅÐÏ¿</label>
+        <label>ç—…åç™»éŒ²</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -866,7 +866,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>´µ¼Ô¼è¾Ã</label>
+        <label>æ‚£è€…å–æ¶ˆ</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -893,7 +893,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>¼õÉÕ</label>
+        <label>å—ä»˜</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -920,7 +920,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>¼ýÇ¼ÅÐÏ¿</label>
+        <label>åŽç´ç™»éŒ²</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -1008,7 +1008,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>Æ¬½ñ¤­</label>
+        <label>é ­æ›¸ã</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -1035,7 +1035,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>Á°²ó½èÊý</label>
+        <label>å‰å›žå‡¦æ–¹</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -1062,7 +1062,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>ÃæÅÓÉ½¼¨</label>
+        <label>ä¸­é€”è¡¨ç¤º</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -1092,7 +1092,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>¡Ê¡Ü¡§¹ÔÁÞÆþ¡¢¡Ý¡§ºÞºï½ü¡¢ÀèÆ¬¶õÇò¡¦¿ôÎÌ£°¡§¹Ôºï½ü¡¢//¡§¸¡º÷¡Ë</label>
+        <label>ï¼ˆï¼‹ï¼šè¡ŒæŒ¿å…¥ã€âˆ’ï¼šå‰¤å‰Šé™¤ã€å…ˆé ­ç©ºç™½ãƒ»æ•°é‡ï¼ï¼šè¡Œå‰Šé™¤ã€//ï¼šæ¤œç´¢ï¼‰</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
@@ -1118,7 +1118,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <text>£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±</text>
+          <text>ï¼‘ï¼’ï¼“ï¼”ï¼•ï¼–ï¼—ï¼˜ï¼™ï¼ï¼‘ï¼’ï¼“ï¼”ï¼•ï¼–ï¼—ï¼˜ï¼™ï¼ï¼‘ï¼’ï¼“ï¼”ï¼•ï¼–ï¼—ï¼˜ï¼™ï¼ï¼‘</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
           <signal>
@@ -1152,21 +1152,6 @@
         <wrap>False</wrap>
       </widget>
       <widget>
-        <class>GtkPandaEntry</class>
-        <name>DRNAME</name>
-        <x>590</x>
-        <y>62</y>
-        <width>227</width>
-        <height>22</height>
-        <sensitive>True</sensitive>
-        <can_focus>False</can_focus>
-        <has_focus>False</has_focus>
-        <editable>False</editable>
-        <text></text>
-        <input_mode>XIM</input_mode>
-        <xim_enabled>False</xim_enabled>
-      </widget>
-      <widget>
         <class>GtkButton</class>
         <name>BHELP</name>
         <x>996</x>
@@ -1177,7 +1162,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>¡©</label>
+        <label>ï¼Ÿ</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -1239,7 +1224,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>ÈÖ¹æ</label>
+            <label>ç•ªå·</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -1254,7 +1239,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>¿ÇÎÅÆü</label>
+            <label>è¨ºç™‚æ—¥</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -1269,7 +1254,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>²Ê</label>
+            <label>ç§‘</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -1284,7 +1269,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>ÊÝ¸±</label>
+            <label>ä¿é™º</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -1341,7 +1326,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>²Ê</label>
+            <label>ç§‘</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -1356,7 +1341,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>ÉÂ    Ì¾</label>
+            <label>ç—…    å</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -1413,7 +1398,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>½é¿Ç»»ÄêÆü¡ÊÆ±Æü½é¿Ç¡Ë</label>
+        <label>åˆè¨ºç®—å®šæ—¥ï¼ˆåŒæ—¥åˆè¨ºï¼‰</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
@@ -1431,7 +1416,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>Ì¤¼ý¶â</label>
+        <label>æœªåŽé‡‘</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
@@ -1449,7 +1434,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>Åö·îÅÀ¿ôÎß·×</label>
+        <label>å½“æœˆç‚¹æ•°ç´¯è¨ˆ</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
@@ -1467,7 +1452,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>¹ç·×ÅÀ¿ô</label>
+        <label>åˆè¨ˆç‚¹æ•°</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
@@ -1548,7 +1533,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>£Ä£ÏÁªÂò</label>
+        <label>ï¼¤ï¼¯é¸æŠž</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
@@ -1563,7 +1548,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>¼¡</label>
+        <label>æ¬¡</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -1590,7 +1575,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <border_width>0</border_width>
-        <label>Á°</label>
+        <label>å‰</label>
         <relief>GTK_RELIEF_NORMAL</relief>
         <xalign>0.5</xalign>
         <yalign>0.5</yalign>
@@ -1752,11 +1737,48 @@
           <rows>400</rows>
           <columns>4</columns>
           <column_types>label,text,text,label</column_types>
-          <column_titles>¿Ç¶è,ÆþÎÏ¥³¡¼¥É,Ì¾¾Î,¿ôÎÌ¡¦ÅÀ¿ô</column_titles>
+          <column_titles>è¨ºåŒº,å…¥åŠ›ã‚³ãƒ¼ãƒ‰,åç§°,æ•°é‡ãƒ»ç‚¹æ•°</column_titles>
           <column_widths>36,140,330,300</column_widths>
           <signal>
             <name>cell_edited</name>
             <handler>table_send_event</handler>
+            <data>ACTIVATE</data>
+          </signal>
+        </widget>
+      </widget>
+      <widget>
+        <class>GtkPandaCombo</class>
+        <name>DRCDCOMB</name>
+        <x>591</x>
+        <y>60</y>
+        <width>224</width>
+        <height>22</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <border_width>0</border_width>
+        <items></items>
+        <case_sensitive>False</case_sensitive>
+        <use_arrows>True</use_arrows>
+        <widget>
+          <class>GtkPandaEntry</class>
+          <child_name>GtkPandaCombo:entry</child_name>
+          <name>DRCD</name>
+          <sensitive>True</sensitive>
+          <can_focus>True</can_focus>
+          <has_focus>False</has_focus>
+          <editable>True</editable>
+          <text></text>
+          <input_mode>XIM</input_mode>
+          <xim_enabled>False</xim_enabled>
+          <signal>
+            <name>changed</name>
+            <handler>entry_changed</handler>
+            <data>CHANGED</data>
+          </signal>
+          <signal>
+            <name>activate</name>
+            <handler>send_event</handler>
             <data>ACTIVATE</data>
           </signal>
         </widget>

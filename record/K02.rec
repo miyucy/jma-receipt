@@ -125,9 +125,6 @@ K02	{
 		B06S	{
 			label	varchar(10);
 		};
-		DRNAME	{
-			value	varchar(50);
-		};
 		scrolledwindow2	{
 			BYOMEILST	{
 				count	int;
@@ -192,6 +189,13 @@ K02	{
 					};
 				}[400];
 			};
+		};
+		DRCDCOMB	{
+			DRCD	{
+				value	varchar(29);
+			};
+			count	int;
+			item	varchar(29)[99];
 		};
 	};
 };

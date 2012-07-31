@@ -1723,12 +1723,25 @@
       *    訂正か受付ありの場合
            IF     (LNK-SC95-KBN        =   "4"  ) OR
                   (FLG-UKETUKE-ARI     =   1    )
-               CONTINUE
+               INITIALIZE                  ORCSDRSETAREA
+               MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
+               MOVE    "1"                 TO  ORCSDR-KBN
+               MOVE    SPA-SRYKA           TO  ORCSDR-SRYKA
+               MOVE    SPA-DRCD(2:4)       TO  ORCSDR-IN-DRCD
+               CALL    "ORCSDRSET"         USING
+                                           SPA-AREA
+                                           ORCSDRSETAREA
+               IF      SPA-DRCD        NOT =   SPACE
+                   MOVE    ORCSDR-IN-DRCD-G    TO  SPA-DRCD-NAME
+               END-IF
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
            ELSE
       *
       *    ドクター初期表示
            IF     (SPA-SRYYMD          =   SPA-SYSYMD )
              AND  (SPA-NYUGAIKBN       =   "2"        )
+      *        当日有効なドクターへ
                INITIALIZE                  ORCSDRSETAREA
                MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
                MOVE    "3"                 TO  ORCSDR-KBN
@@ -1742,6 +1755,8 @@
                    MOVE    ORCSDR-IN-DRCD      TO  SPA-DRCD(2:4)
                    MOVE    ORCSDR-IN-DRCD-G    TO  SPA-DRCD-NAME
                END-IF
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
            ELSE
                INITIALIZE                  ORCSDRSETAREA
                MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
@@ -1759,6 +1774,8 @@
                    MOVE    ORCSDR-DRCD     (1) TO  SPA-DRCD (2:4)
                    MOVE    ORCSDR-DRCD-TBL (1) TO  SPA-DRCD-NAME
                END-IF
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
            END-IF
       *
            END-IF
@@ -1768,6 +1785,7 @@
                PERFORM 100122-DRCDNAME-SET-SEC
            END-IF
       *
+           MOVE    SPA-DRCD-NAME       TO  SPA-GMN-DRCD-G
            .
        10012-SYSKAN-EXT.
            EXIT.
@@ -1801,6 +1819,14 @@
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
                MOVE    SPA-DRCD(2:4)       TO  SPA-DRCD-NAME(1:4)
                MOVE    SYS-1010-NAME       TO  SPA-DRCD-NAME(6:)
+      *
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
+               IF      SPA-DRCD-MAX        <   99
+                   ADD     1               TO  SPA-DRCD-MAX
+               END-IF
+               MOVE    SPA-DRCD-NAME       TO  SPA-GMN-DRCDLST
+                                                (SPA-DRCD-MAX)
+      *
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME

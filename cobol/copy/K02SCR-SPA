@@ -62,6 +62,11 @@
                        09  SPA-GMN-HKNCOMBINUM     PIC X(04).
                        09  SPA-GMN-HKNCOMBY1       PIC X(01).
                        09  SPA-GMN-HKNCOMBIMEI     PIC X(60).
+      *            ¥É¥¯¥¿¡¼
+                   07  SPA-GMN-DRCD-G.
+                       09  SPA-GMN-DRCD        PIC X(04).
+                       09  SPA-GMN-F1          PIC X(01).
+                       09  SPA-GMN-DRCDNAME    PIC X(24).
       *
       *            ±¡Æâ±¡³°¶èÊ¬
                    07  SPA-GMN-INGAI             PIC X(01).
@@ -362,6 +367,15 @@ ito   *
                                                    OCCURS  2.
                05  SPA-USERPG-MAX                 PIC 9(02).
       *
+      *ver.4.7
+      *    ¥É¥¯¥¿¡¼ÁªÂò
+           03  SPA-GMN-DRCDLST-G.
+               05  SPA-GMN-DRCDLST     OCCURS  99.
+                   07  SPA-GMN-DRCDL       PIC X(04).
+                   07  SPA-GMN-F1L         PIC X(01).
+                   07  SPA-GMN-DRCDMEIL    PIC X(24).
+           03  SPA-DRCD-MAX            PIC 9(04).
+      *
       *    £Ë£°£µ²èÌÌ¸ÇÍ­£Ó£Ð£Á
            03  SPA-K05-AREA.
                05  SPA-GMN-SETCODE         PIC X(06).
@@ -656,12 +670,12 @@ ito   *
                        09  SPA-K97-TKOHONLY-CHK   PIC 9(01).
                    07  SPA-K97-HKN-MAX            PIC 9(04).
       *
-               05  SPA-GMN-DRCDLST-G.
-                   07  SPA-GMN-DRCDLST     OCCURS  99.
-                       09  SPA-GMN-DRCDL       PIC X(04).
-                       09  SPA-GMN-F1L         PIC X(01).
-                       09  SPA-GMN-DRCDMEIL    PIC X(24).
-               05  SPA-DRCD-MAX            PIC 9(04).
+               05  SPA-K97-DRCDLST-G.
+                   07  SPA-K97-DRCDLST     OCCURS  99.
+                       09  SPA-K97-DRCDL       PIC X(04).
+                       09  SPA-K97-F1L         PIC X(01).
+                       09  SPA-K97-DRCDMEIL    PIC X(24).
+               05  SPA-K97-DRCD-MAX            PIC 9(04).
       *
       *    £Ë£°£²£±²èÌÌÍÑ
            03  SPA-K021GMN-AREA.
