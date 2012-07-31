@@ -329,6 +329,7 @@
            03  TBL-YOUHO-ZAI-OCC        OCCURS   50.
                05  TBL-YOUHO-MAX           PIC 9(02).
                05  TBL-YOUHO-SRYSYUKBN     PIC X(03).
+               05  TBL-YOUHO-KAISU         PIC 9(03).
                05  TBL-YOUHO-ZAI-OCCURS    OCCURS   50.
                    07  TBL-YOUHO-SRYCD         PIC X(09).
                    07  TBL-YOUHO-KISOTEN       PIC 9(08)V99.
@@ -349,6 +350,7 @@
            03  TBL-YOUHO-HEN02-AREA.
                05  TBL-Y2-SRYSYUKBN        PIC X(03).
                05  TBL-Y2-YOUHOU           PIC X(09).
+               05  TBL-Y2-KAISU            PIC 9(03).
                05  TBL-Y2-KINPUTCHI-G.
                    07  TBL-Y2-KATAI        PIC X(08)  OCCURS  5.
                05  TBL-Y2-ZAI-REC          OCCURS   50.
@@ -2157,6 +2159,8 @@
                                                TO  TBL-Y2-KINPUTCHI-G
                            MOVE    TBL-YOUHO-SRYSYUKBN (IDG2)
                                                    TO  TBL-Y2-SRYSYUKBN
+                           MOVE    TBL-YOUHO-KAISU     (IDG2)
+                                                   TO  TBL-Y2-KAISU
                            PERFORM VARYING    IDG5     FROM    1   BY  1
                                    UNTIL     (IDG5    >   50  )
                                      OR   (TBL-YOUHO-SRYCD (IDG2 IDG5)
@@ -2177,6 +2181,8 @@
                                                =   TBL-Y2-KINPUTCHI-G)
                            AND    (TBL-YOUHO-SRYSYUKBN (IDG2)
                                                =   TBL-Y2-SRYSYUKBN  )
+                           AND    (TBL-YOUHO-KAISU     (IDG2)
+                                               =   TBL-Y2-KAISU      )
                            PERFORM VARYING    IDG5     FROM    1   BY  1
                                    UNTIL     (IDG5    >   50  )
                                      OR   (TBL-YOUHO-SRYCD (IDG2 IDG5)
@@ -2580,6 +2586,9 @@
                IF    (WRK-COM-ZAIEND (IDX)   =   "1")
                    MOVE    IDG2              TO  TBL-YOUHO-MAX (IDG1)
                    MOVE    WRK-CHK-SRYSYUKBN TO  TBL-YOUHO-SRYSYUKBN
+                                                               (IDG1)
+                   MOVE    WRK-COM-KAISU (IDX)
+                                             TO  TBL-YOUHO-KAISU
                                                                (IDG1)
                    ADD     1                 TO  IDG1
                    MOVE    ZERO              TO  IDG2
