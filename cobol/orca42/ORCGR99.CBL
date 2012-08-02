@@ -883,7 +883,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
       *
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key14"             TO  WRK-MCP-PATHNAME
-                   MOVE    "1"                 TO  RECE07-TEISYUTUSAKI
+                   MOVE    "1"                 TO
+                                               SPA-RECE07-TEISYUTUSAKI
                    MOVE    SPA-RECE07-REC      TO  MCPDATA-REC
                    PERFORM 900-RECE07-SELECT-SEC
                    PERFORM             UNTIL   FLG-RECE07  =   1
