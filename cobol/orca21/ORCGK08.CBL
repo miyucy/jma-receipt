@@ -182,7 +182,7 @@
                                                SPA-GMN-TMEISYO.
                            11  SPA-GMN-TBANGO2     PIC X(02).
       *??                  11  SPA-GMN-TMEISYO2    PIC X(60).
-                           11  SPA-GMN-TMEISYO2    PIC X(80).
+                           11  SPA-GMN-TMEISYO2    PIC X(70).
                            11  SPA-GMN-HEN1.
       **                       13  SPA-GMN-TSURYOU     PIC X(18).
                                13  SPA-GMN-TSURYOU     PIC X(22).

@@ -843,6 +843,7 @@
       *            訂正時展開以外
                 AND    (ORCSC100-INIT       =   ZERO   )
                    MOVE    SPACE       TO  SPA-COM-KZMFLG(IDX)
+                   MOVE    SPACE       TO  SPA-COM-KZMFLG3(IDX)
                    MOVE    SPACE       TO  SPA-COM-HCHKFLG(IDX)
                    IF      WRK-NYU-KAI NOT =   SPA-COM-NYU-KAI (IDX)
                        MOVE    SPACE       TO  SPA-COM-TUKIJGNFLG (IDX)
@@ -1610,6 +1611,11 @@
                    ELSE
                        MOVE    SPA-ERRCD       TO  WRK-KEI-ERRCD
                        MOVE    SPA-ERRMSG2     TO  WRK-KEI-ERRMSG2
+      *ver.4.7
+                       IF      WRK-COM-CUR (LNK-ORCSC-KEI-IDX) =   SPACE
+                           MOVE    "2"         TO  WRK-COM-CUR
+                                                     (LNK-ORCSC-KEI-IDX)
+                       END-IF
                    END-IF
                ELSE
                    IF      WRK-ERR-ERRCD       =   SPACE

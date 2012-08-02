@@ -8998,6 +8998,7 @@
       *
            MOVE    1                   TO  SPA-GMN-PAGE
       *??  MOVE    1                   TO  SPA-GMN-CUR
+      *    £±¹ÔÌÜ¤Ø
            MOVE    98                  TO  SPA-GMN-CUR
            MOVE    1                   TO  SPA-MAP-IDX
       *
@@ -11979,10 +11980,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            ¥¹¥¯¥í¡¼¥ëÇØ·Ê¿§¡Ê£±¹ÔËè¡Ë
                    IF      FLG-BGCOLORS        =   ZERO
                        MOVE    "white"         TO
-                                       K02-SRYKBN-BGCOLORS(IDX)
-                                       K02-INPUTCD-BGCOLORS(IDX)
-                                       K02-MEISYO-BGCOLORS(IDX)
-                                       K02-SURYO-BGCOLORS(IDX)
+                                       K02-SRYKBN-BGCOLOR  (IDX)
+                                       K02-INPUTCD-BGCOLOR (IDX)
+                                       K02-MEISYO-BGCOLOR  (IDX)
+                                       K02-SURYO-BGCOLOR   (IDX)
                        IF      SPA-BGLINEKBN       =   "1"
       *                    ºÞËè
                            IF     (SPA-COM-ZAIEND(WRK-IDX) =  "1"  )
@@ -11997,10 +11998,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    ELSE
                        MOVE    SPA-BGCOLORS        TO
-                                       K02-SRYKBN-BGCOLORS (IDX)
-                                       K02-INPUTCD-BGCOLORS(IDX)
-                                       K02-MEISYO-BGCOLORS (IDX)
-                                       K02-SURYO-BGCOLORS  (IDX)
+                                       K02-SRYKBN-BGCOLOR (IDX)
+                                       K02-INPUTCD-BGCOLOR(IDX)
+                                       K02-MEISYO-BGCOLOR (IDX)
+                                       K02-SURYO-BGCOLOR  (IDX)
                        IF      SPA-BGLINEKBN       =   "1"
       *                    ºÞËè
                            IF     (SPA-COM-ZAIEND(WRK-IDX) =  "1"  )
@@ -12028,23 +12029,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                       OR ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
                       AND (SPA-HKNCOMBINUM    NOT =   "9999" ))
                            MOVE    "blue"         TO
-                                       K02-SRYKBN-FGCOLORS (IDX)
-                                       K02-MEISYO-FGCOLORS (IDX)
+                                       K02-SRYKBN-FGCOLOR (IDX)
+                                       K02-MEISYO-FGCOLOR (IDX)
                        IF      SPA-COM-HOUKATU-FLG2(WRK-IDX)   =   1
                            MOVE    "red"          TO
-                                       K02-SRYKBN-FGCOLORS (IDX)
-                                       K02-MEISYO-FGCOLORS (IDX)
+                                       K02-SRYKBN-FGCOLOR (IDX)
+                                       K02-MEISYO-FGCOLOR (IDX)
                        END-IF
                    ELSE
                        MOVE    "black"       TO
-                                       K02-SRYKBN-FGCOLORS (IDX)
-                                       K02-MEISYO-FGCOLORS (IDX)
+                                       K02-SRYKBN-FGCOLOR (IDX)
+                                       K02-MEISYO-FGCOLOR (IDX)
                    END-IF
       *
       *!!          ¶Ø´÷ÌôºÞ
                    IF      SPA-COM-PTKINKI-ARI (WRK-IDX)   =   1
                        MOVE    "red"         TO
-                                       K02-MEISYO-FGCOLORS (IDX)
+                                       K02-MEISYO-FGCOLOR (IDX)
                    END-IF
       *!
                    IF      SPA-GMN-INPUTCD(WRK-IDX)(1:1)   =   "#"
@@ -12080,7 +12081,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ¹Ô¿ôÉ½¼¨
            MOVE    SPACE               TO  K02-MODE
            MOVE    IDX2                TO  WRK-HEN-PAGE1
-           STRING  "¹Ô¿ô "
+           STRING  "¹Ô¿ô:"
                    WRK-HEN-PAGE1       DELIMITED  BY  SIZE
                                        INTO      K02-MODE
            END-STRING
@@ -12520,7 +12521,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ( SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)   OR
                  ((SPA-COM-HKNCOMBI(WRK-IDX)     =   "9999" )
               AND (SPA-HKNCOMBINUM           NOT =   "9999" ))
-              MOVE    "blue"         TO  K02-SURYO-FGCOLORS(IDX)
+              MOVE    "blue"         TO  K02-SURYO-FGCOLOR(IDX)
            END-IF
            .
        5002-SURYO-HEN-EXT.
@@ -12650,10 +12651,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    ELSE
                        IF      SPA-ERRCD(1:1)  =   "K"
                            MOVE    SPA-KEICOLORS
-                                   TO  K02-INPUTCD-BGCOLORS(WRK-IDX2) 
+                                   TO  K02-INPUTCD-BGCOLOR (WRK-IDX2) 
                        ELSE
                            MOVE    SPA-ERRCOLORS
-                                   TO  K02-INPUTCD-BGCOLORS(WRK-IDX2) 
+                                   TO  K02-INPUTCD-BGCOLOR (WRK-IDX2) 
                        END-IF
                    END-IF
       *

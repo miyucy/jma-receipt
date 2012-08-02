@@ -18,6 +18,11 @@
         02  K02N.
       ****  02  K02N-FIXED2.
             03  K02N-TITLE          PIC X(120).
+            03  K02N-POPUP-STATUS.
+              04  K02N-POPUP-SUMMARY   PIC X(256).
+              04  K02N-POPUP-BODY      PIC X(1024).
+              04  K02N-POPUP-ICON      PIC X(256).
+              04  K02N-POPUP-TIMEOUT   PIC S9(9)  BINARY.
               03  K02N-PTNUM.
                 04  K02N-VALUE  PIC X(20).
               03  K02N-KANANAME-G.
@@ -41,17 +46,6 @@
                 04  K02N-VALUE  PIC X(6).
               03  K02N-SRYYMD.
                 04  K02N-VALUE  PIC X(14).
-              03  K02N-SRYKBN-G    OCCURS   24.
-                04  K02N-SRYKBN-STYLE   PIC X(20).
-                04  K02N-SRYKBN   PIC X(2).
-              03  K02N-INPUTCD   OCCURS   24.
-                04  K02N-VALUE   PIC X(54).
-              03  K02N-MEISYO-G    OCCURS   24.
-                04  K02N-MEISYO-STYLE   PIC X(20).
-                04  K02N-MEISYO   PIC X(80).
-              03  K02N-SURYO-G   OCCURS   24.
-                04  K02N-SURYO-STYLE   PIC X(20).
-                04  K02N-SURYO   PIC X(60).
               03  K02N-DOSELNUM.
                 04  K02N-VALUE  PIC X(4).
               03  K02N-NYUINKA.
@@ -120,5 +114,33 @@
                 04  K02N-B11S-STATE   PIC S9(9)   BINARY.
               03  K02N-B12S.
                 04  K02N-B12S-STATE   PIC S9(9)   BINARY.
+              03  K02N-SCROLLEDWINDOW2.
+                04  K02N-HPOS   PIC S9(9)   BINARY.
+                04  K02N-VPOS   PIC S9(9)   BINARY.
+                04  K02N-PANDATABLE1.
+                  05  K02N-PANDATABLE1-STATE  PIC S9(9)   BINARY.
+                  05  K02N-PANDATABLE1-STYLE  PIC X(20).
+                  05  K02N-PANDATABLE1-TROW   PIC S9(9)   BINARY.
+                  05  K02N-PANDATABLE1-TROWATTR   PIC S9(9)   BINARY.
+                  05  K02N-PANDATABLE1-TCOLUMN    PIC S9(9)   BINARY.
+                  05  K02N-PANDATABLE1-TVALUE PIC X(256).
+                  05  K02N-PANDATABLE1-ROWDATA     OCCURS  400 TIMES.
+                    06  K02N-SRYKBN-G.
+                      07  K02N-SRYKBN     PIC X(2).
+                      07  K02N-SRYKBN-FGCOLOR    PIC X(20).
+                      07  K02N-SRYKBN-BGCOLOR    PIC X(20).
+                    06  K02N-INPUTCD-G.
+                      07  K02N-INPUTCD   PIC X(54).
+                      07  K02N-INPUTCD-FGCOLOR    PIC X(20).
+                      07  K02N-INPUTCD-BGCOLOR    PIC X(20).
+                    06  K02N-MEISYO-G.
+                      07  K02N-MEISYO   PIC X(80).
+                      07  K02N-MEISYO-FGCOLOR    PIC X(20).
+                      07  K02N-MEISYO-BGCOLOR    PIC X(20).
+                    06  K02N-SURYO-G.
+                      07  K02N-SURYO   PIC X(60).
+                      07  K02N-SURYO-FGCOLOR    PIC X(20).
+                      07  K02N-SURYO-BGCOLOR    PIC X(20).
+
 
 

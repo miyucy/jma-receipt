@@ -328,8 +328,8 @@
            CALL    "ORCSDRSET"         USING
                                        SPA-AREA
                                        ORCSDRSETAREA
-           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
-           MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-K97-DRCDLST-G
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-K97-DRCD-MAX
       *
            .
        3101-DRCD-SPASET-EXT.
@@ -413,9 +413,9 @@
       *    ドクター
            MOVE    SPA-K97-SELNUM3     TO  K97-SELNUM3
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-DRCD-MAX
-               MOVE    SPA-GMN-DRCDL(IDX)      TO  K97-DRCD    (IDX)
-               MOVE    SPA-GMN-DRCDMEIL(IDX)   TO  K97-DRCDMEI (IDX)
+                   UNTIL       IDX     >   SPA-K97-DRCD-MAX
+               MOVE    SPA-K97-DRCDL(IDX)      TO  K97-DRCD    (IDX)
+               MOVE    SPA-K97-DRCDMEIL(IDX)   TO  K97-DRCDMEI (IDX)
                IF      SPA-K97-SELNUM3     =   K97-DRCD (IDX)
                    MOVE    "T"             TO  K97-DRCD-SELECT (IDX)
                    MOVE    IDX             TO  K97-DRCD-ROW
@@ -424,7 +424,7 @@
                   MOVE    "F"              TO  K97-DRCD-SELECT (IDX)
                END-IF
            END-PERFORM
-           MOVE    SPA-DRCD-MAX        TO  K97-DRCD-COUNT
+           MOVE    SPA-K97-DRCD-MAX        TO  K97-DRCD-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -604,7 +604,7 @@
       *
            MOVE    SPACE                TO  WRK-DRCD
            PERFORM VARYING     IDX   FROM   1   BY  1
-                   UNTIL       IDX   >   SPA-DRCD-MAX
+                   UNTIL       IDX   >   SPA-K97-DRCD-MAX
               IF      K97-DRCD-SELECT (IDX)        =  "T"
                   IF       K97-DRCD(IDX)      =   SPA-K97-SELNUM3
                       CONTINUE
@@ -820,9 +820,9 @@
            IF      WRK-DRCD        NOT =   SPACE
                MOVE    ZERO                TO  FLG-CHK
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX         >   SPA-DRCD-MAX)  OR
+                       UNTIL      (IDX         >   SPA-K97-DRCD-MAX) OR
                                   (FLG-CHK     =   1           )
-                   IF      WRK-DRCD            =   SPA-GMN-DRCDL(IDX)
+                   IF      WRK-DRCD            =   SPA-K97-DRCDL(IDX)
                        MOVE    1               TO  FLG-CHK
                    END-IF
                END-PERFORM
@@ -872,12 +872,12 @@
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX         >   SPA-DRCD-MAX )  OR
+                   UNTIL      (IDX         >   SPA-K97-DRCD-MAX) OR
                               (FLG-CHK     =   1           )  OR
                               (SPA-K97-SELNUM3 =   ZERO  )    OR
                               (SPA-ERRCD   NOT =   SPACE )
-               IF      SPA-K97-SELNUM3     =   SPA-GMN-DRCDL(IDX)
-                   MOVE    SPA-GMN-DRCDMEIL(IDX)
+               IF      SPA-K97-SELNUM3     =   SPA-K97-DRCDL(IDX)
+                   MOVE    SPA-K97-DRCDMEIL(IDX)
                                            TO  WRK-DRCDMEI
                    MOVE    1               TO  FLG-CHK
                END-IF
@@ -917,15 +917,15 @@
            MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
            MOVE    SPA-K97-SRYKA       TO  ORCSDR-SRYKA
            MOVE    SPA-K97-SELNUM3     TO  ORCSDR-IN-DRCD
-           MOVE    SPA-GMN-DRCDLST-G   TO  ORCSDR-DRCD-TBL-G
-           MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
+           MOVE    SPA-K97-DRCDLST-G   TO  ORCSDR-DRCD-TBL-G
+           MOVE    SPA-K97-DRCD-MAX    TO  ORCSDR-DRCD-MAX
            CALL    "ORCSDRSET"         USING
                                        SPA-AREA
                                        ORCSDRSETAREA
            IF      ORCSDR-ERRCD        =   ZERO
-               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
-               MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
-               MOVE    SPA-GMN-DRCDMEIL(SPA-DRCD-MAX)
+               MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-K97-DRCDLST-G
+               MOVE    ORCSDR-DRCD-MAX     TO  SPA-K97-DRCD-MAX
+               MOVE    SPA-K97-DRCDMEIL(SPA-K97-DRCD-MAX)
                                            TO  WRK-DRCDMEI
            ELSE
                MOVE    "0003"              TO  SPA-ERRCD

@@ -133,7 +133,6 @@
               03  K02-BC10.
                 04  K02-BC10-STYLE  PIC X(20).
                 04  K02-BC10-LABEL  PIC X(8).
-
               03  K02-SCROLLEDWINDOW3.
                 04  K02-PANDATABLE1.
                   05  K02-PANDATABLE1-STATE   PIC S9(9)   BINARY.
@@ -142,23 +141,23 @@
                   05  K02-PANDATABLE1-TROWATTR    PIC S9(9)   BINARY.
                   05  K02-PANDATABLE1-TCOLUMN PIC S9(9)   BINARY.
                   05  K02-PANDATABLE1-TVALUE  PIC X(256).
-                  05  K02-PANDATABLE1-TDATA           OCCURS  400 TIMES.
-                    07  K02-SRYKBN-G.
-                        08  K02-SRYKBN   PIC X(2).
-                        08  K02-SRYKBN-FGCOLORS   PIC X(20).
-                        08  K02-SRYKBN-BGCOLORS   PIC X(20).
-                    07  K02-INPUTCD-G.
-                        08  K02-INPUTCD PIC X(54).
-                        08  K02-INPUTCD-FGCOLORS   PIC X(20).
-                        08  K02-INPUTCD-BGCOLORS   PIC X(20).
-                    07  K02-MEISYO-G.
-                        08  K02-MEISYO  PIC X(80).
-                        08  K02-MEISYO-FGCOLORS   PIC X(20).
-                        08  K02-MEISYO-BGCOLORS   PIC X(20).
-                    07  K02-SURYO-G.
-                        08  K02-SURYO   PIC X(60).
-                        08  K02-SURYO-FGCOLORS   PIC X(20).
-                        08  K02-SURYO-BGCOLORS   PIC X(20).
+                  05  K02-PANDATABLE1-ROWDATA     OCCURS  400 TIMES.
+                    06  K02-SRYKBN-G.
+                      07  K02-SRYKBN  PIC X(2).
+                      07  K02-SRYKBN-FGCOLOR PIC X(20).
+                      07  K02-SRYKBN-BGCOLOR PIC X(20).
+                    06  K02-INPUTCD-G.
+                      07  K02-INPUTCD    PIC X(54).
+                      07  K02-INPUTCD-FGCOLOR PIC X(20).
+                      07  K02-INPUTCD-BGCOLOR PIC X(20).
+                    06  K02-MEISYO-G.
+                      07  K02-MEISYO    PIC X(80).
+                      07  K02-MEISYO-FGCOLOR PIC X(20).
+                      07  K02-MEISYO-BGCOLOR PIC X(20).
+                    06  K02-SURYO-G.
+                      07  K02-SURYO    PIC X(60).
+                      07  K02-SURYO-FGCOLOR PIC X(20).
+                      07  K02-SURYO-BGCOLOR PIC X(20).
               03  K02-DRCDCOMB.
                 04  K02-DRCD.
                   05  K02-VALUE   PIC X(29).
