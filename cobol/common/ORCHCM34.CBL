@@ -987,6 +987,7 @@
            INITIALIZE                  SRH-AREA
            INITIALIZE                  ORCHCM34-OT
            INITIALIZE                  TBLCOMBI-AREA
+           INITIALIZE                  WKPTBYOMEI-REC
       *
       *    °åÎÅµ¡´Ø¾ðÊó¼èÆÀ½èÍý
            PERFORM 1001-SYS1001-GET-SEC
@@ -1754,7 +1755,9 @@
       *    ¸øÈñÊÔ½¸½èÍý
            PERFORM 2001-PTKOH-HEN-SEC
       *    ½ýÉÂÌ¾ÊÔ½¸½èÍý
-           PERFORM 2001-PTBYOMEI-HEN-SEC
+           IF    ( ORCHCM34-HIDEBYOKBN =   SPACE )
+               PERFORM 2001-PTBYOMEI-HEN-SEC
+           END-IF
       *    ¿ÇÎÅ¹Ô°ÙÊÔ½¸½èÍý
            PERFORM 2001-SRYACT-HEN-SEC
       *
@@ -2497,8 +2500,6 @@
       *****************************************************************
        2001-PTBYOMEI-HEN-SEC           SECTION.
       *
-           INITIALIZE  WKPTBYOMEI-REC
-      *
       *    ´µ¼ÔÉÂÌ¾¥Þ¥¹¥¿¸¡º÷
            MOVE    ZERO                TO  FLG-PTBYOMEI
            INITIALIZE                  PTBYOMEI-REC
@@ -2582,10 +2583,6 @@
                        COMPUTE WRK-BYOMEI-MAX  =   WRK-BYOMEI-MAX  +   1
       *
                    END-PERFORM
-      *
-            DISPLAY " CONST-BYOMEI-LINE-MAX:" CONST-BYOMEI-LINE-MAX
-                           " CNT-BYOMEI-LINE:" CNT-BYOMEI-LINE
-                           " WRK-BYOMEI-MAX:" WRK-BYOMEI-MAX
       *
                    IF    ( CONST-BYOMEI-LINE-MAX
                               >=   CNT-BYOMEI-LINE + WRK-BYOMEI-MAX )
