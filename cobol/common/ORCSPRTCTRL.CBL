@@ -254,6 +254,8 @@
                  STRING  "orca00/print?filename="
                                            DELIMITED   BY  SIZE
                          SPA-HOSPNUM       DELIMITED   BY  SPACE
+                         ORCSPRTCTRL-BATCH-FLG
+                                           DELIMITED   BY  SPACE
                          ORCSPRTCTRL-TBL-KEY(IDY)
                                            DELIMITED   BY  SPACE
                          "9999"
@@ -281,6 +283,8 @@
                  STRING  "orca00/print?filename="
                                            DELIMITED   BY  SIZE
                          SPA-HOSPNUM       DELIMITED   BY  SPACE
+                         ORCSPRTCTRL-BATCH-FLG
+                                           DELIMITED   BY  SPACE
                          ORCSPRTCTRL-TBL-KEY(IDX)
                                            DELIMITED   BY  SPACE
                          ORCSPRTCTRL-RENNUM(IDX)
@@ -340,6 +344,8 @@
                  STRING  "orca00/print?filename="
                                            DELIMITED   BY  SIZE
                          SPA-HOSPNUM       DELIMITED   BY  SPACE
+                         ORCSPRTCTRL-BATCH-FLG
+                                           DELIMITED   BY  SPACE
                          "ONLINE"
                                            DELIMITED   BY  SIZE
                          LNK-PRTKANRI-RENNUM
@@ -367,6 +373,8 @@
                  STRING  "orca00/print?filename="
                                            DELIMITED   BY  SIZE
                          SPA-HOSPNUM       DELIMITED   BY  SPACE
+                         ORCSPRTCTRL-BATCH-FLG
+                                           DELIMITED   BY  SPACE
                          "ONLINE"
                                            DELIMITED   BY  SIZE
                          LNK-PRTKANRI-RENNUM

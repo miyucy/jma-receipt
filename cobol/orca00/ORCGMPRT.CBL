@@ -266,8 +266,10 @@
            PERFORM 100-AGENTGET-SEC
       *
            PERFORM 110-FILE-CHECK
+           DISPLAY "take FLG-ONLINE = " FLG-ONLINE
            IF      FLG-ONLINE          =   1
                PERFORM 110-FILE-ID
+           DISPLAY "take ORCF-RET = "  ORCF-RET
              IF    ORCF-RET            =   ZERO
                MOVE  1                 TO  FLG-OK
              END-IF
@@ -316,7 +318,9 @@
            IF ORCA-BLOB-OBJECT     = LOW-VALUE
              MOVE   'BLOBIMPORT' TO  MCP-FUNC
              STRING "/tmp/"      DELIMITED   BY  SIZE
-                    MPRT-FILENAME
+                    MPRT-FILENAME(1:2)
+                                 DELIMITED   BY  SPACE
+                    MPRT-FILENAME(4:)
                                  DELIMITED   BY  SPACE
              INTO   ORCA-BLOB-FILE 
              END-STRING
@@ -352,7 +356,9 @@
            END-IF
            ELSE
              STRING "/tmp/"      DELIMITED   BY  SIZE
-                    MPRT-FILENAME
+                    MPRT-FILENAME(1:2)
+                                 DELIMITED   BY  SPACE
+                    MPRT-FILENAME(4:)
                                  DELIMITED   BY  SPACE
              INTO   ORCA-BLOB-FILE 
              END-STRING
@@ -487,7 +493,7 @@
                                            WPRTCTRL-TERMID
            MOVE    2                   TO  PRTCTRL-DATA-KBN
                                            WPRTCTRL-DATA-KBN
-           MOVE    MPRT-FILENAME(3:POS1)
+           MOVE    MPRT-FILENAME(4:POS1)
                                        TO  PRTCTRL-TBL-KEY
                                            WPRTCTRL-TBL-KEY
            MOVE    9999
@@ -515,7 +521,9 @@
            END-IF
       *
            STRING "/tmp/"      DELIMITED   BY  SIZE
-                  MPRT-FILENAME
+                  MPRT-FILENAME(1:2)
+                               DELIMITED   BY  SPACE
+                  MPRT-FILENAME(4:)
                                DELIMITED   BY  SPACE
                   INTO   WK-FILE-NAME
            END-STRING
@@ -609,23 +617,25 @@
       *        MOVE  38              TO  POS12
       *    END-EVALUATE
       *
-           COMPUTE POS1  =  MOJI-CNT   -   38
-           COMPUTE POS2  =  POS1       +   3
+           COMPUTE POS1  =  MOJI-CNT   -   39
+           COMPUTE POS2  =  POS1       +   4
            COMPUTE POS3  =  POS2       +   4
            COMPUTE POS4  =  POS3       +   18
            COMPUTE POS5  =  POS4       +   10
-           COMPUTE POS10 =  POS4       +   5
-           COMPUTE POS11 =  POS2       +   5
-           COMPUTE POS12 =  POS4       +   5
+           COMPUTE POS10 =  POS4       +   4
+           COMPUTE POS11 =  POS2       +   4
+           COMPUTE POS12 =  POS4       +   4
       *
-      *    DISPLAY "POS1  = " POS1
-      *    DISPLAY "POS2  = " POS2
-      *    DISPLAY "POS3  = " POS3
-      *    DISPLAY "POS4  = " POS4
-      *    DISPLAY "POS5  = " POS5
-      *    DISPLAY "POS10 = " POS10
-      *    DISPLAY "POS11 = " POS11
-      *    DISPLAY "POS12 = " POS12
+           DISPLAY "----------------------------------------"
+           DISPLAY "POS1(TBL_KEY の長さ)    = " POS1
+           DISPLAY "POS2(RENNUMの開始位置)  = " POS2
+           DISPLAY "POS3(GROUPの開始位置)   = " POS3
+           DISPLAY "POS4(開始ページの開始位置)  = " POS4
+           DISPLAY "POS5(拡張子の開始位置)  = " POS5
+           DISPLAY "POS10 = " POS10
+           DISPLAY "POS11 = " POS11
+           DISPLAY "POS12 = " POS12
+           DISPLAY "----------------------------------------"
       *
            .
        2201-BTCH-POS-EXT.
@@ -817,7 +827,9 @@
            IF ORCA-BLOB-OBJECT     = LOW-VALUE
              MOVE   'BLOBIMPORT' TO  MCP-FUNC
              STRING "/tmp/"      DELIMITED   BY  SIZE
-                    MPRT-FILENAME
+                    MPRT-FILENAME(1:2)
+                                 DELIMITED   BY  SPACE
+                    MPRT-FILENAME(4:)
                                  DELIMITED   BY  SPACE
              INTO   ORCA-BLOB-FILE 
              END-STRING
@@ -881,7 +893,9 @@
            END-IF
       *
            STRING "/tmp/"      DELIMITED   BY  SIZE
-                  MPRT-FILENAME
+                  MPRT-FILENAME(1:2)
+                               DELIMITED   BY  SPACE
+                  MPRT-FILENAME(4:)
                                DELIMITED   BY  SPACE
                   INTO   WK-FILE-NAME
            END-STRING
@@ -1071,26 +1085,35 @@
            MOVE    IDZ                 TO  MOJI-CNT
            IF      IDZ                 <   75
                MOVE  1                 TO  FLG-BATCH
-               GO  TO                  110-FILE-CHECK-EXT
+      *        GO  TO                  110-FILE-CHECK-EXT
            END-IF
            MOVE    1                   TO  FLG-ONLINE
+      *
+           IF  MPRT-FILENAME(3:1)      =  "0"
+               MOVE  1                 TO  FLG-ONLINE
+               MOVE  ZERO              TO  FLG-BATCH
+           ELSE
+               MOVE  1                 TO  FLG-BATCH
+               MOVE  ZERO              TO  FLG-ONLINE
+               GO  TO                  110-FILE-CHECK-EXT
+           END-IF
       *  MPRT-FILENAME を分割してキーを生成
            MOVE    SPA-HOSPNUM         TO  PRTCTRL-HOSPNUM
            MOVE    SPA-TERMID          TO  PRTCTRL-TERMID
            MOVE    2                   TO  PRTCTRL-DATA-KBN
-           MOVE    MPRT-FILENAME(3:6)
+           MOVE    MPRT-FILENAME(4:6)
                                        TO  PRTCTRL-TBL-KEY
-           MOVE    MPRT-FILENAME(9:4)
+           MOVE    MPRT-FILENAME(10:4)
                                        TO  PRTCTRL-RENNUM
-           MOVE    MPRT-FILENAME(13:14)
+           MOVE    MPRT-FILENAME(14:14)
                                        TO  PRTCTRL-TBL-GROUP
-           MOVE    MPRT-FILENAME(27:4)
+           MOVE    MPRT-FILENAME(28:4)
                                        TO  PRTCTRL-SHORI-RENNUM
-           MOVE    MPRT-FILENAME(31:5)
+           MOVE    MPRT-FILENAME(32:5)
                                        TO  WK-ED-PAGE
-           MOVE    MPRT-FILENAME(36:5)
+           MOVE    MPRT-FILENAME(37:5)
                                        TO  WK-ST-PAGE
-           MOVE    MPRT-FILENAME(41:36)
+           MOVE    MPRT-FILENAME(42:36)
                                        TO  PRTCTRL-TBL-UUID
       *
              STRING "/tmp/"      DELIMITED   BY  SIZE
@@ -1144,15 +1167,15 @@
       *    MOVE    2                   TO  PRTCTRL-DATA-KBN
       *    EVALUATE    IDZ
       *        WHEN    80
-                   MOVE    MPRT-FILENAME(3:6)
+                   MOVE    MPRT-FILENAME(4:6)
                                        TO  PRTCTRL-TBL-KEY
-                   MOVE    MPRT-FILENAME(9:4)
+                   MOVE    MPRT-FILENAME(10:4)
                                        TO  PRTCTRL-RENNUM
-                   MOVE    MPRT-FILENAME(13:14)
+                   MOVE    MPRT-FILENAME(14:14)
                                        TO  PRTCTRL-TBL-GROUP
-                   MOVE    MPRT-FILENAME(27:4)
+                   MOVE    MPRT-FILENAME(28:4)
                                        TO  PRTCTRL-SHORI-RENNUM
-                   MOVE    MPRT-FILENAME(41:36)
+                   MOVE    MPRT-FILENAME(42:36)
                                        TO  PRTCTRL-TBL-UUID
       *        WHEN    81
       *            MOVE    MPRT-FILENAME(3:7)
@@ -1175,16 +1198,16 @@
       *    END-IF
       *
       *
-      *    DISPLAY "-----------------------------------------"
-      *    DISPLAY "PRTCTRL-HOSPNUM = " PRTCTRL-HOSPNUM
-      *    DISPLAY "PRTCTRL-TERMID = " PRTCTRL-TERMID
-      *    DISPLAY "PRTCTRL-TBL-KEY = " PRTCTRL-TBL-KEY
-      *    DISPLAY "PRTCTRL-RENNUM  = " PRTCTRL-RENNUM
-      *    DISPLAY "PRTCTRL-TBL-GROUP = " PRTCTRL-TBL-GROUP
-      *    DISPLAY "PRTCTRL-TBL-UUID = " PRTCTRL-TBL-UUID
-      *    DISPLAY "PRTCTRL-SHORI-RENNUM = " PRTCTRL-SHORI-RENNUM
-      *    DISPLAY "MCP-TERM = " MCP-TERM
-      *    DISPLAY "-----------------------------------------"
+           DISPLAY "-----------------------------------------"
+           DISPLAY "PRTCTRL-HOSPNUM = " PRTCTRL-HOSPNUM
+           DISPLAY "PRTCTRL-TERMID = " PRTCTRL-TERMID
+           DISPLAY "PRTCTRL-TBL-KEY = " PRTCTRL-TBL-KEY
+           DISPLAY "PRTCTRL-RENNUM  = " PRTCTRL-RENNUM
+           DISPLAY "PRTCTRL-TBL-GROUP = " PRTCTRL-TBL-GROUP
+           DISPLAY "PRTCTRL-TBL-UUID = " PRTCTRL-TBL-UUID
+           DISPLAY "PRTCTRL-SHORI-RENNUM = " PRTCTRL-SHORI-RENNUM
+           DISPLAY "MCP-TERM = " MCP-TERM
+           DISPLAY "-----------------------------------------"
            .
        110-CTRLFILE-CHECK-EXT.
            EXIT.
@@ -1232,7 +1255,9 @@
                    DISPLAY "================="
                    PERFORM 11011-DBDEL-SEC
                    STRING "/tmp/"      DELIMITED   BY  SIZE
-                       MPRT-FILENAME
+                       MPRT-FILENAME(1:2)
+                                       DELIMITED   BY  SPACE
+                       MPRT-FILENAME(4:)
                                        DELIMITED   BY  SPACE
                    INTO   ORCA-BLOB-FILE 
                    END-STRING
