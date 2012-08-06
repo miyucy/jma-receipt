@@ -1104,6 +1104,12 @@
            MOVE    WRK-KAISU-GOK       TO  LNK-SC91-KAISU
            MOVE    SPA-COM-SURYO (IDX)
                                        TO  LNK-SC91-SURYO
+      *H24.8
+      *    数量999以上は999で
+           IF      SPA-COM-SURYO (IDX)   >  999
+               MOVE    999                 TO  LNK-SC91-SURYO
+           END-IF
+      *H24.8
            MOVE    SPA-K02-TEISEI-AREA TO  LNK-SC91-TEISEI-AREA
       *
            CALL    "ORCSC91"           USING

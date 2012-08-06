@@ -1058,6 +1058,12 @@
            MOVE    WRK-KAISU-GOK       TO  LNK-SC91-KAISU
            MOVE    SPA-COM-SURYO (IDX)
                                        TO  LNK-SC91-SURYO
+      *H24.8
+      *    数量999以上は999で
+           IF      SPA-COM-SURYO (IDX)   >  999
+               MOVE    999                 TO  LNK-SC91-SURYO
+           END-IF
+      *H24.8
            PERFORM 5101721-KAISU-HEN-SEC
            MOVE    LNK-SC92-KT01-AREA  TO  LNK-SC91-KT01-AREA
            CALL    "ORCSC91"           USING

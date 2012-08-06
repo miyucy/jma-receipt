@@ -151,6 +151,7 @@
            03  WRK-CHK-DD              PIC 9(02).
       *
            03  WRK-DAYMAXCNT           PIC 9(04).
+           03  WRK-DAY-YMD             PIC X(08).
       *    入院期間
            03  CNT-NYU                 PIC 9(03).
            03  WRK-NYU                 PIC 9(03).
@@ -494,8 +495,16 @@
            IF      (LNK-SC91-SURYO     >   1    )
                AND (TNS-JGNCNT1D       >   ZERO )
                AND (TNS-TANICD     NOT =   "001")
+      *H24.8
+      *        ３桁以上は、999とする
+               IF     (LNK-SC91-KAISU  *   LNK-SC91-SURYO)
+                                       >   999
+                   MOVE    999             TO  LNK-SC91-KAISU
+               ELSE
+      *H24.8
                COMPUTE LNK-SC91-KAISU      =   LNK-SC91-KAISU
                                            *   LNK-SC91-SURYO
+               END-IF
            END-IF
       *
            EVALUATE    LNK-SC91-KBN
@@ -609,6 +618,7 @@
            MOVE    ZERO                TO  WRK-ATO-CNT
            INITIALIZE                      WRK-CHK-SRYYMD
            MOVE    ZERO                TO  WRK-CHK-DD
+           MOVE    SPACE               TO  WRK-DAY-YMD
       *
            IF      LNK-SC91-KBN        =   "4"
                MOVE    ZERO            TO  WRK-DOCNT
@@ -777,6 +787,7 @@
                        MOVE    "1022"          TO  LNK-SC91-ERRCD
                    END-IF
                END-IF
+               MOVE    WRK-DAY-YMD         TO  WRK-CHK-SRYYMD
                MOVE    2                   TO  FLG-ERRKBN
                MOVE    LNK-SC91-DAYMAXCNT  TO  WRK-CNT-MAX
                MOVE    WRK-SC91-DAYCHKCNT  TO  WRK-CNT-ERR
@@ -1067,7 +1078,7 @@
                MOVE    TNS-JGNCNT1D        TO  LNK-SC91-DAYMAXCNT
                MOVE    SANTEI-DAY (IDX-Y2) TO  LNK-SC91-DAYCNT
                IF      SANTEI-DAY (IDX-Y2)     >   ZERO
-                   MOVE    SPA-SRYYMD          TO  WRK-CHK-SRYYMD
+                   MOVE    SPA-SRYYMD          TO  WRK-DAY-YMD
                END-IF
            END-IF
       *
@@ -1726,6 +1737,13 @@
       *                日上限の数量を回数とする
                        COMPUTE WRK-DCNT        =  (SPA-COM-KAISU(IDX) 
                                                *   SPA-COM-SURYO(IDX))
+      *H24.8
+                       IF     (SPA-COM-KAISU(IDX)
+                                               *   SPA-COM-SURYO(IDX))
+                                               >   999
+                           MOVE    999             TO  WRK-DCNT
+                       END-IF
+      *H24.8
                    ELSE
                        MOVE    SPA-COM-KAISU(IDX)  TO  WRK-DCNT
                    END-IF

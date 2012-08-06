@@ -1604,6 +1604,12 @@
       *    ¿ôÎÌÈ¿±Ç
            MOVE    SPA-COM-SURYO (IDX-T)
                                        TO  LNK-SC91-SURYO
+      *H24.8
+      *    ¿ôÎÌ999°Ê¾å¤Ï999¤ÇÈ½
+           IF      SPA-COM-SURYO (IDX-T)   >  999
+               MOVE    999                 TO  LNK-SC91-SURYO
+           END-IF
+      *H24.8
            MOVE    LNK-SC92-TEISEI-AREA
                                        TO  LNK-SC91-TEISEI-AREA
            MOVE    LNK-SC92-KT01-AREA
