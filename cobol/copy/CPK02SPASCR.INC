@@ -175,6 +175,8 @@
                            11  SPA-COM-KINKIFLG      PIC X(01).
       *ver.4.7             処方せん料警告２
                            11  SPA-COM-KZMFLG6       PIC X(01).
+      *                    警告
+                           11  SPA-COM-KZMFLG7       PIC X(01).
       *                自動発生済フラグ
                        09  SPA-COM-AUTOFLG           PIC X(01).
       *                残量廃棄自動発生済フラグ

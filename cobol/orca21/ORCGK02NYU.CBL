@@ -10444,11 +10444,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        CONTINUE
                    ELSE
                        IF      SPA-ERRCD(1:1)  =   "K"
-                           MOVE    SPA-KEICOLORS
+      *                    白の時、設定なし
+                           IF      SPA-KEICOLORS   NOT =   "White"
+                               MOVE    SPA-KEICOLORS
                                    TO  K02N-INPUTCD-BGCOLOR (WRK-IDX2) 
+                           END-IF
                        ELSE
-                           MOVE    SPA-ERRCOLORS
+      *                    白の時、設定なし
+                           IF      SPA-ERRCOLORS   NOT =   "White"
+                               MOVE    SPA-ERRCOLORS
                                    TO  K02N-INPUTCD-BGCOLOR (WRK-IDX2) 
+                           END-IF
                        END-IF
                    END-IF
       *
