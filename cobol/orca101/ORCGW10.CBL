@@ -456,6 +456,9 @@
                    ELSE
                        MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA
                    END-IF
+                   IF    ( SYS-TOUKEI-KANRICD  =   "0043" )
+                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
+                   END-IF
       *
                    MOVE    TKIMEMO-MEMO    TO  SPA-GMN-W10-MEMO
       *
@@ -492,6 +495,9 @@
                        MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA1
                    ELSE
                        MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA1
+                   END-IF
+                   IF    ( SYS-TOUKEI-KANRICD  =   "0044" )
+                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA1
                    END-IF
       *
                    MOVE    TKIMEMO-MEMO    TO  SPA-GMN-W10-MEMO1
@@ -664,7 +670,7 @@
            INITIALIZE   SPA-GMN-W10-AREA
                         SPA-NAI-W10-AREA
       *
-           MOVE        "F"             TO  SPA-GMN-W10-CHK-SAVEPARA
+           MOVE        "T"             TO  SPA-GMN-W10-CHK-SAVEPARA
                                            SPA-GMN-W10-CHK-SAVEPARA1
       *
            PERFORM VARYING IDX FROM    1   BY  1

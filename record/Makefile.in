@@ -463,7 +463,8 @@ RECORD_files = \
 	appointmodv2.rec \
 	medicatonmodv2.rec \
 	subjectivesv2.rec \
-	
+	L07.rec \
+	G07.rec \
 
 DEF_files = \
 

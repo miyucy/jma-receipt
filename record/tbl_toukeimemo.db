@@ -80,3 +80,15 @@ path	all		{
 	};
 };
 
+path	del2		{ 	
+	DBDELETE	{
+		DELETE	FROM tbl_toukeimemo
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD   =  :KANRICD
+			AND     KBNCD     =  :KBNCD
+			AND     STYUKYMD  <=  :STYUKYMD
+			AND     EDYUKYMD  >=  :EDYUKYMD
+		;
+	};
+};
+

@@ -241,6 +241,7 @@
            COPY    "L03.INC".
            COPY    "L04.INC".
            COPY    "L06.INC".
+           COPY    "L07.INC".
            COPY    "L99.INC".
            COPY    "LERR.INC".
            COPY    "LID1.INC".
@@ -249,6 +250,7 @@
            COPY    "G02.INC".
            COPY    "G03.INC".
            COPY    "G05.INC".
+           COPY    "G07.INC".
            COPY    "G99.INC".
            COPY    "GERR.INC".
            COPY    "GID1.INC".
