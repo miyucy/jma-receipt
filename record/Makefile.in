@@ -466,6 +466,7 @@ RECORD_files = \
 	L07.rec \
 	G07.rec \
 	L100.rec \
+	G100.rec \
 
 DEF_files = \
 

@@ -232,3 +232,5 @@
                        09  SPA-SFILESV-DATA-TYPE   PIC X(01).
                    07  SPA-SFILESV-IDX             PIC 9(03).
                    07  SPA-SFILESV-MAX             PIC 9(03).
+           03  SPA-G01-OTHERS                      PIC X(50000).
+      *

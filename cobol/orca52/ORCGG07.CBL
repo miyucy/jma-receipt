@@ -19,7 +19,7 @@
        PROGRAM-ID.                     ORCGG07.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : システム管理情報設定
+      *  サブシステム名    : 月次統計
       *  コンポーネント名  : 統計帳票一覧
       *  管理者            : 
       *  作成日付    作業者        記述
@@ -133,6 +133,9 @@
            COPY    "MCPDATA.INC".
       *    COPY    "ORCA-DBPATH".
       *
+      *    ユーザー情報取得
+           COPY    "CPORCSLDUSER.INC".
+      *
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -160,6 +163,7 @@
            COPY    "G05.INC".
            COPY    "G07.INC".
            COPY    "G99.INC".
+           COPY    "G100.INC".
            COPY    "GERR.INC".
            COPY    "GID1.INC".
            COPY    "GID2.INC".
@@ -735,11 +739,11 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "G01"               TO  SPA-SAKIPG
+           MOVE    SPA-G01-MOTOPG      TO  SPA-SAKIPG
            MOVE    "G07"               TO  SPA-MOTOPG
       *
            MOVE   "JOIN  "             TO  MCP-PUTTYPE
-           MOVE    "G01"               TO  MCP-WINDOW
+           MOVE    SPA-G01-MOTOPG      TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -1003,6 +1007,11 @@
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
+           PERFORM 800-LDUSER-CHK-SEC
+           IF    ( SLDUSER-OTHERS  >   ZERO )
+               MOVE    "0104"      TO  SPA-ERRCD
+           END-IF
+      *
            .
       *
        4900-KANRENCHK-EXT.
@@ -1169,6 +1178,13 @@
            WHEN    "0002"
                MOVE    "帳票区分入力エラー"
                                        TO  SPA-ERRMSG
+           WHEN    "0104"
+               STRING  "他端末で月次統計業務使用中の為、"
+                                               DELIMITED BY  SIZE
+                       "実行できません"
+                                               DELIMITED BY  SIZE
+               INTO    SPA-ERRMSG
+               END-STRING
            WHEN    "4001" THRU "4006"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
@@ -1220,6 +1236,20 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＬＤユーザーチェック処理
+      *****************************************************************
+       800-LDUSER-CHK-SEC              SECTION.
+      *
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    52              TO  SLDUSER-MY-LD
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
+      *
+           .
+       800-LDUSER-CHK-EXT.
            EXIT.
       *****************************************************************
       *    システム管理検索処理

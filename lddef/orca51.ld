@@ -21,6 +21,7 @@ bind	"G03"		"OpenCOBOL"	"ORCGG03";
 bind	"G05"		"OpenCOBOL"	"ORCGG05";
 bind	"G07"		"OpenCOBOL"	"ORCGG07";
 bind	"G99"		"OpenCOBOL"	"ORCGG99";
+bind	"G100"		"OpenCOBOL"	"ORCGG100";
 bind	"GERR"		"OpenCOBOL"	"ORCGGERR";
 bind	"GID1"		"OpenCOBOL"	"ORCGGID1";
 bind	"GID2"		"OpenCOBOL"	"ORCGGID2";
@@ -49,6 +50,7 @@ data	{
 		G05;
 		G07;
 		G99;
+		G100;
 		GERR;
 		GID1;
 		GID2;

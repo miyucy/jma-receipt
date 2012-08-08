@@ -219,6 +219,7 @@
            COPY    "G05.INC".
            COPY    "G07.INC".
            COPY    "G99.INC".
+           COPY    "G100.INC".
            COPY    "GERR.INC".
            COPY    "GID1.INC".
            COPY    "GID2.INC".
@@ -444,9 +445,10 @@
                EVALUATE    SPA-GIDCD
                WHEN    "1001"
                    PERFORM 2301-DEL-SEC
-                   MOVE    "JOIN"      TO  MCP-PUTTYPE
-                   PERFORM 210-BACK
-               END-EVALUATE
+                   IF    ( SPA-ERRCD   =   SPACE )
+                       MOVE    "JOIN"      TO  MCP-PUTTYPE
+                       PERFORM 210-BACK
+                   END-IF               END-EVALUATE
            END-IF
       *
            MOVE    SPACE               TO  SPA-G99-FLG
@@ -473,8 +475,8 @@
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
                PERFORM 230-CLEAR-SEC
       *    削除
-           WHEN    "CLICKED"       ALSO    "B03"
-               PERFORM 230-DEL-SEC
+      *    WHEN    "CLICKED"       ALSO    "B03"
+      *        PERFORM 230-DEL-SEC
       *    説明更新
       *    WHEN    "CLICKED"       ALSO    "B04"
       *        PERFORM 240-PARAUPDATE-SEC

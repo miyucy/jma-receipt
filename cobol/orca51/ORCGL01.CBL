@@ -87,7 +87,6 @@
            03  FLG-FIXED                       PIC 9(01).
            03  FLG-CLIENT-OK                   PIC 9(01).
            03  FLG-UPDATE                      PIC 9(01).
-           03  FLG-EXISTS                      PIC 9(01).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -322,6 +321,7 @@
            COPY    "G05.INC".
            COPY    "G07.INC".
            COPY    "G99.INC".
+           COPY    "G100.INC".
            COPY    "GERR.INC".
            COPY    "GID1.INC".
            COPY    "GID2.INC".
