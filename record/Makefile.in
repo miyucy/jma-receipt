@@ -465,6 +465,7 @@ RECORD_files = \
 	subjectivesv2.rec \
 	L07.rec \
 	G07.rec \
+	L100.rec \
 
 DEF_files = \
 

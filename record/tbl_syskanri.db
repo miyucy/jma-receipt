@@ -419,3 +419,33 @@ path	abort	{
 	};
 };
 
+path	del2	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_syskanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
+			AND   KBNCD       >=   :KBNCD
+			AND   KBNCD       <=   :UPKBNCD
+			AND   STYUKYMD    <=   :STYUKYMD
+			AND   EDYUKYMD    >=   :EDYUKYMD
+		;
+	};
+};
+
+path	key25	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key25_csr CURSOR FOR
+		SELECT *
+		FROM      tbl_syskanri
+		WHERE 	  HOSPNUM	   = :HOSPNUM
+			AND   KANRICD      =   :KANRICD
+			AND   KBNCD       >=   :KBNCD
+			AND   KBNCD       <=   :UPKBNCD
+			AND   STYUKYMD    <=   :STYUKYMD
+			AND   EDYUKYMD    >=   :EDYUKYMD
+        ORDER  BY KBNCD,STYUKYMD
+		;
+	};
+};
+

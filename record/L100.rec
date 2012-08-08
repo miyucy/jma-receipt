@@ -1,0 +1,32 @@
+L100	{
+	fixed32	{
+		B05	{
+			state	int;
+		};
+		B06	{
+			state	int;
+		};
+		B07	{
+			state	int;
+		};
+		B08	{
+			state	int;
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		scrolledwindow26	{
+			LIST	{
+				count	int;
+				row	int;
+				rowattr int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(80);
+					value2	varchar(20);
+				}	[200];
+				select	bool[200];
+			};
+		};
+	};
+};

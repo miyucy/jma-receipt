@@ -207,6 +207,7 @@
            COPY    "L06.INC".
            COPY    "L07.INC".
            COPY    "L99.INC".
+           COPY    "L100.INC".
            COPY    "LERR.INC".
            COPY    "LID1.INC".
            COPY    "LID2.INC".
@@ -441,8 +442,10 @@
                EVALUATE    SPA-LIDCD
                WHEN    "1001"
                    PERFORM 2301-DEL-SEC
-                   MOVE    "JOIN"      TO  MCP-PUTTYPE
-                   PERFORM 210-BACK
+                   IF    ( SPA-ERRCD   =   SPACE )
+                       MOVE    "JOIN"      TO  MCP-PUTTYPE
+                       PERFORM 210-BACK
+                   END-IF
                END-EVALUATE
            END-IF
       *
@@ -469,8 +472,8 @@
            WHEN    "CLICKED"       ALSO    "B02"
                PERFORM 230-CLEAR-SEC
       *    削除
-           WHEN    "CLICKED"       ALSO    "B03"
-               PERFORM 230-DEL-SEC
+      *   WHEN    "CLICKED"       ALSO    "B03"
+      *        PERFORM 230-DEL-SEC
       *    説明更新
       *    WHEN    "CLICKED"       ALSO    "B04"
       *        PERFORM 240-PARAUPDATE-SEC

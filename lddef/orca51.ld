@@ -11,6 +11,7 @@ bind	"L04"		"OpenCOBOL"	"ORCGL04";
 bind	"L06"		"OpenCOBOL"	"ORCGL06";
 bind	"L07"		"OpenCOBOL"	"ORCGL07";
 bind	"L99"		"OpenCOBOL"	"ORCGL99";
+bind	"L100"		"OpenCOBOL"	"ORCGL100";
 bind	"LERR"		"OpenCOBOL"	"ORCGLERR";
 bind	"LID1"		"OpenCOBOL"	"ORCGLID1";
 bind	"LID2"		"OpenCOBOL"	"ORCGLID2";
@@ -38,6 +39,7 @@ data	{
 		L06;
 		L07;
 		L99;
+		L100;
 		LERR;
 		LID1;
 		LID2;
@@ -65,6 +67,7 @@ db	{
         tbl_btpara; 
         tbl_prtctrl; 
 	tbl_dbcatalog;
+	tbl_sysuser;
 };
 
 /* #include "orcadb.inc" */

@@ -86,6 +86,8 @@
            03  FLG-TOUKEIMEMO                  PIC 9(01).
            03  FLG-FIXED                       PIC 9(01).
            03  FLG-CLIENT-OK                   PIC 9(01).
+           03  FLG-UPDATE                      PIC 9(01).
+           03  FLG-EXISTS                      PIC 9(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -101,10 +103,12 @@
            03  IDXB                            PIC 9(04).
            03  IDXC                            PIC 9(04).
            03  IDXK                            PIC 9(04).
+           03  IDXU                            PIC 9(04).
            03  IDX0                            PIC 9(04).
            03  IDX1                            PIC 9(04).
            03  IDX2                            PIC 9(04).
            03  IDXL                            PIC 9(04).
+           03  IDXT                            PIC 9(04).
            03  IDX-PARA                        PIC 9(04).
            03  IDW                             PIC 9(04).
       *
@@ -257,7 +261,6 @@
        01  TOUKEIMEMO-REC.
            COPY  "CPTOUKEIMEMO.INC".
       *
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -287,6 +290,10 @@
       *
       *    クライアント印刷制御
            COPY    "CPORCSPRTCTRL.INC".
+      *
+      *    ユーザー情報取得
+           COPY    "CPORCSLDUSER.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -305,6 +312,7 @@
            COPY    "L06.INC".
            COPY    "L07.INC".
            COPY    "L99.INC".
+           COPY    "L100.INC".
            COPY    "LERR.INC".
            COPY    "LID1.INC".
            COPY    "LID2.INC".
@@ -418,9 +426,14 @@
       *        元の画面へ戻す
                IF    ( SPA-MOTOPG      =   "XA01" OR "XB01" OR "XC01"
                                                   OR "XG01"           )
-                   MOVE    LNK-COMMON      TO  SPA-KYOUTU
-                   MOVE    LNK-SCRSPA      TO  SPA-L01FREE
-                   INITIALIZE              SPA-L01KYOUTU
+                   PERFORM 3001-UPDATE-CHK-SEC
+                   IF    ( FLG-UPDATE      =   ZERO )
+                       MOVE    LNK-COMMON      TO  SPA-KYOUTU
+                       MOVE    LNK-SCRSPA      TO  SPA-L01FREE
+                       INITIALIZE              SPA-L01KYOUTU
+                   ELSE
+                       PERFORM 310-SPASET-SEC
+                   END-IF
                    GO  TO  300-SCREEN-EXT
                END-IF
       *
@@ -443,6 +456,8 @@
                PERFORM 330-LID1-SET-SEC
            WHEN    "LID2"
                PERFORM 340-LID2-SET-SEC
+           WHEN    "L100"
+               PERFORM 310-SPASET-SEC
            WHEN    OTHER
       *
                PERFORM 310-SPASET-SEC
@@ -454,6 +469,47 @@
        300-SCREEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    更新チェック処理
+      *****************************************************************
+       3001-UPDATE-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-UPDATE
+      *
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL ( IDX         >   WRK-CONS-LINE-MAX )
+                    OR   ( FLG-UPDATE  =   1 )
+      *
+               IF    ( SPA-GMN-L01-HCNAME (IDX) NOT =   SPACE )
+                   INITIALIZE          SYSKANRI-REC
+                   MOVE    "3001"      TO  SYS-KANRICD
+                   MOVE    IDX         TO  WRK-KBNCD
+                   MOVE    WRK-KBNCD-G TO  SYS-KBNCD
+                   MOVE    SPA-SYSYMD  TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+                   MOVE    SPA-HOSPNUM TO  SYS-HOSPNUM
+                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+                   IF    ( FLG-SYSKANRI    =   ZERO )
+                       MOVE    SYSKANRI-REC
+                                       TO  SYS-3001-REC
+                       IF    ( SYS-3001-HCNAME
+                                       =   SPA-GMN-L01-HCNAME (IDX))
+                        AND  ( SYS-3001-PRGNAME
+                                       =   SPA-GMN-L01-PRGNAME(IDX))
+                           CONTINUE
+                       ELSE
+                           MOVE    1       TO  FLG-UPDATE
+                       END-IF
+                   ELSE
+                           MOVE    1       TO  FLG-UPDATE
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       3001-UPDATE-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    スパ初期編集処理
       *****************************************************************
@@ -900,6 +956,9 @@
            WHEN    "CLICKED"       ALSO    "B02"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
                PERFORM 230-CLEAR-SEC
+      *    並び順変更
+           WHEN    "CLICKED"       ALSO    "B03"
+               PERFORM 480-L100-SENI-SEC
       *    統計データ作成
            WHEN    "CLICKED"       ALSO    "B04"
                PERFORM 240-TOUKEI-SEC
@@ -2244,6 +2303,21 @@
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
+           PERFORM 800-LDUSER-CHK-SEC
+           IF    ( SLDUSER-OTHERS  =   ZERO )
+               PERFORM 4801-L07-SENI-SEC
+           ELSE
+               MOVE    "0104"      TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       480-L07-SENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    統計帳票一覧画面画面遷移処理
+      *****************************************************************
+       4801-L07-SENI-SEC                SECTION.
+      *
            COMPUTE SPA-L01-SEL     =   IDX
                                    + ( SPA-GMN-L01-PAGE    -   1 )
                                    * WRK-CONS-SCR-MAX
@@ -2282,7 +2356,7 @@
            MOVE    1                   TO  FLG-END
       *
            .
-       480-L07-SENI-EXT.
+       4801-L07-SENI-EXT.
            EXIT.
       *****************************************************************
       *    締め処理画面遷移処理
@@ -2321,6 +2395,61 @@
       *
            .
        480-L06-SENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    並び順変更画面遷移処理
+      *****************************************************************
+       480-L100-SENI-SEC                SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           PERFORM 800-LDUSER-CHK-SEC
+           IF    ( SLDUSER-OTHERS  =   ZERO )
+               PERFORM 4801-L100-SENI-SEC
+           ELSE
+               MOVE    "0104"      TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       480-L100-SENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    並び順変更画面遷移処理
+      *****************************************************************
+       4801-L100-SENI-SEC              SECTION.
+      *
+           MOVE    "L01"           TO  SPA-MOTOPG
+      *
+           MOVE    SPA-L01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-L01FREE     TO  SPA-FREE
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGL100"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-L01FREE
+           MOVE    SPA-WORK        TO  SPA-L01KYOUTU
+      *
+           MOVE    "L01"           TO  SPA-MOTOPG
+           MOVE    "L100"          TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "L100"          TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       4801-L100-SENI-EXT.
            EXIT.
       *****************************************************************
       *    締め処理画面遷移処理
@@ -3148,6 +3277,13 @@
                        "】"                    DELIMITED BY  SIZE
                INTO    SPA-ERRMSG
                END-STRING
+           WHEN    "0104"
+               STRING  "他端末で日次統計業務使用中の為、"
+                                               DELIMITED BY  SIZE
+                       "実行できません"
+                                               DELIMITED BY  SIZE
+               INTO    SPA-ERRMSG
+               END-STRING
            WHEN    "1001"
                MOVE    "更新ができませんでした"
                                                    TO  SPA-ERRMSG
@@ -3376,6 +3512,20 @@
       *
            .
        800-ORCSJOB-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＬＤユーザーチェック処理
+      *****************************************************************
+       800-LDUSER-CHK-SEC              SECTION.
+      *
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    51              TO  SLDUSER-MY-LD
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
+      *
+           .
+       800-LDUSER-CHK-EXT.
            EXIT.
       *****************************************************************
       *    管理マスター読込（キー）

@@ -133,6 +133,10 @@
            COPY    "MCPDATA.INC".
       *    COPY    "ORCA-DBPATH".
       *
+      *    ユーザー情報取得
+           COPY    "CPORCSLDUSER.INC".
+      *
+      *
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -150,6 +154,7 @@
            COPY    "L06.INC".
            COPY    "L07.INC".
            COPY    "L99.INC".
+           COPY    "L100.INC".
            COPY    "LERR.INC".
            COPY    "LID1.INC".
            COPY    "LID2.INC".
@@ -1002,6 +1007,11 @@
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
+           PERFORM 800-LDUSER-CHK-SEC
+           IF    ( SLDUSER-OTHERS  >   ZERO )
+               MOVE    "0104"      TO  SPA-ERRCD
+           END-IF
+      *
            .
       *
        4900-KANRENCHK-EXT.
@@ -1168,6 +1178,13 @@
            WHEN    "0002"
                MOVE    "帳票区分入力エラー"
                                        TO  SPA-ERRMSG
+           WHEN    "0104"
+               STRING  "他端末で日次統計業務使用中の為、"
+                                               DELIMITED BY  SIZE
+                       "実行できません"
+                                               DELIMITED BY  SIZE
+               INTO    SPA-ERRMSG
+               END-STRING
            WHEN    "4001" THRU "4006"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
@@ -1219,6 +1236,20 @@
            .
       *
        800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＬＤユーザーチェック処理
+      *****************************************************************
+       800-LDUSER-CHK-SEC              SECTION.
+      *
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    51              TO  SLDUSER-MY-LD
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
+      *
+           .
+       800-LDUSER-CHK-EXT.
            EXIT.
       *****************************************************************
       *    システム管理検索処理
