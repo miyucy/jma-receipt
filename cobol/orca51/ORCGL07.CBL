@@ -739,11 +739,11 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "L01"               TO  SPA-SAKIPG
+           MOVE    SPA-L01-MOTOPG      TO  SPA-SAKIPG
            MOVE    "L07"               TO  SPA-MOTOPG
       *
            MOVE   "JOIN  "             TO  MCP-PUTTYPE
-           MOVE    "L01"               TO  MCP-WINDOW
+           MOVE    SPA-L01-MOTOPG      TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *

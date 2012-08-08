@@ -45,6 +45,9 @@
       *    日次統計共通パラメタ
            COPY    "L01COMMON-SPA".
       *
+      *    画面用ＳＰＡ
+           COPY    "L01SCR-SPA".
+      *
       *    コンスタント値
            COPY    "ENUM-VALUE".
       *
@@ -97,6 +100,7 @@
            03  WRK-TMPKBNCD-G.
                05  WRK-TMPKBNCD-LBL        PIC X(03).
                05  WRK-TMPKBNCD            PIC 9(03).
+           03  WRK-SELNUM                  PIC 9(03).
       *
        01  WRK-ROW.
            05  WRK-TYOHYOLST-ROW           PIC S9(9)   BINARY.
@@ -186,7 +190,8 @@
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-FREE        TO  SPA-L100-AREA
+           MOVE    SPA-FREE        TO  SPA-L01FREE
+           MOVE    SPA-L01-OTHERS  TO  SPA-L100-AREA
            MOVE    SPA-WORK        TO  SPA-L01KYOUTU
       *
            MOVE    SPACE           TO  SPA-ERRCD
@@ -209,7 +214,8 @@
            END-IF
       *
            MOVE    SPA-L01KYOUTU   TO  SPA-WORK
-           MOVE    SPA-L100-AREA   TO  SPA-FREE
+           MOVE    SPA-L100-AREA   TO  SPA-L01-OTHERS
+           MOVE    SPA-L01FREE     TO  SPA-FREE
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
            .
@@ -263,6 +269,10 @@
            EVALUATE    SPA-MOTOPG
            WHEN    "LID1"
                PERFORM 330-LID1-SET-SEC
+           WHEN    "L07"
+               IF    ( SPA-NAI-L07-RET =   1 )
+                   PERFORM 311-SPASET-SEC
+               END-IF
            WHEN    OTHER
                PERFORM 310-SPASET-SEC
            END-EVALUATE
@@ -313,6 +323,20 @@
            .
        310-SPASET-EXT.
            EXIT.
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       311-SPASET-SEC              SECTION.
+      *
+           MOVE    SPA-GMN-TYOHYOLST-SEL
+                                   TO  WRK-SELNUM
+           PERFORM 310-SPASET-SEC
+           MOVE    2               TO  FLG-TYOHYOLST-ROW
+           MOVE    WRK-SELNUM      TO  L100-LIST-ROW
+      *
+           .
+       311-SPASET-EXT.
+           EXIT.
       *
       *****************************************************************
       *    確認画面（ＬＩＤ１）ＯＫ処理
@@ -326,7 +350,7 @@
                    IF    ( SLDUSER-OTHERS  =   ZERO )
                        PERFORM 2301-DEL-SEC
                        IF    ( SPA-ERRCD   =   SPACE )
-                           PERFORM 310-SPASET-SEC
+                           PERFORM 311-SPASET-SEC
                        END-IF
                    ELSE
                        MOVE    "0104"      TO  SPA-ERRCD
@@ -356,10 +380,21 @@
            WHEN    "CLICKED"       ALSO    "B03"
                PERFORM 230-DEL-SEC
            WHEN    "CLICKED"       ALSO    "B05"
+           WHEN    "CLICKED"       ALSO    "B05R"
+      *
            WHEN    "CLICKED"       ALSO    "B06"
+           WHEN    "CLICKED"       ALSO    "B06R"
+      *
            WHEN    "CLICKED"       ALSO    "B07"
+           WHEN    "CLICKED"       ALSO    "B07R"
+      *
            WHEN    "CLICKED"       ALSO    "B08"
+           WHEN    "CLICKED"       ALSO    "B08R"
+      *    並べ替え
                PERFORM  480-TOUROKU-SEC
+      *    追加
+           WHEN    "CLICKED"       ALSO    "B09"
+               PERFORM  480-L07-SENI-SEC
            END-EVALUATE
            .
       *
@@ -531,6 +566,62 @@
        210-BACK-EXT.
            EXIT.
       *****************************************************************
+      *    統計帳票一覧画面画面遷移処理
+      *****************************************************************
+       480-L07-SENI-SEC                SECTION.
+      *
+           PERFORM 800-LDUSER-CHK-SEC
+           IF    ( SLDUSER-OTHERS  =   ZERO )
+               PERFORM 4801-L07-SENI-SEC
+           ELSE
+               MOVE    "0104"      TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       480-L07-SENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    統計帳票一覧画面画面遷移処理
+      *****************************************************************
+       4801-L07-SENI-SEC                SECTION.
+      *
+           MOVE   "L100"           TO  SPA-L01-MOTOPG
+      *
+           COMPUTE SPA-L01-SEL     =   SPA-GMN-TYOHYOLST-SEL
+      *
+           MOVE    SPA-L01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-L100-AREA   TO  SPA-L01-OTHERS
+           MOVE    SPA-L01FREE     TO  SPA-FREE
+           MOVE    SPA-AREA        TO  SPA-COMMON
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGL07"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-L01FREE
+           MOVE    SPA-L01-OTHERS  TO  SPA-L100-AREA
+           MOVE    SPA-WORK        TO  SPA-L01KYOUTU
+      *
+           MOVE    "L100"              TO  SPA-MOTOPG
+           MOVE    "L07"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "L07"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4801-L07-SENI-EXT.
+           EXIT.
+      *****************************************************************
       *    削除処理
       *****************************************************************
        230-DEL-SEC                     SECTION.
@@ -615,12 +706,16 @@
            MOVE    SPA-GMN-TYOHYOLST-SEL   TO  WRK-KBNCD-S9
            EVALUATE    MCP-WIDGET
            WHEN    "B05"
+           WHEN    "B05R"
                COMPUTE WRK-KBNCD-S9 = WRK-KBNCD-S9 - 10
            WHEN    "B06"
+           WHEN    "B06R"
                COMPUTE WRK-KBNCD-S9 = WRK-KBNCD-S9 - 1
            WHEN    "B07"
+           WHEN    "B07R"
                COMPUTE WRK-KBNCD-S9 = WRK-KBNCD-S9 + 1
            WHEN    "B08"
+           WHEN    "B08R"
                COMPUTE WRK-KBNCD-S9 = WRK-KBNCD-S9 + 10
            END-EVALUATE
       *
@@ -647,6 +742,7 @@
                    MOVE    WRK-KBNCD-S9
                                    TO  SPA-GMN-TYOHYOLST-SEL
                                        SPA-GMN-SELNUM
+                                       L100-LIST-ROW
                    MOVE    2       TO  FLG-TYOHYOLST-ROW
                END-IF
            END-IF
@@ -942,7 +1038,7 @@
                MOVE    ZERO            TO  L100-LIST-ROW
                MOVE    ZERO            TO  L100-LIST-ROWATTR
            WHEN    2
-               MOVE    SPA-GMN-TYOHYOLST-SEL
+               MOVE    WRK-TYOHYOLST-ROW
                                        TO  L100-LIST-ROW
                MOVE    2               TO  L100-LIST-ROWATTR
            WHEN    OTHER
@@ -990,18 +1086,32 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
-            MOVE    WIDGET-INSENSITIVE     TO  L100-B05-STATE
+            MOVE    WIDGET-INSENSITIVE     TO  L100-B03-STATE
+                                               L100-B05-STATE
                                                L100-B06-STATE
                                                L100-B07-STATE
                                                L100-B08-STATE
+                                               L100-B09-STATE
+                                               L100-B05R-STATE
+                                               L100-B06R-STATE
+                                               L100-B07R-STATE
+                                               L100-B08R-STATE
       *
             IF    ( SPA-GMN-TYOHYOLST-SEL      >   ZERO )
-             AND  ( SPA-GMN-THCNAME (SPA-GMN-TYOHYOLST-SEL) 
+               IF    ( SPA-GMN-THCNAME (SPA-GMN-TYOHYOLST-SEL) 
                                            NOT =   SPACE )
-                MOVE    WIDGET-NORMAL      TO  L100-B05-STATE
+                    MOVE    WIDGET-NORMAL  TO  L100-B03-STATE
+                                               L100-B05-STATE
                                                L100-B06-STATE
                                                L100-B07-STATE
                                                L100-B08-STATE
+                                               L100-B05R-STATE
+                                               L100-B06R-STATE
+                                               L100-B07R-STATE
+                                               L100-B08R-STATE
+               ELSE
+                    MOVE    WIDGET-NORMAL  TO  L100-B09-STATE
+               END-IF
             END-IF
       *
            .

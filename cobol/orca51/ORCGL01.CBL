@@ -2318,6 +2318,8 @@
       *****************************************************************
        4801-L07-SENI-SEC                SECTION.
       *
+           MOVE    "L01"           TO  SPA-L01-MOTOPG
+      *
            COMPUTE SPA-L01-SEL     =   IDX
                                    + ( SPA-GMN-L01-PAGE    -   1 )
                                    * WRK-CONS-SCR-MAX

@@ -1,5 +1,8 @@
 L100	{
 	fixed32	{
+		B03	{
+			state	int;
+		};
 		B05	{
 			state	int;
 		};
@@ -10,6 +13,21 @@ L100	{
 			state	int;
 		};
 		B08	{
+			state	int;
+		};
+		B09	{
+			state	int;
+		};
+		B05R	{
+			state	int;
+		};
+		B06R	{
+			state	int;
+		};
+		B07R	{
+			state	int;
+		};
+		B08R	{
 			state	int;
 		};
 		SELNUM	{

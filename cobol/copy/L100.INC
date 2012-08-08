@@ -17,10 +17,16 @@
       ********************************************************************
         02  L100.
       *      02  L07-FIXED32.
+              03  L100-B03-STATE           PIC S9(9)   BINARY.
               03  L100-B05-STATE           PIC S9(9)   BINARY.
               03  L100-B06-STATE           PIC S9(9)   BINARY.
               03  L100-B07-STATE           PIC S9(9)   BINARY.
               03  L100-B08-STATE           PIC S9(9)   BINARY.
+              03  L100-B09-STATE           PIC S9(9)   BINARY.
+              03  L100-B05R-STATE          PIC S9(9)   BINARY.
+              03  L100-B06R-STATE          PIC S9(9)   BINARY.
+              03  L100-B07R-STATE          PIC S9(9)   BINARY.
+              03  L100-B08R-STATE          PIC S9(9)   BINARY.
               03  L100-SELNUM              PIC S9(3).
               03  L100-SCROLLEDWINDOW26.
                 04  L100-LIST.
