@@ -83,7 +83,7 @@
                        09  SPA-GMN-JYKNKBNMEI  PIC X(10).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBL-MAX     PIC 9(05).
-                       09  SPA-GMN-TBL-OCC     OCCURS  400.
+                       09  SPA-GMN-TBL-OCC     OCCURS  200.
                            11  SPA-GMN-TTEKCD     PIC X(20).
                            11  SPA-GMN-TNAME      PIC X(100).
                            11  SPA-GMN-TDMKBN-G.
@@ -209,7 +209,7 @@
        01  TBL-AREA.
            03  TBL-GMN-AREA.
                05  TBL-GMN-MAX         PIC 9(05).
-               05  TBL-GMN-OCC         OCCURS  400.
+               05  TBL-GMN-OCC         OCCURS  200.
                    07  TBL-GMN-TTEKCD     PIC X(20).
                    07  TBL-GMN-TNAME      PIC X(100).
                    07  TBL-GMN-TDMKBN     PIC 9(01).
@@ -226,9 +226,9 @@
                05  WRK-HDD         PIC 9(02).
       *
        01  CONST-AREA.
-           03  CONST-TEKCD-MAX     PIC 9(05)   VALUE   400.
+           03  CONST-TEKCD-MAX     PIC 9(05)   VALUE   200.
            03  CONST-LINE-MAX      PIC 9(03)   VALUE   20. 
-           03  CONST-PAGE-MAX      PIC 9(02)   VALUE   20.
+           03  CONST-PAGE-MAX      PIC 9(02)   VALUE   10.
            03  CONST-MKCD-MAX      PIC 9(03)   VALUE   21. 
            03  CONST-SRY           PIC 9(01)   VALUE   0.
            03  CONST-BYO           PIC 9(01)   VALUE   1.
@@ -291,8 +291,6 @@
            COPY    "X04.INC".
            COPY    "X05.INC".
            COPY    "X06.INC".
-           COPY    "X07.INC".
-           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -864,18 +862,15 @@
        330-XID1-SET-SEC            SECTION.
       *
            IF    ( SPA-XID1-FLG        =   "OK" )
-               EVALUATE    SPA-XIDCD
-               WHEN    "1001"
+               IF    ( SPA-XIDCD       =   "1002" )
+                   PERFORM 4031-DEL-SEC
+               ELSE
                    IF    ( SPA-X01-SRYBYO  =   CONST-BYO )
                        PERFORM 491-KOUSHIN-SEC
                    ELSE
                        PERFORM 490-KOUSHIN-SEC
                    END-IF
-               WHEN    "1002"
-                   PERFORM 4031-DEL-SEC
-               WHEN    "2001"
-                   PERFORM 4111-PRINT-SEC
-               END-EVALUATE
+               END-IF
            END-IF
       *
            MOVE    SPACE           TO  SPA-XID1-FLG
@@ -964,11 +959,11 @@
                PERFORM  410-KAKUTEI-SEC
       *    印刷
            WHEN    "CLICKED"       ALSO    "B11"
-      *        IF    ( SPA-X01-SRYBYO      =   CONST-BYO )
-      *            CONTINUE
-      *        ELSE
+               IF    ( SPA-X01-SRYBYO      =   CONST-BYO )
+                   CONTINUE
+               ELSE
                    PERFORM  411-PRINT-SEC
-      *        END-IF
+               END-IF
            END-EVALUATE
            .
       *
@@ -1915,52 +1910,18 @@
       *****************************************************************
        411-PRINT-SEC               SECTION.
       *
-           PERFORM 410-KAKUTEI-SEC
-           IF    ( SPA-ERRCD        =   SPACE )
-               MOVE    "2001"       TO  SPA-XIDCD
-           END-IF
+           INITIALIZE                  ORCHXLSTAREA
+           MOVE    SPA-GMN-CHKKBN      TO  HXLST-CHKKBN
+           MOVE    SPA-GMN-SRYCD       TO  HXLST-SRYCD
+           MOVE    "1"                 TO  HXLST-PROCKBN
+           MOVE    SPA-X01-KJNYMD      TO  HXLST-KJNYMD
+           CALL    "ORCHXLST"      USING   SPA-AREA
+                                           ORCHXLSTAREA
       *
            .
        411-PRINT-EXT.
            EXIT.
-      *****************************************************************
-      *    印刷処理
-      *****************************************************************
-       4111-PRINT-SEC               SECTION.
       *
-           IF    ( SPA-X01-SRYBYO  =   CONST-BYO )
-               PERFORM 4911-KOUSHIN-SEC
-           ELSE
-               PERFORM 4901-KOUSHIN-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-      *
-               IF    ( SPA-X01-SELNUM      =   ZERO )
-                   MOVE    99              TO  SPA-X01-SELNUM
-                   MOVE    SPA-X01-STYUKYMD
-                                           TO  SPA-X01-SEL-STYUKYMD
-                   MOVE    SPA-X01-EDYUKYMD
-                                           TO  SPA-X01-SEL-EDYUKYMD
-               END-IF
-      *
-               INITIALIZE              ORCHXLSTAREA
-               MOVE    SPA-GMN-CHKKBN  TO  HXLST-CHKKBN
-               IF    ( SPA-X01-SRYBYO  =   CONST-BYO )
-                   MOVE    WRK-ID      TO  HXLST-ID
-               ELSE
-                   MOVE    SPA-GMN-SRYCD
-                                       TO  HXLST-SRYCD
-               END-IF
-               MOVE    "1"             TO  HXLST-PROCKBN
-               MOVE    SPA-X01-KJNYMD  TO  HXLST-KJNYMD
-               CALL    "ORCHXLST"  USING   SPA-AREA
-                                           ORCHXLSTAREA
-           END-IF
-      *
-           .
-       4111-PRINT-EXT.
-           EXIT.
       *
       *****************************************************************
       *    確定
@@ -2059,26 +2020,12 @@
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
-           PERFORM 4901-KOUSHIN-SEC
-           IF    ( SPA-ERRCD    =  SPACE )
-               MOVE   "JOIN"     TO   MCP-PUTTYPE 
-               PERFORM 210-BACK
-           END-IF
-      *
-           .
-       490-KOUSHIN-EXT.
-           EXIT.
-      *****************************************************************
-      *       登録処理
-      *****************************************************************
-       4901-KOUSHIN-SEC            SECTION.
-      *
            PERFORM 800-MCNDATE-SEC
       *
            PERFORM 40311-DEL-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                MOVE    "1003"      TO  SPA-ERRCD
-               GO  TO  4901-KOUSHIN-EXT
+               GO  TO  490-KOUSHIN-EXT
            END-IF
       *
            INITIALIZE                  CHKTRD-REC
@@ -2108,40 +2055,28 @@
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC          NOT =   ZERO  )
                    MOVE    "1001"      TO  SPA-ERRCD
-                   GO  TO  4901-KOUSHIN-EXT
+                   GO  TO  490-KOUSHIN-EXT
                END-IF
       *
            END-PERFORM
       *
+           MOVE   "JOIN"     TO   MCP-PUTTYPE 
+           PERFORM 210-BACK
+      *
            .
-       4901-KOUSHIN-EXT.
+       490-KOUSHIN-EXT.
            EXIT.
       *****************************************************************
       *       登録処理
       *****************************************************************
-       491-KOUSHIN-SEC             SECTION.
-      *
-           PERFORM 4911-KOUSHIN-SEC
-           IF    ( SPA-ERRCD    =  SPACE )
-               MOVE   "JOIN"     TO   MCP-PUTTYPE 
-               PERFORM 210-BACK
-           END-IF
-      *
-           .
-       491-KOUSHIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *       登録処理
-      *****************************************************************
-       4911-KOUSHIN-SEC                SECTION.
+       491-KOUSHIN-SEC           SECTION.
       *
            PERFORM 800-MCNDATE-SEC
       *
            PERFORM 40321-DEL-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                MOVE    "1003"      TO  SPA-ERRCD
-               GO  TO  4911-KOUSHIN-EXT
+               GO  TO  491-KOUSHIN-EXT
            END-IF
       *
            IF    ( SPA-X01-SELNUM      =   ZERO )
@@ -2179,13 +2114,17 @@
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC          NOT =   ZERO  )
                    MOVE    "1001"      TO  SPA-ERRCD
-                   GO  TO  4911-KOUSHIN-EXT
+                   GO  TO  491-KOUSHIN-EXT
                END-IF
            END-PERFORM
       *
+           MOVE   "JOIN"     TO   MCP-PUTTYPE 
+           PERFORM 210-BACK
+      *
            .
-       4911-KOUSHIN-EXT.
+       491-KOUSHIN-EXT.
            EXIT.
+      *
       *****************************************************************
       *       入力項目の関連チェック処理
       *****************************************************************
@@ -2321,7 +2260,6 @@
                MOVE    "入外別にチェック"  TO  X05-LBLNYUGAIBND
                MOVE    "日／月（０／１）"  TO  X05-LBLDM
            END-IF
-           MOVE    "印刷"                  TO  X05-B11-LABEL
       *
            PERFORM 510-GSRAUTH-SEC
       *
@@ -2719,18 +2657,11 @@
            WHEN    "1002"
                MOVE    "チェックマスタ設定情報を削除します"
                                         TO  WRK-XIDMSG
-           WHEN    "2001"
-               MOVE    "チェックマスタを登録後、印刷を行います"
-                                        TO  WRK-XIDMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  XID1
-           INITIALIZE                       XID1
            MOVE    SPA-XIDCD            TO  XID1-ID1CODE
            MOVE    WRK-XIDMSG           TO  XID1-ID1MSG
-           MOVE    "戻る"               TO  XID1-B01
-           MOVE    "ＯＫ"               TO  XID1-B12
-      *
            MOVE    "B12"                TO  MCP-WIDGET
       *
            MOVE    "X05"                TO  SPA-MOTOPG

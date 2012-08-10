@@ -73,9 +73,6 @@
            COPY    "CPCOMMONDAT2.INC"      REPLACING   //RECE01//
                                            BY          //BX0202//.
       *
-           COPY    "CPRECEERR.INC".
-      *
-      *
       *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR                         PIC X(02).
@@ -115,6 +112,7 @@
                05  WRK-PARA-MOREKENSA              PIC X(01).
                05  WRK-PARA-MOREBUI                PIC X(01).
            03  WRK-PARA-SRTKBN                     PIC X(01).
+           03  RECEERR                             PIC X(200).
            03  WRK-PARA-KJNYMD                     PIC X(08).
       *
       *    一時領域
@@ -203,7 +201,6 @@
       *****************************************************************
       *
            COPY    "CPORCSS004.INC".
-           COPY    "CPORCSS013.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -220,9 +217,6 @@
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
-      *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -272,8 +266,6 @@
            INITIALIZE                  SORTKEY-AREA
            INITIALIZE                  SPA-AREA
       *
-           INITIALIZE                  RECEERR
-      *
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
@@ -291,19 +283,12 @@
                                        WRK-PARA-JOBID
                                        WRK-PARA-SHELLID
                                        WRK-PARA-HOSPNUM
-                                       RECEERR
                                        WRK-PARA-CHKMORE
                                        WRK-PARA-MOREKIKAN
                                        WRK-PARA-MORERANGE-G
                                        WRK-PARA-SRTKBN
+                                       RECEERR
                                        WRK-PARA-KJNYMD
-           END-UNSTRING
-      *
-           DISPLAY "WRK-PARA-CHKMORE[" WRK-PARA-CHKMORE "]"
-                   "MOREKIKAN[" WRK-PARA-MOREKIKAN "]"
-                   "MORERANGE-G[" WRK-PARA-MORERANGE-G "]"
-                   "SRTKBN[" WRK-PARA-SRTKBN "]"
-                   "KJNYMD[" WRK-PARA-KJNYMD "]"
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    LNK-PRTKANRI-SKYYMD TO  SPA-SYSYMD
@@ -333,17 +318,6 @@
            MOVE    SPA-HOSPNUM         TO  BX0202PARA-HOSPNUM
            MOVE    "BX02002"           TO  BX0202PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  BX0202PARA-TERMID
-      *
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    BX0202PARA-BASENAME
-                                   TO  SGETTEMP-BASENAMES (1)
-           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (2)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  BX0202PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                   TO  RECEERR
       *
            INITIALIZE                  SS004-AREA
            MOVE    WRK-PARA-CHKMORE    TO  SS004-SRYCDKBN
@@ -376,15 +350,6 @@
       *****************************************************************
        2001-BX0202-EDIT-SEC        SECTION.
       *
-           INITIALIZE                      SS013-AREA
-           MOVE    "DBCREATE"          TO  SS013-FUNC
-           MOVE    WRK-PARA-CHKMORE    TO  SS013-CHKKBN
-           MOVE    WRK-PARA-KJNYMD     TO  SS013-KJNYMD
-           MOVE    "0"                 TO  SS013-TEKBYOKBN
-           CALL     "ORCSS013"         USING
-                                       SS013-AREA
-                                       SPA-AREA
-      *
            OPEN    INPUT   TENSU-FILE
            OPEN    OUTPUT  BX0202-FILE
       *
@@ -392,17 +357,7 @@
       *
            PERFORM UNTIL ( FLG-TENSU   NOT =   ZERO )
       *
-               INITIALIZE                  SS013-AREA
-               MOVE    WRK-PARA-CHKMORE TO  SS013-CHKKBN
-               MOVE    TNS-SRYCD       TO  SS013-SRYCD
-               MOVE    "2"             TO  SS013-TEKBYOKBN
-               MOVE    WRK-PARA-KJNYMD TO  SS013-KJNYMD
-               MOVE    "DBINSERT"      TO  SS013-FUNC
-               CALL     "ORCSS013"     USING
-                                       SS013-AREA
-                                       SPA-AREA
-      *
-               PERFORM 900-CHKSND-KEY3-SEL-SEC
+               PERFORM 900-CHKSND-KEY-SEL-SEC
                IF    ( FLG-CHKSND      =   ZERO )
                    CONTINUE
                ELSE
@@ -415,12 +370,6 @@
       *
            CLOSE   TENSU-FILE
                    BX0202-FILE
-      *
-           INITIALIZE                      SS013-AREA
-           MOVE     "DBDROP"           TO  SS013-FUNC
-           CALL     "ORCSS013"         USING
-                                       SS013-AREA
-                                       SPA-AREA
       *
            .
        2001-BX0202-EDIT-EXT.
@@ -865,7 +814,7 @@
       *****************************************************************
       *    チェックマスタ２検索処理
       *****************************************************************
-       900-CHKSND-KEY3-SEL-SEC      SECTION.
+       900-CHKSND-KEY-SEL-SEC      SECTION.
       *
            MOVE    ZERO            TO  FLG-CHKSND
       *
@@ -875,10 +824,11 @@
            MOVE    TNS-SRYCD       TO  CHKSND-SRYCD
            MOVE    WRK-PARA-KJNYMD TO  CHKSND-YUKOSTYMD
                                        CHKSND-YUKOEDYMD
-           MOVE    "0"             TO  CHKSND-CDKBN
+           MOVE    "1"             TO  CHKSND-CDKBN
+           MOVE    1               TO  CHKSND-RENNUM
            MOVE    CHKSND-REC      TO  MCPDATA-REC
            MOVE    "tbl_chksnd"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  CHKSND-REC
@@ -888,11 +838,11 @@
            END-IF
       *
            MOVE    "tbl_chksnd"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-CHKSND-KEY3-SEL-EXT.
+       900-CHKSND-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理
