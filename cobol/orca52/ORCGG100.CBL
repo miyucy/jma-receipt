@@ -525,6 +525,7 @@
        4101-SELNUM-CHK-SEC             SECTION.
       *
            MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  SPA-GMN-TYOHYOLST-SEL
       *
            MOVE    ZERO                TO  IDXL
            PERFORM VARYING IDX0    FROM    1   BY  1

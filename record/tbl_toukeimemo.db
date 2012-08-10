@@ -22,6 +22,7 @@ tbl_toukeimemo {
 	SAVEPARA		char(1);
 	PARA9                   varchar(20);
 	PARA10                  varchar(20);
+	USERMEMO                varchar(5000);
 };
 
 primary	{

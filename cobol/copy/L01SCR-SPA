@@ -74,6 +74,7 @@
                        09  SPA-GMN-L03-PARA        PIC X(20)
                                                    OCCURS  8.
                    07  SPA-GMN-L03-MEMO            PIC X(6000).
+                   07  SPA-GMN-L03-USERMEMO        PIC X(5000).
       *
                05  SPA-NAI-L03-AREA.
                    07  SPA-NAI-L03-PARAARI         PIC 9(01).

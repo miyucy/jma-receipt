@@ -177,6 +177,8 @@
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
+           COPY    "CPORCXKANACONV2.INC".
+      *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
@@ -378,6 +380,7 @@
            PERFORM 3101-TOKEIMEMO-SEL-SEC
            IF    ( FLG-TOUKEIMEMO  =   ZERO )
                MOVE    TKIMEMO-MEMO    TO  SPA-GMN-L03-MEMO
+               MOVE    TKIMEMO-USERMEMO TO SPA-GMN-L03-USERMEMO
            ELSE
                MOVE    WTMEMO-MEMO     TO  SPA-GMN-L03-MEMO
            END-IF
@@ -472,12 +475,14 @@
       *    クリア
            WHEN    "CLICKED"       ALSO    "B02"
                PERFORM 230-CLEAR-SEC
-      *    削除
-      *   WHEN    "CLICKED"       ALSO    "B03"
-      *        PERFORM 230-DEL-SEC
-      *    説明更新
-      *    WHEN    "CLICKED"       ALSO    "B04"
-      *        PERFORM 240-PARAUPDATE-SEC
+      *    入力欄
+           WHEN    "CLICKED"       ALSO    "B03"
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    2       TO  SPA-GMN-L03-CUR
+      *    メモ欄
+           WHEN    "CLICKED"       ALSO    "B04"
+               PERFORM 4101-GMN-SPA-SET-SEC
+               MOVE    81      TO  SPA-GMN-L03-CUR
       *    OK
            WHEN    "CLICKED"       ALSO    "B12"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
@@ -538,10 +543,6 @@
       *
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-             OR  ( FLG-END     NOT =   ZERO  )
-               GO  TO  410-INPUT-CHK-EXT
-           END-IF
       *
            .
       *
@@ -558,6 +559,8 @@
                MOVE    L03-PARA (IDX0)
                                    TO  SPA-GMN-L03-PARA(IDX0)
            END-PERFORM
+      *
+           MOVE    L03-USERMEMO    TO  SPA-GMN-L03-USERMEMO
       *
            .
       *
@@ -577,15 +580,19 @@
       *
            PERFORM VARYING IDXA    FROM    1   BY  1
                    UNTIL ( IDXA    >   WRK-CONS-PARA-MAX )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
                IF    ( SPA-GMN-L03-PARAHYOJI (IDXA)
                                NOT =   SPACE )
       *            入力パラメータ
                    PERFORM 4101-PARA-CHK-SEC
-                   IF    ( SPA-ERRCD   NOT =   SPACE )
-                       GO  TO  4102-KIHON-CHK-EXT
-                   END-IF
                END-IF
+      *
            END-PERFORM
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-USERMEMO-CHK-SEC
+           END-IF
       *
            .
       *
@@ -864,6 +871,25 @@
        410121-PARA-NUM-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ユーザーメモ欄チェック処理
+      *****************************************************************
+       4101-USERMEMO-CHK-SEC           SECTION.
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+           MOVE    5000                TO  KANACONV-LEN
+           MOVE    5000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    0                   TO  KANACONV-CHAR-TYPE
+           MOVE    SPA-GMN-L03-USERMEMO
+                                       TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+      *
+           MOVE    KANACONV-OUTDATA    TO  SPA-GMN-L03-USERMEMO
+      *
+           .
+       4101-USERMEMO-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    共通関連チェック
       *****************************************************************
        4900-KANRENCHK-SEC              SECTION.
@@ -880,6 +906,7 @@
            EVALUATE    TRUE
            WHEN  ( WRK-MCP-WIDGET  =   "B12" )
                PERFORM 4101-GMN-SPA-SET-SEC
+               PERFORM 2101-TOUKEIMEMO-UPD-SEC
                MOVE    1           TO  SPA-NAI-L03-STATUS
            WHEN  ( SPA-LIDCD       =   "1001" )
                MOVE    3           TO  SPA-NAI-L03-STATUS
@@ -889,7 +916,6 @@
       *
            MOVE    "L01"               TO  SPA-SAKIPG
            MOVE    "L03"               TO  SPA-MOTOPG
-               DISPLAY "L03 SPA-MOTOPG[" SPA-MOTOPG "]"
       *
            MOVE    "L01"               TO  MCP-WINDOW
       *
@@ -903,6 +929,61 @@
       *
       *
       *****************************************************************
+      *    統計メモ更新処理
+      *****************************************************************
+       2101-TOUKEIMEMO-UPD-SEC         SECTION.
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
+           INITIALIZE                SYSKANRI-REC
+           MOVE    SPA-HOSPNUM   TO  SYS-HOSPNUM
+           MOVE    "3001"        TO  SYS-KANRICD
+           MOVE    SPA-L01-SEL   TO  WRK-KBNCD
+           MOVE    WRK-KBNCD-G   TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD    TO  SYS-STYUKYMD
+                                     SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF    ( FLG-SYSKANRI  =   ZERO )
+      *
+               PERFORM 3101-TOKEIMEMO-SEL-SEC
+               IF    ( FLG-TOUKEIMEMO  =   ZERO )
+                   MOVE    SPA-GMN-L03-USERMEMO
+                                           TO  TKIMEMO-USERMEMO
+                   MOVE    SMCNDATE-YMD    TO  TKIMEMO-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  TKIMEMO-UPHMS
+                   MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
+                   MOVE    "tbl_toukeimemo" TO MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+               ELSE
+                   INITIALIZE          TOUKEIMEMO-REC
+                   MOVE    SPA-GMN-L03-PRGNAME
+                                           TO  TKIMEMO-PGID
+                   MOVE    SPA-GMN-L03-MEMO
+                                           TO  TKIMEMO-MEMO
+                   MOVE    SPA-GMN-L03-USERMEMO
+                                           TO  TKIMEMO-USERMEMO
+                   MOVE    "1"             TO  TKIMEMO-SAVEPARA
+                   MOVE    SPACE           TO  TKIMEMO-PARA-G
+                   MOVE    SYS-KANRICD     TO  TKIMEMO-KANRICD
+                   MOVE    SYS-KBNCD       TO  TKIMEMO-KBNCD
+                   MOVE    SYS-STYUKYMD    TO  TKIMEMO-STYUKYMD
+                   MOVE    SYS-EDYUKYMD    TO  TKIMEMO-EDYUKYMD
+                   MOVE    SMCNDATE-YMD    TO  TKIMEMO-CREYMD
+                                               TKIMEMO-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  TKIMEMO-UPHMS
+                   MOVE    SPA-HOSPNUM     TO  TKIMEMO-HOSPNUM
+                   MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
+                   MOVE    "tbl_toukeimemo" TO MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+               END-IF
+           END-IF
+      *
+           .
+       2101-TOUKEIMEMO-UPD-EXT.
+           EXIT.
+      *****************************************************************
       *    クリア　処理
       *****************************************************************
        230-CLEAR-SEC                   SECTION.
@@ -911,6 +992,7 @@
       *
            INITIALIZE                  SPA-GMN-L03-PARA-G
                                        SPA-NAI-L03-HENPARA-G
+                                       SPA-GMN-L03-USERMEMO
       *
            .
        230-CLEAR-EXT.
@@ -1043,24 +1125,15 @@
       *
                PERFORM 3101-TOKEIMEMO-SEL-SEC
                IF    ( FLG-TOUKEIMEMO  =   ZERO )
-                   DISPLAY "WRK-MCP-WIDGET =" WRK-MCP-WIDGET
-                   IF    (( TKIMEMO-MEMO (1:10) NOT =   "＃ｈｏｌｄ")
-                    AND   ( TKIMEMO-MEMO (1:10) NOT =   "＃ＨＯＬＤ"))
-                    OR   ( WRK-MCP-WIDGET          =   "B04"   )
-                       MOVE    WTMEMO-MEMO     TO  TKIMEMO-MEMO
-                       MOVE    SMCNDATE-YMD    TO  TKIMEMO-UPYMD
-                       MOVE    SMCNDATE-HMS    TO  TKIMEMO-UPHMS
-                       MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
-                       MOVE    "tbl_toukeimemo" TO MCP-TABLE
-                       MOVE    "key"           TO  MCP-PATHNAME
-                       PERFORM 910-DBUPDATE-SEC
-                       IF    ( MCP-RC          NOT =   ZERO )
-                           MOVE    "0006"      TO  SPA-ERRCD
-                       END-IF
-                   END-IF
-                   IF    ( TKIMEMO-MEMO (1:10) =   "＃ｈｏｌｄ"
-                                                OR "＃ＨＯＬＤ" )
-                       MOVE    ZERO            TO  FLG-UPDATE-SYSKANRI
+                   MOVE    WTMEMO-MEMO     TO  TKIMEMO-MEMO
+                   MOVE    SMCNDATE-YMD    TO  TKIMEMO-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  TKIMEMO-UPHMS
+                   MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
+                   MOVE    "tbl_toukeimemo" TO MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    "0006"      TO  SPA-ERRCD
                    END-IF
                END-IF
            END-IF
@@ -1097,7 +1170,7 @@
                         OR   ( FLG-HIT         NOT =   ZERO )
       *
                    IF    ( SYS-0043-PRGNAME    =   SYS-3001-PRGNAME )
-                       MOVE    SYS-0043-HCNAME TO  SYS-3001-HCNAME
+      *                MOVE    SYS-0043-HCNAME TO  SYS-3001-HCNAME
                        PERFORM VARYING IDX2    FROM    1   BY  1
                                UNTIL ( IDX2    >   10 )
                            MOVE    SYS-0043-PARAHYOJI (IDX2)
@@ -1212,9 +1285,7 @@
            MOVE    SPACE               TO  L03
            INITIALIZE                      L03
       *
-      *    IF    ( SPA-NAI-L03-PARAARI =   1 )
-      *        MOVE    "説明更新"      TO  L03-B04-LABEL
-      *    END-IF
+           MOVE    "メモ欄"            TO  L03-B04-LABEL
       *
            MOVE    "red"               TO  L03-MARKHISSU-STYLE
            MOVE    "*"                 TO  L03-MARKHISSU
@@ -1259,20 +1330,9 @@
            END-PERFORM
       *
       *
-           MOVE    SPACE               TO  L03-MEMO
-           IF    ( SPA-GMN-L03-MEMO (1:10) =   "＃ｈｏｌｄ"
-                                            OR "＃ＨＯＬＤ" )
-               MOVE    1               TO  IDX-STR
-               MOVE    SPACE           TO  WRK-STR
-               UNSTRING     SPA-GMN-L03-MEMO    DELIMITED   BY X"0A"
-               INTO    WRK-STR
-               WITH    POINTER   IDX-STR
-               END-UNSTRING
-               MOVE  SPA-GMN-L03-MEMO (IDX-STR :)
-                                           TO  L03-MEMO
-           ELSE
-               MOVE    SPA-GMN-L03-MEMO    TO  L03-MEMO
-           END-IF
+           MOVE    SPA-GMN-L03-MEMO        TO  L03-MEMO
+      *
+           MOVE    SPA-GMN-L03-USERMEMO    TO  L03-USERMEMO
       *
       *    カーソル位置
            PERFORM 5001-MAPCUR-SEC
@@ -1312,6 +1372,8 @@
                MOVE    "PARA017"           TO  MCP-WIDGET
            WHEN    09
                MOVE    "PARA018"           TO  MCP-WIDGET
+           WHEN    81
+               MOVE    "USERMEMO"          TO  MCP-WIDGET
            WHEN    99
                MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
@@ -1370,8 +1432,10 @@
       *
            END-PERFORM
       *
-           IF    ( SPA-GMN-L03-CUR >   9 )
-               MOVE    99          TO  SPA-GMN-L03-CUR
+           IF    ( SPA-GMN-L03-CUR NOT =   81 )
+               IF    ( SPA-GMN-L03-CUR >   9 )
+                   MOVE    99          TO  SPA-GMN-L03-CUR
+               END-IF
            END-IF
       *
            .

@@ -649,7 +649,8 @@
                                    TO  SPA-GMN-L01-PARA (IDX  IDX-PARA)
       *
                            END-PERFORM
-      *
+                       ELSE
+                           MOVE    "1"    TO  SPA-NAI-L01-SAVEPARA (IDX)
                        END-IF
       *
                        IF    ( IDX         >   SPA-GMN-L01-MAX )
@@ -892,6 +893,8 @@
                                    TO  SPA-GMN-L01-PARA (IDX  IDX-PARA)
       *
                    END-PERFORM
+               ELSE
+                   MOVE    "1"     TO  SPA-NAI-L01-SAVEPARA (IDX)
                END-IF
       *
            END-IF
