@@ -18,7 +18,6 @@
       *    医療機関情報ー入院基本画面ＳＰＡ    (SPA-FREE の内容)
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.08.01    NACL-藤原    14/08/28  ４．８ミドル対応
       *****************************************************************
       *
        01  SPA-G01FREE.
@@ -36,7 +35,6 @@
                        09  SPA-GMN-G01-NUM         PIC X(03).
                        09  SPA-GMN-G01-HCNAME      PIC X(80).
                        09  SPA-GMN-G01-PRGNAME     PIC X(24).
-                       09  SPA-GMN-G01-REPOS-NAME  PIC X(256).
                        09  SPA-GMN-G01-PARAHYOJI-G OCCURS  10.
                            11  SPA-GMN-G01-PARAHYOJI
                                                    PIC X(20).
@@ -58,7 +56,6 @@
                        09  SPA-NAI-G01-HISSU-KBN-G OCCURS  10.
                            11  SPA-NAI-G01-HISSU-KBN
                                                    PIC X(01).
-                   07  SPA-NAI-G01-CLIENT-SAVE     PIC X(01).
            03  SPA-G03-AREA.
                05  SPA-GMN-G03-PAGE                PIC 9(02).
                05  SPA-GMN-G03-MAXPAGE             PIC 9(02).
@@ -70,7 +67,6 @@
                    07  SPA-GMN-G03-NUM             PIC X(03).
                    07  SPA-GMN-G03-HCNAME          PIC X(80).
                    07  SPA-GMN-G03-PRGNAME         PIC X(24).
-                   07  SPA-GMN-G03-REPOS-NAME      PIC X(256).
                    07  SPA-GMN-G03-PARAHYOJI-G.
                        09  SPA-GMN-G03-PARAHYOJI   PIC X(20)
                                                    OCCURS  10.
@@ -150,8 +146,9 @@
                        09  SPA-GMN-G02-HOUKATUKBN2-VALUE
                                                    PIC X(01).
       *
-                   07  SPA-GMN-G02-CDKBN-OCC       OCCURS 3.
-                       09  SPA-GMN-G02-CDKBN-VALUE PIC X(01).
+                   07  SPA-GMN-G02-CDKBN.         
+                       09  SPA-GMN-G02-CDKBN1-VALUE    PIC X(01).
+                       09  SPA-GMN-G02-CDKBN2-VALUE    PIC X(01).
       *
                05  SPA-NAIB-G02-AREA.
                    07  SPA-NAI-G02-SRYYM           PIC 9(06).

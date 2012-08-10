@@ -133,7 +133,28 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA51SCRAREA.INC".
+           COPY    "L01.INC".
+           COPY    "L02.INC".
+           COPY    "L03.INC".
+           COPY    "L04.INC".
+           COPY    "L07.INC".
+           COPY    "L99.INC".
+           COPY    "L100.INC".
+           COPY    "LERR.INC".
+           COPY    "LID1.INC".
+           COPY    "LID2.INC".
+           COPY    "LFIL.INC".
+           COPY    "G01.INC".
+           COPY    "G02.INC".
+           COPY    "G03.INC".
+           COPY    "G05.INC".
+           COPY    "G07.INC".
+           COPY    "G99.INC".
+           COPY    "G100.INC".
+           COPY    "GERR.INC".
+           COPY    "GID1.INC".
+           COPY    "GID2.INC".
+           COPY    "GFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -169,6 +190,15 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
+      *
+           IF      SPA-MOTOPG          =   "LFIL"
+      *        ファイルエントリ処理(クライアント保存)
+               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
+                   ADD     1                   TO  SPA-SFILESV-IDX 
+                   PERFORM 3001-FILEENTRY-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+           END-IF
       *
            MOVE    "B01"               TO  MCP-WIDGET
            MOVE    SPACE               TO  LINKAREA
@@ -486,10 +516,26 @@
                                        ORCA-BLOB
                                        SPA-AREA
       *
+           INITIALIZE                      LFIL 
            MOVE    ORCA-BLOB-OBJECT    TO  L99-OBJECTDATA
+           STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                                       INTO  L99-FILENAME
+           END-STRING
            MOVE    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
                                        TO  L99-FILENAME
+           MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
+                                       TO  LFIL-TITLE
+           MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
+                                       TO  WRK-KENSU-Z
+           MOVE    WRK-KENSU-Z         TO  LFIL-KENSU
+      *
            MOVE    ZERO                TO  L99-DURATION
+      *
+      *    MOVE    "NEW"               TO  MCP-PUTTYPE
+      *    MOVE    "LFIL"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  FLG-END

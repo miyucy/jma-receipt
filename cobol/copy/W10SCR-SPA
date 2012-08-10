@@ -40,21 +40,18 @@
                05  SPA-W10-SEL-EDYUKYMD            PIC X(08).
       *
                05  SPA-W10-KANRICD                 PIC X(04).
-               05  SPA-W10-KANRICD2                 PIC X(04).
                05  SPA-W10-KBNCD                   PIC X(08).
                05  SPA-W10-MODE                    PIC 9(01).
-               05  SPA-W10-CUSTOM-ENABLED          PIC X(01).
-               05  SPA-W10-PARA-MAX                PIC 9(03).
       *
                05  SPA-GMN-W10-AREA.
                    07  SPA-GMN-W10-STYUKYMD        PIC X(09).
                    07  SPA-GMN-W10-EDYUKYMD        PIC X(09).
-                   07  SPA-GMN-W10-PARA-AREA.
+                   07  SPA-GMN-W10-PAGENO          PIC 9(01).
+                   07  SPA-GMN-W10-3001-AREA.
                        09  SPA-GMN-W10-HCNUM       PIC 9(03).
                        09  SPA-GMN-W10-CHK-SAVEPARA PIC X(1).
                        09  SPA-GMN-W10-HCNAME      PIC X(80).
                        09  SPA-GMN-W10-PRGNAME     PIC X(24).
-                       09  SPA-GMN-W10-REPOS-NAME  PIC X(256).
                        09  SPA-GMN-W10-PARA-G      OCCURS  10.
                            11  SPA-GMN-W10-PARAHYOJI
                                                    PIC X(20).
@@ -66,6 +63,22 @@
                            11  SPA-GMN-W10-OPTNINI
                                                    PIC X(01).
                        09  SPA-GMN-W10-MEMO        PIC X(6000).
+                   07  SPA-GMN-W10-3002-AREA.
+                       09  SPA-GMN-W10-HCNUM1      PIC 9(03).
+                       09  SPA-GMN-W10-CHK-SAVEPARA1 PIC X(1).
+                       09  SPA-GMN-W10-HCNAME1     PIC X(80).
+                       09  SPA-GMN-W10-PRGNAME1    PIC X(24).
+                       09  SPA-GMN-W10-PARA1-G     OCCURS  10.
+                           11  SPA-GMN-W10-PARAHYOJI1
+                                                   PIC X(20).
+                           11  SPA-GMN-W10-PARA1   PIC X(10).
+                       09  SPA-GMN-W10-OPTHISSU-KBN1-G
+                                                   OCCURS  10.
+                           11  SPA-GMN-W10-OPTHISSU1
+                                                   PIC X(01).
+                           11  SPA-GMN-W10-OPTNINI1
+                                                   PIC X(01).
+                       09  SPA-GMN-W10-MEMO1       PIC X(6000).
       *
                05  SPA-NAI-W10-AREA.
                    07  SPA-NAI-W10-STYUKYMD        PIC 9(08).

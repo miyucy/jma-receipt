@@ -26,7 +26,6 @@
                                       PIC X(20).
                 04  G03-MARKNINI      PIC X(01).
               03  G03-CHK-G.
-                04  G03-CHK-STATE     PIC S9(9)   BINARY.
                 04  G03-CHK-VALUE     PIC X.
                 04  G03-CHK-LABEL     PIC X(80).
               03  G03-PARA-G.
@@ -42,7 +41,6 @@
               03  G03-NUM-G.
                 04  G03-NUM           PIC X(03).
               03  G03-PRGNAME         PIC X(20).
-              03  G03-REPOS-NAME      PIC X(256).
               03  G03-SCROLLEDWINDOW1.
                 06  G03-MEMO          PIC X(6000).
               03  G03-SCROLLEDWINDOW2.

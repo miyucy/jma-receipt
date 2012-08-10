@@ -18,7 +18,6 @@
       *    医療機関情報ー入院基本画面ＳＰＡ    (SPA-FREE の内容)
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.08.01    NACL-藤原    14/08/28  ４．８ミドル対応
       *****************************************************************
       *
        01  SPA-L01FREE.
@@ -36,7 +35,6 @@
                        09  SPA-GMN-L01-NUM         PIC X(03).
                        09  SPA-GMN-L01-HCNAME      PIC X(80).
                        09  SPA-GMN-L01-PRGNAME     PIC X(24).
-                       09  SPA-GMN-L01-REPOS-NAME  PIC X(256).
                        09  SPA-GMN-L01-PARAHYOJI-G OCCURS  8.
                            11  SPA-GMN-L01-PARAHYOJI
                                                    PIC X(20).
@@ -58,7 +56,6 @@
                        09  SPA-NAI-L01-HISSU-KBN-G OCCURS  8.
                            11  SPA-NAI-L01-HISSU-KBN
                                                    PIC X(01).
-                   07  SPA-NAI-L01-CLIENT-SAVE     PIC X(01).
            03  SPA-L03-AREA.
                05  SPA-GMN-L03-PAGE                PIC 9(02).
                05  SPA-GMN-L03-MAXPAGE             PIC 9(02).
@@ -70,7 +67,6 @@
                    07  SPA-GMN-L03-NUM             PIC X(03).
                    07  SPA-GMN-L03-HCNAME          PIC X(80).
                    07  SPA-GMN-L03-PRGNAME         PIC X(24).
-                   07  SPA-GMN-L03-REPOS-NAME      PIC X(256).
                    07  SPA-GMN-L03-PARAHYOJI-G.
                        09  SPA-GMN-L03-PARAHYOJI   PIC X(20)
                                                    OCCURS  8.
@@ -156,7 +152,6 @@
                            11  SPA-GMN-L04-HOURSKBNMEIL
                                                        PIC X(08).
                05  SPA-NAI-L04-MES-AREA.
-                   07  SPA-NAI-L04-MESPROCKBN      PIC X(01).
                    07  SPA-NAI-L04-MESSTSRYYMD     PIC X(10).
                    07  SPA-NAI-L04-MESEDSRYYMD     PIC X(10).
                05  SPA-NAI-L04-VIEW-AREA.
@@ -169,46 +164,6 @@
                05  SPA-NAI-L04-INPUT-AREA.
                    07  SPA-NAI-L04-STSRYYMD        PIC X(08).
                    07  SPA-NAI-L04-EDSRYYMD        PIC X(08).
-      *
-           03  SPA-L06-AREA.
-               05  SPA-GMN-L06-CUR                     PIC 9(03).
-               05  SPA-GMN-L06-PRE-AREA.
-                   07  SPA-GMN-L06-PREHOURSKBN         PIC X(01).
-                   07  SPA-GMN-L06-PRESTSRYYMD         PIC X(10).
-                   07  SPA-GMN-L06-PRESTTIME.
-                       09  SPA-GMN-L06-PRESTHR         PIC 9(02).
-                       09  SPA-GMN-L06-PRESTMIN        PIC 9(02).
-                   07  SPA-GMN-L06-PREEDSRYYMD         PIC X(10).
-                   07  SPA-GMN-L06-PREEDTIME.
-                       09  SPA-GMN-L06-PREEDHR         PIC 9(02).
-                       09  SPA-GMN-L06-PREEDMIN        PIC 9(02).
-               05  SPA-GMN-L06-STSRYYMD                PIC X(10).
-               05  SPA-GMN-L06-STTIME.
-                   07  SPA-GMN-L06-STHR                PIC 9(02).
-                   07  SPA-GMN-L06-STMIN               PIC 9(02).
-               05  SPA-GMN-L06-INPUT-AREA.
-                   07  SPA-GMN-L06-HOURSKBN-G.
-                       09  SPA-GMN-L06-HOURSKBN        PIC X(01).
-                       09  SPA-GMN-L06-HOURSKBNFL      PIC X(01).
-                       09  SPA-GMN-L06-HOURSKBNMEI     PIC X(18).
-                   07  SPA-GMN-L06-EDSRYYMD            PIC X(10).
-                   07  SPA-GMN-L06-EDTIME.
-                       09  SPA-GMN-L06-EDHR            PIC 9(02).
-                       09  SPA-GMN-L06-EDMIN           PIC 9(02).
-               05  SPA-GMN-L06-CMB-AREA.
-                   07  SPA-GMN-L06-HOURSKBNLST-G.
-                       09  SPA-GMN-L06-HOURSKBN-MAX    PIC 9(03).
-                       09  SPA-GMN-L06-HOURSKBNLST     OCCURS  5.
-                           11  SPA-GMN-L06-HOURSKBNL   PIC X(01).
-                           11  SPA-GMN-L06-HOURSKBNFLL PIC X(01).
-                           11  SPA-GMN-L06-HOURSKBNMEIL
-                                                       PIC X(18).
-               05  SPA-NAI-L06-INPUT-AREA.
-                   07  SPA-NAI-L06-STSRYYMD            PIC X(08).
-                   07  SPA-NAI-L06-STTIME.
-                       09  SPA-NAI-L06-STHR            PIC 9(02).
-                       09  SPA-NAI-L06-STMIN           PIC 9(02).
-                   07  SPA-NAI-L06-EDSRYYMD            PIC X(08).
       *
            03  SPA-L02-AREA.
                05  SPA-GMN-L02-MAX                     PIC 9(04).
@@ -244,8 +199,9 @@
                        09  SPA-GMN-L02-KOJINKBN1-VALUE PIC X(01).
                        09  SPA-GMN-L02-KOJINKBN2-VALUE PIC X(01).
       *
-                   07  SPA-GMN-L02-CDKBN-OCC           OCCURS 3.
-                       09  SPA-GMN-L02-CDKBN-VALUE     PIC X(01).
+                   07  SPA-GMN-L02-CDKBN.         
+                       09  SPA-GMN-L02-CDKBN1-VALUE    PIC X(01).
+                       09  SPA-GMN-L02-CDKBN2-VALUE    PIC X(01).
       *
                05  SPA-NAIB-L02-AREA.
                    07  SPA-NAI-L02-SRYYMD              PIC 9(08).
