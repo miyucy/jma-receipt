@@ -34,6 +34,7 @@
       *  04.06.01    NACL-藤原    10/12/20  保険者からの返戻対応
       *  04.06.02    NACL-藤原    11/02/14  OpenCOBOL 1.0.0 対応
       *  04.06.03    NACL-藤原    12/06/19  取り込み時のレコード長変更
+      *  04.06.03    NACL-藤原    12/08/10  取り込み時の条件変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -708,7 +709,7 @@
       *    またはレコード終了まで
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   SPLIT-CNT)
-                   OR      ( WRK-PO-ED     >=  500  )
+                   OR      ( WRK-PO-ED     >=  3000 )
                    OR      ( FLG-END       =   1    )
       *
                MOVE    ZERO            TO  FLG-AREA1
