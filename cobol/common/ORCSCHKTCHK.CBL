@@ -35,6 +35,7 @@
       *  04.06.00    NACL-多々納  10/10/XX  包括算定（剤）対応
       *  04.06.00    NACL-多々納  11/01/XX  電子点数表マスタ対応
       *  04.06.00    NACL-多々納  12/03/28  Ｈ２４年４月改正対応
+      *  04.07.00    NACL-多々納  12/08/XX  サンプル薬（サ）対応
       *****************************************************************
       *
       *
@@ -69,6 +70,7 @@
            03  FLG-ZAIARI              PIC 9(01).
            03  FLG-SANTEIOK            PIC 9(01).
            03  FLG-INPUTOK             PIC 9(01).
+           03  FLG-INPUTOK2            PIC 9(01).
            03  FLG-DEKIDAKA            PIC 9(01).
       *
            03  FLG-HKTINP              PIC 9(01).
@@ -528,6 +530,11 @@
                    IF     (SPA-COM-INPUTCD (IDX-Z)(1:1)  =   "8" )
                        OR (SPA-COM-INPUTCD (IDX-Z)(1:3)  =   "008")
                        OR (SPA-GMN-INPUTCD (IDX-Z)(1:1)  =   "."  )
+      *ver.4.7         （サ）は包括対象とする
+                       IF     SPA-COM-INPUTCD(IDX-Z) =   "820000046"
+                           MOVE    1                   TO  FLG-HOUKATU
+                       END-IF
+      *????
                        CONTINUE
                    ELSE
                        MOVE    1                   TO  FLG-HOUKATU
@@ -982,6 +989,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *    診療区分による包括
            MOVE    ZERO                TO  FLG-SANTEIOK
            MOVE    ZERO                TO  FLG-INPUTOK
+           MOVE    ZERO                TO  FLG-INPUTOK2
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-GMN-MAX  )
                IF     (SPA-COM-HKNCOMBI (IDX-Z)    =   "9999")
@@ -999,11 +1007,18 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    OR  (SPA-RSI-HKNKBN             =   "3" )
                    CONTINUE
                ELSE
-                   IF      SPA-COM-INPUTCD (IDX-Z)(1:1) =   "1"
+                   IF     (SPA-COM-INPUTCD (IDX-Z)(1:1) =   "1"
                                                         OR  "6"
-                                                        OR  "7"
+                                                        OR  "7" )
                        MOVE    1                   TO  FLG-INPUTOK
                    END-IF
+      *H24.8       （サ）、ユーザ器材
+                   IF     (SPA-COM-INPUTCD (IDX-Z)     =   "820000046")
+                   OR     (SPA-COM-INPUTCD (IDX-Z)(1:3)    = "059"  )
+                       MOVE    1                   TO  FLG-INPUTOK
+                       MOVE    1                   TO  FLG-INPUTOK2
+                   END-IF
+      *H24.8
       *            剤点数がある剤のみ
                    IF     (SPA-COM-ZAIEND (IDX-Z)  =   "1"  )
       *************  AND  (SPA-COM-TENSU  (IDX-Z)  >   ZERO )
@@ -1214,7 +1229,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                                      OR  "223"
                                                      OR  "232"
                                                      OR  "233")
-                     OR   (SPA-COM-TENSU  (IDX-Z)    =   ZERO )
+                     OR  ((SPA-COM-TENSU  (IDX-Z)    =   ZERO )  AND
+                          (FLG-INPUTOK2              =   ZERO))
                        CONTINUE
                    ELSE
                        IF      WRK-HKTKBN20    =   1

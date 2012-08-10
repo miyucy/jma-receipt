@@ -56,6 +56,7 @@
       *  04.07.00    NACL-多々納  11/11/XX  訂正処方せん料展開対応
       *  04.07.00    NACL-多々納  12/03/XX  Ｈ２４年４月改正対応
       *  04.07.00    NACL-多々納  12/07/04  処方せん料判定用法対応
+      *  04.07.00    NACL-多々納  12/08/10  サンプル薬（サ）対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -147,6 +148,10 @@
       *    一般名あり
            03  FLG-GENERIC-OK          PIC 9(01).
            03  FLG-CHK-P               PIC 9(01).
+      *
+      *サンプル薬対応
+           03  FLG-SANPURU             PIC 9(01).
+           03  FLG-YAKZAI-ALL          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1412,6 +1417,9 @@
            INITIALIZE                  WRK-HKNKEI-G
       *ver.4.7
            INITIALIZE                  TBL-YOUHO-HEN-AREA
+      *    サンプル薬投薬
+           MOVE    ZERO                TO  FLG-YAKZAI-ALL
+           MOVE    ZERO                TO  FLG-SANPURU
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
@@ -2291,6 +2299,7 @@
        30001-TOUYAKU-CHK-SEC              SECTION.
       *
            MOVE    ZERO                TO  FLG-YAKUZAI-ARI
+           MOVE    ZERO                TO  FLG-SANPURU
       *
            PERFORM VARYING     IDX3    FROM    IDX   BY  1
                    UNTIL      (IDX3    >   SPA-MAX-LINE  )  OR
@@ -2303,6 +2312,12 @@
                IF      WRK-COM-INPUTCD(IDX3)(1:1)  =   "6"
                    MOVE    1              TO  FLG-YAKUZAI-ARI
                ELSE
+      *ver.4.7
+      *        サンプル薬コメント
+                   IF      WRK-COM-INPUTCD(IDX3)   =   "820000046"
+                       MOVE    1                   TO  FLG-SANPURU
+                   END-IF
+      *!!
                    IF      WRK-COM-ZAIEND (IDX3) =   "1"
                        MOVE    IDX3           TO  IDX
                        MOVE    300            TO  IDX3
@@ -2313,7 +2328,12 @@
            END-PERFORM
       *
            IF      FLG-YAKUZAI-ARI      =   ZERO
+             AND   FLG-SANPURU          =   ZERO
                MOVE    "990"            TO  WRK-CHK-SRYSYUKBN
+           END-IF
+      *
+           IF      FLG-YAKUZAI-ARI      =   1
+               MOVE    1                TO  FLG-YAKZAI-ALL
            END-IF
       *
            .
@@ -2408,6 +2428,10 @@
                   ((WRK-CHK-SRYSYUKBN (1:2)   =   "29" ) AND
                    (WRK-COM-KAISU (IDX)       >   14   ))
                MOVE    1                   TO  FLG-NAIFUKU
+      *        薬剤なし
+               IF      FLG-YAKUZAI-ARI     =   ZERO
+                   MOVE    ZERO                TO  FLG-NAIFUKU
+               END-IF
            ELSE
                MOVE    ZERO                TO  FLG-NAIFUKU
            END-IF
@@ -2561,6 +2585,8 @@
       *ver.4.7
       *    用法毎まとめ対応
            IF      (FLG-NAIFUKU        =   1  )
+      *H24.8  薬剤あり
+              AND  (FLG-YAKUZAI-ARI    =   1  )
               AND  (IDG1               <=  50 )
               AND  (WRK-COM-INPUTCD(IDX)   NOT =   SPACE )
                ADD     1               TO  IDG2
@@ -2712,6 +2738,9 @@
       *    処方せん料算定あり
            IF     (FLG-SYOHO-CHK       =   1   )  AND
                   (FLG-SYOHO-CHK2      =   1   )
+      *H24.8
+      *    サンプル薬のみはなし
+           AND    (FLG-YAKZAI-ALL      =   1    )
                IF     (LNK-ORCSC-KIDCD     =   SPACE )  AND
                       (SPA-CHOZAI-CHK      =   ZERO  )
       *            調基算定チェック
@@ -2777,6 +2806,9 @@
       *    処方せん料算定時の時のみ行う
            IF     (FLG-SYOHO-CHK       =   ZERO) OR
                   (FLG-SYOHOSENN       =   ZERO)
+      *H24.8
+      *    サンプル薬のみはなし
+           OR     (FLG-YAKZAI-ALL      =   ZERO )
                GO      TO      3001-INGAI-SYORI-EXT
            END-IF
       *TEST
@@ -3216,8 +3248,8 @@
       *
       *TEST
       *    訂正で自動発生なしの場合
-           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
-                  (SPA-TEISEI-FLG      =   "0")
+           IF    ((LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (SPA-TEISEI-FLG      =   "0") )
                CONTINUE
            ELSE
       *        薬剤情報提供料、調基
@@ -3229,6 +3261,9 @@
                   (SPA-TEISEITOKU-FLG  =   "0"))
       *        病名疾患区分の自動発生なし
                OR (SPA-BYOMEIAUTO-FLG  NOT =   "1" )
+      *H24.8
+      *    サンプル薬のみはなし
+               OR (FLG-YAKZAI-ALL      =   ZERO )
                CONTINUE
            ELSE
       *        特定疾患処方管理加算
@@ -3248,6 +3283,9 @@
                   (FLG-TONPUK          =   1    )  OR
                   (FLG-GAIYAK          =   1    )
                IF     (FLG-YAKUJYO         =   ZERO )
+      *H24.8
+      *    サンプル薬のみはなし
+               AND    (FLG-YAKZAI-ALL      =   1    )
                    PERFORM 30022-INNAI-YAKUJYOUCHK-SEC
                END-IF
            END-IF
