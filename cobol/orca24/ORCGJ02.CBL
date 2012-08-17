@@ -9680,6 +9680,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        410122-RRK-ZAINUM-SEC           SECTION.
       *
       *    対象履歴判定
+           MOVE    ZERO                TO  WRK-D-IDX
            MOVE    ZERO                TO  IDX-RRK
            MOVE    ZERO                TO  WRK-RRK-RENNUM
            MOVE    ZERO                TO  WRK-RRK-DOUJI-RENNUM
@@ -9691,6 +9692,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-RRK-RRKYMD(IDR)(7:2)    TO  IDR2
                IF     (IDR2                =   SPA-DAY-IDX    ) AND
                       (SPA-RRK-SRYKA (IDR) =   SPA-NAIGMN-SRYKA)
+      *
                    MOVE    SPA-RRK-RENNUM(IDR) TO  WRK-RRK-RENNUM
       *            入院の場合、最大同時連番を取得する
                    IF     (SPA-NYUGAIKBN       =   "1" )
