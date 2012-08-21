@@ -130,8 +130,131 @@
            03  SYS-2010-SEIKANKBN-TNK       PIC  X(01).
            03  SYS-2010-SEIKAN-TAIKBN-TNK   PIC  X(01).
       *
+      *保険欄の括弧再掲記載（高齢者）
+           03  SYS-2010-KAKKBN-K            PIC  X(01).
+           03  SYS-2010-KAK-TAIKBN-K        PIC  X(01).
+      *保険欄の括弧再掲（下）記載（高齢者）
+      *　主＋全＋地（＋長）（分点ありの場合）
+           03  SYS-2010-KAK21KBN-K          PIC  X(01).
+           03  SYS-2010-KAK21-TAIKBN-K      PIC  X(01).
+      *　主＋全＋地　　　　（分点なしの場合）
+           03  SYS-2010-KAK22KBN-K          PIC  X(01).
+           03  SYS-2010-KAK22-TAIKBN-K      PIC  X(01).
+      *　主＋全＋地＋長　　（分点なしの場合）
+           03  SYS-2010-KAK23KBN-K          PIC  X(01).
+           03  SYS-2010-KAK23-TAIKBN-K      PIC  X(01).
+      *保険欄の括弧再掲（下）金額計算（高齢者）
+      *　主＋全＋地　　　　（分点ありの場合）
+           03  SYS-2010-KAK31KBN-K          PIC  X(01).
+           03  SYS-2010-KAK31-TAIKBN-K      PIC  X(01).
+      *　主＋全＋地＋長　　（分点ありの場合）
+           03  SYS-2010-KAK32KBN-K          PIC  X(01).
+           03  SYS-2010-KAK32-TAIKBN-K      PIC  X(01).
+      *保険欄の括弧再掲（下）金額加算（高齢者）
+      *　主＋全＋地（＋長）（分点ありの場合）
+           03  SYS-2010-KAK41KBN-K          PIC  X(01).
+           03  SYS-2010-KAK41-TAIKBN-K      PIC  X(01).
+      *　主＋全＋地　　　　（分点なしの場合）
+           03  SYS-2010-KAK42KBN-K          PIC  X(01).
+           03  SYS-2010-KAK42-TAIKBN-K      PIC  X(01).
+      *　主＋全＋地＋長　　（分点なしの場合）
+           03  SYS-2010-KAK43KBN-K          PIC  X(01).
+           03  SYS-2010-KAK43-TAIKBN-K      PIC  X(01).
+      *
+      *保険欄の括弧再掲記載（７０歳未満）
+           03  SYS-2010-KAKKBN-Y            PIC  X(01).
+           03  SYS-2010-KAK-TAIKBN-Y        PIC  X(01).
+      *保険欄の括弧再掲（下）記載（７０歳未満）
+      *　主＋全＋地（＋長）（分点ありの場合）
+           03  SYS-2010-KAK21KBN-Y          PIC  X(01).
+           03  SYS-2010-KAK21-TAIKBN-Y      PIC  X(01).
+      *　主＋全＋地　　　　（分点なしの場合）
+           03  SYS-2010-KAK22KBN-Y          PIC  X(01).
+           03  SYS-2010-KAK22-TAIKBN-Y      PIC  X(01).
+      *　主＋全＋地＋長　　（分点なしの場合）
+           03  SYS-2010-KAK23KBN-Y          PIC  X(01).
+           03  SYS-2010-KAK23-TAIKBN-Y      PIC  X(01).
+      *保険欄の括弧再掲（下）金額計算（７０歳未満）
+      *　主＋全＋地　　　　（分点ありの場合）
+           03  SYS-2010-KAK31KBN-Y          PIC  X(01).
+           03  SYS-2010-KAK31-TAIKBN-Y      PIC  X(01).
+      *　主＋全＋地＋長　　（分点ありの場合）
+           03  SYS-2010-KAK32KBN-Y          PIC  X(01).
+           03  SYS-2010-KAK32-TAIKBN-Y      PIC  X(01).
+      *保険欄の括弧再掲（下）金額加算（７０歳未満）
+      *　主＋全＋地（＋長）（分点ありの場合）
+           03  SYS-2010-KAK41KBN-Y          PIC  X(01).
+           03  SYS-2010-KAK41-TAIKBN-Y      PIC  X(01).
+      *　主＋全＋地　　　　（分点なしの場合）
+           03  SYS-2010-KAK42KBN-Y          PIC  X(01).
+           03  SYS-2010-KAK42-TAIKBN-Y      PIC  X(01).
+      *　主＋全＋地＋長　　（分点なしの場合）
+           03  SYS-2010-KAK43KBN-Y          PIC  X(01).
+           03  SYS-2010-KAK43-TAIKBN-Y      PIC  X(01).
+      *
+      *保険欄−一部負担金無記載
+      *　（高齢者・外）
+           03  SYS-2010-KSINGKBN-K-G        PIC  X(01).
+           03  SYS-2010-KSING-TAIKBN-K-G    PIC  X(01).
+      *　（高齢者・入）
+           03  SYS-2010-KSINGKBN-K-N        PIC  X(01).
+           03  SYS-2010-KSING-TAIKBN-K-N    PIC  X(01).
+      *　（７０未・外）
+           03  SYS-2010-KSINGKBN-Y-G        PIC  X(01).
+           03  SYS-2010-KSING-TAIKBN-Y-G    PIC  X(01).
+      *　（７０未・入）
+           03  SYS-2010-KSINGKBN-Y-N        PIC  X(01).
+           03  SYS-2010-KSING-TAIKBN-Y-N    PIC  X(01).
+      *一部負担金１円→１０円単位記載
+      *　（高齢者・外）
+           03  SYS-2010-ENCHGKBN-K-G        PIC  X(01).
+           03  SYS-2010-ENCHG-TAIKBN-K-G    PIC  X(01).
+      *　（高齢者・入）
+           03  SYS-2010-ENCHGKBN-K-N        PIC  X(01).
+           03  SYS-2010-ENCHG-TAIKBN-K-N    PIC  X(01).
+      *　（７０未・外）
+           03  SYS-2010-ENCHGKBN-Y-G        PIC  X(01).
+           03  SYS-2010-ENCHG-TAIKBN-Y-G    PIC  X(01).
+      *　（７０未・入）
+           03  SYS-2010-ENCHGKBN-Y-N        PIC  X(01).
+           03  SYS-2010-ENCHG-TAIKBN-Y-N    PIC  X(01).
+      *入院時食事療養記載（公費２欄置き換え）
+           03  SYS-2010-KOH2SKJKBN          PIC  X(01).
+           03  SYS-2010-KOH2SKJ-TAIKBN      PIC  X(01).
+      *
+      *負担金未発生分の回数カウント（外来）
+           03  SYS-2010-KAICNTKBN-G         PIC  X(01).
+           03  SYS-2010-KAICNT-TAIKBN-G     PIC  X(01).
+      *現物給付対象者の特別計算（高齢者・外）
+           03  SYS-2010-GNBKEIKBN-K-G       PIC  X(01).
+           03  SYS-2010-GNBKEI-TAIKBN-K-G   PIC  X(01).
+      *全国公費併用時の特別計算（外来）
+           03  SYS-2010-ZENKEIKBN-G         PIC  X(01).
+           03  SYS-2010-ZENKEI-TAIKBN-G     PIC  X(01).
+      *診察料がない場合の負担金計算（外来）
+           03  SYS-2010-SINKEIKBN-G         PIC  X(01).
+           03  SYS-2010-SINKEI-TAIKBN-G     PIC  X(01).
+      *初診時以外の負担金計算（外来）
+           03  SYS-2010-SYOKEIKBN-G         PIC  X(01).
+           03  SYS-2010-SYOKEI-TAIKBN-G     PIC  X(01).
+      *初診時以外の負担金計算（入院）
+           03  SYS-2010-SYOKEIKBN-N         PIC  X(01).
+           03  SYS-2010-SYOKEI-TAIKBN-N     PIC  X(01).
+      *１入院＠日限度とする特別計算（入院）
+           03  SYS-2010-NYUKEIKBN-N         PIC  X(01).
+           03  SYS-2010-NYUKEI-TAIKBN-N     PIC  X(01).
+      *日上限額を固定額とする特別計算（入院）
+           03  SYS-2010-DAYKEIKBN-N         PIC  X(01).
+           03  SYS-2010-DAYKEI-TAIKBN-N     PIC  X(01).
+      *限度額認定証提示が無い場合の特別計算
+           03  SYS-2010-NINNASIKBN          PIC  X(01).
+           03  SYS-2010-NINNASI-TAIKBN      PIC  X(01).
+      *限度額認定証（上位）の場合の特別計算
+           03  SYS-2010-NINJYOKBN           PIC  X(01).
+           03  SYS-2010-NINJYO-TAIKBN       PIC  X(01).
+      *
       *予備
-           03  SYS-2010-YOBI                PIC  X(430).
+           03  SYS-2010-YOBI                PIC  X(356).
       *端末ＩＤ
            03  SYS-2010-TERMID              PIC  X(16).
       *オペレータＩＤ
