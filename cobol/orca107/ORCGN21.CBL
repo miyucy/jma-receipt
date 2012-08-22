@@ -152,14 +152,16 @@
        01  WRK-CONS-AREA.
            03  WRK-CONS-PASS       PIC X(30)   VALUE
                            "/var/lib/jma-receipt/medphoto/".
-           03  WRK-CONS-CAUTION.
+           03  WRK-CONS-CAUTION1.
              05  FILLER            PIC X(34)   VALUE
                            "医師の指示通りに服用してください。".
-             05  FILLER            PIC X(01)   VALUE   X"0A".
+      *       05  FILLER            PIC X(01)   VALUE   X"0A".
+           03  WRK-CONS-CAUTION2.
              05  FILLER            PIC X(40)   VALUE
                            "発疹・かゆみ等の過敏症が現れた時は服用を".
              05  FILLER            PIC X(30)   VALUE
                            "中止し、医師に相談して下さい。".
+      *       05  FILLER            PIC X(01)   VALUE   X"0A".
       *
       *    文字数多い場合の変換領域
        01  WRK-KANACONV-AREA.
@@ -347,6 +349,15 @@
       *        登録
                WHEN    "CLICKED"   ALSO    "B12"
                    PERFORM 480-TOUROKU-SEC
+      *        定型文１
+               WHEN    "CLICKED"   ALSO    "TEIKEI1"
+                   PERFORM 430-TEIKEI1-SEC
+      *        定型文２
+               WHEN    "CLICKED"   ALSO    "TEIKEI2"
+                   PERFORM 430-TEIKEI2-SEC
+      *        定型文クリア
+               WHEN    "CLICKED"   ALSO    "KURIA"
+                   PERFORM 430-KURIA-SEC
       *        カナ入力
                WHEN    "CLICKED"   ALSO    ANY
                    PERFORM 490-KANA-SEC
@@ -537,7 +548,7 @@
                PERFORM 401-CLEAR-ENTRY-SEC
                IF      SPA-GMN-SELNUM   NOT =   ZERO
                    MOVE    SPA-GMN-KENNAME     TO  SPA-GMN-NAME
-                   MOVE    WRK-CONS-CAUTION    TO  SPA-GMN-CAUTION
+      *             MOVE    WRK-CONS-CAUTION    TO  SPA-GMN-CAUTION
                END-IF
            END-IF
       *
@@ -863,6 +874,57 @@
       *
            .
        420-LISTSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    定型文１
+      *****************************************************************
+       430-TEIKEI1-SEC             SECTION.
+      *
+      *    薬剤が選択されているかチェック
+           IF      SPA-NAI-SRYCD   =   SPACE
+                GO  TO  430-TEIKEI1-EXT
+           END-IF
+      *
+           MOVE    N21-CAUTION     TO  SPA-NAI-CAUTION
+           STRING  N21-CAUTION         DELIMITED BY SPACE
+                   WRK-CONS-CAUTION1   DELIMITED BY SPACE
+                                 INTO  SPA-GMN-CAUTION
+           END-STRING
+      *
+           .
+       430-TEIKEI1-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    定型文２
+      *****************************************************************
+       430-TEIKEI2-SEC             SECTION.
+      *
+      *    薬剤が選択されているかチェック
+           IF      SPA-NAI-SRYCD   =   SPACE
+                GO  TO  430-TEIKEI2-EXT
+           END-IF
+      *
+           MOVE    N21-CAUTION     TO  SPA-NAI-CAUTION
+           STRING  N21-CAUTION         DELIMITED BY SPACE
+                   WRK-CONS-CAUTION2   DELIMITED BY SPACE
+                                 INTO  SPA-GMN-CAUTION
+           END-STRING
+      *
+           .
+       430-TEIKEI2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    定型文クリア
+      *****************************************************************
+       430-KURIA-SEC               SECTION.
+      *
+           MOVE   SPA-NAI-CAUTION  TO   SPA-GMN-CAUTION
+      *
+           .
+       430-KURIA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2219,6 +2281,12 @@ grpsys     CALL    "ORCDBMAIN"         USING
                MOVE    WIDGET-INSENSITIVE  TO  N21-B04-STATE
            END-IF
       *
+           IF      N21-CAUTION     =   SPA-NAI-CAUTION
+               MOVE    WIDGET-INSENSITIVE       TO  N21-KURIA-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL            TO  N21-KURIA-STATE
+           END-IF
+      *
       *    カーソルセット
            PERFORM 530-MAPCUR-SEC
       *
@@ -2410,6 +2478,12 @@ grpsys     CALL    "ORCDBMAIN"         USING
                    MOVE  "CAUTION"         TO  MCP-WIDGET
                WHEN    10
                    MOVE  "PHOTO"           TO  MCP-WIDGET
+               WHEN    11
+                   MOVE  "TEIKEI1"         TO  MCP-WIDGET
+               WHEN    12
+                   MOVE  "TEIKEI2"         TO  MCP-WIDGET
+               WHEN    13
+                   MOVE  "KURIA"           TO  MCP-WIDGET
                WHEN    99
                    MOVE  "B12"             TO  MCP-WIDGET
            END-EVALUATE
@@ -2562,7 +2636,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *    薬剤情報セット
            IF      FLG-YAKUJYO     =   1
                MOVE    SPA-GMN-KENNAME     TO  SPA-GMN-NAME
-               MOVE    WRK-CONS-CAUTION    TO  SPA-GMN-CAUTION
+      *         MOVE    WRK-CONS-CAUTION    TO  SPA-GMN-CAUTION
            ELSE
                IF      YAKUJYO-NAME    =   SPACE
                    MOVE    SPA-GMN-KENNAME TO  SPA-GMN-NAME
