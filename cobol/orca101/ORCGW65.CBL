@@ -9304,6 +9304,7 @@
       *
                EVALUATE    TRUE
                WHEN  ( SPA-PREFNUM     =   CONST-HOKKAIDO )
+                AND  ( SPA-GMN-KOHNUM  =   "183" )
                    MOVE    "1"         TO  SPA-GMN-KAKKBNY
                    MOVE    "0"         TO  SPA-GMN-KAKTAIKBNY
                END-EVALUATE
