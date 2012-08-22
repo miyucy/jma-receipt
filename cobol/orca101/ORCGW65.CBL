@@ -1992,7 +1992,7 @@
                                    TO  SPA-GMN-KAKKBNMEIL (1)
       *
            MOVE  "1"               TO  SPA-GMN-KAKKBNL    (2)
-           MOVE  " ›∏±ÕÛ°›∞Ï…Ù…È√¥∂‚§»∆±∂‚≥€§ŒæÏπÁ§‚µ≠∫‹° µ≠œø°À§π§Î"
+           MOVE  " ›∏±ÕÛ°›∞Ï…Ù…È√¥∂‚§»∆±∂‚≥€§ŒæÏπÁ°¢µ≠∫‹° µ≠œø°À§π§Î"
                                    TO  SPA-GMN-KAKKBNMEIL (2)
       *
       *
@@ -2030,12 +2030,16 @@
            INITIALIZE                  SPA-GMN-KAK31KBNLST-G
       *
            MOVE  "0"               TO  SPA-GMN-KAK31KBNL    (1)
-           MOVE  "° ºÁ°‹√œ§ŒºÁ ›∏±…È√¥¡Í≈ˆ≥€°À§Ú∏µ§À∑◊ªª"
+           MOVE  "° ºÁ°‹√œ§ŒºÁ ›∏±…È√¥¡Í≈ˆ≥€°À§»° ∑ÓæÂ∏¬≥€°À§Ú»Ê≥”"
                                    TO  SPA-GMN-KAK31KBNMEIL (1)
       *
            MOVE  "1"               TO  SPA-GMN-KAK31KBNL    (2)
-           MOVE  "∑◊ªª≥€§»° ∑ÓæÂ∏¬≥€°›∏¯£±…È√¥∂‚°À§Ú»Ê≥”"
-                                   TO  SPA-GMN-KAK31KBNMEIL (2)
+           STRING    "° ºÁ°‹√œ§ŒºÁ ›∏±…È√¥¡Í≈ˆ≥€°À§»"
+                                       DELIMITED BY SIZE
+                     "° ∑ÓæÂ∏¬≥€°›∏¯£±…È√¥∂‚°À§Ú»Ê≥”"
+                                       DELIMITED BY SIZE
+           INTO                        SPA-GMN-KAK31KBNMEIL (2)
+           END-STRING
       *
       *
            MOVE    2               TO  SPA-GMN-KAK31KBN-MAX
@@ -2051,12 +2055,20 @@
            INITIALIZE                  SPA-GMN-KAK32KBNLST-G
       *
            MOVE  "0"               TO  SPA-GMN-KAK32KBNL    (1)
-           MOVE  "° ºÁ°‹√œ°‹ƒπ§ŒºÁ ›∏±…È√¥¡Í≈ˆ≥€°À§Ú∏µ§À∑◊ªª"
-                                   TO  SPA-GMN-KAK32KBNMEIL (1)
+           STRING    "° ºÁ°‹√œ°‹ƒπ§ŒºÁ ›∏±…È√¥¡Í≈ˆ≥€°À§»"
+                                       DELIMITED BY SIZE
+                     "° ∑ÓæÂ∏¬≥€°›≥Á∏Ã∫∆∑«° æÂ°À°À§Ú»Ê≥”"
+                                       DELIMITED BY SIZE
+           INTO                        SPA-GMN-KAK32KBNMEIL (1)
+           END-STRING
       *
            MOVE  "1"               TO  SPA-GMN-KAK32KBNL    (2)
-           MOVE  "∑◊ªª≥€§»° ∑ÓæÂ∏¬≥€°›∏¯£±…È√¥∂‚°À§Ú»Ê≥”"
-                                   TO  SPA-GMN-KAK32KBNMEIL (2)
+           STRING    "° ºÁ°‹√œ°‹ƒπ§ŒºÁ ›∏±…È√¥¡Í≈ˆ≥€°À§»"
+                                       DELIMITED BY SIZE
+                     "° ∑ÓæÂ∏¬≥€°›∏¯£±…È√¥∂‚°À§Ú»Ê≥”"
+                                       DELIMITED BY SIZE
+           INTO                        SPA-GMN-KAK32KBNMEIL (2)
+           END-STRING
       *
       *
            MOVE    2               TO  SPA-GMN-KAK32KBN-MAX
@@ -3671,30 +3683,6 @@
            END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK21KBNK-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK21TAIKBNK-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK22KBNK-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK22TAIKBNK-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK23KBNK-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK23TAIKBNK-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KAK31KBNK-CHK-SEC
            END-IF
       *
@@ -3734,6 +3722,30 @@
                PERFORM 4101-KAK43TAIKBNK-CHK-SEC
            END-IF
       *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK21KBNK-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK21TAIKBNK-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK22KBNK-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK22TAIKBNK-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK23KBNK-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK23TAIKBNK-CHK-SEC
+           END-IF
+      *
            IF    ( SPA-ERRCD   NOT =   SPACE )
                MOVE    2           TO  SPA-GMN-PAGENO
            END-IF
@@ -3753,30 +3765,6 @@
       *
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KAKTAIKBNY-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK21KBNY-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK21TAIKBNY-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK22KBNY-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK22TAIKBNY-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK23KBNY-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               PERFORM 4101-KAK23TAIKBNY-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
@@ -3817,6 +3805,30 @@
       *
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KAK43TAIKBNY-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK21KBNY-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK21TAIKBNY-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK22KBNY-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK22TAIKBNY-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK23KBNY-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KAK23TAIKBNY-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -11503,18 +11515,6 @@
            WHEN    "KAKKBNK"
                MOVE    302                 TO  SPA-GMN-CUR
            WHEN    "KAKTAIKBNK"
-               MOVE    303                 TO  SPA-GMN-CUR
-           WHEN    "KAK21KBNK"
-               MOVE    304                 TO  SPA-GMN-CUR
-           WHEN    "KAK21TAIKBNK"
-               MOVE    305                 TO  SPA-GMN-CUR
-           WHEN    "KAK22KBNK"
-               MOVE    306                 TO  SPA-GMN-CUR
-           WHEN    "KAK22TAIKBNK"
-               MOVE    307                 TO  SPA-GMN-CUR
-           WHEN    "KAK23KBNK"
-               MOVE    308                 TO  SPA-GMN-CUR
-           WHEN    "KAK23TAIKBNK"
                MOVE    309                 TO  SPA-GMN-CUR
            WHEN    "KAK31KBNK"
                MOVE    310                 TO  SPA-GMN-CUR
@@ -11535,22 +11535,22 @@
            WHEN    "KAK43KBNK"
                MOVE    318                 TO  SPA-GMN-CUR
            WHEN    "KAK43TAIKBNK"
+               MOVE    303                 TO  SPA-GMN-CUR
+           WHEN    "KAK21KBNK"
+               MOVE    304                 TO  SPA-GMN-CUR
+           WHEN    "KAK21TAIKBNK"
+               MOVE    305                 TO  SPA-GMN-CUR
+           WHEN    "KAK22KBNK"
+               MOVE    306                 TO  SPA-GMN-CUR
+           WHEN    "KAK22TAIKBNK"
+               MOVE    307                 TO  SPA-GMN-CUR
+           WHEN    "KAK23KBNK"
+               MOVE    308                 TO  SPA-GMN-CUR
+           WHEN    "KAK23TAIKBNK"
                MOVE    004                 TO  SPA-GMN-CUR
            WHEN    "KAKKBNY"
                MOVE    402                 TO  SPA-GMN-CUR
            WHEN    "KAKTAIKBNY"
-               MOVE    403                 TO  SPA-GMN-CUR
-           WHEN    "KAK21KBNY"
-               MOVE    404                 TO  SPA-GMN-CUR
-           WHEN    "KAK21TAIKBNY"
-               MOVE    405                 TO  SPA-GMN-CUR
-           WHEN    "KAK22KBNY"
-               MOVE    406                 TO  SPA-GMN-CUR
-           WHEN    "KAK22TAIKBNY"
-               MOVE    407                 TO  SPA-GMN-CUR
-           WHEN    "KAK23KBNY"
-               MOVE    408                 TO  SPA-GMN-CUR
-           WHEN    "KAK23TAIKBNY"
                MOVE    409                 TO  SPA-GMN-CUR
            WHEN    "KAK31KBNY"
                MOVE    410                 TO  SPA-GMN-CUR
@@ -11571,6 +11571,18 @@
            WHEN    "KAK43KBNY"
                MOVE    418                 TO  SPA-GMN-CUR
            WHEN    "KAK43TAIKBNY"
+               MOVE    403                 TO  SPA-GMN-CUR
+           WHEN    "KAK21KBNY"
+               MOVE    404                 TO  SPA-GMN-CUR
+           WHEN    "KAK21TAIKBNY"
+               MOVE    405                 TO  SPA-GMN-CUR
+           WHEN    "KAK22KBNY"
+               MOVE    406                 TO  SPA-GMN-CUR
+           WHEN    "KAK22TAIKBNY"
+               MOVE    407                 TO  SPA-GMN-CUR
+           WHEN    "KAK23KBNY"
+               MOVE    408                 TO  SPA-GMN-CUR
+           WHEN    "KAK23TAIKBNY"
                MOVE    004                 TO  SPA-GMN-CUR
            WHEN    "KSINGKBNKG"
                MOVE    502                 TO  SPA-GMN-CUR
@@ -11886,27 +11898,6 @@
            IF    ( SPA-GMN-CUR     =   302 )
                IF    ( W65-KAKTAIKBNK-STATE
                                        =   WIDGET-INSENSITIVE )
-                   MOVE    303                 TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR     =   304 )
-               IF    ( W65-KAK21TAIKBNK-STATE
-                                       =   WIDGET-INSENSITIVE )
-                   MOVE    305                 TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR     =   306 )
-               IF    ( W65-KAK22TAIKBNK-STATE
-                                       =   WIDGET-INSENSITIVE )
-                   MOVE    307                 TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR     =   308 )
-               IF    ( W65-KAK23TAIKBNK-STATE
-                                       =   WIDGET-INSENSITIVE )
                    MOVE    309                 TO  SPA-GMN-CUR
                END-IF
            END-IF
@@ -11942,33 +11933,33 @@
            IF    ( SPA-GMN-CUR     =   318 )
                IF    ( W65-KAK43TAIKBNK-STATE
                                        =   WIDGET-INSENSITIVE )
+                   MOVE    303                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   304 )
+               IF    ( W65-KAK21TAIKBNK-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    305                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   306 )
+               IF    ( W65-KAK22TAIKBNK-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    307                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   308 )
+               IF    ( W65-KAK23TAIKBNK-STATE
+                                       =   WIDGET-INSENSITIVE )
                    MOVE    004                 TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
            IF    ( SPA-GMN-CUR     =   402 )
                IF    ( W65-KAKTAIKBNY-STATE
-                                       =   WIDGET-INSENSITIVE )
-                   MOVE    403                 TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR     =   404 )
-               IF    ( W65-KAK21TAIKBNY-STATE
-                                       =   WIDGET-INSENSITIVE )
-                   MOVE    405                 TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR     =   406 )
-               IF    ( W65-KAK22TAIKBNY-STATE
-                                       =   WIDGET-INSENSITIVE )
-                   MOVE    407                 TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR     =   408 )
-               IF    ( W65-KAK23TAIKBNY-STATE
                                        =   WIDGET-INSENSITIVE )
                    MOVE    409                 TO  SPA-GMN-CUR
                END-IF
@@ -12004,6 +11995,27 @@
       *
            IF    ( SPA-GMN-CUR     =   418 )
                IF    ( W65-KAK43TAIKBNY-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    403                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   404 )
+               IF    ( W65-KAK21TAIKBNY-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    405                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   406 )
+               IF    ( W65-KAK22TAIKBNY-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    407                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   408 )
+               IF    ( W65-KAK23TAIKBNY-STATE
                                        =   WIDGET-INSENSITIVE )
                    MOVE    004                 TO  SPA-GMN-CUR
                END-IF

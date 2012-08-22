@@ -2494,7 +2494,7 @@
 	  <class>GtkLabel</class>
 	  <name>label987</name>
 	  <x>4</x>
-	  <y>28</y>
+	  <y>196</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label> ›∏±ÕÛ§Œ≥Á∏Ã∫∆∑«° ≤º°Àµ≠∫‹° π‚Œº‘°À</label>
@@ -2510,7 +2510,7 @@
 	  <class>GtkLabel</class>
 	  <name>label994</name>
 	  <x>4</x>
-	  <y>52</y>
+	  <y>220</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ° °‹ƒπ°À°  ¨≈¿§¢§Í§ŒæÏπÁ°À</label>
@@ -2526,7 +2526,7 @@
 	  <class>GtkLabel</class>
 	  <name>label989</name>
 	  <x>4</x>
-	  <y>76</y>
+	  <y>244</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ°°°°°°°°°  ¨≈¿§ §∑§ŒæÏπÁ°À</label>
@@ -2542,7 +2542,7 @@
 	  <class>GtkLabel</class>
 	  <name>label990</name>
 	  <x>4</x>
-	  <y>100</y>
+	  <y>268</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ°‹ƒπ°°°°°  ¨≈¿§ §∑§ŒæÏπÁ°À</label>
@@ -2558,7 +2558,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1032</name>
 	  <x>4</x>
-	  <y>196</y>
+	  <y>100</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label> ›∏±ÕÛ§Œ≥Á∏Ã∫∆∑«° ≤º°À∂‚≥€≤√ªª° π‚Œº‘°À</label>
@@ -2574,7 +2574,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1034</name>
 	  <x>4</x>
-	  <y>220</y>
+	  <y>124</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ° °‹ƒπ°À°  ¨≈¿§¢§Í§ŒæÏπÁ°À</label>
@@ -2590,7 +2590,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1035</name>
 	  <x>4</x>
-	  <y>244</y>
+	  <y>148</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ°°°°°°°°°  ¨≈¿§ §∑§ŒæÏπÁ°À</label>
@@ -2604,25 +2604,9 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label1036</name>
-	  <x>4</x>
-	  <y>268</y>
-	  <width>280</width>
-	  <height>24</height>
-	  <label>°°ºÁ°‹¡¥°‹√œ°‹ƒπ°°°°°  ¨≈¿§ §∑§ŒæÏπÁ°À</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label991</name>
 	  <x>4</x>
-	  <y>124</y>
+	  <y>28</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label> ›∏±ÕÛ§Œ≥Á∏Ã∫∆∑«° ≤º°À∂‚≥€∑◊ªª° π‚Œº‘°À</label>
@@ -2638,7 +2622,7 @@
 	  <class>GtkLabel</class>
 	  <name>label993</name>
 	  <x>4</x>
-	  <y>148</y>
+	  <y>52</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ°°°°°°°°°  ¨≈¿§¢§Í§ŒæÏπÁ°À</label>
@@ -2654,7 +2638,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1022</name>
 	  <x>4</x>
-	  <y>172</y>
+	  <y>76</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ°‹ƒπ°°°°°  ¨≈¿§¢§Í§ŒæÏπÁ°À</label>
@@ -2667,216 +2651,27 @@
 	</widget>
 
 	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK23KBNK</name>
-	  <x>284</x>
-	  <y>100</y>
-	  <width>448</width>
+	  <class>GtkLabel</class>
+	  <name>label1036</name>
+	  <x>4</x>
+	  <y>172</y>
+	  <width>280</width>
 	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK23KBNK</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>80</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAKKBNK</name>
-	  <x>284</x>
-	  <y>4</y>
-	  <width>448</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAKKBNK</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>80</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK21KBNK</name>
-	  <x>284</x>
-	  <y>52</y>
-	  <width>448</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK21KBNK</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>80</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK22KBNK</name>
-	  <x>284</x>
-	  <y>76</y>
-	  <width>448</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK22KBNK</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>80</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK31KBNK</name>
-	  <x>284</x>
-	  <y>148</y>
-	  <width>448</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK31KBNK</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>80</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
+	  <label>°°ºÁ°‹¡¥°‹√œ°‹ƒπ°°°°°  ¨≈¿§ §∑§ŒæÏπÁ°À</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
 
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK32KBNK</name>
 	  <x>284</x>
-	  <y>172</y>
-	  <width>448</width>
+	  <y>76</y>
+	  <width>508</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2914,10 +2709,51 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK31KBNK</name>
+	  <x>284</x>
+	  <y>52</y>
+	  <width>508</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK31KBNK</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>80</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK41KBNK</name>
 	  <x>284</x>
-	  <y>220</y>
-	  <width>448</width>
+	  <y>124</y>
+	  <width>508</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2957,8 +2793,8 @@
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK42KBNK</name>
 	  <x>284</x>
-	  <y>244</y>
-	  <width>448</width>
+	  <y>148</y>
+	  <width>508</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -2998,8 +2834,8 @@
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK43KBNK</name>
 	  <x>284</x>
-	  <y>268</y>
-	  <width>448</width>
+	  <y>172</y>
+	  <width>508</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3037,10 +2873,174 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAKTAIKBNK</name>
-	  <x>732</x>
+	  <name>CMB_KAK21KBNK</name>
+	  <x>284</x>
+	  <y>220</y>
+	  <width>508</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK21KBNK</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>80</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAKKBNK</name>
+	  <x>284</x>
 	  <y>4</y>
-	  <width>276</width>
+	  <width>508</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAKKBNK</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>80</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK22KBNK</name>
+	  <x>284</x>
+	  <y>244</y>
+	  <width>508</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK22KBNK</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>80</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK23KBNK</name>
+	  <x>284</x>
+	  <y>268</y>
+	  <width>508</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK23KBNK</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>80</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAKTAIKBNK</name>
+	  <x>792</x>
+	  <y>4</y>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3078,133 +3078,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK21TAIKBNK</name>
-	  <x>732</x>
-	  <y>52</y>
-	  <width>276</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK21TAIKBNK</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>40</text_max_length>
-	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK22TAIKBNK</name>
-	  <x>732</x>
-	  <y>76</y>
-	  <width>276</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK22TAIKBNK</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>40</text_max_length>
-	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK23TAIKBNK</name>
-	  <x>732</x>
-	  <y>100</y>
-	  <width>276</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK23TAIKBNK</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>40</text_max_length>
-	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK31TAIKBNK</name>
-	  <x>732</x>
-	  <y>148</y>
-	  <width>276</width>
+	  <x>792</x>
+	  <y>52</y>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3243,9 +3120,9 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK32TAIKBNK</name>
-	  <x>732</x>
-	  <y>172</y>
-	  <width>276</width>
+	  <x>792</x>
+	  <y>76</y>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3284,9 +3161,9 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK41TAIKBNK</name>
-	  <x>732</x>
-	  <y>220</y>
-	  <width>276</width>
+	  <x>792</x>
+	  <y>124</y>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3325,9 +3202,9 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK42TAIKBNK</name>
-	  <x>732</x>
-	  <y>244</y>
-	  <width>276</width>
+	  <x>792</x>
+	  <y>148</y>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3366,9 +3243,9 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK43TAIKBNK</name>
-	  <x>732</x>
-	  <y>268</y>
-	  <width>276</width>
+	  <x>792</x>
+	  <y>172</y>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3381,6 +3258,129 @@
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
 	    <name>KAK43TAIKBNK</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>40</text_max_length>
+	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK21TAIKBNK</name>
+	  <x>792</x>
+	  <y>220</y>
+	  <width>216</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK21TAIKBNK</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>40</text_max_length>
+	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK22TAIKBNK</name>
+	  <x>792</x>
+	  <y>244</y>
+	  <width>216</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK22TAIKBNK</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>40</text_max_length>
+	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK23TAIKBNK</name>
+	  <x>792</x>
+	  <y>268</y>
+	  <width>216</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK23TAIKBNK</name>
 	    <width>163</width>
 	    <can_focus>True</can_focus>
 	    <signal>
@@ -3426,7 +3426,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1039</name>
 	  <x>4</x>
-	  <y>52</y>
+	  <y>220</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ° °‹ƒπ°À°  ¨≈¿§¢§Í§ŒæÏπÁ°À</label>
@@ -3442,7 +3442,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1040</name>
 	  <x>4</x>
-	  <y>76</y>
+	  <y>244</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ°°°°°°°°°  ¨≈¿§ §∑§ŒæÏπÁ°À</label>
@@ -3458,7 +3458,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1041</name>
 	  <x>4</x>
-	  <y>100</y>
+	  <y>268</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ°‹ƒπ°°°°°  ¨≈¿§ §∑§ŒæÏπÁ°À</label>
@@ -3474,7 +3474,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1043</name>
 	  <x>4</x>
-	  <y>220</y>
+	  <y>124</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ° °‹ƒπ°À°  ¨≈¿§¢§Í§ŒæÏπÁ°À</label>
@@ -3490,7 +3490,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1044</name>
 	  <x>4</x>
-	  <y>244</y>
+	  <y>148</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ°°°°°°°°°  ¨≈¿§ §∑§ŒæÏπÁ°À</label>
@@ -3506,7 +3506,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1045</name>
 	  <x>4</x>
-	  <y>268</y>
+	  <y>172</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ°‹ƒπ°°°°°  ¨≈¿§ §∑§ŒæÏπÁ°À</label>
@@ -3522,7 +3522,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1047</name>
 	  <x>4</x>
-	  <y>148</y>
+	  <y>52</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ°°°°°°°°°  ¨≈¿§¢§Í§ŒæÏπÁ°À</label>
@@ -3538,7 +3538,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1048</name>
 	  <x>4</x>
-	  <y>172</y>
+	  <y>76</y>
 	  <width>280</width>
 	  <height>24</height>
 	  <label>°°ºÁ°‹¡¥°‹√œ°‹ƒπ°°°°°  ¨≈¿§¢§Í§ŒæÏπÁ°À</label>
@@ -3554,7 +3554,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1038</name>
 	  <x>4</x>
-	  <y>28</y>
+	  <y>196</y>
 	  <width>300</width>
 	  <height>24</height>
 	  <label> ›∏±ÕÛ§Œ≥Á∏Ã∫∆∑«° ≤º°Àµ≠∫‹° £∑£∞∫–Ã§À˛°À</label>
@@ -3570,7 +3570,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1046</name>
 	  <x>4</x>
-	  <y>124</y>
+	  <y>28</y>
 	  <width>300</width>
 	  <height>24</height>
 	  <label> ›∏±ÕÛ§Œ≥Á∏Ã∫∆∑«° ≤º°À∂‚≥€∑◊ªª° £∑£∞∫–Ã§À˛°À</label>
@@ -3586,7 +3586,7 @@
 	  <class>GtkLabel</class>
 	  <name>label1042</name>
 	  <x>4</x>
-	  <y>196</y>
+	  <y>100</y>
 	  <width>300</width>
 	  <height>24</height>
 	  <label> ›∏±ÕÛ§Œ≥Á∏Ã∫∆∑«° ≤º°À∂‚≥€≤√ªª° £∑£∞∫–Ã§À˛°À</label>
@@ -3619,7 +3619,7 @@
 	  <name>CMB_KAKKBNY</name>
 	  <x>284</x>
 	  <y>4</y>
-	  <width>448</width>
+	  <width>508</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3657,133 +3657,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK21KBNY</name>
-	  <x>284</x>
-	  <y>52</y>
-	  <width>448</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK21KBNY</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>80</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK22KBNY</name>
-	  <x>284</x>
-	  <y>76</y>
-	  <width>448</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK22KBNY</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>80</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK23KBNY</name>
-	  <x>284</x>
-	  <y>100</y>
-	  <width>448</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK23KBNY</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>80</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK31KBNY</name>
 	  <x>284</x>
-	  <y>148</y>
-	  <width>448</width>
+	  <y>52</y>
+	  <width>508</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3823,8 +3700,8 @@
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK32KBNY</name>
 	  <x>284</x>
-	  <y>172</y>
-	  <width>448</width>
+	  <y>76</y>
+	  <width>508</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3862,51 +3739,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK42KBNY</name>
-	  <x>284</x>
-	  <y>244</y>
-	  <width>448</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK42KBNY</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>80</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK41KBNY</name>
 	  <x>284</x>
-	  <y>220</y>
-	  <width>448</width>
+	  <y>124</y>
+	  <width>508</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3944,10 +3780,51 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK42KBNY</name>
+	  <x>284</x>
+	  <y>148</y>
+	  <width>508</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK42KBNY</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>80</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK43KBNY</name>
 	  <x>284</x>
-	  <y>268</y>
-	  <width>448</width>
+	  <y>172</y>
+	  <width>508</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3985,10 +3862,133 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK21KBNY</name>
+	  <x>284</x>
+	  <y>220</y>
+	  <width>508</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK21KBNY</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>80</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK22KBNY</name>
+	  <x>284</x>
+	  <y>244</y>
+	  <width>508</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK22KBNY</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>80</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK23KBNY</name>
+	  <x>284</x>
+	  <y>268</y>
+	  <width>508</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK23KBNY</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>80</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAKTAIKBNY</name>
-	  <x>732</x>
+	  <x>792</x>
 	  <y>4</y>
-	  <width>276</width>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -4026,133 +4026,10 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK21TAIKBNY</name>
-	  <x>732</x>
-	  <y>52</y>
-	  <width>276</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK21TAIKBNY</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>40</text_max_length>
-	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK22TAIKBNY</name>
-	  <x>732</x>
-	  <y>76</y>
-	  <width>276</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK22TAIKBNY</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>40</text_max_length>
-	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_KAK23TAIKBNY</name>
-	  <x>732</x>
-	  <y>100</y>
-	  <width>276</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>KAK23TAIKBNY</name>
-	    <width>163</width>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>40</text_max_length>
-	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK31TAIKBNY</name>
-	  <x>732</x>
-	  <y>148</y>
-	  <width>276</width>
+	  <x>792</x>
+	  <y>52</y>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -4191,9 +4068,9 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK32TAIKBNY</name>
-	  <x>732</x>
-	  <y>172</y>
-	  <width>276</width>
+	  <x>792</x>
+	  <y>76</y>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -4232,9 +4109,9 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK41TAIKBNY</name>
-	  <x>732</x>
-	  <y>220</y>
-	  <width>276</width>
+	  <x>792</x>
+	  <y>124</y>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -4273,9 +4150,9 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK42TAIKBNY</name>
-	  <x>732</x>
-	  <y>244</y>
-	  <width>276</width>
+	  <x>792</x>
+	  <y>148</y>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -4314,9 +4191,9 @@
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_KAK43TAIKBNY</name>
-	  <x>732</x>
-	  <y>268</y>
-	  <width>276</width>
+	  <x>792</x>
+	  <y>172</y>
+	  <width>216</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -4329,6 +4206,129 @@
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
 	    <name>KAK43TAIKBNY</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>40</text_max_length>
+	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK21TAIKBNY</name>
+	  <x>792</x>
+	  <y>220</y>
+	  <width>216</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK21TAIKBNY</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>40</text_max_length>
+	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK22TAIKBNY</name>
+	  <x>792</x>
+	  <y>244</y>
+	  <width>216</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK22TAIKBNY</name>
+	    <width>163</width>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:26 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 27 Aug 2001 02:14:49 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>40</text_max_length>
+	    <text>0 ¬–æ›∂Ë ¨£∂£∑£∏£π£∞£±£≤£≥£¥£µ</text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_KAK23TAIKBNY</name>
+	  <x>792</x>
+	  <y>268</y>
+	  <width>216</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KAK23TAIKBNY</name>
 	    <width>163</width>
 	    <can_focus>True</can_focus>
 	    <signal>
