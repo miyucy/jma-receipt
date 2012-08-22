@@ -47,7 +47,10 @@ ERR_FILE=${19}
             exit  
         fi 
 
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${15}${16},${17}
-	
-        exit
+        #印刷処理時、JBEの書き込みは印刷スクリプト（print_prv.sh）に任せる
+		if [ "${24}" != "OK" ] && [ "${24}" != "PV" ]; then
+	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${15}${16},${17}
+        fi
+        
+		exit
 
