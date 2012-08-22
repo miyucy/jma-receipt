@@ -556,33 +556,39 @@
            03  FILLER          PIC X(14)  VALUE    "06 2 160018910".
       *
       *どれか２つ
-      *    リマトイド因子
+      *(D014)
+      *    リマトイド因子(D014-2)
            03  FILLER          PIC X(14)  VALUE    "07 21160053110".
-      *    抗ガラクトース欠損ＩｇＧ抗体
+      *    抗ガラクトース欠損ＩｇＧ抗体(D014-8)
            03  FILLER          PIC X(14)  VALUE    "07 2 160168750".
-      *    マトリックスメタプロテイナーゼ３（ＭＭＰー３）
+      *    抗ガラクトース欠損ＩｇＧ定量(D014-8)
+           03  FILLER          PIC X(14)  VALUE    "07 2 160195910".
+      *    マトリックスメタプロテイナーゼ３（ＭＭＰー３）(D014-8)
            03  FILLER          PIC X(14)  VALUE    "07 2 160173150".
-      *    Ｃ１ｑ結合免疫複合体
+      *    Ｃ１ｑ結合免疫複合体(D014-11)
            03  FILLER          PIC X(14)  VALUE    "07 2 160119210".
-      *    モノクローナルＲＦ結合免疫複合体
+      *    モノクローナルＲＦ結合免疫複合体(D014-14)
            03  FILLER          PIC X(14)  VALUE    "07 2 160143750".
-      *    ＩｇＧ型リウマチ因子
+      *    ＩｇＧ型リウマチ因子(D014-16)
            03  FILLER          PIC X(14)  VALUE    "07 2 160151650".
-      *    Ｃ３ｄ結合免疫複合体
+      *    Ｃ３ｄ結合免疫複合体(D014-16)
            03  FILLER          PIC X(14)  VALUE    "07 2 160119310".
       *１つ（０７）の検査は算定不可
-      *    抗シトルリン化ペクチド抗体
+      *    抗シトルリン化ペクチド抗体(D014-16)
            03  FILLER          PIC X(14)  VALUE    "08 1 160181150".
+      *    抗シトルリン化ペクチド定量(D014-16)
+           03  FILLER          PIC X(14)  VALUE    "08 1 160197410".
       *
        01  TBL-KENSA-JYU-AREA-R    REDEFINES   TBL-KENSA-JYU-AREA.
-           03  TBL-KENSA-JYU-OCC       OCCURS  19  INDEXED  JYU-IDX.
+      *****03  TBL-KENSA-JYU-OCC       OCCURS  19  INDEXED  JYU-IDX.
+           03  TBL-KENSA-JYU-OCC       OCCURS  21  INDEXED  JYU-IDX.
                05  TBL-JYU-KBN         PIC X(02).
                05  TBL-FILLER1         PIC X(01).
                05  TBL-JYU-KEN         PIC X(01).
                05  TBL-FILLER2         PIC X(01).
                05  TBL-JYU-SRYCD       PIC X(09).
       *01  KEN-JYU-MAX                 PIC 9(04)   VALUE   11.
-       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   19.
+       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   21.
       *
       *    重複算定不可テーブル（２）
       *01  TBL-KENSA-JYU2-AREA.
