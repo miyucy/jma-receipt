@@ -102,3 +102,12 @@
                 04  Z05-VALUE   PIC X(2).
               03  Z05-CDKBN-KBNNUM.
                 04  Z05-VALUE   PIC X(3).
+              03  Z05-COPYCD-G.
+                04  Z05-COPYCD-STATE   PIC S9(9)   BINARY.
+                04  Z05-COPYCD         PIC X(9).
+              03  Z05-B06.
+                04  Z05-B06-STATE   PIC S9(9)   BINARY.
+                04  Z05-B06-LABEL   PIC X(10).
+              03  Z05-B09.
+                04  Z05-B09-STATE   PIC S9(9)   BINARY.
+                04  Z05-B09-LABEL   PIC X(10).

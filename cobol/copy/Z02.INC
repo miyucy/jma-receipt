@@ -83,5 +83,18 @@
                 04  Z02-NYUJIBAIKBN-COUNT   PIC S9(9)   BINARY.
                 04  Z02-NYUJIBAIKBN-ITEM
                         PIC X(40)   OCCURS  10 TIMES.
+              03  Z02-COPYCD-G.
+                04  Z02-COPYCD-STATE   PIC S9(9)   BINARY.
+                04  Z02-COPYCD         PIC X(9).
+              03  Z02-JIHINAME1.
+                04  Z02-VALUE   PIC X(30).
+              03  Z02-JIHINAME2.
+                04  Z02-VALUE   PIC X(30).
+              03  Z02-B06.
+                04  Z02-B06-STATE   PIC S9(9)   BINARY.
+                04  Z02-B06-LABEL   PIC X(10).
+              03  Z02-B09.
+                04  Z02-B09-STATE   PIC S9(9)   BINARY.
+                04  Z02-B09-LABEL   PIC X(10).
 
 

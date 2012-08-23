@@ -84,5 +84,17 @@ Z06	{
 			count	int;
 			item	varchar(30)[5];
 		};
+		COPYCD	{
+	           	state	int;
+			value	varchar(9);
+		};
+		B06	{
+	           	state	int;
+			label	varchar(10);
+		};
+		B09	{
+	           	state	int;
+			label	varchar(10);
+		};
 	};
 };

@@ -94,5 +94,23 @@ Z02	{
 			count	int;
 			item	varchar(40)[10];
 		};
+		COPYCD	{
+	           	state	int;
+			value	varchar(9);
+		};
+		JIHINAME1	{
+			value	varchar(30);
+		};
+		JIHINAME2	{
+			value	varchar(30);
+		};
+		B06	{
+	           	state	int;
+			label	varchar(10);
+		};
+		B09	{
+	           	state	int;
+			label	varchar(10);
+		};
 	};
 };

@@ -123,5 +123,17 @@ Z05	{
 		CDKBN_KBNNUM	{
 			value	varchar(3);
 		};
+		COPYCD	{
+	           	state	int;
+			value	varchar(9);
+		};
+		B06	{
+	           	state	int;
+			label	varchar(10);
+		};
+		B09	{
+	           	state	int;
+			label	varchar(10);
+		};
 	};
 };

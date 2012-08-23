@@ -76,3 +76,13 @@
                 04  Z06-COMMENTKBN-COUNT   PIC S9(9)   BINARY.
                 04  Z06-COMMENTKBN-ITEM
                         PIC X(30)   OCCURS  5 TIMES.
+              03  Z06-COPYCD-G.
+                04  Z06-COPYCD-STATE   PIC S9(9)   BINARY.
+                04  Z06-COPYCD         PIC X(9).
+              03  Z06-B06.
+                04  Z06-B06-STATE   PIC S9(9)   BINARY.
+                04  Z06-B06-LABEL   PIC X(10).
+              03  Z06-B09.
+                04  Z06-B09-STATE   PIC S9(9)   BINARY.
+                04  Z06-B09-LABEL   PIC X(10).
+

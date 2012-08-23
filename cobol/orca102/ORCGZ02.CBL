@@ -41,6 +41,8 @@
       *  04.03.00    NACL-多々納  08/09/19  自賠責集計等取扱追加
       *  04.05.00    NACL-多々納  09/09/19  '0086'コメント追加
       *  04.06.00    NACL-多々納  11/02/23  コメント変更チェック追加
+      *  04.06.00    NACL-多々納  12/08/16  期間変更警告追加
+      *  04.07.00    NACL-多々納  12/08/21  ユーザ登録複写機能追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -52,6 +54,9 @@
        FILE                                      SECTION.
       *
        WORKING-STORAGE                           SECTION.
+      *
+      *    画面色等
+           COPY    "ENUM-VALUE".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -123,8 +128,12 @@
                05  SPA-GMN-NYUJIBAIKBN-LST     OCCURS   10
                                                PIC X(40).
                05  SPA-GMN-NYUJIBAI-MAX        PIC 9(02).
+      *        複写元コード
+               05  SPA-GMN-COPYCD              PIC X(09).
       *
-      *********05  SPA-GMN-CUR                 PIC X(30).
+               05  SPA-GMN-JIHINAME1           PIC X(30).
+               05  SPA-GMN-JIHINAME2           PIC X(30).
+      *
                05  SPA-GMN-CUR                 PIC 9(02).
       *
       *    第二画面内容
@@ -135,14 +144,18 @@
                05  SPA-SRYCDCHK                PIC 9(01).
       *
                05  SPA-JIHIKBN                 PIC 9(01).
+      *        ユーザ登録
+               05  SPA-NAI-USERCD              PIC 9(01).
       *
                05  SPA-NAI-KEIFLG1             PIC 9(01).
                05  SPA-NAI-KEIFLG2             PIC 9(01).
+               05  SPA-NAI-KEIFLG3             PIC 9(01).
       *
       *    フラグエリア
        01  FLG-AREA.
            03  FLG-TENSU                         PIC 9(01).
            03  FLG-TENSUPLUS                     PIC 9(01).
+           03  FLG-SYSKANRI                      PIC 9(01).
       *
            03  FLG-ERR                           PIC 9(01).
            03  FLG-OK                            PIC 9(01).
@@ -196,6 +209,15 @@
            03  WRK-LEN             PIC 9(04).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
+      *v47
+           03  WRK-INPUTCD             PIC X(09).
+           03  WRK-CD-MCNT             PIC 9(02).
+           03  FLG-KANJI               PIC 9(01).
+      *    自費名称編集
+           03  WRK-KBNCD.
+               05  WRK-KBNCD1          PIC X(01).
+               05  WRK-KBNCD2          PIC 9(01).
+           03  WRK-JIHINAME            PIC X(30).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -220,6 +242,8 @@
       *    入力コード
         01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
+      *
+           COPY    "CPSK1013.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -368,6 +392,10 @@
                WHEN    "Z99"
                    MOVE    1                   TO  SPA-GMN-CUR
       *
+      *    検索画面より
+               WHEN    "Z98"
+                   PERFORM 320-Z98SPASET-SEC
+      *
                WHEN    OTHER
                    PERFORM 310-SPASET-SEC
            END-EVALUATE
@@ -473,6 +501,13 @@
                ELSE
                    MOVE    1               TO  SPA-GMN-BUIKBN-MAX
                END-IF
+           END-IF
+      *v47
+      *    ユーザ登録判定
+           IF      (SPA-Z01-SRYCD(1:1) =   "8"  )
+               MOVE    ZERO            TO  SPA-NAI-USERCD
+           ELSE
+               MOVE    1               TO  SPA-NAI-USERCD
            END-IF
       *
       *    点数マスタ読込み
@@ -593,6 +628,10 @@
                MOVE    SPACE               TO  SPA-GMN-NYUJIBAIKBN
            END-IF
       *
+      *!! 
+      *    自費集計先
+           PERFORM 3012-JIHINAME-HEN-SEC
+      *
       *    点数マスタ付加情報検索
            IF      FLG-TENSU           =   ZERO
                MOVE    SPACE               TO  TENSUPLUS-REC
@@ -663,6 +702,114 @@
        3010-JIBAIKBN-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    自費集計先名称処理
+      *****************************************************************
+       3012-JIHINAME-HEN-SEC          SECTION.
+      *
+           IF      (SPA-Z01-SRYCD(1:5) =   "09500"
+                                       OR  "09600"
+                                       OR  "09591"
+                                       OR  "09592"
+                                       OR  "09593"
+                                       OR  "09594"
+                                       OR  "09691"
+                                       OR  "09692"
+                                       OR  "09693"
+                                       OR  "09694" )
+               CONTINUE
+           ELSE
+               GO      TO      3012-JIHINAME-HEN-EXT
+           END-IF
+      *
+      *    外来
+           IF     (SPA-GMN-GAITENTTLKBN    =   ZERO )
+              OR  (SPA-GMN-GAITENTTLKBN    >   10   )
+               MOVE    SPACE                   TO  SPA-GMN-JIHINAME1
+           ELSE
+               MOVE    "2"                     TO  WRK-KBNCD1
+               MOVE    SPA-GMN-GAITENTTLKBN    TO  WRK-KBNCD2
+               PERFORM 30121-JIHINAME-HENSYU-SEC
+               MOVE    WRK-JIHINAME            TO  SPA-GMN-JIHINAME1
+           END-IF
+      *    入院
+           IF     (SPA-GMN-NYUTENTTLKBN    =   ZERO )
+              OR  (SPA-GMN-NYUTENTTLKBN    >   10   )
+               MOVE    SPACE                   TO  SPA-GMN-JIHINAME2
+           ELSE
+               MOVE    "1"                     TO  WRK-KBNCD1
+               MOVE    SPA-GMN-NYUTENTTLKBN    TO  WRK-KBNCD2
+               PERFORM 30121-JIHINAME-HENSYU-SEC
+               MOVE    WRK-JIHINAME            TO  SPA-GMN-JIHINAME2
+           END-IF
+      *
+           .
+       3012-JIHINAME-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    自費集計先名称処理
+      *****************************************************************
+       30121-JIHINAME-HENSYU-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1013-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
+           MOVE    "1013"              TO  SYS-1013-KANRICD
+           MOVE    WRK-KBNCD           TO  SYS-1013-KBNCD
+      *
+           MOVE    SYS-1013-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 960-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    SPACE               TO  WRK-JIHINAME
+           PERFORM
+               UNTIL       FLG-SYSKANRI    =   1
+               MOVE    MCPDATA-REC         TO  SYS-1013-REC
+               IF      SYS-1013-STYUKYMD   <=  SPA-NAI-YUKOSTYMD
+                   MOVE    SYS-1013-JIHINAME   TO  WRK-JIHINAME
+               ELSE
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+      *
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    "key8"              TO  MCP-PATHNAME
+                   PERFORM 960-SYSKANRI-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
+      *
+           .
+       30121-JIHINAME-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為コードセット処理
+      *****************************************************************
+       320-Z98SPASET-SEC          SECTION.
+      *
+           IF      SPA-Z98-SRYCD   NOT =   SPACE
+      *        複写
+               MOVE    SPA-Z98-SRYCD       TO  SPA-GMN-COPYCD
+      *        複写チェック
+               PERFORM 5022-COPYCD-CDCHK-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 5021-COPYCD-SYORI-SEC
+               END-IF
+           ELSE
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    SPACE               TO  SPA-GMN-COPYCD
+           END-IF 
+           .
+       320-Z98SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    確認画面（ＣＩＤ１）ＯＫ処理
       *****************************************************************
        330-ZID1-SET-SEC            SECTION.
@@ -712,6 +859,15 @@
       *        入力コード設定
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM  405-INPUTCD-SEC
+      *v47
+      *        前回複写
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM  406-ZENCOPY-SEC
+      *        検索
+               WHEN    "CLICKED"       ALSO    "B09"
+                   MOVE    SPACE       TO  WRK-INPUTCD
+                   PERFORM 409-KENSAKU-SEC
+      *
       *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM  412-TOUROKU-SEC
@@ -719,10 +875,28 @@
       *
        200-GMNSENI-EXT.
            EXIT.
+      *
       *****************************************************************
       *    会話　処理
       *****************************************************************
        200-ENTRY-SEC                             SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        複写先コード
+               WHEN    "ACTIVATE"       ALSO    "COPYCD"
+                   PERFORM 502-COPYCD-CHK-SEC
+      *        一括入力分
+               WHEN    OTHER
+                   PERFORM 2001-ENTRY-SYORI-SEC
+           END-EVALUATE
+           .
+       200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    その他一括処理
+      *****************************************************************
+       2001-ENTRY-SYORI-SEC         SECTION.
       *
       *    入力個所のセット
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
@@ -734,7 +908,7 @@
       *
            .
       *
-       200-ENTRY-EXT.
+       2001-ENTRY-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -825,6 +999,10 @@
       *    保険適用チェック
            IF      SPA-ERRCD           =   SPACE
                PERFORM 506-HKNTEKKBN-CHK-SEC
+           END-IF
+      *    点数欄集計先チェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 506-GAITENTTLKBN-CHK-SEC
            END-IF
       *    部位チェック
            IF      SPA-ERRCD           =   SPACE
@@ -984,6 +1162,16 @@
        506-HKNTEKKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    点数欄集計先チェック処理
+      *****************************************************************
+       506-GAITENTTLKBN-CHK-SEC          SECTION.
+      *
+           PERFORM 3012-JIHINAME-HEN-SEC
+           .
+      *
+       506-GAITENTTLKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    部位チェック処理
       *****************************************************************
        507-BUIKBN-CHK-SEC          SECTION.
@@ -1102,6 +1290,388 @@
        506-DIGIT-CHK-EXT.
            EXIT.
       *
+      *v47
+      ****************************************************************
+      *    複写先コード処理
+      ****************************************************************
+       502-COPYCD-CHK-SEC      SECTION.
+      *
+           MOVE    Z02-COPYCD          TO  SPA-GMN-COPYCD
+      *
+           IF      SPA-GMN-COPYCD      =   SPACE
+               MOVE    1                   TO  SPA-GMN-CUR
+               GO      TO      502-COPYCD-CHK-EXT
+           END-IF
+      *
+           MOVE    22                  TO  SPA-GMN-CUR
+      *    全角入力の時、４文字まで
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    Z02-COPYCD          TO  KANACHK-MAE-INPUT
+           MOVE    9                   TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-COPYCD
+      *
+      *    "//" 入力の時、検索画面へ
+           IF     SPA-GMN-COPYCD(1:2)  =  "//"
+               MOVE    SPACE               TO  WRK-INPUTCD
+               PERFORM 409-KENSAKU-SEC
+           ELSE
+      *        入力コードチェック
+               IF      SPA-GMN-COPYCD      NOT =   SPACE
+                   MOVE    SPA-GMN-COPYCD      TO  WRK-INPUTCD
+                   PERFORM 4010-SRYCD-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF     (FLG-END             =   ZERO  )  AND
+                  (SPA-ERRCD           =   SPACE )
+      *        複写チェック
+               PERFORM 5022-COPYCD-CDCHK-SEC
+           END-IF
+           IF     (FLG-END             =   ZERO  )  AND
+                  (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-GMN-COPYCD  NOT =   SPACE )
+      *        複写処理
+               PERFORM 5021-COPYCD-SYORI-SEC
+           END-IF
+           .
+       502-COPYCD-CHK-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    複写チェック処理
+      ****************************************************************
+       5022-COPYCD-CDCHK-SEC      SECTION.
+      *
+           EVALUATE    SPA-Z01-SRYCD (1:3)
+      *        部位
+               WHEN    "002"
+                   IF      SPA-GMN-COPYCD (1:3)    =   "002"
+                       CONTINUE
+                   ELSE
+                       MOVE    "0020"          TO  SPA-ERRCD
+                   END-IF
+      *        コメント
+               WHEN    "008"
+                   IF     (SPA-GMN-COPYCD (1:3)    =   "008" )
+                     OR   (SPA-GMN-COPYCD (1:1)    =   "8"   )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0020"          TO  SPA-ERRCD
+                   END-IF
+      *        自費
+               WHEN    "095"
+               WHEN    "096"
+                   IF      SPA-GMN-COPYCD (1:3)    =   "095"
+                                                   OR  "096"
+                       CONTINUE
+                   ELSE
+                       MOVE    "0020"          TO  SPA-ERRCD
+                   END-IF
+      *
+               WHEN    OTHER
+                   MOVE    "0020"          TO  SPA-ERRCD
+           END-EVALUATE
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    22                  TO  SPA-GMN-CUR
+           END-IF
+           .
+       5022-COPYCD-CDCHK-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    複写処理処理
+      ****************************************************************
+       5021-COPYCD-SYORI-SEC      SECTION.
+      *
+      *    点数マスタ読込み
+           MOVE    SPACE               TO  TNS-TENSU-REC
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    SPA-GMN-COPYCD      TO  TNS-SRYCD
+      *
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+      *
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_tensu"         TO  MCP-TABLE
+               MOVE    "key24"             TO  MCP-PATHNAME
+               PERFORM 900-TENSU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TENSU
+               INITIALIZE                      TNS-TENSU-REC
+           END-IF
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key24"             TO  MCP-PATHNAME
+           PERFORM 990-DBLOSEC-SEC
+      *
+           IF      FLG-TENSU           =   ZERO
+      *        点数マスタ編集
+               PERFORM 3001-TENSU-SET-SEC
+               MOVE    SPACE               TO  SPA-GMN-COPYCD
+               MOVE    1                   TO  SPA-GMN-CUR
+           ELSE
+               MOVE    "0021"              TO  SPA-ERRCD
+           END-IF
+           .
+       5021-COPYCD-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢ情報をＳＰＡにセット
+      *****************************************************************
+       3001-TENSU-SET-SEC                     SECTION.
+      *
+           MOVE    TNS-KANANAME        TO  SPA-GMN-KANANAME
+           MOVE    TNS-NAME            TO  SPA-GMN-NAME
+           MOVE    TNS-FORMALNAME      TO  SPA-GMN-FORMALNAME
+      *
+           EVALUATE    SPA-Z01-SRYCD(1:3)
+      *        部位
+               WHEN    "002"
+                   MOVE    TNS-BUIKBN          TO  SPA-GMN-BUIKBN
+                   MOVE    SPACE               TO  SPA-GMN-BUIKBNMEI
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >   SPA-GMN-BUIKBN-MAX
+                       IF      SPA-GMN-BUIKBN 
+                                       =   SPA-GMN-BUIKBNL (IDXX)
+                           MOVE    SPA-GMN-BUIKBNLST (IDXX)
+                                             TO  SPA-GMN-BUIKBN-G
+                           MOVE    SPA-GMN-BUIKBN-MAX
+                                             TO  IDXX
+                       END-IF
+                   END-PERFORM
+      *        コメント
+               WHEN    "008"
+                   IF     (SPA-Z01-SRYCD  (1:4)  =   "0084" )
+                      IF      (SPA-GMN-COPYCD (1:4)  =   "0084")  OR
+                              (SPA-GMN-COPYCD (1:2)  =   "84"  )
+      *                埋め込み値複写
+                           MOVE  TNS-SSTKIJUNCD(1)   TO SPA-GMN-COLUMN1
+                           MOVE  TNS-SSTKIJUNCD(2)   TO SPA-GMN-DIGIT1
+                           MOVE  TNS-SSTKIJUNCD(3)   TO SPA-GMN-COLUMN2
+                           MOVE  TNS-SSTKIJUNCD(4)   TO SPA-GMN-DIGIT2
+                           MOVE  TNS-SSTKIJUNCD(5)   TO SPA-GMN-COLUMN3
+                           MOVE  TNS-SSTKIJUNCD(6)   TO SPA-GMN-DIGIT3
+                           MOVE  TNS-SSTKIJUNCD(7)   TO SPA-GMN-COLUMN4
+                           MOVE  TNS-SSTKIJUNCD(8)   TO SPA-GMN-DIGIT4
+                       ELSE
+      *                埋め込み値クリア
+                           MOVE  ZERO                TO SPA-GMN-COLUMN1
+                           MOVE  ZERO                TO SPA-GMN-DIGIT1
+                           MOVE  ZERO                TO SPA-GMN-COLUMN2
+                           MOVE  ZERO                TO SPA-GMN-DIGIT2
+                           MOVE  ZERO                TO SPA-GMN-COLUMN3
+                           MOVE  ZERO                TO SPA-GMN-DIGIT3
+                           MOVE  ZERO                TO SPA-GMN-COLUMN4
+                           MOVE  ZERO                TO SPA-GMN-DIGIT4
+                       END-IF
+                   END-IF
+      *        自費
+               WHEN    "095"
+               WHEN    "096"
+                   MOVE  TNS-TEN             TO  SPA-GMN-TEN
+                   MOVE  TNS-HKNTEKKBN       TO  SPA-GMN-HKNTEKKBN
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >   SPA-GMN-HKNTEKKBN-MAX
+                       IF      SPA-GMN-HKNTEKKBN 
+                                       =   SPA-GMN-HKNTEKKBNL (IDXX)
+                           MOVE    SPA-GMN-HKNTEKKBNLST (IDXX)
+                                             TO  SPA-GMN-HKNTEKKBN-G
+                           MOVE    SPA-GMN-HKNTEKKBN-MAX
+                                             TO  IDXX
+                       END-IF
+                   END-PERFORM
+                   MOVE  TNS-GAITENTTLKBN    TO  SPA-GMN-GAITENTTLKBN
+                   MOVE  TNS-NYUTENTTLKBN    TO  SPA-GMN-NYUTENTTLKBN
+      *            自費コードの時、点数識別とする
+                   IF      SPA-GMN-BUIKBN-MAX      >=  2
+                       MOVE    TNS-TENSIKIBETU     TO  SPA-GMN-BUIKBN
+                       MOVE    SPACE               TO  SPA-GMN-BUIKBNMEI
+                   END-IF
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >   SPA-GMN-BUIKBN-MAX
+                       IF      SPA-GMN-BUIKBN 
+                                       =   SPA-GMN-BUIKBNL (IDXX)
+                           MOVE    SPA-GMN-BUIKBNLST (IDXX)
+                                             TO  SPA-GMN-BUIKBN-G
+                           MOVE    SPA-GMN-BUIKBN-MAX
+                                             TO  IDXX
+                       END-IF
+                   END-PERFORM
+      *            自賠責集計等取扱
+                   IF     (SPA-Z01-SRYCD(1:5)  =   "09593" )
+                     AND  (SPA-GMN-COPYCD(1:5) =   "09593" )
+                       MOVE    TNS-NAMECHGKBN      TO
+                                               SPA-GMN-GAIJIBAIKBN
+                       MOVE    TNS-KANANAMECHGKBN  TO
+                                               SPA-GMN-NYUJIBAIKBN
+                       PERFORM 3010-JIBAIKBN-HEN-SEC
+                   END-IF
+      *            自費集計先
+                   PERFORM 3012-JIHINAME-HEN-SEC
+           END-EVALUATE
+      *
+           .
+       3001-TENSU-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *  　入力コードチェック処理
+      *****************************************************************
+       4010-SRYCD-CHK-SEC                        SECTION.
+      *
+           MOVE    ZERO               TO  WRK-CD-MCNT
+           MOVE    ZERO               TO  FLG-KANJI
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    WRK-INPUTCD         TO  KANACHK-MAE-INPUT
+           MOVE    9                   TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-INPUTCD
+           IF      KANACHK-RC      NOT =   ZERO
+      *        全角半角混在エラー
+               MOVE    "0003"              TO  SPA-ERRCD
+               GO      TO    4010-SRYCD-CHK-EXT
+           ELSE
+               MOVE    KANACHK-MAX         TO  WRK-CD-MCNT
+      *        全角
+               IF      KANACHK-SYUBETU     =   2
+                   MOVE    1               TO  FLG-KANJI
+               ELSE
+                   MOVE    ZERO            TO  FLG-KANJI
+               END-IF
+           END-IF
+      *    半角で９文字の時、点数マスタチェックへ
+           IF     (WRK-CD-MCNT         =   9    )  AND
+                  (FLG-KANJI           =   ZERO )  AND
+                  (WRK-INPUTCD         NUMERIC  )
+               CONTINUE
+           ELSE
+      *        入力コード検索
+               PERFORM 409-KENSAKU-SEC
+           END-IF
+      *
+           .
+       4010-SRYCD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    検索処理
+      *****************************************************************
+       409-KENSAKU-SEC             SECTION.
+      *
+      *    共通ＳＰＡ編集
+           INITIALIZE                  SPA-Z98-AREA
+           MOVE    "2"                 TO  SPA-Z98-TYPE
+      *
+           INITIALIZE                  SPA-Z98GMN-AREA
+           IF      WRK-INPUTCD         NOT =   SPACE
+      *        その他
+               MOVE    "8"                 TO  SPA-Z98-GMN-SYORI
+               MOVE    WRK-INPUTCD         TO  SPA-Z98-INPUTCD
+               MOVE    "1"                 TO  SPA-Z98-TYPE
+               IF      FLG-KANJI           =   1
+                   MOVE    "J"             TO  SPA-Z98-CDSYUBETU
+               ELSE
+                   IF      WRK-INPUTCD(1:1)    NUMERIC
+                       EVALUATE    WRK-CD-MCNT
+                           WHEN    3
+                           WHEN    6
+                               MOVE    "6"     TO  SPA-Z98-CDSYUBETU
+                           WHEN    4
+                               MOVE    "4"     TO  SPA-Z98-CDSYUBETU
+                           WHEN    5
+                               MOVE    "5"     TO  SPA-Z98-CDSYUBETU
+                       END-EVALUATE
+                   ELSE
+                       MOVE    "A"             TO  SPA-Z98-CDSYUBETU
+                   END-IF
+               END-IF
+      *        画面編集
+               PERFORM 41011-Z98-SET-SEC
+           ELSE
+      *        画面編集
+               PERFORM 41011-Z98-SET-SEC
+           END-IF
+      *
+      *
+           MOVE    "Z02"               TO  SPA-MOTOPG
+           MOVE    "Z98"               TO  SPA-SAKIPG
+           MOVE    "Z02"               TO  SPA-Z98-MOTOPG
+      *
+           IF      SPA-Z98-GMN-MAX     =   ZERO
+               MOVE    "INPUT"             TO  MCP-WIDGET
+           ELSE
+               MOVE    "SELNUM1"           TO  MCP-WIDGET
+           END-IF
+      *
+           MOVE   "NEW"                TO  MCP-PUTTYPE.
+           MOVE   "Z98    "            TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       409-KENSAKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    検索画面編集処理
+      *****************************************************************
+       41011-Z98-SET-SEC                           SECTION.
+      *
+      *
+           MOVE    SPA-Z01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-Z02             TO  SPA-Z01SONOTA
+           MOVE    SPA-Z01FREE         TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGZ98"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON                    TO  SPA-AREA
+           MOVE    SPA-WORK                      TO  SPA-Z01KYOUTU
+           MOVE    SPA-FREE                      TO  SPA-Z01FREE
+           MOVE    SPA-Z01SONOTA                 TO  SPA-Z02
+      *
+           .
+       41011-Z98-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    前回コード複写処理
+      *****************************************************************
+       406-ZENCOPY-SEC          SECTION.
+      *
+           IF      SPA-Z08MAE-SRYCD        =   SPACE
+               MOVE    22                  TO  SPA-GMN-CUR
+           ELSE
+               MOVE    SPA-Z08MAE-SRYCD    TO  SPA-GMN-COPYCD
+      *        複写チェック
+               PERFORM 5022-COPYCD-CDCHK-SEC
+               IF     (FLG-END             =   ZERO  )  AND
+                      (SPA-ERRCD           =   SPACE )
+      *            複写処理
+                   PERFORM 5021-COPYCD-SYORI-SEC
+               END-IF 
+           END-IF 
+           .
+       406-ZENCOPY-EXT.
+           EXIT.
+      *
       ****************************************************************
       *    登録前、必須入力チェック処理
       ****************************************************************
@@ -1169,6 +1739,33 @@
                    MOVE    "1013"              TO  SPA-ERRCD
                    MOVE    1                   TO  SPA-GMN-CUR
                    GO      TO      4109-TOUROKU-CHK-EXT
+               END-IF
+      *
+      *H24.8
+               IF      SPA-Z01-SRYCD(1:1)  =   "8"
+                   IF      SPA-NAI-KEIFLG3     =   ZERO
+                       MOVE    "K005"          TO  SPA-ERRCD
+                       MOVE    1               TO  SPA-NAI-KEIFLG3
+                       MOVE    1               TO  SPA-GMN-CUR
+                       GO      TO      4109-TOUROKU-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *H24.8
+      *    コメント期間変更チェック
+           IF      SPA-Z01-SELNUM      >=  1
+               IF     ( SPA-Z01-SRYCD(1:1)  =   "8"   )
+               AND    ((SPA-Z01-TYUKOSTYMD(SPA-Z01-SELNUM)
+                                       NOT =   SPA-NAI-YUKOSTYMD)
+               OR      (SPA-Z01-TYUKOEDYMD(SPA-Z01-SELNUM)
+                                       NOT =   SPA-NAI-YUKOEDYMD))
+                   IF      SPA-NAI-KEIFLG3     =   ZERO
+                       MOVE    "K004"          TO  SPA-ERRCD
+                       MOVE    1               TO  SPA-NAI-KEIFLG3
+                       MOVE    1               TO  SPA-GMN-CUR
+                       GO      TO      4109-TOUROKU-CHK-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -1368,6 +1965,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF      SPA-ERRCD          =   SPACE
+               MOVE    SPACE               TO  SPA-Z08MAE-SRYCD
+      *
                MOVE     "JOIN"            TO  MCP-PUTTYPE
                PERFORM  401-BACK-SEC
            END-IF
@@ -1499,6 +2098,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    前画面に戻る
       *
            IF      SPA-ERRCD           =   SPACE
+               MOVE    SPA-Z01-SRYCD       TO  SPA-Z08MAE-SRYCD
+      *
                MOVE     "JOIN"            TO  MCP-PUTTYPE
                PERFORM  401-BACK-SEC
            END-IF
@@ -1898,11 +2499,42 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  Z02-NYUJIBAIKBN-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-NYUJIBAI-MAX   TO  Z02-NYUJIBAIKBN-COUNT
+      *v47
+      *    複写元コード
+           MOVE    SPA-GMN-COPYCD      TO  Z02-COPYCD
+           MOVE    SPA-GMN-JIHINAME1   TO  Z02-JIHINAME1
+           MOVE    SPA-GMN-JIHINAME2   TO  Z02-JIHINAME2
+           MOVE    "前回複写"          TO  Z02-B06-LABEL
+           MOVE    "検索"              TO  Z02-B09-LABEL
+      *    非活性処理
+           PERFORM 510-GSRAUTH-SEC
       *
            PERFORM 5001-MAPCUR-SEC
       *
            .
        500-GMNHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    非活性処理
+      *****************************************************************
+       510-GSRAUTH-SEC             SECTION.
+      *
+           MOVE    WIDGET-NORMAL       TO  Z02-COPYCD-STATE
+           MOVE    WIDGET-NORMAL       TO  Z02-B06-STATE
+           MOVE    WIDGET-NORMAL       TO  Z02-B09-STATE
+      *    複写機能不可
+           IF     (SPA-NAI-USERCD      =   ZERO )
+               MOVE    WIDGET-INSENSITIVE      TO  Z02-COPYCD-STATE
+               MOVE    WIDGET-INSENSITIVE      TO  Z02-B06-STATE
+               MOVE    WIDGET-INSENSITIVE      TO  Z02-B09-STATE
+      *
+               MOVE    SPACE                   TO  Z02-B06-LABEL
+               MOVE    SPACE                   TO  Z02-B09-LABEL
+           END-IF
+      *
+           .
+       51O-GSRAUTH-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1957,6 +2589,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "NYUJIBAIKBN"       TO  MCP-WIDGET
                WHEN    19
                    MOVE    "INPCHKKBN"         TO  MCP-WIDGET
+               WHEN    22
+                   MOVE    "COPYCD"            TO  MCP-WIDGET
                WHEN    90
                    MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
@@ -2074,6 +2708,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    DELIMITED BY  SIZE
                                                    INTO    SPA-ERRMSG
                    END-STRING
+      *v47
+               WHEN    "0020"
+                   STRING  "複写できるコードではありません。"
+                                                   DELIMITED BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0021"
+                   STRING  "複写元コードが登録されていません。"
+                                                   DELIMITED BY  SIZE
+                                                   INTO    SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "K001"
                    MOVE    "警告！自費コードの診療区分がありません。"
@@ -2102,6 +2747,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    STRING   "警告！厚生労働省から提供されたデータです。"
                                                    DELIMITED BY  SIZE
                             "削除しないで下さい。"
+                                                   DELIMITED BY  SIZE
+                                                 INTO    SPA-ERRMSG
+                   END-STRING
+      *H24.8
+               WHEN    "K004"
+                   STRING    "警告！"
+                             "厚生労働省から提供される範囲のコードです"
+                             "。有効年月日の変更はしないで下さい。"
+                                                   DELIMITED BY  SIZE
+                                                 INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K005"
+                   STRING    "警告！"
+                             "厚生労働省から提供される範囲のコードです"
+                             "。改正処理はしないで下さい。"
                                                    DELIMITED BY  SIZE
                                                  INTO    SPA-ERRMSG
                    END-STRING
@@ -2232,6 +2892,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .                                       
       *
        990-TENSUPLUS-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理読込
+      *****************************************************************
+       960-SYSKANRI-READ-SEC          SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           .
+      *
+       960-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
