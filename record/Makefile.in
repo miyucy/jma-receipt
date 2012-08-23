@@ -467,6 +467,8 @@ RECORD_files = \
 	G07.rec \
 	L100.rec \
 	G100.rec \
+	medicalmod.rec \
+	medicalmodv2.rec \
 
 DEF_files = \
 
@@ -641,7 +643,6 @@ DB_files = \
 	xml_acceptres.db \
 	xml_medicalres.db \
 	xml_medicalreq.db \
-	medicalmod.rec \
 	tbl_synonym.db \
 	xml_appointlstreq.db \
 	xml_appointlstres.db \
@@ -707,8 +708,8 @@ DB_files = \
 	xml_physicianv2res.db \
 	xml_patientmodv2req.db \
 	xml_patientmodv2res.db \
-	xml_acceptv2req.db \
-	xml_acceptv2res.db \
+	xml_acceptlstv2req.db \
+	xml_acceptlstv2res.db \
 	xml_appointv2req.db \
 	xml_appointv2res.db \
 	xml_medicationv2req.db \
