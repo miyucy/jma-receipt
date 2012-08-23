@@ -1157,22 +1157,8 @@
            MOVE    TBL-K1-PAYKBN  (IDX-K1)  TO  HKN-PAYKBN
            MOVE    TBL-K1-TEKSTYMD (IDX-K1) TO  HKN-TEKSTYMD
            MOVE    TBL-K1-TEKEDYMD (IDX-K1) TO  HKN-TEKEDYMD
-      *
-           MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hknnum"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 921-HKNNUM-READ-SEC
-           ELSE
-               INITIALIZE              HKNNUM-REC
-               MOVE    1               TO  FLG-HKNNUM
-           END-IF
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *    保険番号マスタ検索処理
+           PERFORM 900-HKNNUM-KEY-READ-SEC
            .
        20091-KOHNUMMEI-EXT.
            EXIT.
@@ -2705,6 +2691,47 @@
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *    公費　950　判定
+           IF      SPA-PTTOKK-KBN      =   SPACE
+      *
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+               MOVE    SPA-PTID            TO  PTKOH-PTID
+               MOVE    "950"               TO  PTKOH-KOHNUM
+               MOVE    SPA-SRYYMD          TO  PTKOH-TEKSTYMD
+               MOVE    SPA-SRYYMD          TO  PTKOH-TEKEDYMD
+      *
+               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               MOVE    "DBSELECT"          TO  MCP-FUNC
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                   MOVE    "key6"              TO  MCP-PATHNAME
+                   PERFORM 970-PTKOHINF-READ-SEC
+                   IF      FLG-PTKOHINF        =   ZERO
+      *                07　０７老併　とする
+                       MOVE    "07"                TO  SPA-PTTOKK-KBN
+      *                名称編集
+                       INITIALIZE                  HKNNUM-REC
+                       MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+                       MOVE    PTKOH-KOHNUM        TO  HKN-HKNNUM
+                       MOVE    "00"                TO  HKN-PAYKBN
+                       MOVE    SPA-SRYYMD          TO  HKN-TEKSTYMD
+                       MOVE    SPA-SRYYMD          TO  HKN-TEKEDYMD
+      *                保険番号マスタ検索処理
+                       PERFORM 900-HKNNUM-KEY-READ-SEC
+                       MOVE    HKN-TANSEIDONAME    TO  SPA-PTTOKK-NAIYO
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-PTKOHINF
+               END-IF
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+      *
+           END-IF
            .
        1102PTTOKKI-SET-EXT.
            EXIT.
@@ -5914,6 +5941,30 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        970-PTKOHINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険番号マスタ検索処理
+      *****************************************************************
+       900-HKNNUM-KEY-READ-SEC              SECTION.
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 921-HKNNUM-READ-SEC
+           ELSE
+               INITIALIZE              HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       900-HKNNUM-KEY-READ-EXT.
            EXIT.
       *****************************************************************
       *    公費名称読み込み
