@@ -6,12 +6,13 @@ textsize	400;
 handler "RubyExec" {
         class "Exec";
         serialize "CGI";
-        start "/usr/bin/ruby -Ke %p/%m.rb %a";
+        start "/usr/bin/ruby -Ke -I %p %m.rb %a";
         locale "euc-jp";
 };
 
 bind	"OrcSioriPull"		"RubyExec";
-bind	"Sysbase"		"RubyExec";
+bind	"Sysbase"		    "RubyExec";
+bind	"receden_check"		"RubyExec";
 
 bind    "ORCVTPTINF"    	"OpenCOBOL";
 bind    "ORCVTPTHKNINF" 	"OpenCOBOL";
