@@ -87,6 +87,7 @@
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *  04.07.02    NACL-門脇    11/12/13  院外処方のみの点検用レセプト対応
       *                                     （請求点数０点公費分）
+      *  04.07.03    NACL-門脇    12/08/27  システム管理２０１０機能追加対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -118,7 +119,6 @@
            03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-TOKU75          PIC 9(01).
            03  FLG-SKJRYOYOHI-ARI  PIC 9(01).
-           03  FLG-TAISYO          PIC 9(01).
            03  FLG-KOREI           PIC 9(01).
            03  FLG-SAIGAI-TAISYO   PIC 9(01).
            03  FLG-TENKEN          PIC 9(01).
@@ -477,6 +477,16 @@
                 PERFORM      910-DB-CLOSE-SEC
              ELSE
                 EVALUATE  LNK-FTNJGNCHK-PREFNUM
+                  WHEN      42
+                    IF  (LNK-FTNJGNCHK-KOHNUM  = "287" OR "380"
+                                              OR "281" OR "282"       )
+                    AND (LNK-FTNJGNCHK-SRYYM  >= "200704"             )
+                    AND (PTHKN-HKNNUM  NOT = "060" AND "067" AND "039")
+                      MOVE  "2"  TO WRK-RECEKSIFLG-G
+                      MOVE  "2"  TO WRK-RECEKSIFLG-N
+                    END-IF
+                END-EVALUATE
+                EVALUATE  LNK-FTNJGNCHK-PREFNUM
       **>         WHEN      12
       **>             MOVE  "2"  TO WRK-CHKJGNFLG-G
       **>             MOVE  "1"  TO WRK-CHKJGNFLG-N
@@ -531,12 +541,58 @@
       *
            EVALUATE  SYS-2010-RECEKSIKBN-G
              WHEN      SPACE
+               EVALUATE   LNK-FTNJGNCHK-PREFNUM
+                 WHEN      42
+                  IF  (LNK-FTNJGNCHK-KOHNUM  = "287" OR "380"
+                                            OR "281" OR "282"       )
+                  AND (PTHKN-HKNNUM  NOT = "060" AND "067" AND "039")
+                    MOVE  "2"  TO WRK-RECEKSIFLG-G
+                  END-IF
+               END-EVALUATE
              WHEN      "0"
                     MOVE SPACE TO WRK-RECEKSIFLG-G
              WHEN      "1"
+               EVALUATE  SYS-2010-RECEKSI-TAIKBN-G
+                 WHEN        "0"
                     MOVE  "1"  TO WRK-RECEKSIFLG-G
+                 WHEN        "1"
+                  IF   PTHKN-HKNNUM  = "060" OR "067" OR "039"
+                    MOVE  "1"  TO WRK-RECEKSIFLG-G
+                  END-IF
+                 WHEN        "2"
+                  IF   PTHKN-HKNNUM  NOT = "060" AND "067" AND "039"
+                    MOVE  "1"  TO WRK-RECEKSIFLG-G
+                  END-IF
+                 WHEN        "3"
+                  IF   PTHKN-HKNNUM  = "060" OR "067"
+                    MOVE  "1"  TO WRK-RECEKSIFLG-G
+                  END-IF
+                 WHEN        "4"
+                  IF   PTHKN-HKNNUM  = "039"
+                    MOVE  "1"  TO WRK-RECEKSIFLG-G
+                  END-IF
+               END-EVALUATE
              WHEN      "2"
+               EVALUATE  SYS-2010-RECEKSI-TAIKBN-G
+                 WHEN        "0"
                     MOVE  "2"  TO WRK-RECEKSIFLG-G
+                 WHEN        "1"
+                  IF   PTHKN-HKNNUM  = "060" OR "067" OR "039"
+                    MOVE  "2"  TO WRK-RECEKSIFLG-G
+                  END-IF
+                 WHEN        "2"
+                  IF   PTHKN-HKNNUM  NOT = "060" AND "067" AND "039"
+                    MOVE  "2"  TO WRK-RECEKSIFLG-G
+                  END-IF
+                 WHEN        "3"
+                  IF   PTHKN-HKNNUM  = "060" OR "067"
+                    MOVE  "2"  TO WRK-RECEKSIFLG-G
+                  END-IF
+                 WHEN        "4"
+                  IF   PTHKN-HKNNUM  = "039"
+                    MOVE  "2"  TO WRK-RECEKSIFLG-G
+                  END-IF
+               END-EVALUATE
            END-EVALUATE
       *
            EVALUATE  SYS-2010-RECEKSIKBN-N
@@ -550,13 +606,57 @@
                   AND  LNK-FTNJGNCHK-SRYYM  >= "201001"
                     MOVE  "1"  TO WRK-RECEKSIFLG-N
                   END-IF
+                 WHEN      42
+                  IF  (LNK-FTNJGNCHK-KOHNUM  = "287" OR "380"
+                                            OR "281" OR "282"       )
+                  AND (PTHKN-HKNNUM  NOT = "060" AND "067" AND "039")
+                    MOVE  "2"  TO WRK-RECEKSIFLG-N
+                  END-IF
                END-EVALUATE
              WHEN      "0"
                     MOVE SPACE TO WRK-RECEKSIFLG-N
              WHEN      "1"
+               EVALUATE  SYS-2010-RECEKSI-TAIKBN-N
+                 WHEN        "0"
                     MOVE  "1"  TO WRK-RECEKSIFLG-N
+                 WHEN        "1"
+                  IF   PTHKN-HKNNUM  = "060" OR "067" OR "039"
+                    MOVE  "1"  TO WRK-RECEKSIFLG-N
+                  END-IF
+                 WHEN        "2"
+                  IF   PTHKN-HKNNUM  NOT = "060" AND "067" AND "039"
+                    MOVE  "1"  TO WRK-RECEKSIFLG-N
+                  END-IF
+                 WHEN        "3"
+                  IF   PTHKN-HKNNUM  = "060" OR "067"
+                    MOVE  "1"  TO WRK-RECEKSIFLG-N
+                  END-IF
+                 WHEN        "4"
+                  IF   PTHKN-HKNNUM  = "039"
+                    MOVE  "1"  TO WRK-RECEKSIFLG-N
+                  END-IF
+               END-EVALUATE
              WHEN      "2"
+               EVALUATE  SYS-2010-RECEKSI-TAIKBN-N
+                 WHEN        "0"
                     MOVE  "2"  TO WRK-RECEKSIFLG-N
+                 WHEN        "1"
+                  IF   PTHKN-HKNNUM  = "060" OR "067" OR "039"
+                    MOVE  "2"  TO WRK-RECEKSIFLG-N
+                  END-IF
+                 WHEN        "2"
+                  IF   PTHKN-HKNNUM  NOT = "060" AND "067" AND "039"
+                    MOVE  "2"  TO WRK-RECEKSIFLG-N
+                  END-IF
+                 WHEN        "3"
+                  IF   PTHKN-HKNNUM  = "060" OR "067"
+                    MOVE  "2"  TO WRK-RECEKSIFLG-N
+                  END-IF
+                 WHEN        "4"
+                  IF   PTHKN-HKNNUM  = "039"
+                    MOVE  "2"  TO WRK-RECEKSIFLG-N
+                  END-IF
+               END-EVALUATE
            END-EVALUATE
       *
            EVALUATE  SYS-2010-CHKJGNKBN-G
@@ -1807,33 +1907,14 @@
       *****************************************************************
        2004114-FTNJGNCHK-HENSYU-SEC            SECTION.
       *
-           IF  (LNK-FTNJGNCHK-PREFNUM      =  42           )
-           AND (LNK-FTNJGNCHK-KOHNUM(1:1) >= "1" AND <= "8")
-           AND (LNK-FTNJGNCHK-SRYYM       >= "200704"      )
-             MOVE     ZERO       TO    FLG-TAISYO
-             IF   LNK-FTNJGNCHK-KOHNUM  =  "287" OR "380"
-                                        OR "281" OR "282"
-               MOVE     LNK-FTNJGNCHK-HKNID  TO  WRK-HKNID
-               PERFORM  200411111-HKNINF-KENSAKU-SEC
-               IF   PTHKN-HKNNUM  NOT = "060" AND "067" AND "039"
-                 MOVE      1     TO    FLG-TAISYO
-               END-IF
-             END-IF
-             IF  FLG-TAISYO  =  ZERO
-               IF  (WRK-KOHFTN9-H  =  WRK-KOHFTN-H)
-               OR  (WRK-KOHFTN9-X  =  WRK-KOHFTN  )
-                 MOVE     01     TO    LNK-FTNJGNCHK-RC
-               END-IF
-             END-IF
-           ELSE
-             IF ((LNK-FTNJGNCHK-NYUGAIKBN = "2") AND
-                 (WRK-IRYOKEIKBN-G        = "1"))
-             OR ((LNK-FTNJGNCHK-NYUGAIKBN = "1") AND
-                 (WRK-IRYOKEIKBN-N        = "1"))
+           IF ((LNK-FTNJGNCHK-NYUGAIKBN = "2") AND
+               (WRK-IRYOKEIKBN-G        = "1"))
+           OR ((LNK-FTNJGNCHK-NYUGAIKBN = "1") AND
+               (WRK-IRYOKEIKBN-N        = "1"))
                IF   WRK-KOHFTN   NOT = ZERO
                        MOVE   01        TO  LNK-FTNJGNCHK-RC
                END-IF
-             ELSE
+           ELSE
                EVALUATE   LNK-FTNJGNCHK-KOHNUM
                  WHEN       "012"
                    IF   WRK-SKJ-FTN  >=  14880
@@ -1890,6 +1971,14 @@
                    IF   LNK-FTNJGNCHK-RC      = ZERO
                    AND  WRK-HKNMST-JGNGAK NOT = ZERO
                    AND  WRK-KOHFTN        NOT = 9999999999
+                     IF  (LNK-FTNJGNCHK-PREFNUM      =  42           )
+                     AND (LNK-FTNJGNCHK-KOHNUM(1:1) >= "1" AND <= "8")
+                     AND (LNK-FTNJGNCHK-SRYYM       >= "200704"      )
+                       IF  (WRK-KOHFTN9-H  =  WRK-KOHFTN-H)
+                       OR  (WRK-KOHFTN9-X  =  WRK-KOHFTN  )
+                             MOVE   01         TO  LNK-FTNJGNCHK-RC
+                       END-IF
+                     ELSE
                        IF  (LNK-FTNJGNCHK-SRYYM  >= "200804")
                        AND (WRK-KOHFTN-RITU       =  ZERO   )
                          IF   WRK-HKNMST-JGNGAK  >  WRK-KOHFTN
@@ -1907,9 +1996,9 @@
                              MOVE   01         TO  LNK-FTNJGNCHK-RC
                          END-IF
                        END-IF
+                     END-IF
                    END-IF
                END-EVALUATE
-             END-IF
            END-IF
       *
            IF    LNK-FTNJGNCHK-RC  =   ZERO
