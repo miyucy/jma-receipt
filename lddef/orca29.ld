@@ -58,6 +58,7 @@ db	{
 	tbl_sryacct_sub;
 	tbl_dbcatalog;
 	tbl_prtctrl;
+	tbl_sryacctplus;
 };
 
 /* #include "orcadb.inc" */
