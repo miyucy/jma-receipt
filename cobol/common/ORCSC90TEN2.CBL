@@ -328,8 +328,7 @@
              AND  (LNK-COM-TEN (IDX)     =   ZERO  )
       *!!!!!
       *      ÃÙ∫ﬁŒ¡∏∫≈¿°¢º£∏≥ Ò≥Á ¨§Œ§ﬂ
-             AND  (LNK-COM-INPUTCD (IDX)   =   "630010001"
-                                           OR  "630010004")
+             AND  (LNK-COM-INPUTCD (IDX)   =   "630010001")
       *!!!!!
                MOVE    LNK-COM-SURYO(IDX)  TO  WRK-GENTEN
                MOVE    LNK-COM-SURYO(IDX)  TO  LNK-COM-KISOTEN (IDX)
