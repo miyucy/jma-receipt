@@ -8922,6 +8922,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL       IDX     >   SPA-GMN-MAX
       *            泔刉動陸
              IF     (SPA-COM-YAKUHYO (IDX)   =   "1" )
+      *            蛹鰾動陸
+             OR     (SPA-COM-GENTEN  (IDX)   =   "1" )
              OR     (SPA-GMN-INPUTCD (IDX)(1:1)
                                              =   "."
                                              OR  "*"  )

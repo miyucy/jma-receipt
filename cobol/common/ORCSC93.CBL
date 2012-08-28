@@ -61,6 +61,7 @@
       * 04.04.00     NACL-多々納  09/02/12  外来まとめ対応
       * 04.05.00     NACL-多々納  10/01/XX  治験対応
       * 04.06.00     NACL-多々納  10/12/01  自賠責金額入力対応
+      * 04.07.00     NACL-多々納  12/08/28  薬剤料減点対応
       *****************************************************************
       *
       *
@@ -985,7 +986,6 @@
       *点数を戻す
                    MOVE    SPA-COM-TEN (IDX)   TO  SPA-COM-KISOTEN(IDX)
       *
-      *
       *            薬剤の時、内服・外用を決定する
                    EVALUATE    SPA-COM-YKZKBN(IDX)
                        WHEN    "6"
@@ -996,6 +996,16 @@
                        WHEN    "8"
                        WHEN    "9"
                            MOVE    "23"            TO  WRK-SRYKBN
+      *ver.4.7
+                       WHEN    "3"
+      *                    その他
+      *                    薬剤料減点は注射とする
+                           IF      SPA-COM-INPUTCD (IDX) =   "630010001"
+                               MOVE    "30"            TO  WRK-SRYKBN
+                           ELSE
+                               MOVE    "21"            TO  WRK-SRYKBN
+                           END-IF
+      *
                        WHEN    OTHER
                            MOVE    "21"            TO  WRK-SRYKBN
                    END-EVALUATE
@@ -1162,6 +1172,36 @@
                            MOVE    "0221"          TO  SPA-ERRCD
                        END-IF
                    END-IF
+      *ver.4.7
+      *            減点入力
+                   IF     (SPA-COM-TENSIKIBETU (IDX)   =   7  )
+      *                診療種別の直下
+                       IF     (IDX             >   1     )  AND
+                              (SPA-GMN-INPUTCD (IDX - 1)(1:1)
+                                                =   "."  )
+                           MOVE    "1"             TO  SPA-COM-GENTEN
+                                                              (IDX)
+                           MOVE    "1"             TO  SPA-COM-GENTEN
+                                                              (IDX - 1)
+                           MOVE    1               TO  FLG-GENTEN
+                       ELSE
+                           MOVE    "0240"          TO  SPA-ERRCD
+                       END-IF
+      *                薬剤料減点のチェック（その他注射・入院）
+                       IF     (SPA-COM-INPUTCD (IDX) =   "630010001" )
+                           IF     (SPA-NYUGAIKBN         =   "2"   )
+                             AND  (SPA-ERRCD             =   SPACE )
+                               MOVE    "0242"          TO  SPA-ERRCD
+                           END-IF
+                           IF     (WRK-SRYSYUKBN     NOT =   "340" )
+                             AND  (SPA-ERRCD             =   SPACE )
+                               MOVE    "0241"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  SPA-COM-CUR
+                                                            (IDX - 1)
+                           END-IF
+                       END-IF
+                   END-IF
+      *!!!!
                WHEN    "7"
       *            前が処方せん料は薬剤は入力しない
                    IF     (IDX                     >   1     ) AND

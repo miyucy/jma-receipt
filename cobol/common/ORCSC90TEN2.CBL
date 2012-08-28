@@ -33,6 +33,7 @@
       *  04.05.00    NACL-¬ø°π«º  10/01/XX  ÃÙ…æ¬–±˛
       *  04.05.00    NACL-¬ø°π«º  10/03/XX   ø¿Æ£≤£≤«Ø£¥∑Ó≤˛¿µ¬–±˛
       *  04.07.00    NACL-¬ø°π«º  12/03/XX   ø¿Æ£≤£¥«Ø£¥∑Ó≤˛¿µ¬–±˛
+      *  04.07.00    NACL-¬ø°π«º  12/08/28  ÃÙ∫ﬁŒ¡∏∫≈¿¬–±˛
       *****************************************************************
       *
       *
@@ -119,6 +120,8 @@
            03  WRK-MOJI            PIC X(01).
       *
            03  WRK-MAISU           PIC 9(05).
+      *ver.4.7
+           03  WRK-GENTEN          PIC 9(08).
       *
       *ø«Œ≈π‘∞ŸΩËÕ˝∫«¬Áπ‘
        01  MAX-LINE                PIC 9(03)   VALUE   400.
@@ -208,6 +211,11 @@
                        WHEN    "4"
       *                    √ÌºÕÃÙ
                            PERFORM 1002-CHUUSYA-SET-SEC
+      *ver.4.7
+                       WHEN    "3"
+      *                    §Ω§Œ¬æ
+                           PERFORM 10021-SONOTA-SET-SEC
+      *
                        WHEN    OTHER
       *                    ∆‚…˛ÃÙ
                            PERFORM 1001-YAKUZAI-SET-SEC
@@ -243,6 +251,13 @@
       *        ºÍµªÀË
                MOVE    1                   TO  LNK-COM-SYUFLG(IDX-SYU)
            END-IF
+      *ver.4.7
+      *    ÃÙ∫ﬁŒ¡∏∫≈¿
+           IF      WRK-GENTEN          >   ZERO
+               MOVE    WRK-GENTEN          TO  WRK-SC90-YKZTEN
+           END-IF
+      *
+      *
       *    ºÍµª≈¿øÙ
            MOVE    LNK-SC90-TENSU      TO  LNK-COM-SYUTEN-M (IDX-SYU)
            ADD     LNK-SC90-TENSU      TO  LNK-SC90-TENSUKEI
@@ -302,6 +317,26 @@
            ADD     WRK-SYOKEIS2        TO  WRK-ZAIKEI
            .
        1002-CHUUSYA-SET-EXT.
+           EXIT.
+      *ver.4.7
+      *****************************************************************
+      *    §Ω§Œ¬æ° ∏∫≈¿°À ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       10021-SONOTA-SET-SEC           SECTION.
+      *
+           IF     (LNK-COM-TENSIKIBETU (IDX) =   7 )
+             AND  (LNK-COM-TEN (IDX)     =   ZERO  )
+      *!!!!!
+      *      ÃÙ∫ﬁŒ¡∏∫≈¿°¢º£∏≥ Ò≥Á ¨§Œ§ﬂ
+             AND  (LNK-COM-INPUTCD (IDX)   =   "630010001"
+                                           OR  "630010004")
+      *!!!!!
+               MOVE    LNK-COM-SURYO(IDX)  TO  WRK-GENTEN
+               MOVE    LNK-COM-SURYO(IDX)  TO  LNK-COM-KISOTEN (IDX)
+               MOVE    1                   TO  LNK-COM-PLUSKBN(IDX)
+           END-IF
+           .
+       10021-SONOTA-SET-EXT.
            EXIT.
       *
       *****************************************************************

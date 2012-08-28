@@ -2783,7 +2783,8 @@
                               (WRK-SRY-SRYCD (IDXA)    =   SPACE)
       *        対象外（器材商品コード、逓減コード、用量コード）
                IF     (WRK-SRY-SRYCD (IDXA)(1:3) =   "058" )
-                  OR  (WRK-SRY-SRYCD (IDXA)      =   "630010002" )
+                  OR  (WRK-SRY-SRYCD (IDXA)      =   "630010002")
+                  OR  (WRK-SRY-SRYCD (IDXA)      =   "630010004")
                   OR  (WRK-SRY-SRYCD (IDXA)(1:7) =   "0992000" )
                   OR  (WRK-SRY-SRYCD (IDXA)(1:7) =   "0999999" )
                    CONTINUE

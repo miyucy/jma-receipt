@@ -1931,6 +1931,24 @@
                    MOVE
                    "在宅がん医療総合診察料を算定時、算定できません"
                                        TO  SPA-ERRMSG
+      *ver.4.7
+               WHEN    "0240"
+                   STRING   "減点は診療種別の直下に入力して下さい"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0241"
+                   STRING   "薬剤料減点（合算薬剤料上限超）は"
+                            "その他注射で入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0242"
+                   STRING   "薬剤料減点（合算薬剤料上限超）は"
+                            "入院で入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

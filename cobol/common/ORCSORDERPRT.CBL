@@ -362,6 +362,10 @@
            IF      LNK-WKSRY-ZAIKBN  (1)   =   1
                MOVE    ZERO                TO  FLG-SYORI
            END-IF
+      *    減点は対象外
+           IF      LNK-WKSRY-ZAIKBN  (1)   =   2
+               MOVE    ZERO                TO  FLG-SYORI
+           END-IF
       *
            IF      FLG-SYORI           =   ZERO
                CONTINUE

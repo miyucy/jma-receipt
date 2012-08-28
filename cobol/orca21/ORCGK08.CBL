@@ -3261,7 +3261,8 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   WRK-MAX
       *      ÃÙ…æ°¶¥Ô…æ∞ ≥∞
-             IF     (LNK-WKSRY-ZAIKBN  (IDX)   =   1 )
+             IF     (LNK-WKSRY-ZAIKBN  (IDX)   =   1  )
+             OR     (LNK-WKSRY-ZAIKBN  (IDX)   =   2  )
                CONTINUE
              ELSE
                IF     (LNK-WKSRY-SRYKBN (IDX)  =   "21"

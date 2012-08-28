@@ -1375,6 +1375,7 @@
                   (SRY-SRYSYUKBN       =   "980"))
       *        ÆâÉþÄþ¸ººÞ¤ÏÂÐ¾Ý³°
                IF      (SRY-SRYCD (1)  =  "630010002")
+               OR      (SRY-SRYCD (1)  =  "630010004")
                    MOVE    1                   TO  FLG-SRYACT
                END-IF
            ELSE

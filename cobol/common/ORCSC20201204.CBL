@@ -1299,6 +1299,8 @@
              IF   (WRK-COM-YAKUHYO (IDX)       =   "1"  )  OR
                   (WRK-GMN-INPUTCD (IDX)(1:1)  =   "."  )  OR
                   (WRK-COM-HKNCOMBI (IDX)      =   "9999")
+      *ver.4.7  減点対象外
+             OR   (WRK-COM-GENTEN   (IDX)      =   "1"    )
                CONTINUE
              ELSE
       *
@@ -1430,6 +1432,9 @@
             AND   (WRK-COM-HKNCOMBI (IDX)  NOT =   "9999" )
       *        薬評対象外
             AND   (WRK-COM-YAKUHYO  (IDX)  =   SPACE  )
+      *ver.4.7  減点対象外
+            AND   (WRK-COM-GENTEN   (IDX)  =   SPACE  )
+      *
       *        診療種別区分変換
                PERFORM 30001-SRYSYUKBN-SET-SEC
       *        投薬の時、薬剤コードがあること
@@ -2309,6 +2314,9 @@
            IF      WRK-COM-HKNCOMBI (IDX3)  NOT =   "9999"
       *        薬評対象外
             AND   (WRK-COM-YAKUHYO  (IDX3)  =   SPACE  )
+      *ver.4.7  減点対象外
+            AND   (WRK-COM-GENTEN   (IDX3)  =   SPACE  )
+      *
                IF      WRK-COM-INPUTCD(IDX3)(1:1)  =   "6"
                    MOVE    1              TO  FLG-YAKUZAI-ARI
                ELSE
@@ -3762,6 +3770,9 @@
                 AND (WRK-COM-HKNCOMBI(IDX) NOT =   "9999" )
       *        薬評対象外
                AND  (WRK-COM-YAKUHYO (IDX) =   SPACE  )
+      *ver.4.7  減点対象外
+               AND  (WRK-COM-GENTEN (IDX)  =   SPACE  )
+      *
       *        診療種別区分変換
                PERFORM 30001-SRYSYUKBN-SET-SEC
       *        院内の内服薬チェック

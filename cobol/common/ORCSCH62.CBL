@@ -1027,6 +1027,7 @@
                                                    OR  "001"
                                                    OR  "008")
                    IF     (WRK-SRY-SRYCD (IDXA)    =   "630010002" )
+                     OR   (WRK-SRY-SRYCD (IDXA)    =   "630010004" )
                      OR   (WRK-SRY-SRYCD (IDXA)(1:4)   =   "0086"  )
                        CONTINUE
                    ELSE
@@ -1303,6 +1304,8 @@
                    AND     (FLG-YKJOKUKBN      =   ZERO   ) )
       *                ÌôÉ¾Ê¬ÂÐ¾Ý³°
                    OR      (WKSRY-ZAIKBN       =   1      )
+      *                ¸ºÅÀ³°
+                   OR      (WKSRY-ZAIKBN       =   2      )
                        CONTINUE
                    ELSE
                        ADD     1                   TO  LNK-WKSRYACT-MAX

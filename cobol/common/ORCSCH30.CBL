@@ -650,6 +650,7 @@
                            MOVE    1                   TO  FLG-OK
                        END-IF
                        IF      SRY-SRYCD (IDXA)    =   "630010002"
+                                                   OR  "630010004"
                            CONTINUE
                        ELSE
                            ADD     1               TO  IDX
@@ -1150,6 +1151,8 @@
                    AND    (FLG-YKJOKUKBN       =   ZERO  ) )
       *                ÃÙ…æ§œ¬–æ›≥∞
                    OR    ( WKSRY-ZAIKBN        =   1     )
+      *                ∏∫≈¿
+                   OR    ( WKSRY-ZAIKBN        =   2     )
                        CONTINUE
                    ELSE
                        PERFORM 2001-WKSRYACT-HEN-SEC
