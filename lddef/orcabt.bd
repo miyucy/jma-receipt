@@ -6,7 +6,7 @@ textsize	400;
 handler "RubyExec" {
         class "Exec";
         serialize "CGI";
-        start "/usr/bin/ruby -Ke -I %p %m.rb %a";
+        start "/usr/bin/ruby -Ke -I %p/%m.rb %a";
         locale "euc-jp";
 };
 
