@@ -525,6 +525,7 @@ FORM_files = \
               HCML13.red \
 	      HCM11V05.red \
 	      HCN09V06.red \
+	      HCM3AV02.red \
 
 all:   
 
