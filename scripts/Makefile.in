@@ -132,12 +132,12 @@ ruby_scripts = \
 	daily/das-upload2.rb \
 	allways/mksqldata.rb \
 	tools/orcred2textview.rb \
-	tools/redinspector.rb
-	monthly/receden_check.rb
-	monthly/receden_check_start.rb
-	monthly/receden_common.rb
-	monthly/receden_common_const.rb
-	monthly/receden_const.rb
+	tools/redinspector.rb \
+	monthly/receden_check.rb \
+	monthly/receden_check_start.rb \
+	monthly/receden_common.rb \
+	monthly/receden_common_const.rb \
+	monthly/receden_const.rb \
 	monthly/receden_error.rb
 
 claim_scripts = \
