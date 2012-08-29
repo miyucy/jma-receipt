@@ -145,11 +145,6 @@
                    13  SPA-GMN-I01-TOKNYUIN-CD     PIC X(02).
                    13  SPA-GMN-I01-TOKNYUINFL      PIC X(01).
                    13  SPA-GMN-I01-TOKNYUIN-NM     PIC X(60).
-      *          特定入院非該当
-                 11  SPA-GMN-I01-TOKHIGAITO.
-                   13  SPA-GMN-I01-TOKHIGAITO-CD   PIC X(01).
-                   13  SPA-GMN-I01-TOKHIGAITOFL    PIC X(01).
-                   13  SPA-GMN-I01-TOKHIGAITO-NM   PIC X(28).
       *          算定入院料
                  11  SPA-GMN-I01-SNTNYUIN          PIC X(60).
       *          入院料加算
@@ -169,7 +164,7 @@
                    13  SPA-GMN-I01-SEIKYU-NM       PIC X(22).
       *          検索時患者表示
                  11  SPA-GMN-I01-DISPKBN.
-                   13  SPA-GMN-I01-DISPKBN-CD      PIC X(01).
+                   13  SPA-GMN-I01-DISPKBN-CD      PIC X(02).
                    13  SPA-GMN-I01-DISPKBNFL       PIC X(01).
                    13  SPA-GMN-I01-DISPKBN-NM      PIC X(08).
       *          ユーザープログラム
@@ -270,9 +265,6 @@
                                                    PIC X(02).
                  11  SPA-NAI-I01-TOKNYUINMOT       PIC X(3).
                  11  SPA-NAI-I01-TOKNYUINCD        PIC X(09).
-                 11  SPA-NAI-I01-TOKHIGAITOCD      PIC X(09).
-                 11  SPA-NAI-I01-TOKUTEI-KBN       PIC X(01).
-                 11  SPA-NAI-I01-TOKUTEI-NYUIN     PIC X(02).
       *          病棟入院基本料
                  11  SPA-NAI-I01-KHNRYO-G.
                     13  SPA-NAI-I01-KHNRYO-CD      PIC X(09).
@@ -345,7 +337,7 @@
       *          室料差額コンボ
                  11  SPA-GMN-I01-CMB-SAGAKU.
                    13  SPA-GMN-I01-SAGAKU-CNT      PIC 9(5).
-                   13  SPA-GMN-I01-SAGAKU-ITM      OCCURS  99.
+                   13  SPA-GMN-I01-SAGAKU-ITM      OCCURS  30.
                        15  SPA-GMN-I01-SAGAKUL     PIC X(02).
                        15  SPA-GMN-I01-SAGAKUFLL   PIC X(01).
                        15  SPA-GMN-I01-SAGAKUMEIL  PIC X(20).
@@ -444,7 +436,7 @@
                    13  SPA-GMN-I01-TOKNYUIN-SRYCDTTL
                                                    PIC 9(14).
                    13  SPA-GMN-I01-TOKNYUIN-CNT    PIC 9(5).
-                   13  SPA-GMN-I01-TOKNYUIN-ITM-OCC    OCCURS  100.
+                   13  SPA-GMN-I01-TOKNYUIN-ITM-OCC    OCCURS  30.
                      15    SPA-GMN-I01-TOKNYUIN-ITM.
                        17  SPA-GMN-I01-TOKNYUINL   PIC X(02).
                        17  SPA-GMN-I01-TOKNYUINFLL PIC X(01).
@@ -457,16 +449,6 @@
                                                    PIC X(2).
                      15    SPA-GMN-I01-TOKNYUIN-ITM4
                                                    PIC X(9).
-                     15    SPA-GMN-I01-TOKNYUIN-ITM5
-                                                   PIC X(9).
-      *          特定入院非該当コンボ
-                 11  SPA-GMN-I01-CMB-TOKHIGAITO.
-                   13  SPA-GMN-I01-TOKHIGAITO-CNT        PIC 9(5).
-                   13  SPA-GMN-I01-TOKHIGAITO-ITM-OCC    OCCURS  2.
-                     15    SPA-GMN-I01-TOKHIGAITO-ITM.
-                       17  SPA-GMN-I01-TOKHIGAITOL   PIC X(01).
-                       17  SPA-GMN-I01-TOKHIGAITOFLL PIC X(01).
-                       17  SPA-GMN-I01-TOKHIGAITOMEIL PIC X(28).
       *          入院料加算コンボ
                  11  SPA-GMN-I01-CMB-KSN.
                    13  SPA-GMN-I01-CMB-KSN-EDITABLE PIC 9(1).
@@ -489,7 +471,7 @@
                  11  SPA-GMN-I01-CMB-DISPKBN.
                    13  SPA-GMN-I01-DISPKBN-CNT     PIC 9(5).
                    13  SPA-GMN-I01-DISPKBN-ITM     OCCURS  5.
-                     15  SPA-GMN-I01-DISPKBNL      PIC X(01).
+                     15  SPA-GMN-I01-DISPKBNL      PIC X(02).
                      15  SPA-GMN-I01-DISPKBNFLL    PIC X(01).
                      15  SPA-GMN-I01-DISPKBNMEIL   PIC X(08).
       *          ユーザープログラムコンボ
@@ -499,9 +481,6 @@
                      15  SPA-GMN-I01-USERPGL       PIC X(01).
                      15  SPA-GMN-I01-USERPGFLL     PIC X(01).
                      15  SPA-GMN-I01-USERPGMEIL    PIC X(20).
-      *      褥瘡患者管理加算の算定済み判定エリア
-             07  SPA-I01-JOKUSOUYMD                PIC X(08).
-             07  SPA-I01-JOKUSOUKBN                PIC X(01).
       *
       *  入院歴表示画面
          03  SPA-I02.
@@ -644,8 +623,6 @@
                  11  SPA-GMN-I03-TAIINYMD          PIC X(10).
       *          通算対象日数
                  11  SPA-GMN-I03-TAISYONISSU       PIC S9(5).
-      *          特定入院−通算対象日数
-                 11  SPA-GMN-I03-TOKUTAISYONISSU   PIC S9(5).
       *          病名
                  11  SPA-GMN-I03-BYOMEI-G.
                      15  SPA-GMN-I03-BYOMEI        PIC X(50)
@@ -667,9 +644,6 @@
                                                    PIC X(08).
       *
       *        画面入力部領域
-             07  SPA-NAI-I03-AREA.
-               09  SPA-NAI-I03-JITAKBN             PIC X(01).
-               09  SPA-NAI-I03-TAIINKBN            PIC X(01).
                09  SPA-NAI-I03-INPUT-AREA.
       *          入院日
                  11  SPA-NAI-I03-NYUINYMD          PIC X(08).
