@@ -1272,8 +1272,14 @@ class Receden_check < Receden_common
             end
 
             if flg_tensu_required == true
-              if zai["TEN"].value.to_i == 0
-                @errors.push("33070",rece,zai,"TEN",nil,tbl_tensu["NAME"])
+              if @check_level == 1
+                if zai["TEN"].value.to_i == 0
+                  @errors.push("33070",rece,zai,"TEN",nil,tbl_tensu["NAME"])
+                end
+              else
+                if zai["TEN"].value == ""
+                  @errors.push("33071",rece,zai,"TEN",nil,tbl_tensu["NAME"])
+                end
               end
             end
 
@@ -1454,7 +1460,7 @@ class Receden_check < Receden_common
 
   def main
 
-    @hospnum,@infile,@outfile,@errlog=ARGV[0].split(",")
+    @hospnum,@infile,@outfile,@errlog,@check_level=ARGV[0].split(",")
 
     @db = PandaDB.new
     @db.execFunction("DBOPEN")
