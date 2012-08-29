@@ -769,10 +769,21 @@
            PERFORM
                UNTIL       FLG-SYSKANRI    =   1
                MOVE    MCPDATA-REC         TO  SYS-1013-REC
-               IF      SYS-1013-STYUKYMD   <=  SPA-NAI-YUKOSTYMD
-                   MOVE    SYS-1013-JIHINAME   TO  WRK-JIHINAME
+      *        システム日付で有効
+               IF     (SPA-NAI-YUKOSTYMD   <=  SPA-SYSYMD )  AND
+                      (SPA-NAI-YUKOEDYMD   >=  SPA-SYSYMD )
+                   IF     (SYS-1013-STYUKYMD   <=  SPA-SYSYMD) AND
+                          (SYS-1013-EDYUKYMD   >=  SPA-SYSYMD)
+                       MOVE    SYS-1013-JIHINAME   TO  WRK-JIHINAME
+                       MOVE    1                   TO  FLG-SYSKANRI
+                   END-IF
                ELSE
-                   MOVE    1               TO  FLG-SYSKANRI
+      *            有効期間外は終了日が有効期間内
+                   IF     (SYS-1013-STYUKYMD   <=  SPA-NAI-YUKOEDYMD)
+                   AND    (SYS-1013-EDYUKYMD   >=  SPA-NAI-YUKOEDYMD)
+                       MOVE    SYS-1013-JIHINAME   TO  WRK-JIHINAME
+                       MOVE    1                   TO  FLG-SYSKANRI
+                   END-IF
                END-IF
       *
                IF      FLG-SYSKANRI        =   ZERO
