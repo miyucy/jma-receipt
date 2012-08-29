@@ -50,6 +50,16 @@
                 04  W63-KGKANJINASHI-COUNT PIC S9(9)   BINARY.
                 04  W63-KGKANJINASHI-ITEM  
                                        PIC X(20)   OCCURS  5 TIMES.
+              03  W63-CMB-KGKETACHK.
+                04  W63-KGKETACHK       PIC X(20).
+                04  W63-KGKETACHK-COUNT PIC S9(9)   BINARY.
+                04  W63-KGKETACHK-ITEM  PIC X(20)   OCCURS  5 TIMES.
+              03  W63-CMB-KGKETAMIN.
+                04  W63-KGKETAMIN       PIC X(21).
+                04  W63-KGKETAMIN-STATE PIC S9(9)   BINARY.
+                04  W63-KGKETAMIN-COUNT PIC S9(9)   BINARY.
+                04  W63-KGKETAMIN-ITEM  PIC X(21)   OCCURS  25 TIMES.
+                04  W63-KGKETAMIN-ITEM-STATE PIC S9(9)   BINARY.
               03  W63-CMB-NM1SUJI.
                 04  W63-NM1SUJI        PIC X(20).
                 04  W63-NM1SUJI-COUNT  PIC S9(9)   BINARY.
@@ -79,10 +89,16 @@
                 04  W63-NMSUJINASHI-COUNT PIC S9(9)   BINARY.
                 04  W63-NMSUJINASHI-ITEM
                                        PIC X(20)   OCCURS  5 TIMES.
+              03  W63-CMB-NMKETACHK.
+                04  W63-NMKETACHK       PIC X(20).
+                04  W63-NMKETACHK-COUNT PIC S9(9)   BINARY.
+                04  W63-NMKETACHK-ITEM  PIC X(20)   OCCURS  5 TIMES.
               03  W63-CMB-NMKETAMIN.
                 04  W63-NMKETAMIN       PIC X(21).
+                04  W63-NMKETAMIN-STATE PIC S9(9)   BINARY.
                 04  W63-NMKETAMIN-COUNT PIC S9(9)   BINARY.
                 04  W63-NMKETAMIN-ITEM  PIC X(21)   OCCURS  15 TIMES.
+                04  W63-NMKETAMIN-ITEM-STATE PIC S9(9)   BINARY.
               03  W63-CMB-NM2SUJI.
                 04  W63-NM2SUJI        PIC X(20).
                 04  W63-NM2SUJI-COUNT  PIC S9(9)   BINARY.

@@ -1982,6 +1982,10 @@
                                        TO SRH-1102-NMKETAMINL    (IDX5)
                MOVE    CK4-1102-NMKETAMAX
                                        TO SRH-1102-NMKETAMAXL    (IDX5)
+               MOVE    CK4-1102-KGKETAMIN
+                                       TO SRH-1102-KGKETAMINL    (IDX5)
+               MOVE    CK4-1102-KGKETAMAX
+                                       TO SRH-1102-KGKETAMAXL    (IDX5)
       *
                MOVE    "tbl_chk004"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -4512,6 +4516,18 @@
       *
            IF    ( SRH-1102-KGKANJINASHI   =   "2" )
                IF    ( SDTCHK04-KANJI      =   ZERO )
+                   MOVE    1       TO  FLG-HKNKIGOERR
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-KGKETAMIN  NOT =   SPACE )
+               IF    ( SRH-1102-KGKETAMIN  >   SDTCHK04-KETA )
+                   MOVE    1       TO  FLG-HKNKIGOERR
+               END-IF
+           END-IF
+      *
+           IF    ( SRH-1102-KGKETAMAX  NOT =   SPACE )
+               IF    ( SRH-1102-KGKETAMAX  <   SDTCHK04-KETA )
                    MOVE    1       TO  FLG-HKNKIGOERR
                END-IF
            END-IF
@@ -11043,6 +11059,10 @@
                                        TO  SRH-1102-KGETC
                        MOVE    SRH-1102-KGKANJINASHIL (SRH-IDX)
                                        TO  SRH-1102-KGKANJINASHI
+                       MOVE    SRH-1102-KGKETAMINL (SRH-IDX)
+                                       TO  SRH-1102-KGKETAMIN
+                       MOVE    SRH-1102-KGKETAMAXL (SRH-IDX)
+                                       TO  SRH-1102-KGKETAMAX
       *
                        MOVE    SRH-1102-NM1SUJIL (SRH-IDX)
                                        TO  SRH-1102-NM1SUJI
@@ -11137,6 +11157,10 @@
                                        TO  SRH-1102-KGETC
            MOVE    KGNMCHK-KGKANJINASHI(IDX-KGNM)
                                        TO  SRH-1102-KGKANJINASHI
+           MOVE    KGNMCHK-KGKETAMIN  (IDX-KGNM)
+                                       TO  SRH-1102-KGKETAMIN
+           MOVE    KGNMCHK-KGKETAMAX  (IDX-KGNM)
+                                       TO  SRH-1102-KGKETAMAX
       *
            MOVE    KGNMCHK-NM1SUJI(IDX-KGNM)
                                        TO  SRH-1102-NM1SUJI

@@ -88,6 +88,22 @@ W63	{
 			count	int;
 			item	varchar(20)[05];
 		};
+		CMB_KGKETACHK	{
+			KGKETACHK{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[05];
+		};
+		CMB_KGKETAMIN	{
+			KGKETAMIN{
+				value	varchar(21);
+				state	int;
+			};
+			count	int;
+			item	varchar(21)[25];
+			state	int;
+		};
 		CMB_NM1SUJI	{
 			NM1SUJI	{
 				value	varchar(20);
@@ -137,12 +153,21 @@ W63	{
 			count	int;
 			item	varchar(20)[05];
 		};
+		CMB_NMKETACHK	{
+			NMKETACHK{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[05];
+		};
 		CMB_NMKETAMIN	{
 			NMKETAMIN{
 				value	varchar(21);
+				state	int;
 			};
 			count	int;
 			item	varchar(21)[15];
+			state	int;
 		};
 		CMB_NM2SUJI	{
 			NM2SUJI	{
