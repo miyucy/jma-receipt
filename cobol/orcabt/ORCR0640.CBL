@@ -580,6 +580,7 @@
       *
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *  04.07.02    NACL-門脇    11/10/17  法定外現物給付対応（法別１０、２１）
+      *  04.07.03    NACL-門脇    12/08/28  薬剤料減点対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2056,6 +2057,10 @@
            COPY    "CPRCF062.INC"  REPLACING  //RECE62//
                                    BY         //WRK-RECE62G//.
       *
+       01  WRK-RECE62C-REC. 
+           COPY    "CPRCF062.INC"  REPLACING  //RECE62//
+                                   BY         //WRK-RECE62C//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -2875,6 +2880,7 @@
                                WRK-TENTEKI2-TABLE
       *
            INITIALIZE          WRK-RECE62G-REC
+           INITIALIZE          WRK-RECE62C-REC
       *
            INITIALIZE          WRK-SYS2010-TAIHI-TBL
            INITIALIZE          WRK-SYS2012-TAIHI-TBL
@@ -6479,6 +6485,10 @@
                    IF  IDX3         =     1
                        MOVE  ACCT-ZAIKAISU     TO   WK-ZAIKAISU
                        MOVE  ACCT-ZAITEN       TO   WK-ZAITEN
+                       IF    SRY-SRYKBN  =  "31"  OR  "32"  OR  "33"
+                                COMPUTE   WK-YKZTEN   =
+                                                      ACCT-YKZTEN
+                       END-IF
                        IF    SRY-SRYKBN  =  "40"  OR  "50"  OR  "60"
                                         OR  "70"  OR  "80"  OR  "54"
                                         OR  "64"
@@ -6935,21 +6945,33 @@
                        COMPUTE   RECE62-TENSU(10 BUN-IDX)  =
                                  RECE62-TENSU(10 BUN-IDX)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX)  =
+                                 WRK-RECE62C-TENSU(10 BUN-IDX)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE   RECE62-TENSU(10 BUN-IDX2)  =
                                  RECE62-TENSU(10 BUN-IDX2)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX2) =
+                                 WRK-RECE62C-TENSU(10 BUN-IDX2) +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE   RECE62-TENSU(10 BUN-IDX3)  =
                                  RECE62-TENSU(10 BUN-IDX3)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX3) =
+                                 WRK-RECE62C-TENSU(10 BUN-IDX3) +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE   RECE62-TENSU(10 BUN-IDX4)  =
                                  RECE62-TENSU(10 BUN-IDX4)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX4) =
+                                 WRK-RECE62C-TENSU(10 BUN-IDX4) +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
       *    静脈内注射のレセ点数欄の編集
                WHEN    "32"
@@ -6958,45 +6980,92 @@
                        COMPUTE   RECE62-TENSU(11 BUN-IDX)  =
                                  RECE62-TENSU(11 BUN-IDX)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX)  =
+                                 WRK-RECE62C-TENSU(11 BUN-IDX)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE   RECE62-TENSU(11 BUN-IDX2)  =
                                  RECE62-TENSU(11 BUN-IDX2)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX2) =
+                                 WRK-RECE62C-TENSU(11 BUN-IDX2) +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE   RECE62-TENSU(11 BUN-IDX3)  =
                                  RECE62-TENSU(11 BUN-IDX3)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX3) =
+                                 WRK-RECE62C-TENSU(11 BUN-IDX3) +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE   RECE62-TENSU(11 BUN-IDX4)  =
                                  RECE62-TENSU(11 BUN-IDX4)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX4) =
+                                 WRK-RECE62C-TENSU(11 BUN-IDX4) +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
       *    その他注射のレセ点数欄の編集
                WHEN    "33"
+                 IF  ACCT-ZAIKBN   =    2
+                   IF    BUN-IDX        =   1
+                       COMPUTE   WRK-RECE62G-TENSU(12 BUN-IDX)  =
+                                 WRK-RECE62G-TENSU(12 BUN-IDX)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX2       =   2
+                       COMPUTE   WRK-RECE62G-TENSU(12 BUN-IDX2)  =
+                                 WRK-RECE62G-TENSU(12 BUN-IDX2)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX3       =   3
+                       COMPUTE   WRK-RECE62G-TENSU(12 BUN-IDX3)  =
+                                 WRK-RECE62G-TENSU(12 BUN-IDX3)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                   IF    BUN-IDX4       =   4
+                       COMPUTE   WRK-RECE62G-TENSU(12 BUN-IDX4)  =
+                                 WRK-RECE62G-TENSU(12 BUN-IDX4)  +
+                                (WK-ZAITEN   *   WK-ZAIKAISU)
+                   END-IF
+                 ELSE
                    ADD    WK-ZAIKAISU     TO   RECE62-KAISU(12)
                    IF    BUN-IDX        =   1
                        COMPUTE   RECE62-TENSU(12 BUN-IDX)  =
                                  RECE62-TENSU(12 BUN-IDX)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX)  =
+                                 WRK-RECE62C-TENSU(12 BUN-IDX)  +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE   RECE62-TENSU(12 BUN-IDX2)  =
                                  RECE62-TENSU(12 BUN-IDX2)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX2) =
+                                 WRK-RECE62C-TENSU(12 BUN-IDX2) +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE   RECE62-TENSU(12 BUN-IDX3)  =
                                  RECE62-TENSU(12 BUN-IDX3)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX3) =
+                                 WRK-RECE62C-TENSU(12 BUN-IDX3) +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE   RECE62-TENSU(12 BUN-IDX4)  =
                                  RECE62-TENSU(12 BUN-IDX4)  +
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
+                       COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX4) =
+                                 WRK-RECE62C-TENSU(12 BUN-IDX4) +
+                                (WK-YKZTEN   *   WK-ZAIKAISU)
                    END-IF
+                 END-IF
       *    処置のレセ点数欄の編集
                WHEN    "40"
                    IF    WK-SYUTEN       NOT =   ZERO
@@ -12902,21 +12971,33 @@
                  COMPUTE   RECE62-TENSU(12 BUN-IDX)  =
                            RECE62-TENSU(12 BUN-IDX)  +
                            (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
+                 COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX)  =
+                           WRK-RECE62C-TENSU(12 BUN-IDX)  +
+                           (RECE64-YKZTEN  *  RECE64-ZAIKAISU)
            END-IF
            IF    BUN-IDX2       =   2
                  COMPUTE   RECE62-TENSU(12 BUN-IDX2)  =
                            RECE62-TENSU(12 BUN-IDX2)  +
                            (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
+                 COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX2) =
+                           WRK-RECE62C-TENSU(12 BUN-IDX2) +
+                           (RECE64-YKZTEN  *  RECE64-ZAIKAISU)
            END-IF
            IF    BUN-IDX3       =   3
                  COMPUTE   RECE62-TENSU(12 BUN-IDX3)  =
                            RECE62-TENSU(12 BUN-IDX3)  +
                            (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
+                 COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX3) =
+                           WRK-RECE62C-TENSU(12 BUN-IDX3) +
+                           (RECE64-YKZTEN  *  RECE64-ZAIKAISU)
            END-IF
            IF    BUN-IDX4       =   4
                  COMPUTE   RECE62-TENSU(12 BUN-IDX4)  =
                            RECE62-TENSU(12 BUN-IDX4)  +
                            (RECE64-ZAITEN  *  RECE64-ZAIKAISU)
+                 COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX4) =
+                           WRK-RECE62C-TENSU(12 BUN-IDX4) +
+                           (RECE64-YKZTEN  *  RECE64-ZAIKAISU)
            END-IF
       *
            .                                           
@@ -21967,6 +22048,116 @@
                       RECE62-TENSU(3 4)  -  WRK-RECE62G-TENSU(3 4)
            ELSE
              MOVE     ZERO    TO   RECE62-TENSU(3 4)
+           END-IF
+      *
+      *    その他注射のレセ点数の編集（減点）
+           IF   WRK-RECE62C-TENSU(12 1)  >=  WRK-RECE62G-TENSU(12 1)
+             COMPUTE  RECE62-TENSU(12 1)  =
+                      RECE62-TENSU(12 1)  -  WRK-RECE62G-TENSU(12 1)
+           ELSE
+             COMPUTE  RECE62-TENSU(12 1)  =
+                      RECE62-TENSU(12 1)  -  WRK-RECE62C-TENSU(12 1)
+             COMPUTE  WRK-RECE62G-TENSU(12 1) =
+                      WRK-RECE62G-TENSU(12 1) -
+                      WRK-RECE62C-TENSU(12 1)
+             IF  WRK-RECE62C-TENSU(11 1)  >=   WRK-RECE62G-TENSU(12 1)
+               COMPUTE  RECE62-TENSU(11 1)  =
+                        RECE62-TENSU(11 1)  -  WRK-RECE62G-TENSU(12 1)
+             ELSE
+               COMPUTE  RECE62-TENSU(11 1)  =
+                        RECE62-TENSU(11 1)  -  WRK-RECE62C-TENSU(11 1)
+               COMPUTE  WRK-RECE62G-TENSU(12 1) =
+                        WRK-RECE62G-TENSU(12 1) -
+                        WRK-RECE62C-TENSU(11 1)
+               IF  WRK-RECE62C-TENSU(10 1)  >=   WRK-RECE62G-TENSU(12 1)
+                 COMPUTE  RECE62-TENSU(10 1)  =
+                          RECE62-TENSU(10 1)  -  WRK-RECE62G-TENSU(12 1)
+               ELSE
+                 COMPUTE  RECE62-TENSU(10 1)  =
+                          RECE62-TENSU(10 1)  -  WRK-RECE62C-TENSU(10 1)
+               END-IF
+             END-IF
+           END-IF
+           IF   WRK-RECE62C-TENSU(12 2)  >=  WRK-RECE62G-TENSU(12 2)
+             COMPUTE  RECE62-TENSU(12 2)  =
+                      RECE62-TENSU(12 2)  -  WRK-RECE62G-TENSU(12 2)
+           ELSE
+             COMPUTE  RECE62-TENSU(12 2)  =
+                      RECE62-TENSU(12 2)  -  WRK-RECE62C-TENSU(12 2)
+             COMPUTE  WRK-RECE62G-TENSU(12 2) =
+                      WRK-RECE62G-TENSU(12 2) -
+                      WRK-RECE62C-TENSU(12 2)
+             IF  WRK-RECE62C-TENSU(11 2)  >=   WRK-RECE62G-TENSU(12 2)
+               COMPUTE  RECE62-TENSU(11 2)  =
+                        RECE62-TENSU(11 2)  -  WRK-RECE62G-TENSU(12 2)
+             ELSE
+               COMPUTE  RECE62-TENSU(11 2)  =
+                        RECE62-TENSU(11 2)  -  WRK-RECE62C-TENSU(11 2)
+               COMPUTE  WRK-RECE62G-TENSU(12 2) =
+                        WRK-RECE62G-TENSU(12 2) -
+                        WRK-RECE62C-TENSU(11 2)
+               IF  WRK-RECE62C-TENSU(10 2)  >=   WRK-RECE62G-TENSU(12 2)
+                 COMPUTE  RECE62-TENSU(10 2)  =
+                          RECE62-TENSU(10 2)  -  WRK-RECE62G-TENSU(12 2)
+               ELSE
+                 COMPUTE  RECE62-TENSU(10 2)  =
+                          RECE62-TENSU(10 2)  -  WRK-RECE62C-TENSU(10 2)
+               END-IF
+             END-IF
+           END-IF
+           IF   WRK-RECE62C-TENSU(12 3)  >=  WRK-RECE62G-TENSU(12 3)
+             COMPUTE  RECE62-TENSU(12 3)  =
+                      RECE62-TENSU(12 3)  -  WRK-RECE62G-TENSU(12 3)
+           ELSE
+             COMPUTE  RECE62-TENSU(12 3)  =
+                      RECE62-TENSU(12 3)  -  WRK-RECE62C-TENSU(12 3)
+             COMPUTE  WRK-RECE62G-TENSU(12 3) =
+                      WRK-RECE62G-TENSU(12 3) -
+                      WRK-RECE62C-TENSU(12 3)
+             IF  WRK-RECE62C-TENSU(11 3)  >=   WRK-RECE62G-TENSU(12 3)
+               COMPUTE  RECE62-TENSU(11 3)  =
+                        RECE62-TENSU(11 3)  -  WRK-RECE62G-TENSU(12 3)
+             ELSE
+               COMPUTE  RECE62-TENSU(11 3)  =
+                        RECE62-TENSU(11 3)  -  WRK-RECE62C-TENSU(11 3)
+               COMPUTE  WRK-RECE62G-TENSU(12 3) =
+                        WRK-RECE62G-TENSU(12 3) -
+                        WRK-RECE62C-TENSU(11 3)
+               IF  WRK-RECE62C-TENSU(10 3)  >=   WRK-RECE62G-TENSU(12 3)
+                 COMPUTE  RECE62-TENSU(10 3)  =
+                          RECE62-TENSU(10 3)  -  WRK-RECE62G-TENSU(12 3)
+               ELSE
+                 COMPUTE  RECE62-TENSU(10 3)  =
+                          RECE62-TENSU(10 3)  -  WRK-RECE62C-TENSU(10 3)
+               END-IF
+             END-IF
+           END-IF
+           IF   WRK-RECE62C-TENSU(12 4)  >=  WRK-RECE62G-TENSU(12 4)
+             COMPUTE  RECE62-TENSU(12 4)  =
+                      RECE62-TENSU(12 4)  -  WRK-RECE62G-TENSU(12 4)
+           ELSE
+             COMPUTE  RECE62-TENSU(12 4)  =
+                      RECE62-TENSU(12 4)  -  WRK-RECE62C-TENSU(12 4)
+             COMPUTE  WRK-RECE62G-TENSU(12 4) =
+                      WRK-RECE62G-TENSU(12 4) -
+                      WRK-RECE62C-TENSU(12 4)
+             IF  WRK-RECE62C-TENSU(11 4)  >=   WRK-RECE62G-TENSU(12 4)
+               COMPUTE  RECE62-TENSU(11 4)  =
+                        RECE62-TENSU(11 4)  -  WRK-RECE62G-TENSU(12 4)
+             ELSE
+               COMPUTE  RECE62-TENSU(11 4)  =
+                        RECE62-TENSU(11 4)  -  WRK-RECE62C-TENSU(11 4)
+               COMPUTE  WRK-RECE62G-TENSU(12 4) =
+                        WRK-RECE62G-TENSU(12 4) -
+                        WRK-RECE62C-TENSU(11 4)
+               IF  WRK-RECE62C-TENSU(10 4)  >=   WRK-RECE62G-TENSU(12 4)
+                 COMPUTE  RECE62-TENSU(10 4)  =
+                          RECE62-TENSU(10 4)  -  WRK-RECE62G-TENSU(12 4)
+               ELSE
+                 COMPUTE  RECE62-TENSU(10 4)  =
+                          RECE62-TENSU(10 4)  -  WRK-RECE62C-TENSU(10 4)
+               END-IF
+             END-IF
            END-IF
       *
            .

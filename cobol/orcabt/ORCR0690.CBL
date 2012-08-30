@@ -170,6 +170,7 @@
       *                                     種別不明レセ対応で生保の負担
       *                                     者番号、受給者番号なしのとき、
       *                                     エラーとしない
+      *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -795,6 +796,8 @@
            03  CONS-YKZ20      PIC X(09)   VALUE   "820000047".
       *    包括点数の治験減点分
            03  CONS-GENTEN     PIC X(09)   VALUE   "199000210".
+      *    薬剤料減点（合算薬剤料上限超）
+           03  CONS-GENTEN2    PIC X(09)   VALUE   "630010001".
       *
       *フリーコメント
       *    フリーコメント 
@@ -1742,6 +1745,7 @@
       *
                        IF      RECE65-SRYCD(IDX) =   CONS-TEIGEN
                                                  OR  CONS-GENTEN
+                                                 OR  CONS-GENTEN2
                            MOVE    1             TO  FLG-TEIGEN
                        END-IF
                        IF    ( RECE64-SRYKBN     =   "90" OR "92"      )

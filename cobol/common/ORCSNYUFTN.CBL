@@ -135,6 +135,7 @@
       *
       *  04.06.01    NACL-門脇    10/12/06  労災・自賠責の金額フリー入力
       *                                     コード対応
+      *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -164,6 +165,7 @@
            03  WRK-NYUINRYO-ERR            PIC 9(01).
            03  WRK-NYUINRYO-ERR2           PIC 9(01).
            03  WRK-GENTEN-ERR              PIC 9(01).
+           03  WRK-GENTEN-ERR2             PIC 9(01).
            03  WRK-KYUKYUHANSO-ERR         PIC 9(01).
            03  WRK-TAIJYUSIN-ERR           PIC 9(01).
            03  WRK-HANTEI-YMD              PIC X(08).
@@ -260,6 +262,10 @@
        01  WRK-KOREI-TANYUIN-TABLE.
            02  WRK-KOREI-TANYUIN-TBL  OCCURS   10.
               03 WRK-KOREI-TANYUINFLG      PIC X(01).
+      *
+       01  WRK-YAKTEN-TABLE.
+           02  WRK-YAKTEN-TBL         OCCURS   10.
+              03 WRK-CSY-YAKTEN            PIC 9(07).
       *
        01  WRK-SKYYM-TABLE.
            02  WRK-SKYYM-TBL     OCCURS    2.
@@ -697,6 +703,7 @@
                          WRK-KAIKEING-TABLE
                          WRK-KAIKEING2-TABLE
                          WRK-KOREI-TANYUIN-TABLE
+                         WRK-YAKTEN-TABLE
                          FLG-AREA
                          CNT-AREA.
       *
@@ -889,6 +896,11 @@
            IF    LNK-S02-RC   =   ZERO
              IF   WRK-GENTEN-ERR  =  1
                 MOVE     19     TO    LNK-S02-RC
+             END-IF
+           END-IF.
+           IF    LNK-S02-RC   =   ZERO
+             IF   WRK-GENTEN-ERR2 =  1
+                MOVE     25     TO    LNK-S02-RC
              END-IF
            END-IF.
       *
@@ -4726,6 +4738,9 @@ grpsys                            SPA-AREA
       **   DISPLAY  "SYU-KYUFUGAI-GOKEI-TEN = " 
       **             SYU-KYUFUGAI-GOKEI-TEN
       *
+      *    点滴薬剤（器材）点数まとめ処理
+           PERFORM   TENTEK-MATOME-SEC
+      *
            EVALUATE   SYU-SYUHKNNUM
              WHEN      "971"
              WHEN      "973"
@@ -4738,9 +4753,6 @@ grpsys                            SPA-AREA
       *        その他保険転送処理
                PERFORM   ETCHKN-TENSO-SEC
            END-EVALUATE
-      *
-      *    点滴薬剤（器材）点数まとめ処理
-           PERFORM   TENTEK-MATOME-SEC
       *
       *    保険点数集計
            PERFORM     VARYING   IDZ    FROM   1    BY    1
@@ -5220,6 +5232,9 @@ grpsys                                        SPA-AREA
                    WHEN    "32"
                     COMPUTE SYU-HKNTEN (05) =  SYU-HKNTEN (05)  +
                            (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    COMPUTE WRK-CSY-YAKTEN(IDX) =
+                            WRK-CSY-YAKTEN(IDX) +
+                           (ACCT-YKZTEN  *   SINRYO-COUNT)
                     PERFORM  VARYING  SYU-IDX  FROM  1  BY  1          
                                UNTIL    SYU-IDX   >    31              
                        COMPUTE SDAY-HKNTEN(SYU-IDX) =                  
@@ -5245,9 +5260,26 @@ grpsys                                        SPA-AREA
                                             TBL-ZAIKAISU(SYU-IDX))     
                                   END-PERFORM                          
                                WHEN  "340"
+                                 IF   ACCT-ZAIKBN  =  2
+                                  COMPUTE WRK-SYUG-CSY-HKNTEN(IDX) =
+                                          WRK-SYUG-CSY-HKNTEN(IDX) +
+                                         (ACCT-ZAITEN * SINRYO-COUNT)
+                                  PERFORM VARYING SYU-IDX FROM 1 BY 1
+                                          UNTIL    SYU-IDX  >  31
+                                    COMPUTE WRK-SDAYG-HKNTEN
+                                                     (IDX SYU-IDX) =
+                                            WRK-SDAYG-HKNTEN
+                                                     (IDX SYU-IDX) +
+                                           (ACCT-ZAITEN  *
+                                            TBL-ZAIKAISU(SYU-IDX))
+                                  END-PERFORM
+                                 ELSE
                                   COMPUTE SYU-HKNTEN (05) = 
                                           SYU-HKNTEN (05) + 
                                          (ACCT-ZAITEN * SINRYO-COUNT)
+                                  COMPUTE WRK-CSY-YAKTEN(IDX) =
+                                          WRK-CSY-YAKTEN(IDX) +
+                                         (ACCT-YKZTEN * SINRYO-COUNT)
                                   PERFORM VARYING SYU-IDX FROM 1 BY 1  
                                           UNTIL    SYU-IDX  >  31      
                                     COMPUTE SDAY-HKNTEN(SYU-IDX) =     
@@ -5255,6 +5287,7 @@ grpsys                                        SPA-AREA
                                            (ACCT-ZAITEN  *             
                                             TBL-ZAIKAISU(SYU-IDX))     
                                   END-PERFORM                          
+                                 END-IF
                            END-EVALUATE
                        END-IF
       *            処置
@@ -6075,6 +6108,17 @@ grpsys                                    SPA-AREA
               MOVE      ZERO    TO    SYU-HKNTEN(15)
               MOVE      1       TO    WRK-GENTEN-ERR
            END-IF
+           IF   SYU-HKNTEN(5)   >= WRK-SYUG-CSY-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(5)  =  SYU-HKNTEN(5)
+                                       -  WRK-SYUG-CSY-HKNTEN(IDX)
+              IF  WRK-CSY-YAKTEN(IDX)
+                                <  WRK-SYUG-CSY-HKNTEN(IDX)
+                MOVE    1       TO    WRK-GENTEN-ERR2
+              END-IF
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(5)
+              MOVE      1       TO    WRK-GENTEN-ERR2
+           END-IF
       *
            IF  SYU-SYUHKNNUM       =   "973"
       *
@@ -6135,6 +6179,17 @@ grpsys                                    SPA-AREA
               MOVE      ZERO    TO    SYU-HKNTEN(15)
               MOVE      1       TO    WRK-GENTEN-ERR
            END-IF
+           IF   SYU-HKNTEN(5)   >= WRK-SYUG-CSY-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(5)  =  SYU-HKNTEN(5)
+                                       -  WRK-SYUG-CSY-HKNTEN(IDX)
+              IF  WRK-CSY-YAKTEN(IDX)
+                                <  WRK-SYUG-CSY-HKNTEN(IDX)
+                MOVE    1       TO    WRK-GENTEN-ERR2
+              END-IF
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(5)
+              MOVE      1       TO    WRK-GENTEN-ERR2
+           END-IF
       *
            COMPUTE   WRK-SYUTEN     =  WRK-SYUTEN
                                     -  WRK-SYUG-SDO-HKNTEN(IDX)
@@ -6174,6 +6229,17 @@ grpsys                                    SPA-AREA
            ELSE
               MOVE      ZERO    TO    SYU-HKNTEN(15)
               MOVE      1       TO    WRK-GENTEN-ERR
+           END-IF
+           IF   SYU-HKNTEN(5)   >= WRK-SYUG-CSY-HKNTEN(IDX)
+              COMPUTE   SYU-HKNTEN(5)  =  SYU-HKNTEN(5)
+                                       -  WRK-SYUG-CSY-HKNTEN(IDX)
+              IF  WRK-CSY-YAKTEN(IDX)
+                                <  WRK-SYUG-CSY-HKNTEN(IDX)
+                MOVE    1       TO    WRK-GENTEN-ERR2
+              END-IF
+           ELSE
+              MOVE      ZERO    TO    SYU-HKNTEN(5)
+              MOVE      1       TO    WRK-GENTEN-ERR2
            END-IF
       *
       ***  PERFORM  VARYING  SYU-IDX  FROM  1  BY  1
@@ -6920,6 +6986,8 @@ grpsys                            SPA-AREA
                  IF  ORCSTEN-ZAITEN(IDX1)  NOT =  ZERO
                   IF  WRK-DOJITU-FLG2(IDX IDX1) = 1
                       ADD    ORCSTEN-ZAITEN(IDX1)  TO  SYU-HKNTEN (05)
+                      ADD    ORCSTEN-ZAITEN(IDX1)
+                                               TO  WRK-CSY-YAKTEN(IDX)
                       IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
                         CONTINUE
                       ELSE
@@ -6929,6 +6997,8 @@ grpsys                            SPA-AREA
                    EVALUATE  WRK-DOJITU-FLG(IDX IDX1)
                      WHEN      0
                       ADD    ORCSTEN-ZAITEN(IDX1)  TO  SYU-HKNTEN (05)
+                      ADD    ORCSTEN-ZAITEN(IDX1)
+                                               TO  WRK-CSY-YAKTEN(IDX)
                       IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
                         CONTINUE
                       ELSE
@@ -6938,6 +7008,8 @@ grpsys                            SPA-AREA
                      WHEN      7
                       ADD    ORCSTEN-DOU-ZAITEN(IDX1 1)
                                                    TO  SYU-HKNTEN (05)
+                      ADD    ORCSTEN-DOU-ZAITEN(IDX1 1)
+                                               TO  WRK-CSY-YAKTEN(IDX)
                       IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
                         CONTINUE
                       ELSE
@@ -6950,6 +7022,8 @@ grpsys                            SPA-AREA
                                             ORCSTEN-DOU-ZAITEN(IDX1 2)
                         ADD    ORCSTEN-DOU-ZAITEN(IDX1 2)
                                                    TO  SYU-HKNTEN (05)
+                        ADD    ORCSTEN-DOU-ZAITEN(IDX1 2)
+                                               TO  WRK-CSY-YAKTEN(IDX)
                         IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
                           CONTINUE
                         ELSE
@@ -6961,6 +7035,8 @@ grpsys                            SPA-AREA
                                   ORCSTEN-ZAITEN(IDX1) -
                                   ORCSTEN-DOU-ZAITEN(IDX1 1)
                         ADD    WRK-DOJITU-TENTEK   TO  SYU-HKNTEN (05)
+                        ADD    WRK-DOJITU-TENTEK
+                                               TO  WRK-CSY-YAKTEN(IDX)
                         IF  SYU-SYUHKNNUM = "971" OR "973" OR "975"
                           CONTINUE
                         ELSE

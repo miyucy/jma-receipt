@@ -58,6 +58,7 @@
       *
       *  04.05.01    NACL-門脇    10/01/18  治験対応
       *  04.05.02    NACL-門脇    11/11/09  同日再入院食事対応
+      *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1142,6 +1143,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                           TO  ERR-ERRMSG
                     WHEN       24
                       MOVE "同日再入院日の再入院分に入院料加算有"
+                                          TO  ERR-ERRMSG
+                    WHEN       25
+                      MOVE "薬剤料減点数確認"
                                           TO  ERR-ERRMSG
                     WHEN      OTHER
                       MOVE "仮収納データの取得に失敗"
