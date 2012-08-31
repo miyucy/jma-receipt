@@ -3901,6 +3901,12 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *    °ìÈÌÌ¾½èÊý²Ã»»¤Î»»Äê²ó¿ô¸º»»ÍÑÎÎ°è¤Î½é´ü²½
            MOVE   ZERO              TO   WRK-IPPAN-SKAN2
       *
+           MOVE   ZERO              TO   WK-ZAIKAISU
+           MOVE   ZERO              TO   WK-ZAITEN
+           MOVE   ZERO              TO   WK-SYUTEN
+           MOVE   ZERO              TO   WK-KIZAITEN
+           MOVE   ZERO              TO   WK-YKZTEN
+      *
            PERFORM   VARYING  IDX3   FROM   1   BY   1
                      UNTIL    (IDX3         >     5)        OR
                               (SRY-SRYCD(IDX3)   =   SPACE)

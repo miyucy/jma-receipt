@@ -76,6 +76,7 @@
       *                                     ¥³¡¼¥ÉÂÐ±þ
       *
       *  04.07.01    NACL-ÌçÏÆ    11/09/09  Ï«ºÒÀÁµá½ñºîÀ®ÂÐ±þ
+      *  04.07.02    NACL-ÌçÏÆ    12/08/28  ÌôºÞÎÁ¸ºÅÀÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -171,7 +172,7 @@
        01  TBL-TENSUG-JI.
            03  TBL-TENSU-JI                            OCCURS   31.
               05  TBL-SYUTEN-JI                        PIC S9(09).
-              05  TBL-YKZTEN-JI                        PIC  9(09).
+              05  TBL-YKZTEN-JI                        PIC S9(09).
       *
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
@@ -1947,7 +1948,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       IF  ACCT-ZAIKBN  =    2
                          COMPUTE  TBL-SYUTEN-JI(IDY)  =
                                   TBL-SYUTEN-JI(IDY)  -
-                                 ( WRK-ZAIKAISU-JI * ACCT-ZAITEN   )
+                                 ( WRK-ZAIKAISU-JI * ACCT-SYUTEN1  )
+                         COMPUTE  WRK-KEISAN-JI   =  ACCT-KIZAITEN  +
+                                                     ACCT-YKZTEN
+                         COMPUTE  TBL-YKZTEN-JI(IDY)  =
+                                  TBL-YKZTEN-JI(IDY)  -
+                                 ( WRK-ZAIKAISU-JI * WRK-KEISAN-JI )
                       ELSE
                          COMPUTE  TBL-YKZTEN-JI(IDY)  =
                                   TBL-YKZTEN-JI(IDY)  -

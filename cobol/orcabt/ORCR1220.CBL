@@ -100,6 +100,7 @@
       *  04.05.13    NACL-門脇    12/08/10  ８０その他欄の点数集計修正
       *
       *  04.06.01    NACL-門脇    10/08/16  入院の点滴入力改善対応
+      *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -267,6 +268,7 @@
        01  WK-SYUTEN               PIC S9(08).
        01  WK-KIZAITEN             PIC S9(08).
        01  WK-YKZTEN               PIC S9(08).
+       01  WK-YKZTEN2              PIC S9(08).
       *
       *    エラーメッセージ編集領域
        01  ERR-EDIT-AREA.
@@ -876,6 +878,10 @@
            COPY    "CPRCF200.INC"  REPLACING  //RECE200//
                                    BY         //WRK-RECE200G//.
       *
+       01  WRK-RECE200C-REC. 
+           COPY    "CPRCF200.INC"  REPLACING  //RECE200//
+                                   BY         //WRK-RECE200C//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -1412,6 +1418,7 @@
                                WRK-TENTEKI2-TABLE
       *
            INITIALIZE          WRK-RECE200G-REC
+           INITIALIZE          WRK-RECE200C-REC
       *
            PERFORM    2111-TENTEKIMATOME-HENSYU-SEC
       *
@@ -2975,6 +2982,13 @@
       *****************************************************************
        210122-RECE200-HENSYU-SEC               SECTION.
       *
+           MOVE      ZERO       TO     WK-ZAIKAISU
+           MOVE      ZERO       TO     WK-ZAITEN
+           MOVE      ZERO       TO     WK-SYUTEN
+           MOVE      ZERO       TO     WK-KIZAITEN
+           MOVE      ZERO       TO     WK-YKZTEN
+           MOVE      ZERO       TO     WK-YKZTEN2
+      *
            PERFORM   VARYING  IDX3   FROM   1   BY   1
                      UNTIL    (IDX3         >     5)        OR
                               (SRY-SRYCD(IDX3)   =   SPACE)
@@ -2982,6 +2996,9 @@
                    IF  IDX3         =     1
                        MOVE  ACCT-ZAIKAISU     TO   WK-ZAIKAISU
                        MOVE  ACCT-ZAITEN       TO   WK-ZAITEN
+                       IF    SRY-SRYKBN  =  "31" OR "32" OR "33"
+                           MOVE   ACCT-YKZTEN    TO   WK-YKZTEN2
+                       END-IF
                        IF    SRY-SRYKBN  =  "31" OR "32" OR "33" OR
                                             "40" OR "50" OR "54" OR
                                             "60" OR "70" OR "80" OR
@@ -3007,6 +3024,7 @@
                            MOVE  ZERO          TO   WK-SYUTEN
                            MOVE  ZERO          TO   WK-KIZAITEN
                            MOVE  ZERO          TO   WK-YKZTEN
+                           MOVE  ZERO          TO   WK-YKZTEN2
                        END-IF
                    END-IF
                ELSE
@@ -3015,6 +3033,7 @@
                      MOVE    ZERO     TO    WK-SYUTEN
                      MOVE    ZERO     TO    WK-KIZAITEN
                      MOVE    ZERO     TO    WK-YKZTEN
+                     MOVE    ZERO     TO    WK-YKZTEN2
                END-IF
                IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                     (ACCT-ZAIKAISU  NOT =    ZERO)
@@ -3211,7 +3230,6 @@
       *    注射のレセ点数欄の編集
                WHEN    "31"
                WHEN    "32"
-               WHEN    "33"
                    ADD    WK-ZAIKAISU     TO   RECE200-KAISU(10)
                    COMPUTE   RECE200-TENSU(10 1)  =
                              RECE200-TENSU(10 1)  +
@@ -3219,6 +3237,26 @@
                    COMPUTE   RECE200-TENSU(11 2)  =
                              RECE200-TENSU(11 2)  +
                             (WK-YKZTEN   *   WK-ZAIKAISU)
+                   COMPUTE   WRK-RECE200C-TENSU(11 2)  =
+                             WRK-RECE200C-TENSU(11 2)  +
+                            (WK-YKZTEN2  *   WK-ZAIKAISU)
+               WHEN    "33"
+                 IF  ACCT-ZAIKBN   =    2
+                   COMPUTE   WRK-RECE200G-TENSU(11 2)  =
+                             WRK-RECE200G-TENSU(11 2)  +
+                            (WK-ZAITEN   *   WK-ZAIKAISU)
+                 ELSE
+                   ADD    WK-ZAIKAISU     TO   RECE200-KAISU(10)
+                   COMPUTE   RECE200-TENSU(10 1)  =
+                             RECE200-TENSU(10 1)  +
+                            (WK-SYUTEN   *   WK-ZAIKAISU)
+                   COMPUTE   RECE200-TENSU(11 2)  =
+                             RECE200-TENSU(11 2)  +
+                            (WK-YKZTEN   *   WK-ZAIKAISU)
+                   COMPUTE   WRK-RECE200C-TENSU(11 2)  =
+                             WRK-RECE200C-TENSU(11 2)  +
+                            (WK-YKZTEN2  *   WK-ZAIKAISU)
+                 END-IF
       *    処置のレセ点数欄の編集
                WHEN    "40"
                    IF    WK-SYUTEN       NOT =   ZERO
@@ -6369,6 +6407,9 @@
            COMPUTE   RECE200-TENSU(11 2)  =
                      RECE200-TENSU(11 2)  +
                     (RECE220-KIZAITEN  *  RECE220-ZAIKAISU)
+           COMPUTE   WRK-RECE200C-TENSU(11 2)  =
+                     WRK-RECE200C-TENSU(11 2)  +
+                    (RECE220-YKZTEN    *  RECE220-ZAIKAISU)
       *
            .
       *
@@ -6744,6 +6785,8 @@
            COMPUTE   WRK-TOTALTEN1  =  WRK-TOTALTEN1
                                     -  WRK-RECE200G-TENSU(2 1)
                                     -  WRK-RECE200G-TENSU(3 1)
+           COMPUTE   WRK-TOTALTEN2  =  WRK-TOTALTEN2
+                                    -  WRK-RECE200G-TENSU(11 2)
       *
       *    指導のレセ点数の編集（減点）
            IF   RECE200-TENSU(2 1)   >=  WRK-RECE200G-TENSU(2 1)
@@ -6759,6 +6802,15 @@
                       RECE200-TENSU(3 1)  - WRK-RECE200G-TENSU(3 1)
            ELSE
              MOVE     ZERO    TO   RECE200-TENSU(3 1)
+           END-IF
+      *
+      *    その他注射のレセ点数の編集（減点）
+           IF   WRK-RECE200C-TENSU(11 2)  >=  WRK-RECE200G-TENSU(11 2)
+             COMPUTE  RECE200-TENSU(11 2)  =
+                      RECE200-TENSU(11 2)  -  WRK-RECE200G-TENSU(11 2)
+           ELSE
+             COMPUTE  RECE200-TENSU(11 2)  =
+                      RECE200-TENSU(11 2)  -  WRK-RECE200C-TENSU(11 2)
            END-IF
       *
            .

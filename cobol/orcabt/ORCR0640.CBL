@@ -946,6 +946,7 @@
        01  WK-SYUTEN                                   PIC S9(08).
        01  WK-KIZAITEN                                 PIC S9(08).
        01  WK-YKZTEN                                   PIC S9(08).
+       01  WK-YKZTEN2                                  PIC S9(08).
       *
       *    エラーメッセージ編集領域
        01  ERR-EDIT-AREA.
@@ -6478,6 +6479,13 @@
              END-IF
            END-IF
       *
+           MOVE      ZERO       TO     WK-ZAIKAISU
+           MOVE      ZERO       TO     WK-ZAITEN
+           MOVE      ZERO       TO     WK-SYUTEN
+           MOVE      ZERO       TO     WK-KIZAITEN
+           MOVE      ZERO       TO     WK-YKZTEN
+           MOVE      ZERO       TO     WK-YKZTEN2
+      *
            PERFORM   VARYING  IDX3   FROM   1   BY   1
                      UNTIL    (IDX3         >     5)        OR
                               (SRY-SRYCD(IDX3)   =   SPACE)
@@ -6486,8 +6494,7 @@
                        MOVE  ACCT-ZAIKAISU     TO   WK-ZAIKAISU
                        MOVE  ACCT-ZAITEN       TO   WK-ZAITEN
                        IF    SRY-SRYKBN  =  "31"  OR  "32"  OR  "33"
-                                COMPUTE   WK-YKZTEN   =
-                                                      ACCT-YKZTEN
+                                MOVE   ACCT-YKZTEN    TO   WK-YKZTEN2
                        END-IF
                        IF    SRY-SRYKBN  =  "40"  OR  "50"  OR  "60"
                                         OR  "70"  OR  "80"  OR  "54"
@@ -6508,6 +6515,7 @@
                            MOVE  ZERO          TO   WK-SYUTEN
                            MOVE  ZERO          TO   WK-KIZAITEN
                            MOVE  ZERO          TO   WK-YKZTEN
+                           MOVE  ZERO          TO   WK-YKZTEN2
                        END-IF
                    END-IF
                ELSE
@@ -6516,6 +6524,7 @@
                      MOVE    ZERO     TO    WK-SYUTEN
                      MOVE    ZERO     TO    WK-KIZAITEN
                      MOVE    ZERO     TO    WK-YKZTEN
+                     MOVE    ZERO     TO    WK-YKZTEN2
                END-IF
                IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                     (ACCT-ZAIKAISU  NOT =    ZERO)
@@ -6947,7 +6956,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX)  =
                                  WRK-RECE62C-TENSU(10 BUN-IDX)  +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE   RECE62-TENSU(10 BUN-IDX2)  =
@@ -6955,7 +6964,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX2) =
                                  WRK-RECE62C-TENSU(10 BUN-IDX2) +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE   RECE62-TENSU(10 BUN-IDX3)  =
@@ -6963,7 +6972,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX3) =
                                  WRK-RECE62C-TENSU(10 BUN-IDX3) +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE   RECE62-TENSU(10 BUN-IDX4)  =
@@ -6971,7 +6980,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(10 BUN-IDX4) =
                                  WRK-RECE62C-TENSU(10 BUN-IDX4) +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
       *    静脈内注射のレセ点数欄の編集
                WHEN    "32"
@@ -6982,7 +6991,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX)  =
                                  WRK-RECE62C-TENSU(11 BUN-IDX)  +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE   RECE62-TENSU(11 BUN-IDX2)  =
@@ -6990,7 +6999,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX2) =
                                  WRK-RECE62C-TENSU(11 BUN-IDX2) +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE   RECE62-TENSU(11 BUN-IDX3)  =
@@ -6998,7 +7007,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX3) =
                                  WRK-RECE62C-TENSU(11 BUN-IDX3) +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE   RECE62-TENSU(11 BUN-IDX4)  =
@@ -7006,7 +7015,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(11 BUN-IDX4) =
                                  WRK-RECE62C-TENSU(11 BUN-IDX4) +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
       *    その他注射のレセ点数欄の編集
                WHEN    "33"
@@ -7039,7 +7048,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX)  =
                                  WRK-RECE62C-TENSU(12 BUN-IDX)  +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX2       =   2
                        COMPUTE   RECE62-TENSU(12 BUN-IDX2)  =
@@ -7047,7 +7056,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX2) =
                                  WRK-RECE62C-TENSU(12 BUN-IDX2) +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX3       =   3
                        COMPUTE   RECE62-TENSU(12 BUN-IDX3)  =
@@ -7055,7 +7064,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX3) =
                                  WRK-RECE62C-TENSU(12 BUN-IDX3) +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                    IF    BUN-IDX4       =   4
                        COMPUTE   RECE62-TENSU(12 BUN-IDX4)  =
@@ -7063,7 +7072,7 @@
                                 (WK-ZAITEN   *   WK-ZAIKAISU)
                        COMPUTE   WRK-RECE62C-TENSU(12 BUN-IDX4) =
                                  WRK-RECE62C-TENSU(12 BUN-IDX4) +
-                                (WK-YKZTEN   *   WK-ZAIKAISU)
+                                (WK-YKZTEN2  *   WK-ZAIKAISU)
                    END-IF
                  END-IF
       *    処置のレセ点数欄の編集

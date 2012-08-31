@@ -9015,6 +9015,12 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                      END-IF
            END-PERFORM
       *
+           MOVE      ZERO       TO     WK-ZAIKAISU
+           MOVE      ZERO       TO     WK-ZAITEN
+           MOVE      ZERO       TO     WK-SYUTEN
+           MOVE      ZERO       TO     WK-KIZAITEN
+           MOVE      ZERO       TO     WK-YKZTEN
+      *
            PERFORM   VARYING  IDX3   FROM   1   BY   1
                      UNTIL    (IDX3         >     5)        OR
                               (SRY-SRYCD(IDX3)   =   SPACE)
