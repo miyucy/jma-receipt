@@ -953,7 +953,7 @@
                WHEN    24
                    MOVE    "0021"      TO  ERR-ERRCD
                WHEN    25
-                   MOVE    "0025"      TO  ERR-ERRCD
+                   MOVE    "0022"      TO  ERR-ERRCD
                WHEN    OTHER
                    MOVE    "0006"      TO  ERR-ERRCD
                END-EVALUATE
