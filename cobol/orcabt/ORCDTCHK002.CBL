@@ -643,6 +643,7 @@
       *
        01  ERRKBN-AREA.
            03  ERRKBN-990009                           PIC X(01).
+           03  ERRKBN-A10001                           PIC X(01).
       *
        01  KEY-AREA.
            03  KEY-HKNCOMBI                    PIC 9(04).
@@ -1300,12 +1301,14 @@
                                            FLG-SRYHEIA
       *
       *    薬剤と病名
-           MOVE    "1"                 TO  WRK-CHK-CHKKBN
-           MOVE    "1"                 TO  WRK-CHK-CDKBN
-           PERFORM 900-CHKSND-KEY5-SEL-SEC
-           IF    ( FLG-CHKMST          =   ZERO )
-               MOVE    1               TO  FLG-YKZBYO
-           END-IF
+      *    MOVE    "1"                 TO  WRK-CHK-CHKKBN
+      *    MOVE    "1"                 TO  WRK-CHK-CDKBN
+      *    PERFORM 900-CHKSND-KEY5-SEL-SEC
+      *    IF    ( FLG-CHKMST          =   ZERO )
+      *        MOVE    1               TO  FLG-YKZBYO
+      *    END-IF
+      *
+           MOVE    1                   TO  FLG-YKZBYO
       *
       *    診療行為と病名
            MOVE    "2"                 TO  WRK-CHK-CHKKBN
@@ -2014,6 +2017,8 @@
       *
            MOVE    "1"                 TO  ERRKBN-990009
       *
+           MOVE    "2"                 TO  ERRKBN-A10001
+      *
       *    システム管理マスタ検索処理
            MOVE    ZERO                TO  FLG-CHK004
            INITIALIZE                      CK4-1103-REC
@@ -2038,6 +2043,9 @@
                WHEN    "99"
                    MOVE    CK4-1103-ERRKBN (9)
                                        TO  ERRKBN-990009
+               WHEN    "A1"
+                   MOVE    CK4-1103-ERRKBN (1)
+                                       TO  ERRKBN-A10001
                END-EVALUATE
       *
                MOVE    "tbl_chk004"        TO  MCP-TABLE
@@ -6587,6 +6595,7 @@
            MOVE    WRK-PARA-HOSPNUM    TO  CHKSND-HOSPNUM
            PERFORM 900-CHKSND-KEY13-SEL-SEC
            IF    ( FLG-CHKSND          =   ZERO )
+      *
                MOVE    CHKSND-REC      TO  TCHKSND-REC
                IF    ( CHKSND-NYUGAIKBN    =   SPACE )
                 OR   ( CHKSND-NYUGAIKBN    =   ORCBSD01-NYUGAIKBN )
@@ -6595,7 +6604,14 @@
                    MOVE    1           TO  FLG-CHKMST
                END-IF
            ELSE
-                   MOVE    1           TO  FLG-CHKMST
+      *
+               MOVE    "1"             TO  WRK-CHK-CHKKBN
+               MOVE    "1"             TO  WRK-CHK-CDKBN
+               MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  WRK-CHK-SRYCD
+               PERFORM 901-DTCHK008-WRITE-SEC
+      *
+               MOVE    1               TO  FLG-CHKMST
            END-IF
       *
            IF    ( FLG-CHKMST          =   ZERO )
@@ -9796,6 +9812,8 @@
                    MOVE    "990020"    TO  WRK-ERRCD
                WHEN    24
                    MOVE    "990021"    TO  WRK-ERRCD
+               WHEN    25
+                   MOVE    "990022"    TO  WRK-ERRCD
                WHEN    OTHER
                    MOVE    "990018"    TO  WRK-ERRCD
                END-EVALUATE
@@ -10714,6 +10732,39 @@
        216-ERRMES-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    エラーメッセージ編集処理（７）
+      *****************************************************************
+       217-ERRMES-HEN-SEC              SECTION.
+      *
+           PERFORM 2111-ERRMES-GET-SEC
+      *
+           INITIALIZE  DTCHK004-REC
+      *
+           COMPUTE CNT-CHKERR  =   CNT-CHKERR  +   1
+           MOVE    CNT-CHKERR          TO  DTCHK004-ERRCD-SEQ
+      *
+           MOVE    "Z"                 TO  DTCHK004-HKNKBN
+           MOVE    TERRINF-LASTYMD     TO  DTCHK004-LASTYMD
+      *
+           MOVE    "1"                 TO  DTCHK004-ERRSBT
+           MOVE    "*****"             TO  DTCHK004-PTNUM
+           MOVE    DTCHK004-ERRCD      TO  DTCHK004-R1-ERRCD
+           MOVE    DTCHK004-ERRCD-SEQ  TO  DTCHK004-R1-ERRCD-SEQ
+      *
+           STRING  WRK-ERRMES          DELIMITED   BY  SPACE
+                  "【"                 DELIMITED   BY  SIZE
+                   WRK-ERRMES-PLUS     DELIMITED   BY  SPACE
+                   "】"
+           INTO    DTCHK004-ERRMSG
+           END-STRING
+      *
+           WRITE   DTCHK004-REC
+           COMPUTE CNT-DTCHK004    =   CNT-DTCHK004    +   1
+      *
+           .
+       217-ERRMES-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    エラーメッセージ取得処理
       *****************************************************************
        2111-ERRMES-GET-SEC             SECTION.
@@ -10753,6 +10804,7 @@
        2111-DTCHK004-KYOTU-HEN-SEC     SECTION.
       *
            INITIALIZE  DTCHK004-REC
+           MOVE    "0"                 TO  DTCHK004-ERRSBT
            MOVE    PTNUM-PTNUM         TO  DTCHK004-PTNUM
            MOVE    WRK-ERRCD           TO  DTCHK004-ERRCD
       *
@@ -10769,7 +10821,7 @@
            MOVE    TERRINF-DAY-G       TO  DTCHK004-DAY-G
            MOVE    TERRINF-LASTYMD     TO  DTCHK004-LASTYMD
       *
-           MOVE    "9"                 TO  WRK-SRTKBN
+           MOVE    HIGH-VALUE          TO  WRK-SRTKBN
            EVALUATE    DTCHK003-HKNKBN
            WHEN  CONST-SYAHO
                MOVE    "1"             TO  WRK-SRTKBN
@@ -11693,6 +11745,17 @@
                END-IF
            END-IF
       *
+           CLOSE                       DTCHK008-FILE
+           OPEN    INPUT               DTCHK008-FILE
+      *
+           IF    ( LNK-PRTKANRI-TBL-KEY    =  "RECEPTX" )
+               CONTINUE
+           ELSE
+               IF    ( ERRKBN-A10001   =   "1" )
+                   PERFORM 3001-TEKBYOMEI-MITOUROKU-SEC
+               END-IF
+           END-IF
+      *
            CLOSE                       DCACCT-FILE
                                        DCSRY-FILE
                                        DTCHK003-FILE
@@ -11713,7 +11776,7 @@
       *
                PERFORM 900-DBCOMMIT-SEC
            END-IF
-      *     
+      *
            DISPLAY "*** ORCDTCHK002 END ***"
            DISPLAY "DTCHK004 CNT [" CNT-DTCHK004 "]"
            DISPLAY "***********************"
@@ -11722,6 +11785,41 @@
        300-END-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    適応病名未登録薬剤チェック処理
+      *****************************************************************
+       3001-TEKBYOMEI-MITOUROKU-SEC            SECTION.
+      *
+           PERFORM 901-DTCHK008-READ-SEC
+      *
+           PERFORM UNTIL ( FLG-DTCHK008    NOT =   ZERO )
+      *
+               IF    ( DTCHK008-CHKKBN     =   "1" )
+                AND  ( DTCHK008-CDKBN      =   "1" )
+                AND  ( DTCHK008-FORMSTCHK  =   "1" )
+      *
+                   MOVE    DTCHK008-SRYCD  TO  WRK-SRYCD
+                   MOVE    WRK-KJNYMD      TO  WRK-TNS-YMD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   IF    ( FLG-TENSU       NOT =   ZERO )
+                       MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+                       PERFORM 800-ZENKAKU-HEN-SEC
+                       MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+                   END-IF
+                   MOVE    "A10001"        TO  WRK-ERRCD
+                   MOVE    TNS-NAME        TO  WRK-ERRMES-PLUS
+                   INITIALIZE              TERRINF-AREA
+                   MOVE    WRK-KJNYMD      TO  TERRINF-LASTYMD
+                   PERFORM 217-ERRMES-HEN-SEC
+               END-IF
+      *
+               PERFORM 901-DTCHK008-READ-SEC
+      *
+           END-PERFORM
+      *
+           .
+       3001-TEKBYOMEI-MITOUROKU-EXT.
+           EXIT.
       *****************************************************************
       *    例外設定チェック処理
       *****************************************************************
@@ -12318,6 +12416,22 @@
       *****************************************************************
       *    データチェック中間ファイル読込処理
       *****************************************************************
+       901-DTCHK008-WRITE-SEC          SECTION.
+      *
+           INITIALIZE                  DTCHK008-KEY
+           MOVE    WRK-CHK-CHKKBN      TO  DTCHK008-CHKKBN
+           MOVE    WRK-CHK-CDKBN       TO  DTCHK008-CDKBN
+           MOVE    WRK-CHK-SRYCD       TO  DTCHK008-SRYCD
+           MOVE    "1"                 TO  DTCHK008-FORMSTCHK
+      *
+           WRITE   DTCHK008-REC
+      *
+           .
+       901-DTCHK008-WRITE-EXT.
+           EXIT.
+      *****************************************************************
+      *    データチェック中間ファイル読込処理
+      *****************************************************************
        900-DTCHK008-READ-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-DTCHK008
@@ -12333,6 +12447,21 @@
       *
            .
        900-DTCHK008-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    データチェック中間ファイル読込処理
+      *****************************************************************
+       901-DTCHK008-READ-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-DTCHK008
+      *
+           READ    DTCHK008-FILE       NEXT
+           AT  END
+               MOVE    1               TO  FLG-DTCHK008
+           END-READ
+      *
+           .
+       901-DTCHK008-READ-EXT.
            EXIT.
       *****************************************************************
       *    データチェック中間ファイル読込処理

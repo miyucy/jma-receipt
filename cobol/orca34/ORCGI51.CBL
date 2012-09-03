@@ -2948,6 +2948,8 @@
                    MOVE    "2012"      TO  SPA-ERRCD
                WHEN    24
                    MOVE    "2013"      TO  SPA-ERRCD
+               WHEN    25
+                   MOVE    "2025"      TO  SPA-ERRCD
                WHEN    OTHER
                    MOVE    "2001"      TO  SPA-ERRCD
                END-EVALUATE
@@ -4001,6 +4003,14 @@
                        "同日再入院日の再入院分に入院料加算"
                                            DELIMITED   BY  SPACE
                        "が算定されています"
+                                           DELIMITED   BY  SPACE
+               INTO    SPA-ERRMSG
+               END-STRING
+           WHEN    "2025"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "負担金計算に失敗しました。"
+                                           DELIMITED   BY  SPACE
+                       "薬剤料減点数を確認してください"
                                            DELIMITED   BY  SPACE
                INTO    SPA-ERRMSG
                END-STRING
