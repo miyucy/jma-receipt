@@ -27,3 +27,4 @@
                05  DTCHK008-CHKKBN             PIC X(01).
                05  DTCHK008-CDKBN              PIC X(01).
                05  DTCHK008-SRYCD              PIC X(09).
+               05  DTCHK008-FORMSTCHK          PIC X(01).

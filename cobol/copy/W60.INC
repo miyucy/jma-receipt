@@ -77,4 +77,8 @@
                 04  W60-ERR990009KBN       PIC X(22).
                 04  W60-ERR990009KBN-COUNT PIC S9(9)   BINARY.
                 04  W60-ERR990009KBN-ITEM  PIC X(22)   OCCURS  5.
+              03  W60-CMB-ERRA10001LSTKBN.
+                04  W60-ERRA10001KBN       PIC X(22).
+                04  W60-ERRA10001KBN-COUNT PIC S9(9)   BINARY.
+                04  W60-ERRA10001KBN-ITEM  PIC X(22)   OCCURS  5.
               03  W60-INGAITEN             PIC S9(4)   OCCURS  7.

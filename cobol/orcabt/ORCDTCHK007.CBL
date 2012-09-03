@@ -488,27 +488,38 @@
       *
            MOVE    WRK-SRYYMD (1:16)   TO  HCM402-SRYYM
       *
-           IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
-               MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
-               PERFORM 2201-HKNNAME-GET-SEC
-               STRING  "（"                DELIMITED   BY  SIZE
-                       WRK-NYUGAIMES       DELIMITED   BY  SPACE
-                       "　"                DELIMITED   BY  SIZE
-                       WRK-HKNMES          DELIMITED   BY  SPACE
-                        "）"               DELIMITED   BY  SIZE
-               INTO    HCM402-NYUGAIKBN
-               END-STRING
+           IF    ( DTCHK004-ERRSBT     =   "0" )
       *
-               IF    ( DTCHK004-HKNOTHERS  =   "1" )
-                   MOVE    "他保険あり"    TO  HCM402-BIKO
+               IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
+                   MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
+                   PERFORM 2201-HKNNAME-GET-SEC
+                   STRING  "（"                DELIMITED   BY  SIZE
+                           WRK-NYUGAIMES       DELIMITED   BY  SPACE
+                           "　"                DELIMITED   BY  SIZE
+                           WRK-HKNMES          DELIMITED   BY  SPACE
+                            "）"               DELIMITED   BY  SIZE
+                   INTO    HCM402-NYUGAIKBN
+                   END-STRING
+      *
+                   IF    ( DTCHK004-HKNOTHERS  =   "1" )
+                       MOVE    "他保険あり"    TO  HCM402-BIKO
+                   END-IF
+      *
+               ELSE
+                   STRING  "（"                DELIMITED   BY  SIZE
+                           WRK-NYUGAIMES       DELIMITED   BY  SPACE
+                            "）"               DELIMITED   BY  SIZE
+                   INTO    HCM402-NYUGAIKBN
+                   END-STRING
                END-IF
-      *
            ELSE
-               STRING  "（"                DELIMITED   BY  SIZE
-                       WRK-NYUGAIMES       DELIMITED   BY  SPACE
-                        "）"               DELIMITED   BY  SIZE
-               INTO    HCM402-NYUGAIKBN
-               END-STRING
+                   STRING  "（"                DELIMITED   BY  SIZE
+                           WRK-NYUGAIMES       DELIMITED   BY  SPACE
+                           "　"                DELIMITED   BY  SIZE
+                           "その他"            DELIMITED   BY  SPACE
+                            "）"               DELIMITED   BY  SIZE
+                   INTO    HCM402-NYUGAIKBN
+                   END-STRING
            END-IF
       *
            INITIALIZE                      WRK-PAGE-G
@@ -542,34 +553,45 @@
            INTO    HCM402-SAKYMD
            END-STRING
       *
-      *    患者番号
-           IF    ( DTCHK004-PTNUM      =   SPACE )
-               MOVE   SPACE            TO  WRK-MAE-INPUT
-               STRING "患者ＩＤ"       DELIMITED   BY  SIZE
-                      DTCHK004-PTID    DELIMITED   BY  SIZE
-               INTO   HCM402-PTNUM
-               END-STRING
+           IF    ( DTCHK004-ERRSBT     =   "0" )
+      *
+      *        患者番号
+               IF    ( DTCHK004-PTNUM      =   SPACE )
+                   MOVE   SPACE            TO  WRK-MAE-INPUT
+                   STRING "患者ＩＤ"       DELIMITED   BY  SIZE
+                          DTCHK004-PTID    DELIMITED   BY  SIZE
+                   INTO   HCM402-PTNUM
+                   END-STRING
+               ELSE
+                   MOVE    DTCHK004-PTNUM  TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT   TO  HCM402-PTNUM
+               END-IF
+      *
+      *        患者氏名
+               MOVE    DTCHK004-NAME       TO  HCM402-NAME
+      *
+      *        年齢
+               IF    ( DTCHK004-BIRTHDAY   NOT =   SPACE )
+                   PERFORM 2201-NENREI-HEN-SEC
+                   MOVE    WRK-NENREI      TO  WRK-ZZ9
+                   MOVE    WRK-ZZ9         TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT   TO  HCM402-NENREI
+               END-IF
            ELSE
+      *
                MOVE    DTCHK004-PTNUM  TO  WRK-MAE-INPUT
                PERFORM 800-ZENKAKU-HEN-SEC
-               MOVE    WRK-OUT-INPUT   TO  HCM402-PTNUM
-           END-IF
+               MOVE    WRK-OUT-INPUT       TO  HCM402-PTNUM
       *
-      *    患者氏名
-           MOVE    DTCHK004-NAME       TO  HCM402-NAME
-      *
-      *    年齢
-           IF    ( DTCHK004-BIRTHDAY   NOT =   SPACE )
-               PERFORM 2201-NENREI-HEN-SEC
-               MOVE    WRK-NENREI      TO  WRK-ZZ9
-               MOVE    WRK-ZZ9         TO  WRK-MAE-INPUT
-               PERFORM 800-ZENKAKU-HEN-SEC
-               MOVE    WRK-OUT-INPUT   TO  HCM402-NENREI
+               MOVE    "その他"            TO  HCM402-NAME
            END-IF
       *
            PERFORM 2101-CHKKOMOKU-HEN-SEC
       *
-           IF    ( CNT-PAGE2           =   1 )
+           IF    ( DTCHK004-ERRSBT     =   "0" )
+            AND  ( CNT-PAGE2           =   1 )
                PERFORM 2101-PTHKN-HEN-SEC
            END-IF
       *
@@ -849,6 +871,8 @@
                MOVE    "治験"          TO  WRK-HKNMES
            WHEN    "H"
                MOVE    "包括"          TO  WRK-HKNMES
+           WHEN    "Z"
+               MOVE    "その他"        TO  WRK-HKNMES
            END-EVALUATE
       *
            .

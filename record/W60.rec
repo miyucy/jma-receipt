@@ -132,6 +132,13 @@ W60	{
 			count	int;
 			item	varchar(22)[5];
 		};
+		CMB_ERRA10001KBN	{
+			ERRA10001KBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[5];
+		};
 		SYA_INGAITEN	{
 			value	number(4);
 		};

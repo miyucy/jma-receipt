@@ -98,6 +98,7 @@
            03  FLG-ERR                                 PIC 9(01).
            03  FLG-DTCHK004                            PIC 9(01).
            03  FLG-DTCHK007                            PIC 9(01).
+           03  FLG-LOOPEND                             PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -526,10 +527,28 @@
       *****************************************************************
        900-DTCHK004-READ-SEC           SECTION.
       *
-           READ    DTCHK004-FILE       NEXT
-           AT  END
-               MOVE    1               TO  FLG-DTCHK004
-           END-READ
+           MOVE    ZERO                TO  FLG-DTCHK004
+           MOVE    ZERO                TO  FLG-LOOPEND
+      *
+           PERFORM UNTIL ( FLG-DTCHK004    NOT =   ZERO )
+                    OR   ( FLG-LOOPEND     NOT =   ZERO )
+      *
+               READ    DTCHK004-FILE       NEXT
+               AT  END
+      *
+                   MOVE    1           TO  FLG-DTCHK004
+      *
+               NOT AT  END
+      *
+                   MOVE    1           TO  FLG-LOOPEND
+      *
+                   IF    ( DTCHK004-ERRSBT NOT =   "0" )
+                       MOVE    ZERO    TO  FLG-LOOPEND
+                   END-IF
+      *
+               END-READ
+      *
+           END-PERFORM
       *
            IF    ( FLG-DTCHK004        =   ZERO )
                MOVE    DTCHK004-PTID   TO  KEY-N-PTID

@@ -99,6 +99,7 @@
                05  WRK-KBNCD1200-CD                    PIC X(02).
       *
        01  KEY-AREA.
+           03  KEY-ERRSBT                              PIC X(01).
            03  KEY-PTID                                PIC 9(10).
       *
       *    固定値領域
@@ -359,65 +360,61 @@
            PERFORM UNTIL ( FLG-DTCHK004    NOT =   ZERO )
                     OR   ( FLG-END         NOT =   ZERO )
       *
-               COMPUTE WRK-KBNCD-SEQ   =   WRK-KBNCD-SEQ   +   1
-      *
-               INITIALIZE                      CK4-2001-REC
-               MOVE    SPA-HOSPNUM         TO  CK4-2001-HOSPNUM
-               MOVE    "2001"              TO  CK4-2001-KANRICD
-               MOVE    WRK-KBNCD-G         TO  CK4-2001-KBNCD
-               MOVE    "00000000"          TO  CK4-2001-STYUKYMD
-               MOVE    "99999999"          TO  CK4-2001-EDYUKYMD
-               MOVE    DTCHK004-PTID       TO  CK4-2001-PTID
-               MOVE    DTCHK004-MULHKNKBN  TO  CK4-2001-MULHKNKBN
-      *
+               MOVE    DTCHK004-ERRSBT     TO  KEY-ERRSBT
                MOVE    DTCHK004-PTID       TO  KEY-PTID
       *
                PERFORM UNTIL ( FLG-DTCHK004    NOT =   ZERO )
                         OR   ( FLG-END         NOT =   ZERO )
+                        OR   ( KEY-ERRSBT      NOT =   DTCHK004-ERRSBT )
                         OR   ( KEY-PTID        NOT =   DTCHK004-PTID )
       *
                    PERFORM 20011-ERRINF-EDIT-SEC
-      *
-                   EVALUATE    DTCHK004-HKNKBN
-                   WHEN    "1"
-                       MOVE    "1"         TO  CK4-2001-SYAHO
-                   WHEN    "2"
-                       MOVE    "1"         TO  CK4-2001-KOKUHO
-                   WHEN    "3"
-                       MOVE    "1"         TO  CK4-2001-ROUSAI
-                   WHEN    "4"
-                       MOVE    "1"         TO  CK4-2001-JIBAI
-                   WHEN    "5"
-                       MOVE    "1"         TO  CK4-2001-JIHI
-                   WHEN    "6"
-                       MOVE    "1"         TO  CK4-2001-KOUGAI
-                   WHEN    "7"
-                       MOVE    "1"         TO  CK4-2001-KOUKI
-                   WHEN    "8"
-                       MOVE    "1"         TO  CK4-2001-CHIKEN
-                   WHEN    "H"
-                       MOVE    "1"         TO  CK4-2001-HOUKATU
-                   END-EVALUATE
       *
                    PERFORM 900-DTCHK004-READ-SEC
       *
                END-PERFORM
       *
                IF    ( FLG-END             =   ZERO )
+                AND  ( KEY-ERRSBT          =   "0" )
       *
-                   MOVE    SMCNDATE-YMD    TO  CK4-2001-CREYMD
-                                               CK4-2001-UPYMD
-                   MOVE    SMCNDATE-YMD    TO  CK4-2001-UPHMS
-                   MOVE    CK4-2001-REC    TO  MCPDATA-REC
-                   MOVE    "tbl_chk004"    TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM 910-DBINSERT-SEC
-                   IF    ( MCP-RC      NOT =   ZERO )
-                       MOVE    "エラー患者情報の登録に失敗しました"
-                                           TO  WRK-DTCHKERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                       MOVE    1           TO  FLG-DTCHK004
+                   MOVE    SPACE               TO  CHK004-REC
+                   INITIALIZE                      CHK004-REC
+                   MOVE    SPA-HOSPNUM         TO  CHK004-HOSPNUM
+                   MOVE    "2001"              TO  CHK004-KANRICD
+                   MOVE    "00000000"          TO  CHK004-STYUKYMD
+                   MOVE    "99999999"          TO  CHK004-EDYUKYMD
+                   MOVE    KEY-PTID            TO  CHK004-PTID
+                   MOVE    "4%"                TO  CHK004-KBNCD
+                   MOVE    CHK004-REC          TO  MCPDATA-REC
+                   MOVE    "tbl_chk004"        TO  MCP-TABLE
+                   MOVE    "key5"              TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+                   IF    ( MCP-RC          =   ZERO )
+                       CONTINUE
+                   ELSE
+      *
+                       MOVE    CHK004-REC      TO  CK4-2001-REC
+      *
+                       COMPUTE WRK-KBNCD-SEQ   =   WRK-KBNCD-SEQ   +   1
+                       MOVE    WRK-KBNCD-G     TO  CK4-2001-KBNCD
+      *
+                       MOVE    SMCNDATE-YMD    TO  CK4-2001-CREYMD
+                                                   CK4-2001-UPYMD
+                       MOVE    SMCNDATE-YMD    TO  CK4-2001-UPHMS
+                       MOVE    CK4-2001-REC    TO  MCPDATA-REC
+                       MOVE    "tbl_chk004"    TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBINSERT-SEC
+                       IF    ( MCP-RC      NOT =   ZERO )
+                           MOVE    "エラー患者情報の登録に失敗しました"
+                                               TO  WRK-DTCHKERR
+                           PERFORM 500-ERR-HENSYU-SEC
+                           MOVE    1           TO  FLG-DTCHK004
+                       END-IF
                    END-IF
+                   MOVE    "tbl_chk004"        TO  MCP-TABLE
+                   MOVE    "key5"              TO  MCP-PATHNAME
+                   PERFORM 910-DBCLOSECURSOR-SEC
                END-IF
       *
            END-PERFORM

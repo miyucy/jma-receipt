@@ -39,17 +39,7 @@
            03  CK4-2001-PTID            PIC  9(10).
       *管理テーブル
            03  CK4-2001-TBL.
-               05  CK4-2001-MULHKNKBN   PIC  X(01).
-               05  CK4-2001-SYAHO       PIC  X(01).
-               05  CK4-2001-KOKUHO      PIC  X(01).
-               05  CK4-2001-ROUSAI      PIC  X(01).
-               05  CK4-2001-JIBAI       PIC  X(01).
-               05  CK4-2001-JIHI        PIC  X(01).
-               05  CK4-2001-KOUGAI      PIC  X(01).
-               05  CK4-2001-KOUKI       PIC  X(01).
-               05  CK4-2001-CHIKEN      PIC  X(01).
-               05  CK4-2001-HOUKATU     PIC  X(01).
-               05  CK4-2001-FILLER      PIC  X(490).
+               05  CK4-2001-FILLER      PIC  X(500).
       *端末ＩＤ
            03  CK4-2001-TERMID          PIC  X(16).
       *オペーレータＩＤ

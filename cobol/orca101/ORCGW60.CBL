@@ -104,6 +104,10 @@
                    07  SPA-GMN-ERR990009KBN    PIC X(01).
                    07  SPA-GMN-ERR990009KBNFL  PIC X(01).
                    07  SPA-GMN-ERR990009KBNMEI PIC X(20).
+               05  SPA-GMN-ERRA10001KBN-G.
+                   07  SPA-GMN-ERRA10001KBN    PIC X(01).
+                   07  SPA-GMN-ERRA10001KBNFL  PIC X(01).
+                   07  SPA-GMN-ERRA10001KBNMEI PIC X(20).
                05  SPA-GMN-INGAITEN-G.
                    07  SPA-GMN-SYA-INGAITEN    PIC 9(04).
                    07  SPA-GMN-KOK-INGAITEN    PIC 9(04).
@@ -188,6 +192,13 @@
                        09  SPA-GMN-ERR990009KBNL   PIC X(01).
                        09  SPA-GMN-ERR990009KBNFLL PIC X(01).
                        09  SPA-GMN-ERR990009KBNMEIL
+                                                   PIC X(20).
+               05  SPA-GMN-ERRA10001KBNLST-G.
+                   07  SPA-GMN-ERRA10001KBN-MAX    PIC 9(03).
+                   07  SPA-GMN-ERRA10001KBNLST     OCCURS   5.
+                       09  SPA-GMN-ERRA10001KBNL   PIC X(01).
+                       09  SPA-GMN-ERRA10001KBNFLL PIC X(01).
+                       09  SPA-GMN-ERRA10001KBNMEIL
                                                    PIC X(20).
       *
       *    フラグエリア
@@ -521,6 +532,15 @@
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-ERR990009KBN-G
            END-IF
       *
+           MOVE    SPA-GMN-ERRA10001KBN TO  WRK-CMB-CD
+           PERFORM 4200-ERRA10001KBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-ERRA10001KBNLST (1)
+                                       TO  SPA-GMN-ERRA10001KBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-ERRA10001KBN-G
+           END-IF
+      *
            MOVE    SPA-GMN-REIGAICHKKBN TO  WRK-CMB-CD
            PERFORM 4200-REIGAICHKKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
@@ -693,6 +713,9 @@
                WHEN    "99"
                    MOVE    CK4-1103-ERRKBN (9)
                                            TO  SPA-GMN-ERR990009KBN
+               WHEN    "A1"
+                   MOVE    CK4-1103-ERRKBN (1)
+                                           TO  SPA-GMN-ERRA10001KBN
                END-EVALUATE
       *
                PERFORM 900-CHK004-KEY10-FET-SEC
@@ -738,6 +761,9 @@
       *
       *    その他のチェックエラーコンボ設定処理
            PERFORM 3101-ERR990009KBNLST-SEC
+      *
+      *    「薬剤と病名」に未登録の薬剤チェックコンボ設定処理
+           PERFORM 3101-ERRA10001KBNLST-SEC
       *
       *    患者毎の例外設定使用コンボ設定処理
            PERFORM 3101-REIGAICHKKBNLST-SEC
@@ -959,6 +985,29 @@
       *
            . 
        3101-ERR990009KBNLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    「薬剤と病名」に未登録の薬剤チェックコンボ設定処理
+      *****************************************************************
+       3101-ERRA10001KBNLST-SEC           SECTION.
+      *
+           INITIALIZE                  SPA-GMN-ERRA10001KBNLST-G
+      *
+           MOVE    2               TO  SPA-GMN-ERRA10001KBN-MAX
+      *
+           MOVE    "1"             TO  SPA-GMN-ERRA10001KBNL    (1)
+           MOVE    "チェックする"
+                                   TO  SPA-GMN-ERRA10001KBNMEIL (1)
+      *
+           MOVE    "2"             TO  SPA-GMN-ERRA10001KBNL    (2)
+           MOVE    "チェックしない"
+                                   TO  SPA-GMN-ERRA10001KBNMEIL (2)
+      *
+           MOVE    SPA-GMN-ERRA10001KBNLST  (2)
+                                   TO  SPA-GMN-ERRA10001KBN-G
+      *
+           . 
+       3101-ERRA10001KBNLST-EXT.
            EXIT.
       *****************************************************************
       *    患者毎の例外設定使用コンボ設定処理
@@ -1183,6 +1232,7 @@
            MOVE    W60-YBUTAGAIKBN     TO  SPA-GMN-YBUTAGAIKBN-G
            MOVE    W60-SRYHEIWRNKBN    TO  SPA-GMN-SRYHEIWRNKBN-G
            MOVE    W60-ERR990009KBN    TO  SPA-GMN-ERR990009KBN-G
+           MOVE    W60-ERRA10001KBN    TO  SPA-GMN-ERRA10001KBN-G
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   7 )
                MOVE    W60-INGAITEN (IDX0)
@@ -1240,6 +1290,10 @@
       *
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-ERR990009KBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-ERRA10001KBN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
@@ -1436,6 +1490,24 @@
            .
       *
        4101-ERR990009KBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    「薬剤と病名」に未登録の薬剤チェック区分チェック処理
+      *****************************************************************
+       4101-ERRA10001KBN-CHK-SEC        SECTION.
+      *
+           MOVE    SPA-GMN-ERRA10001KBN TO  WRK-CMB-CD
+           PERFORM 4200-ERRA10001KBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-ERRA10001KBNLST (2)
+                                   TO  SPA-GMN-ERRA10001KBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-ERRA10001KBN-G
+           END-IF
+      *
+           .
+      *
+       4101-ERRA10001KBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    患者毎の例外設定チェック処理
@@ -1706,6 +1778,30 @@
       *
            .
        4200-ERR990009KBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    「薬剤と病名」に未登録の薬剤チェック区分コンボチェック処理
+      *****************************************************************
+       4200-ERRA10001KBNLST-CHK-SEC     SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-ERRA10001KBN-MAX)
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-ERRA10001KBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-ERRA10001KBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-ERRA10001KBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    患者毎の例外設定コンボチェック処理
@@ -2076,26 +2172,44 @@
       *
            IF    ( SPA-ERRCD      =    SPACE )
                INITIALIZE                  CK4-1103-REC
-               MOVE    SPA-HOSPNUM     TO  CK4-1103-HOSPNUM
-               MOVE    "1103"          TO  CK4-1103-KANRICD
                MOVE    "99"            TO  CK4-1103-KBNCD
-               MOVE    SPA-W01-STYUKYMD
-                                       TO  CK4-1103-STYUKYMD
-               MOVE    SPA-W01-EDYUKYMD
-                                       TO  CK4-1103-EDYUKYMD
                MOVE    SPA-GMN-ERR990009KBN
                                        TO  CK4-1103-ERRKBN (9)
-               MOVE    CK4-1103-REC    TO  MCPDATA-REC
-               MOVE    "tbl_chk004"    TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 910-DBINSERT-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    "4005"      TO  SPA-ERRCD
-               END-IF
+               PERFORM 49021-KOUSHIN-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD      =    SPACE )
+               INITIALIZE                  CK4-1103-REC
+               MOVE    "A1"            TO  CK4-1103-KBNCD
+               MOVE    SPA-GMN-ERRA10001KBN
+                                       TO  CK4-1103-ERRKBN (1)
+               PERFORM 49021-KOUSHIN-SEC
            END-IF
       *
            .
        4902-KOUSHIN-EXT.
+           EXIT.
+      *****************************************************************
+      *       登録処理（CHK004 1103)
+      *****************************************************************
+       49021-KOUSHIN-SEC               SECTION.
+      *
+           MOVE    SPA-HOSPNUM     TO  CK4-1103-HOSPNUM
+           MOVE    "1103"          TO  CK4-1103-KANRICD
+           MOVE    SPA-W01-STYUKYMD
+                                   TO  CK4-1103-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD
+                                   TO  CK4-1103-EDYUKYMD
+           MOVE    CK4-1103-REC    TO  MCPDATA-REC
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    "4005"      TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       49021-KOUSHIN-EXT.
            EXIT.
       *****************************************************************
       *    関連チェック
@@ -2281,6 +2395,18 @@
       *
            END-PERFORM
       *
+           MOVE    SPA-GMN-ERRA10001KBN-G   TO  W60-ERRA10001KBN
+      *
+           MOVE    SPA-GMN-ERRA10001KBN-MAX
+                                       TO  W60-ERRA10001KBN-COUNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   SPA-GMN-ERRA10001KBN-MAX )
+      *
+               MOVE    SPA-GMN-ERRA10001KBNLST (IDX0)
+                                       TO  W60-ERRA10001KBN-ITEM (IDX0)
+      *
+           END-PERFORM
+      *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0        >   7 )
       *
@@ -2417,6 +2543,8 @@
                MOVE    "KGI_INGAITEN"  TO MCP-WIDGET
            WHEN    025
                MOVE    "JIH_INGAITEN"  TO MCP-WIDGET
+           WHEN    026
+               MOVE    "ERRA10001KBN"  TO MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -2474,6 +2602,8 @@
            WHEN    "KGI_INGAITEN"
                MOVE    25              TO  SPA-GMN-CUR
            WHEN    "JIH_INGAITEN"
+               MOVE    26              TO  SPA-GMN-CUR
+           WHEN    "ERRA10001KBN"
                MOVE    16              TO  SPA-GMN-CUR
            WHEN    "REIGAICHKKBN"
                MOVE    08              TO  SPA-GMN-CUR

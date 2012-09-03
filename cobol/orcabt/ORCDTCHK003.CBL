@@ -85,6 +85,7 @@
            03  FLG-DTCHK004                            PIC 9(01).
            03  FLG-HKNOTHERS                           PIC 9(01).
            03  FLG-FIL                                 PIC 9(01).
+           03  FLG-LOOPEND                             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -94,6 +95,7 @@
            03  CNT-TTL-PAGE                            PIC 9(06).
            03  CNT-RENBAN                              PIC 9(06).
            03  CNT-HKNINFEDIT                          PIC 9(06).
+           03  CNT-ETC                                 PIC 9(06).
       *
        01  IDX-AREA.
            03  IDX0                                    PIC 9(05). 
@@ -423,7 +425,11 @@
                         OR   ( CNT-LINE       >=   CONST-LINE-MAX )
       *
       *            帳票編集<明細>処理
-                   PERFORM 220-BODY-HEN-SEC
+                   IF    ( DTCHK004-ERRSBT     =   "0" )
+                       PERFORM 220-BODY-HEN-SEC
+                   ELSE
+                       PERFORM 221-BODY-HEN-SEC
+                   END-IF
       *
       *            チェック結果ファイル読込
                    PERFORM 900-DTCHK004-READ-SEC
@@ -473,22 +479,32 @@
       *
            MOVE    WRK-SRYYMD (1:16)   TO  HCM401-SRYYM
       *
-           IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
-               MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
-               PERFORM 2201-HKNNAME-GET-SEC
-               STRING  "（"                DELIMITED   BY  SIZE
-                       WRK-NYUGAIMES       DELIMITED   BY  SPACE
-                       "　"                DELIMITED   BY  SIZE
-                       WRK-HKNMES          DELIMITED   BY  SPACE
-                        "）"               DELIMITED   BY  SIZE
-               INTO    HCM401-NYUGAIKBN
-               END-STRING
+           IF    ( DTCHK004-ERRSBT     =   "0" )
+               IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
+                   MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
+                   PERFORM 2201-HKNNAME-GET-SEC
+                   STRING  "（"                DELIMITED   BY  SIZE
+                           WRK-NYUGAIMES       DELIMITED   BY  SPACE
+                           "　"                DELIMITED   BY  SIZE
+                           WRK-HKNMES          DELIMITED   BY  SPACE
+                            "）"               DELIMITED   BY  SIZE
+                   INTO    HCM401-NYUGAIKBN
+                   END-STRING
+               ELSE
+                   STRING  "（"                DELIMITED   BY  SIZE
+                           WRK-NYUGAIMES       DELIMITED   BY  SPACE
+                            "）"               DELIMITED   BY  SIZE
+                   INTO    HCM401-NYUGAIKBN
+                   END-STRING
+               END-IF
            ELSE
-               STRING  "（"                DELIMITED   BY  SIZE
-                       WRK-NYUGAIMES       DELIMITED   BY  SPACE
-                        "）"               DELIMITED   BY  SIZE
-               INTO    HCM401-NYUGAIKBN
-               END-STRING
+                   STRING  "（"                DELIMITED   BY  SIZE
+                           WRK-NYUGAIMES       DELIMITED   BY  SPACE
+                           "　"                DELIMITED   BY  SIZE
+                           "その他"            DELIMITED   BY  SPACE
+                            "）"               DELIMITED   BY  SIZE
+                   INTO    HCM401-NYUGAIKBN
+                   END-STRING
            END-IF
       *
            MOVE    CNT-PAGE            TO  WRK-ZZ9
@@ -677,6 +693,44 @@
        220-BODY-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    帳票編集<明細>処理
+      *****************************************************************
+       221-BODY-HEN-SEC                SECTION.
+      *
+           COMPUTE CNT-LINE    =   CNT-LINE    +   1
+           COMPUTE CNT-ETC     =   CNT-ETC     +   1
+      *
+           IF    ( CNT-ETC             =   1 )
+            OR   ( CNT-LINE            =   1 )
+               IF    ( CNT-ETC         =   1 )
+                   COMPUTE CNT-RENBAN  =   CNT-RENBAN  +   1
+               END-IF
+      *
+      *        番号
+               MOVE    CNT-RENBAN      TO  WRK-ZZZZ9
+               MOVE    WRK-ZZZZ9       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  HCM401-RENBAN(CNT-LINE)
+      *
+      *        患者番号
+               MOVE    DTCHK004-PTNUM  TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  HCM401-PTNUM (CNT-LINE)
+      *
+      *        患者氏名
+               MOVE    "その他"        TO  HCM401-NAME  (CNT-LINE)
+           END-IF
+      *
+           IF    ( DTCHK004-ERRMSG  (111:)  =   SPACE )
+               MOVE    DTCHK004-ERRMSG      TO  HCM401-MESG  (CNT-LINE)
+           ELSE
+               MOVE    DTCHK004-ERRMSG      TO  HCM401-MESG2 (CNT-LINE)
+           END-IF
+      *
+           .
+       221-BODY-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    患者保険情報編集処理
       *****************************************************************
        2201-PTHKN-HEN-SEC              SECTION.
@@ -846,6 +900,8 @@
                MOVE    "治験"          TO  WRK-HKNMES
            WHEN    "H"
                MOVE    "包括"          TO  WRK-HKNMES
+           WHEN    "Z"
+               MOVE    "その他"        TO  WRK-HKNMES
            END-EVALUATE
       *
            .
