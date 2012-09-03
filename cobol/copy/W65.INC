@@ -704,6 +704,16 @@
                     06  W65-KAICNTTAIKBNG-COUNT  PIC S9(9) BINARY.
                     06  W65-KAICNTTAIKBNG-ITEM   PIC X(40) OCCURS 10.
                     06  W65-KAICNTTAIKBNG-ITEM-STATE  PIC S9(9) BINARY.
+                  05  W65-CMB-CYOKEIKBNG.
+                    06  W65-CYOKEIKBNG           PIC X(80).
+                    06  W65-CYOKEIKBNG-COUNT     PIC S9(9) BINARY.
+                    06  W65-CYOKEIKBNG-ITEM      PIC X(80) OCCURS 10.
+                  05  W65-CMB-CYOKEITAIKBNG.
+                    06  W65-CYOKEITAIKBNG        PIC X(40).
+                    06  W65-CYOKEITAIKBNG-STATE  PIC S9(9) BINARY.
+                    06  W65-CYOKEITAIKBNG-COUNT  PIC S9(9) BINARY.
+                    06  W65-CYOKEITAIKBNG-ITEM   PIC X(40) OCCURS 10.
+                    06  W65-CYOKEITAIKBNG-ITEM-STATE  PIC S9(9) BINARY.
                   05  W65-CMB-GNBKEIKBNKG.
                     06  W65-GNBKEIKBNKG          PIC X(80).
                     06  W65-GNBKEIKBNKG-COUNT    PIC S9(9) BINARY.

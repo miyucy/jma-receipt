@@ -1058,6 +1058,22 @@ W65	{
 					item	varchar(40)[10];
 					state	int;
 				};
+				CMB_CYOKEIKBNG {
+					CYOKEIKBNG	{
+						value	varchar(80);
+					};
+					count	int;
+					item	varchar(80)[10];
+				};
+				CMB_CYOKEITAIKBNG	{
+					CYOKEITAIKBNG	{
+						value	varchar(40);
+						state	int;
+					};
+					count	int;
+					item	varchar(40)[10];
+					state	int;
+				};
 				CMB_GNBKEIKBNKG	{
 					GNBKEIKBNKG	{
 						value	varchar(80);

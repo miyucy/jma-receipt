@@ -597,6 +597,14 @@
                        09  SPA-GMN-KAICNTTAIKBNG           PIC X(01).
                        09  SPA-GMN-KAICNTTAIKBNGF          PIC X(01).
                        09  SPA-GMN-KAICNTTAIKBNGMEI        PIC X(38).
+                   07  SPA-GMN-CYOKEIKBNG-G.
+                       09  SPA-GMN-CYOKEIKBNG              PIC X(01).
+                       09  SPA-GMN-CYOKEIKBNGF             PIC X(01).
+                       09  SPA-GMN-CYOKEIKBNGMEI           PIC X(78).
+                   07  SPA-GMN-CYOKEITAIKBNG-G.
+                       09  SPA-GMN-CYOKEITAIKBNG           PIC X(01).
+                       09  SPA-GMN-CYOKEITAIKBNGF          PIC X(01).
+                       09  SPA-GMN-CYOKEITAIKBNGMEI        PIC X(38).
                    07  SPA-GMN-GNBKEIKBNKG-G.
                        09  SPA-GMN-GNBKEIKBNKG             PIC X(01).
                        09  SPA-GMN-GNBKEIKBNKGF            PIC X(01).
@@ -925,6 +933,20 @@
                            11  SPA-GMN-KAICNTTAIKBNGL       PIC X(01).
                            11  SPA-GMN-KAICNTTAIKBNGFL      PIC X(01).
                            11  SPA-GMN-KAICNTTAIKBNGMEIL    PIC X(38).
+      *
+                   07  SPA-GMN-CYOKEIKBNGLST-G.
+                       09  SPA-GMN-CYOKEIKBNG-MAX           PIC 9(03).
+                       09  SPA-GMN-CYOKEIKBNGLST            OCCURS 10.
+                           11  SPA-GMN-CYOKEIKBNGL          PIC X(01).
+                           11  SPA-GMN-CYOKEIKBNGFL         PIC X(01).
+                           11  SPA-GMN-CYOKEIKBNGMEIL       PIC X(78).
+      *
+                   07  SPA-GMN-CYOKEITAIKBNGLST-G.
+                       09  SPA-GMN-CYOKEITAIKBNG-MAX        PIC 9(03).
+                       09  SPA-GMN-CYOKEITAIKBNGLST         OCCURS 10.
+                           11  SPA-GMN-CYOKEITAIKBNGL       PIC X(01).
+                           11  SPA-GMN-CYOKEITAIKBNGFL      PIC X(01).
+                           11  SPA-GMN-CYOKEITAIKBNGMEIL    PIC X(38).
       *
                    07  SPA-GMN-GNBKEIKBNKGLST-G.
                        09  SPA-GMN-GNBKEIKBNKG-MAX          PIC 9(03).
@@ -1594,6 +1616,12 @@
       *    負担金未発生分の回数カウント（外来）対象区分コンボ編集処理
            PERFORM 3110-KAICNTTAIKBNGLST-SEC
       *
+      *    長期併用時の特別計算（外来）コンボ編集処理
+           PERFORM 3110-CYOKEIKBNGLST-SEC
+      *
+      *    長期併用時の特別計算（外来）対象区分コンボ編集処理
+           PERFORM 3110-CYOKEITAIKBNGLST-SEC
+      *
       *    現物給付対象者の特別計算（高齢者・外）コンボ編集処理
            PERFORM 3110-GNBKEIKBNKGLST-SEC
       *
@@ -2198,7 +2226,7 @@
            INITIALIZE                  SPA-GMN-KAICNTTAIKBNGLST-G
       *
            MOVE  "0"               TO  SPA-GMN-KAICNTTAIKBNGL    (1)
-           MOVE  "月上限回数設定のある公費"
+           MOVE  "上限回数設定のある公費"
                                    TO  SPA-GMN-KAICNTTAIKBNGMEIL (1)
       *
       *
@@ -2206,6 +2234,60 @@
       *
            .
        3110-KAICNTTAIKBNGLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    長期併用時の特別計算（外来）コンボ編集処理
+      *****************************************************************
+       3110-CYOKEIKBNGLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-CYOKEIKBNGLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-CYOKEIKBNGL    (1)
+           MOVE  "設定なし"
+                                   TO  SPA-GMN-CYOKEIKBNGMEIL (1)
+      *
+           MOVE  "1"               TO  SPA-GMN-CYOKEIKBNGL    (2)
+           STRING
+                 "（長期の月上限額−診療済み長期負担相当額）と"
+                                       DELIMITED BY SIZE
+                 "（日上限額）を比較"
+                                       DELIMITED BY SIZE
+           INTO                        SPA-GMN-CYOKEIKBNGMEIL (2)
+           END-STRING
+      *
+           MOVE  "2"               TO  SPA-GMN-CYOKEIKBNGL    (3)
+           MOVE  "高齢現物＋低所の場合、低所の月上限額で１の計算を行う"
+                                   TO  SPA-GMN-CYOKEIKBNGMEIL (3)
+      *
+           MOVE  "3"               TO  SPA-GMN-CYOKEIKBNGL    (4)
+           MOVE  "１の内容（更生・育成併用時を除く）"
+                                   TO  SPA-GMN-CYOKEIKBNGMEIL (4)
+      *
+           MOVE  "4"               TO  SPA-GMN-CYOKEIKBNGL    (5)
+           MOVE  "２の内容（更生・育成併用時を除く）"
+                                   TO  SPA-GMN-CYOKEIKBNGMEIL (5)
+      *
+           MOVE    5               TO  SPA-GMN-CYOKEIKBNG-MAX
+      *
+           .
+       3110-CYOKEIKBNGLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    長期併用時の特別計算（外来）対象区分コンボ編集処理
+      *****************************************************************
+       3110-CYOKEITAIKBNGLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-CYOKEITAIKBNGLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-CYOKEITAIKBNGL    (1)
+           MOVE  "日上限額設定のある公費"
+                                   TO  SPA-GMN-CYOKEITAIKBNGMEIL (1)
+      *
+      *
+           MOVE    1               TO  SPA-GMN-CYOKEITAIKBNG-MAX
+      *
+           .
+       3110-CYOKEITAIKBNGLST-EXT.
            EXIT.
       *****************************************************************
       *    現物給付対象者の特別計算（高齢者・外）コンボ編集処理
@@ -2219,7 +2301,7 @@
                                    TO  SPA-GMN-GNBKEIKBNKGMEIL (1)
       *
            MOVE  "1"               TO  SPA-GMN-GNBKEIKBNKGL    (2)
-           STRING    "（月上限額−診療済み主保険負担相当額累計）と"
+           STRING    "（月上限額−診療済み主保険負担相当額）と"
                                        DELIMITED BY SIZE
                      "（日上限額）を比較"
                                        DELIMITED BY SIZE
@@ -3327,6 +3409,8 @@
            MOVE    W65-KOH2SKJTAIKBN   TO  SPA-GMN-KOH2SKJTAIKBN-G
            MOVE    W65-KAICNTKBNG      TO  SPA-GMN-KAICNTKBNG-G
            MOVE    W65-KAICNTTAIKBNG   TO  SPA-GMN-KAICNTTAIKBNG-G
+           MOVE    W65-CYOKEIKBNG      TO  SPA-GMN-CYOKEIKBNG-G
+           MOVE    W65-CYOKEITAIKBNG   TO  SPA-GMN-CYOKEITAIKBNG-G
            MOVE    W65-GNBKEIKBNKG     TO  SPA-GMN-GNBKEIKBNKG-G
            MOVE    W65-GNBKEITAIKBNKG  TO  SPA-GMN-GNBKEITAIKBNKG-G
            MOVE    W65-ZENKEIKBNG      TO  SPA-GMN-ZENKEIKBNG-G
@@ -4080,6 +4164,14 @@
            END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-CYOKEIKBNG-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-CYOKEITAIKBNG-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-GNBKEIKBNKG-CHK-SEC
            END-IF
       *
@@ -4700,6 +4792,8 @@
            MOVE    SPA-GMN-KOH2SKJTAIKBN   TO SYS-2010-KOH2SKJ-TAIKBN
            MOVE    SPA-GMN-KAICNTKBNG      TO SYS-2010-KAICNTKBN-G
            MOVE    SPA-GMN-KAICNTTAIKBNG   TO SYS-2010-KAICNT-TAIKBN-G
+           MOVE    SPA-GMN-CYOKEIKBNG      TO SYS-2010-CYOKEIKBN-G
+           MOVE    SPA-GMN-CYOKEITAIKBNG   TO SYS-2010-CYOKEI-TAIKBN-G
            MOVE    SPA-GMN-GNBKEIKBNKG     TO SYS-2010-GNBKEIKBN-K-G
            MOVE    SPA-GMN-GNBKEITAIKBNKG  TO SYS-2010-GNBKEI-TAIKBN-K-G
            MOVE    SPA-GMN-ZENKEIKBNG      TO SYS-2010-ZENKEIKBN-G
@@ -5904,6 +5998,16 @@
                                        TO  WRK-CMB-CD
            PERFORM 4200-KAICNTTAIKBNGLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-KAICNTTAIKBNG-G
+      *
+           MOVE    SYS-2010-CYOKEIKBN-G
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-CYOKEIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-CYOKEIKBNG-G
+      *
+           MOVE    SYS-2010-CYOKEI-TAIKBN-G
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-CYOKEITAIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-CYOKEITAIKBNG-G
       *
            MOVE    SYS-2010-GNBKEIKBN-K-G
                                        TO  WRK-CMB-CD
@@ -8075,6 +8179,36 @@
        4101-KAICNTTAIKBNG-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    長期併用時の特別計算（外来）チェック処理
+      *****************************************************************
+       4101-CYOKEIKBNG-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-CYOKEIKBNG
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-CYOKEIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-CYOKEIKBNG-G
+      *
+           IF    ( SPA-GMN-CYOKEIKBNG  =   "0" )
+               MOVE    "0"             TO  SPA-GMN-CYOKEITAIKBNG
+           END-IF
+      *
+           .
+       4101-CYOKEIKBNG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    長期併用時の特別計算（外来）対象区分チェック処理
+      *****************************************************************
+       4101-CYOKEITAIKBNG-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-CYOKEITAIKBNG
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-CYOKEITAIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-CYOKEITAIKBNG-G
+      *
+           .
+       4101-CYOKEITAIKBNG-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    現物給付対象者の特別計算（高齢者・外）チェック処理
       *****************************************************************
        4101-GNBKEIKBNKG-CHK-SEC      SECTION.
@@ -8879,6 +9013,16 @@
            PERFORM 4200-KAICNTTAIKBNGLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-KAICNTTAIKBNG-G
       *
+      *    長期併用時の特別計算（外来）
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-CYOKEIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-CYOKEIKBNG-G
+      *
+      *    長期併用時の特別計算（外来）対象区分
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-CYOKEITAIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-CYOKEITAIKBNG-G
+      *
       *    現物給付対象者の特別計算（高齢者・外）
            MOVE    "0"             TO  WRK-CMB-CD
            PERFORM 4200-GNBKEIKBNKGLST-CHK-SEC
@@ -9406,6 +9550,18 @@
                END-EVALUATE
       *
                EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-OSAKA )
+                AND  ( SPA-GMN-KOHNUM  NOT =   "100" AND "200" )
+                   MOVE    "1"         TO  SPA-GMN-CYOKEIKBNG
+                   MOVE    "0"         TO  SPA-GMN-CYOKEITAIKBNG
+               WHEN  ( SPA-PREFNUM     =   CONST-HIROSHIMA )
+                AND  ( SPA-GMN-KOHNUM  =   "191" OR "291"
+                                        OR "491" )
+                   MOVE    "4"         TO  SPA-GMN-CYOKEIKBNG
+                   MOVE    "0"         TO  SPA-GMN-CYOKEITAIKBNG
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
                WHEN  ( SPA-PREFNUM     =   CONST-HIROSHIMA )
                 AND  ( SPA-GMN-KOHNUM  =   "191" OR "291"
                                         OR "491" )
@@ -9731,6 +9887,8 @@
            MOVE    SPA-GMN-KOH2SKJTAIKBN-G     TO  W65-KOH2SKJTAIKBN
            MOVE    SPA-GMN-KAICNTKBNG-G        TO  W65-KAICNTKBNG
            MOVE    SPA-GMN-KAICNTTAIKBNG-G     TO  W65-KAICNTTAIKBNG
+           MOVE    SPA-GMN-CYOKEIKBNG-G        TO  W65-CYOKEIKBNG
+           MOVE    SPA-GMN-CYOKEITAIKBNG-G     TO  W65-CYOKEITAIKBNG
            MOVE    SPA-GMN-GNBKEIKBNKG-G       TO  W65-GNBKEIKBNKG
            MOVE    SPA-GMN-GNBKEITAIKBNKG-G    TO  W65-GNBKEITAIKBNKG
            MOVE    SPA-GMN-ZENKEIKBNG-G        TO  W65-ZENKEIKBNG
@@ -10254,6 +10412,24 @@
                                    TO  W65-KAICNTTAIKBNG-ITEM (IDX-CMB)
            END-PERFORM
       *
+      *    長期併用時の特別計算（外来）
+           MOVE    SPA-GMN-CYOKEIKBNG-MAX
+                                       TO  W65-CYOKEIKBNG-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-CYOKEIKBNG-MAX )
+               MOVE    SPA-GMN-CYOKEIKBNGLST (IDX-CMB)
+                                       TO  W65-CYOKEIKBNG-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+      *    長期併用時の特別計算（外来）対象区分
+           MOVE    SPA-GMN-CYOKEITAIKBNG-MAX
+                                       TO  W65-CYOKEITAIKBNG-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-CYOKEITAIKBNG-MAX )
+               MOVE    SPA-GMN-CYOKEITAIKBNGLST (IDX-CMB)
+                                   TO  W65-CYOKEITAIKBNG-ITEM (IDX-CMB)
+           END-PERFORM
+      *
       *    現物給付対象者の特別計算（高齢者・外）
            MOVE    SPA-GMN-GNBKEIKBNKG-MAX
                                    TO  W65-GNBKEIKBNKG-COUNT
@@ -10665,6 +10841,8 @@
                                        W65-SEIKANTAIKBNTNK-ITEM-STATE
                                        W65-KAICNTTAIKBNG-STATE
                                        W65-KAICNTTAIKBNG-ITEM-STATE
+                                       W65-CYOKEITAIKBNG-STATE
+                                       W65-CYOKEITAIKBNG-ITEM-STATE
                                        W65-GNBKEITAIKBNKG-STATE
                                        W65-GNBKEITAIKBNKG-ITEM-STATE
                                        W65-ZENKEITAIKBNG-STATE
@@ -11005,6 +11183,11 @@
                MOVE    WIDGET-INSENSITIVE
                                    TO  W65-KAICNTTAIKBNG-STATE
                                        W65-KAICNTTAIKBNG-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-CYOKEIKBNG  =  "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-CYOKEITAIKBNG-STATE
+                                       W65-CYOKEITAIKBNG-ITEM-STATE
            END-IF
            IF    ( SPA-GMN-GNBKEIKBNKG =  "0" )
                MOVE    WIDGET-INSENSITIVE
@@ -11386,6 +11569,10 @@
               MOVE    "NINJYOKBN"          TO  MCP-WIDGET
            WHEN    820
               MOVE    "NINJYOTAIKBN"       TO  MCP-WIDGET
+           WHEN    821
+              MOVE    "CYOKEIKBNG"         TO  MCP-WIDGET
+           WHEN    822
+              MOVE    "CYOKEITAIKBNG"      TO  MCP-WIDGET
            WHEN    003
                MOVE    "SELNUM2"           TO  MCP-WIDGET
            WHEN    004
@@ -11683,6 +11870,10 @@
            WHEN    "KAICNTKBNG"
                MOVE    802                 TO  SPA-GMN-CUR
            WHEN    "KAICNTTAIKBNG"
+               MOVE    821                 TO  SPA-GMN-CUR
+           WHEN    "CYOKEIKBNG"
+               MOVE    822                 TO  SPA-GMN-CUR
+           WHEN    "CYOKEITAIKBNG"
                MOVE    803                 TO  SPA-GMN-CUR
            WHEN    "GNBKEIKBNKG"
                MOVE    804                 TO  SPA-GMN-CUR
@@ -12177,6 +12368,13 @@
       *
            IF    ( SPA-GMN-CUR     =   802 )
                IF    ( W65-KAICNTTAIKBNG-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    821                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   822 )
+               IF    ( W65-CYOKEITAIKBNG-STATE
                                        =   WIDGET-INSENSITIVE )
                    MOVE    803                 TO  SPA-GMN-CUR
                END-IF
@@ -13618,6 +13816,64 @@
       *
            .
        4200-KAICNTTAIKBNGLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    長期併用時の特別計算（外来）コンボチェック処理
+      *****************************************************************
+       4200-CYOKEIKBNGLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-CYOKEIKBNG-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-CYOKEIKBNGL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-CYOKEIKBNGLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-CYOKEIKBNGLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-CYOKEIKBNGLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    長期併用時の特別計算（外来）対象区分コンボチェック処理
+      *****************************************************************
+       4200-CYOKEITAIKBNGLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-CYOKEITAIKBNG-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-CYOKEITAIKBNGL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-CYOKEITAIKBNGLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-CYOKEITAIKBNGLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-CYOKEITAIKBNGLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    現物給付対象者の特別計算（高齢者・外）コンボチェック処理

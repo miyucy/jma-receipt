@@ -252,9 +252,12 @@
       *限度額認定証（上位）の場合の特別計算
            03  SYS-2010-NINJYOKBN           PIC  X(01).
            03  SYS-2010-NINJYO-TAIKBN       PIC  X(01).
+      *長期併用時の特別計算（外来）
+           03  SYS-2010-CYOKEIKBN-G         PIC  X(01).
+           03  SYS-2010-CYOKEI-TAIKBN-G     PIC  X(01).
       *
       *予備
-           03  SYS-2010-YOBI                PIC  X(356).
+           03  SYS-2010-YOBI                PIC  X(354).
       *端末ＩＤ
            03  SYS-2010-TERMID              PIC  X(16).
       *オペレータＩＤ
