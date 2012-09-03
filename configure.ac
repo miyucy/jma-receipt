@@ -67,6 +67,7 @@ AC_SUBST(PGPATH)
 
 PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES(png, "libpng12")
+PKG_CHECK_MODULES(qrencode, "libqrencode")
 PKG_CHECK_MODULES(xml2,
 [
 	libxml-2.0 >= 2.6.27
@@ -76,13 +77,6 @@ AC_PATH_PROG(PKG_CONFIG,pkg-config,no)
 if test x$PKG_CONFIG = xno; then
 	AC_MSG_ERROR(Couldn't find pkg-config)
 fi
-
-AC_CHECK_HEADERS(qrencode.h)
-AC_CHECK_LIB(qrencode,QRcode_encodeString,
-	[have_qrencode=yes QRENCODE_LIB="-lqrencode"],
- 	[AC_MSG_ERROR([*** qrencode is not found.])], [-lpng12])
-AC_SUBST(have_qrencode)
-AC_SUBST(QRENCODE_LIB)
 
 AC_ARG_WITH(patchdir,
 	    [  --with-patchdir=DIR      patch libraries in DIR [PREFIX]],

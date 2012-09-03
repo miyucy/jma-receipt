@@ -16,8 +16,7 @@ CJKANJIOBJS = kanaconv.so orcsstring.so fixreddata.so
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 CC = @CC@
-have_qrencode = @have_qrencode@
-QRENCODE_LIB = @QRENCODE_LIB@
+QRENCODE_LIB = @qrencode_LIBS@
 PNG_CFLAGS = @png_CFLAGS@
 PNG_LIBS = @png_LIBS@
 XML2_CFLAGS = @xml2_CFLAGS@
@@ -26,9 +25,7 @@ XML2_LIBS = @xml2_LIBS@
 COBJS = ${CSRCS:.c=.so}
 CJQOBJS = ${CJQSRCS:.c=.so}  
 
-ifeq ($(have_qrencode), yes)
-  COBJS += $(CJQOBJS)
-endif
+COBJS += $(CJQOBJS)
 COBJS += $(CJKANJIOBJS)
 
 all: $(COBJS)
