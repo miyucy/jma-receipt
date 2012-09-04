@@ -1,7 +1,17 @@
+#if 0
+#!/bin/bash
+src=$0
+obj=${src%.*}
+gcc -g -Wl,--no-as-needed -lm `pkg-config --cflags --libs libpng12 libqrencode` -o $obj $src
+$obj
+exit
+#endif
+
 /*
  * orcqrencode - QR Code encode front end for jma-receipt
  *
  */
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -480,8 +490,7 @@ OPENLOG;
 
 	p = strrchr(qrfile, '.');
 	if(p != NULL)*p = '\0';
-	doEncodeStructured = 0;
-
+	doEncodeStructured = ctx_string2int(ctx, OFFSET_STRUCTURED, SIZE_STRUCTURED);
 	hint = ctx_string2int(ctx, OFFSET_HINT, SIZE_HINT) == 0 ? QR_MODE_KANJI : QR_MODE_8;
 	size = ctx_string2int(ctx, OFFSET_PIXEL, SIZE_PIXEL);
 	margin = ctx_string2int(ctx, OFFSET_MARGIN, SIZE_MARGIN);
@@ -493,19 +502,18 @@ OPENLOG;
 				"%s_%02d.png", qrfile, 1);
 			if(writePNG(code, qrfile_suffix, size, margin) != 0){
 				memset(CTX(ctx, OFFSET_RET_CODE), WRITE_PNG_ERROR, SIZE_RET_CODE);
+				QRcode_free(code);
 				return;
 			}
-SYSLOG("write single image");
+		SYSLOG("write single image");
 			sprintf(buf, "%02d" , code->version);
 			memcpy(CTX(ctx, OFFSET_RET_VERSION), buf, SIZE_RET_VERSION);
 			sprintf(buf, "%02d" , 1);
 			memcpy(CTX(ctx, OFFSET_RET_SYMBOLS), "01", SIZE_RET_SYMBOLS);
-		} else {
-			doEncodeStructured = 1;
+			QRcode_free(code);
+			return;
 		}
 		QRcode_free(code);
-	} else {
-		doEncodeStructured = 1;
 	}
 	if (doEncodeStructured) {
 		head = QRcode_encodeStringStructured(buf2, version, level, hint ,1);
@@ -523,7 +531,7 @@ SYSLOG("write single image");
 				entry = entry->next;	
 				i++;
 			}
-SYSLOG("write multi images");
+		SYSLOG("write multi images");
 			QRcode_List_free(entry);
 		}
 		else {
