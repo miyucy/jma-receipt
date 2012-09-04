@@ -720,6 +720,9 @@
                    MOVE    SPA-GMN-INPUTCD(IDX)(2:3)   TO  WRK-SRYSYUKBN
       *            ø«Œ≈ºÔ Ã∂Ë ¨ÃææŒ°¢ø«Œ≈π‘∞Ÿ∂Ë ¨•ª•√•»
                    PERFORM 510-SRYKBN-MEI-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       MOVE    "1"             TO  SPA-COM-CUR (IDX)
+                   END-IF
                    MOVE    WRK-SRYSYUKBNMEI    TO  SPA-GMN-MEISYO (IDX)
                    MOVE    WRK-SRYKBN          TO  SPA-GMN-SRYKBN (IDX)
       *
