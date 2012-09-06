@@ -2295,7 +2295,7 @@
                WHEN    "K175"
                    STRING  "警告！！"
                            "初診料は併用算定エラーです。"
-                           "初診料の自動発生はできません。"
+      **************       "初診料の自動発生はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
