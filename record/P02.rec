@@ -909,8 +909,8 @@ P02	{
 							value1	varchar(20);
 							value2	varchar(9);
 							value3	varchar(9);
-						}	[40];
-						select	bool[40];
+						}	[60];
+						select	bool[60];
 					};
 				};
 				P024_PTKOHFTNLST2	{

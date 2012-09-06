@@ -182,6 +182,9 @@
                05  FILLER          PIC X(01)   VALUE  ":".
                05  WRK-TMM         PIC 99.
       *
+      *¸øÈñ·ï¿ô
+       01  TBL-MAX-KOH             PIC 9(03)   VALUE   60.
+      *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
@@ -218,7 +221,7 @@
       *
       *    ¸øÈñÉéÃ´¹¹¿·ÊÝÂ¸
        01  HZN-PTKOHFTN-AREA.
-           03  HZN-PTKOHFTN-OCC           OCCURS  50.
+           03  HZN-PTKOHFTN-OCC           OCCURS  60.
                05  HZN-PTKOHFTN-OCC2          OCCURS  100.
                    07  HZN-PTKOHFTN-REC       PIC X(200).
       *    ´µ¼Ô¸øÈñÉéÃ´
@@ -2194,7 +2197,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                  AND  (SPA-NAI24-TKOHEDYMD (IDX2)  >=  SPA-SYSYMD )
                    MOVE    ZERO                TO  FLG-OK
                    PERFORM VARYING IDX         FROM    1   BY  1
-                       UNTIL  (IDX         >   50     )  OR
+                       UNTIL  (IDX         >   TBL-MAX-KOH  )  OR
                               (HZN-PTKOHFTN-REC (IDX 1)
                                            =   SPACE  )  OR
                               (FLG-OK      =   1      )
@@ -2679,8 +2682,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            ADD     1                   TO  IDP-1
            MOVE    ZERO                TO  IDP-2
-           IF      IDP-1               >   50
-               DISPLAY "GP024 KOHFTN PARA 50  OVER"
+           IF      IDP-1               >   TBL-MAX-KOH
+               DISPLAY "GP024 KOHFTN PARA MAX  OVER"
                MOVE    "2499"          TO  SPA-ERRCD
            END-IF
       *
@@ -2706,9 +2709,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ¸øÈñ£É£ÄËè¤Ë¥Æ¡¼¥Ö¥ëÊÝÂ¸
            IF      PTKOHFTN-KOHID  NOT =   WRK-KOHID
                ADD     1                   TO  IDP-1
-               IF      IDP-1               >   50
-                   MOVE    50              TO  IDP-1
-                   MOVE    "2499"          TO  SPA-ERRCD
+               IF      IDP-1               >   TBL-MAX-KOH
+                   MOVE    TBL-MAX-KOH         TO  IDP-1
+                   MOVE    "2499"              TO  SPA-ERRCD
                END-IF
                MOVE    PTKOHFTN-KOHID      TO  WRK-KOHID
                MOVE    ZERO                TO  IDP-2
