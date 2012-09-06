@@ -53,11 +53,13 @@
               05  I41-VALUE       PIC X(60).
           03  I41-KOMENTO.
             04  I41-VALUE       PIC X(50).
-          03  I41-LDAY-OCC      OCCURS 31.
-            04  I41-LDAY-STYLE  PIC X(20).
-            04  I41-LDAY        PIC X(02).
-          03  I41-DAY-OCC       OCCURS 31.
-            04  I41-DAY         PIC X(03).
+          03  I41-DAY           OCCURS 31.
+            04  I41-VALUE       PIC X(3).
+          03  I41-NYUINKACOMB.
+            04  I41-NYUINKA.
+              05  I41-VALUE            PIC X(16).
+            04  I41-NYUINKA-COUNT      PIC S9(9)   BINARY.
+            04  I41-NYUINKA-ITEM       PIC X(16)   OCCURS  100 TIMES.
           03  I41-SCROLLEDWINDOW1.
             04  I41-DATELIST.
               05  I41-DATELIST-COUNT   PIC S9(9)   BINARY.
@@ -87,10 +89,10 @@
               05  I41-SAGAKULIST-COUNT PIC S9(9)   BINARY.
               05  I41-SAGAKULIST-ROW     PIC S9(9)   BINARY.
               05  I41-SAGAKULIST-ROWATTR PIC S9(9)   BINARY.
-              05  I41-SAGAKU-ITEM      OCCURS  99 TIMES.
+              05  I41-SAGAKU-ITEM      OCCURS  30 TIMES.
                 06  I41-SAGAKUNO       PIC X(4).
                 06  I41-SAGAKU         PIC X(22).
-              05  I41-SAGAKULIST-SELECT  PIC X      OCCURS  99 TIMES.
+              05  I41-SAGAKULIST-SELECT  PIC X      OCCURS  30 TIMES.
           03  I41-TSUSANNISSU     PIC S9(6).
           03  I41-SYUBETSU1-G.
             04  I41-SYUBETSU1-STYLE.
@@ -129,13 +131,3 @@
               05  I41-VALUE       PIC X(40).
           03  I41-AGE.
             04  I41-VALUE         PIC X(9).
-          03  I41-NYUINKA-G.
-            04  I41-NYUINKA-STYLE.
-              05  I41-VALUE       PIC X(20).
-            04  I41-NYUINKA.
-              05  I41-VALUE       PIC X(40).
-          03  I41-UPYMD-G.
-            04  I41-UPYMD-STYLE.
-              05  I41-VALUE       PIC X(20).
-            04  I41-UPYMD.
-              05  I41-VALUE       PIC X(20).

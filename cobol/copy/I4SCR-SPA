@@ -81,10 +81,6 @@
                    07  SPA-NAI-YOBI-G.
                        09  SPA-NAI-YOBI                  PIC X(01)
                                                          OCCURS 31.
-      *H29.3
-      *    変更前年月
-                   07  SPA-MAE-GMN-SRYYM                 PIC X(06).
-                   07  SPA-MAE-NAI-SRYYM                 PIC X(06).
       *    更新フラグ
                05  SPA-UPDFLG-41                         PIC X(01).
                05  SPA-MAE-BANGO-41                      PIC 9(03).
@@ -97,7 +93,7 @@
       *    室料差額情報
            03  SPA-GMN-SAGAKUTBL-41.
                05  SPA-GMN-SAGAKU-TITLE-41               PIC X(22).
-               05  SPA-GMN-SAGAKULIST-41                 OCCURS  99.
+               05  SPA-GMN-SAGAKULIST-41                 OCCURS  30.
                    07  SPA-GMN-SAGAKUNO-41               PIC X(04).
                    07  SPA-GMN-SAGAKU-41                 PIC X(22).
                05  SPA-SAGAKU-MAX-41                     PIC 9(03).
@@ -179,29 +175,5 @@
                            11  SPA-NAI-ROUTEKKBN-41      PIC 9(01).
                05  SPA-NAI-MAX-41                    PIC 9(04).
                05  SPA-GMN-MAX-41                    PIC 9(04).
-      *
-      *    プレビュー用保険情報
-           03  SPA-XC01-AREA.
-               05  SPA-XC01-CHK            PIC X(01).
-               05  SPA-XC01-HKNKBN         PIC X(01).
-               05  SPA-XC01-RSI-HKNKBN     PIC X(01).
-               05  SPA-XC01-RESPRVFLG      PIC X(01).
-      *
-               05  SPA-XC01-DAISANFLG      PIC X(01).
-      *
-      *    プレビュー保険組合せ一覧
-           03  SPA-I411-AREA.
-               05  SPA-I411-GMN-CUR        PIC 9(02).
-      *
-               05  SPA-I411-HKNCOMBI-MAX           PIC 9(04).
-               05  SPA-I411-HKNCOMBI-OCCS.
-                   07  SPA-I411-HKNCOMBI-TBL       OCCURS  30.
-                       09  SPA-I411-THKNCOMBI            PIC X(04).
-                       09  SPA-I411-THKNCOMBIMEI         PIC X(50).
-                       09  SPA-I411-THKNNUM              PIC X(03).
-                       09  SPA-I411-THKNKBN              PIC X(01).
-                       09  SPA-I411-TRSI-HKNKBN          PIC X(01).
-                       09  SPA-I411-TSISIKBN             PIC 9(01).
-               05 SPA-I411-SELNUM          PIC X(04).
       *
       *
