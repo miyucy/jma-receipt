@@ -520,6 +520,7 @@
                 PERFORM   200211-SYS2010-SET2-SEC
                 PERFORM   200212-SYS2010-SET3-SEC
              END-IF
+             PERFORM      20021A-SYS2010-KURIA-SEC
       *
       *      公費請求テーブル作成フラグの編集
              IF    LNK-FTNJGNCHK-NYUGAIKBN   =   "1"
@@ -948,6 +949,179 @@
       *
            .
        200212-SYS2010-SET3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理２０１０セットクリア
+      *****************************************************************
+       20021A-SYS2010-KURIA-SEC       SECTION.
+      *
+           EVALUATE  LNK-FTNJGNCHK-PREFNUM
+             WHEN      42
+               IF  (LNK-FTNJGNCHK-KOHNUM  = "287" OR "380"
+                                         OR "281" OR "282"       )
+               AND (LNK-FTNJGNCHK-SRYYM   < "200704"             )
+               AND (PTHKN-HKNNUM  NOT = "060" AND "067" AND "039")
+                 MOVE  SPACE  TO  WRK-RECEKSIFLG-G
+               END-IF
+           END-EVALUATE
+      *
+           EVALUATE  LNK-FTNJGNCHK-PREFNUM
+             WHEN      11
+               IF  (LNK-FTNJGNCHK-KOHNUM  = "383"   )
+               AND (LNK-FTNJGNCHK-SRYYM   < "201001")
+                 MOVE  SPACE  TO  WRK-RECEKSIFLG-N
+               END-IF
+             WHEN      42
+               IF  (LNK-FTNJGNCHK-KOHNUM  = "287" OR "380"
+                                         OR "281" OR "282"       )
+               AND (LNK-FTNJGNCHK-SRYYM   < "200704"             )
+               AND (PTHKN-HKNNUM  NOT = "060" AND "067" AND "039")
+                 MOVE  SPACE  TO  WRK-RECEKSIFLG-N
+               END-IF
+           END-EVALUATE
+      *
+           EVALUATE  LNK-FTNJGNCHK-PREFNUM
+             WHEN      13
+               IF  (LNK-FTNJGNCHK-KOHNUM  = "588"   )
+               AND (LNK-FTNJGNCHK-SRYYM   < "200910")
+                 MOVE  SPACE  TO  WRK-CHKJGNFLG-G
+               END-IF
+           END-EVALUATE
+      *
+           EVALUATE  LNK-FTNJGNCHK-PREFNUM
+             WHEN      11
+               IF ((LNK-FTNJGNCHK-KOHNUM  = "783"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM   < "201004"))
+               OR ((LNK-FTNJGNCHK-KOHNUM  = "683"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM   < "200904"))
+                 MOVE  SPACE  TO  WRK-CHKJGNFLG-N
+               END-IF
+            WHEN      25
+               IF   LNK-FTNJGNCHK-SRYYM   < "200508"
+                 MOVE  SPACE  TO  WRK-CHKJGNFLG-N
+               END-IF
+             WHEN      42
+               IF  (LNK-FTNJGNCHK-KOHNUM  = "182" OR "282")
+               AND (LNK-FTNJGNCHK-SRYYM   < "201012"      )
+                 MOVE  SPACE  TO  WRK-CHKJGNFLG-N
+               END-IF
+           END-EVALUATE
+      *
+           EVALUATE   LNK-FTNJGNCHK-PREFNUM
+             WHEN       07
+               IF ((LNK-FTNJGNCHK-KOHNUM    =  "245"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200412" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "246"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200604" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "445" OR "545"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200604" ))
+                 MOVE  SPACE  TO  WRK-IRYOKEIKBN-G
+               END-IF
+             WHEN       11
+               IF ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "343" OR "342"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200507" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "344"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200507" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                    "181" OR "182" OR "183" OR "281"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200704" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "543" OR "582"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200710" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "381"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200801" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                    "481" OR "482" OR "743" OR "442"
+                                            OR "542"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200804" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "483"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200804" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "383"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "201001" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "681" OR "682"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "683"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "781"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "783"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "201004" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "372" OR "373"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "201101" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                    "462" OR "562" OR "662" OR "762"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "201112" ))
+                 MOVE  SPACE  TO  WRK-IRYOKEIKBN-G
+               END-IF
+             WHEN       43
+               IF ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "341" OR "442"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200912" ))
+                 MOVE  SPACE  TO  WRK-IRYOKEIKBN-G
+               END-IF
+           END-EVALUATE
+      *
+           EVALUATE   LNK-FTNJGNCHK-PREFNUM
+             WHEN       07
+               IF ((LNK-FTNJGNCHK-KOHNUM    =  "245"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200412" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "246"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200604" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "445" OR "545"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200604" ))
+                 MOVE  SPACE  TO  WRK-IRYOKEIKBN-N
+               END-IF
+             WHEN       11
+               IF ((LNK-FTNJGNCHK-KOHNUM    =
+                    "181" OR "182" OR "183" OR "281"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200704" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "543" OR "582"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200710" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "381"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200801" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                             "743" OR "442" OR "542"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200804" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "681" OR "682"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "683"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "781"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200904" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "783"   ) AND
+                   (WRK-TEISYOTOKU2     NOT =  SPACE   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "201004" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "372" OR "373"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "201101" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "462" OR "762"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "201112" ))
+                 MOVE  SPACE  TO  WRK-IRYOKEIKBN-N
+               END-IF
+             WHEN       43
+               IF ((LNK-FTNJGNCHK-KOHNUM    =
+                                      "341" OR "442"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "200912" ))
+                 MOVE  SPACE  TO  WRK-IRYOKEIKBN-N
+               END-IF
+           END-EVALUATE
+      *
+           .
+       20021A-SYS2010-KURIA-EXT.
            EXIT.
       *
       *****************************************************************

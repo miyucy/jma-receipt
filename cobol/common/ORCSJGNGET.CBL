@@ -943,9 +943,63 @@
                  WHEN      "0"
                     MOVE   ZERO   TO   LNK-ORCSJGNGET-TAISYOKBN
                  WHEN      "1"
-                    MOVE    1     TO   LNK-ORCSJGNGET-TAISYOKBN
+                    IF  ((LNK-ORCSJGNGET-PREFNUM       = "01"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "183"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200810"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "13"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "151"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200310"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "23"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "191"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200910"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "23"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "201104"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "24"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "201104"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "07"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "281"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200702"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "08"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200904"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "28"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "186"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200310"))
+                         MOVE   ZERO    TO   LNK-ORCSJGNGET-TAISYOKBN
+                    ELSE
+                         MOVE    1      TO   LNK-ORCSJGNGET-TAISYOKBN
+                    END-IF
                  WHEN      "2"
-                    MOVE    2     TO   LNK-ORCSJGNGET-TAISYOKBN
+                    IF  ((LNK-ORCSJGNGET-PREFNUM       = "01"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "183"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200810"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "13"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "151"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200310"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "23"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "191"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200910"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "23"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "201104"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "24"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "201104"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "07"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "281"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200702"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "08"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "152"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200904"))
+                    OR  ((LNK-ORCSJGNGET-PREFNUM       = "28"    ) AND
+                         (LNK-ORCSJGNGET-KOHHKNNUM     = "186"   ) AND
+                         (LNK-ORCSJGNGET-TEKSTYMD(1:6) < "200310"))
+                         MOVE   ZERO    TO   LNK-ORCSJGNGET-TAISYOKBN
+                    ELSE
+                         MOVE    2      TO   LNK-ORCSJGNGET-TAISYOKBN
+                    END-IF
                END-EVALUATE
                MOVE     "tbl_syskanri"  TO  MCP-TABLE
                MOVE     "key10"         TO  MCP-PATHNAME

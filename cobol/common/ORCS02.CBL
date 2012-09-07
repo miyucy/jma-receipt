@@ -349,6 +349,7 @@
       *  04.07.02    NACL-ÌçÏÆ    11/09/01  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *  04.07.03    NACL-ÌçÏÆ    11/10/17  Ë¡Äê³°¸½ÊªµëÉÕÂÐ±þ¡ÊË¡ÊÌ£±£°¡¢£²£±¡Ë
       *  04.07.04    NACL-ÌçÏÆ    12/04/26  ¸ºÌÈ·×»»ÂÐ¾Ý¶èÊ¬¡Ê¼«ÈñÊ¬¤Î¤ß¡ËÂÐ±þ
+      *  04.07.05    NACL-ÌçÏÆ    12/08/27  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -504,6 +505,7 @@
            03  FLG-OITA-SYUKEI         PIC 9(01).
            03  FLG-JYOGEN-OKIKAE       PIC 9(01).
            03  FLG-SAIGAI-TAISYO       PIC 9(01).
+           03  FLG-OK                  PIC 9(01).
       *
        01  WRK-AREA.
            03  WK-PAYKBN               PIC X(02).
@@ -535,6 +537,14 @@
                  06  WK-2010-SKJRYOKBN-TNK       PIC X(01).
                  06  WK-2010-SEIRYOKBN-TNK       PIC X(01).
                  06  WK-2010-SEIKANKBN-TNK       PIC X(01).
+      *
+                 06  WK-2010-SYOKEIKBN-N         PIC X(01).
+                 06  WK-2010-DAYKEIKBN-N         PIC X(01).
+                 06  WK-2010-NINNASIKBN          PIC X(01).
+                 06  WK-2010-NINJYOKBN           PIC X(01).
+      *
+                 06  WK-2010-NYUKEIKBN-N         PIC X(01).
+                 06  WK-2010-NYUKEI-KJNYMD       PIC X(08).
       *
            03  WK-DAYTAIHI-FTNMONEY    PIC 9(07).
            03  WK-DAYTAIHI-COMPFTN     PIC 9(07).
@@ -3617,6 +3627,8 @@
       *
            PERFORM       2101-PTHKNINF-KENSAKU-SEC
       *
+           PERFORM       2113-SYSKAN2010-HENSYU-SEC
+      *
       *    ¸øÈñÃ±ÆÈ¤ÇÏ·¿ÍÊÝ¸±ÆþÎÏ¤¬¤¢¤ë¤«¥Á¥§¥Ã¥¯
            IF      COMB-HKNNUM          =   SPACE
            AND     COMB-KOH1HKNNUM  NOT =   SPACE
@@ -4278,29 +4290,7 @@
            END-IF
       *
            MOVE    ZERO     TO    FLG-OITA-GENBUTU70
-           IF  ((WK-1001-PREFNUM       =   44           ) AND
-                (LNK-SYU-SRYYMD(1:6)  >=  "201010"      ) AND
-                (LNK-SYU-KOH1HKNNUM    =  "183" OR "283"))
-           OR  ((WK-1001-PREFNUM       =   04           ) AND
-                (LNK-SYU-SRYYMD(1:6)  >=  "201010"      ) AND
-                (LNK-SYU-KOH1HKNNUM    =  "583" OR "683"
-                                                OR "783"))
-           OR  ((WK-1001-PREFNUM       =   04           ) AND
-                (LNK-SYU-SRYYMD(1:6)  >=  "201201"      ) AND
-                (LNK-SYU-KOH1HKNNUM    =  "463" OR "563"
-                                       OR "263" OR "363"))
-           OR  ((WK-1001-PREFNUM       =   10           ) AND
-                (LNK-SYU-SRYYMD(1:6)  >= "201104"       ) AND
-                (LNK-SYU-KOH1HKNNUM    =  "145" OR "245"
-                                       OR "146" OR "246"
-                                       OR "143" OR "243"))
-           OR  ((WK-1001-PREFNUM       =   12           ) AND
-                (LNK-SYU-SRYYMD(1:6)  >=  "201203"      ) AND
-                (LNK-SYU-KOH1HKNNUM    =  "263" OR "363"
-                                       OR "463"         ))
-           OR  ((WK-1001-PREFNUM       =   40           ) AND
-                (LNK-SYU-SRYYMD(1:6)  >=  "201010"      ) AND
-                (LNK-SYU-KOH1HKNNUM    =  "383"         ))
+           IF    WK-2010-NINNASIKBN(1)  NOT = SPACE
              IF  (LNK-SYU-KOH2HKNNUM  = "972" OR "974")
              OR  (LNK-SYU-KOH3HKNNUM  = "972" OR "974")
              OR  (LNK-SYU-KOH4HKNNUM  = "972" OR "974")
@@ -4309,8 +4299,19 @@
                 CONTINUE
              ELSE
                 IF    FLG-GENBUTU70   =  ZERO
-                  IF  (WK-1001-PREFNUM       =   10       )
-                  AND (LNK-SYU-SRYYMD(1:6)  >=  "201104"  )
+                  IF    WK-2010-NINNASIKBN(1)  =  "1" OR "2"
+                       MOVE    2     TO    FLG-GENBUTU70
+                       MOVE    1     TO    FLG-OITA-GENBUTU70
+                  ELSE
+                    IF  FLG-SANSHOU2   =  "2" OR "3"
+                       MOVE    3     TO    FLG-GENBUTU70
+                       MOVE    1     TO    FLG-OITA-GENBUTU70
+                    ELSE
+                       MOVE    2     TO    FLG-GENBUTU70
+                       MOVE    1     TO    FLG-OITA-GENBUTU70
+                    END-IF
+                  END-IF
+                  IF    WK-2010-NINNASIKBN(1)  =  "2" OR "4"
                     INITIALIZE                       PTKOHINF-REC
                     MOVE    LNK-SYU-HOSPNUM      TO  PTKOH-HOSPNUM
                     MOVE    LNK-SYU-PTID         TO  PTKOH-PTID
@@ -4342,17 +4343,6 @@
                     MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                     MOVE    "key4"               TO  MCP-PATHNAME
                     PERFORM  DB-CLOSE-SEC
-      *
-                    IF   FLG-SANSHOU2   =  "2" OR "3"
-                      MOVE    3     TO    FLG-GENBUTU70
-                      MOVE    1     TO    FLG-OITA-GENBUTU70
-                    ELSE
-                      MOVE    2     TO    FLG-GENBUTU70
-                      MOVE    1     TO    FLG-OITA-GENBUTU70
-                    END-IF
-                  ELSE
-                      MOVE    2     TO    FLG-GENBUTU70
-                      MOVE    1     TO    FLG-OITA-GENBUTU70
                   END-IF
                 END-IF
              END-IF
@@ -5200,7 +5190,6 @@
       *
            PERFORM    2111-TOKU75-SETTEI-SEC.
            PERFORM    2112-TAISYOKBN-HENSYU-SEC.
-           PERFORM    2113-SYSKAN2010-HENSYU-SEC.
       *
       *    ´µ¼ÔÉéÃ´¶â»»½ÐÁ°¤Î£±£°£°¡óÉéÃ´³Û»»½Ð
            MOVE      ZERO      TO      WK-ZENGAKU.
@@ -9610,6 +9599,17 @@
            PERFORM   VARYING   IDX-CYO   FROM    1   BY  1
                       UNTIL    IDX-CYO     >     4
              IF   COMB-KOHHKNNUM(IDX-CYO)(1:1)  >=  "1" AND <=  "8"
+      *
+               MOVE    "0"    TO   WK-2010-SKJRYOKBN-HON(IDX-CYO)
+                                   WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                                   WK-2010-SEIKANKBN-HON(IDX-CYO)
+               MOVE    "0"    TO   WK-2010-SKJRYOKBN-TSY(IDX-CYO)
+                                   WK-2010-SEIRYOKBN-TSY(IDX-CYO)
+                                   WK-2010-SEIKANKBN-TSY(IDX-CYO)
+               MOVE    "0"    TO   WK-2010-SKJRYOKBN-TNK(IDX-CYO)
+                                   WK-2010-SEIRYOKBN-TNK(IDX-CYO)
+                                   WK-2010-SEIKANKBN-TNK(IDX-CYO)
+      *
                IF     LNK-SYU-SRYYMD(1:6) >= "200804"
                  INITIALIZE                   SYS-2010-REC
                  MOVE    "2010"           TO  SYS-2010-KANRICD
@@ -9636,14 +9636,20 @@
                  MOVE     "tbl_syskanri"  TO  MCP-TABLE
                  MOVE     "key10"         TO  MCP-PATHNAME
                  PERFORM   DB-CLOSE-SEC
+                 IF  (WK-2010-NYUKEIKBN-N(IDX-CYO)   = "1"       )
+                 AND (WK-2010-NYUKEI-KJNYMD(IDX-CYO) > "20120101")
+                   PERFORM 21136-SYSKAN2010-SET6-SEC
+                 END-IF
                ELSE
                  PERFORM   21132-SYSKAN2010-SET2-SEC
                  PERFORM   21133-SYSKAN2010-SET3-SEC
                  PERFORM   21134-SYSKAN2010-SET4-SEC
+                 PERFORM   21135-SYSKAN2010-SET5-SEC
                END-IF
                IF  WK-2010-IRYOKEIKBN-N(IDX-CYO) = "1"
                  PERFORM   21139-KIZONHKNNUM-CHECK-SEC
                END-IF
+               PERFORM     2113A-SYSKAN2010-KURIA-SEC
              END-IF
            END-PERFORM
       *
@@ -9686,150 +9692,474 @@
                END-EVALUATE
            END-EVALUATE
       *
-           EVALUATE  SYS-2010-SKJKEIKBN
-             WHEN      SPACE
-               PERFORM    21133-SYSKAN2010-SET3-SEC
-             WHEN       "0"
-               IF ((WK-1001-PREFNUM         =   11     ) AND
-                   (COMB-KOHHKNNUM(IDX-CYO) =  "543"   ) AND
-                   (LNK-SYU-SRYYMD(1:6)    >= "200710" ) AND
-                   (LNK-SYU-SRYYMD(1:6)    <= "201109" ))
-                   MOVE     "1"     TO  WK-2010-SKJKEIKBN(IDX-CYO)
-               END-IF
-             WHEN       "1"
-               EVALUATE   SYS-2010-SKJKEI-TAIKBN
-                 WHEN      "0"
-                     MOVE    "1"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
-                 WHEN      "1"
-                     IF    FLG-SANSHOU2   = "2"  OR  "3"
-                       MOVE  "1"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
-                     END-IF
-               END-EVALUATE
-             WHEN       "2"
-               EVALUATE   SYS-2010-SKJKEI-TAIKBN
-                 WHEN      "0"
-                     MOVE    "2"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
-                 WHEN      "1"
-                     IF    FLG-SANSHOU2   = "2"  OR  "3"
-                       MOVE  "2"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
-                     END-IF
-               END-EVALUATE
-           END-EVALUATE
+           IF     LNK-SYU-SRYYMD(1:6)    >=  "200604"
+             EVALUATE  SYS-2010-SKJKEIKBN
+               WHEN      SPACE
+                 PERFORM    21133-SYSKAN2010-SET3-SEC
+               WHEN       "0"
+                 IF ((WK-1001-PREFNUM         =   11     ) AND
+                     (COMB-KOHHKNNUM(IDX-CYO) =  "543"   ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200710" ) AND
+                     (LNK-SYU-SRYYMD(1:6)    <= "201109" ))
+                     MOVE     "1"     TO  WK-2010-SKJKEIKBN(IDX-CYO)
+                 END-IF
+               WHEN       "1"
+                 EVALUATE   SYS-2010-SKJKEI-TAIKBN
+                   WHEN      "0"
+                       MOVE    "1"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
+                   WHEN      "1"
+                       IF    FLG-SANSHOU2   = "2"  OR  "3"
+                         MOVE  "1"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
+                       END-IF
+                 END-EVALUATE
+               WHEN       "2"
+                 EVALUATE   SYS-2010-SKJKEI-TAIKBN
+                   WHEN      "0"
+                       MOVE    "2"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
+                   WHEN      "1"
+                       IF    FLG-SANSHOU2   = "2"  OR  "3"
+                         MOVE  "2"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
+                       END-IF
+                 END-EVALUATE
+             END-EVALUATE
+           END-IF
       *
       *****
       *
-           EVALUATE  SYS-2010-SKJRYOKBN-HON
+           IF     LNK-SYU-SRYYMD(1:6)    >=  "200604"
+             EVALUATE  SYS-2010-SKJRYOKBN-HON
+               WHEN      SPACE
+                 PERFORM    21134-SYSKAN2010-SET4-SEC
+               WHEN       "0"
+                 MOVE         "0"     TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+                 IF ((WK-1001-PREFNUM         =   11     ) AND
+                     (COMB-KOHHKNNUM(IDX-CYO) =  "382"   ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200910" ) AND
+                     (LNK-SYU-SRYYMD(1:6)    <= "201009" ))
+                     MOVE     "2"     TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+                 END-IF
+                 IF ((WK-1001-PREFNUM         =   08     ) AND
+                     (COMB-KOHHKNNUM(IDX-CYO) =
+                               "146" OR "183" OR "185"   ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200511" ) AND
+                     (LNK-SYU-SRYYMD(1:6)    <= "200703" ))
+                     MOVE     "2"     TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+                 END-IF
+               WHEN       "1"
+               WHEN       "2"
+               WHEN       "3"
+                 MOVE  SYS-2010-SKJRYOKBN-HON
+                                      TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+             END-EVALUATE
+      *
+             EVALUATE  SYS-2010-SEIRYOKBN-HON
+               WHEN      SPACE
+                 PERFORM    21134-SYSKAN2010-SET4-SEC
+               WHEN       "0"
+                 MOVE         "0"     TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                 IF ((WK-1001-PREFNUM         =   11     ) AND
+                     (COMB-KOHHKNNUM(IDX-CYO) =  "382"   ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200910" ) AND
+                     (LNK-SYU-SRYYMD(1:6)    <= "201009" ))
+                     MOVE     "2"     TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                 END-IF
+                 IF ((WK-1001-PREFNUM         =   08     ) AND
+                     (COMB-KOHHKNNUM(IDX-CYO) =
+                               "146" OR "183" OR "185"   ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200511" ) AND
+                     (LNK-SYU-SRYYMD(1:6)    <= "200703" ))
+                     MOVE     "2"     TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                 END-IF
+               WHEN       "1"
+               WHEN       "2"
+               WHEN       "3"
+                 MOVE  SYS-2010-SEIRYOKBN-HON
+                                      TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
+             END-EVALUATE
+      *
+             EVALUATE  SYS-2010-SEIKANKBN-HON
+               WHEN      SPACE
+                 PERFORM    21134-SYSKAN2010-SET4-SEC
+               WHEN       "0"
+                 IF ((WK-1001-PREFNUM         =   08     ) AND
+                     (COMB-KOHHKNNUM(IDX-CYO) =
+                               "146" OR "183" OR "185"   ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200511" ) AND
+                     (LNK-SYU-SRYYMD(1:6)    <= "200703" ))
+                     MOVE     "2"     TO  WK-2010-SEIKANKBN-HON(IDX-CYO)
+                 END-IF
+               WHEN       "1"
+               WHEN       "2"
+               WHEN       "3"
+                 MOVE  SYS-2010-SEIKANKBN-HON
+                                      TO  WK-2010-SEIKANKBN-HON(IDX-CYO)
+             END-EVALUATE
+      *
+             EVALUATE  SYS-2010-SKJRYOKBN-TSY
+               WHEN      SPACE
+                 PERFORM    21134-SYSKAN2010-SET4-SEC
+               WHEN       "0"
+               WHEN       "1"
+               WHEN       "2"
+               WHEN       "3"
+                 MOVE  SYS-2010-SKJRYOKBN-TSY
+                                      TO  WK-2010-SKJRYOKBN-TSY(IDX-CYO)
+             END-EVALUATE
+      *
+             EVALUATE  SYS-2010-SEIRYOKBN-TSY
+               WHEN      SPACE
+                 PERFORM    21134-SYSKAN2010-SET4-SEC
+               WHEN       "0"
+               WHEN       "1"
+               WHEN       "2"
+               WHEN       "3"
+                 MOVE  SYS-2010-SEIRYOKBN-TSY
+                                      TO  WK-2010-SEIRYOKBN-TSY(IDX-CYO)
+             END-EVALUATE
+      *
+             EVALUATE  SYS-2010-SEIKANKBN-TSY
+               WHEN      SPACE
+                 PERFORM    21134-SYSKAN2010-SET4-SEC
+               WHEN       "0"
+               WHEN       "1"
+               WHEN       "2"
+               WHEN       "3"
+                 MOVE  SYS-2010-SEIKANKBN-TSY
+                                      TO  WK-2010-SEIKANKBN-TSY(IDX-CYO)
+             END-EVALUATE
+      *
+             EVALUATE  SYS-2010-SKJRYOKBN-TNK
+               WHEN      SPACE
+                 PERFORM    21134-SYSKAN2010-SET4-SEC
+               WHEN       "0"
+               WHEN       "1"
+               WHEN       "2"
+               WHEN       "3"
+                 MOVE  SYS-2010-SKJRYOKBN-TNK
+                                      TO  WK-2010-SKJRYOKBN-TNK(IDX-CYO)
+             END-EVALUATE
+      *
+             EVALUATE  SYS-2010-SEIRYOKBN-TNK
+               WHEN      SPACE
+                 PERFORM    21134-SYSKAN2010-SET4-SEC
+               WHEN       "0"
+               WHEN       "1"
+               WHEN       "2"
+               WHEN       "3"
+                 MOVE  SYS-2010-SEIRYOKBN-TNK
+                                      TO  WK-2010-SEIRYOKBN-TNK(IDX-CYO)
+             END-EVALUATE
+      *
+             EVALUATE  SYS-2010-SEIKANKBN-TNK
+               WHEN      SPACE
+                 PERFORM    21134-SYSKAN2010-SET4-SEC
+               WHEN       "0"
+               WHEN       "1"
+               WHEN       "2"
+               WHEN       "3"
+                 MOVE  SYS-2010-SEIKANKBN-TNK
+                                      TO  WK-2010-SEIKANKBN-TNK(IDX-CYO)
+             END-EVALUATE
+           END-IF
+      *
+      *****
+      *
+           EVALUATE  SYS-2010-SYOKEIKBN-N
              WHEN      SPACE
-               PERFORM    21134-SYSKAN2010-SET4-SEC
-             WHEN       "0"
-               MOVE         "0"     TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
-               IF ((WK-1001-PREFNUM         =   11     ) AND
-                   (COMB-KOHHKNNUM(IDX-CYO) =  "382"   ) AND
-                   (LNK-SYU-SRYYMD(1:6)    >= "200910" ) AND
-                   (LNK-SYU-SRYYMD(1:6)    <= "201009" ))
-                   MOVE     "2"     TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
-               END-IF
+               EVALUATE   WK-1001-PREFNUM
+                 WHEN       01
+                   IF   COMB-KOHHKNNUM(IDX-CYO)   =
+                                   "142" OR "143" OR "144" OR "744"
+                                         OR "443" OR "444" OR "842"
+                                         OR "190" OR "291" OR "292"
+                     MOVE    "1"    TO  WK-2010-SYOKEIKBN-N(IDX-CYO)
+                   END-IF
+               END-EVALUATE
              WHEN       "1"
-             WHEN       "2"
-             WHEN       "3"
-               MOVE  SYS-2010-SKJRYOKBN-HON
-                                    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+                     MOVE    "1"    TO  WK-2010-SYOKEIKBN-N(IDX-CYO)
            END-EVALUATE
       *
-           EVALUATE  SYS-2010-SEIRYOKBN-HON
+           IF   LNK-SYU-SRYYMD(1:6)  >= "201201"
+             EVALUATE  SYS-2010-NYUKEIKBN-N
+               WHEN      SPACE
+                 EVALUATE   WK-1001-PREFNUM
+                   WHEN       04
+                     IF   COMB-KOHHKNNUM(IDX-CYO) =  "463" OR "563"
+                       MOVE    "1"    TO  WK-2010-NYUKEIKBN-N(IDX-CYO)
+                       MOVE    "20120101"
+                                      TO  WK-2010-NYUKEI-KJNYMD(IDX-CYO)
+                     END-IF
+                 END-EVALUATE
+               WHEN       "1"
+                 IF  SYS-2010-STYUKYMD  <=  "20120101"
+                       MOVE    "1"    TO  WK-2010-NYUKEIKBN-N(IDX-CYO)
+                       MOVE    "20120101"
+                                      TO  WK-2010-NYUKEI-KJNYMD(IDX-CYO)
+                 ELSE
+                       MOVE    "1"    TO  WK-2010-NYUKEIKBN-N(IDX-CYO)
+                       MOVE    SYS-2010-STYUKYMD
+                                      TO  WK-2010-NYUKEI-KJNYMD(IDX-CYO)
+                 END-IF
+             END-EVALUATE
+           END-IF
+      *
+           EVALUATE  SYS-2010-DAYKEIKBN-N
              WHEN      SPACE
-               PERFORM    21134-SYSKAN2010-SET4-SEC
-             WHEN       "0"
-               MOVE         "0"     TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
-               IF ((WK-1001-PREFNUM         =   11     ) AND
-                   (COMB-KOHHKNNUM(IDX-CYO) =  "382"   ) AND
-                   (LNK-SYU-SRYYMD(1:6)    >= "200910" ) AND
-                   (LNK-SYU-SRYYMD(1:6)    <= "201009" ))
-                   MOVE     "2"     TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
-               END-IF
+               EVALUATE   WK-1001-PREFNUM
+                 WHEN       15
+                     MOVE    "1"    TO  WK-2010-DAYKEIKBN-N(IDX-CYO)
+                 WHEN       40
+                   IF   LNK-SYU-SRYYMD(1:6)      >=  "200810"
+                     MOVE    "1"    TO  WK-2010-DAYKEIKBN-N(IDX-CYO)
+                   END-IF
+               END-EVALUATE
              WHEN       "1"
-             WHEN       "2"
-             WHEN       "3"
-               MOVE  SYS-2010-SEIRYOKBN-HON
-                                    TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                     MOVE    "1"    TO  WK-2010-DAYKEIKBN-N(IDX-CYO)
            END-EVALUATE
       *
-           EVALUATE  SYS-2010-SEIKANKBN-HON
-             WHEN      SPACE
-               PERFORM    21134-SYSKAN2010-SET4-SEC
-             WHEN       "0"
-             WHEN       "1"
-             WHEN       "2"
-             WHEN       "3"
-               MOVE  SYS-2010-SEIKANKBN-HON
-                                    TO  WK-2010-SEIKANKBN-HON(IDX-CYO)
-           END-EVALUATE
+           IF   LNK-SYU-SRYYMD(1:6)  >= "201010"
+             EVALUATE  SYS-2010-NINNASIKBN
+               WHEN      SPACE
+                 EVALUATE   WK-1001-PREFNUM
+                   WHEN       04
+                     IF   COMB-KOHHKNNUM(IDX-CYO)   =
+                                              "583" OR "683" OR "783"
+                       MOVE    "1"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                     END-IF
+                     IF  (COMB-KOHHKNNUM(IDX-CYO)   =  "363" OR "563")
+                     AND (LNK-SYU-SRYYMD(1:6)      >= "201201"       )
+                       MOVE    "1"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                     END-IF
+                     IF  (COMB-KOHHKNNUM(IDX-CYO)   =  "263" OR "463")
+                     AND (LNK-SYU-SRYYMD(1:6)      >= "201201"       )
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                         MOVE  "1"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                     END-IF
+                   WHEN       10
+                     IF  (COMB-KOHHKNNUM(IDX-CYO)   =
+                                              "145" OR "245" OR "146"
+                                           OR "246" OR "143" OR "243")
+                     AND (LNK-SYU-SRYYMD(1:6)      >= "201104"       )
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                       OR ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "4"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                     END-IF
+                   WHEN       12
+                     IF  (COMB-KOHHKNNUM(IDX-CYO)   =
+                                              "263" OR "363" OR "463")
+                     AND (LNK-SYU-SRYYMD(1:6)      >= "201203"       )
+                       MOVE    "1"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                     END-IF
+                   WHEN       40
+                     IF   COMB-KOHHKNNUM(IDX-CYO)   =  "383"
+                       MOVE    "1"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                     END-IF
+                   WHEN       44
+                     IF   COMB-KOHHKNNUM(IDX-CYO)   =  "183" OR "283"
+                       MOVE    "1"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                     END-IF
+                 END-EVALUATE
+               WHEN       "1"
+                 EVALUATE   SYS-2010-NINNASI-TAIKBN
+                   WHEN      "0"
+                       MOVE    "1"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                   WHEN      "1"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                       OR ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "1"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "2"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                         MOVE  "1"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "3"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "1"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                 END-EVALUATE
+               WHEN       "2"
+                 EVALUATE   SYS-2010-NINNASI-TAIKBN
+                   WHEN      "0"
+                       MOVE    "2"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                   WHEN      "1"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                       OR ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "2"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "2"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                         MOVE  "2"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "3"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "2"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                 END-EVALUATE
+               WHEN       "3"
+                 EVALUATE   SYS-2010-NINNASI-TAIKBN
+                   WHEN      "0"
+                       MOVE    "3"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                   WHEN      "1"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                       OR ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "3"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "2"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                         MOVE  "3"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "3"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "3"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                 END-EVALUATE
+               WHEN       "4"
+                 EVALUATE   SYS-2010-NINNASI-TAIKBN
+                   WHEN      "0"
+                       MOVE    "4"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                   WHEN      "1"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                       OR ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "4"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "2"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                         MOVE  "4"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "3"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "4"    TO  WK-2010-NINNASIKBN(IDX-CYO)
+                       END-IF
+                 END-EVALUATE
+             END-EVALUATE
+           END-IF
       *
-           EVALUATE  SYS-2010-SKJRYOKBN-TSY
-             WHEN      SPACE
-               PERFORM    21134-SYSKAN2010-SET4-SEC
-             WHEN       "0"
-             WHEN       "1"
-             WHEN       "2"
-             WHEN       "3"
-               MOVE  SYS-2010-SKJRYOKBN-TSY
-                                    TO  WK-2010-SKJRYOKBN-TSY(IDX-CYO)
-           END-EVALUATE
-      *
-           EVALUATE  SYS-2010-SEIRYOKBN-TSY
-             WHEN      SPACE
-               PERFORM    21134-SYSKAN2010-SET4-SEC
-             WHEN       "0"
-             WHEN       "1"
-             WHEN       "2"
-             WHEN       "3"
-               MOVE  SYS-2010-SEIRYOKBN-TSY
-                                    TO  WK-2010-SEIRYOKBN-TSY(IDX-CYO)
-           END-EVALUATE
-      *
-           EVALUATE  SYS-2010-SEIKANKBN-TSY
-             WHEN      SPACE
-               PERFORM    21134-SYSKAN2010-SET4-SEC
-             WHEN       "0"
-             WHEN       "1"
-             WHEN       "2"
-             WHEN       "3"
-               MOVE  SYS-2010-SEIKANKBN-TSY
-                                    TO  WK-2010-SEIKANKBN-TSY(IDX-CYO)
-           END-EVALUATE
-      *
-           EVALUATE  SYS-2010-SKJRYOKBN-TNK
-             WHEN      SPACE
-               PERFORM    21134-SYSKAN2010-SET4-SEC
-             WHEN       "0"
-             WHEN       "1"
-             WHEN       "2"
-             WHEN       "3"
-               MOVE  SYS-2010-SKJRYOKBN-TNK
-                                    TO  WK-2010-SKJRYOKBN-TNK(IDX-CYO)
-           END-EVALUATE
-      *
-           EVALUATE  SYS-2010-SEIRYOKBN-TNK
-             WHEN      SPACE
-               PERFORM    21134-SYSKAN2010-SET4-SEC
-             WHEN       "0"
-             WHEN       "1"
-             WHEN       "2"
-             WHEN       "3"
-               MOVE  SYS-2010-SEIRYOKBN-TNK
-                                    TO  WK-2010-SEIRYOKBN-TNK(IDX-CYO)
-           END-EVALUATE
-      *
-           EVALUATE  SYS-2010-SEIKANKBN-TNK
-             WHEN      SPACE
-               PERFORM    21134-SYSKAN2010-SET4-SEC
-             WHEN       "0"
-             WHEN       "1"
-             WHEN       "2"
-             WHEN       "3"
-               MOVE  SYS-2010-SEIKANKBN-TNK
-                                    TO  WK-2010-SEIKANKBN-TNK(IDX-CYO)
-           END-EVALUATE
+           IF   LNK-SYU-SRYYMD(1:6)  >= "201104"
+             EVALUATE  SYS-2010-NINJYOKBN
+               WHEN      SPACE
+                 EVALUATE   WK-1001-PREFNUM
+                   WHEN       10
+                     IF   COMB-KOHHKNNUM(IDX-CYO)   =
+                                              "145" OR "245" OR "146"
+                                           OR "246" OR "143" OR "243"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                       OR ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "2"    TO  WK-2010-NINJYOKBN(IDX-CYO)
+                       END-IF
+                     END-IF
+                 END-EVALUATE
+               WHEN       "1"
+                 EVALUATE   SYS-2010-NINJYO-TAIKBN
+                   WHEN      "0"
+                       MOVE    "1"    TO  WK-2010-NINJYOKBN(IDX-CYO)
+                   WHEN      "1"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                       OR ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "1"    TO  WK-2010-NINJYOKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "2"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                         MOVE  "1"    TO  WK-2010-NINJYOKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "3"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "1"    TO  WK-2010-NINJYOKBN(IDX-CYO)
+                       END-IF
+                 END-EVALUATE
+               WHEN       "2"
+                 EVALUATE   SYS-2010-NINJYO-TAIKBN
+                   WHEN      "0"
+                       MOVE    "2"    TO  WK-2010-NINJYOKBN(IDX-CYO)
+                   WHEN      "1"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                       OR ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "2"    TO  WK-2010-NINJYOKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "2"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039"))
+                         MOVE  "2"    TO  WK-2010-NINJYOKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "3"
+                       IF ((LNK-SYU-SYUHKNNUM  NOT = SPACE) AND
+                           (LNK-SYU-SYUHKNNUM      = "060") AND
+                           (WK-HKNJANUM(7:2)       = SPACE) AND
+                           (WK-HKNJANUM(3:1)       = "3"  ))
+                         MOVE  "2"    TO  WK-2010-NINJYOKBN(IDX-CYO)
+                       END-IF
+                 END-EVALUATE
+             END-EVALUATE
+           END-IF
       *
            .
       *
@@ -9902,44 +10232,42 @@
       ******************************************************************
        21133-SYSKAN2010-SET3-SEC           SECTION.
       *
-           IF     LNK-SYU-SRYYMD(1:6)    >=  "200604"
-             EVALUATE   WK-1001-PREFNUM
-               WHEN       07
-                 IF ((COMB-KOHHKNNUM(IDX-CYO) =
-                                        "445" OR "545"
-                                              OR "645"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200604" ))
-                   MOVE    "1"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
-                 END-IF
-               WHEN       11
-                 IF ((COMB-KOHHKNNUM(IDX-CYO) =  "582"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200710" ))
-                 OR ((COMB-KOHHKNNUM(IDX-CYO) =
-                               "743" OR "442" OR "542"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200804" ))
-                 OR ((COMB-KOHHKNNUM(IDX-CYO) =  "781"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200904" ))
-                 OR ((COMB-KOHHKNNUM(IDX-CYO) =  "381"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200801" ))
-                 OR ((COMB-KOHHKNNUM(IDX-CYO) =
-                                        "372" OR "373"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "201101" ))
-                 OR ((COMB-KOHHKNNUM(IDX-CYO) =  "543"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200710" ) AND
-                     (LNK-SYU-SRYYMD(1:6)    <= "201109" ))
-                   MOVE    "1"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
-                 END-IF
-                 IF ((COMB-KOHHKNNUM(IDX-CYO) =  "281"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200704" ))
-                 OR ((COMB-KOHHKNNUM(IDX-CYO) =  "682"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200904" ))
-                 OR ((COMB-KOHHKNNUM(IDX-CYO) =  "683"   ) AND
-                     (FLG-SANSHOU2        =   "2" OR "3" ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200904" ))
-                   MOVE    "2"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
-                 END-IF
-             END-EVALUATE
-           END-IF
+           EVALUATE   WK-1001-PREFNUM
+             WHEN       07
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "445" OR "545"
+                                            OR "645"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200604" ))
+                 MOVE    "1"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
+               END-IF
+             WHEN       11
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =  "582"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200710" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =
+                             "743" OR "442" OR "542"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200804" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "781"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200904" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "381"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200801" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "372" OR "373"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "201101" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "543"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200710" ) AND
+                   (LNK-SYU-SRYYMD(1:6)    <= "201109" ))
+                 MOVE    "1"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
+               END-IF
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =  "281"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200704" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "682"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200904" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "683"   ) AND
+                   (FLG-SANSHOU2        =   "2" OR "3" ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200904" ))
+                 MOVE    "2"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
+               END-IF
+           END-EVALUATE
       *
            .
       *
@@ -9951,82 +10279,155 @@
       ******************************************************************
        21134-SYSKAN2010-SET4-SEC           SECTION.
       *
-           MOVE    "0"    TO   WK-2010-SKJRYOKBN-HON(IDX-CYO)
-                               WK-2010-SEIRYOKBN-HON(IDX-CYO)
-                               WK-2010-SEIKANKBN-HON(IDX-CYO)
-           MOVE    "0"    TO   WK-2010-SKJRYOKBN-TSY(IDX-CYO)
-                               WK-2010-SEIRYOKBN-TSY(IDX-CYO)
-                               WK-2010-SEIKANKBN-TSY(IDX-CYO)
-           MOVE    "0"    TO   WK-2010-SKJRYOKBN-TNK(IDX-CYO)
-                               WK-2010-SEIRYOKBN-TNK(IDX-CYO)
-                               WK-2010-SEIKANKBN-TNK(IDX-CYO)
-      *
-           IF     LNK-SYU-SRYYMD(1:6)    >=  "200604"
-             EVALUATE   WK-1001-PREFNUM
-               WHEN       04
-                 IF ((COMB-KOHHKNNUM(IDX-CYO) =
-                                        "183" OR "483"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200510" ))
-                 OR ((COMB-KOHHKNNUM(IDX-CYO) =
-                                        "583" OR "783"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "201010" ))
-                   MOVE    "2"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
-                 END-IF
-               WHEN       08
-                 IF ((COMB-KOHHKNNUM(IDX-CYO) =
-                               "146" OR "183" OR "185"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200511" ) AND
-                     (LNK-SYU-SRYYMD(1:6)    <= "200703" ))
-                   MOVE    "2"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
-                                      WK-2010-SEIRYOKBN-HON(IDX-CYO)
-                                      WK-2010-SEIKANKBN-HON(IDX-CYO)
-                 END-IF
-               WHEN       10
-                 IF ((COMB-KOHHKNNUM(IDX-CYO) =
-                      "146" OR "246" OR "143" OR "243" OR
-                      "177" OR "187"                     ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200610" ))
-                   MOVE    "3"    TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
-                                      WK-2010-SEIKANKBN-HON(IDX-CYO)
-                 END-IF
-               WHEN       11
-                 IF   COMB-KOHHKNNUM(IDX-CYO) =
-                               "352" OR "353" OR "354"
-                   MOVE    "2"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
-                 END-IF
-                 IF ((COMB-KOHHKNNUM(IDX-CYO) =  "683"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200904" ))
-                   MOVE    "2"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
-                                      WK-2010-SEIRYOKBN-HON(IDX-CYO)
-                                      WK-2010-SEIKANKBN-HON(IDX-CYO)
-                 END-IF
-                 IF ((COMB-KOHHKNNUM(IDX-CYO) =  "382"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200910" ) AND
-                     (LNK-SYU-SRYYMD(1:6)    <= "201009" ))
-                   MOVE    "2"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
-                                      WK-2010-SEIRYOKBN-HON(IDX-CYO)
-                 END-IF
-               WHEN       15
-                 IF ((COMB-KOHHKNNUM(IDX-CYO) =
-                      "261" OR "361" OR "561" OR "264" OR
-                      "364" OR "564" OR "298"            ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200610" ))
-                   MOVE    "3"    TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
-                                      WK-2010-SEIKANKBN-HON(IDX-CYO)
-                 END-IF
-                 IF ((COMB-KOHHKNNUM(IDX-CYO) =  "198"   ) AND
-                     (LNK-SYU-SRYYMD(1:6)    >= "200610" ))
-                   MOVE    "3"    TO  WK-2010-SEIRYOKBN-TSY(IDX-CYO)
-                                      WK-2010-SEIKANKBN-TSY(IDX-CYO)
-                                      WK-2010-SEIRYOKBN-TNK(IDX-CYO)
-                                      WK-2010-SEIKANKBN-TNK(IDX-CYO)
-                 END-IF
-             END-EVALUATE
-           END-IF
+           EVALUATE   WK-1001-PREFNUM
+             WHEN       04
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "183" OR "483"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200510" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "583" OR "783"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "201010" ))
+                 MOVE    "2"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+               END-IF
+             WHEN       08
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =
+                             "146" OR "183" OR "185"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200511" ) AND
+                   (LNK-SYU-SRYYMD(1:6)    <= "200703" ))
+                 MOVE    "2"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+                                    WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                                    WK-2010-SEIKANKBN-HON(IDX-CYO)
+               END-IF
+             WHEN       10
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =
+                    "146" OR "246" OR "143" OR "243" OR
+                    "177" OR "187"                     ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200610" ))
+                 MOVE    "3"    TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                                    WK-2010-SEIKANKBN-HON(IDX-CYO)
+               END-IF
+             WHEN       11
+               IF   COMB-KOHHKNNUM(IDX-CYO) =
+                             "352" OR "353" OR "354"
+                 MOVE    "2"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+               END-IF
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =  "683"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200904" ))
+                 MOVE    "2"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+                                    WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                                    WK-2010-SEIKANKBN-HON(IDX-CYO)
+               END-IF
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =  "382"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200910" ) AND
+                   (LNK-SYU-SRYYMD(1:6)    <= "201009" ))
+                 MOVE    "2"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+                                    WK-2010-SEIRYOKBN-HON(IDX-CYO)
+               END-IF
+             WHEN       15
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =
+                    "261" OR "361" OR "561" OR "264" OR
+                    "364" OR "564" OR "298"            ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200610" ))
+                 MOVE    "3"    TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                                    WK-2010-SEIKANKBN-HON(IDX-CYO)
+               END-IF
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =  "198"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "200610" ))
+                 MOVE    "3"    TO  WK-2010-SEIRYOKBN-TSY(IDX-CYO)
+                                    WK-2010-SEIKANKBN-TSY(IDX-CYO)
+                                    WK-2010-SEIRYOKBN-TNK(IDX-CYO)
+                                    WK-2010-SEIKANKBN-TNK(IDX-CYO)
+               END-IF
+           END-EVALUATE
       *
            .
       *
        21134-SYSKAN2010-SET4-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°¤Î¥»¥Ã¥È£µ                              *
+      ******************************************************************
+       21135-SYSKAN2010-SET5-SEC           SECTION.
+      *
+           EVALUATE   WK-1001-PREFNUM
+             WHEN       01
+               IF  (COMB-KOHHKNNUM(IDX-CYO)   =
+                               "142" OR "143" OR "144" OR "744"
+                                     OR "443" OR "444" OR "842")
+               AND (LNK-SYU-SRYYMD(1:6)      >= "200410"       )
+                 MOVE    "1"    TO  WK-2010-SYOKEIKBN-N(IDX-CYO)
+               END-IF
+               IF  (COMB-KOHHKNNUM(IDX-CYO)   =
+                                        "190" OR "291" OR "292")
+               AND (LNK-SYU-SRYYMD(1:6)      >= "200708"       )
+                 MOVE    "1"    TO  WK-2010-SYOKEIKBN-N(IDX-CYO)
+               END-IF
+           END-EVALUATE
+      *
+           EVALUATE   WK-1001-PREFNUM
+             WHEN       15
+                 MOVE    "1"    TO  WK-2010-DAYKEIKBN-N(IDX-CYO)
+           END-EVALUATE
+      *
+           .
+      *
+       21135-SYSKAN2010-SET5-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°¤Î¥»¥Ã¥È£¶                              *
+      ******************************************************************
+       21136-SYSKAN2010-SET6-SEC           SECTION.
+      *
+           MOVE     ZERO             TO  FLG-OK
+      *
+           INITIALIZE                    SYS-2010-REC
+           MOVE     "2010"           TO  SYS-2010-KANRICD
+           MOVE     COMB-KOHHKNNUM(IDX-CYO)
+                                     TO  SYS-2010-KBNCD
+           MOVE     LNK-SYU-HOSPNUM  TO  SYS-2010-HOSPNUM
+           MOVE     SYS-2010-REC     TO  MCPDATA-REC
+           MOVE     "DBSELECT"       TO  MCP-FUNC
+           MOVE     "tbl_syskanri"   TO  MCP-TABLE
+           MOVE     "key8"           TO  MCP-PATHNAME
+           CALL     "ORCDBMAIN"      USING   MCPAREA
+                                             MCPDATA-REC
+                                             SPA-AREA
+           IF       MCP-RC           =   ZERO
+             MOVE   "tbl_syskanri"   TO  MCP-TABLE
+             MOVE   "key8"           TO  MCP-PATHNAME
+             PERFORM      SYSKANRI-READ-SEC
+             PERFORM  UNTIL  (FLG-SYSKANRI  =  1)
+                       OR    (FLG-OK        =  1)
+               IF    SYS-2010-STYUKYMD  >=
+                                  WK-2010-NYUKEI-KJNYMD(IDX-CYO)
+                 CONTINUE
+               ELSE
+                 IF  SYS-2010-NYUKEIKBN-N  =  "1"
+                   IF  SYS-2010-STYUKYMD  <=  "20120101"
+                     MOVE  "20120101"
+                              TO  WK-2010-NYUKEI-KJNYMD(IDX-CYO)
+                   ELSE
+                     MOVE  SYS-2010-STYUKYMD
+                              TO  WK-2010-NYUKEI-KJNYMD(IDX-CYO)
+                   END-IF
+                 ELSE
+                   MOVE   1   TO  FLG-OK
+                 END-IF
+               END-IF
+               MOVE "tbl_syskanri"   TO  MCP-TABLE
+               MOVE "key8"           TO  MCP-PATHNAME
+               PERFORM    SYSKANRI-READ-SEC
+             END-PERFORM
+           END-IF
+           MOVE     "tbl_syskanri"   TO  MCP-TABLE
+           MOVE     "key8"           TO  MCP-PATHNAME
+           PERFORM   DB-CLOSE-SEC
+      *
+           .
+      *
+       21136-SYSKAN2010-SET6-EXT.
            EXIT.
       *
       ******************************************************************
@@ -10088,6 +10489,175 @@
            .
       *
        21139-KIZONHKNNUM-CHECK-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°¤Î¥»¥Ã¥È¥¯¥ê¥¢                          *
+      ******************************************************************
+       2113A-SYSKAN2010-KURIA-SEC           SECTION.
+      *
+           EVALUATE   WK-1001-PREFNUM
+             WHEN       07
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =  "245"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200412" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "246"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200604" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "445" OR "545"
+                                            OR "645"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200604" ))
+                 MOVE    SPACE  TO  WK-2010-IRYOKEIKBN-N(IDX-CYO)
+               END-IF
+             WHEN       11
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =
+                    "181" OR "182" OR "183" OR "281"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200704" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "543" OR "582"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200710" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "381"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200801" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =
+                             "743" OR "442" OR "542"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200804" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "681" OR "682"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200904" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "683"   ) AND
+                   (FLG-SANSHOU2        =   "2" OR "3" ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200904" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "781"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200904" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "783"   ) AND
+                   (FLG-SANSHOU2        =   "2" OR "3" ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "201004" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "372" OR "373"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "201101" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "462" OR "762"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "201112" ))
+                 MOVE    SPACE  TO  WK-2010-IRYOKEIKBN-N(IDX-CYO)
+               END-IF
+             WHEN       43
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "341" OR "442"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200912" ))
+                 MOVE    SPACE  TO  WK-2010-IRYOKEIKBN-N(IDX-CYO)
+               END-IF
+           END-EVALUATE
+      *
+           EVALUATE   WK-1001-PREFNUM
+             WHEN       11
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =  "582"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200710" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =
+                             "743" OR "442" OR "542"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200804" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "781"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200904" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "381"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200801" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "372" OR "373"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "201101" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "281"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200704" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "682"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200904" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "683"   ) AND
+                   (FLG-SANSHOU2        =   "2" OR "3" ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200904" ))
+                 MOVE    SPACE  TO  WK-2010-SKJKEIKBN(IDX-CYO)
+               END-IF
+           END-EVALUATE
+      *
+           EVALUATE   WK-1001-PREFNUM
+             WHEN       04
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =
+                                      "583" OR "783"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "201010" ))
+                 MOVE    "0"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+               END-IF
+             WHEN       10
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =
+                    "146" OR "246" OR "143" OR "243" OR
+                    "177" OR "187"                     ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200610" ))
+                 MOVE    "0"    TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                                    WK-2010-SEIKANKBN-HON(IDX-CYO)
+               END-IF
+             WHEN       11
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =  "683"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200904" ))
+                 MOVE    "0"    TO  WK-2010-SKJRYOKBN-HON(IDX-CYO)
+                                    WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                                    WK-2010-SEIKANKBN-HON(IDX-CYO)
+               END-IF
+             WHEN       15
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =
+                    "261" OR "361" OR "561" OR "264" OR
+                    "364" OR "564" OR "298"            ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200610" ))
+                 MOVE    "0"    TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                                    WK-2010-SEIKANKBN-HON(IDX-CYO)
+               END-IF
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =  "198"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "200610" ))
+                 MOVE    "0"    TO  WK-2010-SEIRYOKBN-TSY(IDX-CYO)
+                                    WK-2010-SEIKANKBN-TSY(IDX-CYO)
+                                    WK-2010-SEIRYOKBN-TNK(IDX-CYO)
+                                    WK-2010-SEIKANKBN-TNK(IDX-CYO)
+               END-IF
+           END-EVALUATE
+      *
+           EVALUATE   WK-1001-PREFNUM
+             WHEN       01
+               IF  (COMB-KOHHKNNUM(IDX-CYO) =
+                             "142" OR "143" OR "144" OR "744"
+                                   OR "443" OR "444" OR "842")
+               AND (LNK-SYU-SRYYMD(1:6)     < "200410"       )
+                 MOVE    SPACE  TO  WK-2010-SYOKEIKBN-N(IDX-CYO)
+               END-IF
+               IF  (COMB-KOHHKNNUM(IDX-CYO) =
+                                      "190" OR "291" OR "292")
+               AND (LNK-SYU-SRYYMD(1:6)     < "200708"       )
+                 MOVE    SPACE  TO  WK-2010-SYOKEIKBN-N(IDX-CYO)
+               END-IF
+           END-EVALUATE
+      *
+           EVALUATE   WK-1001-PREFNUM
+             WHEN       40
+               IF   LNK-SYU-SRYYMD(1:6)     < "200810"
+                 MOVE    SPACE  TO  WK-2010-DAYKEIKBN-N(IDX-CYO)
+               END-IF
+           END-EVALUATE
+      *
+           EVALUATE   WK-1001-PREFNUM
+             WHEN       04
+               IF  (COMB-KOHHKNNUM(IDX-CYO) =
+                      "363" OR "563" OR "263" OR "463")
+               AND (LNK-SYU-SRYYMD(1:6)     < "201201")
+                 MOVE    SPACE  TO  WK-2010-NINNASIKBN(IDX-CYO)
+               END-IF
+             WHEN       10
+               IF  (COMB-KOHHKNNUM(IDX-CYO) =
+                               "145" OR "245" OR "146"
+                            OR "246" OR "143" OR "243")
+               AND (LNK-SYU-SRYYMD(1:6)     < "201104")
+                 MOVE    SPACE  TO  WK-2010-NINNASIKBN(IDX-CYO)
+               END-IF
+             WHEN       12
+               IF  (COMB-KOHHKNNUM(IDX-CYO) =
+                               "263" OR "363" OR "463")
+               AND (LNK-SYU-SRYYMD(1:6)     < "201203")
+                 MOVE    SPACE  TO  WK-2010-NINNASIKBN(IDX-CYO)
+               END-IF
+           END-EVALUATE
+      *
+           .
+      *
+       2113A-SYSKAN2010-KURIA-EXT.
            EXIT.
       *
       ******************************************************************
@@ -10924,29 +11494,8 @@
                  (SYU-KOH2HKNNUM   = "183" OR "283" ) OR
                  (SYU-KOH3HKNNUM   = "183" OR "283" ) OR
                  (SYU-KOH4HKNNUM   = "183" OR "283" )))
-           OR  (( WK-1001-PREFNUM         =  44      ) AND
-                ( LNK-SYU-SRYYMD(1:6)    >= "201010" ) AND
-                ( SYU-KOH1HKNNUM   = "183" OR "283"  ))
-           OR  (( WK-1001-PREFNUM         =  04      ) AND
-                ( LNK-SYU-SRYYMD(1:6)    >= "201010" ) AND
-                ( SYU-KOH1HKNNUM   = "583" OR "683"
-                                           OR "783"  ))
-           OR  (( WK-1001-PREFNUM         =  04      ) AND
-                ( LNK-SYU-SRYYMD(1:6)    >= "201201" ) AND
-                ( SYU-KOH1HKNNUM   = "463" OR "563"
-                                  OR "263" OR "363"  ))
-           OR  (( WK-1001-PREFNUM         =  10      ) AND
-                ( LNK-SYU-SRYYMD(1:6)    >= "201104" ) AND
-                ( SYU-KOH1HKNNUM   = "145" OR "245"
-                                  OR "146" OR "246"
-                                  OR "143" OR "243"  ))
-           OR  (( WK-1001-PREFNUM         =  12      ) AND
-                ( LNK-SYU-SRYYMD(1:6)    >= "201203" ) AND
-                ( SYU-KOH1HKNNUM   = "263" OR "363"
-                                  OR "463"           ))
-           OR  (( WK-1001-PREFNUM         =  40      ) AND
-                ( LNK-SYU-SRYYMD(1:6)    >= "201010" ) AND
-                ( SYU-KOH1HKNNUM   = "383"           ))
+           OR  (  WK-2010-NINNASIKBN(1)  NOT = SPACE  )
+           OR  (  WK-2010-NINJYOKBN(1)   NOT = SPACE  )
              COMPUTE   SYU-KOH-FTN         =  SYU-KOH-FTN
                                            -  SYU-JYO-COMPFTN
              COMPUTE   SYU-KOH-FTN-ENTANI  =  SYU-KOH-FTN-ENTANI
@@ -11539,29 +12088,8 @@
                      (LNK-SYU-KOH1HKNNUM  = "183" OR "283") AND
                      (LNK-SYU-SRYYMD(1:6)     >= "200610" ) AND
                      (LNK-SYU-SRYYMD(1:6)     <  "201010" ))
-                 OR ((WK-1001-PREFNUM          =  44      ) AND
-                     (LNK-SYU-KOH1HKNNUM  = "183" OR "283") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
-                 OR ((WK-1001-PREFNUM          =  04      ) AND
-                     (LNK-SYU-KOH1HKNNUM  = "583" OR "683"
-                                                  OR "783") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
-                 OR ((WK-1001-PREFNUM          =  04      ) AND
-                     (LNK-SYU-KOH1HKNNUM  = "463" OR "563"
-                                         OR "263" OR "363") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201201" ))
-                 OR ((WK-1001-PREFNUM          =  10      ) AND
-                     (LNK-SYU-KOH1HKNNUM  = "145" OR "245"
-                                         OR "146" OR "246"
-                                         OR "143" OR "243") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201104" ))
-                 OR ((WK-1001-PREFNUM          =  12      ) AND
-                     (LNK-SYU-KOH1HKNNUM  = "263" OR "363"
-                                         OR "463"         ) AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201203" ))
-                 OR ((WK-1001-PREFNUM          =  40      ) AND
-                     (LNK-SYU-KOH1HKNNUM  = "383"         ) AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
+                 OR ( WK-2010-NINNASIKBN(1)  NOT = SPACE   )
+                 OR ( WK-2010-NINJYOKBN(1)   NOT = SPACE   )
                     IF    LNK-SYU-KOH1HKNNUM  =  SYU-KOH1HKNNUM
                                              OR  SYU-KOH2HKNNUM
                                              OR  SYU-KOH3HKNNUM
@@ -12335,29 +12863,8 @@
                      (LNK-SYU-KOH2HKNNUM  = "183" OR "283") AND
                      (LNK-SYU-SRYYMD(1:6)     >= "200610" ) AND
                      (LNK-SYU-SRYYMD(1:6)     <  "201010" ))
-                 OR ((WK-1001-PREFNUM          =  44      ) AND
-                     (LNK-SYU-KOH2HKNNUM  = "183" OR "283") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
-                 OR ((WK-1001-PREFNUM          =  04      ) AND
-                     (LNK-SYU-KOH2HKNNUM  = "583" OR "683"
-                                                  OR "783") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
-                 OR ((WK-1001-PREFNUM          =  04      ) AND
-                     (LNK-SYU-KOH2HKNNUM  = "463" OR "563"
-                                         OR "263" OR "363") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201201" ))
-                 OR ((WK-1001-PREFNUM          =  10      ) AND
-                     (LNK-SYU-KOH2HKNNUM  = "145" OR "245"
-                                         OR "146" OR "246"
-                                         OR "143" OR "243") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201104" ))
-                 OR ((WK-1001-PREFNUM          =  12      ) AND
-                     (LNK-SYU-KOH2HKNNUM  = "263" OR "363"
-                                         OR "463"         ) AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201203" ))
-                 OR ((WK-1001-PREFNUM          =  40      ) AND
-                     (LNK-SYU-KOH2HKNNUM  = "383"         ) AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
+                 OR ( WK-2010-NINNASIKBN(2)  NOT = SPACE   )
+                 OR ( WK-2010-NINJYOKBN(2)   NOT = SPACE   )
                     IF    LNK-SYU-KOH2HKNNUM  =  SYU-KOH1HKNNUM
                                              OR  SYU-KOH2HKNNUM
                                              OR  SYU-KOH3HKNNUM
@@ -13008,29 +13515,8 @@
                      (LNK-SYU-KOH3HKNNUM  = "183" OR "283") AND
                      (LNK-SYU-SRYYMD(1:6)     >= "200610" ) AND
                      (LNK-SYU-SRYYMD(1:6)     <  "201010" ))
-                 OR ((WK-1001-PREFNUM          =  44      ) AND
-                     (LNK-SYU-KOH3HKNNUM  = "183" OR "283") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
-                 OR ((WK-1001-PREFNUM          =  04      ) AND
-                     (LNK-SYU-KOH3HKNNUM  = "583" OR "683"
-                                                  OR "783") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
-                 OR ((WK-1001-PREFNUM          =  04      ) AND
-                     (LNK-SYU-KOH3HKNNUM  = "463" OR "563"
-                                         OR "263" OR "363") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201201" ))
-                 OR ((WK-1001-PREFNUM          =  10      ) AND
-                     (LNK-SYU-KOH3HKNNUM  = "145" OR "245"
-                                         OR "146" OR "246"
-                                         OR "143" OR "243") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201104" ))
-                 OR ((WK-1001-PREFNUM          =  12      ) AND
-                     (LNK-SYU-KOH3HKNNUM  = "263" OR "363"
-                                         OR "463"         ) AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201203" ))
-                 OR ((WK-1001-PREFNUM          =  40      ) AND
-                     (LNK-SYU-KOH3HKNNUM  = "383"         ) AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
+                 OR ( WK-2010-NINNASIKBN(3)  NOT = SPACE   )
+                 OR ( WK-2010-NINJYOKBN(3)   NOT = SPACE   )
                     IF    LNK-SYU-KOH3HKNNUM  =  SYU-KOH1HKNNUM
                                              OR  SYU-KOH2HKNNUM
                                              OR  SYU-KOH3HKNNUM
@@ -13596,29 +14082,8 @@
                      (LNK-SYU-KOH4HKNNUM  = "183" OR "283") AND
                      (LNK-SYU-SRYYMD(1:6)     >= "200610" ) AND
                      (LNK-SYU-SRYYMD(1:6)     <  "201010" ))
-                 OR ((WK-1001-PREFNUM          =  44      ) AND
-                     (LNK-SYU-KOH4HKNNUM  = "183" OR "283") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
-                 OR ((WK-1001-PREFNUM          =  04      ) AND
-                     (LNK-SYU-KOH4HKNNUM  = "583" OR "683"
-                                                  OR "783") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
-                 OR ((WK-1001-PREFNUM          =  04      ) AND
-                     (LNK-SYU-KOH4HKNNUM  = "463" OR "563"
-                                         OR "263" OR "363") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201201" ))
-                 OR ((WK-1001-PREFNUM          =  10      ) AND
-                     (LNK-SYU-KOH4HKNNUM  = "145" OR "245"
-                                         OR "146" OR "246"
-                                         OR "143" OR "243") AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201104" ))
-                 OR ((WK-1001-PREFNUM          =  12      ) AND
-                     (LNK-SYU-KOH4HKNNUM  = "263" OR "363"
-                                         OR "463"         ) AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201203" ))
-                 OR ((WK-1001-PREFNUM          =  40      ) AND
-                     (LNK-SYU-KOH4HKNNUM  = "383"         ) AND
-                     (LNK-SYU-SRYYMD(1:6)     >= "201010" ))
+                 OR ( WK-2010-NINNASIKBN(4)  NOT = SPACE   )
+                 OR ( WK-2010-NINJYOKBN(4)   NOT = SPACE   )
                     IF    LNK-SYU-KOH4HKNNUM  =  SYU-KOH1HKNNUM
                                              OR  SYU-KOH2HKNNUM
                                              OR  SYU-KOH3HKNNUM
@@ -15841,11 +16306,8 @@
               END-IF
            END-IF
       *
-           IF  (WK-1001-PREFNUM       =   10           )
-           AND (LNK-SYU-SRYYMD(1:6)  >= "201104"       )
-           AND (LNK-SYU-KOH1HKNNUM    =  "145" OR "245"
-                                      OR "146" OR "246"
-                                      OR "143" OR "243")
+           IF  (WK-2010-NINNASIKBN(1)  NOT = SPACE)
+           OR  (WK-2010-NINJYOKBN(1)   NOT = SPACE)
               IF ((FLG-IRYOHI70        =  ZERO) AND
                   (FLG-KOHYONKAIME     =   1  ) AND
                   (FLG-OITA-GENBUTU70  =  ZERO) AND
@@ -15973,23 +16435,25 @@
            INITIALIZE                WK-RRK2-TBL
            MOVE       ZERO     TO    RRK-IDX5
       *
-           IF  ( WK-1001-PREFNUM          =  04       )
-           AND ( LNK-SYU-SRYYMD(1:6)     >= "201201"  )
-           AND ((LNK-SYU-KOH1HKNNUM  = "463" OR "563") OR
-                (LNK-SYU-KOH2HKNNUM  = "463" OR "563") OR
-                (LNK-SYU-KOH3HKNNUM  = "463" OR "563") OR
-                (LNK-SYU-KOH4HKNNUM  = "463" OR "563"))
+           IF  ((WK-2010-NYUKEIKBN-N(1)  =  "1" ) AND
+                (MAX-KAI-KOHI1-M     NOT =  ZERO))
+           OR  ((WK-2010-NYUKEIKBN-N(2)  =  "1" ) AND
+                (MAX-KAI-KOHI2-M     NOT =  ZERO))
+           OR  ((WK-2010-NYUKEIKBN-N(3)  =  "1" ) AND
+                (MAX-KAI-KOHI3-M     NOT =  ZERO))
+           OR  ((WK-2010-NYUKEIKBN-N(4)  =  "1" ) AND
+                (MAX-KAI-KOHI4-M     NOT =  ZERO))
       *
-             IF   LNK-SYU-KOH1HKNNUM  = "463" OR "563"
+             IF   WK-2010-NYUKEIKBN-N(1)  =  "1"
                MOVE      1     TO    WK-RRK2-FLG(1)
              END-IF
-             IF   LNK-SYU-KOH2HKNNUM  = "463" OR "563"
+             IF   WK-2010-NYUKEIKBN-N(2)  =  "1"
                MOVE      1     TO    WK-RRK2-FLG(2)
              END-IF
-             IF   LNK-SYU-KOH3HKNNUM  = "463" OR "563"
+             IF   WK-2010-NYUKEIKBN-N(3)  =  "1"
                MOVE      1     TO    WK-RRK2-FLG(3)
              END-IF
-             IF   LNK-SYU-KOH4HKNNUM  = "463" OR "563"
+             IF   WK-2010-NYUKEIKBN-N(4)  =  "1"
                MOVE      1     TO    WK-RRK2-FLG(4)
              END-IF
       *
@@ -16088,11 +16552,51 @@
                  END-IF
       *
                  IF  WK-RRK-NYUINYMD(RRK-IDX)  NOT = SPACE
-                   IF   WK-RRK-NYUINYMD(RRK-IDX)  <  20120101
-                     MOVE   "20120101"   TO   WK-RRK-NYUINYMD(RRK-IDX)
-                   END-IF
+                    IF   WK-2010-NYUKEIKBN-N(1)  =  "1"
+                      IF   WK-RRK-NYUINYMD(RRK-IDX) <
+                                               WK-2010-NYUKEI-KJNYMD(1)
+                        MOVE   WK-2010-NYUKEI-KJNYMD(1)
+                                          TO   WK-RRK-NYUINYMD(RRK-IDX)
+                      END-IF
+                    END-IF
+                    IF   WK-2010-NYUKEIKBN-N(2)  =  "1"
+                      IF   WK-RRK-NYUINYMD(RRK-IDX) <
+                                               WK-2010-NYUKEI-KJNYMD(2)
+                        MOVE   WK-2010-NYUKEI-KJNYMD(2)
+                                          TO   WK-RRK-NYUINYMD(RRK-IDX)
+                      END-IF
+                    END-IF
+                    IF   WK-2010-NYUKEIKBN-N(3)  =  "1"
+                      IF   WK-RRK-NYUINYMD(RRK-IDX) <
+                                               WK-2010-NYUKEI-KJNYMD(3)
+                        MOVE   WK-2010-NYUKEI-KJNYMD(3)
+                                          TO   WK-RRK-NYUINYMD(RRK-IDX)
+                      END-IF
+                    END-IF
+                    IF   WK-2010-NYUKEIKBN-N(4)  =  "1"
+                      IF   WK-RRK-NYUINYMD(RRK-IDX) <
+                                               WK-2010-NYUKEI-KJNYMD(4)
+                        MOVE   WK-2010-NYUKEI-KJNYMD(4)
+                                          TO   WK-RRK-NYUINYMD(RRK-IDX)
+                      END-IF
+                    END-IF
                  ELSE
-                   MOVE     "20120101"   TO   WK-RRK-NYUINYMD(RRK-IDX)
+                    IF   WK-2010-NYUKEIKBN-N(1)  =  "1"
+                        MOVE   WK-2010-NYUKEI-KJNYMD(1)
+                                          TO   WK-RRK-NYUINYMD(RRK-IDX)
+                    END-IF
+                    IF   WK-2010-NYUKEIKBN-N(2)  =  "1"
+                        MOVE   WK-2010-NYUKEI-KJNYMD(2)
+                                          TO   WK-RRK-NYUINYMD(RRK-IDX)
+                    END-IF
+                    IF   WK-2010-NYUKEIKBN-N(3)  =  "1"
+                        MOVE   WK-2010-NYUKEI-KJNYMD(3)
+                                          TO   WK-RRK-NYUINYMD(RRK-IDX)
+                    END-IF
+                    IF   WK-2010-NYUKEIKBN-N(4)  =  "1"
+                        MOVE   WK-2010-NYUKEI-KJNYMD(4)
+                                          TO   WK-RRK-NYUINYMD(RRK-IDX)
+                    END-IF
                  END-IF
       *
                  IF  (RRK-IDX5    NOT = ZERO                    )
@@ -16161,17 +16665,17 @@
       *
            MOVE   WK-RRK-NYUINYMD(RRK-IDX)(1:6)  TO   WK-RRK-SRYYM
       *
-           IF  (LNK-SYU-KOH1HKNNUM  = "463")
-           OR  (LNK-SYU-KOH2HKNNUM  = "463")
-           OR  (LNK-SYU-KOH3HKNNUM  = "463")
-           OR  (LNK-SYU-KOH4HKNNUM  = "463")
-              MOVE   "463"                       TO   WK-RRK-HKNNUM
+           IF    WK-2010-NYUKEIKBN-N(1)  =  "1"
+             MOVE  LNK-SYU-KOH1HKNNUM   TO  WK-RRK-HKNNUM
            END-IF
-           IF  (LNK-SYU-KOH1HKNNUM  = "563")
-           OR  (LNK-SYU-KOH2HKNNUM  = "563")
-           OR  (LNK-SYU-KOH3HKNNUM  = "563")
-           OR  (LNK-SYU-KOH4HKNNUM  = "563")
-              MOVE   "563"                       TO   WK-RRK-HKNNUM
+           IF    WK-2010-NYUKEIKBN-N(2)  =  "1"
+             MOVE  LNK-SYU-KOH2HKNNUM   TO  WK-RRK-HKNNUM
+           END-IF
+           IF    WK-2010-NYUKEIKBN-N(3)  =  "1"
+             MOVE  LNK-SYU-KOH3HKNNUM   TO  WK-RRK-HKNNUM
+           END-IF
+           IF    WK-2010-NYUKEIKBN-N(4)  =  "1"
+             MOVE  LNK-SYU-KOH4HKNNUM   TO  WK-RRK-HKNNUM
            END-IF
       *
            PERFORM   UNTIL   WK-RRK-SRYYM  >=   LNK-SYU-SRYYMD(1:6)
@@ -21329,36 +21833,21 @@
                PERFORM     23061-KOHPLUS-FUKUOKA-SEC
            END-IF.
       *
-           IF ((WK-1001-PREFNUM         =  01                    ) AND
-               (COMB-KOHHKNNUM(KOH-IDX) = "142" OR "143" OR "144"
-                                                         OR "744") AND
-               (LNK-SYU-SRYYMD(1:6)    >= "200410"               ))
-           OR ((WK-1001-PREFNUM         =  01                    ) AND
-               (COMB-KOHHKNNUM(KOH-IDX) = "842" OR "443" OR "444") AND
-               (WK-NYUKFTNRATE          =  ZERO                  ) AND
-               (LNK-SYU-SRYYMD(1:6)    >= "200410"               ))
-           OR ((WK-1001-PREFNUM         =  01                    ) AND
-               (COMB-KOHHKNNUM(KOH-IDX) = "190" OR "291" OR "292") AND
-               (LNK-SYU-SRYYMD(1:6)    >= "200708"               ))
-               IF    LNK-S02-SYOSINFLG  =  SPACE
-                    MOVE    SPACE   TO   COMB-KOH-NYUJGNKBN(KOH-IDX)
-                    MOVE    ZERO    TO   WK-NYUKFTNRATE
-               END-IF
-           END-IF.
-      *
-           IF  (WK-1001-PREFNUM         =  13           ) AND
-               (COMB-KOHHKNNUM(KOH-IDX) = "588"         ) AND
-               (LNK-SYU-SRYYMD(1:6)    >= "200710"      ) AND
-               (LNK-SYU-SRYYMD(1:6)    <= "200909"      )
+           IF  ((WK-1001-PREFNUM         =  13           ) AND
+                (COMB-KOHHKNNUM(KOH-IDX) = "588"         ) AND
+                (LNK-SYU-SRYYMD(1:6)    >= "200710"      ) AND
+                (LNK-SYU-SRYYMD(1:6)    <= "200909"      ))
+           OR  ((WK-1001-PREFNUM         =  31           ) AND
+                (COMB-KOHHKNNUM(KOH-IDX) = "281" OR "282"
+                                                 OR "283") AND
+                (LNK-SYU-SRYYMD(1:6)    >= "200804"      ) AND
+                (WK-TOTORI-JIRITU        =  1            ))
                     MOVE    SPACE   TO   COMB-KOH-NYUJGNKBN(KOH-IDX)
                     MOVE    ZERO    TO   WK-NYUKFTNRATE
            END-IF.
       *
-           IF  (WK-1001-PREFNUM         =  31           ) AND
-               (COMB-KOHHKNNUM(KOH-IDX) = "281" OR "282"
-                                                OR "283") AND
-               (LNK-SYU-SRYYMD(1:6)    >= "200804"      ) AND
-               (WK-TOTORI-JIRITU        =  1            )
+           IF  ((WK-2010-SYOKEIKBN-N(KOH-IDX)  =  "1"    ) AND
+                (LNK-S02-SYOSINFLG             =  SPACE  ))
                     MOVE    SPACE   TO   COMB-KOH-NYUJGNKBN(KOH-IDX)
                     MOVE    ZERO    TO   WK-NYUKFTNRATE
            END-IF.
@@ -23391,23 +23880,8 @@
        23071-DAYINF-SANTEI-SEC           SECTION.
       *
            MOVE       ZERO        TO       FLG-HIKOTEI.
-           IF      WK-1001-PREFNUM       =   15
-              IF  (LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1)
-                                               >=  "1" AND <=  "8")
-      ***     IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)  =
-      ***             "161" OR "261" OR "361" OR "461" OR "561" OR
-      ***             "163" OR "263" OR "165" OR "265" OR
-      ***             "190" OR "290" OR
-      ***             "164" OR "264" OR "364" OR "464" OR "564"
+           IF      WK-2010-DAYKEIKBN-N(KOH-IDX)  =  "1"
                  MOVE         1      TO      FLG-HIKOTEI
-              END-IF
-           END-IF.
-           IF      WK-1001-PREFNUM       =   40
-              IF  (LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1)
-                                               >=  "1" AND <=  "8")
-              AND (LNK-SYU-SRYYMD(1:6)         >=  "200810"       )
-                 MOVE         1      TO      FLG-HIKOTEI
-              END-IF
            END-IF.
       *
            MOVE       ZERO        TO       FLG-TUKIHIKAKU.
@@ -26208,8 +26682,8 @@
                                  + LNK-SYU-SKYMONEY-LIFE-JIHI-TAX.
       *
       *    ¼ýÇ¼¥Æ¡¼¥Ö¥ë¤Î¸øÈñËè¤Î´µ¼ÔÉéÃ´¶â³Û¤ò¥»¥Ã¥È¤¹¤ë
-           IF   (COMB-KOH1HKNNUM         NOT = SPACE)   AND
-                (COMB-KOH1-NYUJGNKBN     =     "1")
+           IF    COMB-KOH1HKNNUM         NOT = SPACE
+            IF    COMB-KOH1-NYUJGNKBN     =     "1"
              IF  ( LNK-S02-KOUREI-NYUIN-KBN     =        "1"  )
              AND ( COMB-KOH1HKNNUM              =       "027" )
                   CONTINUE
@@ -26242,9 +26716,24 @@
                                     LNK-SYU-KOH1HKNFTNMONEY *  10        
                END-IF
              END-IF
+            ELSE
+             IF  (WK-1001-PREFNUM       =  43           )
+             AND (COMB-KOH1HKNNUM       = "143" OR "342")
+             AND (LNK-SYU-SRYYMD(1:6)  <= "200911"      )
+                    MOVE     LNK-SYU-KOH1COMPFTN  TO
+                                          LNK-SYU-KOH1HKNFTNMONEY
+             ELSE
+                    COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =
+                                    LNK-SYU-KOH1COMPFTN     +   5
+                    COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =
+                                    LNK-SYU-KOH1HKNFTNMONEY /  10
+                    COMPUTE  LNK-SYU-KOH1HKNFTNMONEY  =
+                                    LNK-SYU-KOH1HKNFTNMONEY *  10
+             END-IF
+            END-IF
            END-IF.
-           IF   (COMB-KOH2HKNNUM        NOT = SPACE)   AND
-                (COMB-KOH2-NYUJGNKBN    =     "1")
+           IF    COMB-KOH2HKNNUM         NOT = SPACE
+            IF    COMB-KOH2-NYUJGNKBN     =     "1"
                IF  (( FLG-KOUGAKUCYO3    NOT =    ZERO ) AND
                     ( FLG-IRYOHI3X           =     21  ) AND
                     ( FLG-SYOUKAN(2)         =    "1"  ))
@@ -26270,9 +26759,24 @@
                     COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =                  
                                     LNK-SYU-KOH2HKNFTNMONEY *  10        
                END-IF
+            ELSE
+             IF  (WK-1001-PREFNUM       =  43           )
+             AND (COMB-KOH2HKNNUM       = "143" OR "342")
+             AND (LNK-SYU-SRYYMD(1:6)  <= "200911"      )
+                    MOVE     LNK-SYU-KOH2COMPFTN  TO
+                                          LNK-SYU-KOH2HKNFTNMONEY
+             ELSE
+                    COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =
+                                    LNK-SYU-KOH2COMPFTN     +   5
+                    COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =
+                                    LNK-SYU-KOH2HKNFTNMONEY /  10
+                    COMPUTE  LNK-SYU-KOH2HKNFTNMONEY  =
+                                    LNK-SYU-KOH2HKNFTNMONEY *  10
+             END-IF
+            END-IF
            END-IF.
-           IF   (COMB-KOH3HKNNUM        NOT = SPACE)   AND
-                (COMB-KOH3-NYUJGNKBN    =     "1")
+           IF    COMB-KOH3HKNNUM         NOT = SPACE
+            IF    COMB-KOH3-NYUJGNKBN     =     "1"
                IF  (WK-TAIHI-FTNGAKEN(3) = 1)
                OR  (WK-KUMAMOTO-FLG(3)   = 1)
                     MOVE     LNK-SYU-KOH3COMPFTN  TO
@@ -26285,9 +26789,24 @@
                     COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =                  
                                     LNK-SYU-KOH3HKNFTNMONEY *  10        
                END-IF
+            ELSE
+             IF  (WK-1001-PREFNUM       =  43           )
+             AND (COMB-KOH3HKNNUM       = "143" OR "342")
+             AND (LNK-SYU-SRYYMD(1:6)  <= "200911"      )
+                    MOVE     LNK-SYU-KOH3COMPFTN  TO
+                                          LNK-SYU-KOH3HKNFTNMONEY
+             ELSE
+                    COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =
+                                    LNK-SYU-KOH3COMPFTN     +   5
+                    COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =
+                                    LNK-SYU-KOH3HKNFTNMONEY /  10
+                    COMPUTE  LNK-SYU-KOH3HKNFTNMONEY  =
+                                    LNK-SYU-KOH3HKNFTNMONEY *  10
+             END-IF
+            END-IF
            END-IF.
-           IF   (COMB-KOH4HKNNUM        NOT = SPACE)   AND
-                (COMB-KOH4-NYUJGNKBN    =     "1")
+           IF    COMB-KOH4HKNNUM         NOT = SPACE
+            IF    COMB-KOH4-NYUJGNKBN     =     "1"
                IF  (WK-TAIHI-FTNGAKEN(4) = 1)
                OR  (WK-KUMAMOTO-FLG(4)   = 1)
                     MOVE     LNK-SYU-KOH4COMPFTN  TO
@@ -26300,6 +26819,21 @@
                     COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =                  
                                     LNK-SYU-KOH4HKNFTNMONEY *  10        
                END-IF
+            ELSE
+             IF  (WK-1001-PREFNUM       =  43           )
+             AND (COMB-KOH4HKNNUM       = "143" OR "342")
+             AND (LNK-SYU-SRYYMD(1:6)  <= "200911"      )
+                    MOVE     LNK-SYU-KOH4COMPFTN  TO
+                                          LNK-SYU-KOH4HKNFTNMONEY
+             ELSE
+                    COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =
+                                    LNK-SYU-KOH4COMPFTN     +   5
+                    COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =
+                                    LNK-SYU-KOH4HKNFTNMONEY /  10
+                    COMPUTE  LNK-SYU-KOH4HKNFTNMONEY  =
+                                    LNK-SYU-KOH4HKNFTNMONEY *  10
+             END-IF
+            END-IF
            END-IF.
       *
       *    ¥ì¥»µ­ºÜ¶â³ÛÂàÈòÍÑ¥¨¥ê¥¢¤«¤é¼ýÇ¼¹àÌÜ¤ØÊÔ½¸
@@ -28297,81 +28831,51 @@
       *
            END-IF
       *
-      *    ÂçÊ¬¸©
-      *    µÜ¾ë¸©
            MOVE       ZERO      TO     WK-OITA-CYOFTN-KON
-           IF  ((WK-1001-PREFNUM            =  44     )  AND
-                (LNK-SYU-SRYYMD(1:6)       >= "201010")  AND
-                (LNK-SYU-KOH1HKNNUM   = "183" OR "283"))
-           OR  ((WK-1001-PREFNUM            =  04     )  AND
-                (LNK-SYU-SRYYMD(1:6)       >= "201010")  AND
-                (LNK-SYU-KOH1HKNNUM   = "583" OR "683"
-                                              OR "783"))
-           OR  ((WK-1001-PREFNUM            =  04     )  AND
-                (LNK-SYU-SRYYMD(1:6)       >= "201201")  AND
-                (LNK-SYU-KOH1HKNNUM   = "563" OR "363"))
-           OR  ((WK-1001-PREFNUM            =  04     )  AND
-                (LNK-SYU-SRYYMD(1:6)       >= "201201")  AND
-                (LNK-SYU-KOH1HKNNUM   = "463" OR "263")  AND
-                (LNK-SYU-SYUHKNNUM    NOT = SPACE     )  AND
-                (LNK-SYU-SYUHKNNUM    NOT =
-                             "060" AND "067" AND "039"))
-           OR  ((WK-1001-PREFNUM            =  12     )  AND
-                (LNK-SYU-SRYYMD(1:6)       >= "201203")  AND
-                (LNK-SYU-KOH1HKNNUM   = "263" OR "363"
-                                              OR "463"))
-           OR  ((WK-1001-PREFNUM            =  40     )  AND
-                (LNK-SYU-SRYYMD(1:6)       >= "201010")  AND
-                (LNK-SYU-KOH1HKNNUM   = "383"         ))
-              IF   FLG-GENBUTU70   NOT =  ZERO
-                IF   FLG-IRYOHI70      =  3 OR 4
-      *            ¸ÂÅÙ³ÛÇ§Äê¾ÚÌµ¤·
-                   IF      FLG-OITA-GENBUTU70   =    1
-                     IF  LNK-SYU-SRYYMD(1:6)  <   "201104"
-                       IF  FLG-SYUKEI2  =   ZERO
-                         MOVE  ZERO TO WK-KOUREI-IRYOHI70-JYOGAI
-                         MOVE  ZERO TO WK-OITA-HKNFTNMONEY
-                         PERFORM  230951-OITA-TOKUSYU-HENSYU-SEC
-                       END-IF
-                     ELSE
-                         PERFORM  230951-OITA-TOKUSYU-HENSYU-SEC
-                     END-IF
-                   END-IF
-                   PERFORM        230952-OITA-TOKUSYU-HENSYU2-SEC
-                END-IF
-              END-IF
-           END-IF
-      *
-      *    ·²ÇÏ¸©
-           MOVE       ZERO      TO     WK-OITA-CYOFTN-KON
-           IF   (WK-1001-PREFNUM            =  10     )
-           AND  (LNK-SYU-SRYYMD(1:6)       >= "201104")
-           AND  (LNK-SYU-KOH1HKNNUM   = "145" OR "245"
-                                     OR "146" OR "246"
-                                     OR "143" OR "243")
-      *     ¼ÒÊÝ¡¦¹ñÊÝÁÈ¹ç
-            IF   ((LNK-SYU-SYUHKNNUM NOT = SPACE          ) AND
-                  (LNK-SYU-SYUHKNNUM NOT =
-                                 "060" AND "067" AND "039"))
-            OR   ((LNK-SYU-SYUHKNNUM NOT = SPACE          ) AND
-                  (LNK-SYU-SYUHKNNUM     = "060"          ) AND
-                  (WK-HKNJANUM(7:2)      = SPACE          ) AND
-                  (WK-HKNJANUM(3:1)      = "3"            ))
-      *
+           IF   WK-2010-NINNASIKBN(1)  NOT =  SPACE
              IF   FLG-GENBUTU70   NOT =  ZERO
                IF  (FLG-IRYOHI70      =  3 OR 4)
                OR  (FLG-OITA-SYUKEI   =  1     )
-                 IF   FLG-OITA-SYUKEI  =  1
-                   COMPUTE  WK-KOUREI-IRYOHI70  =
-                            WK-KOUREI-IRYOHI70  +
-                           (LNK-SYU-HKNTEN(17)  * 10)
+      *          ¸ÂÅÙ³ÛÇ§Äê¾ÚÌµ¤·
+                 IF      FLG-OITA-GENBUTU70   =    1
+                    IF   FLG-OITA-SYUKEI  =  1
+                      COMPUTE  WK-KOUREI-IRYOHI70  =
+                               WK-KOUREI-IRYOHI70  +
+                              (LNK-SYU-HKNTEN(17)  * 10)
+                    END-IF
+                    IF  LNK-SYU-SRYYMD(1:6)  <   "201104"
+                      IF  FLG-SYUKEI2  =   ZERO
+                        MOVE  ZERO  TO  WK-KOUREI-IRYOHI70-JYOGAI
+                        MOVE  ZERO  TO  WK-OITA-HKNFTNMONEY
+                        PERFORM  230951-OITA-TOKUSYU-HENSYU-SEC
+                      END-IF
+                    ELSE
+                        PERFORM  230951-OITA-TOKUSYU-HENSYU-SEC
+                    END-IF
                  END-IF
+                 PERFORM         230952-OITA-TOKUSYU-HENSYU2-SEC
+               END-IF
+             END-IF
+           END-IF
+      *
+           MOVE       ZERO      TO     WK-OITA-CYOFTN-KON
+           IF   WK-2010-NINJYOKBN(1)   NOT =  SPACE
+             IF   FLG-GENBUTU70   NOT =  ZERO
+               IF  (FLG-IRYOHI70      =  3 OR 4)
+               OR  (FLG-OITA-SYUKEI   =  1     )
       *          ¾å°Ì½êÆÀ¼Ô
                  IF      FLG-GENBUTU70        =    1
                  AND     FLG-OITA-GENBUTU70   =   ZERO
+                   IF   FLG-OITA-SYUKEI  =  1
+                     COMPUTE  WK-KOUREI-IRYOHI70  =
+                              WK-KOUREI-IRYOHI70  +
+                             (LNK-SYU-HKNTEN(17)  * 10)
+                   END-IF
                    IF   FLG-TOKU75  =  3
                      IF   (FLG-IRYOHI70      =   ZERO)
                      AND  (FLG-KOHYONKAIME   =    1  )
+                     AND  (WK-2010-NINJYOKBN(1)
+                                             =   "2" )
                        MOVE      41700    TO   WK-OITA-KEISAN2
                        MOVE      22200    TO   WK-OITA-KEISAN3
                      ELSE
@@ -28395,6 +28899,8 @@
                    ELSE
                      IF   (FLG-IRYOHI70      =   ZERO)
                      AND  (FLG-KOHYONKAIME   =    1  )
+                     AND  (WK-2010-NINJYOKBN(1)
+                                             =   "2" )
                        MOVE      83400    TO   WK-OITA-KEISAN2
                        MOVE      44400    TO   WK-OITA-KEISAN3
                      ELSE
@@ -28452,82 +28958,32 @@
                      END-IF
                    END-IF
                  END-IF
-      *          ¸ÂÅÙ³ÛÇ§Äê¾ÚÌµ¤·
-                 IF      FLG-OITA-GENBUTU70   =    1
-                       PERFORM  230951-OITA-TOKUSYU-HENSYU-SEC
-                 END-IF
-                 PERFORM        230952-OITA-TOKUSYU-HENSYU2-SEC
+                 PERFORM         230952-OITA-TOKUSYU-HENSYU2-SEC
                END-IF
              END-IF
-            END-IF
            END-IF
       *
       ***
       *
-           IF  (( WK-1001-PREFNUM             =  44      ) AND
-                ( LNK-SYU-SRYYMD(1:6)        >= "201104" ) AND
-                ((LNK-SYU-KOH2HKNNUM   = "183" OR "283" ) OR
-                 (LNK-SYU-KOH3HKNNUM   = "183" OR "283" ) OR
-                 (LNK-SYU-KOH4HKNNUM   = "183" OR "283" )))
-           OR  (( WK-1001-PREFNUM             =  04               ) AND
-                ( LNK-SYU-SRYYMD(1:6)        >= "201104"          ) AND
-                ((LNK-SYU-KOH2HKNNUM   = "583" OR "683" OR "783" ) OR
-                 (LNK-SYU-KOH3HKNNUM   = "583" OR "683" OR "783" ) OR
-                 (LNK-SYU-KOH4HKNNUM   = "583" OR "683" OR "783" )))
-           OR  (( WK-1001-PREFNUM             =  04               ) AND
-                ( LNK-SYU-SRYYMD(1:6)        >= "201201"          ) AND
-                ((LNK-SYU-KOH2HKNNUM   = "463" OR "563" OR "263"
-                                                        OR "363" ) OR
-                 (LNK-SYU-KOH3HKNNUM   = "463" OR "563" OR "263"
-                                                        OR "363" ) OR
-                 (LNK-SYU-KOH4HKNNUM   = "463" OR "563" OR "263"
-                                                        OR "363" )))
-           OR  (( WK-1001-PREFNUM             =  10               ) AND
-                ( LNK-SYU-SRYYMD(1:6)        >= "201104"          ) AND
-                ((LNK-SYU-KOH2HKNNUM   = "145" OR "245" OR "146"
-                                      OR "246" OR "143" OR "243" ) OR
-                 (LNK-SYU-KOH3HKNNUM   = "145" OR "245" OR "146"
-                                      OR "246" OR "143" OR "243" ) OR
-                 (LNK-SYU-KOH4HKNNUM   = "145" OR "245" OR "146"
-                                      OR "246" OR "143" OR "243" )))
-           OR  (( WK-1001-PREFNUM             =  12               ) AND
-                ( LNK-SYU-SRYYMD(1:6)        >= "201203"          ) AND
-                ((LNK-SYU-KOH2HKNNUM   = "263" OR "363" OR "463" ) OR
-                 (LNK-SYU-KOH3HKNNUM   = "263" OR "363" OR "463" ) OR
-                 (LNK-SYU-KOH4HKNNUM   = "263" OR "363" OR "463" )))
-           OR  (( WK-1001-PREFNUM             =  40      ) AND
-                ( LNK-SYU-SRYYMD(1:6)        >= "201104" ) AND
-                ((LNK-SYU-KOH2HKNNUM   = "383"          ) OR
-                 (LNK-SYU-KOH3HKNNUM   = "383"          ) OR
-                 (LNK-SYU-KOH4HKNNUM   = "383"          )))
+           IF     WK-2010-NINNASIKBN(2)  NOT =  SPACE
+           OR     WK-2010-NINNASIKBN(3)  NOT =  SPACE
+           OR     WK-2010-NINNASIKBN(4)  NOT =  SPACE
+           OR     WK-2010-NINJYOKBN(2)   NOT =  SPACE
+           OR     WK-2010-NINJYOKBN(3)   NOT =  SPACE
+           OR     WK-2010-NINJYOKBN(4)   NOT =  SPACE
       *
-             IF   LNK-SYU-KOH2HKNNUM  =
-                    "183" OR "283" OR
-                    "583" OR "683" OR "783" OR
-                    "145" OR "245" OR "146" OR
-                    "246" OR "143" OR "243" OR
-                    "463" OR "563" OR "263" OR "363" OR
-                    "263" OR "363" OR "463"
+             IF     WK-2010-NINNASIKBN(2)  NOT =  SPACE
+             OR     WK-2010-NINJYOKBN(2)   NOT =  SPACE
                   MOVE  LNK-SYU-KOH-COMPFTN(1)
                                     TO  LNK-SYU-JYO-HKNFTNMONEY
              END-IF
-             IF   LNK-SYU-KOH3HKNNUM  =
-                    "183" OR "283" OR
-                    "583" OR "683" OR "783" OR
-                    "145" OR "245" OR "146" OR
-                    "246" OR "143" OR "243" OR
-                    "463" OR "563" OR "263" OR "363" OR
-                    "263" OR "363" OR "463"
+             IF     WK-2010-NINNASIKBN(3)  NOT =  SPACE
+             OR     WK-2010-NINJYOKBN(3)   NOT =  SPACE
                   MOVE  LNK-SYU-KOH-COMPFTN(2)
                                     TO  LNK-SYU-JYO-HKNFTNMONEY
              END-IF
-             IF   LNK-SYU-KOH4HKNNUM  =
-                    "183" OR "283" OR
-                    "583" OR "683" OR "783" OR
-                    "145" OR "245" OR "146" OR
-                    "246" OR "143" OR "243" OR
-                    "463" OR "563" OR "263" OR "363" OR
-                    "263" OR "363" OR "463"
+             IF     WK-2010-NINNASIKBN(4)  NOT =  SPACE
+             OR     WK-2010-NINJYOKBN(4)   NOT =  SPACE
                   MOVE  LNK-SYU-KOH-COMPFTN(3)
                                     TO  LNK-SYU-JYO-HKNFTNMONEY
              END-IF
