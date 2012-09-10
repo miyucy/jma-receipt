@@ -54,17 +54,13 @@ T01	{
 			count	int;
 			item	varchar(32)[5];
 		};
-		HKNJANUM_TITLE	{
-			visible bool;
-			value	varchar(10);
-		};
-		DIRECT_HKNJANUM_COMBO	{
-			visible bool;
-			DIRECT_HKNJANUM	{
-				value	varchar(39);
+		RECEDEN_CHK_COMBO	{
+			state   int;
+			RECEDEN_CHK	{
+				value	varchar(16);
 			};
 			count	int;
-			item	varchar(39)[10];
+			item	varchar(16)[3];
 		};
 		DATA_COMBO	{
 			state   int;
@@ -81,6 +77,18 @@ T01	{
 			};
 			count	int;
 			item	varchar(14)[3];
+		};
+		HKNJANUM_TITLE	{
+			visible bool;
+			value	varchar(10);
+		};
+		DIRECT_HKNJANUM_COMBO	{
+			visible bool;
+			DIRECT_HKNJANUM	{
+				value	varchar(39);
+			};
+			count	int;
+			item	varchar(39)[10];
 		};
 		DATAKBN4	{
 			state	int;
@@ -167,6 +175,10 @@ T01	{
 		TITLE	{
 			style	varchar(20);
 			value	varchar(110);
+		};
+		TITLE1	{
+			style	varchar(20);
+			value	varchar(90);
 		};
 		SYOKBN1	{
 			state	int;

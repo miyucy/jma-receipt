@@ -24,6 +24,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
+      *  04.07.02    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *****************************************************************
        01  SPA-T01KYOUTU.
       *
@@ -32,6 +33,7 @@
       *警告画面より
            05  SPA-TID1-AREA. 
                07  SPA-TID1-FLG            PIC  X(02).
+               07  SPA-T99-FLG             PIC  X(02).
       *警告画面より（印刷指示）
            05  SPA-RECEDEN-FLG             PIC  X(02).
       *
@@ -39,6 +41,10 @@
       *
       *処理状態フラグ（１：レセ電）
            05  SPA-T01-SYORIFLG            PIC  9(01).
+      *
+           05  SPA-T01-TIMER-FLG           PIC 9(01).
+      *
+           05  SPA-T01-TBL-GROUP           PIC  X(14).
       *
       *レセ電作成枚数
            05  SPA-T01-WRNO                PIC  9(02).
@@ -69,4 +75,7 @@
                                            PIC X(08).
                    09  SPA-T01-DIRECT-HKNJANUM-63L
                                            PIC X(08).
-
+      *レセ電データチェック 
+           05  SPA-T01-RECEDEN-CHK         PIC X(01).
+      *ジョブ管理ＤＢのキー値  
+           05  SPA-T01-JOB-JOBID           PIC 9(07).

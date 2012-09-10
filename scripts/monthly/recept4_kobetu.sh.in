@@ -27,9 +27,13 @@ fi
 #            1:作成する
 #        ${26} レセ電データ履歴保存設定区分
 #            1:履歴保存する
+#        ${27} 直接請求する保険者番号
+#            99999999:設定なし
+#        ${28} レセ電データチェックの有無
+#            1:チェックする
 #-------------------------------------------#
 
-    rennum=0
+    rennum=1
 ##  2HD flesize  
     fixedsize=1441500
 
@@ -52,7 +56,9 @@ fi
     echo "arg24 = [" ${24} "]" >>$LOG_FILE
     echo "arg25 = [" ${25} "]" >>$LOG_FILE
     echo "arg26 = [" ${26} "]" >>$LOG_FILE
-    echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
+    echo "arg27 = [" ${27} "]" >>$LOG_FILE
+    echo "arg28 = [" ${28} "]" >>$LOG_FILE
+    echo "hostname =  ["`hostname`  "]" >>$LOG_FILE
 
     RECEFILE1="RECEIPTC"
     RECEFILE2="RECEDEN"
@@ -84,6 +90,46 @@ fi
             exit 
         fi
    fi     
+
+#   レセ電データチェック
+    if  [ ${28} -eq '1' ]; then
+
+        cleanup(){
+	    rm -f ${TMPFILEBASE}*
+        }
+
+	SHNAME=$(basename $0)
+	TMPFILEBASE="/tmp/${23}ORCB44RECEDENCHK"
+	ERRFILE="${TMPFILEBASE}${SHNAME%%.sh}.ERR"
+	ERRFILE="${ERRFILE// /X}"
+	ERRLOG="${TMPFILEBASE}${SHNAME%%.sh}.log"
+	INFILE="/tmp/${23}${RECEFILE2}01.txt"
+	EUCFILE="${TMPFILEBASE}$(basename ${INFILE}).euc"
+	PRM="${23},${EUCFILE},${ERRFILE},${ERRLOG},${24}}"
+
+	export  RUBYLIB=$SITESCRIPTSDIR:$PATCHSCRIPTSDIR:$SCRIPTSDIR:$RUBYLIB
+	export  APS_EXEC_PATH=$(dirname $0)
+
+	cleanup
+
+	[ -e ${ERRLOG}  ] && rm -f ${ERRLOG}
+	[ -e ${INFILE}  ] && nkf -E -e -I ${INFILE} > ${EUCFILE}
+
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt receden_check_start -parameter $PRM 2>  ${ERRLOG}
+	if [ -s ${ERRLOG} ]; then
+	    cat ${ERRLOG} >> $LOG_FILE
+	    ERRCD='0099'
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD:${#ERRCD}-4:4},${23} >> $LOG_FILE
+	    exit
+	fi
+
+        rennum=1
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM560 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${24},'1',${18},${19},${27},${ERRFILE},${23},${20} >> $LOG_FILE 2>&1
+        if  [ -e ${20} ]; then
+            echo "--- BM560 err file exist ---" >>$LOG_FILE
+            exit 
+        fi
+    fi
 
 #   漢字コード変換（ＥＵＣからシフトＪＩＳ）	
 

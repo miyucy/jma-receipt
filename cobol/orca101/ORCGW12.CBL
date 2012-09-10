@@ -148,6 +148,7 @@
       *                                     支払機関請求対応
       *  04.07.04    NACL-藤原    12/03/25  公費記載順設定対応
       *  04.07.05    NACL-藤原    12/05/28  タブラベル対応
+      *  04.07.06    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -395,6 +396,12 @@
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-RECEDEN-DISASTERMEI
+                                              PIC X(22).
+                       09  SPA-GMN-RECEDEN-CHK-G.
+                           11  SPA-GMN-RECEDEN-CHK
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-RECEDEN-CHKMEI
                                               PIC X(22).
                        09  SPA-GMN-KIGO-DELIMITER-FLG-G.
                            11  SPA-GMN-KIGO-DELIMITER-FLG
@@ -1022,6 +1029,15 @@
                        09  SPA-GMN-RECEDEN-DISASTERMEIL
                                               PIC X(22).
                    07  SPA-GMN-RECEDEN-DISASTER-MAX
+                                              PIC 9(01).    
+      *                                        
+                   07  SPA-GMN-RECEDEN-CHKLST  OCCURS  5.
+                       09  SPA-GMN-RECEDEN-CHKL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-RECEDEN-CHKMEIL
+                                              PIC X(22).
+                   07  SPA-GMN-RECEDEN-CHK-MAX
                                               PIC 9(01).    
       *                                        
                    07  SPA-GMN-KIGO-DELIMITER-FLGLST    OCCURS  5.
@@ -2073,6 +2089,14 @@
            MOVE    "記録する"          TO  SPA-GMN-RECEDEN-DISASTERMEIL
                                                                      (2)
            MOVE    2                   TO  SPA-GMN-RECEDEN-DISASTER-MAX
+      *     
+           MOVE    "0"                 TO  SPA-GMN-RECEDEN-CHKL (1)
+           MOVE    "チェックしない"    TO  SPA-GMN-RECEDEN-CHKMEIL
+                                                                (1)
+           MOVE    "1"                 TO  SPA-GMN-RECEDEN-CHKL (2)
+           MOVE    "チェックする"      TO  SPA-GMN-RECEDEN-CHKMEIL
+                                                                (2)
+           MOVE    2                   TO  SPA-GMN-RECEDEN-CHK-MAX
       *     
            MOVE    "0"                 TO  SPA-GMN-KIGO-DELIMITER-FLGL
                                                                    (1)
@@ -3358,6 +3382,19 @@
                END-IF
            END-PERFORM
       *
+           MOVE    SYS-200501-RECEDEN-CHK-KBN
+                                       TO  SPA-GMN-RECEDEN-CHK
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-RECEDEN-CHK-MAX
+               IF      SPA-GMN-RECEDEN-CHK 
+                                   =   SPA-GMN-RECEDEN-CHKL (IDY)
+                   MOVE    SPA-GMN-RECEDEN-CHKLST (IDY)
+                                       TO   SPA-GMN-RECEDEN-CHK-G
+                   MOVE    SPA-GMN-RECEDEN-CHK-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+      *
            MOVE    SYS-200501-KOUIKIPRTNM
                                        TO  SPA-GMN-KOUIKIPRTNM         
            MOVE    SYS-200501-KOUIKIPRTNM-NEXT
@@ -4092,6 +4129,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO
                                            SPA-GMN-RECEDEN-DISASTER-G
            END-IF                                              
+           IF     SPA-GMN-RECEDEN-CHK  =   SPACE
+               MOVE    SPA-GMN-RECEDEN-CHKLST (1)
+                                           TO
+                                           SPA-GMN-RECEDEN-CHK-G
+           END-IF                                              
            IF     SPA-GMN-SRYKAHENKBN  =   SPACE
                MOVE    SPA-GMN-SRYKAHENKBNLST (1)
                                            TO  SPA-GMN-SRYKAHENKBN-G
@@ -4397,6 +4439,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        TO  SPA-GMN-RECEDEN-RIREKIKBN-G
            MOVE    W12-RECEDEN-DATAKBN TO  SPA-GMN-RECEDEN-DATAKBN-G
            MOVE    W12-RECEDEN-DISASTER TO  SPA-GMN-RECEDEN-DISASTER-G
+           MOVE    W12-RECEDEN-CHK     TO  SPA-GMN-RECEDEN-CHK-G
            MOVE    W12-KIGO-DELIMITER-FLG
                                        TO  SPA-GMN-KIGO-DELIMITER-FLG-G
            MOVE    W12-KIGO-DELIMITER-HKNJANUM-FLG
@@ -4821,6 +4864,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
       *
            PERFORM 4180-RECEDEN-DISASTER-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4188-RECEDEN-CHK-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -7070,6 +7118,36 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    レセ電データチェックの有無区分チェック
+      *****************************************************************
+       4188-RECEDEN-CHK-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-RECEDEN-CHK  =   SPACE
+               MOVE    SPA-GMN-RECEDEN-CHKLST (1)
+                                       TO  SPA-GMN-RECEDEN-CHK-G
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-RECEDEN-CHK-MAX
+                   IF      SPA-GMN-RECEDEN-CHK
+                                   =   SPA-GMN-RECEDEN-CHKL (IDY)
+                       MOVE    SPA-GMN-RECEDEN-CHKLST (IDY)
+                                           TO
+                                           SPA-GMN-RECEDEN-CHK-G
+                       MOVE    SPA-GMN-RECEDEN-CHK-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-RECEDEN-CHKMEI   =   SPACE
+                   MOVE    121                     TO  SPA-GMN-CUR
+                   MOVE    "0115"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4188-RECEDEN-CHK-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    記号番号区切り文字設定フラグ（記号）チェック
       *****************************************************************
        4176-KIGO-DELIMITER-FLG-CHK-SEC       SECTION.
@@ -8198,6 +8276,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-RECEDEN-DISASTER
                                            TO
                                            SYS-200501-RECEDEN-DISASTER
+           MOVE    SPA-GMN-RECEDEN-CHK     TO
+                                           SYS-200501-RECEDEN-CHK-KBN
            MOVE    SPA-GMN-INSPECT-CHARACTER-KBN
                                            TO
                                        SYS-200501-INSPECT-CHARACTER-KBN
@@ -8838,6 +8918,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                             TO  W12-RECEDEN-DATAKBN
            MOVE    SPA-GMN-RECEDEN-DISASTER-G
                                             TO  W12-RECEDEN-DISASTER
+           MOVE    SPA-GMN-RECEDEN-CHK-G    TO  W12-RECEDEN-CHK
            MOVE    SPA-GMN-KIGO-DELIMITER-FLG-G
                                             TO  W12-KIGO-DELIMITER-FLG
            MOVE    SPA-GMN-KIGO-DELIMITER-HKNJANUM-FLG-G
@@ -9536,6 +9617,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-RECEDEN-DISASTER-MAX
                                        TO  W12-RECEDEN-DISASTER-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-RECEDEN-CHK-MAX
+               MOVE    SPA-GMN-RECEDEN-CHKLST (IDY)
+                                       TO  W12-RECEDEN-CHKLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-RECEDEN-CHK-MAX
+                                       TO  W12-RECEDEN-CHK-COUNT 
       *
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-KIGO-DELIMITER-FLG-MAX
@@ -9912,6 +10001,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0114"
                    MOVE    "転帰済傷病名記載区分入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0115"
+                   MOVE    "レセ電データチェック入力エラー"
+                                               TO  SPA-ERRMSG
       *
                WHEN    "1003"
                    MOVE    "更新ができませんでした"
@@ -10273,6 +10365,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  MCP-WIDGET
                 WHEN    120
                     MOVE  "RECEDEN_DISASTER"   TO  MCP-WIDGET
+                WHEN    121
+                    MOVE  "RECEDEN_CHK"        TO  MCP-WIDGET
       * 
                 WHEN    11
                     MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
@@ -10313,7 +10407,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE    1                TO  W12-PAGENO
                 WHEN    200 THRU    216
                     MOVE    2                TO  W12-PAGENO
-                WHEN    100 THRU    120
+                WHEN    100 THRU    121
                     MOVE    3                TO  W12-PAGENO
                 WHEN    70  THRU    80
                     MOVE    4                TO  W12-PAGENO
@@ -10597,6 +10691,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "RECEDEN_DATAKBN"
                    MOVE    120         TO  SPA-GMN-CUR
                WHEN    "RECEDEN_DISASTER"
+                   MOVE    121         TO  SPA-GMN-CUR
+               WHEN    "RECEDEN_CHK"
                    MOVE    116         TO  SPA-GMN-CUR
                WHEN    "KIGO_DELI_FLG"
                    MOVE    117         TO  SPA-GMN-CUR

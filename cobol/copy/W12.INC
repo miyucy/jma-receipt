@@ -393,6 +393,12 @@
                     06  W12-RECEDEN-DISASTER-COUNT PIC S9(9)   BINARY.
                     06  W12-RECEDEN-DISASTERLST
                             PIC X(24)   OCCURS  5 TIMES.
+                  05  W12-RECEDEN-CHK-COMBO.
+                    06  W12-RECEDEN-CHK.
+                      07  W12-VALUE   PIC X(24).
+                    06  W12-RECEDEN-CHK-COUNT PIC S9(9)   BINARY.
+                    06  W12-RECEDEN-CHKLST
+                            PIC X(24)   OCCURS  5 TIMES.
                   05  W12-KIGO-DELIMITER-FLG-COMBO.
                     06  W12-KIGO-DELIMITER-FLG.
                       07  W12-VALUE   PIC X(30).

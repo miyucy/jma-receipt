@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -133,6 +134,10 @@
       *        戻る
                WHEN    "CLICKED"                 ALSO    "B01"
                    MOVE    SPACE                 TO  SPA-TID1-FLG
+                   PERFORM 210-BACK
+      *     プレビュー
+               WHEN    "CLICKED"                 ALSO    "B10"
+                   MOVE    "PV"                  TO  SPA-TID1-FLG
                    PERFORM 210-BACK
       *     印刷しない
                WHEN    "CLICKED"                 ALSO    "B11"

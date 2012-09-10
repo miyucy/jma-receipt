@@ -38,6 +38,8 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
+      *
+      *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -50,6 +52,10 @@
       *
       *
        WORKING-STORAGE             SECTION.
+      *
+      *    エラーファイル 名称領域 
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -83,6 +89,16 @@
        01  WRK-AREA.
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
            03  WRK-KENSU-Z         PIC ZZZZZZ9.
+           03  WRK-PRT-PAGE        PIC 9(10).
+           03  WRK-PRT-PAGE1       PIC 9(10).
+      *     
+           03  WRK-SHELL-ARG1.
+             05  WRK-SHELL-SRYYM   PIC  X(06).
+             05  WRK-SHELL-TERMID  PIC  X(16).
+             05  WRK-SHELL-SYSYMD  PIC  X(08).  
+      *  
+           03  WRK-STPAGE          PIC 9(05).
+           03  WRK-EDPAGE          PIC 9(05).
       *
       *    パラメタＤＢ編集用
            03  WRK-BTPARA-INFO-PARA.
@@ -94,6 +110,17 @@
                05  WRK-BTPARA-STNO PIC 9(02).
                05  WRK-BTPARA-EDNO PIC 9(02).
                05  WRK-BTPARA-WRNO PIC 9(02).  
+      *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *
+           COPY    "CPSHELLTBL.INC".
+      *
+      *    プレビュー用情報
+           COPY    "CPXC01LNK.INC".
+      *
+       01  WRK-LNK-AREA.
+           COPY    "CPORCSPRTLNK.INC".
       *     
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -114,13 +141,21 @@
       *    ジョブ管理ＤＢのキー値  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "SOKATU".
-           03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
+      *****03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *     
       *    パラメタＤＢのキー値（レセ電作成）  
            03  WRK-CONS-BTPARA-SHELLID
                                    PIC X(08)   VALUE   "SOKATU".
            03  WRK-CONS-BTPARA-SCRIPTID
                                    PIC X(10)   VALUE   "recept4.sh".
+      *
+      *    エラーファイルＩＤ
+           03  WRK-CONS-FILE-ID    PIC X(08)   VALUE   "OR044ERR".
+      *    
+      *    固定端末ＩＤ
+           03  WRK-CONS-TERMID.
+               05  FILLER          PIC X(08)   VALUE   "0100007F". 
+               05  FILLER          PIC X(56)   VALUE   ALL "Z".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -208,7 +243,10 @@
                MOVE    SPA-FREE            TO  SPA-T01FREE
                INITIALIZE                      SPA-T06 
            END-IF
-      * 
+      *
+           MOVE    SPACE           TO  SPA-ERRCD
+           MOVE    ZERO            TO  FLG-END
+      *
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
@@ -264,6 +302,9 @@
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
+      *    プレビュー画面へ
+               WHEN    "CLICKED"       ALSO    "B12"
+                   PERFORM 4501-NEXT-GMN-SEC
            END-EVALUATE
       *
            .
@@ -297,14 +338,46 @@
            EXIT.
       *
       *****************************************************************
+      *    プレビュー画面へ遷移
+      *****************************************************************
+       4501-NEXT-GMN-SEC            SECTION.
+      *
+           MOVE    "OK"                TO  SPA-T99-FLG
+      *     
+           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    "T99"               TO  SPA-MOTOPG
+      *
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4501-NEXT-GMN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
+           MOVE    ZERO                TO  WRK-PRT-PAGE
+                                           WRK-PRT-PAGE1
+      *
            INITIALIZE                      T99
            MOVE    ZERO                TO  T99-COUNT
+           MOVE    "black"             TO  T99-MSG-STYLE
       *
            MOVE    5                   TO  T99-DURATION
+           MOVE    WIDGET-INSENSITIVE  TO  T99-B12-STATE
+           IF    ( SPA-TID1-FLG    =   "PV" ) 
+           OR    ( SPA-RECEDEN-FLG =   "PV" ) 
+               IF      SPA-T99-MOTOPG  NOT =   "T04"
+                   MOVE    "F12:プレビュー"    TO  T99-B12-LABEL
+               END-IF
+           END-IF 
       *        
            MOVE    SPACE               TO  SYS-3003-REC 
            INITIALIZE                      SYS-3003-REC
@@ -367,8 +440,128 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                            END-IF
                        END-IF
                        MOVE    IDX                     TO  T99-COUNT
+                       IF    ( JOB-PGID        =   "ORCBPRT1" )
+                           MOVE    JOB-UPDCNT  TO  WRK-PRT-PAGE
+                       ELSE
+                           MOVE    JOB-UPDCNT1 TO  WRK-PRT-PAGE1
+                       END-IF
                    END-IF
                END-PERFORM
+           END-IF
+      *
+           IF      T99-MSG              =   SPACE
+               MOVE    "B01"                TO  MCP-WIDGET
+               IF      T99-COUNT            >   ZERO
+                   IF      SPA-T01-SYORIFLG    =   ZERO    OR  9
+                       IF      WRK-PRT-PAGE1   =   ZERO
+                           MOVE    "処理は正常に終了しました"
+                                                   TO  T99-MSG
+                       ELSE
+                           STRING  "処理は正常に終了しました"
+                                                   DELIMITED   BY  SIZE
+                                   "（チェックリストが作成されました）" 
+                                                   DELIMITED   BY  SIZE
+                                                   INTO  T99-MSG
+                           END-STRING
+                           MOVE    "red"   TO  T99-MSG-STYLE
+                       END-IF
+                   ELSE
+                       IF      SPA-GMN-DATAKBN     =   "1"
+      *                    パラメタＤＢ更新処理（レセ電のとき）
+                           PERFORM 4901-BTPARA-UPDATE-SEC
+                           IF      SPA-ERRCD       =   SPACE
+                               IF    ( WRK-BTPARA-EDNO 
+                                               NOT =   WRK-BTPARA-WRNO )
+                                   PERFORM 210-BACK
+                                   GO  TO  490-KAKUNIN-EXT
+                               ELSE
+                                   IF      SPA-RECEDEN-FLG =   "OK"
+                                       PERFORM 210-BACK
+                                       GO  TO  490-KAKUNIN-EXT
+                                   ELSE
+                                       IF    ( SPA-RECEDEN-FLG =  "PV" )
+                                       AND   ( SPA-T01-SYORIFLG
+                                                               =  1    )
+      *                                    レセ電処理後の印刷処理
+                                           PERFORM 4903-PRINT-SEC
+                                       END-IF
+                                       MOVE    9   TO  SPA-T01-SYORIFLG
+                                       IF      WRK-PRT-PAGE1   =   ZERO
+                                           MOVE
+                                           "処理は正常に終了しました"
+                                                           TO  T99-MSG
+                                       ELSE
+                                           STRING
+                                   "処理は正常に終了しました"
+                                                   DELIMITED   BY  SIZE
+                                   "（チェックリストが作成されました）" 
+                                                   DELIMITED   BY  SIZE
+                                                   INTO  T99-MSG
+                                           END-STRING
+                                           MOVE    "red"   TO
+                                                           T99-MSG-STYLE
+                                       END-IF
+                                       GO  TO  490-KAKUNIN-EXT
+                                   END-IF
+                               END-IF
+                           END-IF
+                       ELSE
+                           IF      SPA-RECEDEN-FLG =   "OK"
+                               PERFORM 210-BACK
+                               GO  TO  490-KAKUNIN-EXT
+                           ELSE
+                               IF    ( SPA-RECEDEN-FLG     =   "PV" )
+                               AND   ( SPA-T01-SYORIFLG    =   1    )
+      *                            レセ電処理後の印刷処理
+                                   PERFORM 4903-PRINT-SEC
+                               END-IF
+                               MOVE    9       TO  SPA-T01-SYORIFLG
+                               IF      WRK-PRT-PAGE1   =   ZERO
+                                   MOVE    "処理は正常に終了しました"
+                                                   TO  T99-MSG
+                               ELSE
+                                   STRING  "処理は正常に終了しました"
+                                                   DELIMITED   BY  SIZE
+                                   "（チェックリストが作成されました）" 
+                                                   DELIMITED   BY  SIZE
+                                                   INTO  T99-MSG
+                                   END-STRING
+                                   MOVE    "red"   TO  T99-MSG-STYLE
+                               END-IF
+                               GO  TO  490-KAKUNIN-EXT
+                           END-IF
+                       END-IF
+                   END-IF
+               ELSE
+                   MOVE    "該当する処理はありません"
+                                                TO  T99-MSG
+               END-IF                                 
+               MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
+           ELSE                                        
+               MOVE    "B11"               TO  MCP-WIDGET
+      *        レセ電作成時にフロッピー出力の場合は戻るは押下できない
+               IF    ( SPA-GMN-DATAKBN     =   "1" )
+               AND   ( SPA-T01-SYORIFLG    =   1   )
+                   MOVE    WIDGET-INSENSITIVE  TO  T99-B01-STATE
+               ELSE
+                   MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
+               END-IF
+           END-IF                                 
+      *
+           IF      JOB-ERRCD       =   SPACE
+               IF  ( ( SPA-TID1-FLG    =   "PV" ) AND
+                     ( SPA-T01-SYORIFLG
+                                       =   0    )     )
+               OR  ( ( SPA-RECEDEN-FLG =   "PV" ) AND
+                     ( SPA-T01-SYORIFLG
+                                       =   9    )     )
+                   IF    ( SPA-T99-MOTOPG  NOT =   "T04"     )
+                       IF    ( WRK-PRT-PAGE    >   ZERO )
+                           MOVE    WIDGET-NORMAL   TO  T99-B12-STATE
+                           MOVE    "B12"           TO  MCP-WIDGET
+                       END-IF
+                   END-IF
+               END-IF
            END-IF
       *
            IF    ( SPA-TID1-FLG    =   "FI"    OR  "SV" )
@@ -403,59 +596,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    END-IF
                END-IF    
            END-IF
-           IF      T99-MSG              =   SPACE
-               MOVE    "B01"                TO  MCP-WIDGET
-               IF      T99-COUNT            >   ZERO
-                   IF      SPA-T01-SYORIFLG    =   ZERO    OR  9
-                       MOVE    "処理は正常に終了しました"
-                                                   TO  T99-MSG
-                   ELSE
-                       IF      SPA-GMN-DATAKBN     =   "1"
-      *                    パラメタＤＢ更新処理（レセ電のとき）
-                           PERFORM 4901-BTPARA-UPDATE-SEC
-                           IF      SPA-ERRCD       =   SPACE
-                               IF    ( WRK-BTPARA-EDNO 
-                                               NOT =   WRK-BTPARA-WRNO )
-                                   PERFORM 210-BACK
-                                   GO  TO  490-KAKUNIN-EXT
-                               ELSE
-                                   IF      SPA-RECEDEN-FLG =   "OK"
-                                       PERFORM 210-BACK
-                                       GO  TO  490-KAKUNIN-EXT
-                                   ELSE
-                                       MOVE    9   TO  SPA-T01-SYORIFLG
-                                       MOVE
-                                          "処理は正常に終了しました"
-                                                   TO  T99-MSG
-                                   END-IF
-                               END-IF
-                           END-IF
-                       ELSE
-                           IF      SPA-RECEDEN-FLG =   "OK"
-                               PERFORM 210-BACK
-                               GO  TO  490-KAKUNIN-EXT
-                           ELSE
-                               MOVE    9       TO  SPA-T01-SYORIFLG
-                               MOVE    "処理は正常に終了しました"
-                                               TO  T99-MSG
-                           END-IF
-                       END-IF
-                   END-IF
-               ELSE
-                   MOVE    "該当する処理はありません"
-                                                TO  T99-MSG
-               END-IF                                 
-               MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
-           ELSE                                        
-               MOVE    "B11"               TO  MCP-WIDGET
-      *        レセ電作成時にフロッピー出力の場合は戻るは押下できない
-               IF    ( SPA-GMN-DATAKBN     =   "1" )
-               AND   ( SPA-T01-SYORIFLG    =   1   )
-                   MOVE    WIDGET-INSENSITIVE  TO  T99-B01-STATE
-               ELSE
-                   MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
-               END-IF
-           END-IF                                 
       *
            MOVE    SPACE               TO  LINKAREA
       *
@@ -565,9 +705,197 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
+      *    レセ電処理後の印刷処理
+      *****************************************************************
+       4903-PRINT-SEC            SECTION.
+      *
+      *    ジョブ開始セット処理
+           ADD     1               TO  SPA-T01-JOB-JOBID
+      *       
+           MOVE    "DEL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-T01-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           PERFORM 900-CALL-ORCSJOB-SEC
+      *
+           MOVE    "JBS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    SPA-T01-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    SPA-TERMID      TO  JOB-TERMID
+           PERFORM 900-CALL-ORCSJOB-SEC
+      *     
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
+           MOVE    SPA-TERMID          TO  RECEERR-TERMID
+           MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
+      *      
+           MOVE    SPA-LNK-PRTKANRI-AREA
+                                   TO  LNK-PRTKANRI-AREA
+      *
+      *    印刷処理
+           PERFORM 49031-PRINT-SYORI-SEC
+      *
+      *    ＪＯＢＩＤ更新処理
+      *
+           PERFORM 49032-JIBID-UPD-SEC
+      *
+      *    印刷データ削除処理
+           MOVE    SPACE               TO  SHELLTBL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    "prtdbdel.sh"       TO  SHELLTBL-NAME
+           MOVE    SPA-T01-JOB-JOBID   TO  SHELLTBL-ARG1
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-ARG2
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG3
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "monthly"           TO  MCP-PATHNAME
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           MOVE    9               TO  SPA-T01-SYORIFLG
+      *
+           .
+       4903-PRINT-EXT.
+           EXIT. 
+      *
+      *****************************************************************
+      *    印刷処理
+      *****************************************************************
+       49031-PRINT-SYORI-SEC           SECTION.
+      *
+           MOVE    0                   TO  WRK-STPAGE
+           MOVE    99999               TO  WRK-EDPAGE
+      *             
+           MOVE    SPACE               TO  SHELLTBL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
+      *
+           MOVE    SPACE               TO  LNK-PRTKANRI-AREA
+           INITIALIZE                      LNK-PRTKANRI-AREA
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  LNK-PRTKANRI-TBL-KEY 
+           MOVE    SPA-T01-TBL-GROUP   TO  LNK-PRTKANRI-TBL-GROUP
+           MOVE    ZERO                TO  LNK-PRTKANRI-RENNUM
+           MOVE    ZERO                TO  LNK-PRTKANRI-SHORI-RENNUM
+           MOVE    SPA-NAI-SKYYM       TO  LNK-PRTKANRI-SRYYM 
+           MOVE    SPA-NAI-SKYYMD      TO  LNK-PRTKANRI-SKYYMD
+           MOVE    "print_prv.sh"          TO  LNK-PRTKANRI-SHELLID
+           MOVE    ZERO                TO  LNK-PRTKANRI-PRIORITY
+           MOVE    WRK-CONS-TERMID     TO  LNK-PRTKANRI-TERMID
+           MOVE    SPA-OPID            TO  LNK-PRTKANRI-OPID
+      *
+           MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
+           MOVE    LNK-PRTKANRI-TBL-KEY
+                                       TO  SHELLTBL-ARG2     
+           MOVE    LNK-PRTKANRI-TBL-GROUP
+                                       TO  SHELLTBL-ARG3       
+           MOVE    LNK-PRTKANRI-SHORI-RENNUM
+                                       TO  SHELLTBL-ARG4       
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SHELLTBL-ARG5       
+           MOVE    LNK-PRTKANRI-SKYYMD TO  SHELLTBL-ARG6       
+           MOVE    LNK-PRTKANRI-SHELLID
+                                       TO  SHELLTBL-ARG7       
+           MOVE    LNK-PRTKANRI-PRIORITY
+                                       TO  SHELLTBL-ARG8      
+           MOVE    LNK-PRTKANRI-TERMID TO  SHELLTBL-ARG9       
+           MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
+           MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
+      *             
+           MOVE    RECEERR             TO  SHELLTBL-ARG12
+           MOVE    SPA-T01-JOB-JOBID   TO  SHELLTBL-ARG13
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-ARG14
+           MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
+           MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
+               EVALUATE    SPA-RECEDEN-FLG
+               WHEN    "PV"
+                   MOVE    "3"             TO  SHELLTBL-ARG17
+               WHEN    "NO"
+                   MOVE    "3"             TO  SHELLTBL-ARG17
+               WHEN    "OK"
+                   MOVE    "2"             TO  SHELLTBL-ARG17
+               END-EVALUATE
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "allways"           TO  MCP-PATHNAME
+           PERFORM 900-ORCDBMAIN-SEC
+           .
+       49031-PRINT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＪＯＢＩＤ更新処理
+      *****************************************************************
+       49032-JIBID-UPD-SEC    SECTION.
+      *
+           MOVE    SPACE               TO  SYS-3003-REC 
+           INITIALIZE                      SYS-3003-REC
+           MOVE    "3003"              TO  SYS-3003-KANRICD
+           MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
+           MOVE    SPA-NAI-SKYYM       TO  SYS-3003-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-3003-STYUKYMD (7:2)
+           MOVE    SYS-3003-STYUKYMD   TO  SYS-3003-EDYUKYMD 
+           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
+           MOVE    SYS-3003-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-3003-REC
+           ELSE       
+               MOVE    SPACE               TO  SYS-3003-REC 
+               INITIALIZE                      SYS-3003-REC
+               MOVE    "3003"              TO  SYS-3003-KANRICD
+               MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
+               MOVE    ZERO                TO  SYS-3003-STYUKYMD
+               MOVE    ALL "9"             TO  SYS-3003-EDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
+           END-IF    
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  SYS-3003-TBL-KEY
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                       TO  SYS-3003-TBL-GROUP
+           MOVE    SPA-T01-JOB-JOBID   TO  SYS-3003-JOBID                                      
+      *
+           MOVE    SYS-3003-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           IF      FLG-SYSKANRI        =   ZERO     
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+           ELSE
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+           END-IF         
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "SYSKANRI 3003  ERR KEY = ["
+                                  MCP-RC  " " SYS-3003-KEY  "]"   
+      *****    MOVE    "1010"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       49032-JIBID-UPD-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ファイルエントリ処理(クライアント保存)
       *****************************************************************
        3001-FILEENTRY-SEC          SECTION.
+      *
+           IF      MCP-EVENT       =   "CLICKED"
+           AND     MCP-WIDGET      =   "pandatimer1"
+               IF      SPA-T01-TIMER-FLG    =   0
+                   MOVE    1                    TO  SPA-T01-TIMER-FLG
+               ELSE
+                   GO  TO  3001-FILEENTRY-EXT
+               END-IF
+           END-IF
       *
       *    ＣＳＶ一覧から遷移したとき
            IF      SPA-T99-MOTOPG  =   "T04"
@@ -587,7 +915,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                            SPA-AREA
       *
                MOVE    ORCA-BLOB-OBJECT    TO  T99-OBJECTDATA
-               MOVE    SPA-NAI-T04-TTO-DATA    (SPA-NAI-T04-SELNUM)
+               MOVE    SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
                                            TO  T99-FILENAME
            ELSE
                INITIALIZE                      ORCA-BLOB
@@ -606,14 +934,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                            SPA-AREA
       *
                MOVE    ORCA-BLOB-OBJECT    TO  T99-OBJECTDATA
-               MOVE    SPA-SFILESV-TO-DATA     (SPA-SFILESV-IDX)
+               MOVE    SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
                                            TO  T99-FILENAME
            END-IF
       *
            MOVE    ZERO                TO  T99-DURATION
-      *
-      *     MOVE    "NEW"               TO  MCP-PUTTYPE
-      *     MOVE    "TFIL"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  FLG-END
@@ -690,6 +1015,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                                TO  T99-MSG
                WHEN    "0127"
                    MOVE    "【スクリプトが実行できませんでした】" 
+                                               TO  T99-MSG
+               WHEN    "0099"
+                   MOVE
+                   "【レセ電データチェック処理でエラーが発生しました】"
                                                TO  T99-MSG
            END-EVALUATE
       *

@@ -1025,6 +1025,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
+           DISPLAY "***          PAGE "  CNT-GPAGE
            DISPLAY "*** ORCBM510 END ***"
       *
            .

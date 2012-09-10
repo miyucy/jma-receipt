@@ -53,6 +53,8 @@
       *
       *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
+      *  04.07.02    NACL-藤原    12/08/01  レセ電データチェック機能対応
+      *  04.07.03    NACL-藤原    12/08/28  スクリプト起動パスサーチ対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -221,6 +223,9 @@
       *    ワーク請求管理
            COPY    "CPRCF010.INC"  REPLACING  //RECE10-//
                                    BY         //WRK-RECE10-//.
+      *
+      *    プレビュー用情報
+           COPY    "CPXC01LNK.INC".
       *
        01  WRK-CONS-AREA.
       *    個別指示一覧最大行
@@ -475,10 +480,12 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
       *
       *        元の画面へ戻す
-               IF      SPA-MOTOPG      =   "XA01"  OR  "XB01"
+               IF      SPA-MOTOPG      =   "XA01"  OR  "XB01"  OR
+                                           "XC01"
                    MOVE    LNK-COMMON      TO  SPA-KYOTUKEY
                    MOVE    LNK-SCRSPA      TO  SPA-T06
-                   MOVE    SPA-WORK        TO  SPA-T01KYOUTU
+      *************MOVE    SPA-WORK        TO  SPA-T01KYOUTU
+                   INITIALIZE              SPA-T01KYOUTU
                    GO  TO  300-SCREEN-EXT
                END-IF
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
@@ -486,7 +493,8 @@
                IF      WRK-MOTOPG(1:3)     =  "P97"  
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-T06
-                   MOVE    SPA-WORK        TO  SPA-T01KYOUTU
+      *************MOVE    SPA-WORK        TO  SPA-T01KYOUTU
+                   INITIALIZE              SPA-T01KYOUTU
                    PERFORM 3101-U01SPASET-SEC
                    GO  TO  300-SCREEN-EXT
                END-IF
@@ -707,6 +715,10 @@
                                        TO  SPA-NAI-T06-2009-SYUKA-KOKUHO
            MOVE    SYS-2009-SYUKA-KOUIKI
                                        TO  SPA-NAI-T06-2009-SYUKA-KOUIKI
+      *
+      *    レセ電データチェック 
+           MOVE    SPA-T01-RECEDEN-CHK TO
+                                   SPA-NAI-T06-200501-RECEDEN-CHK-KBN
       *
       *    管理情報編集処理
            PERFORM 3101-ONRECE-KANRI-HENSYU-SEC
@@ -1009,10 +1021,9 @@
                END-IF
            END-IF
       *
-           IF      SPA-T01-SYORIFLG    =   ZERO    OR  9
-               MOVE    1                   TO  SPA-NAI-T06-SYORIFLG
-           ELSE
-               MOVE    ZERO                TO  SPA-NAI-T06-SYORIFLG
+           IF      SPA-T99-FLG     =   "OK"
+               PERFORM 3203-NEXT-GMN-SEC
+               GO  TO  320-T99-SET-EXT
            END-IF
       *
            MOVE    1               TO  SPA-GMN-T06-CUR
@@ -1081,12 +1092,7 @@
            PERFORM 900-CALL-ORCSJOB-SEC
       *             
            MOVE    SPACE           TO  SHELLTBL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    "scripts/monthly/recept4_fd.sh"
-                                   TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    "recept4_fd.sh" TO  SHELLTBL-NAME
            STRING  SYS-2005-RECEDENOUT DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                                INTO    SHELLTBL-ARG1
@@ -1120,7 +1126,7 @@
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "monthly"       TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
       *    ＪＯＢＩＤ更新処理
@@ -1164,6 +1170,47 @@
            .
        3202-PRINT-EXT.
            EXIT. 
+      *
+      *****************************************************************
+      *    プレビュー処理
+      *****************************************************************
+       3203-NEXT-GMN-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-T01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-T06             TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "T06"               TO  SPA-MOTOPG
+           MOVE    "XC01"              TO  SPA-SAKIPG
+      *
+           INITIALIZE                  LNK-XC01-AREA
+      *
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  SPA-PRTKANRI-TBL-KEY
+                                           LNK-XC01-TBL-KEY
+           MOVE    ZERO                TO  LNK-XC01-RENNUM
+           MOVE    SPA-T01-TBL-GROUP   TO  LNK-XC01-TBL-GROUP
+           MOVE    ZERO                TO  LNK-XC01-SHORI-RENNUM
+           MOVE    0                   TO  LNK-XC01-ST-PAGE
+           MOVE    0                   TO  LNK-XC01-ED-PAGE
+           MOVE    "T06"               TO  LNK-XC01-MOTOPG
+           MOVE    SPACE               TO  LNK-XC01-MODE
+      *
+           MOVE    LNK-XC01-AREA       TO  SPA-WORK
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   "XC01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       3203-NEXT-GMN-EXT.
+           EXIT.
       *
       *****************************************************************
       *    確認画面戻り処理
@@ -1433,7 +1480,7 @@
       *****************************************************************
        350-T98-SET-SEC            SECTION.
       *
-           IF      SPA-TID1-FLG    =   "OK"    OR  "NO"
+           IF      SPA-TID1-FLG    =   "OK"    OR  "NO"    OR  "PV"
                MOVE    "T06"                  TO  SPA-T99-MOTOPG
       *        ジョブ管理チェック処理
                PERFORM 4501-JOBKANRI-CHK-SEC
@@ -1520,6 +1567,60 @@
                MOVE    "0022"          TO  SPA-ERRCD
                GO  TO  400-TEISYUTUSAKI-EXT
            END-IF
+           EVALUATE    MCP-WIDGET
+               WHEN    "TEISYUTUSAKI1"
+                   IF      T06-TEISYUTUSAKI1   =   "F"
+                       IF      SPA-GMN-T06-TEISYUTUSAKI1
+                                                   =   "T"
+                           MOVE    "F"     TO  SPA-GMN-T06-TEISYUTUSAKI1
+                           GO  TO  400-TEISYUTUSAKI-EXT
+                       END-IF
+                   ELSE
+                       IF      SPA-GMN-T06-TEISYUTUSAKI-G
+                                                   =   "FFF"
+                           CONTINUE
+                       ELSE
+                           IF      SPA-GMN-T06-TEISYUTUSAKI1   =   "T"
+                               GO  TO  400-TEISYUTUSAKI-EXT
+                           END-IF
+                       END-IF
+                   END-IF
+               WHEN    "TEISYUTUSAKI2"
+                   IF      T06-TEISYUTUSAKI2   =   "F"
+                       IF      SPA-GMN-T06-TEISYUTUSAKI2
+                                                   =   "T"
+                           MOVE    "F"     TO  SPA-GMN-T06-TEISYUTUSAKI2
+                           GO  TO  400-TEISYUTUSAKI-EXT
+                       END-IF
+                   ELSE
+                       IF      SPA-GMN-T06-TEISYUTUSAKI-G
+                                                   =   "FFF"
+                           CONTINUE
+                       ELSE
+                           IF      SPA-GMN-T06-TEISYUTUSAKI2   =   "T"
+                               GO  TO  400-TEISYUTUSAKI-EXT
+                           END-IF
+                       END-IF
+                   END-IF
+               WHEN    "TEISYUTUSAKI3"
+                   IF      T06-TEISYUTUSAKI3   =   "F"
+                       IF      SPA-GMN-T06-TEISYUTUSAKI3
+                                                   =   "T"
+                           MOVE    "F"     TO  SPA-GMN-T06-TEISYUTUSAKI3
+                           GO  TO  400-TEISYUTUSAKI-EXT
+                       END-IF
+                   ELSE
+                       IF      SPA-GMN-T06-TEISYUTUSAKI-G
+                                                   =   "FFF"
+                           CONTINUE
+                       ELSE
+                           IF      SPA-GMN-T06-TEISYUTUSAKI3   =   "T"
+                               GO  TO  400-TEISYUTUSAKI-EXT
+                           END-IF
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *
       *    未処理分があるときのチェック 
            IF    ( SPA-NAI-T06-SYORIFLG
                                        =   ZERO )
@@ -3861,6 +3962,9 @@
       *****************************************************************
        460-RECEDEN-SEC                 SECTION.
       *
+           INITIALIZE                  SPA-T01-TBL-GROUP
+           MOVE    ZERO            TO  SPA-T01-TIMER-FLG
+      *
       *    クライアント保存削除処理             
            INITIALIZE                  ORCSFILESVAREA
            MOVE    "D"             TO  SFILESV-MODE
@@ -4084,15 +4188,14 @@
            MOVE    SMCNDATE-YMD    TO  WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
            MOVE    SMCNDATE-HMS    TO  WRK-CONS-PRTKANRI-TBL-GROUP (9:)
       *
+           MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
+                                   TO  SPA-T01-TBL-GROUP
+      *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *             
            MOVE    SPACE           TO  SHELLTBL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    "scripts/monthly/recept4_kobetu.sh"
-                                   TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    "recept4_kobetu.sh"
+                                   TO  SHELLTBL-NAME
       *                                 
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
@@ -4176,11 +4279,19 @@
                                    TO  SHELLTBL-ARG25
            MOVE    SPA-NAI-T06-200501-RECEDEN-RIREKIKBN
                                    TO  SHELLTBL-ARG26
+           MOVE    "99999999"      TO  SHELLTBL-ARG27
+           IF      SPA-NAI-T06-DIRECT-HKNJANUM
+                                   NOT =   SPACE
+               MOVE    SPA-NAI-T06-DIRECT-HKNJANUM
+                                       TO  SHELLTBL-ARG27
+           END-IF
+           MOVE    SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                   TO  SHELLTBL-ARG28
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "monthly"       TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
       *    ＪＯＢＩＤ更新処理
@@ -4196,6 +4307,7 @@
            MOVE    LNK-PRTKANRI-AREA   TO  SPA-LNK-PRTKANRI-AREA
       * 
       *****MOVE    SPA-T01KYOUTU       TO  SPA-WORK
+           MOVE    WRK-CONS-JOB-JOBID  TO  SPA-T01-JOB-JOBID
       *     
       *    情報確認画面を表示                                                   
            PERFORM 490-KAKUNIN-SEC
@@ -4291,12 +4403,7 @@
            MOVE    99999               TO  WRK-EDPAGE
       *             
            MOVE    SPACE               TO  SHELLTBL
-      *    ファイルデイレクトリ位置指定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    "scripts/allways/print.sh"
-                                       TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
+           MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
            MOVE    LNK-PRTKANRI-RENNUM TO  SHELLTBL-ARG1       
            MOVE    LNK-PRTKANRI-TBL-KEY
                                        TO  SHELLTBL-ARG2     
@@ -4324,7 +4431,7 @@
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "shell"             TO  MCP-PATHNAME
+           MOVE    "allways"           TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            .
        45013-PRINT-SYORI-EXT.
@@ -4337,8 +4444,16 @@
       *
            INITIALIZE                      T99
            MOVE    ZERO                TO  T99-COUNT
+           MOVE    "black"             TO  T99-MSG-STYLE
       *
            MOVE    5                   TO  T99-DURATION
+           MOVE    WIDGET-INSENSITIVE  TO  T99-B12-STATE
+           IF    ( SPA-TID1-FLG    =   "PV" ) 
+           OR    ( SPA-RECEDEN-FLG =   "PV" ) 
+               IF      SPA-T99-MOTOPG  NOT =   "T04"
+                   MOVE    "F12:プレビュー"    TO  T99-B12-LABEL
+               END-IF
+           END-IF 
       *        
            MOVE    SPACE               TO  SYS-3003-REC 
            INITIALIZE                      SYS-3003-REC
@@ -5310,6 +5425,8 @@
                                             TO  TID2-ID1MSG
            END-EVALUATE
       *
+           MOVE    "F"                  TO  TID2-B10-VISIBLE
+           MOVE    "T"                  TO  TID2-B11-VISIBLE
            MOVE    "F11:個人履歴"       TO  TID2-B11-LABEL
            MOVE    "F12:作成する"       TO  TID2-B12-LABEL
            MOVE    "blue"               TO  TID2-LABEL-STYLE

@@ -483,6 +483,13 @@ W12	{
 					count	int;
 					item	varchar(24)[5];
 				};
+				RECEDEN_CHK_COMBO	{
+					RECEDEN_CHK	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[5];
+				};
 				KIGO_DELI_FLG_CMB	{
 					KIGO_DELI_FLG	{
 						value	varchar(30);

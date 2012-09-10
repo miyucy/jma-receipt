@@ -36,6 +36,8 @@
       *                                     の設定も可能にする 
       *
       *  04.06.01    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *
+      *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -58,6 +60,10 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-MCP-WIDGET      PIC X(64).
+      *
+           03  WRK-TIDMSG          PIC X(150).
+           03  WRK-TIDMSG1         PIC X(150).
+           03  WRK-TIDCD-MSG       PIC X(150).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -286,6 +292,7 @@
                    MOVE    SPACE       TO  SPA-TID1-FLG
                    PERFORM 210-BACK
       *     確定
+               WHEN    "CLICKED"       ALSO    "B10"
                WHEN    "CLICKED"       ALSO    "B11"
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-KAKUTEI-SEC
@@ -473,15 +480,12 @@
            END-IF
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+               WHEN    "CLICKED"       ALSO    "B10"
+                   MOVE    "PV"            TO  SPA-TID1-FLG
                WHEN    "CLICKED"       ALSO    "B11"
                    MOVE    "NO"            TO  SPA-TID1-FLG
                WHEN    "CLICKED"       ALSO    "B12"
-                   IF      SPA-NAI-T06-200501-RECEDEN-LST1KBN
-                                                   =   "0"
-                       MOVE    "NO"            TO  SPA-TID1-FLG
-                   ELSE
-                       MOVE    "OK"            TO  SPA-TID1-FLG
-                   END-IF
+                   MOVE    "OK"            TO  SPA-TID1-FLG
            END-EVALUATE
       *
            PERFORM 210-BACK
@@ -518,15 +522,39 @@
       *
            INITIALIZE                  T98
       *
-           IF      SPA-NAI-T06-200501-RECEDEN-LST1KBN
-                                           =   "0"
-               MOVE
-               "レセプト電算データを作成します"
-                                           TO  T98-ID1MSG
+           MOVE    "レセプト電算データを作成します"
+                                       TO  WRK-TIDMSG 
+      *
+           IF    ( SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                           =   "1" )
+           OR    ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                           =   "1" )
+               MOVE    SPACE           TO  WRK-TIDMSG1
+                                           WRK-TIDCD-MSG
+      *
+               IF      SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                           =   "1"
+                   MOVE    "、症状詳記"      TO  WRK-TIDMSG1
+               END-IF
+               IF      SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                           =   "1"
+                   STRING  WRK-TIDMSG1     DELIMITED  BY  SPACE
+                           "、レセ電チェックリスト"
+                                           DELIMITED  BY  SIZE
+                                           INTO  WRK-TIDCD-MSG
+                   END-STRING
+                   MOVE    WRK-TIDCD-MSG   TO  WRK-TIDMSG1
+                   MOVE    SPACE           TO  WRK-TIDCD-MSG
+               END-IF
+      * 
+               STRING   WRK-TIDMSG         DELIMITED  BY  SPACE
+                                "（"               DELIMITED  BY  SIZE
+                                WRK-TIDMSG1 (3:)   DELIMITED  BY  SPACE
+                                  "の印刷を指定）" DELIMITED  BY  SIZE
+                                                   INTO    T98-ID1MSG
+                       END-STRING
            ELSE
-               MOVE
-               "レセプト電算データを作成します（症状詳記の印刷を指定）"
-                                           TO  T98-ID1MSG
+               MOVE    WRK-TIDMSG          TO  T98-ID1MSG
            END-IF
       *
            MOVE    SPA-GMN-T98-DATAKBN-G
@@ -547,12 +575,16 @@
            END-PERFORM
            MOVE    SPA-GMN-T98-PRTKBN-MAX  TO  T98-PRTKBN-COUNT
       *
-           IF      SPA-NAI-T06-200501-RECEDEN-LST1KBN
-                                           =   "0"
-               MOVE    WIDGET-INSENSITIVE  TO  T98-B11-STATE
+           IF    ( SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                       =   "0" )
+           AND   ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                       =   "0" )
+               MOVE    "F"                 TO  T98-B10-VISIBLE
+               MOVE    "F"                 TO  T98-B11-VISIBLE
                MOVE    "F12:作成する"      TO  T98-B12-LABEL
            ELSE
-               MOVE    WIDGET-NORMAL       TO  T98-B11-STATE
+               MOVE    "T"                 TO  T98-B10-VISIBLE
+               MOVE    "T"                 TO  T98-B11-VISIBLE
                MOVE    "F12:印刷する"      TO  T98-B12-LABEL
            END-IF
       *

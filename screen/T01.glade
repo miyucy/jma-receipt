@@ -557,38 +557,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label606</name>
-      <x>590</x>
-      <y>643</y>
-      <width>70</width>
-      <height>18</height>
-      <label>∆˛≥∞∂Ë ¨</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label605</name>
-      <x>175</x>
-      <y>643</y>
-      <width>100</width>
-      <height>18</height>
-      <label>•’•°•§•ÎΩ–Œœ¿Ë</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B15</name>
       <x>168</x>
@@ -635,391 +603,6 @@
     </widget>
 
     <widget>
-      <class>GtkPandaCombo</class>
-      <name>DATA_COMBO</name>
-      <x>280</x>
-      <y>640</y>
-      <width>290</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items>3 •∑•π•∆•‡¥…Õ˝¿ﬂƒÍæÏΩÍ
-</items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>DATA</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>38</text_max_length>
-	<text>3 •∑•π•∆•‡¥…Õ˝¿ﬂƒÍæÏΩÍ° •’•Ì•√•‘•£Õ—°À</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label604</name>
-      <x>200</x>
-      <y>576</y>
-      <width>380</width>
-      <height>18</height>
-      <label>•Ï•ª•◊•»≈≈ªª•∑•π•∆•‡ƒÛ∂°•«°º•ø°¶∏¯»Ò£√£”£÷ƒÛ∂°•«°º•ø</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator14</name>
-      <x>168</x>
-      <y>576</y>
-      <width>30</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>PRTKBN_COMBO</name>
-      <x>280</x>
-      <y>610</y>
-      <width>234</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items>2 ≈¿∏°Õ—•Ï•ª•◊•»° ±°≥∞ΩË ˝¥ﬁ°À
-</items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>PRTKBN</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>32</text_max_length>
-	<text>2 ≈¿∏°Õ—•Ï•ª•◊•»° ±°≥∞ΩË ˝¥ﬁ°À</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>HKNJANUM_TITLE</name>
-      <x>552</x>
-      <y>614</y>
-      <width>100</width>
-      <height>18</height>
-      <label> ›∏±º‘»÷πÊ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>1</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCombo</class>
-      <name>DIRECT_HKNJANUM_COMBO</name>
-      <x>660</x>
-      <y>610</y>
-      <width>305</width>
-      <height>24</height>
-      <value_in_list>False</value_in_list>
-      <ok_if_empty>True</ok_if_empty>
-      <case_sensitive>False</case_sensitive>
-      <use_arrows>True</use_arrows>
-      <use_arrows_always>False</use_arrows_always>
-      <items>00000000 ƒæ¿‹¿¡µ·§π§Î ›∏±º‘∞ ≥∞£≤£≥£¥£µ
-</items>
-
-      <widget>
-	<class>GtkPandaEntry</class>
-	<child_name>GtkPandaCombo:entry</child_name>
-	<name>DIRECT_HKNJANUM</name>
-	<can_focus>True</can_focus>
-	<signal>
-	  <name>activate</name>
-	  <handler>send_event</handler>
-	  <data>ACTIVATE</data>
-	  <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>changed</name>
-	  <handler>entry_changed</handler>
-	  <data>CHANGED</data>
-	  <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
-	</signal>
-	<editable>True</editable>
-	<text_visible>True</text_visible>
-	<text_max_length>39</text_max_length>
-	<text>00000000 ƒæ¿‹¿¡µ·§π§Î ›∏±º‘∞ ≥∞£≤£≥£¥£µ</text>
-	<input_mode>XIM</input_mode>
-	<xim_enabled>False</xim_enabled>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>PRTKBN4</name>
-      <x>910</x>
-      <y>95</y>
-      <width>72</width>
-      <height>16</height>
-      <label>Ãµ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>PRTKBN3</name>
-      <x>910</x>
-      <y>120</y>
-      <width>72</width>
-      <height>16</height>
-      <label>Ãµ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>PRTKBN5</name>
-      <x>910</x>
-      <y>145</y>
-      <width>72</width>
-      <height>16</height>
-      <label>Ãµ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>PRTKBN1</name>
-      <x>920</x>
-      <y>45</y>
-      <width>50</width>
-      <height>16</height>
-      <label>Ãµ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>PRTKBN2</name>
-      <x>920</x>
-      <y>70</y>
-      <width>50</width>
-      <height>16</height>
-      <label>Ãµ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label603</name>
-      <x>840</x>
-      <y>45</y>
-      <width>72</width>
-      <height>16</height>
-      <label>º“°°°° ›</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label602</name>
-      <x>840</x>
-      <y>70</y>
-      <width>72</width>
-      <height>16</height>
-      <label>πÒ°°°° ›</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label608</name>
-      <x>840</x>
-      <y>95</y>
-      <width>72</width>
-      <height>16</height>
-      <label>π≠°°°°∞Ë</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label607</name>
-      <x>840</x>
-      <y>120</y>
-      <width>70</width>
-      <height>16</height>
-      <label>•Ï•ª≈≈πÒ ›</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label610</name>
-      <x>840</x>
-      <y>145</y>
-      <width>70</width>
-      <height>16</height>
-      <label>•Ï•ª≈≈π≠∞Ë</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator11</name>
-      <x>810</x>
-      <y>160</y>
-      <width>177</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label601</name>
-      <x>830</x>
-      <y>20</y>
-      <width>130</width>
-      <height>18</height>
-      <label>…∏Ω‡¡Ì≥Á…Ω∞ı∫˛ªÿº®</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator4</name>
-      <x>810</x>
-      <y>26</y>
-      <width>0</width>
-      <height>141</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator3</name>
-      <x>979</x>
-      <y>26</y>
-      <width>16</width>
-      <height>141</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator12</name>
-      <x>810</x>
-      <y>19</y>
-      <width>20</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator10</name>
-      <x>967</x>
-      <y>19</y>
-      <width>20</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label600</name>
       <x>200</x>
@@ -1053,8 +636,147 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>label512</name>
+      <x>544</x>
+      <y>240</y>
+      <width>150</width>
+      <height>18</height>
+      <label>∏ƒ ÃªÿƒÍ§Œ ›∏±º‘»÷πÊ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label612</name>
+      <x>552</x>
+      <y>315</y>
+      <width>150</width>
+      <height>18</height>
+      <label>∏ƒ ÃªÿƒÍ§Œ ›∏±º‘»÷πÊ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>7.45058e-09</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>DATAKBN2</name>
+      <x>224</x>
+      <y>420</y>
+      <width>180</width>
+      <height>18</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<after>True</after>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 08 Feb 2001 02:47:35 GMT</last_modification_time>
+      </signal>
+      <label>•Ï•ª≈≈¡Ì≥Á…Ω°¶π≠∞Ë</label>
+      <active>True</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label600</name>
+      <x>416</x>
+      <y>40</y>
+      <width>250</width>
+      <height>18</height>
+      <label>° Ω–Œœ¬–æ›§Œø«Œ≈«Ø∑Ó§Ú∆˛Œœ°À°°°°</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label505</name>
+      <x>200</x>
+      <y>40</y>
+      <width>60</width>
+      <height>18</height>
+      <label>ø«Œ≈«Ø∑Ó</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label605</name>
+      <x>175</x>
+      <y>613</y>
+      <width>100</width>
+      <height>18</height>
+      <label>•’•°•§•ÎΩ–Œœ¿Ë</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator15</name>
+      <x>598</x>
+      <y>556</y>
+      <width>415</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator13</name>
+      <x>10</x>
+      <y>672</y>
+      <width>1003</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label604</name>
+      <x>200</x>
+      <y>556</y>
+      <width>380</width>
+      <height>18</height>
+      <label>•Ï•ª•◊•»≈≈ªª•∑•π•∆•‡ƒÛ∂°•«°º•ø°¶∏¯»Ò£√£”£÷ƒÛ∂°•«°º•ø</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>label506</name>
-      <x>205</x>
+      <x>200</x>
       <y>125</y>
       <width>70</width>
       <height>18</height>
@@ -1062,6 +784,156 @@
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator7</name>
+      <x>10</x>
+      <y>128</y>
+      <width>180</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator14</name>
+      <x>10</x>
+      <y>556</y>
+      <width>180</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>TITLE1</name>
+      <x>20</x>
+      <y>19</y>
+      <width>690</width>
+      <height>18</height>
+      <label>£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator6</name>
+      <x>464</x>
+      <y>128</y>
+      <width>551</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>TITLE</name>
+      <x>20</x>
+      <y>2</y>
+      <width>780</width>
+      <height>18</height>
+      <label>£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>7.45058e-09</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label601</name>
+      <x>847</x>
+      <y>5</y>
+      <width>144</width>
+      <height>18</height>
+      <label>…∏Ω‡¡Ì≥Á…Ω∞ı∫˛ªÿº®</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator4</name>
+      <x>832</x>
+      <y>12</y>
+      <width>0</width>
+      <height>123</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator16</name>
+      <x>832</x>
+      <y>6</y>
+      <width>16</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator17</name>
+      <x>989</x>
+      <y>6</y>
+      <width>22</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label606</name>
+      <x>572</x>
+      <y>614</y>
+      <width>100</width>
+      <height>18</height>
+      <label>∆˛≥∞∂Ë ¨</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label613</name>
+      <x>572</x>
+      <y>584</y>
+      <width>100</width>
+      <height>18</height>
+      <label>•Ï•ª≈≈•¡•ß•√•Ø</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HKNJANUM_TITLE</name>
+      <x>572</x>
+      <y>644</y>
+      <width>100</width>
+      <height>18</height>
+      <label> ›∏±º‘»÷πÊ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>1</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -1118,58 +990,6 @@
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator6</name>
-      <x>464</x>
-      <y>128</y>
-      <width>336</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator7</name>
-      <x>168</x>
-      <y>128</y>
-      <width>30</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator1</name>
-      <x>160</x>
-      <y>135</y>
-      <width>16</width>
-      <height>407</height>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK12</name>
-      <x>464</x>
-      <y>180</y>
-      <width>80</width>
-      <height>18</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:47:35 GMT</last_modification_time>
-      </signal>
-      <label> ÷Ã· ¨</label>
-      <active>True</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
       <class>GtkCheckButton</class>
       <name>DATAKBN4</name>
       <x>224</x>
@@ -1215,6 +1035,31 @@
 	<last_modification_time>Thu, 08 Feb 2001 02:47:35 GMT</last_modification_time>
       </signal>
       <label>≈ˆ∑Ó ¨°¶∑Ó√Ÿ§Ï ¨</label>
+      <active>True</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHK12</name>
+      <x>464</x>
+      <y>180</y>
+      <width>80</width>
+      <height>18</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<after>True</after>
+	<data>CLICKED</data>
+	<last_modification_time>Thu, 08 Feb 2001 02:47:35 GMT</last_modification_time>
+      </signal>
+      <label> ÷Ã· ¨</label>
       <active>True</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -1296,22 +1141,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label512</name>
-      <x>544</x>
-      <y>240</y>
-      <width>150</width>
-      <height>18</height>
-      <label>∏ƒ ÃªÿƒÍ§Œ ›∏±º‘»÷πÊ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>HKNJAMEI</name>
       <x>440</x>
       <y>270</y>
@@ -1374,22 +1203,6 @@
       <label>≈ˆ∑Ó ¨°¶∑Ó√Ÿ§Ï ¨</label>
       <active>True</active>
       <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label612</name>
-      <x>552</x>
-      <y>315</y>
-      <width>150</width>
-      <height>18</height>
-      <label>∏ƒ ÃªÿƒÍ§Œ ›∏±º‘»÷πÊ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>7.45058e-09</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
 
     <widget>
@@ -1485,31 +1298,6 @@
 
     <widget>
       <class>GtkCheckButton</class>
-      <name>DATAKBN2</name>
-      <x>224</x>
-      <y>420</y>
-      <width>180</width>
-      <height>18</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:47:35 GMT</last_modification_time>
-      </signal>
-      <label>•Ï•ª≈≈¡Ì≥Á…Ω°¶π≠∞Ë</label>
-      <active>True</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
       <name>DATAKBN3</name>
       <x>224</x>
       <y>450</y>
@@ -1559,113 +1347,134 @@
     </widget>
 
     <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator2</name>
-      <x>792</x>
-      <y>135</y>
-      <width>16</width>
-      <height>407</height>
+      <class>GtkPandaCombo</class>
+      <name>PRTKBN_COMBO</name>
+      <x>280</x>
+      <y>580</y>
+      <width>234</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>2 ≈¿∏°Õ—•Ï•ª•◊•»° ±°≥∞ΩË ˝¥ﬁ°À
+</items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>PRTKBN</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>32</text_max_length>
+	<text>2 ≈¿∏°Õ—•Ï•ª•◊•»° ±°≥∞ΩË ˝¥ﬁ°À</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
     </widget>
 
     <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator5</name>
-      <x>168</x>
-      <y>542</y>
-      <width>633</width>
-      <height>0</height>
+      <class>GtkPandaCombo</class>
+      <name>RECEDEN_CHK_COMBO</name>
+      <x>675</x>
+      <y>580</y>
+      <width>150</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>0 •¡•ß•√•Ø§∑§ §§
+</items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>RECEDEN_CHK</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>16</text_max_length>
+	<text>0 •¡•ß•√•Ø§∑§ §§</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label600</name>
-      <x>416</x>
-      <y>40</y>
-      <width>250</width>
-      <height>18</height>
-      <label>° Ω–Œœ¬–æ›§Œø«Œ≈«Ø∑Ó§Ú∆˛Œœ°À°°°°</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
+      <class>GtkPandaCombo</class>
+      <name>DATA_COMBO</name>
+      <x>280</x>
+      <y>610</y>
+      <width>290</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>3 •∑•π•∆•‡¥…Õ˝¿ﬂƒÍæÏΩÍ
+</items>
 
-    <widget>
-      <class>GtkLabel</class>
-      <name>label505</name>
-      <x>200</x>
-      <y>40</y>
-      <width>60</width>
-      <height>18</height>
-      <label>ø«Œ≈«Ø∑Ó</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>TITLE</name>
-      <x>50</x>
-      <y>8</y>
-      <width>780</width>
-      <height>18</height>
-      <label>£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ£∂£∑£∏£π£∞£±£≤£≥£¥£µ</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>7.45058e-09</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator15</name>
-      <x>598</x>
-      <y>576</y>
-      <width>394</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator13</name>
-      <x>168</x>
-      <y>672</y>
-      <width>823</width>
-      <height>16</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator5</name>
-      <x>160</x>
-      <y>584</y>
-      <width>16</width>
-      <height>95</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator6</name>
-      <x>984</x>
-      <y>584</y>
-      <width>16</width>
-      <height>95</height>
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>DATA</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>38</text_max_length>
+	<text>3 •∑•π•∆•‡¥…Õ˝¿ﬂƒÍæÏΩÍ° •’•Ì•√•‘•£Õ—°À</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
     </widget>
 
     <widget>
       <class>GtkPandaCombo</class>
       <name>NYUGAIKBN_COMBO</name>
-      <x>660</x>
-      <y>640</y>
-      <width>130</width>
+      <x>675</x>
+      <y>610</y>
+      <width>150</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -1699,6 +1508,207 @@
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCombo</class>
+      <name>DIRECT_HKNJANUM_COMBO</name>
+      <x>675</x>
+      <y>640</y>
+      <width>305</width>
+      <height>24</height>
+      <value_in_list>False</value_in_list>
+      <ok_if_empty>True</ok_if_empty>
+      <case_sensitive>False</case_sensitive>
+      <use_arrows>True</use_arrows>
+      <use_arrows_always>False</use_arrows_always>
+      <items>00000000 ƒæ¿‹¿¡µ·§π§Î ›∏±º‘∞ ≥∞£≤£≥£¥£µ
+</items>
+
+      <widget>
+	<class>GtkPandaEntry</class>
+	<child_name>GtkPandaCombo:entry</child_name>
+	<name>DIRECT_HKNJANUM</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>activate</name>
+	  <handler>send_event</handler>
+	  <data>ACTIVATE</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	</signal>
+	<signal>
+	  <name>changed</name>
+	  <handler>entry_changed</handler>
+	  <data>CHANGED</data>
+	  <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text_visible>True</text_visible>
+	<text_max_length>39</text_max_length>
+	<text>00000000 ƒæ¿‹¿¡µ·§π§Î ›∏±º‘∞ ≥∞£≤£≥£¥£µ</text>
+	<input_mode>XIM</input_mode>
+	<xim_enabled>False</xim_enabled>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label603</name>
+      <x>850</x>
+      <y>25</y>
+      <width>72</width>
+      <height>16</height>
+      <label>º“°°°° ›</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTKBN1</name>
+      <x>940</x>
+      <y>25</y>
+      <width>72</width>
+      <height>16</height>
+      <label>Ãµ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label602</name>
+      <x>850</x>
+      <y>45</y>
+      <width>72</width>
+      <height>16</height>
+      <label>πÒ°°°° ›</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTKBN2</name>
+      <x>940</x>
+      <y>45</y>
+      <width>72</width>
+      <height>16</height>
+      <label>Ãµ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label608</name>
+      <x>850</x>
+      <y>65</y>
+      <width>72</width>
+      <height>16</height>
+      <label>π≠°°°°∞Ë</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTKBN4</name>
+      <x>940</x>
+      <y>65</y>
+      <width>72</width>
+      <height>16</height>
+      <label>Ãµ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label607</name>
+      <x>850</x>
+      <y>85</y>
+      <width>70</width>
+      <height>16</height>
+      <label>•Ï•ª≈≈πÒ ›</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTKBN3</name>
+      <x>940</x>
+      <y>85</y>
+      <width>72</width>
+      <height>16</height>
+      <label>Ãµ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label610</name>
+      <x>850</x>
+      <y>105</y>
+      <width>70</width>
+      <height>16</height>
+      <label>•Ï•ª≈≈π≠∞Ë</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>PRTKBN5</name>
+      <x>940</x>
+      <y>105</y>
+      <width>72</width>
+      <height>16</height>
+      <label>Ãµ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

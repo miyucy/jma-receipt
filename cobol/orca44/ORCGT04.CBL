@@ -27,6 +27,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.01    NACL-藤原    10/03/23  ＨＯＳＴ名取得方法の変更
+      *
+      *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -774,6 +776,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    ZERO                TO  T99-COUNT
       *
            MOVE    5                   TO  T99-DURATION
+           MOVE    WIDGET-INSENSITIVE  TO  T99-B12-STATE
+           MOVE    "black"             TO  T99-MSG-STYLE
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE

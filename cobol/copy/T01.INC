@@ -26,15 +26,13 @@
                 04  T01-PRTKBN-COUNT PIC S9(9)   BINARY.
                 04  T01-PRTKBN-ITEM
                         PIC X(32)   OCCURS  5 TIMES.
-              03  T01-HKNJANUM-TITLE-VISIBLE  PIC X(01).
-              03  T01-HKNJANUM-TITLE          PIC X(10).
-              03  T01-DIRECT-HKNJANUM-COMBO.
-                04  T01-DIRECT-HKNJANUM-COMBO-VISIBLE  PIC X(01).
-                04  T01-DIRECT-HKNJANUM.
-                  05  T01-VALUE    PIC X(39).
-                04  T01-DIRECT-HKNJANUM-COUNT PIC S9(9)   BINARY.
-                04  T01-DIRECT-HKNJANUM-ITEM
-                        PIC X(39)   OCCURS  10 TIMES.
+              03  T01-RECEDEN-CHK-COMBO.
+                04  T01-RECEDEN-CHK-STATE PIC S9(9)   BINARY.
+                04  T01-RECEDEN-CHK.
+                  05  T01-VALUE    PIC X(16).
+                04  T01-RECEDEN-CHK-COUNT PIC S9(9)   BINARY.
+                04  T01-RECEDEN-CHK-ITEM
+                        PIC X(16)   OCCURS  3 TIMES.
               03  T01-DATA-COMBO.
                 04  T01-DATA-STATE PIC S9(9)   BINARY.
                 04  T01-DATA.
@@ -49,6 +47,15 @@
                 04  T01-NYUGAIKBN-COUNT PIC S9(9)   BINARY.
                 04  T01-NYUGAIKBN-ITEM
                         PIC X(14)   OCCURS  3 TIMES.
+              03  T01-HKNJANUM-TITLE-VISIBLE  PIC X(01).
+              03  T01-HKNJANUM-TITLE          PIC X(10).
+              03  T01-DIRECT-HKNJANUM-COMBO.
+                04  T01-DIRECT-HKNJANUM-COMBO-VISIBLE  PIC X(01).
+                04  T01-DIRECT-HKNJANUM.
+                  05  T01-VALUE    PIC X(39).
+                04  T01-DIRECT-HKNJANUM-COUNT PIC S9(9)   BINARY.
+                04  T01-DIRECT-HKNJANUM-ITEM
+                        PIC X(39)   OCCURS  10 TIMES.
               03  T01-DATAKBN4-STATE   PIC S9(9)   BINARY.
               03  T01-DATAKBN4-VALUE   PIC X.
               03  T01-DATAKBN3-STATE   PIC S9(9)   BINARY.
@@ -93,6 +100,8 @@
               03  T01-PRTKBN5-VALUE   PIC X(4).
               03  T01-TITLE-STYLE     PIC X(20).
               03  T01-TITLE-VALUE     PIC X(110).
+              03  T01-TITLE1-STYLE    PIC X(20).
+              03  T01-TITLE1-VALUE    PIC X(90).
               03  T01-SYOKBN1-STATE   PIC S9(9)   BINARY.
               03  T01-SYOKBN1-VALUE   PIC X.
               03  T01-SYOKBN2-VALUE   PIC X.

@@ -15,5 +15,6 @@
                 04  T98-DATA-COUNT PIC S9(9)   BINARY.
                 04  T98-DATA-ITEM
                         PIC X(38)   OCCURS  6 TIMES.
-              03  T98-B11-STATE  PIC S9(9)   BINARY.
+              03  T98-B10-VISIBLE  PIC X(01).
+              03  T98-B11-VISIBLE  PIC X(01).
               03  T98-B12-LABEL  PIC X(14).

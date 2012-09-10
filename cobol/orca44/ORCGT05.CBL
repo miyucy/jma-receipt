@@ -37,6 +37,8 @@
       *  04.06.02    NACL-藤原    11/02/10  登録済エラー時の情報追加
       *  04.06.03    NACL-藤原    11/02/14  OpenCOBOL 1.0.0 対応
       *  04.06.04    NACL-藤原    12/06/19  取り込み時のレコード長変更
+      *
+      *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1512,7 +1514,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    またはレコード終了まで
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   SPILIT-CNT)
-                   OR      ( WRK-PO-ED     >=  500  )
+                   OR      ( WRK-PO-ED     >=  3000 )
       *
                MOVE    ZERO            TO  FLG-AREA1
                COMPUTE WRK-PO-ST   =   WRK-PO-ED   +   1
@@ -2354,8 +2356,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            INITIALIZE                      T99
            MOVE    ZERO                TO  T99-COUNT
+           MOVE    "black"             TO  T99-MSG-STYLE
       *
            MOVE    5                   TO  T99-DURATION
+           MOVE    WIDGET-INSENSITIVE  TO  T99-B12-STATE
       *        
            MOVE    SPACE               TO  SYS-3003-REC 
            INITIALIZE                      SYS-3003-REC

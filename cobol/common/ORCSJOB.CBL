@@ -40,6 +40,8 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
       *  04.05.01    NACL-竹田    10/02/27  監視ログ出力対応
+      *
+      *  04.07.01    NACL-藤原    12.09.07  更新件数（個別）の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -318,6 +320,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      JOB-UPDCNT          NOT NUMERIC
                MOVE    ZERO                TO   JOB-UPDCNT
            END-IF
+           IF      JOB-UPDCNT1         NOT NUMERIC
+               MOVE    ZERO                TO   JOB-UPDCNT1
+           END-IF
+           IF      JOB-UPDCNT2         NOT NUMERIC
+               MOVE    ZERO                TO   JOB-UPDCNT2
+           END-IF
+           MOVE    JOB-UPDCNT1         TO  WRK-JOB-UPDCNT1
+           MOVE    JOB-UPDCNT2         TO  WRK-JOB-UPDCNT2
            COMPUTE WRK-JOB-UPDCNT      =   WRK-JOB-UPDCNT  +
                                            JOB-UPDCNT                            
            COMPUTE WRK-JOB-STEPCNT     =   WRK-JOB-STEPCNT +

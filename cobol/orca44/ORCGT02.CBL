@@ -30,6 +30,8 @@
       *  02.09.01    NACL-藤原    06/05/10  処理中のメッセージ表示
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1622,6 +1624,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPACE                TO  TID2
            MOVE    SPA-TIDCD            TO  TID2-ID1CODE
            MOVE    WRK-TIDMSG           TO  TID2-ID1MSG
+           MOVE    "T"                  TO  TID2-B10-VISIBLE
+           MOVE    "F10:プレビュー"     TO  TID2-B10-LABEL
+           MOVE    "T"                  TO  TID2-B11-VISIBLE
            MOVE    "F11:印刷しない"     TO  TID2-B11-LABEL
            MOVE    "F12:印刷する"       TO  TID2-B12-LABEL
            MOVE    "black"              TO  TID2-ID1MSG-STYLE

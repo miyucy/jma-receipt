@@ -1,9 +1,14 @@
 T99	{
 	fixed6	{
 		B01     {
-			 state   int;
+			state   int;
 		 };
+                B12     {
+			state   int;
+			label   varchar(14);
+                 };
 		MSG	{
+			style   varchar(20);
 			value	varchar(200);
 		};
 		scrolledwindow28	{

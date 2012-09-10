@@ -1,6 +1,11 @@
 TID2	{
 	fixed1	{
+		B10	{
+			visible	bool;
+			label	varchar(14);
+		};
 		B11	{
+			visible	bool;
 			label	varchar(14);
 		};
 		B12	{
@@ -11,7 +16,7 @@ TID2	{
 		};
 		ID1MSG	{
 			style	varchar(20);
-			value	varchar(100);
+			value	varchar(144);
 		};
 		LABEL   {
 			style	varchar(20);

@@ -36,6 +36,7 @@
       *
       *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
+      *  04.07.02    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -1299,6 +1300,8 @@
                                            TO  TID2-ID1MSG
            END-EVALUATE
       *
+           MOVE    "F"                  TO  TID2-B10-VISIBLE
+           MOVE    "T"                  TO  TID2-B11-VISIBLE
            MOVE    "F11:個人履歴"       TO  TID2-B11-LABEL
            MOVE    "F12:作成する"       TO  TID2-B12-LABEL
            MOVE    "blue"               TO  TID2-LABEL-STYLE

@@ -30,6 +30,8 @@ tbl_jobkanri	{
 	PID2	 		number(5,0);
 	PID3	 		number(5,0);
 	PID4	 		number(5,0);
+	UPDCNT1			number(10,0);
+	UPDCNT2			number(10,0);
 	YOBI			varchar(500);
 #-----> 主キー更新用項目
 #	UPSHELLID	char(8),virtual;
@@ -101,7 +103,9 @@ path	upd1	{
 					PID2		=	:PID2,
 					PID3		=	:PID3,
 					PID4		=	:PID4,
-					YOBI		=	:YOBI
+					YOBI		=	:YOBI,
+					UPDCNT1		=	:UPDCNT1,
+					UPDCNT2		=	:UPDCNT2
 		WHERE 	HOSPNUM	= :HOSPNUM
 			AND   SHELLID		=   :SHELLID 
 			AND		JOBID			=  :JOBID
