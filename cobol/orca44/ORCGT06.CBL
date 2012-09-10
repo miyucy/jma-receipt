@@ -185,6 +185,9 @@
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
+           03  WRK-PRT-PAGE        PIC 9(10).
+           03  WRK-PRT-PAGE1       PIC 9(10).
+      *
            COPY    "CPORCSPRTLNK.INC".
       *
        01  WRK-MSG.
@@ -4442,6 +4445,9 @@
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
+           MOVE    ZERO                TO  WRK-PRT-PAGE
+                                           WRK-PRT-PAGE1
+      *
            INITIALIZE                      T99
            MOVE    ZERO                TO  T99-COUNT
            MOVE    "black"             TO  T99-MSG-STYLE
@@ -4515,14 +4521,29 @@
                            END-IF                          
                        END-IF    
                        MOVE    IDX                     TO  T99-COUNT    
+                       IF    ( JOB-PGID        =   "ORCBPRT1" )
+                           MOVE    JOB-UPDCNT  TO  WRK-PRT-PAGE
+                       ELSE
+                           MOVE    JOB-UPDCNT1 TO  WRK-PRT-PAGE1
+                       END-IF
                    END-IF
                END-PERFORM
            END-IF
            IF      T99-MSG              =   SPACE
                MOVE    "B01"                TO  MCP-WIDGET
                IF      T99-COUNT            >   ZERO    
-                   MOVE    "処理は正常に終了しました"
-                                                TO  T99-MSG
+                   IF      WRK-PRT-PAGE1   =   ZERO
+                       MOVE    "処理は正常に終了しました"
+                                                   TO  T99-MSG
+                   ELSE
+                       STRING  "処理は正常に終了しました"
+                                               DELIMITED   BY  SIZE
+                               "（チェックリストが作成されました）" 
+                                               DELIMITED   BY  SIZE
+                                               INTO  T99-MSG
+                       END-STRING
+                       MOVE    "red"   TO  T99-MSG-STYLE
+                   END-IF
                ELSE
                    MOVE    "該当する処理はありません"
                                                 TO  T99-MSG
