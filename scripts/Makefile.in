@@ -138,7 +138,7 @@ ruby_scripts = \
 	monthly/receden_common.rb \
 	monthly/receden_common_const.rb \
 	monthly/receden_const.rb \
-	monthly/receden_error.rb
+	monthly/receden_error.rb \
 	monthly/receden.rb
 
 claim_scripts = \
