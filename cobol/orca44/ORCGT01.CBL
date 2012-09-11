@@ -1598,22 +1598,22 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        IF      WRK-BTPARA-EDNO NOT =   WRK-BTPARA-WRNO
                            MOVE    "2003"              TO  SPA-TIDCD
                            GO  TO  320-T99-SET-EXT
-                       ELSE
-      *                    °õºþ½èÍý
-                           IF      SPA-RECEDEN-FLG     =   "OK" 
-                               PERFORM 3202-PRINT-SEC
-                               GO  TO  320-T99-SET-EXT
-                           END-IF       
+      ***                 ELSE
+      ****                    °õºþ½èÍý
+      ***                     IF      SPA-RECEDEN-FLG     =   "OK" 
+      ***                         PERFORM 3202-PRINT-SEC
+      ***                         GO  TO  320-T99-SET-EXT
+      ***                     END-IF       
                        END-IF
                    ELSE
                        MOVE    "1003"              TO  SPA-ERRCD
                    END-IF
-               ELSE
-      *            °õºþ½èÍý
-                   IF      SPA-RECEDEN-FLG     =   "OK"
-                       PERFORM 3202-PRINT-SEC
-                       GO  TO  320-T99-SET-EXT
-                   END-IF
+      ***         ELSE
+      ****            °õºþ½èÍý
+      ***             IF      SPA-RECEDEN-FLG     =   "OK"
+      ***                 PERFORM 3202-PRINT-SEC
+      ***                 GO  TO  320-T99-SET-EXT
+      ***             END-IF
                END-IF
            END-IF
       *
@@ -2175,8 +2175,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                EVALUATE    SPA-TID1-FLG
                WHEN    "PV"
                    MOVE    "3"             TO  SHELLTBL-ARG17
-      *         WHEN    "NO"
-      *             MOVE    "3"             TO  SHELLTBL-ARG17
+      **       WHEN    "NO"
+      **           MOVE    "3"             TO  SHELLTBL-ARG17
                WHEN    "OK"
                    MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
@@ -3732,8 +3732,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                EVALUATE    SPA-TID1-FLG
                WHEN    "PV"
                    MOVE    "3"             TO  SHELLTBL-ARG17
-      *         WHEN    "NO"
-      *             MOVE    "3"             TO  SHELLTBL-ARG17
+      **       WHEN    "NO"
+      **           MOVE    "3"             TO  SHELLTBL-ARG17
                WHEN    "OK"
                    MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE
@@ -4220,8 +4220,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                EVALUATE    SPA-TID1-FLG
                WHEN    "PV"
                    MOVE    "3"             TO  SHELLTBL-ARG17
-      *         WHEN    "NO"
-      *             MOVE    "3"             TO  SHELLTBL-ARG17
+      **       WHEN    "NO"
+      **           MOVE    "3"             TO  SHELLTBL-ARG17
                WHEN    "OK"
                    MOVE    "2"             TO  SHELLTBL-ARG17
                END-EVALUATE

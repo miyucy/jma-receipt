@@ -481,11 +481,12 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                    PERFORM 210-BACK
                                    GO  TO  490-KAKUNIN-EXT
                                ELSE
-                                   IF      SPA-RECEDEN-FLG =   "OK"
-                                       PERFORM 210-BACK
-                                       GO  TO  490-KAKUNIN-EXT
-                                   ELSE
-                                       IF    ( SPA-RECEDEN-FLG =  "PV" )
+      ***                             IF      SPA-RECEDEN-FLG =   "OK"
+      ***                                 PERFORM 210-BACK
+      ***                                 GO  TO  490-KAKUNIN-EXT
+      ***                             ELSE
+                                       IF    ( SPA-RECEDEN-FLG =  "PV"
+                                                               OR "OK" )
                                        AND   ( SPA-T01-SYORIFLG
                                                                =  1    )
       *                                    レセ電処理後の印刷処理
@@ -508,15 +509,16 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                            T99-MSG-STYLE
                                        END-IF
                                        GO  TO  490-KAKUNIN-EXT
-                                   END-IF
+      ***                             END-IF
                                END-IF
                            END-IF
                        ELSE
-                           IF      SPA-RECEDEN-FLG =   "OK"
-                               PERFORM 210-BACK
-                               GO  TO  490-KAKUNIN-EXT
-                           ELSE
-                               IF    ( SPA-RECEDEN-FLG     =   "PV" )
+      ***                     IF      SPA-RECEDEN-FLG =   "OK"
+      ***                         PERFORM 210-BACK
+      ***                         GO  TO  490-KAKUNIN-EXT
+      ***                     ELSE
+                               IF    ( SPA-RECEDEN-FLG     =   "PV"
+                                                           OR  "OK" )
                                AND   ( SPA-T01-SYORIFLG    =   1    )
       *                            レセ電処理後の印刷処理
                                    PERFORM 4903-PRINT-SEC
@@ -535,7 +537,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                    MOVE    "red"   TO  T99-MSG-STYLE
                                END-IF
                                GO  TO  490-KAKUNIN-EXT
-                           END-IF
+      ***                     END-IF
                        END-IF
                    END-IF
                ELSE
@@ -563,12 +565,19 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                        MOVE    "B12"               TO  MCP-WIDGET
                        MOVE    0                   TO  T99-DURATION
                    END-IF
-                   IF  ( ( SPA-RECEDEN-FLG     =   "PV" ) AND
-                         ( SPA-T01-SYORIFLG    =   9    )     )
-                   AND   ( SPA-T01-TIMER-FLG   =   1          )
-                       MOVE    WIDGET-NORMAL       TO  T99-B12-STATE
-                       MOVE    "B12"               TO  MCP-WIDGET
-                       MOVE    0                   TO  T99-DURATION
+                   IF    ( SPA-RECEDEN-FLG     =   "PV" )
+                    AND  ( SPA-T01-SYORIFLG    =   9    )
+                       IF      SPA-TID1-FLG    =   "SV"
+                           IF      SPA-T01-TIMER-FLG   =   1
+                               MOVE    WIDGET-NORMAL   TO  T99-B12-STATE
+                               MOVE    "B12"           TO  MCP-WIDGET
+                               MOVE    0               TO  T99-DURATION
+                           END-IF
+                       ELSE    
+                           MOVE    WIDGET-NORMAL   TO  T99-B12-STATE
+                           MOVE    "B12"           TO  MCP-WIDGET
+                           MOVE    0               TO  T99-DURATION
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -823,14 +832,14 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                        TO  SHELLTBL-ARG14
            MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
            MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
-               EVALUATE    SPA-RECEDEN-FLG
+           EVALUATE    SPA-RECEDEN-FLG
                WHEN    "PV"
                    MOVE    "3"             TO  SHELLTBL-ARG17
-               WHEN    "NO"
-                   MOVE    "3"             TO  SHELLTBL-ARG17
+      ***      WHEN    "NO"
+      ***          MOVE    "3"             TO  SHELLTBL-ARG17
                WHEN    "OK"
                    MOVE    "2"             TO  SHELLTBL-ARG17
-               END-EVALUATE
+           END-EVALUATE
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC

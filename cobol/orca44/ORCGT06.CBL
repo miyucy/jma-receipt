@@ -1005,22 +1005,22 @@
                        IF      WRK-BTPARA-EDNO NOT =   WRK-BTPARA-WRNO
                            MOVE    "2003"              TO  SPA-TIDCD
                            GO  TO  320-T99-SET-EXT
-                       ELSE
-      *                    °õºþ½èÍý
-                           IF      SPA-RECEDEN-FLG     =   "OK"
-                               PERFORM 3202-PRINT-SEC
-                               GO  TO  320-T99-SET-EXT
-                           END-IF       
+      ***                 ELSE
+      ****                    °õºþ½èÍý
+      ***                     IF      SPA-RECEDEN-FLG     =   "OK"
+      ***                         PERFORM 3202-PRINT-SEC
+      ***                         GO  TO  320-T99-SET-EXT
+      ***                     END-IF       
                        END-IF
                    ELSE
                        MOVE    "1005"              TO  SPA-ERRCD
                    END-IF
-               ELSE
-      *            °õºþ½èÍý
-                   IF      SPA-RECEDEN-FLG     =   "OK"
-                       PERFORM 3202-PRINT-SEC
-                       GO  TO  320-T99-SET-EXT
-                   END-IF
+      ***         ELSE
+      ****            °õºþ½èÍý
+      ***             IF      SPA-RECEDEN-FLG     =   "OK"
+      ***                 PERFORM 3202-PRINT-SEC
+      ***                 GO  TO  320-T99-SET-EXT
+      ***             END-IF
                END-IF
            END-IF
       *
@@ -4430,7 +4430,15 @@
                                        TO  SHELLTBL-ARG14
            MOVE    WRK-STPAGE          TO  SHELLTBL-ARG15
            MOVE    WRK-EDPAGE          TO  SHELLTBL-ARG16
-           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG17
+               EVALUATE    SPA-TID1-FLG
+               WHEN    "PV"
+                   MOVE    "3"             TO  SHELLTBL-ARG17
+      **       WHEN    "NO"
+      **           MOVE    "3"             TO  SHELLTBL-ARG17
+               WHEN    "OK"
+                   MOVE    "2"             TO  SHELLTBL-ARG17
+               END-EVALUATE
+grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC
            MOVE    "shell"             TO  MCP-TABLE
