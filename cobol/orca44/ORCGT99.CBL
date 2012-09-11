@@ -100,6 +100,9 @@
            03  WRK-STPAGE          PIC 9(05).
            03  WRK-EDPAGE          PIC 9(05).
       *
+           03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-MCP-EVENT       PIC X(64).
+      *
       *    パラメタＤＢ編集用
            03  WRK-BTPARA-INFO-PARA.
                05  WRK-BTPARA-DATA PIC X(10).
@@ -293,6 +296,9 @@
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
+      *
+           MOVE    MCP-EVENT           TO  WRK-MCP-EVENT
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *    戻る
@@ -549,17 +555,20 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-IF                                 
       *
            IF      JOB-ERRCD       =   SPACE
-               IF  ( ( SPA-TID1-FLG    =   "PV" ) AND
-                     ( SPA-T01-SYORIFLG
-                                       =   0    )     )
-               OR  ( ( SPA-RECEDEN-FLG =   "PV" ) AND
-                     ( SPA-T01-SYORIFLG
-                                       =   9    )     )
-                   IF    ( SPA-T99-MOTOPG  NOT =   "T04"     )
-                       IF    ( WRK-PRT-PAGE    >   ZERO )
-                           MOVE    WIDGET-NORMAL   TO  T99-B12-STATE
-                           MOVE    "B12"           TO  MCP-WIDGET
-                       END-IF
+               IF    ( SPA-T99-MOTOPG  NOT =   "T04" )
+               AND   ( WRK-PRT-PAGE        >   ZERO  )
+                   IF    ( SPA-TID1-FLG        =   "PV" ) 
+                   AND   ( SPA-T01-SYORIFLG    =   0    )
+                       MOVE    WIDGET-NORMAL       TO  T99-B12-STATE
+                       MOVE    "B12"               TO  MCP-WIDGET
+                       MOVE    0                   TO  T99-DURATION
+                   END-IF
+                   IF  ( ( SPA-RECEDEN-FLG     =   "PV" ) AND
+                         ( SPA-T01-SYORIFLG    =   9    )     )
+                   AND   ( SPA-T01-TIMER-FLG   =   1          )
+                       MOVE    WIDGET-NORMAL       TO  T99-B12-STATE
+                       MOVE    "B12"               TO  MCP-WIDGET
+                       MOVE    0                   TO  T99-DURATION
                    END-IF
                END-IF
            END-IF
@@ -888,14 +897,13 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        3001-FILEENTRY-SEC          SECTION.
       *
-           IF      MCP-EVENT       =   "CLICKED"
-           AND     MCP-WIDGET      =   "pandatimer1"
-               IF      SPA-T01-TIMER-FLG    =   0
-                   MOVE    1                    TO  SPA-T01-TIMER-FLG
-               ELSE
+           IF    ( WRK-MCP-EVENT       =   "CLICKED"     )
+           AND   ( WRK-MCP-WIDGET      =   "pandatimer1" )
+               IF      SPA-T01-TIMER-FLG    =   1
                    GO  TO  3001-FILEENTRY-EXT
                END-IF
            END-IF
+           MOVE    1                    TO  SPA-T01-TIMER-FLG
       *
       *    ＣＳＶ一覧から遷移したとき
            IF      SPA-T99-MOTOPG  =   "T04"
@@ -938,7 +946,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                            TO  T99-FILENAME
            END-IF
       *
-           MOVE    ZERO                TO  T99-DURATION
+           MOVE    1                   TO  T99-DURATION
       *
            PERFORM 900-PUT-WINDOW
            MOVE    1                   TO  FLG-END
