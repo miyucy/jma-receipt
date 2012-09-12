@@ -353,6 +353,7 @@
       *                                     Ï¿¤Î½¤Àµ
       *
       *  04.07.01    NACL-ÌçÏÆ    11/09/01  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
+      *  04.07.02    NACL-Æ£¸¶    12/09/04  ÌôºÞÎÁ¸ºÅÀÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1258,7 +1259,7 @@
            COPY    "CPRCF065.INC"  REPLACING  //RECE65//
                                    BY         //WRK-TEIGEN-RECE65//.
       *
-      *    ¸¡ºº¡ÊÈ½ÃÇÎÁ¡ËÍÑÂàÈò¥¨¥ê¥¢
+      *    ¸¡ºº¡ÊÈ½ÃÇÎÁ¡Ë¡¢ÌôºÞÎÁ¤Î¸ºÅÀÍÑÂàÈò¥¨¥ê¥¢
        01  TBL-KENSA-RECE64-AREA.
          02  TBL-KENSA-RECE64-REC  OCCURS  100.
       *
@@ -3687,10 +3688,11 @@
                PERFORM 20070-FTNKBN-HENSYU-SEC
       *
       *
-      *        ¸¡ºº¤ËÈ½ÃÇÎÁ¤¬¤¢¤ë¾ì¹ç¤Î¸¡ºº¤ÎÊÔ½¸
-               IF    ( RECE641-SRYKBN      >   "60"     )
+      *        ¸¡ºº¤ËÈ½ÃÇÎÁ¤¬¤¢¤ë¾ì¹ç¤Î¸¡ºº¡¢Ëô¤ÏÌôºÞÎÁ¤Î¸ºÅÀ¤¬¤¢¤ë¾ì¹ç¤Î
+      *        Ãí¼Í¡Ê¤½¤ÎÂ¾¡Ë¤ÎÊÔ½¸
+               IF    ( RECE641-SRYKBN      >   "60"    OR  "33" )
                AND   ( TBL-KENSA-RECE64-MAX
-                                           >   0        )
+                                           >   0                )
                    MOVE    RECE641-REC         TO  WRK-TAIHI-RECE641-REC
                    MOVE    WRK-FTNKBN          TO  WRK-TAIHI-FTNKBN
       *
@@ -3723,7 +3725,8 @@
            END-PERFORM
       *
       *
-      *    ¸¡ºº¤ËÈ½ÃÇÎÁ¤¬¤¢¤ë¾ì¹ç¤Î¸¡ºº¤ÎÊÔ½¸
+      *    ¸¡ºº¤ËÈ½ÃÇÎÁ¤¬¤¢¤ë¾ì¹ç¤Î¸¡ºº¡¢Ëô¤ÏÌôºÞÎÁ¤Î¸ºÅÀ¤¬¤¢¤ë¾ì¹ç¤Î
+      *    Ãí¼Í¡Ê¤½¤ÎÂ¾¡Ë¤ÎÊÔ½¸
            IF     ( TBL-KENSA-RECE64-MAX
                                        >   0        )
                PERFORM 20078-KENSA-HANDANRYO-HENSYU-SEC
@@ -4491,8 +4494,10 @@
            MOVE    RECE641-SRYKBN      TO  WRK-SRYKBN
       *
       *
-      *    ¸¡ºº¡ÊÈ½ÃÇÎÁ¡Ë¤ÎÂàÈò
-           IF     ( RECE641-KNSJISKBN   =   2 )
+      *    ¸¡ºº¡ÊÈ½ÃÇÎÁ¡Ë¡¢ÌôºÞÎÁ¤Î¸ºÅÀ¤ÎÂàÈò
+           IF    ( RECE641-KNSJISKBN   =   2       )
+           OR    ( RECE641-ZAIKBN      =   2   AND
+                   RECE641-SRYKBN      =   "33"    )
                ADD     1               TO  TBL-KENSA-RECE64-MAX
                MOVE    RECE641-REC     TO  TBL-KENSA-RECE64-REC
                                            (TBL-KENSA-RECE64-MAX)
@@ -4597,8 +4602,10 @@
                            IF      WRK-SJ-CHK          =   ZERO
                                CONTINUE
                            ELSE                      
-      *                        ¸¡ºº¡ÊÈ½ÃÇÎÁ¡Ë¤Î¾ì¹ç¤ÎÂàÈò
-                               IF      RECE641-KNSJISKBN   =   2
+      *                        ¸¡ºº¡ÊÈ½ÃÇÎÁ¡Ë¡¢ÌôºÞÎÁ¤Î¸ºÅÀ¤Î¾ì¹ç¤ÎÂàÈò
+                               IF    ( RECE641-KNSJISKBN   =   2       )
+                               OR    ( RECE641-ZAIKBN      =   2   AND
+                                       RECE641-SRYKBN      =   "33"    )
                                    PERFORM
                                        20013-KENSA-HANDANRYO-TAIHI-SEC
                                ELSE
@@ -4613,14 +4620,22 @@
                                END-IF
                            END-IF
                        WHEN    "1"
-      *                    ¸¡ºº¡ÊÈ½ÃÇÎÁ¡Ë¤Î¾ì¹ç¤ÎÂàÈò
-                           IF     ( RECE641-KNSJISKBN   =   2 )
+      *                    ¸¡ºº¡ÊÈ½ÃÇÎÁ¡Ë¡¢ÌôºÞÎÁ¤Î¸ºÅÀ¤Î¾ì¹ç¤ÎÂàÈò
+                           IF    ( RECE641-KNSJISKBN   =   2       )
+                           OR    ( RECE641-ZAIKBN      =   2   AND
+                                   RECE641-SRYKBN      =   "33"    )
                                PERFORM 20013-KENSA-HANDANRYO-TAIHI-SEC
                            ELSE
                                PERFORM 200711-KOUI-TAIHI-SEC
                            END-IF
                        WHEN    "6"
-                           PERFORM 200711-YKZ-TAIHI-SEC
+      *                    ÌôºÞÎÁ¤Î¸ºÅÀ¤Î¾ì¹ç¤ÎÂàÈò
+                           IF    ( RECE641-ZAIKBN      =   2   AND
+                                   RECE641-SRYKBN      =   "33"    )
+                               PERFORM 20013-KENSA-HANDANRYO-TAIHI-SEC
+                           ELSE
+                               PERFORM 200711-YKZ-TAIHI-SEC
+                           END-IF
                        WHEN    "7"
                            PERFORM 200711-KIZAI-TAIHI-SEC
       *********************IF      RECE641-ZAIREQFLG       =   1
@@ -5016,7 +5031,7 @@
            MOVE    RECE65-NAMEINF (IDX)
                                    TO  TBL-KENSA-RECE65-NAMEINF
                            (TBL-KENSA-RECE64-MAX TBL-KENSA-RECE65-MAX)
-           IF      RECE65-SRYCD (IDX) (1:1)  =   "1"
+           IF      RECE65-SRYCD (IDX) (1:1)  =   "1" OR  "6"
                MOVE    TBL-KENSA-RECE65-MAX 
                                        TO  TBL-KENSA-SRYCD-MAX
                                                 (TBL-KENSA-RECE64-MAX)
@@ -5262,7 +5277,7 @@
                    MOVE    SPACE               TO
                                            WRK-FUKUSHIFLG-SKJINF-AREA
                    PERFORM 20070-FTNKBN-HENSYU-SEC
-                   MOVE    "60"                TO  WRK-SRYKBN
+                   MOVE    WRK-RECE641-SRYKBN  TO  WRK-SRYKBN
       *
       *            ²¾¥ì¥»¥Ç¡¼¥¿¥Õ¥é¥°ÀßÄê
                    IF      WRK-RECE641-TOYAKUFLG =   SPACE
@@ -5331,7 +5346,7 @@
                    MOVE    76                  TO  WRK-NAGASA
                    MOVE    1                   TO  WRK-END 
                    PERFORM 5004-MOJI-HENSYU-SEC  
-               WHEN    OTHER     
+               WHEN    "1"
       *            ´ØÏ¢¥³¥á¥ó¥ÈÂàÈò½èÍý
                    IF      WRK-RECE641-SETCOMFLG   =   "1"
                        INITIALIZE               WRK-RECE655-REC
@@ -5402,6 +5417,127 @@
                        MOVE    WRK-KAISU           TO  WRK-NUM
                        MOVE    3                   TO  WRK-NAGASA
       *****        END-IF
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            ¥³¥á¥ó¥È¥³¡¼¥É£±
+                   IF      TBL-RECE655-MAX >   ZERO
+                       MOVE    TBL-RECE655-SRYCD (1)
+                                                   TO  WRK-DATA
+                       MOVE    9                   TO  WRK-NAGASA
+                   END-IF
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            Ê¸»ú¥Ç¡¼¥¿£±
+                   IF      TBL-RECE655-MAX >   ZERO
+                       MOVE    TBL-RECE655-NAME  (1)
+                                                   TO  WRK-DATA
+                       MOVE    100                 TO  WRK-NAGASA
+                   END-IF
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            ¥³¥á¥ó¥È¥³¡¼¥É£²
+                   IF      TBL-RECE655-MAX >   1
+                       MOVE    TBL-RECE655-SRYCD (2)
+                                                   TO  WRK-DATA
+                       MOVE    9                   TO  WRK-NAGASA
+                   END-IF
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            Ê¸»ú¥Ç¡¼¥¿£²
+                   IF      TBL-RECE655-MAX >   1
+                       MOVE    TBL-RECE655-NAME  (2)
+                                                   TO  WRK-DATA
+                       MOVE    100                 TO  WRK-NAGASA
+                   END-IF
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            ¥³¥á¥ó¥È¥³¡¼¥É£³
+                   IF      TBL-RECE655-MAX >   2
+                       MOVE    TBL-RECE655-SRYCD (3)
+                                                   TO  WRK-DATA
+                       MOVE    9                   TO  WRK-NAGASA
+                   END-IF
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            Ê¸»ú¥Ç¡¼¥¿£³
+                   IF      TBL-RECE655-MAX >   2
+                       MOVE    TBL-RECE655-NAME  (3)
+                                                   TO  WRK-DATA
+                       MOVE    100                 TO  WRK-NAGASA
+                   END-IF
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            ÆüÉÕ¾ðÊó
+                   PERFORM VARYING IDV     FROM    1   BY  1
+                           UNTIL   IDV     >       31
+                       IF      WRK-RECE641-KAISU (1 IDV)   >   ZERO
+                           MOVE    WRK-RECE641-KAISU (1 IDV)
+                                                   TO  WRK-NUM
+                           MOVE    3               TO  WRK-NAGASA
+                       END-IF
+                       IF      IDV                 =   31
+                           MOVE    1                   TO  WRK-END 
+                       END-IF     
+                       PERFORM 5005-NUM-HENSYU-SEC
+                   END-PERFORM  
+               WHEN    "6"
+      *            ´ØÏ¢¥³¥á¥ó¥ÈÂàÈò½èÍý
+                   IF      WRK-RECE641-SETCOMFLG   =   "1"
+                       INITIALIZE               WRK-RECE655-REC
+                       MOVE    TBL-KENSA-RECE65-KEY (IDZ3 IDZ4)
+                                            TO  WRK-RECE655-KEY1
+                       MOVE    TBL-KENSA-RECE65-SHORI-RENNUM
+                                                    (IDZ3 IDZ4)
+                                            TO  WRK-RECE655-SHORI-RENNUM
+                       MOVE    ZERO         TO  WRK-RECE655-SEQNO
+                       PERFORM 200799-KANREN-COMMENT-TAIHI-SEC
+                   END-IF
+      *          
+                   MOVE    "IY,"               TO  WRK-REC
+                   MOVE    3                   TO  WRK-REC-LENGTH
+      *            ¿ÇÎÅ¼±ÊÌ
+                   IF      WRK-SRYKBN      NOT =   SPACE
+                       MOVE    WRK-SRYKBN          TO  WRK-DATA
+                       MOVE    2                   TO  WRK-NAGASA
+                       MOVE    SPACE               TO  WRK-SRYKBN
+                   END-IF
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            ÉéÃ´¶èÊ¬
+                   MOVE    WRK-FTNKBN          TO  WRK-DATA
+                   MOVE    1                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            °åÌôÉÊ¥³¡¼¥É
+                   MOVE    WRK-RECE65-SRYCD (1)
+                                               TO  WRK-DATA
+                   MOVE    9                   TO  WRK-NAGASA
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            »ÈÍÑÎÌ
+                   IF      WRK-RECE65-SRYCD (1)
+                                               =   WRK-CONS-TEIGEN
+                       CONTINUE
+                   ELSE
+                       IF      WRK-RECE65-SRYSURYO (1) >   ZERO
+                           MOVE    WRK-RECE65-SRYSURYO (1)
+                                                       TO  WRK-SRYSURYO
+                           MOVE    WRK-SRYSURYO        TO  WRK-NUM
+                           MOVE    11                  TO  WRK-NAGASA
+                           MOVE    5                   TO  WRK-SYOSUU     
+                       END-IF
+                   END-IF        
+                   PERFORM 5005-NUM-HENSYU-SEC  
+      *            ÅÀ¿ô 
+                   IF      IDZ4            =   IDZ5
+                       IF      WRK-RECE65-SRYCD (1)
+                                               =   WRK-CONS-TEIGEN
+                           MOVE    WRK-RECE641-ZAITEN  TO  WRK-NUM
+                           MOVE    7                   TO  WRK-NAGASA
+                       ELSE
+                           IF      WRK-RECE641-YKZTEN  >   ZERO
+                               MOVE    WRK-RECE641-YKZTEN
+                                                       TO  WRK-NUM
+                               MOVE    7               TO  WRK-NAGASA
+                           END-IF
+                       END-IF
+                   END-IF        
+                   PERFORM 5005-NUM-HENSYU-SEC  
+      *            ²ó¿ô
+                   MOVE    WRK-RECE641-ZAIKAISU
+                                               TO  WRK-KAISU
+                   MOVE    WRK-KAISU           TO  WRK-NUM
+                   MOVE    3                   TO  WRK-NAGASA
                    PERFORM 5005-NUM-HENSYU-SEC
       *            ¥³¥á¥ó¥È¥³¡¼¥É£±
                    IF      TBL-RECE655-MAX >   ZERO
