@@ -1024,6 +1024,12 @@
                END-IF
            END-IF
       *
+           IF      SPA-T01-SYORIFLG    =   ZERO    OR  9
+               MOVE    1                   TO  SPA-NAI-T06-SYORIFLG
+           ELSE
+               MOVE    ZERO                TO  SPA-NAI-T06-SYORIFLG
+           END-IF
+      *
            IF      SPA-T99-FLG     =   "OK"
                PERFORM 3203-NEXT-GMN-SEC
                GO  TO  320-T99-SET-EXT

@@ -33,7 +33,7 @@ fi
 #            1:チェックする
 #-------------------------------------------#
 
-    rennum=1
+    rennum=0
 ##  2HD flesize  
     fixedsize=1441500
 
@@ -80,6 +80,8 @@ fi
         echo "--- BM520 err file exist ---" >> $LOG_FILE 2>&1
         exit 
     fi
+
+    rennum=1
         
 #   症状詳記作成
     if  [ ${25} -eq '1' ]; then
