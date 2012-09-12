@@ -8813,6 +8813,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
       *
+      *!!!!!!
+      *    再度、排他のチェック
+           IF      SPA-LOCK            =   ZERO
+               MOVE    1                   TO  SLOCK-MODE
+               MOVE    SPA-PTID            TO  SLOCK-PTID
+               CALL    "ORCSLOCK"          USING
+                                           MCPAREA
+                                           SPA-AREA
+                                           ORCSLOCKAREA
+               MOVE    ZERO            TO  SPA-LOCK
+               IF      SLOCK-RETURN        =   10
+      *            排他中
+                   MOVE    "9997"              TO  SPA-ERRCD
+                   GO      TO      41002-KOUSIN-SYORI-EXT
+               END-IF
+           END-IF
+      *!!!!!!
+      *
            MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
       *
            MOVE    "K08"               TO  SPA-NAI-SAKIPG
@@ -10511,6 +10529,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            SLOCK-MSG           DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
+      *
+               WHEN    "9997"
+                   STRING  "他端末で使用中となっています。"
+                           "他端末を終了後、登録して下さい。"
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG2
            END-EVALUATE
       *
       *
