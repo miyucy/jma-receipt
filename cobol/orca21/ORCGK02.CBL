@@ -12725,9 +12725,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-ERRCD
                WHEN    "9999"
-                   MOVE    "他端末で使用中です。"
-                                               TO  SPA-ERRMSG
-                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+                   STRING  "他端末で使用中です。"
+                           SLOCK-MSG           DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "9998"
                    STRING  "他端末で使用中です。"
                            "更新はできません。"
@@ -12735,11 +12736,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "9997"
-                   STRING  "他端末で使用中となっています。"
-                           "他端末を終了後、登録して下さい。"
+                   STRING  "他端末で使用中です。"
+                           SLOCK-MSG           DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
-                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG2
            END-EVALUATE
       *
       *

@@ -7541,6 +7541,24 @@
                GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
       *
+      *!!!!!!
+      *    再度、排他のチェック
+           IF      SPA-LOCK            =   ZERO
+               MOVE    1                   TO  SLOCK-MODE
+               MOVE    SPA-PTID            TO  SLOCK-PTID
+               CALL    "ORCSLOCK"          USING
+                                           MCPAREA
+                                           SPA-AREA
+                                           ORCSLOCKAREA
+               MOVE    ZERO            TO  SPA-LOCK
+               IF      SLOCK-RETURN        =   10
+      *            排他中
+                   MOVE    "9997"              TO  SPA-ERRCD
+                   GO      TO      41002-KOUSIN-SYORI-EXT
+               END-IF
+           END-IF
+      *!!!!!!
+      *
       *    受診日設定
            INITIALIZE                  SPA-KT01-RRKDAY-G
            MOVE    ZERO                TO  IDY
@@ -8983,12 +9001,19 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "9999"
-                   MOVE    "他端末で使用中です。"
-                                               TO  SPA-ERRMSG
-                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+                   STRING  "他端末で使用中です。"
+                           SLOCK-MSG           DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "9998"
                    STRING  "他端末で使用中です。"
                            "更新はできません。"
+                           SLOCK-MSG           DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+      *
+               WHEN    "9997"
+                   STRING  "他端末で使用中です。"
                            SLOCK-MSG           DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
