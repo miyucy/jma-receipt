@@ -110,6 +110,8 @@
            03  FLG-IN01                    PIC 9(01).
            03  FLG-IN02                    PIC 9(01).
       *
+           03  FLG-HKNJAINF                PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
@@ -223,6 +225,10 @@
       *    印刷用データ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
+      *
+      *    保険者
+       01  HKNJAINF-REC.
+           COPY    "CPHKNJAINF.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -780,14 +786,22 @@
                MOVE    "個別作成"          TO  HCM74-MEMO1 (20:)
            END-IF      
       *
-           EVALUATE    WRK-PARA-TEISYUTUSAKI
-           WHEN    "1"
-               IF      WRK-PARA-HKNJANUM
-                                       NOT =   SPACE
-                   MOVE    "直接請求する保険者"
-                                           TO  HCM74-MEMO2
-               END-IF      
+           EVALUATE    WRK-PARA-HKNJANUM
+               WHEN    "99999999"
+                   INITIALIZE                      HKNJAINF-REC
+               WHEN    "00000000"
+                   INITIALIZE                      HKNJAINF-REC
+                   MOVE    "直接請求する保険者以外"
+                                                TO  HKNJA-HKNJANAME
+               WHEN    OTHER
+                   MOVE    SPACE               TO  HKNJAINF-REC
+                   INITIALIZE                      HKNJAINF-REC
+                   MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+                   MOVE    WRK-PARA-HKNJANUM   TO  HKNJA-HKNJANUM
+                   MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+                   PERFORM 900-HKNJAINF-READ-SEC
            END-EVALUATE
+           MOVE    HKNJA-HKNJANAME     TO  HCM74-MEMO2
       *
            COMPUTE CNT-PAGE    =   CNT-PAGE    +   1
            MOVE    CNT-PAGE            TO  WRK-PAGE
@@ -1371,6 +1385,38 @@
       *
            .
        900-IN02-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険者マスタ読込
+      *****************************************************************
+       900-HKNJAINF-READ-SEC           SECTION.
+      *
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-HKNJAINF
+                   MOVE    MCPDATA-REC         TO  HKNJAINF-REC
+               ELSE
+                   MOVE    1                   TO  FLG-HKNJAINF
+                   INITIALIZE                      HKNJAINF-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-HKNJAINF
+               INITIALIZE                      HKNJAINF-REC
+           END-IF
+      *
+           MOVE    "tbl_hknjainf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-HKNJAINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
