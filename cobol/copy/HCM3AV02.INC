@@ -55,6 +55,8 @@
                         PIC X(6).
               03  HCM3AV02-TENSU3
                         PIC X(13).
+              03  HCM3AV02-ITBFTN3
+                        PIC X(13).
               03  HCM3AV02-SYOKENSU3
                         PIC X(6).
               03  HCM3AV02-SYONISSU3
@@ -63,14 +65,14 @@
                         PIC X(13).
               03  HCM3AV02-SYOFTNGAK3
                         PIC X(13).
-            02  HCM3AV02-ITBFTN3
-                        PIC X(13).
             02  HCM3AV02-IHO-TBL4
                                         OCCURS 9 TIMES.
               03  HCM3AV02-KENSU4
                         PIC X(6).
               03  HCM3AV02-NISSU4
                         PIC X(6).
+              03  HCM3AV02-ITBFTN4
+                        PIC X(13).
               03  HCM3AV02-TENSU4
                         PIC X(13).
               03  HCM3AV02-SYOKENSU4
@@ -87,6 +89,8 @@
                         PIC X(6).
               03  HCM3AV02-NISSU5
                         PIC X(6).
+              03  HCM3AV02-ITBFTN5
+                        PIC X(13).
               03  HCM3AV02-TENSU5
                         PIC X(13).
               03  HCM3AV02-SYOKENSU5
