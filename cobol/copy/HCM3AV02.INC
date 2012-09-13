@@ -116,6 +116,6 @@
             02  HCM3AV02-MARUCHO
                         PIC X(2)        OCCURS 2 TIMES.
             02  HCM3AV02-LOPTION
-                        PIC X(200).
+                        PIC X(250).
             02  HCM3AV02-SEIDONAME
                         PIC X(8)        OCCURS 5 TIMES.
