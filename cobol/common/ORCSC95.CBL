@@ -5232,6 +5232,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    MCPDATA-REC         TO  SYS-1010-REC
                    MOVE    SPA-DRCD(2:4)       TO  SPA-DRCD-NAME
                    MOVE    SYS-1010-NAME       TO  SPA-DRCD-NAME (6:)
+      *
+                   MOVE    SPA-DRCD-NAME       TO  SPA-GMN-DRCD-G
                END-IF
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
