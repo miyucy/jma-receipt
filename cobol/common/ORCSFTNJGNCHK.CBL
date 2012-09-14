@@ -833,7 +833,7 @@
                OR ((LNK-FTNJGNCHK-KOHNUM    =  "246"   ) AND
                    (LNK-FTNJGNCHK-SRYYM    >= "200604" ))
                OR ((LNK-FTNJGNCHK-KOHNUM    =
-                                      "445" OR "545"   ) AND
+                             "445" OR "545" OR "645"   ) AND
                    (LNK-FTNJGNCHK-SRYYM    >= "200604" ))
                  MOVE    "1"    TO  WRK-IRYOKEIKBN-G
                END-IF
@@ -904,7 +904,7 @@
                OR ((LNK-FTNJGNCHK-KOHNUM    =  "246"   ) AND
                    (LNK-FTNJGNCHK-SRYYM    >= "200604" ))
                OR ((LNK-FTNJGNCHK-KOHNUM    =
-                                      "445" OR "545"   ) AND
+                             "445" OR "545" OR "645"   ) AND
                    (LNK-FTNJGNCHK-SRYYM    >= "200604" ))
                  MOVE    "1"    TO  WRK-IRYOKEIKBN-N
                END-IF
@@ -1015,7 +1015,7 @@
                OR ((LNK-FTNJGNCHK-KOHNUM    =  "246"   ) AND
                    (LNK-FTNJGNCHK-SRYYM     < "200604" ))
                OR ((LNK-FTNJGNCHK-KOHNUM    =
-                                      "445" OR "545"   ) AND
+                             "445" OR "545" OR "645"   ) AND
                    (LNK-FTNJGNCHK-SRYYM     < "200604" ))
                  MOVE  SPACE  TO  WRK-IRYOKEIKBN-G
                END-IF
@@ -1077,7 +1077,7 @@
                OR ((LNK-FTNJGNCHK-KOHNUM    =  "246"   ) AND
                    (LNK-FTNJGNCHK-SRYYM     < "200604" ))
                OR ((LNK-FTNJGNCHK-KOHNUM    =
-                                      "445" OR "545"   ) AND
+                             "445" OR "545" OR "645"   ) AND
                    (LNK-FTNJGNCHK-SRYYM     < "200604" ))
                  MOVE  SPACE  TO  WRK-IRYOKEIKBN-N
                END-IF
