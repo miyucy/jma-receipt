@@ -36,6 +36,7 @@
       *                                     ≥ŒƒÍ ¨§Œµ≠∫‹§Ú√Êªﬂ
       *  04.05.03    NACL-∆£∏∂    12/04/17   ø¿Æ£≤£¥«Ø£¥∑Ó≤˛¿µ¬–±˛
       *                                      ø¿Æ£≤£¥«Ø£¥∑Ó ¨∞ πﬂ§œ§ﬁ§»§·§Î
+      *  04.05.04    NACL-∆£∏∂    12/09/10  ∞Ï…Ù…È√¥∂‚§Œµ≠∫‹¬–±˛
       *
       *  04.07.01    NACL-∆£∏∂    12/01/24  monpe-0.6.20¬–±˛
       *  04.07.02    NACL-∆£∏∂    12/02/13  ∑Ú ›¡»πÁ§ÿ§Œƒæ¿‹¿¡µ·§»ø≥∫∫
@@ -64,7 +65,7 @@
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-           COPY    "HCM3CV01.INC"  REPLACING  //HCM3CV01//
+           COPY    "HCM3CV02.INC"  REPLACING  //HCM3CV02//
                                    BY         //HCM3C//.
       *****COPY    "HCM3D.INC".
            COPY    "HCM3DV01.INC"  REPLACING  //HCM3DV01//
@@ -694,10 +695,16 @@
                MOVE    WRK-NISSUZ              TO  HCM3C-NISSU3 (IDY) 
                MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX IDY)  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ              TO  HCM3C-TENSU3 (IDY)
-               IF      IDY             =   3
-                   MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY) 
+               IF      WRK-PRTFLG      =   5
+                   MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY)
                                                TO  WRK-FTNMONEYZ
-                   MOVE    WRK-FTNMONEYZ       TO  HCM3C-ITBFTN3
+                   MOVE    WRK-FTNMONEYZ       TO  HCM3C-ITBFTN3 (IDY)
+               ELSE
+                   IF      IDY             =   3
+                       MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY) 
+                                               TO  WRK-FTNMONEYZ
+                       MOVE    WRK-FTNMONEYZ   TO  HCM3C-ITBFTN3 (IDY)
+                   END-IF
                END-IF
            END-PERFORM
            MOVE    SUM-KENSU    (IDX3 IDX1 IDX 12)   TO  WRK-KENSUZ
@@ -706,6 +713,11 @@
            MOVE    WRK-NISSUZ              TO  HCM3C-NISSU3 (12) 
            MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX 12)   TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ              TO  HCM3C-TENSU3 (12)
+           IF      WRK-PRTFLG      =   5
+               MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX 12)
+                                               TO  WRK-FTNMONEYZ
+               MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN3(12)
+           END-IF
       *
       *    ∞Â ›√±∆»° ≤»¬≤°À
            MOVE    4                   TO  IDX
@@ -717,6 +729,11 @@
                MOVE    WRK-NISSUZ              TO  HCM3C-NISSU4 (IDY) 
                MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX IDY)  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ              TO  HCM3C-TENSU4 (IDY)
+               IF      WRK-PRTFLG      =   5
+                   MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY)
+                                               TO  WRK-FTNMONEYZ
+                   MOVE    WRK-FTNMONEYZ       TO  HCM3C-ITBFTN4 (IDY)
+               END-IF
            END-PERFORM
            MOVE    SUM-KENSU    (IDX3 IDX1 IDX 12)   TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM3C-KENSU4 (9)
@@ -724,6 +741,11 @@
            MOVE    WRK-NISSUZ              TO  HCM3C-NISSU4 (9) 
            MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX 12)   TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ              TO  HCM3C-TENSU4 (9)
+           IF      WRK-PRTFLG      =   5
+               MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX 12)
+                                               TO  WRK-FTNMONEYZ
+               MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN4 (9)
+           END-IF
       *
       *    ∞Â ›√±∆»° ª∞∫–°À
            MOVE    5                   TO  IDX
@@ -735,6 +757,11 @@
                MOVE    WRK-NISSUZ              TO  HCM3C-NISSU5 (IDY) 
                MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX IDY)  TO  WRK-TENSUZ
                MOVE    WRK-TENSUZ              TO  HCM3C-TENSU5 (IDY)
+               IF      WRK-PRTFLG      =   5
+                   MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX IDY)
+                                               TO  WRK-FTNMONEYZ
+                   MOVE    WRK-FTNMONEYZ       TO  HCM3C-ITBFTN5 (IDY)
+               END-IF
            END-PERFORM
            MOVE    SUM-KENSU    (IDX3 IDX1 IDX 12)   TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM3C-KENSU5 (9)
@@ -742,6 +769,11 @@
            MOVE    WRK-NISSUZ              TO  HCM3C-NISSU5 (9) 
            MOVE    SUM-TOTALTEN (IDX3 IDX1 IDX 12)   TO  WRK-TENSUZ
            MOVE    WRK-TENSUZ              TO  HCM3C-TENSU5 (9)
+           IF      WRK-PRTFLG      =   5
+               MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX 12)
+                                               TO  WRK-FTNMONEYZ
+               MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN4 (9)
+           END-IF
       *
            MOVE    SUM-GOK-KENSU (IDX3 IDX1 1)  TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM3C-KENSUG   
@@ -949,7 +981,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            IF      FLG-PRTKBN          =   ZERO                            
-               MOVE    "HCM3CV01.red"      TO  SPRT-PRTID
+               MOVE    "HCM3CV02.red"      TO  SPRT-PRTID
                MOVE    HCM3C               TO  SPRT-PRTDATA
            ELSE                          
       *********MOVE    "HCM3D.red"         TO  SPRT-PRTID
