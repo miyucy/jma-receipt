@@ -828,6 +828,24 @@
                                                    TO  WRK-SRYSYUKBN
                         END-IF
                    END-IF
+      *ver.4.7
+      *            ÆâÉþÅ©ºÞ¤Î¿ôÎÌ¥Á¥§¥Ã¥¯
+                   IF    (WRK-COM-SOURYOHENKBN (IDX-Z) =   "1" )
+                   AND   (LNK-ORCSC-KAISU          >   1       )
+                   AND   (WRK-SRYSYUKBN(1:2)       =   "21"  )
+      *                ÆâÉþ¤ÏÁíÎÌÆþÎÏ
+                       IF     (WRK-COM-KZMFLG (IDX-Z)
+                                                       =   SPACE) AND
+                              (LNK-ORCSC-KEI-IDX   =   ZERO )
+                           MOVE    "K119"          TO  WRK-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                              (IDX-Z)
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-Z)
+                           MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                       END-IF
+                   END-IF
+      *
            END-EVALUATE
       *
            .

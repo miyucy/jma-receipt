@@ -425,6 +425,8 @@
                        09  SPA-COM-KANZANTANICD        PIC X(03).
       *                数量換算値
                        09  SPA-COM-KANZANCHI           PIC 9(05)V9(05).
+      *ver.4.7         内服滴剤
+                       09  SPA-COM-SOURYOHENKBN        PIC  9(01).
       *    点数マスタ薬剤附加情報より
       *                内服算定
                        09  SPA-COM-NAIFUKUKBN          PIC 9(01).

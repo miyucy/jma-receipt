@@ -71,6 +71,7 @@
       *  04.07.00    NACL-多々納  11/12/20  商品名コード金額単位対応
       *  04.07.00    NACL-多々納  12/01/10  新生児２８日判定修正
       *  04.07.00    NACL-多々納  12/03/XX  平成２４年４月改正対応
+      *  04.07.00    NACL-多々納  12/09/14  器材、コメントチェックマスタ対応
       *****************************************************************
       *
       *
@@ -630,8 +631,8 @@
                    MOVE    LNK-SC92-SRYCD  TO  SPA-COM-INPUTCD(IDX-T)
                    PERFORM 200-KIHON-CHK-SEC
                    IF     (SPA-ERRCD           =   SPACE ) AND
-                          (LNK-SC92-ERRCD3     =   SPACE ) AND
-                          (LNK-SC92-SRYCD(1:1) =   "1"   )
+                          (LNK-SC92-ERRCD3     =   SPACE )
+      *ver.4.7 ***   AND  (LNK-SC92-SRYCD(1:1) =   "1"   )
                        PERFORM 2005-HEIYOU-CHK-SEC
                    END-IF
                WHEN    "4"
@@ -885,8 +886,8 @@
       *
       *    併用算定チェック（算定回数がＯＫの時）
            IF      SPA-COM-CHKFLG (IDX-T)  =   SPACE
-               IF     (LNK-SC92-ERRCD3     =   SPACE ) AND
-                      (LNK-SC92-SRYCD(1:1) =   "1"   )
+               IF     (LNK-SC92-ERRCD3     =   SPACE )
+      **ver.4.7   AND (LNK-SC92-SRYCD(1:1) =   "1"   )
                   AND (LNK-SC92-PG         =   "K02" )
                   AND (LNK-SC92-KBN        =   "1"
                                            OR  "3"
@@ -1928,6 +1929,16 @@
            IF      SPA-COM-HCHKFLG (IDX-T) =   "1"
                GO      TO      2005-HEIYOU-CHK-EXT
            END-IF
+      **ver.4.7
+      *    診療コード、器材、コメントのみ
+           IF     (LNK-SC92-SRYCD(1:1) =   "1"  )
+            OR    (LNK-SC92-SRYCD(1:1) =   "7"
+                                       OR  "8"   )
+            OR    (LNK-SC92-SRYCD(1:3) =   "008" )
+               CONTINUE
+           ELSE
+               GO      TO      2005-HEIYOU-CHK-EXT
+           END-IF
       *
       *    チェックテーブル検索
            INITIALIZE                  CHK-REC
@@ -1968,7 +1979,7 @@
                          OR  (FLG-CHKERR       =   1 )
       *H24.6
       *    診療コードのみ対象
-           IF      CHK-CD(1:1)         =   "1"
+      *****IF      CHK-CD(1:1)         =   "1"
       *
                EVALUATE    CHK-CHKKBN
                    WHEN    "5"
@@ -1976,6 +1987,8 @@
       *                同一画面でのチェック
                        PERFORM 20052-CHK-INPUT-SEC
                        IF      FLG-CHKERR          =   ZERO
+      *                  診療コードのみ対象
+                         AND  (CHK-CD(1:1)         =   "1"  )
       *                    算定履歴とのチェック
                            PERFORM 20051-CHK-SANTEI-SEC
                        END-IF
@@ -1985,6 +1998,8 @@
       *                    同一画面でのチェック
                            PERFORM 20052-CHK-INPUT-SEC
                            IF      FLG-CHKERR          =   ZERO
+      *                       診療コードのみ対象
+                             AND  (CHK-CD(1:1)         =   "1"  )
       *                        算定履歴とのチェック
                                PERFORM 20053-DAYCHK-SANTEI-SEC
                            END-IF
@@ -1999,6 +2014,7 @@
       *                    同一画面でのチェック
                            PERFORM 200521-CHKNYU-INPUT-SEC
                            IF      FLG-CHKERR          =   ZERO
+                             AND  (CHK-CD(1:1)         =   "1"  )
       *                        算定履歴とのチェック
                                PERFORM 200531-DAYCHKNYU-SANTEI-SEC
                            END-IF
@@ -2012,7 +2028,7 @@
                            PERFORM 20052-CHK-INPUT-SEC
                        END-IF
                END-EVALUATE
-           END-IF
+      *****END-IF
       *
                MOVE    "tbl_chk"           TO  MCP-TABLE
                MOVE    "key14"             TO  MCP-PATHNAME
@@ -4919,7 +4935,9 @@
       *    MOVE    TNSP-KANZANTANINAME TO  SPA-COM-KANZANTANINAME(IDX-T)
       *    数量換算値
            MOVE    TNSP-KANZANCHI      TO  SPA-COM-KANZANCHI (IDX-T)
-      *ver.4.5
+      *ver.4.7
+      *    総量編集区分（内服滴剤）
+           MOVE    TNSP-SOURYOHENKBN   TO  SPA-COM-SOURYOHENKBN (IDX-T)
            .
        3006-TENSUPLUS-HEN-EXT.
            EXIT.

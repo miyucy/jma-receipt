@@ -880,17 +880,39 @@
                              ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDX)   =   SPACE ))
                           OR ( SPA-ERRCD           NOT =   SPACE )
-               IF      (SPA-COM-INPUTCD (IDX)(1:1) =   "1" )
-                 AND   (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
+      *        IF      (SPA-COM-INPUTCD (IDX)(1:1) =   "1" )
+      *          AND   (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
+      *          AND   (SPA-COM-HCHKFLG (IDX)      =   SPACE )
+               IF      (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
                  AND   (SPA-COM-HCHKFLG (IDX)      =   SPACE )
       *            回数チェック
                    IF      (SPA-COM-SANTEIRRKKBN(IDX)
                                                NOT =   ZERO )
+                   AND    ((SPA-COM-INPUTCD (IDX)(1:1) =   "1" )  OR
+                           (SPA-COM-INPUTCD (IDX)(1:3) =   "099"))
                        PERFORM 510171-KAISU-CHK-SEC
                    END-IF
+      ***          併用算定チェック
+      *            IF     (SPA-ERRCD              =   SPACE )
+      *                PERFORM 510172-HEISANTEI-CHK-SEC
+      ***          END-IF
       *            併用算定チェック
-                   IF     (SPA-ERRCD              =   SPACE )
+                   IF     (SPA-RSI-HKNKBN          =   "3"   )
+                   OR     (SPA-COM-CHIKENKBN(IDX)  =   "1"   )
+                   OR     (SPA-ERRCD           NOT =   SPACE )
+      *            治験・アフターケアはチェックなし
+                       CONTINUE
+                   ELSE
+      *!!
+                   IF     (SPA-COM-INPUTCD (IDX)(1:1) =   "1" )
+                   OR     (SPA-COM-INPUTCD (IDX)(1:1) =   "7" )
+                   OR     (SPA-COM-INPUTCD (IDX)(1:1) =   "8" )
+                   OR     (SPA-COM-INPUTCD (IDX)(1:3) =   "008" )
+      *                診療コード、器材、コメントのみ
+      *
                        PERFORM 510172-HEISANTEI-CHK-SEC
+                   END-IF
+      *!!!
                    END-IF
                    IF      SPA-ERRCD           =   SPACE
                        MOVE    "1"             TO  SPA-COM-HCHKFLG(IDX)
