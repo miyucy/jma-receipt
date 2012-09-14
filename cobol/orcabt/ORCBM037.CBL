@@ -772,7 +772,7 @@
            IF      WRK-PRTFLG      =   5
                MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX 12)
                                                TO  WRK-FTNMONEYZ
-               MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN4 (9)
+               MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN5 (9)
            END-IF
       *
            MOVE    SUM-GOK-KENSU (IDX3 IDX1 1)  TO  WRK-KENSUZ
