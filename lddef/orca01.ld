@@ -10,6 +10,7 @@ bind	"XA99"		"OpenCOBOL"	"ORCGXA99";
 bind	"XAERR"		"OpenCOBOL"	"ORCGXAERR";
 bind	"XAID1"		"OpenCOBOL"	"ORCGXAID1";
 bind	"XAID2"		"OpenCOBOL"	"ORCGXAID2";
+bind	"_XADMY01"	"OpenCOBOL"	"ORCGXADMY01";
 
 multiplex_group	orca01;
 
@@ -23,6 +24,7 @@ data	{
 		XAERR;
                 XAID1;
                 XAID2;
+		_XADMY01;
 	};
 };
 

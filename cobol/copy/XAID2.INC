@@ -17,7 +17,6 @@
       ********************************************************************
         02  XAID2.
             03  XAID2-FIXED1.
-              04  XAID2-B11-STATE   PIC S9(9)   BINARY.
               04  XAID2-ID1CODE.
                 05  XAID2-VALUE  PIC X(10).
               04  XAID2-ID1MSG.

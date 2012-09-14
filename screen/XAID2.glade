@@ -104,9 +104,9 @@
     <widget>
       <class>GtkButton</class>
       <name>B10</name>
-      <x>175</x>
+      <x>190</x>
       <y>88</y>
-      <width>100</width>
+      <width>120</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
@@ -126,31 +126,8 @@
 
     <widget>
       <class>GtkButton</class>
-      <name>B11</name>
-      <x>275</x>
-      <y>88</y>
-      <width>145</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>0</modifiers>
-	<key>GDK_F11</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
-      </signal>
-      <label>F11:クライアント印刷</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
       <name>B12</name>
-      <x>420</x>
+      <x>410</x>
       <y>88</y>
       <width>100</width>
       <height>24</height>

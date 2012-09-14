@@ -44,11 +44,5 @@ XA01	{
 				select	bool[100];
 			};
 		};
-                pandaprint1 {
-                        item {
-                                path	varchar(256);
-                                title	varchar(256);
-                        }[10];
-                };
 	};
 };

@@ -16,17 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGXAERR.
+       PROGRAM-ID.                 ORCGXADMY01.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 再印刷
-      *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
+      *  サブシステム名    : 受付
+      *  コンポーネント名  : クライアント印刷(dummy)
       *  管理者            : 
-      *  00/12/01    MCC−藤原　   新規作成
+      *  作成日付    作業者        記述
+      *  11/12/26    NACL-竹田　   新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  02.07.00    NACL-竹田    05/10/24  MONFUNC 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -51,22 +51,19 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    ＤＢ検索
+           COPY    "MCPDATA.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *    ＤＢ検索
-           COPY    "MCPDATA.INC".
-      *     
-           COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *****COPY    "MCPAREA.INC".
-           COPY    MCPAREA.
+           COPY    "MCPAREA".
            COPY    "ORCA-SPA".
       *
            COPY    "LINKAREA".
@@ -91,6 +88,8 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+      *
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
@@ -99,9 +98,10 @@
       *    画面遷移
                WHEN      OTHER
                    PERFORM 210-BACK
-           END-EVALUATE.
+           END-EVALUATE
       *
            MOVE    SPA-AREA        TO  SPA-COMMON
+      *
       *
            .
            EXIT    PROGRAM
@@ -111,6 +111,8 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
+           MOVE    SPA-PUTTYPE         TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
            .
        100-INIT-EXT.
            EXIT.
@@ -119,10 +121,7 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "XAERR"              TO  SPA-MOTOPG
-     *
-           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    SPA-PUTTYPE         TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW

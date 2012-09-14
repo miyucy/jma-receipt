@@ -49,8 +49,4 @@
                     06  XA01-TPRT-TITLE    PIC X(60).
                     06  XA01-TPRTFLG       PIC X(2).
                   05  XA01-SELECT          PIC X     OCCURS  100 TIMES.
-              03  PANDAPRINT1.
-                04  XA01-PRTITEM            OCCURS  10 TIMES.
-                  05  XA01-PRTPATH         PIC X(256).
-                  05  XA01-PRTTITLE        PIC X(256).
 

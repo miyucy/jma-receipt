@@ -469,6 +469,7 @@ RECORD_files = \
 	G100.rec \
 	medicalmod.rec \
 	medicalmodv2.rec \
+	_XADMY01.rec \
 
 DEF_files = \
 
