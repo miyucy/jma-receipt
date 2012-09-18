@@ -341,6 +341,7 @@
       *                                     ¤Î¿©»öÉéÃ´·×»»¡Ë
       *  04.05.41    NACL-ÌçÏÆ    12/08/29  Á°´ü¹âÎð¼Ô£±³ä¡Ü£°£µ£±
       *                                     ¤Î¿©»öÉéÃ´·×»»½¤Àµ¡ÊÄ¹´üÊ»ÍÑ»þ¡Ë
+      *  04.05.42    NACL-ÌçÏÆ    12/09/18  ²þÀµÂÐ±þ¡Ê³°Çñ¶èÊ¬£¸¡¤£¹¤ÎÂÐ±þ¡Ë
       *
       *  04.06.01    NACL-ÌçÏÆ    10/11/08  ¼çÊÝ¸±¡Ü¥Þ¥ëÄ¹¤ÎÀÁµáÂÐ±þ
       *  04.06.02    NACL-ÌçÏÆ    12/07/30  ¹â³Û°ÑÇ¤Ê§¤¤À©ÅÙ¾å¸Â³Û£°±ßÂÐ±þ
@@ -18956,7 +18957,8 @@
              IF       ( NACCT-DAY(IDY)   NOT =  ZERO        )
              AND      ( LNK-SYU-DAY(IDY)     =  "1" OR "9"  )
              AND      ( WK-GAIHAKU(IDY)      =
-                                 ZERO OR 4 OR 5 OR 6 OR 7   )
+                                 ZERO OR 4 OR 5 OR 6 OR 7
+                                                OR 8 OR 9   )
       *
               IF  WK-SHOKUDOKASAN(IDY)  =  ZERO
       *
@@ -19885,7 +19887,8 @@
               AND      ((LNK-SYU-DAY(IDY)       =  "1" OR "9" ) OR
                         (LNK-S02-NYUINDAY-KBN(IDY)     =  "1" ))
               AND      ( WK-GAIHAKU(IDY)        =
-                                    ZERO OR 4 OR 5 OR 6 OR 7   )
+                                    ZERO OR 4 OR 5 OR 6 OR 7
+                                                   OR 8 OR 9   )
       *
                IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
                  EVALUATE  LNK-SYU-SYUHKNNUM
@@ -20045,7 +20048,8 @@
               IF       ((LNK-SYU-DAY(IDY)       =  "1" OR "9" ) OR
                         (LNK-S02-NYUINDAY-KBN(IDY)     =  "1" ))
               AND      ( WK-GAIHAKU(IDY)        =
-                                    ZERO OR 4 OR 5 OR 6 OR 7   )
+                                    ZERO OR 4 OR 5 OR 6 OR 7
+                                                   OR 8 OR 9   )
               AND      ( WK-SHOKUJI-KANFLG(IDY) =  ZERO        )
       *
                 IF    LNK-SYU-SYUHKNNUM   =   "971" OR "973"
@@ -20152,7 +20156,8 @@
               AND      ((LNK-SYU-DAY(IDY)       =  "1" OR "9" ) OR
                         (LNK-S02-NYUINDAY-KBN(IDY)     =  "1" ))
               AND      ( WK-GAIHAKU(IDY)        =
-                                    ZERO OR 4 OR 5 OR 6 OR 7   )
+                                    ZERO OR 4 OR 5 OR 6 OR 7
+                                                   OR 8 OR 9   )
       *
                EVALUATE   WK-SHOKUJIRYOYO(IDY)
       *
@@ -20354,7 +20359,8 @@
                IF   (LNK-S02-NYUSANTEI-KBN(IDY)    =  "1" )
                AND  (WK-SHOKUJIRYOYO(IDY)          =   1  )
                AND  (WK-GAIHAKU(IDY)     =
-                              ZERO OR 4 OR 5 OR 6 OR 7    )
+                              ZERO OR 4 OR 5 OR 6 OR 7
+                                             OR 8 OR 9    )
                AND  (WK-SHOKUJI-NYUINJI(IDY)   NOT =  ZERO)
                  IF  WK-SHOKUJI-NYUINJI(IDY) < WK-ROSAITOKU97(IDY)
                    MOVE  WK-SHOKUJI-NYUINJI(IDY)
@@ -20444,7 +20450,8 @@
                IF   (LNK-S02-NYUSANTEI-KBN(IDY)    =  "1" )
                AND  (WK-SHOKUJIRYOYO(IDY)          =   1  )
                AND  (WK-GAIHAKU(IDY)     =
-                              ZERO OR 4 OR 5 OR 6 OR 7    )
+                              ZERO OR 4 OR 5 OR 6 OR 7
+                                             OR 8 OR 9    )
                AND  (WK-SHOKUJI-NYUINJI(IDY)   NOT =  ZERO)
                  IF  WK-SHOKUJI-NYUINJI(IDY) < WK-ROSAITOKU97(IDY)
                    MOVE  WK-SHOKUJI-NYUINJI(IDY)
