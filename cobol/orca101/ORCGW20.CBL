@@ -4308,6 +4308,10 @@
                        MOVE    ZERO    TO  FLG-SETKHNRYO
                END-IF
       *
+               IF    ( TNS-NYUKHNKBN   =   196     )
+                       MOVE    ZERO    TO  FLG-SETKHNRYO
+               END-IF
+      *
                IF    ( FLG-SETKHNRYO   =   1 )
                    PERFORM 410011-KHNRYO-CMB-SET-SEC
                END-IF
