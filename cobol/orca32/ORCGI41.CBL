@@ -4114,6 +4114,21 @@
       *
                    IF      SPA-CHK-SENTEI(IDX-D)   =   SPACE
                      IF      SPA-NAI-SRYYM         >=    "201204"
+                        IF  (SPA-NAI-SRYYM         >=    "201204") AND
+                            (SPA-NAI-SRYYM         <=    "201209")
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  1
+                                                           OR  2
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                                                           OR  6
+                                                           OR  7
+                               CONTINUE
+                           ELSE
+                               MOVE    "0035"         TO  SPA-ERRCD
+                           END-IF
+                        ELSE
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  1
                                                            OR  2
@@ -4128,6 +4143,7 @@
                            ELSE
                                MOVE    "0035"         TO  SPA-ERRCD
                            END-IF
+                        END-IF
                      ELSE
                         IF     (SPA-NAI-SRYYM      >=    "201004") AND
                                (SPA-NAI-SRYYM      <=    "201203")
@@ -4156,6 +4172,8 @@
                    ELSE
       *                選定入院料算定日
                      IF      SPA-NAI-SRYYM         >=    "201204"
+                        IF  (SPA-NAI-SRYYM         >=    "201204") AND
+                            (SPA-NAI-SRYYM         <=    "201209")
                            IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
                                                            OR  3
                                                            OR  4
@@ -4166,6 +4184,20 @@
                            ELSE
                                MOVE    "0036"         TO  SPA-ERRCD
                            END-IF
+                        ELSE
+                           IF      SPA-GMN-DAY-41 (IDX-D)  =   ZERO
+                                                           OR  3
+                                                           OR  4
+                                                           OR  5
+                                                           OR  6
+                                                           OR  7
+                                                           OR  8
+                                                           OR  9
+                               CONTINUE
+                           ELSE
+                               MOVE    "0036"         TO  SPA-ERRCD
+                           END-IF
+                        END-IF
                      ELSE
                         IF     (SPA-NAI-SRYYM      >=    "201004") AND
                                (SPA-NAI-SRYYM      <=    "201203")
@@ -10507,10 +10539,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG
                WHEN    "0035"
                  IF   SPA-NAI-SRYYM     >=    "201204"
+                   IF  (SPA-NAI-SRYYM     >=    "201204")  AND
+                       (SPA-NAI-SRYYM     <=    "201209")
                      MOVE  "外泊での入力可能な区分は０、１、２、３、４"
                                        TO  WRK-ERRMSG(1:42)
                      MOVE  "、５、６、７のいずれかです。"
                                        TO  WRK-ERRMSG(43:28)
+                   ELSE
+                     MOVE  "外泊での入力可能な区分は０、１、２、３、４"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE  "、５、６、７、８、９のいずれかです。"
+                                       TO  WRK-ERRMSG(43:36)
+                   END-IF
                  ELSE
                    IF  (SPA-NAI-SRYYM     >=    "201004")   AND
                        (SPA-NAI-SRYYM     <=    "201203")
@@ -10527,10 +10567,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                  END-IF
                WHEN    "0036"
                  IF   SPA-NAI-SRYYM     >=    "201204"
+                   IF  (SPA-NAI-SRYYM     >=    "201204")  AND
+                       (SPA-NAI-SRYYM     <=    "201209")
                      MOVE  "選定入院料での入力可能な区分は０、３、４、"
                                        TO  WRK-ERRMSG(1:42)
                      MOVE    "５、６、７のいずれかです。"
                                        TO  WRK-ERRMSG(43:26)
+                   ELSE
+                     MOVE  "選定入院料での入力可能な区分は０、３、４、"
+                                       TO  WRK-ERRMSG(1:42)
+                     MOVE    "５、６、７、８、９のいずれかです。"
+                                       TO  WRK-ERRMSG(43:34)
+                   END-IF
                  ELSE
                    IF  (SPA-NAI-SRYYM     >=    "201004")   AND
                        (SPA-NAI-SRYYM     <=    "201203")
