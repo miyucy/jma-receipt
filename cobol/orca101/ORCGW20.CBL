@@ -4308,7 +4308,7 @@
                        MOVE    ZERO    TO  FLG-SETKHNRYO
                END-IF
       *
-               IF    ( TNS-NYUKHNKBN   =   196     )
+               IF    ( TNS-NYUKHNKSNKBN    =   196     )
                        MOVE    ZERO    TO  FLG-SETKHNRYO
                END-IF
       *
