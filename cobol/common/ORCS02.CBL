@@ -342,6 +342,7 @@
       *  04.05.41    NACL-ÌçÏÆ    12/08/29  Á°´ü¹âÎð¼Ô£±³ä¡Ü£°£µ£±
       *                                     ¤Î¿©»öÉéÃ´·×»»½¤Àµ¡ÊÄ¹´üÊ»ÍÑ»þ¡Ë
       *  04.05.42    NACL-ÌçÏÆ    12/09/18  ²þÀµÂÐ±þ¡Ê³°Çñ¶èÊ¬£¸¡¤£¹¤ÎÂÐ±þ¡Ë
+      *  04.05.43    NACL-ÌçÏÆ    12/09/19  Ê¡Åç¸©ÃÏÊý¸øÈñÂÐ±þ
       *
       *  04.06.01    NACL-ÌçÏÆ    10/11/08  ¼çÊÝ¸±¡Ü¥Þ¥ëÄ¹¤ÎÀÁµáÂÐ±þ
       *  04.06.02    NACL-ÌçÏÆ    12/07/30  ¹â³Û°ÑÇ¤Ê§¤¤À©ÅÙ¾å¸Â³Û£°±ßÂÐ±þ
@@ -10182,6 +10183,8 @@
                                       "445" OR "545"
                                             OR "645"   ) AND
                    (LNK-SYU-SRYYMD(1:6)    >= "200604" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "480"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "201210" ))
                  MOVE    "1"    TO  WK-2010-IRYOKEIKBN-N(IDX-CYO)
                END-IF
              WHEN       11
@@ -10241,6 +10244,8 @@
                                         "445" OR "545"
                                               OR "645"   ) AND
                      (LNK-SYU-SRYYMD(1:6)    >= "200604" ))
+                 OR ((COMB-KOHHKNNUM(IDX-CYO) =  "480"   ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "201210" ))
                    MOVE    "1"    TO  WK-2010-SKJKEIKBN(IDX-CYO)
                  END-IF
                WHEN       11
@@ -10454,6 +10459,8 @@
                                       "445" OR "545"
                                             OR "645"   ) AND
                    (LNK-SYU-SRYYMD(1:6)    >= "200604" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "480"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "201210" ))
                  MOVE    "1"    TO  WK-2010-IRYOKEIKBN-N-XXX(IDX-CYO)
                END-IF
              WHEN       11
@@ -10515,6 +10522,8 @@
                                       "445" OR "545"
                                             OR "645"   ) AND
                    (LNK-SYU-SRYYMD(1:6)     < "200604" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "480"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "201210" ))
                  MOVE    SPACE  TO  WK-2010-IRYOKEIKBN-N(IDX-CYO)
                END-IF
              WHEN       11
@@ -10557,6 +10566,11 @@
            END-EVALUATE
       *
            EVALUATE   WK-1001-PREFNUM
+             WHEN       07
+               IF ((COMB-KOHHKNNUM(IDX-CYO) =  "480"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "201210" ))
+                 MOVE    SPACE  TO  WK-2010-SKJKEIKBN(IDX-CYO)
+               END-IF
              WHEN       11
                IF ((COMB-KOHHKNNUM(IDX-CYO) =  "582"   ) AND
                    (LNK-SYU-SRYYMD(1:6)     < "200710" ))
