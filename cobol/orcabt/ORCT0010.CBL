@@ -235,6 +235,10 @@
                "同日再入院日の再入院分に入院料加算が算定されています".
            03  ERR-MSG22                   PIC X(100)    VALUE
                "薬剤料減点数を確認してください".
+           03  ERR-MSG26                   PIC X(100)    VALUE
+               "特定時間退院減算（外泊）の入力に誤りがあります".
+           03  ERR-MSG27                   PIC X(100)    VALUE
+               "特定曜日入退院減算（外泊）の入力に誤りがあります".
            03  ERR-MSG88                   PIC X(100)    VALUE
                "キャンセルしました".
       *
@@ -954,6 +958,10 @@
                    MOVE    "0021"      TO  ERR-ERRCD
                WHEN    25
                    MOVE    "0022"      TO  ERR-ERRCD
+               WHEN    26
+                   MOVE    "0026"      TO  ERR-ERRCD
+               WHEN    27
+                   MOVE    "0027"      TO  ERR-ERRCD
                WHEN    OTHER
                    MOVE    "0006"      TO  ERR-ERRCD
                END-EVALUATE
@@ -1608,6 +1616,10 @@
                MOVE    ERR-MSG21       TO  ERR-ERRMSG
            WHEN    "0022"
                MOVE    ERR-MSG22       TO  ERR-ERRMSG
+           WHEN    "0026"
+               MOVE    ERR-MSG26       TO  ERR-ERRMSG
+           WHEN    "0027"
+               MOVE    ERR-MSG27       TO  ERR-ERRMSG
            WHEN    "8888"
                MOVE    ERR-MSG88       TO  ERR-ERRMSG
            END-EVALUATE

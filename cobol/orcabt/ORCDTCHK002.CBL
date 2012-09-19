@@ -9113,7 +9113,8 @@
       *
                IF    ( TNACCT-GAIHAKU-DAY (IDX0)
                                            =   ZERO OR 4 OR 5
-                                                    OR 6 OR 7 )
+                                                    OR 6 OR 7
+                                                    OR 8 OR 9 )
                    CONTINUE
                ELSE
                    IF    ( TNYUIN-CHOZAI-DAY (IDX0)    =   1 )
@@ -9829,6 +9830,10 @@
                    MOVE    "990021"    TO  WRK-ERRCD
                WHEN    25
                    MOVE    "990022"    TO  WRK-ERRCD
+               WHEN    26
+                   MOVE    "990026"    TO  WRK-ERRCD
+               WHEN    27
+                   MOVE    "990027"    TO  WRK-ERRCD
                WHEN    OTHER
                    MOVE    "990018"    TO  WRK-ERRCD
                END-EVALUATE

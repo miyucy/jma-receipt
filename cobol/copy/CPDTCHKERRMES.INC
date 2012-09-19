@@ -613,13 +613,23 @@
            05 PIC  X(30)   VALUE   "剤料減点数を確認してください  ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "990026".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。特".
+           05 PIC  X(30)   VALUE   "定時間退院減算（外泊）の入力に".
+           05 PIC  X(30)   VALUE   "誤りがあります                ".
+      *
+           05 PIC  X(06)   VALUE   "990027".
+           05 PIC  X(30)   VALUE   "患者負担額が計算できません。特".
+           05 PIC  X(30)   VALUE   "定曜日入退院減算（外泊）の入力".
+           05 PIC  X(30)   VALUE   "に誤りがあります              ".
+      *
            05 PIC  X(06)   VALUE   "A10001".
            05 PIC  X(30)   VALUE   "チェックマスタ「薬剤と病名」に".
            05 PIC  X(30)   VALUE   "登録がありません              ".
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  110.
+           05 ERRMES-OCC   OCCURS  112.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   110.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   112.
