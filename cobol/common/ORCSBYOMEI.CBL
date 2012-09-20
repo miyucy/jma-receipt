@@ -185,6 +185,9 @@
       *    病名コードＭＡＸ
            03  WRK-CONS-BYOMEI-MAX PIC 9(02)   VALUE   21.
       *
+      *    検索病名情報ＭＡＸ
+           03  WRK-CONS-BYOMEICD-TBL-MAX
+                                   PIC 9(02)   VALUE   40.
       *    
       *    ワーク病名
        01  WRK-BYOMEI-REC.
@@ -682,12 +685,14 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    KANACHK-OUT-INPUT   TO  LNK-BYO-BYOMEI
            ELSE
                MOVE    1                   TO  LNK-BYO-KANACHK-ERR
+               MOVE    9                   TO  FLG-KENSAKU-KBN
                GO  TO  200-BYOMEI-SYORI-EXT
            END-IF
       *
       *    文字数チェック
            IF      KANACHK-MAX         >   80
                MOVE    2                   TO  LNK-BYO-KANACHK-ERR
+               MOVE    9                   TO  FLG-KENSAKU-KBN
                GO  TO  200-BYOMEI-SYORI-EXT
            END-IF
       *    病名文字数
@@ -774,6 +779,10 @@ grpsys     COPY    "COMMON-SPA".
                    IF      FLG-BYOMEI          =   ZERO
                        PERFORM 2002-BYOMEICD-HENSYU-SEC
                        IF      FLG-TBLERR          =   1
+                           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                           PERFORM 900-CLOSE-SEC
+      *
                            GO  TO  200-BYOMEI-SYORI-EXT
                        END-IF 
                    END-IF      
@@ -854,12 +863,23 @@ grpsys     COPY    "COMMON-SPA".
                            IF      FLG-BUBUN           >   ZERO
                                PERFORM 2007-BUBUN-HENSYU-SEC
                                IF      FLG-TBLERR          =   1
+                                   MOVE    WRK-MCP-TABLE
+                                                       TO  MCP-TABLE
+                                   MOVE    WRK-MCP-PATHNAME
+                                                       TO  MCP-PATHNAME
+                                   PERFORM 900-CLOSE-SEC
+      *
                                    GO  TO  200-BYOMEI-SYORI-EXT
                                END-IF 
                            END-IF
       *
                            PERFORM 2002-BYOMEICD-HENSYU-SEC
                            IF      FLG-TBLERR  =   1
+                               MOVE    WRK-MCP-TABLE   TO  MCP-TABLE
+                               MOVE    WRK-MCP-PATHNAME
+                                                       TO  MCP-PATHNAME
+                               PERFORM 900-CLOSE-SEC
+      *
                                GO  TO  200-BYOMEI-SYORI-EXT
                            END-IF
                        END-IF      
@@ -949,10 +969,19 @@ grpsys     COPY    "COMMON-SPA".
                    PERFORM 2001-BYOMEICD-KENSAKU-SEC
                    IF      FLG-BYOMEI          =   ZERO
                        PERFORM 2002-BYOMEICD-HENSYU-SEC
+      *
+                       MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                       MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                       PERFORM 900-CLOSE-SEC
+      *
                        IF      FLG-TBLERR          =   1
                            GO  TO  200-BYOMEICD-SYORI-EXT
                        END-IF 
                    ELSE
+                       MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                       MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                       PERFORM 900-CLOSE-SEC
+      *
                        SET     TBL-BYOMEICD-IDX    TO  1
                        SEARCH  TBL-BYOMEICD-OCC
                                        VARYING TBL-BYOMEICD-IDX
@@ -982,10 +1011,6 @@ grpsys     COPY    "COMMON-SPA".
                            GO  TO  200-BYOMEICD-SYORI-EXT
                        END-IF
                    END-IF
-      *
-                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-                   PERFORM 900-CLOSE-SEC
                END-IF
            END-PERFORM    
            .
@@ -1162,7 +1187,7 @@ grpsys                            SPA-AREA
            EVALUATE    FLG-HENSYU
                WHEN    1
                    ADD     1               TO  IDY
-                   IF      IDY             >   WRK-CONS-BYOMEI-MAX
+                   IF      IDY             >   WRK-CONS-BYOMEICD-TBL-MAX
                        MOVE    1           TO  FLG-TBLERR
                        GO  TO  2002-BYOMEICD-HENSYU-EXT
                    END-IF
@@ -1585,7 +1610,8 @@ grpsys                            SPA-AREA
                    EVALUATE    FLG-HENSYU
                        WHEN    "1"
                            ADD     1           TO  IDY
-                           IF      IDY         >   WRK-CONS-BYOMEI-MAX
+                           IF      IDY         >
+                                           WRK-CONS-BYOMEICD-TBL-MAX
                                MOVE    1           TO  FLG-TBLERR
                                GO  TO  2006-KAKKO-KENSAKU-EXT
                            END-IF
@@ -1631,7 +1657,7 @@ grpsys                            SPA-AREA
            EVALUATE    FLG-HENSYU
                WHEN    "1"
                    ADD     1           TO  IDY
-                   IF      IDY         >   WRK-CONS-BYOMEI-MAX
+                   IF      IDY         >   WRK-CONS-BYOMEICD-TBL-MAX
                        MOVE    1           TO  FLG-TBLERR 
                        GO  TO  2007-BUBUN-HENSYU-EXT
                    END-IF
