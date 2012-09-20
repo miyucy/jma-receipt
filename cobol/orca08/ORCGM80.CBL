@@ -80,6 +80,7 @@
                        09  SPA-GMN-TPGMEISYO     PIC X(100).
                        09  SPA-GMN-TPGNAME       PIC X(50).
                        09  SPA-GMN-TVERSION      PIC X(20).
+                       09  SPA-GMN-TVERSION2     PIC X(20).
                        09  SPA-GMN-TVENDOR       PIC X(20).
                        09  SPA-GMN-TINS          PIC X(10).
                        09  SPA-GMN-TLINK         PIC X(10).
@@ -98,6 +99,7 @@
                    07  SPA-NAI-LINK            PIC 9(01).
                    07  SPA-NAI-PGNAME          PIC X(50).
                    07  SPA-NAI-VERSION         PIC X(20).
+                   07  SPA-NAI-VERSION2        PIC X(20).
       *        処理中
                05  SPA-GMN-SYORIMSG            PIC X(80).
                05  SPA-NAI-SYORIERR            PIC 9(01).
@@ -158,6 +160,7 @@
                09  WRK-GMN-TPGMEISYO     PIC X(100).
                09  WRK-GMN-TPGNAME       PIC X(50).
                09  WRK-GMN-TVERSION      PIC X(20).
+               09  WRK-GMN-TVERSION2     PIC X(20).
                09  WRK-GMN-TVENDOR       PIC X(20).
                09  WRK-GMN-TINS          PIC X(10).
                09  WRK-GMN-TLINK         PIC X(10).
@@ -558,7 +561,7 @@
       *****************************************************************
        4042-LIST-HEN-SEC             SECTION.
       *
-           IF      PLUGIN-ID           =   "id  "
+           IF      PLUGIN-ID           =   "name  "
                ADD     1                   TO  IDX
                IF      IDX                 <   IDX-STR
       *            読み飛ばし
@@ -577,15 +580,17 @@
            IF     (FLG-NO              =   ZERO )
              AND  (FLG-DATAEND         =   ZERO )
                EVALUATE    PLUGIN-ID
-               WHEN    "id "
+               WHEN    "name "
       *            番号
                    MOVE    IDX             TO  SPA-GMN-TNUM    (IDY)
-               WHEN    "name "
       *            プログラムＩＤ
                    MOVE    PLUGIN-DATA     TO  SPA-GMN-TPGNAME   (IDY)
-               WHEN    "version "
+               WHEN    "current "
       *            バージョン
                    MOVE    PLUGIN-DATA     TO  SPA-GMN-TVERSION(IDY)
+               WHEN    "available "
+      *            バージョン（最新）
+                   MOVE    PLUGIN-DATA     TO  SPA-GMN-TVERSION2(IDY)
                WHEN    "description "
       *            プログラム名称
                    MOVE    PLUGIN-DATA     TO  SPA-GMN-TPGMEISYO(IDY)
@@ -599,17 +604,17 @@
       *            INS
                    MOVE    PLUGIN-DATA     TO  SPA-NAI-TINS (IDY)
                    IF      SPA-NAI-TINS  (IDY) =   "FALSE"
-                       MOVE    "NO"            TO  SPA-GMN-TINS (IDY)
+                       MOVE    "-"             TO  SPA-GMN-TINS (IDY)
                    ELSE
-                       MOVE    "YES"           TO  SPA-GMN-TINS (IDY)
+                       MOVE    "導入"          TO  SPA-GMN-TINS (IDY)
                    END-IF
                WHEN    "link "
       *            LINK
                    MOVE    PLUGIN-DATA     TO  SPA-NAI-TLINK (IDY)
                    IF      SPA-NAI-TLINK (IDY) =   "FALSE"
-                       MOVE    "disable"       TO  SPA-GMN-TLINK (IDY)
+                       MOVE    "-"             TO  SPA-GMN-TLINK (IDY)
                    ELSE
-                       MOVE    "enable"        TO  SPA-GMN-TLINK (IDY)
+                       MOVE    "適用"          TO  SPA-GMN-TLINK (IDY)
                    END-IF
                END-EVALUATE
            END-IF
@@ -806,20 +811,22 @@
        40423-LIST-HEN03-SEC             SECTION.
       *
       *
-           IF      PLUGIN-ID           =   "id  "
+           IF      PLUGIN-ID           =   "name  "
                PERFORM 40423-LIST03-INIT-SEC
            END-IF
       *
            EVALUATE    PLUGIN-ID
-               WHEN    "id "
+               WHEN    "name "
       *            番号
                    MOVE    1               TO  WRK-GMN-TNUM
-               WHEN    "name "
       *            プログラムＩＤ
                    MOVE    PLUGIN-DATA     TO  WRK-GMN-TPGNAME
-               WHEN    "version "
+               WHEN    "current "
       *            バージョン
                    MOVE    PLUGIN-DATA     TO  WRK-GMN-TVERSION
+               WHEN    "available "
+      *            バージョン
+                   MOVE    PLUGIN-DATA     TO  WRK-GMN-TVERSION2
                WHEN    "description "
       *            プログラム名称
                    MOVE    PLUGIN-DATA     TO  WRK-GMN-TPGMEISYO
@@ -979,6 +986,8 @@
                                        TO  SPA-NAI-PGNAME
            MOVE    SPA-GMN-TVERSION(SPA-NAI-IDX)
                                        TO  SPA-NAI-VERSION
+           MOVE    SPA-GMN-TVERSION2(SPA-NAI-IDX)
+                                       TO  SPA-NAI-VERSION2
       *
            IF      SPA-NAI-INSTALL     =   2
                MOVE    12                  TO  SPA-GMN-CUR
@@ -1208,7 +1217,17 @@
            MOVE    2                   TO  SPA-SHELLFLG
       *
            MOVE    SPA-NAI-PGNAME      TO  WRK-PACKAGE
-           MOVE    SPA-NAI-VERSION     TO  WRK-VERSION
+           EVALUATE    WRK-COMMAND
+               WHEN    "install"
+               WHEN    "upgrade"
+                   MOVE    SPA-NAI-VERSION2    TO  WRK-VERSION
+               WHEN    "uninstall"
+               WHEN    "enable"
+               WHEN    "disable"
+                   MOVE    SPA-NAI-VERSION     TO  WRK-VERSION
+               WHEN    OTHER
+                   MOVE    SPA-NAI-VERSION2    TO  WRK-VERSION
+           END-EVALUATE
            PERFORM 4041-SHELL-CALL-SEC
            .
        4010-SHELL-SYORI-EXT.
@@ -1343,6 +1362,7 @@
                                                TO  M80-TPGMEISYO(IDX)
                MOVE    SPA-GMN-TPGNAME (IDX)   TO  M80-TPGNAME  (IDX)
                MOVE    SPA-GMN-TVERSION(IDX)   TO  M80-TVERSION (IDX)
+               MOVE    SPA-GMN-TVERSION2(IDX)  TO  M80-TVERSION2(IDX)
                MOVE    SPA-GMN-TVENDOR (IDX)   TO  M80-TVENDOR (IDX)
                MOVE    SPA-GMN-TINS    (IDX)   TO  M80-TINS    (IDX)
                MOVE    SPA-GMN-TLINK   (IDX)   TO  M80-TLINK   (IDX)
@@ -1376,10 +1396,10 @@
       *
            EVALUATE    SPA-NAI-INSTALL
                WHEN    1
-                   MOVE    "install"           TO  M80-B09-LABEL
+                   MOVE    "ＰＫＧ導入"        TO  M80-B09-LABEL
                    MOVE    WIDGET-NORMAL       TO  M80-B09-STATE
                WHEN    2
-                   MOVE    "uninstall"         TO  M80-B09-LABEL
+                   MOVE    "ＰＫＧ削除"        TO  M80-B09-LABEL
                    MOVE    WIDGET-NORMAL       TO  M80-B09-STATE
                WHEN    OTHER
                    MOVE    SPACE               TO  M80-B09-LABEL
@@ -1391,10 +1411,10 @@
            IF      SPA-NAI-INSTALL     =   2
                EVALUATE    SPA-NAI-LINK
                WHEN    1
-                   MOVE    "enable"            TO  M80-B11-LABEL
+                   MOVE    "ＰＫＧ適用"        TO  M80-B11-LABEL
                    MOVE    WIDGET-NORMAL       TO  M80-B11-STATE
                WHEN    2
-                   MOVE    "disable"           TO  M80-B11-LABEL
+                   MOVE    "ＰＫＧ解除"        TO  M80-B11-LABEL
                    MOVE    WIDGET-NORMAL       TO  M80-B11-STATE
                END-EVALUATE
            END-IF
@@ -1416,7 +1436,7 @@
       *    明細があり未選択の時
            IF     (SPA-TBL-MAX         >   ZERO )
              AND  (SPA-GMN-SELNUM      =   ZERO )
-               MOVE    "upgrade"           TO  M80-B10-LABEL
+               MOVE    "ＰＫＧ更新"        TO  M80-B10-LABEL
                MOVE    WIDGET-NORMAL       TO  M80-B10-STATE
            END-IF
       *
@@ -1526,31 +1546,31 @@
            MOVE    SPACE               TO  M80ID1
            EVALUATE    SPA-M80ID1CD
                WHEN    "0101"
-                   STRING  "選択したパッケージをインストールします。"
+                   STRING  "選択したパッケージを導入します。"
                            "よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   M80ID1-ID1MSG
                    END-STRING
                WHEN    "0102"
-                   STRING  "選択したパッケージをアンインストール"
+                   STRING  "選択したパッケージを削除"
                            "します。よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   M80ID1-ID1MSG
                    END-STRING
                WHEN    "0103"
-                   STRING  "選択したパッケージをリンクします。"
+                   STRING  "選択したパッケージを適用します。"
                            "よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   M80ID1-ID1MSG
                    END-STRING
                WHEN    "0104"
-                   STRING  "選択したパッケージをアンリンクします。"
+                   STRING  "選択したパッケージを解除します。"
                            "よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   M80ID1-ID1MSG
                    END-STRING
                WHEN    "0105"
-                   STRING  "パッケージをアップグレードします。"
+                   STRING  "パッケージを更新します。"
                            "よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   M80ID1-ID1MSG

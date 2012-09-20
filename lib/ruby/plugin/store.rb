@@ -126,13 +126,11 @@ module JMA::Plugin
         end
         linked = []
         begin
-          list.each_with_index{|l,i|
-              index = i
+          list.each{|l|
               from = File.join(storedir,l[0])
               to = File.expand_path(File.join(@linkprefix,l[1]))
-              to = File.join(to,File.basename(l[0])) if File.exist?(to)
-              unless to.index(@linkprefix) == 0
-                raise "invalid link #{l[0]} to #{l[1]}, over linkprefix violation"
+              if File.exist?(to) && File.symlink?(to)
+                FileUtils.rm_f(to)
               end
               FileUtils.symlink(from,to)
               linked << to

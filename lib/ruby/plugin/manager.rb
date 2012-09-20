@@ -8,6 +8,8 @@ require "plugin/db"
 require "plugin/store"
 require "plugin/util"
 
+require 'pp'
+
 module JMA::Plugin
   class Manager
     def initialize(config)
@@ -23,29 +25,35 @@ module JMA::Plugin
 
     def update
       lock {
+        provided_list = []
         @config[:list].each{|url|
           begin
             @log.info("get package info from #{url}")
-            plist = YAML.load(download_list(url))
-            plist.each{|control|
-              same_name_list = @db.list.select{|c|  c[:name] == control[:name]}
-              upper_list = same_name_list.select{|c| c[:version] >= control[:version]}
-              if upper_list.empty?
-                @log.info("new package:#{control[:name]}-#{control[:version]}")
-                @db.insert(control)
-                same_name_list.each{|c| 
-                  if c[:install] == "FALSE"
-                    @log.info("delete old package:#{c[:name]}-#{c[:version]}")
-                    @db.delete(c[:name],c[:version])
-                  end
-                }
-              end
-            }
+            _list = YAML.load(download_list(url))
+            provided_list << _list if _list
           rescue Exception => ex
             @log.error("can not get package info:#{url} #{ex}")
-            raise ex
+            @log.error(ex)
           end
-        } 
+        }
+        provided_list.flatten!
+
+        #check existence
+        db_list = @db.list
+        db_list.each{|c|
+          available = provided_list.index{|p| 
+            p[:name] == c[:name] && p[:version] == c[:version]
+          }
+          if available
+            @db.available(c[:name],c[:version])
+          else
+            @db.disavailable(c[:name],c[:version])
+          end
+        }
+        #get not installed
+        provided_list.each{|pc|
+          @db.insert(pc) unless @db.id(pc[:name],pc[:version])
+        }
       }
     end
 
@@ -100,6 +108,7 @@ module JMA::Plugin
       @db.list_installed.each{ |control|
         candidate = all.select{|c| 
           c[:install] == "FALSE" && 
+          c[:available] == "TRUE" &&
           c[:name] == control[:name] && 
           c[:version] > control[:version]
         }
@@ -149,16 +158,11 @@ module JMA::Plugin
       unless control
         raise "#{name}-#{version} is not in the list"
       end
-      if @db.install?(name,version)
+      if control[:install] == "TRUE"
         raise "#{name}-#{version} already installed" 
       end
-      upper = @db.list_installed.select{|c| 
-        c[:name] == name &&
-        c[:version] > version
-      }
-      unless upper.empty?
-        @log.info("#{name}-#{upper[0][:version]} installed")
-        return 
+      unless control[:available] == "TRUE"
+        raise "#{name}-#{version} unavailable" 
       end
       package_path = download_package(control[:name],control[:version],control[:url])
       old = @db.list_installed.select{|c| c[:name] == name}

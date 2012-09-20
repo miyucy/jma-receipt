@@ -70,8 +70,43 @@ def parse_package_list(argv)
 end
 
 def list4cobol(list)
-  key = [:id,:name,:version,:description,:vendor,:date,:url,:install,:link]
-  _list = list.each{|r| 
+  available = {}
+  installed = {}
+  list.each{|r|
+    if r[:available] == "TRUE"
+      if available[r[:name]]
+        if r[:version] > available[r[:name]][:version]
+          availabel[r[:name]] = r
+        end
+      else
+        available[r[:name]] = r
+      end
+    end
+    if r[:install] == "TRUE"
+      installed[r[:name]] = r
+    end
+  }
+  _list = []
+  list.map{|r| r[:name]}.sort!.uniq!.each{|n|
+    if installed[n]
+      r = installed[n]
+      r[:current] = r[:version]
+      if available[n]
+        r[:available] = available[n][:version]
+        r[:date] = available[n][:date]
+      else
+        r[:available] = "-"
+      end
+      _list << r
+    else
+      r = available[n]
+      r[:available] = r[:version]
+      r[:current] = "-"
+      _list << r
+    end
+  }
+  key = [:name,:current,:available,:description,:vendor,:date,:install,:link]
+  _list.each{|r| 
     record = key.map{|k| 
       printf("%s:%s\n",k.to_s + ' '*(15-k.to_s.size),r[k])
     }
@@ -111,7 +146,7 @@ if $0 == __FILE__
       yaml = YAML.dump(manager.list(ARGV[0]))
       puts yaml
     when "list4cobol"
-      list4cobol(manager.list(ARGV[0]))
+      list4cobol(manager.list("all"))
     when "search"
       yaml = YAML.dump(manager.search(ARGV[0]))
       puts yaml

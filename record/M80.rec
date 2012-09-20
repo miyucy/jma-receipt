@@ -12,8 +12,9 @@ M80	{
 					value2	varchar(50);
 					value3	varchar(20);
 					value4	varchar(20);
-					value5	varchar(10);
+					value5	varchar(20);
 					value6	varchar(10);
+					value7	varchar(10);
 				}	[100];
 				select	bool[100];
 			};

@@ -15,15 +15,16 @@ module JMA::Plugin
       @db.execute_batch(<<-SQL,JMA::Plugin::VERSION)
         CREATE TABLE system(version TEXT NOT NULL);
         CREATE TABLE control(
-          id          INTEGER PRIMARY KEY,
-          name        TEXT NOT NULL,
-          version     TEXT NOT NULL, 
-          description TEXT, 
-          vendor      TEXT NOT NULL,
-          date        TEXT NOT NULL,
-          url         TEXT NOT NULL,
-          install     TEXT NOT NULL,
-          link        TEXT NOT NULL
+          id           INTEGER PRIMARY KEY,
+          name         TEXT NOT NULL,
+          version      TEXT NOT NULL, 
+          description  TEXT, 
+          vendor       TEXT NOT NULL,
+          date         TEXT NOT NULL,
+          url          TEXT NOT NULL,
+          install      TEXT NOT NULL,
+          link         TEXT NOT NULL,
+          available    TEXT NOT NULL 
         );
       SQL
       @db.execute("INSERT INTO system VALUES (?);",JMA::Plugin::VERSION)
@@ -33,33 +34,42 @@ module JMA::Plugin
       return @db.get_first_row("SELECT version FROM system;")[0]
     end
 
-    def insert(control,install = false, link = false)
+    def insert(control)
       @db.transaction {
         ids = @db.execute("SELECT id FROM control WHERE name=? AND version=?;",
           control[:name],
           control[:version])
         return unless ids.empty?
-        @db.execute("INSERT INTO control (name,version,description,vendor,date,url,install,link) VALUES(?,?,?,?,?,?,?,?);",
+        @db.execute("INSERT INTO control (name,version,description,vendor,date,url,install,link,available) VALUES(?,?,?,?,?,?,?,?,?);",
           control[:name],
           control[:version],
           control[:description],
           control[:vendor],
           control[:date],
           control[:url],
-          install ? "TRUE" : "FALSE",
-          link ? "TRUE" : "FALSE"
+          "FALSE", #install
+          "FALSE", #link
+          "TRUE"   #available
         )
       }
     end
 
     def id(name,version)
-      return @db.execute("SELECT id FROM control WHERE name=? AND version=?;", name,version)[0]
+      ret = @db.execute("SELECT id FROM control WHERE name=? AND version=?;", name,version)
+      return ret ? ret[0] : nil
     end
 
-    def delete(name,version)
+    def available(name,version)
       _id = id(name,version)
       @db.transaction {
-        @db.execute("DELETE FROM control WHERE id=?;", _id)
+        @db.execute("UPDATE control SET available=? WHERE id=?;","TRUE",_id)
+      }
+    end
+
+    def disavailable(name,version)
+      _id = id(name,version)
+      @db.transaction {
+        @db.execute("UPDATE control SET available=? WHERE id=?;","FALSE",_id)
       }
     end
 
@@ -73,7 +83,7 @@ module JMA::Plugin
 
     def uninstall(name,version)
       _id = id(name,version)
-      @db.execute("UPDATE control SET install=? WHERE id=?;","FALSE",_id)
+      @db.execute("UPDATE control SET link=?, install=? WHERE id=?;","FALSE","FALSE",_id)
     end
 
     def install?(name,version)
@@ -101,7 +111,7 @@ module JMA::Plugin
     end
 
     def get_control(name,version)
-      keys = [:id, :name,:version,:description,:vendor,:date,:url,:install,:link]
+      keys = [:id, :name,:version,:description,:vendor,:date,:url,:install,:link,:available]
       vals = @db.execute("SELECT * FROM control WHERE name=? AND version=?;",name,version).flatten
       return nil if vals.empty?
       list = keys.zip(vals)
@@ -115,6 +125,10 @@ module JMA::Plugin
         "#{a[:name]}-#{a[:version]}" <=> "#{b[:name]}-#{b[:version]}"
       }
       return ret
+    end
+
+    def list_available
+      return list.select{|c| c[:available] == "TRUE"}
     end
 
     def list_installed
