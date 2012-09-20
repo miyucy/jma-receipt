@@ -23,7 +23,7 @@ XML2_CFLAGS = @xml2_CFLAGS@
 XML2_LIBS = @xml2_LIBS@
 
 COBJS = ${CSRCS:.c=.so}
-CJQOBJS = ${CJQSRCS:.c=.so}  
+CJQOBJS = ${CJQSRCS:.c=.so}
 
 COBJS += $(CJQOBJS)
 COBJS += $(CJKANJIOBJS)
@@ -45,7 +45,7 @@ installdirs:
 	$(INSTALL) -d $(orcalibdir)
 
 orcqrencode.so: orcqrencode.c
-	$(CC) $(QRENCODE_LIB) $(PNG_CFLAGS) $(PNG_LIBS) -fPIC -shared $< -o $@
+	$(CC) -Wl,--no-as-needed $(QRENCODE_LIB) $(PNG_CFLAGS) $(PNG_LIBS) -fPIC -shared $< -o $@
 
 fixreddata.so: fixreddata.c euc.c
 	$(CC) $(XML2_CFLAGS) $(XML2_LIBS) -fPIC -shared -Wl,-soname,$@ $? -o $@
