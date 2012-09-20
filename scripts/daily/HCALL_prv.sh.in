@@ -48,6 +48,11 @@ fi
 	if      [ ${4:7:4} = "HC2Q" ]   ;then
 		ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' ${4} | xargs rm -f
 	fi
+	if      [ ${4:7:4} = "HC62" ]   ;then
+                LDATA=`ls \`echo $4 | sed 's/[[:digit:]]*\.dat$//g'\`* | sort -r | head -n 1`
+                ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $LDATA |xargs rm -f
+
+	fi
 	rm ${4:0:53}*
 #	rm ${4}
 	fi
