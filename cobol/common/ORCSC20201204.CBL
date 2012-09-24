@@ -3790,6 +3790,8 @@
                AND  (WRK-COM-YAKUHYO (IDX) =   SPACE  )
       *ver.4.7  減点対象外
                AND  (WRK-COM-GENTEN (IDX)  =   SPACE  )
+      *         点数ゼロ対象外（サ）のみの剤等
+               AND  (WRK-COM-KEI    (IDX)  >   ZERO   )
       *
       *        診療種別区分変換
                PERFORM 30001-SRYSYUKBN-SET-SEC
