@@ -9251,7 +9251,7 @@
                EVALUATE    TRUE
                WHEN  ( SPA-PREFNUM     =   CONST-FUKUSHIMA )
                 AND  ( SPA-GMN-KOHNUM  =   "245" OR "246" OR "445"
-                                        OR "545" OR "645" )
+                                        OR "545" OR "645" OR "480" )
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
                 AND  ( SPA-GMN-KOHNUM  =   "343" OR "342" OR "181"
                                         OR "182" OR "183" OR "481"
@@ -9263,7 +9263,7 @@
                                         OR "562" OR "662" OR "762"
                                         )
                WHEN  ( SPA-PREFNUM     =   CONST-KUMAMOTO )
-                AND  ( SPA-GMN-KOHNUM  =   "341" OR "442" )
+                AND  ( SPA-GMN-KOHNUM  =   "341" OR "442" OR "480" )
                    MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNG
                    MOVE    "0"         TO  SPA-GMN-IRYOKEITAIKBNG
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
@@ -9284,7 +9284,7 @@
                                         OR "372" OR "373" OR "281"
                                         OR "462" OR "762" )
                WHEN  ( SPA-PREFNUM     =   CONST-KUMAMOTO )
-                AND  ( SPA-GMN-KOHNUM  =   "341" OR "442" )
+                AND  ( SPA-GMN-KOHNUM  =   "341" OR "442" OR "480" )
                    MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNN
                    MOVE    "0"         TO  SPA-GMN-IRYOKEITAIKBNN
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
@@ -9295,7 +9295,8 @@
       *
                EVALUATE    TRUE
                WHEN  ( SPA-PREFNUM     =   CONST-FUKUSHIMA )
-                AND  ( SPA-GMN-KOHNUM  =   "445" OR "545" OR "645" )
+                AND  ( SPA-GMN-KOHNUM  =   "445" OR "545" OR "645"
+                                        OR "480" )
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
                 AND  ( SPA-GMN-KOHNUM  =            "582" OR "743"
                                         OR "442" OR "781" OR "542"
