@@ -197,6 +197,7 @@
                WHEN    "3"
                WHEN    "7"
                WHEN    "8"
+               WHEN    "5"
                    MOVE    2           TO  SSUB02-PROC-FLG (IDXM)
                WHEN    "2"
                    MOVE    3           TO  SSUB02-PROC-FLG (IDXM)
