@@ -8209,22 +8209,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>P024_JKYSNUM</name>
-	  <x>148</x>
-	  <y>592</y>
-	  <width>177</width>
-	  <height>24</height>
-	  <label></label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label2046</name>
 	  <x>788</x>
 	  <y>468</y>
@@ -8534,6 +8518,22 @@
 	      <ypad>0</ypad>
 	    </widget>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>P024_JKYSNUM</name>
+	  <x>148</x>
+	  <y>592</y>
+	  <width>177</width>
+	  <height>24</height>
+	  <label></label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
 
