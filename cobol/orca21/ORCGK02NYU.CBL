@@ -1906,13 +1906,6 @@
       *    画面用スパ編集処理
            PERFORM                 310-SPA-GMNSET-SEC
       *
-      *    アフターケアの場合エラーとする
-           IF     (SPA-HKNNUM          =   "971" ) AND
-                  (SPA-RSI-HKNKBN      =   "3"   )
-               MOVE    "9041"              TO  SPA-ERRCD
-               MOVE    9                   TO  SPA-HKN-ERR
-               MOVE    SPACE               TO  SPA-ERRMSG2
-           END-IF
            .
        30091-SAIHEN2-EXT.
            EXIT.
@@ -2894,6 +2887,18 @@
       *
            IF      ORCSCWKSRY-ERRCD    NOT =   SPACE
                MOVE    ORCSCWKSRY-ERRCD    TO  WRK-ERRCD1
+           END-IF
+      *
+      *H24.9
+      *    中途終了でアフターケアの場合エラーとする
+           IF     ORCSCWKSRY-SYORIFLG  =   1
+               IF     (SPA-HKNNUM          =   "971" ) AND
+                      (SPA-RSI-HKNKBN      =   "3"   )
+                   MOVE    "9041"              TO  SPA-ERRCD
+                   MOVE    "9041"              TO  WRK-ERRCD1
+                   MOVE    9                   TO  SPA-HKN-ERR
+                   MOVE    SPACE               TO  SPA-ERRMSG2
+               END-IF
            END-IF
       *
            .
@@ -4130,18 +4135,20 @@
                                        SPA-K02
       *
       *    再表示編集処理
+           MOVE    SPACE               TO  WRK-KIDCD
            IF      LNK-SC95-WKSRYACT   =   1
-               MOVE    "0122"          TO  SPA-KIDCD
+               MOVE    "0122"          TO  WRK-KIDCD
            END-IF
       *
       *    保険組合
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
            PERFORM 41012-HKNCOMBI-CHANGE-SEC
-      **** PERFORM 3101-HKNCOMBI-HEN-SEC
+           IF      WRK-KIDCD       NOT =   SPACE
+               MOVE    WRK-KIDCD           TO  SPA-KIDCD
+           END-IF
       *
            MOVE    HZN-SCR-REC         TO  SPA-SCR-REC
            IF     (SPA-SYORIFLG        =   ZERO )  AND
-      ****        (SPA-KID1-FLG    NOT =   "OK" )
                   (SPA-GMN-FLG         =   ZERO )
                INITIALIZE                  SPA-SCR-REC
            END-IF
