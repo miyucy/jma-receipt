@@ -10192,15 +10192,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "レセ電データチェック入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0116"
-                   MOVE    "点検用・提出用設定入力エラー"
+                   MOVE    "点検用・提出用初期表示入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0117"
                    MOVE    "医師名記載区分入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0118"
-                   STRING   "医師別出力設定が医師別出力をしないのときは"
+                   STRING   "医師別出力設定が「医師別出力をしない」"
                                                DELIMITED  BY  SIZE
-                            "医師名の記載を行うことはできません"
+                            "のときは医師名の記載を行うことはできません"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
