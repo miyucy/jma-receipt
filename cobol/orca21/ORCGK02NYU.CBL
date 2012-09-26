@@ -8508,6 +8508,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    9
                        MOVE    "9041"              TO  SPA-ERRCD
                END-EVALUATE
+      *H24.9
+               IF      SPA-ERRCD           =   SPACE
+      *            アフターケアエラー
+                   IF     (SPA-HKNNUM          =   "971" ) AND
+                          (SPA-RSI-HKNKBN      =   "3" )
+                       MOVE    "9029"              TO  SPA-ERRCD
+                       MOVE    5                   TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
            END-IF
       *    入院料設定ないエラー
            IF      SPA-ERRCD           =   SPACE
