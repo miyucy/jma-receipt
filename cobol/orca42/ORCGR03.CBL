@@ -115,6 +115,7 @@
       *                                     不明分ありのとき赤字でエラー
       *                                     表示を行う
       *  04.06.02    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *  04.06.03    NACL-藤原    12/08/20  点検用・提出用初期表示設定対応
       *
       *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
@@ -212,6 +213,8 @@
       *
                    07  SPA-NAI-2005-AUTODSPKBN     PIC X(01).
                    07  SPA-NAI-200501-INSPECT-ZERO-KBN
+                                                   PIC X(01).
+                   07  SPA-NAI-200501-RECEIPT-MAKE-KBN
                                                    PIC X(01).
                    07  SPA-NAI-200505-HKNJANUM     PIC X(08).
       *
@@ -728,8 +731,22 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                    =   SPACE
                MOVE    "0"             TO  SYS-200501-INSPECT-ZERO-KBN
            END-IF
+           IF      SYS-200501-RECEIPT-MAKE-KBN
+                                   =   SPACE
+               MOVE    "1"             TO  SYS-200501-RECEIPT-MAKE-KBN
+           END-IF
            MOVE    SYS-200501-INSPECT-ZERO-KBN
                                    TO  SPA-NAI-200501-INSPECT-ZERO-KBN
+           MOVE    SYS-200501-RECEIPT-MAKE-KBN
+                                   TO  SPA-NAI-200501-RECEIPT-MAKE-KBN
+           EVALUATE    SPA-NAI-200501-RECEIPT-MAKE-KBN
+               WHEN    "1"
+                   MOVE    SPA-GMN-PRTKBNLST (1)
+                                           TO  SPA-GMN-PRTKBN-G
+               WHEN    "2"
+                   MOVE    SPA-GMN-PRTKBNLST (2)
+                                           TO  SPA-GMN-PRTKBN-G
+           END-EVALUATE
       *
       *    レセプト・総括編集情報（区分コード０５のデータ読込）
            INITIALIZE                  SYS-200505-REC
@@ -1241,8 +1258,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
       *
            IF      SPA-GMN-PRTKBN      =   SPACE
                IF      SPA-GMN-SYOKBN      =   "T"
-                   MOVE    SPA-GMN-PRTKBNLST (1)
-                                               TO  SPA-GMN-PRTKBN-G
+                   EVALUATE    SPA-NAI-200501-RECEIPT-MAKE-KBN
+                       WHEN    "1"
+                           MOVE    SPA-GMN-PRTKBNLST (1)
+                                                   TO  SPA-GMN-PRTKBN-G
+                       WHEN    "2"
+                           MOVE    SPA-GMN-PRTKBNLST (2)
+                                                   TO  SPA-GMN-PRTKBN-G
+                   END-EVALUATE
                END-IF
            ELSE
                MOVE    ZERO                TO  WRK-HENFLG
@@ -1257,8 +1280,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
                    END-IF
                END-PERFORM
                IF      WRK-HENFLG         =   ZERO
-                   MOVE    SPA-GMN-PRTKBNLST (1)
-                                           TO  SPA-GMN-PRTKBN-G
+                   EVALUATE    SPA-NAI-200501-RECEIPT-MAKE-KBN
+                       WHEN    "1"
+                           MOVE    SPA-GMN-PRTKBNLST (1)
+                                                   TO  SPA-GMN-PRTKBN-G
+                       WHEN    "2"
+                           MOVE    SPA-GMN-PRTKBNLST (2)
+                                                   TO  SPA-GMN-PRTKBN-G
+                   END-EVALUATE
                END-IF
            END-IF
       *

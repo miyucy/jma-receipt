@@ -145,7 +145,9 @@
       *  04.05.25    NACL-藤原    12/04/11  平成２４年４月改正対応
       *                                     入院略称の変更
       *
-      *  04.06.02    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
+      *  04.06.01    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
+      *
+      *  04.07.01    NACL-藤原    12/09/24  点検用レセプトの医師名記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -330,12 +332,14 @@
            COPY    "HCM11V03.INC".
            COPY    "HCM11V04.INC".
            COPY    "HCM11V05.INC".
+           COPY    "HCM11V06.INC".
            COPY    "HCN09V01.INC".
            COPY    "HCN09V02.INC".
            COPY    "HCN09V03.INC".
            COPY    "HCN09V04.INC".
            COPY    "HCN09V05.INC".
            COPY    "HCN09V06.INC".
+           COPY    "HCN09V07.INC".
            COPY    "HCM12V01.INC".
            COPY    "HCM12V02.INC".
            COPY    "HCM13V01.INC".
@@ -1005,6 +1009,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM11V05
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM11V05-RENNUM
                        MOVE    HCM11V05            TO  RECE08-PRTDATA
+                   WHEN    "HCM11V06.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM11V06
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM11V06-RENNUM
+                       MOVE    HCM11V06            TO  RECE08-PRTDATA
                    WHEN    "HCM12V02.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM12V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM12V02-RENNUM
@@ -1029,6 +1037,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCN09V06
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN09V06-RENNUM
                        MOVE    HCN09V06            TO  RECE08-PRTDATA
+                   WHEN    "HCN09V07.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN09V07
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN09V07-RENNUM
+                       MOVE    HCN09V07            TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
       *             
@@ -1194,6 +1206,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM11V03.red"  ALSO    ANY               
                WHEN    "HCM11V04.red"  ALSO    ANY               
                WHEN    "HCM11V05.red"  ALSO    ANY               
+               WHEN    "HCM11V06.red"  ALSO    ANY               
                WHEN    "HCM12.red"     ALSO    "2"              
                WHEN    "HCM12V01.red"  ALSO    "2"              
                WHEN    "HCM12V02.red"  ALSO    "2"              
@@ -1239,6 +1252,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCN09V04.red"  ALSO    ANY               
                WHEN    "HCN09V05.red"  ALSO    ANY               
                WHEN    "HCN09V06.red"  ALSO    ANY               
+               WHEN    "HCN09V07.red"  ALSO    ANY               
                WHEN    "HCM12.red"     ALSO    "1"              
                WHEN    "HCM12V01.red"  ALSO    "1"              
                WHEN    "HCM12V02.red"  ALSO    "1"              

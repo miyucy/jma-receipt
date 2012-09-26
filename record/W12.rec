@@ -114,13 +114,6 @@ W12	{
 					count	int;
 					item	varchar(34)[5];
 				};
-				KOUIKIKBN_COMBO	{
-					KOUIKIKBN	{
-						value	varchar(34);
-					};
-					count	int;
-					item	varchar(34)[4];
-				};
 				CHKKBN_COMBO	{
 					CHKKBN	{
 						value	varchar(20);
@@ -134,20 +127,6 @@ W12	{
 					};
 					count	int;
 					item	varchar(36)[5];
-				};
-				INSPECT_CHAR_COMBO	{
-					INSPECT_CHAR	{
-						value	varchar(36);
-					};
-					count	int;
-					item	varchar(36)[5];
-				};
-				INSPECT_ZERO_COMBO	{
-					INSPECT_ZERO	{
-						value	varchar(24);
-					};
-					count	int;
-					item	varchar(24)[5];
 				};
 				PREFPRGID	{
 					value	varchar(15);
@@ -169,6 +148,13 @@ W12	{
 					};
 					count	int;
 					item	varchar(34)[5];
+				};
+				RECEIPT_MAKE_COMBO	{
+					RECEIPT_MAKE	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
 				};
 				scr4	{
 					HKNJANUMLIST	{
@@ -490,6 +476,13 @@ W12	{
 					count	int;
 					item	varchar(24)[5];
 				};
+				KOUIKIKBN_COMBO	{
+					KOUIKIKBN	{
+						value	varchar(34);
+					};
+					count	int;
+					item	varchar(34)[4];
+				};
 				KIGO_DELI_FLG_CMB	{
 					KIGO_DELI_FLG	{
 						value	varchar(30);
@@ -699,6 +692,29 @@ W12	{
 					};
 					count	int;
 					item	varchar(22)[3];
+				};
+			};
+			fi31	{
+				INSPECT_CHAR_COMBO	{
+					INSPECT_CHAR	{
+						value	varchar(36);
+					};
+					count	int;
+					item	varchar(36)[5];
+				};
+				INSPECT_ZERO_COMBO	{
+					INSPECT_ZERO	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[5];
+				};
+				DRNAME_KSIKBN_COMBO	{
+					DRNAME_KSIKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
 				};
 			};
 		};

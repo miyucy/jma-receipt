@@ -167,6 +167,7 @@
       *  04.07.03    NACL-藤原    12/01/24  monpe-0.6.20対応
       *  04.07.04    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
+      *  04.07.05    NACL-藤原    12/09/24  点検用レセプトの医師名記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -301,7 +302,8 @@
       *****COPY    "HCM11V02.INC"  REPLACING  //HCM11V02//
       *****COPY    "HCM11V03.INC"  REPLACING  //HCM11V03//
       *****COPY    "HCM11V04.INC"  REPLACING  //HCM11V04//
-           COPY    "HCM11V05.INC"  REPLACING  //HCM11V05//
+      *****COPY    "HCM11V05.INC"  REPLACING  //HCM11V05//
+           COPY    "HCM11V06.INC"  REPLACING  //HCM11V06//
                                    BY         //HC06//.
       *****COPY    "HCM12V01.INC"  REPLACING  //HCM12V01//
            COPY    "HCM12V02.INC"  REPLACING  //HCM12V02//
@@ -1166,6 +1168,8 @@
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
       *
+           COPY    "CPSK1010.INC".
+      *
            COPY    "CPRCF008.INC".
       *
            COPY    "CPRCF010.INC".
@@ -1787,8 +1791,15 @@
                MOVE    ZERO             TO
                                     SYS-200501-INSPECT-CHARACTER-KBN
            END-IF
+           IF      SYS-200501-DRNAME-KSIKBN
+                                        =   SPACE
+               MOVE    "0"              TO  SYS-200501-DRNAME-KSIKBN
+           END-IF
            DISPLAY "SYS-200501-INSPECT-CHARACTER-KBN="
                                     SYS-200501-INSPECT-CHARACTER-KBN
+                    " " WRK-PARA-PRTKBN
+           DISPLAY "SYS-200501-DRNAME-KSIKBN       ="
+                                    SYS-200501-DRNAME-KSIKBN
       *
       *    レセプト・総括編集情報（区分コード０５のデータ読込）
            MOVE    SPACE            TO  SYSKANRI-REC
@@ -2948,6 +2959,28 @@
                        MOVE    SYS-1001-BEDSUIPN   TO  WRK-BEDSU
                        MOVE    WRK-BEDSU           TO  HC06-BEDSU
                    END-IF
+               END-IF
+           END-IF
+      *
+      *    医師名（一括作成の点検用レセプトのみ）
+           IF    ( SYS-200501-DRNAME-KSIKBN
+                                       =   "1"         )
+           AND   ( WRK-PARA-SYOKBN     =   "1"         )
+           AND   ( WRK-PARA-PRTKBN     =   "2" OR  "3" )
+           AND   ( RECE02-DRCD     NOT =   SPACE       )
+               MOVE    SPACE               TO  SYSKANRI-REC
+               INITIALIZE                      SYSKANRI-REC
+               MOVE    "1010"              TO  SYS-KANRICD
+               MOVE    RECE02-DRCD         TO  SYS-KBNCD
+               MOVE    RECE02-SRYYM        TO  SYS-STYUKYMD(1:6)
+               MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+               MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+               MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+               MOVE    "key10"             TO  WRK-MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI    =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1010-REC
+                   MOVE  SYS-1010-NAME (1:20)  TO  HC06-DRNAME
                END-IF
            END-IF
       *
@@ -7715,7 +7748,7 @@
       *********MOVE    "HCM11V01.red"      TO
       *********MOVE    "HCM11V02.red"      TO
       *********MOVE    "HCM11V03.red"      TO
-               MOVE    "HCM11V05.red"      TO
+               MOVE    "HCM11V06.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -7725,7 +7758,7 @@
       *****************MOVE    "HCM11V01.red"      TO
       *********        MOVE    "HCM11V02.red"      TO
       *********        MOVE    "HCM11V03.red"      TO
-                       MOVE    "HCM11V05.red"      TO
+                       MOVE    "HCM11V06.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -7999,7 +8032,7 @@
       *****************WHEN    "HCM11V01.red"
       *****************WHEN    "HCM11V02.red"
       *****************WHEN    "HCM11V03.red"
-                       WHEN    "HCM11V05.red"
+                       WHEN    "HCM11V06.red"
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE

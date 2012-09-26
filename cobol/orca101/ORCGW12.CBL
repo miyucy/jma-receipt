@@ -137,6 +137,7 @@
       *  04.06.03    NACL-藤原    11/12/12  点検レセ０点公費印字対応
       *  04.06.04    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
       *                                     転帰済傷病名記載区分の追加
+      *  04.06.05    NACL-藤原    12/09/22  点検用・提出用初期表示設定対応
       *
       *  04.07.01    NACL-藤原    11/06/02  入退院履歴の記載区分に
       *                                     自費入院分の記載設定を追加
@@ -149,6 +150,7 @@
       *  04.07.04    NACL-藤原    12/03/25  公費記載順設定対応
       *  04.07.05    NACL-藤原    12/05/28  タブラベル対応
       *  04.07.06    NACL-藤原    12/08/01  レセ電データチェック機能対応
+      *  04.07.07    NACL-藤原    12/09/24  点検用レセプトの医師名記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -355,6 +357,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-SEIHO-DSPKBNMEI
                                               PIC X(32).
+                       09  SPA-GMN-RECEIPT-MAKEKBN-G.
+                           11  SPA-GMN-RECEIPT-MAKEKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-RECEIPT-MAKEKBNMEI
+                                              PIC X(18).
                        09  SPA-GMN-RECECOMKBN-G.
                            11  SPA-GMN-RECECOMKBN
                                               PIC X(01).
@@ -439,6 +447,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-BTUNUM-KSIKBNMEI
                                               PIC X(24).
+                       09  SPA-GMN-DRNAME-KSIKBN-G.
+                           11  SPA-GMN-DRNAME-KSIKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-DRNAME-KSIKBNMEI
+                                              PIC X(18).
                        09  SPA-GMN-PRTJYUN1-G.
                            11  SPA-GMN-PRTJYUN1
                                               PIC X(02).
@@ -969,6 +983,15 @@
                    07  SPA-GMN-SEIHO-DSPKBN-MAX
                                               PIC 9(02).    
       *                                        
+                   07  SPA-GMN-RECEIPT-MAKEKBNLST       OCCURS  2.
+                       09  SPA-GMN-RECEIPT-MAKEKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-RECEIPT-MAKEKBNMEIL
+                                              PIC X(18).
+                   07  SPA-GMN-RECEIPT-MAKEKBN-MAX
+                                              PIC 9(02).    
+      *                                        
                    07  SPA-GMN-RECECOMKBNLST  OCCURS  2.
                        09  SPA-GMN-RECECOMKBNL
                                               PIC X(01).
@@ -1092,6 +1115,15 @@
                        09  SPA-GMN-BTUNUM-KSIKBNMEIL
                                               PIC X(24).
                    07  SPA-GMN-BTUNUM-KSIKBN-MAX
+                                              PIC 9(02).   
+      *                                        
+                   07  SPA-GMN-DRNAME-KSIKBNLST OCCURS  2.
+                       09  SPA-GMN-DRNAME-KSIKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-DRNAME-KSIKBNMEIL
+                                              PIC X(18).
+                   07  SPA-GMN-DRNAME-KSIKBN-MAX
                                               PIC 9(02).   
       * 
                    07  SPA-GMN-PRTJYUN1LST    OCCURS  10.
@@ -2206,6 +2238,13 @@
            MOVE    "病棟・病室番号を記載する"
                                        TO  SPA-GMN-BTUNUM-KSIKBNMEIL (3)
            MOVE    3                   TO  SPA-GMN-BTUNUM-KSIKBN-MAX 
+      *
+           MOVE    "0"                 TO  SPA-GMN-DRNAME-KSIKBNL    (1)
+           MOVE    "医師名を記載しない"
+                                       TO  SPA-GMN-DRNAME-KSIKBNMEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-DRNAME-KSIKBNL    (2)
+           MOVE    "医師名を記載する"  TO  SPA-GMN-DRNAME-KSIKBNMEIL (2)
+           MOVE    2                   TO  SPA-GMN-DRNAME-KSIKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-JIHITEKKSIKBNL    (1)
            MOVE    "なし"              TO  SPA-GMN-JIHITEKKSIKBNMEIL (1)
@@ -2291,6 +2330,14 @@
            MOVE    "カナ氏名順"        TO  SPA-GMN-SEIHO-DSPKBNMEIL
                                                                 (3)
            MOVE    3                   TO  SPA-GMN-SEIHO-DSPKBN-MAX 
+      *     
+           MOVE    "1"                 TO  SPA-GMN-RECEIPT-MAKEKBNL(1)
+           MOVE    "提出用レセプト"    TO  SPA-GMN-RECEIPT-MAKEKBNMEIL
+                                                                   (1)
+           MOVE    "2"                 TO  SPA-GMN-RECEIPT-MAKEKBNL(2)
+           MOVE    "点検用レセプト"    TO  SPA-GMN-RECEIPT-MAKEKBNMEIL
+                                                                   (2)
+           MOVE    2                   TO  SPA-GMN-RECEIPT-MAKEKBN-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN1L    (1)
            MOVE    "種別・保険者番号・カナ氏名順"
@@ -3212,6 +3259,19 @@
                END-IF
            END-PERFORM
       *
+           MOVE    SYS-200501-DRNAME-KSIKBN
+                                       TO  SPA-GMN-DRNAME-KSIKBN
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-DRNAME-KSIKBN-MAX
+               IF      SPA-GMN-DRNAME-KSIKBN 
+                               =   SPA-GMN-DRNAME-KSIKBNL (IDY)
+                   MOVE    SPA-GMN-DRNAME-KSIKBNLST (IDY)
+                                       TO  SPA-GMN-DRNAME-KSIKBN-G
+                   MOVE    SPA-GMN-DRNAME-KSIKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+      *
            MOVE    SYS-200501-PRT-CHECKKBN
                                        TO  SPA-GMN-PRT-CHECKKBN
            PERFORM VARYING IDY FROM    1   BY  1
@@ -3543,6 +3603,19 @@
                    MOVE    SPA-GMN-SEIHO-DSPKBNLST (IDY)
                                        TO  SPA-GMN-SEIHO-DSPKBN-G
                    MOVE    SPA-GMN-SEIHO-DSPKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SYS-200501-RECEIPT-MAKE-KBN
+                                       TO  SPA-GMN-RECEIPT-MAKEKBN
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-RECEIPT-MAKEKBN-MAX
+               IF      SPA-GMN-RECEIPT-MAKEKBN 
+                               =   SPA-GMN-RECEIPT-MAKEKBNL (IDY)
+                   MOVE    SPA-GMN-RECEIPT-MAKEKBNLST (IDY)
+                                       TO  SPA-GMN-RECEIPT-MAKEKBN-G
+                   MOVE    SPA-GMN-RECEIPT-MAKEKBN-MAX
                                        TO  IDY
                END-IF
            END-PERFORM
@@ -4142,6 +4215,10 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    SPA-GMN-BTUNUM-KSIKBNLST (1)
                                            TO  SPA-GMN-BTUNUM-KSIKBN-G
            END-IF                                              
+           IF     SPA-GMN-DRNAME-KSIKBN  =   SPACE
+               MOVE    SPA-GMN-DRNAME-KSIKBNLST (1)
+                                           TO  SPA-GMN-DRNAME-KSIKBN-G
+           END-IF                                              
            IF     SPA-GMN-AUTODSPKBN   =   SPACE
                MOVE    SPA-GMN-AUTODSPKBNLST (1)
                                            TO  SPA-GMN-AUTODSPKBN-G
@@ -4290,6 +4367,12 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            TO
                                            SPA-GMN-SEIHO-DSPKBN-G
            END-IF                                              
+           IF     SPA-GMN-RECEIPT-MAKEKBN-G
+                                           =   SPACE
+               MOVE    SPA-GMN-RECEIPT-MAKEKBNLST  (1)
+                                           TO
+                                           SPA-GMN-RECEIPT-MAKEKBN-G
+           END-IF                                              
       *
       *    入力前退避
            MOVE    SPA-GMN-KKHRECEKBN  TO  SPA-GMN-KKHRECEKBN-O 
@@ -4427,10 +4510,12 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-INSPECT-ZERO-KBN       TO
                                        SPA-GMN-INSPECT-ZERO-KBN-G 
            MOVE    W12-SEIHO-DSPKBN    TO  SPA-GMN-SEIHO-DSPKBN-G 
+           MOVE    W12-RECEIPT-MAKE    TO  SPA-GMN-RECEIPT-MAKEKBN-G 
            MOVE    W12-SYAPRTNM-NEXT   TO  SPA-GMN-SYAPRTNM-NEXT
            MOVE    W12-KKHPRTNM-NEXT   TO  SPA-GMN-KKHPRTNM-NEXT
            MOVE    W12-SRYKAHENKBN     TO  SPA-GMN-SRYKAHENKBN-G
            MOVE    W12-BTUNUM-KSIKBN   TO  SPA-GMN-BTUNUM-KSIKBN-G
+           MOVE    W12-DRNAME-KSIKBN   TO  SPA-GMN-DRNAME-KSIKBN-G
            MOVE    W12-RECECOMKBN      TO  SPA-GMN-RECECOMKBN-G
            MOVE    W12-RECEDEN-CDRKBN  TO  SPA-GMN-RECEDEN-CDRKBN-G
            MOVE    W12-RECEDEN-LST1KBN TO  SPA-GMN-RECEDEN-LST1KBN-G
@@ -4510,7 +4595,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-HKNJANUM        TO  SPA-GMN-HKNJANUM
            MOVE    W12-DRCD-PRTKBN     TO  SPA-GMN-DRCD-PRTKBN-G
            MOVE    W12-DRCD-PRTJYUNKBN TO  SPA-GMN-DRCD-PRTJYUNKBN-G
-           MOVE    W12-BTUNUM-PRTKBN     TO  SPA-GMN-BTUNUM-PRTKBN-G
+           MOVE    W12-BTUNUM-PRTKBN   TO  SPA-GMN-BTUNUM-PRTKBN-G
            MOVE    W12-BTUNUM-PRTJYUNKBN TO  SPA-GMN-BTUNUM-PRTJYUNKBN-G
       *
            MOVE    W12-SYUKA-KBN       TO  SPA-GMN-SYUKA-KBN-G
@@ -4597,6 +4682,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
+           PERFORM 4190-DRNAME-KSIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
            PERFORM 4117-RJNGNBKKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
@@ -4653,6 +4743,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
       *
            PERFORM 4173-SEIHO-DSPKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4189-RECEIPT-MAKEKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -5778,6 +5873,35 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    レセプト作成区分チェック
+      *****************************************************************
+       4189-RECEIPT-MAKEKBN-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-RECEIPT-MAKEKBN
+                                           =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-RECEIPT-MAKEKBN-MAX
+                        OR     SPA-GMN-RECEIPT-MAKEKBN
+                                   =   SPA-GMN-RECEIPT-MAKEKBNL (IDY)
+                   CONTINUE
+               END-PERFORM
+      * 
+               IF      IDY <=      SPA-GMN-RECEIPT-MAKEKBN-MAX
+                   MOVE    SPA-GMN-RECEIPT-MAKEKBNLST (IDY)
+                                          TO  SPA-GMN-RECEIPT-MAKEKBN-G
+               ELSE
+                   MOVE    302            TO  SPA-GMN-CUR
+                   MOVE    "0116"          TO  SPA-ERRCD
+               END-IF
+           END-IF    
+      *
+           .
+       4189-RECEIPT-MAKEKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    選択番号入力処理
       *****************************************************************
        4185-SELNUM-CHK-SEC             SECTION.
@@ -6031,6 +6155,34 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF    
            .
        4151-BTUNUM-KSIKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医師名記載区分チェック
+      *****************************************************************
+       4190-DRNAME-KSIKBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-DRNAME-KSIKBN   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-DRNAME-KSIKBN-MAX
+                   IF      SPA-GMN-DRNAME-KSIKBN
+                                   =   SPA-GMN-DRNAME-KSIKBNL (IDY)
+                       MOVE    SPA-GMN-DRNAME-KSIKBNLST (IDY)
+                                           TO  SPA-GMN-DRNAME-KSIKBN-G
+                       MOVE    SPA-GMN-DRNAME-KSIKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-DRNAME-KSIKBNMEI  =   SPACE
+                   MOVE    303                     TO  SPA-GMN-CUR
+                   MOVE    "0117"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4190-DRNAME-KSIKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7766,7 +7918,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            EVALUATE    MCP-WIDGET
                WHEN    "B08"
-                   IF    ( W12-PAGENO  >=  7 )
+                   IF    ( W12-PAGENO  >=  8 )
                        MOVE    0       TO  IDX
                    ELSE
                        COMPUTE IDX =   W12-PAGENO  +   1
@@ -7805,6 +7957,8 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                MOVE    150          TO  SPA-GMN-CUR
                            WHEN    7
                                MOVE    90           TO  SPA-GMN-CUR
+                           WHEN    8
+                               MOVE    66           TO  SPA-GMN-CUR
                        END-EVALUATE
                    END-IF
                END-IF
@@ -8028,7 +8182,18 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE    119                 TO  SPA-GMN-CUR
                    MOVE    "0112"              TO  SPA-ERRCD                    
                END-IF
-           END-IF                         
+           END-IF
+      *
+      *    医師別出力区分と医師名記載区分のチェック
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( SPA-GMN-DRCD-PRTKBN
+                                           =   "0" )
+               AND   ( SPA-GMN-DRNAME-KSIKBN
+                                           =   "1" )
+                   MOVE    303                 TO  SPA-GMN-CUR
+                   MOVE    "0118"              TO  SPA-ERRCD
+               END-IF
+           END-IF
       *
       *    レセ電出力区分と広域連合作成区分チェック
            IF    ( SPA-ERRCD        =   SPACE )
@@ -8226,6 +8391,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-JIBAIPRTKBN     TO  SYS-200501-JIBAIPRTKBN
            MOVE    SPA-GMN-JIBAIPRTKBN-N   TO  SYS-200501-JIBAIPRTKBN-N
            MOVE    SPA-GMN-BTUNUM-KSIKBN   TO  SYS-200501-BTUNUM-KSIKBN
+           MOVE    SPA-GMN-DRNAME-KSIKBN   TO  SYS-200501-DRNAME-KSIKBN
            MOVE    SPA-GMN-PRT-CHECKKBN    TO  SYS-200501-PRT-CHECKKBN
            MOVE    SPA-GMN-JIHI-PRTKBN     TO  SYS-200501-JIHI-PRTKBN
            MOVE    SPA-GMN-PRTJYUN5        TO  SYS-200501-PRTJYUNKBN5
@@ -8256,6 +8422,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-CHKKBN          TO  SYS-200501-CHKKBN
            MOVE    SPA-GMN-BYOMEI-PRTJYUN  TO  SYS-200501-BYOMEI-PRTJYUN
            MOVE    SPA-GMN-SEIHO-DSPKBN    TO  SYS-200501-SEIHO-DSPKBN
+           MOVE    SPA-GMN-RECEIPT-MAKEKBN TO
+                                           SYS-200501-RECEIPT-MAKE-KBN
            MOVE    SPA-GMN-FRAME-ROUPRTKBN
                                            TO
                                            SYS-200501-FRAME-ROUPRTKBN
@@ -8858,9 +9026,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-INSPECT-ZERO-KBN-G
                                             TO  W12-INSPECT-ZERO-KBN
            MOVE    SPA-GMN-SEIHO-DSPKBN-G   TO  W12-SEIHO-DSPKBN
+           MOVE    SPA-GMN-RECEIPT-MAKEKBN-G
+                                            TO  W12-RECEIPT-MAKE
            MOVE    SPA-GMN-RECECOMKBN-G     TO  W12-RECECOMKBN
            MOVE    SPA-GMN-SRYKAHENKBN-G    TO  W12-SRYKAHENKBN
            MOVE    SPA-GMN-BTUNUM-KSIKBN-G  TO  W12-BTUNUM-KSIKBN
+           MOVE    SPA-GMN-DRNAME-KSIKBN-G  TO  W12-DRNAME-KSIKBN
            MOVE    SPA-GMN-AUTODSPKBN-G     TO  W12-AUTODSPKBN
            MOVE    SPA-GMN-PRT-CHECKKBN-G   TO  W12-PRT-CHECKKBN
            MOVE    SPA-GMN-JIHI-PRTKBN-G    TO  W12-JIHI-PRTKBN
@@ -9157,6 +9328,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W12-SEIHO-DSPKBN-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-RECEIPT-MAKEKBN-MAX
+               MOVE    SPA-GMN-RECEIPT-MAKEKBNLST (IDY)
+                                       TO  W12-RECEIPT-MAKELST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-RECEIPT-MAKEKBN-MAX
+                                       TO  W12-RECEIPT-MAKE-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-RECECOMKBN-MAX
                MOVE    SPA-GMN-RECECOMKBNLST (IDY)
                                        TO  W12-RECECOMKBNLST (IDY)
@@ -9179,6 +9358,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-BTUNUM-KSIKBN-MAX
                                        TO  W12-BTUNUM-KSIKBN-COUNT 
+      *
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DRNAME-KSIKBN-MAX
+               MOVE    SPA-GMN-DRNAME-KSIKBNLST (IDY)
+                                       TO  W12-DRNAME-KSIKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DRNAME-KSIKBN-MAX
+                                       TO  W12-DRNAME-KSIKBN-COUNT 
       *
            MOVE    SPA-GMN-SYAPRTNM    TO  W12-SYAPRTNM
       *
@@ -10004,6 +10191,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0115"
                    MOVE    "レセ電データチェック入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0116"
+                   MOVE    "点検用・提出用設定入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0117"
+                   MOVE    "医師名記載区分入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0118"
+                   STRING   "医師別出力設定が医師別出力をしないのときは"
+                                               DELIMITED  BY  SIZE
+                            "医師名の記載を行うことはできません"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "1003"
                    MOVE    "更新ができませんでした"
@@ -10170,26 +10370,24 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "AUTODSPKBN"       TO   MCP-WIDGET
                 WHEN    43
                     MOVE  "KOUIKIOCRKBN"     TO   MCP-WIDGET
-                WHEN    44
-                    MOVE  "KOUIKIKBN"        TO   MCP-WIDGET
                 WHEN    60
                     MOVE  "COMMENT_NYUINRYO" TO   MCP-WIDGET
                 WHEN    64
                     MOVE  "CHKKBN"           TO   MCP-WIDGET
                 WHEN    65
                     MOVE  "BYOMEI_PRTJYUN"   TO   MCP-WIDGET
-                WHEN    66
-                    MOVE  "INSPECT_CHAR"     TO   MCP-WIDGET
-                WHEN    67
-                    MOVE  "INSPECT_ZERO"     TO   MCP-WIDGET
                 WHEN    62
                     MOVE  "SEIHO_DSPKBN"     TO   MCP-WIDGET
+                WHEN    302
+                    MOVE  "RECEIPT_MAKE"     TO   MCP-WIDGET
                 WHEN    68
                     MOVE  "SELNUM"           TO   MCP-WIDGET
                 WHEN    69
                     MOVE  "HKNJANUM1"        TO   MCP-WIDGET
                 WHEN    300
                     MOVE  "HKNJANUM_UPD"     TO   MCP-WIDGET
+                WHEN    303
+                    MOVE  "DRNAME_KSIKBN"    TO   MCP-WIDGET
       *
                 WHEN    9
                     MOVE  "SYAPRTNM"         TO   MCP-WIDGET
@@ -10367,6 +10565,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "RECEDEN_DISASTER"   TO  MCP-WIDGET
                 WHEN    121
                     MOVE  "RECEDEN_CHK"        TO  MCP-WIDGET
+                WHEN    44
+                    MOVE  "KOUIKIKBN"          TO  MCP-WIDGET
       * 
                 WHEN    11
                     MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
@@ -10374,6 +10574,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "SYAPRTKBN"        TO   MCP-WIDGET
                 WHEN    151
                     MOVE  "KOUIKIPRTKBN"     TO   MCP-WIDGET
+      *
+                WHEN    66
+                    MOVE  "INSPECT_CHAR"     TO   MCP-WIDGET
+                WHEN    67
+                    MOVE  "INSPECT_ZERO"     TO   MCP-WIDGET
       *
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
@@ -10387,11 +10592,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    28
                 WHEN    32  THRU    39
                 WHEN    41
-                WHEN    43  THRU    44
+                WHEN    43
                 WHEN    60
                 WHEN    62
-                WHEN    64  THRU    69
-                WHEN    300 THRU    301
+                WHEN    64  THRU    65
+                WHEN    68  THRU    69
+                WHEN    300 THRU    302
                     MOVE    0                TO  W12-PAGENO
                 WHEN    9
                 WHEN    10
@@ -10408,6 +10614,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    200 THRU    216
                     MOVE    2                TO  W12-PAGENO
                 WHEN    100 THRU    121
+                WHEN    44
                     MOVE    3                TO  W12-PAGENO
                 WHEN    70  THRU    80
                     MOVE    4                TO  W12-PAGENO
@@ -10418,6 +10625,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE    6                TO  W12-PAGENO
                 WHEN    90  THRU    98
                     MOVE    7                TO  W12-PAGENO
+                WHEN    66  THRU    67
+                WHEN    303
+                    MOVE    8                TO  W12-PAGENO
                 WHEN    99
                     MOVE    SPA-W12-PAGENO   TO  W12-PAGENO
             END-EVALUATE
@@ -10469,18 +10679,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    20          TO  SPA-GMN-CUR
                WHEN    "JIHITEKKSIKBN"
                    MOVE    60          TO  SPA-GMN-CUR
-               WHEN    "KOUIKIKBN"
-                   MOVE    64          TO  SPA-GMN-CUR
                WHEN    "COMMENT_NYUINRYO"
-                   MOVE    44          TO  SPA-GMN-CUR
+                   MOVE    64          TO  SPA-GMN-CUR
                WHEN    "CHKKBN"
                    MOVE    65          TO  SPA-GMN-CUR
                WHEN    "BYOMEI_PRTJYUN"
-                   MOVE    66          TO  SPA-GMN-CUR
-               WHEN    "INSPECT_CHAR"
-                   MOVE    67          TO  SPA-GMN-CUR
-               WHEN    "INSPECT_ZERO"
-                   MOVE    8           TO  SPA-GMN-CUR
+                   MOVE    8          TO  SPA-GMN-CUR
                WHEN    "PREFPRGID"
                    IF      SPA-BEDSU       >   ZERO
                        MOVE    13          TO  SPA-GMN-CUR
@@ -10492,6 +10696,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "AUTODSPKBN"
                    MOVE    62          TO  SPA-GMN-CUR
                WHEN    "SEIHO_DSPKBN"
+                   MOVE    302         TO  SPA-GMN-CUR
+               WHEN    "RECEIPT_MAKE"
                    MOVE    99          TO  SPA-GMN-CUR
                WHEN    "SELNUM"
                    MOVE    69          TO  SPA-GMN-CUR
@@ -10693,6 +10899,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "RECEDEN_DISASTER"
                    MOVE    121         TO  SPA-GMN-CUR
                WHEN    "RECEDEN_CHK"
+                   MOVE    44          TO  SPA-GMN-CUR
+               WHEN    "KOUIKIKBN"
                    MOVE    116         TO  SPA-GMN-CUR
                WHEN    "KIGO_DELI_FLG"
                    MOVE    117         TO  SPA-GMN-CUR
@@ -10701,6 +10909,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "NUM_DELI_FLG"
                    MOVE    119         TO  SPA-GMN-CUR
                WHEN    "NUM_DELI_HKNJA"
+                   MOVE    99          TO  SPA-GMN-CUR
+      *
+               WHEN    "INSPECT_CHAR"
+                   MOVE    67          TO  SPA-GMN-CUR
+               WHEN    "INSPECT_ZERO"
+                   MOVE    303         TO  SPA-GMN-CUR
+               WHEN    "DRNAME_KSIKBN"
                    MOVE    99          TO  SPA-GMN-CUR
            END-EVALUATE
       *
