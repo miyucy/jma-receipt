@@ -1906,6 +1906,13 @@
       *    画面用スパ編集処理
            PERFORM                 310-SPA-GMNSET-SEC
       *
+      *    アフターケアの場合エラーとする
+           IF     (SPA-HKNNUM          =   "971" ) AND
+                  (SPA-RSI-HKNKBN      =   "3"   )
+               MOVE    "9041"              TO  SPA-ERRCD
+               MOVE    9                   TO  SPA-HKN-ERR
+               MOVE    SPACE               TO  SPA-ERRMSG2
+           END-IF
            .
        30091-SAIHEN2-EXT.
            EXIT.
@@ -8496,6 +8503,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    4
                        MOVE    "1034"              TO  SPA-ERRCD
                        MOVE    5                   TO  SPA-GMN-CUR
+      *H24.9
+      *            アフターケアの中途データ展開
+                   WHEN    9
+                       MOVE    "9041"              TO  SPA-ERRCD
                END-EVALUATE
            END-IF
       *    入院料設定ないエラー
@@ -9554,21 +9565,26 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    老人保険編集エラーがある時、エラーとする
            IF      SPA-RJN-ERR         =   1
                MOVE    "1027"              TO  SPA-ERRCD
+               MOVE    SPACE               TO  SPA-ERRMSG2
            END-IF
       *    老人保険編集エラーがある時、エラーとする
            IF      SPA-RJN-ERR         =   2
                MOVE    "1070"              TO  SPA-ERRCD
+               MOVE    SPACE               TO  SPA-ERRMSG2
            END-IF
       *    保険エラーがある時、エラーとする
            IF      SPA-HKN-ERR         =   1
                MOVE    "1028"              TO  SPA-ERRCD
+               MOVE    SPACE               TO  SPA-ERRMSG2
            END-IF
            IF      SPA-HKN-ERR         =   2
                MOVE    "1032"              TO  SPA-ERRCD
+               MOVE    SPACE               TO  SPA-ERRMSG2
            END-IF
       *    保険未選択の場合、エラー
            IF      SPA-HKN-ERR         =   3
                MOVE    "1006"              TO  SPA-ERRCD
+               MOVE    SPACE               TO  SPA-ERRMSG2
            END-IF
       *    保険選択エラーの場合
            IF      SPA-HKN-ERR         =   4
@@ -9578,6 +9594,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    退職国保の年齢
            IF      SPA-RJN-ERR         =   9
                MOVE    "1077"              TO  SPA-ERRCD
+               MOVE    SPACE               TO  SPA-ERRMSG2
+           END-IF
+      *H24.9
+      *    アフターケアの中途データ展開
+           IF      SPA-HKN-ERR         =   9
+               IF      SPA-KIDCD           =   "0116"
+                                           OR  "0127"
+      *            クリアは行う
+                   CONTINUE
+               ELSE
+                   MOVE    "9041"              TO  SPA-ERRCD
+                   MOVE    SPACE               TO  SPA-ERRMSG2
+               END-IF
            END-IF
       *
       *    入院料設定ないエラー

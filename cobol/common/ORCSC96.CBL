@@ -980,20 +980,23 @@
                    MOVE    "この診療種別は入院のみの使用です。"
                                        TO  SPA-ERRMSG
                WHEN    "9025"
-                   MOVE    "中心静脈注射料を算定します。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "点滴手技料は算定できません。"
-                                       TO  SPA-ERRMSG(29:)
+                   STRING  "中心静脈注射料を算定します。"
+                           "点滴手技料は算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9026"
-                   MOVE    "既に中心静脈注射料が算定済です。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "算定できません。"
-                                       TO  SPA-ERRMSG(37:)
+                   STRING  "既に中心静脈注射料が算定済です。"
+                           "算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9027"
-                   MOVE    "手術が算定されています。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "中心静脈注射料は算定できません。"
-                                       TO  SPA-ERRMSG(25:)
+                   STRING  "手術が算定されています。"
+                           "中心静脈注射料は算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9028"
                    MOVE    "この診療種別は外来のみの使用です。"
                                        TO  SPA-ERRMSG
@@ -1006,11 +1009,20 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H24.9
+               WHEN    "9041"
+                   STRING  "アフターケアは入院の登録はできません。"
+                           "保険変更または中途データ削除を行って下さい"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *H24.9
                WHEN    "9030"
-                   MOVE    "時間加算区分が選択中の時間加算区分と"
-                                       TO  SPA-ERRMSG
-                   MOVE    "違います。"
-                                       TO  SPA-ERRMSG(37:)
+                   STRING  "時間加算区分が選択中の時間加算区分と"
+                           "違います。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9031"
                    MOVE    "入院患者初回加算は既に算定済みです。"
                                        TO  SPA-ERRMSG
