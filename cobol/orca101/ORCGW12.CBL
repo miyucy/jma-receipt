@@ -8187,7 +8187,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *    ∞Âª’ ÃΩ–Œœ∂Ë ¨§»∞Âª’Ãæµ≠∫‹∂Ë ¨§Œ•¡•ß•√•Ø
            IF      SPA-ERRCD           =   SPACE
                IF    ( SPA-GMN-DRCD-PRTKBN
-                                           =   "0" )
+                                       NOT =   "1" )
                AND   ( SPA-GMN-DRNAME-KSIKBN
                                            =   "1" )
                    MOVE    303                 TO  SPA-GMN-CUR
