@@ -28,7 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  05/11/30  MONFUNC 対応
-      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
+      * 04.07.00     NACL-多々納  12/09/25  プログラムオプション保険対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -80,6 +81,8 @@
            03  WRK-PRINT-PG            PIC X(20).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
+      *
+           03  WRK-ERRCD           PIC X(04).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -157,6 +160,8 @@
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-J02
            MOVE    SPA-WORK        TO  SPA-J01KYOUTU
+      *H24.9
+           MOVE    SPA-ERRCD       TO  WRK-ERRCD
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -192,6 +197,14 @@
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "JERR"
+      *H24.9
+               IF      WRK-ERRCD           =   "9001"
+      *            プログラムオプションとのエラー
+                   MOVE    SPACE               TO  WRK-ERRCD
+                   MOVE    10                  TO  SPA-GMN-CUR
+                   PERFORM 210-BACK
+                   GO      TO   100-INIT-EXT
+               END-IF
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
@@ -236,7 +249,7 @@
            END-EVALUATE
       *
            .
-       3OO-SCREEN-EXT.
+       300-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -583,6 +596,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 210-BACK
+           ELSE
+               PERFORM 510-ERRSET-SEC
            END-IF
            .
        2301-PRINT-SYORI-EXT.
@@ -621,6 +636,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  ORCHC33-SRYYM-END
            MOVE    SPA-GMN-NYUGAIKBN   TO  ORCHC33-NYUGAIKBN
            MOVE    SPA-J01-SRYKA       TO  ORCHC33-SRYKA
+      *H24.9
+           MOVE    SPA-GMN-HHKNCOMBI   TO  ORCHC33-HKNCOMBI
+      *
            IF      FLG-PRINT           =   1
       *        明細
                MOVE    ZERO                TO  ORCHC33-PRINT-FLG
@@ -644,6 +662,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      ORCHC33-RC      NOT =   ZERO
                MOVE    "9000"              TO  SPA-ERRCD
+           END-IF
+           IF      ORCHC33-RC          =   8
+      *        プログラムオプションと保険選択のエラー
+               MOVE    "9001"              TO  SPA-ERRCD
            END-IF
       *
            .
@@ -683,6 +705,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  ORCHC33-SRYYM-END
            MOVE    SPA-GMN-NYUGAIKBN   TO  ORCHC33-NYUGAIKBN
            MOVE    SPA-J01-SRYKA       TO  ORCHC33-SRYKA
+      *H24.9
+           MOVE    SPA-GMN-HHKNCOMBI   TO  ORCHC33-HKNCOMBI
            IF      FLG-PRINT           =   1
       *        明細
                MOVE    ZERO                TO  ORCHC33-PRINT-FLG
@@ -705,6 +729,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      ORCHC33-RC      NOT =   ZERO
                MOVE    "9000"              TO  SPA-ERRCD
+           END-IF
+           IF      ORCHC33-RC          =   8
+      *        プログラムオプションと保険選択のエラー
+               MOVE    "9001"              TO  SPA-ERRCD
            END-IF
       *
            .
@@ -773,6 +801,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "9000"
                    MOVE    "印刷エラーです。"
                                        TO  SPA-ERRMSG
+               WHEN    "9001"
+                   STRING  "保険組合せでの印刷となります。"
+                           "保険組合せを確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE               TO  JERR

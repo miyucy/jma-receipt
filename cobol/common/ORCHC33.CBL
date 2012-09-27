@@ -33,6 +33,7 @@
       * 03.04.02     NACL-多々納  07/02/28  包括診療追加対応
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 04.01.00     NACL-多々納  07/10/23  公務災害対応
+      * 04.07.00     NACL-多々納  12/09/25  プログラムオプション保険対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -79,6 +80,7 @@
            03  FLG-SRYACCTPLUS     PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
+           03  FLG-PRINT           PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-ARI             PIC 9(01).
            03  FLG-ARI-RSI         PIC 9(01).
@@ -124,6 +126,8 @@
       *
            03  IDZ                 PIC 9(04).
            03  IDX-D               PIC 9(02).
+      *
+           03  IDX-C               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -203,6 +207,9 @@
       *
            03  WRK-PAGE                PIC 9(03).
            03  WRK-PRT-CNT             PIC 9(03).
+      *H24.9
+           03  WRK-PARA-HKNNUM         PIC X(03).
+           03  WRK-CHK-HKNCOMBI        PIC X(04).
       *
       *    集計テーブル
        01  TBL-AREA.
@@ -247,6 +254,12 @@
                        09  TBL-NAIYO           PIC X(08).
                05  TBL-MEISYO              PIC X(12).
       *
+      *    対象保険組合せテーブル
+       01  TBL-ALL-HKNCOMBI-AREA.
+           03  TBL-ALL-HKNCOMBI-OCC        OCCURS   99.
+               05  TBL-ALL-HKNCOMBINUM     PIC X(04).
+               05  TBL-ALL-HKNNUM          PIC X(03).
+      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
            03  WRK-HENYMD.
@@ -265,6 +278,13 @@
        01  CONTS-AREA.
            03  CONST-H190401       PIC X(08)   VALUE   "20070401".
       *----(03.04.01)--ADD-END-----
+      *    プログラムオプションパラメタ
+       01  PARA-AREA.
+           03  PARA-HKNCOMBIKBN        PIC X(01).
+      *
+           03  WRK-PARA-NAME           PIC X(25).
+           03  WRK-PARA                PIC X(50).
+      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -335,6 +355,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *    プログラムオプション編集パラメタ
+           COPY    "CPORCSPRGOPTION.INC".
       *
       *一括用
       *    印刷ＤＢ更新サブ
@@ -408,8 +431,75 @@
       *    パラメタ編集処理
            PERFORM 120-PARA-HENSYU-SEC
       *
+      *    プログラムオプション取込み
+           PERFORM 100-OPTION-SELECT-SEC
+      *
+      *    パラメタ内容チェック
+           IF     (ORCHC33-PRINT-FLG   NOT =   1   )
+            AND   (ORCHC33-RC              =   ZERO )
+               PERFORM 1002-OPTION-CHEK-SEC
+           END-IF
+      *
            .
        100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プログラムオプション取込み処理
+      *****************************************************************
+       100-OPTION-SELECT-SEC             SECTION.
+      *
+           INITIALIZE                  PARA-AREA
+      *    保険区分
+           MOVE    "HKNCOMBIKBN"       TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-HKNCOMBIKBN
+      *
+           .
+       100-OPTION-SELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    プログラムオプションパラメタ取得処理
+      *****************************************************************
+       1001-OPTION-CALL-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSPRGOPTIONAREA
+           MOVE    "ORCHC33"           TO  ORCSPRGOPTION-PRGID
+           MOVE    WRK-PARA-NAME       TO  ORCSPRGOPTION-IN-DATA
+           CALL    "ORCSPRGOPTION"     USING   SPA-AREA
+                                               ORCSPRGOPTIONAREA
+           MOVE    SPACE               TO  WRK-PARA
+           IF      ORCSPRGOPTION-OT-TYPE   =   1
+      *        半角で１文字目を値とする
+               MOVE    ORCSPRGOPTION-OT-PARA(1:1)  TO  WRK-PARA(1:1)
+           END-IF
+           .
+       1001-OPTION-CALL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ内容チェック処理
+      *****************************************************************
+       1002-OPTION-CHEK-SEC                     SECTION.
+      *
+           EVALUATE    PARA-HKNCOMBIKBN
+           WHEN    "1"
+      *        労災・自賠責・自費
+               IF      (ORCHC33-HKNCOMBI    =   "9999" )
+                   MOVE    8               TO  ORCHC33-RC
+                   MOVE    1               TO  FLG-END
+               END-IF
+           WHEN    "2"
+      *        保険組合せ毎
+               IF     (ORCHC33-HKNCOMBI    =   "0000"
+                                           OR  "9999"
+                                           OR  SPACE )
+                   MOVE    8               TO  ORCHC33-RC
+                   MOVE    1               TO  FLG-END
+               END-IF
+           END-EVALUATE
+           .
+       1002-OPTION-CHEK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -626,6 +716,13 @@
       *****************************************************************
        2000-ALL-PRINT-SEC            SECTION.
       *
+           MOVE    SPACE               TO  WRK-PARA-HKNNUM
+      *    保険組合せテーブル編集
+           IF     (PARA-HKNCOMBIKBN    =   "1"
+                                       OR  "2" )
+               PERFORM 2009-HKNCOMBI-HEN-SEC
+           END-IF
+      *
            MOVE    ZERO                TO  IDX-T
            MOVE    ZERO                TO  CNT-PAGE
            MOVE    ZERO                TO  CNT-MEI
@@ -651,7 +748,7 @@
       *        集計処理
                PERFORM 2001-SYUKEI-SYORI-SEC
       *        印刷処理
-               IF      FLG-SYORI           =   1
+               IF      FLG-PRINT           =   1
                    PERFORM 2002-PRINT-SYORI-SEC
                END-IF
       *        診療年月＋１
@@ -671,11 +768,67 @@
            EXIT.
       *
       *****************************************************************
+      *    保険組合せテーブル編集処理
+      *****************************************************************
+       2009-HKNCOMBI-HEN-SEC        SECTION.
+      *
+           INITIALIZE                      TBL-ALL-HKNCOMBI-AREA
+           MOVE    ZERO                TO  IDX-C
+           MOVE    SPACE               TO  WRK-PARA-HKNNUM
+      *
+           INITIALIZE                      HKNCOMBI-REC
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+           MOVE    SPA-PTID            TO  COMB-PTID
+           MOVE    ORCHC33-SRYYM       TO  COMB-TEKSTYMD(1:6)
+           MOVE    "01"                TO  COMB-TEKSTYMD(7:2)
+           IF      ORCHC33-SRYYM-END   =   SPACE
+               MOVE    ORCHC33-SRYYM       TO  COMB-TEKSTYMD(1:6)
+           ELSE
+               MOVE    ORCHC33-SRYYM-END   TO  COMB-TEKEDYMD(1:6)
+           END-IF 
+           MOVE    "31"                TO  COMB-TEKEDYMD(7:2)
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-HKNCOMBI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+           PERFORM UNTIL   (FLG-HKNCOMBI   =   1  )
+                       OR  (IDX-C           >=  99 )
+               IF      COMB-DELKBN         =   SPACE
+                   ADD     1                   TO  IDX-C
+                   MOVE    COMB-HKNCOMBINUM    TO  TBL-ALL-HKNCOMBINUM
+                                                               (IDX-C)
+                   MOVE    COMB-HKNNUM         TO  TBL-ALL-HKNNUM
+                                                               (IDX-C)
+                   IF      ORCHC33-HKNCOMBI    =   COMB-HKNCOMBINUM
+                       MOVE    COMB-HKNNUM     TO  WRK-PARA-HKNNUM
+                   END-IF
+               END-IF
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-HKNCOMBI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       2009-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    集計処理
       *****************************************************************
-       2001-SYUKEI-SYORI-SEC                SECTION.
+       2001-SYUKEI-SYORI-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-SYORI
+           MOVE    ZERO                TO  FLG-PRINT
       *    集計テーブル
            INITIALIZE                  TBL-AREA
            INITIALIZE                  TBL-RSI-AREA
@@ -718,9 +871,10 @@
       *            保険編集
                    PERFORM 20013-HKNCOMBI-HEN-SEC
       *!!          IF      ACCT-ZAITEN         >   ZERO
-                       MOVE    1                   TO  FLG-SYORI
+                   IF      FLG-SYORI           =   1
+                       MOVE    1                   TO  FLG-PRINT
                        PERFORM 20011-SRYACCT-HEN-SEC
-      *!!          END-IF
+                   END-IF
                END-IF
       *
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
@@ -1020,6 +1174,18 @@
       *****************************************************************
        20013-HKNCOMBI-HEN-SEC                SECTION.
       *
+           MOVE    ZERO                TO  FLG-SYORI
+      *    保険組合せ対象チェック
+           IF      (PARA-HKNCOMBIKBN    =   "1"  OR  "2")
+               MOVE    ACCT-HKNCOMBI        TO  WRK-CHK-HKNCOMBI
+               PERFORM 200139-HKNCOMBI-CHK-SEC
+               IF      FLG-SYORI            =   ZERO
+                   GO      TO      20013-HKNCOMBI-HEN-EXT
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYORI
+           END-IF
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   20
                IF      TBL-HKNCOMBI (IDX)  =   SPACE
@@ -1068,6 +1234,7 @@
       *
            INITIALIZE                  WRK-HKNCOMBI-AREA
            IF      COMB-HKNNUM         =   "971"
+                                       OR  "973"
       *        労災保険名称
                PERFORM 2001312-RSIMEI-HEN-SEC
            ELSE
@@ -1151,6 +1318,51 @@
            END-IF
            .
        2001312-RSIMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険適応判定処理
+      *****************************************************************
+       200139-HKNCOMBI-CHK-SEC          SECTION.
+      *
+           EVALUATE    PARA-HKNCOMBIKBN
+           WHEN    "1"
+      *        労災・自賠責・自費保険とその他保険
+               IF     (WRK-PARA-HKNNUM         =   "971"
+                                               OR  "973" )
+                  OR  (WRK-PARA-HKNNUM(1:2)    =   "98"  )
+      *            保険組合せ一致のみ
+                   IF      ORCHC33-HKNCOMBI    =   WRK-CHK-HKNCOMBI
+                       MOVE    1                   TO  FLG-SYORI
+                   END-IF
+               ELSE
+      *            労災・自賠責は対象外
+                   PERFORM VARYING IDX-C   FROM    1   BY  1
+                           UNTIL   (IDX-C          >   99  )  OR
+                                   (TBL-ALL-HKNCOMBINUM (IDX-C)
+                                                   =   SPACE)
+                       IF      WRK-CHK-HKNCOMBI
+                                           =   TBL-ALL-HKNCOMBINUM
+                                                               (IDX-C)
+                           IF     (TBL-ALL-HKNNUM (IDX-C)  =   "971"
+                                                           OR  "973")
+                           OR     (TBL-ALL-HKNNUM (IDX-C)(1:2)
+                                                           =   "98")
+                               MOVE    ZERO                TO  FLG-SYORI
+                           ELSE
+                               MOVE    1                   TO  FLG-SYORI
+                           END-IF
+                           MOVE    99                  TO  IDX-C
+                       END-IF
+                   END-PERFORM
+               END-IF
+           WHEN    "2"
+      *        保険組合せ一致のみ
+               IF      ORCHC33-HKNCOMBI    =   WRK-CHK-HKNCOMBI
+                   MOVE    1                   TO  FLG-SYORI
+               END-IF
+           END-EVALUATE
+           .
+       200139-HKNCOMBI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1571,11 +1783,23 @@
                MOVE    1               TO  FLG-SYUNOU
            END-IF
            PERFORM UNTIL    FLG-SYUNOU     =   1
-      *
+      *H24.9
+               MOVE    ZERO                TO  FLG-SYORI
                IF      (ORCHC33-SRYKA  NOT =   ZERO  AND  SPACE) AND
                        (ORCHC33-SRYKA  NOT =   SYU-SRYKA)
                    CONTINUE
                ELSE
+                   MOVE    1               TO  FLG-SYORI
+               END-IF
+      *        保険組合せチェック
+               IF      (PARA-HKNCOMBIKBN    =   "1"  OR  "2")
+                 AND   (FLG-SYORI           =   1           )
+                   MOVE    ZERO                 TO  FLG-SYORI
+                   MOVE    SYU-HKNCOMBINUM      TO  WRK-CHK-HKNCOMBI
+                   PERFORM 200139-HKNCOMBI-CHK-SEC
+               END-IF
+      *
+               IF      FLG-SYORI           =   1
       *----(03.04.01)--UPD-START---
       *            自費計
                    COMPUTE WRK-JIHIKEI     =   SYU-JIHI-TOTAL
@@ -1655,12 +1879,23 @@
                MOVE    1               TO  FLG-SYUNOU
            END-IF
            PERFORM UNTIL    FLG-SYUNOU     =   1
-      *
+      *H24.9
+               MOVE    ZERO                TO  FLG-SYORI
                IF      (ORCHC33-SRYKA  NOT =   ZERO  AND  SPACE) AND
                        (ORCHC33-SRYKA  NOT =   SYU-SRYKA)
                    CONTINUE
                ELSE
-      *----(03.04.01)--UPD-START---
+                   MOVE    1               TO  FLG-SYORI
+               END-IF
+      *        保険組合せチェック
+               IF      (PARA-HKNCOMBIKBN    =   "1"  OR  "2")
+                 AND   (FLG-SYORI           =   1           )
+                   MOVE    ZERO                 TO  FLG-SYORI
+                   MOVE    SYU-HKNCOMBINUM      TO  WRK-CHK-HKNCOMBI
+                   PERFORM 200139-HKNCOMBI-CHK-SEC
+               END-IF
+      *
+               IF      FLG-SYORI           =   1
       *            自費計
                    COMPUTE WRK-JIHIKEI     =   SYU-JIHI-TOTAL
                                            +   SYU-JIHI-TOTAL-TAX

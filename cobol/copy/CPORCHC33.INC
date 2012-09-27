@@ -48,6 +48,8 @@
            03  ORCHC33-NYUGAIKBN       PIC X(01).
       *    ø«Œ≈≤ 
            03  ORCHC33-SRYKA           PIC X(02).
+      *     ›∏±¡»πÁ§ª
+           03  ORCHC33-HKNCOMBI        PIC X(04).
       *
       *    ∞ı∫˛∂Ë ¨° 1:∆¨ΩÒ°¢0:Ã¿∫Ÿ)
            03  ORCHC33-PRINT-FLG       PIC 9(01).
