@@ -69,9 +69,7 @@
       *  04.05.00    NACL-多々納  09/07/XX  患者公費負担額機能追加
       *                                     公費負担額未入力警告対応
       *  04.06.00    NACL-多々納  11/03/24  患者情報削除サブ対応
-      *  04.07.00    NACL-多々納  12/01/11  クライアント印刷対応
-      *  04.07.00    NACL-多々納  12/08/08  患者削除再確認対応
-      *  05.00.00    NACL-多々納  17/07/XX  PUSH通信対応
+      *  04.07.00    NACL-多々納  12/09/11  患者削除再確認対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -139,12 +137,6 @@
       *
            03  FLG-CLAIM-MULTIHOST     PIC 9(01).
            03  FLG-SOUSIN              PIC 9(01).
-      *    クライアント印刷有
-           03  FLG-CLIENT-OK       PIC 9(01).
-           03  FLG-PRT             PIC 9(01).
-      *H29.7
-      *PUSH通信用
-           03  FLG-PUSHSYORI       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -153,7 +145,6 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
-           03  IDX2                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -206,32 +197,6 @@
       *
            03  WRK-RENNUM              PIC 9(02).
       *
-      *    カルテＰＧ名
-           03  WRK-KARUTE-PG           PIC X(20).
-      *    処方せんＰＧ名
-           03  WRK-SYOHOU-PG           PIC X(20).
-      *
-      *H29.7
-      *PUSH通信用
-           03  WRK-HEN-DATE.
-               05  WRK-HEN-YY          PIC X(04).
-               05  WRK-HEN-H1          PIC X(01).
-               05  WRK-HEN-MM          PIC X(02).
-               05  WRK-HEN-H2          PIC X(01).
-               05  WRK-HEN-DD          PIC X(02).
-      *    時間編集
-           03  WRK-THMS.
-               05  WRK-THHH             PIC X(02).
-               05  WRK-THMM             PIC X(02).
-               05  WRK-THSS             PIC X(02).
-           03  WRK-HEN-TIME.
-               05  WRK-HEN-THH         PIC X(02).
-               05  WRK-HEN-T1          PIC X(01).
-               05  WRK-HEN-TMM         PIC X(02).
-               05  WRK-HEN-T2          PIC X(01).
-               05  WRK-HEN-TSS         PIC X(02).
-      *
-      *
       *    ＣＬＡＩＭファイル名
        01  CLAIM-FILE.
            03  FILLER              PIC X(30)   VALUE
@@ -274,13 +239,14 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-      *    システム管理マスタ
-           COPY    "CPSYSKANRI.INC".
       *　　（ＣＬＡＩＭ接続）
            COPY    "CPSK9000.INC".
            COPY    "CPSK9001.INC".
-      *　　（帳票プログラム）
-           COPY    "CPSK1032.INC".
+      *
+      *    受付
+      *01  UKETUKE-REC.
+      *    COPY    "CPUKETUKE.INC".
+      *
       *
       *    患者番号変換マスタ
        01  PTNUM-REC.
@@ -290,19 +256,211 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
+      *    保険組み合わせ
+      *01  HKNCOMBI-REC.
+      *    COPY    "CPHKNCOMBI.INC".
+      *
+      *    保険マスタ
+      *01  PTHKNINF-REC.
+      *    COPY    "CPPTHKNINF.INC".
+      *
+      *    公費マスタ
+      *01  PTKOHINF-REC.
+      *    COPY    "CPPTKOHINF.INC".
+      *
+      *    旧姓履歴
+      *01  KYUSEIRRK-REC.
+      *    COPY    "CPKYUSEIRRK.INC".
+      *
+      *    低所得
+      *01  TSYRRK-REC.
+      *    COPY    "CPTSYRRK.INC".
+      *
+      *    年金
+      *01  TNKRRK-REC.
+      *    COPY    "CPTNKRRK.INC".
+      *
+      *    紹介履歴
+      *01  SYKRRK-REC.
+      *    COPY    "CPSYKRRK.INC".
+      *
+      *    診療行為マスタ−
+      *01  SRYACT-REC.
+      *    COPY    "CPSRYACT.INC".
+      *
+      *    ワーク診療行為マスタ−
+      *01  WKSRYACT-REC.
+      *    COPY    "CPWKSRYACT.INC".
+      *
+      *    診療会計マスタ−
+      *01  SRYACCT-REC.
+      *    COPY    "CPSRYACCT.INC".
+      *
+      *    診療会計附加情報マスタ−
+      *01  SRYACCTPLUS-REC.
+      *    COPY    "CPSRYACCTPLUS.INC".
+      *
+      *    患者コメント
+      *01  PTCOM-REC.
+      *    COPY    "CPPTCOM.INC".
+      *
       *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
+      *
+      *    診療科履歴
+      *01  SRYKARRK-REC.
+      *    COPY    "CPSRYKARRK.INC".
+      *
+      *    算定履歴
+      *01  SANTEI-REC.
+      *    COPY    "CPSANTEI.INC".
+      *
+      *    算定履歴
+      *01  SANTEIPLUS-REC.
+      *    COPY    "CPSANTEIPLUS.INC".
+      *
+      *    収納マスタワーク
+      *01  SYUNOU-REC.
+      *    COPY    "CPSYUNOU.INC".
+      *
+      *    収納明細
+      *01  SYUMEI-REC.
+      *    COPY    "CPSYUMEI.INC".
+      *
+      *    患者病名
+      *01  PTBYOMEI-REC.
+      *    COPY    "CPPTBYOMEI.INC".
+      *
+      *    予約マスター
+      *01  YYK-REC.
+      *    COPY    "CPYYK.INC".
+      *
+      *    予約マスター保存
+      *01  WRK-YYK-REC.
+      *    COPY    "CPYYK.INC"       REPLACING
+      *                              //YYK-// BY //WRK-YYK-//.
+      *    予約メモマスター
+      *01  YYKCOM-REC.
+      *    COPY    "CPYYKCOM.INC".
+      *
+      *    レセプトコメント
+      *01  RECECOM-REC.
+      *    COPY    "CPRECECOM.INC".
+      *
+      *
+      *    請求管理
+      *    COPY    "CPRCF010.INC".
+      *
+      *    患者労災保険情報
+      *01  PTRSIINF-REC.
+      *    COPY    "CPPTRSIINF.INC".
+      *
+      *    月代り受給者番号
+      *01  MONTHLYNUM-REC.
+      *    COPY    "CPMONTHLYNUM.INC".
+      *
+      *    患者入院履歴
+      *01  PTNYUINRRK-REC.
+      *    COPY    "CPPTNYUINRRK.INC".
+      *
+      *    患者他院歴付加情報
+      *01  PTTAINFUKA-REC.
+      *    COPY    "CPPTTAINFUKA.INC".
+      *
+      *    入院診療行為マスター
+      *01  NYUINACT-REC.
+      *    COPY    "CPNYUINACT.INC".
+      *
+      *    入院診療会計マスタ−
+      *01  NYUINACCT-REC.
+      *    COPY    "CPNYUINACCT.INC".
+      *
+      *    患者定期請求履歴
+      *01  PTTEIKIRRK-REC.
+      *    COPY    "CPPTTEIKIRRK.INC".
+      *
+      *    地方公費請求書
+      *    COPY    "CPKOHSKY.INC".
+      *
+      *    患者禁忌薬剤マスタ
+      *01  PTKINKI-REC.
+      *    COPY    "CPPTKINKI.INC".
+      *
+      *    患者特記事項マスタ
+      *01  PTTOKKI-REC.
+      *    COPY    "CPPTTOKKI.INC".
+      *
+      *    患者公費負担額
+      *01  PTKOHFTNETC-REC.
+      *    COPY    "CPPTKOHFTNETC.INC".
       *
       *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
+      *    公費負担額
+      *01  PTKOHFTN-REC.
+      *    COPY    "CPPTKOHFTN.INC".
+      *
+      *    日別収納マスタ
+      *01  SYUDAY-REC.
+      *    COPY    "CPSYUDAY.INC".
+      *
+      *    レセプト電算マスター 
+      *    COPY    "CPRECEDEN.INC".
+      *
+      *    手術歴レセプトコメントマスター
+      *01  OPECOM-REC.
+      *    COPY    "CPOPECOM.INC".
+      *
+      *    収納合計マスタ−
+      *01  SYUTTL-REC.
+      *    COPY    "CPSYUTOTAL.INC".
+      *
+      *    主科テーブル
+      *01  SYUKA-REC.
+      *    COPY    "CPSYUKA.INC".
+      *
+      *    療養レセプトコメントマスタ
+      *01  RYOCOM-REC.
+      *    COPY    "CPRYOCOM.INC".
+      *
+      *    収納履歴マスタ
+      *01  SYURRK-REC.
+      *    COPY    "CPSYURRK.INC".
       *
       *    QRコード(被保険者証)（使用なし）
        01  QRCDHKN-REC.
            COPY    "CPQRCDHKN.INC".
       *
+      *    患者メモ
+      *01  PTMEMOINF-REC.
+      *    COPY    "CPPTMEMOINF.INC".
+      *
+      *    入院診療行為照会テーブル
+      *01  NSRYSRH-REC.
+      *    COPY    "CPNSRYSRH.INC".
+      *
+      *    入院履歴照会テーブル
+      *01  NRRKSRH-REC.
+      *    COPY    "CPNRRKSRH.INC".
+      *
+      *    分娩管理テーブル
+      *01  BUNBEN-REC.
+      *    COPY    "CPBUNBEN.INC".
+      *
+      *    同一患者識別テーブル
+      *01  PTSAME-REC.
+      *    COPY    "CPPTSAME.INC".
+      *
+      *    同一患者識別テーブル
+      *01  HZN-PTSAME-REC.
+      *    COPY    "CPPTSAME.INC"      REPLACING
+      *                                //PTSAME-// BY //HZN-PTSAME-//.
+      *
+      *    チェック例外テーブル
+      *    COPY    "CPCHKREIGAI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -334,20 +492,9 @@
       *    ユーザプログラム起動チェックパラメタ
            COPY    "CPORCSUSERCHK.INC".
       *
-      *    カルテパラメータ
-           COPY    "CPORCHC01.INC".
-      *
-      *    処方箋印刷パラメータ
-           COPY    "CPORCHC19.INC".
-      *
-      *    オンライン帳票名・出力先プリンタ名取得パラ
-           COPY    "CPORCSPRTNM.INC".
-      *
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *****COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA"          REPLACING
                                      //MCP// BY //WRK-MCP//.
@@ -356,10 +503,6 @@
            COPY    "CPSHELLTBL.INC".
       *****COPY    "ORCA-DBPATH".
       *===> For Claim End
-      *H29.7
-      *PUSH通信
-           COPY    "CPPUSHPATIENT01.INC".
-      *
       *
       *****************************************************************
       *    連絡　領域
@@ -372,7 +515,33 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+      *****COPY    "P99.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
+           COPY    "P02K.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -415,11 +584,6 @@
                PERFORM 500-SET-SCREEN
       *
            END-IF
-      *
-      *    クライアント印刷
-      *    IF      FLG-CLIENT-OK       =   1
-      *        PERFORM 600-CLIENT-DMY-SEC
-      *    END-IF
       *
            MOVE    SPA-P02KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -581,6 +745,7 @@
                    IF      SPA-ERRCD       NOT =   SPACE
                        PERFORM 510-ERRSET-SEC
                    END-IF
+      *H24.9
                    IF      SPA-ERRCD           =   SPACE
                    AND     SPA-PIDCD       NOT =   SPACE
                        PERFORM 520-JIDSET-SEC
@@ -658,9 +823,6 @@
                    MOVE    1                   TO  SPA-GMN-CUR
                    MOVE    SPACE               TO  SPA-P02-WIDGET
                    MOVE    1                   TO  P02-PAGENO
-      *        禁忌薬剤
-               WHEN    "P02Y"
-                   CONTINUE
       *        ＣＬＡＩＭ画面より
                WHEN    "P02X"
                    MOVE    "P02"               TO  SPA-P02-GAMEN
@@ -676,14 +838,6 @@
                    MOVE    SPACE               TO  SPA-P02-WIDGET
                    MOVE    "P024_FTNSELNUM2"   TO  SPA-P02-WIDGET
                    MOVE    4                   TO  P02-PAGENO
-      *ver.4.7
-      *        確認年月日履歴画面より
-               WHEN    "P02T"
-                   IF      SPA-P02-GAMEN       =   "P02"
-                       MOVE    1                   TO  P02-PAGENO
-                   ELSE
-                       MOVE    2                   TO  P02-PAGENO
-                   END-IF
       *!
       *DDDDDDD ＱＲより
       *        WHEN    "P02Q"
@@ -726,9 +880,6 @@
               IF      (WRK-SPA-PTNUM       =   SPACE   )  AND
                       (WRK-SPA-NAME    NOT =   SPACE   )  AND
                       (WRK-SPA-P02-UKEID   NOT =   ZERO    )
-      *H29.11
-                   MOVE    SPACE               TO  SPA-GMN-PTNUM
-                   MOVE    ZERO                TO  SPA-GMN-PTID
                    MOVE    WRK-SPA-NAME        TO  SPA-NAME
                    MOVE    WRK-SPA-P02-UKEID   TO  SPA-P02-UKEID
       *            各画面を初期編集する
@@ -801,7 +952,6 @@
                    END-IF
       *        削除確認
                WHEN    "0103"
-                   MOVE    SPACE               TO  SPA-PIDCD
                    IF      SPA-PID1-FLG        =   "OK"
       *H24.9
       ***************  PERFORM 4991-DELETE-SYORI-SEC
@@ -815,6 +965,7 @@
                    IF      SPA-PID1-FLG        =   "OK"
                        PERFORM 4991-DELETE-SYORI-SEC
                    END-IF
+      *
       *        保険変更確認
       *******  WHEN    "9100"
       *        WHEN    "9101"
@@ -850,12 +1001,6 @@
                        MOVE    "P02 "          TO  SPA-P02-GAMEN
                        PERFORM 3002-GMNSET-SEC
                    END-IF
-      *VER.4.7
-      *        旧姓履歴確認
-               WHEN    "0250"
-                       MOVE    "P02 "          TO  SPA-P02-GAMEN
-                       PERFORM 3002-GMNSET-SEC
-      ***
       *        住所確認
                WHEN    "1098"
                    IF      SPA-PID1-FLG        =   "OK"
@@ -939,12 +1084,6 @@
                                                    SPAAREA
                                                    LINKAREA
                                                    SCRAREA
-      *        個別設定情報
-               WHEN     "P028"
-                   CALL    "ORCGP028"      USING   MCPAREA
-                                                   SPAAREA
-                                                   LINKAREA
-                                                   SCRAREA
       ******   紹介情報入力
       *        WHEN     "P023"
       *            CALL    "ORCGP023"      USING   MCPAREA
@@ -974,7 +1113,6 @@
                                                SPA-P02SCRAREA
                                                P02
            MOVE    SPA-ERRCD           TO  WRK-ERRCD
-      *
       *    ＱＲデータ判定
       *DD  PERFORM 3101-QRDATA-CHK-SEC
       *
@@ -1356,21 +1494,16 @@
       *    患者紐付け
                WHEN    "CLICKED"       ALSO    "B03S"
                    PERFORM 4032-GRPPTNUM-SEC
-      *ver.4.7
-      *    前・次切替え
-               WHEN    "CLICKED"       ALSO    "B02S"
-                   PERFORM 4034-NEXTCHG-SEC
-      *ver.4.7
       *    タグ切り替え
-      *        WHEN    "CLICKED"       ALSO    "N01"
-      *        WHEN    "CLICKED"       ALSO    "N02"
-      *        WHEN    "CLICKED"       ALSO    "N03"
-      *        WHEN    "CLICKED"       ALSO    "N04"
+               WHEN    "CLICKED"       ALSO    "N01"
+               WHEN    "CLICKED"       ALSO    "N02"
+               WHEN    "CLICKED"       ALSO    "N03"
+               WHEN    "CLICKED"       ALSO    "N04"
       *********WHEN    "CLICKED"       ALSO    "N06"
-      *        WHEN    "CLICKED"       ALSO    "N07"
-      *        WHEN    "CLICKED"       ALSO    "N08"
-      *        WHEN    "CLICKED"       ALSO    "N09"
-      *****        PERFORM 460-TAGUCHG-SEC
+               WHEN    "CLICKED"       ALSO    "N07"
+               WHEN    "CLICKED"       ALSO    "N08"
+               WHEN    "CLICKED"       ALSO    "N09"
+                   PERFORM 460-TAGUCHG-SEC
       *    各画面へ
                WHEN    OTHER
                    MOVE    ZERO                TO  SPA-TAGU-FLG
@@ -1438,11 +1571,6 @@
                    MOVE    "P026"          TO  SPA-P02-GAMEN
                    MOVE    "N09"           TO  SPA-P02-WIDGET
                WHEN    "P026"
-      **           MOVE    "P020"          TO  SPA-P02-GAMEN
-      **           MOVE    "N01"           TO  SPA-P02-WIDGET
-                   MOVE    "P028"          TO  SPA-P02-GAMEN
-                   MOVE    "N10"           TO  SPA-P02-WIDGET
-               WHEN    "P028"
                    MOVE    "P020"          TO  SPA-P02-GAMEN
                    MOVE    "N01"           TO  SPA-P02-WIDGET
            END-EVALUATE
@@ -1488,10 +1616,8 @@
                WHEN    "P020"
       ****         MOVE    "P025"          TO  SPA-P02-GAMEN
       ****         MOVE    "N08"           TO  SPA-P02-WIDGET
-      ****         MOVE    "P026"          TO  SPA-P02-GAMEN
-      ****         MOVE    "N09"           TO  SPA-P02-WIDGET
-                   MOVE    "P028"          TO  SPA-P02-GAMEN
-                   MOVE    "N10"           TO  SPA-P02-WIDGET
+                   MOVE    "P026"          TO  SPA-P02-GAMEN
+                   MOVE    "N09"           TO  SPA-P02-WIDGET
                WHEN    "P02"
                    MOVE    "P020"          TO  SPA-P02-GAMEN
                    MOVE    "N01"           TO  SPA-P02-WIDGET
@@ -1510,9 +1636,6 @@
                WHEN    "P026"
                    MOVE    "P025"          TO  SPA-P02-GAMEN
                    MOVE    "N08"           TO  SPA-P02-WIDGET
-               WHEN    "P028"
-                   MOVE    "P026"          TO  SPA-P02-GAMEN
-                   MOVE    "N09"           TO  SPA-P02-WIDGET
            END-EVALUATE
       *
            MOVE    SPA-P02-WIDGET     TO  MCP-WIDGET
@@ -1534,25 +1657,6 @@
        460-TAGUCHG-SEC           SECTION.
       *
            MOVE    MCP-WIDGET          TO  WRK-WIDGET
-      *ver.4.7
-           EVALUATE    P02-PAGENO
-               WHEN    0
-                   MOVE    "N01"               TO  WRK-WIDGET
-               WHEN    1
-                   MOVE    "N02"               TO  WRK-WIDGET
-               WHEN    2
-                   MOVE    "N03"               TO  WRK-WIDGET
-               WHEN    3
-                   MOVE    "N04"               TO  WRK-WIDGET
-               WHEN    4
-                   MOVE    "N07"               TO  WRK-WIDGET
-               WHEN    5
-                   MOVE    "N08"               TO  WRK-WIDGET
-               WHEN    6
-                   MOVE    "N09"               TO  WRK-WIDGET
-               WHEN    7
-                   MOVE    "N10"               TO  WRK-WIDGET
-           END-EVALUATE
       *
       *    患者指定がない時、チェックなし
            IF      SPA-GMN-PTNUM       =   SPACE
@@ -1577,7 +1681,7 @@
                    MOVE    "P020"          TO  SPA-P02-GAMEN
       *        基本
                WHEN    "N02"
-                   MOVE    "P02 "          TO  SPA-P02-GAMEN
+                   MOVE    "P02 "         TO  SPA-P02-GAMEN
       *        保険組合せ
                WHEN    "N03"
                    MOVE    "P027"         TO  SPA-P02-GAMEN
@@ -1599,9 +1703,6 @@
       *        特記事項
                WHEN    "N09"
                    MOVE    "P026"          TO  SPA-P02-GAMEN
-      *        個別設定
-               WHEN    "N10"
-                   MOVE    "P028"          TO  SPA-P02-GAMEN
            END-EVALUATE
       *
       *    画面ＳＰＡ編集のみ（各画面の初期編集）
@@ -1612,7 +1713,6 @@
       *
            MOVE    SPACE              TO  SPA-P02-WIDGET
            MOVE    ZERO               TO  SPA-FLG-END
-           MOVE    ZERO               TO  FLG-END
       *
            .
        460-TAGUCHG-EXT.
@@ -1626,10 +1726,6 @@
       *        患者番号入力
                WHEN    "ACTIVATE"      ALSO    "PTNUM"
                    PERFORM 4100-PTNUM-SYORI-SEC
-      *ver.4.7
-      *    タグ切り替え
-               WHEN    "SWITCH"       ALSO    "nb2"
-                   PERFORM 460-TAGUCHG-SEC
       *        各画面へ
                WHEN    OTHER
                    IF     (SPA-GMN-PTNUM   NOT =   SPACE  )  AND
@@ -2172,24 +2268,6 @@
            .
        40321-P02G2-SYORI-EXT.
            EXIT.
-      *ver.4.7
-      *
-      *****************************************************************
-      *    前・次切替え処理
-      *****************************************************************
-       4034-NEXTCHG-SEC            SECTION.
-      *
-           EVALUATE    SPA-NAI-NEXTFLG
-               WHEN    0
-                   MOVE    1           TO  SPA-NAI-NEXTFLG
-               WHEN    1
-                   MOVE    2           TO  SPA-NAI-NEXTFLG
-               WHEN    2
-                   MOVE    0           TO  SPA-NAI-NEXTFLG
-           END-EVALUATE
-           .
-       4034-NEXTCHG-EXT.
-           EXIT.
       *****************************************************************
       *    ＱＲ一覧へ処理
       *****************************************************************
@@ -2258,20 +2336,6 @@
                    MOVE    "1021"              TO  SPA-ERRCD
                END-IF
            END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-      *        表示画面の登録処理
-               MOVE    "CLICKED"           TO  MCP-EVENT
-               MOVE    "B12"               TO  MCP-WIDGET
-               MOVE    "PUTG"              TO  MCP-STATUS
-               MOVE    1                   TO  SPA-TAGU-FLG
-               PERFORM 3002-GMNSET-SEC
-               IF     (SPA-ERRCD       NOT =   SPACE )
-                  OR  (SPA-PIDCD       NOT =   SPACE )
-                  GO  TO                  4902-P02YSYORI-EXT
-               END-IF
-           END-IF
-      *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 49021-P02Y-SYORI-SEC
            END-IF
@@ -2283,7 +2347,7 @@
       *****************************************************************
        49021-P02Y-SYORI-SEC            SECTION.
       *
-           INITIALIZE                  SPA-P02Y-AREA
+           INITIALIZE                  SPA-P02Q-AREA
       *
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -2301,7 +2365,6 @@
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-P02SCRAREA
            MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-      *
       *
            IF      SPA-P02Y-MAX        =   ZERO
                MOVE    "SRYCD"             TO  MCP-WIDGET
@@ -2322,9 +2385,8 @@
       *    再発行処理
       *****************************************************************
        450-SAINUM-SEC           SECTION.
-      *
       *    患者ＩＤがあり、新規の時
-           IF     (SPA-GMN-PTNUM   NOT =   SPACE)  AND
+           IF     (SPA-GMN-PTNUM   NOT =   ZERO )  AND
                   (SPA-P02-SYORI       =   1    )
       *        自由構成の時、登録
                MOVE    1                   TO  FLG-HAKKOU
@@ -2599,7 +2661,7 @@
            .
        499-DELETE-EXT.
            EXIT.
-      *
+      *ver.4.7
       *****************************************************************
       *    削除処理
       *****************************************************************
@@ -2647,6 +2709,7 @@
        4990-DELETE-CHEK-EXT.
            EXIT.
       *
+      *
       *****************************************************************
       *    削除処理
       *****************************************************************
@@ -2659,22 +2722,9 @@
                GO      TO      4991-DELETE-SYORI-EXT
            END-IF
       *
-      *H29.7
-      *PUSH通信
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    3                   TO  FLG-PUSHSYORI
-               PERFORM 600-PUSH-SYORI-SEC
-           END-IF
-      *
       *    ユーザプログラム起動
-      *v4.8
-      *    ginbee対応
-      *    IF      SPA-MW              =   SPA-GINBEE
-      *        CONTINUE
-      ***  ELSE
-               MOVE    2                   TO  FLG-USERPG
-               PERFORM 4907-USERPG-SEC
-      **** END-IF
+           MOVE    2                   TO  FLG-USERPG
+           PERFORM 4907-USERPG-SEC
            IF      FLG-END             =   1
                GO      TO      4991-DELETE-SYORI-EXT
            END-IF
@@ -2769,14 +2819,7 @@
       *
       *    ＣＬＡＩＭ接続チェック処理
            MOVE    ZERO                TO  FLG-CLAIM
-      *v4.8
-      *    ginbee対応
-           IF      SPA-MW              =   SPA-GINBEE
-               INITIALIZE                  SPA-P02X-AREA
-           ELSE
-               PERFORM 4905-CLAIM-CHK-SEC
-           END-IF
-      *
+           PERFORM 4905-CLAIM-CHK-SEC
            IF      FLG-CLAIM           =   2
                CONTINUE
            ELSE
@@ -2811,16 +2854,6 @@
                    MOVE    1                   TO  SPA-KEI-FLG
                END-IF
            END-IF
-      *!!!
-      *    カルテ／処方箋発行処理（クライアント印刷の為、移動）
-      **** IF     (SPA-ERRCD           =   SPACE )
-           IF     (SPA-ERRCD      NOT  =   SPACE )
-             AND  (SPA-KEI-FLG         =   ZERO  )
-               CONTINUE
-           ELSE
-               PERFORM 49023-HC01-SYORI-SEC
-           END-IF
-      *!!!
       *    ＣＬＡＩＭ送信
            MOVE    FLG-CLAIM           TO  SPA-FLG-CLAIM
       *
@@ -2833,267 +2866,7 @@
            .
        4902-KOUSIN-SYORI-EXT.
            EXIT.
-      *
-      *ver.4.7
-      *****************************************************************
-      *    カルテ／処方箋発行処理
-      *****************************************************************
-       49023-HC01-SYORI-SEC         SECTION.
-      *
-      *    帳票印刷有無判定
-           MOVE    ZERO                TO  FLG-PRT
-           IF      SPA-GMN-HAKKO       =   "1"  OR  "2"
-                                       OR  "3"
-               MOVE    1               TO  FLG-PRT
-           END-IF
-           PERFORM   VARYING   IDX2    FROM    1   BY  1
-                     UNTIL   ( IDX2            >   10 )
-                     OR      ( FLG-PRT         =   1  )
-                     OR      ( SPA-GMN20-YBANGOU(IDX2)
-                                               =   ZERO  OR  SPACE )
-               IF   (SPA-GMN20-TKARUTE (IDX2)      =   "0"
-                                                   OR  SPACE  )  AND
-                    (SPA-GMN20-TSYOHOU (IDX2)      =   "0"
-                                                   OR  SPACE  )
-                   CONTINUE
-               ELSE
-                   MOVE    1               TO  FLG-PRT
-               END-IF
-           END-PERFORM
-           IF      FLG-PRT             =   ZERO
-               GO      TO      49023-HC01-SYORI-EXT
-           END-IF
-      *
-      *    ＳＰＡに共通項目を設定
-           MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
-           MOVE    "2"                 TO  SPA-NYUGAIKBN
-      *
-      *    帳票プログラム取得
-           PERFORM 21000-PRINT-PG-SEC
-      *
-           IF     (SPA-CLIENT-PRT-FLG  =   2 )
-             OR   (SPA-PRTCONF         =   "1" )
-      *        クライアント印刷制御情報取得処理
-               PERFORM 4901-CLIENT-PRT-SEC
-           END-IF
-      *
-      *    基本画面のカルテ出力
-           IF      SPA-GMN-HAKKO       =   "1"  OR  "2"
-                                       OR  "3"
-               PERFORM 21003-HC01-CALL2-SEC
-           END-IF
-      *
-           MOVE    ZERO                TO  IDX
-           PERFORM   VARYING   IDX2    FROM    1   BY  1
-                     UNTIL   ( IDX2            >   10 )
-                     OR      ( SPA-GMN20-YBANGOU(IDX2)
-                                               =   ZERO  OR  SPACE )
-      *        カルテ出力
-               IF   (SPA-GMN20-TKARUTE (IDX2)      =   "1"  OR  "2"
-                                                   OR  "3"  )
-                   PERFORM 21001-HC01-CALL-SEC
-               END-IF
-      *        処方箋出力
-               IF    SPA-GMN20-TSYOHOU (IDX2)      =   "1"
-                   PERFORM 21001-HC02-CALL-SEC
-               END-IF
-           END-PERFORM
-      *
-           IF      (SPA-CLIENT-PRT-FLG =   1  )
-      *        印刷ダミー処理
-               MOVE    "99"                TO  SPA-PRT-FLG
-               CALL    "ORCHCDUMMY"    USING   SPA-AREA
-           END-IF
-           MOVE    SPACE               TO  SPA-PRT-FLG
-      *
-           .
-       49023-HC01-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    帳票プログラム取得処理
-      *****************************************************************
-       21000-PRINT-PG-SEC              SECTION.
-      *
-      *    カルテ
-           MOVE    SPACE               TO  WRK-KARUTE-PG
-           INITIALIZE                      ORCSPRTNMAREA
-           MOVE    "1"                 TO  ORCSPRTNM-KBN
-           MOVE    "00000001"          TO  ORCSPRTNM-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
-           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
-           CALL    "ORCSPRTNM"         USING
-                                           ORCSPRTNMAREA
-                                           SPA-AREA
-                                           SYS-1032-REC
-           MOVE    ORCSPRTNM-PRTPG     TO  WRK-KARUTE-PG
-      *
-      *    処方せん
-           MOVE    SPACE               TO  WRK-SYOHOU-PG
-           INITIALIZE                      ORCSPRTNMAREA
-           MOVE    "1"                 TO  ORCSPRTNM-KBN
-           MOVE    "00000002"          TO  ORCSPRTNM-KBNCD
-           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
-           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
-           CALL    "ORCSPRTNM"         USING
-                                           ORCSPRTNMAREA
-                                           SPA-AREA
-                                           SYS-1032-REC
-           MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
-      *
-           IF      WRK-KARUTE-PG       =   SPACE
-               MOVE    "ORCHC01"           TO  WRK-KARUTE-PG
-           END-IF
-      *
-           IF      WRK-SYOHOU-PG       =   SPACE
-               MOVE    "ORCHCM19"          TO  WRK-SYOHOU-PG
-           END-IF
-      *
-           .
-      *
-       21000-PRINT-PG-EXT.
-           EXIT.
-      *****************************************************************
-      *    クライアント印刷前　処理
-      *****************************************************************
-       4901-CLIENT-PRT-SEC         SECTION.
-      *
-      *    印刷制御情報取得サブ
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
-      *
-      *    INITIALIZE                  PDMY01
-      *    MOVE    SPACE               TO  PDMY01-PANDAPRINT1
-      *
-      *    クライアント印刷制御情報取得サブ
-           INITIALIZE                  ORCSPRTCTRLAREA
-      *    MOVE    "カルテ"            TO  ORCSPRTCTRL-TITLE-I(01)
-      *    MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
-           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCTRLAREA
-                                               MCPAREA
-      *    MOVE    ORCSPRTCTRL-OUT     TO  PDMY01-PANDAPRINT1
-      *
-      *    再印刷指示なし
-           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           MOVE    1                   TO  FLG-CLIENT-OK
-      *
-           .
-       4901-CLIENT-PRT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    クライアント印刷画面処理
-      *****************************************************************
-      *600-CLIENT-DMY-SEC              SECTION.
-      *
-      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-      *    MOVE    "_PDMY01"           TO  MCP-WINDOW
-      *    MOVE    "NEW"               TO  MCP-PUTTYPE
-      *
-      *    PERFORM 900-PUT-WINDOW
-      *
-      *    .
-      *600-CLIENT-DMY-EXT.
-      *    EXIT.
-      *
-      *****************************************************************
-      *    基本画面のカルテ出力処理
-      *****************************************************************
-       21003-HC01-CALL2-SEC           SECTION.
-      *
-      *
-           MOVE    SPA-GMN-PTID        TO  SPA-PTID
-           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
-      *
-           MOVE    SPA-GMN-SELNUM      TO  SPA-HKNCOMBINUM
-           MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
-           MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
-           MOVE    SPA-GMN-HAKKO       TO  ORCHC01-SYORIKBN
-      *    病名なしは、区分＝４へ
-           IF      SPA-GMN-HAKKO       =   "3"
-               MOVE    "4"             TO  ORCHC01-SYORIKBN
-           END-IF
-      *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               MOVE    "01"                TO  SPA-PRT-FLG
-           END-IF
-      *
-           CALL    WRK-KARUTE-PG     USING  SPA-AREA
-                                            ORCHC01AREA
-      *
-           .
-       21003-HC01-CALL2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    カルテ　出力へ
-      *****************************************************************
-       21001-HC01-CALL-SEC           SECTION.
-      *
-           MOVE    SPA-GMN-PTID        TO  SPA-PTID
-           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
-           IF      SPA-GMN20-THKNCOMBI(IDX2)   =   SPACE
-               MOVE    ZERO            TO  SPA-HKNCOMBINUM
-           ELSE
-               MOVE    SPA-GMN20-THKNCOMBI(IDX2)
-                                       TO  SPA-HKNCOMBINUM
-           END-IF
-           MOVE    SPA-NAI20-SRYKA   (IDX2)
-                                       TO  SPA-SRYKA
-           MOVE    SPA-GMN20-TSRYKA  (IDX2)
-                                       TO  SPA-SRYKAMEI
-           MOVE    SPA-GMN20-TKARUTE (IDX2)
-                                       TO  ORCHC01-SYORIKBN
-      *    病名なしは、区分＝４へ
-           IF      SPA-GMN20-TKARUTE (IDX2)    =   "3"
-               MOVE    "4"             TO  ORCHC01-SYORIKBN
-           END-IF
-      *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               MOVE    "01"                TO  SPA-PRT-FLG
-      *        再印刷指示なし
-               MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           END-IF
-      *
-           CALL    WRK-KARUTE-PG       USING  SPA-AREA
-                                              ORCHC01AREA
-      *
-           .
-       21001-HC01-CALL-EXT.
-           EXIT.
-      *****************************************************************
-      *    処方箋　出力へ
-      *****************************************************************
-       21001-HC02-CALL-SEC           SECTION.
-      *
-           MOVE    SPA-GMN-PTID        TO  SPA-PTID
-           MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
-           MOVE    SPA-GMN-NAME        TO  SPA-NAME
-           MOVE    SPA-GMN-SEXH        TO  SPA-SEX
-           MOVE    SPA-NAI-BIRTHDAY    TO  SPA-BIRTHDAY
-      *
-           MOVE    SPA-NAI20-SRYKA   (IDX2)       TO  SPA-SRYKA
-           MOVE    SPA-GMN20-TSRYKA  (IDX2)       TO  SPA-SRYKAMEI
-           MOVE    "1"                            TO  SPA-DRCD (1:1)
-           MOVE    SPA-NAI20-DRCD    (IDX2)       TO  SPA-DRCD (2:)
-           MOVE    SPA-GMN20-THKNCOMBI(IDX2)       TO  SPA-HKNCOMBINUM
-      *    クライアント印刷
-           IF      FLG-CLIENT-OK       =   1
-               MOVE    "02"                TO  SPA-PRT-FLG
-      *        再印刷指示なし
-               MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           END-IF
-      *    印刷
-           INITIALIZE                  ORCHC19AREA
-           MOVE    ZERO                TO  ORCHC19-RENNUM
-           MOVE    "1"                 TO  ORCHC19-KBN
-           CALL    WRK-SYOHOU-PG       USING   SPA-AREA
-                                               ORCHC19AREA
-      *
-           .
-       21001-HC02-CALL-EXT.
-           EXIT.
+      *----(01.00.05) LINE UPD START ----------------------------------
       *
       *****************************************************************
       *    登録後、処理
@@ -3111,28 +2884,6 @@
       *    ＣＬＡＩＭ送信
            IF      SPA-FLG-CLAIM       =   1
                PERFORM 4906-CLAIM-SOUSIN-SEC
-               PERFORM 49061-API-CLMAI-SEC
-           END-IF
-      *!!!!
-      *H28.6
-      *    ginbee対応
-           IF     (SPA-MW              =   SPA-GINBEE)
-             AND  (SPA-ERRCD           =   SPACE     )
-             AND  (SPA-GMN-PTNUM   NOT =   SPACE     )
-      *        AIP CLAIM送信処理
-               PERFORM 49061-API-CLMAI-SEC
-           END-IF
-      *
-      *
-      *H29.7
-      *PUSH通信
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-P02-SYORI   =   1
-                   MOVE    1               TO  FLG-PUSHSYORI
-               ELSE
-                   MOVE    2               TO  FLG-PUSHSYORI
-               END-IF
-               PERFORM 600-PUSH-SYORI-SEC
            END-IF
       *
       **** IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
@@ -3155,17 +2906,9 @@
                    MOVE    1               TO  FLG-BACK
                END-IF
            END-IF
-      *
       *    ユーザプログラム起動
-      *v4.8
-      *    ginbee対応
-      **   IF      SPA-MW              =   SPA-GINBEE
-      *        CONTINUE
-      **** ELSE
-               MOVE    1                   TO  FLG-USERPG
-               PERFORM 4907-USERPG-SEC
-      ***  END-IF
-      *
+           MOVE    1                   TO  FLG-USERPG
+           PERFORM 4907-USERPG-SEC
            IF      FLG-END             =   1
                MOVE    ZERO                TO  SPA-KEI-FLG
                GO      TO      49021-KOUSIN-AFTER-EXT
@@ -3227,6 +2970,85 @@
                MOVE    "0009"              TO  SPA-ERRCD
                GO  TO                  4901-KOUSINMAE-EXT
            END-IF
+      *
+      **   画面の内容を保存＆更新前チェック
+      *    受付(タグ変更時・切替押下時、未更新のため、ここで必ず更新)
+      *    MOVE    SPA-AREA            TO  SPA-COMMON
+      *    MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+      *    MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *    CALL    "ORCGP020"      USING   MCPAREA
+      *                                    SPAAREA
+      *                                    LINKAREA
+      *                                    SCRAREA
+      *    MOVE    SPA-COMMON          TO  SPA-AREA
+      *    MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+      *    MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+      *    IF      SPA-ERRCD       NOT =   SPACE
+      *        GO  TO                  4901-KOUSINMAE-EXT
+      *    END-IF
+      *
+      *    MOVE    SPACE               TO  WRK-PIDCD
+      *    基本情報チェック
+      *    MOVE    "CLICKED"           TO  MCP-EVENT
+      *    MOVE    "B12"               TO  MCP-WIDGET
+      *    MOVE    "PUTG"              TO  MCP-STATUS
+      *    CALL    "ORCGP02W1"     USING   MCPAREA
+      *                                    SPAAREA
+      *                                    LINKAREA
+      *                                    SCRAREA
+      *    MOVE    SPA-COMMON          TO  SPA-AREA
+      *    MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+      *    MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+      *    IF     (SPA-ERRCD           NOT =   SPACE )
+      *        MOVE    "P02"               TO  SPA-P02-GAMEN
+      *        MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
+      *        GO      TO                  4901-KOUSINMAE-EXT
+      *    END-IF
+      *    IF     (SPA-PIDCD           NOT =   SPACE )
+      *        IF      (SPA-PIDCD(1:1)          =   "K"   )
+      *            MOVE    SPA-PIDCD           TO  WRK-PIDCD
+      *            MOVE    SPACE               TO  SPA-PIDCD
+      *        ELSE
+      *            MOVE    "P02"               TO  SPA-P02-GAMEN
+      *            MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
+      *            GO      TO                  4901-KOUSINMAE-EXT
+      *        END-IF
+      *    END-IF
+      *    IF     (SPA-FLG-END     NOT =   ZERO  )
+      *        GO      TO                  4901-KOUSINMAE-EXT
+      *    END-IF
+      *
+      *    所得(タグ変更時・切替押下時、未更新のため、ここで必ず更新)
+      *    MOVE    "CLICKED"           TO  MCP-EVENT
+      *    MOVE    "B12"               TO  MCP-WIDGET
+      *    MOVE    "PUTG"              TO  MCP-STATUS
+      *    CALL    "ORCGP024"      USING   MCPAREA
+      *                                    SPAAREA
+      *                                    LINKAREA
+      *                                    SCRAREA
+      *    MOVE    SPA-COMMON          TO  SPA-AREA
+      *    MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+      *    MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+      *    IF      SPA-ERRCD       NOT =   SPACE
+      *        MOVE    "P024"              TO  SPA-P02-GAMEN
+      *        MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
+      *        GO  TO                  4901-KOUSINMAE-EXT
+      *    END-IF
+      *    特記事項
+      *    MOVE    "CLICKED"           TO  MCP-EVENT
+      *    MOVE    "B12"               TO  MCP-WIDGET
+      *    MOVE    "PUTG"              TO  MCP-STATUS
+      *    CALL    "ORCGP026"         USING   MCPAREA
+      *                                       SPAAREA
+      *                                        LINKAREA
+      *                                        SCRAREA
+      *    MOVE    SPA-COMMON          TO  SPA-AREA
+      *    MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+      *    MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+      *    IF      SPA-ERRCD       NOT =   SPACE
+      *        MOVE    "P026"              TO  SPA-P02-GAMEN
+      *        GO  TO                  4901-KOUSINMAE-EXT
+      ***  END-IF
       *
            MOVE    SPACE               TO  WRK-PIDCD
       *    -------------------------
@@ -3298,34 +3120,6 @@
                MOVE    SPA-FREE            TO  SPA-P02SCRAREA
                MOVE    SPA-WORK            TO  SPA-P02KYOUTU
       *
-      *H24.12
-      *        特記事項情報・レセプト分割
-           WHEN    "P026"
-               MOVE    "CLICKED" TO  MCP-EVENT
-               MOVE    "B12"     TO  MCP-WIDGET
-               MOVE    "PUTG"    TO  MCP-STATUS
-               CALL    "ORCGP026"       USING   MCPAREA
-                                                SPAAREA
-                                                LINKAREA
-                                                SCRAREA
-               MOVE    SPA-COMMON          TO  SPA-AREA
-               MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-               MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-      *
-      *VER.4.7
-      *        個別設定
-           WHEN    "P028"
-               MOVE    "CLICKED" TO  MCP-EVENT
-               MOVE    "B12"     TO  MCP-WIDGET
-               MOVE    "PUTG"    TO  MCP-STATUS
-               CALL    "ORCGP028"       USING   MCPAREA
-                                                SPAAREA
-                                                LINKAREA
-                                                SCRAREA
-               MOVE    SPA-COMMON          TO  SPA-AREA
-               MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-               MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-      *
            END-EVALUATE
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -3378,25 +3172,6 @@
                MOVE    SPA-WORK            TO  SPA-P02KYOUTU
                IF      SPA-ERRCD       NOT =   SPACE
                    MOVE    "P024"              TO  SPA-P02-GAMEN
-                   MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
-                   GO  TO                  4901-KOUSINMAE-EXT
-               END-IF
-           END-IF
-      *
-           IF      SPA-P02-GAMEN   NOT =   "P026"
-      *        特記事項情報・レセプト分割
-               MOVE    "CLICKED"           TO  MCP-EVENT
-               MOVE    "B12"               TO  MCP-WIDGET
-               MOVE    "PUTG"              TO  MCP-STATUS
-               CALL    "ORCGP026"     USING   MCPAREA
-                                               SPAAREA
-                                               LINKAREA
-                                               SCRAREA
-               MOVE    SPA-COMMON          TO  SPA-AREA
-               MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-               MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-               IF      SPA-ERRCD       NOT =   SPACE
-                   MOVE    "P026"              TO  SPA-P02-GAMEN
                    MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
                    GO  TO                  4901-KOUSINMAE-EXT
                END-IF
@@ -3577,14 +3352,30 @@
            MOVE    SPA-SYSYMD          TO  SYS-9000-EDYUKYMD
       *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
-           MOVE    SYS-9000-REC        TO  SYSKANRI-REC
-           PERFORM 9009-SYSKANRI-KEY-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-9000-REC
+           MOVE    SYS-9000-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-9000-REC
+               MOVE    1                   TO  FLG-SYSKANRI
            END-IF
+      *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    ZERO                TO  FLG-CLAIM-MULTIHOST
-           IF      FLG-SYSKANRI        =   ZERO
+           IF      FLG-SYSKANRI        =   1
+               CONTINUE
+           ELSE
+               MOVE    MCPDATA-REC         TO  SYS-9000-REC
+      *TEST!!!
+      *        MOVE    SPACE               TO  SYS-9000-PT-FLG
+      *TEST!!!
                MOVE    SYS-9000-CODE       TO  SPA-GMN-SCODE
                MOVE    1                   TO  SPA-P02X-GMN-SEL
       *        マルチホストフラグ
@@ -3752,93 +3543,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        49061-CLAIM-SOUSINSYOSI-EXT.
            EXIT.
-      *H28.6
-      *****************************************************************
-      *    API ＣＬＡＩＭ送信処理
-      *****************************************************************
-       49061-API-CLMAI-SEC  SECTION.
-      *
-           MOVE    ZERO                TO  FLG-CLAIM
-           MOVE    ZERO                TO  WRK-RENNUM
-      *    ＣＬＡＩＭ接続判定
-           MOVE    SPACE               TO  SYS-9000-REC
-           INITIALIZE                  SYS-9000-REC
-           MOVE    "9000"              TO  SYS-9000-KANRICD
-           MOVE    "*"                 TO  SYS-9000-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-9000-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-9000-EDYUKYMD
-      *    システム管理検索
-           MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
-           MOVE    SYS-9000-REC        TO  SYSKANRI-REC
-           PERFORM 9009-SYSKANRI-KEY-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-9000-REC
-           END-IF
-      *
-           IF      FLG-SYSKANRI        =   1
-               CONTINUE
-           ELSE
-               MOVE    SYS-9000-CODE       TO  SPA-GMN-SCODE
-               IF     (SYS-9000-SETUZOKU   =   ZERO )  OR
-                      (SYS-9000-PT-FLG NOT =   "1"  )
-                   CONTINUE
-               ELSE
-      *            ＣＬＡＩＭ送信あり
-                   MOVE    1               TO  FLG-CLAIM
-               END-IF
-           END-IF
-      *
-           IF      FLG-CLAIM           =   1
-      *        受付時間取得
-               MOVE    SPACE               TO  WRK-UKETIME
-               INITIALIZE                  ORCSMCNDATEAREA
-               CALL    "ORCSMCNDATE"       USING
-                                           ORCSMCNDATEAREA
-               MOVE    SMCNDATE-HMS        TO  WRK-UKETIME
-      *
-      *        フィアルデイレクトリ位置指定
-               INITIALIZE                  ORCSMKPASSAREA
-               MOVE    CLAIM-FILE          TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-      *
-               MOVE    "HL04.sh"           TO  SHELLTBL-NAME
-      *
-               MOVE    SPA-GMN-SCODE       TO  SHELLTBL-ARG1
-               MOVE    SPA-GMN-PTID        TO  WRK-PTID
-               MOVE    WRK-PTID            TO  SHELLTBL-ARG2
-               MOVE    "XX"                TO  SHELLTBL-ARG3
-               MOVE    WRK-UKETIME         TO  SHELLTBL-ARG4
-               MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG5
-      *
-      *****    MOVE    SYS-9001-ADDRESS    TO  SHELLTBL-ARG6
-      *****    MOVE    SYS-9001-PORT1      TO  SHELLTBL-ARG7
-      *        ドクター
-               MOVE    "@@@@@"             TO  SHELLTBL-ARG8
-      *        保険組合せ
-               MOVE    "@@@@"              TO  SHELLTBL-ARG9
-      *        診療内容
-               MOVE    "XX"                TO  SHELLTBL-ARG10
-      *        連番
-               ADD     1                   TO  WRK-RENNUM
-               MOVE    WRK-RENNUM          TO  SHELLTBL-ARG11 (1:2)
-      *        システム日付
-               MOVE    SPA-SYSYMD          TO  SHELLTBL-ARG12
-      *        患者番号
-               MOVE    SPA-GMN-PTNUM       TO  SHELLTBL-ARG14
-      *
-               MOVE    SHELLTBL            TO  MCPDATA-REC
-               MOVE    "SHELL"             TO  MCP-FUNC
-               MOVE    "shell"             TO  MCP-TABLE
-               MOVE    "allways"           TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-           END-IF
-      *
-           .
-       49061-API-CLMAI-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    ユーザプログラム起動処理
@@ -3949,80 +3653,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        49071-XD01-SYORI-EXT.
            EXIT.
       *
-      *H29.7
-      *PUSH通信
-      *****************************************************************
-      *    PUSH通信処理
-      *****************************************************************
-       600-PUSH-SYORI-SEC             SECTION.
-      *
-           INITIALIZE                      PUSHPT01-REC
-           MOVE    "patient_infomation"    TO  PUSHPT01-EVENT
-           EVALUATE    FLG-PUSHSYORI
-           WHEN    1
-      *        追加
-               MOVE    "add"               TO  PUSHPT01-PMODE
-           WHEN    2
-      *        更新
-               MOVE    "modify"            TO  PUSHPT01-PMODE
-           WHEN    3
-      *        削除
-               MOVE    "delete"            TO  PUSHPT01-PMODE
-           END-EVALUATE
-      *    処理時間取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
-           MOVE    SMCNDATE-HMS        TO  WRK-THMS
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PUSHPT01-SYSYMD
-           MOVE    WRK-HEN-TIME        TO  PUSHPT01-SYSTIME
-           MOVE    SPA-GMN-PTNUM       TO  PUSHPT01-PTNUM
-      *
-           MOVE    PUSHPT01-REC        TO  MCPDATA-REC
-      *
-           MOVE    "PUSHEVENT"         TO  MCP-FUNC
-           MOVE    "push_patient01"    TO  MCP-TABLE
-           MOVE    "push_patient01"    TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-       600-PUSH-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    日付編集処理
-      *****************************************************************
-       801-DAYHEN01-SEC                SECTION.
-      *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE           TO  WRK-HEN-DATE
-           ELSE
-               INITIALIZE                  WRK-HEN-DATE
-               MOVE    WRK-SYY             TO  WRK-HEN-YY
-               MOVE    WRK-SMM             TO  WRK-HEN-MM
-               MOVE    WRK-SDD             TO  WRK-HEN-DD
-               MOVE    "-"                 TO  WRK-HEN-H1
-               MOVE    "-"                 TO  WRK-HEN-H2
-               IF      WRK-SYMD            =   "99999999"
-                   MOVE    "12"                TO  WRK-HEN-MM
-                   MOVE    "31"                TO  WRK-HEN-DD
-               END-IF
-           END-IF
-      *
-           INITIALIZE                  WRK-HEN-TIME
-           MOVE    WRK-THHH            TO  WRK-HEN-THH
-           MOVE    WRK-THMM            TO  WRK-HEN-TMM
-           MOVE    WRK-THSS            TO  WRK-HEN-TSS
-           MOVE    ":"                 TO  WRK-HEN-T1
-           MOVE    ":"                 TO  WRK-HEN-T2
-           .
-       801-DAYHEN01-EXT.
-           EXIT.
-      *
-      *
       *****************************************************************
       *    西暦→和暦FORMAT日付編集
       *****************************************************************
@@ -4099,10 +3729,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                P02
       *
            PERFORM 5001-MAPCUR-SEC
-      *H26.4
-           IF      SPA-ERRCD           =   "9108"
-               MOVE    "B12"           TO   MCP-WIDGET
-           END-IF
       *
            .
        500-GMNHEN-EXT.
@@ -4136,8 +3762,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE  "P025_SELNUM1"    TO   MCP-WIDGET
                    WHEN    6
                        MOVE  "P026_SELNUM"     TO   MCP-WIDGET
-                   WHEN    7
-                       MOVE  "P028_PATIENTID1" TO   MCP-WIDGET
                END-EVALUATE
            ELSE
                MOVE    SPA-P02-WIDGET          TO  MCP-WIDGET
@@ -4188,10 +3812,1151 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    1                   TO  FLG-END
       *
+      *!!!	以下削除
+           GO     TO      510-ERRSET-EXT
+      *!!!
+           EVALUATE    SPA-ERRCD
+               WHEN    "0001"
+                   MOVE    "カナ氏名は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "K101"
+                   STRING  "警告！カナ氏名にカナ以外の文字があります。"
+                           "確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0002"
+                   MOVE    "日付変換エラー"    TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    "日付重複エラー"    TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "未登録予約者は存在していません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0005"
+                   MOVE    "対象住所が見つかりません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "削除対象の明細が変更されています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0007"
+                   MOVE    "必須入力エラー"    TO  SPA-ERRMSG
+               WHEN    "0008"
+                   MOVE    "これ以上登録できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0009"
+                   MOVE    "未入力項目があります。登録できません" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0010"
+                   MOVE    "作成可能な組合せ数を超えています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE    "組合せ番号の上限を超えています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "ファイル読込エラー"    TO  SPA-ERRMSG
+               WHEN    "0013"
+                   MOVE    "他で使用しているので更新できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "保険番号マスタ確認エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE    "組合せ作成中、テーブルオーバーしました"
+                                               TO  SPA-ERRMSG
+               WHEN    "0016"
+                   MOVE    "生年月日が未入力です"
+                                               TO  SPA-ERRMSG
+               WHEN    "0017"
+                   MOVE    "変更年月日が重複しています"  TO  SPA-ERRMSG
+               WHEN    "0018"
+                   MOVE    "正しく選択されていません"
+                                       TO  SPA-ERRMSG
+               WHEN    "0019"
+                   MOVE    "減免事由を正しく選択してください"
+                                               TO  SPA-ERRMSG
+      *----(01.00.01) LINE ADD START --------------------------------
+               WHEN    "0020"
+                   MOVE    "生年月日に未来日が入力されました"
+                                               TO  SPA-ERRMSG
+      *----(01.00.01) LINE ADD END   --------------------------------
+               WHEN    "0021"
+                   MOVE    "性別は１：男２：女で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0022"
+                   MOVE    "労災・自賠責保険ではありません。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "労災・自賠責を表示後、選択して下さい。"
+                                               TO  SPA-ERRMSG(33:)
+               WHEN    "0023"
+                   MOVE    "労災・自賠責保険です。選択できません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0024"
+                   MOVE    "労災・自賠責保険が保険番号マスタ"
+                                               TO  SPA-ERRMSG
+                   MOVE    "に登録されていません。"
+                                               TO  SPA-ERRMSG(33:)
+               WHEN    "0025"
+                   MOVE    "カナ氏名は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0026"
+                   MOVE    "漢字氏名は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0027"
+                   MOVE    "通称名は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0028"
+                   MOVE    "生年月日の暦日エラーです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0029"
+                   MOVE    "カルテ発行区分が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0901"
+                   MOVE    "ユーザプログラム起動表示行区分が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0030"
+                   MOVE    "すべて全角で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0031"
+                   MOVE    "警告！郵便番号は存在しません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0032"
+                   MOVE    "住所は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0033"
+                   MOVE    "世帯主は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0034"
+                   MOVE    "続柄は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0035"
+                   MOVE    "割引率入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0166"
+                   MOVE    "入金方法入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0167"
+                   MOVE    "請求書発行区分入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0036"
+                   MOVE    "状態入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0037"
+                   MOVE    "保険組合せがありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0137"
+                   STRING  "非表示の保険組合せです。"
+                           "選択できません。"  DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0038"
+                   MOVE    "診療科がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0039"
+                   MOVE
+                    "カルテを発行する時は、診療科を選択して下さい。"
+                                               TO  SPA-ERRMSG
+      *    保険エラー
+               WHEN    "0040"
+                   MOVE    "保険者番号検証チェックエラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0041"
+                   MOVE    "保険者番号桁数エラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "0042"
+                   MOVE    "保険の種別は変更できません。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "新しく保険を追加して下さい"
+                                               TO  SPA-ERRMSG(29:)
+               WHEN    "0043"
+               MOVE    "労災・自賠責保険はこの画面では変更できません。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "労災・自賠ボタンを選択して下さい"
+                                               TO  SPA-ERRMSG(47:)
+               WHEN    "0044"
+                   MOVE    "保険の種別がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0045"
+                   MOVE    "本人家族区分がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0046"
+                   MOVE    "補助区分がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0047"
+                   MOVE    "継続区分がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0048"
+                   MOVE    "保険の記号は全角で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "K048"
+                   STRING  "警告！！"
+                           "記号に全角空白があります。"
+                           "レセ電でエラーになります。"
+                                               DELIMITED  BY  SIZE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "K050"
+                   STRING  "警告！！"
+                           "後期高齢者は記号に入力しないで下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "0049"
+                   MOVE    "保険の番号は全角で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "K049"
+                   STRING  "警告！！"
+                           "番号に全角空白があります。"
+                           "レセ電でエラーになります。"
+                                               DELIMITED  BY  SIZE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "0050"
+                   MOVE    "資格取得日が入力エラーです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0051"
+                   MOVE    "保険有効開始日が入力エラーです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0052"
+                   MOVE    "保険有効終了日が入力エラーです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0052"
+                   MOVE    "継続の時保険有効終了日を入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0053"
+                   MOVE    "継続時の適用終了日以降の終了日です"
+                                               TO  SPA-ERRMSG
+               WHEN    "0055"
+                   MOVE    "被保険者名は全角で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0054"
+                   MOVE    "保険有効開始日は必須入力です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0056"
+                   MOVE    "保険の確認年月日が入力エラーです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0057"
+                   STRING  "警告！"
+                           "保険の確認年月日に未来日が入力されました"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0058"
+                   MOVE
+                   "保険有効開始日＜有効終了日で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0059"
+                   MOVE    "保険の種別を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0060"
+                   STRING   "国保・自費・治験の場合、"
+                            "補助区分は必須入力です"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0061"
+                   MOVE     "補助区分は入力できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0062"
+                   MOVE    "保険有効開始日は必須入力です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0063"
+                   MOVE    "適用期間がマスタの範囲を超えています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0064"
+                   MOVE    "保険期間が重複しています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0065"
+                   MOVE    "保険番号マスタが存在していません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0066"
+                   MOVE    "本人のみ入力可能です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1065"
+                   MOVE    "補助区分は本人の時のみ入力可能です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1066"
+                   MOVE    "補助区分は老人割合のみ入力可能です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1067"
+                   STRING  "補助区分２割は前期高齢者の補助区分では"
+                           "ありません。変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0067"
+                   MOVE    "保険者番号と法別番号が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0068"
+                   MOVE    "老人補助区分は変更できません。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "新しい保険を入力して下さい。"
+                                               TO  SPA-ERRMSG(33:)
+               WHEN    "0069"
+                   MOVE    "５年（２年）後日付取得エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "1047"
+                   MOVE    "下船３月の時継続区分は選択できません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1048"
+                   MOVE    "特別は日雇特例のみ選択できます。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1049"
+                   MOVE    "特別はＨ１５年４月からの選択です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1050"
+                   MOVE    "継続はＨ１５年３月３１日までの有効です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1051"
+                   STRING  "６５歳以上です。"
+                           "退職国保は有効期間外となります。"
+                           "期間変更して下さい。"
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K151"
+                   STRING  "警告！！"
+                           "前期高齢者となりました。"
+                           "保険を確認して下さい。"
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+      *    公費エラー
+               WHEN    "0070"
+                   MOVE    "負担者番号・受給者番号が入力されています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0071"
+                   MOVE    "負担者番号が入力エラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "0072"
+                   MOVE    "公費の種類がありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0073"
+                   MOVE    "公費の種類は必須入力です。入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0074"
+                   MOVE    "公費の種別は変更できません"
+                                               TO  SPA-ERRMSG
+      *!
+               WHEN    "2074"
+                   STRING  "961 減額（円）は現在 使用できません。"
+                           "削除して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+      *!
+               WHEN    "0075"
+                   MOVE    "受給者番号は全角・半角の混在はできません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0076"
+                   MOVE    "受給者番号が入力エラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "0077"
+                   MOVE    "公費の適用開始日が入力エラーです"
+                                               TO  SPA-ERRMSG
+      *Ｈ２１．１から
+               WHEN    "0177"
+                   MOVE    "公費開始日に１日は入力できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0078"
+                   MOVE    "公費の適用終了日が入力エラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "0079"
+                   MOVE    "公費の確認年月日が入力エラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "0080"
+                   STRING  "警告！"
+                           "公費の確認年月日に未来日が入力されました"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0081"
+                   MOVE
+                   "保険有効開始日＜有効終了日で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0082"
+                   MOVE    "負担者番号・受給者番号は入力できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0083"
+                   MOVE    "負担者番号検証番号エラーです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "K083"
+                   MOVE    "警告！特定疾患の負担者番号検証番号エラー"
+                                               TO  SPA-ERRMSG
+                   MOVE    "です。"
+                                               TO  SPA-ERRMSG(41:)
+               WHEN    "0084"
+                   MOVE    "受給者番号検証番号エラーです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "K084"
+                   MOVE    "警告！受給者番号検証番号がエラーです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0085"
+                   STRING  "公費に適用年齢の指定があります。"
+                           "適用終了日を入力してください。"
+                                       DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0086"
+                   MOVE    "公費の年齢適用エラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "K005"
+                   MOVE    "警告！公費の年齢開始日適用エラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "K006"
+                   MOVE    "警告！公費の年齢終了日適用エラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "0087"
+                   MOVE    "適用開始日時点での年齢が６５歳未満です"
+                                               TO  SPA-ERRMSG
+               WHEN    "0088"
+                   MOVE    "公費期間が重複しています。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0089"
+                   MOVE    "国保・生活保護の期間が重複しています"
+                                               TO  SPA-ERRMSG
+               WHEN    "K001"
+                   MOVE
+                   "警告！適用開始日時点での年齢が７０歳未満です"
+                                               TO  SPA-ERRMSG
+               WHEN    "K002"
+                   MOVE
+                   "警告！適用開始日時点での年齢が７５歳未満です"
+                                               TO  SPA-ERRMSG
+               WHEN    "K003"
+      *            保険者マスタ期限切れ
+                   MOVE    SPA-HKNJA-IDOYMD    TO  WRK-SYMD
+                   PERFORM 5101-IDOYMD-ERR-SEC
+               WHEN    "K004"
+      *            保険者マスタ期限切れ（公費）
+                   PERFORM 5102-IDOYMD-KOHERR-SEC
+               WHEN    "0090"
+                   MOVE    "公費の空いている行に追加して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0091"
+                   MOVE    "適用期間がマスタの範囲を超えています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0092"
+                   MOVE    "負担者番号との法別番号が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0093"
+                   MOVE    "適用開始日が保険適用の終了日以降です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0094"
+                   MOVE    "適用開始日が保険適用の開始日以前です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0095"
+                   MOVE    "老人公費の場合、全角での入力はできません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0097"
+                   MOVE    "公費負担額対象が４０件を超えました。"
+                                               TO  SPA-ERRMSG
+      *Ｈ１８．１０から
+               WHEN    "0098"
+                   STRING  "老人公費２割はＨ１８年１０月から廃止"
+                           "されています。３割に変更して下さい。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "0112"
+                   STRING  "老人保健は徴収猶予及び減免の対象ではありま"
+                           "せん。確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+      *
+               WHEN    "0099"
+                   MOVE    "日付変換エラーです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "K010"
+                   MOVE
+                   "警告！地方公費単独の保険組合せがあります。"
+                                               TO  SPA-ERRMSG
+               WHEN    "K011"
+                   STRING
+                   "警告！退職国保と老人公費の保険組合せがあります。"
+                                               DELIMITED   BY  SPACE
+                   "保険を確認して下さい。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "K120"
+                   MOVE    "警告！労災・自賠責の患者情報が未登録です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "登録して下さい。"
+                                               TO  SPA-ERRMSG(37:)
+      *Ｈ２０．４から
+               WHEN    "0120"
+                   STRING  "後期高齢者に到達しました。"
+                           "後期高齢者の保険を登録して下さい。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "0121"
+                   STRING  "後期高齢者です。"
+                           "後期高齢者医療を登録するか"
+                           "前の主保険の有効期間を設定して下さい"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "0128"
+                   STRING  "後期高齢非該当者です。"
+                           "保険の補助区分を前期高齢者に変更して下さい"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "K122"
+                   STRING  "警告！！"
+                           "適用開始日が７５歳以上です。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "0122"
+                   STRING  "適用開始日が７５歳以上です。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "K123"
+                   STRING  "警告！！Ｈ２０年３月まで"
+                           "老人公費が適用されていました。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "0124"
+                   MOVE    "後期高齢者・生活保護の期間が重複しています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0125"
+                   STRING  "後期高齢者・残留邦人等の期間が"
+                           "重複しています。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "0126"
+                   MOVE    "国保・残留邦人等の期間が重複しています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0127"
+                   MOVE    "生活保護・残留邦人等の期間が重複しています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0128"
+                   STRING  "前期高齢者の補助区分を選択して下さい"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+      *VER.4.6.0　から
+               WHEN    "K129"
+                   STRING  "警告！"
+                           "本人・家族区分変更です。"
+                           "保険組合せを削除して、"
+                           "新規番号で追加を行います。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "K130"
+                   STRING  "警告！"
+                           "補助区分変更です。"
+                           "保険組合せを削除して、"
+                           "新規番号で追加を行います。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+      *    更新前エラー
+               WHEN    "0100"
+                   MOVE    "カナ氏名は必ず入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0101"
+                   MOVE    "漢字氏名は必ず入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0102"
+                   MOVE    "生年月日は必ず入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0103"
+                   MOVE    "性別は必ず入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0104"
+                   MOVE    "保険の老人割合が入力されていません。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "保険を再作成して下さい。"
+                                               TO  SPA-ERRMSG(37:)
+               WHEN    "0105"
+                   MOVE    "老人割合が入力されていません。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "公費を作成して下さい。"
+                                               TO  SPA-ERRMSG(31:)
+               WHEN    "0106"
+                   STRING   "公費の登録は６０件までです。"
+                            "これ以上追加できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0107"
+                   STRING   "保険の登録は４０件までです。"
+                            "これ以上追加できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+      *    キーエラー
+               WHEN    "0110"
+                   MOVE    "この画面では選択できません。"
+                                               TO  SPA-ERRMSG
+      *    保険組合せ
+               WHEN    "2701"
+                   MOVE    "保険組合せがありません。"
+                                               TO  SPA-ERRMSG
+      *    連絡先
+               WHEN    "2101"
+                   MOVE    "連絡先名称は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2102"
+                   MOVE    "続柄は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2103"
+                   MOVE    "連絡先郵便番号はありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "2104"
+                   MOVE    "連絡先住所は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2105"
+                   MOVE    "勤務先名称は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2106"
+                   MOVE    "勤務先郵便番号はありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "2107"
+                   MOVE    "勤務先住所は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2108"
+                   MOVE    "帰省先名称は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2109"
+                   MOVE    "帰省先郵便番号はありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "2110"
+                   MOVE    "帰省先住所は全角で入力して下さい"
+                                               TO  SPA-ERRMSG
+      *    受付エラー
+               WHEN    "2001"
+                   MOVE    "受付選択番号入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2002"
+                   MOVE    "保険組合せ番号入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2003"
+                   MOVE    "カルテ選択は１です。再入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2005"
+                   MOVE    "処方箋選択は１です。再入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2004"
+                   MOVE    "未登録受付者は存在していません"
+                                               TO  SPA-ERRMSG
+               WHEN    "2008"
+                   MOVE    "１０件以上登録できません"
+                                               TO  SPA-ERRMSG
+               WHEN    "2009"
+                   MOVE    "登録できません"    TO  SPA-ERRMSG
+               WHEN    "2010"
+                   MOVE    "診療科を入力して下さい。" 
+                                               TO  SPA-ERRMSG
+               WHEN    "2011"
+                   MOVE
+           "カルテ、処方せんを入力した時は、保険組合せを入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2012"
+                   MOVE    "ドウターコードがありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "2013"
+                   MOVE    "診療内容コードがありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "1001"
+                   MOVE    "患者を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "1002"
+                   MOVE    "自由構成です。患者番号を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "1003"
+                   MOVE    "患者マスターが存在しません"
+                                               TO  SPA-ERRMSG
+               WHEN    "1004"
+                   MOVE    "新患ではありません。再発行はできません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1005"
+                   MOVE    "患者番号の桁数が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1006"
+                   MOVE    "患者番号の構成が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1007"
+                   MOVE    "患者番号の検証番号が違います。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1008"
+                   MOVE    "患者番号の連番は管理連番以下にして下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "1009"
+                   MOVE    "新規の患者番号を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "1010"
+                   MOVE
+                   "既に存在する患者番号です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1011"
+                   MOVE    "患者番号が登録済みです。再度入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "1012"
+                   MOVE    "他画面からの遷移中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    "患者番号の再発行はできません。"
+                                               TO  SPA-ERRMSG(25:)
+               WHEN    "1020"
+                   MOVE    "患者ＩＤが取得できません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1021"
+                   MOVE    "患者番号を入力して下さい。"
+                                               TO  SPA-ERRMSG
+      *
+               WHEN    "1025"
+                   STRING  "登録済みの患者ではありません。"
+                           "患者登録後、禁忌薬剤を登録して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "1023"
+                   MOVE    "ＱＲデータはありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "1024"
+                   STRING   "ＱＲデータが展開中です。"
+                            "患者番号をクリアして下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "1022"
+                   MOVE    "複写は新規患者の時のみできます。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2501"
+                   MOVE    "選択番号が入力されていません"
+                                               TO  SPA-ERRMSG
+      *        所得者情報
+               WHEN    "2401"
+                   MOVE    "低所得者２の履歴番号がありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "2402"
+                   MOVE    "低所得者２の認定開始日がエラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "2403"
+                   MOVE    "低所得者２の認定終了日がエラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "2404"
+                   MOVE
+                   "低所得者２の認定開始日＜終了日で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2405"
+                   MOVE
+                   "低所得者２の認定期間が重複しています。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2406"
+      ************ MOVE    "老齢福祉年金履歴番号がありません"
+                   MOVE    "低所得者１の履歴番号がありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "2407"
+      ************ MOVE    "老齢福祉年金開始日がエラーです"
+                   MOVE    "低所得者１の認定終了日がエラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "2408"
+      *************MOVE    "老齢福祉年金終了日がエラーです"
+                   MOVE    "低所得者１の認定終了日がエラーです"
+                                               TO  SPA-ERRMSG
+               WHEN    "2409"
+                   MOVE
+      *************"老齢福祉年金開始日＜終了日で入力して下さい"
+                   "低所得者１の認定開始日＜終了日で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2410"
+                   MOVE
+      ************ "老齢福祉年金期間が重複しています。"
+                   "低所得者１の認定期間が重複しています。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2411"
+      ************ MOVE    "低所得者１の認定日を入力して下さい"
+                   MOVE    "低所得者２の認定日を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2412"
+      ************ MOVE    "老齢福祉年金履歴日を入力して下さい"
+      ************ MOVE    "低所得者２の認定日を入力して下さい"
+                   MOVE    "低所得者１の認定日を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2413"
+                   MOVE    "長期入院該当年月日入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2414"
+                   MOVE    "長期入院該当年月日は低所得２の"
+                                               TO  SPA-ERRMSG
+                   MOVE    "範囲内で入力して下さい"
+                                               TO  SPA-ERRMSG(31:)
+               WHEN    "2415"
+                   MOVE    "老齢福祉年金受給者証区分を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2416"
+                   MOVE    "老齢福祉年金受給者証区分入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2417"
+                   STRING  "低所得者２ 認定範囲入力エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2418"
+                   STRING  "低所得者２ 標準負担額減額開始日エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2419"
+                   STRING  "標準負担額減額開始日は低所得２の"
+                           "範囲内で入力して下さい"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2420"
+                   STRING  "低所得者１ 認定範囲入力エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2421"
+                   STRING  "低所得者１ 標準負担額減額開始日エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2422"
+                   STRING  "標準負担額減額開始日は低所得１の"
+                           "範囲内で入力して下さい"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "2423"
+                   STRING  "標準負担額減額開始日≦長期入院該当年月日で"
+                           "入力して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+      *
+               WHEN    "2430"
+                   MOVE    "公費負担選択番号入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2431"
+                   MOVE    "公費負担選択番号２入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2432"
+                   MOVE    "公費負担適用開始日入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2433"
+                   MOVE    "公費負担適用終了日入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2434"
+                   MOVE    "公費負担適用期間が重複しています。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2435"
+                   MOVE    "公費負担の外来上限額入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2436"
+                   MOVE    "公費負担の入院上限額入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2437"
+                   MOVE    "公費負担適用期間を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2438"
+                   MOVE    "公費負担適用開始日＜終了日で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2439"
+                   MOVE    "公費負担は１００％までです。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2499"
+                   MOVE    "公費負担額対象公費が５０件以上です。"
+                                               TO  SPA-ERRMSG
+      *        公費負担額複写
+               WHEN    "2440"
+                   MOVE    "次月複写対象外公費です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2441"
+                   MOVE    "複写する上限額履歴がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2442"
+                   MOVE
+                   "上限額最新履歴の適用終了日が入力されていません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2443"
+                   MOVE    "公費適用終了日以降分は複写できません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2445"
+                   MOVE    "他一部負担入力対象外公費です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2446"
+                   MOVE    "上限額履歴を選択して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2447"
+                   STRING  "他一部負担額が入力されています。"
+                           "開始日変更前に他一部負担を削除して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K240"
+                   STRING  "警告！！"
+                           "公費負担額の設定がない公費があります。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+      *        入力履歴
+               WHEN    "2502"
+                   MOVE    "選択番号入力エラー"    TO  SPA-ERRMSG
+               WHEN    "2503"
+                   MOVE    "変更年月日入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2504"
+                   MOVE    "旧姓履歴を選択して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2506"
+                   MOVE    "削除対象の明細が変更されています"
+                                               TO  SPA-ERRMSG
+               WHEN    "2507"
+                   MOVE    "氏名を入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "2508"
+                   MOVE    "受診科履歴選択番号入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "2509"
+                   MOVE    "登録できません"    TO  SPA-ERRMSG
+               WHEN    "2510"
+                   STRING  "旧姓履歴が２０件以上です。"
+                           "登録できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2530"
+                   MOVE    "全角で入力して下さい"    TO  SPA-ERRMSG
+               WHEN    "2517"
+                   MOVE    "変更年月日が重複しています"  TO  SPA-ERRMSG
+      *
+      *        特記事項
+               WHEN    "2601"
+                   MOVE    "選択番号エラー"    TO  SPA-ERRMSG
+               WHEN    "2602"
+                   MOVE    "入外区分入力エラー"    TO  SPA-ERRMSG
+               WHEN    "2603"
+                   MOVE    "レセ電は数値で入力して下さい"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2604"
+                   MOVE    "紙レセプト入力エラー" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2605"
+                   MOVE    "開始日入力エラー" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2606"
+                   MOVE    "終了日入力エラー" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2607"
+                   MOVE    "特記内容選択エラー" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2608"
+                   MOVE    "紙レセプトを入力して下さい" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2609"
+                   MOVE    "有効期間を入力して下さい" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2610"
+                   MOVE    "開始年月≦終了年月で入力して下さい" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2611"
+                   MOVE    "レセ電コードで重複があります。" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2612"
+                   STRING  "この特記事項の開始は"
+                           "平成２１年５月からです。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2613"
+                   STRING  "この特記事項の開始は"
+                           "平成２１年１０月からです。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "2620"
+                   STRING  "特記事項は５０件までの登録です。"
+                           "これ以上追加できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+      *
+      *        患者番号取得エラー
+               WHEN    "8000"
+                   STRING  "自動採番の患者番号が最大値です。"
+                           "初期番号から採番しました。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8001"
+                   STRING  "患者ＩＤが最大値です。"
+                           "初期番号から採番しました。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8002"
+                   STRING  "自動採番の患者番号が最大値になりました。"
+                           "連番号桁数を変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "8003"
+                   MOVE    "患者ＩＤが登録済です。登録できません。"
+                                               TO  SPA-ERRMSG
+      *
+               WHEN    "9000"
+                   MOVE    "ＤＢ更新エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "9001"
+                   MOVE    "受付ＩＤが９９９９９を超えます。"
+                                                TO  SPA-ERRMSG
+                   MOVE    "これ以上受付はできません。"
+                                                TO  SPA-ERRMSG(33:)
+               WHEN    "9002"
+                   MOVE    "受付更新エラー"
+                                                TO  SPA-ERRMSG
+               WHEN    "9003"
+                   MOVE    "保険組合更新エラー"
+                                                TO  SPA-ERRMSG
+      *
+               WHEN    "9103"
+                   STRING  "保険組合せで診療行為が登録されています。"
+                           "非表示にできません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "9104"
+                   STRING  "保険組合せで病名が登録されています。"
+                           "非表示にできません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "9105"
+                   STRING  "保険組合せで診療・病名が登録されています。"
+                           "非表示にできません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+      *ver.4.6
+               WHEN    "9107"
+                   STRING  "非表示区分がありません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+      *!!
+               WHEN    "9106"
+                   STRING  "保険組合せ番号と最大連番のＤＢで不整合が"
+                           "発生しています。"
+                           "必ず登録をして下さい"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "9100"
+                   STRING  "保険組合の変更で保険期間外の診療が"
+                           "存在します。診療を保険変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "9101"
+                   STRING  "保険組合の変更で保険期間外の病名が"
+                           "存在します。病名を保険変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "9102"
+                   STRING  "保険組合の変更で保険期間外の診療と病名が"
+                           "あります。"
+                           "診療と病名を保険変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+      *
+               WHEN    "9999"
+                   MOVE    "他端末で使用中です。"
+                                               TO  SPA-ERRMSG
+                   MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
+               WHEN    "9998"
+                   STRING  "他端末で使用中です。" 
+                           "更新はできません。"    DELIMITED  BY  SIZE
+                           SLOCK-MSG               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+           END-EVALUATE
+           MOVE    MCP-WIDGET          TO  SPA-WIDGET
+      *
+           MOVE    SPACE               TO  PERR
+           MOVE    SPA-ERRCD           TO  PERR-ERRCODE
+           MOVE    SPA-ERRMSG          TO  PERR-ERRMSG
+           MOVE    "B01"               TO  MCP-WIDGET
+      *
+           MOVE    "P02"               TO  SPA-MOTOPG
+           MOVE    "PERR"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "PERR"              TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
            .
        510-ERRSET-EXT.
            EXIT.
       *
+      *----(01.00.03) LINE ADD START ----------------------------------
+      *****************************************************************
+      *    保険者マスタ期限切れメッセージ表示理
+      *****************************************************************
+       5101-IDOYMD-ERR-SEC              SECTION.
+      *
+      *    日本語変換
+           MOVE    SPACE               TO  STS-AREA-DAY
+           INITIALIZE                      STS-AREA-DAY
+           MOVE    SPACE               TO  LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY2-AREA
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    SPACE               TO  WRK-IDOYMD-H
+               STRING      LNK-DAY2-EDTYMD2-G  DELIMITED  BY  SIZE
+                           LNK-DAY2-EDTYMD2-Y  DELIMITED  BY  SIZE
+                           "年"                DELIMITED  BY  SIZE
+                           LNK-DAY2-EDTYMD2-M  DELIMITED  BY  SIZE
+                           "月"                DELIMITED  BY  SIZE
+                           LNK-DAY2-EDTYMD2-D  DELIMITED  BY  SIZE
+                           "日"                DELIMITED  BY  SIZE
+                                       INTO    WRK-IDOYMD-H
+               END-STRING
+           ELSE
+               MOVE    SPACE               TO  WRK-IDOYMD-H
+           END-IF
+           MOVE    SPACE               TO  SPA-ERRMSG
+           STRING  "この保険者は、"        DELIMITED  BY  SIZE
+                   WRK-IDOYMD-H            DELIMITED  BY  SIZE
+                   "に廃止となりました。"  DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+           END-STRING
+           .
+       5101-IDOYMD-ERR-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険者マスタ期限切れ（公費）メッセージ表示理
+      *****************************************************************
+       5102-IDOYMD-KOHERR-SEC              SECTION.
+      *
+           EVALUATE   SPA-GMN-CUR
+               WHEN   20
+                   MOVE    SPA-PTKOH-IDOYMD (1)    TO  WRK-SYMD
+               WHEN   26
+                   MOVE    SPA-PTKOH-IDOYMD (2)    TO  WRK-SYMD
+               WHEN   32
+                   MOVE    SPA-PTKOH-IDOYMD (3)    TO  WRK-SYMD
+           END-EVALUATE
+      *
+           PERFORM 5101-IDOYMD-ERR-SEC
+           .
+       5102-IDOYMD-KOHERR-EXT.
+           EXIT.
       *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
@@ -4271,14 +5036,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-PIDMSG
                    END-STRING
-      *ver.4.7
-               WHEN    "0250"
-                   STRING  "漢字氏名が変更されました。"
-                           "ＯＫで旧姓履歴に追加します。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-PIDMSG
-                   END-STRING
-      *ver.4.7
       *        Ｈ１８．１０改正から
                WHEN    "0110"
                    STRING  SPA-PIDMSG    DELIMITED  BY  SPACE
@@ -4334,14 +5091,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-PID1-FLG
       *
            MOVE    SPACE               TO  PID1
-           INITIALIZE                      PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
            MOVE    "戻る"              TO  PID1-B01
            MOVE    "ＯＫ"              TO  PID1-B12
            EVALUATE    SPA-PIDCD
                WHEN    "1098"
-               WHEN    "0250"
                    MOVE    "ＮＯ"              TO  PID1-B01
            END-EVALUATE
       *
@@ -4486,36 +5241,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        970-JYURRK-READ-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    システム管理主キー検索
-      *****************************************************************
-       9009-SYSKANRI-KEY-READ-SEC         SECTION.
-      *
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
-               ELSE
-                   INITIALIZE                  SYSKANRI-REC
-               END-IF
-           ELSE
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-      *    カーソルクロース
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       9009-SYSKANRI-KEY-READ-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
