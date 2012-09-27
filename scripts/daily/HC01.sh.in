@@ -9,20 +9,13 @@ fi
 
 . $JMARECEIPT_ENV
 
-PRT_FILE=${MCP_TEMPDIR}/$4
-
 export HOME=/home/orca
-printf %-20000s "$(cat ${PRT_FILE})" > ${PRT_FILE}.tmp
-mv ${PRT_FILE}.tmp ${PRT_FILE}
 
-LAYEROPTION=""
-[[ $(cat ${PRT_FILE}) =~ MonpeLayerIn(.*)MonpeLayerOut ]]
-if [ -n "${BASH_REMATCH[0]}" ]; then
-  LAYEROPTION=$(echo "${BASH_REMATCH[1]}" | sed -e "s/ *-L */,/g" | sed -e "s/,/-H /")
-  sed -i -e "s/${BASH_REMATCH[0]}/$(printf %-$(expr length "${BASH_REMATCH[0]}")s ' ')/"  ${PRT_FILE}
-fi
-
-echo "printed file=>" ${PRT_FILE}
+ruby -e "puts File.readlines(ARGV[0]).at(0).chomp + ' ' * 20000  " $4 > $4.tmp
+mv $4.tmp $4
+LAYEROPTION=`ruby -ne '$_.scan(/MonpeLayerIn(.*)MonpeLayerOut/){ print $1 }' $4`
+ruby -ne 'print $_.gsub(/MonpeLayerIn(.*)MonpeLayerOut/){|s| " " * s.length } ' $4 > $4.tmp
+mv $4.tmp $4
 
 #
 #-------> path switch st
@@ -31,7 +24,6 @@ patch_file=$PATCHFORMDIR/$file
 normal_file=$FORMDIR/$file
 site_file=$SITEFORMDIR/$file
 usr_form=$2
-remove_images=$3
 
 if ! test -f $site_file
 then
@@ -41,41 +33,55 @@ then
   fi
 fi
 #-------> path switch ed
-
-	if	[ $1 = 'red2ps' ];then
-		RED2IFILE=${PRT_FILE}.red2
-		PDFFILE=${PRT_FILE}.pdf
-		FILE=${PRT_FILE}.pdf
-		PRINTER=$5
-		OFFSETX=$6
-		OFFSETY=$7
-
-		[ -z $PRINTER  ] && PRINTER=lp1
-		[ -z $OFFSETX  ] && OFFSETX=0
-		[ -z $OFFSETY  ] && OFFSETY=0
-
-		red2embed $usr_form ${PRT_FILE} -o $RED2IFILE
-		monpe $LAYEROPTION -x $OFFSETX -y $OFFSETY $RED2IFILE -e $PDFFILE
-	 	lpr -P $PRINTER $PDFFILE
-
-		[ -e $RED2IFILE ] && rm $RED2IFILE
-		[ -e $PDFFILE ]   && rm $PDFFILE
+#whether encoding is utf-8 or not.
+if [ "$8"  == '2' ]; then
+	export	RED2PS_OUTPUT_CHARSET=UTF-8
+else
+	export	RED2PS_OUTPUT_CHARSET=EUC-JP
+fi
+	if	[ $1 = 'red2ps' ]	;then
+		if	[ -z $6  ]	;then
+			OFFSETX=0
+		else
+			OFFSETX=$6
+		fi
+		if	[ -z $7  ]	;then
+			OFFSETY=0
+		else
+			OFFSETY=$7
+		fi
+		if	[ -z $5  ]	;then
+			$1 $usr_form $4 $LAYEROPTION -x $OFFSETX -y $OFFSETY -p lp1
+		else
+			$1 $usr_form $4 $LAYEROPTION -x $OFFSETX -y $OFFSETY -p $5
+		fi
 	else	
-		%RUBY% $1 $2 $3 ${PRT_FILE} $5
+		ruby $1 $2 $3 $4 $5
 	fi
 #----------------------------------------------------------------------#
 #	ファイル削除処理
 #----------------------------------------------------------------------#
-
-  if [ -e ${PRT_FILE} ]	;then
-    echo ${PRT_FILE}
-#------ イメージ削除
-    [ "${remove_images}" == "T" ] &&  grep -Eo "${MCP_TEMPDIR}[^ ]*\.(jpg|png)" ${PRT_FILE} |  xargs -r rm -f
-	rm ${PRT_FILE}
+HCLIST="HC04 HC08 HC18 HC20 HC21 HC22 HC23 HC24"
+  for FL in $HCLIST
+  do
+	if	[ $FL = ${4:9:4} ]	;then
+                 echo ${4:9:4}
+		exit
+	fi
+  done
+  if [ -e $4 ]	;then
+        echo $4
+#------ 処方せんQRイメージ削除
+	if	[ ${4:7:4} = "HC2Q" ]	;then
+	    ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $4 | xargs rm -f
+	fi
+	if	[ ${4:7:4} = "HC62" ]	;then
+	    ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $4 | xargs rm -f
+	fi
+	rm $4
   fi
 #----------------------------------------------------------------------#
 #	終了処理
 #----------------------------------------------------------------------#
 	echo "The end"
 exit $RET
-
