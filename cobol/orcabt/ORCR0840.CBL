@@ -218,6 +218,7 @@
       *  04.06.03    NACL-ÌçÏÆ    10/12/06  Ï«ºÒ¡¦¼«ÇåÀÕ¤Î¶â³Û¥Õ¥ê¡¼ÆþÎÏ
       *                                     ¥³¡¼¥ÉÂÐ±þ
       *  04.07.01    NACL-ÌçÏÆ    12/08/28  ÌôºÞÎÁ¸ºÅÀÂÐ±þ
+      *  04.07.02    NACL-ÌçÏÆ    12/09/25  ¥³¥á¥ó¥Èº¹¹þÂÐ±þ¡ÊºßÂð»ýÂ³ÍÛ°µ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1120,6 +1121,9 @@
            03  CONS-SEIRIE-COMMENT   PIC X(09)  VALUE  "190147010".
       *    ÉÂÅïÌôºÞ¶ÈÌ³¼Â»Ü²Ã»»
            03  CONS-BYOYAK-COMMENT   PIC X(09)  VALUE  "190149110".
+      *
+      *    ºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ
+           03  CONS-YOUATU-COMMENT   PIC X(09)  VALUE  "114009710".
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -3817,6 +3821,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
               IF   RECE82-SRYYM    >=     "201204"
                 IF   SRY-SRYCD(IDX2) =  CONS-KAISYOKU-COMMENT
                    MOVE   "1"   TO    RECE84-FLG-KAISYOKU-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2) =  CONS-YOUATU-COMMENT
+                   MOVE   "1"   TO    RECE84-FLG-YOUATU-COMMENT
                 END-IF
               END-IF
            END-IF

@@ -139,6 +139,7 @@
       *
       *  04.07.01    NACL-門脇    10/09/12  複数リハビリ開始日・リハビリ
       *                                     コメントの対応
+      *  04.07.02    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1459,6 +1460,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE059PARA-HOSPNUM
       *            （介護職員等喀痰吸引等指示料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KAISYOKU-HANTEI-SEC
+                      END-IF
+      *            （在宅持続陽圧呼吸療法指導管理料算定日のセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-YOUATU-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE04-TENSOU-SEC
@@ -5239,6 +5244,109 @@ grpsys       PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
+      *    在宅持続陽圧呼吸療法指導管理料があるか判定
+      *****************************************************************
+       2001-YOUATU-HANTEI-SEC          SECTION.
+      *
+           IF     RECE04-FLG-YOUATU-COMMENT   =    "1"
+               INITIALIZE            WRK-JIDO-SETCOM-AREA
+               MOVE      "1"      TO     WRK-JIDO-SETCOMFLG
+               MOVE       26      TO     WRK-JIDO-SETCOMATFLG
+               MOVE       99      TO     FLG-COMMENT
+               PERFORM    20011-YOUATU-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-YOUATU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    在宅持続陽圧呼吸療法指導管理料のコメント編集
+      *****************************************************************
+       20011-YOUATU-COMMENT-SEC          SECTION.
+      *
+           PERFORM   200111-SANTEI-DAY-SEC
+      *
+           MOVE     ZERO         TO  IDZ
+           INITIALIZE            WRK-FREE-AREA2
+      *
+           ADD      1            TO  IDZ
+           MOVE    "実施日　　　年　　月　　日"
+                                 TO  WK-FREE-NAME2(IDZ)(1:26)
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    RECE02-SRYYM        TO  WRK-HENYMD(1:6)
+           MOVE    "01"                TO  WRK-HENYMD(7:2)
+           MOVE    WRK-HENYMD          TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                       LNK-DAY2-AREA
+           IF  STS-DAY-RC1             =   ZERO
+             MOVE    LNK-DAY2-EDTYMD1-Y   TO  WRK-TAIHI-XX
+             INITIALIZE                       ORCSKANACHKAREA
+             MOVE    "2"                  TO  KANACHK-SYORI
+             MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
+             CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+             IF      KANACHK-RC      =   ZERO
+                MOVE    KANACHK-OUT-INPUT(1:4)
+                                  TO  WK-FREE-NAME2(IDZ)(9:4)
+             END-IF
+      *
+             MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
+             INITIALIZE                       ORCSKANACHKAREA
+             MOVE    "2"                  TO  KANACHK-SYORI
+             MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
+             CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+             IF      KANACHK-RC      =   ZERO
+                MOVE    KANACHK-OUT-INPUT(1:4)
+                                  TO  WK-FREE-NAME2(IDZ)(15:4)
+             END-IF
+           END-IF
+      *
+           MOVE    TB-SANTEI-DAY(1)       TO  DAY-IDX2
+           MOVE    TBL-DAY(DAY-IDX2)      TO  WK-FREE-NAME2(IDZ)(21:4)
+      *
+           MOVE    13                     TO  WK-FREE-YUKOKETA2(IDZ)
+      *
+           IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+             MOVE  "2"                    TO  WK-FREE-MEISKYFLG2(IDZ)
+             MOVE  WRK-JIDO-SETCOMATFLG   TO  WK-FREE-SETCOMATFLG2(IDZ)
+           END-IF
+      *
+           PERFORM  200111-RECE05-TAIHI-SEC
+      *
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           MOVE    ZERO                 TO  IDX-RECE05
+           MOVE    SPACE                TO  WRK-RECE05XX-REC
+           INITIALIZE                       WRK-RECE05XX-REC
+      *
+           MOVE    RECE04-MEISAISU      TO  MAX-MEISAISU
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   50    )
+                         OR      ( WK-FREE-NAME2(IDX) =   SPACE )
+                COMPUTE  MAX-MEISAISU        =   MAX-MEISAISU  +  1
+                MOVE   "810000001"
+                             TO  WRK-RECE05XX-SRYCD(MAX-MEISAISU 1)
+                MOVE   ZERO  TO  WRK-RECE05XX-SRYSURYO(MAX-MEISAISU 1)
+                MOVE   WK-FREE-YUKOKETA2(IDX)
+                             TO  WRK-RECE05XX-YUKOKETA(MAX-MEISAISU 1)
+                MOVE   WK-FREE-NAME2(IDX)
+                             TO  WRK-RECE05XX-NAME(MAX-MEISAISU 1)
+                MOVE   WK-FREE-MEISKYFLG2(IDX)
+                          TO  WRK-RECE05XX-MEISKYFLG(MAX-MEISAISU 1)
+                MOVE   WK-FREE-SETCOMATFLG2(IDX)
+                          TO  WRK-RECE05XX-SETCOMATFLG(MAX-MEISAISU 1)
+           END-PERFORM
+      *
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       20011-YOUATU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    人工腎臓等のコメントがあるか判定
       *****************************************************************
        2001-JINZOUETC-HANTEI-SEC          SECTION.
@@ -7567,7 +7675,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                       EVALUATE   RECE051-SETCOMATFLG(IDX)
                         WHEN    1
                         WHEN    3  THRU   16
-                        WHEN   17  THRU   25
+                        WHEN   17  THRU   26
                           ADD  1                 TO  WRK-HEN-SEQNO-J
                           IF   WRK-HEN-SEQNO-J  >  3
                             MOVE   SPACE   TO  RECE051-MEISKYFLG(IDX)
@@ -7683,7 +7791,9 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
       *24
                           "114020910" OR
       *25
-                          "112015810" OR "112015950" OR "112016210"
+                          "112015810" OR "112015950" OR "112016210" OR
+      *26
+                          "114009710"
       *
                        MOVE   RECE051-RENNUM  TO  WRK-HEN-RENNUM-J
                        MOVE   IDX       TO  WRK-HEN-SHORI-RENNUM-J

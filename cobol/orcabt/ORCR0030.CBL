@@ -598,6 +598,7 @@
       *
       *  04.07.01    NACL-ÌçÏÆ    11/09/01  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *  04.07.02    NACL-ÌçÏÆ    11/10/17  Ë¡Äê³°¸½ÊªµëÉÕÂÐ±þ¡ÊË¡ÊÌ£±£°¡¢£²£±¡Ë
+      *  04.07.03    NACL-ÌçÏÆ    12/09/25  ¥³¥á¥ó¥Èº¹¹þÂÐ±þ¡ÊºßÂð»ýÂ³ÍÛ°µ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1927,6 +1928,9 @@
            03  CONS-GAIHOU-COMMENT   PIC X(09)  VALUE  "113014110".
       *    ²ð¸î¿¦°÷ÅùÓ½áâµÛ°úÅù»Ø¼¨ÎÁ
            03  CONS-KAISYOKU-COMMENT PIC X(09)  VALUE  "114020910".
+      *
+      *    ºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ
+           03  CONS-YOUATU-COMMENT   PIC X(09)  VALUE  "114009710".
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -8402,6 +8406,9 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
               IF   RECE02-SRYYM    >=     "201204"
                 IF   SRY-SRYCD(IDX2) =  CONS-KAISYOKU-COMMENT
                    MOVE   "1"   TO    RECE04-FLG-KAISYOKU-COMMENT
+                END-IF
+                IF   SRY-SRYCD(IDX2) =  CONS-YOUATU-COMMENT
+                   MOVE   "1"   TO    RECE04-FLG-YOUATU-COMMENT
                 END-IF
               END-IF
            END-IF

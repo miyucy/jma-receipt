@@ -67,6 +67,7 @@
       *
       *  04.07.01    NACL-門脇    10/09/12  複数リハビリ開始日・リハビリ
       *                                     コメントの対応
+      *  04.07.02    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1076,6 +1077,10 @@
       *            （介護職員等喀痰吸引等指示料の算定日のセット）
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KAISYOKU-HANTEI-SEC
+                      END-IF
+      *            （在宅持続陽圧呼吸療法指導管理料算定日のセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-YOUATU-HANTEI-SEC
                       END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE220-TENSOU-SEC
@@ -3237,6 +3242,98 @@
       *
            .
        2001-KAISYOKU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    在宅持続陽圧呼吸療法指導管理料があるか判定
+      *****************************************************************
+       2001-YOUATU-HANTEI-SEC          SECTION.
+      *
+           IF     RECE220-FLG-YOUATU-COMMENT   =    "1"
+               MOVE       99      TO     FLG-COMMENT
+               PERFORM    20011-YOUATU-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-YOUATU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    在宅持続陽圧呼吸療法指導管理料のコメント編集
+      *****************************************************************
+       20011-YOUATU-COMMENT-SEC          SECTION.
+      *
+           PERFORM   200111-SANTEI-DAY-SEC
+      *
+           MOVE     ZERO         TO  IDZ
+           INITIALIZE            WRK-FREE-AREA2
+      *
+           ADD      1            TO  IDZ
+           MOVE    "実施日　　　年　　月　　日"
+                                 TO  WK-FREE-NAME2(IDZ)(1:26)
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    RECE200-SRYYM       TO  WRK-HENYMD(1:6)
+           MOVE    "01"                TO  WRK-HENYMD(7:2)
+           MOVE    WRK-HENYMD          TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                       LNK-DAY2-AREA
+           IF  STS-DAY-RC1             =   ZERO
+             MOVE    LNK-DAY2-EDTYMD1-Y   TO  WRK-TAIHI-XX
+             INITIALIZE                       ORCSKANACHKAREA
+             MOVE    "2"                  TO  KANACHK-SYORI
+             MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
+             CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+             IF      KANACHK-RC      =   ZERO
+                MOVE    KANACHK-OUT-INPUT(1:4)
+                                  TO  WK-FREE-NAME2(IDZ)(9:4)
+             END-IF
+      *
+             MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
+             INITIALIZE                       ORCSKANACHKAREA
+             MOVE    "2"                  TO  KANACHK-SYORI
+             MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
+             CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+             IF      KANACHK-RC      =   ZERO
+                MOVE    KANACHK-OUT-INPUT(1:4)
+                                  TO  WK-FREE-NAME2(IDZ)(15:4)
+             END-IF
+           END-IF
+      *
+           MOVE    TB-SANTEI-DAY(1)       TO  DAY-IDX2
+           MOVE    TBL-DAY(DAY-IDX2)      TO  WK-FREE-NAME2(IDZ)(21:4)
+      *
+           MOVE    13                     TO  WK-FREE-YUKOKETA2(IDZ)
+      *
+           PERFORM  200111-RECE230-TAIHI-SEC
+      *
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           MOVE    ZERO                 TO  IDX-RECE230
+           MOVE    SPACE                TO  WRK-RECE230XX-REC
+           INITIALIZE                       WRK-RECE230XX-REC
+      *
+           MOVE    RECE220-MEISAISU     TO  MAX-MEISAISU
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                      UNTIL  ( IDX                >   50    )
+                       OR    ( WK-FREE-NAME2(IDX) =   SPACE )
+             COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
+             MOVE  "810000001"
+                     TO  WRK-RECE230XX-SRYCD(MAX-MEISAISU 1)
+             MOVE  ZERO
+                     TO  WRK-RECE230XX-SRYSURYO(MAX-MEISAISU 1)
+             MOVE  WK-FREE-YUKOKETA2(IDX)
+                     TO  WRK-RECE230XX-YUKOKETA(MAX-MEISAISU 1)
+             MOVE  WK-FREE-NAME2(IDX)
+                     TO  WRK-RECE230XX-NAME(MAX-MEISAISU 1)
+           END-PERFORM
+      *
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       20011-YOUATU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

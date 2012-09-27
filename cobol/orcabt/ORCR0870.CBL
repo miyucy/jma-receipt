@@ -110,6 +110,7 @@
       *
       *  04.07.01    NACL-ÌçÏÆ    10/09/12  Ê£¿ô¥ê¥Ï¥Ó¥ê³«»ÏÆü¡¦¥ê¥Ï¥Ó¥ê
       *                                     ¥³¥á¥ó¥È¤ÎÂÐ±þ
+      *  04.07.02    NACL-ÌçÏÆ    12/09/25  ¥³¥á¥ó¥Èº¹¹þÂÐ±þ¡ÊºßÂð»ýÂ³ÍÛ°µ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1311,6 +1312,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KAISYOKU-HANTEI-SEC
                       END-IF
+      *            ¡ÊºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-YOUATU-HANTEI-SEC
+                      END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
@@ -1522,6 +1527,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
       *            ¡Ê²ð¸î¿¦°÷ÅùÓ½áâµÛ°úÅù»Ø¼¨ÎÁ¤Î»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KAISYOKU-HANTEI-SEC
+                      END-IF
+      *            ¡ÊºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-YOUATU-HANTEI-SEC
                       END-IF
       *            ¡Ê¿Í¹©¿ÕÂ¡Åù¤Î»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
                       IF   FLG-COMMENT  =  ZERO
@@ -3843,6 +3852,98 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            .
        2001-KAISYOKU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ¤¬¤¢¤ë¤«È½Äê
+      *****************************************************************
+       2001-YOUATU-HANTEI-SEC          SECTION.
+      *
+           IF     RECE84-FLG-YOUATU-COMMENT   =    "1"
+               MOVE       99      TO     FLG-COMMENT
+               PERFORM    20011-YOUATU-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-YOUATU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       20011-YOUATU-COMMENT-SEC          SECTION.
+      *
+           PERFORM   200111-SANTEI-DAY-SEC
+      *
+           MOVE     ZERO         TO  IDZ
+           INITIALIZE            WRK-FREE-AREA2
+      *
+           ADD      1            TO  IDZ
+           MOVE    "¼Â»ÜÆü¡¡¡¡¡¡Ç¯¡¡¡¡·î¡¡¡¡Æü"
+                                 TO  WK-FREE-NAME2(IDZ)(1:26)
+      *
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY2-AREA
+           MOVE    "21"                TO  LNK-DAY2-IRAI
+           MOVE    RECE82-SRYYM        TO  WRK-HENYMD(1:6)
+           MOVE    "01"                TO  WRK-HENYMD(7:2)
+           MOVE    WRK-HENYMD          TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"   USING   STS-AREA-DAY
+                                       LNK-DAY2-AREA
+           IF  STS-DAY-RC1             =   ZERO
+             MOVE    LNK-DAY2-EDTYMD1-Y   TO  WRK-TAIHI-XX
+             INITIALIZE                       ORCSKANACHKAREA
+             MOVE    "2"                  TO  KANACHK-SYORI
+             MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
+             CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+             IF      KANACHK-RC      =   ZERO
+                MOVE    KANACHK-OUT-INPUT(1:4)
+                                  TO  WK-FREE-NAME2(IDZ)(9:4)
+             END-IF
+      *
+             MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
+             INITIALIZE                       ORCSKANACHKAREA
+             MOVE    "2"                  TO  KANACHK-SYORI
+             MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
+             CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+             IF      KANACHK-RC      =   ZERO
+                MOVE    KANACHK-OUT-INPUT(1:4)
+                                  TO  WK-FREE-NAME2(IDZ)(15:4)
+             END-IF
+           END-IF
+      *
+           MOVE    TB-SANTEI-DAY(1)       TO  DAY-IDX2
+           MOVE    TBL-DAY(DAY-IDX2)      TO  WK-FREE-NAME2(IDZ)(21:4)
+      *
+           MOVE    13                     TO  WK-FREE-YUKOKETA2(IDZ)
+      *
+           PERFORM  200111-RECE85-TAIHI-SEC
+      *
+      *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+           MOVE    ZERO                 TO  IDX-RECE85
+           MOVE    SPACE                TO  WRK-RECE85XX-REC
+           INITIALIZE                       WRK-RECE85XX-REC
+      *
+           MOVE    RECE84-MEISAISU      TO  MAX-MEISAISU
+      *
+           PERFORM   VARYING   IDX   FROM    1   BY  1
+                      UNTIL  ( IDX                >   50    )
+                       OR    ( WK-FREE-NAME2(IDX) =   SPACE )
+             COMPUTE  MAX-MEISAISU  =   MAX-MEISAISU  +  1
+             MOVE  "810000001"
+                          TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+             MOVE   ZERO  TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
+             MOVE   WK-FREE-YUKOKETA2(IDX)
+                          TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+             MOVE   WK-FREE-NAME2(IDX)
+                          TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+             MOVE  "1"    TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
+           END-PERFORM
+      *
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       20011-YOUATU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
