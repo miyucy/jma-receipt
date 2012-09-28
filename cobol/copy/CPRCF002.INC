@@ -137,6 +137,7 @@
       *                                     ÊÝ¸±Íó¡Ý°ìÉôÉéÃ´¶âµ­ºÜ
       *                                     ¡Ê¹âÎð¼Ô¡Ë¡Ê70ºÐÌ¤Ëþ¡Ë¥Õ¥é¥°ÄÉ²Ã
       *  04.07.02    NACL-Æ£¸¶    12/01/06  Í½È÷¤ò£²£°¤ËÊÑ¹¹
+      *  04.07.03    NACL-ÌçÏÆ    12/08/27  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -614,6 +615,31 @@
                    09  RECE02-EKF-FTNKEIFLG    PIC  X(01).
                    09  RECE02-EKF-HKNFTNFLG-K  PIC  X(01).
                    09  RECE02-EKF-HKNFTNFLG-Y  PIC  X(01).
+      *
+                   09  RECE02-EKF-KAKKBN-K     PIC  X(01).
+                   09  RECE02-EKF-KAK21KBN-K   PIC  X(01).
+                   09  RECE02-EKF-KAK22KBN-K   PIC  X(01).
+                   09  RECE02-EKF-KAK23KBN-K   PIC  X(01).
+                   09  RECE02-EKF-KAK31KBN-K   PIC  X(01).
+                   09  RECE02-EKF-KAK32KBN-K   PIC  X(01).
+                   09  RECE02-EKF-KAK41KBN-K   PIC  X(01).
+                   09  RECE02-EKF-KAK42KBN-K   PIC  X(01).
+                   09  RECE02-EKF-KAK43KBN-K   PIC  X(01).
+                   09  RECE02-EKF-KAKKBN-Y     PIC  X(01).
+                   09  RECE02-EKF-KAK21KBN-Y   PIC  X(01).
+                   09  RECE02-EKF-KAK22KBN-Y   PIC  X(01).
+                   09  RECE02-EKF-KAK23KBN-Y   PIC  X(01).
+                   09  RECE02-EKF-KAK31KBN-Y   PIC  X(01).
+                   09  RECE02-EKF-KAK32KBN-Y   PIC  X(01).
+                   09  RECE02-EKF-KAK41KBN-Y   PIC  X(01).
+                   09  RECE02-EKF-KAK42KBN-Y   PIC  X(01).
+                   09  RECE02-EKF-KAK43KBN-Y   PIC  X(01).
+                   09  RECE02-EKF-KSINGKBN-K   PIC  X(01).
+                   09  RECE02-EKF-KSINGKBN-Y   PIC  X(01).
+                   09  RECE02-EKF-ENCHGKBN-K   PIC  X(01).
+                   09  RECE02-EKF-ENCHGKBN-Y   PIC  X(01).
+                   09  RECE02-EKF-NINNASIKBN   PIC  X(01).
+                   09  RECE02-EKF-NINJYOKBN    PIC  X(01).
       *
       *¼ÂÆü¿ô¡¦ÀÁµáÅÀµ­ºÜ¥Õ¥é¥°
            03  RECE02-JSKISAIFLG          PIC  X(01).

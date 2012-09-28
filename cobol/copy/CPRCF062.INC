@@ -129,6 +129,7 @@
       *                                     （高齢者）（70歳未満）フラグ追加
       *                                     食事区分追加
       *  04.07.02    NACL-藤原    12/01/06  予備を２０に変更
+      *  04.07.03    NACL-門脇    12/08/27  システム管理２０１０機能追加対応
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -715,6 +716,32 @@
                    07  RECE62-EKF-FTNKEIFLG    PIC  X(01).
                    07  RECE62-EKF-HKNFTNFLG-K  PIC  X(01).
                    07  RECE62-EKF-HKNFTNFLG-Y  PIC  X(01).
+      *
+                   07  RECE62-EKF-KAKKBN-K     PIC  X(01).
+                   07  RECE62-EKF-KAK21KBN-K   PIC  X(01).
+                   07  RECE62-EKF-KAK22KBN-K   PIC  X(01).
+                   07  RECE62-EKF-KAK23KBN-K   PIC  X(01).
+                   07  RECE62-EKF-KAK31KBN-K   PIC  X(01).
+                   07  RECE62-EKF-KAK32KBN-K   PIC  X(01).
+                   07  RECE62-EKF-KAK41KBN-K   PIC  X(01).
+                   07  RECE62-EKF-KAK42KBN-K   PIC  X(01).
+                   07  RECE62-EKF-KAK43KBN-K   PIC  X(01).
+                   07  RECE62-EKF-KAKKBN-Y     PIC  X(01).
+                   07  RECE62-EKF-KAK21KBN-Y   PIC  X(01).
+                   07  RECE62-EKF-KAK22KBN-Y   PIC  X(01).
+                   07  RECE62-EKF-KAK23KBN-Y   PIC  X(01).
+                   07  RECE62-EKF-KAK31KBN-Y   PIC  X(01).
+                   07  RECE62-EKF-KAK32KBN-Y   PIC  X(01).
+                   07  RECE62-EKF-KAK41KBN-Y   PIC  X(01).
+                   07  RECE62-EKF-KAK42KBN-Y   PIC  X(01).
+                   07  RECE62-EKF-KAK43KBN-Y   PIC  X(01).
+                   07  RECE62-EKF-KSINGKBN-K   PIC  X(01).
+                   07  RECE62-EKF-KSINGKBN-Y   PIC  X(01).
+                   07  RECE62-EKF-ENCHGKBN-K   PIC  X(01).
+                   07  RECE62-EKF-ENCHGKBN-Y   PIC  X(01).
+                   07  RECE62-EKF-KOH2SKJKBN   PIC  X(01).
+                   07  RECE62-EKF-NINNASIKBN   PIC  X(01).
+                   07  RECE62-EKF-NINJYOKBN    PIC  X(01).
       *
       *実日数・請求点記載フラグ
            03  RECE62-JSKISAIFLG          PIC  X(01).
