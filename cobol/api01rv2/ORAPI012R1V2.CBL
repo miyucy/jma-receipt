@@ -341,6 +341,23 @@
            MOVE    PTINF-HOME-TEL1     TO  PTRES-HOME-HPONE1
            MOVE    PTINF-HOME-TEL2     TO  PTRES-HOME-HPONE2
       *
+      *    À¤ÂÓ¼çÌ¾
+           MOVE    PTINF-SETAINUSI     TO  PTRES-SETAI-NAME
+      *    Â³ÊÁ
+           MOVE    PTINF-ZOKUGARA      TO  PTRES-ZOKUGARA
+      *    ¶Ø´÷
+           MOVE    PTINF-TABOO-1       TO  PTRES-TABOO-1
+           MOVE    PTINF-TABOO-2       TO  PTRES-TABOO-2
+      *    ¥¢¥ì¥ë¥®¡¼
+           MOVE    PTINF-ALLERGY-1     TO  PTRES-ALLERGY-1
+           MOVE    PTINF-ALLERGY-2     TO  PTRES-ALLERGY-2
+      *    ´¶À÷¾É
+           MOVE    PTINF-KANSENSYO-1   TO  PTRES-KANSENSYO-1
+           MOVE    PTINF-KANSENSYO-2   TO  PTRES-KANSENSYO-2
+      *    ¥³¥á¥ó¥È
+           MOVE    PTINF-COMMENT-1     TO  PTRES-COMMENT-1
+           MOVE    PTINF-COMMENT-2     TO  PTRES-COMMENT-2
+      *
       *    ÊÝ¸±¼ïÎàÊÑ´¹½èÍý
            PERFORM 200210-HKNCOMBI-HEN-SEC
       *
@@ -482,6 +499,13 @@
       *    Í­¸ú½ªÎ»Æü
            MOVE    ORCSAPIHKN-TEKEDYMD  (IDX)
                                    TO  PTRES-MAIN-END-DATE   (IDX)
+      *
+      *    ÊÝ¸±ÁÈ¹ç¤»
+           MOVE    ORCSAPIHKN-THKNCOMBI  (IDX)
+                                   TO  PTRES-COMBINATION-NUMBER (IDX)
+      *    Êä½õ¶èÊ¬Ì¾¾Î
+           MOVE    ORCSAPIHKN-HOJOKBN-NAME  (IDX)
+                                   TO  PTRES-MAIN-ASSISTANCE-NAME (IDX)
       *    ¸øÈñ¾ðÊó
            PERFORM VARYING     IDY2    FROM    1   BY  1
                    UNTIL       IDY2    >   4

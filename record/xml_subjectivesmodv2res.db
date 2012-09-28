@@ -20,7 +20,7 @@ xml_subjectivesmodv2res {
 		Perform_Date			varchar(10);
 		Department_Code			varchar(2);
 		Department_WholeName		varchar(80);
-		Combination_Number		varchar(4);
+		Insurance_Combination_Number	varchar(4);
 		HealthInsurance_Information  {
 		InsuranceProvider_Class			varchar(03);
 		InsuranceProvider_WholeName		varchar(20);

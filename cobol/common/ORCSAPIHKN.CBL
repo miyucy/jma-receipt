@@ -1131,6 +1131,27 @@
                        MOVE    "³°£³³ä Æþ£²³ä"
                                        TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
                END-EVALUATE
+      *        ¼£¸³
+               WHEN    "900"
+               WHEN    "901"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "1"
+                       MOVE    "²ÝÀÇ"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "2"
+                       MOVE    "Èó²ÝÀÇ"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+               END-EVALUATE
+      *        ¼«Èñ
+               WHEN    "980"   THRU   "989"
+               EVALUATE    TBL-COMB-HOJOKBN (IDX)
+                   WHEN    "1"
+                       MOVE    "²ÝÀÇ"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+                   WHEN    "2"
+                       MOVE    "Èó²ÝÀÇ"
+                                       TO  ORCSAPIHKN-HOJOKBN-NAME (IDX)
+               END-EVALUATE
       *
                WHEN    OTHER
                    IF      TBL-COMB-HKNNUM (IDX)(1:1)  =   "9"
