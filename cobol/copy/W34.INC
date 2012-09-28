@@ -1,5 +1,9 @@
         02  W34.
      ****** 02  W34-FIXED1.
+              03  W34-B07.
+                04  W34-B07-STATE   PIC S9(9)   BINARY.
+              03  W34-B06.
+                04  W34-B06-STATE   PIC S9(9)   BINARY.
               03  W34-PRGID.
                 04  W34-VALUE   PIC X(25).
               03  W34-SELNUM.

@@ -1,5 +1,11 @@
 W34	{
 	fixed1	{
+	        B07	{
+	           	state	int;
+	        };
+	        B06	{
+	           	state	int;
+	        };
 		PRGID	{
 			value	varchar(25);
 		};

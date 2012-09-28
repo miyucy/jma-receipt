@@ -124,7 +124,7 @@
            03  IDX                 PIC 9(05).
            03  IDY                 PIC 9(05).
       *
-           03  IDX2                PIC 9(02).
+           03  IDX2                PIC 9(05).
       *
       *    一時領域
       *
@@ -156,6 +156,8 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+           03  WRK-PAGE            PIC 9(02).
+           03  WRK-PAGE-MAX        PIC 9(02).
       *
       *    文字列チェック関数パラメタ（
        01  ORCXKANACONVAREA.
@@ -441,20 +443,41 @@
            ELSE
                MOVE    1                   TO  FLG-PRGOPTION
            END-IF
+      *
+      *    開始
+           IF     (WRK-PAGE        =   ZERO )
+               MOVE    1                   TO  WRK-PAGE
+           END-IF
+      *
+           COMPUTE IDX2    = (WRK-PAGE -   1)  * 100 
+      *
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL  (FLG-PRGOPTION   =   1   )
-                      OR  (IDX             >=  100 )
-               IF     (IDX                 =   ZERO  )
-                   OR (SPA-GMN-TPRGID (IDX)
-                                       NOT =   PRGOPTION-PRGID)
-                   ADD     1                   TO  IDX
-                   MOVE    IDX                 TO  SPA-GMN-TNUM  (IDX)
-                   MOVE    PRGOPTION-PRGID     TO  SPA-GMN-TPRGID(IDX)
-               END-IF
+                      OR  (IDX             >=  IDX2 )
+               ADD     1                   TO  IDX
                MOVE    "tbl_prgoption"     TO  MCP-TABLE
                MOVE    "all"               TO  MCP-PATHNAME
                PERFORM 990-PRGOPTION-READ-SEC
            END-PERFORM
+      *
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL  (FLG-PRGOPTION   =   1   )
+                      OR  (IDX             >=  100 )
+               ADD     1                   TO  IDX
+               MOVE    IDX                 TO  SPA-GMN-TNUM  (IDX)
+               MOVE    PRGOPTION-PRGID     TO  SPA-GMN-TPRGID(IDX)
+               MOVE    "tbl_prgoption"     TO  MCP-TABLE
+               MOVE    "all"               TO  MCP-PATHNAME
+               PERFORM 990-PRGOPTION-READ-SEC
+           END-PERFORM
+      *
+      *    終了
+           IF     (FLG-PRGOPTION       =   1 )
+               MOVE    WRK-PAGE            TO  WRK-PAGE-MAX
+           ELSE
+               MOVE    ZERO                TO  WRK-PAGE-MAX
+           END-IF
+      *
            MOVE    "tbl_prgoption"     TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -497,6 +520,14 @@
       *    入力
                WHEN    "CLICKED"      ALSO    "B10"
                    PERFORM 4100-ENTER-SEC
+      *    前頁
+               WHEN    "CLICKED"      ALSO    "B06"
+                   COMPUTE WRK-PAGE    =   WRK-PAGE    -   1
+                   PERFORM 310-SPASET-SEC
+      *    次頁
+               WHEN    "CLICKED"      ALSO    "B07"
+                   COMPUTE WRK-PAGE   =    WRK-PAGE    +   1
+                   PERFORM 310-SPASET-SEC
            END-EVALUATE
       *
            .
@@ -1319,6 +1350,18 @@
            MOVE    SPA-TBL-MAX         TO  W34-PRGLST-COUNT
       *
            MOVE    SPA-GMN-SELNUM      TO  W34-SELNUM
+      *
+           IF      WRK-PAGE            =   1
+               MOVE    WIDGET-INSENSITIVE  TO  W34-B06-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  W34-B06-STATE
+           END-IF
+      *
+           IF      WRK-PAGE-MAX        =   WRK-PAGE
+               MOVE    WIDGET-INSENSITIVE  TO  W34-B07-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  W34-B07-STATE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
