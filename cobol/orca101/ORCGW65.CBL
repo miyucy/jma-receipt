@@ -9467,6 +9467,12 @@
                END-EVALUATE
       *
                EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-OSAKA )
+                   MOVE    "1"         TO  SPA-GMN-KAK21KBNY
+                   MOVE    "0"         TO  SPA-GMN-KAK21TAIKBNY
+               END-EVALUATE
+      *
+               EVALUATE    TRUE
                WHEN  ( SPA-PREFNUM     =   CONST-HIROSHIMA )
                    MOVE    "1"         TO  SPA-GMN-KAK32KBNY
                    MOVE    "3"         TO  SPA-GMN-KAK32TAIKBNY
@@ -9509,6 +9515,8 @@
                EVALUATE    TRUE
                WHEN  ( SPA-PREFNUM     =   CONST-HOKKAIDO )
                 AND  ( SPA-GMN-KOHNUM  =   "183" )
+               WHEN  ( SPA-PREFNUM     =   CONST-OSAKA )
+                AND  ( SPA-GMN-KOHNUM  NOT =   "100" AND "200" )
                    MOVE    "2"         TO  SPA-GMN-ENCHGKBNYG
                    MOVE    "0"         TO  SPA-GMN-ENCHGTAIKBNYG
                WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
@@ -9525,6 +9533,8 @@
                    MOVE    "3"         TO  SPA-GMN-ENCHGTAIKBNYN
                WHEN  ( SPA-PREFNUM     =   CONST-HOKKAIDO )
                 AND  ( SPA-GMN-KOHNUM  =   "183" )
+               WHEN  ( SPA-PREFNUM     =   CONST-OSAKA )
+                AND  ( SPA-GMN-KOHNUM  NOT =   "100" AND "200" )
                    MOVE    "2"         TO  SPA-GMN-ENCHGKBNYN
                    MOVE    "0"         TO  SPA-GMN-ENCHGTAIKBNYN
                WHEN  ( SPA-PREFNUM     =   CONST-TOKYO )
