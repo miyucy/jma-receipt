@@ -387,6 +387,8 @@
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
                WHEN    OTHER
+                   MOVE    ZERO                TO  WRK-PAGE 
+                   MOVE    ZERO                TO  WRK-PAGE-MAX 
                    PERFORM 310-SPASET-SEC
            END-EVALUATE
       *
