@@ -1053,8 +1053,7 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-      *****    PERFORM 310-SPASET-SEC
-               PERFORM 3101-PGLIST-HEN-SEC
+               PERFORM 310-SPASET-SEC
                MOVE    1               TO  SPA-GMN-CUR
            END-IF
            .
@@ -1316,8 +1315,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      SPA-ERRCD           =   SPACE
-      *******  PERFORM 310-SPASET-SEC
-               PERFORM 3101-PGLIST-HEN-SEC
+               PERFORM 310-SPASET-SEC
                MOVE    1               TO  SPA-GMN-CUR
            END-IF
             .
