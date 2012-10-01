@@ -882,6 +882,8 @@
                OR ((LNK-FTNJGNCHK-KOHNUM    =
                     "462" OR "562" OR "662" OR "762"   ) AND
                    (LNK-FTNJGNCHK-SRYYM    >= "201112" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "672"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "201210" ))
                  MOVE    "1"    TO  WRK-IRYOKEIKBN-G
                END-IF
              WHEN       43
@@ -945,6 +947,8 @@
                OR ((LNK-FTNJGNCHK-KOHNUM    =
                                       "462" OR "762"   ) AND
                    (LNK-FTNJGNCHK-SRYYM    >= "201112" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "672"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM    >= "201210" ))
                  MOVE    "1"    TO  WRK-IRYOKEIKBN-N
                END-IF
              WHEN       43
@@ -1070,6 +1074,8 @@
                OR ((LNK-FTNJGNCHK-KOHNUM    =
                     "462" OR "562" OR "662" OR "762"   ) AND
                    (LNK-FTNJGNCHK-SRYYM     < "201112" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "672"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "201210" ))
                  MOVE  SPACE  TO  WRK-IRYOKEIKBN-G
                END-IF
              WHEN       43
@@ -1124,6 +1130,8 @@
                OR ((LNK-FTNJGNCHK-KOHNUM    =
                                       "462" OR "762"   ) AND
                    (LNK-FTNJGNCHK-SRYYM     < "201112" ))
+               OR ((LNK-FTNJGNCHK-KOHNUM    =  "672"   ) AND
+                   (LNK-FTNJGNCHK-SRYYM     < "201210" ))
                  MOVE  SPACE  TO  WRK-IRYOKEIKBN-N
                END-IF
              WHEN       43

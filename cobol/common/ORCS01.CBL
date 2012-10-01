@@ -10299,6 +10299,8 @@
                OR ((COMB-KOHHKNNUM(IDX-CYO) =
                     "462" OR "562" OR "662" OR "762"   ) AND
                    (LNK-SYU-SRYYMD(1:6)    >= "201112" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "672"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "201210" ))
                  MOVE    "1"    TO  WK-2010-IRYOKEIKBN-G(IDX-CYO)
                END-IF
              WHEN       43
@@ -10424,6 +10426,8 @@
                OR ((COMB-KOHHKNNUM(IDX-CYO) =
                     "462" OR "562" OR "662" OR "762"   ) AND
                    (LNK-SYU-SRYYMD(1:6)    >= "201112" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "672"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)    >= "201210" ))
                  MOVE    "1"    TO  WK-2010-IRYOKEIKBN-G-XXX(IDX-CYO)
                END-IF
              WHEN       43
@@ -10501,6 +10505,8 @@
                OR ((COMB-KOHHKNNUM(IDX-CYO) =
                     "462" OR "562" OR "662" OR "762"   ) AND
                    (LNK-SYU-SRYYMD(1:6)     < "201112" ))
+               OR ((COMB-KOHHKNNUM(IDX-CYO) =  "672"   ) AND
+                   (LNK-SYU-SRYYMD(1:6)     < "201210" ))
                  MOVE    SPACE  TO  WK-2010-IRYOKEIKBN-G(IDX-CYO)
                END-IF
              WHEN       43
