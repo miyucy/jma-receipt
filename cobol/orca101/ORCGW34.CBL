@@ -66,11 +66,13 @@
       *
       *    画面用ＳＰＡ
        01  SPA-W34.
-           03  SPA-W34-AREA.
-               05  SPA-GMN-PAGE        PIC 9(02).
+           03  SPA-W34-INIT-AREA.
+               05  SPA-GMN-PAGE        PIC 9(03).
+               05  SPA-GMN-NEXT        PIC 9(01).
                05  SPA-GMN-LINE        PIC 9(02).
                05  SPA-GMN-CUR         PIC 9(03).
       *
+           03  SPA-W34-AREA.
       *        プログラム名
                05  SPA-GMN-PRGID           PIC X(25).
                05  SPA-GMN-INPUT-G.
@@ -125,6 +127,7 @@
            03  IDY                 PIC 9(05).
       *
            03  IDX2                PIC 9(05).
+           03  IDX-STR             PIC 9(05).
       *
       *    一時領域
       *
@@ -143,6 +146,7 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
       *
+           03  WRK-MAE-TPRGID      PIC X(25).
            03  WRK-SELNUM          PIC 9(03).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
@@ -156,8 +160,6 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
-           03  WRK-PAGE            PIC 9(02).
-           03  WRK-PAGE-MAX        PIC 9(02).
       *
       *    文字列チェック関数パラメタ（
        01  ORCXKANACONVAREA.
@@ -387,8 +389,6 @@
                WHEN    "WID1"
                    PERFORM 330-WID1-SET-SEC
                WHEN    OTHER
-                   MOVE    ZERO                TO  WRK-PAGE 
-                   MOVE    ZERO                TO  WRK-PAGE-MAX 
                    PERFORM 310-SPASET-SEC
            END-EVALUATE
       *
@@ -431,6 +431,20 @@
       *
            INITIALIZE   SPA-W34
       *
+           MOVE    1                   TO  SPA-GMN-PAGE
+           PERFORM 3101-PGLIST-HEN-SEC
+           . 
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       3101-PGLIST-HEN-SEC              SECTION.
+      *
+           INITIALIZE   SPA-W34-AREA
+           INITIALIZE   SPA-NAI-AREA
+      *
            MOVE    SPACE               TO  PRGOPTION-REC
            INITIALIZE                      PRGOPTION-REC
            MOVE    SPA-HOSPNUM         TO  PRGOPTION-HOSPNUM
@@ -447,48 +461,62 @@
            END-IF
       *
       *    開始
-           IF     (WRK-PAGE        =   ZERO )
-               MOVE    1                   TO  WRK-PAGE
+           IF     (SPA-GMN-PAGE        =   ZERO )
+               MOVE    1                   TO  SPA-GMN-PAGE
            END-IF
+           MOVE    ZERO                TO  SPA-GMN-NEXT
+           MOVE    ZERO                TO  SPA-TBL-MAX
       *
-           COMPUTE IDX2    = (WRK-PAGE -   1)  * 100 
+           COMPUTE IDX-STR         =   (SPA-GMN-PAGE -   1)  * 100 
+                                   +   1
       *
+           MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  IDX
+           MOVE    SPACE               TO  WRK-MAE-TPRGID
            PERFORM UNTIL  (FLG-PRGOPTION   =   1   )
-                      OR  (IDX             >=  IDX2 )
-               ADD     1                   TO  IDX
+                      OR  (SPA-GMN-NEXT    =   1   )
+               IF     (WRK-MAE-TPRGID      =   PRGOPTION-PRGID)
+                   CONTINUE
+               ELSE
+                   ADD     1                   TO  IDX2
+                   MOVE    PRGOPTION-PRGID     TO  WRK-MAE-TPRGID
+                   IF      IDX2                <   IDX-STR
+                       CONTINUE
+                   ELSE
+                       ADD     1                   TO  IDX
+                       IF      IDX                 >   100
+                           MOVE    1               TO  SPA-GMN-NEXT
+                       ELSE
+                           MOVE    IDX             TO  SPA-GMN-TNUM
+                                                              (IDX)
+                           MOVE    PRGOPTION-PRGID
+                                               TO  SPA-GMN-TPRGID(IDX)
+                           MOVE    IDX             TO  SPA-TBL-MAX
+                      END-IF
+                  END-IF
+               END-IF
+      *
                MOVE    "tbl_prgoption"     TO  MCP-TABLE
                MOVE    "all"               TO  MCP-PATHNAME
                PERFORM 990-PRGOPTION-READ-SEC
            END-PERFORM
-      *
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL  (FLG-PRGOPTION   =   1   )
-                      OR  (IDX             >=  100 )
-               ADD     1                   TO  IDX
-               MOVE    IDX                 TO  SPA-GMN-TNUM  (IDX)
-               MOVE    PRGOPTION-PRGID     TO  SPA-GMN-TPRGID(IDX)
-               MOVE    "tbl_prgoption"     TO  MCP-TABLE
-               MOVE    "all"               TO  MCP-PATHNAME
-               PERFORM 990-PRGOPTION-READ-SEC
-           END-PERFORM
-      *
-      *    終了
-           IF     (FLG-PRGOPTION       =   1 )
-               MOVE    WRK-PAGE            TO  WRK-PAGE-MAX
-           ELSE
-               MOVE    ZERO                TO  WRK-PAGE-MAX
-           END-IF
       *
            MOVE    "tbl_prgoption"     TO  MCP-TABLE
            MOVE    "all"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           MOVE    IDX                 TO  SPA-TBL-MAX
+      *    終了
+      *    IF     (FLG-PRGOPTION       =   1 )
+      *        MOVE    WRK-PAGE            TO  WRK-PAGE-MAX
+      *    ELSE
+      *        MOVE    ZERO                TO  WRK-PAGE-MAX
+      *    END-IF
+      *
+      *    MOVE    IDX                 TO  SPA-TBL-MAX
       *
            MOVE    1                   TO  SPA-GMN-CUR
            . 
-       310-SPASET-EXT.
+        3101-PGLIST-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -524,12 +552,10 @@
                    PERFORM 4100-ENTER-SEC
       *    前頁
                WHEN    "CLICKED"      ALSO    "B06"
-                   COMPUTE WRK-PAGE    =   WRK-PAGE    -   1
-                   PERFORM 310-SPASET-SEC
+                   PERFORM 460-MAE-PAGE-SEC
       *    次頁
                WHEN    "CLICKED"      ALSO    "B07"
-                   COMPUTE WRK-PAGE   =    WRK-PAGE    +   1
-                   PERFORM 310-SPASET-SEC
+                   PERFORM 470-NEXT-PAGE-SEC
            END-EVALUATE
       *
            .
@@ -910,6 +936,34 @@
            EXIT.
       *
       *****************************************************************
+      *       前頁処理
+      *****************************************************************
+       460-MAE-PAGE-SEC              SECTION.
+      *
+           IF      SPA-GMN-PAGE        <=   1
+               MOVE    1               TO  SPA-GMN-PAGE
+           ELSE
+               COMPUTE SPA-GMN-PAGE    =   SPA-GMN-PAGE   -   1
+           END-IF
+           PERFORM 3101-PGLIST-HEN-SEC
+           .
+       460-MAE-PAGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       次頁処理
+      *****************************************************************
+       470-NEXT-PAGE-SEC              SECTION.
+      *
+           IF      SPA-GMN-NEXT        =   1
+               COMPUTE SPA-GMN-PAGE    =   SPA-GMN-PAGE   +   1
+           END-IF
+           PERFORM 3101-PGLIST-HEN-SEC
+           .
+       470-NEXT-PAGE-XT.
+           EXIT.
+      *
+      *****************************************************************
       *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
@@ -999,7 +1053,8 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-               PERFORM 310-SPASET-SEC
+      *****    PERFORM 310-SPASET-SEC
+               PERFORM 3101-PGLIST-HEN-SEC
                MOVE    1               TO  SPA-GMN-CUR
            END-IF
            .
@@ -1261,7 +1316,8 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      SPA-ERRCD           =   SPACE
-               PERFORM 310-SPASET-SEC
+      *******  PERFORM 310-SPASET-SEC
+               PERFORM 3101-PGLIST-HEN-SEC
                MOVE    1               TO  SPA-GMN-CUR
            END-IF
             .
@@ -1353,13 +1409,14 @@
       *
            MOVE    SPA-GMN-SELNUM      TO  W34-SELNUM
       *
-           IF      WRK-PAGE            =   1
+      *    前頁
+           IF      SPA-GMN-PAGE            =   1
                MOVE    WIDGET-INSENSITIVE  TO  W34-B06-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  W34-B06-STATE
            END-IF
-      *
-           IF      WRK-PAGE-MAX        =   WRK-PAGE
+      *    次頁
+           IF      SPA-GMN-NEXT            =   ZERO
                MOVE    WIDGET-INSENSITIVE  TO  W34-B07-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  W34-B07-STATE
