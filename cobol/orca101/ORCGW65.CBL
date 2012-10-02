@@ -9261,7 +9261,7 @@
                                         OR "682" OR "381" OR "372"
                                         OR "373" OR "281" OR "462"
                                         OR "562" OR "662" OR "762"
-                                        )
+                                        OR "672" )
                WHEN  ( SPA-PREFNUM     =   CONST-KUMAMOTO )
                 AND  ( SPA-GMN-KOHNUM  =   "341" OR "442" OR "480" )
                    MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNG
@@ -9282,7 +9282,7 @@
                                         OR "442" OR "781" OR "542"
                                         OR "681" OR "682" OR "381"
                                         OR "372" OR "373" OR "281"
-                                        OR "462" OR "762" )
+                                        OR "462" OR "762" OR "672" )
                WHEN  ( SPA-PREFNUM     =   CONST-KUMAMOTO )
                 AND  ( SPA-GMN-KOHNUM  =   "341" OR "442" OR "480" )
                    MOVE    "1"         TO  SPA-GMN-IRYOKEIKBNN
@@ -9300,7 +9300,8 @@
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
                 AND  ( SPA-GMN-KOHNUM  =            "582" OR "743"
                                         OR "442" OR "781" OR "542"
-                                        OR "381" OR "372" OR "373" )
+                                        OR "381" OR "372" OR "373"
+                                        OR "672" )
                    MOVE    "1"         TO  SPA-GMN-SKJKEIKBN
                    MOVE    "0"         TO  SPA-GMN-SKJKEITAIKBN
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
@@ -9314,6 +9315,10 @@
                END-EVALUATE
       *
                EVALUATE    TRUE
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "672" )
+                   MOVE    "1"         TO  SPA-GMN-SKJRYOKBNHON
+                   MOVE    "0"         TO  SPA-GMN-SKJRYOTAIKBNHON
                WHEN  ( SPA-PREFNUM     =   CONST-MIYAGI )
                 AND  ( SPA-GMN-KOHNUM  =   "183" OR "483" OR "583"
                                         OR "783" )
@@ -9332,6 +9337,8 @@
                WHEN  ( SPA-PREFNUM     =   CONST-GUNMA )
                 AND  ( SPA-GMN-KOHNUM  =   "146" OR "246" OR "143"
                                         OR "243" OR "177" OR "187" )
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "672" )
                WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
                 AND  ( SPA-GMN-KOHNUM  =   "261" OR "361" OR "561"
                                         OR "264" OR "364" OR "564"
@@ -9345,6 +9352,8 @@
                 AND  ( SPA-GMN-KOHNUM  =   "683" )
                    MOVE    "2"         TO  SPA-GMN-SEIKANKBNHON
                    MOVE    "0"         TO  SPA-GMN-SEIKANTAIKBNHON
+               WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
+                AND  ( SPA-GMN-KOHNUM  =   "672" )
                WHEN  ( SPA-PREFNUM     =   CONST-GUNMA )
                 AND  ( SPA-GMN-KOHNUM  =   "146" OR "246" OR "143"
                                         OR "243" OR "177" OR "187" )
