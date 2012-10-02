@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -33,7 +33,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(RERR)еиещб╝╛Ё╩є</title>
+  <title>(RERR)уВиуГйуГ╝цГЕха▒</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -76,7 +76,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 26 Jan 2001 04:56:59 GMT</last_modification_time>
       </signal>
-      <label>╩─д╕ды</label>
+      <label>щЦЙуБШуВЛ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -91,7 +91,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>80</text_max_length>
-      <text>д╠д╒двдждидкдфдцдшдяд╠д╒двдждидкдфдцдшдяд╠д╒двдждидкдфдцдшдяд╠д╒двдждидкдфдцдшдя</text>
+      <text>уБмуБ╡уБВуБЖуБИуБКуВДуВЖуВИуВПуБмуБ╡уБВуБЖуБИуБКуВДуВЖуВИуВПуБмуБ╡уБВуБЖуБИуБКуВДуВЖуВИуВПуБмуБ╡уБВуБЖуБИуБКуВДуВЖуВИуВП</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>

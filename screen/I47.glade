@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Thu, 05 Dec 2002 01:59:08 GMT</last_modification_time>
   </signal>
-  <title>(I47)��׾Ȳ�ݰ��Ŷ�ʬ�����ģ̶�ʬ��Ͽ</title>
+  <title>(I47)会計照会−医療区分・ＡＤＬ区分登録</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -84,7 +84,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 22 Feb 2001 06:17:27 GMT</last_modification_time>
       </signal>
-      <label>���ꥢ</label>
+      <label>クリア</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -222,7 +222,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 11 Sep 2006 02:59:55 GMT</last_modification_time>
       </signal>
-      <label>�ѹ�����</label>
+      <label>変更確定</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -279,7 +279,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:01:47 GMT</last_modification_time>
       </signal>
-      <label>�������ѹ�</label>
+      <label>入院料変更</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -302,7 +302,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:01:47 GMT</last_modification_time>
       </signal>
-      <label>��Ͽ</label>
+      <label>登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1481,7 +1481,7 @@
       <y>36</y>
       <width>50</width>
       <height>24</height>
-      <label>�ౡ��</label>
+      <label>退院日</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1512,7 +1512,7 @@
       <y>36</y>
       <width>50</width>
       <height>24</height>
-      <label>������</label>
+      <label>入院日</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1528,7 +1528,7 @@
       <y>620</y>
       <width>24</width>
       <height>20</height>
-      <label>��</label>
+      <label>☆</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1553,7 +1553,7 @@
       <y>680</y>
       <width>64</width>
       <height>24</height>
-      <label>��罤��</label>
+      <label>一括修正</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1569,7 +1569,7 @@
       <y>8</y>
       <width>450</width>
       <height>24</height>
-      <label>����������</label>
+      <label>あいうえお</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1610,7 +1610,7 @@
       <y>600</y>
       <width>64</width>
       <height>24</height>
-      <label>�����ֹ�</label>
+      <label>選択番号</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1690,7 +1690,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label213</name>
-	  <label>̾��</label>
+	  <label>名称</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1716,7 +1716,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label214</name>
-	  <label>��</label>
+	  <label>☆</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -2201,7 +2201,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label176</name>
-	  <label>̾��</label>
+	  <label>名称</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -2227,7 +2227,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label177</name>
-	  <label>��</label>
+	  <label>☆</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

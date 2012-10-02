@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(KTERR2)•®•È°ºæ Û</title>
+  <title>(KTERR2)„Ç®„É©„ÉºÊÉÖÂ†±</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -77,7 +77,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 31 Jan 2001 07:01:33 GMT</last_modification_time>
       </signal>
-      <label> ƒ§∏§Î</label>
+      <label>Èñâ„Åò„Çã</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 

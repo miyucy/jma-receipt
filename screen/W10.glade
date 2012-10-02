@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(W10)•∑•π•∆•‡¥…Õ˝æ Û°›≈˝∑◊ƒ¢…ºΩ–Œœæ Û</title>
+  <title>(W10)„Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜÊÉÖÂ†±‚àíÁµ±Ë®àÂ∏≥Á•®Âá∫ÂäõÊÉÖÂ†±</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -70,7 +70,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 01:47:56 GMT</last_modification_time>
       </signal>
-      <label>Ã·§Î</label>
+      <label>Êàª„Çã</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -93,7 +93,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 13 Feb 2001 02:32:20 GMT</last_modification_time>
       </signal>
-      <label>∫ÔΩ¸</label>
+      <label>ÂâäÈô§</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -116,7 +116,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 06 Feb 2001 02:06:18 GMT</last_modification_time>
       </signal>
-      <label> £ºÃ</label>
+      <label>Ë§áÂÜô</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -185,7 +185,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 01:51:58 GMT</last_modification_time>
       </signal>
-      <label>≈–œø</label>
+      <label>ÁôªÈå≤</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -303,7 +303,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 01 Nov 2004 01:42:03 GMT</last_modification_time>
       </signal>
-      <label>•Ø•Í•¢</label>
+      <label>„ÇØ„É™„Ç¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -370,7 +370,7 @@
       <y>8</y>
       <width>16</width>
       <height>16</height>
-      <label>°¡</label>
+      <label>„Äú</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -456,7 +456,7 @@
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
 	  <text_max_length>80</text_max_length>
-	  <text>£±£≤£≥£¥£µ£∂£∑£∏£π§¢£±£≤£≥£¥£µ£∂£∑£∏£πb£±£≤£≥£¥£µ£∂£∑£∏£πc£±£≤£≥£¥£µ£∂£∑£∏£π£∞</text>
+	  <text>ÔºëÔºíÔºìÔºîÔºïÔºñÔºóÔºòÔºô„ÅÇÔºëÔºíÔºìÔºîÔºïÔºñÔºóÔºòÔºôbÔºëÔºíÔºìÔºîÔºïÔºñÔºóÔºòÔºôcÔºëÔºíÔºìÔºîÔºïÔºñÔºóÔºòÔºôÔºê</text>
 	  <input_mode>XIM</input_mode>
 	  <xim_enabled>True</xim_enabled>
 	</widget>
@@ -952,7 +952,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT02</group>
@@ -977,7 +977,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT02</group>
@@ -1002,7 +1002,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT03</group>
@@ -1027,7 +1027,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT03</group>
@@ -1052,7 +1052,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT04</group>
@@ -1077,7 +1077,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT04</group>
@@ -1102,7 +1102,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT05</group>
@@ -1127,7 +1127,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT06</group>
@@ -1152,7 +1152,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT06</group>
@@ -1177,7 +1177,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT07</group>
@@ -1202,7 +1202,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT07</group>
@@ -1227,7 +1227,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT08</group>
@@ -1252,7 +1252,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT08</group>
@@ -1265,7 +1265,7 @@
 	  <y>110</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>•◊•Ì•∞•È•‡Ãæ</label>
+	  <label>„Éó„É≠„Ç∞„É©„É†Âêç</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1281,7 +1281,7 @@
 	  <y>235</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>°°°°°°°°°°°°£¥</label>
+	  <label>„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄÔºî</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -1297,7 +1297,7 @@
 	  <y>265</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>°°°°°°°°°°°°£µ</label>
+	  <label>„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄÔºï</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -1313,7 +1313,7 @@
 	  <y>295</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>°°°°°°°°°°°°£∂</label>
+	  <label>„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄÔºñ</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -1329,7 +1329,7 @@
 	  <y>325</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>°°°°°°°°°°°°£∑</label>
+	  <label>„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄÔºó</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -1345,7 +1345,7 @@
 	  <y>355</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>°°°°°°°°°°°°£∏</label>
+	  <label>„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄÔºò</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -1373,7 +1373,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT05</group>
@@ -1420,7 +1420,7 @@
 	  <y>384</y>
 	  <width>96</width>
 	  <height>24</height>
-	  <label>•—•È•·•ø¿‚Ã¿</label>
+	  <label>„Éë„É©„É°„ÇøË™¨Êòé</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1448,7 +1448,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT01</group>
@@ -1473,7 +1473,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT01</group>
@@ -1486,7 +1486,7 @@
 	  <y>145</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>ƒ¢…º•—•È•·•ø£±</label>
+	  <label>Â∏≥Á•®„Éë„É©„É°„ÇøÔºë</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -1502,7 +1502,7 @@
 	  <y>25</y>
 	  <width>104</width>
 	  <height>24</height>
-	  <label>ƒ¢…º»÷πÊ</label>
+	  <label>Â∏≥Á•®Áï™Âè∑</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1518,7 +1518,7 @@
 	  <y>65</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>ƒ¢…ºÃæ</label>
+	  <label>Â∏≥Á•®Âêç</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1534,7 +1534,7 @@
 	  <y>175</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>°°°°°°°°°°°°£≤</label>
+	  <label>„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄÔºí</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -1550,7 +1550,7 @@
 	  <y>205</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>°°°°°°°°°°°°£≥</label>
+	  <label>„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄÔºì</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -1578,7 +1578,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Thu, 18 May 2006 04:44:47 GMT</last_modification_time>
 	  </signal>
-	  <label>¡∞≤Û∆˛Œœ§µ§Ï§ø•—•È•·•ø§ÚΩÈ¥¸¿ﬂƒÍ§π§Î°°¢®∆¸…’§œ¬–æ›≥∞§«§π</label>
+	  <label>ÂâçÂõûÂÖ•Âäõ„Åï„Çå„Åü„Éë„É©„É°„Çø„ÇíÂàùÊúüË®≠ÂÆö„Åô„Çã„ÄÄ‚ÄªÊó•‰ªò„ÅØÂØæË±°Â§ñ„Åß„Åô</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	</widget>
@@ -1588,7 +1588,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N01</name>
-	<label>∆¸º°</label>
+	<label>Êó•Ê¨°</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -1652,7 +1652,7 @@
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
 	  <text_max_length>80</text_max_length>
-	  <text>£±£≤£≥£¥£µ£∂£∑£∏£π§¢£±£≤£≥£¥£µ£∂£∑£∏£πb£±£≤£≥£¥£µ£∂£∑£∏£πc£±£≤£≥£¥£µ£∂£∑£∏£π£∞</text>
+	  <text>ÔºëÔºíÔºìÔºîÔºïÔºñÔºóÔºòÔºô„ÅÇÔºëÔºíÔºìÔºîÔºïÔºñÔºóÔºòÔºôbÔºëÔºíÔºìÔºîÔºïÔºñÔºóÔºòÔºôcÔºëÔºíÔºìÔºîÔºïÔºñÔºóÔºòÔºôÔºê</text>
 	  <input_mode>XIM</input_mode>
 	  <xim_enabled>True</xim_enabled>
 	</widget>
@@ -2108,7 +2108,7 @@
 	  <y>70</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>ƒ¢…ºÃæ</label>
+	  <label>Â∏≥Á•®Âêç</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2124,7 +2124,7 @@
 	  <y>30</y>
 	  <width>110</width>
 	  <height>18</height>
-	  <label>ƒ¢…º»÷πÊ</label>
+	  <label>Â∏≥Á•®Áï™Âè∑</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2152,7 +2152,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT011</group>
@@ -2177,7 +2177,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT011</group>
@@ -2202,7 +2202,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT021</group>
@@ -2227,7 +2227,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT021</group>
@@ -2252,7 +2252,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT031</group>
@@ -2277,7 +2277,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT041</group>
@@ -2302,7 +2302,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT041</group>
@@ -2327,7 +2327,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT051</group>
@@ -2352,7 +2352,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT051</group>
@@ -2377,7 +2377,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT061</group>
@@ -2402,7 +2402,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT061</group>
@@ -2427,7 +2427,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT071</group>
@@ -2452,7 +2452,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT071</group>
@@ -2499,7 +2499,7 @@
 	  <y>384</y>
 	  <width>96</width>
 	  <height>24</height>
-	  <label>•—•È•·•ø¿‚Ã¿</label>
+	  <label>„Éë„É©„É°„ÇøË™¨Êòé</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2527,7 +2527,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Thu, 18 May 2006 04:44:47 GMT</last_modification_time>
 	  </signal>
-	  <label>¡∞≤Û∆˛Œœ§µ§Ï§ø•—•È•·•ø§ÚΩÈ¥¸¿ﬂƒÍ§π§Î°°¢®∆¸…’§œ¬–æ›≥∞§«§π</label>
+	  <label>ÂâçÂõûÂÖ•Âäõ„Åï„Çå„Åü„Éë„É©„É°„Çø„ÇíÂàùÊúüË®≠ÂÆö„Åô„Çã„ÄÄ‚ÄªÊó•‰ªò„ÅØÂØæË±°Â§ñ„Åß„Åô</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	</widget>
@@ -2539,7 +2539,7 @@
 	  <y>200</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>£¥</label>
+	  <label>Ôºî</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -2555,7 +2555,7 @@
 	  <y>225</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>£µ</label>
+	  <label>Ôºï</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -2571,7 +2571,7 @@
 	  <y>250</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>£∂</label>
+	  <label>Ôºñ</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -2587,7 +2587,7 @@
 	  <y>275</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>£∑</label>
+	  <label>Ôºó</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -2615,7 +2615,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT031</group>
@@ -2684,7 +2684,7 @@
 	  <y>95</y>
 	  <width>105</width>
 	  <height>20</height>
-	  <label>•◊•Ì•∞•È•‡Ãæ</label>
+	  <label>„Éó„É≠„Ç∞„É©„É†Âêç</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2700,7 +2700,7 @@
 	  <y>125</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>ƒ¢…º•—•È•·•ø£±</label>
+	  <label>Â∏≥Á•®„Éë„É©„É°„ÇøÔºë</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -2716,7 +2716,7 @@
 	  <y>150</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>£≤</label>
+	  <label>Ôºí</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -2732,7 +2732,7 @@
 	  <y>175</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>£≥</label>
+	  <label>Ôºì</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -2748,7 +2748,7 @@
 	  <y>300</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>£∏</label>
+	  <label>Ôºò</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -2764,7 +2764,7 @@
 	  <y>325</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>£π</label>
+	  <label>Ôºô</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -2780,7 +2780,7 @@
 	  <y>350</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>£±£∞</label>
+	  <label>ÔºëÔºê</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -2892,7 +2892,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT091</group>
@@ -2917,7 +2917,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT101</group>
@@ -2942,7 +2942,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>…¨ø‹</label>
+	  <label>ÂøÖÈ†à</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT081</group>
@@ -2967,7 +2967,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT081</group>
@@ -2992,7 +2992,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT091</group>
@@ -3017,7 +3017,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Tue, 14 May 2002 02:30:20 GMT</last_modification_time>
 	  </signal>
-	  <label>«§∞’</label>
+	  <label>‰ªªÊÑè</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>OPT101</group>
@@ -3028,7 +3028,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N02</name>
-	<label>∑Óº°</label>
+	<label>ÊúàÊ¨°</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -3045,7 +3045,7 @@
       <y>8</y>
       <width>75</width>
       <height>18</height>
-      <label>Õ≠∏˙¥¸¥÷</label>
+      <label>ÊúâÂäπÊúüÈñì</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -3061,7 +3061,7 @@
       <y>8</y>
       <width>70</width>
       <height>18</height>
-      <label>£∞£∞£¥£≥</label>
+      <label>ÔºêÔºêÔºîÔºì</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

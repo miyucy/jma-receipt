@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(W66)¥·¥¹¥Æ¥à´ÉÍý¾ðÊó¡Ý¸ø³²°åÎÅµ¡´Ø¾ðÊóÀßÄê</title>
+  <title>(W66)ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±âˆ’å…¬å®³åŒ»ç™‚æ©Ÿé–¢æƒ…å ±è¨­å®š</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>Ìá¤ë</label>
+      <label>æˆ»ã‚‹</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -84,7 +84,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>¥¯¥ê¥¢</label>
+      <label>ã‚¯ãƒªã‚¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -107,7 +107,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>ºï½ü</label>
+      <label>å‰Šé™¤</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -279,7 +279,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>ÅÐÏ¿</label>
+      <label>ç™»éŒ²</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -350,7 +350,7 @@
       <y>10</y>
       <width>36</width>
       <height>24</height>
-      <label>¡Á</label>
+      <label>ã€œ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -366,7 +366,7 @@
       <y>76</y>
       <width>144</width>
       <height>24</height>
-      <label>¸ø³²°åÎÅµ¡´Ø¥³¡¼¥É</label>
+      <label>å…¬å®³åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -382,7 +382,7 @@
       <y>108</y>
       <width>144</width>
       <height>24</height>
-      <label>¿ÇÎÅÊó½·ÀÁµá½ñ</label>
+      <label>è¨ºç™‚å ±é…¬è«‹æ±‚æ›¸</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

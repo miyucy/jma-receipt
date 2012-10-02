@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -36,7 +36,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(K03X)���Ź԰٣ạ̃��ɣ��������򥵥�</title>
+  <title>(K03X)診療行為ＣＬＡＩＭ送信選択サブ</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -68,7 +68,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -91,7 +91,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 21 Feb 2001 07:05:33 GMT</last_modification_time>
       </signal>
-      <label>F12 ��Ͽ</label>
+      <label>F12 登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -138,7 +138,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F11 ��Ͽ�Τ�</label>
+      <label>F11 登録のみ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -149,7 +149,7 @@
       <y>25</y>
       <width>76</width>
       <height>16</height>
-      <label>����������</label>
+      <label>送信コード</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -203,7 +203,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label462</name>
-	  <label>�ֹ�</label>
+	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -216,7 +216,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label463</name>
-	  <label>�������ɥ쥹</label>
+	  <label>送信アドレス</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -229,7 +229,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label464</name>
-	  <label>�����ݡ���</label>
+	  <label>送信ポート</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -242,7 +242,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label465</name>
-	  <label>����</label>
+	  <label>備考</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -260,7 +260,7 @@
       <y>400</y>
       <width>64</width>
       <height>24</height>
-      <label>�����ֹ�</label>
+      <label>選択番号</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

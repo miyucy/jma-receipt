@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -32,7 +32,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(W111)�����ƥ���������Ģɼ���ե��å�����</title>
+  <title>(W111)システム管理情報−帳票オフセット設定</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -64,7 +64,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -87,7 +87,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F12 ��Ͽ</label>
+      <label>F12 登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -110,7 +110,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F3 ���</label>
+      <label>F3 削除</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -161,7 +161,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label481</name>
-	  <label>�ֹ�</label>
+	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -174,7 +174,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label482</name>
-	  <label>Ģɼ�ɣ�</label>
+	  <label>帳票ＩＤ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -187,7 +187,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label483</name>
-	  <label>�ץ��̾</label>
+	  <label>プリンタ名</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -200,7 +200,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label484</name>
-	  <label>������ (cm)</label>
+	  <label>ｘ方向 (cm)</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -213,7 +213,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label485</name>
-	  <label>������ (cm)</label>
+	  <label>ｙ方向 (cm)</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -379,7 +379,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F2 ���ꥢ</label>
+      <label>F2 クリア</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>

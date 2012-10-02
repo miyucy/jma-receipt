@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(W04)�����ƥ��������ݴ����ֹ湽����������</title>
+  <title>(W04)システム管理情報−患者番号構成管理設定</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -216,7 +216,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 28 Feb 2001 04:20:29 GMT</last_modification_time>
       </signal>
-      <label>Ϣ�ֹ��ѹ�</label>
+      <label>連番号変更</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -271,7 +271,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:01:47 GMT</last_modification_time>
       </signal>
-      <label>����</label>
+      <label>確定</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -422,7 +422,7 @@
       <y>12</y>
       <width>54</width>
       <height>18</height>
-      <label>��</label>
+      <label>〜</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -464,7 +464,7 @@
 	  <y>55</y>
 	  <width>54</width>
 	  <height>18</height>
-	  <label>��ʬ</label>
+	  <label>区分</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -480,7 +480,7 @@
 	  <y>100</y>
 	  <width>54</width>
 	  <height>18</height>
-	  <label>���</label>
+	  <label>桁数</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -548,7 +548,7 @@
 	  <y>55</y>
 	  <width>300</width>
 	  <height>18</height>
-	  <label>�ʣ��������ѿ�����    ������������</label>
+	  <label>（０，１：英数字型    ２：数字型）</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -562,7 +562,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N01</name>
-	<label>��ͳ����</label>
+	<label>自由構成</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -666,7 +666,7 @@
 	  <y>120</y>
 	  <width>200</width>
 	  <height>18</height>
-	  <label>�ʣ�������    ���������        </label>
+	  <label>（１：和暦    ２：西暦）        </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -682,7 +682,7 @@
 	  <y>176</y>
 	  <width>200</width>
 	  <height>18</height>
-	  <label>�ʣ�������    �������ʤ���      </label>
+	  <label>（１：する    ２：しない）      </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -698,7 +698,7 @@
 	  <y>224</y>
 	  <width>80</width>
 	  <height>18</height>
-	  <label>Ϣ�ֹ���</label>
+	  <label>連番号桁数</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -714,7 +714,7 @@
 	  <y>176</y>
 	  <width>100</width>
 	  <height>18</height>
-	  <label>Ϣ�ֽ������ʬ</label>
+	  <label>連番初期化区分</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -730,7 +730,7 @@
 	  <y>120</y>
 	  <width>100</width>
 	  <height>18</height>
-	  <label>ǯ��ʬ        </label>
+	  <label>年区分        </label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -746,7 +746,7 @@
 	  <y>24</y>
 	  <width>100</width>
 	  <height>18</height>
-	  <label>��ʬ          </label>
+	  <label>区分          </label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -762,10 +762,10 @@
 	  <y>24</y>
 	  <width>180</width>
 	  <height>72</height>
-	  <label>����ǯ��Ϣ�ֹ�ܸ����ֹ�
-����ǯ��Ϣ�ֹ�
-����Ϣ�ֹ�ܸ����ֹ�
-����Ϣ�ֹ�</label>
+	  <label>１：年＋連番号＋検証番号
+２：年＋連番号
+３：連番号＋検証番号
+４：連番号</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -803,7 +803,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N02</name>
-	<label>ɸ�๽��</label>
+	<label>標準構成</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -851,9 +851,9 @@
 	  <y>24</y>
 	  <width>180</width>
 	  <height>54</height>
-	  <label>�����ե꡼��Ϣ�ֹ�ܥե꡼
-�����ե꡼��Ϣ�ֹ�
-����Ϣ�ֹ�ܥե꡼</label>
+	  <label>１：フリー＋連番号＋フリー
+２：フリー＋連番号
+３：連番号＋フリー</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -869,7 +869,7 @@
 	  <y>24</y>
 	  <width>100</width>
 	  <height>18</height>
-	  <label>��ʬ          </label>
+	  <label>区分          </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -885,7 +885,7 @@
 	  <y>104</y>
 	  <width>100</width>
 	  <height>18</height>
-	  <label>�����        </label>
+	  <label>前桁数        </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -901,7 +901,7 @@
 	  <y>152</y>
 	  <width>100</width>
 	  <height>18</height>
-	  <label>Ϣ�ֹ���    </label>
+	  <label>連番号桁数    </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -917,7 +917,7 @@
 	  <y>200</y>
 	  <width>100</width>
 	  <height>18</height>
-	  <label>����        </label>
+	  <label>後桁数        </label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1003,7 +1003,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N03</name>
-	<label>��ĥ����</label>
+	<label>拡張構成</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -1020,7 +1020,7 @@
       <y>130</y>
       <width>130</width>
       <height>18</height>
-      <label>�����ֹ湽����ʬ</label>
+      <label>患者番号構成区分</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1036,7 +1036,7 @@
       <y>70</y>
       <width>54</width>
       <height>18</height>
-      <label>���ԣɣ�</label>
+      <label>患者ＩＤ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1052,7 +1052,7 @@
       <y>70</y>
       <width>50</width>
       <height>18</height>
-      <label>ǯ</label>
+      <label>年</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1068,7 +1068,7 @@
       <y>10</y>
       <width>70</width>
       <height>18</height>
-      <label>ͭ������</label>
+      <label>有効期間</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1084,7 +1084,7 @@
       <y>70</y>
       <width>50</width>
       <height>18</height>
-      <label>Ϣ�ֹ�</label>
+      <label>連番号</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1128,7 +1128,7 @@
       <y>72</y>
       <width>68</width>
       <height>18</height>
-      <label>ǯ���ؤ���</label>
+      <label>年切替え月</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

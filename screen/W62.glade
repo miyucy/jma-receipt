@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(W62)°õºþÀßÄê³ÎÇ§²èÌÌ</title>
+  <title>(W62)å°åˆ·è¨­å®šç¢ºèªç”»é¢</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:24:50 GMT</last_modification_time>
       </signal>
-      <label>Ìá¤ë</label>
+      <label>æˆ»ã‚‹</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -85,7 +85,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:26:32 GMT</last_modification_time>
       </signal>
-      <label>¥Æ¥¹¥È°õºþ</label>
+      <label>ãƒ†ã‚¹ãƒˆå°åˆ·</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -146,7 +146,7 @@
       <y>688</y>
       <width>80</width>
       <height>24</height>
-      <label>¥×¥ê¥ó¥¿Ì¾</label>
+      <label>ãƒ—ãƒªãƒ³ã‚¿å</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -33,7 +33,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(Z90)ÅÀ¿ô¥Þ¥¹¥¿ÀßÄê¡ÝÏ·¿Í°ìÈÌ¥³¡¼¥É¿¶ÂØÀßÄê</title>
+  <title>(Z90)ç‚¹æ•°ãƒžã‚¹ã‚¿è¨­å®šâˆ’è€äººä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿è¨­å®š</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -92,7 +92,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
       </signal>
-      <label>Ìá¤ë</label>
+      <label>æˆ»ã‚‹</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -115,7 +115,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:01:47 GMT</last_modification_time>
       </signal>
-      <label>³ÎÄê</label>
+      <label>ç¢ºå®š</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -417,7 +417,7 @@
       <y>36</y>
       <width>92</width>
       <height>21</height>
-      <label>´Á»úÌ¾¾Î</label>
+      <label>æ¼¢å­—åç§°</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -433,7 +433,7 @@
       <y>8</y>
       <width>103</width>
       <height>21</height>
-      <label>¿ÇÎÅ¥³¡¼¥É</label>
+      <label>è¨ºç™‚ã‚³ãƒ¼ãƒ‰</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -449,7 +449,7 @@
       <y>72</y>
       <width>147</width>
       <height>16</height>
-      <label>¿¶ÂØ¥³¡¼¥É</label>
+      <label>æŒ¯æ›¿ã‚³ãƒ¼ãƒ‰</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -465,7 +465,7 @@
       <y>72</y>
       <width>344</width>
       <height>24</height>
-      <label>Ì¾                                ¾Î</label>
+      <label>å                                ç§°</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

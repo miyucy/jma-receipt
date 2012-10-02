@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -32,7 +32,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(I02)������ɽ��</title>
+  <title>(I02)入院歴表示</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -64,7 +64,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 06:13:54 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -123,7 +123,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 14 Oct 2004 06:53:11 GMT</last_modification_time>
       </signal>
-      <label>�ౡ��ͳ</label>
+      <label>退院事由</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -179,7 +179,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>4</text_max_length>
-      <text>�Σ�</text>
+      <text>ＮＮ</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -211,7 +211,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
-      <text>�ΣΣΣΣΣΣΣΣΣ�</text>
+      <text>ＮＮＮＮＮＮＮＮＮＮ</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -275,7 +275,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
-      <text>�ΣΣΣΣΣΣΣΣΣ�</text>
+      <text>ＮＮＮＮＮＮＮＮＮＮ</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -291,7 +291,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>24</text_max_length>
-      <text>�ΣΣΣΣΣΣΣΣΣΣΣ�</text>
+      <text>ＮＮＮＮＮＮＮＮＮＮＮＮ</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -307,7 +307,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>60</text_max_length>
-      <text>������������������������������������������������������������</text>
+      <text>１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -338,7 +338,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label112</name>
-	  <label>������</label>
+	  <label>入院科</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -351,7 +351,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label113</name>
-	  <label>����̾</label>
+	  <label>病棟名</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -364,7 +364,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label114</name>
-	  <label>�¼�</label>
+	  <label>病室</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -377,7 +377,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label115</name>
-	  <label>ž����</label>
+	  <label>転入日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -390,7 +390,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label116</name>
-	  <label>ž����</label>
+	  <label>転出日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -403,7 +403,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label200</name>
-	  <label>����</label>
+	  <label>日数</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -416,7 +416,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label201</name>
-	  <label>�̻�</label>
+	  <label>通算</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -429,7 +429,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label210</name>
-	  <label>���͡ʰ�ư���ơ�</label>
+	  <label>備考（異動内容）</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -506,7 +506,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label106</name>
-	  <label>��</label>
+	  <label>主</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -519,7 +519,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label202</name>
-	  <label>����</label>
+	  <label>入外</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -532,7 +532,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label203</name>
-	  <label>���Ų�</label>
+	  <label>診療科</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -545,7 +545,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label107</name>
-	  <label>����̾</label>
+	  <label>傷病名</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -558,7 +558,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label108</name>
-	  <label>������</label>
+	  <label>開始日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -571,7 +571,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label109</name>
-	  <label>ž����</label>
+	  <label>転帰日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -584,7 +584,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label110</name>
-	  <label>ž����ͳ</label>
+	  <label>転帰理由</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -602,7 +602,7 @@
       <y>130</y>
       <width>154</width>
       <height>24</height>
-      <label>ž�ʡ�ž�ž��������</label>
+      <label>転科（転棟・転室）履歴</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -618,7 +618,7 @@
       <y>285</y>
       <width>420</width>
       <height>25</height>
-      <label>��ư���ơβʡ������ʡ������¼����������������ݡ��ݸ��ȹ礻��</label>
+      <label>異動内容［科：入院科／室：病室／入：入院料／保：保険組合せ］</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -634,7 +634,7 @@
       <y>305</y>
       <width>56</width>
       <height>24</height>
-      <label>��̾����</label>
+      <label>病名情報</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -654,7 +654,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
-      <text>�ΣΣΣΣ�</text>
+      <text>ＮＮＮＮＮ</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -666,7 +666,7 @@
       <y>5</y>
       <width>80</width>
       <height>25</height>
-      <label>���</label>
+      <label>初回</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -682,7 +682,7 @@
       <y>30</y>
       <width>80</width>
       <height>25</height>
-      <label>����</label>
+      <label>病棟</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -698,7 +698,7 @@
       <y>105</y>
       <width>80</width>
       <height>25</height>
-      <label>����������</label>
+      <label>算定入院料</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -714,7 +714,7 @@
       <y>5</y>
       <width>60</width>
       <height>25</height>
-      <label>����</label>
+      <label>状態</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -730,7 +730,7 @@
       <y>30</y>
       <width>60</width>
       <height>25</height>
-      <label>�¼��ֹ�</label>
+      <label>病室番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -746,7 +746,7 @@
       <y>80</y>
       <width>60</width>
       <height>25</height>
-      <label>�缣��</label>
+      <label>主治医</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -762,7 +762,7 @@
       <y>55</y>
       <width>60</width>
       <height>25</height>
-      <label>������</label>
+      <label>入院科</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -778,7 +778,7 @@
       <y>55</y>
       <width>80</width>
       <height>25</height>
-      <label>������</label>
+      <label>入院日</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -794,7 +794,7 @@
       <y>55</y>
       <width>80</width>
       <height>25</height>
-      <label>������</label>
+      <label>入院日</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -810,7 +810,7 @@
       <y>80</y>
       <width>80</width>
       <height>25</height>
-      <label>�ౡ��</label>
+      <label>退院日</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -826,7 +826,7 @@
       <y>55</y>
       <width>70</width>
       <height>25</height>
-      <label>���ʤ�</label>
+      <label>食なし</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -842,7 +842,7 @@
       <y>80</y>
       <width>70</width>
       <height>25</height>
-      <label>���ʤ�</label>
+      <label>食なし</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(L07)����Ģɼ����</title>
+  <title>(L07)統計帳票一覧</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label> ���</label>
+      <label> 戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -85,7 +85,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label> ����</label>
+      <label> 確定</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -134,7 +134,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label462</name>
-	  <label>�ֹ�</label>
+	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -147,7 +147,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label463</name>
-	  <label>Ģɼ̾</label>
+	  <label>帳票名</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -160,7 +160,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label464</name>
-	  <label>�ץ������̾</label>
+	  <label>プログラム名</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -173,7 +173,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label465</name>
-	  <label>��Ͽ��</label>
+	  <label>登録済</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -191,7 +191,7 @@
       <y>460</y>
       <width>64</width>
       <height>24</height>
-      <label>�����ֹ�</label>
+      <label>選択番号</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -207,7 +207,7 @@
       <y>4</y>
       <width>128</width>
       <height>24</height>
-      <label>�����Ģɼ����</label>
+      <label>月次統計帳票一覧</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

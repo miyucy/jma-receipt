@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(W33)�����ƥ��������ݰ�������������</title>
+  <title>(W33)システム管理情報−印刷情報削除設定</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -132,7 +132,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>��Ͽ</label>
+      <label>登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -363,7 +363,7 @@
       <y>8</y>
       <width>38</width>
       <height>18</height>
-      <label>��</label>
+      <label>〜</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -379,7 +379,7 @@
       <y>180</y>
       <width>100</width>
       <height>18</height>
-      <label>�Ģɼ</label>
+      <label>月次帳票</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -395,7 +395,7 @@
       <y>120</y>
       <width>130</width>
       <height>18</height>
-      <label>����Ģɼ</label>
+      <label>日次帳票</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -411,7 +411,7 @@
       <y>123</y>
       <width>130</width>
       <height>18</height>
-      <label>����ʬ�ޤ���ͭ</label>
+      <label>ヵ月分まで保有</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -427,7 +427,7 @@
       <y>183</y>
       <width>130</width>
       <height>18</height>
-      <label>����ʬ�ޤ���ͭ</label>
+      <label>ヵ月分まで保有</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

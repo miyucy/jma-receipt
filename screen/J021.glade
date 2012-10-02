@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(J021)��׾Ȳ���ݸ��ȹ����ѹ�</title>
+  <title>(J021)会計照会−保険組合一括変更</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:35:46 GMT</last_modification_time>
       </signal>
-      <label>F1 ���</label>
+      <label>F1 戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -113,7 +113,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:35:46 GMT</last_modification_time>
       </signal>
-      <label>F12 ����</label>
+      <label>F12 確定</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -224,7 +224,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:35:46 GMT</last_modification_time>
       </signal>
-      <label>F2 ���ꥢ</label>
+      <label>F2 クリア</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -276,7 +276,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label492</name>
-	  <label>�ֹ�</label>
+	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -289,7 +289,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label493</name>
-	  <label>�ݸ��ȹ礻</label>
+	  <label>保険組合せ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -302,7 +302,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label494</name>
-	  <label>Ŭ�ѳ�����</label>
+	  <label>適用開始日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -315,7 +315,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label495</name>
-	  <label>Ŭ�ѽ�λ��</label>
+	  <label>適用終了日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -328,7 +328,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label496</name>
-	  <label>��ô���</label>
+	  <label>負担割合</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -346,7 +346,7 @@
       <y>308</y>
       <width>128</width>
       <height>24</height>
-      <label>�ѹ����ݸ��ȹ礻</label>
+      <label>変更前保険組合せ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -362,7 +362,7 @@
       <y>364</y>
       <width>128</width>
       <height>24</height>
-      <label>�ѹ����ݸ��ȹ礻</label>
+      <label>変更後保険組合せ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -378,7 +378,7 @@
       <y>360</y>
       <width>56</width>
       <height>24</height>
-      <label>��</label>
+      <label>↓</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -394,7 +394,7 @@
       <y>424</y>
       <width>40</width>
       <height>24</height>
-      <label>��</label>
+      <label>〜</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -410,7 +410,7 @@
       <y>424</y>
       <width>68</width>
       <height>24</height>
-      <label>�ѹ�����</label>
+      <label>変更期間</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

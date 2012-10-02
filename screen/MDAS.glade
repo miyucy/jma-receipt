@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(MDAS)����Ʊ��</title>
+  <title>(MDAS)参加同意</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F8 Ʊ�դ���</label>
+      <label>F8 同意する</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -101,7 +101,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 09 Oct 2009 07:50:13 GMT</last_modification_time>
       </signal>
-      <label>F1 ���</label>
+      <label>F1 戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -124,7 +124,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 21 Oct 2009 04:38:57 GMT</last_modification_time>
       </signal>
-      <label>F5 Ʊ�դ��ʤ�</label>
+      <label>F5 同意しない</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -135,7 +135,7 @@
       <y>8</y>
       <width>672</width>
       <height>24</height>
-      <label>����Ĵ��������ȡ�����Ĵ���ˤ���ӣϣңã������٥���󥹡ʣϣңã������٥��ˤ˻��ä������ϡ�</label>
+      <label>定点調査研究事業（定点調査）およびＯＲＣＡサーベイランス（ＯＲＣＡサーベイ）に参加される場合は、</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -151,7 +151,7 @@
       <y>32</y>
       <width>664</width>
       <height>24</height>
-      <label>���������Ƥ��ɤߤ���������Ʊ�դ�����ǿ������̤ؿʤ�Ǥ���������</label>
+      <label>下記の内容をお読みいただき、同意した上で申請画面へ進んでください。</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -179,52 +179,52 @@
 	<height>556</height>
 	<can_focus>True</can_focus>
 	<editable>False</editable>
-	<text>���� ����Ĵ�����ϣңã������٥��ˤ����������ݸ����� �� ��
+	<text>■■ 定点調査／ＯＲＣＡサーベイにおける情報の保護方針 ■ ■
 
-�� Ŭ���ϰ� ��
-�����������ƥ��ݥꥷ���ϡ��桼��������Ĵ��������Ȥ���ӣϣңã������٥�������θ����
-�ȡʰʲ��ܸ�����ȡˤ˻��ä����Ŭ�Ѥ���ޤ����ޤ����桼�����ܸ�����Ȥ˻��ä����ݤ�����
-�����¤��ꤷ����������ڤӼ����ǡ����ϡ����ݥꥷ���˽��äƴ�������ޤ���
+■ 適用範囲 ■
+　当セキュリティポリシーは、ユーザが定点調査研究事業およびＯＲＣＡサーベイランス等の研究事
+業（以下本研究事業）に参加する間適用されます。また、ユーザが本研究事業に参加される際に当方
+がお預かりした申請情報及び収集データは、当ポリシーに従って管理されます。
 
-�� ��������ѤˤĤ��� ��
+■ 情報の利用について ■
 
-�������˼�����������ϡ��ʲ�����Ū���ϰ�������Ѥ������ޤ���
+申請時に収集した情報は、以下の目的の範囲内で利用いたします。
 
- * �ܸ�����Ȥˤ��������׽������ϰ����ڤӿ�����ΡֳƼ�������˵��ܤ��줿����ʿ��Ųʡ�
-   ���ּ��Ρ��¾������±����̡�
- * �ܸ�����Ȼ��å桼�����Ф���ץ��������Ȥ���ھ��������������
- * �ȥ�֥롦�䤤��碌�κݤˡ���®�ʥ��ݡ��Ȥ�¸������
+ * 本研究事業における統計処理（地域情報及び申請書の「各種情報」欄に記載された情報（診療科、
+   設置主体、病床数、病院種別）
+ * 本研究事業参加ユーザに対するプロジェクトの普及状況・傾向の報告
+ * トラブル・問い合わせの際に、迅速なサポートを実現する為
 
-�������оݡʼ����ǡ����ˤ����쥻����¸���줿����Τ��������ŵ��ؤΥץ��ե�����ȷ�쥻��
-�Ⱦ��󤫤鴵�ԸĿͤ�����Ǥ�����ʬ���������Ƥ��ޤ����������ΰ켡��������׽����ˤΤ���
-�Ѥ���ޤ���
+収集の対象（収集データ）は日レセに保存された情報のうち、医療機関のプロフィールと月次レセプ
+ト情報から患者個人が特定できる部分が削除されていますが、これらの一次情報は統計処理にのみ利
+用されます。
 
-�� ����δ����ˤĤ��� ��
+■ 情報の管理について ■
 
-������������������ڤӼ����ǡ����ؤ���������������ϳ�̡��Ǽ�����»����¾���ŵ��ؤθĿ;���
-�ΰ��������Τ����ɬ�פ���Ŭ�ڤȹͤ������к���֤��ޤ���
+申請いただいた情報及び収集データへの不正アクセスや漏洩、滅失、き損その他医療機関の個人情報
+の安全管理のために必要かつ適切と考えられる対策を講じます。
 
-�� SSL�ˤĤ��� ��
+■ SSLについて ■
 
-���������̿�����ݤ��ơ������ǡ�����������ԤäƤ�����������ˡ���ORCA�ץ���������ǧ�ڶɡ�
-���ȯ�Ԥ��줿��SSL�����о�����פ����Ѥ��Ƥ��ޤ������쥻�����֤��Ƥ��륳��ԥ塼���ˤ�
-��ORCA�ץ���������ǧ�ڶ�CA������פ����󥹥ȡ��뤵��Ƥ��ޤ���
+　安全な通信を確保して、収集データの送信を行っていただくために、「ORCAプロジェクト認証局」
+より発行された「SSLサーバ証明書」を利用しています。日レセを設置しているコンピュータには
+「ORCAプロジェクト認証局CA証明書」がインストールされています。
 
-����SSL�����о�����פ����Ѥ��ơ��ʲ��Υͥåȥ����δ��������ɤ����������̿��������ʤ���
-�Ķ����󶡤��Ƥ��ޤ���
+　「SSLサーバ証明書」を利用して、以下のネットワーク上の危険性を防ぎ、安全な通信がおこなえる
+環境を提供しています。
 
- * ���ꤹ�ޤ����ɻ�
-SSL�����о������ǧ�ڤ�����ˤ�ꡢ�̿���Υ����Ф��ºߤ��������Υ����Ф˴ְ㤤�ʤ����Ȥ��
-ǧ���Ƥ��ޤ���
+ * 成りすましの防止
+SSLサーバ証明書を認証する事により、通信先のサーバが実在する当方のサーバに間違いないことを確
+認しています。
 
- * ��İ���ɻ�
-���������θ���������Ѥ��ưŹ沽�����̿���SSL�̿��ˤˤ�äơ���������ǡ������ɤ߼��ʤ�
-�褦�ˤ������ޤ���
+ * 盗聴の防止
+証明書の中の公開鍵を使用して暗号化した通信（SSL通信）によって、外部からデータを読み取れない
+ようにいたします。
 
-�� �ݥꥷ���β����ˤĤ��� ��
+■ ポリシーの改訂について ■
 
-�����������ƥ��ݥꥷ���β����ɬ�פ����������ˤϡ�������Ϣ���ξ塢����Ĵ��������Ȥ�Web
-�����Ȥˤ����Τ������ޤ���
+　当セキュリティポリシーの改定の必要が生じた場合には、事前に連絡の上、定点調査研究事業のWeb
+サイトにて通知いたします。
 </text>
 	<xim_enabled>False</xim_enabled>
       </widget>

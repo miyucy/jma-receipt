@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(J042)��׾Ȳ�ݶش�����</title>
+  <title>(J042)会計照会−禁忌薬剤</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -72,7 +72,7 @@
       <y>8</y>
       <width>136</width>
       <height>16</height>
-      <label>�ٹ�  �ش����ޤǤ�</label>
+      <label>警告  禁忌薬剤です</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -88,7 +88,7 @@
       <y>72</y>
       <width>104</width>
       <height>16</height>
-      <label>�ش��о�����̾</label>
+      <label>禁忌対象薬品名</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -116,7 +116,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 12 Jan 2001 08:06:06 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 

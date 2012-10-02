@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(P015)ดตผิละฯฟ-ดตผิศึนๆบฦศฏนิ</title>
+  <title>(P015)ๆฃ่€…็ป้ฒ-ๆฃ่€…็•ชๅทๅ็บ่ก</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 06 Jan 2001 16:38:46 GMT</last_modification_time>
       </signal>
-      <label>ฬแค๋</label>
+      <label>ๆปใ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -85,7 +85,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 06 Jan 2001 16:38:13 GMT</last_modification_time>
       </signal>
-      <label>ณฮฤ๊</label>
+      <label>็ขบๅฎ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -151,7 +151,7 @@
       <y>32</y>
       <width>32</width>
       <height>24</height>
-      <label>ขช</label>
+      <label>โ’</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -167,7 +167,7 @@
       <y>4</y>
       <width>88</width>
       <height>24</height>
-      <label>ต์ดตผิศึนๆ</label>
+      <label>ๆ—งๆฃ่€…็•ชๅท</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -183,7 +183,7 @@
       <y>4</y>
       <width>92</width>
       <height>24</height>
-      <label>ฟทดตผิศึนๆ</label>
+      <label>ๆ–ฐๆฃ่€…็•ชๅท</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

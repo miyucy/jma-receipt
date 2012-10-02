@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -36,7 +36,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(I21)�������Ը����ݾܺ�</title>
+  <title>(I21)入院患者検索−詳細</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -68,7 +68,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>F1:���</label>
+      <label>F1:戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -123,7 +123,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>50</text_max_length>
-      <text>�̤դ������������̤դ�����</text>
+      <text>ぬふあうえおやゆよわぬふあうえ</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -151,7 +151,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>100</text_max_length>
-      <text>�����������������������������������ĤƤȤʤˤ̤ͤΤϤҤդؤۤޤߤ���䤤�椨��</text>
+      <text>あいうえおかきくけこさしすせそたちつてとなにねぬのはひふへほまみむめもやいゆえよ</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -195,7 +195,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>50</text_max_length>
-      <text>�̤դ������������̤դ�����</text>
+      <text>ぬふあうえおやゆよわぬふあうえ</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -223,7 +223,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>2</text_max_length>
-      <text>��</text>
+      <text>男</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -279,7 +279,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
-      <text>������</text>
+      <text>入院中</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -307,7 +307,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
-      <text>�̲����</text>
+      <text>面会謝絶</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -335,7 +335,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
-      <text>�̲����</text>
+      <text>面会拒否</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -433,7 +433,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
-      <text>����������</text>
+      <text>ちちちちち</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -461,7 +461,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
-      <text>�̲����ʣͣңӣ���</text>
+      <text>面会謝絶（ＭＲＳＡ）</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -489,7 +489,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
-      <text>�̲����</text>
+      <text>面会謝絶</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -517,7 +517,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
-      <text>�̲����</text>
+      <text>面会謝絶</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -545,7 +545,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
-      <text>�̲����</text>
+      <text>面会謝絶</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -598,7 +598,7 @@
       <y>240</y>
       <width>60</width>
       <height>18</height>
-      <label>���ౡ��</label>
+      <label>入退院歴</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -614,7 +614,7 @@
       <y>240</y>
       <width>60</width>
       <height>18</height>
-      <label>������</label>
+      <label>コメント</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -630,7 +630,7 @@
       <y>13</y>
       <width>60</width>
       <height>18</height>
-      <label>�����ֹ�</label>
+      <label>患者番号</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -646,7 +646,7 @@
       <y>45</y>
       <width>60</width>
       <height>18</height>
-      <label>���Ի�̾</label>
+      <label>患者氏名</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -662,7 +662,7 @@
       <y>45</y>
       <width>60</width>
       <height>18</height>
-      <label>���̡���</label>
+      <label>性別　　</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -678,7 +678,7 @@
       <y>75</y>
       <width>60</width>
       <height>18</height>
-      <label>��ǯ����</label>
+      <label>生年月日</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -739,7 +739,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label549</name>
-	  <label>������</label>
+	  <label>入院日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -752,7 +752,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label541</name>
-	  <label>�ౡ��</label>
+	  <label>退院日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -765,7 +765,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label542</name>
-	  <label>���Ų�</label>
+	  <label>診療科</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -783,7 +783,7 @@
       <y>146</y>
       <width>60</width>
       <height>18</height>
-      <label>����</label>
+      <label>案内</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -799,7 +799,7 @@
       <y>146</y>
       <width>50</width>
       <height>18</height>
-      <label>����</label>
+      <label>病棟</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -815,7 +815,7 @@
       <y>146</y>
       <width>60</width>
       <height>18</height>
-      <label>�¼��ֹ�</label>
+      <label>病室番号</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -831,7 +831,7 @@
       <y>146</y>
       <width>50</width>
       <height>18</height>
-      <label>����</label>
+      <label>外泊</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

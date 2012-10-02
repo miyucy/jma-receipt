@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(Q100)╜╨╬╧╗╪╝и▓ш╠╠</title>
+  <title>(Q100)хЗ║хКЫцМЗчд║чФ╗щЭв</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -186,7 +186,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:22 GMT</last_modification_time>
       </signal>
-      <label>╠сды</label>
+      <label>цИ╗уВЛ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -209,7 +209,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>г╧г╦</label>
+      <label>я╝пя╝л</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -220,7 +220,7 @@
       <y>134</y>
       <width>15</width>
       <height>16</height>
-      <label>б┴</label>
+      <label>уАЬ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -236,7 +236,7 @@
       <y>216</y>
       <width>110</width>
       <height>16</height>
-      <label>╩╕╗·е│б╝е╔</label>
+      <label>цЦЗхнЧуВ│уГ╝уГЙ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -257,7 +257,7 @@
       <case_sensitive>False</case_sensitive>
       <use_arrows>True</use_arrows>
       <use_arrows_always>False</use_arrows_always>
-      <items>3 е╖е╣е╞ер┤╔═¤└▀─ъ╛ь╜ъ
+      <items>3 уВ╖уВ╣уГЖуГачобчРЖшинхоЪха┤цЙА
 </items>
 
       <widget>
@@ -280,7 +280,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>22</text_max_length>
-	<text>1 епещедевеєе╚╩▌┬╕</text>
+	<text>1 уВпуГйуВдуВвуГ│уГИф┐ЭхнШ</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -298,7 +298,7 @@
       <case_sensitive>False</case_sensitive>
       <use_arrows>True</use_arrows>
       <use_arrows_always>False</use_arrows_always>
-      <items>1 г┼г╒г├
+      <items>1 я╝ея╝╡я╝г
 </items>
 
       <widget>
@@ -321,7 +321,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>22</text_max_length>
-	<text>1 г┼г╒г├</text>
+	<text>1 я╝ея╝╡я╝г</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -350,7 +350,7 @@
       <y>175</y>
       <width>110</width>
       <height>16</height>
-      <label>е╒ебедеы╜╨╬╧└ш</label>
+      <label>уГХуВбуВдуГлхЗ║хКЫхЕИ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

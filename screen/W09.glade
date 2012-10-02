@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -33,7 +33,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(W09)�����ƥ��������ݥ쥻�ץȺ����ؼ��ʰ�����˾�������</title>
+  <title>(W09)システム管理情報−レセプト作成指示（印刷順）情報設定</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -64,7 +64,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -303,7 +303,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>削除</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -330,7 +330,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
-      <text>�̤դ�������������̤դ�������������</text>
+      <text>ぬふあうえおやゆゆよわぬふあうえおやゆよわち</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -342,7 +342,7 @@
       <y>8</y>
       <width>38</width>
       <height>18</height>
-      <label>��</label>
+      <label>〜</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -666,7 +666,7 @@
       <y>184</y>
       <width>122</width>
       <height>18</height>
-      <label>�쥻�ץȼ���</label>
+      <label>レセプト種別</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -971,7 +971,7 @@
       <y>80</y>
       <width>130</width>
       <height>18</height>
-      <label>�쥻�ץȽ��Ͻ�</label>
+      <label>レセプト出力順</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1087,7 +1087,7 @@
       <y>140</y>
       <width>120</width>
       <height>18</height>
-      <label>�쥻�ץȼ���̾��</label>
+      <label>レセプト種類名称</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1103,7 +1103,7 @@
       <y>144</y>
       <width>56</width>
       <height>16</height>
-      <label>�����</label>
+      <label>提出先</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1119,7 +1119,7 @@
       <y>188</y>
       <width>56</width>
       <height>16</height>
-      <label>������ʬ</label>
+      <label>入外区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1135,7 +1135,7 @@
       <y>233</y>
       <width>56</width>
       <height>16</height>
-      <label>ɽ����</label>
+      <label>表示順</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

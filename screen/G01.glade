@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(G01)╖ю╝б┼¤╖╫</title>
+  <title>(G01)цЬИцмбч╡▒шиИ</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>╠сды</label>
+      <label>цИ╗уВЛ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -84,7 +84,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:45 GMT</last_modification_time>
       </signal>
-      <label>епеъев</label>
+      <label>уВпуГкуВв</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -107,7 +107,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
       </signal>
-      <label>╩┬д┘┬╪ди</label>
+      <label>ф╕жуБ╣цЫ┐уБИ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -130,7 +130,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:36 GMT</last_modification_time>
       </signal>
-      <label>┼¤╖╫е╟б╝е┐</label>
+      <label>ч╡▒шиИуГЗуГ╝уВ┐</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -153,7 +153,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:16 GMT</last_modification_time>
       </signal>
-      <label>║╞░ї║■</label>
+      <label>хЖНхН░хИ╖</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -176,7 +176,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:28 GMT</last_modification_time>
       </signal>
-      <label>┴░╩╟</label>
+      <label>хЙНщаБ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -199,7 +199,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:48 GMT</last_modification_time>
       </signal>
-      <label>╝б╩╟</label>
+      <label>цмбщаБ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -245,7 +245,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 02 Apr 2001 07:12:50 GMT</last_modification_time>
       </signal>
-      <label>╕─╩╠╗╪╝и</label>
+      <label>хАЛхИецМЗчд║</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -268,7 +268,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:57 GMT</last_modification_time>
       </signal>
-      <label>CSV╜╨╬╧</label>
+      <label>CSVхЗ║хКЫ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -291,7 +291,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:44:05 GMT</last_modification_time>
       </signal>
-      <label>╛Ё╩є║я╜№</label>
+      <label>цГЕха▒хЙКщЩд</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -314,7 +314,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:44:14 GMT</last_modification_time>
       </signal>
-      <label>╜ш═¤│л╗╧</label>
+      <label>хЗжчРЖщЦЛхзЛ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -337,7 +337,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:44:14 GMT</last_modification_time>
       </signal>
-      <label>╜ш═¤╖ы▓╠</label>
+      <label>хЗжчРЖч╡РцЮЬ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -2831,7 +2831,7 @@
       <y>2</y>
       <width>40</width>
       <height>21</height>
-      <label>╟д░╒</label>
+      <label>ф╗╗цДП</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -2863,7 +2863,7 @@
       <y>2</y>
       <width>40</width>
       <height>21</height>
-      <label>╔м┐▄</label>
+      <label>х┐ЕщаИ</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -3333,7 +3333,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
       </signal>
-      <label>длдндпд▒д│</label>
+      <label>уБЛуБНуБПуБСуБУ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -3358,7 +3358,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
       </signal>
-      <label>длдндпд▒д│</label>
+      <label>уБЛуБНуБПуБСуБУ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -3383,7 +3383,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
       </signal>
-      <label>длдндпд▒д│</label>
+      <label>уБЛуБНуБПуБСуБУ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -3408,7 +3408,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
       </signal>
-      <label>длдндпд▒д│</label>
+      <label>уБЛуБНуБПуБСуБУ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -3433,7 +3433,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
       </signal>
-      <label>длдндпд▒д│</label>
+      <label>уБЛуБНуБПуБСуБУ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -3458,7 +3458,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
       </signal>
-      <label>длдндпд▒д│</label>
+      <label>уБЛуБНуБПуБСуБУ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -5223,7 +5223,7 @@
       <y>35</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5239,7 +5239,7 @@
       <y>35</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5255,7 +5255,7 @@
       <y>35</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5271,7 +5271,7 @@
       <y>35</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5287,7 +5287,7 @@
       <y>35</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5303,7 +5303,7 @@
       <y>56</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5319,7 +5319,7 @@
       <y>56</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5335,7 +5335,7 @@
       <y>56</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5351,7 +5351,7 @@
       <y>56</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5367,7 +5367,7 @@
       <y>103</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5383,7 +5383,7 @@
       <y>103</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5399,7 +5399,7 @@
       <y>103</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5415,7 +5415,7 @@
       <y>103</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5431,7 +5431,7 @@
       <y>103</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5447,7 +5447,7 @@
       <y>124</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5463,7 +5463,7 @@
       <y>124</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5479,7 +5479,7 @@
       <y>124</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5495,7 +5495,7 @@
       <y>124</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5511,7 +5511,7 @@
       <y>124</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5527,7 +5527,7 @@
       <y>171</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5543,7 +5543,7 @@
       <y>171</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5559,7 +5559,7 @@
       <y>171</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5575,7 +5575,7 @@
       <y>171</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5591,7 +5591,7 @@
       <y>171</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5607,7 +5607,7 @@
       <y>192</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5623,7 +5623,7 @@
       <y>192</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5639,7 +5639,7 @@
       <y>192</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5655,7 +5655,7 @@
       <y>192</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5671,7 +5671,7 @@
       <y>192</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5687,7 +5687,7 @@
       <y>239</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5703,7 +5703,7 @@
       <y>239</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5719,7 +5719,7 @@
       <y>239</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5735,7 +5735,7 @@
       <y>239</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5751,7 +5751,7 @@
       <y>239</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5767,7 +5767,7 @@
       <y>260</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5783,7 +5783,7 @@
       <y>260</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5799,7 +5799,7 @@
       <y>260</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5815,7 +5815,7 @@
       <y>260</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5831,7 +5831,7 @@
       <y>260</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5847,7 +5847,7 @@
       <y>307</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5863,7 +5863,7 @@
       <y>307</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5879,7 +5879,7 @@
       <y>307</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5895,7 +5895,7 @@
       <y>307</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5911,7 +5911,7 @@
       <y>307</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5927,7 +5927,7 @@
       <y>328</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5943,7 +5943,7 @@
       <y>328</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5959,7 +5959,7 @@
       <y>328</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5975,7 +5975,7 @@
       <y>328</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5991,7 +5991,7 @@
       <y>328</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6007,7 +6007,7 @@
       <y>375</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6023,7 +6023,7 @@
       <y>375</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6039,7 +6039,7 @@
       <y>375</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6055,7 +6055,7 @@
       <y>375</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6071,7 +6071,7 @@
       <y>375</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6087,7 +6087,7 @@
       <y>396</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6103,7 +6103,7 @@
       <y>396</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6119,7 +6119,7 @@
       <y>396</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6135,7 +6135,7 @@
       <y>396</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6151,7 +6151,7 @@
       <y>396</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6167,7 +6167,7 @@
       <y>443</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6183,7 +6183,7 @@
       <y>443</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6199,7 +6199,7 @@
       <y>443</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6215,7 +6215,7 @@
       <y>443</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6231,7 +6231,7 @@
       <y>443</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6247,7 +6247,7 @@
       <y>464</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6263,7 +6263,7 @@
       <y>464</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6279,7 +6279,7 @@
       <y>464</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6295,7 +6295,7 @@
       <y>464</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6311,7 +6311,7 @@
       <y>464</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6327,7 +6327,7 @@
       <y>511</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6343,7 +6343,7 @@
       <y>511</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6359,7 +6359,7 @@
       <y>511</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6375,7 +6375,7 @@
       <y>511</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6391,7 +6391,7 @@
       <y>511</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6407,7 +6407,7 @@
       <y>532</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6423,7 +6423,7 @@
       <y>532</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6439,7 +6439,7 @@
       <y>532</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6455,7 +6455,7 @@
       <y>532</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6471,7 +6471,7 @@
       <y>532</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6487,7 +6487,7 @@
       <y>579</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6503,7 +6503,7 @@
       <y>579</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6519,7 +6519,7 @@
       <y>579</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6535,7 +6535,7 @@
       <y>579</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6551,7 +6551,7 @@
       <y>579</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6567,7 +6567,7 @@
       <y>600</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6583,7 +6583,7 @@
       <y>600</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6599,7 +6599,7 @@
       <y>600</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6615,7 +6615,7 @@
       <y>600</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6631,7 +6631,7 @@
       <y>600</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6647,7 +6647,7 @@
       <y>647</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6663,7 +6663,7 @@
       <y>647</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6679,7 +6679,7 @@
       <y>647</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6695,7 +6695,7 @@
       <y>647</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6711,7 +6711,7 @@
       <y>647</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6727,7 +6727,7 @@
       <y>668</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6743,7 +6743,7 @@
       <y>668</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6759,7 +6759,7 @@
       <y>668</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6775,7 +6775,7 @@
       <y>668</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6791,7 +6791,7 @@
       <y>668</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6807,7 +6807,7 @@
       <y>56</y>
       <width>100</width>
       <height>21</height>
-      <label>двдддждидк</label>
+      <label>уБВуБДуБЖуБИуБК</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -6845,7 +6845,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
       </signal>
-      <label>длдндпд▒д│</label>
+      <label>уБЛуБНуБПуБСуБУ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -6879,7 +6879,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
       </signal>
-      <label>длдндпд▒д│</label>
+      <label>уБЛуБНуБПуБСуБУ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -6904,7 +6904,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
       </signal>
-      <label>длдндпд▒д│</label>
+      <label>уБЛуБНуБПуБСуБУ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -6929,7 +6929,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
       </signal>
-      <label>длдндпд▒д│</label>
+      <label>уБЛуБНуБПуБСуБУ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>

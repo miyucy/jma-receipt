@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(J026)²ñ·×¾È²ñ¡Ý¥«¥ë¥Æ£³¹æ»æ°õºþ</title>
+  <title>(J026)ä¼šè¨ˆç…§ä¼šâˆ’ã‚«ãƒ«ãƒ†ï¼“å·ç´™å°åˆ·</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:35:46 GMT</last_modification_time>
       </signal>
-      <label>F1 Ìá¤ë</label>
+      <label>F1 æˆ»ã‚‹</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -85,7 +85,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:35:46 GMT</last_modification_time>
       </signal>
-      <label>F12 °õºþ</label>
+      <label>F12 å°åˆ·</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -156,7 +156,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 08:35:46 GMT</last_modification_time>
       </signal>
-      <label>F4 Æ¬½ñ°õºþ</label>
+      <label>F4 é ­æ›¸å°åˆ·</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -200,7 +200,7 @@
       <y>40</y>
       <width>96</width>
       <height>24</height>
-      <label>ºÇ½ª°õºþÊÇ</label>
+      <label>æœ€çµ‚å°åˆ·é </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -216,7 +216,7 @@
       <y>40</y>
       <width>88</width>
       <height>24</height>
-      <label>ºÇ½ª°õºþ¹Ô</label>
+      <label>æœ€çµ‚å°åˆ·è¡Œ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -232,7 +232,7 @@
       <y>44</y>
       <width>68</width>
       <height>20</height>
-      <label>°õºþ³«»ÏÆü</label>
+      <label>å°åˆ·é–‹å§‹æ—¥</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

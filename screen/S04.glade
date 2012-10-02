@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(S04)��ʧ���������</title>
+  <title>(S04)支払証明書印刷</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -50,7 +50,7 @@
       <y>32</y>
       <width>88</width>
       <height>25</height>
-      <label>��ʧ������</label>
+      <label>支払証明書</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -66,7 +66,7 @@
       <y>64</y>
       <width>72</width>
       <height>25</height>
-      <label>������ʬ</label>
+      <label>入外区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -82,7 +82,7 @@
       <y>96</y>
       <width>64</width>
       <height>25</height>
-      <label>���ֻ���</label>
+      <label>期間指定</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -98,7 +98,7 @@
       <y>188</y>
       <width>110</width>
       <height>25</height>
-      <label>�������Ƥΰ���</label>
+      <label>請求内容の印字</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -114,7 +114,7 @@
       <y>272</y>
       <width>112</width>
       <height>24</height>
-      <label>�����������ٽ�</label>
+      <label>自費内訳明細書</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -151,7 +151,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
       </signal>
-      <label>F1:���</label>
+      <label>F1:戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -174,7 +174,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
       </signal>
-      <label>F10:�ץ�ӥ塼</label>
+      <label>F10:プレビュー</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -197,7 +197,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:01:47 GMT</last_modification_time>
       </signal>
-      <label>F12:����</label>
+      <label>F12:印刷</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -208,7 +208,7 @@
       <y>96</y>
       <width>24</width>
       <height>25</height>
-      <label>��</label>
+      <label>〜</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -251,7 +251,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>12</text_max_length>
-	<text>0 ȯ�Ԥ��ʤ�</text>
+	<text>0 発行しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -291,7 +291,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>6</text_max_length>
-	<text>0 ����</text>
+	<text>0 全て</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -331,7 +331,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>8</text_max_length>
-	<text>1 ǯ����</text>
+	<text>1 年月日</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -427,7 +427,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>10</text_max_length>
-	<text>1 ���Ŵ���</text>
+	<text>1 診療期間</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -440,7 +440,7 @@
       <y>244</y>
       <width>165</width>
       <height>25</height>
-      <label>���ֽ�λ����λ�ʧ��</label>
+      <label>期間終了日後の支払い</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -456,7 +456,7 @@
       <y>160</y>
       <width>65</width>
       <height>25</height>
-      <label>���ֶ�ʬ</label>
+      <label>期間区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -472,7 +472,7 @@
       <y>216</y>
       <width>196</width>
       <height>24</height>
-      <label>���ֳ�����������ʬ�λ�ʧ��</label>
+      <label>期間開始日前診療分の支払い</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -515,7 +515,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>12</text_max_length>
-	<text>0 ȯ�Ԥ��ʤ�</text>
+	<text>0 発行しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -555,7 +555,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>1 ��������</text>
+	<text>1 印字する</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -595,7 +595,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>18</text_max_length>
-	<text>1 ��ʧ�ۤ˴ޤ��</text>
+	<text>1 支払額に含める</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -635,7 +635,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>18</text_max_length>
-	<text>1 ��ʧ�ۤ˴ޤ��</text>
+	<text>1 支払額に含める</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>

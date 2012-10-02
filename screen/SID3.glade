@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(SID3)≥Œ«ß≤ËÃÃ</title>
+  <title>(SID3)Á¢∫Ë™çÁîªÈù¢</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -78,7 +78,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:22 GMT</last_modification_time>
       </signal>
-      <label>F1:Ã·§Î</label>
+      <label>F1:Êàª„Çã</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -117,7 +117,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F10:¿¡µ·ΩÒ</label>
+      <label>F10:Ë´ãÊ±ÇÊõ∏</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -140,7 +140,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F12:¿¡µ·ΩÒ°¶Ã¿∫ŸΩÒ</label>
+      <label>F12:Ë´ãÊ±ÇÊõ∏„ÉªÊòéÁ¥∞Êõ∏</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -163,7 +163,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F11:Ã¿∫ŸΩÒ</label>
+      <label>F11:ÊòéÁ¥∞Êõ∏</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -186,7 +186,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>Shift+F12:Ω§¿µ</label>
+      <label>Shift+F12:‰øÆÊ≠£</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -197,7 +197,7 @@
       <y>8</y>
       <width>432</width>
       <height>24</height>
-      <label>¿¡µ·ΩÒ»Øπ‘∂Ë ¨</label>
+      <label>Ë´ãÊ±ÇÊõ∏Áô∫Ë°åÂå∫ÂàÜ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>1</xalign>

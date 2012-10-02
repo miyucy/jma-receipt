@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(W11)�����ƥ��������ݰ�����������</title>
+  <title>(W11)システム管理情報−印刷情報設定</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:55:00 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -99,7 +99,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 09 Feb 2001 02:54:52 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>削除</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -121,7 +121,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 09 Feb 2001 02:55:26 GMT</last_modification_time>
       </signal>
-      <label>���ꥳ�ԡ�</label>
+      <label>設定コピー</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -143,7 +143,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 09 Feb 2001 02:55:26 GMT</last_modification_time>
       </signal>
-      <label>������</label>
+      <label>設定一括</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -166,7 +166,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 08 Feb 2001 23:57:24 GMT</last_modification_time>
       </signal>
-      <label>����Ž��</label>
+      <label>設定貼付</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -211,7 +211,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 08 Mar 2006 05:50:28 GMT</last_modification_time>
       </signal>
-      <label>��������</label>
+      <label>タブ切替</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -233,7 +233,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 28 Feb 2001 04:20:29 GMT</last_modification_time>
       </signal>
-      <label>���ե��å�</label>
+      <label>オフセット</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -255,7 +255,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 08 Mar 2006 05:50:28 GMT</last_modification_time>
       </signal>
-      <label>�����ƥ���</label>
+      <label>印字テスト</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -294,7 +294,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 05:01:47 GMT</last_modification_time>
       </signal>
-      <label>����</label>
+      <label>確定</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -331,7 +331,7 @@
 	  <y>496</y>
 	  <width>60</width>
 	  <height>20</height>
-	  <label>�����ֹ�</label>
+	  <label>選択番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -379,7 +379,7 @@
 	      <class>GtkLabel</class>
 	      <child_name>CList:title</child_name>
 	      <name>label224</name>
-	      <label>�ֹ�</label>
+	      <label>番号</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -392,7 +392,7 @@
 	      <class>GtkLabel</class>
 	      <child_name>CList:title</child_name>
 	      <name>label225</name>
-	      <label>ü��̾</label>
+	      <label>端末名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -1580,7 +1580,7 @@
 	      <y>24</y>
 	      <width>200</width>
 	      <height>20</height>
-	      <label>Ģɼ̾</label>
+	      <label>帳票名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -1596,7 +1596,7 @@
 	      <y>24</y>
 	      <width>150</width>
 	      <height>20</height>
-	      <label>�ץ��̾</label>
+	      <label>プリンタ名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -1612,7 +1612,7 @@
 	      <y>24</y>
 	      <width>160</width>
 	      <height>20</height>
-	      <label>ɸ��ץ������̾</label>
+	      <label>標準プログラム名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -1628,7 +1628,7 @@
 	      <y>24</y>
 	      <width>160</width>
 	      <height>20</height>
-	      <label>�ȼ���ȯ�ץ������̾</label>
+	      <label>独自開発プログラム名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -2954,7 +2954,7 @@
 	    <child_name>Notebook:tab</child_name>
 	    <name>N0101</name>
 	    <width>34</width>
-	    <label>����</label>
+	    <label>一般</label>
 	    <justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -4234,7 +4234,7 @@
 	      <y>24</y>
 	      <width>150</width>
 	      <height>20</height>
-	      <label>�ץ��̾</label>
+	      <label>プリンタ名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -4250,7 +4250,7 @@
 	      <y>24</y>
 	      <width>160</width>
 	      <height>20</height>
-	      <label>ɸ��ץ������̾</label>
+	      <label>標準プログラム名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -4266,7 +4266,7 @@
 	      <y>24</y>
 	      <width>160</width>
 	      <height>20</height>
-	      <label>�ȼ���ȯ�ץ������̾</label>
+	      <label>独自開発プログラム名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -4379,7 +4379,7 @@
 	      <y>24</y>
 	      <width>200</width>
 	      <height>20</height>
-	      <label>Ģɼ̾</label>
+	      <label>帳票名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -5242,7 +5242,7 @@
 	    <class>GtkLabel</class>
 	    <child_name>Notebook:tab</child_name>
 	    <name>N0102</name>
-	    <label>����</label>
+	    <label>入院</label>
 	    <justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -5337,7 +5337,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N01</name>
-	<label>������ץ�󥿳�����ƾ���</label>
+	<label>出力先プリンタ割り当て情報</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -5453,7 +5453,7 @@
 	  <y>236</y>
 	  <width>184</width>
 	  <height>20</height>
-	  <label>����ƣ����ʳ��������</label>
+	  <label>カルテ３号紙（外来）内容</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5469,7 +5469,7 @@
 	  <y>304</y>
 	  <width>222</width>
 	  <height>20</height>
-	  <label>���޾���ݲ����ե�����ե����</label>
+	  <label>薬剤情報−画像ファイルフォルダ</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5485,7 +5485,7 @@
 	  <y>168</y>
 	  <width>144</width>
 	  <height>24</height>
-	  <label>��ȯ������ɽ��̾��</label>
+	  <label>後発医薬品表示名称</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5541,7 +5541,7 @@
 	  <y>56</y>
 	  <width>184</width>
 	  <height>24</height>
-	  <label>��ȯ�����ʤؤ��ѹ��Ľ�̾</label>
+	  <label>後発医薬品への変更可署名</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5557,7 +5557,7 @@
 	  <y>112</y>
 	  <width>156</width>
 	  <height>20</height>
-	  <label>��������ǣ�ɽ����ʬ</label>
+	  <label>処方せんＧＥ表示区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5611,7 +5611,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N02</name>
-	<label>Ģɼ�Խ���ʬ����</label>
+	<label>帳票編集区分情報</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -5660,7 +5660,7 @@
       <y>12</y>
       <width>54</width>
       <height>18</height>
-      <label>��</label>
+      <label>〜</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -5676,7 +5676,7 @@
       <y>10</y>
       <width>100</width>
       <height>18</height>
-      <label>ͭ������</label>
+      <label>有効期間</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

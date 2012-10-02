@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(XE01)QR�����ɥƥ��Ȳ���</title>
+  <title>(XE01)QRコードテスト画面</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -61,7 +61,7 @@
 	<handler>window_destroy</handler>
 	<last_modification_time>Mon, 29 Jan 2007 03:44:17 GMT</last_modification_time>
       </signal>
-      <label>F1 ���</label>
+      <label>F1 戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -84,7 +84,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:10:35 GMT</last_modification_time>
       </signal>
-      <label>F12 ��Ͽ</label>
+      <label>F12 登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -139,7 +139,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
-      <text>��������������������</text>
+      <text>ああああああああああ</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -151,7 +151,7 @@
       <y>35</y>
       <width>76</width>
       <height>24</height>
-      <label>�ݸ����ֹ�</label>
+      <label>保険者番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -167,7 +167,7 @@
       <y>10</y>
       <width>76</width>
       <height>24</height>
-      <label>���ٶ�ʬ</label>
+      <label>制度区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -183,7 +183,7 @@
       <y>60</y>
       <width>76</width>
       <height>24</height>
-      <label>����,�ֹ�</label>
+      <label>記号,番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -243,7 +243,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>28</text_max_length>
-      <text>�ʤ������ʤޤ��ΤƤ��Ȥ��衣</text>
+      <text>ながい　なまえのてすとだよ。</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -255,7 +255,7 @@
       <y>110</y>
       <width>76</width>
       <height>24</height>
-      <label>���ʻ�̾</label>
+      <label>カナ氏名</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -271,7 +271,7 @@
       <y>85</y>
       <width>76</width>
       <height>24</height>
-      <label>�ܿͲ�²</label>
+      <label>本人家族</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -315,7 +315,7 @@
       <y>135</y>
       <width>76</width>
       <height>24</height>
-      <label>����</label>
+      <label>性別</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -387,7 +387,7 @@
       <y>160</y>
       <width>76</width>
       <height>24</height>
-      <label>��ǯ����</label>
+      <label>生年月日</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -403,7 +403,7 @@
       <y>250</y>
       <width>500</width>
       <height>24</height>
-      <label>�����ֹ�,������̾,���ճ��,��ȯ�ԥ�����</label>
+      <label>管理番号,漢字氏名,給付割合,再発行コード</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

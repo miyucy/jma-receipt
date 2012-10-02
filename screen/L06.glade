@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(L06)∆¸º°≈˝∑◊°›ƒ˘§·ª˛πÔ≈–œø</title>
+  <title>(L06)Êó•Ê¨°Áµ±Ë®à‚àíÁ∑†„ÇÅÊôÇÂàªÁôªÈå≤</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>Ã·§Î</label>
+      <label>Êàª„Çã</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -85,7 +85,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:45 GMT</last_modification_time>
       </signal>
-      <label>•Ø•Í•¢</label>
+      <label>„ÇØ„É™„Ç¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -107,7 +107,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
       </signal>
-      <label>∫ÔΩ¸</label>
+      <label>ÂâäÈô§</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -129,7 +129,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:36 GMT</last_modification_time>
       </signal>
-      <label>æ‹∫Ÿ¿ﬂƒÍ</label>
+      <label>Ë©≥Á¥∞Ë®≠ÂÆö</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -218,7 +218,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:44:14 GMT</last_modification_time>
       </signal>
-      <label>≈–œø</label>
+      <label>ÁôªÈå≤</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -353,7 +353,7 @@
       <y>32</y>
       <width>16</width>
       <height>24</height>
-      <label>°ß</label>
+      <label>Ôºö</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -396,7 +396,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>10</text_max_length>
-	<text>3 ¡∞≤ÛºËæ√</text>
+	<text>3 ÂâçÂõûÂèñÊ∂à</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -425,7 +425,7 @@
       <y>84</y>
       <width>452</width>
       <height>24</height>
-      <label>H22.12.31°°11:30</label>
+      <label>H22.12.31„ÄÄ11:30</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>1</xalign>

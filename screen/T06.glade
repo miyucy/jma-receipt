@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(T06)¥ì¥»ÅÅºîÀ®¡Ý¸ÄÊÌ»Ø¼¨</title>
+  <title>(T06)ãƒ¬ã‚»é›»ä½œæˆâˆ’å€‹åˆ¥æŒ‡ç¤º</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>Ìá¤ë</label>
+      <label>æˆ»ã‚‹</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -84,7 +84,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:45 GMT</last_modification_time>
       </signal>
-      <label>¥¯¥ê¥¢</label>
+      <label>ã‚¯ãƒªã‚¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -130,7 +130,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:36 GMT</last_modification_time>
       </signal>
-      <label>ºï½ü</label>
+      <label>å‰Šé™¤</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -153,7 +153,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:16 GMT</last_modification_time>
       </signal>
-      <label>ºÆ°õºþ</label>
+      <label>å†å°åˆ·</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -211,7 +211,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 08:31:04 GMT</last_modification_time>
       </signal>
-      <label>Á°²óºîÀ®</label>
+      <label>å‰å›žä½œæˆ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -234,7 +234,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 02 Apr 2001 07:12:50 GMT</last_modification_time>
       </signal>
-      <label>»áÌ¾¸¡º÷</label>
+      <label>æ°åæ¤œç´¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -280,7 +280,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:44:05 GMT</last_modification_time>
       </signal>
-      <label>¾ðÊóºï½ü</label>
+      <label>æƒ…å ±å‰Šé™¤</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -303,7 +303,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:44:14 GMT</last_modification_time>
       </signal>
-      <label>¥ì¥»ÅÅºîÀ®</label>
+      <label>ãƒ¬ã‚»é›»ä½œæˆ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -449,7 +449,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:44:14 GMT</last_modification_time>
       </signal>
-      <label>½èÍý·ë²Ì</label>
+      <label>å‡¦ç†çµæžœ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -528,7 +528,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 16 Oct 2008 03:13:31 GMT</last_modification_time>
       </signal>
-      <label>¸Ä¿ÍÍúÎò</label>
+      <label>å€‹äººå±¥æ­´</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -551,7 +551,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 16 Oct 2008 03:13:38 GMT</last_modification_time>
       </signal>
-      <label>ºîÀ®ÍúÎò</label>
+      <label>ä½œæˆå±¥æ­´</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -562,7 +562,7 @@
       <y>315</y>
       <width>100</width>
       <height>24</height>
-      <label>¸ÄÊÌ»Ø¼¨°ìÍ÷</label>
+      <label>å€‹åˆ¥æŒ‡ç¤ºä¸€è¦§</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -578,7 +578,7 @@
       <y>645</y>
       <width>60</width>
       <height>18</height>
-      <label>´µ¼ÔÈÖ¹æ</label>
+      <label>æ‚£è€…ç•ªå·</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -594,7 +594,7 @@
       <y>645</y>
       <width>54</width>
       <height>18</height>
-      <label>ÈÖ¹æ</label>
+      <label>ç•ªå·</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -610,7 +610,7 @@
       <y>645</y>
       <width>40</width>
       <height>18</height>
-      <label>Æþ³°</label>
+      <label>å…¥å¤–</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -626,7 +626,7 @@
       <y>645</y>
       <width>54</width>
       <height>18</height>
-      <label>¿ÇÎÅÇ¯·î</label>
+      <label>è¨ºç™‚å¹´æœˆ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -654,7 +654,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
       </signal>
-      <label>¹ñÊÝ</label>
+      <label>å›½ä¿</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>TEISYUTU</group>
@@ -679,7 +679,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
       </signal>
-      <label>¹­°è</label>
+      <label>åºƒåŸŸ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>TEISYUTU</group>
@@ -704,7 +704,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
       </signal>
-      <label>¼ÒÊÝ</label>
+      <label>ç¤¾ä¿</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>TEISYUTU</group>
@@ -749,7 +749,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label532</name>
-	  <label>ÈÖ¹æ</label>
+	  <label>ç•ªå·</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -762,7 +762,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label534</name>
-	  <label>¼õÉÕÆü</label>
+	  <label>å—ä»˜æ—¥</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -775,7 +775,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label535</name>
-	  <label>²ó</label>
+	  <label>å›ž</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -788,7 +788,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label536</name>
-	  <label>ÀÁµáÆü</label>
+	  <label>è«‹æ±‚æ—¥</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -801,7 +801,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label537</name>
-	  <label>²ó</label>
+	  <label>å›ž</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -814,7 +814,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label538</name>
-	  <label>¥¨¥é¡¼·ï¿ô</label>
+	  <label>ã‚¨ãƒ©ãƒ¼ä»¶æ•°</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -827,7 +827,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label539</name>
-	  <label>Áí·ï¿ô</label>
+	  <label>ç·ä»¶æ•°</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -879,7 +879,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label506</name>
-	  <label>ÈÖ¹æ</label>
+	  <label>ç•ªå·</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -892,7 +892,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label520</name>
-	  <label>Æþ³°</label>
+	  <label>å…¥å¤–</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -905,7 +905,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label629</name>
-	  <label>¥¨</label>
+	  <label>ã‚¨</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -918,7 +918,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label507</name>
-	  <label>´µ¼ÔÈÖ¹æ</label>
+	  <label>æ‚£è€…ç•ªå·</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -931,7 +931,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label508</name>
-	  <label>»áÌ¾</label>
+	  <label>æ°å</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -944,7 +944,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label509</name>
-	  <label>¿ÇÎÅÇ¯·î</label>
+	  <label>è¨ºç™‚å¹´æœˆ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -957,7 +957,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label510</name>
-	  <label>¼ïÊÌ</label>
+	  <label>ç¨®åˆ¥</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -970,7 +970,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label516</name>
-	  <label>ÊÝ¸±¼ÔÈÖ¹æ</label>
+	  <label>ä¿é™ºè€…ç•ªå·</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -983,7 +983,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label517</name>
-	  <label>µ­¹æ¡¦ÈÖ¹æ</label>
+	  <label>è¨˜å·ãƒ»ç•ªå·</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -996,7 +996,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label518</name>
-	  <label>Êä</label>
+	  <label>è£œ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1009,7 +1009,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label541</name>
-	  <label>ºîÀ®Æü</label>
+	  <label>ä½œæˆæ—¥</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1059,7 +1059,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label522</name>
-	  <label>ÈÖ¹æ</label>
+	  <label>ç•ªå·</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1072,7 +1072,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label523</name>
-	  <label>Æþ³°</label>
+	  <label>å…¥å¤–</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1085,7 +1085,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label623</name>
-	  <label>ÊÖ</label>
+	  <label>è¿”</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1098,7 +1098,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label524</name>
-	  <label>´µ¼ÔÈÖ¹æ</label>
+	  <label>æ‚£è€…ç•ªå·</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1111,7 +1111,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label525</name>
-	  <label>»áÌ¾</label>
+	  <label>æ°å</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1124,7 +1124,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label526</name>
-	  <label>¿ÇÎÅÇ¯·î</label>
+	  <label>è¨ºç™‚å¹´æœˆ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1137,7 +1137,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label527</name>
-	  <label>À¸Ç¯·îÆü</label>
+	  <label>ç”Ÿå¹´æœˆæ—¥</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1150,7 +1150,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label528</name>
-	  <label>¼ïÊÌ</label>
+	  <label>ç¨®åˆ¥</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1163,7 +1163,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label529</name>
-	  <label>ÊÝ¸±¼ÔÈÖ¹æ</label>
+	  <label>ä¿é™ºè€…ç•ªå·</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1176,7 +1176,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label530</name>
-	  <label>µ­¹æ¡¦ÈÖ¹æ</label>
+	  <label>è¨˜å·ãƒ»ç•ªå·</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1189,7 +1189,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label531</name>
-	  <label>¥³¡¼¥É</label>
+	  <label>ã‚³ãƒ¼ãƒ‰</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1202,7 +1202,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label542</name>
-	  <label>¥¨¥é¡¼ÆâÍÆ</label>
+	  <label>ã‚¨ãƒ©ãƒ¼å†…å®¹</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1220,7 +1220,7 @@
       <y>8</y>
       <width>70</width>
       <height>24</height>
-      <label>¿ÇÎÅÇ¯·î</label>
+      <label>è¨ºç™‚å¹´æœˆ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1236,7 +1236,7 @@
       <y>35</y>
       <width>70</width>
       <height>24</height>
-      <label>ÀÁµáÇ¯·îÆü</label>
+      <label>è«‹æ±‚å¹´æœˆæ—¥</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1252,7 +1252,7 @@
       <y>8</y>
       <width>215</width>
       <height>24</height>
-      <label>Ä¾ÀÜÀÁµá¤¹¤ëÊÝ¸±¼Ô°Ê³°£²£³£´£µ</label>
+      <label>ç›´æŽ¥è«‹æ±‚ã™ã‚‹ä¿é™ºè€…ä»¥å¤–ï¼’ï¼“ï¼”ï¼•</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

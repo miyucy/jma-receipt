@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(K01)���Ź԰����ϡݴ����ֹ�����</title>
+  <title>(K01)診療行為入力−患者番号入力</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -404,7 +404,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 02:21:08 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -427,7 +427,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 23 Feb 2001 05:13:32 GMT</last_modification_time>
       </signal>
-      <label>���ꥢ</label>
+      <label>クリア</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -450,7 +450,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 15 Jun 2001 01:07:09 GMT</last_modification_time>
       </signal>
-      <label>���󴵼�</label>
+      <label>前回患者</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -577,7 +577,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 02:33:19 GMT</last_modification_time>
       </signal>
-      <label>��̾����</label>
+      <label>氏名検索</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -600,7 +600,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 02:33:40 GMT</last_modification_time>
       </signal>
-      <label>ͽ����Ͽ</label>
+      <label>予約登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -623,7 +623,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 02:34:04 GMT</last_modification_time>
       </signal>
-      <label>���հ���</label>
+      <label>受付一覧</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -646,7 +646,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 02:34:30 GMT</last_modification_time>
       </signal>
-      <label>����</label>
+      <label>確定</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -666,7 +666,7 @@
       <y>336</y>
       <width>84</width>
       <height>24</height>
-      <label>����������ʬ</label>
+      <label>院外処方区分</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -682,7 +682,7 @@
       <y>388</y>
       <width>104</width>
       <height>24</height>
-      <label>�ݸ��Ȥ߹�碌</label>
+      <label>保険組み合わせ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -698,7 +698,7 @@
       <y>292</y>
       <width>60</width>
       <height>16</height>
-      <label>ʬ������</label>
+      <label>分散入力</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -714,7 +714,7 @@
       <y>244</y>
       <width>74</width>
       <height>20</height>
-      <label>�ɥ�����</label>
+      <label>ドクター</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -730,7 +730,7 @@
       <y>196</y>
       <width>64</width>
       <height>24</height>
-      <label>�������</label>
+      <label>前回処方</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -746,7 +746,7 @@
       <y>144</y>
       <width>66</width>
       <height>20</height>
-      <label>������</label>
+      <label>診療日</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -762,7 +762,7 @@
       <y>92</y>
       <width>60</width>
       <height>20</height>
-      <label>���Ų�</label>
+      <label>診療科</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -778,7 +778,7 @@
       <y>36</y>
       <width>81</width>
       <height>20</height>
-      <label>�����ֹ�</label>
+      <label>患者番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -827,7 +827,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>tkumino</name>
-	  <label>�ֹ�</label>
+	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -840,7 +840,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>thknkumi</name>
-	  <label>�Ȥ߹�碌������</label>
+	  <label>組み合わせの内容</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -853,7 +853,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>ttekstymd</name>
-	  <label>Ŭ�ѳ�����</label>
+	  <label>適用開始日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -866,7 +866,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>ttekedymd</name>
-	  <label>Ŭ�ѽ�λ��</label>
+	  <label>適用終了日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -879,7 +879,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>tftnwari</name>
-	  <label>��ô���</label>
+	  <label>負担割合</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(O01)´µ¼ÔÀÁµá - Äê´üÀÁµá</title>
+  <title>(O01)æ‚£è€…è«‹æ±‚ - å®šæœŸè«‹æ±‚</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 04:57:00 GMT</last_modification_time>
       </signal>
-      <label>Ìá¤ë</label>
+      <label>æˆ»ã‚‹</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -84,7 +84,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 06 Jul 2005 07:31:00 GMT</last_modification_time>
       </signal>
-      <label>¥¯¥ê¥¢</label>
+      <label>ã‚¯ãƒªã‚¢</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -119,7 +119,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 04:58:30 GMT</last_modification_time>
       </signal>
-      <label>ºï½ü</label>
+      <label>å‰Šé™¤</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -142,7 +142,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 10 Feb 2006 00:47:15 GMT</last_modification_time>
       </signal>
-      <label>ºÆ°õºþ</label>
+      <label>å†å°åˆ·</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -188,7 +188,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 15 Apr 2002 00:32:21 GMT</last_modification_time>
       </signal>
-      <label>°õºþ¶èÊ¬</label>
+      <label>å°åˆ·åŒºåˆ†</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -211,7 +211,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 06 Dec 2002 05:18:38 GMT</last_modification_time>
       </signal>
-      <label>°ì³ç¡¿¸ÄÊÌ</label>
+      <label>ä¸€æ‹¬ï¼å€‹åˆ¥</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -234,7 +234,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 10 Dec 2004 04:37:19 GMT</last_modification_time>
       </signal>
-      <label>ÀÁµá³ÎÇ§</label>
+      <label>è«‹æ±‚ç¢ºèª</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -257,7 +257,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:01:37 GMT</last_modification_time>
       </signal>
-      <label>¡¡¡¡¡¡¡¡</label>
+      <label>ã€€ã€€ã€€ã€€</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -280,7 +280,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:02:40 GMT</last_modification_time>
       </signal>
-      <label>¾ðÊóºï½ü</label>
+      <label>æƒ…å ±å‰Šé™¤</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -303,7 +303,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:03:32 GMT</last_modification_time>
       </signal>
-      <label>³ÎÄê</label>
+      <label>ç¢ºå®š</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -326,7 +326,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:02:40 GMT</last_modification_time>
       </signal>
-      <label>½èÍý·ë²Ì</label>
+      <label>å‡¦ç†çµæžœ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -377,7 +377,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Thu, 05 Dec 2002 07:03:39 GMT</last_modification_time>
       </signal>
-      <label>°ì³çºîÀ®</label>
+      <label>ä¸€æ‹¬ä½œæˆ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>PRTKBN</group>
@@ -402,7 +402,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Thu, 05 Dec 2002 07:06:24 GMT</last_modification_time>
       </signal>
-      <label>¸ÄÊÌºîÀ®</label>
+      <label>å€‹åˆ¥ä½œæˆ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>PRTKBN</group>
@@ -581,7 +581,7 @@
       <y>30</y>
       <width>60</width>
       <height>23</height>
-      <label>°õºþ¶èÊ¬</label>
+      <label>å°åˆ·åŒºåˆ†</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -637,7 +637,7 @@
       <y>144</y>
       <width>76</width>
       <height>24</height>
-      <label>ÅÁÉ¼È¯¹ÔÆü</label>
+      <label>ä¼ç¥¨ç™ºè¡Œæ—¥</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -653,7 +653,7 @@
       <y>104</y>
       <width>72</width>
       <height>24</height>
-      <label>ÀÁµáÇ¯·î</label>
+      <label>è«‹æ±‚å¹´æœˆ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -669,7 +669,7 @@
       <y>104</y>
       <width>548</width>
       <height>24</height>
-      <label>Á°²ó¼Â»Ü´ü´Ö¡§H21.8-1´ü¡¡¼Â»ÜÆü¡§H21.8.16</label>
+      <label>å‰å›žå®Ÿæ–½æœŸé–“ï¼šH21.8-1æœŸã€€å®Ÿæ–½æ—¥ï¼šH21.8.16</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -698,7 +698,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Tue, 20 Aug 2002 01:25:14 GMT</last_modification_time>
       </signal>
-      <label>£±´ü</label>
+      <label>ï¼‘æœŸ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -723,7 +723,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 20 Aug 2002 01:26:59 GMT</last_modification_time>
       </signal>
-      <label>£²´ü</label>
+      <label>ï¼’æœŸ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -748,7 +748,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 20 Aug 2002 01:27:53 GMT</last_modification_time>
       </signal>
-      <label>£³´ü</label>
+      <label>ï¼“æœŸ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>

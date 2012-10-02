@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(L100) ¬§”ΩÁ —ππ≤ËÃÃ</title>
+  <title>(L100)‰∏¶„Å≥È†ÜÂ§âÊõ¥ÁîªÈù¢</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F1:Ã·§Î</label>
+      <label>F1:Êàª„Çã</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -135,7 +135,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label462</name>
-	  <label>»÷πÊ</label>
+	  <label>Áï™Âè∑</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -148,7 +148,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label463</name>
-	  <label>ƒ¢…ºÃæ</label>
+	  <label>Â∏≥Á•®Âêç</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -161,7 +161,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label464</name>
-	  <label>•◊•Ì•∞•È•‡Ãæ</label>
+	  <label>„Éó„É≠„Ç∞„É©„É†Âêç</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -191,7 +191,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>¢¨</label>
+      <label>‚Üë</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -214,7 +214,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>¢≠</label>
+      <label>‚Üì</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -225,7 +225,7 @@
       <y>456</y>
       <width>64</width>
       <height>24</height>
-      <label>¡™¬Ú»÷πÊ</label>
+      <label>ÈÅ∏ÊäûÁï™Âè∑</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -253,8 +253,8 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>¢¨
-¢¨</label>
+      <label>‚Üë
+‚Üë</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -277,8 +277,8 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>¢≠
-¢≠</label>
+      <label>‚Üì
+‚Üì</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -301,7 +301,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F3:∫ÔΩ¸</label>
+      <label>F3:ÂâäÈô§</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -324,7 +324,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F5:¢¨¢¨</label>
+      <label>F5:‚Üë‚Üë</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -347,7 +347,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F6:¢¨</label>
+      <label>F6:‚Üë</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -370,7 +370,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F7:¢≠</label>
+      <label>F7:‚Üì</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -393,7 +393,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F8:¢≠¢≠</label>
+      <label>F8:‚Üì‚Üì</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -416,7 +416,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F9:ƒ…≤√</label>
+      <label>F9:ËøΩÂä†</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>

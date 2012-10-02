@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -33,7 +33,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(P0201)╢╣╪тепо©║щл╓епо©╪Уиу╟ЛмВ</title>
+  <title>(P0201)Ф┌ёХ─┘Г≥╩И▄╡Б┬▓Ф°╙Г≥╩И▄╡Е▐≈Д╩≤Д╦─Х╕╖</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -93,7 +93,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 18 Jan 2001 10:23:03 GMT</last_modification_time>
       </signal>
-      <label>лА╓К</label>
+      <label>Ф┬╩Ц┌▀</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -104,7 +104,7 @@
       <y>464</y>
       <width>64</width>
       <height>24</height>
-      <label>а╙бРхж╧Ф</label>
+      <label>И│╦Ф┼·Г∙╙Е▐╥</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -132,7 +132,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 18 Jan 2001 10:23:03 GMT</last_modification_time>
       </signal>
-      <label>ЁндЙ</label>
+      <label>Г╒╨Е╝ </label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -189,7 +189,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label5</name>
-	  <label>хж╧Ф</label>
+	  <label>Г∙╙Е▐╥</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -202,7 +202,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label6</name>
-	  <label>╪Уиу╩Ч╢ж</label>
+	  <label>Е▐≈Д╩≤Ф≥┌И√⌠</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -215,7 +215,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label7</name>
-	  <label>╩А     л╬</label>
+	  <label>Ф╟▐     Е░█</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -228,7 +228,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label8</name>
-	  <label>©гне╡й</label>
+	  <label>Х╗╨Г≥┌Г╖▒</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

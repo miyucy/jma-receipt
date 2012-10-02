@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(V01)�ݸ��ֹ�����</title>
+  <title>(V01)保険番号設定</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -84,7 +84,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label>���ꥢ</label>
+      <label>クリア</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -107,7 +107,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label>������</label>
+      <label>情報削除</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -248,7 +248,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label>����ã�</label>
+      <label>前回ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -271,7 +271,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label>����</label>
+      <label>確定</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -294,7 +294,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 02:51:05 GMT</last_modification_time>
       </signal>
-      <label>����</label>
+      <label>参照</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -305,7 +305,7 @@
       <y>48</y>
       <width>64</width>
       <height>24</height>
-      <label>�ݸ��ֹ�</label>
+      <label>保険番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -321,7 +321,7 @@
       <y>128</y>
       <width>64</width>
       <height>24</height>
-      <label>��ƻ�ܸ�</label>
+      <label>都道府県</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -337,7 +337,7 @@
       <y>168</y>
       <width>80</width>
       <height>24</height>
-      <label>��ʧ��ʬ</label>
+      <label>支払区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -353,7 +353,7 @@
       <y>208</y>
       <width>64</width>
       <height>24</height>
-      <label>�����ֹ�</label>
+      <label>選択番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -369,7 +369,7 @@
       <y>248</y>
       <width>72</width>
       <height>24</height>
-      <label>ͭ��ǯ����</label>
+      <label>有効年月日</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -385,7 +385,7 @@
       <y>248</y>
       <width>16</width>
       <height>24</height>
-      <label>��</label>
+      <label>〜</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -598,7 +598,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label17</name>
-	  <label>�ֹ�</label>
+	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -611,7 +611,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label18</name>
-	  <label>��ʧ��ʬ</label>
+	  <label>支払区分</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -624,7 +624,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label19</name>
-	  <label>ͭ������ǯ����</label>
+	  <label>有効開始年月日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -637,7 +637,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label20</name>
-	  <label>ͭ����λǯ����</label>
+	  <label>有効終了年月日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -682,7 +682,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>23</text_max_length>
-	<text>99 �����</text>
+	<text>99 神奈川県</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>

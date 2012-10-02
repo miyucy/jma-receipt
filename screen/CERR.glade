@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(CERR)еиещб╝╛Ё╩є</title>
+  <title>(CERR)уВиуГйуГ╝цГЕха▒</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -73,7 +73,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 26 Jan 2001 04:56:59 GMT</last_modification_time>
       </signal>
-      <label>╩─д╕ды</label>
+      <label>щЦЙуБШуВЛ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -100,7 +100,7 @@
       <y>40</y>
       <width>574</width>
       <height>18</height>
-      <label>двдвдвдвдвдвдвдвдвдвдидидидидидидидидидидвдвдвдвдвдвдвдвдвдвдидидидидидидидидиди</label>
+      <label>уБВуБВуБВуБВуБВуБВуБВуБВуБВуБВуБИуБИуБИуБИуБИуБИуБИуБИуБИуБИуБВуБВуБВуБВуБВуБВуБВуБВуБВуБВуБИуБИуБИуБИуБИуБИуБИуБИуБИуБИ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

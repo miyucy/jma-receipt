@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(S09)ÊÝ¸±¾ðÊóÊÑ¹¹²èÌÌ</title>
+  <title>(S09)ä¿é™ºæƒ…å ±å¤‰æ›´ç”»é¢</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -50,7 +50,7 @@
       <y>132</y>
       <width>80</width>
       <height>24</height>
-      <label>ÈÖ¹æ</label>
+      <label>ç•ªå·</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>1</xalign>
@@ -66,7 +66,7 @@
       <y>104</y>
       <width>80</width>
       <height>24</height>
-      <label>µ­¹æ</label>
+      <label>è¨˜å·</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>1</xalign>
@@ -166,7 +166,7 @@
       <y>20</y>
       <width>80</width>
       <height>24</height>
-      <label>ÊÝ¸±¼ÔÈÖ¹æ</label>
+      <label>ä¿é™ºè€…ç•ªå·</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>1</xalign>
@@ -222,7 +222,7 @@
       <y>76</y>
       <width>80</width>
       <height>24</height>
-      <label>ËÜ¿Í¡¦²ÈÂ²</label>
+      <label>æœ¬äººãƒ»å®¶æ—</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>1</xalign>
@@ -250,7 +250,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>F1:Ìá¤ë</label>
+      <label>F1:æˆ»ã‚‹</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -273,7 +273,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>F12:ÅÐÏ¿</label>
+      <label>F12:ç™»éŒ²</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -284,7 +284,7 @@
       <y>20</y>
       <width>288</width>
       <height>24</height>
-      <label>ÊÝ¸±¼ÔÌ¾£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°</label>
+      <label>ä¿é™ºè€…åï¼•ï¼–ï¼—ï¼˜ï¼™ï¼ï¼‘ï¼’ï¼“ï¼”ï¼•ï¼–ï¼—ï¼˜ï¼™ï¼</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -300,7 +300,7 @@
       <y>48</y>
       <width>80</width>
       <height>24</height>
-      <label>¼ÒÊÝ¡¦¹ñÊÝ</label>
+      <label>ç¤¾ä¿ãƒ»å›½ä¿</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>1</xalign>

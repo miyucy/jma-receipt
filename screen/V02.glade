@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(V02)���ݸ��ֹ��������</title>
+  <title>(V02)−保険番号情報入力</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -70,7 +70,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 01:47:56 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -93,7 +93,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Thu, 21 Dec 2000 01:51:58 GMT</last_modification_time>
       </signal>
-      <label>��Ͽ</label>
+      <label>登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -174,7 +174,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 16 Jun 2008 06:40:34 GMT</last_modification_time>
       </signal>
-      <label>��������</label>
+      <label>タブ切替</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -256,7 +256,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 06 Feb 2001 02:06:18 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>削除</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -905,7 +905,7 @@
 	  <y>40</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>�����ô��硡��</label>
+	  <label>回−負担割合　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -921,7 +921,7 @@
 	  <y>70</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݸ���ۡ�����</label>
+	  <label>回−固定額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -937,7 +937,7 @@
 	  <y>100</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>回−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -953,7 +953,7 @@
 	  <y>130</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�³ۡ�����</label>
+	  <label>日−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -969,7 +969,7 @@
 	  <y>160</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�²������</label>
+	  <label>日−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -985,7 +985,7 @@
 	  <y>190</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>月−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1001,7 +1001,7 @@
 	  <y>220</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�²������</label>
+	  <label>月−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1017,7 +1017,7 @@
 	  <y>250</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݿ��������ۡ���</label>
+	  <label>日−食事助成額　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1033,7 +1033,7 @@
 	  <y>280</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���������񡡡���</label>
+	  <label>食事療養費　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1049,7 +1049,7 @@
 	  <y>40</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>�����ô��硡��</label>
+	  <label>回−負担割合　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1065,7 +1065,7 @@
 	  <y>70</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݸ���ۡ�����</label>
+	  <label>回−固定額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1081,7 +1081,7 @@
 	  <y>100</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>回−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1097,7 +1097,7 @@
 	  <y>130</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�³ۡ�����</label>
+	  <label>日−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1113,7 +1113,7 @@
 	  <y>160</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�²������</label>
+	  <label>日−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1129,7 +1129,7 @@
 	  <y>192</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݱ���ݾ�³�</label>
+	  <label>月−院内−上限額</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1145,7 +1145,7 @@
 	  <y>220</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݱ����ݾ�³�</label>
+	  <label>月−院外−上限額</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1161,7 +1161,7 @@
 	  <y>250</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�²������</label>
+	  <label>月−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1177,7 +1177,7 @@
 	  <y>280</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>������ô��ʬ����</label>
+	  <label>薬剤負担区分　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1193,7 +1193,7 @@
 	  <y>10</y>
 	  <width>160</width>
 	  <height>18</height>
-	  <label>�������ô��ʬ��������</label>
+	  <label>外来−負担区分　　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1209,7 +1209,7 @@
 	  <y>10</y>
 	  <width>160</width>
 	  <height>18</height>
-	  <label>��������ô��ʬ��������</label>
+	  <label>入院−負担区分　　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -1223,7 +1223,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N01</name>
-	<label>�ܿ�</label>
+	<label>本人</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -1763,7 +1763,7 @@
 	  <y>280</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>������ô��ʬ����</label>
+	  <label>薬剤負担区分　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1779,7 +1779,7 @@
 	  <y>250</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�²������</label>
+	  <label>月−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1795,7 +1795,7 @@
 	  <y>220</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݱ����ݾ�³�</label>
+	  <label>月−院外−上限額</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1811,7 +1811,7 @@
 	  <y>192</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݱ���ݾ�³�</label>
+	  <label>月−院内−上限額</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1827,7 +1827,7 @@
 	  <y>160</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�²������</label>
+	  <label>日−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1843,7 +1843,7 @@
 	  <y>130</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�³ۡ�����</label>
+	  <label>日−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1859,7 +1859,7 @@
 	  <y>100</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>回−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1875,7 +1875,7 @@
 	  <y>70</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݸ���ۡ�����</label>
+	  <label>回−固定額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1891,7 +1891,7 @@
 	  <y>40</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>�����ô��硡��</label>
+	  <label>回−負担割合　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1931,7 +1931,7 @@
 	  <y>40</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>�����ô��硡��</label>
+	  <label>回−負担割合　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1947,7 +1947,7 @@
 	  <y>70</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݸ���ۡ�����</label>
+	  <label>回−固定額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1963,7 +1963,7 @@
 	  <y>100</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>回−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1979,7 +1979,7 @@
 	  <y>130</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�³ۡ�����</label>
+	  <label>日−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1995,7 +1995,7 @@
 	  <y>160</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�²������</label>
+	  <label>日−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2011,7 +2011,7 @@
 	  <y>190</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>月−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2027,7 +2027,7 @@
 	  <y>220</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�²������</label>
+	  <label>月−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2043,7 +2043,7 @@
 	  <y>250</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݿ��������ۡ���</label>
+	  <label>日−食事助成額　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2059,7 +2059,7 @@
 	  <y>280</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���������񡡡���</label>
+	  <label>食事療養費　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2075,7 +2075,7 @@
 	  <y>10</y>
 	  <width>160</width>
 	  <height>18</height>
-	  <label>�������ô��ʬ��������</label>
+	  <label>外来−負担区分　　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -2091,7 +2091,7 @@
 	  <y>10</y>
 	  <width>160</width>
 	  <height>18</height>
-	  <label>��������ô��ʬ��������</label>
+	  <label>入院−負担区分　　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -2105,7 +2105,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N02</name>
-	<label>��²</label>
+	<label>家族</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -2645,7 +2645,7 @@
 	  <y>70</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݸ���ۡ�����</label>
+	  <label>回−固定額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2661,7 +2661,7 @@
 	  <y>100</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>回−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2677,7 +2677,7 @@
 	  <y>130</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�³ۡ�����</label>
+	  <label>日−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2693,7 +2693,7 @@
 	  <y>160</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�²������</label>
+	  <label>日−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2709,7 +2709,7 @@
 	  <y>192</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݱ���ݾ�³�</label>
+	  <label>月−院内−上限額</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2725,7 +2725,7 @@
 	  <y>220</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݱ����ݾ�³�</label>
+	  <label>月−院外−上限額</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2741,7 +2741,7 @@
 	  <y>250</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�²������</label>
+	  <label>月−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2757,7 +2757,7 @@
 	  <y>280</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>������ô��ʬ����</label>
+	  <label>薬剤負担区分　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2773,7 +2773,7 @@
 	  <y>40</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>�����ô��硡��</label>
+	  <label>回−負担割合　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2813,7 +2813,7 @@
 	  <y>10</y>
 	  <width>160</width>
 	  <height>18</height>
-	  <label>��������ô��ʬ��������</label>
+	  <label>入院−負担区分　　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -2829,7 +2829,7 @@
 	  <y>40</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>�����ô��硡��</label>
+	  <label>回−負担割合　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2845,7 +2845,7 @@
 	  <y>70</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݸ���ۡ�����</label>
+	  <label>回−固定額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2861,7 +2861,7 @@
 	  <y>100</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>回−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2877,7 +2877,7 @@
 	  <y>130</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�³ۡ�����</label>
+	  <label>日−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2893,7 +2893,7 @@
 	  <y>160</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�²������</label>
+	  <label>日−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2909,7 +2909,7 @@
 	  <y>190</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>月−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2925,7 +2925,7 @@
 	  <y>220</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�²������</label>
+	  <label>月−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2941,7 +2941,7 @@
 	  <y>250</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݿ��������ۡ���</label>
+	  <label>日−食事助成額　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2957,7 +2957,7 @@
 	  <y>280</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���������񡡡���</label>
+	  <label>食事療養費　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2973,7 +2973,7 @@
 	  <y>10</y>
 	  <width>160</width>
 	  <height>18</height>
-	  <label>�������ô��ʬ��������</label>
+	  <label>外来−負担区分　　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -2987,7 +2987,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N03</name>
-	<label>�����</label>
+	<label>低所得</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -3527,7 +3527,7 @@
 	  <y>10</y>
 	  <width>160</width>
 	  <height>18</height>
-	  <label>�������ô��ʬ��������</label>
+	  <label>外来−負担区分　　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -3543,7 +3543,7 @@
 	  <y>40</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>�����ô��硡��</label>
+	  <label>回−負担割合　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3559,7 +3559,7 @@
 	  <y>70</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݸ���ۡ�����</label>
+	  <label>回−固定額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3575,7 +3575,7 @@
 	  <y>100</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>回−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3591,7 +3591,7 @@
 	  <y>130</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�³ۡ�����</label>
+	  <label>日−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3607,7 +3607,7 @@
 	  <y>160</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�²������</label>
+	  <label>日−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3623,7 +3623,7 @@
 	  <y>192</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݱ���ݾ�³�</label>
+	  <label>月−院内−上限額</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3663,7 +3663,7 @@
 	  <y>10</y>
 	  <width>160</width>
 	  <height>18</height>
-	  <label>��������ô��ʬ��������</label>
+	  <label>入院−負担区分　　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -3679,7 +3679,7 @@
 	  <y>280</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>������ô��ʬ����</label>
+	  <label>薬剤負担区分　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3695,7 +3695,7 @@
 	  <y>250</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�²������</label>
+	  <label>月−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3711,7 +3711,7 @@
 	  <y>220</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݱ����ݾ�³�</label>
+	  <label>月−院外−上限額</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3727,7 +3727,7 @@
 	  <y>40</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>�����ô��硡��</label>
+	  <label>回−負担割合　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3743,7 +3743,7 @@
 	  <y>70</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݸ���ۡ�����</label>
+	  <label>回−固定額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3759,7 +3759,7 @@
 	  <y>100</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>回−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3775,7 +3775,7 @@
 	  <y>130</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�³ۡ�����</label>
+	  <label>日−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3791,7 +3791,7 @@
 	  <y>160</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݾ�²������</label>
+	  <label>日−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3807,7 +3807,7 @@
 	  <y>190</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�³ۡ�����</label>
+	  <label>月−上限額　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3823,7 +3823,7 @@
 	  <y>220</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>��ݾ�²������</label>
+	  <label>月−上限回数　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3839,7 +3839,7 @@
 	  <y>250</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���ݿ��������ۡ���</label>
+	  <label>日−食事助成額　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3855,7 +3855,7 @@
 	  <y>280</y>
 	  <width>120</width>
 	  <height>18</height>
-	  <label>���������񡡡���</label>
+	  <label>食事療養費　　　</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3869,7 +3869,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N04</name>
-	<label>��ǯ��</label>
+	<label>低年金</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -3886,7 +3886,7 @@
       <y>8</y>
       <width>16</width>
       <height>16</height>
-      <label>��</label>
+      <label>〜</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -3958,7 +3958,7 @@
       <y>8</y>
       <width>75</width>
       <height>18</height>
-      <label>ͭ������</label>
+      <label>有効期間</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -3974,7 +3974,7 @@
       <y>8</y>
       <width>75</width>
       <height>18</height>
-      <label>��ʧ��ʬ</label>
+      <label>支払区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -4074,7 +4074,7 @@
       <y>8</y>
       <width>75</width>
       <height>18</height>
-      <label>�ݸ��ֹ�</label>
+      <label>保険番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -4246,7 +4246,7 @@
       <y>48</y>
       <width>75</width>
       <height>18</height>
-      <label>����̾</label>
+      <label>制度名</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -4262,7 +4262,7 @@
       <y>80</y>
       <width>75</width>
       <height>18</height>
-      <label>û������̾</label>
+      <label>短縮制度名</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -4318,7 +4318,7 @@
       <y>48</y>
       <width>75</width>
       <height>18</height>
-      <label>ˡ���ֹ�</label>
+      <label>法別番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4383,7 +4383,7 @@
       <y>236</y>
       <width>120</width>
       <height>18</height>
-      <label>ǯ��λ</label>
+      <label>年齢終了</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4399,7 +4399,7 @@
       <y>208</y>
       <width>120</width>
       <height>18</height>
-      <label>����ǯ�𳫻�</label>
+      <label>条件−年齢開始</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4455,7 +4455,7 @@
       <y>288</y>
       <width>120</width>
       <height>18</height>
-      <label>�쥻�ץȵ���</label>
+      <label>レセプト記載</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4538,7 +4538,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>36</text_max_length>
-	<text>1 �������Ϲ���Ϣ��Ȥ�ʻ�Ѥ˸¤����</text>
+	<text>1 国保又は広域連合との併用に限り印刷</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -4671,7 +4671,7 @@
       <y>204</y>
       <width>70</width>
       <height>18</height>
-      <label>����ñ��</label>
+      <label>点数単価</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4687,7 +4687,7 @@
       <y>236</y>
       <width>100</width>
       <height>18</height>
-      <label>�쥻�ץ�����</label>
+      <label>レセプト請求</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4703,7 +4703,7 @@
       <y>264</y>
       <width>120</width>
       <height>18</height>
-      <label>�쥻�ץ���ô���</label>
+      <label>レセプト負担金額</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4719,7 +4719,7 @@
       <y>108</y>
       <width>144</width>
       <height>20</height>
-      <label>ˡ���ֹ�����å���ʬ</label>
+      <label>法別番号チェック区分</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4735,7 +4735,7 @@
       <y>108</y>
       <width>120</width>
       <height>18</height>
-      <label>�ݸ�������̶�ʬ</label>
+      <label>保険公費種別区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4751,7 +4751,7 @@
       <y>136</y>
       <width>140</width>
       <height>18</height>
-      <label>�����ֹ�����å���ʬ</label>
+      <label>検証番号チェック区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4767,7 +4767,7 @@
       <y>163</y>
       <width>190</width>
       <height>18</height>
-      <label>����Ը����ֹ�����å���ʬ</label>
+      <label>受給者検証番号チェック区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4783,7 +4783,7 @@
       <y>197</y>
       <width>110</width>
       <height>18</height>
-      <label>��������������</label>
+      <label>　　　　　　２</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4799,7 +4799,7 @@
       <y>167</y>
       <width>110</width>
       <height>18</height>
-      <label>�����ݸ��ֹ棱</label>
+      <label>限定保険番号１</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4815,7 +4815,7 @@
       <y>226</y>
       <width>110</width>
       <height>18</height>
-      <label>��������������</label>
+      <label>　　　　　　３</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -4831,7 +4831,7 @@
       <y>136</y>
       <width>100</width>
       <height>18</height>
-      <label>������ݶ�ʬ</label>
+      <label>公費主保区分</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

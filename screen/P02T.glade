@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(P02T)≥Œ«ßÕ˙ŒÚ≤ËÃÃ</title>
+  <title>(P02T)Á¢∫Ë™çÂ±•Ê≠¥ÁîªÈù¢</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:09:39 GMT</last_modification_time>
       </signal>
-      <label>F1 Ã·§Î</label>
+      <label>F1 Êàª„Çã</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -164,7 +164,7 @@
       <y>52</y>
       <width>34</width>
       <height>18</height>
-      <label>£±°•</label>
+      <label>ÔºëÔºé</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -180,7 +180,7 @@
       <y>100</y>
       <width>34</width>
       <height>18</height>
-      <label>£≥°•</label>
+      <label>ÔºìÔºé</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -196,7 +196,7 @@
       <y>124</y>
       <width>34</width>
       <height>18</height>
-      <label>£¥°•</label>
+      <label>ÔºîÔºé</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -212,7 +212,7 @@
       <y>148</y>
       <width>34</width>
       <height>18</height>
-      <label>£µ°•</label>
+      <label>ÔºïÔºé</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -228,7 +228,7 @@
       <y>76</y>
       <width>34</width>
       <height>18</height>
-      <label>£≤°•</label>
+      <label>ÔºíÔºé</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -244,7 +244,7 @@
       <y>28</y>
       <width>104</width>
       <height>20</height>
-      <label>≥Œ«ß«Ø∑Ó∆¸</label>
+      <label>Á¢∫Ë™çÂπ¥ÊúàÊó•</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -32,7 +32,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(N21FIL)▓ш┴№┴к┬Є▓ш╠╠</title>
+  <title>(N21FIL)чФ╗хГПщБ╕цКЮчФ╗щЭв</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -64,7 +64,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 06 Aug 2007 05:46:01 GMT</last_modification_time>
       </signal>
-      <label>│╬─ъ</label>
+      <label>чв║хоЪ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -87,7 +87,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 18 Feb 2005 01:21:51 GMT</last_modification_time>
       </signal>
-      <label>╠сды</label>
+      <label>цИ╗уВЛ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -98,7 +98,7 @@
       <y>5</y>
       <width>400</width>
       <height>24</height>
-      <label>▓ш┴№е╒ебедеы</label>
+      <label>чФ╗хГПуГХуВбуВдуГл</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -122,7 +122,7 @@
       <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
       <homogeneous>False</homogeneous>
       <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-      <title>е╒ебедеыд╬┴к┬Є</title>
+      <title>уГХуВбуВдуГлуБощБ╕цКЮ</title>
       <signal>
         <name>file_set</name>
         <handler>changed</handler>

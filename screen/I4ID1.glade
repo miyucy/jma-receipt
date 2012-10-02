@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -33,7 +33,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Thu, 05 Dec 2002 02:05:27 GMT</last_modification_time>
   </signal>
-  <title>(I4ID1)≥Œ«ß≤ËÃÃ</title>
+  <title>(I4ID1)Á¢∫Ë™çÁîªÈù¢</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -81,7 +81,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 16 Feb 2001 09:19:29 GMT</last_modification_time>
       </signal>
-      <label>Ã·§Î</label>
+      <label>Êàª„Çã</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -120,7 +120,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 16 Feb 2001 09:20:23 GMT</last_modification_time>
       </signal>
-      <label>£œ£À</label>
+      <label>ÔºØÔº´</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>

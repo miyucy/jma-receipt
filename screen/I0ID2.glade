@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(I0ID2)Ёнг╖╡Хлл</title>
+  <title>(I0ID2)Г╒╨Х╙█Г■╩И²╒</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:22 GMT</last_modification_time>
       </signal>
-      <label>лА╓К</label>
+      <label>Ф┬╩Ц┌▀</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -85,7 +85,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>ёоёк</label>
+      <label>О╪╞О╪╚</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -224,7 +224,7 @@
       <y>200</y>
       <width>72</width>
       <height>25</height>
-      <label>╩╩дЙфЧ╠║на</label>
+      <label>Г╝≈Е╝ Е┘╔И≥╒Ф√≥</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -240,7 +240,7 @@
       <y>170</y>
       <width>72</width>
       <height>25</height>
-      <label>йщ╦╠ах╧Г╓╩</label>
+      <label>Д©²И≥╨Г╣└Е░┬Ц│⌡</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -256,7 +256,7 @@
       <y>140</y>
       <width>30</width>
       <height>25</height>
-      <label>иб╪╪</label>
+      <label>Г≈┘Е╝╓</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -272,7 +272,7 @@
       <y>110</y>
       <width>45</width>
       <height>25</height>
-      <label>╟шф╟фЭ</label>
+      <label>Г∙╟Е▀∙Ф≈╔</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -288,7 +288,7 @@
       <y>140</y>
       <width>30</width>
       <height>25</height>
-      <label>ибеО</label>
+      <label>Г≈┘Фё÷</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -304,7 +304,7 @@
       <y>110</y>
       <width>45</width>
       <height>25</height>
-      <label>фЧ╠║╡й</label>
+      <label>Е┘╔И≥╒Г╖▒</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

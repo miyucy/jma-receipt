@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(CID2)ибл╬╔Ё║╪╔ицж╢╧╓╗Ёнг╖╡Хлл</title>
+  <title>(CID2)Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴Г╫╝Ф▐⌡Ц│┬Г╒╨Х╙█Г■╩И²╒</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -78,7 +78,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:22 GMT</last_modification_time>
       </signal>
-      <label>ёнёо</label>
+      <label>О╪╝О╪╞</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -93,7 +93,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>70</text_max_length>
-      <text>ё╠ё╡ёЁё╢ё╣ё╤ё╥ё╦ё╧ё╟ё╠ё╡ёЁё╢ё╣ё╤ё╥ё╦ё╧ё╟ё╠ё╡ёЁё╢ё╣ё╤ё╥ё╦ё╧ё╟ё╠ё╡ёЁё╢ё╣ё╤</text>
+      <text>О╪▒О╪▓О╪⌠О╪■О╪∙О╪√О╪≈О╪≤О╪≥О╪░О╪▒О╪▓О╪⌠О╪■О╪∙О╪√О╪≈О╪≤О╪≥О╪░О╪▒О╪▓О╪⌠О╪■О╪∙О╪√О╪≈О╪≤О╪≥О╪░О╪▒О╪▓О╪⌠О╪■О╪∙О╪√</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -117,7 +117,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>ёоёк</label>
+      <label>О╪╞О╪╚</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -160,7 +160,7 @@
       <y>56</y>
       <width>120</width>
       <height>16</height>
-      <label>фЧно╓╣╓Л╓©ибл╬</label>
+      <label>Е┘╔Е┼⌡Ц│∙Ц┌▄Ц│÷Г≈┘Е░█</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -176,7 +176,7 @@
       <y>136</y>
       <width>100</width>
       <height>16</height>
-      <label>©Д╬╘╓╧╓Кибл╬</label>
+      <label>Ф▌╗Е╔╗Ц│≥Ц┌▀Г≈┘Е░█</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -208,7 +208,7 @@
       <y>200</y>
       <width>250</width>
       <height>16</height>
-      <label>©Д╬╘╓╧╓Кибл╬╓кцж╓╜╢╧╓╗╓ч╓╧╓╚║╘</label>
+      <label>Ф▌╗Е╔╗Ц│≥Ц┌▀Г≈┘Е░█Ц│╚Г╫╝Ц│█Ф▐⌡Ц│┬Ц│╬Ц│≥Ц│▀О╪÷</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

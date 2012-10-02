@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(N21)╠Ї║▐╛Ё╩єе▐е╣е┐└▀─ъ</title>
+  <title>(N21)шЦмхЙдцГЕха▒уГЮуВ╣уВ┐шинхоЪ</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 04:57:00 GMT</last_modification_time>
       </signal>
-      <label>╠сды</label>
+      <label>цИ╗уВЛ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -84,7 +84,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 25 Jun 2002 01:05:44 GMT</last_modification_time>
       </signal>
-      <label>епеъев</label>
+      <label>уВпуГкуВв</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -107,7 +107,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 21 Jun 2002 08:18:09 GMT</last_modification_time>
       </signal>
-      <label>║я╜№</label>
+      <label>хЙКщЩд</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -130,7 +130,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 04:58:30 GMT</last_modification_time>
       </signal>
-      <label>еъе╣е╚</label>
+      <label>уГкуВ╣уГИ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -212,7 +212,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:01:37 GMT</last_modification_time>
       </signal>
-      <label>▓ш┴№</label>
+      <label>чФ╗хГП</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -235,7 +235,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:01:37 GMT</last_modification_time>
       </signal>
-      <label>╞■╬╧</label>
+      <label>хЕехКЫ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -258,7 +258,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:02:40 GMT</last_modification_time>
       </signal>
-      <label>╗▓╛╚</label>
+      <label>хПВчЕз</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -281,7 +281,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:03:32 GMT</last_modification_time>
       </signal>
-      <label>┼╨╧┐</label>
+      <label>чЩ╗щМ▓</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -292,7 +292,7 @@
       <y>24</y>
       <width>40</width>
       <height>24</height>
-      <label>е│б╝е╔</label>
+      <label>уВ│уГ╝уГЙ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -353,7 +353,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label443</name>
-	  <label>╚╓╣ц</label>
+	  <label>чХкхП╖</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -366,7 +366,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label445</name>
-	  <label>┼╨╧┐</label>
+	  <label>чЩ╗щМ▓</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -379,7 +379,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label444</name>
-	  <label>╠Ї║▐╠╛</label>
+	  <label>шЦмхЙдхРН</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -413,7 +413,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
-      <text>двдддждидкдлдндпд▒д│</text>
+      <text>уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУ</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -429,7 +429,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>26</text_max_length>
-      <text>двдддждидкдлдндпд▒д│д╡д╖д╣</text>
+      <text>уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩ</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -448,7 +448,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:00:56 GMT</last_modification_time>
       </signal>
-      <label>ев</label>
+      <label>уВв</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -466,7 +466,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:01:17 GMT</last_modification_time>
       </signal>
-      <label>ед</label>
+      <label>уВд</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -484,7 +484,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:01:42 GMT</last_modification_time>
       </signal>
-      <label>еж</label>
+      <label>уВж</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -502,7 +502,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:02:04 GMT</last_modification_time>
       </signal>
-      <label>еи</label>
+      <label>уВи</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -520,7 +520,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:02:21 GMT</last_modification_time>
       </signal>
-      <label>ек</label>
+      <label>уВк</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -538,7 +538,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:02:46 GMT</last_modification_time>
       </signal>
-      <label>ел</label>
+      <label>уВл</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -556,7 +556,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:03:06 GMT</last_modification_time>
       </signal>
-      <label>ен</label>
+      <label>уВн</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -574,7 +574,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:03:26 GMT</last_modification_time>
       </signal>
-      <label>еп</label>
+      <label>уВп</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -592,7 +592,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:03:53 GMT</last_modification_time>
       </signal>
-      <label>е▒</label>
+      <label>уВ▒</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -610,7 +610,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:04:10 GMT</last_modification_time>
       </signal>
-      <label>е│</label>
+      <label>уВ│</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -628,7 +628,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:04:29 GMT</last_modification_time>
       </signal>
-      <label>е╡</label>
+      <label>уВ╡</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -646,7 +646,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:04:45 GMT</last_modification_time>
       </signal>
-      <label>е╖</label>
+      <label>уВ╖</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -664,7 +664,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:05:09 GMT</last_modification_time>
       </signal>
-      <label>е╣</label>
+      <label>уВ╣</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -682,7 +682,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:05:27 GMT</last_modification_time>
       </signal>
-      <label>е╗</label>
+      <label>уВ╗</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -700,7 +700,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:06:14 GMT</last_modification_time>
       </signal>
-      <label>е╜</label>
+      <label>уВ╜</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -718,7 +718,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:06:31 GMT</last_modification_time>
       </signal>
-      <label>е┐</label>
+      <label>уВ┐</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -736,7 +736,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:06:47 GMT</last_modification_time>
       </signal>
-      <label>е┴</label>
+      <label>уГБ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -754,7 +754,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:07:02 GMT</last_modification_time>
       </signal>
-      <label>е─</label>
+      <label>уГД</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -772,7 +772,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:07:19 GMT</last_modification_time>
       </signal>
-      <label>е╞</label>
+      <label>уГЖ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -790,7 +790,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:08:18 GMT</last_modification_time>
       </signal>
-      <label>е╚</label>
+      <label>уГИ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -808,7 +808,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:08:36 GMT</last_modification_time>
       </signal>
-      <label>е╩</label>
+      <label>уГК</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -826,7 +826,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:08:52 GMT</last_modification_time>
       </signal>
-      <label>е╦</label>
+      <label>уГЛ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -844,7 +844,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:09:09 GMT</last_modification_time>
       </signal>
-      <label>е╠</label>
+      <label>уГМ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -862,7 +862,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:09:25 GMT</last_modification_time>
       </signal>
-      <label>е═</label>
+      <label>уГН</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -880,7 +880,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:09:41 GMT</last_modification_time>
       </signal>
-      <label>е╬</label>
+      <label>уГО</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -898,7 +898,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:09:56 GMT</last_modification_time>
       </signal>
-      <label>е╧</label>
+      <label>уГП</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -916,7 +916,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:10:13 GMT</last_modification_time>
       </signal>
-      <label>е╥</label>
+      <label>уГТ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -934,7 +934,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:10:31 GMT</last_modification_time>
       </signal>
-      <label>е╒</label>
+      <label>уГХ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -952,7 +952,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:10:47 GMT</last_modification_time>
       </signal>
-      <label>е╪</label>
+      <label>уГШ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -970,7 +970,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:11:02 GMT</last_modification_time>
       </signal>
-      <label>е█</label>
+      <label>уГЫ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -988,7 +988,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:11:18 GMT</last_modification_time>
       </signal>
-      <label>е▐</label>
+      <label>уГЮ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1006,7 +1006,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:11:47 GMT</last_modification_time>
       </signal>
-      <label>е▀</label>
+      <label>уГЯ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1024,7 +1024,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:12:04 GMT</last_modification_time>
       </signal>
-      <label>ер</label>
+      <label>уГа</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1042,7 +1042,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:12:22 GMT</last_modification_time>
       </signal>
-      <label>ес</label>
+      <label>уГб</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1060,7 +1060,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:12:38 GMT</last_modification_time>
       </signal>
-      <label>ет</label>
+      <label>уГв</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1078,7 +1078,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:12:55 GMT</last_modification_time>
       </signal>
-      <label>еф</label>
+      <label>уГд</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1096,7 +1096,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:13:21 GMT</last_modification_time>
       </signal>
-      <label>ец</label>
+      <label>уГж</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1114,7 +1114,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:13:36 GMT</last_modification_time>
       </signal>
-      <label>еш</label>
+      <label>уГи</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1132,7 +1132,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:13:54 GMT</last_modification_time>
       </signal>
-      <label>ещ</label>
+      <label>уГй</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1150,7 +1150,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:14:10 GMT</last_modification_time>
       </signal>
-      <label>еъ</label>
+      <label>уГк</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1168,7 +1168,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:14:26 GMT</last_modification_time>
       </signal>
-      <label>еы</label>
+      <label>уГл</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1186,7 +1186,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:14:45 GMT</last_modification_time>
       </signal>
-      <label>еь</label>
+      <label>уГм</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1204,7 +1204,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:15:01 GMT</last_modification_time>
       </signal>
-      <label>еэ</label>
+      <label>уГн</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1222,7 +1222,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:15:15 GMT</last_modification_time>
       </signal>
-      <label>ея</label>
+      <label>уГп</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1240,7 +1240,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:15:31 GMT</last_modification_time>
       </signal>
-      <label>еЄ</label>
+      <label>уГ▓</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1258,7 +1258,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:15:46 GMT</last_modification_time>
       </signal>
-      <label>еє</label>
+      <label>уГ│</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1276,7 +1276,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:16:04 GMT</last_modification_time>
       </signal>
-      <label>бм</label>
+      <label>уВЬ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1294,7 +1294,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:16:19 GMT</last_modification_time>
       </signal>
-      <label>бл</label>
+      <label>уВЫ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1312,7 +1312,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:16:19 GMT</last_modification_time>
       </signal>
-      <label>б╝</label>
+      <label>уГ╝</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1330,7 +1330,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:16:37 GMT</last_modification_time>
       </signal>
-      <label>╛о╩╕╗·</label>
+      <label>х░ПцЦЗхнЧ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1348,7 +1348,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 24 Jul 2002 03:16:54 GMT</last_modification_time>
       </signal>
-      <label>╕х┬р</label>
+      <label>х╛МщАА</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1381,7 +1381,7 @@
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>100</text_max_length>
-      <text>двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚д╩д╦д╠д═д╬двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚д╩д╦д╠д═д╬</text>
+      <text>уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБиуБкуБлуБмуБнуБоуБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБиуБкуБлуБмуБнуБо</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -1442,7 +1442,7 @@
       <y>416</y>
       <width>56</width>
       <height>24</height>
-      <label>┴к┬Є╚╓╣ц</label>
+      <label>щБ╕цКЮчХкхП╖</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1458,7 +1458,7 @@
       <y>488</y>
       <width>32</width>
       <height>24</height>
-      <label>┐з</label>
+      <label>шЙ▓</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1474,7 +1474,7 @@
       <y>548</y>
       <width>32</width>
       <height>24</height>
-      <label>╖┴</label>
+      <label>х╜в</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1490,7 +1490,7 @@
       <y>608</y>
       <width>32</width>
       <height>24</height>
-      <label>╡н╣ц</label>
+      <label>шиШхП╖</label>
       <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1506,7 +1506,7 @@
       <y>464</y>
       <width>40</width>
       <height>24</height>
-      <label>╠Ї║▐╠╛</label>
+      <label>шЦмхЙдхРН</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1522,7 +1522,7 @@
       <y>544</y>
       <width>68</width>
       <height>24</height>
-      <label>╕·╟╜бж╕·▓╠</label>
+      <label>хК╣шГ╜уГ╗хК╣цЮЬ</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1538,7 +1538,7 @@
       <y>672</y>
       <width>96</width>
       <height>24</height>
-      <label>▓ш┴№е╒ебедеы╠╛</label>
+      <label>чФ╗хГПуГХуВбуВдуГлхРН</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1554,7 +1554,7 @@
       <y>464</y>
       <width>56</width>
       <height>24</height>
-      <label>├э░╒╗Ў╣р</label>
+      <label>ц│ицДПф║ЛщаЕ</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -1592,9 +1592,9 @@
 	  <last_modification_time>Wed, 24 Jul 2002 02:27:49 GMT</last_modification_time>
 	</signal>
 	<editable>True</editable>
-	<text>двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐</text>
+	<text>уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯ
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯ
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯ</text>
 	<xim_enabled>True</xim_enabled>
       </widget>
     </widget>
@@ -1628,12 +1628,12 @@
 	  <last_modification_time>Wed, 24 Jul 2002 02:28:33 GMT</last_modification_time>
 	</signal>
 	<editable>True</editable>
-	<text>двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜</text>
+	<text>уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБб
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭ
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭ
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭ
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭ
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭ</text>
 	<xim_enabled>True</xim_enabled>
       </widget>
     </widget>
@@ -1667,9 +1667,9 @@
 	  <last_modification_time>Wed, 24 Jul 2002 02:29:05 GMT</last_modification_time>
 	</signal>
 	<editable>True</editable>
-	<text>двдддждидкдлдндпд▒д│
-двдддждидкдлдндп
-двдддждидкдлдндп</text>
+	<text>уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУ
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП</text>
 	<xim_enabled>True</xim_enabled>
       </widget>
     </widget>
@@ -1703,14 +1703,14 @@
 	  <last_modification_time>Wed, 24 Jul 2002 02:30:14 GMT</last_modification_time>
 	</signal>
 	<editable>True</editable>
-	<text>двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп</text>
+	<text>уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП</text>
 	<xim_enabled>True</xim_enabled>
       </widget>
     </widget>
@@ -1744,14 +1744,14 @@
 	  <last_modification_time>Wed, 24 Jul 2002 02:30:14 GMT</last_modification_time>
 	</signal>
 	<editable>True</editable>
-	<text>двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп
-двдддждидкдлдндп</text>
+	<text>уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП
+уБВуБДуБЖуБИуБКуБЛуБНуБП</text>
 	<xim_enabled>True</xim_enabled>
       </widget>
     </widget>
@@ -1785,16 +1785,16 @@
 	  <last_modification_time>Wed, 24 Jul 2002 02:30:54 GMT</last_modification_time>
 	</signal>
 	<editable>True</editable>
-	<text>двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚д╩д╦
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚
-двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚</text>
+	<text>уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБиуБкуБл
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБи
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБи
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБи
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБи
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБи
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБи
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБи
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБи
+уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБи</text>
 	<xim_enabled>True</xim_enabled>
       </widget>
     </widget>
@@ -1822,7 +1822,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>256</text_max_length>
-      <text>двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚д╩д╦д╠д═д╬двдддждидкдлдндпд▒д│д╡д╖д╣д╗д╜д┐д┴д─д╞д╚д╩д╦</text>
+      <text>уБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБиуБкуБлуБмуБнуБоуБВуБДуБЖуБИуБКуБЛуБНуБПуБСуБУуБХуБЧуБЩуБЫуБЭуБЯуБбуБдуБжуБиуБкуБл</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -1855,7 +1855,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:03:32 GMT</last_modification_time>
       </signal>
-      <label>─ъ╖┐╩╕г▒</label>
+      <label>хоЪхЮЛцЦЗя╝С</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1878,7 +1878,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:03:32 GMT</last_modification_time>
       </signal>
-      <label>─ъ╖┐╩╕г▓</label>
+      <label>хоЪхЮЛцЦЗя╝Т</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1901,7 +1901,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 22 Dec 2000 05:03:32 GMT</last_modification_time>
       </signal>
-      <label>епеъев</label>
+      <label>уВпуГкуВв</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>

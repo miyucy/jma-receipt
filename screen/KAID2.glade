@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(KAID2)³ÎÇ§²èÌÌ</title>
+  <title>(KAID2)ç¢ºèªç”»é¢</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -78,7 +78,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:22 GMT</last_modification_time>
       </signal>
-      <label>F1 Ìá¤ë</label>
+      <label>F1 æˆ»ã‚‹</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -117,7 +117,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F5 ÌôºÞ¾ðÊó¡¡¡¡</label>
+      <label>F5 è–¬å‰¤æƒ…å ±ã€€ã€€</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -140,7 +140,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F9 ½èÊýäµ¡¦Ìô¾ð</label>
+      <label>F9 å‡¦æ–¹ç®‹ãƒ»è–¬æƒ…</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -163,7 +163,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F8 ½èÊý¤»¤óÈ¯¹Ô</label>
+      <label>F8 å‡¦æ–¹ã›ã‚“ç™ºè¡Œ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -186,7 +186,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F6 ¤ªÌô¼êÄ¢¡¡¡¡</label>
+      <label>F6 ãŠè–¬æ‰‹å¸³ã€€ã€€</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -209,7 +209,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F7 Ìô¾ð¡¦¼êÄ¢¡¡</label>
+      <label>F7 è–¬æƒ…ãƒ»æ‰‹å¸³ã€€</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -232,7 +232,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>F10  Á´Éô¡¡¡¡¡¡</label>
+      <label>F10  å…¨éƒ¨ã€€ã€€ã€€</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>

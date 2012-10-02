@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -32,7 +32,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(R06)еье╗е╫е╚░ї║■▓ш╠╠б▌е╫еъеєе┐░ь│ч└▀─ъ</title>
+  <title>(R06)уГмуВ╗уГЧуГИхН░хИ╖чФ╗щЭвтИТуГЧуГкуГ│уВ┐ф╕АцЛмшинхоЪ</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -64,7 +64,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>╠сды</label>
+      <label>цИ╗уВЛ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -169,7 +169,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>└▀─ъ</label>
+      <label>шинхоЪ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -192,7 +192,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
       </signal>
-      <label>┴┤╩╟д╦└▀─ъ</label>
+      <label>хЕищаБуБлшинхоЪ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>SETTEI</group>
@@ -217,7 +217,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 11 Jan 2002 02:35:17 GMT</last_modification_time>
       </signal>
-      <label>╔╜╝и╩╟д╬д▀д╦└▀─ъ</label>
+      <label>шбичд║щаБуБоуБ┐уБлшинхоЪ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>SETTEI</group>
@@ -230,7 +230,7 @@
       <y>84</y>
       <width>120</width>
       <height>24</height>
-      <label>╜╨╬╧е╫еъеєе┐╠╛</label>
+      <label>хЗ║хКЫуГЧуГкуГ│уВ┐хРН</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -246,7 +246,7 @@
       <y>136</y>
       <width>40</width>
       <height>24</height>
-      <label>┬│╗ц</label>
+      <label>ч╢Ъч┤Щ</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

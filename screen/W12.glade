@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(W12)�����ƥ��������ݥ쥻�ץȡ����������������</title>
+  <title>(W12)システム管理情報−レセプト・総括印刷情報設定</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -134,7 +134,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>��Ͽ</label>
+      <label>登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -211,7 +211,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>��������</label>
+      <label>タブ切替</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -322,7 +322,7 @@
       <y>8</y>
       <width>38</width>
       <height>18</height>
-      <label>��</label>
+      <label>〜</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -486,7 +486,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>26</text_max_length>
-	    <text>2 ����¼��ֹ�򵭺ܤ���</text>
+	    <text>2 病棟・病室番号を記載する</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -899,8 +899,8 @@
 	  <y>370</y>
 	  <width>160</width>
 	  <height>48</height>
-	  <label>���ౡ���򵭺ܶ�ʬ
-������������������������</label>
+	  <label>入退院履歴記載区分
+　　　　　　　（入院外）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -916,7 +916,7 @@
 	  <y>496</y>
 	  <width>150</width>
 	  <height>24</height>
-	  <label>Ϸ�ܸ͡���  �쥻����</label>
+	  <label>老人＋原爆  レセ記載</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -932,7 +932,7 @@
 	  <y>536</y>
 	  <width>150</width>
 	  <height>24</height>
-	  <label>����쥻Ŧ���󵭺�</label>
+	  <label>自費レセ摘要欄記載</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -993,7 +993,7 @@
 	  <case_sensitive>False</case_sensitive>
 	  <use_arrows>True</use_arrows>
 	  <use_arrows_always>False</use_arrows_always>
-	  <items>1 �����ֹ��
+	  <items>1 患者番号順
 </items>
 
 	  <widget>
@@ -1016,7 +1016,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>34</text_max_length>
-	    <text>1 �����ֹ��</text>
+	    <text>1 患者番号順</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -1074,7 +1074,7 @@
 	  <case_sensitive>False</case_sensitive>
 	  <use_arrows>True</use_arrows>
 	  <use_arrows_always>False</use_arrows_always>
-	  <items>0 ž��ʬ���˵��ܤ���
+	  <items>0 転帰分を後に記載する
 </items>
 
 	  <widget>
@@ -1097,7 +1097,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>36</text_max_length>
-	    <text>0 ž��ʬ��Ʊ�쳫�����������˵��ܤ���</text>
+	    <text>0 転帰分を同一開始日の末尾に記載する</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -1115,7 +1115,7 @@
 	  <case_sensitive>False</case_sensitive>
 	  <use_arrows>True</use_arrows>
 	  <use_arrows_always>False</use_arrows_always>
-	  <items>1 �����å�����
+	  <items>1 チェックする
 </items>
 
 	  <widget>
@@ -1138,7 +1138,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>20</text_max_length>
-	    <text>1 �����å�����</text>
+	    <text>1 チェックする</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -1183,7 +1183,7 @@
 	      <class>GtkLabel</class>
 	      <child_name>CList:title</child_name>
 	      <name>label826</name>
-	      <label>�ֹ�</label>
+	      <label>番号</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -1196,7 +1196,7 @@
 	      <class>GtkLabel</class>
 	      <child_name>CList:title</child_name>
 	      <name>label827</name>
-	      <label>�ݸ����ֹ�</label>
+	      <label>保険者番号</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -1209,7 +1209,7 @@
 	      <class>GtkLabel</class>
 	      <child_name>CList:title</child_name>
 	      <name>label828</name>
-	      <label>��</label>
+	      <label>特</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -1222,7 +1222,7 @@
 	      <class>GtkLabel</class>
 	      <child_name>CList:title</child_name>
 	      <name>label829</name>
-	      <label>�ݸ���̾</label>
+	      <label>保険者名</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -1292,7 +1292,7 @@
 	  <y>568</y>
 	  <width>150</width>
 	  <height>24</height>
-	  <label>�ݸ���̾</label>
+	  <label>保険者名</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1315,7 +1315,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
 	  </signal>
-	  <label>���</label>
+	  <label>削除</label>
 	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
@@ -1333,7 +1333,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
 	  </signal>
-	  <label>����</label>
+	  <label>更新</label>
 	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
@@ -1356,7 +1356,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
 	  </signal>
-	  <label>S��F10 ���񵭺ܽ�����</label>
+	  <label>S＋F10 公費記載順設定</label>
 	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
@@ -1376,7 +1376,7 @@
 	  <y>296</y>
 	  <width>132</width>
 	  <height>24</height>
-	  <label>��ư���ܶ�ʬ</label>
+	  <label>自動遷移区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1392,7 +1392,7 @@
 	  <y>256</y>
 	  <width>33</width>
 	  <height>24</height>
-	  <label>����</label>
+	  <label>入院</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1408,7 +1408,7 @@
 	  <y>216</y>
 	  <width>45</width>
 	  <height>24</height>
-	  <label>������</label>
+	  <label>入院外</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1424,8 +1424,8 @@
 	  <y>230</y>
 	  <width>144</width>
 	  <height>48</height>
-	  <label>���̥쥻�ץ��Խ�
-�����ץ������̾</label>
+	  <label>県別レセプト編集
+　　プログラム名</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1441,7 +1441,7 @@
 	  <y>96</y>
 	  <width>132</width>
 	  <height>24</height>
-	  <label>��̾���ܽ�</label>
+	  <label>病名記載順</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1457,7 +1457,7 @@
 	  <y>56</y>
 	  <width>173</width>
 	  <height>24</height>
-	  <label>���ե��顼�����å���ʬ</label>
+	  <label>受付エラーチェック区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1473,7 +1473,7 @@
 	  <y>376</y>
 	  <width>165</width>
 	  <height>24</height>
-	  <label>�����ѡ�����ѽ��ɽ��</label>
+	  <label>点検用・提出用初期表示</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1494,7 +1494,7 @@
 	  <case_sensitive>False</case_sensitive>
 	  <use_arrows>True</use_arrows>
 	  <use_arrows_always>False</use_arrows_always>
-	  <items>3 �ݸ��ȹ礻�˽ऺ�뼫ư����
+	  <items>3 保険組合せに準ずる自動記載
 </items>
 
 	  <widget>
@@ -1517,7 +1517,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>34</text_max_length>
-	    <text>3 �ݸ��ȹ礻�˽ऺ�뼫ư����</text>
+	    <text>3 保険組合せに準ずる自動記載</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -1530,8 +1530,8 @@
 	  <y>6</y>
 	  <width>150</width>
 	  <height>48</height>
-	  <label>������̤�����
-�������������ȵ���</label>
+	  <label>入院料未算定時
+　　　　コメント記載</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1587,7 +1587,7 @@
 	  <y>336</y>
 	  <width>122</width>
 	  <height>24</height>
-	  <label>�̤��ֹ浭�ܶ�ʬ</label>
+	  <label>通し番号記載区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1603,7 +1603,7 @@
 	  <y>416</y>
 	  <width>150</width>
 	  <height>24</height>
-	  <label>���Ųʵ��ܶ�ʬ��������</label>
+	  <label>診療科記載区分（入院）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1619,8 +1619,8 @@
 	  <y>450</y>
 	  <width>150</width>
 	  <height>48</height>
-	  <label>�����ֹ浭�ܶ�ʬ
-����������������������</label>
+	  <label>病棟番号記載区分
+　　　　　　　（入院）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1636,7 +1636,7 @@
 	  <y>136</y>
 	  <width>132</width>
 	  <height>24</height>
-	  <label>ž�������ܶ�ʬ</label>
+	  <label>転帰日記載区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1652,7 +1652,7 @@
 	  <y>176</y>
 	  <width>150</width>
 	  <height>24</height>
-	  <label>ž���ѽ���̾���ܶ�ʬ</label>
+	  <label>転帰済傷病名記載区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1668,7 +1668,7 @@
 	  <y>216</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>���ݣϣãҵ��ܶ�ʬ</label>
+	  <label>社保ＯＣＲ記載区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1684,7 +1684,7 @@
 	  <y>256</y>
 	  <width>144</width>
 	  <height>24</height>
-	  <label>���ݣϣãҵ��ܶ�ʬ</label>
+	  <label>国保ＯＣＲ記載区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1700,7 +1700,7 @@
 	  <y>296</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>����Ϣ��ϣãҵ��ܶ�ʬ</label>
+	  <label>広域連合ＯＣＲ記載区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1716,7 +1716,7 @@
 	  <y>16</y>
 	  <width>140</width>
 	  <height>24</height>
-	  <label>����̾���ܶ�ʬ</label>
+	  <label>傷病名記載区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1732,8 +1732,8 @@
 	  <y>330</y>
 	  <width>150</width>
 	  <height>48</height>
-	  <label>�������ޤȤ�����
-��������������ɽ����</label>
+	  <label>生保等まとめ入力
+　　　　　画面表示順</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1749,7 +1749,7 @@
 	  <y>455</y>
 	  <width>160</width>
 	  <height>19</height>
-	  <label>ľ�������Ԥ������ȹ�</label>
+	  <label>直接請求を行う健保組合</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1792,7 +1792,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>20</text_max_length>
-	    <text>0 ����ѥ쥻�ץ�</text>
+	    <text>0 提出用レセプト</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -1803,7 +1803,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N01</name>
-	<label>�쥻�ץȡ����ܣ�</label>
+	<label>レセプト・基本１</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -2047,7 +2047,7 @@
 	  <y>70</y>
 	  <width>60</width>
 	  <height>24</height>
-	  <label>��³���</label>
+	  <label>（続紙）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2063,7 +2063,7 @@
 	  <y>10</y>
 	  <width>140</width>
 	  <height>24</height>
-	  <label>������</label>
+	  <label>入院外</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -2079,7 +2079,7 @@
 	  <y>10</y>
 	  <width>140</width>
 	  <height>24</height>
-	  <label>����</label>
+	  <label>入院</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -2095,7 +2095,7 @@
 	  <y>40</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>����</label>
+	  <label>社保</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2120,7 +2120,7 @@
 	  <y>10</y>
 	  <width>144</width>
 	  <height>24</height>
-	  <label>���ϥץ��̾����</label>
+	  <label>出力プリンタ名設定</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2248,7 +2248,7 @@
 	  <y>220</y>
 	  <width>64</width>
 	  <height>24</height>
-	  <label>³���ʬ</label>
+	  <label>続紙区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2264,7 +2264,7 @@
 	  <y>130</y>
 	  <width>56</width>
 	  <height>24</height>
-	  <label>��³���</label>
+	  <label>（続紙）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2280,7 +2280,7 @@
 	  <y>190</y>
 	  <width>56</width>
 	  <height>24</height>
-	  <label>��³���</label>
+	  <label>（続紙）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2296,7 +2296,7 @@
 	  <y>100</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>����</label>
+	  <label>国保</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2312,7 +2312,7 @@
 	  <y>160</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>����Ϣ��</label>
+	  <label>広域連合</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2328,7 +2328,7 @@
 	  <y>96</y>
 	  <width>184</width>
 	  <height>24</height>
-	  <label>���������Ͻ�����Ρ�</label>
+	  <label>一括作成出力順（全体）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2344,7 +2344,7 @@
 	  <y>176</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>���������Ͻ�ʼ��ݡ�</label>
+	  <label>一括作成出力順（社保）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2360,7 +2360,7 @@
 	  <y>216</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>���������Ͻ�ʹ��ݡ�</label>
+	  <label>一括作成出力順（国保）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2376,7 +2376,7 @@
 	  <y>256</y>
 	  <width>180</width>
 	  <height>24</height>
-	  <label>���������Ͻ�ʹ���Ϣ���</label>
+	  <label>一括作成出力順（広域連合）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2392,7 +2392,7 @@
 	  <y>296</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>���̺������Ͻ�ʰ��ݡ�</label>
+	  <label>個別作成出力順（医保）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2408,7 +2408,7 @@
 	  <y>136</y>
 	  <width>187</width>
 	  <height>24</height>
-	  <label>�������������������Ρ�����</label>
+	  <label>　　　　　　　（全体）入院</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2531,7 +2531,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>31</text_max_length>
-	    <text>01 ���̡��ݸ����ֹ桦���ʻ�̾��</text>
+	    <text>01 種別・保険者番号・カナ氏名順</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -2611,7 +2611,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>31</text_max_length>
-	    <text>01 ����������������������</text>
+	    <text>01 １２３４５６７８９０１</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -2704,7 +2704,7 @@
 	  <y>16</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>������Υ����å����</label>
+	  <label>印刷後のチェック解除</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2760,7 +2760,7 @@
 	  <y>56</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>����쥻�ץȤΰ�������</label>
+	  <label>自費レセプトの印刷指定</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2843,7 +2843,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>26</text_max_length>
-	    <text>1 ����쥻�ץȤ�������ʤ�</text>
+	    <text>1 自費レセプトを印刷しない</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -2854,7 +2854,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N08</name>
-	<label>���ܣ�</label>
+	<label>基本２</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -2874,7 +2874,7 @@
 	  <y>10</y>
 	  <width>144</width>
 	  <height>24</height>
-	  <label>���ϥץ��̾����</label>
+	  <label>出力プリンタ名設定</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2890,7 +2890,7 @@
 	  <y>10</y>
 	  <width>140</width>
 	  <height>24</height>
-	  <label>������</label>
+	  <label>入院外</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -2906,7 +2906,7 @@
 	  <y>10</y>
 	  <width>140</width>
 	  <height>24</height>
-	  <label>����</label>
+	  <label>入院</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -2922,7 +2922,7 @@
 	  <y>70</y>
 	  <width>60</width>
 	  <height>24</height>
-	  <label>��³���</label>
+	  <label>（続紙）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2938,7 +2938,7 @@
 	  <y>130</y>
 	  <width>60</width>
 	  <height>24</height>
-	  <label>��³���</label>
+	  <label>（続紙）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2954,7 +2954,7 @@
 	  <y>100</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>������</label>
+	  <label>自賠責</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -2970,7 +2970,7 @@
 	  <y>40</y>
 	  <width>110</width>
 	  <height>24</height>
-	  <label>ϫ��</label>
+	  <label>労災</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3210,7 +3210,7 @@
 	  <y>250</y>
 	  <width>140</width>
 	  <height>24</height>
-	  <label>�����ա��ȵ��ܶ�ʬ</label>
+	  <label>自賠責・枠記載区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3226,7 +3226,7 @@
 	  <y>30</y>
 	  <width>70</width>
 	  <height>24</height>
-	  <label>����������</label>
+	  <label>（入院外）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3242,7 +3242,7 @@
 	  <y>304</y>
 	  <width>70</width>
 	  <height>24</height>
-	  <label>��������</label>
+	  <label>（入院）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3258,7 +3258,7 @@
 	  <y>64</y>
 	  <width>70</width>
 	  <height>24</height>
-	  <label>��������</label>
+	  <label>（入院）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3354,7 +3354,7 @@
 	  <y>10</y>
 	  <width>140</width>
 	  <height>24</height>
-	  <label>ϫ�ҡ��ȵ��ܶ�ʬ</label>
+	  <label>労災・枠記載区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3459,7 +3459,7 @@
 	  <y>366</y>
 	  <width>70</width>
 	  <height>24</height>
-	  <label>����������</label>
+	  <label>（入院外）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3475,7 +3475,7 @@
 	  <y>346</y>
 	  <width>140</width>
 	  <height>24</height>
-	  <label>�����ա��ͼ�����</label>
+	  <label>自賠責・様式選択</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3491,7 +3491,7 @@
 	  <y>270</y>
 	  <width>70</width>
 	  <height>24</height>
-	  <label>����������</label>
+	  <label>（入院外）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3507,7 +3507,7 @@
 	  <y>400</y>
 	  <width>70</width>
 	  <height>24</height>
-	  <label>��������</label>
+	  <label>（入院）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3590,7 +3590,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>24</text_max_length>
-	    <text>1 ʿ������ǯ��������ͼ�</text>
+	    <text>1 平成１９年４月改正様式</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -3603,7 +3603,7 @@
 	  <y>126</y>
 	  <width>70</width>
 	  <height>24</height>
-	  <label>����������</label>
+	  <label>（入院外）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3619,7 +3619,7 @@
 	  <y>160</y>
 	  <width>70</width>
 	  <height>24</height>
-	  <label>��������</label>
+	  <label>（入院）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3635,7 +3635,7 @@
 	  <y>208</y>
 	  <width>140</width>
 	  <height>24</height>
-	  <label>ϫ�ҥ����ȵ���</label>
+	  <label>労災コメント記載</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3651,7 +3651,7 @@
 	  <y>106</y>
 	  <width>140</width>
 	  <height>24</height>
-	  <label>ϫ�ҡ��ͼ�����</label>
+	  <label>労災・様式選択</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3734,7 +3734,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>24</text_max_length>
-	    <text>1 ʿ������ǯ��������ͼ�</text>
+	    <text>1 平成１９年４月改正様式</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -3774,7 +3774,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>24</text_max_length>
-	    <text>1 ʿ������ǯ��������ͼ�</text>
+	    <text>1 平成１９年４月改正様式</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -3785,7 +3785,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N07</name>
-	<label>ϫ�ҡ�������</label>
+	<label>労災・自賠責</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -3929,7 +3929,7 @@
 	  <y>175</y>
 	  <width>170</width>
 	  <height>16</height>
-	  <label>�쥻�ץȥ�����</label>
+	  <label>レセプトコメント</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3945,7 +3945,7 @@
 	  <y>136</y>
 	  <width>144</width>
 	  <height>24</height>
-	  <label>�쥻�ťǡ���������</label>
+	  <label>レセ電データ出力先</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -3961,7 +3961,7 @@
 	  <y>192</y>
 	  <width>150</width>
 	  <height>16</height>
-	  <label>�ʾɾ��ܵ��˵�Ͽ��ʬ</label>
+	  <label>（症状詳記）記録区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4105,7 +4105,7 @@
 	  <y>496</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>�쥻�ţãġݣҽ���</label>
+	  <label>レセ電ＣＤ−Ｒ出力</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4161,7 +4161,7 @@
 	  <y>576</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>���ǥ����������ս����</label>
+	  <label>光ディスク等送付書作成</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4177,7 +4177,7 @@
 	  <y>536</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>�ɾ��ܵ�����</label>
+	  <label>症状詳記作成</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4220,7 +4220,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>20</text_max_length>
-	    <text>0 �������ʤ�</text>
+	    <text>0 作成しない</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -4233,7 +4233,7 @@
 	  <y>336</y>
 	  <width>144</width>
 	  <height>24</height>
-	  <label>����Ϣ��</label>
+	  <label>広域連合</label>
 	  <justify>GTK_JUSTIFY_RIGHT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -4249,7 +4249,7 @@
 	  <y>256</y>
 	  <width>144</width>
 	  <height>24</height>
-	  <label>������������</label>
+	  <label>入院外・社保</label>
 	  <justify>GTK_JUSTIFY_RIGHT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -4265,7 +4265,7 @@
 	  <y>376</y>
 	  <width>144</width>
 	  <height>24</height>
-	  <label>����������</label>
+	  <label>入院・社保</label>
 	  <justify>GTK_JUSTIFY_RIGHT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -4281,7 +4281,7 @@
 	  <y>416</y>
 	  <width>144</width>
 	  <height>24</height>
-	  <label>����</label>
+	  <label>国保</label>
 	  <justify>GTK_JUSTIFY_RIGHT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -4297,7 +4297,7 @@
 	  <y>456</y>
 	  <width>144</width>
 	  <height>24</height>
-	  <label>����Ϣ��</label>
+	  <label>広域連合</label>
 	  <justify>GTK_JUSTIFY_RIGHT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -4393,7 +4393,7 @@
 	  <y>16</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>���ݥ쥻�Ž��϶�ʬ</label>
+	  <label>社保レセ電出力区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4409,7 +4409,7 @@
 	  <y>56</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>���ݥ쥻�Ž��϶�ʬ</label>
+	  <label>国保レセ電出力区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4425,7 +4425,7 @@
 	  <y>16</y>
 	  <width>185</width>
 	  <height>24</height>
-	  <label>�쥻�ťǡ���������¸��̵ͭ</label>
+	  <label>レセ電データ履歴保存の有無</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4441,7 +4441,7 @@
 	  <y>96</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>����Ϣ��쥻�Ž��϶�ʬ</label>
+	  <label>広域連合レセ電出力区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4484,7 +4484,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>20</text_max_length>
-	    <text>0 �������ʤ�</text>
+	    <text>0 作成しない</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -4564,7 +4564,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>40</text_max_length>
-	    <text>3 �����ƥ����������ʥե��åԥ��ѡ�</text>
+	    <text>3 システム管理設定場所（フロッピィ用）</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -4604,7 +4604,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>24</text_max_length>
-	    <text>0 ��Ͽ���ʤ�</text>
+	    <text>0 記録しない</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -4644,7 +4644,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>24</text_max_length>
-	    <text>0 �����å����ʤ�</text>
+	    <text>0 チェックしない</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -4657,7 +4657,7 @@
 	  <y>56</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>�ե��������������</label>
+	  <label>ファイル出力先設定</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4673,7 +4673,7 @@
 	  <y>96</y>
 	  <width>183</width>
 	  <height>16</height>
-	  <label>�ݸ��Ԥ�����Ǥ��ʤ��ҳ�</label>
+	  <label>保険者が特定できない災害</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4689,7 +4689,7 @@
 	  <y>113</y>
 	  <width>185</width>
 	  <height>16</height>
-	  <label>�����쥻�ץȤΥ쥻�ŵ�Ͽ</label>
+	  <label>該当レセプトのレセ電記録</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -4705,7 +4705,7 @@
 	  <y>136</y>
 	  <width>180</width>
 	  <height>24</height>
-	  <label>�쥻�ťǡ��������å���̵ͭ</label>
+	  <label>レセ電データチェックの有無</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -4739,7 +4739,7 @@
 	  <y>296</y>
 	  <width>144</width>
 	  <height>24</height>
-	  <label>����</label>
+	  <label>国保</label>
 	  <justify>GTK_JUSTIFY_RIGHT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
@@ -4755,7 +4755,7 @@
 	  <y>220</y>
 	  <width>200</width>
 	  <height>24</height>
-	  <label>����ɽ��Ͽ���ʹ��������</label>
+	  <label>日計表記録条件（合計点数）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4771,7 +4771,7 @@
 	  <y>256</y>
 	  <width>50</width>
 	  <height>24</height>
-	  <label>����</label>
+	  <label>記号</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4787,7 +4787,7 @@
 	  <y>296</y>
 	  <width>50</width>
 	  <height>24</height>
-	  <label>�ֹ�</label>
+	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4803,7 +4803,7 @@
 	  <y>224</y>
 	  <width>85</width>
 	  <height>24</height>
-	  <label>�Խ�����</label>
+	  <label>編集設定</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4819,7 +4819,7 @@
 	  <y>224</y>
 	  <width>132</width>
 	  <height>24</height>
-	  <label>�о��ݸ��ԡʹ��ݡ�</label>
+	  <label>対象保険者（国保）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4835,7 +4835,7 @@
 	  <y>176</y>
 	  <width>150</width>
 	  <height>24</height>
-	  <label>����Ϣ�������ʬ</label>
+	  <label>広域連合作成区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -4878,7 +4878,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>30</text_max_length>
-	    <text>0 ����ʤ�</text>
+	    <text>0 設定なし</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -4918,7 +4918,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>30</text_max_length>
-	    <text>2 �����ݸ��Ԥȸ��ⰷ���ݸ���</text>
+	    <text>2 県内保険者と県内扱い保険者</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -4958,7 +4958,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>30</text_max_length>
-	    <text>0 �Խ��ʤ�</text>
+	    <text>0 編集なし</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -4998,7 +4998,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>30</text_max_length>
-	    <text>2 �֡ݡפ����ѥޥ��ʥ��Ѵ�</text>
+	    <text>2 「−」を全角マイナス変換</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -5049,7 +5049,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N06</name>
-	<label>�쥻��</label>
+	<label>レセ電</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -5069,7 +5069,7 @@
 	  <y>16</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>���⸩��������</label>
+	  <label>県内県外印刷順</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5085,7 +5085,7 @@
 	  <y>64</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>�ݸ��԰�����</label>
+	  <label>保険者印刷順</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5101,7 +5101,7 @@
 	  <y>112</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>�쥻�ץȼ��̰�����</label>
+	  <label>レセプト種別印刷順</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5117,7 +5117,7 @@
 	  <y>160</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>�����ǡ��߰���</label>
+	  <label>在総診・在医総</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5133,7 +5133,7 @@
 	  <y>208</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>Ĺ����Ĺ������������</label>
+	  <label>長期（長期高額療養費）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5177,7 +5177,7 @@
 	  <y>256</y>
 	  <width>150</width>
 	  <height>24</height>
-	  <label>�����Ķ��</label>
+	  <label>全国板金業</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5220,7 +5220,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>24</text_max_length>
-	    <text>1 ��Į¼���ݤ���Ƭ�˰���</text>
+	    <text>1 市町村国保の先頭に印刷</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -5260,7 +5260,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>46</text_max_length>
-	    <text>1 ��Į¼���ݡ������ȹ硦���ⰷ���θ��������ȹ�</text>
+	    <text>1 市町村国保・国保組合・県内扱いの県外国保組合</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -5285,7 +5285,7 @@
 	    <data>CLICKED</data>
 	    <last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
 	  </signal>
-	  <label>S��F12 �ܺ�����</label>
+	  <label>S＋F12 詳細設定</label>
 	  <relief>GTK_RELIEF_NORMAL</relief>
 	</widget>
 
@@ -5305,7 +5305,7 @@
 	  <y>256</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>���ŵ��ؤν�����ݸ���</label>
+	  <label>医療機関の所在地保険者</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5348,7 +5348,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>12</text_max_length>
-	    <text>1 ����ͥ��</text>
+	    <text>1 県内優先</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -5388,7 +5388,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>30</text_max_length>
-	    <text>1 ���ݰ��̡��࿦���ݡ�Ϸ���ݷ�</text>
+	    <text>1 国保一般・退職国保・老人保健</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -5428,7 +5428,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>26</text_max_length>
-	    <text>1 ����̤˽���</text>
+	    <text>1 医師別に出力</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -5468,7 +5468,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>26</text_max_length>
-	    <text>1 ���ݸ���ñ�̤���Ƭ�˰���</text>
+	    <text>1 各保険者単位の先頭に印刷</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -5508,7 +5508,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>26</text_max_length>
-	    <text>1 ���ݸ���ñ�̤���Ƭ�˰���</text>
+	    <text>1 各保険者単位の先頭に印刷</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -5521,7 +5521,7 @@
 	  <y>400</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>����̽�������</label>
+	  <label>医師別出力設定</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5537,7 +5537,7 @@
 	  <y>448</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>����̽��Ͻ�</label>
+	  <label>医師別出力順</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5580,7 +5580,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>26</text_max_length>
-	    <text>1 ���ʻ�̾������Ρ�</text>
+	    <text>1 カナ氏名順（全体）</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -5593,7 +5593,7 @@
 	  <y>496</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>�����̽��������������</label>
+	  <label>病棟別出力設定（入院）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5609,7 +5609,7 @@
 	  <y>544</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>�����̽��Ͻ��������</label>
+	  <label>病棟別出力順（入院）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5652,7 +5652,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>26</text_max_length>
-	    <text>1 �����̤˽���</text>
+	    <text>1 病棟別に出力</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -5692,7 +5692,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>26</text_max_length>
-	    <text>1 ���ʻ�̾������Ρ�</text>
+	    <text>1 カナ氏名順（全体）</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -5703,7 +5703,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N04</name>
-	<label>���ֽ�</label>
+	<label>編綴順</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -5723,7 +5723,7 @@
 	  <y>64</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>���ճ�絭��</label>
+	  <label>給付割合記載</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5739,7 +5739,7 @@
 	  <y>112</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>�쥻�ץȼ��̵���</label>
+	  <label>レセプト種別記載</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5875,8 +5875,8 @@
 	  <y>8</y>
 	  <width>148</width>
 	  <height>48</height>
-	  <label>�������������
-������ʸ�����ܰ���</label>
+	  <label>「特別療養費」
+　　　文字記載位置</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5890,7 +5890,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N02</name>
-	<label>����������</label>
+	<label>特別療養費</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -5910,7 +5910,7 @@
 	  <y>112</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>��������������</label>
+	  <label>広域診療報酬請求書</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5926,7 +5926,7 @@
 	  <y>64</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>���ݿ����������</label>
+	  <label>国保診療報酬請求書</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -5942,7 +5942,7 @@
 	  <y>16</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>���ݿ����������</label>
+	  <label>社保診療報酬請求書</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -6076,7 +6076,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N03</name>
-	<label>����ɽ</label>
+	<label>総括表</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -6096,7 +6096,7 @@
 	  <y>16</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>����б���̵ͭ</label>
+	  <label>主科対応の有無</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -6232,7 +6232,7 @@
 	  <y>64</y>
 	  <width>148</width>
 	  <height>24</height>
-	  <label>�����������������</label>
+	  <label>主科設定情報（入院）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -6248,7 +6248,7 @@
 	  <y>112</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>�������������������</label>
+	  <label>主科設定情報（入院外）</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -6264,7 +6264,7 @@
 	  <y>256</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>��ʾ������</label>
+	  <label>主科情報取得</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -6280,7 +6280,7 @@
 	  <y>160</y>
 	  <width>350</width>
 	  <height>24</height>
-	  <label>��ʤθ��䤬ʣ���ˤʤ���ο��Ųʥ����ɤ�����</label>
+	  <label>主科の候補が複数になる場合の診療科コードの設定</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -6296,7 +6296,7 @@
 	  <y>304</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>��ʼ�������</label>
+	  <label>主科社保設定</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -6312,7 +6312,7 @@
 	  <y>352</y>
 	  <width>160</width>
 	  <height>24</height>
-	  <label>��ʹ�������</label>
+	  <label>主科国保設定</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -6328,7 +6328,7 @@
 	  <y>400</y>
 	  <width>200</width>
 	  <height>24</height>
-	  <label>��ʹ���Ϣ������</label>
+	  <label>主科広域連合設定</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -6389,7 +6389,7 @@
 	  <case_sensitive>False</case_sensitive>
 	  <use_arrows>True</use_arrows>
 	  <use_arrows_always>False</use_arrows_always>
-	  <items>1 ���Ųʥ����ɤξ�������������
+	  <items>1 診療科コードの小さい方で設定
 </items>
 
 	  <widget>
@@ -6412,7 +6412,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>30</text_max_length>
-	    <text>1 ���Ųʥ����ɤξ�������������</text>
+	    <text>1 診療科コードの小さい方で設定</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -6543,7 +6543,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N05</name>
-	<label>�������</label>
+	<label>主科設定</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -6562,7 +6562,7 @@
 	  <y>16</y>
 	  <width>170</width>
 	  <height>24</height>
-	  <label>�����ѥ쥻�ץȵ���</label>
+	  <label>点検用レセプト記載</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -6578,7 +6578,7 @@
 	  <y>96</y>
 	  <width>150</width>
 	  <height>24</height>
-	  <label>���̾���ܶ�ʬ</label>
+	  <label>医師名記載区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -6621,7 +6621,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>36</text_max_length>
-	    <text>0 �������ѥ쥻�ץȡפ��������</text>
+	    <text>0 「点検用レセプト」を印字する</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -6661,7 +6661,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>36</text_max_length>
-	    <text>1 ��������򵭺ܤ���</text>
+	    <text>1 ０点公費を記載する</text>
 	    <input_mode>ASCII</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -6701,7 +6701,7 @@
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
 	    <text_max_length>26</text_max_length>
-	    <text>2 ���̾�򵭺ܤ���</text>
+	    <text>2 医師名を記載する</text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -6712,7 +6712,7 @@
 	<class>GtkLabel</class>
 	<child_name>Notebook:tab</child_name>
 	<name>N09</name>
-	<label>������</label>
+	<label>点検用</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>

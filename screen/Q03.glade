@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(Q03)戮度坛息啡澄千</title>
+  <title>(Q03)浠栨キ鍕欓�ｆ惡纰鸿獚</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -94,7 +94,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:22 GMT</last_modification_time>
       </signal>
-      <label>提る</label>
+      <label>鎴汇倠</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -117,7 +117,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 14 Feb 2001 00:38:53 GMT</last_modification_time>
       </signal>
-      <label>ＯＫ</label>
+      <label>锛极</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -196,7 +196,7 @@
       <y>80</y>
       <width>100</width>
       <height>24</height>
-      <label>滦据壳闻钳奉</label>
+      <label>瀵捐薄瑷虹檪骞存湀</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

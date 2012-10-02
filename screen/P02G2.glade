@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(P02G2)������Ͽ�ݥ��롼�װ��ŵ����ⴵ��ɳ�դ��ꥹ��</title>
+  <title>(P02G2)患者登録−グループ医療機関内患者紐付けリスト</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:09:39 GMT</last_modification_time>
       </signal>
-      <label>F1 ���</label>
+      <label>F1 戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -85,7 +85,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:09:46 GMT</last_modification_time>
       </signal>
-      <label>F9 ɳ�ղ��</label>
+      <label>F9 紐付解除</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -108,7 +108,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:10:35 GMT</last_modification_time>
       </signal>
-      <label>F12 ��Ͽ</label>
+      <label>F12 登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -294,7 +294,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:09:46 GMT</last_modification_time>
       </signal>
-      <label>F2 ���ꥢ</label>
+      <label>F2 クリア</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -326,7 +326,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label262</name>
-	  <label>�ֹ�</label>
+	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -339,7 +339,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label263</name>
-	  <label>���ŵ���̾��</label>
+	  <label>医療機関名称</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -352,7 +352,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label264</name>
-	  <label>�����ֹ�</label>
+	  <label>患者番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -365,7 +365,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label265</name>
-	  <label>��        ̾</label>
+	  <label>氏        名</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -423,7 +423,7 @@
       <y>180</y>
       <width>92</width>
       <height>25</height>
-      <label>ɳ�մ����ֹ�</label>
+      <label>紐付患者番号</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -448,7 +448,7 @@
       <y>220</y>
       <width>52</width>
       <height>24</height>
-      <label>��    ̾</label>
+      <label>氏    名</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -464,7 +464,7 @@
       <y>248</y>
       <width>52</width>
       <height>24</height>
-      <label>��    ��</label>
+      <label>住    所</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(P02H)吹荚判峡≥给锐联买茶烫</title>
+  <title>(P02H)鎮ｈ�呯櫥閷测垝鍏不閬告姙鐢婚潰</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:09:39 GMT</last_modification_time>
       </signal>
-      <label>F1 提る</label>
+      <label>F1 鎴汇倠</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -112,7 +112,7 @@
       <y>8</y>
       <width>76</width>
       <height>24</height>
-      <label>恕侍戎规</label>
+      <label>娉曞垾鐣彿</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -169,7 +169,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label264</name>
-	  <label>戎规</label>
+	  <label>鐣彿</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -182,7 +182,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label265</name>
-	  <label>硷梧</label>
+	  <label>绋</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -195,7 +195,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label266</name>
-	  <label>没教扩刨叹疚</label>
+	  <label>鐭府鍒跺害鍚嶇О</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

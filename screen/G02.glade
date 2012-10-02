@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(G02)����ץǡ�������</title>
+  <title>(G02)月次統計データ作成</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -60,7 +60,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
       </signal>
-      <label>��    ��</label>
+      <label>全    部</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>DATAKBN</group>
@@ -84,7 +84,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
       </signal>
-      <label>���ץǡ����ʿ��šˤΤ�</label>
+      <label>統計データ（診療）のみ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>DATAKBN</group>
@@ -108,7 +108,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
       </signal>
-      <label>���ץǡ�������̾�ˤΤ�</label>
+      <label>統計データ（病名）のみ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>DATAKBN</group>
@@ -154,7 +154,7 @@
       <case_sensitive>False</case_sensitive>
       <use_arrows>True</use_arrows>
       <use_arrows_always>False</use_arrows_always>
-      <items>2 ������
+      <items>2 入院外
 </items>
 
       <widget>
@@ -177,7 +177,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>8</text_max_length>
-	<text>2 ������</text>
+	<text>2 入院外</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -195,7 +195,7 @@
       <case_sensitive>False</case_sensitive>
       <use_arrows>True</use_arrows>
       <use_arrows_always>False</use_arrows_always>
-      <items>3 �����ƥ����������
+      <items>3 システム管理設定場所
 </items>
 
       <widget>
@@ -218,7 +218,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>22</text_max_length>
-	<text>3 �����ƥ����������</text>
+	<text>3 システム管理設定場所</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -299,7 +299,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
       </signal>
-      <label>��Ͽ���ʤ�</label>
+      <label>記録しない</label>
       <active>True</active>
       <draw_indicator>True</draw_indicator>
       <group>KOJIN</group>
@@ -324,7 +324,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:24:50 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -347,7 +347,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 26 Oct 2005 08:06:03 GMT</last_modification_time>
       </signal>
-      <label>���ꥢ</label>
+      <label>クリア</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -525,7 +525,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:28:00 GMT</last_modification_time>
       </signal>
-      <label>������</label>
+      <label>情報削除</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -548,7 +548,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:28:20 GMT</last_modification_time>
       </signal>
-      <label>����</label>
+      <label>確定</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -571,7 +571,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 08:28:20 GMT</last_modification_time>
       </signal>
-      <label>�������</label>
+      <label>処理結果</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -582,7 +582,7 @@
       <y>50</y>
       <width>100</width>
       <height>18</height>
-      <label>������ʬ    </label>
+      <label>処理区分    </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -621,7 +621,7 @@
       <y>254</y>
       <width>250</width>
       <height>18</height>
-      <label>���ץǡ�������̾�ˤν��ϥե�����̾</label>
+      <label>統計データ（病名）の出力ファイル名</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -637,7 +637,7 @@
       <y>204</y>
       <width>250</width>
       <height>18</height>
-      <label>���ץǡ����ʿ��šˤν��ϥե�����̾</label>
+      <label>統計データ（診療）の出力ファイル名</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -653,7 +653,7 @@
       <y>154</y>
       <width>54</width>
       <height>18</height>
-      <label>����ǯ��</label>
+      <label>診療年月</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -669,7 +669,7 @@
       <y>400</y>
       <width>100</width>
       <height>18</height>
-      <label>�������ƶ�ʬ</label>
+      <label>作成内容区分</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -685,7 +685,7 @@
       <y>500</y>
       <width>100</width>
       <height>18</height>
-      <label>ʸ��������  </label>
+      <label>文字コード  </label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -701,7 +701,7 @@
       <y>300</y>
       <width>100</width>
       <height>18</height>
-      <label>�Ŀ;���̵ͭ</label>
+      <label>個人情報有無</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -717,7 +717,7 @@
       <y>454</y>
       <width>250</width>
       <height>18</height>
-      <label>�ʱ�������ʬ������������ʬ�ΰ�����</label>
+      <label>（院外処方分・包括診療入力分の扱い）</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -738,7 +738,7 @@
       <case_sensitive>False</case_sensitive>
       <use_arrows>True</use_arrows>
       <use_arrows_always>False</use_arrows_always>
-      <items>3 �����ƥ����������
+      <items>3 システム管理設定場所
 </items>
 
       <widget>
@@ -761,7 +761,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>22</text_max_length>
-	<text>3 �����ƥ����������</text>
+	<text>3 システム管理設定場所</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -786,7 +786,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
       </signal>
-      <label>��Ͽ����</label>
+      <label>記録する</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>KOJIN</group>
@@ -811,7 +811,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
       </signal>
-      <label>����ޤޤʤ�</label>
+      <label>包括を含まない</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>HOUKATU</group>
@@ -836,7 +836,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
       </signal>
-      <label>����ޤ�</label>
+      <label>包括を含む</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>HOUKATU</group>
@@ -861,7 +861,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
       </signal>
-      <label>�ӡݣ���</label>
+      <label>Ｓ−ｊｉｓ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>CDKBN</group>
@@ -886,7 +886,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Mon, 28 May 2001 06:00:08 GMT</last_modification_time>
       </signal>
-      <label>�ţգ�</label>
+      <label>ＥＵＣ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>CDKBN</group>

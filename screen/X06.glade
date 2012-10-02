@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(X06)Îã³°¥³¡¼¥ÉÅÐÏ¿</title>
+  <title>(X06)ä¾‹å¤–ã‚³ãƒ¼ãƒ‰ç™»éŒ²</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>F1:Ìá¤ë</label>
+      <label>F1:æˆ»ã‚‹</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -85,7 +85,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>F6:Á°ÊÇ</label>
+      <label>F6:å‰é </label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -108,7 +108,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>F7:¼¡ÊÇ</label>
+      <label>F7:æ¬¡é </label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -131,7 +131,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>F12:³ÎÄê</label>
+      <label>F12:ç¢ºå®š</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1252,7 +1252,7 @@
       <y>52</y>
       <width>768</width>
       <height>24</height>
-      <label>Æ±Æü¤Ë½èÊý¤µ¤ì¤Æ¤¤¤ë¾ì¹ç¤ËÅ¬±þÉÂÌ¾¤ÎÌ¤ÆþÎÏ¤òÇ§¤á¤ëÌôºÞ</label>
+      <label>åŒæ—¥ã«å‡¦æ–¹ã•ã‚Œã¦ã„ã‚‹å ´åˆã«é©å¿œç—…åã®æœªå…¥åŠ›ã‚’èªã‚ã‚‹è–¬å‰¤</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1268,7 +1268,7 @@
       <y>556</y>
       <width>550</width>
       <height>24</height>
-      <label>ÄÉ²Ã¡¢ÊÑ¹¹¤·¤¿ÆâÍÆ¤Ï¥Á¥§¥Ã¥¯¥Þ¥¹¥¿ÅÐÏ¿»þ¤ËÊÝÂ¸¤µ¤ì¤Þ¤¹¡£</label>
+      <label>è¿½åŠ ã€å¤‰æ›´ã—ãŸå†…å®¹ã¯ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ç™»éŒ²æ™‚ã«ä¿å­˜ã•ã‚Œã¾ã™ã€‚</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>1</xalign>

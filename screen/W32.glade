@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(W32)�����ƥ��������������Ź԰�����</title>
+  <title>(W32)システム管理情報−包括診療行為設定</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -117,7 +117,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -140,7 +140,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ꥢ</label>
+      <label>クリア</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -163,7 +163,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>削除</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -301,7 +301,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>�����ã�</label>
+      <label>全包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -370,7 +370,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>��Ͽ</label>
+      <label>登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -405,7 +405,7 @@
       <y>24</y>
       <width>38</width>
       <height>18</height>
-      <label>��</label>
+      <label>〜</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -468,7 +468,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label235</name>
-	  <label>�ֹ�</label>
+	  <label>番号</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -481,7 +481,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label236</name>
-	  <label>ͭ��������</label>
+	  <label>有効開始日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -494,7 +494,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label237</name>
-	  <label>ͭ����λ��</label>
+	  <label>有効終了日</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -512,7 +512,7 @@
       <y>132</y>
       <width>104</width>
       <height>24</height>
-      <label>��绻����ˡ</label>
+      <label>包括算定方法</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -564,7 +564,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>40</text_max_length>
-	<text>0 ��绻�ꤷ�ʤ�</text>
+	<text>0 包括算定しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -586,7 +586,7 @@
       <y>220</y>
       <width>104</width>
       <height>24</height>
-      <label>������ʬ</label>
+      <label>入外区分</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -602,7 +602,7 @@
       <y>188</y>
       <width>104</width>
       <height>24</height>
-      <label>��绻���ʬ</label>
+      <label>包括算定区分</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -725,7 +725,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>40</text_max_length>
-	<text>0 �ݸ��ȹ礻�˴ط��ʤ����</text>
+	<text>0 保険組合せに関係なく包括</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -738,7 +738,7 @@
       <y>256</y>
       <width>104</width>
       <height>24</height>
-      <label>�ݸ��ȹ礻��ʬ</label>
+      <label>保険組合せ区分</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -781,7 +781,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -821,7 +821,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -834,7 +834,7 @@
       <y>296</y>
       <width>72</width>
       <height>24</height>
-      <label>���Ŷ�ʬ</label>
+      <label>診療区分</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -877,7 +877,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -890,7 +890,7 @@
       <y>556</y>
       <width>88</width>
       <height>24</height>
-      <label>����������</label>
+      <label>放射線治療</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -906,7 +906,7 @@
       <y>584</y>
       <width>88</width>
       <height>24</height>
-      <label>��������</label>
+      <label>病理診断</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -922,7 +922,7 @@
       <y>616</y>
       <width>88</width>
       <height>24</height>
-      <label>��ش�����</label>
+      <label>医学管理料</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -965,7 +965,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -1005,7 +1005,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -1018,7 +1018,7 @@
       <y>520</y>
       <width>88</width>
       <height>24</height>
-      <label>����������</label>
+      <label>精神科専門</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1034,7 +1034,7 @@
       <y>456</y>
       <width>72</width>
       <height>24</height>
-      <label>��������</label>
+      <label>画像診断</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1077,7 +1077,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -1117,7 +1117,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -1130,7 +1130,7 @@
       <y>424</y>
       <width>100</width>
       <height>24</height>
-      <label>����</label>
+      <label>検査</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1146,7 +1146,7 @@
       <y>392</y>
       <width>48</width>
       <height>24</height>
-      <label>���</label>
+      <label>手術</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1189,7 +1189,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -1229,7 +1229,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -1242,7 +1242,7 @@
       <y>360</y>
       <width>48</width>
       <height>24</height>
-      <label>����</label>
+      <label>処置</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1258,7 +1258,7 @@
       <y>328</y>
       <width>48</width>
       <height>24</height>
-      <label>����</label>
+      <label>注射</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1301,7 +1301,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -1341,7 +1341,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -1354,7 +1354,7 @@
       <y>296</y>
       <width>48</width>
       <height>24</height>
-      <label>����</label>
+      <label>投薬</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1370,7 +1370,7 @@
       <y>648</y>
       <width>88</width>
       <height>24</height>
-      <label>�������</label>
+      <label>在宅医療</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1386,7 +1386,7 @@
       <y>680</y>
       <width>88</width>
       <height>24</height>
-      <label>���ܿ�����</label>
+      <label>基本診療料</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1429,7 +1429,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -1469,7 +1469,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ��礷�ʤ�</text>
+	<text>0 包括しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -1494,7 +1494,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1517,7 +1517,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1540,7 +1540,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1563,7 +1563,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1586,7 +1586,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1609,7 +1609,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1632,7 +1632,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1655,7 +1655,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1678,7 +1678,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1701,7 +1701,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1724,7 +1724,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1747,7 +1747,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1770,7 +1770,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���ã�</label>
+      <label>包括ＣＤ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -1781,7 +1781,7 @@
       <y>488</y>
       <width>104</width>
       <height>24</height>
-      <label>��ϥӥ��¾��</label>
+      <label>リハビリ（他）</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -1824,7 +1824,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>60</text_max_length>
-	<text>001 ���������</text>
+	<text>001 外来診療料</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>

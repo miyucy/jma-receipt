@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Wed, 04 Dec 2002 06:09:44 GMT</last_modification_time>
   </signal>
-  <title>(W99)�����ƥ��������ݣạ̃��ɣ���³��������</title>
+  <title>(W99)システム管理情報−ＣＬＡＩＭ接続情報設定</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
@@ -61,7 +61,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>���</label>
+      <label>戻る</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -102,7 +102,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>��Ͽ</label>
+      <label>登録</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -197,7 +197,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>����</label>
+      <label>次頁</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -220,7 +220,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label>����</label>
+      <label>前頁</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -295,7 +295,7 @@
       <y>100</y>
       <width>140</width>
       <height>25</height>
-      <label>�ạ̃��ɣ���³</label>
+      <label>ＣＬＡＩＭ接続</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -311,7 +311,7 @@
       <y>135</y>
       <width>140</width>
       <height>25</height>
-      <label>�����ѥ�����</label>
+      <label>送信用コード</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -327,7 +327,7 @@
       <y>220</y>
       <width>140</width>
       <height>25</height>
-      <label>ɽ��̵ͭ</label>
+      <label>表示有無</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -343,7 +343,7 @@
       <y>190</y>
       <width>140</width>
       <height>25</height>
-      <label>�������ݥåץ��å�</label>
+      <label>送信時ポップアップ</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -359,7 +359,7 @@
       <y>24</y>
       <width>38</width>
       <height>25</height>
-      <label>��</label>
+      <label>〜</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -434,7 +434,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>1 �ţգ�</text>
+	<text>1 ＥＵＣ</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -547,7 +547,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
-      <text>��ʡʥ��륫������</text>
+      <text>内科（オルカ先生）</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
@@ -659,7 +659,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
-      <text>��ʡʥ��륫������</text>
+      <text>内科（オルカ先生）</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
@@ -771,7 +771,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
-      <text>��ʡʥ��륫������</text>
+      <text>内科（オルカ先生）</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
@@ -883,7 +883,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
-      <text>��ʡʥ��륫������</text>
+      <text>内科（オルカ先生）</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
@@ -995,7 +995,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
-      <text>��ʡʥ��륫������</text>
+      <text>内科（オルカ先生）</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
@@ -1107,7 +1107,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
-      <text>��ʡʥ��륫������</text>
+      <text>内科（オルカ先生）</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
@@ -1219,7 +1219,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
-      <text>��ʡʥ��륫������</text>
+      <text>内科（オルカ先生）</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
@@ -1331,7 +1331,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
-      <text>��ʡʥ��륫������</text>
+      <text>内科（オルカ先生）</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
@@ -1443,7 +1443,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
-      <text>��ʡʥ��륫������</text>
+      <text>内科（オルカ先生）</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
@@ -1555,7 +1555,7 @@
       <editable>True</editable>
       <text_visible>True</text_visible>
       <text_max_length>40</text_max_length>
-      <text>��ʡʥ��륫������</text>
+      <text>内科（オルカ先生）</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>True</xim_enabled>
     </widget>
@@ -1579,7 +1579,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Tue, 12 Nov 2002 04:47:57 GMT</last_modification_time>
       </signal>
-      <label>̵</label>
+      <label>無</label>
       <active>True</active>
       <draw_indicator>True</draw_indicator>
       <group>UKETUKE</group>
@@ -1604,7 +1604,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Tue, 12 Nov 2002 04:48:11 GMT</last_modification_time>
       </signal>
-      <label>ͭ</label>
+      <label>有</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>UKETUKE</group>
@@ -1629,7 +1629,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Tue, 03 Dec 2002 06:05:43 GMT</last_modification_time>
       </signal>
-      <label>̵</label>
+      <label>無</label>
       <active>True</active>
       <draw_indicator>True</draw_indicator>
       <group>TOROKU</group>
@@ -1654,7 +1654,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Tue, 12 Nov 2002 04:48:33 GMT</last_modification_time>
       </signal>
-      <label>ͭ</label>
+      <label>有</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>TOROKU</group>
@@ -1679,7 +1679,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Tue, 12 Nov 2002 04:48:46 GMT</last_modification_time>
       </signal>
-      <label>̵</label>
+      <label>無</label>
       <active>True</active>
       <draw_indicator>True</draw_indicator>
       <group>SINRYO</group>
@@ -1704,7 +1704,7 @@
 	<handler>button_toggled</handler>
 	<last_modification_time>Tue, 12 Nov 2002 04:48:57 GMT</last_modification_time>
       </signal>
-      <label>ͭ</label>
+      <label>有</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
       <group>SINRYO</group>
@@ -1731,7 +1731,7 @@
 	  <y>8</y>
 	  <width>100</width>
 	  <height>25</height>
-	  <label>������Ͽ����</label>
+	  <label>患者登録送信</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1747,7 +1747,7 @@
 	  <y>32</y>
 	  <width>120</width>
 	  <height>25</height>
-	  <label>���Ųʥ쥻������</label>
+	  <label>診療科レセ電送信</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1763,7 +1763,7 @@
 	  <y>56</y>
 	  <width>60</width>
 	  <height>25</height>
-	  <label>��̾����</label>
+	  <label>病名集約</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1779,7 +1779,7 @@
 	  <y>80</y>
 	  <width>60</width>
 	  <height>25</height>
-	  <label>��̾Ʊ��</label>
+	  <label>病名同期</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1795,7 +1795,7 @@
 	  <y>104</y>
 	  <width>120</width>
 	  <height>25</height>
-	  <label>���������������</label>
+	  <label>入院オーダー取込</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1811,7 +1811,7 @@
 	  <y>128</y>
 	  <width>120</width>
 	  <height>25</height>
-	  <label>ʣ���ۥ�������</label>
+	  <label>複数ホスト送信</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1827,7 +1827,7 @@
 	  <y>152</y>
 	  <width>152</width>
 	  <height>24</height>
-	  <label>�����ʳ���˼���</label>
+	  <label>再送（外来）受信</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -1855,7 +1855,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 12 Nov 2002 04:48:46 GMT</last_modification_time>
 	  </signal>
-	  <label>̵</label>
+	  <label>無</label>
 	  <active>True</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>PTINF_SEND</group>
@@ -1880,7 +1880,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 12 Nov 2002 04:48:57 GMT</last_modification_time>
 	  </signal>
-	  <label>ͭ</label>
+	  <label>有</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>PTINF_SEND</group>
@@ -1905,7 +1905,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 12 Nov 2002 04:48:46 GMT</last_modification_time>
 	  </signal>
-	  <label>̵</label>
+	  <label>無</label>
 	  <active>True</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>RECEDENKA_SEND</group>
@@ -1930,7 +1930,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 12 Nov 2002 04:48:57 GMT</last_modification_time>
 	  </signal>
-	  <label>ͭ</label>
+	  <label>有</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>RECEDENKA_SEND</group>
@@ -1955,7 +1955,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 12 Nov 2002 04:48:11 GMT</last_modification_time>
 	  </signal>
-	  <label>̵</label>
+	  <label>無</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>BYOMEI_AGG</group>
@@ -1980,7 +1980,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 12 Nov 2002 04:47:57 GMT</last_modification_time>
 	  </signal>
-	  <label>ͭ</label>
+	  <label>有</label>
 	  <active>True</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>BYOMEI_AGG</group>
@@ -2005,7 +2005,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 12 Nov 2002 04:48:33 GMT</last_modification_time>
 	  </signal>
-	  <label>̵</label>
+	  <label>無</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>BYOMEI_SYNC</group>
@@ -2030,7 +2030,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 03 Dec 2002 06:05:43 GMT</last_modification_time>
 	  </signal>
-	  <label>ͭ</label>
+	  <label>有</label>
 	  <active>True</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>BYOMEI_SYNC</group>
@@ -2055,7 +2055,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 12 Nov 2002 04:48:33 GMT</last_modification_time>
 	  </signal>
-	  <label>̵</label>
+	  <label>無</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>NYU_ORDER</group>
@@ -2080,7 +2080,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 03 Dec 2002 06:05:43 GMT</last_modification_time>
 	  </signal>
-	  <label>ͭ</label>
+	  <label>有</label>
 	  <active>True</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>NYU_ORDER</group>
@@ -2105,7 +2105,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 12 Nov 2002 04:48:33 GMT</last_modification_time>
 	  </signal>
-	  <label>̵</label>
+	  <label>無</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>MULTIHOST</group>
@@ -2130,7 +2130,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 03 Dec 2002 06:05:43 GMT</last_modification_time>
 	  </signal>
-	  <label>ͭ</label>
+	  <label>有</label>
 	  <active>True</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>MULTIHOST</group>
@@ -2155,7 +2155,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 12 Nov 2002 04:48:33 GMT</last_modification_time>
 	  </signal>
-	  <label>̵</label>
+	  <label>無</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>RESEND</group>
@@ -2180,7 +2180,7 @@
 	    <handler>button_toggled</handler>
 	    <last_modification_time>Tue, 03 Dec 2002 06:05:43 GMT</last_modification_time>
 	  </signal>
-	  <label>ͭ</label>
+	  <label>有</label>
 	  <active>True</active>
 	  <draw_indicator>True</draw_indicator>
 	  <group>RESEND</group>
@@ -2195,7 +2195,7 @@
       <y>352</y>
       <width>50</width>
       <height>18</height>
-      <label>��  ��</label>
+      <label>受  付</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2211,7 +2211,7 @@
       <y>352</y>
       <width>50</width>
       <height>18</height>
-      <label>��  ��</label>
+      <label>請  求</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2227,7 +2227,7 @@
       <y>328</y>
       <width>50</width>
       <height>18</height>
-      <label>�ݡ���</label>
+      <label>ポート</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2243,7 +2243,7 @@
       <y>340</y>
       <width>150</width>
       <height>18</height>
-      <label>�������ɥ쥹</label>
+      <label>送信アドレス</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2259,7 +2259,7 @@
       <y>340</y>
       <width>120</width>
       <height>18</height>
-      <label>��         ��</label>
+      <label>メ         モ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2302,7 +2302,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>20</text_max_length>
-	<text>0 ���ʤ�</text>
+	<text>0 しない</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -2315,7 +2315,7 @@
       <y>190</y>
       <width>60</width>
       <height>25</height>
-      <label>������Ͽ</label>
+      <label>患者登録</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2331,7 +2331,7 @@
       <y>188</y>
       <width>60</width>
       <height>25</height>
-      <label>���Ź԰�</label>
+      <label>診療行為</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2347,7 +2347,7 @@
       <y>268</y>
       <width>135</width>
       <height>25</height>
-      <label>����ǻ���Ÿ��</label>
+      <label>外来診察料展開</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
@@ -2550,7 +2550,7 @@
 	<editable>True</editable>
 	<text_visible>True</text_visible>
 	<text_max_length>30</text_max_length>
-	<text>0 ɸ��ʺƿǻ���</text>
+	<text>0 標準（再診時）</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
@@ -2563,7 +2563,7 @@
       <y>190</y>
       <width>60</width>
       <height>25</height>
-      <label>����</label>
+      <label>受付</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>

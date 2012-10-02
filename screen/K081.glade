@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -32,7 +32,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(K081)ø«Œ≈π‘∞Ÿ°›∆˛±°∞ı∫˛ªÿº®</title>
+  <title>(K081)Ë®∫ÁôÇË°åÁÇ∫‚àíÂÖ•Èô¢Âç∞Âà∑ÊåáÁ§∫</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>True</modal>
@@ -52,7 +52,7 @@
       <y>12</y>
       <width>64</width>
       <height>24</height>
-      <label>√ÌºÕΩË ˝</label>
+      <label>Ê≥®Â∞ÑÂá¶Êñπ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -77,7 +77,7 @@
       <y>12</y>
       <width>64</width>
       <height>24</height>
-      <label>ªÿº®‰µ</label>
+      <label>ÊåáÁ§∫ÁÆã</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -93,7 +93,7 @@
       <y>12</y>
       <width>64</width>
       <height>24</height>
-      <label>±°∆‚ΩË ˝</label>
+      <label>Èô¢ÂÜÖÂá¶Êñπ</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -121,7 +121,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>Ã·§Î</label>
+      <label>Êàª„Çã</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -144,7 +144,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F12 »Øπ‘°¶≈–œø</label>
+      <label>F12 Áô∫Ë°å„ÉªÁôªÈå≤</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -467,7 +467,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F9 »Øπ‘§Œ§ﬂ</label>
+      <label>F9 Áô∫Ë°å„ÅÆ„Åø</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -490,7 +490,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Wed, 10 Jan 2001 07:56:38 GMT</last_modification_time>
       </signal>
-      <label>F4 ∆¨ΩÒ∞ı∫˛</label>
+      <label>F4 È†≠Êõ∏Âç∞Âà∑</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -501,7 +501,7 @@
       <y>184</y>
       <width>64</width>
       <height>24</height>
-      <label>•…•Ø•ø°º</label>
+      <label>„Éâ„ÇØ„Çø„Éº</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

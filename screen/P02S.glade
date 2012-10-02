@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GTK-Interface>
 
 <project>
@@ -30,7 +30,7 @@
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
   </signal>
-  <title>(P02S)╢╣╪тепо©║щ╪Г╡йюъдЙ╡Хлл</title>
+  <title>(P02S)Ф┌ёХ─┘Г≥╩И▄╡Б┬▓Д╦╩Г╖▒Х╗╜Е╝ Г■╩И²╒</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
   <modal>True</modal>
@@ -62,7 +62,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:09:39 GMT</last_modification_time>
       </signal>
-      <label>F1 лА╓К</label>
+      <label>F1 Ф┬╩Ц┌▀</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -85,7 +85,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 01:10:35 GMT</last_modification_time>
       </signal>
-      <label>F12 епо©</label>
+      <label>F12 Г≥╩И▄╡</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -133,7 +133,7 @@
       <y>56</y>
       <width>76</width>
       <height>24</height>
-      <label>©гнег╞╥Н</label>
+      <label>Х╗╨Г≥┌Е╧╢Ф°┬</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
@@ -189,7 +189,7 @@
       <y>56</y>
       <width>56</width>
       <height>24</height>
-      <label>╪Г╡й</label>
+      <label>Д╦╩Г╖▒</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
