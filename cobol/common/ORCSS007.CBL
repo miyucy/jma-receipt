@@ -672,7 +672,7 @@
                    +  0.5
            END-IF
       *
-           DISPLAY "WRK-ZAITEN = " WRK-ZAITEN
+      **     DISPLAY "WRK-ZAITEN = " WRK-ZAITEN
       *
            IF    ( NACCT-ZAITEN    NOT =   WRK-ZAITEN )
                MOVE    1               TO  FLG-UNMATCH
