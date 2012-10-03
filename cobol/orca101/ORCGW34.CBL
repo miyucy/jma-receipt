@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.07.00     NACL-多々納  12/10/03  区分コード複数登録対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -411,6 +412,7 @@
                        MOVE    1           TO  SPA-GMN-CUR
                    END-IF
                WHEN    "1003"
+               WHEN    "1004"
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM 430-DELETE-SEC
                    ELSE
@@ -840,6 +842,29 @@
       *****************************************************************
        41023-KBNCD-CHK-SEC            SECTION.
       *
+           IF      SPA-GMN-KBNCD       =   SPACE
+      *        未選択は１
+               MOVE    SPA-GMN-KBNCDL(1)   TO  SPA-GMN-KBNCD-G
+           END-IF
+      *    半角であること
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-KBNCD       TO  KANACHK-MAE-INPUT
+           MOVE    16                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-KBNCD
+           IF     (KANACHK-RC          =   ZERO )  AND
+                  (KANACHK-SYUBETU     =   1    )  AND
+                  (KANACHK-RC2         =   ZERO )
+      *        半角で間に空白がないこと
+               CONTINUE
+           ELSE
+               MOVE    "0003"              TO  SPA-ERRCD
+               MOVE    4                   TO  SPA-GMN-CUR
+               GO      TO      41023-KBNCD-CHK-EXT
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY     >   SPA-KBNCD-MAX ) OR
@@ -852,8 +877,15 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-      *        未選択は１
-               MOVE    SPA-GMN-KBNCDL(1)   TO  SPA-GMN-KBNCD-G
+      *        区分追加
+               IF      SPA-KBNCD-MAX       >=  50
+                   MOVE    "0004"              TO  SPA-ERRCD
+                   MOVE    4                   TO  SPA-GMN-CUR
+               ELSE
+                   ADD     1                   TO  SPA-KBNCD-MAX
+                   MOVE    SPA-GMN-KBNCD-G     TO  SPA-GMN-KBNCDL
+                                                        (SPA-KBNCD-MAX)
+               END-IF
            END-IF
            MOVE    SPA-GMN-KBNCD       TO  SPA-MAE-KBNCD
            PERFORM 410231-KBNCD-HENSYU-SEC
@@ -1252,7 +1284,12 @@
                MOVE    "0006"          TO  SPA-ERRCD
                MOVE    2               TO  SPA-GMN-CUR
            ELSE
-              MOVE    "1003"           TO  SPA-WIDCD
+      *ver.4.7
+               IF      SPA-KBNCD-MAX       >   1
+                   MOVE    "1004"          TO  SPA-WIDCD
+               ELSE
+                   MOVE    "1003"          TO  SPA-WIDCD
+               END-IF
            END-IF
             .
        430-DELETE-SYORI-EXT.
@@ -1301,7 +1338,8 @@
                    IF      PRGOPTION-KBNCD     =   SPA-GMN-KBNCD
                        PERFORM 4301-PRGOPTION-DEL-SEC
                    ELSE
-                       IF      SPA-GMN-KBNCD   =   "*"
+      **************   IF      SPA-GMN-KBNCD   =   "*"
+                       IF      SPA-KBNCD-MAX       <=  1
                            PERFORM 4301-PRGOPTION-DEL-SEC
                        END-IF
                    END-IF
@@ -1451,6 +1489,12 @@
                WHEN    "0003"
                    MOVE    "区分コードエラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0004"
+                   STRING  "区分コードが５０件登録済みです。"
+                           "これ以上登録できません。"
+                                               DELIMITED  BY  SIZE
+                                                     INTO  WRK-WIDMSG
+                   END-STRING
                WHEN    "0010"
                    MOVE    "プログラム名を入力して下さい。"
                                                TO  SPA-ERRMSG
@@ -1511,6 +1555,14 @@
                    END-STRING
                WHEN    "1003"
                    STRING  "表示されているオプション情報を削除します。"
+                           "よろしいですか？"
+                                               DELIMITED  BY  SIZE
+                                                     INTO  WRK-WIDMSG
+                   END-STRING
+      *ver.4.7
+               WHEN    "1004"
+                   STRING  "表示されている区分コードのオプション情報を"
+                           "削除します。"
                            "よろしいですか？"
                                                DELIMITED  BY  SIZE
                                                      INTO  WRK-WIDMSG
