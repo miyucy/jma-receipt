@@ -28,6 +28,24 @@ class Csvline
   end
 end
 
+
+class KsnSort
+
+  attr_accessor :khn_exists,:tsusoku_exists,:chuksncd,:chuksntsuban
+
+  def initialize
+    @khn_exists == false
+    @tsusoku_exists == false
+    @chuksncd = 0
+    @chuksntsuban = 0
+  end
+
+  def clear
+    initialize
+  end
+
+end
+
 class Receden_check < Receden_common
 
   def initialize
@@ -885,6 +903,8 @@ class Receden_check < Receden_common
       flg_plus  = false
       flg_minus = false
 
+      ksnsort = KsnSort.new
+
       tekiyo.zai.each_with_index{|zai,zai_idx|
         case zai["RECID"].value
         when "SI","IY","TO","CO"
@@ -990,6 +1010,37 @@ class Receden_check < Receden_common
                     if tbl_tensu["NYUTENTTLKBN"].to_i >= 970 and tbl_tensu["NYUTENTTLKBN"].to_i <= 975
                       myfooter=sprintf("¿ÇÎÅ¼±ÊÌ¡Î%s¡Ï %s",tekiyo.srykbn,tbl_tensu["NAME"])
                       @errors.push("34900",rece,zai,nil,nil,myfooter)
+                    end
+                  end
+
+                  case tbl_tensu["KOKUJISKBKBN1"].to_i
+                  when 1,3,5
+                    ksnsort.clear
+                    ksnsort.khn_exists = true
+                    ksnsort.chuksncd = tbl_tensu["CHUKSNCD"].to_i
+                  when 7
+                    if ksnsort.tsusoku_exists == true
+                      @errors.push("44360",rece,zai,nil,nil,tbl_tensu["NAME"])
+                    else
+                      if tbl_tensu["CHUKSNCD"].to_i != 0
+                        case
+                        when ksnsort.khn_exists == false
+                          @errors.push("46410",rece,zai,"CHUKSNCD",nil,tbl_tensu["NAME"])
+                        when tbl_tensu["CHUKSNCD"].to_i != ksnsort.chuksncd
+                          @errors.push("46410",rece,zai,"CHUKSNCD",nil,tbl_tensu["NAME"])
+                        when tbl_tensu["CHUKSNTSUBAN"].to_i == ksnsort.chuksntsuban
+                          @errors.push("46120",rece,zai,"CHUKSNTSUBAN",nil,tbl_tensu["NAME"])
+                        when tbl_tensu["CHUKSNTSUBAN"].to_i < ksnsort.chuksntsuban
+                          @errors.push("46410",rece,zai,"CHUKSNCD",nil,tbl_tensu["NAME"])
+                        else
+                          ksnsort.chuksntsuban = tbl_tensu["CHUKSNTSUBAN"].to_i
+                        end
+                      end
+                    end
+                  when 9
+                    ksnsort.tsusoku_exists = true
+                    if ksnsort.khn_exists == false
+                      @errors.push("44350",rece,zai,nil,nil,tbl_tensu["NAME"])
                     end
                   end
 
