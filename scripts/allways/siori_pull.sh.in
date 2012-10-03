@@ -39,6 +39,10 @@ if ! [ -d $MEDPHOTOTEMP ]; then
   mkdir $MEDPHOTOTEMP
 fi
 
+# 取り込む前にレコードを削除
+
+echo "delete from tbl_yakujyo_temp where termid='${TERMID}' and hospnum=${HOSPNUM};" | psql ${DBNAME}
+
 # センターサーバより雛型を取り込む
 
 master_get.sh ${HOSPNUM} ${TERMID} ${JOBID} ${SHELLID} SIORI ${SRYCD}
