@@ -11,8 +11,6 @@ fi
 
 umask 022
 
-PATH=$PATH:/usr/lib/postgresql/bin
-
 ORCAUSER=orca
 ORCAGROUP=orca
 LOGDIR=/var/log/jma-receipt
@@ -26,7 +24,7 @@ then
 fi
 
 if [ ! -e "$INSTALLLOG" ]; then
-  su - orca -c "touch $INSTALLLOG" 
+  su - $ORCAUSER -c "touch $INSTALLLOG" 
 fi
 
 if su - postgres -c "psql template1 -l|grep ${DBNAME}"
@@ -35,7 +33,7 @@ then
 		echo "更新プログラム管理テーブルクリア処理スキップ" 2>&1 | tee -a $INSTALLLOG
 	else
 		echo "更新プログラム管理テーブルクリア処理開始" 2>&1 | tee -a $INSTALLLOG
-		echo "delete from tbl_pgkanri ;" | su - orca -c "psql -e $DBNAME 2>&1 | tee -a $INSTALLLOG"
+		echo "delete from tbl_pgkanri ;" | su - $ORCAUSER -c "psql -e $DBNAME 2>&1 | tee -a $INSTALLLOG"
 	fi 
 fi
 echo "Done."

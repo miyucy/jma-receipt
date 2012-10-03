@@ -20,8 +20,6 @@ fi
 
 . $JMARECEIPT_ENV
 
-PATH=$PATH:/usr/lib/postgresql/bin
-
 FLAG=`id -u`
 
 if [ "${LANG}" = "ja_JP.eucJP" ] ; then
