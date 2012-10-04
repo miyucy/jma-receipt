@@ -6,14 +6,14 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 
 BIN_sources = \
+	jma-receipt-db-setup.sh.in \
+	jma-receipt-db-check.sh.in \
 	jma-receipt-sysbase-setup.sh.in \
 	jma-dbsync.sh.in \
 	jma-backupcluster.sh.in \
 	jma-restorecluster.sh.in
 
 EUC_sources = \
-	jma-receipt-db-setup.sh.in \
-	jma-receipt-db-check.sh.in \
 	jma-receipt-program-upgrade.sh.in \
 	jma-receipt-program-upgrade-check.sh.in \
 	orcvt_exec.sh.in

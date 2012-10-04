@@ -1,36 +1,34 @@
 #!/bin/bash
 #
 # Project code name "ORCA"
-# ����ɸ��쥻�ץȥ��ե�(JMA standard receipt software)
+# 日医標準レセプトソフト(JMA standard receipt software)
 #
 # Copyright(C) 2002 JMA(Japan Medical Association)
 #
 # CREATE: 20060124
 #
 #
-# �ǡ����١�����¤�ѹ�������ư
+# データベース構造変更処理起動
 #
 
-if test -z "$JMARECEIPT_ENV" ; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV" ; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 
-FLAG=`id -u`
-
-if [ "${LANG}" = "ja_JP.eucJP" ] ; then
+if [ "${LANG}" = "ja_JP.UTF-8" ] || [ "${LANG}" = "ja_JP.utf8" ]; then
     JMSG=1
 else
     JMSG=0
 fi
 
+FLAG=`id -u`
+
 if [ ${FLAG} -ne 0 ] ; then
     if [ ${JMSG} -eq 1 ] ; then
-	echo "ERROR: root���¤Ǽ¹Ԥ��Ƥ���������"
+	echo "ERROR: root権限で実行してください。"
     else
     	echo "ERROR: must be root permission."
     fi
@@ -49,9 +47,9 @@ fi
 
 #
 echo
-echo "version @VERSION@ �ǡ����١�����¤�ѹ�������Ԥ��ޤ���"
+echo "version @VERSION@ データベース構造変更処理を行います。"
 if [ ${JMSG} -eq 1 ] ; then
-    $ECHO_N "��������Ǥ����� (y/n) "$ECHO_C
+    $ECHO_N "よろしいですか？ (y/n) "$ECHO_C
 else
     $ECHO_N "Are you sure? (y/n) "$ECHO_C
 fi
@@ -59,7 +57,7 @@ read REPLY
 
 if [ "$?" -eq 1 ] ; then
     if [ ${JMSG} -eq 1 ] ; then
-	echo "NOTICE: �桼���ˤ������򥭥�󥻥뤵��ޤ�����"
+	echo "NOTICE: ユーザにより処理をキャンセルされました。"
     else
     	echo "NOTICE: user canceled."
     fi
@@ -67,7 +65,7 @@ if [ "$?" -eq 1 ] ; then
 fi
 if [ "$REPLY" != "y" -a "$REPLY" != "Y" ] ; then
     if [ ${JMSG} -eq 1 ] ; then
-	echo "NOTICE: �桼���ˤ������򥭥�󥻥뤵��ޤ�����"
+	echo "NOTICE: ユーザにより処理をキャンセルされました。"
     else
     	echo "NOTICE: user canceled."
     fi
@@ -75,25 +73,25 @@ if [ "$REPLY" != "y" -a "$REPLY" != "Y" ] ; then
 fi
 
 #
-# �ǡ����١�����¸�߳�ǧ
+# データベースの存在確認
 #
 echo
-if su - postgres -c "psql template1 -l|grep ${DBNAME} >/dev/null"
+if su - postgres -c "psql template1 ${PSQLOPTION} -l|grep ${DBNAME} >/dev/null"
 then
     if [ ${JMSG} -eq 1 ] ; then
-	echo "${DBNAME} �ǡ����١�����¸�ߤ��ޤ���"
+	echo "${DBNAME} データベースは存在します。"
     else
 	echo "${DBNAME} Database exist."
     fi
 else
     if [ ${JMSG} -eq 1 ] ; then
-	echo "${DBNAME} �ǡ����١�����¸�ߤ��ޤ���"
+	echo "${DBNAME} データベースは存在しません。"
     else
 	echo "${DBNAME} Database not exist."
     fi
 fi
 #
-# �ᥤ�����
+# メイン処理
 #
 echo
 
@@ -124,14 +122,14 @@ if [ ${RC} -eq 0 ] ; then
 fi
 
 #
-# ������λ
+# 処理終了
 #
 echo
 if [ ${JMSG} -eq 1 ] ; then
     if [ ${RC} -eq 0 ] ; then
-	echo "�����Ϥ��٤ƽ�λ���ޤ���"
+	echo "処理はすべて終了しました"
     else
-        echo "�����ϰ۾ｪλ���ޤ�����"
+        echo "処理は異常終了しました。"
     fi
 else
     if [ ${RC} -eq 0 ] ; then

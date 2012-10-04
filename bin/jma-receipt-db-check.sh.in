@@ -1,29 +1,22 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV" ; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 
-umask 022
-
-HOME=/home/orca
 VERSIONFL=${DOCDIR}/version
 DBKANRIFL=/tmp/jma-receipt-db-version
 
 SQLSELECT="SELECT * FROM TBL_DBKANRI WHERE KANRICD='ORCADB00';"
 
-DBHOST=localhost
-
 EXITMODE=code
 
 FLAG=`id -u`
 
-if [ "${LANG}" = "ja_JP.eucJP" ] ; then
+if [ "${LANG}" = "ja_JP.UTF-8" ] || [ "${LANG}" = "ja_JP.utf8" ]; then
     JMSG=1
 else
     JMSG=0
@@ -31,7 +24,7 @@ fi
 
 if [ ${FLAG} -ne 0 ] ; then
     if [ ${JMSG} -eq 1 ] ; then
-        echo "ERROR: root∏¢∏¬§«º¬π‘§∑§∆§Ø§¿§µ§§°£"
+        echo "ERROR: rootÊ®©Èôê„ÅßÂÆüË°å„Åó„Å¶„Åè„Å†„Åï„ÅÑ„ÄÇ"
     else
         echo "ERROR: mest be root permission."
     fi
@@ -51,10 +44,10 @@ VERDATA=`echo $VERLIST | awk '{i=split($0,arr,"("); print arr[i]} ' `
 VERDATA1=`echo $VERDATA | awk '{gsub(/[-)]/,""); print } ' `
 
 #echo "VERDATA1=" $VERDATA1
-
-echo "$SQLSELECT" | su - orca -c "psql -o $DBKANRIFL $DBNAME"  
+su - $ORCAUSER -c "psql $PSQLOPTION -c \"$SQLSELECT\" -o $DBKANRIFL $DBNAME"
 
 DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $DBKANRIFL`
+
 DBVERSION=`echo $DBLIST | awk '{i=split($0,arr,"|"); print arr[2]} ' `
 DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
 
@@ -69,17 +62,18 @@ else
     echo "database version=" $DBVERSION1
     echo
     if [ ${JMSG} -eq 1 ] ; then
-	echo "•—•√•±°º•∏§»•«°º•ø•Ÿ°º•π§Œ•–°º•∏•Á•Û§¨…‘¿∞πÁ§ÚµØ§≥§∑§∆§§§ﬁ§π°£"
+	echo "„Éë„ÉÉ„Ç±„Éº„Ç∏„Å®„Éá„Éº„Çø„Éô„Éº„Çπ„ÅÆ„Éê„Éº„Ç∏„Éß„É≥„Åå‰∏çÊï¥Âêà„ÇíËµ∑„Åì„Åó„Å¶„ÅÑ„Åæ„Åô„ÄÇ"
     else
 	echo "No Good!"
     fi
     if [ "${EXITMODE}" = "file" ] ; then
 	if ! [ -e "SYSCONFDIR"/database-schema-different ] ; then
+	    umask 022
 	    touch "$SYSCONFDIR"/database-schema-different
 	fi
     else
 	exit 99
     fi
-fi 
+fi
 
 rm -f $DBKANRIFL
