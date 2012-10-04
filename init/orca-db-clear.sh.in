@@ -1,39 +1,35 @@
 #! /bin/bash
 
-if test -z "$JMARECEIPT_ENV" ; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 
 umask 022
 
-ORCAUSER=orca
-ORCAGROUP=orca
 LOGDIR=/var/log/jma-receipt
 
 INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
 
 if [ ! -d "$LOGDIR" ]
 then
-  mkdir "$LOGDIR"
-  chown "$ORCAUSER":"$ORCAGROUP" "$LOGDIR"
+    mkdir "$LOGDIR"
+    chown "$ORCAUSER":"$ORCAGROUP" "$LOGDIR"
 fi
 
 if [ ! -e "$INSTALLLOG" ]; then
-  su - $ORCAUSER -c "touch $INSTALLLOG" 
+    su - $ORCAUSER -c "touch $INSTALLLOG"
 fi
 
-if su - postgres -c "psql template1 -l|grep ${DBNAME}"
+if su - postgres -c "psql template1 ${PSQLOPTION} -l|grep ${DBNAME}"
 then
-	if [ -f $PATCHDIR/copying ];	then
-		echo "更新プログラム管理テーブルクリア処理スキップ" 2>&1 | tee -a $INSTALLLOG
-	else
-		echo "更新プログラム管理テーブルクリア処理開始" 2>&1 | tee -a $INSTALLLOG
-		echo "delete from tbl_pgkanri ;" | su - $ORCAUSER -c "psql -e $DBNAME 2>&1 | tee -a $INSTALLLOG"
-	fi 
+    if [ -f $PATCHDIR/copying ];	then
+	echo "更新プログラム管理テーブルクリア処理スキップ" 2>&1 | tee -a $INSTALLLOG
+    else
+	echo "更新プログラム管理テーブルクリア処理開始" 2>&1 | tee -a $INSTALLLOG
+	echo "delete from tbl_pgkanri ;" | su - $ORCAUSER -c "psql ${PSQLOPTION} -e ${DBNAME} 2>&1 | tee -a $INSTALLLOG"
+    fi
 fi
 echo "Done."

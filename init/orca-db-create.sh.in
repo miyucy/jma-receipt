@@ -1,82 +1,44 @@
 #! /bin/bash
 
-if test -z "$JMARECEIPT_ENV" ; then
-  JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-  exit 0
-fi
-
 . $JMARECEIPT_ENV
 
-ORCAUSER=orca
-ORCAGROUP=orca
 LOGDIR=/var/log/jma-receipt
 
-DBUSER="orca"
+
 if [ -z "$DBENCODING" ]
 then
-  DBENCODING="EUC-JP"
+    DBENCODING="EUC-JP"
 fi
-DBVERSIONSQL="SELECT version();"
 USERCHECKSQL="SELECT usename FROM pg_user WHERE usename = '${DBUSER}';"
 DBCHECKSQL="SELECT datname FROM pg_database WHERE datname = '${DBNAME}';"
-LOCALECHECKSQL="SELECT setting FROM pg_settings WHERE name = 'lc_collate';"
 
 INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
 
 if [ ! -d "$LOGDIR" ]
 then
-  mkdir "$LOGDIR"
-  chown "$ORCAUSER":"$ORCAGROUP" "$LOGDIR"
+    mkdir "$LOGDIR"
+    chown "$ORCAUSER":"$ORCAGROUP" "$LOGDIR"
 fi
 
 if [ ! -e "$INSTALLLOG" ]; then
-  su - orca -c "touch $INSTALLLOG" 
+    su - $ORCAUSER -c "touch $INSTALLLOG"
 fi
 
-DBVERSION=`su - postgres -c "psql template1 -t -P format=unaligned -c \"${DBVERSIONSQL}\""|cut -d' ' -f2`
-# echo $DBVERSION
-
-DBVERSIONMAJOR=`echo ${DBVERSION}|sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
-DBVERSIONMINOR=`echo ${DBVERSION}|sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\2/'`
-DBVERSIONMICRO=`echo ${DBVERSION}|sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\3/'`
-# echo $DBVERSIONMAJOR
-# echo $DBVERSIONMINOR
-# echo $DBVERSIONMICRO
-
-#if [ $DBVERSIONMAJOR -ge 8 ] && [ $DBVERSIONMINOR -ge 4 ];
-#then
-#  echo ""
-#else
-#  if test  X`su - postgres -c "psql template1 -t -P format=unaligned -c \"${LOCALECHECKSQL}\""` != "XC"
-#  then
-#    echo "Error, PostgreSQL locale should be C. " | tee -a $INSTALLLOG
-#    echo "Please set locale C and execute initdb or createcluster. " | tee -a $INSTALLLOG
-#    exit 1
-#  fi
-#fi
-
-if [ -z `su - postgres -c "psql template1 -t -c \"${USERCHECKSQL}\""` ]
+if [ -z `su - postgres -c "psql template1 ${PSQLOPTION} -t -c \"${USERCHECKSQL}\""` ]
 then
-#  if [ $DBVERSIONMAJOR -ge 8 ]
-#  then
     su - postgres -c "createuser --createdb --no-superuser --no-createrole ${DBUSER}"
-#  else
-#    su - postgres -c "createuser --createdb --no-adduser ${DBUSER}"
-#  fi
 fi
 
-if [ -z `su - postgres -c "psql template1 -t -c \"${DBCHECKSQL}\""` ]
+if [ -z `su - postgres -c "psql template1 ${PSQLOPTION} -t -c \"${DBCHECKSQL}\""` ]
 then
-#  if [ $DBVERSIONMAJOR -ge 8 ] && [ $DBVERSIONMINOR -ge 4 ];
-#  then
-    su - ${DBUSER} -c "createdb -lC -Ttemplate0 -E${DBENCODING} \"${DBNAME}\""
-#  else
-#    su - ${DBUSER} -c "createdb -E${DBENCODING} \"${DBNAME}\""
-#  fi
-  su - ${DBUSER} -c "psql -e ${DBNAME} < ${INITDIR}/orca_dbkanri_orig.dump 2>&1 | tee -a $INSTALLLOG"
+    su - ${ORCAUSER} -c "createdb -lC -Ttemplate0 -E${DBENCODING} \"${DBNAME}\""
+    su - ${ORCAUSER} -c "psql ${PSQLOPTION} -e ${DBNAME} < ${INITDIR}/orca_dbkanri_orig.dump 2>&1 | tee -a $INSTALLLOG"
 else
-  echo "Database exist." 2>&1 | tee -a $INSTALLLOG
+    echo "Database exist." 2>&1 | tee -a $INSTALLLOG
 fi
 echo "Done."
