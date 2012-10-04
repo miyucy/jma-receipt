@@ -247,6 +247,7 @@
       *
       *  04.07.01    NACL-藤原    11/06/02  入退院履歴記載対応
       *                                     「2自費分は含まない」を追加
+      *  04.07.02    NACL-門脇    12/10/02  高齢者判定フラグ編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3456,6 +3457,16 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
       *    在総診フラグセット
       *****************************************************************
        ZAITAKU-SET-SEC                SECTION.
+      *
+      *    高齢者判定フラグ
+           IF     (( RECE02-AGE          >=  70      )   OR
+                   ( RECE02-AGE          >=  65  AND
+                     RECE01-KOHID    NOT  =   ZERO   )   OR
+                   ( FLG-ROUJINHOKEN      =   1      )   OR
+                   ( RECE02-HKNNUM        =  "039"   ))
+           AND    (  RECE02-YOBIETC(8)    =  ZERO     )
+               MOVE    "1"             TO  RECE02-KOUREI-HANTEIFLG
+           END-IF
       *
       *    自費または特別療養費、公費単独の場合は
       *    在宅総合・在宅末期フラグをクリアする

@@ -203,6 +203,8 @@
       *  04.06.03    NACL-藤原    11/02/24  月途中に医保と児童保護(53)の
       *                                     併用から単独になったときのまとめ
       *  04.06.04    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *
+      *  04.07.01    NACL-門脇    12/10/02  高齢者判定フラグ編集
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1581,6 +1583,16 @@
       *
       *    低所得情報編集
            PERFORM   2101-TEISYOTOKU-HENSYU-SEC
+      *
+      *    高齢者判定フラグ
+           IF     (( RECE62-AGE          >=  70      )   OR
+                   ( RECE62-AGE          >=  65  AND
+                     RECE61-KOHID    NOT  =   ZERO   )   OR
+                   ( FLG-ROUJINHOKEN      =   1      )   OR
+                   ( RECE62-HKNNUM        =  "039"   ))
+           AND    (  RECE62-YOBIETC(8)    =  ZERO     )
+               MOVE    "1"             TO  RECE62-KOUREI-HANTEIFLG
+           END-IF
       *
       *    高齢者フラグ
            MOVE     SPACE    TO    RECE62-KOUREI

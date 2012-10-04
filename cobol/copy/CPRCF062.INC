@@ -130,6 +130,7 @@
       *                                     食事区分追加
       *  04.07.02    NACL-藤原    12/01/06  予備を２０に変更
       *  04.07.03    NACL-門脇    12/08/27  システム管理２０１０機能追加対応
+      *  04.07.04    NACL-門脇    12/10/02  高齢者判定フラグ追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -740,8 +741,6 @@
                    07  RECE62-EKF-ENCHGKBN-K   PIC  X(01).
                    07  RECE62-EKF-ENCHGKBN-Y   PIC  X(01).
                    07  RECE62-EKF-KOH2SKJKBN   PIC  X(01).
-                   07  RECE62-EKF-NINNASIKBN   PIC  X(01).
-                   07  RECE62-EKF-NINJYOKBN    PIC  X(01).
       *
       *実日数・請求点記載フラグ
            03  RECE62-JSKISAIFLG          PIC  X(01).
@@ -862,6 +861,9 @@
       *
       *点検レセ０点公費フラグ
            03  RECE62-TENKEN-FLG          PIC X(01).
+      *
+      *高齢者判定フラグ
+           03  RECE62-KOUREI-HANTEIFLG    PIC X(01).
       *
       *予備
            03  RECE62-YOBIETC-AREA.

@@ -138,6 +138,7 @@
       *                                     （高齢者）（70歳未満）フラグ追加
       *  04.07.02    NACL-藤原    12/01/06  予備を２０に変更
       *  04.07.03    NACL-門脇    12/08/27  システム管理２０１０機能追加対応
+      *  04.07.04    NACL-門脇    12/10/02  高齢者判定フラグ追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -638,8 +639,6 @@
                    09  RECE02-EKF-KSINGKBN-Y   PIC  X(01).
                    09  RECE02-EKF-ENCHGKBN-K   PIC  X(01).
                    09  RECE02-EKF-ENCHGKBN-Y   PIC  X(01).
-                   09  RECE02-EKF-NINNASIKBN   PIC  X(01).
-                   09  RECE02-EKF-NINJYOKBN    PIC  X(01).
       *
       *実日数・請求点記載フラグ
            03  RECE02-JSKISAIFLG          PIC  X(01).
@@ -735,6 +734,9 @@
       *
       *在医総算定フラグ（平成２４年４月診療〜）
            03  RECE02-ZAITAKU-SANTEI-FLG       PIC X(01).
+      *
+      *高齢者判定フラグ
+           03  RECE02-KOUREI-HANTEIFLG         PIC X(01).
       *
       *予備
            03  RECE02-YOBIETC-AREA.
