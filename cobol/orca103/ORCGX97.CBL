@@ -124,7 +124,6 @@
            COPY    "X05.INC".
            COPY    "X06.INC".
            COPY    "X07.INC".
-           COPY    "X08.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -250,7 +249,6 @@
        490-KAKUNIN-SEC            SECTION.
       *
            MOVE    SPACE               TO  X97
-           INITIALIZE                      X97
            MOVE    ZERO                TO  X97-COUNT
       *----(01.00.02)--ADD-START---
            MOVE    WIDGET-INSENSITIVE  TO  X97-B12-STATE
@@ -322,20 +320,13 @@
            MOVE    SPACE               TO  LINKAREA
       *
       *----(01.00.02)--ADD-START---
-           EVALUATE    SPA-XID1-FLG
-           WHEN    "PV"
+           IF    ( SPA-XID1-FLG    =   "PV" )
                MOVE    "F12:プレビュー"    TO  X97-B12-LABEL
                IF    ( WRK-PRT-PAGE    >   ZERO )
                        MOVE    WIDGET-NORMAL    TO  X97-B12-STATE
                        MOVE    "B12"            TO  MCP-WIDGET
                END-IF
-           WHEN    "OK"
-               MOVE    "F12:印刷"               TO  X97-B12-LABEL
-               IF    ( WRK-PRT-PAGE    >   ZERO )
-                       MOVE    WIDGET-NORMAL    TO  X97-B12-STATE
-                       MOVE    "B12"            TO  MCP-WIDGET
-               END-IF
-           END-EVALUATE
+           END-IF
       *----(01.00.02)--UPD-END-----
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
