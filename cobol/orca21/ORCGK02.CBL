@@ -1617,6 +1617,9 @@
                    MOVE    ZERO            TO  SPA-SEIKATU-FLG
       *!!          手帳加算確認
                    MOVE    ZERO            TO  SPA-TECHOKBN-CHK
+      *ver.4.7     緊急時間外確認
+                   MOVE    ZERO            TO  SPA-KENJIKAN-CHK
+                   MOVE    ZERO            TO  SPA-GAZJIKAN-CHK
       *            診療行為、計計算処理、編集
                    MOVE    SPACE           TO  FLG-TOROKU
                    PERFORM 510-TBLHEN-SEC

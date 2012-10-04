@@ -57,6 +57,7 @@
       *  04.06.00    NACL-多々納  10/07/16  免疫学的検査重複チェック対応
       *  04.07.00    NACL-多々納  11/11/25  同日再入院対応
       *  04.07.00    NACL-多々納  12/03/XX  Ｈ２４．４改正対応
+      * 04.07.00     NACL-多々納  12/10/XX  時間外緊急院内検査加算チェック対応
       *****************************************************************
       *
       *
@@ -114,6 +115,10 @@
            03  FLG-NYUDAY           PIC 9(01).
       *
            03  FLG-JYUKBN07         PIC 9(01).
+      *ver.4.7
+           03  FLG-KENSA            PIC 9(01).
+           03  FLG-SINSATU          PIC 9(01).
+           03  FLG-SINSATU-ARI      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -2553,6 +2558,9 @@
            MOVE    ZERO                TO  IDX-TEIGEN
            MOVE    ZERO                TO  IDX-TEIGEN2
            INITIALIZE                      TBL-TEIGEN-AREA
+      *ver.4.7
+           MOVE    ZERO                TO  FLG-SINSATU
+           MOVE    ZERO                TO  FLG-SINSATU-ARI
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
@@ -2592,6 +2600,14 @@
       *        時間外加算チェック（診察、加算、時間加算のもの）
                IF     (WRK-COM-SRYKBN  (IDX-Z)     =   "11"  OR
                                                        "12"     )
+      *ver.4.7
+      *            初診・再診判定
+                   MOVE    1                   TO  FLG-SINSATU
+                   IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1"  )
+                   AND    (WRK-COM-DATAKBN   (IDX-Z)   =   "1"  )
+                       MOVE    1               TO  FLG-SINSATU-ARI
+                   END-IF
+      *ver.4.7
                    IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  ) AND
                           (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
                        MOVE    1               TO  FLG-JIKASAN
@@ -2659,6 +2675,22 @@
       *!   IF      IDX-TEIGEN          >   ZERO
       *!       PERFORM 2009-TEIGEN-TUIKA-SEC
       *!   END-IF
+      *ver.4.7
+      *    環境設定の時間外区分反映
+           IF     (FLG-SINSATU         =   1     )   AND
+                  (FLG-SINSATU-ARI     =   ZERO  )   AND
+                  (FLG-JIKASAN         =   ZERO  )
+               IF     (SPA-SRYYMD          =   SPA-SYSYMD)  AND
+                      (LNK-ORCSC-SYORIFLG  =   ZERO      )  AND
+                      (SPA-GAI-JIKANKBN    NOT =   ZERO  )
+                   MOVE    SPA-GAI-JIKANKBN    TO  FLG-JIKASAN
+               END-IF
+      *        訂正で診察料なしは、チェックしない
+               IF     (LNK-ORCSC-SYORIFLG  =   1   )  AND
+                      (IDX-JIKAN           >   ZERO)
+                   MOVE    1                   TO  FLG-JIKASAN
+               END-IF
+           END-IF
       *
       *    時間外緊急院内画像診断加算有り
            IF      IDX-JIKAN           >   ZERO
@@ -3745,6 +3777,18 @@
           IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      300-AUTO-SYORI-EXT
            END-IF
+      *ver.4.7
+      *    外来緊急時間外チェック
+           IF     (SPA-KENJIKAN-CHK    =   ZERO )
+            AND   (SPA-NYUGAIKBN       =   "2"  )
+            AND   (LNK-ORCSC-PG        =   "K02")
+               PERFORM 3001-JIKANGAI-CHK-SEC
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      300-AUTO-SYORI-EXT
+               END-IF
+           END-IF
+      *ver.4.7
       *
       *    訂正で自動発生なしの場合
            IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
@@ -4206,6 +4250,83 @@
            .
        300-AUTO-SYORI-EXT.
            EXIT.
+      *
+      *ver.4.7
+      *****************************************************************
+      *    緊急時間外チェック処理
+      *****************************************************************
+       3001-JIKANGAI-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SINSATU
+           MOVE    ZERO                TO  FLG-SINSATU-ARI
+           MOVE    ZERO                TO  FLG-JIKASAN
+           MOVE    ZERO                TO  FLG-KENSA
+           MOVE    ZERO                TO  IDX-JIKAN
+      *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
+                              (SPA-ERRCD           NOT =   SPACE )  OR
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+               IF   (WRK-COM-HKNCOMBI (IDX-Z) NOT =   "9999")
+      *            時間外緊急院内画像診断加算
+                   IF      WRK-COM-INPUTCD(IDX-Z)  =   "160000210"
+                       MOVE    IDX-Z           TO  IDX-JIKAN
+                   END-IF
+      *
+      *            時間外加算チェック（診察、加算、時間加算のもの）
+                   IF     (WRK-COM-SRYKBN  (IDX-Z)     =   "11"  OR
+                                                           "12" )
+                       MOVE    1                   TO  FLG-SINSATU
+                       IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1"  )
+                       AND    (WRK-COM-DATAKBN   (IDX-Z)   =   "1"  )
+                           MOVE    1               TO  FLG-SINSATU-ARI
+                       END-IF
+                       IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  )
+                       AND    (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
+                           MOVE    WRK-COM-TIMEKSNKBN(IDX-Z)
+                                                   TO  FLG-JIKASAN 
+                       END-IF
+                   END-IF
+      *
+                   IF     (WRK-COM-SRYKBN (IDX-Z)  =   "60")  AND
+                          (WRK-COM-INPUTCD(IDX-Z)(1:1)
+                                                   =   "1"  )  AND
+                          (WRK-COM-DATAKBN(IDX-Z)  =   "1"  )
+      *                検体検査入力
+                       IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "D" )
+                         AND  (WRK-COM-CDKBN-KBNNUM(IDX-Z) >=  "000"
+                                                       AND <=  "024" )
+                           MOVE    1                   TO  FLG-KENSA
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF     (FLG-KENSA           =   ZERO )
+             OR   (IDX-JIKAN           >   ZERO )
+               GO      TO      3001-JIKANGAI-CHK-EXT
+           END-IF
+           IF     (FLG-SINSATU         =   1    )
+             AND  (FLG-SINSATU-ARI     =   ZERO )
+             AND  (FLG-JIKASAN         =   ZERO )
+      *        初診・再診がない時、環境設定の時間外区分
+               IF     (SPA-SRYYMD          =   SPA-SYSYMD)  AND
+                      (LNK-ORCSC-SYORIFLG  =   ZERO      )  AND
+                      (SPA-GAI-JIKANKBN    NOT =   ZERO  )
+                   MOVE    SPA-GAI-JIKANKBN    TO  FLG-JIKASAN
+               END-IF
+           END-IF
+           IF     (FLG-JIKASAN     NOT =   ZERO )
+               MOVE    "K160"              TO  SPA-ERRCD
+           END-IF
+           MOVE    1                   TO  SPA-KENJIKAN-CHK
+      *
+           .
+      *
+       3001-JIKANGAI-CHK-EXT.
+           EXIT.
+      *ver.4.7
+      *
       *****************************************************************
       *    外来迅速検体検査加算チェック処理
       *****************************************************************

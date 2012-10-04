@@ -1304,6 +1304,9 @@
                    MOVE    ZERO            TO  SPA-NAI-SEIKATUCHK
       *!!          手帳加算確認
                    MOVE    ZERO                TO  SPA-TECHOKBN-CHK
+      *ver.4.7     緊急時間外確認
+                   MOVE    ZERO            TO  SPA-KENJIKAN-CHK
+                   MOVE    ZERO            TO  SPA-GAZJIKAN-CHK
       *!!
       *            最後の日を診療日とする
                    MOVE    SPA-NAI-SRYDD       TO  SPA-GMN-SRYDD
@@ -6358,11 +6361,13 @@
       *
            MOVE    SPACE               TO  LINKAREA
            INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      **** MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    "M00"               TO  SPA-SAKIPG
            MOVE    "KT01"              TO  SPA-MOTOPG
            MOVE    SPACE               TO  SPA-MOTOPG2
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW

@@ -53,6 +53,7 @@
       * 04.05.00     NACL-多々納  10/03/XX  Ｈ２２年４月改正追加
       * 04.06.00     NACL-多々納  10/07/01  残量廃棄自動算定対応
       * 04.07.00     NACL-多々納  12/03/XX  Ｈ２４．４改正対応
+      * 04.07.00     NACL-多々納  12/10/XX  時間外緊急院内画像診断加算チェック対応
       *****************************************************************
       *
       *
@@ -115,6 +116,10 @@
            03  FLG-SYUGI           PIC 9(01).
       *
            03  FLG-DOUJI           PIC 9(01).
+      *ver.4.7
+           03  FLG-JIKASAN2         PIC 9(01).
+           03  FLG-SINSATU          PIC 9(01).
+           03  FLG-SINSATU-ARI      PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -3135,6 +3140,9 @@
       **** END-IF
       *
            MOVE    ZERO                TO  FLG-TENTEKI
+      *ver.4.7
+           MOVE    ZERO                TO  FLG-SINSATU
+           MOVE    ZERO                TO  FLG-SINSATU-ARI
       *
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
@@ -3149,6 +3157,14 @@
       *        時間外加算チェック（診察、加算、時間加算のもの）
                IF     (WRK-COM-SRYKBN  (IDX-Z)     =   "11"  OR
                                                        "12"     )
+      *ver.4.7
+      *            初診・再診判定
+                   MOVE    1                   TO  FLG-SINSATU
+                   IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1"  )
+                   AND    (WRK-COM-DATAKBN   (IDX-Z)   =   "1"  )
+                       MOVE    1               TO  FLG-SINSATU-ARI
+                   END-IF
+      *ver.4.7
                    IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  ) AND
                           (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
                        MOVE    1               TO  FLG-JIKASAN
@@ -3191,6 +3207,22 @@
       *
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      200-ALL-SYORI-EXT
+           END-IF
+      *ver.4.7
+      *    環境設定の時間外区分反映
+           IF     (FLG-SINSATU         =   1     )   AND
+                  (FLG-SINSATU-ARI     =   ZERO  )   AND
+                  (FLG-JIKASAN         =   ZERO  )
+               IF     (SPA-SRYYMD          =   SPA-SYSYMD)  AND
+                      (LNK-ORCSC-SYORIFLG  =   ZERO      )  AND
+                      (SPA-GAI-JIKANKBN    NOT =   ZERO  )
+                   MOVE    SPA-GAI-JIKANKBN    TO  FLG-JIKASAN
+               END-IF
+      *        訂正で診察料なしは、チェックしない
+               IF     (LNK-ORCSC-SYORIFLG  =   1   )  AND
+                      (IDX-GAI             >   ZERO)
+                   MOVE    1                   TO  FLG-JIKASAN
+               END-IF
            END-IF
       *
       *    時間外緊急院内画像診断加算有り
@@ -3452,6 +3484,19 @@
            IF      LNK-ORCSC-PG        =   "K02"
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            END-IF
+      *ver.4.7
+      *    外来緊急時間外チェック
+           IF     (SPA-GAZJIKAN-CHK    =   ZERO )
+            AND   (SPA-NYUGAIKBN       =   "2"  )
+            AND   (LNK-ORCSC-PG        =   "K02")
+               PERFORM 3001-JIKANGAI-CHK-SEC
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      300-AUTO-SYORI-EXT
+               END-IF
+           END-IF
+      *ver.4.7
+      *
       *    訂正で自動発生なしの場合
            IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
                   (SPA-TEISEI-FLG      =   "0")
@@ -3564,6 +3609,108 @@
       *
        300-AUTO-SYORI-EXT.
            EXIT.
+      *
+      *ver.4.7
+      *****************************************************************
+      *    緊急時間外チェック処理
+      *****************************************************************
+       3001-JIKANGAI-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SINSATU
+           MOVE    ZERO                TO  FLG-SINSATU-ARI
+           MOVE    ZERO                TO  FLG-JIKASAN
+           MOVE    ZERO                TO  FLG-JIKASAN2
+           MOVE    ZERO                TO  FLG-KAKUI
+           MOVE    ZERO                TO  FLG-CTMRI
+           MOVE    ZERO                TO  FLG-XSEN
+           MOVE    ZERO                TO  IDX-GAI
+      *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
+                              (SPA-ERRCD           NOT =   SPACE )  OR
+                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+               IF   (WRK-COM-HKNCOMBI (IDX-Z) NOT =   "9999")
+      *            時間外緊急院内画像診断加算
+                   IF      WRK-COM-INPUTCD(IDX-Z)  =   "170016010"
+                       MOVE    IDX-Z               TO  IDX-GAI
+                   END-IF
+      *
+      *            時間外加算チェック（診察、加算、時間加算のもの）
+                   IF     (WRK-COM-SRYKBN  (IDX-Z)     =   "11"  OR
+                                                           "12" )
+                       MOVE    1                   TO  FLG-SINSATU
+                       IF     (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1"  )
+                       AND    (WRK-COM-DATAKBN   (IDX-Z)   =   "1"  )
+                           MOVE    1               TO  FLG-SINSATU-ARI
+                       END-IF
+                       IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  )
+                       AND    (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
+                           MOVE    WRK-COM-TIMEKSNKBN(IDX-Z)
+                                                   TO  FLG-JIKASAN2
+                       END-IF
+                   END-IF
+      *            画像診断判定
+                   IF     (WRK-COM-SRYKBN (IDX-Z)  =   "70")  AND
+                          (WRK-COM-INPUTCD(IDX-Z)(1:1)
+                                                   =   "1"  )  AND
+                          (WRK-COM-DATAKBN(IDX-Z)  =   "1"  )
+      *
+                   EVALUATE    WRK-COM-TNSSRYSYUKBN(IDX-Z)
+      *                Ｘ線有り
+                       WHEN    "721"
+                       WHEN    "720"
+                           MOVE    1                   TO  FLG-XSEN
+                   END-EVALUATE
+      *            検査等実施判定グループ
+                   EVALUATE    WRK-COM-KNSJISGRPKBN (IDX-Z)
+      *                核医学（E101-2,E101-3）
+                       WHEN    31
+                           MOVE    1                   TO  FLG-KAKUI
+      *                核医学（E101-2,E101-3以外）
+                       WHEN    32
+                           MOVE    1                   TO  FLG-KAKUI
+      *                コンピュータ
+                       WHEN    33
+                           MOVE    1                   TO  FLG-CTMRI
+                   END-EVALUATE
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF     (FLG-KAKUI           =   ZERO )
+             AND  (FLG-CTMRI           =   ZERO )
+             AND  (FLG-XSEN            =   ZERO )
+               GO      TO      3001-JIKANGAI-CHK-EXT
+           END-IF
+           IF     (IDX-GAI         NOT =   ZERO )
+               GO      TO      3001-JIKANGAI-CHK-EXT
+           END-IF
+           IF     (FLG-SINSATU         =   1    )
+             AND  (FLG-SINSATU-ARI     =   ZERO )
+             AND  (FLG-JIKASAN2        =   ZERO )
+             AND  (FLG-JIKASAN         =   ZERO )
+      *        初診・再診がない時、環境設定の時間外区分
+               IF     (SPA-SRYYMD          =   SPA-SYSYMD)  AND
+                      (LNK-ORCSC-SYORIFLG  =   ZERO      )  AND
+                      (SPA-GAI-JIKANKBN    NOT =   ZERO  )
+                   MOVE    SPA-GAI-JIKANKBN    TO  FLG-JIKASAN
+               END-IF
+           END-IF
+           IF     (FLG-JIKASAN         =   ZERO )
+              AND (FLG-JIKASAN2        =   ZERO
+                                       OR  6    )
+      *        夜間・早朝加算入力時は、なし
+               GO      TO      3001-JIKANGAI-CHK-EXT
+           END-IF
+      *
+           MOVE    "K161"              TO  SPA-ERRCD
+           MOVE    1                   TO  SPA-GAZJIKAN-CHK
+      *
+           .
+      *
+       3001-JIKANGAI-CHK-EXT.
+           EXIT.
+      *ver.4.7
       *
       *****************************************************************
       *    画像診断管理加算追加処理

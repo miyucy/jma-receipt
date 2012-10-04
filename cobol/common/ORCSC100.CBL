@@ -2397,11 +2397,13 @@
            END-IF
       *            ¸¡ºº
            IF      SPA-SRYKBN-CNT (07) >   ZERO
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
                CALL    "ORCSC60"       USING
                                        MCPAREA
                                        ORCSC00AREA
                                        SPA-SCR-REC
                                        SPA-AREA
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
                MOVE    LNK-NAIACCT-AREA    TO  SPA-NAIACCT-AREA
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
@@ -2417,11 +2419,13 @@
            END-IF
       *            ²èÁü¿ÇÃÇ
            IF      SPA-SRYKBN-CNT (08) >   ZERO
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
                CALL    "ORCSC70"       USING
                                        MCPAREA
                                        ORCSC00AREA
                                        SPA-SCR-REC
                                        SPA-AREA
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
            END-IF
@@ -2431,11 +2435,13 @@
            END-IF
       *            ¤½¤ÎÂ¾
            IF      SPA-SRYKBN-CNT (09) >   ZERO
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
                CALL    "ORCSC80"       USING
                                        MCPAREA
                                        ORCSC00AREA
                                        SPA-SCR-REC
                                        SPA-AREA
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
                MOVE    LNK-ORCSC-ERRMSG    TO  SPA-ERRMSG2
