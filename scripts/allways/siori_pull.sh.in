@@ -41,7 +41,20 @@ fi
 
 # 取り込む前にレコードを削除
 
-echo "delete from tbl_yakujyo_temp where termid='${TERMID}' and hospnum=${HOSPNUM};" | psql ${DBNAME}
+TEMP=$(mktemp)
+trap "rm -f ${TEMP}" EXIT
+echo "delete from tbl_yakujyo_temp where termid='${TERMID}' and hospnum=${HOSPNUM};" > ${TEMP}.wk
+mksqldata.rb ${TEMP}.wk ${TEMP}
+rm -f ${TEMP}.wk
+
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBSQL1 \
+          -parameter ${HOSPNUM},${TEMP}
+if [ $? -ne 0 ] ; then 
+  MSG="レコード削除でエラーが発生しました"
+  ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 \
+            -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},,,${MSG}"
+  exit 0
+fi
 
 # センターサーバより雛型を取り込む
 
