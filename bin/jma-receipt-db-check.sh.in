@@ -54,7 +54,7 @@ DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
 echo
 if [ `echo $DBVERSION1 $VERDATA1 | awk '{print($1==$2) ? "true" : "false"} '` = "true" ];	then
     echo "Very Good!"
-    if [ -e "SYSCONFDIR"/database-schema-different ] ; then
+    if [ -e "$SYSCONFDIR"/database-schema-different ] ; then
 	rm -f "$SYSCONFDIR"/database-schema-different
     fi
 else
@@ -67,7 +67,7 @@ else
 	echo "No Good!"
     fi
     if [ "${EXITMODE}" = "file" ] ; then
-	if ! [ -e "SYSCONFDIR"/database-schema-different ] ; then
+	if ! [ -e "$SYSCONFDIR"/database-schema-different ] ; then
 	    umask 022
 	    touch "$SYSCONFDIR"/database-schema-different
 	fi

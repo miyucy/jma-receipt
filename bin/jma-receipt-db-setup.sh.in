@@ -46,32 +46,33 @@ else
 fi
 
 #
-echo
-echo "version @VERSION@ データベース構造変更処理を行います。"
-if [ ${JMSG} -eq 1 ] ; then
-    $ECHO_N "よろしいですか？ (y/n) "$ECHO_C
-else
-    $ECHO_N "Are you sure? (y/n) "$ECHO_C
-fi
-read REPLY
-
-if [ "$?" -eq 1 ] ; then
+if [ "$1" != "-y" -a "$1" != "-Y" ] ; then
+    echo
+    echo "version @VERSION@ データベース構造変更処理を行います。"
     if [ ${JMSG} -eq 1 ] ; then
-	echo "NOTICE: ユーザにより処理をキャンセルされました。"
+	$ECHO_N "よろしいですか？ (y/n) "$ECHO_C
     else
-    	echo "NOTICE: user canceled."
+	$ECHO_N "Are you sure? (y/n) "$ECHO_C
     fi
-    exit 1
-fi
-if [ "$REPLY" != "y" -a "$REPLY" != "Y" ] ; then
-    if [ ${JMSG} -eq 1 ] ; then
-	echo "NOTICE: ユーザにより処理をキャンセルされました。"
-    else
-    	echo "NOTICE: user canceled."
-    fi
-    exit 0
-fi
+    read REPLY
 
+    if [ "$?" -eq 1 ] ; then
+	if [ ${JMSG} -eq 1 ] ; then
+	    echo "NOTICE: ユーザにより処理をキャンセルされました。"
+	else
+    	    echo "NOTICE: user canceled."
+	fi
+	exit 1
+    fi
+    if [ "$REPLY" != "y" -a "$REPLY" != "Y" ] ; then
+	if [ ${JMSG} -eq 1 ] ; then
+	    echo "NOTICE: ユーザにより処理をキャンセルされました。"
+	else
+    	    echo "NOTICE: user canceled."
+	fi
+	exit 0
+    fi
+fi
 #
 # データベースの存在確認
 #
@@ -113,7 +114,7 @@ else
 fi
 
 if [ ${RC} -eq 0 ] ; then
-    bash "$ORCALIBDIR"/bin/jma-receipt-db-check.sh
+    bash "$BINDIR"/jma-receipt-db-check.sh
     if [ $? -eq 0 ] ; then
 	if [ -e "$SYSCONFDIR"/database-non-upgrade ] ; then
 	    rm -f "$SYSCONFDIR"/database-non-upgrade

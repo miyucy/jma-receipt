@@ -165,10 +165,7 @@ fi
 #DB管理情報の取得
 su - $ORCAUSER -c "psql ${PSQLOPTION} -o $HOME/orca-mstlog/sql.out -f $HOME/orca-mstlog/SQLSELECT.TXT $DBNAME"
 DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $HOME/orca-mstlog/sql.out`
-echo "$DBLIST" "DBLIST"
 #ダウンロードファイル生成
-echo "$MSTDIR$DBLIST"
-echo $PATH
 ORCXSMST1 $MSTDIR$DBLIST
 if [ $? -ne 0 ]	;	then
     echo "ダウンロードファイル生成に失敗しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
