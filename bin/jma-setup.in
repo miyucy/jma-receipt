@@ -1,0 +1,3 @@
+#!/bin/sh
+
+@prefix@/bin/jma-receipt-db-setup.sh -y

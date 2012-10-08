@@ -13,6 +13,8 @@ BIN_sources = \
 	jma-backupcluster.sh.in \
 	jma-restorecluster.sh.in
 
+BIN_cmdsrc = jma-setup.in
+
 EUC_sources = \
 	jma-receipt-program-upgrade.sh.in \
 	jma-receipt-program-upgrade-check.sh.in \
@@ -24,13 +26,18 @@ BIN_bin = \
 	jma-plugin
 
 BIN_objs = $(BIN_sources:.sh.in=.sh) \
-	   $(EUC_sources:.sh.in=.sh)
+           $(EUC_sources:.sh.in=.sh) \
+           $(BIN_cmd)
+
+BIN_cmd = jma-setup
 
 EUC_shell_scripts = $(EUC_sources:.sh.in=.sh)
 
-BIN_files = $(BIN_objs) $(BIN_bin)
+BIN_files = $(BIN_objs) $(BIN_bin) $(BIN_cmd)
 
 .SUFFIXES: .sh.in .sh
+
+all:	$(BIN_objs)
 
 .sh.in.sh:
 	sed -e 's,\@jma-receipt-env\@,$(sysconfdir)\/jma-receipt\.env,g' \
@@ -38,14 +45,17 @@ BIN_files = $(BIN_objs) $(BIN_bin)
 	$< > $@
 	chmod +x $@
 
-all:	$(BIN_objs)
+$(BIN_cmd):
+	sed -e 's,\@prefix\@,$(prefix),g' \
+	$(BIN_cmdsrc) > $@
+	chmod +x $@
 
 convutf8: $(EUC_shell_scripts)
 	echo $(EUC_shell_scripts) | xargs nkf -Ewm0 --overwrite
 
 filecheck:
 
-clean: 
+clean:
 	-rm -f $(BIN_objs)
 
 distclean: clean

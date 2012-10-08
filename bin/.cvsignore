@@ -9,4 +9,5 @@ jma-receipt-sysbase-setup.sh
 jma-backupcluster.sh
 jma-dbsync.sh
 jma-restorecluster.sh
+jma-setup
 
