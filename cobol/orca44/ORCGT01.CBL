@@ -5695,7 +5695,16 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                            MOVE    "処理中です"    TO  T99-MSG
                        ELSE
                            IF      JOB-ERRCD       =   SPACE
-                               CONTINUE
+                               IF      JOB-PGID        =   "ORCBPRT1"
+                                   CONTINUE
+                               ELSE
+      *                            レセ電データチェックリストの有無
+                                   IF      JOB-UPDCNT1 >   ZERO
+                                       MOVE
+                                   "【チェックリストが作成されました】"
+                                                 TO  T99-ERRMSG   (IDX)
+                                   END-IF  
+                               END-IF
                            ELSE
                                MOVE    SPACE       TO  T99-MSG
                                PERFORM 4901-JOB-ERRSET-SEC
@@ -5768,26 +5777,12 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *        レセ電データ作成時のレセプト件数
                IF      WRK-PRT-PAGE2   >   ZERO
                    MOVE    WRK-PRT-PAGE2   TO  WRK-T99-MSG-KENSU
+                   MOVE    WRK-T99-MSG     TO  T99-MSG
                END-IF
       *
       *        レセ電データチェック時のエラーリストの有無
                IF      WRK-PRT-PAGE1   >   ZERO
-                   IF      WRK-PRT-PAGE2   >   ZERO
-                       STRING  WRK-T99-MSG     DELIMITED   BY  SIZE
-                               "（チェックリストが作成されました）" 
-                                               DELIMITED   BY  SIZE
-                                               INTO        T99-MSG
-                       END-STRING
-                   ELSE
-                       STRING  WRK-T99-MSG1    DELIMITED   BY  SIZE
-                               "（チェックリストが作成されました）" 
-                                               DELIMITED   BY  SIZE
-                                               INTO        T99-MSG
-                       END-STRING
-                   END-IF
                    MOVE    "red"           TO  T99-MSG-STYLE
-               ELSE
-                   MOVE    WRK-T99-MSG     TO  T99-MSG
                END-IF
            END-IF
       *
