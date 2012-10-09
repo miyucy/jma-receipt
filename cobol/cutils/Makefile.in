@@ -48,7 +48,7 @@ orcqrencode.so: orcqrencode.c
 	$(CC) -Wl,--no-as-needed $(QRENCODE_LIB) $(PNG_CFLAGS) $(PNG_LIBS) -fPIC -shared $< -o $@
 
 fixreddata.so: fixreddata.c euc.c
-	$(CC) $(XML2_CFLAGS) -wl,--no-as-needed $(XML2_LIBS) -fPIC -shared -Wl,-soname,$@ $? -o $@
+	$(CC) $(XML2_CFLAGS) -Wl,--no-as-needed $(XML2_LIBS) -fPIC -shared -Wl,-soname,$@ $? -o $@
 
 kanaconv.so: kanaconv.o euc.o
 	$(CC) -shared -Wl,-soname,$@ -o $@ $?
