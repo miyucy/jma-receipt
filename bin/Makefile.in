@@ -46,7 +46,7 @@ all:	$(BIN_objs)
 	chmod +x $@
 
 $(BIN_cmd):
-	sed -e 's,\@prefix\@,$(prefix),g' \
+	sed -e 's,\@bindir\@,$(bindir),g' \
 	$(BIN_cmdsrc) > $@
 	chmod +x $@
 
