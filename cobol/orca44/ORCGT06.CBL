@@ -187,6 +187,7 @@
       *
            03  WRK-PRT-PAGE        PIC 9(10).
            03  WRK-PRT-PAGE1       PIC 9(10).
+           03  WRK-PRT-PAGE2       PIC 9(06).
       *
            COPY    "CPORCSPRTLNK.INC".
       *
@@ -222,6 +223,15 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
+      *
+           03  WRK-T99-MSG.
+               05  WRK-T99-MSG1    PIC X(24)   VALUE
+                   "処理は正常に終了しました".
+               05  FILLER          PIC X(16)   VALUE
+                   "　レセプト総件数".
+               05  WRK-T99-MSG-KENSU
+                                   PIC ZZZZZ9.
+               05  FILLER          PIC X(02)   VALUE   "件".
       *
       *    ワーク請求管理
            COPY    "CPRCF010.INC"  REPLACING  //RECE10-//
@@ -4294,8 +4304,13 @@
                MOVE    SPA-NAI-T06-DIRECT-HKNJANUM
                                        TO  SHELLTBL-ARG27
            END-IF
-           MOVE    SPA-NAI-T06-200501-RECEDEN-CHK-KBN
-                                   TO  SHELLTBL-ARG28
+           IF      SPA-NAI-T06-SRYYM-H
+                                   <   201204
+               MOVE    "0"             TO  SHELLTBL-ARG28
+           ELSE
+               MOVE    SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                       TO  SHELLTBL-ARG28
+           END-IF
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -4461,6 +4476,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
       *
            MOVE    ZERO                TO  WRK-PRT-PAGE
                                            WRK-PRT-PAGE1
+                                           WRK-PRT-PAGE2
       *
            INITIALIZE                      T99
            MOVE    ZERO                TO  T99-COUNT
@@ -4538,7 +4554,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
                        IF    ( JOB-PGID        =   "ORCBPRT1" )
                            MOVE    JOB-UPDCNT  TO  WRK-PRT-PAGE
                        ELSE
+      *                    レセ電データチェックリストの枚数
                            MOVE    JOB-UPDCNT1 TO  WRK-PRT-PAGE1
+      *                    レセ電データのレセプト件数
+                           MOVE    JOB-UPDCNT2 TO  WRK-PRT-PAGE2
                        END-IF
                    END-IF
                END-PERFORM
@@ -4546,18 +4565,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
            IF      T99-MSG              =   SPACE
                MOVE    "B01"                TO  MCP-WIDGET
                IF      T99-COUNT            >   ZERO    
-                   IF      WRK-PRT-PAGE1   =   ZERO
-                       MOVE    "処理は正常に終了しました"
-                                                   TO  T99-MSG
-                   ELSE
-                       STRING  "処理は正常に終了しました"
-                                               DELIMITED   BY  SIZE
-                               "（チェックリストが作成されました）" 
-                                               DELIMITED   BY  SIZE
-                                               INTO  T99-MSG
-                       END-STRING
-                       MOVE    "red"   TO  T99-MSG-STYLE
-                   END-IF
+      *            メッセージ編集処理
+                   PERFORM 4900-MSG-HENSYU-SEC
                ELSE
                    MOVE    "該当する処理はありません"
                                                 TO  T99-MSG
@@ -4587,7 +4596,46 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
            .
        490-KAKUNIN-EXT.
            EXIT.
+       *
+      *****************************************************************
+      *    メッセージ編集処理
+      *****************************************************************
+       4900-MSG-HENSYU-SEC         SECTION.
       *
+           IF    ( WRK-PRT-PAGE1   =   ZERO )
+           AND   ( WRK-PRT-PAGE2   =   ZERO )
+               MOVE    WRK-T99-MSG1    TO  T99-MSG
+           ELSE
+      *        レセ電データ作成時のレセプト件数
+               IF      WRK-PRT-PAGE2   >   ZERO
+                   MOVE    WRK-PRT-PAGE2   TO  WRK-T99-MSG-KENSU
+               END-IF
+      *
+      *        レセ電データチェック時のエラーリストの有無
+               IF      WRK-PRT-PAGE1   >   ZERO
+                   IF      WRK-PRT-PAGE2   >   ZERO
+                       STRING  WRK-T99-MSG     DELIMITED   BY  SIZE
+                               "（チェックリストが作成されました）" 
+                                               DELIMITED   BY  SIZE
+                                               INTO        T99-MSG
+                       END-STRING
+                   ELSE
+                       STRING  WRK-T99-MSG1    DELIMITED   BY  SIZE
+                               "（チェックリストが作成されました）" 
+                                               DELIMITED   BY  SIZE
+                                               INTO        T99-MSG
+                       END-STRING
+                   END-IF
+                   MOVE    "red"           TO  T99-MSG-STYLE
+               ELSE
+                   MOVE    WRK-T99-MSG     TO  T99-MSG
+               END-IF
+           END-IF
+      *
+           .
+       4900-MSG-HENSYU-EXT.
+           EXIT.
+     *
       *****************************************************************
       *    エラーメッセージセット処理
       *****************************************************************

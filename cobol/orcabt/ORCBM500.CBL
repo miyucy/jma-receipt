@@ -88,6 +88,7 @@
       *
       *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
+      *  04.07.02    NACL-藤原    12/10/05  レセプト件数をジョブ管理に更新
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1462,6 +1463,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-RECENUM     TO  JOB-UPDCNT2
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC

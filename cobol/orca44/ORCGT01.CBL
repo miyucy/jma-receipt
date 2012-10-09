@@ -272,7 +272,8 @@
       *
            03  WRK-PRT-PAGE        PIC 9(10).
            03  WRK-PRT-PAGE1       PIC 9(10).
-      *     
+           03  WRK-PRT-PAGE2       PIC 9(06).
+     *     
       *
            03  WRK-PRTNM           PIC 9(04).
            03  WRK-PRTNM-R         REDEFINES   WRK-PRTNM.
@@ -329,6 +330,15 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
+      *
+           03  WRK-T99-MSG.
+               05  WRK-T99-MSG1    PIC X(24)   VALUE
+                   "処理は正常に終了しました".
+               05  FILLER          PIC X(16)   VALUE
+                   "　レセプト総件数".
+               05  WRK-T99-MSG-KENSU
+                                   PIC ZZZZZ9.
+               05  FILLER          PIC X(02)   VALUE   "件".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -5021,8 +5031,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
                                                    TO  SHELLTBL-ARG25
                    END-IF
            END-EVALUATE
-           MOVE    SPA-GMN-RECEDEN-CHK
-                                   TO  SHELLTBL-ARG26
+           IF      SPA-NAI-SKYYM   <   201204
+               MOVE    "0"             TO  SHELLTBL-ARG26
+           ELSE
+               MOVE    SPA-GMN-RECEDEN-CHK
+                                       TO  SHELLTBL-ARG26
+           END-IF
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -5621,6 +5635,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    ZERO                TO  WRK-PRT-PAGE
                                            WRK-PRT-PAGE1
+                                           WRK-PRT-PAGE2
       *
            INITIALIZE                      T99
            MOVE    ZERO                TO  T99-COUNT
@@ -5698,7 +5713,10 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                        IF    ( JOB-PGID        =   "ORCBPRT1" )
                            MOVE    JOB-UPDCNT  TO  WRK-PRT-PAGE
                        ELSE
+      *                    レセ電データチェックリストの枚数
                            MOVE    JOB-UPDCNT1 TO  WRK-PRT-PAGE1
+      *                    レセ電データのレセプト件数
+                           MOVE    JOB-UPDCNT2 TO  WRK-PRT-PAGE2
                        END-IF
                    END-IF
                END-PERFORM
@@ -5706,18 +5724,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            IF      T99-MSG              =   SPACE
                MOVE    "B01"                TO  MCP-WIDGET
                IF      T99-COUNT            >   ZERO    
-                   IF      WRK-PRT-PAGE1   =   ZERO
-                       MOVE    "処理は正常に終了しました"
-                                                   TO  T99-MSG
-                   ELSE
-                       STRING  "処理は正常に終了しました"
-                                               DELIMITED   BY  SIZE
-                               "（チェックリストが作成されました）" 
-                                               DELIMITED   BY  SIZE
-                                               INTO  T99-MSG
-                       END-STRING
-                       MOVE    "red"   TO  T99-MSG-STYLE
-                   END-IF
+      *            メッセージ編集処理
+                   PERFORM 4900-MSG-HENSYU-SEC
                ELSE
                    MOVE    "該当する処理はありません"
                                                 TO  T99-MSG
@@ -5746,6 +5754,45 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    1                    TO  FLG-END              
            .
        490-KAKUNIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    メッセージ編集処理
+      *****************************************************************
+       4900-MSG-HENSYU-SEC         SECTION.
+      *
+           IF    ( WRK-PRT-PAGE1   =   ZERO )
+           AND   ( WRK-PRT-PAGE2   =   ZERO )
+               MOVE    WRK-T99-MSG1    TO  T99-MSG
+           ELSE
+      *        レセ電データ作成時のレセプト件数
+               IF      WRK-PRT-PAGE2   >   ZERO
+                   MOVE    WRK-PRT-PAGE2   TO  WRK-T99-MSG-KENSU
+               END-IF
+      *
+      *        レセ電データチェック時のエラーリストの有無
+               IF      WRK-PRT-PAGE1   >   ZERO
+                   IF      WRK-PRT-PAGE2   >   ZERO
+                       STRING  WRK-T99-MSG     DELIMITED   BY  SIZE
+                               "（チェックリストが作成されました）" 
+                                               DELIMITED   BY  SIZE
+                                               INTO        T99-MSG
+                       END-STRING
+                   ELSE
+                       STRING  WRK-T99-MSG1    DELIMITED   BY  SIZE
+                               "（チェックリストが作成されました）" 
+                                               DELIMITED   BY  SIZE
+                                               INTO        T99-MSG
+                       END-STRING
+                   END-IF
+                   MOVE    "red"           TO  T99-MSG-STYLE
+               ELSE
+                   MOVE    WRK-T99-MSG     TO  T99-MSG
+               END-IF
+           END-IF
+      *
+           .
+       4900-MSG-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5987,7 +6034,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    SPA-GMN-RECEDEN-CHKLST (IDX)
                                            TO  T01-RECEDEN-CHK-ITEM(IDX)
            END-PERFORM
-           MOVE    SPA-GMN-RECEDEN-CHK-MAX TO  T01-RECEDEN-CHK-COUNT
+           MOVE    SPA-GMN-RECEDEN-CHK-MAX
+                                       TO  T01-RECEDEN-CHK-COUNT
       *
            MOVE    SPA-GMN-PRTKBN1-VALUE
                                        TO  T01-PRTKBN1-VALUE
@@ -6453,10 +6501,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    IF  (   SPA-NAI-200501-RECEDEN-LST1KBN
                                            =   "1"         )
                    OR  ( ( SPA-NAI-200501-RECEDEN-LST2KBN
-                                           =   "1" )   AND
-                         ( SPA-GMN-PRTKBN  =   "1" )       )
-                   OR  (   SPA-GMN-RECEDEN-CHK
-                                           =   "1"         )
+                                           =   "1"    )    AND
+                         ( SPA-GMN-PRTKBN  =   "1"    )        )
+                   OR  ( ( SPA-GMN-RECEDEN-CHK
+                                           =   "1"    )    AND
+                         ( SPA-NAI-SKYYM   >=  201204 )        )
                        MOVE    SPACE           TO  WRK-TIDMSG1
                                                    WRK-TIDCD-MSG
       *
@@ -6475,8 +6524,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                            MOVE    WRK-TIDCD-MSG   TO  WRK-TIDMSG1
                            MOVE    SPACE           TO  WRK-TIDCD-MSG
                          END-IF
-                       IF      SPA-GMN-RECEDEN-CHK
-                                               =   "1"
+                       IF    ( SPA-GMN-RECEDEN-CHK
+                                               =   "1"    )
+                       AND   ( SPA-NAI-SKYYM   >=  201204 )
                            STRING  WRK-TIDMSG1     DELIMITED  BY  SPACE
                                   "、レセ電チェックリスト"
                                                    DELIMITED  BY  SIZE
@@ -6525,12 +6575,13 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "F11:印刷しない"
                                    TO  TID2-B11-LABEL
            IF  (   SPA-NAI-200501-RECEDEN-LST1KBN
-                                   =   "1"         )
+                                   =   "1"             )
            OR  ( ( SPA-NAI-200501-RECEDEN-LST2KBN
-                                   =   "1" )   AND
-                 ( SPA-GMN-PRTKBN  =   "1" )       )
-           OR  (   SPA-GMN-RECEDEN-CHK
-                                   =   "1"         )
+                                   =   "1"    )   AND
+                 ( SPA-GMN-PRTKBN  =   "1"    )        )
+           OR  ( ( SPA-GMN-RECEDEN-CHK
+                                   =   "1"    )    AND
+                 ( SPA-NAI-SKYYM   >=  201204 )        )
                MOVE    "T"             TO  TID2-B10-VISIBLE
                MOVE    "T"             TO  TID2-B11-VISIBLE
                MOVE    "F12:印刷する"  TO  TID2-B12-LABEL

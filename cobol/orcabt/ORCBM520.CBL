@@ -1342,11 +1342,13 @@
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-RECENUM     TO  JOB-UPDCNT2
            PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 900-DBDISCONNECT-SEC
            DISPLAY "RECE300  IN   " CNT-IN  
            DISPLAY "RECE300  OUT  " CNT-OUT
+           DISPLAY "RECE300  RE   " WRK-RECENUM
            DISPLAY "RECE300  FILE " WRK-FILE-RENNUM  
            DISPLAY "*** ORCBM520 END ***"
            .

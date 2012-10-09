@@ -525,10 +525,11 @@
            MOVE    "レセプト電算データを作成します"
                                        TO  WRK-TIDMSG 
       *
-           IF    ( SPA-NAI-T06-200501-RECEDEN-LST1KBN
-                                           =   "1" )
-           OR    ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
-                                           =   "1" )
+           IF  (   SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                           =   "1"             )
+           OR  ( ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                           =   "1"    )    AND
+                 ( SPA-NAI-T06-SRYYM-H     >=  201204 )        )
                MOVE    SPACE           TO  WRK-TIDMSG1
                                            WRK-TIDCD-MSG
       *
@@ -536,8 +537,9 @@
                                            =   "1"
                    MOVE    "、症状詳記"      TO  WRK-TIDMSG1
                END-IF
-               IF      SPA-NAI-T06-200501-RECEDEN-CHK-KBN
-                                           =   "1"
+               IF    ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                           =   "1"    )
+               AND   ( SPA-NAI-T06-SRYYM-H >=  201204 )
                    STRING  WRK-TIDMSG1     DELIMITED  BY  SPACE
                            "、レセ電チェックリスト"
                                            DELIMITED  BY  SIZE
@@ -575,10 +577,11 @@
            END-PERFORM
            MOVE    SPA-GMN-T98-PRTKBN-MAX  TO  T98-PRTKBN-COUNT
       *
-           IF    ( SPA-NAI-T06-200501-RECEDEN-LST1KBN
-                                       =   "0" )
-           AND   ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
-                                       =   "0" )
+           IF  (   SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                       =   "0"            )
+           AND ( ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                       =   "0"    )    OR
+                 ( SPA-NAI-T06-SRYYM-H <   201204 )       )
                MOVE    "F"                 TO  T98-B10-VISIBLE
                MOVE    "F"                 TO  T98-B11-VISIBLE
                MOVE    "F12:作成する"      TO  T98-B12-LABEL

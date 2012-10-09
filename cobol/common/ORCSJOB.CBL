@@ -326,8 +326,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      JOB-UPDCNT2         NOT NUMERIC
                MOVE    ZERO                TO   JOB-UPDCNT2
            END-IF
-           MOVE    JOB-UPDCNT1         TO  WRK-JOB-UPDCNT1
-           MOVE    JOB-UPDCNT2         TO  WRK-JOB-UPDCNT2
+           COMPUTE WRK-JOB-UPDCNT1     =   WRK-JOB-UPDCNT1  +
+                                           JOB-UPDCNT1
+           COMPUTE WRK-JOB-UPDCNT2     =   WRK-JOB-UPDCNT2  +
+                                           JOB-UPDCNT2
            COMPUTE WRK-JOB-UPDCNT      =   WRK-JOB-UPDCNT  +
                                            JOB-UPDCNT                            
            COMPUTE WRK-JOB-STEPCNT     =   WRK-JOB-STEPCNT +
