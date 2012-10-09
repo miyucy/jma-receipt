@@ -352,7 +352,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SPACE               TO  SHELLTBL
            INITIALIZE                      SHELLTBL
       *
-           MOVE    WRK-SHELLTBL-NAME   TO  SHELLTBL-NAME
+           MOVE    MKPRT-ID            TO  SHELLTBL-NAME
       *    MONP
            MOVE    SHELL-MONPE         TO  SHELLTBL-ARG1
       *    FROM
@@ -374,7 +374,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    "SHELL"             TO  MCP-FUNC
       *****MOVE    PATH-SHELL-SHELL    TO  MCP-PATH
            MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "shell"             TO  MCP-PATHNAME
+           MOVE    "daily"             TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
