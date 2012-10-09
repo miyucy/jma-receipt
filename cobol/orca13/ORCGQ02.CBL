@@ -493,6 +493,7 @@
                MOVE    LNK-SCRSPA          TO  SPA-Q01FREE
       *    患者登録
            WHEN    "P02"
+           WHEN    "K02"
            WHEN    "C02"
       *
       *        退避しておいたＳＰＡの内容を元に戻す
@@ -1362,6 +1363,9 @@
                    MOVE    "P02"       TO      WRK-WINDOW
                    PERFORM 480-GYOUMU-SENI-SEC
                WHEN    "CLICKED"       ALSO    "B05S"
+                   MOVE    "K02"       TO      WRK-WINDOW
+                   PERFORM 480-GYOUMU-SENI-SEC
+               WHEN    "CLICKED"       ALSO    "B06S"
                    MOVE    "C02"       TO      WRK-WINDOW
                    PERFORM 480-GYOUMU-SENI-SEC
       *    前頁
@@ -1799,6 +1803,9 @@
       *    受付と患者検索以外の元をセット
            MOVE    "Q02"               TO  SPA-MOTOPG
            MOVE    WRK-WINDOW          TO  SPA-SAKIPG
+           IF    ( WRK-WINDOW          =   "K02" )
+               MOVE    SPA-MOTOPG      TO  SPA-MACHIPG
+           END-IF
       *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
