@@ -470,6 +470,7 @@ RECORD_files = \
 	medicalmod.rec \
 	medicalmodv2.rec \
 	_XADMY01.rec \
+	X07.rec \
 
 DEF_files = \
 
