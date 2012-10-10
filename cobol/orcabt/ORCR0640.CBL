@@ -757,6 +757,8 @@
            03  FLG-ZENKOKUKOHI-NISYU                   PIC 9(01).
            03  FLG-ZENKOKUKOHI-NISYU2                  PIC 9(01).
            03  FLG-ZENKOKUKOHI-NISYU3                  PIC 9(01).
+           03  FLG-ZENKOKUKOHI-NISYU4                  PIC 9(01).
+           03  FLG-ZENKOKUKOHI-NISYU5                  PIC 9(01).
            03  FLG-SYUNOU-ARI                          PIC 9(01).
            03  FLG-TOKU75                              PIC 9(01).
            03  FLG-TOKU75-KIZON                        PIC 9(01).
@@ -14858,6 +14860,8 @@
            MOVE    ZERO                 TO      FLG-ZENKOKUKOHI-NISYU
            MOVE    ZERO                 TO      FLG-ZENKOKUKOHI-NISYU2
            MOVE    ZERO                 TO      FLG-ZENKOKUKOHI-NISYU3
+           MOVE    ZERO                 TO      FLG-ZENKOKUKOHI-NISYU4
+           MOVE    ZERO                 TO      FLG-ZENKOKUKOHI-NISYU5
            MOVE    ZERO                 TO      FLG-KEISAN-TOK1
                                                 FLG-KEISAN-TOK2
                                                 WRK-KINGAKU-TOK1
@@ -21010,8 +21014,7 @@
                       MOVE  FTN-KOH-XX7  TO  RECE62-KOUREI-SAIKEI2
                       IF    WRK-CYOKI-KEISAN   <  WRK-CYOKI-KEISAN2
                       AND   WRK-CYOKI-KEISAN3  <  FTN-KOH-XX7
-      *                   °¦É²¸©
-                          IF   WRK-PREFNUM  =  "38"
+                          IF   FLG-ZENKOKUKOHI-NISYU4  =  2
       **>                   COMPUTE WRK-CYOKI-KEISAN4
       **>                                         = FTN-KOH-XX7
       **>                                         - WRK-CYOKI-KEISAN3
@@ -21053,9 +21056,7 @@
                     IF  FLG-ZENKOKUKOHI-NISYU  =   ZERO
                       IF    WRK-CYOKI-KEISAN   <  WRK-CYOKI-KEISAN2
                       AND   WRK-CYOKI-KEISAN3  <  FTN-KOH-XX7
-                        IF   (RECE62-SRYYM          >=  "200804")
-                        AND  (WRK-PREFNUM            =  "34"    )
-                        AND  (RECE62-TEISYUTUSAKI    =   2 OR 6 )
+                        IF   FLG-ZENKOKUKOHI-NISYU4  =  2
                             IF   FTN-KOH-XX7      > WRK-CYOKI-KEISAN6
                              MOVE WRK-CYOKI-KEISAN6
                                                 TO  WRK-CYOKI-KEISAN7
@@ -21301,14 +21302,7 @@
              END-IF
             END-IF
       *
-            IF  (RECE62-SRYYM        >=  "200804")
-            AND (RECE62-KOUREI        =  "1"     )
-              IF  ((RECE62-TEISYUTUSAKI  =   6                  ) AND
-                   (WRK-PREFNUM          = "10" OR "45" OR "23"
-                                        OR "27" OR "28" OR "38"
-                                        OR "34"                 ))
-              OR  ((RECE62-TEISYUTUSAKI  =   2                  ) AND
-                   (WRK-PREFNUM          = "38"                 ))
+            IF  FLG-ZENKOKUKOHI-NISYU4  =  1
                  COMPUTE  WRK-CHK-KOKIGAK4 = RECE62-TOTALTEN(2)
                                            + RECE62-HENTOTALTEN(3)
                  IF  (((RECE62-KOHNUM(1)(1:1) = "0"            ) AND
@@ -21325,21 +21319,20 @@
                                            RECE62-HENTOTALTEN(3)) )
                    IF   FLG-ZENKOKUKOHI-NISYU  =  ZERO
                      MOVE     1       TO   FLG-CHIIKI
-                     IF   RECE62-KYURATE   NOT =    30
-                        PERFORM  210466-HOKEN-ICHIBUFTN-CHK-SEC
-                     ELSE
-                        PERFORM  210467-HOKEN-ICHIBUFTN-CHK2-SEC
-                     END-IF
                    ELSE
                      MOVE     3       TO   FLG-CHIIKI
+                   END-IF
+                   IF   RECE62-KOUREI    =  "1"
                      IF   RECE62-KYURATE   NOT =    30
                         PERFORM  210466-HOKEN-ICHIBUFTN-CHK-SEC
                      ELSE
                         PERFORM  210467-HOKEN-ICHIBUFTN-CHK2-SEC
                      END-IF
                    END-IF
+                   IF   RECE62-KOUREI    =  "2"
+                        PERFORM  210467-HOKEN-ICHIBUFTN-CHK2-SEC
+                   END-IF
                  END-IF
-              END-IF
             END-IF
       *
             EVALUATE   WRK-PREFNUM
@@ -21477,51 +21470,10 @@
                    END-IF
                  END-IF
                END-IF
-      *      °¦ÃÎ¸©ÃÏÊý¸øÈñ
-      *      ÂçºåÉÜÃÏÊý¸øÈñ
-             WHEN    "23"
-             WHEN    "27"
-               IF  (FLG-ZENKOKUKOHI-NISYU  =   2 OR 3)
-               AND (RECE62-TEISYUTUSAKI    =   2 OR 6)
-               AND (RECE62-KOUREI          =  "1"    )
-                 IF ((((RECE62-KOHNUM(1)(1:1)  =  "0"            ) AND
-                       (RECE62-KOHNUM(1)   NOT =  "012" AND "025")) OR
-                      ( TBL-TOKATUKAIFLG(1)    =   1              )) AND
-                     (  RECE62-KOHNUM(2)(1:1) >=  "1" AND <= "8"   ) AND
-                     (  TBL-TOKATUKAIFLG(2)    =  ZERO             ) AND
-                     (  RECE62-TOTALTEN(1) =  RECE62-HENTOTALTEN(3)))
-                 OR ((  RECE62-KOHNUM(1)(1:1)  =  "0"              ) AND
-                     (  RECE62-KOHNUM(1)   NOT =  "012" AND "025"  ) AND
-                     (  RECE62-KOHNUM(2)       =  "972" OR "974"   ) AND
-                     (  RECE62-KOHNUM(3)(1:1) >=  "1" AND <= "8"   ) AND
-                     (  TBL-TOKATUKAIFLG(3)    =  ZERO             ) AND
-                     (  RECE62-TOTALTEN(1) =  RECE62-HENTOTALTEN(4)))
-                 OR ((  RECE62-KOHNUM(1)       =  "972" OR "974"   ) AND
-                     (  TBL-TOKATUKAIFLG(2)    =   1               ) AND
-                     (  RECE62-KOHNUM(3)(1:1) >=  "1" AND <= "8"   ) AND
-                     (  TBL-TOKATUKAIFLG(3)    =  ZERO             ) AND
-                     (  RECE62-TOTALTEN(1) =  RECE62-HENTOTALTEN(4)))
-                   IF   FLG-KOH  =   2
-                     COMPUTE  WRK-CHK-KOKIGAK8  =  RECE62-FTNMONEY(2)
-                                                -  WRK-KOH-GAI
-                   ELSE
-                     IF  WRK-FTNMONEY-MAE  NOT = 999999999
-                       MOVE  WRK-FTNMONEY-MAE   TO  WRK-CHK-KOKIGAK8
-                     ELSE
-                       MOVE  RECE62-FTNMONEY(2) TO  WRK-CHK-KOKIGAK8
-                     END-IF
-                   END-IF
-                   COMPUTE  RECE62-KOUREI-SAIKEI2  =
-                            RECE62-KOUREI-SAIKEI2  +
-                            WRK-CHK-KOKIGAK8
-                   IF    RECE62-KOUREI-SAIKEI2   =  ZERO
-                      MOVE     1     TO   RECE62-YOBIETC(7)
-                   ELSE
-                      MOVE    ZERO   TO   RECE62-YOBIETC(7)
-                   END-IF
-                 END-IF
-               END-IF
             END-EVALUATE
+      *
+      *     ÊÝ¸±Íó¤Î³ç¸ÌºÆ·Ç¡Ê²¼¡Ë¶â³Û²Ã»»
+            PERFORM       210469-SAIKEI-KINGAKU-KASAN-SEC
       *
            ELSE
       *
@@ -22620,7 +22572,8 @@
       *
            IF  ((FLG-HOKENICHIBU2  NOT = ZERO) AND
                 (FLG-HOKENICHIBU3  NOT = ZERO) AND
-                (FLG-HOKENICHIBU-SYU   = ZERO))
+                (FLG-HOKENICHIBU-SYU   = ZERO) AND
+                (FLG-CHIIKI            = ZERO))
            OR  ( FLG-HOKENICHIBU-CHK   =  1   )
              MOVE   RECE62-TOTALTEN(1)  TO  WRK-HANTEI-TOTALTEN
            ELSE
@@ -22639,11 +22592,11 @@
              END-IF
            END-IF
       *
-           IF  ( RECE62-KOUREI         = "1"  )
-           OR  ( FLG-CHIIKI        NOT = ZERO )
+           IF  ( FLG-CHIIKI        NOT = ZERO )
            OR  ((FLG-HOKENICHIBU2  NOT = ZERO) AND
                 (FLG-HOKENICHIBU3  NOT = ZERO) AND
-                (FLG-HOKENICHIBU-SYU   = ZERO))
+                (FLG-HOKENICHIBU-SYU   = ZERO) AND
+                (FLG-CHIIKI            = ZERO))
            OR  ( FLG-HOKENICHIBU-CHK   =  1   )
              IF   WRK-KINGAKU3  >  WRK-CHK-KOKIGAK2
                COMPUTE  WRK-CHK-KOKIGAK5  =  WRK-KINGAKU3
@@ -22818,6 +22771,95 @@
       *
            .
        210468-SYUHKN-JYOHEN-KEISAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±Íó¤Î³ç¸ÌºÆ·Ç¡Ê²¼¡Ë¶â³Û²Ã»»
+      *****************************************************************
+       210469-SAIKEI-KINGAKU-KASAN-SEC               SECTION.
+      *
+           EVALUATE    FLG-ZENKOKUKOHI-NISYU5
+             WHEN          2
+               IF   FLG-ZENKOKUKOHI-NISYU   =   2
+                 IF ((((RECE62-KOHNUM(1)(1:1)  =  "0"            ) AND
+                       (RECE62-KOHNUM(1)   NOT =  "012" AND "025")) OR
+                      ( TBL-TOKATUKAIFLG(1)    =   1              )) AND
+                     (  RECE62-KOHNUM(2)(1:1) >=  "1" AND <= "8"   ) AND
+                     (  TBL-TOKATUKAIFLG(2)    =  ZERO             ) AND
+                     (  RECE62-TOTALTEN(1) =  RECE62-HENTOTALTEN(3)))
+                 OR ((  RECE62-KOHNUM(1)(1:1)  =  "0"              ) AND
+                     (  RECE62-KOHNUM(1)   NOT =  "012" AND "025"  ) AND
+                     (  RECE62-KOHNUM(2)       =  "972" OR "974"   ) AND
+                     (  RECE62-KOHNUM(3)(1:1) >=  "1" AND <= "8"   ) AND
+                     (  TBL-TOKATUKAIFLG(3)    =  ZERO             ) AND
+                     (  RECE62-TOTALTEN(1) =  RECE62-HENTOTALTEN(4)))
+                 OR ((  RECE62-KOHNUM(1)       =  "972" OR "974"   ) AND
+                     (  TBL-TOKATUKAIFLG(2)    =   1               ) AND
+                     (  RECE62-KOHNUM(3)(1:1) >=  "1" AND <= "8"   ) AND
+                     (  TBL-TOKATUKAIFLG(3)    =  ZERO             ) AND
+                     (  RECE62-TOTALTEN(1) =  RECE62-HENTOTALTEN(4)))
+                    PERFORM       2104691-SAIKEI-KINGAKU-KASAN2-SEC
+                 END-IF
+               END-IF
+             WHEN          3
+               IF   FLG-ZENKOKUKOHI-NISYU   =   3
+                 IF ((((RECE62-KOHNUM(1)(1:1)  =  "0"            ) AND
+                       (RECE62-KOHNUM(1)   NOT =  "012" AND "025")) OR
+                      ( TBL-TOKATUKAIFLG(1)    =   1              )) AND
+                     (  RECE62-KOHNUM(2)(1:1) >=  "1" AND <= "8"   ) AND
+                     (  TBL-TOKATUKAIFLG(2)    =  ZERO             ) AND
+                     (  RECE62-TOTALTEN(1) =  RECE62-HENTOTALTEN(3)))
+                    PERFORM       2104691-SAIKEI-KINGAKU-KASAN2-SEC
+                 END-IF
+               END-IF
+             WHEN          4
+               IF   FLG-ZENKOKUKOHI-NISYU   =   3
+                 IF ((  RECE62-KOHNUM(1)(1:1)  =  "0"              ) AND
+                     (  RECE62-KOHNUM(1)   NOT =  "012" AND "025"  ) AND
+                     (  RECE62-KOHNUM(2)       =  "972" OR "974"   ) AND
+                     (  RECE62-KOHNUM(3)(1:1) >=  "1" AND <= "8"   ) AND
+                     (  TBL-TOKATUKAIFLG(3)    =  ZERO             ) AND
+                     (  RECE62-TOTALTEN(1) =  RECE62-HENTOTALTEN(4)))
+                 OR ((  RECE62-KOHNUM(1)       =  "972" OR "974"   ) AND
+                     (  TBL-TOKATUKAIFLG(2)    =   1               ) AND
+                     (  RECE62-KOHNUM(3)(1:1) >=  "1" AND <= "8"   ) AND
+                     (  TBL-TOKATUKAIFLG(3)    =  ZERO             ) AND
+                     (  RECE62-TOTALTEN(1) =  RECE62-HENTOTALTEN(4)))
+                    PERFORM       2104691-SAIKEI-KINGAKU-KASAN2-SEC
+                 END-IF
+               END-IF
+           END-EVALUATE
+      *
+           .
+       210469-SAIKEI-KINGAKU-KASAN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÝ¸±Íó¤Î³ç¸ÌºÆ·Ç¡Ê²¼¡Ë¶â³Û²Ã»»
+      *****************************************************************
+       2104691-SAIKEI-KINGAKU-KASAN2-SEC               SECTION.
+      *
+           IF   FLG-KOH  =   2
+             COMPUTE  WRK-CHK-KOKIGAK8  =  RECE62-FTNMONEY(2)
+                                        -  WRK-KOH-GAI
+           ELSE
+             IF  WRK-FTNMONEY-MAE  NOT = 999999999
+               MOVE  WRK-FTNMONEY-MAE   TO  WRK-CHK-KOKIGAK8
+             ELSE
+               MOVE  RECE62-FTNMONEY(2) TO  WRK-CHK-KOKIGAK8
+             END-IF
+           END-IF
+           COMPUTE  RECE62-KOUREI-SAIKEI2  =
+                    RECE62-KOUREI-SAIKEI2  +
+                    WRK-CHK-KOKIGAK8
+           IF    RECE62-KOUREI-SAIKEI2   =  ZERO
+              MOVE     1     TO   RECE62-YOBIETC(7)
+           ELSE
+              MOVE    ZERO   TO   RECE62-YOBIETC(7)
+           END-IF
+      *
+           .
+       2104691-SAIKEI-KINGAKU-KASAN2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -23241,48 +23283,267 @@
       *
                MOVE           1           TO   FLG-ZENKOKUKOHI-NISYU3
       *
-      ***      IF ((WRK-PREFNUM         = "27"           ) AND
-      ***          (RECE62-KOUREI-HANTEIFLG   =   "1"    ))
-               IF ( WRK-PREFNUM         = "27"            )
-               OR ((WRK-PREFNUM         = "28"           ) AND
-                   (RECE62-TEISYUTUSAKI =  6             ) AND
-                   (RECE62-KOUREI-HANTEIFLG   =   "1"    ))
-               OR ((WRK-PREFNUM         = "23"           ) AND
-                   (RECE62-TEISYUTUSAKI =  6             ) AND
-                   (RECE62-KOUREI-HANTEIFLG   =   "1"    ))
-               OR ((WRK-PREFNUM         = "38"           ) AND
-                   (RECE62-TEISYUTUSAKI =  2 OR 6        ) AND
-                   (RECE62-KOUREI-HANTEIFLG   =   "1"    ))
-      *
-                  MOVE        2           TO   FLG-ZENKOKUKOHI-NISYU
-                  EVALUATE  WRK-PREFNUM
-                    WHEN        "27"
-                      IF    RECE62-HKNCOMBI(2)   =   ZERO
-                         IF  (RECE62-TEISYUTUSAKI       =    2 OR 6)
-                         AND (RECE62-KOUREI-HANTEIFLG   =   "1"    )
-                           MOVE    3      TO   FLG-ZENKOKUKOHI-NISYU
-                         ELSE
-                           MOVE    ZERO   TO   FLG-ZENKOKUKOHI-NISYU
-                         END-IF
-                      END-IF
-                    WHEN        "23"
-                    WHEN        "28"
-                      IF    RECE62-HKNCOMBI(2)   =   ZERO
-                           MOVE    ZERO   TO   FLG-ZENKOKUKOHI-NISYU
-                      END-IF
-                    WHEN        "38"
-                      IF    RECE62-HKNCOMBI(2)   =   ZERO
-                         IF (RECE62-KOHNUM(1)  = "972" OR "974")
-                         OR (RECE62-KOHNUM(2)  = "972" OR "974")
-                         OR (RECE62-KOHNUM(3)  = "972" OR "974")
-                         OR (RECE62-KOHNUM(4)  = "972" OR "974")
-                           MOVE    3      TO   FLG-ZENKOKUKOHI-NISYU
-                         ELSE
-                           MOVE    ZERO   TO   FLG-ZENKOKUKOHI-NISYU
-                         END-IF
-                      END-IF
-                  END-EVALUATE
-      *
+               IF (((RECE62-KOHNUM(1)(1:1)  =  "0"            ) AND
+                    (RECE62-KOHNUM(1)   NOT =  "012" AND "025")) OR
+                   ( TBL-TOKATUKAIFLG(1)    =   1              ))  AND
+                  (  RECE62-KOHNUM(2)(1:1) >=  "1" AND <= "8"   )  AND
+                  (  TBL-TOKATUKAIFLG(2)    =  ZERO             )
+                 IF   RECE62-KOUREI-HANTEIFLG   =  "1"
+                   IF    RECE62-EKF-KAK21KBN-K(3)  =  "1"
+                     MOVE        2          TO   FLG-ZENKOKUKOHI-NISYU
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                        MOVE    ZERO        TO   FLG-ZENKOKUKOHI-NISYU
+                        IF (RECE62-KOHNUM(1)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(2)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(3)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(4)  = "972" OR "974")
+                          IF   RECE62-EKF-KAK23KBN-K(3)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU
+                          END-IF
+                        ELSE
+                          IF   RECE62-EKF-KAK22KBN-K(3)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU
+                          END-IF
+                        END-IF
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK31KBN-K(3)  =  "1"
+                     IF  (RECE62-KOHNUM(1)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(2)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(3)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(4)  = "972" OR "974")
+                             CONTINUE
+                     ELSE
+                             MOVE     1     TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                             MOVE    ZERO   TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK32KBN-K(3)  =  "1"
+                     IF  (RECE62-KOHNUM(1)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(2)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(3)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(4)  = "972" OR "974")
+                             MOVE     2     TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                             MOVE    ZERO   TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK41KBN-K(3)  =  "1"
+                     MOVE        2          TO   FLG-ZENKOKUKOHI-NISYU5
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                        MOVE    ZERO        TO   FLG-ZENKOKUKOHI-NISYU5
+                        IF (RECE62-KOHNUM(1)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(2)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(3)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(4)  = "972" OR "974")
+                          IF   RECE62-EKF-KAK43KBN-K(3)  =  "1"
+                             MOVE     4     TO   FLG-ZENKOKUKOHI-NISYU5
+                          END-IF
+                        ELSE
+                          IF   RECE62-EKF-KAK42KBN-K(3)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU5
+                          END-IF
+                        END-IF
+                     END-IF
+                   END-IF
+                 ELSE
+                   IF    RECE62-EKF-KAK21KBN-Y(3)  =  "1"
+                     MOVE        2          TO   FLG-ZENKOKUKOHI-NISYU
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                        MOVE    ZERO        TO   FLG-ZENKOKUKOHI-NISYU
+                        IF (RECE62-KOHNUM(1)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(2)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(3)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(4)  = "972" OR "974")
+                          IF   RECE62-EKF-KAK23KBN-Y(3)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU
+                          END-IF
+                        ELSE
+                          IF   RECE62-EKF-KAK22KBN-Y(3)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU
+                          END-IF
+                        END-IF
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK31KBN-Y(3)  =  "1"
+                     IF  (RECE62-KOHNUM(1)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(2)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(3)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(4)  = "972" OR "974")
+                             CONTINUE
+                     ELSE
+                             MOVE     1     TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                             MOVE    ZERO   TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK32KBN-Y(3)  =  "1"
+                     IF  (RECE62-KOHNUM(1)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(2)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(3)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(4)  = "972" OR "974")
+                             MOVE     2     TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                             MOVE    ZERO   TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK41KBN-Y(3)  =  "1"
+                     MOVE        2          TO   FLG-ZENKOKUKOHI-NISYU5
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                        MOVE    ZERO        TO   FLG-ZENKOKUKOHI-NISYU5
+                        IF (RECE62-KOHNUM(1)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(2)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(3)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(4)  = "972" OR "974")
+                          IF   RECE62-EKF-KAK43KBN-Y(3)  =  "1"
+                             MOVE     4     TO   FLG-ZENKOKUKOHI-NISYU5
+                          END-IF
+                        ELSE
+                          IF   RECE62-EKF-KAK42KBN-Y(3)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU5
+                          END-IF
+                        END-IF
+                     END-IF
+                   END-IF
+                 END-IF
+               END-IF
+               IF  ((RECE62-KOHNUM(1)(1:1)  =  "0"            )  AND
+                    (RECE62-KOHNUM(1)   NOT =  "012" AND "025")  AND
+                    (RECE62-KOHNUM(2)       =  "972" OR "974" )  AND
+                    (RECE62-KOHNUM(3)(1:1) >=  "1" AND <= "8" )  AND
+                    (TBL-TOKATUKAIFLG(3)    =  ZERO           ))
+               OR  ((RECE62-KOHNUM(1)       =  "972" OR "974" )  AND
+                    (TBL-TOKATUKAIFLG(2)    =   1             )  AND
+                    (RECE62-KOHNUM(3)(1:1) >=  "1" AND <= "8" )  AND
+                    (TBL-TOKATUKAIFLG(3)    =  ZERO           ))
+                 IF   RECE62-KOUREI-HANTEIFLG   =  "1"
+                   IF    RECE62-EKF-KAK21KBN-K(4)  =  "1"
+                     MOVE        2          TO   FLG-ZENKOKUKOHI-NISYU
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                        MOVE    ZERO        TO   FLG-ZENKOKUKOHI-NISYU
+                        IF (RECE62-KOHNUM(1)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(2)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(3)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(4)  = "972" OR "974")
+                          IF   RECE62-EKF-KAK23KBN-K(4)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU
+                          END-IF
+                        ELSE
+                          IF   RECE62-EKF-KAK22KBN-K(4)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU
+                          END-IF
+                        END-IF
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK31KBN-K(4)  =  "1"
+                     IF  (RECE62-KOHNUM(1)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(2)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(3)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(4)  = "972" OR "974")
+                             CONTINUE
+                     ELSE
+                             MOVE     1     TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                             MOVE    ZERO   TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK32KBN-K(4)  =  "1"
+                     IF  (RECE62-KOHNUM(1)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(2)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(3)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(4)  = "972" OR "974")
+                             MOVE     2     TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                             MOVE    ZERO   TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK41KBN-K(4)  =  "1"
+                     MOVE        2          TO   FLG-ZENKOKUKOHI-NISYU5
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                        MOVE    ZERO        TO   FLG-ZENKOKUKOHI-NISYU5
+                        IF (RECE62-KOHNUM(1)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(2)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(3)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(4)  = "972" OR "974")
+                          IF   RECE62-EKF-KAK43KBN-K(4)  =  "1"
+                             MOVE     4     TO   FLG-ZENKOKUKOHI-NISYU5
+                          END-IF
+                        ELSE
+                          IF   RECE62-EKF-KAK42KBN-K(4)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU5
+                          END-IF
+                        END-IF
+                     END-IF
+                   END-IF
+                 ELSE
+                   IF    RECE62-EKF-KAK21KBN-Y(4)  =  "1"
+                     MOVE        2          TO   FLG-ZENKOKUKOHI-NISYU
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                        MOVE    ZERO        TO   FLG-ZENKOKUKOHI-NISYU
+                        IF (RECE62-KOHNUM(1)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(2)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(3)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(4)  = "972" OR "974")
+                          IF   RECE62-EKF-KAK23KBN-Y(4)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU
+                          END-IF
+                        ELSE
+                          IF   RECE62-EKF-KAK22KBN-Y(4)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU
+                          END-IF
+                        END-IF
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK31KBN-Y(4)  =  "1"
+                     IF  (RECE62-KOHNUM(1)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(2)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(3)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(4)  = "972" OR "974")
+                             CONTINUE
+                     ELSE
+                             MOVE     1     TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                             MOVE    ZERO   TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK32KBN-Y(4)  =  "1"
+                     IF  (RECE62-KOHNUM(1)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(2)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(3)  = "972" OR "974")
+                     OR  (RECE62-KOHNUM(4)  = "972" OR "974")
+                             MOVE     2     TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                             MOVE    ZERO   TO   FLG-ZENKOKUKOHI-NISYU4
+                     END-IF
+                   END-IF
+                   IF    RECE62-EKF-KAK41KBN-Y(4)  =  "1"
+                     MOVE        2          TO   FLG-ZENKOKUKOHI-NISYU5
+                     IF   RECE62-HKNCOMBI(2)  =    ZERO
+                        MOVE    ZERO        TO   FLG-ZENKOKUKOHI-NISYU5
+                        IF (RECE62-KOHNUM(1)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(2)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(3)  = "972" OR "974")
+                        OR (RECE62-KOHNUM(4)  = "972" OR "974")
+                          IF   RECE62-EKF-KAK43KBN-Y(4)  =  "1"
+                             MOVE     4     TO   FLG-ZENKOKUKOHI-NISYU5
+                          END-IF
+                        ELSE
+                          IF   RECE62-EKF-KAK42KBN-Y(4)  =  "1"
+                             MOVE     3     TO   FLG-ZENKOKUKOHI-NISYU5
+                          END-IF
+                        END-IF
+                     END-IF
+                   END-IF
+                 END-IF
                END-IF
       *
              END-IF

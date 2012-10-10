@@ -344,6 +344,9 @@
       *  04.05.42    NACL-門脇    12/09/18  改正対応（外泊区分８，９の対応）
       *  04.05.43    NACL-門脇    12/09/19  福島県地方公費対応
       *  04.05.44    NACL-門脇    12/09/26  秋田県地方公費対応
+      *  04.05.45    NACL-門脇    12/10/01  埼玉県地方公費対応
+      *  04.05.46    NACL-門脇    12/10/09  大分県地方公費対応
+      *                                     （システム管理２０１０設定追加）
       *
       *  04.06.01    NACL-門脇    10/11/08  主保険＋マル長の請求対応
       *  04.06.02    NACL-門脇    12/07/30  高額委任払い制度上限額０円対応
@@ -15957,7 +15960,7 @@
                                                TO  FLG-KOHFUKA-HENSYU
                      PERFORM   220142-KOHFUKA-HENSYU1-SEC
                    ELSE
-      *              保険者変更、公費受給者証変更無しの場合
+      *              保険者変更時
                      PERFORM   220144-KOHFUKA-HENSYU3-SEC
                    END-IF
                  ELSE
@@ -15967,6 +15970,14 @@
                  END-IF
              WHEN      "3"
                  CONTINUE
+             WHEN      "4"
+                 IF   WK-HKNJANUM2  =  WK-HKNJANUM
+                   MOVE   1   TO   FLG-KOHFUKA-HENSYU
+                   PERFORM   220142-KOHFUKA-HENSYU1-SEC
+                 ELSE
+      *            保険者変更時
+                   PERFORM   220144-KOHFUKA-HENSYU3-SEC
+                 END-IF
            END-EVALUATE
       *
            .
@@ -15996,7 +16007,7 @@
                MOVE   1   TO   FLG-KOHFUKA-HENSYU
                PERFORM   220142-KOHFUKA-HENSYU1-SEC
              ELSE
-      *        保険者変更、公費受給者証変更無しの場合
+      *        保険者変更時
                PERFORM   220144-KOHFUKA-HENSYU3-SEC
              END-IF
            END-IF
