@@ -2697,7 +2697,11 @@
            MOVE    "変更前の負担を無条件に考慮しない"
                                    TO  SPA-GMN-JYUHENKBNMEIL (4)
       *
-           MOVE    4               TO  SPA-GMN-JYUHENKBN-MAX
+           MOVE    "4"             TO  SPA-GMN-JYUHENKBNL    (5)
+           MOVE    "変更前の負担を考慮する（保険者変更時を除く）"
+                                   TO  SPA-GMN-JYUHENKBNMEIL (5)
+      *
+           MOVE    5               TO  SPA-GMN-JYUHENKBN-MAX
       *
            .
        3110-JYUHENKBNLST-EXT.
@@ -4274,6 +4278,23 @@
       *****************************************************************
        4102-PAGE02-KANREN-CHK-SEC       SECTION.
       *
+           IF    ( SPA-GMN-KAK41KBNK       =   "0" )
+               IF    ( SPA-GMN-KAK42KBNK   =   "0" )
+                AND  ( SPA-GMN-KAK43KBNK   =   "0" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0018"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-KAK21KBNK       =   "0" )
+               IF    ( SPA-GMN-KAK22KBNK   =   "0" )
+                AND  ( SPA-GMN-KAK23KBNK   =   "0" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0019"      TO  SPA-ERRCD
+               END-IF
+           END-IF
       *
            .
        4102-PAGE02-KANREN-CHK-EXT.
@@ -4283,6 +4304,23 @@
       *****************************************************************
        4102-PAGE03-KANREN-CHK-SEC       SECTION.
       *
+           IF    ( SPA-GMN-KAK41KBNY       =   "0" )
+               IF    ( SPA-GMN-KAK42KBNY   =   "0" )
+                AND  ( SPA-GMN-KAK43KBNY   =   "0" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0018"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-KAK21KBNY       =   "0" )
+               IF    ( SPA-GMN-KAK22KBNY   =   "0" )
+                AND  ( SPA-GMN-KAK23KBNY   =   "0" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0019"      TO  SPA-ERRCD
+               END-IF
+           END-IF
       *
            .
        4102-PAGE03-KANREN-CHK-EXT.
@@ -12560,6 +12598,26 @@
            WHEN    "0017"
                MOVE    "有効期間終了日は月末日で入力してください"
                                        TO  SPA-ERRMSG
+           WHEN    "0018"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "金額加算"
+                                       DELIMITED   BY  SIZE
+                       "（分点ありの場合）が０の時、"
+                                       DELIMITED   BY  SIZE
+                       "（分点なしの場合）は０を設定してください"
+                                       DELIMITED   BY  SIZE
+               INTO                        SPA-ERRMSG
+               END-STRING
+           WHEN    "0019"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "記載"
+                                       DELIMITED   BY  SIZE
+                       "（分点ありの場合）が０の時、"
+                                       DELIMITED   BY  SIZE
+                       "（分点なしの場合）は０を設定してください"
+                                       DELIMITED   BY  SIZE
+               INTO                        SPA-ERRMSG
+               END-STRING
            WHEN    "1008"
                MOVE    "範囲内の選択番号を入力してください"
                                        TO  SPA-ERRMSG
