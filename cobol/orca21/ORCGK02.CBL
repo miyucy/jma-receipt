@@ -101,6 +101,7 @@
       *  04.07.00    NACL-多々納  11/09/XX  院外処方点数表示対応
       *  04.07.00    NACL-多々納  12/01/05  クライアント印刷対応
       *  04.07.00    NACL-多々納  12/08/XX  ドクター選択対応
+      *  04.07.00    NACL-多々納  12/10/10  照会からの遷移対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1319,6 +1320,7 @@
       *
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+      *
       *        画面ＳＰＡ読み込み
                PERFORM 1002-K02SPA-SET-SEC
       *        元画面へ戻す
@@ -1479,6 +1481,22 @@
                WHEN    "XD01"
       *             ユーザプログラム実行画面より
                    PERFORM 30010-INIT-GMN-SEC
+      *ver.4.7
+               WHEN    "Q02"
+               WHEN    "Q02A"
+               WHEN    "Q02B"
+      *            照会より
+                   MOVE    LNK-KYOUTU          TO  WRK-SPA-KYOUTU
+                   PERFORM 30010-INIT-GMN-SEC
+                   MOVE    WRK-SPA-PTNUM       TO  K02-PTNUM
+                   PERFORM 41010-PTNUM-SYORI-SEC
+                   IF      SPA-KIDCD           =   "0121"
+      *                入院中の時、入院画面へ
+                       MOVE    SPACE               TO  WRK-PUTTYPE
+                       MOVE    SPACE               TO  SPA-KIDCD
+                       PERFORM 450-K02N-SYORI-SEC
+                   END-IF
+      *
                WHEN    OTHER
       *            外部・患者決定
                    PERFORM 3000-SCREEN-SYORI-SEC
@@ -1592,7 +1610,6 @@
                            PERFORM 3003-GMN-HEN-SEC
                        END-IF
                    END-IF
-      *
                WHEN    "K08"
                WHEN    "K03"
       *            登録後クリア画面の表示
@@ -9031,7 +9048,11 @@
       *    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
       **** MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
            IF      SPA-MACHIPG         =   "U02"
-               MOVE    "U02"               TO  WRK-SAKIPG
+                                       OR  "Q02"
+                                       OR  "Q02A"
+                                       OR  "Q02B"
+     *******   MOVE    "U02"               TO  WRK-SAKIPG
+               MOVE    SPA-MACHIPG         TO  WRK-SAKIPG
                PERFORM 210-BACK-SYORI-SEC
            ELSE
                IF      SPA-GMN-PTNUM       =   SPACE
@@ -12417,6 +12438,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    受付
            IF      SPA-GSRAUTH-11      =   "1"
                MOVE    WIDGET-NORMAL       TO  K02-B04S-STATE
+      *ver.4.7  照会からは非活性
+               IF      SPA-MACHIPG          =   "Q02"
+                                            OR  "Q02A"
+                                            OR  "Q02B"
+                   MOVE    WIDGET-INSENSITIVE  TO  K02-B04S-STATE
+               END-IF
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  K02-B04S-STATE
            END-IF
