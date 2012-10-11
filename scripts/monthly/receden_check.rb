@@ -1252,29 +1252,31 @@ class Receden_check < Receden_common
                 end
               end
 
-              FTNKBN[zai["FTNKBN"].value].each_with_index{|ftn,i|
-                if ftn == 1
-                  if  tekiyo.srykbn != "97"
-                    if flg_minus == false
-                      myten[i] += zai["KAISU"].value.to_i * zai["TEN"].value.to_i
+              if FTNKBN.key?(zai["FTNKBN"].hankaku)
+                FTNKBN[zai["FTNKBN"].value].each_with_index{|ftn,i|
+                  if ftn == 1
+                    if  tekiyo.srykbn != "97"
+                      if flg_minus == false
+                        myten[i] += zai["KAISU"].value.to_i * zai["TEN"].value.to_i
+                      else
+                        myten[i] -= zai["KAISU"].value.to_i * zai["TEN"].value.to_i
+                      end
                     else
-                      myten[i] -= zai["KAISU"].value.to_i * zai["TEN"].value.to_i
-                    end
-                  else
-                    if tbl_tensu.empty?
-                    else
-                       case tbl_tensu["NYUTENTTLKBN"].to_i
-                       when 970, 972, 974
-                         if myssmoney[i].nil?
-                           myssmoney[i]  = zai["KAISU"].value.to_i * zai["TEN"].value.to_i
-                         else
-                           myssmoney[i] += zai["KAISU"].value.to_i * zai["TEN"].value.to_i
+                      if tbl_tensu.empty?
+                      else
+                         case tbl_tensu["NYUTENTTLKBN"].to_i
+                         when 970, 972, 974
+                           if myssmoney[i].nil?
+                             myssmoney[i]  = zai["KAISU"].value.to_i * zai["TEN"].value.to_i
+                           else
+                             myssmoney[i] += zai["KAISU"].value.to_i * zai["TEN"].value.to_i
+                           end
                          end
-                       end
+                      end
                     end
                   end
-                end
-              }
+                }
+              end
             end
 
             if zai["KAISU"].value.to_i == 0
