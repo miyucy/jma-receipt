@@ -29,6 +29,7 @@ utf8_shell_sources = \
 	allways/program_upgrade_online.sh.in \
 	allways/program_upgrade_copy.sh.in \
 	allways/program_upgrade_restart.sh.in \
+	allways/cronselect.sh.in \
 	daily/HCALL.sh.in \
 	daily/execoprg.sh.in \
 	daily/HC01.sh.in \

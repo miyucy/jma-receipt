@@ -20,6 +20,6 @@ do
 done
 
 [ -f ${DUMPFILE}.`expr ${BACKUPGEN} + 1` ] && rm -f  ${DUMPFILE}.`expr ${BACKUPGEN} + 1`
-
-pg_dump -cO ${DBNAME} | gzip > ${DUMPFILE}.1
-
+create_pgpass
+pg_dump ${DBCONNOPTION} -cO ${DBNAME} | gzip > ${DUMPFILE}.1
+delete_pgpass

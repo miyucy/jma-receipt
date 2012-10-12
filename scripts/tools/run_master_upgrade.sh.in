@@ -1,25 +1,21 @@
 #!/bin/bash
 
-LOGFILE=/var/log/jma-receipt/${0%.sh}.log
-RUNDATE=$(date  '+%Y%m%d%H%M%S')
-
-if test -z "$JMARECEIPT_ENV"; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="/n/jma-receipt/etc/jma-receipt.env"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 
+LOGFILE="$LOGDIR"/${0%.sh}.log
+RUNDATE=$(date  '+%Y%m%d%H%M%S')
+
 export PATH=${SITESCRIPTSDIR}/allways:${PATCHSCRIPTSDIR}/allways:${SCRIPTSDIR}/allways:$PATH
-
+echo ${ORCALIBDIR}
 export COB_LIBRARY_PATH=${PATCHLIBDIR}:${ORCALIBDIR}:/usr/lib/panda
-
-DBUSER="orca"
-
-if [ `whoami` != "${DBUSER}" ]; then
-    echo   "${DBUSER}ユーザーで実行してください。"
+echo ${COB_LIBRARY_PATH}
+if [ `whoami` != "${ORCAUSER}" ]; then
+    echo   "${ORCAUSER}ユーザーで実行してください。"
     exit 101
 fi
 
@@ -30,8 +26,10 @@ if [ $? -ne 0 ]; then
 fi
 
 #HOSPNUM=01
+create_pgpass
 SQL="select hospnum from tbl_sysbase;"
-HNLIST=`psql ${DBUSER} -t -A -q -c "${SQL}"`
+HNLIST=`psql ${DBCONNOPTION} ${DBNAME} -t -A -q -c "${SQL}"`
+delete_pgpass
 
 for hospnum in ${HNLIST} ; do
   HOSPNUM=`printf "%02d" $hospnum`
@@ -51,7 +49,6 @@ for hospnum in ${HNLIST} ; do
   if [	-e ${HOSPIDFL}	];	then 
     rm ${HOSPIDFL}
   fi
-
   ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBCHECKREDL -parameter "${MNTERRFL}"
   if [	-e ${MNTERRFL}	];	then 
     cat ${MNTERRFL}

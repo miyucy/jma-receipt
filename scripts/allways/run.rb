@@ -3,13 +3,14 @@ require 'date'
 require 'syslog'
 
 lockdir = '/tmp/jma-receipt-lock'
+CRONSELECT = File.dirname(__FILE__) + '/' + "cronselect.sh"
 
-list = `psql orca -At -F ',' -c "SELECT CRNDOW,CRNMON,CRNDOM,CRNHOUR,SCRIPT from tbl_cron where RUN = \'1\'\;"`.split("\n").map{|r|
+list = `#{CRONSELECT}`.split("\n").map{|r|
   r = r.split(/,/).map{|c| c = "." * c.length if c =~ /^\*/; c }
   [sprintf("%s %s/%s/.. %s", r[0], r[1], r[2], r[3]), r[4..-1].join(" ")]
 }
 time = DateTime.now.strftime("%w %D %H")
-
+p list
 list.each {|cmd|
   next unless /#{cmd[0]}/ =~ time
   begin

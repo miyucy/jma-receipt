@@ -1,15 +1,11 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV"; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
-
-umask 022
 
 #------------------------------------
 # $1 : 処理区分
@@ -17,9 +13,7 @@ umask 022
 # $3 : インストールディレクトリ
 #------------------------------------
 
-HOME=/home/orca
 PRGDIR=orca-prgupwork
-LOGDIR=/var/log/jma-receipt
 
 LOG="$LOGDIR"/program_upgrade_check.log
 
@@ -33,7 +27,9 @@ case "${SYORI}" in
       begin;
       delete from tbl_pgkanri where systemversion = 'check';
       commit;"
-      echo "${SQL}" | psql ${DBNAME}
+      create_pgpass
+      echo "${SQL}" | psql ${DBCONNOPTION} ${DBNAME}
+      delete_pgpass
       exit 0
       ;;
 
@@ -77,8 +73,8 @@ ymd=$(date +'%Y%m%d')
 time=$(date +'%H%M%S')
 
 SQL="select max(pgno) from tbl_pgkanri;"
-
-PGNOMAX=`echo ${SQL} | psql -t -A ${DBNAME}`
+create_pgpass
+PGNOMAX=`echo ${SQL} | psql ${DBCONNOPTION} -t -A ${DBNAME}`
 if [ -z ${PGNOMAX} ]; then
   PGNOMAX=000
 fi
@@ -100,6 +96,7 @@ WHERE
 insert into tbl_pgkanri values ('','check','${PGNO}','${ymd}','${PGNAME}','${UPDATEFLG}','','${INSTALLDIR}','${COMMENT}','','','${ymd}','','${time}');
 commit;"
 
-echo "${SQL}" | psql ${DBNAME}
+echo "${SQL}" | psql ${DBCONNOPTION} ${DBNAME}
+delete_pgpass
 
 exit 0

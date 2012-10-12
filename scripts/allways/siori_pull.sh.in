@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV" ; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
@@ -62,9 +60,9 @@ master_get.sh ${HOSPNUM} ${TERMID} ${JOBID} ${SHELLID} SIORI ${SRYCD}
 if [ $? -ne 0 ] ; then
   exit $?
 fi
- 
-FLIST=`echo "select photo1_filename || ' ' || photo2_filename || ' ' || photo3_filename from tbl_yakujyo_temp where termid='${TERMID}' and srycd='${SRYCD}' and hospnum=${HOSPNUM};" | psql -Atq ${DBNAME}`
-
+create_pgpass
+FLIST=`echo "select photo1_filename || ' ' || photo2_filename || ' ' || photo3_filename from tbl_yakujyo_temp where termid='${TERMID}' and srycd='${SRYCD}' and hospnum=${HOSPNUM};" | psql ${DBCONNOPTION} -Atq ${DBNAME}`
+delete_pgpass
 #echo $FLIST
 
 for file in $FLIST
