@@ -65,6 +65,8 @@
       *  04.06.03    NACL-藤原    11/10/07  傷病名を３行まで記載可能とする
       *
       *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *  04.07.02    NACL-門脇    12/10/12  保険別請求チェック表（標準帳票）
+      *                                     の機能追加対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3103,6 +3105,12 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
            MOVE    RECE200-AGE         TO  RECE10-AGE  
       *    一部負担金・食事療養費標準負担額区分
            MOVE    SPACE               TO  RECE10-SHOKUJIFTNKBN
+      *
+           MOVE    RECE200-HKNCOMBI    TO  RECE10-HKNCOMBI(1)
+      *
+           MOVE    RECE200-TOTALTEN(3) TO  RECE10-SHOKUJIRYOYOHI(1)
+           MOVE    RECE200-SHOKUJITOTALDAY
+                                       TO  RECE10-SHOKUJINISSU(1)
       *
            MOVE    "00000000000000000000000000000000000000000000000000"
                                        TO  RECE10-RESERVE-AREA

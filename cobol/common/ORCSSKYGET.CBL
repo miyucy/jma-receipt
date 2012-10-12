@@ -28,6 +28,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.01    NACL-門脇    11/06/29  テスト患者を対象外とする修正
       *  04.05.02    NACL-門脇    11/11/09  同日再入院食事対応
+      *  04.07.01    NACL-門脇    12/10/12  保険別請求チェック表（標準帳票）
+      *                                     の機能追加対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -61,6 +63,7 @@
        01  WRK-AREA.
            03  WRK-KEISAN                PIC S9(09).
            03  WRK-KEISAN2               PIC S9(09).
+           03  WRK-KEISAN3               PIC  9(09).
       *
            03  WRK-TAIHI-AREA.
              05  WRK-TAIHI-PTID          PIC 9(10).
@@ -68,6 +71,8 @@
       *
            03  WRK-TAIHI-AREA2.
              05  WRK-TAIHI-DAY           PIC 9(01)   OCCURS   31.
+      *
+           03  WRK-PTFTNRATE             PIC 9(03).
       *
       *    共通領域
            COPY    "MCPAREA".
@@ -86,6 +91,8 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+           COPY    "CPORCSAGECHK.INC".
       *
            COPY    "MCPDATA.INC".
       *
@@ -140,6 +147,12 @@
            EVALUATE    LNK-SKYGET-KBN
       *      ＜社保・国保・後期高齢の請求管理データ単位の編集＞
              WHEN      "1"
+      *      ＜労災の請求管理データ単位の編集＞
+             WHEN      "3"
+      *      ＜自賠責の請求管理データ単位の編集＞
+             WHEN      "4"
+      *      ＜公害の請求管理データ単位の編集＞
+             WHEN      "5"
                IF      LNK-SKYGET-SRYYM  <  201004
                       MOVE    1     TO   LNK-SKYGET-RC
                ELSE
@@ -175,6 +188,11 @@
                PERFORM    2001-HENSYU1-SEC
              WHEN      "2"
                PERFORM    2002-HENSYU2-SEC
+             WHEN      "3"
+             WHEN      "4"
+               PERFORM    2001-HENSYU3-SEC
+             WHEN      "5"
+               PERFORM    2001-HENSYU5-SEC
            END-EVALUATE
       *
            .
@@ -694,6 +712,95 @@
       *
            .
        200211-INDEX-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    区分”３”の編集　＜労災＞
+      *    区分”４”の編集　＜自賠責＞
+      *****************************************************************
+       2001-HENSYU3-SEC            SECTION.
+      *
+           MOVE    ZERO                TO   WRK-PTFTNRATE
+      *
+           INITIALIZE                       ORCSAGECHKAREA
+           MOVE    SPA-HOSPNUM         TO   AGECHK-HOSPNUM
+           MOVE    RECE10-PTID         TO   AGECHK-PTID
+           MOVE    RECE10-SRYYM        TO   AGECHK-SRYYMD(1:6)
+           MOVE    "01"                TO   AGECHK-SRYYMD(7:2)
+           MOVE    RECE10-HKNCOMBI(1)  TO   AGECHK-HKNCOMBINUM
+           MOVE    RECE10-NYUGAIKBN    TO   AGECHK-NYUGAIKBN
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+                                       SPA-AREA
+           IF    AGECHK-RC       =  ZERO
+             MOVE  AGECHK-FTNRATE      TO   WRK-PTFTNRATE
+           END-IF
+      *
+           MOVE    RECE10-JNISSU(1)         TO LNK-SKYGET-IRYO-NISSU
+           MOVE    RECE10-TOTALTEN(1)       TO LNK-SKYGET-IRYO-TOTALTEN
+           MOVE    ZERO                     TO LNK-SKYGET-IRYO-ICHIBUFTN
+           MOVE    ZERO                     TO LNK-SKYGET-IRYO-HOKENJA
+           IF    WRK-PTFTNRATE   =  100
+             IF    RECE10-NYUGAIKBN   =  "1"
+               COMPUTE   LNK-SKYGET-IRYO-ICHIBUFTN =
+                         RECE10-FTNMONEY(1)        -
+                         RECE10-SHOKUJIRYOYOHI(1)
+             ELSE
+               MOVE  RECE10-FTNMONEY(1)     TO LNK-SKYGET-IRYO-ICHIBUFTN
+             END-IF
+           ELSE
+             IF    RECE10-NYUGAIKBN   =  "1"
+               COMPUTE   LNK-SKYGET-IRYO-HOKENJA   =
+                         RECE10-FTNMONEY(1)        -
+                         RECE10-SHOKUJIRYOYOHI(1)
+             ELSE
+               MOVE  RECE10-FTNMONEY(1)     TO LNK-SKYGET-IRYO-HOKENJA
+             END-IF
+           END-IF
+           MOVE    ZERO                     TO LNK-SKYGET-IRYO-KOHFTN
+      *
+           MOVE    RECE10-SHOKUJINISSU(1)   TO LNK-SKYGET-SKJ-KAISU
+           MOVE    RECE10-SHOKUJIRYOYOHI(1) TO LNK-SKYGET-SKJ-RYOYOHI
+           MOVE    ZERO                     TO LNK-SKYGET-SKJ-ICHIBUFTN
+           MOVE    ZERO                     TO LNK-SKYGET-SKJ-HOKENJA
+           IF    WRK-PTFTNRATE   =  100
+             MOVE  RECE10-SHOKUJIRYOYOHI(1) TO LNK-SKYGET-SKJ-ICHIBUFTN
+           ELSE
+             MOVE  RECE10-SHOKUJIRYOYOHI(1) TO LNK-SKYGET-SKJ-HOKENJA
+           END-IF
+           MOVE    ZERO                     TO LNK-SKYGET-SKJ-KOHFTN
+      *
+           .
+       2001-HENSYU3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    区分”５”の編集　＜公害＞
+      *****************************************************************
+       2001-HENSYU5-SEC            SECTION.
+      *
+           MOVE    RECE10-JNISSU(1)         TO LNK-SKYGET-IRYO-NISSU
+           MOVE    RECE10-TOTALTEN(1)       TO LNK-SKYGET-IRYO-TOTALTEN
+           MOVE    ZERO                     TO LNK-SKYGET-IRYO-ICHIBUFTN
+           IF    RECE10-NYUGAIKBN   =  "1"
+             COMPUTE   WRK-KEISAN3  =  RECE10-YKZFTN(1) *  1.2
+             COMPUTE   LNK-SKYGET-IRYO-HOKENJA   =
+                       RECE10-FTNMONEY(1)        -
+                       WRK-KEISAN3
+           ELSE
+             MOVE  ZERO                     TO WRK-KEISAN3
+             MOVE  RECE10-FTNMONEY(1)       TO LNK-SKYGET-IRYO-HOKENJA
+           END-IF
+           MOVE    ZERO                     TO LNK-SKYGET-IRYO-KOHFTN
+      *
+           MOVE    RECE10-SHOKUJINISSU(1)   TO LNK-SKYGET-SKJ-KAISU
+           MOVE    WRK-KEISAN3              TO LNK-SKYGET-SKJ-RYOYOHI
+           MOVE    ZERO                     TO LNK-SKYGET-SKJ-ICHIBUFTN
+           MOVE    WRK-KEISAN3              TO LNK-SKYGET-SKJ-HOKENJA
+           MOVE    ZERO                     TO LNK-SKYGET-SKJ-KOHFTN
+      *
+           .
+       2001-HENSYU5-EXT.
            EXIT.
       *
       *****************************************************************

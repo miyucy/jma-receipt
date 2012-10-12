@@ -104,6 +104,8 @@
       *  04.06.01    NACL-門脇    10/08/16  入院の点滴入力改善対応
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
       *  04.07.02    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
+      *  04.07.03    NACL-門脇    12/10/12  保険別請求チェック表（標準帳票）
+      *                                     の機能追加対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7038,6 +7040,10 @@
       *
              END-PERFORM
       *
+           END-IF
+      *
+           IF  SYU-SYUSKJ-RYOYOHI  NOT =  ZERO
+             ADD   SYU-SYUSKJ-NISSU   TO   RECE200-SHOKUJITOTALDAY
            END-IF
       *
            .
