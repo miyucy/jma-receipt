@@ -26,8 +26,6 @@ INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
 THISTIMELOG="$LOGDIR"/orca-db-install-thistime.log
 #
 
-CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
-
 PATH=$PATCHSCRIPTSDIR/allways:$SCRIPTSDIR/allways:$PATCHLIBDIR:$ORCALIBDIR:$PATH
 
 orcawget () {

@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV"; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="/n/jma-receipt/etc/jma-receipt.env"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 
 #------------------------------------
@@ -34,9 +32,7 @@ UPDKANRIFILE=info/${KANRIFILE}
 UPDFILE=${HOME}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
 LEN=100
 PRFFILE=/tmp/MSTMLI.PRF.$$
-VACUUMCOUNT=1000
 
-CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
 
 orcawget () {
 #受信ファイル削除
@@ -322,21 +318,6 @@ do
 		exit 99
 	fi
 done
-
-if [ ${UPDCOUNT} -ge ${VACUUMCOUNT} ] ; then
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},マスタを最適化しています,"
-	for TBLNO in $(echo ${DATLIST} | tr -s '[:blank:]' '\n' | sort | cut -c 1,2 | uniq)
-	do
-		case ${TBLNO} in
-		'07')
-		                echo "vacuum analyze tbl_interact;"     | psql ${DBNAME} ;;
-		'08')
-		                echo "vacuum analyze tbl_sskijyo;"      | psql ${DBNAME} ;;
-		'09')
-		                echo "vacuum analyze tbl_hknjainf;"     | psql ${DBNAME} ;;
-		esac
-	done
-fi
 
 echo  "全ての処理が完了しました"
 	cleanup

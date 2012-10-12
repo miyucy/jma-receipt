@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV"; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="/n/jma-receipt/etc/jma-receipt.env"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 
 #------------------------------------
@@ -36,9 +34,6 @@ CODE5=${10}
 
 WORKDIR=/tmp
 
-CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
-
-LOGDIR=/var/log/jma-receipt
 LOG="$LOGDIR"/${HOSPNUM}master_get.log
 
 # echo message (default character-code EUC)

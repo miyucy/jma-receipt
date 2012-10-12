@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV"; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="/n/jma-receipt/etc/jma-receipt.env"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 
 #------------------------------------
@@ -31,9 +29,6 @@ UPDKANRIFILE=info/ORCADBR-3.DAT
 UPDFILE=${HOME}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
 LEN=100
 PRFFILE=/tmp/MSTMNT.PRF.$$
-VACUUMCOUNT=1000
-
-CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
 
 orcawget () {
 #受信ファイル削除
@@ -301,83 +296,7 @@ do
 		cleanup
 		exit 99
 	fi
-#	if  [ $(echo ${UPD} | cut -c 1,2) == "00" ] ; then
-#		TENSUCNT=$(expr ${TENSUCNT} + ${COUNT})
-#		if [ ${TENSUCNT} -ge 5000 ] ; then
-#			echo "vacuum analyze tbl_tensu ;" | psql ${DBNAME}
-#			TENSUCNT=0
-#		fi
-#	fi
 done
-
-if [ ${UPDCOUNT} -ge ${VACUUMCOUNT} ] ; then
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},マスタを最適化しています,"
-	for TBLNO in $(echo ${DATLIST} | tr -s '[:blank:]' '\n' | sort | cut -c 1,2 | uniq)
-	do
-		case ${TBLNO} in
-		'00')
-		                echo "vacuum analyze tbl_tensu ;"      | psql ${DBNAME} ;;
-		'01')
-		                echo "vacuum analyze tbl_hknnum ;"      | psql ${DBNAME} ;;
-		'02')
-		                echo "vacuum analyze tbl_syskanri;"     | psql ${DBNAME} ;;
-		'03')
-		                echo "vacuum analyze tbl_byomei;"       | psql ${DBNAME} ;;
-		'04')
-		                echo "vacuum analyze tbl_chk;"          | psql ${DBNAME} ;;
-		'05')
-		                echo "vacuum analyze tbl_srycdchg;"     | psql ${DBNAME} ;;
-		'06')
-		                echo "vacuum analyze tbl_kensasort;"    | psql ${DBNAME} ;;
-	#	'07')
-	#	                echo "vacuum analyze tbl_interact;"     | psql ${DBNAME} ;;
-	#	'08')
-	#	                echo "vacuum analyze tbl_sskijyo;"      | psql ${DBNAME} ;;
-	#	'09')
-	#	                echo "vacuum analyze tbl_hknjainf;"     | psql ${DBNAME} ;;
-		'10')
-		                echo "vacuum analyze tbl_adrs;"         | psql ${DBNAME} ;;
-		'11')
-		                echo "vacuum analyze tbl_tekioubyomei;" | psql ${DBNAME} ;;
-		'12')
-		                echo "vacuum analyze tbl_genericname;"  | psql ${DBNAME} ;;
-		'13')
-		                echo "vacuum analyze tbl_hktsantei;"    | psql ${DBNAME} ;;
-		'14')
-		                echo "vacuum analyze tbl_hktsrycd;"     | psql ${DBNAME} ;;
-		'15')
-		                echo "vacuum analyze tbl_toukeimemo;"   | psql ${DBNAME} ;;
-		'16')
-		                echo "vacuum analyze tbl_prgoption;"    | psql ${DBNAME} ;;
-		'17')
-		                echo "vacuum analyze tbl_infection_judgment;"  | psql ${DBNAME} ;;
-		'18')
-		                echo "vacuum analyze tbl_nyuinkhn;"     | psql ${DBNAME} ;;
-		'19')
-		                echo "vacuum analyze tbl_nyuksnchk;"    | psql ${DBNAME} ;;
-		'20')
-		                echo "vacuum analyze tbl_nyuinryakusho;"       | psql ${DBNAME} ;;
-		'21')
-		                echo "vacuum analyze tbl_synonym;"      | psql ${DBNAME} ;;
-		'22')
-		                echo "vacuum analyze tbl_etensu_1;"     | psql ${DBNAME}
-		                echo "vacuum analyze tbl_etensu_2;"     | psql ${DBNAME}
-		                echo "vacuum analyze tbl_etensu_2_jma;" | psql ${DBNAME}
-		                echo "vacuum analyze tbl_etensu_2_sample;"     | psql ${DBNAME}
-		                echo "vacuum analyze tbl_etensu_3_1;"   | psql ${DBNAME}
-		                echo "vacuum analyze tbl_etensu_3_2;"   | psql ${DBNAME}
-		                echo "vacuum analyze tbl_etensu_3_3;"   | psql ${DBNAME}
-		                echo "vacuum analyze tbl_etensu_3_4;"   | psql ${DBNAME}
-		                echo "vacuum analyze tbl_etensu_4;"     | psql ${DBNAME}
-		                echo "vacuum analyze tbl_etensu_5;"     | psql ${DBNAME} ;;
-		'23')
-		                echo "vacuum analyze tbl_labor_sio;"    | psql ${DBNAME} ;;
-		'24')
-		                echo "vacuum analyze tbl_generic_price;"      | psql ${DBNAME} ;;
-		esac
-	done
-fi
-
 
 echo  "全ての処理が完了しました"
 		cleanup

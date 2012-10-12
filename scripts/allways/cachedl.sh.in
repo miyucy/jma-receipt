@@ -1,12 +1,10 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV"; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="/n/jma-receipt/etc/jma-receipt.env"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 
 umask 022
@@ -16,8 +14,6 @@ PATCHDIR=/var/lib/jma-receipt/patch
 PACKAGEFILE=patch@VERSION@.gz
 PRGPATH=$PGUPGRADEPATH/@VERSION@
 PATCHLIST=$PATCHDIR/patch-file-list
-CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
-
 
 #オフラインメンテナンスであるかチェック
 OFFLINEPATH=`echo $PRGPATH | sed -ne 's#file://##p'`
