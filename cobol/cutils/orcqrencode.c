@@ -32,8 +32,8 @@ exit
 
 /*
  *	struct qrencode_ctx;
- *		char infile[1024];		INPUT FILENAME 
- *		char qrfile[1024];		OUTPUT FILENAME
+ *		char infile[256];		INPUT FILENAME 
+ *		char qrfile[256];		OUTPUT FILENAME
  *		char opt_level;			ERROR CORRECTION LEVEL
  *		char opt_pixel;			PIXEL per dot
  *		char opt_margin;		SYMBOL MARGIN
@@ -48,8 +48,8 @@ exit
 
 #define	MAX_DATA_SIZE	7090 * 16
 
-#define	SIZE_INFILE			1024
-#define SIZE_QRFILE			1024
+#define	SIZE_INFILE			256
+#define SIZE_QRFILE			256
 #define SIZE_LEVEL			1
 #define SIZE_PIXEL			1
 #define SIZE_MARGIN			1
@@ -411,25 +411,6 @@ parse_csv(char *in,
 	return(0);
 }
 
-static void
-lf2crlf(char *in, 
-	char *out)
-{
-	unsigned char *p,*q;
-
-	out[0] = 0x00;
-	for(p = in, q = out; *p != 0; p++,q++){
-		if (*p == 0x0a) { 
-			*q = 0x0d;
-			q++;
-			*q = 0x0a;
-		} else {
-			*q = *p;
-		}
-	}
-	*q = 0;
-}
-
 static
 void print_ctx(char *ctx)
 {
@@ -487,7 +468,7 @@ OPENLOG;
 			return;
 		}
 	} else {
-		lf2crlf(buf,buf2);
+		memcpy(buf2,buf,MAX_DATA_SIZE);
 	}
 
 	snprintf(qrfile, SIZE_QRFILE, "%s", CTX(ctx, OFFSET_QRFILE));
