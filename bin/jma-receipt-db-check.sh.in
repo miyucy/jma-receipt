@@ -44,7 +44,10 @@ VERDATA=`echo $VERLIST | awk '{i=split($0,arr,"("); print arr[i]} ' `
 VERDATA1=`echo $VERDATA | awk '{gsub(/[-)]/,""); print } ' `
 
 #echo "VERDATA1=" $VERDATA1
-su - $ORCAUSER -c "psql $PSQLOPTION -c \"$SQLSELECT\" -o $DBKANRIFL $DBNAME"
+
+create_pgpass
+su - $ORCAUSER -c "psql $DBCONNOPTION -c \"$SQLSELECT\" -o $DBKANRIFL $DBNAME"
+delete_pgpass
 
 DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $DBKANRIFL`
 
@@ -68,7 +71,6 @@ else
     fi
     if [ "${EXITMODE}" = "file" ] ; then
 	if ! [ -e "$SYSCONFDIR"/database-schema-different ] ; then
-	    umask 022
 	    touch "$SYSCONFDIR"/database-schema-different
 	fi
     else

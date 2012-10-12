@@ -7,29 +7,23 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
 fi
 . $JMARECEIPT_ENV
 
-umask 022
-
-LOGDIR=/var/log/jma-receipt
-
 INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
 
-if [ ! -d "$LOGDIR" ]
-then
-    mkdir "$LOGDIR"
-    chown "$ORCAUSER":"$ORCAGROUP" "$LOGDIR"
-fi
+DELETESQL="DELETE FROM tbl_pgkanri;"
 
 if [ ! -e "$INSTALLLOG" ]; then
     su - $ORCAUSER -c "touch $INSTALLLOG"
 fi
 
-if su - postgres -c "psql template1 ${PSQLOPTION} -l|grep ${DBNAME}"
-then
-    if [ -f $PATCHDIR/copying ];	then
-	echo "更新プログラム管理テーブルクリア処理スキップ" 2>&1 | tee -a $INSTALLLOG
-    else
-	echo "更新プログラム管理テーブルクリア処理開始" 2>&1 | tee -a $INSTALLLOG
-	echo "delete from tbl_pgkanri ;" | su - $ORCAUSER -c "psql ${PSQLOPTION} -e ${DBNAME} 2>&1 | tee -a $INSTALLLOG"
+status=0
+if [ -f $PATCHDIR/copying ];	then
+    echo "更新プログラム管理テーブルクリア処理スキップ" 2>&1 | tee -a $INSTALLLOG
+else
+    echo "更新プログラム管理テーブルクリア処理開始" 2>&1 | tee -a $INSTALLLOG
+    su - $ORCAUSER -c "psql ${DBCONNOPTION} -e ${DBNAME} -c \"${DELETESQL}\"" 2>&1 | tee -a $INSTALLLOG
+    if [ ${PIPESTATUS[0]} -ne 0 ] ; then
+	echo "NG" | tee -a $INSTALLLOG
+	exit 2
     fi
 fi
-echo "Done."
+exit 0

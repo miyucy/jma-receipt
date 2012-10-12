@@ -9,19 +9,17 @@ fi
 
 umask 022
 
-LOGDIR=/var/log/jma-receipt
-
-HOME=/var/tmp
+TMPDIR=/var/tmp
 MSTDIR=orca-$(date +%Y%m%d)
 VERSIONFL=${DOCDIR}/version
 
-UPDSQL1="update tbl_dbkanri set termid='##' where kanricd='ORCADB00';"
-SQLSELECT="SELECT * FROM TBL_DBKANRI WHERE KANRICD='ORCADB00';"
+UPDSQL1="UPDATE tbl_dbkanri SET termid='##' WHERE kanricd='ORCADB00';"
+SQLSELECT="SELECT * FROM tbl_dbkanri WHERE kanricd='ORCADB00';"
 
-UPDKANRIFILE=info/ORCADBS.DAT
+UPDKANRIFILE=test/ORCADBS.DAT
 
-UPDFILE=$HOME/$MSTDIR/ORCADBS.OUT
-TBLFILE=$HOME/$MSTDIR/ORCADBS.TBL
+UPDFILE=$TMPDIR/$MSTDIR/ORCADBS.OUT
+TBLFILE=$TMPDIR/$MSTDIR/ORCADBS.TBL
 LEN=100
 
 INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
@@ -45,7 +43,7 @@ orcawget () {
     fi
     orcadt_verify.rb --dir . --cacert ${CACERTFILE} ${DBUPGRADEPATH}/$1.p7m
 #接続確認
-    if [ $? -eq 0 ]	;	then 
+    if [ $? -eq 0 ]	;	then
 #	echo "wget end OK"
 #ファイルサイズチェック
 	if [	-s	$DWNFL	]
@@ -62,7 +60,7 @@ orcawget () {
 orcatar () {
     TARFL=`echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
     TAR=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[i-1] arr[i]} ' `
-    LOCALFL=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[1]".dat"} ' ` 
+    LOCALFL=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[1]".dat"} ' `
 #解凍処理
     echo $1
     if [	$TAR = "targz" ]
@@ -72,7 +70,7 @@ orcatar () {
 	return 0;
     fi
 #tar確認
-    if [ $? -eq 0 ]	;	then 
+    if [ $? -eq 0 ]	;	then
 	echo "tar end OK"
     else
 	echo "tar end NG"
@@ -87,33 +85,28 @@ orcatar () {
     fi
 }
 
-if [ ! -d "$LOGDIR" ]; then
-    mkdir "$LOGDIR"
-    chown "$ORCAUSER":"$ORCAGROUP" "$LOGDIR"
-fi
-
 if [ ! -e "$INSTALLLOG" ]; then
     su - $ORCAUSER -c "touch $INSTALLLOG"
 fi
 su - $ORCAUSER -c "rm -f $THISTIMELOG"
 
 #エラーファイル用フォルダ作成
-if ! [	-d	$HOME/orca-mstlog	];	then
-    cd $HOME
+if ! [	-d	$TMPDIR/orca-mstlog	];	then
+    cd $TMPDIR
     mkdir orca-mstlog
     chown "$ORCAUSER":"$ORCAGROUP" orca-mstlog
 fi
 #整合性チェック
-rm -f $HOME/orca-mstlog/SQLSELECT.TXT
-rm -f $HOME/orca-mstlog/master_log
+rm -f $TMPDIR/orca-mstlog/SQLSELECT.TXT
+rm -f $TMPDIR/orca-mstlog/master_log
 VERLIST=`awk '/version/{gsub(/\t| |;/,""); print} ' $VERSIONFL`
 VERDATA=`echo $VERLIST | awk '{i=split($0,arr,"("); print arr[i]} ' `
 VERDATA1=`echo $VERDATA | awk '{gsub(/[-)]/,""); print } ' `
 VERDATA2=`echo $VERDATA | awk '{gsub(/[)]/,""); print } ' `
 echo "VERDATA1=" $VERDATA1
-echo "$SQLSELECT" > $HOME/orca-mstlog/SQLSELECT.TXT
-su - $ORCAUSER -c "psql ${PSQLOPTION} -o $HOME/orca-mstlog/sql.out -f $HOME/orca-mstlog/SQLSELECT.TXT $DBNAME"
-DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $HOME/orca-mstlog/sql.out`
+echo "$SQLSELECT" > $TMPDIR/orca-mstlog/SQLSELECT.TXT
+su - $ORCAUSER -c "psql ${DBCONNOPTION} -o $TMPDIR/orca-mstlog/sql.out -f $TMPDIR/orca-mstlog/SQLSELECT.TXT $DBNAME"
+DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $TMPDIR/orca-mstlog/sql.out`
 DBVERSION=`echo $DBLIST | awk '{i=split($0,arr,"|"); print arr[2]} ' `
 DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
 #	if [ `echo $DBVERSION1 $VERDATA1 | awk '{print($1<$2) ? "true" : "false"} '` = "true" ];	then
@@ -122,10 +115,10 @@ if [ `echo $DBVERSION1 $VERDATA1 | awk '{print($1<=$2) ? "true" : "false"} '` = 
 else
     echo "ダウングレードの処理となっています。処理を中止します" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     exit 99
-fi 
+fi
 #整合性チェックここまで
 #DB管理情報更新
-echo "update tbl_dbkanri set version='$VERDATA2' where kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${PSQLOPTION} -e $DBNAME 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
+echo "update tbl_dbkanri set version='$VERDATA2' where kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
 
 #オフラインメンテナンスであるかチェック
 OFFLINEPATH=`echo $DBUPGRADEPATH | sed -ne 's#file://##p'`
@@ -137,12 +130,12 @@ fi
 
 echo $MSTDIR
 echo $UPDFILE
-if ! [	-d	$HOME/$MSTDIR	];	then 
-    cd $HOME
+if ! [	-d	$TMPDIR/$MSTDIR	];	then
+    cd $TMPDIR
     mkdir $MSTDIR
     chown "$ORCAUSER":"$ORCAGROUP" $MSTDIR
 fi
-cd $HOME/$MSTDIR
+cd $TMPDIR/$MSTDIR
 rm -f *
 if  [ $OFFLINE = "offline" ]; then
     if  [ -e $OFFLINEPATH/$UPDKANRIFILE ]; then
@@ -163,8 +156,8 @@ else
 fi
 
 #DB管理情報の取得
-su - $ORCAUSER -c "psql ${PSQLOPTION} -o $HOME/orca-mstlog/sql.out -f $HOME/orca-mstlog/SQLSELECT.TXT $DBNAME"
-DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $HOME/orca-mstlog/sql.out`
+su - $ORCAUSER -c "psql ${DBCONNOPTION} -o $TMPDIR/orca-mstlog/sql.out -f $TMPDIR/orca-mstlog/SQLSELECT.TXT $DBNAME"
+DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $TMPDIR/orca-mstlog/sql.out`
 #ダウンロードファイル生成
 ORCXSMST1 $MSTDIR$DBLIST
 if [ $? -ne 0 ]	;	then
@@ -178,18 +171,9 @@ then
     echo "更新用ダウンロードファイルの作成が終了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 else
     echo "更新用ファイルはありません" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
-    rm -r $HOME/$MSTDIR
+    rm -r $TMPDIR/$MSTDIR
     exit 
 fi
-
-#TBLバックアップ処理
-TBLLIST=`awk '{gsub(/\t| |;/,""); print} ' $TBLFILE`
-for TBL in $TBLLIST
-do
-    echo "TBL=" $TBL
-    su - $ORCAUSER -c "pg_dump -O -t $TBL $DBNAME > $TBL.out"
-done
-#TBLバックアップ処理終了
 
 UPDLIST=`awk '{gsub(/\t| |;/,""); print} ' $UPDFILE`
 
@@ -230,21 +214,23 @@ do
     fi
 done
 #DB構造変更処理
+DBOPTION="${DBCONNOPTION} ${DBNAME}"
+
 for UPD in $UPDLIST
 do
     UPD1=`echo $UPD | awk '{gsub(/.tar.gz/,".dat"); print} ' `
     UPD2=`echo $UPD1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
 #SQL
 #
-    if	[ -s $HOME/$MSTDIR/$UPD2 ]; then
+    if	[ -s $TMPDIR/$MSTDIR/$UPD2 ]; then
 	if	[ "${UPD2:0:7}" = "ORCADBC" ]; then
-	    su - $ORCAUSER -c "bash $HOME/$MSTDIR/$UPD2 $DBNAME $INSTALLLOG $THISTIMELOG"
+	    su - $ORCAUSER -c "bash $TMPDIR/$MSTDIR/$UPD2 $DBOPTION $INSTALLLOG $THISTIMELOG"
 	else
-	    su - $ORCAUSER -c "psql ${PSQLOPTION} -e $DBNAME < $HOME/$MSTDIR/$UPD2 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
+	    su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME < $TMPDIR/$MSTDIR/$UPD2 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
 	fi
     fi
-#	LOGLIST=`awk '/NOTICE:/ {skip = !skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $HOME/$MSTDIR/log`
-##	LOGLIST=`awk '/ERROR:/{gsub(/\t| |;/,""); print} ' $HOME/$MSTDIR/log`
+#	LOGLIST=`awk '/NOTICE:/ {skip = !skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $TMPDIR/$MSTDIR/log`
+##	LOGLIST=`awk '/ERROR:/{gsub(/\t| |;/,""); print} ' $TMPDIR/$MSTDIR/log`
     LOGLIST=`awk '/ERROR:/{gsub(/\t| |;/,""); print} ' $THISTIMELOG`
     for LOG in $LOGLIST
     do
@@ -260,16 +246,10 @@ do
 
 #DB管理情報更新
 
-    echo "update tbl_dbkanri set dbsversion1='${UPD:0:21}',dbsversion2='${UPD:0:21}',upymd=to_char(now(),'yyyymmdd'),uphms=to_char(now(),'hh24miss') where kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${PSQLOPTION} -e $DBNAME 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
+    echo "update tbl_dbkanri set dbsversion1='${UPD:0:21}',dbsversion2='${UPD:0:21}',upymd=to_char(now(),'yyyymmdd'),uphms=to_char(now(),'hh24miss') where kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
 done
-
-#vacuum analyze
-
-echo "vacuum analyze;" | su - $ORCAUSER -c "psql ${PSQLOPTION} -e $DBNAME 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
 
 echo  "全ての処理が完了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 #注意☆☆☆テストが終了したら元に戻す
-rm -r $HOME/$MSTDIR
+rm -r $TMPDIR/$MSTDIR
 
-
-#wait

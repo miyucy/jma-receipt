@@ -74,34 +74,20 @@ if [ "$1" != "-y" -a "$1" != "-Y" ] ; then
     fi
 fi
 #
-# データベースの存在確認
-#
-echo
-if su - postgres -c "psql template1 ${PSQLOPTION} -l|grep ${DBNAME} >/dev/null"
-then
-    if [ ${JMSG} -eq 1 ] ; then
-	echo "${DBNAME} データベースは存在します。"
-    else
-	echo "${DBNAME} Database exist."
-    fi
-else
-    if [ ${JMSG} -eq 1 ] ; then
-	echo "${DBNAME} データベースは存在しません。"
-    else
-	echo "${DBNAME} Database not exist."
-    fi
-fi
-#
 # メイン処理
 #
+
 echo
 
+create_pgpass
 RC=0
-
+echo "$INITDIR"/orca-db-create.sh ......
 bash "$INITDIR"/orca-db-create.sh
 if [ $? -eq 0 ] ; then
+    echo "$INITDIR"/orca-db-install.sh .....
     bash "$INITDIR"/orca-db-install.sh
     if [ $? -eq 0 ] ; then
+	echo "$INITDIR"/orca-db-clear.sh .....
 	bash "$INITDIR"/orca-db-clear.sh
 	if [ $? -ne 0 ] ; then
 	    RC=1
@@ -112,8 +98,10 @@ if [ $? -eq 0 ] ; then
 else
     RC=1
 fi
+delete_pgpass
 
 if [ ${RC} -eq 0 ] ; then
+    echo "$BINDIR"/jma-receipt-db-check.sh .....
     bash "$BINDIR"/jma-receipt-db-check.sh
     if [ $? -eq 0 ] ; then
 	if [ -e "$SYSCONFDIR"/database-non-upgrade ] ; then
@@ -121,7 +109,6 @@ if [ ${RC} -eq 0 ] ; then
 	fi
     fi
 fi
-
 #
 # 処理終了
 #

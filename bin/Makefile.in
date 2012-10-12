@@ -20,6 +20,8 @@ EUC_sources = \
 	jma-receipt-program-upgrade-check.sh.in \
 	orcvt_exec.sh.in
 
+BIN_cmd = jma-setup
+
 BIN_bin = \
 	orcvt_euc.rb \
 	orcvt_euc_kananame.rb \
@@ -28,8 +30,6 @@ BIN_bin = \
 BIN_objs = $(BIN_sources:.sh.in=.sh) \
            $(EUC_sources:.sh.in=.sh) \
            $(BIN_cmd)
-
-BIN_cmd = jma-setup
 
 EUC_shell_scripts = $(EUC_sources:.sh.in=.sh)
 
@@ -45,7 +45,7 @@ all:	$(BIN_objs)
 	$< > $@
 	chmod +x $@
 
-$(BIN_cmd):
+$(BIN_cmd): $(BIN_cmdsrc)
 	sed -e 's,\@bindir\@,$(bindir),g' \
 	$(BIN_cmdsrc) > $@
 	chmod +x $@

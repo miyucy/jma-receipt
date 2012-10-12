@@ -7,38 +7,66 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
 fi
 . $JMARECEIPT_ENV
 
-LOGDIR=/var/log/jma-receipt
-
-
 if [ -z "$DBENCODING" ]
 then
     DBENCODING="EUC-JP"
 fi
 USERCHECKSQL="SELECT usename FROM pg_user WHERE usename = '${DBUSER}';"
 DBCHECKSQL="SELECT datname FROM pg_database WHERE datname = '${DBNAME}';"
+SETPASSWORD="ALTER USER ${DBUSER} password '${DBPASS}';"
 
 INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
-
-if [ ! -d "$LOGDIR" ]
-then
-    mkdir "$LOGDIR"
-    chown "$ORCAUSER":"$ORCAGROUP" "$LOGDIR"
-fi
 
 if [ ! -e "$INSTALLLOG" ]; then
     su - $ORCAUSER -c "touch $INSTALLLOG"
 fi
 
-if [ -z `su - postgres -c "psql template1 ${PSQLOPTION} -t -c \"${USERCHECKSQL}\""` ]
-then
-    su - postgres -c "createuser --createdb --no-superuser --no-createrole ${DBUSER}"
+# USER
+if [ x"$DBHOST" = "x" ]; then
+    # localhost("")
+    if [ -z `su - postgres -c "psql ${DBCONNOPTION} template1 -t -c \"${USERCHECKSQL}\""` ]
+    then
+	su - postgres -c "createuser ${DBCONNOPTION} --createdb --no-superuser --no-createrole ${DBUSER}"
+	if [ $? -ne 0 ] ; then
+	    echo "createuser error" | tee -a $INSTALLLOG
+	    exit 99
+	fi
+    fi
+else
+    # remote host
+    USEREXIST=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} template1 -t -c \"${USERCHECKSQL}\""`
+    RC=$?
+    if [ -z $USEREXIST ] || [ $RC -ne 0 ]
+    then
+	su - ${ORCAUSER} -c "createuser ${DBCONNOPTION} -U postgres --createdb --no-superuser --no-createrole ${DBUSER}"
+	if [ $? -ne 0 ] ; then
+	    echo "createuser error" | tee -a $INSTALLLOG
+	    exit 99
+	fi
+	su - ${ORCAUSER} -c "psql ${DBCONNOPTION} -U postgres -c \"${SETPASSWORD}\""
+	if [ $? -ne 0 ] ; then
+	    echo "set password error" | tee -a $INSTALLLOG
+	    exit 99
+	fi
+    fi
 fi
 
-if [ -z `su - postgres -c "psql template1 ${PSQLOPTION} -t -c \"${DBCHECKSQL}\""` ]
+# DB
+if [ -z `su - ${ORCAUSER} -c "psql ${DBCONNOPTION} template1 -t -c \"${DBCHECKSQL}\""` ]
 then
-    su - ${ORCAUSER} -c "createdb -lC -Ttemplate0 -E${DBENCODING} \"${DBNAME}\""
-    su - ${ORCAUSER} -c "psql ${PSQLOPTION} -e ${DBNAME} < ${INITDIR}/orca_dbkanri_orig.dump 2>&1 | tee -a $INSTALLLOG"
+    su - ${ORCAUSER} -c "createdb ${DBCONNOPTION} -lC -Ttemplate0 -E${DBENCODING} \"${DBNAME}\""
+    if [ $? -ne 0 ] ; then
+	echo "createdb error" | tee -a $INSTALLLOG
+	exit 99
+    fi
+    su - ${ORCAUSER} -c "psql ${DBCONNOPTION} -e ${DBNAME} -f ${INITDIR}/orca_dbkanri_orig.dump 2>&1 | tee -a $INSTALLLOG"
+    if [ ${PIPESTATUS[0]} -ne 0 ]
+    then
+	echo "NG" | tee -a $INSTALLLOG
+	exit 99
+    fi
 else
-    echo "Database exist." 2>&1 | tee -a $INSTALLLOG
+    echo "Database \"${DBNAME}\" exist." 2>&1 | tee -a $INSTALLLOG
 fi
 echo "Done."
+exit 0
