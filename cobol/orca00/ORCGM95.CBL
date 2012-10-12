@@ -222,6 +222,7 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+           COPY    "CPSYSKANRI.INC".
       *    職員情報
            COPY  "CPSK1010.INC".
       *    診療科情報
@@ -444,7 +445,7 @@
                MOVE    "key10"             TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-1038-REC
+                   MOVE    SYSKANRI-REC        TO  SYS-1038-REC
                END-IF
            ELSE
                INITIALIZE                  SYS-1038-REC
@@ -566,7 +567,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM UNTIL   FLG-SYSKANRI    =   1
-               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1006-REC
                IF      SYS-1006-KBNCD      =   "2"
       *            夜間・早朝加算
                    IF      SYS-1006-SSTKIJUN (172) =   1
@@ -611,7 +612,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM UNTIL   FLG-SYSKANRI    =   1
-               MOVE    MCPDATA-REC         TO  SYS-1008-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1008-REC
       *        時間外加算特例乳幼児
                IF      SYS-1008-JIKANTOKU-NYU-FLG  =   SPACE
                    MOVE    ZERO            TO  WRK-JIKANTOKU-NYU
@@ -1373,7 +1374,7 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
-               MOVE    MCPDATA-REC           TO  SYS-1005-REC
+               MOVE    SYSKANRI-REC          TO  SYS-1005-REC
                MOVE    SYS-1005-KBNCD (1:2)  TO  SPA-NAI-SRYKA (IDX)
                MOVE    SYS-1005-SRYKANAME1   TO  SPA-NAI-SRYKAMEI (IDX)
                MOVE    IDX                   TO  SPA-SRYKA-MAX
@@ -1426,7 +1427,7 @@
            MOVE    1                   TO  IDX-S
            MOVE    ZERO                TO  IDX-H
            PERFORM UNTIL       FLG-SYSKANRI    =   1
-               MOVE    MCPDATA-REC           TO  SYS-1011-REC
+               MOVE    SYSKANRI-REC            TO  SYS-1011-REC
                IF      SPA-M95-SYORI         =   1
                    MOVE    SYS-1011-KBNCD(1:2)   TO  WRK-SRYKA
                    PERFORM 42002-ALL-SYSLIST-HEN-SEC
@@ -1606,7 +1607,7 @@
            PERFORM
                    UNTIL       (FLG-SYSKANRI   =   1    )
                            OR  (IDX            >=  300  )
-               MOVE    MCPDATA-REC             TO  SYS-1010-REC
+               MOVE    SYSKANRI-REC            TO  SYS-1010-REC
                IF      SYS-1010-KBNCD(1:1)     =   "1"
                    ADD     1                   TO  IDX
                    MOVE    SYS-1010-KBNCD      TO  TBL-DRCD (IDX)
@@ -1737,7 +1738,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1011-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1011-REC
                PERFORM 420091-SYS1011-DEL-SEC
            END-IF
       *
@@ -1916,7 +1917,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1011-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1011-REC
                PERFORM 4021-SYS1011-HEN-SEC
       *
                MOVE    SMCNDATE-YMD        TO  SYS-1011-UPYMD
@@ -2357,8 +2358,10 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
+               MOVE    SPACE           TO  SYSKANRI-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            .

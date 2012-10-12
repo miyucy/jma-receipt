@@ -729,7 +729,7 @@
                        PERFORM 3003-KAID2-SET-SEC
                    ELSE
                        MOVE    1                   TO  SPA-GMN-CUR
-                       MOVE    SPACE               TO  SPA-KAID1CD
+                       MOVE    SPACE               TO  SPA-KAID2CD
                    END-IF
                WHEN    OTHER
                    PERFORM 3001-SPA-SET-SEC
@@ -2300,6 +2300,7 @@
            END-IF
       *
            MOVE    SPACE               TO  SPA-KAID2CD
+           MOVE    SPACE               TO  SPA-KAID2-FLG
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
