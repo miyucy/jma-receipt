@@ -70,10 +70,11 @@
            03  FLG-ZAIARI              PIC 9(01).
            03  FLG-SANTEIOK            PIC 9(01).
            03  FLG-INPUTOK             PIC 9(01).
-           03  FLG-INPUTOK2            PIC 9(01).
            03  FLG-DEKIDAKA            PIC 9(01).
       *
            03  FLG-HKTINP              PIC 9(01).
+      *ver.4.7
+           03  FLG-INPUTOK2            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1490,12 +1491,17 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *                診療コード包括
                        MOVE    LNK-ORCSC-SRYCD (IDX-L1 IDX-L2)
                                                    TO  WRK-SRYCD
+      *                手技料のみチェック
+                       IF      WRK-SRYCD (1:1)     =   "1"
+      *
                        IF      TBL-HKTSRYCD (1)    =   SPACE
       *                    電子点数表からのチェック
                            PERFORM 30022-ETENSU-CHECK-SEC
                        ELSE
       *                    包括チェックマスタからのチェック
                            PERFORM 30021-SRYCD-CHECK-SEC
+                       END-IF
+      *
                        END-IF
                    END-IF
                END-PERFORM

@@ -153,6 +153,7 @@
       *サンプル薬対応
            03  FLG-SANPURU             PIC 9(01).
            03  FLG-YAKZAI-ALL          PIC 9(01).
+           03  FLG-ZAIEND2             PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -193,6 +194,8 @@
       *
            03  IDZ5                PIC 9(04).
            03  IDZ6                PIC 9(04).
+      *
+           03  IDX-G               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -2753,6 +2756,43 @@
                OR  (SPA-IGAKUKAN-ARI       NOT =   ZERO)
                OR  (SPA-IGAKUKAN-ARI2      NOT =   ZERO)
                CONTINUE
+      *H24.10
+      *        包括剤で算定
+      *            生活習慣病指導管理料チェック
+                   IF     (SPA-SEIKATU-ARI     NOT =   ZERO )  OR
+                          (SPA-SEIKATU-ARI2    NOT =   ZERO )
+                       IF      SPA-HKTSANTEI-203   NOT =   ZERO
+                           MOVE    1               TO  FLG-SYOHO-CHK
+                       END-IF
+                   END-IF
+      *            小児科外来診察料チェック
+                   IF      (LNK-ORCSC-SYONIKA-ARI  NOT =   ZERO)
+                       IF      SPA-HKTSANTEI-202   NOT =   ZERO
+                           MOVE    1               TO  FLG-SYOHO-CHK
+                       END-IF
+                   END-IF
+      *            在宅時医学総合管理料チェック
+                   IF     (SPA-ZAIKANRI-ARI    NOT =   ZERO )  OR
+                          (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
+                       IF      SPA-HKTSANTEI-204   NOT =   ZERO
+                           MOVE    1               TO  FLG-SYOHO-CHK
+                       END-IF
+                   END-IF
+      *            特定施設入居時等医学管理料チェック
+                   IF     (SPA-IGAKUKAN-ARI    NOT =   ZERO )  OR
+                          (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
+                       IF      SPA-HKTSANTEI-205   NOT =   ZERO
+                           MOVE    1               TO  FLG-SYOHO-CHK
+                       END-IF
+                   END-IF
+      *            在宅末期医療総合診察料チェック
+                   IF     (SPA-ZAIMATU-ARI    NOT =   ZERO )  OR
+                          (SPA-ZAIMATU-ARI2   NOT =   ZERO )
+                       IF      SPA-HKTSANTEI-206  NOT  =   ZERO
+                           MOVE    1               TO  FLG-SYOHO-CHK
+                       END-IF
+                   END-IF
+      *
            ELSE
                MOVE    1                   TO  FLG-SYOHO-CHK
            END-IF
@@ -3790,8 +3830,6 @@
                AND  (WRK-COM-YAKUHYO (IDX) =   SPACE  )
       *ver.4.7  減点対象外
                AND  (WRK-COM-GENTEN (IDX)  =   SPACE  )
-      *         点数ゼロ対象外（サ）のみの剤等
-               AND  (WRK-COM-KEI    (IDX)  >   ZERO   )
       *
       *        診療種別区分変換
                PERFORM 30001-SRYSYUKBN-SET-SEC
@@ -3804,6 +3842,12 @@
                ELSE
                    MOVE    ZERO                TO  FLG-NAIFUKU
                END-IF
+      *        点数ゼロ対象外（サ）のみの剤等
+               IF      FLG-NAIFUKU             =   1
+      *            薬剤料逓減チェック処理
+                   PERFORM 300110-GENTUIKA-CHK-SEC
+               END-IF
+      *
                IF     (FLG-NAIFUKU             =   1     )  AND
                       (FLG-ZAI                 =   ZERO  )
                    IF      WRK-GMN-INPUTCD(IDX)(1:1)   =   "."
@@ -3882,6 +3926,29 @@
            .
        3001-GENHEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    薬剤料逓減チェック処理
+      *****************************************************************
+       300110-GENTUIKA-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-ZAIEND2
+           PERFORM VARYING     IDX-G   FROM    IDX BY  1
+                   UNTIL      (IDX-G   >   SPA-MAX-LINE  )
+                       OR    ( FLG-ZAIEND2     =   1     )
+      *
+               IF      WRK-COM-ZAIEND (IDX-G)  =   "1"
+                   MOVE    1               TO  FLG-ZAIEND2
+                   IF     (WRK-COM-KEI (IDX-G) =   ZERO   )
+      *                剤点数がゼロの時、対象外
+                       MOVE    ZERO            TO  FLG-NAIFUKU
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       300110-GENTUIKA-CHK-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    薬剤料逓減追加処理
