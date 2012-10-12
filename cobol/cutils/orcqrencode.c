@@ -460,9 +460,15 @@ OPENLOG;
 		return;
 	}
 
-	if(parse_csv(buf, buf2) !=0){
-		memset(CTX(ctx, OFFSET_RET_CODE), KANA_CONV_ERROR, SIZE_RET_CODE);
-		return;
+	hint = ctx_string2int(ctx, OFFSET_HINT, SIZE_HINT);
+
+	if (hint < 2) {
+		if(parse_csv(buf, buf2) !=0){
+			memset(CTX(ctx, OFFSET_RET_CODE), KANA_CONV_ERROR, SIZE_RET_CODE);
+			return;
+		}
+	} else {
+		memcpy(buf2,buf,MAX_DATA_SIZE);
 	}
 
 	snprintf(qrfile, SIZE_QRFILE, "%s", CTX(ctx, OFFSET_QRFILE));
@@ -491,7 +497,7 @@ OPENLOG;
 	p = strrchr(qrfile, '.');
 	if(p != NULL)*p = '\0';
 	doEncodeStructured = ctx_string2int(ctx, OFFSET_STRUCTURED, SIZE_STRUCTURED);
-	hint = ctx_string2int(ctx, OFFSET_HINT, SIZE_HINT) == 0 ? QR_MODE_KANJI : QR_MODE_8;
+	hint = (hint % 2) == 0 ? QR_MODE_KANJI : QR_MODE_8;
 	size = ctx_string2int(ctx, OFFSET_PIXEL, SIZE_PIXEL);
 	margin = ctx_string2int(ctx, OFFSET_MARGIN, SIZE_MARGIN);
 
