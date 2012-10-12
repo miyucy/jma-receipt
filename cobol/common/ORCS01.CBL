@@ -382,6 +382,8 @@
       *  04.05.48    NACL-門脇    12/10/01  埼玉県地方公費対応
       *  04.05.49    NACL-門脇    12/10/09  大分県地方公費対応
       *                                     （システム管理２０１０設定追加）
+      *  04.05.50    NACL-門脇    12/10/11  複数科まとめ時の収納読み飛ばし
+      *                                     条件修正
       *
       *  04.06.01    NACL-門脇    10/09/02  出産育児一時金直接支払制度（外来）
       *  04.06.02    NACL-門脇    10/11/08  主保険＋マル長の請求対応
@@ -27352,6 +27354,10 @@
                       (LNK-SYU-GRP-DENPNUM  NOT =  ZERO           ) AND
                       (LNK-SYU-GRP-DENPNUM      =  SYU-GRP-DENPNUM))
                OR    ((LNK-S01-SAIKEISAN-KBN    =   "1"           ) AND
+                      (LNK-S01-IKTGENMKJFLG     =  SPACE          ) AND
+                      (LNK-SYU-GRP-DENPNUM  NOT =  ZERO           ) AND
+                      (LNK-SYU-GRP-DENPNUM      =  SYU-DENPNUM    ))
+               OR    ((LNK-S01-SAIKEISAN-KBN    =   "1"           ) AND
                       (LNK-S01-IKTKEISANKBN     =   "1"           ) AND
                       (FLG-IKTKEISANKBN         =  ZERO           ) AND
                       (LNK-S01-IKTSORTKBN       =   "0" OR SPACE  ) AND
@@ -27454,6 +27460,10 @@
                       (LNK-S01-IKTGENMKJFLG     =  SPACE          ) AND
                       (LNK-SYU-GRP-DENPNUM  NOT =  ZERO           ) AND
                       (LNK-SYU-GRP-DENPNUM      =  SYU-GRP-DENPNUM))
+               OR    ((LNK-S01-SAIKEISAN-KBN    =   "1"           ) AND
+                      (LNK-S01-IKTGENMKJFLG     =  SPACE          ) AND
+                      (LNK-SYU-GRP-DENPNUM  NOT =  ZERO           ) AND
+                      (LNK-SYU-GRP-DENPNUM      =  SYU-DENPNUM    ))
                        IF  (LNK-S01-SAIKEISAN-KBN  =   "1"       )
                        AND (LNK-SYU-DENPNUM    NOT =  ZERO       )
                        AND (LNK-SYU-DENPNUM        =  SYU-DENPNUM)
