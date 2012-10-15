@@ -167,6 +167,8 @@
       *  04.06.05    NACL-藤原    11/10/07  傷病名を３行まで記載可能とする
       *  04.06.06    NACL-藤原    11/12/12  点検レセ０点公費印字対応
       *  04.06.07    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
+      *  04.06.08    NACL-藤原    12/10/04  同一レセプトの公費が４つを超
+      *                                     えた場合の種別不明対応
       *
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *  04.07.02    NACL-藤原    12/01/24  monpe-0.6.20対応
@@ -1158,6 +1160,10 @@
            03  WRK-ERR-MSG-16.
                05  FILLER          PIC X(20)  VALUE
                    "【０点公費記載あり】".
+      *
+           03  WRK-ERR-MSG-88.
+               05  FILLER          PIC X(24)  VALUE
+                   "公費が４つを超えています".
       *
        01  WRK-CONS-AREA.
       *    固定端末ＩＤ
@@ -3354,6 +3360,8 @@
                    MOVE    WRK-ERR-MSG-14  TO   HC06-HEAD4-G (5:)
                WHEN    13
                    MOVE    WRK-ERR-MSG-15  TO   HC06-HEAD4-G (5:)
+               WHEN    88
+                   MOVE    WRK-ERR-MSG-88  TO   HC06-HEAD4-G (5:)
            END-EVALUATE
            INSPECT HC06-HEAD4-G  REPLACING ALL "  "    BY  "　"
       *
