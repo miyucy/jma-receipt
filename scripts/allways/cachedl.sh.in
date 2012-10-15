@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JMARECEIPT_ENV="/n/jma-receipt/etc/jma-receipt.env"
+JMARECEIPT_ENV="@jma-receipt-env@"
 if [ ! -f ${JMARECEIPT_ENV} ]; then
     echo "${JMARECEIPT_ENV} does not found."
     exit 1

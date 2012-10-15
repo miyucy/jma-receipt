@@ -82,7 +82,6 @@ utf8_shell_sources = \
         allways/ykjchk.sh.in \
 	allways/chkmst2.sh.in \
 	tools/db-backup.sh.in \
-	tools/run_master_upgrade.sh.in \
 	monthly/receipt_export.sh.in \
 	allways/das-check.sh.in \
 	allways/orc_cups_del.sh.in \
@@ -100,10 +99,11 @@ utf8_shell_sources = \
 	tools/orcred2conv.sh.in \
 	allways/orc_print_dmy.sh.in
 
-eucjp_shell_sources = \
-	allways/program_upgrade_check_log.sh.in \
+shell_sources = \
 	allways/master_standard_upgrade.sh.in \
 	allways/master_license_upgrade.sh.in \
+	tools/run_master_upgrade.sh.in \
+	allways/program_upgrade_check_log.sh.in \
 	allways/master_get.sh.in \
 	allways/siori_pull.sh.in \
 	allways/medphoto_copy.sh.in \
@@ -174,7 +174,7 @@ noinst_claim_file = \
 
 shell_scripts = \
 	$(utf8_shell_sources:.sh.in=.sh) \
-	$(eucjp_shell_sources:.sh.in=.sh)
+	$(shell_sources:.sh.in=.sh)
 
 utf8_shell_scripts = \
 	$(utf8_shell_sources:.sh.in=.sh) \

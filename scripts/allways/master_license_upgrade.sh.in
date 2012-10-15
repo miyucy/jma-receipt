@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JMARECEIPT_ENV="/n/jma-receipt/etc/jma-receipt.env"
+JMARECEIPT_ENV="@jma-receipt-env@"
 if [ ! -f ${JMARECEIPT_ENV} ]; then
     echo "${JMARECEIPT_ENV} does not found."
     exit 1
@@ -8,12 +8,12 @@ fi
 . $JMARECEIPT_ENV
 
 #------------------------------------
-# $1 : °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ(HOSPNUM)
-# $2 : ¥¹¡¼¥Ñ¡¼¥Ð¥¤¥¶¡¼
-# $3 : °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ(HOSPID)
-# $4 : ¥¨¥é¡¼¥Õ¥¡¥¤¥ëÌ¾
-# $5 : ¥¸¥ç¥Ö£É£Ä
-# $6 : ¥·¥§¥ë£É£Ä
+# $1 : åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·(HOSPNUM)
+# $2 : ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒã‚¤ã‚¶ãƒ¼
+# $3 : åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·(HOSPID)
+# $4 : ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«å
+# $5 : ã‚¸ãƒ§ãƒ–ï¼©ï¼¤
+# $6 : ã‚·ã‚§ãƒ«ï¼©ï¼¤
 #------------------------------------
 
 HOSPNUM=$1
@@ -21,7 +21,6 @@ ERRFILE=$4
 JOBID=$5
 SHELLID=$(printf "%-8s" $6)
 
-HOME=/var/lib/jma-receipt/master
 MSTDIR=lics-$(date +%Y%m%d)
 WGETRCFL=/tmp/.wgetrc.license-master
 LIUPWD=$3
@@ -29,113 +28,103 @@ LIUPWD=$3
 KANRIFILE=ORCADBR-LI.DAT
 UPDKANRIFILE=info/${KANRIFILE}
 
-UPDFILE=${HOME}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
+UPDFILE=${MASTERDIR}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
 LEN=100
 PRFFILE=/tmp/MSTMLI.PRF.$$
 
 
 orcawget () {
-#¼õ¿®¥Õ¥¡¥¤¥ëºï½ü
-	if [	-e	$1	]
-	then
+#å—ä¿¡ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤
+    if [ -e $1 ] ; then
 #	echo "rm start" $1
-		rm $1;
-	fi
-	if [	-n	"$OBSOLETEDL"	]
-	then
-		echo "http_user="${LIUPWD:0:5} > ${WGETRCFL}
-		echo "http_passwd="${LIUPWD:0:5} >> ${WGETRCFL}
-		export WGETRC=${WGETRCFL}
-		wget -q ${WGETOPTION} ${DBLICENSEPATH}/$1
-	else
-		orcadt_verify.rb --dir . --cacert ${CACERTFILE} --user ${LIUPWD:0:5} --password ${LIUPWD:0:5} ${DBLICENSEPATH}/$1.p7m
-	fi
-#ÀÜÂ³³ÎÇ§
-	if [ $? -eq 0 ]	;	then 
+	rm $1;
+    fi
+    if [ -n "$OBSOLETEDL" ] ; then
+	echo "http_user="${LIUPWD:0:5} > ${WGETRCFL}
+	echo "http_passwd="${LIUPWD:0:5} >> ${WGETRCFL}
+	export WGETRC=${WGETRCFL}
+	wget -q ${WGETOPTION} ${DBLICENSEPATH}/$1
+    else
+	orcadt_verify.rb --dir . --cacert ${CACERTFILE} --user ${LIUPWD:0:5} --password ${LIUPWD:0:5} ${DBLICENSEPATH}/$1.p7m
+    fi
+#æŽ¥ç¶šç¢ºèª
+    if [ $? -eq 0 ] ; then
 #	echo "wget end OK"
-		if [	-n	"$OBSOLETEDL"	]
-		then
-			rm  ${WGETRCFL}
-		fi
-#¥Õ¥¡¥¤¥ë¥µ¥¤¥º¥Á¥§¥Ã¥¯
-		if [	-s	./`basename $1`	]
-		then
-			return 0;
-		else
-			return 1;
-		fi
-	else
-		if [	-n	"$OBSOLETEDL"	]
-		then
-			rm  ${WGETRCFL}
-		fi
-		return 1;
+	if [ -n	"$OBSOLETEDL" ] ; then
+	    rm	${WGETRCFL}
 	fi
+#ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºãƒã‚§ãƒƒã‚¯
+	if [ -s ./`basename $1` ] ; then
+	    return 0;
+	else
+	    return 1;
+	fi
+    else
+	if [ -n "$OBSOLETEDL" ] ; then
+	    rm	${WGETRCFL}
+	fi
+	return 1;
+    fi
 }
 
 orcacp () {
-	if [	-e	$1	]
-	then
-		rm $1;
-	fi
-	if [	-n	"$OBSOLETEDL"	]
-	then
-		cp $1 ./
+    if [ -e $1 ] ; then
+	rm $1;
+    fi
+    if [ -n "$OBSOLETEDL" ] ; then
+	cp $1 ./
+    else
+	orcadt_verify.rb --dir . --cacert ${CACERTFILE} $1.p7m
+    fi
+    if [ $? -eq 0 ] ; then
+#ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºãƒã‚§ãƒƒã‚¯
+	if [ -s ./`basename $1`	] ; then
+	    return 0;
 	else
-		orcadt_verify.rb --dir . --cacert ${CACERTFILE} $1.p7m
+	    return 1;
 	fi
-	if [ $? -eq 0 ]	;	then 
-#¥Õ¥¡¥¤¥ë¥µ¥¤¥º¥Á¥§¥Ã¥¯
-		if [	-s	./`basename $1`	]
-		then
-			return 0;
-		else
-			return 1;
-		fi
-	else
-		return 1;
-	fi
+    else
+	return 1;
+    fi
 }
 
 orcatar () {
-	TARFL=$(echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ')
-	TAR=$(echo ${TARFL} | awk '{i=split($0,arr,"."); print arr[i-1] arr[i]} ' )
-	LOCALFL=$(echo ${TARFL} | awk '{i=split($0,arr,"."); print arr[1]".dat"} ' ) 
-	echo ${LOCALFL} "LOCALFL"
-	echo ${TARFL} "TARFL"
-#¼õ¿®¥Õ¥¡¥¤¥ëºï½ü
-	echo $1
-	if [	${TAR} = "targz" ]; then
-		echo ${TAR} "TAR"
-		tar zxf ${TARFL}
-		#tar³ÎÇ§
-		if [ $? -eq 0 ]; then 
-			echo "tar end OK"
-		else
-			echo "tar end NG"
-			return 1;
-	   	fi
- 	else
- 		echo "NO tar end"
- 		return 0;
- 	fi
-#¥Õ¥¡¥¤¥ë¥µ¥¤¥º¥Á¥§¥Ã¥¯
-	if [	-s	${LOCALFL}	]
-	then
-		return 0;
+    TARFL=$(echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ')
+    TAR=$(echo ${TARFL} | awk '{i=split($0,arr,"."); print arr[i-1] arr[i]} ' )
+    LOCALFL=$(echo ${TARFL} | awk '{i=split($0,arr,"."); print arr[1]".dat"} ' )     echo ${LOCALFL} "LOCALFL"
+    echo ${TARFL} "TARFL"
+#å—ä¿¡ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤
+    echo $1
+    if [ ${TAR} = "targz" ] ; then
+	echo ${TAR} "TAR"
+	tar zxf ${TARFL}
+		#tarç¢ºèª
+	if [ $? -eq 0 ] ; then
+	    echo "tar end OK"
 	else
-		return 1;
+	    echo "tar end NG"
+	    return 1;
 	fi
+    else
+	echo "NO tar end"
+	return 0;
+    fi
+#ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºãƒã‚§ãƒƒã‚¯
+    if [ -s ${LOCALFL} ] ; then
+	return 0;
+    else
+	return 1;
+    fi
 }
 
 cleanup () {
-	if	[ -d ${HOME}/${HOSPNUM}/${MSTDIR} ];	then 
-		rm -r ${HOME}/${HOSPNUM}/${MSTDIR}
-	fi
+    if	[ -d ${MASTERDIR}/${HOSPNUM}/${MSTDIR} ] ; then
+	rm -r ${MASTERDIR}/${HOSPNUM}/${MSTDIR}
+    fi
 
-	if [	-e ${PRFFILE}	];	then 
-		rm ${PRFFILE}
-	fi
+    if [ -e ${PRFFILE} ] ; then
+	rm ${PRFFILE}
+    fi
 }
 
 
@@ -143,18 +132,18 @@ cleanup () {
 VOLSIZE=`df -m /var | tail -1 | sed 's/\s\{1,\}/ /g' | cut -d' ' -f4`
 if [ -z "$MINSIZE" ]; then
 #set default 500MB
-  MINSIZE=500
+    MINSIZE=500
 fi
 if [ $VOLSIZE -lt $MINSIZE ]; then
-  ERRMSG="The space capacity of the disk is insufficient. [ ${VOLSIZE}MB ]"
-  ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8101,${HOSPNUM},${ERRFILE},,${ERRMSG}"
-  echo "${ERRMSG}"
-  exit 99
+    ERRMSG="The space capacity of the disk is insufficient. [ ${VOLSIZE}MB ]"
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8101,${HOSPNUM},${ERRFILE},,${ERRMSG}"
+    echo "${ERRMSG}"
+    exit 99
 fi
 
-#¥ª¥Õ¥é¥¤¥ó¥á¥ó¥Æ¥Ê¥ó¥¹¤Ç¤¢¤ë¤«¥Á¥§¥Ã¥¯
+#ã‚ªãƒ•ãƒ©ã‚¤ãƒ³ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ã§ã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
 OFFLINEPATH=$(echo ${DBLICENSEPATH} | sed -ne 's#file://##p')
-if [ -z ${OFFLINEPATH} ]; then
+if [ -z ${OFFLINEPATH} ] ; then
     OFFLINE="online"
 else
     OFFLINE="offline"
@@ -163,164 +152,163 @@ fi
 echo ${MSTDIR}
 echo ${UPDFILE}
 
-if [	-e ${ERRFILE}	];	then 
-  rm ${ERRFILE}
+if [ -e ${ERRFILE} ] ; then
+    rm ${ERRFILE}
 fi
 
-if [	-e ${PRFFILE}	];	then 
-  rm ${PRFFILE}
+if [ -e ${PRFFILE} ] ; then
+    rm ${PRFFILE}
 fi
 touch ${PRFFILE}
 
 
-if ! [	-d	${HOME}/${HOSPNUM}/${MSTDIR}	];	then 
-	mkdir -p ${HOME}/${HOSPNUM}/${MSTDIR}
+if ! [	-d ${MASTERDIR}/${HOSPNUM}/${MSTDIR} ] ; then
+    mkdir -p ${MASTERDIR}/${HOSPNUM}/${MSTDIR}
 fi
-if ! [	-d	${HOME}/${HOSPNUM}/orca-mstlog	];	then 
-	mkdir -p ${HOME}/${HOSPNUM}/orca-mstlog
+if ! [ -d ${MASTERDIR}/${HOSPNUM}/orca-mstlog	] ; then
+    mkdir -p ${MASTERDIR}/${HOSPNUM}/orca-mstlog
 fi
 
 if [ $(pgrep -fo "$0 $HOSPNUM") -ne $$ ]; then
-	echo "¥Þ¥¹¥¿¹¹¿·½èÍý¤Ï´û¤Ë¼Â¹ÔÃæ¤Ç¤¹"
-	exit 1
+    echo "ãƒžã‚¹ã‚¿æ›´æ–°å‡¦ç†ã¯æ—¢ã«å®Ÿè¡Œä¸­ã§ã™"
+    exit 1
 fi
 
 
-cd ${HOME}/${HOSPNUM}/${MSTDIR}
+cd ${MASTERDIR}/${HOSPNUM}/${MSTDIR}
 
-${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID},${HOSPNUM},${ERRFILE},£Ä£Â¥ì¥³¡¼¥É´ÉÍý¾ðÊó¤ò¼èÆÀ¤·¤Æ¤¤¤Þ¤¹,"
-if [  -e ${ERRFILE} ]	;	then 
-	cleanup
-	exit 99
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID},${HOSPNUM},${ERRFILE},ï¼¤ï¼¢ãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã‚’å–å¾—ã—ã¦ã„ã¾ã™,"
+if [ -e ${ERRFILE} ] ; then
+    cleanup
+    exit 99
 fi
 
 rm -f *.*
-if  [ ${OFFLINE} = "offline" ]; then
+if  [ ${OFFLINE} = "offline" ] ; then
     if  orcacp ${OFFLINEPATH}/${UPDKANRIFILE} ; then
-	echo "DB¥ì¥³¡¼¥É´ÉÍý¾ðÊó¤òÊ£¼Ì¤·¤Þ¤·¤¿"
+	echo "DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã‚’è¤‡å†™ã—ã¾ã—ãŸ"
     else
-	echo "DB¥ì¥³¡¼¥É´ÉÍý¾ðÊó¤¬¤¢¤ê¤Þ¤»¤ó¤Ç¤·¤¿"
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0001,${HOSPNUM},${ERRFILE},,£Ä£Â¥ì¥³¡¼¥É´ÉÍý¾ðÊó¤¬¤¢¤ê¤Þ¤»¤ó¤Ç¤·¤¿"
+	echo "DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ãŒã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ"
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0001,${HOSPNUM},${ERRFILE},,ï¼¤ï¼¢ãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ãŒã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ"
 	cleanup
 	exit 99
     fi
 else
-#¥»¥ó¥¿¤«¤é¤ÎDB¹½Â¤ÂÎ¥À¥¦¥ó¥í¡¼¥É
+#ã‚»ãƒ³ã‚¿ã‹ã‚‰ã®DBæ§‹é€ ä½“ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰
     LOGMSG=`orcawget ${UPDKANRIFILE} 2>&1`
     RESULT=`echo "${LOGMSG}" | head -1`
-    if	[ "[SUCCESS]" = "${RESULT:0:9}" ]; then
-	echo "¥»¥ó¥¿¤«¤é¤ÎDB¥ì¥³¡¼¥É´ÉÍý¾ðÊó¤Î¥À¥¦¥ó¥í¡¼¥É¤¬½ªÎ»¤·¤Þ¤·¤¿"
+    if	[ "[SUCCESS]" = "${RESULT:0:9}" ] ; then
+	echo "ã‚»ãƒ³ã‚¿ã‹ã‚‰ã®DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãŒçµ‚äº†ã—ã¾ã—ãŸ"
     else
         echo "${LOGMSG}"
-	echo "¥»¥ó¥¿¤«¤é¤ÎDB¥ì¥³¡¼¥É´ÉÍý¾ðÊó¤Î¥À¥¦¥ó¥í¡¼¥É¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
+	echo "ã‚»ãƒ³ã‚¿ã‹ã‚‰ã®DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã«å¤±æ•—ã—ã¾ã—ãŸ"
 	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8002,${HOSPNUM},${ERRFILE},,${RESULT}"
 	cleanup
         exit 99
     fi
-    if  [  -s	${HOME}/${HOSPNUM}/${MSTDIR}/${KANRIFILE}	]
+    if  [ -s ${MASTERDIR}/${HOSPNUM}/${MSTDIR}/${KANRIFILE} ]
     then
-	echo "¥»¥ó¥¿¤«¤é¤ÎDB¥ì¥³¡¼¥É´ÉÍý¾ðÊó¤ÏÀµ¾ï¤Ç¤·¤¿"
+	echo "ã‚»ãƒ³ã‚¿ã‹ã‚‰ã®DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã¯æ­£å¸¸ã§ã—ãŸ"
     else
-	echo "¥»¥ó¥¿¤«¤é¤ÎDB¥ì¥³¡¼¥É´ÉÍý¾ðÊó¤Ï¶õ¤Ç¤·¤¿"
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0003,${HOSPNUM},${ERRFILE},,£Ä£Â¥ì¥³¡¼¥É´ÉÍý¾ðÊó¤ÏÌ¤ÀßÄê¤Ç¤·¤¿"
+	echo "ã‚»ãƒ³ã‚¿ã‹ã‚‰ã®DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã¯ç©ºã§ã—ãŸ"
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0003,${HOSPNUM},${ERRFILE},,ï¼¤ï¼¢ãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã¯æœªè¨­å®šã§ã—ãŸ"
 	cleanup
         exit 99
     fi
 fi
 
-#¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ëÀ¸À®
-	${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST3 -parameter "${HOSPNUM}$2${MSTDIR}"
-	if [ $? -ne 0 ]	;	then 
-		echo "¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ëÀ¸À®¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-		${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0005,${HOSPNUM},${ERRFILE},,¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ëÀ¸À®¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-		cleanup
-		exit 99
-	fi
-#¹¹¿·ÍÑ¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ë¼õ¿®
-#¥Õ¥¡¥¤¥ë¥µ¥¤¥º¥Á¥§¥Ã¥¯
-	if [	-s	${UPDFILE}	]
-	then
-		echo "¹¹¿·ÍÑ¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ë¤ÎºîÀ®¤¬½ªÎ»¤·¤Þ¤·¤¿"
-	else
-		echo "¹¹¿·ÍÑ¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ë¤ÏºîÀ®¤µ¤ì¤Þ¤»¤ó¤Ç¤·¤¿"
-		${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8001,${HOSPNUM},${ERRFILE},,"
-		cleanup
-		exit 0
-	fi
+#ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆ
+${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST3 -parameter "${HOSPNUM}$2${MSTDIR}"
+if [ $? -ne 0 ]	; then
+    echo "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆã«å¤±æ•—ã—ã¾ã—ãŸ"
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0005,${HOSPNUM},${ERRFILE},,ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆã«å¤±æ•—ã—ã¾ã—ãŸ"
+    cleanup
+    exit 99
+fi
+#æ›´æ–°ç”¨ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«å—ä¿¡
+#ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºãƒã‚§ãƒƒã‚¯
+if [ -s ${UPDFILE} ] ; then
+    echo "æ›´æ–°ç”¨ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®ä½œæˆãŒçµ‚äº†ã—ã¾ã—ãŸ"
+else
+    echo "æ›´æ–°ç”¨ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã¯ä½œæˆã•ã‚Œã¾ã›ã‚“ã§ã—ãŸ"
+    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8001,${HOSPNUM},${ERRFILE},,"
+    cleanup
+    exit 0
+fi
 
 UPDLIST=$(awk '{gsub(/\t| |;/,""); print} ' ${UPDFILE})
 MSTCOUNT=$(echo ${UPDLIST} |wc -w)
 MSTSEQ=0
 for UPD in ${UPDLIST}
 do
-	MSTSEQ=$(expr ${MSTSEQ} + 1)
-        ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},¹¹¿·¥Ç¡¼¥¿¤ò¼èÆÀ¤·¤Æ¤¤¤Þ¤¹ $(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})"
-	if [  -e ${ERRFILE} ]	;	then 
-		cleanup 
-		exit 99
-	fi
-	echo ${UPD:35:${LEN}}
-	if  [ ${OFFLINE} = "offline" ]; then
-	    if  orcacp ${OFFLINEPATH}/${UPD:35:${LEN}} ; then
-		echo ${UPD:35:${LEN}} "Ê£¼Ì¤¬½ªÎ»¤·¤Þ¤·¤¿"
-	    else
-		echo ${UPD:35:${LEN}} "Ê£¼Ì¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-		${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0007,${HOSPNUM},${ERRFILE},,Ê£¼Ì¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-		cleanup 
-	        exit 99
-	    fi
+    MSTSEQ=$(expr ${MSTSEQ} + 1)
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},æ›´æ–°ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—ã—ã¦ã„ã¾ã™ $(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})"
+    if [ -e ${ERRFILE} ] ; then
+	cleanup
+	exit 99
+    fi
+    echo ${UPD:35:${LEN}}
+    if  [ ${OFFLINE} = "offline" ]; then
+	if  orcacp ${OFFLINEPATH}/${UPD:35:${LEN}} ; then
+	    echo ${UPD:35:${LEN}} "è¤‡å†™ãŒçµ‚äº†ã—ã¾ã—ãŸ"
 	else
-            LOGMSG=`orcawget ${UPD:35:${LEN}} 2>&1`
-            RESULT=`echo "${LOGMSG}" | head -1`
-            if [ "[SUCCESS]" = "${RESULT:0:9}" ]; then
-		echo ${UPD:35:${LEN}} "¥À¥¦¥ó¥í¡¼¥É¤¬½ªÎ»¤·¤Þ¤·¤¿"
-	    else
-                echo "${LOGMSG}"
-		echo ${UPD:35:${LEN}} "¥À¥¦¥ó¥í¡¼¥É¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-	        ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0008,${HOSPNUM},${ERRFILE},,${RESULT}"
-		cleanup 
-	        exit 99
-	    fi
+	    echo ${UPD:35:${LEN}} "è¤‡å†™ã«å¤±æ•—ã—ã¾ã—ãŸ"
+	    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0007,${HOSPNUM},${ERRFILE},,è¤‡å†™ã«å¤±æ•—ã—ã¾ã—ãŸ"
+	    cleanup
+	    exit 99
 	fi
+    else
+        LOGMSG=`orcawget ${UPD:35:${LEN}} 2>&1`
+        RESULT=`echo "${LOGMSG}" | head -1`
+        if [ "[SUCCESS]" = "${RESULT:0:9}" ]; then
+	    echo ${UPD:35:${LEN}} "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãŒçµ‚äº†ã—ã¾ã—ãŸ"
+	else
+            echo "${LOGMSG}"
+	    echo ${UPD:35:${LEN}} "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã«å¤±æ•—ã—ã¾ã—ãŸ"
+	    ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0008,${HOSPNUM},${ERRFILE},,${RESULT}"
+	    cleanup
+	    exit 99
+	fi
+    fi
 done
 
 DATLIST=""
 for UPD in ${UPDLIST}
 do
 #	echo ${UPD}
-	if	orcatar ${UPD} ;	then
-		echo ${UPD} "²òÅà½èÍý¤¬½ªÎ»¤·¤Þ¤·¤¿"
-	else
-		${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0009,${HOSPNUM},${ERRFILE},,²òÅà½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-		echo ${UPD} "²òÅà½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
-		cleanup 
-	        exit 99
-	fi
-	DAT=$(echo ${UPD} | awk '{i=split($0,arr,"/");gsub(/.tar.gz/,".dat",arr[i]); print arr[i]} ')
-	DAT=${UPD}$(wc -l ${DAT} | awk '{i=split($0,arr," ");printf("#%06d",arr[1])}')
-	DATLIST=${DATLIST}" "${DAT}
+    if orcatar ${UPD} ; then
+	echo ${UPD} "è§£å‡å‡¦ç†ãŒçµ‚äº†ã—ã¾ã—ãŸ"
+    else
+	${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0009,${HOSPNUM},${ERRFILE},,è§£å‡å‡¦ç†ã«å¤±æ•—ã—ã¾ã—ãŸ"
+	echo ${UPD} "è§£å‡å‡¦ç†ã«å¤±æ•—ã—ã¾ã—ãŸ"
+	cleanup
+	exit 99
+    fi
+    DAT=$(echo ${UPD} | awk '{i=split($0,arr,"/");gsub(/.tar.gz/,".dat",arr[i]); print arr[i]} ')
+    DAT=${UPD}$(wc -l ${DAT} | awk '{i=split($0,arr," ");printf("#%06d",arr[1])}')
+    DATLIST=${DATLIST}" "${DAT}
 done
-#DB¹½Â¤ÊÑ¹¹½èÍý
+#DBæ§‹é€ å¤‰æ›´å‡¦ç†
 UPDCOUNT=0
 MSTSEQ=0
 for UPD in ${DATLIST}
 do
-	MSTSEQ=$(expr ${MSTSEQ} + 1)
-	UPD1=$(echo ${UPD} | awk '{i=split($0,arr,"#");gsub(/.tar.gz/,".dat",arr[1]); print arr[1] } ')
-	COUNT=$(echo ${UPD} | awk '{i=split($0,arr,"#"); print arr[i]} ' )
-	UPDCOUNT=$(expr ${UPDCOUNT} + ${COUNT})
-	MSTCNTMSG=$(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})
-	echo ${UPD1} "DB¹¹¿·"
-#¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ëÀ¸À®
-	${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST4 -parameter "${HOSPNUM}${MSTDIR}${UPD1}*****************************************************,$(printf "%06d" ${MSTCOUNT}),$(printf "%06d" ${MSTSEQ}),${MSTCNTMSG},${COUNT},${ERRFILE},${JOBID},${SHELLID},${PRFFILE}"
-	if [  -e ${ERRFILE} ]	;	then 
-		cleanup 
-		exit 99
-	fi
+    MSTSEQ=$(expr ${MSTSEQ} + 1)
+    UPD1=$(echo ${UPD} | awk '{i=split($0,arr,"#");gsub(/.tar.gz/,".dat",arr[1]); print arr[1] } ')
+    COUNT=$(echo ${UPD} | awk '{i=split($0,arr,"#"); print arr[i]} ' )
+    UPDCOUNT=$(expr ${UPDCOUNT} + ${COUNT})
+    MSTCNTMSG=$(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})
+    echo ${UPD1} "DBæ›´æ–°"
+#ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆ
+    ${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST4 -parameter "${HOSPNUM}${MSTDIR}${UPD1}*****************************************************,$(printf "%06d" ${MSTCOUNT}),$(printf "%06d" ${MSTSEQ}),${MSTCNTMSG},${COUNT},${ERRFILE},${JOBID},${SHELLID},${PRFFILE}"
+    if [ -e ${ERRFILE} ] ; then
+	cleanup
+	exit 99
+    fi
 done
 
-echo  "Á´¤Æ¤Î½èÍý¤¬´°Î»¤·¤Þ¤·¤¿"
-	cleanup
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},,¥Þ¥¹¥¿¹¹¿·½èÍý¤¬½ªÎ»¤·¤Þ¤·¤¿"
+echo  "å…¨ã¦ã®å‡¦ç†ãŒå®Œäº†ã—ã¾ã—ãŸ"
+cleanup
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},,ãƒžã‚¹ã‚¿æ›´æ–°å‡¦ç†ãŒçµ‚äº†ã—ã¾ã—ãŸ"
 
-	exit 0
+exit 0

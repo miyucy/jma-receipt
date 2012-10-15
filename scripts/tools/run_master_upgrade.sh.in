@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JMARECEIPT_ENV="/n/jma-receipt/etc/jma-receipt.env"
+JMARECEIPT_ENV="@jma-receipt-env@"
 if [ ! -f ${JMARECEIPT_ENV} ]; then
     echo "${JMARECEIPT_ENV} does not found."
     exit 1
@@ -11,26 +11,23 @@ LOGFILE="$LOGDIR"/${0%.sh}.log
 RUNDATE=$(date  '+%Y%m%d%H%M%S')
 
 export PATH=${SITESCRIPTSDIR}/allways:${PATCHSCRIPTSDIR}/allways:${SCRIPTSDIR}/allways:$PATH
-echo ${ORCALIBDIR}
 export COB_LIBRARY_PATH=${PATCHLIBDIR}:${ORCALIBDIR}:/usr/lib/panda
-echo ${COB_LIBRARY_PATH}
 if [ `whoami` != "${ORCAUSER}" ]; then
-    echo   "${ORCAUSER}•Ê°º•∂°º§«º¬π‘§∑§∆§Ø§¿§µ§§°£"
+    echo   "${ORCAUSER}„É¶„Éº„Ç∂„Éº„ÅßÂÆüË°å„Åó„Å¶„Åè„Å†„Åï„ÅÑ„ÄÇ"
     exit 101
 fi
 
 pgrep aps > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-    echo   "∆¸•Ï•ª§¨µØ∆∞§∑§∆§§§ﬁ§ª§Û°£"
+    echo   "Êó•„É¨„Çª„ÅåËµ∑Âãï„Åó„Å¶„ÅÑ„Åæ„Åõ„Çì„ÄÇ"
     exit 102
 fi
 
 #HOSPNUM=01
-create_pgpass
+
 SQL="select hospnum from tbl_sysbase;"
 HNLIST=`psql ${DBCONNOPTION} ${DBNAME} -t -A -q -c "${SQL}"`
-delete_pgpass
-
+create_pgpass
 for hospnum in ${HNLIST} ; do
   HOSPNUM=`printf "%02d" $hospnum`
 
@@ -38,45 +35,46 @@ for hospnum in ${HNLIST} ; do
   MLIERRFL=/tmp/${HOSPNUM}MLIERR-${RUNDATE}.$$
   HOSPIDFL=/tmp/${HOSPNUM}HODPID-${RUNDATE}.$$
 
-  if [	-e ${MNTERRFL}	];	then 
+  if [	-e ${MNTERRFL}	] ; then
     rm ${MNTERRFL}
   fi
 
-  if [	-e ${MLIERRFL}	];	then 
+  if [	-e ${MLIERRFL}	] ; then
     rm ${MLIERRFL}
   fi
 
-  if [	-e ${HOSPIDFL}	];	then 
+  if [	-e ${HOSPIDFL}	] ; then
     rm ${HOSPIDFL}
   fi
   ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBCHECKREDL -parameter "${MNTERRFL}"
-  if [	-e ${MNTERRFL}	];	then 
+  if [	-e ${MNTERRFL}	] ; then
     cat ${MNTERRFL}
     rm ${MNTERRFL}
     exit 103
   fi
 
   ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBMNT01 -parameter "${HOSPNUM},${MNTERRFL},${HOSPIDFL}"
-  if [	-e ${MNTERRFL}	];	then 
+  if [	-e ${MNTERRFL}	] ; then
     cat ${MNTERRFL}
     rm ${MNTERRFL}
     exit 104
   fi
 
-  if [	-e ${HOSPIDFL}	];	then 
+  if [	-e ${HOSPIDFL}	] ; then
     HOSPID=$(cat ${HOSPIDFL})
     rm ${HOSPIDFL}
   else
-    echo   "HOSPID§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£"
+    echo   "HOSPID„ÅåÂèñÂæó„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü„ÄÇ"
     exit 105
   fi
 
   master_upgrade.sh "${HOSPNUM}" "T" "${HOSPID}" "${MNTERRFL}" "0000001" "MSTMNT" "${MLIERRFL}" "0000001" "MSTMLI"
   MSTMNT=$?
 
-  if [ ${MSTMNT} -ne 0 ]; then
+  if [ ${MSTMNT} -ne 0 ] ; then
     exit ${MSTMNT}
   fi
 done
+delete_pgpass
 
 exit ${MSTMNT}

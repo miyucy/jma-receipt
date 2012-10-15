@@ -6,10 +6,7 @@ fi
 if ! test -f "$JMARECEIPT_ENV"; then
     exit 0
 fi
-
-
 . $JMARECEIPT_ENV
-
 
 #------------------------------------
 # $1 : 医療機関識別番号(HOSPNUM)

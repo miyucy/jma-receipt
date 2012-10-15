@@ -8,9 +8,9 @@ fi
 . $JMARECEIPT_ENV
 
 #------------------------------------
-# $1 : ������ʬ
-# $2 : �ץ������̾
-# $3 : ���󥹥ȡ���ǥ��쥯�ȥ�
+# $1 : 処理区分
+# $2 : プログラム名
+# $3 : インストールディレクトリ
 #------------------------------------
 
 PRGDIR=orca-prgupwork
@@ -34,32 +34,32 @@ case "${SYORI}" in
       ;;
 
   complete)
-      COMMENT="�󶡤���Ƥ���ǿ��ξ��֤Ǥ�����"
+      COMMENT="提供されている最新の状態でした。"
       UPDATEFLG=""
       ;;
 
   error1)
-      COMMENT="${PGNAME} ���󶡤���Ƥ��ޤ���Ŭ�Ѥ���Ƥ��ޤ���"
+      COMMENT="${PGNAME} が提供されていますが適用されていません。"
       UPDATEFLG="E"
       ;;
 
   error2)
-      COMMENT="${INSTALLDIR}/${PGNAME} ������ޤ����󶡤��줿��ΤǤϤ���ޤ���"
+      COMMENT="${INSTALLDIR}/${PGNAME} がありますが提供されたものではありません。"
       UPDATEFLG="E"
       ;;
 
   error3)
-      COMMENT="${INSTALLDIR}/${PGNAME} ���󶡤��줿��Τ����Ƥ��㤤�ޤ���"
+      COMMENT="${INSTALLDIR}/${PGNAME} は提供されたものと内容が違います。"
       UPDATEFLG="E"
       ;;
 
   error4)
-      COMMENT="${INSTALLDIR}/${PGNAME} ���󶡤��줿��ΤȰ㤦���ˤ���ޤ���"
+      COMMENT="${INSTALLDIR}/${PGNAME} は提供されたものと違う場所にあります。"
       UPDATEFLG="E"
       ;;
 
   error9)
-      COMMENT="${INSTALLDIR}/${PGNAME} ����"
+      COMMENT="${INSTALLDIR}/${PGNAME} ？？"
       UPDATEFLG="E"
       ;;
 
@@ -82,21 +82,13 @@ WKNUM=`expr ${PGNOMAX} + 1`
 PGNO=`printf "%03d" ${WKNUM}`
 
 SQL="\set ON_ERROR_STOP
+set client_encoding TO 'UTF-8';
 begin;
-SELECT
- CASE pg_encoding_to_char(encoding)
-  WHEN 'UTF8' THEN set_config('client_encoding','EUC_JIS_2004',true)
-  WHEN 'EUC_JP' THEN set_config('client_encoding','EUC_JP',true)
-  ELSE set_config('client_encoding','EUC_JP',true)
- END as encode
-FROM
- pg_database
-WHERE
- datname = current_database();
 insert into tbl_pgkanri values ('','check','${PGNO}','${ymd}','${PGNAME}','${UPDATEFLG}','','${INSTALLDIR}','${COMMENT}','','','${ymd}','','${time}');
 commit;"
 
 echo "${SQL}" | psql ${DBCONNOPTION} ${DBNAME}
+echo "${SQL}"
 delete_pgpass
 
 exit 0
