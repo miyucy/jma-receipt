@@ -1910,12 +1910,13 @@ grpsys             PERFORM 900-DBSELECT-SEC
                MOVE    RECE01-MISEIKYU-FLG     TO  RECE02-MISEIKYU-FLG
            END-IF
       *
-      *    医師別出力設定（一括作成時のみ）
+      *    医師別出力設定（一括作成時リアルタイムプレビュー時のみ）
            IF    ( IDZ             =   1                     )
-           AND   ( WRK-PARA-SRYYM  NOT =   "000000"          )
            AND   ( SYS-200501-DRCD-PRTKBN
                                    =   "1"                   )
            AND   ( RECE02-SRYYM    >=  WRK-CONS-SRYYM-200804 )
+             IF    ( WRK-PARA-SRYYM  NOT =   "000000"  )
+             OR    ( WRK-PARA-SHELLID    =   "RECEPTX" )
                INITIALIZE                      ORCSDRCDGETAREA
                MOVE    RECE02-HOSPNUM  TO  SPA-HOSPNUM
                MOVE    "2"             TO  LNK-DRCDGET-I-NYUGAIKBN
@@ -1933,7 +1934,8 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    MOVE    LNK-DRCDGET-O-DRCD  TO  RECE02-DRCD
                    MOVE    LNK-DRCDGET-O-DRCD-SRYKA
                                                TO  RECE02-DRCD-SRYKA
-               END-IF 
+               END-IF
+             END-IF 
            END-IF
       *
       *    患者特記事項

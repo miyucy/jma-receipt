@@ -3072,25 +3072,29 @@
                    END-STRING
            END-EVALUATE
       *
-      *    医師名（一括作成の点検用レセプトのみ）
+      *    医師名（一括作成の点検用レセプトまたはリアルタイムプレビュー時のみ）
            IF    ( SYS-200501-DRNAME-KSIKBN
                                        =   "1"         )
-           AND   ( WRK-PARA-SYOKBN     =   "1"         )
-           AND   ( WRK-PARA-PRTKBN     =   "2" OR  "3" )
            AND   ( RECE62-DRCD     NOT =   SPACE       )
-               MOVE    SPACE               TO  SYSKANRI-REC
-               INITIALIZE                      SYSKANRI-REC
-               MOVE    "1010"              TO  SYS-KANRICD
-               MOVE    RECE62-DRCD         TO  SYS-KBNCD
-               MOVE    RECE62-SRYYM        TO  SYS-STYUKYMD(1:6)
-               MOVE    "01"                TO  SYS-STYUKYMD(7:2)
-               MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
-               MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
-               MOVE    "key10"             TO  WRK-MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI    =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-1010-REC
-                   MOVE  SYS-1010-NAME (1:20)  TO  HC06-DRNAME
+           AND   ( WRK-PARA-PRTKBN     =   "2" OR  "3" )
+               IF  ( ( WRK-PARA-SHELLID
+                                       NOT =   "RECEPTX" ) AND
+                     ( WRK-PARA-SYOKBN     =   "1"       )     )
+               OR  (   WRK-PARA-SHELLID    =   "RECEPTX"       )
+                   MOVE    SPACE               TO  SYSKANRI-REC
+                   INITIALIZE                      SYSKANRI-REC
+                   MOVE    "1010"              TO  SYS-KANRICD
+                   MOVE    RECE62-DRCD         TO  SYS-KBNCD
+                   MOVE    RECE62-SRYYM        TO  SYS-STYUKYMD(1:6)
+                   MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+                   MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+                   MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+                   MOVE    "key10"             TO  WRK-MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+                   IF      FLG-SYSKANRI    =   ZERO
+                       MOVE    MCPDATA-REC         TO  SYS-1010-REC
+                       MOVE  SYS-1010-NAME (1:20)  TO  HC06-DRNAME
+                   END-IF
                END-IF
            END-IF
       *

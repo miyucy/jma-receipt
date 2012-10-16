@@ -1765,12 +1765,13 @@
                MOVE    RECE61-MISEIKYU-FLG     TO  RECE62-MISEIKYU-FLG
            END-IF
       *
-      *    医師別出力設定（一括作成時のみ）
+      *    医師別出力設定（一括作成時リアルタイムプレビュー時のみ）
            IF    ( IDZ             =   1                     )
-           AND   ( WRK-PARA-SRYYM  NOT =   "000000"          )
            AND   ( SYS-200501-DRCD-PRTKBN
                                    =   "1"                   )
            AND   ( RECE62-SRYYM    >=  WRK-CONS-SRYYM-200804 )
+             IF    ( WRK-PARA-SRYYM  NOT =   "000000"  )
+             OR    ( WRK-PARA-SHELLID    =   "RECEPTX" )
                INITIALIZE                      ORCSDRCDGETAREA
                MOVE    RECE62-HOSPNUM  TO  SPA-HOSPNUM
                MOVE    "1"             TO  LNK-DRCDGET-I-NYUGAIKBN
@@ -1794,6 +1795,7 @@
                    MOVE    LNK-DRCDGET-O-DRCD-SRYKA
                                                TO  RECE62-DRCD-SRYKA
                END-IF 
+             END-IF 
            END-IF
       *
       *    患者特記事項
