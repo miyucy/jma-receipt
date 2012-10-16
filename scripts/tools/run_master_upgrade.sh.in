@@ -25,9 +25,9 @@ fi
 
 #HOSPNUM=01
 
+create_pgpass
 SQL="select hospnum from tbl_sysbase;"
 HNLIST=`psql ${DBCONNOPTION} ${DBNAME} -t -A -q -c "${SQL}"`
-create_pgpass
 for hospnum in ${HNLIST} ; do
   HOSPNUM=`printf "%02d" $hospnum`
 
