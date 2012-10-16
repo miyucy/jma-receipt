@@ -222,7 +222,7 @@ do
 #
     if	[ -s $TMPDIR/$MSTDIR/$UPD2 ]; then
 	if	[ "${UPD2:0:7}" = "ORCADBC" ]; then
-	    su - $ORCAUSER -c "bash $TMPDIR/$MSTDIR/$UPD2 $DBOPTION $INSTALLLOG $THISTIMELOG"
+	    su - $ORCAUSER -c "bash $TMPDIR/$MSTDIR/$UPD2 \"${DBOPTION}\" ${INSTALLLOG} ${THISTIMELOG}"
 	else
 	    su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME < $TMPDIR/$MSTDIR/$UPD2 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
 	fi
