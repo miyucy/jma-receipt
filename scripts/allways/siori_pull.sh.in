@@ -8,10 +8,10 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    è–¬å‰¤æƒ…å ±ãƒžã‚¹ã‚¿åŒ»è–¬å“ã—ãŠã‚Šãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰å‡¦ç†
+#    ÌôºÞ¾ðÊó¥Þ¥¹¥¿°åÌôÉÊ¤·¤ª¤ê¥À¥¦¥ó¥í¡¼¥É½èÍý
 #
-#	å¼•æ•°ã‚ˆã‚Š
-#        $1  SRYCD åŒ»è–¬å“ã‚³ãƒ¼ãƒ‰ï¼ˆï¼™æ¡ï¼‰
+#	°ú¿ô¤è¤ê
+#        $1  SRYCD °åÌôÉÊ¥³¡¼¥É¡Ê£¹·å¡Ë
 #        $2  TERMID
 #        $3  JOBID 
 #        $4  SHELLID
@@ -28,7 +28,7 @@ MEDPHOTOPATH="${MSTSRVPATH}/siori/image"
 MEDPHOTODIR="/tmp/medphoto"
 MEDPHOTOTEMP="$MEDPHOTODIR"/${HOSPNUM}
 
-# ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«æ ¼ç´ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã®ä½œæˆ
+# ²èÁü¥Õ¥¡¥¤¥ë³ÊÇ¼¥Ç¥£¥ì¥¯¥È¥ê¤ÎºîÀ®
 
 if ! [ -d $MEDPHOTODIR ]; then
   mkdir $MEDPHOTODIR
@@ -37,7 +37,7 @@ if ! [ -d $MEDPHOTOTEMP ]; then
   mkdir $MEDPHOTOTEMP
 fi
 
-# å–ã‚Šè¾¼ã‚€å‰ã«ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’å‰Šé™¤
+# ¼è¤ê¹þ¤àÁ°¤Ë¥ì¥³¡¼¥É¤òºï½ü
 
 TEMP=$(mktemp)
 trap "rm -f ${TEMP}" EXIT
@@ -48,13 +48,13 @@ rm -f ${TEMP}.wk
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBSQL1 \
           -parameter ${HOSPNUM},${TEMP}
 if [ $? -ne 0 ] ; then 
-  MSG="ãƒ¬ã‚³ãƒ¼ãƒ‰å‰Šé™¤ã§ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ"
+  MSG="¥ì¥³¡¼¥Éºï½ü¤Ç¥¨¥é¡¼¤¬È¯À¸¤·¤Þ¤·¤¿"
   ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 \
             -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},,,${MSG}"
   exit 0
 fi
 
-# ã‚»ãƒ³ã‚¿ãƒ¼ã‚µãƒ¼ãƒã‚ˆã‚Šé››åž‹ã‚’å–ã‚Šè¾¼ã‚€
+# ¥»¥ó¥¿¡¼¥µ¡¼¥Ð¤è¤ê¿÷·¿¤ò¼è¤ê¹þ¤à
 
 master_get.sh ${HOSPNUM} ${TERMID} ${JOBID} ${SHELLID} SIORI ${SRYCD}
 if [ $? -ne 0 ] ; then
@@ -70,7 +70,7 @@ do
   wget -q -O ${MEDPHOTOTEMP}/${file} ${MEDPHOTOPATH}/${file}
 done
 
-MSG="å‚ç…§å‡¦ç†ãŒçµ‚äº†ã—ã¾ã—ãŸ"
+MSG="»²¾È½èÍý¤¬½ªÎ»¤·¤Þ¤·¤¿"
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 \
           -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},,,${MSG}"
 
