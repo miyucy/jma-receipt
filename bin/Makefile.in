@@ -12,14 +12,12 @@ BIN_sources = \
 	jma-dbsync.sh.in \
 	jma-backupcluster.sh.in \
 	jma-restorecluster.sh.in \
+	jma-receipt-program-upgrade-check.sh.in \
+	jma-receipt-program-upgrade.sh.in \
+	orcvt_exec.sh.in \
 	create_dbgroup.sh.in
 
 BIN_cmdsrc = jma-setup.in
-
-EUC_sources = \
-	jma-receipt-program-upgrade.sh.in \
-	jma-receipt-program-upgrade-check.sh.in \
-	orcvt_exec.sh.in
 
 BIN_cmd = jma-setup
 
@@ -29,10 +27,7 @@ BIN_bin = \
 	jma-plugin
 
 BIN_objs = $(BIN_sources:.sh.in=.sh) \
-           $(EUC_sources:.sh.in=.sh) \
            $(BIN_cmd)
-
-EUC_shell_scripts = $(EUC_sources:.sh.in=.sh)
 
 BIN_files = $(BIN_objs) $(BIN_bin) $(BIN_cmd)
 
@@ -50,9 +45,6 @@ $(BIN_cmd): $(BIN_cmdsrc)
 	sed -e 's,\@bindir\@,$(bindir),g' \
 	$(BIN_cmdsrc) > $@
 	chmod +x $@
-
-convutf8: $(EUC_shell_scripts)
-	echo $(EUC_shell_scripts) | xargs nkf -Ewm0 --overwrite
 
 filecheck:
 

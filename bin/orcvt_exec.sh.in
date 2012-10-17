@@ -1,29 +1,26 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV" ; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV" ; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
-export COB_LIBRARY_PATH="$PATCHLIBDIR":"$ORCALIBDIR":/usr/lib/panda:/usr/lib/open-cobol
 
 if [ $# -ne 2 ]; then
     echo
-    echo "•™•◊•∑•Á•Û§¨¿µ§∑§Ø§¢§Í§ﬁ§ª§Û"
+    echo "„Ç™„Éó„Ç∑„Éß„É≥„ÅåÊ≠£„Åó„Åè„ÅÇ„Çä„Åæ„Åõ„Çì"
     echo
     exit 1
 fi
 
 if [ ! -e "$2" ]; then
     echo
-    echo "$2 •’•°•§•Î§¨¬∏∫ﬂ§∑§ﬁ§ª§Û"
+    echo "$2 „Éï„Ç°„Ç§„É´„ÅåÂ≠òÂú®„Åó„Åæ„Åõ„Çì"
     echo
     exit 1
 fi
 
+export COB_LIBRARY_PATH
 cd $exec_prefix
-
 $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt $1 -parameter $2

@@ -10,4 +10,5 @@ jma-backupcluster.sh
 jma-dbsync.sh
 jma-restorecluster.sh
 jma-setup
+create_dbgroup.sh
 

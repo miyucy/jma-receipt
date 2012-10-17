@@ -1,39 +1,21 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV"; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
-fi
-
 . $JMARECEIPT_ENV
 
-PANDALIB=/usr/lib/panda
-COBLIB=/usr/lib/open-cobol
-
-# echo message (default character-code EUC)
-echomsg() {
-  if [ "${LANG}" = "ja_JP.UTF-8" ] || [ "${LANG}" = "ja_JP.UTF8" ]; then
-    echo `echo $1 | nkf -wE`
-  else
-    echo $1
-  fi
-}
-
-if [ `whoami` != "orca" ]; then
-  echomsg "orca•Ê°º•∂°º§«º¬π‘§∑§∆§Ø§¿§µ§§°£"
+if [ `whoami` != "${ORCAUSER}" ]; then
+  echo "${ORCAUSER}„É¶„Éº„Ç∂„Éº„ÅßÂÆüË°å„Åó„Å¶„Åè„Å†„Åï„ÅÑ„ÄÇ"
   exit 1
 fi
 
-PATH=$SITESCRIPTSDIR/allways:$PATCHSCRIPTSDIR/allways:$SCRIPTSDIR/allways:$PATH
-export PATH
-
-COB_LIBRARY_PATH="${PATCHLIBDIR}":"${ORCALIBDIR}":"${PANDALIB}":"${COBLIB}"
 export COB_LIBRARY_PATH
-
 $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBS0000001PRGMNT,01"
 
+PATH=$SITESCRIPTSDIR/allways:$PATCHSCRIPTSDIR/allways:$SCRIPTSDIR/allways:$PATH
 program_upgrade_online.sh "update" "01"
 
 exit $?
