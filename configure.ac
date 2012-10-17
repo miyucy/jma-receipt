@@ -15,28 +15,7 @@ AC_ARG_ENABLE(debug, [  --enable-debug=[no/yes] turn on debugging [default=no]],
 if test "x$enable_debug" = "xyes"; then
   DEBUG="debug"
 fi
-
-dnl --enable-hosp
-AC_ARG_ENABLE(hosp, [  --enable-hosp=[no/yes] support hosp [default=yes]],,enable_hosp="yes")
-
-if test "x$enable_hosp" = "xyes"; then
-  HOSP="hosp"
-  CLINIC_BED_SET_TO_ZERO="
-      *The number of beds is set to 0 with the clinic version start.
-      *         MOVE    ZERO                TO  SPA-BEDSU
-      *         MOVE    ZERO                TO  SPA-BEDSUIPN
-      *The number of beds is set to 0 with the clinic version end."
-else
-  CLINIC_BED_SET_TO_ZERO="
-      *The number of beds is set to 0 with the clinic version start.
-               MOVE    ZERO                TO  SPA-BEDSU
-               MOVE    ZERO                TO  SPA-BEDSUIPN
-      *The number of beds is set to 0 with the clinic version end."
-fi
-
 AC_SUBST(DEBUG)
-AC_SUBST(HOSP)
-AC_SUBST(CLINIC_BED_SET_TO_ZERO)
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -224,7 +203,6 @@ AC_CONFIG_FILES([
 cobol/Makefile
 cobol/Makefile.global
 cobol/cutils/Makefile
-cobol/common/ORCSCOMMON.CBL
 cobol/copy/Makefile
 bin/Makefile
 lib/Makefile

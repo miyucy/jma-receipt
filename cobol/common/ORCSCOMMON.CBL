@@ -295,7 +295,6 @@
                MOVE    SYS-1001-HOSPNAME   TO  ORCSCOMMON-HOSPNAME
                MOVE    SYS-1001-HOSPNAME   TO  SPA-HOSPNAME
       *
-@CLINIC_BED_SET_TO_ZERO@
            ELSE
                MOVE    "1002"              TO  SPA-ERRCD
            END-IF

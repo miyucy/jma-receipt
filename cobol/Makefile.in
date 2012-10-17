@@ -2,7 +2,6 @@ top_srcdir = @top_srcdir@
 include $(top_srcdir)/Makefile.directories
 
 INSTALL = @INSTALL@
-HOSP = @HOSP@
 
 SUBDIRS = \
 	common \
@@ -26,6 +25,11 @@ SUBDIRS = \
 	orca24 \
 	orca25 \
 	orca29 \
+	orca31 \
+	orca32 \
+	orca33 \
+	orca34 \
+	orca36 \
 	orca41 \
 	orca42 \
 	orca43 \
@@ -49,18 +53,7 @@ SUBDIRS = \
 	cutils \
 	api21 \
 	api01r \
-	api01rv2
-
-hosp_SUBDIRS = \
-	orca31 \
-	orca32 \
-	orca33 \
-	orca34 \
-	orca36 
-
-ifeq ($(HOSP), hosp)
-  SUBDIRS += $(hosp_SUBDIRS)
-endif
+	api01rv2 
 
 COPYDIRS = copy
 
