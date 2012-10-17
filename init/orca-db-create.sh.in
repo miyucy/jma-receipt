@@ -34,26 +34,36 @@ if [ x"$DBHOST" = "x" ]; then
     fi
 else
     # remote host
-    USEREXIST=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} template1 -t -c \"${USERCHECKSQL}\""`
-    RC=$?
-    if [ -z $USEREXIST ] || [ $RC -ne 0 ]
-    then
-	su - ${ORCAUSER} -c "createuser ${DBCONNOPTION} -U postgres --createdb --no-superuser --no-createrole ${DBUSER}"
-	if [ $? -ne 0 ] ; then
-	    echo "createuser error" | tee -a $INSTALLLOG
-	    exit 99
-	fi
-	su - ${ORCAUSER} -c "psql ${DBCONNOPTION} -U postgres -c \"${SETPASSWORD}\""
-	if [ $? -ne 0 ] ; then
-	    echo "set password error" | tee -a $INSTALLLOG
-	    exit 99
+    if [ x"$PGPASS" != "x" ]; then
+	USEREXIST=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} template1 -t -c \"${USERCHECKSQL}\""`
+	RC=$?
+	if [ -z $USEREXIST ] || [ $RC -ne 0 ] ; then
+	    su - ${ORCAUSER} -c "createuser ${DBCONNOPTION} -U postgres --createdb --no-superuser --no-createrole ${DBUSER}"
+	    if [ $? -ne 0 ] ; then
+		echo "createuser error" | tee -a $INSTALLLOG
+		exit 99
+	    fi
+	    su - ${ORCAUSER} -c "psql ${DBCONNOPTION} -U postgres -c \"${SETPASSWORD}\""
+	    if [ $? -ne 0 ] ; then
+		echo "set password error" | tee -a $INSTALLLOG
+		exit 99
+	    fi
 	fi
     fi
 fi
 
 # DB
-if [ -z `su - ${ORCAUSER} -c "psql ${DBCONNOPTION} template1 -t -c \"${DBCHECKSQL}\""` ]
-then
+DBEXIST=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} template1 -t -c \"${DBCHECKSQL}\""`
+RC=$?
+if [  $RC -ne 0 ] ; then
+    DBEXIST=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} ${DBNAME} -t -c \"${DBCHECKSQL}\""`
+    RC=$?
+fi
+if [ $RC -ne 0 ] ; then
+    echo "database check error" | tee -a $INSTALLLOG
+    exit 99
+fi
+if [ -z $DBEXIST ] ; then
     su - ${ORCAUSER} -c "createdb ${DBCONNOPTION} -lC -Ttemplate0 -E${DBENCODING} \"${DBNAME}\""
     if [ $? -ne 0 ] ; then
 	echo "createdb error" | tee -a $INSTALLLOG
