@@ -17,9 +17,9 @@ fi
 
 status=0
 if [ -f $PATCHDIR/copying ];	then
-    echo "¹¹¿·¥×¥í¥°¥é¥à´ÉÍý¥Æ¡¼¥Ö¥ë¥¯¥ê¥¢½èÍý¥¹¥­¥Ã¥×" 2>&1 | tee -a $INSTALLLOG
+    echo "æ›´æ–°ãƒ—ãƒ­ã‚°ãƒ©ãƒ ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒªã‚¢å‡¦ç†ã‚¹ã‚­ãƒƒãƒ—" 2>&1 | tee -a $INSTALLLOG
 else
-    echo "¹¹¿·¥×¥í¥°¥é¥à´ÉÍý¥Æ¡¼¥Ö¥ë¥¯¥ê¥¢½èÍý³«»Ï" 2>&1 | tee -a $INSTALLLOG
+    echo "æ›´æ–°ãƒ—ãƒ­ã‚°ãƒ©ãƒ ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒªã‚¢å‡¦ç†é–‹å§‹" 2>&1 | tee -a $INSTALLLOG
     su - $ORCAUSER -c "psql ${DBCONNOPTION} -e ${DBNAME} -c \"${DELETESQL}\"" 2>&1 | tee -a $INSTALLLOG
     if [ ${PIPESTATUS[0]} -ne 0 ] ; then
 	echo "NG" | tee -a $INSTALLLOG

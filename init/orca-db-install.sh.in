@@ -33,19 +33,17 @@ orcawget () {
     if [ ${DWNFL:1:10}	= "XXXXXXXXXX"	] ;	then
 	return 0;
     fi
-#¼õ¿®¥Õ¥¡¥¤¥ëºï½ü
-    if [	-e	$DWNFL	]
-    then
+#å—ä¿¡ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤
+    if [ -e $DWNFL ] ; then
 #	echo "rm start" $DWNFL
 	rm $DWNFL;
     fi
     orcadt_verify.rb --dir . --cacert ${CACERTFILE} ${DBUPGRADEPATH}/$1.p7m
-#ÀÜÂ³³ÎÇ§
-    if [ $? -eq 0 ]	;	then
+#æ¥ç¶šç¢ºèª
+    if [ $? -eq 0 ] ; then
 #	echo "wget end OK"
-#¥Õ¥¡¥¤¥ë¥µ¥¤¥º¥Á¥§¥Ã¥¯
-	if [	-s	$DWNFL	]
-	then
+#ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºãƒã‚§ãƒƒã‚¯
+	if [ -s $DWNFL ] ; then
 	    return 0;
 	else
 	    return 1;
@@ -59,24 +57,22 @@ orcatar () {
     TARFL=`echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
     TAR=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[i-1] arr[i]} ' `
     LOCALFL=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[1]".dat"} ' `
-#²òÅà½èÍı
+#è§£å‡å‡¦ç†
     echo $1
-    if [	$TAR = "targz" ]
-    then
+    if [ $TAR = "targz" ] ; then
 	tar zxf $TARFL
     else
 	return 0;
     fi
-#tar³ÎÇ§
-    if [ $? -eq 0 ]	;	then
+#tarç¢ºèª
+    if [ $? -eq 0 ] ; then
 	echo "tar end OK"
     else
 	echo "tar end NG"
 	return 1;
     fi
-#¥Õ¥¡¥¤¥ë¥µ¥¤¥º¥Á¥§¥Ã¥¯
-    if [	-s	$LOCALFL	]
-    then
+#ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºãƒã‚§ãƒƒã‚¯
+    if [ -s $LOCALFL ] ; then
 	return 0;
     else
 	return 1;
@@ -88,13 +84,13 @@ if [ ! -e "$INSTALLLOG" ]; then
 fi
 su - $ORCAUSER -c "rm -f $THISTIMELOG"
 
-#¥¨¥é¡¼¥Õ¥¡¥¤¥ëÍÑ¥Õ¥©¥ë¥ÀºîÀ®
-if ! [	-d	$TMPDIR/orca-mstlog	];	then
+#ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«ç”¨ãƒ•ã‚©ãƒ«ãƒ€ä½œæˆ
+if ! [ -d $TMPDIR/orca-mstlog ] ; then
     cd $TMPDIR
     mkdir orca-mstlog
     chown "$ORCAUSER":"$ORCAGROUP" orca-mstlog
 fi
-#À°¹çÀ­¥Á¥§¥Ã¥¯
+#æ•´åˆæ€§ãƒã‚§ãƒƒã‚¯
 rm -f $TMPDIR/orca-mstlog/SQLSELECT.TXT
 rm -f $TMPDIR/orca-mstlog/master_log
 VERLIST=`awk '/version/{gsub(/\t| |;/,""); print} ' $VERSIONFL`
@@ -108,17 +104,17 @@ DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub
 DBVERSION=`echo $DBLIST | awk '{i=split($0,arr,"|"); print arr[2]} ' `
 DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
 #	if [ `echo $DBVERSION1 $VERDATA1 | awk '{print($1<$2) ? "true" : "false"} '` = "true" ];	then
-if [ `echo $DBVERSION1 $VERDATA1 | awk '{print($1<=$2) ? "true" : "false"} '` = "true" ];	then
+if [ `echo $DBVERSION1 $VERDATA1 | awk '{print($1<=$2) ? "true" : "false"} '` = "true" ] ; then
     echo "OK"
 else
-    echo "¥À¥¦¥ó¥°¥ì¡¼¥É¤Î½èÍı¤È¤Ê¤Ã¤Æ¤¤¤Ş¤¹¡£½èÍı¤òÃæ»ß¤·¤Ş¤¹" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+    echo "ãƒ€ã‚¦ãƒ³ã‚°ãƒ¬ãƒ¼ãƒ‰ã®å‡¦ç†ã¨ãªã£ã¦ã„ã¾ã™ã€‚å‡¦ç†ã‚’ä¸­æ­¢ã—ã¾ã™" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     exit 99
 fi
-#À°¹çÀ­¥Á¥§¥Ã¥¯¤³¤³¤Ş¤Ç
-#DB´ÉÍı¾ğÊó¹¹¿·
+#æ•´åˆæ€§ãƒã‚§ãƒƒã‚¯ã“ã“ã¾ã§
+#DBç®¡ç†æƒ…å ±æ›´æ–°
 echo "update tbl_dbkanri set version='$VERDATA2' where kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
 
-#¥ª¥Õ¥é¥¤¥ó¥á¥ó¥Æ¥Ê¥ó¥¹¤Ç¤¢¤ë¤«¥Á¥§¥Ã¥¯
+#ã‚ªãƒ•ãƒ©ã‚¤ãƒ³ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ã§ã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
 OFFLINEPATH=`echo $DBUPGRADEPATH | sed -ne 's#file://##p'`
 if [ -z $OFFLINEPATH ]; then
     OFFLINE="online"
@@ -128,7 +124,7 @@ fi
 
 echo $MSTDIR
 echo $UPDFILE
-if ! [	-d	$TMPDIR/$MSTDIR	];	then
+if ! [ -d $TMPDIR/$MSTDIR ] ; then
     cd $TMPDIR
     mkdir $MSTDIR
     chown "$ORCAUSER":"$ORCAGROUP" $MSTDIR
@@ -138,37 +134,36 @@ rm -f *
 if  [ $OFFLINE = "offline" ]; then
     if  [ -e $OFFLINEPATH/$UPDKANRIFILE ]; then
 	cp $OFFLINEPATH/$UPDKANRIFILE ./
-	echo "DB¥ì¥³¡¼¥É´ÉÍı¾ğÊó¤òÊ£¼Ì¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+	echo "DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã‚’è¤‡å†™ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     else
-	echo "DB¥ì¥³¡¼¥É´ÉÍı¾ğÊó¤¬¤¢¤ê¤Ş¤»¤ó¤Ç¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+	echo "DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ãŒã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 	exit 99
     fi
 else
-#¥»¥ó¥¿¤«¤é¤ÎDB¹½Â¤ÂÎ¥À¥¦¥ó¥í¡¼¥É
+#ã‚»ãƒ³ã‚¿ã‹ã‚‰ã®DBæ§‹é€ ä½“ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰
     if	orcawget $UPDKANRIFILE ;	then
-	echo "¥»¥ó¥¿¤«¤é¤ÎDB¥ì¥³¡¼¥É´ÉÍı¾ğÊó¤Î¥À¥¦¥ó¥í¡¼¥É¤¬½ªÎ»¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+	echo "ã‚»ãƒ³ã‚¿ã‹ã‚‰ã®DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãŒçµ‚äº†ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     else
-	echo "¥»¥ó¥¿¤«¤é¤ÎDB¥ì¥³¡¼¥É´ÉÍı¾ğÊó¤Î¥À¥¦¥ó¥í¡¼¥É¤Ë¼ºÇÔ¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+	echo "ã‚»ãƒ³ã‚¿ã‹ã‚‰ã®DBãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†æƒ…å ±ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã«å¤±æ•—ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
         exit 99
     fi
 fi
 
-#DB´ÉÍı¾ğÊó¤Î¼èÆÀ
+#DBç®¡ç†æƒ…å ±ã®å–å¾—
 su - $ORCAUSER -c "psql ${DBCONNOPTION} -o $TMPDIR/orca-mstlog/sql.out -f $TMPDIR/orca-mstlog/SQLSELECT.TXT $DBNAME"
 DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $TMPDIR/orca-mstlog/sql.out`
-#¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ëÀ¸À®
+#ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆ
 ORCXSMST1 $MSTDIR$DBLIST
 if [ $? -ne 0 ]	;	then
-    echo "¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ëÀ¸À®¤Ë¼ºÇÔ¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+    echo "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆã«å¤±æ•—ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     exit 99
 fi
-#¹¹¿·ÍÑ¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ë¼õ¿®
-#¥Õ¥¡¥¤¥ë¥µ¥¤¥º¥Á¥§¥Ã¥¯
-if [	-s	$UPDFILE	]
-then
-    echo "¹¹¿·ÍÑ¥À¥¦¥ó¥í¡¼¥É¥Õ¥¡¥¤¥ë¤ÎºîÀ®¤¬½ªÎ»¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+#æ›´æ–°ç”¨ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«å—ä¿¡
+#ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºãƒã‚§ãƒƒã‚¯
+if [ -s $UPDFILE ] ; then
+    echo "æ›´æ–°ç”¨ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®ä½œæˆãŒçµ‚äº†ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 else
-    echo "¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë¤Ï¤¢¤ê¤Ş¤»¤ó" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+    echo "æ›´æ–°ç”¨ãƒ•ã‚¡ã‚¤ãƒ«ã¯ã‚ã‚Šã¾ã›ã‚“" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     rm -r $TMPDIR/$MSTDIR
     exit 
 fi
@@ -181,21 +176,21 @@ do
     if  [ $OFFLINE = "offline" ]; then
 	DWNFL=`echo ${UPD:35:$LEN} | awk '{i=split($0,arr,"/"); print arr[i]} ' `
 	if [ ${DWNFL:1:10}	= "XXXXXXXXXX"	] ;	then
-	    echo ${UPD:35:$LEN} "¥ª¥ê¥¸¥Ê¥ë¥À¥ó¥×¥¹¥­¥Ã¥×¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+	    echo ${UPD:35:$LEN} "ã‚ªãƒªã‚¸ãƒŠãƒ«ãƒ€ãƒ³ãƒ—ã‚¹ã‚­ãƒƒãƒ—ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 	else
 	    if  [ -e $OFFLINEPATH/${UPD:35:$LEN} ]; then
 		cp $OFFLINEPATH/${UPD:35:$LEN} ./
-		echo ${UPD:35:$LEN} "Ê£¼Ì¤¬½ªÎ»¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+		echo ${UPD:35:$LEN} "è¤‡å†™ãŒçµ‚äº†ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 	    else
-		echo ${UPD:35:$LEN} "Ê£¼Ì¤Ë¼ºÇÔ¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+		echo ${UPD:35:$LEN} "è¤‡å†™ã«å¤±æ•—ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 	        exit 99
 	    fi
 	fi
     else
 	if	orcawget ${UPD:35:$LEN} ;	then
-	    echo ${UPD:35:$LEN} "¥À¥¦¥ó¥í¡¼¥É¤¬½ªÎ»¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+	    echo ${UPD:35:$LEN} "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ãŒçµ‚äº†ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 	else
-	    echo ${UPD:35:$LEN} "¥À¥¦¥ó¥í¡¼¥É¤Ë¼ºÇÔ¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+	    echo ${UPD:35:$LEN} "ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ã«å¤±æ•—ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 	    exit 99
 	fi
     fi
@@ -205,13 +200,13 @@ for UPD in $UPDLIST
 do
 #	echo $UPD
     if	orcatar $UPD ;	then
-	echo $UPD "²òÅà½èÍı¤¬½ªÎ»¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+	echo $UPD "è§£å‡å‡¦ç†ãŒçµ‚äº†ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     else
-	echo $UPD "²òÅà½èÍı¤Ë¼ºÇÔ¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+	echo $UPD "è§£å‡å‡¦ç†ã«å¤±æ•—ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 	exit 99
     fi
 done
-#DB¹½Â¤ÊÑ¹¹½èÍı
+#DBæ§‹é€ å¤‰æ›´å‡¦ç†
 DBOPTION="${DBCONNOPTION} ${DBNAME}"
 
 for UPD in $UPDLIST
@@ -233,21 +228,21 @@ do
     for LOG in $LOGLIST
     do
 	if [ "${LOG:0:6}" = "ERROR:" ];	then
-	    echo $UDP2 "¹¹¿·½èÍı¤Ë¼ºÇÔ¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+	    echo $UDP2 "æ›´æ–°å‡¦ç†ã«å¤±æ•—ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 	    exit 99
 	fi
     done
 #	if [ $? -ne 0 ]	;	then 
-#	echo $UDP2 "¹¹¿·½èÍı¤Ë¼ºÇÔ¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+#	echo $UDP2 "æ›´æ–°å‡¦ç†ã«å¤±æ•—ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 #		exit 99
 #	fi
 
-#DB´ÉÍı¾ğÊó¹¹¿·
+#DBç®¡ç†æƒ…å ±æ›´æ–°
 
     echo "update tbl_dbkanri set dbsversion1='${UPD:0:21}',dbsversion2='${UPD:0:21}',upymd=to_char(now(),'yyyymmdd'),uphms=to_char(now(),'hh24miss') where kanricd='ORCADB00';" | su - $ORCAUSER -c "psql ${DBCONNOPTION} -e $DBNAME 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
 done
 
-echo  "Á´¤Æ¤Î½èÍı¤¬´°Î»¤·¤Ş¤·¤¿" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
-#Ãí°Õ¡ù¡ù¡ù¥Æ¥¹¥È¤¬½ªÎ»¤·¤¿¤é¸µ¤ËÌá¤¹
+echo  "å…¨ã¦ã®å‡¦ç†ãŒå®Œäº†ã—ã¾ã—ãŸ" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+#æ³¨æ„â˜†â˜†â˜†ãƒ†ã‚¹ãƒˆãŒçµ‚äº†ã—ãŸã‚‰å…ƒã«æˆ»ã™
 rm -r $TMPDIR/$MSTDIR
 
