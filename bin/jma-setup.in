@@ -1,3 +1,7 @@
 #!/bin/sh
 
+if [ "x$1" = "x--create_dbgroup" ] ; then
+    @bindir@/create_dbgroup.sh
+fi
+
 @bindir@/jma-receipt-db-setup.sh -y

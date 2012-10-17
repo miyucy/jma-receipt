@@ -1,0 +1,53 @@
+#!/bin/bash
+
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
+fi
+. $JMARECEIPT_ENV
+
+DBGROUPINC=${SYSCONFDIR}/dbgroup.inc
+
+HOSTPORT=""
+
+if [ "x${DBHOST}" != "x" ] ; then
+    if [ "x${DBPORT}" != "x" ] ; then
+	HOSTPORT="${DBHOST}:${DBPORT}"
+    else
+	HOSTPORT="${DBHOST}"
+    fi
+fi
+SUBHOSTPORT=""
+if [ "x${SUBDBHOST}" != "x" ] ; then
+    if [ "x${SUBDBPORT}" != "x" ] ; then
+	SUBHOSTPORT="${SUBDBHOST}:${SUBDBPORT}"
+    else
+	SUBHOSTPORT="${SUBDBHOST}"
+    fi
+fi
+
+: > $DBGROUPINC
+chown $ORCAUSER:$ORCAGROUP $DBGROUPINC
+chmod 0600 $DBGROUPINC
+
+cat << _EOF_ >> $DBGROUPINC
+db_group {
+ type "PostgreSQL";
+ port "${HOSTPORT}";
+ name "${DBNAME}";
+ user "${DBUSER}";
+ password "${DBPASS}";
+ redirect "log";
+};
+db_group "log" {
+ priority 100;
+ type "PostgreSQL";
+ port "${SUBHOSTPORT}";
+ name "${SUBDBNAME}";
+ user "${SUBDBUSER}";
+ password "${SUBDBPASS}";
+ file "${REDIRECTLOG}";
+ redirect_port "localhost";
+};
+_EOF_
