@@ -646,7 +646,7 @@ w_exec.clear
 is_portlait=`zcat -f #{red_file} | ruby -e 'STDIN.read.delete("\n").scan(/attribute name="is_portrait".*?"(.*?)"/){|s| print s}'`
 puts is_portlait
 if is_portlait=='false'
-    optRotate=' -E '
+    optRotate=''
 end
 puts "is_portlait[" +  is_portlait + "]"
 
