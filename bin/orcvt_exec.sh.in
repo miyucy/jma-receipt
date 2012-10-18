@@ -21,6 +21,7 @@ if [ ! -e "$2" ]; then
     exit 1
 fi
 
+COB_LIBRARY_PATH="$PATCHLIBDIR":"$ORCALIBDIR":"$PANDALIB"
 export COB_LIBRARY_PATH
 cd $exec_prefix
 $DBSTUB -dir "$LDDEFDIR"/directory -bd orcabt $1 -parameter $2

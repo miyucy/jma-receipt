@@ -12,6 +12,7 @@ if [ `whoami` != "${ORCAUSER}" ]; then
   exit 1
 fi
 
+COB_LIBRARY_PATH="$PATCHLIBDIR":"$ORCALIBDIR":"$PANDALIB"
 export COB_LIBRARY_PATH
 $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter "JBS0000001PRGMNT,01"
 
