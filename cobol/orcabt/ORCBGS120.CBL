@@ -262,7 +262,7 @@
                MOVE    1           TO  BGS100P-KOUKI
            END-EVALUATE
       *
-           MOVE    "1"             TO  BGS100P-MEISAI
+           MOVE    1               TO  BGS100P-MEISAI
       *
            IF    ( BGS100P-SRYYM   >=  CONST-H2204 )
                CONTINUE
