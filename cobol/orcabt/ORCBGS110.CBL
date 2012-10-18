@@ -62,6 +62,13 @@
                                    RECORD  KEY     IS  BGSETC-KEY
                                    FILE    STATUS  IS  STS-BGSETC.
       *
+      *    レセプト別請求ファイル
+           SELECT  BGSMEI-FILE     ASSIGN  ASS-BGSMEI
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  BGSMEI-KEY
+                                   FILE    STATUS  IS  STS-BGSMEI.
+      *
       *    エラーファイル
            SELECT  BGS100ERR-FILE  ASSIGN  ASS-BGS100ERR
                                    FILE    STATUS  IS  STS-BGS100ERR.
@@ -93,6 +100,12 @@
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSETC-//.
       *
+      *    レセプト別請求ファイル
+       FD  BGSMEI-FILE.
+       01  BGSMEI-REC.
+           COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
+                                   BY         //BGSMEI-//.
+      *
       *    エラーファイル
        FD  BGS100ERR-FILE.
        01  BGS100ERR-REC           PIC X(200).
@@ -104,6 +117,7 @@
            03  ASS-BGSKOH          PIC X(255).
            03  ASS-BGSHKNJA        PIC X(255).
            03  ASS-BGSETC          PIC X(255).
+           03  ASS-BGSMEI          PIC X(255).
            03  ASS-BGS100ERR       PIC X(255).
       *
        01  CNT-AREA.
@@ -111,25 +125,32 @@
            03  CNT-SYAKOH          PIC 9(08).
            03  CNT-KOKHKN          PIC 9(08).
            03  CNT-KOKKOH          PIC 9(08).
-           03  CNT-KOKHKNJA       PIC 9(08).
+           03  CNT-KOKHKNJA        PIC 9(08).
            03  CNT-KOUHKN          PIC 9(08).
            03  CNT-KOUKOH          PIC 9(08).
-           03  CNT-KOUHKNJA       PIC 9(08).
+           03  CNT-KOUHKNJA        PIC 9(08).
+           03  CNT-SYAMEI          PIC 9(08).
+           03  CNT-KOKMEI          PIC 9(08).
+           03  CNT-KOUMEI          PIC 9(08).
+           03  CNT-BGSMEI          PIC 9(08).
       *
        01  STS-AREA.
            03  STS-BGSSKY          PIC X(02).
            03  STS-BGSKOH          PIC X(02).
            03  STS-BGSHKNJA        PIC X(02).
            03  STS-BGSETC          PIC X(02).
+           03  STS-BGSMEI          PIC X(02).
            03  STS-BGS100ERR       PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-BGSSKY          PIC 9(01).
            03  FLG-BGSKOH          PIC 9(01).
            03  FLG-BGSHKNJA        PIC 9(01).
+           03  FLG-BGSMEI          PIC 9(01).
            03  FLG-SEIKYU          PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-LOOPEND         PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                PIC 9(05).
@@ -137,6 +158,7 @@
            03  IDX-KOH             PIC 9(05).
            03  IDX-NG              PIC 9(05).
            03  IDX-HKN             PIC 9(05).
+           03  IDXH                PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-TABLE           PIC X(64).
@@ -148,6 +170,10 @@
            03  WRK-TTLID           PIC 9(5).
            03  WRK-RECEKA          PIC X(2).
            03  WRK-ST              PIC 9(5).
+           03  WRK-GROUPID         PIC 9(5).
+           03  WRK-HKNKBN-G.
+               05  WRK-HKNKBN1     PIC 9(02).
+               05  WRK-HKNKBN2     PIC 9(02).
       *
        01  CONST-AREA.
            03  CONST-SYAHO         PIC 9(01)   VALUE 1.
@@ -160,6 +186,53 @@
            03  CONST-JIBAI         PIC 9(01)   VALUE 8.
            03  CONST-KOUGAI        PIC 9(01)   VALUE 9.
            03  CONST-RECEKA-MAX    PIC 9(05)   VALUE 100.
+      *
+           03  CONST-SYA-KOU9HEI   PIC 9(02)   VALUE 1.
+           03  CONST-SYA-KOU9TAN   PIC 9(02)   VALUE 2.
+           03  CONST-SYA-KOU7HEI   PIC 9(02)   VALUE 3.
+           03  CONST-SYA-KOU7TAN   PIC 9(02)   VALUE 4.
+           03  CONST-SYA-HONHEI    PIC 9(02)   VALUE 5.
+           03  CONST-SYA-HONTAN    PIC 9(02)   VALUE 6.
+           03  CONST-SYA-KZKHEI    PIC 9(02)   VALUE 7.
+           03  CONST-SYA-KZKTAN    PIC 9(02)   VALUE 8.
+           03  CONST-SYA-MISGKHEI  PIC 9(02)   VALUE 9.
+           03  CONST-SYA-MISGKTAN  PIC 9(02)   VALUE 10.
+           03  CONST-SYA-KOHTAN    PIC 9(02)   VALUE 11.
+           03  CONST-SYA-KOH2HEI   PIC 9(02)   VALUE 12.
+           03  CONST-SYA-KOH3HEI   PIC 9(02)   VALUE 13.
+           03  CONST-SYA-TOTAL     PIC 9(02)   VALUE 99.
+      *
+           03  CONST-SYA-H01       PIC 9(02)   VALUE 1.
+           03  CONST-SYA-H02       PIC 9(02)   VALUE 2.
+           03  CONST-SYA-H03       PIC 9(02)   VALUE 3.
+           03  CONST-SYA-H04       PIC 9(02)   VALUE 4.
+           03  CONST-SYA-H31       PIC 9(02)   VALUE 5.
+           03  CONST-SYA-H06       PIC 9(02)   VALUE 6.
+           03  CONST-SYA-H07       PIC 9(02)   VALUE 7.
+           03  CONST-SYA-H63       PIC 9(02)   VALUE 8.
+      *
+           03  CONST-KOK-IPNKOU9   PIC 9(02)   VALUE 1.
+           03  CONST-KOK-IPNKOU7   PIC 9(02)   VALUE 2.
+           03  CONST-KOK-IPN       PIC 9(02)   VALUE 3.
+           03  CONST-KOK-IPNMISGK  PIC 9(02)   VALUE 4.
+           03  CONST-KOK-TAI       PIC 9(02)   VALUE 5.
+           03  CONST-KOK-TAIKZK    PIC 9(02)   VALUE 6.
+           03  CONST-KOK-TAIMISGK  PIC 9(02)   VALUE 7.
+           03  CONST-KOK-TOTAL     PIC 9(02)   VALUE 99.
+      *
+           03  CONST-KOU-KOU9      PIC 9(02)   VALUE 1.
+           03  CONST-KOU-KOU7      PIC 9(02)   VALUE 2.
+           03  CONST-KOU-TOTAL     PIC 9(02)   VALUE 99.
+      *
+           03  CONST-HKNKBN2-TTL   PIC 9(02)   VALUE 99.
+      *
+       01  BGSSUM-AREA.
+           COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
+                                   BY         //BGSSUM-//.
+      *
+       01  TBGSMEI-AREA.
+           COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
+                                   BY         //TBGSMEI-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -243,6 +316,7 @@
            MOVE    BGS100P-KOHFNAME    TO  ASS-BGSKOH
            MOVE    BGS100P-HKNJAFNAME  TO  ASS-BGSHKNJA
            MOVE    BGS100P-ETCFNAME    TO  ASS-BGSETC
+           MOVE    BGS100P-MEIFNAME    TO  ASS-BGSMEI
            MOVE    BGS100P-ERRFNAME    TO  ASS-BGS100ERR
       *
            MOVE    "STM"               TO  SJOBKANRI-MODE
@@ -283,13 +357,14 @@
            OPEN    OUTPUT  BGSSKY-FILE
                            BGSKOH-FILE
                            BGSHKNJA-FILE
+                           BGSMEI-FILE
       *
            CLOSE           BGSSKY-FILE
                            BGSKOH-FILE
                            BGSHKNJA-FILE
+                           BGSMEI-FILE
       *
            PERFORM 900-SEIKYU-KEY79-SEL-SEC
-           DISPLAY "FLG-SEIKYU=" FLG-SEIKYU
            IF    ( FLG-SEIKYU      =   ZERO )
                MOVE    2   TO  BGS100P-RC
            END-IF
@@ -306,6 +381,7 @@
            OPEN    I-O     BGSSKY-FILE
                            BGSKOH-FILE
                            BGSHKNJA-FILE
+                           BGSMEI-FILE
       *
            OPEN    OUTPUT  BGSETC-FILE
       *
@@ -335,7 +411,9 @@
       *
       *    その他請求
            IF    ( BGS100P-RC      =   ZERO )
-               PERFORM 2001-ETC-SEIKYU-EDIT-SEC
+               IF    ( BGS100P-MEISAI  =   ZERO )
+                   PERFORM 2001-ETC-SEIKYU-EDIT-SEC
+               END-IF
            END-IF
       *
       *    診療科編集
@@ -348,6 +426,7 @@
            CLOSE           BGSSKY-FILE
                            BGSKOH-FILE
                            BGSHKNJA-FILE
+                           BGSMEI-FILE
                            BGSETC-FILE
       *
       *
@@ -377,7 +456,11 @@
                                                SPA-AREA
       *
                    IF    ( LNK-SKYGET-RC   =   ZERO )
-                       PERFORM 20011-SEIKYU-EDIT-SEC
+                       IF    ( BGS100P-MEISAI  =   ZERO )
+                           PERFORM 20011-SEIKYU-EDIT-SEC
+                       ELSE
+                           PERFORM 20012-SEIKYU-EDIT-SEC
+                       END-IF
                    ELSE
                        DISPLAY "SKIPPED RC["   LNK-SKYGET-RC
                            "]PTID["            RECE10-PTID
@@ -471,37 +554,9 @@
       *
            PERFORM 900-BGSSKY-READ-SEC
       *
-           COMPUTE BGSSKY-KENSU
-               =   BGSSKY-KENSU    +   1
-           COMPUTE BGSSKY-NISSU
-               =   BGSSKY-NISSU        + LNK-SKYGET-IRYO-NISSU
-           COMPUTE BGSSKY-TENSU
-               =   BGSSKY-TENSU        + LNK-SKYGET-IRYO-TOTALTEN
-           COMPUTE BGSSKY-FTNMONEY
-               =   BGSSKY-FTNMONEY     + LNK-SKYGET-IRYO-ICHIBUFTN
-           COMPUTE BGSSKY-HKNMONEY
-               =   BGSSKY-HKNMONEY     + LNK-SKYGET-IRYO-HOKENJA
-           COMPUTE BGSSKY-KOHMONEY
-               =   BGSSKY-KOHMONEY     + LNK-SKYGET-IRYO-KOHFTN
-           COMPUTE BGSSKY-TTLMONEY
-               =   BGSSKY-TTLMONEY     + LNK-SKYGET-IRYO-ICHIBUFTN
-                                       + LNK-SKYGET-IRYO-HOKENJA
-                                       + LNK-SKYGET-IRYO-KOHFTN
-           COMPUTE BGSSKY-SKJKAISU
-               =   BGSSKY-SKJKAISU     + LNK-SKYGET-SKJ-KAISU
-           COMPUTE BGSSKY-SKJTTLMONEY
-               =   BGSSKY-SKJTTLMONEY  + LNK-SKYGET-SKJ-RYOYOHI
-           COMPUTE BGSSKY-SKJFTNMONEY
-               =   BGSSKY-SKJFTNMONEY  + LNK-SKYGET-SKJ-ICHIBUFTN
-           COMPUTE BGSSKY-SKJHKNMONEY
-               =   BGSSKY-SKJHKNMONEY  + LNK-SKYGET-SKJ-HOKENJA
-           COMPUTE BGSSKY-SKJKOHMONEY
-               =   BGSSKY-SKJKOHMONEY  + LNK-SKYGET-SKJ-KOHFTN
-           COMPUTE BGSSKY-TTLTTLMONEY
-               =   BGSSKY-TTLTTLMONEY  + LNK-SKYGET-IRYO-ICHIBUFTN
-                                       + LNK-SKYGET-IRYO-HOKENJA
-                                       + LNK-SKYGET-IRYO-KOHFTN
-                                       + LNK-SKYGET-SKJ-RYOYOHI
+           MOVE    BGSSKY-REC      TO  BGSSUM-AREA
+           PERFORM 2100-SEIKYU-SUM-SEC
+           MOVE    BGSSUM-AREA     TO  BGSSKY-REC
       *
            IF    ( FLG-BGSSKY          =   ZERO )
                REWRITE BGSSKY-REC
@@ -571,56 +626,260 @@
       *****************************************************************
        200111-BGSHKNJA-EDIT-SEC       SECTION.
       *
+           EVALUATE    WRK-HOKEN
+           WHEN    CONST-KOKUHO
+      *
+               PERFORM 9001-KOKUKO-GROUPID-EDIT-SEC
+               PERFORM 2001111-BGSHKNJA-EDIT-SEC
+      *
+               MOVE    CONST-KOK-TOTAL TO  WRK-GROUPID
+               PERFORM 2001111-BGSHKNJA-EDIT-SEC
+      *
+           WHEN    CONST-KOUKI
+      *
+               PERFORM 9001-KOUKI-GROUPID-EDIT-SEC
+               PERFORM 2001111-BGSHKNJA-EDIT-SEC
+      *
+               MOVE    CONST-KOU-TOTAL TO  WRK-GROUPID
+               PERFORM 2001111-BGSHKNJA-EDIT-SEC
+           END-EVALUATE
+      *
+           .
+       200111-BGSHKNJA-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険者別請求ファイル編集処理
+      *****************************************************************
+       2001111-BGSHKNJA-EDIT-SEC       SECTION.
+      *
            PERFORM 900-BGSHKNJA-READ-SEC
       *
-           COMPUTE BGSHKNJA-KENSU
-               =   BGSHKNJA-KENSU    +   1
-           COMPUTE BGSHKNJA-NISSU
-               =   BGSHKNJA-NISSU        + LNK-SKYGET-IRYO-NISSU
-           COMPUTE BGSHKNJA-TENSU
-               =   BGSHKNJA-TENSU        + LNK-SKYGET-IRYO-TOTALTEN
-           COMPUTE BGSHKNJA-FTNMONEY
-               =   BGSHKNJA-FTNMONEY     + LNK-SKYGET-IRYO-ICHIBUFTN
-           COMPUTE BGSHKNJA-HKNMONEY
-               =   BGSHKNJA-HKNMONEY     + LNK-SKYGET-IRYO-HOKENJA
-           COMPUTE BGSHKNJA-KOHMONEY
-               =   BGSHKNJA-KOHMONEY     + LNK-SKYGET-IRYO-KOHFTN
-           COMPUTE BGSHKNJA-TTLMONEY
-               =   BGSHKNJA-TTLMONEY     + LNK-SKYGET-IRYO-ICHIBUFTN
-                                         + LNK-SKYGET-IRYO-HOKENJA
-                                         + LNK-SKYGET-IRYO-KOHFTN
-           COMPUTE BGSHKNJA-SKJKAISU
-               =   BGSHKNJA-SKJKAISU     + LNK-SKYGET-SKJ-KAISU
-           COMPUTE BGSHKNJA-SKJTTLMONEY
-               =   BGSHKNJA-SKJTTLMONEY  + LNK-SKYGET-SKJ-RYOYOHI
-           COMPUTE BGSHKNJA-SKJFTNMONEY
-               =   BGSHKNJA-SKJFTNMONEY  + LNK-SKYGET-SKJ-ICHIBUFTN
-           COMPUTE BGSHKNJA-SKJHKNMONEY
-               =   BGSHKNJA-SKJHKNMONEY  + LNK-SKYGET-SKJ-HOKENJA
-           COMPUTE BGSHKNJA-SKJKOHMONEY
-               =   BGSHKNJA-SKJKOHMONEY  + LNK-SKYGET-SKJ-KOHFTN
-           COMPUTE BGSHKNJA-TTLTTLMONEY
-               =   BGSHKNJA-TTLTTLMONEY  + LNK-SKYGET-IRYO-ICHIBUFTN
-                                         + LNK-SKYGET-IRYO-HOKENJA
-                                         + LNK-SKYGET-IRYO-KOHFTN
-                                         + LNK-SKYGET-SKJ-RYOYOHI
+           MOVE    BGSHKNJA-REC    TO  BGSSUM-AREA
+           PERFORM 2100-SEIKYU-SUM-SEC
+           MOVE    BGSSUM-AREA     TO  BGSHKNJA-REC
       *
            IF    ( FLG-BGSHKNJA          =   ZERO )
                REWRITE BGSHKNJA-REC
            ELSE
                WRITE   BGSHKNJA-REC
       *
-               EVALUATE    WRK-HOKEN
-               WHEN    CONST-KOKUHO
-                   COMPUTE CNT-KOKHKNJA   =   CNT-KOKHKNJA   +   1
-               WHEN    CONST-KOUKI
-                   COMPUTE CNT-KOUHKNJA   =   CNT-KOUHKNJA   +   1
-               END-EVALUATE
+               IF    ( WRK-GROUPID       =    CONST-KOK-TOTAL )
+                OR   ( WRK-GROUPID       =    CONST-KOU-TOTAL )
+                   CONTINUE
+               ELSE
+                   EVALUATE    WRK-HOKEN
+                   WHEN    CONST-KOKUHO
+                       COMPUTE CNT-KOKHKNJA   =   CNT-KOKHKNJA   +   1
+                   WHEN    CONST-KOUKI
+                       COMPUTE CNT-KOUHKNJA   =   CNT-KOUHKNJA   +   1
+                   END-EVALUATE
+               END-IF
       *
            END-IF
       *
            .
-       200111-BGSHKNJA-EDIT-EXT.
+       2001111-BGSHKNJA-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求明細編集処理
+      *****************************************************************
+       20012-SEIKYU-EDIT-SEC           SECTION.
+      *
+           MOVE    CONST-SYAHO         TO  WRK-HOKEN
+           IF    ( RECE10-HKNNUM-S     =   "060" OR "067" )
+               MOVE    CONST-KOKUHO    TO  WRK-HOKEN
+           END-IF
+           IF    ( RECE10-HKNNUM-S     =   "039" )
+               MOVE    CONST-KOUKI     TO  WRK-HOKEN
+           END-IF
+      *
+           PERFORM 200121-BGSMEI-EDIT-SEC
+      *
+           IF    ( RECE10-RECEKA       NOT =   "00" )
+               PERFORM VARYING IDX0 FROM    1   BY  1
+                      UNTIL ( IDX0 >   CONST-RECEKA-MAX )
+                       OR   ( BGS100P-RECEKA (IDX0)
+                                           =   RECE10-RECEKA )
+      *
+                   IF    ( IDX0            >   BGS100P-RECEKA-MAX )
+                       MOVE    RECE10-RECEKA
+                                           TO  BGS100P-RECEKA (IDX0)
+                       MOVE    IDX0        TO  BGS100P-RECEKA-MAX
+                       MOVE    CONST-RECEKA-MAX
+                                           TO  IDX0
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
+           .
+       20012-SEIKYU-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求明細ファイル編集処理
+      *****************************************************************
+       200121-BGSMEI-EDIT-SEC       SECTION.
+      *
+           INITIALIZE               BGSMEI-REC
+      *
+           PERFORM 2001211-BGSMEI-KEY-EDIT-SEC
+      *
+           MOVE    BGSMEI-REC      TO  TBGSMEI-AREA
+      *
+           MOVE    BGSMEI-REC      TO  BGSSUM-AREA
+           PERFORM 2100-SEIKYU-SUM-SEC
+           MOVE    BGSSUM-AREA     TO  BGSMEI-REC
+      *
+           COMPUTE CNT-BGSMEI = CNT-BGSMEI + 1
+           MOVE    CNT-BGSMEI      TO  BGSMEI-SEQ
+      *
+           WRITE   BGSMEI-REC
+      *
+           IF    ( WRK-GROUPID       =    CONST-SYA-TOTAL )
+            OR   ( WRK-GROUPID       =    CONST-KOK-TOTAL )
+            OR   ( WRK-GROUPID       =    CONST-KOU-TOTAL )
+               CONTINUE
+           ELSE
+               EVALUATE    WRK-HOKEN
+               WHEN    CONST-SYAHO
+                   COMPUTE CNT-SYAMEI  =   CNT-SYAMEI  +   1
+               WHEN    CONST-KOKUHO
+                   COMPUTE CNT-KOKMEI  =   CNT-KOKMEI  +   1
+               WHEN    CONST-KOUKI
+                   COMPUTE CNT-KOUMEI  =   CNT-KOUMEI  +   1
+               END-EVALUATE
+           END-IF
+      *
+      ***  保険区分別小計データ作成
+           PERFORM 900-BGSMEI-READ-SEC
+      *
+           MOVE    BGSMEI-REC      TO  BGSSUM-AREA
+           PERFORM 2100-SEIKYU-SUM-SEC
+           MOVE    BGSSUM-AREA     TO  BGSMEI-REC
+      *
+           IF    ( FLG-BGSMEI      =   ZERO )
+               REWRITE BGSMEI-REC
+           ELSE
+               WRITE   BGSMEI-REC
+           END-IF
+      *
+           .
+       200121-BGSMEI-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求明細ファイルキー項目編集処理
+      *****************************************************************
+       2001211-BGSMEI-KEY-EDIT-SEC     SECTION.
+      *
+           MOVE    WRK-HOKEN       TO  BGSMEI-HOKEN
+      *
+           EVALUATE    TRUE
+           WHEN  ( BGS100P-EDITKBN =   "0" )
+               MOVE    "0"         TO  BGSMEI-SKYSBT
+           WHEN  ( BGS100P-SRYYM   =   RECE10-SRYYM )
+               MOVE    "1"         TO  BGSMEI-SKYSBT
+           WHEN  ( RECE10-HENREIYM =   "000000" )
+               MOVE    "2"         TO  BGSMEI-SKYSBT
+           WHEN    OTHER
+               MOVE    "3"         TO  BGSMEI-SKYSBT
+           END-EVALUATE
+      *
+           MOVE    RECE10-NYUGAIKBN
+                                   TO  BGSMEI-NYUGAIKBN
+      *
+           IF    ( WRK-HOKEN       =   CONST-SYAHO
+             OR                        CONST-KOKUHO
+             OR                        CONST-KOUKI )
+               IF    ( BGS100P-SYUKA-HKN (WRK-HOKEN)
+                                   =   1 )
+                   MOVE    RECE10-RECEKA
+                                   TO  BGSMEI-RECEKA
+               ELSE
+                   MOVE    "00"    TO  BGSMEI-RECEKA
+               END-IF
+           ELSE
+                   MOVE    "00"    TO  BGSMEI-RECEKA
+           END-IF
+      *
+           EVALUATE    WRK-HOKEN
+           WHEN    CONST-SYAHO
+               PERFORM 9001-SYHAO-HKNKBN-EDIT-SEC
+           WHEN    CONST-KOKUHO
+               PERFORM 9001-KOKUKO-HKNKBN-EDIT-SEC
+           WHEN    CONST-KOUKI
+               PERFORM 9001-KOUKI-HKNKBN-EDIT-SEC
+           END-EVALUATE
+           MOVE    WRK-HKNKBN-G    TO  BGSMEI-RECESBT
+      *
+           MOVE    RECE10-HKNNUM   TO  BGSMEI-HKNNUM
+      *
+           IF    ( WRK-HOKEN       =   CONST-KOKUHO
+                                    OR CONST-KOUKI )
+               MOVE    RECE10-PREFKBN
+                                   TO  BGSMEI-PREFKBN
+           END-IF
+           MOVE    RECE10-HKNJANUM-S
+                                   TO  BGSMEI-HKNJANUM
+      *
+           EVALUATE    WRK-HOKEN
+           WHEN    CONST-SYAHO
+               PERFORM 9001-SYAHO-GROUPID-EDIT-SEC
+           WHEN    CONST-KOKUHO
+               PERFORM 9001-KOKUKO-GROUPID-EDIT-SEC
+           WHEN    CONST-KOUKI
+               PERFORM 9001-KOUKI-GROUPID-EDIT-SEC
+           END-EVALUATE
+           MOVE    WRK-GROUPID     TO  BGSMEI-GROUPID
+      *
+           MOVE    RECE10-SRYYM    TO  BGSMEI-SRYYM
+           MOVE    PTINF-KANANAME  TO  BGSMEI-KANANAME
+           MOVE    PTINF-NAME      TO  BGSMEI-NAME
+           MOVE    RECE10-PTID     TO  BGSMEI-PTID
+      *
+           
+      *
+           .
+       2001211-BGSMEI-KEY-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求集計処理
+      *****************************************************************
+       2100-SEIKYU-SUM-SEC          SECTION.
+      *
+           COMPUTE BGSSUM-KENSU
+               =   BGSSUM-KENSU    +   1
+           COMPUTE BGSSUM-NISSU
+               =   BGSSUM-NISSU        + LNK-SKYGET-IRYO-NISSU
+           COMPUTE BGSSUM-TENSU
+               =   BGSSUM-TENSU        + LNK-SKYGET-IRYO-TOTALTEN
+           COMPUTE BGSSUM-FTNMONEY
+               =   BGSSUM-FTNMONEY     + LNK-SKYGET-IRYO-ICHIBUFTN
+           COMPUTE BGSSUM-HKNMONEY
+               =   BGSSUM-HKNMONEY     + LNK-SKYGET-IRYO-HOKENJA
+           COMPUTE BGSSUM-KOHMONEY
+               =   BGSSUM-KOHMONEY     + LNK-SKYGET-IRYO-KOHFTN
+           COMPUTE BGSSUM-TTLMONEY
+               =   BGSSUM-TTLMONEY     + LNK-SKYGET-IRYO-ICHIBUFTN
+                                       + LNK-SKYGET-IRYO-HOKENJA
+                                       + LNK-SKYGET-IRYO-KOHFTN
+           COMPUTE BGSSUM-SKJKAISU
+               =   BGSSUM-SKJKAISU     + LNK-SKYGET-SKJ-KAISU
+           COMPUTE BGSSUM-SKJTTLMONEY
+               =   BGSSUM-SKJTTLMONEY  + LNK-SKYGET-SKJ-RYOYOHI
+           COMPUTE BGSSUM-SKJFTNMONEY
+               =   BGSSUM-SKJFTNMONEY  + LNK-SKYGET-SKJ-ICHIBUFTN
+           COMPUTE BGSSUM-SKJHKNMONEY
+               =   BGSSUM-SKJHKNMONEY  + LNK-SKYGET-SKJ-HOKENJA
+           COMPUTE BGSSUM-SKJKOHMONEY
+               =   BGSSUM-SKJKOHMONEY  + LNK-SKYGET-SKJ-KOHFTN
+           COMPUTE BGSSUM-TTLTTLMONEY
+               =   BGSSUM-TTLTTLMONEY  + LNK-SKYGET-IRYO-ICHIBUFTN
+                                       + LNK-SKYGET-IRYO-HOKENJA
+                                       + LNK-SKYGET-IRYO-KOHFTN
+                                       + LNK-SKYGET-SKJ-RYOYOHI
+      *
+           .
+       2100-SEIKYU-SUM-EXT.
            EXIT.
       *****************************************************************
       *    その他請求データ編集処理
@@ -647,6 +906,12 @@
                        MOVE    "1"     TO  BGSETC-NYUGAIKBN
                    ELSE
                        MOVE    "2"     TO  BGSETC-NYUGAIKBN
+                   END-IF
+      *
+                   IF    ( BGS100P-EDITKBN =   "0" )
+                       MOVE    "0"     TO  BGSETC-SKYSBT
+                   ELSE
+                       MOVE    "1"     TO  BGSETC-SKYSBT
                    END-IF
                    MOVE   "  "         TO  BGSETC-RECEKA
                    MOVE   LNK-SKYGET-KENSU (IDX-HKN IDX-NG)
@@ -880,21 +1145,30 @@
        900-SEIKYU-FET-SEC              SECTION.
       *
            MOVE    ZERO            TO  FLG-SEIKYU
+           MOVE    ZERO            TO  FLG-LOOPEND
       *
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-PATHNAME    TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  RECE10-REC
+           PERFORM UNTIL ( FLG-SEIKYU  NOT =   ZERO )
+                    OR   ( FLG-LOOPEND NOT =   ZERO )
       *
-               IF    ( RECE10-SKYKBN-RECEDEN   =   "1" )
-                   MOVE    2       TO  BGS100P-RC
+               MOVE    WRK-TABLE       TO  MCP-TABLE
+               MOVE    WRK-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+      *
+                   MOVE    MCPDATA-REC TO  RECE10-REC
+      *
+                   MOVE    1           TO  FLG-LOOPEND
+      *
+                   IF    ( RECE10-SKYKBN-RECEDEN   =   "1" )
+                       MOVE    2       TO  BGS100P-RC
+                   END-IF
+      *
+               ELSE
+                   MOVE    1           TO  FLG-SEIKYU
+                   INITIALIZE              RECE10-REC
                END-IF
       *
-           ELSE
-               MOVE    1           TO  FLG-SEIKYU
-               INITIALIZE              RECE10-REC
-           END-IF
+           END-PERFORM
       *
            .
       *
@@ -966,6 +1240,17 @@
            MOVE    RECE10-NYUGAIKBN
                                    TO  BGSSKY-NYUGAIKBN
       *
+           EVALUATE    TRUE
+           WHEN  ( BGS100P-EDITKBN =   "0" )
+               MOVE    "0"         TO  BGSSKY-SKYSBT
+           WHEN  ( BGS100P-SRYYM   =   RECE10-SRYYM )
+               MOVE    "1"         TO  BGSSKY-SKYSBT
+           WHEN  ( RECE10-HENREIYM =   "000000" )
+               MOVE    "2"         TO  BGSSKY-SKYSBT
+           WHEN    OTHER
+               MOVE    "3"         TO  BGSSKY-SKYSBT
+           END-EVALUATE
+      *
            IF    ( WRK-HOKEN       =   CONST-SYAHO
              OR                        CONST-KOKUHO
              OR                        CONST-KOUKI )
@@ -984,6 +1269,17 @@
            MOVE    RECE10-RECESYUBETU
                                    TO  BGSSKY-RECESBT
            MOVE    RECE10-HKNNUM   TO  BGSSKY-HKNNUM
+      *
+           EVALUATE    WRK-HOKEN
+           WHEN    CONST-SYAHO
+               PERFORM 9001-SYAHO-GROUPID-EDIT-SEC
+           WHEN    CONST-KOKUHO
+               PERFORM 9001-KOKUKO-GROUPID-EDIT-SEC
+           WHEN    CONST-KOUKI
+               PERFORM 9001-KOUKI-GROUPID-EDIT-SEC
+           END-EVALUATE
+      *
+           MOVE    WRK-GROUPID     TO  BGSSKY-GROUPID
            READ    BGSSKY-FILE
            INVALID
                MOVE    1           TO  FLG-BGSSKY
@@ -1003,6 +1299,17 @@
            INITIALIZE                  BGSKOH-REC
            MOVE    RECE10-NYUGAIKBN
                                    TO  BGSKOH-NYUGAIKBN
+      *
+           EVALUATE    TRUE
+           WHEN  ( BGS100P-EDITKBN =   "0" )
+               MOVE    "0"         TO  BGSKOH-SKYSBT
+           WHEN  ( BGS100P-SRYYM   =   RECE10-SRYYM )
+               MOVE    "1"         TO  BGSKOH-SKYSBT
+           WHEN  ( RECE10-HENREIYM =   "000000" )
+               MOVE    "2"         TO  BGSKOH-SKYSBT
+           WHEN    OTHER
+               MOVE    "3"         TO  BGSKOH-SKYSBT
+           END-EVALUATE
       *
            IF    ( WRK-HOKEN       =   CONST-SYAHO
              OR                        CONST-KOKUHO
@@ -1039,6 +1346,18 @@
            INITIALIZE                  BGSHKNJA-REC
            MOVE    RECE10-NYUGAIKBN
                                    TO  BGSHKNJA-NYUGAIKBN
+      *
+           EVALUATE    TRUE
+           WHEN  ( BGS100P-EDITKBN =   "0" )
+               MOVE    "0"         TO  BGSHKNJA-SKYSBT
+           WHEN  ( BGS100P-SRYYM   =   RECE10-SRYYM )
+               MOVE    "1"         TO  BGSHKNJA-SKYSBT
+           WHEN  ( RECE10-HENREIYM =   "000000" )
+               MOVE    "2"         TO  BGSHKNJA-SKYSBT
+           WHEN    OTHER
+               MOVE    "3"         TO  BGSHKNJA-SKYSBT
+           END-EVALUATE
+      *
            IF    ( WRK-HOKEN       =   CONST-SYAHO
              OR                        CONST-KOKUHO
              OR                        CONST-KOUKI )
@@ -1056,6 +1375,9 @@
            MOVE    RECE10-PREFKBN  TO  BGSHKNJA-PREFKBN
            MOVE    RECE10-HKNJANUM-S
                                    TO  BGSHKNJA-HKNJANUM
+      *
+           MOVE    WRK-GROUPID     TO  BGSHKNJA-GROUPID
+      *
            READ    BGSHKNJA-FILE
            INVALID
                MOVE    1           TO  FLG-BGSHKNJA
@@ -1063,7 +1385,342 @@
       *
            .
       *
-       900-BGSHKNJA-READ--EXT.
+       900-BGSHKNJA-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセプト別請求ファイル読込処理
+      *****************************************************************
+       900-BGSMEI-READ-SEC          SECTION.
+      *
+           MOVE    ZERO                 TO  FLG-BGSMEI
+      *
+           INITIALIZE                   BGSMEI-REC
+           MOVE    TBGSMEI-HOKEN        TO  BGSMEI-HOKEN
+           MOVE    TBGSMEI-SKYSBT       TO  BGSMEI-SKYSBT
+           MOVE    TBGSMEI-NYUGAIKBN    TO  BGSMEI-NYUGAIKBN
+           MOVE    TBGSMEI-RECEKA       TO  BGSMEI-RECEKA
+      *
+           MOVE    TBGSMEI-RECESBT      TO  WRK-HKNKBN-G
+           MOVE    CONST-HKNKBN2-TTL    TO  WRK-HKNKBN2
+           MOVE    WRK-HKNKBN-G         TO  BGSMEI-RECESBT
+      *
+           IF    ( BGS100P-HKNJANUM
+                                    NOT =   SPACE )
+               MOVE    TBGSMEI-HKNJANUM TO  BGSMEI-HKNJANUM
+           END-IF
+      *
+           READ    BGSMEI-FILE
+           INVALID
+               MOVE    1           TO  FLG-BGSMEI
+           END-READ
+      *
+           .
+      *
+       900-BGSMEI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    社保保険区分編集処理
+      *****************************************************************
+       9001-SYHAO-HKNKBN-EDIT-SEC      SECTION.
+      *
+           INITIALIZE                  WRK-HKNKBN-G
+      *
+           PERFORM 9001-SYAHO-GROUPID-EDIT-SEC
+           IF    ( WRK-GROUPID     NOT =   ZERO )
+               MOVE    WRK-GROUPID     TO  WRK-HKNKBN1
+               IF    ( WRK-GROUPID     =   CONST-SYA-KOH2HEI
+                                        OR CONST-SYA-KOH3HEI )
+                   MOVE    CONST-SYA-KOHTAN
+                                       TO  WRK-HKNKBN1
+               END-IF
+               PERFORM 90011-SYHAO-HKNKBN-EDIT-SEC
+           END-IF
+      *
+           .
+       9001-SYHAO-HKNKBN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    社保保険区分編集処理(保険の種類）
+      *****************************************************************
+       90011-SYHAO-HKNKBN-EDIT-SEC     SECTION.
+      *
+           EVALUATE    RECE10-HKNNUM
+           WHEN    "001"
+           WHEN    "009"
+               MOVE    CONST-SYA-H01    TO  WRK-HKNKBN2
+           WHEN    "002"
+               MOVE    CONST-SYA-H02    TO  WRK-HKNKBN2
+           WHEN    "003"
+               MOVE    CONST-SYA-H03    TO  WRK-HKNKBN2
+           WHEN    "004"
+               MOVE    CONST-SYA-H04    TO  WRK-HKNKBN2
+           WHEN    "031"   THRU    "034"
+               MOVE    CONST-SYA-H31    TO  WRK-HKNKBN2
+           WHEN    "006"
+               MOVE    CONST-SYA-H06    TO  WRK-HKNKBN2
+           WHEN    "007"
+               MOVE    CONST-SYA-H07    TO  WRK-HKNKBN2
+           WHEN    "063"
+           WHEN    "072"   THRU    "075"
+               MOVE    CONST-SYA-H63    TO  WRK-HKNKBN2
+           END-EVALUATE
+      *
+           .
+       90011-SYHAO-HKNKBN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    国保保険区分編集処理
+      *****************************************************************
+       9001-KOKUKO-HKNKBN-EDIT-SEC     SECTION.
+      *
+           INITIALIZE                  WRK-HKNKBN-G
+      *
+           PERFORM 9001-KOKUKO-GROUPID-EDIT-SEC
+           MOVE    WRK-GROUPID     TO  WRK-HKNKBN1
+      *
+           .
+       9001-KOKUKO-HKNKBN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    後期高齢者保険区分編集処理
+      *****************************************************************
+       9001-KOUKI-HKNKBN-EDIT-SEC      SECTION.
+      *
+           INITIALIZE                  WRK-HKNKBN-G
+      *
+           PERFORM 9001-KOUKI-GROUPID-EDIT-SEC
+           MOVE    WRK-GROUPID     TO  WRK-HKNKBN1
+      *
+           .
+       9001-KOUKI-HKNKBN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    社保グループＩＤ編集処理
+      *****************************************************************
+       9001-SYAHO-GROUPID-EDIT-SEC     SECTION.
+      *
+           MOVE   ZERO                     TO  WRK-GROUPID
+      *
+           EVALUATE    RECE10-RECESYUBETU
+           WHEN    "1117"
+           WHEN    "1118"
+               MOVE    CONST-SYA-KOU9TAN   TO  WRK-GROUPID
+           WHEN    "1127"
+           WHEN    "1128"
+           WHEN    "1137"
+           WHEN    "1138"
+           WHEN    "1147"
+           WHEN    "1148"
+           WHEN    "1157"
+           WHEN    "1158"
+               MOVE    CONST-SYA-KOU9HEI   TO  WRK-GROUPID
+           WHEN    "1119"
+           WHEN    "1110"
+               MOVE    CONST-SYA-KOU7TAN   TO  WRK-GROUPID
+           WHEN    "1129"
+           WHEN    "1120"
+           WHEN    "1139"
+           WHEN    "1130"
+           WHEN    "1149"
+           WHEN    "1140"
+           WHEN    "1159"
+           WHEN    "1150"
+               MOVE    CONST-SYA-KOU7HEI   TO  WRK-GROUPID
+           WHEN    "1111"
+           WHEN    "1112"
+               MOVE    CONST-SYA-HONTAN    TO  WRK-GROUPID
+           WHEN    "1121"
+           WHEN    "1122"
+           WHEN    "1131"
+           WHEN    "1132"
+           WHEN    "1141"
+           WHEN    "1142"
+           WHEN    "1151"
+           WHEN    "1152"
+               MOVE    CONST-SYA-HONHEI    TO  WRK-GROUPID
+           WHEN    "1115"
+           WHEN    "1116"
+               MOVE    CONST-SYA-KZKTAN    TO  WRK-GROUPID
+           WHEN    "1125"
+           WHEN    "1126"
+           WHEN    "1135"
+           WHEN    "1136"
+           WHEN    "1145"
+           WHEN    "1146"
+           WHEN    "1155"
+           WHEN    "1156"
+               MOVE    CONST-SYA-KZKHEI    TO  WRK-GROUPID
+           WHEN    "1113"
+           WHEN    "1114"
+               MOVE    CONST-SYA-MISGKTAN  TO  WRK-GROUPID
+           WHEN    "1123"
+           WHEN    "1124"
+           WHEN    "1133"
+           WHEN    "1134"
+           WHEN    "1143"
+           WHEN    "1144"
+           WHEN    "1153"
+           WHEN    "1154"
+               MOVE    CONST-SYA-MISGKHEI  TO  WRK-GROUPID
+           WHEN    "1211"
+           WHEN    "1212"
+               MOVE    CONST-SYA-KOHTAN    TO  WRK-GROUPID
+           WHEN    "1221"
+           WHEN    "1222"
+               MOVE    CONST-SYA-KOH2HEI   TO  WRK-GROUPID
+           WHEN    "1231"
+           WHEN    "1232"
+           WHEN    "1241"
+           WHEN    "1242"
+               MOVE    CONST-SYA-KOH3HEI   TO  WRK-GROUPID
+           WHEN    OTHER
+               DISPLAY "RECESBT[" RECE10-RECESYUBETU "]" RECE10-REC
+           END-EVALUATE
+      *
+           .
+       9001-SYHAO-GROUPID-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    国保グループＩＤ編集処理
+      *****************************************************************
+       9001-KOKUKO-GROUPID-EDIT-SEC    SECTION.
+      *
+           MOVE   ZERO             TO     WRK-GROUPID
+      *
+           EVALUATE    RECE10-RECESYUBETU
+           WHEN    "1117"
+           WHEN    "1118"
+           WHEN    "1127"
+           WHEN    "1128"
+           WHEN    "1138"
+           WHEN    "1138"
+           WHEN    "1147"
+           WHEN    "1148"
+           WHEN    "1157"
+           WHEN    "1158"
+               MOVE    CONST-KOK-IPNKOU9   TO  WRK-GROUPID
+           WHEN    "1119"
+           WHEN    "1110"
+           WHEN    "1129"
+           WHEN    "1120"
+           WHEN    "1139"
+           WHEN    "1130"
+           WHEN    "1149"
+           WHEN    "1140"
+           WHEN    "1159"
+           WHEN    "1150"
+               MOVE    CONST-KOK-IPNKOU7   TO  WRK-GROUPID
+           WHEN    "1111"
+           WHEN    "1112"
+           WHEN    "1121"
+           WHEN    "1122"
+           WHEN    "1131"
+           WHEN    "1132"
+           WHEN    "1141"
+           WHEN    "1142"
+           WHEN    "1151"
+           WHEN    "1152"
+               MOVE    CONST-KOK-IPN      TO  WRK-GROUPID
+           WHEN    "1115"
+           WHEN    "1116"
+           WHEN    "1125"
+           WHEN    "1126"
+           WHEN    "1135"
+           WHEN    "1136"
+           WHEN    "1145"
+           WHEN    "1146"
+           WHEN    "1155"
+           WHEN    "1156"
+               MOVE    CONST-KOK-IPN      TO  WRK-GROUPID
+           WHEN    "1113"
+           WHEN    "1114"
+           WHEN    "1123"
+           WHEN    "1124"
+           WHEN    "1133"
+           WHEN    "1134"
+           WHEN    "1143"
+           WHEN    "1144"
+           WHEN    "1153"
+           WHEN    "1154"
+               MOVE    CONST-KOK-IPNMISGK TO  WRK-GROUPID
+           WHEN    "1411"
+           WHEN    "1412"
+           WHEN    "1421"
+           WHEN    "1422"
+           WHEN    "1431"
+           WHEN    "1432"
+           WHEN    "1441"
+           WHEN    "1442"
+           WHEN    "1451"
+           WHEN    "1452"
+               MOVE    CONST-KOK-TAI      TO  WRK-GROUPID
+           WHEN    "1415"
+           WHEN    "1416"
+           WHEN    "1425"
+           WHEN    "1426"
+           WHEN    "1435"
+           WHEN    "1436"
+           WHEN    "1445"
+           WHEN    "1446"
+           WHEN    "1455"
+           WHEN    "1456"
+               MOVE    CONST-KOK-TAIKZK   TO  WRK-GROUPID
+           WHEN    "1413"
+           WHEN    "1414"
+           WHEN    "1423"
+           WHEN    "1424"
+           WHEN    "1433"
+           WHEN    "1434"
+           WHEN    "1443"
+           WHEN    "1444"
+           WHEN    "1453"
+           WHEN    "1454"
+               MOVE    CONST-KOK-TAIMISGK TO  WRK-GROUPID
+           WHEN    OTHER
+               DISPLAY "RECESBT[" RECE10-RECESYUBETU "]" RECE10-REC
+           END-EVALUATE
+      *
+           .
+      *
+       9001-KOKUKO-GROUPID-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    後期高齢者グループＩＤ編集処理
+      *****************************************************************
+       9001-KOUKI-GROUPID-EDIT-SEC    SECTION.
+      *
+            MOVE   ZERO                    TO  WRK-GROUPID
+      *
+           EVALUATE    RECE10-RECESYUBETU
+           WHEN    "1317"
+           WHEN    "1318"
+           WHEN    "1327"
+           WHEN    "1328"
+           WHEN    "1337"
+           WHEN    "1338"
+           WHEN    "1347"
+           WHEN    "1348"
+           WHEN    "1357"
+           WHEN    "1358"
+               MOVE    CONST-KOU-KOU9      TO  WRK-GROUPID
+           WHEN    "1319"
+           WHEN    "1310"
+           WHEN    "1329"
+           WHEN    "1320"
+           WHEN    "1339"
+           WHEN    "1330"
+           WHEN    "1349"
+           WHEN    "1340"
+           WHEN    "1359"
+           WHEN    "1350"
+               MOVE    CONST-KOU-KOU7      TO  WRK-GROUPID
+           WHEN    OTHER
+               DISPLAY "RECESBT[" RECE10-RECESYUBETU "]" RECE10-REC
+           END-EVALUATE
+      *
+           .
+      *
+       9001-KOUKI-GROUPID-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

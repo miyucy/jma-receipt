@@ -168,6 +168,7 @@
            03  WRK-PRT-SAKYMD      PIC X(22).
            03  WRK-KANACHK-STR     PIC X(500).
            03  WRK-SRYKANAME1      PIC X(24).
+           03  WRK-SKYSBTNAME      PIC X(50).
            03  WRK-MAX             PIC 9(05).
            03  WRK-CSVDATA         PIC X(20000).
            03  WRK-NYUGAIKBN       PIC X(01).
@@ -176,6 +177,8 @@
            03  WRK-PRTKBNMEI       PIC X(10).
            03  WRK-DATAKBN         PIC X(01).
            03  WRK-DATAKBNMEI      PIC X(50).
+           03  WRK-HKNKBNNAME      PIC X(20).
+           03  WRK-HKNJANAME       PIC X(24).
       *
        01  CSV-HEAD-AREA.
            03  CSV-H01-G.
@@ -194,6 +197,8 @@
                            VALUE   "入外区分".
                    07  CSV-H01-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H01-SKYSBT          PIC X(50)
+                           VALUE   "当月・当月外".
                    07  CSV-H01-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H01-SRYKAMEI        PIC X(50)
@@ -228,9 +233,9 @@
                            VALUE   "（ａ）＋（ｂ）".
                05  CSV-H01-R   REDEFINES   CSV-H01-VAL.
                    07  CSV-H01-ITEM            PIC X(50)
-                                               OCCURS  23.
+                                               OCCURS  24.
                05  CSV-H01-MAX                 PIC 9(05)
-                                               VALUE   23.
+                                               VALUE   24.
            03  CSV-H02-G.
                05  CSV-H02-VAL.
                    07  CSV-H02-PRTKBN          PIC X(50)
@@ -247,6 +252,8 @@
                            VALUE   "入外区分".
                    07  CSV-H02-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H02-SKYSBT          PIC X(50)
+                           VALUE   "当月・当月外".
                    07  CSV-H02-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H02-SRYKAMEI        PIC X(50)
@@ -280,6 +287,8 @@
                            VALUE   "入外区分".
                    07  CSV-H03-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H03-SKYSBT          PIC X(50)
+                           VALUE   "当月・当月外".
                    07  CSV-H03-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H03-SRYKAMEI        PIC X(50)
@@ -317,6 +326,8 @@
                            VALUE   "入外区分".
                    07  CSV-H04-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H04-SKYSBT          PIC X(50)
+                           VALUE   "当月・当月外".
                    07  CSV-H04-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H04-SRYKAMEI        PIC X(50)
@@ -339,12 +350,14 @@
                            VALUE   "保険診療収益".
                05  CSV-H04-R   REDEFINES   CSV-H04-VAL.
                    07  CSV-H04-ITEM            PIC X(50)
-                                               OCCURS  17.
+                                               OCCURS  18.
                05  CSV-H04-MAX                 PIC 9(05)
-                                               VALUE   17.
+                                               VALUE   18.
       *
        01  KEY-AREA.
+           03  KEY-SKYSBT          PIC X(01).
            03  KEY-RECEKA          PIC X(02).
+           03  KEY-HKNJANUM        PIC X(08).
       *
        01  THKN-AREA.
            03  THKN-NYUGAI-OCC     OCCURS  2.
@@ -402,6 +415,16 @@
            03  CONST-TKOH-MAX      PIC 9(03) VALUE 20.
            03  CONST-HKNJATTL      PIC 9(03) VALUE 55.
            03  CONST-HKNJA-MAX     PIC 9(03) VALUE 54.
+      *
+           03  CONST-GRP-IPNKOU9   PIC 9(02)   VALUE 1.
+           03  CONST-GRP-IPNKOU7   PIC 9(02)   VALUE 2.
+           03  CONST-GRP-IPN       PIC 9(02)   VALUE 3.
+           03  CONST-GRP-IPNMISGK  PIC 9(02)   VALUE 4.
+           03  CONST-GRP-TAI       PIC 9(02)   VALUE 5.
+           03  CONST-GRP-TAIKZK    PIC 9(02)   VALUE 6.
+           03  CONST-GRP-TAIMISGK  PIC 9(02)   VALUE 7.
+           03  CONST-GRP-TOTAL     PIC 9(02)   VALUE 99.
+      *
            03  CONST-HKNMEI-G.
                05  CONST-HKNMEI01  PIC X(50)
                                    VALUE "一般（高９）".
@@ -431,6 +454,9 @@
        01  TTLHKN-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //TTLHKN-//.
+      *
+       01  BGSF01-REC.
+           COPY    "CPBGSF01.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -552,6 +578,24 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           IF    ( BGS100P-EDITKBN =   "1" )
+               MOVE    "1"         TO  KEY-SKYSBT
+               PERFORM 201-MAIN-SEC
+               MOVE    "2"         TO  KEY-SKYSBT
+               PERFORM 201-MAIN-SEC
+           ELSE
+               MOVE    SPACE       TO  KEY-SKYSBT
+               PERFORM 201-MAIN-SEC
+           END-IF
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    主　処理
+      *****************************************************************
+       201-MAIN-SEC                SECTION.
+      *
            IF    ( BGS100P-SYUKA-KOK   =   1 )
                PERFORM VARYING IDX-RECEKA  FROM    1   BY  1
                        UNTIL ( IDX-RECEKA  >   BGS100P-RECEKA-MAX )
@@ -569,7 +613,7 @@
            END-IF
       *
            .
-       200-MAIN-EXT.
+       201-MAIN-EXT.
            EXIT.
       *****************************************************************
       *    主　処理
@@ -582,6 +626,17 @@
            INITIALIZE                      THKN-AREA
                                            TKOH-AREA
                                            TETC-AREA
+      *
+           MOVE    SPACE               TO      WRK-SKYSBTNAME
+           IF    ( BGS100P-EDITKBN =   "1" )
+               EVALUATE    KEY-SKYSBT
+               WHEN    "1"
+                   MOVE  "当月診療分"  TO      WRK-SKYSBTNAME
+               WHEN    "2"
+                   MOVE  "当月診療分以外（月遅れ請求、返戻分再請求）"
+                                       TO      WRK-SKYSBTNAME
+               END-EVALUATE
+           END-IF
       *
            MOVE    SPACE           TO      WRK-SRYKANAME1
            IF    ( BGS100P-SYUKA-KOK   =   1 )
@@ -662,105 +717,37 @@
                MOVE    2           TO   IDX1
            END-IF
       *
-           EVALUATE    BGSSKY-RECESBT
-           WHEN    "1117"
-           WHEN    "1118"
-           WHEN    "1127"
-           WHEN    "1128"
-           WHEN    "1138"
-           WHEN    "1138"
-           WHEN    "1147"
-           WHEN    "1148"
-           WHEN    "1157"
-           WHEN    "1158"
+           EVALUATE    BGSSKY-GROUPID
+      *
+           WHEN    CONST-GRP-IPNKOU9
                MOVE    CONST-IPNKOU9   TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1119"
-           WHEN    "1110"
-           WHEN    "1129"
-           WHEN    "1120"
-           WHEN    "1139"
-           WHEN    "1130"
-           WHEN    "1149"
-           WHEN    "1140"
-           WHEN    "1159"
-           WHEN    "1150"
+      *
+           WHEN    CONST-GRP-IPNKOU7
                MOVE    CONST-IPNKOU7   TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1111"
-           WHEN    "1112"
-           WHEN    "1121"
-           WHEN    "1122"
-           WHEN    "1131"
-           WHEN    "1132"
-           WHEN    "1141"
-           WHEN    "1142"
-           WHEN    "1151"
-           WHEN    "1152"
+      *
+           WHEN    CONST-GRP-IPN
                MOVE    CONST-IPN      TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1115"
-           WHEN    "1116"
-           WHEN    "1125"
-           WHEN    "1126"
-           WHEN    "1135"
-           WHEN    "1136"
-           WHEN    "1145"
-           WHEN    "1146"
-           WHEN    "1155"
-           WHEN    "1156"
-               MOVE    CONST-IPN      TO  IDX2
-               PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1113"
-           WHEN    "1114"
-           WHEN    "1123"
-           WHEN    "1124"
-           WHEN    "1133"
-           WHEN    "1134"
-           WHEN    "1143"
-           WHEN    "1144"
-           WHEN    "1153"
-           WHEN    "1154"
+      *
+           WHEN    CONST-GRP-IPNMISGK
                MOVE    CONST-IPNMISGK TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1411"
-           WHEN    "1412"
-           WHEN    "1421"
-           WHEN    "1422"
-           WHEN    "1431"
-           WHEN    "1432"
-           WHEN    "1441"
-           WHEN    "1442"
-           WHEN    "1451"
-           WHEN    "1452"
+      *
+           WHEN    CONST-GRP-TAI
                MOVE    CONST-TAI      TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1415"
-           WHEN    "1416"
-           WHEN    "1425"
-           WHEN    "1426"
-           WHEN    "1435"
-           WHEN    "1436"
-           WHEN    "1445"
-           WHEN    "1446"
-           WHEN    "1455"
-           WHEN    "1456"
+      *
+           WHEN    CONST-GRP-TAIKZK
                MOVE    CONST-TAIKZK   TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1413"
-           WHEN    "1414"
-           WHEN    "1423"
-           WHEN    "1424"
-           WHEN    "1433"
-           WHEN    "1434"
-           WHEN    "1443"
-           WHEN    "1444"
-           WHEN    "1453"
-           WHEN    "1454"
+      *
+           WHEN    CONST-GRP-TAIMISGK
                MOVE    CONST-TAIMISGK TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
            WHEN    OTHER
-               DISPLAY "RECESBT[" BGSSKY-RECESBT "]" BGSSKY-REC
+               DISPLAY "GROUPID[" BGSSKY-GROUPID "]" BGSSKY-REC
            END-EVALUATE
       *
            IF    ( BGSSKY-HKNNUM   =   "060" )
@@ -922,6 +909,7 @@
            MOVE    WRK-PRT-SRYYM       TO  HCGS138N1-SRYYM
            MOVE    "入院"              TO  HCGS138N1-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS138N1-SYSYMD
+           MOVE    WRK-SKYSBTNAME      TO  HCGS138N1-SKYSBT
            MOVE    WRK-SRYKANAME1      TO  HCGS138N1-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
@@ -1085,6 +1073,7 @@
            INITIALIZE                  TTLHKN-REC
            MOVE    "1"             TO  KEY-NYUGAIKBN
            MOVE    ZERO            TO  CNT-CSV
+           MOVE    SPACE           TO  WRK-HKNJANAME
       *
            OPEN    INPUT       BGSHKNJA-FILE
       *
@@ -1094,6 +1083,7 @@
       *
                PERFORM 210-HCGS138N2-HEAD-SEC
       *
+               MOVE    BGSHKNJA-HKNJANUM   TO  KEY-HKNJANUM
                PERFORM UNTIL ( FLG-BGSHKNJA    NOT =   ZERO )
                         OR   ( CNT-LINE    >=   CONST-HKNJA-MAX )
       *
@@ -1127,6 +1117,7 @@
            MOVE    WRK-PRT-SRYYM       TO  HCGS138N2-SRYYM
            MOVE    "入院"              TO  HCGS138N2-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS138N2-SYSYMD
+           MOVE    WRK-SKYSBTNAME      TO  HCGS138N2-SKYSBT
            MOVE    WRK-SRYKANAME1      TO  HCGS138N2-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
@@ -1147,13 +1138,26 @@
       *
            PERFORM 900-HKNJAINF-KEY-SEL-SEC
       *
-           IF    ( HKNJA-HKNJANAME NOT =   SPACE )
-               MOVE    HKNJA-HKNJANAME
-                               TO  HCGS138N2-HKNJANAME (CNT-LINE)
-           ELSE
-               MOVE    BGSHKNJA-HKNJANUM
-                               TO  HCGS138N2-HKNJANAME (CNT-LINE)
+           PERFORM 2201-HKNKBNNAME-EDIT-SEC
+      *
+           IF    ( KEY-HKNJANUM    NOT =   BGSHKNJA-HKNJANUM )
+            OR   ( CNT-LINE            =   1 )
+      *
+               IF    ( HKNJA-HKNJANAME NOT =   SPACE )
+                   STRING  HKNJA-HKNJANAME     DELIMITED BY SPACE
+                   INTO    HCGS138N2-HKNJANAME (CNT-LINE)
+                   END-STRING
+               ELSE
+                   STRING  BGSHKNJA-HKNJANUM   DELIMITED BY SIZE
+                   INTO    HCGS138N2-HKNJANAME (CNT-LINE)
+                   END-STRING
+               END-IF
+      *
+               MOVE    BGSHKNJA-HKNJANUM  TO  KEY-HKNJANUM
+      *
            END-IF
+      *
+           MOVE    WRK-HKNKBNNAME  TO  HCGS138N2-HKNKBNNAME (CNT-LINE)
       *
            MOVE    BGSHKNJA-KENSU         TO  WRK-Z4
            MOVE    WRK-Z4      TO  HCGS138N2-KENSU (CNT-LINE)
@@ -1194,36 +1198,74 @@
            MOVE    BGSHKNJA-TTLTTLMONEY    TO  WRK-Z9
            MOVE    WRK-Z9      TO  HCGS138N2-TTLTTLMONEY (CNT-LINE)
       *
-           COMPUTE TTLHKN-KENSU
-               =   TTLHKN-KENSU    +   BGSHKNJA-KENSU
-           COMPUTE TTLHKN-NISSU
-               =   TTLHKN-NISSU    +   BGSHKNJA-NISSU
-           COMPUTE TTLHKN-TENSU
-               =   TTLHKN-TENSU    +   BGSHKNJA-TENSU
-           COMPUTE TTLHKN-FTNMONEY
-               =   TTLHKN-FTNMONEY +   BGSHKNJA-FTNMONEY
-           COMPUTE TTLHKN-HKNMONEY
-               =   TTLHKN-HKNMONEY +   BGSHKNJA-HKNMONEY
-           COMPUTE TTLHKN-KOHMONEY
-               =   TTLHKN-KOHMONEY +   BGSHKNJA-KOHMONEY
-           COMPUTE TTLHKN-TTLMONEY
-               =   TTLHKN-TTLMONEY +   BGSHKNJA-TTLMONEY
+           IF    ( BGSHKNJA-GROUPID    NOT =   CONST-GRP-TOTAL )
+               COMPUTE TTLHKN-KENSU
+                   =   TTLHKN-KENSU    +   BGSHKNJA-KENSU
+               COMPUTE TTLHKN-NISSU
+                   =   TTLHKN-NISSU    +   BGSHKNJA-NISSU
+               COMPUTE TTLHKN-TENSU
+                   =   TTLHKN-TENSU    +   BGSHKNJA-TENSU
+               COMPUTE TTLHKN-FTNMONEY
+                   =   TTLHKN-FTNMONEY +   BGSHKNJA-FTNMONEY
+               COMPUTE TTLHKN-HKNMONEY
+                   =   TTLHKN-HKNMONEY +   BGSHKNJA-HKNMONEY
+               COMPUTE TTLHKN-KOHMONEY
+                   =   TTLHKN-KOHMONEY +   BGSHKNJA-KOHMONEY
+               COMPUTE TTLHKN-TTLMONEY
+                   =   TTLHKN-TTLMONEY +   BGSHKNJA-TTLMONEY
       *
-           COMPUTE TTLHKN-SKJKAISU
-               =   TTLHKN-SKJKAISU     +   BGSHKNJA-SKJKAISU
-           COMPUTE TTLHKN-SKJTTLMONEY
-               =   TTLHKN-SKJTTLMONEY  +   BGSHKNJA-SKJTTLMONEY
-           COMPUTE TTLHKN-SKJFTNMONEY
-               =   TTLHKN-SKJFTNMONEY  +   BGSHKNJA-SKJFTNMONEY
-           COMPUTE TTLHKN-SKJHKNMONEY
-               =   TTLHKN-SKJHKNMONEY  +   BGSHKNJA-SKJHKNMONEY
-           COMPUTE TTLHKN-SKJKOHMONEY
-               =   TTLHKN-SKJKOHMONEY  +   BGSHKNJA-SKJKOHMONEY
-           COMPUTE TTLHKN-TTLTTLMONEY
-               =   TTLHKN-TTLTTLMONEY  +   BGSHKNJA-TTLTTLMONEY
+               COMPUTE TTLHKN-SKJKAISU
+                   =   TTLHKN-SKJKAISU     +   BGSHKNJA-SKJKAISU
+               COMPUTE TTLHKN-SKJTTLMONEY
+                   =   TTLHKN-SKJTTLMONEY  +   BGSHKNJA-SKJTTLMONEY
+               COMPUTE TTLHKN-SKJFTNMONEY
+                   =   TTLHKN-SKJFTNMONEY  +   BGSHKNJA-SKJFTNMONEY
+               COMPUTE TTLHKN-SKJHKNMONEY
+                   =   TTLHKN-SKJHKNMONEY  +   BGSHKNJA-SKJHKNMONEY
+               COMPUTE TTLHKN-SKJKOHMONEY
+                   =   TTLHKN-SKJKOHMONEY  +   BGSHKNJA-SKJKOHMONEY
+               COMPUTE TTLHKN-TTLTTLMONEY
+                   =   TTLHKN-TTLTTLMONEY  +   BGSHKNJA-TTLTTLMONEY
+           END-IF
       *
            .
        220-HCGS138N2-BODY-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険区分名称編集処理
+      *****************************************************************
+       2201-HKNKBNNAME-EDIT-SEC        SECTION.
+      *
+           MOVE    SPACE       TO  WRK-HKNKBNNAME
+           EVALUATE    BGSHKNJA-GROUPID
+           WHEN    CONST-GRP-IPNKOU9
+               MOVE    "一般（高９）"
+                               TO  WRK-HKNKBNNAME
+           WHEN    CONST-GRP-IPNKOU7
+               MOVE    "一般（高７）"
+                               TO  WRK-HKNKBNNAME
+           WHEN    CONST-GRP-IPN
+               MOVE    "一般"
+                               TO  WRK-HKNKBNNAME
+           WHEN    CONST-GRP-IPNMISGK
+               MOVE    "一般（６歳）"
+                               TO  WRK-HKNKBNNAME
+           WHEN    CONST-GRP-TAI
+               MOVE    "退職（本人）"
+                               TO  WRK-HKNKBNNAME
+           WHEN    CONST-GRP-TAIKZK
+               MOVE    "退職（家族）"
+                               TO  WRK-HKNKBNNAME
+           WHEN    CONST-GRP-TAIMISGK
+               MOVE    "退職（６歳）"
+                               TO  WRK-HKNKBNNAME
+           WHEN    CONST-GRP-TOTAL
+               MOVE    "【保険者計】"
+                               TO  WRK-HKNKBNNAME
+           END-EVALUATE
+      *
+           .
+       2201-HKNKBNNAME-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    入院チェック表合計編集処理（２枚目）
@@ -1543,6 +1585,9 @@
                                    TO  WRK-ITEM
            PERFORM 801-CSVDATA-EDIT-SEC
       *
+           MOVE  WRK-SKYSBTNAME    TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
            MOVE  KEY-RECEKA        TO  WRK-ITEM
            PERFORM 801-CSVDATA-EDIT-SEC
       *
@@ -1575,6 +1620,11 @@
                    IF    ( WRK-ITEM    =   "保険区分" )
                        MOVE    "保険者一覧"
                                        TO  WRK-ITEM
+                       PERFORM 801-CSVDATA-EDIT-SEC
+      *
+                       MOVE    "保険区分"
+                                       TO  WRK-ITEM
+      *
                    END-IF
                    IF    ( IDXI   >=   CSV-H01-MAX    )
                        PERFORM 802-CSVDATA-EDIT-SEC
@@ -1590,7 +1640,12 @@
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   CNT-LINE )
       *
-               PERFORM 20011-HCGS138N2-CSV-SEC
+               IF    ( HCGS138N2-HKNJANAME (IDX2)
+                                   NOT =   SPACE )
+                 OR  ( HCGS138N2-HKNKBNNAME (IDX2)
+                                   NOT =   SPACE )
+                   PERFORM 20011-HCGS138N2-CSV-SEC
+               END-IF
       *
            END-PERFORM
       *
@@ -1616,7 +1671,17 @@
            MOVE    "保険者別"      TO  WRK-DATAKBNMEI
            PERFORM 20011-CSV-KEY-EDIT-SEC
       *
-           MOVE    HCGS138N2-HKNJANAME (IDX2)
+           IF    ( HCGS138N2-HKNJANAME (IDX2)
+                                       NOT =   SPACE )
+               MOVE    HCGS138N2-HKNJANAME (IDX2)
+                                   TO  WRK-HKNJANAME
+           END-IF
+      *
+           MOVE    WRK-HKNJANAME
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS138N2-HKNKBNNAME (IDX2)
                                    TO  WRK-ITEM
            PERFORM 801-CSVDATA-EDIT-SEC
       *
@@ -1687,6 +1752,7 @@
            MOVE    WRK-PRT-SRYYM       TO  HCGS138G1-SRYYM
            MOVE    "外来"              TO  HCGS138G1-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS138G1-SYSYMD
+           MOVE    WRK-SKYSBTNAME      TO  HCGS138G1-SKYSBT
            MOVE    WRK-SRYKANAME1      TO  HCGS138G1-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
@@ -1841,6 +1907,7 @@
       *
                PERFORM 210-HCGS138G2-HEAD-SEC
       *
+               MOVE    BGSHKNJA-HKNJANUM   TO  KEY-HKNJANUM
                PERFORM UNTIL ( FLG-BGSHKNJA    NOT =   ZERO )
                         OR   ( CNT-LINE    >=   CONST-HKNJA-MAX )
       *
@@ -1874,6 +1941,7 @@
            MOVE    WRK-PRT-SRYYM       TO  HCGS138G2-SRYYM
            MOVE    "外来"              TO  HCGS138G2-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS138G2-SYSYMD
+           MOVE    WRK-SKYSBTNAME      TO  HCGS138G2-SKYSBT
            MOVE    WRK-SRYKANAME1      TO  HCGS138G2-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
@@ -1894,13 +1962,31 @@
       *
            PERFORM 900-HKNJAINF-KEY-SEL-SEC
       *
-           IF    ( HKNJA-HKNJANAME NOT =   SPACE )
-               MOVE    HKNJA-HKNJANAME
-                               TO  HCGS138G2-HKNJANAME (CNT-LINE)
-           ELSE
-               MOVE    BGSHKNJA-HKNJANUM
-                               TO  HCGS138G2-HKNJANAME (CNT-LINE)
+           PERFORM 2201-HKNKBNNAME-EDIT-SEC
+      *
+           IF    ( KEY-HKNJANUM    NOT =   BGSHKNJA-HKNJANUM )
+            OR   ( CNT-LINE            =   1 )
+      *
+               IF    ( CNT-LINE        >   1 )
+                AND  ( CNT-LINE  + 1   <   CONST-HKNJA-MAX )
+                   COMPUTE CNT-LINE = CNT-LINE + 1
+               END-IF
+      *
+               IF    ( HKNJA-HKNJANAME NOT =   SPACE )
+                   STRING  HKNJA-HKNJANAME     DELIMITED BY SPACE
+                   INTO    HCGS138G2-HKNJANAME (CNT-LINE)
+                   END-STRING
+               ELSE
+                   STRING  BGSHKNJA-HKNJANUM   DELIMITED BY SIZE
+                   INTO    HCGS138G2-HKNJANAME (CNT-LINE)
+                   END-STRING
+               END-IF
+      *
+               MOVE    BGSHKNJA-HKNJANUM   TO  KEY-HKNJANUM
+      *
            END-IF
+      *
+           MOVE    WRK-HKNKBNNAME  TO  HCGS138G2-HKNKBNNAME (CNT-LINE)
       *
            MOVE    BGSHKNJA-KENSU         TO  WRK-Z4
            MOVE    WRK-Z4      TO  HCGS138G2-KENSU (CNT-LINE)
@@ -1923,20 +2009,22 @@
            MOVE    BGSHKNJA-TTLMONEY       TO  WRK-Z9
            MOVE    WRK-Z9      TO  HCGS138G2-TTLMONEY (CNT-LINE)
       *
-           COMPUTE TTLHKN-KENSU
-               =   TTLHKN-KENSU    +   BGSHKNJA-KENSU
-           COMPUTE TTLHKN-NISSU
-               =   TTLHKN-NISSU    +   BGSHKNJA-NISSU
-           COMPUTE TTLHKN-TENSU
-               =   TTLHKN-TENSU    +   BGSHKNJA-TENSU
-           COMPUTE TTLHKN-FTNMONEY
-               =   TTLHKN-FTNMONEY +   BGSHKNJA-FTNMONEY
-           COMPUTE TTLHKN-HKNMONEY
-               =   TTLHKN-HKNMONEY +   BGSHKNJA-HKNMONEY
-           COMPUTE TTLHKN-KOHMONEY
-               =   TTLHKN-KOHMONEY +   BGSHKNJA-KOHMONEY
-           COMPUTE TTLHKN-TTLMONEY
-               =   TTLHKN-TTLMONEY +   BGSHKNJA-TTLMONEY
+           IF    ( BGSHKNJA-GROUPID    NOT =   CONST-GRP-TOTAL )
+               COMPUTE TTLHKN-KENSU
+                   =   TTLHKN-KENSU    +   BGSHKNJA-KENSU
+               COMPUTE TTLHKN-NISSU
+                   =   TTLHKN-NISSU    +   BGSHKNJA-NISSU
+               COMPUTE TTLHKN-TENSU
+                   =   TTLHKN-TENSU    +   BGSHKNJA-TENSU
+               COMPUTE TTLHKN-FTNMONEY
+                   =   TTLHKN-FTNMONEY +   BGSHKNJA-FTNMONEY
+               COMPUTE TTLHKN-HKNMONEY
+                   =   TTLHKN-HKNMONEY +   BGSHKNJA-HKNMONEY
+               COMPUTE TTLHKN-KOHMONEY
+                   =   TTLHKN-KOHMONEY +   BGSHKNJA-KOHMONEY
+               COMPUTE TTLHKN-TTLMONEY
+                   =   TTLHKN-TTLMONEY +   BGSHKNJA-TTLMONEY
+           END-IF
       *
            .
        220-HCGS138G2-BODY-EXT.
@@ -2213,6 +2301,10 @@
                    IF    ( WRK-ITEM    =   "保険区分" )
                        MOVE    "保険者一覧"
                                        TO  WRK-ITEM
+                       PERFORM 801-CSVDATA-EDIT-SEC
+      *
+                       MOVE    "保険区分"
+                                       TO  WRK-ITEM
                    END-IF
                    IF    ( IDXI   >=   CSV-H04-MAX    )
                        PERFORM 802-CSVDATA-EDIT-SEC
@@ -2228,7 +2320,12 @@
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   CNT-LINE )
       *
-               PERFORM 20011-HCGS138G2-CSV-SEC
+               IF    ( HCGS138G2-HKNJANAME (IDX2)
+                                   NOT =   SPACE )
+                 OR  ( HCGS138G2-HKNKBNNAME (IDX2)
+                                   NOT =   SPACE )
+                   PERFORM 20011-HCGS138G2-CSV-SEC
+               END-IF
       *
            END-PERFORM
       *
@@ -2254,7 +2351,17 @@
            MOVE    "保険者別"      TO  WRK-DATAKBNMEI
            PERFORM 20011-CSV-KEY-EDIT-SEC
       *
-           MOVE    HCGS138G2-HKNJANAME (IDX2)
+           IF    ( HCGS138G2-HKNJANAME (IDX2)
+                                       NOT =   SPACE )
+               MOVE    HCGS138G2-HKNJANAME (IDX2)
+                                   TO  WRK-HKNJANAME
+           END-IF
+      *
+           MOVE    WRK-HKNJANAME
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS138G2-HKNKBNNAME (IDX2)
                                    TO  WRK-ITEM
            PERFORM 801-CSVDATA-EDIT-SEC
       *
@@ -2590,22 +2697,8 @@
       *
                    MOVE    1       TO  FLG-LOOPEND
       *
-                   IF    ( BGSSKY-HOKEN    NOT =   CONST-KOKUHO )
-                       MOVE    ZERO    TO  FLG-LOOPEND
-                   END-IF
-      *
-                   IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
-                       IF    ( BGS100P-NYUGAIKBN
-                                           NOT =  BGSSKY-NYUGAIKBN )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
-      *
-                   IF    ( KEY-RECEKA      NOT =   SPACE )
-                       IF    ( KEY-RECEKA  NOT =   BGSSKY-RECEKA )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
+                   MOVE    BGSSKY-REC  TO  BGSF01-REC
+                   PERFORM 9001-SKIP-CHK-SEC
       *
                END-READ
            END-PERFORM
@@ -2632,22 +2725,8 @@
       *
                    MOVE    1       TO  FLG-LOOPEND
       *
-                   IF    ( BGSKOH-HOKEN    NOT =   CONST-KOKUHO )
-                       MOVE    ZERO    TO  FLG-LOOPEND
-                   END-IF
-      *
-                   IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
-                       IF    ( BGS100P-NYUGAIKBN
-                                           NOT =  BGSKOH-NYUGAIKBN )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
-      *
-                   IF    ( KEY-RECEKA      NOT =   SPACE )
-                       IF    ( KEY-RECEKA  NOT =   BGSKOH-RECEKA )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
+                   MOVE    BGSKOH-REC  TO  BGSF01-REC
+                   PERFORM 9001-SKIP-CHK-SEC
       *
                END-READ
            END-PERFORM
@@ -2674,27 +2753,13 @@
       *
                    MOVE    1       TO  FLG-LOOPEND
       *
-                   IF    ( BGSHKNJA-HOKEN  NOT =   CONST-KOKUHO )
-                       MOVE    ZERO    TO  FLG-LOOPEND
-                   END-IF
-      *
                    IF    ( BGSHKNJA-NYUGAIKBN
                                            NOT =   KEY-NYUGAIKBN )
                        MOVE    ZERO    TO  FLG-LOOPEND
                    END-IF
       *
-                   IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
-                       IF    ( BGS100P-NYUGAIKBN
-                                           NOT =   BGSHKNJA-NYUGAIKBN )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
-      *
-                   IF    ( KEY-RECEKA      NOT =   SPACE )
-                       IF    ( KEY-RECEKA  NOT =   BGSHKNJA-RECEKA )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
+                   MOVE    BGSHKNJA-REC    TO  BGSF01-REC
+                   PERFORM 9001-SKIP-CHK-SEC
       *
                END-READ
       *
@@ -2722,22 +2787,8 @@
       *
                    MOVE    1       TO  FLG-LOOPEND
       *
-                   IF    ( BGSETC-HOKEN    NOT =   CONST-KOKUHO )
-                       MOVE    ZERO    TO  FLG-LOOPEND
-                   END-IF
-      *
-                   IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
-                       IF    ( BGS100P-NYUGAIKBN
-                                           NOT =   BGSETC-NYUGAIKBN )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
-      *
-                   IF    ( KEY-RECEKA      NOT =   SPACE )
-                       IF    ( KEY-RECEKA  NOT =   BGSETC-RECEKA )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
+                   MOVE    BGSETC-REC  TO  BGSF01-REC
+                   PERFORM 9001-SKIP-CHK-SEC
       *
                END-READ
            END-PERFORM
@@ -2745,6 +2796,44 @@
            .
       *
        900-BGSETC-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    読み飛ばしチェック処理
+      *****************************************************************
+       9001-SKIP-CHK-SEC           SECTION.
+      *
+           IF    ( BGSF01-HOKEN    NOT =   CONST-KOKUHO )
+               MOVE    ZERO    TO  FLG-LOOPEND
+           END-IF
+      *
+           IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
+               IF    ( BGS100P-NYUGAIKBN
+                                   NOT =   BGSF01-NYUGAIKBN )
+                   MOVE    ZERO    TO  FLG-LOOPEND
+               END-IF
+      *
+           END-IF
+      *
+           IF    ( KEY-SKYSBT      NOT =   SPACE )
+               IF   (( KEY-SKYSBT      =   "1" )
+                AND  ( BGSF01-SKYSBT   =   "1" ))
+                 OR (( KEY-SKYSBT      =   "2" )
+                AND  ( BGSF01-SKYSBT   =   "2" OR "3" ))
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-LOOPEND
+               END-IF
+           END-IF
+      *
+           IF    ( KEY-RECEKA      NOT =   SPACE )
+               IF    ( KEY-RECEKA  NOT =   BGSF01-RECEKA )
+                   MOVE    ZERO    TO  FLG-LOOPEND
+               END-IF
+           END-IF
+      *
+           .
+      *
+       9001-SKIP-CHK-EXT.
            EXIT.
       *****************************************************************
       *    保険番号マスタ検索処理

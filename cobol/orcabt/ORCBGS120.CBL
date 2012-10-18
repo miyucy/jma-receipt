@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCBGS100.
+       PROGRAM-ID.                 ORCBGS120.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 月次帳票
-      *  コンポーネント名  : 新保険別請求チェック表
+      *  コンポーネント名  : 保険別請求チェック明細表
       *  管理者            :
       *  作成日付    作業者        記述
       *  11/01/13    NACL-太田     新規作成
@@ -60,6 +60,15 @@
       *
        01  CONST-AREA.
            03  CONST-H2204         PIC X(06)   VALUE "201004".
+           03  CONST-SYAHO         PIC 9(01)   VALUE 1.
+           03  CONST-KOKUHO        PIC 9(01)   VALUE 2.
+           03  CONST-KOUKI         PIC 9(01)   VALUE 3.
+           03  CONST-TOKUYOU       PIC 9(01)   VALUE 4.
+           03  CONST-JIHI          PIC 9(01)   VALUE 5.
+           03  CONST-CHIKEN        PIC 9(01)   VALUE 6.
+           03  CONST-ROUSAI        PIC 9(01)   VALUE 7.
+           03  CONST-JIBAI         PIC 9(01)   VALUE 8.
+           03  CONST-KOUGAI        PIC 9(01)   VALUE 9.
       *
       *    パラメタ領域
        01  BGS100P-AREA.
@@ -152,6 +161,8 @@
                                                BGS100P-SRYYM
                                                BGS100P-NYUGAIKBN
                                                BGS100P-EDITKBN
+                                               BGS100P-HKNKBN-G
+                                               BGS100P-HKNJANUM
            END-UNSTRING
       *
            MOVE    BGS100P-HOSPNUM     TO  SPA-HOSPNUM
@@ -179,19 +190,16 @@
       *
            EVALUATE    BGS100P-FORMKBN
            WHEN    "1"
-               MOVE    "保険別請求チェック表（社保）（標準帳票）"
+               MOVE    "保険別請求チェック明細表（社保）"
                                        TO  BGS100P-SHELLMSG
            WHEN    "2"
-               MOVE    "保険別請求チェック表（国保）（標準帳票）"
+               MOVE    "保険別請求チェック明細表（国保）"
                                        TO  BGS100P-SHELLMSG
            WHEN    "3"
-               MOVE    "保険別請求チェック表（後期高齢者）（標準帳票）"
-                                       TO  BGS100P-SHELLMSG
-           WHEN    "9"
-               MOVE    "保険別請求チェック表（総括表）（標準帳票）"
+               MOVE    "保険別請求チェック明細表（後期高齢者）"
                                        TO  BGS100P-SHELLMSG
            WHEN    OTHER
-               MOVE    "保険別請求チェック表（標準帳票）"
+               MOVE    "保険別請求チェック明細表（標準帳票）"
                                        TO  BGS100P-SHELLMSG
            END-EVALUATE
       *
@@ -220,7 +228,7 @@
       *****************************************************************
        1001-PARA-CHK-SEC               SECTION.
       *
-           IF    ( BGS100P-FORMKBN = "0" OR "1" OR "2" OR "3" OR "9" )
+           IF    ( BGS100P-FORMKBN = "0" OR "1" OR "2" OR "3"  )
                CONTINUE
            ELSE
                MOVE    "0"         TO  BGS100P-FORMKBN
@@ -246,16 +254,15 @@
                MOVE    1           TO  BGS100P-SYAHO
                                        BGS100P-KOKUHO
                                        BGS100P-KOUKI
-                                       BGS100P-SOUKATU
            WHEN    "1"
                MOVE    1           TO  BGS100P-SYAHO
            WHEN    "2"
                MOVE    1           TO  BGS100P-KOKUHO
            WHEN    "3"
                MOVE    1           TO  BGS100P-KOUKI
-           WHEN    "9"
-               MOVE    1           TO  BGS100P-SOUKATU
            END-EVALUATE
+      *
+           MOVE    "1"             TO  BGS100P-MEISAI
       *
            IF    ( BGS100P-SRYYM   >=  CONST-H2204 )
                CONTINUE
@@ -294,7 +301,10 @@
                IF    ( BGS100P-SYAHO   =   1 )
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ST:ORCBGS137"
-                   CALL    "ORCBGS137" USING
+      *
+                   MOVE    CONST-SYAHO TO  BGS100P-HOKEN
+      *
+                   CALL    "ORCBGS121" USING
                                        BGS100P-AREA
                                        SPA-AREA
                    PERFORM 800-MCNDATE-SEC
@@ -307,7 +317,10 @@
                IF    ( BGS100P-KOKUHO  =   1 )
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ST:ORCBGS138"
-                   CALL    "ORCBGS138" USING
+      *
+                   MOVE    CONST-KOKUHO TO  BGS100P-HOKEN
+      *
+                   CALL    "ORCBGS121" USING
                                        BGS100P-AREA
                                        SPA-AREA
                    PERFORM 800-MCNDATE-SEC
@@ -320,24 +333,14 @@
                IF    ( BGS100P-KOUKI   =   1 )
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ST:ORCBGS140"
-                   CALL    "ORCBGS140" USING
+      *
+                   MOVE    CONST-KOUKI TO  BGS100P-HOKEN
+      *
+                   CALL    "ORCBGS121" USING
                                        BGS100P-AREA
                                        SPA-AREA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCBGS140"
-               END-IF
-           END-IF
-      *
-      *    総括表
-           IF    ( BGS100P-RC      =   ZERO )
-               IF    ( BGS100P-SOUKATU =   1 )
-                   PERFORM 800-MCNDATE-SEC
-                   DISPLAY SMCNDATE-HMS "ST:ORCBGS139"
-                   CALL    "ORCBGS139" USING
-                                       BGS100P-AREA
-                                       SPA-AREA
-                   PERFORM 800-MCNDATE-SEC
-                   DISPLAY SMCNDATE-HMS "ED:ORCBGS139"
                END-IF
            END-IF
       *
