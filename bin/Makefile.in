@@ -54,6 +54,6 @@ clean:
 distclean: clean
 	-rm -f Makefile
 
-install: all convutf8
+install: all 
 	$(INSTALL) -d $(bindir)
 	$(INSTALL_SCRIPT) $(BIN_files) $(bindir)
