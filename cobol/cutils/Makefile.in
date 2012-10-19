@@ -8,7 +8,8 @@ CSRCS = \
 	coblog.c \
 	cobsleep.c \
 	orcsjistoeuc.c \
-	orcfileencode.c
+	orcfileencode.c \
+	orcmkdir.c
 
 CJQSRCS = orcqrencode.c
 
