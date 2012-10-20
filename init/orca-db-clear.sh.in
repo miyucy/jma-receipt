@@ -19,10 +19,12 @@ status=0
 if [ -f $PATCHDIR/copying ];	then
     echo "更新プログラム管理テーブルクリア処理スキップ" 2>&1 | tee -a $INSTALLLOG
 else
-    echo "更新プログラム管理テーブルクリア処理開始" 2>&1 | tee -a $INSTALLLOG
-    su - $ORCAUSER -c "psql ${DBCONNOPTION} -e ${DBNAME} -c \"${DELETESQL}\"" 2>&1 | tee -a $INSTALLLOG
-    if [ ${PIPESTATUS[0]} -ne 0 ] ; then
-	echo "NG" | tee -a $INSTALLLOG
+    PGKANRIDEL=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -q ${DBNAME} -c \"${DELETESQL}\"" 2>&1`
+    RC=$?
+    if [ $RC -ne 0 ] ; then
+	echo "${DELETESQL}" | tee -a $INSTALLLOG
+	echo "$PGKANRIDEL"  | tee -a $INSTALLLOG
+	echo "ERROR: tbl_pgkanriが削除出来ませんでした" | tee -a $INSTALLLOG
 	exit 2
     fi
 fi

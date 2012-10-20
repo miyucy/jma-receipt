@@ -14,7 +14,7 @@ fi
 USERCHECKSQL="SELECT usename FROM pg_user WHERE usename = '${DBUSER}';"
 DBCHECKSQL="SELECT datname FROM pg_database WHERE datname = '${DBNAME}';"
 SETPASSWORD="ALTER USER ${DBUSER} password '${DBPASS}';"
-
+DBKANRISQL="SELECT count(*) FROM pg_tables WHERE tablename = 'tbl_dbkanri';"
 INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
 
 if [ ! -e "$INSTALLLOG" ]; then
@@ -28,7 +28,7 @@ if [ x"$DBHOST" = "x" ]; then
     then
 	su - postgres -c "createuser ${DBCONNOPTION} --createdb --no-superuser --no-createrole ${DBUSER}"
 	if [ $? -ne 0 ] ; then
-	    echo "createuser error" | tee -a $INSTALLLOG
+	    echo "ERROR: createuser error (${DBUSER})" | tee -a $INSTALLLOG
 	    exit 99
 	fi
     fi
@@ -40,14 +40,15 @@ else
 	if [ -z $USEREXIST ] || [ $RC -ne 0 ] ; then
 	    su - ${ORCAUSER} -c "createuser ${DBCONNOPTION} -U postgres --createdb --no-superuser --no-createrole ${DBUSER}"
 	    if [ $? -ne 0 ] ; then
-		echo "createuser error" | tee -a $INSTALLLOG
+		echo "ERROR: createuser error(${DBUSER})" | tee -a $INSTALLLOG
+		exit 99
+	    fi
+	    echo "CREATEUSER (${DBUSER})" | tee -a  $INSTALLLOG
+	    if [ $? -ne 0 ] ; then
+		echo "ERROR: set password error" | tee -a $INSTALLLOG
 		exit 99
 	    fi
 	    su - ${ORCAUSER} -c "psql ${DBCONNOPTION} -U postgres -c \"${SETPASSWORD}\""
-	    if [ $? -ne 0 ] ; then
-		echo "set password error" | tee -a $INSTALLLOG
-		exit 99
-	    fi
 	fi
     fi
 fi
@@ -55,28 +56,31 @@ fi
 # DB
 DBEXIST=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} template1 -t -c \"${DBCHECKSQL}\""`
 RC=$?
-if [  $RC -ne 0 ] ; then
+if [ ! -z $DBEXIST ] ; then
     DBEXIST=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} ${DBNAME} -t -c \"${DBCHECKSQL}\""`
     RC=$?
 fi
 if [ $RC -ne 0 ] ; then
-    echo "database check error" | tee -a $INSTALLLOG
+    echo "ERROR: database check error (${DBCHECKSQL})" | tee -a $INSTALLLOG
     exit 99
 fi
 if [ -z $DBEXIST ] ; then
     su - ${ORCAUSER} -c "createdb ${DBCONNOPTION} -lC -Ttemplate0 -E${DBENCODING} \"${DBNAME}\""
     if [ $? -ne 0 ] ; then
-	echo "createdb error" | tee -a $INSTALLLOG
+	echo "ERROR: createdb error (${DBNAME})" | tee -a $INSTALLLOG
 	exit 99
     fi
-    su - ${ORCAUSER} -c "psql ${DBCONNOPTION} -e ${DBNAME} -f ${INITDIR}/orca_dbkanri_orig.dump 2>&1 | tee -a $INSTALLLOG"
-    if [ ${PIPESTATUS[0]} -ne 0 ]
-    then
-	echo "NG" | tee -a $INSTALLLOG
-	exit 99
-    fi
-else
-    echo "Database \"${DBNAME}\" exist." 2>&1 | tee -a $INSTALLLOG
+    echo "CREATEDB (${DBNAME})" | tee -a  $INSTALLLOG
 fi
-echo "Done."
+DBKANRICHECK=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} -At ${DBNAME} -c \"${DBKANRISQL}\""`
+if [ $? -ne 0 ] || [ "$DBKANRICHECK" -eq 0 ]; then
+    DBKANRI=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} -q --set \"ON_ERROR_STOP=1\" ${DBNAME} -f ${INITDIR}/orca_dbkanri_orig.dump" 2>&1`
+    RC=$?
+    if [ $RC -ne 0 ] ; then
+	echo "ERROR: ${INITDIR}/orca_dbkanri_orig.dump が処理出来ませんでした" | tee -a $INSTALLLOG
+	echo $DBKANRI
+	exit 99
+    fi
+    echo "${INITDIR}/orca_dbkanri_orig.dump done." | tee -a  $INSTALLLOG
+fi
 exit 0
