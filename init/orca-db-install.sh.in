@@ -11,13 +11,13 @@ TMPDIR=/var/tmp
 MSTDIR=orca-$(date +%Y%m%d)
 VERSIONFL=${DOCDIR}/version
 
-UPDSQL1="UPDATE tbl_dbkanri SET termid='##' WHERE kanricd='ORCADB00';"
+# UPDSQL1="UPDATE tbl_dbkanri SET termid='##' WHERE kanricd='ORCADB00';"
 SQLSELECT="SELECT * FROM tbl_dbkanri WHERE kanricd='ORCADB00';"
 
 UPDKANRIFILE=info/ORCADBS.DAT
 
 UPDFILE=$TMPDIR/$MSTDIR/ORCADBS.OUT
-TBLFILE=$TMPDIR/$MSTDIR/ORCADBS.TBL
+# TBLFILE=$TMPDIR/$MSTDIR/ORCADBS.TBL
 LEN=100
 
 INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
@@ -55,7 +55,6 @@ orcatar () {
     TAR=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[i-1] arr[i]} ' `
     LOCALFL=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[1]".dat"} ' `
 #解凍処理
-    echo $1
     if [ $TAR = "targz" ] ; then
         tar zxf $TARFL
     else
@@ -136,8 +135,6 @@ else
     fi
 fi
 
-#DB管理情報の取得
-DBLIST=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -Ate -c \"${SQLSELECT}\" $DBNAME"`
 #ダウンロードファイル生成
 RST=`ORCXSMST1 $MSTDIR$DBLIST 2>&1`
 RC=$?
@@ -186,7 +183,7 @@ done
 
 for UPD in $UPDLIST
 do
-#       echo $UPD
+    echo $UPD 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     if orcatar $UPD ; then
         echo $UPD "解凍処理が終了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     else
