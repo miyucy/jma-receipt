@@ -607,7 +607,7 @@ W07	{
 					item	varchar(40)[10];
 				};
 				BGCOLORS	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				BGLINEKBN_COMB	{
 					BGLINEKBN	{

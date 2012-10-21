@@ -733,7 +733,7 @@
                            11  SPA-GMN-GENERICFLG-MAX   PIC 9(01).
       *ver.4.7
       *                入力スクロール背景色
-                       09  SPA-GMN-BGCOLORS            PIC  X(20).
+                       09  SPA-GMN-BGCOLORS            PIC  X(16).
       *                入力スクロール背景行
                        09  SPA-GMN-BGLINEKBN-G.
                            11  SPA-GMN-BGLINEKBN       PIC X(01).
@@ -3316,7 +3316,7 @@
            MOVE    SYS-1038-BGCOLORS       TO  SPA-GMN-BGCOLORS
            IF      SPA-GMN-BGCOLORS        =   SPACE
       *        空白は初期表示
-               MOVE    "AntiqueWhite"      TO  SPA-GMN-BGCOLORS
+               MOVE    "#FAEBD7"           TO  SPA-GMN-BGCOLORS
            END-IF
       *    入力スクロール背景行区分
            MOVE    SYS-1038-BGLINEKBN      TO  SPA-GMN-BGLINEKBN
@@ -7618,7 +7618,7 @@
       *
            IF      SPA-GMN-BGCOLORS        =   SPACE
       *        空白は初期表示
-               MOVE    "AntiqueWhite"      TO  SPA-GMN-BGCOLORS
+               MOVE    "#FAEBD7"           TO  SPA-GMN-BGCOLORS
            ELSE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI

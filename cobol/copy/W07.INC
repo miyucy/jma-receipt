@@ -474,7 +474,7 @@
                     06  W07-GMNHYOKBN5-ITEM
                             PIC X(40)   OCCURS  10 TIMES.
                   05  W07-BGCOLORS.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-BGLINEKBN-COMB.
                     06  W07-BGLINEKBN.
                       07  W07-VALUE   PIC X(40).

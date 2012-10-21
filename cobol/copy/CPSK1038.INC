@@ -99,7 +99,7 @@
                    07  SYS-1038-GMNHYOKBN     PIC  X(01)
                                               OCCURS   5.
       *入力スクロール背景色
-               05  SYS-1038-BGCOLORS       PIC  X(20).
+               05  SYS-1038-BGCOLORS       PIC  X(16).
       *入力スクロール背景行区分
                05  SYS-1038-BGLINEKBN      PIC  X(01).
       *環境設定背景色変更
