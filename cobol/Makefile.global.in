@@ -47,11 +47,14 @@ filecheck:
 	|sort -k2 |uniq -u -f1 
 
 install: all installdirs
-	for f in $(OBJS) $(EXEC); do \
+	for f in $(OBJS); do \
 	  $(INSTALL) -m 555 $${f} $(orcalibdir) ; done
+	for f in $(EXEC); do \
+	  $(INSTALL) -m 555 $${f} $(bindir) ; done
 
 installdirs:
 	$(INSTALL) -d $(orcalibdir)
+	$(INSTALL) -d $(bindir)
 
 %.so: %.CBL
 	$(postprocess-depend)

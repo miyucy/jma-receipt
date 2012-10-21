@@ -55,6 +55,8 @@ SUBDIRS = \
 	api01r \
 	api01rv2 
 
+BINDIRS = bin
+
 COPYDIRS = copy
 
 all filecheck:   
@@ -65,17 +67,17 @@ all filecheck:
 	    *k*) failcom='fail=yes';; \
 	  esac; \
 	done; \
-	for i in $(COPYDIRS) $(SUBDIRS); \
+	for i in $(COPYDIRS) $(SUBDIRS) $(BINDIRS); \
 	  do $(MAKE) -C $$i $@ || eval $$failcom; \
 	done
 clean: 
-	for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i $@; done
+	for i in $(COPYDIRS) $(SUBDIRS) $(BINDIRS); do $(MAKE) -C $$i $@; done
 distclean: 
-	for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i $@; done
+	for i in $(COPYDIRS) $(SUBDIRS) $(BINDIRS); do $(MAKE) -C $$i $@; done
 	-rm -f Makefile Makefile.global
 
 install installdirs:
-	for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i $@; done
+	for i in $(COPYDIRS) $(SUBDIRS) $(BINDIRS); do $(MAKE) -C $$i $@; done
 
 install-copys install-copydirs: 
 	for i in $(COPYDIRS); do $(MAKE) -C $$i $@ ; done
