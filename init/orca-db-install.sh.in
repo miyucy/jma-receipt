@@ -32,7 +32,7 @@ LEN=100
 INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
 THISTIMELOG="$LOGDIR"/orca-db-install-thistime.log
 
-PATH=$PATCHSCRIPTSDIR/allways:$SCRIPTSDIR/allways:$PATCHLIBDIR:$ORCALIBDIR:$PATH
+PATH=$BINDIR:$PATCHSCRIPTSDIR/allways:$SCRIPTSDIR/allways:$PATCHLIBDIR:$ORCALIBDIR:$PATH
 
 orcawget () {
     DWNFL=`echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
