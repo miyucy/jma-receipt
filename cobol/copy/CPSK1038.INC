@@ -105,23 +105,24 @@
       *環境設定背景色変更
                05  SYS-1038-M95BGCOLORS-G.
       *            標準
-                   07  SYS-1038-BGCOLORSJ0      PIC  X(20).
+                   07  SYS-1038-BGCOLORSJ0      PIC  X(16).
       *            システム日付変更
-                   07  SYS-1038-BGCOLORSDAY     PIC  X(20).
+                   07  SYS-1038-BGCOLORSDAY     PIC  X(16).
       *            時間外区分
                    07  SYS-1038-BGCOLORSJ-G.
-                       09 SYS-1038-BGCOLORSJ   PIC  X(20)
+                       09 SYS-1038-BGCOLORSJ   PIC  X(16)
                                                OCCURS   8.
       *エラー背景色
-               05  SYS-1038-ERRCOLORS       PIC  X(20).
+               05  SYS-1038-ERRCOLORS       PIC  X(16).
       *警告背景色
-               05  SYS-1038-KEICOLORS       PIC  X(20).
+               05  SYS-1038-KEICOLORS       PIC  X(16).
       *予備 
       *******  05                          PIC  X(488).
       ******   05  SYS-1038-YOBI           PIC  X(480).
       ****     05  SYS-1038-YOBI           PIC  X(454).
       ****     05  SYS-1038-YOBI           PIC  X(253).
-               05  SYS-1038-YOBI           PIC  X(213).
+      *****    05  SYS-1038-YOBI           PIC  X(213).
+               05  SYS-1038-YOBI           PIC  X(261).
       *端末ＩＤ
            03  SYS-1038-TERMID          PIC  X(16).
       *オペーレータＩＤ

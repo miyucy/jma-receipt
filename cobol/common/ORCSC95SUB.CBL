@@ -715,7 +715,8 @@
            END-IF
       *    入力スクロール背景色
            IF      SPA-BGCOLORS        =   SPACE
-               MOVE    "AntiqueWhite"      TO  SPA-BGCOLORS
+      *******  MOVE    "AntiqueWhite"      TO  SPA-BGCOLORS
+               MOVE    "#FAEBD7"           TO  SPA-BGCOLORS
            END-IF
       *    入力スクロール背景色
            IF      SPA-BGLINEKBN       =   SPACE
@@ -723,11 +724,13 @@
            END-IF
       *    入力スクロール背景色
            IF      SPA-ERRCOLORS       =   SPACE
-               MOVE    "pink1"             TO  SPA-ERRCOLORS
+      ******** MOVE    "pink1"             TO  SPA-ERRCOLORS
+               MOVE    "#FFB5C5"           TO  SPA-ERRCOLORS
            END-IF
       *    警告背景色
            IF      SPA-KEICOLORS       =   SPACE
-               MOVE    "pink1"             TO  SPA-KEICOLORS
+      *******  MOVE    "pink1"             TO  SPA-KEICOLORS
+               MOVE    "#FFB5C5"           TO  SPA-KEICOLORS
            END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

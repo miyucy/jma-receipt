@@ -482,25 +482,25 @@
                     06  W07-BGLINEKBN-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
                   05  W07-BGCOLORSJ0.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-BGCOLORSDAY.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-BGCOLORSJ1.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-BGCOLORSJ2.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-BGCOLORSJ3.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-BGCOLORSJ4.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-BGCOLORSJ5.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-BGCOLORSJ6.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-BGCOLORSJ7.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-BGCOLORSJ8.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-GENERIC-FLG-COMB.
                     06  W07-GENERIC-FLG.
                       07  W07-VALUE   PIC X(40).
@@ -508,9 +508,9 @@
                     06  W07-GENERIC-FLG-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
                   05  W07-ERRCOLORS.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                   05  W07-KEICOLORS.
-                    06  W07-VALUE   PIC X(20).
+                    06  W07-COLOR   PIC X(16).
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.

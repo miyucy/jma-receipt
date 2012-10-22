@@ -744,17 +744,17 @@
                                                         OCCURS  5.
                            11  SPA-GMN-BGLINEKBN-MAX   PIC 9(01).
       *                環境設定背景色（標準）
-                       09  SPA-GMN-BGCOLORSJ0         PIC  X(20).
+                       09  SPA-GMN-BGCOLORSJ0         PIC  X(16).
       *                環境設定背景色（日付変更）
-                       09  SPA-GMN-BGCOLORSDAY         PIC  X(20).
+                       09  SPA-GMN-BGCOLORSDAY         PIC  X(16).
       *                環境設定背景色（時間外）
                        09  SPA-GMN-BGCOLORSJ-G.
-                           11  SPA-GMN-BGCOLORSJ       PIC  X(20)
+                           11  SPA-GMN-BGCOLORSJ       PIC  X(16)
                                                        OCCURS   8.
       *                エラー背景色
-                       09  SPA-GMN-ERRCOLORS            PIC  X(20).
+                       09  SPA-GMN-ERRCOLORS            PIC  X(16).
       *                警告背景色
-                       09  SPA-GMN-KEICOLORS            PIC  X(20).
+                       09  SPA-GMN-KEICOLORS            PIC  X(16).
       *
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
@@ -3322,19 +3322,32 @@
            MOVE    SYS-1038-BGLINEKBN      TO  SPA-GMN-BGLINEKBN
       *    環境設定背景色
            MOVE    SYS-1038-BGCOLORSJ0     TO  SPA-GMN-BGCOLORSJ0
+           IF      SPA-GMN-BGCOLORSJ0      =   SPACE
+               MOVE    "#000000"           TO  SPA-GMN-BGCOLORSJ0
+           END-IF
            MOVE    SYS-1038-BGCOLORSDAY    TO  SPA-GMN-BGCOLORSDAY
+           IF      SPA-GMN-BGCOLORSDAY     =   SPACE
+               MOVE    "#000000"           TO  SPA-GMN-BGCOLORSDAY
+           END-IF
            MOVE    SYS-1038-BGCOLORSJ-G    TO  SPA-GMN-BGCOLORSJ-G
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   8   )
+               IF      SPA-GMN-BGCOLORSJ (IDX) =   SPACE
+      *             クロは背景色なし
+                   MOVE    "#000000"       TO  SPA-GMN-BGCOLORSJ (IDX)
+               END-IF
+           END-PERFORM
       *    エラー背景色
            MOVE    SYS-1038-ERRCOLORS      TO  SPA-GMN-ERRCOLORS
            IF      SPA-GMN-ERRCOLORS       =   SPACE
       *        空白は初期表示
-               MOVE    "pink1"             TO  SPA-GMN-ERRCOLORS
+               MOVE    "#FFB5C5"           TO  SPA-GMN-ERRCOLORS
            END-IF
       *    警告背景色
            MOVE    SYS-1038-KEICOLORS      TO  SPA-GMN-KEICOLORS
            IF      SPA-GMN-KEICOLORS       =   SPACE
       *        空白は初期表示
-               MOVE    "pink1"             TO  SPA-GMN-KEICOLORS
+               MOVE    "#FFB5C5"           TO  SPA-GMN-KEICOLORS
            END-IF
       *
       *    入金管理区分
@@ -7617,12 +7630,13 @@
        4108-BGCOLORS-CHK-SEC      SECTION.
       *
            IF      SPA-GMN-BGCOLORS        =   SPACE
+                                            OR  "#000000"
       *        空白は初期表示
                MOVE    "#FAEBD7"           TO  SPA-GMN-BGCOLORS
            ELSE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    20                  TO  KANACHK-MAX-CNT
+               MOVE    16                  TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-BGCOLORS    TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -7668,12 +7682,13 @@
        4108-ERRCOLORS-CHK-SEC      SECTION.
       *
            IF      SPA-GMN-ERRCOLORS        =   SPACE
+                                            OR  "#000000"
       *        空白は初期表示
-               MOVE    "pink1"             TO  SPA-GMN-ERRCOLORS
+               MOVE    "#FFB5C5"            TO  SPA-GMN-ERRCOLORS
            ELSE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    20                  TO  KANACHK-MAX-CNT
+               MOVE    16                  TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-ERRCOLORS   TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -7695,12 +7710,13 @@
        4108-KEICOLORS-CHK-SEC      SECTION.
       *
            IF      SPA-GMN-KEICOLORS        =   SPACE
+                                            OR  "#000000"
       *        空白は初期表示
-               MOVE    "pink1"             TO  SPA-GMN-KEICOLORS
+               MOVE    "#FFB5C5"            TO  SPA-GMN-KEICOLORS
            ELSE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    20                  TO  KANACHK-MAX-CNT
+               MOVE    16                  TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-KEICOLORS   TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -7826,12 +7842,14 @@
       *****************************************************************
        4108-BGCOLORSJ0-CHK-SEC      SECTION.
       *
-           IF      SPA-GMN-BGCOLORSJ0      =   SPACE
-               CONTINUE
+           IF      SPA-GMN-BGCOLORSJ0      =   "#000000"
+                                           OR  SPACE
+      *        クロは背景色なし
+               MOVE    "#000000"           TO  SPA-GMN-BGCOLORSJ0
            ELSE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    20                  TO  KANACHK-MAX-CNT
+               MOVE    16                  TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-BGCOLORSJ0  TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -7852,12 +7870,14 @@
       *****************************************************************
        4108-BGCOLORSDAY-CHK-SEC      SECTION.
       *
-           IF      SPA-GMN-BGCOLORSDAY =   SPACE
-               CONTINUE
+           IF      SPA-GMN-BGCOLORSDAY =   "#000000"
+                                           OR  SPACE
+      *        クロは背景色なし
+               MOVE    "#000000"           TO  SPA-GMN-BGCOLORSDAY
            ELSE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    20                  TO  KANACHK-MAX-CNT
+               MOVE    16                  TO  KANACHK-MAX-CNT
                MOVE    SPA-GMN-BGCOLORSDAY TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
@@ -7881,12 +7901,15 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   8   )
                           OR  (SPA-ERRCD   NOT =   SPACE )
-               IF      SPA-GMN-BGCOLORSJ (IDX) =   SPACE
-                   CONTINUE
+               IF      SPA-GMN-BGCOLORSJ (IDX) =   "#000000"
+                                               OR  SPACE
+      *             クロは背景色なし
+                   MOVE    "#000000"           TO  SPA-GMN-BGCOLORSJ
+                                                            (IDX)
                ELSE
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "1"                 TO  KANACHK-SYORI
-                   MOVE    20                  TO  KANACHK-MAX-CNT
+                   MOVE    16                  TO  KANACHK-MAX-CNT
                    MOVE    SPA-GMN-BGCOLORSJ (IDX)
                                                TO  KANACHK-MAE-INPUT
                    CALL    "ORCSKANACHK"       USING
@@ -9724,14 +9747,46 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NAI-GMNHYOKBN (4)   TO  SYS-1038-GMNHYOKBN (4)
            MOVE    SPA-NAI-GMNHYOKBN (5)   TO  SYS-1038-GMNHYOKBN (5)
       *
-           MOVE    SPA-GMN-BGCOLORS        TO  SYS-1038-BGCOLORS
+           IF      SPA-GMN-BGCOLORS        =   "#000000"
+               MOVE    SPACE               TO  SYS-1038-BGCOLORS
+           ELSE
+               MOVE    SPA-GMN-BGCOLORS    TO  SYS-1038-BGCOLORS
+           END-IF
            MOVE    SPA-GMN-BGLINEKBN       TO  SYS-1038-BGLINEKBN
       *    環境設定背景色
-           MOVE    SPA-GMN-BGCOLORSJ0      TO  SYS-1038-BGCOLORSJ0
-           MOVE    SPA-GMN-BGCOLORSDAY     TO  SYS-1038-BGCOLORSDAY
-           MOVE    SPA-GMN-BGCOLORSJ-G     TO  SYS-1038-BGCOLORSJ-G
-           MOVE    SPA-GMN-ERRCOLORS       TO  SYS-1038-ERRCOLORS
-           MOVE    SPA-GMN-KEICOLORS       TO  SYS-1038-KEICOLORS
+           IF      SPA-GMN-BGCOLORSJ0      =   "#000000"
+               MOVE    SPACE                   TO  SYS-1038-BGCOLORSJ0
+           ELSE
+               MOVE    SPA-GMN-BGCOLORSJ0      TO  SYS-1038-BGCOLORSJ0
+           END-IF
+           IF      SPA-GMN-BGCOLORSDAY     =   "#000000"
+               MOVE    SPACE                   TO  SYS-1038-BGCOLORSDAY
+           ELSE
+               MOVE    SPA-GMN-BGCOLORSDAY     TO  SYS-1038-BGCOLORSDAY
+           END-IF
+      *    時間外区分
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   8   )
+               IF      SPA-GMN-BGCOLORSJ (IDX) =   "#000000"
+      *             クロは背景色なし
+                   MOVE    SPACE               TO  SYS-1038-BGCOLORSJ
+                                                            (IDX)
+               ELSE
+                   MOVE    SPA-GMN-BGCOLORSJ (IDX)
+                                               TO  SYS-1038-BGCOLORSJ
+                                                           (IDX)
+               END-IF
+           END-PERFORM
+           IF      SPA-GMN-ERRCOLORS       =   "#000000"
+               MOVE    SPACE                   TO  SYS-1038-ERRCOLORS
+           ELSE
+               MOVE    SPA-GMN-ERRCOLORS       TO  SYS-1038-ERRCOLORS
+           END-IF
+           IF      SPA-GMN-KEICOLORS       =   "#000000"
+               MOVE    SPACE                   TO  SYS-1038-KEICOLORS
+           ELSE
+               MOVE    SPA-GMN-KEICOLORS       TO  SYS-1038-KEICOLORS
+           END-IF
       *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *

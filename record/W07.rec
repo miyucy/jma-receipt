@@ -617,34 +617,34 @@ W07	{
 					item	varchar(40)[5];
 				};
 				BGCOLORSJ0	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				BGCOLORSDAY	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				BGCOLORSJ1	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				BGCOLORSJ2	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				BGCOLORSJ3	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				BGCOLORSJ4	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				BGCOLORSJ5	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				BGCOLORSJ6	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				BGCOLORSJ7	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				BGCOLORSJ8	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				GENERIC_FLG_COMB	{
 					GENERIC_FLG	{
@@ -654,10 +654,10 @@ W07	{
 					item	varchar(40)[05];
 				};
 				ERRCOLORS	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 				KEICOLORS	{
-					value	varchar(20);
+					color	varchar(16);
 				};
 			};
 			TAGNAME3    {
