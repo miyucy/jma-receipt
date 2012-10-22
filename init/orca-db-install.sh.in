@@ -20,8 +20,8 @@ TMPDIR=/var/tmp
 MSTDIR=orca-$(date +%Y%m%d)
 VERSIONFL=${DOCDIR}/version
 
-# UPDSQL1="UPDATE tbl_dbkanri SET termid='##' WHERE kanricd='ORCADB00';"
-SQLSELECT="SELECT * FROM tbl_dbkanri WHERE kanricd='ORCADB00';"
+DBLISTSQL="SELECT * FROM tbl_dbkanri WHERE kanricd='ORCADB00';"
+DBVERSIONSQL="SELECT version FROM tbl_dbkanri WHERE kanricd='ORCADB00';"
 
 UPDKANRIFILE=info/ORCADBS.DAT
 
@@ -92,11 +92,10 @@ VERDATA=`echo $VERLIST | awk '{i=split($0,arr,"("); print arr[i]} ' `
 VERDATA1=`echo $VERDATA | awk '{gsub(/[-)]/,""); print } ' `
 VERDATA2=`echo $VERDATA | awk '{gsub(/[)]/,""); print } ' `
 
-DBLIST=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -At -c \"${SQLSELECT}\" $DBNAME"`
-if [ $? -ne 0 ] || [ -z "$DBLIST" ] ; then
+DBVERSION=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -At -c \"${DBVERSIONSQL}\" $DBNAME"`
+if [ $? -ne 0 ] ; then
     err "データベース管理情報が読み取れません。処理を中止します" 99
 fi
-DBVERSION=`echo $DBLIST | awk '{i=split($0,arr,"|"); print arr[2]} ' `
 DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
 if [ "$DBVERSION1" -gt "$VERDATA1" ] ; then
     echo "Database: ${DBVERSION1}" | tee -a $INSTALLLOG $THISTIMELOG
@@ -136,12 +135,10 @@ else
     fi
 fi
 
-DBLIST=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -At -c \"${SQLSELECT}\" $DBNAME"`
+DBLIST=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -At -c \"${DBLISTSQL}\" $DBNAME"`
 if [ $? -ne 0 ] || [ -z "$DBLIST" ] ; then
     err "データベース管理情報が読み取れません。処理を中止します" 99
 fi
-DBVERSION=`echo $DBLIST | awk '{i=split($0,arr,"|"); print arr[2]} ' `
-DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
 
 #ダウンロードファイル生成
 RST=`ORCXSMST1 $MSTDIR$DBLIST 2>&1`
@@ -177,6 +174,7 @@ do
                 cp $OFFLINEPATH/${UPD:35:$LEN} ./
                 echo ${UPD:35:$LEN} "複写が終了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
             else
+		echo "$OFFLINEPATH/"
                 err "${UPD:35:$LEN} 複写に失敗しました" 99
             fi
         fi
