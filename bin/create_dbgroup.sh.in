@@ -26,7 +26,12 @@ if [ "x${SUBDBHOST}" != "x" ] ; then
 	SUBHOSTPORT="${SUBDBHOST}"
     fi
 fi
-
+if [ "x${SSLMODE}" != "x" ] ; then
+    STRSSLMODE="sslmode \"${SSLMODE}\";"
+fi
+if [ "x${SUBSSLMODE}" != "x" ] ; then
+    STRSUBSSLMODE="sslmode \"${SUBSSLMODE}\";"
+fi
 : > $DBGROUPINC
 chown $ORCAUSER:$ORCAGROUP $DBGROUPINC
 chmod 0600 $DBGROUPINC
@@ -34,7 +39,7 @@ chmod 0600 $DBGROUPINC
 cat << _EOF_ >> $DBGROUPINC
 db_group {
  type "PostgreSQL";
- port "${HOSTPORT}";
+ port "${HOSTPORT}"; $STRSSLMODE
  name "${DBNAME}";
  user "${DBUSER}";
  password "${DBPASS}";
@@ -43,7 +48,7 @@ db_group {
 db_group "log" {
  priority 100;
  type "PostgreSQL";
- port "${SUBHOSTPORT}";
+ port "${SUBHOSTPORT}"; $STRSUBSSLMODE
  name "${SUBDBNAME}";
  user "${SUBDBUSER}";
  password "${SUBDBPASS}";
