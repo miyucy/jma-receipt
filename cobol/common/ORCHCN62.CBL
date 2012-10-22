@@ -168,6 +168,9 @@
                    07  WRK-YOH-NAME-2  PIC X(98).
            03  WRK-FILE-CNT        PIC 9(02).
            03  WRK-SYS-TIME        PIC 9(08).
+      *    ファイル名
+           03  WRK-CSV-FILE        PIC X(256).
+           03  WRK-DIRECTORY       PIC X(256).
       *ver.4.7
            03  WRK-SHO-NAME        PIC X(80).
            03  WRK-SHO-TANINAME    PIC X(20).
@@ -324,6 +327,11 @@
            COPY    "CPMKPASS.INC".
       *    ファイル存在チェック
            COPY    "CPORCSFILECHK.INC".
+      *    ＣＳＶファイル作成パラメタ
+           COPY    "CPORCSFILEENCODE.INC".
+      *    ディレクトリ作成パラメタ
+           COPY    "CPORCSMKDIR.INC".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -1339,6 +1347,10 @@
       *    ファイル名組み立て項目
            MOVE    WRK-SYS-TIME        TO  ORCSQRCVS62-SYSTIME
       *
+      *    ＣＳＶ保存ファイル名 
+           PERFORM 50034-QRCSVFILE-SEC
+           MOVE    WRK-CSV-FILE        TO  ORCSQRCVS62-CSV-FILENAME
+      *
            CALL    "ORCSQRCSV62"       USING
                                        SPA-AREA
                                        ORCSQRCSV62AREA
@@ -1478,6 +1490,42 @@
            .
        50031-QRPRT-WRITE-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ＣＳＶデータの変換　処理
+      *****************************************************************
+       50034-QRCSVFILE-SEC             SECTION.
+      *
+      *    ディレクトリ名取得
+      *    INITIALIZE                      ORCSMKDIRAREA
+      *    MOVE    "/tmp/jahistc"      TO  MKDIR-DIRECTORY
+      *    MOVE    "0755"              TO  MKDIR-MODE
+      *    MOVE    ZERO                TO  MKDIR-RESULT
+      *    CALL    "orcmkdir"          USING   ORCSMKDIRAREA
+      *
+           MOVE    "/var/lib/jma-receipt/jahistc/"
+                                       TO  WRK-DIRECTORY
+      *    ファイル名作成
+           MOVE    SPACE               TO  WRK-CSV-FILE
+           STRING  WRK-DIRECTORY       DELIMITED   BY  SPACE
+                   "JAHISTC"
+                   SPA-HOSPNUM         DELIMITED   BY  SIZE
+                   SPA-PTNUM           DELIMITED   BY  SPACE
+                   "-"
+                   "1"
+                   SPA-SRYYMD
+                   ORCHCN62-DRCD
+                   SPA-SYSYMD
+                   WRK-SYS-TIME
+                   ".csv"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-CSV-FILE
+           END-STRING
+      *
+           .
+       50034-QRCSVFILE-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    終了　　処理

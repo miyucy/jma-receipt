@@ -142,6 +142,8 @@
       *
       *    ＱＲ作成用
            COPY    "CPORCSQRENCODE.INC".
+      *    ＣＳＶファイル作成パラメタ
+           COPY    "CPORCSFILEENCODE.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -191,6 +193,7 @@
            MOVE    ORCSQRCVS62-FORM-ID TO  FILE-FORM-ID1
            MOVE    SPA-TERMID          TO  FILE-TERMID1
            MOVE    ORCSQRCVS62-SYSTIME TO  FILE-SYOHMS1
+      *
            OPEN    OUTPUT              QRCSV-FILE
            IF      STS-FILE1       NOT =   ZERO
                MOVE    9               TO  ORCSQRCVS62-ERRCD
@@ -212,6 +215,18 @@
       *    ＱＲイメージ作成
            IF      ORCSQRCVS62-ERRCD   =   ZERO
                PERFORM 400-QRIMAGE-SEC
+           END-IF
+      *
+      *    CSVデータ（JIS）の作成
+           INITIALIZE                      ORCSFILEENCODEAREA
+           MOVE    FILE-NAME1          TO  FLEN-INFILENAME
+           MOVE    ORCSQRCVS62-CSV-FILENAME
+                                       TO  FLEN-OUTFILENAME
+           MOVE    "3"                 TO  FLEN-OPTION
+           CALL    "orcfileencode"     USING
+                                       ORCSFILEENCODEAREA
+           IF      FLEN-RET        NOT =   ZERO
+               MOVE    9               TO  ORCSQRCVS62-ERRCD
            END-IF
       *
       *    ＱＲデータ削除

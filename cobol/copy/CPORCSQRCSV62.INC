@@ -24,7 +24,7 @@
       ************************************************************
       *
        01  ORCSQRCSV62AREA.
-      *    ファイル名（全桁設定）
+      *    帳票名
            03  ORCSQRCVS62-FORM-ID          PIC X(06).
       *
       *    共通情報
@@ -49,6 +49,8 @@
       *        05  ORCSQRCVS62-RECESRYKA     PIC  X(02).
       *        05  ORCSQRCVS62-SRYKANAME     PIC  X(40).
       *        医師情報
+      *        ドクターコード
+               05  ORCSQRCVS62-DRCD          PIC  X(05).
       *        フリガナ
                05  ORCSQRCVS62-DR-KANANAME   PIC  X(40).
       *        氏名
@@ -93,4 +95,7 @@
            03  ORCSQRCVS62-RET-COUNT          PIC 9(02).
       *    qrencode return-code
            03  ORCSQRCVS62-RET                PIC X(01).
+      *
+      *    ＱＲＣＳＶファイル名
+           03  ORCSQRCVS62-CSV-FILENAME       PIC X(256).
       *
