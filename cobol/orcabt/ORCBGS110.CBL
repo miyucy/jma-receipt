@@ -200,7 +200,6 @@
            03  CONST-SYA-KOHTAN    PIC 9(02)   VALUE 11.
            03  CONST-SYA-KOH2HEI   PIC 9(02)   VALUE 12.
            03  CONST-SYA-KOH3HEI   PIC 9(02)   VALUE 13.
-           03  CONST-SYA-TOTAL     PIC 9(02)   VALUE 99.
       *
            03  CONST-SYA-H01       PIC 9(02)   VALUE 1.
            03  CONST-SYA-H02       PIC 9(02)   VALUE 2.
@@ -218,17 +217,21 @@
            03  CONST-KOK-TAI       PIC 9(02)   VALUE 5.
            03  CONST-KOK-TAIKZK    PIC 9(02)   VALUE 6.
            03  CONST-KOK-TAIMISGK  PIC 9(02)   VALUE 7.
-           03  CONST-KOK-TOTAL     PIC 9(02)   VALUE 99.
       *
            03  CONST-KOU-KOU9      PIC 9(02)   VALUE 1.
            03  CONST-KOU-KOU7      PIC 9(02)   VALUE 2.
-           03  CONST-KOU-TOTAL     PIC 9(02)   VALUE 99.
+      *
+           03  CONST-TOTAL-GROUPID PIC 9(02)   VALUE 99.
       *
            03  CONST-HKNKBN2-TTL   PIC 9(02)   VALUE 99.
       *
        01  BGSSUM-AREA.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSSUM-//.
+      *
+       01  TBGSHKNJA-AREA.
+           COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
+                                   BY         //TBGSHKNJA-//.
       *
        01  TBGSMEI-AREA.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
@@ -626,23 +629,69 @@
       *****************************************************************
        200111-BGSHKNJA-EDIT-SEC       SECTION.
       *
-           EVALUATE    WRK-HOKEN
-           WHEN    CONST-KOKUHO
+           INITIALIZE                  BGSHKNJA-REC
+           MOVE    RECE10-NYUGAIKBN
+                                   TO  BGSHKNJA-NYUGAIKBN
+      *
+           EVALUATE    TRUE
+           WHEN  ( BGS100P-EDITKBN =   "0" )
+               MOVE    "0"         TO  BGSHKNJA-SKYSBT
+           WHEN  ( BGS100P-SRYYM   =   RECE10-SRYYM )
+               MOVE    "1"         TO  BGSHKNJA-SKYSBT
+           WHEN  ( RECE10-HENREIYM =   "000000" )
+               MOVE    "2"         TO  BGSHKNJA-SKYSBT
+           WHEN    OTHER
+               MOVE    "3"         TO  BGSHKNJA-SKYSBT
+           END-EVALUATE
+      *
+           IF    ( BGS100P-SYUKA-HKN (WRK-HOKEN)
+                                   =   1 )
+               MOVE    RECE10-RECEKA
+                                   TO  BGSHKNJA-RECEKA
+           ELSE
+                   MOVE    "00"    TO  BGSHKNJA-RECEKA
+           END-IF
+      *
+           MOVE    WRK-HOKEN       TO  BGSHKNJA-HOKEN
+           MOVE    RECE10-PREFKBN  TO  BGSHKNJA-PREFKBN
+           MOVE    RECE10-HKNJANUM-S
+                                   TO  BGSHKNJA-HKNJANUM
+      *
+           IF    ( WRK-HOKEN       =   CONST-KOKUHO )
+      *
+               COMPUTE CNT-KOKHKNJA   =   CNT-KOKHKNJA   +   1
       *
                PERFORM 9001-KOKUKO-GROUPID-EDIT-SEC
-               PERFORM 2001111-BGSHKNJA-EDIT-SEC
-      *
-               MOVE    CONST-KOK-TOTAL TO  WRK-GROUPID
-               PERFORM 2001111-BGSHKNJA-EDIT-SEC
-      *
-           WHEN    CONST-KOUKI
+               MOVE    WRK-GROUPID     TO  BGSHKNJA-GROUPID
+           ELSE
+               COMPUTE CNT-KOUHKNJA   =   CNT-KOUHKNJA   +   1
       *
                PERFORM 9001-KOUKI-GROUPID-EDIT-SEC
+               MOVE    WRK-GROUPID     TO  BGSHKNJA-GROUPID
+           END-IF
+      *
+           MOVE    BGSHKNJA-REC    TO  TBGSHKNJA-AREA
+      *
+           PERFORM 2001111-BGSHKNJA-EDIT-SEC
+      *
+           MOVE    TBGSHKNJA-AREA  TO  BGSHKNJA-REC
+           MOVE    CONST-TOTAL-GROUPID
+                                   TO  BGSHKNJA-GROUPID
+           PERFORM 2001111-BGSHKNJA-EDIT-SEC
+      *
+           IF    ( BGS100P-SYUKA-HKN (WRK-HOKEN)
+                                   =   1 )
+      *
+               MOVE    "GO"            TO  TBGSHKNJA-RECEKA
+               MOVE    TBGSHKNJA-AREA  TO  BGSHKNJA-REC
                PERFORM 2001111-BGSHKNJA-EDIT-SEC
       *
-               MOVE    CONST-KOU-TOTAL TO  WRK-GROUPID
+               MOVE    TBGSHKNJA-AREA  TO  BGSHKNJA-REC
+               MOVE    CONST-TOTAL-GROUPID
+                                       TO  BGSHKNJA-GROUPID
                PERFORM 2001111-BGSHKNJA-EDIT-SEC
-           END-EVALUATE
+      *
+           END-IF
       *
            .
        200111-BGSHKNJA-EDIT-EXT.
@@ -662,19 +711,6 @@
                REWRITE BGSHKNJA-REC
            ELSE
                WRITE   BGSHKNJA-REC
-      *
-               IF    ( WRK-GROUPID       =    CONST-KOK-TOTAL )
-                OR   ( WRK-GROUPID       =    CONST-KOU-TOTAL )
-                   CONTINUE
-               ELSE
-                   EVALUATE    WRK-HOKEN
-                   WHEN    CONST-KOKUHO
-                       COMPUTE CNT-KOKHKNJA   =   CNT-KOKHKNJA   +   1
-                   WHEN    CONST-KOUKI
-                       COMPUTE CNT-KOUHKNJA   =   CNT-KOUHKNJA   +   1
-                   END-EVALUATE
-               END-IF
-      *
            END-IF
       *
            .
@@ -735,9 +771,7 @@
       *
            WRITE   BGSMEI-REC
       *
-           IF    ( WRK-GROUPID       =    CONST-SYA-TOTAL )
-            OR   ( WRK-GROUPID       =    CONST-KOK-TOTAL )
-            OR   ( WRK-GROUPID       =    CONST-KOU-TOTAL )
+           IF    ( WRK-GROUPID       =    CONST-TOTAL-GROUPID )
                CONTINUE
            ELSE
                EVALUATE    WRK-HOKEN
@@ -1342,41 +1376,6 @@
        900-BGSHKNJA-READ-SEC          SECTION.
       *
            MOVE    ZERO            TO  FLG-BGSHKNJA
-      *
-           INITIALIZE                  BGSHKNJA-REC
-           MOVE    RECE10-NYUGAIKBN
-                                   TO  BGSHKNJA-NYUGAIKBN
-      *
-           EVALUATE    TRUE
-           WHEN  ( BGS100P-EDITKBN =   "0" )
-               MOVE    "0"         TO  BGSHKNJA-SKYSBT
-           WHEN  ( BGS100P-SRYYM   =   RECE10-SRYYM )
-               MOVE    "1"         TO  BGSHKNJA-SKYSBT
-           WHEN  ( RECE10-HENREIYM =   "000000" )
-               MOVE    "2"         TO  BGSHKNJA-SKYSBT
-           WHEN    OTHER
-               MOVE    "3"         TO  BGSHKNJA-SKYSBT
-           END-EVALUATE
-      *
-           IF    ( WRK-HOKEN       =   CONST-SYAHO
-             OR                        CONST-KOKUHO
-             OR                        CONST-KOUKI )
-               IF    ( BGS100P-SYUKA-HKN (WRK-HOKEN)
-                                   =   1 )
-                   MOVE    RECE10-RECEKA
-                                   TO  BGSHKNJA-RECEKA
-               ELSE
-                   MOVE    "00"    TO  BGSHKNJA-RECEKA
-               END-IF
-           ELSE
-                   MOVE    "00"    TO  BGSHKNJA-RECEKA
-           END-IF
-           MOVE    WRK-HOKEN       TO  BGSHKNJA-HOKEN
-           MOVE    RECE10-PREFKBN  TO  BGSHKNJA-PREFKBN
-           MOVE    RECE10-HKNJANUM-S
-                                   TO  BGSHKNJA-HKNJANUM
-      *
-           MOVE    WRK-GROUPID     TO  BGSHKNJA-GROUPID
       *
            READ    BGSHKNJA-FILE
            INVALID

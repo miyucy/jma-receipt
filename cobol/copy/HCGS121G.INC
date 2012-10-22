@@ -27,7 +27,7 @@
                 04  HCGS121G-HKNJANUM
                         PIC X(8).
                 04  HCGS121G-HKNJANAME
-                        PIC X(20).
+                        PIC X(50).
                 04  HCGS121G-HBTNUM
                         PIC X(2).
                 04  HCGS121G-HKNKBNNAME

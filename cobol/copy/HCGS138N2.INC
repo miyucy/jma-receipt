@@ -42,6 +42,8 @@
                         PIC X(9).
                 04  HCGS138N2-TTLTTLMONEY
                         PIC X(9).
+            02  HCGS138N2-HKNJANUM
+                        PIC X(8)        OCCURS 55 TIMES.
             02  HCGS138N2-SKYSBT
                         PIC X(50).
             02  HCGS138N2-HKNKBNNAME

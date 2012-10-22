@@ -149,6 +149,7 @@
            03  WRK-PRT-SAKYMD      PIC X(22).
            03  WRK-KANACHK-STR     PIC X(500).
            03  WRK-SRYKANAME1      PIC X(24).
+           03  WRK-SKYSBTNAME      PIC X(50).
            03  WRK-MAX             PIC 9(05).
            03  WRK-CSVDATA         PIC X(20000).
            03  WRK-NYUGAIKBN       PIC X(01).
@@ -175,6 +176,8 @@
                            VALUE   "入外区分".
                    07  CSV-H01-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H01-SKYSBT          PIC X(50)
+                           VALUE   "当月・当月外".
                    07  CSV-H01-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H01-SRYKAMEI        PIC X(50)
@@ -209,9 +212,9 @@
                            VALUE   "（ａ）＋（ｂ）".
                05  CSV-H01-R   REDEFINES   CSV-H01-VAL.
                    07  CSV-H01-ITEM            PIC X(50)
-                                               OCCURS  23.
+                                               OCCURS  24.
                05  CSV-H01-MAX                 PIC 9(05)
-                                               VALUE   23.
+                                               VALUE   24.
            03  CSV-H02-G.
                05  CSV-H02-VAL.
                    07  CSV-H02-PRTKBN          PIC X(50)
@@ -228,6 +231,8 @@
                            VALUE   "入外区分".
                    07  CSV-H02-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H02-SKYSBT          PIC X(50)
+                           VALUE   "当月・当月外".
                    07  CSV-H02-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H02-SRYKAMEI        PIC X(50)
@@ -238,9 +243,9 @@
                            VALUE   "件数".
                05  CSV-H02-R   REDEFINES   CSV-H02-VAL.
                    07  CSV-H02-ITEM            PIC X(50)
-                                               OCCURS  11.
+                                               OCCURS  12.
                05  CSV-H02-MAX                 PIC 9(05)
-                                               VALUE   11.
+                                               VALUE   12.
            03  CSV-H03-G.
                05  CSV-H03-VAL.
                    07  CSV-H03-PRTKBN          PIC X(50)
@@ -257,6 +262,8 @@
                            VALUE   "入外区分".
                    07  CSV-H03-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H03-SKYSBT          PIC X(50)
+                           VALUE   "当月・当月外".
                    07  CSV-H03-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H03-SRYKAMEI        PIC X(50)
@@ -275,9 +282,9 @@
                            VALUE   "窓口請求端数処理額".
                05  CSV-H03-R   REDEFINES   CSV-H03-VAL.
                    07  CSV-H03-ITEM            PIC X(50)
-                                               OCCURS  15.
+                                               OCCURS  16.
                05  CSV-H03-MAX                 PIC 9(05)
-                                               VALUE   15.
+                                               VALUE   16.
            03  CSV-H04-G.
                05  CSV-H04-VAL.
                    07  CSV-H04-PRTKBN          PIC X(50)
@@ -294,6 +301,8 @@
                            VALUE   "入外区分".
                    07  CSV-H04-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H04-SKYSBT          PIC X(50)
+                           VALUE   "当月・当月外".
                    07  CSV-H04-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H04-SRYKAMEI        PIC X(50)
@@ -316,11 +325,12 @@
                            VALUE   "保険診療収益".
                05  CSV-H04-R   REDEFINES   CSV-H04-VAL.
                    07  CSV-H04-ITEM            PIC X(50)
-                                               OCCURS  17.
+                                               OCCURS  18.
                05  CSV-H04-MAX                 PIC 9(05)
-                                               VALUE   17.
+                                               VALUE   18.
       *
        01  KEY-AREA.
+           03  KEY-SKYSBT          PIC X(01).
            03  KEY-RECEKA          PIC X(02).
       *
        01  THKN-AREA.
@@ -394,6 +404,32 @@
            03  CONST-KOUGAITTL     PIC 9(03) VALUE 30.
            03  CONST-ALLTTL        PIC 9(03) VALUE 31.
            03  CONST-THKN-MAX      PIC 9(03) VALUE 31.
+      *
+           03  CONST-GRP-SYA-KOU9HEI   PIC 9(02)   VALUE 1.
+           03  CONST-GRP-SYA-KOU9TAN   PIC 9(02)   VALUE 2.
+           03  CONST-GRP-SYA-KOU7HEI   PIC 9(02)   VALUE 3.
+           03  CONST-GRP-SYA-KOU7TAN   PIC 9(02)   VALUE 4.
+           03  CONST-GRP-SYA-HONHEI    PIC 9(02)   VALUE 5.
+           03  CONST-GRP-SYA-HONTAN    PIC 9(02)   VALUE 6.
+           03  CONST-GRP-SYA-KZKHEI    PIC 9(02)   VALUE 7.
+           03  CONST-GRP-SYA-KZKTAN    PIC 9(02)   VALUE 8.
+           03  CONST-GRP-SYA-MISGKHEI  PIC 9(02)   VALUE 9.
+           03  CONST-GRP-SYA-MISGKTAN  PIC 9(02)   VALUE 10.
+           03  CONST-GRP-SYA-KOHTAN    PIC 9(02)   VALUE 11.
+           03  CONST-GRP-SYA-KOH2HEI   PIC 9(02)   VALUE 12.
+           03  CONST-GRP-SYA-KOH3HEI   PIC 9(02)   VALUE 13.
+      *
+           03  CONST-GRP-KOK-IPNKOU9   PIC 9(02)   VALUE 1.
+           03  CONST-GRP-KOK-IPNKOU7   PIC 9(02)   VALUE 2.
+           03  CONST-GRP-KOK-IPN       PIC 9(02)   VALUE 3.
+           03  CONST-GRP-KOK-IPNMISGK  PIC 9(02)   VALUE 4.
+           03  CONST-GRP-KOK-TAI       PIC 9(02)   VALUE 5.
+           03  CONST-GRP-KOK-TAIKZK    PIC 9(02)   VALUE 6.
+           03  CONST-GRP-KOK-TAIMISGK  PIC 9(02)   VALUE 7.
+      *
+           03  CONST-GRP-KOU-KOU9      PIC 9(02)   VALUE 1.
+           03  CONST-GRP-KOU-KOU7      PIC 9(02)   VALUE 2.
+      *
            03  CONST-HKNMEI-G.
                05  CONST-HKNMEI01  PIC X(50)
                                    VALUE "社保高９公費併用".
@@ -465,6 +501,9 @@
        01  TTLHKN-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //TTLHKN-//.
+      *
+       01  BGSF01-REC.
+           COPY    "CPBGSF01.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -579,6 +618,24 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           IF    ( BGS100P-EDITKBN =   "1" )
+               MOVE    "1"         TO  KEY-SKYSBT
+               PERFORM 201-MAIN-SEC
+               MOVE    "2"         TO  KEY-SKYSBT
+               PERFORM 201-MAIN-SEC
+           ELSE
+               MOVE    SPACE       TO  KEY-SKYSBT
+               PERFORM 201-MAIN-SEC
+           END-IF
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    主　処理
+      *****************************************************************
+       201-MAIN-SEC                SECTION.
+      *
            IF    ( BGS100P-SYUKA   =   1 )
                PERFORM VARYING IDX-RECEKA  FROM    1   BY  1
                        UNTIL ( IDX-RECEKA  >   BGS100P-RECEKA-MAX )
@@ -596,7 +653,7 @@
            END-IF
       *
            .
-       200-MAIN-EXT.
+       201-MAIN-EXT.
            EXIT.
       *****************************************************************
       *    主　処理
@@ -608,6 +665,17 @@
       *
            INITIALIZE                      THKN-AREA
                                            TKOH-AREA
+      *
+           MOVE    SPACE           TO      WRK-SKYSBTNAME
+           IF    ( BGS100P-EDITKBN =   "1" )
+               EVALUATE    KEY-SKYSBT
+               WHEN    "1"
+                   MOVE  "当月診療分"  TO      WRK-SKYSBTNAME
+               WHEN    "2"
+                   MOVE  "当月診療分以外（月遅れ請求、返戻分再請求）"
+                                       TO      WRK-SKYSBTNAME
+               END-EVALUATE
+           END-IF
       *
            MOVE    SPACE           TO      WRK-SRYKANAME1
            IF    ( BGS100P-SYUKA   =   1 )
@@ -731,89 +799,56 @@
       *****************************************************************
        200111-SYAHO-SKY-EDIT-SEC       SECTION.
       *
-           EVALUATE    BGSSKY-RECESBT
-           WHEN    "1117"
-           WHEN    "1118"
-               MOVE    CONST-SYAKOU9TAN    TO  IDX2
-               PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1127"
-           WHEN    "1128"
-           WHEN    "1137"
-           WHEN    "1138"
-           WHEN    "1147"
-           WHEN    "1148"
-           WHEN    "1157"
-           WHEN    "1158"
+           EVALUATE    BGSSKY-GROUPID
+      *
+           WHEN    CONST-GRP-SYA-KOU9HEI
                MOVE    CONST-SYAKOU9HEI    TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1119"
-           WHEN    "1110"
-               MOVE    CONST-SYAKOU7TAN    TO  IDX2
+      *
+           WHEN    CONST-GRP-SYA-KOU9TAN
+               MOVE    CONST-SYAKOU9TAN    TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1129"
-           WHEN    "1120"
-           WHEN    "1139"
-           WHEN    "1130"
-           WHEN    "1149"
-           WHEN    "1140"
-           WHEN    "1159"
-           WHEN    "1150"
+      *
+           WHEN    CONST-GRP-SYA-KOU7HEI
                MOVE    CONST-SYAKOU7HEI    TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1111"
-           WHEN    "1112"
-               MOVE    CONST-SYAHONTAN     TO  IDX2
+      *
+           WHEN    CONST-GRP-SYA-KOU7TAN
+               MOVE    CONST-SYAKOU7TAN    TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1121"
-           WHEN    "1122"
-           WHEN    "1131"
-           WHEN    "1132"
-           WHEN    "1141"
-           WHEN    "1142"
-           WHEN    "1151"
-           WHEN    "1152"
+      *
+           WHEN    CONST-GRP-SYA-HONHEI
                MOVE    CONST-SYAHONHEI     TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1115"
-           WHEN    "1116"
-               MOVE    CONST-SYAKZKTAN     TO  IDX2
+      *
+           WHEN    CONST-GRP-SYA-HONTAN
+               MOVE    CONST-SYAHONTAN     TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1125"
-           WHEN    "1126"
-           WHEN    "1135"
-           WHEN    "1136"
-           WHEN    "1145"
-           WHEN    "1146"
-           WHEN    "1155"
-           WHEN    "1156"
+      *
+           WHEN    CONST-GRP-SYA-KZKHEI
                MOVE    CONST-SYAKZKHEI     TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1113"
-           WHEN    "1114"
-               MOVE    CONST-SYAMISGKTAN   TO  IDX2
+      *
+           WHEN    CONST-GRP-SYA-KZKTAN
+               MOVE    CONST-SYAKZKTAN     TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1123"
-           WHEN    "1124"
-           WHEN    "1133"
-           WHEN    "1134"
-           WHEN    "1143"
-           WHEN    "1144"
-           WHEN    "1153"
-           WHEN    "1154"
+      *
+           WHEN    CONST-GRP-SYA-MISGKHEI
                MOVE    CONST-SYAMISGKHEI   TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1211"
-           WHEN    "1212"
-           WHEN    "1221"
-           WHEN    "1222"
-           WHEN    "1231"
-           WHEN    "1232"
-           WHEN    "1241"
-           WHEN    "1242"
+      *
+           WHEN    CONST-GRP-SYA-MISGKTAN
+               MOVE    CONST-SYAMISGKTAN   TO  IDX2
+               PERFORM 2001111-SKY-SUM-SEC
+      *
+           WHEN    CONST-GRP-SYA-KOHTAN
+           WHEN    CONST-GRP-SYA-KOH2HEI
+           WHEN    CONST-GRP-SYA-KOH3HEI
                MOVE    CONST-SYAKOH        TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
+      *
            WHEN    OTHER
-               DISPLAY "RECESBT[" BGSSKY-RECESBT "]" BGSSKY-REC
+               DISPLAY "GROUPID[" BGSSKY-GROUPID "]" BGSSKY-REC
            END-EVALUATE
       *
                MOVE    CONST-SYATTL        TO  IDX2
@@ -827,105 +862,38 @@
       *****************************************************************
        200111-KOKUHO-SKY-EDIT-SEC      SECTION.
       *
-           EVALUATE    BGSSKY-RECESBT
-           WHEN    "1117"
-           WHEN    "1118"
-           WHEN    "1127"
-           WHEN    "1128"
-           WHEN    "1138"
-           WHEN    "1138"
-           WHEN    "1147"
-           WHEN    "1148"
-           WHEN    "1157"
-           WHEN    "1158"
+           EVALUATE    BGSSKY-GROUPID
+      *
+           WHEN    CONST-GRP-KOK-IPNKOU9
                MOVE    CONST-KOKIPNKOU9    TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1119"
-           WHEN    "1110"
-           WHEN    "1129"
-           WHEN    "1120"
-           WHEN    "1139"
-           WHEN    "1130"
-           WHEN    "1149"
-           WHEN    "1140"
-           WHEN    "1159"
-           WHEN    "1150"
+      *
+           WHEN    CONST-GRP-KOK-IPNKOU7
                MOVE    CONST-KOKIPNKOU7    TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1111"
-           WHEN    "1112"
-           WHEN    "1121"
-           WHEN    "1122"
-           WHEN    "1131"
-           WHEN    "1132"
-           WHEN    "1141"
-           WHEN    "1142"
-           WHEN    "1151"
-           WHEN    "1152"
+      *
+           WHEN    CONST-GRP-KOK-IPN
                MOVE    CONST-KOKIPNHON     TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1115"
-           WHEN    "1116"
-           WHEN    "1125"
-           WHEN    "1126"
-           WHEN    "1135"
-           WHEN    "1136"
-           WHEN    "1145"
-           WHEN    "1146"
-           WHEN    "1155"
-           WHEN    "1156"
-               MOVE    CONST-KOKIPNHON     TO  IDX2
-               PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1113"
-           WHEN    "1114"
-           WHEN    "1123"
-           WHEN    "1124"
-           WHEN    "1133"
-           WHEN    "1134"
-           WHEN    "1143"
-           WHEN    "1144"
-           WHEN    "1153"
-           WHEN    "1154"
+      *
+           WHEN    CONST-GRP-KOK-IPNMISGK
                MOVE    CONST-KOKIPNMISGK   TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1411"
-           WHEN    "1412"
-           WHEN    "1421"
-           WHEN    "1422"
-           WHEN    "1431"
-           WHEN    "1432"
-           WHEN    "1441"
-           WHEN    "1442"
-           WHEN    "1451"
-           WHEN    "1452"
+      *
+           WHEN    CONST-GRP-KOK-TAI
                MOVE    CONST-KOKTAIHON     TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1415"
-           WHEN    "1416"
-           WHEN    "1425"
-           WHEN    "1426"
-           WHEN    "1435"
-           WHEN    "1436"
-           WHEN    "1445"
-           WHEN    "1446"
-           WHEN    "1455"
-           WHEN    "1456"
+      *
+           WHEN    CONST-GRP-KOK-TAIKZK
                MOVE    CONST-KOKTAIKZK     TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1413"
-           WHEN    "1414"
-           WHEN    "1423"
-           WHEN    "1424"
-           WHEN    "1433"
-           WHEN    "1434"
-           WHEN    "1443"
-           WHEN    "1444"
-           WHEN    "1453"
-           WHEN    "1454"
+      *
+           WHEN    CONST-GRP-KOK-TAIMISGK
                MOVE    CONST-KOKTAIMISGK   TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
+      *
            WHEN    OTHER
-               DISPLAY "RECESBT[" BGSSKY-RECESBT "]" BGSSKY-REC
+               DISPLAY "GROUPID[" BGSSKY-GROUPID "]" BGSSKY-REC
            END-EVALUATE
       *
            MOVE    CONST-KOKTTL            TO  IDX2
@@ -939,33 +907,18 @@
       *****************************************************************
        200111-KOUKI-SKY-EDIT-SEC       SECTION.
       *
-           EVALUATE    BGSSKY-RECESBT
-           WHEN    "1317"
-           WHEN    "1318"
-           WHEN    "1327"
-           WHEN    "1328"
-           WHEN    "1337"
-           WHEN    "1338"
-           WHEN    "1347"
-           WHEN    "1348"
-           WHEN    "1357"
-           WHEN    "1358"
+           EVALUATE    BGSSKY-GROUPID
+      *
+           WHEN    CONST-GRP-KOU-KOU9
                MOVE    CONST-KOUKOU9   TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
-           WHEN    "1319"
-           WHEN    "1310"
-           WHEN    "1329"
-           WHEN    "1320"
-           WHEN    "1339"
-           WHEN    "1330"
-           WHEN    "1349"
-           WHEN    "1340"
-           WHEN    "1359"
-           WHEN    "1350"
+      *
+           WHEN    CONST-GRP-KOU-KOU7
                MOVE    CONST-KOUKOU7   TO  IDX2
                PERFORM 2001111-SKY-SUM-SEC
+      *
            WHEN    OTHER
-               DISPLAY "RECESBT[" BGSSKY-RECESBT "]" BGSSKY-REC
+               DISPLAY "GROUPID[" BGSSKY-GROUPID "]" BGSSKY-REC
            END-EVALUATE
       *
            MOVE    CONST-KOUTTL        TO  IDX2
@@ -1268,6 +1221,7 @@
                                        TO  HCGS139N-NYUGAI
            END-IF
            MOVE    WRK-PRT-SAKYMD      TO  HCGS139N-SYSYMD
+           MOVE    WRK-SKYSBTNAME      TO  HCGS139N-SKYSBT
            MOVE    WRK-SRYKANAME1      TO  HCGS139N-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
@@ -1716,6 +1670,9 @@
                                    TO  WRK-ITEM
            PERFORM 801-CSVDATA-EDIT-SEC
       *
+           MOVE  WRK-SKYSBTNAME    TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
            MOVE  KEY-RECEKA        TO  WRK-ITEM
            PERFORM 801-CSVDATA-EDIT-SEC
       *
@@ -1750,6 +1707,7 @@
            MOVE    WRK-PRT-SRYYM       TO  HCGS139G-SRYYM
            MOVE    "外来"              TO  HCGS139G-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS139G-SYSYMD
+           MOVE    WRK-SKYSBTNAME      TO  HCGS139G-SKYSBT
            MOVE    WRK-SRYKANAME1      TO  HCGS139G-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
@@ -2437,18 +2395,8 @@
       *
                    MOVE    1       TO  FLG-LOOPEND
       *
-                   IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
-                       IF    ( BGS100P-NYUGAIKBN
-                                           NOT =   BGSSKY-NYUGAIKBN )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
-      *
-                   IF    ( KEY-RECEKA      NOT =   SPACE )
-                       IF    ( KEY-RECEKA  NOT =   BGSSKY-RECEKA )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
+                   MOVE    BGSSKY-REC  TO  BGSF01-REC
+                   PERFORM 9001-SKIP-CHK-SEC
       *
                END-READ
            END-PERFORM
@@ -2475,18 +2423,8 @@
       *
                    MOVE    1       TO  FLG-LOOPEND
       *
-                   IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
-                       IF    ( BGS100P-NYUGAIKBN
-                                           NOT =   BGSKOH-NYUGAIKBN )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
-      *
-                   IF    ( KEY-RECEKA      NOT =   SPACE )
-                       IF    ( KEY-RECEKA  NOT =   BGSKOH-RECEKA )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
+                   MOVE    BGSKOH-REC  TO  BGSF01-REC
+                   PERFORM 9001-SKIP-CHK-SEC
       *
                END-READ
            END-PERFORM
@@ -2513,18 +2451,8 @@
       *
                    MOVE    1       TO  FLG-LOOPEND
       *
-                   IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
-                       IF    ( BGS100P-NYUGAIKBN
-                                           NOT =   BGSETC-NYUGAIKBN )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
-      *
-                   IF    ( KEY-RECEKA      NOT =   SPACE )
-                       IF    ( KEY-RECEKA  NOT =   BGSETC-RECEKA )
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
+                   MOVE    BGSETC-REC  TO  BGSF01-REC
+                   PERFORM 9001-SKIP-CHK-SEC
       *
                END-READ
            END-PERFORM
@@ -2532,6 +2460,40 @@
            .
       *
        900-BGSETC-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    読み飛ばしチェック処理
+      *****************************************************************
+       9001-SKIP-CHK-SEC           SECTION.
+      *
+           IF    ( BGS100P-NYUGAIKBN   =   "1" OR "2" )
+               IF    ( BGS100P-NYUGAIKBN
+                                   NOT =   BGSF01-NYUGAIKBN )
+                   MOVE    ZERO    TO  FLG-LOOPEND
+               END-IF
+      *
+           END-IF
+      *
+           IF    ( KEY-SKYSBT      NOT =   SPACE )
+               IF   (( KEY-SKYSBT      =   "1" )
+                AND  ( BGSF01-SKYSBT   =   "1" ))
+                 OR (( KEY-SKYSBT      =   "2" )
+                AND  ( BGSF01-SKYSBT   =   "2" OR "3" ))
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-LOOPEND
+               END-IF
+           END-IF
+      *
+           IF    ( KEY-RECEKA      NOT =   SPACE )
+               IF    ( KEY-RECEKA  NOT =   BGSF01-RECEKA )
+                   MOVE    ZERO    TO  FLG-LOOPEND
+               END-IF
+           END-IF
+      *
+           .
+      *
+       9001-SKIP-CHK-EXT.
            EXIT.
       *****************************************************************
       *    システム管理検索処理

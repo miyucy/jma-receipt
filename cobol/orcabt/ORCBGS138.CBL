@@ -178,6 +178,7 @@
            03  WRK-DATAKBN         PIC X(01).
            03  WRK-DATAKBNMEI      PIC X(50).
            03  WRK-HKNKBNNAME      PIC X(20).
+           03  WRK-HKNJANUM        PIC X(08).
            03  WRK-HKNJANAME       PIC X(24).
       *
        01  CSV-HEAD-AREA.
@@ -268,9 +269,9 @@
                            VALUE   "点数".
                05  CSV-H02-R   REDEFINES   CSV-H02-VAL.
                    07  CSV-H02-ITEM            PIC X(50)
-                                               OCCURS  13.
+                                               OCCURS  14.
                05  CSV-H02-MAX                 PIC 9(05)
-                                               VALUE   13.
+                                               VALUE   14.
            03  CSV-H03-G.
                05  CSV-H03-VAL.
                    07  CSV-H03-PRTKBN          PIC X(50)
@@ -307,9 +308,9 @@
                            VALUE   "窓口請求端数処理額".
                05  CSV-H03-R   REDEFINES   CSV-H03-VAL.
                    07  CSV-H03-ITEM            PIC X(50)
-                                               OCCURS  15.
+                                               OCCURS  16.
                05  CSV-H03-MAX                 PIC 9(05)
-                                               VALUE   15.
+                                               VALUE   16.
            03  CSV-H04-G.
                05  CSV-H04-VAL.
                    07  CSV-H04-PRTKBN          PIC X(50)
@@ -1073,6 +1074,7 @@
            INITIALIZE                  TTLHKN-REC
            MOVE    "1"             TO  KEY-NYUGAIKBN
            MOVE    ZERO            TO  CNT-CSV
+           MOVE    SPACE           TO  WRK-HKNJANUM
            MOVE    SPACE           TO  WRK-HKNJANAME
       *
            OPEN    INPUT       BGSHKNJA-FILE
@@ -1143,12 +1145,10 @@
            IF    ( KEY-HKNJANUM    NOT =   BGSHKNJA-HKNJANUM )
             OR   ( CNT-LINE            =   1 )
       *
+               MOVE    HKNJA-HKNJANUM  TO  HCGS138N2-HKNJANUM (CNT-LINE)
+      *
                IF    ( HKNJA-HKNJANAME NOT =   SPACE )
                    STRING  HKNJA-HKNJANAME     DELIMITED BY SPACE
-                   INTO    HCGS138N2-HKNJANAME (CNT-LINE)
-                   END-STRING
-               ELSE
-                   STRING  BGSHKNJA-HKNJANUM   DELIMITED BY SIZE
                    INTO    HCGS138N2-HKNJANAME (CNT-LINE)
                    END-STRING
                END-IF
@@ -1618,6 +1618,9 @@
                    MOVE    CSV-H01-ITEM (IDXI)
                                        TO  WRK-ITEM
                    IF    ( WRK-ITEM    =   "保険区分" )
+                       MOVE    "保険者番号"
+                                       TO  WRK-ITEM
+                       PERFORM 801-CSVDATA-EDIT-SEC
                        MOVE    "保険者一覧"
                                        TO  WRK-ITEM
                        PERFORM 801-CSVDATA-EDIT-SEC
@@ -1640,7 +1643,7 @@
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   CNT-LINE )
       *
-               IF    ( HCGS138N2-HKNJANAME (IDX2)
+               IF    ( HCGS138N2-HKNJANUM (IDX2)
                                    NOT =   SPACE )
                  OR  ( HCGS138N2-HKNKBNNAME (IDX2)
                                    NOT =   SPACE )
@@ -1671,11 +1674,17 @@
            MOVE    "保険者別"      TO  WRK-DATAKBNMEI
            PERFORM 20011-CSV-KEY-EDIT-SEC
       *
-           IF    ( HCGS138N2-HKNJANAME (IDX2)
+           IF    ( HCGS138N2-HKNJANUM (IDX2)
                                        NOT =   SPACE )
+               MOVE    HCGS138N2-HKNJANUM (IDX2)
+                                   TO  WRK-HKNJANUM
                MOVE    HCGS138N2-HKNJANAME (IDX2)
                                    TO  WRK-HKNJANAME
            END-IF
+      *
+           MOVE    WRK-HKNJANUM
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
       *
            MOVE    WRK-HKNJANAME
                                    TO  WRK-ITEM
@@ -1898,6 +1907,8 @@
            INITIALIZE                  TTLHKN-REC
            MOVE    "2"             TO  KEY-NYUGAIKBN
            MOVE    ZERO            TO  CNT-CSV
+           MOVE    SPACE           TO  WRK-HKNJANUM
+           MOVE    SPACE           TO  WRK-HKNJANAME
       *
            OPEN    INPUT       BGSHKNJA-FILE
       *
@@ -1972,12 +1983,10 @@
                    COMPUTE CNT-LINE = CNT-LINE + 1
                END-IF
       *
+               MOVE    HKNJA-HKNJANUM  TO  HCGS138G2-HKNJANUM (CNT-LINE)
+      *
                IF    ( HKNJA-HKNJANAME NOT =   SPACE )
                    STRING  HKNJA-HKNJANAME     DELIMITED BY SPACE
-                   INTO    HCGS138G2-HKNJANAME (CNT-LINE)
-                   END-STRING
-               ELSE
-                   STRING  BGSHKNJA-HKNJANUM   DELIMITED BY SIZE
                    INTO    HCGS138G2-HKNJANAME (CNT-LINE)
                    END-STRING
                END-IF
@@ -2299,6 +2308,9 @@
                    MOVE    CSV-H04-ITEM (IDXI)
                                        TO  WRK-ITEM
                    IF    ( WRK-ITEM    =   "保険区分" )
+                       MOVE    "保険者番号"
+                                       TO  WRK-ITEM
+                       PERFORM 801-CSVDATA-EDIT-SEC
                        MOVE    "保険者一覧"
                                        TO  WRK-ITEM
                        PERFORM 801-CSVDATA-EDIT-SEC
@@ -2351,11 +2363,17 @@
            MOVE    "保険者別"      TO  WRK-DATAKBNMEI
            PERFORM 20011-CSV-KEY-EDIT-SEC
       *
-           IF    ( HCGS138G2-HKNJANAME (IDX2)
+           IF    ( HCGS138G2-HKNJANUM (IDX2)
                                        NOT =   SPACE )
+               MOVE    HCGS138G2-HKNJANUM (IDX2)
+                                   TO  WRK-HKNJANUM
                MOVE    HCGS138G2-HKNJANAME (IDX2)
                                    TO  WRK-HKNJANAME
            END-IF
+      *
+           MOVE    WRK-HKNJANUM
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
       *
            MOVE    WRK-HKNJANAME
                                    TO  WRK-ITEM
@@ -2756,6 +2774,15 @@
                    IF    ( BGSHKNJA-NYUGAIKBN
                                            NOT =   KEY-NYUGAIKBN )
                        MOVE    ZERO    TO  FLG-LOOPEND
+                   END-IF
+      *
+                   IF    ( BGS100P-SYUKA-KOK   =   1 )
+                    AND  ( KEY-RECEKA          =   SPACE )
+                       IF    ( BGSHKNJA-RECEKA =   "GO" )
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO    TO  FLG-LOOPEND
+                       END-IF
                    END-IF
       *
                    MOVE    BGSHKNJA-REC    TO  BGSF01-REC

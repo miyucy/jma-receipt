@@ -30,6 +30,8 @@
                         PIC X(9).
                 04  HCGS138G2-TTLMONEY
                         PIC X(9).
+            02  HCGS138G2-HKNJANUM
+                        PIC X(8)        OCCURS 55 TIMES.
             02  HCGS138G2-SKYSBT
                         PIC X(50).
             02  HCGS138G2-HKNKBNNAME
