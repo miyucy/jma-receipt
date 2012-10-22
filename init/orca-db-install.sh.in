@@ -7,6 +7,15 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
 fi
 . $JMARECEIPT_ENV
 
+err () {
+  MSG=$1
+  NUM=$2
+  delete_pgpass
+  echo "ERROR: ${MSG}" | tee -a $INSTALLLOG $THISTIMELOG
+  exit ${NUM}
+}
+
+create_pgpass
 TMPDIR=/var/tmp
 MSTDIR=orca-$(date +%Y%m%d)
 VERSIONFL=${DOCDIR}/version
@@ -36,16 +45,12 @@ orcawget () {
     fi
     RST=`orcadt_verify.rb --dir . --cacert ${CACERTFILE} ${DBUPGRADEPATH}/$1.p7m 2>&1`
     RC=$?
-    echo "$RST" | tee -a $INSTALLLOG $THISTIMELOG
-#接続確認
-    if [ $RC -eq 0 ] ; then
-#ファイルサイズチェック
-        if [ -s $DWNFL ] ; then
-            return 0;
-        else
-            return 1;
-        fi
+#接続確認 && ファイルサイズチェック
+    if [ $RC -eq 0 ] && [ -s $DWNFL ] ; then
+	echo "$RST" | tee -a $INSTALLLOG $THISTIMELOG > /dev/null
+        return 0;
     else
+	echo "$RST" | tee -a $INSTALLLOG $THISTIMELOG
         return 1;
     fi
 }
@@ -89,16 +94,14 @@ VERDATA2=`echo $VERDATA | awk '{gsub(/[)]/,""); print } ' `
 
 DBLIST=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -At -c \"${SQLSELECT}\" $DBNAME"`
 if [ $? -ne 0 ] || [ -z "$DBLIST" ] ; then
-    echo "ERROR: データベース管理情報が読み取れません。処理を中止します" | tee -a $INSTALLLOG $THISTIMELOG
-    exit 99
+    err "データベース管理情報が読み取れません。処理を中止します" 99
 fi
 DBVERSION=`echo $DBLIST | awk '{i=split($0,arr,"|"); print arr[2]} ' `
 DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
 if [ "$DBVERSION1" -gt "$VERDATA1" ] ; then
-    echo "ERROR: ダウングレードの処理となっています。処理を中止します" | tee -a $INSTALLLOG $THISTIMELOG
     echo "Database: ${DBVERSION1}" | tee -a $INSTALLLOG $THISTIMELOG
     echo " Version: ${VERDATA1}"   | tee -a $INSTALLLOG $THISTIMELOG
-    exit 99
+    err "ダウングレードの処理となっています。処理を中止します" 99
 fi
 
 #DB管理情報更新
@@ -120,28 +123,34 @@ cd $TMPDIR/$MSTDIR
 rm -f *
 if  [ $OFFLINE = "offline" ]; then
     if  [ ! -e $OFFLINEPATH/$UPDKANRIFILE ]; then
-        echo "ERROR: DBレコード管理情報がありませんでした" | tee -a $INSTALLLOG $THISTIMELOG
-        exit 99
+        err "DBレコード管理情報がありませんでした" 99
     fi
     cp $OFFLINEPATH/$UPDKANRIFILE ./
-    echo "DBレコード管理情報を複写しました" | tee -a $INSTALLLOG $THISTIMELOG
+    echo "OFFLINE: DBレコード管理情報を複写しました" | tee -a $INSTALLLOG $THISTIMELOG
 else
     #センタからのDB構造体ダウンロード
     if orcawget $UPDKANRIFILE ; then
-        echo "センタからのDBレコード管理情報のダウンロードが終了しました" | tee -a $INSTALLLOG $THISTIMELOG
+        echo "ONLINE: センタからのDBレコード管理情報のダウンロードが終了しました" | tee -a $INSTALLLOG $THISTIMELOG
     else
-        echo "ERROR: センタからのDBレコード管理情報のダウンロードに失敗しました" | tee -a $INSTALLLOG $THISTIMELOG
-        exit 99
+        err "センタからのDBレコード管理情報のダウンロードに失敗しました" 99
     fi
 fi
+
+DBLIST=`su - $ORCAUSER -c "psql ${DBCONNOPTION} -At -c \"${SQLSELECT}\" $DBNAME"`
+if [ $? -ne 0 ] || [ -z "$DBLIST" ] ; then
+    err "データベース管理情報が読み取れません。処理を中止します" 99
+fi
+DBVERSION=`echo $DBLIST | awk '{i=split($0,arr,"|"); print arr[2]} ' `
+DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
 
 #ダウンロードファイル生成
 RST=`ORCXSMST1 $MSTDIR$DBLIST 2>&1`
 RC=$?
-echo "$RST" | tee -a $INSTALLLOG $THISTIMELOG
 if [ $RC -ne 0 ] ; then
-    echo "ERROR: ダウンロードファイル生成に失敗しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
-    exit 99
+    echo "$RST" | tee -a $INSTALLLOG $THISTIMELOG
+    err "ダウンロードファイル生成に失敗しました" 99
+else
+    echo "$RST" | tee -a $INSTALLLOG $THISTIMELOG > /dev/null
 fi
 #更新用ダウンロードファイル受信
 #ファイルサイズチェック
@@ -150,6 +159,7 @@ if [ -s $UPDFILE ] ; then
 else
     echo "更新用ファイルはありません" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     rm -r $TMPDIR/$MSTDIR
+    delete_pgpass
     exit 0
 fi
 
@@ -167,16 +177,14 @@ do
                 cp $OFFLINEPATH/${UPD:35:$LEN} ./
                 echo ${UPD:35:$LEN} "複写が終了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
             else
-                echo "ERROR: ${UPD:35:$LEN} 複写に失敗しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
-                exit 99
+                err "${UPD:35:$LEN} 複写に失敗しました" 99
             fi
         fi
     else
         if orcawget ${UPD:35:$LEN} ; then
             echo ${UPD:35:$LEN} "ダウンロードが終了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
         else
-            echo "ERROR: ${UPD:35:$LEN} ダウンロードに失敗しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
-            exit 99
+            err "${UPD:35:$LEN} ダウンロードに失敗しました" 99
         fi
     fi
 done
@@ -185,10 +193,9 @@ for UPD in $UPDLIST
 do
     echo $UPD 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     if orcatar $UPD ; then
-        echo $UPD "解凍処理が終了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
+        echo "$UPD 解凍処理が終了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
     else
-        echo $UPD "解凍処理に失敗しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
-        exit 99
+        err "$UPD 解凍処理に失敗しました" 99
     fi
 done
 #DB構造変更処理
@@ -211,8 +218,7 @@ do
     for LOG in $LOGLIST
     do
         if [ "${LOG:0:6}" = "ERROR:" ] ; then
-            echo "ERROR: $UDP2 更新処理に失敗しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
-            exit 99
+            err "$UDP2 更新処理に失敗しました" 99
         fi
     done
 
@@ -224,4 +230,5 @@ done
 echo  "全ての処理が完了しました" 2>&1 | tee -a $INSTALLLOG $THISTIMELOG
 
 rm -r $TMPDIR/$MSTDIR
-
+delete_pgpass
+exit 0

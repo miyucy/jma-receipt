@@ -79,7 +79,6 @@ fi
 
 echo
 
-create_pgpass
 RC=0
 echo "$INITDIR"/orca-db-create.sh ......
 bash "$INITDIR"/orca-db-create.sh
@@ -98,7 +97,7 @@ if [ $? -eq 0 ] ; then
 else
     RC=1
 fi
-delete_pgpass
+
 
 if [ ${RC} -eq 0 ] ; then
     echo "$BINDIR"/jma-receipt-db-check.sh .....

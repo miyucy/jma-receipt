@@ -8,7 +8,6 @@ fi
 . $JMARECEIPT_ENV
 
 VERSIONFL=${DOCDIR}/version
-DBKANRIFL=/tmp/jma-receipt-db-version
 
 SQLSELECT="SELECT * FROM TBL_DBKANRI WHERE KANRICD='ORCADB00';"
 
@@ -37,7 +36,6 @@ else
     EXITMODE=file
 fi
 
-rm -f $DBKANRIFL
 
 VERLIST=`awk '/version/{gsub(/\t| |;/,""); print} ' $VERSIONFL`
 VERDATA=`echo $VERLIST | awk '{i=split($0,arr,"("); print arr[i]} ' `
@@ -46,10 +44,13 @@ VERDATA1=`echo $VERDATA | awk '{gsub(/[-)]/,""); print } ' `
 #echo "VERDATA1=" $VERDATA1
 
 create_pgpass
-su - $ORCAUSER -c "psql $DBCONNOPTION -c \"$SQLSELECT\" -o $DBKANRIFL $DBNAME"
+DBLIST=`su - $ORCAUSER -c "psql $DBCONNOPTION -At -c \"$SQLSELECT\" $DBNAME"`
+RC=$?
 delete_pgpass
-
-DBLIST=`awk '/--------|row/ {skip = ! skip; next};/};/ {exit}; (skip == 1) {gsub(/\t| |;/,""); print} ' $DBKANRIFL`
+if [ $RC -ne 0 ] || [ -z "$DBLIST" ] ; then
+    echo "ERROR: データベース管理情報が読み取れません。処理を中止します"
+    exit 99
+fi
 
 DBVERSION=`echo $DBLIST | awk '{i=split($0,arr,"|"); print arr[2]} ' `
 DBVERSION1=`echo $DBVERSION | awk '{gsub(/[-)]/,""); print } ' `
@@ -78,4 +79,4 @@ else
     fi
 fi
 
-rm -f $DBKANRIFL
+exit 0

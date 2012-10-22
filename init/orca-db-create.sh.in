@@ -7,6 +7,15 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
 fi
 . $JMARECEIPT_ENV
 
+err () {
+  MSG=$1
+  NUM=$2
+  delete_pgpass
+  echo "ERROR: ${MSG}" | tee -a $INSTALLLOG
+  exit ${NUM}
+}
+
+create_pgpass
 if [ -z "$DBENCODING" ]
 then
     DBENCODING="EUC-JP"
@@ -28,8 +37,7 @@ if [ x"$DBHOST" = "x" ]; then
     then
 	su - postgres -c "createuser ${DBCONNOPTION} --createdb --no-superuser --no-createrole ${DBUSER}"
 	if [ $? -ne 0 ] ; then
-	    echo "ERROR: createuser error (${DBUSER})" | tee -a $INSTALLLOG
-	    exit 99
+	    err "createuser error (${DBUSER})" 99
 	fi
     fi
 else
@@ -40,13 +48,11 @@ else
 	if [ -z $USEREXIST ] || [ $RC -ne 0 ] ; then
 	    su - ${ORCAUSER} -c "createuser ${DBCONNOPTION} -U postgres --createdb --no-superuser --no-createrole ${DBUSER}"
 	    if [ $? -ne 0 ] ; then
-		echo "ERROR: createuser error(${DBUSER})" | tee -a $INSTALLLOG
-		exit 99
+		err "createuser error(${DBUSER})" 99
 	    fi
 	    echo "CREATEUSER (${DBUSER})" | tee -a  $INSTALLLOG
 	    if [ $? -ne 0 ] ; then
-		echo "ERROR: set password error" | tee -a $INSTALLLOG
-		exit 99
+		err "set password error"  99
 	    fi
 	    su - ${ORCAUSER} -c "psql ${DBCONNOPTION} -U postgres -c \"${SETPASSWORD}\""
 	fi
@@ -61,14 +67,12 @@ if [ ! -z $DBEXIST ] ; then
     RC=$?
 fi
 if [ $RC -ne 0 ] ; then
-    echo "ERROR: database check error (${DBCHECKSQL})" | tee -a $INSTALLLOG
-    exit 99
+    err "database check error (${DBCHECKSQL})" 99
 fi
 if [ -z $DBEXIST ] ; then
     su - ${ORCAUSER} -c "createdb ${DBCONNOPTION} -lC -Ttemplate0 -E${DBENCODING} \"${DBNAME}\""
     if [ $? -ne 0 ] ; then
-	echo "ERROR: createdb error (${DBNAME})" | tee -a $INSTALLLOG
-	exit 99
+	err "createdb error (${DBNAME})" 99
     fi
     echo "CREATEDB (${DBNAME})" | tee -a  $INSTALLLOG
 fi
@@ -77,10 +81,10 @@ if [ $? -ne 0 ] || [ "$DBKANRICHECK" -eq 0 ]; then
     DBKANRI=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} -q --set \"ON_ERROR_STOP=1\" ${DBNAME} -f ${INITDIR}/orca_dbkanri_orig.dump" 2>&1`
     RC=$?
     if [ $RC -ne 0 ] ; then
-	echo "ERROR: ${INITDIR}/orca_dbkanri_orig.dump が処理出来ませんでした" | tee -a $INSTALLLOG
 	echo $DBKANRI
-	exit 99
+	err "${INITDIR}/orca_dbkanri_orig.dump が処理出来ませんでした" 99
     fi
     echo "${INITDIR}/orca_dbkanri_orig.dump done." | tee -a  $INSTALLLOG
 fi
+delete_pgpass
 exit 0
