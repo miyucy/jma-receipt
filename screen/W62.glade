@@ -11,7 +11,7 @@
     <class>GtkWindow</class>
     <name>W62</name>
     <width>650</width>
-    <height>728</height>
+    <height>720</height>
     <sensitive>True</sensitive>
     <can_focus>False</can_focus>
     <has_focus>False</has_focus>
@@ -45,7 +45,7 @@
         <class>GtkButton</class>
         <name>B01</name>
         <x>8</x>
-        <y>708</y>
+        <y>688</y>
         <width>80</width>
         <height>24</height>
         <sensitive>True</sensitive>
@@ -72,7 +72,7 @@
         <class>GtkButton</class>
         <name>B12</name>
         <x>550</x>
-        <y>708</y>
+        <y>688</y>
         <width>80</width>
         <height>24</height>
         <sensitive>True</sensitive>
@@ -99,7 +99,7 @@
         <class>GtkPandaCombo</class>
         <name>PRTNUMCOMBO</name>
         <x>470</x>
-        <y>682</y>
+        <y>660</y>
         <width>160</width>
         <height>24</height>
         <sensitive>True</sensitive>
@@ -139,7 +139,7 @@
         <x>16</x>
         <y>8</y>
         <width>616</width>
-        <height>670</height>
+        <height>648</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -149,7 +149,7 @@
         <class>GtkLabel</class>
         <name>label508</name>
         <x>380</x>
-        <y>682</y>
+        <y>660</y>
         <width>80</width>
         <height>24</height>
         <sensitive>True</sensitive>
