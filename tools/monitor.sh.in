@@ -1,67 +1,64 @@
 #! /bin/bash
 
 ####################################################################
-# jma-receipt�����С��򥽡����ΰ��֤��鵯ư����
-# ��ȯ�� monitor
-# monitor.sh [LD̾]
+# jma-receiptサーバーをソースの位置から起動する
+# 開発用 monitor
+# monitor.sh [LD名]
 #
-# ��) 
+# 例)
 # $ cd jma-receipt
 # $ tools/monitor.sh orca21
 ####################################################################
 
-# �ǥ��쥯�ȥ�ΰ�ư
+# ディレクトリの移動
 cd `dirname $0`/..
 
 
-# �Ķ��ѿ��μ�����
+# 環境変数の取り込み
 if test -z "$JMARECEIPT_ENV" ; then
     JMARECEIPT_ENV="@jma-receipt-env@"
 fi
 if ! test -f "$JMARECEIPT_ENV"; then
-    echo "�Ķ�����ե����� $JMARECEIPT_ENV ���ɤ�ޤ���"
+    echo "環境設定ファイル $JMARECEIPT_ENV が読めません"
     exit 1
 fi
 
 . $JMARECEIPT_ENV
 
 
-# glserver ��ư���뤫��
+# glserver を起動するか？
 Start_GLSERVER=true
 
-# dbredirector ��ư���뤫��
+# dbredirector を起動するか？
 Start_dbredirector=false
 
-# jma-receipt �ΰ���
+# jma-receipt の位置
 #ORCA_DIR=prefix
 LDDEF="$ORCA_DIR"/lddef
 
-# ��ư���� LD�Υꥹ��(�����ˤ���񤭤����)
-echo "$LDDEF"
+# 起動する LDのリスト(引数により上書きされる)
 LD=`ls $LDDEF/*.ld|xargs -I{} basename {} .ld`
 
-# ��˵�ư����LD
-# ����LD�ϰ����˴ط��ʤ���ư�����
+# 常に起動するLD
+# このLDは引数に関係なく起動される
 ALWAYS_LD="orca00"
 
-# aps �Υݡ����ֹ� 
-# �����ֹ�+ LD�ο��� (orca101 �ʤ� 101) = 9201
-# �ǵ�ư����롣
+# トレースするLD
+TRACE_LD="orca11"
+
+# aps のポート番号 
+# この番号+ LDの数値 (orca101 なら 101) = 9201
+# で起動される。
 START_PORT=9100
 
-# so�����å�
-# ��ư������˥���ѥ���Ѥ������å����� *so�ե�����
+# soチェック
+# 起動する時にコンパイル済かチェックする *soファイル
 COB_SO=ORCGM00.so
 
 # MCPSUB lib
 COB_LIBRARY_PATH=/usr/local/lib:/usr/lib:/usr/lib/panda
-# site-lib�μ�����
+# site-libの取り込み
 COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$SITELIBDIR"
-# orca lib
-COB_LIBRARY_PATH=$COB_LIBRARY_PATH:"$ORCA_DIR"/cobol/common:"$ORCA_DIR"/cobol/orcabt:"$ORCA_DIR"/cobol/claim:"$ORCA_DIR"/cobol/cutils
-
-
-
 
 ####################################################################
 
@@ -85,39 +82,41 @@ fi
 
 ####################################################################
 if ! test -d $LDDEF ; then
-    echo "${LDDEF} �ǥ��쥯�ȥ꤬����ޤ���"
+    echo "${LDDEF} ディレクトリがありません"
     exit 1
 fi
 if ! test -f $DIRECTORY; then
-    echo "directory �ե����뤬����ޤ���"
+    echo "directory ファイルがありません"
     exit 1
 fi
 if ! test -d $SCREEN ; then
-    echo "${SCREEN} �ǥ��쥯�ȥ꤬����ޤ���"
+    echo "${SCREEN} ディレクトリがありません"
     exit 1
 fi
 if ! test -f `echo ${SCREEN}/*glade|sed -e "s/ .*//g"` ; then
-    echo "glade�ե����뤬����ޤ���"
+    echo "gladeファイルがありません"
     exit 1
 fi
 if ! test -d $RECORD ; then
-    echo "${RECORD} �ǥ��쥯�ȥ꤬����ޤ���"
+    echo "${RECORD} ディレクトリがありません"
     exit 1
 fi
 if ! test -d ${ORCA_DIR}/cobol/${ALWAYS_LD}; then
-    echo "LD(COBOL) ${ORCA_DIR}/cobol/${ALWAYS_LD} �ǥ��쥯�ȥ꤬����ޤ���"
+    echo "LD(COBOL) ${ORCA_DIR}/cobol/${ALWAYS_LD} ディレクトリがありません"
     exit 1
 fi
 if ! test -f ${ORCA_DIR}/cobol/${ALWAYS_LD}/${COB_SO}; then
-    echo "${ORCA_DIR}/cobol/${ALWAYS_LD}/${COB_SO} ������ޤ���"
-    echo "����ѥ�������"
+    echo "${ORCA_DIR}/cobol/${ALWAYS_LD}/${COB_SO} がありません"
+    echo "コンパイル前？"
     exit 1
 fi
 
 ####################################################################
 
 for i in "$ORCA_DIR"/cobol/*; do
-    COB_LIBRARY_PATH=$COB_LIBRARY_PATH:$i
+    if [ -d $i ] && [ $i != "CVS" ] ; then
+	COB_LIBRARY_PATH=$COB_LIBRARY_PATH:$i
+    fi
 done
 export COB_LIBRARY_PATH
 export JMARECEIPT_ENV="$ORCA_DIR"/etc/jma-receipt.env
@@ -172,12 +171,16 @@ done
 
 for i in $LD; do
     if [ $i != $ALWAYS_LD ]; then
-      $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
+	if [ $i = $TRACE_LD ] ; then
+	    $APS -nocheck -timer -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
+	else
+	    $APS -nocheck -dir $DIRECTORY -record $RECORD -base $ORCA_DIR $i  &
+	fi
     fi
 done
 
 while :
-do 
+do
   read END
   if [ "$END" == "exit" ]; then
     killall wfc
