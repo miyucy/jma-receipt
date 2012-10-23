@@ -307,8 +307,6 @@
            COPY    "CPMKPASS.INC".
       *    ファイル存在チェック
            COPY    "CPORCSFILECHK.INC".
-      *    ファイル削除パラメタ
-           COPY    "CPORCSFDEL.INC".
       *    ＣＳＶファイル作成パラメタ
            COPY    "CPORCSFILEENCODE.INC".
       *    ディレクトリ作成パラメタ
