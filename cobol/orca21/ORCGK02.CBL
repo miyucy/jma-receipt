@@ -12068,7 +12068,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    ADD     1                   TO  IDX
       *            スクロール背景色（１行毎）
                    IF      FLG-BGCOLORS        =   ZERO
-                       MOVE    "white"         TO
+     ***************** MOVE    "white"         TO
+                       MOVE    "#FFFFFF"       TO
                                        K02-SRYKBN-BGCOLOR  (IDX)
                                        K02-INPUTCD-BGCOLOR (IDX)
                                        K02-MEISYO-BGCOLOR  (IDX)
@@ -12746,13 +12747,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    ELSE
                        IF      SPA-ERRCD(1:1)  =   "K"
       *                    白の時、設定なし
-                           IF      SPA-KEICOLORS   NOT =   "White"
+                           IF      SPA-KEICOLORS   NOT =   "#FFFFFF"
                                MOVE    SPA-KEICOLORS
                                    TO  K02-INPUTCD-BGCOLOR (WRK-IDX2) 
                            END-IF
                        ELSE
       *                    白の時、設定なし
-                           IF      SPA-ERRCOLORS   NOT =   "White"
+                           IF      SPA-ERRCOLORS   NOT =   "#FFFFFF"
                                MOVE    SPA-ERRCOLORS
                                    TO  K02-INPUTCD-BGCOLOR (WRK-IDX2) 
                            END-IF
