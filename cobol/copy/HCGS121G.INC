@@ -21,7 +21,7 @@
                 04  HCGS121G-PTNUM2
                         PIC X(20).
                 04  HCGS121G-SRYYM2
-                        PIC X(6).
+                        PIC X(10).
                 04  HCGS121G-NAME
                         PIC X(26).
                 04  HCGS121G-HKNJANUM

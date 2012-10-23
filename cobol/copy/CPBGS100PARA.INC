@@ -43,9 +43,13 @@
            03  BGS100P-SYAHO           PIC 9(01).
            03  BGS100P-KOKUHO          PIC 9(01).
            03  BGS100P-KOUKI           PIC 9(01).
+           03  BGS100P-ROUSAI          PIC 9(01).
+           03  BGS100P-JIBAI           PIC 9(01).
+           03  BGS100P-KOUGAI          PIC 9(01).
            03  BGS100P-SOUKATU         PIC 9(01).
            03  BGS100P-HOKEN           PIC 9(01).
            03  BGS100P-EDITKBN         PIC X(01).
+           03  BGS100P-ETCGETKBN       PIC X(01).
            03  BGS100P-HKNKBN-G.
                05  BGS100P-HKNKBN-HKN  PIC X(01).
                05  BGS100P-HKNKBN      PIC X(02).

@@ -97,6 +97,7 @@
            03  IDX-RECEKA          PIC 9(05).
            03  IDXI                PIC 9(05).
            03  IDXL                PIC 9(05).
+           03  IDXM                PIC 9(05).
            03  IDXT                PIC 9(05).
       *
        01  WRK-AREA.
@@ -107,9 +108,10 @@
            03  WRK-EDTYMD3         PIC X(22).
            03  WRK-ERRMSG          PIC X(200).
            03  WRK-Z3              PIC Z(3).
-           03  WRK-Z4              PIC Z(4).
+           03  WRK-Z4              PIC Z(3)9.
            03  WRK-Z5              PIC Z(5).
            03  WRK-Z9              PIC Z(9).
+           03  WRK-TENZ            PIC Z(8)9.
            03  WRK-M9              PIC -(9).
            03  WRK-HKNNUM          PIC X(3).
            03  WRK-TTLID           PIC 9(5).
@@ -123,7 +125,8 @@
            03  WRK-CSVDATA         PIC X(20000).
            03  WRK-NYUGAIKBN       PIC X(01).
            03  WRK-NYUGAIKBNMEI    PIC X(04).
-           03  WRK-PRTKBN          PIC X(01).
+           03  WRK-PRTKBN.
+               05  WRK-PRTKBN9     PIC 9(01).
            03  WRK-PRTKBNMEI       PIC X(10).
            03  WRK-DATAKBN         PIC X(01).
            03  WRK-DATAKBNMEI      PIC X(50).
@@ -134,6 +137,8 @@
            03  WRK-SYUKA-HKN       PIC 9(01).
            03  WRK-HKNKBN-HKN-G.
                05  WRK-HKNKBN-HKN  PIC 9(01).
+           03  WRK-HKNJANUM        PIC X(08).
+           03  WRK-HKNJANAME       PIC X(50).
       *
        01  CSV-HEAD-AREA.
            03  CSV-H01-G.
@@ -146,18 +151,32 @@
                            VALUE   "¥Ç¡¼¥¿¶èÊ¬".
                    07  CSV-H01-DATAKBNMEI      PIC X(50)
                            VALUE   "¥Ç¡¼¥¿¶èÊ¬Ì¾".
-                   07  CSV-H01-SRYYMD          PIC X(50)
+                   07  CSV-H01-SRYYM           PIC X(50)
                            VALUE   "¿ÇÎÅÇ¯·î".
                    07  CSV-H01-NYUGAIKBN       PIC X(50)
                            VALUE   "Æþ³°¶èÊ¬".
                    07  CSV-H01-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "Æþ³°¶èÊ¬Ì¾¾Î".
+                   07  CSV-H01-SKYSBTKBN       PIC X(50)
+                           VALUE   "Åö·î¡¦Åö·î³°¶èÊ¬".
+                   07  CSV-H01-SKYSBT          PIC X(50)
+                           VALUE   "Åö·î¡¦Åö·î³°".
                    07  CSV-H01-SRYKA           PIC X(50)
                            VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
                    07  CSV-H01-SRYKAMEI        PIC X(50)
                            VALUE   "¿ÇÎÅ²ÊÌ¾¾Î".
                    07  CSV-H01-HKNKBN          PIC X(50)
                            VALUE   "ÊÝ¸±¶èÊ¬".
+                   07  CSV-H01-PTNUM           PIC X(50)
+                           VALUE   "´µ¼ÔÈÖ¹æ".
+                   07  CSV-H01-NAME            PIC X(50)
+                           VALUE   "»áÌ¾".
+                   07  CSV-H01-HBTNUM          PIC X(50)
+                           VALUE   "Ë¡ÊÌÈÖ¹æ".
+                   07  CSV-H01-HKNJANUM        PIC X(50)
+                           VALUE   "ÊÝ¸±¼ÔÈÖ¹æ".
+                   07  CSV-H01-HKNJANAME       PIC X(50)
+                           VALUE   "ÊÝ¸±¼ÔÌ¾".
                    07  CSV-H01-KENSU           PIC X(50)
                            VALUE   "·ï¿ô".
                    07  CSV-H01-NISSU           PIC X(50)
@@ -184,11 +203,13 @@
                            VALUE   "¿©»ö¡¦À¸³èÀÁµá±ß¡Ê£â¡Ë".
                    07  CSV-H01-TTLTTLMONEY     PIC X(50)
                            VALUE   "¡Ê£á¡Ë¡Ü¡Ê£â¡Ë".
+                   07  CSV-H01-SRYYM2          PIC X(50)
+                           VALUE   "¿ÇÎÅÇ¯·î¡ÊÅö·î°Ê³°¡Ë".
                05  CSV-H01-R   REDEFINES   CSV-H01-VAL.
                    07  CSV-H01-ITEM            PIC X(50)
-                                               OCCURS  23.
+                                               OCCURS  31.
                05  CSV-H01-MAX                 PIC 9(05)
-                                               VALUE   23.
+                                               VALUE   31.
            03  CSV-H02-G.
                05  CSV-H02-VAL.
                    07  CSV-H02-PRTKBN          PIC X(50)
@@ -198,19 +219,33 @@
                    07  CSV-H02-DATAKBN         PIC X(50)
                            VALUE   "¥Ç¡¼¥¿¶èÊ¬".
                    07  CSV-H02-DATAKBNMEI      PIC X(50)
-                           VALUE   "¥Ç¡¼¥¿¶èÊ¬".
-                   07  CSV-H02-SRYYMD          PIC X(50)
+                           VALUE   "¥Ç¡¼¥¿¶èÊ¬Ì¾".
+                   07  CSV-H02-SRYYM           PIC X(50)
                            VALUE   "¿ÇÎÅÇ¯·î".
                    07  CSV-H02-NYUGAIKBN       PIC X(50)
                            VALUE   "Æþ³°¶èÊ¬".
                    07  CSV-H02-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "Æþ³°¶èÊ¬Ì¾¾Î".
+                   07  CSV-H02-SKYSBTKBN       PIC X(50)
+                           VALUE   "Åö·î¡¦Åö·î³°¶èÊ¬".
+                   07  CSV-H02-SKYSBT          PIC X(50)
+                           VALUE   "Åö·î¡¦Åö·î³°".
                    07  CSV-H02-SRYKA           PIC X(50)
                            VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
                    07  CSV-H02-SRYKAMEI        PIC X(50)
                            VALUE   "¿ÇÎÅ²ÊÌ¾¾Î".
                    07  CSV-H02-HKNKBN          PIC X(50)
                            VALUE   "ÊÝ¸±¶èÊ¬".
+                   07  CSV-H02-PTNUM           PIC X(50)
+                           VALUE   "´µ¼ÔÈÖ¹æ".
+                   07  CSV-H02-NAME            PIC X(50)
+                           VALUE   "»áÌ¾".
+                   07  CSV-H02-HBTNUM          PIC X(50)
+                           VALUE   "Ë¡ÊÌÈÖ¹æ".
+                   07  CSV-H02-HKNJANUM        PIC X(50)
+                           VALUE   "ÊÝ¸±¼ÔÈÖ¹æ".
+                   07  CSV-H02-HKNJANAME       PIC X(50)
+                           VALUE   "ÊÝ¸±¼ÔÌ¾".
                    07  CSV-H02-KENSU           PIC X(50)
                            VALUE   "·ï¿ô".
                    07  CSV-H02-NISSU           PIC X(50)
@@ -224,12 +259,14 @@
                    07  CSV-H02-KOHMONEY        PIC X(50)
                            VALUE   "¸øÈñÀÁµá³Û".
                    07  CSV-H02-TTLMONEY        PIC X(50)
-                           VALUE   "ÊÝ¸±¿ÇÎÅ¼ý±×".
+                           VALUE   "ÊÝ¸±¿ÇÎÅ¼ý±×¡Ê£á¡Ë".
+                   07  CSV-H02-SRYYM2          PIC X(50)
+                           VALUE   "¿ÇÎÅÇ¯·î¡ÊÅö·î°Ê³°¡Ë".
                05  CSV-H02-R   REDEFINES   CSV-H02-VAL.
                    07  CSV-H02-ITEM            PIC X(50)
-                                               OCCURS  17.
+                                               OCCURS  25.
                05  CSV-H02-MAX                 PIC 9(05)
-                                               VALUE   17.
+                                               VALUE   25.
       *
        01  KEY-AREA.
            03  KEY-RECEKA          PIC X(02).
@@ -273,6 +310,18 @@
            03  CONST-KOU-KOU9      PIC 9(02)   VALUE 1.
            03  CONST-KOU-KOU7      PIC 9(02)   VALUE 2.
       *
+           03  CONST-RSI-TG        PIC 9(02)   VALUE 1.
+           03  CONST-RSI-TT        PIC 9(02)   VALUE 2.
+           03  CONST-RSI-SG        PIC 9(02)   VALUE 3.
+           03  CONST-RSI-ST        PIC 9(02)   VALUE 4.
+           03  CONST-RSI-AC        PIC 9(02)   VALUE 5.
+           03  CONST-RSI-KS        PIC 9(02)   VALUE 6.
+      *
+           03  CONST-JBI-NEW        PIC 9(02)   VALUE 1.
+           03  CONST-JBI-USUAL      PIC 9(02)   VALUE 2.
+      *
+           03  CONST-KGI-GRP        PIC 9(02)   VALUE 1.
+      *
            03  CONST-HKNKBN2-TTL   PIC 9(02)   VALUE 99.
       *
            03  CONST-MEI-TTL       PIC 9(03) VALUE 55.
@@ -286,6 +335,9 @@
        01  TBGSMEI-AREA.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //TBGSMEI-//.
+      *
+           COPY  "HCGS121N.INC"    REPLACING  //HCGS121N//
+                                   BY         //TMPS121//.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -520,6 +572,7 @@
       *
                MOVE    BGSMEI-NYUGAIKBN    TO  KEY-NYUGAIKBN
                MOVE    BGSMEI-RECESBT      TO  KEY-HKNKBN-G
+               MOVE    SPACE               TO  WRK-HKNKBNNAME
                INITIALIZE                      TOTAL-AREA
       *
                PERFORM UNTIL ( FLG-BGSMEI      NOT =   ZERO )
@@ -544,6 +597,7 @@
                    END-PERFORM
       *
                    PERFORM 230-HCGS121-PRINT-SEC
+                   PERFORM 2001-HCGS121-CSV-SEC
       *
                END-PERFORM
       *
@@ -560,6 +614,7 @@
        210-HEAD-SEC                    SECTION.
       *
            INITIALIZE                      HCGS121N
+                                           TMPS121
       *
            EVALUATE    BGSMEI-HOKEN
            WHEN    CONST-SYAHO
@@ -569,6 +624,12 @@
            WHEN    CONST-KOUKI
                MOVE    "¡Ê¸å´ü¹âÎð¼Ô¡Ë"
                                        TO  HCGS121N-HKNNAME
+           WHEN    CONST-ROUSAI
+               MOVE    "¡ÊÏ«ºÒ¡Ë"      TO  HCGS121N-HKNNAME
+           WHEN    CONST-JIBAI
+               MOVE    "¡Ê¼«ÇåÀÕ¡Ë"    TO  HCGS121N-HKNNAME
+           WHEN    CONST-KOUGAI
+               MOVE    "¡Ê¸ø³²¡Ë"      TO  HCGS121N-HKNNAME
            END-EVALUATE
       *
            MOVE    WRK-PRT-SRYYM       TO  HCGS121N-SRYYM
@@ -579,6 +640,7 @@
            END-IF
            MOVE    WRK-PRT-SAKYMD      TO  HCGS121N-SYSYMD
            MOVE    WRK-SKYSBTNAME      TO  HCGS121N-SKYSBT
+      *
            MOVE    WRK-SRYKANAME1      TO  HCGS121N-SRYKANAME
       *
            COMPUTE CNT-PAGE  = CNT-PAGE    +   1
@@ -599,14 +661,16 @@
       *
            COMPUTE CNT-LINE = CNT-LINE +   1
       *
-           PERFORM 900-PTNUM-KEY-SEL-SEC
-      *
            MOVE    BGSMEI-RECESBT      TO  WRK-HKNKBN-G
       *
            IF    ( WRK-HKNKBN2     =   CONST-HKNKBN2-TTL )
                MOVE    "¡¡¡¡¾®¡¡·×"
                                    TO  HCGS121N-HKNKBNNAME (CNT-LINE)
+                                       TMPS121-HKNKBNNAME (CNT-LINE)
            ELSE
+      *
+               PERFORM 900-PTNUM-KEY-SEL-SEC
+      *
                IF    ( CNT-LINE        =   1 )
                 OR   ( KEY-HKNKBN1 NOT =   WRK-HKNKBN1 )
       *
@@ -618,13 +682,29 @@
                                    TO  HCGS121N-HKNKBNNAME (CNT-LINE)
                END-IF
       *
-               IF    ( WRK-HKNKBN1     NOT =   CONST-SYA-KOH )
+               IF   (  BGSMEI-HOKEN        =   CONST-SYAHO
+                   AND WRK-HKNKBN1         =   CONST-SYA-KOH )
+                 OR (  BGSMEI-HOKEN        =   CONST-ROUSAI
+                                            OR CONST-JIBAI
+                                            OR CONST-KOUGAI )
+                   CONTINUE
+               ELSE
                    IF    ( BGSMEI-HKNNUM   =   "009" )
                        MOVE    "01"
                                    TO  HCGS121N-HBTNUM (CNT-LINE)
                    ELSE
                        MOVE    BGSMEI-HKNNUM (2:2)
                                    TO  HCGS121N-HBTNUM (CNT-LINE)
+                   END-IF
+      *
+                   MOVE    BGSMEI-HKNJANUM
+                                   TO  HCGS121N-HKNJANUM (CNT-LINE)
+      *
+                   PERFORM 900-HKNJAINF-KEY-SEL-SEC
+      *
+                   IF    ( HKNJA-HKNJANAME NOT =   SPACE )
+                       MOVE    HKNJA-HKNJANAME
+                                   TO  HCGS121N-HKNJANAME (CNT-LINE)
                    END-IF
                END-IF
       *
@@ -642,27 +722,24 @@
                    PERFORM 800-HIZUKE-EDIT-SEC
                    MOVE    WRK-EDTYMD1(1:6)
                                    TO  HCGS121N-SRYYM2(CNT-LINE)
+                   MOVE    BGSMEI-SRYYM(1:4)
+                                   TO  TMPS121-SRYYM2(CNT-LINE)(1:4)
+                   MOVE    "/"     TO  TMPS121-SRYYM2(CNT-LINE)(5:1)
+                   MOVE    BGSMEI-SRYYM(5:2)
+                                   TO  TMPS121-SRYYM2(CNT-LINE)(6:2)
                END-IF
       *
                MOVE    BGSMEI-NAME     TO  HCGS121N-NAME (CNT-LINE)
       *
-               IF    ( WRK-HKNKBN1     NOT =   CONST-SYA-KOH )
-                   MOVE    BGSMEI-HKNJANUM
-                                       TO  HCGS121N-HKNJANUM (CNT-LINE)
+               MOVE    WRK-HKNKBNNAME
+                                   TO  TMPS121-HKNKBNNAME (CNT-LINE)
+               MOVE    PTNUM-PTNUM
+                                   TO  TMPS121-PTNUM2     (CNT-LINE)
       *
-                   PERFORM 900-HKNJAINF-KEY-SEL-SEC
-      *
-                   IF    ( HKNJA-HKNJANAME NOT =   SPACE )
-                       MOVE    HKNJA-HKNJANAME
-                                   TO  HCGS121N-HKNJANAME (CNT-LINE)
-                   ELSE
-                       MOVE    BGSMEI-HKNJANUM
-                                   TO  HCGS121N-HKNJANAME (CNT-LINE)
-                   END-IF
-               END-IF
            END-IF
       *
            MOVE    BGSMEI-REC      TO  TBGSMEI-AREA
+           MOVE    CNT-LINE        TO  IDXM
            PERFORM 2201-BODY-SEC
       *
            IF    ( WRK-HKNKBN2     NOT =   CONST-HKNKBN2-TTL )
@@ -678,53 +755,53 @@
        2201-BODY-SEC                   SECTION.
       *
            MOVE    TBGSMEI-KENSU   TO  WRK-Z4
-           MOVE    WRK-Z4          TO  HCGS121N-KENSU (CNT-LINE)
+           MOVE    WRK-Z4          TO  HCGS121N-KENSU (IDXM)
       *
            MOVE    TBGSMEI-NISSU   TO  WRK-Z4
-           MOVE    WRK-Z4          TO  HCGS121N-NISSU (CNT-LINE)
+           MOVE    WRK-Z4          TO  HCGS121N-NISSU (IDXM)
       *
-           MOVE    TBGSMEI-TENSU   TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCGS121N-TENSU (CNT-LINE)
+           MOVE    TBGSMEI-TENSU   TO  WRK-TENZ
+           MOVE    WRK-TENZ        TO  HCGS121N-TENSU (IDXM)
       *
            MOVE    TBGSMEI-FTNMONEY
                                    TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCGS121N-FTNMONEY (CNT-LINE)
+           MOVE    WRK-Z9          TO  HCGS121N-FTNMONEY (IDXM)
       *
            MOVE    TBGSMEI-HKNMONEY
                                    TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCGS121N-HKNMONEY (CNT-LINE)
+           MOVE    WRK-Z9          TO  HCGS121N-HKNMONEY (IDXM)
       *
            MOVE    TBGSMEI-KOHMONEY
                                    TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCGS121N-KOHMONEY (CNT-LINE)
+           MOVE    WRK-Z9          TO  HCGS121N-KOHMONEY (IDXM)
       *
            MOVE    TBGSMEI-TTLMONEY
                                    TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCGS121N-TTLMONEY (CNT-LINE)
+           MOVE    WRK-Z9          TO  HCGS121N-TTLMONEY (IDXM)
       *
            MOVE    TBGSMEI-SKJKAISU
                                    TO  WRK-Z5
-           MOVE    WRK-Z5          TO  HCGS121N-SKJKAISU (CNT-LINE)
+           MOVE    WRK-Z5          TO  HCGS121N-SKJKAISU (IDXM)
       *
            MOVE    TBGSMEI-SKJTTLMONEY
                                    TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCGS121N-SKJTTLMONEY (CNT-LINE)
+           MOVE    WRK-Z9          TO  HCGS121N-SKJTTLMONEY (IDXM)
       *
            MOVE    TBGSMEI-SKJFTNMONEY
                                    TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCGS121N-SKJFTNMONEY (CNT-LINE)
+           MOVE    WRK-Z9          TO  HCGS121N-SKJFTNMONEY (IDXM)
       *
            MOVE    TBGSMEI-SKJHKNMONEY
                                    TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCGS121N-SKJHKNMONEY (CNT-LINE)
+           MOVE    WRK-Z9          TO  HCGS121N-SKJHKNMONEY (IDXM)
       *
            MOVE    TBGSMEI-SKJKOHMONEY
                                    TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCGS121N-SKJKOHMONEY (CNT-LINE)
+           MOVE    WRK-Z9          TO  HCGS121N-SKJKOHMONEY (IDXM)
       *
            MOVE    TBGSMEI-TTLTTLMONEY
                                    TO  WRK-Z9
-           MOVE    WRK-Z9          TO  HCGS121N-TTLTTLMONEY (CNT-LINE)
+           MOVE    WRK-Z9          TO  HCGS121N-TTLTTLMONEY (IDXM)
       *
            .
        2201-BODY-EXT.
@@ -841,6 +918,42 @@
                    MOVE    "¹â£·"
                                        TO  WRK-HKNKBNNAME
                END-EVALUATE
+           WHEN    CONST-ROUSAI
+               EVALUATE    WRK-HKNKBN1
+               WHEN    CONST-RSI-TG
+                   MOVE    "Ã»´ü¡¦¶ÈÌ³"
+                                       TO  WRK-HKNKBNNAME
+               WHEN    CONST-RSI-TT
+                   MOVE    "Ã»´ü¡¦ÄÌ¶Ð"
+                                       TO  WRK-HKNKBNNAME
+               WHEN    CONST-RSI-SG
+                   MOVE    "½ýÉÂ¡¦¶ÈÌ³"
+                                       TO  WRK-HKNKBNNAME
+               WHEN    CONST-RSI-ST
+                   MOVE    "½ýÉÂ¡¦ÄÌ¶Ð"
+                                       TO  WRK-HKNKBNNAME
+               WHEN    CONST-RSI-AC
+                   MOVE    "¥¢¥Õ¥¿¡¼¥±¥¢"
+                                       TO  WRK-HKNKBNNAME
+               WHEN    CONST-RSI-KS
+                   MOVE    "¸øÌ³ºÒ³²"
+                                       TO  WRK-HKNKBNNAME
+               END-EVALUATE
+           WHEN    CONST-JIBAI
+               EVALUATE    WRK-HKNKBN1
+               WHEN    CONST-JBI-NEW
+                   MOVE    "¿·ÍÍ¼°"
+                                       TO  WRK-HKNKBNNAME
+               WHEN    CONST-JBI-USUAL
+                   MOVE    "½¾ÍèÍÍ¼°"
+                                       TO  WRK-HKNKBNNAME
+               END-EVALUATE
+           WHEN    CONST-KOUGAI
+               EVALUATE    WRK-HKNKBN1
+               WHEN    CONST-KGI-GRP
+                   MOVE    "¸ø³²"
+                                       TO  WRK-HKNKBNNAME
+               END-EVALUATE
            END-EVALUATE
       *
            .
@@ -851,9 +964,10 @@
       *****************************************************************
        2201-TOTAL-EDIT-SEC             SECTION.
       *
-           MOVE    CONST-MEI-TTL   TO  CNT-LINE
+           MOVE    CONST-MEI-TTL   TO  IDXM
       *
-           MOVE    "¡¡¡¡¹ç¡¡·×"    TO  HCGS121N-HKNKBNNAME (CNT-LINE)
+           MOVE    "¡¡¡¡¹ç¡¡·×"    TO  HCGS121N-HKNKBNNAME (IDXM)
+                                       TMPS121-HKNKBNNAME  (IDXM)
            MOVE    TOTAL-AREA      TO  TBGSMEI-AREA
            PERFORM 2201-BODY-SEC
       *
@@ -968,6 +1082,239 @@
       *
            .
        230-PRINT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÌÀºÙÉ½ÊÔ½¸½èÍý¡Ê£Ã£Ó£Ö¡Ë
+      *****************************************************************
+       2001-HCGS121-CSV-SEC            SECTION.
+      *
+           MOVE    BGS100P-HOKEN   TO  WRK-PRTKBN9
+      *
+           MOVE    SPACE           TO  WRK-PRTKBNMEI
+           EVALUATE    BGS100P-HOKEN
+           WHEN    CONST-SYAHO
+               MOVE    "¼ÒÊÝ"      TO  WRK-PRTKBNMEI
+           WHEN    CONST-KOKUHO
+               MOVE    "¹ñÊÝ"      TO  WRK-PRTKBNMEI
+           WHEN    CONST-KOUKI
+               MOVE    "¸å´ü¹âÎð¼Ô"
+                                   TO  WRK-PRTKBNMEI
+           WHEN    CONST-ROUSAI
+               MOVE    "Ï«ºÒ"      TO  WRK-PRTKBNMEI
+           WHEN    CONST-JIBAI
+               MOVE    "¼«ÇåÀÕ"    TO  WRK-PRTKBNMEI
+           WHEN    CONST-KOUGAI
+               MOVE    "¸ø³²"      TO  WRK-PRTKBNMEI
+           END-EVALUATE
+      *
+           IF    ( KEY-NYUGAIKBN   =   "1" )
+               MOVE    "1"         TO  WRK-NYUGAIKBN
+               MOVE    "Æþ±¡"      TO  WRK-NYUGAIKBNMEI
+           ELSE
+               MOVE    "2"         TO  WRK-NYUGAIKBN
+               MOVE    "³°Íè"      TO  WRK-NYUGAIKBNMEI
+           END-IF
+      *
+           COMPUTE CNT-CSV =   CNT-CSV     +   1
+      *
+           IF    ( CNT-CSV =   1 )
+               IF    ( KEY-NYUGAIKBN   =   "1" )
+                   MOVE    SPACE           TO  WRK-CSVDATA
+                   MOVE    1               TO  IDXP
+                   PERFORM VARYING IDXI    FROM    1   BY  1
+                           UNTIL ( IDXI    >   CSV-H01-MAX )
+      *
+                       MOVE    CSV-H01-ITEM (IDXI)
+                                           TO  WRK-ITEM
+      *
+                       IF    ( IDXI   >=   CSV-H01-MAX    )
+                           PERFORM 802-CSVDATA-EDIT-SEC
+                       ELSE
+                           PERFORM 801-CSVDATA-EDIT-SEC
+                       END-IF
+      *
+                   END-PERFORM
+               ELSE
+                   MOVE    SPACE           TO  WRK-CSVDATA
+                   MOVE    1               TO  IDXP
+                   PERFORM VARYING IDXI    FROM    1   BY  1
+                           UNTIL ( IDXI    >   CSV-H02-MAX )
+      *
+                       MOVE    CSV-H02-ITEM (IDXI)
+                                           TO  WRK-ITEM
+      *
+                       IF    ( IDXI   >=   CSV-H02-MAX    )
+                           PERFORM 802-CSVDATA-EDIT-SEC
+                       ELSE
+                           PERFORM 801-CSVDATA-EDIT-SEC
+                       END-IF
+      *
+                   END-PERFORM
+               END-IF
+      *
+               PERFORM 230-TOUKEICSV-SEC
+      *
+           END-IF
+      *
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL ( IDX2    >   CNT-LINE )
+      *
+               PERFORM 20011-HCGS121-CSV-SEC
+      *
+           END-PERFORM
+      *
+           IF    ( FLG-BGSMEI      NOT =   ZERO )
+             OR  ( KEY-NYUGAIKBN   NOT =   BGSMEI-NYUGAIKBN)
+      *
+               MOVE    CONST-MEI-TTL   TO  IDX2
+      *
+               PERFORM 20011-HCGS121-CSV-SEC
+      *
+           END-IF
+      *
+           .
+       2001-HCGS121-CSV-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÌÀºÙÉ½ÊÔ½¸½èÍý¡Ê£Ã£Ó£Ö¡Ë¡ÊÆþ±¡¡Ë
+      *****************************************************************
+       20011-HCGS121-CSV-SEC           SECTION.
+      *
+           MOVE  SPACE             TO  WRK-CSVDATA
+           MOVE    1               TO  IDXP
+      *
+           MOVE    "5"             TO  WRK-DATAKBN
+           MOVE    "¥ì¥»¥×¥ÈÊÌ"    TO  WRK-DATAKBNMEI
+           PERFORM 20011-CSV-KEY-EDIT-SEC
+      *
+           MOVE    TMPS121-HKNKBNNAME (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    TMPS121-PTNUM2 (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS121N-NAME (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS121N-HBTNUM (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS121N-HKNJANUM (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS121N-HKNJANAME (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS121N-KENSU (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS121N-NISSU (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS121N-TENSU (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS121N-FTNMONEY (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS121N-HKNMONEY (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS121N-KOHMONEY (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE    HCGS121N-TTLMONEY (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           IF    ( KEY-NYUGAIKBN   =   "1" )
+               MOVE    HCGS121N-SKJKAISU (IDX2)
+                                   TO  WRK-ITEM
+               PERFORM 801-CSVDATA-EDIT-SEC
+      *
+               MOVE    HCGS121N-SKJTTLMONEY (IDX2)
+                                   TO  WRK-ITEM
+               PERFORM 801-CSVDATA-EDIT-SEC
+      *
+               MOVE    HCGS121N-SKJHKNMONEY (IDX2)
+                                   TO  WRK-ITEM
+               PERFORM 801-CSVDATA-EDIT-SEC
+      *
+               MOVE    HCGS121N-SKJKOHMONEY (IDX2)
+                                   TO  WRK-ITEM
+               PERFORM 801-CSVDATA-EDIT-SEC
+      *
+               MOVE    HCGS121N-SKJFTNMONEY (IDX2)
+                                   TO  WRK-ITEM
+               PERFORM 801-CSVDATA-EDIT-SEC
+      *
+               MOVE    HCGS121N-TTLTTLMONEY (IDX2)
+                                   TO  WRK-ITEM
+               PERFORM 801-CSVDATA-EDIT-SEC
+           END-IF
+      *
+           MOVE    TMPS121-SRYYM2 (IDX2)
+                                   TO  WRK-ITEM
+           PERFORM 802-CSVDATA-EDIT-SEC
+      *
+           PERFORM 230-TOUKEICSV-SEC
+      *
+           .
+       20011-HCGS121-CSV-EXT.
+           EXIT.
+      *****************************************************************
+      *    £Ã£Ó£Ö¥Õ¥¡¥¤¥ë£Ë£Å£Ù¹àÌÜÊÔ½¸½èÍý
+      *****************************************************************
+       20011-CSV-KEY-EDIT-SEC         SECTION.
+      *
+           MOVE  WRK-PRTKBN        TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE  WRK-PRTKBNMEI     TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE  WRK-DATAKBN       TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE  WRK-DATAKBNMEI    TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE  WRK-CSV-SRYYM     TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE  WRK-NYUGAIKBN     TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE  WRK-NYUGAIKBNMEI
+                                   TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE  KEY-SKYSBT        TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE  WRK-SKYSBTNAME    TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE  KEY-RECEKA        TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           MOVE  WRK-SRYKANAME1    TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
+           .
+       20011-CSV-KEY-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    £Ã£Ó£Ö½ÐÎÏ½èÍý
@@ -1086,7 +1433,7 @@
        802-CSVDATA-EDIT-SEC            SECTION.
       *
            PERFORM 800-CSVDATA-EDIT-SEC
-           PERFORM 800-PUT-CR-SEC
+      *    PERFORM 800-PUT-CR-SEC
            .
       *
        802-CSVDATA-EDIT-EXT.
@@ -1255,7 +1602,8 @@
                    IF    ( BGS100P-HKNKBN-HKN
                                            NOT =   SPACE )
                        IF    ( BGS100P-HKNKBN-HKN
-                                               =   "1" OR "2" OR "3" )
+                                               =   "1" OR "2" OR "3"
+                                                OR "7" OR "8" OR "9" )
                            MOVE    BGS100P-HKNKBN-HKN
                                                TO  WRK-HKNKBN-HKN-G
                            IF    ( WRK-HKNKBN-HKN
@@ -1266,9 +1614,12 @@
                                MOVE    ZERO    TO  FLG-LOOPEND
                        END-IF
       *
-                       IF    ( BGS100P-HKNKBN
+                       IF    ( BGS100P-HKNKBN-HKN
+                                               =   "1" OR "2" OR "3" )
+                           IF    ( BGS100P-HKNKBN
                                            NOT =   BGSMEI-RECESBT (1:2))
                                MOVE    ZERO    TO  FLG-LOOPEND
+                           END-IF
                        END-IF
                    END-IF
       *

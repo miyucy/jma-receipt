@@ -198,6 +198,8 @@
                            VALUE   "入外区分".
                    07  CSV-H01-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H01-SKYSBTKBN       PIC X(50)
+                           VALUE   "当月・当月外区分".
                    07  CSV-H01-SKYSBT          PIC X(50)
                            VALUE   "当月・当月外".
                    07  CSV-H01-SRYKA           PIC X(50)
@@ -234,9 +236,9 @@
                            VALUE   "（ａ）＋（ｂ）".
                05  CSV-H01-R   REDEFINES   CSV-H01-VAL.
                    07  CSV-H01-ITEM            PIC X(50)
-                                               OCCURS  24.
+                                               OCCURS  25.
                05  CSV-H01-MAX                 PIC 9(05)
-                                               VALUE   24.
+                                               VALUE   25.
            03  CSV-H02-G.
                05  CSV-H02-VAL.
                    07  CSV-H02-PRTKBN          PIC X(50)
@@ -253,6 +255,8 @@
                            VALUE   "入外区分".
                    07  CSV-H02-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H02-SKYSBTKBN       PIC X(50)
+                           VALUE   "当月・当月外区分".
                    07  CSV-H02-SKYSBT          PIC X(50)
                            VALUE   "当月・当月外".
                    07  CSV-H02-SRYKA           PIC X(50)
@@ -269,9 +273,9 @@
                            VALUE   "点数".
                05  CSV-H02-R   REDEFINES   CSV-H02-VAL.
                    07  CSV-H02-ITEM            PIC X(50)
-                                               OCCURS  14.
+                                               OCCURS  15.
                05  CSV-H02-MAX                 PIC 9(05)
-                                               VALUE   14.
+                                               VALUE   15.
            03  CSV-H03-G.
                05  CSV-H03-VAL.
                    07  CSV-H03-PRTKBN          PIC X(50)
@@ -288,6 +292,8 @@
                            VALUE   "入外区分".
                    07  CSV-H03-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H03-SKYSBTKBN       PIC X(50)
+                           VALUE   "当月・当月外区分".
                    07  CSV-H03-SKYSBT          PIC X(50)
                            VALUE   "当月・当月外".
                    07  CSV-H03-SRYKA           PIC X(50)
@@ -308,9 +314,9 @@
                            VALUE   "窓口請求端数処理額".
                05  CSV-H03-R   REDEFINES   CSV-H03-VAL.
                    07  CSV-H03-ITEM            PIC X(50)
-                                               OCCURS  16.
+                                               OCCURS  17.
                05  CSV-H03-MAX                 PIC 9(05)
-                                               VALUE   16.
+                                               VALUE   17.
            03  CSV-H04-G.
                05  CSV-H04-VAL.
                    07  CSV-H04-PRTKBN          PIC X(50)
@@ -327,6 +333,8 @@
                            VALUE   "入外区分".
                    07  CSV-H04-NYUGAIKBNMEI    PIC X(50)
                            VALUE   "入外区分名称".
+                   07  CSV-H04-SKYSBTKBN       PIC X(50)
+                           VALUE   "当月・当月外区分".
                    07  CSV-H04-SKYSBT          PIC X(50)
                            VALUE   "当月・当月外".
                    07  CSV-H04-SRYKA           PIC X(50)
@@ -351,9 +359,9 @@
                            VALUE   "保険診療収益".
                05  CSV-H04-R   REDEFINES   CSV-H04-VAL.
                    07  CSV-H04-ITEM            PIC X(50)
-                                               OCCURS  18.
+                                               OCCURS  19.
                05  CSV-H04-MAX                 PIC 9(05)
-                                               VALUE   18.
+                                               VALUE   19.
       *
        01  KEY-AREA.
            03  KEY-SKYSBT          PIC X(01).
@@ -1585,6 +1593,9 @@
                                    TO  WRK-ITEM
            PERFORM 801-CSVDATA-EDIT-SEC
       *
+           MOVE  KEY-SKYSBT        TO  WRK-ITEM
+           PERFORM 801-CSVDATA-EDIT-SEC
+      *
            MOVE  WRK-SKYSBTNAME    TO  WRK-ITEM
            PERFORM 801-CSVDATA-EDIT-SEC
       *
@@ -1675,7 +1686,8 @@
            PERFORM 20011-CSV-KEY-EDIT-SEC
       *
            IF    ( HCGS138N2-HKNJANUM (IDX2)
-                                       NOT =   SPACE )
+                               NOT =   SPACE )
+             OR  ( IDX2            =   CONST-HKNJATTL )
                MOVE    HCGS138N2-HKNJANUM (IDX2)
                                    TO  WRK-HKNJANUM
                MOVE    HCGS138N2-HKNJANAME (IDX2)
@@ -2364,7 +2376,8 @@
            PERFORM 20011-CSV-KEY-EDIT-SEC
       *
            IF    ( HCGS138G2-HKNJANUM (IDX2)
-                                       NOT =   SPACE )
+                               NOT =   SPACE )
+             OR  ( IDX2            =   CONST-HKNJATTL )
                MOVE    HCGS138G2-HKNJANUM (IDX2)
                                    TO  WRK-HKNJANUM
                MOVE    HCGS138G2-HKNJANAME (IDX2)
@@ -2577,7 +2590,7 @@
        802-CSVDATA-EDIT-SEC            SECTION.
       *
            PERFORM 800-CSVDATA-EDIT-SEC
-           PERFORM 800-PUT-CR-SEC
+      *    PERFORM 800-PUT-CR-SEC
            .
       *
        802-CSVDATA-EDIT-EXT.

@@ -54,5 +54,11 @@
                         PIC X(9).
                 04  HCGS139G-HASU
                         PIC X(9).
+            02  HCGS139G-LBLKOUGAI
+                        PIC X(20).
+            02  HCGS139G-LBLJIBAI
+                        PIC X(20).
+            02  HCGS139G-LBLROUSAI
+                        PIC X(20).
             02  HCGS139G-SKYSBT
                         PIC X(50).

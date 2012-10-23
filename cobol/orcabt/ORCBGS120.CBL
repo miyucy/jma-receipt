@@ -207,7 +207,8 @@
       *
            MOVE    SPACE               TO  BGS100P-CSVFNAME
            STRING  SPA-HOSPNUM     DELIMITED   BY  SIZE
-                   "hknseikyuchk_" DELIMITED   BY  SIZE
+                   "hknseikyuchk_meisai_"
+                                   DELIMITED   BY  SIZE
                    BGS100P-SRYYM   DELIMITED   BY  SIZE
                    ".csv"          DELIMITED   BY  SIZE
            INTO    BGS100P-CSVFNAME
@@ -254,12 +255,21 @@
                MOVE    1           TO  BGS100P-SYAHO
                                        BGS100P-KOKUHO
                                        BGS100P-KOUKI
+                                       BGS100P-ROUSAI
+                                       BGS100P-JIBAI
+                                       BGS100P-KOUGAI
            WHEN    "1"
                MOVE    1           TO  BGS100P-SYAHO
            WHEN    "2"
                MOVE    1           TO  BGS100P-KOKUHO
            WHEN    "3"
                MOVE    1           TO  BGS100P-KOUKI
+           WHEN    "7"
+               MOVE    1           TO  BGS100P-ROUSAI
+           WHEN    "8"
+               MOVE    1           TO  BGS100P-JIBAI
+           WHEN    "9"
+               MOVE    1           TO  BGS100P-KOUGAI
            END-EVALUATE
       *
            MOVE    1               TO  BGS100P-MEISAI
@@ -335,6 +345,57 @@
                    DISPLAY SMCNDATE-HMS "ST:ORCBGS140"
       *
                    MOVE    CONST-KOUKI TO  BGS100P-HOKEN
+      *
+                   CALL    "ORCBGS121" USING
+                                       BGS100P-AREA
+                                       SPA-AREA
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ED:ORCBGS140"
+               END-IF
+           END-IF
+      *
+      *    Ï«ºÒ
+           IF    ( BGS100P-RC      =   ZERO )
+               IF    ( BGS100P-ROUSAI   =   1 )
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ST:ORCBGS140"
+      *
+                   MOVE    CONST-ROUSAI
+                                       TO  BGS100P-HOKEN
+      *
+                   CALL    "ORCBGS121" USING
+                                       BGS100P-AREA
+                                       SPA-AREA
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ED:ORCBGS140"
+               END-IF
+           END-IF
+      *
+      *    ¼«ÇåÀÕ
+           IF    ( BGS100P-RC      =   ZERO )
+               IF    ( BGS100P-JIBAI   =   1 )
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ST:ORCBGS140"
+      *
+                   MOVE    CONST-JIBAI
+                                       TO  BGS100P-HOKEN
+      *
+                   CALL    "ORCBGS121" USING
+                                       BGS100P-AREA
+                                       SPA-AREA
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ED:ORCBGS140"
+               END-IF
+           END-IF
+      *
+      *    ¸ø³²
+           IF    ( BGS100P-RC      =   ZERO )
+               IF    ( BGS100P-KOUGAI  =   1 )
+                   PERFORM 800-MCNDATE-SEC
+                   DISPLAY SMCNDATE-HMS "ST:ORCBGS140"
+      *
+                   MOVE    CONST-KOUGAI
+                                       TO  BGS100P-HOKEN
       *
                    CALL    "ORCBGS121" USING
                                        BGS100P-AREA

@@ -152,6 +152,7 @@
                                                BGS100P-SRYYM
                                                BGS100P-NYUGAIKBN
                                                BGS100P-EDITKBN
+                                               BGS100P-ETCGETKBN
            END-UNSTRING
       *
            MOVE    BGS100P-HOSPNUM     TO  SPA-HOSPNUM
@@ -236,6 +237,12 @@
                CONTINUE
            ELSE
                MOVE    "0"         TO  BGS100P-EDITKBN
+           END-IF
+      *
+           IF    ( BGS100P-ETCGETKBN   =   "1" OR "0" )
+               CONTINUE
+           ELSE
+               MOVE    "0"         TO  BGS100P-ETCGETKBN
            END-IF
       *
            MOVE    BGS100P-SRYYM   TO  BGS100P-SRYYMD
