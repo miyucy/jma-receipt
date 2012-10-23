@@ -103,7 +103,7 @@
       *
        01  WRK-CONS-AREA.
            03  WRK-CONS-FILENAME   PIC X(20)   VALUE
-                                   "data/test.ps".
+                                   "data/test.pdf".
       *    ¥·¥¹¥Æ¥à´ÉÍý£Ä£Â¡Ê£³£°£°£³¡Ë¤Î¥­¡¼ÃÍ  
            03  WRK-CONS-3003-KBNCD PIC X(08)   VALUE   "101".
       *    °õºþ´ÉÍý£Ä£Â¤Î¥­¡¼ÃÍ  
