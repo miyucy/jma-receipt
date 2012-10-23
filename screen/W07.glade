@@ -5412,7 +5412,7 @@
             <class>GtkLabel</class>
             <name>label394</name>
             <x>460</x>
-            <y>484</y>
+            <y>485</y>
             <width>101</width>
             <height>18</height>
             <sensitive>True</sensitive>
@@ -5430,7 +5430,7 @@
             <class>GtkLabel</class>
             <name>label395</name>
             <x>460</x>
-            <y>508</y>
+            <y>510</y>
             <width>104</width>
             <height>20</height>
             <sensitive>True</sensitive>
@@ -5484,7 +5484,7 @@
             <class>GtkLabel</class>
             <name>label398</name>
             <x>716</x>
-            <y>484</y>
+            <y>485</y>
             <width>108</width>
             <height>19</height>
             <sensitive>True</sensitive>
@@ -5502,7 +5502,7 @@
             <class>GtkLabel</class>
             <name>label399</name>
             <x>716</x>
-            <y>508</y>
+            <y>510</y>
             <width>101</width>
             <height>18</height>
             <sensitive>True</sensitive>
@@ -5962,7 +5962,7 @@
             <class>GtkLabel</class>
             <name>label402</name>
             <x>500</x>
-            <y>588</y>
+            <y>590</y>
             <width>52</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -5980,7 +5980,7 @@
             <class>GtkLabel</class>
             <name>label403</name>
             <x>712</x>
-            <y>592</y>
+            <y>590</y>
             <width>64</width>
             <height>20</height>
             <sensitive>True</sensitive>
@@ -5997,7 +5997,7 @@
           <widget>
             <class>GtkColorButton</class>
             <name>BGCOLORS</name>
-            <x>552</x>
+            <x>554</x>
             <y>556</y>
             <width>100</width>
             <height>28</height>
@@ -6011,7 +6011,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>入力スクロール背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6026,7 +6026,7 @@
             <class>GtkColorButton</class>
             <name>ERRCOLORS</name>
             <x>554</x>
-            <y>592</y>
+            <y>590</y>
             <width>100</width>
             <height>28</height>
             <visible>True</visible>
@@ -6039,7 +6039,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>エラー行背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6054,7 +6054,7 @@
             <class>GtkColorButton</class>
             <name>KEICOLORS</name>
             <x>748</x>
-            <y>588</y>
+            <y>590</y>
             <width>100</width>
             <height>28</height>
             <visible>True</visible>
@@ -6067,7 +6067,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>警告行背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6095,7 +6095,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>標準の背景色選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6123,7 +6123,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>時間外背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6151,7 +6151,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>休日背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6179,7 +6179,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>深夜背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6194,7 +6194,7 @@
             <class>GtkColorButton</class>
             <name>BGCOLORSJ4</name>
             <x>556</x>
-            <y>509</y>
+            <y>508</y>
             <width>100</width>
             <height>28</height>
             <visible>True</visible>
@@ -6207,7 +6207,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>時間外特例背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6235,7 +6235,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>小児科夜間背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6263,7 +6263,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>小児科休日背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6278,7 +6278,7 @@
             <class>GtkColorButton</class>
             <name>BGCOLORSJ7</name>
             <x>808</x>
-            <y>483</y>
+            <y>482</y>
             <width>100</width>
             <height>28</height>
             <visible>True</visible>
@@ -6291,7 +6291,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>小児科深夜背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6306,7 +6306,7 @@
             <class>GtkColorButton</class>
             <name>BGCOLORSJ8</name>
             <x>808</x>
-            <y>509</y>
+            <y>508</y>
             <width>100</width>
             <height>28</height>
             <visible>True</visible>
@@ -6319,7 +6319,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>夜間・早朝背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
@@ -6347,7 +6347,7 @@
             <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <response_id>0</response_id>
-            <title>色の選択</title>
+            <title>日付変更背景色の選択</title>
             <color>#000000000000</color>
             <signal>
               <name>color_set</name>
