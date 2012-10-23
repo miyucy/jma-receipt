@@ -2495,3 +2495,20 @@ path	key81	{
 	};
 };
 
+path	key82	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_main_key82_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu_main
+                WHERE (      HOSPNUM     =   :HOSPNUM    )
+                  AND (      HKNNUM_S  LIKE  :HKNNUM_S   )
+                  AND (      RECESYUBETU <>  '0000'      )
+                  AND (   (( SRYYM       =   :SKYYM    )
+                       AND ( SKYKBN      <>  '0'       )
+                       AND (( SKYYM      =   '000000'  ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM    )
+                       AND ( SKYKBN      <>  '0'       )))
+                  AND (      NYUGAIKBN   LIKE   :NYUGAIKBN  )
+		;
+	};
+};
