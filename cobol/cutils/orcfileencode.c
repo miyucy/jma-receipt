@@ -307,6 +307,7 @@ lf2crlf(char *in,
 			*q = *p;
 		}
 	}
+	*q = 0;
 }
 
 static
@@ -315,7 +316,8 @@ void print_ctx(char *ctx)
 	printf("==== orcfileencode ctx\n");
 	printf("infile:%s\n", CTX(ctx, OFFSET_INFILE));
 	printf("outfile:%s\n", CTX(ctx, OFFSET_OUTFILE));
-	printf("ret_code:%02x\n", *CTX(ctx, OFFSET_RET_CODE));
+	printf("hint:%02x\n", *CTX(ctx, OFFSET_HINT));
+	printf("ret_code:%02X\n", *CTX(ctx, OFFSET_RET_CODE));
 }
 
 void
@@ -352,7 +354,7 @@ OPENLOG;
 
 	snprintf(outfile, SIZE_OUTFILE, "%s", CTX(ctx, OFFSET_OUTFILE));
 
-	if((fp = fopen(outfile, "wb")) == NULL){
+	if((fp = fopen(outfile, "w")) == NULL){
 		memset(CTX(ctx, OFFSET_RET_CODE), ENCODE_ERROR, SIZE_RET_CODE);
 		return;
 	}

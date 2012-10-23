@@ -171,6 +171,8 @@
       *    ファイル名
            03  WRK-CSV-FILE        PIC X(256).
            03  WRK-DIRECTORY       PIC X(256).
+           03  WRK-DIRECTORY-E     PIC X(256).
+           03  WRK-DRCD-E          PIC X(05).
       *ver.4.7
            03  WRK-SHO-NAME        PIC X(80).
            03  WRK-SHO-TANINAME    PIC X(20).
@@ -254,12 +256,16 @@
        01  CONS-FORM-ID        PIC X(05)   VALUE   "HC62Q".
       *H24.9
       *
+       01  CONS-CSVDIR             PIC X(28)   VALUE
+                                   "/var/lib/jma-receipt/jahistc".
       *    プログラムオプションパラメタ
        01  PARA-AREA.
            03  PARA-COMMENT2           PIC X(01).
       *H24.9
            03  PARA-QRKBN              PIC X(01).
            03  PARA-SHOHIN             PIC X(01).
+           03  PARA-CSVKBN             PIC X(01).
+           03  PARA-CSVDIR             PIC X(256).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -427,6 +433,35 @@
            MOVE    "SHOHIN"        TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)   TO  PARA-SHOHIN
+      *    CSVファイル作成
+           MOVE    "CSVKBN"        TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)   TO  PARA-CSVKBN
+      *    CSVファイルディレクトリ
+           MOVE    "CSVDIR"        TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    ORCSPRGOPTION-OT-PARA(1:)
+                                   TO  PARA-CSVDIR
+      *
+           IF     (PARA-QRKBN      =   "1")  AND
+                  (PARA-CSVKBN     =   "1")
+               IF      PARA-CSVDIR     =   SPACE
+                   MOVE    CONS-CSVDIR     TO  WRK-DIRECTORY
+               ELSE
+                   MOVE    PARA-CSVDIR     TO  WRK-DIRECTORY
+                   INITIALIZE                  ORCSMKDIRAREA
+                   MOVE    WRK-DIRECTORY   TO  MKDIR-DIRECTORY
+                   MOVE    "0755"          TO  MKDIR-MODE
+                   MOVE    ZERO            TO  MKDIR-RESULT
+                   CALL    "orcmkdir"   USING  ORCSMKDIRAREA
+                   IF      MKDIR-RESULT NOT =  ZERO
+                       MOVE    "0"             TO  PARA-CSVKBN
+                   END-IF
+               END-IF
+           ELSE
+               MOVE    "0"             TO  PARA-CSVKBN
+               MOVE    SPACE           TO  WRK-DIRECTORY
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -1255,37 +1290,37 @@
       *
       *        剤回数
                MOVE    ORCHCN62-ZAIKAIKEI (IDX-ZAI)
-                                       TO  ORCSQRCVS62-KAISU (IDX-QR1)
+                                       TO  ORCSQRCSV62-KAISU (IDX-QR1)
       *        診療区分
                MOVE    ORCHCN62-SRYKBN (IDX-ZAI)
-                                       TO  ORCSQRCVS62-SRYKBN (IDX-QR1)
+                                       TO  ORCSQRCSV62-SRYKBN (IDX-QR1)
       *        診療種別
                MOVE    ORCHCN62-SRYSYUKBN (IDX-ZAI)
-                                       TO  ORCSQRCVS62-SRYSYUKBN
+                                       TO  ORCSQRCSV62-SRYSYUKBN
                                                               (IDX-QR1)
            END-IF
       *
            ADD     1                   TO  IDX-QR2
            MOVE    ORCHCN62-SRYCD(IDX-ZAI IDX-SRY)
-                                       TO  ORCSQRCVS62-SRYCD
+                                       TO  ORCSQRCSV62-SRYCD
                                                        (IDX-QR1 IDX-QR2)
-           MOVE    WRK-TNS-NAME        TO  ORCSQRCVS62-TNS-NAME
+           MOVE    WRK-TNS-NAME        TO  ORCSQRCSV62-TNS-NAME
                                                        (IDX-QR1 IDX-QR2)
-           MOVE    TNS-TANINAME        TO  ORCSQRCVS62-TANINAME
+           MOVE    TNS-TANINAME        TO  ORCSQRCSV62-TANINAME
                                                        (IDX-QR1 IDX-QR2)
            MOVE    ORCHCN62-SRYSURYO(IDX-ZAI IDX-SRY)
-                                       TO  ORCSQRCVS62-SURYOU
+                                       TO  ORCSQRCSV62-SURYOU
                                                        (IDX-QR1 IDX-QR2)
-           MOVE    TNS-YKZKBN          TO  ORCSQRCVS62-YKZKBN
+           MOVE    TNS-YKZKBN          TO  ORCSQRCSV62-YKZKBN
                                                        (IDX-QR1 IDX-QR2)
            IF      TNSP-SOURYOHENKBN   =   1
       *        内服点剤
-               MOVE    "1"             TO  ORCSQRCVS62-NAIHENKBN
+               MOVE    "1"             TO  ORCSQRCSV62-NAIHENKBN
                                                        (IDX-QR1 IDX-QR2)
            END-IF
            IF      ORCHCN62-SRYCD(IDX-ZAI IDX-SRY)(1:3) =   "001"
       *        用法コメント区分
-               MOVE    TNS-KENTAICOMMENT   TO  ORCSQRCVS62-YCOMMNTKBN
+               MOVE    TNS-KENTAICOMMENT   TO  ORCSQRCSV62-YCOMMNTKBN
                                                   (IDX-QR1 IDX-QR2)
            END-IF
       *
@@ -1295,10 +1330,10 @@
                            OR (WRK-YOH-NAME (IDX-QY)   =   SPACE )
                            OR (IDX-QR2     >=   100  )
                ADD     1                   TO  IDX-QR2
-               MOVE    "810000001"         TO  ORCSQRCVS62-SRYCD
+               MOVE    "810000001"         TO  ORCSQRCSV62-SRYCD
                                                        (IDX-QR1 IDX-QR2)
                MOVE    WRK-YOH-NAME-2(IDX-QY)
-                                           TO  ORCSQRCVS62-TNS-NAME
+                                           TO  ORCSQRCSV62-TNS-NAME
                                                        (IDX-QR1 IDX-QR2)
            END-PERFORM
       *
@@ -1313,7 +1348,7 @@
       *
            ADD     1                   TO  IDX-QRB
            IF      IDX-QRB              <=  10
-               MOVE    WRK-TNS-NAME        TO  ORCSQRCVS62-BIKOU
+               MOVE    WRK-TNS-NAME        TO  ORCSQRCSV62-BIKOU
                                                        (IDX-QRB)
            END-IF
            .
@@ -1325,38 +1360,40 @@
       *****************************************************************
        500-QR-SYORI-SEC            SECTION.
       *
-           MOVE    ORCHCN62-SRYYMD     TO  ORCSQRCVS62-SRYYMD
+           MOVE    ORCHCN62-SRYYMD     TO  ORCSQRCSV62-SRYYMD
       *    医療機関情報
-           MOVE    SYS-1001-PREFNUM    TO  ORCSQRCVS62-PREFNUM
-           MOVE    SYS-1001-HOSPCD     TO  ORCSQRCVS62-HOSPCD
-           MOVE    SYS-1001-HOSPSBT    TO  ORCSQRCVS62-HOSPSBT
-           MOVE    WRK-HOSPNAME        TO  ORCSQRCVS62-HOSPNAME
+           MOVE    SYS-1001-PREFNUM    TO  ORCSQRCSV62-PREFNUM
+           MOVE    SYS-1001-HOSPCD     TO  ORCSQRCSV62-HOSPCD
+           MOVE    SYS-1001-HOSPSBT    TO  ORCSQRCSV62-HOSPSBT
+           MOVE    WRK-HOSPNAME        TO  ORCSQRCSV62-HOSPNAME
       *    ドクター
-           MOVE    SYS-1010-KANANAME   TO  ORCSQRCVS62-DR-KANANAME
-           MOVE    SYS-1010-NAME       TO  ORCSQRCVS62-DR-NAME
+           MOVE    SYS-1010-KANANAME   TO  ORCSQRCSV62-DR-KANANAME
+           MOVE    SYS-1010-NAME       TO  ORCSQRCSV62-DR-NAME
       *    患者情報
-           MOVE    SPA-NAME            TO  ORCSQRCVS62-NAME
-           MOVE    SPA-KANANAME        TO  ORCSQRCVS62-KANANAME
-           MOVE    SPA-SEX             TO  ORCSQRCVS62-SEX
-           MOVE    SPA-BIRTHDAY        TO  ORCSQRCVS62-BIRTHDAY
+           MOVE    SPA-NAME            TO  ORCSQRCSV62-NAME
+           MOVE    SPA-KANANAME        TO  ORCSQRCSV62-KANANAME
+           MOVE    SPA-SEX             TO  ORCSQRCSV62-SEX
+           MOVE    SPA-BIRTHDAY        TO  ORCSQRCSV62-BIRTHDAY
       *    時間
            COMPUTE WRK-SYS-TIME        =   SYS-TIME
                                        +   ORCHCN62-CNT
       *    ファイル名
-           MOVE    CONS-FORM-ID        TO  ORCSQRCVS62-FORM-ID
+           MOVE    CONS-FORM-ID        TO  ORCSQRCSV62-FORM-ID
       *    ファイル名組み立て項目
-           MOVE    WRK-SYS-TIME        TO  ORCSQRCVS62-SYSTIME
+           MOVE    WRK-SYS-TIME        TO  ORCSQRCSV62-SYSTIME
       *
-      *    ＣＳＶ保存ファイル名 
-           PERFORM 50034-QRCSVFILE-SEC
-           MOVE    WRK-CSV-FILE        TO  ORCSQRCVS62-CSV-FILENAME
+           IF      PARA-CSVKBN     =   "1"
+      *        ＣＳＶ保存ファイル名 
+               PERFORM 50034-QRCSVFILE-SEC
+               MOVE    WRK-CSV-FILE        TO  ORCSQRCSV62-CSV-FILENAME
+           END-IF
       *
            CALL    "ORCSQRCSV62"       USING
                                        SPA-AREA
                                        ORCSQRCSV62AREA
       *
       *    ＱＲイメージ印刷
-           IF      ORCSQRCVS62-RET-COUNT   >   ZERO
+           IF      ORCSQRCSV62-RET-COUNT   >   ZERO
                PERFORM 5003-QRIMAGE-HEN-SEC
            END-IF
            .
@@ -1384,7 +1421,7 @@
                    UNTIL       IDQ     >   15
                MOVE    KUHAKU-FILE-NAME    TO  HCM62Q-IMAGE-1 (IDQ)
                ADD     1                   TO  WRK-FILE-CNT
-               IF      WRK-FILE-CNT        <=  ORCSQRCVS62-RET-COUNT 
+               IF      WRK-FILE-CNT        <=  ORCSQRCSV62-RET-COUNT 
                    MOVE    SPA-HOSPNUM         TO  QR-FILE-HOSPNUM
                    MOVE    CONS-FORM-ID        TO  QR-FILE-FORM-ID
                    MOVE    SPA-TERMID          TO  QR-FILE-TERMID
@@ -1496,29 +1533,59 @@
       *****************************************************************
        50034-QRCSVFILE-SEC             SECTION.
       *
-      *    ディレクトリ名取得
-      *    INITIALIZE                      ORCSMKDIRAREA
-      *    MOVE    "/tmp/jahistc"      TO  MKDIR-DIRECTORY
-      *    MOVE    "0755"              TO  MKDIR-MODE
-      *    MOVE    ZERO                TO  MKDIR-RESULT
-      *    CALL    "orcmkdir"          USING   ORCSMKDIRAREA
+      *    ディレクトリ作成（医療機関識別番号）
+           INITIALIZE                      ORCSMKDIRAREA
+           MOVE    SPACE               TO  WRK-DIRECTORY-E
+           STRING  WRK-DIRECTORY       DELIMITED   BY  SPACE
+                   "/"
+                   SPA-HOSPNUM         DELIMITED   BY  SIZE
+                                       INTO    WRK-DIRECTORY-E
+           END-STRING
+           MOVE    WRK-DIRECTORY-E     TO  MKDIR-DIRECTORY
+           MOVE    "0755"              TO  MKDIR-MODE
+           MOVE    ZERO                TO  MKDIR-RESULT
+           CALL    "orcmkdir"          USING   ORCSMKDIRAREA
+           IF      MKDIR-RESULT     NOT =  ZERO
+               MOVE    "0"                 TO  PARA-CSVKBN
+               GO  TO  50034-QRCSVFILE-EXT
+           END-IF
       *
-           MOVE    "/var/lib/jma-receipt/jahistc/"
-                                       TO  WRK-DIRECTORY
+      *    ディレクトリ作成（診療日）
+           INITIALIZE                      ORCSMKDIRAREA
+           STRING  WRK-DIRECTORY-E     DELIMITED   BY  SPACE
+                   "/"
+                   SPA-SRYYMD          DELIMITED   BY  SIZE
+                                       INTO    MKDIR-DIRECTORY
+           END-STRING
+      *
+           MOVE    MKDIR-DIRECTORY     TO  WRK-DIRECTORY-E
+      *
+           MOVE    "0755"              TO  MKDIR-MODE
+           MOVE    ZERO                TO  MKDIR-RESULT
+           CALL    "orcmkdir"          USING   ORCSMKDIRAREA
+           IF      MKDIR-RESULT     NOT =  ZERO
+               MOVE    "0"                 TO  PARA-CSVKBN
+               GO  TO  50034-QRCSVFILE-EXT
+           END-IF
+      *
+           IF      ORCHCN62-DRCD       =   SPACE
+               MOVE    "XXXXX"             TO  WRK-DRCD-E
+           ELSE
+               MOVE    ORCHCN62-DRCD       TO  WRK-DRCD-E
+           END-IF
       *    ファイル名作成
            MOVE    SPACE               TO  WRK-CSV-FILE
-           STRING  WRK-DIRECTORY       DELIMITED   BY  SPACE
-                   "JAHISTC"
+           STRING  WRK-DIRECTORY-E     DELIMITED   BY  SPACE
+                   "/JAHISTC"
                    SPA-HOSPNUM         DELIMITED   BY  SIZE
                    SPA-PTNUM           DELIMITED   BY  SPACE
                    "-"
                    "1"
-                   SPA-SRYYMD
-                   ORCHCN62-DRCD
-                   SPA-SYSYMD
-                   WRK-SYS-TIME
+                   SPA-SRYYMD          DELIMITED   BY  SIZE
+                   WRK-DRCD-E          DELIMITED   BY  SIZE
+                   SPA-SYSYMD          DELIMITED   BY  SIZE
+                   WRK-SYS-TIME        DELIMITED   BY  SIZE
                    ".csv"
-                                       DELIMITED   BY  SIZE
                                        INTO    WRK-CSV-FILE
            END-STRING
       *
