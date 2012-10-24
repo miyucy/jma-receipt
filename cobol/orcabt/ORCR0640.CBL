@@ -5733,6 +5733,9 @@
               IF   ACCT-SRYKBN = "97"
       ***        MOVE    "4"            TO      RECE64-ZAISKBKBN
                  MOVE    "9"            TO      RECE64-ZAISKBKBN
+                 IF   ACCT-ZAITEN  =  ZERO
+                   MOVE  "A"            TO      RECE64-ZAISKBKBN
+                 END-IF
               END-IF
            END-IF
            MOVE    ACCT-ZAINUM          TO      RECE64-ZAINUM

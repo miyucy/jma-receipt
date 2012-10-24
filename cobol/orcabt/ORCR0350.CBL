@@ -4562,6 +4562,9 @@
                                     MOVE    31          TO  IDY
                                 END-IF 
                             END-PERFORM
+                            IF  RECE641-SRYKBN  = "97"
+                                    MOVE    0           TO  FLG-TAISYO
+                            END-IF
                         END-IF
                      END-IF  
                    ELSE  

@@ -2145,6 +2145,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
               IF   ACCT-SRYKBN = "97"
       ***        MOVE    "4"            TO      RECE84-ZAISKBKBN
                  MOVE    "9"            TO      RECE84-ZAISKBKBN
+                 IF   ACCT-ZAITEN  =  ZERO
+                   MOVE  "A"            TO      RECE84-ZAISKBKBN
+                 END-IF
               END-IF
            END-IF
            MOVE    RECE82-PTNUM         TO      RECE84-PTNUM
