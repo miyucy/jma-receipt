@@ -362,25 +362,25 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-           COPY    "CPSK1005.INC".
+      *    COPY    "CPSK1005.INC".
       *
-           COPY    "CPSK1006.INC".
+      *    COPY    "CPSK1006.INC".
       *
            COPY    "CPSK1010.INC".
       *
-           COPY    "CPSK1001.INC".
+      *    COPY    "CPSK1001.INC".
       *
-           COPY    "CPSK1007.INC".
+      *    COPY    "CPSK1007.INC".
       *
-           COPY    "CPSK1008.INC".
+      *    COPY    "CPSK1008.INC".
       *
-           COPY    "CPSK1038.INC".
+      *    COPY    "CPSK1038.INC".
       *
-           COPY    "CPSK1030.INC".
+      *    COPY    "CPSK1030.INC".
       *
-           COPY    "CPSK1014.INC".
+      *    COPY    "CPSK1014.INC".
       *    ＣＬＡＩＭ接続情報 
-           COPY    "CPSK9000.INC".
+      *    COPY    "CPSK9000.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.

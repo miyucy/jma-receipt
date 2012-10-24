@@ -608,19 +608,17 @@
                            MOVE    1               TO  FLG-AUTO-OK
                        END-IF
                    END-IF
-      *ver.4.7
-      *            処方せん料判定
-                   IF     (ORCSCWKSRY-SYORIFLG         =   ZERO ) AND
+      *H24.6
+      *            処方せん料を訂正時展開する
+                   IF     (SPA-SRYYMD              >=  "20120401")  AND
+                          (ORCSCWKSRY-SYORIFLG         =   ZERO ) AND
                           (LNK-WKSRY-AUTOKBN(IDX IDY)  =  "3"   ) AND
                           (LNK-WKSRY-SRYSYUKBN(IDX)    =  "820" )
-      *                訂正時の展開あり
-                       IF     (SPA-TEISEISYO-FLG       =  "1" )
-                           MOVE    ZERO            TO  FLG-HEN-CHK
-                           MOVE    SPACE           TO  LNK-WKSRY-AUTOKBN
+                       MOVE    ZERO               TO  FLG-HEN-CHK
+                       MOVE    SPACE              TO  LNK-WKSRY-AUTOKBN
                                                             (IDX IDY)
-                       END-IF
                    END-IF
-      *!
+      *!!!!
       *            自動発生の有無判定
                    IF      ORCSCWKSRY-SYORIFLG     =   ZERO
                        IF     (LNK-WKSRY-AUTOKBN(IDX IDY)  =  "4"

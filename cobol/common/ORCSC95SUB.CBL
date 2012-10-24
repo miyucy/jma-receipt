@@ -450,16 +450,6 @@
                    MOVE    SYS-1008-TECHOKBN-FLG
                                            TO  SPA-TECHOKBN-FLG
                END-IF
-      *ver.4.7 訂正時の自動発生（処方せん料）
-               IF      SYS-1008-TEISEISYO-FLG  =   SPACE
-                   MOVE    "0"             TO  SPA-TEISEISYO-FLG
-               ELSE
-                   MOVE    SYS-1008-TEISEISYO-FLG
-                                           TO  SPA-TEISEISYO-FLG
-               END-IF
-               IF      SPA-SRYYMD          <   "20100401"
-                   MOVE    "0"             TO  SPA-TEISEISYO-FLG
-               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -489,7 +479,6 @@
       *        診察料自動発生
                MOVE    "1"                 TO  SPA-INITAUTO-FLG
                MOVE    "0"                 TO  SPA-TECHOKBN-FLG
-               MOVE    "0"                 TO  SPA-TEISEISYO-FLG
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1260,22 +1249,11 @@
                    MOVE    SYS-1008-TECHOKBN-FLG
                                            TO  SPA-TECHOKBN-FLG
                END-IF
-      *ver.4.7 訂正時の自動発生（処方せん料）
-               IF      SYS-1008-TEISEISYO-FLG  =   SPACE
-                   MOVE    "0"             TO  SPA-TEISEISYO-FLG
-               ELSE
-                   MOVE    SYS-1008-TEISEISYO-FLG
-                                           TO  SPA-TEISEISYO-FLG
-               END-IF
-               IF      SPA-SRYYMD          <   "20100401"
-                   MOVE    "0"             TO  SPA-TEISEISYO-FLG
-               END-IF
            ELSE
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
       *        検体検査加算自動発生
                MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
                MOVE    "0"                 TO  SPA-TECHOKBN-FLG
-               MOVE    "0"                 TO  SPA-TEISEISYO-FLG
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
