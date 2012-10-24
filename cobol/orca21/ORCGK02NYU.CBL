@@ -435,6 +435,7 @@
            03  WRK-SANTEI-CNT          PIC 9(04).
       *    入力位置
            03  WRK-FLG-IN              PIC X(01).
+           03  WRK-FLG-IN4             PIC X(01).
       *
            03  WRK-KINKIFLG            PIC X(01).
            03  WRK-PTKINKI-ARI         PIC 9(01).
@@ -586,6 +587,9 @@
            03  WRK-MAP-PAGE2       PIC 9(04).
            03  WRK-MAP-PAGE3       PIC 9(04).
            03  WRK-MAP-MAXPAGE     PIC 9(04).
+      *ver.4.7
+           03  WRK-MAP-CUR4        PIC 9(04).
+           03  FLG-MAP-CUR4        PIC 9(01).
       *    画面数量編集用
        01  WRK-GMN-SURYO-AREA.
            03  WRK-SURYO-HENSYU.
@@ -4295,6 +4299,7 @@
                MOVE    SPACE               TO  SPA-COM-CUR (IDX)
                MOVE    SPACE               TO  SPA-COM-IN  (IDX)
                MOVE    SPACE               TO  SPA-COM-IN2 (IDX)
+               MOVE    SPACE               TO  SPA-COM-IN4 (IDX)
            END-PERFORM
       *
            MOVE    ZERO                TO  WRK-STR
@@ -4313,6 +4318,19 @@
                                                            (SPA-GMN-IDX)
                    MOVE    ZERO                TO  FLG-INPUT-NASI
                END-IF
+      *ver.4.7
+      *        今回変更位置
+               IF     (K02N-INPUTCD (WRK-IDX2)  NOT =
+                                       SPA-GMN-INPUTCD (SPA-GMN-IDX))
+                   MOVE    "1"                 TO  SPA-COM-IN4
+                                                           (SPA-GMN-IDX)
+               END-IF
+               IF       (K02N-MEISYO  (WRK-IDX2)   NOT =
+                                       SPA-GMN-MEISYO-G (SPA-GMN-IDX))
+                   MOVE    "2"                 TO  SPA-COM-IN4
+                                                           (SPA-GMN-IDX)
+               END-IF
+      *ver.4.7
       *
                IF     (SPA-GMN-INPUTCD(SPA-GMN-IDX)
                                            NOT =   SPA-MAE-INPUTCD
@@ -4860,11 +4878,13 @@
       *
                MOVE    SPA-COM-TIMEFLG(SPA-GMN-IDX)    TO  WRK-TIMEFLG
                MOVE    SPA-COM-IN     (SPA-GMN-IDX)    TO  WRK-FLG-IN
+               MOVE    SPA-COM-IN4    (SPA-GMN-IDX)    TO  WRK-FLG-IN4
                MOVE    SPA-GMN-MEISYO-G(SPA-GMN-IDX)   TO  WRK-MEISYO-G
                INITIALIZE                  SPA-GMN-TBLREC (SPA-GMN-IDX)
                INITIALIZE                  SPA-COM-TBLREC (SPA-GMN-IDX)
                MOVE    WRK-TIMEFLG     TO  SPA-COM-TIMEFLG(SPA-GMN-IDX)
                MOVE    WRK-FLG-IN      TO  SPA-COM-IN  (SPA-GMN-IDX)
+               MOVE    WRK-FLG-IN4     TO  SPA-COM-IN4 (SPA-GMN-IDX)
                MOVE    "1"             TO  SPA-COM-IN2 (SPA-GMN-IDX)
                MOVE    WRK-KINKIFLG    TO  SPA-COM-KINKIFLG
                                                         (SPA-GMN-IDX)
@@ -9810,6 +9830,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  WRK-PAGE
            MOVE    ZERO                TO  SPA-GMN-MAX
       *ver.4.7
+           MOVE    ZERO                TO  WRK-MAP-CUR4
+           MOVE    ZERO                TO  FLG-MAP-CUR4
+      *ver.4.7
       *訂正展開時、１行目にカーソル移動
            IF      SPA-GMN-CUR         =   98
                MOVE    "1"             TO  SPA-COM-CUR (1)
@@ -9861,6 +9884,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    IDX             TO  WRK-MAP-CUR3
                            MOVE    WRK-PAGE        TO  WRK-MAP-PAGE3
                        END-IF
+      *ver.4.7
+      *                今回入力位置
+                       IF     (SPA-COM-IN4 (WRK-IDX)   =   "1" )
+                           MOVE    IDX             TO  WRK-MAP-CUR4
+                           MOVE    1               TO  FLG-MAP-CUR4
+                       END-IF
+                       IF     (SPA-COM-IN4 (WRK-IDX)   =   "2" )
+                           MOVE    IDX             TO  WRK-MAP-CUR4
+                           MOVE    2               TO  FLG-MAP-CUR4
+                       END-IF
+      *
       *
                        END-IF
       *
@@ -9920,6 +9954,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WRK-MAP-CUR3        TO  SPA-MAP-IDX
                MOVE    WRK-MAP-PAGE3       TO  SPA-GMN-PAGE
                MOVE    2                   TO  SPA-GMN-CUR
+               GO      TO      5002-GMNSPA-HEN-EXT
+           END-IF
+      *
+      *ver.4.7
+      *    カーソル指定のない時、入力行へ
+           IF     (WRK-MAP-CUR4    NOT =   ZERO )
+            AND   (WRK-MAP-MAX         >   WRK-MAP-CUR4)
+               MOVE    WRK-MAP-CUR4        TO  SPA-MAP-IDX
+               MOVE    1                   TO  SPA-GMN-PAGE
+               MOVE    FLG-MAP-CUR4        TO  SPA-GMN-CUR
                GO      TO      5002-GMNSPA-HEN-EXT
            END-IF
       *
@@ -10004,6 +10048,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *ver.4.7
       *            スクロール背景色（１行毎）
                    IF      FLG-BGCOLORS        =   ZERO
+      *                白色設定
       ***************  MOVE    "white"         TO
                        MOVE    "#FFFFFF"       TO
                                        K02N-SRYKBN-BGCOLOR  (IDX)
@@ -10078,8 +10123,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                     IF      K02N-INPUTCD (IDX) NOT =   SPACE
                         MOVE    IDX                TO  IDX2
                     END-IF
-      *ver.4.7
-      *!
+               ELSE
+      *            剤毎（約束セット対応）
+                   IF     (SPA-BGLINEKBN       =   "1" )  AND
+                          (SPA-COM-ZAIEND(WRK-IDX) =  "1"  )
+                       IF      FLG-BGCOLORS        =   ZERO
+                           MOVE    1               TO  FLG-BGCOLORS
+                       ELSE
+                           MOVE    ZERO            TO  FLG-BGCOLORS
+                       END-IF
+                   END-IF
                END-IF
       *
            END-PERFORM

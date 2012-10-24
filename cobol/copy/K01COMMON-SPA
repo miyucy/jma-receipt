@@ -187,10 +187,10 @@
                    07  SPA-GMNHYOKBN       PIC  X(01)
                                            OCCURS   5.
       *入力スクロール背景色
-               05  SPA-BGCOLORS               PIC X(20).
+               05  SPA-BGCOLORS               PIC X(16).
                05  SPA-BGLINEKBN              PIC X(01).
-               05  SPA-ERRCOLORS              PIC X(20).
-               05  SPA-KEICOLORS              PIC X(20).
+               05  SPA-ERRCOLORS              PIC X(16).
+               05  SPA-KEICOLORS              PIC X(16).
       *
       *前回保険組合せ相違チェック
                05  SPA-ZENHKNCHK-FLG       PIC X(01).

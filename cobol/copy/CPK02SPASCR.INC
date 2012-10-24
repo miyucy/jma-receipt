@@ -78,6 +78,8 @@
                        09  SPA-COM-IN2           PIC X(01).
       *                数量入力有り
                        09  SPA-COM-IN3           PIC X(01).
+      *ver.4.7         入力有り
+                       09  SPA-COM-IN4           PIC X(01).
                        09  SPA-MAE-INPUTCD       PIC X(54).
       *---(01.00.01)
       *
