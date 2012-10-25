@@ -23,7 +23,7 @@ tbl_order {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 	SELSTUKEYMD			char(8),virtual;
 	SELEDUKEYMD 	    char(8),virtual;
 };

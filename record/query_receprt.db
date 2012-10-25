@@ -14,7 +14,7 @@ query_receprt     {
 	HKNJANUM_S			char(8);
 	KENSU				number(6);
 	PAGE				number(6);
-#-----> ¸¡º÷¥­¡¼ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ã‚­ãƒ¼ç”¨é …ç›®
 };
 
 path    key             {

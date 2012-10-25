@@ -9,7 +9,7 @@ tbl_nyuinryakusho	{
 	CREYMD		char(8);
 	UPYMD		char(8);
 	UPHMS		char(6);
-#-----> 主キー更新用項目
+#-----> 荳ｻ繧ｭ繝ｼ譖ｴ譁ｰ逕ｨ鬆�逶ｮ
 	UPSRYCD		char(9),virtual;
 	UPYUKOSTYMD	char(8),virtual;
 	UPYUKOEDYMD 	char(8),virtual;

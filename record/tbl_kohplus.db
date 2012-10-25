@@ -15,7 +15,7 @@ OPID		varchar(16);
 CREYMD		char(8);
 UPYMD		char(8);
 UPHMS		char(6);
-#----°Ê²¼¹¹¿·ÍÑ¹àÌÜ
+#----ä»¥ä¸‹æ›´æ–°ç”¨é …ç›®
 UPHOSPNUM	number(2,0),virtual;
 UPPREFNUM	char(2),virtual;
 UPCITYNUM	char(3),virtual;

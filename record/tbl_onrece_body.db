@@ -6,7 +6,7 @@ tbl_onrece_body   {
 	SCNT			number(3);
 	RENNUM			number(3);
 	RECEIPT_NO		number(6);
-#---> ¥­¡¼Éô
+#---> ã‚­ãƒ¼éƒ¨
 	SYORIYMD		char(8);
 	UKEYMD			char(8);
 	SKYYMD			char(8);
@@ -45,7 +45,7 @@ tbl_onrece_body   {
 	KAKUTEI_KBN		char(1);
 	ERR_KBN			char(2);
 	SEIKYU_INFO		varchar(40);
-#---> ¼õÉÕ¡¦»öÌ³ÅÀ¸¡¸ÇÍ­¾ðÊó
+#---> å—ä»˜ãƒ»äº‹å‹™ç‚¹æ¤œå›ºæœ‰æƒ…å ±
 	U_ERR_CODE		char(4);
 	U_ERR_MSG_1		varchar(400);
 	U_ERR_MSG_2		varchar(512);
@@ -63,7 +63,7 @@ tbl_onrece_body   {
 	CREYMD			char(8);
 	UPYMD 			char(8);
 	UPHMS 			char(6);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 	UCNT_V			number(3),virtual;
 	SCNT_V			number(3),virtual;
 	XXTEISYUTUSAKI		char(1),virtual;

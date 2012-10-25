@@ -14,7 +14,7 @@ tbl_prtctrl	{
 	OPID			varchar(16);
 	CREYMD 			varchar(8);
 	CREHMS 			varchar(6);
-#-----> virtual ¹àÌÜ
+#-----> virtual é …ç›®
 	SELLIMIT		number(8),virtual;
 	SELOFFSET		number(8),virtual;
 };

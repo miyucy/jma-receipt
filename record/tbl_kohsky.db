@@ -533,7 +533,7 @@ FLG4				number(1,0);
 FLG5				number(1,0);
 CREYMD	        char(8);
 UPDYMD	        char(8);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 XXKOHNUM1 			char(3),virtual;
 XXKOHNUM2 			char(3),virtual;
 XXKOHNUM3 			char(3),virtual;

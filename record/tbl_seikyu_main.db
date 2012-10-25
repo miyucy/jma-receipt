@@ -224,9 +224,9 @@ CREYMD				char(8);
 CREHMS				char(6);
 UPDYMD				char(8);
 UPDHMS				char(6);
-#-----> ¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
 UPHKNJANUM			char(10),virtual;
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 XXPREFNUM 			char(2),virtual;
 XXSRYYM 			number(6),virtual;
 XXSTHKNJANUM			char(8),virtual;

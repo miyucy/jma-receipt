@@ -462,7 +462,7 @@ path	all2	{
 	};
 };
 
-#HOSPNUM,PTID¤Î¤ß¼èÆÀ
+#HOSPNUM,PTIDã®ã¿å–å¾—
 path	key20 	{
 	DBSELECT	{
 		DECLARE tbl_nyuinacct_key20_csr CURSOR FOR

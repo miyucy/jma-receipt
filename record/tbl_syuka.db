@@ -2,7 +2,7 @@ tbl_syuka {
     HOSPNUM              number(2,0);
     NYUGAIKBN           char(1);
     PTID                number(10,0);
-# ---> Æþ±¡´ðËÜÎÁ¤È¿ÇÎÅÊ¬¤ò¤ï¤±¤ë
+# ---> å…¥é™¢åŸºæœ¬æ–™ã¨è¨ºç™‚åˆ†ã‚’ã‚ã‘ã‚‹
     TEN_KBN             char(1);
     SRYYM               char(6);
     TEISYUTUSAKI        char(1);
@@ -29,16 +29,16 @@ tbl_syuka {
     KAISU               number(3);
     NISSU               number(3);
     EDDAY               number(2);
-#  Ì¤ÀÁµá¥ì¥»¤Ç»È¤¦Í½Äê
+#  æœªè«‹æ±‚ãƒ¬ã‚»ã§ä½¿ã†äºˆå®š
     MISEIKYU_FLG        char(2);
-#  ºï½ü¥Õ¥é¥°
+#  å‰Šé™¤ãƒ•ãƒ©ã‚°
     DLT_FLG             char(1);
     TERMID              varchar(16);
     OPID                varchar(16);
     CREYMD              char(8);
     UPYMD               char(8);
     UPHMS               char(6);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
     XXPTNUM             char(20),virtual;
 };
 primary {

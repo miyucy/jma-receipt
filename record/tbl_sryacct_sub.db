@@ -5,7 +5,7 @@ tbl_sryacct_sub {
 	RENNUM				number(3,0);
 	DATE_HI				number(2,0);
 	DAY_CNT				number(3,0);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 	VNYUGAIKBN 			char(1),virtual;
 	VSRYYM 				char(6),virtual;
 };

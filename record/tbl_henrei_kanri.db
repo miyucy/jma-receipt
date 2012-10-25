@@ -2,13 +2,13 @@ tbl_henrei_kanri	{
 	HOSPNUM			number(2,0);
 	TEISYUTUSAKI		char(1);
 	TEISYUTUSAKI2		char(1);
-#---->  ¿³ººÂ¦¤¬½èÍı¤·¤¿Ç¯·î(HI¥ì¥³¡¼¥É¤ÎÇ¯·î)
+#---->  å¯©æŸ»å´ãŒå‡¦ç†ã—ãŸå¹´æœˆ(HIãƒ¬ã‚³ãƒ¼ãƒ‰ã®å¹´æœˆ)
 	SYORIYM			char(6);
 	RECV_TOTAL_CNT		number(5);
 	RECV_PATIENT_CNT	number(5);
 	RECV_GO_CNT		number(5);
 	RECV_GO_TEN		number(10);
-#-----> ¤³¤³¤Ş¤Ç
+#-----> ã“ã“ã¾ã§
 	TERMID			varchar(64);
 	OPID			varchar(16);
 	CREYMD			char(8);

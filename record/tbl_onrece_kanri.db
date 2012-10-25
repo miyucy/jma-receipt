@@ -5,7 +5,7 @@ tbl_onrece_kanri   {
 	UCNT			number(3);
 	SCNT			number(3);
 	RENNUM			number(3);
-#---> ¥­¡¼Éô
+#---> ã‚­ãƒ¼éƒ¨
 	SYORIYMD		char(8);
 	UKEYMD			char(8);
 	SKYYMD			char(8);
@@ -19,7 +19,7 @@ tbl_onrece_kanri   {
 	CREYMD			char(8);
 	UPYMD 			char(8);
 	UPHMS 			char(6);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 	UCNT_V			number(3),virtual;
 	SCNT_V			number(3),virtual;
 };

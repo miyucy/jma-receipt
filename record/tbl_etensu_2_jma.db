@@ -4,13 +4,13 @@ tbl_etensu_2_jma {
 	YUKOSTYMD			char(8);
 	YUKOEDYMD			char(8);
 	CHGYMD   			char(8);
-#-----> 検索キー項目
+#-----> 讀懃ｴ｢繧ｭ繝ｼ鬆�逶ｮ
 	HOSPNUM				number(2,0),virtual;
 	SRYKBN				char(2),virtual;
 	SRYSYUKBN			char(3),virtual;
 	SRYKBN2				char(2),virtual;
 	SRYSYUKBN2			char(3),virtual;
-#-----> 主キー更新用項目
+#-----> 荳ｻ繧ｭ繝ｼ譖ｴ譁ｰ逕ｨ鬆�逶ｮ
 	UPH_GROUP 			varchar(7),virtual;
 	UPSRYCD				char(9),virtual;
 	UPYUKOSTYMD			char(8),virtual;

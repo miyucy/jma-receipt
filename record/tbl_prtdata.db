@@ -18,7 +18,7 @@ tbl_prtdata	{
 	PRTNM			char(16);
 	PRTDATA			varchar(20000);
 	CREYMD 			varchar(8);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 	STPAGE			number(5),virtual;
 	EDPAGE			number(5),virtual;
 };

@@ -17,7 +17,7 @@ tbl_prtkanri	{
 	OPID			varchar(16);
 	PRTNM			varchar(16);
 	CREYMD 			varchar(8);
-#-----> virtual ¹àÌÜ
+#-----> virtual é …ç›®
 	SELLIMIT		number(8),virtual;
 	SELOFFSET		number(8),virtual;
 };

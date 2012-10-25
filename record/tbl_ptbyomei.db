@@ -65,7 +65,7 @@ tbl_ptbyomei {
 	CREYMD  			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 	XXBYOMEI    		varchar(160),virtual;
 };
 primary	{

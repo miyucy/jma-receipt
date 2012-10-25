@@ -17,7 +17,7 @@ SYOCD				char(5);
 KOFUNUM  			char(14);
 SAIGAIKBN			char(1);
 COMMENT  			varchar(200);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 XXTEISYUTUSAKI			number(1,0),virtual;
 };
 

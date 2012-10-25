@@ -6,7 +6,7 @@ tbl_etensu_2_sample {
 	RENNUM				number(2);
 	SAMPLECD			char(9);
 	CHGYMD   			char(8);
-#-----> 主キー更新用項目
+#-----> 荳ｻ繧ｭ繝ｼ譖ｴ譁ｰ逕ｨ鬆�逶ｮ
 	UPH_GROUP 			varchar(7),virtual;
 	UPSRYCD				char(9),virtual;
 	UPYUKOSTYMD			char(8),virtual;

@@ -44,7 +44,7 @@ tbl_receprt	{
         TERMID              char(64);
         OPID                char(16);
         PRTJYUN_SYUKA       number(4);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 	STKANANAME			char(100),virtual;
 	EDKANANAME			char(100),virtual;
 	STRENNUM			number(2),virtual;

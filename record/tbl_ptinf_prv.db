@@ -59,7 +59,7 @@ tbl_ptinf_prv {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-#-----> virtual¹àÌÜ
+#-----> virtualé …ç›®
 	ST_SRYYMD			char(8),virtual;
 	ED_SRYYMD			char(8),virtual;
 	NYUGAIKBN			char(1),virtual;

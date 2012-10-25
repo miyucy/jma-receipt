@@ -19,14 +19,14 @@ tbl_chksnd	{
 	CREYMD  		char(8);
 	UPYMD   		char(8);
 	UPHMS			char(6);
-#-----> ¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
 	UPCHKKBN		char(1),virtual;
 	UPSRYCD   		char(9),virtual;
 	UPYUKOSTYMD 	char(8),virtual;
 	UPYUKOEDYMD 	char(8),virtual;
 	UPCDKBN   		char(1),virtual;
 	UPRENNUM		number(3),virtual;
-#-----> ¸¡º÷¥­¡¼ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ã‚­ãƒ¼ç”¨é …ç›®
 	SELNAME		char(200),virtual;
 	SELCDSYU		char(1),virtual;
 	SELINPUTCD		char(20),virtual;

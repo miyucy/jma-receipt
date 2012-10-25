@@ -918,7 +918,7 @@ path	st_key1 	{
 	};
 };
 
-#PTID¤Î¤ß¼èÆÀ
+#PTIDã®ã¿å–å¾—
 path	key36 	{
 	DBSELECT	{
 		DECLARE tbl_syunou_prv_key36_csr CURSOR FOR

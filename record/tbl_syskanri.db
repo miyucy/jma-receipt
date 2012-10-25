@@ -10,7 +10,7 @@ tbl_syskanri	{
 	CREYMD		char(8);
 	UPYMD		char(8);
 	UPHMS		char(6);
-#-----> ¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
 	UPHOSPNUM	number(2,0),virtual;
 	UPKANRICD	char(4),virtual;
 	UPKBNCD	char(8),virtual;

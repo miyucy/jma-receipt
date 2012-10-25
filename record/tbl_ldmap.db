@@ -1,6 +1,6 @@
 tbl_ldmap	{
 	HOSPNUM				number(2,0);
-#--> Ã¼Ëö£É£Ä
+#--> ç«¯æœ«ï¼©ï¼¤
 	MAP_LDNAME		varchar(20);
 	MAP_GROUPNUM		number(2,0);
 	MAP_EDANUM		number(2,0);

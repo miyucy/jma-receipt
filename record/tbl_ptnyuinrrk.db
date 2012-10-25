@@ -766,7 +766,7 @@ path	key42		{
 	};
 };
 
-#PTID§Œ§ﬂ
+#PTID„ÅÆ„Åø
 path	key43		{ 	
 	DBSELECT	{
 		DECLARE tbl_ptnyuinrrk_key43_csr CURSOR FOR
@@ -834,7 +834,7 @@ path	upd4		{
 	};
 };
 
-#PTID§Œ§ﬂ
+#PTID„ÅÆ„Åø
 path	key46		{ 	
 	DBSELECT	{
 		DECLARE tbl_ptnyuinrrk_key46_csr CURSOR FOR

@@ -6,7 +6,7 @@ tbl_etensu_3_2 {
 	HAIHAN				number(1,0);
 	TOKUREI				number(1,0);
 	CHGYMD   			char(8);
-#-----> 主キー更新用項目
+#-----> 荳ｻ繧ｭ繝ｼ譖ｴ譁ｰ逕ｨ鬆�逶ｮ
 	UPSRYCD1			char(9),virtual;
 	UPSRYCD2			char(9),virtual;
 	UPYUKOSTYMD			char(8),virtual;

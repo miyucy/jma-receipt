@@ -1,4 +1,4 @@
-# name: BLOB����ѥǡ����ΰ�
+# name: BLOB操作用データ領域
 blob {
     object  object;
     file    text;

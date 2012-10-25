@@ -14,7 +14,7 @@ tbl_ptkohftn {
 	CREYMD			char(8);
 	UPYMD			char(8);
 	UPHMS			char(6);
-#-----> ¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
 	UPHOSPNUM			number(2,0),virtual;
 	UPPTID 				number(10,0),virtual;
 	UPKOHID				number(10,0),virtual;

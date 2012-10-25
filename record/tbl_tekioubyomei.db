@@ -35,7 +35,7 @@ tbl_tekioubyomei {
 	CREYMD			char(8);
 	UPYMD			char(8);
 	UPHMS			char(6);
-#-----> ¸¡º÷¥­¡¼ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ã‚­ãƒ¼ç”¨é …ç›®
 	SELNAME		char(200),virtual;
 	SELYUKOSTYMD  		char(8),virtual;
 	SELYUKOEDYMD  		char(8),virtual;

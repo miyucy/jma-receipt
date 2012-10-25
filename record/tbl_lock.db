@@ -1,6 +1,6 @@
 tbl_lock	{
 	HOSPNUM				number(2,0);
-#--> Ã¼Ëö£É£Ä
+#--> ç«¯æœ«ï¼©ï¼¤
 	LOCK_TERMID		char(64);
 	LOCK_OPID		varchar(16);
 	LOCKTABLE	{
@@ -405,7 +405,7 @@ tbl_lock	{
 		FLG49		char(1);
 		FLG50		char(1);
 	};
-#-----> ¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
 #	UPSHELLID	char(8),virtual;
 };
 

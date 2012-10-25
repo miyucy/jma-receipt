@@ -36,7 +36,7 @@ query_dtchk	{
 	REZEMM         		number(2);
 	ID	         		integer;
 	GRPID        		char(1);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 	SELHOSPNUM			number(2,0),virtual;
 	SELPTID				number(10),virtual;
 	SELSRYKA			char(2),virtual;

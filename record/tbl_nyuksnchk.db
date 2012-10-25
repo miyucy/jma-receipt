@@ -9,7 +9,7 @@ tbl_nyuksnchk	{
 	CREYMD  		char(8);
 	UPYMD   		char(8);
 	UPHMS			char(6);
-#-----> ¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
 	UPNYUINKBN		char(3),virtual;
 	UPKSNKBN   		char(3),virtual;
 	UPYUKOSTYMD 		char(8),virtual;

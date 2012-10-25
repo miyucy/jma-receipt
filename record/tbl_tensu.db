@@ -146,12 +146,12 @@ tbl_tensu {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-#-----> ¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
 	UPHOSPNUM			number(2,0),virtual;
 	UPSRYCD				char(9),virtual;
 	UPSTYUKYMD			char(8),virtual;
 	UPEDYUKYMD			char(8),virtual;
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 	STSRYKBN			char(2),virtual;
 	EDSRYKBN			char(2),virtual;
 	TK_CDKBN_KBNNUM		number(3,0),virtual;

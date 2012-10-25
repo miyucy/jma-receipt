@@ -149,7 +149,7 @@ tbl_sryacct_prv {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
     STSRYYM 			char(6),virtual;
     EDSRYYM 			char(6),virtual;
 };
@@ -624,7 +624,7 @@ path	key26 	{
 	};
 };
 
-#HOSPNUM,PTID¤Î¤ß¼èÆÀ
+#HOSPNUM,PTIDã®ã¿å–å¾—
 path	key27 	{
 	DBSELECT	{
 		DECLARE tbl_sryacct_prv_key27_csr CURSOR FOR

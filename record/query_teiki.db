@@ -11,7 +11,7 @@ query_teiki	{
 	KENSU				number(10,0);
 	TENNYUYMD			char(8);
 	TAIINYMD			char(8);
-#-----> ¸¡º÷¥­¡¼ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ã‚­ãƒ¼ç”¨é …ç›®
 	SELKBT1				char(1),virtual;
 	SELKBT2				char(1),virtual;
 	SELKBT3				char(1),virtual;

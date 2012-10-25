@@ -67,7 +67,7 @@ SHOKUJINISSU       	number(2,0);
 SHOKUJIRYOYOHI       	number(9,0);
 SHOKUJIFTN 		number(9,0);
 YKZFTN 			number(5,0);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 XXTEISYUTUSAKI			number(1,0),virtual;
 };
 

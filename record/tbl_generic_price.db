@@ -5,7 +5,7 @@ tbl_generic_price {
 	PRICE   			number(11,2);
 	CREYMD   			char(8);
 	UPYMD    			char(8);
-#-----> 主キー更新用項目
+#-----> 荳ｻ繧ｭ繝ｼ譖ｴ譁ｰ逕ｨ鬆�逶ｮ
 	UPYAKKAKJNCD			char(12),virtual;
 	UPYUKOSTYMD			char(8),virtual;
 	UPYUKOEDYMD 			char(8),virtual;

@@ -1,7 +1,7 @@
 view_bd003 {
 
-#   SKYMONEY,NYUHEN_MONEY¤Ï
-#   ½¸·×¤Ë»È¤¤¤¿¤¤¤Î¤Ç10·å¤È¤Ã¤Æ¤ª¤¯
+#   SKYMONEY,NYUHEN_MONEYã¯
+#   é›†è¨ˆã«ä½¿ã„ãŸã„ã®ã§10æ¡ã¨ã£ã¦ãŠã
 
 
 	HOSPNUM				number(2,0);
@@ -13,7 +13,7 @@ view_bd003 {
 	NYUHEN_MONEY		number(10,0);
 	NYUHEN_YMD			char(8);
 	SRYYMD              char(8);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 	STSRYYMD			char(8),virtual;
 	EDSRYYMD			char(8),virtual;
 };

@@ -13,7 +13,7 @@ tbl_chkreigai	{
 	CREYMD  		char(8);
 	UPYMD   		char(8);
 	UPHMS			char(6);
-#-----> ¸¡º÷¥­¡¼ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ã‚­ãƒ¼ç”¨é …ç›®
 	SELLIMIT		number(8,0),virtual;
 	SELOFFSET		number(8,0),virtual;
 };

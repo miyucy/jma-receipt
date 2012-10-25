@@ -31,7 +31,7 @@ tbl_prvkanri	{
 	CREYMD			varchar(08);
 	UPYMD			varchar(08);
 	UPHMS			varchar(06);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 	STPAGE			number(5),virtual;
 	EDPAGE			number(5),virtual;
 };

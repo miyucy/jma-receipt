@@ -57,7 +57,7 @@ tbl_sryacct_main {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
     STSRYYM 			char(6),virtual;
     EDSRYYM 			char(6),virtual;
 };
@@ -532,7 +532,7 @@ path	key26 	{
 	};
 };
 
-#HOSPNUM,PTID¤Î¤ß¼èÆÀ
+#HOSPNUM,PTIDã®ã¿å–å¾—
 path	key27 	{
 	DBSELECT	{
 		DECLARE tbl_sryacct_main_key27_csr CURSOR FOR
@@ -898,7 +898,7 @@ path	key41	{
 	};
 };
 
-#SRYKA¤Î¤ß¼èÆÀ
+#SRYKAã®ã¿å–å¾—
 path	key42	{
 	DBSELECT	{
 		DECLARE tbl_sryacct_main_key42_csr CURSOR FOR
@@ -930,7 +930,7 @@ path	key42	{
 	};
 };
 
-#PTID,SRYKA¤Î¤ß¼èÆÀ
+#PTID,SRYKAã®ã¿å–å¾—
 path	key43	{
 	DBSELECT	{
 		DECLARE tbl_sryacct_main_key43_csr CURSOR FOR

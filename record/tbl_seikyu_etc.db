@@ -50,7 +50,7 @@ ETC_SHOKUJIFTN3 		number(9,0);
 ETC_SHOKUJINISSU4       	number(2,0);
 ETC_SHOKUJIRYOYOHI4     	number(9,0);
 ETC_SHOKUJIFTN4 		number(9,0);
-#-----> ¸¡º÷ÍÑ¹àÌÜ
+#-----> æ¤œç´¢ç”¨é …ç›®
 XXTEISYUTUSAKI			number(1,0),virtual;
 };
 

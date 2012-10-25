@@ -1,11 +1,11 @@
 tbl_jobkanri	{
 	HOSPNUM				number(2,0);
-#--> ¥¸¥ç¥Ö£É£Ä
+#--> ã‚¸ãƒ§ãƒ–ï¼©ï¼¤
 	JOBID			number(7,0);
-#--> ¥·¥§¥ë£É£Ä
+#--> ã‚·ã‚§ãƒ«ï¼©ï¼¤
 	SHELLID			char(8);
 	RUN_OPID		char(16);
-#--> ¥·¥§¥ë¥á¥Ã¥»¡¼¥¸
+#--> ã‚·ã‚§ãƒ«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	SHELLMSG		char(100);
 	TERMID			varchar(32);
 	OPID			varchar(16);
@@ -33,7 +33,7 @@ tbl_jobkanri	{
 	UPDCNT1			number(10,0);
 	UPDCNT2			number(10,0);
 	YOBI			varchar(500);
-#-----> ¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
 #	UPSHELLID	char(8),virtual;
 };
 
