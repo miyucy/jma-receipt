@@ -229,7 +229,10 @@
       *****************************************************************
        1001-PARA-CHK-SEC               SECTION.
       *
-           IF    ( BGS100P-FORMKBN = "0" OR "1" OR "2" OR "3"  )
+           IF    ( BGS100P-FORMKBN = "0" OR "1" OR "2" OR "3"
+                                  OR "7" OR "8" OR "9"
+                                  OR "a" OR "A"
+                                  OR "b" OR "B"  )
                CONTINUE
            ELSE
                MOVE    "0"         TO  BGS100P-FORMKBN
@@ -256,6 +259,16 @@
                                        BGS100P-KOKUHO
                                        BGS100P-KOUKI
                                        BGS100P-ROUSAI
+                                       BGS100P-JIBAI
+                                       BGS100P-KOUGAI
+           WHEN    "a"
+           WHEN    "A"
+               MOVE    1           TO  BGS100P-SYAHO
+                                       BGS100P-KOKUHO
+                                       BGS100P-KOUKI
+           WHEN    "b"
+           WHEN    "B"
+               MOVE    1           TO  BGS100P-ROUSAI
                                        BGS100P-JIBAI
                                        BGS100P-KOUGAI
            WHEN    "1"
