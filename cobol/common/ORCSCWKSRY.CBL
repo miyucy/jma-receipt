@@ -688,24 +688,36 @@
                                                                (IDX2)
                        END-IF
                        MOVE    ZERO                TO  FLG-SET
-      *                情ま’情陸質杅毛鰾醒方曰庍凳
-                       IF      FLG-INGAIKBN-ARI    =   1
+      *************    情ま’情陸質杅毛鰾醒方曰庍凳
+      *                IF      FLG-INGAIKBN-ARI    =   1
       *                情陸
-                           IF      FLG-INGAIKBN        =   1
-                               MOVE    "1"             TO  SPA-INGAIKBN
-                           END-IF
+      *                    IF      FLG-INGAIKBN        =   1
+      *                        MOVE    "1"             TO  SPA-INGAIKBN
+      *                    END-IF
       *                    情ま﹋ェ情反情ま﹌
-                          IF      FLG-INGAIKBN        =   2
-                               MOVE    "0"             TO  SPA-INGAIKBN
-                           END-IF
-                       END-IF
+      *                    IF      FLG-INGAIKBN        =   2
+      *                        MOVE    "0"             TO  SPA-INGAIKBN
+      *                    END-IF
+      *                END-IF
       *
-                       MOVE    ZERO                TO  FLG-INGAIKBN
-                       MOVE    ZERO                TO  FLG-INGAIKBN-ARI
+      *                MOVE    ZERO                TO  FLG-INGAIKBN
+      ***********      MOVE    ZERO                TO  FLG-INGAIKBN-ARI
                    END-IF
                END-IF
            END-PERFORM
-      *
+      *H24.10
+      *    情ま’情陸質杅毛髑泔鰾醒方曰庍凳
+           IF      FLG-INGAIKBN-ARI    =   1
+      *        情陸
+               IF      FLG-INGAIKBN        =   1
+                   MOVE    "1"             TO  SPA-INGAIKBN
+               END-IF
+      *        情ま﹋ェ情反情ま﹌
+               IF      FLG-INGAIKBN        =   2
+                   MOVE    "0"             TO  SPA-INGAIKBN
+               END-IF
+           END-IF
+      *!!
       *    襪懇凜及遙爛肣拑瓚狤及�衝�
            IF      FLG-AUTO-ARI        =   ZERO
                IF      FLG-AUTO-NASI       =   1
@@ -1645,9 +1657,22 @@
       *                管ま卞泔管互丐月凜及心
                        IF     ( LNK-WKSRY-SRYCD (IDX IDY)(1:1)
                                                =   "6" )
-                         OR   ( LNK-WKSRY-SRYCD (IDX IDY)(1:3)
-                                               =   "059" )
-                           MOVE    1               TO  FLG-INGAIKBN
+                           IF      FLG-INGAIKBN    =   ZERO
+                               MOVE    1               TO  FLG-INGAIKBN
+                           END-IF
+                       END-IF
+      *H24.10
+      *                交□扒湛箋匹﹜嗯喊∩未伕及凜﹜情陸午允月
+                       IF      FLG-INGAIKBN    =   ZERO
+                           IF     ( LNK-WKSRY-SRYCD (IDX IDY)(1:3)
+                                                   =   "059" )
+                               MOVE    LNK-WKSRY-SRYCD (IDX IDY)
+                                                       TO  TNS-SRYCD
+                               PERFORM 910-TENSU-READ-SEC
+                               IF      TNS-TEN         >   ZERO
+                                   MOVE    1           TO  FLG-INGAIKBN
+                               END-IF
+                           END-IF
                        END-IF
                    ELSE
       *                管鰾醒﹦未伕﹛情ま

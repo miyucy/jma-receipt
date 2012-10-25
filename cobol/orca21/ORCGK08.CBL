@@ -2517,8 +2517,11 @@
            END-IF
       *
       *    醒恟﹋泔管﹜湛箋及午五﹌
-           IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )
-             OR   (LNK-WKSRY-SRYCD (IDX IDZ)(1:3)   =   "059"    )
+           IF    ((LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )
+             OR   (LNK-WKSRY-SRYCD (IDX IDZ)(1:3)   =   "059"    ))
+      *       蛹鰾動陸
+             AND  (LNK-WKSRYP-PLUSKBN (IDX)    =   ZERO  )
+      *
                IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  )
                  AND  (TNS-TEN                          =   ZERO )
                  AND  (TNS-TENSIKIBETU                  =   1    )
