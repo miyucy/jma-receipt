@@ -220,7 +220,7 @@
                    07  CSV-H01-SKYSBTKBN       PIC X(50)
                            VALUE   "当月・当月外区分".
                    07  CSV-H01-SKYSBT          PIC X(50)
-                           VALUE   "当月・当月外".
+                           VALUE   "当月・当月外区分名称".
                    07  CSV-H01-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H01-SRYKAMEI        PIC X(50)
@@ -277,7 +277,7 @@
                    07  CSV-H02-SKYSBTKBN       PIC X(50)
                            VALUE   "当月・当月外区分".
                    07  CSV-H02-SKYSBT          PIC X(50)
-                           VALUE   "当月・当月外".
+                           VALUE   "当月・当月外区分名称".
                    07  CSV-H02-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H02-SRYKAMEI        PIC X(50)
@@ -314,7 +314,7 @@
                    07  CSV-H03-SKYSBTKBN       PIC X(50)
                            VALUE   "当月・当月外区分".
                    07  CSV-H03-SKYSBT          PIC X(50)
-                           VALUE   "当月・当月外".
+                           VALUE   "当月・当月外区分名称".
                    07  CSV-H03-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H03-SRYKAMEI        PIC X(50)
@@ -355,7 +355,7 @@
                    07  CSV-H04-SKYSBTKBN       PIC X(50)
                            VALUE   "当月・当月外区分".
                    07  CSV-H04-SKYSBT          PIC X(50)
-                           VALUE   "当月・当月外".
+                           VALUE   "当月・当月外区分名称".
                    07  CSV-H04-SRYKA           PIC X(50)
                            VALUE   "診療科コード".
                    07  CSV-H04-SRYKAMEI        PIC X(50)
