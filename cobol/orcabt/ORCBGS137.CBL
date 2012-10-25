@@ -1917,36 +1917,6 @@
                    MOVE    WRK-Z9      TO  WRK-ITEM
                    PERFORM 801-CSVDATA-EDIT-SEC
       *
-                   MOVE    THKN-SKJKAISU (IDX1 IDX2)
-                                       TO  WRK-Z5
-                   MOVE    WRK-Z5      TO  WRK-ITEM
-                   PERFORM 801-CSVDATA-EDIT-SEC
-      *
-                   MOVE    THKN-SKJFTNMONEY (IDX1 IDX2)
-                                       TO  WRK-Z9
-                   MOVE    WRK-Z9      TO  WRK-ITEM
-                   PERFORM 801-CSVDATA-EDIT-SEC
-      *
-                   MOVE    THKN-SKJHKNMONEY (IDX1 IDX2)
-                                       TO  WRK-Z9
-                   MOVE    WRK-Z9      TO  WRK-ITEM
-                   PERFORM 801-CSVDATA-EDIT-SEC
-      *
-                   MOVE    THKN-SKJKOHMONEY (IDX1 IDX2)
-                                       TO  WRK-Z9
-                   MOVE    WRK-Z9      TO  WRK-ITEM
-                   PERFORM 801-CSVDATA-EDIT-SEC
-      *
-                   MOVE    THKN-SKJTTLMONEY (IDX1 IDX2)
-                                       TO  WRK-Z9
-                   MOVE    WRK-Z9      TO  WRK-ITEM
-                   PERFORM 801-CSVDATA-EDIT-SEC
-      *
-                   MOVE    THKN-TTLTTLMONEY (IDX1 IDX2)
-                                       TO  WRK-Z9
-                   MOVE    WRK-Z9      TO  WRK-ITEM
-                   PERFORM 802-CSVDATA-EDIT-SEC
-      *
                    PERFORM 230-TOUKEICSV-SEC
       *
                END-IF
