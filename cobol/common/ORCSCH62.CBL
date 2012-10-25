@@ -883,6 +883,11 @@
                           OR  (FLG-ZAITAKU-ARI     =   ZERO  )
                            MOVE    1               TO  FLG-TAIGAI
                        END-IF
+      *                院内種別であれば対象
+                       IF     (WRK-SRYSYUKBN       =   "141"
+                                                   OR  "142" )
+                           MOVE    ZERO            TO  FLG-TAIGAI
+                       END-IF
                    END-IF
                    IF     (WRK-SRYSYUKBN       =   "212"  OR
                                                    "222"  OR
@@ -1526,6 +1531,8 @@
       *            在宅で薬剤・器材がある時、
                    IF     (WRK-YKZTEN      >   ZERO )  OR
                           (WRK-KIZAITEN    >   ZERO )
+                    OR    (WRK-SRYSYUKBN   =   "141"
+                                           OR  "142"  )
                        MOVE    1               TO  FLG-OK2
                    END-IF
                END-IF
