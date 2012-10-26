@@ -1173,12 +1173,12 @@
            MOVE    RECE10-NYUGAIKBN    TO  BGSETC-NYUGAIKBN
       *
            IF    ( BGS100P-EDITKBN =   "0" )
-               MOVE    "0"         TO  BGSMEI-SKYSBT
+               MOVE    "0"         TO  BGSETC-SKYSBT
            ELSE
                IF    ( BGS100P-SRYYM   =   RECE10-SRYYM )
-                   MOVE    "1"     TO  BGSMEI-SKYSBT
+                   MOVE    "1"     TO  BGSETC-SKYSBT
                ELSE
-                   MOVE    "2"     TO  BGSMEI-SKYSBT
+                   MOVE    "2"     TO  BGSETC-SKYSBT
                END-IF
            END-IF
       *
