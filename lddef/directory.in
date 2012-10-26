@@ -35,7 +35,7 @@ db_group "xml" {
 };
 db_group "xml2" {
  type    "XMLIO2";
-  };
+};
 
 ld	{
 	orca00	 1;

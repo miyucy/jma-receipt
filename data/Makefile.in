@@ -8,7 +8,7 @@ ORCADATA_files = \
 	SRYKBNNAME.TXT \
 	TENSUKBNNAME.TXT \
 	transparent.jpg \
-	test.ps \
+	test.pdf \
 
 all:   
 
