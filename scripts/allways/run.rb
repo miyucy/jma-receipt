@@ -10,7 +10,6 @@ list = `#{CRONSELECT}`.split("\n").map{|r|
   [sprintf("%s %s/%s/.. %s", r[0], r[1], r[2], r[3]), r[4..-1].join(" ")]
 }
 time = DateTime.now.strftime("%w %D %H")
-p list
 list.each {|cmd|
   next unless /#{cmd[0]}/ =~ time
   begin
