@@ -5601,6 +5601,7 @@
                  AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
                    MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
                    MOVE    "1"             TO  WRK-COM-KZMFLG  (IDX-Z)
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                ELSE
                    MOVE    SPACE           TO  SPA-ERRCD
                END-IF
@@ -5634,6 +5635,7 @@
                  AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
                    MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
                    MOVE    "1"             TO  WRK-COM-KZMFLG  (IDX-Z)
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                ELSE
                    MOVE    SPACE           TO  SPA-ERRCD
                END-IF
