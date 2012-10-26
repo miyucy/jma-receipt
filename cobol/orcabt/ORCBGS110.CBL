@@ -442,7 +442,7 @@
       *    §Ω§Œ¬æ¿¡µ·° ¿¡µ·¥…Õ˝§Ë§Í°À
            IF    ( BGS100P-MEISAI      =   1 )
             OR  (( BGS100P-SOUKATU     =   1 )
-            AND  ( BGS100P-ETCGETKBN   =   "1" ))
+            AND  ( BGS100P-ETCGETKBN   =   "0" ))
                PERFORM 2002-ETC-SEIKYU-EDIT-SEC
            END-IF
       *
@@ -1015,7 +1015,7 @@
                    END-IF
                    MOVE   "  "         TO  BGSETC-RECEKA
       *
-                   IF    ( BGS100P-ETCGETKBN =   "1" )
+                   IF    ( BGS100P-ETCGETKBN =   "0" )
                     AND  ( BGSETC-HOKEN      =   CONST-ROUSAI
                                               OR CONST-JIBAI
                                               OR CONST-KOUGAI )

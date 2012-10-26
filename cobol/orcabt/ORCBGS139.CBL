@@ -1333,7 +1333,7 @@
       *
            IF    ( KEY-RECEKA          =   SPACE )
       *
-               IF    ( BGS100P-ETCGETKBN   =   "1" )
+               IF    ( BGS100P-ETCGETKBN   =   "0" )
                    MOVE    "汐　　阂"  TO  HCGS139N-LBLROUSAI
                    MOVE    "极 清 勒"  TO  HCGS139N-LBLJIBAI
                    MOVE    "给　　巢"  TO  HCGS139N-LBLKOUGAI
@@ -1815,7 +1815,7 @@
       *
            IF    ( KEY-RECEKA          =   SPACE )
       *
-               IF    ( BGS100P-ETCGETKBN   =   "1" )
+               IF    ( BGS100P-ETCGETKBN   =   "0" )
                    MOVE    "汐　　阂"  TO  HCGS139G-LBLROUSAI
                    MOVE    "极 清 勒"  TO  HCGS139G-LBLJIBAI
                    MOVE    "给　　巢"  TO  HCGS139G-LBLKOUGAI
