@@ -6964,7 +6964,6 @@
                          OR  ( FLG-CHKEND (9)  =   1 )
       *
                    IF    ( TSRYKA-SRYCD (IDX6 IDX7)(1:1)   NOT =   "6" )
-                    AND  ( TSRYKA-SRYCD (IDX6 IDX7)(1:1)   NOT =   "7" )
                     AND  ( TSRYKA-SRYCD (IDX6 IDX7)(1:1)   NOT =   "S" )
                        MOVE    9       TO  WRK-CHKNUM
                        MOVE    "0901"  TO  WRK-ERRKBN
@@ -8121,7 +8120,6 @@
                     OR   ( FLG-CHKEND (11)     =   1 )
       *
                IF    ( TSRYCD-SRYCD (IDX6)(1:1)    NOT =   "6" )
-                AND  ( TSRYCD-SRYCD (IDX6)(1:1)    NOT =   "7" )
       *
       *            チェックマスタよりチェック
                    IF    ( FLG-CHKEND (11)     =   ZERO )
