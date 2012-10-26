@@ -73,6 +73,12 @@ module JMA::Plugin
       }
     end
 
+    def delete_unavailable
+      @db.transaction {
+        @db.execute("DELETE FROM control WHERE available=? AND install=?;","FALSE","FALSE")
+      }
+    end
+
     def install(name,version)
       _id = id(name,version)
       list = @db.execute("SELECT id FROM control WHERE name = (SELECT name FROM control WHERE id=?) AND install='TRUE';",_id)
@@ -83,7 +89,7 @@ module JMA::Plugin
 
     def uninstall(name,version)
       _id = id(name,version)
-      @db.execute("UPDATE control SET link=?, install=? WHERE id=?;","FALSE","FALSE",_id)
+      @db.execute("UPDATE control SET link=?,install=? WHERE id=?;","FALSE","FALSE",_id)
     end
 
     def install?(name,version)

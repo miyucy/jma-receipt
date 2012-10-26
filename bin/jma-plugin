@@ -87,7 +87,7 @@ def list4cobol(list)
     end
   }
   _list = []
-  list.map{|r| r[:name]}.sort!.uniq!.each{|n|
+  list.map{|r| r[:name]}.sort.uniq.each{|n|
     if installed[n]
       r = installed[n]
       r[:current] = r[:version]

@@ -606,7 +606,7 @@
                    IF      SPA-NAI-TINS  (IDY) =   "FALSE"
                        MOVE    "-"             TO  SPA-GMN-TINS (IDY)
                    ELSE
-                       MOVE    "導入"          TO  SPA-GMN-TINS (IDY)
+                       MOVE    "○"             TO  SPA-GMN-TINS (IDY)
                    END-IF
                WHEN    "link "
       *            LINK
@@ -614,7 +614,7 @@
                    IF      SPA-NAI-TLINK (IDY) =   "FALSE"
                        MOVE    "-"             TO  SPA-GMN-TLINK (IDY)
                    ELSE
-                       MOVE    "適用"          TO  SPA-GMN-TLINK (IDY)
+                       MOVE    "○"             TO  SPA-GMN-TLINK (IDY)
                    END-IF
                END-EVALUATE
            END-IF
@@ -1396,10 +1396,10 @@
       *
            EVALUATE    SPA-NAI-INSTALL
                WHEN    1
-                   MOVE    "ＰＫＧ導入"        TO  M80-B09-LABEL
+                   MOVE    "取込"              TO  M80-B09-LABEL
                    MOVE    WIDGET-NORMAL       TO  M80-B09-STATE
                WHEN    2
-                   MOVE    "ＰＫＧ削除"        TO  M80-B09-LABEL
+                   MOVE    "削除"              TO  M80-B09-LABEL
                    MOVE    WIDGET-NORMAL       TO  M80-B09-STATE
                WHEN    OTHER
                    MOVE    SPACE               TO  M80-B09-LABEL
@@ -1411,10 +1411,10 @@
            IF      SPA-NAI-INSTALL     =   2
                EVALUATE    SPA-NAI-LINK
                WHEN    1
-                   MOVE    "ＰＫＧ適用"        TO  M80-B11-LABEL
+                   MOVE    "組込"              TO  M80-B11-LABEL
                    MOVE    WIDGET-NORMAL       TO  M80-B11-STATE
                WHEN    2
-                   MOVE    "ＰＫＧ解除"        TO  M80-B11-LABEL
+                   MOVE    "取外"              TO  M80-B11-LABEL
                    MOVE    WIDGET-NORMAL       TO  M80-B11-STATE
                END-EVALUATE
            END-IF
@@ -1436,7 +1436,7 @@
       *    明細があり未選択の時
            IF     (SPA-TBL-MAX         >   ZERO )
              AND  (SPA-GMN-SELNUM      =   ZERO )
-               MOVE    "ＰＫＧ更新"        TO  M80-B10-LABEL
+               MOVE    "更新"              TO  M80-B10-LABEL
                MOVE    WIDGET-NORMAL       TO  M80-B10-STATE
            END-IF
       *
@@ -1512,7 +1512,7 @@
                    MOVE    "選択番号を入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "ＳＨＥＬＬ起動に失敗しました。"
+                   MOVE    "スクリプトの起動に失敗しました。"
                                        TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  SPA-ERRMSG
@@ -1537,7 +1537,6 @@
        510-ERRSET-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    確認メッセージ表示理
       *****************************************************************
@@ -1546,7 +1545,7 @@
            MOVE    SPACE               TO  M80ID1
            EVALUATE    SPA-M80ID1CD
                WHEN    "0101"
-                   STRING  "選択したパッケージを導入します。"
+                   STRING  "選択したパッケージを取り込みます。"
                            "よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   M80ID1-ID1MSG
@@ -1558,13 +1557,13 @@
                                        INTO   M80ID1-ID1MSG
                    END-STRING
                WHEN    "0103"
-                   STRING  "選択したパッケージを適用します。"
+                   STRING  "選択したパッケージを組み込みます。"
                            "よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   M80ID1-ID1MSG
                    END-STRING
                WHEN    "0104"
-                   STRING  "選択したパッケージを解除します。"
+                   STRING  "選択したパッケージを取り外します。"
                            "よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   M80ID1-ID1MSG

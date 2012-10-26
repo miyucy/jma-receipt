@@ -54,6 +54,7 @@ module JMA::Plugin
         provided_list.each{|pc|
           @db.insert(pc) unless @db.id(pc[:name],pc[:version])
         }
+        @db.delete_unavailable
       }
     end
 
