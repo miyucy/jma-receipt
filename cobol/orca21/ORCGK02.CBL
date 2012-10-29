@@ -12498,14 +12498,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-STRING
       *
       *ito ちょっと試し start
-           MOVE    SPA-GMN-POPUP-SUMMARY   TO  K02-POPUP-SUMMARY
-           MOVE    SPA-GMN-POPUP-BODY      TO  K02-POPUP-BODY
-           MOVE    SPA-GMN-POPUP-ICON      TO  K02-POPUP-ICON
-           MOVE    SPA-GMN-POPUP-TIMEOUT   TO  K02-POPUP-TIMEOUT
+      *!!! MOVE    SPA-GMN-POPUP-SUMMARY   TO  K02-POPUP-SUMMARY
+      *    MOVE    SPA-GMN-POPUP-BODY      TO  K02-POPUP-BODY
+      *    MOVE    SPA-GMN-POPUP-ICON      TO  K02-POPUP-ICON
+      *    MOVE    SPA-GMN-POPUP-TIMEOUT   TO  K02-POPUP-TIMEOUT
       *    DISPLAY "SPA-GMN-POPUP-TIMEOUT = " SPA-GMN-POPUP-TIMEOUT
-           IF      SPA-GMN-POPUP-SUMMARY   NOT = SPACE
+      *    IF      SPA-GMN-POPUP-SUMMARY   NOT = SPACE
                INITIALIZE SPA-GMN-POPUP-STATUS
-           END-IF
+      *!!! END-IF
       *ito ちょっと試し END
       *
       *    非活性処理
