@@ -2256,15 +2256,20 @@
            END-STRING
       *
            MOVE  "2"               TO  SPA-GMN-CYOKEIKBNGL    (3)
-           MOVE  "高齢現物＋低所の場合、低所の月上限額で１の計算を行う"
-                                   TO  SPA-GMN-CYOKEIKBNGMEIL (3)
+           STRING
+                 "１と同様（高齢現物＋低所の場合、低所の月上限額で"
+                                       DELIMITED BY SIZE
+                 "計算を行う）"
+                                       DELIMITED BY SIZE
+           INTO                        SPA-GMN-CYOKEIKBNGMEIL (3)
+           END-STRING
       *
            MOVE  "3"               TO  SPA-GMN-CYOKEIKBNGL    (4)
-           MOVE  "１の内容（更生・育成併用時を除く）"
+           MOVE  "１と同様（更生・育成併用時を除く）"
                                    TO  SPA-GMN-CYOKEIKBNGMEIL (4)
       *
            MOVE  "4"               TO  SPA-GMN-CYOKEIKBNGL    (5)
-           MOVE  "２の内容（更生・育成併用時を除く）"
+           MOVE  "２と同様（更生・育成併用時を除く）"
                                    TO  SPA-GMN-CYOKEIKBNGMEIL (5)
       *
            MOVE    5               TO  SPA-GMN-CYOKEIKBNG-MAX
