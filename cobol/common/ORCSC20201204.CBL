@@ -194,7 +194,7 @@
       *
            03  IDZ5                PIC 9(04).
            03  IDZ6                PIC 9(04).
-      *
+      *サンプル薬対応
            03  IDX-G               PIC 9(04).
       *
       *    一時領域
@@ -2282,12 +2282,6 @@
                MOVE    WRK-ZAITEN-G        TO  WRK-ZAITEN
             END-IF
            END-PERFORM
-      *TEST
-      *     DISPLAY "TBL-Y2-YOUHOU:" TBL-Y2-YOUHOU
-      *          ",WRK-ZAITEN-G:" WRK-ZAITEN-G
-      *        ",WRK-KONGO:" WRK-KONGO
-      *        ",WRK-SONOTA:" WRK-SONOTA
-      *TEST
            IF      WRK-ZAITEN-G        <=  205
                IF      WRK-ZAITEN-G        =   ZERO
                    CONTINUE
@@ -2441,7 +2435,7 @@
                        END-IF
                        IF     ( WRK-COM-INPUTCD (IDX + 1)
                                                    =   "099209908"  )
-      *                 一般名記載
+      *                 一般名記載あり
                            MOVE    1                   TO  FLG-CHK-P
                        END-IF
                        IF      (FLG-CHK-P          =   1   )  AND
@@ -2802,12 +2796,16 @@
                   (IDX-SYOHOU          =   ZERO )
                MOVE    1                   TO  FLG-SYOHO-CHK2
            END-IF
+      *H24.8
+      *    サンプル薬のみはなし
+           IF     (FLG-YAKZAI-ALL      =   ZERO )
+             AND  (FLG-SANPURU         =   1    )
+               MOVE    ZERO                TO  FLG-SYOHO-CHK
+           END-IF
+      *
       *    処方せん料算定あり
            IF     (FLG-SYOHO-CHK       =   1   )  AND
                   (FLG-SYOHO-CHK2      =   1   )
-      *H24.8
-      *    サンプル薬のみはなし
-           AND    (FLG-YAKZAI-ALL      =   1    )
                IF     (LNK-ORCSC-KIDCD     =   SPACE )  AND
                       (SPA-CHOZAI-CHK      =   ZERO  )
       *            調基算定チェック
@@ -2873,9 +2871,6 @@
       *    処方せん料算定時の時のみ行う
            IF     (FLG-SYOHO-CHK       =   ZERO) OR
                   (FLG-SYOHOSENN       =   ZERO)
-      *H24.8
-      *    サンプル薬のみはなし
-           OR     (FLG-YAKZAI-ALL      =   ZERO )
                GO      TO      3001-INGAI-SYORI-EXT
            END-IF
       *TEST
@@ -3314,8 +3309,8 @@
       *
       *TEST
       *    訂正で自動発生なしの場合
-           IF    ((LNK-ORCSC-SYORIFLG  =   1  )  AND
-                  (SPA-TEISEI-FLG      =   "0") )
+           IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
+                  (SPA-TEISEI-FLG      =   "0")
                CONTINUE
            ELSE
       *        薬剤情報提供料、調基
