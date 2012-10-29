@@ -1326,7 +1326,9 @@
                WHEN    "Q02A"
                WHEN    "Q02B"
       *            照会より
-                   MOVE    SPA-PTNUM           TO  K02N-PTNUM
+                   MOVE    LNK-KYOUTU          TO  WRK-SPA-KYOUTU
+                   PERFORM 30010-INIT-GMN-SEC
+                   MOVE    WRK-SPA-PTNUM       TO  K02N-PTNUM
                    PERFORM 41010-PTNUM-SYORI-SEC
                WHEN    OTHER
       *            外部・患者決定
