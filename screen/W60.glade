@@ -2063,9 +2063,9 @@
       <name>label337</name>
       <x>36</x>
       <y>584</y>
-      <width>324</width>
+      <width>360</width>
       <height>22</height>
-      <label>＜チェックマスタ「薬剤と病名」に未登録の薬剤＞</label>
+      <label>＜チェックマスタ「薬剤と病名」に未登録の薬剤の有無＞</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0</xalign>
