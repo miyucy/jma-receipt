@@ -595,8 +595,7 @@
       *
            INITIALIZE  SYSKANRI-REC
            MOVE    "5000"          TO  WRK-KANRICD
-           MOVE    PTNYUINRRK-NYUINKA
-                                   TO  WRK-KBNCD
+           MOVE    "*"             TO  WRK-KBNCD
            MOVE    SPA-SYSYMD      TO  WRK-KJNYMD
            PERFORM 4101-SYSKANRI-SEL-SEC
            IF    ( FLG-SYSKANRI    =   ZERO )
