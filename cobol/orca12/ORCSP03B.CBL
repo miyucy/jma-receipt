@@ -1095,7 +1095,7 @@
       *    適応開始入力　処理
       *****************************************************************
        1001-KTEKSTYMD-CHK-SEC           SECTION.
-     *
+      *
            IF      SPA-GMN-KTEKSTYMD(IDX-K)    =   SPACE
                MOVE    ZERO            TO  FLG-CHK-ERR
                EVALUATE    IDX-K
@@ -1982,6 +1982,18 @@
                            MOVE    IDX-K       TO  WRK-IDX1
                            MOVE    IDK2        TO  WRK-IDX2
                        END-IF
+      *ver.4.7
+      *                ０７、０８入所中の重複不可
+                       IF      (SPA-GMN-KOHNUM (IDX-K) =   "950"
+                                                       OR  "951"  )  AND
+                               (SPA-GMN-KOHNUM (IDK2)  =   "950"
+                                                       OR  "951"  ) 
+                           MOVE    "0135"      TO  SPA-ERRCD
+                           MOVE    23          TO  SPA-GMN-CUR
+                           MOVE    IDX-K       TO  WRK-IDX1
+                           MOVE    IDK2        TO  WRK-IDX2
+                       END-IF
+      *
                    END-IF
       *
                    END-IF
@@ -2109,6 +2121,17 @@
                        MOVE    23          TO  SPA-GMN-CUR
                        MOVE    IDX         TO  WRK-IDX1
                    END-IF
+      *ver.4.7
+      *            ０７、０８入所中の重複不可
+                   IF      (SPA-GMN-KOHNUM (IDX-K) =   "950"
+                                                   OR  "951"  )  AND
+                           (SPA-PTKOH-KOHNUM(IDX)  =   "950"
+                                                   OR  "951"  ) 
+                       MOVE    "0135"      TO  SPA-ERRCD
+                       MOVE    23          TO  SPA-GMN-CUR
+                       MOVE    IDX         TO  WRK-IDX1
+                   END-IF
+      *
                END-IF
            END-PERFORM
       *
