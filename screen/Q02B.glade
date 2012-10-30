@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <GTK-Interface>
 
 <project>
@@ -477,6 +477,28 @@
       <accelerator>
 	<modifiers>GDK_SHIFT_MASK</modifiers>
 	<key>GDK_F5</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Fri, 22 Dec 2000 04:59:36 GMT</last_modification_time>
+      </signal>
+      <label>診療行為</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+    <widget>
+      <class>GtkButton</class>
+      <name>B06S</name>
+      <x>432</x>
+      <y>694</y>
+      <width>80</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
+	<key>GDK_F6</key>
 	<signal>clicked</signal>
       </accelerator>
       <signal>

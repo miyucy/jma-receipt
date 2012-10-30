@@ -514,8 +514,6 @@
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-Q01FREE
       *
-           DISPLAY "000-PROC-SEC Q01-PAGENO [" Q01-PAGENO "]"
-      *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
@@ -5483,10 +5481,6 @@
                  INTO      SPA-GMN-Q01-BYOMEI (IDX1)
                  WITH      POINTER IDXG
                  END-STRING
-               IF    ( IDX1 = 1 )
-                   DISPLAY "IDX0=" IDX0
-                            SPA-GMN-Q01-BYOMEI (IDX1)(1:30)
-               END-IF
                END-PERFORM
              END-EVALUATE
            END-IF

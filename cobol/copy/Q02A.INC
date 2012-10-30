@@ -20,6 +20,7 @@
               04  Q02A-B05-STATE                PIC S9(9)   BINARY.
               04  Q02A-B05S-STATE               PIC S9(9)   BINARY.
               04  Q02A-B06-STATE                PIC S9(9)   BINARY.
+              04  Q02A-B06S-STATE               PIC S9(9)   BINARY.
               04  Q02A-B07-STATE                PIC S9(9)   BINARY.
               04  Q02A-B09-STATE                PIC S9(9)   BINARY.
               04  Q02A-B09S-STATE               PIC S9(9)   BINARY.

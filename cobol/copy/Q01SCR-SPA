@@ -924,12 +924,16 @@
                        09  SPA-GMN-Q02-FLG-PTINF       PIC 9(01).
       *
       *                画面に表示されない患者の情報
-                       09  SPA-GMN-Q02-PTINF-AREA.
-                           11  SPA-GMN-Q02-PTINF-OCC   OCCURS  200.
+                       09  SPA-NAI-Q02-KEKKATBL.
+                           11  SPA-NAI-Q02-KEKKATBL-OCC   OCCURS  200.
       *
       *                        患者ＩＤ
-                               13  SPA-GMN-Q02-PTINF-PTID
+                               13  SPA-NAI-Q02-TPTID
                                                        PIC 9(10).
+      *
+      *                        入院中区分
+                               13  SPA-NAI-Q02-TNYUINKBN
+                                                       PIC X(1).
       *
       *
       *    Ｑ０３

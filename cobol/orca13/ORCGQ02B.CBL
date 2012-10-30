@@ -464,6 +464,8 @@
       *    ´µ¼ÔÅÐÏ¿
            WHEN    "P02"
            WHEN    "C02"
+           WHEN    "K02"
+           WHEN    "K02N"
       *
       *        ÂàÈò¤·¤Æ¤ª¤¤¤¿£Ó£Ð£Á¤ÎÆâÍÆ¤ò¸µ¤ËÌá¤¹
                INITIALIZE                  QSUB01-LNK
@@ -885,10 +887,10 @@
            MOVE   LOW-VALUE        TO  WRK-KEY-SRYCD
       *
            MOVE    SPACE           TO  SPA-GMN-Q02-KEKKATBL
-                                       SPA-GMN-Q02-PTINF-AREA
+                                       SPA-NAI-Q02-KEKKATBL
       *
            INITIALIZE                  SPA-GMN-Q02-KEKKATBL
-                                       SPA-GMN-Q02-PTINF-AREA
+                                       SPA-NAI-Q02-KEKKATBL
       *
       *    £Ó£Ñ£ÌÊ¸ÊÔ½¸½èÍý
            INITIALIZE              QSUB02-LNK
@@ -969,7 +971,7 @@
                MOVE    WRK-NISSU-MES   TO  SPA-GMN-Q02-TMEMO  (IDX-GMN)
       *
       *        ´µ¼Ô£É£Ä
-               MOVE    PTINF-PTID  TO  SPA-GMN-Q02-PTINF-PTID (IDX-GMN)
+               MOVE    PTINF-PTID  TO  SPA-NAI-Q02-TPTID (IDX-GMN)
       *
                MOVE    IDX-GMN     TO  SPA-GMN-Q02-KEKKA-MAX
       *
@@ -1052,6 +1054,17 @@
            END-IF
       *
            MOVE    WRK-AGE-G           TO  SPA-GMN-Q02-TAGE    (IDX-GMN)
+      *
+      *    Á°²óÍè±¡ÆüÊÔ½¸
+           INITIALIZE                  ORCSLASTYMDAREA
+           MOVE    PTINF-PTID    TO    ORCSLASTYMD-PTID
+           CALL    "ORCSLASTYMD"       USING
+                                       ORCSLASTYMDAREA
+                                       SPA-AREA
+           IF    ( ORCSLASTYMD-BRMNUM  NOT =   SPACE )
+               MOVE    "1"         TO  SPA-NAI-Q02-TNYUINKBN (IDX-GMN)
+           END-IF
+      *
       *    ¿ÇÎÅ¥³¡¼¥É
            MOVE    PTSRH-SRYCD    TO  SPA-GMN-Q02-TSRYCD       (IDX-GMN)
       *    ¿ÇÎÅ¹Ô°ÙÌ¾¾Î
@@ -1366,6 +1379,9 @@
                    MOVE    "P02"       TO      WRK-WINDOW
                    PERFORM 480-GYOUMU-SENI-SEC
                WHEN    "CLICKED"       ALSO    "B05S"
+                   MOVE    "K02"       TO      WRK-WINDOW
+                   PERFORM 480-GYOUMU-SENI-SEC
+               WHEN    "CLICKED"       ALSO    "B06S"
                    MOVE    "C02"       TO      WRK-WINDOW
                    PERFORM 480-GYOUMU-SENI-SEC
       *    Á°ÊÇ
@@ -1801,14 +1817,23 @@
       *
            INITIALIZE                  SPA-KYOTUKEY
       *
-           MOVE    SPA-GMN-Q02-PTINF-PTID (IDX-PTNUM)
+           MOVE    SPA-NAI-Q02-TPTID (IDX-PTNUM)
                                        TO  SPA-PTID
            MOVE  SPA-GMN-Q02-TPTNUM (IDX-PTNUM)
                                        TO  SPA-PTNUM
       *
+           IF    ( WRK-WINDOW          =   "K02" )
+               IF    ( SPA-NAI-Q02-TNYUINKBN (IDX1)    =   "1" )
+                   MOVE    "K02N"      TO  WRK-WINDOW
+               END-IF
+           END-IF
+      *
       *    ¼õÉÕ¤È´µ¼Ô¸¡º÷°Ê³°¤Î¸µ¤ò¥»¥Ã¥È
            MOVE    "Q02"               TO  SPA-MOTOPG
            MOVE    WRK-WINDOW          TO  SPA-SAKIPG
+           IF    ( WRK-WINDOW          =   "K02" OR "K02N" )
+               MOVE    SPA-MOTOPG      TO  SPA-MACHIPG
+           END-IF
       *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
@@ -2279,10 +2304,16 @@
                MOVE    WIDGET-INSENSITIVE  TO  Q02B-B05-STATE
            END-IF
       *
-           IF    ( SPA-GSRAUTH-22          =   "1" )
+           IF    ( SPA-GSRAUTH-21          =   "1" )
                MOVE    WIDGET-NORMAL       TO  Q02B-B05S-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  Q02B-B05S-STATE
+           END-IF
+      *
+           IF    ( SPA-GSRAUTH-22          =   "1" )
+               MOVE    WIDGET-NORMAL       TO  Q02B-B06S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  Q02B-B06S-STATE
            END-IF
       *
       *    É½Âê

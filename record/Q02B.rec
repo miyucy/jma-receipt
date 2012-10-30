@@ -9,6 +9,9 @@ Q02B	{
 		B06	{
 			state	int;
 		};
+		B06S	{
+			state	int;
+		};
 		B07	{
 			state	int;
 		};
