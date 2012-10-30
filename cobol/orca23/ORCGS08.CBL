@@ -2154,7 +2154,9 @@
                    IF    ( SPA-S08-MOTOPG  =   "I04" )
                        PERFORM 22011-PRINT-SEC
                    ELSE
-                       PERFORM 800-CLIENT-PRT-SEC
+                       IF    ( SPA-CLIENT-PRT-FLG  =   2 )
+                           PERFORM 800-CLIENT-PRT-SEC
+                       END-IF
                        PERFORM 22011-PRINT-SEC
                        PERFORM 800-CLIENT-DUMMY-PRT-SEC
                    END-IF

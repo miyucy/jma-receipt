@@ -1996,7 +1996,9 @@
            PERFORM 3401-PGNAME-SHIHARAI-SEC
       *
       *    クライアント印刷情報編集
-           PERFORM 801-CLIENT-PRT-SEC
+           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
+               PERFORM 801-CLIENT-PRT-SEC
+           END-IF
       *
            PERFORM VARYING IDX2 FROM   1   BY  1
                    UNTIL ( IDX2 >      3 )
@@ -4634,7 +4636,9 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"  USING   SPA-AREA
-           PERFORM 800-CLIENT-PRT-SEC
+           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
+               PERFORM 800-CLIENT-PRT-SEC
+           END-IF
       *
            IF    ( SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
                                        =   "1" )
@@ -4656,7 +4660,9 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"  USING   SPA-AREA
-           PERFORM 800-CLIENT-PRT-SEC
+           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
+               PERFORM 800-CLIENT-PRT-SEC
+           END-IF
       *
            MOVE    SPA-NAI-GYOUMUID
                                    TO      WRK-GYOUMUID
@@ -4676,7 +4682,9 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"  USING   SPA-AREA
-           PERFORM 800-CLIENT-PRT-SEC
+           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
+               PERFORM 800-CLIENT-PRT-SEC
+           END-IF
       *
            MOVE    SPA-NAI-GYOUMUID
                                    TO      WRK-GYOUMUID

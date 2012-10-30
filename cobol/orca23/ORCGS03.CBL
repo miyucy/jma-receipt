@@ -2889,7 +2889,9 @@
                                    TO  WRK-SKYPRT-DENPEDANUM
       *            印刷制御情報取得サブ
                    CALL    "ORCSONPRTSET"  USING   SPA-AREA
-                   PERFORM 800-CLIENT-PRT-SEC
+                   IF    ( SPA-CLIENT-PRT-FLG  =   2 )
+                       PERFORM 800-CLIENT-PRT-SEC
+                   END-IF
                    IF    ( SPA-S01-NYUGAIKBN   =   "1" )
                        PERFORM 4101-SKYPRT-PRINT-SEC
                    ELSE
@@ -3261,7 +3263,9 @@
       *
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"  USING   SPA-AREA
-           PERFORM 800-CLIENT-PRT-SEC
+           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
+               PERFORM 800-CLIENT-PRT-SEC
+           END-IF
       *
            IF    ( SPA-S01-NYUGAIKBN   =   "1" )
                PERFORM 4111-SRYPRT-PRINT-SEC
@@ -3463,7 +3467,9 @@
                CALL    "ORCSONPRTSET"  USING   SPA-AREA
                IF    ( SPA-GMN-SKYPRT  =   "1" )
                  OR  ( SPA-GMN-SRYPRT  =   "1" )
-                   PERFORM 800-CLIENT-PRT-SEC
+                   IF    ( SPA-CLIENT-PRT-FLG  =   2 )
+                       PERFORM 800-CLIENT-PRT-SEC
+                   END-IF
                END-IF
       *
                IF    ( SPA-GMN-SKYPRT  =   "1" )

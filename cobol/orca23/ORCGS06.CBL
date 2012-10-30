@@ -2581,7 +2581,9 @@
             OR  (( FLG-NYU-SKYPRT      =   1 )
               AND( SPA-GMN-SKYPRTKBN   =   "1" ))
       *
-               PERFORM 800-CLIENT-PRT-SEC
+               IF    ( SPA-CLIENT-PRT-FLG  =   2 )
+                   PERFORM 800-CLIENT-PRT-SEC
+               END-IF
       *
            END-IF
       *
