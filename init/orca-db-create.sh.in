@@ -24,6 +24,7 @@ USERCHECKSQL="SELECT usename FROM pg_user WHERE usename = '${DBUSER}';"
 DBCHECKSQL="SELECT datname FROM pg_database WHERE datname = '${DBNAME}';"
 SETPASSWORD="ALTER USER ${DBUSER} password '${DBPASS}';"
 INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
+ENCODINGCHECK="SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = '${DBNAME}';"
 
 if [ ! -e "$INSTALLLOG" ]; then
     su - $ORCAUSER -c "touch $INSTALLLOG"
@@ -74,6 +75,20 @@ if [ -z $DBEXIST ] ; then
 	err "createdb error (${DBNAME})" 99
     fi
     echo "CREATEDB (${DBNAME})" | tee -a  $INSTALLLOG
+else
+    ORCAENCODING=`su - ${ORCAUSER} -c "psql ${DBCONNOPTION} ${DBNAME} -t -c \"${ENCODINGCHECK}\""`
+    if [ $? -ne 0 ] ; then
+	err "encoding error (${DBNAME})" 99
+    fi
+    if [ $DBENCODING = "UTF-8" ] || [ $DBENCODING = "UTF8" ] || [ $DBENCODING = "utf-8" ] || [ $DBENCODING = "utf8" ] ; then
+	if [ $ORCAENCODING != "UTF8" ]; then
+	    err "encoding error Database(${ORCAENCODING}) != DBENCODING(${DBENCODING})" 98
+	fi
+    else
+	if [ $ORCAENCODING != "EUC_JP" ]; then
+	    err "encoding error Database(${ORCAENCODING}) != DBENCODING(${DBENCODING})" 98
+	fi
+    fi
 fi
 delete_pgpass
 exit 0
