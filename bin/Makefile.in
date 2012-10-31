@@ -10,6 +10,7 @@ BIN_sources = \
 	jma-receipt-db-check.sh.in \
 	jma-receipt-sysbase-setup.sh.in \
 	jma-dbsync.sh.in \
+	jma-dbconvert.sh.in \
 	jma-backupcluster.sh.in \
 	jma-restorecluster.sh.in \
 	jma-receipt-program-upgrade-check.sh.in \
@@ -18,13 +19,13 @@ BIN_sources = \
 	create_dbgroup.sh.in
 
 BIN_cmdsrc = jma-setup.in
-
 BIN_cmd = jma-setup
 
 BIN_bin = \
 	orcvt_euc.rb \
 	orcvt_euc_kananame.rb \
-	jma-plugin
+	jma-plugin \
+	convu8.rb
 
 BIN_objs = $(BIN_sources:.sh.in=.sh) \
            $(BIN_cmd)

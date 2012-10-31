@@ -8,6 +8,7 @@ orcvt_exec.sh
 jma-receipt-sysbase-setup.sh
 jma-backupcluster.sh
 jma-dbsync.sh
+jma-dbconvert.sh
 jma-restorecluster.sh
 jma-setup
 create_dbgroup.sh
