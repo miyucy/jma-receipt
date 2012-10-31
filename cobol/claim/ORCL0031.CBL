@@ -883,17 +883,17 @@
                END-IF
            END-IF
       *
-           IF      FLG-END             =   ZERO
-      *        病名セット処理
-               PERFORM 2006-BYOMEI-SET-SEC
-           END-IF
-      *
       *    外来の時、受付に会計待を設定
            IF     (WRK-NYUGAIKBN       =   "2"  )
               AND (FLG-ERR             =   ZERO )
       *       中途データ作成時のみ
               AND (CNT-OUT01           >   ZERO )
                PERFORM 2010-UKETUKE-CHK-SEC
+           END-IF
+      *
+           IF      FLG-END             =   ZERO
+      *        病名セット処理
+               PERFORM 2006-BYOMEI-SET-SEC
            END-IF
       *
            IF      FLG-ERR             =   ZERO
@@ -991,6 +991,7 @@
            ELSE
                MOVE   "2"              TO  WRK-NYUGAIKBN
            END-IF
+      *
       *
       *    ドクター
            DISPLAY "ドクタ   = ["  LF04-DOCCD "]"
