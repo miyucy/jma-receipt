@@ -562,6 +562,14 @@
                                    MOVE    20         TO  SPA-GMN-CUR
                                    MOVE    1          TO  SPA-NAI-FTNCHK
                                                                 (IDX-K)
+      *ver.4.7                     警告後の一覧表示の為
+                                   IF     (SPA-NAI-KOHHBTKBN-FLG
+                                                       =   "1"   )
+                                       MOVE    SPACE
+                                               TO  SPA-NAI-PTKOH-KEIFLG
+                                                               (IDX-K)
+                                   END-IF
+      *
                                ELSE
       *                            法別番号より公費種類を決定する
                                    PERFORM 10011-HKNNUM-SET-SEC
