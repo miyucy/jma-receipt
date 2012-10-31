@@ -31,6 +31,14 @@ else
 fi
 AC_SUBST(DISTCODENAME)
 
+AC_PATH_PROG(DPKG,dpkg,no)
+if test x$DPKG = no; then
+   ARCHITECTURE="i386"
+else
+   ARCHITECTURE="`dpkg --print-architecture`"
+fi
+AC_SUBST(ARCHITECTURE)
+
 AC_PATH_PROG(PG_LSCLUSTERS,pg_lsclusters,no)
 PGCLUSTER="main"
 if test x$PG_LSCLUSTERS = xno; then
@@ -139,10 +147,10 @@ AC_ARG_WITH(open-cobol-exec-prefix,
 	  COBOLFLAGS="-m -dynamic -fixed -fimplicit-init -std=cobol85 -Wall "
   	  EXEC_COBOLFLAGS="-x -dynamic -fixed -std=cobol85 -Wall "
 	  if test "x$enable_debug" = "xyes"; then
-	    COBOLFLAGS="${COBOLFLAGS}-g -debug -fdebugging-line -fsource-location -ftrace "
-	    EXEC_COBOLFLAGS="${EXEC_COBOLFLAGS}-g -debug -fdebugging-line -ftrace"
+	    COBOLFLAGS="${COBOLFLAGS} -g -debug -fdebugging-line -fsource-location "
+	    EXEC_COBOLFLAGS="${EXEC_COBOLFLAGS} -g -debug -fdebugging-line "
 	  fi
-      fi	
+      fi
   else
       AC_MSG_RESULT(no)
       AC_MSG_ERROR(OpenCOBOL compiler not found.)
