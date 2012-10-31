@@ -7,4 +7,9 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
 fi
 . $JMARECEIPT_ENV
 
-$DBSYNC -dir "$LDDEFDIR"/directory $*
+if [ `id -u` -eq 0 ] ; then
+    # root
+    su - $ORCAUSER -c "$DBSYNC -dir "$LDDEFDIR"/directory $*"
+else
+    $DBSYNC -dir "$LDDEFDIR"/directory $*
+fi

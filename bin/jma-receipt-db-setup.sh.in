@@ -18,6 +18,9 @@ if [ ! -f ${JMARECEIPT_ENV} ]; then
 fi
 . $JMARECEIPT_ENV
 
+CHANGE=$1
+NOINST=$2
+
 if [ "${LANG}" = "ja_JP.UTF-8" ] || [ "${LANG}" = "ja_JP.utf8" ]; then
     JMSG=1
 else
@@ -77,28 +80,29 @@ fi
 # メイン処理
 #
 
-echo
-
 RC=0
 echo "$INITDIR"/orca-db-create.sh ......
 bash "$INITDIR"/orca-db-create.sh
-if [ $? -eq 0 ] ; then
+RC=$?
+if [ ${RC} -eq 0 ] ; then
+    if [ x"$NOINST" = x"--noinstall" ] ; then
+	echo "OK! データベースをリストア後再度 jma-setupを実行してください"
+	exit 0
+    fi
+    echo "$INITDIR"/orca-db-init.sh .....
+    bash "$INITDIR"/orca-db-init.sh
+    RC=$?
+fi
+if [ ${RC} -eq 0 ] ; then
     echo "$INITDIR"/orca-db-install.sh .....
     bash "$INITDIR"/orca-db-install.sh
-    if [ $? -eq 0 ] ; then
-	echo "$INITDIR"/orca-db-clear.sh .....
-	bash "$INITDIR"/orca-db-clear.sh
-	if [ $? -ne 0 ] ; then
-	    RC=1
-	fi
-    else
-        RC=1
-    fi
-else
-    RC=1
+    RC=$?
 fi
-
-
+if [ ${RC} -eq 0 ] ; then
+    echo "$INITDIR"/orca-db-clear.sh .....
+    bash "$INITDIR"/orca-db-clear.sh
+    RC=$?
+fi
 if [ ${RC} -eq 0 ] ; then
     echo "$BINDIR"/jma-receipt-db-check.sh .....
     bash "$BINDIR"/jma-receipt-db-check.sh
@@ -111,12 +115,11 @@ fi
 #
 # 処理終了
 #
-echo
 if [ ${JMSG} -eq 1 ] ; then
     if [ ${RC} -eq 0 ] ; then
-	echo "処理はすべて終了しました"
+	echo "データベース構造変更処理は終了しました"
     else
-        echo "処理は異常終了しました。"
+        echo "データベース構造変更処理は異常終了しました。"
     fi
 else
     if [ ${RC} -eq 0 ] ; then
