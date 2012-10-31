@@ -109,7 +109,7 @@ else
   PARAM="${PARAM},${RECORD}"
 fi
 
-su orca -c "$DBSTUB -dir $LDDIRECTORY -bd orcabt Sysbase -parameter $PARAM"
+su $ORCAUSER -c "$DBSTUB -dir $LDDIRECTORY -bd orcabt Sysbase -parameter $PARAM"
 
 exit 0
 
