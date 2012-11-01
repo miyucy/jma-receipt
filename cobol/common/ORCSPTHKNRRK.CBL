@@ -221,13 +221,14 @@
            PERFORM 20011-PTHKNRRK-ADD-SEC
       *    前回分追加
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   10   )
+                   UNTIL      (IDX     >   5    )
                    OR         (ORCSHKNRRK-RC   NOT =   ZERO )
                    OR         (TBL-PTHKNRRK-KAKUNINYMD (IDX) =   SPACE)
                MOVE    TBL-PTHKNRRK-REC (IDX)  TO  PTHKNRRK-REC
       *
                ADD     1                   TO  WRK-RENNUM
-               IF      WRK-RENNUM          >   9
+               IF      WRK-RENNUM          >   5
+      *            登録件数は５件までとする
                    MOVE    10                  TO  IDX
                ELSE
                    MOVE    WRK-RENNUM          TO  PTHKNRRK-RENNUM
