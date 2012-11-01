@@ -35,6 +35,8 @@
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *
       *  04.05.01    NACL-藤原    10/03/23  ＨＯＳＴ名取得方法の変更
+      *
+      *  04.07.01    NACL-藤原    12/10/31  ファイル出力先のデフォルト変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -427,7 +429,7 @@
                MOVE    6               TO  SPA-GMN-L02-FILE1-MAX
            END-IF
       *
-           MOVE    SPA-GMN-L02-FILE1LST (1)
+           MOVE    SPA-GMN-L02-FILE1LST (3)
                                    TO  SPA-GMN-L02-FILE1-G
       *
            MOVE    "T"             TO  SPA-GMN-L02-KOJINKBN1-VALUE
@@ -677,7 +679,7 @@
        41023-FILE1-CHK-SEC           SECTION.
       *
            IF      SPA-GMN-L02-FILE1     =   SPACE
-               MOVE    SPA-GMN-L02-FILE1LST (1)
+               MOVE    SPA-GMN-L02-FILE1LST (3)
                                            TO  SPA-GMN-L02-FILE1-G
            ELSE
                PERFORM VARYING IDX FROM    1   BY  1
@@ -691,7 +693,7 @@
                    END-IF
                END-PERFORM        
                IF      SPA-GMN-L02-FILE1MEI    =   SPACE  
-                   MOVE    SPA-GMN-L02-FILE1LST (1)
+                   MOVE    SPA-GMN-L02-FILE1LST (3)
                                                TO  SPA-GMN-L02-FILE1-G
                END-IF
            END-IF

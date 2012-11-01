@@ -151,6 +151,8 @@
       *  04.07.05    NACL-藤原    12/05/28  タブラベル対応
       *  04.07.06    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *  04.07.07    NACL-藤原    12/09/24  点検用レセプトの医師名記載対応
+      *  04.07.08    NACL-藤原    12/10/31  ファイル出力先設定のデフォルト
+      *                                     変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4193,7 +4195,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF                                              
            IF     SPA-GMN-RECEDEN-DATAKBN
                                        =   SPACE
-               MOVE    SPA-GMN-RECEDEN-DATAKBNLST (1)
+               MOVE    SPA-GMN-RECEDEN-DATAKBNLST (4)
                                            TO  SPA-GMN-RECEDEN-DATAKBN-G
            END-IF                                              
            IF     SPA-GMN-RECEDEN-DISASTER
@@ -7216,7 +7218,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        4169-RECEDEN-DATAKBN-CHK-SEC       SECTION.
       *
            IF      SPA-GMN-RECEDEN-DATAKBN  =   SPACE
-               MOVE    SPA-GMN-RECEDEN-DATAKBNLST (1)
+               MOVE    SPA-GMN-RECEDEN-DATAKBNLST (4)
                                        TO  SPA-GMN-RECEDEN-DATAKBN-G
            ELSE
                PERFORM VARYING IDY FROM    1   BY  1

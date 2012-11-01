@@ -158,6 +158,8 @@
       *                                     支払機関請求対応
       *  04.07.03    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *  04.07.04    NACL-藤原    12/08/28  スクリプト起動パスサーチ対応
+      *  04.07.05    NACL-藤原    12/10/31  ファイル出力先設定のデフォルト
+      *                                     変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -823,7 +825,7 @@ grpsys                                         SPA-AREA
            END-IF 
            IF      SYS-200501-RECEDEN-DATAKBN
                                        =   SPACE
-               MOVE    "1"                 TO
+               MOVE    "4"                 TO
                                            SYS-200501-RECEDEN-DATAKBN
            END-IF 
            IF     SYS-200501-RECEDEN-DISASTER
