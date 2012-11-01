@@ -2616,6 +2616,14 @@
       *****************************************************************
        505-BYOKANRENKBN-CHK-SEC         SECTION.
       *
+      *ver.4.7
+      *    予約コードのみ初期表示
+           IF      SPA-Z01-SRYCD(1:3)  =   "099"
+               IF      SPA-GMN-BYOKANRENKBN    =   SPACE
+                   MOVE    "00"            TO  SPA-GMN-BYOKANRENKBN
+               END-IF
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-BYOKANRENKBN-MAX
@@ -2639,6 +2647,13 @@
       *  　指導管理料関連チェック
       *****************************************************************
        505-SDOKNRYO-CHK-SEC         SECTION.
+      *ver.4.7
+      *    予約コードのみ初期表示
+           IF      SPA-Z01-SRYCD(1:3)  =   "099"
+               IF      SPA-GMN-SDOKNRYO    =   SPACE
+                   MOVE    ZERO            TO  SPA-GMN-SDOKNRYO
+               END-IF
+           END-IF
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2664,6 +2679,13 @@
       *****************************************************************
        505-YKZKNRKBN-CHK-SEC         SECTION.
       *
+      *ver.4.7
+      *    予約コードのみ初期表示
+           IF      SPA-Z01-SRYCD(1:3)  =   "099"
+               IF      SPA-GMN-YKZKNRKBN   =   SPACE
+                   MOVE    "0"             TO  SPA-GMN-YKZKNRKBN
+               END-IF
+           END-IF
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-YKZKNRKBN-MAX
@@ -2687,6 +2709,13 @@
       *  　入外適用チェック
       *****************************************************************
        505-NYUGAITEKKBN-CHK-SEC         SECTION.
+      *ver.4.7
+      *    予約コードのみ初期表示
+           IF      SPA-Z01-SRYCD(1:3)  =   "099"
+               IF      SPA-GMN-NYUGAITEKKBN    =   SPACE
+                   MOVE    "0"             TO  SPA-GMN-NYUGAITEKKBN
+               END-IF
+           END-IF
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2713,6 +2742,14 @@
       *****************************************************************
        505-ROUTEKKBN-CHK-SEC         SECTION.
       *
+      *ver.4.7
+      *    予約コードのみ初期表示
+           IF      SPA-Z01-SRYCD(1:3)  =   "099"
+               IF      SPA-GMN-ROUTEKKBN   =   SPACE
+                   MOVE    "0"             TO  SPA-GMN-ROUTEKKBN
+               END-IF
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-ROUTEKKBN-MAX
@@ -2736,6 +2773,13 @@
       *  　病院診療所チェック
       *****************************************************************
        505-HOSPSRYKBN-CHK-SEC         SECTION.
+      *ver.4.7
+      *    予約コードのみ初期表示
+           IF      SPA-Z01-SRYCD(1:3)  =   "099"
+               IF      SPA-GMN-HOSPSRYKBN  =   SPACE
+                   MOVE    "0"             TO  SPA-GMN-HOSPSRYKBN
+               END-IF
+           END-IF
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2805,6 +2849,14 @@
       *****************************************************************
        505-SANTEIRRKKBN-CHK-SEC         SECTION.
       *
+      *ver.4.7
+      *    予約コードのみ初期表示
+           IF      SPA-Z01-SRYCD(1:3)  =   "099"
+               IF      SPA-GMN-SANTEIRRKKBN    =   SPACE
+                   MOVE    "0"             TO  SPA-GMN-SANTEIRRKKBN
+               END-IF
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SANTEIRRKKBN-MAX
@@ -2827,6 +2879,14 @@
       *  　時間加算チェック
       *****************************************************************
        505-TIMEKSNKBN-CHK-SEC         SECTION.
+      *
+      *ver.4.7
+      *    予約コードのみ初期表示
+           IF      SPA-Z01-SRYCD(1:3)  =   "099"
+               IF      SPA-GMN-TIMEKSNKBN  =   SPACE
+                   MOVE    "0"             TO  SPA-GMN-TIMEKSNKBN
+               END-IF
+           END-IF
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -2851,6 +2911,14 @@
       *  　外来管理加算チェック
       *****************************************************************
        505-GAIKANRIKBN-CHK-SEC         SECTION.
+      *
+      *ver.4.7
+      *    予約コードのみ初期表示
+           IF      SPA-Z01-SRYCD(1:3)  =   "099"
+               IF      SPA-GMN-GAIKANRIKBN =   SPACE
+                   MOVE    "0"             TO  SPA-GMN-GAIKANRIKBN
+               END-IF
+           END-IF
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
