@@ -4764,6 +4764,10 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                IF      AGECHK-RJNCHK       =   9
                    MOVE    "K007"              TO  SPA-ERRCD
                END-IF
+      *        Ｈ２０．４から後期高齢者の保険がない時
+               IF      AGECHK-RJNCHK       =   4
+                   MOVE    "K013"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *TEST
            IF      SPA-ERRCD           =   SPACE
@@ -6859,6 +6863,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    STRING  "警告！！"
                            "６５歳以上です。"
                            "退職国保は対象ではありません。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K013"
+                   STRING  "警告！！"
+                           "後期高齢者の年齢です。"
+                           "後期高齢者の保険を登録して下さい。"
                                                 DELIMITED  BY  SIZE
                                                 INTO  SPA-ERRMSG
                    END-STRING
