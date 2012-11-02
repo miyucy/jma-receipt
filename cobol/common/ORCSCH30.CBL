@@ -43,6 +43,7 @@
       * 04.05.00     NACL-多々納  09/09/XX  '0086'コメントコード対応他
       * 04.05.00     NACL-多々納  09/10/XX  換算値数量対応
       * 04.06.00     NACL-多々納  11/02/22  用法コメント対応
+      * 04.07.00     NACL-多々納  12/11/02  薬剤毎のコメント対応
       *****************************************************************
       *
       *
@@ -92,6 +93,7 @@
            03  IDT                 PIC 9(04).
            03  IDXC                PIC 9(04).
            03  IDXD                PIC 9(04).
+           03  IDXC2               PIC 9(04).
       *
            03  IDX-ACT             PIC 9(02).
            03  IDX-REN             PIC 9(04).
@@ -133,6 +135,8 @@
                05  TBL-COMMENT-G           OCCURS   20.
                    07  TBL-COMMENT             PIC X(09).
                    07  TBL-INPUTCOMENT         PIC X(80).
+                   07  TBL-IDX-S               PIC 9(04).
+                   07  TBL-IDXD                PIC 9(04).
       *
            03  WRK-SRYNAME              PIC X(80).
       *
@@ -830,6 +834,7 @@
        20022-ZAICHEK-SYORI-EXT.
            EXIT.
       *
+      *
       *****************************************************************
       *    診療会計よりテーブル編集処理
       *****************************************************************
@@ -924,6 +929,25 @@
                                                OR  "0083"
                                                OR  "0084"
                                                OR  "0085" )
+      *ver.4.7
+               IF     (IDX-S                   >   ZERO  )
+      *            薬剤の下のコメント
+                   ADD     1                       TO  IDXD
+                   MOVE    TBL-SRY-SRYCD (IDXA)    TO  TBL-YCOMMENT
+                                                       (IDX-S IDXD)
+                   IF     (TBL-SRY-INPUTNUM (IDXA) NOT =   ZERO )
+                       PERFORM 200221-PTCOM-HEN-SEC
+                       MOVE    PTCOM-INPUTCOMENT   TO  TBL-YINPUTCOMENT
+                                                       (IDX-S IDXD)
+                   ELSE
+                       MOVE    TBL-SRY-COM-NAME (IDXA)
+                                                   TO  TBL-YINPUTCOMENT
+                                                       (IDX-S IDXD)
+                   END-IF
+               END-IF
+      *ver.4.7
+      *
+      *        すべての薬剤
                ADD     1                       TO  IDXC
                MOVE    TBL-SRY-SRYCD (IDXA)    TO  TBL-COMMENT (IDXC)
                IF     (TBL-SRY-INPUTNUM (IDXA) NOT =   ZERO )
@@ -934,6 +958,13 @@
                    MOVE    TBL-SRY-COM-NAME (IDXA) TO  TBL-INPUTCOMENT
                                                              (IDXC)
                END-IF
+      *ver.4.7
+               IF      IDX-S                   >   ZERO
+      *            薬剤あり
+                   MOVE    IDX-S               TO  TBL-IDX-S (IDXC)
+                   MOVE    IDXD                TO  TBL-IDXD (IDXC)
+               END-IF
+      *ver.4.7
            END-IF
       *    用法コメント
            IF     (TBL-SRY-SRYCD (IDXA)(1:3)   =   "001" ) AND
@@ -983,7 +1014,7 @@
            PERFORM VARYING     IDXY    FROM    10  BY  -1
                    UNTIL      (IDXY        <   1      )
                IF     (WRK-YOHOU(IDXY)     NOT =   SPACE )
-               AND    (WRK-YOHOU-KBN(IDXY)     =   "1"       )
+               AND    (WRK-YOHOU-KBN(IDXY)     =   "1"   )
                    MOVE    WRK-YOHOU(IDXY)     TO  WRK-YSRYCD
                    MOVE    WRK-YOHOU-NAME(IDXY)
                                                TO  WRK-YSRYCD-NAME
@@ -1002,6 +1033,23 @@
                MOVE    WRK-YOHOU-NAME(IDXY2)
                                            TO  WRK-YSRYCD-NAME
                MOVE    SPACE               TO  WRK-YOHOU(IDXY2)
+           END-IF
+      *
+      *ver.4.7
+      *    用法コードがないとき最後のコメントをすべてに
+           IF     (WRK-YSRYCD          =   SPACE )
+              AND (IDXC                >   ZERO  )
+      *        コメント
+               IF     (TBL-COMMENT (IDXC)  NOT =   SPACE)
+               AND    (TBL-IDX-S   (IDXC)  NOT =   ZERO )
+                   MOVE    TBL-IDX-S   (IDXC)      TO  IDX
+                   MOVE    TBL-IDXD    (IDXC)      TO  IDXC2
+                   MOVE    SPACE           TO  TBL-YCOMMENT (IDX IDXC2)
+                   MOVE    SPACE           TO  TBL-YINPUTCOMENT
+                                                            (IDX IDXC2)
+                   MOVE    ZERO            TO  TBL-IDX-S   (IDXC)
+                   MOVE    ZERO            TO  TBL-IDXD    (IDXC)
+               END-IF
            END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1038,28 +1086,34 @@
                END-PERFORM
       *        用法コメント
                MOVE    ZERO                TO  IDXD
-               PERFORM VARYING     IDXC    FROM    1   BY  1
-                       UNTIL      (IDXC        >   10   )   OR
-                                  (TBL-YCOMMENT (IDX IDXC)  =   SPACE)
+               PERFORM VARYING     IDXC2   FROM    1   BY  1
+                       UNTIL      (IDXC2       >   10   )
+                 IF      TBL-YCOMMENT (IDX IDXC2)  =   SPACE
+                       CONTINUE
+                 ELSE
                    ADD     1                    TO  IDXD
-                   MOVE    TBL-YCOMMENT (IDX IDXC)
+                   MOVE    TBL-YCOMMENT (IDX IDXC2)
                                                 TO  ORCHC30-COMMENT-CD
                                                             (IDY IDXD)
-                   MOVE    TBL-YINPUTCOMENT (IDX IDXC)
+                   MOVE    TBL-YINPUTCOMENT (IDX IDXC2)
                                                TO  ORCHC30-COMMENT-MEI
                                                             (IDY IDXD)
+                 END-IF
                END-PERFORM
       *        コメント
-               PERFORM VARYING     IDXC    FROM    1   BY  1
-                       UNTIL      (IDXC        >   10   )   OR
-                                  (TBL-COMMENT (IDXC)  =   SPACE)
+               PERFORM VARYING     IDXC2    FROM   1   BY  1
+                       UNTIL      (IDXC2       >  10   )
                             OR    (IDXD        >=  10   )
-                   ADD     1                    TO  IDXD
-                   MOVE    TBL-COMMENT (IDXC)  TO  ORCHC30-COMMENT-CD
+                 IF     (TBL-COMMENT (IDXC2)   NOT =   SPACE)
+                 AND    (TBL-IDX-S   (IDXC2)       =   ZERO )
+      *
+                   ADD     1                   TO  IDXD
+                   MOVE    TBL-COMMENT (IDXC2) TO  ORCHC30-COMMENT-CD
                                                             (IDY IDXD)
-                   MOVE    TBL-INPUTCOMENT (IDXC)
+                   MOVE    TBL-INPUTCOMENT (IDXC2)
                                                TO  ORCHC30-COMMENT-MEI
                                                             (IDY IDXD)
+                 END-IF
                END-PERFORM
       *
                EVALUATE    WRK-SRYKBN
@@ -1371,12 +1425,33 @@
                                                OR  "0083"
                                                OR  "0084"
                                                OR  "0085" )
+      *ver.4.7
+               IF     (IDX-S                   >   ZERO  )
+      *            薬剤の下のコメント
+                   ADD     1                       TO  IDXD
+                   MOVE    ORCSCH30-SRYCD(IDT IDXA)
+                                                   TO  TBL-YCOMMENT
+                                                       (IDX-S IDXD)
+                   MOVE    ORCSCH30-INPUTCOMENT(IDT IDXA)
+                                                   TO  TBL-YINPUTCOMENT
+                                                       (IDX-S IDXD)
+               END-IF
+      *ver.4.7
+      *
+      *        すべての薬剤
                ADD     1                       TO  IDXC
                MOVE    ORCSCH30-SRYCD(IDT IDXA)
                                                TO  TBL-COMMENT (IDXC)
                MOVE    ORCSCH30-INPUTCOMENT(IDT IDXA)
                                                TO  TBL-INPUTCOMENT
                                                              (IDXC)
+      *ver.4.7
+               IF      IDX-S                   >   ZERO
+      *            薬剤あり
+                   MOVE    IDX-S               TO  TBL-IDX-S (IDXC)
+                   MOVE    IDXD                TO  TBL-IDXD (IDXC)
+               END-IF
+      *ver.4.7
            END-IF
       *    用法コメント
            IF     (ORCSCH30-SRYCD(IDT IDXA)(1:3)
