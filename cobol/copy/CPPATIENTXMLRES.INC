@@ -102,8 +102,6 @@
                       06  PTRES-MAIN-CONTINUATION      PIC X(01).
       *                ‰Ωı∂Ë ¨
                       06  PTRES-MAIN-ASSISTANCE        PIC X(01).
-      *                ‰Ωı∂Ë ¨ÃææŒ
-                      06  PTRES-MAIN-ASSISTANCE-NAME   PIC X(20).
       *               À‹øÕ≤»¬≤∂Ë ¨
                       06  PTRES-MAIN-FAMILY            PIC X(01).
       *               »Ô ›∏±º‘Ãæ
