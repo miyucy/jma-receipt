@@ -8226,10 +8226,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    IF    ( SPA-GMN-KOUIKIKBN   =   "0" OR  SPACE )
       *****************IF    ( SPA-GMN-SYARECEKBN
       *****************                        NOT =   "0" AND SPACE )
-      *****************IF    ( SPA-GMN-KKHRECEKBN
-      *****************                        NOT =   "0" AND SPACE )
-      *****************AND   ( SPA-GMN-KOUIKIRECEKBN
-                       IF    ( SPA-GMN-KOUIKIRECEKBN
+                       IF    ( SPA-GMN-KKHRECEKBN
+                                               NOT =   "0" AND SPACE )
+                       OR    ( SPA-GMN-KOUIKIRECEKBN
                                                NOT =   "0" AND SPACE )
                            MOVE    "1004"          TO  SPA-WIDCD2
                        END-IF
