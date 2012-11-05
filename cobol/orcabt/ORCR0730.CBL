@@ -154,6 +154,7 @@
       *  04.05.41    NACL-門脇    12/06/28  生保まとめ分点欄摘要欄記載対応
       *  04.05.42    NACL-門脇    12/09/19  保険欄−一部負担金欄金額置換対応
       *  04.05.43    NACL-門脇    12/10/22  生保まとめ分点欄点数集計修正
+      *  04.05.44    NACL-藤原    12/11/05  摘要欄の公費情報の記載方法修正
       *
       *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
       *                                     種別不明レセ対応
@@ -7842,9 +7843,9 @@
                    END-IF
                END-IF
       *
-               PERFORM VARYING IDY     FROM    1   BY  1
-                       UNTIL   IDY     >       WRK-KOH-HENSYU-MAX
-                   INSPECT WRK-KOH-HENSYU-X (IDY)  REPLACING   ALL "  "
+               PERFORM VARYING IDW     FROM    1   BY  1
+                       UNTIL   IDW     >       WRK-KOH-HENSYU-MAX
+                   INSPECT WRK-KOH-HENSYU-X (IDW)  REPLACING   ALL "  "
                                                                BY  "　"
       * 
                    IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
@@ -7853,18 +7854,18 @@
                    ADD     1                   TO  WRK-LINETEK
       *
                    IF      CNT-PAGE        =   1   
-                       MOVE    WRK-KOH-HENSYU-X (IDY)
+                       MOVE    WRK-KOH-HENSYU-X (IDW)
                                        TO  HC06-TEKIYO (WRK-LINETEK)
                    ELSE                    
                        EVALUATE    SYS-2005-NEXTPRTKBN
                            WHEN    "0"   
-                               MOVE    WRK-KOH-HENSYU-X (IDY)
+                               MOVE    WRK-KOH-HENSYU-X (IDW)
                                            TO  HC061-TEKIYO(WRK-LINETEK)
                            WHEN    "1"   
-                               MOVE    WRK-KOH-HENSYU-X (IDY)
+                               MOVE    WRK-KOH-HENSYU-X (IDW)
                                            TO  HC062-TEKIYO(WRK-LINETEK)
                            WHEN    "2"   
-                               MOVE    WRK-KOH-HENSYU-X (IDY)
+                               MOVE    WRK-KOH-HENSYU-X (IDW)
                                            TO  HC063-TEKIYO(WRK-LINETEK)
                        END-EVALUATE
                    END-IF                    
@@ -8089,11 +8090,11 @@
                                                    INTO    WRK-ADRS
                                END-STRING
                            END-IF
-                           PERFORM VARYING IDY     FROM    1   BY  1
+                           PERFORM VARYING IDW     FROM    1   BY  1
                                    UNTIL   IDY     >       5
-                                   OR      WRK-ADRS-R (IDY)
+                                   OR      WRK-ADRS-R (IDW)
                                                    =       SPACE
-                               INSPECT WRK-ADRS-R (IDY)
+                               INSPECT WRK-ADRS-R (IDW)
                                        REPLACING   ALL "  "    BY  "　"
       * 
                                IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
@@ -8102,18 +8103,18 @@
                                ADD     1               TO  WRK-LINETEK
       *
                                IF      CNT-PAGE        =   1   
-                                   MOVE    WRK-ADRS-R (IDY)
+                                   MOVE    WRK-ADRS-R (IDW)
                                            TO  HC06-TEKIYO (WRK-LINETEK)
                                ELSE                    
                                  EVALUATE    SYS-2005-NEXTPRTKBN
                                    WHEN    "0"   
-                                       MOVE    WRK-ADRS-R (IDY)
+                                       MOVE    WRK-ADRS-R (IDW)
                                            TO  HC061-TEKIYO(WRK-LINETEK)
                                    WHEN    "1"   
-                                       MOVE    WRK-ADRS-R (IDY)
+                                       MOVE    WRK-ADRS-R (IDW)
                                            TO  HC062-TEKIYO(WRK-LINETEK)
                                    WHEN    "2"   
-                                       MOVE    WRK-ADRS-R (IDY)
+                                       MOVE    WRK-ADRS-R (IDW)
                                            TO  HC063-TEKIYO(WRK-LINETEK)
                                  END-EVALUATE
                                END-IF                    
@@ -8156,11 +8157,11 @@
                            END-IF
 
       *                    事業所名記載
-                           PERFORM VARYING IDY     FROM    1   BY  1
-                                   UNTIL   IDY     >       2
-                                   OR      RECE62-RENRAKU-NAME-R (IDY)
+                           PERFORM VARYING IDW     FROM    1   BY  1
+                                   UNTIL   IDW     >       2
+                                   OR      RECE62-RENRAKU-NAME-R (IDW)
                                                    =       SPACE
-                               MOVE    RECE62-RENRAKU-NAME-R (IDY)
+                               MOVE    RECE62-RENRAKU-NAME-R (IDW)
                                                        TO  WRK-TITLE
                                INSPECT WRK-TITLE
                                        REPLACING   ALL "  "    BY  "　"
@@ -8202,11 +8203,11 @@
                                                    INTO    WRK-ADRS
                                END-STRING
                            END-IF
-                           PERFORM VARYING IDY     FROM    1   BY  1
-                                   UNTIL   IDY     >       5
-                                   OR      WRK-ADRS-R (IDY)
+                           PERFORM VARYING IDW     FROM    1   BY  1
+                                   UNTIL   IDW     >       5
+                                   OR      WRK-ADRS-R (IDW)
                                                    =       SPACE
-                               INSPECT WRK-ADRS-R (IDY)
+                               INSPECT WRK-ADRS-R (IDW)
                                        REPLACING   ALL "  "    BY  "　"
       * 
                                IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
@@ -8215,18 +8216,18 @@
                                ADD     1               TO  WRK-LINETEK
       *
                                IF      CNT-PAGE        =   1   
-                                   MOVE    WRK-ADRS-R (IDY)
+                                   MOVE    WRK-ADRS-R (IDW)
                                            TO  HC06-TEKIYO (WRK-LINETEK)
                                ELSE                    
                                  EVALUATE    SYS-2005-NEXTPRTKBN
                                    WHEN    "0"   
-                                       MOVE  WRK-ADRS-R (IDY)
+                                       MOVE  WRK-ADRS-R (IDW)
                                            TO  HC061-TEKIYO(WRK-LINETEK)
                                    WHEN    "1"   
-                                       MOVE  WRK-ADRS-R (IDY)
+                                       MOVE  WRK-ADRS-R (IDW)
                                            TO  HC062-TEKIYO(WRK-LINETEK)
                                    WHEN    "2"   
-                                       MOVE  WRK-ADRS-R (IDY)
+                                       MOVE  WRK-ADRS-R (IDW)
                                            TO  HC063-TEKIYO(WRK-LINETEK)
                                  END-EVALUATE
                                END-IF                    
@@ -8345,9 +8346,9 @@
                    END-IF
                END-IF
       *
-               PERFORM VARYING IDY     FROM    1   BY  1
-                       UNTIL   IDY     >       5
-                   IF      RECE62-2006-TEKIYOU-COMMENT1 (IDY)
+               PERFORM VARYING IDW     FROM    1   BY  1
+                       UNTIL   IDW     >       5
+                   IF      RECE62-2006-TEKIYOU-COMMENT1 (IDW)
                                            NOT =   SPACE
                        IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
                            PERFORM 34120-PAGE-SEC
@@ -8355,21 +8356,21 @@
                        ADD     1                   TO  WRK-LINETEK
       *
                        IF      CNT-PAGE        =   1   
-                           MOVE    RECE62-2006-TEKIYOU-COMMENT1 (IDY)
+                           MOVE    RECE62-2006-TEKIYOU-COMMENT1 (IDW)
                                            TO  HC06-TEKIYO (WRK-LINETEK)
                        ELSE                    
                            EVALUATE    SYS-2005-NEXTPRTKBN
                                WHEN    ZERO
                                    MOVE    RECE62-2006-TEKIYOU-COMMENT1
-                                                                   (IDY)
+                                                                   (IDW)
                                            TO  HC061-TEKIYO(WRK-LINETEK)
                                WHEN    "1"   
                                    MOVE    RECE62-2006-TEKIYOU-COMMENT1
-                                                                   (IDY)
+                                                                   (IDW)
                                            TO  HC062-TEKIYO(WRK-LINETEK)
                                WHEN    "2"   
                                    MOVE    RECE62-2006-TEKIYOU-COMMENT1
-                                                                   (IDY)
+                                                                   (IDW)
                                            TO  HC063-TEKIYO(WRK-LINETEK)
                            END-EVALUATE
                        END-IF                    
