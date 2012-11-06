@@ -6076,7 +6076,7 @@
             </signal>
             <signal>
               <name>color_set</name>
-              <handler>send_evnt</handler>
+              <handler>send_event</handler>
             </signal>
           </widget>
           <widget>
