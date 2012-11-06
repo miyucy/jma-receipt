@@ -836,6 +836,14 @@
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
+           IF    ( SPA-NAI-STYUKYMD    =   ZERO )
+           AND   ( SPA-NAI-EDYUKYMD    =   ZERO )
+               MOVE    "0002"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-GMN-CUR
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+               
+      *
            PERFORM 41021-GRP-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  4102-KIHON-CHK-EXT
@@ -1792,6 +1800,9 @@
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
                    MOVE    "選択番号がありません"     TO  WERR-ERRMSG
+               WHEN    "0002"
+                   MOVE    "有効期間の入力がありません"
+                                                      TO  WERR-ERRMSG
                WHEN    "0003"
                    MOVE    "エラーがある項目があります"
                                                       TO  WERR-ERRMSG
