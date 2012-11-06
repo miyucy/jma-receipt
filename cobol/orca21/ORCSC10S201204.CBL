@@ -6215,21 +6215,30 @@
       *    次が薬剤で前が剤終了でない時
            IF     (HZN-COM-INPUTCD(IDX  +  1)(1:1) =   "6"   )
            AND    (SPA-COM-KAIFLG (IDX2)       NOT =   "1"   )
-           AND    (SPA-COM-SRYSYUKBN(IDX2)     NOT =   "600" )
-               MOVE    "1"                 TO  SPA-COM-KAIFLG
-                                                      (IDX2)
-               INITIALIZE                  ORCSC94AREA
-               MOVE    "1"                 TO  LNK-SC94-KBN
-               MOVE    "K02"               TO  LNK-SC94-PG
-               MOVE    IDX2                TO  LNK-SC94-IDX
-               CALL    "ORCSC94"           USING
+               IF     (SPA-COM-SRYKBN (IDX2)
+                                               =   "11"
+                                               OR  "12"
+                                               OR  "13" )
+               OR     (SPA-COM-SRYSYUKBN(IDX2)
+                                               =   "600" )
+                   CONTINUE
+               ELSE
+                   MOVE    "1"                 TO  SPA-COM-KAIFLG
+                                                          (IDX2)
+                   INITIALIZE                  ORCSC94AREA
+                   MOVE    "1"                 TO  LNK-SC94-KBN
+                   MOVE    "K02"               TO  LNK-SC94-PG
+                   MOVE    IDX2                TO  LNK-SC94-IDX
+                   CALL    "ORCSC94"           USING
                                                ORCSC94AREA
                                                SPA-SCR-REC
                                                SPA-AREA
+               END-IF
            END-IF
       *
            IF     (HZN-COM-INPUTCD(IDX + 1)(1:1)   =   "6"   )
            AND    (SPA-COM-SRYSYUKBN(IDX2)     =   "600" )
+           AND    (SPA-COM-KAISU    (IDX2)     <=  1     )
       *        検査の時、回数が無効となる為、診療種別を変更する
                MOVE    1                   TO  IDX3
                MOVE    HZN-COM-SRYKBN(IDX + 1)
