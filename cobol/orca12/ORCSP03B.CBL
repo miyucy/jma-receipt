@@ -45,12 +45,7 @@
       * 03.04.00     NACL-多々納  06/10/30  受給者検証番号警告追加
       * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
       * 04.02.00     NACL-多々納  08/03/XX  平成２０年４月改正対応
-      * 04.07.00     NACL-多々納  11/07/01  公費一覧表示対応
-      * 04.07.00     NACL-多々納  12/09/25  生活保護重複対応
-      * 04.07.00     NACL-多々納  12/11/16  長期高額療養重複不可
-      * 04.07.00     NACL-多々納  13/11/13  生活保護重複警告対応
-      * 04.07.00     NACL-多々納  14/12/XX  難病等対応、公費名称編集修正
-      * 04.08.00     NACL-多々納  16/02/XX  京都府　京都子重複可対応
+      * 04.06.00     NACL-多々納  12/11/06  生活保護重複対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,8 +78,6 @@
            03  FLG-AUTO            PIC 9(01).
       *
            03  FLG-HKNNUM-CHK      PIC 9(01).
-      *    新規区分
-           03  FLG-KOHINS          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -183,20 +176,6 @@
       *    Ｈ１８．１０改正
            03  WRK-TEKEDYMD            PIC X(08).
            03  WRK-TEKEDYMD-W          PIC X(10).
-      *ver.4.7
-      *    法別チェック
-           03  WRK-HBTNUM              PIC X(02).
-           03  WRK-CHK-KOHNUM          PIC X(03).
-           03  WRK-HBTCNT              PIC 9(02).
-           03  WRK-MAE-HBTNUM          PIC X(02).
-      *H26.12
-      *    公費種別編集
-           03  WRK-HKNNUM              PIC X(03).
-           03  WRK-PAYKBN              PIC X(02).
-           03  WRK-HKNKOHSBTKBN        PIC X(01).
-           03  WRK-TANSEIDONAME        PIC X(20).
-           03  WRK-TEKSTYMD            PIC X(08).
-           03  WRK-HZN-STYMD           PIC X(08).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMD.
@@ -310,12 +289,6 @@
                    UNTIL      (IDX-K       >   3   )  OR
                               (SPA-ERRCD   NOT =   SPACE )  OR
                               (SPA-PIDCD   NOT =   SPACE )
-                           OR (SPA-FLG-END         =   1     )
-      *        第三者行為なし
-               IF      SPA-GMN-KOHNUM(IDX-K) =   "970"
-                   CONTINUE
-               ELSE
-      *
       *        基本チェック
                PERFORM 100-KIHON-CHK-SEC
                IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -324,14 +297,9 @@
                                            +  ((IDX-K  -   1  )  *  6 )
                    MOVE    IDX-K           TO  SPA-KOH-ERRIDX
                END-IF
-      *
-               END-IF
            END-PERFORM
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-PIDCD       NOT =   SPACE )
-               GO      TO      000-PROC-EXT
-           END-IF
-           IF     (SPA-FLG-END         =   1     )
                GO      TO      000-PROC-EXT
            END-IF
       *
@@ -381,20 +349,9 @@
       ****************************************************************
        100-KIHON-CHK-SEC     SECTION.
       *
-           MOVE    ZERO                TO  FLG-KOHINS
-           MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
-           IF     (IDX-K2              =   ZERO      ) OR
-                  (SPA-PTKOH-SINKIKBN (IDX-K2)
-                                       =    "1"      )
-               MOVE    1                   TO  FLG-KOHINS
-           END-IF
-      *
       *    負担者番号
            IF      SPA-ERRCD           =   SPACE
                PERFORM 1001-FTNJANUM-CHK-SEC
-           END-IF
-           IF     (SPA-FLG-END         =   1     )
-               GO      TO      100-KIHON-CHK-EXT
            END-IF
       *
       *    公費
@@ -519,7 +476,6 @@
                    CONTINUE
                ELSE
                    PERFORM 101100-HKNNUM-CHK-SEC
-      *            保険の種類は保険者マスタなしとする
                    IF      FLG-HKNNUM-CHK      =   1
                        MOVE    1               TO  FLG-HKNJAINF
                    END-IF
@@ -528,24 +484,8 @@
       *    保険者番号あり
            IF      FLG-HKNJAINF        =   ZERO
                MOVE    HKNJA-HKNNUM        TO  WRK-MAE-KOHNUM
+      *
                MOVE    HKNJA-IDOYMD        TO  SPA-PTKOH-IDOYMD (IDX-K)
-      *
-      *ver.4.7
-      *        新規で負担者番号再入力時
-      *        IF     (FLG-KOHINS          =   1     )
-      *           AND (SPA-GMN-KOHNUM (IDX-K) NOT =   SPACE )
-      *           AND (SPA-GMN-KOHNUM (IDX-K) NOT =   WRK-MAE-KOHNUM)
-      *            PERFORM 10110-KOHHBTNUMKBN-SEC
-      *            IF     (WRK-KOHHBTNUMKBN    =   ZERO )
-      *              OR   (WRK-MAE-HBTNUM      =   SPA-GMN-FTNJANUM
-      *                                                  (IDX-K) (1:2))
-      *                CONTINUE
-      *            ELSE
-      *                負担者番号の公費へ
-      *                MOVE    SPACE           TO  SPA-GMN-KOHNUM(IDX-K)
-      *            END-IF
-      *****    END-IF
-      *
            ELSE
                MOVE    "1"                 TO  SPA-NAI-PTKOH-KEIFLG
                                                                (IDX-K)
@@ -581,14 +521,6 @@
                                    MOVE    20         TO  SPA-GMN-CUR
                                    MOVE    1          TO  SPA-NAI-FTNCHK
                                                                 (IDX-K)
-      *ver.4.7                     警告後の一覧表示の為
-                                   IF     (SPA-NAI-KOHHBTKBN-FLG
-                                                       =   "1"   )
-                                       MOVE    SPACE
-                                               TO  SPA-NAI-PTKOH-KEIFLG
-                                                               (IDX-K)
-                                   END-IF
-      *
                                ELSE
       *                            法別番号より公費種類を決定する
                                    PERFORM 10011-HKNNUM-SET-SEC
@@ -605,15 +537,15 @@
       *
            IF     (WRK-MAE-KOHNUM      =   SPACE )  OR
                   (SPA-ERRCD       NOT =   SPACE )
-            OR    (SPA-FLG-END         =   1     )
                CONTINUE
            ELSE
-      *        更新の時、保険区分変更時、エラーとする
-      **       MOVE    SPA-NAI-PTKOH-EDANUM(IDX-K) TO  IDX-K2
-      *        IF     (SPA-NAI-PTKOH-KOHID (IDX-K) NOT =   ZERO  )
-      *         AND   (SPA-MAE-KOHNUM (IDX-K)
-      ***                                  NOT =   SPACE )
-               IF      FLG-KOHINS          =   ZERO
+      *    更新の時、保険区分変更時、エラーとする
+               MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
+               IF     (IDX-K2              >   ZERO  ) AND
+                      (SPA-PTKOH-SINKIKBN (IDX-K2)
+                                           =   SPACE  )  AND
+                      (SPA-MAE-KOHNUM (IDX-K)
+                                       NOT =   SPACE    )
                    IF      WRK-MAE-KOHNUM  NOT =   SPA-MAE-KOHNUM(IDX-K)
                        PERFORM 10011-HKNNUM-HENCHK-SEC
                    END-IF
@@ -679,7 +611,6 @@
        10110-KOHHBTNUMKBN-SEC           SECTION.
       *
            MOVE    SPACE               TO  WRK-KOHHBTNUMKBN
-           MOVE    SPACE               TO  WRK-MAE-HBTNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-KOHMAX
                IF     (SPA-GMN-KOHNUM(IDX-K)
@@ -689,9 +620,6 @@
       *            法別番号チェック区分
                    MOVE    SPA-NAI-KOHHBTNUMKBN (IDX)
                                            TO  WRK-KOHHBTNUMKBN
-      *            法別番号
-                   MOVE    SPA-NAI-HBTNUM (IDX)
-                                           TO  WRK-MAE-HBTNUM
                END-IF
            END-PERFORM
       *
@@ -705,7 +633,6 @@
        10011-HKNNUM-SET-SEC           SECTION.
       *
            MOVE    SPACE               TO  WRK-KOHHBTNUMKBN
-           MOVE    SPACE               TO  WRK-MAE-HBTNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-KOHMAX
                IF     (SPA-MAE-KOHNUM(IDX-K)
@@ -715,8 +642,6 @@
       *            法別番号チェック区分
                    MOVE    SPA-NAI-KOHHBTNUMKBN (IDX)
                                            TO  WRK-KOHHBTNUMKBN
-                   MOVE    SPA-NAI-HBTNUM (IDX)
-                                           TO  WRK-MAE-HBTNUM
                END-IF
            END-PERFORM
       *    法別番号チェック区分をしない
@@ -724,44 +649,6 @@
                MOVE    SPA-MAE-KOHNUM(IDX-K)   TO  WRK-MAE-KOHNUM
                GO      TO      10011-HKNNUM-SET-EXT
            END-IF
-      *
-      *ver.4.7
-      *    負担者番号の法別番号から保険番号マスタの公費番号の判定
-           MOVE    ZERO                TO  WRK-HBTCNT
-           MOVE    SPACE               TO  WRK-CHK-KOHNUM
-           MOVE    SPA-GMN-FTNJANUM(IDX-K) (1:2)
-                                       TO  WRK-HBTNUM
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-GMN-KOHMAX
-               IF      WRK-HBTNUM      =   SPA-NAI-HBTNUM (IDX)
-                   ADD     1               TO  WRK-HBTCNT
-                   IF      WRK-HBTCNT      =   1
-                       MOVE    SPA-GMN-KOHNUML (IDX)
-                                               TO  WRK-CHK-KOHNUM
-                   END-IF
-               END-IF
-           END-PERFORM
-           IF      SPA-MAE-KOHNUM (IDX-K)  =   SPACE
-               MOVE    WRK-CHK-KOHNUM      TO  WRK-MAE-KOHNUM
-      *        公費法別一覧編集区分
-               IF     (SPA-GMN-KOHNUM (IDX-K)  =   SPACE )
-                 AND  (SPA-NAI-KOHHBTKBN-FLG   =   "1"   )
-                   IF     (WRK-HBTCNT          >   1   )
-      *                同じ制度が複数ある
-                       PERFORM 10011-P02H-SYORI-SEC
-                   END-IF
-               END-IF
-           ELSE
-      *        公費種類の変更なし
-               IF      WRK-CHK-KOHNUM      =   SPA-MAE-KOHNUM (IDX-K)
-                   MOVE    SPACE           TO  WRK-MAE-KOHNUM
-               ELSE
-                   MOVE    WRK-CHK-KOHNUM  TO  WRK-MAE-KOHNUM
-               END-IF
-           END-IF
-      *
-      *!!!
-           GO      TO    10011-HKNNUM-SET-EXT
       *
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
@@ -818,21 +705,6 @@
            .
        10011-HKNNUM-SET-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    公費法別一覧編集画面処理
-      *****************************************************************
-       10011-P02H-SYORI-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-P02H-AREA
-           MOVE    WRK-HBTNUM          TO  SPA-P02H-HBTNUM
-           MOVE    IDX-K               TO  SPA-P02H-KOHIDX
-           MOVE    1                   TO  SPA-FLG-END
-      *
-           .
-       10011-P02H-SYORI-EXT.
-           EXIT.
-      *
       ****************************************************************
       *    変更時保険の種類チェック処理
       ****************************************************************
@@ -867,9 +739,11 @@
        1001-KOHNUM-CHK-SEC           SECTION.
       *
       *    更新の時、保険区分変更時、エラーとする
-      ***  MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
+           MOVE    SPA-NAI-PTKOH-EDANUM (IDX-K)    TO  IDX-K2
            MOVE    ZERO                TO  FLG-CHK
-           IF     (FLG-KOHINS          =   ZERO    )  AND
+           IF     (IDX-K2              >   ZERO      ) AND
+                  (SPA-PTKOH-SINKIKBN (IDX-K2)
+                                       =    SPACE    ) AND
                   (SPA-MAE-KOHNUM (IDX-K)  NOT =   SPACE )
                IF      SPA-GMN-KOHNUM(IDX-K)
                                            =   SPA-MAE-KOHNUM(IDX-K)
@@ -902,14 +776,16 @@
            END-IF
       *
       *!９６１ 減免金額は仕様決定までエラーとする
-      *    IF      SPA-GMN-KOHNUM(IDX-K)   =   "961"
-      *        MOVE    "2074"          TO  SPA-ERRCD
-      *        MOVE    22              TO  SPA-GMN-CUR
-      *        GO      TO      1001-KOHNUM-CHK-EXT
-      *    END-IF
+           IF      SPA-GMN-KOHNUM(IDX-K)   =   "961"
+               MOVE    "2074"          TO  SPA-ERRCD
+               MOVE    22              TO  SPA-GMN-CUR
+               GO      TO      1001-KOHNUM-CHK-EXT
+           END-IF
       *!
       *    新規の時、チェック・編集
-           IF     (FLG-KOHINS          =   1   )
+           IF     (IDX-K2              =   ZERO    )  OR
+                  (SPA-PTKOH-SINKIKBN (IDX-K2)
+                                       =   "1"      )
                PERFORM 41011-HKNNUM-SYORI-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    MOVE    21              TO  SPA-GMN-CUR
@@ -943,16 +819,12 @@
                        END-IF
                    END-IF
       *
-      *            日付なしのみ
-                   IF      SPA-NAI-KTEKSTYMD(IDX-K)    =   SPACE
-      *
                    MOVE    SPA-GMN-KOHNUMLST (IDX)
                                            TO  SPA-GMN-KOHNUM-G(IDX-K)
+      *
                    MOVE    SPA-NAI-KOHSBTKBN (IDX)
                                            TO  SPA-NAI-PTKOH-SBTKBN
                                                               (IDX-K)
-                   END-IF
-      *
                    MOVE    SPA-NAI-KOHPAYKBN (IDX)
                                            TO  SPA-NAI-PTKOH-PAYKBN
                                                               (IDX-K)
@@ -1126,7 +998,7 @@
       *    適応開始入力　処理
       *****************************************************************
        1001-KTEKSTYMD-CHK-SEC           SECTION.
-      *
+     *
            IF      SPA-GMN-KTEKSTYMD(IDX-K)    =   SPACE
                MOVE    ZERO            TO  FLG-CHK-ERR
                EVALUATE    IDX-K
@@ -1189,30 +1061,6 @@
                END-IF
            END-IF
       *!!
-      *H25.12
-      *    "961"減額（円）はＨ２４年４月からとする
-           IF     (SPA-GMN-KOHNUM(IDX-K)   =   "961" )
-             AND  (SPA-ERRCD               =   SPACE )
-               IF      SPA-NAI-KTEKSTYMD(IDX-K)    <   "20120401"
-                   MOVE    "2074"              TO  SPA-ERRCD
-                   MOVE    23                  TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-      *!!
-      *H26.12
-      *    新規で開始日変更時に名称編集
-           IF     (FLG-KOHINS          =   1     )
-              AND (SPA-ERRCD           =   SPACE )
-               IF     (SPA-NAI-KTEKSTYMD(IDX-K)
-                                       NOT =   WRK-HZN-STYMD)
-                OR    (SPA-GMN-KTEKEDYMD (IDX-K)
-                                           =   SPACE )
-                   MOVE    IDX-K               TO  IDX-K1
-                   PERFORM 3101-HKNNUM-SET-SEC
-               END-IF
-           END-IF
-      *
            .
        1001-KTEKSTYMD-CHK-EXT.
            EXIT.
@@ -1447,13 +1295,6 @@
       *    ELSE
       *        PERFORM 2005-IDOYMD-CHECK-SEC
       **** END-IF
-      *H25.12
-      *    生活保護重複チェック
-           IF     (SPA-GMN-KOHNUM(IDX-K)   =   "012")
-              AND (SPA-NAI-JFKCHKFLG(IDX-K)    =   ZERO)
-              AND (SPA-ERRCD               =   SPACE)
-               PERFORM 2006-SEIJYUFUKU-CHK-SEC
-           END-IF
       *
            .
        200-KANREN-CHK-EXT.
@@ -1747,7 +1588,7 @@
                END-IF
            END-IF
       *
-           .
+          .
        4912-JKYSNUM-CHECK-EXT.
            EXIT.
       *****************************************************************
@@ -1788,18 +1629,11 @@
                ELSE
                    MOVE    SPA-NAI-KTEKEDYMD(IDX-K) TO  WRK-YMDS2
                END-IF
-      *        誕生日より前はゼロ
-               IF      WRK-YYS2           <   WRK-YYS1
-                   MOVE    ZERO           TO  WRK-NENREI-YY
-               ELSE
-      *
                COMPUTE   WRK-NENREI-YY    =   WRK-YYS2
                                           -   WRK-YYS1
                IF  WRK-YMDS1 (5:4)        >   WRK-YMDS2 (5:4)
                    COMPUTE WRK-NENREI-YY  =   WRK-NENREI-YY
                                           -   1
-               END-IF
-      *
                END-IF
       *
                IF  ( WRK-NENREI-YY         <   WRK-STYEAR )  OR
@@ -1944,68 +1778,6 @@
        2005-IDOYMD-CHECK-EXT.
            EXIT.
       *
-      *v4.7
-      *****************************************************************
-      *    生活保護の期間重複チェック処理
-      *****************************************************************
-       2006-SEIJYUFUKU-CHK-SEC         SECTION.
-      *
-           MOVE    1               TO  SPA-NAI-JFKCHKFLG (IDX-K)
-      *
-           MOVE    ZERO                TO  WRK-IDX-AREA
-           PERFORM VARYING     IDK2     FROM    1   BY  1
-                   UNTIL      (IDK2         >   3   )  OR
-                              (SPA-ERRCD   NOT =   SPACE )
-               IF      SPA-GMN-KOHNUM(IDK2)   NOT =   SPACE
-                   MOVE    SPA-NAI-PTKOH-EDANUM (IDK2)
-                                               TO  WRK-IDX (IDK2)
-               END-IF
-               IF     (SPA-GMN-KOHNUM(IDK2)    =   "012") AND
-                      (IDX-K               NOT =   IDK2 )
-                   IF      (SPA-NAI-KTEKEDYMD (IDX-K)
-                                       <   SPA-NAI-KTEKSTYMD(IDK2) ) OR
-                           (SPA-NAI-KTEKSTYMD (IDX-K)
-                                       >   SPA-NAI-KTEKEDYMD(IDK2) )
-                       CONTINUE
-                   ELSE
-                       MOVE    "K136"          TO  SPA-ERRCD
-                       MOVE    23              TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
-           END-PERFORM
-      *    テーブル分
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX             >   SPA-PTKOH-MAX )  OR
-                              (SPA-ERRCD   NOT =   SPACE )
-               MOVE    ZERO            TO  FLG-CHK
-      *        現在表示分、削除分はチェックしない
-               IF     (IDX             =   WRK-IDX (1) OR
-                                           WRK-IDX (2)  OR
-                                           WRK-IDX (3) ) OR
-                      (SPA-PTKOH-SAKJOKBN(IDX)     =   "1" )
-                   CONTINUE
-               ELSE
-      *            範囲の重複
-                   IF      (SPA-PTKOH-TEKEDYMD (IDX)
-                                       <   SPA-NAI-KTEKSTYMD(IDX-K)) OR
-                           (SPA-PTKOH-TEKSTYMD (IDX)
-                                       >   SPA-NAI-KTEKEDYMD(IDX-K))
-                       CONTINUE
-                   ELSE
-                       MOVE    1            TO  FLG-CHK
-                   END-IF
-               END-IF
-               IF     (FLG-CHK              =   1  )
-                  AND (SPA-PTKOH-KOHNUM(IDX)  =   "012")
-                   MOVE    "K136"          TO  SPA-ERRCD
-                   MOVE    23              TO  SPA-GMN-CUR
-               END-IF
-           END-PERFORM
-           .
-      *
-       2006-SEIJYUFUKU-CHK-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    公費期間重複チェック処理
       *****************************************************************
@@ -2051,11 +1823,6 @@
                    COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR
                                            +  ((IDX-K  -   1  )  *  6 )
                END-IF
-      *APIV3対応
-               IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                      (SPA-PIDCD       NOT =   SPACE )
-                   MOVE    IDX-K           TO  SPA-KOH-ERRIDX
-               END-IF
            END-PERFORM
       *
            .
@@ -2082,34 +1849,16 @@
                        IF     (SPA-GMN-KOHNUM (IDX-K)
                                            =   SPA-GMN-KOHNUM(IDK2))
                        AND   ((SPA-GMN-KOHNUM(IDX-K)
-                                           =   "051"
+                                           =   "051"  OR  "052"
                                            OR  "091"
       *                肝炎治療　追加
                                            OR  "038"
-      *ver.4.7         生活保護　追加
+      *H24.11          生活保護　追加
                                            OR  "012"
-      *                更正・育成追加
                                            OR  "015"  OR  "016"    )
       *                北海道の地方公費
                           OR  (SPA-GMN-KOHNUM(IDX-K)   =   "183"  AND
-                               SPA-PREFNUM             =   01    )
-      *H25.7
-      *                第三者行為
-                          OR  (SPA-GMN-KOHNUM(IDX-K)   =   "970" )
-      *H27.1
-      *                難病
-                          OR ( SPA-GMN-KOHNUM(IDX-K)   =   "054" )
-      *H26.11
-      *                小児特定　Ｈ２６．１２まで
-                          OR ((SPA-GMN-KOHNUM(IDX-K)   =   "052" ) AND
-                              (SPA-NAI-KTEKSTYMD (IDX-K)
-                                                       <=  "20141231"))
-      *H28.2
-      *                京都府　京都子　H25.9.1から
-                          OR ((SPA-GMN-KOHNUM(IDX-K)   =   "745" ) AND
-                              (SPA-PREFNUM             =   26    ) AND
-                              (SPA-NAI-KTEKSTYMD (IDX-K)
-                                                       >=  "20130901")))
+                               SPA-PREFNUM             =   01    ))
                            CONTINUE
                        ELSE
       *
@@ -2135,28 +1884,6 @@
                            MOVE    IDX-K       TO  WRK-IDX1
                            MOVE    IDK2        TO  WRK-IDX2
                        END-IF
-      *H24.11
-      *                長期高額療養費の重複不可
-                       IF      (SPA-NAI-PTKOH-SBTKBN (IDX-K) =  "2") AND
-                               (SPA-NAI-PTKOH-SBTKBN (IDK2)  =  "2")
-                           MOVE    "0136"      TO  SPA-ERRCD
-                           MOVE    23          TO  SPA-GMN-CUR
-                           MOVE    IDX-K       TO  WRK-IDX1
-                           MOVE    IDK2        TO  WRK-IDX2
-                       END-IF
-      *
-      *ver.4.7
-      *                ０７、０８入所中の重複不可
-                       IF      (SPA-GMN-KOHNUM (IDX-K) =   "950"
-                                                       OR  "951"  )  AND
-                               (SPA-GMN-KOHNUM (IDK2)  =   "950"
-                                                       OR  "951"  ) 
-                           MOVE    "0135"      TO  SPA-ERRCD
-                           MOVE    23          TO  SPA-GMN-CUR
-                           MOVE    IDX-K       TO  WRK-IDX1
-                           MOVE    IDK2        TO  WRK-IDX2
-                       END-IF
-      *
                    END-IF
       *
                    END-IF
@@ -2164,7 +1891,6 @@
            END-PERFORM
       *
            IF      SPA-ERRCD           =   SPACE
-             OR   (SPA-ERRCD(1:1)      =   "K"   )
                GO      TO      3001-INPUT-KOH-CHK-EXT
            END-IF
       *
@@ -2245,7 +1971,6 @@
                    END-IF
                END-IF
       *
-      *
                IF      FLG-CHK         =   1
       *            特定は重複可とする
                    IF     (SPA-GMN-KOHNUM (IDX-K)
@@ -2256,24 +1981,13 @@
                                                OR  "091" 
       *                   肝炎治療　追加
                                                OR  "038"
-      *ver.4.7            生活保護　追加
+      *H24.11             生活保護　追加
                                                OR  "012"
       *                   更正・育成追加
                                                OR  "015"  OR  "016"  )
       *                  北海道の地方公費
                          OR  ((SPA-GMN-KOHNUM(IDX-K)   =   "183" ) AND
-                              (SPA-PREFNUM             =   01    ))
-      *H25.7              第三者行為
-                         OR   (SPA-GMN-KOHNUM(IDX-K)   =   "970" )
-      *H27.1             難病
-                          OR ( SPA-GMN-KOHNUM(IDX-K)   =   "054" )
-      *H28.2
-      *                京都府　京都子　H25.9.1から
-                          OR ((SPA-GMN-KOHNUM(IDX-K)   =   "745" ) AND
-                              (SPA-PREFNUM             =   26    ) AND
-                              (SPA-NAI-KTEKSTYMD (IDX-K)
-                                                       >=  "20130901"))
-      *
+                              (SPA-PREFNUM             =   01    ) )
                              MOVE    ZERO              TO  FLG-CHK
                        END-IF
                    END-IF
@@ -2296,27 +2010,7 @@
                        MOVE    23          TO  SPA-GMN-CUR
                        MOVE    IDX         TO  WRK-IDX1
                    END-IF
-      *H24.11
-      *            長期高額療養の重複不可
-                   IF      (SPA-NAI-PTKOH-SBTKBN (IDX-K) =  "2") AND
-                           (SPA-PTKOH-HKN-SBTKBN (IDX)   =  "2")
-                       MOVE    "0136"      TO  SPA-ERRCD
-                       MOVE    23          TO  SPA-GMN-CUR
-                       MOVE    IDX         TO  WRK-IDX1
-                   END-IF
-      *ver.4.7
-      *            ０７、０８入所中の重複不可
-                   IF      (SPA-GMN-KOHNUM (IDX-K) =   "950"
-                                                   OR  "951"  )  AND
-                           (SPA-PTKOH-KOHNUM(IDX)  =   "950"
-                                                   OR  "951"  ) 
-                       MOVE    "0135"      TO  SPA-ERRCD
-                       MOVE    23          TO  SPA-GMN-CUR
-                       MOVE    IDX         TO  WRK-IDX1
-                   END-IF
-      *
                END-IF
-      *
            END-PERFORM
       *
            IF      (WRK-IDX1           >   ZERO  )  AND
@@ -2324,8 +2018,6 @@
                                        >=  SPA-NAI-KTEKSTYMD(IDX-K)) AND
                    (SPA-PTKOH-TEKSTYMD (WRK-IDX1)
                                        <   SPA-NAI-KTEKSTYMD(IDX-K))
-               AND (SPA-ERRCD(1:1) NOT =   "K"   )
-      *
                MOVE    IDX-K           TO  SPA-KOH-IDX1
                MOVE    WRK-IDX1        TO  SPA-KOH-IDX2
                MOVE    1               TO  SPA-KOH-FLG
@@ -2433,7 +2125,7 @@
            MOVE    SPA-SYSYMDWH    TO  SPA-GMN-KKAKUNINYMD(SPA-KOH-IDX1)
       *    公費名編集
            MOVE    SPA-KOH-IDX1    TO  IDX-K1
-      **** PERFORM 3101-HKNNUM-SET-SEC
+           PERFORM 3101-HKNNUM-SET-SEC
       *
       *    老人公費の時、新規公費を追加する
       *    Ｈ１４．１０改正分のみ
@@ -2481,65 +2173,18 @@
       *****************************************************************
        3101-HKNNUM-SET-SEC           SECTION.
       *
-      *    MOVE    ZERO                TO  FLG-OK
-      *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL       IDX     >   SPA-GMN-KOHMAX
-      *        IF     (SPA-GMN-KOHNUM(IDX-K1)
-      *                               =    SPA-GMN-KOHNUML (IDX)) AND
-      *               (SPA-GMN-KOHKBN(IDX-K1)
-      *                               =    SPA-GMN-KOHKBNL (IDX))
-      *            MOVE    SPA-GMN-KOHNUMLST (IDX)
-      *                                    TO  SPA-GMN-KOHNUM-G(IDX-K1)
-      *            MOVE    SPA-GMN-KOHMAX      TO  IDX
-      *        END-IF
-      *    END-PERFORM
-      *
-      *H26.12
-      *    保険番号マスタの開始日の名称編集
-           MOVE    SPA-GMN-KOHNUM (IDX-K1)     TO  WRK-HKNNUM
-           MOVE    SPA-GMN-KOHKBN (IDX-K1)     TO  WRK-PAYKBN
-           MOVE    SPA-NAI-KTEKSTYMD(IDX-K1)   TO  WRK-TEKSTYMD
-      *
-           INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
-           MOVE    WRK-HKNNUM          TO  HKN-HKNNUM
-           IF      WRK-PAYKBN          =   SPACE
-               MOVE    ZERO                TO  HKN-PAYKBN
-           ELSE
-               MOVE    WRK-PAYKBN          TO  HKN-PAYKBN
-           END-IF
-           MOVE    WRK-TEKSTYMD        TO  HKN-TEKSTYMD
-           MOVE    WRK-TEKSTYMD        TO  HKN-TEKEDYMD
-      *
-           MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_hknnum"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 921-HKNMST-NEXT-SEC
-           ELSE
-               INITIALIZE              HKNNUM-REC
-               MOVE    1               TO  FLG-HKNNUM
-           END-IF
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           MOVE    SPACE               TO  WRK-HKNKOHSBTKBN
-           MOVE    SPACE               TO  WRK-TANSEIDONAME
-           IF      FLG-HKNNUM          =   ZERO
-               MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKNKOHSBTKBN
-               MOVE    HKN-TANSEIDONAME    TO  WRK-TANSEIDONAME
-      *        リストの名称より長くする
-      *****    INSPECT WRK-TANSEIDONAME    REPLACING ALL "  " BY "　"
-      *
-               MOVE    WRK-TANSEIDONAME    TO  SPA-GMN-KOHNUMMEI
-                                                            (IDX-K1)
-               MOVE    WRK-HKNKOHSBTKBN    TO  SPA-NAI-PTKOH-SBTKBN
-                                                            (IDX-K1)
-           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KOHMAX
+               IF     (SPA-GMN-KOHNUM(IDX-K1)
+                                      =    SPA-GMN-KOHNUML (IDX)) AND
+                      (SPA-GMN-KOHKBN(IDX-K1)
+                                      =    SPA-GMN-KOHKBNL (IDX))
+                   MOVE    SPA-GMN-KOHNUMLST (IDX)
+                                           TO  SPA-GMN-KOHNUM-G(IDX-K1)
+                   MOVE    SPA-GMN-KOHMAX      TO  IDX
+               END-IF
+           END-PERFORM
       *
            .
        3101-HKNNUM-SET-EXT.
@@ -2784,11 +2429,6 @@
            MOVE    SPA-PTKOH-HKN-SBTKBN (IDX)
                                        TO  SPA-NAI-PTKOH-SBTKBN(IDX-K)
       *
-      *H26.12
-      *    保険番号マスタから名称編集
-           MOVE    IDX-K           TO  IDX-K1
-           PERFORM 3101-HKNNUM-SET-SEC
-      *
            .
        31012-IPN-KOHHEN-EXT.
            EXIT.
@@ -2917,11 +2557,6 @@
                                                               (IDX-K)
            MOVE    SPA-SYSYMDWH        TO  SPA-GMN-KKAKUNINYMD
                                                               (IDX-K)
-      *H26.12
-      *    保険番号マスタから名称編集
-           MOVE    IDX-K           TO  IDX-K1
-           PERFORM 3101-HKNNUM-SET-SEC
-      *
       *
            MOVE    ZERO                TO  SPA-KOH-ADD
            EVALUATE    IDX-K
