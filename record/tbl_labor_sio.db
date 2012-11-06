@@ -8,6 +8,10 @@ tbl_labor_sio {
 	CREYMD			varchar(8);
 	UPYMD			varchar(8);
 	UPHMS			varchar(6);
+#-----> 主キー更新用項目
+	UPSYOCD			char(5),virtual;
+	UPYUKOSTYMD		char(8),virtual;
+	UPYUKOEDYMD		char(8),virtual;
 };
 
 primary	{
@@ -33,5 +37,36 @@ path	all	{
 		SELECT *
 		FROM tbl_labor_sio
       		;
+	};
+};
+
+path	key2	{
+	DBSELECT	{
+		DECLARE tbl_labor_sio_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_labor_sio
+			WHERE	SYOCD        =  :SYOCD
+			ORDER	BY	YUKOSTYMD
+		;
+	};
+};
+
+path	upd1	{
+	DBUPDATE		{
+		UPDATE	tbl_labor_sio
+				SET
+				SYOCD          = :SYOCD,
+				YUKOSTYMD      = :YUKOSTYMD,
+				YUKOEDYMD      = :YUKOEDYMD,
+				NAME           = :NAME,
+				TERMID         = :TERMID,
+				OPID           = :OPID,
+				CREYMD         = :CREYMD,
+				UPYMD          = :UPYMD,
+				UPHMS          = :UPHMS
+			WHERE 	SYOCD          = :UPSYOCD
+			AND	YUKOSTYMD      = :UPYUKOSTYMD
+			AND	YUKOEDYMD      = :UPYUKOEDYMD
+		;
 	};
 };

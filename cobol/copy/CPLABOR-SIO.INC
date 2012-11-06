@@ -43,3 +43,8 @@
            03  LABOR-SIO-UPYMD              PIC  X(08).
       *更新時間
            03  LABOR-SIO-UPHMS              PIC  X(06).
+      *更新用
+           03  LABOR-SIO-UP-KEY.
+               05  LABOR-SIO-UPSYOCD      PIC  X(05).
+               05  LABOR-SIO-UPYUKOSTYMD  PIC  X(08).
+               05  LABOR-SIO-UPYUKOEDYMD  PIC  X(08).
