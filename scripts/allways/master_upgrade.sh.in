@@ -1,53 +1,47 @@
 #!/bin/bash
 
-if test -z "$JMARECEIPT_ENV"; then
-    JMARECEIPT_ENV="@jma-receipt-env@"
-fi
-if ! test -f "$JMARECEIPT_ENV"; then
-    exit 0
+JMARECEIPT_ENV="@jma-receipt-env@"
+if [ ! -f ${JMARECEIPT_ENV} ]; then
+    echo "${JMARECEIPT_ENV} does not found."
+    exit 1
 fi
 . $JMARECEIPT_ENV
 
 #------------------------------------
-# $1 : °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ(HOSPNUM)
-# $2 : ¥¹¡¼¥Ñ¡¼¥Ð¥¤¥¶¡¼
-# $3 : °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ(HOSPID)
-# $4 : É¸½à¥Þ¥¹¥¿¥¨¥é¡¼¥Õ¥¡¥¤¥ëÌ¾
-# $5 : É¸½à¥Þ¥¹¥¿¥¸¥ç¥Ö£É£Ä
-# $6 : É¸½à¥Þ¥¹¥¿¥·¥§¥ë£É£Ä
-# $7 : ¥é¥¤¥»¥ó¥¹¥Þ¥¹¥¿¥¨¥é¡¼¥Õ¥¡¥¤¥ëÌ¾
-# $8 : ¥é¥¤¥»¥ó¥¹¥Þ¥¹¥¿¥¸¥ç¥Ö£É£Ä
-# $9 : ¥é¥¤¥»¥ó¥¹¥Þ¥¹¥¿¥·¥§¥ë£É£Ä
+# $1 : åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·(HOSPNUM)
+# $2 : ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒã‚¤ã‚¶ãƒ¼
+# $3 : åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·(HOSPID)
+# $4 : æ¨™æº–ãƒžã‚¹ã‚¿ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«å
+# $5 : æ¨™æº–ãƒžã‚¹ã‚¿ã‚¸ãƒ§ãƒ–ï¼©ï¼¤
+# $6 : æ¨™æº–ãƒžã‚¹ã‚¿ã‚·ã‚§ãƒ«ï¼©ï¼¤
+# $7 : ãƒ©ã‚¤ã‚»ãƒ³ã‚¹ãƒžã‚¹ã‚¿ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«å
+# $8 : ãƒ©ã‚¤ã‚»ãƒ³ã‚¹ãƒžã‚¹ã‚¿ã‚¸ãƒ§ãƒ–ï¼©ï¼¤
+# $9 : ãƒ©ã‚¤ã‚»ãƒ³ã‚¹ãƒžã‚¹ã‚¿ã‚·ã‚§ãƒ«ï¼©ï¼¤
 #------------------------------------
 HOSPNUM=$1
-LOGDIR=/var/log/jma-receipt
 TMPLOG=/tmp/${HOSPNUM}master-upgrade-log.$$
 STARTNAME="${HOSPNUM}master-upgrade.log.gz.0"
 
 MNTRET=0
 MLIRET=0
 
-
-#[ -d ${LOGDIR} ]         || mkdir -p ${LOGDIR}
-
-
 if [ -f ${LOGDIR}/${STARTNAME} ];  then
-	if [ $(stat -c "%s" ${LOGDIR}/${STARTNAME}) -ge 1048576 ] ; then
-		for NUM in `seq 3 -1 1`
-		do
-		  NEWNAME="${STARTNAME%.*}.${NUM}"
-		  NUM=`expr ${NUM} - 1`
-		  OLDNAME="${STARTNAME%.*}.${NUM}"
-		  mv ${LOGDIR}/${OLDNAME} ${LOGDIR}/${NEWNAME} 2>/dev/null
-		done
-	fi
+    if [ $(stat -c "%s" ${LOGDIR}/${STARTNAME}) -ge 1048576 ] ; then
+	for NUM in `seq 3 -1 1`
+	do
+	  NEWNAME="${STARTNAME%.*}.${NUM}"
+	  NUM=`expr ${NUM} - 1`
+	  OLDNAME="${STARTNAME%.*}.${NUM}"
+	  mv ${LOGDIR}/${OLDNAME} ${LOGDIR}/${NEWNAME} 2>/dev/null
+	done
+    fi
 fi
 
-#É¸½à¥Þ¥¹¥¿¹¹¿·
+#æ¨™æº–ãƒžã‚¹ã‚¿æ›´æ–°
 master_standard_upgrade.sh $1 $2 $4 $5 $6 2>&1 | tee ${TMPLOG}
 MNTRET=$?
 if [ ${MNTRET} -ne 1 ]; then
-    #¥é¥¤¥»¥ó¥¹¥Þ¥¹¥¿¹¹¿·
+    #ãƒ©ã‚¤ã‚»ãƒ³ã‚¹ãƒžã‚¹ã‚¿æ›´æ–°
     sleep 1
     master_license_upgrade.sh $1 $2 $3 $7 $8 $9 2>&1 | tee -a ${TMPLOG}
     MLIRET=$?

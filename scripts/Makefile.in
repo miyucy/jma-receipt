@@ -12,7 +12,6 @@ noinst_shell_sources = \
 utf8_shell_sources = \
 	allways/site-upgrade.sh.in \
 	allways/ORCBQ01.sh.in \
-	allways/master_upgrade.sh.in \
 	allways/orcbsd01.sh.in \
 	allways/orcbse01.sh.in \
 	allways/orcbsf01.sh.in \
@@ -63,7 +62,6 @@ utf8_shell_sources = \
 	monthly/toukei1.sh.in \
 	monthly/receden_sokatu.sh.in \
 	monthly/collectdata1.sh.in \
-	monthly/das-upload.sh.in \
 	claim/HL01.sh.in \
 	claim/HL02.sh.in \
 	claim/HL03.sh.in \
@@ -83,17 +81,13 @@ utf8_shell_sources = \
 	allways/chkmst2.sh.in \
 	tools/db-backup.sh.in \
 	monthly/receipt_export.sh.in \
-	allways/das-check.sh.in \
 	allways/orc_cups_del.sh.in \
-	allways/das-profile.sh.in \
-	daily/das-infection.sh.in \
 	daily/infectiondata1.sh.in \
 	allways/plugin.sh.in \
 	execshell.sh.in \
 	allways/ORCBQ03.sh.in \
 	monthly/dtck_prv.sh.in \
 	daily/infectiondata2.sh.in \
-	daily/das-infection2.sh.in \
 	daily/infectionagree.sh.in \
 	allways/orcbs02.sh.in \
 	tools/orcred2conv.sh.in \
@@ -107,6 +101,12 @@ shell_sources = \
 	allways/master_get.sh.in \
 	allways/siori_pull.sh.in \
 	allways/medphoto_copy.sh.in \
+	allways/master_upgrade.sh.in \
+	allways/das-check.sh.in \
+	allways/das-profile.sh.in \
+	monthly/das-upload.sh.in \
+	daily/das-infection.sh.in \
+	daily/das-infection2.sh.in \
 
 ruby_scripts = \
 	daily/print-data.rb \
