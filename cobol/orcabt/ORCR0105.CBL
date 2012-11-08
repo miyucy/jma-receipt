@@ -147,6 +147,7 @@
       *  04.05.35    NACL-ÌçÏÆ    12/09/19  ÊÝ¸±Íó¡Ý°ìÉôÉéÃ´¶âÍó¶â³ÛÃÖ´¹ÂÐ±þ
       *  04.05.36    NACL-ÌçÏÆ    12/10/22  À¸ÊÝ¤Þ¤È¤áÊ¬ÅÀÍóÅÀ¿ô½¸·×½¤Àµ
       *  04.05.37    NACL-Æ£¸¶    12/11/05  Å¦Í×Íó¤Î¸øÈñ¾ðÊó¤Îµ­ºÜÊýË¡½¤Àµ
+      *  04.05.38    NACL-ÌçÏÆ    12/11/08  ¸øÈñÍó¡Ý°ìÉôÉéÃ´¶âÍó¶â³ÛÃÖ´¹ÂÐ±þ
       *
       *  04.06.01    NACL-Æ£¸¶    10/06/23  ¥ì¥»ÅÅÀÁµá»þ¤Î¼õÉÕ¥¨¥é¡¼Ê¬¤Î
       *                                     ¼ïÊÌÉÔÌÀ¥ì¥»ÂÐ±þ
@@ -9271,18 +9272,21 @@
              IF    RECE02-YOBIETC(14)  NOT =  123456789
                  MOVE   "1"        TO  RECE10-RESERVE-AREA(6:1)
              END-IF
-      *@@    IF    RECE02-YOBIETC(15)  NOT =  123456789
-      *@@        MOVE   "1"        TO  RECE10-RESERVE-AREA(7:1)
-      *@@    END-IF
-      *@@    IF    RECE02-YOBIETC(16)  NOT =  123456789
-      *@@        MOVE   "1"        TO  RECE10-RESERVE-AREA(8:1)
-      *@@    END-IF
-      *@@    IF    RECE02-YOBIETC(17)  NOT =  123456789
-      *@@        MOVE   "1"        TO  RECE10-RESERVE-AREA(9:1)
-      *@@    END-IF
-      *@@    IF    RECE02-YOBIETC(18)  NOT =  123456789
-      *@@        MOVE   "1"        TO  RECE10-RESERVE-AREA(10:1)
-      *@@    END-IF
+           END-IF
+      *
+           IF      RECE02-YOBIETC(19)  =  1
+             IF    RECE02-YOBIETC(15)  NOT =  123456789
+                 MOVE   "1"        TO  RECE10-RESERVE-AREA(7:1)
+             END-IF
+             IF    RECE02-YOBIETC(16)  NOT =  123456789
+                 MOVE   "1"        TO  RECE10-RESERVE-AREA(8:1)
+             END-IF
+             IF    RECE02-YOBIETC(17)  NOT =  123456789
+                 MOVE   "1"        TO  RECE10-RESERVE-AREA(9:1)
+             END-IF
+             IF    RECE02-YOBIETC(18)  NOT =  123456789
+                 MOVE   "1"        TO  RECE10-RESERVE-AREA(10:1)
+             END-IF
            END-IF
       *
            IF      RECE02-SRYYM    >=  "201004"
