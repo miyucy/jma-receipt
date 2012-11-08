@@ -214,7 +214,7 @@
                                        TBYOMEI-AREA
                                        TGRP-AREA
       *
-           IF    ( SDTCHK01-CHKKBN     =   "1" )
+           IF    ( SDTCHK01-CHKKBN     =   "1" OR "2" )
             AND  ( SDTCHK01-GRPCHKKBN  =   "1" )
                PERFORM 1001-GRP-INIT-SEC
            END-IF
