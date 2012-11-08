@@ -3284,7 +3284,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        WRK-PTBYOMEI-SRYKA-REC
                                        WRK-PTBYOMEI-DOUKI-REC
                                        WRK-UTAGAIFLG-KETASU
-                                       PTBYOMEI-CNT
+      ********                         PTBYOMEI-CNT
       *
       *    「の疑い」を検索
            PERFORM VARYING IDY FROM    1  BY  2
@@ -3371,13 +3371,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            PERFORM             UNTIL   FLG-PTBYOMEI        =   1
       *
-               IF      FLG-BYOMEI-DELETE   =   1
-                   IF      WRK-NYUGAIKBN       =   WRK-PTBYO-NYUGAIKBN
-                       ADD     1                   TO  PTBYOMEI-CNT
-                   END-IF
-               ELSE
-                   ADD     1                   TO  PTBYOMEI-CNT
-               END-IF
+      ********IF      FLG-BYOMEI-DELETE   =   1
+      ********     IF      WRK-NYUGAIKBN       =   WRK-PTBYO-NYUGAIKBN
+      ********         ADD     1                   TO  PTBYOMEI-CNT
+      ********     END-IF
+      ******** ELSE
+      ********     ADD     1                   TO  PTBYOMEI-CNT
+      ******** END-IF
       *
       *        最小診療科の病名情報を取得
                IF      WRK-PTBYO-SRYKA     =   SPACE
@@ -3390,13 +3390,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
       *        同一診療科の病名情報を取得
                IF      PTBYO-SRYKA         =   WRK-SRYKA
-                   IF      FLG-BYOMEI-DELETE   =   1
-                       IF      WRK-NYUGAIKBN   =   WRK-PTBYO-NYUGAIKBN
-                           ADD     1           TO  PTBYOMEI-SRYKA-CNT
-                       END-IF
-                   ELSE
-                       ADD     1               TO  PTBYOMEI-SRYKA-CNT
-                   END-IF
+      ********     IF      FLG-BYOMEI-DELETE   =   1
+      ********         IF      WRK-NYUGAIKBN   =   WRK-PTBYO-NYUGAIKBN
+      ********             ADD     1           TO  PTBYOMEI-SRYKA-CNT
+      ********         END-IF
+      ********     ELSE
+      ********         ADD     1               TO  PTBYOMEI-SRYKA-CNT
+      ********     END-IF
       *
                    IF      FLG-PTBYOMEI-UMU    >   2
                        CONTINUE
@@ -3431,10 +3431,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        同一開始日・病名で存在しないとき
                PERFORM 2006123-KOUSIN-01-SEC
            ELSE
-             IF      PTBYOMEI-CNT        =   1
-               MOVE    WRK-PTBYOMEI-REC  TO  PTBYOMEI-REC
-               PERFORM 2006124-KOUSIN-02-SEC
-               GO  TO  200612-BYOMEI-HEN-EXT
+      *******IF      PTBYOMEI-CNT        =   1
+      *******  MOVE    WRK-PTBYOMEI-REC  TO  PTBYOMEI-REC
+      *******  PERFORM 2006124-KOUSIN-02-SEC
+      *******  GO  TO  200612-BYOMEI-HEN-EXT
       *
                IF    ( SYS-9000-BYOMEI-SYU-FLG
                                             =   SPACE )
@@ -3471,7 +3471,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                END-IF
-             END-IF
+      *******END-IF
            END-IF
            .
        200612-BYOMEI-HEN-EXT.
@@ -3573,7 +3573,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-UTAGAIFLG   TO  PTBYO-UTAGAIFLG
            MOVE    WRK-SYUBYOFLG   TO  PTBYO-SYUBYOFLG
       *    入外区分
-           MOVE    WRK-NYUGAIKBN   TO  PTBYO-NYUGAIKBN
+      *****MOVE    WRK-NYUGAIKBN   TO  PTBYO-NYUGAIKBN
       *
       *    疾患コードがエラー又は未コード化傷病名コード以外のとき
            IF      FLG-BYOMEI-CHK      NOT =   1   AND 5
@@ -3791,7 +3791,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-SYUBYOFLG       TO  PTBYO-SYUBYOFLG
       *
       *    入外区分
-           MOVE    WRK-NYUGAIKBN       TO  PTBYO-NYUGAIKBN
+      *****MOVE    WRK-NYUGAIKBN       TO  PTBYO-NYUGAIKBN
       *
       *    疑いフラグ
            EVALUATE    PTBYO-UTAGAIFLG ALSO    WRK-UTAGAIFLG
