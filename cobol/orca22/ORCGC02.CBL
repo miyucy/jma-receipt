@@ -5127,44 +5127,47 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                GO  TO  4102-BYOMEICD-CHK-EXT
            END-IF     
       *
-      *    病名欄入力後、病名コード置換え後にコード入力した時の処理
-           IF    ( SPA-NAI-C02-BYOMEICD (1)
+           IF      C02-BYOMEICD (IDZ)  =   SPACE
+               CONTINUE
+           ELSE
+      *      病名欄入力後、病名コード置換え後にコード入力した時の処理
+             IF    ( SPA-NAI-C02-BYOMEICD (1)
                                NOT =   SPA-GMN-C02-BYOMEICD (1) )
-           OR    ( SPA-NAI-C02-BYOMEICD (2)
+             OR    ( SPA-NAI-C02-BYOMEICD (2)
                                NOT =   SPA-GMN-C02-BYOMEICD (2) )
-           OR    ( SPA-NAI-C02-BYOMEICD (3)
+             OR    ( SPA-NAI-C02-BYOMEICD (3)
                                NOT =   SPA-GMN-C02-BYOMEICD (3) )
-           OR    ( SPA-NAI-C02-BYOMEICD (4)
+             OR    ( SPA-NAI-C02-BYOMEICD (4)
                                NOT =   SPA-GMN-C02-BYOMEICD (4) )
-           OR    ( SPA-NAI-C02-BYOMEICD (5)
+             OR    ( SPA-NAI-C02-BYOMEICD (5)
                                NOT =   SPA-GMN-C02-BYOMEICD (5) )
-           OR    ( SPA-NAI-C02-BYOMEICD (6)
+             OR    ( SPA-NAI-C02-BYOMEICD (6)
                                NOT =   SPA-GMN-C02-BYOMEICD (6) )
-           OR    ( SPA-NAI-C02-BYOMEICD (7)
+             OR    ( SPA-NAI-C02-BYOMEICD (7)
                                NOT =   SPACE                    )
-           OR    ( SPA-NAI-C02-BYOMEICD (1)
+             OR    ( SPA-NAI-C02-BYOMEICD (1)
                                NOT =   SPACE               AND
-                   SPA-NAI-C02-BYOMEICD-O (1 1)
+                     SPA-NAI-C02-BYOMEICD-O (1 1)
                                    =   SPACE                    )
-           OR    ( SPA-NAI-C02-BYOMEICD (2)
+             OR    ( SPA-NAI-C02-BYOMEICD (2)
                                NOT =   SPACE               AND
-                   SPA-NAI-C02-BYOMEICD-O (2 1)
+                     SPA-NAI-C02-BYOMEICD-O (2 1)
                                    =   SPACE                    )
-           OR    ( SPA-NAI-C02-BYOMEICD (3)
+             OR    ( SPA-NAI-C02-BYOMEICD (3)
                                NOT =   SPACE               AND
-                  SPA-NAI-C02-BYOMEICD-O (3 1)
+                    SPA-NAI-C02-BYOMEICD-O (3 1)
                                    =   SPACE                    )
-           OR    ( SPA-NAI-C02-BYOMEICD (4)
+             OR    ( SPA-NAI-C02-BYOMEICD (4)
                                NOT =   SPACE               AND
-                   SPA-NAI-C02-BYOMEICD-O (4 1)
+                     SPA-NAI-C02-BYOMEICD-O (4 1)
                                    =   SPACE                    )
-           OR    ( SPA-NAI-C02-BYOMEICD (5)
+             OR    ( SPA-NAI-C02-BYOMEICD (5)
                                NOT =   SPACE               AND
-                   SPA-NAI-C02-BYOMEICD-O (5 1)
+                     SPA-NAI-C02-BYOMEICD-O (5 1)
                                    =   SPACE                    )
-           OR    ( SPA-NAI-C02-BYOMEICD (6)
+             OR    ( SPA-NAI-C02-BYOMEICD (6)
                                NOT =   SPACE               AND
-                   SPA-NAI-C02-BYOMEICD-O (6 1)
+                     SPA-NAI-C02-BYOMEICD-O (6 1)
                                    =   SPACE                    )
                INITIALIZE                    SPA-NAI-C02-BYOMEI-TBL
                PERFORM VARYING IDZ FROM    1   BY  1
@@ -5209,7 +5212,8 @@ grpsys                         MOVE    SPA-HOSPNUM
                    END-IF 
                END-PERFORM
                MOVE    WRK-WIDGET2     TO  IDZ
-           END-IF 
+             END-IF
+           END-IF
       *
       *    コードの挿入・削除の制御文字取得
            IF      C02-BYOMEICD (IDZ)  NOT =   SPACE
@@ -10751,7 +10755,6 @@ grpsys                                          SPA-AREA
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                    TO  FLG-END              
-           .
            .
        490-USERBYOMEI-KENSAKU-EXT.
            EXIT.
