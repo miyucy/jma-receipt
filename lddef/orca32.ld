@@ -10,6 +10,7 @@ bind	"I44"		"OpenCOBOL"	"ORCGI44";
 bind	"I47"		"OpenCOBOL"	"ORCGI47";
 bind	"I48"		"OpenCOBOL"	"ORCGI48";
 bind	"I49"		"OpenCOBOL"	"ORCGI49";
+bind	"I411"		"OpenCOBOL"	"ORCGI411";
 bind	"I4ERR"		"OpenCOBOL"	"ORCGI4ERR";
 bind	"I4ID1"		"OpenCOBOL"	"ORCGI4ID1";
 
@@ -24,6 +25,7 @@ data 	{
 		I47;
 		I48;
 		I49;
+		I411;
 		I4ERR;
 		I4ID1;
 	};

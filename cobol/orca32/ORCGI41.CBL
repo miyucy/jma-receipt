@@ -99,6 +99,7 @@
       *  04.03.00    NACL-小豆沢  08/08/11  特定入院料コード取得をサブプロに変更
       *  04.05.00    NACL-多々納  09/07/21  入院料削除の入院加算対応
       *  04.06.00    NACL-多々納  10/09/17  一括修正入力変更対応
+      *  04.07.00    NACL-多々納  12/11/09  プレビュー追加対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -173,6 +174,10 @@
            03  FLG-SKJ-ASA         PIC 9(01).
            03  FLG-SKJ-HIRU        PIC 9(01).
            03  FLG-SKJ-YUU         PIC 9(01).
+      *    プレビュー用
+           03  FLG-HKN-OK          PIC 9(01).
+           03  FLG-KOGHKN-OK       PIC 9(01).
+           03  FLG-RSIHKN-OK       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -410,6 +415,12 @@
                05  WRK-Z6              PIC ZZZZZZ.
            03  WRK-BRMNUM-9            PIC 9(06).
       *
+      *    プレビュー用
+           03  WRK-HKNCOMBI-CHK        PIC X(04).
+           03  WRK-RSI-CNT             PIC 9(03).
+           03  WRK-JIB-CNT             PIC 9(03).
+           03  WRK-KOG-CNT             PIC 9(03).
+      *
       *    回数一括変更用
        01  WRK-DAY-AREA.
            03  WRK-DAY-TBL.
@@ -537,6 +548,8 @@
            COPY    "CPSK5002.INC".
       *
            COPY    "CPSK5113.INC".
+      *ver.4.7
+           COPY    "CPSK1043.INC".
       *
       *    点数マスタ−
            COPY    "CPTENSU.INC".
@@ -674,8 +687,14 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      ***  COPY    "CPORCMCP.INC".
-      ***  COPY    "ORCA-DBPATH".
+      *
+      *    プレビュー用情報
+           COPY    "CPXC01LNK.INC".
+      *
+       01  WRK-PREV-AREA.
+           03  WRK-CONS-PRTKANRI-TBL-KEY
+                                   PIC X(08)   VALUE   "RECEPTX".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -694,6 +713,7 @@
            COPY    "I47.INC".
            COPY    "I48.INC".
            COPY    "I49.INC".
+           COPY    "I411.INC".
            COPY    "I4ERR.INC".
            COPY    "I4ID1.INC".
       *
@@ -804,6 +824,7 @@
                IF      WRK-MOTOPG(1:3)     =   "Y01"  OR  "U01"
                                                       OR  "P97"
                                                       OR  "C50"
+                                                      OR  "XC01"
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-I41
                    MOVE    SPA-WORK        TO  SPA-I4KYOUTU
@@ -814,6 +835,10 @@
                END-IF
       *        コメントの時、そのまま画面表示へ
                IF      WRK-MOTOPG(1:3)     =   "C50"
+                   GO      TO      300-SCREEN-EXT
+               END-IF
+      *        プレビューから
+               IF      WRK-MOTOPG          =   "XC01"
                    GO      TO      300-SCREEN-EXT
                END-IF
       *        外部より選択がある時
@@ -842,6 +867,13 @@
                        IF      SPA-IIDCD       NOT =   SPACE
                            PERFORM 520-JIDSET-SEC
                        END-IF
+                   END-IF
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "I411"
+      *            プレビュー保険一覧より
+                   IF      SPA-I411-SELNUM     NOT =   SPACE
+      *                プレビュー処理
+                       PERFORM 4130-PREVIEW-SEC
                    END-IF
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
@@ -3498,6 +3530,10 @@
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOROKU-SEC
+      *ver.4.7
+      *    プレビュー
+               WHEN    "CLICKED"       ALSO    "B01S"
+                   PERFORM 4010-PREVIEW-SYORI-SEC
            END-EVALUATE.
       *
        200-GMNSENI-EXT.
@@ -10568,6 +10604,319 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        49011-ZAIKAISU-UPD-EXT.
            EXIT.
       *
+      *ver.4.7
+      *****************************************************************
+      *    プレビュー処理
+      *****************************************************************
+       4010-PREVIEW-SYORI-SEC          SECTION.
+      *
+      *    剤修正のチェック
+           IF      SPA-NAI-NUM-41  NOT =   ZERO
+               MOVE    "0009"          TO  SPA-ERRCD
+               GO      TO      4010-PREVIEW-SYORI-EXT
+           END-IF
+           IF      SPA-GMN-PTNUM       =   SPACE
+               MOVE    "0019"          TO  SPA-ERRCD
+               GO      TO      4010-PREVIEW-SYORI-EXT
+           END-IF
+      *
+           IF      SPA-UPDFLG-41       =   "1"
+               PERFORM 4901-NYUINACCT-UPD-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE)   OR
+                      (SPA-IIDCD       NOT =   SPACE)
+                   GO      TO      4010-PREVIEW-SYORI-EXT
+               END-IF
+           END-IF
+      *
+           MOVE    SPACE               TO  SPA-XC01-HKNKBN
+           MOVE    SPACE               TO  SPA-XC01-RSI-HKNKBN
+           MOVE    SPACE               TO  SPA-XC01-CHK
+           MOVE    SPACE               TO  WRK-HKNCOMBI-CHK
+           MOVE    ZERO                TO  FLG-HKN-OK
+           MOVE    ZERO                TO  FLG-RSIHKN-OK
+           MOVE    ZERO                TO  FLG-KOGHKN-OK
+           MOVE    ZERO                TO  WRK-RSI-CNT
+           MOVE    ZERO                TO  WRK-JIB-CNT
+           MOVE    ZERO                TO  WRK-KOG-CNT
+      *
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX     >   SPA-NAI-MAX-41
+               IF      SPA-NAI-TZAISKBKBN-41 (IDX) =   "5"
+      *            保険判定
+                   PERFORM VARYING IDK     FROM    1   BY  1
+                           UNTIL   IDK     >   SPA-NAI-SRYMATU
+                       IF      SPA-NAI-DAY-41 (IDX IDK)    NOT =   ZERO
+                           MOVE    ZERO        TO  WRK-HKNCOMBINUM
+                           MOVE    SPA-NAI-DAY-41 (IDX IDK)
+                                               TO  WRK-HKNCOMBINUM(2:3)
+                           IF      WRK-HKNCOMBINUM
+                                               NOT =   WRK-HKNCOMBI-CHK
+                               PERFORM 40102-PRV-HKNCOMBI-CHK-SEC
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+      *
+           IF     (WRK-HKNCOMBI-CHK    =   SPACE )
+      *        保険組合せの剤なし
+               MOVE    "0071"          TO  SPA-ERRCD
+           ELSE
+      *        プレビュー対象の全保険内容チェック処理
+               PERFORM 40102-PREVIEW-HKNCHK-SEC
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE )
+               IF      SPA-XC01-CHK        =   "1"
+      *            プレビュー保険選択画面へ
+                   PERFORM 40104-I411-SYORI-SEC
+               ELSE
+      *            プレビュー処理
+                   PERFORM 4130-PREVIEW-SEC
+               END-IF
+           END-IF
+           .
+       4010-PREVIEW-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    プレビュー対象の全保険内容チェック処理
+      *****************************************************************
+       40102-PRV-HKNCOMBI-CHK-SEC          SECTION.
+      *
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL       IDH     >   SPA-HKNCOMBI-MAX
+               IF      SPA-I41-THKNCOMBI (IDH) =   WRK-HKNCOMBINUM
+      *            保険判定
+                   EVALUATE    SPA-I41-HKNNUM (IDH)
+                       WHEN    "971"
+      *                労災
+                       WHEN    "973"
+      *                自賠責
+                           IF      SPA-I41-HKNNUM (IDH)    =   "971"
+                               ADD     1               TO  WRK-RSI-CNT
+                           ELSE
+                               ADD     1               TO  WRK-JIB-CNT
+                           END-IF
+                           IF      FLG-RSIHKN-OK       =   ZERO
+                               MOVE    SPA-I41-RSI-HKNKBN (IDH)
+                                                   TO  FLG-RSIHKN-OK
+                           END-IF
+                       WHEN    "975"
+      *                公害
+                           ADD     1               TO  WRK-KOG-CNT
+                           MOVE    1               TO  FLG-KOGHKN-OK
+                       WHEN    OTHER
+                           MOVE    1               TO  FLG-HKN-OK
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+           MOVE    WRK-HKNCOMBINUM     TO  WRK-HKNCOMBI-CHK
+           .
+       40102-PRV-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    プレビュー対象の全保険内容チェック処理
+      *****************************************************************
+       40102-PREVIEW-HKNCHK-SEC         SECTION.
+      *
+      *    健保のみ
+           IF    ( FLG-HKN-OK      NOT =   ZERO  )
+            AND  ( WRK-RSI-CNT         =   ZERO  )
+            AND  ( WRK-JIB-CNT         =   ZERO  )
+            AND  ( WRK-KOG-CNT         =   ZERO  )
+               MOVE    "0"                 TO  SPA-XC01-HKNKBN
+               MOVE    SPACE               TO  SPA-XC01-RSI-HKNKBN
+           END-IF
+      *    労災のみ
+           IF    ( FLG-HKN-OK          =   ZERO  )
+            AND  ( WRK-RSI-CNT         >   ZERO  )
+            AND  ( WRK-JIB-CNT         =   ZERO  )
+            AND  ( WRK-KOG-CNT         =   ZERO  )
+               MOVE    "1"                 TO  SPA-XC01-HKNKBN
+               MOVE    FLG-RSIHKN-OK       TO  SPA-XC01-RSI-HKNKBN
+           END-IF
+      *    自賠責のみ
+           IF    ( FLG-HKN-OK          =   ZERO  )
+            AND  ( WRK-RSI-CNT         =   ZERO  )
+            AND  ( WRK-JIB-CNT         >   ZERO  )
+            AND  ( WRK-KOG-CNT         =   ZERO  )
+               MOVE    "2"                 TO  SPA-XC01-HKNKBN
+               MOVE    FLG-RSIHKN-OK       TO  SPA-XC01-RSI-HKNKBN
+           END-IF
+      *    公害のみ
+           IF    ( FLG-HKN-OK          =   ZERO  )
+            AND  ( WRK-RSI-CNT         =   ZERO  )
+            AND  ( WRK-JIB-CNT         =   ZERO  )
+            AND  ( WRK-KOG-CNT         >   ZERO  )
+               MOVE    "3"             TO  SPA-XC01-HKNKBN
+               MOVE    SPACE           TO  SPA-XC01-RSI-HKNKBN
+           END-IF
+      *
+           IF      SPA-XC01-HKNKBN     =   SPACE
+               IF     (WRK-RSI-CNT         >   ZERO )
+                  OR  (WRK-JIB-CNT         >   ZERO )
+                  OR  (WRK-KOG-CNT         >   ZERO )
+                   MOVE    "1"             TO  SPA-XC01-CHK
+               END-IF
+           END-IF
+           .
+       40102-ALL-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    プレビュー処理
+      *****************************************************************
+       4130-PREVIEW-SEC          SECTION.
+      *
+           PERFORM 41301-PREVIEW-KICK-SEC
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-I4KYOUTU        TO  SPA-WORK
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-I41             TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "I41"               TO  SPA-MOTOPG
+           MOVE    "I41"               TO  SPA-MOTOPG3
+           MOVE    "XC01"              TO  SPA-SAKIPG
+      *
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  SPA-PRTKANRI-TBL-KEY
+           MOVE    SPA-GMN-PTID        TO  LNK-XC01-TBL-GROUP
+           MOVE    0                   TO  LNK-XC01-SHORI-RENNUM
+           MOVE    1                   TO  LNK-XC01-RENNUM
+           MOVE    1                   TO  LNK-XC01-ST-PAGE
+           MOVE    99999               TO  LNK-XC01-ED-PAGE
+           MOVE    "1"                 TO  LNK-XC01-MODE
+           MOVE    SPA-XC01-HKNKBN     TO  LNK-XC01-HKNKBN
+           MOVE    LNK-XC01-AREA       TO  SPA-WORK
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           MOVE   "XC01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       4130-PREVIEW-EXT.
+           EXIT.
+      *****************************************************************
+      *    プレビューバッチ起動処理
+      *****************************************************************
+       41301-PREVIEW-KICK-SEC    SECTION.
+      *
+      *    自賠責
+           IF     SPA-XC01-RSI-HKNKBN  =   "4"
+               MOVE    "2"                 TO  SPA-XC01-HKNKBN
+           END-IF
+      *
+      *    レセプトプレビュー区分
+           PERFORM 413011-RESPRVFLG-HEN-SEC
+      *
+           MOVE    SPACE               TO  SPA-XC01-CHK
+           CALL    "ORCSRECEARGMK"     USING
+                                       "0"
+                                       SPA-GMN-PTID
+                                       SPA-NAI-SRYYM
+                                       SPA-NYUGAIKBN
+                                       SPA-XC01-HKNKBN
+                                       SPA-XC01-RSI-HKNKBN
+                                       SPA-XC01-RESPRVFLG
+                                       SPA-AREA
+      *
+           .
+       41301-PREVIEW-KICK-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセプトプレビュー区分編集処理
+      *****************************************************************
+       413011-RESPRVFLG-HEN-SEC                  SECTION.
+      *
+      *    レセプトプレビュー
+           MOVE    "1"                 TO  SPA-XC01-RESPRVFLG
+      *    会計照会情報より編集とする
+           MOVE    SPACE               TO  SYS-1043-REC
+           MOVE    "1043"              TO  SYS-1043-KANRICD
+           MOVE    "*"                 TO  SYS-1043-KBNCD
+           MOVE    SPA-NAI-SRYYM       TO  SYS-1043-STYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-1043-STYUKYMD(7:2)
+           MOVE    SYS-1043-STYUKYMD   TO  SYS-1043-EDYUKYMD
+      *    システム管理検索
+           MOVE    SPA-HOSPNUM         TO  SYS-1043-HOSPNUM
+           MOVE    SYS-1043-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1043-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1043-REC
+      *        レセプトプレビュー
+               IF      SYS-1043-RESPRVFLG  =   "1"  OR  "2"
+                   MOVE    SYS-1043-RESPRVFLG  TO  SPA-XC01-RESPRVFLG
+               ELSE
+                   MOVE    "1"                 TO  SPA-XC01-RESPRVFLG
+               END-IF
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       413011-RESPRVFLG-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プレビュー保険選択画面へ
+      *****************************************************************
+       40104-I411-SYORI-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-I4KYOUTU        TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-I41             TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGI411"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-I41
+           MOVE    SPA-WORK            TO  SPA-I4KYOUTU
+      *
+      *    画面カーソルセット処理
+           MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+           MOVE    SPA-I4KYOUTU        TO  SPA-WORK
+      *
+           MOVE    "I411"              TO  SPA-SAKIPG
+           MOVE    "I41"               TO  SPA-MOTOPG
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "I411"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       40104-I411-SYORI-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    自画面編集処理
       *****************************************************************
@@ -10871,6 +11220,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG(1:42)
                    MOVE    "です。"
                                        TO  WRK-ERRMSG(43:6)
+      *ver.4.7
+               WHEN    "0071"
+                   STRING  "プレビューできる入院登録がありません。"
+                           "プレビューはできません。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-ERRMSG
+                   END-STRING
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません。"
                                        TO  WRK-ERRMSG

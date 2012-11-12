@@ -6,7 +6,8 @@ SRCS = \
 	ORCGI44.CBL \
 	ORCGI47.CBL \
 	ORCGI48.CBL \
-	ORCGI49.CBL
+	ORCGI49.CBL \
+	ORCGI411.CBL \
 
 
 top_builddir = ../..
