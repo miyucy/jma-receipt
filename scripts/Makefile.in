@@ -91,7 +91,8 @@ utf8_shell_sources = \
 	daily/infectionagree.sh.in \
 	allways/orcbs02.sh.in \
 	tools/orcred2conv.sh.in \
-	allways/orc_print_dmy.sh.in
+	allways/orc_print_dmy.sh.in \
+	allways/orcbi202.sh.in \
 
 shell_sources = \
 	allways/master_standard_upgrade.sh.in \

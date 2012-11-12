@@ -1,49 +1,54 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
           02  I21.
-              03  I21-PTNUM.
-                04  I21-VALUE   PIC X(20).
-              03  I21-KANANAME.
-                04  I21-VALUE   PIC X(50).
-              03  I21-ADRS.
-                04  I21-VALUE   PIC X(100).
-              03  I21-SRYKANAME.
-                04  I21-VALUE   PIC X(18).
-              03  I21-NAME.
-                04  I21-VALUE   PIC X(50).
-              03  I21-SEX.
-                04  I21-VALUE   PIC X(2).
-              03  I21-BIRTHDAY.
-                04  I21-VALUE   PIC X(9).
-              03  I21-JYOTAI1-STYLE   PIC X(20).
-              03  I21-JYOTAI1-VALUE   PIC X(10).
-              03  I21-JYOTAI2-STYLE   PIC X(20).
-              03  I21-JYOTAI2-VALUE   PIC X(10).
-              03  I21-JYOTAI3-STYLE   PIC X(20).
-              03  I21-JYOTAI3-VALUE   PIC X(10).
-              03  I21-AGE.
-                04  I21-VALUE   PIC S9(3).
-              03  I21-BRMNUM.
-                04  I21-VALUE   PIC X(8).
-              03  I21-BTUNUM.
-                04  I21-VALUE   PIC X(10).
-              03  I21-MSG1-STYLE   PIC X(20).
-              03  I21-MSG1-VALUE   PIC X(20).
-              03  I21-MSG2-STYLE   PIC X(20).
-              03  I21-MSG2-VALUE   PIC X(20).
-              03  I21-MSG3-STYLE   PIC X(20).
-              03  I21-MSG3-VALUE   PIC X(20).
-              03  I21-MSG4-STYLE   PIC X(20).
-              03  I21-MSG4-VALUE   PIC X(20).
-              03  I21-COMMENT-STYLE   PIC X(20).
-              03  I21-COMMENT-VALUE   PIC X(100).
-              03  I21-GAIHAKU-STYLE   PIC X(20).
-              03  I21-GAIHAKU-VALUE   PIC X(8).
+              03  I21-B04-STATE            PIC S9(9)   BINARY.
+              03  I21-B04S-STATE           PIC S9(9)   BINARY.
+              03  I21-B06-LABEL            PIC X(8).
+              03  I21-B06-STATE            PIC S9(9)   BINARY.
+              03  I21-B07-LABEL            PIC X(8).
+              03  I21-B07-STATE            PIC S9(9)   BINARY.
+              03  I21-B12-STATE            PIC S9(9)   BINARY.
+              03  I21-DURATION             PIC S9(9)   BINARY.
+              03  I21-STSRYYMD  PIC X(10).
+              03  I21-STSRYYMD-STATE       PIC S9(9)   BINARY.
+              03  I21-EDSRYYMD  PIC X(10).
+              03  I21-EDSRYYMD-STATE       PIC S9(9)   BINARY.
+              03  I21-LBLMSG01  PIC X(100).
+              03  I21-LBLMSG01-STYLE       PIC X(20).
               03  I21-SCROLLEDWINDOW1.
-                04  I21-RIREKILST.
-                  05  I21-COUNT       PIC S9(9)   BINARY.
-                  05  I21-ROW         PIC S9(9)   BINARY.
-                  05  I21-ROWATTR     PIC S9(9)   BINARY.
-                  05  I21-ITEM        OCCURS  50 TIMES.
-                    06  I21-TNYUINYMD PIC X(9).
-                    06  I21-TTAIINYMD PIC X(9).
-                    06  I21-TSRYKA    PIC X(10).
-                  05  I21-SELECT  PIC X       OCCURS  50 TIMES.
+                04  I21-BTULIST.
+                  05  I21-BTULIST-COUNT    PIC S9(9)   BINARY.
+                  05  I21-BTULIST-ROW      PIC S9(9)   BINARY.
+                  05  I21-BTULIST-ROWATTR  PIC S9(9)   BINARY.
+                  05  I21-BTULIST-ITEM     OCCURS  100 TIMES.
+                    06  I21-TBTUNUM-G.
+                        07  I21-TFIL1      PIC X(2).
+                        07  I21-TBTUNUM    PIC X(2).
+                        07  I21-TFIL2      PIC X(2).
+                    06  I21-TBTUNAME       PIC X(10).
+                    06  I21-TCNT-ST        PIC X(10).
+                    06  I21-TCNT-NYUIN     PIC X(10).
+                    06  I21-TCNT-TENNYU    PIC X(10).
+                    06  I21-TCNT-TENSTU    PIC X(10).
+                    06  I21-TCNT-TAIIN     PIC X(10).
+                    06  I21-TCNT-ED        PIC X(10).
+                    06  I21-TCNT-TOTAL     PIC X(10).
+                    06  I21-TCNT-AVG       PIC X(10).
+                  05  I21-BTULIST-SELECT   PIC X
+                                           OCCURS  100 TIMES.
+

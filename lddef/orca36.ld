@@ -22,7 +22,7 @@ data	{
 		I22;
 		I23;
 		I2ERR;
-                I2ID1;
+		I2ID1;
 	};
 };
 
@@ -40,6 +40,7 @@ db	{
 	tbl_hknnum;
 	tbl_jyurrk;
 	tbl_ptnyuinrrk;
+	tbl_ptsrh;
 };
 
 /* #include "orcadb.inc" */

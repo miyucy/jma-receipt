@@ -1,83 +1,57 @@
 I21	{
 	fixed6	{
-		PTNUM	{
-			value	varchar(20);
+		B04	{
+			state	int;
 		};
-		KANANAME	{
-			value	varchar(50);
+		B04S	{
+			state	int;
 		};
-		ADRS	{
+		B06	{
+           	label	varchar(8);
+			state	int;
+		};
+		B07	{
+           	label	varchar(8);
+			state	int;
+		};
+		B12	{
+			state	int;
+		};
+        pandatimer1     {
+			duration        int;
+        };
+		STSRYYMD	{
+			value	varchar(10);
+			state	int;
+		};
+		EDSRYYMD	{
+			value	varchar(10);
+			state	int;
+		};
+		LBLMSG01	{
 			value	varchar(100);
-		};
-		SRYKANAME	{
-			value	varchar(18);
-		};
-		NAME	{
-			value	varchar(50);
-		};
-		SEX	{
-			value	varchar(2);
-		};
-		BIRTHDAY	{
-			value	varchar(9);
-		};
-		JYOTAI1	{
-		    style   varchar(20); 
-			value	varchar(10);
-		};
-		JYOTAI2	{
-		    style   varchar(20); 
-			value	varchar(10);
-		};
-		JYOTAI3	{
-		    style   varchar(20); 
-			value	varchar(10);
-		};
-		AGE	{
-			value	number(3);
-		};
-		BRMNUM	{
-			value	varchar(8);
-		};
-		BTUNUM	{
-			value	varchar(10);
-		};
-		MSG1	{
-		    style   varchar(20); 
-			value	varchar(20);
-		};
-		MSG2	{
-		    style   varchar(20); 
-			value	varchar(20);
-		};
-		MSG3	{
-		    style   varchar(20); 
-			value	varchar(20);
-		};
-		MSG4	{
-		    style   varchar(20); 
-			value	varchar(20);
-		};
-		COMMENT	{
-		    style   varchar(20); 
-			value	varchar(100);
-		};
-		GAIHAKU	{
-		    style   varchar(20); 
-			value	varchar(8);
+			style	varchar(20);
 		};
 		scrolledwindow1	{
-			RIREKILST	{
+			BTULIST	{
 				count	int;
-				row int;
-				rowattr int;
+				row	int;
+				rowattr	int;
 				item	{
-					value0	varchar(9);
-					value1	varchar(9);
+					value0	varchar(06);
+					value1	varchar(10);
 					value2	varchar(10);
-				}	[50];
-				select	bool[50];
+					value3	varchar(10);
+					value4	varchar(10);
+					value5	varchar(10);
+					value6	varchar(10);
+					value7	varchar(10);
+					value8	varchar(10);
+					value9	varchar(10);
+				}	[100];
+				select	bool[100];
 			};
 		};
 	};
 };
+

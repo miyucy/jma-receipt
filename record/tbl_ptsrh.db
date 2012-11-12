@@ -187,3 +187,19 @@ path	key2 	{
  		;
 	};
 };
+
+path	key3 	{
+	DBSELECT	{
+		DECLARE tbl_ptsrh_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptsrh
+	        WHERE	HOSPNUM    =    :HOSPNUM
+		AND     TERMID     =    :TERMID
+		AND     DATAKBN    =    :DATAKBN
+		AND     UPYMD      =    :UPYMD
+		AND     UPHMS      =    :UPHMS
+        ORDER BY TOTALTEN
+ 		;
+	};
+};
+

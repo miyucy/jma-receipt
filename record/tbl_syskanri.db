@@ -449,3 +449,18 @@ path	key25	{
 	};
 };
 
+path	key26		{ 	
+	DBSELECT	{
+		DECLARE tbl_syskanri_key26_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD 
+			AND	KBNCD        =   :KBNCD
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+        ORDER  BY STYUKYMD DESC
+		;
+	};
+};
+

@@ -466,9 +466,6 @@
            WHEN    "I2ID1"
                    PERFORM 330-I2ID1-SET-SEC
                    GO  TO  300-SCREEN-EXT
-           WHEN    "I21"
-                   MOVE    ZERO            TO  SPA-GMN-SELNUM
-                   GO  TO  300-SCREEN-EXT
            WHEN    "I22"
                    PERFORM 3001-I22SPASET-SEC
                    GO  TO  300-SCREEN-EXT
@@ -476,7 +473,8 @@
                    PERFORM 3001-I23SPASET-SEC
                    GO  TO  300-SCREEN-EXT
       *
-      *    入院会計照会画面
+           WHEN    "I21"
+                   GO  TO  300-SCREEN-EXT
            WHEN    "I01"
       *
       *        退避しておいたＳＰＡの内容を元に戻す
@@ -952,6 +950,9 @@
       *    入退院登録画面
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 440-I01-SENI-SEC
+      *    病棟別入院患者数
+               WHEN    "CLICKED"       ALSO    "B08"
+                   PERFORM 440-I21-SENI-SEC
       *    前頁
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 440-PAGE-BACK-SEC
@@ -2191,6 +2192,45 @@
       *
            .
        440-I01-SENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    入退院登録画面へ
+      *****************************************************************
+       440-I21-SENI-SEC                SECTION.
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           MOVE    "I20"           TO  SPA-MOTOPG
+           MOVE    SPA-I2FREE      TO  SPA-FREE
+           MOVE    SPA-I2KYOUTU    TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGI21"       USING
+                                   MCPAREA
+                                   SPAAREA
+                                   LINKAREA
+                                   SCRAREA
+      *
+           MOVE    SPA-FREE        TO  SPA-I2FREE
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-I2KYOUTU
+      *
+           MOVE  "I20"             TO  SPA-MOTOPG
+           MOVE  "I21"             TO  SPA-SAKIPG
+      *
+           MOVE  "NEW"             TO  MCP-PUTTYPE
+           MOVE  "I21"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE  1                 TO  FLG-END
+      *
+           .
+       440-I21-SENI-EXT.
            EXIT.
       *************************************************************
       *    前頁処理
