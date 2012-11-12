@@ -5658,7 +5658,8 @@
            END-IF.
       *
            MOVE    "I41"               TO  SPA-MOTOPG.
-           MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG.
+      *??? MOVE    SPA-MOTOPG2         TO  SPA-SAKIPG.
+           MOVE    SPA-I40-MOTOPG      TO  SPA-SAKIPG.
            IF      SPA-I40-MOTOPG      =   "M01"
       *        業務選択へ
                MOVE   "M01"                TO  SPA-SAKIPG
@@ -10768,14 +10769,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            PERFORM 41301-PREVIEW-KICK-SEC
       *
+           MOVE    SPA-GMN-SRYKA-I-41     TO  SPA-I40-SRYKA
+           MOVE    SPA-GMN-SRYKAMEI-I-41  TO  SPA-I40-SRYKAMEI
+           MOVE    SPA-I4KYOUTU           TO  SPA-WORK
+           MOVE    SPA-AREA               TO  SPA-COMMON
+      *
+      *
            MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-I4KYOUTU        TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-I41             TO  LNK-SCRSPA
       *
       *    画面移行用のパラメタ変更
            MOVE    "I41"               TO  SPA-MOTOPG
-           MOVE    "I41"               TO  SPA-MOTOPG3
            MOVE    "XC01"              TO  SPA-SAKIPG
       *
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
@@ -10791,8 +10796,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
-           MOVE   "JOIN"               TO  MCP-PUTTYPE
-           MOVE   "XC01   "            TO  MCP-WINDOW
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    "XC01   "           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
       *
