@@ -59,6 +59,7 @@
       *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
       *  04.07.00    NACL=多々納  11/09/08  アトピー性皮膚炎と他病名対応
       *  04.07.00    NACL=多々納  11/10/XX  同日再入院対応
+      *  04.07.00    NACL=多々納  11/10/30  API検索対応
       *****************************************************************
       *
       *
@@ -613,6 +614,11 @@
                    ELSE
                        PERFORM 400-HKNCOMBI-CHKHEN-SEC
                    END-IF
+      *ver.4.7
+      *        API　患者初期情報取得
+               WHEN    "@"
+                   PERFORM 600-API-SPASET-SEC
+      *
            END-EVALUATE
       *
            .
@@ -5490,6 +5496,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4900-WKSRYACT-CLEAR-EXT.
            EXIT.
+      *ver.4.7
+      *
+      *****************************************************************
+      *    API　患者初期情報取得処理
+      *****************************************************************
+       600-API-SPASET-SEC             SECTION.
+      *
+           INITIALIZE                  SPA-K02
+      *
+      *    患者決定時編集
+           PERFORM 1101-PTINF-HENSYU-SEC
+      *    初診日、最終診察日
+           MOVE    SPACE               TO  SPA-SYOYMD 
+           MOVE    SPACE               TO  SPA-LSTYMD 
+           PERFORM 1101-HKN-SYOYMD-SET-SEC
+      *
+      *    保険組合せ名称編集
+           PERFORM 10013-HKNCOMBI-SEC
+      *
+           .
+       600-API-SPASET-EXT.
+           EXIT.
+      *ver.4.7
       *
       *****************************************************************
       *    西暦和暦編集処理

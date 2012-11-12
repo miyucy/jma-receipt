@@ -2766,6 +2766,7 @@
                MOVE    "1"                 TO  SPA-COM-KZMFLG(IDX)
                MOVE    "1"                 TO  SPA-COM-KZMFLG3(IDX)
                MOVE    "1"                 TO  SPA-COM-HKEIFLG (IDX)
+               MOVE    "1"                 TO  SPA-COM-KZMFLGNK (IDX)
            END-PERFORM
       *    内分泌負荷試験検査情報
            INITIALIZE              SPA-NAI-FUKATEN-AREA
@@ -2788,6 +2789,8 @@
                       (SPA-COM-KZMFLG2(IDX)    NOT =   SPACE )  OR
                       (SPA-COM-KZMFLG3(IDX)    NOT =   SPACE )  OR
                       (SPA-COM-NYU-KZMFLG-G(IDX)    NOT =   SPACE )
+      *ver.4.7        入院料併用警告
+                 OR   (SPA-COM-KZMFLGNK(IDX)   NOT =   SPACE )
       *            約束セット
                    IF     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "." )
       *?              OR  (SPA-GMN-INPUTCD(IDX)(1:1)   =   "S" )
@@ -2796,13 +2799,15 @@
                        MOVE    SPACE       TO  SPA-MAE-INPUTCD (IDX)
                    END-IF
                END-IF
-               MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG3(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
-               MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
+      *        警告フラグクリア
+               MOVE    SPACE           TO  SPA-COM-KZMFLGAREA (IDX)
+      ***      MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG3(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
+      ******   MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-NYU-KZMFLG-G(IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1(IDX)
@@ -4579,6 +4584,9 @@
                        MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
                    WHEN    "K122" 
                        MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
+      *            入院料併用チェック
+                   WHEN    "K910"
+                       MOVE    SPACE           TO  SPA-COM-KZMFLGNK(IDX)
                    WHEN    OTHER
                       MOVE    SPACE            TO  SPA-COM-KZMFLG (IDX)
                    END-EVALUATE
@@ -5537,43 +5545,6 @@
            .
        4101113-INPUTCD-CHK-EXT.
            EXIT.
-      *****************************************************************
-      *    算定履歴チェック処理
-      *****************************************************************
-      *41011262-SANTEI-CHK-SEC       SECTION.
-      *
-      *    算定履歴検索
-      *    INITIALIZE                  SANTEI-REC
-      *    MOVE    SPA-HOSPNUM          TO  SANTEI-HOSPNUM
-      *    MOVE    SPA-PTID            TO  SANTEI-PTID
-      *    MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-      *    MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-      *    MOVE    ZERO                TO  SANTEI-SRYKA
-      *    IF     (WRK-SRYCD (1:5)     =   "09980")  AND
-      *           (SPA-HKNKBN          =   1      )  AND
-      *           (SSANTEI-HKNKBN  NOT =   ZERO)
-      *        MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
-      *    ELSE
-      *        MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-      *    END-IF
-      *
-      *    MOVE    SANTEI-REC          TO  MCPDATA-REC
-      *    MOVE    "tbl_santei"        TO  MCP-TABLE
-      *    MOVE    "key3"              TO  MCP-PATHNAME
-      *    PERFORM 910-DBSELECT-SEC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "key3"              TO  MCP-PATHNAME
-      *        PERFORM 920-SANTEI-READ-SEC
-      *    ELSE
-      *        MOVE    1                   TO  FLG-SANTEI
-      *    END-IF
-      *    MOVE    "tbl_santei"        TO  MCP-TABLE
-      *    MOVE    "key3"              TO  MCP-PATHNAME
-      *    PERFORM 990-DBCLOSE-SEC
-      *
-      *    .
-      *41011262-SANTEI-CHK-EXT.
-      *    EXIT.
       *
       *****************************************************************
       *    カーソル位置設定処理
@@ -5730,6 +5701,12 @@
                            MOVE    SPACE           TO  SPA-COM-KZMFLG2
                                                             (IDX-K2)
                            MOVE    SPACE           TO  SPA-COM-KZMFLG3
+                                                            (IDX-K2)
+                      END-IF
+                      IF      SPA-COM-SRYKBN (IDX-K2)  =  "90"
+                                                       OR "92"
+                                                       OR "97"
+                           MOVE    SPACE           TO  SPA-COM-KZMFLGNK
                                                             (IDX-K2)
                       END-IF
                   END-IF
@@ -8710,7 +8687,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-PERFORM
       *
-      *           点数マスタ編集・基本チェック
+      *            点数マスタ編集・基本チェック
                    INITIALIZE                  ORCSC92AREA
                    MOVE    SPACE               TO  LNK-SC92-KBN
                    MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG

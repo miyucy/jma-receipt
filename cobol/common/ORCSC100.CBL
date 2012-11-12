@@ -845,6 +845,8 @@
                    MOVE    SPACE       TO  SPA-COM-KZMFLG(IDX)
                    MOVE    SPACE       TO  SPA-COM-KZMFLG3(IDX)
                    MOVE    SPACE       TO  SPA-COM-HCHKFLG(IDX)
+      *            Æþ±¡ÎÁÊ»ÍÑ¥Á¥§¥Ã¥¯
+                   MOVE    SPACE       TO  SPA-COM-KZMFLGNK(IDX)
                    IF      WRK-NYU-KAI NOT =   SPA-COM-NYU-KAI (IDX)
                        MOVE    SPACE       TO  SPA-COM-TUKIJGNFLG (IDX)
                        MOVE    SPACE       TO  SPA-COM-TUKIJGNFLG1(IDX)
@@ -2514,6 +2516,7 @@
                                        SPA-AREA
                MOVE    LNK-ORCSC-CHK-IDX   TO  SPA-CHK-IDX
                MOVE    LNK-ORCSC-KIDCD     TO  SPA-KIDCD
+               MOVE    LNK-ORCSC-ERRMSG    TO  SPA-ERRMSG2
            END-IF
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (SPA-KIDCD       NOT =   SPACE )

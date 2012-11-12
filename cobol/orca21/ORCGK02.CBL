@@ -2366,13 +2366,14 @@
                       (SPA-COM-KZMFLG3(IDX)    NOT =   SPACE )
                    MOVE    SPACE               TO  SPA-MAE-INPUTCD (IDX)
                END-IF
-               MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG3(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
-               MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
+               MOVE    SPACE           TO  SPA-COM-KZMFLGAREA (IDX)
+      ****     MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG3(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
+      ******** MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG (IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1(IDX)
            END-PERFORM
@@ -4064,13 +4065,14 @@
                    END-IF
                END-IF
       *        警告フラグクリア
-               MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG3(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
-               MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
-               MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
+               MOVE    SPACE           TO  SPA-COM-KZMFLGAREA (IDX)
+      *******  MOVE    SPACE           TO  SPA-COM-KZMFLG (IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG2(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG3(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG4(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
+      *        MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
+      ******** MOVE    SPACE           TO  SPA-COM-KINKIFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG(IDX)
                MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1(IDX)
       *        併用算定が警告の時、クリア
@@ -9092,18 +9094,10 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-      **** MOVE    ZERO                TO  SPA-NAI-ROUSTR
-      *    MOVE    ZERO                TO  SPA-RJN-ERR
-      *    MOVE    ZERO                TO  SPA-HKN-ERR
-      *    MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
-      *    MOVE    ZERO                TO  SPA-NAI-KOHFLG
-      *    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
-      **** MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
            IF      SPA-MACHIPG         =   "U02"
                                        OR  "Q02"
                                        OR  "Q02A"
                                        OR  "Q02B"
-     *******   MOVE    "U02"               TO  WRK-SAKIPG
                MOVE    SPA-MACHIPG         TO  WRK-SAKIPG
                PERFORM 210-BACK-SYORI-SEC
            ELSE

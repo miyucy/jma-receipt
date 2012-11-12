@@ -42,6 +42,7 @@
       * 04.06.00     NACL-多々納  11/02/14  用法コメント対応
       * 04.07.00     NACL-多々納  11/09/21  院外処方点数対応
       * 04.07.00     NACL-多々納  11/12/20  商品名コード単価対応
+      * 04.07.00     NACL-多々納  12/11/07  警告区分等追加
       ************************************************************
       *
       *01  SPA-K02SCR-REC.
@@ -150,19 +151,10 @@
                        09  SPA-COM-FLGAREA.
       *                    禁忌薬剤警告済フラグ
                            11  SPA-COM-KNKFLG        PIC X(01).
+      *                    禁忌薬剤チェック済フラグ
                            11  SPA-COM-KNKUMU        PIC X(01).
       *                    労災読み替え加算分
                            11  SPA-COM-RSIFLG2       PIC X(01).
-      *                    警告済フラグ
-                           11  SPA-COM-KZMFLG        PIC X(01).
-      *                    警告済フラグ２
-                           11  SPA-COM-KZMFLG2       PIC X(01).
-      *                    警告済フラグ３（同日併用チェック）
-                           11  SPA-COM-KZMFLG3       PIC X(01).
-      *                    警告済フラグ４（長期日数チェック）
-                           11  SPA-COM-KZMFLG4       PIC X(01).
-      *                    警告済フラグ５（投与量チェック）
-                           11  SPA-COM-KZMFLG5       PIC X(01).
       *                    数量チェック済（投与量チェック）
                            11  SPA-COM-SURCHK        PIC X(01).
       *                    併用算定済フラグ
@@ -173,16 +165,31 @@
                            11  SPA-COM-CHKFLG        PIC X(01).
       *                    時間加算フラグ
                            11  SPA-COM-TIMEFLG       PIC 9(01).
+      *                警告済みフラグ
+                       09  SPA-COM-KZMFLGAREA.
       *                    患者禁忌薬剤チェック済フラグ
                            11  SPA-COM-KINKIFLG      PIC X(01).
+      *                    警告済フラグ
+                           11  SPA-COM-KZMFLG        PIC X(01).
+      *                    警告済フラグ２
+                           11  SPA-COM-KZMFLG2       PIC X(01).
+      *                    警告済フラグ３（同日併用チェック）
+                           11  SPA-COM-KZMFLG3       PIC X(01).
+      *                    警告済フラグ４（長期日数チェック）
+                           11  SPA-COM-KZMFLG4       PIC X(01).
+      *                    警告済フラグ５（投与量チェック）
+                           11  SPA-COM-KZMFLG5       PIC X(01).
       *ver.4.7             処方せん料警告２
                            11  SPA-COM-KZMFLG6       PIC X(01).
-      *                    警告
+      *                    警告（予備）
                            11  SPA-COM-KZMFLG7       PIC X(01).
+      *                    入院料併用警告
+                           11  SPA-COM-KZMFLGNK      PIC X(01).
+      *
       *                自動発生済フラグ
                        09  SPA-COM-AUTOFLG           PIC X(01).
       *                残量廃棄自動発生済フラグ
-                       09  SPA-COM-AUTOFLG2           PIC X(01).
+                       09  SPA-COM-AUTOFLG2          PIC X(01).
       *                計算チェック済フラグ（毎回クリア）
                        09  SPA-COM-SANFLG        PIC 9(01).
       *                逓減検査対象有無（１：逓減有り）
@@ -456,4 +463,5 @@
       *ver.4.7 から予備
                        09  SPA-COM-YOBI1               PIC X(10).
                        09  SPA-COM-YOBI2               PIC X(10).
+                       09  SPA-COM-YOBI3               PIC S9(10)V9(5).
       * 
