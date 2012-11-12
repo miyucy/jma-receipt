@@ -275,7 +275,7 @@
           <border_width>0</border_width>
           <show_titles>True</show_titles>
           <columns>10</columns>
-          <column_widths>48,100,100,80,76,76,80,100,80,80</column_widths>
+          <column_widths>48,100,96,80,76,76,80,96,80,80</column_widths>
           <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
           <widget>
             <class>GtkLabel</class>
@@ -319,8 +319,8 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>期間開始日時点
-在院患者数</label>
+            <label>期間開始日
+患者数</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -399,8 +399,8 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>期間終了日時点
-在院患者数</label>
+            <label>期間終了日
+患者数</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
