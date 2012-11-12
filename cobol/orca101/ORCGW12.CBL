@@ -8048,6 +8048,19 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                PERFORM 4103-RECEDENOUT-CHK-SEC
            END-IF
       *
+      *    ∞Âª’ ÃΩ–Œœ∂Ë ¨§»∞Âª’Ãæµ≠∫‹∂Ë ¨§Œ•¡•ß•√•Ø
+           IF    ( SPA-ERRCD        =   SPACE )
+           AND   ( SPA-WIDCD        =   SPACE )
+           AND   ( SPA-WIDCD2       =   SPACE )
+               IF    ( SPA-GMN-DRCD-PRTKBN
+                                       NOT =   "1" )
+               AND   ( SPA-GMN-DRNAME-KSIKBN
+                                           =   "1" )
+                   MOVE    303                 TO  SPA-GMN-CUR
+                   MOVE    "0118"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
            IF    ( SPA-ERRCD        =   SPACE )
            AND   ( SPA-WIDCD        =   SPACE )
            AND   ( SPA-WIDCD2       =   SPACE )
@@ -8183,17 +8196,6 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            =   "0" )
                    MOVE    119                 TO  SPA-GMN-CUR
                    MOVE    "0112"              TO  SPA-ERRCD                    
-               END-IF
-           END-IF
-      *
-      *    ∞Âª’ ÃΩ–Œœ∂Ë ¨§»∞Âª’Ãæµ≠∫‹∂Ë ¨§Œ•¡•ß•√•Ø
-           IF      SPA-ERRCD           =   SPACE
-               IF    ( SPA-GMN-DRCD-PRTKBN
-                                       NOT =   "1" )
-               AND   ( SPA-GMN-DRNAME-KSIKBN
-                                           =   "1" )
-                   MOVE    303                 TO  SPA-GMN-CUR
-                   MOVE    "0118"              TO  SPA-ERRCD
                END-IF
            END-IF
       *
