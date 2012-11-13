@@ -89,6 +89,8 @@
            03  FLG-HCN331          PIC 9(01).
            03  FLG-HCN331-END      PIC 9(01).
            03  FLG-TUKI-END        PIC 9(01).
+           03  FLG-PRINT-OK        PIC 9(01).
+           03  FLG-HKNCOMBICHK     PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -726,7 +728,6 @@
            MOVE    ZERO                TO  CNT-PAGE
            MOVE    ZERO                TO  CNT-MEI
            MOVE    SPACE               TO  HCM33N
-           MOVE    ZERO                TO  FLG-PRINT
       *
       *    追加印刷初期処理
            IF      FLG-HCN331           =   1
@@ -748,9 +749,7 @@
       *        集計処理
                PERFORM 2001-SYUKEI-SYORI-SEC
       *        印刷処理
-               IF      FLG-PRINT           =   1
-                   PERFORM 2002-PRINT-SYORI-SEC
-               END-IF
+               PERFORM 2002-PRINT-SYORI-SEC
       *        診療年月＋１
                COMPUTE WRK-SRYMM           =   WRK-SRYMM    +   1
                IF      WRK-SRYMM           >   12
@@ -778,30 +777,36 @@
       *
            INITIALIZE                      HKNCOMBI-REC
            MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
-           MOVE    SPA-PTID            TO  COMB-PTID
-           MOVE    ORCHC33-SRYYM       TO  COMB-TEKSTYMD(1:6)
-           MOVE    "01"                TO  COMB-TEKSTYMD(7:2)
-           IF      ORCHC33-SRYYM-END   =   SPACE
-               MOVE    ORCHC33-SRYYM       TO  COMB-TEKSTYMD(1:6)
-           ELSE
-               MOVE    ORCHC33-SRYYM-END   TO  COMB-TEKEDYMD(1:6)
-           END-IF 
-           MOVE    "31"                TO  COMB-TEKEDYMD(7:2)
+           MOVE    ORCHC33-PTID        TO  COMB-PTID
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-HKNCOMBI-READ-SEC
            ELSE
                MOVE    1               TO  FLG-HKNCOMBI
            END-IF
            PERFORM UNTIL   (FLG-HKNCOMBI   =   1  )
                        OR  (IDX-C           >=  99 )
-               IF      COMB-DELKBN         =   SPACE
+               MOVE    ZERO                TO  FLG-HKNCOMBICHK
+               IF     (COMB-DELKBN         =   SPACE )
+      *        診療年月の有効チェック
+               AND   ((ORCHC33-SRYYM       >=  COMB-TEKSTYMD(1:6))
+                  AND (ORCHC33-SRYYM       <=  COMB-TEKEDYMD(1:6)))
+                   MOVE    1                   TO  FLG-HKNCOMBICHK
+               END-IF
+      *        終了日の有効チェック
+               IF    ( ORCHC33-SRYYM-END   NOT =   SPACE )  AND
+                     ((ORCHC33-SRYYM-END       <   COMB-TEKSTYMD(1:6))
+                  OR  (ORCHC33-SRYYM-END       >   COMB-TEKEDYMD(1:6)))
+                   MOVE    ZERO            TO  FLG-HKNCOMBICHK
+               END-IF
+      *
+               IF      FLG-HKNCOMBICHK     =   1
                    ADD     1                   TO  IDX-C
                    MOVE    COMB-HKNCOMBINUM    TO  TBL-ALL-HKNCOMBINUM
                                                                (IDX-C)
@@ -812,11 +817,11 @@
                    END-IF
                END-IF
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-HKNCOMBI-READ-SEC
            END-PERFORM
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            .
        2009-HKNCOMBI-HEN-EXT.
@@ -829,7 +834,6 @@
        2001-SYUKEI-SYORI-SEC                SECTION.
       *
            MOVE    ZERO                TO  FLG-SYORI
-           MOVE    ZERO                TO  FLG-PRINT
       *    集計テーブル
            INITIALIZE                  TBL-AREA
            INITIALIZE                  TBL-RSI-AREA
@@ -874,8 +878,7 @@
       *            保険編集
                    PERFORM 20013-HKNCOMBI-HEN-SEC
       ***          IF      ACCT-ZAITEN         >   ZERO
-                   IF      FLG-SYORI           =   1
-                       MOVE    1                   TO  FLG-PRINT
+                   IF      FLG-OK              =   1
                        PERFORM 20011-SRYACCT-HEN-SEC
                    END-IF
                END-IF
@@ -1244,16 +1247,16 @@
       *****************************************************************
        20013-HKNCOMBI-HEN-SEC                SECTION.
       *
-           MOVE    ZERO                TO  FLG-SYORI
+           MOVE    ZERO                TO  FLG-OK
       *    保険組合せ対象チェック
            IF      (PARA-HKNCOMBIKBN    =   "1"  OR  "2")
                MOVE    ACCT-HKNCOMBI        TO  WRK-CHK-HKNCOMBI
                PERFORM 200139-HKNCOMBI-CHK-SEC
-               IF      FLG-SYORI            =   ZERO
+               IF      FLG-OK               =   ZERO
                    GO      TO      20013-HKNCOMBI-HEN-EXT
                END-IF
            ELSE
-               MOVE    1                   TO  FLG-SYORI
+               MOVE    1                   TO  FLG-OK
            END-IF
       *
       *
@@ -1402,7 +1405,7 @@
                   OR  (WRK-PARA-HKNNUM(1:2)    =   "98"  )
       *            保険組合せ一致のみ
                    IF      ORCHC33-HKNCOMBI    =   WRK-CHK-HKNCOMBI
-                       MOVE    1                   TO  FLG-SYORI
+                       MOVE    1                   TO  FLG-OK
                    END-IF
                ELSE
       *            労災・自賠責は対象外
@@ -1417,9 +1420,9 @@
                                                            OR  "973")
                            OR     (TBL-ALL-HKNNUM (IDX-C)(1:2)
                                                            =   "98")
-                               MOVE    ZERO                TO  FLG-SYORI
+                               MOVE    ZERO                TO  FLG-OK
                            ELSE
-                               MOVE    1                   TO  FLG-SYORI
+                               MOVE    1                   TO  FLG-OK
                            END-IF
                            MOVE    99                  TO  IDX-C
                        END-IF
@@ -1428,7 +1431,7 @@
            WHEN    "2"
       *        保険組合せ一致のみ
                IF      ORCHC33-HKNCOMBI    =   WRK-CHK-HKNCOMBI
-                   MOVE    1                   TO  FLG-SYORI
+                   MOVE    1                   TO  FLG-OK
                END-IF
            END-EVALUATE
            .
@@ -1676,7 +1679,7 @@
                    PERFORM 20013-HKNCOMBI-HEN-SEC
       *H24.9
       *            対象外
-                   IF      FLG-SYORI           =   ZERO
+                   IF      FLG-OK              =   ZERO
                        MOVE    ZERO        TO  LNK-ORCHCN33SUB-TEN
                                                                  (IDXH)
                        MOVE    ZERO        TO  LNK-ORCHCN33SUB-ETCTEN

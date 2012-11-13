@@ -92,6 +92,7 @@
            03  FLG-TUKI-END            PIC 9(01).
       *
            03  FLG-NEXT-YY             PIC 9(01).
+           03  FLG-HKNCOMBICHK     PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -778,30 +779,37 @@
       *
            INITIALIZE                      HKNCOMBI-REC
            MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
-           MOVE    SPA-PTID            TO  COMB-PTID
-           MOVE    ORCHC33-SRYYM       TO  COMB-TEKSTYMD(1:6)
-           MOVE    "01"                TO  COMB-TEKSTYMD(7:2)
-           IF      ORCHC33-SRYYM-END   =   SPACE
-               MOVE    ORCHC33-SRYYM       TO  COMB-TEKSTYMD(1:6)
-           ELSE
-               MOVE    ORCHC33-SRYYM-END   TO  COMB-TEKEDYMD(1:6)
-           END-IF 
-           MOVE    "31"                TO  COMB-TEKEDYMD(7:2)
+           MOVE    ORCHC33-PTID        TO  COMB-PTID
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-HKNCOMBI-READ-SEC
            ELSE
                MOVE    1               TO  FLG-HKNCOMBI
            END-IF
            PERFORM UNTIL   (FLG-HKNCOMBI   =   1  )
                        OR  (IDX-C           >=  99 )
-               IF      COMB-DELKBN         =   SPACE
+               MOVE    ZERO                TO  FLG-HKNCOMBICHK
+               IF     (COMB-DELKBN         =   SPACE )
+      *        診療年月の有効チェック
+               AND   ((ORCHC33-SRYYM       >=  COMB-TEKSTYMD(1:6))
+                  AND (ORCHC33-SRYYM       <=  COMB-TEKEDYMD(1:6)))
+                   MOVE    1                   TO  FLG-HKNCOMBICHK
+               END-IF
+      *        終了日の有効チェック
+               IF    ( COMB-DELKBN         =   SPACE   )    AND
+                     ( ORCHC33-SRYYM-END   NOT =   SPACE )  AND
+                     ((ORCHC33-SRYYM-END       >=  COMB-TEKSTYMD(1:6))
+                 AND  (ORCHC33-SRYYM-END       <=  COMB-TEKEDYMD(1:6)))
+                   MOVE    1                   TO  FLG-HKNCOMBICHK
+               END-IF
+      *
+               IF      FLG-HKNCOMBICHK     =   1
                    ADD     1                   TO  IDX-C
                    MOVE    COMB-HKNCOMBINUM    TO  TBL-ALL-HKNCOMBINUM
                                                                (IDX-C)
@@ -811,12 +819,13 @@
                        MOVE    COMB-HKNNUM     TO  WRK-PARA-HKNNUM
                    END-IF
                END-IF
+      *
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
+               MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-HKNCOMBI-READ-SEC
            END-PERFORM
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            .
        2009-HKNCOMBI-HEN-EXT.
