@@ -32,6 +32,7 @@ distclean:
 	-rm -f jma-receipt.env
 	-rm -f jma-receipt.conf
 	-rm -f Makefile
+	-rm -f jppinfo.list
 
 install: all
 	$(INSTALL) -d $(sysconfdir)
