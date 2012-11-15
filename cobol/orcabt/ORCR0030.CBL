@@ -604,6 +604,7 @@
       *  04.07.02    NACL-ÌçÏÆ    11/10/17  Ë¡Äê³°¸½ÊªµëÉÕÂÐ±þ¡ÊË¡ÊÌ£±£°¡¢£²£±¡Ë
       *  04.07.03    NACL-ÌçÏÆ    12/08/27  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *  04.07.04    NACL-ÌçÏÆ    12/09/25  ¥³¥á¥ó¥Èº¹¹þÂÐ±þ¡ÊºßÂð»ýÂ³ÍÛ°µ¡Ë
+      *  04.07.05    NACL-ÌçÏÆ    12/11/15  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1072,6 +1073,7 @@
                  07  WRK-SYUNOU-GENBUTU70-KOH3COMPFTN    PIC  9(07).
                  07  WRK-SYUNOU-GENBUTU70-KOH4HKNNUM     PIC  X(03).
                  07  WRK-SYUNOU-GENBUTU70-KOH4COMPFTN    PIC  9(07).
+                 07  WRK-SYUNOU-GENBUTU70-GASSANFLG      PIC  9(01).
                  07  WRK-SYUNOU-GENBUTU70-HANTEIFLG      PIC  9(01).
       *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¤Î¼ýÇ¼¥Ç¡¼¥¿ÂàÈò¡Ê¼çÊÝ¸±Ã±ÆÈÊ¬¡Ë
            03  WRK-SYUNOU-GENBUTU70T-TABLE.
@@ -12466,6 +12468,10 @@ grpsys           PERFORM 900-DBSELECT-SEC
                          WRK-SYUNOU-GENBUTU70-KOH4HKNNUM(IDX1)
                ADD   SYU-KOH4COMPFTN   TO
                          WRK-SYUNOU-GENBUTU70-KOH4COMPFTN(IDX1)
+               IF    SYU-SKJ-FTNGAKU(3)  =  9
+                  MOVE    9            TO
+                         WRK-SYUNOU-GENBUTU70-GASSANFLG(IDX1)
+               END-IF
              END-IF
            END-IF
       *
@@ -13301,6 +13307,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE
              MOVE      1      TO    FLG-HOKENICHIBU
              IF ((WRK-SYUNOU-GENBUTU70-HANTEIFLG(IDX1) = 1) AND
+                 (RECE02-SRYYM     >= "201204"            ))
+             OR ((WRK-SYUNOU-GENBUTU70-GASSANFLG(IDX1) = 9) AND
                  (RECE02-SRYYM     >= "201204"            ))
              OR ((SYU-KOH-HKNNUM(1) = "972" OR "974"      ) AND
                  (SYU-KOH-HKNNUM(2) = SPACE               ) AND

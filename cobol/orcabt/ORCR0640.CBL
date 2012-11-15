@@ -591,6 +591,7 @@
       *  04.07.03    NACL-ÌçÏÆ    12/08/27  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *  04.07.04    NACL-ÌçÏÆ    12/08/28  ÌôºÞÎÁ¸ºÅÀÂÐ±þ
       *  04.07.05    NACL-ÌçÏÆ    12/09/25  ¥³¥á¥ó¥Èº¹¹þÂÐ±þ¡ÊºßÂð»ýÂ³ÍÛ°µ¡Ë
+      *  04.07.06    NACL-ÌçÏÆ    12/11/15  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -14982,6 +14983,7 @@
            IF  (RECE62-NYUINRYOFLG   =   "1"     )
            AND (RECE62-KOUREI        =   "1"     )
            AND (RECE62-SRYYM        >=   "200904")
+           AND (RECE62-SRYYM        <=   "201203")
              INITIALIZE                        SYUNOU-REC
              MOVE    RECE62-HOSPNUM       TO   SYU-HOSPNUM
              MOVE    RECE62-NYUGAIKBN     TO   SYU-NYUGAIKBN
@@ -16509,6 +16511,8 @@
                    (SYU-KOH-HKNNUM(2) = SPACE         ) AND
                    (SYU-KOH-HKNNUM(3) = SPACE         ) AND
                    (SYU-KOH-HKNNUM(4) = SPACE         ))
+             OR   ((SYU-SKJ-FTNGAKU(3)  =  9          ) AND
+                   (RECE62-SRYYM     >= "201204"      ))
                  ADD    SYU-TOTAL-HKNTEN    TO  WRK-JYOGENKBN-TEN
                  ADD    SYU-KOH-FTN         TO  WRK-KOH-FTN-GEN70
              END-IF

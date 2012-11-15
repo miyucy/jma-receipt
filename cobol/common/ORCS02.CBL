@@ -358,6 +358,7 @@
       *  04.07.03    NACL-ÌçÏÆ    11/10/17  Ë¡Äê³°¸½ÊªµëÉÕÂÐ±þ¡ÊË¡ÊÌ£±£°¡¢£²£±¡Ë
       *  04.07.04    NACL-ÌçÏÆ    12/04/26  ¸ºÌÈ·×»»ÂÐ¾Ý¶èÊ¬¡Ê¼«ÈñÊ¬¤Î¤ß¡ËÂÐ±þ
       *  04.07.05    NACL-ÌçÏÆ    12/08/27  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
+      *  04.07.06    NACL-ÌçÏÆ    12/11/15  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -555,6 +556,8 @@
       *
                  06  WK-2010-NYUKEIKBN-N         PIC X(01).
                  06  WK-2010-NYUKEI-KJNYMD       PIC X(08).
+      *
+                 06  WK-2010-KOGAKKEIKBN         PIC X(01).
       *
            03  WK-DAYTAIHI-FTNMONEY    PIC 9(07).
            03  WK-DAYTAIHI-COMPFTN     PIC 9(07).
@@ -5939,6 +5942,26 @@
                PERFORM   2107-KOHFTN-KINGAKU-SEC
            END-IF.
       *
+           IF  (FLG-GENBUTU70       NOT =   ZERO  )
+           AND (FLG-OITA-GENBUTU70      =   ZERO  )
+           AND (LNK-SYU-SRYYMD(1:6)    >= "201204")
+             IF    (COMB-KOH1HKNNUM(1:1) = "0" )
+             OR    (COMB-KOH2HKNNUM(1:1) = "0" )
+             OR    (COMB-KOH3HKNNUM(1:1) = "0" )
+             OR    (COMB-KOH4HKNNUM(1:1) = "0" )
+             OR    (COMB-KOH1HKNNUM(1:2) = "99")
+             OR    (COMB-KOH2HKNNUM(1:2) = "99")
+             OR    (COMB-KOH3HKNNUM(1:2) = "99")
+             OR    (COMB-KOH4HKNNUM(1:2) = "99")
+               CONTINUE
+             ELSE
+               IF  (COMB-KOH1HKNNUM(1:1)   >= "1" AND <= "8")
+               AND (WK-2010-KOGAKKEIKBN(1)  = "1"           )
+                   MOVE     9     TO    LNK-SYU-SKJ-FTNGAKU(3)
+               END-IF
+             END-IF
+           END-IF.
+      *
            IF  LNK-S02-KOUREI-NYUIN-KBN   =   "1"
                IF  COMB-KOH1-HKNKOHSBTKBN   =   "3"
                    EVALUATE   COMB-KOH1PAYKBN
@@ -10190,6 +10213,26 @@
                            (WK-HKNJANUM(7:2)       = SPACE) AND
                            (WK-HKNJANUM(3:1)       = "3"  ))
                          MOVE  "2"    TO  WK-2010-NINJYOKBN(IDX-CYO)
+                       END-IF
+                 END-EVALUATE
+             END-EVALUATE
+           END-IF
+      *
+           IF   LNK-SYU-SRYYMD(1:6)  >= "201204"
+             EVALUATE  SYS-2010-KOGAKKEIKBN
+               WHEN       "1"
+                 EVALUATE   SYS-2010-KOGAKKEI-TAIKBN
+                   WHEN      "0"
+                       MOVE    "1"    TO  WK-2010-KOGAKKEIKBN(IDX-CYO)
+                   WHEN      "1"
+                       IF   LNK-SYU-SYUHKNNUM = "060" OR "067" OR "039"
+                         MOVE  "1"    TO  WK-2010-KOGAKKEIKBN(IDX-CYO)
+                       END-IF
+                   WHEN      "2"
+                       IF  (LNK-SYU-SYUHKNNUM  NOT = SPACE)
+                       AND (LNK-SYU-SYUHKNNUM  NOT =
+                                 "060" AND "067" AND "039")
+                         MOVE  "1"    TO  WK-2010-KOGAKKEIKBN(IDX-CYO)
                        END-IF
                  END-EVALUATE
              END-EVALUATE
@@ -14719,6 +14762,9 @@
                    (SYU-KOH3HKNNUM   = SPACE          ) AND
                    (SYU-KOH4HKNNUM   = SPACE          ) AND
                    (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL))
+               OR ((SYU-SKJ-FTNGAKU(3) =  9           ) AND
+                   (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL) AND
+                   (LNK-SYU-SRYYMD(1:6)  >=  "201204" ))
                  MOVE  SYU-KOH-FTN    TO  WK-SYU-SYUCOMPFTN
                  COMPUTE WK-ENTANI = SYU-KOH-FTN-ENTANI + 0.9
                  IF    FLG-IRYOHI70  =  1 OR 2
@@ -14726,11 +14772,14 @@
                              WK-KOUREI-IRYOHI70  +
                             (SYU-HKNTEN (17) * 10)
                  END-IF
-                 IF (SYU-KOH1HKNNUM   = "972" OR "974" ) AND
-                    (SYU-KOH2HKNNUM   = SPACE          ) AND
-                    (SYU-KOH3HKNNUM   = SPACE          ) AND
-                    (SYU-KOH4HKNNUM   = SPACE          ) AND
-                    (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL)
+                 IF ((SYU-KOH1HKNNUM   = "972" OR "974" ) AND
+                     (SYU-KOH2HKNNUM   = SPACE          ) AND
+                     (SYU-KOH3HKNNUM   = SPACE          ) AND
+                     (SYU-KOH4HKNNUM   = SPACE          ) AND
+                     (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL))
+                 OR ((SYU-SKJ-FTNGAKU(3) =  9           ) AND
+                     (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL) AND
+                     (LNK-SYU-SRYYMD(1:6)  >=  "201204" ))
                     COMPUTE     WK-GENBUTU-HKNKIN   =
                                 WK-GENBUTU-HKNKIN   +
                                (SYU-HKNTEN (17) * 10)
