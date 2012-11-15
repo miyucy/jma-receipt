@@ -48,6 +48,7 @@
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
+           03  FLG-NYUKSNCHK               PIC 9(01).
            03  FLG-NYUKSN-ARI              PIC 9(01).
            03  FLG-KSN                     PIC 9(01).
            03  FLG-SENTEI-SET              PIC 9(01).
@@ -62,34 +63,13 @@
            03  IDX5                        PIC 9(04).
            03  IDX6                        PIC 9(04).
       *
-      *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
-       01  CONSTANT-AREA.
-      *
-      *    É¸·ç¡Ê£±£°£°Ê¬¤Î£±£°¸º³Û¡Ë
-           03  CONS-HYOKETU1               PIC X(09) VALUE "190107890".
-      *    É¸·ç¡Ê£±£°£°Ê¬¤Î£±£µ¸º³Û¡Ë
-           03  CONS-HYOKETU2               PIC X(09) VALUE "190107990".
-      *    É¸·ç¡Ê£±£°£°Ê¬¤Î£³¸º³Û¡Ë¡ÊÎ¥ÅçÅù¡Ë
-           03  CONS-HYOKETU3               PIC X(09) VALUE "190108590".
-      *    É¸·ç¡Ê£±£°£°Ê¬¤Î£²¸º³Û¡Ë¡ÊÎ¥ÅçÅù¡Ë
-           03  CONS-HYOKETU4               PIC X(09) VALUE "190108690".
-      *    Äê¿ôÄ¶²áÆþ±¡´ðËÜÎÁ¸º³Û¡Ê£±£°£°Ê¬¤Î£±£°¡Ë
-           03  CONS-TEISU1                 PIC X(09) VALUE "190107690".
-      *    Äê¿ôÄ¶²áÆþ±¡´ðËÜÎÁ¸º³Û¡Ê£±£°£°Ê¬¤Î£²£°¡Ë
-           03  CONS-TEISU2                 PIC X(09) VALUE "190107790".
-      *    Äê¿ôÄ¶²áÆþ±¡´ðËÜÎÁ¸º³Û¡Ê£±£°£°Ê¬¤Î£±£°¡Ë¡ÊÆÃÄêÆþ±¡ÎÁ¡Ë
-           03  CONS-TEISU3                 PIC X(09) VALUE "190122990".
-      *    Äê¿ôÄ¶²áÆþ±¡´ðËÜÎÁ¸º³Û¡Ê£±£°£°Ê¬¤Î£²£°¡Ë¡ÊÆÃÄêÆþ±¡ÎÁ¡Ë
-           03  CONS-TEISU4                 PIC X(09) VALUE "190123090".
-      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
       *
            03  WRK-MM-X                    PIC X(02).
            03  WRK-MM-9     REDEFINES   WRK-MM-X
                                            PIC 9(02).
-           03  WRK-GAIHAKU-SRYCD           PIC X(09).
-           03  WRK-MEISAISU                PIC 9(03).
+           03  WRK-KSN-NYUKHNKSNKBN        PIC 9(03).
            03  WRK-KSNKBN                  PIC 9(03).
            03  WRK-CHUKSNCD-XXX            PIC X(04).
       *
@@ -112,10 +92,9 @@
                    07  WRK-HKNCOMBI-DAY    PIC 9(03).
                    07  WRK-SRYKBN          PIC X(02).
                    07  WRK-NYUINKHN        PIC X(09).
-                   07  WRK-SHOKIKSN        PIC X(09).
+                   07  WRK-KHN-NYUKHNKSNKBN PIC 9(03).
                    07  WRK-HYOUKETSU       PIC X(09).
                    07  WRK-TEISU           PIC X(09).
-                   07  WRK-NYUKHNKSNKBN    PIC 9(03).
                    07  WRK-GAIHAKU-KBN     PIC 9(02).
                    07  WRK-CHUKSNCD        PIC X(04).
       *
@@ -164,6 +143,10 @@
       *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *
+      *    Æþ±¡ÎÁ²Ã»»¥Á¥§¥Ã¥¯
+       01  NYUKSNCHK-REC.
+           COPY   "CPNYUKSNCHK.INC".
       *
       *    ÁªÄêÎÅÍÜÈñ
        01  SENTEICDCHG-REC.
@@ -306,12 +289,30 @@
        200-MAIN-1-SEC            SECTION.
       *
       *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤È£³¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü¤Ë¤Ä¤¤¤Æ¼èÆÀ
-           INITIALIZE                      ORCSNYUINDAY-AREA
-           MOVE    SPA-HOSPNUM         TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    SPA-PTID            TO  LNK-NYUINDAY-PTID
-           MOVE    ORCSCNKSN-SRYYM     TO  LNK-NYUINDAY-SANTEIYM
+           INITIALIZE                          ORCSNYUINDAY-AREA
+           MOVE    SPA-HOSPNUM             TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    SPA-PTID                TO  LNK-NYUINDAY-PTID
+           MOVE    ORCSCNKSN-SRYYM         TO  LNK-NYUINDAY-SANTEIYM
            CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
                                                SPA-AREA
+      *
+      *    ÅÀ¿ô¥Þ¥¹¥¿¤è¤êÃí²Ã»»¤«Æþ±¡´ðËÜÎÁÅù²Ã»»¤«¤òÈ½Äê¤·¤Ê¤¬¤é
+      *    Æþ±¡ÎÁ²Ã»»¤ÎÆþ±¡´ðËÜ²Ã»»¶èÊ¬¤ò¼èÆÀ
+           MOVE    ZERO                    TO  FLG-KSN
+           MOVE    ZERO                    TO  WRK-KSN-NYUKHNKSNKBN
+           INITIALIZE                          TNS-TENSU-REC
+           MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
+           MOVE    ORCSCNKSN-SRYCD         TO  TNS-SRYCD
+           MOVE    ORCSCNKSN-SRYYM         TO  TNS-YUKOSTYMD(1:6)
+           MOVE    "01"                    TO  TNS-YUKOSTYMD(7:2)
+           MOVE    TNS-YUKOSTYMD           TO  TNS-YUKOEDYMD
+           PERFORM   910-TENSU-READ-SEC
+           IF   ((TNS-CDKBN-KBNNUM         >=  200)   AND
+                 (TNS-CDKBN-KBNNUM         <=  299))
+      *        Æþ±¡´ðËÜÎÁÅù²Ã»»
+               MOVE      1                 TO  FLG-KSN
+               MOVE    TNS-NYUKHNKSNKBN    TO  WRK-KSN-NYUKHNKSNKBN
+           END-IF
       *
       *    Æþ±¡ÎÁ¤Î¼èÆÀ
            INITIALIZE                          NYUINACCT-REC
@@ -332,12 +333,23 @@
                    ELSE
       *                ³ºÅöÆþ±¡¹Ô°Ù¥Æ¡¼¥Ö¥ë¤ÎÆÉ¤ß¹þ¤ß
                        PERFORM    210-NYUINACT-GET-SEC
+      *
+      *                ÅÀ¿ô¥Þ¥¹¥¿¤è¤êÆþ±¡ÎÁ¤ÎÆþ±¡´ðËÜ²Ã»»¶èÊ¬¤ò¼èÆÀ
+                       INITIALIZE                   TNS-TENSU-REC
+                       MOVE    SPA-HOSPNUM      TO  TNS-HOSPNUM
+                       MOVE    NSRY-SRYCD(1)    TO  TNS-SRYCD
+                       MOVE    ORCSCNKSN-SRYYM  TO  TNS-YUKOSTYMD(1:6)
+                       MOVE    "01"             TO  TNS-YUKOSTYMD(7:2)
+                       MOVE    TNS-YUKOSTYMD    TO  TNS-YUKOEDYMD
+                       PERFORM   910-TENSU-READ-SEC
       *                Æþ±¡´ðËÜÎÁ¤ÎÂàÈò
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   NACCT-DAY(IDX1)    NOT =  ZERO
-                             MOVE    NSRY-SRYCD(1)   TO  
-                                                   WRK-NYUINKHN(IDX1)
+                             MOVE    NSRY-SRYCD(1)
+                                                TO  WRK-NYUINKHN(IDX1)
+                             MOVE    TNS-NYUKHNKSNKBN  TO
+                                            WRK-KHN-NYUKHNKSNKBN(IDX1)
       *
                            END-IF
                        END-PERFORM
@@ -359,6 +371,43 @@
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
+      *
+      *    Æþ±¡ÎÁ²Ã»»¥Á¥§¥Ã¥¯¥Æ¡¼¥Ö¥ë¤Ë¤è¤ë¥Á¥§¥Ã¥¯
+           PERFORM    VARYING   IDX1   FROM   1   BY   1
+                      UNTIL     IDX1   >   31
+               IF   (ORCSCNKSN-DAY(IDX1)         NOT =   ZERO)  AND
+                    (WRK-KHN-NYUKHNKSNKBN(IDX1)  NOT =   ZERO)
+      *
+                    INITIALIZE                 NYUKSNCHK-REC
+                    MOVE    WRK-KHN-NYUKHNKSNKBN (IDX1)
+                                           TO  NYUKSNCHK-NYUINKBN
+                    MOVE    WRK-KSN-NYUKHNKSNKBN
+                                           TO  NYUKSNCHK-KSNKBN
+                    DISPLAY "NYUKSNCHK-NYUINKBN = " NYUKSNCHK-NYUINKBN
+                    DISPLAY "NYUKSNCHK-KSNKBN   = " NYUKSNCHK-KSNKBN
+                    MOVE    ORCSCNKSN-SRYYM
+                                           TO  NYUKSNCHK-YUKOSTYMD(1:6)
+                    MOVE    "01"           TO  NYUKSNCHK-YUKOSTYMD(7:2)
+                    MOVE    NYUKSNCHK-YUKOSTYMD
+                                           TO  NYUKSNCHK-YUKOEDYMD
+                    MOVE    "tbl_nyuksnchk" TO MCP-TABLE
+                    MOVE    "key"          TO  MCP-PATHNAME
+                    PERFORM 910-NYUKSNCHK-SELECT-SEC
+                    MOVE    "tbl_nyuksnchk" TO MCP-TABLE
+                    MOVE    "key"          TO  MCP-PATHNAME
+                    PERFORM 910-NYUKSNCHK-READ-SEC
+                    DISPLAY "FLG-NYUKSNCHK = " FLG-NYUKSNCHK
+                    IF      FLG-NYUKSNCHK  NOT =   ZERO
+                      MOVE    6          TO  ORCSCNKSN-RC
+                      MOVE  "»»ÄêÆþ±¡ÎÁ¤Ç¤Ï»»Äê¤Ç¤­¤Ê¤¤Æþ±¡ÎÁ²Ã»»¤Ç¤¹¡£"
+                                           TO      ORCSCNKSN-ERRMSG
+                    END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF     ORCSCNKSN-RC             =   6
+               GO  TO  200-MAIN-1-EXT
+           END-IF
       *
       *    Æþ±¡»þ¤Î³°Çñ¼èÆÀ
            INITIALIZE                          NYUINACCT-REC
@@ -403,13 +452,13 @@
                       UNTIL     IDX1   >   31
                IF    (ORCSCNKSN-DAY(IDX1)  =   1) 
                AND   (WRK-GAIHAKU(IDX1)    =   1)
-                   MOVE     5              TO      ORCSCNKSN-RC
+                   MOVE     7              TO      ORCSCNKSN-RC
                    MOVE  "³°ÇñÆü¤ËÆþ±¡ÎÁ²Ã»»¤¬ÆþÎÏ¤µ¤ì¤Æ¤¤¤Þ¤¹¡£"
                                            TO      ORCSCNKSN-ERRMSG
                END-IF
            END-PERFORM
       *
-           IF     ORCSCNKSN-RC             =   5
+           IF     ORCSCNKSN-RC             =   7
                GO  TO  200-MAIN-1-EXT
            END-IF
       *
@@ -680,6 +729,41 @@
       *
            .
        910-NYUINACT-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÎÁ²Ã»»¥Á¥§¥Ã¥¯¸¡º÷
+      *****************************************************************
+       910-NYUKSNCHK-SELECT-SEC        SECTION.
+      *
+           MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
+           PERFORM   900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO               TO  FLG-NYUKSNCHK
+           ELSE
+               MOVE    1                  TO  FLG-NYUKSNCHK
+           END-IF
+      *
+           .
+       910-NYUKSNCHK-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÎÁ²Ã»»¥Á¥§¥Ã¥¯ÆÉ¹þ
+      *****************************************************************
+       910-NYUKSNCHK-READ-SEC        SECTION.
+      *
+           PERFORM   900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC        TO  NYUKSNCHK-REC
+               MOVE    ZERO               TO  FLG-NYUKSNCHK
+           ELSE
+               INITIALIZE                     NYUKSNCHK-REC
+               MOVE    1                  TO  FLG-NYUKSNCHK
+           END-IF
+      *
+           .
+       910-NYUKSNCHK-READ-EXT.
            EXIT.
       *
       *****************************************************************
