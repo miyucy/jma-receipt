@@ -255,9 +255,12 @@
       *長期併用時の特別計算（外来）
            03  SYS-2010-CYOKEIKBN-G         PIC  X(01).
            03  SYS-2010-CYOKEI-TAIKBN-G     PIC  X(01).
+      *７０歳未満現物給付高額療養費合算計算
+           03  SYS-2010-KOGAKKEIKBN         PIC  X(01).
+           03  SYS-2010-KOGAKKEI-TAIKBN     PIC  X(01).
       *
       *予備
-           03  SYS-2010-YOBI                PIC  X(354).
+           03  SYS-2010-YOBI                PIC  X(352).
       *端末ＩＤ
            03  SYS-2010-TERMID              PIC  X(16).
       *オペレータＩＤ

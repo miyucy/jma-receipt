@@ -677,6 +677,14 @@
                        09  SPA-GMN-NINJYOTAIKBN            PIC X(01).
                        09  SPA-GMN-NINJYOTAIKBNF           PIC X(01).
                        09  SPA-GMN-NINJYOTAIKBNMEI         PIC X(38).
+                   07  SPA-GMN-KOGAKKEIKBN-G.
+                       09  SPA-GMN-KOGAKKEIKBN               PIC X(01).
+                       09  SPA-GMN-KOGAKKEIKBNF              PIC X(01).
+                       09  SPA-GMN-KOGAKKEIKBNMEI            PIC X(78).
+                   07  SPA-GMN-KOGAKKEITAIKBN-G.
+                       09  SPA-GMN-KOGAKKEITAIKBN            PIC X(01).
+                       09  SPA-GMN-KOGAKKEITAIKBNF           PIC X(01).
+                       09  SPA-GMN-KOGAKKEITAIKBNMEI         PIC X(38).
                05  SPA-GMN-CMB-AREA.
                    07  SPA-GMN-KOHNUMLST-G.
                        09  SPA-GMN-KOHNUM-MAX              PIC 9(03).
@@ -1059,6 +1067,20 @@
                            11  SPA-GMN-NINJYOTAIKBNL       PIC X(01).
                            11  SPA-GMN-NINJYOTAIKBNFL      PIC X(01).
                            11  SPA-GMN-NINJYOTAIKBNMEIL    PIC X(38).
+      *
+                   07  SPA-GMN-KOGAKKEIKBNLST-G.
+                       09  SPA-GMN-KOGAKKEIKBN-MAX           PIC 9(03).
+                       09  SPA-GMN-KOGAKKEIKBNLST            OCCURS 10.
+                           11  SPA-GMN-KOGAKKEIKBNL          PIC X(01).
+                           11  SPA-GMN-KOGAKKEIKBNFL         PIC X(01).
+                           11  SPA-GMN-KOGAKKEIKBNMEIL       PIC X(78).
+      *
+                   07  SPA-GMN-KOGAKKEITAIKBNLST-G.
+                       09  SPA-GMN-KOGAKKEITAIKBN-MAX        PIC 9(03).
+                       09  SPA-GMN-KOGAKKEITAIKBNLST         OCCURS 10.
+                           11  SPA-GMN-KOGAKKEITAIKBNL       PIC X(01).
+                           11  SPA-GMN-KOGAKKEITAIKBNFL      PIC X(01).
+                           11  SPA-GMN-KOGAKKEITAIKBNMEIL    PIC X(38).
                    07  SPA-GMN-COMMONTAIKBNLST-G.
                        09  SPA-GMN-COMMONTAIKBN-MAX        PIC 9(03).
                        09  SPA-GMN-COMMONTAIKBNLST         OCCURS 10.
@@ -1669,6 +1691,12 @@
       *
       *    ¸ÂÅÙ³ÛÇ§Äê¾Ú¡Ê¾å°Ì¡Ë¤Î¾ì¹ç¤ÎÆÃÊÌ·×»»ÂÐ¾Ý¶èÊ¬¥³¥ó¥ÜÊÔ½¸½èÍý
            PERFORM 3110-NINJYOTAIKBNLST-SEC
+      *
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»¥³¥ó¥ÜÊÔ½¸½èÍý
+           PERFORM 3110-KOGAKKEIKBNLST-SEC
+      *
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»ÂÐ¾Ý¶èÊ¬¥³¥ó¥ÜÊÔ½¸½èÍý
+           PERFORM 3110-KOGAKKEITAIKBNLST-SEC
       *
            .
        311-COMBO-EDIT-EXT.
@@ -2660,6 +2688,54 @@
        3110-NINJYOTAIKBNLST-EXT.
            EXIT.
       *****************************************************************
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»¥³¥ó¥ÜÊÔ½¸½èÍý
+      *****************************************************************
+       3110-KOGAKKEIKBNLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-KOGAKKEIKBNLST-G
+      *
+           MOVE    "0"             TO  SPA-GMN-KOGAKKEIKBNL    (1)
+           STRING    "¼çÃ±ÆÈ¤È¡Ê¼ç¡ÜÃÏ¡Ë¤¬¤¢¤ë¾ì¹ç¡¢"
+                                       DELIMITED BY SIZE
+                     "Î¾Êý¹ç»»ÂÐ¾Ý¤È¤Ê¤ë»þ¤Î¤ß¹ç»»·×»»"
+                                       DELIMITED BY SIZE
+           INTO                        SPA-GMN-KOGAKKEIKBNMEIL (1)
+           END-STRING
+      *
+           MOVE    "1"               TO  SPA-GMN-KOGAKKEIKBNL  (2)
+           MOVE    "¼çÃ±ÆÈ¤È¡Ê¼ç¡ÜÃÏ¡Ë¤¬¤¢¤ë¾ì¹ç¡¢Ìµ¾ò·ï¤Ë¹ç»»·×»»"
+                                   TO  SPA-GMN-KOGAKKEIKBNMEIL (2)
+      *
+           MOVE    2               TO  SPA-GMN-KOGAKKEIKBN-MAX
+      *
+           .
+       3110-KOGAKKEIKBNLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»ÂÐ¾Ý¶èÊ¬¥³¥ó¥ÜÊÔ½¸½èÍý
+      *****************************************************************
+       3110-KOGAKKEITAIKBNLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-KOGAKKEITAIKBNLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-KOGAKKEITAIKBNL    (1)
+           MOVE  "³ºÅö¸øÈñÂÐ¾Ý¼ÔÁ´°÷"
+                                   TO  SPA-GMN-KOGAKKEITAIKBNMEIL (1)
+      *
+           MOVE  "1"               TO  SPA-GMN-KOGAKKEITAIKBNL    (2)
+           MOVE  "¹ñÊÝ¡¦¹­°è"
+                                   TO  SPA-GMN-KOGAKKEITAIKBNMEIL (2)
+      *
+           MOVE  "2"               TO  SPA-GMN-KOGAKKEITAIKBNL    (3)
+           MOVE  "¼ÒÊÝ"
+                                   TO  SPA-GMN-KOGAKKEITAIKBNMEIL (3)
+      *
+           MOVE    3               TO  SPA-GMN-KOGAKKEITAIKBN-MAX
+      *
+           .
+       3110-KOGAKKEITAIKBNLST-EXT.
+           EXIT.
+      *****************************************************************
       *    Æü¡¦·î¾å¸ÂÉéÃ´¶â·×»»¥³¥ó¥ÜÊÔ½¸½èÍý
       *****************************************************************
        3110-JGNFTNKBNLST-SEC           SECTION.
@@ -3438,6 +3514,8 @@
            MOVE    W65-NINNASITAIKBN   TO  SPA-GMN-NINNASITAIKBN-G
            MOVE    W65-NINJYOKBN       TO  SPA-GMN-NINJYOKBN-G
            MOVE    W65-NINJYOTAIKBN    TO  SPA-GMN-NINJYOTAIKBN-G
+           MOVE    W65-KOGAKKEIKBN     TO  SPA-GMN-KOGAKKEIKBN-G
+           MOVE    W65-KOGAKKEITAIKBN  TO  SPA-GMN-KOGAKKEITAIKBN-G
       *
            MOVE    W65-YUKOSTYMD       TO  SPA-GMN-YUKOSTYMD
            MOVE    W65-YUKOEDYMD       TO  SPA-GMN-YUKOEDYMD
@@ -4252,6 +4330,14 @@
                PERFORM 4101-NINJYOTAIKBN-CHK-SEC
            END-IF
       *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KOGAKKEIKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-KOGAKKEITAIKBN-CHK-SEC
+           END-IF
+      *
            IF    ( SPA-ERRCD   NOT =   SPACE )
                MOVE    7           TO  SPA-GMN-PAGENO
            END-IF
@@ -4855,6 +4941,8 @@
            MOVE    SPA-GMN-NINNASITAIKBN   TO SYS-2010-NINNASI-TAIKBN
            MOVE    SPA-GMN-NINJYOKBN       TO SYS-2010-NINJYOKBN
            MOVE    SPA-GMN-NINJYOTAIKBN    TO SYS-2010-NINJYO-TAIKBN
+           MOVE    SPA-GMN-KOGAKKEIKBN     TO SYS-2010-KOGAKKEIKBN
+           MOVE    SPA-GMN-KOGAKKEITAIKBN  TO SYS-2010-KOGAKKEI-TAIKBN
       ***
            .
        4201-KOHINF-EDIT-EXT.
@@ -6139,6 +6227,15 @@
                                        TO  WRK-CMB-CD
            PERFORM 4200-NINJYOTAIKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-NINJYOTAIKBN-G
+      *
+           MOVE    SYS-2010-KOGAKKEIKBN  TO  WRK-CMB-CD
+           PERFORM 4200-KOGAKKEIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-KOGAKKEIKBN-G
+      *
+           MOVE    SYS-2010-KOGAKKEI-TAIKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-KOGAKKEITAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-KOGAKKEITAIKBN-G
       *
       **
       *
@@ -8520,6 +8617,35 @@
        4101-NINJYOTAIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4101-KOGAKKEIKBN-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-KOGAKKEIKBN  TO  WRK-CMB-CD
+           PERFORM 4200-KOGAKKEIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-KOGAKKEIKBN-G
+      *
+           IF    ( SPA-GMN-KOGAKKEIKBN   =   "0" )
+               MOVE    "0"             TO  SPA-GMN-KOGAKKEITAIKBN
+           END-IF
+      *
+           .
+       4101-KOGAKKEIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»ÂÐ¾Ý¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4101-KOGAKKEITAIKBN-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-KOGAKKEITAIKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-KOGAKKEITAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-KOGAKKEITAIKBN-G
+      *
+           .
+       4101-KOGAKKEITAIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    Í­¸ú´ü´Ö³«»ÏÆü
       *****************************************************************
        4101-YUKOSTYMD-CHK-SEC          SECTION.
@@ -9146,6 +9272,16 @@
            MOVE    "0"             TO  WRK-CMB-CD
            PERFORM 4200-NINJYOTAIKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-NINJYOTAIKBN-G
+      *
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-KOGAKKEIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-KOGAKKEIKBN-G
+      *
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»ÂÐ¾Ý¶èÊ¬
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-KOGAKKEITAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-KOGAKKEITAIKBN-G
       *
            .
        42011-COMBO-SET-DEFAULT-ETXT.
@@ -9970,6 +10106,8 @@
            MOVE    SPA-GMN-NINNASITAIKBN-G     TO  W65-NINNASITAIKBN
            MOVE    SPA-GMN-NINJYOKBN-G         TO  W65-NINJYOKBN
            MOVE    SPA-GMN-NINJYOTAIKBN-G      TO  W65-NINJYOTAIKBN
+           MOVE    SPA-GMN-KOGAKKEIKBN-G       TO  W65-KOGAKKEIKBN
+           MOVE    SPA-GMN-KOGAKKEITAIKBN-G    TO  W65-KOGAKKEITAIKBN
       *
            MOVE    SPA-GMN-JNISSUKBN-MAX       TO  W65-JNISSUKBN-COUNT
            PERFORM VARYING IDX-CMB FROM    1   BY  1
@@ -10641,6 +10779,24 @@
                                    TO  W65-NINJYOTAIKBN-ITEM (IDX-CMB)
            END-PERFORM
       *
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»
+           MOVE    SPA-GMN-KOGAKKEIKBN-MAX
+                                   TO  W65-KOGAKKEIKBN-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-KOGAKKEIKBN-MAX )
+               MOVE    SPA-GMN-KOGAKKEIKBNLST (IDX-CMB)
+                                   TO  W65-KOGAKKEIKBN-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»ÂÐ¾Ý¶èÊ¬
+           MOVE    SPA-GMN-KOGAKKEITAIKBN-MAX
+                                   TO  W65-KOGAKKEITAIKBN-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-KOGAKKEITAIKBN-MAX )
+               MOVE    SPA-GMN-KOGAKKEITAIKBNLST (IDX-CMB)
+                                   TO  W65-KOGAKKEITAIKBN-ITEM (IDX-CMB)
+           END-PERFORM
+      *
       *    ¸øÈñ¥ê¥¹¥È
            MOVE    SPA-GMN-KOHLST-MAX  TO  W65-KOHLST-COUNT
            PERFORM VARYING IDX-LST    FROM    1   BY  1
@@ -10924,6 +11080,8 @@
                                        W65-NINNASITAIKBN-ITEM-STATE
                                        W65-NINJYOTAIKBN-STATE
                                        W65-NINJYOTAIKBN-ITEM-STATE
+                                       W65-KOGAKKEITAIKBN-STATE
+                                       W65-KOGAKKEITAIKBN-ITEM-STATE
                                        W65-YUKOSTYMD-STATE
                                        W65-YUKOEDYMD-STATE
                                        W65-SELNUM2-STATE
@@ -11297,6 +11455,11 @@
                                    TO  W65-NINJYOTAIKBN-STATE
                                        W65-NINJYOTAIKBN-ITEM-STATE
            END-IF
+           IF    ( SPA-GMN-KOGAKKEIKBN   =  "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-KOGAKKEITAIKBN-STATE
+                                       W65-KOGAKKEITAIKBN-ITEM-STATE
+           END-IF
       *
       *
            IF    ( SPA-GMN-KOHLST-MAX  >=  CONST-KOHLST-MAX )
@@ -11636,6 +11799,10 @@
               MOVE    "CYOKEIKBNG"         TO  MCP-WIDGET
            WHEN    822
               MOVE    "CYOKEITAIKBNG"      TO  MCP-WIDGET
+           WHEN    823
+              MOVE    "KOGAKKEIKBN"          TO  MCP-WIDGET
+           WHEN    824
+              MOVE    "KOGAKKEITAIKBN"       TO  MCP-WIDGET
            WHEN    003
                MOVE    "SELNUM2"           TO  MCP-WIDGET
            WHEN    004
@@ -11973,6 +12140,10 @@
            WHEN    "NINJYOKBN"
                MOVE    820                 TO  SPA-GMN-CUR
            WHEN    "NINJYOTAIKBN"
+               MOVE    823                 TO  SPA-GMN-CUR
+           WHEN    "KOGAKKEIKBN"
+               MOVE    824                 TO  SPA-GMN-CUR
+           WHEN    "KOGAKKEITAIKBN"
                MOVE    004                 TO  SPA-GMN-CUR
            WHEN    "SELNUM2"
                MOVE    002                 TO  SPA-GMN-CUR
@@ -12501,6 +12672,13 @@
       *
            IF    ( SPA-GMN-CUR     =   820 )
                IF    ( W65-NINJYOTAIKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    823                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   824 )
+               IF    ( W65-KOGAKKEITAIKBN-STATE
                                        =   WIDGET-INSENSITIVE )
                    MOVE    004                 TO  SPA-GMN-CUR
                END-IF
@@ -14421,6 +14599,64 @@
       *
            .
        4200-NINJYOTAIKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-KOGAKKEIKBNLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-KOGAKKEIKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-KOGAKKEIKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-KOGAKKEIKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-KOGAKKEIKBNLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-KOGAKKEIKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¹â³ÛÎÅÍÜÈñ¹ç»»·×»»ÂÐ¾Ý¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-KOGAKKEITAIKBNLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-KOGAKKEITAIKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-KOGAKKEITAIKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-KOGAKKEITAIKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-KOGAKKEITAIKBNLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-KOGAKKEITAIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ¸øÈñ¤Î¼ïÎà¥³¥ó¥Ü¥Ü¥Ã¥¯¥¹¥Á¥§¥Ã¥¯½èÍý

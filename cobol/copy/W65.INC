@@ -804,6 +804,16 @@
                     06  W65-NINJYOTAIKBN-COUNT   PIC S9(9) BINARY.
                     06  W65-NINJYOTAIKBN-ITEM    PIC X(40) OCCURS 10.
                     06  W65-NINJYOTAIKBN-ITEM-STATE PIC S9(9) BINARY.
+                  05  W65-CMB-KOGAKKEIKBN.
+                    06  W65-KOGAKKEIKBN            PIC X(80).
+                    06  W65-KOGAKKEIKBN-COUNT      PIC S9(9) BINARY.
+                    06  W65-KOGAKKEIKBN-ITEM       PIC X(80) OCCURS 10.
+                  05  W65-CMB-KOGAKKEITAIKBN.
+                    06  W65-KOGAKKEITAIKBN         PIC X(40).
+                    06  W65-KOGAKKEITAIKBN-STATE   PIC S9(9) BINARY.
+                    06  W65-KOGAKKEITAIKBN-COUNT   PIC S9(9) BINARY.
+                    06  W65-KOGAKKEITAIKBN-ITEM    PIC X(40) OCCURS 10.
+                    06  W65-KOGAKKEITAIKBN-ITEM-STATE PIC S9(9) BINARY.
               03  W65-YUKOSTYMD                  PIC X(10).
               03  W65-YUKOSTYMD-STATE            PIC S9(9) BINARY.
               03  W65-YUKOEDYMD                  PIC X(10).
