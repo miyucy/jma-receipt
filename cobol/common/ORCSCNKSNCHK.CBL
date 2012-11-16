@@ -296,7 +296,7 @@
            CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
                                                SPA-AREA
       *
-      *    点数マスタより注加算か入院基本料等加算かを判定しながら
+      *    点数マスタより注加算か入院基本料等加算かを判定
       *    入院料加算の入院基本加算区分を取得
            MOVE    ZERO                    TO  FLG-KSN
            MOVE    ZERO                    TO  WRK-KSN-NYUKHNKSNKBN
@@ -307,10 +307,28 @@
            MOVE    "01"                    TO  TNS-YUKOSTYMD(7:2)
            MOVE    TNS-YUKOSTYMD           TO  TNS-YUKOEDYMD
            PERFORM   910-TENSU-READ-SEC
+      *    入院料加算以外は処理をスッキプする
+           IF     (TNS-SRYKBN              =   "90"  OR  "92")  AND
+                  (TNS-TENSIKIBETU         =    3)
+               CONTINUE
+           ELSE
+               GO  TO  200-MAIN-1-EXT
+           END-IF
+      *    注加算
+           IF   ((TNS-CDKBN-KBNNUM         >=  100)   AND
+                 (TNS-CDKBN-KBNNUM         <=  199))
+      *        入院基本料等加算
+               MOVE      1                 TO  FLG-KSN
+           END-IF
+           IF   ((TNS-CDKBN-KBNNUM         >=  300)   AND
+                 (TNS-CDKBN-KBNNUM         <=  399))
+      *        入院基本料等加算
+               MOVE      1                 TO  FLG-KSN
+           END-IF
            IF   ((TNS-CDKBN-KBNNUM         >=  200)   AND
                  (TNS-CDKBN-KBNNUM         <=  299))
       *        入院基本料等加算
-               MOVE      1                 TO  FLG-KSN
+               MOVE      2                 TO  FLG-KSN
                MOVE    TNS-NYUKHNKSNKBN    TO  WRK-KSN-NYUKHNKSNKBN
            END-IF
       *
@@ -372,8 +390,9 @@
            PERFORM   900-CLOSE-SEC
       *
       *
-      *    入院料加算チェックテーブルによるチェック
-           PERFORM    VARYING   IDX1   FROM   1   BY   1
+      *    入院料加算チェックテーブルによるチェック（入院基本料等加算）
+           IF    FLG-KSN      =     2
+             PERFORM    VARYING   IDX1   FROM   1   BY   1
                       UNTIL     IDX1   >   31
                IF   (ORCSCNKSN-DAY(IDX1)         NOT =   ZERO)  AND
                     (WRK-KHN-NYUKHNKSNKBN(IDX1)  NOT =   ZERO)
@@ -403,10 +422,12 @@
                                            TO      ORCSCNKSN-ERRMSG
                     END-IF
                END-IF
-           END-PERFORM
+             END-PERFORM
       *
-           IF     ORCSCNKSN-RC             =   6
-               GO  TO  200-MAIN-1-EXT
+             IF     ORCSCNKSN-RC             =   6
+                  GO  TO  200-MAIN-1-EXT
+             END-IF
+      *
            END-IF
       *
       *    入院時の外泊取得
