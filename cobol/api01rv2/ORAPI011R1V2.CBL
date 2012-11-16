@@ -202,6 +202,10 @@
                                      //APILST-// BY //APILST6-//.
            COPY    "CPAPILSTV2.INC"    REPLACING
                                      //APILST-// BY //APILST7-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                       //APILST-// BY //APILST8-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                       //APILST-// BY //APILST8-//.
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
