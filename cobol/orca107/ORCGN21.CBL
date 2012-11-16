@@ -153,12 +153,22 @@
            03  WRK-CONS-PASS       PIC X(30)   VALUE
                            "/var/lib/jma-receipt/medphoto/".
            03  WRK-CONS-CAUTION1.
-             05  FILLER            PIC X(34)   VALUE
-                           "医師の指示通りに服用してください。".
+             05  FILLER            PIC X(32)   VALUE
+                           "医師の指示通りに服用して下さい。".
+      *       05  FILLER            PIC X(01)   VALUE   X"0A".
+           03  WRK-CONS-CAUTION11.
+             05  FILLER            PIC X(32)   VALUE
+                           "医師の指示通りに使用して下さい。".
       *       05  FILLER            PIC X(01)   VALUE   X"0A".
            03  WRK-CONS-CAUTION2.
              05  FILLER            PIC X(40)   VALUE
                            "発疹・かゆみ等の過敏症が現れた時は服用を".
+             05  FILLER            PIC X(30)   VALUE
+                           "中止し、医師に相談して下さい。".
+      *       05  FILLER            PIC X(01)   VALUE   X"0A".
+           03  WRK-CONS-CAUTION21.
+             05  FILLER            PIC X(40)   VALUE
+                           "発疹・かゆみ等の過敏症が現れた時は使用を".
              05  FILLER            PIC X(30)   VALUE
                            "中止し、医師に相談して下さい。".
       *       05  FILLER            PIC X(01)   VALUE   X"0A".
@@ -593,6 +603,7 @@
            IF      SPA-GMN-JYOTAIFLG   =   ZERO
                INITIALIZE                      SPA-COPY-AREA
                MOVE    SPA-NAI-YAKKAKJNCD  TO  SPA-COPY-YAKKAKJNCD
+               MOVE    SPA-NAI-YKZKBN      TO  SPA-COPY-YKZKBN
                MOVE    SPA-NAI-SRYCD       TO  SPA-COPY-SRYCD
                MOVE    SPA-NAI-KENCD       TO  SPA-COPY-KENCD
                MOVE    SPA-NAI-SELNUM      TO  SPA-COPY-SELNUM
@@ -704,6 +715,7 @@
                                                    SPA-NAI-SRYCD
                            MOVE    TNS-YAKKAKJNCD
                                                TO  SPA-NAI-YAKKAKJNCD
+                           MOVE    TNS-YKZKBN  TO  SPA-NAI-YKZKBN
                            PERFORM 800-YAKUJYO-SET-SEC
                        ELSE
                            PERFORM 800-LIST-KENSU-SET-SEC
@@ -868,6 +880,8 @@
                                        SPA-NAI-SRYCD
            MOVE    SPA-GMN-TKJNCD(SPA-GMN-SELNUM)
                                    TO  SPA-NAI-YAKKAKJNCD
+           MOVE    SPA-GMN-TYKZKBN(SPA-GMN-SELNUM)
+                                   TO  SPA-NAI-YKZKBN
       *
       *    薬剤情報マスタ読み込み
            PERFORM 800-YAKUJYO-SET-SEC
@@ -887,10 +901,18 @@
            END-IF
       *
            MOVE    N21-CAUTION     TO  SPA-NAI-CAUTION
-           STRING  N21-CAUTION         DELIMITED BY SPACE
-                   WRK-CONS-CAUTION1   DELIMITED BY SPACE
-                                 INTO  SPA-GMN-CAUTION
-           END-STRING
+      *
+           IF      SPA-NAI-YKZKBN  =   1
+               STRING  N21-CAUTION         DELIMITED BY SPACE
+                       WRK-CONS-CAUTION1   DELIMITED BY SPACE
+                                     INTO  SPA-GMN-CAUTION
+               END-STRING
+           ELSE
+               STRING  N21-CAUTION         DELIMITED BY SPACE
+                       WRK-CONS-CAUTION11   DELIMITED BY SPACE
+                                     INTO  SPA-GMN-CAUTION
+               END-STRING
+           END-IF
       *
            .
        430-TEIKEI1-EXT.
@@ -907,10 +929,18 @@
            END-IF
       *
            MOVE    N21-CAUTION     TO  SPA-NAI-CAUTION
-           STRING  N21-CAUTION         DELIMITED BY SPACE
-                   WRK-CONS-CAUTION2   DELIMITED BY SPACE
-                                 INTO  SPA-GMN-CAUTION
-           END-STRING
+      *
+           IF      SPA-NAI-YKZKBN  =   1
+               STRING  N21-CAUTION         DELIMITED BY SPACE
+                       WRK-CONS-CAUTION2   DELIMITED BY SPACE
+                                     INTO  SPA-GMN-CAUTION
+               END-STRING
+           ELSE
+               STRING  N21-CAUTION         DELIMITED BY SPACE
+                       WRK-CONS-CAUTION21  DELIMITED BY SPACE
+                                     INTO  SPA-GMN-CAUTION
+               END-STRING
+           END-IF
       *
            .
        430-TEIKEI2-EXT.
@@ -2588,6 +2618,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
            MOVE    TNS-NAME        TO  SPA-GMN-TNAME(IDX)
            MOVE    TNS-SRYCD       TO  SPA-GMN-TCD(IDX)
            MOVE    TNS-YAKKAKJNCD  TO  SPA-GMN-TKJNCD(IDX)
+           MOVE    TNS-YKZKBN      TO  SPA-GMN-TYKZKBN(IDX)
       *
            .
        800-LIST-TENSU--SET-EXT.
@@ -2609,6 +2640,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
                    MOVE    SPA-GMN-TCD(IDX)    TO  SPA-GMN-KENCD
                                                    SPA-NAI-SRYCD
                    MOVE    SPA-GMN-TKJNCD(IDX) TO  SPA-NAI-YAKKAKJNCD
+                   MOVE    SPA-GMN-TYKZKBN(IDX) TO  SPA-NAI-YKZKBN
                    PERFORM 800-YAKUJYO-SET-SEC
                    INITIALIZE                      SPA-GMN-TBL
                    MOVE    ZERO                TO  SPA-GMN-MAX
