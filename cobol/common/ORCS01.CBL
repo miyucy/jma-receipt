@@ -15154,9 +15154,10 @@
                PERFORM    22023-KAISU-SELECT-SEC
            END-IF.
       *
-           IF   (WK-2010-KAICNTKBN-G(IDX3)  =  "1" )
-           AND  (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL)
-             MOVE     ZERO     TO     FLG-NOCOUNT
+           IF    WK-2010-KAICNTKBN-G(IDX3)  =  "1"
+             IF  WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL
+               MOVE   ZERO     TO     FLG-NOCOUNT
+             END-IF
              IF  (LNK-S01-SAIKEISAN-KBN   =   "1")
              AND (LNK-SYU-DENPNUM     NOT =  ZERO)
              AND (LNK-SYU-DENPNUM  <  SYU-DENPNUM)
@@ -15315,9 +15316,10 @@
                PERFORM    22023-KAISU-SELECT-SEC
            END-IF.
       *
-           IF   (WK-2010-KAICNTKBN-G(IDX3)  =  "1" )
-           AND  (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL)
-             MOVE     ZERO     TO     FLG-NOCOUNT
+           IF    WK-2010-KAICNTKBN-G(IDX3)  =  "1"
+             IF  WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL
+               MOVE   ZERO     TO     FLG-NOCOUNT
+             END-IF
              IF  (LNK-S01-SAIKEISAN-KBN   =   "1")
              AND (LNK-SYU-DENPNUM     NOT =  ZERO)
              AND (LNK-SYU-DENPNUM  <  SYU-DENPNUM)
