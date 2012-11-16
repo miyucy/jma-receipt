@@ -385,6 +385,7 @@
       *  04.05.50    NACL-門脇    12/10/11  複数科まとめ時の収納読み飛ばし
       *                                     条件修正
       *  04.05.51    NACL-門脇    12/11/05  北海道旭川市対応
+      *  04.05.52    NACL-門脇    12/11/16  大阪府地方公費対応
       *
       *  04.06.01    NACL-門脇    10/09/02  出産育児一時金直接支払制度（外来）
       *  04.06.02    NACL-門脇    10/11/08  主保険＋マル長の請求対応
@@ -15153,7 +15154,8 @@
                PERFORM    22023-KAISU-SELECT-SEC
            END-IF.
       *
-           IF    WK-2010-KAICNTKBN-G(IDX3)  =  "1"
+           IF   (WK-2010-KAICNTKBN-G(IDX3)  =  "1" )
+           AND  (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL)
              MOVE     ZERO     TO     FLG-NOCOUNT
              IF  (LNK-S01-SAIKEISAN-KBN   =   "1")
              AND (LNK-SYU-DENPNUM     NOT =  ZERO)
@@ -15313,7 +15315,8 @@
                PERFORM    22023-KAISU-SELECT-SEC
            END-IF.
       *
-           IF    WK-2010-KAICNTKBN-G(IDX3)  =  "1"
+           IF   (WK-2010-KAICNTKBN-G(IDX3)  =  "1" )
+           AND  (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL)
              MOVE     ZERO     TO     FLG-NOCOUNT
              IF  (LNK-S01-SAIKEISAN-KBN   =   "1")
              AND (LNK-SYU-DENPNUM     NOT =  ZERO)
