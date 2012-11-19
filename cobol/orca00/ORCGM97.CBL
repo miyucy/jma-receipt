@@ -38,9 +38,23 @@
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
+      *    プログラム更新　管理ファイル
+           SELECT  PGUP-FILE       ASSIGN  FILE-PGUP
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PGUP.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
+      *
+       FD  PGUP-FILE.
+       01  PGUP-REC.
+           03  PGUP-TIMES              PIC 9(04).
+           03  FILLER                  PIC X(01).
+           03  PGUP-UPDATEFLG          PIC X(01).
+           03  FILLER                  PIC X(01).
+           03  PGUP-RELEASEYMD         PIC X(08).
+           03  FILLER                  PIC X(01).
+           03  PGUP-COMMENT            PIC X(100).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -103,8 +117,16 @@
       *
       *    カウント領域
        01  CNT-AREA.
-           03  CNT-PGKANRI         PIC 9(02).
+           03  CNT-PGKANRI         PIC 9(06).
+           03  CNT-SKIP-MAX        PIC 9(06).
            03  CNT-TERMID          PIC 9(03).
+      *
+       01  STS-AREA.
+           03  STS-PGUP            PIC X(02).
+      *
+       01  FILE-AREA.
+           03  FILE-PGUP           PIC X(48)  VALUE
+               "/usr/lib/jma-receipt/patch-lib/patch-program.prf".
       *
       *    処理区分領域
        01  SKBN-AREA.
@@ -123,13 +145,18 @@
            03  WRK-SECOND.
                05  WRK-SEC         PIC Z9.
       *
+           03  WRK-GMN-TBL.
+               05  WRK-GMN-NAIYOLIST      OCCURS  99.
+                   07  WRK-GMN-TEIKYOYMD  PIC X(09).
+                   07  WRK-GMN-SYORIFLG   PIC X(08).
+                   07  WRK-GMN-NAIYO      PIC X(100).
+               05  WRK-GMN-NAIYOLIST-MAX  PIC 9(02).
+      *
        01  SHELL-AREA.
            03  SHELL-NAME1         PIC X(41)  VALUE
                "program_upgrade_online.sh".
            03  SHELL-NAME2         PIC X(42)  VALUE
                "program_upgrade_restart.sh".
-      *     03  SHELL-NAME3         PIC X(40)  VALUE
-      *         "scripts/allways/program_upgrade_check.sh".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -146,8 +173,8 @@
       *****************************************************************
       *
       *    ＰＧ管理
-       01  PGKANRI-REC.
-           COPY    "CPPGKANRI.INC".
+      * 01  PGKANRI-REC.
+      *     COPY    "CPPGKANRI.INC".
       *
       *    ジョブ管理
        01  JOBKANRI-REC.
@@ -536,61 +563,84 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        400-JYOKYO-SET-SEC          SECTION.
       *
-           MOVE    ZERO            TO  CNT-PGKANRI
+           MOVE    ZERO                TO  CNT-PGKANRI
+           MOVE    ZERO                TO  FLG-PGKANRI
       *
-           PERFORM 900-PGKANRI-SELECT-SEC
+      *    レコード件数を求める
+           OPEN    INPUT   PGUP-FILE
+           IF      STS-PGUP        NOT =   ZERO
+               MOVE    1                   TO  FLG-PGKANRI
+           ELSE
+               PERFORM UNTIL   FLG-PGKANRI =   1
+                   PERFORM 4001-PROOF-READ-SEC
+               END-PERFORM
+               MOVE    ZERO                TO  FLG-PGKANRI
+           END-IF
+           CLOSE   PGUP-FILE
       *
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   FLG-PGKANRI =   1
-                   OR      IDX         >   99
-      *    日付変換
-               MOVE    PGKANRI-RELEASEYMD  TO  WRK-SYMD
-               PERFORM 700-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG         TO  SPA-GMN-TEIKYOYMD(IDX)
-      *    更新フラグ
-               IF      PGKANRI-UPDATEFLG   =   "T"
-                   MOVE    "　　済　"      TO  SPA-GMN-SYORIFLG(IDX)
-               ELSE
-                 IF      PGKANRI-UPDATEFLG   =   "F"
-                     MOVE    "　未処理"      TO  SPA-GMN-SYORIFLG(IDX)
-                 ELSE
-                   IF      PGKANRI-UPDATEFLG   =   "E"
-                       MOVE    "　エラー"      TO  SPA-GMN-SYORIFLG(IDX)
-                   ELSE
-                       MOVE    "　　　　"      TO  SPA-GMN-SYORIFLG(IDX)
-                   END-IF
-                 END-IF
+           IF      CNT-PGKANRI         >   99
+               COMPUTE CNT-SKIP-MAX        =   CNT-PGKANRI  -  99
+           ELSE
+               MOVE    ZERO                TO  CNT-SKIP-MAX
+           END-IF
+      *
+      *     プログラム更新
+      *     MOVE    SPACE               TO  STS-RESTARTMSG
+      *
+           MOVE    ZERO                TO  CNT-PGKANRI
+           MOVE    ZERO                TO  FLG-PGKANRI
+           MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  WRK-GMN-NAIYOLIST-MAX
+      *
+           OPEN    INPUT   PGUP-FILE
+           IF      STS-PGUP        NOT =   ZERO
+               MOVE    1                   TO  FLG-PGKANRI
+           ELSE
+               PERFORM 4001-PROOF-READ-SEC
+           END-IF
+      *
+           PERFORM UNTIL   FLG-PGKANRI =   1
+               IF      CNT-PGKANRI         >   CNT-SKIP-MAX
+                   COMPUTE IDX                 =   IDX +   1
+      *            提供日
+                   MOVE    PGUP-RELEASEYMD     TO  WRK-SYMD
+                   PERFORM 700-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG         TO
+                                               WRK-GMN-TEIKYOYMD(IDX)
+      *            更新フラグ
+                   EVALUATE    PGUP-UPDATEFLG
+                       WHEN    "T"
+                           MOVE    "　　済　"      TO
+                                                   WRK-GMN-SYORIFLG(IDX)
+                       WHEN    "F"
+                           MOVE    "　未処理"      TO
+                                                   WRK-GMN-SYORIFLG(IDX)
+                       WHEN    "E"
+                           MOVE    "　エラー"      TO
+                                                   WRK-GMN-SYORIFLG(IDX)
+                       WHEN    OTHER
+                           MOVE    "　　　　"      TO
+                                                   WRK-GMN-SYORIFLG(IDX)
+                   END-EVALUATE
+      *            内容
+                   MOVE    PGUP-COMMENT        TO  WRK-GMN-NAIYO(IDX)
                END-IF
-      *    内容
-               MOVE    PGKANRI-COMMENT     TO  SPA-GMN-NAIYO(IDX)
-      *
-               COMPUTE CNT-PGKANRI     =   CNT-PGKANRI +   1
-               PERFORM 900-PGKANRI-FETCH-SEC
-      *    ９９件を超えた場合
-               IF      (IDX                =   99)    AND
-                       (FLG-PGKANRI        =   0 )
-                   PERFORM VARYING IDY     FROM    10  BY  1
-                           UNTIL   IDY     >   99
-                       MOVE    SPA-GMN-NAIYOLIST(IDY)    TO
-                               SPA-GMN-NAIYOLIST(IDY - 9)
-                       MOVE    SPACE       TO  SPA-GMN-NAIYOLIST(IDY)
-                   END-PERFORM
-                   MOVE    90              TO  IDX
-                   MOVE    90              TO  CNT-PGKANRI
-               END-IF
+               PERFORM 4001-PROOF-READ-SEC
            END-PERFORM
       *
-           MOVE    CNT-PGKANRI         TO  SPA-GMN-NAIYOLIST-MAX
+           MOVE    IDX                 TO  WRK-GMN-NAIYOLIST-MAX
+           CLOSE   PGUP-FILE
       *
-           PERFORM 900-PGKANRI-CLOSE-SEC
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING IDY     FROM    WRK-GMN-NAIYOLIST-MAX
+                                   BY  -1
+                   UNTIL   IDY     =   ZERO
+               COMPUTE IDX                 =   IDX +   1
+               MOVE    WRK-GMN-NAIYOLIST(IDY)  TO
+                                           SPA-GMN-NAIYOLIST(IDX)
+           END-PERFORM
       *
-      *    IF      SPA-GMN-NAIYOLIST-MAX   =  ZERO
-      *        MOVE    SPACE         TO  SKBN-RUN
-      *        MOVE    "更新データはありません。"
-      *                              TO  SPA-GMN-MSG
-      *        MOVE    "blue"        TO  SPA-GMN-MSG-STYLE
-      *        GO  TO  400-JYOKYO-SET-EXT
-      *    END-IF
+           MOVE    WRK-GMN-NAIYOLIST-MAX   TO  SPA-GMN-NAIYOLIST-MAX
       *
       *    メッセージ編集
            PERFORM 820-JOBKANRI-READ1-SEC
@@ -680,6 +730,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       ***  END-IF
            .
        400-JYOKYO-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プルーフ読み込み処理
+      *****************************************************************
+       4001-PROOF-READ-SEC         SECTION.
+           READ    PGUP-FILE
+               AT END
+                   MOVE    1                   TO  FLG-PGKANRI
+               NOT AT END
+                   COMPUTE CNT-PGKANRI         =   CNT-PGKANRI  +  1
+           END-READ
+           .
+       4001-PROOF-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1360,68 +1424,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-SYSDB-INV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＰＧ管理マスタ読み込み（キー）
-      *****************************************************************
-       900-PGKANRI-SELECT-SEC      SECTION.
-      *
-           INITIALIZE                  PGKANRI-REC
-           MOVE    "DBSELECT"      TO  MCP-FUNC
-           MOVE    "tbl_pgkanri"   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          =   ZERO
-               MOVE    ZERO        TO  FLG-PGKANRI
-               PERFORM 900-PGKANRI-FETCH-SEC
-           ELSE
-               MOVE    1           TO  FLG-PGKANRI
-           END-IF
-            .
-      *
-       900-PGKANRI-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＰＧ管理マスタ読み込み（キー）
-      *****************************************************************
-       900-PGKANRI-FETCH-SEC       SECTION.
-      *
-           MOVE    "DBFETCH"       TO  MCP-FUNC
-           MOVE    "tbl_pgkanri"   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           IF      MCP-RC          =   ZERO
-               MOVE    ZERO            TO  FLG-PGKANRI
-               MOVE    MCPDATA-REC     TO  PGKANRI-REC
-           ELSE
-               MOVE    1           TO  FLG-PGKANRI
-           END-IF
-           .
-      *
-       900-PGKANRI-FETCH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ＰＧ管理マスタ読み込み（キー）
-      *****************************************************************
-       900-PGKANRI-CLOSE-SEC       SECTION.
-      *
-           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           MOVE    "tbl_pgkanri"   TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-      *
-       900-PGKANRI-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************

@@ -18,7 +18,7 @@ def local_md5list(patch_lib,dir_list)
       end
       file_name = File.basename(path)
       if file_name.to_s != ""
-        unless file_name == "copying"
+        unless file_name == "patch-program.prf"
           begin
             md5 = Digest::MD5.hexdigest(File.open(path).read)
           rescue Exception => ex
