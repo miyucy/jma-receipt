@@ -109,6 +109,7 @@
       *  04.07.02    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
       *  04.07.03    NACL-門脇    12/10/12  保険別請求チェック表（標準帳票）
       *                                     の機能追加対応
+      *  04.07.04    NACL-門脇    12/09/25  コメント差込取り止め（在宅持続陽圧）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2745,9 +2746,9 @@
                 IF   SRY-SRYCD(IDX2) =  CONS-KAISYOKU-COMMENT
                    MOVE   "1"   TO    RECE220-FLG-KAISYOKU-COMMENT
                 END-IF
-                IF   SRY-SRYCD(IDX2) =  CONS-YOUATU-COMMENT
-                   MOVE   "1"   TO    RECE220-FLG-YOUATU-COMMENT
-                END-IF
+      ***       IF   SRY-SRYCD(IDX2) =  CONS-YOUATU-COMMENT
+      ***          MOVE   "1"   TO    RECE220-FLG-YOUATU-COMMENT
+      ***       END-IF
               END-IF
            END-IF
       *

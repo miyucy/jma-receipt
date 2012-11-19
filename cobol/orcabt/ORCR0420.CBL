@@ -232,6 +232,7 @@
       *  04.06.04    NACL-門脇    12/10/15  診療行為入力したコメントのみの剤の
       *                                     レセプト記載対応
       *  04.07.01    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
+      *  04.07.02    NACL-門脇    12/09/25  コメント差込取り止め（在宅持続陽圧）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3559,9 +3560,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 IF   SRY-SRYCD(IDX2) =  CONS-KAISYOKU-COMMENT
                    MOVE   "1"   TO    RECE44-FLG-KAISYOKU-COMMENT
                 END-IF
-                IF   SRY-SRYCD(IDX2) =  CONS-YOUATU-COMMENT
-                   MOVE   "1"   TO    RECE44-FLG-YOUATU-COMMENT
-                END-IF
+      ***       IF   SRY-SRYCD(IDX2) =  CONS-YOUATU-COMMENT
+      ***          MOVE   "1"   TO    RECE44-FLG-YOUATU-COMMENT
+      ***       END-IF
               END-IF
            END-IF
       *

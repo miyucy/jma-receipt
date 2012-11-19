@@ -605,6 +605,7 @@
       *  04.07.03    NACL-門脇    12/08/27  システム管理２０１０機能追加対応
       *  04.07.04    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
       *  04.07.05    NACL-門脇    12/11/15  システム管理２０１０機能追加対応
+      *  04.07.06    NACL-門脇    12/09/25  コメント差込取り止め（在宅持続陽圧）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -9588,9 +9589,9 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                 IF   SRY-SRYCD(IDX2) =  CONS-KAISYOKU-COMMENT
                    MOVE   "1"   TO    RECE04-FLG-KAISYOKU-COMMENT
                 END-IF
-                IF   SRY-SRYCD(IDX2) =  CONS-YOUATU-COMMENT
-                   MOVE   "1"   TO    RECE04-FLG-YOUATU-COMMENT
-                END-IF
+      ***       IF   SRY-SRYCD(IDX2) =  CONS-YOUATU-COMMENT
+      ***          MOVE   "1"   TO    RECE04-FLG-YOUATU-COMMENT
+      ***       END-IF
               END-IF
            END-IF
       *
