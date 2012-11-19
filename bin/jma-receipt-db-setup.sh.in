@@ -99,9 +99,9 @@ if [ ${RC} -eq 0 ] ; then
     RC=$?
 fi
 if [ ${RC} -eq 0 ] ; then
-    echo "$INITDIR"/orca-db-clear.sh .....
-    bash "$INITDIR"/orca-db-clear.sh
-    RC=$?
+    if [ ! -f ${PGUP_PROOF} ];	then
+        rm -fr ${PGUP_PROOF}
+    fi
 fi
 if [ ${RC} -eq 0 ] ; then
     echo "$BINDIR"/jma-receipt-db-check.sh .....

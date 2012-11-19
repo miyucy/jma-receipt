@@ -14,8 +14,6 @@ fi
 #------------------------------------
 
 PRGDIR=orca-prgupwork
-PGUP_PROOF="${PATCHLIBDIR}/patch-program.prf"
-
 LOG="$LOGDIR"/program_upgrade_check.log
 
 SYORI=$1
