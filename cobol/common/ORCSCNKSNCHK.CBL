@@ -421,6 +421,10 @@
                       MOVE  "算定入院料では算定できない入院料加算です。"
                                            TO      ORCSCNKSN-ERRMSG
                     END-IF
+      *             入院料加算チェッククローズ
+                    MOVE    "tbl_nyuksnchk"         TO  MCP-TABLE
+                    MOVE    "key"                   TO  MCP-PATHNAME
+                    PERFORM   900-CLOSE-SEC
                END-IF
              END-PERFORM
       *
