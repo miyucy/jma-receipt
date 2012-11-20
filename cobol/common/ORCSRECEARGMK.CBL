@@ -43,6 +43,8 @@
       *  04.05.01    NACL-藤原    11/08/02  労災新様式対応
       *
       *  04.06.01    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *
+      *  04.07.01    NACL-藤原    12/11/20  スクリプト起動パスサーチ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -120,8 +122,8 @@
            COPY    "CPORCSPRTLNK.INC".             
       *
        01  WRK-SHELL-NAME.
-           05  FILLER             PIC X(16) VALUE
-                                             "scripts/monthly/".
+      *****05  FILLER             PIC X(16) VALUE
+      *****                                  "scripts/monthly/".
            05  WRK-SHELL-SHELL    PIC X(20).
       *
            COPY    "MCPAREA".
@@ -557,11 +559,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
       *
            MOVE    SPACE           TO  SHELLTBL
       *    ファイルデイレクトリ位置指定
-           INITIALIZE              ORCSMKPASSAREA
-           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      **   INITIALIZE              ORCSMKPASSAREA
+      **   MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
+      **   CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+      **   MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
+           MOVE    WRK-SHELL-NAME  TO  SHELLTBL-NAME
       *------------------> recept1.sh $1 - $11
            MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG1
            MOVE    "2"             TO  SHELLTBL-ARG2
@@ -738,7 +741,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG34
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "shell"         TO  MCP-PATHNAME
+           MOVE    "monthly"       TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            DISPLAY "ORCSRECEARGMK ED ="
