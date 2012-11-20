@@ -12,8 +12,7 @@ initdump_files = \
 init_sources = \
         orca-db-create.sh \
         orca-db-init.sh \
-        orca-db-install.sh \
-        orca-db-clear.sh
+        orca-db-install.sh
 
 init_scripts = $(init_sources:.sh.in=.sh)
 
