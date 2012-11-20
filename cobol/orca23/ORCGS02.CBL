@@ -4762,7 +4762,7 @@
       *
                IF    ( FLG-SEIKYU-PRT  =   1 )
                    MOVE    "03"            TO      WRK-SPA-PRT-FLG
-                   CALL    "ORCHCN03"      USING   ORCHCN03AREA
+                   CALL    WRK-SEIKYU-PG   USING   ORCHCN03AREA
                                                    WRK-SPA-AREA
                    MOVE    SPACE           TO  WRK-SPA-PRT-FLG
                END-IF
