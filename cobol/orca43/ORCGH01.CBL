@@ -99,6 +99,7 @@
       *  04.06.04    NACL-藤原    11/12/12  点検レセ０点公費印字対応
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
+      *  04.07.02    NACL-藤原    12/11/19  主科情報の取得方法変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -601,6 +602,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            IF      SYS-2009-SYUKA-KBN
                                    =   SPACE
                MOVE    "0"             TO  SYS-2009-SYUKA-KBN
+           END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   "0"
+               MOVE    "0"             TO  SYS-2009-SYUKA-SYAHO
+                                           SYS-2009-SYUKA-KOKUHO
+                                           SYS-2009-SYUKA-KOUIKI
            END-IF
            IF    ( SYS-2009-SYUKA-KBN
                                    =   "1"   )

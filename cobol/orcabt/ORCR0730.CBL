@@ -178,6 +178,7 @@
       *  04.07.03    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
       *  04.07.04    NACL-藤原    12/09/24  点検用レセプトの医師名記載対応
+      *  04.07.05    NACL-藤原    12/11/19  主科情報の取得方法変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1950,6 +1951,12 @@
                                    =   SPACE
                MOVE    "0"             TO  SYS-2009-SYUKA-KBN
            END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   "0"
+               MOVE    "0"             TO  SYS-2009-SYUKA-SYAHO
+                                           SYS-2009-SYUKA-KOKUHO
+                                           SYS-2009-SYUKA-KOUIKI
+           END-IF
            IF    ( SYS-2009-SYUKA-KBN
                                    =   "1"   )
            AND   ( SYS-2009-SYUKA-SYAHO
@@ -1968,6 +1975,10 @@
                                    =   SPACE )
                MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
            END-IF
+           DISPLAY "SYS-2009-SYUKA-KBN="  SYS-2009-SYUKA-KBN " "
+                                          SYS-2009-SYUKA-SYAHO " "
+                                          SYS-2009-SYUKA-KOKUHO " "
+                                          SYS-2009-SYUKA-KOUIKI
       * 
       *    県内扱い保険者情報
            MOVE    SPACE            TO  WRK-1033-TABLE

@@ -55,6 +55,7 @@
       *                                     支払機関請求対応
       *  04.07.02    NACL-藤原    12/08/01  レセ電データチェック機能対応
       *  04.07.03    NACL-藤原    12/08/28  スクリプト起動パスサーチ対応
+      *  04.07.04    NACL-藤原    12/11/19  主科情報の取得方法変更
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -703,6 +704,12 @@
            IF      SYS-2009-SYUKA-KBN
                                    =   SPACE
                MOVE    "0"             TO  SYS-2009-SYUKA-KBN
+           END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   "0"
+               MOVE    "0"             TO  SYS-2009-SYUKA-SYAHO
+                                           SYS-2009-SYUKA-KOKUHO
+                                           SYS-2009-SYUKA-KOUIKI
            END-IF
            IF    ( SYS-2009-SYUKA-KBN
                                    =   "1"   )

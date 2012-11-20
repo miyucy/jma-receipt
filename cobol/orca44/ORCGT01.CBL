@@ -160,6 +160,7 @@
       *  04.07.04    NACL-藤原    12/08/28  スクリプト起動パスサーチ対応
       *  04.07.05    NACL-藤原    12/10/31  ファイル出力先設定のデフォルト
       *                                     変更
+      *  04.07.06    NACL-藤原    12/11/19  主科情報の取得方法変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1076,6 +1077,12 @@ grpsys                                         SPA-AREA
            IF      SYS-2009-SYUKA-KBN
                                    =   SPACE
                MOVE    "0"             TO  SYS-2009-SYUKA-KBN
+           END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   "0"
+               MOVE    "0"             TO  SYS-2009-SYUKA-SYAHO
+                                           SYS-2009-SYUKA-KOKUHO
+                                           SYS-2009-SYUKA-KOUIKI
            END-IF
            IF    ( SYS-2009-SYUKA-KBN
                                    =   "1"   )
