@@ -1511,7 +1511,7 @@
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
-        <xalign>0.5</xalign>
+        <xalign>0</xalign>
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>

@@ -4939,7 +4939,7 @@
             <name>label384</name>
             <x>28</x>
             <y>472</y>
-            <width>20</width>
+            <width>32</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -4957,7 +4957,7 @@
             <name>label385</name>
             <x>28</x>
             <y>496</y>
-            <width>20</width>
+            <width>32</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -4975,7 +4975,7 @@
             <name>label386</name>
             <x>28</x>
             <y>520</y>
-            <width>20</width>
+            <width>32</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -4993,7 +4993,7 @@
             <name>label387</name>
             <x>28</x>
             <y>544</y>
-            <width>20</width>
+            <width>32</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
