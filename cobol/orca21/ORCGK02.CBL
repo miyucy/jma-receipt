@@ -745,10 +745,10 @@
       *処理最大行
        01  MAX-LINE-VALUE          PIC 9(04)   VALUE   400.
       *画面最大行
-      *ito 01  MAX-GMN                 PIC 9(04)   VALUE   20.
+      *01  MAX-GMN                 PIC 9(04)   VALUE   20.
        01  MAX-GMN                 PIC 9(04)   VALUE   400.
       *画面ページ数（処理最大行÷画面最大行）
-      *ito 01  MAX-PAGE                PIC 9(04)   VALUE   20.
+      *01  MAX-PAGE                PIC 9(04)   VALUE   20.
        01  MAX-PAGE                PIC 9(04)   VALUE   1.
       *
        01  WRK-MOJI-AREA.
@@ -1058,33 +1058,33 @@
       *
        01  SCRAREA.
            COPY    "ORCA21SCRAREA.INC".
-      *ito     COPY    "K01.INC".
-      *ito     COPY    "K02.INC".
-      *ito     COPY    "K02N.INC".
-      *ito     COPY    "K021.INC".
-      *ito     COPY    "K023.INC".
-      *ito     COPY    "K03.INC".
-      *ito     COPY    "K04.INC".
-      *ito     COPY    "K05.INC".
-      *ito     COPY    "K051.INC".
-      *ito     COPY    "K052.INC".
-      *ito     COPY    "K06.INC".
-      *ito     COPY    "K061.INC".
-      *ito     COPY    "K062.INC".
-      *ito     COPY    "K07.INC".
-      *ito     COPY    "K08.INC".
-      *ito     COPY    "K081.INC".
-      *ito     COPY    "K09.INC".
-      *ito     COPY    "K10.INC".
-      *ito     COPY    "K97.INC".
-      *ito     COPY    "K98.INC".
-      *ito     COPY    "K99.INC".
-      *ito     COPY    "K03X.INC".
-      *ito     COPY    "KERR.INC".
-      *ito     COPY    "KERR2.INC".
-      *ito     COPY    "KID1.INC".
-      *ito     COPY    "KID2.INC".
-      *ito     COPY    "KHELP.INC".
+      *!!!     COPY    "K01.INC".
+      *!!!     COPY    "K02.INC".
+      *!!!     COPY    "K02N.INC".
+      *!!!     COPY    "K021.INC".
+      *!!!     COPY    "K023.INC".
+      *!!!     COPY    "K03.INC".
+      *!!!     COPY    "K04.INC".
+      *!!!     COPY    "K05.INC".
+      *!!!     COPY    "K051.INC".
+      *!!!     COPY    "K052.INC".
+      *!!!     COPY    "K06.INC".
+      *!!!     COPY    "K061.INC".
+      *!!!     COPY    "K062.INC".
+      *!!!     COPY    "K07.INC".
+      *!!!     COPY    "K08.INC".
+      *!!!     COPY    "K081.INC".
+      *!!!     COPY    "K09.INC".
+      *!!!     COPY    "K10.INC".
+      *!!!     COPY    "K97.INC".
+      *!!!     COPY    "K98.INC".
+      *!!!     COPY    "K99.INC".
+      *!!!     COPY    "K03X.INC".
+      *!!!     COPY    "KERR.INC".
+      *!!!     COPY    "KERR2.INC".
+      *!!!     COPY    "KID1.INC".
+      *!!!     COPY    "KID2.INC".
+      *!!!     COPY    "KHELP.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -4926,8 +4926,8 @@
       *    入力項目の決定
            IF      MCP-EVENT           =   "ACTIVATE"   OR
                                            "ACTIVATE2"
-      *ito         IF     (MCP-WIDGET(1:07)    =   "INPUTCD"  )  OR
-      *ito                (MCP-WIDGET(1:6)     =   "MEISYO"   )
+      *!!!      IF     (MCP-WIDGET(1:07)    =   "INPUTCD"  )  OR
+      *!!!             (MCP-WIDGET(1:6)     =   "MEISYO"   )
                IF      MCP-WIDGET      =   "PANDATABLE1"
                    PERFORM 2001-INPUT-SET-SEC
                    IF      WRK-IDX2        =   ZERO
@@ -4982,14 +4982,14 @@
       *    入力行NOの設定
            MOVE    ZERO                TO  WRK-IDX2
            MOVE    SPACE               TO  WRK-WIDGET
-      *ito     IF      MCP-WIDGET(1:07)    =   "INPUTCD"
-      *ito         MOVE    MCP-WIDGET(8:2)     TO  WRK-IDX2
-      *ito         MOVE    MCP-WIDGET(1:7)     TO  WRK-WIDGET
-      *ito     END-IF
-      *ito     IF      MCP-WIDGET(1:6)     =   "MEISYO"
-      *ito         MOVE    MCP-WIDGET(7:2)     TO  WRK-IDX2
-      *ito         MOVE    MCP-WIDGET(1:6)     TO  WRK-WIDGET
-      *ito     END-IF
+      *!!!     IF      MCP-WIDGET(1:07)    =   "INPUTCD"
+      *!!!         MOVE    MCP-WIDGET(8:2)     TO  WRK-IDX2
+      *!!!         MOVE    MCP-WIDGET(1:7)     TO  WRK-WIDGET
+      *!!!     END-IF
+      *!!!     IF      MCP-WIDGET(1:6)     =   "MEISYO"
+      *!!!         MOVE    MCP-WIDGET(7:2)     TO  WRK-IDX2
+      *!!!         MOVE    MCP-WIDGET(1:6)     TO  WRK-WIDGET
+      *!!!     END-IF
            IF      MCP-WIDGET          =   "PANDATABLE1"
                MOVE    K02-PANDATABLE1-TROW    TO  WRK-IDX2
                IF      K02-PANDATABLE1-TCOLUMN =   2
@@ -5122,21 +5122,15 @@
                    END-IF
       *            メモ登録有無
                    PERFORM 41021-PTMEMOINF-SEC
-      *ito ちょっと試し start
+      *!!!!!
                    INITIALIZE SPA-GMN-POPUP-STATUS
-      *            MOVE    "保険確認"          TO  SPA-GMN-POPUP-SUMMARY
-      *             STRING  PTHKN-KAKUNINYMD        DELIMITED  BY  SIZE
-      *            STRING  "H23. 3.11"             DELIMITED  BY  SIZE
-      *                    " より確認していません" DELIMITED  BY  SIZE
-      *                                      INTO  SPA-GMN-POPUP-BODY
-      *            END-STRING
-                   IF      PTMEMOINF-MEMO  NOT =   SPACE
-                   MOVE    "メモがあります"    TO  SPA-GMN-POPUP-SUMMARY
-                   MOVE    PTMEMOINF-MEMO      TO  SPA-GMN-POPUP-BODY
-                   MOVE    SPACE               TO  SPA-GMN-POPUP-ICON
-                   MOVE    5                   TO  SPA-GMN-POPUP-TIMEOUT
-                   END-IF
-      *ito ちょっと試し END
+      ****         IF      PTMEMOINF-MEMO  NOT =   SPACE
+      *            MOVE    "メモがあります"    TO  SPA-GMN-POPUP-SUMMARY
+      *            MOVE    PTMEMOINF-MEMO      TO  SPA-GMN-POPUP-BODY
+      *            MOVE    SPACE               TO  SPA-GMN-POPUP-ICON
+      *            MOVE    5                   TO  SPA-GMN-POPUP-TIMEOUT
+      ****         END-IF
+      *!!!!!END
            END-EVALUATE
            .
       *
@@ -12556,7 +12550,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO  K02-TITLE
            END-STRING
       *
-      *ito ちょっと試し start
       *!!! MOVE    SPA-GMN-POPUP-SUMMARY   TO  K02-POPUP-SUMMARY
       *    MOVE    SPA-GMN-POPUP-BODY      TO  K02-POPUP-BODY
       *    MOVE    SPA-GMN-POPUP-ICON      TO  K02-POPUP-ICON
@@ -12565,7 +12558,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    IF      SPA-GMN-POPUP-SUMMARY   NOT = SPACE
                INITIALIZE SPA-GMN-POPUP-STATUS
       *!!! END-IF
-      *ito ちょっと試し END
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
@@ -12722,7 +12714,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            MOVE    WRK-SURYO-HENSYU    TO  K02-SURYO (IDX)
-      *ito     MOVE    "user-font"         TO  K02-SURYO-STYLE(IDX)
+      *!!! MOVE    "user-font"         TO  K02-SURYO-STYLE(IDX)
       *@
       *    包括剤
            IF    ( SPA-COM-HOUKATU-ZAI (WRK-IDX) NOT =   ZERO)   OR

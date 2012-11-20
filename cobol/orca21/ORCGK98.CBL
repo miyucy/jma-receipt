@@ -417,33 +417,33 @@
       *
        01  SCRAREA.
            COPY    "ORCA21SCRAREA.INC".
-      *ito     COPY    "K01.INC".
-      *ito     COPY    "K02.INC".
-      *ito     COPY    "K02N.INC".
-      *ito     COPY    "K021.INC".
-      *ito     COPY    "K023.INC".
-      *ito     COPY    "K03.INC".
-      *ito     COPY    "K04.INC".
-      *ito     COPY    "K05.INC".
-      *ito     COPY    "K051.INC".
-      *ito     COPY    "K052.INC".
-      *ito     COPY    "K06.INC".
-      *ito     COPY    "K061.INC".
-      *ito     COPY    "K062.INC".
-      *ito     COPY    "K07.INC".
-      *ito     COPY    "K08.INC".
-      *ito     COPY    "K081.INC".
-      *ito     COPY    "K09.INC".
-      *ito     COPY    "K10.INC".
-      *ito     COPY    "K97.INC".
-      *ito     COPY    "K98.INC".
-      *ito     COPY    "K99.INC".
-      *ito     COPY    "K03X.INC".
-      *ito     COPY    "KERR.INC".
-      *ito     COPY    "KERR2.INC".
-      *ito     COPY    "KID1.INC".
-      *ito     COPY    "KID2.INC".
-      *ito     COPY    "KHELP.INC".
+      *!!!     COPY    "K01.INC".
+      *!!!     COPY    "K02.INC".
+      *!!!     COPY    "K02N.INC".
+      *!!!     COPY    "K021.INC".
+      *!!!     COPY    "K023.INC".
+      *!!!     COPY    "K03.INC".
+      *!!!     COPY    "K04.INC".
+      *!!!     COPY    "K05.INC".
+      *!!!     COPY    "K051.INC".
+      *!!!     COPY    "K052.INC".
+      *!!!     COPY    "K06.INC".
+      *!!!     COPY    "K061.INC".
+      *!!!     COPY    "K062.INC".
+      *!!!     COPY    "K07.INC".
+      *!!!     COPY    "K08.INC".
+      *!!!     COPY    "K081.INC".
+      *!!!     COPY    "K09.INC".
+      *!!!     COPY    "K10.INC".
+      *!!!     COPY    "K97.INC".
+      *!!!     COPY    "K98.INC".
+      *!!!     COPY    "K99.INC".
+      *!!!     COPY    "K03X.INC".
+      *!!!     COPY    "KERR.INC".
+      *!!!     COPY    "KERR2.INC".
+      *!!!     COPY    "KID1.INC".
+      *!!!     COPY    "KID2.INC".
+      *!!!     COPY    "KHELP.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
