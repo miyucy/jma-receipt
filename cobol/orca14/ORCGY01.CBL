@@ -4383,6 +4383,7 @@
            END-IF
       *
            MOVE    SPACE               TO  Y01
+           INITIALIZE                      Y01
       *
            MOVE    ZERO                TO  Y01-PTLIST-ROW
            MOVE    ZERO                TO  Y01-PTLIST-ROWATTR

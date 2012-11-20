@@ -605,6 +605,7 @@
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  Y05
+           INITIALIZE                      Y05
       *
            MOVE    SPA-GMN-PTNUM       TO  Y05-PTNUM
            MOVE    SPA-GMN-NAME        TO  Y05-NAME

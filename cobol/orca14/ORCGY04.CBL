@@ -660,6 +660,7 @@
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  Y04
+           INITIALIZE                      Y04
       *
            MOVE    SPA-GMN-SINRYO      TO  Y04-SRYNAIYO
            MOVE    SPA-GMN-DRNAME      TO  Y04-DRNAME

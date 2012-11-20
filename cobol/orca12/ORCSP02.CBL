@@ -2866,6 +2866,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            MOVE    SPACE               TO  P02
+           INITIALIZE                      P02
       *
            EVALUATE    SPA-P02-GAMEN
                WHEN    "P020"

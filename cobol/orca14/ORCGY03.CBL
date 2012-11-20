@@ -960,7 +960,9 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
+      *
            MOVE    SPACE               TO  Y03
+           INITIALIZE                      Y03
       *
            MOVE    SPA-GMN-SINYMD      TO  Y03-SRYMD
       *----(01.00.01) LINE ADD START ----------------------------------
