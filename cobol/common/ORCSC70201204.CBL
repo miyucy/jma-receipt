@@ -3649,6 +3649,15 @@
                                                    TO  FLG-JIKASAN2
                        END-IF
                    END-IF
+      *           ¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¤Î»þ´Ö³°²Ã»»
+                   IF     (WRK-COM-SRYKBN  (IDX-Z)     =   "13" )
+                       IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  )
+                       AND    (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
+                           MOVE    WRK-COM-TIMEKSNKBN(IDX-Z)
+                                                   TO  FLG-JIKASAN 
+                       END-IF
+                   END-IF
+      *
       *            ²èÁü¿ÇÃÇÈ½Äê
                    IF     (WRK-COM-SRYKBN (IDX-Z)  =   "70")  AND
                           (WRK-COM-INPUTCD(IDX-Z)(1:1)

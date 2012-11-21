@@ -4287,6 +4287,14 @@
                                                    TO  FLG-JIKASAN 
                        END-IF
                    END-IF
+      *           凝價粗陸侳褲說恔及凜棉陸笛遙
+                   IF     (WRK-COM-SRYKBN  (IDX-Z)     =   "13" )
+                       IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  )
+                       AND    (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
+                           MOVE    WRK-COM-TIMEKSNKBN(IDX-Z)
+                                                   TO  FLG-JIKASAN 
+                       END-IF
+                   END-IF
       *
                    IF     (WRK-COM-SRYKBN (IDX-Z)  =   "60")  AND
                           (WRK-COM-INPUTCD(IDX-Z)(1:1)
