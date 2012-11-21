@@ -2206,6 +2206,9 @@
            MOVE    "2 空白チェックあり（予約設定有）"
                                        TO  SPA-GMN-UKEHKNCHK-LIST(3)
            MOVE    3                   TO  SPA-GMN-UKEHKNCHK-MAX
+      *ver.4.7
+      *    背景色初期設定
+           PERFORM 3109-COLORS-INIT-SEC
       *
            EVALUATE    SPA-W01-KANRICD
       *        診療行為情報
@@ -3174,6 +3177,26 @@
       *
            . 
        310-SPASET-1017-EXT.
+           EXIT.
+      *ver.4.7
+      *
+      *****************************************************************
+      *    背景色初期設定処理
+      *****************************************************************
+       3109-COLORS-INIT-SEC         SECTION.
+      *
+           MOVE    "#000000"           TO  SPA-GMN-BGCOLORS
+           MOVE    "#000000"           TO  SPA-GMN-BGCOLORSJ0
+           MOVE    "#000000"           TO  SPA-GMN-BGCOLORSDAY
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   8   )
+               MOVE    "#000000"       TO  SPA-GMN-BGCOLORSJ (IDX)
+           END-PERFORM
+           MOVE    "#000000"           TO  SPA-GMN-ERRCOLORS
+           MOVE    "#000000"           TO  SPA-GMN-KEICOLORS
+      *
+           .
+       3109-COLORS-INIT-EXT.
            EXIT.
       *
       *****************************************************************
