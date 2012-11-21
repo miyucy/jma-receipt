@@ -1263,8 +1263,6 @@
                                    TO  SPA-GMN-G01-PARA    (IDXA IDXB)
                END-IF
            WHEN    "PSN1"
-               IF    ( SPA-GMN-G01-PARA (IDXA IDXB)(1:1)
-                                               IS  NUMERIC )
                    IF    ( SPA-GMN-G01-PARA (IDXA IDXB)(2:)
                                                =   SPACE )
                        MOVE    SPA-GMN-G01-PARA(IDXA IDXB)(1:1)
@@ -1272,9 +1270,6 @@
                    ELSE
                        MOVE    "0002"  TO  SPA-ERRCD
                    END-IF
-               ELSE
-                   MOVE    "0002"      TO  SPA-ERRCD
-               END-IF
            WHEN    "N1"
            WHEN    "N2"
            WHEN    "N3"

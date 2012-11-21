@@ -651,10 +651,6 @@
            WHEN    "YMD"
                MOVE    SPA-SYSYMD      TO  SPA-NAI-G03-HENPARA(IDXA)
                MOVE    SPA-SYSYMDWH    TO  SPA-GMN-G03-PARA   (IDXA)
-           WHEN    "PSN1"
-               MOVE    "0"             TO  SPA-NAI-G03-HENPARA(IDXA)
-               MOVE    "0"
-                                       TO  SPA-GMN-G03-PARA   (IDXA)
            WHEN    "N1"
            WHEN    "N2"
            WHEN    "N3"
@@ -714,16 +710,12 @@
                    MOVE    WRK-HENYMDG TO  SPA-GMN-G03-PARA    (IDXA)
                END-IF
            WHEN    "PSN1"
-               IF    ( SPA-GMN-G03-PARA (IDXA)(1:1)   IS  NUMERIC )
                    IF    ( SPA-GMN-G03-PARA (IDXA)(2:)    =   SPACE )
                        MOVE    SPA-GMN-G03-PARA(IDXA)(1:1)
                            TO  SPA-NAI-G03-HENPARA (IDXA)
                    ELSE
                        MOVE    "0002"  TO  SPA-ERRCD
                    END-IF
-               ELSE
-                   MOVE    "0002"      TO  SPA-ERRCD
-               END-IF
            WHEN    "N1"
            WHEN    "N2"
            WHEN    "N3"
