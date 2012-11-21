@@ -19,7 +19,7 @@
   <name>I23</name>
   <x>0</x>
   <y>548</y>
-  <width>1024</width>
+  <width>1016</width>
   <height>200</height>
   <signal>
     <name>map_event</name>

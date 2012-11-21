@@ -13,7 +13,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>L03</name>
-  <width>1024</width>
+  <width>1016</width>
   <height>620</height>
   <signal>
     <name>map_event</name>
