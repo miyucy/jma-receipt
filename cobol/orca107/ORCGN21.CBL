@@ -365,9 +365,6 @@
       *        定型文２
                WHEN    "CLICKED"   ALSO    "TEIKEI2"
                    PERFORM 430-TEIKEI2-SEC
-      *        定型文クリア
-               WHEN    "CLICKED"   ALSO    "KURIA"
-                   PERFORM 430-KURIA-SEC
       *        カナ入力
                WHEN    "CLICKED"   ALSO    ANY
                    PERFORM 490-KANA-SEC
@@ -900,7 +897,7 @@
                 GO  TO  430-TEIKEI1-EXT
            END-IF
       *
-           MOVE    N21-CAUTION     TO  SPA-NAI-CAUTION
+      *     MOVE    N21-CAUTION     TO  SPA-NAI-CAUTION
       *
            IF      SPA-NAI-YKZKBN  =   1
                STRING  N21-CAUTION         DELIMITED BY SPACE
@@ -928,7 +925,7 @@
                 GO  TO  430-TEIKEI2-EXT
            END-IF
       *
-           MOVE    N21-CAUTION     TO  SPA-NAI-CAUTION
+      *     MOVE    N21-CAUTION     TO  SPA-NAI-CAUTION
       *
            IF      SPA-NAI-YKZKBN  =   1
                STRING  N21-CAUTION         DELIMITED BY SPACE
@@ -944,17 +941,6 @@
       *
            .
        430-TEIKEI2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    定型文クリア
-      *****************************************************************
-       430-KURIA-SEC               SECTION.
-      *
-           MOVE   SPA-NAI-CAUTION  TO   SPA-GMN-CAUTION
-      *
-           .
-       430-KURIA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2311,12 +2297,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
                MOVE    WIDGET-INSENSITIVE  TO  N21-B04-STATE
            END-IF
       *
-           IF      N21-CAUTION     =   SPA-NAI-CAUTION
-               MOVE    WIDGET-INSENSITIVE       TO  N21-KURIA-STATE
-           ELSE
-               MOVE    WIDGET-NORMAL            TO  N21-KURIA-STATE
-           END-IF
-      *
       *    カーソルセット
            PERFORM 530-MAPCUR-SEC
       *
@@ -2512,8 +2492,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
                    MOVE  "TEIKEI1"         TO  MCP-WIDGET
                WHEN    12
                    MOVE  "TEIKEI2"         TO  MCP-WIDGET
-               WHEN    13
-                   MOVE  "KURIA"           TO  MCP-WIDGET
                WHEN    99
                    MOVE  "B12"             TO  MCP-WIDGET
            END-EVALUATE

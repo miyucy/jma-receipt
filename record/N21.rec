@@ -92,8 +92,5 @@ N21	{
 		PHOTOAREA	{
 			imagedata	object;
 		};
-		KURIA	{
-			state   int;
-		};
 	};
 };

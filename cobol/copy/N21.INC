@@ -70,5 +70,3 @@
                   07  N21-CAUTION         PIC X(4000).
                 05  N21-PHOTO         PIC X(256).
                 05  N21-PHOTOAREA     PIC X(8).
-                05  N21-KURIA.
-                  07  N21-KURIA-STATE     PIC S9(9)   BINARY.
