@@ -1038,7 +1038,7 @@
            IF     SPA-NAI-NEXTFLG      =   0
                                        OR  2
       *    ¸øÈñ
-           IF      SPA-GMN27-KOH-PCNT  <   8
+           IF      SPA-GMN27-KOH-PCNT  <   12
                COMPUTE IDX             =   SPA-GMN27-KOH-PCNT  +  1
                IF      SPA-GMN27-KOHRENNUM (IDX 1)  NOT =   ZERO
                    MOVE    IDX             TO  SPA-GMN27-KOH-PCNT

@@ -747,12 +747,14 @@
       *
                    07  SPA-NAI27-PARADENUM                  PIC 9(03).
       *
+      *        ÊÝ¸±ºÇÂç¡¡£´£°·ï
                05  SPA-GMN27-HKN2-AREA.
                    07  SPA-GMN27-HKN-PG            OCCURS 8.
                        09  SPA-GMN27-HKNRENNUM     PIC 9(04)  OCCURS 5.
                    07  SPA-GMN27-HKN-PCNT          PIC 9(04).
+      *        ¸øÈñºÇÂç¡¡£¶£°·ï
                05  SPA-GMN27-KOH-AREA.
-                   07  SPA-GMN27-KOH-PG            OCCURS 8.
+                   07  SPA-GMN27-KOH-PG            OCCURS 12.
                        09  SPA-GMN27-KOHRENNUM     PIC 9(04)  OCCURS 5.
                    07  SPA-GMN27-KOH-PCNT          PIC 9(04).
       *
