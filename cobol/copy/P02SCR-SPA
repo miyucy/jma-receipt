@@ -787,6 +787,11 @@
                    07  SPA-GMN21-KISEI-ADRS        PIC X(100).
                    07  SPA-GMN21-KISEI-BANTI       PIC X(100).
                    07  SPA-GMN21-KISEI-TEL         PIC X(15).
+      *            ¥µº‘√œ∞Ëœ¢∑»ŒŒ∞Ë
+                   07  SPA-GMN21-PTPUBLIC-AREA.
+      *                √œ∞Ëœ¢∑»£…£ƒ
+                       09  SPA-GMN21-PATIENTID1        PIC X(20).
+      *
                05  SPA-NAI21-AREA.
                    07  SPA-MAE-RENRAKU-ADRS        PIC X(100).
                    07  SPA-MAE-OFFICE-ADRS         PIC X(100).

@@ -559,6 +559,8 @@
                     06  P02-VALUE   PIC X(100).
                   05  P02-P021-KISTEL.
                     06  P02-VALUE   PIC X(15).
+                  05  P02-P021-PATIENTID1.
+                    06  P02-VALUE   PIC X(20).
                 04  P02-FIXPAGE7.
                   05  P02-P024-TSRSELNUM.
                     06  P02-VALUE   PIC X(4).

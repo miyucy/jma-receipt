@@ -804,6 +804,9 @@ P02	{
 				P021_KISTEL	{
 					value	varchar(15);
 				};
+				P021_PATIENTID1	{
+					value	varchar(20);
+				};
 			};
 			FP7	{
 				P024_TSRSELNUM	{

@@ -174,4 +174,5 @@ db	{
 	tbl_pthknrrk;
 	tbl_labor_sio;
         tbl_generic_price;
+        tbl_ptnum_public;
 };

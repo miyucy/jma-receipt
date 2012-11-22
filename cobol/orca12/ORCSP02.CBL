@@ -51,6 +51,7 @@
       * 04.05.00     NACL-Â¿¡¹Ç¼  09/07/XX  ´µ¼Ô¸øÈñÉéÃ´³Ûµ¡Ç½ÄÉ²Ã
       * 04.05.00     NACL-Â¿¡¹Ç¼  10/03/XX  Ê¿À®£²£²Ç¯£´·î²þÀµÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  11/08/XX  ÊÝ¸±³ÎÇ§Ç¯·îÆüÍúÎòÂÐ±þ
+      * 04.07.00     NACL-Â¿¡¹Ç¼  12/11/22  ÃÏ°èÏ¢·È£É£ÄÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -122,6 +123,7 @@
            03  FLG-TNKRRK          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-PTSAME          PIC 9(01).
+           03  FLG-PTPUBLIC        PIC 9(01).
       *
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
@@ -375,6 +377,10 @@
       *    Æ±°ì´µ¼Ô¼±ÊÌ¥Æ¡¼¥Ö¥ë
        01  PTSAME-REC.
            COPY    "CPPTSAME.INC".
+      *
+      *    ´µ¼ÔÃÏ°èÏ¢·È¥Æ¡¼¥Ö¥ë
+       01  PTPUBLIC-REC.
+           COPY    "CPPTNUM_PUBLIC.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -1624,6 +1630,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    Â¾¤Î¾ðÊóÊÔ½¸
            PERFORM 10022-PARA-SET-SEC
+      *ver.4.7
+      *    ÃÏ°èÏ¢·ÈÊÔ½¸
+           PERFORM 10025-PTNUMPUBLIC-SET-SEC
+      *
       *    ´µ¼ÔÏ«ºÒ¾ðÊóÊÔ½¸
            PERFORM 10023-RSIPARA-SET-SEC
       *
@@ -2714,9 +2724,40 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        1002211-HKNNUM-SET-EXT.
            EXIT.
+      *ver.4.7
+      *****************************************************************
+      *    ÃÏ°èÏ¢·ÈÊÔ½¸½èÍý
+      *****************************************************************
+       10025-PTNUMPUBLIC-SET-SEC           SECTION.
+      *
+           INITIALIZE                  PTPUBLIC-REC
+           MOVE    PTINF-HOSPNUM       TO  PTPUBLIC-HOSPNUM
+           MOVE    PTINF-PTID          TO  PTPUBLIC-PTID
+      *
+           MOVE    PTPUBLIC-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptnum_public"  TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptnum_public"  TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-PTPUBLIC-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTPUBLIC
+               INITIALIZE                  PTPUBLIC-REC
+           END-IF
+           MOVE    "tbl_ptnum_public"  TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    PTPUBLIC-PATIENT-ID1    TO  SPA-GMN21-PATIENTID1
+           .
+       10025-PTNUMPUBLIC-SET-EXT.
+           EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÏ«ºÒ¾ðÊóÊÔ½¸ÊÔ½¸
+      *    ´µ¼ÔÏ«ºÒ¾ðÊóÊÔ½¸½èÍý
       *****************************************************************
        10023-RSIPARA-SET-SEC           SECTION.
       *
@@ -2909,7 +2950,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-CONDITIONH (2)  TO  P02-P02-CONDITIONH2
            MOVE    SPA-GMN-CONDITIONH (3)  TO  P02-P02-CONDITIONH3
       *
-      *
            PERFORM 2001-P020-SET-SEC
       *
            PERFORM 2001-P02W1-SET-SEC
@@ -3084,7 +3124,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÊÝ¸±ÁÈ¹ç¤»
            MOVE    ZERO                TO  IDZ
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-HKNCOMBI-MAX
+                   UNTIL      (IDX     >   SPA-HKNCOMBI-MAX )
+                           OR (IDZ     >=  15      )
                IF      SPA-NAI-THYOJIKBN (IDX) =   "1"
                    CONTINUE
                ELSE
@@ -3611,6 +3652,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN21-KISEI-ADRS     TO  P02-P021-KISADRS
            MOVE    SPA-GMN21-KISEI-BANTI    TO  P02-P021-KISBANTI
            MOVE    SPA-GMN21-KISEI-TEL      TO  P02-P021-KISTEL
+      *    ÃÏ°èÏ¢·È£É£Ä
+           MOVE    SPA-GMN21-PATIENTID1     TO  P02-P021-PATIENTID1
            .
        2001-P021-SET-EXT.
            EXIT.
@@ -4587,6 +4630,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-PTSAME-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼ÔÃÏ°èÏ¢·È¥Ç¡¼¥¿ÆÉ¹þ½èÍý
+      *****************************************************************
+       920-PTPUBLIC-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-PTPUBLIC
+               MOVE    MCPDATA-REC         TO  PTPUBLIC-REC
+           ELSE
+               MOVE    1                   TO  FLG-PTPUBLIC
+               INITIALIZE                  PTPUBLIC-REC
+           END-IF
+      *
+           .
+       920-PTPUBLIC-READ-EXT.
            EXIT.
       *
       *****************************************************************

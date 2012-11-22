@@ -784,6 +784,9 @@
                WHEN    "2118"
                    MOVE    "携帯番号は半角で入力して下さい"
                                                TO  SPA-ERRMSG
+               WHEN    "2119"
+                   MOVE    "地域連携ＩＤは半角で入力して下さい"
+                                               TO  SPA-ERRMSG
       *ver.4.7
       *    受付エラー
                WHEN    "2001"

@@ -48,6 +48,7 @@
       *  04.05.00    NACL-多々納  09/07/XX  患者公費負担額機能追加
       *  04.07.00    NACL-多々納  11/08/XX  患者保険確認履歴追加
       *  04.07.00    NACL-多々納  12/01/12  印刷処理移動
+      *  04.07.00    NACL-多々納  12/11/22  患者地域連携追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -122,6 +123,7 @@
            03  FLG-QRCDHKN         PIC 9(01).
            03  FLG-PTSAME          PIC 9(01).
            03  FLG-PTKOHFTNETC     PIC 9(01).
+           03  FLG-PTPUBLIC        PIC 9(01).
       *
            03  FLG-SYORI           PIC X(01).
            03  FLG-SYORI2          PIC X(01).
@@ -326,6 +328,11 @@
                                        //PTSAME-// BY //HZN-PTSAME-//.
       *
       *
+      *    患者地域連携テーブル
+       01  PTPUBLIC-REC.
+           COPY    "CPPTNUM_PUBLIC.INC".
+      *
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -489,6 +496,9 @@
       *
       *    患者情報更新
            PERFORM 210-PTINF-SYORI-SEC
+      *ver.4.7
+      *    患者地域連携情報更新
+           PERFORM 210-PTPUBLIC-SYORI-SEC
       *
       *    旧姓履歴更新
            PERFORM 260-KYUSEIRRK-SYORI-SEC
@@ -760,6 +770,107 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        2101-PTINF-HENSYUI-EXT.
+           EXIT.
+      *ver.4.7
+      *****************************************************************
+      *    患者地域連携情報更新処理
+      *****************************************************************
+       210-PTPUBLIC-SYORI-SEC        SECTION.
+      *
+           INITIALIZE                      PTPUBLIC-REC
+           MOVE    SPA-HOSPNUM         TO  PTPUBLIC-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTPUBLIC-PTID
+           MOVE    PTPUBLIC-REC        TO  MCPDATA-REC
+           PERFORM 900-PTPUBLIC-READ-SEC
+      *
+           IF      FLG-PTPUBLIC        =   ZERO
+               IF      SPA-GMN21-PATIENTID1    =   SPACE
+      *            地域連携ＩＤが空白なら削除
+                   MOVE    PTPUBLIC-REC        TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   MOVE    "tbl_ptnum_public"  TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
+                   IF      MCP-RC          NOT =   ZERO
+                       DISPLAY "P029 PTPUBLIC DEL ERR:" MCP-RC
+                               ",KEY:" PTPUBLIC-KEY
+                       MOVE    "9000"          TO  SPA-ERRCD
+                   END-IF
+               ELSE
+      *            更新
+                   PERFORM 2101-PTPUBLIC-UPS-SEC
+               END-IF
+           ELSE
+               IF      SPA-GMN21-PATIENTID1    NOT =   SPACE
+      *            地域連携情ＩＤあれば登録
+                   PERFORM 2101-PTPUBLIC-INS-SEC
+               END-IF
+           END-IF
+           .
+       210-PTPUBLIC-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者地域連携データ登録処理
+      *****************************************************************
+       2101-PTPUBLIC-INS-SEC        SECTION.
+      *
+           INITIALIZE                      PTPUBLIC-REC
+           MOVE    SPA-HOSPNUM         TO  PTPUBLIC-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTPUBLIC-PTID
+      *    入力値編集
+           MOVE    SPA-GMN21-PATIENTID1
+                                       TO  PTPUBLIC-PATIENT-ID1
+      *    作成年月日
+           MOVE    SMCNDATE-YMD        TO  PTPUBLIC-CREYMD
+           MOVE    SMCNDATE-YMD        TO  PTPUBLIC-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTPUBLIC-UPHMS
+           MOVE    SPA-OPID            TO  PTPUBLIC-OPID
+      *
+           MOVE    PTPUBLIC-REC        TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_ptnum_public"  TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "P029 PTPUBLIC INS ERR:" MCP-RC
+                           ",KEY:" PTPUBLIC-KEY
+               MOVE    "9000"          TO  SPA-ERRCD
+           END-IF
+           .
+       210-PTPUBLIC-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者地域連携データ更新処理
+      *****************************************************************
+       2101-PTPUBLIC-UPS-SEC        SECTION.
+      *
+           MOVE    MCPDATA-REC         TO  PTPUBLIC-REC
+      *    入力値編集
+           MOVE    SPA-GMN21-PATIENTID1
+                                       TO  PTPUBLIC-PATIENT-ID1
+      *    更新年月日
+           MOVE    SMCNDATE-YMD        TO  PTPUBLIC-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTPUBLIC-UPHMS
+           MOVE    SPA-OPID            TO  PTPUBLIC-OPID
+      *
+           MOVE    PTPUBLIC-REC        TO  MCPDATA-REC
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           MOVE    "tbl_ptnum_public"  TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "P029 PTPUBLIC UPD ERR:" MCP-RC
+                           ",KEY:" PTPUBLIC-KEY
+               MOVE    "9000"          TO  SPA-ERRCD
+           END-IF
+           .
+       2101-PTPUBLIC-UPS-EXT.
            EXIT.
       *****************************************************************
       *    患者保険マスター処理
@@ -2822,6 +2933,36 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        900-QRCDHKN-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者地域連携読み込み
+      *****************************************************************
+       900-PTPUBLIC-READ-SEC         SECTION.
+      *
+           MOVE    PTPUBLIC-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptnum_public"  TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptnum_public"  TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTPUBLIC-REC
+                   MOVE    ZERO            TO  FLG-PTPUBLIC
+               ELSE
+                   MOVE    1               TO  FLG-PTPUBLIC
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-PTPUBLIC
+           END-IF
+           MOVE    "tbl_ptnum_public"  TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       900-PTPUBLIC-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
