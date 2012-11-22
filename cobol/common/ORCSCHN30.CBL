@@ -266,11 +266,16 @@
            MOVE    ORCSHCN30-ROOMNO    TO  ORCHCN30-ROOMNO
       *
            IF      WRK-YAKJYO-PG   NOT =   SPACE
-               MOVE    WRK-YAKJYO-PG   TO  ONPRTDATA-PGID
+      *ver.4.7 プレビューの為、直接印刷へ変更
                MOVE    ORCHCN30AREA    TO  ONPRTDATA-DATA
-               CALL    "ORCHCOMMON"        USING
+               CALL    WRK-YAKJYO-PG       USING
                                            SPA-AREA
                                            ONPRTDATA
+      *****    MOVE    WRK-YAKJYO-PG   TO  ONPRTDATA-PGID
+      *        MOVE    ORCHCN30AREA    TO  ONPRTDATA-DATA
+      *        CALL    "ORCHCOMMON"        USING
+      *                                    SPA-AREA
+      *****                                ONPRTDATA
            END-IF
       *
            .

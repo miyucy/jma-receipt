@@ -6504,11 +6504,15 @@
                MOVE    SPA-SRYYMD          TO  ORCHC67-SRYYMD
                MOVE    "2"                 TO  ORCHC67-KBN
                MOVE    "06"                TO  SPA-PRT-FLG
-               MOVE    WRK-YYKHYO-PG       TO  ONPRTDATA-PGID
+      *ver.4.7 プレビューの為、直接印刷へ変更
                MOVE    ORCHC67AREA         TO  ONPRTDATA-DATA
-               CALL    "ORCHCOMMON"        USING
-                                           SPA-AREA
-                                           ONPRTDATA
+               CALL    WRK-YYKHYO-PG       USING   SPA-AREA
+                                                   ONPRTDATA
+      ******   MOVE    WRK-YYKHYO-PG       TO  ONPRTDATA-PGID
+      *        MOVE    ORCHC67AREA         TO  ONPRTDATA-DATA
+      *        CALL    "ORCHCOMMON"        USING
+      *                                    SPA-AREA
+      ****                                 ONPRTDATA
            END-IF
       *
            IF      (SPA-CLIENT-PRT-FLG =   1  )
