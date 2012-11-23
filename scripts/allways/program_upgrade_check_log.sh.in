@@ -23,14 +23,14 @@ INSTALLDIR=$3
 case "${SYORI}" in
   clear)
       TEMP=$(mktemp)
-      grep -v ':E:' ${PGUP_PROOF} > ${TEMP}
+      grep -v ':E:' ${PGUP_PROOF} | grep -v '9999:' > ${TEMP}
       mv ${TEMP} ${PGUP_PROOF}
       exit 0
       ;;
 
   complete)
-      COMMENT=`echo "提供されている最新の状態でした。" | nkf -e`
-      UPDATEFLG=""
+      COMMENT="提供されている最新の状態でした。"
+      UPDATEFLG=" "
       ;;
 
   error1)
@@ -60,7 +60,7 @@ case "${SYORI}" in
 
   *)
       COMMENT=""
-      UPDATEFLG=""
+      UPDATEFLG=" "
       ;;
 esac
 

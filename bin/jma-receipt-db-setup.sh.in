@@ -99,11 +99,6 @@ if [ ${RC} -eq 0 ] ; then
     RC=$?
 fi
 if [ ${RC} -eq 0 ] ; then
-    if [ ! -f ${PGUP_PROOF} ];	then
-        rm -fr ${PGUP_PROOF}
-    fi
-fi
-if [ ${RC} -eq 0 ] ; then
     echo "$BINDIR"/jma-receipt-db-check.sh .....
     bash "$BINDIR"/jma-receipt-db-check.sh
     if [ $? -eq 0 ] ; then
