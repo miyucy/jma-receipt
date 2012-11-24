@@ -229,6 +229,7 @@
                                                +   IN-LEN
                    IF     (IN-SQL(IN-LEN:1)    NOT =   ",")  AND
                           (FLG-SQL-END             =   ZERO)
+                       MOVE    X"0a"               TO  W-SQLSTR(W-MOVP:)
                        COMPUTE W-MOVP              =   W-MOVP  +  1
                    END-IF
       *
