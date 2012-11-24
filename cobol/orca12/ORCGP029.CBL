@@ -330,7 +330,7 @@
       *
       *    患者地域連携テーブル
        01  PTPUBLIC-REC.
-           COPY    "CPPTNUM_PUBLIC.INC".
+           COPY    "CPPTNUM-PUBLIC.INC".
       *
       *
       *****************************************************************
