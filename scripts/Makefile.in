@@ -118,7 +118,6 @@ ruby_scripts = \
 	daily/apslib.rb \
 	daily/monlib.rb \
 	allways/cachedl.rb \
-	allways/cachetoprgdir.rb \
 	allways/run.rb \
 	allways/orcadt_verify.rb \
 	allways/Sysbase.rb \
