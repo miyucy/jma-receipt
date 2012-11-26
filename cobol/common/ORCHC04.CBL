@@ -963,8 +963,10 @@
       *
       *    ∞ÂŒ≈µ°¥ÿΩªΩÍ
            MOVE    WRK-HOSPADRS        TO  HCM04-IRYOADRS
+           INSPECT HCM04-IRYOADRS      REPLACING ALL "  " BY "°°"
       *    ∞ÂŒ≈µ°¥ÿÃæ
            MOVE    WRK-HOSPNAME        TO  HCM04-IRYOMEI
+           INSPECT HCM04-IRYOMEI       REPLACING ALL "  " BY "°°"
       *    ∞ÂŒ≈µ°¥ÿ£‘£≈£Ã
            MOVE    WRK-HOSPTEL         TO  HCM04-IRYOTEL
       *
@@ -2040,8 +2042,10 @@
       *
       *    ∞ÂŒ≈µ°¥ÿΩªΩÍ
            MOVE    WRK-HOSPADRS        TO  HCM04A5-IRYOADRS
+           INSPECT HCM04A5-IRYOADRS    REPLACING ALL "  " BY "°°"
       *    ∞ÂŒ≈µ°¥ÿÃæ
            MOVE    WRK-HOSPNAME        TO  HCM04A5-IRYOMEI
+           INSPECT HCM04A5-IRYOMEI     REPLACING ALL "  " BY "°°"
       *    ∞ÂŒ≈µ°¥ÿ£‘£≈£Ã
            MOVE    WRK-HOSPTEL         TO  HCM04A5-IRYOTEL
       *
