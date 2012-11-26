@@ -588,7 +588,11 @@
       *
       *    ∞ÂŒ≈µ°¥ÿ
            MOVE    WRK-HOSPADRS        TO  HCM67-HOSPADRS
+           INSPECT HCM67-HOSPADRS      REPLACING ALL "  " BY "°°"
+      *
            MOVE    WRK-HOSPNAME        TO  HCM67-HOSPNAME
+           INSPECT HCM67-HOSPNAME      REPLACING ALL "  " BY "°°"
+      *
            MOVE    WRK-HOSPTEL         TO  HCM67-HOSPTEL
       *
            MOVE    ZERO                TO  CNT-LINE

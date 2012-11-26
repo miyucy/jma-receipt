@@ -355,8 +355,10 @@
       *
       *    所在地
            MOVE    WRK-HOSPADRS    TO  HCN63-HOSPADRS
+           INSPECT HCN63-HOSPADRS      REPLACING ALL "  " BY "　"
       *    医療機関名称
            MOVE    WRK-HOSPNAME    TO  HCN63-HOSPNAME
+           INSPECT HCN63-HOSPNAME      REPLACING ALL "  " BY "　"
       *    電話番号
            MOVE    WRK-HOSPTEL     TO  HCN63-HOSPTEL
       *
@@ -571,8 +573,8 @@
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
            MOVE    "*"             TO  SYS-1001-KBNCD
-           MOVE    SPA-SRYYMD      TO  SYS-1001-STYUKYMD
-           MOVE    SPA-SRYYMD      TO  SYS-1001-EDYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1001-STYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1001-EDYUKYMD
            MOVE    SPA-HOSPNUM     TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
@@ -596,8 +598,8 @@
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"          TO  SYS-1002-KANRICD
            MOVE    "*"             TO  SYS-1002-KBNCD
-           MOVE    SPA-SRYYMD      TO  SYS-1002-STYUKYMD
-           MOVE    SPA-SRYYMD      TO  SYS-1002-EDYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1002-STYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1002-EDYUKYMD
            MOVE    SPA-HOSPNUM     TO  SYS-1002-HOSPNUM
            MOVE    SYS-1002-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
@@ -620,7 +622,7 @@
            INITIALIZE                  SYS-1034-REC
            INITIALIZE                  ORCSPRTNMAREA
            MOVE    "2"             TO  ORCSPRTNM-KBN
-           MOVE    SPA-SRYYMD      TO  ORCSPRTNM-SRYYMD
+           MOVE    SPA-SYSYMD      TO  ORCSPRTNM-SRYYMD
            MOVE    "1"             TO  ORCSPRTNM-NYUGAIKBN
            CALL    "ORCSPRTNM"         USING
                                        ORCSPRTNMAREA
@@ -644,8 +646,8 @@
            INITIALIZE                  SYS-1900-REC
            MOVE    "1900"          TO  SYS-1900-KANRICD
            MOVE    "*"             TO  SYS-1900-KBNCD
-           MOVE    SPA-SRYYMD      TO  SYS-1900-STYUKYMD
-           MOVE    SPA-SRYYMD      TO  SYS-1900-EDYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1900-STYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1900-EDYUKYMD
            MOVE    SPA-HOSPNUM     TO  SYS-1900-HOSPNUM
            MOVE    SYS-1900-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
@@ -676,8 +678,8 @@
            MOVE    "1901"          TO  SYS-1901-KANRICD
            MOVE    SYS-1900-PRTKBN(11)
                                    TO  SYS-1901-KBNCD
-           MOVE    SPA-SRYYMD      TO  SYS-1901-STYUKYMD
-           MOVE    SPA-SRYYMD      TO  SYS-1901-EDYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1901-STYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1901-EDYUKYMD
            MOVE    SPA-HOSPNUM     TO  SYS-1901-HOSPNUM
            MOVE    SYS-1901-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC
@@ -706,8 +708,8 @@
            MOVE    "1902"          TO  SYS-1902-KANRICD
            MOVE    SYS-1900-PRTKBN(11)
                                    TO  SYS-1902-KBNCD
-           MOVE    SPA-SRYYMD      TO  SYS-1902-STYUKYMD
-           MOVE    SPA-SRYYMD      TO  SYS-1902-EDYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1902-STYUKYMD
+           MOVE    SPA-SYSYMD      TO  SYS-1902-EDYUKYMD
            MOVE    SPA-HOSPNUM     TO  SYS-1902-HOSPNUM
            MOVE    SYS-1902-REC    TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-READ-SEC

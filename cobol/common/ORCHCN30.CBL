@@ -1545,10 +1545,15 @@
                                        TO  HCN300-NAME
            ELSE
                MOVE    WRK-YKJ-NAME    TO  HCN300-NAME2
+               INSPECT HCN300-NAME2    REPLACING ALL "  " BY "¡¡"
            END-IF
       *
            MOVE    WRK-YKJ-JYUSYO  TO  HCN300-JYUSYO
+           INSPECT HCN300-JYUSYO   REPLACING ALL "  " BY "¡¡"
+      *
            MOVE    WRK-YKJ-HSPNAME TO  HCN300-HSPNAME
+           INSPECT HCN300-HSPNAME  REPLACING ALL "  " BY "¡¡"
+      *
            MOVE    WRK-YKJ-TEL     TO  HCN300-TEL
            MOVE    WRK-YKJ-DRNAME  TO  HCN300-DRNAME
            MOVE    WRK-YKJ-BTUNAME TO  HCN300-BTUNAME

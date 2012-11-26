@@ -1535,8 +1535,10 @@
       *
       *    ∞ÂŒ≈µ°¥ÿΩªΩÍ
            MOVE    WRK-HOSPADRS        TO  HC02-HOSPADRS
+           INSPECT HC02-HOSPADRS       REPLACING ALL "  " BY "°°"
       *    ∞ÂŒ≈µ°¥ÿÃæ
            MOVE    WRK-HOSPNAME        TO  HC02-HOSPNAME
+           INSPECT HC02-HOSPNAME       REPLACING ALL "  " BY "°°"
       *    ∞ÂŒ≈µ°¥ÿ£‘£≈£Ã
            MOVE    WRK-HOSPTEL         TO  HC02-HOSPTEL
       *    •…•Ø•ø°º

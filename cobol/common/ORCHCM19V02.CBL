@@ -1535,8 +1535,10 @@
       *
       *    ∞ÂŒ≈µ°¥ÿΩªΩÍ
            MOVE    WRK-HOSPADRS        TO  HCM19-HOSPADRS
+           INSPECT HCM19-HOSPADRS      REPLACING ALL "  " BY "°°"
       *    ∞ÂŒ≈µ°¥ÿÃæ
            MOVE    WRK-HOSPNAME        TO  HCM19-HOSPNAME
+           INSPECT HCM19-HOSPNAME      REPLACING ALL "  " BY "°°"
       *    ∞ÂŒ≈µ°¥ÿ£‘£≈£Ã
            MOVE    WRK-HOSPTEL         TO  HCM19-HOSPTEL
       *    •…•Ø•ø°º

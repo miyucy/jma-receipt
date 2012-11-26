@@ -1557,10 +1557,15 @@
                                        TO  HCM300-NAME
            ELSE
                MOVE    WRK-YKJ-NAME    TO  HCM300-NAME2
+               INSPECT HCM300-NAME2    REPLACING ALL "  " BY "¡¡"
            END-IF
       *
            MOVE    WRK-YKJ-JYUSYO  TO  HCM300-JYUSYO
+           INSPECT HCM300-JYUSYO   REPLACING ALL "  " BY "¡¡"
+      *
            MOVE    WRK-YKJ-HSPNAME TO  HCM300-HSPNAME
+           INSPECT HCM300-HSPNAME  REPLACING ALL "  " BY "¡¡"
+      *
            MOVE    WRK-YKJ-TEL     TO  HCM300-TEL
            MOVE    WRK-YKJ-DRNAME  TO  HCM300-DRNAME
       *

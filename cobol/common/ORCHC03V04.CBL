@@ -774,8 +774,10 @@
       *
       *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM03V04-IRYOADRS
+           INSPECT HCM03V04-IRYOADRS   REPLACING ALL "  " BY "　"
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM03V04-IRYOMEI
+           INSPECT HCM03V04-IRYOMEI    REPLACING ALL "  " BY "　"
       *    今回入金額
            MOVE    WRK-NYUKIN          TO  WRK-Z72
            MOVE    1                   TO  FLG-HENPARA
