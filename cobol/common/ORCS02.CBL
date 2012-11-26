@@ -22769,6 +22769,36 @@
                        END-IF
                      END-IF
                    END-IF
+                   IF ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "3"))
+      *              生活療養分（環境）の助成は無し（その他は全額助成）
+                     IF   (LNK-SYU-SRYYMD(1:6)    >=  "200610")
+                     AND  (FLG-SEIKATUL2           =   1      )
+                       IF   ( FLG-SEIKATUS          =  1   )
+                       OR   ((FLG-SEIKATUL          =  1  ) AND
+                             (WK-SHOKUJI-NISSUL NOT = ZERO))
+                         MOVE  "9"    TO  WK-NYUSKJRYYKBN
+                         MOVE  "4"    TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                       END-IF
+                     ELSE
+                         MOVE  "3"    TO  WK-NYUSKJRYYKBN
+                     END-IF
+                   END-IF
+                   IF ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "3"))
+      *              生活療養分の助成は無し（一般分は全額助成）
+                     IF   (LNK-SYU-SRYYMD(1:6)    >=  "200610")
+                     AND  (FLG-SEIKATUL            =   1      )
+                       IF     FLG-SEIKATUS   =   1
+                         MOVE  "5"    TO  WK-NYUSKJRYYKBN
+                         MOVE  "1"    TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                       END-IF
+                     ELSE
+                         MOVE  "3"    TO  WK-NYUSKJRYYKBN
+                     END-IF
+                   END-IF
                  WHEN        "3"
                    IF ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "0") AND
                        (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "0") AND
@@ -22854,6 +22884,36 @@
                        END-IF
                      END-IF
                    END-IF
+                   IF ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "3"))
+      *              生活療養分（環境）の助成は無し（その他は全額助成）
+                     IF   (LNK-SYU-SRYYMD(1:6)    >=  "200610")
+                     AND  (FLG-SEIKATUL2           =   1      )
+                       IF   ( FLG-SEIKATUS          =  1   )
+                       OR   ((FLG-SEIKATUL          =  1  ) AND
+                             (WK-SHOKUJI-NISSUL NOT = ZERO))
+                         MOVE  "9"    TO  WK-NYUSKJRYYKBN
+                         MOVE  "4"    TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                       END-IF
+                     ELSE
+                         MOVE  "3"    TO  WK-NYUSKJRYYKBN
+                     END-IF
+                   END-IF
+                   IF ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "3"))
+      *              生活療養分の助成は無し（一般分は全額助成）
+                     IF   (LNK-SYU-SRYYMD(1:6)    >=  "200610")
+                     AND  (FLG-SEIKATUL            =   1      )
+                       IF     FLG-SEIKATUS   =   1
+                         MOVE  "5"    TO  WK-NYUSKJRYYKBN
+                         MOVE  "1"    TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                       END-IF
+                     ELSE
+                         MOVE  "3"    TO  WK-NYUSKJRYYKBN
+                     END-IF
+                   END-IF
                  WHEN        "3"
                    IF ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "0") AND
                        (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "0") AND
@@ -22937,6 +22997,36 @@
                        ELSE
                          MOVE  ZERO   TO  FLG-NYUSKJJYOGAK
                        END-IF
+                     END-IF
+                   END-IF
+                   IF ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "3"))
+      *              生活療養分（環境）の助成は無し（その他は全額助成）
+                     IF   (LNK-SYU-SRYYMD(1:6)    >=  "200610")
+                     AND  (FLG-SEIKATUL2           =   1      )
+                       IF   ( FLG-SEIKATUS          =  1   )
+                       OR   ((FLG-SEIKATUL          =  1  ) AND
+                             (WK-SHOKUJI-NISSUL NOT = ZERO))
+                         MOVE  "9"    TO  WK-NYUSKJRYYKBN
+                         MOVE  "4"    TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                       END-IF
+                     ELSE
+                         MOVE  "3"    TO  WK-NYUSKJRYYKBN
+                     END-IF
+                   END-IF
+                   IF ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "3"))
+      *              生活療養分の助成は無し（一般分は全額助成）
+                     IF   (LNK-SYU-SRYYMD(1:6)    >=  "200610")
+                     AND  (FLG-SEIKATUL            =   1      )
+                       IF     FLG-SEIKATUS   =   1
+                         MOVE  "5"    TO  WK-NYUSKJRYYKBN
+                         MOVE  "1"    TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                       END-IF
+                     ELSE
+                         MOVE  "3"    TO  WK-NYUSKJRYYKBN
                      END-IF
                    END-IF
                  WHEN        "3"
