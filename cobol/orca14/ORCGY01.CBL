@@ -39,7 +39,6 @@
       *  04.03.00    NACL-多々納  08/06/18  初期表示設定対応
       *  04.04.00    NACL-多々納  09/01/16  予約メモ・予約票対応
       *  04.05.00    NACL-多々納  09/10/27  拡張漢字対応
-      *  04.08.00    NACL-森脇    13/10/10  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -84,10 +83,6 @@
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-HENKOU          PIC 9(01).
            03  FLG-CALENDAR        PIC 9(01).
-      *----(04.08.00)--ADD-START---
-      *    クライアント印刷有
-           03  FLG-CLIENT-OK       PIC 9(01).
-      *----(04.08.00)--ADD-END-----
       *
       *    システム領域
        01  SYS-AREA.
@@ -337,10 +332,6 @@
            COPY    "CPORCSPRTNM.INC".
       *    オンライン帳票共通パラメタ
            COPY    "CPONPRTDATA.INC".
-      *----(04.08.00)--ADD-START---
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *----(04.08.00)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -737,7 +728,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   99   )  OR
+                   UNTIL       (IDX            >   40   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC             TO  SYS-1005-REC
       *
@@ -787,9 +778,7 @@
                    UNTIL       (IDX            >=  99   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC             TO  SYS-1010-REC
-               IF     (SYS-1010-KBNCD(1:1) =   "1"  )
-      *H27.12  非表示
-                AND   (SYS-1010-HYOJIFLG   NOT =   "1" )
+               IF      SYS-1010-KBNCD(1:1) =   "1"
                    ADD     1                   TO  IDX
                    MOVE    SYS-1010-KBNCD(2:4)
                                                TO  SPA-GMN-DRCD
@@ -864,7 +853,7 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       (IDX            >   99   )  OR
+                   UNTIL       (IDX            >   10   )  OR
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC             TO  SYS-0051-REC
       *
@@ -3919,18 +3908,11 @@
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
-           IF     (SPA-CLIENT-PRT-FLG  =   2 )
-             OR   (SPA-PRTCONF         =   "1" )
-      *        クライアント印刷制御情報取得サブ
-               PERFORM 4901-CLIENT-PRT-SEC
-           END-IF
-      *
       *    予約票出力
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "1"                 TO  ORCSPRTNM-KBN
            MOVE    "00000010"          TO  ORCSPRTNM-KBNCD
            MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
-           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
            CALL    "ORCSPRTNM"         USING
                                            ORCSPRTNMAREA
                                            SPA-AREA
@@ -3950,24 +3932,16 @@
                MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
                MOVE    SPA-GMN-NAME        TO  SPA-NAME
                MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
-      *
                MOVE    "01"                TO  SPA-PRT-FLG
       *
+               MOVE    WRK-YYKHYO-PG       TO  ONPRTDATA-PGID
                MOVE    ORCHC67AREA         TO  ONPRTDATA-DATA
-               CALL    WRK-YYKHYO-PG       USING
+               CALL    "ORCHCOMMON"        USING
                                            SPA-AREA
                                            ONPRTDATA
            END-IF
       *
            MOVE    HZN-SPA-AREA        TO  SPA-AREA
-      *
-           IF      (SPA-CLIENT-PRT-FLG =   1  )
-      *        印刷ダミー処理
-               MOVE    "99"                TO  SPA-PRT-FLG
-               CALL    "ORCHCDUMMY"    USING   SPA-AREA
-               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
-           END-IF
-      *
           .
        4908-YYKHYO-PRINT-EXT.
            EXIT.
@@ -4381,22 +4355,6 @@
       *
            .
        210-BACK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    クライアント印刷前　処理
-      *****************************************************************
-       4901-CLIENT-PRT-SEC          SECTION.
-      *
-      *    クライアント印刷制御情報取得サブ
-           INITIALIZE                  ORCSPRTCTRLAREA
-           CALL    "ORCSPRTCTRL"       USING   SPA-AREA
-                                               ORCSPRTCTRLAREA
-                                               MCPAREA
-      *
-           MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
-           .
-       4901-CLIENT-PRT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4844,7 +4802,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  YID1
-           INITIALIZE                       YID1
            MOVE    SPA-YID1CD           TO  YID1-ID1CODE
            MOVE    WRK-YID1MSG          TO  YID1-ID1MSG
            MOVE    "ＮＯ"               TO  YID1-B01
