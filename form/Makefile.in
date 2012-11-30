@@ -538,53 +538,6 @@ FORM_files = \
 	      HCM13V02P.red \
 	      HCM14V02P.red \
 	      HCN09V07P.red \
-	      HCN23V08.red \
-	      HCN48V04.red \
-	      HCN50V04.red \
-	      HCN50V04P.red \
-	      HCN51V04.red \
-	      HCN51V04P.red \
-	      HCN53V04.red \
-	      HCN54V04.red \
-	      HCN66V01.red \
-	      HCN67V01.red \
-	      HCN68.red \
-	      HCN69.red \
-	      HCM72V01.red \
-	      HCM73V01.red \
-	      HCM75.red \
-	      HCM76.red \
-	      HCM77.red \
-	      HCN70.red \
-          HCGS121GV02.red \
-          HCGS121NV02.red \
-          HCGS139GV02.red \
-          HCGS139NV02.red \
-	      HCM78.red \
-          HCM401V05.red \
-          HCM402V03.red \
-          HCM79.red \
-          HCM80.red \
-          HCM81.red \
-          HCM82.red \
-	      HCN63V2.red \
-	      HCN02V03.red \
-	      HCMG007.red \
-	      HCN68H28.red \
-	HC02QV03.red \
-	HC02V03.red \
-	HCM19V03.red \
-	HCN71.red \
-	HCN04A5.red \
-	HCM03V05.red \
-	HCMG008.red \
-	HCM78V01.red \
-	      HCN68H30.red \
-	      HCN69H30.red \
-	      HC02V04.red \
-	      HC02QV04.red \
-	      HCM19V04.red \
-	      HC02ZA5.red \
 
 all:   
 

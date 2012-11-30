@@ -63,11 +63,6 @@
                     06  W07-NYUSYOSIN-ITEM    PIC X(12)   OCCURS  2.
                   05  W07-KIKAN.
                     06  W07-VALUE   PIC S9(2).
-                  05  W07-KINKCHK-COMBO.
-                    06  W07-KINKCHK.
-                      07  W07-VALUE   PIC X(40).
-                    06  W07-KINKCHK-COUNT   PIC S9(9)   BINARY.
-                    06  W07-KINKCHK-ITEM    PIC X(40)   OCCURS  3.
                   05  W07-GAIKANKBN-COMBO.
                     06  W07-GAIKANKBN.
                       07  W07-VALUE   PIC X(32).
@@ -77,7 +72,7 @@
                     06  W07-GAIMOVE.
                       07  W07-VALUE   PIC X(22).
                     06  W07-GAIMOVE-COUNT   PIC S9(9)   BINARY.
-                    06  W07-GAIMOVE-ITEM    PIC X(22)   OCCURS  9 TIMES.
+                    06  W07-GAIMOVE-ITEM    PIC X(22)   OCCURS  3 TIMES.
                   05  W07-HOUKATU-COMBO.
                     06  W07-HOUKATU.
                       07  W07-VALUE   PIC X(30).
@@ -95,10 +90,10 @@
                     06  W07-CHOKICHK-ITEM    PIC X(22)   OCCURS  2.
                   05  W07-JIKANTOKUNYU-COMB.
                     06  W07-JIKANTOKUNYU.
-                      07  W07-VALUE   PIC X(30).
+                      07  W07-VALUE   PIC X(12).
                     06  W07-JIKANTOKUNYU-COUNT   PIC S9(9)   BINARY.
                     06  W07-JIKANTOKUNYU-ITEM
-                            PIC X(30)   OCCURS  9 TIMES.
+                            PIC X(12)   OCCURS  2 TIMES.
                   05  W07-GAZOUKSN1-COMB.
                     06  W07-GAZOUKSN1.
                       07  W07-VALUE   PIC X(12).
@@ -177,10 +172,10 @@
                             PIC X(12)   OCCURS  2 TIMES.
                   05  W07-BYOHYOKBN-COMB.
                     06  W07-BYOHYOKBN.
-                      07  W07-VALUE   PIC X(40).
+                      07  W07-VALUE   PIC X(12).
                     06  W07-BYOHYOKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-BYOHYOKBN-ITEM
-                            PIC X(40)   OCCURS  5 TIMES.
+                            PIC X(12)   OCCURS  2 TIMES.
                   05  W07-ZAIJUNKBN-COMB.
                     06  W07-ZAIJUNKBN.
                       07  W07-VALUE   PIC X(16).
@@ -205,12 +200,6 @@
                     06  W07-TEINYUAUTO-COUNT   PIC S9(9)   BINARY.
                     06  W07-TEINYUAUTO-ITEM
                             PIC X(12)   OCCURS  2 TIMES.
-                  05  W07-TEISHOHOU-COMB.
-                    06  W07-TEISHOHOU.
-                      07  W07-VALUE   PIC X(12).
-                    06  W07-TEISHOHOU-COUNT   PIC S9(9)   BINARY.
-                    06  W07-TEISHOHOU-ITEM
-                            PIC X(12)   OCCURS  2 TIMES.
                   05  W07-NYUKENSA-COMB.
                     06  W07-NYUKENSA.
                       07  W07-VALUE   PIC X(12).
@@ -229,24 +218,6 @@
                     06  W07-TECHOKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-TECHOKBN-ITEM
                             PIC X(30)   OCCURS  5 TIMES.
-                  05  W07-JGAIKEIKBN-COMB.
-                    06  W07-JGAIKEIKBN.
-                      07  W07-VALUE   PIC X(30).
-                    06  W07-JGAIKEIKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W07-JGAIKEIKBN-ITEM
-                            PIC X(30)   OCCURS  5 TIMES.
-                  05  W07-TOUYOCHK-COMB.
-                    06  W07-TOUYOCHK.
-                      07  W07-VALUE   PIC X(40).
-                    06  W07-TOUYOCHK-COUNT   PIC S9(9)   BINARY.
-                    06  W07-TOUYOCHK-ITEM
-                            PIC X(40)   OCCURS  5 TIMES.
-                  05  W07-SHOHOU30CHK-COMB.
-                    06  W07-SHOHOU30CHK.
-                      07  W07-TEXTDATA    PIC X(40).
-                    06  W07-SHOHOU30CHK-COUNT   PIC S9(9)   BINARY.
-                    06  W07-SHOHOU30CHK-ITEM
-                            PIC X(40)   OCCURS  5 TIMES.
                 04  W07-TAGNAME1.
                   05  W07-TAGNAME1-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG2.
@@ -350,12 +321,6 @@
                     06  W07-KOHHBTKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-KOHHBTKBN-ITEM
                             PIC X(28)   OCCURS  5 TIMES.
-                  05  W07-HKNINITKBN-COMB.
-                    06  W07-HKNINITKBN.
-                      07  W07-VALUE   PIC X(32).
-                    06  W07-HKNINITKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W07-HKNINITKBN-ITEM
-                            PIC X(32)   OCCURS  5 TIMES.
                 04  W07-TAGNAME2.
                   05  W07-TAGNAME2-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG3.
@@ -466,12 +431,6 @@
                     06  W07-SEI20KSNKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-SEI20KSNKBN-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
-                  05  W07-SIN20KSNKBN-COMB.
-                    06  W07-SIN20KSNKBN.
-                      07  TEXTDATA    PIC X(40).
-                    06  W07-SIN20KSNKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W07-SIN20KSNKBN-ITEM
-                            PIC X(40)   OCCURS  5 TIMES.
                   05  W07-YMDHENKBN-COMB.
                     06  W07-YMDHENKBN.
                       07  W07-VALUE   PIC X(60).
@@ -507,12 +466,6 @@
                       07  W07-VALUE   PIC X(40).
                     06  W07-GMNHYOKBN5-COUNT   PIC S9(9)   BINARY.
                     06  W07-GMNHYOKBN5-ITEM
-                            PIC X(40)   OCCURS  10 TIMES.
-                  05  W07-GMNHYOKBN6-COMB.
-                    06  W07-GMNHYOKBN6.
-                      07  W07-VALUE   PIC X(40).
-                    06  W07-GMNHYOKBN6-COUNT   PIC S9(9)   BINARY.
-                    06  W07-GMNHYOKBN6-ITEM
                             PIC X(40)   OCCURS  10 TIMES.
                   05  W07-BGCOLORS.
                     06  W07-COLOR   PIC X(16).
@@ -558,12 +511,6 @@
                     06  W07-PRVLAYOUT038-COUNT   PIC S9(9)   BINARY.
                     06  W07-PRVLAYOUT038-ITEM
                             PIC X(60)   OCCURS  5 TIMES.
-                  05  W07-SETALLKBN-COMB.
-                    06  W07-SETALLKBN.
-                      07  W07-VALUE   PIC X(40).
-                    06  W07-SETALLKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W07-SETALLKBN-ITEM
-                            PIC X(40)   OCCURS  5 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.
@@ -592,23 +539,11 @@
                       07  W07-VALUE   PIC X(40).
                     06  W07-TUKISUM-COUNT          PIC S9(9) BINARY.
                     06  W07-TUKISUM-ITEM           PIC X(40) OCCURS 5.
-                  05  W07-S02MODE-COMBO.
-                    06  W07-S02MODE.
-                      07  W07-VALUE   PIC X(22).
-                    06  W07-S02MODE-COUNT   PIC S9(9)   BINARY.
-                    06  W07-S02MODE-ITEM    PIC X(22)   OCCURS  5.
-                  05  W07-LBLS02LIMIT       PIC X(30).
-                  05  W07-S02LIMIT-VISIBLE  PIC X(1).
-                  05  W07-S02LIMIT    PIC S9(3).
                   05  W07-S02SORTKBN-COMBO.
                     06  W07-S02SORTKBN.
                       07  W07-VALUE   PIC X(22).
                     06  W07-S02SORTKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-S02SORTKBN-ITEM    PIC X(22)   OCCURS  5.
-                  05  W07-SAIKEISANSKYCHK-COMBO.
-                    06  W07-SAIKEISANSKYCHK       PIC X(60).
-                    06  W07-SAIKEISANSKYCHK-COUNT PIC S9(9) BINARY.
-                    06  W07-SAIKEISANSKYCHK-ITEM  PIC X(60) OCCURS  5.
                   05  W07-IKTSORTKBN-COMBO.
                     06  W07-IKTSORTKBN.
                       07  W07-VALUE   PIC X(22).
@@ -649,7 +584,7 @@
                     06  W07-S04DSPKBN             PIC X(20).
                     06  W07-S04DSPKBN-STATE       PIC S9(9)   BINARY.
                     06  W07-S04DSPKBN-COUNT       PIC S9(9)   BINARY.
-                    06  W07-S04DSPKBN-ITEM        PIC X(20)   OCCURS  4.
+                    06  W07-S04DSPKBN-ITEM        PIC X(20)   OCCURS  3.
                     06  W07-S04DSPKBN-ITEM-STATE  PIC S9(9)   BINARY.
                   05  W07-S04-SUMKBN-COMBO.
                     06  W07-S04SUMKBN          PIC X(18).
@@ -663,12 +598,6 @@
                     06  W07-S04SYORIKBN-COUNT     PIC S9(9)   BINARY.
                     06  W07-S04SYORIKBN-ITEM      PIC X(18)   OCCURS  2.
                     06  W07-S04SYORIKBN-ITEM-STATE PIC S9(9)   BINARY.
-                  05  W07-S04-JIHIPRTKBN-COMBO.
-                    06  W07-S04JIHIPRTKBN           PIC X(24).
-                    06  W07-S04JIHIPRTKBN-STATE     PIC S9(9)   BINARY.
-                    06  W07-S04JIHIPRTKBN-COUNT     PIC S9(9)   BINARY.
-                    06  W07-S04JIHIPRTKBN-ITEM      PIC X(24) OCCURS  5.
-                    06  W07-S04JIHIPRTKBN-ITEM-STATE PIC S9(9)   BINARY.
                   05  W07-S06SKYPRT-COMBO.
                     06  W07-S06SKYPRT           PIC X(24).
                     06  W07-S06SKYPRT-COUNT   PIC S9(9)   BINARY.
@@ -743,11 +672,6 @@
                       07  W07-VALUE   PIC X(12).
                     06  W07-MSG4-DSPKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-MSG4-DSPKBN-ITEM    PIC X(12)   OCCURS  2.
-                  05  W07-MSG5-DSPKBN-COMBO.
-                    06  W07-MSG5-DSPKBN.
-                      07  W07-VALUE   PIC X(12).
-                    06  W07-MSG5-DSPKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W07-MSG5-DSPKBN-ITEM    PIC X(12)   OCCURS  2.
                   05  W07-SRYKA-DSPKBN-COMBO.
                     06  W07-SRYKA-DSPKBN.
                       07  W07-VALUE   PIC X(40).
@@ -839,18 +763,3 @@
                             PIC X(50)   OCCURS  5 TIMES.
                 04  W07-TAGNAME7.
                   05  W07-TAGNAME7-STATE   PIC S9(9)   BINARY.
-                04  W07-TAG8.
-                  05  W07-DAKETUKBN-COMB.
-                    06  W07-DAKETUKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W07-DAKETUKBN-ITEM
-                            PIC X(50)   OCCURS  5 TIMES.
-                    06  W07-DAKETUKBN.
-                      07  W07-TEXTDATA    PIC X(50).
-                  05  W07-TEIRITUKBN-COMB.
-                    06  W07-TEIRITUKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W07-TEIRITUKBN-ITEM
-                            PIC X(50)   OCCURS  5 TIMES.
-                    06  W07-TEIRITUKBN.
-                      07  W07-TEXTDATA    PIC X(50).
-                04  W07-TAGNAME8.
-                  05  W07-TAGNAME8-STATE   PIC S9(9)   BINARY.

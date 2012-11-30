@@ -172,13 +172,6 @@
       *  04.06.07    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
       *  04.06.08    NACL-藤原    12/10/04  同一レセプトの公費が４つを超
       *                                     えた場合の種別不明対応
-      *  04.06.09    NACL-藤原    13/04/03  表示期間によるレセプトへの転
-      *                                     帰日有無による病名文字の変更
-      *  04.06.10    NACL-藤原    13/06/12  国保で本人・家族の変更があるが
-      *                                     給付割合の変更がないときは１枚
-      *                                     にまとめるときの公費データの
-      *                                     更新方法の修正
-      *  04.06.11    NACL-門脇    13/09/17  宮城県地方公費対応
       *
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *  04.07.02    NACL-藤原    12/01/24  monpe-0.6.20対応
@@ -188,66 +181,6 @@
       *  04.07.05    NACL-藤原    12/11/19  主科情報の取得方法変更
       *  04.07.06    NACL-藤原    12/11/20  リアルタイムプレビュー時の
       *                                     一画面対応
-      *  04.07.07    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
-      *  04.07.08    NACL-藤原    12/12/17  複数枚レセプト分割対応
-      *  04.07.09    NACL-藤原    13/02/07  労災レセ電対応
-      *  04.07.10    NACL-門脇    13/09/11  自賠責（第三者行為）対応
-      *  04.07.11    NACL-門脇    13/11/11  減額（円）の対応
-      *  04.07.12    NACL-藤原    13/12/09  医療情報連携基盤対応
-      *  04.07.13    NACL-門脇    14/02/03  第三者行為対応（院外処方のみの
-      *                                     保険組み合わせの病名記載対応）
-      *  04.07.14    NACL-藤原    14/04/22  ＥＦファイル作成対応
-      *  04.07.15    NACL-門脇    14/06/05  第三者行為のコメント記載修正
-      *  04.07.16    NACL-門脇    14/07/10  （感染症＋生保＋生保）レセプト
-      *                                     の点数欄記載修正
-      *  04.07.17    NACL-藤原    14/12/03  平成２６年１１月改正対応
-      *  04.07.18    NACL-門脇    14/12/05  平成２７年１月改正対応
-      *  04.07.19    NACL-門脇    15/01/07  平成２７年１月改正対応
-      *                                     （公費請求テーブル編集）
-      *  04.07.20    NACL-門脇    15/02/09  第三者行為のコメント編集条件修正
-      *  04.07.21    NACL-門脇    15/03/17  請求点数０点公費レセ記載対応
-      *  04.07.22    NACL-藤原    15/06/04  ＥＦファイルに種別不明分があ
-      *                                     れば処理終了
-      *  04.07.23    NACL-門脇    15/06/23  食事回数記載修正
-      *
-      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
-      *                                     載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-藤原    15/02/04  請求管理への公費情報の更新
-      *  04.08.04    NACL-藤原    15/09/01  保険履歴の記載対応
-      *  04.08.05    NACL-門脇    15/10/21  現物給付対象外の低所得（食事）対応
-      *  04.08.06    NACL-門脇    16/02/08  RECE62の予備項目使用分について、
-      *                                     個々に項目を設ける事に伴う修正。
-      *                                     第３第４公費の括弧再掲記載対応
-      *  04.08.07    NACL-門脇    16/03/15  生保まとめ分点欄記載修正
-      *  04.08.08    NACL-藤原    16/04/01  平成２８年４月改正対応
-      *  04.08.09    NACL-門脇    16/04/15  平成２８年４月改正対応
-      *  04.08.10    NACL-門脇    16/05/17  「低所得２」の記載条件修正
-      *  04.08.11    NACL-藤原    16/09/06  レセ電請求時の受付エラー分の
-      *                                     種別不明レセ対応
-      *                                     残留法人等の負担者番号、受給者番号なし
-      *  04.08.12    NACL-門脇    16/09/27  保険欄−一部負担金の減額コメント
-      *                                     記載修正
-      *  04.08.13    NACL-門脇    16/09/28  自賠責（第三者行為）
-      *                                     保険別請求チェック表の機能追加
-      *  04.08.14    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
-      *  04.08.15    NACL-門脇    17/03/17  保険別請求チェック表の機能追加
-      *                                     （公費請求書に関わる対応）
-      *  04.08.16    NACL-門脇    17/03/27  請求金額０円レセプト作成対応
-      *  04.08.17    NACL-藤原    17/04/12  請求点数不一致時の種別不明対応
-      *  04.08.18    NACL-藤原    17/05/26  直接請求する保険者に地方職員
-      *                                     共済組合を追加
-      *  04.08.19    NACL-門脇    17/07/03  （災１）等の記載を括弧なしで
-      *                                     記載するよう変更
-      *  04.08.20    NACL-門脇    17/08/28  平成２９年１０月改正
-      *                                     （入院時生活療養の見直し）
-      *  04.08.21    NACL-門脇    17/09/26  平成２９年１０月改正
-      *                                     （入院時生活療養の見直し）
-      *  04.08.22    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
-      *                                     での食事算定対応
-      *
-      *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
-      *  05.00.02    NACL-伊藤    17/12/20  診療情報システム対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -341,34 +274,38 @@
            COPY    "CPCOMMONSHELL.INC".
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE62PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE62//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE62XPARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE62X//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE63PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE63//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE66PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE66//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE68PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE68//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE69PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE69//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE67PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE67//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"
+                                   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名取得
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *       
       *****COPY    "HCN09V01.INC"  REPLACING  //HCN09V01//
       *****COPY    "HCN09V02.INC"  REPLACING  //HCN09V02//
@@ -441,8 +378,6 @@
            03  FLG-HENSYU          PIC 9(01).
            03  FLG-STS             PIC 9(04).
            03  FLG-MEISYO-HENSYU   PIC 9(01).
-           03  FLG-JNISSU          PIC 9(01).
-           03  FLG-TOTALTEN        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -485,8 +420,6 @@
            03  IDX3                PIC 9(02).
            03  IDX4                PIC 9(02).
            03  IDX5                PIC 9(02).
-           03  IDX6                PIC 9(02).
-           03  IDX7                PIC 9(02).
       *     
            03  SEIHIDX             PIC 9(02).
            03  KAKKIDX             PIC 9(02).
@@ -570,9 +503,6 @@
            03  WRK-KYURATE-X.
                05  WRK-KYURATE-9   PIC 9(03).
            03  WRK-KYURATE         PIC Z9.
-           03  WRK-GENMEN-FTNRATE.
-               05  WRK-GENMEN-FTNRATE1  PIC 9(02).
-               05  WRK-GENMEN-FTNRATE2  PIC 9(01).
            03  WRK-BEDSU           PIC ZZZZ.
            03  WRK-HBTNUM-X.
                05  WRK-HBTNUM-9    PIC 9(03).
@@ -610,17 +540,6 @@
                    07  WRK-TOKKINM-O
                                    PIC X(12).
       *
-           03  WRK-HEN-DATE.
-               05  WRK-HEN-YY      PIC X(04).
-               05  WRK-HEN-H1      PIC X(01).
-               05  WRK-HEN-MM      PIC X(02).
-               05  WRK-HEN-H2      PIC X(01).
-               05  WRK-HEN-DD      PIC X(02).
-      *
-           03  WRK-CNT             PIC 9(10).
-           03  WRK-CNT-X           REDEFINES   WRK-CNT
-                                   PIC X(10).
-      *
            03  WRK-1033-TABLE.
                05  WRK-1033-TBL    OCCURS  5.
                    07  WRK-1033-HKNJANUM-G.
@@ -631,28 +550,14 @@
                    07  WRK-1033-EDYUKYMD 
                                    PIC X(08).                                       
       *
-           03  WRK-1009-KETA       PIC 9(02).                                      
-      *
-           03  WRK-DAISAN-DATA.
-               05  WRK-DAISAN-FTNMONEY     PIC 9(09).
-           03  WRK-DAISAN-DATA2.
-               05  WRK-DAISAN-SKJFTN       PIC 9(06).
-      *
       ***  03  WRK-FUTAN           PIC ZZZ,ZZZ,ZZ9. 
            03  WRK-FUTAN           PIC ZZZZZZZZ9.
       ***  03  WRK-FUTAN1          PIC ZZZ,ZZ9. 
            03  WRK-FUTAN1          PIC ZZZZZ9.
-           03  WRK-FUTAN2          PIC ZZZZZZZ9.
-           03  WRK-FUTAN3          PIC Z9.
-           03  WRK-FUTAN4          PIC ZZ,ZZZ,ZZ9.
-           03  WRK-FUTAN5          PIC ZZZ,ZZZ,ZZ9.
            03  WRK-TITLE           PIC X(50).
            03  WRK-TEKIYOU         PIC X(50).
            03  WRK-ADRS.
                05  WRK-ADRS-R      PIC X(50)  OCCURS  5.
-      *
-           03  WRK-TOTALTEN-OCC.
-               05  WRK-TOTALTEN    PIC 9(8)    OCCURS  5.
       *
       *    県単用項目ファイル用ワーク     
            COPY    "HCN06.INC"     REPLACING  //HCN06//
@@ -667,10 +572,9 @@
            03  WRK-ERR-FILE-MSG1                   PIC X(17).
            03  WRK-ERR-FLG                         PIC 9(01).
       *    エラーファイル名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME内のBASENAME開始位置
-       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -748,13 +652,6 @@
                        09  WRK-BYOMEI2R-TENKI  PIC X(04).
                        09  WRK-BYOMEI2R-TENKIYMD
                                                PIC X(12).
-               05  WRK-BYOMEI2R1-NAMEW REDEFINES   WRK-BYOMEI2-NAME.
-                   07  FILLER                  PIC X(14).
-                   07  WRK-BYOMEI2R1-ELSE.
-                       09  WRK-BYOMEI2R1-YMD   PIC X(20).
-                       09  WRK-BYOMEI2R1-TENKI PIC X(04).
-                       09  WRK-BYOMEI2R1-TENKIYMD
-                                               PIC X(06).
       *
       *    傷病名が３行になるときの編集
            03  WRK-BYOMEI3                     PIC X(48).
@@ -809,7 +706,6 @@
                05  WRK-KOH-FTNJANUM            PIC X(20).
                05  WRK-KOH-JNISSU              PIC X(04).
                05  WRK-KOH-FL                  PIC X(06).
-               05  WRK-KOH-SAIKEI              PIC X(14).
       *
            03  WRK-WLINETEK                    PIC 9(03).
            03  WRK-TNSIDX                      PIC 9(02).
@@ -823,7 +719,7 @@
            03  WRK-KGK7                        PIC ZZZZ,ZZ9.
            03  WRK-KGK8                        PIC ZZZZZ,ZZ9.
            03  WRK-KGK6                        PIC ZZZ,ZZ9.
-           03  WRK-KGK4                        PIC ZZZZ.
+           03  WRK-KGK4                        PIC ZZZ9.
            03  WRK-KGK2                        PIC Z9.
            03  WRK-KGK10                       PIC ZZ,ZZZ,ZZ9.
       *
@@ -982,39 +878,15 @@
            03  FILLER          PIC X(10)   VALUE   "２４多低".
            03  FILLER          PIC X(02)   VALUE   "25".
            03  FILLER          PIC X(10)   VALUE   "２５出産".
-           03  FILLER          PIC X(02)   VALUE   "26".
-           03  FILLER          PIC X(10)   VALUE   "２６区ア".
-           03  FILLER          PIC X(02)   VALUE   "27".
-           03  FILLER          PIC X(10)   VALUE   "２７区イ".
-           03  FILLER          PIC X(02)   VALUE   "28".
-           03  FILLER          PIC X(10)   VALUE   "２８区ウ".
-           03  FILLER          PIC X(02)   VALUE   "29".
-           03  FILLER          PIC X(10)   VALUE   "２９区エ".
-           03  FILLER          PIC X(02)   VALUE   "30".
-           03  FILLER          PIC X(10)   VALUE   "３０区オ".
-           03  FILLER          PIC X(02)   VALUE   "31".
-           03  FILLER          PIC X(10)   VALUE   "３１多ア".
-           03  FILLER          PIC X(02)   VALUE   "32".
-           03  FILLER          PIC X(10)   VALUE   "３２多イ".
-           03  FILLER          PIC X(02)   VALUE   "33".
-           03  FILLER          PIC X(10)   VALUE   "３３多ウ".
-           03  FILLER          PIC X(02)   VALUE   "34".
-           03  FILLER          PIC X(10)   VALUE   "３４多エ".
-           03  FILLER          PIC X(02)   VALUE   "35".
-           03  FILLER          PIC X(10)   VALUE   "３５多オ".
-           03  FILLER          PIC X(02)   VALUE   "36".
-           03  FILLER          PIC X(10)   VALUE   "３６加治".
            03  FILLER          PIC X(02)   VALUE   "96".
            03  FILLER          PIC X(10)   VALUE   "９６".
            03  FILLER          PIC X(02)   VALUE   "97".
            03  FILLER          PIC X(10)   VALUE   "９７".
-           03  FILLER          PIC X(02)   VALUE   "37".
-           03  FILLER          PIC X(10)   VALUE   "３７申出".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
-           03  TBL-TOKKI       OCCURS   37.
+           03  TBL-TOKKI       OCCURS   25.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
-       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   37.
+       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   25.
       *
       *   症状詳記区分の表題
        01  TBL-RECECOM-AREA.
@@ -1038,10 +910,8 @@
                "【疾患別リハビリテーションに係る治療継続の理由等】".
            03  FILLER              PIC X(52)   VALUE
                "【廃用症候群に係る評価表】".
-           03  FILLER              PIC X(52)   VALUE
-               "【医薬品医療機器等法に規定する治験に係る治験概要】".
        01  TBL-RECECOM-AREA-R      REDEFINES   TBL-RECECOM-AREA.
-           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   11.
+           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   10.
       *
       *   退職者保険番号
        01  WRK-RETIRE-AREA.
@@ -1109,8 +979,8 @@
                05  WRK-JINISSUZ    PIC  ZZ.
            03  WRK-JINISSU2.
                05  WRK-JINISSU2Z   PIC  Z9.
-           03  WRK-SAIKEI.
-               05  WRK-SAIKEIZ     PIC  ZZZZZZ9.
+      *
+       01  WRK-CNT                 PIC  9(5).
       *
       *    ＯＣＲ編集領域
        01  OCR1-AREA.
@@ -1300,20 +1170,6 @@
                05  FILLER          PIC X(20)  VALUE
                    "【０点公費記載あり】".
       *
-           03  WRK-ERR-MSG-17.
-               05  FILLER          PIC X(42)   VALUE
-                   "残留法人等の負担者番号、受給者番号の入力が". 
-               05  FILLER          PIC X(10)   VALUE
-                   "ありません".
-      *
-           03  WRK-ERR-MSG-18.
-                05  FILLER          PIC X(52)   VALUE
-               "０５９で始まる「その他材料コード」が使用されています". 
-      *
-           03  WRK-ERR-MSG-19.
-               05  FILLER          PIC X(52)   VALUE
-               "請求点数と点数欄の合計が不一致です". 
-      *
            03  WRK-ERR-MSG-88.
                05  FILLER          PIC X(24)  VALUE
                    "公費が４つを超えています".
@@ -1377,9 +1233,6 @@
       *    レセプト作成指示（個別指示）コード
            COPY    "CPSK2002.INC".
       *
-      *    患者番号構成管理情報
-           COPY    "CPSK1009.INC".
-      *
            COPY    "CPSK1010.INC".
       *
            COPY    "CPSK1038.INC".
@@ -1432,10 +1285,6 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ジョブ管理マスタ
-       01  JOBKANRI-REC.
-           COPY    "CPJOBKANRI.INC".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -1464,10 +1313,13 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
       *
-      *    PUSH
-           COPY    "CPPUSHBATCH01.INC".
+      *    ジョブ管理マスタ
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -1567,16 +1419,8 @@
                PERFORM 5001-DB-DELETE-SEC
            END-IF
       *
-      *    ＥＦファイル作成・連携基盤用・診療情報システム用のとき処理終了
-           IF      WRK-PARA-PRTKBN      =   "9" OR  "8" OR "B"
-               IF      WRK-PARA-PRTKBN      =   "8"
-                   PERFORM 1001-EFOUT-CHECK-SEC
-               END-IF
-               MOVE    2                    TO  FLG-STS
-           ELSE
-               IF      FLG-STS             =   ZERO
-                   PERFORM 900-RECE62-READ-SEC
-               END-IF
+           IF      FLG-STS             =   ZERO
+              PERFORM 900-RECE62-READ-SEC
            END-IF
            .
        100-INIT-EXT.
@@ -1587,59 +1431,38 @@
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    "RECE620"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    "RECE62X"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               MOVE    WRK-CONS-TERMID     TO  RECEDAT1PARA-TERMID
-           END-IF
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           MOVE    "RECE631"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (4)
-           MOVE    "RECE661"          TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (5)
-           MOVE    "RECE680"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (6)
-           MOVE    "RECE690"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (7)
-           MOVE    "RECE670"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (8)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE62PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE62XPARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE63PARA
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  RECE66PARA
-           MOVE    SGETTEMP-FULLNAMES (6)
-                                       TO  RECE68PARA
-           MOVE    SGETTEMP-FULLNAMES (7)
-                                       TO  RECE69PARA
-           MOVE    SGETTEMP-FULLNAMES (8)
-                                       TO  RECE67PARA
+           MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE62PARA-HOSPNUM
       *
-           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+           MOVE    "RECE62X"           TO  RECE62XPARA-FILE-ID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE62XPARA-HOSPNUM
+      *->  MOVE    WRK-CONS-TERMID     TO  RECE62XPARA-TERMID
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               MOVE    WRK-PARA-TERMID TO  RECE62XPARA-TERMID
+           ELSE
+               MOVE    WRK-CONS-TERMID TO  RECE62XPARA-TERMID
+           END-IF
+      *
+           MOVE    "RECE631"           TO  RECE63PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE63PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE63PARA-HOSPNUM
+      *
+           MOVE    "RECE661"           TO  RECE66PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE66PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE66PARA-HOSPNUM
+      *
+           MOVE    "RECE680"           TO  RECE68PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE68PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE68PARA-HOSPNUM
+      *
+           MOVE    "RECE690"           TO  RECE69PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE69PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE69PARA-HOSPNUM
+      *
+           MOVE    "RECE670"           TO  RECE67PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE67PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE67PARA-HOSPNUM
       *
            OPEN    I-O                 RECE62-FILE
            IF      STS-RECE62          =   "00"
@@ -2062,33 +1885,11 @@
                                         =   SPACE
                MOVE    "0"              TO  SYS-200501-DRNAME-KSIKBN
            END-IF
-           IF      SYS-200501-TERMINAL-DIGIT-PRTKBN
-                                   =   SPACE
-               MOVE    "0"             TO
-                                       SYS-200501-TERMINAL-DIGIT-PRTKBN
-           END-IF
-           IF      SYS-200501-TENKIBYOMEI-KBN
-                                    =   SPACE
-               MOVE    ZERO             TO  SYS-200501-TENKIBYOMEI-KBN
-           END-IF
-           IF      SYS-200501-HKN-RIREKI-KBN
-                                        =   SPACE
-               MOVE    "0"              TO  SYS-200501-HKN-RIREKI-KBN
-           END-IF
-      *
-           DISPLAY "SYS-2005-TENKIHENKBN            ="
-                                    SYS-2005-TENKIHENKBN
            DISPLAY "SYS-200501-INSPECT-CHARACTER-KBN="
                                     SYS-200501-INSPECT-CHARACTER-KBN
                     " " WRK-PARA-PRTKBN
-           DISPLAY "SYS-200501-DRNAME-KSIKBN        ="
+           DISPLAY "SYS-200501-DRNAME-KSIKBN       ="
                                     SYS-200501-DRNAME-KSIKBN
-           DISPLAY "SYS-200501-TERMINAL-DIGIT-PRTKBN="
-                                    SYS-200501-TERMINAL-DIGIT-PRTKBN
-           DISPLAY "SYS-200501-TENKIBYOMEI-KBN      ="
-                                    SYS-200501-TENKIBYOMEI-KBN
-           DISPLAY "SYS-200501-HKN-RIREKI-KBN       ="
-                                    SYS-200501-HKN-RIREKI-KBN
       *
       *    レセプト・総括編集情報（区分コード０５のデータ読込）
            MOVE    SPACE            TO  SYSKANRI-REC
@@ -2233,59 +2034,6 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
-      *
-      *    患者番号構成管理情報編集
-           MOVE    ZERO                TO  WRK-1009-KETA 
-           IF   WRK-PARA-SRYYM    NOT =  ZERO
-               MOVE    SPACE           TO  SYSKANRI-REC
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    "1009"          TO  SYS-KANRICD
-               MOVE    "*"             TO  SYS-KBNCD
-               MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
-               MOVE    "01"            TO  SYS-STYUKYMD (7:2)
-               MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
-               MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
-               MOVE    "key10"         TO  WRK-MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI    =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-1009-REC
-      *
-                   DISPLAY "SYS-1009-PTNUMKSIKBN=" SYS-1009-PTNUMKSIKBN
-                          " JIYKSIKETA=" SYS-1009-JIYKSIKETA
-                          " HJNKSIRENNUMKETA=" SYS-1009-HJNKSIRENNUMKETA
-                          " KKCKSIMAEKETA=" SYS-1009-KKCKSIMAEKETA
-                          " KKCKSIRENNUMKETA=" SYS-1009-KKCKSIRENNUMKETA
-                          " KKCKSIATOKETA=" SYS-1009-KKCKSIATOKETA
-      *
-                   EVALUATE    SYS-1009-PTNUMKSIKBN
-                       WHEN    "1"
-                           MOVE    SYS-1009-JIYKSIKETA TO  WRK-1009-KETA
-                       WHEN    "2"
-                           MOVE    SYS-1009-HJNKSIRENNUMKETA
-                                                       TO  WRK-1009-KETA
-                       WHEN    "3"
-                           COMPUTE WRK-1009-KETA   =
-                                           SYS-1009-KKCKSIMAEKETA      +
-                                           SYS-1009-KKCKSIRENNUMKETA   +
-                                           SYS-1009-KKCKSIATOKETA 
-                   END-EVALUATE
-                   IF      WRK-1009-KETA       <   3
-                       MOVE    ZERO                TO  WRK-1009-KETA 
-                   ELSE
-                       COMPUTE WRK-1009-KETA   =   WRK-1009-KETA   -
-                                                   1
-                   END-IF
-                   DISPLAY "WRK-1009-KETA       =" WRK-1009-KETA
-               ELSE
-                   MOVE    "患者番号構成管理情報が取得できませんでした"
-                                           TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   MOVE    2               TO  FLG-STS
-                   GO  TO  120-HOSPINF-GET-EXT
-               END-IF
-            ELSE
-               INITIALIZE                  SYS-1009-REC
-            END-IF   
       *
       *    リアルタイムプレビュー時の画面設定取得
            MOVE    "0"                 TO  WRK-PRVLAYOUT
@@ -2467,48 +2215,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ＥＦファイル種別不明分チェック処理
-      *****************************************************************
-       1001-EFOUT-CHECK-SEC        SECTION.
-      *
-           PERFORM 990-RECE62-READ-SEC
-      *
-           PERFORM         UNTIL   FLG-RECE62     =   1
-      *        不明分があれば処理終了
-               IF    ( RECE62-RECESYUBETU  =   ZERO )
-               OR    ( RECE62-ERR-ERRKBN   =   15   )
-                   IF      RECE62-RECESYUBETU  =   ZERO
-                       STRING   "レセプトが種別不明です　患者番号＝"
-                                                  DELIMITED  BY  SIZE
-                                RECE62-PTNUM       DELIMITED  BY  SIZE
-                                                   INTO  WRK-RECEERR
-                       END-STRING
-                   ELSE
-                       STRING  "０５９で始まる「その他材料コード」"
-                                                   DELIMITED  BY  SIZE
-                               "が使用されています　患者番号＝"
-                                                   DELIMITED  BY  SIZE
-                                RECE62-PTNUM       DELIMITED  BY  SIZE
-                                                   INTO  WRK-RECEERR
-                       END-STRING
-                   END-IF
-                   PERFORM 500-ERR-HENSYU-SEC
-                   STRING  "ORCR0730 "         DELIMITED   BY  SIZE
-                           WRK-RECEERR         DELIMITED   BY  SPACE
-                           LOW-VALUE           DELIMITED   BY  SIZE
-                                              INTO    WRK-ERRMSG
-                   END-STRING
-                   PERFORM 500-COBABORT-SEC
-               END-IF
-      *
-               PERFORM 990-RECE62-READ-SEC
-           END-PERFORM
-      *
-           .
-       1001-EFOUT-CHECK-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
@@ -2627,11 +2333,9 @@
                        MOVE    "―"       TO  WRK-HKN-FIL
                END-EVALUATE
       *
-               IF  ( ( RECE69-NUM         =   SPACE )
-               AND   ( RECE69-KIGO        =   SPACE )
-               AND   ( RECE69-HKNJANUM    =   SPACE ) )
-               OR  (   SYS-200501-HKN-RIREKI-KBN
-                                           =   "1"    )
+               IF    ( RECE69-NUM         =   SPACE )
+               AND   ( RECE69-KIGO        =   SPACE )        
+               AND   ( RECE69-HKNJANUM    =   SPACE )        
                    STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE69-TANSEIDONAME    DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI (WRK-RIREKI-MAX)
@@ -2807,16 +2511,13 @@
            END-PERFORM
       *
            MOVE     ZERO       TO    FLG-JIRITU-HENSYU
-           IF ((RECE62-HKNNUM     =  SPACE                  ) AND
-               (RECE62-KOHNUM(1)  =  "021" OR "015" OR "016") AND
-               (RECE62-KOHNUM(2)  =  "012"                  ))
+           IF (( RECE62-HKNNUM     =   SPACE                 ) AND
+               ( RECE62-KOHNUM (1) =   "021"                 ) AND
+               ( RECE62-KOHNUM (2) =   "012"                 ))
+           OR (( RECE62-HKNNUM     =   SPACE                 ) AND
+               ( RECE62-KOHNUM (1) =   "015" OR "016"        ) AND
+               ( RECE62-KOHNUM (2) =   "012"                 ))
                     MOVE       1       TO    FLG-JIRITU-HENSYU
-           END-IF
-           IF ((RECE62-HKNNUM     =  SPACE                  ) AND
-               (RECE62-KOHNUM(1)  =  "010"                  ) AND
-               (RECE62-KOHNUM(2)  =  "012"                  ) AND
-               (RECE62-KOHNUM(3)  =  "012"                  ))
-                    MOVE       2       TO    FLG-JIRITU-HENSYU
            END-IF
       *
       *    県単用項目ファイル読込処理
@@ -2835,7 +2536,7 @@
            PERFORM 320-HC101-BYOMEI-HEN-SEC
       *
       *    帳票編集<公費３、公費４、適用欄上段コメント>処理
-           PERFORM 380-HC101-TEKIYOU-COM-HEN-SEC
+           PERFORM 380-HC101-TEKIYOU-COMMENT-HEN-SEC
       *
       *    帳票編集<入退院履歴・入院基本料種別の続き>処理
            PERFORM 380-HC101-NYUTAI-RIREKI-HEN-SEC
@@ -2966,7 +2667,6 @@
            ELSE
                MOVE    RECE62X-TEKSTYMD    TO  KOHSKY-TEKSTYMD
            END-IF
-           MOVE    RECE62X-RECEIPT-KBN TO  KOHSKY-RECEIPT-KBN
       *
            MOVE     999999999          TO  WRK-TAIHI-FTNMONEY
       *    レセプト種別を請求管理より編集
@@ -2990,29 +2690,7 @@
                  MOVE  RECE10-FTNMONEY(1)  TO  WRK-TAIHI-FTNMONEY
                END-IF
            ELSE
-               INITIALIZE                      RECE10-REC
-               MOVE    KOHSKY-KEY          TO  RECE10-KEY
-               MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
-               MOVE    "key84"             TO  WRK-MCP-PATHNAME
-               PERFORM 900-SEIKYU-INV-SEC
-               IF      FLG-SEIKYU          =   ZERO
-                   MOVE    MCPDATA-REC         TO  RECE10-REC
-      *            点検用レセ０点公費のとき作成しない
-                   IF      RECE10-SKYKBN-RECEDEN   =   "1"
-                       DISPLAY "RECE10-SKYKBN-RECEDEN="
-                                               RECE10-SKYKBN-RECEDEN
-                       GO  TO  20022-KOHSKY-WRITE-EXT
-                   END-IF
-      *
-                   MOVE    RECE10-RECESYUBETU  TO  KOHSKY-RECESYUBETU
-                   MOVE    RECE10-RECEKA       TO  KOHSKY-RECEKA
-                   MOVE    RECE10-TEKSTYMD     TO  KOHSKY-TEKSTYMD
-                   IF      RECE10-FLG (5)  NOT =   ZERO
-                       MOVE    RECE10-FTNMONEY(1)  TO WRK-TAIHI-FTNMONEY
-                   END-IF
-               ELSE
-                   GO  TO  20022-KOHSKY-WRITE-EXT
-               END-IF
+               GO  TO  2002-KOHSKY-WRITE-EXT
            END-IF
       *
            PERFORM 900-KOHSKY-INV-SEC
@@ -3089,29 +2767,14 @@
            END-IF
            MOVE    RECE62X-SHOSHINTIME TO  KOHSKY-SHOSHINTIME
            IF      RECE62X-KOUREI   =  "2" OR "3"
-             IF  RECE62X-SRYYM   >=  "201501"
-               EVALUATE  RECE62X-DISCOUNTTENTNK
-                 WHEN       "26"
-                   MOVE   "2"     TO   KOHSKY-ZAITAKU
-                 WHEN       "27"
-                   MOVE   "3"     TO   KOHSKY-ZAITAKU
-                 WHEN       "28"
-                   MOVE   "4"     TO   KOHSKY-ZAITAKU
-                 WHEN       "29"
-                   MOVE   "5"     TO   KOHSKY-ZAITAKU
-                 WHEN       "30"
-                   MOVE   "6"     TO   KOHSKY-ZAITAKU
-               END-EVALUATE
-             ELSE
-               EVALUATE  RECE62X-DISCOUNTTENTNK
-                 WHEN       "17"
-                   MOVE   "2"     TO   KOHSKY-ZAITAKU
-                 WHEN       "18"
-                   MOVE   "3"     TO   KOHSKY-ZAITAKU
-                 WHEN       "19"
-                   MOVE   "4"     TO   KOHSKY-ZAITAKU
-               END-EVALUATE
-             END-IF
+             EVALUATE  RECE62X-DISCOUNTTENTNK
+               WHEN       "17"
+                 MOVE   "2"     TO   KOHSKY-ZAITAKU
+               WHEN       "18"
+                 MOVE   "3"     TO   KOHSKY-ZAITAKU
+               WHEN       "19"
+                 MOVE   "4"     TO   KOHSKY-ZAITAKU
+             END-EVALUATE
            END-IF
            IF      RECE62X-KOUREI-SAIKEI  NOT =  999999999
              MOVE  RECE62X-KOUREI-SAIKEI  TO  KOHSKY-ZAITAKU-SAIKEI
@@ -3495,8 +3158,7 @@
            IF    ( SYS-200501-DRNAME-KSIKBN
                                        =   "1"         )
            AND   ( RECE62-DRCD     NOT =   SPACE       )
-           AND   ( WRK-PARA-PRTKBN     =   "2" OR  "3" 
-                                       OR  "4" OR  "5" )
+           AND   ( WRK-PARA-PRTKBN     =   "2" OR  "3" )
                IF  ( ( WRK-PARA-SHELLID
                                        NOT =   "RECEPTX" ) AND
                      ( WRK-PARA-SYOKBN     =   "1"       )     )
@@ -3598,7 +3260,7 @@
            END-IF
       *
       *    点検用レセプト作成時
-           IF      WRK-PARA-PRTKBN     =   "2" OR  "3" OR  "4" OR  "5"
+           IF      WRK-PARA-PRTKBN     =   "2" OR  "3"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
                                            =   "0"
                    MOVE    "点検用レセプト"    TO  HC06-LABEL
@@ -3648,15 +3310,15 @@
                            WHEN    8
                            WHEN    10
                            WHEN    11
-                               MOVE    "不詳"  TO  HC06-HEAD5
+                               MOVE    "（不詳）"  TO  HC06-HEAD5
                            WHEN    2
                            WHEN    7
-                               MOVE    "災１"  TO  HC06-HEAD5
+                               MOVE    "（災１）"  TO  HC06-HEAD5
                            WHEN    4
-                               MOVE    "災２"  TO  HC06-HEAD5
+                               MOVE    "（災２）"  TO  HC06-HEAD5
                            WHEN    5
-                               MOVE    "不詳・災１"
-                                               TO  HC06-HEAD5
+                               MOVE    "（不詳・災１）"
+                                                   TO  HC06-HEAD5
                        END-EVALUATE
                END-EVALUATE
            END-IF
@@ -3784,12 +3446,6 @@
                    MOVE    WRK-ERR-MSG-14  TO   HC06-HEAD4-G (5:)
                WHEN    13
                    MOVE    WRK-ERR-MSG-15  TO   HC06-HEAD4-G (5:)
-               WHEN    14
-                   MOVE    WRK-ERR-MSG-17  TO   HC06-HEAD4-G (5:)
-               WHEN    15
-                   MOVE    WRK-ERR-MSG-18  TO   HC06-HEAD4-G (5:)
-               WHEN    16
-                   MOVE    WRK-ERR-MSG-19  TO   HC06-HEAD4-G (5:)
                WHEN    88
                    MOVE    WRK-ERR-MSG-88  TO   HC06-HEAD4-G (5:)
            END-EVALUATE
@@ -4601,34 +4257,37 @@
       *
       *    <診療実日数>
            IF      CNT-PAGE        =   1
-               MOVE      ZERO             TO  FLG-JNISSU
-               IF    ((IDX1                         =   1   ) AND
-                      (RECE62-HKNNUM            NOT =  SPACE))
-               OR    ((IDX1                     NOT =   1   ) AND
-                      (RECE62-KOHNUM(IDX1 - 1)  NOT =  SPACE))
+               IF      RECE62-TOTALTEN (IDX1)        >   ZERO
+               OR      RECE62-SHOKUJIRYOYOHI(IDX1)   >   ZERO
                   MOVE    RECE62-JNISSU (IDX1)
                                           TO  WRK-JINISSU2Z
                   MOVE    WRK-JINISSU2    TO  HC06-JINISSU
-                  MOVE    1               TO  FLG-JNISSU
                END-IF
-               IF      RECE62-KOHNUM(IDX2 - 1)  NOT =  SPACE
-                  IF (FLG-JNISSU                 = ZERO               )
-                  OR (RECE62-JNISSU(IDX1)    NOT = RECE62-JNISSU(IDX2))
-                  OR (RECE62-JSKISAIFLG          = "1"                )
-                  OR (RECE62-EKF-JNISSUFLG(IDX2) = "1"                )
+               IF (((RECE62-TOTALTEN(IDX2)         > ZERO         ) OR
+                    (RECE62-SHOKUJIRYOYOHI(IDX2)   > ZERO         )) AND
+                   ((RECE62-JNISSU(IDX1) NOT = RECE62-JNISSU(IDX2)) OR
+                    (RECE62-JSKISAIFLG          =   "1"           ) OR
+                    (RECE62-EKF-JNISSUFLG(IDX2) =   "1"           )))
+               OR ( (RECE62-TOTALTEN(IDX2)         > ZERO         )  AND
+                    (RECE62-TOTALTEN(IDX1)         = ZERO         ) )
+               OR ( (RECE62-SHOKUJIRYOYOHI(IDX2)   > ZERO         )  AND
+                    (RECE62-SHOKUJIRYOYOHI(IDX1)   = ZERO         ) )
                       MOVE    RECE62-JNISSU (IDX2)
                                               TO  WRK-JINISSU2Z
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
-                  END-IF
                END-IF
-               IF      RECE62-KOHNUM(IDX3 - 1)  NOT =  SPACE
-                  IF (RECE62-JNISSU(IDX2)    NOT = RECE62-JNISSU(IDX3))
-                  OR (RECE62-JSKISAIFLG          = "1"                )
-                  OR (RECE62-EKF-JNISSUFLG(IDX3) = "1"                )
+               IF (((RECE62-TOTALTEN(IDX3)         > ZERO         ) OR
+                    (RECE62-SHOKUJIRYOYOHI(IDX3)   > ZERO         )) AND
+                   ((RECE62-JNISSU(IDX2) NOT = RECE62-JNISSU(IDX3)) OR
+                    (RECE62-JSKISAIFLG          =   "1"           ) OR
+                    (RECE62-EKF-JNISSUFLG(IDX3) =   "1"           )))
+               OR (( RECE62-FUKUSHIFLG(IDX3)    =   "1"            ) AND
+                   ((RECE62-JNISSU(IDX2) NOT = RECE62-JNISSU(IDX3)) OR
+                    (RECE62-JSKISAIFLG          =   "1"           ) OR
+                    (RECE62-EKF-JNISSUFLG(IDX3) =   "1"           )))
                       MOVE    RECE62-JNISSU (IDX3)
                                               TO  WRK-JINISSU2Z
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
-                  END-IF
                END-IF
       *        県単用項目
                IF      FLG-RECE67           =   ZERO
@@ -5761,19 +5420,10 @@
                    MOVE    ZERO            TO  FLG-TENKI
                END-IF
            ELSE
-               IF      SYS-200501-TENKIBYOMEI-KBN
-                                       =   "0"
-                   IF  WRK-BYOMEI2R1-ELSE  =   SPACE
-      *                診療年月日・転帰　編集処理
-                       PERFORM 32221-SRYYMD-TENKI-HEN-SEC
-                       MOVE    ZERO            TO  FLG-TENKI
-                   END-IF
-               ELSE
-                   IF  WRK-BYOMEI2R-ELSE   =   SPACE
-      *                診療年月日・転帰　編集処理
-                       PERFORM 32221-SRYYMD-TENKI-HEN-SEC
-                       MOVE    ZERO            TO  FLG-TENKI
-                   END-IF
+               IF  WRK-BYOMEI2R-ELSE   =   SPACE
+      *            診療年月日・転帰　編集処理
+                   PERFORM 32221-SRYYMD-TENKI-HEN-SEC
+                   MOVE    ZERO            TO  FLG-TENKI
                END-IF
            END-IF    
       *
@@ -5857,60 +5507,30 @@
                    MOVE    SPACE           TO  WRK-BYOMEI2-TENKI
                END-EVALUATE
            ELSE
-               IF      SYS-200501-TENKIBYOMEI-KBN
-                                           =   "0"
-      *            診療開始日
-                   MOVE    WRK-BO-SRYYMD       TO  WRK-SYMD
-                   PERFORM 31012-SEIWA-HEN-SEC
-                   MOVE    LNK-DAY2-EDTYMD3 (5:)
-                                               TO  WRK-BYOMEI2R1-YMD
-      *            転帰
-                   EVALUATE    WRK-BO-TENKIKBN
-                   WHEN    "1"
-                       MOVE    "治ゆ"          TO  WRK-BYOMEI2R1-TENKI
-                   WHEN    "2"
-                       MOVE    "死亡"          TO  WRK-BYOMEI2R1-TENKI
-                   WHEN    "3"
-                       MOVE    "中止"          TO  WRK-BYOMEI2R1-TENKI
-                   WHEN    OTHER
-                       MOVE    SPACE           TO  WRK-BYOMEI2R1-TENKI
-                   END-EVALUATE
-      *            転帰日
-                   IF      WRK-BO-TENKIYMD     =   SPACE
-                       CONTINUE
-                   ELSE
-                       MOVE    WRK-BO-TENKIYMD     TO  WRK-SYMD
-                       PERFORM 31012-SEIWA-HEN-SEC
-                       MOVE    LNK-DAY2-EDTYMD3 (17:)
-                                                   TO
-                                               WRK-BYOMEI2R1-TENKIYMD
-                   END-IF
+      *        診療開始日
+               MOVE    WRK-BO-SRYYMD       TO  WRK-SYMD
+               PERFORM 31012-SEIWA-HEN-SEC
+               MOVE    LNK-DAY2-EDTYMD3 (5:)
+                                           TO  WRK-BYOMEI2R-YMD
+      *        転帰
+               EVALUATE    WRK-BO-TENKIKBN
+               WHEN    "1"
+                   MOVE    "治ゆ"          TO  WRK-BYOMEI2R-TENKI
+               WHEN    "2"
+                   MOVE    "死亡"          TO  WRK-BYOMEI2R-TENKI
+               WHEN    "3"
+                   MOVE    "中止"          TO  WRK-BYOMEI2R-TENKI
+               WHEN    OTHER
+                   MOVE    SPACE           TO  WRK-BYOMEI2R-TENKI
+               END-EVALUATE
+      *        転帰日
+               IF      WRK-BO-TENKIYMD     =   SPACE
+                   CONTINUE 
                ELSE
-      *            診療開始日
-                   MOVE    WRK-BO-SRYYMD       TO  WRK-SYMD
+                   MOVE    WRK-BO-TENKIYMD     TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
-                   MOVE    LNK-DAY2-EDTYMD3 (5:)
-                                               TO  WRK-BYOMEI2R-YMD
-      *            転帰
-                   EVALUATE    WRK-BO-TENKIKBN
-                   WHEN    "1"
-                       MOVE    "治ゆ"          TO  WRK-BYOMEI2R-TENKI
-                   WHEN    "2"
-                       MOVE    "死亡"          TO  WRK-BYOMEI2R-TENKI
-                   WHEN    "3"
-                       MOVE    "中止"          TO  WRK-BYOMEI2R-TENKI
-                   WHEN    OTHER
-                       MOVE    SPACE           TO  WRK-BYOMEI2R-TENKI
-                   END-EVALUATE
-      *            転帰日
-                   IF      WRK-BO-TENKIYMD     =   SPACE
-                       CONTINUE 
-                   ELSE
-                       MOVE    WRK-BO-TENKIYMD     TO  WRK-SYMD
-                       PERFORM 31012-SEIWA-HEN-SEC
-                       MOVE    LNK-DAY2-EDTYMD3 (11:)
+                   MOVE    LNK-DAY2-EDTYMD3 (11:)
                                                TO  WRK-BYOMEI2R-TENKIYMD
-                   END-IF
                END-IF                                
            END-IF                                     
       *
@@ -5967,10 +5587,6 @@
                MOVE    2                  TO  IDX2
            END-IF      
       *
-           IF    FLG-JIRITU-HENSYU   =  2
-               MOVE    3                  TO  IDX3
-           END-IF
-      *
       *    １１初診〜８０他         
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL     IDX       >   22
@@ -5978,17 +5594,10 @@
                MOVE    RECE62-KAISU(IDX)         TO  WRK-KAISUZ
                MOVE    WRK-KAISU                 TO  HC06-KAISU   (IDX)
       *        <点数・公費点数>
-               IF    FLG-JIRITU-HENSYU  NOT =  ZERO
-                 EVALUATE  FLG-JIRITU-HENSYU
-                   WHEN      1
-                     COMPUTE WRK-SUM-TENSU = RECE62-TENSU(IDX IDX1)
-                                           + RECE62-TENSU(IDX IDX2)
-                     MOVE    WRK-SUM-TENSU       TO  WRK-TENSUZ
-                   WHEN      2
-                     COMPUTE WRK-SUM-TENSU = RECE62-TENSU(IDX IDX1)
-                                           + RECE62-TENSU(IDX IDX3)
-                     MOVE    WRK-SUM-TENSU       TO  WRK-TENSUZ
-                 END-EVALUATE
+               IF    FLG-JIRITU-HENSYU  =  1
+                  COMPUTE WRK-SUM-TENSU   =     RECE62-TENSU(IDX IDX1)
+                                          +     RECE62-TENSU(IDX IDX2)
+                  MOVE    WRK-SUM-TENSU          TO  WRK-TENSUZ
                ELSE
                   MOVE    RECE62-TENSU(IDX IDX1) TO  WRK-TENSUZ
                END-IF
@@ -6000,27 +5609,17 @@
                        (RECE62-HENTOTALTEN(IDX1) NOT =
                                      RECE62-HENTOTALTEN(IDX2)))
                   IF    RECE62-SEIHOFLG    =  "1"
-                    IF   RECE62-SYUTANARIFLG  =  ZERO
-                      MOVE  RECE62-TENSU(IDX IDX2)
-                                                   TO  WRK-TENSUZ
-                      MOVE  WRK-TENSU              TO  HC06-TENSU(IDX)
+                   MOVE    RECE62-TENSU(IDX IDX2)  TO   WRK-TENSUZ
+                   MOVE    WRK-TENSU               TO   HC06-TENSU(IDX)
       *
-                      COMPUTE WRK-SUM-TENSU = RECE62-TENSU(IDX IDX2)
-                                            - RECE62-TENSU(IDX IDX1)
-                      MOVE  WRK-SUM-TENSU          TO  WRK-KOUTENZ
-                      MOVE  WRK-KOUTEN             TO  HC06-KOHTEN(IDX)
-                    ELSE
-                      COMPUTE WRK-SUM-TENSU = RECE62-TENSU(IDX IDX2)
-                                            + RECE62-SYUTANTEN(IDX)
-                      MOVE  WRK-SUM-TENSU          TO  WRK-TENSUZ
-                      MOVE  WRK-TENSU              TO  HC06-TENSU(IDX)
-      *
-                      MOVE  RECE62-TENSU(IDX IDX2) TO  WRK-KOUTENZ
-                      MOVE  WRK-KOUTEN             TO  HC06-KOHTEN(IDX)
-                    END-IF
+                   COMPUTE WRK-SUM-TENSU   =     RECE62-TENSU(IDX IDX2)
+                                           -     RECE62-TENSU(IDX IDX1)
+                   MOVE    WRK-SUM-TENSU         TO  WRK-KOUTENZ
+                   MOVE    WRK-KOUTEN            TO  HC06-KOHTEN  (IDX)
                   ELSE
-                      MOVE  RECE62-TENSU(IDX IDX2) TO  WRK-KOUTENZ
-                      MOVE  WRK-KOUTEN             TO  HC06-KOHTEN(IDX)
+                   MOVE    RECE62-TENSU(IDX IDX2)
+                                                 TO  WRK-KOUTENZ
+                   MOVE    WRK-KOUTEN            TO  HC06-KOHTEN  (IDX)
                   END-IF
                  END-IF
                END-IF
@@ -6039,17 +5638,10 @@
                                              TO  WRK-KAISUZ
                MOVE    WRK-KAISU             TO  HC06-NYUKAISU  (IDX)
       *        <金額・公費金額>
-               IF    FLG-JIRITU-HENSYU  NOT =  ZERO
-                 EVALUATE  FLG-JIRITU-HENSYU
-                   WHEN      1
-                     COMPUTE WRK-SUM-TENSU = RECE62-NYUKHNKEI(IDX IDX1)
-                                           + RECE62-NYUKHNKEI(IDX IDX2)
-                     MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
-                   WHEN      2
-                     COMPUTE WRK-SUM-TENSU = RECE62-NYUKHNKEI(IDX IDX1)
-                                           + RECE62-NYUKHNKEI(IDX IDX3)
-                     MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
-                 END-EVALUATE
+               IF    FLG-JIRITU-HENSYU  =  1
+                   COMPUTE WRK-SUM-TENSU =  RECE62-NYUKHNKEI(IDX IDX1)
+                                         +  RECE62-NYUKHNKEI(IDX IDX2)
+                   MOVE    WRK-SUM-TENSU     TO  WRK-TENSUZ
                ELSE
                    MOVE    RECE62-NYUKHNKEI(IDX IDX1)
                                              TO  WRK-TENSUZ
@@ -6062,30 +5654,18 @@
                        (RECE62-HENTOTALTEN(IDX1) NOT =
                                      RECE62-HENTOTALTEN(IDX2)))
                   IF    RECE62-SEIHOFLG    =  "1"
-                    IF   RECE62-SYUTANARIFLG  =  ZERO
-                      MOVE  RECE62-NYUKHNKEI(IDX IDX2)
-                                              TO  WRK-TENSUZ
-                      MOVE  WRK-TENSU         TO  HC06-NYUTENSU(IDX)
+                   MOVE    RECE62-NYUKHNKEI(IDX IDX2)
+                                             TO  WRK-TENSUZ
+                   MOVE    WRK-TENSU         TO  HC06-NYUTENSU(IDX)
       *
-                      COMPUTE WRK-SUM-TENSU = RECE62-NYUKHNKEI(IDX IDX2)
-                                            - RECE62-NYUKHNKEI(IDX IDX1)
-                      MOVE  WRK-SUM-TENSU     TO  WRK-KOUTENZ
-                      MOVE  WRK-KOUTEN        TO  HC06-NYUKOHTEN(IDX)
-                    ELSE
-                      COMPUTE WRK-SUM-TENSU = RECE62-NYUKHNKEI(IDX IDX2)
-                                            + RECE62-SYUTANTEN-NYUKHN
-                                                                   (IDX)
-                      MOVE  WRK-SUM-TENSU     TO  WRK-TENSUZ
-                      MOVE  WRK-TENSU         TO  HC06-NYUTENSU(IDX)
-      *
-                      MOVE  RECE62-NYUKHNKEI(IDX IDX2)
-                                              TO  WRK-KOUTENZ
-                      MOVE  WRK-KOUTEN        TO  HC06-NYUKOHTEN(IDX)
-                    END-IF
+                   COMPUTE WRK-SUM-TENSU  =  RECE62-NYUKHNKEI(IDX IDX2)
+                                          -  RECE62-NYUKHNKEI(IDX IDX1)
+                   MOVE    WRK-SUM-TENSU     TO  WRK-KOUTENZ
+                   MOVE    WRK-KOUTEN        TO  HC06-NYUKOHTEN (IDX)
                   ELSE
-                      MOVE  RECE62-NYUKHNKEI(IDX IDX2)
-                                              TO  WRK-KOUTENZ
-                      MOVE  WRK-KOUTEN        TO  HC06-NYUKOHTEN(IDX)
+                   MOVE    RECE62-NYUKHNKEI(IDX IDX2)
+                                             TO  WRK-KOUTENZ
+                   MOVE    WRK-KOUTEN        TO  HC06-NYUKOHTEN (IDX)
                   END-IF
                  END-IF
                END-IF
@@ -6100,19 +5680,10 @@
                    ADD     RECE62-NYUKHNNISSU(IDX)
                                                  TO  SUM-NYUKHNNISSU
       *            <金額・公費金額>
-                   IF    FLG-JIRITU-HENSYU  NOT =  ZERO
-                     EVALUATE  FLG-JIRITU-HENSYU
-                       WHEN      1
-                         COMPUTE WRK-SUM-TENSU              =
-                                 RECE62-NYUKHNKEI(IDX IDX1) +
-                                 RECE62-NYUKHNKEI(IDX IDX2)
-                         ADD   WRK-SUM-TENSU     TO  SUM-NYUKHNKEI (1)
-                       WHEN      2
-                         COMPUTE WRK-SUM-TENSU              =
-                                 RECE62-NYUKHNKEI(IDX IDX1) +
-                                 RECE62-NYUKHNKEI(IDX IDX3)
-                         ADD   WRK-SUM-TENSU     TO  SUM-NYUKHNKEI (1)
-                     END-EVALUATE
+                   IF    FLG-JIRITU-HENSYU  =  1
+                     COMPUTE WRK-SUM-TENSU = RECE62-NYUKHNKEI(IDX IDX1)
+                                           + RECE62-NYUKHNKEI(IDX IDX2)
+                     ADD     WRK-SUM-TENSU       TO  SUM-NYUKHNKEI (1)
                    ELSE
                      ADD     RECE62-NYUKHNKEI(IDX IDX1)
                                                  TO  SUM-NYUKHNKEI (1)
@@ -6124,27 +5695,14 @@
                            (RECE62-HENTOTALTEN(IDX1) NOT =
                                          RECE62-HENTOTALTEN(IDX2)))
                       IF    RECE62-SEIHOFLG    =  "1"
-                        IF   RECE62-SYUTANARIFLG  =  ZERO
-                          COMPUTE WRK-SUM-TENSU
-                                        = RECE62-NYUKHNKEI(IDX IDX2)
-                                        - RECE62-NYUKHNKEI(IDX IDX1)
-                          ADD   WRK-SUM-TENSU   TO  SUM-NYUKHNKEI(2)
-                                                    SUM-NYUKHNKEI(1)
-                        ELSE
-                          COMPUTE SUM-NYUKHNKEI(1) =
-                                  SUM-NYUKHNKEI(1) -
-                                  RECE62-NYUKHNKEI(IDX IDX1)
-                          COMPUTE WRK-SUM-TENSU
-                                        = RECE62-NYUKHNKEI(IDX IDX2)
-                                        + RECE62-SYUTANTEN-NYUKHN
-                                                               (IDX)
-                          ADD   WRK-SUM-TENSU   TO  SUM-NYUKHNKEI(1)
-                          ADD   RECE62-NYUKHNKEI(IDX IDX2)
-                                                TO  SUM-NYUKHNKEI(2)
-                        END-IF
+                       COMPUTE WRK-SUM-TENSU
+                                       = RECE62-NYUKHNKEI(IDX IDX2)
+                                       - RECE62-NYUKHNKEI(IDX IDX1)
+                       ADD     WRK-SUM-TENSU     TO  SUM-NYUKHNKEI (2)
+                                                     SUM-NYUKHNKEI (1)
                       ELSE
-                          ADD   RECE62-NYUKHNKEI(IDX IDX2)
-                                                TO  SUM-NYUKHNKEI(2)
+                       ADD    RECE62-NYUKHNKEI(IDX IDX2)
+                                                 TO  SUM-NYUKHNKEI (2)
                       END-IF
                      END-IF
                    END-IF
@@ -6163,19 +5721,11 @@
                END-IF
            END-IF
       *        <入院基本料・加算>
-           IF    FLG-JIRITU-HENSYU  NOT =  ZERO
-             EVALUATE  FLG-JIRITU-HENSYU
-               WHEN      1
-                 COMPUTE WRK-SUM-TENSU =  RECE62-NYUKHNKEI2 (IDX1)
-                                       +  RECE62-NYUKHNKEI2 (IDX2)
-                 MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
-                 MOVE    WRK-TENSU       TO  HC06-NYUTENSU  (5)
-               WHEN      2
-                 COMPUTE WRK-SUM-TENSU =  RECE62-NYUKHNKEI2 (IDX1)
-                                       +  RECE62-NYUKHNKEI2 (IDX3)
-                 MOVE    WRK-SUM-TENSU   TO  WRK-TENSUZ
-                 MOVE    WRK-TENSU       TO  HC06-NYUTENSU  (5)
-             END-EVALUATE
+           IF    FLG-JIRITU-HENSYU  =  1
+             COMPUTE WRK-SUM-TENSU =  RECE62-NYUKHNKEI2 (IDX1)
+                                   +  RECE62-NYUKHNKEI2 (IDX2)
+             MOVE    WRK-SUM-TENSU            TO  WRK-TENSUZ
+             MOVE    WRK-TENSU                TO  HC06-NYUTENSU  (5)
              IF      WRK-SUM-TENSU              <   ZERO
                PERFORM VARYING IDZ FROM    6   BY  -1
                        UNTIL   IDZ <       1
@@ -6207,29 +5757,18 @@
                    (RECE62-HENTOTALTEN(IDX1) NOT =
                                  RECE62-HENTOTALTEN(IDX2)))
               IF    RECE62-SEIHOFLG    =  "1"
-                IF   RECE62-SYUTANARIFLG  =  ZERO
-                  MOVE  RECE62-NYUKHNKEI2(IDX2)
-                                          TO  WRK-TENSUZ
-                  MOVE  WRK-TENSU         TO  HC06-NYUTENSU(5)
+               MOVE    RECE62-NYUKHNKEI2(IDX2)
+                                               TO  WRK-TENSUZ
+               MOVE    WRK-TENSU               TO  HC06-NYUTENSU(5)
       *
-                  COMPUTE WRK-SUM-TENSU = RECE62-NYUKHNKEI2(IDX2)
-                                        - RECE62-NYUKHNKEI2(IDX1)
-                  MOVE  WRK-SUM-TENSU     TO  WRK-KOUTENZ
-                  MOVE  WRK-KOUTEN        TO  HC06-NYUKOHTEN(5)
-                ELSE
-                  COMPUTE WRK-SUM-TENSU = RECE62-NYUKHNKEI2(IDX2)
-                                        + RECE62-SYUTANTEN-NYUKHN2
-                  MOVE  WRK-SUM-TENSU     TO  WRK-TENSUZ
-                  MOVE  WRK-TENSU         TO  HC06-NYUTENSU(5)
-      *
-                  MOVE  RECE62-NYUKHNKEI2(IDX2)
-                                          TO  WRK-KOUTENZ
-                  MOVE  WRK-KOUTEN        TO  HC06-NYUKOHTEN(5)
-                END-IF
+               COMPUTE WRK-SUM-TENSU   = RECE62-NYUKHNKEI2(IDX2)
+                                       - RECE62-NYUKHNKEI2(IDX1)
+               MOVE    WRK-SUM-TENSU           TO  WRK-KOUTENZ
+               MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (5)
               ELSE
-                  MOVE  RECE62-NYUKHNKEI2(IDX2)
-                                          TO  WRK-KOUTENZ
-                  MOVE  WRK-KOUTEN        TO  HC06-NYUKOHTEN(5)
+               MOVE    RECE62-NYUKHNKEI2 (IDX2)
+                                               TO  WRK-KOUTENZ
+               MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (5)
               END-IF
               IF      RECE62-NYUKHNKEI2 (IDX2)
                                                <   ZERO
@@ -6275,19 +5814,10 @@
                                              TO  WRK-KAISUZ
                    MOVE    WRK-KAISU         TO  HC06-NYUKAISU  (IDY)
       *            <金額・公費金額>
-                   IF    FLG-JIRITU-HENSYU  NOT =  ZERO
-                     EVALUATE  FLG-JIRITU-HENSYU
-                       WHEN      1
-                         COMPUTE WRK-SUM-TENSU              =
-                                 RECE62-NYUTOKKEI(IDX IDX1) +
-                                 RECE62-NYUTOKKEI(IDX IDX2)
-                         MOVE  WRK-SUM-TENSU          TO  WRK-TENSUZ
-                       WHEN      2
-                         COMPUTE WRK-SUM-TENSU              =
-                                 RECE62-NYUTOKKEI(IDX IDX1) +
-                                 RECE62-NYUTOKKEI(IDX IDX3)
-                         MOVE  WRK-SUM-TENSU          TO  WRK-TENSUZ
-                     END-EVALUATE
+                   IF    FLG-JIRITU-HENSYU  =  1
+                     COMPUTE WRK-SUM-TENSU =  RECE62-NYUTOKKEI(IDX IDX1)
+                                           +  RECE62-NYUTOKKEI(IDX IDX2)
+                     MOVE  WRK-SUM-TENSU              TO  WRK-TENSUZ
                    ELSE
                      MOVE  RECE62-NYUTOKKEI(IDX IDX1) TO  WRK-TENSUZ
                    END-IF
@@ -6299,31 +5829,19 @@
                            (RECE62-HENTOTALTEN(IDX1) NOT =
                                          RECE62-HENTOTALTEN(IDX2)))
                       IF    RECE62-SEIHOFLG    =  "1"
-                        IF   RECE62-SYUTANARIFLG  =  ZERO
-                          MOVE  RECE62-NYUTOKKEI(IDX IDX2)
-                                                TO  WRK-TENSUZ
-                          MOVE  WRK-TENSU       TO  HC06-NYUTENSU(IDY)
+                       MOVE    RECE62-NYUTOKKEI(IDX IDX2)
+                                             TO   WRK-TENSUZ
+                       MOVE    WRK-TENSU     TO   HC06-NYUTENSU(IDY)
       *
-                          COMPUTE WRK-SUM-TENSU
-                                        = RECE62-NYUTOKKEI(IDX IDX2)
-                                        - RECE62-NYUTOKKEI(IDX IDX1)
-                          MOVE  WRK-SUM-TENSU   TO  WRK-KOUTENZ
-                          MOVE  WRK-KOUTEN      TO  HC06-NYUKOHTEN(IDY)
-                        ELSE
-                          COMPUTE WRK-SUM-TENSU
-                                        = RECE62-NYUTOKKEI(IDX IDX2)
-                                        + RECE62-SYUTANTEN-NYUTOK(IDX)
-                          MOVE  WRK-SUM-TENSU   TO  WRK-TENSUZ
-                          MOVE  WRK-TENSU       TO  HC06-NYUTENSU(IDY)
-      *
-                          MOVE  RECE62-NYUTOKKEI(IDX IDX2)
-                                                TO  WRK-KOUTENZ
-                          MOVE  WRK-KOUTEN      TO  HC06-NYUKOHTEN(IDY)
-                        END-IF
+                       COMPUTE WRK-SUM-TENSU
+                                       = RECE62-NYUTOKKEI(IDX IDX2)
+                                       - RECE62-NYUTOKKEI(IDX IDX1)
+                       MOVE    WRK-SUM-TENSU TO  WRK-KOUTENZ
+                       MOVE    WRK-KOUTEN    TO  HC06-NYUKOHTEN (IDY)
                       ELSE
-                          MOVE  RECE62-NYUTOKKEI(IDX IDX2)
-                                                TO  WRK-KOUTENZ
-                          MOVE  WRK-KOUTEN      TO  HC06-NYUKOHTEN(IDY)
+                       MOVE    RECE62-NYUTOKKEI(IDX IDX2)
+                                             TO  WRK-KOUTENZ
+                       MOVE    WRK-KOUTEN    TO  HC06-NYUKOHTEN (IDY)
                       END-IF
                      END-IF
                    END-IF
@@ -6339,19 +5857,10 @@
                    ADD     RECE62-NYUTOKNISSU(IDX)
                                                  TO  SUM-NYUKHNNISSU
       *            <金額・公費金額>
-                   IF    FLG-JIRITU-HENSYU  NOT =  ZERO
-                     EVALUATE  FLG-JIRITU-HENSYU
-                       WHEN      1
-                         COMPUTE WRK-SUM-TENSU              =
-                                 RECE62-NYUTOKKEI(IDX IDX1) +
-                                 RECE62-NYUTOKKEI(IDX IDX2)
-                         ADD  WRK-SUM-TENSU      TO  SUM-NYUKHNKEI (1)
-                       WHEN      2
-                         COMPUTE WRK-SUM-TENSU              =
-                                 RECE62-NYUTOKKEI(IDX IDX1) +
-                                 RECE62-NYUTOKKEI(IDX IDX3)
-                         ADD  WRK-SUM-TENSU      TO  SUM-NYUKHNKEI (1)
-                     END-EVALUATE
+                   IF    FLG-JIRITU-HENSYU  =  1
+                     COMPUTE WRK-SUM-TENSU = RECE62-NYUTOKKEI(IDX IDX1)
+                                           + RECE62-NYUTOKKEI(IDX IDX2)
+                     ADD     WRK-SUM-TENSU       TO  SUM-NYUKHNKEI (1)
                    ELSE
                      ADD     RECE62-NYUTOKKEI(IDX IDX1)
                                                  TO  SUM-NYUKHNKEI (1)
@@ -6363,35 +5872,20 @@
                            (RECE62-HENTOTALTEN(IDX1) NOT =
                                          RECE62-HENTOTALTEN(IDX2)))
                       IF    RECE62-SEIHOFLG    =  "1"
-                        IF   RECE62-SYUTANARIFLG  =  ZERO
-                          COMPUTE WRK-SUM-TENSU
-                                         = RECE62-NYUTOKKEI(IDX IDX2)
-                                         - RECE62-NYUTOKKEI(IDX IDX1)
-                          ADD  WRK-SUM-TENSU    TO  SUM-NYUKHNKEI(2)
-                                                    SUM-NYUKHNKEI(1)
-                        ELSE
-                          COMPUTE SUM-NYUKHNKEI(1) =
-                                  SUM-NYUKHNKEI(1) -
-                                  RECE62-NYUTOKKEI(IDX IDX1)
-                          COMPUTE WRK-SUM-TENSU
+                       COMPUTE WRK-SUM-TENSU
                                         = RECE62-NYUTOKKEI(IDX IDX2)
-                                        + RECE62-SYUTANTEN-NYUTOK
-                                                               (IDX)
-                          ADD   WRK-SUM-TENSU   TO  SUM-NYUKHNKEI(1)
-                          ADD   RECE62-NYUTOKKEI(IDX IDX2)
-                                                TO  SUM-NYUKHNKEI(2)
-                        END-IF
+                                        - RECE62-NYUTOKKEI(IDX IDX1)
+                       ADD    WRK-SUM-TENSU      TO  SUM-NYUKHNKEI (2)
+                                                     SUM-NYUKHNKEI (1)
                       ELSE
-                          ADD   RECE62-NYUTOKKEI(IDX IDX2)
-                                                TO  SUM-NYUKHNKEI(2)
+                       ADD    RECE62-NYUTOKKEI(IDX IDX2)
+                                                 TO  SUM-NYUKHNKEI (2)
                       END-IF
                      END-IF
                    END-IF
                END-PERFORM    
       *        <基本料>
-               MOVE    SPACE                 TO  HC06-NYUKHNTEN  (9)
-                                                 HC06-NYUKHNTENN (9)
-                                                 HC06-NYUKHNTENN2(9)
+               MOVE    SPACE                 TO  HC06-NYUKHNTEN (9)
       *        <日数>
                MOVE    SUM-NYUKHNNISSU       TO  WRK-KAISUZ
                MOVE    WRK-KAISU             TO  HC06-NYUKAISU  (9)
@@ -6404,19 +5898,11 @@
                END-IF
            END-IF
       *        <特定入院料・その他>
-           IF    FLG-JIRITU-HENSYU  NOT =  ZERO
-             EVALUATE  FLG-JIRITU-HENSYU
-               WHEN      1
-                 COMPUTE WRK-SUM-TENSU =  RECE62-NYUTOKKEI2 (IDX1)
-                                       +  RECE62-NYUTOKKEI2 (IDX2)
-                 MOVE    WRK-SUM-TENSU    TO  WRK-TENSUZ
-                 MOVE    WRK-TENSU        TO  HC06-NYUTENSU (10)
-               WHEN      2
-                 COMPUTE WRK-SUM-TENSU =  RECE62-NYUTOKKEI2 (IDX1)
-                                       +  RECE62-NYUTOKKEI2 (IDX3)
-                 MOVE    WRK-SUM-TENSU    TO  WRK-TENSUZ
-                 MOVE    WRK-TENSU        TO  HC06-NYUTENSU (10)
-             END-EVALUATE
+           IF    FLG-JIRITU-HENSYU  =  1
+             COMPUTE WRK-SUM-TENSU =  RECE62-NYUTOKKEI2 (IDX1)
+                                   +  RECE62-NYUTOKKEI2 (IDX2)
+             MOVE    WRK-SUM-TENSU            TO  WRK-TENSUZ
+             MOVE    WRK-TENSU                TO  HC06-NYUTENSU  (10)
              IF      WRK-SUM-TENSU            <   ZERO
                PERFORM VARYING IDZ FROM    6   BY  -1
                        UNTIL   IDZ <       1
@@ -6450,29 +5936,17 @@
                    (RECE62-HENTOTALTEN(IDX1) NOT =
                                  RECE62-HENTOTALTEN(IDX2)))
               IF    RECE62-SEIHOFLG    =  "1"
-                IF   RECE62-SYUTANARIFLG  =  ZERO
-                  MOVE  RECE62-NYUTOKKEI2(IDX2)
-                                          TO  WRK-TENSUZ
-                  MOVE  WRK-TENSU         TO  HC06-NYUTENSU(10)
+               MOVE    RECE62-NYUTOKKEI2(IDX2) TO  WRK-TENSUZ
+               MOVE    WRK-TENSU               TO  HC06-NYUTENSU(10)
       *
-                  COMPUTE WRK-SUM-TENSU = RECE62-NYUTOKKEI2(IDX2)
-                                        - RECE62-NYUTOKKEI2(IDX1)
-                  MOVE  WRK-SUM-TENSU     TO  WRK-KOUTENZ
-                  MOVE  WRK-KOUTEN        TO  HC06-NYUKOHTEN(10)
-                ELSE
-                  COMPUTE WRK-SUM-TENSU = RECE62-NYUTOKKEI2(IDX2)
-                                        + RECE62-SYUTANTEN-NYUTOK2
-                  MOVE  WRK-SUM-TENSU     TO  WRK-TENSUZ
-                  MOVE  WRK-TENSU         TO  HC06-NYUTENSU(10)
-      *
-                  MOVE  RECE62-NYUTOKKEI2(IDX2)
-                                          TO  WRK-KOUTENZ
-                  MOVE  WRK-KOUTEN        TO  HC06-NYUKOHTEN(10)
-                END-IF
+               COMPUTE WRK-SUM-TENSU   = RECE62-NYUTOKKEI2(IDX2)
+                                       - RECE62-NYUTOKKEI2(IDX1)
+               MOVE    WRK-SUM-TENSU           TO  WRK-KOUTENZ
+               MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (10)
               ELSE
-                  MOVE  RECE62-NYUTOKKEI2(IDX2)
-                                          TO  WRK-KOUTENZ
-                  MOVE  WRK-KOUTEN        TO  HC06-NYUKOHTEN(10)
+               MOVE    RECE62-NYUTOKKEI2 (IDX2)
+                                               TO  WRK-KOUTENZ
+               MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (10)
               END-IF
               IF      RECE62-NYUTOKKEI2 (IDX2)
                                                <   ZERO
@@ -6526,7 +6000,7 @@
            END-PERFORM          
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL     IDX       >   4
-               IF      RECE62-SHOKUJIKHNNISSU (IDX)  >   ZERO
+               IF      RECE62-SHOKUJIKHNRYO (IDX)    >   ZERO      
                    MOVE    RECE62-SHOKUJIKHNRYO (IDX)
                                              TO  WRK-KGK4
                    MOVE    WRK-KGK4          TO  HC06-SYOGAK (IDX)          
@@ -6543,7 +6017,7 @@
                                    TO  HC06-SYOKJN-KHNSEI         
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL     IDX       >   2
-               IF      RECE62-SHOKUJIKHNNISSU-SEI (IDX)  >   0
+               IF      RECE62-SHOKUJIKHNRYO-SEI (IDX)  >   0
                    MOVE    RECE62-SHOKUJIKHNRYO-SEI (IDX)
                                              TO  WRK-KGK4
                    MOVE    WRK-KGK4          TO  HC06-SYOGAK-SEI   (IDX)          
@@ -6568,6 +6042,9 @@
                          MOVE "低所得２　３月超"
                                           TO  HC06-GENGAKUMEI
                       END-IF
+      **           WHEN    "3"
+      **              MOVE    "低所得２　３月超"
+      **                                  TO  HC06-GENGAKUMEI
                END-EVALUATE
            ELSE
                EVALUATE    RECE62-TEISYOTOKU3
@@ -6617,7 +6094,12 @@
       *    保険（減免）
            EVALUATE    RECE62-GENMENKBN
                WHEN    1
-                   IF    RECE62-GENGAKURATE  >   ZERO
+                   IF      RECE62-GENGAKU      >   ZERO
+                       MOVE    RECE62-GENGAKU      TO  WRK-KGK6
+                       MOVE    WRK-KGK6            TO  HC06-GENMENKIN
+                       MOVE    "減額"              TO  HC06-GENMEN
+                       MOVE    "円"                TO  HC06-GENMEN2
+                   ELSE
                        COMPUTE WRK-KYURATE-9   =
                                        RECE62-GENGAKURATE  /   10 
                        MOVE    WRK-KYURATE-9   TO  WRK-KYURATE
@@ -6628,36 +6110,10 @@
                        IF    ( KANACHK-RC      =   ZERO )
                        AND   ( KANACHK-MAX     >   ZERO )
                            MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                               TO  HC06-GENMEN3(5:)
+                                                   TO  HC06-GENMEN(5:)
                        END-IF    
-                       MOVE   "減額"           TO  HC06-GENMEN3(1:4)
-                       MOVE   "割"             TO  HC06-GENMEN3(9:2)
-      *
-                       MOVE    RECE62-GENGAKURATE
-                                               TO  WRK-GENMEN-FTNRATE
-                       IF   WRK-GENMEN-FTNRATE2  NOT =  ZERO
-                         INITIALIZE            ORCSKANACHKAREA
-                         MOVE  "2"             TO  KANACHK-SYORI
-                         MOVE  WRK-GENMEN-FTNRATE2
-                                               TO  KANACHK-MAE-INPUT
-                         CALL  "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                         IF  ( KANACHK-RC      =   ZERO )
-                         AND ( KANACHK-MAX     >   ZERO )
-                           MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                               TO  HC06-GENMEN3(11:)
-                         END-IF
-                         MOVE "分"             TO  HC06-GENMEN3(13:2)
-                       END-IF
-                   ELSE
-                     IF  RECE62-GENGAKU      >   ZERO
-                       MOVE    RECE62-GENGAKU      TO  WRK-KGK6
-                       MOVE    WRK-KGK6            TO  HC06-GENMENKIN
-                       MOVE    "減額金額"          TO  HC06-GENMEN
-                       MOVE    "円"                TO  HC06-GENMEN2
-                     ELSE
-                       MOVE    "減額後金額"        TO  HC06-GENMEN
-                       MOVE    "円"                TO  HC06-GENMEN2
-                     END-IF
+                       MOVE   "減額"               TO  HC06-GENMEN(1:4)
+                       MOVE   "割"                 TO  HC06-GENMEN(9:2)
                    END-IF
                WHEN    2
                    MOVE    "免除"             TO  HC06-GENMEN
@@ -6665,14 +6121,9 @@
                    MOVE    "支払猶予"         TO  HC06-GENMEN
            END-EVALUATE 
       *    保険
-           MOVE      ZERO                     TO  FLG-TOTALTEN
-           IF    ((IDX1                         =   1   ) AND
-                  (RECE62-HKNNUM            NOT =  SPACE))
-           OR    ((IDX1                     NOT =   1   ) AND
-                  (RECE62-KOHNUM(IDX1 - 1)  NOT =  SPACE))
+           IF      RECE62-TOTALTEN (IDX1)     >   ZERO
                MOVE    RECE62-TOTALTEN (IDX1) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  HC06-TOTALTEN(1)
-               MOVE    1                      TO  FLG-TOTALTEN
                IF    ( RECE62-FTNMONEY (IDX1) >    ZERO   )
                OR    ( RECE62-KOUREI          = "1" OR "2")
                    MOVE    RECE62-FTNMONEY (IDX1) TO  WRK-KGK7
@@ -6683,18 +6134,18 @@
                    END-IF
                END-IF
            END-IF
-           IF  ((RECE62-SAIKEIZEROKSI1       =   1                ) AND
+           IF  ((RECE62-YOBIETC(6)           =   1                ) AND
                 (RECE62-KOUREI-SAIKEI    NOT =  999999999         ))
-           OR  ((RECE62-SAIKEIZEROKSI1       =  ZERO              ) AND
+           OR  ((RECE62-YOBIETC(6)           =  ZERO              ) AND
                 (RECE62-KOUREI-SAIKEI    NOT =  999999999 AND ZERO))
              MOVE    "("                   TO  HC06-FTNMONEYSAI(1:1)
              MOVE   RECE62-KOUREI-SAIKEI   TO  WRK-KGK7
              MOVE   WRK-KGK7               TO  HC06-FTNMONEYSAI(3:8)
              MOVE    ")"                   TO  HC06-FTNMONEYSAI(11:1)
            END-IF
-           IF  ((RECE62-SAIKEIZEROKSI2       =   1                ) AND
+           IF  ((RECE62-YOBIETC(7)           =   1                ) AND
                 (RECE62-KOUREI-SAIKEI2   NOT =  999999999         ))
-           OR  ((RECE62-SAIKEIZEROKSI2       =  ZERO              ) AND
+           OR  ((RECE62-YOBIETC(7)           =  ZERO              ) AND
                 (RECE62-KOUREI-SAIKEI2   NOT =  999999999 AND ZERO))
              MOVE    "("                   TO  HC06-FTNMONEYSAI2(1:1)
              MOVE   RECE62-KOUREI-SAIKEI2  TO  WRK-KGK7
@@ -6703,11 +6154,11 @@
            END-IF
       *    IF      RECE62-SHOKUJINISSU (IDX1)   >   ZERO
            IF      RECE62-SHOKUJIRYOYOHI(IDX1)  >   ZERO
-      ***      IF      RECE62-SHOKUJINISSU (IDX1)  >  ZERO
+               IF      RECE62-SHOKUJINISSU (IDX1)  >  ZERO
                    MOVE    RECE62-SHOKUJINISSU (IDX1)
                                                TO  WRK-KGK2
                    MOVE    WRK-KGK2            TO  HC06-SYONISSU(1)
-      ***      END-IF
+               END-IF
                MOVE    RECE62-SHOKUJIRYOYOHI (IDX1) TO  WRK-KGK6
                MOVE    WRK-KGK6                TO  HC06-SYOTOTALTEN(1)
                IF      RECE62-SHOKUJIFTN (IDX1) >   ZERO
@@ -6719,7 +6170,7 @@
       *
            INITIALIZE                     WRK-FTNMONEY-HENSYU-AREA
       *    公費１
-           IF    ( RECE62-KOHNUM(IDX2 - 1)    NOT =   SPACE            )
+           IF    ( RECE62-TOTALTEN (IDX2) >   ZERO                     )
            AND   ((RECE62-TOTALTEN (IDX2)
                                       NOT =   RECE62-TOTALTEN (IDX1)) OR
                   (RECE62-FTNMONEY (IDX2)
@@ -6734,7 +6185,7 @@
                END-IF
              END-IF
            END-IF
-           IF    ( RECE62-KOHNUM(IDX2 - 1)    NOT =   SPACE         )
+           IF    ( RECE62-TOTALTEN (IDX2) >   ZERO                  )
            AND   ( RECE62-FTNMONEY (IDX2) =   RECE62-FTNMONEY (IDX1))
            AND   ( RECE62-KISAIFLG (IDX2) =   "1"                   )
                IF    RECE62-FTNMONEY (IDX2)   >   ZERO
@@ -6743,21 +6194,38 @@
                                                   WRK-KOH-FTNMONEY(1)
                END-IF
            END-IF
-           IF    ( RECE62-KOHNUM(IDX2 - 1)    NOT =   SPACE )
-           AND   ( RECE62-FTNMONEY (IDX2)         =   ZERO  )
-           AND   ( RECE62-ZEROKISAIFLG (IDX2)     =   "1"   )
+           IF   (( RECE62-TOTALTEN (IDX2)     >   ZERO ) AND
+                 ( RECE62-FTNMONEY (IDX2)     =   ZERO ) AND
+                 ( RECE62-ZEROKISAIFLG (IDX2) =   "1"  ))
+           OR   (( RECE62-HKNNUM        NOT =   SPACE  ) AND
+                 ( RECE62-GENMENKBN         =   2 OR 3 ) AND
+                 ( RECE62-TOTALTEN (IDX2)     =   ZERO ) AND
+                 ( RECE62-FTNMONEY (IDX2)     =   ZERO ) AND
+                 ( RECE62-ZEROKISAIFLG (IDX2) =   "1"  ))
+           OR   (( RECE62-HKNNUM        NOT =   SPACE  ) AND
+                 ( RECE62-GENMENKBN         =   2 OR 3 ) AND
+                 ( RECE62-TOTALTEN (IDX2)     =   ZERO ) AND
+                 ( RECE62-FTNMONEY (IDX2)     >   ZERO ))
                    MOVE    RECE62-FTNMONEY (IDX2) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO
                                                   WRK-KOH-FTNMONEY(1)
            END-IF
-           IF      RECE62-KOHNUM(IDX2 - 1)    NOT =   SPACE
-             IF  (FLG-TOTALTEN                 = ZERO                 )
-             OR  (RECE62-TOTALTEN(IDX1)    NOT = RECE62-TOTALTEN(IDX2))
-             OR  (RECE62-JSKISAIFLG            = "1"                  )
-             OR  (RECE62-EKF-TOTALTENFLG(IDX2) = "1"                  )
+           IF    ( RECE62-TOTALTEN (IDX2) >   ZERO            )
+           AND   ((RECE62-TOTALTEN (IDX2)
+                               NOT =   RECE62-TOTALTEN (IDX1)) OR
+                  (RECE62-JSKISAIFLG             =  "1"      ) OR
+                  (RECE62-EKF-TOTALTENFLG(IDX2)  =  "1"      ))
                MOVE    RECE62-TOTALTEN (IDX2) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  WRK-KOH-TOTALTEN(1)
-             END-IF
+           ELSE
+               IF     (RECE62-HKNNUM     NOT =   SPACE  ) AND
+                      (RECE62-KOHNUM(1)  NOT =   SPACE  ) AND
+                      (RECE62-GENMENKBN      =   2 OR 3 ) AND
+                      (RECE62-TOTALTEN (IDX2)  =   ZERO )
+                   MOVE    RECE62-TOTALTEN (IDX2) TO  WRK-KGK10
+                   MOVE    WRK-KGK10              TO
+                                                  WRK-KOH-TOTALTEN(1)
+               END-IF
            END-IF
       *
            IF    ( RECE62-SHOKUJIRYOYOHI(IDX2) >   ZERO                )
@@ -6769,11 +6237,11 @@
                                       RECE62-SHOKUJIFTN     (IDX1)) OR
                   (RECE62-JSKISAIFLG        =  "1"                ) OR
                   (RECE62-EKF-SKJFLG(IDX2)  =  "1"                )    )
-      ***      IF      RECE62-SHOKUJINISSU (IDX2)  >  ZERO
+               IF      RECE62-SHOKUJINISSU (IDX2)  >  ZERO
                    MOVE    RECE62-SHOKUJINISSU (IDX2)
                                            TO  WRK-KGK2 
                    MOVE    WRK-KGK2        TO  WRK-KOH-SYONISSU (1)
-      ***      END-IF
+               END-IF
                MOVE    RECE62-SHOKUJIRYOYOHI (IDX2)
                                            TO  WRK-KGK6
                MOVE    WRK-KGK6            TO  WRK-KOH-SYOTOTALTEN(1)
@@ -6787,8 +6255,7 @@
                  IF   (SYS-1001-PREFNUM  =  04                    )
                  AND  (RECE62-KOHNUM(1)  = "183" OR "483" OR "583"
                                         OR "783" OR "463" OR "563"
-                                        OR "263" OR "363"
-                                        OR "663" OR "763"         )
+                                        OR "263" OR "363"         )
                      MOVE    RECE62-SHOKUJINISSU (IDX2)
                                                  TO  WRK-KGK2 
                      MOVE    WRK-KGK2            TO
@@ -6809,8 +6276,9 @@
                  END-IF
                END-IF
            END-IF
+      *     
       *    公費２
-           IF  ( RECE62-KOHNUM(IDX3 - 1)    NOT =   SPACE            )
+           IF  ( RECE62-TOTALTEN (IDX3) >   ZERO                     )
            AND ((RECE62-TOTALTEN (IDX3)
                                     NOT =   RECE62-TOTALTEN (IDX1)) OR
                 (RECE62-TOTALTEN (IDX3)
@@ -6829,7 +6297,7 @@
                    END-IF
                  END-IF
            END-IF
-           IF    ( RECE62-KOHNUM(IDX3 - 1)    NOT =   SPACE         )
+           IF    ( RECE62-TOTALTEN (IDX3) >   ZERO                  )
            AND   ( RECE62-FTNMONEY (IDX3) =   RECE62-FTNMONEY (IDX2))
            AND   ( RECE62-KISAIFLG (IDX3) =   "1"                   )
                  IF    RECE62-FTNMONEY (IDX3)   >   ZERO
@@ -6838,20 +6306,53 @@
                                                   WRK-KOH-FTNMONEY(2)
                  END-IF
            END-IF
-           IF    ( RECE62-KOHNUM(IDX3 - 1)    NOT =   SPACE )
-           AND   ( RECE62-FTNMONEY (IDX3)         =   ZERO  )
-           AND   ( RECE62-ZEROKISAIFLG (IDX3)     =   "1"   )
+           IF   (( RECE62-TOTALTEN (IDX3)     >   ZERO ) AND
+                 ( RECE62-FTNMONEY (IDX3)     =   ZERO ) AND
+                 ( RECE62-ZEROKISAIFLG (IDX3) =   "1"  ))
+           OR   (( RECE62-KOHNUM(2)           =   "012") AND
+                 ( RECE62-TOTALTEN (IDX3)     =   ZERO ) AND
+                 ( RECE62-FTNMONEY (IDX3)     =   ZERO ) AND
+                 ( RECE62-ZEROKISAIFLG (IDX3) =   "1"  ))
+           OR   (( RECE62-FUKUSHIFLG(IDX3)    =   "1"  ) AND
+                 ( RECE62-TOTALTEN (IDX3)     =   ZERO ) AND
+                 ( RECE62-FTNMONEY (IDX3)     =   ZERO ) AND
+                 ( RECE62-ZEROKISAIFLG (IDX3) =   "1"  ))
+           OR   (( RECE62-FUKUSHIFLG(IDX3)    =   "1"  ) AND
+                 ( RECE62-TOTALTEN (IDX3)     =   ZERO ) AND
+                 ( RECE62-FTNMONEY (IDX3)     >   ZERO ))
+           OR   (( RECE62-HKNNUM        NOT =   SPACE  ) AND
+                 ( RECE62-GENMENKBN         =   2 OR 3 ) AND
+                 ( RECE62-TOTALTEN (IDX3)     =   ZERO ) AND
+                 ( RECE62-FTNMONEY (IDX3)     =   ZERO ) AND
+                 ( RECE62-ZEROKISAIFLG (IDX3) =   "1"  ))
+           OR   (( RECE62-HKNNUM        NOT =   SPACE  ) AND
+                 ( RECE62-GENMENKBN         =   2 OR 3 ) AND
+                 ( RECE62-TOTALTEN (IDX3)     =   ZERO ) AND
+                 ( RECE62-FTNMONEY (IDX3)     >   ZERO ))
                    MOVE    RECE62-FTNMONEY (IDX3) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO
                                                   WRK-KOH-FTNMONEY(2)
            END-IF
-           IF      RECE62-KOHNUM(IDX3 - 1)    NOT =   SPACE
-             IF  (RECE62-TOTALTEN(IDX2)    NOT = RECE62-TOTALTEN(IDX3))
-             OR  (RECE62-JSKISAIFLG            = "1"                  )
-             OR  (RECE62-EKF-TOTALTENFLG(IDX3) = "1"                  )
+           IF    ( RECE62-TOTALTEN (IDX3) >   ZERO            )
+           AND   ((RECE62-TOTALTEN (IDX3)
+                               NOT =   RECE62-TOTALTEN (IDX2)) OR
+                  (RECE62-JSKISAIFLG             =  "1"      ) OR
+                  (RECE62-EKF-TOTALTENFLG(IDX3)  =  "1"      ))
                MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  WRK-KOH-TOTALTEN(2)
-             END-IF
+           ELSE
+               IF    ((RECE62-FUKUSHIFLG(IDX3) =   "1"  ) AND
+                      (RECE62-TOTALTEN (IDX3)  =   ZERO ))
+               OR    ((RECE62-KOHNUM(2)        =   "012") AND
+                      (RECE62-TOTALTEN (IDX3)  =   ZERO ))
+               OR    ((RECE62-HKNNUM     NOT =   SPACE  ) AND
+                      (RECE62-KOHNUM(2)  NOT =   SPACE  ) AND
+                      (RECE62-GENMENKBN      =   2 OR 3 ) AND
+                      (RECE62-TOTALTEN (IDX3)  =   ZERO ))
+                   MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK10
+                   MOVE    WRK-KGK10              TO
+                                                  WRK-KOH-TOTALTEN(2)
+               END-IF
            END-IF
       *
            IF    ( RECE62-SHOKUJIRYOYOHI(IDX3) >   ZERO                )
@@ -6863,11 +6364,11 @@
                                       RECE62-SHOKUJIFTN     (IDX2)) OR
                   (RECE62-JSKISAIFLG        =  "1"                ) OR
                   (RECE62-EKF-SKJFLG(IDX3)  =  "1"                )    )
-      ***      IF      RECE62-SHOKUJINISSU (IDX3)  >  ZERO
+               IF      RECE62-SHOKUJINISSU (IDX3)  >  ZERO
                    MOVE    RECE62-SHOKUJINISSU (IDX3)
                                            TO  WRK-KGK2
                    MOVE    WRK-KGK2        TO  WRK-KOH-SYONISSU (2)
-      ***      END-IF
+               END-IF
                MOVE    RECE62-SHOKUJIRYOYOHI (IDX3)
                                            TO  WRK-KGK6
                MOVE    WRK-KGK6            TO  WRK-KOH-SYOTOTALTEN(2)
@@ -6881,8 +6382,7 @@
                  IF   (SYS-1001-PREFNUM  =  04                    )
                  AND  (RECE62-KOHNUM(2)  = "183" OR "483" OR "583"
                                         OR "783" OR "463" OR "563"
-                                        OR "263" OR "363"
-                                        OR "663" OR "763"         )
+                                        OR "263" OR "363"         )
                      MOVE    RECE62-SHOKUJINISSU (IDX3)
                                                  TO  WRK-KGK2 
                      MOVE    WRK-KGK2            TO
@@ -6906,7 +6406,7 @@
       *
       *    公費３
            IF      IDX4                    >   ZERO
-               IF   (  RECE62-KOHNUM(IDX4 - 1)    NOT =   SPACE       )
+               IF   (  RECE62-TOTALTEN (IDX4)  >   ZERO               )
                AND  (( RECE62-TOTALTEN (IDX4)
                                    NOT =   RECE62-TOTALTEN (IDX1)) OR
                      ( RECE62-TOTALTEN (IDX4)
@@ -6929,7 +6429,7 @@
                        END-IF
                      END-IF
                END-IF
-               IF    ( RECE62-KOHNUM(IDX4 - 1)    NOT =   SPACE        )
+               IF    ( RECE62-TOTALTEN (IDX4)  > ZERO                  )
                AND   ( RECE62-FTNMONEY (IDX4)  = RECE62-FTNMONEY (IDX3))
                AND   ( RECE62-KISAIFLG (IDX4)  = "1"                   )
                    IF      RECE62-FTNMONEY (IDX4)   >   ZERO
@@ -6938,22 +6438,54 @@
                        MOVE    WRK-KGK7        TO  WRK-KOH-FTNMONEY(3)
                    END-IF
                END-IF
-               IF    ( RECE62-KOHNUM(IDX4 - 1)    NOT =   SPACE )
-               AND   ( RECE62-FTNMONEY (IDX4)         =   ZERO  )
-               AND   ( RECE62-ZEROKISAIFLG (IDX4)     =   "1"   )
+               IF   (( RECE62-TOTALTEN (IDX4)      >   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX4)      =   ZERO ) AND
+                     ( RECE62-ZEROKISAIFLG (IDX4)  =   "1"  )     )
+               OR   (( RECE62-KOHNUM(3)            =   "012") AND
+                     ( RECE62-TOTALTEN (IDX4)      =   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX4)      =   ZERO ) AND
+                     ( RECE62-ZEROKISAIFLG (IDX4)  =   "1"  )     )
+               OR   (( RECE62-FUKUSHIFLG(IDX4)     =   "1"  ) AND
+                     ( RECE62-TOTALTEN (IDX4)      =   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX4)      =   ZERO ) AND
+                     ( RECE62-ZEROKISAIFLG (IDX4)  =   "1"  )     )
+               OR   (( RECE62-FUKUSHIFLG(IDX4)     =   "1"  ) AND
+                     ( RECE62-TOTALTEN (IDX4)      =   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX4)      >   ZERO )     )
+               OR   (( RECE62-HKNNUM         NOT =   SPACE  ) AND
+                     ( RECE62-GENMENKBN          =   2 OR 3 ) AND
+                     ( RECE62-TOTALTEN (IDX4)      =   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX4)      =   ZERO ) AND
+                     ( RECE62-ZEROKISAIFLG (IDX4)  =   "1"  )     )
+               OR   (( RECE62-HKNNUM         NOT =   SPACE  ) AND
+                     ( RECE62-GENMENKBN          =   2 OR 3 ) AND
+                     ( RECE62-TOTALTEN (IDX4)      =   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX4)      >   ZERO )     )
                    MOVE    RECE62-FTNMONEY (IDX4)  TO  WRK-KGK7
                    MOVE    WRK-KGK7                TO
                                                    WRK-KOH-FTNMONEY(3)
                END-IF
-               IF      RECE62-KOHNUM(IDX4 - 1)    NOT =   SPACE
-                 IF  (RECE62-TOTALTEN(IDX3)
-                                        NOT = RECE62-TOTALTEN(IDX4))
-                 OR  (RECE62-JSKISAIFLG            = "1"           )
-                 OR  (RECE62-EKF-TOTALTENFLG(IDX4) = "1"           )
+               IF    ( RECE62-TOTALTEN (IDX4) >   ZERO            )
+               AND   ((RECE62-TOTALTEN (IDX4)
+                                   NOT =   RECE62-TOTALTEN (IDX3)) OR
+                      (RECE62-JSKISAIFLG             =  "1"      ) OR
+                      (RECE62-EKF-TOTALTENFLG(IDX4)  =  "1"      ))
                    MOVE    RECE62-TOTALTEN (IDX4)  TO  WRK-KGK10
                    MOVE    WRK-KGK10               TO
                                                    WRK-KOH-TOTALTEN(3)
-                 END-IF
+               ELSE
+                   IF    ((RECE62-FUKUSHIFLG(IDX4) =   "1"  ) AND
+                          (RECE62-TOTALTEN (IDX4)  =   ZERO ))
+                   OR    ((RECE62-KOHNUM(3)        =   "012") AND
+                          (RECE62-TOTALTEN (IDX4)  =   ZERO ))
+                   OR    ((RECE62-HKNNUM     NOT =   SPACE  ) AND
+                          (RECE62-KOHNUM(3)  NOT =   SPACE  ) AND
+                          (RECE62-GENMENKBN      =   2 OR 3 ) AND
+                          (RECE62-TOTALTEN (IDX4)  =   ZERO ))
+                       MOVE    RECE62-TOTALTEN (IDX4)  TO  WRK-KGK10
+                       MOVE    WRK-KGK10               TO
+                                                   WRK-KOH-TOTALTEN(3)
+                   END-IF
                END-IF
       *
                IF    ( RECE62-SHOKUJIRYOYOHI(IDX4) >   ZERO            )
@@ -6965,11 +6497,11 @@
                                       RECE62-SHOKUJIFTN     (IDX3)) OR
                       (RECE62-JSKISAIFLG        =  "1"            ) OR
                       (RECE62-EKF-SKJFLG(IDX4)  =  "1"            )    )
-      ***          IF      RECE62-SHOKUJINISSU (IDX4)  >  ZERO
+                   IF      RECE62-SHOKUJINISSU (IDX4)  >  ZERO
                        MOVE    RECE62-SHOKUJINISSU (IDX4)
                                                TO  WRK-KGK2
                        MOVE    WRK-KGK2        TO  WRK-KOH-SYONISSU (3)
-      ***          END-IF
+                   END-IF
                    MOVE    RECE62-SHOKUJIRYOYOHI (IDX4)
                                                TO  WRK-KGK6
                    MOVE    WRK-KGK6            TO
@@ -6986,8 +6518,7 @@
                        IF   (SYS-1001-PREFNUM      =   04              )
                        AND  (RECE62-KOHNUM(3) = "183" OR "483" OR "583"
                                              OR "783" OR "463" OR "563"
-                                             OR "263" OR "363"
-                                             OR "663" OR "763"         )
+                                             OR "263" OR "363"         )
                            MOVE    RECE62-SHOKUJINISSU (IDX4)
                                                    TO  WRK-KGK2 
                            MOVE    WRK-KGK2        TO
@@ -7011,7 +6542,7 @@
            END-IF    
       *    公費４
            IF      IDX5                   >   ZERO
-               IF   (  RECE62-KOHNUM(IDX5 - 1)    NOT =   SPACE       )
+               IF   (  RECE62-TOTALTEN (IDX5)  >   ZERO               )
                AND  (( RECE62-TOTALTEN (IDX5)
                                    NOT =   RECE62-TOTALTEN (IDX1)) OR
                      ( RECE62-TOTALTEN (IDX5)
@@ -7038,7 +6569,7 @@
                        END-IF
                      END-IF
                END-IF
-               IF    ( RECE62-KOHNUM(IDX5 - 1)    NOT =   SPACE        )
+               IF    ( RECE62-TOTALTEN (IDX5)  > ZERO                  )
                AND   ( RECE62-FTNMONEY (IDX5)  = RECE62-FTNMONEY (IDX4))
                AND   ( RECE62-KISAIFLG (IDX5)  = "1"                   )
                    IF      RECE62-FTNMONEY (IDX5)   >   ZERO
@@ -7047,22 +6578,54 @@
                        MOVE    WRK-KGK7        TO  WRK-KOH-FTNMONEY(4)
                    END-IF
                END-IF
-               IF    ( RECE62-KOHNUM(IDX5 - 1)    NOT =   SPACE )
-               AND   ( RECE62-FTNMONEY (IDX5)         =   ZERO  )
-               AND   ( RECE62-ZEROKISAIFLG (IDX5)     =   "1"   )
+               IF   (( RECE62-TOTALTEN (IDX5)      >   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX5)      =   ZERO ) AND
+                     ( RECE62-ZEROKISAIFLG (IDX5)  =   "1"  )     )
+               OR   (( RECE62-KOHNUM(4)            =   "012") AND
+                     ( RECE62-TOTALTEN (IDX5)      =   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX5)      =   ZERO ) AND
+                     ( RECE62-ZEROKISAIFLG (IDX5)  =   "1"  )     )
+               OR   (( RECE62-FUKUSHIFLG(IDX5)     =   "1"  ) AND
+                     ( RECE62-TOTALTEN (IDX5)      =   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX5)      =   ZERO ) AND
+                     ( RECE62-ZEROKISAIFLG (IDX5)  =   "1"  )     )
+               OR   (( RECE62-FUKUSHIFLG(IDX5)     =   "1"  ) AND
+                     ( RECE62-TOTALTEN (IDX5)      =   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX5)      >   ZERO )     )
+               OR   (( RECE62-HKNNUM         NOT =   SPACE  ) AND
+                     ( RECE62-GENMENKBN          =   2 OR 3 ) AND
+                     ( RECE62-TOTALTEN (IDX5)      =   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX5)      =   ZERO ) AND
+                     ( RECE62-ZEROKISAIFLG (IDX5)  =   "1"  )     )
+               OR   (( RECE62-HKNNUM         NOT =   SPACE  ) AND
+                     ( RECE62-GENMENKBN          =   2 OR 3 ) AND
+                     ( RECE62-TOTALTEN (IDX5)      =   ZERO ) AND
+                     ( RECE62-FTNMONEY (IDX5)      >   ZERO )     )
                    MOVE    RECE62-FTNMONEY (IDX5)  TO  WRK-KGK7
                    MOVE    WRK-KGK7                TO
                                                    WRK-KOH-FTNMONEY(4)
                END-IF
-               IF      RECE62-KOHNUM(IDX5 - 1)    NOT =   SPACE
-                 IF  (RECE62-TOTALTEN(IDX4)
-                                        NOT = RECE62-TOTALTEN(IDX5))
-                 OR  (RECE62-JSKISAIFLG            = "1"           )
-                 OR  (RECE62-EKF-TOTALTENFLG(IDX5) = "1"           )
+               IF    ( RECE62-TOTALTEN (IDX5) >   ZERO            )
+               AND   ((RECE62-TOTALTEN (IDX5)
+                                   NOT =   RECE62-TOTALTEN (IDX4)) OR
+                      (RECE62-JSKISAIFLG             =  "1"      ) OR
+                      (RECE62-EKF-TOTALTENFLG(IDX5)  =  "1"      ))
                    MOVE    RECE62-TOTALTEN (IDX5)  TO  WRK-KGK10
                    MOVE    WRK-KGK10               TO
                                                    WRK-KOH-TOTALTEN(4)
-                 END-IF
+               ELSE
+                   IF    ((RECE62-FUKUSHIFLG(IDX5) =   "1"  ) AND
+                          (RECE62-TOTALTEN (IDX5)  =   ZERO ))
+                   OR    ((RECE62-KOHNUM(4)        =   "012") AND
+                          (RECE62-TOTALTEN (IDX5)  =   ZERO ))
+                   OR    ((RECE62-HKNNUM     NOT =   SPACE  ) AND
+                          (RECE62-KOHNUM(4)  NOT =   SPACE  ) AND
+                          (RECE62-GENMENKBN      =   2 OR 3 ) AND
+                          (RECE62-TOTALTEN (IDX5)  =   ZERO ))
+                       MOVE    RECE62-TOTALTEN (IDX5)  TO  WRK-KGK10
+                       MOVE    WRK-KGK10               TO
+                                                   WRK-KOH-TOTALTEN(4)
+                   END-IF
                END-IF
       *
                IF    ( RECE62-SHOKUJIRYOYOHI(IDX5) >   ZERO            )
@@ -7074,11 +6637,11 @@
                                       RECE62-SHOKUJIFTN     (IDX4)) OR
                       (RECE62-JSKISAIFLG        =  "1"            ) OR
                       (RECE62-EKF-SKJFLG(IDX5)  =  "1"            )    )
-      ***          IF      RECE62-SHOKUJINISSU (IDX5)  >  ZERO
+                   IF      RECE62-SHOKUJINISSU (IDX5)  >  ZERO
                        MOVE    RECE62-SHOKUJINISSU (IDX5)
                                                TO  WRK-KGK2
                        MOVE    WRK-KGK2        TO  WRK-KOH-SYONISSU (4)
-      ***          END-IF
+                   END-IF
                    MOVE    RECE62-SHOKUJIRYOYOHI (IDX5)
                                                TO  WRK-KGK6
                    MOVE    WRK-KGK6            TO
@@ -7095,8 +6658,7 @@
                        IF   (SYS-1001-PREFNUM      =   04              )
                        AND  (RECE62-KOHNUM(4) = "183" OR "483" OR "583"
                                              OR "783" OR "463" OR "563"
-                                             OR "263" OR "363"
-                                             OR "663" OR "763"         )
+                                             OR "263" OR "363"         )
                            MOVE    RECE62-SHOKUJINISSU (IDX5)
                                                    TO  WRK-KGK2 
                            MOVE    WRK-KGK2        TO
@@ -7452,11 +7014,8 @@
       *
            MOVE    ZERO            TO  FLG-LINE
       *
-           IF   ((RECE62-TEISYOTOKU3          =   "4"    ) AND
-                 (RECE62-SEIKATURYOYO         =   "1"    ))
-           OR   ((RECE62-TEISYOTOKU3-KKSKBN   =   "1"    ) AND
-                 (RECE62-SEIKATURYOYO         =   "1"    ) AND
-                 (RECE62-SRYYM               >=  "201710"))
+           IF    ( RECE62-TEISYOTOKU3  =   "4" )
+           AND   ( RECE62-SEIKATURYOYO =   "1" )
       *        摘要欄に病名が表示されている場合、１行あける
                IF  WRK-LINETEK             >   ZERO
       *
@@ -7473,34 +7032,18 @@
                    PERFORM 34120-PAGE-SEC
                END-IF
                ADD     1               TO  WRK-LINETEK
-               IF   (RECE62-TEISYOTOKU3   = "4")
-               AND  (RECE62-SEIKATURYOYO  = "1")
-                 IF    CNT-PAGE        =   1
-                       MOVE  "老福"        TO  HC06-TEKIYO (WRK-LINETEK)
-                 ELSE
-                   EVALUATE    SYS-2005-NEXTPRTKBN
-                     WHEN    "0"
-                       MOVE  "老福"        TO  HC061-TEKIYO(WRK-LINETEK)
-                     WHEN    "1"
-                       MOVE  "老福"        TO  HC062-TEKIYO(WRK-LINETEK)
-                     WHEN    "2"
-                       MOVE  "老福"        TO  HC063-TEKIYO(WRK-LINETEK)
-                   END-EVALUATE
-                 END-IF
+               IF      CNT-PAGE        =   1   
+                   MOVE    "老福"          TO  HC06-TEKIYO (WRK-LINETEK)
                ELSE
-                 IF    CNT-PAGE        =   1
-                       MOVE  "境界層該当"  TO  HC06-TEKIYO (WRK-LINETEK)
-                 ELSE
                    EVALUATE    SYS-2005-NEXTPRTKBN
-                     WHEN    "0"
-                       MOVE  "境界層該当"  TO  HC061-TEKIYO(WRK-LINETEK)
-                     WHEN    "1"
-                       MOVE  "境界層該当"  TO  HC062-TEKIYO(WRK-LINETEK)
-                     WHEN    "2"
-                       MOVE  "境界層該当"  TO  HC063-TEKIYO(WRK-LINETEK)
+                       WHEN    "0"   
+                           MOVE    "老福"  TO  HC061-TEKIYO(WRK-LINETEK)
+                       WHEN    "1"   
+                           MOVE    "老福"  TO  HC062-TEKIYO(WRK-LINETEK)
+                       WHEN    "2"   
+                           MOVE    "老福"  TO  HC063-TEKIYO(WRK-LINETEK)
                    END-EVALUATE
-                 END-IF
-               END-IF
+               END-IF    
       *
                MOVE    ZERO            TO  FLG-LINE
            END-IF
@@ -7543,7 +7086,6 @@
       *
                MOVE    ZERO                  TO  FLG-KUGIRI
                IF  RECE661-ZAINUM        NOT =   WRK-R061-ZAINUM-O
-               OR  RECE661-KOHBUNRI      NOT =   WRK-R061-KOHBUNRI-O
                    MOVE    ZERO              TO  CNT-ZAIMEISAISU
                END-IF
                ADD     1                     TO  CNT-ZAIMEISAISU
@@ -7750,7 +7292,7 @@
       *****************************************************************
        34110-KOHNAME-SET-SEC          SECTION.
       *
-           IF      RECE62-KOHBUNRICHIKAN  =   ZERO
+           IF      RECE62-YOBIETC(9)  =   ZERO
               MOVE     SPACE             TO  WRK-KUGIRI6
               MOVE     SPACE             TO  WRK-KUGIRI2-KOHNAME
               MOVE     RECE62-KOHNUM (RECE661-KOHBUNRI)
@@ -8059,13 +7601,8 @@
                                                TO  WRK-RECECOM-NAME
                    WHEN    "50"
                        MOVE    1               TO  FLG-RECECOM-SJKBN
-                       IF      RECE62-SRYYM    <   201412
-                           MOVE    TBL-RECECOM-NAME (8)
-                                                   TO  WRK-RECECOM-NAME
-                       ELSE
-                           MOVE    TBL-RECECOM-NAME (11)
-                                                   TO  WRK-RECECOM-NAME
-                       END-IF
+                       MOVE    TBL-RECECOM-NAME (8)
+                                               TO  WRK-RECECOM-NAME
                    WHEN    "51"
                        MOVE    1               TO  FLG-RECECOM-SJKBN
                        MOVE    TBL-RECECOM-NAME (9)
@@ -8251,7 +7788,7 @@
       *****************************************************************
       *    帳票編集<公費３、公費４、適用欄上段コメント>処理
       *****************************************************************
-       380-HC101-TEKIYOU-COM-HEN-SEC      SECTION.
+       380-HC101-TEKIYOU-COMMENT-HEN-SEC      SECTION.
       *
       *    公費３、公費４
            IF    ( RECE62-KOHNUM (3)   =   SPACE )
@@ -8335,41 +7872,6 @@
                        MOVE    SPACE       TO  WRK-KOH-JNISSU  
                    END-IF
       *
-                   MOVE        SPACE       TO  WRK-KOH-SAIKEI
-                   IF  ((IDY                         =   3       ) AND
-                        (RECE62-SAIKEIZEROKSI3       =   1       ) AND
-                        (RECE62-KOUREI-SAIKEI3   NOT =  999999999))
-                   OR  ((IDY                         =   4       ) AND
-                        (RECE62-SAIKEIZEROKSI4       =   1       ) AND
-                        (RECE62-KOUREI-SAIKEI4   NOT =  999999999))
-                     EVALUATE  IDY
-                       WHEN     3
-                         MOVE  RECE62-KOUREI-SAIKEI3  TO  WRK-SAIKEIZ
-                       WHEN     4
-                         MOVE  RECE62-KOUREI-SAIKEI4  TO  WRK-SAIKEIZ
-                     END-EVALUATE
-                     MOVE    ZERO          TO  IDX7
-                     INITIALIZE            ORCSKANACHKAREA
-                     MOVE    "2"           TO  KANACHK-SYORI
-                     MOVE    WRK-SAIKEI    TO  KANACHK-MAE-INPUT
-                     CALL    "ORCSKANACHK" USING   ORCSKANACHKAREA
-                     IF    ( KANACHK-RC    =   ZERO )
-                     AND   ( KANACHK-MAX   >   ZERO )
-                       PERFORM  VARYING   IDX6  FROM   1   BY   2
-                                 UNTIL    IDX6    >    KANACHK-MAX
-                         IF  KANACHK-OUT-INPUT(IDX6:2)  NOT =  "　"
-                             MOVE   IDX6         TO  IDX7
-                             MOVE   KANACHK-MAX  TO  IDX6
-                         END-IF
-                       END-PERFORM
-                       IF    IDX7   NOT = ZERO
-                         COMPUTE  IDX6  =  KANACHK-MAX - IDX7 + 1
-                         MOVE   KANACHK-OUT-INPUT(IDX7:IDX6)
-                                           TO  WRK-KOH-SAIKEI
-                       END-IF
-                     END-IF
-                   END-IF
-      *
                    ADD     1               TO  WRK-KOH-HENSYU-MAX
                    EVALUATE    IDZZ
                        WHEN    1
@@ -8409,17 +7911,6 @@
                                                INTO    WRK-KOH-HENSYU-X
                                                    (WRK-KOH-HENSYU-MAX)
                    END-STRING
-      *
-                   IF   WRK-KOH-SAIKEI  NOT =  SPACE
-                     ADD     1             TO  WRK-KOH-HENSYU-MAX
-                     STRING  "公費給付対象額（"
-                                               DELIMITED  BY  SIZE
-                             WRK-KOH-SAIKEI    DELIMITED  BY  SPACE
-                             "円）"            DELIMITED  BY  SIZE
-                                               INTO    WRK-KOH-HENSYU-X
-                                                   (WRK-KOH-HENSYU-MAX)
-                     END-STRING
-                   END-IF
                  END-IF
                END-PERFORM
       *    
@@ -8488,15 +7979,15 @@
                          WHEN    8
                          WHEN    10
                          WHEN    11
-                             MOVE    "不詳"  TO  WRK-TITLE
+                             MOVE    "（不詳）"  TO  WRK-TITLE
                          WHEN    2
                          WHEN    7
-                             MOVE    "災１"  TO  WRK-TITLE
+                             MOVE    "（災１）"  TO  WRK-TITLE
                          WHEN    4
-                             MOVE    "災２"  TO  WRK-TITLE
+                             MOVE    "（災２）"  TO  WRK-TITLE
                          WHEN    5
-                             MOVE    "不詳・災１"
-                                             TO  WRK-TITLE
+                             MOVE    "（不詳・災１）"
+                                                 TO  WRK-TITLE
                  END-EVALUATE
                  INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "　"
       * 
@@ -8521,7 +8012,7 @@
       *        災害対応（震災以前一部負担金の記載（災２））
                IF      RECE62-RJNGAIKOHFTN (1) =   4
                    MOVE    SPACE               TO  WRK-TITLE
-                   MOVE    RECE62-GENMEN-NASI-KIN
+                   MOVE    RECE62-YOBIETC (4)
                                            TO  WRK-FUTAN
                    INITIALIZE              ORCSKANACHKAREA
                    MOVE    "2"             TO  KANACHK-SYORI 
@@ -8569,7 +8060,7 @@
       *
       *            震災以前一部食事生活療養標準負担額の記載（災２）
                    MOVE    SPACE               TO  WRK-TITLE
-                   MOVE    RECE62-GENMEN-NASI-SKJ
+                   MOVE    RECE62-YOBIETC (5)
                                            TO  WRK-FUTAN1
                    INITIALIZE              ORCSKANACHKAREA
                    MOVE    "2"             TO  KANACHK-SYORI 
@@ -8861,7 +8352,7 @@
            END-IF
       *
       *    東大阪市減免コメント
-           IF      RECE62-GENMEN-COM   =   1   OR   2
+           IF      RECE62-YOBIETC (10) =   1   OR  2
       *        摘要欄に記載されている場合１行あける
                IF      WRK-LINETEK     >   ZERO
                    IF      WRK-LINETEK     >=   WRK-TEKIYOU-LINE
@@ -8877,7 +8368,7 @@
                ADD     1                   TO  WRK-LINETEK
       *
                IF      CNT-PAGE        =   1
-                   EVALUATE    RECE62-GENMEN-COM
+                   EVALUATE    RECE62-YOBIETC (10)
                        WHEN    1
                            MOVE    "決定区分１"
                                            TO  HC06-TEKIYO (WRK-LINETEK)
@@ -8888,7 +8379,7 @@
                ELSE                    
                    EVALUATE    SYS-2005-NEXTPRTKBN
                        WHEN    "0"   
-                           EVALUATE    RECE62-GENMEN-COM
+                           EVALUATE    RECE62-YOBIETC (10)
                                WHEN    1
                                    MOVE    "決定区分１"
                                            TO  HC061-TEKIYO(WRK-LINETEK)
@@ -8897,7 +8388,7 @@
                                            TO  HC061-TEKIYO(WRK-LINETEK)
                            END-EVALUATE
                        WHEN    "1"   
-                           EVALUATE    RECE62-GENMEN-COM
+                           EVALUATE    RECE62-YOBIETC (10)
                                WHEN    1
                                    MOVE    "決定区分１"
                                            TO  HC062-TEKIYO(WRK-LINETEK)
@@ -8906,7 +8397,7 @@
                                            TO  HC062-TEKIYO(WRK-LINETEK)
                            END-EVALUATE
                        WHEN    "2"   
-                           EVALUATE    RECE62-GENMEN-COM
+                           EVALUATE    RECE62-YOBIETC (10)
                                WHEN    1
                                    MOVE    "決定区分１"
                                            TO  HC063-TEKIYO(WRK-LINETEK)
@@ -8915,213 +8406,6 @@
                                            TO  HC063-TEKIYO(WRK-LINETEK)
                            END-EVALUATE
                    END-EVALUATE
-               END-IF
-           END-IF
-      *
-      *    第三者行為対応
-           IF  (RECE62-DAISAN-GAITO   =   1  OR  2  OR  4)
-           AND (RECE62-DAISAN-TOKKI   =   ZERO           )
-      *        摘要欄に記載されている場合１行あける
-               IF      WRK-LINETEK     >   ZERO
-                   IF      WRK-LINETEK     >=   WRK-TEKIYOU-LINE
-                       PERFORM 34120-PAGE-SEC
-                   ELSE
-                       ADD     1               TO  WRK-LINETEK
-                   END-IF
-               END-IF
-      *
-      *        請求点数
-               MOVE    SPACE                   TO  WRK-TITLE
-               MOVE    RECE62-DAISAN-TOTALTEN  TO  WRK-FUTAN4
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "2"             TO  KANACHK-SYORI
-               MOVE    WRK-FUTAN4      TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-               IF    ( KANACHK-RC      =   ZERO )
-               AND   ( KANACHK-MAX     >   ZERO )
-                 STRING  "（第三者行為）請求点　　　"
-                                         DELIMITED  BY  SIZE
-                          KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                         DELIMITED  BY  SIZE
-                          "点"           DELIMITED  BY  SIZE
-                                         INTO    WRK-TITLE
-                 END-STRING
-               END-IF
-               INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "　"
-      *
-               IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
-                   PERFORM 34120-PAGE-SEC
-               END-IF
-               ADD     1                   TO  WRK-LINETEK
-      *
-               IF      CNT-PAGE        =   1
-                     MOVE    WRK-TITLE  TO  HC06-TEKIYO (WRK-LINETEK)
-               ELSE
-                   EVALUATE    SYS-2005-NEXTPRTKBN
-                     WHEN    "0"
-                       MOVE  WRK-TITLE  TO  HC061-TEKIYO(WRK-LINETEK)
-                     WHEN    "1"
-                       MOVE  WRK-TITLE  TO  HC062-TEKIYO(WRK-LINETEK)
-                     WHEN    "2"
-                       MOVE  WRK-TITLE  TO  HC063-TEKIYO(WRK-LINETEK)
-                   END-EVALUATE
-               END-IF
-      *
-               IF   RECE62-DAISAN-TOTALTEN  NOT = ZERO
-      *          一部負担金
-                 MOVE    SPACE                   TO  WRK-TITLE
-                 MOVE    RECE62-DAISAN-FTNMONEY  TO  WRK-FUTAN5
-                 INITIALIZE              ORCSKANACHKAREA
-                 MOVE    "2"             TO  KANACHK-SYORI
-                 MOVE    WRK-FUTAN5      TO  KANACHK-MAE-INPUT
-                 CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                 IF    ( KANACHK-RC      =   ZERO )
-                 AND   ( KANACHK-MAX     >   ZERO )
-                   STRING  "（第三者行為）一部負担額"
-                                           DELIMITED  BY  SIZE
-                            KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                           DELIMITED  BY  SIZE
-                            "円"           DELIMITED  BY  SIZE
-                                           INTO    WRK-TITLE
-                   END-STRING
-                 END-IF
-                 INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "　"
-      *
-                 IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
-                     PERFORM 34120-PAGE-SEC
-                 END-IF
-                 ADD     1                   TO  WRK-LINETEK
-      *
-                 IF      CNT-PAGE        =   1
-                       MOVE    WRK-TITLE  TO  HC06-TEKIYO (WRK-LINETEK)
-                 ELSE
-                     EVALUATE    SYS-2005-NEXTPRTKBN
-                       WHEN    "0"
-                         MOVE  WRK-TITLE  TO  HC061-TEKIYO(WRK-LINETEK)
-                       WHEN    "1"
-                         MOVE  WRK-TITLE  TO  HC062-TEKIYO(WRK-LINETEK)
-                       WHEN    "2"
-                         MOVE  WRK-TITLE  TO  HC063-TEKIYO(WRK-LINETEK)
-                     END-EVALUATE
-                 END-IF
-               END-IF
-      *
-               IF   RECE62-DAISAN-SKJ-RYOYOHI-KEI  NOT = ZERO
-      *          食事回数
-                 MOVE    SPACE                   TO  WRK-TITLE
-                 MOVE    RECE62-DAISAN-SKJ-NISSU-KEI
-                                                 TO  WRK-FUTAN3
-                 INITIALIZE              ORCSKANACHKAREA
-                 MOVE    "2"             TO  KANACHK-SYORI
-                 MOVE    WRK-FUTAN3      TO  KANACHK-MAE-INPUT
-                 CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                 IF    ( KANACHK-RC      =   ZERO )
-                 AND   ( KANACHK-MAX     >   ZERO )
-                   STRING  "（第三者行為）食事回数　　　　　　　　　　"
-                                           DELIMITED  BY  SIZE
-                            KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                           DELIMITED  BY  SIZE
-                            "回"           DELIMITED  BY  SIZE
-                                           INTO    WRK-TITLE
-                   END-STRING
-                 END-IF
-                 INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "　"
-      *
-                 IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
-                     PERFORM 34120-PAGE-SEC
-                 END-IF
-                 ADD     1                   TO  WRK-LINETEK
-      *
-                 IF      CNT-PAGE        =   1
-                       MOVE    WRK-TITLE  TO  HC06-TEKIYO (WRK-LINETEK)
-                 ELSE
-                     EVALUATE    SYS-2005-NEXTPRTKBN
-                       WHEN    "0"
-                         MOVE  WRK-TITLE  TO  HC061-TEKIYO(WRK-LINETEK)
-                       WHEN    "1"
-                         MOVE  WRK-TITLE  TO  HC062-TEKIYO(WRK-LINETEK)
-                       WHEN    "2"
-                         MOVE  WRK-TITLE  TO  HC063-TEKIYO(WRK-LINETEK)
-                     END-EVALUATE
-                 END-IF
-               END-IF
-      *
-      *        食事療養費
-               MOVE    SPACE                   TO  WRK-TITLE
-               MOVE    RECE62-DAISAN-SKJ-RYOYOHI-KEI
-                                               TO  WRK-FUTAN4
-               INITIALIZE              ORCSKANACHKAREA
-               MOVE    "2"             TO  KANACHK-SYORI
-               MOVE    WRK-FUTAN4      TO  KANACHK-MAE-INPUT
-               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-               IF    ( KANACHK-RC      =   ZERO )
-               AND   ( KANACHK-MAX     >   ZERO )
-                 STRING  "（第三者行為）食事療養費　"
-                                         DELIMITED  BY  SIZE
-                          KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                         DELIMITED  BY  SIZE
-                          "円"           DELIMITED  BY  SIZE
-                                         INTO    WRK-TITLE
-                 END-STRING
-               END-IF
-               INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "　"
-      *
-               IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
-                   PERFORM 34120-PAGE-SEC
-               END-IF
-               ADD     1                   TO  WRK-LINETEK
-      *
-               IF      CNT-PAGE        =   1
-                     MOVE    WRK-TITLE  TO  HC06-TEKIYO (WRK-LINETEK)
-               ELSE
-                   EVALUATE    SYS-2005-NEXTPRTKBN
-                     WHEN    "0"
-                       MOVE  WRK-TITLE  TO  HC061-TEKIYO(WRK-LINETEK)
-                     WHEN    "1"
-                       MOVE  WRK-TITLE  TO  HC062-TEKIYO(WRK-LINETEK)
-                     WHEN    "2"
-                       MOVE  WRK-TITLE  TO  HC063-TEKIYO(WRK-LINETEK)
-                   END-EVALUATE
-               END-IF
-      *
-               IF   RECE62-DAISAN-SKJ-RYOYOHI-KEI  NOT = ZERO
-      *          食事標準負担額
-                 MOVE    SPACE                   TO  WRK-TITLE
-                 MOVE    RECE62-DAISAN-SKJ-FTN-KEI
-                                                 TO  WRK-FUTAN4
-                 INITIALIZE              ORCSKANACHKAREA
-                 MOVE    "2"             TO  KANACHK-SYORI
-                 MOVE    WRK-FUTAN4      TO  KANACHK-MAE-INPUT
-                 CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-                 IF    ( KANACHK-RC      =   ZERO )
-                 AND   ( KANACHK-MAX     >   ZERO )
-                   STRING  "（第三者行為）標準負担額　"
-                                           DELIMITED  BY  SIZE
-                            KANACHK-OUT-INPUT(1:KANACHK-MAX)
-                                           DELIMITED  BY  SIZE
-                            "円"           DELIMITED  BY  SIZE
-                                           INTO    WRK-TITLE
-                   END-STRING
-                 END-IF
-                 INSPECT WRK-TITLE   REPLACING   ALL "  "    BY  "　"
-      *
-                 IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
-                     PERFORM 34120-PAGE-SEC
-                 END-IF
-                 ADD     1                   TO  WRK-LINETEK
-      *
-                 IF      CNT-PAGE        =   1
-                       MOVE    WRK-TITLE  TO  HC06-TEKIYO (WRK-LINETEK)
-                 ELSE
-                     EVALUATE    SYS-2005-NEXTPRTKBN
-                       WHEN    "0"
-                         MOVE  WRK-TITLE  TO  HC061-TEKIYO(WRK-LINETEK)
-                       WHEN    "1"
-                         MOVE  WRK-TITLE  TO  HC062-TEKIYO(WRK-LINETEK)
-                       WHEN    "2"
-                         MOVE  WRK-TITLE  TO  HC063-TEKIYO(WRK-LINETEK)
-                     END-EVALUATE
-                 END-IF
                END-IF
            END-IF
       *
@@ -9175,7 +8459,7 @@
            END-IF
       *
            .
-       380-HC101-TEKIYOU-COM-HEN-EXT.
+       380-HC101-TEKIYOU-COMMENT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9859,7 +9143,6 @@
                                                DELIMITED  BY  SIZE
                         RECE62-PTNUM           DELIMITED  BY  SIZE  
                                                INTO  WRK-RECEERR
-               END-STRING
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                  TO  FLG-ERR
            ELSE    
@@ -9940,14 +9223,6 @@
                IF      SYS-200501-BTUNUM-PRTKBN
                                            =   "1"
                    MOVE    RECE62-LASTBTUNUM   TO  RECE08-SORT-1
-               END-IF
-      *        ターミナルデジット出力設定
-               IF    ( SYS-200501-TERMINAL-DIGIT-PRTKBN
-                                           =   "1"  )
-               AND   ( WRK-PARA-SRYYM  NOT =   ZERO )
-               AND   ( WRK-1009-KETA       >   ZERO )
-                   MOVE    RECE62-PTNUM (WRK-1009-KETA:2)
-                                           TO   RECE08-SORT-2
                END-IF
       *
                MOVE    "tbl_receprt"       TO  MCP-TABLE
@@ -10487,8 +9762,7 @@
                MOVE    "8"             TO  RECE08-HKNJANUM-SRT
       *
                IF       RECE08-HKNJANUM (1:2)
-                                        =   "06"    OR  "63"    OR
-                                            "32"
+                                        =   "06"    OR  "63"
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       5
                            OR      SYS-200505-HKNJANUM (IDX)
@@ -10595,16 +9869,13 @@
                            MOVE    "4"             TO  RECE07-SYORISBT
                    END-EVALUATE
                END-IF
-               EVALUATE    WRK-PARA-PRTKBN
-                   WHEN    "2"
-                       MOVE    "1"                 TO  RECE07-PRTKBN
-                   WHEN    "3"
+               IF      WRK-PARA-PRTKBN     =   "2"
+                   MOVE    "1"                 TO  RECE07-PRTKBN
+               ELSE
+                   IF      WRK-PARA-PRTKBN     =   "3"
                        MOVE    "2"                 TO  RECE07-PRTKBN
-                   WHEN    "4"
-                       MOVE    "3"                 TO  RECE07-PRTKBN
-                   WHEN    "5"
-                       MOVE    "4"                 TO  RECE07-PRTKBN
-               END-EVALUATE
+                   END-IF
+               END-IF
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
                IF      RECE08-CHOUKI       =   "1"
@@ -10770,7 +10041,6 @@
            ELSE
                MOVE    RECE62-TEKSTYMD TO  RECE10-TEKSTYMD
            END-IF
-           MOVE    RECE62-RECEIPT-KBN  TO  RECE10-RECEIPT-KBN
       *
            MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
            MOVE    "key"               TO  WRK-MCP-PATHNAME
@@ -10796,6 +10066,13 @@
                MOVE    ZERO                TO  RECE10-SKYYM
                                                RECE10-HENREIYM
                                                RECE10-TEISEIKBN
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       4
+                   MOVE    RECE62-KOHNUM (IDX) TO
+                                       RECE10-KOHNUM (IDX)
+                   MOVE    RECE62-KOHID  (IDX) TO
+                                       RECE10-KOHID  (IDX)
+               END-PERFORM
                MOVE    RECE62-HKNNUM   TO  RECE10-HKNNUM-S
                IF      RECE62-HKNJANUM-KEY =   SPACE
                    MOVE    ZERO            TO  RECE10-HKNJANUM-S
@@ -10821,14 +10098,6 @@
                MOVE    ZERO                TO  RECE10-UPDYMD
                                                RECE10-UPDHMS
            END-IF
-      *
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       4
-               MOVE    RECE62-KOHNUM (IDX) TO
-                                       RECE10-KOHNUM (IDX)
-               MOVE    RECE62-KOHID  (IDX) TO
-                                       RECE10-KOHID  (IDX)
-           END-PERFORM
       *
            MOVE    RECE62-KIGO         TO  RECE10-KIGO
            MOVE    RECE62-NUM          TO  RECE10-NUM
@@ -11119,7 +10388,7 @@
                                        TO  RECE10-ETC-YKZFTN (1)
       *
       *    後期高齢者非該当
-           IF      RECE62-KOREIHIGAITO  =   1
+           IF      RECE62-YOBIETC (8)  =   1
                MOVE    1                   TO  RECE10-ETC-YKZFTN (2)
            END-IF 
       *
@@ -11131,9 +10400,9 @@
                MOVE   RECE62-KOUREI    TO  RECE10-RESERVE-AREA(1:1)
            END-IF
       *
-           IF     (RECE62-ICBKINKSI-ARI    =  1  OR  2  OR  3)
-           OR     (RECE62-ICBKINKSI-NASI   =  1  OR  2  OR  3)
-             EVALUATE  RECE62-ICBKINKSI-ARI
+           IF     (RECE62-YOBIETC(11)  =  1  OR  2  OR  3)
+           OR     (RECE62-YOBIETC(3)   =  1  OR  2  OR  3)
+             EVALUATE  RECE62-YOBIETC(11)
                WHEN       1
                  MOVE   "1"        TO  RECE10-RESERVE-AREA(2:1)
                WHEN       2
@@ -11141,7 +10410,7 @@
                WHEN       3
                  MOVE   "3"        TO  RECE10-RESERVE-AREA(2:1)
              END-EVALUATE
-             EVALUATE  RECE62-ICBKINKSI-NASI
+             EVALUATE  RECE62-YOBIETC(3)
                WHEN       1
                  MOVE   "1"        TO  RECE10-RESERVE-AREA(3:1)
                WHEN       2
@@ -11149,76 +10418,38 @@
                WHEN       3
                  MOVE   "3"        TO  RECE10-RESERVE-AREA(3:1)
              END-EVALUATE
-             IF    RECE62-SAIKEI-CHIKAN-KIN1  NOT =  123456789
-               IF  RECE62-SAIKEI-CHIKAN-KIN1      =  009999999
+             IF    RECE62-YOBIETC(12)  NOT =  123456789
+               IF  RECE62-YOBIETC(12)      =  009999999
                  MOVE   "2"        TO  RECE10-RESERVE-AREA(4:1)
                ELSE
                  MOVE   "1"        TO  RECE10-RESERVE-AREA(4:1)
                END-IF
              END-IF
-             IF    RECE62-SAIKEI-CHIKAN-KIN2  NOT =  123456789
-               IF  RECE62-SAIKEI-CHIKAN-KIN2      =  009999999
+             IF    RECE62-YOBIETC(13)  NOT =  123456789
+               IF  RECE62-YOBIETC(13)      =  009999999
                  MOVE   "2"        TO  RECE10-RESERVE-AREA(5:1)
                ELSE
                  MOVE   "1"        TO  RECE10-RESERVE-AREA(5:1)
                END-IF
              END-IF
-             IF    RECE62-SAIKEI-CHIKAN-KIN3  NOT =  123456789
-               IF  RECE62-SAIKEI-CHIKAN-KIN3      =  009999999
-                 MOVE   "2"        TO  RECE10-RESERVE-AREA(11:1)
-               ELSE
-                 MOVE   "1"        TO  RECE10-RESERVE-AREA(11:1)
-               END-IF
-             END-IF
-             IF    RECE62-SAIKEI-CHIKAN-KIN4  NOT =  123456789
-               IF  RECE62-SAIKEI-CHIKAN-KIN4      =  009999999
-                 MOVE   "2"        TO  RECE10-RESERVE-AREA(12:1)
-               ELSE
-                 MOVE   "1"        TO  RECE10-RESERVE-AREA(12:1)
-               END-IF
-             END-IF
-             IF    RECE62-HKN-CHIKAN-KIN      NOT =  123456789
+             IF    RECE62-YOBIETC(14)  NOT =  123456789
                  MOVE   "1"        TO  RECE10-RESERVE-AREA(6:1)
              END-IF
            END-IF
       *
-           IF      RECE62-KOHCHIKAN  =  1
-             IF    RECE62-KOH-CHIKAN-KIN1     NOT =  123456789
+           IF      RECE62-YOBIETC(19)  =  1
+             IF    RECE62-YOBIETC(15)  NOT =  123456789
                  MOVE   "1"        TO  RECE10-RESERVE-AREA(7:1)
              END-IF
-             IF    RECE62-KOH-CHIKAN-KIN2     NOT =  123456789
+             IF    RECE62-YOBIETC(16)  NOT =  123456789
                  MOVE   "1"        TO  RECE10-RESERVE-AREA(8:1)
              END-IF
-             IF    RECE62-KOH-CHIKAN-KIN3     NOT =  123456789
+             IF    RECE62-YOBIETC(17)  NOT =  123456789
                  MOVE   "1"        TO  RECE10-RESERVE-AREA(9:1)
              END-IF
-             IF    RECE62-KOH-CHIKAN-KIN4     NOT =  123456789
+             IF    RECE62-YOBIETC(18)  NOT =  123456789
                  MOVE   "1"        TO  RECE10-RESERVE-AREA(10:1)
              END-IF
-           END-IF
-      *
-      *    「医保＋第三者行為」の医療費一部負担額、食事標準負担額を記録
-           IF    RECE62-DAISAN-FTNMONEY  NOT = ZERO
-               MOVE  RECE62-DAISAN-FTNMONEY
-                                      TO  WRK-DAISAN-FTNMONEY
-               MOVE  WRK-DAISAN-DATA  TO  RECE10-RESERVE-AREA(13:9)
-           END-IF
-           IF    RECE62-DAISAN-SKJ-FTN-KEI  NOT = ZERO
-               MOVE  RECE62-DAISAN-SKJ-FTN-KEI
-                                      TO  WRK-DAISAN-SKJFTN
-               MOVE  WRK-DAISAN-DATA2 TO  RECE10-RESERVE-AREA(22:6)
-           END-IF
-      *
-      *    請求額情報（公費負担のうちレセプト請求しない地方公費分）を記録
-           IF    RECE62-SKYIRYO-KOHFTN-KOHSKY  NOT = ZERO
-               MOVE  RECE62-SKYIRYO-KOHFTN-KOHSKY
-                                      TO  WRK-DAISAN-FTNMONEY
-               MOVE  WRK-DAISAN-DATA  TO  RECE10-RESERVE-AREA(28:9)
-           END-IF
-           IF    RECE62-SKYSKJ-KOHFTN-KOHSKY  NOT = ZERO
-               MOVE  RECE62-SKYSKJ-KOHFTN-KOHSKY
-                                      TO  WRK-DAISAN-SKJFTN
-               MOVE  WRK-DAISAN-DATA2 TO  RECE10-RESERVE-AREA(37:6)
            END-IF
       *
            IF      RECE62-SRYYM        >=  "201004"
@@ -11451,8 +10682,7 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -11462,8 +10692,7 @@
            STRING  "ORCR0730 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -11523,132 +10752,6 @@
       *    データ削除処理
       *****************************************************************
        5001-DB-DELETE-SEC               SECTION.
-      *
-      *    ＥＦファイル作成・連携基盤用・診療情報システム用のとき
-           IF      WRK-PARA-PRTKBN =   "9" OR  "8" OR "B"
-               IF      WRK-PARA-SYOKBN     =   "1"
-                   INITIALIZE                      RECEDEN-REC
-                   MOVE    WRK-PARA-HOSPNUM    TO  RECEDEN-HOSPNUM
-      *************MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
-                   MOVE    "1"                 TO  RECEDEN-NYUGAIKBN
-                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   IF      WRK-PARA-PRTKBN =   "9"
-                       MOVE    "tbl_renkei_tmp"    TO  MCP-TABLE
-                   ELSE
-                       IF      WRK-PARA-PRTKBN =   "8"
-                           MOVE    "tbl_efout"         TO  MCP-TABLE
-                       ELSE
-                           MOVE    "tbl_receden_tmp"   TO  MCP-TABLE
-                       END-IF
-                   END-IF
-                   MOVE    "del1"              TO  MCP-PATHNAME
-                   PERFORM 900-ORCDBMAIN-SEC
-                   IF      MCP-RC           NOT =   ZERO
-                       DISPLAY "DBPATH=" MCP-TABLE " " MCP-PATHNAME
-                               " MCP-RC=" MCP-RC
-                       IF      WRK-PARA-PRTKBN =   "8"
-                           MOVE
-                          "ＥＦファイル作成削除処理でエラーとなりました"
-                                                       TO  WRK-RECEERR
-                       ELSE
-                           IF      WRK-PARA-PRTKBN =   "9"
-                               MOVE
-                               "連携基盤削除処理でエラーとなりました"
-                                                       TO  WRK-RECEERR
-                           ELSE
-                               MOVE
-                       "診療情報システム用削除処理でエラーとなりました"
-                                                       TO  WRK-RECEERR
-                           END-IF
-                       END-IF
-                       PERFORM 500-ERR-HENSYU-SEC
-                       GO  TO  5001-DB-DELETE-EXT
-                   END-IF
-               ELSE
-                   EVALUATE    BTPARA-INFO-KBN
-                     WHEN    "01"
-      *                レセプト指示（個別指示）コード読み込み
-                       INITIALIZE                      SYS-2002-REC
-                       MOVE    "2002"              TO  SYS-2002-KANRICD
-                       MOVE    WRK-PARA-HOSPNUM    TO  SYS-2002-HOSPNUM
-                       MOVE    ZERO                TO  SYS-2002-STYUKYMD
-                       MOVE    ZERO                TO  SYS-2002-EDYUKYMD
-                       MOVE    SYS-2002-REC        TO  MCPDATA-REC
-                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                       MOVE    "key2"              TO  MCP-PATHNAME
-                       PERFORM 900-DBSELECT-SEC
-                       IF      MCP-RC              =   ZERO
-                           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                           MOVE    "key2"          TO  MCP-PATHNAME
-                           PERFORM 900-SYSKANRI-N-SEC
-                       ELSE
-                           MOVE    1                   TO  FLG-SYSKANRI
-                       END-IF
-      *
-                       PERFORM         UNTIL       FLG-SYSKANRI    =   1
-                           MOVE    MCPDATA-REC     TO  SYS-2002-REC
-      *
-                           DISPLAY "DELETE PTNUM=" SYS-2002-PTNUM
-                                           " SRYYM=" SYS-2002-SRYYM
-      *                    診療年月のレセ電削除処理
-                           INITIALIZE                  RECEDEN-REC
-                           MOVE    WRK-PARA-HOSPNUM    TO
-                                                       RECEDEN-HOSPNUM
-                           MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
-                           MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
-                           MOVE    SYS-2002-NYUGAIKBN  TO
-                                                       RECEDEN-NYUGAIKBN
-                           MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                           MOVE    "DBDELETE"          TO  MCP-FUNC
-                           IF      WRK-PARA-PRTKBN =   "9"
-                               MOVE    "tbl_renkei_tmp"    TO  MCP-TABLE
-                           ELSE
-                               IF      WRK-PARA-PRTKBN =   "8"
-                                   MOVE    "tbl_efout"         TO
-                                                               MCP-TABLE
-                               ELSE
-                                   MOVE    "tbl_receden_tmp"   TO
-                                                               MCP-TABLE
-                               END-IF
-                           END-IF
-                           MOVE    "del2"              TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC           NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               IF      WRK-PARA-PRTKBN =   "8"
-                                   MOVE
-                          "ＥＦファイル作成削除処理でエラーとなりました"
-                                                       TO  WRK-RECEERR
-                               ELSE
-                                   IF      WRK-PARA-PRTKBN =   "9"
-                                       MOVE
-                               "連携基盤削除処理でエラーとなりました"
-                                                       TO  WRK-RECEERR
-                                   ELSE
-                                       MOVE
-                       "診療情報システム用削除処理でエラーとなりました"
-                                                       TO  WRK-RECEERR
-                                   END-IF
-                               END-IF
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
-                           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                           MOVE    "key2"          TO  MCP-PATHNAME
-                           PERFORM 900-SYSKANRI-N-SEC
-                       END-PERFORM
-      *
-                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                       MOVE    "key2"              TO  MCP-PATHNAME
-                       PERFORM 900-CLOSE-SEC
-                 END-EVALUATE
-               END-IF      
-               GO  TO  5001-DB-DELETE-EXT
-           END-IF
       *
            IF      WRK-PARA-SYOKBN     =   "1"
       *
@@ -12060,52 +11163,9 @@
                    MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
                    MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
                    MOVE    SYS-2002-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
-                   MOVE    1                   TO  RECEDEN-TEISYUTUSAKI
                    MOVE    RECEDEN-REC         TO  MCPDATA-REC
                    MOVE    "tbl_receden"       TO  MCP-TABLE
-                   MOVE    "del4"              TO  MCP-PATHNAME
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   PERFORM   900-ORCDBMAIN-SEC
-                   IF      MCP-RC           NOT =   ZERO
-                     DISPLAY "TABLE=" MCP-TABLE "PATHNAME=" MCP-PATHNAME
-                     DISPLAY " MCP-RC=" MCP-RC
-                       MOVE
-                       "レセ電削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                       GO  TO  5001-DB-DELETE-EXT
-                   END-IF
-      *
-                   INITIALIZE                  RECEDEN-REC
-                   MOVE    SYS-1001-HOSPNUM    TO  RECEDEN-HOSPNUM
-                   MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
-                   MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
-                   MOVE    SYS-2002-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
-                   MOVE    2                   TO  RECEDEN-TEISYUTUSAKI
-                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                   MOVE    "tbl_receden"       TO  MCP-TABLE
-                   MOVE    "del4"              TO  MCP-PATHNAME
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   PERFORM   900-ORCDBMAIN-SEC
-                   IF      MCP-RC           NOT =   ZERO
-                     DISPLAY "TABLE=" MCP-TABLE "PATHNAME=" MCP-PATHNAME
-                     DISPLAY " MCP-RC=" MCP-RC
-                       MOVE
-                       "レセ電削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                       GO  TO  5001-DB-DELETE-EXT
-                   END-IF
-      *
-                   INITIALIZE                  RECEDEN-REC
-                   MOVE    SYS-1001-HOSPNUM    TO  RECEDEN-HOSPNUM
-                   MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
-                   MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
-                   MOVE    SYS-2002-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
-                   MOVE    6                   TO  RECEDEN-TEISYUTUSAKI
-                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                   MOVE    "tbl_receden"       TO  MCP-TABLE
-                   MOVE    "del4"              TO  MCP-PATHNAME
+                   MOVE    "del2"              TO  MCP-PATHNAME
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    PERFORM   900-ORCDBMAIN-SEC
                    IF      MCP-RC           NOT =   ZERO
@@ -12156,12 +11216,6 @@
                PERFORM 3001-MISEIKYU-FLG-KOUSIN-SEC
            END-IF 
       *
-      *    ＰＵＳＨ通知処理
-           IF    ( WRK-PARA-SHELLID
-                                   NOT =   "RECEPTX" )
-               PERFORM 3001-PUSH-SEC
-           END-IF
-      *
            DISPLAY "*** ORCR0730 IN  RECE62 ="  CNT-RECE62
            DISPLAY "*** ORCR0730 IN  RECE62X="  CNT-RECE62X
            DISPLAY "                 PAGE    "  CNT-OUT
@@ -12171,8 +11225,7 @@
       *        ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    CNT-OUT         TO  JOB-UPDCNT
-               MOVE    CNT-RECE62      TO  JOB-UPDCNT1
+              MOVE    CNT-OUT          TO  JOB-UPDCNT
               PERFORM   900-CALL-ORCSJOB-SEC
            END-IF
       *
@@ -12260,105 +11313,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ＰＵＳＨ通知処理
-      *****************************************************************
-       3001-PUSH-SEC        SECTION.
-      *
-           EVALUATE    WRK-PARA-RECEKBN
-               WHEN    "0"
-                   IF    ( SYS-2005-SYARECEKBN =   "2" OR  "3" )
-                   AND   ( SYS-2005-KKHRECEKBN =   "2" OR  "3" )
-                   AND   ( SYS-200501-KOUIKIRECEKBN
-                                               =   "2" OR  "3" )
-                       GO  TO  3001-PUSH-EXT
-                   END-IF
-               WHEN    "1"
-                   IF      SYS-2005-SYARECEKBN =   "2" OR  "3"
-                       GO  TO  3001-PUSH-EXT
-                   END-IF
-               WHEN    "2"
-                   IF      SYS-2005-KKHRECEKBN =   "2" OR  "3"
-                       GO  TO  3001-PUSH-EXT
-                   END-IF
-               WHEN    "7"
-                   IF      SYS-200501-KOUIKIRECEKBN
-                                               =   "2" OR  "3"
-                       GO  TO  3001-PUSH-EXT
-                   END-IF
-           END-EVALUATE
-      *
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           PERFORM 900-CALL-ORCSJOB-SEC
-           IF    ( SJOBKANRI-RETURN
-                                   =   ZERO  )
-           AND   ( JOB-KARTE-UID
-                               NOT =   SPACE )
-               INITIALIZE                  PUSHBA01-REC
-               MOVE    JOB-KARTE-UID   TO  PUSHBA01API-KARTE-UID
-               MOVE    JOB-ORCA-UID    TO  PUSHBA01API-ORCA-UID
-               MOVE    "000"           TO  PUSHBA01API-RESULT
-               MOVE    "receipt_make"  TO  PUSHBA01-EVENT
-               IF      WRK-PARA-SRYYM  =   ZERO
-                   MOVE    "9999-12"       TO  PUSHBA01-PERFORM-MONTH
-               ELSE
-                   MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD
-                   PERFORM 801-DAYHEN01-SEC
-                   MOVE    WRK-HEN-DATE (1:7)
-                                           TO  PUSHBA01-PERFORM-MONTH
-               END-IF
-               MOVE    CNT-RECE62      TO  WRK-CNT
-               MOVE    WRK-CNT-X       TO  PUSHBA01-OUTPUT-COUNT
-      *??
-             display "push=" PUSHBA01-REC "#"
-      *??
-               MOVE    PUSHBA01-REC    TO  MCPDATA-REC
-               MOVE    "PUSHEVENT"     TO  MCP-FUNC
-               MOVE    "push_batch01"  TO  MCP-TABLE
-               MOVE    "push_batch01"  TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"     USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           END-IF
-           .
-       3001-PUSH-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           .
-       800-FILENM-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    日付編集処理
-      *****************************************************************
-       801-DAYHEN01-SEC                SECTION.
-      *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE               TO  WRK-HEN-DATE
-           ELSE
-               INITIALIZE                  WRK-HEN-DATE
-               MOVE    WRK-SYMD (1:4)      TO  WRK-HEN-YY
-               MOVE    WRK-SYMD (5:2)      TO  WRK-HEN-MM
-               MOVE    WRK-SYMD (7:2)      TO  WRK-HEN-DD
-               MOVE    "-"                 TO  WRK-HEN-H1
-               MOVE    "-"                 TO  WRK-HEN-H2
-               IF      WRK-SYMD            =   "99999999"
-                   MOVE    "12"                TO  WRK-HEN-MM
-                   MOVE    "31"                TO  WRK-HEN-DD
-               END-IF
-           END-IF
-           .
-       801-DAYHEN01-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    基本情報データ読み込み処理
       *****************************************************************
        900-RECE62-READ-SEC           SECTION.
@@ -12394,8 +11348,7 @@
                    AND   ( RECE62-SHOKUJIRYOYOHI (4)
                                                =   ZERO            )
                    AND   ( RECE62-SHOKUJIRYOYOHI (5)
-                                               =   ZERO            )
-                   AND   ( RECE62-SKYZEROFLG   =   ZERO            )
+                                               =   ZERO             )
                        IF      RECE62-RECESYUBETU
                                                NOT =   8888    AND ZERO
                            GO  TO  900-RECE62-READ-SEC
@@ -12407,9 +11360,6 @@
                    END-IF    
       *
                    DISPLAY "RECE62  PTNUM=" RECE62-PTNUM
-                           " SRYYM="        RECE62-SRYYM
-                           " RECESYUBETU="  RECE62-RECESYUBETU
-                           " ERR-ERRKBN="   RECE62-ERR-ERRKBN
                            " RJNGAIKOHFTN(1)="
                                             RECE62-RJNGAIKOHFTN (1)
       *
@@ -12433,55 +11383,6 @@
                        MOVE    "01"           TO  WRK-SYS-SRYYMD(7:2)
                        PERFORM 900-SYSKANRI-HENSYU-SEC
                    END-IF
-      *
-      *            請求点と点数欄の合計をチェック
-                   IF      RECE62-ERR-ERRKBN   =   ZERO
-                       INITIALIZE              WRK-TOTALTEN-OCC
-      *
-                       PERFORM VARYING IDY     FROM    1   BY  1
-                               UNTIL   IDY     >       5
-                           PERFORM VARYING IDX     FROM    1   BY  1
-                                   UNTIL   IDX     >       22
-                               ADD     RECE62-TENSU (IDX IDY)
-                                               TO  WRK-TOTALTEN (IDY)
-                           END-PERFORM
-                           PERFORM VARYING IDX FROM    1   BY  1
-                                   UNTIL   IDX >       10
-                               ADD     RECE62-NYUKHNKEI  (IDX IDY)
-                                               TO  WRK-TOTALTEN (IDY)
-                               ADD     RECE62-NYUTOKKEI  (IDX IDY)
-                                               TO  WRK-TOTALTEN (IDY)
-                           END-PERFORM
-                           ADD     RECE62-NYUKHNKEI2 (IDY)
-                                               TO  WRK-TOTALTEN (IDY)
-                           ADD     RECE62-NYUTOKKEI2 (IDY)
-                                               TO  WRK-TOTALTEN (IDY)
-                       END-PERFORM
-      *
-                       IF    ( RECE62-TOTALTEN (1)
-                                             NOT =   WRK-TOTALTEN (1) )
-                       OR    ( RECE62-TOTALTEN (2)
-                                             NOT =   WRK-TOTALTEN (2) )
-                       OR    ( RECE62-TOTALTEN (3)
-                                             NOT =   WRK-TOTALTEN (3) )
-                       OR    ( RECE62-TOTALTEN (4)
-                                             NOT =   WRK-TOTALTEN (4) )
-                       OR    ( RECE62-TOTALTEN (5)
-                                             NOT =   WRK-TOTALTEN (5) )
-                           MOVE    16            TO  RECE62-ERR-ERRKBN
-      *
-                           DISPLAY "TOTALTEN (1)=" WRK-TOTALTEN    (1)
-                                               "#" RECE62-TOTALTEN (1)
-                           DISPLAY "TOTALTEN (2)=" WRK-TOTALTEN    (2)
-                                               "#" RECE62-TOTALTEN (2)
-                           DISPLAY "TOTALTEN (3)=" WRK-TOTALTEN    (3)
-                                               "#" RECE62-TOTALTEN (3)
-                           DISPLAY "TOTALTEN (4)=" WRK-TOTALTEN    (4)
-                                               "#" RECE62-TOTALTEN (4)
-                           DISPLAY "TOTALTEN (5)=" WRK-TOTALTEN    (4)
-                                               "#" RECE62-TOTALTEN (5)
-                       END-IF
-               END-IF
            END-READ
       *
            .

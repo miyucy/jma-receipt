@@ -47,16 +47,6 @@
       *  04.07.01    NACL-藤原    12/11/20  スクリプト起動パスサーチ対応
       *  04.07.02    NACL-藤原    12/11/20  リアルタイムプレビュー時の
       *                                     一画面対応
-      *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
-      *  04.07.04    NACL-藤原    13/12/04  自賠責（労災準拠）のレセプト
-      *                                     様式追加対応
-      *  04.07.05    NACL-藤原    14/03/12  第三者行為のプリンタ設定
-      *  04.07.06    NACL-藤原    15/06/15  「自賠責・様式選択」の初期表
-      *                                     示変更対応
-      *
-      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
-      *                                     載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -76,12 +66,9 @@
        01  RECEERR-REC             PIC X(200).
        WORKING-STORAGE         SECTION.
       *
-      *    エラーファイル名称
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECEERR//.
-      *
-      *    エラーファイル名称領域 
-           COPY    "CPERRFL.INC".
+      *    エラーファイル 名称領域 
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -177,8 +164,6 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *???
@@ -189,7 +174,7 @@
       *****************************************************************
       *
       *     LINK-HKNKBN
-      *     ０：医保  １：労災  ２：自賠責  ３：公害  ４：第三者行為
+      *     ０：医保  １：労災  ２：自賠責
       *     LINK-PTRSI-HKNKBN
       *     １：労災  ２：自賠責
       *      LINK-GYOUMUKBN
@@ -324,18 +309,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                            SYS-2005-FRAME-JIBAIPRTKBN-N
            END-IF
            IF      SYS-200501-JIBAIPRTKBN    =   SPACE
-               MOVE    "1"                 TO  SYS-200501-JIBAIPRTKBN
+               MOVE    ZERO                TO  SYS-200501-JIBAIPRTKBN
            END-IF
            IF      SYS-200501-JIBAIPRTKBN-N  =   SPACE
-               MOVE    "1"                 TO  SYS-200501-JIBAIPRTKBN-N
-           END-IF
-           IF      SYS-200501-JIBAIPRTKBN1
-                                       =   SPACE
-               MOVE    "2"                 TO  SYS-200501-JIBAIPRTKBN1
-           END-IF
-           IF      SYS-200501-JIBAIPRTKBN1-N
-                                       =   SPACE
-               MOVE    "2"                 TO  SYS-200501-JIBAIPRTKBN1-N
+               MOVE    ZERO                TO  SYS-200501-JIBAIPRTKBN-N
            END-IF
            IF      SYS-200501-FRAME-ROUPRTKBN
                                            =   SPACE
@@ -363,29 +340,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                MOVE    "0"                 TO
                                            SYS-200501-INSPECT-ZERO-KBN
            END-IF
-           IF      SYS-200501-INSPECT-INCLUDE-KBN
-                                   =   SPACE
-               MOVE    "0"             TO
-                                       SYS-200501-INSPECT-INCLUDE-KBN
-           END-IF
-      *    点検用レセプトのとき
            IF    ( LINK-PRTKBN             =   "2" )
-               IF      LINK-HKNKBN             =   "0"
-                   EVALUATE    SYS-200501-INSPECT-ZERO-KBN
-                                   ALSO   SYS-200501-INSPECT-INCLUDE-KBN
-                       WHEN    "1" ALSO    "0"
-                           MOVE    "3"                 TO  LINK-PRTKBN
-                       WHEN    "0" ALSO    "1"
-                           MOVE    "4"                 TO  LINK-PRTKBN
-                       WHEN    "1" ALSO    "1"
-                           MOVE    "5"                 TO  LINK-PRTKBN
-                   END-EVALUATE
-               ELSE
-                   EVALUATE    SYS-200501-INSPECT-INCLUDE-KBN
-                       WHEN    "1"
-                           MOVE    "4"                 TO  LINK-PRTKBN
-                   END-EVALUATE
-               END-IF
+           AND   ( LINK-HKNKBN             =   "0" )
+           AND   ( SYS-200501-INSPECT-ZERO-KBN
+                                           =   "1" )
+               MOVE    "3"                 TO  LINK-PRTKBN
            END-IF
       *                
       *    出力先プリンタ名割り当て情報の取得
@@ -593,16 +552,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    LINK-PTID       TO  WRK-PTID
       *
-           MOVE    "ORPRVERR"      TO  ERRFLPARA-FILE-ID
-           MOVE    SPA-TERMID      TO  ERRFLPARA-TERMID
-           MOVE    SPA-HOSPNUM     TO  ERRFLPARA-HOSPNUM
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    ERRFLPARA-BASENAME
-                                   TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SPACE           TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME
-                                   TO  RECEERR
+           MOVE    "ORPRVERR"      TO  RECEERR-FILE-ID
+           MOVE    WRK-PTID        TO  RECEERR-TERMID
+grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
       *
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
@@ -633,11 +585,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                            TO  SHELLTBL-ARG3
                WHEN    "3"
                    MOVE    "6"             TO  SHELLTBL-ARG3
-               WHEN    "4"
-                   MOVE    "8"             TO  SHELLTBL-ARG3
            END-EVALUATE 
-           MOVE    ERRFLPARA-BASENAME
-                                   TO  SHELLTBL-ARG4
+           MOVE    RECEERR         TO  SHELLTBL-ARG4
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG5
            MOVE    WRK-CONS-JOB-SHELLID
@@ -677,23 +626,12 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                WHEN   "2"              ALSO    "1"
                    MOVE    SYS-200501-ROUPRTKBN    TO  SHELLTBL-ARG14
                WHEN   "1"              ALSO    "2"
-               WHEN   "1"              ALSO    "4"
                    MOVE    SYS-200501-JIBAIPRTKBN-N
                                                    TO  SHELLTBL-ARG14
                WHEN   "2"              ALSO    "2"
-               WHEN   "2"              ALSO    "4"
                    MOVE    SYS-200501-JIBAIPRTKBN  TO  SHELLTBL-ARG14
                WHEN   OTHER
                    MOVE    "0"                     TO  SHELLTBL-ARG14
-           END-EVALUATE
-           EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
-               WHEN   "1"              ALSO    "2"
-                   MOVE    SYS-200501-JIBAIPRTKBN1-N
-                                                   TO  SHELLTBL-ARG38
-               WHEN   "2"              ALSO    "2"
-                   MOVE    SYS-200501-JIBAIPRTKBN1 TO  SHELLTBL-ARG38
-               WHEN   OTHER
-                   MOVE    "0"                     TO  SHELLTBL-ARG38
            END-EVALUATE
       *
       *------------------> recept2.sh $11 - $26 (#24 は除く)
@@ -741,7 +679,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    SYS-2005-ROUPRTNM-NEXT-N
                                    TO  SHELLTBL-ARG16
                WHEN   "1"              ALSO    "2"
-               WHEN   "1"              ALSO    "4"
                    MOVE    SYS-2005-JBAIPRTNM-N
                                    TO  SHELLTBL-ARG15
                    MOVE    SYS-2005-JBAIPRTNM-NEXT-N
@@ -752,7 +689,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    SYS-2005-ROUPRTNM-NEXT
                                    TO  SHELLTBL-ARG16
                WHEN   "2"              ALSO    "2"
-               WHEN   "2"              ALSO    "4"
                    MOVE    SYS-2005-JBAIPRTNM
                                    TO  SHELLTBL-ARG15
                    MOVE    SYS-2005-JBAIPRTNM-NEXT
