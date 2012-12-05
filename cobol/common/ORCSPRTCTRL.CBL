@@ -187,6 +187,7 @@
            IF    ORCSPRTCTRL-BATCH-FLG NOT = 1
              MOVE    2                   TO  SPA-CLIENT-PRT-FLG
            END-IF
+           MOVE    SPACE                 TO  IN-ASS
            STRING  "/tmp/"             DELIMITED   BY  SIZE
                    SPA-HOSPNUM         DELIMITED   BY  SPACE
                    "ONLINE"            DELIMITED   BY  SIZE
@@ -293,7 +294,7 @@
                                            DELIMITED   BY  SPACE
                          ORCSPRTCTRL-TBL-GROUP(IDX)
                                            DELIMITED   BY  SPACE
-                         IDX    
+                         ORCSPRTCTRL-SHORI-RENNUM (IDX)
                                            DELIMITED   BY  SPACE
                          ORCSPRTCTRL-EDPAGE(IDX)
                                            DELIMITED   BY  SIZE
