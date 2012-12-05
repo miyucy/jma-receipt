@@ -172,6 +172,7 @@
            COPY    "CPORCMCP.INC".  
       *
            COPY    "ORCA-BLOB".  
+           COPY    "ORCA-SYSTEM".  
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *   ファイル取得関数
@@ -198,6 +199,8 @@
            COPY    "M01N.INC".
            COPY    "M02.INC". 
            COPY    "M95.INC".
+           COPY    "M96.INC".
+           COPY    "M97.INC".
            COPY    "MERR.INC".
            COPY    "MID1.INC".
            COPY    "MVER.INC".
@@ -1741,6 +1744,33 @@
                  DISPLAY "pdf hit !!"
                  MOVE  ".pdf"          TO  WRK-FILE-TYPE
            END-IF
+      *    AGENT 取得
+      *    INITIALIZE                      ORCA-SYSTEM
+      *    MOVE    "GETVALUE"          TO  MCP-FUNC
+      *    MOVE    MCP-TERM            TO  ORCA-SYSTEM-ID
+      *    MOVE    10                  TO  ORCA-SYSTEM-NUM
+      *    MOVE    "agent"             TO  ORCA-SYSTEM-KEY(1)
+      *    MOVE    ORCA-SYSTEM         TO  MCPDATA-REC
+      *    MOVE    "system"            TO  MCP-TABLE
+      *    MOVE    "key"               TO  MCP-PATHNAME
+      *    CALL   "ORCDBMAIN"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+      *                                SPA-AREA
+      *    IF    ( MCP-RC              =   ZERO    OR  1 )
+      *        MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
+      *    ELSE
+      *        INITIALIZE                      ORCA-SYSTEM
+      *    END-IF
+      *
+      *    DISPLAY "ORCA-SYSTEM-VALUE(1)(1:9) = "
+      *               ORCA-SYSTEM-VALUE(1)(1:9)
+      *
+      *    IF    ORCA-SYSTEM-VALUE(1)(1:9) = "glclient/"
+      *          MOVE  ".ps"           TO  WRK-FILE-TYPE
+      *    ELSE
+      *          MOVE  ".pdf"          TO  WRK-FILE-TYPE
+      *    END-IF
       *
            .
        100-AGENTGET-EXT.
