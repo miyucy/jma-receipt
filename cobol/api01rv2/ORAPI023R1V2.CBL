@@ -1261,12 +1261,6 @@
       *    ¿ÇÎÅ¹Ô°ÙÅÐÏ¿½èÍý
       *****************************************************************
        20021-MAIN-SYORI-SEC        SECTION.
-      *test
-           DISPLAY "20021-MAIN-SYORI-SEC SPA-SRYYMD:"  SPA-SRYYMD 
-                   ",PTINF-PTID:"  PTINF-PTID
-                   ",WRK-PTNUM:"  WRK-PTNUM
-                   ",WRK-HKNCOMBI:"  WRK-HKNCOMBI
-           ",SPA-GAI-JIKANKBN:"  SPA-GAI-JIKANKBN
       *
            INITIALIZE                  ORCSC95AREA
            MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
@@ -1392,20 +1386,6 @@
       *
       *    ¿ÇÎÅ¹Ô°Ù¡¢·×·×»»½èÍý¡¢ÊÔ½¸
            PERFORM 510-TBLHEN-SYORI-SEC
-      *
-      *test
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   (IDX        >   SPA-MAX-LINE )  OR
-                          ((SPA-GMN-INPUTCD(IDX)   =   SPACE ) AND
-                           (SPA-COM-INPUTCD(IDX)   =   SPACE ))
-            DISPLAY "IDX:"  IDX
-                ",GMN:"  SPA-GMN-INPUTCD(IDX)(1:22)
-                ",COM:"  SPA-COM-INPUTCD(IDX)
-                ",SRYKBN:"  SPA-COM-SRYKBN (IDX)
-                ","  SPA-COM-SRYSYUKBN (IDX)
-                ",TENSU:"  SPA-GMN-TENSU (IDX)
-           END-PERFORM
-      *TEST
       *
       *    Êñ³ç¤ÎÈ½Äê
            IF     (SPA-ERRCD           =   SPACE )  AND
@@ -1823,26 +1803,7 @@
       *    ¼ýÇ¼¾ðÊó½ÐÎÏÊÔ½¸½èÍý
       *****************************************************************
        6002-ACSRES-SYUNOU-HEN-SEC             SECTION.
-      *TEST
-           DISPLAY "SYU-SKYMONEY:" SYU-SKYMONEY 
-                     ",SYU-HKNTEKMONEY:" SYU-HKNTEKMONEY
-                     ",SYU-NYUKIN-TOTAL:" SYU-NYUKIN-TOTAL
-                     ",SYU-JIHI-TAX:" SYU-JIHI-TAX
-                     ",SYU-JIHI-TOTAL:" SYU-JIHI-TOTAL
-                     ",SYU-JIHI-TOTAL-TAX:" SYU-JIHI-TOTAL-TAX
-                     ",SYU-TGMONEY (17):" SYU-TGMONEY (17)
-                     ",SYU-TGMONEYTAX (17):" SYU-TGMONEY-TAX  (17)
-           DISPLAY "SYU-RSI-TOTAL:" SYU-RSI-TOTAL
-                   ",RSISAISHIN-MONEY:" SYU-RSISAISHIN-MONEY
-                   ",RSISDO-MONEY:" SYU-RSISDO-MONEY
-                   ",RSI-TAX-SAI:" SYU-RSI-TAX-SAI
-                   ",RSI-TOTAL:" SYU-RSI-TOTAL
-                   ",RSIJIBAI:" SYU-RSIJIBAI-SKYMONEY
-           DISPLAY "SYU-DISCOUNT-RATEKBN:" SYU-DISCOUNT-RATEKBN
-                   ",SYU-DISCOUNT-TEIRITU :" SYU-DISCOUNT-TEIRITU 
-                   ",SYU-DISCOUNT-RATE:" SYU-DISCOUNT-RATE
-                   ",SYU-DISCOUNT-MONEY:" SYU-DISCOUNT-MONEY
-      *TEST
+      *
       *    ³ä°úÎ¨
            IF      SYU-DISCOUNT-RATE   NOT =   ZERO
                EVALUATE    SYU-DISCOUNT-TEIRITU
