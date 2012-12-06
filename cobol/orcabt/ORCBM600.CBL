@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -58,19 +57,15 @@
        WORKING-STORAGE             SECTION.
       *
       *    ＣＳＶデータ
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //CSVPARA//.
-      *
-      *01  CSVPARA.
-      ***  03  FILLER              PIC X(05) VALUE "/tmp/".
-       01  CSVPARA-BASENAME.
+       01  CSVPARA.
+           03  FILLER              PIC X(05) VALUE "/tmp/".
            03  CSVPARA-HOSPNUM     PIC 9(02).
            03  FILLER              PIC X(10)   VALUE 
                                                "TIHOUKOUHI".
            03  CSVPARA-RENNUM      PIC 9(02)   VALUE   1.
            03  FILLER              PIC X(04)   VALUE   ".txt".
       *
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //CSVERR//.
       *
       *    フラグ領域
@@ -102,17 +97,8 @@
                05  WRK-PARA-JOBID          PIC 9(07).
                05  WRK-PARA-SHELLID        PIC X(08).
       *
-       01  WRK-ERR-AREA.
-           03  WRK-CSVERR                          PIC X(200). 
-           03  WRK-ERRMSG                          PIC X(300).
-           03  WRK-MCP-RC                          PIC 9(9).
-           03  WRK-ERR-FILE-STS                    PIC X(02).
-           03  WRK-ERR-FILE-MSG                    PIC X(100).
-           03  WRK-ERR-FILE-MSG1                   PIC X(17).
-           03  WRK-ERR-FLG                         PIC 9(01).
-      *    エラーファイル名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //WRK-ERR-FILE-NM//.
+           03  WRK-CSVERR          PIC X(200). 
+           03  WRK-ERRMSG          PIC X(300). 
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -132,8 +118,6 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -143,7 +127,7 @@
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(400).
+           02  FILLER      PIC X(1000).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -171,7 +155,6 @@
                                        WRK-AREA
                                        FLG-AREA
                                        SPA-AREA
-                                       CSVERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA-HOSPNUM
@@ -188,16 +171,6 @@
                                    TO  SPA-HOSPNUM
       *
            MOVE    SPA-HOSPNUM     TO  CSVPARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    CSVERR              TO  SGETTEMP-BASENAMES  (1)
-           MOVE    CSVPARA-BASENAME    TO  SGETTEMP-BASENAMES  (2)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  CSVERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  CSVERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  CSVPARA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -390,34 +363,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
        900-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-           PERFORM 900-ORCDBMAIN-SEC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
-               MOVE    SPACE               TO  WRK-ERR-AREA
-               INITIALIZE                      WRK-ERR-AREA
-               MOVE    MCP-RC              TO  WRK-MCP-RC
-      *
-               STRING  "ＤＢ読み込みエラー　TABLE="
-                                           DELIMITED   BY  SIZE
-                       MCP-TABLE           DELIMITED   BY  SPACE
-                       " RC="              DELIMITED   BY  SIZE
-                       WRK-MCP-RC          DELIMITED   BY  SIZE
-                                           INTO    WRK-CSVERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-      *
-               STRING  "ORCBM600 select err TABLE="
-                                           DELIMITED   BY  SIZE
-                       MCP-TABLE           DELIMITED   BY  SPACE
-                       " PATHNAME="        DELIMITED   BY  SIZE
-                       MCP-PATHNAME        DELIMITED   BY  SPACE
-                       " RC="              DELIMITED   BY  SIZE
-                       WRK-MCP-RC          DELIMITED   BY  SIZE
-                       LOW-VALUE           DELIMITED   BY  SIZE
-                                           INTO    WRK-ERRMSG
-               END-STRING
-               CALL    "cobabort"          USING   WRK-ERRMSG
+               DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
            END-IF
            .
        900-DBSELECT-EXT.

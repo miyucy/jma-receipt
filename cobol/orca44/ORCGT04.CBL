@@ -30,10 +30,6 @@
       *
       *  04.06.01    NACL-藤原    12/12/04  出産育児一時金のＣＳＶ出力時
       *                                     の履歴作成
-      *
-      *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -55,11 +51,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING   //TEMPFLPARA//
-                                   BY          //RECEERR//.
-      *
-      *    エラーファイル名称領域 
-           COPY    "CPERRFL.INC".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -130,6 +123,8 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
+      *     
+           COPY    "ORCA-SYSTEM".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -196,8 +191,6 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-      *    ユーザー情報取得
-           COPY    "CPORCSLDUSER.INC".
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -209,7 +202,23 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA44SCRAREA.INC".
+           COPY    "T01.INC".
+           COPY    "T02.INC".
+           COPY    "T03.INC".
+           COPY    "T04.INC".
+           COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T08.INC".
+           COPY    "T09.INC".
+           COPY    "T91.INC".
+           COPY    "T98.INC".
+           COPY    "T99.INC".
+           COPY    "TERR.INC".
+           COPY    "TID1.INC".
+           COPY    "TID2.INC".
+           COPY    "TID3.INC".
+           COPY    "TFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -315,6 +324,7 @@
       *        ジョブ管理チェック処理
                PERFORM 4501-JOBKANRI-CHK-SEC
                IF      SPA-ERRCD      =   SPACE
+      *********    PERFORM 500-KAKUTEI-SEC
                    IF      SPA-ERRCD      =   SPACE  
                        PERFORM 210-BACK
                        GO  TO  3002-TID1-SET-EXT
@@ -661,7 +671,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
                                    "】"            DELIMITED  BY  SIZE
                                                    INTO  WRK-RECEERR
-                           END-STRING
                            MOVE    SYS-3003-JOBID  TO  IDX
                        END-IF
                    END-IF
@@ -669,6 +678,182 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
            .
        4501-JOBKANRI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保存処理
+      *****************************************************************
+       500-KAKUTEI-SEC                 SECTION.
+      *
+           MOVE    ZERO            TO  SPA-T99-FILESV-CHK-FLG
+      *
+      *    ジョブ開始セット
+           MOVE    "DEL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           PERFORM 900-CALL-ORCSJOB-SEC
+      *
+           MOVE    "JBS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           MOVE    SPA-TERMID      TO  JOB-TERMID                        
+           PERFORM 900-CALL-ORCSJOB-SEC
+      *
+           MOVE    WRK-CONS-FILE-ID
+                                   TO  RECEERR-FILE-ID
+           MOVE    SPA-TERMID      TO  RECEERR-TERMID
+           MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
+           MOVE    SPACE           TO  SHELLTBL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    "scripts/monthly/recept60.sh"
+                                   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+      *     
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG1
+           MOVE    SPA-NAI-SRYYM   TO  SHELLTBL-ARG2
+           MOVE    SPA-NAI-T04-TSHELLID      (SPA-NAI-T04-SELNUM)
+                                   TO  SHELLTBL-ARG3
+           MOVE    SPA-NAI-T04-TSHORI-RENNUM (SPA-NAI-T04-SELNUM)
+                                   TO  SHELLTBL-ARG4
+           MOVE    SPA-NAI-T04-TRENNUM       (SPA-NAI-T04-SELNUM)
+                                   TO  SHELLTBL-ARG5
+           MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG6
+           MOVE    SPA-NAI-T04-TTO-FOLDER   (SPA-NAI-T04-SELNUM)
+                                   TO  SHELLTBL-ARG7
+           MOVE    SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
+                                   TO  SHELLTBL-ARG8
+      *    ipアドレス取得
+           INITIALIZE                  ORCA-SYSTEM
+           MOVE    "GETVALUE"      TO  MCP-FUNC
+           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
+           MOVE    10              TO  ORCA-SYSTEM-NUM
+           MOVE    "host"          TO  ORCA-SYSTEM-KEY (1)
+           MOVE    ORCA-SYSTEM     TO  MCPDATA-REC 
+           MOVE    "system"        TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
+           MOVE    ORCA-SYSTEM-VALUE (1)
+                                   TO  SHELLTBL-ARG9
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG10
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG11
+           MOVE    RECEERR         TO  SHELLTBL-ARG12
+      *
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           IF    ( SPA-GMN-DATAKBN =   "5" )
+               MOVE    "SV"            TO  SPA-TID1-FLG
+           END-IF
+      *
+      *    自動的に情報確認画面を表示
+           PERFORM 490-KAKUNIN-SEC      
+      *
+           .
+       500-KAKUTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    処理確認処理
+      *****************************************************************
+       490-KAKUNIN-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  T99
+           MOVE    ZERO                TO  T99-COUNT
+      *
+           MOVE    5                   TO  T99-DURATION
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  JOB-JOBID
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  JOB-SHELLID
+           PERFORM 900-CALL-ORCSJOB-SEC
+           IF      SJOBKANRI-RETURN
+                                   =   ZERO
+               MOVE    1               TO  IDX                     
+               MOVE    JOB-JOBID       TO  T99-RENNUM   (IDX)
+               MOVE    JOB-SHELLMSG    TO  T99-SHORINM  (IDX)
+               MOVE    JOB-STARTTIME(1:2)
+                                       TO  WRK-HH
+               MOVE    JOB-STARTTIME(3:2)
+                                       TO  WRK-MM
+               MOVE    JOB-STARTTIME(5:2)
+                                       TO  WRK-SS
+               MOVE    WRK-HENTIME     TO  T99-STARTTIME(IDX)
+               MOVE    JOB-ENDTIME(1:2)
+                                       TO  WRK-HH
+               MOVE    JOB-ENDTIME(3:2)
+                                       TO  WRK-MM
+               MOVE    JOB-ENDTIME(5:2)
+                                       TO  WRK-SS
+               MOVE    WRK-HENTIME     TO  T99-ENDTIME  (IDX)
+               MOVE    JOB-YOBI        TO  T99-ERRMSG   (IDX)
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "処理中です"    TO  T99-MSG
+               ELSE
+                   IF      JOB-ERRCD       =   SPACE
+                       CONTINUE
+                   ELSE
+                       IF      T99-MSG     =   SPACE
+                           STRING  JOB-YOBI        DELIMITED BY SPACE
+                                   "【"            DELIMITED BY SIZE
+                                   JOB-SHELLMSG    DELIMITED BY SPACE
+                                   "】"            DELIMITED BY SIZE
+                                                   INTO  T99-MSG
+                           END-STRING   
+                       END-IF
+                   END-IF                          
+               END-IF    
+               MOVE    IDX                     TO  T99-COUNT    
+           END-IF
+      *
+           IF      T99-MSG              =   SPACE
+               IF      T99-COUNT            >   ZERO    
+                   MOVE    "処理は正常に終了しました"
+                                                TO  T99-MSG
+               ELSE
+                   MOVE    "該当する処理はありません"
+                                                TO  T99-MSG
+               END-IF                                 
+               MOVE    "B01"               TO  MCP-WIDGET
+           ELSE
+               MOVE    "B11"               TO  MCP-WIDGET
+           END-IF
+           MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
+      *
+           MOVE    "T04"               TO  SPA-MOTOPG
+           MOVE    "T99"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "T99"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+           .
+       490-KAKUNIN-EXT.
            EXIT.
       *     
       *****************************************************************
@@ -824,7 +1009,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            MOVE    SPACE                TO  TID1
-           INITIALIZE                       TID1
            MOVE    SPA-TIDCD            TO  TID1-ID1CODE
            MOVE    WRK-TIDMSG           TO  TID1-ID1MSG
            MOVE    "戻る"               TO  TID1-B01-LABEL
@@ -872,22 +1056,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        5002-HIZUKE-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ipアドレス取得
-      *****************************************************************
-       900-SYSTEM-GET-SEC          SECTION.
-      *
-           INITIALIZE                  SLDUSER-AREA
-           MOVE    2               TO  SLDUSER-KBN
-           MOVE    MCP-TERM        TO  SLDUSER-ID
-           CALL    "ORCSLDUSER"        USING
-                                       SLDUSER-AREA
-                                       SPA-AREA
-      *
-           .
-       900-SYSTEM-GET-EXT.
            EXIT.
       *
       *****************************************************************
