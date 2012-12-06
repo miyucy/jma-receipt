@@ -1561,7 +1561,13 @@
                    MOVE    "OK"             TO  SPA-KID1-FLG
                    PERFORM 5301-KIDCD-CHK-SEC
                ELSE
-      *        ·Ù¹ð¤ÏÅÐÏ¿ÂÐ¾Ý
+      *            ½é¿Ç»»ÄêÆü¤Ê¤·¤Ï¡¢·ÑÂ³¤¹¤ë
+                   IF     (SPA-ERRCD           =   "1058" )
+                     AND  (SPA-SYOYMD          =   SPACE  )
+                       MOVE    SPA-SYSYMD      TO  SPA-SYOYMD
+                       MOVE    SPACE           TO  SPA-ERRCD
+                   END-IF
+      *            ·Ù¹ð¤ÏÅÐÏ¿ÂÐ¾Ý
                    IF      SPA-ERRCD(1:1)      =   "K"
                        MOVE    ZERO                TO  FLG-ERR
                        PERFORM 30010-KEIMSGSYORI-SEC

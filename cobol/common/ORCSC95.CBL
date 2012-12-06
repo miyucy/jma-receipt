@@ -5514,6 +5514,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    保険組合せ名称編集
            PERFORM 10013-HKNCOMBI-SEC
+      *    病名編集
+           PERFORM 11012-BYOMEI-HENSYU-SEC
+      *    特定疾患の有無検索
+           PERFORM 11011-TOKUTEI-SYORI-SEC
       *
            .
        600-API-SPASET-EXT.
