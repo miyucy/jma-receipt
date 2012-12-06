@@ -38,19 +38,6 @@
       *  04.06.01    NACL-藤原    11/12/12  点検レセ０点公費印字対応
       *
       *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
-      *  04.07.02    NACL-藤原    13/10/07  労災レセ電対応
-      *  04.07.03    NACL-藤原    13/11/01  労災レセ電データチェック機能
-      *                                     対応
-      *  04.07.04    NACL-藤原    13/12/09  医療情報連携基盤対応
-      *  04.07.05    NACL-藤原    14/12/05  入力チェックの修正
-      *
-      *  04.08.01    NACL-藤原    14/08/26  fdd 廃止に伴う対応
-      *  04.08.02    NACL-藤原    14/08/28  ４．８ミドル対応
-      *  04.08.03    NACL-藤原    15/08/07  医療情報連携基盤のクライアン
-      *                                     ト保存対応
-      *  04.08.04    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
-      *                                     データ等の作成対応
-      *                                      （１日からの変更のみ）
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -116,7 +103,22 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA44SCRAREA.INC".
+           COPY    "T01.INC".
+           COPY    "T02.INC".
+           COPY    "T03.INC".
+           COPY    "T04.INC".
+           COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T08.INC".
+           COPY    "T09.INC".
+           COPY    "T91.INC".
+           COPY    "T98.INC".
+           COPY    "T99.INC".
+           COPY    "TERR.INC".
+           COPY    "TID1.INC".
+           COPY    "TID2.INC".
+           COPY    "TID3.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -218,7 +220,7 @@
            END-IF 
            IF      SYS-200501-RECEDEN-DATAKBN
                                        =   SPACE
-               MOVE    "4"                 TO
+               MOVE    "1"                 TO
                                            SYS-200501-RECEDEN-DATAKBN
            END-IF 
       *
@@ -227,73 +229,51 @@
            CALL    "ORCSCLIENTSV"  USING   ORCSCLIENTSVAREA
                                            SPA-AREA
       *
-           MOVE    ZERO                TO  IDX
-           IF      SPA-MW              =   SPA-PANDA
-               IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                   =   "F"
-                   MOVE    "3"             TO  SPA-GMN-T98-DATAKBNL (1)
-                   MOVE    "システム管理設定場所（フロッピィ用）"
-                                       TO  SPA-GMN-T98-DATAKBNMEIL  (1)
-                   MOVE    1               TO  IDX
-               END-IF
-               ADD     1               TO  IDX
-               MOVE    "4"             TO  SPA-GMN-T98-DATAKBNL    (IDX)
-               MOVE    "システム管理設定場所（ＭＯ用）"
-                                       TO  SPA-GMN-T98-DATAKBNMEIL (IDX)
-               MOVE    IDX             TO  SPA-GMN-T98-DATAKBN-MAX
-           END-IF
+           MOVE    "1"             TO  SPA-GMN-T98-DATAKBNL        (1)
+           MOVE    "フロッピィ"    TO  SPA-GMN-T98-DATAKBNMEIL     (1)
+           MOVE    "2"             TO  SPA-GMN-T98-DATAKBNL        (2)
+           MOVE    "ＭＯ"          TO  SPA-GMN-T98-DATAKBNMEIL     (2)
+           MOVE    "3"             TO  SPA-GMN-T98-DATAKBNL        (3)
+           MOVE    "システム管理設定場所（フロッピィ用）"
+                                   TO  SPA-GMN-T98-DATAKBNMEIL     (3)
+           MOVE    "4"             TO  SPA-GMN-T98-DATAKBNL        (4)
+           MOVE    "システム管理設定場所（ＭＯ用）"
+                                   TO  SPA-GMN-T98-DATAKBNMEIL     (4)
+           MOVE    4               TO  SPA-GMN-T98-DATAKBN-MAX
            IF      SCLIENTSV-CLIENT-SAVE
                                    =   "1"
-               ADD     1               TO  IDX
-               MOVE    "5"             TO  SPA-GMN-T98-DATAKBNL    (IDX)
+               MOVE    "5"             TO  SPA-GMN-T98-DATAKBNL    (5)
                MOVE    "クライアント保存"
-                                       TO  SPA-GMN-T98-DATAKBNMEIL (IDX)
-               MOVE    IDX             TO  SPA-GMN-T98-DATAKBN-MAX
+                                       TO  SPA-GMN-T98-DATAKBNMEIL (5)
+               MOVE    5               TO  SPA-GMN-T98-DATAKBN-MAX
       *
                IF      SYS-200501-RECEDEN-CDRKBN   =   "1"
-                   ADD     1           TO  IDX
-                   MOVE    "6"         TO  SPA-GMN-T98-DATAKBNL    (IDX)
+                   MOVE    "6"         TO  SPA-GMN-T98-DATAKBNL    (6)
                    MOVE    "クライアント保存（ＣＤ−Ｒ用）"
-                                       TO  SPA-GMN-T98-DATAKBNMEIL (IDX)
-                   MOVE    IDX         TO  SPA-GMN-T98-DATAKBN-MAX
+                                       TO  SPA-GMN-T98-DATAKBNMEIL (6)
+                   MOVE    6           TO  SPA-GMN-T98-DATAKBN-MAX
                END-IF
            END-IF
       *
-           EVALUATE    SPA-T01-PRTKBN
-               WHEN    "6"
-                   MOVE    "6"             TO  SPA-GMN-T98-PRTKBNL   (1)
-                   MOVE    "連携基盤用"    TO  SPA-GMN-T98-PRTKBNMEIL(1)
-                   MOVE    1           TO  SPA-GMN-T98-PRTKBN-MAX
-               WHEN    "7"
-                   MOVE    "7"             TO  SPA-GMN-T98-PRTKBNL   (1)
-                   MOVE    "連携基盤用（当日分まで）"
-                                           TO  SPA-GMN-T98-PRTKBNMEIL(1)
-                   MOVE    1           TO  SPA-GMN-T98-PRTKBN-MAX
-               WHEN    OTHER
-                   IF      SPA-NAI-T06-RECEDEN-CHK =   SPACE
-                       MOVE    "1"         TO  SPA-GMN-T98-PRTKBNL   (1)
-                       MOVE    "提出用"    TO  SPA-GMN-T98-PRTKBNMEIL(1)
-                       MOVE    "2"         TO  SPA-GMN-T98-PRTKBNL   (2)
-                       MOVE    "点検用（院外処方含）"
+           IF      SPA-NAI-T06-RECEDEN-CHK =   SPACE
+               MOVE    "1"                 TO  SPA-GMN-T98-PRTKBNL   (1)
+               MOVE    "提出用"            TO  SPA-GMN-T98-PRTKBNMEIL(1)
+               MOVE    "2"                 TO  SPA-GMN-T98-PRTKBNL   (2)
+               MOVE    "点検用（院外処方含）"
                                            TO  SPA-GMN-T98-PRTKBNMEIL(2)
-                       MOVE    2           TO  SPA-GMN-T98-PRTKBN-MAX
-                   ELSE
-                       MOVE    "2"         TO  SPA-GMN-T98-PRTKBNL   (1)
-                       MOVE    "点検用（院外処方含）"
+               MOVE    2                   TO  SPA-GMN-T98-PRTKBN-MAX
+           ELSE
+               MOVE    "2"                 TO  SPA-GMN-T98-PRTKBNL   (1)
+               MOVE    "点検用（院外処方含）"
                                            TO  SPA-GMN-T98-PRTKBNMEIL(1)
-                       MOVE    1           TO  SPA-GMN-T98-PRTKBN-MAX
-                   END-IF
-           END-EVALUATE    
+               MOVE    1                   TO  SPA-GMN-T98-PRTKBN-MAX
+           END-IF
            MOVE    SPA-GMN-T98-PRTKBNLST (1)
                                        TO  SPA-GMN-T98-PRTKBN-G
       *
            MOVE    SYS-200501-RECEDEN-DATAKBN
                                        TO  SPA-GMN-T98-DATAKBN
            PERFORM 41021-DATAKBN-CHK-SEC                                 
-           IF    ( SYS-200501-RECEDEN-DATAKBN
-                                       =   "1" OR  "2" )
-               MOVE    SPACE           TO  SPA-GMN-T98-DATAKBN-G
-           END-IF
       *
            MOVE    1               TO  SPA-GMN-T98-CUR
            .
@@ -407,19 +387,10 @@
       *****************************************************************
        41021-DATAKBN-CHK-SEC            SECTION.
       *
-           IF      SPA-GMN-T98-DATAKBN =   SPACE
-               IF      SPA-MW              =   SPA-GINBEE
-                   IF      SPA-GMN-T98-DATAKBN-MAX >   ZERO
-                       MOVE    "0017"              TO  SPA-ERRCD
-                       MOVE    2                   TO  SPA-GMN-T98-CUR
-                       GO  TO  41021-DATAKBN-CHK-EXT
-                   END-IF
-               ELSE
-                   MOVE    SPA-GMN-T98-DATAKBNLST (2)
-                                               TO  SPA-GMN-T98-DATAKBN-G
-               END-IF
+           IF      SPA-GMN-T98-DATAKBN     =   SPACE
+               MOVE    SPA-GMN-T98-DATAKBNLST (4)
+                                           TO  SPA-GMN-T98-DATAKBN-G
            ELSE
-               MOVE    SPACE               TO   SPA-GMN-T98-DATAKBNMEI
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-T98-DATAKBN-MAX
                    IF        SPA-GMN-T98-DATAKBN
@@ -429,37 +400,10 @@
                        MOVE    SPA-GMN-T98-DATAKBN-MAX
                                            TO  IDX
                    END-IF
-               END-PERFORM
-           END-IF
-      *
-           IF    ( SPA-GMN-T98-DATAKBNMEI
-                                       =   SPACE       )
-               IF      SPA-MW              =   SPA-GINBEE
-                   MOVE    SPA-GMN-T98-DATAKBNLST (1)
+               END-PERFORM        
+               IF      SPA-GMN-T98-DATAKBNMEI  =   SPACE  
+                   MOVE    SPA-GMN-T98-DATAKBNLST (4)
                                                TO  SPA-GMN-T98-DATAKBN-G
-               ELSE
-                   IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                       =   "F"
-                       MOVE    SPA-GMN-T98-DATAKBNLST (2)
-                                               TO  SPA-GMN-T98-DATAKBN-G
-                   ELSE
-                       MOVE    SPA-GMN-T98-DATAKBNLST (1)
-                                               TO  SPA-GMN-T98-DATAKBN-G
-                   END-IF
-               END-IF
-           END-IF
-      *
-           IF      SPA-GMN-T98-PRTKBN  =   "6" OR  "7" OR  "8"
-               IF      SPA-GMN-T98-DATAKBN     =   "4" OR  "5"
-                   CONTINUE
-               ELSE
-                   IF      SPA-MW              =   SPA-GINBEE
-                       MOVE    SPA-GMN-T98-DATAKBNLST (1)
-                                               TO  SPA-GMN-T98-DATAKBN-G
-                   ELSE
-                       MOVE    SPA-GMN-T98-DATAKBNLST (2)
-                                               TO  SPA-GMN-T98-DATAKBN-G
-                   END-IF
                END-IF
            END-IF
            .
@@ -475,7 +419,6 @@
                MOVE    SPA-GMN-T98-PRTKBNLST (1)
                                            TO  SPA-GMN-T98-PRTKBN-G
            ELSE
-               MOVE    SPACE               TO   SPA-GMN-T98-PRTKBNMEI
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-T98-PRTKBN-MAX
                    IF        SPA-GMN-T98-PRTKBN
@@ -579,87 +522,41 @@
       *
            INITIALIZE                  T98
       *
-           MOVE    "F"                 TO  T98-B10-VISIBLE
-           MOVE    "F"                 TO  T98-B11-VISIBLE
-           MOVE    "F12:作成する"      TO  T98-B12-LABEL
-      *
-           IF      SPA-GMN-T06-TEISYUTUSAKI1
-                                   =   "T"
-               MOVE    "社保分のレセプト電算データを作成します"
+           MOVE    "レセプト電算データを作成します"
                                        TO  WRK-TIDMSG 
-           ELSE
-               IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                       =   "T"
-                   MOVE    "労災分のレセプト電算データを作成します"
-                                           TO  WRK-TIDMSG 
-               ELSE
-                   MOVE
-                       "国保、広域分のレセプト電算データを作成します"
-                                           TO  WRK-TIDMSG 
-               END-IF
-           END-IF
       *
-           IF      SPA-GMN-T06-TEISYUTUSAKI4
-                                       =   "T"
-      *        労災のとき
-               IF  ( ( SPA-T06-2005-RECEDEN-CHK-KBN
-                                               =   "1"    )    AND
-                     ( SPA-NAI-T06-SRYYM-H     >=  201307 )        )
-                   STRING   WRK-TIDMSG         DELIMITED  BY  SPACE
-                            "（レセ電チェックリストの印刷を指定）"  
-                                               DELIMITED  BY  SIZE
-                                               INTO    T98-ID1MSG
+           IF  (   SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                           =   "1"             )
+           OR  ( ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                           =   "1"    )    AND
+                 ( SPA-NAI-T06-SRYYM-H     >=  201204 )        )
+               MOVE    SPACE           TO  WRK-TIDMSG1
+                                           WRK-TIDCD-MSG
+      *
+               IF      SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                           =   "1"
+                   MOVE    "、症状詳記"      TO  WRK-TIDMSG1
+               END-IF
+               IF    ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                           =   "1"    )
+               AND   ( SPA-NAI-T06-SRYYM-H >=  201204 )
+                   STRING  WRK-TIDMSG1     DELIMITED  BY  SPACE
+                           "、レセ電チェックリスト"
+                                           DELIMITED  BY  SIZE
+                                           INTO  WRK-TIDCD-MSG
                    END-STRING
-      *
-                   MOVE    "T"                 TO  T98-B10-VISIBLE
-                   MOVE    "T"                 TO  T98-B11-VISIBLE
-                   MOVE    "F12:印刷する"      TO  T98-B12-LABEL
-               ELSE
-                   MOVE    WRK-TIDMSG          TO  T98-ID1MSG
+                   MOVE    WRK-TIDCD-MSG   TO  WRK-TIDMSG1
+                   MOVE    SPACE           TO  WRK-TIDCD-MSG
                END-IF
-           ELSE
-      *      労災以外のとき
-             IF      SPA-T01-PRTKBN    =   "6" OR  "7"
-                 MOVE    WRK-TIDMSG          TO  T98-ID1MSG
-             ELSE
-               IF  (   SPA-T06-2005-RECEDEN-LST1KBN
-                                               =   "1"             )
-               OR  ( ( SPA-T06-2005-RECEDEN-CHK-KBN
-                                               =   "1"    )    AND
-                    ( SPA-NAI-T06-SRYYM-H     >=  201204 )        )
-                   MOVE    SPACE           TO  WRK-TIDMSG1
-                                               WRK-TIDCD-MSG
-      *
-                   IF      SPA-T06-2005-RECEDEN-LST1KBN
-                                               =   "1"
-                       MOVE    "、症状詳記"      TO  WRK-TIDMSG1
-                   END-IF
-                   IF    ( SPA-T06-2005-RECEDEN-CHK-KBN
-                                               =   "1"    )
-                   AND   ( SPA-NAI-T06-SRYYM-H >=  201204 )
-                       STRING  WRK-TIDMSG1     DELIMITED  BY  SPACE
-                               "、レセ電チェックリスト"
-                                               DELIMITED  BY  SIZE
-                                               INTO  WRK-TIDCD-MSG
-                       END-STRING
-                       MOVE    WRK-TIDCD-MSG   TO  WRK-TIDMSG1
-                       MOVE    SPACE           TO  WRK-TIDCD-MSG
-                   END-IF
       * 
-                   STRING   WRK-TIDMSG         DELIMITED  BY  SPACE
-                            "（"               DELIMITED  BY  SIZE
-                            WRK-TIDMSG1 (3:)   DELIMITED  BY  SPACE
-                            "の印刷を指定）"   DELIMITED  BY  SIZE
-                                               INTO    T98-ID1MSG
-                   END-STRING
-      *
-                   MOVE    "T"                 TO  T98-B10-VISIBLE
-                   MOVE    "T"                 TO  T98-B11-VISIBLE
-                   MOVE    "F12:印刷する"      TO  T98-B12-LABEL
-               ELSE
-                   MOVE    WRK-TIDMSG          TO  T98-ID1MSG
-               END-IF
-             END-IF
+               STRING   WRK-TIDMSG         DELIMITED  BY  SPACE
+                                "（"               DELIMITED  BY  SIZE
+                                WRK-TIDMSG1 (3:)   DELIMITED  BY  SPACE
+                                  "の印刷を指定）" DELIMITED  BY  SIZE
+                                                   INTO    T98-ID1MSG
+                       END-STRING
+           ELSE
+               MOVE    WRK-TIDMSG          TO  T98-ID1MSG
            END-IF
       *
            MOVE    SPA-GMN-T98-DATAKBN-G
@@ -680,24 +577,18 @@
            END-PERFORM
            MOVE    SPA-GMN-T98-PRTKBN-MAX  TO  T98-PRTKBN-COUNT
       *
-           MOVE    "blue"              TO  T98-LABEL-STYLE
-           IF      SPA-T01-PRTKBN      =   "6" OR  "7"
-               CONTINUE
-           ELSE 
-               IF      SPA-GMN-T06-SRYYMKBN-MAX
-                                       >   ZERO
-                   STRING   "【"               DELIMITED   BY  SPACE
-                            SPA-NAI-T06-SRYYMKBN-ST-PRT
-                                           (SPA-NAI-T06-SRYYMKBN-SELNUM)
-                                               DELIMITED   BY  SPACE
-                            "〜"               DELIMITED   BY  SPACE
-                            SPA-NAI-T06-SRYYMKBN-ED-PRT
-                                           (SPA-NAI-T06-SRYYMKBN-SELNUM)
-                                               DELIMITED   BY  SPACE
-                            "】"               DELIMITED   BY  SPACE
-                                               INTO        T98-LABEL
-                   END-STRING
-               END-IF
+           IF  (   SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                       =   "0"            )
+           AND ( ( SPA-NAI-T06-200501-RECEDEN-CHK-KBN
+                                       =   "0"    )    OR
+                 ( SPA-NAI-T06-SRYYM-H <   201204 )       )
+               MOVE    "F"                 TO  T98-B10-VISIBLE
+               MOVE    "F"                 TO  T98-B11-VISIBLE
+               MOVE    "F12:作成する"      TO  T98-B12-LABEL
+           ELSE
+               MOVE    "T"                 TO  T98-B10-VISIBLE
+               MOVE    "T"                 TO  T98-B11-VISIBLE
+               MOVE    "F12:印刷する"      TO  T98-B12-LABEL
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -755,9 +646,6 @@
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
-               WHEN    "0017"
-                   MOVE    "ファイル出力先入力エラー" 
-                                       TO  SPA-ERRMSG
                WHEN    "9999"
                    MOVE    SPACE       TO  SPA-ERRMSG
            END-EVALUATE

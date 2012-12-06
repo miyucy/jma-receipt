@@ -29,37 +29,37 @@ fi
 #            1:履歴保存する
 #        ${16} 提出先（出産育児一時金）
 #-------------------------------------------#
+#
+##      エラーファイル削除
+        rm -f ${12}
 
         LOG_FILE="/var/log/jma-receipt/${1}recept60.log"
-        [ -e ${LOG_FILE} ] && rm ${LOG_FILE}
-
-        FILE_1=${MCP_TEMPDIR}/${1}"TIHOUKOUHI01.txt"
+        FILE_1="/tmp/"${1}"TIHOUKOUHI01.txt"
         FILE_2=${13}${1}${8}
-        FILE_3=${MCP_TEMPDIR}/${1}${8}
+        FILE_3="/tmp/"${1}${8}
 
-        echo "arg1  = [" ${1} "]"   
-        echo "arg2  = [" ${2} "]"   
-        echo "arg6  = [" ${6} "]"   
-        echo "arg8  = [" ${8} "]"   
-        echo "arg13 = [" ${13} "]"  
-        echo "arg14 = [" ${14} "]"  
-        echo "arg15 = [" ${15} "]"  
-        echo "arg16 = [" ${16} "]"  
-#        echo "hostname =  [" `hostname`  "]" 
-        echo "file1= [" $FILE_1 "]"  
-        echo "file2= [" $FILE_2 "]"  
-        echo "file3= [" $FILE_3 "]"  
+        rm -f $LOG_FILE
 
-##      エラーファイル削除
-	echo "errfile = [" ${MCP_TEMPDIR}/${18}  "]" 
-        rm  -f ${MCP_TEMPDIR}/${18}
+        echo "arg1  = [" ${1} "]"   >$LOG_FILE
+        echo "arg2  = [" ${2} "]"   >>$LOG_FILE
+        echo "arg6  = [" ${6} "]"   >>$LOG_FILE
+        echo "arg8  = [" ${8} "]"   >>$LOG_FILE
+        echo "arg9  = [" ${9} "]"   >>$LOG_FILE
+        echo "arg13 = [" ${13} "]"  >>$LOG_FILE
+        echo "arg14 = [" ${14} "]"  >>$LOG_FILE
+        echo "arg15 = [" ${15} "]"  >>$LOG_FILE
+        echo "arg15 = [" ${16} "]"  >>$LOG_FILE
+        echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
+        echo "file1= [" $FILE_1 "]"  >> $LOG_FILE
+        echo "file2= [" $FILE_2 "]"  >> $LOG_FILE
+        echo "file3= [" $FILE_3 "]"  >> $LOG_FILE
 
 #       該当ファイル削除
 	rm -f $FILE_2
 	rm -f $FILE_1
 	rm -f $FILE_3
 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM600 -parameter ${1},${2},${3},${4},${5},${8},${10},${11},${12} 
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM600 -parameter ${1},${2},${3},${4},${5},${8},${10},${11},${12} >> $LOG_FILE 2>&1
         if  [ -e ${12} ]; then
             exit
         fi
@@ -68,31 +68,55 @@ fi
 #       コード区分によりコード変換
 
         if   [ ${14} = '1' ]; then
-            echo "nkf -Esx"   
             if  [ ${6} != '5' ]&& [ ${6} != '6' ]; then
-                 nkf -Esx $FILE_1 > $FILE_2
+                 nkf -s $FILE_1 > $FILE_2
             else
-                 nkf -Esx $FILE_1 > $FILE_3
+                 nkf -s $FILE_1 > $FILE_3
             fi
         else
-            if   [ ${14} = '3' ]; then
-            echo "nkf -wx"   
-                if  [ ${6} != '5' ]&& [ ${6} != '6' ]; then
-                    nkf -wx $FILE_1 > $FILE_2
-                else
-                    nkf -wx $FILE_1 > $FILE_3
+            if  [ ${6} != '5' ]&& [ ${6} != '6' ]; then
+                if   [ ${6} != '5' ]; then
+                 nkf -w $FILE_1 > $FILE_2
+            else
+                 nkf -w $FILE_1 > $FILE_3
                 fi
             else
-            echo "cp"   
-                if  [ ${6} != '5' ]&& [ ${6} != '6' ]; then
-                    cp $FILE_1  $FILE_2
+            if  [ ${6} != '5' ]&& [ ${6} != '6' ]; then
+                     cp $FILE_1  $FILE_2
                 else
-                    cp $FILE_1  $FILE_3
-               fi
+                     cp $FILE_1  $FILE_3
+                fi
             fi
         fi
          
-#       システム管理場所出力のとき
+#
+        FDDHOST=`echo ${9}|tr \[\] "  "`
+        if  [ ${6} -eq '1' ]; then
+            echo "--- fdw-> fd start ---" >>$LOG_FILE
+            $FDW -host $FDDHOST -command fd-write.sh $FILE_2 ${8}
+            RC=$?
+            echo "--- fdw-> fd end   ---[" $RC  "]" >>$LOG_FILE
+            if  [ $RC -ne '0' ]; then
+                ERRCD='0000'$RC
+                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE 2>&1
+                echo "--- fdw-> fd err   ---" >>$LOG_FILE
+                exit
+	    fi
+        fi
+
+        if  [ ${6} -eq '2' ]; then
+            echo "--- fdw-> mo start ---" >>$LOG_FILE
+            $FDW -host $FDDHOST -command mo-write.sh $FILE_2 ${8}
+            RC=$?
+            echo "--- fdw-> mo end   ---[" $RC  "]" >>$LOG_FILE
+            if  [ $RC -ne '0' ]; then
+                ERRCD='0000'$RC
+                $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE 2>&1
+                echo "--- fdw-> mo err   ---" >>$LOG_FILE
+                exit
+            fi
+        fi         
+
         if  [ ${6} -eq '3' ]|| [ ${6} -eq '4' ]; then
 #           履歴保存先のフォルダへファイル作成
             if  [ ${15} -eq '1' ]; then
@@ -104,20 +128,20 @@ fi
                 if ! test -d  "$OUT_FOLDER"; then
                      mkdir $OUT_FOLDER
                      RC=$?
-                     echo "--- mkdir end   ---[" $RC  "]" 
+                     echo "--- mkdir end   ---[" $RC  "]" >>$LOG_FILE
                      if  [ $RC -ne '0' ]; then
                          ERRCD='0077'
-                         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD},${1} 
-                         echo "--- mkdir  err   ---" 
+                         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD},${1} >> $LOG_FILE 2>&1
+                         echo "--- mkdir  err   ---" >>$LOG_FILE
                          exit
                      fi
                      chmod -R g+r ${OUT_FOLDER}
-                     echo "--- mkdir rireki holder ---" 
+                     echo "--- mkdir rireki holder ---" >>$LOG_FILE
                 else
                      rm $OUT_FOLDER${8}*
-                     echo "--- rm rireki holder file ---" 
+                     echo "--- rm rireki holder file ---" >>$LOG_FILE
                 fi
-                echo "--- folder name  [" $OUT_FOLDER "]" 
+                echo "--- folder name  [" $OUT_FOLDER "]" >>$LOG_FILE
 	        echo "ファイルの処理(履歴保存)"
                 if  test -e "$FILE_2"; then
                     cp $FILE_2 ${OUT_FOLDER}${8}
@@ -126,28 +150,25 @@ fi
     	            echo $FILE_2 "nothing"
 	            break
 	        fi
-            else
-#               履歴保存を行わないとき
-                chmod -R g+r $FILE_2
             fi
         fi
 
 #       ＣＤ−Ｒ出力のときisoファイル作成
         if  [ ${6} -eq '6' ]; then
-            echo "--- iso start ---" 
+            echo "--- iso start ---" >>$LOG_FILE
             DIR=`mktemp -d`
             cp $FILE_3 ${DIR}/${8}
-            mkisofs --input-charset cp437 -l -o $FILE_3.iso ${DIR}/
+            mkisofs --input-charset cp437 -o $FILE_3.iso ${DIR}/
 	    RC=$?
-            echo "--- iso end   ---[" $RC  "]" 
+            echo "--- iso end   ---[" $RC  "]" >>$LOG_FILE
 	    if  [ $RC -ne '0' ]; then
 	        ERRCD='0000'$RC
-	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} 
-                echo "--- iso err   ---" 
+	        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11}'  '${ERRCD:${#ERRCD}-4:4},${1} >> $LOG_FILE 2>&1
+                echo "--- iso err   ---" >>$LOG_FILE
                 exit
 	    fi
         fi
        
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11},${1} 
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${10}${11},${1} >> $LOG_FILE 2>&1
 
         exit 

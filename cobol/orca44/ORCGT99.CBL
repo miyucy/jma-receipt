@@ -43,13 +43,6 @@
       *                                     クライアント保存（ＣＤ−Ｒ）対応
       *
       *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
-      *  04.07.02    NACL-藤原    13/10/07  労災レセ電データチェック機能
-      *                                     対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-藤原    14/08/26  fdd 廃止に伴う対応
-      *
-      *  05.00.01    NACL-藤原    17/11/29  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -64,11 +57,8 @@
        WORKING-STORAGE             SECTION.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING   //TEMPFLPARA//
-                                   BY          //RECEERR//.
-      *
-      *    エラーファイル名称領域 
-           COPY    "CPERRFL.INC".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -82,7 +72,7 @@
            COPY    "T06SCR-SPA".
            COPY    "CPORCSPRTLNK.INC"
                                    REPLACING  //LNK-//
-                                   BY         //SPA-6-LNK-//.
+                                   BY         //SPA-T06-LNK-//.
       *
       *    レセプト作成指示共通パラメタ
            COPY    "T01COMMON-SPA".
@@ -93,6 +83,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-BTPARA          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -115,6 +106,20 @@
       *
            03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-MCP-EVENT       PIC X(64).
+      *
+      *    パラメタＤＢ編集用
+           03  WRK-BTPARA-INFO-PARA.
+               05  WRK-BTPARA-DATA PIC X(10).
+               05  WRK-BTPARA-FILENM
+                                   PIC X(20).
+               05  WRK-BTPARA-DATAKBN
+                                   PIC X(01).
+               05  WRK-BTPARA-STNO PIC 9(02).
+               05  WRK-BTPARA-EDNO PIC 9(02).
+               05  WRK-BTPARA-WRNO PIC 9(02).  
+      *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -174,6 +179,10 @@
       *
            COPY    "CPSK3003.INC".
       *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
+      *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
@@ -207,7 +216,22 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA44SCRAREA.INC".
+           COPY    "T01.INC".
+           COPY    "T02.INC".
+           COPY    "T03.INC".
+           COPY    "T04.INC".
+           COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T08.INC".
+           COPY    "T09.INC".
+           COPY    "T91.INC".
+           COPY    "T98.INC".
+           COPY    "T99.INC".
+           COPY    "TERR.INC".
+           COPY    "TID1.INC".
+           COPY    "TID2.INC".
+           COPY    "TID3.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -466,21 +490,50 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *                メッセージ編集処理
                        PERFORM 4900-MSG-HENSYU-SEC
                    ELSE
-      ***              IF      SPA-RECEDEN-FLG =   "OK"
-      ***                  PERFORM 210-BACK
-      ***                  GO  TO  490-KAKUNIN-EXT
-      ***              ELSE
-                           IF    ( SPA-RECEDEN-FLG     =   "PV"
-                                                       OR  "OK" )
-                           AND   ( SPA-T01-SYORIFLG    =   1    )
-      *                        レセ電処理後の印刷処理
-                               PERFORM 4903-PRINT-SEC
+                       IF      SPA-GMN-DATAKBN     =   "1"
+      *                    パラメタＤＢ更新処理（レセ電のとき）
+                           PERFORM 4901-BTPARA-UPDATE-SEC
+                           IF      SPA-ERRCD       =   SPACE
+                               IF    ( WRK-BTPARA-EDNO 
+                                               NOT =   WRK-BTPARA-WRNO )
+                                   PERFORM 210-BACK
+                                   GO  TO  490-KAKUNIN-EXT
+                               ELSE
+      ***                             IF      SPA-RECEDEN-FLG =   "OK"
+      ***                                 PERFORM 210-BACK
+      ***                                 GO  TO  490-KAKUNIN-EXT
+      ***                             ELSE
+                                       IF    ( SPA-RECEDEN-FLG =  "PV"
+                                                               OR "OK" )
+                                       AND   ( SPA-T01-SYORIFLG
+                                                               =  1    )
+      *                                    レセ電処理後の印刷処理
+                                           PERFORM 4903-PRINT-SEC
+                                       END-IF
+                                       MOVE    9   TO  SPA-T01-SYORIFLG
+      *                                メッセージ編集処理
+                                       PERFORM 4900-MSG-HENSYU-SEC
+                                       GO  TO  490-KAKUNIN-EXT
+      ***                             END-IF
+                               END-IF
                            END-IF
-                           MOVE    9       TO  SPA-T01-SYORIFLG
-      *                    メッセージ編集処理
-                           PERFORM 4900-MSG-HENSYU-SEC
-                           GO  TO  490-KAKUNIN-EXT
-      ***              END-IF
+                       ELSE
+      ***                     IF      SPA-RECEDEN-FLG =   "OK"
+      ***                         PERFORM 210-BACK
+      ***                         GO  TO  490-KAKUNIN-EXT
+      ***                     ELSE
+                               IF    ( SPA-RECEDEN-FLG     =   "PV"
+                                                           OR  "OK" )
+                               AND   ( SPA-T01-SYORIFLG    =   1    )
+      *                            レセ電処理後の印刷処理
+                                   PERFORM 4903-PRINT-SEC
+                               END-IF
+                               MOVE    9       TO  SPA-T01-SYORIFLG
+      *                        メッセージ編集処理
+                               PERFORM 4900-MSG-HENSYU-SEC
+                               GO  TO  490-KAKUNIN-EXT
+      ***                     END-IF
+                       END-IF
                    END-IF
                ELSE
                    MOVE    "該当する処理はありません"
@@ -489,7 +542,13 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
            ELSE                                        
                MOVE    "B11"               TO  MCP-WIDGET
-               MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
+      *        レセ電作成時にフロッピー出力の場合は戻るは押下できない
+               IF    ( SPA-GMN-DATAKBN     =   "1" )
+               AND   ( SPA-T01-SYORIFLG    =   1   )
+                   MOVE    WIDGET-INSENSITIVE  TO  T99-B01-STATE
+               ELSE
+                   MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
+               END-IF
            END-IF                                 
       *
            IF      JOB-ERRCD       =   SPACE
@@ -526,7 +585,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                        PERFORM 4903-FILESV-UPDATE-SEC
                    END-IF
                END-IF
-            END-IF
+            END-IF       
       *
            IF    ( SPA-TID1-FLG    =   "SV" )
                IF      JOB-ENDYMD  NOT =   SPACE
@@ -585,6 +644,48 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            .
        4900-MSG-HENSYU-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    パラメタＤＢ更新処理
+      *****************************************************************
+       4901-BTPARA-UPDATE-SEC       SECTION.
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+      *    作成済枚数の更新
+           INITIALIZE                      BTPARA-REC
+           MOVE    WRK-CONS-BTPARA-SHELLID
+                                       TO  BTPARA-SHELLID
+           MOVE    WRK-CONS-BTPARA-SCRIPTID
+                                       TO  BTPARA-SCRIPTID
+           MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           PERFORM 900-BTPARA-READ-SEC
+           IF      FLG-BTPARA          =   ZERO
+               MOVE    BTPARA-INFO-PARA    TO  WRK-BTPARA-INFO-PARA
+               MOVE    SPA-T01-WRNO        TO  WRK-BTPARA-WRNO
+               MOVE    WRK-BTPARA-INFO-PARA
+                                           TO  BTPARA-INFO-PARA
+               MOVE    SMCNDATE-YMD        TO  BTPARA-UPYMD
+               MOVE    SMCNDATE-HMS        TO  BTPARA-UPHMS
+               MOVE    BTPARA-REC          TO  MCPDATA-REC
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+grpsys         PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC      NOT =   ZERO
+                   MOVE    "1002"              TO  SPA-ERRCD
+               END-IF
+           ELSE
+               MOVE    "1001"              TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4901-BTPARA-UPDATE-EXT.
+           EXIT. 
       *
       *****************************************************************
       *    クライアント保存情報チェック処理
@@ -666,15 +767,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-TERMID      TO  JOB-TERMID
            PERFORM 900-CALL-ORCSJOB-SEC
       *     
-           MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
-           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
-           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
-           MOVE    SPACE               TO  RECEERR
-           STRING  MCP-TEMPDIR         DELIMITED   BY  SPACE
-                   "/"                 DELIMITED   BY  SIZE
-                   ERRFLPARA-BASENAME  DELIMITED   BY  SPACE
-                                       INTO        RECEERR
-           END-STRING
+           MOVE    WRK-CONS-FILE-ID    TO  RECEERR-FILE-ID
+           MOVE    SPA-TERMID          TO  RECEERR-TERMID
+           MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
       *      
            MOVE    SPA-LNK-PRTKANRI-AREA
                                    TO  LNK-PRTKANRI-AREA
@@ -688,7 +783,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    印刷データ削除処理
            MOVE    SPACE               TO  SHELLTBL
-      *
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
            MOVE    "prtdbdel.sh"       TO  SHELLTBL-NAME
            MOVE    SPA-T01-JOB-JOBID   TO  SHELLTBL-ARG1
            MOVE    WRK-CONS-JOB-SHELLID
@@ -716,6 +812,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *             
            MOVE    SPACE               TO  SHELLTBL
       *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
            MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
       *
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
@@ -749,7 +846,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    LNK-PRTKANRI-OPID   TO  SHELLTBL-ARG10      
            MOVE    LNK-PRTKANRI-PRTNM  TO  SHELLTBL-ARG11      
       *             
-           MOVE    ERRFLPARA-BASENAME  TO  SHELLTBL-ARG12
+           MOVE    RECEERR             TO  SHELLTBL-ARG12
            MOVE    SPA-T01-JOB-JOBID   TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SHELLTBL-ARG14
@@ -762,11 +859,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       ***          MOVE    "3"             TO  SHELLTBL-ARG17
                WHEN    "OK"
                    MOVE    "2"             TO  SHELLTBL-ARG17
-                   IF      SPA-CLIENT-PRT-FLG  =   2
-                       MOVE    "5"             TO  SHELLTBL-ARG17
-                       MOVE    SPA-CLIENT-SHOWDIALOG
-                                               TO  SHELLTBL-ARG22
-                   END-IF
            END-EVALUATE
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
            MOVE    SHELLTBL            TO  MCPDATA-REC
@@ -849,9 +941,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "blob"              TO  MCP-TABLE
                IF      SPA-GMN-DATAKBN     =   "6"
-      ************ STRING  "/tmp/"             DELIMITED  BY  SIZE
-                   STRING  MCP-TEMPDIR         DELIMITED  BY  SPACE
-                           "/"                 DELIMITED  BY  SIZE
+                   STRING  "/tmp/"             DELIMITED  BY  SIZE
                            SPA-HOSPNUM         DELIMITED  BY  SIZE
                            SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
                                                DELIMITED  BY  SPACE
@@ -859,9 +949,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                INTO  ORCA-BLOB-FILE
                    END-STRING
                ELSE
-      ************ STRING  "/tmp/"             DELIMITED  BY  SIZE
-                   STRING  MCP-TEMPDIR         DELIMITED  BY  SPACE
-                           "/"                 DELIMITED  BY  SIZE
+                   STRING  "/tmp/"             DELIMITED  BY  SIZE
                            SPA-HOSPNUM         DELIMITED  BY  SIZE
                            SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
                                                DELIMITED  BY  SPACE
@@ -1055,6 +1143,49 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-SYSKANRI-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 900-BTPARA-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-BTPARA-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-N-SEC          SECTION.
+      *
+grpsys     PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  BTPARA-REC
+               MOVE    ZERO                TO  FLG-BTPARA
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           .
+       900-BTPARA-READ-N-EXT.
            EXIT.
       *
       *****************************************************************
