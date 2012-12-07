@@ -830,7 +830,7 @@
       *    時間外区分
            IF     (ACSREQ-TIME-CLASS   NOT =   SPACE  )
            AND    (WRK-ERRCD           =   SPACE  )
-               IF      ACSREQ-TIME-CLASS   >=  "1"   AND  <=  "8"
+               IF      ACSREQ-TIME-CLASS   >=  "0"   AND  <=  "8"
                    MOVE    ACSREQ-TIME-CLASS   TO  WRK-TIMEFLG
                ELSE
                    MOVE    "03"                TO  WRK-ERRCD
@@ -1018,11 +1018,6 @@
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  ACSRES-BIRTHDAY
            MOVE    PTINF-SEX           TO  ACSRES-SEX
-      *    MOVE    PTINF-HOME-POST     TO  ACSRES-HOME-ZIP-CODE
-      *    STRING  PTINF-HOME-ADRS
-      *            PTINF-HOME-BANTI    DELIMITED  BY  SPACE
-      *                                INTO    ACSRES-HOME-ADDRESSES
-      *    END-STRING
       *
            MOVE    WRK-SRYKA-NAME      TO  ACSRES-APPOINT-DEP-NAME
            .
@@ -1380,6 +1375,11 @@
       *                点数マスタチェック（再表示編集時にエラー）
                        IF      SPA-COM-CUR (IDX)   NOT =   SPACE
                            PERFORM 3100-KIHONCHK-SEC
+                       END-IF
+      *                電話再診の加算処理なし
+                      IF     (SPA-COM-SRYKBN(IDX) =   "12"  )
+                         AND  (SPA-COM-INPUTCD(IDX)(1:1) =  "1")
+                           MOVE    "1"         TO  SPA-COM-KSNAUTO(IDX)
                        END-IF
                END-EVALUATE
            END-PERFORM

@@ -165,6 +165,8 @@
                            11  SPA-COM-CHKFLG        PIC X(01).
       *                    時間加算フラグ
                            11  SPA-COM-TIMEFLG       PIC 9(01).
+      *ver.4.8             再診自動算定フラグ
+                           11  SPA-COM-KSNAUTO       PIC X(01).
       *                警告済みフラグ
                        09  SPA-COM-KZMFLGAREA.
       *                    患者禁忌薬剤チェック済フラグ

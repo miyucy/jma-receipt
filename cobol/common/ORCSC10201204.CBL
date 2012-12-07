@@ -69,6 +69,7 @@
       * 04.06.00     NACL-多々納  10/09/XX  診察料加算処理対応他
       * 04.06.00     NACL-多々納  10/11/12  同日初診料他科なし算定対応
       * 04.07.00     NACL-多々納  12/03/XX  Ｈ２４年４月改正対応
+      * 04.08.00     NACL-多々納  12/12/XX  電話再診の加算算定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -352,6 +353,11 @@
            03  WRK-NYU-CNT             PIC 9(03).
       *H24.4
            03  WRK-GAIRIHA-SRYKA       PIC X(02).
+      *
+           03  WRK-JIKANKBN            PIC 9(01).
+      *
+           03  WRK-SPA-CHIIKKBN        PIC 9(01).
+           03  WRK-SPA-MEISAKBN        PIC 9(01).
       *
       *    保存用ＳＰＡ
        01  HZN-SCR-REC.
@@ -696,7 +702,18 @@
            IF      LNK-ORCSC-PG        =   "K02"
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            ELSE
+      *ver.4.8
+      *        電話再診の加算発生用
+               IF      LNK-ORCSC-PG        =   "KT01"
+                   MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+                   MOVE    SPA-CHIIKKBN        TO  WRK-SPA-CHIIKKBN
+                   MOVE    SPA-MEISAKBN        TO  WRK-SPA-MEISAKBN
+               END-IF
                INITIALIZE                      SPA-K01KYOUTU
+      *ver.4.8
+      *        電話再診の加算発生用
+               MOVE    WRK-SPA-CHIIKKBN    TO  SPA-CHIIKKBN
+               MOVE    WRK-SPA-MEISAKBN    TO  SPA-MEISAKBN
            END-IF
       *
            EVALUATE    LNK-ORCSC-KBN
@@ -1255,6 +1272,17 @@
                END-IF
            END-IF
       *
+      *ver.4.8
+      *    電話再診の自動発生 
+           IF     (SPA-NYUGAIKBN       =   "2" )
+             AND  (WRK-KBN             =   "T"
+                                       OR  "S"  )
+             AND  (WRK-COM-KSNAUTO(IDX-Z)  =   SPACE
+                                           OR  "2" )
+               PERFORM 1001149-TELSAISIN-SET-SEC
+           END-IF
+      *ver.4.8
+      *
            IF      SPA-NYUGAIKBN       =   "2"
       *    外来管理加算の判定
                PERFORM 100111-KEIZOKU-CHK-SEC
@@ -1432,6 +1460,100 @@
            .
        100114-SYUGISYORI-CHK-EXT.
            EXIT.
+      *
+      *ver.4.8
+      *****************************************************************
+      *    電話再診の自動発生 
+      *****************************************************************
+       1001149-TELSAISIN-SET-SEC                  SECTION.
+      *
+      *    時間外加算
+           IF     (SPA-SYORIFLG            =   ZERO )
+            AND   (SPA-SRYYMD              =   SPA-SYSYMD)
+            AND   (SPA-GAI-JIKANKBN    NOT =   ZERO )
+            AND   (WRK-COM-TIMEFLG (IDX-Z) =   ZERO )
+            AND   (WRK-COM-TIMEKSNKBN (IDX-Z)  NOT = ZERO )
+            AND   (WRK-COM-KSNAUTO (IDX-Z) =   SPACE )
+      *        小児科特例時間外は６歳未満
+               MOVE    SPA-GAI-JIKANKBN    TO  WRK-JIKANKBN
+               IF      WRK-JIKANKBN        =   8
+      *            ６歳未満は小児科特例夜間へ
+                   IF     (SPA-NENREI-YY       <   6  )
+                      AND (SPA-JIKANTOKU-NYU   =   1  )
+                       MOVE    5               TO  WRK-JIKANKBN
+                   END-IF
+               END-IF
+               IF     (WRK-JIKANKBN        =   5
+                                           OR  6
+                                           OR  7  )  AND
+                      (SPA-NENREI-YY       >=  6  )
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-GMN-INPUTCD (IDX-Z)
+                                               TO  WRK-INPUTCD
+                   MOVE    SPACE               TO  WRK-GMN-INPUTCD
+                                                       (IDX-Z)
+                   STRING  WRK-JIKANKBN
+                           " "
+                           WRK-INPUTCD     DELIMITED  BY  SIZE
+                                           INTO    WRK-GMN-INPUTCD
+                                                       (IDX-Z)
+                   END-STRING
+                   MOVE    WRK-JIKANKBN        TO  WRK-COM-TIMEFLG
+                                                       (IDX-Z)
+               END-IF
+           END-IF
+      *
+           MOVE    "1"                 TO  WRK-COM-KSNAUTO(IDX-Z)
+      *
+      *    挿入位置
+           MOVE    IDX-Z               TO  IDX-S
+           IF     (WRK-COM-INPUTCD(IDX-Z + 1)(1:1) =  "1" )
+             AND  (WRK-COM-DATAKBN(IDX-Z + 1)      =  "2" ) 
+             AND  (WRK-COM-TIMEKSNKBN (IDX-Z + 1)  NOT =   ZERO )
+      *        時間外加算の入力があればその下
+               ADD     1                   TO  IDX-S
+           END-IF
+      *
+      *    時間外対応加算（地域医療貢献加算）
+           MOVE    SPACE               TO  WRK-SRYCD
+           EVALUATE    SPA-CHIIKKBN
+               WHEN    1
+      *            時間外対応加算１
+                   MOVE    TBL-CHISRYCD1       TO  WRK-SRYCD
+               WHEN    2
+      *            時間外対応加算２
+                   MOVE    TBL-CHISRYCD2       TO  WRK-SRYCD
+               WHEN    3
+      *            時間外対応加算３
+                   MOVE    TBL-CHISRYCD3       TO  WRK-SRYCD
+           END-EVALUATE
+           IF      WRK-SRYCD       NOT =   SPACE
+               PERFORM 1110-KASAN-CHK-SEC
+               IF      FLG-ARI         =   ZERO
+                   PERFORM 1100-KASAN-SET-SEC
+                   IF      FLG-ADD             =   1
+      *                入力分
+                       MOVE    SPACE       TO  WRK-COM-AUTOKBN (IDX-S)
+                   END-IF
+               END-IF
+           END-IF
+      *    明細発行体制等加算
+           IF      SPA-MEISAKBN        =   1
+               MOVE    TBL-MEISRYCD        TO  WRK-SRYCD
+               PERFORM 1110-KASAN-CHK-SEC
+               IF      FLG-ARI         =   ZERO
+                   PERFORM 1100-KASAN-SET-SEC
+                   IF      FLG-ADD             =   1
+      *                入力分
+                       MOVE    SPACE       TO  WRK-COM-AUTOKBN (IDX-S)
+                   END-IF
+               END-IF
+           END-IF
+           .
+       1001149-TELSAISIN-SET-EXT.
+           EXIT.
+      *???????????????????????????????????????
       *
       *****************************************************************
       *    行削除処理
@@ -1958,15 +2080,14 @@
                   (WRK-KBN2                =   "D"   )
                GO      TO      1002-KASAN-SET-EXT
            END-IF
-      *TEST
-      *H24.4テスト
+      *
+      *H24.4
       *    同一日２科目
            IF     (WRK-COM-SRYKBN(IDX-Z)   =   "12"  )  AND
                   (WRK-KBN2                =   "D"   )
                GO      TO      1002-KASAN-SET-EXT
            END-IF
-      *TEST
-      *H24.4テスト
+      *H24.4
       *
            MOVE    SPACE               TO  WRK-SRYCD
            MOVE    ZERO                TO  FLG-SINSATU
@@ -4822,7 +4943,7 @@
                       (IDX-ZAI2            =   1   )  AND
                       (IDX-SYU2            >   ZERO )
                  AND  (SPA-SYOYMD          =   SPACE )
-                   MOVE    "1017"          TO  SPA-ERRCD
+      ***********  MOVE    "1017"          TO  SPA-ERRCD
                    MOVE    "1058"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (IDX-SYU2)
                    GO      TO      200-ALL-SYORI-EXT

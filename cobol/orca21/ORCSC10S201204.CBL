@@ -73,6 +73,7 @@
       * 04.07.00     NACL-¬ø°π«º  12/03/XX   ø¿Æ£≤£¥«Ø£¥∑Ó≤˛¿µ¬–±˛
       * 04.07.00     NACL-¬ø°π«º  12/05/01  ≥∞ÕË•Í•œ•”•Íø«ª°Œ¡≈˘¬–±˛
       * 04.07.00     NACL-¬ø°π«º  12/08/08  ø«ª°Œ¡§ §∑∆±∆¸ΩÈø«Œ¡»Ø¿∏¬–±˛
+      * 04.08.00     NACL-¬ø°π«º  12/12/XX  ≈≈œ√∫∆ø«§Œ≤√ªªªªƒÍ¬–±˛
       *****************************************************************
       *
       *
@@ -221,6 +222,8 @@
       *
            03  IDX-STR              PIC 9(02).
            03  IDX-R                PIC 9(02).
+      *
+           03  IDX-TEL                 PIC 9(04).
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
@@ -5890,6 +5893,28 @@
            IF     (SPA-INITAUTO-FLG    =   "0" )
                MOVE    ZERO                TO  FLG-HENKAN
            END-IF
+      *
+      *TEST
+      *ver.4.8
+      *    ≈≈œ√∫∆ø«ΩËÕ˝∫—§ﬂ∂Ë ¨¿ﬂƒÍ
+           IF     (WRK-KBN3            =   "T"  OR  "S" )
+             AND  (IDX-TEL             >   ZERO         )
+      *        £√£Ã£¡£…£Õ§´§È§œ°¢¥ƒ∂≠¿ﬂƒÍ§œ»ø±«§ §∑
+               IF     (SPA-WKSRY-KARTE-FLG NOT =   1   )
+                   MOVE    "2"             TO  SPA-COM-KSNAUTO
+                                                   (IDX-TEL)
+               END-IF
+      *        ø«ª°Œ¡º´∆∞»Ø¿∏§ §∑ª˛CLAIM§‚§ §∑
+               IF     (SPA-INITAUTO-FLG    =   "0" )
+      *        √Ê≈”Ω™Œª§«∫∆ªªƒÍ§∑§ §§ª˛
+                 OR  ((SPA-CHUTOTENKAI-FLG =   "0"  )  AND
+                      (SPA-WKSRY-KARTE-FLG =   1    ))
+                   MOVE    "1"             TO  SPA-COM-KSNAUTO
+                                                   (IDX-TEL)
+               END-IF
+           END-IF
+      *ver.4.8
+      *
       *    ø«ª°Œ¡ —¥π
            IF      FLG-HENKAN          =   1
       *        ª˛¥÷≥∞§ §∑
@@ -5907,6 +5932,7 @@
       *
            MOVE    ZERO                TO  FLG-TAKA
            MOVE    ZERO                TO  FLG-ARI
+           MOVE    ZERO                TO  IDX-TEL
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE    )  OR
                              ((SPA-COM-INPUTCD(IDX) =   SPACE ) AND
@@ -5955,6 +5981,12 @@
                    IF      WRK-KBN             =   "G"
                        MOVE    1               TO  FLG-GAI
                    END-IF
+      *ver.4.8
+      *            ≈≈œ√∫∆ø«§Œ∞Ã√÷
+                   IF     (WRK-KBN3            =   "T"  OR  "S" )
+                       MOVE    IDX             TO  IDX-TEL
+                   END-IF
+      *
                END-IF
                EVALUATE    SPA-COM-INPUTCD (IDX)
       *                £ƒ£’£Õ£Õ£Ÿø«ª°Œ¡
