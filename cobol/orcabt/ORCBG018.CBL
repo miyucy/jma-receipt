@@ -28,7 +28,6 @@
       *****************************************************************
       *  プログラム修正履歴
       *  Maj/Min/Rev 修正者        日付      内容
-      *  04.08.01    NACL-森脇     14/07/22  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -71,12 +70,7 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0181//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
-      *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
-      *----(04.08.01)--ADD-END-----
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCMSL55.INC".
       *
@@ -121,9 +115,7 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *----(04.08.01)--UPD-START---
-      *     03  RECEERR             PIC X(100).
-      *----(04.08.01)--UPD-END-----
+           03  RECEERR             PIC X(100).
            03  WRK-PARA-SRYYMD     PIC X(08).
       *
       *    一時領域
@@ -258,11 +250,6 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *----(04.08.01)--ADD-START---
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -309,9 +296,6 @@
            INITIALIZE                  KEY-AREA
            INITIALIZE                  SPA-AREA
            INITIALIZE                  TTNS-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -355,33 +339,10 @@
                                        JOBKANRI-REC
                                        SPA-AREA
       *
-           MOVE    "STP"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           MOVE    3               TO  JOB-STOPFLG
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
-                                       SPA-AREA
-      *
            MOVE    "BG01801"       TO  BG0181-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  BG0181-TERMID
            MOVE    SPA-HOSPNUM     TO  BG0181-HOSPNUM
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    BG0181-BASENAME     TO  SGETTEMP-BASENAMES (1)
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  BG0181-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -686,13 +647,11 @@
                MOVE    TNS-SRYCD       TO  WRK-SRYCD
                PERFORM 900-SRYCDCHG-KEY2-SEL-SEC
                IF    ( FLG-SRYCDCHG        =   ZERO )
-                   PERFORM 900-CHKSND-KEY30-SEL-SEC
+                   PERFORM 900-CHKSND-KEY6-SEL-SEC
                    IF    ( FLG-TCHKSND             =   ZERO )
-                       PERFORM 900-CHKSND-KEY6-SEL-SEC
       *電話でのお問い合わせ４月１日−チェックマスタ経過措置薬剤更新
       *での不具合データ修復対応
-                       IF    ( FLG-TCHKSND         =   ZERO )
-                        AND  ( TCHKSND-UTAGAIKBN   =   SPACE )
+                       IF    ( TCHKSND-UTAGAIKBN   =   SPACE )
                            PERFORM 200111-CHKSND-SRYCD-EDIT-SEC
                            MOVE    "1"     TO  WRK-MSTKBN
                            MOVE    "0"     TO  WRK-PROCKBN
@@ -1997,38 +1956,12 @@ grpsys                                 SPA-AREA
       *****************************************************************
       *    チェックマスタ２検索処理
       *****************************************************************
-       900-CHKSND-KEY30-SEL-SEC        SECTION.
+       900-CHKSND-KEY6-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-TCHKSND
       *
            MOVE    CHKSND-REC          TO  TCHKSND-REC
            MOVE    CHG-RJNSRYCD        TO  TCHKSND-SRYCD
-           MOVE    "0"                 TO  TCHKSND-CDKBN
-      *
-           MOVE    TCHKSND-REC         TO  MCPDATA-REC
-           MOVE    "tbl_chksnd"        TO  MCP-TABLE
-           MOVE    "key30"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC TO  TCHKSND-REC
-           ELSE
-               MOVE    1           TO  FLG-TCHKSND
-               INITIALIZE              TCHKSND-REC
-           END-IF
-      *
-           MOVE    "tbl_chksnd"        TO  MCP-TABLE
-           MOVE    "key30"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-CHKSND-KEY30-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタ２検索処理
-      *****************************************************************
-       900-CHKSND-KEY6-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  FLG-TCHKSND
       *
            MOVE    TCHKSND-REC         TO  MCPDATA-REC
            MOVE    "tbl_chksnd"        TO  MCP-TABLE
