@@ -34,7 +34,6 @@
       * 01.00.03     NACL−多々納 02/11/11  ＤＵＭＭＹ診察料追加
       * 01.00.04     NACL−多々納 02/12/09  動脈注射エラー追加
       * 04.07.00     NACL-多々納  12/03/XX  Ｈ２４年４月改正対応
-      * 04.07.00     NACL-多々納  15/03/XX  Ｈ２７年４月改正対応
       *****************************************************************
       *
       *
@@ -257,16 +256,6 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *H25.8
-               WHEN    "K035"
-                   STRING  "警告！"
-                           "上記算定済です。"
-                           "労災では併用算定はできません。"
-                           "保険の確認をして下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *
                WHEN    "0034"
                    MOVE
                    "初診料算定日より、１月以内です。算定できません。"
@@ -485,15 +474,6 @@
                                        TO  SPA-ERRMSG
                    MOVE    "逓減・加算コードは入力できません"
                                        TO  SPA-ERRMSG(37:)
-      *H27.4
-                   IF      SPA-SRYYMD      >=  "20150401"
-                       MOVE    SPACE           TO  SPA-ERRMSG
-                       STRING  "施設基準不適合の手術ではありません。"
-                               "逓減コードは入力できません"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                       END-STRING
-                   END-IF
                WHEN    "0074"
                    MOVE
                "この種別は投薬料が算定できない時のみ入力できます。"
@@ -575,13 +555,6 @@
                WHEN    "0094"
                    MOVE    "既にこの労災では算定済です。算定できません"
                                        TO  SPA-ERRMSG
-      *H25.10
-               WHEN    "K094"
-                   STRING  "警告！"
-                           "既にこの労災では算定済です。算定できません"
-                                       DELIMITED   BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
                WHEN    "0095"
                    MOVE    "個別療法と集団療法の混在している日が"
                                        TO  SPA-ERRMSG
@@ -762,14 +735,6 @@
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H28.6
-               WHEN    "K804"
-                   STRING  "警告！"
-                           "四肢加算ができないコードです。"
-                           "労災加算を削除して下さい。"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
                WHEN    "8005"
                    MOVE    "労災加算は１．５倍のみです。"
                                        TO  SPA-ERRMSG
@@ -893,32 +858,9 @@
                                        TO  SPA-ERRMSG
                    MOVE    "できません。"
                                        TO  SPA-ERRMSG(31:)
-      *H25.4
-               WHEN    "8052"
-                   STRING  "外来管理加算（読み替え加算）は"
-                           "入力できません。"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *
                WHEN    "8100"
                    MOVE    "公害保険の診療コードです。入力できません。"
                                        TO  SPA-ERRMSG
-      *H25.11
-               WHEN    "8101"
-                   STRING  "労災保険【公務災害】の診療コードです。"
-                           "入力できません。"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K811"
-                   STRING  "警告！"
-                           "京都府の労災保険【公務災害】の"
-                           "診療コードです。"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *
                WHEN    "S001"
                    STRING  "約束セット内に使用できないコードがあります"
                            "。この約束セットは使用できません。"
@@ -1127,13 +1069,6 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H27.1
-               WHEN    "9042"
-                   STRING  "入院の中心静脈注射の器材は別剤で"
-                           "入力してください。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
       *!!!
                WHEN    "9100"
                    STRING  "診療内容が４００行を超えます。"
@@ -1183,13 +1118,6 @@
                WHEN    "0600"
                    STRING  "コンタクトレンズ検査料算定時に算定できない"
                            "検査です。"
-                                       DELIMITED   BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H30.4
-               WHEN    "0604"
-                   STRING  "コンタクトレンズ検査料算定時に"
-                           "算定できません"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -1279,57 +1207,6 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H25.7   から
-               WHEN    "K402"
-                   STRING  "警告！労災の合成コードで"
-                           "算定して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0402"
-                   STRING  "手技が複数あります。"
-                           "労災の合成コードで算定して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0404"
-                   STRING  "手技と薬剤が混在しています。"
-                           "手技毎に剤分離するか、"
-                           "薬剤をまとめて下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0405"
-                   STRING  "手技と器材が混在しています。"
-                           "手技毎に剤分離するか、"
-                           "器材をまとめて下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K404"
-                   STRING  "警告！"
-                           "手技と薬剤が混在しています。"
-                           "手技毎に剤分離するか、"
-                           "薬剤をまとめて下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K405"
-                   STRING  "警告！"
-                           "手技と器材が混在しています。"
-                           "手技毎に剤分離するか、"
-                           "器材をまとめて下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K406"
-                   STRING  "警告！"
-                           "複数の手技と時間外加算があります。"
-                           "労災の合成コードで算定して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *!!!
                WHEN    "K501"
                    STRING  "警告！手術の手技が剤内に複数あります。"
                            "手技毎に剤分離して下さい。"
@@ -1801,8 +1678,7 @@
                    END-STRING
       *
                WHEN    "0221"
-                   STRING   "薬評・器評・加評・体評は診療種別の直下に"
-                            "入力して下さい"
+                   STRING   "薬評・器評は診療種別の直下に入力して下さい"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -1826,7 +1702,7 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0225"
-                   STRING   "薬評・器評・加評での入力はできません。"
+                   STRING   "薬評・器評での入力はできません。"
                             "剤分離して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
@@ -1872,35 +1748,12 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *ver.4.7
-               WHEN    "0504"
-                   STRING   "この診療種別は平成２６年４月から有効です。"
-                            "入力できません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0505"
-                   STRING   "この診療種別は平成２６年１０月から"
-                            "有効です。"
-                            "入力できません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H28.1
-               WHEN    "0506"
-                   STRING   "この診療種別は平成２７年４月から"
-                            "有効です。"
-                            "入力できません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
       *Ｈ２２．４から
                WHEN    "0270"
                    STRING  "ＣＴ、ＭＲＩが逓減になります。"
                            "剤を分けて入力して下さい"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
-                   END-STRING
                WHEN    "0260"
                    STRING  "組織診断料を算定できる検査を入力して"
                            "下さい。"
@@ -2055,16 +1908,6 @@
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H26.4
-               WHEN    "K874"
-                   STRING  "警告！"
-                           "通院・在宅精神療法開始日からの"
-                           "算定期間を経過しています。"
-                           "算定できません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *
                WHEN    "K870"
                    STRING  "警告！"
                            "初期加算（リハビリテーション料）を"
@@ -2132,229 +1975,6 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-               WHEN    "1105"
-                   STRING  "この初診の初診算定日は平成２８年４月以降"
-                           "にして下さい。"
-                                           DELIMITED   BY  SIZE
-                                           INTO    SPA-ERRMSG
-                   END-STRING
-      *H25.2
-               WHEN    "7011"
-                   STRING  "レセプト電算データから移行したデータです。"
-                           "訂正できません。"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H26.4 から
-               WHEN    "0511"
-                   STRING  "副鼻腔手術用内視鏡加算の算定できない"
-                           "手術です。"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0512"
-                   STRING  "副鼻腔手術軟骨部組織切除器加算の"
-                           "算定できない手術です。"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0513"
-                   STRING  "この脊髄誘発電位測定等加算の算定できない"
-                           "手術です。"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0514"
-                   STRING  "脊髄誘発電位測定等加算は算定できない"
-                           "手術です。"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0541"
-                   STRING  "長時間麻酔管理加算の算定できない"
-                           "麻酔です。"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K990"
-                   STRING  "警告！！"
-                           "４月改定の点数ではありません。"
-                           "至急、点数マスタをチェックしてください。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H27.1 改正から
-               WHEN    "K111"
-                   STRING  "警告！"
-                           "妥結率５割以下の設定ではありません。"
-                           "確認して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K112"
-                   STRING  "警告！"
-                           "妥結率５割以下の設定です。"
-                           "妥結率５割以下のコードを入力して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "1104"
-                   STRING  "この初診の初診算定日は平成２７年１月以降"
-                           "にして下さい。"
-                                           DELIMITED   BY  SIZE
-                                           INTO    SPA-ERRMSG
-                   END-STRING
-      *!!!
-      *H27.6
-               WHEN    "2072"
-                   STRING  "後発品変更不可（処方単位）・"
-                           "後発品変更可（処方単位）"
-                           "が重複します。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2073"
-                   STRING  "後発品変更不可（処方単位）は"
-                           "入力できません。"
-                           "システム管理が変更不可です。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "2074"
-                   STRING  "後発品変更可（処方単位）は入力できません。"
-                           "システム管理が変更可です。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H27.4
-               WHEN    "K116"
-                   STRING  "警告！"
-                           "低紹介率の設定ではありません。"
-                           "投薬の逓減は行いません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H29.9
-               WHEN    "0542"
-                   STRING  "加算の所定点数に該当しない項目があります。"
-                           "別剤として入力して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *
-      *H30.2
-               WHEN    "0701"
-                   STRING  "撮影料の合計数量と違います。"
-                           "同じ数量を入力して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "K701"
-                   STRING  "警告！撮影料の合計数量と違います。"
-                           "同じ数量を入力して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *
-      *H30.4
-               WHEN    "0181"
-                   STRING  "妊婦加算と初・再診料が違います。"
-                           "正しい加算を入力して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0182"
-                   STRING  "６歳未満です。妊婦加算の入力はできません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0183"
-                   STRING  "男性です。妊婦加算の入力はできません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0184"
-                   STRING  "既に妊婦加算の入力があります。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0185"
-                   STRING  "小児・産・産婦人科特例時間外は"
-                           "算定できません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0186"
-                   STRING  "産・産婦人科特例時間外は"
-                           "算定できません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0187"
-                   STRING  "妊婦加算の入力できる剤ではありません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *
-               WHEN    "0281"
-                   STRING  "分割調剤は院外投薬で入力して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0282"
-                   STRING  "分割調剤は１剤に１つ入力して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0283"
-                   STRING  "分割調剤は３０日以上で入力して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0284"
-                   STRING  "分割調剤の日数入力が違います。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0285"
-                   STRING  "分割調剤の合計日数と投薬日数が違います。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0286"
-                   STRING  "分割調剤の内容がありません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0287"
-                   STRING  "注加算コードのある加算はまとめて"
-                           "入力して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *
-               WHEN    "K120"
-                   STRING  "警告！"
-                           "血行促進・皮膚保湿剤の入力があります。"
-                           "確認して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "K274"
-                   STRING  "警告！"
-                           "悪性腫瘍病理組織標本加算の"
-                           "算定できる手術の算定がありません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *
-               WHEN    "K503"
-                   STRING  "警告！術中脳灌流モニタリング加算の"
-                           "算定できる手術の算定がありません。"
-                                       DELIMITED   BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
@@ -2465,20 +2085,12 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *
                WHEN    "1101"
                    MOVE    "初診算定日＜診療日で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "1102"
                    MOVE    "初診算定日が暦日ではありません。"
                                        TO  SPA-ERRMSG
-      *H25.4
-               WHEN    "1103"
-                   STRING  "この初診の初診算定日は平成２５年４月以降"
-                           "にして下さい。"
-                                           DELIMITED   BY  SIZE
-                                           INTO    SPA-ERRMSG
-                   END-STRING
                WHEN    "1017"
       *?           MOVE
       *            "初診算定日を登録して、再診料自動算定をして下さい"
@@ -2622,30 +2234,12 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *H30.4 から
-                   IF      SPA-SRYYMD      >=  "20180401"
-                       STRING  "処方料が算定されません。"
-                               "特定疾患処方管理加算２（処方料）"
-                               "は算定できません"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                       END-STRING
-                   END-IF
                WHEN    "1038"
                    STRING  "処方せん料が算定されません。"
                            "長期投薬加算（処方せん料）は算定できません"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *H30.4 から
-                   IF      SPA-SRYYMD      >=  "20180401"
-                       STRING  "処方箋料が算定されません。"
-                               "特定疾患処方管理加算２（処方箋料）"
-                               "は算定できません"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                       END-STRING
-                   END-IF
       *VER.4.3.0 から警告追加
                WHEN    "K038"
                    STRING  "警告！処方せん料を算定しません。"
@@ -2654,30 +2248,12 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *H30.4 から
-                   IF      SPA-SRYYMD      >=  "20180401"
-                   STRING  "警告！処方箋料を算定しません。"
-                           "特定疾患処方管理加算２（処方箋料）"
-                           "のみの算定となります"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-                   END-IF
                WHEN    "K037"
                    STRING  "警告！処方料を算定しません。"
                            "長期投薬加算（処方料）のみの算定となります"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *H30.4 から
-                   IF      SPA-SRYYMD      >=  "20180401"
-                   STRING  "警告！処方料を算定しません。"
-                           "特定疾患処方管理加算２（処方料）"
-                           "のみの算定となります"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-                   END-IF
                WHEN    "1039"
                    STRING  "既に処方せん料が算定済みです。"
                            "調剤技術基本料は算定できません。"
@@ -2705,14 +2281,8 @@
                    END-STRING
       *        Ｈ１８．１０改正から
                WHEN    "1070"
-      *            STRING  "老人の保険割合が２割です。"
-      *                    "３割に保険を登録し直して下さい。"
-      *                                DELIMITED  BY  SIZE
-      *                                INTO    SPA-ERRMSG
-      *            END-STRING
-      *H26.5 から　２割も対象なるので、割合削除
-                   STRING  "老人の保険割合が違います。"
-                           "保険を登録し直して下さい。"
+                   STRING  "老人の保険割合が２割です。"
+                           "３割に保険を登録し直して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -2877,7 +2447,7 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K007"
-                   STRING  "警告！特定薬剤治療管理料は４月目以降の"
+                   STRING  "警告！特定薬剤治療管理料は４月日以降の"
                            "算定に変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
@@ -2958,15 +2528,6 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H30.4 から
-                   IF      SPA-SRYYMD      >=  "20180401"
-                   STRING  "警告！既に特処加算１を算定済みです。"
-                           "特処加算２"
-                           "を算定する場合は削除して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-                   END-IF
                WHEN    "K021"
                    MOVE    "警告！２８日以上の投薬がありません。"
                                        TO  SPA-ERRMSG
@@ -3272,505 +2833,9 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *
-      *H26.4　改正から
-               WHEN    "K106"
-                   STRING  "警告！"
-                           "地域包括診療料が算定済みです。"
-                           "診察料は算定できません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K250"
-                   STRING  "警告！"
-                           "うがい薬のみの投薬となります。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "K541"
-                   STRING  "警告！長時間麻酔管理加算の算定できる"
-                           "手術の算定がありません。"
-                                       DELIMITED   BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *
-      *H26.10　改正から
-               WHEN    "K252"
-                   STRING  "警告！"
-                           "向精神薬多剤投与ではありません。"
-                           "処方せん料を確認して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K251"
-                   STRING  "警告！"
-                           "向精神薬多剤投与となります。"
-                           "処方せん料を確認して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K265"
-                   STRING  "警告！"
-                           "向精神薬多剤投与となります。"
-                           "精神科継続外来支援・指導料は算定できません"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H27.4
-               WHEN    "K253"
-                   STRING  "警告！"
-                           "３０日以上の投薬があります。"
-                           "処方せんの３０日以上投薬逓減の算定"
-                           "がありません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K254"
-                   STRING  "警告！"
-                           "３０日以上の投薬がありません。"
-                           "処方せんの３０日以上投薬逓減の算定"
-                           "があります。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K256"
-                   STRING  "警告！"
-                           "低紹介率の設定ではありません。"
-                           "処方せんの３０日以上投薬逓減の算定"
-                           "があります。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H28.9
-               WHEN    "K257"
-                   STRING  "警告！"
-                           "認知症地域包括診療の算定があります。"
-                           "投薬種類数が算定上限を超えています。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *==
-      *
-               WHEN    "1316"
-                   MOVE    "初診料への自動変更はできません。"
-                                       TO  SPA-ERRMSG
-               WHEN    "1317"
-                   STRING  "再診料への自動変更はできません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "1318"
-                   STRING  "小児科外来診療料の入力がありません。"
-                           "自動変更はできません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *
-      *H28.4　改正から
-               WHEN    "K107"
-                   STRING  "警告！"
-                           "認知症地域包括診療料が算定済みです。"
-                           "診察料は算定できません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K108"
-                   STRING  "警告！"
-                           "湿布薬が７０枚を超えています。"
-                           "減点対象となります。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K109"
-                   STRING  "警告！"
-                           "湿布薬の投薬があります。"
-                           "全量・１日量のコメントを入力して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K110"
-                   STRING  "警告！"
-                           "湿布薬が７０枚を超えています。"
-                           "投与理由のコメントを入力して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0101"
-                   STRING  "処方せん無交付加算の在宅料ではありません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K222"
-                   STRING  "警告！"
-                           "一般名処方加算１（処方せん料）の対象では"
-                           "ありません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "K223"
-                   STRING  "警告！"
-                           "一般名処方加算２（処方せん料）の対象では"
-                           "ありません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0236"
-                   STRING  "外用薬院内投薬がゼロ点になります。"
-                           "診療種別を.231に変更して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "8053"
-                   STRING  "廃用症候群リハビリテーション開始日が"
-                       "算定されていません。終了日の入力はできません"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "8054"
-                   STRING  "廃用症候群リハビリテーション終了日は"
-                       "開始日と同日に入力できません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K855"
-                   STRING  "警告！廃用症候群リハビリテーション"
-                           "発症日から１２０日以上です。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K856"
-                   STRING  "警告！廃用症候群リハビリ"
-                           "発症日から１２０日以上です。"
-                           "月１３単位を超えました。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K857"
-                   STRING  "警告！廃用症候群リハビリテーション"
-                           "発症日から１８０日以上です。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K858"
-                   STRING  "警告！廃用症候群リハビリ"
-                           "発症日から１８０日以上です。"
-                           "月１３単位を超えました。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K859"
-                   STRING  "警告！廃用症候群リハビリテーション"
-                           "発症日の１２０日超から算定して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K860"
-                   STRING  "警告！廃用症候群リハビリテーション"
-                           "発症日の１８０日超から算定して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *
-               WHEN    "K542"
-                   STRING  "警告！非侵襲的血行動態モニタリング加算の"
-                           "算定できる手術の算定がありません。"
-                                       DELIMITED   BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K543"
-                   STRING  "警告！非侵襲的血行動態モニタリング加算の"
-                           "算定できる麻酔の算定がありません。"
-                                       DELIMITED   BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0515"
-                   STRING  "凍結保存同種組織加算の"
-                           "算定できない手術です。"
-                                           DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K876"
-                   STRING  "警告！既に"
-                           "児童思春期精神科専門管理加算（２０歳未満）"
-                           "の算定があります。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H28.7 から
-               WHEN    "K877"
-                   STRING  "警告！"
-                           "通院・在宅精神療法等の減算規定に"
-                           "該当しません。"
-                           "算定コードを確認して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K878"
-                   STRING  "警告！"
-                           "通院・在宅精神療法等の減算規定に"
-                           "該当します。"
-                           "算定コードを確認して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H28.7
-               WHEN    "8055"
-                   STRING  "労災加算は１．５倍のみです。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "8056"
-                   STRING  "労災加算は２倍のみです。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K805"
-                   STRING  "警告！"
-                           "労災加算は１．５倍のみです。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K806"
-                   STRING  "警告！"
-                           "労災加算は２倍のみです。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K407"
-                   STRING  "警告！"
-                           "労災加算は算定できません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *!!!
-      *H28.9
-               WHEN    "K511"
-                   STRING  "警告！"
-                           "多椎間又は多椎弓実施加算の"
-                           "下に手術の入力があります。"
-                           "数量まとめは行いません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0227"
-                   STRING  "持参薬予約コードは"
-                           "投薬剤の最初に入力して下さい。"
-                                       DELIMITED  BY  SPACE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0228"
-                   STRING  "持参薬予約コードは"
-                           "「包括分入力」での入力はできません。"
-                                       DELIMITED  BY  SPACE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H28.9　改正から
-               WHEN    "K810"
-                   STRING  "警告！"
-                           "目標設定等支援・管理料（初回）の算定が"
-                           "ありません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K816"
-                   STRING  "警告！"
-                           "前回が目標設定等支援・管理料（初回）の算定"
-                           "です。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K812"
-                   STRING  "警告！"
-                           "前回の目標設定等支援・管理料算定日が"
-                           "３月以内です。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K813"
-                   STRING  "警告！"
-                           "目標設定等支援・管理料の算定が３月以内に"
-                           "ありません。減点対象です。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K814"
-                   STRING  "警告！"
-                           "目標設定等支援・管理料の算定があります。"
-                           "減点対象ではありません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K815"
-                   STRING  "警告！"
-                           "減点対象開始日付未満です。"
-                           "減点対象ではありません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *!!!
-      *H29.1
-               WHEN    "K190"
-                   STRING  "警告！"
-                           "翌月の入院料算定がありません。"
-                           "翌月の入院調剤料は出来高で作成します。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      **
-      *!!!
-      *H29.3
-               WHEN    "K258"
-                   STRING  "警告！"
-                           "向精神薬多剤投与となります。"
-                           "処方料を確認して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K259"
-                   STRING  "警告！"
-                           "内服薬剤が７種類以上です。"
-                           "処方料を確認して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K260"
-                   STRING  "警告！"
-                           "向精神薬多剤投与ではありません。"
-                           "逓減ができません。"
-                           "処方料を確認して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K261"
-                   STRING  "警告！"
-                           "内服薬剤が７種類以上ではありません。"
-                           "処方料を確認して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0235"
-                   STRING  "院内投薬がありません。"
-                           "処方料の算定はできません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K266"
-                   STRING  "警告！"
-                           "地域包括診療の算定があります。"
-                           "逓減対象外です。"
-                           "処方料を確認して下さい。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0238"
-                   STRING  "処方料（麻・向・覚・毒）の算定は"
-                           "できません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0239"
-                   STRING  "処方料が算定できません。"
-                           "外来後発医薬品使用体制加算は"
-                           "算定できません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K262"
-                   STRING  "警告！"
-                           "処方料が算定できません。"
-                           "外来後発医薬品使用体制加算は"
-                           "算定できません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0243"
-                   STRING  "処方料減算の対象ではありません。"
-                           "算定できません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "0244"
-                   STRING  "湿布薬が７０枚を超えています。"
-                           "処方料は算定できません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H29.4
-               WHEN    "K268"
-                   STRING  "確認！"
-                           "長期投薬のため理由の記載が"
-                           "必要となる場合があります。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-      *H30.4 改正
-               WHEN    "0245"
-                   STRING  "処方せん料が算定されません。"
-                           "向精神薬調整連携加算（処方箋料）は"
-                           "算定不可です"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K245"
-                   STRING  "警告！処方せん料を算定しません。"
-                           "向精神薬調整連携加算（処方箋料）"
-                           "のみの算定"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0246"
-                   STRING  "処方料が算定されません。"
-                           "向精神薬調整連携加算（処方料）は"
-                           "算定不可です"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K246"
-                   STRING  "警告！処方料を算定しません。"
-                           "向精神薬調整連携加算（処方料）"
-                           "のみの算定です"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *H29.8
-               WHEN    "1310"
-                   STRING  "保険組合せの選択件数が上限を超えています。"
-                           "選択できません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "1311"
-                   STRING  "診療科の選択件数が上限を超えています。"
-                           "選択できません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "1312"
-                   STRING  "保険組合せ・診療科の組合せ件数が"
-                           "上限件数を超えています。"
-                           "選択できません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *H29.9
-               WHEN    "K300"
-                   STRING  "警告！当月に受診があります。"
-                           "登録済みの診療内容の"
-                           "包括確認をして下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *
-      **
                WHEN    "K910"
                    STRING  "警告！"
                            "入院会計照会を確認して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *
-               WHEN    "1999"
-                   STRING  "中途終了データの更新に失敗しました"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
@@ -3797,11 +2862,6 @@
                WHEN    "5001"
                    MOVE    "セットコード入力エラー"
                                        TO  SPA-ERRMSG
-               WHEN    "5100"
-                   STRING  "対象のセットが存在しません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
                WHEN    "5002"
                    MOVE    "すでに入力済コードです"
                                        TO  SPA-ERRMSG
@@ -3874,12 +2934,6 @@
                WHEN    "5030"
                    STRING  "約束セットに薬評・器評コードの入力は"
                            "できません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "5031"
-                   STRING  "履歴は１０件までの登録となります。"
-                           "これ以上登録できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -3998,14 +3052,6 @@
                WHEN    "K103"
                    STRING  "警告！！登録時と診療内容が違います。"
                            "必ず登録をして点数を変更して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
-               WHEN    "K104"
-                   STRING  "警告！"
-                           "登録時と点数が違います。"
-                           "湿布薬減点対象であれば、"
-                           "訂正で点数を変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
