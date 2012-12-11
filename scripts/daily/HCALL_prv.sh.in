@@ -8,67 +8,53 @@ if ! test -f "$JMARECEIPT_ENV"; then
 fi
 
 . $JMARECEIPT_ENV
-
 export HOME=/home/orca
 export PATH=$SITESCRIPTSDIR/daily:$PATCHSCRIPTSDIR/daily:$SCRIPTSDIR/daily:$PATH
-export RUBYLIB=$SITESCRIPTSDIR:$PATCHSCRIPTSDIR:$SCRIPTSDIR:$RUBYLIB
-export MONBLOB
-export MONUPLOAD
-export LDDIRECTORY
+
+#if ! test -d /var/tmp/.orca_ps ; then
+#    mkdir /var/tmp/.orca_ps
+#fi
 
 #----------------------------------------------------------------------#
-#       引数	
-#       1:DATAファイル名称
+#       ����	
+#       1:DATA�ե�����̾��
 #       2:HOSPNUM
-#       3:エンコーディング(1:EUC-JP/2:UTF8/3:OTHER)
-#       4:プレビュー管理編集フラグ（1:編集する/1以外:編集しない）
-#       5:帳票表題（クライアント印刷用）
-#       6:ダイアログ表示区分（1:ダイアログ表示　クライアント印刷用）
+#       3:���󥳡��ǥ���(1:EUC-JP/2:UTF8/3:OTHER)
+#       4:DATA�ե�����̾��(���ꥸ�ʥ�)
 #----------------------------------------------------------------------#
 
-PRT_FILE_BASE=$1
-HOSPNUM=$2
-PRT_FILE_FULL=${MCP_TEMPDIR}/${PRT_FILE_BASE}
-YAML_FILE=$(mktemp --suffix=.yaml ${MCP_TEMPDIR}/print_parent_prv.XXXXX)
-
-REPORT_TITLE=""
-[ -n "$5" ] && REPORT_TITLE=$(echo $5 | nkf -w)
-LOG_FILE=${LOGDIR}/${HOSPNUM}$(basename ${0%.*}).log
-[ -e ${LOG_FILE} ] && rm ${LOG_FILE}
-
-echo  `date`
-echo  $#  
-
-
- cat << EOS > ${YAML_FILE}
-hospnum: "${HOSPNUM}"
-data_file: "${PRT_FILE_FULL}"
-form_dir: "${FORMDIR}"
-site_form_dir: "${SITEFORMDIR}"
-patch_form_dir: "${PATCHFORMDIR}"
-mcp_temp_dir: "${MCP_TEMPDIR}"
-report_title: "${REPORT_TITLE}"
-show_dialog: "$6"
-EOS
-
-echo "yaml"  
-cat ${YAML_FILE} 
-echo "--" 
-
-if [ "$4"  == "1" ]; then
-  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter ${PRT_FILE_BASE},$2
+	echo	`date`
+	echo $#
+	echo	$1
+#whether encoding is utf-8 or not.
+if [ "$3"  == '2' ]; then
+	export	RED2PS_OUTPUT_CHARSET=UTF-8
 else
-  echo "ORCBPREV skipped"
+	export	RED2PS_OUTPUT_CHARSET=EUC-JP
 fi
 
-print_parent_prv.rb ${YAML_FILE}
-[ -e ${YAML_FILE} ] && rm ${YAML_FILE}
+	ruby "$PATCHSCRIPTSDIR"/daily/print_parent_prv.rb "/var/tmp/temp.tmp" "ruby ${SCRIPTSDIR}/daily/print-data.rb " ${FORMDIR} ${RECORDDIR} ${SITEFORMDIR} ${SITERECORDDIR} $1 "ruby ${SCRIPTSDIR}/daily/print-data_prv.rb " "ruby ${SCRIPTSDIR}/daily/orcred2ps.rb " ${PATCHFORMDIR}
 
-#------ お薬手帳、処方せんQRイメージ削除
-#       （一時ディレクトリに作成されたpngファイルを削除）
-grep -Eo "${MCP_TEMPDIR}/([0-9a-zA-Z]|\.|\-|\_)+\.png" ${PRT_FILE_FULL} | xargs -r rm -f  
-[ -e ${PRT_FILE_FULL} ] && rm ${PRT_FILE_FULL}
+	if	[ $?  =  0 ]; then
+        	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBPREV -parameter $1,$2
+	fi
+	rm -f $1
+        if [ -z "$4" ]  ; then
+                echo "HCALL end"
+                exit
+        fi
+        if [ ${4:0:4} = "/tmp" ] ; then
+#------ ��������QR���᡼�����
+	if      [ ${4:7:4} = "HC2Q" ]   ;then
+		ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' ${4} | xargs rm -f
+	fi
+	if      [ ${4:7:4} = "HC62" ]   ;then
+                LDATA=`ls \`echo $4 | sed 's/[[:digit:]]*\.dat$//g'\`* | sort -r | head -n 1`
+                ruby -ne '$_.scan(%r|/tmp.*?\.png|m){|a| print "#{a} "}' $LDATA |xargs rm -f
 
-echo `date`
-echo "HCALL end"
+	fi
+	rm ${4:0:53}*
+#	rm ${4}
+	fi
 
+	echo	`date`
