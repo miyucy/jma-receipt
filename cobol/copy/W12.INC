@@ -66,12 +66,6 @@
                     06  W12-NYUTAIINREKI-COUNT   PIC S9(9)   BINARY.
                     06  W12-NYUTAIINREKILST
                             PIC X(42)   OCCURS  3 TIMES.
-                  05  W12-NYUTAIINREKI-NYU-COMBO.
-                    06  W12-NYUTAIINREKI-NYU.
-                      07  W12-VALUE   PIC X(42).
-                    06  W12-NYUTAIINREKI-NYU-COUNT  PIC S9(9)   BINARY.
-                    06  W12-NYUTAIINREKI-NYULST
-                            PIC X(42)   OCCURS  2 TIMES.
                   05  W12-SRYKAHENKBN-COMBO.
                     06  W12-SRYKAHENKBN.
                       07  W12-VALUE   PIC X(20).
@@ -102,24 +96,12 @@
                     06  W12-COMMENT-NYUINRYO-COUNT   PIC S9(9)   BINARY.
                     06  W12-COMMENT-NYUINRYOLST
                             PIC X(34)   OCCURS  5 TIMES.
-                  05  W12-COMMENT-NYUINRYO1-COMBO.
-                    06  W12-COMMENT-NYUINRYO1.
-                      07  W12-VALUE   PIC X(34).
-                    06  W12-COMMENT-NYUINRYO1-COUNT   PIC S9(9)  BINARY.
-                    06  W12-COMMENT-NYUINRYO1LST
-                            PIC X(34)   OCCURS  5 TIMES.
                   05  W12-CHKKBN-COMBO.
                     06  W12-CHKKBN.
-                      07  W12-VALUE   PIC X(36).
+                      07  W12-VALUE   PIC X(20).
                     06  W12-CHKKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-CHKKBNLST
-                            PIC X(36)   OCCURS  5 TIMES.
-                  05  W12-SHOKUJI-PRTKBN-COMBO.
-                    06  W12-SHOKUJI-PRTKBN.
-                      07  W12-VALUE   PIC X(36).
-                    06  W12-SHOKUJI-PRTKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W12-SHOKUJI-PRTKBNLST
-                            PIC X(36)   OCCURS  5 TIMES.
+                            PIC X(20)   OCCURS  5 TIMES.
                   05  W12-BYOMEI-PRTJYUN-COMBO.
                     06  W12-BYOMEI-PRTJYUN.
                       07  W12-VALUE   PIC X(36).
@@ -148,12 +130,6 @@
                     06  W12-RECEIPT-MAKE-COUNT   PIC S9(9)   BINARY.
                     06  W12-RECEIPT-MAKELST
                             PIC X(20)   OCCURS  2 TIMES.
-                  05  W12-ZERO-KOH-PRTKBN-COMBO.
-                    06  W12-ZERO-KOH-PRTKBN.
-                      07  W12-VALUE   PIC X(20).
-                    06  W12-ZERO-KOH-PRTKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W12-ZERO-KOH-PRTKBNLST
-                            PIC X(20)   OCCURS  2 TIMES.
                   05  W12-SCR.
                     06  W12-HKNJANUMLIST.
                       07  W12-HKNJANUMLIST-COUNT  PIC S9(9)   BINARY.
@@ -172,43 +148,6 @@
                     06  W12-VALUE  PIC X(8).
                   05  W12-HKNJANAME1.
                     06  W12-VALUE  PIC X(50).
-                04  W12-FI32.
-                  05  W12-HKN-RIREKI-COMBO.
-                    06  W12-HKN-RIREKI.
-                      07  W12-VALUE   PIC X(22).
-                    06  W12-HKN-RIREKI-COUNT   PIC S9(9)   BINARY.
-                    06  W12-HKN-RIREKILST
-                            PIC X(22)   OCCURS  2 TIMES.
-                  05  W12-GENBUTU-ICHIBU-COMBO.
-                    06  W12-GENBUTU-ICHIBU.
-                      07  W12-VALUE   PIC X(38).
-                    06  W12-GENBUTU-ICHIBU-COUNT   PIC S9(9)   BINARY.
-                    06  W12-GENBUTU-ICHIBULST
-                            PIC X(38)   OCCURS  5 TIMES.
-                  05  W12-COMPRESS-COMBO.
-                    06  W12-COMPRESS.
-                      07  W12-VALUE   PIC X(30).
-                    06  W12-COMPRESS-COUNT   PIC S9(9)   BINARY.
-                    06  W12-COMPRESSLST
-                            PIC X(30)   OCCURS  2 TIMES.
-                  05  W12-DISASTER-RECEIPT-COMBO.
-                    06  W12-DISASTER-RECEIPT.
-                      07  W12-VALUE   PIC X(20).
-                    06  W12-DISASTER-RECEIPT-COUNT   PIC S9(9)   BINARY.
-                    06  W12-DISASTER-RECEIPTLST
-                            PIC X(20)   OCCURS  5 TIMES.
-                  05  W12-15-YKZ-COMBO.
-                    06  W12-15-YKZ.
-                      07  W12-VALUE    PIC X(20).
-                    06  W12-15-YKZ-COUNT   PIC S9(9)   BINARY.
-                    06  W12-15-YKZLST
-                            PIC X(20)   OCCURS  5 TIMES.
-                  05  W12-KOUHI-ICHIBU-KSI-COMBO.
-                    06  W12-KOUHI-ICHIBU-KSI.
-                      07  W12-VALUE    PIC X(32).
-                    06  W12-KOUHI-ICHIBU-KSI-COUNT   PIC S9(9)   BINARY.
-                    06  W12-KOUHI-ICHIBU-KSILST
-                            PIC X(32)   OCCURS  5 TIMES.
                 04  W12-FI30.
                   05  W12-SYAPRTNM.
                     06  W12-VALUE   PIC X(16).
@@ -342,43 +281,13 @@
                       07  W12-VALUE   PIC X(24).
                     06  W12-JIBAIPRTKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-JIBAIPRTKBNLST
-                            PIC X(24)   OCCURS  5 TIMES.
+                            PIC X(24)   OCCURS  2 TIMES.
                   05  W12-JIBAIPRTKBN-N-COMBO.
                     06  W12-JIBAIPRTKBN-N.
                       07  W12-VALUE   PIC X(24).
                     06  W12-JIBAIPRTKBN-N-COUNT   PIC S9(9)   BINARY.
                     06  W12-JIBAIPRTKBN-NLST
-                            PIC X(24)   OCCURS  5 TIMES.
-                  05  W12-JIBAIPRTKBN1-COMBO.
-                    06  W12-JIBAIPRTKBN1.
-                      07  W12-VALUE   PIC X(24).
-                    06  W12-JIBAIPRTKBN1-COUNT  PIC S9(9)   BINARY.
-                    06  W12-JIBAIPRTKBN1LST
-                            PIC X(24)   OCCURS  5 TIMES.
-                  05  W12-JIBAIPRTKBN1-N-COMBO.
-                    06  W12-JIBAIPRTKBN1-N.
-                      07  W12-VALUE   PIC X(24).
-                    06  W12-JIBAIPRTKBN1-N-COUNT  PIC S9(9)   BINARY.
-                    06  W12-JIBAIPRTKBN1-NLST
-                            PIC X(24)   OCCURS  5 TIMES.
-                  05  W12-JIBAI-FRACTION-KBN1-COMBO.
-                    06  W12-JIBAI-FRACTION-KBN1.
-                      07  W12-VALUE   PIC X(38).
-                    06  W12-JIBAI-FRACTION-KBN1-COUNT  PIC S9(9) BINARY.
-                    06  W12-JIBAI-FRACTION-KBN1LST
-                            PIC X(38)   OCCURS  5 TIMES.
-                  05  W12-JIBAI-FRACTION-KBN2-COMBO.
-                    06  W12-JIBAI-FRACTION-KBN2.
-                      07  W12-VALUE   PIC X(38).
-                    06  W12-JIBAI-FRACTION-KBN2-COUNT  PIC S9(9) BINARY.
-                    06  W12-JIBAI-FRACTION-KBN2LST
-                            PIC X(38)   OCCURS  5 TIMES.
-                  05  W12-JIBAI-PDF-COMBO.
-                    06  W12-JIBAI-PDF.
-                      07  W12-VALUE   PIC X(20).
-                    06  W12-JIBAI-PDF-COUNT  PIC S9(9) BINARY.
-                    06  W12-JIBAI-PDFLST
-                            PIC X(20)   OCCURS  2 TIMES.
+                            PIC X(24)   OCCURS  2 TIMES.
                   05  W12-ROUPRTNM.
                     06  W12-VALUE   PIC X(16).
                   05  W12-ROUPRTNM-NEXT.
@@ -414,13 +323,6 @@
                     06  W12-KOUIKIRECEKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-KOUIKIRECEKBNLST
                             PIC X(24)   OCCURS  4 TIMES.
-                  05  W12-ROURECEKBN-COMBO.
-                    06  W12-ROURECEKBN.
-                      07  W12-VALUE   PIC X(24).
-                    06  W12-ROURECEKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W12-ROURECEKBNLST
-                            PIC X(24)   OCCURS  4 TIMES.
-                  05  W12-RECEDENOUT-STATE   PIC S9(9)   BINARY.
                   05  W12-RECEDENOUT.
                     06  W12-VALUE   PIC X(30).
                   05  W12-RECECOMKBN-COMBO.
@@ -459,14 +361,6 @@
                     06  W12-RECEDEN-LST2KBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-RECEDEN-LST2KBNLST
                             PIC X(20)   OCCURS  2 TIMES.
-                  05  W12-RECEDEN-LST2KBN-MEDIA-COMBO.
-                    06  W12-RECEDEN-LST2KBN-MEDIA.
-                      07  W12-VALUE   PIC X(20).
-                    06  W12-RECEDEN-LST2KBN-MEDIA-COUNT
-                                                 PIC S9(9) BINARY.
-                    06  W12-RECEDEN-LST2KBN-MEDIALST
-                            PIC X(20)   OCCURS  5 TIMES.
-                  05  W12-RECEDEN-RIREKI-STATE   PIC S9(9)   BINARY.
                   05  W12-RECEDEN-RIREKIKBN-COMBO.
                     06  W12-RECEDEN-RIREKIKBN.
                       07  W12-VALUE   PIC X(24).
@@ -497,31 +391,31 @@
                     06  W12-KOUIKIKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-KOUIKIKBNLST
                             PIC X(34)   OCCURS  4 TIMES.
-                  05  W12-KIGO-DELI-FLG-COMBO.
-                    06  W12-KIGO-DELI-FLG.
+                  05  W12-KIGO-DELIMITER-FLG-COMBO.
+                    06  W12-KIGO-DELIMITER-FLG.
                       07  W12-VALUE   PIC X(30).
-                    06  W12-KIGO-DELI-FLG-COUNT PIC S9(9)   BINARY.
-                    06  W12-KIGO-DELI-FLGLST
+                    06  W12-KIGO-DELIMITER-FLG-COUNT PIC S9(9)   BINARY.
+                    06  W12-KIGO-DELIMITER-FLGLST
                             PIC X(30)   OCCURS  5 TIMES.
-                  05  W12-KIGO-DELI-HKNJA-FLG-COMBO.
-                    06  W12-KIGO-DELI-HKNJA-FLG.
+                  05  W12-KIGO-DELIMITER-HKNJANUM-FLG-COMBO.
+                    06  W12-KIGO-DELIMITER-HKNJANUM-FLG.
                       07  W12-VALUE   PIC X(30).
-                    06  W12-KIGO-DELI-HKNJA-FLG-COUNT
+                    06  W12-KIGO-DELIMITER-HKNJANUM-FLG-COUNT
                                                      PIC S9(9)   BINARY.
-                    06  W12-KIGO-DELI-HKNJA-FLGLST
+                    06  W12-KIGO-DELIMITER-HKNJANUM-FLGLST
                             PIC X(30)   OCCURS  5 TIMES.
-                  05  W12-NUM-DELI-FLG-COMBO.
-                    06  W12-NUM-DELI-FLG.
+                  05  W12-NUM-DELIMITER-FLG-COMBO.
+                    06  W12-NUM-DELIMITER-FLG.
                       07  W12-VALUE   PIC X(30).
-                    06  W12-NUM-DELI-FLG-COUNT  PIC S9(9)   BINARY.
-                    06  W12-NUM-DELI-FLGLST
+                    06  W12-NUM-DELIMITER-FLG-COUNT  PIC S9(9)   BINARY.
+                    06  W12-NUM-DELIMITER-FLGLST
                             PIC X(30)   OCCURS  5 TIMES.
-                  05  W12-NUM-DELI-HKNJA-FLG-COMBO.
-                    06  W12-NUM-DELI-HKNJA-FLG.
+                  05  W12-NUM-DELIMITER-HKNJANUM-FLG-COMBO.
+                    06  W12-NUM-DELIMITER-HKNJANUM-FLG.
                       07  W12-VALUE   PIC X(30).
-                    06  W12-NUM-DELI-HKNJA-FLG-COUNT
+                    06  W12-NUM-DELIMITER-HKNJANUM-FLG-COUNT
                                                     PIC S9(9)   BINARY.
-                    06  W12-NUM-DELI-HKNJA-FLGLST
+                    06  W12-NUM-DELIMITER-HKNJANUM-FLGLST
                             PIC X(30)   OCCURS  5 TIMES.
                 04  W12-FI26.
                   05  W12-PREFKBN-PRTJYUN-COMBO.
@@ -595,7 +489,7 @@
                     06  W12-TERMINAL-DIGIT-PRTKBN-COUNT
                                                   PIC S9(9) BINARY.
                     06  W12-TERMINAL-DIGIT-PRTKBNLST
-                            PIC X(38)   OCCURS  5 TIMES.
+                            PIC X(38)   OCCURS  2 TIMES.
                 04  W12-FI25.
                   05  W12-MOJI-COMBO.
                     06  W12-MOJI-KISAIKBN.
@@ -623,12 +517,6 @@
                     06  W12-SYAPRTKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-SYAPRTKBNLST
                             PIC X(24)   OCCURS  2 TIMES.
-                  05  W12-DISASTER-SYAPRTKBN-COMBO.
-                    06  W12-DISASTER-SYAPRTKBN.
-                      07  W12-VALUE   PIC X(32).
-                    06  W12-DISASTER-SYAPRTKBN-COUNT   PIC S9(9) BINARY.
-                    06  W12-DISASTER-SYAPRTKBNLST
-                            PIC X(32)   OCCURS  2 TIMES.
                   05  W12-KKHPRTKBN-COMBO.
                     06  W12-KKHPRTKBN.
                       07  W12-VALUE   PIC X(20).
@@ -641,18 +529,6 @@
                     06  W12-KOUIKIPRTKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-KOUIKIPRTKBNLST
                             PIC X(34)   OCCURS  5 TIMES.
-                  05  W12-ROUSAIPRTKBN-COMBO.
-                    06  W12-ROUSAIPRTKBN.
-                      07  W12-VALUE   PIC X(20).
-                    06  W12-ROUSAIPRTKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W12-ROUSAIPRTKBNLST
-                            PIC X(20)   OCCURS  2 TIMES.
-                  05  W12-FRAME-ROUSAIPRTKBN-COMBO.
-                    06  W12-FRAME-ROUSAIPRTKBN.
-                      07  W12-VALUE   PIC X(20).
-                    06  W12-FRAME-ROUSAIPRTKBN-COUNT   PIC S9(9) BINARY.
-                    06  W12-FRAME-ROUSAIPRTKBNLST
-                            PIC X(20)   OCCURS  2 TIMES.
                 04  W12-FI27.
                   05  W12-SYUKA-KBN-COMBO.
                     06  W12-SYUKA-KBN.
@@ -702,7 +578,6 @@
                     06  W12-SYUKA-KOUIKI-COUNT   PIC S9(9)   BINARY.
                     06  W12-SYUKA-KOUIKILST
                             PIC X(22)   OCCURS  3 TIMES.
-                04  W12-FI31.
                   05  W12-INSPECT-CHARACTER-KBN-COMBO.
                     06  W12-INSPECT-CHARACTER-KBN.
                       07  W12-VALUE   PIC X(36).
@@ -710,6 +585,7 @@
                                       PIC S9(9)   BINARY.
                     06  W12-INSPECT-CHARACTER-KBNLST
                             PIC X(36)   OCCURS  5 TIMES.
+                04  W12-FI31.
                   05  W12-INSPECT-ZERO-KBN-COMBO.
                     06  W12-INSPECT-ZERO-KBN.
                       07  W12-VALUE   PIC X(24).
@@ -717,20 +593,6 @@
                                       PIC S9(9)   BINARY.
                     06  W12-INSPECT-ZERO-KBNLST
                             PIC X(24)   OCCURS  5 TIMES.
-                  05  W12-INSPECT-INCLUDE-KBN-COMBO.
-                    06  W12-INSPECT-INCLUDE-KBN.
-                      07  W12-VALUE   PIC X(32).
-                    06  W12-INSPECT-INCLUDE-KBN-COUNT
-                                      PIC S9(9)   BINARY.
-                    06  W12-INSPECT-INCLUDE-KBNLST
-                            PIC X(32)   OCCURS  5 TIMES.
-                  05  W12-INSPECT-GENERAL-KBN-COMBO.
-                    06  W12-INSPECT-GENERAL-KBN.
-                      07  W12-VALUE   PIC X(30).
-                    06  W12-INSPECT-GENERAL-KBN-COUNT
-                                      PIC S9(9)   BINARY.
-                    06  W12-INSPECT-GENERAL-KBNLST
-                            PIC X(30)   OCCURS  5 TIMES.
                   05  W12-DRNAME-KSIKBN-COMBO.
                     06  W12-DRNAME-KSIKBN.
                       07  W12-VALUE   PIC X(20).

@@ -92,12 +92,6 @@
       *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
       *  04.07.02    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
-      *  04.07.03    NACL-藤原    13/01/07  自費レセプトを印刷しない設定
-      *                                     のとき、入力順、ターミナルデジット
-      *                                     出力の対象としない
-      *  04.07.04    NACL-藤原    13/03/01  保険者番号の条件設定変更
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -121,7 +115,7 @@ grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
       *    フラグ領域
@@ -236,8 +230,6 @@ grpsys     COPY    "COMMON-SPA".
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -303,12 +295,6 @@ grpsys     COPY    "COMMON-SPA".
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
-      *
            UNSTRING    WRK-PARA-ARG25  DELIMITED  BY  "#/"
                                        INTO  WRK-PARA-KKHPRTNM
                                              WRK-PARA-KOUIKIPRTNM
@@ -317,20 +303,10 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO  WRK-PARA-KKHPRTNM-N
                                              WRK-PARA-KOUIKIPRTNM-N
            END-UNSTRING
-           INSPECT WRK-PARA-RECE09-HKNJANUM  REPLACING   ALL "#"
-                                                         BY  " "
-      *
-      *    リアルタイムプレビューのとき
-           IF      WRK-PARA-SHELLID        =   "RECEPTX"
-               MOVE    "0"                 TO  WRK-PARA-PREFKBN
-           END-IF
            DISPLAY "KKHPRTNM   =" WRK-PARA-KKHPRTNM " "
                                   WRK-PARA-KKHPRTNM-N
            DISPLAY "KOUIKIPRTNM=" WRK-PARA-KOUIKIPRTNM " "
                                   WRK-PARA-KOUIKIPRTNM-N
-           DISPLAY "PRTJYUN    =" WRK-PARA-RECE09-PRTJYUN " "
-                                  WRK-PARA-PREFKBN
-           DISPLAY "HKNJANUM   =" WRK-PARA-RECE09-HKNJANUM
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -816,15 +792,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *                                  
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  RECE08-REC
-      *
-      *        入力順、ターミナルデジットで自費レセプトを印刷しない設定のとき
-               IF    ( WRK-PARA-RECE09-PRTJYUN =   "05"    OR  "13" )
-               AND   ( WRK-PARA-PREFKBN        =   "1"              )
-                   IF      RECE08-RECESYUBETU      =    "8888"
-                       GO  TO  900-RECEPRT-FET-SEC
-                   END-IF
-               END-IF
-      *
                MOVE    ZERO            TO  FLG-END
                ADD     1               TO  CNT-IN-CANCEL
                                            CNT-IN

@@ -1339,21 +1339,7 @@ path	key52	{
                     AND     CREYMD       =   :CREYMD
                     AND     CREHMS       =   :CREHMS
                     AND     NYUGAIKBN    =   :NYUGAIKBN 
-                   ORDER BY SORT_2,PTNUM,RECENUM,RENNUM
+                   ORDER BY SORT_2,PTNUM
 		;
 	};
-};
-
-path    key53   {
-        DBSELECT        {
-		DECLARE tbl_receprt_key53_csr CURSOR FOR
-		SELECT *
-                FROM tbl_receprt
-		WHERE 	HOSPNUM	= :HOSPNUM
-                    AND   PRTID        =   :PRTID
-                    AND     RECEYM       =   :RECEYM
-                    AND     PTNUM        =   :PTNUM
-                   ORDER BY CREYMD DESC,CREHMS DESC,RECENUM,RENNUM
-                ;
-        };
 };
