@@ -203,6 +203,13 @@
       *
       *手帳加算確認チェック
                05  SPA-TECHOKBN-FLG           PIC X(01).
+      *ver.4.8
+      *患者情報表示
+               05  SPA-POPUPKBN-G.
+                   07  SPA-POPUP-TIMEOUT      PIC 9(03).
+                   07  SPA-POPUP-HKNCHK       PIC X(01).
+                   07  SPA-POPUP-MEMO1        PIC X(01).
+                   07  SPA-POPUP-MEMO2        PIC X(01).
       *
            03  SPA-K01SET-AREA.
       *処理フラグ（０：通常、１：訂正）

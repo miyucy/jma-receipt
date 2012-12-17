@@ -271,6 +271,8 @@
       *
       *    スクロール背景
            03  FLG-BGCOLORS            PIC 9(01).
+      *ver.4.8
+           03  FLG-POPINI              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -915,6 +917,9 @@
       *    クライアント印刷制御
            COPY    "CPORCSPRTCTRL.INC".
       *
+      *
+      *    患者情報通知パラメタ
+           COPY    "CPORCSPOPUPSET.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1700,6 +1705,13 @@
            INITIALIZE                  SPA-SCR-REC
            MOVE    ZERO            TO  SPA-NAI-ROUSTR
       *
+      *    患者情報通知判定
+           IF      SPA-PTID            =   SPA-GMN-PTID
+               MOVE    ZERO            TO  FLG-POPINI
+           ELSE
+               MOVE    1               TO  FLG-POPINI
+           END-IF
+      *
       *    初期ＳＰＡ編集処理
            IF     (SPA-MOTOPG          =   "P02"  OR  "U02" )  AND
                   (SPA-PTID        NOT =   SPA-GMN-PTID )
@@ -1802,6 +1814,13 @@
                                        SPA-K01KYOUTU
                                        SPA-K02
       *
+      *ver.4.8
+           IF      FLG-POPINI          =   1
+      *        患者情報通知
+               PERFORM 41023-POPUP-SYORI-SEC
+           END-IF
+      *
+      *
            IF     SPA-HKNCOMBINUM      =   SPACE  OR  ZERO
       *        スパ共通編集処理
                PERFORM                 310-SPA-SET-SEC
@@ -1841,6 +1860,14 @@
       *    ワーク診療行為解除
            MOVE    ZERO            TO  FLG-MOD-FLG
            PERFORM 4900-WKSRYACT-CLEAR-SEC
+      *
+      *    患者情報通知判定
+           IF      SPA-PTID            =   SPA-GMN-PTID
+               MOVE    ZERO            TO  FLG-POPINI
+           ELSE
+               MOVE    1               TO  FLG-POPINI
+           END-IF
+      *
       *
       *    初期ＳＰＡ編集処理
            IF     (SPA-SRYYMD      NOT =   SPA-GMN-SRYYMD )  OR
@@ -1903,6 +1930,11 @@
                                            SPA-AREA
                                            SPA-K01KYOUTU
                                            SPA-K02
+           END-IF
+      *
+           IF      FLG-POPINI          =   1
+      *        患者情報通知
+               PERFORM 41023-POPUP-SYORI-SEC
            END-IF
       *
       *!   IF     SPA-HKNCOMBINUM      =   SPACE  OR  ZERO
@@ -3358,6 +3390,10 @@
                    IF      SPA-ERRCD           =   SPACE
       *                患者番号決定初期処理
                        PERFORM 410101-PTNUM-SYOKI-SEC
+      *
+      *            患者情報通知
+                   PERFORM 41023-POPUP-SYORI-SEC
+      *
                    END-IF
            END-EVALUATE
            .
@@ -3569,6 +3605,40 @@
                                        TO  SPA-STR-NYUINYMD
            .
        4101011-PTNYUINRRK-HEN-EXT.
+           EXIT.
+      *
+      *ver.4.8
+      *****************************************************************
+      *    患者情報通知処理
+      *****************************************************************
+       41023-POPUP-SYORI-SEC         SECTION.
+      *
+           INITIALIZE                  SPA-GMN-POPUP-STATUS
+      *
+           IF     (SPA-POPUP-HKNCHK    =   "1" )
+             OR   (SPA-POPUP-MEMO1     =   "1" )
+             OR   (SPA-POPUP-MEMO2     =   "1" )
+               INITIALIZE                  ORCSPOPUPSETAREA
+      *        保険最終確認日表示
+               MOVE    SPA-POPUP-HKNCHK    TO  ORCSPOPUPSET-HKNCHK
+      *        メモ１
+               MOVE    SPA-POPUP-MEMO1     TO  ORCSPOPUPSET-MEMO1
+      *        メモ２
+               MOVE    SPA-POPUP-MEMO2     TO  ORCSPOPUPSET-MEMO2
+               CALL    "ORCSPOPUPSET"      USING
+                                           SPA-AREA
+                                           ORCSPOPUPSETAREA
+      *
+               IF     ORCSPOPUPSET-BODY    NOT =   SPACE
+                   MOVE    ORCSPOPUPSET-BODY   TO  SPA-GMN-POPUP-BODY
+                   MOVE    "患者情報"          TO  SPA-GMN-POPUP-SUMMARY
+                   MOVE    SPACE               TO  SPA-GMN-POPUP-ICON
+                   MOVE    SPA-POPUP-TIMEOUT   TO  SPA-GMN-POPUP-TIMEOUT
+               END-IF
+           END-IF
+      *
+           .
+       41023-POPUP-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -10315,6 +10385,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                  INTO  K02N-TITLE
            END-STRING
       *----(04.07.00) LINE UPD END   ----------------------------------
+      *
+      *ver.4.8
+      *    患者情報通知
+           MOVE    SPA-GMN-POPUP-SUMMARY   TO  K02N-POPUP-SUMMARY
+           MOVE    SPA-GMN-POPUP-BODY      TO  K02N-POPUP-BODY
+           MOVE    SPA-GMN-POPUP-ICON      TO  K02N-POPUP-ICON
+           MOVE    SPA-GMN-POPUP-TIMEOUT   TO  K02N-POPUP-TIMEOUT
+           IF      SPA-GMN-POPUP-SUMMARY   NOT = SPACE
+               INITIALIZE SPA-GMN-POPUP-STATUS
+           END-IF
+      *
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC

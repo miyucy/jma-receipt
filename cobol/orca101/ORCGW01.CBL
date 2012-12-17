@@ -96,6 +96,7 @@
       *                                     最新分を選択状態とする
       *  04.07.00    NACL-小豆沢  11/08/09  保険者マスタ業務からの遷移処理
       *                                     追加
+      *  04.08.00    NACL-多々納  12/12/14  1920 患者情報通知追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -321,6 +322,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1910 プログラムオプション情報".
            03  FILLER              PIC X(35)   VALUE
+               "1920 患者情報通知情報".
+           03  FILLER              PIC X(35)   VALUE
                "2003 レセプト作成指示（印刷順）情報".
            03  FILLER              PIC X(35)   VALUE
                "2005 レセプト・総括印刷情報".
@@ -344,11 +347,12 @@
                "4100 公害医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   46.
+      **** 03  TBL-KANRICD-TBL         OCCURS   46.
+           03  TBL-KANRICD-TBL         OCCURS   47.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   46.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   47.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -531,6 +535,7 @@
            COPY    "W33.INC".
            COPY    "W34.INC".
            COPY    "W35.INC".
+           COPY    "W36.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -2132,6 +2137,10 @@
                    MOVE    "W18"               TO  SPA-SAKIPG
                WHEN    "1910" 
                    MOVE    "W34"               TO  SPA-SAKIPG
+      *        患者情報通知
+               WHEN    "1920" 
+                   MOVE    "W36"               TO  SPA-SAKIPG
+      *
                WHEN    "5000"
                    MOVE    "W24"               TO  SPA-SAKIPG
                WHEN    "5001"
@@ -2251,6 +2260,9 @@
                WHEN    "1031"
       *        レセプト・総括印刷情報
                WHEN    "2005"
+      *        患者情報通知
+               WHEN    "1920"
+      *
                    IF     (SPA-NAI-STYUKYMD    =   ZERO )  AND
                           (SPA-NAI-EDYUKYMD    =   99999999)
                        CONTINUE

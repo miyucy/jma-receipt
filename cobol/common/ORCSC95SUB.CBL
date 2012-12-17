@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.07.00     NACL=多々納  12/03/XX  平成２４年４月改正対応
+      * 04.08.00     NACL=多々納  12/12/14  患者情報通知対応
       *****************************************************************
       *
       *
@@ -87,6 +88,8 @@
            COPY    "CPSK1030.INC".
       *
            COPY    "CPSK1014.INC".
+      *    患者情報通知
+           COPY    "CPSK1920.INC".
       *    ＣＬＡＩＭ接続情報 
            COPY    "CPSK9000.INC".
       *
@@ -546,6 +549,29 @@
            IF     (SPA-NYUGAIKBN       =   "2"   )
                PERFORM 10011-CLAIM-HEN-SEC
            END-IF
+      *ver.4.8
+      *    患者情報通知
+           MOVE    SPACE               TO  SYS-1920-REC
+           INITIALIZE                  SYS-1920-REC
+           MOVE    "1920"              TO  SYS-1920-KANRICD
+           MOVE    "*"                 TO  SYS-1920-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1920-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1920-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1920-HOSPNUM
+           MOVE    SYS-1920-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1920-REC
+      *        表示時間（未使用）
+      *********MOVE    SYS-1920-POPUP-TIMEOUT  TO  SPA-POPUP-TIMEOUT
+               MOVE    ZERO                    TO  SPA-POPUP-TIMEOUT
+      *        保険確認日
+               MOVE    SYS-1920-POPUP-HKNCHK   TO  SPA-POPUP-HKNCHK
+      *        メモ１
+               MOVE    SYS-1920-POPUP-MEMO1    TO  SPA-POPUP-MEMO1
+      *        メモ２
+               MOVE    SYS-1920-POPUP-MEMO2    TO  SPA-POPUP-MEMO2
+           END-IF
            .
        100-K01KYOUTU-EXT.
            EXIT.
@@ -613,22 +639,11 @@
            MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
-           MOVE    SYS-1038-REC        TO  MCPDATA-REC
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1038-REC
-               INITIALIZE                  SYS-1038-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+           MOVE    SYS-1038-REC        TO  SYSKANRI-REC
+      *    システム管理キー検索
+           PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+               MOVE    SYSKANRI-REC        TO  SYS-1038-REC
       *        複数科まとめ集計
                MOVE    SYS-1038-KAGRPFLG       TO  SPA-KAGRPFLG
       *        ＤＯ初期表示
@@ -722,9 +737,6 @@
                MOVE    "#FFB5C5"           TO  SPA-KEICOLORS
            END-IF
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
            .
        1002-SYSKANRI-KYOTU-EXT.
            EXIT.
@@ -742,27 +754,14 @@
            MOVE    SPA-SRYYMD          TO  SYS-9000-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-9000-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
-           MOVE    SYS-9000-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-9000-REC
-               INITIALIZE                  SYS-9000-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
+           MOVE    SYS-9000-REC        TO  SYSKANRI-REC
+      *    システム管理キー検索
+           PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-9000-REC
+               MOVE    SYSKANRI-REC        TO  SYS-9000-REC
       *        外来診察料展開
                MOVE   SYS-9000-SINSATU-FLG TO  SPA-SINSATU-FLG
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
            IF      SPA-SINSATU-FLG     =   SPACE
                MOVE    "0"             TO  SPA-SINSATU-FLG
@@ -1302,6 +1301,35 @@
       *
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    管理マスター読込（キー）
+      *****************************************************************
+       900-SYSKANRI-INV-SEC         SECTION.
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYSKANRI-REC
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       900-SYSKANRI-INV-EXT.
            EXIT.
       *
       *****************************************************************

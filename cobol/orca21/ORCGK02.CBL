@@ -102,6 +102,7 @@
       *  04.07.00    NACL-多々納  12/01/05  クライアント印刷対応
       *  04.07.00    NACL-多々納  12/08/XX  ドクター選択対応
       *  04.07.00    NACL-多々納  12/10/10  照会からの遷移対応
+      *  04.08.00    NACL-多々納  12/12/17  患者情報通知対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -342,6 +343,8 @@
       *    会計照会戻りチェック
            03  FLG-CHK-ERR             PIC 9(01).
            03  FLG-CHKRRK              PIC 9(01).
+      *ver.4.8
+           03  FLG-POPINI              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1040,6 +1043,9 @@
       *
       *    ドクター編集処理パラメタ
            COPY    "CPORCSDRSET.INC".
+      *
+      *    患者情報通知パラメタ
+           COPY    "CPORCSPOPUPSET.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -2121,6 +2127,13 @@
            INITIALIZE                  SPA-SCR-REC
            MOVE    ZERO                TO  SPA-NAI-ROUSTR
       *
+      *    患者情報通知判定
+           IF      SPA-PTID            =   SPA-GMN-PTID
+               MOVE    ZERO            TO  FLG-POPINI
+           ELSE
+               MOVE    1               TO  FLG-POPINI
+           END-IF
+      *
       *    初期ＳＰＡ編集処理
            IF     (SPA-MOTOPG          =   "P02"  OR  "U02" 
                                                   OR  "K02N" )  AND
@@ -2207,6 +2220,11 @@
            IF      SPA-ERRCD           =   "9999"
                GO      TO      3009-SAIHEN-EXT
            END-IF
+      *ver.4.8
+           IF      FLG-POPINI          =   1
+      *        患者情報通知
+               PERFORM 41023-POPUP-SYORI-SEC
+           END-IF
       *
            IF     SPA-HKNCOMBINUM      =   SPACE  OR  ZERO
       *        スパ共通編集処理
@@ -2259,10 +2277,16 @@
       *    中途終了分よりの時　初画面を編集
            INITIALIZE                  SPA-SCR-REC
       *
-      *     ワーク診療行為解除
-            MOVE    ZERO            TO  FLG-MOD-FLG
-            PERFORM 4900-WKSRYACT-CLEAR-SEC
+      *    ワーク診療行為解除
+           MOVE    ZERO            TO  FLG-MOD-FLG
+           PERFORM 4900-WKSRYACT-CLEAR-SEC
       *
+      *    患者情報通知判定
+           IF      SPA-PTID            =   SPA-GMN-PTID
+               MOVE    ZERO            TO  FLG-POPINI
+           ELSE
+               MOVE    1               TO  FLG-POPINI
+           END-IF
       *    初期ＳＰＡ編集処理
            IF     (SPA-SRYYMD      NOT =   SPA-GMN-SRYYMD )  OR
                   (SPA-PTID        NOT =   SPA-GMN-PTID   )
@@ -2338,6 +2362,11 @@
                ELSE
                    GO      TO  30091-SAIHEN2-EXT
                END-IF
+           END-IF
+      *
+           IF      FLG-POPINI          =   1
+      *        患者情報通知
+               PERFORM 41023-POPUP-SYORI-SEC
            END-IF
       *
       *    保険組合せのエラーをクリアする
@@ -5122,15 +5151,10 @@
                    END-IF
       *            メモ登録有無
                    PERFORM 41021-PTMEMOINF-SEC
-      *!!!!!
-                   INITIALIZE SPA-GMN-POPUP-STATUS
-      ****         IF      PTMEMOINF-MEMO  NOT =   SPACE
-      *            MOVE    "メモがあります"    TO  SPA-GMN-POPUP-SUMMARY
-      *            MOVE    PTMEMOINF-MEMO      TO  SPA-GMN-POPUP-BODY
-      *            MOVE    SPACE               TO  SPA-GMN-POPUP-ICON
-      *            MOVE    5                   TO  SPA-GMN-POPUP-TIMEOUT
-      ****         END-IF
-      *!!!!!END
+      *
+      *            患者情報通知
+                   PERFORM 41023-POPUP-SYORI-SEC
+      *
            END-EVALUATE
            .
       *
@@ -5345,6 +5369,38 @@
       *
            .
        41022-JYURRK-NUM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者情報通知処理
+      *****************************************************************
+       41023-POPUP-SYORI-SEC         SECTION.
+      *
+           INITIALIZE                  SPA-GMN-POPUP-STATUS
+      *
+           IF     (SPA-POPUP-HKNCHK    =   "1" )
+             OR   (SPA-POPUP-MEMO1     =   "1" )
+             OR   (SPA-POPUP-MEMO2     =   "1" )
+               INITIALIZE                  ORCSPOPUPSETAREA
+      *        保険最終確認日表示
+               MOVE    SPA-POPUP-HKNCHK    TO  ORCSPOPUPSET-HKNCHK
+      *        メモ１
+               MOVE    SPA-POPUP-MEMO1     TO  ORCSPOPUPSET-MEMO1
+      *        メモ２
+               MOVE    SPA-POPUP-MEMO2     TO  ORCSPOPUPSET-MEMO2
+               CALL    "ORCSPOPUPSET"      USING
+                                           SPA-AREA
+                                           ORCSPOPUPSETAREA
+      *
+               IF     ORCSPOPUPSET-BODY    NOT =   SPACE
+                   MOVE    ORCSPOPUPSET-BODY   TO  SPA-GMN-POPUP-BODY
+                   MOVE    "患者情報"          TO  SPA-GMN-POPUP-SUMMARY
+                   MOVE    SPACE               TO  SPA-GMN-POPUP-ICON
+                   MOVE    SPA-POPUP-TIMEOUT   TO  SPA-GMN-POPUP-TIMEOUT
+               END-IF
+           END-IF
+      *
+           .
+       41023-POPUP-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    診療日入力処理
@@ -12549,15 +12605,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    "]"                 DELIMITED BY SIZE
                                        INTO  K02-TITLE
            END-STRING
-      *
-      *!!! MOVE    SPA-GMN-POPUP-SUMMARY   TO  K02-POPUP-SUMMARY
-      *    MOVE    SPA-GMN-POPUP-BODY      TO  K02-POPUP-BODY
-      *    MOVE    SPA-GMN-POPUP-ICON      TO  K02-POPUP-ICON
-      *    MOVE    SPA-GMN-POPUP-TIMEOUT   TO  K02-POPUP-TIMEOUT
-      *    DISPLAY "SPA-GMN-POPUP-TIMEOUT = " SPA-GMN-POPUP-TIMEOUT
-      *    IF      SPA-GMN-POPUP-SUMMARY   NOT = SPACE
+      *ver.4.8
+      *    患者情報通知
+           MOVE    SPA-GMN-POPUP-SUMMARY   TO  K02-POPUP-SUMMARY
+           MOVE    SPA-GMN-POPUP-BODY      TO  K02-POPUP-BODY
+           MOVE    SPA-GMN-POPUP-ICON      TO  K02-POPUP-ICON
+           MOVE    SPA-GMN-POPUP-TIMEOUT   TO  K02-POPUP-TIMEOUT
+           IF      SPA-GMN-POPUP-SUMMARY   NOT = SPACE
                INITIALIZE SPA-GMN-POPUP-STATUS
-      *!!! END-IF
+           END-IF
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
