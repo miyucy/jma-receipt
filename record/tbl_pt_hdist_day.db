@@ -1,0 +1,117 @@
+tbl_pt_hdist_day {
+    HOSPNUM             number(2,0);
+    PTID                number(10,0);
+    NYUGAIKBN           char(1);
+    SRYYM               char(6);
+    DAY                 char(2);
+    RECEIPT_KBN         char(1);
+    HKNCOMBI1_1         number(4,0);
+    HKNCOMBI1_2         number(4,0);
+    HKNCOMBI1_3         number(4,0);
+    HKNCOMBI1_4         number(4,0);
+    HKNCOMBI1_5         number(4,0);
+    HKNCOMBI1_6         number(4,0);
+    HKNCOMBI1_7         number(4,0);
+    HKNCOMBI1_8         number(4,0);
+    HKNCOMBI1_9         number(4,0);
+    HKNCOMBI1_10        number(4,0);
+    HKNCOMBI1_11        number(4,0);
+    HKNCOMBI1_12        number(4,0);
+    HKNCOMBI1_13        number(4,0);
+    HKNCOMBI1_14        number(4,0);
+    HKNCOMBI1_15        number(4,0);
+    HKNCOMBI1_16        number(4,0);
+    HKNCOMBI1_17        number(4,0);
+    HKNCOMBI1_18        number(4,0);
+    HKNCOMBI1_19        number(4,0);
+    HKNCOMBI1_20        number(4,0);
+    HKNCOMBI2_1         number(4,0);
+    HKNCOMBI2_2         number(4,0);
+    HKNCOMBI2_3         number(4,0);
+    HKNCOMBI2_4         number(4,0);
+    HKNCOMBI2_5         number(4,0);
+    HKNCOMBI2_6         number(4,0);
+    HKNCOMBI2_7         number(4,0);
+    HKNCOMBI2_8         number(4,0);
+    HKNCOMBI2_9         number(4,0);
+    HKNCOMBI2_10        number(4,0);
+    HKNCOMBI2_11        number(4,0);
+    HKNCOMBI2_12        number(4,0);
+    HKNCOMBI2_13        number(4,0);
+    HKNCOMBI2_14        number(4,0);
+    HKNCOMBI2_15        number(4,0);
+    HKNCOMBI2_16        number(4,0);
+    HKNCOMBI2_17        number(4,0);
+    HKNCOMBI2_18        number(4,0);
+    HKNCOMBI2_19        number(4,0);
+    HKNCOMBI2_20        number(4,0);
+    TERMID              varchar(16);
+    OPID                varchar(16);
+    CREYMD              char(8);
+    UPYMD               char(8);
+    UPHMS               char(6);
+};
+primary {
+    HOSPNUM,PTID,NYUGAIKBN,SRYYM,DAY;
+};
+
+
+path	key		{ 	
+	DBSELECT	{
+		DECLARE tbl_pt_hdist_day_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pt_hdist_day
+			WHERE   HOSPNUM        =   :HOSPNUM
+			AND     PTID           =   :PTID
+			AND     NYUGAIKBN      =   :NYUGAIKBN
+			AND     SRYYM          =   :SRYYM
+			AND     DAY            =   :DAY
+		;
+	};
+};
+
+path	key2		{ 	
+	DBSELECT	{
+		DECLARE tbl_pt_hdist_day_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pt_hdist_day
+			WHERE   HOSPNUM        =   :HOSPNUM
+			AND     PTID           =   :PTID
+			AND   NYUGAIKBN        IN ('0',:NYUGAIKBN)
+			AND     SRYYM          =   :SRYYM
+			ORDER   BY  DAY
+		;
+	};
+};
+
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE tbl_pt_hdist_day_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pt_hdist_day
+			WHERE   HOSPNUM        =   :HOSPNUM
+			AND     PTID           =   :PTID
+			ORDER   BY  SRYYM  DESC,
+				    DAY    DESC,
+				    RECEIPT_KBN
+		;
+	};
+};
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_pt_hdist_day_all_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pt_hdist_day
+			WHERE   HOSPNUM    =   :HOSPNUM
+ 		;
+	};
+};
+path	del 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_pt_hdist_day
+			WHERE HOSPNUM     =   :HOSPNUM
+			AND   PTID        =   :PTID
+		;
+	};
+};
