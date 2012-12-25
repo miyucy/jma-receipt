@@ -727,6 +727,7 @@ DB_files = \
 	tbl_ptnum_public.db \
 	xml_acsimulatev2req.db \
 	xml_acsimulatev2res.db \
+	tbl_pt_hdist_day.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
