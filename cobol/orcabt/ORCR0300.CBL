@@ -392,6 +392,8 @@
       *  04.06.08    NACL-藤原    11/06/10  基本項目でデータ区分２の記録
       *  04.06.09    NACL-藤原    11/09/29  基本項目でデータ区分２のデー
       *                                     タのみの診療区分の記録
+      *  04.06.10    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
       *
       *  04.07.01    NACL-藤原    11/06/02  入退院履歴記載対応
       *                                     「2自費分は含まない」を追加
@@ -7678,6 +7680,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
            ELSE
                MOVE    RECE02-TEKSTYMD TO  RECEDEN-TEKSTYMD
            END-IF
+           MOVE    RECE02-RECEIPT-KBN  TO  RECEDEN-RECEIPT-KBN
            .
        50011-KEY-HENSYU-EXT.
            EXIT.
@@ -7727,7 +7730,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    右ずめ編集処理
+      *    右詰め編集処理
       *****************************************************************
        5003-DATA-RIGHT-HENSYU-SEC          SECTION.
       *

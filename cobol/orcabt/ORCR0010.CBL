@@ -223,6 +223,8 @@
       *  04.06.05    NACL-藤原    12/10/04  同一レセプトの公費が４つを超
       *                                     えた場合の種別不明対応
       *  04.06.06    NACL-藤原    12/09/27  生活保護期間重複対応
+      *  04.06.07    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
       *
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *  04.07.02    NACL-藤原    12/03/25  公費記載順設定対応
@@ -326,6 +328,8 @@
            03  IDX1                                    PIC 9(03). 
            03  IDX2                                    PIC 9(03). 
            03  IDX3                                    PIC 9(03). 
+           03  IDX4                                    PIC 9(03). 
+           03  IDX5                                    PIC 9(03). 
            03  IDY                                     PIC 9(03). 
            03  IDZ                                     PIC 9(03).
            03  IDXX                                    PIC 9(03).
@@ -577,6 +581,14 @@
                05  TBL-SYS2013-TBL     OCCURS  50.
                    07  TBL-SYS2013     PIC X(610).
            03  TBL-SYS2013-MAX         PIC 9(03).
+      *
+      *    施設入所情報（９５０、９５１）退避用領域
+       01  TABLE-PTKOHINF-AREA.
+           02  TBL-PTKOHINF-REC        OCCURS  10.
+           COPY    "CPPTKOHINF.INC"
+                                   REPLACING   //PTKOH//
+                                   BY          //TBL-PTKOH//.
+           02  TBL-PTKOHINF-MAX    PIC 9(02).
       *
        01  WRK-CONS-AREA.
       *    労災保険番号 
@@ -1114,7 +1126,7 @@ grpsys     MOVE    SPA-HOSPNUM             TO  PTINF-HOSPNUM
            MOVE    KEY-N-PTID              TO  WRK-SYUKA-PTID
            PERFORM 800-MISEIKYU-CHECK-SEC
       *
-           DISPLAY "SRYACCT PTID=" KEY-N-PTID 
+           DISPLAY "SRYACCT PTID=" WRK-SYUKA-PTID
                    " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
                    " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
       *
@@ -1129,13 +1141,16 @@ grpsys     MOVE    SPA-HOSPNUM             TO  PTINF-HOSPNUM
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
+      *        施設入所情報
+               PERFORM 500-SISETU-HENSYU-SEC
+      *
+      *        患者年齢計算
+               PERFORM 500-AGECHK-SEC
+      *
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      FLG-END         =   1 
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
-      *
-      *            患者年齢計算
-                   PERFORM 500-AGECHK-SEC
       *
       *            保険組合せ読込み
                    INITIALIZE                  HKNCOMBI-REC
@@ -1858,7 +1873,32 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                                                WRK-RECE01-HOJOKBN
                    END-EVALUATE
              END-EVALUATE
-           END-IF           
+           END-IF
+      *
+      *    施設入所の有無
+           IF    ( WRK-RECE01-RECEIPT-KBN (1:1)
+                                           =   SPACE )
+           AND   ( TBL-PTKOHINF-MAX        >   ZERO  )
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL   IDX1    >       TBL-PTKOHINF-MAX
+                   IF    ( TBL-PTKOH-TEKSTYMD (IDX1)
+                                           <=  COMB-TEKSTYMD           )
+                   AND   ( COMB-TEKEDYMD   <=  TBL-PTKOH-TEKEDYMD(IDX1))
+                       IF      TBL-PTKOH-KOHNUM (IDX1)
+                                               =   "950"
+                           MOVE    "1"     TO  WRK-RECE01-RECEIPT-KBN
+                                                                   (1:1)
+                       END-IF
+                       IF      TBL-PTKOH-KOHNUM (IDX1)
+                                               =   "951"
+                           MOVE    "2"     TO  WRK-RECE01-RECEIPT-KBN
+                                                                   (1:1)
+                       END-IF
+                       MOVE    TBL-PTKOHINF-MAX
+                                           TO  IDX1
+                   END-IF
+               END-PERFORM
+           END-IF
       *
       *    レセのとき地方公費のみの場合は出力しない
            IF      WRK-SYOKBN             =   "1"        
@@ -3083,8 +3123,8 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SYS-2002-PTID       TO  WRK-SYUKA-PTID
            PERFORM 800-MISEIKYU-CHECK-SEC
       *
-           DISPLAY "SYS PTID=" SYS-2002-PTID
-                   " SRYYM="   SYS-2002-SRYYM 
+           DISPLAY "SYS PTID=" WRK-SYUKA-PTID
+                   " SRYYM="   WRK-SYUKA-SRYYM 
                    " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
       *
       *    該当診療年月の医療機関情報取得
@@ -3128,9 +3168,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
       *
+      *    施設入所情報
+      ***  MOVE    SYS-2002-PTID       TO  WRK-PTKOH-PTID
+           PERFORM 500-SISETU-HENSYU-SEC
+      *
+      *
       *    患者年齢計算
            PERFORM 500-AGECHK-SEC
-      *
       *
            IF      FLG-END             =   ZERO
       *        診療会計読み込み
@@ -3180,8 +3224,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    SYS-2002-PTID       TO  WRK-SYUKA-PTID
            PERFORM 800-MISEIKYU-CHECK-SEC
       *
-           DISPLAY "SYS PTID=" SYS-2002-PTID
-                   " SRYYM="   SYS-2002-SRYYM 
+           DISPLAY "SYS PTID=" WRK-SYUKA-PTID
+                   " SRYYM="   WRK-SYUKA-SRYYM
                    " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
       *
       *    未請求設定時は読み飛ばす
@@ -3229,6 +3273,10 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY7-AREA
                MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
+      *
+      *        施設入所情報
+      ***      MOVE    SYS-2002-PTID       TO  WRK-PTKOH-PTID
+               PERFORM 500-SISETU-HENSYU-SEC
       *
       *        患者年齢計算
                PERFORM 500-AGECHK-SEC
@@ -3305,7 +3353,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    PTINF-PTID      TO  WRK-SYUKA-PTID
                PERFORM 800-MISEIKYU-CHECK-SEC
       *
-               DISPLAY "JYUSIN PTID=" PTINF-PTID 
+               DISPLAY "JYUSIN PTID=" WRK-SYUKA-PTID
                        " SRYYM="   WRK-SYUKA-SRYYM
                        " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
       *
@@ -3313,6 +3361,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF    SYUKA-MISEIKYU-FLG  =   "01"
                    CONTINUE
                ELSE
+      *            施設入所情報
+      ***          MOVE    PTINF-PTID          TO  WRK-PTKOH-PTID
+                   PERFORM 500-SISETU-HENSYU-SEC
       *
       *            患者年齢計算
                    PERFORM 500-AGECHK-SEC
@@ -3629,6 +3680,82 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
+      *    施設入所情報処理
+      *****************************************************************
+       500-SISETU-HENSYU-SEC             SECTION.
+      *
+           INITIALIZE                      TABLE-PTKOHINF-AREA
+      *
+      *    ９５０（老併）
+           INITIALIZE                      PTKOHINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+           MOVE    WRK-SYUKA-PTID      TO  PTKOH-PTID
+           MOVE    "950"               TO  PTKOH-KOHNUM
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 900-PTKOHINF-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTKOHINF  
+           END-IF
+           PERFORM     UNTIL   FLG-PTKOHINF    =   1
+                       OR      TBL-PTKOHINF-MAX
+                                               >=  10
+               IF      PTKOH-SAKJOKBN      =  SPACE
+                   ADD     1               TO  TBL-PTKOHINF-MAX
+                   MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
+                                                   (TBL-PTKOHINF-MAX)
+               END-IF
+      *
+               MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+               MOVE    "key4"           TO  MCP-PATHNAME
+               PERFORM  900-PTKOHINF-READ-N-SEC
+           END-PERFORM
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+      *    ９５１（老健）
+           INITIALIZE                      PTKOHINF-REC
+           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+           MOVE    WRK-SYUKA-PTID      TO  PTKOH-PTID
+           MOVE    "951"               TO  PTKOH-KOHNUM
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 900-PTKOHINF-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTKOHINF  
+           END-IF
+           PERFORM     UNTIL   FLG-PTKOHINF    =   1
+                       OR      TBL-PTKOHINF-MAX
+                                               >=  10
+               IF      PTKOH-SAKJOKBN      =  SPACE
+                   ADD     1               TO  TBL-PTKOHINF-MAX
+                   MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
+                                                   (TBL-PTKOHINF-MAX)
+               END-IF
+      *
+               MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+               MOVE    "key4"           TO  MCP-PATHNAME
+               PERFORM  900-PTKOHINF-READ-N-SEC
+           END-PERFORM
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           .
+       500-SISETU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    未請求フラグチェック処理
       *****************************************************************
        800-MISEIKYU-CHECK-SEC          SECTION.
@@ -3939,6 +4066,23 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-PTKOHINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者公費情報読込
+      *****************************************************************
+       900-PTKOHINF-READ-N-SEC         SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+               MOVE    ZERO            TO  FLG-PTKOHINF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           .
+       900-PTKOHINF-READ-N-EXT.
            EXIT.
       *
       *****************************************************************
