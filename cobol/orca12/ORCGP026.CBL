@@ -76,6 +76,7 @@
            03  IDX-H1              PIC 9(04).
            03  IDX-H2              PIC 9(04).
            03  IDX-H3              PIC 9(04).
+           03  IDX-L               PIC 9(04).
            03  IDX-L1              PIC 9(04).
            03  IDX-L2              PIC 9(04).
            03  IDR                 PIC 9(04).
@@ -112,10 +113,17 @@
            03  WRK-SRYYMD-1.
                05  WRK-SRYYM-1         PIC X(06).
                05  WRK-SRYDD-1         PIC X(02).
-           03  WRK-SRT-HKNNUM          PIC X(03).
-           03  WRK-END-HKNNUM          PIC X(03).
-           03  WRK-CHKSRT-HKNNUM          PIC X(03).
-           03  WRK-CHKEND-HKNNUM          PIC X(03).
+      *    保険期間チェック
+           03  WRK-HKNINF-CHK.
+               05  WRK-SRT-HKNNUM          PIC X(03).
+               05  WRK-END-HKNNUM          PIC X(03).
+               05  WRK-CHKSRT-HKNNUM       PIC X(03).
+               05  WRK-CHKEND-HKNNUM       PIC X(03).
+      *
+               05  WRK-SRT-HKNJANUM        PIC X(08).
+               05  WRK-END-HKNJANUM        PIC X(08).
+               05  WRK-CHKSRT-HKNJANUM     PIC X(08).
+               05  WRK-CHKEND-HKNJANUM     PIC X(08).
       *
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-HKNCOMBI-MEI        PIC X(100).
@@ -495,8 +503,6 @@
        31011-HDMIDASI-INI-SEC             SECTION.
       *
            MOVE    SPACE               TO  SPA-GMN26-HDMIDASI-G
-           MOVE    "振分日以前"        TO  SPA-GMN26-HDMIDASI (1)
-           MOVE    "振分日以降"        TO  SPA-GMN26-HDMIDASI (2)
            .
        31011-HDMIDASI-INI-EXT.
            EXIT.
@@ -939,16 +945,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  SPA-GMN26-HDLSTMAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   50
+                   UNTIL       IDX     >=  20
               IF     (SPA-GMN26-THDSRYYM (IDX)  =   SPACE )
-                 AND (IDX              <   50   )
+                 AND (IDX              <   20   )
                    MOVE    SPA-GMN26-HDLIST-OCC (IDX + 1)
                                        TO  SPA-GMN26-HDLIST-OCC(IDX)
                    INITIALIZE              SPA-GMN26-HDLIST-OCC(IDX + 1)
               END-IF
            END-PERFORM
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   50
+                   UNTIL       IDX     >   20
               IF     (SPA-GMN26-THDSRYYM (IDX)   NOT =   SPACE )
                    ADD     1               TO  SPA-GMN26-HDLSTMAX
                    MOVE    SPA-GMN26-HDLSTMAX
@@ -1254,6 +1260,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM VARYING    IDX-H    FROM    1   BY  1
                        UNTIL     (IDX-H    >   2   )
                               OR (SPA-ERRCD    NOT =   SPACE )
+                   MOVE    ZERO                TO  IDX-L
                    PERFORM VARYING    IDX-H2   FROM    1   BY  1
                            UNTIL     (IDX-H2   >   20   )
                                   OR (SPA-ERRCD    NOT =   SPACE )
@@ -1261,11 +1268,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    =   SPACE
                            MOVE    20              TO  IDX-H2
                        ELSE
+                           ADD     1               TO  IDX-L
                            MOVE    SPA-NAI26-THKNCOMBI(IDX IDX-H IDX-H2)
                                                    TO  WRK-CHK-HKNCOMBI
                            PERFORM 410131-HKNCOMBI-CHK-SEC
                        END-IF
                    END-PERFORM
+      *            保険組合せ数一致判定
+                   IF      IDX-H               =   1
+                       IF      IDX-L1          NOT =   IDX-L
+                           MOVE    "2631"              TO  SPA-ERRCD
+                           MOVE    25                  TO  SPA-GMN26-CUR
+                       END-IF
+                   ELSE
+                       IF      IDX-L2          NOT =   IDX-L
+                           MOVE    "2631"              TO  SPA-ERRCD
+                           MOVE    25                  TO  SPA-GMN26-CUR
+                       END-IF
+                   END-IF
                END-PERFORM
            END-IF
            .
@@ -2025,6 +2045,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        410131-PTHKNINF-CHK-SEC             SECTION.
       *
+           INITIALIZE                      WRK-HKNINF-CHK
            MOVE    SPACE               TO  WRK-SRT-HKNNUM
            MOVE    SPACE               TO  WRK-END-HKNNUM
            MOVE    SPACE               TO  WRK-CHKSRT-HKNNUM
@@ -2095,19 +2116,33 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      FLG-HKNOK           =   1
                        IF      PTHKN-TEKSTYMD      =   WRK-SRYYMD
                            MOVE    PTHKN-HKNNUM    TO  WRK-SRT-HKNNUM
+                           MOVE    PTHKN-HKNJANUM  TO  WRK-SRT-HKNJANUM
                        END-IF
                        IF      PTHKN-TEKEDYMD      =   WRK-SRYYMD-1
                            MOVE    PTHKN-HKNNUM    TO  WRK-END-HKNNUM
+                           MOVE    PTHKN-HKNJANUM  TO  WRK-END-HKNJANUM
                        END-IF
                    END-IF
       *
                    IF     (SPA-GMN26-HDRESEKBN =   SPACE    )
                     AND   (PTHKN-HKNNUM(1:1)   NOT =   "9"  )
                        IF      PTHKN-TEKSTYMD      =   WRK-SRYYMD
-                           MOVE    PTHKN-HKNNUM    TO  WRK-CHKSRT-HKNNUM
+                           IF     (WRK-CHKSRT-HKNNUM   =   SPACE)
+                           OR     (WRK-CHKEND-HKNNUM   =   PTHKN-HKNNUM)
+                               MOVE    PTHKN-HKNNUM    TO
+                                                   WRK-CHKSRT-HKNNUM
+                               MOVE    PTHKN-HKNJANUM  TO
+                                                   WRK-CHKSRT-HKNJANUM
+                           END-IF
                        END-IF
                        IF      PTHKN-TEKEDYMD      =   WRK-SRYYMD-1
-                           MOVE    PTHKN-HKNNUM    TO  WRK-CHKEND-HKNNUM
+                           IF     (WRK-CHKEND-HKNNUM   =   SPACE)
+                           OR     (WRK-CHKSRT-HKNNUM   =   PTHKN-HKNNUM)
+                               MOVE    PTHKN-HKNNUM    TO
+                                                   WRK-CHKEND-HKNNUM
+                               MOVE    PTHKN-HKNJANUM  TO
+                                                   WRK-CHKEND-HKNJANUM
+                           END-IF
                        END-IF
                    END-IF
       *            対象年月の保険判定
@@ -2129,21 +2164,30 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-ERRCD           =   SPACE
                IF    ((WRK-SRT-HKNNUM      =   SPACE     )  AND
                       (FLG-HKNOK-ALL       =   1         ))
-               OR     (WRK-SRT-HKNNUM  NOT =   WRK-END-HKNNUM)
+               OR    ( WRK-SRT-HKNNUM      NOT =   WRK-END-HKNNUM)
                    MOVE    "2637"              TO  SPA-ERRCD
+                   MOVE    24                  TO  SPA-GMN26-CUR
+               END-IF
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+              IF      (WRK-SRT-HKNNUM      =   WRK-END-HKNNUM)  AND
+                      (WRK-SRT-HKNJANUM    NOT =   WRK-END-HKNJANUM)
+                   MOVE    "2640"              TO  SPA-ERRCD
                    MOVE    24                  TO  SPA-GMN26-CUR
                END-IF
            END-IF
       *    保険期間見出し
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPACE               TO  SPA-GMN26-HDMIDASI-G
-               STRING  WRK-SRYDD-1
-                       "日まで振分日以前"
+               STRING  "（〜"
+                       WRK-SRYDD-1
+                       "日）"
                                            DELIMITED  BY  SIZE
                                            INTO  SPA-GMN26-HDMIDASI (1)
                END-STRING
-               STRING  WRK-SRYDD
-                       "日まで振分日以降"
+               STRING  "（"
+                       WRK-SRYDD
+                       "日〜）"
                                            DELIMITED  BY  SIZE
                                            INTO  SPA-GMN26-HDMIDASI (2)
                END-STRING
@@ -2343,7 +2387,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    "1"
                MOVE    SPACE               TO  TBL-HD-HKNCOMBI-MEI
                                                   (IDX-H IDX-H2)
-               STRING  "●非"                  DELIMITED  BY  SIZE
+               STRING  "●非 "                 DELIMITED  BY  SIZE
                        WRK-HKNCOMBI-MEI        DELIMITED  BY  "  "
                                        INTO    TBL-HD-HKNCOMBI-MEI
                                                   (IDX-H IDX-H2)
@@ -2351,7 +2395,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    "2"
                MOVE    SPACE               TO  TBL-HD-HKNCOMBI-MEI
                                                   (IDX-H IDX-H2)
-               STRING  "●入"                  DELIMITED  BY  SIZE
+               STRING  "●入 "                 DELIMITED  BY  SIZE
                        WRK-HKNCOMBI-MEI        DELIMITED  BY  "  "
                                        INTO    TBL-HD-HKNCOMBI-MEI
                                                   (IDX-H IDX-H2)
@@ -2359,7 +2403,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    "3"
                MOVE    SPACE               TO  TBL-HD-HKNCOMBI-MEI
                                                   (IDX-H IDX-H2)
-               STRING  "●外"                  DELIMITED  BY  SIZE
+               STRING  "●外 "                 DELIMITED  BY  SIZE
                        WRK-HKNCOMBI-MEI        DELIMITED  BY  "  "
                                        INTO    TBL-HD-HKNCOMBI-MEI
                                                   (IDX-H IDX-H2)

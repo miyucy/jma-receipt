@@ -10462,7 +10462,7 @@
               <widget>
                 <class>GtkLabel</class>
                 <child_name>CList:title</child_name>
-                <name>HDMIDAS1</name>
+                <name>label14</name>
                 <sensitive>True</sensitive>
                 <can_focus>False</can_focus>
                 <has_focus>False</has_focus>
@@ -10470,7 +10470,7 @@
                 <yalign>0.5</yalign>
                 <xpad>0</xpad>
                 <ypad>0</ypad>
-                <label></label>
+                <label>保険組合せ</label>
                 <justify>GTK_JUSTIFY_CENTER</justify>
                 <wrap>False</wrap>
               </widget>
@@ -10518,7 +10518,7 @@
               <widget>
                 <class>GtkLabel</class>
                 <child_name>CList:title</child_name>
-                <name>HDMIDAS2</name>
+                <name>label16</name>
                 <sensitive>True</sensitive>
                 <can_focus>False</can_focus>
                 <has_focus>False</has_focus>
@@ -10526,11 +10526,47 @@
                 <yalign>0.5</yalign>
                 <xpad>0</xpad>
                 <ypad>0</ypad>
-                <label></label>
+                <label>保険組合せ</label>
                 <justify>GTK_JUSTIFY_CENTER</justify>
                 <wrap>False</wrap>
               </widget>
             </widget>
+          </widget>
+          <widget>
+            <class>GtkLabel</class>
+            <name>P026_HDMIDAS1</name>
+            <x>608</x>
+            <y>276</y>
+            <width>100</width>
+            <height>20</height>
+            <sensitive>True</sensitive>
+            <can_focus>False</can_focus>
+            <has_focus>False</has_focus>
+            <xalign>0.5</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+            <ypad>0</ypad>
+            <label></label>
+            <justify>GTK_JUSTIFY_CENTER</justify>
+            <wrap>False</wrap>
+          </widget>
+          <widget>
+            <class>GtkLabel</class>
+            <name>P026_HDMIDAS2</name>
+            <x>840</x>
+            <y>276</y>
+            <width>100</width>
+            <height>20</height>
+            <sensitive>True</sensitive>
+            <can_focus>False</can_focus>
+            <has_focus>False</has_focus>
+            <xalign>0.5</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+            <ypad>0</ypad>
+            <label></label>
+            <justify>GTK_JUSTIFY_CENTER</justify>
+            <wrap>False</wrap>
           </widget>
         </widget>
         <widget>

@@ -798,27 +798,27 @@
                     06  P02-HPOS    PIC S9(9)   BINARY.
                     06  P02-VPOS    PIC S9(9)   BINARY.
                     06  P02-P026-HDHKNLST1.
-                      07  P02-P026-HDMIDAS1.
-                        08  P02-VALUE   PIC X(20).
                       07  P02-P026-HDHKNLST1-COUNT  PIC S9(9)   BINARY.
                       07  P02-P026-HDHKNLST1-ROW PIC S9(9)   BINARY.
                       07  P02-ITEM        OCCURS  20 TIMES.
                         08  P02-P026-THKNNUM1  PIC X(4).
-                        08  P02-P026-THKNMEI1  PIC X(50).
+                        08  P02-P026-THKNMEI1  PIC X(60).
                       07  P02-P026-HDHKNLST1-SELECT
                               PIC X       OCCURS  20 TIMES.
                   05  P02-SCROLLEDWINDOW3.
                     06  P02-HPOS    PIC S9(9)   BINARY.
                     06  P02-VPOS    PIC S9(9)   BINARY.
                     06  P02-P026-HDHKNLST2.
-                      07  P02-P026-HDMIDAS2.
-                        08  P02-VALUE   PIC X(20).
                       07  P02-P026-HDHKNLST2-COUNT PIC S9(9)   BINARY.
                       07  P02-P026-HDHKNLST2-ROW PIC S9(9)   BINARY.
                       07  P02-ITEM        OCCURS  20 TIMES.
                         08  P02-P026-THKNNUM2  PIC X(4).
-                        08  P02-P026-THKNMEI2  PIC X(50).
+                        08  P02-P026-THKNMEI2  PIC X(60).
                       07  P02-P026-HDHKNLST2-SELECT
                               PIC X       OCCURS  20 TIMES.
+                  05  P02-P026-HDMIDAS1.
+                    06  P02-VALUE   PIC X(20).
+                  05  P02-P026-HDMIDAS2.
+                    06  P02-VALUE   PIC X(20).
 
 

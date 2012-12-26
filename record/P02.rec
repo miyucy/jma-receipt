@@ -1109,14 +1109,11 @@ P02	{
 					hpos	int;
 					vpos	int;
 					P026_HDHKNLST1	{
-						HDMIDAS1	{
-							value	varchar(20);
-						};
 						count	int;
 						row	int;
 						item	{
 							value0	varchar(4);
-							value1	varchar(50);
+							value1	varchar(60);
 						}	[20];
 						select	bool[20];
 					};
@@ -1125,17 +1122,20 @@ P02	{
 					hpos	int;
 					vpos	int;
 					P026_HDHKNLST2	{
-						HDMIDAS2	{
-							value	varchar(20);
-						};
 						count	int;
 						row	int;
 						item	{
 							value0	varchar(4);
-							value1	varchar(50);
+							value1	varchar(60);
 						}	[20];
 						select	bool[20];
 					};
+				};
+				P026_HDMIDAS1	{
+					value	varchar(20);
+				};
+				P026_HDMIDAS2	{
+					value	varchar(20);
 				};
 			};
 		};

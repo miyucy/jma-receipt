@@ -1191,6 +1191,12 @@
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "2640"
+                   STRING  "振分日で期間変更の保険が"
+                           "同一保険者でありません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
       *
       *        患者番号取得エラー
                WHEN    "8000"
