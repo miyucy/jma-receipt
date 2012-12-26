@@ -52,7 +52,7 @@ tbl_pt_hdist_day {
     UPHMS               char(6);
 };
 primary {
-    HOSPNUM,PTID,NYUGAIKBN,SRYYM,DAY;
+    HOSPNUM,PTID,NYUGAIKBN,SRYYM,DAY,RECEIPT_KBN;
 };
 
 
@@ -66,6 +66,7 @@ path	key		{
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     SRYYM          =   :SRYYM
 			AND     DAY            =   :DAY
+			AND     RECEIPT_KBN    =   :RECEIPT_KBN
 		;
 	};
 };

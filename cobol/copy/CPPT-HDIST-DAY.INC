@@ -35,7 +35,8 @@
       *振分日
                05  PT-HDIST-DAY-DAY        PIC X(02).
       *レセプト区分
-           03  PT-HDIST-DAY-RECEIPT-KBN    PIC X(01).
+               05  PT-HDIST-DAY-RECEIPT-KBN
+                                           PIC X(01).
       *保険組合せ情報（１：前 ２：後）
            03  PT-HDIST-DAY-HKNCOMBI-INF.
                05  PT-HDIST-DAY-HKNCOMBI-OCC   OCCURS 2.

@@ -10,7 +10,7 @@ create	table	tbl_pt_hdist_day	(
 	NYUGAIKBN	char(1) NOT NULL,
 	SRYYM	   	char(6) NOT NULL,
 	DAY  		char(2) NOT NULL,
-	RECEIPT_KBN	char(1),
+	RECEIPT_KBN	char(1) NOT NULL,
 	HKNCOMBI1_1	smallint DEFAULT 0,
 	HKNCOMBI1_2	smallint DEFAULT 0,
 	HKNCOMBI1_3	smallint DEFAULT 0,
@@ -61,6 +61,7 @@ create	table	tbl_pt_hdist_day	(
 		PTID,
 		NYUGAIKBN,
 		SRYYM,
-		DAY
+		DAY,
+		RECEIPT_KBN
 	)
 );
