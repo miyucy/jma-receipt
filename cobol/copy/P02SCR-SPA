@@ -1094,6 +1094,9 @@
                        09  SPA-GMN26-HDRESEKBN-MEI PIC X(18).
       *
                    07  SPA-NAI26-HDSRYYM           PIC X(06).
+                   07  SPA-NAI26-STHKNID           PIC 9(10).
+                   07  SPA-NAI26-EDHKNID           PIC 9(10).
+      *
       *        患者レセプト分割リスト
                05  SPA-GMN26-HDLIST-TBL.
                    07  SPA-GMN26-HDLIST-OCC         OCCURS  20.

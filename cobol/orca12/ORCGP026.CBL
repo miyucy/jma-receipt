@@ -65,6 +65,7 @@
            03  FLG-HKNOK-ALL       PIC 9(01).
            03  FLG-HYOJI           PIC 9(01).
            03  FLG-HKNCOMBI-ERR    PIC 9(01).
+           03  FLG-HKNOK-ERR       PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -125,6 +126,9 @@
                05  WRK-END-HKNJANUM        PIC X(08).
                05  WRK-CHKSRT-HKNJANUM     PIC X(08).
                05  WRK-CHKEND-HKNJANUM     PIC X(08).
+      *
+               05  WRK-SRT-HKNID           PIC 9(10).
+               05  WRK-END-HKNID           PIC 9(10).
       *
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-HKNCOMBI-MEI        PIC X(100).
@@ -830,6 +834,10 @@
                    MOVE    "2639"          TO  SPA-ERRCD
                    MOVE    25              TO  SPA-GMN26-CUR
                END-IF
+               IF      SPA-ERRCD           =   "2641"
+                   MOVE    27                  TO  SPA-GMN26-CUR
+               END-IF
+      *
                IF      SPA-ERRCD       NOT =   SPACE
                    MOVE    IDX             TO  SPA-GMN26-HDSELNUM
                END-IF
@@ -1877,7 +1885,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
                IF     (SPA-ERRCD           =   SPACE  )
                   AND (SPA-GMN26-HDSRYYM   =   SPACE  )
-                   MOVE    "2633"              TO  SPA-ERRCD
+                   MOVE    "2632"              TO  SPA-ERRCD
                    MOVE    21                  TO  SPA-GMN26-CUR
                END-IF
                IF      SPA-ERRCD       NOT =   SPACE
@@ -1909,13 +1917,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        ÊÝ¸±´ü´Ö¥Á¥§¥Ã¥¯
                PERFORM 410131-PTHKNINF-CHK-SEC
                IF     (SPA-ERRCD      NOT  =   SPACE  )
+                AND   (FLG-HKNOK-ERR       =   ZERO   )
                    MOVE    SPACE               TO  SPA-ERRCD
                    MOVE    ZERO                TO  SPA-GMN26-CUR
-               ELSE
-                   MOVE    "1"                 TO  SPA-GMN26-HDRESEKBN
                END-IF
                IF     (WRK-CHKSRT-HKNNUM   =   WRK-CHKEND-HKNNUM)
-                 AND  (WRK-CHKSRT-HKNNUM   NOT =   SPACE        )
+      *********  AND  (WRK-CHKSRT-HKNNUM   NOT =   SPACE        )
+                 AND  (SPA-ERRCD               =   SPACE        )
+                 AND  (SPA-GMN26-HDRESEKBN     =   SPACE        )
                    EVALUATE    WRK-CHKSRT-HKNNUM
                        WHEN    "060"
                        WHEN    "063"
@@ -2091,6 +2100,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            MOVE    ZERO                TO  FLG-HKNOK-ALL
+           MOVE    ZERO                TO  FLG-HKNOK-ERR
            PERFORM
                UNTIL   (FLG-PARA           =   1  )
       *
@@ -2124,10 +2134,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        IF      PTHKN-TEKSTYMD      =   WRK-SRYYMD
                            MOVE    PTHKN-HKNNUM    TO  WRK-SRT-HKNNUM
                            MOVE    PTHKN-HKNJANUM  TO  WRK-SRT-HKNJANUM
+                           MOVE    PTHKN-HKNID     TO  WRK-SRT-HKNID
                        END-IF
                        IF      PTHKN-TEKEDYMD      =   WRK-SRYYMD-1
                            MOVE    PTHKN-HKNNUM    TO  WRK-END-HKNNUM
                            MOVE    PTHKN-HKNJANUM  TO  WRK-END-HKNJANUM
+                           MOVE    PTHKN-HKNID     TO  WRK-END-HKNID
                        END-IF
                    END-IF
       *
@@ -2169,6 +2181,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 990-DBCLOSE-SEC
       *
            IF      SPA-ERRCD           =   SPACE
+               IF     (FLG-HKNOK-ALL       =   1     )  AND
+                      (WRK-SRT-HKNNUM      =   SPACE )  AND
+                      (WRK-CHKSRT-HKNNUM   =   SPACE )  AND
+                      (SPA-GMN26-HDRESEKBN =   SPACE )
+                   MOVE    "2637"              TO  SPA-ERRCD
+                   MOVE    22                  TO  SPA-GMN26-CUR
+                   MOVE    1                   TO  FLG-HKNOK-ERR
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
                IF    ((WRK-SRT-HKNNUM      =   SPACE     )  AND
                       (FLG-HKNOK-ALL       =   1         ))
                OR    ( WRK-SRT-HKNNUM      NOT =   WRK-END-HKNNUM)
@@ -2183,6 +2206,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    24                  TO  SPA-GMN26-CUR
                END-IF
            END-IF
+      *
       *    ÊÝ¸±´ü´Ö¸«½Ð¤·
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPACE               TO  SPA-GMN26-HDMIDASI-G
@@ -2198,6 +2222,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            DELIMITED  BY  SIZE
                                            INTO  SPA-GMN26-HDMIDASI (2)
                END-STRING
+      *
+               IF      WRK-SRT-HKNNUM  NOT =   SPACE
+                   MOVE    WRK-SRT-HKNID       TO  SPA-NAI26-STHKNID
+                   MOVE    WRK-END-HKNID       TO  SPA-NAI26-EDHKNID
+               END-IF
            END-IF
            .
        410131-PTHKNINF-CHK-EXT.
@@ -2303,6 +2332,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                END-IF
                            END-IF
                    END-EVALUATE
+      *            ÊÝ¸±£É£ÄÈ½Äê
+                   IF      FLG-HKNOK       =   1
+      *                ¿¶ÂØÆüÁ°¤ÇÊÝ¸±£É£ÄÈ½Äê
+                       IF     (SPA-NAI26-EDHKNID   NOT =   ZERO )
+                         AND  (SPA-NAI26-EDHKNID   NOT =   COMB-HKNID)
+                         AND  (COMB-TEKEDYMD       <   WRK-SRYYMD)
+                           MOVE    ZERO            TO  FLG-HKNOK
+                       END-IF
+      *                ¿¶ÂØÆü¸å¤ÇÊÝ¸±£É£ÄÈ½Äê
+                       IF     (SPA-NAI26-STHKNID   NOT =   ZERO )
+                         AND  (SPA-NAI26-STHKNID   NOT =   COMB-HKNID)
+                         AND  (COMB-TEKSTYMD       >=  WRK-SRYYMD  )
+                           MOVE    ZERO            TO  FLG-HKNOK
+                       END-IF
+                   END-IF
       *
                    IF      FLG-HKNOK       =   1
       *                ¿¶ÂØÆü°ÊÁ°
@@ -2332,11 +2376,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        ÂÐ¾Ý¤Ê¤·
                MOVE    "2638"              TO  SPA-ERRCD
                MOVE    24                  TO  SPA-GMN26-CUR
+               IF      SPA-NAI26-STHKNID   =   ZERO
+                   MOVE    22                  TO  SPA-GMN26-CUR
+               END-IF
            END-IF
       *    ´ü´Ö³°¤Î¸øÈñÃ±ÆÈ¤¢¤ê
-           IF      FLG-HKNCOMBI-ERR    =   1
+           IF     (FLG-HKNCOMBI-ERR    =   1  )
+             AND  (SPA-ERRCD           =   SPACE )
                MOVE    "2641"              TO  SPA-ERRCD
-               MOVE    27                  TO  SPA-GMN26-CUR
+               MOVE    22                  TO  SPA-GMN26-CUR
            END-IF
            .
        41013-HD-HKNCOMBI-CHK-EXT.
