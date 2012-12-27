@@ -194,6 +194,7 @@
            03  WRK-TEIMSG              PIC X(20).
       *
            03  WRK-HFTNLST2-ROW        PIC S9(09).
+           03  WRK-HKNKUMI-ROW         PIC S9(09).
       *   Ç¯ÎðÉ½¼¨
        01  WRK-NENREI-AREA.
            03  WRK-YMDS1.
@@ -2959,6 +2960,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    P02-P024-HFTNLST2-ROW   TO  WRK-HFTNLST2-ROW
            END-IF
+           IF     (SPA-GMN27-MAX        =   ZERO )
+             OR   (SPA-NAI27-SELNUM     =   ZERO )
+             OR   (SPA-P02-GAMEN    NOT =   "P027")
+               MOVE    ZERO                    TO  WRK-HKNKUMI-ROW
+           ELSE
+               MOVE    P02-P027-HKNKUMI-ROW    TO  WRK-HKNKUMI-ROW
+           END-IF
       *
            MOVE    SPACE               TO  P02
            INITIALIZE                      P02
@@ -3731,6 +3739,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            MOVE    ZERO                TO  P02-P027-HKNKUMI-COUNT
+           IF      WRK-HKNKUMI-ROW     NOT =   ZERO
+               MOVE    WRK-HKNKUMI-ROW     TO  P02-P027-HKNKUMI-ROW
+           END-IF
            PERFORM   VARYING     IDX     FROM   1   BY  1
                      UNTIL       IDX     >   SPA-GMN27-MAX
                      OR        ( SPA-GMN27-NUM   (IDX)
@@ -3771,6 +3782,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            =   SPA-NAI27-SELNUM
                    MOVE    "T"             TO  P02-P027-HKNKUMI-SELECT
                                                                (IDX)
+      *            MOVE    IDX             TO  P02-P027-HKNKUMI-ROW
+      *            MOVE    2               TO  P02-P027-HKNKUMI-ROWATTR
                ELSE
                    MOVE    "F"             TO  P02-P027-HKNKUMI-SELECT
                                                                (IDX)

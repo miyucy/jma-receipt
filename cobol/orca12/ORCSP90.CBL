@@ -1197,6 +1197,13 @@
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "2641"
+                   STRING  "振分日で振り分け出来ない保険組合せが"
+                           "あります。"
+                           "レセプト分割はできません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
       *
       *        患者番号取得エラー
                WHEN    "8000"
