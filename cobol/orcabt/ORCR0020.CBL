@@ -254,6 +254,7 @@
       *  04.07.01    NACL-藤原    11/06/02  入退院履歴記載対応
       *                                     「2自費分は含まない」を追加
       *  04.07.02    NACL-門脇    12/10/02  高齢者判定フラグ編集
+      *  04.07.03    NACL-藤原    12/12/17  複数枚レセプト分割対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1802,11 +1803,13 @@ grpsys             PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
       *    老併、老健の編集
-           IF      RECE01-RECEIPT-KBN   =   "1"
+           IF      RECE01-RECEIPT-KBN (1:1)
+                                        =   "1"
                ADD      1                   TO  TOKKI-IDX
                MOVE    "07"                 TO  RECE02-TOKKI (TOKKI-IDX)
            END-IF
-           IF      RECE01-RECEIPT-KBN   =   "2"
+           IF      RECE01-RECEIPT-KBN (1:1)
+                                        =   "2"
                ADD      1                   TO  TOKKI-IDX
                MOVE    "08"                 TO  RECE02-TOKKI (TOKKI-IDX)
            END-IF
@@ -3850,6 +3853,8 @@ grpsys                   PERFORM 900-DBSELECT-SEC
                              MOVE    1                TO  FLG-PTHKNINF  
                          END-IF
       *
+                         MOVE    ZERO                TO  FLG-RIREKI-HEN
+      *
                          PERFORM          UNTIL   FLG-PTHKNINF     =   1
                                           OR      FLG-RIREKI-HEN   =   1
                            IF      PTHKN-SAKJOKBN   =   SPACE
@@ -3950,8 +3955,8 @@ grpsys                           PERFORM 900-DBSELECT-SEC
                          IF      FLG-RIREKI-HEN      =   ZERO
                            MOVE    RECE09-REC        TO
                                                  TBL-RECE09-OCC (IDYY)
-                           MOVE    100               TO  IDYY
                          END-IF
+                         MOVE    100               TO  IDYY
                      ELSE                                            
                        INITIALIZE                      PTKOHINF-REC
                        MOVE    RECE01-HOSPNUM      TO  PTKOH-HOSPNUM

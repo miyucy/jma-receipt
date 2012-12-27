@@ -228,6 +228,7 @@
       *
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *  04.07.02    NACL-藤原    12/03/25  公費記載順設定対応
+      *  04.07.03    NACL-藤原    12/12/17  複数枚レセプト分割対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -307,6 +308,7 @@
            03  FLG-BTPARA                              PIC 9(01).
            03  FLG-SYUKA                               PIC 9(01).
            03  FLG-PTKOHINF                            PIC 9(01).
+           03  FLG-PT-HDIST-DAY                        PIC 9(01).
       * 
            03  FLG-KOH                                 PIC 9(01).
            03  FLG-CONTKBN                             PIC 9(01).
@@ -590,6 +592,14 @@
                                    BY          //TBL-PTKOH//.
            02  TBL-PTKOHINF-MAX    PIC 9(02).
       *
+      *    患者レセプト分割情報退避用領域
+       01  TBL-PT-HDIST-DAY-T.
+         02  TBL-PT-HDIST-DAY-REC      OCCURS  10.
+           COPY    "CPPT-HDIST-DAY.INC"
+                                   REPLACING   //PT-HDIST-DAY//
+                                   BY          //TBL-PT-HDIST-DAY//.
+         02  TBL-PT-HDIST-DAY-MAX  PIC 9(02).
+      *
        01  WRK-CONS-AREA.
       *    労災保険番号 
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
@@ -690,6 +700,10 @@
       *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
+      *
+      *    患者レセプト分割
+       01  PT-HDIST-DAY-REC.
+           COPY    "CPPT-HDIST-DAY.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -1143,6 +1157,9 @@ grpsys     MOVE    SPA-HOSPNUM             TO  PTINF-HOSPNUM
            ELSE
       *        施設入所情報
                PERFORM 500-SISETU-HENSYU-SEC
+      *
+      *        患者レセプト分割情報情報
+               PERFORM 500-PT-HDIST-DAY-HENSYU-SEC
       *
       *        患者年齢計算
                PERFORM 500-AGECHK-SEC
@@ -1897,6 +1914,51 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                        MOVE    TBL-PTKOHINF-MAX
                                            TO  IDX1
                    END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    患者レセプト分割情報の有無
+           IF    ( WRK-RECE01-RECEIPT-KBN (2:3)
+                                           =   SPACE )
+           AND   ( TBL-PT-HDIST-DAY-MAX    >   ZERO  )
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL   IDX1    >       TBL-PT-HDIST-DAY-MAX
+                   PERFORM VARYING IDX4    FROM    1   BY  1
+                           UNTIL   IDX4    >       2
+                       PERFORM VARYING IDX5    FROM    1   BY  1
+                               UNTIL   IDX5    >       10
+                               OR      TBL-PT-HDIST-DAY-HKNCOMBI
+                                                       (IDX1 IDX4 IDX5)
+                                               =   ZERO
+                           IF      COMB-HKNCOMBINUM    =
+                                   TBL-PT-HDIST-DAY-HKNCOMBI
+                                                       (IDX1 IDX4 IDX5)
+                               MOVE    TBL-PT-HDIST-DAY-DAY (IDX1)
+                                                       TO
+                                           WRK-RECE01-RECEIPT-KBN (2:2)
+                               IF      IDX4            =   1
+                                   MOVE    "1"         TO
+                                           WRK-RECE01-RECEIPT-KBN (4:1)
+                               ELSE
+                                   MOVE    "2"         TO
+                                           WRK-RECE01-RECEIPT-KBN (4:1)
+                               END-IF
+                               IF    ( TBL-PT-HDIST-DAY-SRYYM   (IDX1)
+                                           =   COMB-TEKSTYMD (1:6) AND
+                                       TBL-PT-HDIST-DAY-DAY (IDX1)
+                                           =   COMB-TEKSTYMD (7:2)     )
+                               OR    ( TBL-PT-HDIST-DAY-SRYYM   (IDX1)
+                                           =   COMB-TEKEDYMD (1:6) AND
+                                       TBL-PT-HDIST-DAY-DAY (IDX1)
+                                           =   COMB-TEKEDYMD (7:2)     )
+                                   MOVE    10              TO  IDX5
+                                   MOVE    2               TO  IDX4
+                                   MOVE    TBL-PT-HDIST-DAY-MAX
+                                                           TO  IDX1   
+                               END-IF
+                           END-IF
+                       END-PERFORM
+                   END-PERFORM
                END-PERFORM
            END-IF
       *
@@ -3172,6 +3234,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
       ***  MOVE    SYS-2002-PTID       TO  WRK-PTKOH-PTID
            PERFORM 500-SISETU-HENSYU-SEC
       *
+      *    患者レセプト分割情報情報
+           PERFORM 500-PT-HDIST-DAY-HENSYU-SEC
       *
       *    患者年齢計算
            PERFORM 500-AGECHK-SEC
@@ -3278,6 +3342,9 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
       ***      MOVE    SYS-2002-PTID       TO  WRK-PTKOH-PTID
                PERFORM 500-SISETU-HENSYU-SEC
       *
+      *        患者レセプト分割情報情報
+               PERFORM 500-PT-HDIST-DAY-HENSYU-SEC
+      *
       *        患者年齢計算
                PERFORM 500-AGECHK-SEC
       *
@@ -3364,6 +3431,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *            施設入所情報
       ***          MOVE    PTINF-PTID          TO  WRK-PTKOH-PTID
                    PERFORM 500-SISETU-HENSYU-SEC
+      *
+      *            患者レセプト分割情報情報
+                   PERFORM 500-PT-HDIST-DAY-HENSYU-SEC
       *
       *            患者年齢計算
                    PERFORM 500-AGECHK-SEC
@@ -3753,6 +3823,48 @@ grpsys                                     SPA-AREA
            PERFORM 900-CLOSE-SEC
            .
        500-SISETU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者レセプト分割情報処理
+      *****************************************************************
+       500-PT-HDIST-DAY-HENSYU-SEC     SECTION.
+      *
+           INITIALIZE                      TBL-PT-HDIST-DAY-T
+      *
+           INITIALIZE                      PT-HDIST-DAY-REC
+           MOVE    SPA-HOSPNUM         TO  PT-HDIST-DAY-HOSPNUM
+           MOVE    WRK-SYUKA-PTID      TO  PT-HDIST-DAY-PTID
+           MOVE    WRK-SYUKA-SRYYM     TO  PT-HDIST-DAY-SRYYM
+           MOVE    "2"                 TO  PT-HDIST-DAY-NYUGAIKBN
+           MOVE    PT-HDIST-DAY-REC    TO  MCPDATA-REC
+           MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-PT-HDIST-DAY-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PT-HDIST-DAY
+           END-IF
+           PERFORM     UNTIL   FLG-PT-HDIST-DAY    =   1
+                       OR      TBL-PT-HDIST-DAY-MAX
+                                                   >=  10
+               ADD     1                   TO  TBL-PT-HDIST-DAY-MAX
+               MOVE    PT-HDIST-DAY-REC    TO  TBL-PT-HDIST-DAY-REC
+                                               (TBL-PT-HDIST-DAY-MAX)
+      *
+               MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-PT-HDIST-DAY-READ-N-SEC
+           END-PERFORM
+           MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           .
+      *
+       500-PT-HDIST-DAY-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4159,6 +4271,24 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-SYUKA-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者レセプト分割読込
+      *****************************************************************
+       900-PT-HDIST-DAY-READ-N-SEC         SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  PT-HDIST-DAY-REC
+               MOVE    ZERO                TO  FLG-PT-HDIST-DAY
+           ELSE
+               MOVE    1                   TO  FLG-PT-HDIST-DAY
+               INITIALIZE                      PT-HDIST-DAY-REC
+           END-IF
+      *
+           .
+       900-PT-HDIST-DAY-READ-N-EXT.
            EXIT.
       *
       *****************************************************************
