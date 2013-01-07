@@ -5726,6 +5726,12 @@
                MOVE    SPA-NAI-ROUJIN      TO  SPA-MAE-ROUJIN
            END-IF
       *!!
+      *H25.1
+      *    入院中は再編集なし
+           IF      SPA-NAI-NYUIN       =   1
+               GO      TO      410121-HKNCOMBI-SAI-EXT
+           END-IF
+      *
       *
       *    保険区分が変更された時、再編集を行う
            IF     (SPA-HKNKBN          =   SPA-MAE-HKNKBN  )  AND
