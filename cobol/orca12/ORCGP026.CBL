@@ -2535,13 +2535,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                ¿¶ÂØÆüÁ°¤ÇÊÝ¸±£É£ÄÈ½Äê
                        IF     (SPA-NAI26-EDHKNID   NOT =   ZERO )
                          AND  (SPA-NAI26-EDHKNID   NOT =   COMB-HKNID)
-                         AND  (COMB-TEKEDYMD       <   WRK-SRYYMD)
+      *????????????      AND  (COMB-TEKEDYMD       <   WRK-SRYYMD)
                            MOVE    ZERO            TO  FLG-HKNOK
                        END-IF
       *                ¿¶ÂØÆü¸å¤ÇÊÝ¸±£É£ÄÈ½Äê
                        IF     (SPA-NAI26-STHKNID   NOT =   ZERO )
                          AND  (SPA-NAI26-STHKNID   NOT =   COMB-HKNID)
-                         AND  (COMB-TEKSTYMD       >=  WRK-SRYYMD  )
+      *??????????????    AND  (COMB-TEKSTYMD       >=  WRK-SRYYMD  )
                            MOVE    ZERO            TO  FLG-HKNOK
                        END-IF
                    END-IF
