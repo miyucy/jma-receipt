@@ -2424,6 +2424,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      WRK-SRT-HKNNUM  NOT =   SPACE
                    MOVE    WRK-SRT-HKNID       TO  SPA-NAI26-STHKNID
                    MOVE    WRK-END-HKNID       TO  SPA-NAI26-EDHKNID
+                   MOVE    WRK-SRT-HKNNUM      TO  SPA-NAI26-STHKNNUM
+                   MOVE    WRK-END-HKNNUM      TO  SPA-NAI26-EDHKNNUM
                END-IF
            END-IF
            .
@@ -2533,15 +2535,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            ÊÝ¸±£É£ÄÈ½Äê
                    IF      FLG-HKNOK       =   1
       *                ¿¶ÂØÆüÁ°¤ÇÊÝ¸±£É£ÄÈ½Äê
-                       IF     (SPA-NAI26-EDHKNID   NOT =   ZERO )
-                         AND  (SPA-NAI26-EDHKNID   NOT =   COMB-HKNID)
-      *????????????      AND  (COMB-TEKEDYMD       <   WRK-SRYYMD)
+                       IF     (SPA-NAI26-EDHKNNUM  NOT =   SPACE)
+                         AND  (SPA-NAI26-EDHKNNUM  NOT =   COMB-HKNNUM)
+                         AND  (COMB-TEKEDYMD       <   WRK-SRYYMD)
                            MOVE    ZERO            TO  FLG-HKNOK
                        END-IF
       *                ¿¶ÂØÆü¸å¤ÇÊÝ¸±£É£ÄÈ½Äê
-                       IF     (SPA-NAI26-STHKNID   NOT =   ZERO )
-                         AND  (SPA-NAI26-STHKNID   NOT =   COMB-HKNID)
-      *??????????????    AND  (COMB-TEKSTYMD       >=  WRK-SRYYMD  )
+                       IF     (SPA-NAI26-STHKNNUM   NOT =   SPACE)
+                         AND  (SPA-NAI26-STHKNNUM   NOT =   COMB-HKNNUM)
+                         AND  (COMB-TEKSTYMD       >=  WRK-SRYYMD  )
                            MOVE    ZERO            TO  FLG-HKNOK
                        END-IF
                    END-IF

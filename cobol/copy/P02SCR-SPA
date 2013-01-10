@@ -1099,6 +1099,8 @@
                    07  SPA-NAI26-HDSRYYM           PIC X(06).
                    07  SPA-NAI26-STHKNID           PIC 9(10).
                    07  SPA-NAI26-EDHKNID           PIC 9(10).
+                   07  SPA-NAI26-STHKNNUM          PIC X(03).
+                   07  SPA-NAI26-EDHKNNUM          PIC X(03).
       *
       *        患者レセプト分割リスト
                05  SPA-GMN26-HDLIST-TBL.
