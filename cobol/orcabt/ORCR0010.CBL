@@ -1930,6 +1930,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                                OR      TBL-PT-HDIST-DAY-HKNCOMBI
                                                        (IDX1 IDX4 IDX5)
                                                =   ZERO
+                         IF      TBL-PT-HDIST-DAY-DLTFLG
+                                                       (IDX1 IDX4 IDX5)
+                                                       =   "1"
+                           CONTINUE
+                         ELSE
                            IF      COMB-HKNCOMBINUM    =
                                    TBL-PT-HDIST-DAY-HKNCOMBI
                                                        (IDX1 IDX4 IDX5)
@@ -1957,6 +1962,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                                                            TO  IDX1   
                                END-IF
                            END-IF
+                         END-IF 
                        END-PERFORM
                    END-PERFORM
                END-PERFORM
@@ -3779,6 +3785,13 @@ grpsys                                     SPA-AREA
                    ADD     1               TO  TBL-PTKOHINF-MAX
                    MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
                                                    (TBL-PTKOHINF-MAX)
+      *
+                   DISPLAY "   TBL-PTKOHINF-MAX=" TBL-PTKOHINF-MAX
+                           " KOHNUM="
+                                   TBL-PTKOH-KOHNUM   (TBL-PTKOHINF-MAX)
+                           " ST="  TBL-PTKOH-TEKSTYMD (TBL-PTKOHINF-MAX)
+                           " ED="  TBL-PTKOH-TEKEDYMD (TBL-PTKOHINF-MAX)
+      *
                END-IF
       *
                MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
@@ -3812,6 +3825,13 @@ grpsys                                     SPA-AREA
                    ADD     1               TO  TBL-PTKOHINF-MAX
                    MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
                                                    (TBL-PTKOHINF-MAX)
+      *
+                   DISPLAY "   TBL-PTKOHINF-MAX=" TBL-PTKOHINF-MAX
+                           " KOHNUM="
+                                   TBL-PTKOH-KOHNUM   (TBL-PTKOHINF-MAX)
+                           " ST="  TBL-PTKOH-TEKSTYMD (TBL-PTKOHINF-MAX)
+                           " ED="  TBL-PTKOH-TEKEDYMD (TBL-PTKOHINF-MAX)
+      *
                END-IF
       *
                MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
@@ -3854,6 +3874,14 @@ grpsys                                     SPA-AREA
                ADD     1                   TO  TBL-PT-HDIST-DAY-MAX
                MOVE    PT-HDIST-DAY-REC    TO  TBL-PT-HDIST-DAY-REC
                                                (TBL-PT-HDIST-DAY-MAX)
+      *
+               DISPLAY "   TBL-PT-HDIST-DAY=" TBL-PT-HDIST-DAY-MAX
+                       " DAY=" TBL-PT-HDIST-DAY-DAY
+                                               (TBL-PT-HDIST-DAY-MAX)
+               DISPLAY "      1=" TBL-PT-HDIST-DAY-HKNCOMBI-OCC
+                                               (TBL-PT-HDIST-DAY-MAX 1)
+               DISPLAY "      2=" TBL-PT-HDIST-DAY-HKNCOMBI-OCC
+                                               (TBL-PT-HDIST-DAY-MAX 2)
       *
                MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME

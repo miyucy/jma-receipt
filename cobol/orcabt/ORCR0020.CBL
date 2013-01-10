@@ -1329,7 +1329,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                ELSE
                    PERFORM VARYING IDXX    FROM    1   BY  1
                            UNTIL   IDXX    >       WRK-SEIHO-RECE01-MAX
-      *              施設入所分と入所外でまとめる
+      *              分割区分毎にまとめる
                      IF      RECE01-RECEIPT-KBN    =
                                    WRK-SEIHO-RECE01-RECEIPT-KBN (IDXX)
                        PERFORM VARYING IDYY    FROM    1   BY  1
