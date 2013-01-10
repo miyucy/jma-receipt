@@ -1204,6 +1204,11 @@
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "2642"
+                   STRING  "削除番号選択エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
       *
       *        患者番号取得エラー
                WHEN    "8000"

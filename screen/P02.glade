@@ -23,12 +23,12 @@
     <wmclass_class></wmclass_class>
     <wmclass_name></wmclass_name>
     <signal>
-      <name>set_focus</name>
-      <handler>set_focus</handler>
-    </signal>
-    <signal>
       <name>map_event</name>
       <handler>map_event</handler>
+    </signal>
+    <signal>
+      <name>set_focus</name>
+      <handler>set_focus</handler>
     </signal>
     <signal>
       <name>delete_event</name>
@@ -1206,13 +1206,13 @@
               <data>CHANGED</data>
             </signal>
             <signal>
-              <name>focus_in_event</name>
-              <handler>select_all</handler>
-            </signal>
-            <signal>
               <name>activate</name>
               <handler>send_event</handler>
               <data>ACTIVATE</data>
+            </signal>
+            <signal>
+              <name>focus_in_event</name>
+              <handler>select_all</handler>
             </signal>
             <signal>
               <name>focus_out_event</name>
@@ -1450,14 +1450,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -1484,13 +1484,13 @@
               <data>CHANGED</data>
             </signal>
             <signal>
-              <name>focus_in_event</name>
-              <handler>select_all</handler>
-            </signal>
-            <signal>
               <name>activate</name>
               <handler>send_event</handler>
               <data>ACTIVATE</data>
+            </signal>
+            <signal>
+              <name>focus_in_event</name>
+              <handler>select_all</handler>
             </signal>
             <signal>
               <name>focus_out_event</name>
@@ -1616,14 +1616,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -1650,13 +1650,13 @@
               <data>CHANGED</data>
             </signal>
             <signal>
-              <name>focus_in_event</name>
-              <handler>select_all</handler>
-            </signal>
-            <signal>
               <name>activate</name>
               <handler>send_event</handler>
               <data>ACTIVATE</data>
+            </signal>
+            <signal>
+              <name>focus_in_event</name>
+              <handler>select_all</handler>
             </signal>
             <signal>
               <name>focus_out_event</name>
@@ -1782,14 +1782,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -1816,13 +1816,13 @@
               <data>CHANGED</data>
             </signal>
             <signal>
-              <name>focus_in_event</name>
-              <handler>select_all</handler>
-            </signal>
-            <signal>
               <name>activate</name>
               <handler>send_event</handler>
               <data>ACTIVATE</data>
+            </signal>
+            <signal>
+              <name>focus_in_event</name>
+              <handler>select_all</handler>
             </signal>
             <signal>
               <name>focus_out_event</name>
@@ -1948,14 +1948,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -2979,14 +2979,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -3008,14 +3008,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -3037,14 +3037,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -3222,14 +3222,14 @@
             <active>False</active>
             <draw_indicator>True</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -4927,14 +4927,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -5078,14 +5078,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -5107,14 +5107,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -5136,14 +5136,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -5165,14 +5165,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -5194,14 +5194,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -5223,14 +5223,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -5252,14 +5252,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -5281,14 +5281,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -5310,14 +5310,14 @@
             <active>False</active>
             <draw_indicator>False</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -5772,8 +5772,8 @@
               </signal>
               <signal>
                 <name>unselect_row</name>
-                <handler>selection_changed</handler>
-                <data>SELECT</data>
+                <handler>           </handler>
+                <data>  </data>
               </signal>
               <widget>
                 <class>GtkLabel</class>
@@ -5946,14 +5946,14 @@
             <active>False</active>
             <draw_indicator>True</draw_indicator>
             <signal>
+              <name>toggled</name>
+              <handler>button_toggled</handler>
+            </signal>
+            <signal>
               <name>clicked</name>
               <handler>send_event</handler>
               <data>CLICKED</data>
               <after>True</after>
-            </signal>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
             </signal>
           </widget>
           <widget>
@@ -9980,7 +9980,7 @@
           <widget>
             <class>GtkScrolledWindow</class>
             <name>scrolledwindow1</name>
-            <x>36</x>
+            <x>32</x>
             <y>300</y>
             <width>450</width>
             <height>128</height>
@@ -10118,7 +10118,7 @@
             <name>label7</name>
             <x>28</x>
             <y>448</y>
-            <width>80</width>
+            <width>60</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -10134,7 +10134,7 @@
           <widget>
             <class>GtkNumberEntry</class>
             <name>P026_HDSELNUM</name>
-            <x>40</x>
+            <x>32</x>
             <y>472</y>
             <width>50</width>
             <height>24</height>
@@ -10158,7 +10158,7 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P026_HD_NYUGAI_COMB</name>
-            <x>270</x>
+            <x>244</x>
             <y>472</y>
             <width>136</width>
             <height>24</height>
@@ -10195,7 +10195,7 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P026_HDSRYYM</name>
-            <x>120</x>
+            <x>104</x>
             <y>472</y>
             <width>80</width>
             <height>24</height>
@@ -10221,7 +10221,7 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P026_HDDAY</name>
-            <x>216</x>
+            <x>196</x>
             <y>472</y>
             <width>40</width>
             <height>24</height>
@@ -10247,7 +10247,7 @@
           <widget>
             <class>GtkLabel</class>
             <name>label9</name>
-            <x>120</x>
+            <x>104</x>
             <y>448</y>
             <width>80</width>
             <height>24</height>
@@ -10265,9 +10265,9 @@
           <widget>
             <class>GtkLabel</class>
             <name>label10</name>
-            <x>212</x>
+            <x>196</x>
             <y>448</y>
-            <width>60</width>
+            <width>50</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -10283,7 +10283,7 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P026_HD_RESEKBN_COMB</name>
-            <x>420</x>
+            <x>388</x>
             <y>472</y>
             <width>110</width>
             <height>24</height>
@@ -10321,7 +10321,7 @@
           <widget>
             <class>GtkLabel</class>
             <name>label11</name>
-            <x>272</x>
+            <x>256</x>
             <y>448</y>
             <width>60</width>
             <height>24</height>
@@ -10339,7 +10339,7 @@
           <widget>
             <class>GtkLabel</class>
             <name>label12</name>
-            <x>424</x>
+            <x>392</x>
             <y>448</y>
             <width>60</width>
             <height>24</height>
@@ -10379,7 +10379,7 @@
           <widget>
             <class>GtkButton</class>
             <name>BHD02</name>
-            <x>256</x>
+            <x>228</x>
             <y>520</y>
             <width>62</width>
             <height>24</height>
@@ -10401,7 +10401,7 @@
           <widget>
             <class>GtkButton</class>
             <name>BHD03</name>
-            <x>448</x>
+            <x>408</x>
             <y>520</y>
             <width>62</width>
             <height>24</height>
@@ -10423,9 +10423,9 @@
           <widget>
             <class>GtkScrolledWindow</class>
             <name>scrolledwindow2</name>
-            <x>560</x>
+            <x>516</x>
             <y>300</y>
-            <width>212</width>
+            <width>230</width>
             <height>200</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -10441,9 +10441,25 @@
               <has_focus>False</has_focus>
               <border_width>0</border_width>
               <show_titles>True</show_titles>
-              <columns>2</columns>
-              <column_widths>40,150</column_widths>
+              <columns>3</columns>
+              <column_widths>40,20,150</column_widths>
               <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+              <signal>
+                <name>select_row</name>
+                <handler>clist_send_event</handler>
+                <data>SELECT</data>
+                <after>True</after>
+              </signal>
+              <signal>
+                <name>select_row</name>
+                <handler>selection_changed</handler>
+                <data>SELECT</data>
+              </signal>
+              <signal>
+                <name>unselect_row</name>
+                <handler>selection_changed</handler>
+                <data>SELECT</data>
+              </signal>
               <widget>
                 <class>GtkLabel</class>
                 <child_name>CList:title</child_name>
@@ -10470,6 +10486,21 @@
                 <yalign>0.5</yalign>
                 <xpad>0</xpad>
                 <ypad>0</ypad>
+                <label>削</label>
+                <justify>GTK_JUSTIFY_CENTER</justify>
+                <wrap>False</wrap>
+              </widget>
+              <widget>
+                <class>GtkLabel</class>
+                <child_name>CList:title</child_name>
+                <name>label15</name>
+                <sensitive>True</sensitive>
+                <can_focus>False</can_focus>
+                <has_focus>False</has_focus>
+                <xalign>0.5</xalign>
+                <yalign>0.5</yalign>
+                <xpad>0</xpad>
+                <ypad>0</ypad>
                 <label>保険組合せ</label>
                 <justify>GTK_JUSTIFY_CENTER</justify>
                 <wrap>False</wrap>
@@ -10479,9 +10510,9 @@
           <widget>
             <class>GtkScrolledWindow</class>
             <name>scrolledwindow3</name>
-            <x>788</x>
+            <x>764</x>
             <y>300</y>
-            <width>212</width>
+            <width>230</width>
             <height>200</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -10497,13 +10528,29 @@
               <has_focus>False</has_focus>
               <border_width>0</border_width>
               <show_titles>True</show_titles>
-              <columns>2</columns>
-              <column_widths>40,150</column_widths>
+              <columns>3</columns>
+              <column_widths>40,20,150</column_widths>
               <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+              <signal>
+                <name>select_row</name>
+                <handler>clist_send_event</handler>
+                <data>SELECT</data>
+                <after>True</after>
+              </signal>
+              <signal>
+                <name>select_row</name>
+                <handler>selection_changed</handler>
+                <data>SELECT</data>
+              </signal>
+              <signal>
+                <name>unselect_row</name>
+                <handler>selection_changed</handler>
+                <data>SELECT</data>
+              </signal>
               <widget>
                 <class>GtkLabel</class>
                 <child_name>CList:title</child_name>
-                <name>label15</name>
+                <name>label16</name>
                 <sensitive>True</sensitive>
                 <can_focus>False</can_focus>
                 <has_focus>False</has_focus>
@@ -10518,7 +10565,22 @@
               <widget>
                 <class>GtkLabel</class>
                 <child_name>CList:title</child_name>
-                <name>label16</name>
+                <name>label17</name>
+                <sensitive>True</sensitive>
+                <can_focus>False</can_focus>
+                <has_focus>False</has_focus>
+                <xalign>0.5</xalign>
+                <yalign>0.5</yalign>
+                <xpad>0</xpad>
+                <ypad>0</ypad>
+                <label>削</label>
+                <justify>GTK_JUSTIFY_CENTER</justify>
+                <wrap>False</wrap>
+              </widget>
+              <widget>
+                <class>GtkLabel</class>
+                <child_name>CList:title</child_name>
+                <name>label18</name>
                 <sensitive>True</sensitive>
                 <can_focus>False</can_focus>
                 <has_focus>False</has_focus>
@@ -10567,6 +10629,90 @@
             <label></label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
+          </widget>
+          <widget>
+            <class>GtkLabel</class>
+            <name>label19</name>
+            <x>516</x>
+            <y>512</y>
+            <width>60</width>
+            <height>24</height>
+            <sensitive>True</sensitive>
+            <can_focus>False</can_focus>
+            <has_focus>False</has_focus>
+            <xalign>0.5</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+            <ypad>0</ypad>
+            <label>削除番号</label>
+            <justify>GTK_JUSTIFY_CENTER</justify>
+            <wrap>False</wrap>
+          </widget>
+          <widget>
+            <class>GtkNumberEntry</class>
+            <name>P026_DELSEL1</name>
+            <x>580</x>
+            <y>512</y>
+            <width>40</width>
+            <height>24</height>
+            <sensitive>True</sensitive>
+            <can_focus>True</can_focus>
+            <has_focus>False</has_focus>
+            <editable>True</editable>
+            <max_length>4</max_length>
+            <format>ZZZZ</format>
+            <signal>
+              <name>changed</name>
+              <handler>entry_changed</handler>
+              <data>CHANGED</data>
+            </signal>
+            <signal>
+              <name>activate</name>
+              <handler>send_event</handler>
+              <data>ACTIVATE</data>
+            </signal>
+          </widget>
+          <widget>
+            <class>GtkLabel</class>
+            <name>label20</name>
+            <x>764</x>
+            <y>512</y>
+            <width>60</width>
+            <height>24</height>
+            <sensitive>True</sensitive>
+            <can_focus>False</can_focus>
+            <has_focus>False</has_focus>
+            <xalign>0.5</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+            <ypad>0</ypad>
+            <label>削除番号</label>
+            <justify>GTK_JUSTIFY_CENTER</justify>
+            <wrap>False</wrap>
+          </widget>
+          <widget>
+            <class>GtkNumberEntry</class>
+            <name>P026_DELSEL2</name>
+            <x>824</x>
+            <y>512</y>
+            <width>40</width>
+            <height>24</height>
+            <sensitive>True</sensitive>
+            <can_focus>True</can_focus>
+            <has_focus>False</has_focus>
+            <editable>True</editable>
+            <max_length>4</max_length>
+            <format>ZZZZ</format>
+            <signal>
+              <name>changed</name>
+              <handler>entry_changed</handler>
+              <data>CHANGED</data>
+            </signal>
+            <signal>
+              <name>activate</name>
+              <handler>send_event</handler>
+              <data>ACTIVATE</data>
+            </signal>
           </widget>
         </widget>
         <widget>

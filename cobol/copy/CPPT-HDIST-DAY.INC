@@ -40,8 +40,13 @@
       *保険組合せ情報（１：前 ２：後）
            03  PT-HDIST-DAY-HKNCOMBI-INF.
                05  PT-HDIST-DAY-HKNCOMBI-OCC   OCCURS 2.
-                   07  PT-HDIST-DAY-HKNCOMBI
-                                           PIC 9(04)   OCCURS 20.
+                   07  PT-HDIST-DAY-HKNCOMBI-T OCCURS 20.
+      *保険組合せ
+                       09  PT-HDIST-DAY-HKNCOMBI
+                                           PIC 9(04).
+      *削除フラグ
+                       09  PT-HDIST-DAY-DLTFLG
+                                           PIC X(01).
       *端末ＩＤ
            03  PT-HDIST-DAY-TERMID         PIC X(16).
       *オペーレータＩＤ

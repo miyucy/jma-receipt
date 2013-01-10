@@ -1092,6 +1092,9 @@
                        09  SPA-GMN26-HDRESEKBN     PIC X(01).
                        09  SPA-GMN26-HD2           PIC X(01).
                        09  SPA-GMN26-HDRESEKBN-MEI PIC X(18).
+      *            保険組合せ削除
+                   07  SPA-GMN26-DELSEL1           PIC 9(04).
+                   07  SPA-GMN26-DELSEL2           PIC 9(04).
       *
                    07  SPA-NAI26-HDSRYYM           PIC X(06).
                    07  SPA-NAI26-STHKNID           PIC 9(10).
@@ -1115,7 +1118,8 @@
                        09  SPA-NAI26-HDHKNLST-TBL.
                            11  SPA-NAI26-HDHKNLST-OCC    OCCURS  2.
                                13  SPA-NAI26-THKNCOMBI-G   OCCURS  20.
-                                   15  SPA-NAI26-THKNCOMBI PIC X(04).
+                                   15  SPA-NAI26-THKNCOMBI   PIC X(04).
+                                   15  SPA-NAI26-THKNDLTFLG  PIC X(01).
       *
                    07  SPA-GMN26-HDLSTMAX            PIC 9(03).
       *        保険組合せ
@@ -1125,6 +1129,7 @@
                    07  SPA-GMN26-HDHKNLST-OCC         OCCURS  2.
                        09  SPA-GMN26-HDHKNLST-OCC2       OCCURS  20.
                            11  SPA-GMN26-THDHKNCOMBI     PIC X(04).
+                           11  SPA-GMN26-THDHKNDELFLG    PIC X(01).
                            11  SPA-GMN26-THDHKNNAME      PIC X(60).
       *
       *

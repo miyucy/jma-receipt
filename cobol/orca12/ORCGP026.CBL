@@ -84,6 +84,7 @@
            03  IDR                 PIC 9(04).
            03  IDX-C               PIC 9(04).
            03  IDX5                PIC 9(04).
+           03  IDX-HW              PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -135,6 +136,16 @@
            03  WRK-HKNCOMBI-MAX        PIC 9(04).
       *
            03  WRK-CHK-HKNCOMBI        PIC X(04).
+           03  WRK-HKNDELFLG           PIC X(01).
+      *
+      *    対象保険組合せチェック
+           03  WRK-HDHKNLST-TBL.
+               05  WRK-HDHKNLST-OCC         OCCURS  2.
+                   07  WRK-HDHKNLST-OCC2       OCCURS  20.
+                       11  WRK-THDHKNCOMBI     PIC X(04).
+                       11  WRK-THDHKNDELFLG    PIC X(01).
+                       11  WRK-THDHKNNAME      PIC X(60).
+      *
       *
       *    レセプト分割対象保険組合せ
        01  TBL-HDHKNLST-AREA.
@@ -489,6 +500,9 @@
                            MOVE    PT-HDIST-DAY-HKNCOMBI (IDX-H1 IDX-H2)
                                            TO  SPA-NAI26-THKNCOMBI
                                                    (IDX IDX-H1 IDX-H2)
+                           MOVE    PT-HDIST-DAY-DLTFLG (IDX-H1 IDX-H2)
+                                           TO  SPA-NAI26-THKNDLTFLG
+                                                   (IDX IDX-H1 IDX-H2)
                        END-IF
                    END-PERFORM
                END-PERFORM
@@ -633,6 +647,10 @@
                    MOVE    "BHD03"              TO  MCP-WIDGET
                WHEN    27
                    MOVE    "BHD01"              TO  MCP-WIDGET
+               WHEN    28
+                   MOVE    "P026_DELSEL1"       TO  MCP-WIDGET
+               WHEN    29
+                   MOVE    "P026_DELSEL2"       TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -883,6 +901,10 @@
                                                    (IDX IDX-H1 IDX-H2)
                                            TO  PT-HDIST-DAY-HKNCOMBI
                                                         (IDX-H1 IDX-H2)
+                           MOVE    SPA-NAI26-THKNDLTFLG
+                                                   (IDX IDX-H1 IDX-H2)
+                                           TO  PT-HDIST-DAY-DLTFLG
+                                                        (IDX-H1 IDX-H2)
                        END-IF
                    END-PERFORM
                END-PERFORM
@@ -1039,6 +1061,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SPA-GMN26-THDHKNCOMBI (IDX-H  IDX-H2)
                                TO  SPA-NAI26-THKNCOMBI
                                                (IDX IDX-H  IDX-H2)
+                       MOVE    SPA-GMN26-THDHKNDELFLG (IDX-H  IDX-H2)
+                               TO  SPA-NAI26-THKNDLTFLG
+                                               (IDX IDX-H  IDX-H2)
                    END-PERFORM
                END-PERFORM
       *
@@ -1074,6 +1099,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    番号選択
                WHEN    "ACTIVATE"      ALSO    "P026_HDSELNUM"
                    PERFORM 41015-HDSELNUM-SEC
+      *    振日前リスト選択
+               WHEN    ANY             ALSO    "P026_HDHKNLST1"
+                   PERFORM 41016-HDHKNLST1-SYORI-SEC
+      *        番号選択
+               WHEN    "ACTIVATE"      ALSO    "P026_DELSEL1"
+                   PERFORM 41017-DELSEL1-SEC
+      *    振日後リスト選択
+               WHEN    ANY             ALSO    "P026_HDHKNLST2"
+                   PERFORM 41016-HDHKNLST2-SYORI-SEC
+      *        番号選択
+               WHEN    "ACTIVATE"      ALSO    "P026_DELSEL2"
+                   PERFORM 41017-DELSEL2-SEC
                WHEN    OTHER
                    MOVE    ZERO                TO  FLG-TOUROKU
       *            入力チェック処理
@@ -1259,6 +1296,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            OR  ZERO  )
                    MOVE    SPA-NAI26-THKNCOMBI (IDX IDX-H  IDX-H2)
                                            TO  WRK-HKNCOMBI
+                   MOVE    SPA-NAI26-THKNDLTFLG (IDX IDX-H  IDX-H2)
+                                           TO  WRK-HKNDELFLG
                    PERFORM 410131-HDLIST-HKNCOMBI-SEC
                END-PERFORM
            END-PERFORM
@@ -1345,6 +1384,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    TBL-HD-HKNCOMBI-MEI (IDX-H IDX-H2)
                                            TO  SPA-GMN26-THDHKNNAME
                                                     (IDX-H IDX-H2)
+      *            削除区分
+                   MOVE    WRK-HKNDELFLG   TO  SPA-GMN26-THDHKNDELFLG
+                                                    (IDX-H IDX-H2)
+      *
       *            対象チェック
                    IF     (COMB-DELKBN     NOT =   SPACE )
       *                削除
@@ -1364,6 +1407,145 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            .
        410131-HDLIST-HKNCOMBI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト分割保険組合せ一覧覧選択
+      *****************************************************************
+       41016-HDHKNLST1-SYORI-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SELNUM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   20   )  OR
+                              (SPA-GMN26-THDHKNCOMBI (1 IDX) =  SPACE)
+               IF      P02-P026-HDHKNLST1-SELECT (IDX)  =   "T"
+                   MOVE    SPA-GMN26-THDHKNCOMBI (1 IDX)
+                                               TO  WRK-SELNUM
+                   MOVE    20                  TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SELNUM      NOT =   ZERO
+               MOVE    WRK-SELNUM          TO  SPA-GMN26-DELSEL1
+           END-IF
+      *
+           IF      SPA-GMN26-DELSEL1   >   ZERO
+               MOVE    SPA-GMN26-DELSEL1   TO   P02-P026-DELSEL1
+               PERFORM 41017-DELSEL1-SEC
+           END-IF
+      *
+           .
+       41016-HDHKNLST1-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    選択番号入力処理
+      *****************************************************************
+       41017-DELSEL1-SEC           SECTION.
+      *
+           MOVE    P02-P026-DELSEL1    TO  SPA-GMN26-DELSEL1
+      *
+           IF      SPA-GMN26-DELSEL1   =   ZERO
+               MOVE    29              TO  SPA-GMN26-CUR
+               GO      TO      41017-DELSEL1-EXT
+           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   20  )
+                          OR  (FLG-OK      =   1   )
+                          OR  (SPA-GMN26-THDHKNCOMBI (1 IDX) =  SPACE)
+               IF      SPA-GMN26-THDHKNCOMBI (1 IDX)
+                                               =   SPA-GMN26-DELSEL1
+                   IF      SPA-GMN26-THDHKNDELFLG (1 IDX)
+                                               =   SPACE
+                       MOVE    "1"         TO  SPA-GMN26-THDHKNDELFLG
+                                                              (1 IDX)
+                   ELSE
+                       MOVE    SPACE       TO  SPA-GMN26-THDHKNDELFLG
+                                                              (1 IDX)
+                   END-IF
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "2642"          TO  SPA-ERRCD
+               MOVE    28              TO  SPA-GMN26-CUR
+           ELSE
+               MOVE    29              TO  SPA-GMN26-CUR
+               MOVE    ZERO            TO  SPA-GMN26-DELSEL1
+           END-IF
+      *
+           .
+       41017-DELSEL1-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセプト分割保険組合せ一覧覧選択
+      *****************************************************************
+       41016-HDHKNLST2-SYORI-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  WRK-SELNUM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   20   )  OR
+                              (SPA-GMN26-THDHKNCOMBI (2 IDX) =  SPACE)
+               IF      P02-P026-HDHKNLST2-SELECT (IDX)  =   "T"
+                   MOVE    SPA-GMN26-THDHKNCOMBI (2 IDX)
+                                               TO  WRK-SELNUM
+                   MOVE    20                  TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           IF      WRK-SELNUM      NOT =   ZERO
+               MOVE    WRK-SELNUM          TO  SPA-GMN26-DELSEL2
+           END-IF
+      *
+           IF      SPA-GMN26-DELSEL2   >   ZERO
+               MOVE    SPA-GMN26-DELSEL2   TO   P02-P026-DELSEL2
+               PERFORM 41017-DELSEL2-SEC
+           END-IF
+      *
+           .
+       41016-HDHKNLST2-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    選択番号入力処理
+      *****************************************************************
+       41017-DELSEL2-SEC           SECTION.
+      *
+           MOVE    P02-P026-DELSEL2    TO  SPA-GMN26-DELSEL2
+      *
+           IF      SPA-GMN26-DELSEL2   =   ZERO
+               MOVE    29              TO  SPA-GMN26-CUR
+               GO      TO      41017-DELSEL2-EXT
+           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   20  )
+                          OR  (FLG-OK      =   1   )
+                          OR  (SPA-GMN26-THDHKNCOMBI (2 IDX) =  SPACE)
+               IF      SPA-GMN26-THDHKNCOMBI (2 IDX)
+                                               =   SPA-GMN26-DELSEL2
+                   IF      SPA-GMN26-THDHKNDELFLG (2 IDX)
+                                               =   SPACE
+                       MOVE    "1"         TO  SPA-GMN26-THDHKNDELFLG
+                                                              (2 IDX)
+                   ELSE
+                       MOVE    SPACE       TO  SPA-GMN26-THDHKNDELFLG
+                                                              (2 IDX)
+                   END-IF
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "2642"          TO  SPA-ERRCD
+               MOVE    29              TO  SPA-GMN26-CUR
+           ELSE
+               MOVE    26              TO  SPA-GMN26-CUR
+               MOVE    ZERO            TO  SPA-GMN26-DELSEL2
+           END-IF
+      *
+           .
+       41017-DELSEL2-EXT.
            EXIT.
       *****************************************************************
       *    入力チェック処理
@@ -2015,6 +2197,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        対象保険組合せチェック
                PERFORM 41013-HD-HKNCOMBI-CHK-SEC
       *
+               MOVE    SPA-GMN26-HDHKNLST-TBL  TO  WRK-HDHKNLST-TBL
+      *
                INITIALIZE                  SPA-GMN26-HDHKNLST-TBL
                PERFORM VARYING    IDX-H    FROM    1   BY  1
                        UNTIL      IDX-H    >   2
@@ -2047,6 +2231,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    TBL-HD-HKNCOMBI-MEI (IDX-H IDX-H2)
                                            TO  SPA-GMN26-THDHKNNAME
                                                    (IDX-H IDX-H3)
+      *                    削除分反映
+                           PERFORM VARYING    IDX-HW   FROM    1   BY  1
+                                   UNTIL     (IDX-HW   >   20  )
+                                      OR (WRK-THDHKNCOMBI (IDX-H IDX-HW)
+                                                   =   SPACE )
+                           IF      SPA-GMN26-THDHKNCOMBI(IDX-H IDX-H3)
+                                                   =   WRK-THDHKNCOMBI
+                                                       (IDX-H IDX-HW)
+                               MOVE    WRK-THDHKNDELFLG (IDX-H IDX-HW)
+                                           TO  SPA-GMN26-THDHKNDELFLG
+                                                       (IDX-H IDX-H3)
+                                   MOVE    20      TO  IDX-HW
+                               END-IF
+                           END-PERFORM
                        END-IF
                    END-PERFORM
                END-PERFORM
@@ -2326,7 +2524,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    MOVE    1               TO  FLG-HKNOK
                                END-IF
                                IF     (COMB-HKNNUM         =   SPACE)
-                               AND    (WRK-SRT-HKNNUM      =   SPACE)
+      *?????                   AND    (WRK-SRT-HKNNUM      =   SPACE)
       *                            公費単独チェック
                                    PERFORM 410131-KOHONLY-CHK-SEC
                                END-IF
@@ -2348,7 +2546,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
       *
-                   IF      FLG-HKNOK       =   1
+                   IF     (FLG-HKNOK       =   1   )
+                      OR  (FLG-HKNOK       =   2   )
       *                振替日以前
                        IF     (COMB-TEKEDYMD   <   WRK-SRYYMD  )
                            MOVE    1               TO  IDX-H
@@ -2413,6 +2612,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1               TO  FLG-HKNOK
            END-IF
       *
+      *    保険ありの時は、公費単独はすべて対象とする
+           IF     (FLG-HKNOK           =   ZERO )
+             AND  (WRK-SRT-HKNNUM  NOT =   SPACE)
+               MOVE    2               TO  FLG-HKNOK
+           END-IF
+      *
            IF      FLG-HKNOK           =   ZERO
                MOVE    1               TO  FLG-HKNCOMBI-ERR
            END-IF
@@ -2427,17 +2632,29 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        41013-HD-HKNCOMMEI-SEC             SECTION.
       *
            MOVE    SPACE               TO  WRK-HKNCOMBI-MEI
-           STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                   " "                     DELIMITED  BY  SIZE
-                   COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+           IF      COMB-SYU-TANSEIDONAME   =   SPACE
+               STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                                        INTO      WRK-HKNCOMBI-MEI
-           END-STRING
+               END-STRING
+           ELSE
+               STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
+                       " "                     DELIMITED  BY  SIZE
+                       COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
+                                       INTO      WRK-HKNCOMBI-MEI
+               END-STRING
+           END-IF
       *
            MOVE    COMB-HKNCOMBINUM    TO  TBL-HD-HKNCOMBI
                                                   (IDX-H IDX-H2)

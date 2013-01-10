@@ -4134,6 +4134,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  P02-P026-THKNNUM1(IDX)
                MOVE    SPA-GMN26-THDHKNNAME (1 IDX)
                                            TO  P02-P026-THKNMEI1(IDX)
+               IF      SPA-GMN26-THDHKNDELFLG (1 IDX)  =   "1"
+                   MOVE    "¡ý"            TO  P02-P026-TDELKBN1 (IDX)
+               END-IF
                MOVE    IDX                 TO  P02-P026-HDHKNLST1-COUNT
            END-PERFORM
       *    ¿¶Ê¬Æü°Ê¹ß
@@ -4145,8 +4148,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  P02-P026-THKNNUM2(IDX)
                MOVE    SPA-GMN26-THDHKNNAME (2 IDX)
                                            TO  P02-P026-THKNMEI2(IDX)
+               IF      SPA-GMN26-THDHKNDELFLG (2 IDX)  =   "1"
+                   MOVE    "¡ý"            TO  P02-P026-TDELKBN2 (IDX)
+               END-IF
                MOVE    IDX                 TO  P02-P026-HDHKNLST2-COUNT
            END-PERFORM
+           MOVE    SPA-GMN26-DELSEL1       TO  P02-P026-DELSEL1
+           MOVE    SPA-GMN26-DELSEL2       TO  P02-P026-DELSEL2
            .
        2001-P026-SET-EXT.
            EXIT.
