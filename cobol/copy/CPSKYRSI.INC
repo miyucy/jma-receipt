@@ -49,7 +49,7 @@
                05  SKYRSI-KOHID-KEY        PIC 9(10).
       *適用開始年月日
                05  SKYRSI-TEKSTYMD         PIC X(08).
-      *入所中区分
+      *分割区分
                05  SKYRSI-RECEIPT-KBN      PIC X(10).
       *労災情報
            03  SKYRSI-RSIINF.

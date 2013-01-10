@@ -88,7 +88,7 @@
                    07  RECE05-KOHID        PIC 9(10).
       *適用開始年月日
                    07  RECE05-TEKSTYMD     PIC X(08). 
-      *入所中区分
+      *分割区分
                    07  RECE05-RECEIPT-KBN  PIC X(10).
       *剤番号
                05  RECE05-ZAINUM          PIC  9(08).

@@ -60,7 +60,7 @@
                05  RECEDEN-KOHID-KEY        PIC  9(10).
       *適用開始年月日
                05  RECEDEN-TEKSTYMD         PIC  X(08).
-      *入所中区分
+      *分割区分
                05  RECEDEN-RECEIPT-KBN      PIC  X(10).
       *レコード区分（１：レセ電、２：症状詳記）
                05  RECEDEN-RECKBN           PIC  X(01).

@@ -358,6 +358,7 @@
       *
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *  04.07.02    NACL-藤原    12/09/04  薬剤料減点対応
+      *  04.07.03    NACL-藤原    12/12/17  複数枚レセプト分割対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -8749,6 +8750,7 @@
            ELSE
                MOVE    RECE62-TEKSTYMD TO  RECEDEN-TEKSTYMD
            END-IF
+           MOVE    RECE62-RECEIPT-KBN  TO  RECEDEN-RECEIPT-KBN
            .
        50011-KEY-HENSYU-EXT.
            EXIT.

@@ -55,7 +55,7 @@
                    07  SKYKOH-KOHID-KEY        PIC  9(10).
       *適用開始年月日
                    07  SKYKOH-TEKSTYMD         PIC  X(08).
-      *入所中区分
+      *分割区分
                    07  SKYKOH-RECEIPT-KBN      PIC  X(10).
       *連番号(1〜4)
                05  SKYKOH-RENNUM           PIC  9(02).

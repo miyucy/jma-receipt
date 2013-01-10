@@ -59,7 +59,7 @@
                    07  RECE68-KOHID        PIC 9(10).
       *適用開始年月日
                    07  RECE68-TEKSTYMD     PIC X(08). 
-      *入所中区分
+      *分割区分
                    07  RECE68-RECEIPT-KBN  PIC X(10).
       *入院年月日
                05  RECE68-NYUINYMD        PIC X(08).

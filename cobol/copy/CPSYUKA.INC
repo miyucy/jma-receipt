@@ -49,7 +49,7 @@
                05  SYUKA-HOJOKBN       PIC X(01).
       *公費ＩＤ
                05  SYUKA-KOHID         PIC 9(10).
-      *入所中区分
+      *分割区分
                05  SYUKA-RECEIPT-KBN   PIC X(10).
       *レセプト種別
                05  SYUKA-RECESYUBETU   PIC X(04).

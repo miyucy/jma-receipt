@@ -74,7 +74,7 @@
                    07  RECE041-KOHID       PIC 9(10).
       *適用開始年月日
                    07  RECE041-TEKSTYMD    PIC X(08). 
-      *入所中区分
+      *分割区分
                    07  RECE041-RECEIPT-KBN PIC X(10).
       *診療区分
                05  RECE041-SRYKBN          PIC  X(02).

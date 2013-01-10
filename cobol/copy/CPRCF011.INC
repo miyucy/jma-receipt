@@ -60,7 +60,7 @@
                05  RECE11-KOHID           PIC 9(10).
       *適用開始年月日
                05  RECE11-TEKSTYMD        PIC  X(08). 
-      *入所中区分
+      *分割区分
                05  RECE11-RECEIPT-KBN     PIC  X(10).
       *給付割合
            03  RECE11-KYURATE             PIC  9(03).

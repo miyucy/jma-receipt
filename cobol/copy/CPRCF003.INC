@@ -68,7 +68,7 @@
                    07  RECE03-KOHID        PIC 9(10).
       *適用開始年月日
                    07  RECE03-TEKSTYMD    PIC X(08). 
-      *入所中区分
+      *分割区分
                    07  RECE03-RECEIPT-KBN PIC X(10).
       *診療開始日
                05  RECE03-SRYYMD          PIC X(08).

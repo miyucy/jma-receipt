@@ -40,6 +40,8 @@
       *  04.06.02    NACL-藤原    10/11/04  補足コメント対応
       *  04.06.03    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
+      *
+      *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -131,6 +133,7 @@
                05  KEY-N-SRYYM         PIC 9(06).
                05  KEY-N-NYUGAIKBN     PIC X(01).
                05  KEY-N-PTID          PIC 9(10).
+               05  KEY-N-RECEIPT-KBN   PIC X(01).
                05  KEY-N-RECEKA        PIC X(02).
                05  KEY-N-TEISYUTUSAKI  PIC 9(01).
                05  KEY-N-RECESYUBETU   PIC 9(04).
@@ -147,6 +150,7 @@
                05  KEY-O-SRYYM         PIC 9(06).
                05  KEY-O-NYUGAIKBN     PIC X(01).
                05  KEY-O-PTID          PIC 9(10).
+               05  KEY-O-RECEIPT-KBN   PIC X(01).
                05  KEY-O-RECEKA        PIC X(02).
                05  KEY-O-TEISYUTUSAKI  PIC 9(01).
                05  KEY-O-RECESYUBETU   PIC 9(04).
@@ -487,6 +491,7 @@
                    MOVE    RECE63-SRYYM        TO  KEY-N-SRYYM
                    MOVE    RECE63-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
                    MOVE    RECE63-PTID         TO  KEY-N-PTID
+                   MOVE    RECE63-RECEIPT-KBN  TO  KEY-N-RECEIPT-KBN
                    MOVE    RECE63-RECEKA       TO  KEY-N-RECEKA
                    MOVE    RECE63-TEISYUTUSAKI TO  KEY-N-TEISYUTUSAKI
                    MOVE    RECE63-RECESYUBETU  TO  KEY-N-RECESYUBETU

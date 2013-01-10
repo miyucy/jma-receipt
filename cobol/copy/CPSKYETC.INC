@@ -50,7 +50,7 @@
                05  SKYETC-KOHID-KEY        PIC  9(10).
       *適用開始年月日
                05  SKYETC-TEKSTYMD         PIC  X(08).
-      *入所中区分
+      *分割区分
                05  SKYETC-RECEIPT-KBN      PIC X(10).
       *レセプト記載外公費情報
            03  SKYETC-ETC-KOH-G.

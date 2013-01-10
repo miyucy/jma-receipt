@@ -69,7 +69,7 @@
       *            公費ＩＤ（公費単独のみ）
                    07  LNK-SYUACC-IO-KOHID
                                        PIC 9(10).
-      *            入所中区分
+      *            分割区分
                    07  LNK-SYUACC-IO-RECEIPT-KBN
                                        PIC X(10).
       *            保険番号（主保険）
@@ -126,7 +126,7 @@
                  09  LNK-IO2-SYU-HOJOKBN       PIC X(01).
       *公費ＩＤ（公費単独のみ）
                  09  LNK-IO2-SYU-KOHID         PIC 9(10).
-      *入所中区分
+      *分割区分
                  09  LNK-IO2-SYU-RECEIPT-KBN   PIC X(10).
       *レセプト種別
                  09  LNK-IO2-SYU-RECESYUBETU   PIC X(04).

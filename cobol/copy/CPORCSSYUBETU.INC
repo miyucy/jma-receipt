@@ -84,7 +84,7 @@
       *            適用開始年月日
                    07  LNK-SYUBETU-TEKSTYMD
                                        PIC X(08).
-      *            入所中区分
+      *            分割区分
                    07  LNK-SYUBETU-RECEIPT-KBN
                                        PIC X(10).
       *            保険番号（主保険）

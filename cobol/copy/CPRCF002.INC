@@ -166,7 +166,7 @@
                05  RECE02-KOHID-KEY       PIC  9(10).
       *適用開始年月日
                05  RECE02-TEKSTYMD        PIC  X(08). 
-      *入所中区分
+      *分割区分
                05  RECE02-RECEIPT-KBN     PIC  X(10).
       *患者番号
            03  RECE02-PTNUM               PIC  X(20).

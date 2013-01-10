@@ -63,7 +63,7 @@
                05  RECE61-NYUGAIKBN       PIC  X(01).
       *´µ¼Ô£É£Ä
                05  RECE61-PTID            PIC  9(10).
-      *Æþ½êÃæ¶èÊ¬
+      *Ê¬³ä¶èÊ¬
                05  RECE61-RECEIPT-KBN     PIC  X(10).
       *¥ì¥»¥×¥È¿ÇÎÅ²Ê
                05  RECE61-RECEKA          PIC  X(02).
