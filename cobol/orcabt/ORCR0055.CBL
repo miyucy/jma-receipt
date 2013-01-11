@@ -142,7 +142,6 @@ grpsys     COPY    "COMMON-SPA".
                05  KEY-N-SRYYM         PIC 9(06).
                05  KEY-N-NYUGAIKBN     PIC X(01).
                05  KEY-N-PTID          PIC 9(10).
-               05  KEY-N-RECEIPT-KBN   PIC X(01).
                05  KEY-N-RECEKA        PIC X(02).
                05  KEY-N-TEISYUTUSAKI  PIC 9(01).
                05  KEY-N-RECESYUBETU   PIC 9(04).
@@ -150,6 +149,7 @@ grpsys     COPY    "COMMON-SPA".
                05  KEY-N-HOJOKBN       PIC X(01).
                05  KEY-N-KOHID         PIC 9(10).
                05  KEY-N-TEKSTYMD      PIC X(08). 
+               05  KEY-N-RECEIPT-KBN   PIC X(10).
                05  KEY-N-SRYYMD        PIC X(08).
                05  KEY-N-TENKIKBN      PIC X(01).
                05  KEY-N-TENKIYMD      PIC X(08).
@@ -159,7 +159,6 @@ grpsys     COPY    "COMMON-SPA".
                05  KEY-O-SRYYM         PIC 9(06).
                05  KEY-O-NYUGAIKBN     PIC X(01).
                05  KEY-O-PTID          PIC 9(10).
-               05  KEY-O-RECEIPT-KBN   PIC X(01).
                05  KEY-O-RECEKA        PIC X(02).
                05  KEY-O-TEISYUTUSAKI  PIC 9(01).
                05  KEY-O-RECESYUBETU   PIC 9(04).
@@ -167,6 +166,7 @@ grpsys     COPY    "COMMON-SPA".
                05  KEY-O-HOJOKBN       PIC X(01).
                05  KEY-O-KOHID         PIC 9(10).
                05  KEY-O-TEKSTYMD      PIC X(08). 
+               05  KEY-O-RECEIPT-KBN   PIC X(10).
                05  KEY-O-SRYYMD        PIC X(08).
                05  KEY-O-TENKIKBN      PIC X(01).
                05  KEY-O-TENKIYMD      PIC X(08).
