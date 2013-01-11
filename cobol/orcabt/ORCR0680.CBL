@@ -133,7 +133,6 @@
                05  KEY-N-SRYYM         PIC 9(06).
                05  KEY-N-NYUGAIKBN     PIC X(01).
                05  KEY-N-PTID          PIC 9(10).
-               05  KEY-N-RECEIPT-KBN   PIC X(01).
                05  KEY-N-RECEKA        PIC X(02).
                05  KEY-N-TEISYUTUSAKI  PIC 9(01).
                05  KEY-N-RECESYUBETU   PIC 9(04).
@@ -141,6 +140,7 @@
                05  KEY-N-HOJOKBN       PIC X(01).
                05  KEY-N-KOHID         PIC 9(10).
                05  KEY-N-TEKSTYMD      PIC X(08). 
+               05  KEY-N-RECEIPT-KBN   PIC X(10).
                05  KEY-N-SRYYMD        PIC X(08).
                05  KEY-N-TENKIKBN      PIC X(01).
                05  KEY-N-TENKIYMD      PIC X(08).
@@ -150,13 +150,13 @@
                05  KEY-O-SRYYM         PIC 9(06).
                05  KEY-O-NYUGAIKBN     PIC X(01).
                05  KEY-O-PTID          PIC 9(10).
-               05  KEY-O-RECEIPT-KBN   PIC X(01).
                05  KEY-O-RECEKA        PIC X(02).
                05  KEY-O-TEISYUTUSAKI  PIC 9(01).
                05  KEY-O-RECESYUBETU   PIC 9(04).
                05  KEY-O-HKNJANUM      PIC X(08).
                05  KEY-O-HOJOKBN       PIC X(01).
                05  KEY-O-TEKSTYMD      PIC X(08). 
+               05  KEY-O-RECEIPT-KBN   PIC X(10).
                05  KEY-O-SRYYMD        PIC X(08).
                05  KEY-O-TENKIKBN      PIC X(01).
                05  KEY-O-KOHID         PIC 9(10).
@@ -308,17 +308,7 @@
        200-MAIN-SEC                SECTION.
       *    
            INITIALIZE                      RECE631-REC
-           MOVE    RECE63-HOSPNUM      TO  RECE631-HOSPNUM
-           MOVE    RECE63-SRYYM        TO  RECE631-SRYYM
-           MOVE    RECE63-NYUGAIKBN    TO  RECE631-NYUGAIKBN
-           MOVE    RECE63-PTID         TO  RECE631-PTID
-           MOVE    RECE63-RECEKA       TO  RECE631-RECEKA
-           MOVE    RECE63-TEISYUTUSAKI TO  RECE631-TEISYUTUSAKI
-           MOVE    RECE63-RECESYUBETU  TO  RECE631-RECESYUBETU
-           MOVE    RECE63-HKNJANUM     TO  RECE631-HKNJANUM
-           MOVE    RECE63-HOJOKBN      TO  RECE631-HOJOKBN
-           MOVE    RECE63-KOHID        TO  RECE631-KOHID
-           MOVE    RECE63-TEKSTYMD     TO  RECE631-TEKSTYMD
+           MOVE    RECE63-KEY1         TO  RECE631-KEY1
            MOVE    RECE63-SRYYMD       TO  RECE631-SRYYMD
            MOVE    RECE63-SYUBYOFLG    TO  RECE631-SYUBYOFLG   
            MOVE    RECE63-TENKIKBN     TO  RECE631-TENKIKBN
