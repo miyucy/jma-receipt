@@ -30,8 +30,6 @@
       *  04.04.00    NACL-Â¿¡¹Ç¼  09/04/09  £È£²£±¡¥£µÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/28  £È£²£±Ç¯£±£°·îÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/12/25  ¥ì¥»¥×¥ÈÊ¬³äÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  14/12/XX  £È£²£·Ç¯£°£±·îÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  15/11/XX  ¥ì¥»¥×¥ÈÊ¬³ä£µ£°·ïÂ¾ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -140,8 +138,6 @@
            03  WRK-CHK-HKNCOMBI        PIC X(04).
            03  WRK-HKNDELFLG           PIC X(01).
       *
-           03  WRK-TUKICNT             PIC 9(03).
-      *
       *    ÂÐ¾ÝÊÝ¸±ÁÈ¹ç¤»¥Á¥§¥Ã¥¯
            03  WRK-HDHKNLST-TBL.
                05  WRK-HDHKNLST-OCC         OCCURS  2.
@@ -199,26 +195,12 @@
            03  FILLER              PIC X(15)   VALUE   "23 £²£³Â¿°ì".
            03  FILLER              PIC X(15)   VALUE   "24 £²£´Â¿Äã".
            03  FILLER              PIC X(15)   VALUE   "25 £²£µ½Ð»º".
-      *H27.1 ¤«¤é
-           03  FILLER              PIC X(15)   VALUE   "26 £²£¶¶è¥¢".
-           03  FILLER              PIC X(15)   VALUE   "27 £²£·¶è¥¤".
-           03  FILLER              PIC X(15)   VALUE   "28 £²£¸¶è¥¦".
-           03  FILLER              PIC X(15)   VALUE   "29 £²£¹¶è¥¨".
-           03  FILLER              PIC X(15)   VALUE   "30 £³£°¶è¥ª".
-           03  FILLER              PIC X(15)   VALUE   "31 £³£±Â¿¥¢".
-           03  FILLER              PIC X(15)   VALUE   "32 £³£²Â¿¥¤".
-           03  FILLER              PIC X(15)   VALUE   "33 £³£³Â¿¥¦".
-           03  FILLER              PIC X(15)   VALUE   "34 £³£´Â¿¥¨".
-           03  FILLER              PIC X(15)   VALUE   "35 £³£µÂ¿¥ª".
-           03  FILLER              PIC X(15)   VALUE   "36 £³£¶²Ã¼£".
-           03  FILLER              PIC X(15)   VALUE   "37 £³£·¿½½Ð".
        01  TBL-TOKKI-AREA-R        REDEFINES   TBL-TOKKI-AREA.
-      **** 03  TBL-TOKKI-OCC       OCCURS   23.
-           03  TBL-TOKKI-OCC       OCCURS   35.
+           03  TBL-TOKKI-OCC       OCCURS   23.
                05  TBL-TOKK-CD     PIC X(02).
                05  TBL-TOKK-K      PIC X(01).
                05  TBL-TOKK-NAIYO  PIC X(12).
-       01  TBL-TOKK-MAX            PIC 9(02)   VALUE   35.
+       01  TBL-TOKK-MAX            PIC 9(02)   VALUE   23.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -467,9 +449,6 @@
       *
            INITIALIZE                  SPA-GMN26-HDLIST-TBL
            INITIALIZE                  SPA-GMN26-HDHKNLST-TBL
-      *
-           MOVE    1                   TO  SPA-NAI26-INIT
-      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL     ( IDX     >   50 )
                    OR        ( IDX     >   WRK-HDI-MAX )
@@ -1001,16 +980,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  IDY
            MOVE    ZERO                TO  SPA-GMN26-HDLSTMAX
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >=  50
+                   UNTIL       IDX     >=  20
               IF     (SPA-GMN26-THDSRYYM (IDX)  =   SPACE )
-                 AND (IDX              <   50   )
+                 AND (IDX              <   20   )
                    MOVE    SPA-GMN26-HDLIST-OCC (IDX + 1)
                                        TO  SPA-GMN26-HDLIST-OCC(IDX)
                    INITIALIZE              SPA-GMN26-HDLIST-OCC(IDX + 1)
               END-IF
            END-PERFORM
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   50
+                   UNTIL       IDX     >   20
               IF     (SPA-GMN26-THDSRYYM (IDX)   NOT =   SPACE )
                    ADD     1               TO  SPA-GMN26-HDLSTMAX
                    MOVE    SPA-GMN26-HDLSTMAX
@@ -1050,7 +1029,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN26-HDSELNUM  =   ZERO
                    IF      SPA-GMN26-HDLSTMAX  >=  50
-                       MOVE    "2643"          TO  SPA-ERRCD
+                       MOVE    "2636"          TO  SPA-ERRCD
                    ELSE
                        ADD     1               TO  SPA-GMN26-HDLSTMAX
                        MOVE    SPA-GMN26-HDLSTMAX  TO  IDX
@@ -1743,12 +1722,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        OR  "24"
       *        ½Ð»º¤Ï³°Íè²Ä
       ***                              OR  "25"
-      *H26.12   Â¿¥¢¤«¤éÂ¿¥ª
-                                       OR  "31"
-                                       OR  "32"
-                                       OR  "33"
-                                       OR  "34"
-                                       OR  "35"
       *        Æþ±¡
                MOVE    SPA-GMN26-NYUGAI-LST (2)
                                            TO  SPA-GMN26-NYUGAI-G
@@ -1873,37 +1846,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *!!!
       *
-      *H26.12
-      *    ¶è¥¢¤«¤éÂ¿¥ª¡¡Ê¿À®£²£·Ç¯£±·î¤«¤é
-           IF     (SPA-GMN26-CD        >=  "26"  AND
-                                       <=  "35"  )
-           AND    (SPA-ERRCD           =   SPACE )
-           AND    (SPA-NAI26-STYM  NOT =   ZERO  )
-               IF      SPA-NAI26-STYM      <   "201501"
-                   MOVE    "2614"              TO  SPA-ERRCD
-                   MOVE    05                  TO  SPA-GMN26-CUR
-               END-IF
-           END-IF
-      *    ²Ã¼£¡¡Ê¿À®£²£¶Ç¯£±£±·î¤«¤é
-           IF     (SPA-GMN26-CD        =   "36"  )
-           AND    (SPA-ERRCD           =   SPACE )
-           AND    (SPA-NAI26-STYM  NOT =   ZERO  )
-               IF      SPA-NAI26-STYM      <   "201411"
-                   MOVE    "2615"              TO  SPA-ERRCD
-                   MOVE    05                  TO  SPA-GMN26-CUR
-               END-IF
-           END-IF
-      *
-      *    ¿½½Ð¡¡Ê¿À®£²£¸Ç¯£´·î¤«¤é
-           IF     (SPA-GMN26-CD        =   "37"  )
-           AND    (SPA-ERRCD           =   SPACE )
-           AND    (SPA-NAI26-STYM  NOT =   ZERO  )
-               IF      SPA-NAI26-STYM      <   "201604"
-                   MOVE    "2616"              TO  SPA-ERRCD
-                   MOVE    05                  TO  SPA-GMN26-CUR
-               END-IF
-           END-IF
-      *
            .
        41012-STYM-CHK-EXT.
            EXIT.
@@ -1964,15 +1906,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF     (SPA-NAI26-STYM      >   SPA-NAI26-EDYM)
                    MOVE    "2610"              TO  SPA-ERRCD
                    MOVE    6                   TO  SPA-GMN26-CUR
-               END-IF
-           END-IF
-      *H26.12
-           IF      SPA-ERRCD           =   SPACE
-               IF     (SPA-GMN26-CD    NOT =   SPACE )
-                  AND (SPA-GMN26-NYUGAI    =   SPACE )
-      *            Æþ³°¶èÊ¬Ì¤ÀßÄê
-                   MOVE    SPA-GMN26-NYUGAI-LST (1)
-                                           TO  SPA-GMN26-NYUGAI-G
                END-IF
            END-IF
       *
@@ -2047,11 +1980,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        ½ÅÊ£¥Á¥§¥Ã¥¯
                PERFORM 411001-JYUFUKU-CHK02-SEC
            END-IF
-      *H27.11
-           IF      SPA-ERRCD           =   SPACE
-      *        ·î£±£°·ï¥Á¥§¥Ã¥¯
-               PERFORM 411002-TUKICNT-CHK-SEC
-           END-IF
            .
        4110-TOUROKU-CHK02-EXT.
            EXIT.
@@ -2083,32 +2011,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            .
        411001-JYUFUKU-CHK02-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    ¥ì¥»Ê¬³ä¥Æ¡¼¥Ö¥ë¤Î½ÅÊ£¥Á¥§¥Ã¥¯½èÍý
-      ****************************************************************
-       411002-TUKICNT-CHK-SEC             SECTION.
-      *
-           MOVE    ZERO                TO  WRK-TUKICNT
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-GMN26-HDLSTMAX )
-               IF     (SPA-NAI26-HDSRYYM   =   SPA-NAI26-THDSRYYM
-                                                             (IDX))
-                   IF     (SPA-GMN26-HDSELNUM  NOT =   ZERO )
-                     AND  (SPA-GMN26-HDSELNUM      =   IDX  )
-                       CONTINUE
-                   ELSE
-                       ADD     1               TO  WRK-TUKICNT
-                   END-IF
-               END-IF
-           END-PERFORM
-           IF      WRK-TUKICNT         >=  10
-               MOVE    "2644"          TO  SPA-ERRCD
-               MOVE    21              TO  SPA-GMN26-CUR
-            END-IF
-           .
-       411002-TUKICNT-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2717,12 +2619,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              AND  (WRK-SRT-HKNNUM  NOT =   SPACE)
                MOVE    2               TO  FLG-HKNOK
            END-IF
-      *H27.11
-      *    ¸øÈñÃ±ÆÈ¤â¤¹¤Ù¤ÆÂÐ¾Ý
-      *    IF      FLG-HKNOK           =   ZERO
-      *        MOVE    1               TO  FLG-HKNCOMBI-ERR
-      *    END-IF
       *
+           IF      FLG-HKNOK           =   ZERO
+               MOVE    1               TO  FLG-HKNCOMBI-ERR
+           END-IF
       *
            .
        410131-KOHONLY-CHK-EXT.

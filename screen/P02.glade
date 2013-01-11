@@ -52,7 +52,6 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <text_max_length>20</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -78,7 +77,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>50</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -94,7 +92,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>2</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -110,7 +107,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>9</text_max_length>
         <text>419.11.11</text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -126,7 +122,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>6</text_max_length>
         <text>1111</text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -142,7 +137,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>6</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -158,7 +152,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>6</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -174,7 +167,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>50</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -243,7 +235,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>4</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -280,7 +271,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>21</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -318,7 +308,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>29</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -356,7 +345,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>21</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -394,7 +382,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>16</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -421,7 +408,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>4</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -955,7 +941,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>30</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1009,7 +994,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>KANA</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1046,7 +1030,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>4</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1073,7 +1056,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -1099,7 +1081,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -1125,7 +1106,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1151,7 +1131,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>8</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1188,7 +1167,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>16</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1215,7 +1193,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>8</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1264,7 +1241,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>20</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1291,7 +1267,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>40</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -1317,7 +1292,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>40</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -1343,7 +1317,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1369,7 +1342,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1395,7 +1367,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1421,7 +1392,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -1447,7 +1417,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1502,7 +1471,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>8</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1540,7 +1508,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>20</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1566,7 +1533,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1592,7 +1558,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1618,7 +1583,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1673,7 +1637,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>8</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1711,7 +1674,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>20</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1737,7 +1699,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1763,7 +1724,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1789,7 +1749,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1844,7 +1803,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>8</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1882,7 +1840,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>20</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1908,7 +1865,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1934,7 +1890,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1960,7 +1915,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -2038,7 +1992,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>7</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -2064,7 +2017,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -2090,7 +2042,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -2116,7 +2067,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>15</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -2142,7 +2092,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>15</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -2168,7 +2117,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -2194,7 +2142,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>30</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -2220,7 +2167,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -2246,7 +2192,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -2272,7 +2217,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -2298,7 +2242,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -2324,7 +2267,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -2350,7 +2292,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -2376,7 +2317,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -2402,7 +2342,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -2443,7 +2382,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>～</label>
+            <label>〜</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -2541,7 +2480,7 @@
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
-            <xalign>0</xalign>
+            <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
@@ -2559,7 +2498,7 @@
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
-            <xalign>0</xalign>
+            <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
@@ -2751,7 +2690,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>6</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2843,7 +2781,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>16</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2881,7 +2818,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>20</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2937,7 +2873,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>20</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2967,7 +2902,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>～</label>
+            <label>〜</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -3170,7 +3105,7 @@
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
-            <xalign>0</xalign>
+            <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
@@ -3201,7 +3136,7 @@
             <name>P02_HKNJAADRS2</name>
             <x>544</x>
             <y>160</y>
-            <width>220</width>
+            <width>216</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -3219,7 +3154,7 @@
             <name>P02_HKNJAADRS</name>
             <x>544</x>
             <y>132</y>
-            <width>220</width>
+            <width>216</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
@@ -3271,9 +3206,9 @@
           <widget>
             <class>GtkCheckButton</class>
             <name>P02_DEATHKBN</name>
-            <x>716</x>
+            <x>704</x>
             <y>8</y>
-            <width>70</width>
+            <width>76</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
@@ -3300,7 +3235,7 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2010</name>
-            <x>656</x>
+            <x>640</x>
             <y>8</y>
             <width>62</width>
             <height>24</height>
@@ -3320,34 +3255,34 @@
             <name>TEIMSG</name>
             <x>462</x>
             <y>8</y>
-            <width>140</width>
+            <width>138</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
-            <xalign>0</xalign>
+            <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>12345678901234568</label>
+            <label></label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
           <widget>
             <class>GtkLabel</class>
             <name>TEIMSG2</name>
-            <x>614</x>
+            <x>592</x>
             <y>8</y>
-            <width>54</width>
+            <width>48</width>
             <height>24</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
-            <xalign>0</xalign>
+            <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>123456</label>
+            <label></label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -3373,7 +3308,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>20</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3411,7 +3345,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>20</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3441,7 +3374,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>～</label>
+            <label>〜</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -3459,7 +3392,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>～</label>
+            <label>〜</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -3558,7 +3491,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>21</text_max_length>
               <text>01 内科</text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3644,7 +3576,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>23</text_max_length>
               <text>　　　</text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3700,7 +3631,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>14</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3756,7 +3686,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>23</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3830,7 +3759,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>23</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3868,7 +3796,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>23</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3972,7 +3899,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>23</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -4010,7 +3936,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>50</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -4025,29 +3950,6 @@
                 <data>ACTIVATE</data>
               </signal>
             </widget>
-          </widget>
-          <widget>
-            <class>GtkNumberEntry</class>
-            <name>P02_BIRTHWEIGHT</name>
-            <x>946</x>
-            <y>452</y>
-            <width>40</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <format>ZZZZ</format>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
           </widget>
           <widget>
             <class>GtkLabel</class>
@@ -4161,7 +4063,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>6</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -4199,7 +4100,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>30</text_max_length>
               <text>0 カルテ発行なし</text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -4236,80 +4136,6 @@
               <handler>send_event</handler>
               <data>CLICKED</data>
             </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P02_HKNJA_IDOMSG</name>
-            <x>544</x>
-            <y>228</y>
-            <width>208</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_RIGHT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label27</name>
-            <x>878</x>
-            <y>452</y>
-            <width>70</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>出生時体重</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label28</name>
-            <x>986</x>
-            <y>452</y>
-            <width>16</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>ｇ</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>TEIMSG3</name>
-            <x>574</x>
-            <y>8</y>
-            <width>60</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
           </widget>
         </widget>
         <widget>
@@ -4348,7 +4174,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>4</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4374,7 +4199,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>8</text_max_length>
             <text>負担区分</text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4390,8 +4214,7 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>8</text_max_length>
-            <text>回ー割合</text>
+            <text>回−割合</text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
           </widget>
@@ -4406,8 +4229,7 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
-            <text>回ー固定額</text>
+            <text>回−固定額</text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
           </widget>
@@ -4422,8 +4244,7 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
-            <text>回ー上限額</text>
+            <text>回−上限額</text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
           </widget>
@@ -4438,8 +4259,7 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
-            <text>日ー上限額</text>
+            <text>日−上限額</text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
           </widget>
@@ -4454,8 +4274,7 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
-            <text>日ー上回数</text>
+            <text>日−上回数</text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
           </widget>
@@ -4470,8 +4289,7 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
-            <text>月ー上限額</text>
+            <text>月−上限額</text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
           </widget>
@@ -4486,8 +4304,7 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
-            <text>月ー上回数</text>
+            <text>月−上回数</text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
           </widget>
@@ -4502,7 +4319,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>15</text_max_length>
             <text>       薬剤区分</text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4518,7 +4334,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>8</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4534,7 +4349,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>8</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4550,7 +4364,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>8</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4566,7 +4379,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>8</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4582,7 +4394,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>8</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4598,7 +4409,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>8</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4614,7 +4424,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4630,7 +4439,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4646,7 +4454,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4662,7 +4469,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4678,7 +4484,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4694,7 +4499,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4710,7 +4514,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4726,7 +4529,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4742,7 +4544,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4758,7 +4559,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4774,7 +4574,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4790,7 +4589,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4806,7 +4604,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4822,7 +4619,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4838,7 +4634,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4854,7 +4649,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4870,7 +4664,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4886,7 +4679,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4902,7 +4694,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>14</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4918,7 +4709,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>14</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4934,7 +4724,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>14</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4950,7 +4739,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>4</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4966,7 +4754,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>6</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4982,7 +4769,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>3</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -4998,7 +4784,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -5014,7 +4799,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>3</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -5030,7 +4814,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -5046,7 +4829,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>3</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -5062,7 +4844,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -5078,7 +4859,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>3</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -5094,7 +4874,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -5110,7 +4889,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>3</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -5126,7 +4904,6 @@
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
             <editable>False</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -5984,19 +5761,19 @@
               <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
               <signal>
                 <name>select_row</name>
+                <handler>selection_changed</handler>
+                <data>SELECT</data>
+              </signal>
+              <signal>
+                <name>select_row</name>
                 <handler>clist_send_event</handler>
                 <data>SELECT</data>
                 <after>True</after>
               </signal>
               <signal>
-                <name>select_row</name>
-                <handler>selection_changed</handler>
-                <data>SELECT</data>
-              </signal>
-              <signal>
                 <name>unselect_row</name>
-                <handler>selection_changed</handler>
-                <data>SELECT</data>
+                <handler>           </handler>
+                <data>  </data>
               </signal>
               <widget>
                 <class>GtkLabel</class>
@@ -6219,7 +5996,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>20</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -6387,7 +6163,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>15</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -6413,7 +6188,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>15</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -6439,7 +6213,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -6465,7 +6238,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>20</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -6491,7 +6263,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -6517,7 +6288,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>30</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -6543,7 +6313,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>7</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -6569,7 +6338,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -6595,7 +6363,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -6621,7 +6388,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>15</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -6647,7 +6413,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>15</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -6673,7 +6438,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -6699,7 +6463,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>7</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -6725,7 +6488,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -6751,7 +6513,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -6777,7 +6538,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>15</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -6803,7 +6563,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -6829,7 +6588,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>7</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -6855,7 +6613,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -6881,7 +6638,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>100</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -6907,7 +6663,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>15</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7366,6 +7121,51 @@
             <has_focus>False</has_focus>
             <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
           </widget>
+          <widget>
+            <class>GtkLabel</class>
+            <name>label1</name>
+            <x>8</x>
+            <y>574</y>
+            <width>90</width>
+            <height>24</height>
+            <visible>True</visible>
+            <sensitive>True</sensitive>
+            <can_focus>False</can_focus>
+            <has_focus>False</has_focus>
+            <xalign>0</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+            <ypad>0</ypad>
+            <label>地域連携ＩＤ</label>
+            <justify>GTK_JUSTIFY_LEFT</justify>
+            <wrap>False</wrap>
+          </widget>
+          <widget>
+            <class>GtkPandaEntry</class>
+            <name>P021_PATIENTID1</name>
+            <x>92</x>
+            <y>574</y>
+            <width>200</width>
+            <height>24</height>
+            <sensitive>True</sensitive>
+            <can_focus>True</can_focus>
+            <has_focus>False</has_focus>
+            <editable>True</editable>
+            <max_length>20</max_length>
+            <text></text>
+            <input_mode>ASCII</input_mode>
+            <xim_enabled>False</xim_enabled>
+            <signal>
+              <name>changed</name>
+              <handler>entry_changed</handler>
+              <data>CHANGED</data>
+            </signal>
+            <signal>
+              <name>activate</name>
+              <handler>send_event</handler>
+              <data>ACTIVATE</data>
+            </signal>
+          </widget>
         </widget>
         <widget>
           <class>GtkLabel</class>
@@ -7395,15 +7195,14 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TSRSELNUM</name>
-            <x>692</x>
-            <y>10</y>
+            <x>604</x>
+            <y>16</y>
             <width>48</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>4</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7421,15 +7220,14 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TSYSTYMD</name>
-            <x>692</x>
-            <y>36</y>
+            <x>604</x>
+            <y>44</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7447,15 +7245,14 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TSYEDYMD</name>
-            <x>840</x>
-            <y>36</y>
+            <x>752</x>
+            <y>44</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7473,15 +7270,14 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TSYSKJGNSTYMD</name>
-            <x>776</x>
-            <y>114</y>
+            <x>692</x>
+            <y>132</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7499,8 +7295,8 @@
           <widget>
             <class>GtkButton</class>
             <name>BT2</name>
-            <x>636</x>
-            <y>172</y>
+            <x>560</x>
+            <y>164</y>
             <width>62</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -7526,8 +7322,8 @@
           <widget>
             <class>GtkButton</class>
             <name>BT1</name>
-            <x>896</x>
-            <y>172</y>
+            <x>716</x>
+            <y>164</y>
             <width>62</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -7553,15 +7349,14 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TNKSELNUM</name>
-            <x>692</x>
-            <y>212</y>
+            <x>604</x>
+            <y>216</y>
             <width>48</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>4</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7579,15 +7374,14 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TNKSTYMD</name>
-            <x>692</x>
-            <y>238</y>
+            <x>604</x>
+            <y>244</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7605,15 +7399,14 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TNKEDYMD</name>
-            <x>848</x>
-            <y>236</y>
+            <x>760</x>
+            <y>244</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7631,8 +7424,8 @@
           <widget>
             <class>GtkButton</class>
             <name>BN1</name>
-            <x>896</x>
-            <y>376</y>
+            <x>716</x>
+            <y>368</y>
             <width>62</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -7658,8 +7451,8 @@
           <widget>
             <class>GtkButton</class>
             <name>BN2</name>
-            <x>636</x>
-            <y>376</y>
+            <x>560</x>
+            <y>368</y>
             <width>62</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -7720,7 +7513,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7746,7 +7538,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7772,7 +7563,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>9</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7798,7 +7588,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>9</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7907,15 +7696,14 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TSYNINSTYMD</name>
-            <x>776</x>
-            <y>88</y>
+            <x>692</x>
+            <y>104</y>
             <width>91</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -7933,10 +7721,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2021</name>
-            <x>620</x>
-            <y>114</y>
+            <x>540</x>
+            <y>132</y>
             <width>136</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -7951,10 +7739,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2058</name>
-            <x>620</x>
-            <y>88</y>
+            <x>540</x>
+            <y>104</y>
             <width>148</width>
-            <height>20</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -7969,10 +7757,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2057</name>
-            <x>620</x>
-            <y>62</y>
+            <x>540</x>
+            <y>76</y>
             <width>67</width>
-            <height>20</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -7987,15 +7775,14 @@
           <widget>
             <class>GtkPandaEntry</class>
             <name>P024_TNKNINSTYMD</name>
-            <x>776</x>
-            <y>290</y>
+            <x>692</x>
+            <y>304</y>
             <width>88</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -8013,10 +7800,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label1810</name>
-            <x>784</x>
-            <y>36</y>
+            <x>700</x>
+            <y>44</y>
             <width>54</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8031,10 +7818,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label1809</name>
-            <x>620</x>
-            <y>36</y>
+            <x>540</x>
+            <y>44</y>
             <width>54</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8049,14 +7836,14 @@
           <widget>
             <class>GtkLabel</class>
             <name>label1819</name>
-            <x>620</x>
-            <y>10</y>
+            <x>536</x>
+            <y>16</y>
             <width>62</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
-            <xalign>0</xalign>
+            <xalign>0.5</xalign>
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
@@ -8085,10 +7872,10 @@
           <widget>
             <class>GtkHSeparator</class>
             <name>hseparator47</name>
-            <x>-4</x>
+            <x>0</x>
             <y>192</y>
             <width>1015</width>
-            <height>20</height>
+            <height>16</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8117,8 +7904,8 @@
             <name>sc104</name>
             <x>8</x>
             <y>24</y>
-            <width>572</width>
-            <height>164</height>
+            <width>516</width>
+            <height>160</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8133,8 +7920,8 @@
               <has_focus>False</has_focus>
               <border_width>0</border_width>
               <show_titles>True</show_titles>
-              <columns>7</columns>
-              <column_widths>30,64,64,90,90,90,80</column_widths>
+              <columns>6</columns>
+              <column_widths>30,74,64,101,99,80</column_widths>
               <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
               <signal>
                 <name>select_row</name>
@@ -8242,30 +8029,15 @@
                 <justify>GTK_JUSTIFY_CENTER</justify>
                 <wrap>False</wrap>
               </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label2081</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>境界層該当</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
             </widget>
           </widget>
           <widget>
             <class>GtkLabel</class>
             <name>label1820</name>
-            <x>620</x>
-            <y>212</y>
+            <x>540</x>
+            <y>216</y>
             <width>62</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8280,10 +8052,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label1817</name>
-            <x>792</x>
-            <y>240</y>
+            <x>704</x>
+            <y>244</y>
             <width>54</width>
-            <height>20</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8298,10 +8070,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label1818</name>
-            <x>620</x>
-            <y>238</y>
+            <x>540</x>
+            <y>244</y>
             <width>50</width>
-            <height>24</height>
+            <height>20</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8316,10 +8088,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2060</name>
-            <x>620</x>
-            <y>264</y>
+            <x>540</x>
+            <y>276</y>
             <width>67</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8334,8 +8106,8 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P024_FUKUSHI_COMB</name>
-            <x>776</x>
-            <y>316</y>
+            <x>692</x>
+            <y>332</y>
             <width>156</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -8353,7 +8125,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>10</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -8372,8 +8143,8 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2052</name>
-            <x>620</x>
-            <y>316</y>
+            <x>540</x>
+            <y>332</y>
             <width>148</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -8390,10 +8161,10 @@
           <widget>
             <class>GtkLabel</class>
             <name>label2059</name>
-            <x>620</x>
-            <y>290</y>
+            <x>540</x>
+            <y>304</y>
             <width>148</width>
-            <height>24</height>
+            <height>18</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8409,9 +8180,9 @@
             <class>GtkHSeparator</class>
             <name>hseparator53</name>
             <x>0</x>
-            <y>398</y>
+            <y>396</y>
             <width>1014</width>
-            <height>20</height>
+            <height>16</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8440,8 +8211,8 @@
             <name>sc105</name>
             <x>8</x>
             <y>228</y>
-            <width>572</width>
-            <height>164</height>
+            <width>516</width>
+            <height>160</height>
             <sensitive>True</sensitive>
             <can_focus>False</can_focus>
             <has_focus>False</has_focus>
@@ -8456,8 +8227,8 @@
               <has_focus>False</has_focus>
               <border_width>0</border_width>
               <show_titles>True</show_titles>
-              <columns>7</columns>
-              <column_widths>32,64,64,90,90,80,90</column_widths>
+              <columns>6</columns>
+              <column_widths>32,75,70,91,100,80</column_widths>
               <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
               <signal>
                 <name>select_row</name>
@@ -8562,21 +8333,6 @@
                 <xpad>0</xpad>
                 <ypad>0</ypad>
                 <label>年金受給者証</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label2082</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>境界層該当</label>
                 <justify>GTK_JUSTIFY_CENTER</justify>
                 <wrap>False</wrap>
               </widget>
@@ -8736,7 +8492,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>～</label>
+            <label>〜</label>
             <justify>GTK_JUSTIFY_LEFT</justify>
             <wrap>False</wrap>
           </widget>
@@ -8797,8 +8553,8 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P024_TSYTEKK_COB</name>
-            <x>690</x>
-            <y>62</y>
+            <x>604</x>
+            <y>72</y>
             <width>240</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -8816,7 +8572,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>30</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -8835,8 +8590,8 @@
           <widget>
             <class>GtkPandaCombo</class>
             <name>P024_TNKTEKK_COB</name>
-            <x>692</x>
-            <y>264</y>
+            <x>604</x>
+            <y>272</y>
             <width>240</width>
             <height>24</height>
             <sensitive>True</sensitive>
@@ -8854,7 +8609,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>30</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -9058,118 +8812,6 @@
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
-          <widget>
-            <class>GtkPandaCombo</class>
-            <name>P024_TSYKYOUKAI_COB</name>
-            <x>777</x>
-            <y>140</y>
-            <width>148</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <items></items>
-            <case_sensitive>False</case_sensitive>
-            <use_arrows>True</use_arrows>
-            <widget>
-              <class>GtkPandaEntry</class>
-              <child_name>GtkPandaCombo:entry</child_name>
-              <name>P024_TSYKYOUKAI</name>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <editable>True</editable>
-              <text_max_length>30</text_max_length>
-              <text></text>
-              <input_mode>XIM</input_mode>
-              <xim_enabled>False</xim_enabled>
-              <signal>
-                <name>changed</name>
-                <handler>entry_changed</handler>
-                <data>CHANGED</data>
-              </signal>
-              <signal>
-                <name>activate</name>
-                <handler>send_event</handler>
-                <data>ACTIVATE</data>
-              </signal>
-            </widget>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label59</name>
-            <x>620</x>
-            <y>140</y>
-            <width>76</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>境界層該当</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label60</name>
-            <x>620</x>
-            <y>342</y>
-            <width>94</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>境界層該当</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaCombo</class>
-            <name>P024_TNKKYOUKAI_COB</name>
-            <x>776</x>
-            <y>342</y>
-            <width>156</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <items></items>
-            <case_sensitive>False</case_sensitive>
-            <use_arrows>True</use_arrows>
-            <widget>
-              <class>GtkPandaEntry</class>
-              <child_name>GtkPandaCombo:entry</child_name>
-              <name>P024_TNKKYOUKAI</name>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <editable>True</editable>
-              <text_max_length>30</text_max_length>
-              <text></text>
-              <input_mode>XIM</input_mode>
-              <xim_enabled>False</xim_enabled>
-              <signal>
-                <name>changed</name>
-                <handler>entry_changed</handler>
-                <data>CHANGED</data>
-              </signal>
-              <signal>
-                <name>activate</name>
-                <handler>send_event</handler>
-                <data>ACTIVATE</data>
-              </signal>
-            </widget>
-          </widget>
         </widget>
         <widget>
           <class>GtkLabel</class>
@@ -9207,7 +8849,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>4</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -9233,7 +8874,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>10</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -9259,7 +8899,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -9285,7 +8924,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -9311,7 +8949,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>50</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -9381,7 +9018,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>4</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -9841,7 +9477,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -9867,7 +9502,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>12</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>True</xim_enabled>
@@ -9893,7 +9527,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>7</text_max_length>
             <text>2004.10</text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -9919,7 +9552,6 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>7</text_max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -10053,7 +9685,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>20</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -10101,7 +9732,7 @@
             <yalign>0.5</yalign>
             <xpad>0</xpad>
             <ypad>0</ypad>
-            <label>～</label>
+            <label>〜</label>
             <justify>GTK_JUSTIFY_CENTER</justify>
             <wrap>False</wrap>
           </widget>
@@ -10199,7 +9830,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>20</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -10512,6 +10142,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
+            <max_length>3</max_length>
             <format>ZZZ</format>
             <signal>
               <name>changed</name>
@@ -10546,7 +10177,6 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>20</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -10573,7 +10203,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>8</text_max_length>
+            <max_length>8</max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -10599,7 +10229,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <text_max_length>2</text_max_length>
+            <max_length>2</max_length>
             <text></text>
             <input_mode>ASCII</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -10672,7 +10302,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <text_max_length>20</text_max_length>
+              <max_length>50</max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -11029,6 +10659,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
+            <max_length>4</max_length>
             <format>ZZZZ</format>
             <signal>
               <name>changed</name>
@@ -11070,6 +10701,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
+            <max_length>4</max_length>
             <format>ZZZZ</format>
             <signal>
               <name>changed</name>
@@ -11098,2103 +10730,6 @@
           <ypad>0</ypad>
           <label>特記事項・レセプト分割</label>
           <justify>GTK_JUSTIFY_CENTER</justify>
-          <wrap>False</wrap>
-        </widget>
-        <widget>
-          <class>GtkFixed</class>
-          <name>FP10</name>
-          <position>7</position>
-          <sensitive>True</sensitive>
-          <can_focus>False</can_focus>
-          <has_focus>False</has_focus>
-          <border_width>0</border_width>
-          <widget>
-            <class>GtkHSeparator</class>
-            <name>hseparator2</name>
-            <x>0</x>
-            <y>116</y>
-            <width>460</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-          </widget>
-          <widget>
-            <class>GtkPandaCombo</class>
-            <name>P028_MNOTE_QRKBN_COMB</name>
-            <x>220</x>
-            <y>56</y>
-            <width>226</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <items></items>
-            <case_sensitive>False</case_sensitive>
-            <use_arrows>True</use_arrows>
-            <widget>
-              <class>GtkPandaEntry</class>
-              <child_name>GtkPandaCombo:entry</child_name>
-              <name>P028_MNOTE_QRKBN</name>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <editable>True</editable>
-              <text_max_length>30</text_max_length>
-              <text></text>
-              <input_mode>XIM</input_mode>
-              <xim_enabled>False</xim_enabled>
-              <signal>
-                <name>changed</name>
-                <handler>entry_changed</handler>
-                <data>CHANGED</data>
-              </signal>
-              <signal>
-                <name>activate</name>
-                <handler>send_event</handler>
-                <data>ACTIVATE</data>
-              </signal>
-            </widget>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label25</name>
-            <x>128</x>
-            <y>56</y>
-            <width>122</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>ＱＲコード</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label26</name>
-            <x>96</x>
-            <y>88</y>
-            <width>124</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>データフォーマット</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaCombo</class>
-            <name>P028_MNOTE_CSV_COMB</name>
-            <x>220</x>
-            <y>88</y>
-            <width>226</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <items></items>
-            <case_sensitive>False</case_sensitive>
-            <use_arrows>True</use_arrows>
-            <widget>
-              <class>GtkPandaEntry</class>
-              <child_name>GtkPandaCombo:entry</child_name>
-              <name>P028_MNOTE_CSV</name>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <editable>True</editable>
-              <text_max_length>50</text_max_length>
-              <text></text>
-              <input_mode>XIM</input_mode>
-              <xim_enabled>False</xim_enabled>
-              <signal>
-                <name>changed</name>
-                <handler>entry_changed</handler>
-                <data>CHANGED</data>
-              </signal>
-              <signal>
-                <name>activate</name>
-                <handler>send_event</handler>
-                <data>ACTIVATE</data>
-              </signal>
-            </widget>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label21</name>
-            <x>8</x>
-            <y>56</y>
-            <width>100</width>
-            <height>20</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>電子版お薬手帳</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label1</name>
-            <x>8</x>
-            <y>12</y>
-            <width>90</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>地域連携ＩＤ</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_PATIENTID1</name>
-            <x>88</x>
-            <y>12</y>
-            <width>170</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>20</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkHSeparator</class>
-            <name>hseparator3</name>
-            <x>0</x>
-            <y>36</y>
-            <width>460</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label22</name>
-            <x>260</x>
-            <y>12</y>
-            <width>62</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>情報提供</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaCombo</class>
-            <name>P028_AGREEMENT_COMB</name>
-            <x>320</x>
-            <y>12</y>
-            <width>126</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <items></items>
-            <case_sensitive>True</case_sensitive>
-            <use_arrows>True</use_arrows>
-            <loop_selection>False</loop_selection>
-            <widget>
-              <class>GtkPandaEntry</class>
-              <child_name>GtkPandaCombo:entry</child_name>
-              <name>P028_AGREEMENT</name>
-              <visible>True</visible>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <editable>True</editable>
-              <text_max_length>20</text_max_length>
-              <text></text>
-              <input_mode>XIM</input_mode>
-              <xim_enabled>False</xim_enabled>
-              <signal>
-                <name>changed</name>
-                <handler>entry_changed</handler>
-                <data>CHANGED</data>
-              </signal>
-              <signal>
-                <name>activate</name>
-                <handler>send_event</handler>
-                <data>ACTIVATE</data>
-              </signal>
-            </widget>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label23</name>
-            <x>8</x>
-            <y>140</y>
-            <width>100</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>日医版連携</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkHSeparator</class>
-            <name>hseparator4</name>
-            <x>0</x>
-            <y>172</y>
-            <width>460</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-          </widget>
-          <widget>
-            <class>GtkPandaCombo</class>
-            <name>P028_JMAMRVER_COMB</name>
-            <x>220</x>
-            <y>140</y>
-            <width>220</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <items></items>
-            <case_sensitive>False</case_sensitive>
-            <use_arrows>True</use_arrows>
-            <loop_selection>False</loop_selection>
-            <widget>
-              <class>GtkPandaEntry</class>
-              <child_name>GtkPandaCombo:entry</child_name>
-              <name>P028_JMAMRVER</name>
-              <visible>True</visible>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <editable>True</editable>
-              <text_max_length>50</text_max_length>
-              <text></text>
-              <input_mode>XIM</input_mode>
-              <xim_enabled>False</xim_enabled>
-              <signal>
-                <name>changed</name>
-                <handler>entry_changed</handler>
-                <data>CHANGED</data>
-              </signal>
-              <signal>
-                <name>activate</name>
-                <handler>send_event</handler>
-                <data>ACTIVATE</data>
-              </signal>
-            </widget>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label24</name>
-            <x>96</x>
-            <y>140</y>
-            <width>124</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>データフォーマット</label>
-            <justify>GTK_JUSTIFY_CENTER</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label29</name>
-            <x>12</x>
-            <y>184</y>
-            <width>103</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>介護保険情報</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label30</name>
-            <x>164</x>
-            <y>304</y>
-            <width>100</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>被保険者番号</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label31</name>
-            <x>80</x>
-            <y>304</y>
-            <width>100</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>保険者番号</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label32</name>
-            <x>12</x>
-            <y>392</y>
-            <width>104</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>介護認定情報</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_CRHIHKNJANUM</name>
-            <x>164</x>
-            <y>328</y>
-            <width>90</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>10</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_CRHKNJANUM</name>
-            <x>72</x>
-            <y>328</y>
-            <width>80</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>6</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkScrolledWindow</class>
-            <name>scrolledwindow4</name>
-            <x>28</x>
-            <y>418</y>
-            <width>444</width>
-            <height>120</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-            <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-            <widget>
-              <class>GtkPandaCList</class>
-              <name>P028_CARENINLST</name>
-              <width>98</width>
-              <height>80</height>
-              <visible>True</visible>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <border_width>0</border_width>
-              <show_titles>True</show_titles>
-              <columns>5</columns>
-              <column_widths>30,150,74,74,74</column_widths>
-              <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-              <signal>
-                <name>select_row</name>
-                <handler>clist_send_event</handler>
-                <data>SELECT</data>
-                <after>True</after>
-              </signal>
-              <signal>
-                <name>select_row</name>
-                <handler>selection_changed</handler>
-                <data>SELECT</data>
-              </signal>
-              <signal>
-                <name>unselect_row</name>
-                <handler>selection_changed</handler>
-                <data>SELECT</data>
-              </signal>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label33</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>番号</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label34</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>要介護状態</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label35</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>認定日</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label37</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>有効開始日</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label36</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>有効終了日</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-            </widget>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label38</name>
-            <x>4</x>
-            <y>544</y>
-            <width>68</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>選択番号</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label39</name>
-            <x>76</x>
-            <y>544</y>
-            <width>80</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>要介護状態</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label40</name>
-            <x>284</x>
-            <y>544</y>
-            <width>60</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>認定日</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label41</name>
-            <x>368</x>
-            <y>544</y>
-            <width>60</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>有効期間</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_CRNINYMD</name>
-            <x>276</x>
-            <y>568</y>
-            <width>80</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>10</text_max_length>
-            <text>H25.12.12</text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_CRTEKSTYMD</name>
-            <x>360</x>
-            <y>568</y>
-            <width>80</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>10</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_CRTEKEDYMD</name>
-            <x>464</x>
-            <y>568</y>
-            <width>80</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>10</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaCombo</class>
-            <name>P028_CAREJOTAI_COMB</name>
-            <x>70</x>
-            <y>568</y>
-            <width>200</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <items></items>
-            <case_sensitive>False</case_sensitive>
-            <use_arrows>True</use_arrows>
-            <loop_selection>False</loop_selection>
-            <widget>
-              <class>GtkPandaEntry</class>
-              <child_name>GtkPandaCombo:entry</child_name>
-              <name>P028_CAREJOTAI</name>
-              <visible>True</visible>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <editable>True</editable>
-              <text_max_length>50</text_max_length>
-              <text></text>
-              <input_mode>XIM</input_mode>
-              <xim_enabled>False</xim_enabled>
-              <signal>
-                <name>changed</name>
-                <handler>entry_changed</handler>
-                <data>CHANGED</data>
-              </signal>
-              <signal>
-                <name>activate</name>
-                <handler>send_event</handler>
-                <data>ACTIVATE</data>
-              </signal>
-            </widget>
-          </widget>
-          <widget>
-            <class>GtkNumberEntry</class>
-            <name>P028_CRSELNUM</name>
-            <x>20</x>
-            <y>568</y>
-            <width>42</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <format>ZZZ</format>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label42</name>
-            <x>436</x>
-            <y>568</y>
-            <width>32</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>〜</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkButton</class>
-            <name>BCRN1</name>
-            <x>76</x>
-            <y>596</y>
-            <width>62</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>削除</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkButton</class>
-            <name>BCRN2</name>
-            <x>364</x>
-            <y>596</y>
-            <width>62</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>更新</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label43</name>
-            <x>416</x>
-            <y>220</y>
-            <width>60</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>保険者名</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label44</name>
-            <x>416</x>
-            <y>252</y>
-            <width>60</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>所在地</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P028_CAREHKNJAMEI</name>
-            <x>480</x>
-            <y>218</y>
-            <width>300</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P028_CAREHKNJAADRS</name>
-            <x>480</x>
-            <y>246</y>
-            <width>384</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>あ</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label45</name>
-            <x>416</x>
-            <y>296</y>
-            <width>60</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>電話</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P028_CAREHKNJATEL</name>
-            <x>480</x>
-            <y>296</y>
-            <width>100</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P028_CAREHKNJAADRS2</name>
-            <x>480</x>
-            <y>270</y>
-            <width>384</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>あ</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkNumberEntry</class>
-            <name>P028_CRHSELNUM</name>
-            <x>24</x>
-            <y>328</y>
-            <width>40</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <format>ZZ</format>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label46</name>
-            <x>16</x>
-            <y>304</y>
-            <width>53</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>選択番号</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label47</name>
-            <x>272</x>
-            <y>308</y>
-            <width>100</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>有効期間</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_CHTEKSTYMD</name>
-            <x>264</x>
-            <y>328</y>
-            <width>80</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>10</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_CHTEKEDYMD</name>
-            <x>360</x>
-            <y>328</y>
-            <width>80</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>10</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label48</name>
-            <x>336</x>
-            <y>328</y>
-            <width>32</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>〜</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkScrolledWindow</class>
-            <name>scrolledwindow5</name>
-            <x>24</x>
-            <y>210</y>
-            <width>363</width>
-            <height>90</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-            <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-            <widget>
-              <class>GtkPandaCList</class>
-              <name>P028_CAREHKNLST</name>
-              <width>360</width>
-              <height>80</height>
-              <visible>True</visible>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <border_width>0</border_width>
-              <show_titles>True</show_titles>
-              <columns>5</columns>
-              <column_widths>30,70,74,74,74</column_widths>
-              <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-              <signal>
-                <name>select_row</name>
-                <handler>clist_send_event</handler>
-                <data>SELECT</data>
-                <after>True</after>
-              </signal>
-              <signal>
-                <name>select_row</name>
-                <handler>selection_changed</handler>
-                <data>SELECT</data>
-              </signal>
-              <signal>
-                <name>unselect_row</name>
-                <handler>selection_changed</handler>
-                <data>SELECT</data>
-              </signal>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label49</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>番号</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label50</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>保険者番号</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label51</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>被保険者番号</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label52</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>有効開始日</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label53</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>有効終了日</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-            </widget>
-          </widget>
-          <widget>
-            <class>GtkButton</class>
-            <name>BCRH1</name>
-            <x>80</x>
-            <y>356</y>
-            <width>62</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>削除</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkButton</class>
-            <name>BCRH2</name>
-            <x>356</x>
-            <y>360</y>
-            <width>62</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>更新</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P028_CAREHKNMEI</name>
-            <x>408</x>
-            <y>200</y>
-            <width>300</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkHSeparator</class>
-            <name>hseparator5</name>
-            <x>580</x>
-            <y>316</y>
-            <width>418</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
-          </widget>
-          <widget>
-            <class>GtkVSeparator</class>
-            <name>vseparator1</name>
-            <x>572</x>
-            <y>328</y>
-            <width>20</width>
-            <height>304</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <orientation>GTK_ORIENTATION_VERTICAL</orientation>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label54</name>
-            <x>596</x>
-            <y>388</y>
-            <width>200</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>地域包括診療対象疾病</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkCheckButton</class>
-            <name>P028_CHKHKTBYO1</name>
-            <x>616</x>
-            <y>412</y>
-            <width>90</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>高血圧症</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <active>False</active>
-            <draw_indicator>True</draw_indicator>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkCheckButton</class>
-            <name>P028_CHKHKTBYO2</name>
-            <x>708</x>
-            <y>412</y>
-            <width>80</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>糖尿病</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <active>False</active>
-            <draw_indicator>True</draw_indicator>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkCheckButton</class>
-            <name>P028_CHKHKTBYO3</name>
-            <x>792</x>
-            <y>412</y>
-            <width>100</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>脂質異常症</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <active>False</active>
-            <draw_indicator>True</draw_indicator>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkCheckButton</class>
-            <name>P028_CHKHKTBYO4</name>
-            <x>900</x>
-            <y>412</y>
-            <width>80</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>認知症</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <active>False</active>
-            <draw_indicator>True</draw_indicator>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkCheckButton</class>
-            <name>P028_NNCHIKBN</name>
-            <x>596</x>
-            <y>450</y>
-            <width>206</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>認知症地域包括診療料算定</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <active>False</active>
-            <draw_indicator>True</draw_indicator>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkCheckButton</class>
-            <name>P028_SYOUNIKBN</name>
-            <x>596</x>
-            <y>488</y>
-            <width>216</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>小児かかりつけ診療料算定</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <active>False</active>
-            <draw_indicator>True</draw_indicator>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkScrolledWindow</class>
-            <name>scrolledwindow7</name>
-            <x>468</x>
-            <y>10</y>
-            <width>530</width>
-            <height>132</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <hscrollbar_policy>GTK_POLICY_AUTOMATIC</hscrollbar_policy>
-            <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
-            <widget>
-              <class>GtkPandaCList</class>
-              <name>P028_MYLIST</name>
-              <width>510</width>
-              <height>120</height>
-              <visible>True</visible>
-              <sensitive>True</sensitive>
-              <can_focus>True</can_focus>
-              <has_focus>False</has_focus>
-              <border_width>0</border_width>
-              <show_titles>True</show_titles>
-              <columns>4</columns>
-              <column_widths>20,75,150,240</column_widths>
-              <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-              <signal>
-                <name>select_row</name>
-                <handler>clist_send_event</handler>
-                <data>SELECT</data>
-                <after>True</after>
-              </signal>
-              <signal>
-                <name>select_row</name>
-                <handler>selection_changed</handler>
-                <data>SELECT</data>
-              </signal>
-              <signal>
-                <name>unselect_row</name>
-                <handler>selection_changed</handler>
-                <data>SELECT</data>
-              </signal>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label1924</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>番号</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label1925</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>ＩＤ識別</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label1926</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>ＩＤ番号</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-              <widget>
-                <class>GtkLabel</class>
-                <child_name>CList:title</child_name>
-                <name>label1927</name>
-                <sensitive>True</sensitive>
-                <can_focus>False</can_focus>
-                <has_focus>False</has_focus>
-                <xalign>0.5</xalign>
-                <yalign>0.5</yalign>
-                <xpad>0</xpad>
-                <ypad>0</ypad>
-                <label>備考</label>
-                <justify>GTK_JUSTIFY_CENTER</justify>
-                <wrap>False</wrap>
-              </widget>
-            </widget>
-          </widget>
-          <widget>
-            <class>GtkButton</class>
-            <name>BCMY1</name>
-            <x>528</x>
-            <y>180</y>
-            <width>62</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>削除</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkButton</class>
-            <name>BCMY2</name>
-            <x>900</x>
-            <y>180</y>
-            <width>62</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>更新</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkNumberEntry</class>
-            <name>P028_MYSELNUM</name>
-            <x>470</x>
-            <y>150</y>
-            <width>36</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <format>ZZ</format>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_MYIDKEY</name>
-            <x>510</x>
-            <y>150</y>
-            <width>90</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>10</text_max_length>
-            <text>1234567890</text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_MY_NUMBER</name>
-            <x>604</x>
-            <y>150</y>
-            <width>150</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>20</text_max_length>
-            <text>1234567890</text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_MY_DESCRIP</name>
-            <x>758</x>
-            <y>150</y>
-            <width>244</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>100</text_max_length>
-            <text>1234567890</text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label55</name>
-            <x>594</x>
-            <y>524</y>
-            <width>200</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>管理料等自動算定</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label56</name>
-            <x>596</x>
-            <y>549</y>
-            <width>32</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>１．</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_AUTOSRYCD1</name>
-            <x>620</x>
-            <y>546</y>
-            <width>90</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>9</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label57</name>
-            <x>596</x>
-            <y>573</y>
-            <width>32</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>２．</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_AUTOSRYCD2</name>
-            <x>620</x>
-            <y>570</y>
-            <width>90</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>9</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkPandaEntry</class>
-            <name>P028_AUTOSRYCD3</name>
-            <x>620</x>
-            <y>595</y>
-            <width>90</width>
-            <height>24</height>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <editable>True</editable>
-            <text_max_length>9</text_max_length>
-            <text></text>
-            <input_mode>ASCII</input_mode>
-            <xim_enabled>False</xim_enabled>
-            <signal>
-              <name>changed</name>
-              <handler>entry_changed</handler>
-              <data>CHANGED</data>
-            </signal>
-            <signal>
-              <name>activate</name>
-              <handler>send_event</handler>
-              <data>ACTIVATE</data>
-            </signal>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>label58</name>
-            <x>596</x>
-            <y>597</y>
-            <width>32</width>
-            <height>20</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label>３．</label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P028_AUTONAME1</name>
-            <x>712</x>
-            <y>548</y>
-            <width>290</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P028_AUTONAME2</name>
-            <x>712</x>
-            <y>569</y>
-            <width>290</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkLabel</class>
-            <name>P028_AUTONAME3</name>
-            <x>712</x>
-            <y>595</y>
-            <width>290</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>False</can_focus>
-            <has_focus>False</has_focus>
-            <xalign>0</xalign>
-            <yalign>0.5</yalign>
-            <xpad>0</xpad>
-            <ypad>0</ypad>
-            <label></label>
-            <justify>GTK_JUSTIFY_LEFT</justify>
-            <wrap>False</wrap>
-          </widget>
-          <widget>
-            <class>GtkCheckButton</class>
-            <name>P028_NINPUKBN</name>
-            <x>596</x>
-            <y>352</y>
-            <width>110</width>
-            <height>24</height>
-            <visible>True</visible>
-            <sensitive>True</sensitive>
-            <can_focus>True</can_focus>
-            <has_focus>False</has_focus>
-            <border_width>0</border_width>
-            <label>妊婦</label>
-            <relief>GTK_RELIEF_NORMAL</relief>
-            <xalign>0.5</xalign>
-            <yalign>0.5</yalign>
-            <response_id>0</response_id>
-            <active>False</active>
-            <draw_indicator>True</draw_indicator>
-            <signal>
-              <name>toggled</name>
-              <handler>button_toggled</handler>
-            </signal>
-            <signal>
-              <name>clicked</name>
-              <handler>send_event</handler>
-              <data>CLICKED</data>
-              <after>True</after>
-            </signal>
-          </widget>
-        </widget>
-        <widget>
-          <class>GtkLabel</class>
-          <name>N10</name>
-          <child_name>Notebook:tab</child_name>
-          <position>7</position>
-          <tab_fill>False</tab_fill>
-          <visible>True</visible>
-          <sensitive>True</sensitive>
-          <can_focus>False</can_focus>
-          <has_focus>False</has_focus>
-          <xalign>0.5</xalign>
-          <yalign>0.5</yalign>
-          <xpad>0</xpad>
-          <ypad>0</ypad>
-          <label>その他</label>
-          <justify>GTK_JUSTIFY_LEFT</justify>
           <wrap>False</wrap>
         </widget>
       </widget>
@@ -13771,7 +11306,7 @@
         <xpad>0</xpad>
         <ypad>0</ypad>
         <label></label>
-        <justify>GTK_JUSTIFY_FILL</justify>
+        <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
       <widget>

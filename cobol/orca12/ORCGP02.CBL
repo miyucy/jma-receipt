@@ -71,7 +71,6 @@
       *  04.06.00    NACL-多々納  11/03/24  患者情報削除サブ対応
       *  04.07.00    NACL-多々納  12/01/11  クライアント印刷対応
       *  04.07.00    NACL-多々納  12/08/08  患者削除再確認対応
-      *  05.00.00    NACL-多々納  17/07/XX  PUSH通信対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -142,9 +141,6 @@
       *    クライアント印刷有
            03  FLG-CLIENT-OK       PIC 9(01).
            03  FLG-PRT             PIC 9(01).
-      *H29.7
-      *PUSH通信用
-           03  FLG-PUSHSYORI       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -211,27 +207,6 @@
       *    処方せんＰＧ名
            03  WRK-SYOHOU-PG           PIC X(20).
       *
-      *H29.7
-      *PUSH通信用
-           03  WRK-HEN-DATE.
-               05  WRK-HEN-YY          PIC X(04).
-               05  WRK-HEN-H1          PIC X(01).
-               05  WRK-HEN-MM          PIC X(02).
-               05  WRK-HEN-H2          PIC X(01).
-               05  WRK-HEN-DD          PIC X(02).
-      *    時間編集
-           03  WRK-THMS.
-               05  WRK-THHH             PIC X(02).
-               05  WRK-THMM             PIC X(02).
-               05  WRK-THSS             PIC X(02).
-           03  WRK-HEN-TIME.
-               05  WRK-HEN-THH         PIC X(02).
-               05  WRK-HEN-T1          PIC X(01).
-               05  WRK-HEN-TMM         PIC X(02).
-               05  WRK-HEN-T2          PIC X(01).
-               05  WRK-HEN-TSS         PIC X(02).
-      *
-      *
       *    ＣＬＡＩＭファイル名
        01  CLAIM-FILE.
            03  FILLER              PIC X(30)   VALUE
@@ -274,13 +249,16 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-      *    システム管理マスタ
-           COPY    "CPSYSKANRI.INC".
       *　　（ＣＬＡＩＭ接続）
            COPY    "CPSK9000.INC".
            COPY    "CPSK9001.INC".
       *　　（帳票プログラム）
            COPY    "CPSK1032.INC".
+      *
+      *    受付
+      *01  UKETUKE-REC.
+      *    COPY    "CPUKETUKE.INC".
+      *
       *
       *    患者番号変換マスタ
        01  PTNUM-REC.
@@ -290,19 +268,211 @@
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
+      *    保険組み合わせ
+      *01  HKNCOMBI-REC.
+      *    COPY    "CPHKNCOMBI.INC".
+      *
+      *    保険マスタ
+      *01  PTHKNINF-REC.
+      *    COPY    "CPPTHKNINF.INC".
+      *
+      *    公費マスタ
+      *01  PTKOHINF-REC.
+      *    COPY    "CPPTKOHINF.INC".
+      *
+      *    旧姓履歴
+      *01  KYUSEIRRK-REC.
+      *    COPY    "CPKYUSEIRRK.INC".
+      *
+      *    低所得
+      *01  TSYRRK-REC.
+      *    COPY    "CPTSYRRK.INC".
+      *
+      *    年金
+      *01  TNKRRK-REC.
+      *    COPY    "CPTNKRRK.INC".
+      *
+      *    紹介履歴
+      *01  SYKRRK-REC.
+      *    COPY    "CPSYKRRK.INC".
+      *
+      *    診療行為マスタ−
+      *01  SRYACT-REC.
+      *    COPY    "CPSRYACT.INC".
+      *
+      *    ワーク診療行為マスタ−
+      *01  WKSRYACT-REC.
+      *    COPY    "CPWKSRYACT.INC".
+      *
+      *    診療会計マスタ−
+      *01  SRYACCT-REC.
+      *    COPY    "CPSRYACCT.INC".
+      *
+      *    診療会計附加情報マスタ−
+      *01  SRYACCTPLUS-REC.
+      *    COPY    "CPSRYACCTPLUS.INC".
+      *
+      *    患者コメント
+      *01  PTCOM-REC.
+      *    COPY    "CPPTCOM.INC".
+      *
       *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
+      *
+      *    診療科履歴
+      *01  SRYKARRK-REC.
+      *    COPY    "CPSRYKARRK.INC".
+      *
+      *    算定履歴
+      *01  SANTEI-REC.
+      *    COPY    "CPSANTEI.INC".
+      *
+      *    算定履歴
+      *01  SANTEIPLUS-REC.
+      *    COPY    "CPSANTEIPLUS.INC".
+      *
+      *    収納マスタワーク
+      *01  SYUNOU-REC.
+      *    COPY    "CPSYUNOU.INC".
+      *
+      *    収納明細
+      *01  SYUMEI-REC.
+      *    COPY    "CPSYUMEI.INC".
+      *
+      *    患者病名
+      *01  PTBYOMEI-REC.
+      *    COPY    "CPPTBYOMEI.INC".
+      *
+      *    予約マスター
+      *01  YYK-REC.
+      *    COPY    "CPYYK.INC".
+      *
+      *    予約マスター保存
+      *01  WRK-YYK-REC.
+      *    COPY    "CPYYK.INC"       REPLACING
+      *                              //YYK-// BY //WRK-YYK-//.
+      *    予約メモマスター
+      *01  YYKCOM-REC.
+      *    COPY    "CPYYKCOM.INC".
+      *
+      *    レセプトコメント
+      *01  RECECOM-REC.
+      *    COPY    "CPRECECOM.INC".
+      *
+      *
+      *    請求管理
+      *    COPY    "CPRCF010.INC".
+      *
+      *    患者労災保険情報
+      *01  PTRSIINF-REC.
+      *    COPY    "CPPTRSIINF.INC".
+      *
+      *    月代り受給者番号
+      *01  MONTHLYNUM-REC.
+      *    COPY    "CPMONTHLYNUM.INC".
+      *
+      *    患者入院履歴
+      *01  PTNYUINRRK-REC.
+      *    COPY    "CPPTNYUINRRK.INC".
+      *
+      *    患者他院歴付加情報
+      *01  PTTAINFUKA-REC.
+      *    COPY    "CPPTTAINFUKA.INC".
+      *
+      *    入院診療行為マスター
+      *01  NYUINACT-REC.
+      *    COPY    "CPNYUINACT.INC".
+      *
+      *    入院診療会計マスタ−
+      *01  NYUINACCT-REC.
+      *    COPY    "CPNYUINACCT.INC".
+      *
+      *    患者定期請求履歴
+      *01  PTTEIKIRRK-REC.
+      *    COPY    "CPPTTEIKIRRK.INC".
+      *
+      *    地方公費請求書
+      *    COPY    "CPKOHSKY.INC".
+      *
+      *    患者禁忌薬剤マスタ
+      *01  PTKINKI-REC.
+      *    COPY    "CPPTKINKI.INC".
+      *
+      *    患者特記事項マスタ
+      *01  PTTOKKI-REC.
+      *    COPY    "CPPTTOKKI.INC".
+      *
+      *    患者公費負担額
+      *01  PTKOHFTNETC-REC.
+      *    COPY    "CPPTKOHFTNETC.INC".
       *
       *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
+      *    公費負担額
+      *01  PTKOHFTN-REC.
+      *    COPY    "CPPTKOHFTN.INC".
+      *
+      *    日別収納マスタ
+      *01  SYUDAY-REC.
+      *    COPY    "CPSYUDAY.INC".
+      *
+      *    レセプト電算マスター 
+      *    COPY    "CPRECEDEN.INC".
+      *
+      *    手術歴レセプトコメントマスター
+      *01  OPECOM-REC.
+      *    COPY    "CPOPECOM.INC".
+      *
+      *    収納合計マスタ−
+      *01  SYUTTL-REC.
+      *    COPY    "CPSYUTOTAL.INC".
+      *
+      *    主科テーブル
+      *01  SYUKA-REC.
+      *    COPY    "CPSYUKA.INC".
+      *
+      *    療養レセプトコメントマスタ
+      *01  RYOCOM-REC.
+      *    COPY    "CPRYOCOM.INC".
+      *
+      *    収納履歴マスタ
+      *01  SYURRK-REC.
+      *    COPY    "CPSYURRK.INC".
       *
       *    QRコード(被保険者証)（使用なし）
        01  QRCDHKN-REC.
            COPY    "CPQRCDHKN.INC".
       *
+      *    患者メモ
+      *01  PTMEMOINF-REC.
+      *    COPY    "CPPTMEMOINF.INC".
+      *
+      *    入院診療行為照会テーブル
+      *01  NSRYSRH-REC.
+      *    COPY    "CPNSRYSRH.INC".
+      *
+      *    入院履歴照会テーブル
+      *01  NRRKSRH-REC.
+      *    COPY    "CPNRRKSRH.INC".
+      *
+      *    分娩管理テーブル
+      *01  BUNBEN-REC.
+      *    COPY    "CPBUNBEN.INC".
+      *
+      *    同一患者識別テーブル
+      *01  PTSAME-REC.
+      *    COPY    "CPPTSAME.INC".
+      *
+      *    同一患者識別テーブル
+      *01  HZN-PTSAME-REC.
+      *    COPY    "CPPTSAME.INC"      REPLACING
+      *                                //PTSAME-// BY //HZN-PTSAME-//.
+      *
+      *    チェック例外テーブル
+      *    COPY    "CPCHKREIGAI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -356,10 +526,6 @@
            COPY    "CPSHELLTBL.INC".
       *****COPY    "ORCA-DBPATH".
       *===> For Claim End
-      *H29.7
-      *PUSH通信
-           COPY    "CPPUSHPATIENT01.INC".
-      *
       *
       *****************************************************************
       *    連絡　領域
@@ -373,6 +539,36 @@
       *
        01  SCRAREA.
            COPY    "ORCA12SCRAREA.INC".
+      *    COPY    "P02.INC".
+      *    COPY    "P02A.INC".
+      *****COPY    "P02B.INC".
+      *****COPY    "P02C.INC".
+      *    COPY    "P02D.INC".
+      *    COPY    "P02E.INC".
+      *    COPY    "P02F.INC".
+      *    COPY    "P014.INC".
+      *    COPY    "P015.INC".
+      *    COPY    "P98.INC".
+      *    COPY    "P981.INC".
+      *****COPY    "P99.INC".
+      *    COPY    "P0201.INC".
+      *    COPY    "P982.INC".
+      *    COPY    "P100.INC".
+      *    COPY    "P02X.INC".
+      *    COPY    "P02S.INC".
+      *    COPY    "P02Q.INC".
+      *    COPY    "P02Q1.INC".
+      *    COPY    "P02Y.INC".
+      *    COPY    "P02Y1.INC".
+      *    COPY    "P02G.INC".
+      *    COPY    "P02G2.INC".
+      *    COPY    "P02K.INC".
+      *    COPY    "P02H.INC".
+      *    COPY    "P02T.INC".
+      *    COPY    "PERR.INC".
+      *    COPY    "PID1.INC".
+      *    COPY    "PDMY01.INC".
+      **   COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -417,9 +613,9 @@
            END-IF
       *
       *    クライアント印刷
-      *    IF      FLG-CLIENT-OK       =   1
-      *        PERFORM 600-CLIENT-DMY-SEC
-      *    END-IF
+           IF      FLG-CLIENT-OK       =   1
+               PERFORM 600-CLIENT-DMY-SEC
+           END-IF
       *
            MOVE    SPA-P02KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -658,9 +854,6 @@
                    MOVE    1                   TO  SPA-GMN-CUR
                    MOVE    SPACE               TO  SPA-P02-WIDGET
                    MOVE    1                   TO  P02-PAGENO
-      *        禁忌薬剤
-               WHEN    "P02Y"
-                   CONTINUE
       *        ＣＬＡＩＭ画面より
                WHEN    "P02X"
                    MOVE    "P02"               TO  SPA-P02-GAMEN
@@ -726,9 +919,6 @@
               IF      (WRK-SPA-PTNUM       =   SPACE   )  AND
                       (WRK-SPA-NAME    NOT =   SPACE   )  AND
                       (WRK-SPA-P02-UKEID   NOT =   ZERO    )
-      *H29.11
-                   MOVE    SPACE               TO  SPA-GMN-PTNUM
-                   MOVE    ZERO                TO  SPA-GMN-PTID
                    MOVE    WRK-SPA-NAME        TO  SPA-NAME
                    MOVE    WRK-SPA-P02-UKEID   TO  SPA-P02-UKEID
       *            各画面を初期編集する
@@ -939,12 +1129,6 @@
                                                    SPAAREA
                                                    LINKAREA
                                                    SCRAREA
-      *        個別設定情報
-               WHEN     "P028"
-                   CALL    "ORCGP028"      USING   MCPAREA
-                                                   SPAAREA
-                                                   LINKAREA
-                                                   SCRAREA
       ******   紹介情報入力
       *        WHEN     "P023"
       *            CALL    "ORCGP023"      USING   MCPAREA
@@ -974,7 +1158,6 @@
                                                SPA-P02SCRAREA
                                                P02
            MOVE    SPA-ERRCD           TO  WRK-ERRCD
-      *
       *    ＱＲデータ判定
       *DD  PERFORM 3101-QRDATA-CHK-SEC
       *
@@ -1438,11 +1621,6 @@
                    MOVE    "P026"          TO  SPA-P02-GAMEN
                    MOVE    "N09"           TO  SPA-P02-WIDGET
                WHEN    "P026"
-      **           MOVE    "P020"          TO  SPA-P02-GAMEN
-      **           MOVE    "N01"           TO  SPA-P02-WIDGET
-                   MOVE    "P028"          TO  SPA-P02-GAMEN
-                   MOVE    "N10"           TO  SPA-P02-WIDGET
-               WHEN    "P028"
                    MOVE    "P020"          TO  SPA-P02-GAMEN
                    MOVE    "N01"           TO  SPA-P02-WIDGET
            END-EVALUATE
@@ -1488,10 +1666,8 @@
                WHEN    "P020"
       ****         MOVE    "P025"          TO  SPA-P02-GAMEN
       ****         MOVE    "N08"           TO  SPA-P02-WIDGET
-      ****         MOVE    "P026"          TO  SPA-P02-GAMEN
-      ****         MOVE    "N09"           TO  SPA-P02-WIDGET
-                   MOVE    "P028"          TO  SPA-P02-GAMEN
-                   MOVE    "N10"           TO  SPA-P02-WIDGET
+                   MOVE    "P026"          TO  SPA-P02-GAMEN
+                   MOVE    "N09"           TO  SPA-P02-WIDGET
                WHEN    "P02"
                    MOVE    "P020"          TO  SPA-P02-GAMEN
                    MOVE    "N01"           TO  SPA-P02-WIDGET
@@ -1510,9 +1686,6 @@
                WHEN    "P026"
                    MOVE    "P025"          TO  SPA-P02-GAMEN
                    MOVE    "N08"           TO  SPA-P02-WIDGET
-               WHEN    "P028"
-                   MOVE    "P026"          TO  SPA-P02-GAMEN
-                   MOVE    "N09"           TO  SPA-P02-WIDGET
            END-EVALUATE
       *
            MOVE    SPA-P02-WIDGET     TO  MCP-WIDGET
@@ -1550,8 +1723,6 @@
                    MOVE    "N08"               TO  WRK-WIDGET
                WHEN    6
                    MOVE    "N09"               TO  WRK-WIDGET
-               WHEN    7
-                   MOVE    "N10"               TO  WRK-WIDGET
            END-EVALUATE
       *
       *    患者指定がない時、チェックなし
@@ -1577,7 +1748,7 @@
                    MOVE    "P020"          TO  SPA-P02-GAMEN
       *        基本
                WHEN    "N02"
-                   MOVE    "P02 "          TO  SPA-P02-GAMEN
+                   MOVE    "P02 "         TO  SPA-P02-GAMEN
       *        保険組合せ
                WHEN    "N03"
                    MOVE    "P027"         TO  SPA-P02-GAMEN
@@ -1599,9 +1770,6 @@
       *        特記事項
                WHEN    "N09"
                    MOVE    "P026"          TO  SPA-P02-GAMEN
-      *        個別設定
-               WHEN    "N10"
-                   MOVE    "P028"          TO  SPA-P02-GAMEN
            END-EVALUATE
       *
       *    画面ＳＰＡ編集のみ（各画面の初期編集）
@@ -1612,7 +1780,6 @@
       *
            MOVE    SPACE              TO  SPA-P02-WIDGET
            MOVE    ZERO               TO  SPA-FLG-END
-           MOVE    ZERO               TO  FLG-END
       *
            .
        460-TAGUCHG-EXT.
@@ -2258,20 +2425,6 @@
                    MOVE    "1021"              TO  SPA-ERRCD
                END-IF
            END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-      *        表示画面の登録処理
-               MOVE    "CLICKED"           TO  MCP-EVENT
-               MOVE    "B12"               TO  MCP-WIDGET
-               MOVE    "PUTG"              TO  MCP-STATUS
-               MOVE    1                   TO  SPA-TAGU-FLG
-               PERFORM 3002-GMNSET-SEC
-               IF     (SPA-ERRCD       NOT =   SPACE )
-                  OR  (SPA-PIDCD       NOT =   SPACE )
-                  GO  TO                  4902-P02YSYORI-EXT
-               END-IF
-           END-IF
-      *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 49021-P02Y-SYORI-SEC
            END-IF
@@ -2283,7 +2436,7 @@
       *****************************************************************
        49021-P02Y-SYORI-SEC            SECTION.
       *
-           INITIALIZE                  SPA-P02Y-AREA
+           INITIALIZE                  SPA-P02Q-AREA
       *
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -2301,7 +2454,6 @@
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-P02SCRAREA
            MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-      *
       *
            IF      SPA-P02Y-MAX        =   ZERO
                MOVE    "SRYCD"             TO  MCP-WIDGET
@@ -2322,9 +2474,8 @@
       *    再発行処理
       *****************************************************************
        450-SAINUM-SEC           SECTION.
-      *
       *    患者ＩＤがあり、新規の時
-           IF     (SPA-GMN-PTNUM   NOT =   SPACE)  AND
+           IF     (SPA-GMN-PTNUM   NOT =   ZERO )  AND
                   (SPA-P02-SYORI       =   1    )
       *        自由構成の時、登録
                MOVE    1                   TO  FLG-HAKKOU
@@ -2659,22 +2810,9 @@
                GO      TO      4991-DELETE-SYORI-EXT
            END-IF
       *
-      *H29.7
-      *PUSH通信
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    3                   TO  FLG-PUSHSYORI
-               PERFORM 600-PUSH-SYORI-SEC
-           END-IF
-      *
       *    ユーザプログラム起動
-      *v4.8
-      *    ginbee対応
-      *    IF      SPA-MW              =   SPA-GINBEE
-      *        CONTINUE
-      ***  ELSE
-               MOVE    2                   TO  FLG-USERPG
-               PERFORM 4907-USERPG-SEC
-      **** END-IF
+           MOVE    2                   TO  FLG-USERPG
+           PERFORM 4907-USERPG-SEC
            IF      FLG-END             =   1
                GO      TO      4991-DELETE-SYORI-EXT
            END-IF
@@ -2769,14 +2907,7 @@
       *
       *    ＣＬＡＩＭ接続チェック処理
            MOVE    ZERO                TO  FLG-CLAIM
-      *v4.8
-      *    ginbee対応
-           IF      SPA-MW              =   SPA-GINBEE
-               INITIALIZE                  SPA-P02X-AREA
-           ELSE
-               PERFORM 4905-CLAIM-CHK-SEC
-           END-IF
-      *
+           PERFORM 4905-CLAIM-CHK-SEC
            IF      FLG-CLAIM           =   2
                CONTINUE
            ELSE
@@ -2813,11 +2944,7 @@
            END-IF
       *!!!
       *    カルテ／処方箋発行処理（クライアント印刷の為、移動）
-      **** IF     (SPA-ERRCD           =   SPACE )
-           IF     (SPA-ERRCD      NOT  =   SPACE )
-             AND  (SPA-KEI-FLG         =   ZERO  )
-               CONTINUE
-           ELSE
+           IF     (SPA-ERRCD           =   SPACE )
                PERFORM 49023-HC01-SYORI-SEC
            END-IF
       *!!!
@@ -2871,8 +2998,7 @@
       *    帳票プログラム取得
            PERFORM 21000-PRINT-PG-SEC
       *
-           IF     (SPA-CLIENT-PRT-FLG  =   2 )
-             OR   (SPA-PRTCONF         =   "1" )
+           IF      SPA-CLIENT-PRT-FLG  =   2
       *        クライアント印刷制御情報取得処理
                PERFORM 4901-CLIENT-PRT-SEC
            END-IF
@@ -2961,17 +3087,17 @@
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
-      *    INITIALIZE                  PDMY01
-      *    MOVE    SPACE               TO  PDMY01-PANDAPRINT1
+           INITIALIZE                  PDMY01
+           MOVE    SPACE               TO  PDMY01-PANDAPRINT1
       *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
-      *    MOVE    "カルテ"            TO  ORCSPRTCTRL-TITLE-I(01)
-      *    MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
+           MOVE    "カルテ"            TO  ORCSPRTCTRL-TITLE-I(01)
+           MOVE    "処方箋"            TO  ORCSPRTCTRL-TITLE-I(02)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
-      *    MOVE    ORCSPRTCTRL-OUT     TO  PDMY01-PANDAPRINT1
+           MOVE    ORCSPRTCTRL-OUT     TO  PDMY01-PANDAPRINT1
       *
       *    再印刷指示なし
            MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
@@ -2984,18 +3110,18 @@
       *****************************************************************
       *    クライアント印刷画面処理
       *****************************************************************
-      *600-CLIENT-DMY-SEC              SECTION.
+       600-CLIENT-DMY-SEC              SECTION.
       *
-      *    MOVE    MCP-WINDOW          TO  SPA-SAKIPG
-      *    MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
-      *    MOVE    "_PDMY01"           TO  MCP-WINDOW
-      *    MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+           MOVE    "_PDMY01"           TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
       *
-      *    PERFORM 900-PUT-WINDOW
+           PERFORM 900-PUT-WINDOW
       *
-      *    .
-      *600-CLIENT-DMY-EXT.
-      *    EXIT.
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
       *
       *****************************************************************
       *    基本画面のカルテ出力処理
@@ -3052,8 +3178,6 @@
       *    クライアント印刷
            IF      FLG-CLIENT-OK       =   1
                MOVE    "01"                TO  SPA-PRT-FLG
-      *        再印刷指示なし
-               MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
            END-IF
       *
            CALL    WRK-KARUTE-PG       USING  SPA-AREA
@@ -3111,28 +3235,6 @@
       *    ＣＬＡＩＭ送信
            IF      SPA-FLG-CLAIM       =   1
                PERFORM 4906-CLAIM-SOUSIN-SEC
-               PERFORM 49061-API-CLMAI-SEC
-           END-IF
-      *!!!!
-      *H28.6
-      *    ginbee対応
-           IF     (SPA-MW              =   SPA-GINBEE)
-             AND  (SPA-ERRCD           =   SPACE     )
-             AND  (SPA-GMN-PTNUM   NOT =   SPACE     )
-      *        AIP CLAIM送信処理
-               PERFORM 49061-API-CLMAI-SEC
-           END-IF
-      *
-      *
-      *H29.7
-      *PUSH通信
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-P02-SYORI   =   1
-                   MOVE    1               TO  FLG-PUSHSYORI
-               ELSE
-                   MOVE    2               TO  FLG-PUSHSYORI
-               END-IF
-               PERFORM 600-PUSH-SYORI-SEC
            END-IF
       *
       **** IF      SPA-MACHIPG         =   "U02"  OR  "K02" OR "Q02"
@@ -3155,17 +3257,9 @@
                    MOVE    1               TO  FLG-BACK
                END-IF
            END-IF
-      *
       *    ユーザプログラム起動
-      *v4.8
-      *    ginbee対応
-      **   IF      SPA-MW              =   SPA-GINBEE
-      *        CONTINUE
-      **** ELSE
-               MOVE    1                   TO  FLG-USERPG
-               PERFORM 4907-USERPG-SEC
-      ***  END-IF
-      *
+           MOVE    1                   TO  FLG-USERPG
+           PERFORM 4907-USERPG-SEC
            IF      FLG-END             =   1
                MOVE    ZERO                TO  SPA-KEI-FLG
                GO      TO      49021-KOUSIN-AFTER-EXT
@@ -3305,20 +3399,6 @@
                MOVE    "B12"     TO  MCP-WIDGET
                MOVE    "PUTG"    TO  MCP-STATUS
                CALL    "ORCGP026"       USING   MCPAREA
-                                                SPAAREA
-                                                LINKAREA
-                                                SCRAREA
-               MOVE    SPA-COMMON          TO  SPA-AREA
-               MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-               MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-      *
-      *VER.4.7
-      *        個別設定
-           WHEN    "P028"
-               MOVE    "CLICKED" TO  MCP-EVENT
-               MOVE    "B12"     TO  MCP-WIDGET
-               MOVE    "PUTG"    TO  MCP-STATUS
-               CALL    "ORCGP028"       USING   MCPAREA
                                                 SPAAREA
                                                 LINKAREA
                                                 SCRAREA
@@ -3577,14 +3657,30 @@
            MOVE    SPA-SYSYMD          TO  SYS-9000-EDYUKYMD
       *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
-           MOVE    SYS-9000-REC        TO  SYSKANRI-REC
-           PERFORM 9009-SYSKANRI-KEY-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-9000-REC
+           MOVE    SYS-9000-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-9000-REC
+               MOVE    1                   TO  FLG-SYSKANRI
            END-IF
+      *    カーソルクロース
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
            MOVE    ZERO                TO  FLG-CLAIM-MULTIHOST
-           IF      FLG-SYSKANRI        =   ZERO
+           IF      FLG-SYSKANRI        =   1
+               CONTINUE
+           ELSE
+               MOVE    MCPDATA-REC         TO  SYS-9000-REC
+      *TEST!!!
+      *        MOVE    SPACE               TO  SYS-9000-PT-FLG
+      *TEST!!!
                MOVE    SYS-9000-CODE       TO  SPA-GMN-SCODE
                MOVE    1                   TO  SPA-P02X-GMN-SEL
       *        マルチホストフラグ
@@ -3752,93 +3848,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        49061-CLAIM-SOUSINSYOSI-EXT.
            EXIT.
-      *H28.6
-      *****************************************************************
-      *    API ＣＬＡＩＭ送信処理
-      *****************************************************************
-       49061-API-CLMAI-SEC  SECTION.
-      *
-           MOVE    ZERO                TO  FLG-CLAIM
-           MOVE    ZERO                TO  WRK-RENNUM
-      *    ＣＬＡＩＭ接続判定
-           MOVE    SPACE               TO  SYS-9000-REC
-           INITIALIZE                  SYS-9000-REC
-           MOVE    "9000"              TO  SYS-9000-KANRICD
-           MOVE    "*"                 TO  SYS-9000-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-9000-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-9000-EDYUKYMD
-      *    システム管理検索
-           MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
-           MOVE    SYS-9000-REC        TO  SYSKANRI-REC
-           PERFORM 9009-SYSKANRI-KEY-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-9000-REC
-           END-IF
-      *
-           IF      FLG-SYSKANRI        =   1
-               CONTINUE
-           ELSE
-               MOVE    SYS-9000-CODE       TO  SPA-GMN-SCODE
-               IF     (SYS-9000-SETUZOKU   =   ZERO )  OR
-                      (SYS-9000-PT-FLG NOT =   "1"  )
-                   CONTINUE
-               ELSE
-      *            ＣＬＡＩＭ送信あり
-                   MOVE    1               TO  FLG-CLAIM
-               END-IF
-           END-IF
-      *
-           IF      FLG-CLAIM           =   1
-      *        受付時間取得
-               MOVE    SPACE               TO  WRK-UKETIME
-               INITIALIZE                  ORCSMCNDATEAREA
-               CALL    "ORCSMCNDATE"       USING
-                                           ORCSMCNDATEAREA
-               MOVE    SMCNDATE-HMS        TO  WRK-UKETIME
-      *
-      *        フィアルデイレクトリ位置指定
-               INITIALIZE                  ORCSMKPASSAREA
-               MOVE    CLAIM-FILE          TO  MKPASS-IN-01
-               CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
-      *
-               MOVE    "HL04.sh"           TO  SHELLTBL-NAME
-      *
-               MOVE    SPA-GMN-SCODE       TO  SHELLTBL-ARG1
-               MOVE    SPA-GMN-PTID        TO  WRK-PTID
-               MOVE    WRK-PTID            TO  SHELLTBL-ARG2
-               MOVE    "XX"                TO  SHELLTBL-ARG3
-               MOVE    WRK-UKETIME         TO  SHELLTBL-ARG4
-               MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG5
-      *
-      *****    MOVE    SYS-9001-ADDRESS    TO  SHELLTBL-ARG6
-      *****    MOVE    SYS-9001-PORT1      TO  SHELLTBL-ARG7
-      *        ドクター
-               MOVE    "@@@@@"             TO  SHELLTBL-ARG8
-      *        保険組合せ
-               MOVE    "@@@@"              TO  SHELLTBL-ARG9
-      *        診療内容
-               MOVE    "XX"                TO  SHELLTBL-ARG10
-      *        連番
-               ADD     1                   TO  WRK-RENNUM
-               MOVE    WRK-RENNUM          TO  SHELLTBL-ARG11 (1:2)
-      *        システム日付
-               MOVE    SPA-SYSYMD          TO  SHELLTBL-ARG12
-      *        患者番号
-               MOVE    SPA-GMN-PTNUM       TO  SHELLTBL-ARG14
-      *
-               MOVE    SHELLTBL            TO  MCPDATA-REC
-               MOVE    "SHELL"             TO  MCP-FUNC
-               MOVE    "shell"             TO  MCP-TABLE
-               MOVE    "allways"           TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-           END-IF
-      *
-           .
-       49061-API-CLMAI-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    ユーザプログラム起動処理
@@ -3949,80 +3958,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        49071-XD01-SYORI-EXT.
            EXIT.
       *
-      *H29.7
-      *PUSH通信
-      *****************************************************************
-      *    PUSH通信処理
-      *****************************************************************
-       600-PUSH-SYORI-SEC             SECTION.
-      *
-           INITIALIZE                      PUSHPT01-REC
-           MOVE    "patient_infomation"    TO  PUSHPT01-EVENT
-           EVALUATE    FLG-PUSHSYORI
-           WHEN    1
-      *        追加
-               MOVE    "add"               TO  PUSHPT01-PMODE
-           WHEN    2
-      *        更新
-               MOVE    "modify"            TO  PUSHPT01-PMODE
-           WHEN    3
-      *        削除
-               MOVE    "delete"            TO  PUSHPT01-PMODE
-           END-EVALUATE
-      *    処理時間取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
-           MOVE    SMCNDATE-HMS        TO  WRK-THMS
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  PUSHPT01-SYSYMD
-           MOVE    WRK-HEN-TIME        TO  PUSHPT01-SYSTIME
-           MOVE    SPA-GMN-PTNUM       TO  PUSHPT01-PTNUM
-      *
-           MOVE    PUSHPT01-REC        TO  MCPDATA-REC
-      *
-           MOVE    "PUSHEVENT"         TO  MCP-FUNC
-           MOVE    "push_patient01"    TO  MCP-TABLE
-           MOVE    "push_patient01"    TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           .
-       600-PUSH-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    日付編集処理
-      *****************************************************************
-       801-DAYHEN01-SEC                SECTION.
-      *
-           IF      WRK-SYMD            =   SPACE
-               MOVE    SPACE           TO  WRK-HEN-DATE
-           ELSE
-               INITIALIZE                  WRK-HEN-DATE
-               MOVE    WRK-SYY             TO  WRK-HEN-YY
-               MOVE    WRK-SMM             TO  WRK-HEN-MM
-               MOVE    WRK-SDD             TO  WRK-HEN-DD
-               MOVE    "-"                 TO  WRK-HEN-H1
-               MOVE    "-"                 TO  WRK-HEN-H2
-               IF      WRK-SYMD            =   "99999999"
-                   MOVE    "12"                TO  WRK-HEN-MM
-                   MOVE    "31"                TO  WRK-HEN-DD
-               END-IF
-           END-IF
-      *
-           INITIALIZE                  WRK-HEN-TIME
-           MOVE    WRK-THHH            TO  WRK-HEN-THH
-           MOVE    WRK-THMM            TO  WRK-HEN-TMM
-           MOVE    WRK-THSS            TO  WRK-HEN-TSS
-           MOVE    ":"                 TO  WRK-HEN-T1
-           MOVE    ":"                 TO  WRK-HEN-T2
-           .
-       801-DAYHEN01-EXT.
-           EXIT.
-      *
-      *
       *****************************************************************
       *    西暦→和暦FORMAT日付編集
       *****************************************************************
@@ -4099,10 +4034,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                P02
       *
            PERFORM 5001-MAPCUR-SEC
-      *H26.4
-           IF      SPA-ERRCD           =   "9108"
-               MOVE    "B12"           TO   MCP-WIDGET
-           END-IF
       *
            .
        500-GMNHEN-EXT.
@@ -4136,8 +4067,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE  "P025_SELNUM1"    TO   MCP-WIDGET
                    WHEN    6
                        MOVE  "P026_SELNUM"     TO   MCP-WIDGET
-                   WHEN    7
-                       MOVE  "P028_PATIENTID1" TO   MCP-WIDGET
                END-EVALUATE
            ELSE
                MOVE    SPA-P02-WIDGET          TO  MCP-WIDGET
@@ -4334,7 +4263,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  SPA-PID1-FLG
       *
            MOVE    SPACE               TO  PID1
-           INITIALIZE                      PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
            MOVE    "戻る"              TO  PID1-B01
@@ -4486,36 +4414,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        970-JYURRK-READ-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    システム管理主キー検索
-      *****************************************************************
-       9009-SYSKANRI-KEY-READ-SEC         SECTION.
-      *
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
-               ELSE
-                   INITIALIZE                  SYSKANRI-REC
-               END-IF
-           ELSE
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-      *    カーソルクロース
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       9009-SYSKANRI-KEY-READ-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

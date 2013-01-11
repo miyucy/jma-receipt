@@ -50,11 +50,6 @@
       *  04.07.00    NACL-多々納  12/01/12  印刷処理移動
       *  04.07.00    NACL-多々納  12/11/22  患者地域連携追加
       *  04.07.00    NACL-多々納  12/12/21  レセプト分割対応
-      *  04.07.00    NACL-多々納  14/02/XX  患者介護情報追加対応
-      *  04.07.00    NACL-多々納  14/03/XX  地域包括診療対象疾病対応
-      *  04.08.00    NACL-多々納  15/11/XX  APIV3(HAORI)対応
-      *  04.08.00    NACL-多々納  16/03/XX  平成２８年４月改正対応
-      *  05.00.00    NACL-多々納  16/12/15  患者個人番号対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -62,10 +57,30 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    パラメタデータ
+      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  INDEXED
+      *                            ACCESS  MODE    IS  DYNAMIC
+      *                            RECORD  KEY     IS  PAR-KEY
+      *                            FILE    STATUS  IS  STS-PARA.
+      *
        DATA                    DIVISION.
       *FILE                        SECTION.
       *
+      *    パラメタデータ
+      *FD  PARA-FILE.
+      *01  PARA-REC.
+      *    03  PAR-KEY.
+      *        05  PAR-FILEMEI         PIC X(08).
+      *        05  PAR-EDANUM          PIC 9(04).
+      *    03  PARA-DATA-REC            PIC X(3000).
+      *
        WORKING-STORAGE             SECTION.
+      *    パラメタファイル名
+      *01  FILE-NAME1.
+      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+      *    03  FILLER              PIC X(07)   VALUE   "P01PARA".
+      *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -73,6 +88,16 @@
            COPY    "P02COMMON-SPA".
       *    患者登録全画面スパ領域
            COPY    "P02SCR-SPA".
+      *
+      *    カルテパラメータ
+      *    COPY    "CPORCHC01.INC".
+      *
+      *    処方箋印刷パラメータ
+      *    COPY    "CPORCHC19.INC".
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -101,10 +126,6 @@
            03  FLG-PTKOHFTNETC     PIC 9(01).
            03  FLG-PTPUBLIC        PIC 9(01).
            03  FLG-PTHDISTDAY      PIC 9(01).
-           03  FLG-PTCONF          PIC 9(01).
-           03  FLG-PTCARE-HKNINF   PIC 9(01).
-           03  FLG-PTCARE-NINTEI   PIC 9(01).
-           03  FLG-PTMYNUMBER      PIC 9(01).
       *
            03  FLG-SYORI           PIC X(01).
            03  FLG-SYORI2          PIC X(01).
@@ -135,10 +156,6 @@
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX5                PIC 9(04).
-           03  IDH1                PIC 9(02).
-      *
-           03  IDH2                PIC 9(02).
-           03  IDH3                PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -171,11 +188,6 @@
       *
            03  WRK-PTSAME-CNT          PIC 9(02).
       *
-      *    患者個別設定　設定ＫＥＹ
-           03  WRK-CONF-CKEY           PIC  X(25).
-      *                  設定データ
-           03  WRK-CONF-CDATA          PIC  X(10).
-      *
       *    カルテＰＧ名
       *    03  WRK-KARUTE-PG           PIC X(20).
       *    処方せんＰＧ名
@@ -194,10 +206,6 @@
                05  WRK-THH         PIC 99.
                05  FILLER          PIC X(01)   VALUE  ":".
                05  WRK-TMM         PIC 99.
-      *
-      *公費一部負担件数
-       01  MAX-KOHFTN              PIC 9(03)   VALUE   300.
-      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -331,22 +339,6 @@
            COPY    "CPPTNUM-PUBLIC.INC".
       *
       *
-      *    患者個別設定テーブル
-       01  PTCONF-REC.
-           COPY    "CPPTCONF.INC".
-      *
-      *    患者介護保険情報テーブル
-       01  PTCARE-HKNINF-REC.
-           COPY    "CPPTCARE-HKNINF.INC".
-      *
-      *    患者介護認定者情報テーブル
-       01  PTCARE-NINTEI-REC.
-           COPY    "CPPTCARE-NINTEI.INC".
-      *H28.12
-      *    患者個人番号テーブル
-       01  PTMYNUMBER-REC.
-           COPY    "CPPTMYNUMBER.INC".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -401,20 +393,17 @@
                PERFORM 1001-HKNCOMBI-KIKANCHK-SEC
                MOVE    1               TO  FLG-END
            END-IF
-      *APIV3   チェックのみ
-           IF      SPA-P02-GAMEN   =   "APICHK"
-               MOVE    1               TO  FLG-END
-           END-IF
       *
            IF      FLG-END         =   ZERO
                IF      SPA-P02-GAMEN   =   "API"
-      *            ＡＰＩ更新処理
+      *        ＡＰＩ更新処理
                    PERFORM 300-API-KOUSIN-SEC
                ELSE
       *
-      *            ＤＢ更新処理
-                   PERFORM 200-MAIN-SEC
-               END-IF
+      *        ＤＢ更新処理
+               PERFORM 200-MAIN-SEC
+           END-IF
+      *
            END-IF
       *
            MOVE    SPA-P02KYOUTU   TO  SPA-WORK
@@ -430,6 +419,7 @@
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
       *
@@ -515,21 +505,9 @@
       *ver.4.7
       *    患者地域連携情報更新
            PERFORM 210-PTPUBLIC-SYORI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      200-MAIN-EXT
-           END-IF
-      *ver.4.7
-      *    患者個別設定情報更新
-           PERFORM 211-PTCONF-SYORI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      200-MAIN-EXT
-           END-IF
       *
       *    旧姓履歴更新
            PERFORM 260-KYUSEIRRK-SYORI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      200-MAIN-EXT
-           END-IF
       *
       *    公費負担額
            INITIALIZE                      PTKOHFTN-REC
@@ -566,7 +544,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            PERFORM
                UNTIL  (FLG-PARA            =   1 )
-                  OR  (SPA-ERRCD       NOT =   SPACE )
                EVALUATE    PARA-FILEMEI
                    WHEN    "PTHKNINF"
                        PERFORM 220-PTHKNINF-SYORI-SEC
@@ -615,25 +592,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-ERRCD           =   SPACE
                PERFORM 3001-PTKOHFTNETC-SYORI-SEC
            END-IF
-      *    特記事項テーブル更新
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 300-PTTOKKI-SYORI-SEC
-           END-IF
-      *ver.4.7
-      *    患者介護保険情報更新
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 2130-PTCARE-HKNINF-SYORI-SEC
-           END-IF
-      *    患者介護認定者情報更新
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 2140-PTCARE-NINTEI-SYORI-SEC
-           END-IF
-      *H28.12
-      *    患者個人番号情報更新
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 2150-MYNUMBER-SYORI-SEC
-           END-IF
-      *
       *    レセプト作成管理マスタ更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2009-RECEUPD-UPDATE-SEC
@@ -834,8 +792,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 900-PTPUBLIC-READ-SEC
       *
            IF      FLG-PTPUBLIC        =   ZERO
-               IF     (SPA-GMN28-PATIENTID1    =   SPACE )
-                  AND (SPA-GMN28-AGREEMENT     =   SPACE )
+               IF      SPA-GMN21-PATIENTID1    =   SPACE
       *            地域連携ＩＤが空白なら削除
                    MOVE    PTPUBLIC-REC        TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -854,11 +811,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 2101-PTPUBLIC-UPS-SEC
                END-IF
            ELSE
-               IF     (SPA-GMN28-PATIENTID1    =   SPACE )
-                  AND (SPA-GMN28-AGREEMENT     =   SPACE )
-                   CONTINUE
-               ELSE
-      *            地域連携情ＩＤ・同意区分あれば登録
+               IF      SPA-GMN21-PATIENTID1    NOT =   SPACE
+      *            地域連携情ＩＤあれば登録
                    PERFORM 2101-PTPUBLIC-INS-SEC
                END-IF
            END-IF
@@ -874,10 +828,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  PTPUBLIC-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTPUBLIC-PTID
       *    入力値編集
-           MOVE    SPA-GMN28-PATIENTID1
+           MOVE    SPA-GMN21-PATIENTID1
                                        TO  PTPUBLIC-PATIENT-ID1
-           MOVE    SPA-GMN28-AGREEMENT
-                                       TO  PTPUBLIC-AGREEMENT
       *    作成年月日
            MOVE    SMCNDATE-YMD        TO  PTPUBLIC-CREYMD
            MOVE    SMCNDATE-YMD        TO  PTPUBLIC-UPYMD
@@ -897,7 +849,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "9000"          TO  SPA-ERRCD
            END-IF
            .
-       2101-PTPUBLIC-INS-EXT.
+       210-PTPUBLIC-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    患者地域連携データ更新処理
@@ -906,10 +858,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    MCPDATA-REC         TO  PTPUBLIC-REC
       *    入力値編集
-           MOVE    SPA-GMN28-PATIENTID1
+           MOVE    SPA-GMN21-PATIENTID1
                                        TO  PTPUBLIC-PATIENT-ID1
-           MOVE    SPA-GMN28-AGREEMENT
-                                       TO  PTPUBLIC-AGREEMENT
       *    更新年月日
            MOVE    SMCNDATE-YMD        TO  PTPUBLIC-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTPUBLIC-UPHMS
@@ -930,261 +880,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        2101-PTPUBLIC-UPS-EXT.
            EXIT.
-      *ver.4.7
-      *****************************************************************
-      *    患者個別設定情報更新処理
-      *****************************************************************
-       211-PTCONF-SYORI-SEC        SECTION.
-      *
-      *    お薬手帳ＱＲ区分
-           MOVE    SPA-GMN28-MNOTE-QRKBN   TO  WRK-CONF-CDATA
-           MOVE    "MNOTEQR"               TO  WRK-CONF-CKEY
-           PERFORM 2111-PTCONF-DBSYORI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      211-PTCONF-SYORI-EXT
-           END-IF
-      *
-      *    お薬手帳データフォーマット区分
-           MOVE    SPA-GMN28-MNOTE-CSV     TO  WRK-CONF-CDATA
-           MOVE    "MNOTEVER"              TO  WRK-CONF-CKEY
-           PERFORM 2111-PTCONF-DBSYORI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      211-PTCONF-SYORI-EXT
-           END-IF
-      *
-      *    日医データフォーマット区分
-           MOVE    SPA-GMN28-JMAMRVER      TO  WRK-CONF-CDATA
-           MOVE    "JMAMRVER"              TO  WRK-CONF-CKEY
-           PERFORM 2111-PTCONF-DBSYORI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      211-PTCONF-SYORI-EXT
-           END-IF
-      *
-      *H26.1
-      *    出生時体重
-           IF      SPA-GMN-BIRTHWEIGHT     =   ZERO
-               MOVE    SPACE                   TO  WRK-CONF-CDATA
-           ELSE
-               MOVE    SPA-GMN-BIRTHWEIGHT-X   TO  WRK-CONF-CDATA
-           END-IF
-           MOVE    "BIRTHWEIGHT"           TO  WRK-CONF-CKEY
-           PERFORM 2111-PTCONF-DBSYORI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      211-PTCONF-SYORI-EXT
-           END-IF
-      *
-      *H26.4
-      *    地域包括診療対象疾病
-           PERFORM VARYING     IDH1    FROM    1   BY  1
-                   UNTIL       IDH1    >   4
-               IF      SPA-GMN28-CHKHKTBYO(IDH1)  =   SPACE
-                   MOVE    "0"             TO  SPA-GMN28-CHKHKTBYO(IDH1)
-               END-IF
-           END-PERFORM
-           IF      SPA-GMN28-CHKHKTBYO-AREA    =   ZERO
-               MOVE    SPACE                   TO  WRK-CONF-CDATA
-           ELSE
-               MOVE    SPA-GMN28-CHKHKTBYO-AREA    TO  WRK-CONF-CDATA
-           END-IF
-           MOVE    "TIIKIHOKATU"           TO  WRK-CONF-CKEY
-           PERFORM 2111-PTCONF-DBSYORI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      211-PTCONF-SYORI-EXT
-           END-IF
-      *H28.4
-      *    認知症地域包括診療
-           IF      SPA-GMN28-NNCHIKBN  =   ZERO
-               MOVE    SPACE           TO  SPA-GMN28-NNCHIKBN
-           END-IF
-           MOVE    SPA-GMN28-NNCHIKBN      TO  WRK-CONF-CDATA
-           MOVE    "NINTIHOKATU"           TO  WRK-CONF-CKEY
-           PERFORM 2111-PTCONF-DBSYORI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      211-PTCONF-SYORI-EXT
-           END-IF
-      *    小児かかりつけ診療
-           IF      SPA-GMN28-SYOUNIKBN =   ZERO
-               MOVE    SPACE           TO  SPA-GMN28-SYOUNIKBN
-           END-IF
-           MOVE    SPA-GMN28-SYOUNIKBN     TO  WRK-CONF-CDATA
-           MOVE    "SYOUNIKAKARI"          TO  WRK-CONF-CKEY
-           PERFORM 2111-PTCONF-DBSYORI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      211-PTCONF-SYORI-EXT
-           END-IF
-      *H30.4
-      *    妊婦区分
-           IF      SPA-GMN28-NINPUKBN   =   ZERO
-               MOVE    SPACE           TO  SPA-GMN28-NINPUKBN
-           END-IF
-           MOVE    SPA-GMN28-NINPUKBN  TO  WRK-CONF-CDATA
-           MOVE    "NINPUKBN"          TO  WRK-CONF-CKEY
-           PERFORM 2111-PTCONF-DBSYORI-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      211-PTCONF-SYORI-EXT
-           END-IF
-      *H28.12
-      *    指導料等自動算定
-           MOVE    ZERO                TO  IDH2
-           PERFORM VARYING     IDH1    FROM    1   BY  1
-                   UNTIL      (IDH1    >   3    )
-                          OR  (SPA-ERRCD   NOT =   SPACE )
-               IF      SPA-GMN28-AUTOSRYCD(IDH1)   =   SPACE
-                   CONTINUE
-               ELSE
-                   ADD     1               TO  IDH2
-                   MOVE    SPA-GMN28-AUTOSRYCD(IDH1)
-                                           TO  WRK-CONF-CDATA
-                   EVALUATE    IDH2
-                   WHEN    1
-                       MOVE    "JIDOSANTEI-1"      TO  WRK-CONF-CKEY
-                   WHEN    2
-                       MOVE    "JIDOSANTEI-2"      TO  WRK-CONF-CKEY
-                   WHEN    3
-                       MOVE    "JIDOSANTEI-3"      TO  WRK-CONF-CKEY
-                   END-EVALUATE
-                   PERFORM 2111-PTCONF-DBSYORI-SEC
-               END-IF
-           END-PERFORM
-           IF      IDH2                <   3
-               COMPUTE IDH3            =   IDH2    +   1
-               PERFORM VARYING     IDH1    FROM    IDH3  BY  1
-                       UNTIL      (IDH1    >   3    )
-                              OR  (SPA-ERRCD   NOT =   SPACE )
-                   MOVE    SPACE           TO  WRK-CONF-CDATA
-                   EVALUATE    IDH1
-                   WHEN    1
-                       MOVE    "JIDOSANTEI-1"      TO  WRK-CONF-CKEY
-                   WHEN    2
-                       MOVE    "JIDOSANTEI-2"      TO  WRK-CONF-CKEY
-                   WHEN    3
-                       MOVE    "JIDOSANTEI-3"      TO  WRK-CONF-CKEY
-                   END-EVALUATE
-                   PERFORM 2111-PTCONF-DBSYORI-SEC
-               END-PERFORM
-           END-IF
-           .
-       211-PTCONF-SYORI-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者個別設定登録処理
-      *****************************************************************
-       2111-PTCONF-DBSYORI-SEC        SECTION.
-      *
-      *
-           INITIALIZE                  PTCONF-REC
-           MOVE    PTINF-HOSPNUM       TO  PTCONF-HOSPNUM
-           MOVE    PTINF-PTID          TO  PTCONF-PTID
-           MOVE    WRK-CONF-CKEY       TO  PTCONF-CKEY
-      *
-           MOVE    PTCONF-REC          TO  MCPDATA-REC
-           MOVE    "tbl_ptconf"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptconf"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 930-PTCONF-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTCONF
-               INITIALIZE                  PTCONF-REC
-           END-IF
-           MOVE    "tbl_ptconf"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    ＤＢあり
-           IF      FLG-PTCONF          =   ZERO
-               IF      WRK-CONF-CDATA      =   SPACE
-      *            ＤＢ削除
-                   MOVE    PTCONF-REC          TO  MCPDATA-REC
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   MOVE    "tbl_ptconf"        TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO
-                       DISPLAY "P029 PTCONF DEL ERR:" MCP-RC
-                               ",KEY:" PTCONF-KEY
-                       MOVE    "9000"          TO  SPA-ERRCD
-                   END-IF
-               ELSE
-      *            ＤＢ更新
-                   PERFORM 21111-PTCONF-UPS-SEC
-               END-IF
-           ELSE
-               IF      WRK-CONF-CDATA  NOT =   SPACE
-      *            登録
-                   PERFORM 21112-PTCONF-INS-SEC
-               END-IF
-           END-IF
-      *
-           .
-       2111-PTCONF-DBSYORI-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者個別設定データ登録処理
-      *****************************************************************
-       21112-PTCONF-INS-SEC        SECTION.
-      *
-           INITIALIZE                      PTCONF-REC
-           MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  PTCONF-PTID
-           MOVE    WRK-CONF-CKEY       TO  PTCONF-CKEY
-      *    入力値編集
-           MOVE    WRK-CONF-CDATA      TO  PTCONF-CDATA
-      *    作成年月日
-           MOVE    SMCNDATE-YMD        TO  PTCONF-CREYMD
-           MOVE    SMCNDATE-YMD        TO  PTCONF-UPYMD
-           MOVE    SMCNDATE-HMS        TO  PTCONF-UPHMS
-           MOVE    SPA-OPID            TO  PTCONF-OPID
-      *
-           MOVE    PTCONF-REC          TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_ptconf"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "P029 PTCONF INS ERR:" MCP-RC
-                           ",KEY:" PTCONF-KEY
-               MOVE    "9000"          TO  SPA-ERRCD
-           END-IF
-           .
-       21112-PTCONF-INS-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者個別設定データ更新処理
-      *****************************************************************
-       21111-PTCONF-UPS-SEC        SECTION.
-      *
-      *    入力値編集
-           MOVE    WRK-CONF-CDATA      TO  PTCONF-CDATA
-      *    更新年月日
-           MOVE    SMCNDATE-YMD        TO  PTCONF-UPYMD
-           MOVE    SMCNDATE-HMS        TO  PTCONF-UPHMS
-           MOVE    SPA-OPID            TO  PTCONF-OPID
-      *
-           MOVE    PTCONF-REC          TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_ptconf"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "P029 PTCONF UPD ERR:" MCP-RC
-                           ",KEY:" PTCONF-KEY
-               MOVE    "9000"          TO  SPA-ERRCD
-           END-IF
-           .
-       21111-PTCONF-UPS-EXT.
-           EXIT.
-      *
-      *
       *****************************************************************
       *    患者保険マスター処理
       *****************************************************************
@@ -1662,15 +1357,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_yyk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *
-      *H26.8   ドクター・診療内容を変更した場合
-           IF      FLG-YYK             =   ZERO
-               IF     (YYK-PTID        NOT =   ZERO )
-                AND   (YYK-PTID        NOT =   UKE-PTID)
-                   MOVE    1               TO  FLG-YYK
-               END-IF
-           END-IF
-      *
+     *
            IF      FLG-YYK             =   ZERO
       *
                MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
@@ -1713,7 +1400,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            .
-       2401-YYK-SYORI-EXT.
+       240-UKETUKE-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2038,7 +1725,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SMCNDATE-YMD        TO  SYS-1009-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-1009-UPHMS
-               MOVE    SPA-OPID            TO  SYS-1009-OPID
       *        患者番号採番  更新
                MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                MOVE    SYS-1009-REC        TO  MCPDATA-REC
@@ -2366,7 +2052,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-HMS        TO  PTKOHFTN-UPHMS
       *
                MOVE    SPA-OPID            TO  PTKOHFTN-OPID
-               MOVE    SPACE               TO  PTKOHFTN-TERMID
       *
       *        新規
                MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
@@ -2568,7 +2253,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    今回更新対象月分はすべて削除
            PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL      (IDX     >   MAX-KOHFTN )  OR
+                   UNTIL      (IDX     >   100 )  OR
                               (SPA-NAI24-KOHFTN-ID (IDX)   =   ZERO)
                INITIALIZE                      PTKOHFTNETC-REC
                MOVE    SPA-HOSPNUM         TO  PTKOHFTNETC-HOSPNUM
@@ -2700,176 +2385,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        30011-PTKOHFTNETC-DBSYORI-EXT.
            EXIT.
-      *ver.4.7
-      *****************************************************************
-      *    患者介護保険情報更新処理
-      *****************************************************************
-       2130-PTCARE-HKNINF-SYORI-SEC         SECTION.
-      *
-      *    すべて削除
-           INITIALIZE                      PTCARE-HKNINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  PTCRHKN-PTID
-           MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL      (IDX     >   SPA-GMN28-CRHKN-MAX )
-                           OR (SPA-ERRCD   NOT =   SPACE )
-      *        登録
-               PERFORM 21301-PTCAREHKNINF-INS-SEC
-           END-PERFORM
-           .
-       2130-PTCARE-HKNINF-SYORI-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者介護保険情報データ登録処理
-      *****************************************************************
-       21301-PTCAREHKNINF-INS-SEC        SECTION.
-      *
-           INITIALIZE                  PTCARE-HKNINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  PTCRHKN-PTID
-           MOVE    SPA-GMN28-TCRHKNJANUM (IDX)
-                                       TO  PTCRHKN-HKNJANUM
-           MOVE    SPA-GMN28-TCRHIHKNJANUM (IDX)
-                                       TO  PTCRHKN-HIHKNJANUM
-           MOVE    SPA-NAI28-TCRHSTRYMD(IDX)
-                                       TO  PTCRHKN-TEKSTYMD
-           MOVE    SPA-NAI28-TCRHENDYMD(IDX)
-                                       TO  PTCRHKN-TEKEDYMD
-      *    作成年月日
-           MOVE    SMCNDATE-YMD        TO  PTCRHKN-CREYMD
-           MOVE    SMCNDATE-YMD        TO  PTCRHKN-UPYMD
-           MOVE    SMCNDATE-HMS        TO  PTCRHKN-UPHMS
-           MOVE    SPA-OPID            TO  PTCRHKN-OPID
-      *
-           MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_ptcare_hkninf"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "P029 PTCRHKN INS ERR:" MCP-RC
-                           ",KEY:" PTCRHKN-KEY
-               MOVE    "9000"          TO  SPA-ERRCD
-           END-IF
-           .
-       21301-PTCAREHKNINF-INS-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者介護認定者情報更新処理
-      *****************************************************************
-       2140-PTCARE-NINTEI-SYORI-SEC         SECTION.
-      *
-      *    すべて削除
-           INITIALIZE                      PTCARE-NINTEI-REC
-           MOVE    SPA-HOSPNUM         TO  PTCRNIN-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  PTCRNIN-PTID
-           MOVE    PTCARE-NINTEI-REC   TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   SPA-GMN28-CRNIN-MAX
-               INITIALIZE                  PTCARE-NINTEI-REC
-               MOVE    SPA-HOSPNUM         TO  PTCRNIN-HOSPNUM
-               MOVE    SPA-GMN-PTID        TO  PTCRNIN-PTID
-               MOVE    SPA-NAI28-TCRSTRYMD(IDX)
-                                           TO  PTCRNIN-TEKSTYMD
-               MOVE    SPA-NAI28-TCRENDYMD(IDX)
-                                           TO  PTCRNIN-TEKEDYMD
-               MOVE    SPA-NAI28-TCAREJOTAI(IDX)
-                                           TO  PTCRNIN-CAREJOTAICD
-               MOVE    SPA-NAI28-TCRNINYMD (IDX)
-                                           TO  PTCRNIN-NINTEIYMD
-      *
-               MOVE    SMCNDATE-YMD        TO  PTCRNIN-CREYMD
-               MOVE    SMCNDATE-YMD        TO  PTCRNIN-UPYMD
-               MOVE    SMCNDATE-HMS        TO  PTCRNIN-UPHMS
-               MOVE    SPA-OPID            TO  PTCRNIN-OPID
-      *        追加
-               MOVE    PTCARE-NINTEI-REC   TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-               IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "P029 PTCARE-NINTEI INS ERR:" MCP-RC
-                                   ",KEY:" PTCRNIN-KEY
-                   MOVE    "9000"              TO  SPA-ERRCD
-               END-IF
-           END-PERFORM
-           .
-       2140-PTCARE-NINTEI-SYORI-EXT.
-           EXIT.
-      *
-      *H28.12
-      *****************************************************************
-      *    患者個人番号情報更新処理
-      *****************************************************************
-       2150-MYNUMBER-SYORI-SEC         SECTION.
-      *
-      *    すべて削除
-           INITIALIZE                      PTMYNUMBER-REC
-           MOVE    SPA-HOSPNUM         TO  PTMYNUM-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  PTMYNUM-PTID
-           MOVE    PTMYNUMBER-REC      TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
-           MOVE    "del1"              TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-      *
-           PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL       IDX     >   SPA-GMN28-MYID-MAX
-               INITIALIZE                  PTMYNUMBER-REC
-               MOVE    SPA-HOSPNUM         TO  PTMYNUM-HOSPNUM
-               MOVE    SPA-GMN-PTID        TO  PTMYNUM-PTID
-               MOVE    SPA-GMN28-TMYIDKEY(IDX)
-                                           TO  PTMYNUM-ID-KEY
-               MOVE    SPA-GMN28-TMYNUMBER(IDX)
-                                           TO  PTMYNUM-MY-NUMBER
-               MOVE    SPA-GMN28-TMYDESCRIP(IDX)
-                                           TO  PTMYNUM-DESCRIPTION
-      *
-               MOVE    SMCNDATE-YMD        TO  PTMYNUM-CREYMD
-               MOVE    SMCNDATE-YMD        TO  PTMYNUM-UPYMD
-               MOVE    SMCNDATE-HMS        TO  PTMYNUM-UPHMS
-               MOVE    SPA-OPID            TO  PTMYNUM-OPID
-      *        追加
-               MOVE    PTMYNUMBER-REC      TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-               IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "P029 PTMYNUMBER INS ERR:" MCP-RC
-                                   ",KEY:" PTMYNUM-KEY
-                   MOVE    "9000"              TO  SPA-ERRCD
-               END-IF
-           END-PERFORM
-           .
-       2150-MYNUMBER-SYORI-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    主科情報設定処理
@@ -3152,11 +2667,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        ADD     1        TO  WRK-KOH-CNT
                    WHEN    "HKNCOMBI"
                        PERFORM 250-HKNCOMBI-SYORI-SEC
-      *            労災保険
-                   WHEN    "PTRSIINF"
-                       IF      SPA-RSIAPI-FLG      =   "1"
-                           PERFORM 292-PTRSIINF-SYORI-SEC
-                       END-IF
                END-EVALUATE
       *
                MOVE    "tbl_para"          TO  MCP-TABLE
@@ -3574,54 +3084,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        991-PTHDISTDAY-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者個別設定テーブル読み込み
-      *****************************************************************
-       930-PTCONF-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTCONF-REC
-               MOVE    ZERO            TO  FLG-PTCONF
-           ELSE
-               INITIALIZE                  PTCONF-REC
-               MOVE    1               TO  FLG-PTCONF
-           END-IF
-      *
-           .
-       930-PTCONF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者介護保険情読み込み
-      *****************************************************************
-       900-PTCAREHKNINF-READ-SEC         SECTION.
-      *
-           MOVE    PTCARE-HKNINF-REC   TO  MCPDATA-REC
-           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PTCARE-HKNINF-REC
-                   MOVE    ZERO            TO  FLG-PTCARE-HKNINF
-               ELSE
-                   MOVE    1               TO  FLG-PTCARE-HKNINF
-                   MOVE    SPACE           TO  PTCARE-HKNINF-REC
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-PTCARE-HKNINF
-           END-IF
-           MOVE    "tbl_ptcare_hkninf" TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       900-PTCAREHKNINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
