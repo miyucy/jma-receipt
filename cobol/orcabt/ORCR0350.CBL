@@ -868,6 +868,7 @@
                        09  TBL-ZAIW-HOJOKBN         PIC  X(01).
                        09  TBL-ZAIW-KOHID           PIC  9(10).
                        09  TBL-ZAIW-TEKSTYMD        PIC  X(08). 
+                       09  TBL-ZAIW-RECEIPT-KBN     PIC  X(10).                    
                        09  TBL-ZAIW-ZAINUM          PIC  9(08).
                        09  TBL-ZAIW-ZAIREN          PIC  9(02).
                        09  TBL-ZAIW-RENNUM          PIC  9(02).
@@ -966,6 +967,7 @@
                    07  TBL-KOUI-HOJOKBN         PIC  X(01).
                    07  TBL-KOUI-KOHID           PIC  9(10).
                    07  TBL-KOUI-TEKSTYMD        PIC  X(08). 
+                   07  TBL-KOUI-RECEIPT-KBN     PIC  X(10).                    
                    07  TBL-KOUI-ZAINUM          PIC  9(08).
                    07  TBL-KOUI-ZAIREN          PIC  9(02).
                    07  TBL-KOUI-RENNUM          PIC  9(02).
@@ -1096,6 +1098,7 @@
                        09  WRK-KOUI-HOJOKBN        PIC X(01).
                        09  WRK-KOUI-KOHID          PIC 9(10).
                        09  WRK-KOUI-TEKSTYMD       PIC X(08). 
+                       09  WRK-KOUI-RECEIPT-KBN    PIC X(10).                    
                        09  WRK-KOUI-ZAINUM         PIC 9(08).
                        09  TBL-KOUI-ZAIREN         PIC 9(02).
                        09  WRK-KOUI-RENNUM         PIC 9(02).
@@ -1194,6 +1197,7 @@
                    07  TBL-KOUI-SRYKBN13-HOJOKBN     PIC X(01).
                    07  TBL-KOUI-SRYKBN13-KOHID       PIC 9(10).
                    07  TBL-KOUI-SRYKBN13-TEKSTYMD    PIC X(08). 
+                   07  TBL-KOUI-SRYKBN13-RECEIPT-KBN PIC X(10).                    
                    07  TBL-KOUI-SRYKBN13-ZAINUM      PIC 9(08).
                    07  TBL-KOUI-SRYKBN13-RENNUM      PIC 9(02).
                05  TBL-KOUI-SRYKBN13-SHORI-RENNUM    PIC 9(01).
@@ -1284,6 +1288,7 @@
                    07  TBL-KENSA-RECE65-HOJOKBN        PIC X(01).
                    07  TBL-KENSA-RECE65-KOHID          PIC  9(10).
                    07  TBL-KENSA-RECE65-TEKSTYMD       PIC X(08). 
+                   07  TBL-KENSA-RECE65-RECEIPT-KBN    PIC X(10).                    
                    07  TBL-KENSA-RECE65-ZAINUM         PIC 9(08).
                    07  TBL-KENSA-RECE65-ZAIREN         PIC 9(02).
                    07  TBL-KENSA-RECE65-RENNUM         PIC 9(02).
