@@ -366,30 +366,3 @@ path	abort 	{
 	};
 };
 
-path	key17 	{
-	DBSELECT	{
-		DECLARE tbl_syumei_key17_csr CURSOR FOR
-		SELECT DISTINCT ON (NYUGAIKBN,DENPNUM,PTID) *
-		FROM tbl_syumei
-			WHERE   HOSPNUM        =  :HOSPNUM
-			AND   NYUGAIKBN    LIKE  :NYUGAIKBN
-			AND   DAILYKEY        >= :STDAILYKEY
-			AND   DAILYKEY        <= :EDDAILYKEY
-			ORDER BY   NYUGAIKBN,DENPNUM,PTID,DENPEDANUM
-		;
-	};
-};
-
-path	key18 	{
-	DBSELECT	{
-		DECLARE tbl_syumei_key18_csr CURSOR FOR
-		SELECT *
-		FROM tbl_syumei
-			WHERE   HOSPNUM        =  :HOSPNUM
-			AND   NYUGAIKBN       =  :NYUGAIKBN
-			AND   NYUHEN_YMD      =  ''
-			ORDER   BY   PTID,DENPNUM,DENPEDANUM
-		;
-	};
-};
-

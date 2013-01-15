@@ -153,21 +153,10 @@
                WHEN    "DBDISCONNECT"
                WHEN    "DBSTART"
                WHEN    "DBCOMMIT"
-      *!!!!!   WHEN    "PUTWINDOW"
                    MOVE    LOW-VALUE       TO  MCP-TABLE
                                                MCP-PATHNAME
-      *!!!!!!!!!!!!!!!
                WHEN    "PUTWINDOW"
-                   MOVE    LOW-VALUE       TO  MCP-TABLE
-                                               MCP-PATHNAME
-                   IF     (MCP-PUTTYPE     =   "CHANGE"  OR
-                                               "JOIN"    )
-                     AND  (MCP-WINDOW      =   "M01"    )
-                       IF        SPA-BEDFLG     >   ZERO
-                           MOVE    "M01N"          TO  MCP-WINDOW
-                       END-IF
-                   END-IF
-      *!!!!!!!!!!!!!!!
+                   MOVE    ZERO            TO  MCP-RC
                WHEN    OTHER
                    IF  MCP-FUNC            =   "DBFETCH"
                        MOVE    LOW-VALUE   TO  MCPDATA-REC
@@ -186,8 +175,7 @@
       *
            IF    ( FLG-ERR         =   ZERO )
       *
-               MOVE    2           TO  MCP-VERSION
-               MOVE    1           TO  MCP-LIMIT
+               MOVE    1           TO  MCP-VERSION
                MOVE    1           TO  MCP-REDIRECT
       *
                IF    ( MCP-TABLE   =   "tbl_srysrh"
@@ -195,20 +183,14 @@
                                     OR "tbl_rrksrh"
                                     OR "tbl_ptsrh"
                                                     )
+                   MOVE    2       TO  MCP-VERSION
                    MOVE    0       TO  MCP-REDIRECT
-               END-IF
-      *
-               IF    ( MCP-TABLE   =   "tbl_chksnd"
-                                    OR "tbl_sryacct_main"
-                                    OR "tbl_sryacct_sub" )
-                   IF    ( MCP-PATHNAME (1:3)  =   "tmp" )
-                       MOVE    0   TO  MCP-REDIRECT
-                   END-IF
                END-IF
       *
                IF    ( MCP-TABLE   =   "tbl_jobkanri" )
                    MOVE    MCPDATA-REC TO  JOBKANRI-REC
                    IF    ( JOB-SHELLID =   "PRGMNT" )
+                       MOVE    2   TO  MCP-VERSION
                        MOVE    0   TO  MCP-REDIRECT
                    END-IF
                END-IF
@@ -343,17 +325,16 @@
       *
            IF    ( MCP-FUNC    =   "DBINSERT"
                                 OR "DBUPDATE" )
-               MOVE    1               TO  IDX1
+               MOVE    ZERO            TO  IDX1
                MOVE    ZERO            TO  KANACONV-RETURN
                PERFORM UNTIL ( IDX1    >=  CONST-MAX-LEN )
                         OR   ( MCPDATA-REC (IDX1 : )   =   SPACE )
                         OR   ( KANACONV-RETURN NOT =   ZERO )
       *
+                   COMPUTE IDX1    =   IDX1    +   1
                    MOVE    MCPDATA-REC (1 :IDX1)
                                        TO  WKMCPDATA-REC
                    PERFORM 800-KANACONV-SEC
-      *
-                   COMPUTE IDX1    =   IDX1    +   1
       *
                END-PERFORM
       *
@@ -369,9 +350,11 @@
       *
                MOVE    MCPDATA-REC     TO  WKMCPDATA-REC
                PERFORM 800-KANACONV-SEC
-               MOVE    1               TO  IDX1
+               MOVE    ZERO            TO  IDX1
                PERFORM UNTIL ( IDX1    >=  CONST-MAX-LEN )
                         OR   ( MCPDATA-REC (IDX1 : )   =   SPACE )
+      *
+                   COMPUTE IDX1    =   IDX1    +   1
       *
                    IF    ( MCPDATA-REC (IDX1 : 1)
                                    NOT =  KANACONV-OUTDATA  (IDX1 : 1))
@@ -402,8 +385,6 @@
                            PERFORM 800-KANACONV-SEC
                        END-PERFORM
                    END-IF
-      *
-                   COMPUTE IDX1    =   IDX1    +   1
       *
                END-PERFORM
            END-IF
