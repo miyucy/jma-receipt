@@ -1,6 +1,7 @@
 name	orca41;
 
-arraysize	20; textsize	400;
+arraysize	20;
+textsize	400;
 
 bind	""		"OpenCOBOL"	"ORCGD01";
 bind	"D01"		"OpenCOBOL"	"ORCGD01";
@@ -70,20 +71,6 @@ db	{
 	tbl_chk004;
 	tbl_chk005;
 	tbl_inputcd;
-	tbl_tekioubyomei;
-	tbl_byomei ;
-	tbl_etensu_3_1 ;
-	tbl_etensu_3_2 ;
-	tbl_etensu_3_3 ;
-	tbl_etensu_5 ;
-	tbl_nsrysrh ;
-	tbl_nrrksrh ;
-	tbl_tnkrrk;
-	tbl_tsyrrk;
-	tbl_spa_tmp;
-	tbl_tekiou_disease;
-    tbl_material_s;
-    tbl_material_k;
 };
 
 /* #include "orcadb.inc" */

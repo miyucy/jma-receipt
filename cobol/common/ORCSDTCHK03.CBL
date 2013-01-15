@@ -49,8 +49,6 @@
            03  FLG-HIT                     PIC 9(01).
            03  FLG-LOOP-END                PIC 9(01).
            03  FLG-TAISYO-HKN              PIC 9(01).
-           03  FLG-BYOMEI-ERRDAY-G.
-               05  FLG-BYOMEI-ERRDAY       PIC 9(01)   OCCURS  31.
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -225,9 +223,6 @@
       *
                PERFORM 2001-BYOMEI-CHK-SEC
                IF    ( FLG-MATCH    =  1 )
-      *
-                   MOVE    ZERO        TO  FLG-BYOMEI-ERRDAY-G
-      *
                    PERFORM VARYING IDX-DAY    FROM 1   BY  1
                            UNTIL ( IDX-DAY    >    31 )
       *
@@ -236,14 +231,10 @@
                            MOVE    IDX-DAY         TO  WRK-SRYDD
                            PERFORM 2001-TAISYO-CHK-SEC
                            IF    ( FLG-TAISYO  =   1 )
-                               MOVE  1 TO  FLG-BYOMEI-ERRDAY (IDX-DAY)
+                               PERFORM 2001-ERRINF-SEC
                            END-IF
                        END-IF
                    END-PERFORM
-      *
-                   IF    ( FLG-BYOMEI-ERRDAY-G NOT =   ZERO )
-                       PERFORM 2001-ERRINF-SEC
-                   END-IF
                END-IF
       *
                PERFORM 900-QDTCHK-KEY-FET-SEC
@@ -445,8 +436,6 @@
                COMPUTE TBYOMEI-MAX
                    =   TBYOMEI-MAX     +   1
       *
-               CALL    "ORCSDTCHK07"   USING   QDTCHK-REC
-      *
                MOVE    QDTCHK-NYUGAIKBN
                                        TO  TBYOMEI-NYUGAIKBN
                                                           (TBYOMEI-MAX)
@@ -457,9 +446,8 @@
                                                           (TBYOMEI-MAX)
                MOVE    QDTCHK-SRYKA    TO  TBYOMEI-SRYKA  (TBYOMEI-MAX)
                MOVE    QDTCHK-SRYYMD   TO  TBYOMEI-SRYYMD (TBYOMEI-MAX)
-               MOVE    FLG-BYOMEI-ERRDAY-G
-                                       TO  TBYOMEI-ERRDAY-G
-                                                 (TBYOMEI-MAX)
+               MOVE    1               TO  TBYOMEI-ERRDAY
+                                                 (TBYOMEI-MAX IDX-DAY)
       *
            END-IF
       *
@@ -625,12 +613,6 @@
                    END-IF
       *
                    IF    ( QDTCHK-REZEFLG  =   "1" )
-                       MOVE    ZERO        TO  FLG-LOOP-END
-                   END-IF
-      *
-                   IF    ( QDTCHK-TENKIKBN =   "8" )
-                    AND  ( QDTCHK-TENKIYMD (1:6)
-                                          <=   SDTCHK01-KJNYMD (1:6))
                        MOVE    ZERO        TO  FLG-LOOP-END
                    END-IF
                ELSE

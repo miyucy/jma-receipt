@@ -62,7 +62,7 @@
        WORKING-STORAGE                 SECTION.
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //DTCHKERRPARA//.
       *
       *    中間ファイルファイル名称領域 
@@ -140,9 +140,6 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
@@ -158,7 +155,7 @@
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
       *    エラーファイルファイル名称領域 
-           COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //LNKDTCHKERRPARA//.
       *
       *    データチェック一括処理パラメータ
@@ -230,15 +227,6 @@
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK004PARA-HOSPNUM
            MOVE    "DTCHK004"          TO  DTCHK004PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004PARA-TERMID
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    DTCHK004PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (1)
-      *
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-      *
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  DTCHK004PARA-FULLNAME
       *
            IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
                PERFORM 900-DBCOMMIT-SEC
@@ -488,20 +476,6 @@
                                    TO  CK4-1201-TEKBYOMEI
            MOVE    DTCHK004-TEKCOMPKBN
                                    TO  CK4-1201-TEKCOMPKBN
-           MOVE    DTCHK004-TANICD
-                                   TO  CK4-1201-TANICD
-           MOVE    DTCHK004-TANINAME
-                                   TO  CK4-1201-TANINAME
-           MOVE    DTCHK004-SHONUM
-                                   TO  CK4-1201-SHONUM
-           MOVE    DTCHK004-SRYSTYMD
-                                   TO  CK4-1201-SRYSTYMD
-           MOVE    DTCHK004-SRYEDYMD
-                                   TO  CK4-1201-SRYEDYMD
-           MOVE    DTCHK004-LIMIT
-                                   TO  CK4-1201-LIMIT
-           MOVE    DTCHK004-TSUKISU
-                                   TO  CK4-1201-TSUKISU
       *
            MOVE    SMCNDATE-YMD    TO  CK4-1201-CREYMD
                                        CK4-1201-UPYMD
