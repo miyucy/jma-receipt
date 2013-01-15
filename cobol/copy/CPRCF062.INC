@@ -122,7 +122,6 @@
       *  04.06.03    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
       *  04.06.04    NACL-藤原    11/12/12  点検レセ０点公費印字対応
-      *  04.06.05    NACL-門脇    13/06/14  食事標準負担額記録判定用フラグ追加
       *
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *                                     一部負担金金額集計フラグ追加
@@ -133,34 +132,6 @@
       *  04.07.03    NACL-門脇    12/08/27  システム管理２０１０機能追加対応
       *  04.07.04    NACL-門脇    12/10/02  高齢者判定フラグ追加
       *  04.07.05    NACL-藤原    12/12/17  複数枚レセプト分割対応
-      *  04.07.06    NACL-藤原    13/12/09  医療情報連携基盤対応
-      *  04.07.07    NACL-門脇    13/07/10  自賠責（第三者行為）対応
-      *  04.07.08    NACL-門脇    14/01/08  請求点数がない保険組み合わせ有り
-      *                                     フラグ追加
-      *  04.07.09    NACL-門脇    14/05/13  超重症児（者）入院診療加算等の
-      *                                     算定フラグ追加
-      *  04.07.10    NACL-門脇    14/07/31  第三者行為に関するフラグ追加
-      *
-      *  04.08.01    NACL-門脇    14/07/29  ３２文字以上の文字列修正
-      *                                     （コンパイル時のワーニング修正）
-      *                                     RECE62-FUKUSHIFLG-SKJIPA-AREA
-      *                                     RECE62-FUKUSHIFLG-SKJSEI-AREA
-      *  04.08.02    NACL-門脇    15/12/02  ３歳児視覚聴覚精密健康診査
-      *                                     （地域公費）対応
-      *  04.08.03    NACL-門脇    16/02/08  予備項目使用分について、
-      *                                     個々に項目を設ける。
-      *                                     第３第４公費の括弧再掲記載対応
-      *  04.08.04    NACL-門脇    16/03/15  生保まとめ用項目追加
-      *  04.08.05    NACL-門脇    16/03/31  平成２８年４月改正対応
-      *  04.08.06    NACL-門脇    16/05/30  １９原爆一般の特殊計算対応
-      *  04.08.07    NACL-門脇    17/03/17  保険別請求チェック表の機能追加
-      *                                     （公費請求書に関わる対応）
-      *  04.08.08    NACL-門脇    17/03/27  請求金額０円レセプト作成対応
-      *  04.08.09    NACL-門脇    17/09/26  平成２９年１０月改正
-      *                                     （入院時生活療養費の見直し）
-      *  04.08.10    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
-      *                                     での食事算定対応
-      *  04.08.11    NACL-門脇    18/03/27  平成３０年４月改正対応
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -546,9 +517,6 @@
       *入院年月日
            03  RECE62-NYUINYMD            PIC  X(08).
       *
-      *退院年月日
-           03  RECE62-TAIINYMD            PIC  X(08).
-      *
       *医療機関種別
            03  RECE62-HOSPSBT             PIC  X(01).
       *特記事項情報
@@ -624,18 +592,12 @@
                                           OCCURS  4.
       *低所得フラグ３（食事判定用）
            03  RECE62-TEISYOTOKU3         PIC  X(01).
-           03  RECE62-TEISYOTOKU3-KKSKBN  PIC  X(01).
-           03  RECE62-TEISYOTOKU3-SKJKBN  PIC  X(01)  OCCURS 31.
       *高齢者フラグ
            03  RECE62-KOUREI              PIC  X(01).
       *高齢者一部負担金再掲
            03  RECE62-KOUREI-SAIKEI       PIC  9(09).
       *高齢者一部負担金再掲２
            03  RECE62-KOUREI-SAIKEI2      PIC  9(09).
-      *再掲３
-           03  RECE62-KOUREI-SAIKEI3      PIC  9(09).
-      *再掲４
-           03  RECE62-KOUREI-SAIKEI4      PIC  9(09).
       *公費の一部負担金再掲
            03  RECE62-KOH-SAIKEI          PIC  9(09).
       *公費の一部負担金再掲フラグ
@@ -715,11 +677,11 @@
                05  RECE62-FUKUSHIFLG-SKJ  PIC  X(01)   OCCURS 4.
       *
       *レセ電用：食事療養（一般）編集情報
-           03  RECE62-FUKUSHIFLG-SKJIPA-AREA.
+           03  RECE62-FUKUSHIFLG-SKJIPAINF-AREA.
                05  RECE62-FUKUSHIFLG-SKJIPA
                                           PIC  X(01)   OCCURS 4.
       *レセ電用：食事療養（生活）編集情報
-           03  RECE62-FUKUSHIFLG-SKJSEI-AREA.
+           03  RECE62-FUKUSHIFLG-SKJSEIINF-AREA.
                05  RECE62-FUKUSHIFLG-SKJSEI
                                           PIC  X(01)   OCCURS 4.
       *
@@ -888,10 +850,6 @@
       *公費負担
                05  RECE62-SKYSKJ-KOHFTN        PIC 9(09).
       *
-      *請求額情報（公費負担のうちレセプト請求しない地方公費分）
-           03  RECE62-SKYIRYO-KOHFTN-KOHSKY    PIC 9(09).
-           03  RECE62-SKYSKJ-KOHFTN-KOHSKY     PIC 9(09).
-      *
       *入院料情報
            03  RECE62-DOUJITSU-AREA.
       *同日再入院（入院分）の保険組合せ
@@ -909,162 +867,6 @@
       *
       *高齢者判定フラグ
            03  RECE62-KOUREI-HANTEIFLG    PIC X(01).
-      *
-      *食事標準負担額記録判定用フラグ（主保険がない場合）（レセ電用）
-           03  RECE62-SKJFTNFLG-AREA.
-               05  RECE62-SKJFTNFLG       PIC X(01)   OCCURS   4.
-               05  RECE62-SKJFTNFLG2      PIC X(01).
-      *
-      *第三者行為情報（インデックスの情報は保険組合せ番号情報とリンク）
-           03  RECE62-DAISANINF-AREA.
-             04  RECE62-DAISANINF               OCCURS 10.
-      *第三者行為保険組合せフラグ
-               05  RECE62-DAISANFLG             PIC 9(01).
-      *第三者行為公費ＩＤ
-               05  RECE62-DAISAN-KOHID          PIC 9(10).
-      *第三者行為保険組合せ現物給付フラグ
-               05  RECE62-DAISAN-GENBUTUFLG     PIC 9(01).
-      *第三者行為請求点数又は食事あり
-               05  RECE62-DAISAN-SKYFLG         PIC 9(01).
-      *リハビリ開始日編集用公費分離区分
-               05  RECE62-RIHA-KOHBUNRI         PIC 9(01).
-      *リハビリ算定テーブル
-               05  RECE62-RIHA-DAY-AREA.
-                 06  RECE62-RIHA-DAY-OCC        OCCURS 31.
-                   07  RECE62-RIHA-SINDAI       PIC 9(01).
-                   07  RECE62-RIHA-KOKYUKI      PIC 9(01).
-                   07  RECE62-RIHA-NOUKE        PIC 9(01).
-                   07  RECE62-RIHA-UNDOKI       PIC 9(01).
-                   07  RECE62-RIHA-NANBYO       PIC 9(01).
-                   07  RECE62-RIHA-SYOGAI       PIC 9(01).
-                   07  RECE62-RIHA-SESSYOKU     PIC 9(01).
-                   07  RECE62-RIHA-HAIYO        PIC 9(01).
-      *リハビリ加算算定テーブル
-               05  RECE62-RIHA-DAY9-AREA.
-                 06  RECE62-RIHA-DAY9-OCC       OCCURS 31.
-                   07  RECE62-RIHA-SINDAI9      PIC 9(01).
-                   07  RECE62-RIHA-KOKYUKI9     PIC 9(01).
-                   07  RECE62-RIHA-HAIYO9       PIC 9(01).
-      *
-      *第三者行為レセプト該当フラグ
-      *（０：第三者行為の請求点なし）
-      *（１：第三者行為のみ請求点あり）
-      *（２：第三者行為以外と第三者行為の両方に請求点あり）
-      *（３：第三者行為の請求点なし　（第三者行為に院外処方あり））
-      *（４：第三者行為のみ請求点あり（第三者行為以外に院外処方あり））
-      *（９：第三者行為の請求点なし　（患者登録で第三者行為の登録なし））
-           03  RECE62-DAISAN-GAITO              PIC 9(01).
-      *第三者行為請求点数合計
-           03  RECE62-DAISAN-TOTALTEN           PIC 9(08).
-      *第三者行為一部負担金相当額合計
-           03  RECE62-DAISAN-FTNMONEY           PIC 9(09).
-      *第三者行為食事合計
-           03  RECE62-DAISAN-SKJ-NISSU-KEI      PIC 9(02).
-           03  RECE62-DAISAN-SKJ-RYOYOHI-KEI    PIC 9(08).
-           03  RECE62-DAISAN-SKJ-FTN-KEI        PIC 9(08).
-      *第三者行為高齢者フラグ（第三者行為のみ＋高齢者）
-           03  RECE62-DAISAN-KOUREI             PIC 9(01).
-      *第三者行為レセプト現物給付該当フラグ
-           03  RECE62-DAISAN-GENBUTU-GAITO      PIC 9(01).
-      *第三者行為一部負担金金額置換フラグ
-           03  RECE62-DAISAN-CHIKAN             PIC 9(01).
-      *第三者行為特記事項有無フラグ
-           03  RECE62-DAISAN-TOKKI              PIC 9(01).
-      *
-      *請求点数がない保険組み合わせ有りフラグ
-           03  RECE62-SKYTENFLG                 PIC 9(01).
-      *
-      *超重症児（者）入院診療加算等の算定フラグ
-           03  RECE62-CYOJKSNFLG                PIC X(01).
-      *
-      *３歳児視覚聴覚精密健康診査（地域公費）
-           03  RECE62-SEIKENFLG                 PIC 9(01).
-           03  RECE62-SEIKENTEN                 PIC 9(07).
-      *
-      *高齢非該当フラグ
-           03  RECE62-KOREIHIGAITO              PIC 9(01).
-      *公費分離区分置換フラグ
-           03  RECE62-KOHBUNRICHIKAN            PIC 9(01).
-      *非減免対象分扱い一部負担金
-           03  RECE62-GENMEN-NASI-KIN           PIC 9(09).
-      *非減免対象分扱い食事標準負担額
-           03  RECE62-GENMEN-NASI-SKJ           PIC 9(09).
-      *括弧再掲上の０円記載フラグ
-           03  RECE62-SAIKEIZEROKSI1            PIC 9(01).
-      *括弧再掲下の０円記載フラグ
-           03  RECE62-SAIKEIZEROKSI2            PIC 9(01).
-      *括弧再掲３の０円記載フラグ
-           03  RECE62-SAIKEIZEROKSI3            PIC 9(01).
-      *括弧再掲４の０円記載フラグ
-           03  RECE62-SAIKEIZEROKSI4            PIC 9(01).
-      *東大阪市減免コメントフラグ
-           03  RECE62-GENMEN-COM                PIC 9(01).
-      *【レセプト】保険欄−一部負担金記載なしフラグ
-           03  RECE62-ICBKINKSI-NASI            PIC 9(01).
-      *【レセプト】保険欄−一部負担金記載ありフラグ
-           03  RECE62-ICBKINKSI-ARI             PIC 9(01).
-      *【レセプト】公費欄−一部負担金金額置換フラグ
-           03  RECE62-KOHCHIKAN                 PIC 9(01).
-      *「（再掲上）：」置換金額
-           03  RECE62-SAIKEI-CHIKAN-KIN1        PIC 9(09).
-      *「（再掲下）：」置換金額
-           03  RECE62-SAIKEI-CHIKAN-KIN2        PIC 9(09).
-      *「（再掲３）：」置換金額
-           03  RECE62-SAIKEI-CHIKAN-KIN3        PIC 9(09).
-      *「（再掲４）：」置換金額
-           03  RECE62-SAIKEI-CHIKAN-KIN4        PIC 9(09).
-      *「保険負担金：」置換金額
-           03  RECE62-HKN-CHIKAN-KIN            PIC 9(09).
-      *「公１負担金：」置換金額
-           03  RECE62-KOH-CHIKAN-KIN1           PIC 9(09).
-      *「公２負担金：」置換金額
-           03  RECE62-KOH-CHIKAN-KIN2           PIC 9(09).
-      *「公３負担金：」置換金額
-           03  RECE62-KOH-CHIKAN-KIN3           PIC 9(09).
-      *「公４負担金：」置換金額
-           03  RECE62-KOH-CHIKAN-KIN4           PIC 9(09).
-      *
-      *生保まとめ用（主保険単独分診区別点数）
-           03  RECE62-SYUTANTEN-AREA.
-               05  RECE62-SYUTANTEN             PIC 9(08)  OCCURS 30.
-               05  RECE62-SYUTANTEN-NYUKHN      PIC 9(09)  OCCURS 10.
-               05  RECE62-SYUTANTEN-NYUKHN2     PIC S9(09).
-               05  RECE62-SYUTANTEN-NYUTOK      PIC 9(09)  OCCURS 10.
-               05  RECE62-SYUTANTEN-NYUTOK2     PIC S9(09).
-           03  RECE62-SYUTANARIFLG              PIC 9(01).
-      *
-      *標準負担額経過措置（精神）
-           03  RECE62-SEISIN-SKJFLG             PIC 9(01).
-           03  RECE62-SEISIN-NYUINYMD           PIC X(08).
-           03  RECE62-SEISIN-SKJSAN-AREA.
-             04  RECE62-SEISIN-SKJSAN-OCC       OCCURS 10.
-               05  RECE62-SEISIN-SKJSAN-OCC2    OCCURS 31.
-                 06  RECE62-SEISIN-SKJSAN       PIC 9(01).
-      *
-      *再診加算（入院）情報
-           03  RECE62-NYUSAIINF.
-               05  RECE62-NYUSAI-TENSU          PIC 9(08)  OCCURS  5.
-      *入院料日別診療区分情報
-           03  RECE62-NYUDAYINF.
-               05  RECE62-NYUDAY-SRYKBN         PIC X(02)  OCCURS 31.
-      *
-      *１９原爆一般特殊計算フラグ（患者７割負担）
-           03  RECE62-GENBAKUINF.
-               05  RECE62-GENBAKU-TOKFLG        PIC 9(01).
-               05  RECE62-GENBAKU-OCC           OCCURS 10.
-                   07  RECE62-GENBAKU-FTNKIN    PIC 9(07)V9(01).
-                   07  RECE62-GENBAKU-IDX       PIC 9(01).
-      *
-      *請求点数０円レセプト作成フラグ
-           03  RECE62-SKYZEROFLG                PIC 9(01).
-      *
-      *入院料算定日テーブル情報（ＥＦ用）
-           03  RECE62-EF-NYUINDAY-TBL.
-               05  RECE62-EF-NYUINDAY-KBN       PIC X(01)  OCCURS 31.
-      *
-      *夜間看護体制特定日減算情報
-           03  RECE62-KANGOGENINF.
-               05  RECE62-KANGOGEN-SRYCD        PIC X(09)  OCCURS 31.
       *
       *予備
            03  RECE62-YOBIETC-AREA.

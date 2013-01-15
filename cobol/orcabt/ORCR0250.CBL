@@ -65,14 +65,6 @@
       *                                     レセプト記載対応
       *
       *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
-      *  04.07.02    NACL-藤原    15/02/18  医療情報連携対応
-      *                                     自費レセプトを対象とする
-      *  04.07.03    NACL-門脇    15/08/10  日別保険組合せ番号編集対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-門脇    16/08/23  持参薬対応
-      *  04.08.03    NACL-門脇    16/09/20  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -128,23 +120,24 @@
       *
       *     レセプト明細ファイル 名称領域 
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE64PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE64//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE641PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE641//.
       *
       *     レセプト６５ファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE65PARA//.
+      *
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE65//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"
+                                   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名取得
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -185,7 +178,6 @@
                05  WRK-PARA-KKHRECEKBN PIC X(01).
                05  WRK-PARA-KOUIKIRECEKBN
                                        PIC X(01).
-               05  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-KOHBUNRI            PIC 9(01).
@@ -214,10 +206,9 @@
            03  WRK-ERR-FILE-MSG1                   PIC X(17).
            03  WRK-ERR-FLG                         PIC 9(01).
       *    エラーファイル名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME内のBASENAME開始位置
-       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -235,8 +226,6 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -283,13 +272,10 @@
                                                WRK-PARA-KKHRECEKBN
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
-                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           DISPLAY "WRK-PARA-PRTKBN=" WRK-PARA-PRTKBN
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -326,32 +312,17 @@
                                    TO  WRK-PARA-KOUIKIRECEKBN 
            DISPLAY "KOUIKIRECEKBN=" WRK-PARA-KOUIKIRECEKBN
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    "RECE641"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    "RECE649"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           MOVE    "RECE651"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (4)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE64PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE641PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE65PARA
+           MOVE    "RECE641"           TO  RECE64PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE64PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE64PARA-HOSPNUM
       *
-           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+           MOVE    "RECE649"           TO  RECE641PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE641PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE641PARA-HOSPNUM
+      *
+           MOVE    "RECE651"           TO  RECE65PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE65PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE65PARA-HOSPNUM
       *
            OPEN    OUTPUT              RECE641-FILE
            CLOSE                       RECE641-FILE
@@ -458,11 +429,6 @@
            MOVE    RECE64-ZAIKBN       TO  RECE641-ZAIKBN
            MOVE    RECE64-ACCTP-SYUGI-TBL-G
                                        TO  RECE641-ACCTP-SYUGI-TBL-G
-           MOVE    RECE64-HKNCOMBI-DAY-AREA
-                                       TO  RECE641-HKNCOMBI-DAY-AREA
-           MOVE    RECE64-NYUSAIFLG    TO  RECE641-NYUSAIFLG
-           MOVE    RECE64-YKZKISAIFLG  TO  RECE641-YKZKISAIFLG
-           MOVE    RECE64-JISANYAKKBN  TO  RECE641-JISANYAKKBN
       *
            WRITE   RECE641-REC
       *
@@ -626,8 +592,7 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -637,8 +602,7 @@
            STRING  "ORCR0250 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -671,17 +635,6 @@
            DISPLAY "*** ORCR0250 END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           .
-       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -722,41 +675,19 @@
                              ( RECE64-TEISYUTUSAKI
                                                    =   "6"  )      )
                        OR  (   RECE64-RECESYUBETU  =   ZERO   OR 
-      *************************************************8888   OR 
+                                                       8888   OR 
                                                        6666        )
                        OR  ( RECE64-SRYKBN         =  "95"    OR
                                                       "96"    OR
                                                       "98"         )
                                CONTINUE
                        ELSE
-                           IF      RECE64-RECESYUBETU  =   8888
-                               IF      WRK-PARA-PRTKBN =   "9"
-                                   MOVE    1               TO  FLG-READ
-                               END-IF
-                           ELSE
-                               IF      WRK-PARA-PRTKBN =   "9"
-                                   IF    ( RECE64-JIHOKBN
-                                                       NOT =   SPACE )
-                                   AND   ( RECE64-ZAIKBN   =   3   OR
-                                                               4     )
-                                       CONTINUE
-                                   ELSE
-                                       MOVE    1           TO  FLG-READ
-                                   END-IF
-                               ELSE 
-                                   MOVE    1           TO  FLG-READ
-                               END-IF
-                           END-IF
+                           MOVE    1           TO  FLG-READ
                        END-IF      
       *
                        IF      FLG-READ            =   1         
                            ADD     1                   TO  CNT-IN
                            MOVE    ZERO                TO  FLG-END
-      *
-                           DISPLAY "RECE64  PTNUM=" RECE64-PTNUM
-                                    " RECESYUBETU=" RECE64-RECESYUBETU
-                                    " " RECE64-JIHOKBN
-                                    " " RECE64-ZAIKBN
                        END-IF
                END-READ
            END-PERFORM

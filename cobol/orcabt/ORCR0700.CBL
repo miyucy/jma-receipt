@@ -61,10 +61,6 @@
       *                                     レセプト記載対応
       *
       *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-門脇    16/08/23  持参薬対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -113,19 +109,18 @@
       *
            COPY    "COMMON-SPA".
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE66PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE66//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE661PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE661//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"
+                                   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名取得
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -172,8 +167,6 @@
       *     
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -223,24 +216,13 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    "RECE660"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    "RECE661"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE66PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE661PARA
+           MOVE    "RECE660"           TO  RECE66PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE66PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE66PARA-HOSPNUM
+      *
+           MOVE    "RECE661"           TO  RECE661PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE661PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE661PARA-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -318,8 +300,8 @@
                           MOVE   4      TO      RECE661-KNSJISKBN
                   END-IF
               END-IF
-              IF   (RECE66-SAFLG   NOT =  SPACE)
-              OR   (RECE66-ZAIKBN  NOT =  ZERO )
+              IF   (RECE66-SAFLG   NOT =   SPACE )
+              OR   (RECE66-ZAIKBN      =   1 OR 2)
                    MOVE    9            TO      RECE661-KNSJISKBN
               END-IF
            END-IF     
@@ -363,8 +345,6 @@
            MOVE   RECE66-DAY2        TO   RECE661-DAY2
       *
            MOVE   RECE66-HKNCOMBI    TO   RECE661-HKNCOMBI
-      *
-           MOVE   RECE66-JIHOKBN     TO   RECE661-JIHOKBN
       *
            IF     RECE66-RECESYUBETU  =  8888
               IF     RECE66-ZAITEN  NOT =  ZERO
@@ -491,17 +471,6 @@
            DISPLAY "*** ORCR0700 END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           .
-       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

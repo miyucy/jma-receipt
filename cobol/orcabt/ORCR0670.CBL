@@ -64,11 +64,6 @@
       *  04.06.05    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
       *
       *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
-      *  04.07.02    NACL-藤原    13/07/01  レセ電請求時の受付エラー分の
-      *                                     自費レセプト対象の有無設定
-      *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -111,19 +106,18 @@
        WORKING-STORAGE             SECTION.
       *
       *     レセプト明細ファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE62PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE62//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE63PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE63//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"
+                                   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名取得
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -219,8 +213,6 @@
       *    拡張漢字チェックサブ
            COPY    "CPORCSKANACHK2.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -273,24 +265,13 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    "RECE620"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    "RECE630"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE62PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE63PARA
+           MOVE    "RECE620"           TO  RECE62PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE62PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE62PARA-HOSPNUM
+      *
+           MOVE    "RECE630"           TO  RECE63PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE63PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE63PARA-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -415,10 +396,7 @@
            PERFORM 900-CLOSE-SEC
       *
       *    対象病名がなかったとき
-           IF    ( SYS-200501-CHKKBN   =   "1"     )
-           OR    ( SYS-200501-CHKKBN   =   "2" AND
-                   RECE62-RECESYUBETU
-                                   NOT =   "8888"  )
+           IF      SYS-200501-CHKKBN   =   "1"
                IF      CNT-RECE-OUT        =   ZERO
                    IF      RECE62-ERR-ERRKBN   =   ZERO 
                        MOVE    10                  TO  RECE62-ERR-ERRKBN
@@ -437,9 +415,6 @@
       *    患者病名診療年月日別処理
       *****************************************************************
        2001-PTBYO-HENSYU-SEC                SECTION.
-      *??
-           DISPLAY "RECE62-DAISAN-GAITO=" RECE62-DAISAN-GAITO "#"
-      *??
       *
            MOVE    PTBYO-SRYYMD            TO  KEY-N-SRYYMD
            MOVE    ZERO                    TO  WRK-RENNUM
@@ -509,18 +484,13 @@
       *    保険組合せ
            IF      PTBYO-HKNCOMBI     =   ZERO
                CONTINUE
-           ELSE
-      *        第三者行為のみの場合は対象外
-               IF      RECE62-DAISAN-GAITO =   1
-                   GO  TO  2001-PTBYO-CHK-EXT
-               END-IF
-      *
+           ELSE 
                MOVE    ZERO            TO  IDZ  
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       10
                        OR      RECE62-HKNCOMBI (IDX)   =   ZERO 
-                   IF      PTBYO-HKNCOMBI  =
-                                           RECE62-HKNCOMBI (IDX)
+                   IF      PTBYO-HKNCOMBI   =
+                                            RECE62-HKNCOMBI (IDX)
                        MOVE    IDX             TO  IDZ
                        MOVE    10              TO  IDX
                    END-IF
@@ -529,45 +499,6 @@
                    CONTINUE
                ELSE
                    GO  TO  2001-PTBYO-CHK-EXT
-               END-IF
-           END-IF
-      *
-      *    公費ＩＤ（第三者行為）
-           IF      RECE62-DAISAN-GAITO =   9
-               CONTINUE
-           ELSE
-      *        患者登録で第三者行為の登録なし以外のときにチェック
-               IF      PTBYO-KOHID         =   ZERO
-      *            第三者行為のみの場合は対象外
-                   IF      RECE62-DAISAN-GAITO =   1
-                       GO  TO  2001-PTBYO-CHK-EXT
-                   END-IF
-               ELSE 
-      *            第三者行為以外のみの場合は対象外
-                   IF      RECE62-DAISAN-GAITO =   0
-                       GO  TO  2001-PTBYO-CHK-EXT
-                   END-IF
-      *
-                   MOVE    ZERO            TO  IDZ
-                   PERFORM VARYING IDX     FROM    1   BY  1
-                           UNTIL   IDX     >       10
-                           OR      RECE62-HKNCOMBI (IDX)
-                                           =   ZERO 
-                       IF    ( RECE62-DAISANFLG     (IDX)
-                                               =   1           )
-                       AND   ( RECE62-DAISAN-SKYFLG (IDX)
-                                               =   1           )
-                       AND   ( RECE62-DAISAN-KOHID  (IDX)
-                                               =   PTBYO-KOHID )  
-                           MOVE    IDX             TO  IDZ
-                           MOVE    10              TO  IDX
-                       END-IF
-                   END-PERFORM
-                   IF      IDZ            >   ZERO
-                       CONTINUE
-                   ELSE
-                       GO  TO  2001-PTBYO-CHK-EXT
-                   END-IF
                END-IF
            END-IF
       *
@@ -870,17 +801,6 @@
           DISPLAY "*** ORCR0670 END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           .
-       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************
