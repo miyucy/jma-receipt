@@ -19,8 +19,6 @@ bind	"RID1"		"OpenCOBOL"	"ORCGRID1";
 bind	"RID2"		"OpenCOBOL"	"ORCGRID2";
 bind	"RID3"		"OpenCOBOL"	"ORCGRID3";
 bind	"RID4"		"OpenCOBOL"	"ORCGRID4";
-bindapi	"receiptmakev3"	"OpenCOBOL"	"ORAPI042R1V3";
-bindapi	"receiptprintv3" "OpenCOBOL"	"ORAPI042R2V3";
 
 multiplex_group	orca42;
 
@@ -43,22 +41,8 @@ data	{
 		RID2;
 		RID3;
 		RID4;
-		receiptmakev3;
-		receiptprintv3;
 	};
 };
-
-db "xml2" {
- xml_receipt_makev3req;
- xml_receipt_makev3res;
- xml_receipt_printv3req;
- xml_receipt_printv3res;
-};
-
-db "monblob" {
- monblob;
-};
-
 db	{
 	tbl_btpara;
 	tbl_hkncombi;
@@ -86,7 +70,6 @@ db	{
 	tbl_seikyu_etc;
 	tbl_seikyu_rsi;
 	tbl_senteicdchg;
-	tbl_spa_tmp;
 	tbl_sryact;
 	tbl_syskanri;
 	tbl_syuka;
@@ -102,10 +85,7 @@ db	{
 	tbl_ptkohftnetc;
 	tbl_ryocom;
 	tbl_pt_hdist_day;
-	tbl_sysuser;
-	tbl_sysbase;
 };
-
 
 /* #include "orcadb.inc" */
 #include "orcadbh.inc"
