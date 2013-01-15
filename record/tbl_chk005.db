@@ -19,12 +19,12 @@ tbl_chk005	{
 	CREYMD  		char(8);
 	UPYMD   		char(8);
 	UPHMS			char(6);
-#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
+#-----> ¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
 	UPHOSPNUM		number(2,0),virtual;
 	UPCHKKBN		char(1),virtual;
 	UPID			integer,virtual;
 	UPRENNUM		integer,virtual;
-#-----> æ¤œç´¢ã‚­ãƒ¼ç”¨é …ç›®
+#-----> ¸¡º÷¥­¡¼ÍÑ¹àÌÜ
 	SELNAME			char(200),virtual;
 };
 
@@ -116,7 +116,6 @@ path	key6	{
 		SELECT * FROM TBL_CHK005
 			WHERE	HOSPNUM	=	:HOSPNUM
 			AND	CHKKBN	=	:CHKKBN
-            AND ( :ID = 0  OR ( :ID <> 0 AND ID = :ID))
 			AND	YUKOSTYMD	<=	:YUKOSTYMD
 			AND	YUKOEDYMD	>=	:YUKOEDYMD
 		ORDER BY BYOMEI,ID,RENNUM

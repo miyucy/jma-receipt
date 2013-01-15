@@ -9,10 +9,8 @@ tbl_chkreigai	{
 	BYOMEI   		varchar(160);
 	COMPKBN   		char(1);
 	TEKCD   		char(9);
-	TEKBYOMEI   	varchar(160);
-	TEKCOMPKBN      char(1);
-	TANICD   		number(3,0);
-	TANINAME   		varchar(12);
+	TEKBYOMEI   		varchar(160);
+	TEKCOMPKBN   		char(1);
 	ERRCD   		char(6);
 	ERRMSG   		varchar(200);
 	STYUKYMD	  	char(8);
@@ -22,7 +20,7 @@ tbl_chkreigai	{
 	CREYMD  		char(8);
 	UPYMD   		char(8);
 	UPHMS			char(6);
-#-----> æ¤œç´¢ã‚­ãƒ¼ç”¨é …ç›®
+#-----> ¸¡º÷¥­¡¼ÍÑ¹àÌÜ
 	SELLIMIT		number(8,0),virtual;
 	SELOFFSET		number(8,0),virtual;
 };
@@ -130,7 +128,6 @@ path	del2		{
 		AND ( TEKCD      = :TEKCD  OR  :TEKCD  = '')
 		AND ( TEKBYOMEI  = :TEKBYOMEI  OR  :TEKBYOMEI  = '')
 		AND ( TEKCOMPKBN = :TEKCOMPKBN OR  :TEKCOMPKBN = '')
-		AND ( TANICD     = :TANICD  OR  :TANICD = 0 )
 		AND NYUGAIKBN	 =  :NYUGAIKBN
 		AND STYUKYMD	<=  :STYUKYMD
 		AND EDYUKYMD	>=  :EDYUKYMD

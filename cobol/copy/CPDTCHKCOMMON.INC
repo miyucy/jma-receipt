@@ -31,9 +31,6 @@
            03  THKNID-OCC                              OCCURS 20.
                05  THKNID-HKNID                        PIC 9(10).
                05  THKNID-HKNNUM                       PIC X(03).
-               05  THKNID-HOJOKBN                      PIC X(01).
-               05  THKNID-TEKSTYMD                     PIC X(08).
-               05  THKNID-KAKUNINYMD                   PIC X(08).
                05  THKNID-HKNID-DAY-G.
                    07  THKNID-HKNID-DAY                PIC 9(01)
                                                        OCCURS  31.
@@ -55,9 +52,6 @@
            03  THKNCOMBI-MAX                           PIC 9(05).
            03  THKNCOMBI-OCC                           OCCURS 40.
                05  THKNCOMBI-HKNCOMBI                  PIC 9(04).
-               05  THKNCOMBI-HKNNUM                    PIC X(03).
-               05  THKNCOMBI-KOHNUM                    PIC X(03).
-               05  THKNCOMBI-KOHID                     PIC 9(10).
                05  THKNCOMBI-ACCTKBN                   PIC X(01).
                05  THKNCOMBI-STYMD                     PIC X(08).
                05  THKNCOMBI-EDYMD                     PIC X(08).
@@ -66,18 +60,17 @@
                                                        OCCURS  31.
       *
          02  TNACCT-KKN-AREA.
-           03  TNACCT-KKN-NODATA                       PIC 9(01).
-           03  TNACCT-KKN-STYMD.
-               05  TNACCT-KKN-STYM                     PIC X(06).
-               05  TNACCT-KKN-STDD                     PIC 9(02).
-           03  TNACCT-KKN-EDYMD.
-               05  TNACCT-KKN-EDYM                     PIC X(06).
-               05  TNACCT-KKN-EDDD                     PIC 9(02).
            03  TNACCT-KKN-DAY                          PIC 9(03)
                                                        OCCURS 31.
       *
          02  TNYUINRYO-AREA.
            03  TNYUINRYO-DAY                           PIC 9(03)
+                                                       OCCURS 31.
+         02  TKHNRYO-HKNCOMBI-AREA.
+           03  TKHNRYO-HKNCOMBI-MAX                    PIC 9(05).
+           03  TKHNRYO-HKNCOMBI-OCC                    OCCURS 20.
+               05  TKHNRYO-HKNCOMBI                    PIC 9(04).
+               05  TKHNRYO-HKNCOMBI-DAY                PIC 9(01)
                                                        OCCURS 31.
          02  TNACCT-GAIHAKU-AREA.
            03  TNACCT-GAIHAKU-DAY                      PIC 9(03)
@@ -94,7 +87,6 @@
            03  TSRYKA-OCC                              OCCURS 30.
                05  TSRYKA-PTBYO-CNT1                   PIC 9(05).
                05  TSRYKA-PTBYO-CNT2                   PIC 9(05).
-               05  TSRYKA-HKNTG-CNT                    PIC 9(05).
                05  TSRYKA-PTSYUBYO-CNT                 PIC 9(05).
                05  TSRYKA-SRYKA                        PIC X(02).
                05  TSRYKA-SYOSIN-DAY                   PIC 9(01)
@@ -158,12 +150,6 @@
                05  TSRYCD-DAY-HKNFLG-G.
                    07  TSRYCD-DAY-HKNFLG               PIC 9(01)
                                                        OCCURS  31.
-               05  TSRYCD-DENPNUM-G.
-                   07  TSRYCD-DENPNUM-OCC              OCCURS 100.
-                       09  TSRYCD-DENPNUM              PIC 9(07).
-                       09  TSRYCD-DENPNUM-HKNFLG       PIC 9(01).
-                       09  TSRYCD-DENPNUM-KAISU        PIC 9(09).
-                       09  TSRYCD-DENPNUM-DAY          PIC 9(02).
       *
       *    ¼ÂÆü¿ôÂàÈò¥ï¡¼¥¯¡Ê¼ÂÆü¿ô¥Á¥§¥Ã¥¯ÍÑ¡Ë
          02  TJNISSU-AREA.
@@ -189,14 +175,12 @@
       *
       *    Æþ±¡Ä´ºÞÎÁ»»ÄêÆüÂàÈò¥ï¡¼¥¯
          02  TNYUIN-CHOZAI-AREA.
-           03  TNYUIN-CHOZAI-DAY-OCC                   OCCURS 3.
-               05  TNYUIN-CHOZAI-DAY                   PIC 9(01)
+           03  TNYUIN-CHOZAI-DAY                       PIC 9(01)
                                                        OCCURS 31.
       *
       *    Æþ±¡¿ÇÎÅ¹Ô°ÙÆüÂàÈò¥ï¡¼¥¯
          02  TNYUIN-ACCT-AREA.
-           03  TNYUIN-ACCT-DAY-G.
-               05  TNYUIN-ACCT-DAY                     PIC 9(01)
+           03  TNYUIN-ACCT-DAY                         PIC 9(01)
                                                        OCCURS 31.
       *
       *    Ê»ÍÑ¶Ø´÷¡Ê»»Äê¡ËÂàÈò¥ï¡¼¥¯
@@ -217,22 +201,6 @@
                        09  THEIYOU-DAY2                PIC 9(01)
                                                        OCCURS 31.
       *
-      *  ´ïºàÃ±°Ì¥Á¥§¥Ã¥¯ÂàÈò¥ï¡¼¥¯
-         02  TKZI-AREA.
-           03  TKZI-MAX                                PIC 9(05).
-           03  TKZI-OCC                                OCCURS 30.
-               05  TKZI-SRYCD                          PIC X(09).
-               05  TKZI-058-SRYCD                      PIC X(09).
-               05  TKZI-DAY-G.
-                   07  TKZI-DAY                        PIC 9(01)
-                                                       OCCURS 31.
-           03  TKZI-MICD-MAX                           PIC 9(05).
-           03  TKZI-MICD-OCC                           OCCURS 30.
-               05  TKZI-MICD-SRYCD                     PIC X(09).
-               05  TKZI-MICD-DAY-G.
-                   07  TKZI-MICD-DAY                   PIC 9(01)
-                                                       OCCURS 31.
-      *
       *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯
          02  TCHK-AREA.
            03  TCHK-IDX                                PIC 9(08).
@@ -247,7 +215,7 @@
                05  TCHK-ACT-BYOMEI                     PIC X(160).
                05  TCHK-ACT-CD-G.
                    07  TCHK-ACT-CD-MAX                 PIC 9(05).
-                   07  TCHK-ACT-CD-OCC                 OCCURS  400.
+                   07  TCHK-ACT-CD-OCC                 OCCURS  200.
                        09  TCHK-ACT-CD                 PIC X(09).
                        09  TCHK-ACT-DAYMONTHKBN        PIC X(01).
                        09  TCHK-ACT-NYUGAIKBN          PIC X(01).
@@ -272,7 +240,7 @@
                    07  TCHK-STK-BYOMEI                 PIC X(160).
                    07  TCHK-STK-CD-G.
                        09  TCHK-STK-CD-MAX             PIC 9(05).
-                       09  TCHK-STK-CD-OCC             OCCURS  400.
+                       09  TCHK-STK-CD-OCC             OCCURS  200.
                            11  TCHK-STK-CD             PIC X(09).
                            11  TCHK-STK-DAYMONTHKBN    PIC X(01).
                            11  TCHK-STK-NYUGAIKBN      PIC X(01).
@@ -343,38 +311,6 @@
                05  TCOMERR-COM                     PIC X(80).
                05  TCOMERR-DAY-G.
                    07  TCOMERR-DAY                 PIC 9(01)
-                                                   OCCURS  31.
-      *
-         02  TRSIRECEDEN-AREA.
-           03  TRSIRECEDEN-MAX                     PIC 9(05).
-           03  TRSIRECEDEN-OCC                     OCCURS  20.
-               05  TRSIRECEDEN-SRYCD               PIC X(09).
-               05  TRSIRECEDEN-KAISU               PIC 9(05).
-               05  TRSIRECEDEN-DAY-G.
-                   07  TRSIRECEDEN-DAY             PIC 9(01)
-                                                   OCCURS  31.
-      *
-      *  ±¡³°½èÊýÎÎ°è
-         02  TINGAI-AREA.
-           03  TINGAI-MAX                          PIC 9(07).
-           03  TINGAI-OCC                          OCCURS  20.
-               05  TINGAI-HKNNUM                   PIC X(03).
-               05  TINGAI-NYUGAIKBN                PIC X(01).
-               05  TINGAI-TEN                      PIC 9(07).
-      *
-      *  ²ð¸îÆÍ¹ç¥Á¥§¥Ã¥¯ÂàÈòÎÎ°è
-         02  TKAIGO-AREA.
-           03  TKAIGO-NINTEI-DAY-G.
-               05  TKAIGO-NINTEI-DAY               PIC 9(01)
-                                                   OCCURS  31.
-           03  TKAIGO-ERR-DAY-G.
-               05  TKAIGO-ERR-DAY                  PIC 9(01)
-                                                   OCCURS  31.
-           03  TKAIGO-IDX                          PIC 9(05).
-           03  TKAIGO-MAX                          PIC 9(05).
-           03  TKAIGO-OCC                          OCCURS  50.
-               05  TKAIGO-SRYCD                    PIC X(09).
-               05  TKAIGO-SRYCD-DAY                PIC 9(01)
                                                    OCCURS  31.
       *
          02  SRH-AREA.
@@ -456,8 +392,6 @@
                    07  SRH-1102-KGKAKKO            PIC X(01).
                    07  SRH-1102-KGETC              PIC X(01).
                    07  SRH-1102-KGKANJINASHI       PIC X(01).
-                   07  SRH-1102-KGKETAMIN          PIC X(02).
-                   07  SRH-1102-KGKETAMAX          PIC X(02).
                    07  SRH-1102-NMSUJINASHI        PIC X(01).
                    07  SRH-1102-NMKETAMIN          PIC X(02).
                    07  SRH-1102-NMKETAMAX          PIC X(02).
@@ -491,8 +425,6 @@
                    07  SRH-1102-KGKAKKOL           PIC X(01).
                    07  SRH-1102-KGETCL             PIC X(01).
                    07  SRH-1102-KGKANJINASHIL      PIC X(01).
-                   07  SRH-1102-KGKETAMINL         PIC X(02).
-                   07  SRH-1102-KGKETAMAXL         PIC X(02).
                    07  SRH-1102-NMSUJINASHIL       PIC X(01).
                    07  SRH-1102-NMKETAMINL         PIC X(02).
                    07  SRH-1102-NMKETAMAXL         PIC X(02).
