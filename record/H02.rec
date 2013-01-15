@@ -1,68 +1,66 @@
-H02 {
-  fixed32 {
-    B12 {
-      state int;
-    };
-    SELNUM {
-      state int;
-      numdata number(2);
-    };
-    LABEL {
-      style varchar(20);
-      textdata varchar(10);
-    };
-    SYORIYM {
-      style varchar(20);
-      textdata varchar(6);
-    };
-    NYUGAIKBN {
-      style varchar(20);
-      textdata varchar(6);
-    };
-    RECESYUBETU {
-      style varchar(20);
-      textdata varchar(10);
-    };
-    HKNJANUM {
-      style varchar(20);
-      textdata varchar(8);
-    };
-    KIGO {
-      style varchar(20);
-      textdata varchar(20);
-    };
-    ERR {
-      style varchar(20);
-      textdata varchar(100);
-    };
-    scrolledwindow26 {
-      HENREILIST {
-        count int;
-        row int;
-          item {
-            column1 varchar(2);
-            column2 varchar(7);
-            column3 varchar(2);
-            column4 varchar(2);
-            column5 varchar(10);
-            column6 varchar(8);
-            column7 varchar(20);
-            column8 varchar(4);
-            column9 varchar(2);
-            column10 varchar(100);
-            column11 varchar(2);
-            column12 varchar(6);
-            column13 varchar(2);
-            column14 varchar(10);
-            column15 varchar(8);
-            column16 varchar(20);
-            column17 varchar(2);
-            column18 varchar(4);
-            column19 varchar(2);
-            column20 varchar(2);
-          }[30];
-          selectdata bool[30];
-      };
-    };
-  };
+H02	{
+	fixed32	{
+		B12     {
+			state   int;
+		};
+		SELNUM	{
+			state   int;
+			value	number(2);
+		};
+		LABEL	      	{
+			style   varchar(20);
+			value	varchar(10);
+		};
+		SYORIYM	      	{
+			style   varchar(20);
+			value	varchar(6);
+		};
+		NYUGAIKBN	{
+			style   varchar(20);
+			value	varchar(6);
+		};
+		RECESYUBETU	{
+			style   varchar(20);
+			value	varchar(4);
+		};
+		HKNJANUM	{
+			style   varchar(20);
+			value	varchar(8);
+		};
+		KIGO		{
+			style   varchar(20);
+			value	varchar(20);
+		};
+		ERR		{
+			style   varchar(20);
+			value	varchar(100);
+		};
+		scrolledwindow26	{
+			HENREILIST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(2);
+					value1	varchar(7);
+					value2	varchar(2);
+					value3	varchar(2);
+					value4	varchar(4);
+					value5	varchar(8);
+					value6	varchar(20);
+					value7	varchar(4);
+					value8	varchar(100);
+					value9	varchar(2);
+					value10	varchar(6);
+					value11	varchar(2);
+					value12	varchar(4);
+					value13	varchar(8);
+					value14	varchar(20);
+					value15	varchar(2);
+					value16	varchar(4);
+					value17	varchar(2);
+				}	[30];
+				select	bool[30];
+			};
+		};
+	};
 };

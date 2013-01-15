@@ -43,11 +43,6 @@
       *  04.07.02    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
       *                                     直接請求フラグの追加
-      *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
-      *
-      *  04.08.01    NACL-藤原    17/04/10  患者単位での点数算定設定
-      *                                     （労災準拠又は健保準拠）対応
-      *                                     保険区分（自賠責用）の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -277,7 +272,6 @@
            MOVE    RECE10-RESERVE-AREA     TO  SKYMAIN-RESERVE-AREA
            MOVE    RECE10-HENREI-SIJI-FLG  TO  SKYMAIN-HENREI-SIJI-FLG
            MOVE    RECE10-DIRECT-FLG       TO  SKYMAIN-DIRECT-FLG
-           MOVE    RECE10-HKNKBN-RSI       TO  SKYMAIN-HKNKBN-RSI
            MOVE    RECE10-HKNNUM-S         TO  SKYMAIN-HKNNUM-S
            MOVE    RECE10-HKNJANUM-S       TO  SKYMAIN-HKNJANUM-S
            MOVE    RECE10-CREYMD           TO  SKYMAIN-CREYMD
@@ -392,7 +386,6 @@
            MOVE    SKYMAIN-RESERVE-AREA    TO  RECE10-RESERVE-AREA
            MOVE    SKYMAIN-HENREI-SIJI-FLG TO  RECE10-HENREI-SIJI-FLG
            MOVE    SKYMAIN-DIRECT-FLG      TO  RECE10-DIRECT-FLG
-           MOVE    SKYMAIN-HKNKBN-RSI      TO  RECE10-HKNKBN-RSI
            MOVE    SKYMAIN-HKNNUM-S        TO  RECE10-HKNNUM-S
            MOVE    SKYMAIN-HKNJANUM-S      TO  RECE10-HKNJANUM-S
            MOVE    SKYMAIN-CREYMD          TO  RECE10-CREYMD
@@ -414,7 +407,6 @@
            END-IF
       *
            IF      SKYMAIN-HKNNUM              =   "971"   OR  "973"
-                                                           OR  "970"
                PERFORM 900-SKYRSI-KEY-SEL-SEC
                MOVE    SKYRSI-SYOCD            TO  RECE10-SYOCD
                MOVE    SKYRSI-SYOKAIFLG        TO  RECE10-SYOKAIFLG
@@ -587,10 +579,7 @@
            INITIALIZE                      SKYKOH-REC
            PERFORM 9001-SKYKOH-KEY-EDIT-SEC
            IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
-                                    OR "del6" OR "del7" OR "del8"
-                                    OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14"
-                                    OR "del15" OR "del16" OR "del17" )
+                                    OR "del6" OR "del7" )
                CONTINUE
            ELSE
                MOVE    "del"           TO   MCP-PATHNAME
@@ -673,10 +662,7 @@
            INITIALIZE                  SKYETC-REC
            PERFORM 9001-SKYETC-KEY-EDIT-SEC
            IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
-                                    OR "del6" OR "del7" OR "del8"
-                                    OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14"
-                                    OR "del15" OR "del16" OR "del17" )
+                                    OR "del6" OR "del7" )
                CONTINUE
            ELSE
                MOVE    "del"           TO   MCP-PATHNAME
@@ -743,10 +729,7 @@
            INITIALIZE                  SKYRSI-REC
            PERFORM 9001-SKYRSI-KEY-EDIT-SEC
            IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
-                                    OR "del6" OR "del7" OR "del8"
-                                    OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14"
-                                    OR "del15" OR "del16" OR "del17" )
+                                    OR "del6" OR "del7" )
                CONTINUE
            ELSE
                MOVE    "del"           TO   MCP-PATHNAME
@@ -767,7 +750,7 @@
            MOVE    "del"           TO   MCP-PATHNAME
            PERFORM 2001-SKYRSI-DEL-SEC
       *
-           IF    ( SKYMAIN-HKNNUM    =   "971"   OR  "973"   OR  "970" )
+           IF    ( SKYMAIN-HKNNUM    =   "971"   OR  "973" )
       *
                INITIALIZE                  SKYRSI-REC
                PERFORM 9001-SKYRSI-KEY-EDIT-SEC
@@ -819,8 +802,6 @@
            MOVE    SKYMAIN-KEY         TO  SKYKOH-KEY1
            MOVE    SKYMAIN-XXTEISYUTUSAKI
                                        TO  SKYKOH-XXTEISYUTUSAKI
-           MOVE    SKYMAIN-HKNNUM      TO  SKYKOH-XXHKNNUM
-           MOVE    SKYMAIN-HKNKBN-RSI  TO  SKYKOH-XXHKNKBN-RSI
       *
            .
        9001-SKYKOH-KEY-EDIT-EXT.
@@ -880,8 +861,6 @@
            MOVE    SKYMAIN-KEY         TO  SKYETC-KEY
            MOVE    SKYMAIN-XXTEISYUTUSAKI
                                        TO  SKYETC-XXTEISYUTUSAKI
-           MOVE    SKYMAIN-HKNNUM      TO  SKYETC-XXHKNNUM
-           MOVE    SKYMAIN-HKNKBN-RSI  TO  SKYETC-XXHKNKBN-RSI
            .
        9001-SKYETC-KEY-EDIT-EXT.
            EXIT.
@@ -920,8 +899,6 @@
            MOVE    SKYMAIN-KEY         TO  SKYRSI-KEY
            MOVE    SKYMAIN-XXTEISYUTUSAKI
                                        TO  SKYRSI-XXTEISYUTUSAKI
-           MOVE    SKYMAIN-HKNNUM      TO  SKYRSI-XXHKNNUM
-           MOVE    SKYMAIN-HKNKBN-RSI  TO  SKYRSI-XXHKNKBN-RSI
            .
        9001-SKYRSI-KEY-EDIT-EXT.
            EXIT.

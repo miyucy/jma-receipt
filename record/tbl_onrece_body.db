@@ -1,7 +1,6 @@
 tbl_onrece_body   {
         HOSPNUM			number(2,0);
 	TEISYUTUSAKI		char(1);
-	HOSPCD			char(7);
 	SRYYM			char(6);
 	UCNT			number(3);
 	SCNT			number(3);
@@ -72,7 +71,7 @@ tbl_onrece_body   {
 };
 
 primary {
-        HOSPNUM,TEISYUTUSAKI,HOSPCD,SRYYM,UCNT,SCNT,RENNUM,RECEIPT_NO;
+        HOSPNUM,TEISYUTUSAKI,SRYYM,UCNT,SCNT,RENNUM,RECEIPT_NO;
 };
 
 path    key             {
@@ -82,7 +81,6 @@ path    key             {
                 FROM tbl_onrece_body
                 WHERE	HOSPNUM		= :HOSPNUM
                     AND	TEISYUTUSAKI	= :TEISYUTUSAKI
-                    AND HOSPCD          = :HOSPCD
                     AND	SRYYM		= :SRYYM
                     AND	UCNT		= :UCNT
                     AND	SCNT		= :SCNT
@@ -99,7 +97,6 @@ path    key1            {
                 FROM tbl_onrece_body
                 WHERE	HOSPNUM		= :HOSPNUM
                     AND	TEISYUTUSAKI	= :TEISYUTUSAKI
-                    AND HOSPCD          = :HOSPCD
                     AND	SRYYM		= :SRYYM
                     AND	UCNT		= :UCNT
                     AND	SCNT		= :SCNT
@@ -285,50 +282,5 @@ path    upd2    {
                 ;
         };
 };
-path    key7            {
-        DBSELECT        {
-                DECLARE tbl_onrece_body_key7_csr CURSOR FOR
-                SELECT *
-                FROM tbl_onrece_body
-                WHERE	HOSPNUM		= :HOSPNUM
-                    AND	TEISYUTUSAKI	= :TEISYUTUSAKI
-                    AND	SRYYM		= :SRYYM
-                    AND	UCNT		= :UCNT
-                    AND	SCNT		= :SCNT
-                    AND	RENNUM		= :RENNUM
-		ORDER	BY	U_YOBI1 DESC,U_YOBI2,PTNUM
-                ;
-        };
-};
-
-path    key8            {
-        DBSELECT        {
-                DECLARE tbl_onrece_body_key8_csr CURSOR FOR
-                SELECT *
-                FROM tbl_onrece_body
-                WHERE	HOSPNUM		= :HOSPNUM
-                    AND	TEISYUTUSAKI	= :TEISYUTUSAKI
-                    AND HOSPCD          = :HOSPCD
-                    AND	SRYYM		= :SRYYM
-                    AND	UCNT		= :UCNT
-                    AND	SCNT		= :SCNT
-                    AND	RENNUM		= :RENNUM
-		ORDER	BY	RECEIPT_NO
-                ;
-        };
-};
-
-path	del1	{
-	DBDELETE	{
-		DELETE
-                FROM tbl_onrece_body
-		WHERE	HOSPNUM		= :HOSPNUM
-		    AND	UCNT		= :UCNT
-		    AND	SCNT		= :SCNT
-		    AND	substring(CREYMD,1,6) < :SRYYM
-		;
-	};
-};
-
 
 

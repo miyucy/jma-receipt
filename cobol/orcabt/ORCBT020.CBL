@@ -45,8 +45,6 @@
       *  04.05.04    NACL-藤原    12/11/15  剤点数等のマイナス表記対応
       *
       *  04.06.01    NACL-藤原    10/06/21  日本語化（見出し）対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -141,24 +139,18 @@
                                    BY         //TOUKEI03PARA//.
       *
       *    ＣＳＶデータ（診療情報）
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //TOUKEI04PARA//.
-      *01  TOUKEI04PARA.
-      *****03  FILLER                  PIC  X(05) VALUE "/tmp/".
-       01  TOUKEI04PARA-BASENAME.
+       01  TOUKEI04PARA.
+           03  FILLER                  PIC  X(05) VALUE "/tmp/".
            03  TOUKEI04PARA-HOSPNUM    PIC  9(02).
            03  TOUKEI04PARA-FILE-ID    PIC  X(12) VALUE "toukei01.dat".
       *
       *    ＣＳＶデータ（病名情報）
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //TOUKEI05PARA//.
-      *01  TOUKEI05PARA.
-      *****03  FILLER                  PIC  X(05) VALUE "/tmp/".
-       01  TOUKEI05PARA-BASENAME.
+       01  TOUKEI05PARA.
+           03  FILLER                  PIC  X(05) VALUE "/tmp/".
            03  TOUKEI05PARA-HOSPNUM    PIC  9(02).
            03  TOUKEI05PARA-FILE-ID    PIC  X(12) VALUE "toukei02.dat".
       *
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TOUKEIERR//.
       *
       *    フラグ領域
@@ -210,7 +202,6 @@
                05  WRK-PARA-FILE2              PIC X(20).
                05  WRK-PARA-FILENM1-FOLDER     PIC X(150).
                05  WRK-PARA-FILENM2-FOLDER     PIC X(150).
-      *
            03  WRK-TOUKEIERR               PIC X(200). 
       * 
            03  WRK-YMD.
@@ -287,8 +278,6 @@
                07  WRK-KOHTEKSTYMD    PIC  X(08).
       *        適用終了年月日
                07  WRK-KOHTEKEDYMD    PIC  X(08).
-      *
-       01  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
       *
       *    ヘッダー情報
        01  CSV-HEAD-01.
@@ -725,8 +714,6 @@
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -735,7 +722,7 @@
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(400).
+           02  FILLER      PIC X(1000).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -808,35 +795,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI02PARA-HOSPNUM
            MOVE    "TOKEI030"          TO  TOUKEI03PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  TOUKEI03PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TOUKEIERR           TO  SGETTEMP-BASENAMES  (1)
-           MOVE    TOUKEI01PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    TOUKEI02PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           MOVE    TOUKEI03PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (4)
-           MOVE    TOUKEI04PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (5)
-           MOVE    TOUKEI05PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (6)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  TOUKEI01PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  TOUKEI02PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  TOUKEI03PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  TOUKEI04PARA
-           MOVE    SGETTEMP-FULLNAMES (6)
-                                       TO  TOUKEI05PARA
-      *
-           MOVE   SGETTEMP-TEMPDIR     TO  WRK-SGETTEMP-TEMPDIR
       *
            OPEN    I-O                 TOUKEI01-FILE
                                        TOUKEI02-FILE
@@ -1864,9 +1822,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                             (WRK-RENNUM)
                MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
                MOVE    WRK-PARA-SRYYM  TO  SFILESV-SRYYM    (WRK-RENNUM)
-      *********MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
-               MOVE    WRK-SGETTEMP-TEMPDIR
-                                       TO  SFILESV-FOR-FOLDER
+               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
                                                             (WRK-RENNUM)
                MOVE    WRK-PARA-FILENM1
                                        TO  SFILESV-FOR-DATA (WRK-RENNUM)
@@ -1892,9 +1848,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                             (WRK-RENNUM)
                MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
                MOVE    WRK-PARA-SRYYM  TO  SFILESV-SRYYM    (WRK-RENNUM)
-      *********MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
-               MOVE    WRK-SGETTEMP-TEMPDIR
-                                       TO  SFILESV-FOR-FOLDER
+               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
                                                             (WRK-RENNUM)
                MOVE    WRK-PARA-FILENM2
                                        TO  SFILESV-FOR-DATA (WRK-RENNUM)

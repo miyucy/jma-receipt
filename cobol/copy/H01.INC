@@ -139,7 +139,7 @@
                 04  H01-HTEISYUTUSAKI-VALUE   PIC X(10).
               03  H01-HRECESYUBETU.
                 04  H01-HRECESYUBETU-STYLE   PIC X(20).
-                04  H01-HRECESYUBETU-VALUE   PIC X(14).
+                04  H01-HRECESYUBETU-VALUE   PIC X(12).
               03  H01-HHKNJANUM.
                 04  H01-HHKNJANUM-STYLE   PIC X(20).
                 04  H01-HHKNJANUM-VALUE   PIC X(14).
@@ -157,7 +157,7 @@
                 04  H01-HENREI-MSG-VALUE   PIC X(14).
               03  H01-HCREYMD.
                 04  H01-HCREYMD-STYLE   PIC X(20).
-                04  H01-HCREYMD-VALUE   PIC X(19).
+                04  H01-HCREYMD-VALUE   PIC X(13).
               03  H01-AGE.
                 04  H01-VALUE   PIC 9(3).
               03  H01-KYURATE.

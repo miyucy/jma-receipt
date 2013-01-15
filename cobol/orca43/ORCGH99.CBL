@@ -72,12 +72,6 @@
       *                                     ０８（老健）のレセプト対応
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
-      *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
-      *
-      *  04.08.01    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
-      *                                     レセプトの分割対応
-      *  04.08.02    NACL-藤原    17/04/10  患者単位での点数算定設定
-      *                                     （労災準拠又は健保準拠）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -223,7 +217,6 @@
        01  SCRAREA.
            COPY    "H01.INC".
            COPY    "H02.INC".
-           COPY    "H03.INC".
            COPY    "H99.INC".
            COPY    "HERR.INC".
            COPY    "HID1.INC".
@@ -540,10 +533,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                        MOVE    "老健"          TO
                                            SPA-H99GMN-TRECEIPT-KBN (IDX)
                END-EVALUATE
-               IF      RECE10-ETC-YKZFTN (1)   >   ZERO
-                   MOVE    "災"            TO
-                                           SPA-H99GMN-TDISASTER (IDX)
-               END-IF
       *
       *       公費単独で生保又は中国残留邦人等、自立支援のとき負担者番号、
       *       受給者番号をセット
@@ -655,25 +644,11 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                        MOVE    "公務災害"          TO  WRK-RECESYUBETU
                    WHEN    "7011"
                    WHEN    "7001"
-                       EVALUATE    RECE10-RECEKBN
-                           WHEN    "4"
-                              MOVE    "新様式"     TO  WRK-RECESYUBETU
-                           WHEN    "5"
-                               EVALUATE    RECE10-HKNKBN
-                                   WHEN    "5"
-                                       MOVE    "従来様式・労災"
-                                                   TO  WRK-RECESYUBETU
-                                   WHEN    "6"
-                                       MOVE    "従来様式・健保"
-                                                   TO  WRK-RECESYUBETU
-                                   WHEN    OTHER
-                                       MOVE    "従来様式"
-                                                   TO  WRK-RECESYUBETU
-                               END-EVALUATE
-                           WHEN    "6"
-                               MOVE    "第三者行為"
-                                                   TO  WRK-RECESYUBETU
-                       END-EVALUATE
+                       IF      RECE10-RECEKBN      =   "4"
+                           MOVE    "新様式"        TO  WRK-RECESYUBETU
+                       ELSE
+                           MOVE    "従来様式"      TO  WRK-RECESYUBETU
+                       END-IF
                END-EVALUATE
                GO  TO  530-RECESYUBETU-HENSYU-EXT
            END-IF        
@@ -1074,8 +1049,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                    TO  H99-TCREYMD      (IDX)
                MOVE    SPA-H99GMN-TRECEIPT-KBN (IDX)
                                    TO  H99-TRECEIPT-KBN (IDX)
-               MOVE    SPA-H99GMN-TDISASTER    (IDX)
-                                   TO  H99-TDISASTER    (IDX)
                MOVE    IDX         TO  H99-COUNT
            END-PERFORM
       ***  MOVE    "T"              TO  H99-SELECT (1)
@@ -1162,7 +1135,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
        520-HIDSET-SEC              SECTION.
       *
            MOVE    SPACE                TO  HID1
-           INITIALIZE                       HID1
            MOVE    SPA-HIDCD            TO  HID1-ID1CODE
            EVALUATE    SPA-HIDCD
                WHEN    "1006"
