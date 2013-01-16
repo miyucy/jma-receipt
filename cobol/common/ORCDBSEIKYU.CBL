@@ -38,16 +38,6 @@
       *                                     ÊÝ¸±ÁÈ¹ç¤»¾ðÊó
       *  04.06.03    NACL-Æ£¸¶    12/10/26  ÆÃµ­»ö¹à£°£·¡ÊÏ·Ê»¡ËµÚ¤Ó
       *                                     £°£¸¡ÊÏ··ò¡Ë¤Î¥ì¥»¥×¥ÈÂÐ±þ
-      *
-      *  04.07.01    NACL-Æ£¸¶    11/09/02  Ï«ºÒÀÁµá½ñºîÀ®ÂÐ±þ
-      *  04.07.02    NACL-Æ£¸¶    12/02/13  ·òÊÝÁÈ¹ç¤Ø¤ÎÄ¾ÀÜÀÁµá¤È¿³ºº
-      *                                     »ÙÊ§µ¡´ØÀÁµáÂÐ±þ
-      *                                     Ä¾ÀÜÀÁµá¥Õ¥é¥°¤ÎÄÉ²Ã
-      *  04.07.03    NACL-Æ£¸¶    13/09/20  Âè»°¼Ô¹Ô°ÙÂÐ±þ
-      *
-      *  04.08.01    NACL-Æ£¸¶    17/04/10  ´µ¼ÔÃ±°Ì¤Ç¤ÎÅÀ¿ô»»ÄêÀßÄê
-      *                                     ¡ÊÏ«ºÒ½àµòËô¤Ï·òÊÝ½àµò¡ËÂÐ±þ
-      *                                     ÊÝ¸±¶èÊ¬¡Ê¼«ÇåÀÕÍÑ¡Ë¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -66,7 +56,6 @@
        01  FLG-AREA.
            03  FLG-SKYETC          PIC 9(01).
            03  FLG-SKYKOH          PIC 9(01).
-           03  FLG-SKYRSI          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -99,9 +88,6 @@
       *
       *    ÀÁµá´ÉÍý¡Ê¥ì¥»¥×¥Èµ­ºÜ³°¸øÈñ¾ðÊó¡Ë
            COPY    "CPSKYETC.INC".
-      *
-      *    ÀÁµá´ÉÍý¡ÊÏ«ºÒ¾ðÊó¡Ë
-           COPY    "CPSKYRSI.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
@@ -276,8 +262,6 @@
            MOVE    RECE10-FLG   (5)        TO  SKYMAIN-FLG   (5)
            MOVE    RECE10-RESERVE-AREA     TO  SKYMAIN-RESERVE-AREA
            MOVE    RECE10-HENREI-SIJI-FLG  TO  SKYMAIN-HENREI-SIJI-FLG
-           MOVE    RECE10-DIRECT-FLG       TO  SKYMAIN-DIRECT-FLG
-           MOVE    RECE10-HKNKBN-RSI       TO  SKYMAIN-HKNKBN-RSI
            MOVE    RECE10-HKNNUM-S         TO  SKYMAIN-HKNNUM-S
            MOVE    RECE10-HKNJANUM-S       TO  SKYMAIN-HKNJANUM-S
            MOVE    RECE10-CREYMD           TO  SKYMAIN-CREYMD
@@ -391,8 +375,6 @@
            MOVE    SKYMAIN-FLG   (5)       TO  RECE10-FLG   (5)
            MOVE    SKYMAIN-RESERVE-AREA    TO  RECE10-RESERVE-AREA
            MOVE    SKYMAIN-HENREI-SIJI-FLG TO  RECE10-HENREI-SIJI-FLG
-           MOVE    SKYMAIN-DIRECT-FLG      TO  RECE10-DIRECT-FLG
-           MOVE    SKYMAIN-HKNKBN-RSI      TO  RECE10-HKNKBN-RSI
            MOVE    SKYMAIN-HKNNUM-S        TO  RECE10-HKNNUM-S
            MOVE    SKYMAIN-HKNJANUM-S      TO  RECE10-HKNJANUM-S
            MOVE    SKYMAIN-CREYMD          TO  RECE10-CREYMD
@@ -411,18 +393,6 @@
             OR   ( SKYMAIN-KOHNUM (3)      NOT =   SPACE )
             OR   ( SKYMAIN-KOHNUM (4)      NOT =   SPACE )
                    PERFORM 20011-SKYKOH-GET-SEC
-           END-IF
-      *
-           IF      SKYMAIN-HKNNUM              =   "971"   OR  "973"
-                                                           OR  "970"
-               PERFORM 900-SKYRSI-KEY-SEL-SEC
-               MOVE    SKYRSI-SYOCD            TO  RECE10-SYOCD
-               MOVE    SKYRSI-SYOKAIFLG        TO  RECE10-SYOKAIFLG
-               MOVE    SKYRSI-KOFUNUM          TO  RECE10-KOFUNUM
-               MOVE    SKYRSI-SAIGAIKBN        TO  RECE10-SAIGAIKBN
-               MOVE    SKYRSI-COMMENT          TO  RECE10-COMMENT
-               MOVE    SKYRSI-RECEKBN          TO  RECE10-RECEKBN
-               MOVE    SKYRSI-HKNKBN           TO  RECE10-HKNKBN
            END-IF
       *
            IF    ( SKYMAIN-ETCCREATEFLG    =   1 )
@@ -512,10 +482,6 @@
            END-IF
       *
            IF    ( MCP-RC          =    ZERO )
-               PERFORM 2001-SKYRSI-INS-SEC
-           END-IF
-      *
-           IF    ( MCP-RC          =    ZERO )
                MOVE    SKYMAIN-REC         TO  MCPDATA-REC
                MOVE    "tbl_seikyu_main"   TO  MCP-TABLE
                MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
@@ -536,10 +502,6 @@
       *
            IF    ( MCP-RC          =    ZERO )
                PERFORM 2001-SKYETC-INS-SEC
-           END-IF
-      *
-           IF    ( MCP-RC          =    ZERO )
-               PERFORM 2001-SKYRSI-INS-SEC
            END-IF
       *
            IF    ( MCP-RC          =    ZERO )
@@ -566,10 +528,6 @@
            END-IF
       *
            IF    ( MCP-RC          =    ZERO )
-               PERFORM 2001-SKYRSI-DEL-SEC
-           END-IF
-      *
-           IF    ( MCP-RC          =    ZERO )
                MOVE    SKYMAIN-REC        TO  MCPDATA-REC
                MOVE    "tbl_seikyu_main"   TO  MCP-TABLE
                MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
@@ -587,10 +545,7 @@
            INITIALIZE                      SKYKOH-REC
            PERFORM 9001-SKYKOH-KEY-EDIT-SEC
            IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
-                                    OR "del6" OR "del7" OR "del8"
-                                    OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14"
-                                    OR "del15" OR "del16" OR "del17" )
+                                    OR "del6" OR "del7" )
                CONTINUE
            ELSE
                MOVE    "del"           TO   MCP-PATHNAME
@@ -673,10 +628,7 @@
            INITIALIZE                  SKYETC-REC
            PERFORM 9001-SKYETC-KEY-EDIT-SEC
            IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
-                                    OR "del6" OR "del7" OR "del8"
-                                    OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14"
-                                    OR "del15" OR "del16" OR "del17" )
+                                    OR "del6" OR "del7" )
                CONTINUE
            ELSE
                MOVE    "del"           TO   MCP-PATHNAME
@@ -736,59 +688,6 @@
        2001-SKYETC-INS-EXT.
            EXIT.
       *****************************************************************
-      *    ÀÁµá´ÉÍý¡ÊÏ«ºÒ¾ðÊó¡Ëºï½ü½èÍý
-      *****************************************************************
-       2001-SKYRSI-DEL-SEC             SECTION.
-      *
-           INITIALIZE                  SKYRSI-REC
-           PERFORM 9001-SKYRSI-KEY-EDIT-SEC
-           IF    ( MCP-PATHNAME    =   "del1" OR "del3" OR "del4" 
-                                    OR "del6" OR "del7" OR "del8"
-                                    OR "del9" OR "del10" OR "del11"
-                                    OR "del12" OR "del13" OR "del14"
-                                    OR "del15" OR "del16" OR "del17" )
-               CONTINUE
-           ELSE
-               MOVE    "del"           TO   MCP-PATHNAME
-           END-IF
-      *
-           MOVE    SKYRSI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_seikyu_rsi"    TO  MCP-TABLE
-           PERFORM 910-DBDELETE-SEC
-      *
-           .
-       2001-SKYRSI-DEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¿·ÀÁµá´ÉÍý¡ÊÏ«ºÒ¾ðÊó¡ËÄÉ²Ã½èÍý
-      *****************************************************************
-       2001-SKYRSI-INS-SEC             SECTION.
-      *
-           MOVE    "del"           TO   MCP-PATHNAME
-           PERFORM 2001-SKYRSI-DEL-SEC
-      *
-           IF    ( SKYMAIN-HKNNUM    =   "971"   OR  "973"   OR  "970" )
-      *
-               INITIALIZE                  SKYRSI-REC
-               PERFORM 9001-SKYRSI-KEY-EDIT-SEC
-               MOVE    RECE10-SYOCD        TO  SKYRSI-SYOCD
-               MOVE    RECE10-SYOKAIFLG    TO  SKYRSI-SYOKAIFLG
-               MOVE    RECE10-KOFUNUM      TO  SKYRSI-KOFUNUM
-               MOVE    RECE10-SAIGAIKBN    TO  SKYRSI-SAIGAIKBN
-               MOVE    RECE10-COMMENT      TO  SKYRSI-COMMENT
-               MOVE    RECE10-RECEKBN      TO  SKYRSI-RECEKBN
-               MOVE    RECE10-HKNKBN       TO  SKYRSI-HKNKBN
-               MOVE    SKYRSI-REC          TO  MCPDATA-REC
-               MOVE    "tbl_seikyu_rsi"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBINSERT-SEC
-      *
-           END-IF
-      *
-           .
-       2001-SKYRSI-INS-EXT.
-           EXIT.
-      *****************************************************************
       *    ÀÁµá´ÉÍý¡Ê¸øÈñ¾ðÊó¡Ë¸¡º÷½èÍý
       *****************************************************************
        900-SKYKOH-KEY2-SEL-SEC         SECTION.
@@ -819,8 +718,6 @@
            MOVE    SKYMAIN-KEY         TO  SKYKOH-KEY1
            MOVE    SKYMAIN-XXTEISYUTUSAKI
                                        TO  SKYKOH-XXTEISYUTUSAKI
-           MOVE    SKYMAIN-HKNNUM      TO  SKYKOH-XXHKNNUM
-           MOVE    SKYMAIN-HKNKBN-RSI  TO  SKYKOH-XXHKNKBN-RSI
       *
            .
        9001-SKYKOH-KEY-EDIT-EXT.
@@ -880,50 +777,8 @@
            MOVE    SKYMAIN-KEY         TO  SKYETC-KEY
            MOVE    SKYMAIN-XXTEISYUTUSAKI
                                        TO  SKYETC-XXTEISYUTUSAKI
-           MOVE    SKYMAIN-HKNNUM      TO  SKYETC-XXHKNNUM
-           MOVE    SKYMAIN-HKNKBN-RSI  TO  SKYETC-XXHKNKBN-RSI
            .
        9001-SKYETC-KEY-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    ÀÁµá´ÉÍý¡ÊÏ«ºÒ¾ðÊó¡Ë¸¡º÷½èÍý
-      *****************************************************************
-       900-SKYRSI-KEY-SEL-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SKYRSI
-      *
-           INITIALIZE                      SKYRSI-REC
-           PERFORM 9001-SKYRSI-KEY-EDIT-SEC
-           MOVE    SKYRSI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_seikyu_rsi"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SKYRSI-REC
-           ELSE
-               MOVE    1               TO  FLG-SKYRSI
-               INITIALIZE                  SKYRSI-REC
-           END-IF
-      *
-           MOVE    "tbl_seikyu_rsi"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-SKYRSI-KEY-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    ÀÁµá´ÉÍý¡ÊÏ«ºÒ¾ðÊó¡Ë¥­¡¼¾ðÊóÊÔ½¸½èÍý
-      *****************************************************************
-       9001-SKYRSI-KEY-EDIT-SEC        SECTION.
-      *
-           MOVE    SKYMAIN-KEY         TO  SKYRSI-KEY
-           MOVE    SKYMAIN-XXTEISYUTUSAKI
-                                       TO  SKYRSI-XXTEISYUTUSAKI
-           MOVE    SKYMAIN-HKNNUM      TO  SKYRSI-XXHKNNUM
-           MOVE    SKYMAIN-HKNKBN-RSI  TO  SKYRSI-XXHKNKBN-RSI
-           .
-       9001-SKYRSI-KEY-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý

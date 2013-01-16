@@ -61,13 +61,6 @@
       *  04.06.03    NACL-藤原    11/01/05  機能追加（注加算、同時併施等）
       *  04.06.04    NACL-藤原    12/10/26  特記事項０７（老併）及び
       *                                     ０８（老健）のレセプト対応
-      *
-      *  04.07.01    NACL-門脇    13/12/09  医療情報連携対応
-      *  04.07.02    NACL-門脇    14/09/11  点数マスタの診療区分追加
-      *
-      *  04.08.01    NACL-門脇    16/01/12  点検用レセプト院外処方
-      *                                     一般名記載対応
-      *  04.08.02    NACL-門脇    16/04/20  平成２８年４月改正対応
       ************************************************************
       *01  RECE05-REC.
            03  RECE05-KEY.
@@ -205,27 +198,4 @@
                    07  RECE05-RECEHENFLG       PIC  X(01).
       *関係コメント関連設定フラグ
                    07  RECE05-SETCOMATFLG      PIC  9(03).
-      *点数マスタの診療区分
-                   07  RECE05-TNSSRYKBN        PIC  X(02).
-      *
-      *医療情報連携用情報
-               05  RECE05-IRYORENKEIINF.
-      *一般名記載院外処方フラグ
-                   07  RECE05-INGAIFLG         PIC  X(01).
-      *一般名記載院外処方フラグ（レセプト用）
-                   07  RECE05-INGAIFLG-RECE    PIC  X(01).
-      *一般名記載院外処方フラグ（湿布薬コメント用）
-                   07  RECE05-INGAIFLG-SIPPU   PIC  X(01).
-      *一般名コード（薬価基準コード）
-                   07  RECE05-YAKKAKJNCD       PIC  X(12).
-      *一般名処方加算区分
-                   07  RECE05-GENERIC-KBN      PIC  X(01).
-      *一般名称
-                   07  RECE05-GENERICNAME      PIC  X(200).
-      *漢字有効桁数
-                   07  RECE05-GENERICYUKOKETA  PIC  9(03).
-      *
-      *湿布薬情報
-               05  RECE05-SIPPUINF.
-                   07  RECE05-SIPPUFLG         PIC  X(01).
       *

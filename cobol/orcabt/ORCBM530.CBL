@@ -32,10 +32,6 @@
       *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
       *                                     ０８（老健）のレセプト対応
       *                                     receipt_kbn 追加 
-      *
-      *  04.07.01    NACL-藤原    14/12/03  平成２６年１１月改正対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -55,8 +51,6 @@
        01  RECEERR-REC                 PIC X(200).
       *
        WORKING-STORAGE             SECTION.
-      *
-           COPY    "CPRECEERR.INC".
       *
            COPY    "HCM37V01.INC"  REPLACING  //HCM37V01//
                                    BY         //HCM37//.
@@ -100,6 +94,7 @@
            05  WRK-PARA-JOBID          PIC 9(07).
            05  WRK-PARA-SHELLID        PIC X(08).
            05  WRK-PARA-HOSPNUM        PIC 9(02).
+           05  RECEERR                 PIC X(100).
       *
       *    一時領域
        01  WRK-AREA.
@@ -161,12 +156,6 @@
            03  WRK-MOJI11.
                05  FILLER111           PIC X(50)   VALUE
                    "【廃用症候群に係る評価表】".
-           03  WRK-MOJI12.
-               05  FILLER121           PIC X(50)   VALUE
-                   "【上記以外の診療報酬明細書】".
-           03  WRK-MOJI13.
-               05  FILLER              PIC X(50)   VALUE
-               "【医薬品医療機器等法に規定する治験に係る治験概要】".
       *
        01  CONST-AREA.
            03  CONST-H2004             PIC X(06)   VALUE    "200804".
@@ -243,8 +232,6 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -317,13 +304,6 @@
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SPACE           TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME
-                                   TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -435,21 +415,13 @@
                                MOVE    WRK-MOJI7
                                        TO  HCM37-NAIYO(CNT-LINE)
                            WHEN    "50"
-                               IF      RECE10-SRYYM    <   201412
-                                   MOVE    WRK-MOJI9
-                                           TO  HCM37-NAIYO(CNT-LINE)
-                               ELSE
-                                   MOVE    WRK-MOJI13
-                                           TO  HCM37-NAIYO(CNT-LINE)
-                               END-IF
+                               MOVE    WRK-MOJI9
+                                       TO  HCM37-NAIYO(CNT-LINE)
                            WHEN    "51"
                                MOVE    WRK-MOJI10
                                        TO  HCM37-NAIYO(CNT-LINE)
                            WHEN    "52"
                                MOVE    WRK-MOJI11
-                                       TO  HCM37-NAIYO(CNT-LINE)
-                           WHEN    "90"
-                               MOVE    WRK-MOJI12
                                        TO  HCM37-NAIYO(CNT-LINE)
                            WHEN    "99"
                                MOVE    WRK-MOJI8
@@ -1098,7 +1070,6 @@
                                            OR  "50"
                                            OR  "51"
                                            OR  "52"
-                                           OR  "90"
                                            OR  "99"
                        ADD     1               TO  CNT-RECEDEN
                        MOVE    1               TO  FLG-RECEDENOK

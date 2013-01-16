@@ -140,7 +140,7 @@
       *明細点数情報
                05  KOHSKY-TENSUINF        OCCURS  5.
       *明細点数
-                   07  KOHSKY-TENSU       PIC S9(08).
+                   07  KOHSKY-TENSU       PIC  9(08).
       *実日数情報
            03  KOHSKY-JNISSUINF           OCCURS  5.
       *実日数
@@ -148,11 +148,11 @@
       *合計点数情報
            03  KOHSKY-TOTALTENINF         OCCURS  5.
       *合計点数
-               05  KOHSKY-TOTALTEN        PIC S9(08).
+               05  KOHSKY-TOTALTEN        PIC  9(08).
       *負担金額情報
            03  KOHSKY-FTNMONEYINF         OCCURS  5.
       *負担金額
-               05  KOHSKY-FTNMONEY        PIC S9(09).
+               05  KOHSKY-FTNMONEY        PIC  9(09).
       *薬剤一部負担金情報
            03  KOHSKY-YKZFTNINF           OCCURS  5.
       *薬剤一部負担金
@@ -172,7 +172,7 @@
       *在宅総合・在宅末期フラグ
            03  KOHSKY-ZAITAKU             PIC  X(01).
       *在宅総合・在宅末期一部負担金再掲
-           03  KOHSKY-ZAITAKU-SAIKEI      PIC S9(09).
+           03  KOHSKY-ZAITAKU-SAIKEI      PIC  9(09).
       *請求年月
            03  KOHSKY-SKYYM               PIC  X(06).
       *返戻年月
