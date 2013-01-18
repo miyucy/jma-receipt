@@ -197,8 +197,6 @@
       *サンプル薬対応
            03  IDX-G               PIC 9(04).
       *
-           03  IDXW                PIC 9(04).
-      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SRYCD           PIC X(09).
@@ -256,7 +254,7 @@
                05  WRK-SANTEN-GEN      PIC 9(08).
                05  WRK-SANTENSU        PIC 9(08).
                05  WRK-SANTEN-KEI      PIC 9(08).
-               05  WRK-HKNKEI-TBL      OCCURS   15.
+               05  WRK-HKNKEI-TBL      OCCURS   5.
                    07  WRK-HKNKEI-COMBI    PIC X(04).
                    07  WRK-HKNKEI-CHIKEN   PIC X(01).
                    07  WRK-HKNKEI-KEIKEI   PIC 9(08).
@@ -2346,7 +2344,7 @@
       *!!
                    IF      WRK-COM-ZAIEND (IDX3) =   "1"
                        MOVE    IDX3           TO  IDX
-                       MOVE    SPA-MAX-LINE   TO  IDX3
+                       MOVE    300            TO  IDX3
                    END-IF
                END-IF
       *@
@@ -2374,36 +2372,18 @@
       *    複数保険判定（内服のみ）
            IF      WRK-CHK-SRYSYUKBN   =   "211"
                                        OR  "291"
-      *****    IF      WRK-HKNKEI-COMBI (WRK-CNT-HKN)
-      *                                =   WRK-COM-HKNCOMBI (IDX)
-      *            CONTINUE
-      *        ELSE
-      *            ADD     1               TO  WRK-CNT-HKN
-      *            MOVE    WRK-COM-HKNCOMBI (IDX)
-      *                                    TO  WRK-HKNKEI-COMBI
-      *                                               (WRK-CNT-HKN)
-      *            MOVE    WRK-COM-CHIKENKBN(IDX)
-      *                                    TO  WRK-HKNKEI-CHIKEN
-      *                                               (WRK-CNT-HKN)
-      *****    END-IF
-      *
-      *        保険毎にまとめる
-               PERFORM VARYING   IDXW      FROM    1   BY  1
-                       UNTIL    (IDXW      >   15  )
-                   IF      WRK-HKNKEI-COMBI (IDXW) =   SPACE
-                       MOVE    WRK-COM-HKNCOMBI (IDX)
-                                               TO  WRK-HKNKEI-COMBI
-                                                      (IDXW)
-                       MOVE    WRK-COM-CHIKENKBN(IDX)
-                                               TO  WRK-HKNKEI-CHIKEN
-                                                      (IDXW)
-                   END-IF
-                   IF      WRK-HKNKEI-COMBI (IDXW)
+               IF      WRK-HKNKEI-COMBI (WRK-CNT-HKN)
                                        =   WRK-COM-HKNCOMBI (IDX)
-                       MOVE    IDXW            TO  WRK-CNT-HKN
-                       MOVE    15              TO  IDXW
-                   END-IF
-               END-PERFORM
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  WRK-CNT-HKN
+                   MOVE    WRK-COM-HKNCOMBI (IDX)
+                                           TO  WRK-HKNKEI-COMBI
+                                                      (WRK-CNT-HKN)
+                   MOVE    WRK-COM-CHIKENKBN(IDX)
+                                           TO  WRK-HKNKEI-CHIKEN
+                                                      (WRK-CNT-HKN)
+               END-IF
            END-IF
       *
       *H24.4
@@ -2550,17 +2530,6 @@
                MOVE    ZERO            TO  WRK-SONOTA
                MOVE    ZERO            TO  WRK-ZAITEN
                MOVE    ZERO            TO  WRK-ZAITEN-G
-      *
-           ELSE
-               IF      (FLG-NAIFUKU            =   ZERO )
-                 AND   (WRK-COM-ZAIEND (IDX)   =   "1"  )
-                 AND  ((WRK-CHK-SRYSYUKBN      =   "291") AND
-                       (WRK-COM-KAISU(IDX) NOT >   14   ))
-      *            院内臨時投薬の１４日未満の点数集計
-                   ADD     WRK-COM-KEI (IDX)   TO  WRK-KEIKEI
-                   ADD     WRK-COM-KEI (IDX)   TO  WRK-HKNKEI-KEIKEI
-                                                       (WRK-CNT-HKN)
-               END-IF
            END-IF
       *
       **** 後発医薬品チェック
@@ -3866,12 +3835,10 @@
       *        診療種別区分変換
                PERFORM 30001-SRYSYUKBN-SET-SEC
       *        院内の内服薬チェック
-      *          臨時投薬もすべて対象
-      ********** 臨時で１４日以内の時は対象外
+      *          臨時で１４日以内の時は対象外
                IF     ( WRK-CHK-SRYSYUKBN      =   "211" )  OR
-                      ( WRK-CHK-SRYSYUKBN      =   "291" )
-      *!!             ((WRK-CHK-SRYSYUKBN      =   "291") AND
-      *!!!             (WRK-COM-KAISU (IDX)    >   14   ))
+                      ((WRK-CHK-SRYSYUKBN      =   "291") AND
+                       (WRK-COM-KAISU (IDX)    >   14   ))
                    MOVE    1                   TO  FLG-NAIFUKU
                ELSE
                    MOVE    ZERO                TO  FLG-NAIFUKU
@@ -3922,15 +3889,6 @@
            MOVE    ZERO                TO  WRK-SANTEN-G
            COMPUTE WRK-SANTEN-KEI      =   WRK-KEIKEI
                                        -   WRK-SANTEN
-      *    複数保険最終行
-           MOVE    ZERO                TO  WRK-CNT-HKN
-           PERFORM VARYING IDX-GEN     FROM    1   BY  1
-                   UNTIL  (IDX-GEN         >   15 )
-               IF      WRK-HKNKEI-COMBI (IDX-GEN)
-                                       NOT =   SPACE
-                   MOVE    IDX-GEN         TO  WRK-CNT-HKN
-               END-IF
-           END-PERFORM
       *
            PERFORM VARYING IDX-GEN     FROM    1   BY  1
                    UNTIL   IDX-GEN     >   WRK-CNT-HKN
@@ -4536,10 +4494,6 @@
            END-IF
            IF      FLG-ERR             =   ZERO
                ADD     1               TO  IDXS
-               IF      IDXS            >   30
-                   MOVE    "XXXX"          TO  SPA-ERRCD
-                   GO      TO     3002-KASAN-SYORI-EXT
-               END-IF
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                    (02 IDXS)
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
@@ -5096,10 +5050,9 @@
       *
                       COMPUTE IDX-Y3              =   JYURRK-RENNUM
                                                   +   1
-      *ver.4.8
-      *               IF      IDX-Y3              >   4
-      *                    MOVE    4               TO  IDX-Y3
-      ****            END-IF
+                      IF      IDX-Y3              >   4
+                           MOVE    4               TO  IDX-Y3
+                      END-IF
                       MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                       IF      (ACCT-DAY (IDX-Y3 IDX-Y2)
                                                    >   ZERO  ) AND
@@ -5247,8 +5200,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
