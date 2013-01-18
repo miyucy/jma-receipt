@@ -32,6 +32,7 @@
       * 04.07.00     NACL-Â¿¡¹Ç¼  11/12/19  ¾¦ÉÊÌ¾¥³¡¼¥ÉÃ±²ÁÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  12/04/20  £È£²£´Ç¯£´·î²þÀµÂÐ±þ
       *                                     ¡Ê°ìÈÌÌ¾µ­ºÜÊÔ½¸¡Ë
+      * 04.08.00     NACL-Â¿¡¹Ç¼  13/01/11  ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë£±£°ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4877,9 +4878,10 @@
       *
            COMPUTE IDX-Y3              =   JYURRK-RENNUM
                                        +   1
-           IF      IDX-Y3              >   4
-               MOVE    4               TO  IDX-Y3
-           END-IF
+      *ver.4.8
+      **** IF      IDX-Y3              >   4
+      *        MOVE    4               TO  IDX-Y3
+      **** END-IF
            MOVE    ZERO                TO  WRK-ACCT-KAISU
            MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
            MOVE    ACCT-DAY (IDX-Y3 IDX-Y2)    TO  WRK-ACCT-KAISU

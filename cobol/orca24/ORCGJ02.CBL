@@ -67,6 +67,7 @@
       *  04.07.00    NACL-多々納  11/08/XX  算定履歴付加情報削除対応
       *  04.07.00    NACL-多々納  11/09/XX  院外処方点数表示対応
       *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
+      *  04.08.00    NACL-多々納  13/01/15  診療回数テーブル１０対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -122,7 +123,7 @@
       *
        01  WRK-DATA-REC.
            03  WRK-DATA            PIC X(30000)
-                                   OCCURS  11.
+                                   OCCURS  20.
        01  SPA-SCR-REC.
            COPY    "CPJ02SPASCR.INC".
       *
@@ -301,6 +302,8 @@
       *
            03  IDX-C               PIC 9(04).
       *
+           03  IDXD                PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
       *
@@ -445,8 +448,8 @@
       *
       *    受診履歴変更用
            03  WRK-RRKYMD              PIC X(08).
-           03  WRK-RENNUM              PIC 9(01).
-           03  WRK-MAE-RENNUM          PIC 9(01).
+           03  WRK-RENNUM              PIC 9(02).
+           03  WRK-MAE-RENNUM          PIC 9(02).
            03  WRK-DOUJI-RENNUM        PIC 9(01).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-RRK-SRYKA           PIC X(02).
@@ -455,8 +458,7 @@
            03  WRK-DAY-MAE             PIC 9(03).
            03  IDX-D1                  PIC 9(02).
            03  IDX-D2                  PIC 9(02).
-      *****03  IDX-D3                  PIC 9(04).
-           03  IDX-D3                  PIC 9(01).
+           03  IDX-D3                  PIC 9(04).
            03  IDX-D4                  PIC 9(04).
       *    履歴剤変更用
            03  WRK-RRKZAI-HEN.
@@ -538,7 +540,9 @@
            03  WRK-SPA-GMN-DAY-G.
                05  WRK-SPA-GMN-DAY     PIC 9(03)    OCCURS   31.
       *    回数保存
-           03  WRK-REN                 PIC 9(01).
+           03  WRK-REN                 PIC 9(02).
+      *    履歴回数
+           03  WRK-CNT-DAY             PIC 9(02).
       *    回数
            03  WRK-CNT-TUKI            PIC 9(03).
            03  WRK-DAYCNT              PIC 9(03).
@@ -985,7 +989,7 @@
            END-IF
            MOVE    SPA-SCR-REC         TO  WRK-DATA-REC
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   11  )  OR
+                   UNTIL      (IDX     >   20  )  OR
                               (WRK-DATA (IDX)     =   SPACE)
       *
                MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
@@ -1274,14 +1278,24 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   31
-               IF      SPA-NAI-DAYCHK (IDX)    =   1
-                   MOVE    SPA-NAI-DAY1(IDX)   TO  SPA-GNAI-DAY (2 IDX)
-                   MOVE    SPA-NAI-DAY2(IDX)   TO  SPA-GNAI-DAY (3 IDX)
-                   MOVE    SPA-NAI-DAY3(IDX)   TO  SPA-GNAI-DAY (4 IDX)
-                   COMPUTE SPA-GNAI-DAY (1 IDX )
-                                               =   SPA-NAI-DAY1 (IDX)
-                                               +   SPA-NAI-DAY2 (IDX)
-                                               +   SPA-NAI-DAY3 (IDX)
+               IF      SPA-J022NAI-DAYCHK (IDX)    =   1
+                   MOVE    ZERO                TO  SPA-GNAI-DAY (1 IDX )
+                   PERFORM VARYING     IDX-J   FROM    1   BY  1
+                           UNTIL       IDX-J   >   9
+                       COMPUTE IDR4            =   IDX-J   +   1
+                       MOVE    SPA-J022NAI-DAY (IDX IDX-J)
+                                           TO  SPA-GNAI-DAY (IDR4 IDX)
+                       COMPUTE SPA-GNAI-DAY (1 IDX )
+                                           =   SPA-GNAI-DAY (1 IDX )
+                                           +   SPA-J022NAI-DAY
+                                                           (IDX IDX-J)
+                   END-PERFORM
+      **           MOVE    SPA-NAI-DAY2(IDX)   TO  SPA-GNAI-DAY (3 IDX)
+      **           MOVE    SPA-NAI-DAY3(IDX)   TO  SPA-GNAI-DAY (4 IDX)
+      **           COMPUTE SPA-GNAI-DAY (1 IDX )
+      *                                        =   SPA-NAI-DAY1 (IDX)
+      *                                        +   SPA-NAI-DAY2 (IDX)
+      *****                                    +   SPA-NAI-DAY3 (IDX)
                    MOVE    SPA-GNAI-DAY (1 IDX )   TO  SPA-GMN-DAY(IDX)
                END-IF
            END-PERFORM
@@ -5152,12 +5166,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            今回変更があり、履歴がある時
       *!           IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )  OR
       *!                  (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
-                   IF    ((SPA-GNAI-DAY (2 SPA-DAY-IDX)  >   ZERO  ) AND
-                          (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )) OR
-                         ((SPA-GNAI-DAY (2 SPA-DAY-IDX)  >   ZERO  ) AND
-                          (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )) OR
-                         ((SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  ) AND
-                          (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  ))
+      *            IF    ((SPA-GNAI-DAY (2 SPA-DAY-IDX)  >   ZERO  ) AND
+      *                   (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )) OR
+      *                  ((SPA-GNAI-DAY (2 SPA-DAY-IDX)  >   ZERO  ) AND
+      *                   (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )) OR
+      *                  ((SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  ) AND
+      ***                 (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  ))
+      *            履歴の回数
+                   PERFORM 4101291-GMNDAY-DAYCHK-SEC
+                   IF      WRK-CNT-DAY         >   1
                        PERFORM 410122-DAY-JYRRKCHK-SEC
                        MOVE    WRK-RENNUM          TO  SPA-J022-MAX
                        PERFORM 410121-J022-SET-SEC
@@ -5182,17 +5199,45 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *    変更日の編集処理
       *****************************************************************
+       4101291-GMNDAY-DAYCHK-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  WRK-CNT-DAY
+           PERFORM VARYING     IDXD     FROM    2   BY  1
+                   UNTIL       IDXD     >   10
+               IF      SPA-GNAI-DAY (IDXD SPA-DAY-IDX)   >   ZERO
+                   ADD     1              TO  WRK-CNT-DAY
+               END-IF
+           END-PERFORM
+      *
+           .
+       4101291-GMNDAY-DAYCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    変更日の編集処理
+      *****************************************************************
        4101291-GMNDAY-NAI-SEC           SECTION.
       *
            MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
                                        TO  SPA-GNAI-DAY (1 SPA-DAY-IDX)
-           MOVE    2                   TO  IDR2
-           IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )
-               MOVE    3               TO  IDR2
-           ELSE
-               IF     (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
-                   MOVE    4               TO  IDR2
+      ***  MOVE    2                   TO  IDR2
+      *    IF     (SPA-GNAI-DAY (3 SPA-DAY-IDX)  >   ZERO  )
+      *        MOVE    3               TO  IDR2
+      *    ELSE
+      *        IF     (SPA-GNAI-DAY (4 SPA-DAY-IDX)  >   ZERO  )
+      *            MOVE    4               TO  IDR2
+      *        END-IF
+      **** END-IF
+           MOVE    ZERO                TO  IDR2
+           PERFORM VARYING     IDXD    FROM    2   BY  1
+                   UNTIL      (IDXD        >   10  )
+                          AND (IDR2        >   ZERO )
+               IF      SPA-GNAI-DAY (IDXD SPA-DAY-IDX)   >   ZERO
+                   MOVE    IDXD            TO  IDR2
                END-IF
+           END-PERFORM
+           IF      IDR2                =   ZERO
+               MOVE    2               TO  IDR2
            END-IF
            MOVE    SPA-GMN-DAY (SPA-DAY-IDX)
                                        TO  SPA-GNAI-DAY
@@ -6085,9 +6130,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                =   SPA-NAI-HENSRYYMD)
                        AND    (SPA-RRK-SRYKA (IDX)
                                                =   WRK-SRYKA   )
-                           IF      SPA-RRK-RENNUM (IDX)    >=  3
-                               MOVE    1           TO  SPA-NAI-KEIFLG2
-                           END-IF
+      *v48   連番上限＝９
+      ****                 IF      SPA-RRK-RENNUM (IDX)    >=  3
+      *                        MOVE    1           TO  SPA-NAI-KEIFLG2
+      **                   END-IF
                            MOVE    1               TO  FLG-OK
                        END-IF
       *
@@ -6293,9 +6339,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            診療日の追加
                    MOVE    JYURRK-RENNUM   TO  IDX-D3
                    COMPUTE IDX-D3          =   IDX-D3    +   1
-                   IF      IDX-D3          >   4
-                       MOVE    4               TO  IDX-D3
-                   END-IF
+      *****        IF      IDX-D3          >   4
+      *                MOVE    4               TO  IDX-D3
+      *******      END-IF
                    MOVE    ACCT-DAY (IDX-D3 IDX-D1)
                                            TO  WRK-DAY-S
                    MOVE    WRK-DAY-S       TO  ACCT-DAY (2 IDX-D2)
@@ -7443,18 +7489,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    JYURRK-RENNUM       TO  IDX-D3
            COMPUTE IDX-D3              =   IDX-D3    +   1
            COMPUTE IDX-D4              =   WRK-RRK-RENNUM    +   1
-           IF      IDX-D3              >   4
-               MOVE    4               TO  IDX-D3
-           END-IF
-           IF      IDX-D4              >   4
-               MOVE    4               TO  IDX-D4
-           END-IF
+      **** IF      IDX-D3              >   4
+      *        MOVE    4               TO  IDX-D3
+      *    END-IF
+      *    IF      IDX-D4              >   4
+      *        MOVE    4               TO  IDX-D4
+      *****END-IF
       *
            MOVE    SPA-NAI-DAY (IDY IDX-D3 IDX-D1)
                                        TO  WRK-DAY-S
            MOVE    WRK-DAY-S           TO  SPA-NAI-DAY
                                                   (IDY IDX-D4 IDX-D2)
-           MOVE    WRK-DAY-S           TO  SPA-NAI-DAY (IDY 1 IDX-D2)
+      *????MOVE    WRK-DAY-S           TO  SPA-NAI-DAY (IDY 1 IDX-D2)
+           ADD     WRK-DAY-S           TO  SPA-NAI-DAY (IDY 1 IDX-D2)
       *
            COMPUTE SPA-NAI-DAY (IDY 1   IDX-D1)
                                        =   SPA-NAI-DAY
@@ -7476,12 +7523,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    JYURRK-UPRENNUM     TO  IDX-D3
            COMPUTE IDX-D3              =   IDX-D3    +   1
            COMPUTE IDX-D4              =   WRK-RENNUM    +   1
-           IF      IDX-D3              >   4
-               MOVE    4               TO  IDX-D3
-           END-IF
-           IF      IDX-D4              >   4
-               MOVE    4               TO  IDX-D4
-           END-IF
+      **** IF      IDX-D3              >   4
+      *        MOVE    4               TO  IDX-D3
+      *    END-IF
+      *    IF      IDX-D4              >   4
+      *        MOVE    4               TO  IDX-D4
+      **** END-IF
       *
            MOVE    SPA-NAI-DAY (IDY IDX-D3 IDX-D1)
                                        TO  WRK-DAY-S
@@ -7502,12 +7549,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    HZN-JYURRK-RENNUM   TO  IDX-D3
            COMPUTE IDX-D3              =   IDX-D3    +   1
            COMPUTE IDX-D4              =   WRK-RRK-RENNUM    +   1
-           IF      IDX-D3              >   4
-               MOVE    4               TO  IDX-D3
-           END-IF
-           IF      IDX-D4              >   4
-               MOVE    4               TO  IDX-D4
-           END-IF
+      **** IF      IDX-D3              >   4
+      *        MOVE    4               TO  IDX-D3
+      *    END-IF
+      *    IF      IDX-D4              >   4
+      *        MOVE    4               TO  IDX-D4
+      **** END-IF
       *
            MOVE    SPA-NAI-DAY (IDY IDX-D3 IDX-D1)
                                        TO  WRK-DAY-S
@@ -9676,11 +9723,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        47021-WEEKCNT-CHEK-EXT.
            EXIT.
+      *
       *****************************************************************
       *    受診履歴の剤変更処理
       *****************************************************************
        410122-RRK-ZAINUM-SEC           SECTION.
-      *
       *    対象履歴判定
            MOVE    ZERO                TO  WRK-D-IDX
            MOVE    ZERO                TO  IDX-RRK
@@ -9735,6 +9782,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-PERFORM
+      *TEST
+      *      DISPLAY "SPA-DAY-IDX:" SPA-DAY-IDX
+      *            ",IDX-RRK:"  IDX-RRK
+      *TEST
       *    対象がなかった時追加
            IF      IDX-RRK             =   ZERO
                IF      SPA-GNAI-DAY (1 SPA-DAY-IDX)    >   ZERO
@@ -9773,7 +9824,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *                                NOT =
       ****             SPA-NAI-DAY (IDX IDR4 SPA-DAY-IDX) )  AND
            PERFORM VARYING     IDR4    FROM    2   BY   1
-                   UNTIL       IDR4    >   4
+      ************ UNTIL       IDR4    >   4
+                   UNTIL       IDR4    >   10
                IF     (SPA-GNAI-DAY (IDR4 SPA-DAY-IDX)
                                            >   ZERO  )  OR
                       (SPA-NAI-DAY (IDX IDR4 SPA-DAY-IDX)
@@ -9790,25 +9842,25 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                            =   SPA-NAIGMN-SRYKA) AND
                               (SPA-RRK-HKNCOMBI(IDR5)
                                            =   SPA-GMN-HKNCOMBI )
-                           IF      SPA-RRK-RENNUM (IDR5)   >   3
-                               MOVE    4               TO  WRK-REN
-                           ELSE
+      *v4.8                IF      SPA-RRK-RENNUM (IDR5)   >   3
+      *                        MOVE    4               TO  WRK-REN
+      ****                 ELSE
                                MOVE    SPA-RRK-RENNUM (IDR5)
                                                        TO  WRK-REN
                                ADD     1               TO  WRK-REN
-                           END-IF
+      ****                 END-IF
       *                    剤番号存在判定
                            IF      WRK-REN             =   IDR4
                                MOVE    IDR5            TO  IDX-RRK2
                                PERFORM 41012202-JYURRK-ZAINUM-SEC
-                               IF     (WRK-IDR         =   ZERO )
-                                 AND  (IDR4            =   4    )
+      *v4.8                    IF     (WRK-IDR         =   ZERO )
+      *                          AND  (IDR4            =   4    )
       *                            連番が４で剤番号がない時、再度
-                                   IF      IDX-RRK3        =   ZERO
-                                       MOVE    IDR5        TO  IDX-RRK3
-                                   END-IF
-                                   MOVE    ZERO            TO  IDX-RRK2
-                               END-IF
+      *                            IF      IDX-RRK3        =   ZERO
+      *                                MOVE    IDR5        TO  IDX-RRK3
+      *                            END-IF
+      *                            MOVE    ZERO            TO  IDX-RRK2
+      ****                     END-IF
                            ELSE
                                IF      IDR6            =   ZERO
                                    MOVE    IDR5            TO  IDR6
@@ -9824,25 +9876,25 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *ver.4.7
       *            入院対象の受診履歴がない時
                    IF     (IDX-RRK2            =   ZERO )
-                      AND (WRK-D-RENNUM    NOT =   ZERO )
+      *?????          AND (WRK-D-RENNUM    NOT =   ZERO )
                        CONTINUE
                    ELSE
       *ver.4.7
       *
-                   IF      IDX-RRK2            =   ZERO
-                       IF      IDX-RRK3        =   ZERO
-                           MOVE    IDR6            TO  IDX-RRK2
-                       ELSE
-                           MOVE    IDX-RRK3        TO  IDX-RRK2
-                       END-IF
-                   END-IF
-                   IF      SPA-RRK-RENNUM (IDX-RRK2)   >   3
-                       MOVE    4               TO  WRK-REN
-                   ELSE
+      *            IF      IDX-RRK2            =   ZERO
+      *                IF      IDX-RRK3        =   ZERO
+      *                    MOVE    IDR6            TO  IDX-RRK2
+      *                ELSE
+      *                    MOVE    IDX-RRK3        TO  IDX-RRK2
+      *                END-IF
+      *            END-IF
+      *v4.8        IF      SPA-RRK-RENNUM (IDX-RRK2)   >   3
+      *                MOVE    4               TO  WRK-REN
+      ****         ELSE
                        MOVE    SPA-RRK-RENNUM (IDX-RRK2)
                                                TO  WRK-REN
                        ADD     1               TO  WRK-REN
-                   END-IF
+      *****        END-IF
                    MOVE    SPA-GNAI-DAY (IDR4 SPA-DAY-IDX)
                                                TO  WRK-DAY-S
                    IF      IDR4            NOT =   WRK-REN
@@ -9973,15 +10025,20 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
              AND  (SPA-NAI-NYUIN (SPA-DAY-IDX) NOT =   3 )
                MOVE    SPA-RRK-RENNUM   (IDR)  TO  IDD3
                ADD     1                       TO  IDD3
-               IF      IDD3                    >   4
-                   MOVE    4                   TO  IDD3
-               END-IF
-               MOVE    ZERO                TO  SPA-GNAI-DAY
-                                                     (2 SPA-DAY-IDX)
-               MOVE    ZERO                TO  SPA-GNAI-DAY
-                                                     (3 SPA-DAY-IDX)
-               MOVE    ZERO                TO  SPA-GNAI-DAY
-                                                     (4 SPA-DAY-IDX)
+      *v4.8    IF      IDD3                    >   4
+      *            MOVE    4                   TO  IDD3
+      *        END-IF
+      *        MOVE    ZERO                TO  SPA-GNAI-DAY
+      *                                              (2 SPA-DAY-IDX)
+      *        MOVE    ZERO                TO  SPA-GNAI-DAY
+      *                                              (3 SPA-DAY-IDX)
+      *        MOVE    ZERO                TO  SPA-GNAI-DAY
+      ********                                       (4 SPA-DAY-IDX)
+               PERFORM VARYING     IDXD    FROM    2   BY   1
+                       UNTIL      (IDXD    >   10  )
+                   MOVE    ZERO            TO  SPA-GNAI-DAY
+                                                  (IDXD SPA-DAY-IDX)
+               END-PERFORM
                MOVE    SPA-GNAI-DAY (1 SPA-DAY-IDX)
                                            TO  SPA-GNAI-DAY
                                                      (IDD3 SPA-DAY-IDX)
@@ -10781,6 +10838,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    会計連番
            MOVE    SPA-RRK-KAIKEI-RENNUM(IDX)
                                        TO  JYURRK-KAIKEI-RENNUM
+           IF      JYURRK-KAIKEI-RENNUM    =   ZERO
+               MOVE    1               TO  JYURRK-KAIKEI-RENNUM
+           END-IF
       *
       *****MOVE    "1"                 TO  JYURRK-LASTKBN
       *
@@ -11116,7 +11176,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO                TO  WRK-GRP-DENPNUM
            PERFORM
-                   UNTIL   FLG-SYUNOU      =   1
+                   UNTIL  (FLG-SYUNOU      =   1     )
+                       OR (SPA-ERRCD   NOT =   SPACE )
                IF     (SYU-GRP-DENPNUM     =   ZERO )  OR
                       (SYU-GRP-RENNUM      =   1    )
                    MOVE    ZERO                TO  WRK-GRP-DENPNUM
@@ -11198,7 +11259,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            PERFORM VARYING     IDX     FROM    2   BY  1
-                   UNTIL       IDX     >   IDX-SYU
+                   UNTIL      (IDX     >   IDX-SYU )
+                           OR (SPA-ERRCD   NOT =   SPACE )
       *
                MOVE    TBL-SYUNOU-REC(IDX) TO  SYUNOU-REC
                ADD     1                   TO  SPA-J025-MAX
@@ -11272,7 +11334,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-ERRCD           =   SPACE
                MOVE    0                   TO  FLG-ERR
            ELSE
-               MOVE    1                   TO  FLG-ERR
+      *H25.1
+               IF      SPA-ERRCD           =   "0070"
+      *            ＤＢ更新エラー
+                   MOVE    "2009"              TO  SPA-ERRCD
+                   GO      TO      490121-SYUNOU-SAIKEI-EXT
+               ELSE
+      *            再計算エラー
+                   MOVE    1                   TO  FLG-ERR
+               END-IF
            END-IF
       *
       *    受診履歴更新
@@ -13894,6 +13964,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2004"
                    MOVE    "削除エラーです。"
                                        TO  WRK-ERRMSG
+      *H25.1
+               WHEN    "2009"
+                   STRING  "収納明細の更新エラーです。"
+                           "再計算できませんでした。"
+                                       DELIMITED   BY  SIZE
+                                       INTO   WRK-ERRMSG
+                   END-STRING
+      *
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません"
                                        TO  WRK-ERRMSG

@@ -78,7 +78,7 @@
                            11  SPA-NAI-INPUTCHI        PIC  X(08)
                                                        OCCURS  5.
                        09  SPA-NAI-DAY-AREA.
-                           11  SPA-NAI-DAY-TBL     OCCURS   4.
+                           11  SPA-NAI-DAY-TBL     OCCURS   10.
                                13   SPA-NAI-DAY    PIC  9(03)
                                                        OCCURS   31.
                        09  SPA-NAI-RENNUM          PIC  9(02).

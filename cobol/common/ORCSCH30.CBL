@@ -600,9 +600,10 @@
                MOVE    JYURRK-ZAINUM (IDX-JYU) TO  WRK-ZAINUM
                COMPUTE IDX-REN         =   JYURRK-RENNUM
                                        +   1
-               IF      IDX-REN         >   4
-                   MOVE    4               TO  IDX-REN
-               END-IF
+      *ver.4.8
+      ******   IF      IDX-REN         >   4
+      *            MOVE    4               TO  IDX-REN
+      ******   END-IF
                PERFORM 2002-SRYACT-SYORI-SEC
            END-PERFORM
       *

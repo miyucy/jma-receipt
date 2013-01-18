@@ -26,6 +26,10 @@
       *  作成日付    作業者        記述
       *  09/02/12    NACL-太田     新規作成
       *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
+      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
@@ -47,6 +51,8 @@
        01  IDX-AREA.
            03  IDX1                PIC 9(05).
            03  IDX-DAY             PIC 9(05).
+      *
+           03  IDZ                 PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -260,8 +266,11 @@
       *
                PERFORM UNTIL ( FLG-SRYACCTS    NOT =   ZERO )
       *
-                   COMPUTE ACCT-DAY (ACCTS-RENNUM + 1 ACCTS-DATE-HI)
-                       =   ACCTS-DAY-CNT
+      ****         COMPUTE ACCT-DAY (ACCTS-RENNUM + 1 ACCTS-DATE-HI)
+      ****             =   ACCTS-DAY-CNT
+                   COMPUTE IDZ             =   ACCTS-RENNUM + 1
+                   MOVE    ACCTS-DAY-CNT   TO  ACCT-DAY
+                                                  (IDZ ACCTS-DATE-HI)
       *
                    COMPUTE ACCT-DAY (2 ACCTS-DATE-HI)
                        =   ACCT-DAY (2 ACCTS-DATE-HI)
@@ -381,7 +390,8 @@
       *
            MOVE    ZERO            TO   WRK-RENNUMMAX
            PERFORM VARYING IDX1    FROM 3   BY  1
-                   UNTIL ( IDX1    >    4 )
+      *!!          UNTIL ( IDX1    >    4 )
+                   UNTIL ( IDX1    >    10)
                     OR   ( MCP-RC  NOT  =   ZERO )
       *
                PERFORM VARYING IDX-DAY  FROM    1  BY  1

@@ -15,6 +15,30 @@ J022	{
 			state	int;
 			value	number(3);
 		};
+		DAY4	{
+			state	int;
+			value	number(3);
+		};
+		DAY5	{
+			state	int;
+			value	number(3);
+		};
+		DAY6	{
+			state	int;
+			value	number(3);
+		};
+		DAY7	{
+			state	int;
+			value	number(3);
+		};
+		DAY8	{
+			state	int;
+			value	number(3);
+		};
+		DAY9	{
+			state	int;
+			value	number(3);
+		};
 		MSG1	{
 			value	varchar(10);
 		};

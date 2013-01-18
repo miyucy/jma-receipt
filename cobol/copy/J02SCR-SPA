@@ -127,7 +127,7 @@
                        09  SPA-NAI-SRYYY           PIC 9(04).
                        09  SPA-NAI-SRYMM           PIC 9(02).
                    07  SPA-GNAI-DAY-G.
-                       09  SPA-GNAI-DAY-TBL        OCCURS  4.
+                       09  SPA-GNAI-DAY-TBL        OCCURS  10.
                            11  SPA-GNAI-DAY        PIC 9(03)
                                                    OCCURS   31.
                    07  SPA-NAI-MAX                 PIC 9(04).
@@ -285,21 +285,19 @@
       *
       *    回数入力画面用
            03  SPA-J022-AREA.
-               05  SPA-NAI-DAYCHK-G.
-                   07  SPA-NAI-DAYCHK-TBL      OCCURS  31.
-                       09  SPA-NAI-DAYCHK      PIC 9(01).
-                       09  SPA-NAI-DAY1        PIC 9(03).
-                       09  SPA-NAI-DAY2        PIC 9(03).
-                       09  SPA-NAI-DAY3        PIC 9(03).
+               05  SPA-J022NAI-DAYCHK-G.
+                   07  SPA-J022NAI-DAYCHK-TBL      OCCURS  31.
+                       09  SPA-J022NAI-DAYCHK      PIC 9(01).
+                       09  SPA-J022NAI-DAY-G.
+                           11  SPA-J022NAI-DAY         PIC 9(03)
+                                                   OCCURS   9.
                05  SPA-HENNYMD             PIC X(22).
                05  SPA-J022-END            PIC 9(01).
                05  SPA-J022-CUR            PIC 9(02).
                05  SPA-J022-IDX            PIC 9(04).
                05  SPA-J022-MAX            PIC 9(04).
                05  SPA-J022-GMN.
-                   07  SPA-J022-DAY1           PIC 9(03).
-                   07  SPA-J022-DAY2           PIC 9(03).
-                   07  SPA-J022-DAY3           PIC 9(03).
+                   07  SPA-J022-DAY            PIC 9(03)   OCCURS   9.
       *
       *    収納確認画面用
            03  SPA-J025-AREA.

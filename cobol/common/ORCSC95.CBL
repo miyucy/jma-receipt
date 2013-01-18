@@ -60,6 +60,7 @@
       *  04.07.00    NACL=多々納  11/09/08  アトピー性皮膚炎と他病名対応
       *  04.07.00    NACL=多々納  11/10/XX  同日再入院対応
       *  04.07.00    NACL=多々納  11/10/30  API検索対応
+      *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
       *****************************************************************
       *
       *
@@ -178,6 +179,8 @@
            03  IDX-P               PIC 9(04).
       *
            03  IDY-TBL             PIC 9(04).
+      *
+           03  IDX-AC              PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -4661,23 +4664,42 @@
                MOVE    WRK-RRK-SRYYMD(7:2)     TO  IDX-STR
       *        診療連番のある時、連番の回数
       ******** EVALUATE    LNK-SC95-RENNUM 
+      *!!!!
+      *    診療回数テーブル１０対応
+      *        EVALUATE    WRK-RENNUM
+      *            WHEN    ZERO
+      *            同日再診の最終回セット
+      *                EVALUATE    TRUE
+      *                  WHEN    ACCT-DAY (4 IDX-STR)    >   ZERO
+      *                    MOVE    ACCT-DAY(4 IDX-STR) TO  WRK-ZAIKAISU
+      *                  WHEN    ACCT-DAY (3 IDX-STR)    >   ZERO
+      *                    MOVE    ACCT-DAY(3 IDX-STR) TO  WRK-ZAIKAISU
+      *                  WHEN    ACCT-DAY (2 IDX-STR)    >   ZERO
+      *                    MOVE    ACCT-DAY(2 IDX-STR) TO  WRK-ZAIKAISU
+      *              END-EVALUATE
+      *            WHEN    1
+      *                MOVE    ACCT-DAY(2 IDX-STR) TO  WRK-ZAIKAISU
+      *            WHEN    2
+      *                MOVE    ACCT-DAY(3 IDX-STR) TO  WRK-ZAIKAISU
+      *            WHEN    OTHER
+      *                MOVE    ACCT-DAY(4 IDX-STR) TO  WRK-ZAIKAISU
+      *        END-EVALUATE
+      *ver.4.8
                EVALUATE    WRK-RENNUM
                    WHEN    ZERO
       *            同日再診の最終回セット
-                       EVALUATE    TRUE
-                         WHEN    ACCT-DAY (4 IDX-STR)    >   ZERO
-                           MOVE    ACCT-DAY(4 IDX-STR) TO  WRK-ZAIKAISU
-                         WHEN    ACCT-DAY (3 IDX-STR)    >   ZERO
-                           MOVE    ACCT-DAY(3 IDX-STR) TO  WRK-ZAIKAISU
-                         WHEN    ACCT-DAY (2 IDX-STR)    >   ZERO
-                           MOVE    ACCT-DAY(2 IDX-STR) TO  WRK-ZAIKAISU
-                     END-EVALUATE
-                   WHEN    1
-                       MOVE    ACCT-DAY(2 IDX-STR) TO  WRK-ZAIKAISU
-                   WHEN    2
-                       MOVE    ACCT-DAY(3 IDX-STR) TO  WRK-ZAIKAISU
+                       PERFORM VARYING    IDX-AC   FROM    10  BY  -1
+                               UNTIL     (IDX-AC   <=  1   )
+                           IF      ACCT-DAY (IDX-AC IDX-STR)   >   ZERO
+                               MOVE    ACCT-DAY(IDX-AC IDX-STR)
+                                                   TO  WRK-ZAIKAISU
+                           END-IF
+                       END-PERFORM
                    WHEN    OTHER
-                       MOVE    ACCT-DAY(4 IDX-STR) TO  WRK-ZAIKAISU
+      *            連番＋１
+                       COMPUTE IDX-AC          =   WRK-RENNUM   +  1
+                       MOVE    ACCT-DAY(IDX-AC IDX-STR)
+                                                   TO  WRK-ZAIKAISU
                END-EVALUATE
            END-IF
       *

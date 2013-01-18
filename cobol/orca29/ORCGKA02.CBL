@@ -1499,14 +1499,18 @@
            IF      FLG-SRYACCT         =   ZERO
       *    回数決定
       *        同日再診の最終回セット
-               EVALUATE    JYURRK-RENNUM
-                   WHEN    1
-                       MOVE    ACCT-DAY (2 IDX-S2)    TO  WRK-ZAIKAISU
-                   WHEN    2
-                       MOVE    ACCT-DAY (3 IDX-S2)    TO  WRK-ZAIKAISU
-                   WHEN    OTHER
-                       MOVE    ACCT-DAY (4 IDX-S2)    TO  WRK-ZAIKAISU
-               END-EVALUATE
+      *ver.4.8
+      *        EVALUATE    JYURRK-RENNUM
+      *            WHEN    1
+      *                MOVE    ACCT-DAY (2 IDX-S2)    TO  WRK-ZAIKAISU
+      *            WHEN    2
+      *                MOVE    ACCT-DAY (3 IDX-S2)    TO  WRK-ZAIKAISU
+      *            WHEN    OTHER
+      *                MOVE    ACCT-DAY (4 IDX-S2)    TO  WRK-ZAIKAISU
+      ****     END-EVALUATE
+      *
+               MOVE    ACCT-DAY (JYURRK-RENNUM + 1 IDX-S2)
+                                               TO  WRK-ZAIKAISU
       *
                MOVE    ACCT-DAY-TBL (1)    TO  WRK-DAY-TBL
            END-IF
@@ -4413,6 +4417,7 @@
            IF      ORCHCN62-ZAI-MAX    =   ZERO
                MOVE    "0101"              TO  SPA-ERRCD
            END-IF
+      *
       *
            .
        41041-ORCHC62-HENSYU-EXT.

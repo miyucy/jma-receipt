@@ -35,6 +35,7 @@
       * 03.05.00     NACL-Â¿¡¹Ç¼  07/05/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       * 04.02.00     NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµ
       * 04.06.00     NACL-Â¿¡¹Ç¼  10/09/06  ¼«ÈñÊÝ¸±Æþ±¡ÃæÆþÎÏÂÐ±þ
+      * 04.08.00     NACL-Â¿¡¹Ç¼  13/01/15  ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë£±£°ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -98,6 +99,8 @@
            03  IDX4                PIC 9(02).
       *
            03  IDX-N               PIC 9(02).
+      *
+           03  IDZ                 PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -2076,10 +2079,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    JYURRK-SRYYMD(7:2)  TO  IDX2
                COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
                                            -   ACCT-DAY (1 IDX2)
-               MOVE    ZERO                TO  ACCT-DAY (1 IDX2)
-               MOVE    ZERO                TO  ACCT-DAY (2 IDX2)
-               MOVE    ZERO                TO  ACCT-DAY (3 IDX2)
-               MOVE    ZERO                TO  ACCT-DAY (4 IDX2)
+               PERFORM VARYING    IDZ      FROM    1   BY  1
+                       UNTIL      IDZ      >   10
+                   MOVE    ZERO            TO  ACCT-DAY (IDZ IDX2)
+               END-PERFORM
+      ***      MOVE    ZERO                TO  ACCT-DAY (1 IDX2)
+      *        MOVE    ZERO                TO  ACCT-DAY (2 IDX2)
+      *        MOVE    ZERO                TO  ACCT-DAY (3 IDX2)
+      ****     MOVE    ZERO                TO  ACCT-DAY (4 IDX2)
                IF      ACCT-ZAIKAISU       =   ZERO
                    PERFORM 30032114-SRYACCT-DELETE-SEC
                ELSE
@@ -2366,10 +2373,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       (IDX3            <=  SPA-J021-DAY2 )
                    ADD     ACCT-DAY (1 IDX3)   TO  ACCT-ZAIKAISU
                ELSE
-                   MOVE    ZERO        TO  ACCT-DAY (1 IDX3)
-                   MOVE    ZERO        TO  ACCT-DAY (2 IDX3)
-                   MOVE    ZERO        TO  ACCT-DAY (3 IDX3)
-                   MOVE    ZERO        TO  ACCT-DAY (4 IDX3)
+                   PERFORM VARYING    IDZ      FROM    1   BY  1
+                           UNTIL      IDZ      >   10
+                       MOVE    ZERO        TO  ACCT-DAY (IDZ IDX3)
+                   END-PERFORM
+      **           MOVE    ZERO        TO  ACCT-DAY (1 IDX3)
+      *            MOVE    ZERO        TO  ACCT-DAY (2 IDX3)
+      *            MOVE    ZERO        TO  ACCT-DAY (3 IDX3)
+      ***          MOVE    ZERO        TO  ACCT-DAY (4 IDX3)
                END-IF
              END-PERFORM
            ELSE
@@ -2379,10 +2390,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      IDX3            =   IDX2
                    ADD     ACCT-DAY (1 IDX2)   TO  ACCT-ZAIKAISU
                ELSE
-                   MOVE    ZERO        TO  ACCT-DAY (1 IDX3)
-                   MOVE    ZERO        TO  ACCT-DAY (2 IDX3)
-                   MOVE    ZERO        TO  ACCT-DAY (3 IDX3)
-                   MOVE    ZERO        TO  ACCT-DAY (4 IDX3)
+                   PERFORM VARYING    IDZ      FROM    1   BY  1
+                           UNTIL      IDZ      >   10
+                       MOVE    ZERO        TO  ACCT-DAY (IDZ IDX3)
+                   END-PERFORM
+      **           MOVE    ZERO        TO  ACCT-DAY (1 IDX3)
+      *            MOVE    ZERO        TO  ACCT-DAY (2 IDX3)
+      *            MOVE    ZERO        TO  ACCT-DAY (3 IDX3)
+      ***          MOVE    ZERO        TO  ACCT-DAY (4 IDX3)
                END-IF
              END-PERFORM
            END-IF
@@ -2639,25 +2654,35 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        UNTIL       IDX3    >   31
                    IF     (IDX3            >=  SPA-J021-DAY1 ) AND
                           (IDX3            <=  SPA-J021-DAY2 )
-                       ADD     HZN-ACCT-DAY (1 IDX3)
-                                               TO  ACCT-DAY (1 IDX3)
-                       ADD     HZN-ACCT-DAY (2 IDX3)
-                                               TO  ACCT-DAY (2 IDX3)
-                       ADD     HZN-ACCT-DAY (3 IDX3)
-                                               TO  ACCT-DAY (3 IDX3)
-                       ADD     HZN-ACCT-DAY (4 IDX3)
-                                               TO  ACCT-DAY (4 IDX3)
+      **v.4.8          ADD     HZN-ACCT-DAY (1 IDX3)
+      *                                        TO  ACCT-DAY (1 IDX3)
+      *                ADD     HZN-ACCT-DAY (2 IDX3)
+      *                                        TO  ACCT-DAY (2 IDX3)
+      *                ADD     HZN-ACCT-DAY (3 IDX3)
+      *                                        TO  ACCT-DAY (3 IDX3)
+      *                ADD     HZN-ACCT-DAY (4 IDX3)
+      *****                                    TO  ACCT-DAY (4 IDX3)
                        ADD     HZN-ACCT-DAY (1 IDX3)
                                                TO  ACCT-ZAIKAISU
+                       PERFORM VARYING    IDZ      FROM    1   BY  1
+                               UNTIL      IDZ      >   10
+                           ADD     HZN-ACCT-DAY (IDZ IDX3)
+                                               TO  ACCT-DAY (IDZ IDX3)
+                       END-PERFORM
                    END-IF
                END-PERFORM
            ELSE
                MOVE    JYURRK-SRYYMD(7:2)  TO  IDX2
-               ADD     HZN-ACCT-DAY (1 IDX2)   TO  ACCT-DAY (1 IDX2)
-               ADD     HZN-ACCT-DAY (2 IDX2)   TO  ACCT-DAY (2 IDX2)
-               ADD     HZN-ACCT-DAY (3 IDX2)   TO  ACCT-DAY (3 IDX2)
-               ADD     HZN-ACCT-DAY (4 IDX2)   TO  ACCT-DAY (4 IDX2)
+      **v4.8   ADD     HZN-ACCT-DAY (1 IDX2)   TO  ACCT-DAY (1 IDX2)
+      *        ADD     HZN-ACCT-DAY (2 IDX2)   TO  ACCT-DAY (2 IDX2)
+      *        ADD     HZN-ACCT-DAY (3 IDX2)   TO  ACCT-DAY (3 IDX2)
+      ****     ADD     HZN-ACCT-DAY (4 IDX2)   TO  ACCT-DAY (4 IDX2)
                ADD     HZN-ACCT-DAY (1 IDX2)   TO  ACCT-ZAIKAISU
+               PERFORM VARYING    IDZ      FROM    1   BY  1
+                       UNTIL      IDZ      >   10
+                   ADD     HZN-ACCT-DAY (IDZ IDX2)
+                                              TO  ACCT-DAY (IDZ IDX2)
+               END-PERFORM
            END-IF
       *
            MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
@@ -2957,10 +2982,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                              (IDX2            <=  SPA-J021-DAY2 )
                            COMPUTE ACCT-ZAIKAISU   =   ACCT-ZAIKAISU
                                                    -   ACCT-DAY (1 IDX2)
-                           MOVE    ZERO            TO  ACCT-DAY (1 IDX2)
-                           MOVE    ZERO            TO  ACCT-DAY (2 IDX2)
-                           MOVE    ZERO            TO  ACCT-DAY (3 IDX2)
-                           MOVE    ZERO            TO  ACCT-DAY (4 IDX2)
+      **v.4.8              MOVE    ZERO            TO  ACCT-DAY (1 IDX2)
+      *                    MOVE    ZERO            TO  ACCT-DAY (2 IDX2)
+      *                    MOVE    ZERO            TO  ACCT-DAY (3 IDX2)
+      ****                 MOVE    ZERO            TO  ACCT-DAY (4 IDX2)
+                           PERFORM VARYING    IDZ      FROM    1   BY  1
+                                   UNTIL      IDZ      >   10
+                               MOVE    ZERO            TO  ACCT-DAY
+                                                            (IDZ IDX2)
+                           END-PERFORM
                        END-IF
                    END-IF
                END-PERFORM

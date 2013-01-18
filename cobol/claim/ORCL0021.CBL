@@ -45,6 +45,7 @@
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/01/XX  ¼£¸³¡¦³ÈÄ¥´Á»úÂÐ±þ
       *  04.06.00    NACL-Â¿¡¹Ç¼  10/11/16  ¥Þ¥ëÄ¹ÉéÃ´³Û¤òÊÝ¸±ÉéÃ´³ÛÈ¿±Ç
+      *  04.08.00    NACL-Â¿¡¹Ç¼  13/01/15  ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë£±£°ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -629,9 +630,10 @@
                    MOVE    JYURRK-ZAINUM (IDX-JYU) TO  WRK-ZAINUM
                    COMPUTE IDX-REN         =   JYURRK-RENNUM
                                            +   1
-                   IF      IDX-REN         >   4
-                       MOVE    4               TO  IDX-REN
-                   END-IF
+      *ver.4.8
+      ****         IF      IDX-REN         >   4
+      *                MOVE    4               TO  IDX-REN
+      *****        END-IF
                    PERFORM 2002-SRYACT-SYORI-SEC
                END-PERFORM
              END-IF

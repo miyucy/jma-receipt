@@ -2251,13 +2251,14 @@
                PERFORM 41022-JYURRK-NUM-CHK-SEC
            END-IF
       *    受診履歴が３で、通常の時、警告
-           IF     (SPA-ERRCD           =   SPACE )
-              AND (SPA-KIDCD           =   SPACE )
-               IF     (SPA-RRK-LSTYMD       =   SPA-SRYYMD )  AND
-                      (WRK-SC95-LAST-RENNUM    >=  3      )
-                   MOVE    "0106"          TO  SPA-KIDCD
-               END-IF
-           END-IF
+      *ver.4.8 から解除
+      *    IF     (SPA-ERRCD           =   SPACE )
+      *       AND (SPA-KIDCD           =   SPACE )
+      *        IF     (SPA-RRK-LSTYMD       =   SPA-SRYYMD )  AND
+      *               (WRK-SC95-LAST-RENNUM    >=  3      )
+      *            MOVE    "0106"          TO  SPA-KIDCD
+      *        END-IF
+      ***  END-IF
       *
       *    画面用スパ編集処理
            PERFORM                 310-SPA-GMNSET-SEC
@@ -5280,13 +5281,14 @@
            END-IF
       *!!
       *    受診履歴が３で、通常の時、警告
-           IF     (SPA-ERRCD           =   SPACE )
-              AND (SPA-KIDCD           =   SPACE )
-               IF     (SPA-RRK-LSTYMD       =   SPA-SRYYMD )  AND
-                      (WRK-SC95-LAST-RENNUM    >=  3      )
-                   MOVE    "0106"          TO  SPA-KIDCD
-               END-IF
-           END-IF
+      *ver.4.8 から解除
+      *    IF     (SPA-ERRCD           =   SPACE )
+      *       AND (SPA-KIDCD           =   SPACE )
+      *        IF     (SPA-RRK-LSTYMD       =   SPA-SRYYMD )  AND
+      *               (WRK-SC95-LAST-RENNUM    >=  3      )
+      *            MOVE    "0106"          TO  SPA-KIDCD
+      *        END-IF
+      **** END-IF
       *
            IF     (SPA-ERRCD           =   SPACE )
               AND (SPA-KIDCD           =   SPACE )
@@ -6104,11 +6106,12 @@
                GO      TO      41013-SRYKA-CHANGE02-EXT
            END-IF
       *    受診履歴が３で、通常の時、警告
-           IF     (SPA-RRK-LSTYMD          =   SPA-SRYYMD )  AND
-                  (LNK-SC95-LAST-RENNUM    >=  3      )
-               MOVE    "0106"          TO  SPA-KIDCD
-               GO      TO      41013-SRYKA-CHANGE02-EXT
-           END-IF
+      *ver.4.8 から解除
+      *    IF     (SPA-RRK-LSTYMD          =   SPA-SRYYMD )  AND
+      *           (LNK-SC95-LAST-RENNUM    >=  3      )
+      *        MOVE    "0106"          TO  SPA-KIDCD
+      *        GO      TO      41013-SRYKA-CHANGE02-EXT
+      **** END-IF
       *    保険組合編集
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
            PERFORM 3101-HKNCOMBI-HEN-SEC

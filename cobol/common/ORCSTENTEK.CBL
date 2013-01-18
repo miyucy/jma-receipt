@@ -92,6 +92,7 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDZ                 PIC 9(04).
       *
            03  IDXA                PIC 9(04).
            03  IDXA2               PIC 9(04).
@@ -2345,10 +2346,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
                                                -   ACCT-DAY
                                                        (1  IDX-D)
-                   MOVE    ZERO                TO  ACCT-DAY (1 IDX-D)
-                   MOVE    ZERO                TO  ACCT-DAY (2 IDX-D)
-                   MOVE    ZERO                TO  ACCT-DAY (3 IDX-D)
-                   MOVE    ZERO                TO  ACCT-DAY (4 IDX-D)
+      *v48         MOVE    ZERO                TO  ACCT-DAY (1 IDX-D)
+      *            MOVE    ZERO                TO  ACCT-DAY (2 IDX-D)
+      *            MOVE    ZERO                TO  ACCT-DAY (3 IDX-D)
+      *            MOVE    ZERO                TO  ACCT-DAY (4 IDX-D)
+                   PERFORM VARYING    IDZ      FROM    1   BY  1
+                           UNTIL      IDZ      >   10
+                       MOVE    ZERO            TO  ACCT-DAY (IDZ IDX-D)
+                   END-PERFORM
                END-IF
            END-PERFORM
            .

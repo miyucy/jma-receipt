@@ -38,6 +38,7 @@
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *  04.04.00    NACL-竹田　  09/03/04  外来まとめ対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値入力・多剤投与他対応
+      *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
       *****************************************************************
       *
       *
@@ -139,6 +140,7 @@
            03  IDX-1               PIC 9(04).
            03  IDX-2               PIC 9(02).
            03  IDX-3               PIC 9(02).
+           03  IDX-A               PIC 9(04).
       *
            03  IDH                 PIC 9(04).
            03  IDH2                PIC 9(04).
@@ -2130,22 +2132,26 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        OR (SPA-ERRCD       NOT =   SPACE )
       *
                    MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
-                   EVALUATE    JYURRK-RENNUM
-                       WHEN    1
-                           MOVE    2               TO  IDX-1
-                       WHEN    2
-                           MOVE    3               TO  IDX-1
-                       WHEN    OTHER
-                           MOVE    4               TO  IDX-1
-                   END-EVALUATE
-                   EVALUATE    WRK-MAE-RENNUM
-                       WHEN    1
-                           MOVE    2               TO  IDX-3
-                       WHEN    2
-                           MOVE    3               TO  IDX-3
-                       WHEN    OTHER
-                           MOVE    4               TO  IDX-3
-                   END-EVALUATE
+      *********    EVALUATE    JYURRK-RENNUM
+      *                WHEN    1
+      *                    MOVE    2               TO  IDX-1
+      *                WHEN    2
+      *                    MOVE    3               TO  IDX-1
+      *                WHEN    OTHER
+      *                    MOVE    4               TO  IDX-1
+      *            END-EVALUATE
+      *            EVALUATE    WRK-MAE-RENNUM
+      *                WHEN    1
+      *                    MOVE    2               TO  IDX-3
+      *                WHEN    2
+      *                    MOVE    3               TO  IDX-3
+      *                WHEN    OTHER
+      *                    MOVE    4               TO  IDX-3
+      *******      END-EVALUATE
+      *ver.4.8
+      *            連番＋１　を会計テーブル位置とする
+                   COMPUTE IDX-1               =   JYURRK-RENNUM   +   1
+                   COMPUTE IDX-3               =   WRK-MAE-RENNUM  +   1
       *
       *            剤回数　変更
                    ADD     ACCT-DAY (IDX-3 IDX-2)
@@ -2226,14 +2232,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                         OR (SPA-ERRCD      NOT =   SPACE )
       *
                    MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
-                   EVALUATE    JYURRK-RENNUM
-                       WHEN    1
-                           MOVE    2               TO  IDX-1
-                       WHEN    2
-                           MOVE    3               TO  IDX-1
-                       WHEN    OTHER
-                           MOVE    4               TO  IDX-1
-                   END-EVALUATE
+      ******       EVALUATE    JYURRK-RENNUM
+      *                WHEN    1
+      *                    MOVE    2               TO  IDX-1
+      *                WHEN    2
+      *                    MOVE    3               TO  IDX-1
+      *                WHEN    OTHER
+      *                    MOVE    4               TO  IDX-1
+      ******       END-EVALUATE
+      *ver.4.8
+                   COMPUTE IDX-1       =   JYURRK-RENNUM   +   1
       *
       *            算定履歴の削除処理
                    MOVE    ACCT-DAY (IDX-1 IDX-2)  TO  WRK-KAISU
@@ -3288,9 +3296,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            COMPUTE IDX1                =   WRK-JYURRK-RENNUM
                                        +   1
-           IF      IDX1                >   4
-               MOVE    4                   TO  IDX1
-           END-IF
+      *ver.4.8
+      **** IF      IDX1                >   4
+      *        MOVE    4                   TO  IDX1
+      **** END-IF
            ADD     WRK-SRYKAISUKEI     TO  ACCT-DAY  (IDX1 IDX2)
            .
       *
@@ -4700,22 +4709,26 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        OR  (SPA-ERRCD      NOT =   SPACE)
       *
                    MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
-                   EVALUATE    JYURRK-RENNUM
-                       WHEN    1
-                           MOVE    2               TO  IDX-1
-                       WHEN    2
-                           MOVE    3               TO  IDX-1
-                       WHEN    OTHER
-                           MOVE    4               TO  IDX-1
-                   END-EVALUATE
-                       EVALUATE    WRK-RENNUM-KEY
-                           WHEN    1
-                               MOVE    2               TO  IDX-3
-                           WHEN    2
-                               MOVE    3               TO  IDX-3
-                           WHEN    OTHER
-                               MOVE    4               TO  IDX-3
-                       END-EVALUATE
+      *****        EVALUATE    JYURRK-RENNUM
+      *                WHEN    1
+      *                    MOVE    2               TO  IDX-1
+      *                WHEN    2
+      *                    MOVE    3               TO  IDX-1
+      *                WHEN    OTHER
+      *                    MOVE    4               TO  IDX-1
+      *            END-EVALUATE
+      *                EVALUATE    WRK-RENNUM-KEY
+      *                    WHEN    1
+      *                        MOVE    2               TO  IDX-3
+      *                    WHEN    2
+      *                        MOVE    3               TO  IDX-3
+      *                    WHEN    OTHER
+      *                        MOVE    4               TO  IDX-3
+      *****            END-EVALUATE
+      *ver.4.8
+                       COMPUTE IDX-1           =   JYURRK-RENNUM   +   1
+                       COMPUTE IDX-3           =   WRK-RENNUM-KEY  +   1
+      *
       *                剤回数　変更
                        ADD     ACCT-DAY (IDX-3 IDX-2)
                                               TO  ACCT-DAY (IDX-1 IDX-2)

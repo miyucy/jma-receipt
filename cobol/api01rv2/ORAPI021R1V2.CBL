@@ -28,6 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *
+      * 04.08.00     NACL-Â¿¡¹Ç¼  13/01/11  ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë£±£°ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -82,7 +83,7 @@
            03  IDXM                PIC 9(02).
       *    ¿ÇÎÅ¹Ô°ÙÍÑ
            03  IDX-ACT             PIC 9(02).
-           03  IDX-REN             PIC 9(01).
+           03  IDX-REN             PIC 9(04).
            03  IDXA                PIC 9(04).
            03  IDX-S               PIC 9(04).
            03  IDX-T               PIC 9(04).
@@ -1260,9 +1261,10 @@
       *        ºÞËèÊÔ½¸
                COMPUTE IDX-REN         =   JYURRK-RENNUM
                                        +   1
-               IF      IDX-REN         >   4
-                   MOVE    4               TO  IDX-REN
-               END-IF
+      *v4.8
+      *        IF      IDX-REN         >   4
+      *            MOVE    4               TO  IDX-REN
+      *******  END-IF
                PERFORM VARYING     IDX-J   FROM    1   BY  1
                        UNTIL      (IDX-J       >   15      )
                                OR (WRK-ERRCD   NOT =   SPACE)

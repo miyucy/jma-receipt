@@ -5227,9 +5227,10 @@
       *
            COMPUTE IDX-Y3              =   JYURRK-RENNUM
                                        +   1
-           IF      IDX-Y3              >   4
-               MOVE    4               TO  IDX-Y3
-           END-IF
+      *ver.4.8
+      **** IF      IDX-Y3              >   4
+      *        MOVE    4               TO  IDX-Y3
+      **** END-IF
            MOVE    ZERO                TO  WRK-ACCT-KAISU
            MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
            MOVE    ACCT-DAY (IDX-Y3 IDX-Y2)    TO  WRK-ACCT-KAISU

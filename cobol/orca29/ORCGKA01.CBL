@@ -34,6 +34,7 @@
       *  04.05.00    NACL-多々納  09/07/22  薬情に在宅・コメント対応
       *  04.05.00    NACL-多々納  09/10/XX  換算値入力対応
       *  04.07.00    NACL-多々納  12/01/06  クライアント印刷対応
+      *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1436,14 +1437,18 @@
            IF      FLG-SRYACCT         =   ZERO
       *    回数決定
       *        同日再診の最終回セット
-               EVALUATE    JYURRK-RENNUM
-                   WHEN    1
-                       MOVE    ACCT-DAY (2 IDX-S2)    TO  WRK-ZAIKAISU
-                   WHEN    2
-                       MOVE    ACCT-DAY (3 IDX-S2)    TO  WRK-ZAIKAISU
-                   WHEN    OTHER
-                       MOVE    ACCT-DAY (4 IDX-S2)    TO  WRK-ZAIKAISU
-               END-EVALUATE
+      *ver.4.8
+      *        EVALUATE    JYURRK-RENNUM
+      *            WHEN    1
+      *                MOVE    ACCT-DAY (2 IDX-S2)    TO  WRK-ZAIKAISU
+      *            WHEN    2
+      *                MOVE    ACCT-DAY (3 IDX-S2)    TO  WRK-ZAIKAISU
+      *            WHEN    OTHER
+      *                MOVE    ACCT-DAY (4 IDX-S2)    TO  WRK-ZAIKAISU
+      *******  END-EVALUATE
+      *
+               MOVE    ACCT-DAY (JYURRK-RENNUM + 1 IDX-S2)
+                                               TO  WRK-ZAIKAISU
            END-IF
       *
            INITIALIZE                  WKSRYACT-REC

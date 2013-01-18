@@ -1051,4 +1051,38 @@ path	key48 	{
 		;
 	};
 };
+path	key50	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key50_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND     RENNUM     >=  4
+			ORDER   BY        PTID,
+				          NYUGAIKBN,
+					  SRYKA,
+					  SRYYMD,
+			                  RENNUM,
+			                  DOUJI_RENNUM,
+			                  EDANUM
+		;
+	};
+};
+path	key51	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key51_csr CURSOR FOR
+		SELECT *
+		FROM tbl_jyurrk
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   SRYKA       =   :SRYKA
+			AND   SRYYMD      =   :SRYYMD
+			AND   RENNUM      =   :RENNUM
+			ORDER   BY        DOUJI_RENNUM,
+			                  EDANUM
+		;
+	};
+};
+
 

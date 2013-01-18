@@ -78,6 +78,7 @@
       * 04.06.00     NACL-Â¿¡¹Ç¼  12/04/10  °ìÈÌÌ¾£±£°£°Ê¸»úÂÐ±þ
       *                                     ´ÞÎÌµ¬³ÊÊÑ¹¹ÉÔ²ÄÅù¤ÎÂÐ±þ
       * 04.06.00     NACL-Â¿¡¹Ç¼  12/09/27  °å»Õ¥³¡¼¥ÉÅùÊÔ½¸ÂÐ±þ
+      * 04.08.00     NACL-Â¿¡¹Ç¼  13/01/11  ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë£±£°ÂÐ±þ
       *****************************************************************
       *
       *
@@ -2317,9 +2318,10 @@
                MOVE    JYURRK-ZAINUM (IDX-JYU) TO  WRK-ZAINUM
                COMPUTE IDX-REN         =   JYURRK-RENNUM
                                        +   1
-               IF      IDX-REN         >   4
-                   MOVE    4               TO  IDX-REN
-               END-IF
+      *ver.4.8
+      *        IF      IDX-REN         >   4
+      *            MOVE    4               TO  IDX-REN
+      ******   END-IF
                PERFORM 2002-SRYACT-SYORI-SEC
            END-PERFORM
       *

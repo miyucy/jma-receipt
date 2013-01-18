@@ -1865,14 +1865,17 @@
            IF      FLG-SRYACCT         =   ZERO
       *    回数決定
       *        同日再診の最終回セット
-               EVALUATE    SPA-SEL-RENNUM
-                   WHEN    1
-                       MOVE    ACCT-DAY (2 IDX-STR)    TO  WRK-ZAIKAISU
-                   WHEN    2
-                       MOVE    ACCT-DAY (3 IDX-STR)    TO  WRK-ZAIKAISU
-                   WHEN    OTHER
-                       MOVE    ACCT-DAY (4 IDX-STR)    TO  WRK-ZAIKAISU
-               END-EVALUATE
+      *ver.4.8
+      *        EVALUATE    SPA-SEL-RENNUM
+      *            WHEN    1
+      *                MOVE    ACCT-DAY (2 IDX-STR)    TO  WRK-ZAIKAISU
+      *            WHEN    2
+      *                MOVE    ACCT-DAY (3 IDX-STR)    TO  WRK-ZAIKAISU
+      *            WHEN    OTHER
+      *                MOVE    ACCT-DAY (4 IDX-STR)    TO  WRK-ZAIKAISU
+      ******   END-EVALUATE
+               MOVE    ACCT-DAY (SPA-SEL-RENNUM + 1  IDX-STR)
+                                                   TO  WRK-ZAIKAISU
            END-IF
       *
            INITIALIZE                  WKSRYACT-REC

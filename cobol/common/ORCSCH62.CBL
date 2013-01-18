@@ -32,6 +32,7 @@
       *  04.05.00    NACL-多々納  09/10/XX  換算値数量対応
       *  04.06.00    NACL-多々納  11/02/22  用法コードコメント対応
       *  04.07.00    NACL-多々納  12/09/27  商品コード対応
+      *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
       *****************************************************************
       *
       *
@@ -747,9 +748,10 @@
                MOVE    JYURRK-ZAINUM (IDX-JYU) TO  WRK-ZAINUM
                COMPUTE IDX-REN         =   JYURRK-RENNUM
                                        +   1
-               IF      IDX-REN         >   4
-                   MOVE    4               TO  IDX-REN
-               END-IF
+      *ver.4.8
+      ***      IF      IDX-REN         >   4
+      *            MOVE    4               TO  IDX-REN
+      ****     END-IF
                PERFORM 2002-SRYACT-SYORI-SEC
            END-PERFORM
       *

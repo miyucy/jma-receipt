@@ -59,6 +59,7 @@
       *  04.06.02    NACL-ÌçÏÆ    10/11/08  ¼çÊÝ¸±¡Ü¥Þ¥ëÄ¹¤ÎÀÁµáÂÐ±þ
       *  04.06.03    NACL-ÌçÏÆ    10/12/06  Ï«ºÒ¡¦¼«ÇåÀÕ¤Î¶â³Û¥Õ¥ê¡¼ÆþÎÏ
       *                                     ¥³¡¼¥ÉÂÐ±þ
+      *  04.08.00    NACL-Â¿¡¹Ç¼  13/01/18  ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë£±£°ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -557,9 +558,10 @@
       *H24.5
                     IF   FLG-JYURRK   =    ZERO
                         COMPUTE   SAI-IDX  =  JYURRK-RENNUM  +  1
-                        IF    SAI-IDX   >   4
-                            MOVE      4         TO  SAI-IDX
-                        END-IF
+      *ver.4.8
+      **               IF    SAI-IDX   >   4
+      **                    MOVE      4         TO  SAI-IDX
+      **                END-IF
                         IF    JYURRK-SRYKBN1 = "01"
                             MOVE   "1"   TO   LNK-S01-SINSATUFLG
                         END-IF
