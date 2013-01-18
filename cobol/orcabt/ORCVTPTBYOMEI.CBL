@@ -52,6 +52,13 @@
                                    ASS-CSV
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-CSV.
+      *    ＩＳＡＭファイル
+           SELECT  ISAM-FILE       ASSIGN
+                                   ASS-ISAM
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  ISAM-KEY
+                                   FILE    STATUS  IS  STS-ISAM.
       *
       *    出力エラーファイル
            SELECT  ERR-FILE        ASSIGN
@@ -76,6 +83,15 @@
            03  CSV-RR  REDEFINES       CSV-R.
                05  CSV-X               PIC X(01)  OCCURS   300.
       *
+      *    ＩＳＡＭファイル
+       FD  ISAM-FILE.
+       01  ISAM-REC.
+           03  ISAM-KEY.
+               05  ISAM-PTID           PIC 9(10).
+               05  ISAM-RENNUM         PIC 9(02).
+           03  ISAM-TBL.
+               05  ISAM-HKNID          PIC 9(10).
+      *
       *    出力エラーファイル
        FD  ERR-FILE.
        01  ERR-REC                     PIC X(100).
@@ -86,18 +102,21 @@
        01  ASS-AREA.
            03  ASS-PARA                PIC X(256).
            03  ASS-CSV                 PIC X(256).
+           03  ASS-ISAM                PIC X(256).
            03  ASS-ERR                 PIC X(256).
       *
       *    フラグ領域
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-CSV                 PIC X(02).
+           03  STS-ISAM                PIC X(02).
            03  STS-LST                 PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-PARA                PIC 9(01).
            03  FLG-CSV                 PIC 9(01).
+           03  FLG-ISAM                PIC 9(01).
       *
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTNUM               PIC 9(01).
@@ -141,6 +160,7 @@
       *
       *    パラメータ保存
        01  PARA-SAVE.
+           03  PARA-00-7               PIC X(01).
            03  PARA-05-1               PIC X(02).
            03  PARA-08-G.
                05  PARA-08-KENSU       PIC 9(02).
@@ -186,6 +206,8 @@
            03  WRK-ERR                 PIC 9(06).
       *
            03  WRK-KOUMOKU-NO          PIC 9(04).
+      *
+           03  WRK-RENNUM              PIC 9(02).
       *
       *    保険組合せ用テーブル
            03  WRK-HEN-AREA.
@@ -398,6 +420,15 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
+      *    ＩＳＡＭ初期処理
+           OPEN    INPUT           ISAM-FILE
+           IF  STS-ISAM        NOT =   ZERO
+               MOVE    1           TO  FLG-ISAM
+               DISPLAY "*(ORCVTPTBYOMEI)* ISAM-FILE OPN STS["
+                                       STS-ISAM "]"
+               GO  TO  100-INIT-EXT
+           END-IF
+      *
       *    帳票出力　初期処理
            PERFORM 2710-ERRLST-INIT-SEC
            IF      FLG-CSV         =   1
@@ -466,6 +497,8 @@
        101-PARA-GET1-SEC           SECTION.
       *
            EVALUATE    PARA-DATKBN
+               WHEN  "00-7"
+                   MOVE  PARA-DATA TO  PARA-00-7
                WHEN  "01-7"
                    MOVE  PARA-DATA TO  ASS-CSV
                WHEN  "02-7"
@@ -496,6 +529,8 @@
                    MOVE  PARA-DATA TO  PARA-09-7
                WHEN  "11-7"
                    MOVE  PARA-DATA TO  PARA-11-7
+               WHEN  "12-3"
+                   MOVE  PARA-DATA TO  ASS-ISAM
                WHEN    "HN"
                    MOVE    PARA-DATA     TO  PARA-HOSPNUM
            END-EVALUATE
@@ -680,11 +715,12 @@
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  CNT-HKNCOMB
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
+           MOVE    ZERO            TO  WRK-RENNUM
       *
       *    患者病名ＣＳＶファイルに存在する項目数分、繰り返す
       *    またはレコード終了、または項目エラー４個まで
            PERFORM VARYING   IDX   FROM    1   BY  1
-                   UNTIL   ( IDX           >   34   )
+                   UNTIL   ( IDX           >   35   )
                    OR      ( WRK-PO-ED     >=  300  )
                    OR      ( IDE           >   4    )
       *
@@ -742,7 +778,7 @@
       *
       *        カンマの位置
                IF    ( CSV-X (IDY)         =   "," ) OR
-                     ((IDX                 =   34 )  AND
+                     ((IDX                 =   35 )  AND
                      ( CSV-X (IDY)         =   SPACE))
                    MOVE    IDY                 TO  WRK-PO-ED
                    MOVE    1                   TO  FLG-COMMA
@@ -860,6 +896,9 @@
       *    ３４：補足コメント
            WHEN    34
                PERFORM 2410-HOSOKU-SET-SEC
+      *    ３５：労災・自賠責保険レコード番号
+           WHEN    35
+               PERFORM 2410-RENNUM-SET-SEC
            END-EVALUATE
       *
            IF      FLG-ERR         NOT =   ZERO
@@ -1357,6 +1396,35 @@
            EXIT.
       *
       *****************************************************************
+      *    項目３５：労災・自賠責保険レコード番号　処理
+      *****************************************************************
+       2410-RENNUM-SET-SEC         SECTION.
+      *
+           IF      PARA-00-7       NOT =   "2"
+               GO  TO  2410-RENNUM-SET-EXT
+           END-IF
+      *
+           IF      FLG-NODATA      =   1
+               GO  TO  2410-RENNUM-SET-EXT
+           END-IF
+      *
+           IF      WRK-MO-CNT      >   2
+               MOVE    2               TO  FLG-ERR
+               GO  TO  2410-RENNUM-SET-EXT
+           END-IF
+      *
+           IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT)  =   ZERO
+               GO  TO  2410-RENNUM-SET-EXT
+           END-IF
+      *
+           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                       TO  WRK-RENNUM
+      *
+           .
+       2410-RENNUM-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    患者病名マスタ　登録処理
       *****************************************************************
        260-PTBYOMEI-INSERT-SEC     SECTION.
@@ -1366,6 +1434,17 @@
            IF      FLG-PTNUM           NOT =   ZERO
                MOVE    7               TO  FLG-ERR
                GO  TO  260-PTBYOMEI-INSERT-EXT
+           END-IF
+      *
+      *    労災・自賠責保険レコード番号指定されていれば
+           IF      WRK-RENNUM  NOT =   ZERO
+               INITIALIZE                  ISAM-REC
+               MOVE    PTNUM-PTID      TO  ISAM-PTID
+               MOVE    WRK-RENNUM      TO  ISAM-RENNUM
+               PERFORM 900-ISAM-READ-SEC
+               INITIALIZE                  WRK-HEN-AREA
+               MOVE    ISAM-HKNID      TO  WRK-HEN-HKNCOMBI(1) 
+               MOVE    1               TO  CNT-HKNCOMB
            END-IF
       *
            MOVE    PTNUM-PTID      TO  WKPTBYO-PTID
@@ -1940,6 +2019,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    帳票出力　終了処理
            CLOSE   CSV-FILE
+           CLOSE   ISAM-FILE
            CLOSE   ERR-FILE
       *
       *    DB DISCONNECT
@@ -2105,6 +2185,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-CSV-KENSAKU-EXT.
           EXIT.
       *
+      *****************************************************************
+      *    ＩＳＡＭファイル読み込み処理
+      *****************************************************************
+       900-ISAM-READ-SEC           SECTION.
+      *
+           READ    ISAM-FILE
+               INVALID
+                   MOVE    1           TO  FLG-ISAM
+               NOT INVALID
+                   MOVE    ZERO        TO  FLG-ISAM
+           END-READ
+      *
+           .
+       900-ISAM-READ-EXT.
+          EXIT.
+      *      
       *****************************************************************
       *    パラメータファイル読み込み処理
       *****************************************************************

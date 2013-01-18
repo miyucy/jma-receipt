@@ -46,6 +46,13 @@
                                    ASS-CSV
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-CSV.
+      *    ＩＳＡＭファイル
+           SELECT  ISAM-FILE       ASSIGN
+                                   ASS-ISAM
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  ISAM-KEY
+                                   FILE    STATUS  IS  STS-ISAM.
       *
       *    出力エラーファイル
            SELECT  ERR-FILE        ASSIGN
@@ -70,6 +77,15 @@
            03  CSV-RR  REDEFINES       CSV-R.
                05  CSV-X               PIC X(01)  OCCURS   300.
       *
+      *    ＩＳＡＭファイル
+       FD  ISAM-FILE.
+       01  ISAM-REC.
+           03  ISAM-KEY.
+               05  ISAM-PTID           PIC 9(10).
+               05  ISAM-RENNUM         PIC 9(02).
+           03  ISAM-TBL.
+               05  ISAM-HKNID          PIC 9(10).
+      *
       *    出力エラーファイル
        FD  ERR-FILE.
        01  ERR-REC                     PIC X(100).
@@ -84,18 +100,21 @@
        01  ASS-AREA.
            03  ASS-PARA                PIC X(256).
            03  ASS-CSV                 PIC X(256).
+           03  ASS-ISAM                PIC X(256).
            03  ASS-ERR                 PIC X(256).
       *
       *    フラグ領域
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-CSV                 PIC X(02).
+           03  STS-ISAM                PIC X(02).
            03  STS-LST                 PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-PARA                PIC 9(01).
            03  FLG-CSV                 PIC 9(01).
+           03  FLG-ISAM                PIC 9(01).
       *
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTNUM               PIC 9(01).
@@ -392,6 +411,15 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
+      *    ＩＳＡＭ初期処理
+           OPEN    OUTPUT          ISAM-FILE
+           IF  STS-ISAM        NOT =   ZERO
+               MOVE    1           TO  FLG-ISAM
+               DISPLAY "*(ORCVTPTRSIINF)* ISAM-FILE OPN STS["
+                                       STS-ISAM "]"
+               GO  TO  100-INIT-EXT
+           END-IF
+      *
       *    帳票出力　初期処理
            PERFORM 2710-ERRLST-INIT-SEC
            IF  FLG-CSV             =   1
@@ -467,6 +495,8 @@
                    MOVE    PARA-DATA     TO  PARA-09-9
                WHEN    "11-9"
                    MOVE    PARA-DATA     TO  PARA-11-9
+               WHEN    "12-3"
+                   MOVE    PARA-DATA     TO  ASS-ISAM
                WHEN    "HN"
                    MOVE    PARA-DATA     TO  PARA-HOSPNUM
            END-EVALUATE
@@ -1951,6 +1981,14 @@
            IF      FLG-ERR             =   ZERO
                PERFORM 2503-PTHKNINF-INSERT-SEC
            END-IF
+      *    ＩＳＡＭファイル出力
+           IF      FLG-ERR             =   ZERO
+               INITIALIZE                  ISAM-REC
+               MOVE    WRK-PTID        TO  ISAM-PTID
+               MOVE    WRK-RENNUM      TO  ISAM-RENNUM
+               MOVE    WRK-HKNID       TO  ISAM-HKNID
+               WRITE   ISAM-REC
+           END-IF
       *
            .
        250-PTRSIINF-SET-EXT.
@@ -2408,6 +2446,7 @@
       *
       *    帳票出力　終了処理
            CLOSE                       CSV-FILE
+           CLOSE                       ISAM-FILE
            CLOSE                       ERR-FILE
       *
       *    DB DISCONNECT
