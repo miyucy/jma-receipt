@@ -14,35 +14,10 @@ bindapi	"medicalgetv2"	"OpenCOBOL"	"ORAPI021R1V2";
 bindapi	"diseasegetv2"	"OpenCOBOL"	"ORAPI022R1V2";
 bindapi	"appointlst2v2"	"OpenCOBOL"	"ORAPI014R2V2";
 bindapi	"acsimulatev2"	"OpenCOBOL"	"ORAPI023R1V2";
-bindapi	"visitptlstv2"	"OpenCOBOL"	"ORAPI021R2V2";
-bindapi "hsconfbasev2"  "OpenCOBOL"	"ORAPI031RC1V2";
-bindapi "hsconfwardv2"  "OpenCOBOL"	"ORAPI031RC2V2";
-bindapi	"tmedicalgetv2"	"OpenCOBOL"	"ORAPI021R3V2";
-bindapi "hsmealv2"      "OpenCOBOL"	"ORAPI032R1V2";
-bindapi	"insprogetv2"	"OpenCOBOL"	"ORAPI105R1V2";
-bindapi "hsptevalv2"    "OpenCOBOL"	"ORAPI032R2V2";
-bindapi "hsptinfv2"     "OpenCOBOL"	"ORAPI031R1V2";
-bindapi	"hsacsimulatev2" "OpenCOBOL"	"ORAPI034R1V2";
-bindapi	"incomeinfv2"	"OpenCOBOL"	"ORAPI023R2V2";
-bindapi	"systeminfv2"	"OpenCOBOL"	"ORAPI000R1V2";
-bindapi	"insuranceinf1v2"	"OpenCOBOL"	"ORAPI012R5V2";
-bindapi	"receiptinf1v2"		"OpenCOBOL"	"ORAPI042R1V2";
-bindapi	"claimfrontv2"	"OpenCOBOL"	"ORAPICLAIMR1V2";
-bindapi	"claimaccountv2"	"OpenCOBOL"	"ORAPICLAIMR2V2";
-bindapi	"formdatagetv2"	"OpenCOBOL"	"ORAPI001R1V2";
-bindapi	"contraindicationcheckv2"	"OpenCOBOL"	"ORAPI021R4V2";
-bindapi	"okusurigetv2"	"OpenCOBOL"	"ORAPIRELR1V2";
-bindapi	"okusuriputv2"	"OpenCOBOL"	"ORAPIRELR2V2";
-bindapi	"imagegetv2"	"OpenCOBOL"	"ORAPI000R2V2";
-bindapi	"patientlst6v2"	"OpenCOBOL"	"ORAPI012R6V2";
-bindapi	"prescriptionv2"	"OpenCOBOL"	"ORAPI001R2V2";
-bindapi	"medicinenotebookv2"	"OpenCOBOL"	"ORAPI001R3V2";
-bindapi	"subjectiveslstv2"	"OpenCOBOL"	"ORAPI025R1V2";
-bindapi	"system01dailyv2"	"OpenCOBOL"	"ORAPI101R2V2";
-bindapi	"hsconfroomchargev2"	"OpenCOBOL"	"ORAPI031RC3V2";
-bindapi	"pusheventgetv2"	"OpenCOBOL"	"ORAPI000R3V2";
+
 
 multiplex_group	api01rv2;
+
 
 data	{
 	spa	orcaspa;
@@ -58,33 +33,6 @@ data	{
 		diseasegetv2;
 		appointlst2v2;
 		acsimulatev2;
-		visitptlstv2;
-		hsconfbasev2;
-	        hsconfwardv2;
-		tmedicalgetv2;
-	        hsmealv2;
-	        insprogetv2;
-	        hsptevalv2;
-	        hsptinfv2;
-		hsacsimulatev2;
-		incomeinfv2;
-		systeminfv2;
-		insuranceinf1v2;
-		receiptinf1v2;
-		claimfrontv2;
-		claimaccountv2;
-		formdatagetv2;
-		contraindicationcheckv2;
-		okusurigetv2;
-		okusuriputv2;
-	        imagegetv2;
-		patientlst6v2;
-		prescriptionv2;
-		medicinenotebookv2;
-		subjectiveslstv2;
-		system01dailyv2;
-        hsconfroomchargev2;
-        pusheventgetv2;
 	};
 };
 db "xml2" {
@@ -105,78 +53,13 @@ db "xml2" {
  xml_medicalget01v2res;
  xml_medicalget02v2res;
  xml_medicalget03v2res;
- xml_medicalget04v2res;
  xml_disease_infov2res;
  xml_disease_infov2req;
  xml_appointlst2v2req;
  xml_appointlst2v2res;
  xml_acsimulatev2req;
  xml_acsimulatev2res;
- xml_visitptlstv2req;
- xml_visitptlst01v2res;
- xml_visitptlst02v2res;
- xml_hsconfbasev2req;
- xml_hsconfbasev2res;
- xml_hsconfwardv2req;
- xml_hsconfwardv2res;
- xml_hsconfroomv2res;
- xml_tmedicalgetv2req;
- xml_tmedicalgetv2res;
- xml_hsmealv2res;
- xml_hsmealv2req;
- xml_insprogetv2req;
- xml_insprogetv2res;
- xml_hsptevalv2res;
- xml_hsptevalv2req;
- xml_hsptinfv2res;
- xml_hsptinfv2req;
- xml_hsacsimulatev2req;
- xml_hsacsimulatev2res;
- xml_incomeinfv2res;
- xml_incomeinfv2req;
- xml_system1001v2res;
- xml_systeminfv2req;
- xml_systeminfv2res;
- xml_insuranceinf1v2req;
- xml_insuranceinf1v2res;
- xml_receipt_inf1v2req;
- xml_receipt_inf1v2res;
- xml_claim_frontv2req;
- xml_claim_frontv2res;
- xml_claim_accountv2req;
- xml_claim_accountv2res;
- xml_formdatagetv2req;
- xml_contraindication_checkv2req;
- xml_contraindication_checkv2res;
- xml_okusurigetv2req;
- xml_okusurigetv2res;
- xml_okusuriputv2req;
- xml_okusuriputv2res;
- xml_imagegetv2req;
- xml_patientlst6v2req;
- xml_patientlst6v2res;
- xml_prescriptionv2req;
- fm_prescription;
- xml_medicine_notebookv2req;
- fm_medicine_notebook;
- xml_subjectiveslstv2req;
- xml_subjectiveslstv2res;
- xml_system01_dailyv2req;
- xml_system01_dailyv2res;
- xml_hsconfroomchargev2req;
- xml_hsconfroomchargev2res;
- xml_pusheventgetv2req;
- xml_pusheventgetv2err;
 };
 
 #include "orcadb.inc"
 #include "orcadbh.inc"
-
-db "push" {
-  push_print001;
-  push_batch01;
-};
-
-#db "msgarray" {
-#  xml_pusheventgetv2res;
-#};
