@@ -36,8 +36,6 @@
       *                                     外も対象
       *                                     補足チェック対応
       *                                     同義語変換対応
-      *  04.06.02    NACL-藤原    13/02/13  自院病名の廃止病名のチェック
-      *                                     条件修正
       *
       *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
@@ -59,8 +57,6 @@
        01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
-      *
-           COPY    "CPRECEERR.INC".
       *
            COPY    "HCMSL55.INC".
       *
@@ -96,7 +92,6 @@
       *
        01  INDEX-AREA.
            03  IDX                 PIC 9(02).
-           03  IDY                 PIC 9(02).
       *
       *    パラメタ領域
        01  WRK-PARA.
@@ -104,6 +99,7 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
+           03  RECEERR             PIC X(100).
            03  WRK-PARA-SRYYM      PIC X(06).
            03  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-SYOKBN     PIC X(01).
@@ -361,9 +357,6 @@
       *   画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -409,8 +402,6 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
       *
-           INITIALIZE                  RECEERR
-      *
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
@@ -451,12 +442,6 @@
                                    TO  JOB-SHELLMSG
       *
            PERFORM 900-CALL-ORCSJOB-SEC
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  RECEERR
       *
       *    診療年月編集
            IF      WRK-PARA-SRYYM  =   "999999" 
@@ -1279,24 +1264,10 @@
                END-IF
              ELSE     
       *        廃止年月日が設定されているとき
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       21
-                       OR      USBYO-BYOMEICD (IDY)
-                                           =   SPACE   OR  ALL "9"
-                   IF      USBYO-BYOMEICD (IDY) (1:1)
-                                               NOT =   "Z"
-                       MOVE    USBYO-BYOMEICD (IDY)
-                                                   TO  USBYO-KHNBYOMEICD
-                       MOVE    21                  TO  IDY
-                   END-IF
-               END-PERFORM         
                MOVE    USBYO-KHNBYOMEICD   TO  BYO-BYOMEICD
                PERFORM 900-BYOMEI-READ-SEC
                MOVE    BYOMEI-REC          TO  WRK-BYOMEI-REC
-      *********IF      WRK-BYO-HAISIYMD    NOT =   SPACE
-               IF      WRK-BYO-HAISIYMD        =   SPACE   OR  ALL "9"
-                   CONTINUE
-               ELSE
+               IF      WRK-BYO-HAISIYMD    NOT =   SPACE
                    IF      WRK-BYO-IKOSAKICD   =   SPACE
                        MOVE    3                   TO  FLG-ERR
       *                推奨病名チェック
