@@ -61,6 +61,7 @@
       *  04.05.08    NACL-門脇    12/04/02  平成２４年４月改正
       *                                     「再診」の対応
       *                                     「その他」の対応
+      *  04.05.09    NACL-門脇    13/01/22  ワーク領域拡張
       *  04.06.01    NACL-門脇    12/10/15  診療行為入力したコメントのみの剤の
       *                                     レセプト記載対応
       *****************************************************************
@@ -390,7 +391,7 @@
                05  WRK-RECE120-HOUKNSKBN           PIC 9(02).
                05  WRK-RECE120-GAIJINKEN           PIC 9(02).
                05  WRK-RECE120-SRYSYUKBN           PIC X(03).
-               05  WRK-RECE120-REC                 PIC X(700).
+               05  WRK-RECE120-REC                 PIC X(1000).
                05  WRK-RECE120-SRYCD-G.
                    07  WRK-RECE120-KENTAICOMMENT-SRYCD
                                                   PIC 9(09).
@@ -459,7 +460,7 @@
        01  WRK-RECE120GJK-MAX               PIC 9(02).
        01  WRK-RECE120GJK-TABLE.
            03  WRK-RECE120GJK-TBL           OCCURS 31.
-               05  WRK-RECE120GJK-REC       PIC X(700).
+               05  WRK-RECE120GJK-REC       PIC X(1000).
        01  RECE120GJK-REC.
            COPY    "CPRCF120.INC"  REPLACING  //RECE120//
                                    BY         //RECE120GJK//.

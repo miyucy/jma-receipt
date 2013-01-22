@@ -53,6 +53,7 @@
       *  04.05.03    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.04    NACL-門脇    10/01/27  治験対応
       *  04.05.05    NACL-門脇    11/11/30  画像診断フイルム分画数対応
+      *  04.05.06    NACL-門脇    13/01/22  ワーク領域拡張
       *  04.06.01    NACL-門脇    12/10/15  診療行為入力したコメントのみの剤の
       *                                     レセプト記載対応
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
@@ -364,7 +365,7 @@
                05  WRK-RECE220-HOUKNSKBN   PIC 9(02).
                05  WRK-RECE220-GAIJINKEN   PIC 9(02).
                05  WRK-RECE220-SRYSYUKBN   PIC X(03).
-               05  WRK-RECE220-REC         PIC X(700).
+               05  WRK-RECE220-REC         PIC X(1000).
                05  WRK-RECE220-SRYCD-G.
                    07  WRK-RECE220-KENTAICOMMENT-SRYCD
                                            PIC 9(09).
@@ -437,7 +438,7 @@
        01  WRK-RECE220GJK-MAX               PIC 9(02).
        01  WRK-RECE220GJK-TABLE.
            03  WRK-RECE220GJK-TBL           OCCURS 31.
-               05  WRK-RECE220GJK-REC       PIC X(700).
+               05  WRK-RECE220GJK-REC       PIC X(1000).
        01  RECE220GJK-REC.
            COPY    "CPRCF220.INC"  REPLACING  //RECE220//
                                    BY         //RECE220GJK//.
