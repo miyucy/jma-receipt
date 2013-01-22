@@ -30,6 +30,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1353,8 +1354,10 @@
            END-EVALUATE                             
       *
       *    労災レセプト回数
-           MOVE    RECE41-RECEKAISU        TO  WRK-RECEKAISU
-           MOVE    WRK-RECEKAISU           TO  HCM69-KAI
+           IF   RECE41-ROUKAISU   =   "2"
+             MOVE    RECE41-RECEKAISU      TO  WRK-RECEKAISU
+             MOVE    WRK-RECEKAISU         TO  HCM69-KAI
+           END-IF
       *
       *    労災基準監督署コード
            IF      RECE41-SYOKAIFLG    =   "1"

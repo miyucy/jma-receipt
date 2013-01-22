@@ -46,6 +46,7 @@
       *  04.05.03    NACL-門脇    12/04/10  改正対応項目追加
       *
       *  04.07.01    NACL-門脇    12/09/25  コメント差込項目追加
+      *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
       ************************************************************
       *01  RECE84-REC.
            03  RECE84-KEY.
@@ -67,6 +68,8 @@
                05  RECE84-ZAINUM          PIC  9(08).
       *診療区分
            03  RECE84-SRYKBN              PIC  X(02).
+      *診療種別区分
+           03  RECE84-SRYSYUKBN           PIC  X(03).
       *剤識別区分
            03  RECE84-ZAISKBKBN           PIC  X(01).
       *患者番号
@@ -115,6 +118,8 @@
            03  RECE84-RYOTENKISAISU       PIC  9(04).
       *自賠責集計等取扱
            03  RECE84-JIBAISYUKEIKBN      PIC  9(01).
+      *関係コメント存在フラグ
+           03  RECE84-SETCOMFLG           PIC  X(01).
       *剤区分
            03  RECE84-ZAIKBN              PIC  9(03).
       *画像診断（２回目以降減算あり）
@@ -171,12 +176,16 @@
            03  RECE84-FLG-SYODOU-COMMENT  PIC  X(01).
            03  RECE84-SYODOU-SRYKA-AREA.
                05  RECE84-SYODOU-SRYKA    PIC  X(02)     OCCURS  10.
+      *検査等実施判断
+           03  RECE84-KNSJISKBN           PIC  9(01).
       *検査等実施判断グループ
            03  RECE84-KNSJISGRPKBN        PIC  9(02).
       *往診・特別往診
            03  RECE84-FLG-OSIN-COMMENT    PIC  X(01).
       *在支援に関する診療
            03  RECE84-FLG-ZAISIEN-COMMENT PIC  X(01).
+      *レセ電用入院料加算フラグ
+           03  RECE84-NYUKSNFLG           PIC  9(01).
       *検査（ＢＮＰ、ＮＴ−ｐｒｏＢＮＰ、ＨＡＮＰ）
            03  RECE84-FLG-KENSA-COMMENT   PIC  X(01).
       *
@@ -197,6 +206,9 @@
       *重症者加算（精神療養病棟入院料）
            03  RECE84-FLG-JYUSYO-COMMENT  PIC  X(01).
       *
+      *画像診断フイルム
+           03  RECE84-FLG-FILM-COMMENT    PIC  X(01).
+      *
       *介護職員等喀痰吸引等指示料
            03  RECE84-FLG-KAISYOKU-COMMENT
                                           PIC  X(01).
@@ -216,3 +228,21 @@
              04  RECE84-DAY-TBL           OCCURS  4.
                  05  RECE84-KAISUINF      OCCURS  31.
                      07  RECE84-KAISU     PIC  9(03).
+      *
+      *手技毎の内容（手術・画像診断・処置）
+           03  RECE84-ACCTP-SYUGI-TBL-G.
+                 05  RECE84-ACCTP-SYUGI-TBL     OCCURS  5.
+      *手技開始コード
+                     07  RECE84-ACCTP-SRYCD     PIC X(09).
+      *手技点数
+                     07  RECE84-ACCTP-SYUTEN    PIC 9(07).
+      *薬剤点数
+                     07  RECE84-ACCTP-YKZTEN    PIC 9(07).
+      *その他器材点数（フィルム・酸素・窒素以外）
+                     07  RECE84-ACCTP-KIZAITEN  PIC 9(07).
+      *フィルム点数
+                     07  RECE84-ACCTP-FIRTEN    PIC 9(07).
+      *酸素点数
+           03  RECE84-ACCTP-SANSOTEN            PIC 9(07).
+      *窒素点数
+           03  RECE84-ACCTP-CHISOTEN            PIC 9(07).

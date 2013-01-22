@@ -53,6 +53,7 @@
       *  04.07.01   NACL-門脇     11/09/01  労災初回請求分フラグ追加
       *                                     労災基準監督署コード追加
       *                                     テスト患者番号区分追加
+      *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
       ************************************************************
       *01  RECE82-REC.
            03  RECE82-KEY.
@@ -162,6 +163,11 @@
       *
       *医療機関種別
            03  RECE82-HOSPSBT             PIC  X(01).
+      *
+      *病棟区分情報
+           03  RECE82-BYOTOKBNINF         OCCURS  4.
+      *病棟区分
+               05  RECE82-BYOTOKBN        PIC  X(02).
       *
       *病棟種別情報
            03  RECE82-BYOTOSYUBETUINF     OCCURS 31.
@@ -309,6 +315,8 @@
                05  RECE82-YKZTEN-JI       PIC  9(08).
       *コメントカウントフラグ
            03  RECE82-COMCNTFLG           PIC  X(01).
+      *病床数編集フラグ（特定疾患療養指導料等）
+           03  RECE82-BEDSUFLG            PIC  X(01).
       *外来迅速検体検査加算フラグ
            03  RECE82-KENTAIKASANFLG      PIC  X(01).
       *特別な関係にある他院歴ありフラグ

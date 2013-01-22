@@ -55,6 +55,7 @@
       *  04.05.03    NACL-門脇    12/04/10  改正対応項目追加
       *
       *  04.07.01    NACL-門脇    12/09/25  コメント差込項目追加
+      *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
       ************************************************************
       *01  RECE44-REC.
            03  RECE44-KEY.
@@ -76,6 +77,8 @@
                05  RECE44-ZAINUM          PIC  9(08).
       *診療区分
            03  RECE44-SRYKBN              PIC  X(02).
+      *診療種別区分
+           03  RECE44-SRYSYUKBN           PIC  X(03).
       *患者番号
            03  RECE44-PTNUM               PIC  X(20).
       *診療科
@@ -120,6 +123,8 @@
            03  RECE44-OKIKAEFLG           PIC  X(01).
       *自賠責集計等取扱
            03  RECE44-JIBAISYUKEIKBN      PIC  9(01).
+      *関係コメント存在フラグ
+           03  RECE44-SETCOMFLG           PIC  X(01).
       *剤区分
            03  RECE44-ZAIKBN              PIC  9(03).
       *画像診断（２回目以降減算あり）
@@ -184,6 +189,8 @@
            03  RECE44-FLG-NIKOCHIN-COMMENT PIC X(01).
       *重度喘息患者治療管理加算
            03  RECE44-FLG-ZENSOKU-COMMENT PIC  X(01).
+      *検査等実施判断
+           03  RECE44-KNSJISKBN           PIC  9(01).
       *検査等実施判断グループ
            03  RECE44-KNSJISGRPKBN        PIC  9(02).
       *往診・特別往診
@@ -210,6 +217,9 @@
       *認知療法・認知行動療法
            03  RECE44-FLG-NINRYO-COMMENT  PIC  X(01).
       *
+      *画像診断フイルム
+           03  RECE44-FLG-FILM-COMMENT    PIC  X(01).
+      *
       *認知症専門診断管理料２
            03  RECE44-FLG-NINSEN-COMMENT  PIC  X(01).
       *退院時共同指導料１（１以外）
@@ -232,3 +242,21 @@
              04  RECE44-DAY-TBL           OCCURS  4.
                  05  RECE44-KAISUINF      OCCURS  31.
                      07  RECE44-KAISU     PIC  9(03).
+      *
+      *手技毎の内容（手術・画像診断・処置）
+           03  RECE44-ACCTP-SYUGI-TBL-G.
+                 05  RECE44-ACCTP-SYUGI-TBL     OCCURS  5.
+      *手技開始コード
+                     07  RECE44-ACCTP-SRYCD     PIC X(09).
+      *手技点数
+                     07  RECE44-ACCTP-SYUTEN    PIC 9(07).
+      *薬剤点数
+                     07  RECE44-ACCTP-YKZTEN    PIC 9(07).
+      *その他器材点数（フィルム・酸素・窒素以外）
+                     07  RECE44-ACCTP-KIZAITEN  PIC 9(07).
+      *フィルム点数
+                     07  RECE44-ACCTP-FIRTEN    PIC 9(07).
+      *酸素点数
+           03  RECE44-ACCTP-SANSOTEN            PIC 9(07).
+      *窒素点数
+           03  RECE44-ACCTP-CHISOTEN            PIC 9(07).

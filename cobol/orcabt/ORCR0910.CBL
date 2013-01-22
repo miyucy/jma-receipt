@@ -113,6 +113,7 @@
       *  04.06.01    NACL-門脇    12/10/15  診療行為入力したコメントのみの剤の
       *                                     レセプト記載対応
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
+      *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -492,18 +493,18 @@
       *
        01  TBL-ZAIW-AREA.
       *    剤の先頭の診療コード
-           03  TBL-ZAIW-SRYCD1             PIC X(09).
+           03  WRK-ZAIW-SRYCD1             PIC X(09).
       *    剤の先頭の診療コードの各種番号等情報
-           03  TBL-ZAIW-CDKBN-AREA.
-               05  TBL-ZAIW-CDKBN-KBN          PIC X(01).
-               05  TBL-ZAIW-CDKBN-SYO          PIC 9(01).
-               05  TBL-ZAIW-CDKBN-BU           PIC 9(02).
-               05  TBL-ZAIW-CDKBN-KBNNUM       PIC 9(03).
-               05  TBL-ZAIW-CDKBN-KBNNUM-EDA   PIC 9(02).
-               05  TBL-ZAIW-CDKBN-KOUBAN       PIC 9(02).
-               05  TBL-ZAIW-KOUHYOJYUNNUM      PIC 9(09).
+           03  WRK-ZAIW-CDKBN-AREA.
+               05  WRK-ZAIW-CDKBN-KBN          PIC X(01).
+               05  WRK-ZAIW-CDKBN-SYO          PIC 9(01).
+               05  WRK-ZAIW-CDKBN-BU           PIC 9(02).
+               05  WRK-ZAIW-CDKBN-KBNNUM       PIC 9(03).
+               05  WRK-ZAIW-CDKBN-KBNNUM-EDA   PIC 9(02).
+               05  WRK-ZAIW-CDKBN-KOUBAN       PIC 9(02).
+               05  WRK-ZAIW-KOUHYOJYUNNUM      PIC 9(09).
       *    剤の先頭の診療コードの検査等実施判断情報
-           03  TBL-ZAIW-KNSJISKBN          PIC 9(01).
+           03  WRK-ZAIW-KNSJISKBN          PIC 9(01).
       *
       *    診療行為別テーブル
       *    １：ユーザーコメント、２：コメント、
@@ -514,6 +515,7 @@
                    07  TBL-ZAIW-SRYACTINF.
       *                診療コード/数量/回数
                        09  TBL-ZAIW-SRYCD           PIC  X(09).
+                       09  TBL-ZAIW-SRYSYUKBN-X     PIC  X(03).
                        09  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(05).
                        09  TBL-ZAIW-SRYKAISU        PIC  9(03).
       *                単位コード/単位名称有効桁数/単位名称
@@ -528,20 +530,33 @@
                        09  TBL-ZAIW-AUTOKBN         PIC  X(01).
                        09  TBL-ZAIW-INPUTNUM        PIC  9(03).
                        09  TBL-ZAIW-TENTTLKBN       PIC  9(03).
-      *                検体検査コメント
-                       09  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
-      *                きざみ値計算識別
+      *
+                       09  TBL-ZAIW-DATAKBN         PIC  9(01).
+                       09  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
+                       09  TBL-ZAIW-KNSJISKBN       PIC  9(01).
+                       09  TBL-ZAIW-KNSJISGRPKBN    PIC  9(02).
+                       09  TBL-ZAIW-CDKBNINF.
+                         11 TBL-ZAIW-CDKBN-KBN        PIC  X(01).
+                         11 TBL-ZAIW-CDKBN-SYO        PIC  9(01).
+                         11 TBL-ZAIW-CDKBN-BU         PIC  9(02).
+                         11 TBL-ZAIW-CDKBN-KBNNUM     PIC  9(03).
+                         11 TBL-ZAIW-CDKBN-KBNNUM-EDA PIC  9(02).
+                         11 TBL-ZAIW-CDKBN-KOUBAN     PIC  9(02).
+                         11 TBL-ZAIW-KOUHYOJYUNNUM    PIC  9(09).
+                       09  TBL-ZAIW-KOKUJISKBKBN1   PIC  9(01).
+                       09  TBL-ZAIW-KOKUJISKBKBN2   PIC  9(01).
+                       09  TBL-ZAIW-TUSOKUGAIKBN    PIC  9(01).
+                       09  TBL-ZAIW-TIMEKSNKBN      PIC  9(01).
                        09  TBL-ZAIW-KZMCOMPSIKIBETU PIC  9(01).
+                       09  TBL-ZAIW-CHUKSNINF.
+                         11 TBL-ZAIW-CHUKSNCD       PIC  X(04).
+                         11 TBL-ZAIW-CHUKSNTUBAN    PIC  X(01).
+                       09  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
+                       09  TBL-ZAIW-INPUTCOMENT     PIC  X(80).
                    07  TBL-ZAIW-NAMEINF.
       *                漢字有効桁数/漢字名称
                        09  TBL-ZAIW-YUKOKETA        PIC  9(03).
                        09  TBL-ZAIW-NAME            PIC  X(200).
-      *                データ区分情報
-                   07  TBL-ZAIW-DATAKBNINF.
-                       09  TBL-ZAIW-DATAKBN         PIC  9(01).
-      *                包括対象検査情報
-                   07  TBL-ZAIW-HOUKNSKBNINF.
-                       09  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
                    07  TBL-ZAIW-SRYSYUKBN-INPUT     PIC  X(03).
                    07  TBL-ZAIW-KENTAICOMMENT-SRYCD PIC  9(09).
       *            レセ用特定器材商品名編集フラグ
@@ -1273,23 +1288,23 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                            CONTINUE
                          ELSE
                            MOVE    RECE85-SRYCD (IDX)
-                                                 TO  TBL-ZAIW-SRYCD1 
+                                                 TO  WRK-ZAIW-SRYCD1 
                            MOVE    RECE85-CDKBN-KBN(IDX)
-                                                 TO  TBL-ZAIW-CDKBN-KBN
+                                                 TO  WRK-ZAIW-CDKBN-KBN
                            MOVE    RECE85-CDKBN-SYO(IDX)
-                                                 TO  TBL-ZAIW-CDKBN-SYO
+                                                 TO  WRK-ZAIW-CDKBN-SYO
                            MOVE    RECE85-CDKBN-BU(IDX)
-                                                 TO  TBL-ZAIW-CDKBN-BU
+                                                 TO  WRK-ZAIW-CDKBN-BU
                            MOVE    RECE85-CDKBN-KBNNUM(IDX)
-                                         TO  TBL-ZAIW-CDKBN-KBNNUM
+                                         TO  WRK-ZAIW-CDKBN-KBNNUM
                            MOVE    RECE85-CDKBN-KBNNUM-EDA(IDX)
-                                         TO  TBL-ZAIW-CDKBN-KBNNUM-EDA
+                                         TO  WRK-ZAIW-CDKBN-KBNNUM-EDA
                            MOVE    RECE85-CDKBN-KOUBAN(IDX)
-                                         TO  TBL-ZAIW-CDKBN-KOUBAN
+                                         TO  WRK-ZAIW-CDKBN-KOUBAN
                            MOVE    RECE85-KOUHYOJYUNNUM(IDX)
-                                         TO  TBL-ZAIW-KOUHYOJYUNNUM
+                                         TO  WRK-ZAIW-KOUHYOJYUNNUM
                            MOVE    RECE85-KNSJISKBN(IDX)
-                                         TO  TBL-ZAIW-KNSJISKBN
+                                         TO  WRK-ZAIW-KNSJISKBN
                            MOVE    1             TO  WRK-RECE85
                          END-IF
                        END-IF
@@ -1303,10 +1318,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                      TO  TBL-ZAIW-NAMEINF   (IDY IDZ)
                        MOVE    RECE85-RECEHENFLG(IDX)
                                      TO  TBL-ZAIW-RECEHENFLG(IDY IDZ)
-                       MOVE    RECE85-DATAKBNINF(IDX)
-                                     TO  TBL-ZAIW-DATAKBNINF(IDY IDZ)
-                       MOVE    RECE85-HOUKNSKBNINF(IDX)
-                                     TO  TBL-ZAIW-HOUKNSKBNINF(IDY IDZ)
                        MOVE    RECE85-SRYSYUKBN  TO
                                      TBL-ZAIW-SRYSYUKBN-INPUT(IDY IDZ)
                        IF      WRK-KENTAICOMMENT-SRYCD  NOT =  ZERO
@@ -1788,7 +1799,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
            COMPUTE WRK-ZAIWMAX (6)   =   WRK-ZAIWMAX  (6)     +   
                                          WRK-ZAIWMAX  (3) 
-           MOVE    TBL-ZAIW-SRYCD1   TO  TBL-ZAIW-SRYCD (3 1) 
+           MOVE    WRK-ZAIW-SRYCD1   TO  TBL-ZAIW-SRYCD (3 1) 
       *
            PERFORM 20052-SRYKBNELSE-CHECK-SEC
            .
@@ -2006,7 +2017,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                               OR  WRK-CONS-SAIKETSU3 
                    CONTINUE
                ELSE
-                   IF      TBL-ZAIW-KNSJISKBN  =  "2"
+                   IF      WRK-ZAIW-KNSJISKBN  =  "2"
                        CONTINUE
                    ELSE 
                        ADD     RECE84-ZAIKAISU   TO  WRK-KENSA-KAISU
@@ -2119,7 +2130,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
            MOVE    ZERO                TO  WRK-RECE84GJK-MAX
       *
            IF      ( RECE82-KENTAIKASANFLG   =   '1' )
-             AND   ( TBL-ZAIW-KNSJISKBN  NOT =   2 )
+             AND   ( WRK-ZAIW-KNSJISKBN  NOT =   2 )
              AND  (((RECE84-KNSJISGRPKBN     >   0)
              AND    (RECE84-KNSJISGRPKBN     <   7))
              OR     (RECE84-SRYCDTOTAL       =   WRK-CONS-NYOIPPAN-N))
@@ -3186,55 +3197,55 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
       *---------適用欄並び替え用の編集（表用番号等）-----------------
                IF      IDY               =   1
-                 IF       (TBL-ZAIW-SRYCD1(1:1)  =   "6"  OR  "7")
-                 OR       (TBL-ZAIW-SRYCD1(1:3)  =   "059"       )
+                 IF       (WRK-ZAIW-SRYCD1(1:1)  =   "6"  OR  "7")
+                 OR       (WRK-ZAIW-SRYCD1(1:3)  =   "059"       )
                  OR       (RECE84-SAFLG      NOT =   SPACE       )
                  OR       (RECE84-ZAIKBN         =    1          )
                      MOVE    ALL "9"            TO
-                                            TBL-ZAIW-CDKBN-AREA
+                                            WRK-ZAIW-CDKBN-AREA
                      IF   (RECE84-SAFLG      NOT =   SPACE)
                      OR   (RECE84-ZAIKBN         =    1   )
-                         MOVE    999999999   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                         MOVE    999999999   TO  WRK-ZAIW-KOUHYOJYUNNUM
                      ELSE
-                       IF    TBL-ZAIW-SRYCD1(1:1)  =   "6"
-                         MOVE    999999997   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                       IF    WRK-ZAIW-SRYCD1(1:1)  =   "6"
+                         MOVE    999999997   TO  WRK-ZAIW-KOUHYOJYUNNUM
                        ELSE
-                         MOVE    999999998   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                         MOVE    999999998   TO  WRK-ZAIW-KOUHYOJYUNNUM
                        END-IF
                      END-IF
                  END-IF
       ***        IF   RECE82-SRYYM   >=   "200804"
-      ***          EVALUATE  TBL-ZAIW-SRYCD1
+      ***          EVALUATE  WRK-ZAIW-SRYCD1
       ***            WHEN     "101130010"
-      ***              MOVE      ALL "9"     TO  TBL-ZAIW-CDKBN-AREA
-      ***              MOVE      999999981   TO  TBL-ZAIW-KOUHYOJYUNNUM
+      ***              MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
+      ***              MOVE      999999981   TO  WRK-ZAIW-KOUHYOJYUNNUM
       ***          END-EVALUATE
       ***        END-IF
-                 EVALUATE    TBL-ZAIW-SRYCD1
+                 EVALUATE    WRK-ZAIW-SRYCD1
                      WHEN     "101800175"
-                       MOVE      ALL "9"     TO  TBL-ZAIW-CDKBN-AREA
-                       MOVE      999999982   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                       MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
+                       MOVE      999999982   TO  WRK-ZAIW-KOUHYOJYUNNUM
                      WHEN     "101800180"
-                       MOVE      ALL "9"     TO  TBL-ZAIW-CDKBN-AREA
-                       MOVE      999999983   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                       MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
+                       MOVE      999999983   TO  WRK-ZAIW-KOUHYOJYUNNUM
                      WHEN     "101800330"
-                       MOVE      ALL "9"     TO  TBL-ZAIW-CDKBN-AREA
-                       MOVE      999999984   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                       MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
+                       MOVE      999999984   TO  WRK-ZAIW-KOUHYOJYUNNUM
                      WHEN     "101800340"
-                       MOVE      ALL "9"     TO  TBL-ZAIW-CDKBN-AREA
-                       MOVE      999999985   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                       MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
+                       MOVE      999999985   TO  WRK-ZAIW-KOUHYOJYUNNUM
                  END-EVALUATE
                END-IF
-               MOVE    TBL-ZAIW-CDKBN-SYO  TO  RECE86-CDKBN-SYO
-               MOVE    TBL-ZAIW-CDKBN-BU   TO  RECE86-CDKBN-BU
-               MOVE    TBL-ZAIW-CDKBN-KBN  TO  RECE86-CDKBN-KBN
-               MOVE    TBL-ZAIW-CDKBN-KBNNUM
+               MOVE    WRK-ZAIW-CDKBN-SYO  TO  RECE86-CDKBN-SYO
+               MOVE    WRK-ZAIW-CDKBN-BU   TO  RECE86-CDKBN-BU
+               MOVE    WRK-ZAIW-CDKBN-KBN  TO  RECE86-CDKBN-KBN
+               MOVE    WRK-ZAIW-CDKBN-KBNNUM
                                            TO  RECE86-CDKBN-KBNNUM
-               MOVE    TBL-ZAIW-CDKBN-KBNNUM-EDA
+               MOVE    WRK-ZAIW-CDKBN-KBNNUM-EDA
                                            TO  RECE86-CDKBN-KBNNUM-EDA
-               MOVE    TBL-ZAIW-CDKBN-KOUBAN
+               MOVE    WRK-ZAIW-CDKBN-KOUBAN
                                            TO  RECE86-CDKBN-KOUBAN
-               MOVE    TBL-ZAIW-KOUHYOJYUNNUM
+               MOVE    WRK-ZAIW-KOUHYOJYUNNUM
                                            TO  RECE86-KOUHYOJUNNUM
       *
                IF    RECE84-GAZOGEN = "1"
@@ -3246,7 +3257,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                MOVE    RECE84-ZAITEN     TO  RECE86-ZAITEN
       *
                IF      RECE84-SRYKBN     =   "60" OR "64"
-                       MOVE   TBL-ZAIW-KNSJISKBN
+                       MOVE   WRK-ZAIW-KNSJISKBN
                                              TO  RECE86-KNSJISKBN
                ELSE
                        MOVE   ZERO           TO  RECE86-KNSJISKBN

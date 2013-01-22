@@ -44,6 +44,8 @@
       *  04.03.01    NACL-門脇    08/09/25  自賠責０９５９３の集計先対応
       *  04.05.01    NACL-門脇    12/04/11  平成２４年４月改正
       *                                     コメント差込
+      *
+      *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -74,22 +76,18 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE441-KEY
                                    FILE    STATUS  IS  STS-RECE441.
-           SELECT  RECE4441-FILE   ASSIGN  RECE441PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE4441-KEY
-                                   FILE    STATUS  IS  STS-RECE441.
       *
            SELECT  RECE451-FILE    ASSIGN  RECE451PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE451-KEY
                                    FILE    STATUS  IS  STS-RECE451.
-           SELECT  RECE4551-FILE   ASSIGN  RECE451PARA
+      *
+           SELECT  RECE455-FILE    ASSIGN  RECE455PARA
                                    ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE4551-KEY
-                                   FILE    STATUS  IS  STS-RECE451.
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE455-KEY
+                                   FILE    STATUS  IS  STS-RECE455.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -122,15 +120,9 @@
            COPY    "CPRCF045.INC"  REPLACING   //RECE45//
                                    BY          //RECE451//.
       *
-       FD  RECE4441-FILE.
-       01  RECE4441-REC. 
-           COPY    "CPRCF044.INC"  REPLACING   //RECE44//
-                                   BY          //RECE4441//.
-      *
-       FD  RECE4551-FILE.
-       01  RECE4551-REC. 
-           COPY    "CPRCF045.INC"  REPLACING   //RECE45//
-                                   BY          //RECE4551//.
+       FD  RECE455-FILE.
+       01  RECE455-REC. 
+           COPY    "CPRCF0455.INC".
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -158,6 +150,10 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE451//.
       *
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE455//.
+      *
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
@@ -169,22 +165,31 @@
            03  STS-RECE441         PIC X(02).
            03  STS-RECE45          PIC X(02).
            03  STS-RECE451         PIC X(02).
+           03  STS-RECE455         PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-RECE44          PIC 9(01).
+           03  FLG-RECE441         PIC 9(01).
            03  FLG-RECE45          PIC 9(01).
+           03  FLG-RECE451         PIC 9(01).
            03  FLG-WRKRECE45       PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-COMMENT         PIC 9(02).
+           03  FLG-SETCOM          PIC 9(01).
+           03  FLG-MEISKY-OKIKAE   PIC 9(01).
+           03  FLG-SETCOM-OKIKAE   PIC 9(01).
       *    
       *    カウント領域
        01  CNT-AREA.
            03  CNT-RECE41          PIC 9(06).
            03  CNT-RECE44          PIC 9(06).
            03  CNT-RECE45          PIC 9(06).
+           03  CNT-RECE455         PIC 9(06).
+           03  CNT-RECE44-RE       PIC 9(06).
+           03  CNT-RECE45-RE       PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
       *
       *    添字領域
@@ -216,6 +221,18 @@
                05  WRK-TAIHI-SRYYM             PIC  9(06).
                05  WRK-TAIHI-SRYD              PIC  9(02).
       *
+           03  WRK-HEN-RENNUM                  PIC  9(02).
+           03  WRK-HEN-SHORI-RENNUM            PIC  9(01).
+           03  WRK-HEN-SEQNO                   PIC  9(02).
+      *
+           03  WRK-HEN-RENNUM-X                PIC  9(02).
+           03  WRK-HEN-SHORI-RENNUM-X          PIC  9(01).
+           03  WRK-HEN-SEQNO-X                 PIC  9(02).
+      *
+           03  WRK-HEN-RENNUM-J                PIC  9(02).
+           03  WRK-HEN-SHORI-RENNUM-J          PIC  9(01).
+           03  WRK-HEN-SEQNO-J                 PIC  9(02).
+      *
        01  WRK-RECE45-REC. 
            COPY    "CPRCF045.INC"  REPLACING   //RECE45//
                                    BY          //WRK-RECE45//.
@@ -231,6 +248,12 @@
            03  WRK-FREEINF2                  OCCURS 50.
                05  WK-FREE-YUKOKETA2         PIC  9(03).
                05  WK-FREE-NAME2             PIC  X(200).
+               05  WK-FREE-MEISKYFLG2        PIC  X(01).
+               05  WK-FREE-SETCOMATFLG2      PIC  9(03).
+      *
+       01  WRK-JIDO-SETCOM-AREA.
+           03  WRK-JIDO-SETCOMATFLG          PIC  9(03).
+           03  WRK-JIDO-SETCOMFLG            PIC  X(01).
       *
       *    日付全角変換領域
        01  TBL-TUKI-AREA.
@@ -416,21 +439,27 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE441PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE451PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
       *
+           MOVE    "RECE455"           TO  RECE455PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE455PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE455PARA-HOSPNUM
+      *
            OPEN    INPUT               RECE41-FILE
       *
            OPEN    INPUT               RECE44-FILE
       *
            OPEN    INPUT               RECE45-FILE
       *
-           OPEN    OUTPUT              RECE4441-FILE
-           CLOSE                       RECE4441-FILE
-      *
-           OPEN    OUTPUT              RECE4551-FILE
-           CLOSE                       RECE4551-FILE
-      *
            OPEN    OUTPUT              RECE441-FILE
+           CLOSE                       RECE441-FILE
       *
            OPEN    OUTPUT              RECE451-FILE
+           CLOSE                       RECE451-FILE
+      *
+           OPEN    I-O                 RECE441-FILE
+      *
+           OPEN    I-O                 RECE451-FILE
+      *
+           OPEN    I-O                 RECE455-FILE
       *
            .
        110-FILE-OPEN-EXT.
@@ -440,6 +469,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
       *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
+      *
+           INITIALIZE                      WRK-JIDO-SETCOM-AREA
       *
            INITIALIZE                      RECE44-REC
            MOVE    RECE41-HOSPNUM      TO  RECE44-HOSPNUM
@@ -555,6 +586,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
       *
            END-PERFORM
       *
+      *****関係コメント編集****************
+           PERFORM     260-SETCOM-HENSYU-SEC
+      *
            IF      FLG-END         =   ZERO
                PERFORM 990-RECE41-READ-SEC
       *
@@ -574,8 +608,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
       *****************************************************************
        2001-KYUKYU-COMMENT-SEC          SECTION.
       *
+           INITIALIZE            WRK-JIDO-SETCOM-AREA
+           MOVE      "1"       TO     WRK-JIDO-SETCOMFLG
+           MOVE      201       TO     WRK-JIDO-SETCOMATFLG
+      *
            MOVE       RECE44-REC    TO   RECE441-REC
            ADD        1             TO   RECE441-MEISAISU
+           IF   WRK-JIDO-SETCOMFLG   =  "1"
+             MOVE  WRK-JIDO-SETCOMFLG
+                                    TO   RECE441-SETCOMFLG
+           END-IF
            WRITE      RECE441-REC
            ADD        1             TO   CNT-RECE44
       *
@@ -618,6 +660,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
                                         TO  DAY-IDX
            MOVE     TBL-DAY(DAY-IDX)    TO  RECE451-NAME(2)(13:4)
       *
+           IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+             MOVE  "2"                  TO  RECE451-MEISKYFLG(2)
+             MOVE  WRK-JIDO-SETCOMATFLG TO  RECE451-SETCOMATFLG(2)
+           END-IF
+      *
            MOVE     "2"                 TO  RECE451-SIKFLG(2)
       *
            WRITE    RECE451-REC
@@ -631,6 +678,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
       *    初診（同日複数診療科）のコメント編集
       *****************************************************************
        2001-SYODOU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE            WRK-JIDO-SETCOM-AREA
+           MOVE      "1"       TO     WRK-JIDO-SETCOMFLG
+           MOVE       4        TO     WRK-JIDO-SETCOMATFLG
       *
            MOVE       ZERO       TO   IDZ
            INITIALIZE            WRK-FREE-AREA2
@@ -667,6 +718,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
              MOVE    "key10"             TO  MCP-PATHNAME
              PERFORM 900-CLOSE-SEC
       *
+             IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+               MOVE  "2"                   TO  WK-FREE-MEISKYFLG2(IDZ)
+               MOVE  WRK-JIDO-SETCOMATFLG  TO  WK-FREE-SETCOMATFLG2(IDZ)
+             END-IF
+      *
              PERFORM   VARYING   IDW   FROM   200   BY  -1
                         UNTIL    IDW   <   1
                 IF   WK-FREE-NAME2(IDZ)(IDW:1)  NOT =  SPACE
@@ -713,6 +769,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
                              TO  WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1)
                 MOVE   WK-FREE-NAME2(IDX)
                              TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)
+                MOVE   WK-FREE-MEISKYFLG2(IDX)
+                          TO  WRK-RECE45XX-MEISKYFLG(MAX-MEISAISU 1)
+                MOVE   WK-FREE-SETCOMATFLG2(IDX)
+                          TO  WRK-RECE45XX-SETCOMATFLG(MAX-MEISAISU 1)
                 MOVE    "2"  TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
            END-PERFORM
       *
@@ -780,6 +840,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            MOVE    RECE44-REC        TO      RECE441-REC
            MOVE    WRK-CNT-MEISAI    TO      RECE441-MEISAISU
+           IF   WRK-JIDO-SETCOMFLG   =  "1"
+             MOVE  WRK-JIDO-SETCOMFLG
+                                     TO      RECE441-SETCOMFLG
+           END-IF
            WRITE   RECE441-REC
            ADD     1                 TO      CNT-RECE44
       *
@@ -791,6 +855,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *    再診（同一日２科目）のコメント編集
       *****************************************************************
        2001-SAIDOU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE            WRK-JIDO-SETCOM-AREA
+           MOVE      "1"       TO     WRK-JIDO-SETCOMFLG
+           MOVE       25       TO     WRK-JIDO-SETCOMATFLG
       *
            MOVE       ZERO       TO   IDZ
            INITIALIZE            WRK-FREE-AREA2
@@ -827,6 +895,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
              MOVE    "key10"             TO  MCP-PATHNAME
              PERFORM 900-CLOSE-SEC
       *
+             IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+               MOVE  "2"                   TO  WK-FREE-MEISKYFLG2(IDZ)
+               MOVE  WRK-JIDO-SETCOMATFLG  TO  WK-FREE-SETCOMATFLG2(IDZ)
+             END-IF
+      *
              PERFORM   VARYING   IDW   FROM   200   BY  -1
                         UNTIL    IDW   <   1
                 IF   WK-FREE-NAME2(IDZ)(IDW:1)  NOT =  SPACE
@@ -873,6 +946,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
                              TO  WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1)
                 MOVE   WK-FREE-NAME2(IDX)
                              TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)
+                MOVE   WK-FREE-MEISKYFLG2(IDX)
+                          TO  WRK-RECE45XX-MEISKYFLG(MAX-MEISAISU 1)
+                MOVE   WK-FREE-SETCOMATFLG2(IDX)
+                          TO  WRK-RECE45XX-SETCOMATFLG(MAX-MEISAISU 1)
                 MOVE    "2"  TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
            END-PERFORM
       *
@@ -940,6 +1017,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            MOVE    RECE44-REC        TO      RECE441-REC
            MOVE    WRK-CNT-MEISAI    TO      RECE441-MEISAISU
+           IF   WRK-JIDO-SETCOMFLG   =  "1"
+             MOVE  WRK-JIDO-SETCOMFLG
+                                     TO      RECE441-SETCOMFLG
+           END-IF
            WRITE   RECE441-REC
            ADD     1                 TO      CNT-RECE44
       *
@@ -992,6 +1073,212 @@ grpsys       PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
+      *    関係コメント編集
+      *****************************************************************
+       260-SETCOM-HENSYU-SEC     SECTION.
+      *
+      *    パラメータ４４１ファイルより編集
+           PERFORM 800-RECE41-SET441-SEC
+           MOVE    ZERO                TO  RECE441-ZAINUM
+      *
+           START   RECE441-FILE
+               KEY IS    >=   RECE441-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE441
+               NOT INVALID
+                   PERFORM 990-RECE441-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE441          =   1                 )
+               OR     ( RECE41-HOSPNUM   NOT =   RECE441-HOSPNUM   )
+               OR     ( RECE41-SRYYM     NOT =   RECE441-SRYYM     )
+               OR     ( RECE41-NYUGAIKBN NOT =   RECE441-NYUGAIKBN )
+               OR     ( RECE41-PTID      NOT =   RECE441-PTID      )
+               OR     ( RECE41-RECEKA    NOT =   RECE441-RECEKA    )
+               OR     ( RECE41-HKNID     NOT =   RECE441-HKNID     )
+               OR     ( RECE41-TEKSTYMD  NOT =   RECE441-TEKSTYMD  )
+      *
+               MOVE      ZERO      TO    FLG-SETCOM-OKIKAE
+      *
+               IF     RECE441-SETCOMFLG   =    "1"
+                  PERFORM 2601-SETCOM-HENSYU2-SEC
+                  IF   FLG-SETCOM-OKIKAE  =  "1"
+                    CONTINUE
+                  ELSE
+                    MOVE   SPACE   TO   RECE441-SETCOMFLG
+                    REWRITE   RECE441-REC
+                    ADD     1      TO   CNT-RECE44-RE
+                  END-IF
+               END-IF
+      *
+               PERFORM 990-RECE441-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       260-SETCOM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    関係コメント編集２
+      *****************************************************************
+       2601-SETCOM-HENSYU2-SEC     SECTION.
+      *
+           MOVE    ZERO    TO    FLG-SETCOM
+      *
+           MOVE    ZERO    TO    WRK-HEN-RENNUM-X
+                                 WRK-HEN-SHORI-RENNUM-X
+                                 WRK-HEN-SEQNO-X
+           MOVE    ZERO    TO    WRK-HEN-RENNUM-J
+                                 WRK-HEN-SHORI-RENNUM-J
+                                 WRK-HEN-SEQNO-J
+      *
+           PERFORM 800-RECE441-SET451-SEC
+           MOVE    RECE441-ZAINUM      TO  RECE451-ZAINUM
+           START   RECE451-FILE
+               KEY IS    >=   RECE451-KEY
+               INVALID
+                   MOVE    1           TO  FLG-RECE451
+               NOT INVALID
+                   PERFORM 990-RECE451-NEXT-SEC
+           END-START
+           PERFORM
+               UNTIL  ( FLG-RECE451           =   1                 )
+               OR     ( RECE441-HOSPNUM   NOT =   RECE451-HOSPNUM   )
+               OR     ( RECE441-SRYYM     NOT =   RECE451-SRYYM     )
+               OR     ( RECE441-NYUGAIKBN NOT =   RECE451-NYUGAIKBN )
+               OR     ( RECE441-PTID      NOT =   RECE451-PTID      )
+               OR     ( RECE441-RECEKA    NOT =   RECE451-RECEKA    )
+               OR     ( RECE441-HKNID     NOT =   RECE451-HKNID     )
+               OR     ( RECE441-TEKSTYMD  NOT =   RECE451-TEKSTYMD  )
+               OR     ( RECE441-ZAINUM    NOT =   RECE451-ZAINUM    )
+      *
+               MOVE      ZERO      TO    FLG-MEISKY-OKIKAE
+      *
+               PERFORM   VARYING   IDX   FROM    1   BY  1
+                         UNTIL   ( IDX                >   5     )
+                         OR      ( RECE451-SRYCD(IDX) =   SPACE )
+                IF    RECE451-SIKFLG(IDX)     =  "2"
+                 IF   RECE451-MEISKYFLG(IDX)  =  "2"
+                   IF      RECE451-SRYYM  >=  "201304"
+                    IF     RECE451-SETCOMATFLG(IDX) = ZERO
+                      IF   (FLG-SETCOM              =  1   )
+                      AND  (RECE451-RECEDENFLG(IDX) = SPACE)
+                        ADD    1                 TO  WRK-HEN-SEQNO-X
+                        IF   WRK-HEN-SEQNO-X  >  3
+                          MOVE   SPACE   TO  RECE451-MEISKYFLG(IDX)
+                          MOVE   1       TO  FLG-MEISKY-OKIKAE
+                        ELSE
+                          MOVE   WRK-HEN-RENNUM-X  TO  WRK-HEN-RENNUM
+                          MOVE   WRK-HEN-SHORI-RENNUM-X
+                                         TO  WRK-HEN-SHORI-RENNUM
+                          MOVE   WRK-HEN-SEQNO-X   TO  WRK-HEN-SEQNO
+                          PERFORM  26011-SETCOM-HENSYU3-SEC
+                        END-IF
+                        IF  (WRK-HEN-RENNUM-X = WRK-HEN-RENNUM-J )
+                        AND (WRK-HEN-SHORI-RENNUM-X
+                                        = WRK-HEN-SHORI-RENNUM-J )
+                          ADD  1                 TO  WRK-HEN-SEQNO-J
+                        END-IF
+                      END-IF
+                    ELSE
+                      EVALUATE   RECE451-SETCOMATFLG(IDX)
+                        WHEN    4
+                        WHEN   25
+                        WHEN  201
+                          ADD  1                 TO  WRK-HEN-SEQNO-J
+                          IF   WRK-HEN-SEQNO-J  >  3
+                            MOVE   SPACE   TO  RECE451-MEISKYFLG(IDX)
+                            MOVE   1       TO  FLG-MEISKY-OKIKAE
+                          ELSE
+                            MOVE WRK-HEN-RENNUM-J  TO  WRK-HEN-RENNUM
+                            MOVE WRK-HEN-SHORI-RENNUM-J
+                                         TO  WRK-HEN-SHORI-RENNUM
+                            MOVE WRK-HEN-SEQNO-J   TO  WRK-HEN-SEQNO
+                            PERFORM  26011-SETCOM-HENSYU3-SEC
+                          END-IF
+                          IF  (WRK-HEN-RENNUM-X = WRK-HEN-RENNUM-J )
+                          AND (WRK-HEN-SHORI-RENNUM-X
+                                          = WRK-HEN-SHORI-RENNUM-J )
+                            ADD    1             TO  WRK-HEN-SEQNO-X
+                          END-IF
+                      END-EVALUATE
+                    END-IF
+                   ELSE
+                    MOVE   SPACE   TO  RECE451-MEISKYFLG(IDX)
+                    MOVE   1       TO  FLG-MEISKY-OKIKAE
+                   END-IF
+                 ELSE
+                    IF   (RECE451-SRYCD(IDX)(1:1) = "1" OR "6" OR "7")
+                    OR   (RECE451-SRYCD(IDX)(1:3) = "059"            )
+                      MOVE   1               TO  FLG-SETCOM
+                      MOVE   RECE451-RENNUM  TO  WRK-HEN-RENNUM-X
+                      MOVE   IDX             TO  WRK-HEN-SHORI-RENNUM-X
+                      MOVE   ZERO            TO  WRK-HEN-SEQNO-X
+                    END-IF
+      *
+                    IF   (RECE451-SRYCD(IDX) =
+      *4
+                          "101110040" OR
+      *25
+                          "101120040" OR
+      *201
+                          "101800890"                        )
+                    OR   (RECE451-SRYCD(IDX)(1:5)  =  "09593")
+      *
+                       MOVE   RECE451-RENNUM  TO  WRK-HEN-RENNUM-J
+                       MOVE   IDX       TO  WRK-HEN-SHORI-RENNUM-J
+                       MOVE   ZERO            TO  WRK-HEN-SEQNO-J
+                    END-IF
+                 END-IF
+                ELSE
+                    MOVE   SPACE   TO  RECE451-MEISKYFLG(IDX)
+                    MOVE   1       TO  FLG-MEISKY-OKIKAE
+                END-IF
+               END-PERFORM
+      *
+               IF    FLG-MEISKY-OKIKAE  =  1
+                  REWRITE   RECE451-REC
+                  ADD       1        TO   CNT-RECE45-RE
+               END-IF
+      *
+               PERFORM 990-RECE451-NEXT-SEC
+      *
+           END-PERFORM
+      *
+           .
+       2601-SETCOM-HENSYU2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    関係コメント編集３
+      *****************************************************************
+       26011-SETCOM-HENSYU3-SEC     SECTION.
+      *
+           MOVE    SPACE                 TO  RECE455-REC
+           INITIALIZE                        RECE455-REC
+      *
+           MOVE    RECE451-KEY           TO  RECE455-KEY
+      *
+           MOVE    WRK-HEN-RENNUM        TO  RECE455-RENNUM
+           MOVE    WRK-HEN-SHORI-RENNUM  TO  RECE455-SHORI-RENNUM
+           MOVE    WRK-HEN-SEQNO         TO  RECE455-SEQNO
+      *
+           MOVE    RECE451-SRYCD(IDX)    TO  RECE455-SRYCD
+           MOVE    RECE451-NAME(IDX)     TO  RECE455-NAME
+           MOVE    RECE451-INPUTCOMENT(IDX)
+                                         TO  RECE455-INPUTCOMENT
+      *
+           WRITE   RECE455-REC
+           ADD     1                     TO  CNT-RECE455
+      *
+           MOVE    1                     TO  FLG-SETCOM-OKIKAE
+      *
+           .
+       26011-SETCOM-HENSYU3-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
@@ -1011,6 +1298,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "RECE41  IN  " CNT-RECE41  
            DISPLAY "RECE44  CNT " CNT-RECE44  
            DISPLAY "RECE45  CNT " CNT-RECE45  
+           DISPLAY "RECE44  REWRITE :" CNT-RECE44-RE
+           DISPLAY "RECE45  REWRITE :" CNT-RECE45-RE
+           DISPLAY "RECE455 CNT-OUT :" CNT-RECE455
            DISPLAY "*** ORCR0435 END ***"
       *
            .
@@ -1030,6 +1320,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            CLOSE                       RECE441-FILE
            CLOSE                       RECE451-FILE
+      *
+           CLOSE                       RECE455-FILE
       *
            .
        310-FILE-CLOSE-EXT.
@@ -1147,6 +1439,22 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       ****************************************************************
+      *    レセプト４４１データ読み
+      ****************************************************************
+       990-RECE441-NEXT-SEC           SECTION.
+      *
+           READ    RECE441-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE441
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE441
+           END-READ
+      *
+           .
+       990-RECE441-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
       *    レセプト０５データ読み
       ****************************************************************
        990-RECE45-NEXT-SEC           SECTION.
@@ -1160,6 +1468,58 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        990-RECE45-NEXT-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    レセプト４５１データ読み
+      ****************************************************************
+       990-RECE451-NEXT-SEC           SECTION.
+      *
+           READ    RECE451-FILE       NEXT
+               AT  END
+                   MOVE    1         TO  FLG-RECE451
+               NOT AT  END
+                   MOVE    ZERO      TO  FLG-RECE451
+           END-READ
+      *
+           .
+       990-RECE451-NEXT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト４１データ編集処理（４４１）
+      *****************************************************************
+       800-RECE41-SET441-SEC           SECTION.
+      *
+           INITIALIZE                      RECE441-REC
+           MOVE    RECE41-HOSPNUM      TO  RECE441-HOSPNUM
+           MOVE    RECE41-SRYYM        TO  RECE441-SRYYM
+           MOVE    RECE41-NYUGAIKBN    TO  RECE441-NYUGAIKBN
+           MOVE    RECE41-PTID         TO  RECE441-PTID
+           MOVE    RECE41-RECEKA       TO  RECE441-RECEKA
+           MOVE    RECE41-HKNID        TO  RECE441-HKNID
+           MOVE    RECE41-TEKSTYMD     TO  RECE441-TEKSTYMD
+      *
+           .
+       800-RECE41-SET441-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト４４１データ編集処理（４５１）
+      *****************************************************************
+       800-RECE441-SET451-SEC           SECTION.
+      *
+           INITIALIZE                       RECE451-REC
+           MOVE    RECE441-HOSPNUM      TO  RECE451-HOSPNUM
+           MOVE    RECE441-SRYYM        TO  RECE451-SRYYM
+           MOVE    RECE441-NYUGAIKBN    TO  RECE451-NYUGAIKBN
+           MOVE    RECE441-PTID         TO  RECE451-PTID
+           MOVE    RECE441-RECEKA       TO  RECE451-RECEKA
+           MOVE    RECE441-HKNID        TO  RECE451-HKNID
+           MOVE    RECE441-TEKSTYMD     TO  RECE451-TEKSTYMD
+      *
+           .
+       800-RECE441-SET451-EXT.
            EXIT.
       *
       *****************************************************************

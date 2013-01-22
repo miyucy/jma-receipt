@@ -89,6 +89,7 @@
       *                                     コード対応
       *
       *  04.07.01    NACL-門脇    11/09/07  労災請求書作成対応
+      *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -988,7 +989,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
       *    労災レセプト回数取得
            IF    ( RECE41-HKNKBN     =   "1"  OR  "2" )
-      **>  AND   ( RECE41-ROUKAISU   =   "2"          )
              INITIALIZE                    LNK-ORCSROUKAISU-REC
              MOVE  RECE41-HOSPNUM      TO  LNK-ORCSROUKAISU-HOSPNUM
              MOVE  RECE41-NYUGAIKBN    TO  LNK-ORCSROUKAISU-NYUGAIKBN
@@ -1037,10 +1037,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
               IF   LNK-ORCSROUKAISU-RECEKAISU  =  1
                 MOVE   "1"               TO  RECE41-SYOKAIFLG
               END-IF
-              IF   RECE41-ROUKAISU   =   "2"
-                MOVE   LNK-ORCSROUKAISU-RECEKAISU
+              MOVE     LNK-ORCSROUKAISU-RECEKAISU
                                          TO  RECE41-RECEKAISU
-              END-IF
              END-IF
            END-IF
       *
