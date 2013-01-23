@@ -5231,7 +5231,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  IDR2
            PERFORM VARYING     IDXD    FROM    2   BY  1
                    UNTIL      (IDXD        >   10  )
-                          AND (IDR2        >   ZERO )
+                           OR (IDR2        >   ZERO )
                IF      SPA-GNAI-DAY (IDXD SPA-DAY-IDX)   >   ZERO
                    MOVE    IDXD            TO  IDR2
                END-IF
