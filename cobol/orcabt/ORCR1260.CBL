@@ -438,7 +438,7 @@
        01  WRK-RECE220GJK-MAX               PIC 9(02).
        01  WRK-RECE220GJK-TABLE.
            03  WRK-RECE220GJK-TBL           OCCURS 31.
-               05  WRK-RECE220GJK-REC       PIC X(1000).
+               05  WRK-RECE220GJK-REC       PIC X(2000).
        01  RECE220GJK-REC.
            COPY    "CPRCF220.INC"  REPLACING  //RECE220//
                                    BY         //RECE220GJK//.
@@ -2233,6 +2233,7 @@
                      UNTIL   IDW >       WRK-KENSA-SU (IDXX)
                MOVE  WRK-RECE220-IDX (IDXX IDW) TO  IDX1
                MOVE  WRK-RECE220-REC (IDX1)     TO  RECE220-REC
+               MOVE  WRK-RECE220-DAY-AREA(IDX1) TO  RECE220-DAY-AREA
                ADD   RECE220-ZAITEN             TO  WRK-RECE220-ZAITEN
                PERFORM 2002-TBLZAIW-TAIHI-SEC
              END-PERFORM

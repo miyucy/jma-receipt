@@ -484,7 +484,7 @@
        01  WRK-RECE84GJK-MAX               PIC 9(02).
        01  WRK-RECE84GJK-TABLE.
            03  WRK-RECE84GJK-TBL           OCCURS 31.
-               05  WRK-RECE84GJK-REC       PIC X(1000).
+               05  WRK-RECE84GJK-REC       PIC X(2000).
        01  RECE84GJK-REC.
            COPY    "CPRCF084.INC"  REPLACING  //RECE84//
                                    BY         //RECE84GJK//.
@@ -2405,6 +2405,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                      UNTIL   IDW >       WRK-KENSA-SU (IDXX)
                MOVE  WRK-RECE84-IDX (IDXX IDW) TO  IDX1
                MOVE  WRK-RECE84-REC (IDX1)     TO  RECE84-REC
+               MOVE  WRK-RECE84-DAY-AREA(IDX1) TO  RECE84-DAY-AREA
                ADD   RECE84-ZAITEN             TO  WRK-RECE84-ZAITEN
                PERFORM 2002-TBLZAIW-TAIHI-SEC
              END-PERFORM

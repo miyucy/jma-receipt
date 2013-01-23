@@ -43,6 +43,8 @@
       *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  04.05.03    NACL-門脇    12/04/11  平成２４年４月改正
+      *
+      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -431,7 +433,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *          剤回数・日数回数テーブルの加算
                  ADD     RECE44-ZAIKAISU     TO  RECE443-ZAIKAISU
                  PERFORM VARYING IDX FROM    1   BY  1
-                         UNTIL   IDX >       4
+                         UNTIL   IDX >      10
                      PERFORM VARYING IDY FROM    1   BY  1
                              UNTIL   IDY >       31
                          ADD     RECE44-KAISU (IDX IDY)
@@ -490,7 +492,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *          剤回数・日数回数テーブルの加算
                  ADD     RECE44-ZAIKAISU     TO  RECE443-ZAIKAISU
                  PERFORM VARYING IDX FROM    1   BY  1
-                         UNTIL   IDX >       4
+                         UNTIL   IDX >      10
                      PERFORM VARYING IDY FROM    1   BY  1
                              UNTIL   IDY >       31
                          ADD     RECE44-KAISU (IDX IDY)

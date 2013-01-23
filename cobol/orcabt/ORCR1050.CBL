@@ -64,6 +64,8 @@
       *  04.05.09    NACL-門脇    13/01/22  ワーク領域拡張
       *  04.06.01    NACL-門脇    12/10/15  診療行為入力したコメントのみの剤の
       *                                     レセプト記載対応
+      *
+      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -199,6 +201,7 @@
            03  IDX4                PIC 9(04).
       *
            03  IDX6                PIC 9(04).
+           03  IDX7                PIC 9(04).
       *
            03  IDXY                PIC 9(03).
            03  IDXZ                PIC 9(03).
@@ -353,7 +356,7 @@
                05  WRK-GAIJINKEN           PIC 9(02).
                05  WRK-SRYSYUKBN-K         PIC X(03).
                05  WRK-KAISU-G.
-                   07  WRK-KAKSU-OCC       OCCURS  4.
+                   07  WRK-KAKSU-OCC       OCCURS  10.
                        09  WRK-KAISU       PIC 9(03).  
                    07  WRK-KAISU1          PIC 9(02).
                    07  WRK-KAISU2          PIC 9(03).
@@ -398,7 +401,7 @@
                    07  WRK-RECE120-SRYCD           PIC 9(09).
                    07  WRK-RECE120-SRYSURYO        PIC 9(05)V9(05).
                05  WRK-RECE120-DAY-AREA.
-                   07  WRK-RECE120-DAY-TBL         OCCURS  4.
+                   07  WRK-RECE120-DAY-TBL         OCCURS  10.
                        09  WRK-RECE120-KAISUINF    OCCURS  31.
                            11  WRK-RECE120-KAISU   PIC  9(03).
       *
@@ -460,7 +463,7 @@
        01  WRK-RECE120GJK-MAX               PIC 9(02).
        01  WRK-RECE120GJK-TABLE.
            03  WRK-RECE120GJK-TBL           OCCURS 31.
-               05  WRK-RECE120GJK-REC       PIC X(1000).
+               05  WRK-RECE120GJK-REC       PIC X(2000).
        01  RECE120GJK-REC.
            COPY    "CPRCF120.INC"  REPLACING  //RECE120//
                                    BY         //RECE120GJK//.
@@ -2401,14 +2404,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                            RECE120GJK-DAY-AREA
                        MOVE    RECE120-KAISU (1 IDX)
                                        TO  RECE120GJK-ZAIKAISU
-                       MOVE    RECE120-KAISU (1 IDX)
-                                       TO  RECE120GJK-KAISU (1 IDX)
-                       MOVE    RECE120-KAISU (2 IDX)
-                                       TO  RECE120GJK-KAISU (2 IDX) 
-                       MOVE    RECE120-KAISU (3 IDX)
-                                       TO  RECE120GJK-KAISU (3 IDX) 
-                       MOVE    RECE120-KAISU (4 IDX)
-                                       TO  RECE120GJK-KAISU (4 IDX) 
+                       PERFORM VARYING IDX7 FROM  1  BY  1
+                                UNTIL  IDX7   >  10
+                         MOVE    RECE120-KAISU(IDX7 IDX)
+                                       TO  RECE120GJK-KAISU(IDX7 IDX)
+                       END-PERFORM
                        COMPUTE WRK-RECE120GJK-MAX =  WRK-RECE120GJK-MAX
                                                  +  1
                        MOVE    RECE120GJK-REC       
@@ -2416,10 +2416,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                                (WRK-RECE120GJK-MAX)
                        COMPUTE RECE120-ZAIKAISU   =  RECE120-ZAIKAISU
                                        -   RECE120-KAISU (1 IDX)
-                       MOVE    ZERO    TO  RECE120-KAISU (1 IDX)
-                                           RECE120-KAISU (2 IDX) 
-                                           RECE120-KAISU (3 IDX) 
-                                           RECE120-KAISU (4 IDX) 
+                       PERFORM VARYING IDX7 FROM  1  BY  1
+                                UNTIL  IDX7   >  10
+                         MOVE    ZERO  TO  RECE120-KAISU(IDX7 IDX)
+                       END-PERFORM
                    END-IF
                  END-IF
              END-PERFORM
@@ -2663,6 +2663,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                      UNTIL   IDW >       WRK-KENSA-SU (IDXX)
                MOVE  WRK-RECE120-IDX (IDXX IDW) TO  IDX1
                MOVE  WRK-RECE120-REC (IDX1)     TO  RECE120-REC
+               MOVE  WRK-RECE120-DAY-AREA(IDX1) TO  RECE120-DAY-AREA
                ADD   RECE120-ZAITEN             TO  WRK-RECE120-ZAITEN
                PERFORM 2002-TBLZAIW-TAIHI-SEC
              END-PERFORM    

@@ -144,6 +144,8 @@
       *  04.07.01    NACL-門脇    10/09/12  複数リハビリ開始日・リハビリ
       *                                     コメントの対応
       *  04.07.02    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
+      *
+      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -796,12 +798,12 @@
                07  TBL-YT1-MEISAISU             PIC 9(04).
              05  TBL-YT1-RECE04-DAY-AREA.
                07  TBL-YT1-OCC2                 OCCURS  31.
-                 09  TBL-YT1-OCC3               OCCURS   3.
+                 09  TBL-YT1-OCC3               OCCURS   9.
                    11  TBL-YT1-KAISU            PIC 9(03).
              05  TBL-YT1-FLG                    PIC 9(01).
       *
       *    並び替え用
-       01  WRK-YAKUTEI-DATA                     PIC X(1361).
+       01  WRK-YAKUTEI-DATA                     PIC X(1919).
       *
        01  WRK-TAIHI-YT1-KEY                    PIC X(07).
        01  WRK-TAIHI-YT1-KEY2                   PIC 9(01).
@@ -811,7 +813,7 @@
       *    薬剤逓減情報（キー単位の編集テーブル）
        01  TBL-YAKUTEI-INF2.
            03  TBL-YT2-DAY                    OCCURS      31.
-             05  TBL-YT2X-KAIT                  OCCURS     3.
+             05  TBL-YT2X-KAIT                  OCCURS     9.
                06  TBL-YT2X1-OCC                  OCCURS  25.
                  07  TBL-YT2X1-RECE04-REC         PIC X(1000).
                  07  TBL-YT2X1-KAISU              PIC 9(03).
@@ -824,7 +826,7 @@
                  07  TBL-YT2X2-DAY-AREA.
                    09  TBL-YT2X2-OCC2               OCCURS  31.
                        11  TBL-YT2X2-DAY            PIC 9(03).
-             05  TBL-YT2Y-KAIT                  OCCURS     3.
+             05  TBL-YT2Y-KAIT                  OCCURS     9.
                06  TBL-YT2Y1-OCC                  OCCURS  26.
                  07  TBL-YT2Y1-HIKAKU.
                    09  TBL-YT2Y1-ZAITEN           PIC 9(08).
@@ -6263,7 +6265,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
              MOVE    RECE04-MEISAISU     TO   TBL-YT1-MEISAISU(IDX6)
       *
              PERFORM   VARYING   IDX7    FROM   2   BY   1
-                        UNTIL   (IDX7      >    4)
+                        UNTIL   (IDX7      >   10)
       *
                COMPUTE   IDX9    =   IDX7  -   1
                PERFORM   VARYING   IDX8    FROM   1   BY   1
@@ -6486,7 +6488,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                               UNTIL   (IDX7      >    31)
       *
                      PERFORM   VARYING   IDX8    FROM   1   BY   1
-                                UNTIL   (IDX8      >    3)
+                                UNTIL   (IDX8      >    9)
       *
                         IF   TBL-YT1-KAISU(IDX6 IDX7 IDX8)
                                                         NOT =  ZERO
@@ -6546,7 +6548,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                               UNTIL   (IDX7      >    31)
       *
                      PERFORM   VARYING   IDX8    FROM   1   BY   1
-                                UNTIL   (IDX8      >    3)
+                                UNTIL   (IDX8      >    9)
       *
                         IF   TBL-YT1-KAISU(IDX6 IDX7 IDX8)
                                                         NOT =  ZERO
@@ -6622,7 +6624,7 @@ grpsys     MOVE    RECE04-HOSPNUM       TO  SANTEI-HOSPNUM
                       UNTIL   (IDX7      >    31)
       *
               PERFORM   VARYING   IDX8    FROM   1   BY   1
-                         UNTIL   (IDX8      >    3)
+                         UNTIL   (IDX8      >    9)
       *
                IF  (TBL-YT2Y1-HIKAKU(IDX7 IDX8 26)  NOT = ZERO)
                OR  (TBL-YT2Y2-HIKAKU(IDX7 IDX8  4)  NOT = ZERO)

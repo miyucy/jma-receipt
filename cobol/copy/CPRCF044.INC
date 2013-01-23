@@ -56,6 +56,7 @@
       *
       *  04.07.01    NACL-門脇    12/09/25  コメント差込項目追加
       *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
+      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       ************************************************************
       *01  RECE44-REC.
            03  RECE44-KEY.
@@ -236,13 +237,6 @@
       *在宅持続陽圧呼吸療法指導管理料
            03  RECE44-FLG-YOUATU-COMMENT  PIC  X(01).
       *
-      *日数回数テーブル
-           03  RECE44-DAY-AREA.
-      *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
-             04  RECE44-DAY-TBL           OCCURS  4.
-                 05  RECE44-KAISUINF      OCCURS  31.
-                     07  RECE44-KAISU     PIC  9(03).
-      *
       *手技毎の内容（手術・画像診断・処置）
            03  RECE44-ACCTP-SYUGI-TBL-G.
                  05  RECE44-ACCTP-SYUGI-TBL     OCCURS  5.
@@ -260,3 +254,10 @@
            03  RECE44-ACCTP-SANSOTEN            PIC 9(07).
       *窒素点数
            03  RECE44-ACCTP-CHISOTEN            PIC 9(07).
+      *
+      *日数回数テーブル
+           03  RECE44-DAY-AREA.
+      *        診療回数テーブル（1:合計、2-9:１回〜９回）
+             04  RECE44-DAY-TBL           OCCURS  10.
+                 05  RECE44-KAISUINF      OCCURS  31.
+                     07  RECE44-KAISU     PIC  9(03).

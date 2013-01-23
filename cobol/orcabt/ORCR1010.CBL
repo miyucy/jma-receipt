@@ -103,6 +103,8 @@
       *                                     レセプト記載対応
       *  04.07.01    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
       *  04.07.02    NACL-門脇    12/09/25  コメント差込取り止め（在宅持続陽圧）
+      *
+      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1350,7 +1352,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE        ZERO             TO  WK-TAIHI-DAY
            MOVE        ZERO             TO  WK-TAIHI-FLG
            PERFORM     VARYING   IDX3   FROM    1    BY   1
-                       UNTIL     IDX3   >       4
+                       UNTIL     IDX3   >      10
                PERFORM     VARYING   IDX2   FROM    1    BY   1
                            UNTIL     IDX2   >       31
                    MOVE    ACCT-DAY(IDX3 IDX2)  TO

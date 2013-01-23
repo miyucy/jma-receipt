@@ -53,6 +53,8 @@
       *
       *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
       *                                     キーにkohid 追加
+      *
+      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -413,7 +415,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    WRK-COMRENNUM       TO  RECE042-COMRENNUM
                    MOVE    RECE04-ZAIKAISU     TO  RECE042-ZAIKAISU
                    PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       4
+                           UNTIL   IDX >      10
                        PERFORM VARYING IDY FROM    1   BY  1
                                UNTIL   IDY >       31
                            MOVE    RECE04-KAISU (IDX IDY)
@@ -451,7 +453,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *              剤回数・日数回数テーブルの加算
                      ADD     RECE04-ZAIKAISU     TO  RECE042-ZAIKAISU
                      PERFORM VARYING IDX FROM    1   BY  1
-                             UNTIL   IDX >       4
+                             UNTIL   IDX >      10
                          PERFORM VARYING IDY FROM    1   BY  1
                                  UNTIL   IDY >       31
                              ADD     RECE04-KAISU (IDX IDY)
@@ -510,7 +512,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *              剤回数・日数回数テーブルの加算
                      ADD     RECE04-ZAIKAISU     TO  RECE042-ZAIKAISU
                      PERFORM VARYING IDX FROM    1   BY  1
-                             UNTIL   IDX >       4
+                             UNTIL   IDX >      10
                          PERFORM VARYING IDY FROM    1   BY  1
                                  UNTIL   IDY >       31
                              ADD     RECE04-KAISU (IDX IDY)

@@ -90,6 +90,8 @@
       *
       *  04.07.01    NACL-ÌçÏÆ    11/09/07  Ï«ºÒÀÁµá½ñºîÀ®ÂÐ±þ
       *  04.07.02    NACL-ÌçÏÆ    13/01/21  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
+      *
+      *  04.08.01    NACL-ÌçÏÆ    13/01/22  Æü¿ô²ó¿ô¥Æ¡¼¥Ö¥ë£±£°²óÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -294,17 +296,17 @@
                                                        OCCURS   31.
       *    ³°Íè´ÉÍý²Ã»»¡ÊÆÃÎã¡§£µ£²¡ËÍÑÎÎ°è
        01  TBL-G52NISSU.
-         02  TBL-G52NISSU-OCC                          OCCURS   3.
+         02  TBL-G52NISSU-OCC                          OCCURS   9.
            03  TBL-G52NISSU-DAY                        PIC  X(01)
                                                        OCCURS   31.
       *    ³°Íè´ÉÍý²Ã»»¡ÊÆÃÎã¡§£²£¶¡ËÍÑÎÎ°è
        01  TBL-G26NISSU.
-         02  TBL-G26NISSU-OCC                          OCCURS   3.
+         02  TBL-G26NISSU-OCC                          OCCURS   9.
            03  TBL-G26NISSU-DAY                        PIC  X(01)
                                                        OCCURS   31.
       *    ³°Íè´ÉÍý²Ã»»»»ÄêÍÑÎÎ°è
        01  TBL-GXXNISSU.
-         02  TBL-GXXNISSU-OCC                          OCCURS   3.
+         02  TBL-GXXNISSU-OCC                          OCCURS   9.
            03  TBL-GXXNISSU-DAY                        PIC  X(01)
                                                        OCCURS   31.
       *
@@ -1967,7 +1969,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
                IF   FLG-GAIRAIXX        =       1
                     PERFORM    VARYING   IDZ2   FROM   2    BY   1
-                                UNTIL    IDZ2     >    4
+                                UNTIL    IDZ2     >   10
                        COMPUTE    IDZ3  =   IDZ2  -   1
                        PERFORM    VARYING   IDZ   FROM   1    BY   1
                                    UNTIL    IDZ     >    31
@@ -1980,7 +1982,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
                IF   FLG-GAIRAI26        =       1
                     PERFORM    VARYING   IDZ2   FROM   2    BY   1
-                                UNTIL    IDZ2     >    4
+                                UNTIL    IDZ2     >   10
                        COMPUTE    IDZ3  =   IDZ2  -   1
                        PERFORM    VARYING   IDZ   FROM   1    BY   1
                                    UNTIL    IDZ     >    31
@@ -1993,7 +1995,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
                IF   FLG-GAIRAI52        =       1
                     PERFORM    VARYING   IDZ2   FROM   2    BY   1
-                                UNTIL    IDZ2     >    4
+                                UNTIL    IDZ2     >   10
                        COMPUTE    IDZ3  =   IDZ2  -   1
                        PERFORM    VARYING   IDZ   FROM   1    BY   1
                                    UNTIL    IDZ     >    31
@@ -2042,7 +2044,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
        2104-HENSYU-SET-SEC                    SECTION.
       *
            PERFORM    VARYING   IDZ2   FROM   1    BY   1
-                       UNTIL    IDZ2     >    3
+                       UNTIL    IDZ2     >    9
               PERFORM    VARYING    IDZ    FROM    1   BY   1
                           UNTIL     IDZ     >     31
                   IF   ( TBL-GXXNISSU-DAY(IDZ2 IDZ)
@@ -2059,7 +2061,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            PERFORM    VARYING   IDZ2   FROM   1    BY   1
-                       UNTIL    IDZ2     >    3
+                       UNTIL    IDZ2     >    9
               PERFORM    VARYING    IDZ    FROM    1   BY   1
                           UNTIL     IDZ     >     31
                   IF   ( TBL-GXXNISSU-DAY(IDZ2 IDZ)

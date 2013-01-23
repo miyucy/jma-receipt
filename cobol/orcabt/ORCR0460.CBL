@@ -145,6 +145,8 @@
       *                                     レセプト記載対応
       *
       *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
+      *
+      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -285,6 +287,7 @@
            03  IDX4                PIC 9(04).
       *
            03  IDX6                PIC 9(04).
+           03  IDX7                PIC 9(04).
       *
            03  WRK-SYU-INDEX       PIC 9(04).
            03  WRK-YKZ-INDEX       PIC 9(04).
@@ -437,7 +440,7 @@
                05  WRK-GAIJINKEN           PIC 9(02).
                05  WRK-SRYSYUKBN-K         PIC X(03).
                05  WRK-KAISU-G.
-                   07  WRK-KAKSU-OCC       OCCURS  4.
+                   07  WRK-KAKSU-OCC       OCCURS  10.
                        09  WRK-KAISU       PIC 9(03).
                    07  WRK-KAISU1          PIC 9(02).
                    07  WRK-KAISU2          PIC 9(03).
@@ -482,7 +485,7 @@
                    07  WRK-RECE44-SRYCD           PIC 9(09).
                    07  WRK-RECE44-SRYSURYO        PIC 9(05)V9(05).
                05  WRK-RECE44-DAY-AREA.
-                   07  WRK-RECE44-DAY-TBL         OCCURS  4.
+                   07  WRK-RECE44-DAY-TBL         OCCURS  10.
                        09  WRK-RECE44-KAISUINF    OCCURS  31.
                            11  WRK-RECE44-KAISU   PIC  9(03).
       *
@@ -544,7 +547,7 @@
        01  WRK-RECE44GJK-MAX               PIC 9(02).
        01  WRK-RECE44GJK-TABLE.
            03  WRK-RECE44GJK-TBL           OCCURS 31.
-               05  WRK-RECE44GJK-REC       PIC X(1000).
+               05  WRK-RECE44GJK-REC       PIC X(2000).
        01  RECE44GJK-REC.
            COPY    "CPRCF044.INC"  REPLACING  //RECE44//
                                    BY         //RECE44GJK//.
@@ -2532,14 +2535,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                            RECE44GJK-DAY-AREA
                        MOVE    RECE44-KAISU (1 IDX)
                                        TO  RECE44GJK-ZAIKAISU
-                       MOVE    RECE44-KAISU (1 IDX)
-                                       TO  RECE44GJK-KAISU (1 IDX)
-                       MOVE    RECE44-KAISU (2 IDX)
-                                       TO  RECE44GJK-KAISU (2 IDX) 
-                       MOVE    RECE44-KAISU (3 IDX)
-                                       TO  RECE44GJK-KAISU (3 IDX) 
-                       MOVE    RECE44-KAISU (4 IDX)
-                                       TO  RECE44GJK-KAISU (4 IDX) 
+                       PERFORM VARYING IDX7 FROM  1  BY  1
+                                UNTIL  IDX7   >  10
+                         MOVE    RECE44-KAISU(IDX7 IDX)
+                                       TO  RECE44GJK-KAISU(IDX7 IDX)
+                       END-PERFORM
                        COMPUTE WRK-RECE44GJK-MAX =  WRK-RECE44GJK-MAX
                                                  +  1
                        MOVE    RECE44GJK-REC       
@@ -2547,10 +2547,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                                (WRK-RECE44GJK-MAX)
                        COMPUTE RECE44-ZAIKAISU   =  RECE44-ZAIKAISU
                                        -   RECE44-KAISU (1 IDX)
-                       MOVE    ZERO    TO  RECE44-KAISU (1 IDX)
-                                           RECE44-KAISU (2 IDX) 
-                                           RECE44-KAISU (3 IDX) 
-                                           RECE44-KAISU (4 IDX) 
+                       PERFORM VARYING IDX7 FROM  1  BY  1
+                                UNTIL  IDX7   >  10
+                         MOVE    ZERO  TO  RECE44-KAISU(IDX7 IDX)
+                       END-PERFORM
                    END-IF
                  END-IF
              END-PERFORM
@@ -2793,6 +2793,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                      UNTIL   IDW >       WRK-KENSA-SU (IDXX)
                MOVE  WRK-RECE44-IDX (IDXX IDW) TO  IDX1
                MOVE  WRK-RECE44-REC (IDX1)     TO  RECE44-REC
+               MOVE  WRK-RECE44-DAY-AREA(IDX1) TO  RECE44-DAY-AREA
                ADD   RECE44-ZAITEN             TO  WRK-RECE44-ZAITEN
                PERFORM 2002-TBLZAIW-TAIHI-SEC
              END-PERFORM    
