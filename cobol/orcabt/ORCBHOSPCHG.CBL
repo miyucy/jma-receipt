@@ -320,6 +320,12 @@
                                            ACCT-DAY (2 IDX1 )
                                            ACCT-DAY (3 IDX1 )
                                            ACCT-DAY (4 IDX1 )
+                                           ACCT-DAY (5 IDX1 )
+                                           ACCT-DAY (6 IDX1 )
+                                           ACCT-DAY (7 IDX1 )
+                                           ACCT-DAY (8 IDX1 )
+                                           ACCT-DAY (9 IDX1 )
+                                           ACCT-DAY (10 IDX1 )
       *
                END-PERFORM
       *
