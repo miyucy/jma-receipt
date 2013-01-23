@@ -88,16 +88,8 @@
       *  04.05.01    NACL-藤原    09/06/11  病棟別出力対応
       *                                     「１２」の追加
       *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
-      *
-      *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
-      *                                     支払機関請求対応
-      *  04.07.02    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
-      *  04.07.03    NACL-藤原    13/01/07  自費レセプトを印刷しない設定
-      *                                     のとき、入力順、ターミナルデジット
-      *                                     出力の対象としない
-      *  04.07.04    NACL-藤原    13/03/01  保険者番号の条件設定変更
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.05.03    NACL-藤原    13/01/07  自費レセプトを印刷しない設定
+      *                                     のとき、入力順出力の対象としない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -121,7 +113,7 @@ grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
       *    フラグ領域
@@ -168,11 +160,11 @@ grpsys     COPY    "COMMON-SPA".
                        09  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).
                    07  WRK-PARA-RECE09-PRTJYUN       PIC X(02).
                    07  WRK-PARA-RECE09-DATA.
-                       09  WRK-PARA-RECE09-HKNJANUM  PIC X(08).
                        09  WRK-PARA-RECE09-CHOUKI    PIC X(01).
                        09  WRK-PARA-RECE09-ZAITAKU   PIC X(01).
                        09  WRK-PARA-RECE09-KOUGAKU   PIC X(01).
                        09  WRK-PARA-RECE09-SRT-LAST  PIC X(01).
+                       09  WRK-PARA-RECE09-HKNJANUM  PIC X(08).
                    07  WRK-PARA-RECE09-DATA-R        REDEFINES
                                                  WRK-PARA-RECE09-DATA.
                        09  WRK-PARA-RECE09-DRCD      PIC X(05).
@@ -235,8 +227,6 @@ grpsys     COPY    "COMMON-SPA".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -303,12 +293,6 @@ grpsys     COPY    "COMMON-SPA".
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
-      *
            UNSTRING    WRK-PARA-ARG25  DELIMITED  BY  "#/"
                                        INTO  WRK-PARA-KKHPRTNM
                                              WRK-PARA-KOUIKIPRTNM
@@ -317,20 +301,18 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO  WRK-PARA-KKHPRTNM-N
                                              WRK-PARA-KOUIKIPRTNM-N
            END-UNSTRING
-           INSPECT WRK-PARA-RECE09-HKNJANUM  REPLACING   ALL "#"
-                                                         BY  " "
       *
       *    リアルタイムプレビューのとき
            IF      WRK-PARA-SHELLID        =   "RECEPTX"
                MOVE    "0"                 TO  WRK-PARA-PREFKBN
            END-IF
+      *
            DISPLAY "KKHPRTNM   =" WRK-PARA-KKHPRTNM " "
                                   WRK-PARA-KKHPRTNM-N
            DISPLAY "KOUIKIPRTNM=" WRK-PARA-KOUIKIPRTNM " "
                                   WRK-PARA-KOUIKIPRTNM-N
            DISPLAY "PRTJYUN    =" WRK-PARA-RECE09-PRTJYUN " "
                                   WRK-PARA-PREFKBN
-           DISPLAY "HKNJANUM   =" WRK-PARA-RECE09-HKNJANUM
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -619,11 +601,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *            医師別順印刷
                    PERFORM 9002-DRCD-RECEPRT-KEY-HENSYU-SEC
                WHEN    "12"                    ALSO    ANY
-      *            病棟別順印刷
+      *            医師別順印刷
                    PERFORM 9003-BTUNUM-RECEPRT-KEY-HENSYU-SEC
-               WHEN    "13"                    ALSO    ANY
-      *            ターミナルデジット
-                   MOVE    "key52"             TO  WRK-MCP-PATHNAME
                WHEN    ANY                     ALSO    "4"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                        EVALUATE    WRK-PARA-RECE09-PRTJYUN
@@ -750,7 +729,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    WRK-PARA-RECE09-DRCD TO  RECE08-DRCD
            END-IF
            MOVE    WRK-PARA-SRYKA       TO  RECE08-DRCD-SRYKA
-           MOVE    "%%%%%%%%"           TO  RECE08-HKNJANUM-S
       *
            EVALUATE    WRK-PARA-RECE09-DRCD-PRTJYUNKBN
                                ALSO    WRK-PARA-RECE09-RECESYUBETU
@@ -786,7 +764,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                             TO  RECE08-SORT-1
            END-IF
            MOVE    WRK-PARA-SRYKA       TO  RECE08-SRYKA
-           MOVE    "%%%%%%%%"           TO  RECE08-HKNJANUM-S
       *
            EVALUATE    WRK-PARA-RECE09-BTUNUM-PRTJYUNKBN
                                ALSO    WRK-PARA-RECE09-RECESYUBETU
@@ -817,14 +794,13 @@ grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  RECE08-REC
       *
-      *        入力順、ターミナルデジットで自費レセプトを印刷しない設定のとき
-               IF    ( WRK-PARA-RECE09-PRTJYUN =   "05"    OR  "13" )
-               AND   ( WRK-PARA-PREFKBN        =   "1"              )
+      *        入力順で自費レセプトを印刷しない設定のとき
+               IF    ( WRK-PARA-RECE09-PRTJYUN =   "05" )
+               AND   ( WRK-PARA-PREFKBN        =   "1"  )
                    IF      RECE08-RECESYUBETU      =    "8888"
                        GO  TO  900-RECEPRT-FET-SEC
                    END-IF
                END-IF
-      *
                MOVE    ZERO            TO  FLG-END
                ADD     1               TO  CNT-IN-CANCEL
                                            CNT-IN
