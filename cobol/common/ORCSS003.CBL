@@ -295,9 +295,6 @@
       *
            MOVE    JYURRK-SRYYMD       TO  WRK-SRYYMD
            COMPUTE IDX-KAISU   =   JYURRK-RENNUM   +   1
-           IF    ( IDX-KAISU   >   4 )
-               MOVE    4               TO  IDX-KAISU
-           END-IF
       *
       *    ¿ÇÎÅ²ñ·×¸¡º÷
            MOVE    ZERO                TO  FLG-SRYACCT

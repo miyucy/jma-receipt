@@ -7373,6 +7373,12 @@
                                                ACCT-DAY (2 IDX35)
                                                ACCT-DAY (3 IDX35)
                                                ACCT-DAY (4 IDX35)
+                                               ACCT-DAY (5 IDX35)
+                                               ACCT-DAY (6 IDX35)
+                                               ACCT-DAY (7 IDX35)
+                                               ACCT-DAY (8 IDX35)
+                                               ACCT-DAY (9 IDX35)
+                                               ACCT-DAY (10 IDX35)
                        END-IF
       *
                    END-PERFORM
