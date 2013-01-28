@@ -614,6 +614,7 @@
       *  04.07.07    NACL-門脇    13/01/17  複数枚レセプト分割対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
+      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7667,6 +7668,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        IF      ACCT-HKNCOMBI   =
                                                RECE02-HKNCOMBI (IDX1)
       *
+                           IF    ACCT-JIHOKBN  NOT = SPACE
+                              MOVE    ZERO       TO  ACCT-ZAITEN
+                           END-IF
+      *
                            MOVE   ZERO           TO  FLG-RINYAK
       *
                            PERFORM    21041-KUMIAWASE-HANBETU-SEC
@@ -8454,9 +8459,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
                END-IF
       *
+               IF      ACCT-JIHOKBN  NOT =     SPACE
+                        MOVE    "3"       TO    RECE04-TOYAKUFLG
+               END-IF
+      *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
                AND   ( RECE04-ZAITEN     =     ZERO         )
                AND   ( ACCT-ZAIKBN   NOT =     1            )
+               AND   ( ACCT-JIHOKBN      =     SPACE        )
                   IF     RECE04-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE04-TOYAKUFLG
                   ELSE
@@ -8474,9 +8484,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
                END-IF
       *
-               IF    ( SRY-SRYKBN        =     "14" )
-               AND   ( RECE04-ZAITEN     =     ZERO )
-               AND   ( ACCT-ZAIKBN   NOT =     1    )
+               IF    ( SRY-SRYKBN        =     "14"  )
+               AND   ( RECE04-ZAITEN     =     ZERO  )
+               AND   ( ACCT-ZAIKBN   NOT =     1     )
+               AND   ( ACCT-JIHOKBN      =     SPACE )
                   IF     RECE04-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE04-TOYAKUFLG
                   ELSE

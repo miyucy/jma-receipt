@@ -35,6 +35,7 @@
       *  04.05.02    NACL-門脇    12/04/11  平成２４年４月改正
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
+      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -356,6 +357,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    RECE120-FLG-HOUTEN-COMMENT
                                            TO
                                            RECE121-FLG-HOUTEN-COMMENT
+               MOVE    RECE120-JIHOKBN     TO  RECE121-JIHOKBN
       *
                IF      RECE120-COMCDFLG    =   "2"
                    MOVE    SPACE               TO  RECE121-SRYSYUKBN
@@ -799,6 +801,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE120-MEISAISU    TO  RECE121-MEISAISU
            MOVE    RECE120-FLG-HOUTEN-COMMENT
                                        TO  RECE121-FLG-HOUTEN-COMMENT
+           MOVE    RECE120-JIHOKBN     TO  RECE121-JIHOKBN
            START   RECE121-FILE
                KEY IS    >=   RECE121-KEY
                INVALID
@@ -818,6 +821,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                  ( RECE120-FLG-HOUTEN-COMMENT
                                        NOT =
                                        RECE121-FLG-HOUTEN-COMMENT ) OR
+                 ( RECE120-JIHOKBN     NOT =  RECE121-JIHOKBN     ) OR
                  ( FLG-RECE121             =  1                   )
       *
                MOVE     ZERO       TO  FLG-NASHI

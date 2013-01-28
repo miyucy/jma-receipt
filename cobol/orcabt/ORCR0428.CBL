@@ -45,6 +45,7 @@
       *  04.05.03    NACL-門脇    12/04/11  平成２４年４月改正
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
+      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -419,6 +420,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    RECE44-MEISAISU     TO  RECE443-MEISAISU 
                MOVE    RECE44-FLG-HOUTEN-COMMENT
                                   TO  RECE443-FLG-HOUTEN-COMMENT
+               MOVE    RECE44-JIHOKBN      TO  RECE443-JIHOKBN
                IF      RECE44-COMCDFLG   =   "2"
                  ADD     1                 TO  WRK-COMRENNUM
                  MOVE    WRK-COMRENNUM     TO  RECE443-COMRENNUM
@@ -844,6 +846,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE44-MEISAISU     TO  RECE443-MEISAISU
            MOVE    RECE44-FLG-HOUTEN-COMMENT
                                        TO  RECE443-FLG-HOUTEN-COMMENT
+           MOVE    RECE44-JIHOKBN      TO  RECE443-JIHOKBN
            START   RECE443-FILE
                KEY IS    >=   RECE443-KEY
                INVALID
@@ -868,6 +871,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
                   (RECE44-MEISAISU     NOT =  RECE443-MEISAISU)     OR
                   (RECE44-FLG-HOUTEN-COMMENT
                                 NOT =  RECE443-FLG-HOUTEN-COMMENT)  OR
+                  (RECE44-JIHOKBN      NOT =  RECE443-JIHOKBN)      OR
                   (FLG-RECE443             =  1)
       *
                   MOVE     ZERO     TO     FLG-NASHI

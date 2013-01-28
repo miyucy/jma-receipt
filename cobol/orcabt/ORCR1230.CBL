@@ -31,6 +31,7 @@
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
+      *  04.08.01    NACL-ÌçÏÆ    13/01/25  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -351,6 +352,7 @@
                MOVE    RECE220-SURYOUTOTAL TO  RECE221-SURYOUTOTAL
                MOVE    RECE220-RUIKEITOTAL TO  RECE221-RUIKEITOTAL
                MOVE    RECE220-MEISAISU    TO  RECE221-MEISAISU 
+               MOVE    RECE220-JIHOKBN     TO  RECE221-JIHOKBN
                IF      RECE220-COMCDFLG    =   "1"
                  ADD     1                 TO  WRK-COMRENNUM
                  MOVE    WRK-COMRENNUM     TO  RECE221-COMRENNUM
@@ -724,6 +726,7 @@
            MOVE    RECE220-SURYOUTOTAL TO  RECE221-SURYOUTOTAL
            MOVE    RECE220-RUIKEITOTAL TO  RECE221-RUIKEITOTAL
            MOVE    RECE220-MEISAISU    TO  RECE221-MEISAISU
+           MOVE    RECE220-JIHOKBN     TO  RECE221-JIHOKBN
            START   RECE221-FILE
                KEY IS    >=   RECE221-KEY
                INVALID
@@ -740,6 +743,7 @@
                  ( RECE220-SURYOUTOTAL NOT =  RECE221-SURYOUTOTAL ) OR
                  ( RECE220-RUIKEITOTAL NOT =  RECE221-RUIKEITOTAL ) OR
                  ( RECE220-MEISAISU    NOT =  RECE221-MEISAISU    ) OR
+                 ( RECE220-JIHOKBN     NOT =  RECE221-JIHOKBN     ) OR
                  ( FLG-RECE221             =  1)
       *
                   MOVE     ZERO     TO     FLG-NASHI

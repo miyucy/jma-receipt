@@ -110,6 +110,8 @@
       *  04.07.03    NACL-門脇    12/10/12  保険別請求チェック表（標準帳票）
       *                                     の機能追加対応
       *  04.07.04    NACL-門脇    12/09/25  コメント差込取り止め（在宅持続陽圧）
+      *
+      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1500,6 +1502,10 @@
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
       *
+                   IF    ACCT-JIHOKBN  NOT = SPACE
+                      MOVE    ZERO      TO  ACCT-ZAITEN
+                   END-IF
+      *
                    MOVE   ZERO          TO  FLG-TENTEKIMATOME
                    IF    ACCT-SRYKBN  =  "33"
                       PERFORM   21015-TENTEKIMATOME-CHECK-SEC
@@ -1943,9 +1949,14 @@
                   END-IF
                END-IF
       *
+               IF      ACCT-JIHOKBN  NOT =     SPACE
+                        MOVE    "3"       TO    RECE220-TOYAKUFLG
+               END-IF
+      *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
                AND   ( RECE220-ZAITEN     =     ZERO        )
                AND   ( ACCT-ZAIKBN   NOT =     1            )
+               AND   ( ACCT-JIHOKBN      =     SPACE        )
                   IF     RECE220-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE220-TOYAKUFLG
                   ELSE
@@ -1963,9 +1974,10 @@
                   END-IF
                END-IF
       *
-               IF    ( SRY-SRYKBN        =     "14" )
-               AND   ( RECE220-ZAITEN    =     ZERO )
-               AND   ( ACCT-ZAIKBN   NOT =     1    )
+               IF    ( SRY-SRYKBN        =     "14"  )
+               AND   ( RECE220-ZAITEN    =     ZERO  )
+               AND   ( ACCT-ZAIKBN   NOT =     1     )
+               AND   ( ACCT-JIHOKBN      =     SPACE )
                   IF     RECE220-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE220-TOYAKUFLG
                   ELSE

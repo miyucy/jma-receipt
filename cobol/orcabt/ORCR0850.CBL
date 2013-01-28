@@ -43,6 +43,7 @@
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
+      *  04.08.01    NACL-ÌçÏÆ    13/01/25  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -427,6 +428,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    RECE84-SURYOUTOTAL  TO  RECE842-SURYOUTOTAL
                MOVE    RECE84-RUIKEITOTAL  TO  RECE842-RUIKEITOTAL
                MOVE    RECE84-MEISAISU     TO  RECE842-MEISAISU 
+               MOVE    RECE84-JIHOKBN      TO  RECE842-JIHOKBN
                IF      RECE84-COMCDFLG   =   "1"
                  ADD     1                 TO  WRK-COMRENNUM
                  MOVE    WRK-COMRENNUM     TO  RECE842-COMRENNUM
@@ -856,6 +858,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE84-SURYOUTOTAL  TO  RECE842-SURYOUTOTAL
            MOVE    RECE84-RUIKEITOTAL  TO  RECE842-RUIKEITOTAL
            MOVE    RECE84-MEISAISU     TO  RECE842-MEISAISU
+           MOVE    RECE84-JIHOKBN      TO  RECE842-JIHOKBN
            START   RECE842-FILE
                KEY IS    >=   RECE842-KEY
                INVALID
@@ -878,6 +881,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                   (RECE84-SURYOUTOTAL  NOT =  RECE842-SURYOUTOTAL)  OR
                   (RECE84-RUIKEITOTAL  NOT =  RECE842-RUIKEITOTAL)  OR
                   (RECE84-MEISAISU     NOT =  RECE842-MEISAISU)     OR
+                  (RECE84-JIHOKBN      NOT =  RECE842-JIHOKBN)      OR
                   (FLG-RECE842             =  1)
       *
                   MOVE     ZERO     TO     FLG-NASHI

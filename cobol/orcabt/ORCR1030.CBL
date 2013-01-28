@@ -68,6 +68,7 @@
       *  04.07.02    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
+      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -606,6 +607,7 @@
        01  TBL-YAKUTEI-INF.
            03  TBL-YT1-OCC                      OCCURS 100.
              05  TBL-YT1-KEY.
+               07  TBL-YT1-JIHOKBN              PIC X(01).
                07  TBL-YT1-SRYKA                PIC X(02).
              05  TBL-YT1-RECE120-REC            PIC X(1000).
              05  TBL-YT1-HIKAKU.
@@ -622,9 +624,10 @@
              05  TBL-YT1-FLG                    PIC 9(01).
       *
       *    並び替え用
-       01  WRK-YAKUTEI-DATA                     PIC X(1914).
+       01  WRK-YAKUTEI-DATA                     PIC X(1915).
       *
-       01  WRK-TAIHI-YT1-KEY                    PIC X(02).
+       01  WRK-TAIHI-YT1-KEY                    PIC X(03).
+       01  WRK-TAIHI-YT1-KEY3                   PIC X(01).
        01  WRK-YAKUTEI-ZAINUM                   PIC 9(08).
        01  WRK-YAKUTEI-ZAINUM2                  PIC 9(08).
       *
@@ -5084,6 +5087,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
            ADD       1        TO         IDX6
       *
            IF    IDX6    <=    100
+             MOVE    RECE120-JIHOKBN      TO   TBL-YT1-JIHOKBN(IDX6)
              MOVE    RECE120-SRYKA        TO   TBL-YT1-SRYKA(IDX6)
       *
              MOVE    RECE120-REC          TO   TBL-YT1-RECE120-REC(IDX6)
@@ -5284,6 +5288,7 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
            INITIALIZE                   TBL-YAKUTEI-INF2
            INITIALIZE                   TBL-YAKUTEI-INF3
            MOVE       SPACE     TO      WRK-TAIHI-YT1-KEY
+           MOVE       SPACE     TO      WRK-TAIHI-YT1-KEY3
       *
            MOVE       ZERO      TO      IDX11
       *
@@ -5295,10 +5300,15 @@ grpsys     MOVE    RECE120-HOSPNUM      TO  SANTEI-HOSPNUM
       *
                  IF   WRK-TAIHI-YT1-KEY  NOT =  SPACE
                    PERFORM   2401-YAKUTEI-MATOME-SEC
+                   IF  TBL-YT1-JIHOKBN(IDX6)  NOT = WRK-TAIHI-YT1-KEY3
+                       PERFORM 2402-YAKUTEI-WRITE-SEC
+                       INITIALIZE                  TBL-YAKUTEI-INF3
+                   END-IF
                  END-IF
       *
                  INITIALIZE                        TBL-YAKUTEI-INF2
                  MOVE   TBL-YT1-KEY(IDX6)      TO  WRK-TAIHI-YT1-KEY
+                 MOVE   TBL-YT1-JIHOKBN(IDX6)  TO  WRK-TAIHI-YT1-KEY3
       *
               END-IF
       *

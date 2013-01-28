@@ -236,6 +236,7 @@
       *  04.07.03    NACL-門脇    13/01/21  労災レセ電対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
+      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1590,6 +1591,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  800-SRYACCT-READ-SEC
                PERFORM  UNTIL     FLG-SRYACCT   =   1 
       *
+                 IF    ACCT-JIHOKBN  NOT = SPACE
+                    MOVE    ZERO      TO  ACCT-ZAITEN
+                 END-IF
+      *
                  MOVE   ZERO          TO  FLG-RINYAK
       *
                  IF    ACCT-SRYKBN       =  "95"  OR  "96"
@@ -2116,9 +2121,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
                END-IF
       *
+               IF      ACCT-JIHOKBN  NOT =     SPACE
+                        MOVE    "3"       TO    RECE44-TOYAKUFLG
+               END-IF
+      *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
                AND   ( RECE44-ZAITEN     =     ZERO         )
                AND   ( ACCT-ZAIKBN   NOT =     1            )
+               AND   ( ACCT-JIHOKBN      =     SPACE        )
                   IF     RECE44-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE44-TOYAKUFLG
                   ELSE
@@ -2136,9 +2146,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
                END-IF
       *
-               IF    ( SRY-SRYKBN        =     "14" )
-               AND   ( RECE44-ZAITEN     =     ZERO )
-               AND   ( ACCT-ZAIKBN   NOT =     1    )
+               IF    ( SRY-SRYKBN        =     "14"  )
+               AND   ( RECE44-ZAITEN     =     ZERO  )
+               AND   ( ACCT-ZAIKBN   NOT =     1     )
+               AND   ( ACCT-JIHOKBN      =     SPACE )
                   IF     RECE44-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE44-TOYAKUFLG
                   ELSE
@@ -8203,6 +8214,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    "key24"          TO      MCP-PATHNAME
                PERFORM  800-SRYACCT-READ-SEC
                PERFORM  UNTIL     FLG-SRYACCT   =   1 
+      *
+                 IF    ACCT-JIHOKBN  NOT = SPACE
+                    MOVE    ZERO      TO  ACCT-ZAITEN
+                 END-IF
       *
                  MOVE   ZERO          TO  FLG-RINYAK
       *

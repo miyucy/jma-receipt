@@ -51,6 +51,7 @@
       *  04.05.02    NACL-門脇    12/04/11  平成２４年４月改正
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
+      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -432,6 +433,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    RECE44-MEISAISU     TO  RECE442-MEISAISU 
                    MOVE    RECE44-FLG-HOUTEN-COMMENT
                                       TO  RECE442-FLG-HOUTEN-COMMENT
+                   MOVE    RECE44-JIHOKBN      TO  RECE442-JIHOKBN
                    ADD     1                   TO  WRK-COMRENNUM
                    MOVE    WRK-COMRENNUM       TO  RECE442-COMRENNUM
                    MOVE    RECE44-ZAIKAISU     TO  RECE442-ZAIKAISU
@@ -465,6 +467,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    RECE44-MEISAISU     TO  RECE442-MEISAISU 
                    MOVE    RECE44-FLG-HOUTEN-COMMENT
                                       TO  RECE442-FLG-HOUTEN-COMMENT
+                   MOVE    RECE44-JIHOKBN      TO  RECE442-JIHOKBN
                    IF      RECE44-COMCDFLG   =   "1"
                      ADD     1                 TO  WRK-COMRENNUM
                      MOVE    WRK-COMRENNUM     TO  RECE442-COMRENNUM
@@ -932,6 +935,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE44-MEISAISU     TO  RECE442-MEISAISU
            MOVE    RECE44-FLG-HOUTEN-COMMENT
                                        TO  RECE442-FLG-HOUTEN-COMMENT
+           MOVE    RECE44-JIHOKBN      TO  RECE442-JIHOKBN
            START   RECE442-FILE
                KEY IS    >=   RECE442-KEY
                INVALID
@@ -956,6 +960,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
                   (RECE44-MEISAISU     NOT =  RECE442-MEISAISU)     OR
                   (RECE44-FLG-HOUTEN-COMMENT
                                 NOT =  RECE442-FLG-HOUTEN-COMMENT)  OR
+                  (RECE44-JIHOKBN      NOT =  RECE442-JIHOKBN)      OR
                   (FLG-RECE442             =  1)
       *
                   MOVE     ZERO     TO     FLG-NASHI

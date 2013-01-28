@@ -597,6 +597,8 @@
       *  04.07.06    NACL-門脇    12/11/15  システム管理２０１０機能追加対応
       *  04.07.07    NACL-門脇    12/09/25  コメント差込取り止め（在宅持続陽圧）
       *  04.07.08    NACL-門脇    13/01/17  複数枚レセプト分割対応
+      *
+      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5608,6 +5610,10 @@
                        IF      ACCT-HKNCOMBI   =
                                                RECE62-HKNCOMBI (IDX1)
       *
+                           IF    ACCT-JIHOKBN  NOT = SPACE
+                              MOVE    ZERO       TO  ACCT-ZAITEN
+                           END-IF
+      *
                            MOVE   ZERO           TO  FLG-TENTEKIMATOME
                            IF    ACCT-SRYKBN  =  "33"
                               PERFORM   21015-TENTEKIMATOME-CHECK-SEC
@@ -6186,9 +6192,14 @@
                   END-IF
                END-IF
       *
+               IF      ACCT-JIHOKBN  NOT =     SPACE
+                        MOVE    "3"       TO    RECE64-TOYAKUFLG
+               END-IF
+      *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
                AND   ( RECE64-ZAITEN     =     ZERO         )
                AND   ( ACCT-ZAIKBN   NOT =     1            )
+               AND   ( ACCT-JIHOKBN      =     SPACE        )
                   IF     RECE64-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE64-TOYAKUFLG
                   ELSE
@@ -6206,9 +6217,10 @@
                   END-IF
                END-IF
       *
-               IF    ( SRY-SRYKBN        =     "14" )
-               AND   ( RECE64-ZAITEN     =     ZERO )
-               AND   ( ACCT-ZAIKBN   NOT =     1    )
+               IF    ( SRY-SRYKBN        =     "14"  )
+               AND   ( RECE64-ZAITEN     =     ZERO  )
+               AND   ( ACCT-ZAIKBN   NOT =     1     )
+               AND   ( ACCT-JIHOKBN      =     SPACE )
                   IF     RECE64-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE64-TOYAKUFLG
                   ELSE

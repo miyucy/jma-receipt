@@ -105,6 +105,7 @@
       *  04.07.02    NACL-門脇    12/09/25  コメント差込取り止め（在宅持続陽圧）
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
+      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1192,6 +1193,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
       *
+                   IF    ACCT-JIHOKBN  NOT = SPACE
+                      MOVE    ZERO       TO  ACCT-ZAITEN
+                   END-IF
+      *
                    MOVE   ZERO           TO  FLG-RINYAK
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
@@ -1591,9 +1596,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
                END-IF
       *
+               IF      ACCT-JIHOKBN  NOT =     SPACE
+                        MOVE    "3"       TO    RECE120-TOYAKUFLG
+               END-IF
+      *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
                AND   ( RECE120-ZAITEN     =     ZERO        )
                AND   ( ACCT-ZAIKBN   NOT =     1            )
+               AND   ( ACCT-JIHOKBN      =     SPACE        )
                   IF     RECE120-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE120-TOYAKUFLG
                   ELSE
@@ -1611,9 +1621,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   END-IF
                END-IF
       *
-               IF    ( SRY-SRYKBN        =     "14" )
-               AND   ( RECE120-ZAITEN    =     ZERO )
-               AND   ( ACCT-ZAIKBN   NOT =     1    )
+               IF    ( SRY-SRYKBN        =     "14"  )
+               AND   ( RECE120-ZAITEN    =     ZERO  )
+               AND   ( ACCT-ZAIKBN   NOT =     1     )
+               AND   ( ACCT-JIHOKBN      =     SPACE )
                   IF     RECE120-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE120-TOYAKUFLG
                   ELSE
