@@ -75,9 +75,14 @@ grpsys     SELECT  BG00201-FILE   ASSIGN   BG00201PARA
       *    定期請求情報ファイル
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01//
+grpsys*DD                          BY          //ORCBG002//.
                                    BY          //BG00201//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-           COPY    "CPRECEERR.INC".
+      *    エラーファイル 名称領域 
+grpsys*DD  COPY    "CPCOMMONDAT2.INC"  REPLACING  //RECE01PARA//
+grpsys*DD                              BY         //RECEERR//.
+grpsys*DD  03  FILLER                  PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCMG002.INC".
       *
@@ -125,6 +130,7 @@ grpsys     SELECT  BG00201-FILE   ASSIGN   BG00201PARA
            03  WRK-PARA-SHELLID                    PIC X(08).
 grpsys*DD  03  WRK-PARA-HOSPID                     PIC X(24).
 grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
+grpsys     03  RECEERR                             PIC X(100).
            03  WRK-PARA-SRYYM                      PIC X(06).
            03  WRK-PARA-SYORIKBN                   PIC X(01).
       *----(02.00.01)--ADD-START---
@@ -340,9 +346,6 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
       *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
       *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -390,8 +393,6 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
 grpsys     INITIALIZE                  SPA-AREA
-      *
-           INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -445,16 +446,6 @@ grpsys     MOVE    "BG00201"           TO  BG00201PARA-FILE-ID
 grpsys     MOVE    LNK-PRTKANRI-TERMID TO  BG00201PARA-TERMID
 grpsys     MOVE    SPA-HOSPNUM         TO  BG00201PARA-HOSPNUM
       *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    BG00201PARA-BASENAME
-                                   TO  SGETTEMP-BASENAMES (1)
-           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (2)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  BG00201PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                   TO  RECEERR
-      *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
            IF    ( FLG-END         NOT =   ZERO )
@@ -479,7 +470,7 @@ grpsys     MOVE    "key10"         TO  WRK-DBPATH
                MOVE    MCPDATA-REC     TO  SYS-1001-REC
            ELSE
                MOVE    "医療機関情報が取得できませんでした。"
-                                       TO  WRK-RECEERR 
+                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  100-INIT-EXT
            END-IF
