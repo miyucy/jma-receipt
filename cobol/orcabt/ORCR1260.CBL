@@ -57,6 +57,8 @@
       *  04.06.01    NACL-門脇    12/10/15  診療行為入力したコメントのみの剤の
       *                                     レセプト記載対応
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
+      *
+      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1756,10 +1758,12 @@
                    MOVE    "＊"            TO  WRK-ZAI-MK
                END-IF    
                IF    ((RECE220-YKZTEN        =   ZERO ) AND
-                      (IDX1                 =   5    ) AND
+                      (RECE220-JIHOKBN       =  SPACE ) AND
+                      (IDX1                  =   5    ) AND
                       (RECE220-RYOTENKISAISU =   ZERO ))
                OR    ((RECE220-KIZAITEN      =   ZERO ) AND
-                      (IDX1                 =   4    ) AND
+                      (RECE220-JIHOKBN       =  SPACE ) AND
+                      (IDX1                  =   4    ) AND
                       (RECE220-RYOTENKISAISU =   ZERO ))
                    CONTINUE
                ELSE    
@@ -1797,9 +1801,11 @@
                    END-IF
                END-IF    
       *        点数・回数セット処理（特定器材）
-               IF      IDX1              =   4
-               AND     WRK-ZAIWMAX(IDX1) >   ZERO
-               AND     RECE220-KIZAITEN   >   ZERO
+               IF     ( IDX1                =   4    )
+               AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
+                 IF   ((RECE220-KIZAITEN     >   ZERO) AND
+                       (RECE220-JIHOKBN      =  SPACE))
+                 OR   ( RECE220-JIHOKBN  NOT =  SPACE )
                    IF      RECE220-SRYKBN     >=  "33"                   
                        MOVE    RECE220-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE220-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -1808,11 +1814,14 @@
                        PERFORM 440-TNSKAI-SET-SEC
                        MOVE    IDY               TO  WRK-TBLMAX 
                    END-IF
+                 END-IF
                END-IF     
       *        点数・回数セット処理（薬剤）
-               IF      IDX1              =   5
-               AND     WRK-ZAIWMAX(IDX1) >   ZERO
-               AND     RECE220-YKZTEN     >   ZERO
+               IF     ( IDX1                =   5    )
+               AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
+                 IF   ((RECE220-YKZTEN       >   ZERO) AND
+                       (RECE220-JIHOKBN      =  SPACE))
+                 OR   ( RECE220-JIHOKBN  NOT =  SPACE )
                    IF      RECE220-SRYKBN     >=  "33"               
                        MOVE    RECE220-YKZTEN     TO  WRK-ZAITENX
                        MOVE    RECE220-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -1821,6 +1830,7 @@
                        PERFORM 440-TNSKAI-SET-SEC
                        MOVE    IDY               TO  WRK-TBLMAX 
                    END-IF          
+                 END-IF
                END-IF        
            END-PERFORM
       *             

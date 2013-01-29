@@ -1195,6 +1195,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                    IF    ACCT-JIHOKBN  NOT = SPACE
                       MOVE    ZERO       TO  ACCT-ZAITEN
+                      MOVE    ZERO       TO  ACCT-SYUTEN1
+                      MOVE    ZERO       TO  ACCT-SYUTEN2
+                      MOVE    ZERO       TO  ACCT-YKZTEN
+                      MOVE    ZERO       TO  ACCT-KIZAITEN
                    END-IF
       *
                    MOVE   ZERO           TO  FLG-RINYAK
@@ -1241,8 +1245,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  PERFORM RECE120-WRITE-SEC
                                END-IF
                    ELSE
-                     IF  (ACCT-ZAIKAISU  NOT =    ZERO)  AND
-                         (ACCT-JIHOKBN       =   SPACE)
+                     IF   ACCT-ZAIKAISU  NOT =    ZERO
+                      IF ((WRK-PARA-PRTKBN   =
+                                     "1" OR "2" OR "3") AND
+                          (ACCT-JIHOKBN      =   SPACE))
+                      OR ( WRK-PARA-PRTKBN   =
+                                            "4" OR "5" )
                                IF ( ACCT-SRYKBN  NOT =
                                     "24" AND "90" AND "92" AND "93" AND
                                     "97" AND "98"                 )
@@ -1297,6 +1305,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       END-IF
                                  END-IF
                                END-IF
+                      END-IF
                      END-IF
                    END-IF
                    MOVE    "tbl_sryacct"       TO   MCP-TABLE
@@ -1710,14 +1719,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SRY-INPUTNUM(IDX2) TO    RECE130-INPUTNUM(IDX4)
       *
       **診療実日数のカウントを行える剤であるかの判定
-               IF  ((ACCT-ZAITEN    NOT =    ZERO)    AND               
-                    (ACCT-ZAIKAISU  NOT =    ZERO)    AND               
-                    (ACCT-SRYKBN        =  "11"  OR  "12"  OR           
-                                           "13"  OR  "14"     ))        
-               OR  ((ACCT-ZAITEN        =    ZERO)    AND               
-                    (ACCT-ZAIKAISU  NOT =    ZERO)    AND               
-                    (ACCT-SRYKBN        =  "11"  OR  "12"  OR           
-                                           "99"               ))        
+               IF      ACCT-JIHOKBN       =    SPACE
+                 IF  ((ACCT-ZAITEN    NOT =    ZERO             ) AND
+                      (ACCT-ZAIKAISU  NOT =    ZERO             ) AND
+                      (ACCT-SRYKBN        =  "11"  OR  "12"  OR
+                                             "13"  OR  "14"     ))
+                 OR  ((ACCT-ZAITEN        =    ZERO             ) AND
+                      (ACCT-ZAIKAISU  NOT =    ZERO             ) AND
+                      (ACCT-SRYKBN        =  "11"  OR  "12"  OR
+                                             "99"               ))
       *
                        IF ( (TNS-JITUDAY    =     2          ) AND      
                             (TNS-DAYCNT     =     1   OR   2 )    )     
@@ -1790,7 +1800,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                              MOVE    1      TO    FLG-SHOSAISIN-GEN
                        END-IF
       *
-               END-IF                                                   
+                 END-IF
+               END-IF
       *
                IF      TNS-SRYKBN         =     "80"
                    IF  TNS-GAITENTTLKBN   =     130
@@ -1799,7 +1810,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF
       *
-               PERFORM  2104411-RECE130-TENSOU-COMCNT-HEN-SEC
+               IF      ACCT-JIHOKBN       =     SPACE
+                  PERFORM  2104411-RECE130-TENSOU-COMCNT-HEN-SEC
+               ELSE
+                   MOVE   "1"   TO    RECE120-FLG-SHUJUTU-COMMENT
+                   MOVE   "1"   TO    RECE120-FLG-MASUI-COMMENT
+               END-IF
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
                 IF   ACCT-ZAIKBN  =  1

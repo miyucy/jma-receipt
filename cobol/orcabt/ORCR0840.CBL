@@ -1970,6 +1970,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                 IF    ACCT-JIHOKBN  NOT = SPACE
                    MOVE    ZERO      TO  ACCT-ZAITEN
+                   MOVE    ZERO      TO  ACCT-SYUTEN1
+                   MOVE    ZERO      TO  ACCT-SYUTEN2
+                   MOVE    ZERO      TO  ACCT-YKZTEN
+                   MOVE    ZERO      TO  ACCT-KIZAITEN
                 END-IF
       *
                 MOVE   ZERO          TO  FLG-RINYAK
@@ -1979,7 +1983,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 ELSE
       *
                  MOVE     ZERO    TO    FLG-JYOGAI
-                 IF    ACCT-SRYKBN  =  "90" OR "92"
+                 IF   (ACCT-SRYKBN  =  "90" OR "92")
+                 AND  (ACCT-JIHOKBN =  SPACE       )
                    PERFORM  VARYING  ID4    FROM   1   BY   1
                              UNTIL  (ID4                  >   50  )
                                OR   (WRK-CHUKSNSRYCD(ID4) =  SPACE)
@@ -2093,9 +2098,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          END-IF
                        END-IF
                    ELSE
-                       IF  (ACCT-ZAIKAISU  NOT =    ZERO) AND
-                           (ACCT-JIHOKBN       =   SPACE) AND
+                       IF  (ACCT-ZAIKAISU  NOT =    ZERO)  AND
                            (FLG-TENTEKIMATOME  =    ZERO)
+                        IF ((WRK-PARA-PRTKBN   =
+                                       "1" OR "2" OR "3") AND
+                            (ACCT-JIHOKBN      =   SPACE))
+                        OR ( WRK-PARA-PRTKBN   =
+                                              "4" OR "5" )
                             IF ( ACCT-SRYKBN  NOT =
                                  "12" AND "25" AND "93" AND "98")
                             OR ( ACCT-ZAIKBN  =   1             )
@@ -2156,6 +2165,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  END-IF
                                END-IF
                             END-IF
+                        END-IF
                        END-IF
                    END-IF
                  END-IF
@@ -2283,7 +2293,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  900-SRYACT-READ-SEC
       *
                MOVE     ZERO    TO    FLG-JYOGAI
-               IF    ACCT-SRYKBN  =  "90" OR "92"
+               IF   (ACCT-SRYKBN  =  "90" OR "92")
+               AND  (ACCT-JIHOKBN =  SPACE       )
                  PERFORM  VARYING  ID4    FROM   1   BY   1
                            UNTIL  (ID4                  >   50  )
                              OR   (WRK-CHUKSNSRYCD(ID4) =  SPACE)
@@ -2458,7 +2469,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
                     ( ACCT-ZAITEN      NOT =   ZERO       ) AND
                     ( ACCT-SYUTEN1         =   ZERO       ) AND
-                    ( ACCT-ZAIKAISU    NOT =   ZERO       ))
+                    ( ACCT-ZAIKAISU    NOT =   ZERO       ) AND
+                    ( ACCT-JIHOKBN         =   SPACE      ))
             OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
                                    "60" OR "64" OR "70" OR
                                    "80"                   ) AND
@@ -2514,6 +2526,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              AND (  ACCT-ZAITEN          NOT = ZERO  )
       *******AND (  ACCT-SYUTEN1             = ZERO  )
              AND (  ACCT-ZAIKAISU        NOT = ZERO  )
+             AND (  ACCT-JIHOKBN             = SPACE )
       *
               MOVE    1                  TO    FLG-TENTEKI             
       *
@@ -2533,7 +2546,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
                       ( ACCT-ZAITEN      NOT =   ZERO       ) AND
                       ( ACCT-SYUTEN1         =   ZERO       ) AND
-                      ( ACCT-ZAIKAISU    NOT =   ZERO       ))
+                      ( ACCT-ZAIKAISU    NOT =   ZERO       ) AND
+                      ( ACCT-JIHOKBN         =   SPACE      ))
               OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
                                      "60" OR "64" OR "70" OR
                                      "80"                   ) AND
@@ -2564,6 +2578,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SRY-SRYCD(IDX2)    TO    RECE85-SRYCD(IDX4)
       *
                IF      SRY-SRYCD(IDX2)    =     CONS-BYOITAIYO
+               AND     ACCT-JIHOKBN       =     SPACE
                   EVALUATE  RECE82-HOSPSBT
                      WHEN     "1"
                           MOVE     "3"    TO    RECE82-HOSPSBT
@@ -2573,6 +2588,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF      SRY-SRYKBN         =     "13"
+               AND     ACCT-JIHOKBN       =     SPACE
                    IF   SRY-SRYCD(IDX2)   =     CONS-SIDORYO1    OR
                                                 CONS-SIDORYO2    OR
                                                 CONS-SIDORYO3    OR
@@ -2893,7 +2909,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                END-IF                                                   
       *
-               PERFORM  220211-RECE85-TENSOU-COMCNT-HEN-SEC
+               IF      ACCT-JIHOKBN       =     SPACE
+                  PERFORM  220211-RECE85-TENSOU-COMCNT-HEN-SEC
+               ELSE
+                   MOVE   "1"   TO    RECE84-FLG-SHUJUTU-COMMENT
+                   MOVE   "1"   TO    RECE84-FLG-MASUI-COMMENT
+               END-IF
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
                 IF   ACCT-ZAIKBN  =  1

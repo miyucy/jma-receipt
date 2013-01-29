@@ -115,6 +115,8 @@
       *                                     レセプト記載対応
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
       *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
+      *
+      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1929,9 +1931,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                    MOVE    "＊"            TO  WRK-ZAI-MK
                END-IF    
                IF    ((RECE84-YKZTEN        =   ZERO ) AND
+                      (RECE84-JIHOKBN       =  SPACE ) AND
                       (IDX1                 =   5    ) AND
                       (RECE84-RYOTENKISAISU =   ZERO ))
                OR    ((RECE84-KIZAITEN      =   ZERO ) AND
+                      (RECE84-JIHOKBN       =  SPACE ) AND
                       (IDX1                 =   4    ) AND
                       (RECE84-RYOTENKISAISU =   ZERO ))
                    CONTINUE
@@ -1971,9 +1975,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                    END-IF
                END-IF    
       *        点数・回数セット処理（特定器材）
-               IF      IDX1              =   4
-               AND     WRK-ZAIWMAX(IDX1) >   ZERO
-               AND     RECE84-KIZAITEN   >   ZERO
+               IF     ( IDX1                =   4    )
+               AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
+                 IF   ((RECE84-KIZAITEN     >   ZERO) AND
+                       (RECE84-JIHOKBN      =  SPACE))
+                 OR   ( RECE84-JIHOKBN  NOT =  SPACE )
                    IF      RECE84-SRYKBN     >=  "33"                   
       **>          IF      RECE84-SRYKBN     >   "33"                   
                        MOVE    RECE84-KIZAITEN   TO  WRK-ZAITENX
@@ -1983,11 +1989,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                        PERFORM 440-TNSKAI-SET-SEC
                        MOVE    IDY               TO  WRK-TBLMAX 
                    END-IF
+                 END-IF
                END-IF     
       *        点数・回数セット処理（薬剤）
-               IF      IDX1              =   5
-               AND     WRK-ZAIWMAX(IDX1) >   ZERO
-               AND     RECE84-YKZTEN     >   ZERO
+               IF     ( IDX1                =   5    )
+               AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
+                 IF   ((RECE84-YKZTEN       >   ZERO) AND
+                       (RECE84-JIHOKBN      =  SPACE))
+                 OR   ( RECE84-JIHOKBN  NOT =  SPACE )
       ***          IF      RECE84-SRYKBN     >=  "31"   
       *****************IF      RECE84-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  
@@ -2007,6 +2016,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                            MOVE    IDY               TO  WRK-TBLMAX 
                        END-IF          
       ***          END-IF
+                 END-IF
                END-IF        
            END-PERFORM
       *             

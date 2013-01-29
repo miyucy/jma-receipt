@@ -7682,11 +7682,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                            IF    ACCT-JIHOKBN  NOT = SPACE
                               MOVE    ZERO       TO  ACCT-ZAITEN
+                              MOVE    ZERO       TO  ACCT-SYUTEN1
+                              MOVE    ZERO       TO  ACCT-SYUTEN2
+                              MOVE    ZERO       TO  ACCT-YKZTEN
+                              MOVE    ZERO       TO  ACCT-KIZAITEN
                            END-IF
       *
                            MOVE   ZERO           TO  FLG-RINYAK
       *
-                           PERFORM    21041-KUMIAWASE-HANBETU-SEC
+                           IF    ACCT-JIHOKBN      = SPACE
+                              PERFORM    21041-KUMIAWASE-HANBETU-SEC
+                           END-IF
       *
                            IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
@@ -8253,16 +8259,28 @@ grpsys     PERFORM 900-DBSELECT-SEC
              END-IF
       *
              IF       SRY-SRYCD(IDX2)  =  "099999909"
+               IF     ACCT-JIHOKBN     =   SPACE
                   MOVE    1     TO    RECE02-YOBIETC(3)
                   MOVE    2     TO    FLG-KIN-OKIKAE
+               ELSE
+                  MOVE    1     TO    FLG-HENSYU-NG
+               END-IF
              END-IF
              IF       SRY-SRYCD(IDX2)  =  "099999910"
+               IF     ACCT-JIHOKBN     =   SPACE
                   MOVE    1     TO    RECE02-YOBIETC(11)
                   MOVE    1     TO    FLG-KIN-OKIKAE
+               ELSE
+                  MOVE    1     TO    FLG-HENSYU-NG
+               END-IF
              END-IF
              IF       SRY-SRYCD(IDX2)  =  "099999921"
+               IF     ACCT-JIHOKBN     =   SPACE
                   MOVE    1     TO    RECE02-YOBIETC(19)
                   MOVE    1     TO    FLG-KIN-OKIKAE2
+               ELSE
+                  MOVE    1     TO    FLG-HENSYU-NG
+               END-IF
              END-IF
              IF       SRY-SRYCD(IDX2)(1:5)  =
                       "09960" OR "09970" OR "09980"
@@ -8409,6 +8427,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SRY-SRYCD(IDX2)    TO    RECE05-SRYCD(IDX4)
       *
                IF      SRY-SRYKBN         =     "12"
+               AND     ACCT-JIHOKBN       =     SPACE
                    IF   SRY-SRYCD(IDX2)   =     CONS-SAISHIN1    OR
                                                 CONS-SAISHIN2    OR
                                                 CONS-SAISHIN3    OR
@@ -8439,6 +8458,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF      SRY-SRYKBN         =     "13"
+               AND     ACCT-JIHOKBN       =     SPACE
                    IF   SRY-SRYCD(IDX2)   =     CONS-SIDORYO1    OR
                                                 CONS-SIDORYO2    OR
                                                 CONS-SIDORYO3    OR
@@ -8607,14 +8627,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
       **診療実日数のカウントを行える剤であるかの判定
-               IF  ((ACCT-ZAITEN    NOT =    ZERO)    AND               
-                    (ACCT-ZAIKAISU  NOT =    ZERO)    AND               
-                    (ACCT-SRYKBN        =  "11"  OR  "12"  OR           
-                                           "13"  OR  "14"     ))        
-               OR  ((ACCT-ZAITEN        =    ZERO)    AND               
-                    (ACCT-ZAIKAISU  NOT =    ZERO)    AND               
-                    (ACCT-SRYKBN        =  "11"  OR  "12"  OR           
-                                           "99"               ))        
+               IF      ACCT-JIHOKBN       =    SPACE
+                 IF  ((ACCT-ZAITEN    NOT =    ZERO             ) AND
+                      (ACCT-ZAIKAISU  NOT =    ZERO             ) AND
+                      (ACCT-SRYKBN        =  "11"  OR  "12"  OR
+                                             "13"  OR  "14"     ))
+                 OR  ((ACCT-ZAITEN        =    ZERO             ) AND
+                      (ACCT-ZAIKAISU  NOT =    ZERO             ) AND
+                      (ACCT-SRYKBN        =  "11"  OR  "12"  OR
+                                             "99"               ))
       *
                        IF ( (TNS-JITUDAY    =     2          ) AND      
                             (TNS-DAYCNT     =     1   OR   2 )    )     
@@ -8687,7 +8708,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                              MOVE    1      TO    FLG-SHOSAISIN-GEN
                        END-IF
       *
-               END-IF                                                   
+                 END-IF
+               END-IF
       *
                IF      TNS-SRYKBN         =     "80"
                    IF  TNS-GAITENTTLKBN   =     130
@@ -8696,7 +8718,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF
       *
-               PERFORM  2104411-RECE05-TENSOU-COMCNT-HEN-SEC
+               IF      ACCT-JIHOKBN       =     SPACE
+                  PERFORM  2104411-RECE05-TENSOU-COMCNT-HEN-SEC
+               ELSE
+                   MOVE   "1"   TO    RECE04-FLG-SHUJUTU-COMMENT
+                   MOVE   "1"   TO    RECE04-FLG-MASUI-COMMENT
+               END-IF
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
                 IF   ACCT-ZAIKBN  =  1
@@ -12380,6 +12407,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *
            EVALUATE    FLG-TOKKI
              WHEN        1
+              IF ACCT-JIHOKBN = SPACE
                EVALUATE    ACCT-SRYCDTOTAL
                    WHEN    CONS-TOKKI1
                        MOVE    "01"      TO      WRK-TOKKI
@@ -12424,7 +12452,9 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    WHEN    CONS-TOKKI25
                        MOVE    "25"      TO      WRK-TOKKI
                END-EVALUATE
+              END-IF
              WHEN        2
+              IF ACCT-JIHOKBN = SPACE
                EVALUATE    SRY-SRYCD(IDX2)
                    WHEN    CONS-TOKKI1(6:9)
                        MOVE    "01"      TO      WRK-TOKKI
@@ -12469,8 +12499,11 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    WHEN    CONS-TOKKI25(6:9)
                        MOVE    "25"      TO      WRK-TOKKI
                END-EVALUATE
+              END-IF
              WHEN        3
+              IF ACCT-JIHOKBN = SPACE
                        MOVE    "14"      TO      WRK-TOKKI
+              END-IF
              WHEN        4
                        MOVE    "15"      TO      WRK-TOKKI
              WHEN        5
@@ -12494,9 +12527,13 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        MOVE    "19"      TO      WRK-TOKKI
                END-EVALUATE
              WHEN        9
+              IF ACCT-JIHOKBN = SPACE
                        MOVE    "11"      TO      WRK-TOKKI
+              END-IF
              WHEN       10
+              IF ACCT-JIHOKBN = SPACE
                        MOVE    "12"      TO      WRK-TOKKI
+              END-IF
              WHEN       11
                        MOVE    "25"      TO      WRK-TOKKI
              WHEN       12

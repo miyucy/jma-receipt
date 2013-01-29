@@ -174,6 +174,8 @@
       *  04.06.03    NACL-門脇    12/10/15  診療行為入力したコメントのみの剤の
       *                                     レセプト記載対応
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
+      *
+      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2401,9 +2403,11 @@
                    MOVE    "＊"            TO  WRK-ZAI-MK
                END-IF    
                IF    ((RECE64-YKZTEN        =   ZERO ) AND
+                      (RECE64-JIHOKBN       =  SPACE ) AND
                       (IDX1                 =   5    ) AND
                       (RECE64-RYOTENKISAISU =   ZERO ))
                OR    ((RECE64-KIZAITEN      =   ZERO ) AND
+                      (RECE64-JIHOKBN       =  SPACE ) AND
                       (IDX1                 =   4    ) AND
                       (RECE64-RYOTENKISAISU =   ZERO ))
                    CONTINUE
@@ -2443,9 +2447,11 @@
                    END-IF
                END-IF    
       *        点数・回数セット処理（特定器材）
-               IF      IDX1              =   4
-               AND     WRK-ZAIWMAX(IDX1) >   ZERO
-               AND     RECE64-KIZAITEN   >   ZERO
+               IF     ( IDX1                =   4    )
+               AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
+                 IF   ((RECE64-KIZAITEN     >   ZERO) AND
+                       (RECE64-JIHOKBN      =  SPACE))
+                 OR   ( RECE64-JIHOKBN  NOT =  SPACE )
                    IF      RECE64-SRYKBN     >=  "33"                   
       **>          IF      RECE64-SRYKBN     >   "33"                   
                        MOVE    RECE64-KIZAITEN   TO  WRK-ZAITENX
@@ -2455,11 +2461,14 @@
                        PERFORM 440-TNSKAI-SET-SEC
                        MOVE    IDY               TO  WRK-TBLMAX 
                    END-IF
+                 END-IF
                END-IF     
       *        点数・回数セット処理（薬剤）
-               IF      IDX1              =   5
-               AND     WRK-ZAIWMAX(IDX1) >   ZERO
-               AND     RECE64-YKZTEN     >   ZERO
+               IF     ( IDX1                =   5    )
+               AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
+                 IF   ((RECE64-YKZTEN       >   ZERO) AND
+                       (RECE64-JIHOKBN      =  SPACE))
+                 OR   ( RECE64-JIHOKBN  NOT =  SPACE )
       ***          IF      RECE64-SRYKBN     >=  "31"   
       *****************IF      RECE64-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  
@@ -2479,6 +2488,7 @@
                            MOVE    IDY               TO  WRK-TBLMAX 
                        END-IF          
       ***          END-IF
+                 END-IF
                END-IF        
            END-PERFORM
       *             

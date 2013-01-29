@@ -248,6 +248,7 @@
       *                                     レセプト記載対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
+      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2014,6 +2015,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                                  OR  CONS-JYOMYAKU)
                            IF  (RECE04-YKZTEN     =   ZERO)
                            AND (RECE04-KIZAITEN   =   ZERO)
+                           AND (RECE04-JIHOKBN    =  SPACE)
                                CONTINUE
                            ELSE
                                MOVE    1         TO  FLG-HIKAKIN
@@ -2933,10 +2935,12 @@ grpsys         PERFORM 900-DBSELECT-SEC
       **       AND     RECE04-YKZTEN     <=  20
       **           CONTINUE
       *********ELSE    
-               IF    (    (RECE04-YKZTEN     =   ZERO )
-                      AND (IDX1              =   5    ) )
-               OR    (    (RECE04-KIZAITEN   =   ZERO )
-                      AND (IDX1              =   4    ) )
+               IF    ((RECE04-YKZTEN     =   ZERO) AND
+                      (RECE04-JIHOKBN    =  SPACE) AND
+                      (IDX1              =   5   ))
+               OR    ((RECE04-KIZAITEN   =   ZERO) AND
+                      (RECE04-JIHOKBN    =  SPACE) AND
+                      (IDX1              =   4   ))
                    CONTINUE
                ELSE    
       ***          IF   (RECE04-SRYKBN     =   "31" OR "32")
@@ -2979,9 +2983,11 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF    
       *        点数・回数セット処理（特定器材）
-               IF      IDX1              =   4
-               AND     WRK-ZAIWMAX(IDX1) >   ZERO
-               AND     RECE04-KIZAITEN   >   ZERO
+               IF     ( IDX1                =   4    )
+               AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
+                 IF   ((RECE04-KIZAITEN     >   ZERO) AND
+                       (RECE04-JIHOKBN      =  SPACE))
+                 OR   ( RECE04-JIHOKBN  NOT =  SPACE )
                    IF      RECE04-SRYKBN     >=  "33"   
                        MOVE    RECE04-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE04-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -2990,11 +2996,14 @@ grpsys         PERFORM 900-DBSELECT-SEC
                        PERFORM 440-TNSKAI-SET-SEC
                        MOVE    IDY               TO  WRK-TBLMAX 
                    END-IF
+                 END-IF
                END-IF     
       *        点数・回数セット処理（薬剤）
-               IF      IDX1              =   5
-               AND     WRK-ZAIWMAX(IDX1) >   ZERO
-               AND     RECE04-YKZTEN     >   ZERO
+               IF     ( IDX1                =   5    )
+               AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
+                 IF   ((RECE04-YKZTEN       >   ZERO) AND
+                       (RECE04-JIHOKBN      =  SPACE))
+                 OR   ( RECE04-JIHOKBN  NOT =  SPACE )
       ***          IF      RECE04-SRYKBN     >=  "31"   
       *****************IF      RECE04-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  
@@ -3013,6 +3022,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                            MOVE    IDY               TO  WRK-TBLMAX 
                        END-IF          
       ***          END-IF
+                 END-IF
                END-IF        
            END-PERFORM
       *             

@@ -5627,6 +5627,10 @@
       *
                            IF    ACCT-JIHOKBN  NOT = SPACE
                               MOVE    ZERO       TO  ACCT-ZAITEN
+                              MOVE    ZERO       TO  ACCT-SYUTEN1
+                              MOVE    ZERO       TO  ACCT-SYUTEN2
+                              MOVE    ZERO       TO  ACCT-YKZTEN
+                              MOVE    ZERO       TO  ACCT-KIZAITEN
                            END-IF
       *
                            MOVE   ZERO           TO  FLG-TENTEKIMATOME
@@ -5983,16 +5987,28 @@
             END-IF
       *
             IF       SRY-SRYCD(IDX2)   =  "099999909"
+               IF     ACCT-JIHOKBN     =   SPACE
                   MOVE    1     TO    RECE62-YOBIETC(3)
                   MOVE    2     TO    FLG-KIN-OKIKAE
+               ELSE
+                  MOVE    1     TO    FLG-HENSYU-NG
+               END-IF
             END-IF
             IF       SRY-SRYCD(IDX2)   =  "099999910"
+               IF     ACCT-JIHOKBN     =   SPACE
                   MOVE    1     TO    RECE62-YOBIETC(11)
                   MOVE    1     TO    FLG-KIN-OKIKAE
+               ELSE
+                  MOVE    1     TO    FLG-HENSYU-NG
+               END-IF
             END-IF
             IF       SRY-SRYCD(IDX2)   =  "099999921"
+               IF     ACCT-JIHOKBN     =   SPACE
                   MOVE    1     TO    RECE62-YOBIETC(19)
                   MOVE    1     TO    FLG-KIN-OKIKAE2
+               ELSE
+                  MOVE    1     TO    FLG-HENSYU-NG
+               END-IF
             END-IF
             IF       SRY-SRYCD(IDX2)(1:5)  =
                      "09960" OR "09970" OR "09980"
@@ -6012,7 +6028,8 @@
                      (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
                     ( ACCT-ZAITEN      NOT =   ZERO       ) AND
                     ( ACCT-SYUTEN1         =   ZERO       ) AND
-                    ( ACCT-ZAIKAISU    NOT =   ZERO       ))
+                    ( ACCT-ZAIKAISU    NOT =   ZERO       ) AND
+                    ( ACCT-JIHOKBN         =   SPACE      ))
             OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
                                    "60" OR "64" OR "70" OR
                                    "80"                   ) AND
@@ -6096,6 +6113,7 @@
              AND (  ACCT-ZAITEN          NOT = ZERO  )
       *******AND (  ACCT-SYUTEN1             = ZERO  )
              AND (  ACCT-ZAIKAISU        NOT = ZERO  )
+             AND (  ACCT-JIHOKBN             = SPACE )
       *
               MOVE    1                  TO    FLG-TENTEKI             
       *
@@ -6115,7 +6133,8 @@
                        (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
                       ( ACCT-ZAITEN      NOT =   ZERO       ) AND
                       ( ACCT-SYUTEN1         =   ZERO       ) AND
-                      ( ACCT-ZAIKAISU    NOT =   ZERO       ))
+                      ( ACCT-ZAIKAISU    NOT =   ZERO       ) AND
+                      ( ACCT-JIHOKBN         =   SPACE      ))
               OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
                                      "60" OR "64" OR "70" OR
                                      "80"                   ) AND
@@ -6170,6 +6189,7 @@
                MOVE    SRY-SRYCD(IDX2)    TO    RECE65-SRYCD(IDX4)
       *
                IF      SRY-SRYKBN         =     "13"
+               AND     ACCT-JIHOKBN       =     SPACE
                    IF   SRY-SRYCD(IDX2)   =     CONS-SIDORYO1    OR
                                                 CONS-SIDORYO2    OR
                                                 CONS-SIDORYO3    OR
@@ -6349,7 +6369,12 @@
                    END-IF
                END-IF
       *
-               PERFORM  2101211-RECE65-TENSOU-COMCNT-HEN-SEC
+               IF      ACCT-JIHOKBN       =     SPACE
+                  PERFORM  2101211-RECE65-TENSOU-COMCNT-HEN-SEC
+               ELSE
+                   MOVE   "1"   TO    RECE64-FLG-SHUJUTU-COMMENT
+                   MOVE   "1"   TO    RECE64-FLG-MASUI-COMMENT
+               END-IF
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
                 IF   ACCT-ZAIKBN  =  1
@@ -8751,6 +8776,7 @@
       *
            EVALUATE    FLG-TOKKI
              WHEN        1
+              IF ACCT-JIHOKBN = SPACE
                EVALUATE    ACCT-SRYCDTOTAL
                    WHEN    CONS-TOKKI1
                        MOVE    "01"      TO      WRK-TOKKI
@@ -8801,7 +8827,9 @@
                    WHEN    CONS-TOKKI25
                        MOVE    "25"      TO      WRK-TOKKI
                END-EVALUATE
+              END-IF
              WHEN        2
+              IF ACCT-JIHOKBN = SPACE
                EVALUATE    SRY-SRYCD(IDX2)
                    WHEN    CONS-TOKKI1(6:9)
                        MOVE    "01"      TO      WRK-TOKKI
@@ -8852,8 +8880,11 @@
                    WHEN    CONS-TOKKI25(6:9)
                        MOVE    "25"      TO      WRK-TOKKI
                END-EVALUATE
+              END-IF
              WHEN        3
+              IF ACCT-JIHOKBN = SPACE
                        MOVE    "14"      TO      WRK-TOKKI
+              END-IF
              WHEN        4
                        MOVE    "15"      TO      WRK-TOKKI
              WHEN        5
@@ -8886,9 +8917,13 @@
                        MOVE    "24"      TO      WRK-TOKKI
                END-EVALUATE
              WHEN        9
+              IF ACCT-JIHOKBN = SPACE
                        MOVE    "11"      TO      WRK-TOKKI
+              END-IF
              WHEN       10
+              IF ACCT-JIHOKBN = SPACE
                        MOVE    "12"      TO      WRK-TOKKI
+              END-IF
              WHEN       12
                        MOVE    "01"      TO      WRK-TOKKI
       *

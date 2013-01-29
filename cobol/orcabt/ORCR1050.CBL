@@ -66,6 +66,7 @@
       *                                     レセプト記載対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
+      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1408,6 +1409,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                                  OR  CONS-JYOMYAKU)
                            IF  (RECE120-YKZTEN     =   ZERO)
                            AND (RECE120-KIZAITEN   =   ZERO)
+                           AND (RECE120-JIHOKBN    =  SPACE)
                                CONTINUE
                            ELSE
                                MOVE    1         TO  FLG-HIKAKIN
@@ -2126,10 +2128,12 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF      RECE120-SRYKBN   <=   "33"
                    MOVE    "＊"            TO  WRK-ZAI-MK
                END-IF    
-               IF    (    (RECE120-YKZTEN     =   ZERO )
-                      AND (IDX1              =   5    ) )
-               OR    (    (RECE120-KIZAITEN   =   ZERO )
-                      AND (IDX1              =   4    ) )
+               IF    ((RECE120-YKZTEN     =   ZERO) AND
+                      (RECE120-JIHOKBN    =  SPACE) AND
+                      (IDX1               =   5   ))
+               OR    ((RECE120-KIZAITEN   =   ZERO) AND
+                      (RECE120-JIHOKBN    =  SPACE) AND
+                      (IDX1               =   4   ))
                    CONTINUE
                ELSE    
       ***          IF   (RECE120-SRYKBN     =   "31" OR "32")
@@ -2172,9 +2176,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    END-IF
                END-IF    
       *        点数・回数セット処理（特定器材）
-               IF      IDX1              =   4
-               AND     WRK-ZAIWMAX(IDX1) >   ZERO
-               AND     RECE120-KIZAITEN   >   ZERO
+               IF     ( IDX1                =   4    )
+               AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
+                 IF   ((RECE120-KIZAITEN     >   ZERO) AND
+                       (RECE120-JIHOKBN      =  SPACE))
+                 OR   ( RECE120-JIHOKBN  NOT =  SPACE )
                    IF      RECE120-SRYKBN     >=  "33"   
                        MOVE    RECE120-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE120-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -2183,11 +2189,14 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        PERFORM 440-TNSKAI-SET-SEC
                        MOVE    IDY               TO  WRK-TBLMAX 
                    END-IF
+                 END-IF
                END-IF     
       *        点数・回数セット処理（薬剤）
-               IF      IDX1              =   5
-               AND     WRK-ZAIWMAX(IDX1) >   ZERO
-               AND     RECE120-YKZTEN    >   ZERO
+               IF     ( IDX1                =   5    )
+               AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
+                 IF   ((RECE120-YKZTEN       >   ZERO) AND
+                       (RECE120-JIHOKBN      =  SPACE))
+                 OR   ( RECE120-JIHOKBN  NOT =  SPACE )
                    IF      RECE120-SRYKBN     >=   "33"
                        MOVE    RECE120-YKZTEN     TO  WRK-ZAITENX
                        MOVE    RECE120-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -2196,6 +2205,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        PERFORM 440-TNSKAI-SET-SEC
                        MOVE    IDY               TO  WRK-TBLMAX 
                    END-IF          
+                 END-IF
                END-IF        
            END-PERFORM
       *             
