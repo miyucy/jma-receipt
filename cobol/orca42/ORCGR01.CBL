@@ -157,6 +157,9 @@
       *  04.07.03    NACL-藤原    12/11/20  リアルタイムプレビュー時の
       *                                     一画面対応
       *  04.07.04    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
+      *
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -311,7 +314,7 @@
              05  WRK-SHELL-SYSYMD  PIC X(08).  
            03  WRK-RECEKBN         PIC X(18).
            03  WRK-NYUGAIKBN       PIC X(10).
-           03  WRK-PRTKBN          PIC X(30).
+           03  WRK-PRTKBN          PIC X(44).
            03  WRK-ERRCD           PIC X(04).
       *
            03  WRK-KBNCD-X.
@@ -483,11 +486,10 @@
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *----(01.00.04) LINE ADD START ----------------------------------
       *
       *   画面日付変換サブ
           COPY    "CPORCSGDAY.INC".
-      *----(01.00.04) LINE ADD END   ----------------------------------
+      *
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
@@ -697,6 +699,12 @@
                    MOVE    "【点検用】"    TO  WRK-PRTKBN
                WHEN    "3"
                    MOVE    "【点検用（０点公費記載設定）】"
+                                           TO  WRK-PRTKBN
+               WHEN    "4"
+                   MOVE    "【点検用（包括診療分記載設定）】"
+                                           TO  WRK-PRTKBN
+               WHEN    "5"
+                   MOVE    "【点検用（０点公費・包括診療分記載設定）】"
                                            TO  WRK-PRTKBN
                WHEN    OTHER
                    MOVE    SPACE           TO  WRK-PRTKBN
@@ -3728,7 +3736,8 @@ grpsys             PERFORM 900-DBSELECT-SEC
       *
            MOVE    ZERO                TO  SPA-NAI-R01-PRTKBN-FLG
            IF    ( SPA-ERRCD           =   SPACE       )
-           AND   ( SPA-R01-PRTKBN      =   "2" OR  "3" )
+           AND   ( SPA-R01-PRTKBN      =   "2" OR  "3"
+                                       OR  "4" OR  "5" )
                EVALUATE    SPA-GMN-R01-SYORI
                    WHEN    "1"
                    WHEN    "4"
@@ -3948,7 +3957,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
       *
       *    点検用レセプトで平成２００８年３月以前のとき
            IF    ( SPA-NAI-R01-PRTKBN-FLG  =   1           )
-           AND   ( SPA-R01-PRTKBN          =   "2" OR  "3" )
+           AND   ( SPA-R01-PRTKBN          =   "2" OR  "3"
+                                           OR  "4" OR  "5" )
                MOVE    "1"                     TO  SPA-R01-PRTKBN
            END-IF
            MOVE    ZERO           TO  SPA-NAI-R01-PRTKBN-FLG
@@ -5361,6 +5371,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1006"
                WHEN    "1007"
                    IF      SPA-R01-PRTKBN       =   "2" OR  "3"
+                                                OR  "4" OR  "5"
                        MOVE    "【点検用レセプト】"     TO  RID1-LABEL
                    END-IF
                    IF      SPA-NAI-R01-PRTKBN-FLG       =   1
@@ -5468,6 +5479,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1006"
                WHEN    "1007"
                    IF      SPA-R01-PRTKBN       =   "2" OR  "3"
+                                                OR  "4" OR  "5"
                        MOVE    "【点検用レセプト】"     TO  RID4-LABEL
                    END-IF
                    IF      SPA-NAI-R01-PRTKBN-FLG       =   1

@@ -1531,7 +1531,7 @@ R02	{
 		};
 		};
 		FILEKBN	{
-			value	varchar(72);
+			value	varchar(82);
 		};
 		MSG	{
 			style   varchar(20);

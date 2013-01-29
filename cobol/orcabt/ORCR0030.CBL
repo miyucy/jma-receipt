@@ -981,10 +981,6 @@
                05  OCR3-CHKDGT5                        PIC 9(01).
            03  OCR3-YOBI                               PIC X(28).
       *
-      *    ¥Ñ¥¹Ì¾ÎÎ°è
-           03  WRK-MCP-TABLE       PIC X(64).
-           03  WRK-MCP-PATHNAME    PIC X(64).
-      *
       *    ºÞ¾ðÊóÂàÈòÎÎ°è
        01  WK-ZAIKAISU                                 PIC S9(07).
        01  WK-ZAITEN                                   PIC S9(08).
@@ -1198,7 +1194,6 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-IN                                  PIC X(01).
            03  WRK-PARA.
       *********05  WRK-PARA-PREFNUM                    PIC X(02).
                05  WRK-PARA-SRYYM                      PIC X(06).
@@ -1207,6 +1202,7 @@
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                        PIC 9(02).
+           03  WRK-PARA-PRTKBN                         PIC X(01).
       *
            03  WRK-SYS-SRYYMD                          PIC X(08).
       *
@@ -1300,6 +1296,12 @@
       *    1·åÌÜ:À¸ÊÝ 2·åÌÜ:·ë³Ë 3·åÌÜ:Àº¿À
            03  WRK-3SYU-KBN.
                05  WRK-3SYU        PIC X(03).
+      *
+      *    ¥Ñ¥¹Ì¾ÎÎ°è
+           03  WRK-MCP-TABLE       PIC X(64).
+           03  WRK-MCP-PATHNAME    PIC X(64).
+           03  WRK-SRYACCT-PATHNAME
+                                   PIC X(64).
       *
       *    ¿ô»úÈ¾³ÑÁ´³ÑÊÑ´¹ÍÑ     
            03  WRK-CHAR-IDX                    PIC 9(02).
@@ -2245,10 +2247,13 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           DISPLAY "WRK-PARA-PRTKBN =" WRK-PARA-PRTKBN
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    £Ä£Â¥ª¡¼¥×¥ó½èÍý
@@ -7654,11 +7659,18 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      ACCT-HOSPNUM
            MOVE    RECE02-SRYYM         TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key32"             TO  MCP-PATHNAME
+           IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+               MOVE    "key62"             TO  WRK-SRYACCT-PATHNAME
+           ELSE
+               MOVE    "key32"             TO  WRK-SRYACCT-PATHNAME
+           END-IF
+           MOVE    WRK-SRYACCT-PATHNAME
+                                       TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sryacct"       TO   MCP-TABLE
-               MOVE    "key32"             TO   MCP-PATHNAME
+               MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
                PERFORM  900-SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
@@ -7787,7 +7799,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        END-IF
                    END-PERFORM          
                    MOVE    "tbl_sryacct"       TO   MCP-TABLE
-                   MOVE    "key32"             TO   MCP-PATHNAME
+                   MOVE    WRK-SRYACCT-PATHNAME
+                                               TO  MCP-PATHNAME
                    PERFORM   900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
@@ -7795,7 +7808,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            MOVE    "tbl_sryacct"       TO   MCP-TABLE
-           MOVE    "key32"             TO   MCP-PATHNAME
+           MOVE    WRK-SRYACCT-PATHNAME
+                                       TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .

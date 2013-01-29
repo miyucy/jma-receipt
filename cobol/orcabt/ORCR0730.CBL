@@ -183,6 +183,9 @@
       *                                     一画面対応
       *  04.07.07    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
       *  04.07.08    NACL-藤原    12/12/17  複数枚レセプト分割対応
+      *
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3226,7 +3229,8 @@
            IF    ( SYS-200501-DRNAME-KSIKBN
                                        =   "1"         )
            AND   ( RECE62-DRCD     NOT =   SPACE       )
-           AND   ( WRK-PARA-PRTKBN     =   "2" OR  "3" )
+           AND   ( WRK-PARA-PRTKBN     =   "2" OR  "3" 
+                                       OR  "4" OR  "5" )
                IF  ( ( WRK-PARA-SHELLID
                                        NOT =   "RECEPTX" ) AND
                      ( WRK-PARA-SYOKBN     =   "1"       )     )
@@ -3328,7 +3332,7 @@
            END-IF
       *
       *    点検用レセプト作成時
-           IF      WRK-PARA-PRTKBN     =   "2" OR  "3"
+           IF      WRK-PARA-PRTKBN     =   "2" OR  "3" OR  "4" OR  "5"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
                                            =   "0"
                    MOVE    "点検用レセプト"    TO  HC06-LABEL
@@ -9945,13 +9949,16 @@
                            MOVE    "4"             TO  RECE07-SYORISBT
                    END-EVALUATE
                END-IF
-               IF      WRK-PARA-PRTKBN     =   "2"
-                   MOVE    "1"                 TO  RECE07-PRTKBN
-               ELSE
-                   IF      WRK-PARA-PRTKBN     =   "3"
+               EVALUATE    WRK-PARA-PRTKBN
+                   WHEN    "2"
+                       MOVE    "1"                 TO  RECE07-PRTKBN
+                   WHEN    "3"
                        MOVE    "2"                 TO  RECE07-PRTKBN
-                   END-IF
-               END-IF
+                   WHEN    "4"
+                       MOVE    "3"                 TO  RECE07-PRTKBN
+                   WHEN    "5"
+                       MOVE    "4"                 TO  RECE07-PRTKBN
+               END-EVALUATE
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
                IF      RECE08-CHOUKI       =   "1"

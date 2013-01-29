@@ -1311,6 +1311,7 @@
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                        PIC 9(02).
+           03  WRK-PARA-PRTKBN                         PIC X(01).
       *
            03  WRK-SYS-SRYYMD                          PIC X(08).
       *
@@ -1468,6 +1469,10 @@
       *    1·åÌÜ:À¸ÊÝ 2·åÌÜ:·ë³Ë 3·åÌÜ:Àº¿À
            03  WRK-3SYU-KBN.
                05  WRK-3SYU        PIC X(03).
+      *
+      *    ¥Ñ¥¹Ì¾ÎÎ°è
+           03  WRK-SRYACCT-PATHNAME
+                                   PIC X(64).
       *
       *    ¿ô»úÈ¾³ÑÁ´³ÑÊÑ´¹ÍÑ     
            03  WRK-CHAR-IDX                    PIC 9(02).
@@ -2261,10 +2266,13 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           DISPLAY "WRK-PARA-PRTKBN =" WRK-PARA-PRTKBN
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        £Ä£Â¥ª¡¼¥×¥ó½èÍý
@@ -5596,11 +5604,18 @@
            MOVE    RECE62-SRYYM         TO      ACCT-SRYYM
            MOVE    SRYACCT-REC          TO      MCPDATA-REC
            MOVE    "tbl_sryacct"        TO      MCP-TABLE
-           MOVE    "key33"              TO      MCP-PATHNAME
+           IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+               MOVE    "key63"             TO  WRK-SRYACCT-PATHNAME
+           ELSE
+               MOVE    "key33"             TO  WRK-SRYACCT-PATHNAME
+           END-IF
+           MOVE    WRK-SRYACCT-PATHNAME
+                                       TO  MCP-PATHNAME
            PERFORM   900-DBSELECT-SEC
            IF      MCP-RC               =       ZERO
                MOVE    "tbl_sryacct"    TO      MCP-TABLE
-               MOVE    "key33"          TO      MCP-PATHNAME
+               MOVE    WRK-SRYACCT-PATHNAME
+                                       TO  MCP-PATHNAME
                PERFORM  900-SRYACCT-READ-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
@@ -5737,7 +5752,8 @@
                        END-IF
                    END-PERFORM          
                    MOVE    "tbl_sryacct"     TO      MCP-TABLE
-                   MOVE    "key33"           TO      MCP-PATHNAME
+                   MOVE    WRK-SRYACCT-PATHNAME
+                                             TO  MCP-PATHNAME
                    PERFORM   900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
@@ -5745,7 +5761,8 @@
            END-IF
       *
            MOVE    "tbl_sryacct"      TO      MCP-TABLE
-           MOVE    "key33"            TO      MCP-PATHNAME
+           MOVE    WRK-SRYACCT-PATHNAME
+                                      TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
            .

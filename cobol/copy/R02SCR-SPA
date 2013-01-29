@@ -46,6 +46,9 @@
       *
       *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
+      *
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
       *****************************************************************
       *
        01  SPA-R02.
@@ -66,7 +69,7 @@
                05  SPA-GMN-CUR                     PIC 9(03).
                05  SPA-GMN-AREA.
                    07  SPA-GMN-SYOKBN              PIC X(01).
-                   07  SPA-GMN-FILEKBN             PIC X(72).
+                   07  SPA-GMN-FILEKBN             PIC X(82).
                    07  SPA-GMN-MSG                 PIC X(42).
                    07  SPA-GMN-CREYMD              PIC X(22).
                    07  SPA-GMN-PAGEH               PIC 9(04).

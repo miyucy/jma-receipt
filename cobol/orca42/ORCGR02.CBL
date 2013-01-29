@@ -143,6 +143,9 @@
       *  04.07.04    NACL-藤原    13/01/07  自費レセプトを印刷しない設定
       *                                     のとき、入力順、ターミナルデジット
       *                                     出力の対象としない
+      *
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -263,7 +266,7 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-RECEERR         PIC X(200).
-           03  WRK-PRTKBN          PIC X(30).
+           03  WRK-PRTKBN          PIC X(40).
            03  WRK-RECEKBN         PIC X(10).
            03  WRK-NYUGAIKBN       PIC X(06).
            03  WRK-PREFKBN         PIC X(01).
@@ -616,16 +619,21 @@
            MOVE    "T"             TO  SPA-GMN-SYOKBN
       *
       *    点検用レセプト作成時
-           IF      SPA-R01-PRTKBN  =   "2"
-               MOVE    "【点検用】"    TO  WRK-PRTKBN
-           ELSE
-               IF      SPA-R01-PRTKBN  =   "3"
-                   MOVE    "【点検用（０点公費記載設定）】"
+           EVALUATE    SPA-R01-PRTKBN
+               WHEN    "2"
+                   MOVE    "【点検用】"    TO  WRK-PRTKBN
+               WHEN    "3"
+                   MOVE    "【点検用（０点公費）】"
                                            TO  WRK-PRTKBN
-               ELSE
+               WHEN    "4"
+                   MOVE    "【点検用（包括診療分）】"
+                                           TO  WRK-PRTKBN
+               WHEN    "5"
+                   MOVE    "【点検用（０点公費・包括診療）】"
+                                           TO  WRK-PRTKBN
+               WHEN    OTHER
                    MOVE    SPACE           TO  WRK-PRTKBN
-               END-IF
-           END-IF
+           END-EVALUATE
       *
       *    ファイル作成区分
            EVALUATE    SPA-R01-FILEKBN
@@ -8170,7 +8178,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-RIDCD3           TO  RID3-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID3-ID1MSG
            MOVE    "blue"               TO  RID3-LABEL-STYLE
-           IF      SPA-R01-PRTKBN       =   "2" OR  "3"
+           IF      SPA-R01-PRTKBN       =   "2" OR  "3" OR  "4" OR  "5"
                MOVE    "【点検用レセプト】"     TO  RID3-LABEL
            END-IF
            MOVE    "B12"                TO  MCP-WIDGET

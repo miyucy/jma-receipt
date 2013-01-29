@@ -723,6 +723,13 @@ W12	{
 					count	int;
 					item	varchar(24)[5];
 				};
+				INSPECT_INCLUDE_COMBO	{
+					INSPECT_INCLUDE	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[5];
+				};
 				DRNAME_KSIKBN_COMBO	{
 					DRNAME_KSIKBN	{
 						value	varchar(20);

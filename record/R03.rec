@@ -33,7 +33,7 @@ R03	{
 		};
 		PRTKBN_LABEL	{
 			style   varchar(20);
-			value	varchar(20);
+			value	varchar(28);
 		};
 		KOBETU	{
 			value	bool;
