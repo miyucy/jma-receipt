@@ -48,9 +48,6 @@
       *  04.06.00    NACL-多々納  10/12/XX  週回数対応
       *  04.07.00    NACL-多々納  11/11/28  同日再入院対応
       *                                     継続初回入院日対応
-      *  04.07.00    NACL-多々納  13/02/XX  労災レセ電コード対応(H25.7)
-      *  04.07.00    NACL-多々納  13/07/14  他月数　６０（５年）対応
-      *  04.08.00    NACL-多々納  18/03/XX  平成３０年４月改正対応
       *****************************************************************
       *
       *
@@ -123,8 +120,6 @@
            03  WRK-DOCNT-P             PIC 9(04).
            03  WRK-DCNT                PIC 9(04).
            03  WRK-JGNCNTETCM          PIC 9(02).
-      *    他月数
-           03  WRK-CHK-JGNCNTETCM      PIC 9(02).
       *
            03  WRK-SRYCD               PIC X(09).
            03  WRK-CODE                PIC X(03).
@@ -147,7 +142,6 @@
            03  WRK-RIGAKU-KBN          PIC X(01). 
       *    労災のリハビリ件数
            03  WRK-RSI-CNT             PIC 9(04).
-           03  WRK-RSI-SRYCD           PIC X(09).
       *
            03  WRK-CHK-SRYCD           PIC X(09).
            03  WRK-CHK-SRYYMD.
@@ -215,8 +209,6 @@
       *
            03  WRK-CHKCNT              PIC 9(03).
       *
-           03  WRK-HZN-SRYCD           PIC X(09).
-      *
       *    同時に算定する診療行為コード一覧
        01  TBL-DOUJI-AREA.
       *     寝たきり老人在宅総合診療科（処方箋交付あり）
@@ -255,20 +247,6 @@
       *    小児科外来診療科（院内処方）再診
            03  FILLER                  PIC X(04)   VALUE   "004".
            03  FILLER                  PIC X(09)   VALUE   "113003810".
-      *H28.4
-      *    小児かかりつけ診療科（院内処方）初診
-           03  FILLER                  PIC X(04)   VALUE   "004".
-           03  FILLER                  PIC X(09)   VALUE   "113019710".
-      *    小児かかりつけ診療科（院内処方）再診
-           03  FILLER                  PIC X(04)   VALUE   "004".
-           03  FILLER                  PIC X(09)   VALUE   "113019810".
-      *    小児かかりつけ診療科（院外処方）初診
-           03  FILLER                  PIC X(04)   VALUE   "004".
-           03  FILLER                  PIC X(09)   VALUE   "113019910".
-      *    小児かかりつけ診療科（院外処方）再診
-           03  FILLER                  PIC X(04)   VALUE   "004".
-           03  FILLER                  PIC X(09)   VALUE   "113020010".
-      *
       *    消炎鎮痛処置テーブル
            03  FILLER                  PIC X(04)   VALUE   "005".
            03  FILLER                  PIC X(09)   VALUE   "140029610".
@@ -306,60 +284,18 @@
       *    人工腎臓（その他）
            03  FILLER                  PIC X(04)   VALUE   "008".
            03  FILLER                  PIC X(09)   VALUE   "140007710".
-      *    人工腎臓（４時間未満）（H30.3　まで）
+      *    人工腎臓（４時間未満）
            03  FILLER                  PIC X(04)   VALUE   "008".
            03  FILLER                  PIC X(09)   VALUE   "140036710".
-      *    人工腎臓（４時間以上から５時間未満）（H30.3　まで）
+      *    人工腎臓（４時間以上から５時間未満）
            03  FILLER                  PIC X(04)   VALUE   "008".
            03  FILLER                  PIC X(09)   VALUE   "140051010".
-      *    人工腎臓（５時間以上）（H30.3　まで）
+      *    人工腎臓（５時間以上）
            03  FILLER                  PIC X(04)   VALUE   "008".
            03  FILLER                  PIC X(09)   VALUE   "140051110".
       *    持続緩徐式血液濾過
            03  FILLER                  PIC X(04)   VALUE   "008".
            03  FILLER                  PIC X(09)   VALUE   "140029850".
-      *    人工腎臓（慢性維持透析濾過）（H30.3　まで）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140052810".
-      *
-      *Ｈ３０．４　人工腎臓の追加
-      *    人工腎臓（慢性維持透析１（４時間未満）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140057810".
-      *    人工腎臓（慢性維持透析１（４時間以上５時間未満）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140057910".
-      *    人工腎臓（慢性維持透析１（５時間以上）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058010".
-      *    人工腎臓（慢性維持透析２（４時間未満）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058110".
-      *    人工腎臓（慢性維持透析２（４時間以上５時間未満）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058210".
-      *    人工腎臓（慢性維持透析２（５時間以上）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058310".
-      *    人工腎臓（慢性維持透析３（４時間未満）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058410".
-      *    人工腎臓（慢性維持透析３（４時間以上５時間未満）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058510".
-      *    人工腎臓（慢性維持透析３（５時間以上）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140058610".
-      *    人工腎臓（慢性維持透析１（４時間未満）（経過措置）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140059310".
-      *    人工腎臓（慢性維持透析１（４時間以上５時間未満）（経過措置）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140059410".
-      *    人工腎臓（慢性維持透析１（５時間以上）（経過措置）
-           03  FILLER                  PIC X(04)   VALUE   "008".
-           03  FILLER                  PIC X(09)   VALUE   "140059510".
-      *
       *
       *    継続管理加算（一般）
            03  FILLER                  PIC X(04)   VALUE   "006".
@@ -379,25 +315,19 @@
       *****03  TBL-DOUJI-OCC           OCCURS   9   INDEXED   TBL-IDX.
       *****03  TBL-DOUJI-OCC           OCCURS   13  INDEXED   TBL-IDX.
       **** 03  TBL-DOUJI-OCC           OCCURS   24  INDEXED   TBL-IDX.
-      *****03  TBL-DOUJI-OCC           OCCURS   34  INDEXED   TBL-IDX.
-      *H30.4
-           03  TBL-DOUJI-OCC           OCCURS   46  INDEXED   TBL-IDX.
+           03  TBL-DOUJI-OCC           OCCURS   29  INDEXED   TBL-IDX.
                05  TBL-CODE                PIC X(03).
                05  TBL-CHK                 PIC X(01).
                05  TBL-SRYCD               PIC X(09).
       *01  TBL-MAX                     PIC 9(04)   VALUE   9.
       *01  TBL-MAX                     PIC 9(04)   VALUE   18.
       *01  TBL-MAX                     PIC 9(04)   VALUE   24.
-      *01  TBL-MAX                     PIC 9(04)   VALUE   34.
-       01  TBL-MAX                     PIC 9(04)   VALUE   46.
+       01  TBL-MAX                     PIC 9(04)   VALUE   29.
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
       *    リハビリ同一算定コードテーブル
            COPY   "CMRIHACDTBL.INC".
-      *H25.7
-      *    労災コード置換えテーブル 
-           COPY   "CMRSICNGTBL.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -519,14 +449,6 @@
                   AND (TNS-CDKBN-KBNNUM        =   "001"
                                                OR  "002"   )
                   AND (TNS-CDKBN-KBNNUM-EDA    =   "00"    )
-                   MOVE    1               TO  FLG-RIHA-OK
-               END-IF
-      *    H28.4 廃用症候群
-               IF     (SPA-SRYYMD              >=  "20160401")
-                  AND (FLG-RIHA-OK             =   ZERO    )
-                  AND (TNS-CDKBN-KBN           =   "H"     )
-                  AND (TNS-CDKBN-KBNNUM        =   "001"   )
-                  AND (TNS-CDKBN-KBNNUM-EDA    =   "02"    )
                    MOVE    1               TO  FLG-RIHA-OK
                END-IF
       *
@@ -664,20 +586,10 @@
                    MOVE    SPACE           TO  WRK-RSI-KBN
                END-IF
            END-IF
-      *H25.7
-      *    労災保険コード変更
-           IF     (WRK-SRYCD(1:3)      =   "101"      )  AND
-                  (SPA-SRYYMD          >=  "20130701" )
-               PERFORM 10001-RSICD-SANTEI-CHK-SEC
-           END-IF
-      *
       *    Ｈ２２年４月から追加のコードは固定で判定
       *     (COPY に追加するのは、パッケージ対応で）
            IF      WRK-SRYCD           =   "099800181"
                                        OR  "099800182"
-      *H28.4
-             OR  (WRK-SRYCD(1:7)       =   "0998002"   )
-      *        早期・初期リハ開始日・終了日
       *        がん患者リハ開始日・終了日
                MOVE    1               TO  FLG-HKNSAN
                MOVE    SPACE           TO  WRK-RIGAKU-RYO
@@ -700,36 +612,6 @@
            .
        1000-SANTEI-CHK-EXT.
            EXIT.
-      *H25.7
-      *****************************************************************
-      *    労災コード保険毎のコードの判定処理
-      *****************************************************************
-       10001-RSICD-SANTEI-CHK-SEC      SECTION.
-      *
-      *    労災のコードの判定
-           SET     TBL-RCN             TO  1
-           SEARCH  TBL-RSICHG-OCC      VARYING   TBL-RCN
-               AT  END
-                   MOVE    SPACE           TO  WRK-RSI-KBN
-               WHEN    WRK-SRYCD           =   TBL-RSICHG-ATO-SRYCD
-                                                          (TBL-RCN)
-                   MOVE    TBL-RSICHG-KBN (TBL-RCN)
-                                           TO  WRK-RSI-KBN
-           END-SEARCH
-      *
-           IF      WRK-RSI-KBN         =   "R"
-               MOVE    1               TO  FLG-HKNSAN
-           ELSE
-               IF      WRK-RSI-KBN         =   "A"
-                   MOVE    1               TO  FLG-HKNSAN
-               ELSE
-                   MOVE    ZERO            TO  FLG-HKNSAN
-               END-IF
-           END-IF
-           .
-       10001-RSICD-SANTEI-CHK-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    算定回数チェック処理
@@ -951,11 +833,6 @@
                IF     (LNK-SC91-ERRCD  NOT =   SPACE  )  AND
                       (WRK-RSI-KBN     NOT =   SPACE  )
                    MOVE    "0094"          TO  LNK-SC91-ERRCD
-      *H25.10
-      *            上限回数エラー処理＝９の時、警告とする
-                   IF       TNS-JGNCNTERR      =   9
-                       MOVE    "K094"          TO  LNK-SC91-ERRCD
-                   END-IF
                END-IF
            END-IF
       *
@@ -1181,22 +1058,6 @@
            IF      FLG-SANTEI          =   1
                INITIALIZE              SANTEI-REC
            END-IF
-      *H25.7
-      *    労災コード変更前コードでの検索
-           IF     (WRK-SRYCD(1:3)      =   "101"      )
-             AND  (SPA-SRYYMD          >=  "20130701" )
-             AND  (WRK-RSI-KBN         =   "R"        )
-             AND  (FLG-SANTEI          =    1         )
-               IF    (SPA-COB-TEKSTYMD    <   "20130701" )
-                   PERFORM 10011-RSICD-SANTEI-YMD-SEC
-               ELSE
-      *            労災の初診時ブラッシング料（処置）(手術)の時
-                   IF      WRK-SRYCD           =   "101400030"
-                                               OR  "101500150"
-                       PERFORM 10011-RSICD-SANTEI-YMD-SEC
-                   END-IF
-               END-IF
-           END-IF
       *
       *    算定歴の回数をチェックする
            IF      TNS-JGNCNT          >   ZERO
@@ -1288,71 +1149,6 @@
       *
            .
        1001-SANTEI-YMD-EXT.
-           EXIT.
-      *****************************************************************
-      *    労災コード変更前コードでの検索処理
-      *****************************************************************
-       10011-RSICD-SANTEI-YMD-SEC      SECTION.
-      *
-      *    変更前の労災コード判定
-           SET     TBL-RCN             TO  1
-           SEARCH  TBL-RSICHG-OCC      VARYING   TBL-RCN
-               AT  END
-                   MOVE    SPACE           TO  WRK-RSI-SRYCD
-               WHEN    WRK-SRYCD           =   TBL-RSICHG-ATO-SRYCD
-                                                          (TBL-RCN)
-                   MOVE    TBL-RSICHG-MAE-SRYCD (TBL-RCN)
-                                           TO  WRK-RSI-SRYCD
-           END-SEARCH
-      *    労災の初診時ブラッシング料（処置）の時、手術を検索
-           IF      WRK-SRYCD           =   "101400030"
-               MOVE    "101500150"         TO  WRK-RSI-SRYCD
-           END-IF
-      *
-           IF      WRK-RSI-SRYCD   NOT =   SPACE
-      *        算定履歴検索
-               INITIALIZE                  SANTEI-REC
-               MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
-               MOVE    SPA-PTID            TO  SANTEI-PTID
-               MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
-               MOVE    WRK-RSI-SRYCD       TO  SANTEI-SRYCD
-               MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-               MOVE    ZERO                TO  SANTEI-SRYKA
-               MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
-      *
-      *        労災毎の算定
-               MOVE    "key3"              TO  WRK-ORC-DBPATH
-      *
-               MOVE    SANTEI-REC          TO  MCPDATA-REC
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_santei"        TO  MCP-TABLE
-                   MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
-                   PERFORM 920-SANTEI-READ-SEC
-               ELSE
-                   MOVE    1                   TO  FLG-SANTEI
-                   INITIALIZE                      SANTEI-REC
-               END-IF
-      *
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
-           END-IF
-      *
-           IF      WRK-RSI-SRYCD   NOT =   SPACE
-               IF     (LNK-SC91-SYORIFLG   =   1 )
-                  AND (WRK-TEI-CNT         =   ZERO )
-                   MOVE    WRK-SRYCD           TO  WRK-HZN-SRYCD
-                   MOVE    WRK-RSI-SRYCD       TO  WRK-SRYCD
-                   PERFORM 1001-TEISEI-CNT-SEC
-                   MOVE    WRK-HZN-SRYCD       TO  WRK-SRYCD
-               END-IF
-           END-IF
-      *
-           .
-       10011-RSICD-SANTEI-YMD-EXT.
            EXIT.
       *****************************************************************
       *    週数処理
@@ -1716,11 +1512,6 @@
       *****************************************************************
        10012-RSI-MCNT-SEC      SECTION.
       *
-      *    月上限チェックなし
-           IF      SPA-SRYYMD          >=  "20100401"
-               GO      TO      10012-RSI-MCNT-EXT
-           END-IF
-      *
       *    システム月＜傷病日＋３月
            IF       SPA-SRYYMD(1:6)    <   SPA-RSI-SHOBYOYMD3(1:6)
                MOVE    ZERO            TO  WRK-RSI-CNT
@@ -1747,34 +1538,18 @@
       *
       *    算定開始年月
            MOVE    SPA-SRYYMD(1:6)     TO  WRK-STRYM
-      *
-           MOVE    TNS-JGNCNTETCM      TO  WRK-CHK-JGNCNTETCM
-      *
-           IF      TNS-JGNCNTETCM      =   99
-      *        上限他月数が９９の時は、全履歴１回とする
-               MOVE    ZERO                TO  WRK-STRYM
+           IF      WRK-STRMM           <   TNS-JGNCNTETCM
+               COMPUTE WRK-STRYY       =   WRK-STRYY    -   1
+               COMPUTE WRK-STRMM       =   WRK-STRMM
+                                       +   12
+                                       -  (TNS-JGNCNTETCM   -  1 )
            ELSE
-      *
-      *        最長５年とする
-               IF      WRK-CHK-JGNCNTETCM  >   60
-                   MOVE    60                  TO  WRK-CHK-JGNCNTETCM
-               END-IF
-      *
-               PERFORM UNTIL   WRK-CHK-JGNCNTETCM  <=  12
-                   COMPUTE WRK-STRYY       =   WRK-STRYY    -   1
-                   COMPUTE WRK-CHK-JGNCNTETCM  =   WRK-CHK-JGNCNTETCM
-                                       -   12
-               END-PERFORM
-      *
-               IF      WRK-STRMM           <   WRK-CHK-JGNCNTETCM
-                   COMPUTE WRK-STRYY       =   WRK-STRYY    -   1
-                   COMPUTE WRK-STRMM       =   WRK-STRMM
-                                           +   12
-                                       -  (WRK-CHK-JGNCNTETCM   -  1 )
-               ELSE
-                   COMPUTE WRK-STRMM       =   WRK-STRMM
-                                       -  (WRK-CHK-JGNCNTETCM   -  1 )
-               END-IF
+               COMPUTE WRK-STRMM       =   WRK-STRMM
+                                       -  (TNS-JGNCNTETCM   -  1 )
+           END-IF
+      *    上限他月数が９９の時は、全履歴１回とする
+           IF      TNS-JGNCNTETCM      =   99
+               MOVE    ZERO                TO  WRK-STRYM
            END-IF
       *
       *    保険毎のコードの判定
@@ -2133,10 +1908,8 @@
                            ADD     WRK-DODAYCNT    TO  WRK-DAYCNT-SUM
                       END-IF
       *
-      *               上限他月数のみ設定
-                      IF     (TNS-JGNCNTETCM     >   ZERO )
-                        AND  (TNS-JGNCNT         =   ZERO )
-                        AND  (TNS-JGNCNT1D       =   ZERO )
+      *               上限他月数
+                      IF      TNS-JGNCNTETCM     >   ZERO
                           PERFORM 2002-DOJSANTEI-ETC-SEC
                       ELSE
                           PERFORM 2001-DOJSANTEI-YMD-SEC
@@ -2196,6 +1969,126 @@
       *    点数マスタの内容を入力分へ戻す
            MOVE    TNSWK-TENSU-REC     TO  TNS-TENSU-REC
       *
+      *!!!!!!!!!!!!!!!!!!!1     
+           GO     TO  200-DOUJI-CHK-EXT.
+      *    当月のＭＡＸ
+           IF     (LNK-SC91-MAXCNT     >   ZERO  )  AND
+                  (LNK-SC91-MAXCNT     <= ( WRK-SC91-CNT  +  WRK-CNT
+                                       +  WRK-DOCNT-SUM))
+               MOVE    "0033"          TO  LNK-SC91-ERRCD
+      *        上限回数エラー処理＝９の時、回数エラーは警告とする
+               IF       WRK-JGNCNTERR      =   9
+                   MOVE    "K004"              TO  LNK-SC91-ERRCD
+               END-IF
+      *        人工腎臓の時メッセージ変更
+               IF      WRK-CODE            =   "008"
+                   MOVE    "K242"         TO  LNK-SC91-ERRCD
+               END-IF
+           END-IF
+      *    薬剤情報提供料はチェック判定
+           IF      WRK-CODE            =   "002"
+      *        H22.4　から併用算定チェックなしとする（手帳加算対象外）
+               IF      SPA-SRYYMD          <   "20100401"
+                   IF      (SPA-YAKJYOCHK-FLG   =   "0"   ) OR
+                          ((WRK-CHK             =   "0")  AND
+                           (SPA-YAKJYO-1        =   2  ))   OR
+                          ((WRK-CHK             =   "1" )  AND
+                          ((SPA-YAKJYO-2        =   2 ) OR
+                           (SPA-YAKJYO-3        =   2 )) )
+                       MOVE    LNK-SC91-ERRCD      TO  LNK-SC91-ERRCD2
+                       MOVE    SPACE               TO  LNK-SC91-ERRCD
+                   END-IF
+               ELSE
+      *        H22.4　から薬情のコードは１つ
+                   IF      (SPA-YAKJYOCHK-FLG   =   "0"   ) OR
+                         (( WRK-CHK             =   "0" ) AND
+                          ((SPA-YAKJYO-1        =   2  ) OR
+                           (SPA-YAKJYO-2        =   2  ) OR
+                           (SPA-YAKJYO-3        =   2  )) )
+                       MOVE    LNK-SC91-ERRCD      TO  LNK-SC91-ERRCD2
+                       MOVE    SPACE               TO  LNK-SC91-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    保険毎のコードの判定
+           MOVE    LNK-SC91-SRYCD      TO  WRK-SRYCD
+           PERFORM 1000-SANTEI-CHK-SEC
+      *
+      *    労災で消炎鎮痛処置の時、当日上限回数を変更する
+           MOVE    LNK-SC91-DAYMAXCNT  TO  WRK-DAYMAXCNT
+           IF     (SPA-HKNKBN          =   1 ) AND
+                  (SPA-RSI-JUNKYO  NOT =   "1" )
+               EVALUATE    WRK-RIGAKU-KBN
+      *            マッサージ
+                   WHEN    "M"
+      *            器具
+                   WHEN    "K"
+                       MOVE    3               TO  WRK-DAYMAXCNT
+      *            介達牽引
+                   WHEN    "T"
+                       MOVE    3               TO  WRK-DAYMAXCNT
+      *           湿布
+                   WHEN    "P"
+                       MOVE    ZERO            TO  WRK-DAYMAXCNT
+      *            腰部固定帯固定等
+                   WHEN    "E"
+                       MOVE    3               TO  WRK-DAYMAXCNT
+               END-EVALUATE
+           END-IF
+      *    当日のＭＡＸ
+           IF     (LNK-SC91-ERRCD      =   SPACE  )  AND
+                  (WRK-DAYMAXCNT       >   ZERO   )
+               IF      WRK-DAYMAXCNT
+                                   <=  (  WRK-SC91-DAYCNT
+                                       +  WRK-DAYCNT-SUM
+                                       +  WRK-DOCNT-SUM )
+                   MOVE    "0033"          TO  LNK-SC91-ERRCD
+      *            消炎鎮痛処置の時、エラーメッセージを換える
+                   IF      WRK-CODE        =   "005"
+                       MOVE    "1022"          TO  LNK-SC91-ERRCD
+      *                入院の時、日を表示する
+                       IF      (SPA-NYUGAIKBN      =   "1"   )  AND
+                               (WRK-CHK-NAME   NOT =   SPACE )  AND
+                               (WRK-CHK-SRYDD  NOT =   SPA-SRYYMD(7:2))
+                           MOVE    SPA-SRYYMD(7:2)     TO  WRK-CHK-SRYDD
+                       END-IF
+                   END-IF
+      *            上限回数エラー処理＝９の時、回数エラーは警告とする
+                   IF       WRK-JGNCNTERR      =   9
+      ****            MOVE    "K091"              TO  LNK-SC91-ERRCD
+                      MOVE    "K902"              TO  LNK-SC91-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    併用算定エラーの内容を編集する（最後に算定したもの）
+           IF     LNK-SC91-ERRCD   NOT =   SPACE
+               IF      WRK-CHK-NAME        =   SPACE
+                   MOVE    WRK-CHK-SRYCD       TO  TNS-SRYCD
+                   PERFORM 910-TENSU-READ-SEC
+                   MOVE    TNS-NAME            TO  WRK-CHK-NAME
+                   STRING  "今回　"            DELIMITED  BY  SIZE
+                           WRK-CHK-NAME        DELIMITED  BY  SPACE
+                           INTO                LNK-SC91-ERRMSG
+                   END-STRING
+               ELSE
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY2-AREA
+                   MOVE    "21"                TO  LNK-DAY2-IRAI
+                   MOVE    WRK-CHK-SRYYMD      TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                       LNK-DAY2-AREA
+                   STRING  LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                           "　"                DELIMITED  BY  SIZE
+                           WRK-CHK-NAME        DELIMITED  BY  SPACE
+                           INTO                LNK-SC91-ERRMSG
+                   END-STRING
+               END-IF
+           END-IF
+      *
+      *    点数マスタの内容を入力分へ戻す
+           MOVE    TNSWK-TENSU-REC     TO  TNS-TENSU-REC
            .
        200-DOUJI-CHK-EXT.
            EXIT.
@@ -2291,36 +2184,19 @@
       *
       *    算定開始年月
            MOVE    SPA-SRYYMD(1:6)     TO  WRK-STRYM
-      *
-           MOVE    TNS-JGNCNTETCM      TO  WRK-CHK-JGNCNTETCM
-      *
-           IF      TNS-JGNCNTETCM      =   99
-      *        上限他月数が９９の時は、全履歴１回とする
-               MOVE    ZERO                TO  WRK-STRYM
+           IF      WRK-STRMM           <   TNS-JGNCNTETCM
+               COMPUTE WRK-STRYY       =   WRK-STRYY    -   1
+               COMPUTE WRK-STRMM       =   WRK-STRMM
+                                       +   12
+                                       -  (TNS-JGNCNTETCM   -  1 )
            ELSE
-      *
-      *        最長５年とする
-               IF      WRK-CHK-JGNCNTETCM  >   60
-                   MOVE    60                  TO  WRK-CHK-JGNCNTETCM
-               END-IF
-      *
-               PERFORM UNTIL   WRK-CHK-JGNCNTETCM  <=  12
-                   COMPUTE WRK-STRYY       =   WRK-STRYY    -   1
-                   COMPUTE WRK-CHK-JGNCNTETCM  =   WRK-CHK-JGNCNTETCM
-                                       -   12
-               END-PERFORM
-      *
-               IF      WRK-STRMM           <   WRK-CHK-JGNCNTETCM
-                   COMPUTE WRK-STRYY       =   WRK-STRYY    -   1
-                   COMPUTE WRK-STRMM       =   WRK-STRMM
-                                           +   12
-                                       -  (WRK-CHK-JGNCNTETCM   -  1 )
-               ELSE
-                   COMPUTE WRK-STRMM       =   WRK-STRMM
-                                       -  (WRK-CHK-JGNCNTETCM   -  1 )
-               END-IF
+               COMPUTE WRK-STRMM       =   WRK-STRMM
+                                       -  (TNS-JGNCNTETCM   -  1 )
            END-IF
-      *
+      *    上限他月数が９９の時は、全履歴１回とする
+           IF      TNS-JGNCNTETCM      =   99
+               MOVE    ZERO                TO  WRK-STRYM
+           END-IF
       *    保険毎のコードの判定
            PERFORM 1000-SANTEI-CHK-SEC
       *    算定履歴検索
