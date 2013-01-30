@@ -47,6 +47,9 @@
       *  04.07.01    NACL-藤原    12/11/20  スクリプト起動パスサーチ対応
       *  04.07.02    NACL-藤原    12/11/20  リアルタイムプレビュー時の
       *                                     一画面対応
+      *
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -340,11 +343,22 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                MOVE    "0"                 TO
                                            SYS-200501-INSPECT-ZERO-KBN
            END-IF
+           IF      SYS-200501-INSPECT-INCLUDE-KBN
+                                   =   SPACE
+               MOVE    "0"             TO
+                                       SYS-200501-INSPECT-INCLUDE-KBN
+           END-IF
+      *    点検用レセプトのとき
            IF    ( LINK-PRTKBN             =   "2" )
-           AND   ( LINK-HKNKBN             =   "0" )
-           AND   ( SYS-200501-INSPECT-ZERO-KBN
-                                           =   "1" )
-               MOVE    "3"                 TO  LINK-PRTKBN
+               EVALUATE    SYS-200501-INSPECT-ZERO-KBN
+                               ALSO   SYS-200501-INSPECT-INCLUDE-KBN
+                   WHEN    "1" ALSO    "0"
+                       MOVE    "3"                 TO  LINK-PRTKBN
+                   WHEN    "0" ALSO    "1"
+                       MOVE    "4"                 TO  LINK-PRTKBN
+                   WHEN    "1" ALSO    "1"
+                       MOVE    "5"                 TO  LINK-PRTKBN
+               END-EVALUATE
            END-IF
       *                
       *    出力先プリンタ名割り当て情報の取得
