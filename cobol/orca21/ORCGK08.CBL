@@ -6367,7 +6367,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO                TO  FLG-DEL
       *        Êñ³çÊ¬¤ÏÂÐ¾Ý³°
                IF     (LNK-WKSRY-HKNCOMBI (IDX)    =   "9999")
-                   OR (LNK-WKSRY-CONTKBN  (IDX)    =   "H"   )
+      *H25.1   Êñ³çºÞ¤ÏÂÐ¾Ý
+      *??          OR (LNK-WKSRY-CONTKBN  (IDX)    =   "H"   )
                    MOVE    1               TO  FLG-DEL
                END-IF
                PERFORM VARYING     IDY     FROM    1   BY  1

@@ -3276,6 +3276,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "2"                 TO  ACCT-ZAIREQFLG
            END-IF
       *!!
+      *     Ò≥Á∫ﬁ§Œ¿ﬂƒÍ
+           IF      LNK-WKSRY-CONTKBN (1)   =   "H"
+               MOVE    "1"                 TO  ACCT-JIHOKBN
+           ELSE
+               MOVE    SPACE               TO  ACCT-JIHOKBN
+           END-IF
       *    ÃÙ…æ°¶¥Ô…æ°¢∏∫≈¿ ¨
            MOVE    LNK-WKSRY-ZAIKBN (1)    TO  ACCT-ZAIKBN
            .
