@@ -2431,8 +2431,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF      ACCT-JIHOKBN       =     SPACE
                   PERFORM  2101211-RECE45-TENSOU-COMCNT-HEN-SEC
                ELSE
-                   MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
-                   MOVE   "1"   TO    RECE44-FLG-MASUI-COMMENT
+                  IF   RECE44-SRYKBN      =     "50"
+                     MOVE   "1"   TO    RECE44-FLG-SHUJUTU-COMMENT
+                  END-IF
+                  IF   RECE44-SRYKBN      =     "54"
+                     MOVE   "1"   TO    RECE44-FLG-MASUI-COMMENT
+                  END-IF
                END-IF
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           

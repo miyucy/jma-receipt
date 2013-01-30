@@ -6372,8 +6372,12 @@
                IF      ACCT-JIHOKBN       =     SPACE
                   PERFORM  2101211-RECE65-TENSOU-COMCNT-HEN-SEC
                ELSE
-                   MOVE   "1"   TO    RECE64-FLG-SHUJUTU-COMMENT
-                   MOVE   "1"   TO    RECE64-FLG-MASUI-COMMENT
+                  IF   RECE64-SRYKBN      =     "50"
+                     MOVE   "1"   TO    RECE64-FLG-SHUJUTU-COMMENT
+                  END-IF
+                  IF   RECE64-SRYKBN      =     "54"
+                     MOVE   "1"   TO    RECE64-FLG-MASUI-COMMENT
+                  END-IF
                END-IF
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
