@@ -101,7 +101,7 @@ R01	{
 		};
 		JYOKEN1	{
 			style   varchar(20); 
-			value	varchar(30);
+			value	varchar(50);
 		};
 		SRYYMH	{
 			style   varchar(20); 

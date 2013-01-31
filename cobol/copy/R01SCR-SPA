@@ -96,7 +96,7 @@
       *
                    07  SPA-GMN-R01-BTPARA-AREA.
                        09  SPA-GMN-R01-BTPARA-HYODAI   PIC X(30).
-                       09  SPA-GMN-R01-BTPARA-JYOKEN1  PIC X(30).
+                       09  SPA-GMN-R01-BTPARA-JYOKEN1  PIC X(50).
                        09  SPA-GMN-R01-BTPARA-JYOKEN2  PIC X(30).
                        09  SPA-GMN-R01-BTPARA-CREYMD   PIC X(09).
                        09  SPA-GMN-R01-BTPARA-KENSU    PIC X(07).

@@ -1114,7 +1114,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>HYODAI</name>
-        <x>460</x>
+        <x>450</x>
         <y>3</y>
         <width>220</width>
         <height>24</height>
@@ -1134,7 +1134,7 @@
         <name>JYOKEN1</name>
         <x>670</x>
         <y>3</y>
-        <width>220</width>
+        <width>350</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -1143,7 +1143,7 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>１２３４５６７８９０１２３４５</label>
+        <label>平成１２年１２月１２日　～　平成１２年１２月３１日</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>

@@ -2821,10 +2821,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                ELSE
                    EVALUATE    SPA-NAI-200501-INSPECT-ZERO-KBN
                                ALSO   SPA-NAI-200501-INSPECT-INCLUDE-KBN
-                       WHEN    "0" ALSO    "1"
+                       WHEN    ANY ALSO    "1"
                            MOVE    "4"             TO  SPA-R01-PRTKBN
-                       WHEN    "1" ALSO    "1"
-                          MOVE    "5"              TO  SPA-R01-PRTKBN
                    END-EVALUATE
                END-IF
            END-IF
