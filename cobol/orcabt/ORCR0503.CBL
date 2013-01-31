@@ -30,6 +30,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1052,7 +1054,7 @@
            END-IF     
       *
       *    点検用レセプト作成時
-           IF      WRK-PARA-PRTKBN     =   "2"
+           IF      WRK-PARA-PRTKBN NOT =   "1"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
                                            =   "0"
                    MOVE    "点検用レセプト"    TO  HCM71-LABEL
@@ -1848,9 +1850,16 @@
                                                    TO  RECE07-STYMD
                    END-EVALUATE
                END-IF 
-               IF      WRK-PARA-PRTKBN     =   "2"
-                   MOVE    "1"                 TO  RECE07-PRTKBN
-               END-IF
+               EVALUATE    WRK-PARA-PRTKBN
+                   WHEN    "2"
+                       MOVE    "1"                 TO  RECE07-PRTKBN
+                   WHEN    "3"
+                       MOVE    "2"                 TO  RECE07-PRTKBN
+                   WHEN    "4"
+                       MOVE    "3"                 TO  RECE07-PRTKBN
+                   WHEN    "5"
+                       MOVE    "4"                 TO  RECE07-PRTKBN
+               END-EVALUATE
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
            ELSE
@@ -2181,7 +2190,7 @@
       *****    PERFORM 500-ERR-HENSYU-SEC
       *****END-IF
            DISPLAY "*** ORCR0503 IN   "  CNT-RECE41
-           DISPLAY "*** ORCR0503 OUT  "  CNT-OUT
+           DISPLAY "*** ORCR0503 PAGE "  CNT-OUT
            DISPLAY "*** ORCR0503 END ***"
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"

@@ -4378,32 +4378,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    レセプト明細書読込（順読み）
-      *****************************************************************
-       910-RECE01-READ-N-SEC             SECTION.
-      *
-           READ    RECE01-FILE     NEXT
-               AT  END
-                   MOVE    1           TO  FLG-RECE01
-               NOT AT  END
-                   IF      STS-RECE01          =   "00"
-                       CONTINUE
-                   ELSE
-                       MOVE    SPACE           TO  WRK-ERRMSG-AREA
-                       INITIALIZE                  WRK-ERRMSG-AREA
-                       MOVE    2               TO  WRK-ERR-FLG
-                       MOVE    RECE01PARA      TO  WRK-ERR-FILE-NM
-                       MOVE    STS-RECE01      TO  WRK-ERR-FILE-STS
-                       PERFORM 500-FILE-ERR-ABORT-SEC
-                   END-IF
-      *
-                   MOVE    ZERO        TO  FLG-RECE01
-           END-READ
-           .
-       910-RECE01-READ-N-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    医療費請求書読込
       *****************************************************************
        900-RECE01X-READ-SEC            SECTION.

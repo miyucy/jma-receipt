@@ -60,6 +60,9 @@
       *  04.05.02    NACL-門脇    11/11/09  同日再入院食事対応
       *  04.05.03    NACL-門脇    12/09/18  改正対応（外泊区分８，９の対応）
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
+      *
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -149,6 +152,7 @@
                05  WRK-PARA-PTID                       PIC X(10).
                05  WRK-PARA-SRYYM-O                    PIC X(06).
            03  WRK-PARA-JIBAIPRTKBN                    PIC X(01).
+           03  WRK-PARA-PRTKBN                         PIC  X(01).
            03  WRK-PARA-HOSPNUM                        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD                          PIC X(08).
@@ -183,6 +187,8 @@
            03  WRK-AMARI                               PIC 9(05).
       *
            03  WRK-CONS-HKNNUM                         PIC X(03).
+      *
+           03  WRK-SRYACCT-PATHNAME                    PIC X(64).
       *
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
@@ -305,10 +311,17 @@
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
                                                WRK-PARA-JIBAIPRTKBN
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           DISPLAY "WRK-PARA-HOSPNUM    =" WRK-PARA-HOSPNUM
+           DISPLAY "WRK-PARA-SYOKBN     =" WRK-PARA-SYOKBN
+           DISPLAY "WRK-PARA-SRYYM      =" WRK-PARA-SRYYM
+           DISPLAY "WRK-PARA-PRTKBN     =" WRK-PARA-PRTKBN
+           DISPLAY "WRK-PARA-RECEKBN    =" WRK-PARA-RECEKBN
       *
            MOVE    WRK-PARA-SRYYM      TO  SYS-2001-SRYYM
            MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN 
@@ -545,11 +558,18 @@ grpsys         MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                MOVE    "1"                 TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key36"             TO  MCP-PATHNAME
+               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+                   MOVE    "key60"             TO  WRK-SRYACCT-PATHNAME
+               ELSE
+                   MOVE    "key36"             TO  WRK-SRYACCT-PATHNAME
+               END-IF
+               MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
 grpsys         PERFORM 900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key36"             TO  MCP-PATHNAME
+                   MOVE    WRK-SRYACCT-PATHNAME
+                                               TO  MCP-PATHNAME
                    PERFORM 900-SRYACCT-READ-SEC
                ELSE
                    INITIALIZE                  SRYACCT-REC
@@ -563,7 +583,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *        カーソルクロース
                IF   FLG-ERR   =   ZERO
                  MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                 MOVE    "key36"             TO  MCP-PATHNAME
+                 MOVE    WRK-SRYACCT-PATHNAME
+                                             TO  MCP-PATHNAME
                  PERFORM 900-CLOSE-SEC
                END-IF
            END-IF
@@ -614,7 +635,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
            PERFORM 500-CANCEL-HENSYU-SEC
            IF      FLG-ERR             =   1
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key36"             TO  MCP-PATHNAME
+               MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
                GO  TO  20011-IKKATU-SRYACCT-HENSYU-EXT
            END-IF
@@ -636,7 +658,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                OR      FLG-ERR         =   1
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key36"             TO  MCP-PATHNAME
+                   MOVE    WRK-SRYACCT-PATHNAME
+                                               TO  MCP-PATHNAME
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
@@ -680,7 +703,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                    OR      KEY-N-PTID  
                                                    NOT =   KEY-O-PTID
                                MOVE    "tbl_sryacct"  TO  MCP-TABLE
-                               MOVE    "key36"        TO  MCP-PATHNAME
+                               MOVE    WRK-SRYACCT-PATHNAME
+                                                   TO  MCP-PATHNAME
                                PERFORM 900-SRYACCT-READ-SEC
                            END-PERFORM
                          ELSE
@@ -690,7 +714,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                        OR      FLG-ERR     =   1
                                        OR      KEY-NEW NOT =   KEY-OLD
                                MOVE    "tbl_sryacct"  TO  MCP-TABLE
-                               MOVE    "key36"        TO  MCP-PATHNAME
+                               MOVE    WRK-SRYACCT-PATHNAME
+                                                      TO  MCP-PATHNAME
                                PERFORM 900-SRYACCT-READ-SEC
                            END-PERFORM
                          END-IF    
@@ -1384,11 +1409,18 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key37"             TO  MCP-PATHNAME
+               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+                   MOVE    "key61"             TO  WRK-SRYACCT-PATHNAME
+               ELSE
+                   MOVE    "key37"             TO  WRK-SRYACCT-PATHNAME
+               END-IF
+               MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key37"             TO  MCP-PATHNAME
+               MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -1402,7 +1434,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    カーソルクロース
            IF   FLG-ERR   =   ZERO
              MOVE    "tbl_sryacct"       TO  MCP-TABLE
-             MOVE    "key37"             TO  MCP-PATHNAME
+             MOVE    WRK-SRYACCT-PATHNAME
+                                         TO  MCP-PATHNAME
              PERFORM 900-CLOSE-SEC
            END-IF
       *
@@ -1501,11 +1534,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key37"             TO  MCP-PATHNAME
+           IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+               MOVE    "key61"             TO  WRK-SRYACCT-PATHNAME
+           ELSE
+               MOVE    "key37"             TO  WRK-SRYACCT-PATHNAME
+           END-IF
+           MOVE    WRK-SRYACCT-PATHNAME
+                                       TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key37"             TO  MCP-PATHNAME
+               MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -1519,7 +1559,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    カーソルクロース
            IF   FLG-ERR   =   ZERO
              MOVE    "tbl_sryacct"       TO  MCP-TABLE
-             MOVE    "key37"             TO  MCP-PATHNAME
+             MOVE    WRK-SRYACCT-PATHNAME
+                                         TO  MCP-PATHNAME
              PERFORM 900-CLOSE-SEC
            END-IF
       *
@@ -1610,7 +1651,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                OR      FLG-ERR         =   1
                                OR      KEY-NEW     NOT =   KEY-OLD
                        MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                       MOVE    "key37"             TO  MCP-PATHNAME
+                       MOVE    WRK-SRYACCT-PATHNAME
+                                                   TO  MCP-PATHNAME
                        PERFORM 900-SRYACCT-READ-SEC
                    END-PERFORM
                  END-IF
@@ -1846,7 +1888,8 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
              WHEN    "1"
                IF   FLG-NG  =  1
                  MOVE    "tbl_sryacct"     TO  MCP-TABLE
-                 MOVE    "key36"           TO  MCP-PATHNAME
+                 MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
                  PERFORM 900-CLOSE-SEC
                END-IF
                IF   FLG-NG  =  2
@@ -1857,7 +1900,8 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
              WHEN    "2"
                IF   FLG-NG  =  3
                  MOVE    "tbl_sryacct"     TO  MCP-TABLE
-                 MOVE    "key37"           TO  MCP-PATHNAME
+                 MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
                  PERFORM 900-CLOSE-SEC
                END-IF
                IF   FLG-NG  =  4

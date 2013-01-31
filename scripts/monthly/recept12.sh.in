@@ -27,7 +27,8 @@ fi
 #        $16 HOSPNUM 
 #        $17 様式区分
 #        $18 レセプト作成区分
-#            1:提出用レセ、2:点検用レセ
+#            1:提出用レセ、2:点検用レセ、3:点検用レセ（０点公費記載）
+#            4:点検用レセ（包括算定分記載）、5:点検用レセ（０点公費・包括算定分記載）
 #        $19 請求データ削除区分
 #            0:削除しない、2:削除する
 #-------------------------------------------#
@@ -50,7 +51,7 @@ fi
            LOG_FILE="/var/log/jma-receipt/${16}recept12b.log"
         fi
 
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0400 -parameter $1$2$3$5$6,${17},${16},${4}    > $LOG_FILE 2>&1
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0400 -parameter $1$2$3$5$6,${17},${18},${16},${4}    > $LOG_FILE 2>&1
 	
 	
         if  [ -e $4 ]; then

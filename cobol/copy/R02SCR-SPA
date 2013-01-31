@@ -286,7 +286,7 @@
                05  SPA-GMN-R04-PAGE                PIC 9(02).
                05  SPA-GMN-R04-CUR                 PIC 9(02).
                05  SPA-GMN-R04-AREA.
-                   07  SPA-GMN-R04-FILEKBN         PIC X(50).
+                   07  SPA-GMN-R04-FILEKBN         PIC X(62).
                    07  SPA-GMN-R04-CREYMD          PIC X(22).
                    07  SPA-GMN-R04-PAGEH           PIC 9(04).
                    07  SPA-GMN-R04-KENSUH          PIC 9(04).

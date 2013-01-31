@@ -50,6 +50,9 @@
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       *  04.07.02    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -626,6 +629,11 @@
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           DISPLAY "WRK-PARA-HOSPNUM   =" WRK-PARA-HOSPNUM
+           DISPLAY "WRK-PARA-SYOKBN    =" WRK-PARA-SYOKBN
+           DISPLAY "WRK-PARA-SRYYM     =" WRK-PARA-SRYYM
+           DISPLAY "WRK-PARA-PRTKBN    =" WRK-PARA-PRTKBN
       *
       *    ファイルＯＰＥＮ処理
            MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
@@ -1404,7 +1412,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            END-IF
       *
       *    点検用レセプト作成時
-           IF      WRK-PARA-PRTKBN     =   "2"
+           IF      WRK-PARA-PRTKBN NOT =   "1"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
                                            =   "0"
                    MOVE    "点検用レセプト"    TO  HCM56-LABEL
@@ -2607,9 +2615,16 @@ grpsys         MOVE    RECE08-HOSPNUM      TO  RECE07-HOSPNUM
                                                    TO  RECE07-STYMD
                    END-EVALUATE
                END-IF 
-               IF      WRK-PARA-PRTKBN     =   "2"
-                   MOVE    "1"                 TO  RECE07-PRTKBN
-               END-IF
+               EVALUATE    WRK-PARA-PRTKBN
+                   WHEN    "2"
+                       MOVE    "1"                 TO  RECE07-PRTKBN
+                   WHEN    "3"
+                       MOVE    "2"                 TO  RECE07-PRTKBN
+                   WHEN    "4"
+                       MOVE    "3"                 TO  RECE07-PRTKBN
+                   WHEN    "5"
+                       MOVE    "4"                 TO  RECE07-PRTKBN
+               END-EVALUATE
                MOVE    1                   TO  RECE07-PAGE
            ELSE
                ADD     1                   TO  RECE07-PAGE
@@ -2930,7 +2945,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            CLOSE                       RECE47-FILE
       *
            DISPLAY "*** ORCR0483 IN   "  CNT-RECE41
-           DISPLAY "*** ORCR0483 OUT  "  CNT-OUT
+           DISPLAY "*** ORCR0483 PAGE "  CNT-OUT
            DISPLAY "*** ORCR0483 END ***"
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"

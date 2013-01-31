@@ -30,6 +30,9 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
+      *
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -615,11 +618,16 @@
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
                                                WRK-PARA-RECECOM
-                                                WRK-PARA-PRTKBN
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           DISPLAY "WRK-PARA-HOSPNUM   =" WRK-PARA-HOSPNUM
+           DISPLAY "WRK-PARA-SRYYM     =" WRK-PARA-SRYYM
+           DISPLAY "WRK-PARA-PRTKBN    =" WRK-PARA-PRTKBN
+           DISPLAY "WRK-PARA-RECECOM   =" WRK-PARA-RECECOM
       *
            MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
@@ -1341,7 +1349,7 @@
            END-IF     
       *
       *    点検用レセプト作成時
-           IF      WRK-PARA-PRTKBN     =   "2"
+           IF      WRK-PARA-PRTKBN NOT =   "1"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
                                            =   "0"
                    MOVE    "点検用レセプト"    TO  HCN67-LABEL
@@ -2984,9 +2992,16 @@
                IF      WRK-PARA-SRYYM      =   ZERO
                    MOVE    ZERO            TO  RECE07-SYORISBT
                END-IF
-               IF      WRK-PARA-PRTKBN     =   "2"
-                   MOVE    "1"                 TO  RECE07-PRTKBN
-               END-IF
+               EVALUATE    WRK-PARA-PRTKBN
+                   WHEN    "2"
+                       MOVE    "1"                 TO  RECE07-PRTKBN
+                   WHEN    "3"
+                       MOVE    "2"                 TO  RECE07-PRTKBN
+                   WHEN    "4"
+                       MOVE    "3"                 TO  RECE07-PRTKBN
+                   WHEN    "5"
+                       MOVE    "4"                 TO  RECE07-PRTKBN
+               END-EVALUATE
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
            ELSE
@@ -3334,7 +3349,7 @@
       *****    PERFORM 500-ERR-HENSYU-SEC
       *****END-IF
            DISPLAY "*** ORCR0964 IN   "  CNT-RECE82
-           DISPLAY "*** ORCR0964 OUT  "  CNT-OUT
+           DISPLAY "*** ORCR0964 PAGE "  CNT-OUT
            DISPLAY "*** ORCR0964 END ***"
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"

@@ -970,32 +970,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
                                            SPA-NAI-SRYYMH
            END-IF    
       *
-           MOVE    SPA-R01-SYOKBN      TO  SPA-GMN-SYOKBN
-           EVALUATE    SPA-GMN-SYOKBN
-               WHEN    "T"
-                   MOVE    "•Ï•ª•◊•»ø∑µ¨∫Ó¿Æ" TO  SPA-GMN-SYOKBN-LABEL
-                   EVALUATE    SPA-R01-PRTKBN
-                       WHEN    "3"
-                           MOVE    "£∞≈¿∏¯»Òµ≠∫‹¿ﬂƒÍ"
-                                              TO  SPA-GMN-PRTKBN-LABEL
-                       WHEN    "4"
-                           MOVE    " Ò≥Áø«Œ≈ ¨µ≠∫‹¿ﬂƒÍ"
-                                              TO  SPA-GMN-PRTKBN-LABEL
-                       WHEN    "5"
-                           MOVE    "£∞≈¿∏¯»Ò°¶ Ò≥Áø«Œ≈ ¨µ≠∫‹¿ﬂƒÍ"
-                                              TO  SPA-GMN-PRTKBN-LABEL
-                       WHEN    OTHER
-      *****                MOVE    "£∞≈¿∏¯»Ò§Úµ≠∫‹§∑§ §§"
-      *****                                   TO  SPA-GMN-PRTKBN-LABEL
-                           MOVE    SPACE      TO  SPA-GMN-PRTKBN-LABEL
-                   END-EVALUATE
-               WHEN    "F"
-                   MOVE    "∫Ó¿Æ∫—•Ï•ª•◊•»∫∆∞ı∫˛"
-                                              TO  SPA-GMN-SYOKBN-LABEL
-                   MOVE    SPACE              TO  SPA-GMN-PRTKBN-G
-                   MOVE    SPACE              TO  SPA-GMN-PRTKBN-LABEL
-           END-EVALUATE      
-      *
            MOVE    SPA-R01-AUTODSPKBN  TO  SPA-NAI-2005-AUTODSPKBN
            MOVE    SPA-R01-INSPECT-ZERO-KBN
                                        TO
@@ -1003,6 +977,35 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
            MOVE    SPA-R01-INSPECT-INCLUDE-KBN
                                        TO
                                    SPA-NAI-200501-INSPECT-INCLUDE-KBN
+      *
+           MOVE    SPA-R01-SYOKBN      TO  SPA-GMN-SYOKBN
+           EVALUATE    SPA-GMN-SYOKBN
+               WHEN    "T"
+                   MOVE    "•Ï•ª•◊•»ø∑µ¨∫Ó¿Æ"  TO  SPA-GMN-SYOKBN-LABEL
+                   MOVE    SPACE               TO  SPA-GMN-PRTKBN-LABEL
+                   IF      SPA-R01-PRTKBN  NOT =   "1"
+                     EVALUATE    SPA-NAI-200501-INSPECT-ZERO-KBN
+                               ALSO   SPA-NAI-200501-INSPECT-INCLUDE-KBN
+                       WHEN    "1"     ALSO     "0"
+                           MOVE    "£∞≈¿∏¯»Òµ≠∫‹¿ﬂƒÍ"
+                                               TO  SPA-GMN-PRTKBN-LABEL
+                       WHEN    "0"     ALSO    "1"
+                           MOVE    " Ò≥Áø«Œ≈ ¨µ≠∫‹¿ﬂƒÍ"
+                                               TO  SPA-GMN-PRTKBN-LABEL
+                       WHEN    "1"     ALSO    "1"
+                           MOVE    "£∞≈¿∏¯»Ò°¶ Ò≥Áø«Œ≈ ¨µ≠∫‹¿ﬂƒÍ"
+                                               TO  SPA-GMN-PRTKBN-LABEL
+      ******           WHEN    "0"     ALSO    "0"
+      ******               MOVE    "£∞≈¿∏¯»Ò§Úµ≠∫‹§∑§ §§"
+      ******                                   TO  SPA-GMN-PRTKBN-LABEL
+                     END-EVALUATE
+                   END-IF
+               WHEN    "F"
+                   MOVE    "∫Ó¿Æ∫—•Ï•ª•◊•»∫∆∞ı∫˛"
+                                              TO  SPA-GMN-SYOKBN-LABEL
+                   MOVE    SPACE              TO  SPA-GMN-PRTKBN-G
+                   MOVE    SPACE              TO  SPA-GMN-PRTKBN-LABEL
+           END-EVALUATE      
       *
            IF      SPA-GMN-IKKATU          =   "T" 
                MOVE    2               TO  SPA-GMN-CUR
@@ -2801,19 +2804,29 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-R01-NYUGAIKBN
       *
            MOVE    SPA-GMN-PRTKBN      TO  SPA-R01-PRTKBN
-      *    ∞Â › ¨§«≈¿∏°Õ—•Ï•ª° £∞≈¿∏¯»Ò§¢§Í°¢ Ò≥Áø«Œ≈ ¨§¢§Í°À§Œ§»§≠
-           IF    ( SPA-R01-RECEKBN     =   "0" OR  "1" OR
-                                           "2" OR  "7"    )
-           AND   ( SPA-R01-PRTKBN      =   "2"            )
-               EVALUATE    SPA-NAI-200501-INSPECT-ZERO-KBN
+      *    ≈¿∏°Õ—•Ï•ª° £∞≈¿∏¯»Ò§¢§Í°¢ Ò≥Áø«Œ≈ ¨§¢§Í°À§Œ§»§≠
+           IF     SPA-R01-PRTKBN      =   "2"
+      *        ∞Â › ¨
+               IF    ( SPA-R01-RECEKBN     =   "0" OR  "1" OR
+                                               "2" OR  "7"    )
+                   EVALUATE    SPA-NAI-200501-INSPECT-ZERO-KBN
                                ALSO   SPA-NAI-200501-INSPECT-INCLUDE-KBN
-                   WHEN    "1" ALSO    "0"
-                       MOVE    "3"                 TO  SPA-R01-PRTKBN
-                   WHEN    "0" ALSO    "1"
-                       MOVE    "4"                 TO  SPA-R01-PRTKBN
-                   WHEN    "1" ALSO    "1"
-                       MOVE    "5"                 TO  SPA-R01-PRTKBN
-               END-EVALUATE
+                       WHEN    "1" ALSO    "0"
+                           MOVE    "3"             TO  SPA-R01-PRTKBN
+                       WHEN    "0" ALSO    "1"
+                           MOVE    "4"             TO  SPA-R01-PRTKBN
+                       WHEN    "1" ALSO    "1"
+                          MOVE    "5"              TO  SPA-R01-PRTKBN
+                   END-EVALUATE
+               ELSE
+                   EVALUATE    SPA-NAI-200501-INSPECT-ZERO-KBN
+                               ALSO   SPA-NAI-200501-INSPECT-INCLUDE-KBN
+                       WHEN    "0" ALSO    "1"
+                           MOVE    "4"             TO  SPA-R01-PRTKBN
+                       WHEN    "1" ALSO    "1"
+                          MOVE    "5"              TO  SPA-R01-PRTKBN
+                   END-EVALUATE
+               END-IF
            END-IF
      *
            MOVE    SPACE               TO  SPA-R01-GMNKBN

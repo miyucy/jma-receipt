@@ -253,40 +253,20 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE44-KEY
                                    FILE    STATUS  IS  STS-RECE44.
-           SELECT  RECE444-FILE    ASSIGN  RECE44PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE444-KEY
-                                   FILE    STATUS  IS  STS-RECE44.
            SELECT  RECE4A-FILE     ASSIGN  RECE4APARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE4A-KEY
-                                   FILE    STATUS  IS  STS-RECE4A.
-           SELECT  RECE4A4-FILE    ASSIGN  RECE4APARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE4A4-KEY
                                    FILE    STATUS  IS  STS-RECE4A.
            SELECT  RECE45-FILE     ASSIGN  RECE45PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE45-KEY
                                    FILE    STATUS  IS  STS-RECE45.
-           SELECT  RECE455-FILE    ASSIGN  RECE45PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE455-KEY
-                                   FILE    STATUS  IS  STS-RECE45.
            SELECT  RECE4B-FILE     ASSIGN  RECE4BPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE4B-KEY
-                                   FILE    STATUS  IS  STS-RECE4B.
-           SELECT  RECE4B5-FILE    ASSIGN  RECE4BPARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  SEQUENTIAL
-                                   RECORD  KEY     IS  RECE4B5-KEY
                                    FILE    STATUS  IS  STS-RECE4B.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
@@ -303,39 +283,19 @@
        01  RECE44-REC. 
            COPY    "CPRCF044.INC".
       *
-       FD  RECE444-FILE.
-       01  RECE444-REC. 
-           COPY    "CPRCF044.INC"  REPLACING  //RECE44//
-                                   BY         //RECE444//.
-      *
        FD  RECE4A-FILE.
        01  RECE4A-REC. 
            COPY    "CPRCF044.INC"  REPLACING  //RECE44//
                                    BY         //RECE4A//.
       *
-       FD  RECE4A4-FILE.
-       01  RECE4A4-REC. 
-           COPY    "CPRCF044.INC"  REPLACING  //RECE44//
-                                   BY         //RECE4A4//.
-      *
        FD  RECE45-FILE.
        01  RECE45-REC. 
            COPY    "CPRCF045.INC".
-      *
-       FD  RECE455-FILE.
-       01  RECE455-REC. 
-           COPY    "CPRCF045.INC"  REPLACING  //RECE45//
-                                   BY         //RECE455//.
       *
        FD  RECE4B-FILE.
        01  RECE4B-REC. 
            COPY    "CPRCF045.INC"  REPLACING  //RECE45//
                                    BY         //RECE4B//.
-      *
-       FD  RECE4B5-FILE.
-       01  RECE4B5-REC. 
-           COPY    "CPRCF045.INC"  REPLACING  //RECE45//
-                                   BY         //RECE4B5//.
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -1461,17 +1421,15 @@ grpsys           PERFORM 900-DBSELECT-SEC
            END-IF
       *                             
       *    レセプト処理
-           OPEN    OUTPUT              RECE444-FILE
-           CLOSE                       RECE444-FILE
       *
-           OPEN    OUTPUT              RECE455-FILE
-           CLOSE                       RECE455-FILE
+           OPEN    OUTPUT              RECE45-FILE
+           CLOSE                       RECE45-FILE
       *
-           OPEN    OUTPUT              RECE4A4-FILE
-           CLOSE                       RECE4A4-FILE
+           OPEN    OUTPUT              RECE4A-FILE
+           CLOSE                       RECE4A-FILE
       *
-           OPEN    OUTPUT              RECE4B5-FILE
-           CLOSE                       RECE4B5-FILE
+           OPEN    OUTPUT              RECE4B-FILE
+           CLOSE                       RECE4B-FILE
       *
            OPEN    OUTPUT              RECE44-FILE
       ***                              RECE45-FILE

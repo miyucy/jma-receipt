@@ -72,6 +72,9 @@
       *  04.06.01    NACL-藤原    10/08/25  一括入力対応
       *
       *  04.07.01    NACL-藤原    11/09/02  起動方法の変更
+      *
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -165,7 +168,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-NYUGAIKBN       PIC X(06).
            03  WRK-RECEERR         PIC X(200).
-           03  WRK-RECEPRTKBN      PIC X(10).
+           03  WRK-RECEPRTKBN      PIC X(240).
            03  WRK-RECEKBN         PIC X(18).
            03  WRK-PREFKBN         PIC X(01).
            03  WRK-TEISYUTUSAKI    PIC X(01).
@@ -461,11 +464,17 @@
                                    SPA-GMN-PRTNM-AREA
       *
       *    点検用レセプト作成時
-           IF      SPA-R01-PRTKBN  =   "2"
-               MOVE    "【点検用】"    TO  WRK-RECEPRTKBN
-           ELSE
-               MOVE    SPACE           TO  WRK-RECEPRTKBN
-           END-IF
+           EVALUATE    SPA-R01-PRTKBN
+               WHEN    "2"
+               WHEN    "3"
+                   MOVE    "【点検用】"    TO  WRK-RECEPRTKBN
+               WHEN    "4"
+               WHEN    "5"
+                   MOVE    "【点検用（包括診療分）】"
+                                           TO  WRK-RECEPRTKBN
+               WHEN    OTHER
+                   MOVE    SPACE           TO  WRK-RECEPRTKBN
+           END-EVALUATE
       *
       *    ファイル作成区分
            EVALUATE    SPA-R01-RECE07-RECEKBN
@@ -2771,7 +2780,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-RIDCD3           TO  RID3-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID3-ID1MSG
            MOVE    "blue"               TO  RID3-LABEL-STYLE
-           IF      SPA-R01-PRTKBN       =   "2"
+           IF      SPA-R01-PRTKBN   NOT =   "1"
                MOVE    "【点検用レセプト】"     TO  RID3-LABEL
            END-IF
            MOVE    "B12"                TO  MCP-WIDGET
