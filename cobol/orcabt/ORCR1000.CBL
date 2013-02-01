@@ -28,6 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -126,11 +128,11 @@
                05  WRK-PARA-PTID       PIC X(10).
                05  WRK-PARA-SRYYM-O    PIC X(06).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
-      *
-           03  WRK-RECEERR             PIC X(200). 
+           03  WRK-PARA-PRTKBN         PIC X(01).
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
+           03  WRK-SRYACCT-PATHNAME    PIC X(64).
       *
            03  WRK-PRTSEQ              PIC 9(03).
       *
@@ -161,6 +163,19 @@
            03  WRK-SYUKA-PTID          PIC 9(10).
       *
            03  WRK-SYS-SRYYMD          PIC X(08).
+      *
+       01  WRK-ERRMSG-AREA.
+           03  WRK-RECEERR         PIC X(200).
+           03  WRK-ERRMSG          PIC X(300).
+           03  WRK-MCP-RC          PIC 9(9).
+           03  WRK-ERR-FILE-STS    PIC X(02).
+           03  WRK-ERR-FILE-MSG    PIC X(100).
+           03  WRK-ERR-FILE-MSG1   PIC X(17).
+           03  WRK-ERR-FLG         PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1PARA//
+                                   BY         //WRK-ERR-FILE-NM//.
       *
        01  WRK-RECE100-REC.
            COPY    "CPRCF100.INC"  REPLACING   //RECE100//
@@ -294,10 +309,16 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           DISPLAY "WRK-PARA-HOSPNUM=" WRK-PARA-HOSPNUM
+           DISPLAY "WRK-PARA-SYOKBN =" WRK-PARA-SYOKBN
+           DISPLAY "WRK-PARA-SRYYM  =" WRK-PARA-SRYYM
+           DISPLAY "WRK-PARA-PRTKBN =" WRK-PARA-PRTKBN
       *
            MOVE    WRK-PARA-SRYYM      TO  SYS-2001-SRYYM
            MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN 
@@ -478,11 +499,18 @@ grpsys         MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                MOVE    "2"                 TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key36"             TO  MCP-PATHNAME
+               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+                   MOVE    "key60"             TO  WRK-SRYACCT-PATHNAME
+               ELSE
+                   MOVE    "key36"             TO  WRK-SRYACCT-PATHNAME
+               END-IF
+               MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
 grpsys         PERFORM 900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key36"             TO  MCP-PATHNAME
+                   MOVE    WRK-SRYACCT-PATHNAME
+                                               TO  MCP-PATHNAME
                    PERFORM 900-SRYACCT-READ-SEC
                ELSE
                    INITIALIZE                  SRYACCT-REC
@@ -495,7 +523,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                END-PERFORM
       *        カーソルクロース
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key36"             TO  MCP-PATHNAME
+               MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
            END-IF
            .
@@ -530,7 +559,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                OR      FLG-END         =   1 
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key36"             TO  MCP-PATHNAME
+                   MOVE    WRK-SRYACCT-PATHNAME
+                                               TO  MCP-PATHNAME
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
@@ -585,12 +615,14 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                                        OR      FLG-END     =   1 
                                        OR      KEY-NEW NOT =   KEY-OLD
                                MOVE    "tbl_sryacct"   TO  MCP-TABLE
-                               MOVE    "key36"         TO  MCP-PATHNAME
+                               MOVE    WRK-SRYACCT-PATHNAME
+                                                       TO  MCP-PATHNAME
                                PERFORM 900-SRYACCT-READ-SEC
                            END-PERFORM
                        ELSE
                            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                           MOVE    "key36"             TO  MCP-PATHNAME
+                           MOVE    WRK-SRYACCT-PATHNAME
+                                                       TO  MCP-PATHNAME
                            PERFORM 900-SRYACCT-READ-SEC
                        END-IF
                    END-PERFORM    
@@ -838,6 +870,19 @@ grpsys     MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
                        " RECESYUBETU="  RECE100-RECESYUBETU 
       *
                WRITE   RECE100-REC
+      *
+               IF      STS-RECE01          =   "00"
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE               TO  WRK-ERRMSG-AREA
+                   INITIALIZE                      WRK-ERRMSG-AREA
+      *
+                   MOVE    3                   TO  WRK-ERR-FLG
+                   MOVE    RECE100PARA         TO  WRK-ERR-FILE-NM
+                   MOVE    STS-RECE01          TO  WRK-ERR-FILE-STS
+                   PERFORM 500-FILE-ERR-ABORT-SEC
+               END-IF
+      *
                ADD     1                    TO  CNT-RECE100
            END-PERFORM
            .
@@ -1082,11 +1127,18 @@ grpsys         MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key37"             TO  MCP-PATHNAME
+               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+                   MOVE    "key61"             TO  WRK-SRYACCT-PATHNAME
+               ELSE
+                   MOVE    "key37"             TO  WRK-SRYACCT-PATHNAME
+               END-IF
+               MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
 grpsys         PERFORM 900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key37"             TO  MCP-PATHNAME
+                   MOVE    WRK-SRYACCT-PATHNAME
+                                               TO  MCP-PATHNAME
                    PERFORM 900-SRYACCT-READ-SEC
                ELSE
                    INITIALIZE                  SRYACCT-REC
@@ -1099,7 +1151,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                END-PERFORM
       *        カーソルクロース
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key37"             TO  MCP-PATHNAME
+               MOVE    WRK-SRYACCT-PATHNAME
+                                           TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
       *
       *        ファイル出力処理
@@ -1185,11 +1238,18 @@ grpsys             MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                    MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
                    MOVE    SRYACCT-REC         TO  MCPDATA-REC
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key37"             TO  MCP-PATHNAME
+                   IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+                       MOVE    "key61"         TO  WRK-SRYACCT-PATHNAME
+                   ELSE
+                       MOVE    "key37"         TO  WRK-SRYACCT-PATHNAME
+                   END-IF
+                   MOVE    WRK-SRYACCT-PATHNAME
+                                               TO  MCP-PATHNAME
 grpsys             PERFORM 900-DBSELECT-SEC
                    IF      MCP-RC              =   ZERO
                        MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                       MOVE    "key37"             TO  MCP-PATHNAME
+                       MOVE    WRK-SRYACCT-PATHNAME
+                                                   TO  MCP-PATHNAME
                        PERFORM 900-SRYACCT-READ-SEC
                    ELSE
                        INITIALIZE                  SRYACCT-REC
@@ -1202,7 +1262,8 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    END-PERFORM
       *            カーソルクロース
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    "key37"             TO  MCP-PATHNAME
+                   MOVE    WRK-SRYACCT-PATHNAME
+                                               TO  MCP-PATHNAME
                    PERFORM 900-CLOSE-SEC
       *
       *            ファイル出力処理
@@ -1278,11 +1339,18 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                        MOVE    "2"                 TO  ACCT-NYUGAIKBN
                        MOVE    SRYACCT-REC         TO  MCPDATA-REC
                        MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                       MOVE    "key37"             TO  MCP-PATHNAME
+                       IF      WRK-PARA-PRTKBN     =   "4" OR  "5" 
+                           MOVE    "key61"     TO  WRK-SRYACCT-PATHNAME
+                       ELSE
+                           MOVE    "key37"     TO  WRK-SRYACCT-PATHNAME
+                       END-IF
+                       MOVE    WRK-SRYACCT-PATHNAME
+                                                   TO  MCP-PATHNAME
 grpsys                  PERFORM 900-DBSELECT-SEC
                        IF      MCP-RC              =   ZERO
                            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                           MOVE    "key37"             TO  MCP-PATHNAME
+                           MOVE    WRK-SRYACCT-PATHNAME
+                                                       TO  MCP-PATHNAME
                            PERFORM 900-SRYACCT-READ-SEC
                        ELSE
                            INITIALIZE                  SRYACCT-REC
@@ -1295,7 +1363,8 @@ grpsys                  PERFORM 900-DBSELECT-SEC
                        END-PERFORM
       *                カーソルクロース
                        MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                       MOVE    "key37"             TO  MCP-PATHNAME
+                       MOVE    WRK-SRYACCT-PATHNAME
+                                                   TO  MCP-PATHNAME
                        PERFORM 900-CLOSE-SEC
       *
       *                ファイル出力処理
@@ -1370,12 +1439,14 @@ grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                                    OR      FLG-END         =   1
                                    OR      KEY-NEW     NOT =   KEY-OLD
                            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                           MOVE    "key37"             TO  MCP-PATHNAME
+                           MOVE    WRK-SRYACCT-PATHNAME
+                                                       TO  MCP-PATHNAME
                            PERFORM 900-SRYACCT-READ-SEC
                         END-PERFORM
                    ELSE
                        MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                       MOVE    "key37"             TO  MCP-PATHNAME
+                       MOVE    WRK-SRYACCT-PATHNAME
+                                                   TO  MCP-PATHNAME
                        PERFORM 900-SRYACCT-READ-SEC
                    END-IF
                END-PERFORM    
@@ -1413,6 +1484,66 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    1                   TO  FLG-END
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC           SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORCR1000 "             DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1824,12 +1955,34 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
        900-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
-               DISPLAY "SELECT ERR table=" MCP-TABLE
-                       " pathname="        MCP-PATHNAME
+               MOVE    SPACE               TO  WRK-ERRMSG-AREA
+               INITIALIZE                      WRK-ERRMSG-AREA
+               MOVE    MCP-RC              TO  WRK-MCP-RC
+      *
+               STRING  "ＤＢ読み込みエラー　TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+      *
+               STRING  "ORCR1000 select err TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " PATHNAME="        DELIMITED   BY  SIZE
+                       MCP-PATHNAME        DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                       LOW-VALUE           DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+               END-STRING
+               PERFORM 500-COBABORT-SEC
            END-IF
            .
        900-DBSELECT-EXT.

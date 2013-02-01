@@ -350,15 +350,22 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
            END-IF
       *    点検用レセプトのとき
            IF    ( LINK-PRTKBN             =   "2" )
-               EVALUATE    SYS-200501-INSPECT-ZERO-KBN
-                               ALSO   SYS-200501-INSPECT-INCLUDE-KBN
-                   WHEN    "1" ALSO    "0"
-                       MOVE    "3"                 TO  LINK-PRTKBN
-                   WHEN    "0" ALSO    "1"
-                       MOVE    "4"                 TO  LINK-PRTKBN
-                   WHEN    "1" ALSO    "1"
-                       MOVE    "5"                 TO  LINK-PRTKBN
-               END-EVALUATE
+               IF      LINK-HKNKBN             =   "0"
+                   EVALUATE    SYS-200501-INSPECT-ZERO-KBN
+                                   ALSO   SYS-200501-INSPECT-INCLUDE-KBN
+                       WHEN    "1" ALSO    "0"
+                           MOVE    "3"                 TO  LINK-PRTKBN
+                       WHEN    "0" ALSO    "1"
+                           MOVE    "4"                 TO  LINK-PRTKBN
+                       WHEN    "1" ALSO    "1"
+                           MOVE    "5"                 TO  LINK-PRTKBN
+                   END-EVALUATE
+               ELSE
+                   EVALUATE    SYS-200501-INSPECT-INCLUDE-KBN
+                       WHEN    "1"
+                           MOVE    "4"                 TO  LINK-PRTKBN
+                   END-EVALUATE
+               END-IF
            END-IF
       *                
       *    出力先プリンタ名割り当て情報の取得
