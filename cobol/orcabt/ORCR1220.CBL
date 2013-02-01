@@ -1502,14 +1502,6 @@
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
       *
-                   IF    ACCT-JIHOKBN  NOT = SPACE
-                      MOVE    ZERO      TO  ACCT-ZAITEN
-                      MOVE    ZERO      TO  ACCT-SYUTEN1
-                      MOVE    ZERO      TO  ACCT-SYUTEN2
-                      MOVE    ZERO      TO  ACCT-YKZTEN
-                      MOVE    ZERO      TO  ACCT-KIZAITEN
-                   END-IF
-      *
                    MOVE   ZERO          TO  FLG-TENTEKIMATOME
                    IF    ACCT-SRYKBN  =  "33"
                       PERFORM   21015-TENTEKIMATOME-CHECK-SEC
@@ -1517,10 +1509,17 @@
       *
                    MOVE   ZERO          TO  FLG-RINYAK
       *
-                   IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                        (ACCT-JIHOKBN       =   SPACE)    AND
-                        (FLG-TENTEKIMATOME  =    ZERO)
+                   IF  ((ACCT-ZAITEN    NOT =    ZERO ) AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                        (FLG-TENTEKIMATOME  =    ZERO ) AND
+                        (WRK-PARA-PRTKBN    =
+                                    "1" OR "2" OR "3" ) AND
+                        (ACCT-JIHOKBN       =    SPACE))
+                   OR  ((ACCT-ZAITEN    NOT =    ZERO ) AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                        (FLG-TENTEKIMATOME  =    ZERO ) AND
+                        (WRK-PARA-PRTKBN    =
+                                           "4" OR "5" ))
                       MOVE   ZERO   TO   WRK-SRYSURYO
                       MOVE   ZERO   TO   WRK-SRYSURYO2
                       MOVE   ZERO   TO   WRK-SRYSURYO3
@@ -1570,13 +1569,15 @@
                         END-IF
                       END-IF
                    ELSE
-                      IF  (ACCT-ZAIKAISU  NOT =    ZERO)  AND
-                          (FLG-TENTEKIMATOME  =    ZERO)
-                       IF ((WRK-PARA-PRTKBN   =
-                                      "1" OR "2" OR "3") AND
-                           (ACCT-JIHOKBN      =   SPACE))
-                       OR ( WRK-PARA-PRTKBN   =
-                                             "4" OR "5" )
+                      IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                           (FLG-TENTEKIMATOME  =    ZERO ) AND
+                           (WRK-PARA-PRTKBN    =
+                                       "1" OR "2" OR "3" ) AND
+                           (ACCT-JIHOKBN       =    SPACE))
+                      OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                           (FLG-TENTEKIMATOME  =    ZERO ) AND
+                           (WRK-PARA-PRTKBN    =
+                                              "4" OR "5" ))
                          IF ( ACCT-SRYKBN  NOT =
                               "12" AND "25" AND "93" AND "98")
                          OR ( ACCT-ZAIKBN  =   1             )
@@ -1624,7 +1625,6 @@
                                  END-IF
                             END-IF
                          END-IF
-                       END-IF
                       END-IF
                    END-IF
                    MOVE    "tbl_sryacct"     TO      MCP-TABLE
@@ -1739,7 +1739,9 @@
                    PERFORM   210121-RECE230-TENSOU-SEC
                    IF   FLG-TENTEKI   =  ZERO
                    AND  FLG-WRITE230X =   1
-                     PERFORM 210122-RECE200-HENSYU-SEC
+                     IF  ACCT-JIHOKBN  =  SPACE
+                       PERFORM 210122-RECE200-HENSYU-SEC
+                     END-IF
                      PERFORM RECE230-WRITE-SEC
                      MOVE  1            TO      FLG-WRITE230
                    END-IF
@@ -1825,7 +1827,6 @@
                                    "80"                   ) AND
                     (ACCT-ZAITEN       NOT =  ZERO        ) AND
                     (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                    (ACCT-JIHOKBN          =  SPACE       ) AND
                     (ACCT-YKZTEN           =  ZERO        ) AND
                     (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
             OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
@@ -1850,7 +1851,6 @@
                                      "80"                   ) AND
                       (ACCT-ZAITEN       NOT =  ZERO        ) AND
                       (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                      (ACCT-JIHOKBN          =  SPACE       ) AND
                       (ACCT-YKZTEN           =  ZERO        ) AND
                       (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
                      COMPUTE  RECE220-SURYOUTOTAL =  RECE220-SURYOUTOTAL
@@ -1902,7 +1902,6 @@
                                      "80"                   ) AND
                       (ACCT-ZAITEN       NOT =  ZERO        ) AND
                       (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                      (ACCT-JIHOKBN          =  SPACE       ) AND
                       (ACCT-YKZTEN           =  ZERO        ) AND
                       (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
               OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
@@ -7709,6 +7708,12 @@
       *    データ出力処理（Ｆ００４）
       *****************************************************************
        RECE220-WRITE-SEC                SECTION.
+      *
+           MOVE    RECE220-ZAITEN      TO  RECE220-HOKATU-ZAITEN
+           MOVE    RECE220-SYUTEN1     TO  RECE220-HOKATU-SYUTEN1
+           MOVE    RECE220-SYUTEN2     TO  RECE220-HOKATU-SYUTEN2
+           MOVE    RECE220-YKZTEN      TO  RECE220-HOKATU-YKZTEN
+           MOVE    RECE220-KIZAITEN    TO  RECE220-HOKATU-KIZAITEN
       *
            WRITE   RECE220-REC
            ADD     1                   TO  CNT-OUT1

@@ -5625,14 +5625,6 @@
                        IF      ACCT-HKNCOMBI   =
                                                RECE62-HKNCOMBI (IDX1)
       *
-                           IF    ACCT-JIHOKBN  NOT = SPACE
-                              MOVE    ZERO       TO  ACCT-ZAITEN
-                              MOVE    ZERO       TO  ACCT-SYUTEN1
-                              MOVE    ZERO       TO  ACCT-SYUTEN2
-                              MOVE    ZERO       TO  ACCT-YKZTEN
-                              MOVE    ZERO       TO  ACCT-KIZAITEN
-                           END-IF
-      *
                            MOVE   ZERO           TO  FLG-TENTEKIMATOME
                            IF    ACCT-SRYKBN  =  "33"
                               PERFORM   21015-TENTEKIMATOME-CHECK-SEC
@@ -5877,7 +5869,9 @@
                    PERFORM   210121-RECE65-TENSOU-SEC
                    IF   FLG-TENTEKI  =  ZERO
                    AND  FLG-WRITE65X =   1
-                     PERFORM 210122-RECE62-HENSYU-SEC
+                     IF  ACCT-JIHOKBN  =  SPACE
+                       PERFORM 210122-RECE62-HENSYU-SEC
+                     END-IF
                      PERFORM RECE65-WRITE-SEC
                      MOVE  1            TO      FLG-WRITE65
                    END-IF
@@ -26959,6 +26953,13 @@
       *            診療会計マスタ付加情報設定
                    PERFORM 9001-SRYACCTPLUS-HENSYU-SEC
                END-IF
+      * 
+               MOVE    RECE64-ZAITEN      TO    RECE64-HOKATU-ZAITEN
+               MOVE    RECE64-SYUTEN1     TO    RECE64-HOKATU-SYUTEN1
+               MOVE    RECE64-SYUTEN2     TO    RECE64-HOKATU-SYUTEN2
+               MOVE    RECE64-YKZTEN      TO    RECE64-HOKATU-YKZTEN
+               MOVE    RECE64-KIZAITEN    TO    RECE64-HOKATU-KIZAITEN
+      *
                WRITE   RECE64-REC
       *
                IF      STS-RECE64          =   "00"

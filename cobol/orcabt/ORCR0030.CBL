@@ -7680,14 +7680,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        IF      ACCT-HKNCOMBI   =
                                                RECE02-HKNCOMBI (IDX1)
       *
-                           IF    ACCT-JIHOKBN  NOT = SPACE
-                              MOVE    ZERO       TO  ACCT-ZAITEN
-                              MOVE    ZERO       TO  ACCT-SYUTEN1
-                              MOVE    ZERO       TO  ACCT-SYUTEN2
-                              MOVE    ZERO       TO  ACCT-YKZTEN
-                              MOVE    ZERO       TO  ACCT-KIZAITEN
-                           END-IF
-      *
                            MOVE   ZERO           TO  FLG-RINYAK
       *
                            IF    ACCT-JIHOKBN      = SPACE
@@ -7732,7 +7724,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE  ZERO  TO   FLG-KIN-OKIKAE
                                MOVE  ZERO  TO   FLG-KIN-OKIKAE2
                                MOVE  ZERO  TO   FLG-HENSYU-NG
-                               PERFORM 21042-RECE02-TOTALTEN-HENSYU-SEC     
+                               IF  ACCT-JIHOKBN  =  SPACE
+                                PERFORM 21042-RECE02-TOTALTEN-HENSYU-SEC
+                               END-IF
                                PERFORM 21043-RECE04-TENSOU-SEC
                                PERFORM 21044-RECE05-HENSYU-SEC
                                IF    FLG-WRITE05  =   1
@@ -8183,7 +8177,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      WRK-RENNUM2
                    MOVE   ZERO   TO  FLG-WRITE05X
                    PERFORM   210441-RECE05-TENSOU-SEC
-                   PERFORM   210442-RECE02-HENSYU-SEC
+                   IF  ACCT-JIHOKBN  =  SPACE
+                     PERFORM 210442-RECE02-HENSYU-SEC
+                   END-IF
                    IF  FLG-WRITE05X  =  1
                       PERFORM  RECE05-WRITE-SEC
                       MOVE  1    TO  FLG-WRITE05
@@ -8984,7 +8980,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                  END-IF
                END-IF
       *
-               IF          SRY-SRYKBN       =     "31" OR "32"
+               IF   (SRY-SRYKBN       =  "31" OR "32")
+               AND  (ACCT-JIHOKBN     =  SPACE       )
                  IF        SRY-SRYCD(IDX2)  =    CONS-HIKAKIN
       ***                                  OR    CONS-SEIBUTU
       ***                                  OR    CONS-MAYAKU
@@ -21717,6 +21714,12 @@ grpsys         PERFORM 900-DBFETCH-SEC
                    PERFORM 9001-SRYACCTPLUS-HENSYU-SEC
                END-IF
       * 
+               MOVE    RECE04-ZAITEN      TO    RECE04-HOKATU-ZAITEN
+               MOVE    RECE04-SYUTEN1     TO    RECE04-HOKATU-SYUTEN1
+               MOVE    RECE04-SYUTEN2     TO    RECE04-HOKATU-SYUTEN2
+               MOVE    RECE04-YKZTEN      TO    RECE04-HOKATU-YKZTEN
+               MOVE    RECE04-KIZAITEN    TO    RECE04-HOKATU-KIZAITEN
+      *
                WRITE   RECE04-REC
       *
                IF      STS-RECE04          =   "00"

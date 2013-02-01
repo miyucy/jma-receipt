@@ -1950,14 +1950,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
       *
-                IF    ACCT-JIHOKBN  NOT = SPACE
-                   MOVE    ZERO      TO  ACCT-ZAITEN
-                   MOVE    ZERO      TO  ACCT-SYUTEN1
-                   MOVE    ZERO      TO  ACCT-SYUTEN2
-                   MOVE    ZERO      TO  ACCT-YKZTEN
-                   MOVE    ZERO      TO  ACCT-KIZAITEN
-                END-IF
-      *
                 MOVE   ZERO          TO  FLG-RINYAK
       *
                 IF    ACCT-SRYKBN       =  "95"  OR  "96"
@@ -1985,15 +1977,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       OR  190111790  OR  190809190
                                       OR  190807570  OR  190808670
                                       OR  190116990  OR  190813390) AND
+                     (ACCT-JIHOKBN     =  SPACE                   ) AND
                      (RECE82-SRYYM     <= "200603"                ))
                  OR ((ACCT-SRYCDTOTAL  =  190109170  OR  190109270) AND
+                     (ACCT-JIHOKBN     =  SPACE                   ) AND
                      (RECE82-SRYYM     <= "200606"                ))
                  OR ((ACCT-SRYCDTOTAL  =  190117070  OR  190109670) AND
+                     (ACCT-JIHOKBN     =  SPACE                   ) AND
                      (RECE82-SRYYM     >= "200604"                ) AND
                      (RECE82-SRYYM     <= "200803"                ))
                  OR ((ACCT-SRYCDTOTAL  =  190121970  OR  190122670) AND
+                     (ACCT-JIHOKBN     =  SPACE                   ) AND
                      (RECE82-SRYYM     >= "200607"                ))
                  OR ((ACCT-SRYCDTOTAL  =  190119210               ) AND
+                     (ACCT-JIHOKBN     =  SPACE                   ) AND
                      (RECE82-SRYYM     >= "200804"                ))
                  OR ( FLG-JYOGAI       =  1                        )
                    CONTINUE
@@ -2014,8 +2011,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                    IF  ((ACCT-ZAITEN    NOT =    ZERO ) AND
                         (ACCT-ZAIKAISU  NOT =    ZERO ) AND
-                        (ACCT-JIHOKBN       =    SPACE) AND
-                        (FLG-TENTEKIMATOME  =    ZERO ))
+                        (FLG-TENTEKIMATOME  =    ZERO ) AND
+                        (WRK-PARA-PRTKBN    =
+                                    "1" OR "2" OR "3" ) AND
+                        (ACCT-JIHOKBN       =    SPACE))
+                   OR  ((ACCT-ZAITEN    NOT =    ZERO ) AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                        (FLG-TENTEKIMATOME  =    ZERO ) AND
+                        (WRK-PARA-PRTKBN    =
+                                           "4" OR "5" ))
                    OR  ( FLG-TAISYO         =      1   )
       *
                        MOVE   ZERO   TO   WRK-TEN
@@ -2080,13 +2084,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          END-IF
                        END-IF
                    ELSE
-                       IF  (ACCT-ZAIKAISU  NOT =    ZERO)  AND
-                           (FLG-TENTEKIMATOME  =    ZERO)
-                        IF ((WRK-PARA-PRTKBN   =
-                                       "1" OR "2" OR "3") AND
-                            (ACCT-JIHOKBN      =   SPACE))
-                        OR ( WRK-PARA-PRTKBN   =
-                                              "4" OR "5" )
+                       IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                            (FLG-TENTEKIMATOME  =    ZERO ) AND
+                            (WRK-PARA-PRTKBN    =
+                                        "1" OR "2" OR "3" ) AND
+                            (ACCT-JIHOKBN       =    SPACE))
+                       OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                            (FLG-TENTEKIMATOME  =    ZERO ) AND
+                            (WRK-PARA-PRTKBN    =
+                                               "4" OR "5" ))
                             IF ( ACCT-SRYKBN  NOT =
                                  "12" AND "25" AND "93" AND "98")
                             OR ( ACCT-ZAIKBN  =   1             )
@@ -2147,7 +2153,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  END-IF
                                END-IF
                             END-IF
-                        END-IF
                        END-IF
                    END-IF
                  END-IF
@@ -2294,15 +2299,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  OR  "190111790"  OR  "190809190"
                                  OR  "190807570"  OR  "190808670"
                                  OR  "190116990"  OR  "190813390") AND
+                   (ACCT-JIHOKBN  =   SPACE                      ) AND
                    (RECE82-SRYYM     <= "200603"                 ))
                OR ((SRY-SRYCD(1)  =  "190109170"  OR  "190109270") AND
+                   (ACCT-JIHOKBN  =   SPACE                      ) AND
                    (RECE82-SRYYM     <= "200606"                 ))
                OR ((SRY-SRYCD(1)  =  "190117070"  OR  "190109670") AND
+                   (ACCT-JIHOKBN  =   SPACE                      ) AND
                    (RECE82-SRYYM     >= "200604"                 ) AND
                    (RECE82-SRYYM     <= "200803"                 ))
                OR ((SRY-SRYCD(1)  =  "190121970"  OR  "190122670") AND
+                   (ACCT-JIHOKBN  =   SPACE                      ) AND
                    (RECE82-SRYYM     >= "200607"                 ))
                OR ((SRY-SRYCD(1)  =  "190119210"                 ) AND
+                   (ACCT-JIHOKBN  =   SPACE                      ) AND
                    (RECE82-SRYYM     >= "200804"                 ))
                OR ( FLG-JYOGAI    =   1                           )
                  MOVE   ZERO         TO   FLG-WRITE85
@@ -2316,7 +2326,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    PERFORM   22021-RECE85-TENSOU-SEC
                    IF   FLG-TENTEKI  =  ZERO
                    AND  FLG-WRITE85X =   1
-                     PERFORM 22022-RECE82-HENSYU-SEC
+                     IF  ACCT-JIHOKBN  =  SPACE
+                       PERFORM 22022-RECE82-HENSYU-SEC
+                     END-IF
                      PERFORM 900-RECE85-WRITE-SEC
                      MOVE  1            TO   FLG-WRITE85
                    END-IF
@@ -2458,7 +2470,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                    "80"                   ) AND
                     (ACCT-ZAITEN       NOT =  ZERO        ) AND
                     (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                    (ACCT-JIHOKBN          =  SPACE       ) AND
                     (ACCT-YKZTEN           =  ZERO        ) AND
                     (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
             OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
@@ -2483,7 +2494,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      "80"                   ) AND
                       (ACCT-ZAITEN       NOT =  ZERO        ) AND
                       (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                      (ACCT-JIHOKBN          =  SPACE       ) AND
                       (ACCT-YKZTEN           =  ZERO        ) AND
                       (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
                      COMPUTE   RECE84-SURYOUTOTAL =  RECE84-SURYOUTOTAL
@@ -2535,7 +2545,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      "80"                   ) AND
                       (ACCT-ZAITEN       NOT =  ZERO        ) AND
                       (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                      (ACCT-JIHOKBN          =  SPACE       ) AND
                       (ACCT-YKZTEN           =  ZERO        ) AND
                       (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
               OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
@@ -11199,6 +11208,18 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *      診療会計マスタ付加情報設定
              PERFORM   920-SRYACCTPLUS-HENSYU-SEC
            END-IF
+      *
+           MOVE    RECE84-ZAITEN    TO  RECE84-HOKATU-ZAITEN
+           MOVE    RECE84-SYUTEN1   TO  RECE84-HOKATU-SYUTEN1
+           MOVE    RECE84-SYUTEN2   TO  RECE84-HOKATU-SYUTEN2
+           MOVE    RECE84-YKZTEN    TO  RECE84-HOKATU-YKZTEN
+           MOVE    RECE84-KIZAITEN  TO  RECE84-HOKATU-KIZAITEN
+      *
+           MOVE    RECE8A-ZAITEN    TO  RECE8A-HOKATU-ZAITEN
+           MOVE    RECE8A-SYUTEN1   TO  RECE8A-HOKATU-SYUTEN1
+           MOVE    RECE8A-SYUTEN2   TO  RECE8A-HOKATU-SYUTEN2
+           MOVE    RECE8A-YKZTEN    TO  RECE8A-HOKATU-YKZTEN
+           MOVE    RECE8A-KIZAITEN  TO  RECE8A-HOKATU-KIZAITEN
       *
            WRITE   RECE84-REC
       *

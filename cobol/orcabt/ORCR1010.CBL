@@ -1193,18 +1193,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
       *
-                   IF    ACCT-JIHOKBN  NOT = SPACE
-                      MOVE    ZERO       TO  ACCT-ZAITEN
-                      MOVE    ZERO       TO  ACCT-SYUTEN1
-                      MOVE    ZERO       TO  ACCT-SYUTEN2
-                      MOVE    ZERO       TO  ACCT-YKZTEN
-                      MOVE    ZERO       TO  ACCT-KIZAITEN
-                   END-IF
-      *
                    MOVE   ZERO           TO  FLG-RINYAK
-                   IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
-                        (ACCT-JIHOKBN       =   SPACE)
+                   IF  ((ACCT-ZAITEN    NOT =    ZERO ) AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                        (WRK-PARA-PRTKBN    =
+                                    "1" OR "2" OR "3" ) AND
+                        (ACCT-JIHOKBN       =    SPACE))
+                   OR  ((ACCT-ZAITEN    NOT =    ZERO ) AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                        (WRK-PARA-PRTKBN    =
+                                           "4" OR "5" ))
                                MOVE  ZERO  TO   FLG-SHOSAISIN           
                                MOVE  ZERO  TO   FLG-SHOSAISIN-GEN
                                MOVE  ZERO  TO   WRK-SRYSURYO
@@ -1245,12 +1243,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  PERFORM RECE120-WRITE-SEC
                                END-IF
                    ELSE
-                     IF   ACCT-ZAIKAISU  NOT =    ZERO
-                      IF ((WRK-PARA-PRTKBN   =
-                                     "1" OR "2" OR "3") AND
-                          (ACCT-JIHOKBN      =   SPACE))
-                      OR ( WRK-PARA-PRTKBN   =
-                                            "4" OR "5" )
+                     IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                          (WRK-PARA-PRTKBN    =
+                                      "1" OR "2" OR "3" ) AND
+                          (ACCT-JIHOKBN       =    SPACE))
+                     OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                          (WRK-PARA-PRTKBN    =
+                                             "4" OR "5" ))
                                IF ( ACCT-SRYKBN  NOT =
                                     "24" AND "90" AND "92" AND "93" AND
                                     "97" AND "98"                 )
@@ -1305,7 +1304,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       END-IF
                                  END-IF
                                END-IF
-                      END-IF
                      END-IF
                    END-IF
                    MOVE    "tbl_sryacct"       TO   MCP-TABLE
@@ -1414,7 +1412,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      WRK-RENNUM2
                    MOVE   ZERO   TO  FLG-WRITE05X
                    PERFORM   210441-RECE130-TENSOU-SEC
-                   PERFORM   210442-RECE100-HENSYU-SEC
+                   IF  ACCT-JIHOKBN  =  SPACE
+                     PERFORM 210442-RECE100-HENSYU-SEC
+                   END-IF
                    IF  FLG-WRITE05X  =  1
                       PERFORM  RECE130-WRITE-SEC
                       MOVE  1    TO  FLG-WRITE05
@@ -1505,7 +1505,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                     "80"                   ) AND
                      (ACCT-ZAITEN       NOT =  ZERO        ) AND
                      (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                     (ACCT-JIHOKBN          =  SPACE       ) AND
                      (ACCT-YKZTEN           =  ZERO        ) AND
                      (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
              OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
@@ -1530,7 +1529,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      "80"                   ) AND
                       (ACCT-ZAITEN       NOT =  ZERO        ) AND
                       (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                      (ACCT-JIHOKBN          =  SPACE       ) AND
                       (ACCT-YKZTEN           =  ZERO        ) AND
                       (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
                      COMPUTE  RECE120-SURYOUTOTAL =  RECE120-SURYOUTOTAL
@@ -1557,7 +1555,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      "80"                   ) AND
                       (ACCT-ZAITEN       NOT =  ZERO        ) AND
                       (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                      (ACCT-JIHOKBN          =  SPACE       ) AND
                       (ACCT-YKZTEN           =  ZERO        ) AND
                       (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
               OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
@@ -2019,7 +2016,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                  END-IF
                END-IF
       *
-               IF          SRY-SRYKBN       =     "31" OR "32"
+               IF   (SRY-SRYKBN       =  "31" OR "32")
+               AND  (ACCT-JIHOKBN     =  SPACE       )
                  IF        SRY-SRYCD(IDX2)  =    CONS-HIKAKIN
       ***                                  OR    CONS-SEIBUTU
       ***                                  OR    CONS-MAYAKU
@@ -4714,6 +4712,12 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *    データ出力処理（Ｆ００４）
       *****************************************************************
        RECE120-WRITE-SEC                SECTION.
+      *
+           MOVE    RECE120-ZAITEN      TO  RECE120-HOKATU-ZAITEN
+           MOVE    RECE120-SYUTEN1     TO  RECE120-HOKATU-SYUTEN1
+           MOVE    RECE120-SYUTEN2     TO  RECE120-HOKATU-SYUTEN2
+           MOVE    RECE120-YKZTEN      TO  RECE120-HOKATU-YKZTEN
+           MOVE    RECE120-KIZAITEN    TO  RECE120-HOKATU-KIZAITEN
       *
            WRITE   RECE120-REC
       *

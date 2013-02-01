@@ -1549,14 +1549,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  800-SRYACCT-READ-SEC
                PERFORM  UNTIL     FLG-SRYACCT   =   1 
       *
-                 IF    ACCT-JIHOKBN  NOT = SPACE
-                    MOVE    ZERO      TO  ACCT-ZAITEN
-                    MOVE    ZERO      TO  ACCT-SYUTEN1
-                    MOVE    ZERO      TO  ACCT-SYUTEN2
-                    MOVE    ZERO      TO  ACCT-YKZTEN
-                    MOVE    ZERO      TO  ACCT-KIZAITEN
-                 END-IF
-      *
                  MOVE   ZERO          TO  FLG-RINYAK
       *
                  IF    ACCT-SRYKBN       =  "95"  OR  "96"
@@ -1573,7 +1565,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                    IF  ((ACCT-ZAITEN    NOT =    ZERO ) AND
                         (ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                        (WRK-PARA-PRTKBN    =
+                                    "1" OR "2" OR "3" ) AND
                         (ACCT-JIHOKBN       =    SPACE))
+                   OR  ((ACCT-ZAITEN    NOT =    ZERO ) AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                        (WRK-PARA-PRTKBN    =
+                                           "4" OR "5" ))
                    OR  ( FLG-TAISYO         =      1   )
                                MOVE    ZERO    TO      WRK-TEN
                                                        WRK-MEISAI-CNT
@@ -1628,12 +1626,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  PERFORM 21013-RECE44-WRITE-SEC
                                END-IF
                    ELSE
-                             IF   ACCT-ZAIKAISU  NOT =    ZERO
-                              IF ((WRK-PARA-PRTKBN   =
-                                             "1" OR "2" OR "3") AND
-                                  (ACCT-JIHOKBN      =   SPACE))
-                              OR ( WRK-PARA-PRTKBN   =
-                                                    "4" OR "5" )
+                             IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                                  (WRK-PARA-PRTKBN    =
+                                              "1" OR "2" OR "3" ) AND
+                                  (ACCT-JIHOKBN       =    SPACE))
+                             OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                                  (WRK-PARA-PRTKBN    =
+                                                     "4" OR "5" ))
                                IF ( ACCT-SRYKBN  NOT =
                                     "24" AND "90" AND "92" AND "93" AND
                                     "97" AND "98"                 )
@@ -1701,7 +1700,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       END-IF
                                  END-IF
                                END-IF
-                              END-IF
                              END-IF
                    END-IF
                  END-IF
@@ -1825,7 +1823,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      WRK-RENNUM2
                    MOVE   ZERO   TO  FLG-WRITE45X
                    PERFORM   210121-RECE45-TENSOU-SEC
-                   PERFORM   210122-RECE41-HENSYU-SEC
+                   IF  ACCT-JIHOKBN  =  SPACE
+                     PERFORM 210122-RECE41-HENSYU-SEC
+                   END-IF
                    IF  FLG-WRITE45X  =  1
                       PERFORM  210123-RECE45-WRITE-SEC
                       MOVE  1    TO  FLG-WRITE45
@@ -1942,7 +1942,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                     "80"                   ) AND
                      (ACCT-ZAITEN       NOT =  ZERO        ) AND
                      (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                     (ACCT-JIHOKBN          =  SPACE       ) AND
                      (ACCT-YKZTEN           =  ZERO        ) AND
                      (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
              OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
@@ -1967,7 +1966,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      "80"                   ) AND
                       (ACCT-ZAITEN       NOT =  ZERO        ) AND
                       (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                      (ACCT-JIHOKBN          =  SPACE       ) AND
                       (ACCT-YKZTEN           =  ZERO        ) AND
                       (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
                      COMPUTE   RECE44-SURYOUTOTAL =  RECE44-SURYOUTOTAL
@@ -1994,7 +1992,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      "80"                   ) AND
                       (ACCT-ZAITEN       NOT =  ZERO        ) AND
                       (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
-                      (ACCT-JIHOKBN          =  SPACE       ) AND
                       (ACCT-YKZTEN           =  ZERO        ) AND
                       (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
               OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
@@ -2685,7 +2682,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  END-IF
                END-IF
       *
-               IF          SRY-SRYKBN       =     "31" OR "32"
+               IF   (SRY-SRYKBN       =  "31" OR "32")
+               AND  (ACCT-JIHOKBN     =  SPACE       )
                  IF        SRY-SRYCD(IDX2)  =    CONS-HIKAKIN
       ***                                  OR    CONS-SEIBUTU
       ***                                  OR    CONS-MAYAKU
@@ -7977,6 +7975,18 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
              PERFORM   920-SRYACCTPLUS-HENSYU-SEC
            END-IF
       *
+           MOVE    RECE44-ZAITEN    TO  RECE44-HOKATU-ZAITEN
+           MOVE    RECE44-SYUTEN1   TO  RECE44-HOKATU-SYUTEN1
+           MOVE    RECE44-SYUTEN2   TO  RECE44-HOKATU-SYUTEN2
+           MOVE    RECE44-YKZTEN    TO  RECE44-HOKATU-YKZTEN
+           MOVE    RECE44-KIZAITEN  TO  RECE44-HOKATU-KIZAITEN
+      *
+           MOVE    RECE4A-ZAITEN    TO  RECE4A-HOKATU-ZAITEN
+           MOVE    RECE4A-SYUTEN1   TO  RECE4A-HOKATU-SYUTEN1
+           MOVE    RECE4A-SYUTEN2   TO  RECE4A-HOKATU-SYUTEN2
+           MOVE    RECE4A-YKZTEN    TO  RECE4A-HOKATU-YKZTEN
+           MOVE    RECE4A-KIZAITEN  TO  RECE4A-HOKATU-KIZAITEN
+      *
            WRITE   RECE44-REC
            ADD     1                TO  CNT-OUT1
       *
@@ -8193,14 +8203,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM  800-SRYACCT-READ-SEC
                PERFORM  UNTIL     FLG-SRYACCT   =   1 
       *
-                 IF    ACCT-JIHOKBN  NOT = SPACE
-                    MOVE    ZERO      TO  ACCT-ZAITEN
-                    MOVE    ZERO      TO  ACCT-SYUTEN1
-                    MOVE    ZERO      TO  ACCT-SYUTEN2
-                    MOVE    ZERO      TO  ACCT-YKZTEN
-                    MOVE    ZERO      TO  ACCT-KIZAITEN
-                 END-IF
-      *
                  MOVE   ZERO          TO  FLG-RINYAK
       *
                  IF    ACCT-SRYKBN       =  "95"  OR  "96"
@@ -8225,7 +8227,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF      FLG-DAY         =   1
                            IF  ((ACCT-ZAITEN    NOT =    ZERO ) AND
                                 (ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                                (WRK-PARA-PRTKBN    =
+                                            "1" OR "2" OR "3" ) AND
                                 (ACCT-JIHOKBN       =    SPACE))
+                           OR  ((ACCT-ZAITEN    NOT =    ZERO ) AND
+                                (ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                                (WRK-PARA-PRTKBN    =
+                                                   "4" OR "5" ))
                            OR  ( FLG-TAISYO         =      1   )
                                MOVE  ACCT-DAY(1 WRK-DAY)  
                                                TO    WRK-ZAIKAISU-XXX
@@ -8282,12 +8290,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  PERFORM 21013-RECE44-WRITE-SEC
                                END-IF
                            ELSE
-                             IF   ACCT-ZAIKAISU  NOT =    ZERO
-                              IF ((WRK-PARA-PRTKBN   =
-                                             "1" OR "2" OR "3") AND
-                                  (ACCT-JIHOKBN      =   SPACE))
-                              OR ( WRK-PARA-PRTKBN   =
-                                                    "4" OR "5" )
+                             IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                                  (WRK-PARA-PRTKBN    =
+                                              "1" OR "2" OR "3" ) AND
+                                  (ACCT-JIHOKBN       =    SPACE))
+                             OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+                                  (WRK-PARA-PRTKBN    =
+                                                     "4" OR "5" ))
                                IF ( ACCT-SRYKBN  NOT =
                                     "24" AND "90" AND "92" AND "93" AND
                                     "97" AND "98"                 )
@@ -8357,7 +8366,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       END-IF
                                  END-IF
                                END-IF
-                              END-IF
                              END-IF
                            END-IF
                    END-IF

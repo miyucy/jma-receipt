@@ -1328,7 +1328,8 @@
            END-IF
       *
       *    初診加算の時だけ印刷＋検診
-           IF    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+           IF   RECE220-JIHOKBN  =  SPACE
+             IF  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                             =   WRK-CONS-SYOSIN-KASAN1
                                             OR  WRK-CONS-SYOSIN-KASAN2
                                             OR  WRK-CONS-SYOSIN-KASAN5
@@ -1360,13 +1361,14 @@
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
                                             OR  CONS-COMMENT8         )
-           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8" AND    
+             OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8" AND    
                   TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)   
                                                      NOT = "830000020")
-           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)  = "008"  )
+             OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)  = "008"  )
                    CONTINUE
-           ELSE
+             ELSE
                    MOVE    1                 TO  FLG-NOPRT
+             END-IF
            END-IF
       *
       *    識別が点数の場合
@@ -1378,7 +1380,8 @@
                END-IF
            END-IF
       *
-           IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) =
+           IF   RECE220-JIHOKBN  =  SPACE
+            IF TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) =
                                             WRK-CONS-SYOSIN-KASAN29
       *
                MOVE     1              TO  TBL-DENSHI-FLG
@@ -1386,6 +1389,7 @@
                                        TO  TBL-DENSHI-TEN
                ADD   RECE220-ZAIKAISU  TO  TBL-DENSHI-ZAIKAISU
       *
+            END-IF
            END-IF
       *
            .
@@ -1757,14 +1761,22 @@
                IF      RECE220-SRYKBN   <=   "33"
                    MOVE    "＊"            TO  WRK-ZAI-MK
                END-IF    
-               IF    ((RECE220-YKZTEN        =   ZERO ) AND
-                      (RECE220-JIHOKBN       =  SPACE ) AND
-                      (IDX1                  =   5    ) AND
-                      (RECE220-RYOTENKISAISU =   ZERO ))
-               OR    ((RECE220-KIZAITEN      =   ZERO ) AND
-                      (RECE220-JIHOKBN       =  SPACE ) AND
-                      (IDX1                  =   4    ) AND
-                      (RECE220-RYOTENKISAISU =   ZERO ))
+               IF    ((RECE220-YKZTEN           =   ZERO) AND
+                      (RECE220-JIHOKBN          =  SPACE) AND
+                      (RECE220-RYOTENKISAISU    =   ZERO) AND
+                      (IDX1                     =   5   ))
+               OR    ((RECE220-KIZAITEN         =   ZERO) AND
+                      (RECE220-JIHOKBN          =  SPACE) AND
+                      (RECE220-RYOTENKISAISU    =   ZERO) AND
+                      (IDX1                     =   4   ))
+               OR    ((RECE220-HOKATU-YKZTEN    =   ZERO) AND
+                      (RECE220-JIHOKBN      NOT =  SPACE) AND
+                      (RECE220-RYOTENKISAISU    =   ZERO) AND
+                      (IDX1                     =   5   ))
+               OR    ((RECE220-HOKATU-KIZAITEN  =   ZERO) AND
+                      (RECE220-JIHOKBN      NOT =  SPACE) AND
+                      (RECE220-RYOTENKISAISU    =   ZERO) AND
+                      (IDX1                     =   4   ))
                    CONTINUE
                ELSE    
                        IF   RECE220-SRYKBN     =   "31" OR "32"
@@ -1803,9 +1815,10 @@
       *        点数・回数セット処理（特定器材）
                IF     ( IDX1                =   4    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF   ((RECE220-KIZAITEN     >   ZERO) AND
-                       (RECE220-JIHOKBN      =  SPACE))
-                 OR   ( RECE220-JIHOKBN  NOT =  SPACE )
+                 IF ((RECE220-KIZAITEN         >   ZERO) AND
+                     (RECE220-JIHOKBN          =  SPACE))
+                 OR ((RECE220-HOKATU-KIZAITEN  >   ZERO) AND
+                     (RECE220-JIHOKBN      NOT =  SPACE))
                    IF      RECE220-SRYKBN     >=  "33"                   
                        MOVE    RECE220-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE220-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -1819,9 +1832,10 @@
       *        点数・回数セット処理（薬剤）
                IF     ( IDX1                =   5    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF   ((RECE220-YKZTEN       >   ZERO) AND
-                       (RECE220-JIHOKBN      =  SPACE))
-                 OR   ( RECE220-JIHOKBN  NOT =  SPACE )
+                 IF ((RECE220-YKZTEN           >   ZERO) AND
+                     (RECE220-JIHOKBN          =  SPACE))
+                 OR ((RECE220-HOKATU-YKZTEN    >   ZERO) AND
+                     (RECE220-JIHOKBN      NOT =  SPACE))
                    IF      RECE220-SRYKBN     >=  "33"               
                        MOVE    RECE220-YKZTEN     TO  WRK-ZAITENX
                        MOVE    RECE220-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -1837,6 +1851,7 @@
       *    検査のとき回数を集計
            IF     (WRK-ZAIWMAX(3)      >   ZERO        )
            AND    (RECE220-SRYKBN      =   "60" OR "64")
+           AND    (RECE220-JIHOKBN     =   SPACE       )
                IF      TBL-ZAIW-SRYCD (3 1)   =   WRK-CONS-SAIKETSU1
                                               OR  WRK-CONS-SAIKETSU2
                                               OR  WRK-CONS-SAIKETSU3 
@@ -1877,15 +1892,17 @@
                MOVE    1             TO  FLG-NOPRT
            END-IF
       *    診療行為テーブルに存在した場合、印字しないこと
-           PERFORM   VARYING   IDY   FROM    1   BY  1
-                     UNTIL   ( IDY           >   TBL-NOSRYCD-MAX )
-                     OR      ( FLG-NOPRT     =    1 )
+           IF   RECE220-JIHOKBN  =  SPACE
+             PERFORM   VARYING   IDY   FROM    1   BY  1
+                       UNTIL   ( IDY           >   TBL-NOSRYCD-MAX )
+                       OR      ( FLG-NOPRT     =    1 )
       *
                IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                 =   TBL-NOSRYCD (IDY)
                    MOVE    1                 TO  FLG-NOPRT
                END-IF
-           END-PERFORM
+             END-PERFORM
+           END-IF
       *
            .
        200521-SEYKBNELSE-MEISAI-EXT.
@@ -2365,6 +2382,8 @@
                MOVE    ZERO              TO  RECE240-ZAIKBN
                MOVE    SPACE             TO  RECE240-SRYSYUKBN
                MOVE    ZERO              TO  RECE240-DAY
+      *
+               MOVE    SPACE             TO  RECE240-JIHOKBN
       *
                PERFORM 4501-RECE240-WRITE-SEC
       *
@@ -2909,12 +2928,20 @@
                   AND (RECE240-TENTEKIKBN  =  ZERO                     )
                           MOVE   2              TO  RECE240-TENTEKIKBN
                   END-IF
-                  IF  (WRK-SRYSYUKBN       =  "330" OR "332")
-                  AND (RECE220-ZAITEN  NOT =  ZERO          )
-                  AND (RECE220-YKZTEN      =  ZERO          )
-                  AND (RECE220-KIZAITEN    =  ZERO          )
-                  AND (RECE240-TENTEKIKBN  =  ZERO          )
+                  IF  (WRK-SRYSYUKBN      =  "330" OR "332")
+                  AND (RECE240-TENTEKIKBN =  ZERO          )
+                    IF  (RECE220-ZAITEN  NOT =  ZERO          )
+                    AND (RECE220-YKZTEN      =  ZERO          )
+                    AND (RECE220-KIZAITEN    =  ZERO          )
+                    AND (RECE220-JIHOKBN     =  SPACE         )
                           MOVE   3              TO  RECE240-TENTEKIKBN
+                    END-IF
+                    IF  (RECE220-HOKATU-ZAITEN  NOT =  ZERO   )
+                    AND (RECE220-HOKATU-YKZTEN      =  ZERO   )
+                    AND (RECE220-HOKATU-KIZAITEN    =  ZERO   )
+                    AND (RECE220-JIHOKBN        NOT =  SPACE  )
+                          MOVE   3              TO  RECE240-TENTEKIKBN
+                    END-IF
                   END-IF
       *
                   IF  (WRK-SRYSYUKBN      =  "340")
@@ -2923,18 +2950,32 @@
                                           OR "130011070" OR "130012110"
                                           OR "130011610" OR "130011810"
                                           OR "130012010"               )
-                  AND (RECE220-YKZTEN      =  ZERO )
-                  AND (RECE220-KIZAITEN    =  ZERO )
+                    IF  (RECE220-YKZTEN      =  ZERO )
+                    AND (RECE220-KIZAITEN    =  ZERO )
+                    AND (RECE220-JIHOKBN     =  SPACE)
                           MOVE   4              TO  RECE240-TENTEKIKBN
+                    END-IF
+                    IF  (RECE220-HOKATU-YKZTEN      =  ZERO )
+                    AND (RECE220-HOKATU-KIZAITEN    =  ZERO )
+                    AND (RECE220-JIHOKBN        NOT =  SPACE)
+                          MOVE   4              TO  RECE240-TENTEKIKBN
+                    END-IF
                   END-IF
                   IF  (WRK-SRYSYUKBN      =  "340")
                   AND (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
                                           OR "130000310" OR "130010570"
                                           OR "130010670" OR "130011570")
-                  AND (RECE220-YKZTEN      =  ZERO )
-                  AND (RECE220-KIZAITEN    =  ZERO )
-                  AND (RECE240-TENTEKIKBN  =  ZERO )
+                  AND (RECE240-TENTEKIKBN =  ZERO )
+                    IF  (RECE220-YKZTEN      =  ZERO )
+                    AND (RECE220-KIZAITEN    =  ZERO )
+                    AND (RECE220-JIHOKBN     =  SPACE)
                           MOVE   5              TO  RECE240-TENTEKIKBN
+                    END-IF
+                    IF  (RECE220-HOKATU-YKZTEN    =  ZERO )
+                    AND (RECE220-HOKATU-KIZAITEN  =  ZERO )
+                    AND (RECE220-JIHOKBN      NOT =  SPACE)
+                          MOVE   5              TO  RECE240-TENTEKIKBN
+                    END-IF
                   END-IF
                 ELSE
                   IF  (WRK-SRYSYUKBN      =  "330" OR "332"            )
@@ -2985,21 +3026,41 @@
                   END-IF
                 END-IF
       *
-                IF   (WRK-SRYSYUKBN           =  "330")
-                AND  (RECE220-YKZTEN       NOT =  ZERO )
-                AND  (RECE240-TENTEKIKBN       =  ZERO )
-                         MOVE   6              TO  RECE240-TENTEKIKBN
-                END-IF
-                IF   (WRK-SRYSYUKBN           =  "330")
-                AND  (RECE220-KIZAITEN     NOT =  ZERO )
-                AND  (RECE240-TENTEKIKBN       =  ZERO )
-                         MOVE   7              TO  RECE240-TENTEKIKBN
+                IF   WRK-SRYSYUKBN   =  "330" OR "331" OR "332" OR
+                                        "350" OR "352"
+                  IF   (RECE220-YKZTEN             NOT =  ZERO )
+                  AND  (RECE220-JIHOKBN                =  SPACE)
+                  AND  (RECE240-TENTEKIKBN             =  ZERO )
+                          MOVE   6              TO  RECE240-TENTEKIKBN
+                  END-IF
+                  IF   (RECE220-HOKATU-YKZTEN      NOT =  ZERO )
+                  AND  (RECE220-JIHOKBN            NOT =  SPACE)
+                  AND  (RECE240-TENTEKIKBN             =  ZERO )
+                          MOVE   6              TO  RECE240-TENTEKIKBN
+                  END-IF
+                  IF   (RECE220-KIZAITEN           NOT =  ZERO )
+                  AND  (RECE220-JIHOKBN                =  SPACE)
+                  AND  (RECE240-TENTEKIKBN             =  ZERO )
+                          MOVE   7              TO  RECE240-TENTEKIKBN
+                  END-IF
+                  IF   (RECE220-HOKATU-KIZAITEN    NOT =  ZERO )
+                  AND  (RECE220-JIHOKBN            NOT =  SPACE)
+                  AND  (RECE240-TENTEKIKBN             =  ZERO )
+                          MOVE   7              TO  RECE240-TENTEKIKBN
+                  END-IF
                 END-IF
       *
-                IF   (WRK-SRYSYUKBN           =  "340")
-                AND  (RECE220-ZAITEN       NOT =  ZERO )
-                AND  (RECE240-TENTEKIKBN       =  ZERO )
-                         MOVE   8              TO  RECE240-TENTEKIKBN
+                IF   WRK-SRYSYUKBN   =  "340"
+                  IF   (RECE220-ZAITEN             NOT =  ZERO )
+                  AND  (RECE220-JIHOKBN                =  SPACE)
+                  AND  (RECE240-TENTEKIKBN             =  ZERO )
+                          MOVE   8              TO  RECE240-TENTEKIKBN
+                  END-IF
+                  IF   (RECE220-HOKATU-ZAITEN      NOT =  ZERO )
+                  AND  (RECE220-JIHOKBN            NOT =  SPACE)
+                  AND  (RECE240-TENTEKIKBN             =  ZERO )
+                          MOVE   8              TO  RECE240-TENTEKIKBN
+                  END-IF
                 END-IF
       *
       **********以下コメントのみ分
@@ -3068,7 +3129,11 @@
                   MOVE    ZERO             TO  RECE240-KOUHYOJUNNUM
                END-IF
       *
-               MOVE    RECE220-ZAITEN      TO  RECE240-ZAITEN
+               IF    RECE220-JIHOKBN = SPACE
+                  MOVE    RECE220-ZAITEN         TO  RECE240-ZAITEN
+               ELSE
+                  MOVE    RECE220-HOKATU-ZAITEN  TO  RECE240-ZAITEN
+               END-IF
       *
                IF      RECE220-SRYKBN     =   "60" OR "64"
                        MOVE   WRK-ZAIW-KNSJISKBN
@@ -3119,6 +3184,8 @@
                  WHEN      "99"
                    MOVE   WRK-SRYSYUKBN  TO  RECE240-SRYSYUKBN
                END-EVALUATE
+      *
+               MOVE    RECE220-JIHOKBN   TO  RECE240-JIHOKBN
       *
                PERFORM 4501-RECE240-WRITE-SEC
       *         

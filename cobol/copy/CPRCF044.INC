@@ -57,6 +57,7 @@
       *  04.07.01    NACL-門脇    12/09/25  コメント差込項目追加
       *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
+      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       ************************************************************
       *01  RECE44-REC.
            03  RECE44-KEY.
@@ -239,7 +240,7 @@
       *
       *手技毎の内容（手術・画像診断・処置）
            03  RECE44-ACCTP-SYUGI-TBL-G.
-                 05  RECE44-ACCTP-SYUGI-TBL     OCCURS  5.
+               05    RECE44-ACCTP-SYUGI-TBL     OCCURS  5.
       *手技開始コード
                      07  RECE44-ACCTP-SRYCD     PIC X(09).
       *手技点数
@@ -254,6 +255,19 @@
            03  RECE44-ACCTP-SANSOTEN            PIC 9(07).
       *窒素点数
            03  RECE44-ACCTP-CHISOTEN            PIC 9(07).
+      *
+      *包括診療分退避点数
+           03  RECE44-HOKATU-TENSU-AREA.
+      *剤点数
+               05    RECE44-HOKATU-ZAITEN       PIC 9(08).
+      *手技点数１
+               05    RECE44-HOKATU-SYUTEN1      PIC 9(07).
+      *手技点数２
+               05    RECE44-HOKATU-SYUTEN2      PIC 9(07).
+      *薬剤点数
+               05    RECE44-HOKATU-YKZTEN       PIC 9(07).
+      *器材点数
+               05    RECE44-HOKATU-KIZAITEN     PIC 9(07).
       *
       *日数回数テーブル
            03  RECE44-DAY-AREA.

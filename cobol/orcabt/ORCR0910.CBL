@@ -1497,7 +1497,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
            END-IF
       *
       *    初診加算の時だけ印刷＋検診
-           IF    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
+           IF   RECE84-JIHOKBN  =  SPACE
+             IF  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                             =   WRK-CONS-SYOSIN-KASAN1
                                             OR  WRK-CONS-SYOSIN-KASAN2
                                             OR  WRK-CONS-SYOSIN-KASAN5
@@ -1530,13 +1531,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
                                             OR  CONS-COMMENT8         )
-           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8" AND
+             OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:1)  = "8" AND
                   TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                                      NOT = "830000020")
-           OR    (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)  = "008"  )
+             OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)  = "008"  )
                    CONTINUE
-           ELSE
+             ELSE
                    MOVE    1                 TO  FLG-NOPRT
+             END-IF
            END-IF
       *    識別が点数の場合
            IF  FLG-NOPRT                     =   ZERO
@@ -1547,7 +1549,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                END-IF
            END-IF
       *
-           IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) =
+           IF   RECE84-JIHOKBN  =  SPACE
+            IF TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) =
                                             WRK-CONS-SYOSIN-KASAN29
       *
                MOVE     1              TO  TBL-DENSHI-FLG
@@ -1555,6 +1558,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                        TO  TBL-DENSHI-TEN
                ADD   RECE84-ZAIKAISU   TO  TBL-DENSHI-ZAIKAISU
       *
+            END-IF
            END-IF
       *
            .
@@ -1930,14 +1934,22 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                IF      RECE84-SRYKBN   <=   "33"
                    MOVE    "＊"            TO  WRK-ZAI-MK
                END-IF    
-               IF    ((RECE84-YKZTEN        =   ZERO ) AND
-                      (RECE84-JIHOKBN       =  SPACE ) AND
-                      (IDX1                 =   5    ) AND
-                      (RECE84-RYOTENKISAISU =   ZERO ))
-               OR    ((RECE84-KIZAITEN      =   ZERO ) AND
-                      (RECE84-JIHOKBN       =  SPACE ) AND
-                      (IDX1                 =   4    ) AND
-                      (RECE84-RYOTENKISAISU =   ZERO ))
+               IF    ((RECE84-YKZTEN           =   ZERO) AND
+                      (RECE84-JIHOKBN          =  SPACE) AND
+                      (RECE84-RYOTENKISAISU    =   ZERO) AND
+                      (IDX1                    =   5   ))
+               OR    ((RECE84-KIZAITEN         =   ZERO) AND
+                      (RECE84-JIHOKBN          =  SPACE) AND
+                      (RECE84-RYOTENKISAISU    =   ZERO) AND
+                      (IDX1                    =   4   ))
+               OR    ((RECE84-HOKATU-YKZTEN    =   ZERO) AND
+                      (RECE84-JIHOKBN      NOT =  SPACE) AND
+                      (RECE84-RYOTENKISAISU    =   ZERO) AND
+                      (IDX1                    =   5   ))
+               OR    ((RECE84-HOKATU-KIZAITEN  =   ZERO) AND
+                      (RECE84-JIHOKBN      NOT =  SPACE) AND
+                      (RECE84-RYOTENKISAISU    =   ZERO) AND
+                      (IDX1                    =   4   ))
                    CONTINUE
                ELSE    
                        IF   RECE84-SRYKBN     =   "31" OR "32"
@@ -1977,9 +1989,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *        点数・回数セット処理（特定器材）
                IF     ( IDX1                =   4    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF   ((RECE84-KIZAITEN     >   ZERO) AND
-                       (RECE84-JIHOKBN      =  SPACE))
-                 OR   ( RECE84-JIHOKBN  NOT =  SPACE )
+                 IF ((RECE84-KIZAITEN         >   ZERO) AND
+                     (RECE84-JIHOKBN          =  SPACE))
+                 OR ((RECE84-HOKATU-KIZAITEN  >   ZERO) AND
+                     (RECE84-JIHOKBN      NOT =  SPACE))
                    IF      RECE84-SRYKBN     >=  "33"                   
       **>          IF      RECE84-SRYKBN     >   "33"                   
                        MOVE    RECE84-KIZAITEN   TO  WRK-ZAITENX
@@ -1994,9 +2007,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *        点数・回数セット処理（薬剤）
                IF     ( IDX1                =   5    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF   ((RECE84-YKZTEN       >   ZERO) AND
-                       (RECE84-JIHOKBN      =  SPACE))
-                 OR   ( RECE84-JIHOKBN  NOT =  SPACE )
+                 IF ((RECE84-YKZTEN           >   ZERO) AND
+                     (RECE84-JIHOKBN          =  SPACE))
+                 OR ((RECE84-HOKATU-YKZTEN    >   ZERO) AND
+                     (RECE84-JIHOKBN      NOT =  SPACE))
       ***          IF      RECE84-SRYKBN     >=  "31"   
       *****************IF      RECE84-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  
@@ -2023,6 +2037,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *    検査のとき回数を集計
            IF     (WRK-ZAIWMAX(3)     >   ZERO        )
            AND    (RECE84-SRYKBN      =   "60" OR "64")
+           AND    (RECE84-JIHOKBN     =   SPACE       )
                IF      TBL-ZAIW-SRYCD (3 1)   =   WRK-CONS-SAIKETSU1
                                               OR  WRK-CONS-SAIKETSU2
                                               OR  WRK-CONS-SAIKETSU3 
@@ -2053,15 +2068,17 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                MOVE    1             TO  FLG-NOPRT
            END-IF
       *    診療行為テーブルに存在した場合、印字しないこと
-           PERFORM   VARYING   IDY   FROM    1   BY  1
-                     UNTIL   ( IDY           >   TBL-NOSRYCD-MAX )
-                     OR      ( FLG-NOPRT     =    1 )
+           IF   RECE84-JIHOKBN  =  SPACE
+             PERFORM   VARYING   IDY   FROM    1   BY  1
+                       UNTIL   ( IDY           >   TBL-NOSRYCD-MAX )
+                       OR      ( FLG-NOPRT     =    1 )
       *
                IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                                 =   TBL-NOSRYCD (IDY)
                    MOVE    1                 TO  FLG-NOPRT
                END-IF
-           END-PERFORM
+             END-PERFORM
+           END-IF
       *
            .
        200521-SEYKBNELSE-MEISAI-EXT.
@@ -2551,6 +2568,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                MOVE    ZERO              TO  RECE86-ZAIKBN
                MOVE    SPACE             TO  RECE86-SRYSYUKBN
                MOVE    ZERO              TO  RECE86-DAY
+      *
+               MOVE    SPACE             TO  RECE86-JIHOKBN
       *
                WRITE   RECE86-REC
       *
@@ -3103,11 +3122,19 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                           MOVE   2              TO  RECE86-TENTEKIKBN
                   END-IF
                   IF  (WRK-SRYSYUKBN      =  "330" OR "332")
-                  AND (RECE84-ZAITEN  NOT =  ZERO          )
-                  AND (RECE84-YKZTEN      =  ZERO          )
-                  AND (RECE84-KIZAITEN    =  ZERO          )
                   AND (RECE86-TENTEKIKBN  =  ZERO          )
+                    IF  (RECE84-ZAITEN  NOT =  ZERO          )
+                    AND (RECE84-YKZTEN      =  ZERO          )
+                    AND (RECE84-KIZAITEN    =  ZERO          )
+                    AND (RECE84-JIHOKBN     =  SPACE         )
                           MOVE   3              TO  RECE86-TENTEKIKBN
+                    END-IF
+                    IF  (RECE84-HOKATU-ZAITEN  NOT =  ZERO   )
+                    AND (RECE84-HOKATU-YKZTEN      =  ZERO   )
+                    AND (RECE84-HOKATU-KIZAITEN    =  ZERO   )
+                    AND (RECE84-JIHOKBN        NOT =  SPACE  )
+                          MOVE   3              TO  RECE86-TENTEKIKBN
+                    END-IF
                   END-IF
       *
                   IF  (WRK-SRYSYUKBN      =  "340")
@@ -3116,18 +3143,32 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                           OR "130011070" OR "130012110"
                                           OR "130011610" OR "130011810"
                                           OR "130012010"               )
-                  AND (RECE84-YKZTEN      =  ZERO )
-                  AND (RECE84-KIZAITEN    =  ZERO )
+                    IF  (RECE84-YKZTEN      =  ZERO )
+                    AND (RECE84-KIZAITEN    =  ZERO )
+                    AND (RECE84-JIHOKBN     =  SPACE)
                           MOVE   4              TO  RECE86-TENTEKIKBN
+                    END-IF
+                    IF  (RECE84-HOKATU-YKZTEN      =  ZERO )
+                    AND (RECE84-HOKATU-KIZAITEN    =  ZERO )
+                    AND (RECE84-JIHOKBN        NOT =  SPACE)
+                          MOVE   4              TO  RECE86-TENTEKIKBN
+                    END-IF
                   END-IF
                   IF  (WRK-SRYSYUKBN      =  "340")
                   AND (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
                                           OR "130000310" OR "130010570"
                                           OR "130010670" OR "130011570")
-                  AND (RECE84-YKZTEN      =  ZERO )
-                  AND (RECE84-KIZAITEN    =  ZERO )
                   AND (RECE86-TENTEKIKBN  =  ZERO )
+                    IF  (RECE84-YKZTEN      =  ZERO )
+                    AND (RECE84-KIZAITEN    =  ZERO )
+                    AND (RECE84-JIHOKBN     =  SPACE)
                           MOVE   5              TO  RECE86-TENTEKIKBN
+                    END-IF
+                    IF  (RECE84-HOKATU-YKZTEN    =  ZERO )
+                    AND (RECE84-HOKATU-KIZAITEN  =  ZERO )
+                    AND (RECE84-JIHOKBN      NOT =  SPACE)
+                          MOVE   5              TO  RECE86-TENTEKIKBN
+                    END-IF
                   END-IF
                 ELSE
                   IF  (WRK-SRYSYUKBN      =  "330" OR "332"            )
@@ -3178,21 +3219,41 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                   END-IF
                 END-IF
       *
-                IF   (WRK-SRYSYUKBN           =  "330")
-                AND  (RECE84-YKZTEN       NOT =  ZERO )
-                AND  (RECE86-TENTEKIKBN       =  ZERO )
-                         MOVE   6              TO  RECE86-TENTEKIKBN
-                END-IF
-                IF   (WRK-SRYSYUKBN           =  "330")
-                AND  (RECE84-KIZAITEN     NOT =  ZERO )
-                AND  (RECE86-TENTEKIKBN       =  ZERO )
-                         MOVE   7              TO  RECE86-TENTEKIKBN
+                IF   WRK-SRYSYUKBN   =  "330" OR "331" OR "332" OR
+                                        "350" OR "352"
+                  IF   (RECE84-YKZTEN             NOT =  ZERO )
+                  AND  (RECE84-JIHOKBN                =  SPACE)
+                  AND  (RECE86-TENTEKIKBN             =  ZERO )
+                          MOVE   6              TO  RECE86-TENTEKIKBN
+                  END-IF
+                  IF   (RECE84-HOKATU-YKZTEN      NOT =  ZERO )
+                  AND  (RECE84-JIHOKBN            NOT =  SPACE)
+                  AND  (RECE86-TENTEKIKBN             =  ZERO )
+                          MOVE   6              TO  RECE86-TENTEKIKBN
+                  END-IF
+                  IF   (RECE84-KIZAITEN           NOT =  ZERO )
+                  AND  (RECE84-JIHOKBN                =  SPACE)
+                  AND  (RECE86-TENTEKIKBN             =  ZERO )
+                          MOVE   7              TO  RECE86-TENTEKIKBN
+                  END-IF
+                  IF   (RECE84-HOKATU-KIZAITEN    NOT =  ZERO )
+                  AND  (RECE84-JIHOKBN            NOT =  SPACE)
+                  AND  (RECE86-TENTEKIKBN             =  ZERO )
+                          MOVE   7              TO  RECE86-TENTEKIKBN
+                  END-IF
                 END-IF
       *
-                IF   (WRK-SRYSYUKBN           =  "340")
-                AND  (RECE84-ZAITEN       NOT =  ZERO )
-                AND  (RECE86-TENTEKIKBN       =  ZERO )
-                         MOVE   8              TO  RECE86-TENTEKIKBN
+                IF   WRK-SRYSYUKBN   =  "340"
+                  IF   (RECE84-ZAITEN             NOT =  ZERO )
+                  AND  (RECE84-JIHOKBN                =  SPACE)
+                  AND  (RECE86-TENTEKIKBN             =  ZERO )
+                          MOVE   8              TO  RECE86-TENTEKIKBN
+                  END-IF
+                  IF   (RECE84-HOKATU-ZAITEN      NOT =  ZERO )
+                  AND  (RECE84-JIHOKBN            NOT =  SPACE)
+                  AND  (RECE86-TENTEKIKBN             =  ZERO )
+                          MOVE   8              TO  RECE86-TENTEKIKBN
+                  END-IF
                 END-IF
       *
       **********以下コメントのみ分
@@ -3266,7 +3327,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                   MOVE    ZERO             TO  RECE86-KOUHYOJUNNUM
                END-IF
       *
-               MOVE    RECE84-ZAITEN     TO  RECE86-ZAITEN
+               IF    RECE84-JIHOKBN = SPACE
+                  MOVE    RECE84-ZAITEN         TO  RECE86-ZAITEN
+               ELSE
+                  MOVE    RECE84-HOKATU-ZAITEN  TO  RECE86-ZAITEN
+               END-IF
       *
                IF      RECE84-SRYKBN     =   "60" OR "64"
                        MOVE   WRK-ZAIW-KNSJISKBN
@@ -3319,6 +3384,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                MOVE    RECE84-ZAIKBN     TO  RECE86-ZAIKBN
       *
                MOVE    RECE84-OKIKAEFLG  TO  RECE86-OKIKAEFLG
+      *
+               MOVE    RECE84-JIHOKBN    TO  RECE86-JIHOKBN
       *
                WRITE   RECE86-REC
       *         

@@ -47,6 +47,8 @@
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-門脇    10/01/25  治験対応
+      *
+      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -340,6 +342,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE   RECE86-ZAIKBN      TO   RECE87-ZAIKBN
       *
            MOVE   RECE86-DAY2        TO   RECE87-DAY2
+      *
+           MOVE   RECE86-JIHOKBN     TO   RECE87-JIHOKBN
       *
            IF     RECE86-SRYKBN  NOT =  "95" AND "96"
                PERFORM     2101-RECE87-WRITE-SEC

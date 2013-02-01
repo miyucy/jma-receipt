@@ -38,6 +38,8 @@
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *  04.05.02    NACL-門脇    09/06/18  円摘要欄コメント編集対応
+      *
+      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -543,6 +545,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
              MOVE    WRK-RECE46-PTNUM      TO  RECE47-PTNUM
              MOVE    WRK-RECE46-SRYKA      TO  RECE47-SRYKA
              MOVE    TBL-ZAI-NAME(IDX)     TO  RECE47-TEKIYO-INF
+      *
+             MOVE    SPACE                 TO  RECE47-JIHOKBN
       *
              READ    RECE47-FILE
                INVALID
