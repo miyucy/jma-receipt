@@ -92,6 +92,7 @@ utf8_shell_sources = \
 	tools/orcred2conv.sh.in \
 	allways/orc_print_dmy.sh.in \
 	allways/orcbi202.sh.in \
+	allways/log_shell.sh.in \
 
 shell_sources = \
 	allways/master_standard_upgrade.sh.in \
@@ -139,7 +140,8 @@ ruby_scripts = \
 	monthly/receden_common_const.rb \
 	monthly/receden_const.rb \
 	monthly/receden_error.rb \
-	monthly/receden.rb
+	monthly/receden.rb \
+	allways/mask.rb \
 
 claim_scripts = \
 	claim/rb/clm_rcv.rb \

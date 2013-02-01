@@ -19,6 +19,9 @@ case "$1" in
   allways)
     PATH=$SITESCRIPTSDIR/allways:$PATCHSCRIPTSDIR/allways:$SCRIPTSDIR/allways:$PATH
     ;;
+  shell)
+    PATH=$PATH
+    ;;
   *)
     exit 1
     ;;
@@ -26,9 +29,19 @@ esac
 
 export PATH
 
+LOGSH="log_shell.sh"
+LOGSHDIR=$SCRIPTSDIR/allways
+[ -e ${PATCHSCRIPTSDIR}/allways/${LOGSH} ] && LOGSHDIR=${PATCHSCRIPTSDIR}/allways
+[ -e ${SITESCRIPTSDIR}/allways/${LOGSH} ]  && LOGSHDIR=${SITESCRIPTSDIR}/allways
+
+${LOGSHDIR}/${LOGSH} "$$" "ST" "$@" &
+
 bash -c "$2 \"$3\" \"$4\" \"$5\" \"$6\" \"$7\" \"$8\" \"$9\" \"${10}\" \"${11}\" \"${12}\" \"${13}\" \"${14}\" \
         \"${15}\" \"${16}\" \"${17}\" \"${18}\" \"${19}\" \"${20}\" \"${21}\" \"${22}\" \"${23}\" \"${24}\" \
         \"${25}\" \"${26}\" \"${27}\" \"${28}\" \"${29}\" \"${30}\" \"${31}\" \"${32}\" \"${33}\" \"${34}\" \
         \"${35}\" \"${36}\" \"${37}\" \"${38}\" \"${39}\" \"${40}\" \"${41}\" \"${42}\""
+RET=$?
 
-exit $?
+${LOGSHDIR}/${LOGSH} "$$" "ED" "$@" &
+
+exit ${RET}
