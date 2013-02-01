@@ -2930,7 +2930,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "特定器材種別１がありません"
                                                  TO  SPA-ERRMSG
                WHEN    "0016"
-                   MOVE    "特定器材種別２がありません"
+      ***********  MOVE    "特定器材種別２がありません"
+                   MOVE    "上限価格（酸素）がありません"
                                                  TO  SPA-ERRMSG
                WHEN    "0017"
                    MOVE    "経過措置年月日が違います"
