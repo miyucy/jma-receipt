@@ -333,7 +333,7 @@
                                                      PIC  9(10).
                        09  SPA-H99NAI-RECE10-TEKSTYMD
                                                      PIC X(08).
-                       09  SPA-H99NAI-RECE10-RECEITP-KBN
+                       09  SPA-H99NAI-RECE10-RECEIPT-KBN
                                                      PIC X(10).
                    07  SPA-H99NAI-SKYKBN-RECEDEN     PIC X(01)
                                               OCCURS  50.
