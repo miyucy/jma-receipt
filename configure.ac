@@ -60,6 +60,8 @@ PKG_CHECK_MODULES(xml2,
 	libxml-2.0 >= 2.6.27
 ])
 
+AC_SEARCH_LIBS([crypt],[crypt])
+
 AC_PATH_PROG(PKG_CONFIG,pkg-config,no)
 if test x$PKG_CONFIG = xno; then
 	AC_MSG_ERROR(Couldn't find pkg-config)

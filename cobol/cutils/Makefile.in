@@ -9,7 +9,8 @@ CSRCS = \
 	cobsleep.c \
 	orcsjistoeuc.c \
 	orcfileencode.c \
-	orcmkdir.c
+	orcmkdir.c \
+	orcsauth.c
 
 CJQSRCS = orcqrencode.c
 
@@ -45,6 +46,9 @@ install: all installdirs
 
 installdirs:
 	$(INSTALL) -d $(orcalibdir)
+
+orcsauth.so: orcsauth.c
+	$(CC) -Wl,--no-as-needed -lcrypt -fPIC -shared $< -o $@
 
 orcqrencode.so: orcqrencode.c
 	$(CC) -Wl,--no-as-needed $(QRENCODE_LIB) $(PNG_CFLAGS) $(PNG_LIBS) -fPIC -shared $< -o $@
