@@ -2575,6 +2575,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
                IF      RECE04-SRYKBN      >=  "33"
                AND     RECE04-ZAIKBN   NOT =   1
+               AND     RECE04-JIHOKBN      =   SPACE
                    CONTINUE
                ELSE        
                    MOVE    WRK-TBLMAX       TO  IDY
@@ -2961,7 +2962,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
       ***          AND  (IDX1              =    3          )
       ***              CONTINUE
       ***          ELSE    
-                       IF   RECE04-SRYKBN     =   "31" OR "32"
+                       IF  ( RECE04-SRYKBN        =   "31" OR "32" )
+                       OR  ((RECE04-SRYKBN        =   "33"        ) AND
+                            (RECE04-JIHOKBN   NOT =   SPACE       ))
                          IF   WRK-TBLMAX      >    ZERO
                              MOVE     SPACE      TO  WRK-ZAI-MK
                          END-IF
@@ -2986,6 +2989,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *        点数・回数セット処理（診療行為）
                IF      IDX1              =   3
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
+               AND     RECE04-JIHOKBN    =   SPACE
                    IF      RECE04-SRYKBN     >=  "33"       
                        MOVE    RECE04-SYUTEN1    TO  WRK-ZAITENX
                        MOVE    RECE04-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -2998,10 +3002,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *        点数・回数セット処理（特定器材）
                IF     ( IDX1                =   4    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF ((RECE04-KIZAITEN         >   ZERO) AND
-                     (RECE04-JIHOKBN          =  SPACE))
-                 OR ((RECE04-HOKATU-KIZAITEN  >   ZERO) AND
-                     (RECE04-JIHOKBN      NOT =  SPACE))
+               AND    ( RECE04-JIHOKBN      =   SPACE)
+                 IF     RECE04-KIZAITEN     >   ZERO
                    IF      RECE04-SRYKBN     >=  "33"   
                        MOVE    RECE04-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE04-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -3015,10 +3017,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *        点数・回数セット処理（薬剤）
                IF     ( IDX1                =   5    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF ((RECE04-YKZTEN           >   ZERO) AND
-                     (RECE04-JIHOKBN          =  SPACE))
-                 OR ((RECE04-HOKATU-YKZTEN    >   ZERO) AND
-                     (RECE04-JIHOKBN      NOT =  SPACE))
+               AND    ( RECE04-JIHOKBN      =   SPACE)
+                 IF     RECE04-YKZTEN       >   ZERO
       ***          IF      RECE04-SRYKBN     >=  "31"   
       *****************IF      RECE04-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  
@@ -4817,7 +4817,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                  (RECE04-ZAITEN      =   ZERO                ) AND
                  (RECE04-TOYAKUFLG   =   SPACE               ))
              OR ( RECE04-SAFLG   NOT =   SPACE                )
-             OR ( RECE04-TOYAKUFLG   =   "2"                  )
+             OR ( RECE04-TOYAKUFLG   =   "2" OR "4"           )
              OR ( RECE04-ZAIKBN      =    1                   )
                   GO  TO  440-TNSKAI-SET-EXT
              END-IF

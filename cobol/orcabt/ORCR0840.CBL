@@ -2084,15 +2084,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          END-IF
                        END-IF
                    ELSE
-                       IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
-                            (FLG-TENTEKIMATOME  =    ZERO ) AND
-                            (WRK-PARA-PRTKBN    =
-                                        "1" OR "2" OR "3" ) AND
-                            (ACCT-JIHOKBN       =    SPACE))
-                       OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
-                            (FLG-TENTEKIMATOME  =    ZERO ) AND
-                            (WRK-PARA-PRTKBN    =
-                                               "4" OR "5" ))
+                       IF   (ACCT-ZAIKAISU     NOT =  ZERO )
+                       AND  (FLG-TENTEKIMATOME     =  ZERO )
+                       AND  (ACCT-JIHOKBN          =  SPACE)
+      **>              IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+      **>                   (FLG-TENTEKIMATOME  =    ZERO ) AND
+      **>                   (WRK-PARA-PRTKBN    =
+      **>                               "1" OR "2" OR "3" ) AND
+      **>                   (ACCT-JIHOKBN       =    SPACE))
+      **>              OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+      **>                   (FLG-TENTEKIMATOME  =    ZERO ) AND
+      **>                   (WRK-PARA-PRTKBN    =
+      **>                                      "4" OR "5" ))
                             IF ( ACCT-SRYKBN  NOT =
                                  "12" AND "25" AND "93" AND "98")
                             OR ( ACCT-ZAIKBN  =   1             )
@@ -2615,7 +2618,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF      ACCT-JIHOKBN  NOT =     SPACE
+                  IF     RECE84-SAFLG   NOT =  SPACE
                         MOVE    "3"       TO    RECE84-TOYAKUFLG
+                  ELSE
+                    IF  (SRY-SRYCD(IDX2)(1:1)  =  "8"  )
+                    OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
+                        IF   RECE84-TOYAKUFLG = SPACE
+                          MOVE  "4"       TO    RECE84-TOYAKUFLG
+                        END-IF
+                    ELSE
+                        MOVE    "3"       TO    RECE84-TOYAKUFLG
+                    END-IF
+                  END-IF
                END-IF
       *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )

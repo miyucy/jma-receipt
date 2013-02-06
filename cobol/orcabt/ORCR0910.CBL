@@ -1582,6 +1582,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                IF      RECE84-SRYKBN      >=  "33"                      
       **>      IF      RECE84-SRYKBN      >   "33"                      
                AND     RECE84-ZAIKBN   NOT =   1
+               AND     RECE84-JIHOKBN      =   SPACE
                    CONTINUE
                ELSE        
                    MOVE    WRK-TBLMAX       TO  IDY
@@ -1952,7 +1953,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                       (IDX1                    =   4   ))
                    CONTINUE
                ELSE    
-                       IF   RECE84-SRYKBN     =   "31" OR "32"
+                       IF  ( RECE84-SRYKBN        =   "31" OR "32" )
+                       OR  ((RECE84-SRYKBN        =   "33"        ) AND
+                            (RECE84-JIHOKBN   NOT =   SPACE       ))
                          IF   WRK-TBLMAX      >    ZERO
                              MOVE     SPACE      TO  WRK-ZAI-MK
                          END-IF
@@ -1976,6 +1979,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *        点数・回数セット処理（診療行為）
                IF      IDX1              =   3
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
+               AND     RECE84-JIHOKBN    =   SPACE
                    IF      RECE84-SRYKBN     >=  "33"                   
       **>          IF      RECE84-SRYKBN     >   "33"                   
                        MOVE    RECE84-SYUTEN1    TO  WRK-ZAITENX
@@ -1989,10 +1993,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *        点数・回数セット処理（特定器材）
                IF     ( IDX1                =   4    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF ((RECE84-KIZAITEN         >   ZERO) AND
-                     (RECE84-JIHOKBN          =  SPACE))
-                 OR ((RECE84-HOKATU-KIZAITEN  >   ZERO) AND
-                     (RECE84-JIHOKBN      NOT =  SPACE))
+               AND    ( RECE84-JIHOKBN      =   SPACE)
+                 IF     RECE84-KIZAITEN     >   ZERO
                    IF      RECE84-SRYKBN     >=  "33"                   
       **>          IF      RECE84-SRYKBN     >   "33"                   
                        MOVE    RECE84-KIZAITEN   TO  WRK-ZAITENX
@@ -2007,10 +2009,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *        点数・回数セット処理（薬剤）
                IF     ( IDX1                =   5    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF ((RECE84-YKZTEN           >   ZERO) AND
-                     (RECE84-JIHOKBN          =  SPACE))
-                 OR ((RECE84-HOKATU-YKZTEN    >   ZERO) AND
-                     (RECE84-JIHOKBN      NOT =  SPACE))
+               AND    ( RECE84-JIHOKBN      =   SPACE)
+                 IF     RECE84-YKZTEN       >   ZERO
       ***          IF      RECE84-SRYKBN     >=  "31"   
       *****************IF      RECE84-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  
@@ -3037,7 +3037,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                   (RECE84-ZAITEN      =   ZERO                ) AND
                   (RECE84-TOYAKUFLG   =   SPACE               ))
               OR ( RECE84-SAFLG   NOT =   SPACE                )
-              OR ( RECE84-TOYAKUFLG   =   "2"                  )
+              OR ( RECE84-TOYAKUFLG   =   "2" OR "4"           )
               OR ( RECE84-ZAIKBN      =    1                   )
                   GO  TO  440-TNSKAI-SET-EXT
               END-IF

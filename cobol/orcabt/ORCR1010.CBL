@@ -1243,13 +1243,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  PERFORM RECE120-WRITE-SEC
                                END-IF
                    ELSE
-                     IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
-                          (WRK-PARA-PRTKBN    =
-                                      "1" OR "2" OR "3" ) AND
-                          (ACCT-JIHOKBN       =    SPACE))
-                     OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
-                          (WRK-PARA-PRTKBN    =
-                                             "4" OR "5" ))
+                     IF    ACCT-ZAIKAISU  NOT =    ZERO
+                     AND   ACCT-JIHOKBN       =    SPACE
+      **>            IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+      **>                 (WRK-PARA-PRTKBN    =
+      **>                             "1" OR "2" OR "3" ) AND
+      **>                 (ACCT-JIHOKBN       =    SPACE))
+      **>            OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
+      **>                 (WRK-PARA-PRTKBN    =
+      **>                                    "4" OR "5" ))
                                IF ( ACCT-SRYKBN  NOT =
                                     "24" AND "90" AND "92" AND "93" AND
                                     "97" AND "98"                 )
@@ -1603,7 +1605,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF      ACCT-JIHOKBN  NOT =     SPACE
+                  IF     RECE120-SAFLG   NOT =  SPACE
                         MOVE    "3"       TO    RECE120-TOYAKUFLG
+                  ELSE
+                    IF  (SRY-SRYCD(IDX2)(1:1)  =  "8"  )
+                    OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
+                        IF   RECE120-TOYAKUFLG = SPACE
+                          MOVE  "4"       TO    RECE120-TOYAKUFLG
+                        END-IF
+                    ELSE
+                        MOVE    "3"       TO    RECE120-TOYAKUFLG
+                    END-IF
+                  END-IF
                END-IF
       *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )

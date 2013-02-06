@@ -115,6 +115,8 @@
       *                                     コメントの対応
       *  04.07.02    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
       *  04.07.03    NACL-門脇    13/01/21  労災レセ電対応
+      *
+      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1270,7 +1272,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                INITIALIZE    WRK-JIDO-SETCOM-AREA
                MOVE    ZERO   TO   FLG-KAISIEN
       *
-               IF   RECE82-HKNKBN    NOT  =  "4"                        
+               IF   RECE84-JIHOKBN  NOT =  SPACE
+                INITIALIZE  WRK-JIDO-SETCOM-AREA
+                PERFORM     20011-HOKATU-COMMENT-SEC
+               ELSE
+                IF   RECE82-HKNKBN    NOT  =  "4"                        
                  EVALUATE      RECE84-SRYKBN                   
                    WHEN      "11"
                       IF   RECE82-HKNKBN     =   "5"
@@ -1460,7 +1466,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                    WHEN   OTHER
                          PERFORM    2099-RECE84-WRITE-SEC
                  END-EVALUATE
-               ELSE                                                     
+                ELSE                                                     
                  EVALUATE      RECE84-SRYKBN                            
                    WHEN      "11"
                       EVALUATE   RECE82-JIBAIKBN
@@ -1643,6 +1649,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                    WHEN   OTHER                                         
                          PERFORM    2099-RECE84-WRITE-SEC
                  END-EVALUATE                                           
+                END-IF
                END-IF                                                   
       *
                PERFORM 990-RECE84-NEXT-SEC
@@ -4607,6 +4614,34 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            .
        20011-SHUJUTSU-ETC2-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括診療分のコメント編集（差込：上）
+      *****************************************************************
+       20011-HOKATU-COMMENT-SEC          SECTION.
+      *
+           PERFORM  200111-RECE85-TAIHI-SEC
+      *
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
+           MOVE    ZERO                 TO  IDX-RECE85
+           MOVE    SPACE                TO  WRK-RECE85XX-REC
+           INITIALIZE                       WRK-RECE85XX-REC
+      *
+           ADD    1             TO  IDX-RECE85
+           MOVE  "810000001"    TO  WRK-RECE85XX-SRYCD(IDX-RECE85 1)
+           MOVE   ZERO          TO  WRK-RECE85XX-SRYSURYO(IDX-RECE85 1)
+           MOVE   6             TO  WRK-RECE85XX-YUKOKETA(IDX-RECE85 1)
+           MOVE  "【包括診療】" TO  WRK-RECE85XX-NAME(IDX-RECE85 1)
+           MOVE  "1"            TO  WRK-RECE85XX-SIKFLG(IDX-RECE85 1)
+      *
+           MOVE  "1"            TO
+                                  WRK-RECE85XX-RECEDENFLG(IDX-RECE85 1)
+      *
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       20011-HOKATU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

@@ -1411,6 +1411,7 @@
            IF  WRK-TBLMAX           >   ZERO
                IF      RECE220-SRYKBN      >=  "33"                      
                AND     RECE220-ZAIKBN   NOT =   1
+               AND     RECE220-JIHOKBN      =   SPACE
                    CONTINUE
                ELSE        
                    MOVE    WRK-TBLMAX       TO  IDY
@@ -1779,7 +1780,9 @@
                       (IDX1                     =   4   ))
                    CONTINUE
                ELSE    
-                       IF   RECE220-SRYKBN     =   "31" OR "32"
+                       IF  ( RECE220-SRYKBN       =   "31" OR "32" )
+                       OR  ((RECE220-SRYKBN       =   "33"        ) AND
+                            (RECE220-JIHOKBN  NOT =   SPACE       ))
                          IF   WRK-TBLMAX      >    ZERO
                              MOVE     SPACE      TO  WRK-ZAI-MK
                          END-IF
@@ -1803,6 +1806,7 @@
       *        点数・回数セット処理（診療行為）
                IF      IDX1              =   3
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
+               AND     RECE220-JIHOKBN   =   SPACE
                    IF      RECE220-SRYKBN     >=  "33"                   
                        MOVE    RECE220-SYUTEN1    TO  WRK-ZAITENX
                        MOVE    RECE220-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -1815,10 +1819,8 @@
       *        点数・回数セット処理（特定器材）
                IF     ( IDX1                =   4    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF ((RECE220-KIZAITEN         >   ZERO) AND
-                     (RECE220-JIHOKBN          =  SPACE))
-                 OR ((RECE220-HOKATU-KIZAITEN  >   ZERO) AND
-                     (RECE220-JIHOKBN      NOT =  SPACE))
+               AND    ( RECE220-JIHOKBN     =   SPACE)
+                 IF     RECE220-KIZAITEN    >   ZERO
                    IF      RECE220-SRYKBN     >=  "33"                   
                        MOVE    RECE220-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE220-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -1832,10 +1834,8 @@
       *        点数・回数セット処理（薬剤）
                IF     ( IDX1                =   5    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF ((RECE220-YKZTEN           >   ZERO) AND
-                     (RECE220-JIHOKBN          =  SPACE))
-                 OR ((RECE220-HOKATU-YKZTEN    >   ZERO) AND
-                     (RECE220-JIHOKBN      NOT =  SPACE))
+               AND    ( RECE220-JIHOKBN      =   SPACE)
+                 IF     RECE220-YKZTEN       >   ZERO
                    IF      RECE220-SRYKBN     >=  "33"               
                        MOVE    RECE220-YKZTEN     TO  WRK-ZAITENX
                        MOVE    RECE220-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -2844,7 +2844,7 @@
                  (RECE220-ZAITEN     =   ZERO                ) AND
                  (RECE220-TOYAKUFLG  =   SPACE               ))
              OR ( RECE220-SAFLG  NOT =   SPACE                )
-             OR ( RECE220-TOYAKUFLG  =   "2"                  )
+             OR ( RECE220-TOYAKUFLG  =   "2" OR "4"           )
              OR ( RECE220-ZAIKBN     =    1                   )
                   GO  TO  440-TNSKAI-SET-EXT
              END-IF

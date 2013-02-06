@@ -1783,6 +1783,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            IF  WRK-TBLMAX           >   ZERO
                IF      RECE120-SRYKBN      >=  "33"
                AND     RECE120-ZAIKBN   NOT =   1
+               AND     RECE120-JIHOKBN      =   SPACE
                    CONTINUE
                ELSE        
                    MOVE    WRK-TBLMAX       TO  IDY
@@ -2154,7 +2155,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       ***          AND  (IDX1              =    3          )
       ***              CONTINUE
       ***          ELSE    
-                       IF   RECE120-SRYKBN     =   "31" OR "32"
+                       IF  ( RECE120-SRYKBN       =   "31" OR "32" )
+                       OR  ((RECE120-SRYKBN       =   "33"        ) AND
+                            (RECE120-JIHOKBN  NOT =   SPACE       ))
                          IF   WRK-TBLMAX      >    ZERO
                              MOVE     SPACE      TO  WRK-ZAI-MK
                          END-IF
@@ -2179,6 +2182,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *        点数・回数セット処理（診療行為）
                IF      IDX1              =   3
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
+               AND     RECE120-JIHOKBN   =   SPACE
                    IF      RECE120-SRYKBN     >=  "33"       
                        MOVE    RECE120-SYUTEN1    TO  WRK-ZAITENX
                        MOVE    RECE120-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -2191,10 +2195,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *        点数・回数セット処理（特定器材）
                IF     ( IDX1                =   4    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF ((RECE120-KIZAITEN         >   ZERO) AND
-                     (RECE120-JIHOKBN          =  SPACE))
-                 OR ((RECE120-HOKATU-KIZAITEN  >   ZERO) AND
-                     (RECE120-JIHOKBN      NOT =  SPACE))
+               AND    ( RECE120-JIHOKBN     =   SPACE)
+                 IF     RECE120-KIZAITEN    >   ZERO
                    IF      RECE120-SRYKBN     >=  "33"   
                        MOVE    RECE120-KIZAITEN   TO  WRK-ZAITENX
                        MOVE    RECE120-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -2208,10 +2210,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *        点数・回数セット処理（薬剤）
                IF     ( IDX1                =   5    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF ((RECE120-YKZTEN           >   ZERO) AND
-                     (RECE120-JIHOKBN          =  SPACE))
-                 OR ((RECE120-HOKATU-YKZTEN    >   ZERO) AND
-                     (RECE120-JIHOKBN      NOT =  SPACE))
+               AND    ( RECE120-JIHOKBN     =   SPACE)
+                 IF     RECE120-YKZTEN      >   ZERO
                    IF      RECE120-SRYKBN     >=   "33"
                        MOVE    RECE120-YKZTEN     TO  WRK-ZAITENX
                        MOVE    RECE120-ZAIKAISU   TO  WRK-ZAIKAISUX
@@ -3353,7 +3353,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                  (RECE120-ZAITEN     =   ZERO                ) AND
                  (RECE120-TOYAKUFLG  =   SPACE               ))
              OR ( RECE120-SAFLG  NOT =   SPACE                )
-             OR ( RECE120-TOYAKUFLG  =   "2"                  )
+             OR ( RECE120-TOYAKUFLG  =   "2" OR "4"           )
              OR ( RECE120-ZAIKBN     =    1                   )
                   GO  TO  440-TNSKAI-SET-EXT
              END-IF

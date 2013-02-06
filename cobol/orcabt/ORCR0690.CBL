@@ -2047,6 +2047,7 @@
                IF      RECE64-SRYKBN      >=  "33"                      
       **>      IF      RECE64-SRYKBN      >   "33"                      
                AND     RECE64-ZAIKBN   NOT =   1
+               AND     RECE64-JIHOKBN      =   SPACE
                    CONTINUE
                ELSE        
                    MOVE    WRK-TBLMAX       TO  IDY
@@ -2424,7 +2425,9 @@
                       (IDX1                    =   4   ))
                    CONTINUE
                ELSE    
-                       IF   RECE64-SRYKBN     =   "31" OR "32"
+                       IF  ( RECE64-SRYKBN        =   "31" OR "32" )
+                       OR  ((RECE64-SRYKBN        =   "33"        ) AND
+                            (RECE64-JIHOKBN   NOT =   SPACE       ))
                          IF   WRK-TBLMAX      >    ZERO
                              MOVE     SPACE      TO  WRK-ZAI-MK
                          END-IF
@@ -2448,6 +2451,7 @@
       *        点数・回数セット処理（診療行為）
                IF      IDX1              =   3
                AND     WRK-ZAIWMAX(IDX1) >   ZERO
+               AND     RECE64-JIHOKBN    =   SPACE
                    IF      RECE64-SRYKBN     >=  "33"                   
       **>          IF      RECE64-SRYKBN     >   "33"                   
                        MOVE    RECE64-SYUTEN1    TO  WRK-ZAITENX
@@ -2461,10 +2465,8 @@
       *        点数・回数セット処理（特定器材）
                IF     ( IDX1                =   4    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF ((RECE64-KIZAITEN         >   ZERO) AND
-                     (RECE64-JIHOKBN          =  SPACE))
-                 OR ((RECE64-HOKATU-KIZAITEN  >   ZERO) AND
-                     (RECE64-JIHOKBN      NOT =  SPACE))
+               AND    ( RECE64-JIHOKBN      =   SPACE)
+                 IF     RECE64-KIZAITEN     >   ZERO
                    IF      RECE64-SRYKBN     >=  "33"                   
       **>          IF      RECE64-SRYKBN     >   "33"                   
                        MOVE    RECE64-KIZAITEN   TO  WRK-ZAITENX
@@ -2479,10 +2481,8 @@
       *        点数・回数セット処理（薬剤）
                IF     ( IDX1                =   5    )
                AND    ( WRK-ZAIWMAX(IDX1)   >   ZERO )
-                 IF ((RECE64-YKZTEN           >   ZERO) AND
-                     (RECE64-JIHOKBN          =  SPACE))
-                 OR ((RECE64-HOKATU-YKZTEN    >   ZERO) AND
-                     (RECE64-JIHOKBN      NOT =  SPACE))
+               AND    ( RECE64-JIHOKBN      =   SPACE)
+                 IF     RECE64-YKZTEN       >   ZERO
       ***          IF      RECE64-SRYKBN     >=  "31"   
       *****************IF      RECE64-SRYKBN     =   "31"    OR  
       **                                             "32"    OR  "33"  
@@ -4077,7 +4077,7 @@
                   (RECE64-ZAITEN      =   ZERO                ) AND
                   (RECE64-TOYAKUFLG   =   SPACE               ))
               OR ( RECE64-SAFLG   NOT =   SPACE                )
-              OR ( RECE64-TOYAKUFLG   =   "2"                  )
+              OR ( RECE64-TOYAKUFLG   =   "2" OR "4"           )
               OR ( RECE64-ZAIKBN      =    1                   )
                   GO  TO  440-TNSKAI-SET-EXT
               END-IF

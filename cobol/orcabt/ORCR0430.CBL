@@ -1435,7 +1435,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
                INITIALIZE    WRK-JIDO-SETCOM-AREA
       *
-               IF   RECE41-HKNKBN    NOT  =  "4"                        
+               IF   RECE44-JIHOKBN  NOT =  SPACE
+                INITIALIZE  WRK-JIDO-SETCOM-AREA
+                PERFORM     20011-HOKATU-COMMENT-SEC
+               ELSE
+                IF   RECE41-HKNKBN    NOT  =  "4"                        
                  EVALUATE      RECE44-SRYKBN                   
                    WHEN      "11"
                       IF   RECE41-HKNKBN     =   "5"
@@ -1617,7 +1621,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    WHEN   OTHER
                       PERFORM       2099-RECE44-TENSOU-SEC
                  END-EVALUATE
-               ELSE                                                     
+                ELSE                                                     
                  EVALUATE      RECE44-SRYKBN                            
                    WHEN      "11"
                       EVALUATE   RECE41-JIBAIKBN
@@ -1795,6 +1799,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    WHEN   OTHER                                         
                       PERFORM       2099-RECE44-TENSOU-SEC
                  END-EVALUATE                                           
+                END-IF
                END-IF                                                   
       *
                PERFORM 990-RECE44-NEXT-SEC
@@ -5465,6 +5470,34 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            .
        20011-SHUJUTSU-ETC2-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     Ò≥Áø«Œ≈ ¨§Œ•≥•·•Û•» ‘Ω∏° ∫ππ˛°ßæÂ°À
+      *****************************************************************
+       20011-HOKATU-COMMENT-SEC          SECTION.
+      *
+           PERFORM  200111-RECE45-TAIHI-SEC
+      *
+      *    £“£≈£√£≈£∞£µ•’•°•§•Î§Œ∆‚Õ∆§Ú•∆°º•÷•Î§À¬‡»Ú
+           MOVE    ZERO                 TO  IDX-RECE45
+           MOVE    SPACE                TO  WRK-RECE45XX-REC
+           INITIALIZE                       WRK-RECE45XX-REC
+      *
+           ADD    1             TO  IDX-RECE45
+           MOVE  "810000001"    TO  WRK-RECE45XX-SRYCD(IDX-RECE45 1)
+           MOVE   ZERO          TO  WRK-RECE45XX-SRYSURYO(IDX-RECE45 1)
+           MOVE   6             TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
+           MOVE  "°⁄ Ò≥Áø«Œ≈°€" TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+           MOVE  "1"            TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
+      *
+           MOVE  "1"            TO
+                                  WRK-RECE45XX-RECEDENFLG(IDX-RECE45 1)
+      *
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       20011-HOKATU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

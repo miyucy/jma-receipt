@@ -7735,6 +7735,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                END-IF
                            ELSE
                              IF   ACCT-ZAIKAISU  NOT =    ZERO
+                             AND  ACCT-JIHOKBN       =    SPACE
                                IF ( ACCT-SRYKBN  NOT =
                                     "24" AND "90" AND "92" AND "93" AND
                                     "97" AND "98"                 )
@@ -8491,7 +8492,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF      ACCT-JIHOKBN  NOT =     SPACE
+                  IF     RECE04-SAFLG   NOT =  SPACE
                         MOVE    "3"       TO    RECE04-TOYAKUFLG
+                  ELSE
+                    IF  (SRY-SRYCD(IDX2)(1:1)  =  "8"  )
+                    OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
+                        IF   RECE04-TOYAKUFLG = SPACE
+                          MOVE  "4"       TO    RECE04-TOYAKUFLG
+                        END-IF
+                    ELSE
+                        MOVE    "3"       TO    RECE04-TOYAKUFLG
+                    END-IF
+                  END-IF
                END-IF
       *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )

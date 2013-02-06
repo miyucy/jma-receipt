@@ -1136,7 +1136,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
                UNTIL  ( FLG-RECE120           =   1             )
                OR     ( RECE100-KEY       NOT =   RECE120-KEY1  )
       *
-               EVALUATE      RECE120-SRYKBN
+               IF   RECE120-JIHOKBN  NOT =  SPACE
+                 PERFORM     20011-HOKATU-COMMENT-SEC
+               ELSE
+                 EVALUATE      RECE120-SRYKBN
                    WHEN      "11"
                       MOVE   ZERO   TO  FLG-COMMENT
       *            ¡Ê½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë»»Äê²Ê¤Î¥»¥Ã¥È¡Ë
@@ -1306,7 +1309,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       END-IF
                    WHEN   OTHER
                       PERFORM    2099-RECE120-TENSOU-SEC
-               END-EVALUATE
+                 END-EVALUATE
+               END-IF
       *
                PERFORM 990-RECE120-NEXT-SEC
       *
@@ -4537,6 +4541,30 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            .
        20011-SHUJUTSU-ETC2-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Êñ³ç¿ÇÎÅÊ¬¤Î¥³¥á¥ó¥ÈÊÔ½¸¡Êº¹¹þ¡§¾å¡Ë
+      *****************************************************************
+       20011-HOKATU-COMMENT-SEC          SECTION.
+      *
+           PERFORM  200111-RECE130-TAIHI-SEC
+      *
+      *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+           MOVE    ZERO                 TO  IDX-RECE130
+           MOVE    SPACE                TO  WRK-RECE130XX-REC
+           INITIALIZE                       WRK-RECE130XX-REC
+      *
+           ADD    1             TO IDX-RECE130
+           MOVE  "810000001"    TO WRK-RECE130XX-SRYCD(IDX-RECE130 1)
+           MOVE   ZERO          TO WRK-RECE130XX-SRYSURYO(IDX-RECE130 1)
+           MOVE   6             TO WRK-RECE130XX-YUKOKETA(IDX-RECE130 1)
+           MOVE  "¡ÚÊñ³ç¿ÇÎÅ¡Û" TO WRK-RECE130XX-NAME(IDX-RECE130 1)
+      *
+           PERFORM  200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       20011-HOKATU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

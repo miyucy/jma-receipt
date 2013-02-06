@@ -1380,7 +1380,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE059PARA-HOSPNUM
                  END-IF
                END-IF
       *
-               EVALUATE      RECE04-SRYKBN
+               IF   RECE04-JIHOKBN  NOT =  SPACE
+                 INITIALIZE  WRK-JIDO-SETCOM-AREA
+                 PERFORM     20011-HOKATU-COMMENT-SEC
+               ELSE
+                 EVALUATE      RECE04-SRYKBN
                    WHEN      "11"
                       MOVE   ZERO   TO  FLG-COMMENT
       *            ¡Ê½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë»»Äê²Ê¤Î¥»¥Ã¥È¡Ë
@@ -1550,7 +1554,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE059PARA-HOSPNUM
                       END-IF
                    WHEN   OTHER
                       PERFORM    2099-RECE04-TENSOU-SEC
-               END-EVALUATE
+                 END-EVALUATE
+               END-IF
       *
                PERFORM 990-RECE04-NEXT-SEC
       *
@@ -5658,6 +5663,33 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            .
        20011-SHUJUTSU-ETC2-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Êñ³ç¿ÇÎÅÊ¬¤Î¥³¥á¥ó¥ÈÊÔ½¸¡Êº¹¹þ¡§¾å¡Ë
+      *****************************************************************
+       20011-HOKATU-COMMENT-SEC          SECTION.
+      *
+           PERFORM  200111-RECE05-TAIHI-SEC
+      *
+      *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+           MOVE   ZERO          TO  IDX-RECE05
+           MOVE   SPACE         TO  WRK-RECE05XX-REC
+           INITIALIZE               WRK-RECE05XX-REC
+      *
+           ADD    1             TO  IDX-RECE05
+           MOVE  "810000001"    TO  WRK-RECE05XX-SRYCD(IDX-RECE05 1)
+           MOVE   ZERO          TO  WRK-RECE05XX-SRYSURYO(IDX-RECE05 1)
+           MOVE   6             TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
+           MOVE  "¡ÚÊñ³ç¿ÇÎÅ¡Û" TO  WRK-RECE05XX-NAME(IDX-RECE05 1)
+      *
+           MOVE  "1"            TO
+                                  WRK-RECE05XX-RECEDENFLG(IDX-RECE05 1)
+      *
+           PERFORM  200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       20011-HOKATU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
