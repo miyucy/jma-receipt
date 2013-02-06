@@ -4830,9 +4830,6 @@
            MOVE   6             TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
            MOVE  "¡ÚÊñ³ç¿ÇÎÅ¡Û" TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
       *
-           MOVE  "1"            TO
-                                  WRK-RECE65XX-RECEDENFLG(IDX-RECE65 1)
-      *
            PERFORM  200111-SRYACTINF-HENSYU-SEC
       *
            .

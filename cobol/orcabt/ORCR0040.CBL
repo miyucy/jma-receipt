@@ -5683,9 +5683,6 @@ grpsys       PERFORM 900-DBSELECT-SEC
            MOVE   6             TO  WRK-RECE05XX-YUKOKETA(IDX-RECE05 1)
            MOVE  "¡ÚÊñ³ç¿ÇÎÅ¡Û" TO  WRK-RECE05XX-NAME(IDX-RECE05 1)
       *
-           MOVE  "1"            TO
-                                  WRK-RECE05XX-RECEDENFLG(IDX-RECE05 1)
-      *
            PERFORM  200111-SRYACTINF-HENSYU-SEC
       *
            .

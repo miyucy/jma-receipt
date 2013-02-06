@@ -5491,9 +5491,6 @@ grpsys       PERFORM 900-DBSELECT-SEC
            MOVE  "¡ÚÊñ³ç¿ÇÎÅ¡Û" TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
            MOVE  "1"            TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
       *
-           MOVE  "1"            TO
-                                  WRK-RECE45XX-RECEDENFLG(IDX-RECE45 1)
-      *
            PERFORM    200111-SRYACTINF-HENSYU-SEC
       *
            .
