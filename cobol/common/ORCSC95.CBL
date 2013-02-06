@@ -942,6 +942,12 @@
                        MOVE    SPA-SRYKA-MAX   TO  IDY
                    END-IF
                END-PERFORM
+      *!!!!!!!!
+               IF      SPA-GMN-RRKSRYKA(IDX)   =   SPACE
+                   MOVE    SPA-NAI-RRK-SRYKA (IDX)
+                                               TO  SPA-GMN-RRKSRYKA(IDX)
+               END-IF
+      *!!!!!!!
            END-PERFORM
       *
            .

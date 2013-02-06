@@ -68,6 +68,7 @@
       *  04.07.00    NACL-多々納  11/09/XX  院外処方点数表示対応
       *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
       *  04.08.00    NACL-多々納  13/01/15  診療回数テーブル１０対応
+      *  04.07.00    NACL-多々納  13/02/06  レセ電データ移行対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2526,6 +2527,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  SPA-GMN-RRKSRYKA (IDX)
                END-IF
            END-PERFORM
+      *H25.2
+           IF      SPA-GMN-RRKSRYKA (IDX)  =   SPACE
+               MOVE    JYURRK-SRYKA        TO  SPA-GMN-RRKSRYKA (IDX)
+           END-IF
+      *!!!!
       *    保険組合せ
            MOVE    JYURRK-HKNCOMBINUM  TO  SPA-GMN-RRKHKNCOMBI (IDX)
            IF      JYURRK-HKNKBN       =   "1"
@@ -2969,6 +2975,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    SPA-SRYKA-MAX   TO  IDK
                    END-IF
                END-PERFORM
+      *H25.2
+               IF      WRK-SRYKAMEI        =   SPACE
+                   MOVE    ACCT-SRYKA      TO  WRK-SRYKAMEI
+               END-IF
+      *
                IF      IDG                 <   400
                    MOVE    WRK-SRYKAMEI(1:2)   TO  SPA-NAI-SRYKAMEI
                                                               (IDG + 1)
@@ -4753,6 +4764,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-NAI-MAX     TO  IDX
                END-IF
            END-PERFORM
+      *H25.2
+      *    レセ電移行分はエラー
+           IF     (SPA-GMN-BANGO   NOT =   ZERO )
+             AND  (SPA-NAI-SRYKA   (SPA-NAI-BANGO)(1:1)
+                                       =   "A"   )
+               MOVE    "7011"              TO  SPA-ERRCD
+               GO      TO      41011-BANGO-CHK-EXT
+           END-IF
       *
            IF      SPA-GMN-BANGO       =   ZERO
                INITIALIZE                  SPA-GMN-INPUT
@@ -5749,6 +5768,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    2               TO  SPA-J02-SYORI
                    MOVE    4               TO  SPA-GMN-CUR
                END-IF
+           END-IF
+      *H25.2
+      *    レセ電移行分はエラー
+           IF     (SPA-ERRCD           =   SPACE    )
+             AND  (SPA-NAI-RRKSELNUM   NOT =   ZERO )
+             AND  (SPA-RRK-SRYKA (SPA-NAI-RRKSELNUM)(1:1)
+                                       =   "A"   )
+               MOVE    "7011"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -9782,10 +9810,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-PERFORM
-      *TEST
-      *      DISPLAY "SPA-DAY-IDX:" SPA-DAY-IDX
-      *            ",IDX-RRK:"  IDX-RRK
-      *TEST
       *    対象がなかった時追加
            IF      IDX-RRK             =   ZERO
                IF      SPA-GNAI-DAY (1 SPA-DAY-IDX)    >   ZERO
@@ -14035,6 +14059,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        "保険一括変更をして下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-ERRMSG
+                   END-STRING
+      *H25.2
+               WHEN    "7011"
+                   STRING  "レセプト電算データから移行したデータです。"
+                           "変更できません。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
                    END-STRING
       *@@
                WHEN    "9009"

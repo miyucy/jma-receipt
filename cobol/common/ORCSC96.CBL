@@ -1975,6 +1975,13 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H25.2
+               WHEN    "7011"
+                   STRING  "レセプト電算データから移行したデータです。"
+                           "訂正できません。"
+                                           DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

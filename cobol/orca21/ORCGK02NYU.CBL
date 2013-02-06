@@ -6757,6 +6757,14 @@
       *****************************************************************
        410141-TEISEI-SET-SEC           SECTION.
       *
+      *H25.2
+      *    レセ電移行分はエラー
+           IF      SPA-NAI-RRK-SRYKA (SPA-NAI-DOSELNUM)(1:1)
+                                       =   "A"
+               MOVE    "7011"              TO  SPA-ERRCD
+               GO      TO      410141-TEISEI-SET-EXT
+           END-IF
+      *
            MOVE    ZERO            TO  FLG-MOD-FLG
            PERFORM 4900-WKSRYACT-CLEAR-SEC
       *
