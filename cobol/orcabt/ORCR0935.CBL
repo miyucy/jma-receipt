@@ -42,11 +42,6 @@
       *  04.05.01    NACL-門脇    09/06/18  円摘要欄コメント編集対応
       *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
       *  04.05.03    NACL-門脇    13/02/07  金額項目７桁対応
-      *
-      *  04.07.01    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -307,8 +302,6 @@
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -349,7 +342,6 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
-           INITIALIZE                  RECEERR
       *
       *    ファイルＯＰＥＮ処理
       *
@@ -390,38 +382,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE01PARA
-           INITIALIZE                      RECE01PARA
            MOVE    "RECE820"           TO  RECE01PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE86PARA
-           INITIALIZE                      RECE86PARA
            MOVE    "RECE861"           TO  RECE86PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE86PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE87PARA
-           INITIALIZE                      RECE87PARA
            MOVE    "RECE871"           TO  RECE87PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE87PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE01PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE86PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           MOVE    RECE87PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE01PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE86PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE87PARA
       *
            OPEN    INPUT               RECE82-FILE
       *
@@ -842,11 +813,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    ZERO        TO  FLG-END
       *
                    DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
-      *
-                   IF    (WRK-PARA-RECEKBN       =  "4")
-                   AND   (WRK-PARA-JIBAIPRTKBN   =  "2")
-                       GO  TO  990-RECE82-READ-SEC
-                   END-IF
       *
            END-READ
       *
