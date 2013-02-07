@@ -11,10 +11,9 @@
     }
 *********************************************************************/
 
-#define _XOPEN_SOURCE           /* define before 1st #include */
-
 #include <sys/time.h>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h>             /* crypt() */
 
 /*
@@ -58,8 +57,8 @@ AuthMakeSalt(void)
 	 * Generate 8 chars of salt, the old crypt() will use only first 2.
 	 */
 	gettimeofday(&tv, (struct timezone *) 0);
-	strcat(result, (char *)l64a(tv.tv_usec));
-	strcat(result, (char *)l64a(tv.tv_sec + getpid() + clock()));
+	strcat(result, l64a(tv.tv_usec));
+	strcat(result, l64a(tv.tv_sec + getpid() + clock()));
 
 	if (strlen(result) > 3 + 8)  /* magic+salt */
 		result[11] = '\0';
