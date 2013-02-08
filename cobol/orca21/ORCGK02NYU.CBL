@@ -8705,6 +8705,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    ZERO                TO  SPA-NAI-JYURRKFLG
                END-IF
            END-IF
+      *H25.2
+           IF      SPA-ERRCD           =   SPACE
+      *        訂正時の保険自動変換
+               IF      SPA-HKN-ERR2        =   1
+                   MOVE    "K176"              TO  SPA-ERRCD
+                   MOVE    ZERO                TO  SPA-HKN-ERR2
+               END-IF
+           END-IF
       *
       *    診療行為入力チェック
            IF      SPA-ERRCD           =   SPACE

@@ -11021,25 +11021,67 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    ZERO                TO  SPA-NAI-JYURRKFLG
                END-IF
            END-IF
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      41001-KIHON-CHK-EXT
-           END-IF
+      **   IF      SPA-ERRCD       NOT =   SPACE
+      *        GO      TO      41001-KIHON-CHK-EXT
+      ***  END-IF
       *    地方公費のみの場合、警告
-           IF      SPA-NAI-KOHFLG      =   1
+           IF     (SPA-NAI-KOHFLG      =   1      )
+             AND  (SPA-ERRCD           =   SPACE  )
                IF      SPA-NAI-KOHFLG-ERR  =   ZERO
                    MOVE    "K034"              TO  SPA-ERRCD
                    MOVE    5                   TO  SPA-GMN-CUR
-                   GO      TO      41001-KIHON-CHK-EXT
+                   MOVE    1                   TO  SPA-NAI-KOHFLG-ERR
                END-IF
            END-IF
       *    国保 前期高齢者変更チェック
-           IF      SPA-NAI-ZENKIFLG      =   1
+           IF     (SPA-NAI-ZENKIFLG    =   1      )
+             AND  (SPA-ERRCD           =   SPACE  )
                IF      SPA-NAI-ZENKIFLG-ERR    =   ZERO
                    MOVE    "K171"              TO  SPA-ERRCD
                    MOVE    5                   TO  SPA-GMN-CUR
-                   GO      TO      41001-KIHON-CHK-EXT
+                   MOVE    1                   TO  SPA-NAI-ZENKIFLG-ERR
                END-IF
            END-IF
+      *H25.2
+      *    前回保険組合せの判定チェック
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-HKNCHK-FLG  NOT =   ZERO   )  AND 
+                  (SPA-HKNCHK-CHK      =   ZERO   )
+               IF      SPA-HKNCHK-FLG      =   2
+                   MOVE    "K173"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    "K172"              TO  SPA-ERRCD
+               END-IF
+               MOVE    5                   TO  SPA-GMN-CUR
+               MOVE    1                   TO  SPA-HKNCHK-CHK
+               MOVE    ZERO                TO  SPA-HKNCHK-FLG
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+      *        訂正時の保険自動変換
+               IF      SPA-HKN-ERR2        =   1
+                   MOVE    "K176"              TO  SPA-ERRCD
+                   MOVE    ZERO                TO  SPA-HKN-ERR2
+               END-IF
+           END-IF
+      *    初診料の併用算定判定
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-SYOSIN-KEI      =   1      )  AND
+                  (SPA-SYOSIN-KEIFLG   =   ZERO   )
+               MOVE    "K174"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-SYOSIN-KEIFLG
+           END-IF
+      *    初診料の併用算定判定
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-SYOSIN-KEI      =   2      )  AND
+                  (SPA-SYOSIN-KEIFLG   =   ZERO   )
+               MOVE    "K175"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-SYOSIN-KEIFLG
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      41001-KIHON-CHK-EXT
+           END-IF
+      *
       *
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
