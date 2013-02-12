@@ -52,8 +52,6 @@
            COPY    "HCM32NV02.INC" REPLACING   //HCM32NV02//
                                    BY          //HCM32N//.
       *
-           COPY    "CPFMSHIHARAI.INC".
-      *
       *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
@@ -105,14 +103,6 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
-           03  WRK-DATE.
-               05  WRK-DATE-YY     PIC 9(04).
-               05  WRK-DATE-FL1    PIC X(01).
-               05  WRK-DATE-MM     PIC 9(02).
-               05  WRK-DATE-FL2    PIC X(01).
-               05  WRK-DATE-DD     PIC 9(02).
-           03  WRK-PARA-NAME       PIC X(25).
-           03  WRK-PARA            PIC X(100).
       *
            03  WRK-HENSYU-TBL.
                05  WRK-KEY-YMD     PIC X(08).
@@ -162,15 +152,6 @@
            03  WRK-Z9              PIC ---,---,---.
            03  WRK-ZZZZ9           PIC ZZZZ9.
            03  WRK-HOJOKBN         PIC X(01).
-           03  WRK-HOSPINF-G.
-               05  WRK-HOSP-1902   PIC X(01).
-               05  WRK-HOSP-NAME   PIC X(80)   OCCURS 3.
-               05  WRK-HOSP-ADRS   PIC X(100)  OCCURS 3.
-               05  WRK-HOSP-TEL    PIC X(15).
-               05  WRK-HOSP-POST   PIC X(7).
-           03  WRK-ZZ9             PIC ZZ9.
-           03  WRK-Z9M             PIC -------9.
-           03  WRK-GZ9M            PIC --------9.
       *
        01  TJNISSU-AREA.
            03  TJNISSU-NYU         PIC 9(05).
@@ -209,11 +190,6 @@
            03  CONST-H190401       PIC X(08)   VALUE   "20070401".
       *----(03.04.01)--ADD-END-----
       *
-      *    パラメタエリア
-       01  TPARA-AREA.
-           03  TPARA-API-DATA          PIC X(01).
-           03  TPARA-API-CUSTOM-ID     PIC X(30).
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -228,15 +204,6 @@
       *
       *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
-      *
-      *    医療機関編集情報
-           COPY    "CPSK1900.INC".
-      *
-      *    医療機関名称編集情報
-           COPY    "CPSK1901.INC".
-      *
-      *    医療機関住所編集情報
-           COPY    "CPSK1902.INC".
       *
       *    収納
        01  SYUNOU-REC.
@@ -257,12 +224,6 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *    プログラムオプション編集パラメタ
-           COPY    "CPORCSPRGOPTION.INC".
-      *
-      *    API対応
-           COPY    "CPORCRPMAIN.INC".
       *
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -302,17 +263,9 @@
       *    初期処理
            PERFORM 100-INIT-SEC
       *
-           PERFORM UNTIL ( FLG-END     NOT =   ZERO )
-      *
-               IF    ( TPARA-API-DATA      =   "1" )
-      *            主処理（APIデータ作成）
-                   PERFORM 201-MAIN-SEC
-               ELSE
-      *            主処理（帳票印刷）
-                   PERFORM 200-MAIN-SEC
-               END-IF
-      *
-           END-PERFORM
+      *    主処理
+           PERFORM 200-MAIN-SEC
+                   UNTIL   FLG-END     =   1
       *
            PERFORM 300-END-SEC
       *
@@ -346,37 +299,12 @@
            CALL    "ORCSS003"      USING   SS003-AREA
                                            SPA-AREA
       *
+      *
       *    医療機関情報−基本情報読み込み
            PERFORM 900-SYS1001-READ-SEC
-           MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSP-NAME (1)
       *
       *    医療機関情報−所在地、連絡先読み込み
            PERFORM 900-SYS1002-READ-SEC
-           MOVE    SYS-1002-ADRS       TO  WRK-HOSP-ADRS (1)
-           MOVE    SYS-1002-TEL        TO  WRK-HOSP-TEL
-           MOVE    SYS-1002-POST       TO  WRK-HOSP-POST
-      *
-      *    医療機関編集情報読み込み
-           PERFORM 900-SYS1900-READ-SEC
-           IF    ( SYS-1900-PRTKBN (24)    NOT =   SPACE )
-      *        医療機関名称編集情報読み込み
-               PERFORM 900-SYS1901-READ-SEC
-               IF    ( FLG-SYSKANRI    =   ZERO )
-                   MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSP-NAME (1)
-                   MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSP-NAME (2)
-                   MOVE    SYS-1901-HOSPNAME3  TO  WRK-HOSP-NAME (3)
-               END-IF
-      *        医療機関住所編集情報読み込み
-               PERFORM 900-SYS1902-READ-SEC
-               IF    ( FLG-SYSKANRI    =   ZERO )
-                   MOVE    "1"             TO  WRK-HOSP-1902
-                   MOVE    SYS-1902-ADRS1  TO  WRK-HOSP-ADRS (1)
-                   MOVE    SYS-1902-ADRS2  TO  WRK-HOSP-ADRS (2)
-                   MOVE    SYS-1902-ADRS3  TO  WRK-HOSP-ADRS (3)
-                   MOVE    SYS-1902-TEL    TO  WRK-HOSP-TEL
-                   MOVE    SYS-1902-POST   TO  WRK-HOSP-POST
-               END-IF
-           END-IF
       *
       *    患者情報読み込み
            PERFORM 900-PTINF-READ-SEC
@@ -386,9 +314,6 @@
       *
       *    患者保険組合せ取得
            PERFORM 1001-HKNCOMBI-HEN-SEC
-      *
-      *    プログラムオプション取得
-           PERFORM 100-OPTION-SELECT-SEC
       *
            .
        100-INIT-EXT.
@@ -432,47 +357,6 @@
        1001-HKNCOMBI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    プログラムオプション取込み処理
-      *****************************************************************
-       100-OPTION-SELECT-SEC           SECTION.
-      *
-           INITIALIZE                  TPARA-AREA
-      *
-           MOVE    "0"             TO  TPARA-API-DATA
-      *
-           MOVE    "API_DATA"      TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           IF    ( WRK-PARA        =   "0" OR "1" )
-               MOVE    WRK-PARA    TO  TPARA-API-DATA
-           END-IF
-      *
-           MOVE    "API_CUSTOM_ID" TO  WRK-PARA-NAME
-           PERFORM 1001-OPTION-CALL-SEC
-           MOVE    WRK-PARA        TO  TPARA-API-CUSTOM-ID
-      *
-           .
-       100-OPTION-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    プログラムオプションパラメタ取得処理
-      *****************************************************************
-       1001-OPTION-CALL-SEC             SECTION.
-      *
-           MOVE    SPACE               TO  WRK-PARA
-      *
-           INITIALIZE                  ORCSPRGOPTIONAREA
-           MOVE    "ORCHCM32"          TO  ORCSPRGOPTION-PRGID
-           MOVE    WRK-PARA-NAME       TO  ORCSPRGOPTION-IN-DATA
-           CALL    "ORCSPRGOPTION"     USING   SPA-AREA
-                                               ORCSPRGOPTIONAREA
-           MOVE    ORCSPRGOPTION-OT-PARA
-                                       TO  WRK-PARA
-      *
-           .
-       1001-OPTION-CALL-EXT.
-           EXIT.
-      *****************************************************************
       *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
@@ -486,8 +370,6 @@
            MOVE    ZERO            TO  CNT-LINE
       *
            MOVE    1               TO  IDX4
-           MOVE    WRK-NYUGAIKBN (IDX4)
-                                   TO  KEY-NYUGAIKBN
            PERFORM 20011-SKIP-SEC
       *
            PERFORM UNTIL ( IDX4    >   WRK-HEN-MAX )
@@ -703,25 +585,6 @@
       *****************************************************************
        2101-SRYKIKAN-HEN-SEC           SECTION.
       *
-      *    入金編集処理
-           PERFORM 220-NUKIN-HENSYU-SEC
-           IF    ( ORCHCM31-DSPKBN =   "1" )
-                   PERFORM 21011-SRYKIKAN-HEN-SEC
-           ELSE
-               IF    ( HCM31S01-BFKINGAKU (1)      >   ZERO )
-                OR   ( HCM31S01-KINGAKU (1)        >   ZERO )
-                   PERFORM 21011-SRYKIKAN-HEN-SEC
-               END-IF
-           END-IF
-      *
-           .
-       2101-SRYKIKAN-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療期間より編集処理
-      *****************************************************************
-       21011-SRYKIKAN-HEN-SEC           SECTION.
-      *
            MOVE    ZERO            TO  IDX2
            MOVE    ZERO            TO  WRK-HKNTEN
                                        WRK-FTNMONEY
@@ -795,6 +658,9 @@
       *----(03.04.01)--UPD-END-----
            END-IF
       *
+      *    入金編集処理
+           PERFORM 220-NUKIN-HENSYU-SEC
+      *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1        >   WRK-HEN-MAX )
                     OR   ( IDX2    NOT =   ZERO )
@@ -817,7 +683,7 @@
       *
            IF    ( IDX2            =   ZERO )
                IF    ( WRK-HEN-MAX >=  CONST-HEN-MAX )
-                   GO  TO  21011-SRYKIKAN-HEN-EXT
+                   GO  TO  2101-SRYKIKAN-HEN-EXT
                END-IF
       *
                COMPUTE WRK-HEN-MAX =   WRK-HEN-MAX     +   1
@@ -891,7 +757,7 @@
            END-IF
       *
            .
-       21011-SRYKIKAN-HEN-EXT.
+       2101-SRYKIKAN-HEN-EXT.
            EXIT.
       *****************************************************************
       *    実日数編集処理
@@ -1110,7 +976,13 @@
            END-IF
       *
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
-            AND  ( ORCHCM31-DSPKBN     =   "2" OR "3" OR "4"  )
+            AND  ( ORCHCM31-DSPKBN     =   "2"   )
+            AND  ( WRK-GAKU (IDX4) =   ZERO )
+                   MOVE    ZERO    TO  FLG-TAISYO
+           END-IF
+      *
+           IF    ( ORCHCM31-KIKANKBN   =   "1"   )
+            AND  ( ORCHCM31-SUMKBN     =   "1"   )
             AND  ( WRK-GAKU (IDX4) =   ZERO )
                    MOVE    ZERO    TO  FLG-TAISYO
            END-IF
@@ -1150,20 +1022,17 @@
       *
       *
       *    医療機関住所
-           IF    ( WRK-HOSP-ADRS (1)(81:)  NOT =   SPACE )
-            AND  ( WRK-HOSP-1902               =   SPACE )
-               MOVE    WRK-HOSP-ADRS (1)   TO  HCM32N-HOSPADRS2
+           IF    ( SYS-1002-ADRS (61:) =   SPACE )
+               MOVE    SYS-1002-ADRS   TO  HCM32N-HOSPADRS
            ELSE
-               MOVE    WRK-HOSP-ADRS (1)   TO  HCM32N-HOSPADRS (1)
-               MOVE    WRK-HOSP-ADRS (2)   TO  HCM32N-HOSPADRS (2)
+               MOVE    SYS-1002-ADRS   TO  HCM32N-HOSPADRS2
            END-IF
       *
       *    医療機関名
-           MOVE    WRK-HOSP-NAME (1)   TO  HCM32N-HOSPNAME (1)
-           MOVE    WRK-HOSP-NAME (2)   TO  HCM32N-HOSPNAME (2)
+           MOVE    SYS-1001-HOSPNAME   TO  HCM32N-HOSPNAME
       *
       *    医療機関ＴＥＬ
-           MOVE    WRK-HOSP-TEL        TO  HCM32N-HOSPTEL
+           MOVE    SYS-1002-TEL        TO  HCM32N-HOSPTEL
       *
            IF    ( ORCHCM31-KIKANKBN   =   "2" )
                MOVE    "支払月"        TO  HCM32N-LABELYM
@@ -1213,7 +1082,7 @@
            MOVE    WRK-HENYMDG(11:6)   TO  HCM32N-SRYYYMM2(CNT-LINE)
       *
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
-            AND  ( ORCHCM31-DSPKBN     =   "1" OR "3" OR "4" )
+            AND  ( ORCHCM31-DSPKBN     =   "1" OR "3" )
       *
       *        保険点数
                IF      WRK-MON-TENSU   NOT =   ZERO
@@ -1287,7 +1156,7 @@
        240-GOKEI-HEN-SEC               SECTION.
       *
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
-            AND  ( ORCHCM31-DSPKBN     =   "1" OR "3" OR "4" )
+            AND  ( ORCHCM31-DSPKBN     =   "1" OR "3"  )
       *
                MOVE    WRK-GHKNTEN     TO  WRK-Z7
                MOVE    WRK-Z7          TO  HCM32N-GHKNTEN
@@ -1398,268 +1267,13 @@
             MOVE    HCM32N-GFTNMONEY   TO  HCM32G-GFTNMONEY
             MOVE    HCM32N-GJIHIMONEY  TO  HCM32G-GJIHIMONEY
             MOVE    HCM32N-GSKYMONEY   TO  HCM32G-GSKYMONEY
-            MOVE    HCM32N-HOSPADRS (1) TO  HCM32G-HOSPADRS (1)
-            MOVE    HCM32N-HOSPADRS (2) TO  HCM32G-HOSPADRS (2)
+            MOVE    HCM32N-HOSPADRS    TO  HCM32G-HOSPADRS
             MOVE    HCM32N-HOSPADRS2   TO  HCM32G-HOSPADRS2
-            MOVE    HCM32N-HOSPNAME (1) TO  HCM32G-HOSPNAME (1)
-            MOVE    HCM32N-HOSPNAME (2) TO  HCM32G-HOSPNAME (2)
+            MOVE    HCM32N-HOSPNAME    TO  HCM32G-HOSPNAME
             MOVE    HCM32N-HOSPTEL     TO  HCM32G-HOSPTEL
       *
            .
        2501-HCM32G-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    主処理
-      *****************************************************************
-       201-MAIN-SEC                SECTION.
-      *
-      *
-      *    統計データ編集
-           PERFORM 210-HENSYU-SEC
-      *
-      *    統計データ並び替え
-           PERFORM 230-NARABIKAE-SEC
-      *
-           MOVE    1               TO  IDX4
-           MOVE    WRK-NYUGAIKBN (IDX4)
-                                   TO  KEY-NYUGAIKBN
-           PERFORM 20011-SKIP-SEC
-      *
-           PERFORM UNTIL ( IDX4    >   WRK-HEN-MAX )
-      *
-               INITIALIZE              WRK-GHENSYU-TBL
-               MOVE    ZERO        TO  CNT-PAGE
-               MOVE    ZERO        TO  CNT-LINE
-      *
-               MOVE    WRK-NYUGAIKBN (IDX4)
-                                   TO  KEY-NYUGAIKBN
-      *
-               PERFORM 241-HEAD-HEN-SEC
-      *
-               PERFORM UNTIL ( IDX4        >   WRK-HEN-MAX )
-                        OR   ( WRK-NYUGAIKBN (IDX4)
-                                       NOT =   KEY-NYUGAIKBN )
-      *
-                   MOVE    WRK-HIDUKE (IDX4)(1:6)
-                                           TO  KEY-HIDUKE
-      *
-                   INITIALIZE                  WRK-MONTH-G
-                   MOVE    KEY-HIDUKE      TO  WRK-MON-HIDUKE
-                   PERFORM UNTIL ( IDX4    >   WRK-HEN-MAX )
-                        OR       ( WRK-NYUGAIKBN(IDX4)
-                                       NOT =   KEY-NYUGAIKBN )
-                        OR       ( WRK-HIDUKE (IDX4)(1:6)
-                                       NOT =   KEY-HIDUKE )
-      *
-                       MOVE    1           TO  WRK-MON-TAISYO
-                       COMPUTE WRK-MON-TENSU
-                           =   WRK-MON-TENSU   +   WRK-TENSU (IDX4)
-                       COMPUTE WRK-MON-HOKEN
-                           =   WRK-MON-HOKEN   +   WRK-HOKEN (IDX4)
-                       COMPUTE WRK-MON-SYOKUJI
-                           =   WRK-MON-SYOKUJI +   WRK-SYOKUJI (IDX4)
-                       COMPUTE WRK-MON-JIHI
-                           =   WRK-MON-JIHI    +   WRK-JIHI (IDX4)
-                       COMPUTE WRK-MON-GAKU
-                           =   WRK-MON-GAKU    +   WRK-GAKU (IDX4)
-                       COMPUTE WRK-MON-BFGAKU
-                           =   WRK-MON-BFGAKU  +   WRK-BFGAKU (IDX4)
-      *
-                       COMPUTE IDX4    =   IDX4    +   1
-                       PERFORM 20011-SKIP-SEC
-      *
-                   END-PERFORM
-      *
-                   IF    ( WRK-MON-TAISYO  =   1 )
-                       PERFORM 241-MEISAI-HEN-SEC
-                   END-IF
-      *
-               END-PERFORM
-      *
-               IF    ( CNT-LINE    >   ZERO )
-                   PERFORM 241-GOKEI-HEN-SEC
-                   PERFORM 251-RPMAIN-SEC
-               END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    1               TO  FLG-END
-      *
-           .
-       201-MAIN-EXT.
-           EXIT.
-      *****************************************************************
-      *    ヘッダ編集処理
-      *****************************************************************
-       241-HEAD-HEN-SEC            SECTION.
-      *
-           INITIALIZE                          FMSHIHARAI-REC
-      *
-           MOVE    "shiharai_shomeisho"    TO  FMSHIHARAI-FORM-ID
-           MOVE    TPARA-API-CUSTOM-ID     TO  FMSHIHARAI-CUSTOM-ID
-           MOVE    SPRT-PRTNM              TO  FMSHIHARAI-PRINTER
-           MOVE    "2"                     TO  FMSHIHARAI-FORMKBN
-           MOVE    ORCHCM31-KIKANKBN       TO  FMSHIHARAI-PRTKBN
-           MOVE    ORCHCM31-SUMKBN         TO  FMSHIHARAI-SUMKBN
-           MOVE    PTNUM-PTNUM             TO  FMSHIHARAI-PTNUM
-           MOVE    PTINF-NAME              TO  FMSHIHARAI-NAME
-           MOVE    PTINF-KANANAME          TO  FMSHIHARAI-KANANAME
-           MOVE    PTINF-BIRTHDAY          TO  WRK-SYMD
-           PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE                TO  FMSHIHARAI-BIRTHDAY
-           MOVE    PTINF-SEX               TO  FMSHIHARAI-SEX
-           MOVE    WRK-HOSP-NAME (1)       TO  FMSHIHARAI-HOSP-NAME (1)
-           MOVE    WRK-HOSP-NAME (2)       TO  FMSHIHARAI-HOSP-NAME (2)
-           MOVE    WRK-HOSP-NAME (3)       TO  FMSHIHARAI-HOSP-NAME (3)
-           MOVE    WRK-HOSP-POST           TO  FMSHIHARAI-HOSP-POST
-           MOVE    WRK-HOSP-ADRS (1)       TO  FMSHIHARAI-HOSP-ADRS (1)
-           MOVE    WRK-HOSP-ADRS (2)       TO  FMSHIHARAI-HOSP-ADRS (2)
-           MOVE    WRK-HOSP-ADRS (3)       TO  FMSHIHARAI-HOSP-ADRS (3)
-           MOVE    WRK-HOSP-TEL            TO  FMSHIHARAI-HOSP-TEL
-           MOVE    ORCHCM31-STRSRYYMD      TO  WRK-SYMD
-           PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE                TO  FMSHIHARAI-STRSRYYMD
-           MOVE    ORCHCM31-ENDSRYYMD      TO  WRK-SYMD
-           PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE                TO  FMSHIHARAI-ENDSRYYMD
-      *
-           IF    ( ORCHCM31-KIKANKBN   =   "2" )
-               CONTINUE
-           ELSE
-               IF    ( KEY-NYUGAIKBN   =   "1" )
-                   MOVE    TJNISSU-NYU     TO  WRK-ZZ9
-                   MOVE    WRK-ZZ9         TO  FMSHIHARAI-JNISSU
-               ELSE
-                   MOVE    TJNISSU-GAI     TO  WRK-ZZ9
-                   MOVE    WRK-ZZ9         TO  FMSHIHARAI-JNISSU
-               END-IF
-           END-IF
-           MOVE    SPA-SYSYMD              TO  WRK-SYMD
-           PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE                TO  FMSHIHARAI-PRTYMD
-           MOVE    KEY-NYUGAIKBN           TO  FMSHIHARAI-NYUGAIKBN
-      *
-           .
-       241-HEAD-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    編集処理
-      *****************************************************************
-       241-MEISAI-HEN-SEC                  SECTION.
-      *
-           COMPUTE CNT-LINE    =   CNT-LINE    +   1
-      *
-           MOVE    WRK-MON-HIDUKE      TO  WRK-SYMD(1:6)
-           MOVE    "01"                TO  WRK-SYMD(7:2)
-           PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE (1:7)      TO  FMSHIHARAI-SRYYM(CNT-LINE)
-      *
-           IF    ( ORCHCM31-KIKANKBN   =   "1"   )
-            AND  ( ORCHCM31-DSPKBN     =   "1" OR "3" OR "4" )
-      *
-      *        保険点数
-               MOVE    WRK-MON-TENSU   TO  WRK-Z9M
-               MOVE    WRK-Z9M         TO  FMSHIHARAI-TENSU (CNT-LINE)
-      *
-      *        保険分負担額
-               MOVE    WRK-MON-HOKEN   TO  WRK-Z9M
-               MOVE    WRK-Z9M         TO  FMSHIHARAI-HOKEN(CNT-LINE)
-      *
-      *        食事・生活負担額
-               IF    ( KEY-NYUGAIKBN   =   "1" )
-                   MOVE    WRK-MON-SYOKUJI
-                                       TO  WRK-Z9M
-                   MOVE    WRK-Z9M     TO  FMSHIHARAI-SHOKUJI(CNT-LINE)
-               END-IF
-      *
-      *        自費分負担額
-               MOVE    WRK-MON-JIHI    TO  WRK-Z9M
-               MOVE    WRK-Z9M         TO  FMSHIHARAI-JIHI(CNT-LINE)
-           END-IF
-      *
-      *    入返金額
-           MOVE    WRK-MON-GAKU        TO  WRK-Z9M
-           MOVE    WRK-Z9M             TO  FMSHIHARAI-NYUKIN (CNT-LINE)
-      *
-           IF    ( ORCHCM31-SUMKBN     =   "1" )
-               IF    ( WRK-MON-BFGAKU  NOT =   ZERO )
-                   MOVE    WRK-MON-BFGAKU
-                                       TO  WRK-Z9M
-                   MOVE    WRK-Z9M     TO  FMSHIHARAI-ZENKAI-NYUKIN
-                                                             (CNT-LINE)
-               END-IF
-           END-IF
-      *
-           COMPUTE WRK-GHKNTEN
-               =   WRK-GHKNTEN     +   WRK-MON-TENSU
-      *
-           COMPUTE WRK-GFTNMONEY
-               =   WRK-GFTNMONEY   +   WRK-MON-HOKEN
-      *
-           COMPUTE WRK-GSKJMONEY
-               =   WRK-GSKJMONEY   +   WRK-MON-SYOKUJI
-      *
-           COMPUTE WRK-GJIHIMONEY
-               =   WRK-GJIHIMONEY  +   WRK-MON-JIHI
-      *
-           COMPUTE WRK-GSKYMONEY
-               =   WRK-GSKYMONEY   +   WRK-MON-GAKU
-      *
-           .
-       241-MEISAI-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    合計行編集処理
-      *****************************************************************
-       241-GOKEI-HEN-SEC               SECTION.
-      *
-           IF    ( ORCHCM31-KIKANKBN   =   "1"   )
-            AND  ( ORCHCM31-DSPKBN     =   "1" OR "3" OR "4" )
-      *
-               MOVE    WRK-GHKNTEN     TO  WRK-GZ9M
-               MOVE    WRK-GZ9M        TO  FMSHIHARAI-TTL-TENSU
-      *
-               MOVE    WRK-GFTNMONEY   TO  WRK-GZ9M
-               MOVE    WRK-GZ9M        TO  FMSHIHARAI-TTL-HOKEN
-      *
-               IF    ( KEY-NYUGAIKBN   =   "1" )
-                   MOVE    WRK-GSKJMONEY   TO  WRK-GZ9M
-                   MOVE    WRK-GZ9M        TO  FMSHIHARAI-TTL-SHOKUJI
-               END-IF
-      *
-               MOVE    WRK-GJIHIMONEY  TO  WRK-GZ9M
-               MOVE    WRK-GZ9M        TO  FMSHIHARAI-TTL-JIHI
-           END-IF
-      *
-      *    合計入返金額
-           MOVE    WRK-GSKYMONEY       TO  WRK-GZ9M
-           MOVE    WRK-GZ9M            TO  FMSHIHARAI-TTL-NYUKIN
-      *
-           .
-       241-GOKEI-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＡＰＩ送信処理
-      *****************************************************************
-       251-RPMAIN-SEC                  SECTION.
-      *
-           COMPUTE CNT-OUT         =   CNT-OUT     +   1
-      *
-           INITIALIZE                      RPMAIN-AREA
-           MOVE    "shiharai_shomeisho" TO RPMAIN-ID
-           MOVE    TPARA-API-CUSTOM-ID  TO RPMAIN-CUSTOM-ID
-           MOVE    SPRT-TITLE           TO RPMAIN-TITLE
-           MOVE    SPRT-TBL-KEY         TO RPMAIN-TBL-KEY
-           MOVE    "fm_payment_certificate"
-                                       TO  MCP-TABLE
-           MOVE    FMSHIHARAI-DATA     TO  RPMAIN-DATA
-           CALL    "ORCRPMAIN"         USING
-                                       MCPAREA
-                                       RPMAIN-AREA
-                                       SPA-AREA
-      *
-           .
-       251-RPMAIN-EXT.
            EXIT.
       *****************************************************************
       *    終了　　処理
@@ -1689,35 +1303,6 @@
        31012-SEIWA-HEN-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    日付編集処理
-      *****************************************************************
-       800-DATE-SEC                    SECTION.
-      *
-           MOVE    SPACE               TO  WRK-DATE
-      *
-           IF    ( WRK-SYMD        NOT  =   SPACE )
-               INITIALIZE                  WRK-DATE
-               MOVE    WRK-SYY             TO  WRK-DATE-YY
-               MOVE    WRK-SMM             TO  WRK-DATE-MM
-               MOVE    WRK-SDD             TO  WRK-DATE-DD
-               MOVE    "-"                 TO  WRK-DATE-FL1
-               MOVE    "-"                 TO  WRK-DATE-FL2
-      *
-               EVALUATE    WRK-SYMD
-               WHEN    "00000000"
-                   MOVE    01              TO  WRK-DATE-MM
-                   MOVE    01              TO  WRK-DATE-DD
-               WHEN    "99999999"
-                   MOVE    12              TO  WRK-DATE-MM
-                   MOVE    31              TO  WRK-DATE-DD
-               END-EVALUATE
-      *
-           END-IF
-      *
-           .
-       800-DATE-EXT.
-           EXIT.
       *****************************************************************
       *    システム管理基本情報読み込み
       *****************************************************************
@@ -1786,59 +1371,6 @@
        900-SYS1002-READ-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    医療機関編集情報読み込み
-      *****************************************************************
-       900-SYS1900-READ-SEC        SECTION.
-      *
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-           MOVE    "1900"          TO  SYS-KANRICD
-           MOVE    "*"             TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
-                                       SYS-EDYUKYMD
-           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC    TO  SYS-1900-REC
-      *
-           .
-       900-SYS1900-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    医療機関名称編集情報読み込み
-      *****************************************************************
-       900-SYS1901-READ-SEC        SECTION.
-      *
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-           MOVE    "1901"          TO  SYS-KANRICD
-           MOVE    SYS-1900-PRTKBN (24)
-                                   TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
-                                       SYS-EDYUKYMD
-           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC    TO  SYS-1901-REC
-      *
-           .
-       900-SYS1901-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    医療機関住所編集情報読み込み
-      *****************************************************************
-       900-SYS1902-READ-SEC        SECTION.
-      *
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-           MOVE    "1902"          TO  SYS-KANRICD
-           MOVE    SYS-1900-PRTKBN (24)
-                                   TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
-                                       SYS-EDYUKYMD
-           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC    TO  SYS-1902-REC
-      *
-           .
-       900-SYS1902-READ-EXT.
-           EXIT.
       *****************************************************************
       *    患者番号読み込み
       *****************************************************************
@@ -2018,32 +1550,6 @@
       *
            .
        900-HKNCOMBI-KEY2-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    システム管理検索処理(KEY10)
-      *****************************************************************
-       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SYSKANRI
-      *
-           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC    =     ZERO )
-               MOVE    MCPDATA-REC TO  SYSKANRI-REC
-           ELSE
-               INITIALIZE              SYSKANRI-REC
-               MOVE    1           TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key10"         TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-      *
-       900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
