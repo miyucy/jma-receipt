@@ -268,6 +268,17 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE4B-KEY
                                    FILE    STATUS  IS  STS-RECE4B.
+      *    レセ電用
+           SELECT  RECE44C-FILE    ASSIGN  RECE44CPARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE44C-KEY
+                                   FILE    STATUS  IS  STS-RECE44C.
+           SELECT  RECE45C-FILE    ASSIGN  RECE45CPARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE45C-KEY
+                                   FILE    STATUS  IS  STS-RECE45C.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -296,6 +307,18 @@
        01  RECE4B-REC. 
            COPY    "CPRCF045.INC"  REPLACING  //RECE45//
                                    BY         //RECE4B//.
+      *
+      *    レセ電用
+       FD  RECE44C-FILE.
+       01  RECE44C-REC. 
+           COPY    "CPRCF044.INC"  REPLACING  //RECE44//
+                                   BY         //RECE44C//.
+      *
+       FD  RECE45C-FILE.
+       01  RECE45C-REC. 
+           COPY    "CPRCF045.INC"  REPLACING  //RECE45//
+                                   BY         //RECE45C//.
+      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -317,6 +340,13 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE4B//.
+      *    レセ電用
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE44C//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE45C//.
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
@@ -328,6 +358,8 @@
            03  STS-RECE45                              PIC X(02).
            03  STS-RECE4A                              PIC X(02).
            03  STS-RECE4B                              PIC X(02).
+           03  STS-RECE44C                             PIC X(02).
+           03  STS-RECE45C                             PIC X(02).
            03  STS-RECEERR                             PIC X(02).
       *
        01  FLG-AREA.
@@ -422,6 +454,8 @@
            03  CNT-OUT3                                PIC 9(06).
            03  CNT-OUT4                                PIC 9(06).
            03  CNT-OUT5                                PIC 9(06).
+           03  CNT-OUT6                                PIC 9(06).
+           03  CNT-OUT7                                PIC 9(06).
            03  CNT-NYUYOJI                             PIC 9(02).
            03  CNT-SAISIN-DOUJITU                      PIC 9(02).
            03  CNT-SAISIN-ETC                          PIC 9(02).
@@ -525,6 +559,7 @@
            03  WRK-SOGAIKASAN                          PIC 9(07).
            03  WRK-RYOYOTEATE                          PIC 9(07).
            03  WRK-RYOYOTEATE2                         PIC 9(07).
+           03  WRK-ZAI-KINGAKU                         PIC 9(09).
       *
            03  WRK-KYUGYOFLG                           PIC X(01).
       *
@@ -1257,6 +1292,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE4APARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE4BPARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE4BPARA-HOSPNUM
       *
+           MOVE    "RECE44C"           TO  RECE44CPARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE44CPARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE44CPARA-HOSPNUM
+           MOVE    "RECE45C"           TO  RECE45CPARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE45CPARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE45CPARA-HOSPNUM
+      *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
       *
@@ -1422,6 +1464,9 @@ grpsys           PERFORM 900-DBSELECT-SEC
       *                             
       *    レセプト処理
       *
+           OPEN    OUTPUT              RECE44-FILE
+           CLOSE                       RECE44-FILE
+      *
            OPEN    OUTPUT              RECE45-FILE
            CLOSE                       RECE45-FILE
       *
@@ -1431,13 +1476,21 @@ grpsys           PERFORM 900-DBSELECT-SEC
            OPEN    OUTPUT              RECE4B-FILE
            CLOSE                       RECE4B-FILE
       *
+           OPEN    OUTPUT              RECE44C-FILE
+           CLOSE                       RECE44C-FILE
+      *
+           OPEN    OUTPUT              RECE45C-FILE
+           CLOSE                       RECE45C-FILE
+      *
            OPEN    OUTPUT              RECE44-FILE
       ***                              RECE45-FILE
            OPEN    I-O                 RECE45-FILE
       *
            OPEN    OUTPUT              RECE4A-FILE
                                        RECE4B-FILE
-      
+      *
+           OPEN    OUTPUT              RECE44C-FILE
+           OPEN    I-O                 RECE45C-FILE
       *
            OPEN    I-O                 RECE41-FILE
       *
@@ -1582,6 +1635,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        WRK-KEIBUKASAN
                                                        WRK-SOGAIKASAN
                                                        WRK-RYOYOTEATE
+                                                       WRK-ZAI-KINGAKU
       *
                                MOVE    ZERO    TO      WRK-SRYSURYO
                                                        WRK-SRYSURYO2
@@ -1653,6 +1707,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       WRK-KEIBUKASAN
                                                       WRK-SOGAIKASAN
                                                       WRK-RYOYOTEATE
+                                                      WRK-ZAI-KINGAKU
       *
                                       MOVE  ZERO  TO  WRK-SRYSURYO
                                                       WRK-SRYSURYO2
@@ -2876,6 +2931,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                   MOVE     "2"     TO    RECE45-SIKFLG(IDX4)
       *
+                  IF  (ACCT-SRYKBN          = "80"   )
+                  AND (SRY-SRYCD(IDX2)(1:5) =
+                        "09591" OR "09592" OR "09593")
+                        COMPUTE  WRK-ZAI-KINGAKU = WRK-ZAI-KINGAKU
+                                                 + WRK-TNS-TEN(IDX2)
+                  ELSE
+                        COMPUTE  WRK-ZAI-KINGAKU = WRK-ZAI-KINGAKU
+                                                 + TNS-TEN
+                  END-IF
+      *
                ELSE
       *
                   IF   RECE41-HKNKBN     =  "4"
@@ -2885,6 +2950,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      ADD      1          TO  WRK-MEISAI-CNT
                      COMPUTE  WRK-TEN    =   WRK-TEN   +
                                              TNS-TEN
+      *
+                     COMPUTE  WRK-ZAI-KINGAKU = WRK-ZAI-KINGAKU
+                                              + WRK-RYOYOTEATE2
       *
                      ADD      1          TO  WRK-SURYOUTOTAL
                      MOVE  SRY-SRYCD(IDX2) 
@@ -7830,12 +7898,18 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
        210123-RECE45-WRITE-SEC                SECTION.
       *
            MOVE    RECE45-REC          TO   RECE4B-REC      
+           MOVE    RECE45-REC          TO   RECE45C-REC
       *
            WRITE   RECE45-REC
            ADD     1                   TO   CNT-OUT2
       *
            WRITE   RECE4B-REC
            ADD     1                   TO   CNT-OUT5
+      *
+           IF      RECE41-HKNKBN    =   "1" OR "2"
+             WRITE RECE45C-REC
+             ADD   1                   TO   CNT-OUT7
+           END-IF
       *
            .
        210123-RECE45-WRITE-EXT.
@@ -7896,6 +7970,62 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                 END-READ
            END-PERFORM
       *
+      *****
+      *
+           IF      RECE41-HKNKBN    =   "1" OR "2"
+      *
+             MOVE    ZERO                TO  FLG-REWRITE
+      *
+             INITIALIZE                      RECE45C-REC
+             MOVE    RECE44-HOSPNUM      TO  RECE45C-HOSPNUM
+             MOVE    RECE44-SRYYM        TO  RECE45C-SRYYM
+             MOVE    RECE44-NYUGAIKBN    TO  RECE45C-NYUGAIKBN
+             MOVE    RECE44-PTID         TO  RECE45C-PTID
+             MOVE    RECE44-RECEKA       TO  RECE45C-RECEKA
+             MOVE    RECE44-HKNID        TO  RECE45C-HKNID
+             MOVE    RECE44-TEKSTYMD     TO  RECE45C-TEKSTYMD
+             MOVE    RECE44-ZAINUM       TO  RECE45C-ZAINUM
+             START   RECE45C-FILE
+                 KEY IS    >=   RECE45C-KEY
+                 INVALID
+                     MOVE    1         TO  FLG-RECE45
+                 NOT INVALID
+                     MOVE    ZERO      TO  FLG-RECE45
+                     READ    RECE45C-FILE   NEXT
+                       AT  END
+                         MOVE    1     TO  FLG-RECE45
+                     END-READ
+             END-START
+             PERFORM   UNTIL
+               (RECE44-HOSPNUM      NOT =  RECE45C-HOSPNUM)     OR
+               (RECE44-SRYYM        NOT =  RECE45C-SRYYM)       OR
+               (RECE44-NYUGAIKBN    NOT =  RECE45C-NYUGAIKBN)   OR
+               (RECE44-PTID         NOT =  RECE45C-PTID)        OR
+               (RECE44-RECEKA       NOT =  RECE45C-RECEKA)      OR
+               (RECE44-HKNID        NOT =  RECE45C-HKNID)       OR
+               (RECE44-TEKSTYMD     NOT =  RECE45C-TEKSTYMD)    OR
+               (RECE44-ZAINUM       NOT =  RECE45C-ZAINUM)      OR
+               (FLG-RECE45                =      1        )    OR
+               (FLG-REWRITE               =      1        )
+                IF    RECE45C-RENNUM   =   WRK-RENNUM
+                   MOVE    1              TO  FLG-REWRITE
+                   PERFORM  VARYING  IDXB  FROM  5   BY  -1
+                             UNTIL   IDXB   <    1
+                     IF  RECE45C-SRYCD(IDXB)  NOT = SPACE
+                       MOVE WRK-SRYSURYO3 TO RECE45C-SRYSURYO(IDXB)
+                       MOVE 1             TO IDXB
+                     END-IF
+                   END-PERFORM
+                   REWRITE   RECE45C-REC
+                END-IF
+                READ    RECE45C-FILE   NEXT
+                  AT  END
+                    MOVE    1     TO  FLG-RECE45
+                END-READ
+             END-PERFORM
+      *
+           END-IF
+      *
            .
        210124-RECE45-REWRITE-EXT.
            EXIT.                                                       
@@ -7955,6 +8085,62 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                 END-READ
            END-PERFORM
       *
+      *****
+      *
+           IF      RECE41-HKNKBN    =   "1" OR "2"
+      *
+             MOVE    ZERO                TO  FLG-REWRITE
+      *
+             INITIALIZE                      RECE45C-REC
+             MOVE    RECE44-HOSPNUM      TO  RECE45C-HOSPNUM
+             MOVE    RECE44-SRYYM        TO  RECE45C-SRYYM
+             MOVE    RECE44-NYUGAIKBN    TO  RECE45C-NYUGAIKBN
+             MOVE    RECE44-PTID         TO  RECE45C-PTID
+             MOVE    RECE44-RECEKA       TO  RECE45C-RECEKA
+             MOVE    RECE44-HKNID        TO  RECE45C-HKNID
+             MOVE    RECE44-TEKSTYMD     TO  RECE45C-TEKSTYMD
+             MOVE    RECE44-ZAINUM       TO  RECE45C-ZAINUM
+             START   RECE45C-FILE
+                 KEY IS    >=   RECE45C-KEY
+                 INVALID
+                     MOVE    1         TO  FLG-RECE45
+                 NOT INVALID
+                     MOVE    ZERO      TO  FLG-RECE45
+                     READ    RECE45C-FILE   NEXT
+                       AT  END
+                         MOVE    1     TO  FLG-RECE45
+                     END-READ
+             END-START
+             PERFORM   UNTIL
+               (RECE44-HOSPNUM      NOT =  RECE45C-HOSPNUM)     OR
+               (RECE44-SRYYM        NOT =  RECE45C-SRYYM)       OR
+               (RECE44-NYUGAIKBN    NOT =  RECE45C-NYUGAIKBN)   OR
+               (RECE44-PTID         NOT =  RECE45C-PTID)        OR
+               (RECE44-RECEKA       NOT =  RECE45C-RECEKA)      OR
+               (RECE44-HKNID        NOT =  RECE45C-HKNID)       OR
+               (RECE44-TEKSTYMD     NOT =  RECE45C-TEKSTYMD)    OR
+               (RECE44-ZAINUM       NOT =  RECE45C-ZAINUM)      OR
+               (FLG-RECE45                =      1        )    OR
+               (FLG-REWRITE               =      1        )
+                IF    RECE45C-RENNUM   =   WRK-RENNUM2
+                   MOVE    1              TO  FLG-REWRITE
+                   PERFORM  VARYING  IDXB  FROM  5   BY  -1
+                             UNTIL   IDXB   <    1
+                     IF  RECE45C-SRYCD(IDXB)  NOT = SPACE
+                       MOVE   "1"  TO   RECE45C-RECEPTFLG(IDXB)
+                       MOVE    1   TO   IDXB
+                     END-IF
+                   END-PERFORM
+                   REWRITE   RECE45C-REC
+                END-IF
+                READ    RECE45C-FILE   NEXT
+                  AT  END
+                    MOVE    1     TO  FLG-RECE45
+                END-READ
+             END-PERFORM
+      *
+           END-IF
+      *
            .
        210124-RECE45-REWRITE2-EXT.
            EXIT.                                                       
@@ -7965,6 +8151,7 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
        21013-RECE44-WRITE-SEC                SECTION.
       *
            MOVE    RECE44-REC          TO  RECE4A-REC
+           MOVE    RECE44-REC          TO  RECE44C-REC
       *
            COMPUTE  RECE44-ZAITEN      =  RECE44-ZAITEN     -  
                                           WRK-TEN
@@ -8000,11 +8187,25 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            MOVE    RECE4A-YKZTEN    TO  RECE4A-HOKATU-YKZTEN
            MOVE    RECE4A-KIZAITEN  TO  RECE4A-HOKATU-KIZAITEN
       *
+           MOVE    RECE44C-ZAITEN   TO  RECE44C-HOKATU-ZAITEN
+           MOVE    RECE44C-SYUTEN1  TO  RECE44C-HOKATU-SYUTEN1
+           MOVE    RECE44C-SYUTEN2  TO  RECE44C-HOKATU-SYUTEN2
+           MOVE    RECE44C-YKZTEN   TO  RECE44C-HOKATU-YKZTEN
+           MOVE    RECE44C-KIZAITEN TO  RECE44C-HOKATU-KIZAITEN
+      *
            WRITE   RECE44-REC
            ADD     1                TO  CNT-OUT1
       *
            WRITE   RECE4A-REC
            ADD     1                TO  CNT-OUT4
+      *
+           IF      RECE41-HKNKBN    =   "1" OR "2"
+             COMPUTE  RECE44C-ZAI-TENSU  =  RECE44C-ZAITEN
+                                         -  WRK-TEN
+             MOVE  WRK-ZAI-KINGAKU  TO  RECE44C-ZAI-KINGAKU
+             WRITE RECE44C-REC
+             ADD   1                TO  CNT-OUT6
+           END-IF
       *
            .
        21013-RECE44-WRITE-EXT.
@@ -8259,6 +8460,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                      WRK-KEIBUKASAN
                                                      WRK-SOGAIKASAN
                                                      WRK-RYOYOTEATE
+                                                     WRK-ZAI-KINGAKU
       *
                                MOVE    ZERO    TO    WRK-SRYSURYO
                                                      WRK-SRYSURYO2
@@ -8332,6 +8534,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       WRK-KEIBUKASAN
                                                       WRK-SOGAIKASAN
                                                       WRK-RYOYOTEATE
+                                                      WRK-ZAI-KINGAKU
       *
                                       MOVE  ZERO  TO  WRK-SRYSURYO
                                                       WRK-SRYSURYO2
@@ -8845,6 +9048,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    RECE45-FILE
                    RECE4A-FILE
                    RECE4B-FILE
+                   RECE44C-FILE
+                   RECE45C-FILE
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *    ステップ管理終了処理
@@ -8861,6 +9066,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "RECE45-OUT :" CNT-OUT2  
            DISPLAY "RECE4A-OUT :" CNT-OUT4 
            DISPLAY "RECE4B-OUT :" CNT-OUT5  
+           DISPLAY "RECE44C-OUT :" CNT-OUT6 
+           DISPLAY "RECE45C-OUT :" CNT-OUT7  
            DISPLAY "*** ORCR0420 END ***"
       * 
            .
@@ -9272,6 +9479,11 @@ grpsys         PERFORM 900-DBFETCH-SEC
                                       TO   RECE4A-ACCTP-SYUGI-TBL-G
                MOVE   ACCTP-SANSOTEN  TO   RECE4A-ACCTP-SANSOTEN
                MOVE   ACCTP-CHISOTEN  TO   RECE4A-ACCTP-CHISOTEN
+      *
+               MOVE   ACCTP-SYUGI-TBL-G
+                                      TO   RECE44C-ACCTP-SYUGI-TBL-G
+               MOVE   ACCTP-SANSOTEN  TO   RECE44C-ACCTP-SANSOTEN
+               MOVE   ACCTP-CHISOTEN  TO   RECE44C-ACCTP-CHISOTEN
              END-IF
            END-IF
       *
