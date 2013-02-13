@@ -25,7 +25,6 @@
        01  SS012-AREA.
            03  SS012-KEY.
                05  SS012-I-BYOMEI           PIC X(200).
-           03  SS012-SRYYM                  PIC X(06).
            03  SS012-O-BYOMEI               PIC X(200).
            03  SS012-BYOMEICD-G.
                05  SS012-BYOMEICD-OCC       OCCURS  21.
