@@ -103,8 +103,7 @@
       *
        FD  RECE441-FILE.
        01  RECE441-REC. 
-           COPY    "CPRCF044.INC"  REPLACING   //RECE44//
-                                   BY          //RECE441//.
+           COPY    "CPRCF0441.INC".
       *
        FD  RECE451-FILE.
        01  RECE451-REC. 
@@ -113,7 +112,7 @@
       *ワーク
        FD  RECE449-FILE.
        01  RECE449-REC. 
-           COPY    "CPRCF044.INC"  REPLACING   //RECE44//
+           COPY    "CPRCF0441.INC" REPLACING   //RECE441//
                                    BY          //RECE449//.
       *
        FD  RECE459-FILE.
@@ -240,7 +239,6 @@
            03  CNT-DENWA           PIC 9(06).
            03  CNT-DOUDEN          PIC 9(06).
            03  CNT-IN-COMMIT       PIC 9(06).
-           03  CNT-IN-CANCEL       PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -300,7 +298,6 @@
            03  WRK-KETA-TAIHI      PIC 9(04).
            03  WRK-KETA2           PIC 9(04).
            03  WRK-ZAINUM          PIC 9(08).
-           03  WRK-RECEERR         PIC X(200).
       *
            03  WRK-FSANTEIYMD      PIC 9(08).
            03  WRK-AFTER2          PIC 9(08).
@@ -411,6 +408,18 @@
            03  WRK-HEN-RENNUM-J2             PIC 9(02).
            03  WRK-HEN-SHORI-RENNUM-J2       PIC 9(01).
            03  WRK-HEN-SEQNO-J2              PIC 9(02).
+      *
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR             PIC X(200).
+           03  WRK-ERRMSG              PIC X(300).
+           03  WRK-MCP-RC              PIC 9(9).
+           03  WRK-ERR-FILE-STS        PIC X(02).
+           03  WRK-ERR-FILE-MSG        PIC X(100).
+           03  WRK-ERR-FILE-MSG1       PIC X(17).
+           03  WRK-ERR-FLG             PIC 9(01).
+      *    エラーファイル名称領域 
+           COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
+                                       BY         //WRK-ERR-FILE-NM//.
       *
        01  WRK-RECE44-REC. 
            COPY    "CPRCF044.INC"  REPLACING   //RECE44//
@@ -835,9 +844,7 @@
                MOVE    "ORCR0436"      TO  JOB-PGID
                MOVE    "コメント編集（労災・自賠責）（レセ電用）" 
                                        TO  JOB-SHELLMSG
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
-      *        処理中止設定処理
-               PERFORM 500-CANCEL-HENSYU-SEC
+               PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *    
            PERFORM 990-RECE41-READ-SEC
@@ -860,31 +867,31 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE41PARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE41PARA-HOSPNUM
       *
            MOVE    "RECE44E"           TO  RECE44PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE44PARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE44PARA-HOSPNUM
       *
            MOVE    "RECE45C"           TO  RECE45PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE45PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE45PARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE45PARA-HOSPNUM
       *
            MOVE    "RECE44F"           TO  RECE441PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE441PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE441PARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE441PARA-HOSPNUM
       *
            MOVE    "RECE45F"           TO  RECE451PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE451PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
       *
            MOVE    "RECE44G"           TO  RECE449PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE449PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE449PARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE449PARA-HOSPNUM
       *
            MOVE    "RECE45G"           TO  RECE459PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE459PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE459PARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE459PARA-HOSPNUM
       *
            MOVE    "RECE456"           TO  RECE455PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE455PARA-TERMID
@@ -1228,11 +1235,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE459PARA-HOSPNUM
              MOVE    RECE41-SRYYM        TO  SYS-1005-STYUKYMD(1:6)
              MOVE    "01"                TO  SYS-1005-STYUKYMD(7:2)
              MOVE    SYS-1005-STYUKYMD   TO  SYS-1005-EDYUKYMD
-grpsys       MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+             MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
              MOVE    SYS-1005-REC        TO  MCPDATA-REC
              MOVE    "tbl_syskanri"      TO  MCP-TABLE
              MOVE    "key2"              TO  MCP-PATHNAME
-grpsys       PERFORM 900-DBSELECT-SEC
+             PERFORM 900-DBSELECT-SEC
              IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"    TO  MCP-TABLE
                MOVE    "key2"            TO  MCP-PATHNAME
@@ -1721,12 +1728,6 @@ grpsys       PERFORM 900-DBSELECT-SEC
                  PERFORM 900-DBSTART-SEC
            END-IF
       *
-      *    処理中止設定処理
-           IF      CNT-IN-CANCEL   =   50
-               MOVE    ZERO            TO  CNT-IN-CANCEL
-               PERFORM 500-CANCEL-HENSYU-SEC
-           END-IF
-      *
            .
        200-MAIN-EXT.
            EXIT.
@@ -1750,7 +1751,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key24"             TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_jyurrk"    TO  MCP-TABLE
                MOVE    "key24"         TO  MCP-PATHNAME
@@ -2313,7 +2314,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
       *
                 MOVE    "tbl_santei"   TO  MCP-TABLE
@@ -2412,7 +2413,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SRYACT-REC            TO  MCPDATA-REC
            MOVE    "tbl_sryact"          TO  MCP-TABLE
            MOVE    "key7"                TO  MCP-PATHNAME
-grpsys     PERFORM  900-DBSELECT-SEC
+           PERFORM  900-DBSELECT-SEC
            IF      MCP-RC               =       ZERO
                MOVE    "tbl_sryact"      TO  MCP-TABLE
                MOVE    "key7"            TO  MCP-PATHNAME
@@ -2429,11 +2430,11 @@ grpsys     PERFORM  900-DBSELECT-SEC
                  MOVE    SRYACCT-REC      TO    MCPDATA-REC
                  MOVE    "tbl_sryacct"    TO    MCP-TABLE
                  MOVE    "key31"          TO    MCP-PATHNAME
-grpsys           PERFORM  900-DBSELECT-SEC
+                 PERFORM  900-DBSELECT-SEC
                  IF     MCP-RC            =  ZERO
                     MOVE    "tbl_sryacct" TO    MCP-TABLE
                     MOVE    "key31"       TO    MCP-PATHNAME
-grpsys              PERFORM  900-DBFETCH-SEC
+                    PERFORM  900-DBFETCH-SEC
                     IF      MCP-RC        =       ZERO
                         MOVE    MCPDATA-REC  TO  SRYACCT-REC
       *
@@ -2476,7 +2477,7 @@ grpsys              PERFORM  900-DBFETCH-SEC
               MOVE    SRYACT-REC             TO    MCPDATA-REC
               MOVE    "tbl_sryact"           TO    MCP-TABLE
               MOVE    "key2"                 TO    MCP-PATHNAME
-grpsys        PERFORM  900-DBSELECT-SEC
+              PERFORM  900-DBSELECT-SEC
               IF     MCP-RC            =  ZERO
                  MOVE    "tbl_sryact"        TO    MCP-TABLE
                  MOVE    "key2"              TO    MCP-PATHNAME
@@ -3110,7 +3111,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
       *
                 MOVE    "tbl_santei"   TO  MCP-TABLE
@@ -3183,7 +3184,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
       *
                 MOVE    "tbl_santei"   TO  MCP-TABLE
@@ -3655,11 +3656,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
              MOVE    RECE41-SRYYM        TO  SYS-1005-STYUKYMD(1:6)
              MOVE    "01"                TO  SYS-1005-STYUKYMD(7:2)
              MOVE    SYS-1005-STYUKYMD   TO  SYS-1005-EDYUKYMD
-grpsys       MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+             MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
              MOVE    SYS-1005-REC        TO  MCPDATA-REC
              MOVE    "tbl_syskanri"      TO  MCP-TABLE
              MOVE    "key10"             TO  MCP-PATHNAME
-grpsys       PERFORM 900-DBSELECT-SEC
+             PERFORM 900-DBSELECT-SEC
              IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"    TO  MCP-TABLE
                MOVE    "key10"           TO  MCP-PATHNAME
@@ -3761,11 +3762,11 @@ grpsys       PERFORM 900-DBSELECT-SEC
              MOVE    RECE41-SRYYM        TO  SYS-1005-STYUKYMD(1:6)
              MOVE    "01"                TO  SYS-1005-STYUKYMD(7:2)
              MOVE    SYS-1005-STYUKYMD   TO  SYS-1005-EDYUKYMD
-grpsys       MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+             MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
              MOVE    SYS-1005-REC        TO  MCPDATA-REC
              MOVE    "tbl_syskanri"      TO  MCP-TABLE
              MOVE    "key10"             TO  MCP-PATHNAME
-grpsys       PERFORM 900-DBSELECT-SEC
+             PERFORM 900-DBSELECT-SEC
              IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"    TO  MCP-TABLE
                MOVE    "key10"           TO  MCP-PATHNAME
@@ -3849,7 +3850,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
              MOVE    SANTEI-REC          TO  MCPDATA-REC
              MOVE    "tbl_santei"        TO  MCP-TABLE
              MOVE    "key"               TO  MCP-PATHNAME
-grpsys       PERFORM  900-DBSELECT-SEC
+             PERFORM  900-DBSELECT-SEC
              IF      MCP-RC              =   ZERO
                   MOVE    "tbl_santei"   TO  MCP-TABLE
                   MOVE    "key"          TO  MCP-PATHNAME
@@ -3889,6 +3890,10 @@ grpsys       PERFORM  900-DBSELECT-SEC
            PERFORM   200111-SANTEI-DAY-SEC
       *
            MOVE       RECE44-REC    TO   RECE449-REC
+      *
+           MOVE       RECE44-ZAINUM TO   RECE449-ZAINUM
+           MOVE       RECE44-SRYKBN TO   RECE449-SRYKBN
+      *
            ADD        1             TO   RECE449-MEISAISU
            MOVE      "1"            TO   RECE449-SETCOMFLG
            WRITE      RECE449-REC
@@ -3960,7 +3965,7 @@ grpsys       PERFORM  900-DBSELECT-SEC
              MOVE    SANTEI-REC          TO  MCPDATA-REC
              MOVE    "tbl_santei"        TO  MCP-TABLE
              MOVE    "key3"              TO  MCP-PATHNAME
-grpsys       PERFORM  900-DBSELECT-SEC
+             PERFORM  900-DBSELECT-SEC
              IF      MCP-RC              =   ZERO
                  MOVE    "tbl_santei"    TO  MCP-TABLE
                  MOVE    "key3"          TO  MCP-PATHNAME
@@ -4449,7 +4454,7 @@ grpsys       PERFORM  900-DBSELECT-SEC
              MOVE    SANTEI-REC          TO  MCPDATA-REC
              MOVE    "tbl_santei"        TO  MCP-TABLE
              MOVE    "key3"              TO  MCP-PATHNAME
-grpsys       PERFORM 900-DBSELECT-SEC
+             PERFORM 900-DBSELECT-SEC
              IF      MCP-RC              =   ZERO
                     MOVE    "tbl_santei" TO  MCP-TABLE
                     MOVE    "key3"       TO  MCP-PATHNAME
@@ -5231,9 +5236,9 @@ grpsys       PERFORM 900-DBSELECT-SEC
                          MOVE  WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)
                                           TO   RECE459-SRYACT-TBL(IDX)
       *
-                         IF    WRK-RECE45XX-SIKFLG(IDX-RECE45 1)  =  "1"
+      **>                IF    WRK-RECE45XX-SIKFLG(IDX-RECE45 1)  =  "1"
                               ADD    1    TO   WRK-CNT-MEISAI
-                         END-IF    
+      **>                END-IF
       *
                      END-IF  
                   END-PERFORM
@@ -5244,6 +5249,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
            END-PERFORM     
       *
            MOVE    RECE44-REC        TO      RECE449-REC
+      *
+           MOVE    RECE44-ZAINUM     TO      RECE449-ZAINUM
+           MOVE    RECE44-SRYKBN     TO      RECE449-SRYKBN
+      *
            MOVE    WRK-CNT-MEISAI    TO      RECE449-MEISAISU
            WRITE   RECE449-REC
            ADD     1                 TO      CNT-RECE449
@@ -6030,6 +6039,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
        2099-RECE44-TENSOU-SEC     SECTION.
       *
            MOVE       RECE44-REC    TO   RECE449-REC
+      *
+           MOVE       RECE44-ZAINUM TO   RECE449-ZAINUM
+           MOVE       RECE44-SRYKBN TO   RECE449-SRYKBN
+      *
            WRITE      RECE449-REC
            ADD        1             TO   CNT-RECE449
            PERFORM    20991-RECE45-TENSOU-SEC
@@ -6151,9 +6164,9 @@ grpsys       PERFORM 900-DBSELECT-SEC
                          MOVE  WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)
                                           TO   RECE459-SRYACT-TBL(IDX)
       *
-                         IF    WRK-RECE45XX-SIKFLG(IDX-RECE45 1)  =  "1"
+      **>                IF    WRK-RECE45XX-SIKFLG(IDX-RECE45 1)  =  "1"
                               ADD    1    TO   WRK-CNT-MEISAI
-                         END-IF    
+      **>                END-IF
       *
                      END-IF  
                   END-PERFORM
@@ -6164,6 +6177,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
            END-PERFORM     
       *
            MOVE    RECE44-REC        TO      RECE449-REC
+      *
+           MOVE    RECE44-ZAINUM     TO      RECE449-ZAINUM
+           MOVE    RECE44-SRYKBN     TO      RECE449-SRYKBN
+      *
            MOVE    WRK-CNT-MEISAI    TO      RECE449-MEISAISU
            IF   WRK-JIDO-SETCOMFLG   =  "1"
              MOVE  WRK-JIDO-SETCOMFLG
@@ -6472,6 +6489,13 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       INITIALIZE       RECE449-REC
                       MOVE   TBL-YT3X1-RECE44-REC(IDX7 IDX8)
                                   TO   RECE449-REC
+                                       WRK-RECE44-REC
+      *
+                      MOVE   WRK-RECE44-ZAINUM
+                                  TO   RECE449-ZAINUM
+                      MOVE   WRK-RECE44-SRYKBN
+                                  TO   RECE449-SRYKBN
+      *
                       MOVE   RECE449-ZAINUM  TO  WRK-YAKUTEI-ZAINUM
                       MOVE   TBL-YT3X1-KAISU(IDX7 IDX8)
                                   TO   RECE449-ZAIKAISU
@@ -6500,6 +6524,13 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       INITIALIZE       RECE449-REC
                       MOVE   TBL-YT3X2-RECE44-REC(IDX7 IDX8)
                                   TO   RECE449-REC
+                                       WRK-RECE44-REC
+      *
+                      MOVE   WRK-RECE44-ZAINUM
+                                  TO   RECE449-ZAINUM
+                      MOVE   WRK-RECE44-SRYKBN
+                                  TO   RECE449-SRYKBN
+      *
                       MOVE   RECE449-ZAINUM  TO  WRK-YAKUTEI-ZAINUM
                       MOVE   TBL-YT3X2-KAISU(IDX7 IDX8)
                                   TO   RECE449-ZAIKAISU
@@ -6571,6 +6602,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
       *    パラメータ４４９ファイルより編集
            PERFORM 800-RECE41-SET449-SEC
+           MOVE    SPACE               TO  RECE449-SRYKBN
            MOVE    ZERO                TO  RECE449-ZAINUM
       *
            START   RECE449-FILE
@@ -7059,9 +7091,9 @@ grpsys       PERFORM 900-DBSELECT-SEC
                          MOVE  WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)
                                           TO   RECE451-SRYACT-TBL(IDX)
       *
-                         IF    WRK-RECE45XX-SIKFLG(IDX-RECE45 1)  =  "1"
+      **>                IF    WRK-RECE45XX-SIKFLG(IDX-RECE45 1)  =  "1"
                               ADD    1    TO   WRK-CNT-MEISAI
-                         END-IF    
+      **>                END-IF
       *
                      END-IF  
                   END-PERFORM
@@ -7236,9 +7268,9 @@ grpsys       PERFORM 900-DBSELECT-SEC
                            MOVE  WRK-RECE45XX-SRYACT-TBL(IDX-RECE45 1)
                                             TO   RECE451-SRYACT-TBL(IDX)
       *
-                           IF  WRK-RECE45XX-SIKFLG(IDX-RECE45 1) = "1"
+      **>                  IF  WRK-RECE45XX-SIKFLG(IDX-RECE45 1) = "1"
                                 ADD    1    TO   WRK-CNT-MEISAI
-                           END-IF
+      **>                  END-IF
       *
                        END-IF  
                     END-PERFORM
@@ -7342,6 +7374,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
       *    パラメータ４４１ファイルより編集
            PERFORM 800-RECE41-SET441-SEC
+           MOVE    SPACE               TO  RECE441-SRYKBN
            MOVE    ZERO                TO  RECE441-ZAINUM
       *
            START   RECE441-FILE
@@ -7424,9 +7457,9 @@ grpsys       PERFORM 900-DBSELECT-SEC
                PERFORM   VARYING   IDX   FROM    1   BY  1
                          UNTIL   ( IDX                >   5     )
                          OR      ( RECE451-SRYCD(IDX) =   SPACE )
-                IF    RECE451-SIKFLG(IDX)     =  "1"
+      **>       IF    RECE451-SIKFLG(IDX)     =  "1"
                  IF   RECE451-MEISKYFLG(IDX)  =  "2"
-                   IF      RECE451-SRYYM  >=  "201304"
+                   IF      RECE451-SRYYM  >=  "201204"
                     IF     RECE451-SETCOMATFLG(IDX) = ZERO
                       IF   (FLG-SETCOM              =  1   )
                       AND  (RECE451-RECEDENFLG(IDX) = SPACE)
@@ -7457,6 +7490,9 @@ grpsys       PERFORM 900-DBSELECT-SEC
                         WHEN    1
                         WHEN    3  THRU   16
                         WHEN   17  THRU   26
+                        WHEN  204
+                        WHEN  225
+                        WHEN  301
                           ADD  1                 TO  WRK-HEN-SEQNO-J
                           IF   WRK-HEN-SEQNO-J  >  3
                             MOVE   SPACE   TO  RECE451-MEISKYFLG(IDX)
@@ -7505,7 +7541,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       MOVE   ZERO            TO  WRK-HEN-SEQNO-X
                     END-IF
       *
-                    IF    RECE451-SRYCD(IDX) =
+                    IF   (RECE451-SRYCD(IDX) =
       *1
                           "113000410" OR "113000510" OR "180000110" OR
                           "180000210" OR
@@ -7573,7 +7609,15 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *25
                           "112015810" OR "112015950" OR "112016210" OR
       *26
-                          "114009710"
+                          "114009710" OR
+      *
+      *204
+                          "101110040" OR
+      *225
+                          "101120040" OR
+      *301
+                          "101110030" OR "101800890"         )
+                    OR   (RECE451-SRYCD(IDX)(1:5)  =  "09593")
       *
                        MOVE   RECE451-RENNUM  TO  WRK-HEN-RENNUM-J
                        MOVE   IDX       TO  WRK-HEN-SHORI-RENNUM-J
@@ -7589,10 +7633,10 @@ grpsys       PERFORM 900-DBSELECT-SEC
                        MOVE   ZERO            TO  WRK-HEN-SEQNO-J2
                     END-IF
                  END-IF
-                ELSE
-                    MOVE   SPACE   TO  RECE451-MEISKYFLG(IDX)
-                    MOVE   1       TO  FLG-MEISKY-OKIKAE
-                END-IF
+      **>       ELSE
+      **>           MOVE   SPACE   TO  RECE451-MEISKYFLG(IDX)
+      **>           MOVE   1       TO  FLG-MEISKY-OKIKAE
+      **>       END-IF
                END-PERFORM
       *
                IF    FLG-MEISKY-OKIKAE  =  1
@@ -7657,58 +7701,81 @@ grpsys       PERFORM 900-DBSELECT-SEC
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
                    MOVE    "9999"          TO  JOB-ERRCD
-grpsys             PERFORM 900-CALL-ORCSJOB-SEC
+                   PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
            END-IF
       *                             
-           MOVE    1                   TO  FLG-END
-      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCR0436 "         DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
            .
        500-ERR-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    処理中止処理
+      *    エラー時終了処理
       *****************************************************************
-       500-CANCEL-HENSYU-SEC                SECTION.
+       500-COBABORT-SEC            SECTION.
       *
-           IF      WRK-PARA-SHELLID    =   "RECEPTX"
-               CONTINUE
-           ELSE
-               MOVE    "CHK"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
-               IF    ( SJOBKANRI-RETURN
-                                       =   ZERO )
-               AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "処理が中止されました"
-                                           TO  WRK-RECEERR
+           CALL    "cobabort"          USING   WRK-ERRMSG
       *
-                   OPEN    INPUT   RECEERR-FILE
-                   IF      STS-RECEERR         =   ZERO
-                       CLOSE   RECEERR-FILE
-                   ELSE
-                       OPEN    OUTPUT              RECEERR-FILE
-      *    
-                       MOVE    WRK-RECEERR         TO  RECEERR-REC
-                       WRITE   RECEERR-REC
-                       CLOSE   RECEERR-FILE
-      *         
-      *                ジョブ管理終了処理
-                       MOVE    "CAN"           TO  SJOBKANRI-MODE
-                       INITIALIZE                  JOBKANRI-REC
-                       MOVE    WRK-RECEERR     TO  JOB-YOBI
-                       MOVE    "8888"          TO  JOB-ERRCD
-                       MOVE    2               TO  JOB-STOPFLG
-grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
-                   END-IF
-      *                             
-                   MOVE    1                   TO  FLG-END
-               END-IF
-           END-IF
            .
-       500-CANCEL-HENSYU-EXT.
+       500-COBABORT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC      SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORCR0436 "             DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    終了　　処理
@@ -7722,7 +7789,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
       *    ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
+               PERFORM 900-CALL-ORCSJOB-SEC
       *
                PERFORM 900-DBDISCONNECT-SEC
            END-IF
@@ -7919,7 +7986,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                NOT AT  END
                    ADD     1           TO  CNT-RECE41
                    ADD     1           TO  CNT-IN-COMMIT
-                                           CNT-IN-CANCEL
       *
                    DISPLAY "RECE41  PTNUM=" RECE41-PTNUM
       *
@@ -8032,11 +8098,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBFETCH-SEC
+               PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  SANTEI-REC
                    MOVE    ZERO                TO  FLG-SANTEI
@@ -8062,7 +8128,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *****************************************************************
        900-SANTEI-READ-SEC         SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
+           PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  SANTEI-REC
                MOVE    ZERO                TO  FLG-SANTEI
@@ -8080,7 +8146,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
+           PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1005-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
@@ -8098,7 +8164,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *****************************************************************
        900-JYURRK-READ-SEC         SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
+           PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  JYURRK-REC
                MOVE    ZERO            TO  FLG-JYURRK
@@ -8116,7 +8182,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *****************************************************************
        900-SRYACT-READ-SEC           SECTION.
       *
-grpsys     PERFORM 900-DBFETCH-SEC
+           PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SRYACT-REC
                MOVE    ZERO            TO  FLG-SRYACT
@@ -8156,11 +8222,11 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *
            MOVE    "tbl_ptcom"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptcom"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBFETCH-SEC
+               PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTCOM-REC
                    MOVE    ZERO                TO  FLG-PTCOM
@@ -8187,7 +8253,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
        900-TENSU-TBL-SEC               SECTION.
       *
            INITIALIZE                       TNS-TENSU-REC
-grpsys     MOVE    SPA-HOSPNUM      TO      TNS-HOSPNUM
+           MOVE    SPA-HOSPNUM      TO      TNS-HOSPNUM
            MOVE    SRY-SRYCD(IDX12) TO      TNS-SRYCD
            MOVE    SRY-SRYYM        TO      TNS-YUKOSTYMD(1:6)
            MOVE    "01"             TO      TNS-YUKOSTYMD(7:2)
@@ -8196,11 +8262,11 @@ grpsys     MOVE    SPA-HOSPNUM      TO      TNS-HOSPNUM
            MOVE    TNS-TENSU-REC    TO      MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_tensu"     TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBFETCH-SEC
+               PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
                    MOVE    ZERO            TO  FLG-TENSU
@@ -8229,7 +8295,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
@@ -8244,12 +8310,34 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
        900-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
-               DISPLAY "SELECT ERR table=" MCP-TABLE
-                       " pathname="        MCP-PATHNAME
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    MCP-RC              TO  WRK-MCP-RC
+      *
+               STRING  "ＤＢ読み込みエラー　TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+      *
+               STRING  "ORCR0436 select err TABLE="
+                                           DELIMITED   BY  SIZE
+                       MCP-TABLE           DELIMITED   BY  SPACE
+                       " PATHNAME="        DELIMITED   BY  SIZE
+                       MCP-PATHNAME        DELIMITED   BY  SPACE
+                       " RC="              DELIMITED   BY  SIZE
+                       WRK-MCP-RC          DELIMITED   BY  SIZE
+                       LOW-VALUE           DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+               END-STRING
+               PERFORM 500-COBABORT-SEC
            END-IF
            .
        900-DBSELECT-EXT.
@@ -8261,7 +8349,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        900-DBFETCH-SEC                SECTION.
       *
            MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-DBFETCH-EXT.
@@ -8273,7 +8361,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        900-CLOSE-SEC               SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-CLOSE-EXT.
@@ -8284,7 +8372,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            .
@@ -8300,12 +8388,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
            .
        120-DBOPEN-EXT.
            EXIT.
@@ -8318,12 +8406,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBDISCONNECT-EXT.
            EXIT.
@@ -8336,7 +8424,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-DBCOMMIT-EXT.
@@ -8350,7 +8438,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            .
        900-DBSTART-EXT.
