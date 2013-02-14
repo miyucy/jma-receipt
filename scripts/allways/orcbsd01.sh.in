@@ -40,7 +40,7 @@ fi
 OLDLOG=/home/orca/orcbsd01.log
 LOGFILE="/var/log/jma-receipt/${15}orcb041.log"
 
-for p in $(pgrep -f "$0 $1" ) ; do
+for p in $(pgrep -u orca -f "$0 $1" ) ; do
   if [ $p -ne $$ ]; then
     pkill -P $p
   fi
