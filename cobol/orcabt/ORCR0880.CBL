@@ -80,12 +80,6 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE851-KEY
                                    FILE    STATUS  IS  STS-RECE851.
-      *
-           SELECT  RECE855-FILE    ASSIGN  RECE855PARA
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
-                                   RECORD  KEY     IS  RECE855-KEY
-                                   FILE    STATUS  IS  STS-RECE855.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -118,10 +112,6 @@
            COPY    "CPRCF085.INC"  REPLACING   //RECE85//
                                    BY          //RECE851//.
       *
-       FD  RECE855-FILE.
-       01  RECE855-REC. 
-           COPY    "CPRCF0855.INC".
-      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -148,10 +138,6 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE851//.
       *
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1//
-                                   BY         //RECE855//.
-      *
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
@@ -163,32 +149,23 @@
            03  STS-RECE841         PIC X(02).
            03  STS-RECE85          PIC X(02).
            03  STS-RECE851         PIC X(02).
-           03  STS-RECE855         PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-RECE84          PIC 9(01).
-           03  FLG-RECE841         PIC 9(01).
            03  FLG-RECE85          PIC 9(01).
-           03  FLG-RECE851         PIC 9(01).
            03  FLG-WRKRECE85       PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-NYU-RENZOKU     PIC 9(01).
            03  FLG-COMMENT         PIC 9(02).
-           03  FLG-SETCOM          PIC 9(01).
-           03  FLG-MEISKY-OKIKAE   PIC 9(01).
-           03  FLG-SETCOM-OKIKAE   PIC 9(01).
       *    
       *    カウント領域
        01  CNT-AREA.
            03  CNT-RECE82          PIC 9(06).
            03  CNT-RECE84          PIC 9(06).
            03  CNT-RECE85          PIC 9(06).
-           03  CNT-RECE855         PIC 9(06).
-           03  CNT-RECE84-RE       PIC 9(06).
-           03  CNT-RECE85-RE       PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
       *
       *    添字領域
@@ -219,18 +196,6 @@
            03  WRK-TAIHI-SRYYMD.
                05  WRK-TAIHI-SRYYM             PIC  9(06).
                05  WRK-TAIHI-SRYD              PIC  9(02).
-      *
-           03  WRK-HEN-RENNUM                  PIC  9(02).
-           03  WRK-HEN-SHORI-RENNUM            PIC  9(01).
-           03  WRK-HEN-SEQNO                   PIC  9(02).
-      *
-           03  WRK-HEN-RENNUM-X                PIC  9(02).
-           03  WRK-HEN-SHORI-RENNUM-X          PIC  9(01).
-           03  WRK-HEN-SEQNO-X                 PIC  9(02).
-      *
-           03  WRK-HEN-RENNUM-J                PIC  9(02).
-           03  WRK-HEN-SHORI-RENNUM-J          PIC  9(01).
-           03  WRK-HEN-SEQNO-J                 PIC  9(02).
       *
        01  WRK-RECE85-REC. 
            COPY    "CPRCF085.INC"  REPLACING   //RECE85//
@@ -444,10 +409,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE841PARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE851PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
       *
-           MOVE    "RECE855"           TO  RECE855PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  RECE855PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECE855PARA-HOSPNUM
-      *
            OPEN    INPUT               RECE82-FILE
       *
            OPEN    INPUT               RECE84-FILE
@@ -463,8 +424,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
            OPEN    I-O                 RECE841-FILE
       *
            OPEN    I-O                 RECE851-FILE
-      *
-           OPEN    I-O                 RECE855-FILE
       *
            .
        110-FILE-OPEN-EXT.
@@ -572,9 +531,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
       *
            END-PERFORM
       *
-      *****関係コメント編集****************
-           PERFORM 260-SETCOM-HENSYU-SEC
-      *
            PERFORM 990-RECE82-READ-SEC
       *
            .
@@ -588,7 +544,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
       *
            INITIALIZE            WRK-JIDO-SETCOM-AREA
            MOVE      "1"       TO     WRK-JIDO-SETCOMFLG
-           MOVE      201       TO     WRK-JIDO-SETCOMATFLG
+           MOVE      301       TO     WRK-JIDO-SETCOMATFLG
       *
            MOVE       RECE84-REC    TO   RECE841-REC
            ADD        1             TO   RECE841-MEISAISU
@@ -659,7 +615,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
       *
            INITIALIZE            WRK-JIDO-SETCOM-AREA
            MOVE      "1"       TO     WRK-JIDO-SETCOMFLG
-           MOVE      201       TO     WRK-JIDO-SETCOMATFLG
+           MOVE      301       TO     WRK-JIDO-SETCOMATFLG
       *
            PERFORM     20011-NYU-DAY-SEC
       *
@@ -781,7 +737,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
       *
            INITIALIZE            WRK-JIDO-SETCOM-AREA
            MOVE      "1"       TO     WRK-JIDO-SETCOMFLG
-           MOVE       4        TO     WRK-JIDO-SETCOMATFLG
+           MOVE      204       TO     WRK-JIDO-SETCOMATFLG
       *
            MOVE       ZERO       TO   IDZ
            INITIALIZE            WRK-FREE-AREA2
@@ -1007,209 +963,6 @@ grpsys       PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    関係コメント編集
-      *****************************************************************
-       260-SETCOM-HENSYU-SEC     SECTION.
-      *
-      *    パラメータ８４１ファイルより編集
-           PERFORM 800-RECE82-SET841-SEC
-           MOVE    ZERO                TO  RECE841-ZAINUM
-      *
-           START   RECE841-FILE
-               KEY IS    >=   RECE841-KEY
-               INVALID
-                   MOVE    1           TO  FLG-RECE841
-               NOT INVALID
-                   PERFORM 990-RECE841-NEXT-SEC
-           END-START
-           PERFORM
-               UNTIL  ( FLG-RECE841          =   1                 )
-               OR     ( RECE82-HOSPNUM   NOT =   RECE841-HOSPNUM   )
-               OR     ( RECE82-SRYYM     NOT =   RECE841-SRYYM     )
-               OR     ( RECE82-NYUGAIKBN NOT =   RECE841-NYUGAIKBN )
-               OR     ( RECE82-PTID      NOT =   RECE841-PTID      )
-               OR     ( RECE82-RECEKA    NOT =   RECE841-RECEKA    )
-               OR     ( RECE82-HKNID     NOT =   RECE841-HKNID     )
-               OR     ( RECE82-TEKSTYMD  NOT =   RECE841-TEKSTYMD  )
-      *
-               MOVE      ZERO      TO    FLG-SETCOM-OKIKAE
-      *
-               IF     RECE841-SETCOMFLG   =    "1"
-                  PERFORM 2601-SETCOM-HENSYU2-SEC
-                  IF   FLG-SETCOM-OKIKAE  =  "1"
-                    CONTINUE
-                  ELSE
-                    MOVE   SPACE   TO   RECE841-SETCOMFLG
-                    REWRITE   RECE841-REC
-                    ADD     1      TO   CNT-RECE84-RE
-                  END-IF
-               END-IF
-      *
-               PERFORM 990-RECE841-NEXT-SEC
-      *
-           END-PERFORM
-      *
-           .
-       260-SETCOM-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    関係コメント編集２
-      *****************************************************************
-       2601-SETCOM-HENSYU2-SEC     SECTION.
-      *
-           MOVE    ZERO    TO    FLG-SETCOM
-      *
-           MOVE    ZERO    TO    WRK-HEN-RENNUM-X
-                                 WRK-HEN-SHORI-RENNUM-X
-                                 WRK-HEN-SEQNO-X
-           MOVE    ZERO    TO    WRK-HEN-RENNUM-J
-                                 WRK-HEN-SHORI-RENNUM-J
-                                 WRK-HEN-SEQNO-J
-      *
-           PERFORM 800-RECE841-SET851-SEC
-           MOVE    RECE841-ZAINUM       TO  RECE851-ZAINUM
-           START   RECE851-FILE
-               KEY IS    >=   RECE851-KEY
-               INVALID
-                   MOVE    1            TO  FLG-RECE851
-               NOT INVALID
-                   PERFORM 990-RECE851-NEXT-SEC
-           END-START
-           PERFORM
-               UNTIL  ( FLG-RECE851           =   1                 )
-               OR     ( RECE841-HOSPNUM   NOT =   RECE851-HOSPNUM   )
-               OR     ( RECE841-SRYYM     NOT =   RECE851-SRYYM     )
-               OR     ( RECE841-NYUGAIKBN NOT =   RECE851-NYUGAIKBN )
-               OR     ( RECE841-PTID      NOT =   RECE851-PTID      )
-               OR     ( RECE841-RECEKA    NOT =   RECE851-RECEKA    )
-               OR     ( RECE841-HKNID     NOT =   RECE851-HKNID     )
-               OR     ( RECE841-TEKSTYMD  NOT =   RECE851-TEKSTYMD  )
-               OR     ( RECE841-ZAINUM    NOT =   RECE851-ZAINUM    )
-      *
-               MOVE      ZERO      TO    FLG-MEISKY-OKIKAE
-      *
-               PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX                >   5     )
-                         OR      ( RECE851-SRYCD(IDX) =   SPACE )
-                IF    RECE851-SIKFLG(IDX)     =  "2"
-                 IF   RECE851-MEISKYFLG(IDX)  =  "2"
-                   IF      RECE851-SRYYM  >=  "201304"
-                    IF     RECE851-SETCOMATFLG(IDX) = ZERO
-                      IF   (FLG-SETCOM              =  1   )
-                      AND  (RECE851-RECEDENFLG(IDX) = SPACE)
-                        ADD    1                 TO  WRK-HEN-SEQNO-X
-                        IF   WRK-HEN-SEQNO-X  >  3
-                          MOVE   SPACE   TO  RECE851-MEISKYFLG(IDX)
-                          MOVE   1       TO  FLG-MEISKY-OKIKAE
-                        ELSE
-                          MOVE   WRK-HEN-RENNUM-X  TO  WRK-HEN-RENNUM
-                          MOVE   WRK-HEN-SHORI-RENNUM-X
-                                         TO  WRK-HEN-SHORI-RENNUM
-                          MOVE   WRK-HEN-SEQNO-X   TO  WRK-HEN-SEQNO
-                          PERFORM  26011-SETCOM-HENSYU3-SEC
-                        END-IF
-                        IF  (WRK-HEN-RENNUM-X = WRK-HEN-RENNUM-J )
-                        AND (WRK-HEN-SHORI-RENNUM-X
-                                        = WRK-HEN-SHORI-RENNUM-J )
-                          ADD  1                 TO  WRK-HEN-SEQNO-J
-                        END-IF
-                      END-IF
-                    ELSE
-                      EVALUATE   RECE851-SETCOMATFLG(IDX)
-                        WHEN    4
-                        WHEN  201
-                          ADD  1                 TO  WRK-HEN-SEQNO-J
-                          IF   WRK-HEN-SEQNO-J  >  3
-                            MOVE   SPACE   TO  RECE851-MEISKYFLG(IDX)
-                            MOVE   1       TO  FLG-MEISKY-OKIKAE
-                          ELSE
-                            MOVE WRK-HEN-RENNUM-J  TO  WRK-HEN-RENNUM
-                            MOVE WRK-HEN-SHORI-RENNUM-J
-                                         TO  WRK-HEN-SHORI-RENNUM
-                            MOVE WRK-HEN-SEQNO-J   TO  WRK-HEN-SEQNO
-                            PERFORM  26011-SETCOM-HENSYU3-SEC
-                          END-IF
-                          IF  (WRK-HEN-RENNUM-X = WRK-HEN-RENNUM-J )
-                          AND (WRK-HEN-SHORI-RENNUM-X
-                                          = WRK-HEN-SHORI-RENNUM-J )
-                            ADD    1             TO  WRK-HEN-SEQNO-X
-                          END-IF
-                      END-EVALUATE
-                    END-IF
-                   ELSE
-                    MOVE   SPACE   TO  RECE851-MEISKYFLG(IDX)
-                    MOVE   1       TO  FLG-MEISKY-OKIKAE
-                   END-IF
-                 ELSE
-                    IF   (RECE851-SRYCD(IDX)(1:1) = "1" OR "6" OR "7")
-                    OR   (RECE851-SRYCD(IDX)(1:3) = "059"            )
-                      MOVE   1               TO  FLG-SETCOM
-                      MOVE   RECE851-RENNUM  TO  WRK-HEN-RENNUM-X
-                      MOVE   IDX             TO  WRK-HEN-SHORI-RENNUM-X
-                      MOVE   ZERO            TO  WRK-HEN-SEQNO-X
-                    END-IF
-      *
-                    IF   (RECE851-SRYCD(IDX) =
-      *4
-                          "101110040" OR
-      *201
-                          "101800880"                        )
-                    OR   (RECE851-SRYCD(IDX)(1:5)  =  "09593")
-      *
-                       MOVE   RECE851-RENNUM  TO  WRK-HEN-RENNUM-J
-                       MOVE   IDX       TO  WRK-HEN-SHORI-RENNUM-J
-                       MOVE   ZERO            TO  WRK-HEN-SEQNO-J
-                    END-IF
-                 END-IF
-                ELSE
-                    MOVE   SPACE   TO  RECE851-MEISKYFLG(IDX)
-                    MOVE   1       TO  FLG-MEISKY-OKIKAE
-                END-IF
-               END-PERFORM
-      *
-               IF    FLG-MEISKY-OKIKAE  =  1
-                  REWRITE   RECE851-REC
-                  ADD       1        TO   CNT-RECE85-RE
-               END-IF
-      *
-               PERFORM 990-RECE851-NEXT-SEC
-      *
-           END-PERFORM
-      *
-           .
-       2601-SETCOM-HENSYU2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    関係コメント編集３
-      *****************************************************************
-       26011-SETCOM-HENSYU3-SEC     SECTION.
-      *
-           MOVE    SPACE                 TO  RECE855-REC
-           INITIALIZE                        RECE855-REC
-      *
-           MOVE    RECE851-KEY           TO  RECE855-KEY
-      *
-           MOVE    WRK-HEN-RENNUM        TO  RECE855-RENNUM
-           MOVE    WRK-HEN-SHORI-RENNUM  TO  RECE855-SHORI-RENNUM
-           MOVE    WRK-HEN-SEQNO         TO  RECE855-SEQNO
-      *
-           MOVE    RECE851-SRYCD(IDX)    TO  RECE855-SRYCD
-           MOVE    RECE851-NAME(IDX)     TO  RECE855-NAME
-           MOVE    RECE851-INPUTCOMENT(IDX)
-                                         TO  RECE855-INPUTCOMENT
-      *
-           WRITE   RECE855-REC
-           ADD     1                     TO  CNT-RECE855
-      *
-           MOVE    1                     TO  FLG-SETCOM-OKIKAE
-      *
-           .
-       26011-SETCOM-HENSYU3-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
@@ -1303,9 +1056,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "RECE82  IN  " CNT-RECE82  
            DISPLAY "RECE84  CNT " CNT-RECE84  
            DISPLAY "RECE85  CNT " CNT-RECE85  
-           DISPLAY "RECE84  REWRITE :" CNT-RECE84-RE
-           DISPLAY "RECE85  REWRITE :" CNT-RECE85-RE
-           DISPLAY "RECE855 CNT-OUT :" CNT-RECE855
            DISPLAY "*** ORCR0880 END ***"
       *
            .
@@ -1325,8 +1075,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            CLOSE                       RECE841-FILE
            CLOSE                       RECE851-FILE
-      *
-           CLOSE                       RECE855-FILE
       *
            .
        310-FILE-CLOSE-EXT.
@@ -1369,22 +1117,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       ****************************************************************
-      *    レセプト８４１データ読み
-      ****************************************************************
-       990-RECE841-NEXT-SEC           SECTION.
-      *
-           READ    RECE841-FILE       NEXT
-               AT  END
-                   MOVE    1         TO  FLG-RECE841
-               NOT AT  END
-                   MOVE    ZERO      TO  FLG-RECE841
-           END-READ
-      *
-           .
-       990-RECE841-NEXT-EXT.
-           EXIT.
-      *
-      ****************************************************************
       *    レセプト０５データ読み
       ****************************************************************
        990-RECE85-NEXT-SEC           SECTION.
@@ -1398,58 +1130,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        990-RECE85-NEXT-EXT.
-           EXIT.
-      *
-      ****************************************************************
-      *    レセプト８５１データ読み
-      ****************************************************************
-       990-RECE851-NEXT-SEC           SECTION.
-      *
-           READ    RECE851-FILE       NEXT
-               AT  END
-                   MOVE    1         TO  FLG-RECE851
-               NOT AT  END
-                   MOVE    ZERO      TO  FLG-RECE851
-           END-READ
-      *
-           .
-       990-RECE851-NEXT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    レセプト８２データ編集処理（８４１）
-      *****************************************************************
-       800-RECE82-SET841-SEC           SECTION.
-      *
-           INITIALIZE                      RECE841-REC
-           MOVE    RECE82-HOSPNUM      TO  RECE841-HOSPNUM
-           MOVE    RECE82-SRYYM        TO  RECE841-SRYYM
-           MOVE    RECE82-NYUGAIKBN    TO  RECE841-NYUGAIKBN
-           MOVE    RECE82-PTID         TO  RECE841-PTID
-           MOVE    RECE82-RECEKA       TO  RECE841-RECEKA
-           MOVE    RECE82-HKNID        TO  RECE841-HKNID
-           MOVE    RECE82-TEKSTYMD     TO  RECE841-TEKSTYMD
-      *
-           .
-       800-RECE82-SET841-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    レセプト８４１データ編集処理（８５１）
-      *****************************************************************
-       800-RECE841-SET851-SEC           SECTION.
-      *
-           INITIALIZE                       RECE851-REC
-           MOVE    RECE841-HOSPNUM      TO  RECE851-HOSPNUM
-           MOVE    RECE841-SRYYM        TO  RECE851-SRYYM
-           MOVE    RECE841-NYUGAIKBN    TO  RECE851-NYUGAIKBN
-           MOVE    RECE841-PTID         TO  RECE851-PTID
-           MOVE    RECE841-RECEKA       TO  RECE851-RECEKA
-           MOVE    RECE841-HKNID        TO  RECE851-HKNID
-           MOVE    RECE841-TEKSTYMD     TO  RECE851-TEKSTYMD
-      *
-           .
-       800-RECE841-SET851-EXT.
            EXIT.
       *
       *****************************************************************

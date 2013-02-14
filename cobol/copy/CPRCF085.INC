@@ -36,20 +36,21 @@
       ************************************************************
       *01  RECE85-REC.
            03  RECE85-KEY.
+               05  RECE85-KEY1.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE85-HOSPNUM         PIC  9(02).
+                   07  RECE85-HOSPNUM     PIC  9(02).
       *¿ÇÎÅÇ¯·î
-               05  RECE85-SRYYM           PIC  9(06).
+                   07  RECE85-SRYYM       PIC  9(06).
       *Æþ³°¶èÊ¬
-               05  RECE85-NYUGAIKBN       PIC  X(01).
+                   07  RECE85-NYUGAIKBN   PIC  X(01).
       *´µ¼Ô£É£Ä
-               05  RECE85-PTID            PIC  9(10).
+                   07  RECE85-PTID        PIC  9(10).
       *¥ì¥»¥×¥È²Ê
-               05  RECE85-RECEKA          PIC  X(02).
+                   07  RECE85-RECEKA      PIC  X(02).
       *ÊÝ¸±£É£Ä        
-               05  RECE85-HKNID           PIC  9(10).
+                   07  RECE85-HKNID       PIC  9(10).
       *Å¬ÍÑ³«»ÏÇ¯·îÆü
-               05  RECE85-TEKSTYMD        PIC  X(08).
+                   07  RECE85-TEKSTYMD    PIC  X(08).
       *ºÞÈÖ¹æ
                05  RECE85-ZAINUM          PIC  9(08).
       *Ï¢ÈÖ¹æ

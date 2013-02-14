@@ -257,6 +257,17 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE8B-KEY
                                    FILE    STATUS  IS  STS-RECE8B.
+      *    レセ電用
+           SELECT  RECE84C-FILE    ASSIGN  RECE84CPARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE84C-KEY
+                                   FILE    STATUS  IS  STS-RECE84C.
+           SELECT  RECE85C-FILE    ASSIGN  RECE85CPARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  RECE85C-KEY
+                                   FILE    STATUS  IS  STS-RECE85C.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -286,6 +297,17 @@
            COPY    "CPRCF085.INC"  REPLACING  //RECE85//
                                    BY         //RECE8B//.
       *
+      *    レセ電用
+       FD  RECE84C-FILE.
+       01  RECE84C-REC. 
+           COPY    "CPRCF084.INC"  REPLACING  //RECE84//
+                                   BY         //RECE84C//.
+      *
+       FD  RECE85C-FILE.
+       01  RECE85C-REC. 
+           COPY    "CPRCF085.INC"  REPLACING  //RECE85//
+                                   BY         //RECE85C//.
+      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -307,6 +329,13 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE8B//.
+      *    レセ電用
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE84C//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE85C//.
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
@@ -318,6 +347,8 @@
            03  STS-RECE85                              PIC X(02).
            03  STS-RECE8A                              PIC X(02).
            03  STS-RECE8B                              PIC X(02).
+           03  STS-RECE84C                             PIC X(02).
+           03  STS-RECE85C                             PIC X(02).
            03  STS-RECEERR                             PIC X(02).
       *
        01  FLG-AREA.
@@ -383,6 +414,8 @@
            03  CNT-OUT3                                PIC 9(06).
            03  CNT-OUT4                                PIC 9(06).
            03  CNT-OUT5                                PIC 9(06).
+           03  CNT-OUT6                                PIC 9(06).
+           03  CNT-OUT7                                PIC 9(06).
            03  CNT-DAY21                               PIC 9(06).
            03  CNT-DAY24                               PIC 9(06).
       *
@@ -625,6 +658,7 @@
            03  WRK-SOGAIKASAN                          PIC 9(07).
            03  WRK-RYOYOTEATE                          PIC 9(07).
            03  WRK-RYOYOTEATE2                         PIC 9(07).
+           03  WRK-ZAI-KINGAKU                         PIC 9(09).
       *
            03  WRK-HEYA-NINZU                          PIC 9(02).
       *
@@ -1338,6 +1372,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE8APARA-HOSPNUM
            MOVE    WRK-PARA-TERMID     TO  RECE8BPARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE8BPARA-HOSPNUM
       *
+           MOVE    "RECE84C"           TO  RECE84CPARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE84CPARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE84CPARA-HOSPNUM
+           MOVE    "RECE85C"           TO  RECE85CPARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE85CPARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE85CPARA-HOSPNUM
+      *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
       *
@@ -1616,11 +1657,20 @@ grpsys       PERFORM 900-DBSELECT-SEC
            OPEN    OUTPUT              RECE8B-FILE
            CLOSE                       RECE8B-FILE
       *
+           OPEN    OUTPUT              RECE84C-FILE
+           CLOSE                       RECE84C-FILE
+      *
+           OPEN    OUTPUT              RECE85C-FILE
+           CLOSE                       RECE85C-FILE
+      *
            OPEN    OUTPUT              RECE84-FILE
            OPEN    I-O                 RECE85-FILE
       *
            OPEN    OUTPUT              RECE8A-FILE
                                        RECE8B-FILE
+      *
+           OPEN    OUTPUT              RECE84C-FILE
+           OPEN    I-O                 RECE85C-FILE
       *
            OPEN    I-O                 RECE82-FILE
            IF      STS-RECE82          =   "00"
@@ -2031,6 +2081,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                           WRK-KEIBUKASAN
                                           WRK-SOGAIKASAN
                                           WRK-RYOYOTEATE
+                                          WRK-ZAI-KINGAKU
       *
                        MOVE   ZERO   TO   WRK-SRYSURYO
                        MOVE   ZERO   TO   WRK-SRYSURYO2
@@ -2113,6 +2164,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                     WRK-KEIBUKASAN
                                                     WRK-SOGAIKASAN
                                                     WRK-RYOYOTEATE
+                                                    WRK-ZAI-KINGAKU
       *
                                  MOVE   ZERO   TO   WRK-SRYSURYO
                                  MOVE   ZERO   TO   WRK-SRYSURYO2
@@ -3339,6 +3391,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                      MOVE     "2"        TO    RECE85-SIKFLG(IDX4)
       *
+                     IF  (ACCT-SRYKBN          = "80"              )
+                     AND (SRY-SRYCD(IDX2)(1:5) =
+                           "09591" OR "09592" OR "09593" OR "09594")
+                       COMPUTE WRK-ZAI-KINGAKU = WRK-ZAI-KINGAKU
+                                               + WRK-JIBAIKZI-TNS(IDX2)
+                     ELSE
+                       COMPUTE WRK-ZAI-KINGAKU = WRK-ZAI-KINGAKU
+                                               + TNS-TEN
+                     END-IF
+      *
                ELSE
       *
                   IF   RECE82-HKNKBN     =  "4"
@@ -3348,6 +3410,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      ADD      1          TO  WRK-MEISAI-CNT
                      COMPUTE  WRK-TEN    =   WRK-TEN   +
                                              TNS-TEN
+      *
+                     COMPUTE  WRK-ZAI-KINGAKU = WRK-ZAI-KINGAKU
+                                              + WRK-RYOYOTEATE2
       *
                      ADD      1          TO  WRK-SURYOUTOTAL
                      MOVE  SRY-SRYCD(IDX2) 
@@ -11200,6 +11265,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
        900-RECE84-WRITE-SEC                SECTION.
       *
            MOVE     RECE84-REC      TO  RECE8A-REC
+           MOVE     RECE84-REC      TO  RECE84C-REC
       *
            COMPUTE  RECE84-ZAITEN      =  RECE84-ZAITEN     -  
                                           WRK-TEN
@@ -11235,6 +11301,12 @@ grpsys     PERFORM  900-DBSELECT-SEC
            MOVE    RECE8A-YKZTEN    TO  RECE8A-HOKATU-YKZTEN
            MOVE    RECE8A-KIZAITEN  TO  RECE8A-HOKATU-KIZAITEN
       *
+           MOVE    RECE84C-ZAITEN   TO  RECE84C-HOKATU-ZAITEN
+           MOVE    RECE84C-SYUTEN1  TO  RECE84C-HOKATU-SYUTEN1
+           MOVE    RECE84C-SYUTEN2  TO  RECE84C-HOKATU-SYUTEN2
+           MOVE    RECE84C-YKZTEN   TO  RECE84C-HOKATU-YKZTEN
+           MOVE    RECE84C-KIZAITEN TO  RECE84C-HOKATU-KIZAITEN
+      *
            WRITE   RECE84-REC
       *
            IF      STS-RECE84          =   "00"
@@ -11267,6 +11339,27 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *
            ADD     1                TO  CNT-OUT4
       *
+           IF      RECE82-HKNKBN    =   "1" OR "2"
+             COMPUTE  RECE84C-ZAI-TENSU  =  RECE84C-ZAITEN
+                                         -  WRK-TEN
+             MOVE  WRK-ZAI-KINGAKU  TO  RECE84C-ZAI-KINGAKU
+             WRITE RECE84C-REC
+      *
+             IF      STS-RECE84C    =   "00"
+                 CONTINUE
+             ELSE
+                 MOVE    SPACE               TO  WRK-ERR-AREA
+                 INITIALIZE                      WRK-ERR-AREA
+      *
+                 MOVE    3                   TO  WRK-ERR-FLG
+                 MOVE    RECE84CPARA         TO  WRK-ERR-FILE-NM
+                 MOVE    STS-RECE84C         TO  WRK-ERR-FILE-STS
+                 PERFORM 500-FILE-ERR-ABORT-SEC
+             END-IF
+      *
+             ADD   1                TO  CNT-OUT6
+           END-IF
+      *
            .
        900-RECE84-WRITE-EXT.
            EXIT.
@@ -11277,6 +11370,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
        900-RECE85-WRITE-SEC                SECTION.
       *
            MOVE    RECE85-REC          TO   RECE8B-REC      
+           MOVE    RECE85-REC          TO   RECE85C-REC
       *
            WRITE   RECE85-REC
        *
@@ -11309,6 +11403,24 @@ grpsys     PERFORM  900-DBSELECT-SEC
            END-IF
       *
            ADD     1                   TO   CNT-OUT5
+      *
+           IF      RECE82-HKNKBN    =   "1" OR "2"
+             WRITE RECE85C-REC
+      *
+             IF      STS-RECE85C    =   "00"
+                 CONTINUE
+             ELSE
+                 MOVE    SPACE               TO  WRK-ERR-AREA
+                 INITIALIZE                      WRK-ERR-AREA
+      *
+                 MOVE    3                   TO  WRK-ERR-FLG
+                 MOVE    RECE85CPARA         TO  WRK-ERR-FILE-NM
+                 MOVE    STS-RECE85C         TO  WRK-ERR-FILE-STS
+                 PERFORM 500-FILE-ERR-ABORT-SEC
+             END-IF
+      *
+             ADD   1                   TO   CNT-OUT7
+           END-IF
       *
            .
        900-RECE85-WRITE-EXT.
@@ -11384,6 +11496,74 @@ grpsys     PERFORM  900-DBSELECT-SEC
                    END-READ
            END-PERFORM
       *
+      *****
+      *
+           IF      RECE82-HKNKBN    =   "1" OR "2"
+      *
+             MOVE    ZERO                TO  FLG-REWRITE
+      *
+             INITIALIZE                      RECE85C-REC
+             MOVE    RECE84-HOSPNUM      TO  RECE85C-HOSPNUM
+             MOVE    RECE84-SRYYM        TO  RECE85C-SRYYM
+             MOVE    RECE84-NYUGAIKBN    TO  RECE85C-NYUGAIKBN
+             MOVE    RECE84-PTID         TO  RECE85C-PTID
+             MOVE    RECE84-RECEKA       TO  RECE85C-RECEKA
+             MOVE    RECE84-HKNID        TO  RECE85C-HKNID
+             MOVE    RECE84-TEKSTYMD     TO  RECE85C-TEKSTYMD
+             MOVE    RECE84-ZAINUM       TO  RECE85C-ZAINUM
+             START   RECE85C-FILE
+                    KEY IS    >=   RECE85C-KEY
+                    INVALID
+                        MOVE    1         TO  FLG-RECE85-ZAN
+                    NOT INVALID
+                        MOVE    ZERO      TO  FLG-RECE85-ZAN
+                        READ    RECE85C-FILE   NEXT
+                          AT  END
+                            MOVE    1     TO  FLG-RECE85-ZAN
+                        END-READ
+             END-START
+             PERFORM   UNTIL
+               (RECE84-HOSPNUM      NOT =  RECE85C-HOSPNUM  ) OR
+               (RECE84-SRYYM        NOT =  RECE85C-SRYYM    ) OR
+               (RECE84-NYUGAIKBN    NOT =  RECE85C-NYUGAIKBN) OR
+               (RECE84-PTID         NOT =  RECE85C-PTID     ) OR
+               (RECE84-RECEKA       NOT =  RECE85C-RECEKA   ) OR
+               (RECE84-HKNID        NOT =  RECE85C-HKNID    ) OR
+               (RECE84-TEKSTYMD     NOT =  RECE85C-TEKSTYMD ) OR
+               (RECE84-ZAINUM       NOT =  RECE85C-ZAINUM   ) OR
+               (FLG-RECE85-ZAN          =      1            ) OR
+               (FLG-REWRITE             =      1            )
+                   IF    RECE85C-RENNUM   =   WRK-RENNUM
+                      MOVE    1              TO  FLG-REWRITE
+                      PERFORM  VARYING  IDXB  FROM  5   BY  -1
+                                UNTIL   IDXB   <    1
+                        IF  RECE85C-SRYCD(IDXB)  NOT = SPACE
+                          MOVE WRK-SRYSURYO3 TO RECE85C-SRYSURYO(IDXB)
+                          MOVE 1             TO IDXB
+                        END-IF
+                      END-PERFORM
+                      REWRITE   RECE85C-REC
+      *
+                      IF      STS-RECE85C    =   "00"
+                        CONTINUE
+                      ELSE
+                        MOVE    SPACE        TO  WRK-ERR-AREA
+                        INITIALIZE               WRK-ERR-AREA
+      *
+                        MOVE    4            TO  WRK-ERR-FLG
+                        MOVE    RECE85CPARA  TO  WRK-ERR-FILE-NM
+                        MOVE    STS-RECE85C  TO  WRK-ERR-FILE-STS
+                        PERFORM 500-FILE-ERR-ABORT-SEC
+                      END-IF
+                   END-IF
+                   READ    RECE85C-FILE   NEXT
+                     AT  END
+                       MOVE    1     TO  FLG-RECE85-ZAN
+                   END-READ
+             END-PERFORM
+      *
+           END-IF
+      *
            .
        900-RECE85-REWRITE-EXT.
            EXIT.                                                       
@@ -11458,6 +11638,74 @@ grpsys     PERFORM  900-DBSELECT-SEC
                    END-READ
            END-PERFORM
       *
+      *****
+      *
+           IF      RECE82-HKNKBN    =   "1" OR "2"
+      *
+             MOVE    ZERO                TO  FLG-REWRITE
+      *
+             INITIALIZE                      RECE85C-REC
+             MOVE    RECE84-HOSPNUM      TO  RECE85C-HOSPNUM
+             MOVE    RECE84-SRYYM        TO  RECE85C-SRYYM
+             MOVE    RECE84-NYUGAIKBN    TO  RECE85C-NYUGAIKBN
+             MOVE    RECE84-PTID         TO  RECE85C-PTID
+             MOVE    RECE84-RECEKA       TO  RECE85C-RECEKA
+             MOVE    RECE84-HKNID        TO  RECE85C-HKNID
+             MOVE    RECE84-TEKSTYMD     TO  RECE85C-TEKSTYMD
+             MOVE    RECE84-ZAINUM       TO  RECE85C-ZAINUM
+             START   RECE85C-FILE
+                    KEY IS    >=   RECE85C-KEY
+                    INVALID
+                        MOVE    1         TO  FLG-RECE85-ZAN
+                    NOT INVALID
+                        MOVE    ZERO      TO  FLG-RECE85-ZAN
+                        READ    RECE85C-FILE   NEXT
+                          AT  END
+                            MOVE    1     TO  FLG-RECE85-ZAN
+                        END-READ
+             END-START
+             PERFORM   UNTIL
+               (RECE84-HOSPNUM      NOT =  RECE85C-HOSPNUM  ) OR
+               (RECE84-SRYYM        NOT =  RECE85C-SRYYM    ) OR
+               (RECE84-NYUGAIKBN    NOT =  RECE85C-NYUGAIKBN) OR
+               (RECE84-PTID         NOT =  RECE85C-PTID     ) OR
+               (RECE84-RECEKA       NOT =  RECE85C-RECEKA   ) OR
+               (RECE84-HKNID        NOT =  RECE85C-HKNID    ) OR
+               (RECE84-TEKSTYMD     NOT =  RECE85C-TEKSTYMD ) OR
+               (RECE84-ZAINUM       NOT =  RECE85C-ZAINUM   ) OR
+               (FLG-RECE85-ZAN          =      1            ) OR
+               (FLG-REWRITE             =      1            )
+                   IF    RECE85C-RENNUM   =   WRK-RENNUM2
+                      MOVE    1              TO  FLG-REWRITE
+                      PERFORM  VARYING  IDXB  FROM  5   BY  -1
+                                UNTIL   IDXB   <    1
+                        IF  RECE85C-SRYCD(IDXB)  NOT = SPACE
+                          MOVE   "1"  TO   RECE85C-RECEPTFLG(IDXB)
+                          MOVE    1   TO   IDXB
+                        END-IF
+                      END-PERFORM
+                      REWRITE   RECE85C-REC
+      *
+                      IF      STS-RECE85C      =   "00"
+                          CONTINUE
+                      ELSE
+                          MOVE    SPACE        TO  WRK-ERR-AREA
+                          INITIALIZE               WRK-ERR-AREA
+      *
+                          MOVE    4            TO  WRK-ERR-FLG
+                          MOVE    RECE85CPARA  TO  WRK-ERR-FILE-NM
+                          MOVE    STS-RECE85C  TO  WRK-ERR-FILE-STS
+                          PERFORM 500-FILE-ERR-ABORT-SEC
+                      END-IF
+                   END-IF
+                   READ    RECE85C-FILE   NEXT
+                     AT  END
+                       MOVE    1     TO  FLG-RECE85-ZAN
+                   END-READ
+             END-PERFORM
+      *
+           END-IF
+      *
            .
        900-RECE85-REWRITE2-EXT.
            EXIT.                                                       
@@ -11472,6 +11720,8 @@ grpsys     PERFORM  900-DBSELECT-SEC
                    RECE85-FILE
                    RECE8A-FILE
                    RECE8B-FILE
+                   RECE84C-FILE
+                   RECE85C-FILE
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ステップ管理終了処理
@@ -11488,6 +11738,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "RECE85-OUT :" CNT-OUT2  
            DISPLAY "RECE8A-OUT :" CNT-OUT4 
            DISPLAY "RECE8B-OUT :" CNT-OUT5  
+           DISPLAY "RECE84C-OUT :" CNT-OUT6 
+           DISPLAY "RECE85C-OUT :" CNT-OUT7  
            DISPLAY "*** ORCR0840 END ***"
            .
        300-TERM-EXT.
@@ -11883,6 +12135,11 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
                                       TO   RECE8A-ACCTP-SYUGI-TBL-G
                MOVE   ACCTP-SANSOTEN  TO   RECE8A-ACCTP-SANSOTEN
                MOVE   ACCTP-CHISOTEN  TO   RECE8A-ACCTP-CHISOTEN
+      *
+               MOVE   ACCTP-SYUGI-TBL-G
+                                      TO   RECE84C-ACCTP-SYUGI-TBL-G
+               MOVE   ACCTP-SANSOTEN  TO   RECE84C-ACCTP-SANSOTEN
+               MOVE   ACCTP-CHISOTEN  TO   RECE84C-ACCTP-CHISOTEN
              END-IF
            END-IF
       *
