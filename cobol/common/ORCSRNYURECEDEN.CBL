@@ -1390,15 +1390,17 @@
                END-PERFORM
       *
       *        Ï«ºÒ¾è¿ô¥»¥Ã¥È
-               IF         LNK-SROUNYUIN-JOUSU-KBN(IDX1)   =    "1"
-                   ADD      1               TO  WRK-MEISAISU
-                   MOVE   "101900010"   TO  WRK-SO-SRYCD
-                                             (IDX1 WRK-MEISAISU)
-               END-IF
-               IF         LNK-SROUNYUIN-JOUSU-KBN(IDX1)   =    "2"
-                   ADD      1               TO  WRK-MEISAISU
-                   MOVE   "101900020"   TO  WRK-SO-SRYCD
-                                             (IDX1 WRK-MEISAISU)
+               IF    WRK-SO-SRYKBN(IDX1)    =     "90"
+                 IF         LNK-SROUNYUIN-JOUSU-KBN(IDX1)   =    "1"
+                     ADD      1               TO  WRK-MEISAISU
+                     MOVE   "101900010"   TO  WRK-SO-SRYCD
+                                               (IDX1 WRK-MEISAISU)
+                 END-IF
+                 IF         LNK-SROUNYUIN-JOUSU-KBN(IDX1)   =    "2"
+                     ADD      1               TO  WRK-MEISAISU
+                     MOVE   "101900020"   TO  WRK-SO-SRYCD
+                                               (IDX1 WRK-MEISAISU)
+                 END-IF
                END-IF
       *
       *
