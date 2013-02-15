@@ -573,6 +573,10 @@
       *    ²ð¸î¿¦°÷ÅùÓ½áâµÛ°úÅù»Ø¼¨ÎÁ
            03  CONS-KAISYOKU        PIC X(09) VALUE "114020910".
       *
+      *    µßµÞ°åÎÅ´ÉÍý²Ã»»
+           03  CONS-KYUKYU          PIC X(09) VALUE "101110020".
+           03  CONS-KYUKYU2         PIC X(09) VALUE "101800880".
+      *
       *    ÌôºÞ´ÉÍý»ØÆ³ÎÁ¥Æ¡¼¥Ö¥ë¡Ê£²£°£°£¸Ç¯£´·î¿ÇÎÅÊ¬¡Á¡Ë
        01  TBL-YAKUKAN-AREA.
            03  FILLER               PIC X(09) VALUE "113010710".
@@ -1198,16 +1202,17 @@
                    WHEN      "11"
                       IF   RECE82-HKNKBN     =   "5"
                       AND  RECE82-KOMUKBN    =   "2"
-                          MOVE   ZERO   TO  FLG-COMMENT
-      *                ¡Ê½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë»»Äê²Ê¤Î¥»¥Ã¥È¡Ë
-                          IF   FLG-COMMENT  =  ZERO
-                            PERFORM    2001-SYODOU-HANTEI-SEC
-                          END-IF
-                          IF   FLG-COMMENT  =  ZERO
-                            PERFORM    2099-RECE84-WRITE-SEC
-                          END-IF
+                         MOVE    1     TO  FLG-HANTEI
                       ELSE
-                            PERFORM    2099-RECE84-WRITE-SEC
+                         MOVE    2     TO  FLG-HANTEI
+                      END-IF
+                      MOVE   ZERO   TO  FLG-COMMENT
+      *               ¡Ê½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë»»Äê²Ê¤Î¥»¥Ã¥È¡Ë
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SYODOU-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE84-WRITE-SEC
                       END-IF
                    WHEN      "13"
                       MOVE   ZERO   TO  FLG-COMMENT
@@ -1336,6 +1341,10 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SEIKEA-HANTEI-SEC
                       END-IF
+      *            ¡ÊµßµÞ°åÎÅ´ÉÍý²Ã»»¤Î»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM       2001-KYUKYU-HANTEI-SEC
+                      END-IF
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2099-RECE84-WRITE-SEC
                       END-IF
@@ -1388,17 +1397,18 @@
                    WHEN      "11"
                       EVALUATE   RECE82-JIBAIKBN
                         WHEN       "1"
-                          PERFORM      2099-RECE84-WRITE-SEC
+                          MOVE    2     TO  FLG-HANTEI
                         WHEN       "2"
-                          MOVE   ZERO   TO  FLG-COMMENT
-      *                ¡Ê½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë»»Äê²Ê¤Î¥»¥Ã¥È¡Ë
-                          IF   FLG-COMMENT  =  ZERO
-                            PERFORM    2001-SYODOU-HANTEI-SEC
-                          END-IF
-                          IF   FLG-COMMENT  =  ZERO
-                            PERFORM    2099-RECE84-WRITE-SEC
-                          END-IF
+                          MOVE    1     TO  FLG-HANTEI
                       END-EVALUATE
+                      MOVE   ZERO   TO  FLG-COMMENT
+      *               ¡Ê½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë»»Äê²Ê¤Î¥»¥Ã¥È¡Ë
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-SYODOU-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE84-WRITE-SEC
+                      END-IF
                    WHEN      "13"                                       
                       MOVE   ZERO   TO  FLG-COMMENT
       *            ¡ÊÌôºÞ´ÉÍý»ØÆ³ÎÁ»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
@@ -1494,6 +1504,10 @@
       *            ¡Ê¶É½ê±¢°µÊÄº¿½èÃÖ¤Î»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM       2001-KYOKUIN-HANTEI-SEC
+                      END-IF
+      *            ¡ÊµßµÞ°åÎÅ´ÉÍý²Ã»»¤Î»»ÄêÆü¤Î¥»¥Ã¥È¡Ë
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM       2001-KYUKYU-HANTEI-SEC
                       END-IF
       *
                       IF   FLG-COMMENT  =  ZERO
@@ -3061,7 +3075,12 @@
            IF      RECE84-FLG-SYODOU-COMMENT   =    "1"
                 INITIALIZE            WRK-JIDO-SETCOM-AREA
                 MOVE      "1"       TO     WRK-JIDO-SETCOMFLG
-                MOVE       4        TO     WRK-JIDO-SETCOMATFLG
+                EVALUATE  FLG-HANTEI
+                  WHEN       1
+                    MOVE    4       TO     WRK-JIDO-SETCOMATFLG
+                  WHEN       2
+                    MOVE  204       TO     WRK-JIDO-SETCOMATFLG
+                END-EVALUATE
                 MOVE       99       TO     FLG-COMMENT
                 PERFORM    20011-SYODOU-COMMENT-SEC
            END-IF
@@ -3150,7 +3169,12 @@
                           TO  WRK-RECE85XX-MEISKYFLG(MAX-MEISAISU 1)
                 MOVE   WK-FREE-SETCOMATFLG2(IDX)
                           TO  WRK-RECE85XX-SETCOMATFLG(MAX-MEISAISU 1)
-                MOVE    "1"  TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
+                EVALUATE  FLG-HANTEI
+                  WHEN       1
+                    MOVE  "1"  TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
+                  WHEN       2
+                    MOVE  "2"  TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
+                END-EVALUATE
            END-PERFORM
       *
            PERFORM    200111-SRYACTINF-HENSYU-SEC
@@ -4160,10 +4184,10 @@
            END-PERFORM
       *
            MOVE    RECE84-REC        TO      RECE849-REC
-      *
+      *@@@@
            MOVE    RECE84-ZAINUM     TO      RECE849-ZAINUM
            MOVE    RECE84-SRYKBN     TO      RECE849-SRYKBN
-      *
+      *@@@@
            MOVE    WRK-CNT-MEISAI    TO      RECE849-MEISAISU
            WRITE   RECE849-REC
            ADD     1                 TO      CNT-RECE849
@@ -4255,10 +4279,10 @@
        20011-TAIIN-COMMENT-SEC          SECTION.
       *
            MOVE       RECE84-REC       TO  RECE849-REC
-      *
+      *@@@@
            MOVE       RECE84-ZAINUM    TO  RECE849-ZAINUM
            MOVE       RECE84-SRYKBN    TO  RECE849-SRYKBN
-      *
+      *@@@@
            EVALUATE   FLG-HANTEI
              WHEN       1
                 ADD     1              TO  RECE849-MEISAISU
@@ -5062,6 +5086,95 @@
            EXIT.
       *
       *****************************************************************
+      *    µßµÞ°åÎÅ´ÉÍý²Ã»»¤ÎÈ½Äê
+      *****************************************************************
+       2001-KYUKYU-HANTEI-SEC          SECTION.
+      *
+           IF (( RECE82-KYUKYU-PRTKBN    =      1         ) AND
+               ( RECE84-SRYCDTOTAL(6:9)  =   CONS-KYUKYU  ) AND
+               ( RECE82-SRYYM           <=   "201306"     ))
+           OR (( RECE82-KYUKYU-PRTKBN    =      1         ) AND
+               ( RECE84-SRYCDTOTAL(6:9)  =   CONS-KYUKYU2 ) AND
+               ( RECE82-SRYYM           >=   "201307"     ))
+           OR (( RECE84-JIBAISYUKEIKBN   =      4         ) AND
+               ( RECE84-SRYCDTOTAL(6:5)  =   "09593"      ))
+               IF   RECE82-SRYYM   >=  "200604"
+                 MOVE      99            TO  FLG-COMMENT
+                 PERFORM   2001-KYUKYU-COMMENT200604-SEC
+               END-IF
+           END-IF
+      *
+           .
+       2001-KYUKYU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    µßµÞ°åÎÅ´ÉÍý²Ã»»¤Î¥³¥á¥ó¥ÈÊÔ½¸
+      *****************************************************************
+       2001-KYUKYU-COMMENT200604-SEC          SECTION.
+      *
+           INITIALIZE            WRK-JIDO-SETCOM-AREA
+           MOVE      "1"       TO     WRK-JIDO-SETCOMFLG
+           MOVE      301       TO     WRK-JIDO-SETCOMATFLG
+      *
+           PERFORM     20011-NYU-DAY-SEC
+      *
+           PERFORM     200111-RECE85-TAIHI-SEC
+      *
+      *    £Ò£Å£Ã£Å£°£µ¥Õ¥¡¥¤¥ë¤ÎÆâÍÆ¤ò¥Æ¡¼¥Ö¥ë¤ËÂàÈò
+           MOVE    ZERO                TO  IDX-RECE85
+           MOVE    SPACE               TO  WRK-RECE85XX-REC
+           INITIALIZE                      WRK-RECE85XX-REC
+      *
+           MOVE    RECE84-MEISAISU     TO  MAX-MEISAISU
+      *
+      *    »»ÄêÆü¥³¥á¥ó¥È¤ÎÁÞÆþ
+           PERFORM  VARYING      IDX    FROM  1   BY   1
+                    UNTIL       (IDX    >     31)      OR
+                                (TBL-NYU-DAY-ST(IDX)  =  ZERO)
+               COMPUTE  MAX-MEISAISU  =  MAX-MEISAISU  +  1
+               MOVE   "810000001"
+                             TO  WRK-RECE85XX-SRYCD(MAX-MEISAISU 1)
+               MOVE    ZERO  TO  WRK-RECE85XX-SRYSURYO(MAX-MEISAISU 1)
+               IF    TBL-NYU-DAY-CD(IDX)  =  CONS-SANTEI-COMMENT1
+                 MOVE    8   TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+                 MOVE    "»»Äê¡¡¡¡·î¡¡¡¡Æü"
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+                 MOVE    RECE82-SRYYM(5:2)    TO  DAY-IDX2
+                 MOVE    TBL-DAY(DAY-IDX2)
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)(5:4)
+                 MOVE    TBL-NYU-DAY-ST(IDX)  TO  DAY-IDX
+                 MOVE    TBL-DAY(DAY-IDX)
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)(11:4)
+               ELSE
+                 MOVE    12  TO  WRK-RECE85XX-YUKOKETA(MAX-MEISAISU 1)
+                 MOVE    "»»Äê¡¡¡¡·î¡¡¡¡Æü¡Á¡¡¡¡Æü"
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)
+                 MOVE    RECE82-SRYYM(5:2)    TO  DAY-IDX2
+                 MOVE    TBL-DAY(DAY-IDX2)
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)(5:4)
+                 MOVE    TBL-NYU-DAY-ST(IDX)  TO  DAY-IDX
+                 MOVE    TBL-DAY(DAY-IDX)
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)(11:4)
+                 MOVE    TBL-NYU-DAY-ED(IDX)  TO  DAY-IDX
+                 MOVE    TBL-DAY(DAY-IDX)
+                             TO  WRK-RECE85XX-NAME(MAX-MEISAISU 1)(19:4)
+               END-IF
+               IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
+                 MOVE  "2" TO  WRK-RECE85XX-MEISKYFLG(MAX-MEISAISU 1)
+                 MOVE  WRK-JIDO-SETCOMATFLG
+                           TO  WRK-RECE85XX-SETCOMATFLG(MAX-MEISAISU 1)
+               END-IF
+               MOVE    "2"   TO  WRK-RECE85XX-SIKFLG(MAX-MEISAISU 1)
+           END-PERFORM
+      *
+           PERFORM    200111-SRYACTINF-HENSYU-SEC
+      *
+           .
+       2001-KYUKYU-COMMENT200604-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ³°ÇñÆü¤Î¥³¥á¥ó¥ÈÊÔ½¸
       *    Àº¿À²Ê³ÖÎ¥ÉÂ¼¼´ÉÍý²Ã»»¡ÊÆþ±¡ÎÁ²Ã»»¡Ë¤Î¥³¥á¥ó¥ÈÊÔ½¸
       *****************************************************************
@@ -5579,10 +5692,10 @@
            PERFORM    200111-SANTEI-DAY-SEC
       *
            MOVE       RECE84-REC       TO  RECE849-REC
-      *
+      *@@@@
            MOVE       RECE84-ZAINUM    TO  RECE849-ZAINUM
            MOVE       RECE84-SRYKBN    TO  RECE849-SRYKBN
-      *
+      *@@@@
            ADD     1                   TO  RECE849-MEISAISU
            WRITE      RECE849-REC
            ADD     1                   TO  CNT-RECE849
@@ -5635,10 +5748,10 @@
        2099-RECE84-WRITE-SEC      SECTION.
       *
            MOVE    RECE84-REC      TO  RECE849-REC
-      *
+      *@@@@
            MOVE    RECE84-ZAINUM   TO  RECE849-ZAINUM
            MOVE    RECE84-SRYKBN   TO  RECE849-SRYKBN
-      *
+      *@@@@
            WRITE   RECE849-REC
            ADD     1               TO  CNT-RECE849
       *
@@ -5771,10 +5884,10 @@
            END-PERFORM
       *
            MOVE    RECE84-REC        TO      RECE849-REC
-      *
+      *@@@@
            MOVE    RECE84-ZAINUM     TO      RECE849-ZAINUM
            MOVE    RECE84-SRYKBN     TO      RECE849-SRYKBN
-      *
+      *@@@@
            MOVE    WRK-CNT-MEISAI    TO      RECE849-MEISAISU
            IF   WRK-JIDO-SETCOMFLG   =  "1"
              MOVE  WRK-JIDO-SETCOMFLG
@@ -5794,7 +5907,9 @@
       *
       *    ¥Ñ¥é¥á¡¼¥¿£¸£´£¹¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸
            PERFORM 800-RECE82-SET849-SEC
+      *@@@@
            MOVE    SPACE               TO  RECE849-SRYKBN
+      *@@@@
            MOVE    ZERO                TO  RECE849-ZAINUM
       *
            START   RECE849-FILE
@@ -7200,7 +7315,9 @@
       *
       *    ¥Ñ¥é¥á¡¼¥¿£¸£´£±¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸
            PERFORM 800-RECE82-SET841-SEC
+      *@@@@
            MOVE    SPACE               TO  RECE841-SRYKBN
+      *@@@@
            MOVE    ZERO                TO  RECE841-ZAINUM
       *
            START   RECE841-FILE

@@ -3932,10 +3932,10 @@
            PERFORM   200111-SANTEI-DAY-SEC
       *
            MOVE       RECE44-REC    TO   RECE449-REC
-      *
+      *@@@@
            MOVE       RECE44-ZAINUM TO   RECE449-ZAINUM
            MOVE       RECE44-SRYKBN TO   RECE449-SRYKBN
-      *
+      *@@@@
            ADD        1             TO   RECE449-MEISAISU
            MOVE      "1"            TO   RECE449-SETCOMFLG
            WRITE      RECE449-REC
@@ -5289,10 +5289,10 @@
            END-PERFORM     
       *
            MOVE    RECE44-REC        TO      RECE449-REC
-      *
+      *@@@@
            MOVE    RECE44-ZAINUM     TO      RECE449-ZAINUM
            MOVE    RECE44-SRYKBN     TO      RECE449-SRYKBN
-      *
+      *@@@@
            MOVE    WRK-CNT-MEISAI    TO      RECE449-MEISAISU
            WRITE   RECE449-REC
            ADD     1                 TO      CNT-RECE449
@@ -6069,10 +6069,10 @@
            MOVE      301            TO   WRK-JIDO-SETCOMATFLG
       *
            MOVE      RECE44-REC     TO   RECE449-REC
-      *
+      *@@@@
            MOVE      RECE44-ZAINUM  TO   RECE449-ZAINUM
            MOVE      RECE44-SRYKBN  TO   RECE449-SRYKBN
-      *
+      *@@@@
            ADD        1             TO   RECE449-MEISAISU
            IF   WRK-JIDO-SETCOMFLG   =  "1"
              MOVE  WRK-JIDO-SETCOMFLG
@@ -6180,10 +6180,10 @@
        2099-RECE44-TENSOU-SEC     SECTION.
       *
            MOVE       RECE44-REC    TO   RECE449-REC
-      *
+      *@@@@
            MOVE       RECE44-ZAINUM TO   RECE449-ZAINUM
            MOVE       RECE44-SRYKBN TO   RECE449-SRYKBN
-      *
+      *@@@@
            WRITE      RECE449-REC
            ADD        1             TO   CNT-RECE449
            PERFORM    20991-RECE45-TENSOU-SEC
@@ -6316,10 +6316,10 @@
            END-PERFORM     
       *
            MOVE    RECE44-REC        TO      RECE449-REC
-      *
+      *@@@@
            MOVE    RECE44-ZAINUM     TO      RECE449-ZAINUM
            MOVE    RECE44-SRYKBN     TO      RECE449-SRYKBN
-      *
+      *@@@@
            MOVE    WRK-CNT-MEISAI    TO      RECE449-MEISAISU
            IF   WRK-JIDO-SETCOMFLG   =  "1"
              MOVE  WRK-JIDO-SETCOMFLG
@@ -6629,12 +6629,12 @@
                       MOVE   TBL-YT3X1-RECE44-REC(IDX7 IDX8)
                                   TO   RECE449-REC
                                        WRK-RECE44-REC
-      *
+      *@@@@
                       MOVE   WRK-RECE44-ZAINUM
                                   TO   RECE449-ZAINUM
                       MOVE   WRK-RECE44-SRYKBN
                                   TO   RECE449-SRYKBN
-      *
+      *@@@@
                       MOVE   RECE449-ZAINUM  TO  WRK-YAKUTEI-ZAINUM
                       MOVE   TBL-YT3X1-KAISU(IDX7 IDX8)
                                   TO   RECE449-ZAIKAISU
@@ -6664,12 +6664,12 @@
                       MOVE   TBL-YT3X2-RECE44-REC(IDX7 IDX8)
                                   TO   RECE449-REC
                                        WRK-RECE44-REC
-      *
+      *@@@@
                       MOVE   WRK-RECE44-ZAINUM
                                   TO   RECE449-ZAINUM
                       MOVE   WRK-RECE44-SRYKBN
                                   TO   RECE449-SRYKBN
-      *
+      *@@@@
                       MOVE   RECE449-ZAINUM  TO  WRK-YAKUTEI-ZAINUM
                       MOVE   TBL-YT3X2-KAISU(IDX7 IDX8)
                                   TO   RECE449-ZAIKAISU
@@ -6741,7 +6741,9 @@
       *
       *    パラメータ４４９ファイルより編集
            PERFORM 800-RECE41-SET449-SEC
+      *@@@@
            MOVE    SPACE               TO  RECE449-SRYKBN
+      *@@@@
            MOVE    ZERO                TO  RECE449-ZAINUM
       *
            START   RECE449-FILE
@@ -7509,7 +7511,9 @@
       *
       *    パラメータ４４１ファイルより編集
            PERFORM 800-RECE41-SET441-SEC
+      *@@@@
            MOVE    SPACE               TO  RECE441-SRYKBN
+      *@@@@
            MOVE    ZERO                TO  RECE441-ZAINUM
       *
            START   RECE441-FILE
