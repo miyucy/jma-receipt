@@ -368,7 +368,8 @@
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            MOVE    ORCSQRCSV62-SYSTIME TO  FILE-SYOHMS2
            MOVE    FILE-NAME2          TO  QREN-QRFILENAME
-           MOVE    "L"                 TO  QREN-SL-OPTION
+      *!!  MOVE    "L"                 TO  QREN-SL-OPTION
+           MOVE    "M"                 TO  QREN-SL-OPTION
            MOVE    "1"                 TO  QREN-SS-OPTION
            MOVE    "2"                 TO  QREN-SM-OPTION
       *サイズ
@@ -380,6 +381,17 @@
            MOVE    "1"                 TO  QREN-LC-OPTION
       *
            CALL    "orcqrencode"       USING   ORCSQRENCODEAREA
+      *H25.2
+      *    サイズエラーの時は、再度作成
+           IF     (QREN-RET            =   "1"  )
+               OR (QREN-RET-COUNT      >   12   )
+               MOVE    "L"                 TO  QREN-SL-OPTION
+               INITIALIZE                      QREN-RET-VERSION
+               INITIALIZE                      QREN-RET-COUNT
+               INITIALIZE                      QREN-RET
+               CALL    "orcqrencode"       USING   ORCSQRENCODEAREA
+           END-IF
+      *
            MOVE    QREN-RET-VERSION    TO  ORCSQRCSV62-RET-VERSION
            MOVE    QREN-RET-COUNT      TO  ORCSQRCSV62-RET-COUNT
            MOVE    QREN-RET            TO  ORCSQRCSV62-RET
