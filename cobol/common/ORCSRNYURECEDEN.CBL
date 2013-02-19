@@ -2833,10 +2833,11 @@
       *
       *            同日再入院日に他保険で食事の算定がある場合に
       *            食堂加算をクリアする
-                   IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                   IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2"
+                                                             OR "4")
                                                                      AND
-                       (LNK-RNYURECEDEN-HKNKBN   NOT =
-                               LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX1)) AND
+                       (LNK-RNYURECEDEN-HKNCOMBI   NOT =
+                             LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1)) AND
                        (NACCT-DAY(IDX1)    NOT =  ZERO)              AND
                        (LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1) = "1"   OR
                                                                "2"   OR
@@ -2956,10 +2957,11 @@
       *
       *            同日再入院日に他保険で食事の算定がある場合に
       *            食堂加算をクリアする
-                   IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                   IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2"
+                                                             OR "4")
                                                                      AND
-                       (LNK-RNYURECEDEN-HKNKBN   NOT =
-                               LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX1)) AND
+                       (LNK-RNYURECEDEN-HKNCOMBI   NOT =
+                             LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1)) AND
                        (NACCT-DAY(IDX1)    NOT =  ZERO)              AND
                        (LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1) = "2"   OR
                                                                "3")  AND
@@ -3080,10 +3082,11 @@
       *
       *            同日再入院日に他保険で食事の算定がある場合に
       *            食堂加算をクリアする
-                   IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                   IF  (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2"
+                                                             OR "4")
                                                                      AND
-                       (LNK-RNYURECEDEN-HKNKBN   NOT =
-                               LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX1)) AND
+                       (LNK-RNYURECEDEN-HKNCOMBI   NOT =
+                             LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1)) AND
                        (NACCT-DAY(IDX1)    NOT =  ZERO)              AND
                        (LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1) = "3")  AND
                       ((WRK-GAIHAKU-KBN(IDX1)    =  ZERO)            OR
