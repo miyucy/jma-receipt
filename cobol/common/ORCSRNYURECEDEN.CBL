@@ -529,6 +529,9 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
+      *    保険区分に固定値をセット
+           MOVE    "4"                 TO  LNK-RNYURECEDEN-HKNKBN
+      *
            .
        100-PRM-CHK-EXT.
            EXIT.
@@ -558,6 +561,23 @@
            MOVE    LNK-RNYURECEDEN-SANTEIYM   TO  LNK-NYUINDAY-SANTEIYM
            CALL    "ORCSNYUINDAY"         USING   ORCSNYUINDAY-AREA
                                                   SPA-AREA
+      *
+      *労災から労災への同日再入院で保険組合せが変更とならない場合は
+      *同日再入院扱いとする必要がないので、"ORCSNYUINDAY"の返却値を
+      *クリアすることとする
+           PERFORM    VARYING   IDX1   FROM   1   BY   1
+                      UNTIL     IDX1   >   31
+               IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)  = "1")
+               AND (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "4")
+               AND (LNK-RNYURECEDEN-HKNCOMBI  =
+                               LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1))
+               AND (LNK-RNYURECEDEN-HKNCOMBI  =
+                               LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1))
+      *            同日再入院区分と保険変動区分をクリア
+                   MOVE  SPACE TO LNK-NYUINDAY-DOUJITSU-KBN(IDX1)
+                   MOVE  SPACE TO LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1)
+               END-IF
+           END-PERFORM
       *
       *月末に同日再入院時のレセ電対象保険組合せ番号の取得
       *    月末日を取得
@@ -866,6 +886,7 @@
                                                           "197000110"
                                MOVE  "197000570"
                                        TO WRK-SYS5000-SHOKUCD(3 IDX1)
+      **                       DISPLAY  "== SHOKUDO-SET IDX1 = " IDX1
                            END-IF
                        END-IF
                    END-PERFORM
@@ -873,7 +894,8 @@
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
                        IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)  = "1")
-                       AND (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                       AND (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2"
+                                                                 OR "4")
                        AND (LNK-RNYURECEDEN-HKNKBN  =
                                      LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX1))
                        AND (NACCT-DAY(IDX1)    NOT =  ZERO)
@@ -882,6 +904,7 @@
                                                           "197000110"
                                MOVE  "197000570"
                                        TO WRK-SYS5000-SHOKUCD(3 IDX1)
+      **                       DISPLAY  "=== SHOKUDO-DOU-SET IDX1 = " IDX1
                            END-IF
                        END-IF
                    END-PERFORM
@@ -2730,10 +2753,11 @@
       *
       *            同日再入院で退院日の食事無しであれば、会計をクリアする
                    IF (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1") AND
-                      (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2") AND
-                         (LNK-RNYURECEDEN-HKNKBN
-                           =  LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX1)) AND
-                         (LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1) = "0")
+                      (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3"
+                                                            OR "4") AND
+                      (LNK-RNYURECEDEN-HKNCOMBI
+                          =  LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1)) AND
+                      (LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1) = "0")
                         MOVE    ZERO     TO   NACCT-DAY(IDX1)
                    END-IF
       *
@@ -2770,7 +2794,8 @@
                    END-IF
       *
       *            同日再入院日（朝から）
-                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2"
+                                                               OR "4")
                                                                      AND
                          (LNK-RNYURECEDEN-HKNKBN
                               =  LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX1)) AND
@@ -2849,9 +2874,10 @@
       *
       *            同日再入院で退院日の食事無しであれば、会計をクリアする
                    IF (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1") AND
-                      (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2") AND
-                         (LNK-RNYURECEDEN-HKNKBN
-                           =  LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX1)) AND
+                      (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3"
+                                                            OR "4") AND
+                      (LNK-RNYURECEDEN-HKNCOMBI
+                          =  LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1)) AND
                          (LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1) = "0" OR
                                                                  "1")
                         MOVE    ZERO     TO   NACCT-DAY(IDX1)
@@ -2890,7 +2916,8 @@
                    END-IF
       *
       *            同日再入院日（昼から）
-                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2"
+                                                               OR "4")
                                                                      AND
                          (LNK-RNYURECEDEN-HKNKBN
                               =  LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX1)) AND
@@ -2969,9 +2996,10 @@
       *
       *            同日再入院で退院日の食事無しであれば、会計をクリアする
                    IF (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)       = "1") AND
-                      (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2") AND
-                         (LNK-RNYURECEDEN-HKNKBN
-                           =  LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX1)) AND
+                      (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3"
+                                                            OR "4") AND
+                      (LNK-RNYURECEDEN-HKNCOMBI
+                          =  LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1)) AND
                          (LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1) = "0" OR
                                                                  "1" OR
                                                                  "2")
@@ -3011,7 +3039,8 @@
                    END-IF
       *
       *            同日再入院日（夕から）
-                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "3")
+                   IF    (LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1) = "2"
+                                                               OR "4")
                                                                      AND
                          (LNK-RNYURECEDEN-HKNKBN
                               =  LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX1)) AND

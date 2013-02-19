@@ -38,7 +38,7 @@
            03  LNK-RNYURECEDEN-SANTEIYM              PIC  X(06).
       *保険組合せ番号
            03  LNK-RNYURECEDEN-HKNCOMBI              PIC  9(04).
-      *保険区分
+      *保険区分（４をセット）
            03  LNK-RNYURECEDEN-HKNKBN                PIC  X(01).
       *返却項目
            03  LNK-RNYURECEDEN-HENKYAKU-AREA.
