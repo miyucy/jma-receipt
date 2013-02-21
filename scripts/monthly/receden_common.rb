@@ -3,6 +3,8 @@
 require "monthly/receden_common_const"
 require "date"
 
+$KCODE = "UTF-8"
+
 class Csvline
   attr_accessor :receline,:line,:fileline,:rows,:hash
 
@@ -69,15 +71,15 @@ class Receden_common < Receden_common_const
     if s == nil
       ret = -1
     else
-      #È¾³Ñ
-      if s.to_s =~ /^[ -~Ž¡-Žß]*$/
+      #åŠè§’
+      if s.to_s =~ /^[ -~ï½¡-ï¾Ÿ]*$/
         ret = 0
       end
-      #Á´³Ñ
-      if s.to_s =~ /^[^ -~Ž¡-Žß]*$/
+      #å…¨è§’
+      if s.to_s =~ /^[^ -~ï½¡-ï¾Ÿ]*$/
         ret = 1
       end
-      #Ê¸»ú¤¬¤Ê¤¤¾ì¹ç¤âÈ¾³Ñ¤È¤¹¤ë
+      #æ–‡å­—ãŒãªã„å ´åˆã‚‚åŠè§’ã¨ã™ã‚‹
       if s.to_s == ""
         ret = 0
       end

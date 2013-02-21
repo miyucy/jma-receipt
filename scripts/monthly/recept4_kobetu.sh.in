@@ -106,8 +106,8 @@ fi
 	ERRFILE="${ERRFILE// /X}"
 	ERRLOG="${TMPFILEBASE}${SHNAME%%.sh}.log"
 	INFILE="/tmp/${23}${RECEFILE2}01.txt"
-	EUCFILE="${TMPFILEBASE}$(basename ${INFILE}).euc"
-	PRM="${23},${EUCFILE},${ERRFILE},${ERRLOG},${24}}"
+	UTF8FILE="${TMPFILEBASE}$(basename ${INFILE}).euc"
+	PRM="${23},${UTF8FILE},${ERRFILE},${ERRLOG},${24}}"
 
 	export  RUBYLIB=$SITESCRIPTSDIR:$PATCHSCRIPTSDIR:$SCRIPTSDIR:$RUBYLIB
 	export  APS_EXEC_PATH=$(dirname $0)
@@ -115,9 +115,9 @@ fi
 	cleanup
 
 	[ -e ${ERRLOG}  ] && rm -f ${ERRLOG}
-	[ -e ${INFILE}  ] && nkf -E -e -I ${INFILE} > ${EUCFILE}
+	[ -e ${INFILE}  ] && nkf -I --ic=EUC-JP --oc=CP932 ${INFILE} | nkf --ic=CP932 --oc=UTF-8 > ${UTF8FILE}
 
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt receden_check_start -parameter $PRM 2>  ${ERRLOG}
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt Receden_check_start -parameter $PRM 2>  ${ERRLOG}
 	if [ -s ${ERRLOG} ]; then
 	    cat ${ERRLOG} >> $LOG_FILE
 	    ERRCD='0099'

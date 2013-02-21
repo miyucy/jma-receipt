@@ -4,7 +4,7 @@ require "csv"
 require "iconv"
 require "monthly/receden_common"
 
-$KCODE = 'e'
+$KCODE = "UTF-8"
 
 class Receden < Receden_common
 

@@ -135,7 +135,7 @@ ruby_scripts = \
 	tools/orcred2textview.rb \
 	tools/redinspector.rb \
 	monthly/receden_check.rb \
-	monthly/receden_check_start.rb \
+	monthly/Receden_check_start.rb \
 	monthly/receden_common.rb \
 	monthly/receden_common_const.rb \
 	monthly/receden_const.rb \

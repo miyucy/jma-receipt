@@ -3,10 +3,50 @@
 require "monthly/receden"
 require "monthly/receden_common"
 require "monthly/receden_error"
-require	"daily/apslib"
 require	"date"
 require	"kconv"
 require	"jcode"
+require	"json"
+
+$KCODE = "UTF-8"
+
+
+class DBMAIN
+
+   def initialize
+     @data  = nil
+     @mcpIn = {"db" => {}}
+     @mcpOut = {}
+     @rc = MCP_OK
+   end
+
+   def exec(_func, _table=nil ,_pathname= nil, _query=nil)
+
+     @mcpIn["func"] = _func
+     @mcpIn["db"]["table"]=_table
+     @mcpIn["db"]["pathname"]=_pathname
+     @rc,@mcpOut,@data = monfunc(@mcpIn.to_json,_query.to_json)
+     @mcpOut=JSON.parse(@mcpOut) unless @mcpOut.nil?
+     @data=JSON.parse(@data) unless @data.nil?
+   rescue
+     @rc = -99
+   ensure
+     return @rc
+   end
+
+   def rc
+     @rc
+   end
+
+   def data
+     @data
+   end
+
+   def [](name)
+     @data[name]
+   end
+
+end
 
 class Csvline
 
@@ -50,7 +90,6 @@ class Receden_check < Receden_common
 
   def initialize
     @cache_tensu = Hash.new
-    @cache_hknjainf = Hash.new
     @cache_byomei = Hash.new
   end
 
@@ -69,44 +108,22 @@ class Receden_check < Receden_common
     end
 
     if ret.empty?
-      tbl=PandaTable.new(@db,"tbl_tensu")
-      tbl["tbl_tensu.HOSPNUM"]   = hospnum
-      tbl["tbl_tensu.SRYCD"]     = srycd
-      tbl["tbl_tensu.YUKOSTYMD"] = sryymd
-      tbl["tbl_tensu.YUKOEDYMD"] = sryymd
-      if tbl.execFunction("DBSELECT","key") == 0
-        if tbl.execFunction("DBFETCH","key") == 0
-          tbl.values.each{|key,value|
-            ret[key.gsub(/^tbl_tensu\./,"")]=value
-          }
-          @cache_tensu[srycd] << ret
+      db = DBMAIN.new
+      query = {"HOSPNUM"   => hospnum,
+               "SRYCD"     => srycd,
+               "YUKOSTYMD" => sryymd,
+               "YUKOEDYMD" => sryymd,
+              }
+      db.exec("DBSELECT","tbl_tensu","key",query)
+      if db.rc == 0
+        db.exec("DBFETCH","tbl_tensu","key")
+        if db.rc == 0
+          ret = db.data
+          @cache_tensu[srycd] << db.data
         end
       end
-      tbl.execFunction("DBCLOSECURSOR","key")
+      db.exec("DBCLOSECURSOR","tbl_tensu","key")
     end
-    return ret
-
-  end
-
-  def select_hknjainf(hospnum,hknjanum)
-    ret=Hash.new
-    if @cache_hknjainf.key?(hknjanum)
-        ret = @cache_hknjainf[hknjanum]
-    else
-      tbl=PandaTable.new(@db,"tbl_hknjainf")
-      tbl["tbl_hknjainf.HOSPNUM"]   = hospnum
-      tbl["tbl_hknjainf.HKNJANUM"]     = hknjanum
-      if tbl.execFunction("DBSELECT","key") == 0
-        if tbl.execFunction("DBFETCH","key") == 0
-          tbl.values.each{|key,value|
-            ret[key.gsub(/^tbl_hknjainf\./,"")]=value
-          }
-          @cache_hknjainf[hknjanum] =  ret
-        end
-      end
-      tbl.execFunction("DBCLOSECURSOR","key")
-    end
-
     return ret
 
   end
@@ -116,17 +133,18 @@ class Receden_check < Receden_common
     if @cache_byomei.key?(byomeicd)
       ret = @cache_byomei[byomeicd]
     else
-      tbl=PandaTable.new(@db,"tbl_byomei")
-      tbl["tbl_byomei.BYOMEICD"] = byomeicd
-      if tbl.execFunction("DBSELECT","key") == 0
-        if tbl.execFunction("DBFETCH","key") == 0
-          tbl.values.each{|key,value|
-            ret[key.gsub(/^tbl_byomei\./,"")]=value
-          }
-          @cache_byomei[byomeicd] = ret
+      db = DBMAIN.new
+      query = {"BYOMEICD"   => byomeicd,
+              }
+      db.exec("DBSELECT","tbl_byomei","key",query)
+      if db.rc == 0
+        db.exec("DBFETCH","tbl_byomei","key")
+        if db.rc == 0
+          ret = db.data
+          @cache_byomei[byomeicd] = db.data
         end
       end
-      tbl.execFunction("DBCLOSECURSOR","key")
+      db.exec("DBCLOSECURSOR","tbl_byomei","key")
     end
 
     return ret
@@ -148,9 +166,9 @@ class Receden_check < Receden_common
           if @info[id].hash.key?(key)
             myvalue=csv[key].value
             if myvalue.split(//).size > 20
-               myvalue=myvalue.split(//)[0,4].join << "°ƒ"
+               myvalue=myvalue.split(//)[0,4].join << "‚Ä¶"
             end
-            ret=sprintf("%s°Œ%s°œ",@info[id].hash[key].label,myvalue)
+            ret=sprintf("%sÔºª%sÔºΩ",@info[id].hash[key].label,myvalue)
           end
         end
       end
@@ -168,10 +186,11 @@ class Receden_check < Receden_common
 
       if @info.rec.key?(id)
         @info[id].rows.each{|item|
-          if item.maxsize < rows[item.name].value.bytesize
+          sjisStr=NKF.nkf("-Ws", rows[item.name].value)
+          if item.maxsize < sjisStr.bytesize
             @errors.push("25390",rece,rows,item.name)
           else
-            if item.fixed? && item.maxsize > rows[item.name].value.bytesize
+            if item.fixed? && item.maxsize > sjisStr.bytesize
               @errors.push("25530",rece,rows,item.name)
             end
           end
@@ -189,7 +208,7 @@ class Receden_check < Receden_common
             end
           when KANJI
             if rows[item.name].zenkaku == rows[item.name].value
-              if rows[item.name].value =~ /¢Æ/
+              if rows[item.name].value =~ /„Äì/
                 @errors.push("25441",rece,rows,item.name)
               end
             else
@@ -198,7 +217,7 @@ class Receden_check < Receden_common
           when TEXT
             if ( rows[item.name].zenkaku == rows[item.name].value ) ||
               ( rows[item.name].hankaku == rows[item.name].value )
-              if rows[item.name].value =~ /¢Æ/
+              if rows[item.name].value =~ /„Äì/
                 @errors.push("25441",rece,rows,item.name)
               end
             else
@@ -246,13 +265,13 @@ class Receden_check < Receden_common
     receNum=1
 
     #---------------------------------------------------------------------------------------------------
-    #    •’•©°º•ﬁ•√•»•¡•ß•√•Ø(IR•Ï•≥°º•…)
+    #    „Éï„Ç©„Éº„Éû„ÉÉ„Éà„ÉÅ„Çß„ÉÉ„ÇØ(IR„É¨„Ç≥„Éº„Éâ)
     check_format(nil,ir)
     #---------------------------------------------------------------------------------------------------
 
     r.receipt.each{|rece|
 
-      #    RE•Ï•≥°º•…§œ«€ŒÛ§»§∑§∆§§§Î§¨°¢•Ï•ª•◊•»ÀË§ÀƒÃæÔ§œ£±∑Ô
+      #    RE„É¨„Ç≥„Éº„Éâ„ÅØÈÖçÂàó„Å®„Åó„Å¶„ÅÑ„Çã„Åå„ÄÅ„É¨„Çª„Éó„ÉàÊØé„Å´ÈÄöÂ∏∏„ÅØÔºë‰ª∂
       re=rece.re.first
 
       if re["RECENUM"].num != nil
@@ -284,7 +303,7 @@ class Receden_check < Receden_common
           if re["SRYYM"].wtos >= ir["SKYYM"].wtos
             @errors.push("21590",rece,re,"SRYYM")
           end
-#         £≥«Ø° ¿¡µ·ª˛∏˙¥¸¥÷°À∑–≤·•¡•ß•√•Ø
+#         ÔºìÂπ¥ÔºàË´ãÊ±ÇÊôÇÂäπÊúüÈñìÔºâÁµåÈÅé„ÉÅ„Çß„ÉÉ„ÇØ
           if re["SRYYM"].wtos.to_i + 30000 < ir["SKYYM"].wtos.to_i
             @errors.push("31030",rece,re,"SRYYM")
           end
@@ -408,7 +427,7 @@ class Receden_check < Receden_common
 
             rece.ko.each{|ko|
               if ko["TEN"].value != "0"
-                myfooter=sprintf("∏¯»ÒÀ° Ã[%s]≈¿øÙ[%s]",ko["FTNNUM"].value[0,2],ko["TEN"].value)
+                myfooter=sprintf("ÂÖ¨Ë≤ªÊ≥ïÂà•[%s]ÁÇπÊï∞[%s]",ko["FTNNUM"].value[0,2],ko["TEN"].value)
                 @errors.push("30170",rece,re,"TOKKI",nil,myfooter)
               end
             }
@@ -485,7 +504,7 @@ class Receden_check < Receden_common
         @errors.push("21660",rece,re,"BTUKBN")
       end
 
-      if re["NAME"].value.gsub(/( |°°)/,"").strip == ""
+      if re["NAME"].value.gsub(/( |„ÄÄ)/,"").strip == ""
         @errors.push("30010",rece,re,"NAME")
       end
 
@@ -537,7 +556,7 @@ class Receden_check < Receden_common
       end
 
       #---------------------------------------------------------------------------------------------------
-      #       •’•©°º•ﬁ•√•»•¡•ß•√•Ø(RE•Ï•≥°º•…)
+      #       „Éï„Ç©„Éº„Éû„ÉÉ„Éà„ÉÅ„Çß„ÉÉ„ÇØ(RE„É¨„Ç≥„Éº„Éâ)
       check_format(rece,re)
       #---------------------------------------------------------------------------------------------------
 
@@ -579,33 +598,33 @@ class Receden_check < Receden_common
       if ho["KIGO"].value == ""
       else
         case
-        when ho["KIGO"].value =~ /( |°°)/
+        when ho["KIGO"].value =~ /( |„ÄÄ)/
           @errors.push("21630",rece,ho,"KIGO")
         else
           case ho["HKNJANUM"].value[0,2]
           when "01"
             if ( ho["KIGO"].value.split(//).size != 7 &&
                  ho["KIGO"].value.split(//).size != 8 ) ||
-               ho["KIGO"].value.gsub(/£∞/,"") == "" ||
-               ho["KIGO"].value.gsub(/[£∞-£π]/,"") != ""
+               ho["KIGO"].value.gsub(/Ôºê/,"") == "" ||
+               ho["KIGO"].value.gsub(/[Ôºê-Ôºô]/,"") != ""
               @errors.push("31480",rece,ho,"KIGO")
             end
 
             if ho["NUM"].value.split(//).size >= 8 ||
-               ho["NUM"].value.gsub(/£∞/,"") == "" ||
-               ho["NUM"].value.gsub(/[£∞-£π]/,"") != ""
+               ho["NUM"].value.gsub(/Ôºê/,"") == "" ||
+               ho["NUM"].value.gsub(/[Ôºê-Ôºô]/,"") != ""
               @errors.push("31500",rece,ho,"NUM")
             end
           when "02"
             if re["SRYYM"].wtos >= H230401
               if ho["KIGO"].value.split(//).size > 10 ||
-                 ho["KIGO"].value.gsub(/£∞/,"") == ""  ||
-                 ho["KIGO"].value.gsub(/[£∞-£π]/,"") != ""
+                 ho["KIGO"].value.gsub(/Ôºê/,"") == ""  ||
+                 ho["KIGO"].value.gsub(/[Ôºê-Ôºô]/,"") != ""
                 @errors.push("31980",rece,ho,"KIGO")
               end
 
-              if ho["NUM"].value.gsub(/£∞/,"") == ""  ||
-                 ho["NUM"].value.gsub(/[£∞-£π]/,"") != ""
+              if ho["NUM"].value.gsub(/Ôºê/,"") == ""  ||
+                 ho["NUM"].value.gsub(/[Ôºê-Ôºô]/,"") != ""
                 @errors.push("31990",rece,ho,"NUM")
               end
             end
@@ -618,7 +637,7 @@ class Receden_check < Receden_common
               @errors.push("31760",rece,ho,"HKNJANUM")
             end
           when "06","63"
-              if ho["KIGO"].value.gsub(/[£∞-£π]/,"") != ""
+              if ho["KIGO"].value.gsub(/[Ôºê-Ôºô]/,"") != ""
                 @errors.push("31770",rece,ho,"KIGO")
               end
           end
@@ -628,12 +647,12 @@ class Receden_check < Receden_common
       if ho["NUM"].value == ""
         @errors.push("21620",rece,ho,"NUM")
       else
-        if ho["NUM"].value =~ /( |°°)/
+        if ho["NUM"].value =~ /( |„ÄÄ)/
           @errors.push("21640",rece,ho,"NUM")
         end
       end
 
-      if ho["NUM"].value =~ /[£∞-£π]/
+      if ho["NUM"].value =~ /[Ôºê-Ôºô]/
       else
         @errors.push("31460",rece,ho,"NUM")
       end
@@ -644,18 +663,18 @@ class Receden_check < Receden_common
       end
 
       if ho["HKNJANUM"].value == "32130213"
-        if ho["KIGO"].value != "≈‘" && ho["KIGO"].value != "≈‘«§∑—"
+        if ho["KIGO"].value != "ÈÉΩ" && ho["KIGO"].value != "ÈÉΩ‰ªªÁ∂ô"
           @errors.push("31710",rece,ho,"KIGO")
         end
         if ho["NUM"].value.split(//).size != 8 ||
-           ho["NUM"].value.gsub(/[£∞-£π]/,"") != ""
+           ho["NUM"].value.gsub(/[Ôºê-Ôºô]/,"") != ""
           @errors.push("31750",rece,ho,"NUM")
         end
       end
 
       if ["01","02","06","63","33"].include?(ho["HKNJANUM"].value[0,2]) ||
          ho["HKNJANUM"].value == "32130213"
-        if ho["KIGO"].value.gsub(/°°/,"").strip == ""
+        if ho["KIGO"].value.gsub(/„ÄÄ/,"").strip == ""
           @errors.push("31720",rece,ho,"KIGO")
         end
       end
@@ -693,7 +712,7 @@ class Receden_check < Receden_common
       end
 
       #---------------------------------------------------------------------------------------------------
-      #          •’•©°º•ﬁ•√•»•¡•ß•√•Ø(HO•Ï•≥°º•…)
+      #          „Éï„Ç©„Éº„Éû„ÉÉ„Éà„ÉÅ„Çß„ÉÉ„ÇØ(HO„É¨„Ç≥„Éº„Éâ)
       check_format(rece,ho)
       #---------------------------------------------------------------------------------------------------
     }
@@ -751,7 +770,7 @@ class Receden_check < Receden_common
       end
 
       if ko["FTNNUM"].hankaku[0,2] == "30"
-        myfooter=sprintf("%s°°%s",edit_msg(re,"RECESBT"),edit_msg(ko,"JKYNUM"))
+        myfooter=sprintf("%s„ÄÄ%s",edit_msg(re,"RECESBT"),edit_msg(ko,"JKYNUM"))
         if re["RECESBT"].hankaku  =~ /^(1211|1212)$/
           if ko["JKYNUM"].value.strip != ""
             @errors.push("21690",rece,ko,"FTNNUM",nil,myfooter)
@@ -770,7 +789,7 @@ class Receden_check < Receden_common
       ko_key = sprintf("%s%s",ko["FTNNUM"].value,ko["JKYNUM"].value)
 
       if ko_keys.include?(ko_key)
-        myfooter=sprintf("%s°°%s",edit_msg(ko,"FTNNUM"),edit_msg(ko,"JKYNUM"))
+        myfooter=sprintf("%s„ÄÄ%s",edit_msg(ko,"FTNNUM"),edit_msg(ko,"JKYNUM"))
         @errors.push(["00000","30840","30860","30810"][i],rece,ko,nil,nil,myfooter)
       end
 
@@ -794,7 +813,7 @@ class Receden_check < Receden_common
       end
 
       #---------------------------------------------------------------------------------------------------
-      #          •’•©°º•ﬁ•√•»•¡•ß•√•Ø(KO•Ï•≥°º•…)
+      #          „Éï„Ç©„Éº„Éû„ÉÉ„Éà„ÉÅ„Çß„ÉÉ„ÇØ(KO„É¨„Ç≥„Éº„Éâ)
       check_format(rece,ko)
       #---------------------------------------------------------------------------------------------------
     }
@@ -858,7 +877,7 @@ class Receden_check < Receden_common
       end
 
       if sy["BYOMEICD"].value == "0000999"
-        if sy["BYOMEI"].value.gsub(/°°/,"").strip == ""
+        if sy["BYOMEI"].value.gsub(/„ÄÄ/,"").strip == ""
           @errors.push("32090",rece,sy,"BYOMEI")
         end
       else
@@ -887,7 +906,7 @@ class Receden_check < Receden_common
         end
       end
       #---------------------------------------------------------------------------------------------------
-      #          •’•©°º•ﬁ•√•»•¡•ß•√•Ø(SY•Ï•≥°º•…)
+      #          „Éï„Ç©„Éº„Éû„ÉÉ„Éà„ÉÅ„Çß„ÉÉ„ÇØ(SY„É¨„Ç≥„Éº„Éâ)
       check_format(rece,sy)
       #---------------------------------------------------------------------------------------------------
     }
@@ -947,7 +966,7 @@ class Receden_check < Receden_common
             if  SRYKBN.key?(zai["SRYKBN"].hankaku)
               if SRYKBN[zai["SRYKBN"].hankaku] == NYUGAI || SRYKBN[zai["SRYKBN"].hankaku] == rece.sbt.nyugai
                 if zai["SRYKBN"].value < srtSrykbn
-                  @errors.push("23060",rece,zai,"SRYKBN",nil,"¡∞≤Ûø«Œ≈º± Ã°Œ#{srtSrykbn}°œ")
+                  @errors.push("23060",rece,zai,"SRYKBN",nil,"ÂâçÂõûË®∫ÁôÇË≠òÂà•Ôºª#{srtSrykbn}ÔºΩ")
                 end
                 srtSrykbn = zai["SRYKBN"].value
               else
@@ -1000,18 +1019,18 @@ class Receden_check < Receden_common
                       if re["SRYYM"].value >= H200401
                         if rece.age  < 65 || rece.sbt.nyugai == GAIRAI
                           if tbl_tensu["NYUTENTTLKBN"].to_i >= 972
-                            myfooter=sprintf("ø«Œ≈º± Ã°Œ%s°œ %s",tekiyo.srykbn,tbl_tensu["NAME"])
+                            myfooter=sprintf("Ë®∫ÁôÇË≠òÂà•Ôºª%sÔºΩ %s",tekiyo.srykbn,tbl_tensu["NAME"])
                             @errors.push("34960",rece,zai,nil,nil,myfooter)
                           end
                         end
                       end
                     else
-                      myfooter=sprintf("ø«Œ≈º± Ã°Œ%s°œ %s",tekiyo.srykbn,tbl_tensu["NAME"])
+                      myfooter=sprintf("Ë®∫ÁôÇË≠òÂà•Ôºª%sÔºΩ %s",tekiyo.srykbn,tbl_tensu["NAME"])
                       @errors.push("34910",rece,zai,nil,nil,myfooter)
                     end
                   else
                     if tbl_tensu["NYUTENTTLKBN"].to_i >= 970 and tbl_tensu["NYUTENTTLKBN"].to_i <= 975
-                      myfooter=sprintf("ø«Œ≈º± Ã°Œ%s°œ %s",tekiyo.srykbn,tbl_tensu["NAME"])
+                      myfooter=sprintf("Ë®∫ÁôÇË≠òÂà•Ôºª%sÔºΩ %s",tekiyo.srykbn,tbl_tensu["NAME"])
                       @errors.push("34900",rece,zai,nil,nil,myfooter)
                     end
                   end
@@ -1062,7 +1081,7 @@ class Receden_check < Receden_common
                   end
 
                   if tekiyo.srykbn == "97"
-                      myfooter=sprintf("ø«Œ≈º± Ã°Œ%s°œ %s",tekiyo.srykbn,tbl_tensu["NAME"])
+                      myfooter=sprintf("Ë®∫ÁôÇË≠òÂà•Ôºª%sÔºΩ %s",tekiyo.srykbn,tbl_tensu["NAME"])
                       @errors.push("34950",rece,zai,nil,nil,myfooter)
                   end
 
@@ -1094,14 +1113,14 @@ class Receden_check < Receden_common
                   end
 
                   if zai["SRYCD"].value == "777770000"
-                    if zai["NAME"].value.gsub(/°°/,"").strip == "" && zai["INFO"].value.gsub(/°°/,"").strip == ""
+                    if zai["NAME"].value.gsub(/„ÄÄ/,"").strip == "" && zai["INFO"].value.gsub(/„ÄÄ/,"").strip == ""
                      @errors.push("33160",rece,zai,"NAME",nil,tbl_tensu["NAME"])
                      @errors.push("33160",rece,zai,"INFO",nil,tbl_tensu["NAME"])
                    end
                   end
 
                   if tekiyo.srykbn == "97"
-                      myfooter=sprintf("ø«Œ≈º± Ã°Œ%s°œ %s",tekiyo.srykbn,tbl_tensu["NAME"])
+                      myfooter=sprintf("Ë®∫ÁôÇË≠òÂà•Ôºª%sÔºΩ %s",tekiyo.srykbn,tbl_tensu["NAME"])
                       @errors.push("34950",rece,zai,nil,nil,myfooter)
                   end
 
@@ -1134,13 +1153,13 @@ class Receden_check < Receden_common
                     end
                     case row.value[1,2]
                     when "10" , "30"
-                      if zai[mycommoji].value.gsub(/°°/,"").strip == ""
+                      if zai[mycommoji].value.gsub(/„ÄÄ/,"").strip == ""
                         @errors.push("34410",rece,zai,mycommoji,nil,myfooter)
                       end
                     when "40"
-                      if zai[mycommoji].value.gsub(/°°/,"").strip == ""
+                      if zai[mycommoji].value.gsub(/„ÄÄ/,"").strip == ""
                         @errors.push("34410",rece,zai,mycommoji,nil,myfooter)
-                      elsif zai[mycommoji].value.gsub(/^[£∞-£π]+$/,"").strip == ""
+                      elsif zai[mycommoji].value.gsub(/^[Ôºê-Ôºô]+$/,"").strip == ""
                         if com_tensu.empty?
                         else
                           comsize= com_tensu["SSTKIJUNCD2"].to_i + com_tensu["SSTKIJUNCD4"].to_i  + com_tensu["SSTKIJUNCD6"].to_i + com_tensu["SSTKIJUNCD8"].to_i
@@ -1152,8 +1171,8 @@ class Receden_check < Receden_common
                         @errors.push("34440",rece,zai,mycommoji,nil,myfooter)
                       end
                     when "90"
-                      if zai[mycommoji].value =~ /^(°°{4}|[£∞-£π]{4})+$/
-                         modcds=zai[mycommoji].value.scan(/[£∞-£π]{4}/)
+                      if zai[mycommoji].value =~ /^(„ÄÄ{4}|[Ôºê-Ôºô]{4})+$/
+                         modcds=zai[mycommoji].value.scan(/[Ôºê-Ôºô]{4}/)
                          case
                          when modcds.empty?
                            @errors.push("34410",rece,zai,mycommoji)
@@ -1161,7 +1180,7 @@ class Receden_check < Receden_common
                           @errors.push("23870",rece,zai,mycommoji)
                          else
                            modcds.each{|modcd|
-                             tbl_byomei=select_byomei(sprintf("ZZZ%s",modcd.tr("£∞-£π","0-9")))
+                             tbl_byomei=select_byomei(sprintf("ZZZ%s",modcd.tr("Ôºê-Ôºô","0-9")))
                              if tbl_byomei.empty?
                                @errors.push("34590",rece,zai,mycommoji,nil,modcd)
                              end
@@ -1174,7 +1193,7 @@ class Receden_check < Receden_common
                   end
                 else
                   if zai[mycommoji].value != ""
-                    @errors.push("23880",rece,zai,key,nil,"•≥•·•Û•» ∏ª˙°Œ#{zai[mycommoji].value}°œ")
+                    @errors.push("23880",rece,zai,key,nil,"„Ç≥„É°„É≥„ÉàÊñáÂ≠óÔºª#{zai[mycommoji].value}ÔºΩ")
                   end
                 end
               end
@@ -1198,7 +1217,7 @@ class Receden_check < Receden_common
                     else
                       if tbl_tensu["JITUDAY"].to_i == 2 && tbl_tensu["DAYCNT"].to_i == 1
                         if mysyosin_NG_days[day_idx] == true || mybyo_stdays[day_idx] == false
-                          myheader=sprintf("%sªªƒÍ∆¸%d∆¸",tbl_tensu["NAME"],key.sub(/DAY/,"").to_i)
+                          myheader=sprintf("%sÁÆóÂÆöÊó•%dÊó•",tbl_tensu["NAME"],key.sub(/DAY/,"").to_i)
                           @errors.push("46340",rece,zai,nil,myheader)
                         end
                       end
@@ -1207,7 +1226,7 @@ class Receden_check < Receden_common
                 end
                 if myzaiday.key?(key)
                   if  myzaiday[key] != row.value
-                    myfooter=sprintf("•Ï•ª•◊•»∆‚•Ï•≥°º•…»÷πÊ°Œ%d°œ§ŒªªƒÍ∆¸§Œ≤ÛøÙ°Œ%s°œ",myzailine[key],myzaiday[key])
+                    myfooter=sprintf("„É¨„Çª„Éó„ÉàÂÜÖ„É¨„Ç≥„Éº„ÉâÁï™Âè∑Ôºª%dÔºΩ„ÅÆÁÆóÂÆöÊó•„ÅÆÂõûÊï∞Ôºª%sÔºΩ",myzailine[key],myzaiday[key])
                     @errors.push("23140",rece,zai,key,nil,myfooter)
                   end
                 else
@@ -1224,7 +1243,7 @@ class Receden_check < Receden_common
               end
             }
             #---------------------------------------------------------------------------------------------------
-            #                   •’•©°º•ﬁ•√•»•¡•ß•√•Ø(SI,IY,TO,CO•Ï•≥°º•…)
+            #                   „Éï„Ç©„Éº„Éû„ÉÉ„Éà„ÉÅ„Çß„ÉÉ„ÇØ(SI,IY,TO,CO„É¨„Ç≥„Éº„Éâ)
             case  zai["RECID"].value
             when  "SI"
               check_format(rece,zai)
@@ -1286,7 +1305,7 @@ class Receden_check < Receden_common
               @errors.push("23110",rece,zai,"KAISU")
             end
             if zai["KAISU"].value.to_i != mysrykaisu
-              myfooter=sprintf("ªªƒÍ∆¸æ Û° ≤ÛøÙ°À§ŒπÁ∑◊√Õ°Œ%s°œ",mysrykaisu)
+              myfooter=sprintf("ÁÆóÂÆöÊó•ÊÉÖÂ†±ÔºàÂõûÊï∞Ôºâ„ÅÆÂêàË®àÂÄ§Ôºª%sÔºΩ",mysrykaisu)
               @errors.push("23150",rece,zai,"KAISU",nil,myfooter)
             end
             if myzaikaisu.nil?
@@ -1294,7 +1313,7 @@ class Receden_check < Receden_common
               myreceline = zai.receline
             else
               if  myzaikaisu != zai["KAISU"].value
-                myfooter=sprintf("•Ï•ª•◊•»∆‚•Ï•≥°º•…»÷πÊ°Œ%d°œ§Œ≤ÛøÙ°Œ%s°œ",myreceline,myzaikaisu)
+                myfooter=sprintf("„É¨„Çª„Éó„ÉàÂÜÖ„É¨„Ç≥„Éº„ÉâÁï™Âè∑Ôºª%dÔºΩ„ÅÆÂõûÊï∞Ôºª%sÔºΩ",myreceline,myzaikaisu)
                 @errors.push("23120",rece,zai,"KAISU",nil,myfooter)
               end
             end
@@ -1351,13 +1370,13 @@ class Receden_check < Receden_common
 
             case zai["SRYCD"].value[1,2]
             when "10" , "30"
-              if zai["DATA"].value.gsub(/°°/,"").strip == ""
+              if zai["DATA"].value.gsub(/„ÄÄ/,"").strip == ""
                 @errors.push("34380",rece,zai,"DATA",nil,myfooter)
               end
             when "40"
-              if zai["DATA"].value.gsub(/°°/,"").strip == ""
+              if zai["DATA"].value.gsub(/„ÄÄ/,"").strip == ""
                 @errors.push("34380",rece,zai,"DATA",nil,myfooter)
-              elsif zai["DATA"].value.gsub(/^[£∞-£π]+$/,"").strip == ""
+              elsif zai["DATA"].value.gsub(/^[Ôºê-Ôºô]+$/,"").strip == ""
                 if tbl_tensu.empty?
                 else
                   comsize= tbl_tensu["SSTKIJUNCD2"].to_i + tbl_tensu["SSTKIJUNCD4"].to_i  + tbl_tensu["SSTKIJUNCD6"].to_i + tbl_tensu["SSTKIJUNCD8"].to_i
@@ -1369,14 +1388,14 @@ class Receden_check < Receden_common
                 @errors.push("34390",rece,zai,"DATA",nil,myfooter)
               end
             when "90"
-              if zai["DATA"].value =~ /^(°°{4}|[£∞-£π]{4})+$/
-                 modcds=zai["DATA"].value.scan(/[£∞-£π]{4}/)
+              if zai["DATA"].value =~ /^(„ÄÄ{4}|[Ôºê-Ôºô]{4})+$/
+                 modcds=zai["DATA"].value.scan(/[Ôºê-Ôºô]{4}/)
                  if modcds.empty?
                    @errors.push("34380",rece,zai,"DATA")
                  else
                    modcds.each{|modcd|
                      
-                     tbl_byomei=select_byomei(sprintf("ZZZ%s",modcd.tr("£∞-£π","0-9")))
+                     tbl_byomei=select_byomei(sprintf("ZZZ%s",modcd.tr("Ôºê-Ôºô","0-9")))
                      if tbl_byomei.empty?
                        @errors.push("33930",rece,zai,"DATA",nil,modcd)
                      end
@@ -1401,24 +1420,24 @@ class Receden_check < Receden_common
     myten_total = 0
     myten.each{|ten| myten_total += ten.to_i}
     if myten_total < 0
-      myfooter=sprintf("≈¨Õ—æ Û•Ï•≥°º•…§ÚπÁ∑◊§∑§ø≈¿øÙ°Œ%d°œ",myten_total)
+      myfooter=sprintf("ÈÅ©Áî®ÊÉÖÂ†±„É¨„Ç≥„Éº„Éâ„ÇíÂêàË®à„Åó„ÅüÁÇπÊï∞Ôºª%dÔºΩ",myten_total)
       @errors.push("33800",rece,nil,nil,nil,myfooter)
     end
 
     if rece.ho.empty?
     else
       if rece.ho.first["TEN"].value.to_i != myten[0]
-        myfooter=sprintf("≈¨Õ—æ Û•Ï•≥°º•…§Œ≈¿øÙπÁ∑◊°Œ%d°œ",myten[0])
+        myfooter=sprintf("ÈÅ©Áî®ÊÉÖÂ†±„É¨„Ç≥„Éº„Éâ„ÅÆÁÇπÊï∞ÂêàË®àÔºª%dÔºΩ",myten[0])
         @errors.push("45010",rece,rece.ho.first,"TEN",nil,myfooter)
       end
 
       if myten[0] < 0
-        myfooter=sprintf("ºÁ ›∏±§Œ≈¨Õ—æ Û•Ï•≥°º•…§ÚπÁ∑◊§∑§ø≈¿øÙ°Œ%d°œ",myten[0])
+        myfooter=sprintf("‰∏ª‰øùÈô∫„ÅÆÈÅ©Áî®ÊÉÖÂ†±„É¨„Ç≥„Éº„Éâ„ÇíÂêàË®à„Åó„ÅüÁÇπÊï∞Ôºª%dÔºΩ",myten[0])
         @errors.push("33800",rece,rece.ho.first,nil,nil,myfooter)
       end
 
       if myssmoney[0] != nil && rece.ho.first["SSMONEY"].value.to_i != myssmoney[0]
-        myfooter=sprintf("≈¨Õ—æ Û•Ï•≥°º•…§Œø©ªˆŒ≈Õ‹°¶¿∏≥ËŒ≈Õ‹πÁ∑◊°Œ%d°œ",myssmoney[0])
+        myfooter=sprintf("ÈÅ©Áî®ÊÉÖÂ†±„É¨„Ç≥„Éº„Éâ„ÅÆÈ£ü‰∫ãÁôÇÈ§ä„ÉªÁîüÊ¥ªÁôÇÈ§äÂêàË®àÔºª%dÔºΩ",myssmoney[0])
         @errors.push("45340",rece,rece.ho.first,"TEN",nil,myfooter)
       end
     end
@@ -1426,17 +1445,17 @@ class Receden_check < Receden_common
     rece.ko.each_with_index{|ko,i|
 
       if ko["TEN"].value.to_i != myten[i + 1]
-        myfooter=sprintf("≈¨Õ—æ Û•Ï•≥°º•…§ÚπÁ∑◊§∑§ø≈¿øÙ°Œ%d°œ",myten[i+1])
+        myfooter=sprintf("ÈÅ©Áî®ÊÉÖÂ†±„É¨„Ç≥„Éº„Éâ„ÇíÂêàË®à„Åó„ÅüÁÇπÊï∞Ôºª%dÔºΩ",myten[i+1])
         @errors.push(["45020","45030","45250","45260"][i],rece,ko,"TEN",nil,myfooter)
       end
 
       if myten[i + 1] < 0
-        myfooter=sprintf("¬Ë%s∏¯»Ò§Œ≈¨Õ—æ Û•Ï•≥°º•…§ÚπÁ∑◊§∑§ø≈¿øÙ°Œ%d°œ",["∞Ï","∆Û","ª∞","ªÕ"][i],myten[i+1])
+        myfooter=sprintf("Á¨¨%sÂÖ¨Ë≤ª„ÅÆÈÅ©Áî®ÊÉÖÂ†±„É¨„Ç≥„Éº„Éâ„ÇíÂêàË®à„Åó„ÅüÁÇπÊï∞Ôºª%dÔºΩ",["‰∏Ä","‰∫å","‰∏â","Âõõ"][i],myten[i+1])
         @errors.push("33800",rece,ko,nil,nil,myfooter)
       end
 
       if myssmoney[i + 1] != nil && ko["SSMONEY"].value.to_i != myssmoney[i + 1]
-        myfooter=sprintf("≈¨Õ—æ Û•Ï•≥°º•…§Œø©ªˆŒ≈Õ‹°¶¿∏≥ËŒ≈Õ‹πÁ∑◊°Œ%d°œ",myssmoney[i + 1])
+        myfooter=sprintf("ÈÅ©Áî®ÊÉÖÂ†±„É¨„Ç≥„Éº„Éâ„ÅÆÈ£ü‰∫ãÁôÇÈ§ä„ÉªÁîüÊ¥ªÁôÇÈ§äÂêàË®àÔºª%dÔºΩ",myssmoney[i + 1])
         @errors.push(["45350","45360","45640","45650"][i],rece,ko,"SSMONEY",nil,myfooter)
       end
     }
@@ -1461,7 +1480,7 @@ class Receden_check < Receden_common
       end
       sj.each{|sj_line|
         #---------------------------------------------------------------------------------------------------
-        #              •’•©°º•ﬁ•√•»•¡•ß•√•Ø(SJ•Ï•≥°º•…)
+        #              „Éï„Ç©„Éº„Éû„ÉÉ„Éà„ÉÅ„Çß„ÉÉ„ÇØ(SJ„É¨„Ç≥„Éº„Éâ)
         check_format(rece,sj_line)
         #---------------------------------------------------------------------------------------------------
       }
@@ -1503,24 +1522,24 @@ class Receden_check < Receden_common
       else
         if rece.sai.first["DATA01"].value == "MN"
           if rece.sai.first["DATA04"].value != re["SELNUM"].value
-            @errors.push("21200",rece,re,"SELNUM",nil,"Õ˙ŒÚ¥…Õ˝•÷•Ì•√•Ø∏°∫∫»÷πÊ°Œ#{rece.sai.first["DATA04"].value}°œ")
+            @errors.push("21200",rece,re,"SELNUM",nil,"Â±•Ê≠¥ÁÆ°ÁêÜ„Éñ„É≠„ÉÉ„ÇØÊ§úÊüªÁï™Âè∑Ôºª#{rece.sai.first["DATA04"].value}ÔºΩ")
           end
         else
           if rece.sai.first["DATA19"].value != re["SELNUM"].value
-            @errors.push("21200",rece,re,"SELNUM",nil,"Õ˙ŒÚ¥…Õ˝•÷•Ì•√•Ø∏°∫∫»÷πÊ°Œ#{rece.sai.first["DATA19"].value}°œ")
+            @errors.push("21200",rece,re,"SELNUM",nil,"Â±•Ê≠¥ÁÆ°ÁêÜ„Éñ„É≠„ÉÉ„ÇØÊ§úÊüªÁï™Âè∑Ôºª#{rece.sai.first["DATA19"].value}ÔºΩ")
           end
         end
       end
     end
   end
 
-  def main
+  def main(_param)
 
-    @hospnum,@infile,@outfile,@errlog,@check_level=ARGV[0].split(",")
+    @hospnum,@infile,@outfile,@errlog,@check_level=_param.split(",")
 
-    @db = PandaDB.new
-    @db.execFunction("DBOPEN")
-    @db.execFunction("DBSTART")
+    db = DBMAIN.new
+    db.exec("DBOPEN")
+    db.exec("DBSTART")
     @info=Recinfo.new
     @errors=Receden_error.new
 
@@ -1531,8 +1550,8 @@ class Receden_check < Receden_common
     end
     @errors.write(@outfile)
 
-    @db.execFunction("DBCOMMIT")
-    @db.execFunction("DBDISCONNECT")
+    db.exec("DBCOMMIT")
+    db.exec("DBDISCONNECT")
 
   rescue => err
     open(@errlog,"w"){|f|
