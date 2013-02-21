@@ -422,38 +422,24 @@ SCREEN_screen = \
 	P02T.glade \
 	W68.glade \
 	SID4.glade \
+	_KDMY01.glade \
+	_KADMY01.glade \
+	_PDMY01.glade \
+	_UDMY01.glade \
 	S10.glade \
 	W122.glade \
+	_SDMY01.glade \
 	L06.glade \
 	L07.glade \
 	G07.glade \
 	L100.glade \
 	G100.glade \
+	_LDMY01.glade \
+	_XADMY01.glade \
 	X07.glade \
 	I411.glade \
 	W36.glade \
-	C06.glade \
-	W91.glade \
-	XG03.glade \
-	W37.glade \
-	W92.glade \
-	M03.glade \
-	MMERR.glade \
-	MMID1.glade \
-	H03.glade \
-	W061.glade \
-	MJOB.glade \
-	UDR.glade \
-	I4ID2.glade \
-	W141.glade \
-	W142.glade \
-	K024.glade \
-	K0241.glade \
-    Z010.glade \
- 	Q05.glade \
- 	X08.glade \
- 	W93.glade \
- 	XG04.glade \
+	W00.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
 
