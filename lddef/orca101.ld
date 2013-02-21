@@ -9,7 +9,6 @@ bind	"W03"		"OpenCOBOL"	"ORCGW03";
 bind	"W04"		"OpenCOBOL"	"ORCGW04";
 bind	"W05"		"OpenCOBOL"	"ORCGW05";
 bind	"W06"		"OpenCOBOL"	"ORCGW06";
-bind	"W061"		"OpenCOBOL"	"ORCGW061";
 bind	"W07"		"OpenCOBOL"	"ORCGW07";
 bind	"W08"		"OpenCOBOL"	"ORCGW08";
 bind	"W09"		"OpenCOBOL"	"ORCGW09";
@@ -21,8 +20,6 @@ bind	"W121"		"OpenCOBOL"	"ORCGW121";
 bind	"W122"		"OpenCOBOL"	"ORCGW122";
 bind	"W13"		"OpenCOBOL"	"ORCGW13";
 bind	"W14"		"OpenCOBOL"	"ORCGW14";
-bind	"W141"		"OpenCOBOL"	"ORCGW141";
-bind	"W142"		"OpenCOBOL"	"ORCGW142";
 bind	"W15"		"OpenCOBOL"	"ORCGW15";
 bind	"W16"		"OpenCOBOL"	"ORCGW16";
 bind	"W17"		"OpenCOBOL"	"ORCGW17";
@@ -45,7 +42,6 @@ bind	"W33"		"OpenCOBOL"	"ORCGW33";
 bind	"W34"		"OpenCOBOL"	"ORCGW34";
 bind	"W35"		"OpenCOBOL"	"ORCGW35";
 bind	"W36"		"OpenCOBOL"	"ORCGW36";
-bind	"W37"		"OpenCOBOL"	"ORCGW37";
 bind	"W60"		"OpenCOBOL"	"ORCGW60";
 bind	"W61"		"OpenCOBOL"	"ORCGW61";
 bind	"W62"		"OpenCOBOL"	"ORCGW62";
@@ -55,9 +51,6 @@ bind	"W65"		"OpenCOBOL"	"ORCGW65";
 bind	"W66"		"OpenCOBOL"	"ORCGW66";
 bind	"W67"		"OpenCOBOL"	"ORCGW67";
 bind	"W68"		"OpenCOBOL"	"ORCGW68";
-bind	"W91"		"OpenCOBOL"	"ORCGW91";
-bind	"W92"		"OpenCOBOL"	"ORCGW92";
-bind	"W93"		"OpenCOBOL"	"ORCGW93";
 bind	"W96"		"OpenCOBOL"	"ORCGW96";
 bind	"W98"		"OpenCOBOL"	"ORCGW98";
 bind	"W981"		"OpenCOBOL"	"ORCGW981";
@@ -66,7 +59,7 @@ bind	"W99"		"OpenCOBOL"	"ORCGW99";
 bind	"WERR"		"OpenCOBOL"	"ORCGWERR";
 bind	"WID1"		"OpenCOBOL"	"ORCGWID1";
 bind	"WID2"		"OpenCOBOL"	"ORCGWID2";
-bindapi	"manageusersv2"	"OpenCOBOL"	"ORCGWAPI01";
+bind	"W00"		"OpenCOBOL"	"ORCGW00";
 
 multiplex_group	orca101;
 
@@ -80,7 +73,6 @@ data	{
 		W04;
 		W05;
 		W06;
-		W061;
 		W07;
 		W08;
 		W09;
@@ -92,8 +84,6 @@ data	{
 		W122;
 		W13;
 		W14;
-		W141;
-		W142;
 		W15;
 		W16;
 		W17;
@@ -116,7 +106,6 @@ data	{
 		W34;
 		W35;
 		W36;
-		W37;
 		W60;
 		W61;
 		W62;
@@ -126,9 +115,6 @@ data	{
 		W66;
 		W67;
 		W68;
-		W91;
-		W92;
-		W93;
 		W96;
 		W98;
 		W981;
@@ -137,18 +123,13 @@ data	{
 		WERR;
 		WID1;
 		WID2;
-		manageusersv2;
+		W00;
 	};
-};
-
-db	"xml2"	{
-	xml_manageusersv2req;
-	xml_manageusersv2res;
 };
 
 #include "orcadb.inc"
 /* #include "orcadbh.inc" */
-db	"shell"	{
+ db	"shell"	{
 	shell;
 };
 db      "blob_body" {

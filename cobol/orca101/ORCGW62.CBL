@@ -29,8 +29,6 @@
       *  Maj/Min/Rev 修正者        日付      内容
       *  00.00.01    NACL-森脇     06.08.02  労災、自賠のプリンタ追加
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
-      *  04.08.01    NACL-森脇     16/09/06  GINBEE対応
-      *  05.00.00    NACL-太田     17/11/29  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -38,11 +36,24 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    エラーファイル
+           SELECT  TESTERR-FILE    ASSIGN  TESTERR
+                                   FILE    STATUS  IS  STS-TESTERR.
+      *
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
+       FD  TESTERR-FILE.
+       01  TESTERR-REC             PIC X(200).
+      *
        WORKING-STORAGE             SECTION.
+      *
+      *    エラーファイル 名称領域 
+           COPY    "CPCOMMONDAT2.INC"
+                                   REPLACING  //RECE01PARA//
+                                   BY         //TESTERR//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -57,6 +68,10 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-TESTERR         PIC X(02).
       *
       *    システム領域
        01  SYS-AREA.
@@ -79,6 +94,8 @@
        01  WRK-AREA.
            03  WRK-WIDGET          PIC X(64).
            03  WRK-WIDMSG          PIC X(70).
+      *
+           03  WRK-TESTERR         PIC X(200).
       *
            03  WRK-PRTNUM          PIC X(17).
            03  WRK-PRTNAME-G.
@@ -151,7 +168,63 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W122.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W321.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W36.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W68.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
+           COPY    "W00.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -450,31 +523,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE           TO  W62
            INITIALIZE                  W62
       *
-      *----(04.08.01)--ADD-START---
-      *    ファイル位置決定
-           INITIALIZE                  ORCSMKPASSAREA
-           MOVE    WRK-CONS-FILENAME
-                                   TO  MKPASS-IN-01
-           CALL    "ORCSMKPASS"        USING
-                                       ORCSMKPASSAREA
-      *
-      *    ファイル存在チェック
-           INITIALIZE                  ORCSFILECHKAREA
-           MOVE    MKPASS-OT-01    TO  FILECHK-NAME
-           CALL    "ORCSFILECHK"       USING
-                                       ORCSFILECHKAREA
-           IF          FILECHK-RC      =   0
-               MOVE    "BLOBIMPORT"    TO  MCP-FUNC
-               MOVE    "blob"          TO  MCP-TABLE
-               MOVE    "primary"       TO  MCP-PATHNAME
-               MOVE    MKPASS-OT-01    TO  ORCA-BLOB-FILE
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   ORCA-BLOB
-                                                   SPA-AREA
-               MOVE    ORCA-BLOB-OBJECT    TO  SPA-W62-OBJECT
-           END-IF
-      *----(04.08.01)--ADD-END-----
-      *
            MOVE    SPA-W62-OBJECT  TO  W62-PSAREA
            MOVE    SPA-W62-PRTNUM-G    TO  W62-PRTNUM
       *
@@ -686,11 +734,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO            TO  WRK-CONS-JOB-JOBID
            MOVE    SPACE           TO  WRK-CONS-PREVIEW-TBL-GROUP
       *
+           MOVE    "TESTERR"       TO  TESTERR-FILE-ID
+           MOVE    SPA-TERMID      TO  TESTERR-TERMID
+      *
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *
            MOVE    SPACE           TO  SHELLTBL
       *
-           MOVE    "preprint.sh"   TO  SHELLTBL-NAME
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    "scripts/allways/preprint.sh"
+                                   TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING
+                                       ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
            MOVE    WRK-CONS-PREVIEW-TBL-KEY
@@ -730,7 +787,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LNK-PRTKANRI-PRTNM
                                    TO  SHELLTBL-ARG11
       *
-           MOVE    SPACE           TO  SHELLTBL-ARG12
+           MOVE    TESTERR         TO  SHELLTBL-ARG12
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
@@ -744,14 +801,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-ARG15
            MOVE    WRK-PRTNUM      TO  SHELLTBL-ARG16
       *
-           IF    SPA-CLIENT-PRT-FLG  =  2
-               MOVE    "1"         TO  SHELLTBL-ARG17
-           END-IF
+      *     MOVE    "1"             TO  SHELLTBL-ARG17
+      *
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "allways"       TO  MCP-PATHNAME
+           MOVE    "shell"         TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA

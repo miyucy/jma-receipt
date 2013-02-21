@@ -274,7 +274,64 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC". 
+           COPY    "W08.INC". 
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W122.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W321.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W36.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W68.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
+           COPY    "W00.INC".
+      *
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -581,11 +638,11 @@
            MOVE    SPA-HOSPNUM         TO  SYS-9001-HOSPNUM
            MOVE    SYS-9001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                INITIALIZE                  SYSKANRI-REC
@@ -608,12 +665,12 @@
                                        TO  SPA-GMN-SMEMO (IDX)  
       *
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
       *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *                                  
            MOVE    IDX                 TO  SPA-GMN-MAX
@@ -1314,10 +1371,6 @@
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
-           PERFORM 800-MCNDATE-SEC
-           MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
-           MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
-      *
       *    Ï«ºÒ°åÎÅµ¡´Ø¾ðÊó
            MOVE    SPACE               TO  SYS-9000-REC
            INITIALIZE                      SYS-9000-REC
@@ -1340,8 +1393,8 @@
                MOVE    "*"                     TO  SYS-9000-KBNCD
            END-IF
       *
-           MOVE    "00000000"              TO  SYS-9000-STYUKYMD
-           MOVE    "99999999"              TO  SYS-9000-EDYUKYMD
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-9000-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD        TO  SYS-9000-EDYUKYMD
            MOVE    SPA-GMN-SETUZOKU        TO  SYS-9000-SETUZOKU
            MOVE    SPA-GMN-SCODE           TO  SYS-9000-CODE
            MOVE    SPA-GMN-UKEBUTTON-G     TO  SYS-9000-UKEBUTTON-G
@@ -1392,64 +1445,72 @@
                MOVE    SPACE               TO  SYS-9000-RESEND-FLG
            END-IF
       *     
+           MOVE    SYS-9000-REC            TO  SYSKANRI-REC
+      *     
            IF      FLG-SYSKANRI            =   ZERO
-               MOVE    SMCNDATE-YMD        TO  SYS-9000-UPYMD
-               MOVE    SMCNDATE-HMS        TO  SYS-9000-UPHMS
+      *     
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
+      *     
+               MOVE    SYS-KANRICD             TO  SYSUP-KANRICD
+               MOVE    SYS-KBNCD               TO  SYSUP-KBNCD
+               MOVE    SPA-W01-SEL-STYUKYMD    TO  SYSUP-STYUKYMD
+               MOVE    SPA-W01-SEL-EDYUKYMD    TO  SYSUP-EDYUKYMD
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "upd1"                  TO  MCP-PATHNAME
+               MOVE    "DBUPDATE"              TO  MCP-FUNC
            ELSE
-               MOVE    SMCNDATE-YMD        TO  SYS-9000-CREYMD
-                                               SYS-9000-UPYMD
-               MOVE    SMCNDATE-HMS        TO  SYS-9000-UPHMS
+      *     
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD        TO  SYS-CREYMD
+                                               SYS-UPYMD
+               MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
+      *     
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "key"                   TO  MCP-PATHNAME
+               MOVE    "DBINSERT"              TO  MCP-FUNC
            END-IF
-      *
-           MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
-           MOVE    SYS-9000-REC        TO  SYSKANRI-REC
-      *
-      *    £Ã£Ì£Á£É£ÍÀÜÂ³¾ðÊó
-           MOVE    "99999999"          TO  SYS-STYUKYMD
-           MOVE    "00000000"          TO  SYS-EDYUKYMD
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "del11"             TO  MCP-PATHNAME
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF    ( MCP-RC              NOT =   ZERO )
-               MOVE    "1003"                  TO  SPA-ERRCD
-               GO  TO  490-KOUSHIN-EXT
-           END-IF
-      *
-           MOVE    SYS-9000-REC        TO  SYSKANRI-REC
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF    ( MCP-RC              NOT =   ZERO )
-               MOVE    "1003"                  TO  SPA-ERRCD
-               GO  TO  490-KOUSHIN-EXT
-           END-IF
-      *
-      *    £Ã£Ì£Á£É£ÍÀÜÂ³ÀßÄêÌ¾¾Îºï½ü½èÍý
-           INITIALIZE                      SYS-9001-REC
-           MOVE    "9001"                  TO  SYS-9001-KANRICD
-           MOVE    "99999999"              TO  SYS-9001-STYUKYMD
-           MOVE    "00000000"              TO  SYS-9001-EDYUKYMD
-           MOVE    SPA-HOSPNUM             TO  SYS-9001-HOSPNUM
-           MOVE    SYS-9001-REC            TO  MCPDATA-REC
-           MOVE    "DBDELETE"              TO  MCP-FUNC
-           MOVE    "tbl_syskanri"          TO  MCP-TABLE
-           MOVE    "del11"                 TO  MCP-PATHNAME
+           MOVE    SPA-HOSPNUM             TO  SYS-HOSPNUM
+                                               SYSUP-HOSPNUM
+           MOVE    SYSKANRI-REC            TO  MCPDATA-REC
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *
            IF      MCP-RC              NOT =   ZERO 
-               MOVE    "1001"                  TO  SPA-ERRCD
-               DISPLAY "SYSKANRI-KEY =>" SYS-9001-KEY 
+               MOVE    "1003"                  TO  SPA-ERRCD
                GO  TO  490-KOUSHIN-EXT
+           END-IF      
+      *
+      *    £Ã£Ì£Á£É£ÍÀÜÂ³ÀßÄêÌ¾¾Îºï½ü½èÍý
+           INITIALIZE                  SYS-9001-REC
+           MOVE    "9001"              TO  SYS-9001-KANRICD
+           MOVE    SPA-SYSYMD          TO  SYS-9001-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-9001-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-9001-HOSPNUM
+           MOVE    SYS-9001-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               INITIALIZE                      SYS-9001-REC
+               MOVE    "9001"                  TO  SYS-9001-KANRICD
+               MOVE    SPA-SYSYMD              TO  SYS-9001-STYUKYMD
+               MOVE    SPA-SYSYMD              TO  SYS-9001-EDYUKYMD
+               MOVE    SPA-HOSPNUM             TO  SYS-9001-HOSPNUM
+               MOVE    SYS-9001-REC            TO  MCPDATA-REC
+               MOVE    "DBDELETE"              TO  MCP-FUNC
+               MOVE    "tbl_syskanri"          TO  MCP-TABLE
+               MOVE    "del11"                 TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+      *
+               IF      MCP-RC              NOT =   ZERO 
+                   MOVE    "1001"                  TO  SPA-ERRCD
+                   DISPLAY "SYSKANRI-KEY =>" SYS-9001-KEY 
+                   GO  TO  490-KOUSHIN-EXT
+               END-IF
            END-IF
       *
       *    £Ã£Ì£Á£É£ÍÀÜÂ³ÀßÄêÅÐÏ¿½èÍý
@@ -1470,8 +1531,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                             TO  SYS-9001-PORT2 
                    MOVE    SPA-GMN-SMEMO (IDX)
                                             TO  SYS-9001-MEMO 
-                   MOVE    "00000000"       TO  SYS-9001-STYUKYMD
-                   MOVE    "99999999"       TO  SYS-9001-EDYUKYMD
+                   MOVE    SPA-W01-STYUKYMD    TO  SYS-9001-STYUKYMD
+                   MOVE    SPA-W01-EDYUKYMD    TO  SYS-9001-EDYUKYMD
       *     
                    PERFORM 800-MCNDATE-SEC
                    MOVE    SMCNDATE-YMD        TO  SYS-9001-CREYMD
@@ -1719,7 +1780,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

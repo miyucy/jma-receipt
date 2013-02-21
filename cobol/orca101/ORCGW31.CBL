@@ -101,10 +101,6 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-YMD                             PIC X(10).
-           03  WRK-ZOGENPTN                        PIC X(01).
-           03  WRK-ZOGEN                           PIC S9(05).
-           03  WRK-KEISANYMD                       PIC X(08).
       *    入力項目名
            03  WRK-MCP-WIDGET                      PIC X(64).
            03  WRK-WIDMSG                          PIC X(200).
@@ -121,8 +117,6 @@
       *
       *    固定値領域
        01  CONST-AREA.
-           03  CONST-H300401           PIC X(08)   VALUE "20180401".
-           03  CONST-H280401           PIC X(08)   VALUE "20160401".
            03  CONST-H220401           PIC X(08)   VALUE "20100401".
            03  CONST-H200401           PIC X(08)   VALUE "20080401".
            03  CONST-GMN-MEDKBN-MAX    PIC 9(05)   VALUE 40.
@@ -246,6 +240,126 @@
                        09  CONST-MEDKBN-SRYCD  PIC X(09).
                05  CONST-MEDKBN-MAX        PIC 9(03)   VALUE   37.
       *
+           03  CONST-MEDH20-G.
+               05  CONST-MEDH20-VAL.
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2004.
+                   07                  PIC X(09)   VALUE "820000060".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2020.
+                   07                  PIC X(09)   VALUE "820000076".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2021.
+                   07                  PIC X(09)   VALUE "820000077".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2022.
+                   07                  PIC X(09)   VALUE "820000078".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2023.
+                   07                  PIC X(09)   VALUE "820000079".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2024.
+                   07                  PIC X(09)   VALUE "820000080".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2027.
+                   07                  PIC X(09)   VALUE "820000083".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2031.
+                   07                  PIC X(09)   VALUE "820000087".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2034.
+                   07                  PIC X(09)   VALUE "820000090".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2001.
+                   07                  PIC X(09)   VALUE "820000057".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2010.
+                   07                  PIC X(09)   VALUE "820000066".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2002.
+                   07                  PIC X(09)   VALUE "820000058".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2003.
+                   07                  PIC X(09)   VALUE "820000059".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2005.
+                   07                  PIC X(09)   VALUE "820000061".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2006.
+                   07                  PIC X(09)   VALUE "820000062".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2007.
+                   07                  PIC X(09)   VALUE "820000063".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2008.
+                   07                  PIC X(09)   VALUE "820000064".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2009.
+                   07                  PIC X(09)   VALUE "820000065".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2011.
+                   07                  PIC X(09)   VALUE "820000067".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2012.
+                   07                  PIC X(09)   VALUE "820000068".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2013.
+                   07                  PIC X(09)   VALUE "820000069".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2014.
+                   07                  PIC X(09)   VALUE "820000070".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2015.
+                   07                  PIC X(09)   VALUE "820000071".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2016.
+                   07                  PIC X(09)   VALUE "820000072".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2017.
+                   07                  PIC X(09)   VALUE "820000073".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2030.
+                   07                  PIC X(09)   VALUE "820000086".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2036.
+                   07                  PIC X(09)   VALUE "820000092".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2037.
+                   07                  PIC X(09)   VALUE "820000093".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2018.
+                   07                  PIC X(09)   VALUE "820000074".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2019.
+                   07                  PIC X(09)   VALUE "820000075".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2025.
+                   07                  PIC X(09)   VALUE "820000081".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2026.
+                   07                  PIC X(09)   VALUE "820000082".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2028.
+                   07                  PIC X(09)   VALUE "820000084".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2029.
+                   07                  PIC X(09)   VALUE "820000085".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2032.
+                   07                  PIC X(09)   VALUE "820000088".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2033.
+                   07                  PIC X(09)   VALUE "820000089".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2035.
+                   07                  PIC X(09)   VALUE "820000091".
+               05  CONST-MEDH20-R REDEFINES CONST-MEDH20-VAL.
+                   07  CONST-MEDH20-OCC    OCCURS  37.
+                       09  CONST-MEDH20-ALLKBN PIC 9(01).
+                       09  CONST-MEDH20-ZAINUM PIC 9(04).
+                       09  CONST-MEDH20-SRYCD  PIC X(09).
+               05  CONST-MEDH20-MAX        PIC 9(03)   VALUE   37.
+      *
            COPY  "CPMEDKBN.INC".
       *
       *****************************************************************
@@ -268,11 +382,6 @@
       *    サブプロ用　領域
       *****************************************************************
       *
-      *    日付変換サブ
-           COPY    "CPORCSDAY.INC".
-           COPY    "CPORCSLNK.INC".
-           COPY    "CPORCSGDAY.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -289,7 +398,63 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W122.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W321.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W36.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W68.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
+           COPY    "W00.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -458,49 +623,44 @@
       *****************************************************************
        3101-SPA-5014-SET-SEC                  SECTION.
       *
-           MOVE    ZERO                TO  IDX-CHK
+           PERFORM VARYING IDX-CHK    FROM    1   BY  1
+                   UNTIL ( IDX-CHK    >   CONST-MEDH20-MAX )
       *
-           PERFORM VARYING IDX-MED FROM    1   BY  1
-                   UNTIL ( IDX-MED >   MEDH20-MAX )
-      *
-               IF    ( MEDH20-STYMD (IDX-MED)
-                                      <=   SPA-W01-STYUKYMD )
-                 AND ( MEDH20-EDYMD (IDX-MED)
-                                      >=   SPA-W01-STYUKYMD )
-                 AND ( MEDH20-ID    (IDX-MED)
-                                      <    "80" )
-      *
-                   COMPUTE IDX-CHK   = IDX-CHK + 1
-                   MOVE    IDX-CHK     TO  SPA-GMN-MEDKBN-MAX
-      *
-                   MOVE    MEDH20-ZAINUM (IDX-MED)
+               MOVE    CONST-MEDH20-ZAINUM (IDX-CHK)
                                        TO  SPA-NAI-MEDKBN-ZAINUM
                                                               (IDX-CHK)
-                   MOVE    MEDH20-CDL  (IDX-MED)
+               MOVE    CONST-MEDH20-SRYCD  (IDX-CHK)
                                        TO  SPA-NAI-MEDKBN-SRYCD
                                                               (IDX-CHK)
-                   MOVE    MEDH20-MEIL (IDX-MED)
+      *
+               PERFORM VARYING IDX-MED FROM    1   BY  1
+                       UNTIL ( IDX-MED >   MEDH20-MAX )
+                        OR   ( SPA-GMN-CHK-LBLMEDKBN (IDX-CHK)
+                                       NOT =   SPACE )
+                   IF    ( MEDH20-STYMD (IDX-MED)
+                                      <=   SPA-W01-STYUKYMD )
+                     AND ( MEDH20-EDYMD (IDX-MED)
+                                      >=   SPA-W01-STYUKYMD )
+                     AND ( MEDH20-ZAINUM (IDX-MED)
+                                       =   SPA-NAI-MEDKBN-ZAINUM
+                                                              (IDX-CHK))
+                       MOVE    MEDH20-MEIL (IDX-MED)
                                        TO  SPA-GMN-CHK-LBLMEDKBN
                                                               (IDX-CHK)
-      *
-                   PERFORM 3101-SYS5014-SEL-SEC
-                   IF    ( SYS-5014-DISPKBN    =   "1" )
-                       MOVE    "T"     TO  SPA-GMN-CHK-MEDKBN (IDX-CHK)
-                   ELSE
-                       MOVE    "F"     TO  SPA-GMN-CHK-MEDKBN (IDX-CHK)
                    END-IF
       *
-                   IF    ( SPA-W01-STYUKYMD   >=   CONST-H300401 )
-                       IF    ( MEDH20-ZAINUM (IDX-MED)
-                                       =   2022 OR 2024 OR 2031 OR 2002
-                                        OR 2007 OR 2039 )
-                           MOVE    "T" TO  SPA-GMN-CHK-MEDKBN (IDX-CHK)
-                       END-IF
-                   END-IF
+               END-PERFORM
       *
+               PERFORM 3101-SYS5014-SEL-SEC
+               IF    ( SYS-5014-DISPKBN    =   "1" )
+                   MOVE    "T"         TO  SPA-GMN-CHK-MEDKBN (IDX-CHK)
+               ELSE
+                   MOVE    "F"         TO  SPA-GMN-CHK-MEDKBN (IDX-CHK)
                END-IF
       *
            END-PERFORM
+      *
+           MOVE    CONST-MEDH20-MAX    TO  SPA-GMN-MEDKBN-MAX
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
@@ -579,14 +739,7 @@
            IF    ( FLG-SYSKANRI    =   ZERO )
                CONTINUE
            ELSE
-               MOVE    SYS-5014-REC    TO  SYSKANRI-REC
-               PERFORM 900-SYSKANRI-KEY16-SEL-SEC
-               MOVE    SYSKANRI-REC    TO  SYS-5014-REC
-               IF    ( FLG-SYSKANRI    =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    "1"         TO  SYS-5014-DISPKBN
-               END-IF
+               MOVE    "1"         TO  SYS-5014-DISPKBN
            END-IF
       *
            .
@@ -1030,76 +1183,25 @@
                    UNTIL ( IDX-CHK    >   SPA-GMN-MEDKBN-MAX )
                     OR   ( SPA-ERRCD  NOT =   SPACE )
       *
-               DISPLAY "A SEL " SPA-NAI-MEDKBN-ZAINUM (IDX-CHK)
                PERFORM 3101-SYS5014-SEL-SEC
-               DISPLAY "A RESULT " FLG-SYSKANRI
                IF    ( FLG-SYSKANRI    =   ZERO )
+                   IF    ( SPA-GMN-CHK-MEDKBN (IDX-CHK)    =   "T" )
+                       MOVE    "1"         TO  SYS-5014-DISPKBN
+                   ELSE
+                       MOVE    SPACE       TO  SYS-5014-DISPKBN
+                   END-IF
       *
                    MOVE    SMCNDATE-YMD    TO  SYS-5014-UPYMD
                    MOVE    SMCNDATE-HMS    TO  SYS-5014-UPHMS
                    MOVE    SPA-HOSPNUM     TO  SYS-5014-HOSPNUM
-      *
-                   IF    ( SPA-W01-STYUKYMD
-                                       >   SYS-5014-STYUKYMD )
-                       MOVE    SYS-5014-REC    TO  SYSKANRI-REC
-                       MOVE    SYS-HOSPNUM     TO  SYSUP-HOSPNUM
-                       MOVE    SYS-KANRICD     TO  SYSUP-KANRICD
-                       MOVE    SYS-KBNCD       TO  SYSUP-KBNCD
-                       MOVE    SYS-STYUKYMD    TO  SYSUP-STYUKYMD
-                       MOVE    SYS-EDYUKYMD    TO  SYSUP-EDYUKYMD
-                       MOVE    SPA-W01-STYUKYMD
-                                               TO  WRK-YMD
-                       MOVE    "1"             TO  WRK-ZOGENPTN
-                       MOVE    -1              TO  WRK-ZOGEN
-                       PERFORM 800-CALENDAR-SEC
-                       MOVE    WRK-KEISANYMD   TO  SYS-EDYUKYMD
-                       MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-                       MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                       MOVE    "upd1"          TO  MCP-PATHNAME
-                       PERFORM 910-DBUPDATE-SEC
-                       IF    ( MCP-RC      NOT =   ZERO )
-                           MOVE    "4008"      TO  SPA-ERRCD
-                       END-IF
+                   MOVE    SYS-5014-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+                   IF    ( MCP-RC      NOT =   ZERO )
+                       MOVE    "4001"      TO  SPA-ERRCD
                    END-IF
       *
-                   IF    ( SPA-ERRCD       =   SPACE )
-      *
-               DISPLAY "B SEL " SPA-NAI-MEDKBN-ZAINUM (IDX-CHK)
-                       PERFORM 48011-SYS5014-EDIT-SEC
-               DISPLAY "B RESULT " FLG-SYSKANRI
-      *
-                       IF    ( SPA-W01-STYUKYMD
-                                           >   SYS-5014-STYUKYMD )
-                           MOVE    SYS-5014-REC    TO  SYSKANRI-REC
-                           MOVE    SPA-W01-STYUKYMD TO SYS-STYUKYMD
-                           MOVE    SPA-W01-EDYUKYMD TO SYS-EDYUKYMD
-                           MOVE    SMCNDATE-YMD    TO  SYS-CREYMD
-                           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-                           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                           MOVE    "key"           TO  MCP-PATHNAME
-                           PERFORM 910-DBINSERT-SEC
-                           IF    ( MCP-RC      NOT =   ZERO )
-                               MOVE    "4009"      TO  SPA-ERRCD
-                           END-IF
-                       ELSE
-                           MOVE    SYS-5014-REC    TO  SYSKANRI-REC
-                           MOVE    SYS-HOSPNUM     TO  SYSUP-HOSPNUM
-                           MOVE    SYS-KANRICD     TO  SYSUP-KANRICD
-                           MOVE    SYS-KBNCD       TO  SYSUP-KBNCD
-                           MOVE    SYS-STYUKYMD    TO  SYSUP-STYUKYMD
-                           MOVE    SYS-EDYUKYMD    TO  SYSUP-EDYUKYMD
-      *
-                           MOVE    SPA-W01-STYUKYMD TO SYS-STYUKYMD
-                           MOVE    SPA-W01-EDYUKYMD TO SYS-EDYUKYMD
-                           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
-                           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                           MOVE    "upd1"          TO  MCP-PATHNAME
-                           PERFORM 910-DBUPDATE-SEC
-                           IF    ( MCP-RC      NOT =   ZERO )
-                               MOVE    "4008"      TO  SPA-ERRCD
-                           END-IF
-                       END-IF
-                   END-IF
                ELSE
       *
                    MOVE    SPACE       TO      SYS-5014-REC
@@ -1122,8 +1224,11 @@
                        MOVE    SPA-NAI-MEDKBN-SRYCD  (IDX-CHK)
                                        TO  SYS-5014-SRYCD 
                    END-IF
-      *
-                   PERFORM 48011-SYS5014-EDIT-SEC
+                   IF    ( SPA-GMN-CHK-MEDKBN (IDX-CHK)    =   "T" )
+                       MOVE    "1"     TO  SYS-5014-DISPKBN
+                   ELSE
+                       MOVE    SPACE   TO  SYS-5014-DISPKBN
+                   END-IF
       *
                    MOVE    SMCNDATE-YMD    TO  SYS-5014-CREYMD
                                                SYS-5014-UPYMD
@@ -1144,20 +1249,6 @@
       *
            .
        4801-SYS5014-TOUROKU-EXT.
-           EXIT.
-      *****************************************************************
-      *    医療区分表示情報編集処理
-      *****************************************************************
-       48011-SYS5014-EDIT-SEC          SECTION.
-      *
-           IF    ( SPA-GMN-CHK-MEDKBN (IDX-CHK)    =   "T" )
-               MOVE    "1"             TO  SYS-5014-DISPKBN
-           ELSE
-               MOVE    SPACE           TO  SYS-5014-DISPKBN
-           END-IF
-      *
-           .
-       48011-SYS5014-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    登録処理
@@ -1361,14 +1452,6 @@
                    MOVE    WIDGET-INSENSITIVE
                                       TO  W31-CHK-MEDKBN-STATE (IDX-CHK)
                END-IF
-               IF    ( SPA-W01-STYUKYMD   >=   CONST-H300401 )
-                   IF    ( SPA-NAI-MEDKBN-ZAINUM (IDX-CHK)
-                               =   2022 OR 2024 OR 2031 OR 2002
-                                OR 2007 OR 2039 )
-                       MOVE    WIDGET-INSENSITIVE
-                                      TO  W31-CHK-MEDKBN-STATE (IDX-CHK)
-                   END-IF
-               END-IF
       *
            END-PERFORM
       *
@@ -1470,7 +1553,7 @@
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
-           WHEN    "4001"  THRU    "4009"
+           WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            END-EVALUATE
@@ -1510,7 +1593,6 @@
       *
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -1539,26 +1621,6 @@
            .
       *
        800-MCNDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    カレンダー処理
-      *****************************************************************
-       800-CALENDAR-SEC                SECTION.
-      *
-      *    増減パターン 1:日／2:月／3:年
-      *
-           INITIALIZE                  STS-AREA-DAY
-           INITIALIZE                  LNK-DAY6-AREA
-           MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    WRK-YMD             TO  LNK-DAY6-KIJUN
-           MOVE    WRK-ZOGENPTN        TO  LNK-DAY6-ZOGENPTN
-           MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KEISAN     TO  WRK-KEISANYMD
-      *
-           .
-       800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
       *    システム管理検索処理

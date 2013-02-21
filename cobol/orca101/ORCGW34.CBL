@@ -121,7 +121,6 @@
            03  FLG-CHK             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-OK              PIC 9(01).
-           03  FLG-GMN-INIT        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -152,7 +151,6 @@
            03  WRK-SELNUM          PIC 9(03).
       *
            03  WRK-MCP-WIDGET      PIC X(64).
-           03  WRK-PRGLST-ROW      PIC S9(9)   BINARY.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -240,7 +238,63 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC". 
+           COPY    "W08.INC". 
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W122.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W321.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W36.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W68.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
+           COPY    "W00.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -339,7 +393,6 @@
                    PERFORM 330-WID1-SET-SEC
                WHEN    OTHER
                    PERFORM 310-SPASET-SEC
-                   MOVE    1               TO  FLG-GMN-INIT
            END-EVALUATE
       *
            .
@@ -384,7 +437,6 @@
       *
            MOVE    1                   TO  SPA-GMN-PAGE
            PERFORM 3101-PGLIST-HEN-SEC
-      *
            . 
        310-SPASET-EXT.
            EXIT.
@@ -905,7 +957,6 @@
       *
            IF      SPA-GMN-SELNUM      =   ZERO
                PERFORM 310-SPASET-SEC
-               MOVE    1                   TO  FLG-GMN-INIT
            ELSE
                MOVE    SPACE               TO  SPA-GMN-PRGID
                INITIALIZE                  SPA-GMN-INPUT-G
@@ -1365,14 +1416,8 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    W34-ROW             TO  WRK-PRGLST-ROW
-      *
            MOVE    SPACE               TO  W34
            INITIALIZE                      W34
-      *
-           IF    ( FLG-GMN-INIT        =   ZERO )
-               MOVE    WRK-PRGLST-ROW  TO  W34-ROW
-           END-IF
       *
            MOVE    SPA-GMN-PRGID       TO  W34-PRGID
            MOVE    SPA-GMN-EXPLANTION  TO  W34-EXPLANTION
@@ -1527,7 +1572,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

@@ -95,17 +95,15 @@
                        09  WRK-SSTKJNCD9           PIC 9(04).
            03  WRK-KBN1-G.
                05  WRK-KBN1                        PIC 9(01).
-           03  WRK-KBN2-G.
-               05  WRK-KBN2                        PIC 9(02).
            03  WRK-PNT                 PIC 9(05).
       *
        01  SSTKJN-AREA.
            03  SSTKJN-VAL.
                05  SSTKJN-VAL-OCC                  PIC X(500)
-                                                   OCCURS  20.
+                                                   OCCURS  7.
            03  SSTKJN-R    REDEFINES       SSTKJN-VAL.
                05  SSTKJN-CD                       PIC X(01)
-                                                   OCCURS  10000.
+                                                   OCCURS  3500.
       *
       *    コラムリスト位置
            03  WRK-W201-ROW            PIC S9(09).
@@ -157,7 +155,63 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W122.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W321.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W36.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W68.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
+           COPY    "W00.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -246,6 +300,7 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
       *
+           EVALUATE    SPA-MOTOPG
            EVALUATE    SPA-MOTOPG
            WHEN    "W25"
                    PERFORM 320-W25SPASET-SEC
@@ -392,7 +447,6 @@
       *
            MOVE    SPACE               TO  W201
       *    コラムリストの位置指定
-           INITIALIZE                      W201
            MOVE    ZERO                TO  W201-MEILIST-ROW
            IF      WRK-W201-ROW    NOT =   ZERO
                MOVE    WRK-W201-ROW    TO  W201-MEILIST-ROW 
@@ -858,20 +912,13 @@
       *
            PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
       *
-               EVALUATE    TRUE
-               WHEN  ( SYS-1006-KBNCD (2:)         =   SPACE )
-                AND  ( SYS-1006-KBNCD  >=  "1" )
-                AND  ( SYS-1006-KBNCD  <=  "9" )
+      *
+               IF    ( SYS-1006-KBNCD  >=  "1" )
+                AND  ( SYS-1006-KBNCD  <=  "7" )
                    MOVE    SYS-1006-KBNCD  TO  WRK-KBN1-G
                    MOVE    SYS-1006-TBL    TO  SSTKJN-VAL-OCC
                                                      (WRK-KBN1)
-               WHEN  ( SYS-1006-KBNCD (2:1)    NOT =   SPACE )
-                AND  ( SYS-1006-KBNCD  >=  "10" )
-                AND  ( SYS-1006-KBNCD  <=  "19" )
-                   MOVE    SYS-1006-KBNCD  TO  WRK-KBN2-G
-                   MOVE    SYS-1006-TBL    TO  SSTKJN-VAL-OCC
-                                                     (WRK-KBN2)
-               END-EVALUATE
+               END-IF
       *
                PERFORM 900-SYSKANRI-KEY2-FET-SEC
                MOVE    SYSKANRI-REC    TO  SYS-1006-REC
@@ -1419,7 +1466,6 @@
           END-EVALUATE
       *
            MOVE    SPACE               TO  WID1
-           INITIALIZE                      WID1
            MOVE    SPA-WIDCD           TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG          TO  WID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
