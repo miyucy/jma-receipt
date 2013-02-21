@@ -8374,12 +8374,6 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            MOVE    RECE4A-YKZTEN    TO  RECE4A-HOKATU-YKZTEN
            MOVE    RECE4A-KIZAITEN  TO  RECE4A-HOKATU-KIZAITEN
       *
-           MOVE    RECE44C-ZAITEN   TO  RECE44C-HOKATU-ZAITEN
-           MOVE    RECE44C-SYUTEN1  TO  RECE44C-HOKATU-SYUTEN1
-           MOVE    RECE44C-SYUTEN2  TO  RECE44C-HOKATU-SYUTEN2
-           MOVE    RECE44C-YKZTEN   TO  RECE44C-HOKATU-YKZTEN
-           MOVE    RECE44C-KIZAITEN TO  RECE44C-HOKATU-KIZAITEN
-      *
            WRITE   RECE44-REC
            ADD     1                TO  CNT-OUT1
       *
@@ -8387,11 +8381,25 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            ADD     1                TO  CNT-OUT4
       *
            IF      RECE41-HKNKBN    =   "1" OR "2"
+      *
              COMPUTE  RECE44C-ZAI-TENSU  =  RECE44C-ZAITEN
                                          -  WRK-TEN
              MOVE  WRK-ZAI-KINGAKU  TO  RECE44C-ZAI-KINGAKU
+      *
+             COMPUTE  RECE44C-ZAITEN     =  RECE44C-ZAITEN
+                                         -  WRK-TEN
+             COMPUTE  RECE44C-SYUTEN1    =  RECE44C-SYUTEN1
+                                         -  WRK-TEN
+      *
+             MOVE  RECE44C-ZAITEN   TO  RECE44C-HOKATU-ZAITEN
+             MOVE  RECE44C-SYUTEN1  TO  RECE44C-HOKATU-SYUTEN1
+             MOVE  RECE44C-SYUTEN2  TO  RECE44C-HOKATU-SYUTEN2
+             MOVE  RECE44C-YKZTEN   TO  RECE44C-HOKATU-YKZTEN
+             MOVE  RECE44C-KIZAITEN TO  RECE44C-HOKATU-KIZAITEN
+      *
              WRITE RECE44C-REC
              ADD   1                TO  CNT-OUT6
+      *
            END-IF
       *
            .

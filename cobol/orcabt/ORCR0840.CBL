@@ -11548,12 +11548,6 @@ grpsys     PERFORM  900-DBSELECT-SEC
            MOVE    RECE8A-YKZTEN    TO  RECE8A-HOKATU-YKZTEN
            MOVE    RECE8A-KIZAITEN  TO  RECE8A-HOKATU-KIZAITEN
       *
-           MOVE    RECE84C-ZAITEN   TO  RECE84C-HOKATU-ZAITEN
-           MOVE    RECE84C-SYUTEN1  TO  RECE84C-HOKATU-SYUTEN1
-           MOVE    RECE84C-SYUTEN2  TO  RECE84C-HOKATU-SYUTEN2
-           MOVE    RECE84C-YKZTEN   TO  RECE84C-HOKATU-YKZTEN
-           MOVE    RECE84C-KIZAITEN TO  RECE84C-HOKATU-KIZAITEN
-      *
            WRITE   RECE84-REC
       *
            IF      STS-RECE84          =   "00"
@@ -11587,9 +11581,22 @@ grpsys     PERFORM  900-DBSELECT-SEC
            ADD     1                TO  CNT-OUT4
       *
            IF      RECE82-HKNKBN    =   "1" OR "2"
+      *
              COMPUTE  RECE84C-ZAI-TENSU  =  RECE84C-ZAITEN
                                          -  WRK-TEN
              MOVE  WRK-ZAI-KINGAKU  TO  RECE84C-ZAI-KINGAKU
+      *
+             COMPUTE  RECE84C-ZAITEN     =  RECE84C-ZAITEN
+                                         -  WRK-TEN
+             COMPUTE  RECE84C-SYUTEN1    =  RECE84C-SYUTEN1
+                                         -  WRK-TEN
+      *
+             MOVE  RECE84C-ZAITEN   TO  RECE84C-HOKATU-ZAITEN
+             MOVE  RECE84C-SYUTEN1  TO  RECE84C-HOKATU-SYUTEN1
+             MOVE  RECE84C-SYUTEN2  TO  RECE84C-HOKATU-SYUTEN2
+             MOVE  RECE84C-YKZTEN   TO  RECE84C-HOKATU-YKZTEN
+             MOVE  RECE84C-KIZAITEN TO  RECE84C-HOKATU-KIZAITEN
+      *
              WRITE RECE84C-REC
       *
              IF      STS-RECE84C    =   "00"
@@ -11605,6 +11612,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
              END-IF
       *
              ADD   1                TO  CNT-OUT6
+      *
            END-IF
       *
            .
