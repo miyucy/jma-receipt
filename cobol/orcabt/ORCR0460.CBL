@@ -141,8 +141,11 @@
       *                                     「再診」の対応
       *                                     「その他」の対応
       *  04.05.09    NACL-門脇    13/01/22  ワーク領域拡張
+      *
       *  04.06.01    NACL-門脇    12/10/15  診療行為入力したコメントのみの剤の
       *                                     レセプト記載対応
+      *  04.06.02    NACL-門脇    13/02/18  労災レセ電対応
+      *                                     （新診療行為コード対応）
       *
       *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
       *
@@ -682,6 +685,8 @@
            03  FILLER          PIC X(09)   VALUE   "120000110".
       *    外来管理加算（３月以内）
            03  FILLER          PIC X(09)   VALUE   "101120070".
+      *    外来管理加算（３月以内）
+           03  FILLER          PIC X(09)   VALUE   "101120020".
       *    外来管理加算（３月超）（５回以内）
            03  FILLER          PIC X(09)   VALUE   "101120080".
       *    実日数算定
@@ -769,9 +774,9 @@
            03  FILLER          PIC X(09)   VALUE   "099140001".
       *
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   58.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   59.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   58.
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   59.
       *
       *    固定値
        01  CONST-AREA.
@@ -1761,12 +1766,23 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                    END-IF
       *
       *            ＊外来管理加算の場合
-                   IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                         =   "101120070"  OR
-                                             "101120080"
+                   IF  ((TBL-ZAIW-SRYCD(WRK-WIDX1 WRK-WIDX2)
+                           =  "101120070" OR "101120080"     ) AND
+                        (RECE41-SRYYM   <=  "201306"         ))
+                   OR  ((TBL-ZAIW-SRYCD(WRK-WIDX1 WRK-WIDX2)
+                           =  "101120020"                    ) AND
+                        (RECE41-SRYYM   >=  "201307"         ))
                      IF  RECE41-GAIRAIKSN-PRTKBN   =   "1"
                          MOVE    ZERO          TO  FLG-NOPRT
                      END-IF
+                   END-IF
+                   IF  ((TBL-ZAIW-SRYCD(WRK-WIDX1 WRK-WIDX2)
+                           =  "101120070" OR "101120080"     ) AND
+                        (RECE41-SRYYM   >=  "201307"         ))
+                   OR  ((TBL-ZAIW-SRYCD(WRK-WIDX1 WRK-WIDX2)
+                           =  "101120020"                    ) AND
+                        (RECE41-SRYYM   <=  "201306"         ))
+                         MOVE    ZERO          TO  FLG-NOPRT
                    END-IF
       *            一つの剤に他の明細も存在する場合
       ***          IF  RECE44-MEISAISU       >   1
@@ -3651,14 +3667,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                        END-IF
                      END-IF
                  END-IF
-      ***        IF   RECE41-SRYYM   >=   "200804"
-      ***          EVALUATE  WRK-ZAIW-SRYCD1
-      ***            WHEN     "101130010"
-      ***              MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
-      ***              MOVE      999999981   TO  WRK-ZAIW-KOUHYOJYUNNUM
-      ***          END-EVALUATE
-      ***        END-IF
-                 EVALUATE    WRK-ZAIW-SRYCD1
+                 IF   RECE41-SRYYM   <=   "201306"
+                   EVALUATE    WRK-ZAIW-SRYCD1
                      WHEN     "101800175"
                        MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
                        MOVE      999999982   TO  WRK-ZAIW-KOUHYOJYUNNUM
@@ -3671,7 +3681,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                      WHEN     "101800340"
                        MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
                        MOVE      999999985   TO  WRK-ZAIW-KOUHYOJYUNNUM
-                 END-EVALUATE
+                   END-EVALUATE
+                 END-IF
                END-IF
                MOVE    WRK-ZAIW-CDKBN-SYO  TO  RECE46-CDKBN-SYO
                MOVE    WRK-ZAIW-CDKBN-BU   TO  RECE46-CDKBN-BU

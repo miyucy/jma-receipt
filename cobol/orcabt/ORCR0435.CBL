@@ -45,6 +45,9 @@
       *  04.05.01    NACL-ÌçÏÆ    12/04/11  Ê¿À®£²£´Ç¯£´·î²þÀµ
       *                                     ¥³¥á¥ó¥Èº¹¹þ
       *
+      *  04.06.01    NACL-ÌçÏÆ    13/02/18  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
+      *                                     ¡Ê¿·¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÂÐ±þ¡Ë
+      *
       *  04.07.01    NACL-ÌçÏÆ    13/01/21  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
       *****************************************************************
       *
@@ -276,8 +279,8 @@
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
       *    µßµÞ°åÎÅ´ÉÍý²Ã»»
-           03  CONS-KYUKYU1    PIC X(09)   VALUE   "101110020".
-           03  CONS-KYUKYU2    PIC X(09)   VALUE   "101110030".
+           03  CONS-KYUKYU     PIC X(09)   VALUE   "101110030".
+           03  CONS-KYUKYU2    PIC X(09)   VALUE   "101800890".
       *
       *
            COPY    "MCPAREA".
@@ -503,8 +506,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
                    END-IF
                  WHEN      "80"
                    IF (( RECE41-KYUKYU-PRTKBN    =      1         ) AND
-                       ( RECE44-SRYCDTOTAL(6:9)  =   CONS-KYUKYU1
-                                                OR   CONS-KYUKYU2 ))
+                       ( RECE44-SRYCDTOTAL(6:9)  =   CONS-KYUKYU  ) AND
+                       ( RECE41-SRYYM           <=   "201306"     ))
+                   OR (( RECE41-KYUKYU-PRTKBN    =      1         ) AND
+                       ( RECE44-SRYCDTOTAL(6:9)  =   CONS-KYUKYU2 ) AND
+                       ( RECE41-SRYYM           >=   "201307"     ))
                    OR (( RECE44-JIBAISYUKEIKBN   =      4         ) AND
                        ( RECE44-SRYCDTOTAL(6:5)  =   "09593"      ))
                        MOVE    SPACE   TO   WRK-TAIHI-SRYYMD

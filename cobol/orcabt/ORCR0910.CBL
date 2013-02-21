@@ -111,8 +111,12 @@
       *  04.05.04    NACL-ÌçÏÆ    10/01/25  ¼£¸³ÂÐ±þ
       *  04.05.05    NACL-ÌçÏÆ    11/11/30  ²èÁü¿ÇÃÇ¥Õ¥¤¥ë¥àÊ¬²è¿ôÂÐ±þ
       *  04.05.06    NACL-ÌçÏÆ    13/01/22  ¥ï¡¼¥¯ÎÎ°è³ÈÄ¥
+      *
       *  04.06.01    NACL-ÌçÏÆ    12/10/15  ¿ÇÎÅ¹Ô°ÙÆþÎÏ¤·¤¿¥³¥á¥ó¥È¤Î¤ß¤ÎºÞ¤Î
       *                                     ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
+      *  04.06.02    NACL-ÌçÏÆ    13/02/18  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
+      *                                     ¡Ê¿·¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÂÐ±þ¡Ë
+      *
       *  04.07.01    NACL-ÌçÏÆ    12/08/28  ÌôºÞÎÁ¸ºÅÀÂÐ±þ
       *  04.07.02    NACL-ÌçÏÆ    13/01/21  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
       *
@@ -3287,14 +3291,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                        END-IF
                      END-IF
                  END-IF
-      ***        IF   RECE82-SRYYM   >=   "200804"
-      ***          EVALUATE  WRK-ZAIW-SRYCD1
-      ***            WHEN     "101130010"
-      ***              MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
-      ***              MOVE      999999981   TO  WRK-ZAIW-KOUHYOJYUNNUM
-      ***          END-EVALUATE
-      ***        END-IF
-                 EVALUATE    WRK-ZAIW-SRYCD1
+                 IF   RECE82-SRYYM   <=   "201306"
+                   EVALUATE    WRK-ZAIW-SRYCD1
                      WHEN     "101800175"
                        MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
                        MOVE      999999982   TO  WRK-ZAIW-KOUHYOJYUNNUM
@@ -3307,7 +3305,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                      WHEN     "101800340"
                        MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
                        MOVE      999999985   TO  WRK-ZAIW-KOUHYOJYUNNUM
-                 END-EVALUATE
+                   END-EVALUATE
+                 END-IF
                END-IF
                MOVE    WRK-ZAIW-CDKBN-SYO  TO  RECE86-CDKBN-SYO
                MOVE    WRK-ZAIW-CDKBN-BU   TO  RECE86-CDKBN-BU

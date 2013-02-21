@@ -66,6 +66,8 @@
       *
       *  04.06.01    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
       *                                     は公費単独のレセプトとする
+      *  04.06.02    NACL-門脇    13/02/18  労災レセ電対応
+      *                                     （新診療行為コード対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3910,8 +3912,11 @@ grpsys             MOVE    SPA-HOSPNUM             TO  PTCOM-HOSPNUM
                                               OR "112015810"
                                               OR "112015950"
                                               OR "112016210"
-                                              OR "101110040"
-                                              OR "101120100"      )
+                                              OR "101110040"      )
+                       OR ( (SRY-SRYCD(IDX2)  =  "101120100" ) AND
+                            (SRY-SRYYM       <=  "201306"    )    )
+                       OR ( (SRY-SRYCD(IDX2)  =  "101120040" ) AND
+                            (SRY-SRYYM       >=  "201307"    )    )
                              MOVE    1      TO    FLG-SHOSAISIN
                        END-IF
                        IF    SRY-SRYCD(IDX2)  =  "099409903"

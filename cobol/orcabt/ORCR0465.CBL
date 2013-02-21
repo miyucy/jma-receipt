@@ -47,6 +47,9 @@
       *
       *  04.05.01    NACL-Æ£¸¶    09/07/14  ¾®¿ôÅÀ°Ê²¼£µ·åÂÐ±þ
       *
+      *  04.06.01    NACL-ÌçÏÆ    13/02/18  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
+      *                                     ¡Ê¿·¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÂÐ±þ¡Ë
+      *
       *  04.07.01    NACL-ÌçÏÆ    13/01/21  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
       *****************************************************************
       *
@@ -325,12 +328,17 @@
       *    ½é¿Ç
            03  CONS-SYOSHIN    PIC X(09)   VALUE   "101110010".
       *     
-      *    ºÆ¿Ç     
+      *    ºÆ¿Ç¡Ê£²£°£±£³Ç¯£³·î¤Þ¤Ç¡Ë
            03  CONS-SAISHIN-G.
                05  FILLER      PIC X(09)   VALUE   "101120040".
                05  FILLER      PIC X(09)   VALUE   "101120050".
            03  CONS-SAISHIN-R              REDEFINES   CONS-SAISHIN-G.
                05  CONS-SAISHIN            PIC X(09)   OCCURS  2. 
+      *    ºÆ¿Ç¡Ê£²£°£±£³Ç¯£´·î¤«¤é¡Ë
+           03  CONS-SAISHIN2-G.
+               05  FILLER      PIC X(09)   VALUE   "101120010".
+           03  CONS-SAISHIN2-R             REDEFINES   CONS-SAISHIN2-G.
+               05  CONS-SAISHIN2           PIC X(09)   OCCURS  1. 
       *
            COPY    "MCPAREA".
       *
@@ -657,7 +665,17 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                        MOVE    1                 TO  FLG-NOPRT
                    END-IF
                WHEN    "12"
-                   PERFORM VARYING IDY FROM    1   BY  1
+                   IF  RECE41-SRYYM   >=  "201307"
+                     PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY         >   1
+                               OR      FLG-NOPRT   =   1
+                       IF  TBL-ZAIW-SRYCD (WRK-WIDX1)
+                                         =   CONS-SAISHIN2(IDY)
+                           MOVE    1           TO  FLG-NOPRT
+                       END-IF
+                     END-PERFORM
+                   ELSE
+                     PERFORM VARYING IDY FROM    1   BY  1
                                UNTIL   IDY         >   2
                                OR      FLG-NOPRT   =   1  
                        IF  TBL-ZAIW-SRYCD (WRK-WIDX1)
@@ -667,7 +685,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                        IF      RECE41-SAISHIN-PRTKBN2  =   "1"  
                            MOVE    ZERO        TO  FLG-NOPRT
                        END-IF
-                   END-PERFORM
+                     END-PERFORM
+                   END-IF
              END-EVALUATE
       *
            END-IF
@@ -758,7 +777,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
            MOVE    WRK-SRYCD1        TO  RECE46-SRYCD1
            MOVE    RECE44-ZAINUM     TO  RECE46-ZAINUM
            MOVE    WRK-LINENUM       TO  RECE46-LINENUM
-           IF     RECE46-SRYCD1  = "101110030"
+           IF    ((RECE46-SRYCD1   =  "101110030") AND
+                  (RECE41-SRYYM   <=  "201306"   ))
+           OR    ((RECE46-SRYCD1   =  "101800890") AND
+                  (RECE41-SRYYM   >=  "201307"   ))
                    MOVE    777          TO  RECE46-GAITENTTLKBN
            ELSE
              IF    RECE46-SRYCD1(1:5)   =  "09591" OR "09592" OR "09593"
