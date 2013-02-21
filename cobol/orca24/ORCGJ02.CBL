@@ -69,6 +69,7 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  11/10/XX  Æ±ÆüºÆÆþ±¡ÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  13/01/15  ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë£±£°ÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  13/02/06  ¥ì¥»ÅÅ¥Ç¡¼¥¿°Ü¹ÔÂÐ±þ
+      *  04.07.00    NACL-Â¿¡¹Ç¼  13/04/XX  Ï«ºÒ¥ì¥»ÅÅ¥³¡¼¥ÉÊÑ´¹ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -635,6 +636,10 @@
       *
       *    ÊÝ¸±ÊÌ»»ÄêÍúÎò¥Æ¡¼¥Ö¥ë
            COPY    "CMSANTEITBL.INC".
+      *!!
+      *H25.7
+      *    Ï«ºÒ¥³¡¼¥ÉÃÖ´¹¤¨¥Æ¡¼¥Ö¥ë 
+           COPY   "CMRSICNGTBL.INC".
       *
       *    ¼õ¿ÇÍúÎò
        01  WRK-JYURRK-REC.
@@ -5250,7 +5255,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  IDR2
            PERFORM VARYING     IDXD    FROM    2   BY  1
                    UNTIL      (IDXD        >   10  )
-                           OR (IDR2        >   ZERO )
+                         OR   (IDR2        >   ZERO )
                IF      SPA-GNAI-DAY (IDXD SPA-DAY-IDX)   >   ZERO
                    MOVE    IDXD            TO  IDR2
                END-IF
@@ -8015,6 +8020,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        420011-SRYACT-DEL-SEC        SECTION.
       *
+           MOVE    ACCT-SRYYM          TO  WRK-SRYYMD(1:6)
+           MOVE    "01"                TO  WRK-SRYYMD(7:2)
+      *
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
@@ -8159,11 +8167,31 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1               TO  FLG-HKNSAN
       *            £È£±£¸¡¿£´·î¤«¤éÂÐ±þ
                    IF      TBL-RIGAKU-RYO(TBL-SAN) =   "H"
-                       IF      ACCT-SRYYM      >=  "200604"
+      **************   IF      ACCT-SRYYM      >=  "200604"
+                       IF      ACCT-SRYYM      <   "200604"
                            MOVE    ZERO            TO  FLG-HKNSAN
                        END-IF
                    END-IF
            END-SEARCH
+      *!!!!!!!!!!!!!! 
+      *H25.7
+      *    Ï«ºÒÊÝ¸±¥³¡¼¥ÉÊÑ¹¹
+           IF     (WRK-SRYCD(1:3)      =   "101"    )   AND
+                  (ACCT-SRYYM          >=  "201307" )
+               PERFORM 4200111-RSICD-SANTEI-CHK-SEC
+           END-IF
+      *
+      *    Ï«ºÒÊÝ¸±È½Äê
+           MOVE    SPACE               TO  WRK-RSI-HKNKBN
+           PERFORM VARYING     IDH     FROM    1   BY  1
+                   UNTIL       IDH     >   SPA-HKN-MAX
+               IF      SPA-GMN-THKNCOMBINUM (IDH)
+                                           =   ACCT-HKNCOMBI
+                   MOVE    SPA-NAI-THKNKBN (IDH)
+                                               TO  WRK-RSI-HKNKBN
+                   MOVE    SPA-HKN-MAX         TO  IDH
+               END-IF
+           END-PERFORM
       *
       *    »»ÄêÍúÎò¸¡º÷
            MOVE    SPACE               TO  SANTEI-REC
@@ -8188,7 +8216,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            IF     (FLG-HKNSAN          =   1   )  AND
-                  (SPA-NAI-HKNKBN  NOT =   ZERO)
+                  (WRK-RSI-HKNKBN  NOT =   SPACE )
                MOVE     ACCT-HKNCOMBI      TO  SANTEI-HKNCOMBINUM
            ELSE
                MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
@@ -8228,6 +8256,38 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4200111-SANTEI-DEL-EXT.
            EXIT.
+      *!!!!!!!!!!!!!! 
+      *
+      *****************************************************************
+      *    Ï«ºÒ¥³¡¼¥ÉÊÝ¸±Ëè¤Î¥³¡¼¥É¤ÎÈ½Äê½èÍý
+      *****************************************************************
+       4200111-RSICD-SANTEI-CHK-SEC      SECTION.
+      *
+      *    Ï«ºÒ¤Î¥³¡¼¥É¤ÎÈ½Äê
+           SET     TBL-RCN             TO  1
+           SEARCH  TBL-RSICHG-OCC      VARYING   TBL-RCN
+               AT  END
+                   MOVE    SPACE           TO  WRK-RSI-KBN
+               WHEN    WRK-SRYCD       =   TBL-RSICHG-ATO-SRYCD
+                                                          (TBL-RCN)
+                   MOVE    TBL-RSICHG-KBN (TBL-RCN)
+                                           TO  WRK-RSI-KBN
+           END-SEARCH
+      *
+           IF      WRK-RSI-KBN         =   "R"
+               MOVE    1               TO  FLG-HKNSAN
+           ELSE
+               IF      WRK-RSI-KBN         =   "A"
+                   MOVE    1               TO  FLG-HKNSAN
+               ELSE
+                   MOVE    ZERO            TO  FLG-HKNSAN
+               END-IF
+           END-IF
+      *
+           .
+       4200111-RSICD-SANTEI-CHK-EXT.
+           EXIT.
+      *!!!!!!!!!!!!!! 
       *****************************************************************
       *    ºÞ¤Î¤Ê¤¤¼õ¿ÇÍúÎò¤Îºï½ü½èÍý
       *****************************************************************
@@ -9756,6 +9816,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ¼õ¿ÇÍúÎò¤ÎºÞÊÑ¹¹½èÍý
       *****************************************************************
        410122-RRK-ZAINUM-SEC           SECTION.
+      *
       *    ÂÐ¾ÝÍúÎòÈ½Äê
            MOVE    ZERO                TO  WRK-D-IDX
            MOVE    ZERO                TO  IDX-RRK
@@ -12538,6 +12599,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        È¯À¸Ç¯·îÆü¡Ü£³·î
       *        È¯À¸Æü¤òµá¤á¤ë
       *        µßµÞ°åÎÅ´ÉÍý²Ã»»¤Î¥Á¥§¥Ã¥¯
+      *        ¡¡(2004.4¤«¤é»ÈÍÑ¤Ê¤·¡¡Ï«ºÒ¥³¡¼¥ÉÊÑ¹¹ÂÐ±þ¤Ê¤·¡Ë
                MOVE    SPACE               TO  WRK-HASSYOYMD
                MOVE    "101110030"         TO  WRK-SRYCD
                PERFORM 51011-SANTEI-CHK-SEC
@@ -12579,7 +12641,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1               TO  FLG-HKNSAN
       *            £È£±£¸¡¿£´·î¤«¤éÂÐ±þ
                    IF      TBL-RIGAKU-RYO(TBL-SAN) =   "H"
-                       IF      WRK-SRYYMD      >=  "20060401"
+      *************    IF      WRK-SRYYMD      >=  "20060401"
+                       IF      WRK-SRYYMD      <   "20060401"
                            MOVE    ZERO            TO  FLG-HKNSAN
                        END-IF
                    END-IF

@@ -1207,6 +1207,21 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *H25.7   から
+               WHEN    "K402"
+                   STRING  "警告！労災の合成コードで"
+                           "算定して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0402"
+                   STRING  "労災の処置に通則加算があります。"
+                           "労災合成コードに変更して手技毎に"
+                           "剤分離して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *!!!
                WHEN    "K501"
                    STRING  "警告！手術の手技が剤内に複数あります。"
                            "手技毎に剤分離して下さい。"

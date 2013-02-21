@@ -2304,6 +2304,9 @@
       *
       *            診療
            IF      SPA-SRYKBN-CNT (01) >   ZERO
+      *            労災その他の時もチェックを行う（労災レセ電対応）
+             OR  ((SPA-SRYKBN-CNT (09) >   ZERO  )  AND
+                  (SPA-HKNKBN          =   1     ))
                CALL    "ORCSC10"       USING
                                        MCPAREA
                                        ORCSC00AREA

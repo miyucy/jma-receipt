@@ -72,6 +72,7 @@
       *  04.07.00    NACL-多々納  12/01/10  新生児２８日判定修正
       *  04.07.00    NACL-多々納  12/03/XX  平成２４年４月改正対応
       *  04.07.00    NACL-多々納  12/09/14  器材、コメントチェックマスタ対応
+      *  04.07.00    NACL-多々納  13/02/XX  労災レセ電コード対応(H25.7)
       *****************************************************************
       *
       *
@@ -198,6 +199,8 @@
            03  WRK-SRYCD               PIC X(09).
            03  WRK-SRYCD2              PIC X(09).
            03  WRK-SRYCD-3             PIC X(09).
+      *H25.7
+           03  WRK-CHK-SRYCD           PIC X(09).
       *
            03  WRK-SYOSINYMD1          PIC X(08).
            03  WRK-YMD.
@@ -364,6 +367,9 @@
            COPY   "CMSANTEITBL.INC".
       *    リハビリ同一算定コードテーブル
            COPY   "CMRIHACDTBL.INC".
+      *H25.7
+      *    労災コード置換えテーブル 
+           COPY   "CMRSICNGTBL.INC".
       *
       *    酸素コードテーブル
            COPY     "CMSANSOTBL.INC".
@@ -2553,9 +2559,47 @@
                        END-IF
                    END-IF
            END-SEARCH
+      *H25.7
+      *    労災保険コード変更
+           IF     (CHK-CD(1:3)         =   "101"    )   AND
+                  (SPA-SRYYMD          >=  "20130701" )
+               MOVE    CHK-CD              TO  WRK-CHK-SRYCD
+               PERFORM 10001-RSICD-SANTEI-CHK-SEC
+           END-IF
+      *
       *
            .
        1000-SANTEI-CHK-EXT.
+           EXIT.
+      *
+      *H25.7
+      *****************************************************************
+      *    労災コード保険毎のコードの判定処理
+      *****************************************************************
+       10001-RSICD-SANTEI-CHK-SEC      SECTION.
+      *
+      *    労災のコードの判定
+           SET     TBL-RCN             TO  1
+           SEARCH  TBL-RSICHG-OCC      VARYING   TBL-RCN
+               AT  END
+                   MOVE    SPACE           TO  WRK-RSI-KBN
+               WHEN    WRK-CHK-SRYCD       =   TBL-RSICHG-ATO-SRYCD
+                                                          (TBL-RCN)
+                   MOVE    TBL-RSICHG-KBN (TBL-RCN)
+                                           TO  WRK-RSI-KBN
+           END-SEARCH
+      *
+           IF      WRK-RSI-KBN         =   "R"
+               MOVE    1               TO  FLG-HKNSAN
+           ELSE
+               IF      WRK-RSI-KBN         =   "A"
+                   MOVE    1               TO  FLG-HKNSAN
+               ELSE
+                   MOVE    ZERO            TO  FLG-HKNSAN
+               END-IF
+           END-IF
+           .
+       10001-RSICD-SANTEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2912,6 +2956,13 @@
                        END-IF
                    END-IF
            END-SEARCH
+      *H25.7
+      *    労災保険コード変更
+           IF     (WRK-SRYCD(1:3)      =   "101"    )   AND
+                  (SPA-SRYYMD          >=  "20130701" )
+               MOVE    WRK-SRYCD           TO  WRK-CHK-SRYCD
+               PERFORM 10001-RSICD-SANTEI-CHK-SEC
+           END-IF
       *
            INITIALIZE                  SANTEI-REC
            MOVE    ZERO                TO  FLG-SANTEI-OK
@@ -2990,6 +3041,13 @@
                        END-IF
                    END-IF
            END-SEARCH
+      *H25.7
+      *    労災保険コード変更
+           IF     (WRK-SRYCD2(1:3)     =   "101"    )   AND
+                  (SPA-SRYYMD          >=  "20130701" )
+               MOVE    WRK-SRYCD2           TO  WRK-CHK-SRYCD
+               PERFORM 10001-RSICD-SANTEI-CHK-SEC
+           END-IF
       *
            INITIALIZE                  HZN-SANTEI-REC
       *
@@ -3152,6 +3210,13 @@
                        END-IF
                    END-IF
            END-SEARCH
+      *H25.7
+      *    労災保険コード変更
+           IF     (WRK-SRYCD(1:3)      =   "101"    )   AND
+                  (SPA-SRYYMD          >=  "20130701" )
+               MOVE    WRK-SRYCD            TO  WRK-CHK-SRYCD
+               PERFORM 10001-RSICD-SANTEI-CHK-SEC
+           END-IF
       *
            INITIALIZE                  HZN-SANTEI-REC
       *    算定履歴検索
@@ -3686,6 +3751,13 @@
                END-IF
            ELSE
                MOVE    SPACE               TO  SPA-GMN-TANINAME (IDX-T)
+           END-IF
+      *H25.2
+      *    自賠責特定コードの単位
+           IF     (SPA-COM-INPUTCD (IDX-T)(1:5)    =   "09593" )
+              AND (TNS-TANICD                   NOT =   ZERO   )
+               PERFORM 3004-TANI-HENSYU-SEC
+               MOVE    WRK-TANINAME        TO  SPA-GMN-TANINAME (IDX-T)
            END-IF
       *
       *    診療種別区分
