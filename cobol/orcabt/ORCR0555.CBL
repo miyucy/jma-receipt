@@ -3179,14 +3179,6 @@
                    PERFORM 200724-COMMENT-HENSYU-SEC
                END-PERFORM  
            END-IF          
-      *??
-           DISPLAY "SYUTEN="  WRK-SRYCD1-MAX "#"
-                               RECE44-SRYKBN "#" 
-                     RECE44-ZAITEN "#" RECE44-SYUTEN1 "#"
-                             RECE44-SYUTEN2 "#" RECE44-ZAI-KINGAKU
-                            "#" RECE44-ZAI-TENSU "#"
-                                          TBL-KOUI-SRYKBN12-TEN-G
-      *??
       *     
       *    診療行為データ・コメントデータの編集
            PERFORM VARYING IDX FROM    1   BY  1
@@ -3196,9 +3188,6 @@
       *
                MOVE    SPACE               TO  WRK-REC
                MOVE    ZERO                TO  WRK-REC-LENGTH
-      *??
-           DISPLAY "TBL-KOUI-SRYCD=" IDX "#" TBL-KOUI-SRYCD (IDX)
-      *??
       *
                EVALUATE    TBL-KOUI-SRYCD (IDX) (1:1)
                    WHEN    "0"
@@ -3309,9 +3298,6 @@
                            MOVE    7                 TO  WRK-NAGASA
                           END-IF
                          END-IF 
-      *??
-           DISPLAY "ten=" WRK-NUM
-      *??
                        END-IF    
                        PERFORM 5005-NUM-HENSYU-SEC  
       *                金額
@@ -3319,14 +3305,8 @@
                        AND   ( RECE44-ZAI-KINGAKU  >   ZERO           )
                            MOVE    RECE44-ZAI-KINGAKU  TO  WRK-NUM
                            MOVE    9                   TO  WRK-NAGASA
-      *??
-           DISPLAY "kin=" WRK-NUM
-      *??
                        END-IF    
                        PERFORM 5005-NUM-HENSYU-SEC  
-      *??
-           DISPLAY "WRK-REC=" WRK-REC(1:WRK-REC-LENGTH)
-      *??
       *                回数
                        MOVE    RECE44-ZAIKAISU    TO  WRK-KAISU
                        MOVE    WRK-KAISU           TO  WRK-NUM
@@ -3388,9 +3368,6 @@
                            PERFORM 5005-NUM-HENSYU-SEC
                        END-PERFORM  
                END-EVALUATE  
-      *??
-           DISPLAY "5001 WRK-REC=" WRK-REC(1:WRK-REC-LENGTH)
-      *??
       *
                PERFORM 5001-FILE-WRITE-SEC
       *
