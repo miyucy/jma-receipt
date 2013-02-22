@@ -399,10 +399,6 @@
                            MOVE    STS-RECE44      TO  WRK-ERR-FILE-STS
                            PERFORM 500-FILE-ERR-ABORT-SEC
                        END-IF
-      *??
-           DISPLAY "RECE44-RECESYUBETU=" RECE44-RECESYUBETU "#" 
-                     RECE44-SRYKBN "#" RECE44-MEISAISU
-      *??
       *
                        IF    ( RECE44-RECESYUBETU  =   ZERO
                                                    OR  7021      )
@@ -418,12 +414,6 @@
                            ADD     1               TO  CNT-IN
       *
                            DISPLAY "PTNUM=" RECE44-PTNUM
-      *??
-           DISPLAY "SYUTEN=" RECE44-SRYKBN "#" 
-                     RECE44-ZAITEN "#" RECE441-SYUTEN1 "#"
-                             RECE441-SYUTEN2 "#" RECE44-ZAI-KINGAKU
-                            "#" RECE44-ZAI-TENSU "#"
-      *??
                        END-IF
                END-READ
            END-PERFORM
