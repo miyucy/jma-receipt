@@ -41,7 +41,7 @@
       *ø«Œ≈∂Ë ¨
                05  RECE841-SRYKBN          PIC  X(02).
       *∫ﬁ»÷πÊ
-           03  RECE841-ZAINUM              PIC  9(08).
+               05  RECE841-ZAINUM          PIC  9(08).
       *
            03  RECE841-DATA-AREA.
       *ø«Œ≈ºÔ Ã∂Ë ¨

@@ -41,7 +41,7 @@
       *ø«Œ≈∂Ë ¨
                05  RECE441-SRYKBN          PIC X(02).
       *∫ﬁ»÷πÊ
-           03  RECE441-ZAINUM              PIC 9(08).
+               05  RECE441-ZAINUM          PIC 9(08).
       *
            03  RECE441-DATA-AREA. 
       *ø«Œ≈ºÔ Ã∂Ë ¨
