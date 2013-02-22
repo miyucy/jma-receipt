@@ -158,6 +158,7 @@
       *  04.07.08    NACL-藤原    12/10/31  ファイル出力先設定のデフォルト
       *                                     変更
       *  04.07.09    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
+      *  04.07.10    NACL-藤原    13/02/07  労災レセ電作成対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -247,6 +248,12 @@
                                               PIC X(01).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-KOUIKIRECEKBNMEI
+                                              PIC X(22).
+                       09  SPA-GMN-ROURECEKBN-G.
+                           11  SPA-GMN-ROURECEKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-ROURECEKBNMEI
                                               PIC X(22).
                        09  SPA-GMN-RECEDENOUT PIC X(30).              
                        09  SPA-GMN-SYAOCRKBN-G.
@@ -847,6 +854,14 @@
                        09  SPA-GMN-KOUIKIRECEKBNMEIL
                                               PIC X(22).
                    07  SPA-GMN-KOUIKIRECEKBN-MAX PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-ROURECEKBNLST          OCCURS  4.
+                       09  SPA-GMN-ROURECEKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-ROURECEKBNMEIL
+                                              PIC X(22).
+                   07  SPA-GMN-ROURECEKBN-MAX PIC 9(02).    
       *                                        
                    07  SPA-GMN-KKHOCRKBNLST           OCCURS  4.
                        09  SPA-GMN-KKHOCRKBNL PIC X(01).
@@ -1985,6 +2000,17 @@
            MOVE    "入院・入院外"
                                        TO  SPA-GMN-KOUIKIRECEKBNMEIL (4)
            MOVE    4                   TO  SPA-GMN-KOUIKIRECEKBN-MAX 
+      *     
+           MOVE    "0"                 TO  SPA-GMN-ROURECEKBNL    (1)
+           MOVE    "出力なし"          TO  SPA-GMN-ROURECEKBNMEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-ROURECEKBNL    (2)
+           MOVE    "入院外のみ"        TO  SPA-GMN-ROURECEKBNMEIL (2)
+           MOVE    "2"                 TO  SPA-GMN-ROURECEKBNL    (3)
+           MOVE    "入院のみ"          TO  SPA-GMN-ROURECEKBNMEIL (3)
+           MOVE    "3"                 TO  SPA-GMN-ROURECEKBNL    (4)
+           MOVE    "入院・入院外"
+                                       TO  SPA-GMN-ROURECEKBNMEIL (4)
+           MOVE    4                   TO  SPA-GMN-ROURECEKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHOCRKBNL    (1)
            MOVE    "ＯＣＲなし"        TO  SPA-GMN-KKHOCRKBNMEIL (1)
@@ -3462,6 +3488,20 @@
                                        TO  IDY
                END-IF                                     
            END-PERFORM
+      *
+           MOVE    SYS-200501-ROURECEKBN
+                                       TO  SPA-GMN-ROURECEKBN
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-ROURECEKBN-MAX
+               IF      SPA-GMN-ROURECEKBN 
+                               =   SPA-GMN-ROURECEKBNL (IDY)
+                   MOVE    SPA-GMN-ROURECEKBNLST (IDY)
+                                       TO  SPA-GMN-ROURECEKBN-G
+                   MOVE    SPA-GMN-ROURECEKBN-MAX
+                                       TO  IDY
+               END-IF                                     
+           END-PERFORM
+      *
            MOVE    SYS-200501-NI-JYOKEN (1)
                                        TO  SPA-GMN-NI-JYOKEN5
            MOVE    SYS-200501-NI-JYOKEN (2)
@@ -4272,6 +4312,10 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    SPA-GMN-KOUIKIRECEKBNLST (1)
                                            TO  SPA-GMN-KOUIKIRECEKBN-G
            END-IF                                              
+           IF     SPA-GMN-ROURECEKBN-G  =   SPACE
+               MOVE    SPA-GMN-ROURECEKBNLST (1)
+                                           TO  SPA-GMN-ROURECEKBN-G
+           END-IF                                              
            IF     SPA-GMN-RENNUMHENKBN-G   =   SPACE
                MOVE    SPA-GMN-RENNUMHENKBNLST (1)
                                            TO  SPA-GMN-RENNUMHENKBN-G
@@ -4636,6 +4680,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-KKHRECEKBN      TO  SPA-GMN-KKHRECEKBN-G 
            MOVE    W12-SYARECEKBN      TO  SPA-GMN-SYARECEKBN-G 
            MOVE    W12-KOUIKIRECEKBN   TO  SPA-GMN-KOUIKIRECEKBN-G 
+           MOVE    W12-ROURECEKBN      TO  SPA-GMN-ROURECEKBN-G 
            MOVE    W12-RECEDENOUT      TO  SPA-GMN-RECEDENOUT 
            MOVE    W12-SYAOCRKBN       TO  SPA-GMN-SYAOCRKBN-G 
            MOVE    W12-KKHOCRKBN       TO  SPA-GMN-KKHOCRKBN-G 
@@ -5067,6 +5112,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
+           PERFORM 4193-ROURECEKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
       *****PERFORM 4103-RECEDENOUT-CHK-SEC
       *****IF      SPA-ERRCD       NOT =   SPACE
       *****    GO      TO      4102-KIHON-CHK-EXT
@@ -5413,6 +5463,35 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            .
        4158-KOUIKIRECEKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災レセ電出力区分チェック
+      *****************************************************************
+       4193-ROURECEKBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-ROURECEKBN  =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-ROURECEKBN-MAX
+                   IF      SPA-GMN-ROURECEKBN 
+                                   =   SPA-GMN-ROURECEKBNL (IDY)
+                       MOVE    SPA-GMN-ROURECEKBNLST (IDY)
+                                           TO  SPA-GMN-ROURECEKBN-G
+                       MOVE    SPA-GMN-ROURECEKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-ROURECEKBNMEI   =   SPACE
+                   MOVE    306                     TO  SPA-GMN-CUR
+                   MOVE    "0121"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+      *
+           .
+       4193-ROURECEKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8740,6 +8819,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-NYUTAIINREKI-NYU-KSIKBN
                                            TO
                                    SYS-200501-NYUTAIINREKI-NYU-KSIKBN
+           MOVE    SPA-GMN-ROURECEKBN      TO  SYS-200501-ROURECEKBN
            MOVE    SYS-200501-REC          TO  SYSKANRI-REC
       *     
            PERFORM 800-MCNDATE-SEC
@@ -9286,6 +9366,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-KKHRECEKBN-G     TO  W12-KKHRECEKBN
            MOVE    SPA-GMN-SYARECEKBN-G     TO  W12-SYARECEKBN
            MOVE    SPA-GMN-KOUIKIRECEKBN-G  TO  W12-KOUIKIRECEKBN
+           MOVE    SPA-GMN-ROURECEKBN-G     TO  W12-ROURECEKBN
            MOVE    SPA-GMN-SYAOCRKBN-G      TO  W12-SYAOCRKBN
            MOVE    SPA-GMN-KKHOCRKBN-G      TO  W12-KKHOCRKBN
            MOVE    SPA-GMN-KOUIKIOCRKBN-G   TO  W12-KOUIKIOCRKBN
@@ -9458,6 +9539,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-KOUIKIRECEKBN-MAX
                                        TO  W12-KOUIKIRECEKBN-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-ROURECEKBN-MAX
+               MOVE    SPA-GMN-ROURECEKBNLST (IDY)
+                                       TO  W12-ROURECEKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-ROURECEKBN-MAX
+                                       TO  W12-ROURECEKBN-COUNT
       *
            MOVE    SPA-GMN-RECEDENOUT  TO  W12-RECEDENOUT
       *     
@@ -10532,6 +10621,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0120"
                    MOVE    "点検用レセプト包括診療分記載入力エラー"
                                                TO  SPA-ERRMSG
+               WHEN    "0121"
+                   MOVE    "労災レセ電出力区分入力エラー"
+                                               TO  SPA-ERRMSG
       *
                WHEN    "1003"
                    MOVE    "更新ができませんでした"
@@ -10900,6 +10992,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "RECEDEN_CHK"        TO  MCP-WIDGET
                 WHEN    44
                     MOVE  "KOUIKIKBN"          TO  MCP-WIDGET
+                WHEN    306
+                    MOVE  "ROURECEKBN"         TO   MCP-WIDGET
       * 
                 WHEN    11
                     MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
@@ -10951,6 +11045,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE    2                TO  W12-PAGENO
                 WHEN    100 THRU    121
                 WHEN    44
+                WHEN    306
                     MOVE    3                TO  W12-PAGENO
                 WHEN    70  THRU    81
                     MOVE    4                TO  W12-PAGENO
@@ -11214,6 +11309,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "KKHRECEKBN"
                    MOVE    108         TO  SPA-GMN-CUR
                WHEN    "KOUIKIRECEKBN"
+                   MOVE    306         TO  SPA-GMN-CUR
+               WHEN    "ROURECEKBN"
                    MOVE    102         TO  SPA-GMN-CUR
                WHEN    "RECEDENOUT"
                    MOVE    103         TO  SPA-GMN-CUR

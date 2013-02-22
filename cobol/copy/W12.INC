@@ -329,6 +329,12 @@
                     06  W12-KOUIKIRECEKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-KOUIKIRECEKBNLST
                             PIC X(24)   OCCURS  4 TIMES.
+                  05  W12-ROURECEKBN-COMBO.
+                    06  W12-ROURECEKBN.
+                      07  W12-VALUE   PIC X(24).
+                    06  W12-ROURECEKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-ROURECEKBNLST
+                            PIC X(24)   OCCURS  4 TIMES.
                   05  W12-RECEDENOUT.
                     06  W12-VALUE   PIC X(30).
                   05  W12-RECECOMKBN-COMBO.

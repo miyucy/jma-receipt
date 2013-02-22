@@ -239,7 +239,6 @@
            03  CNT-DOUJITU         PIC 9(06).
            03  CNT-DENWA           PIC 9(06).
            03  CNT-DOUDEN          PIC 9(06).
-           03  CNT-IN-COMMIT       PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -845,17 +844,15 @@
       *
            PERFORM 110-FILE-OPEN-SEC
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               PERFORM 120-DBOPEN-SEC
+           PERFORM 120-DBOPEN-SEC
       *
-      *        ステップ管理開始処理
-               MOVE    "STS"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    "ORCR0436"      TO  JOB-PGID
-               MOVE    "コメント編集（労災・自賠責）（レセ電用）" 
-                                       TO  JOB-SHELLMSG
-               PERFORM 900-CALL-ORCSJOB-SEC
-           END-IF
+      *    ステップ管理開始処理
+           MOVE    "STS"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    "ORCR0436"      TO  JOB-PGID
+           MOVE    "コメント編集（労災・自賠責）（レセ電用）" 
+                                   TO  JOB-SHELLMSG
+           PERFORM 900-CALL-ORCSJOB-SEC
       *    
            PERFORM 990-RECE41-READ-SEC
            .
@@ -1743,12 +1740,6 @@
            PERFORM     260-SETCOM-HENSYU-SEC
       *
            PERFORM 990-RECE41-READ-SEC
-      *
-           IF  CNT-IN-COMMIT   =    300
-                 MOVE  ZERO          TO      CNT-IN-COMMIT
-                 PERFORM 900-DBCOMMIT-SEC
-                 PERFORM 900-DBSTART-SEC
-           END-IF
       *
            .
        200-MAIN-EXT.
@@ -7997,6 +7988,8 @@
            MOVE    RECE41-HKNID        TO  RECE449-HKNID
            MOVE    RECE41-TEKSTYMD     TO  RECE449-TEKSTYMD
       *
+           MOVE    RECE41-RECESYUBETU  TO  RECE449-RECESYUBETU 
+      *
            .
        800-RECE41-SET449-EXT.
            EXIT.
@@ -8119,7 +8112,6 @@
                    MOVE    1           TO  FLG-END
                NOT AT  END
                    ADD     1           TO  CNT-RECE41
-                   ADD     1           TO  CNT-IN-COMMIT
       *
                    DISPLAY "RECE41  PTNUM=" RECE41-PTNUM
       *

@@ -1876,6 +1876,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 MOVE    FLG-RINYAK     TO    RECE44-SAFLG
            END-IF
       *
+           MOVE    RECE41-RECESYUBETU  TO  RECE44-RECESYUBETU
+      *
            .
        21011-RECE44-TENSOU-EXT.
            EXIT.

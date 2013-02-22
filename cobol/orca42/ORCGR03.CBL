@@ -122,6 +122,7 @@
       *  04.07.02    NACL-藤原    12/11/20  リアルタイムプレビュー時の
       *                                     一画面対応
       *  04.07.03    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
+      *  04.07.04    NACL-藤原    12/11/21  労災レセ電作成対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -2560,6 +2561,10 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                        MOVE    ZERO            TO
                                            SYS-200501-ROUPRTKBN-N
                    END-IF
+                   IF      SYS-200501-ROURECEKBN
+                                               =   SPACE
+                       MOVE    "0"             TO  SYS-200501-ROURECEKBN
+                   END-IF
       *
                    MOVE    SPACE           TO  SHELLTBL
                    EVALUATE    SPA-R01-RECEKBN
@@ -2640,20 +2645,34 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                    MOVE    "00"            TO  SHELLTBL-ARG10 (7:2)
                    MOVE    SYS-1001-PREFNUM
                                            TO  SHELLTBL-ARG11
-                   IF      SYS-2005-SYARECEKBN
-                                           =   ZERO
-                       MOVE    "0"             TO  SHELLTBL-ARG12
-                   ELSE
-                       MOVE    SYS-2005-SYARECEKBN
-                                               TO  SHELLTBL-ARG12
-                   END-IF
-                   IF      SYS-2005-KKHRECEKBN
-                                           =   ZERO
-                       MOVE    "0"             TO  SHELLTBL-ARG13
-                   ELSE
-                       MOVE    SYS-2005-KKHRECEKBN
-                                               TO  SHELLTBL-ARG13
-                   END-IF
+                   EVALUATE    SPA-R01-RECEKBN
+                       WHEN    "0"
+                       WHEN    "1"
+                       WHEN    "2"
+                       WHEN    "7"
+                           IF      SYS-2005-SYARECEKBN
+                                                   =   ZERO
+                               MOVE    "0"         TO  SHELLTBL-ARG12
+                           ELSE
+                               MOVE    SYS-2005-SYARECEKBN
+                                                   TO  SHELLTBL-ARG12
+                           END-IF
+                           IF      SYS-2005-KKHRECEKBN
+                                                   =   ZERO
+                               MOVE    "0"         TO  SHELLTBL-ARG13
+                           ELSE
+                               MOVE    SYS-2005-KKHRECEKBN
+                                                   TO  SHELLTBL-ARG13
+                           END-IF
+                       WHEN    "3"
+                           MOVE    SYS-200501-ROURECEKBN
+                                                   TO  SHELLTBL-ARG12
+                           MOVE    "0"             TO  SHELLTBL-ARG13
+                       WHEN    OTHER
+                           MOVE    "0"             TO  SHELLTBL-ARG12
+                                                       SHELLTBL-ARG13
+                   END-EVALUATE
+                   
                    EVALUATE    SPA-R01-RECEKBN
                        WHEN    "3"
                            MOVE    SYS-200501-COMMENT-ROU-KSIKBN

@@ -293,3 +293,6 @@
                     07  RECE441-DAY-TBL        OCCURS  10.
                         09  RECE441-KAISUINF   OCCURS  31.
                             11  RECE441-KAISU  PIC 9(03).
+      *レセプト種別
+               05  RECE441-RECESYUBETU         PIC 9(04).
+

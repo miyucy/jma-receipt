@@ -406,6 +406,13 @@ W12	{
 					count	int;
 					item	varchar(24)[4];
 				};
+				ROURECEKBN_COMBO	{
+					ROURECEKBN	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[4];
+				};
 				RECEDENOUT	{
 					value	varchar(30);
 				};
