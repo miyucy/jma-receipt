@@ -490,7 +490,7 @@
        01  WRK-RECE84GJK-MAX               PIC 9(02).
        01  WRK-RECE84GJK-TABLE.
            03  WRK-RECE84GJK-TBL           OCCURS 31.
-               05  WRK-RECE84GJK-REC       PIC X(2000).
+               05  WRK-RECE84GJK-REC       PIC X(1000).
        01  RECE84GJK-REC.
            COPY    "CPRCF084.INC"  REPLACING  //RECE84//
                                    BY         //RECE84GJK//.

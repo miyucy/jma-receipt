@@ -75,7 +75,7 @@
                    07  RECE121-KAISUINF    OCCURS  31.
                        09  RECE121-KAISU   PIC 9(03).
       *データ
-           03  RECE121-REC1                PIC X(1000).
+           03  RECE121-REC1                PIC X(2000).
       *コメントデータ
            03  RECE121-COM-AREA.
                05  RECE121-COM             PIC X(200)    OCCURS  10.

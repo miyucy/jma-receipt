@@ -626,7 +626,7 @@
        01  WRK-RECE64GJK-MAX               PIC 9(02).
        01  WRK-RECE64GJK-TABLE.
            03  WRK-RECE64GJK-TBL           OCCURS 31.
-               05  WRK-RECE64GJK-REC       PIC X(2000).
+               05  WRK-RECE64GJK-REC       PIC X(1000).
        01  RECE64GJK-REC.
            COPY    "CPRCF064.INC"  REPLACING  //RECE64//
                                    BY         //RECE64GJK//.

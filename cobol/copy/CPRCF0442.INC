@@ -85,7 +85,7 @@
                    07  RECE442-KAISUINF    OCCURS  31.
                        09  RECE442-KAISU   PIC  9(03).
       *データ
-           03  RECE442-REC1                PIC  X(1000).
+           03  RECE442-REC1                PIC  X(2000).
       *コメントデータ
            03  RECE442-COM-AREA.
                05  RECE442-COM             PIC  X(200)    OCCURS  10.

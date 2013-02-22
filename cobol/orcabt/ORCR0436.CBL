@@ -645,7 +645,7 @@
              05  TBL-YT1-KEY.
                07  TBL-YT1-JIHOKBN              PIC X(01).
                07  TBL-YT1-SRYKA                PIC X(02).
-             05  TBL-YT1-RECE44-REC             PIC X(1000).
+             05  TBL-YT1-RECE44-REC             PIC X(2000).
              05  TBL-YT1-HIKAKU.
                07  TBL-YT1-ZAITEN               PIC 9(08).
                07  TBL-YT1-SRYCDTOTAL           PIC 9(14).
@@ -660,7 +660,7 @@
              05  TBL-YT1-FLG                    PIC 9(01).
       *
       *    ÊÂ¤ÓÂØ¤¨ÍÑ
-       01  WRK-YAKUTEI-DATA                     PIC X(1915).
+       01  WRK-YAKUTEI-DATA                     PIC X(2915).
       *
        01  WRK-TAIHI-YT1-KEY                    PIC X(03).
        01  WRK-TAIHI-YT1-KEY3                   PIC X(01).
@@ -672,13 +672,13 @@
            03  TBL-YT2-DAY                    OCCURS      31.
              05  TBL-YT2X-KAIT                  OCCURS     9.
                06  TBL-YT2X1-OCC                  OCCURS  25.
-                 07  TBL-YT2X1-RECE44-REC         PIC X(1000).
+                 07  TBL-YT2X1-RECE44-REC         PIC X(2000).
                  07  TBL-YT2X1-KAISU              PIC 9(03).
                  07  TBL-YT2X1-DAY-AREA.
                    09  TBL-YT2X1-OCC2               OCCURS  31.
                        11  TBL-YT2X1-DAY            PIC 9(03).
                06  TBL-YT2X2-OCC                  OCCURS   3.
-                 07  TBL-YT2X2-RECE44-REC         PIC X(1000).
+                 07  TBL-YT2X2-RECE44-REC         PIC X(2000).
                  07  TBL-YT2X2-KAISU              PIC 9(03).
                  07  TBL-YT2X2-DAY-AREA.
                    09  TBL-YT2X2-OCC2               OCCURS  31.
@@ -706,13 +706,13 @@
            03  TBL-YT3-XXX                    OCCURS     100.
              05  TBL-YT3X-KAIT.
                06  TBL-YT3X1-OCC                  OCCURS  25.
-                 07  TBL-YT3X1-RECE44-REC         PIC X(1000).
+                 07  TBL-YT3X1-RECE44-REC         PIC X(2000).
                  07  TBL-YT3X1-KAISU              PIC 9(03).
                  07  TBL-YT3X1-DAY-AREA.
                    09  TBL-YT3X1-OCC2               OCCURS  31.
                        11  TBL-YT3X1-DAY            PIC 9(03).
                06  TBL-YT3X2-OCC                  OCCURS   3.
-                 07  TBL-YT3X2-RECE44-REC         PIC X(1000).
+                 07  TBL-YT3X2-RECE44-REC         PIC X(2000).
                  07  TBL-YT3X2-KAISU              PIC 9(03).
                  07  TBL-YT3X2-DAY-AREA.
                    09  TBL-YT3X2-OCC2               OCCURS  31.

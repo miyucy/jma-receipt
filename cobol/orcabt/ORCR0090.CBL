@@ -638,7 +638,7 @@
                05  WRK-RECE04-KOHBUNRI            PIC 9(01).
                05  WRK-RECE04-GAIJINKEN           PIC 9(02).
                05  WRK-RECE04-SRYSYUKBN           PIC X(03).
-               05  WRK-RECE04-REC                 PIC X(1000).
+               05  WRK-RECE04-REC                 PIC X(2000).
                05  WRK-RECE04-SRYCD-G.
                    07  WRK-RECE04-KENTAICOMMENT-SRYCD
                                                   PIC 9(09).

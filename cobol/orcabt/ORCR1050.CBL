@@ -395,7 +395,7 @@
                05  WRK-RECE120-HOUKNSKBN           PIC 9(02).
                05  WRK-RECE120-GAIJINKEN           PIC 9(02).
                05  WRK-RECE120-SRYSYUKBN           PIC X(03).
-               05  WRK-RECE120-REC                 PIC X(1000).
+               05  WRK-RECE120-REC                 PIC X(2000).
                05  WRK-RECE120-SRYCD-G.
                    07  WRK-RECE120-KENTAICOMMENT-SRYCD
                                                   PIC 9(09).

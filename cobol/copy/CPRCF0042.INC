@@ -104,7 +104,7 @@
                    07  RECE042-KAISUINF    OCCURS  31.
                        09  RECE042-KAISU   PIC  9(03).
       *データ
-           03  RECE042-REC1                PIC  X(1000).
+           03  RECE042-REC1                PIC  X(2000).
       *コメントデータ
            03  RECE042-COM-AREA.
                05  RECE042-COM             PIC  X(200)    OCCURS  10.
