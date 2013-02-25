@@ -406,6 +406,7 @@
            03  FLG-DOJITU                              PIC 9(01).
            03  FLG-HENSYU-NG                           PIC 9(01).
            03  FLG-SETCOM                              PIC 9(01).
+           03  FLG-HENSYU-OK                           PIC 9(01).
       *
       *    •´•¶•Û•»ŒŒ∞Ë
        01  CNT-AREA.
@@ -2158,6 +2159,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE   ZERO   TO   FLG-WRITE85
                        MOVE   ZERO   TO   FLG-TENTEKI
                        MOVE   ZERO   TO   FLG-HENSYU-NG
+                       MOVE   ZERO   TO   FLG-HENSYU-OK
                        MOVE   ZERO   TO   FLG-SETCOM
                        MOVE   ZERO   TO   WRK-SETCOM-JIDO
                        MOVE   ZERO   TO   WRK-SETCOM-JIDO2
@@ -2241,6 +2243,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                  MOVE   ZERO   TO   FLG-WRITE85
                                  MOVE   ZERO   TO   FLG-TENTEKI
                                  MOVE   ZERO   TO   FLG-HENSYU-NG
+                                 MOVE   ZERO   TO   FLG-HENSYU-OK
                                  MOVE   ZERO   TO   FLG-SETCOM
                                  MOVE   ZERO   TO   WRK-SETCOM-JIDO
                                  MOVE   ZERO   TO   WRK-SETCOM-JIDO2
@@ -3734,6 +3737,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                PERFORM  220216-SETCOM-HENSYU-SEC
       *
+               IF      SRY-SRYKBN         =     "33"
+               AND     FLG-HENSYU-OK      =     ZERO
+               AND     ACCT-JIHOKBN       =     SPACE
+                 PERFORM  220217-TENTEKI-CDKBN-KBNNUM-HENSYU-SEC
+                 MOVE     1     TO    FLG-HENSYU-OK
+               END-IF
+      *
               END-IF
              END-IF
             END-IF  
@@ -4747,6 +4757,60 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
       *
            .
        220216-SETCOM-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ≈¿≈©•≥°º•……ΩÕ—»÷πÊ°›∂Ë ¨»÷πÊ ‘Ω∏
+      *****************************************************************
+       220217-TENTEKI-CDKBN-KBNNUM-HENSYU-SEC     SECTION.
+      *
+      *    …ΩÕ—°›∂Ë ¨»÷πÊ
+      *    £¥:≈¿≈©
+      *    £µ°ß√Êø¥¿≈ÃÆ
+      *    £∂°ß√Êø¥¿≈ÃÆ±…Õ‹
+      *    £∑∞ æÂ°°§Ω§Œ¬æ√ÌºÕ
+           IF     RECE85-CDKBN-KBNNUM(IDX4)   NOT =    ZERO
+              IF     RECE85-CDKBN-KBNNUM(IDX4)  <=    6
+                EVALUATE    RECE85-CDKBN-KBNNUM(IDX4)
+                  WHEN     5
+                    MOVE   6     TO   RECE84-CDKBN-KBNNUM
+                  WHEN     6
+                    MOVE   8     TO   RECE84-CDKBN-KBNNUM
+                  WHEN  OTHER
+                    MOVE   RECE85-CDKBN-KBNNUM(IDX4)
+                                 TO   RECE84-CDKBN-KBNNUM
+                END-EVALUATE
+              ELSE
+                MOVE   RECE85-CDKBN-KBNNUM(IDX4)
+                                 TO   RECE84-CDKBN-KBNNUM
+                ADD    10        TO   RECE84-CDKBN-KBNNUM
+              END-IF
+      *       ≈¿≈©√ÌºÕ° ∑Ïﬁ˘¿Æ ¨¿Ω∫ﬁ ∏ΩÒ°À≤√ªª
+              IF     RECE85-SRYCD(IDX4)    =   "130010570"
+                    MOVE   5     TO   RECE84-CDKBN-KBNNUM
+              END-IF
+      *       √Êø¥¿≈ÃÆ√ÌºÕ° ∑Ïﬁ˘¿Æ ¨¿Ω∫ﬁ ∏ΩÒ°À≤√ªª
+              IF     RECE85-SRYCD(IDX4)    =   "130010670"
+                    MOVE   7     TO   RECE84-CDKBN-KBNNUM
+              END-IF
+           ELSE
+      *       ÃÙ∫ﬁ
+              IF     RECE84-YKZTEN     NOT =   ZERO
+                    MOVE   9     TO   RECE84-CDKBN-KBNNUM
+              END-IF
+      *       ¥Ô∫‡
+              IF     RECE84-KIZAITEN   NOT =   ZERO
+                    MOVE   10    TO   RECE84-CDKBN-KBNNUM
+              END-IF
+      *       •≥•·•Û•»
+              IF    (RECE85-SRYCD(IDX4)(1:1)    =   "8"  )
+              OR    (RECE85-SRYCD(IDX4)(1:3)    =   "008")
+                    MOVE   999   TO   RECE84-CDKBN-KBNNUM
+              END-IF
+           END-IF
+      *
+           .
+       220217-TENTEKI-CDKBN-KBNNUM-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9268,6 +9332,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                     MOVE   SPACE  TO   WRK-FORMALNAME
                     MOVE   ZERO   TO   FLG-SETCOM
+                    MOVE   ZERO   TO   FLG-HENSYU-OK
                     IF  ORCSTEN-ZAITEN(IDY)  NOT =  ZERO
       *
                        MOVE   1      TO   FLG-SIKIBETU
@@ -9320,6 +9385,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                        MOVE   SPACE  TO   WRK-FORMALNAME
                        MOVE   ZERO   TO   FLG-SETCOM
+                       MOVE   ZERO   TO   FLG-HENSYU-OK
                        MOVE   2      TO   FLG-SIKIBETU
       *
                        INITIALIZE         WRK-ORCSTEN-TABLE
@@ -9374,6 +9440,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  PERFORM  VARYING  IDY    FROM    1   BY  1
                            UNTIL   IDY     >     31
                     MOVE    ZERO     TO   FLG-SETCOM
+                    MOVE    ZERO     TO   FLG-HENSYU-OK
                     IF  WRK-TENTEKI2-T-ZAITEN(IDY)  NOT =  ZERO
                        MOVE      3   TO   FLG-SIKIBETU
                        PERFORM   2401X-RECE84-TENSOU3-SEC
@@ -9390,6 +9457,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  PERFORM  VARYING  IDY    FROM    1   BY  1
                            UNTIL   IDY     >     31
                     MOVE    ZERO     TO   FLG-SETCOM
+                    MOVE    ZERO     TO   FLG-HENSYU-OK
                     IF  WRK-TENTEKI2-C-ZAITEN(IDY)  NOT =  ZERO
                        MOVE      4   TO   FLG-SIKIBETU
                        PERFORM   2401X-RECE84-TENSOU3-SEC
@@ -9845,6 +9913,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      END-IF
                   END-IF
       **
+                  IF      FLG-HENSYU-OK      =     ZERO
+                    PERFORM  220217-TENTEKI-CDKBN-KBNNUM-HENSYU-SEC
+                    MOVE     1     TO    FLG-HENSYU-OK
+                  END-IF
+      *
                 END-IF  
       *
                 ADD        1                TO  IDX2
@@ -10091,6 +10164,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      OR   (RECE85-SRYCD(IDX4)(1:3) = "059"            )
                         MOVE   1             TO  FLG-SETCOM
                      END-IF
+                  END-IF
+      *
+                  IF      FLG-HENSYU-OK      =     ZERO
+                    PERFORM  220217-TENTEKI-CDKBN-KBNNUM-HENSYU-SEC
+                    MOVE     1     TO    FLG-HENSYU-OK
                   END-IF
       *
                   ADD        1               TO  IDX2
