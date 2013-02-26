@@ -70,6 +70,7 @@
       * 04.06.00     NACL-多々納  10/11/12  同日初診料他科なし算定対応
       * 04.07.00     NACL-多々納  12/03/XX  Ｈ２４年４月改正対応
       * 04.08.00     NACL-多々納  12/12/XX  電話再診の加算算定対応
+      * 04.08.00     NACL-多々納  13/03/XX  Ｈ２５年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -358,6 +359,9 @@
       *
            03  WRK-SPA-CHIIKKBN        PIC 9(01).
            03  WRK-SPA-MEISAKBN        PIC 9(01).
+      *H25.3
+           03  WRK-SYOUKAI             PIC 9(01).
+           03  FLG-SYOKAINASI          PIC 9(01).
       *
       *    保存用ＳＰＡ
        01  HZN-SCR-REC.
@@ -414,12 +418,10 @@
       *    小児科外来診察料(院内処方 再診)
            03  FILLER              PIC X(14)   VALUE   "200 N113003810".
       *
-      *
       *    外来診療料
            03  FILLER              PIC X(14)   VALUE   "301  112011310".
       *    同日外来診療料
            03  FILLER              PIC X(14)   VALUE   "301D 112011710".
-      *TEST
       *H24.4
       *    再診料（同一日２科目）
            03  FILLER              PIC X(14)   VALUE   "100KD112015810".
@@ -428,14 +430,25 @@
       *    外来診療料（同一日２科目）
            03  FILLER              PIC X(14)   VALUE   "300KD112016210".
       *H24.4
-      *TEST
+      *
+      *H25.4 から
+      *    初診料（紹介状なし）
+           03  FILLER              PIC X(14)   VALUE   "110F 111012510".
+      *    同日初診（紹介状なし）
+           03  FILLER              PIC X(14)   VALUE   "110FD111012610".
+      *    外来診療料（他医療機関へ紹介）
+           03  FILLER              PIC X(14)   VALUE   "311  112016310".
+      *    外来診療料（同一日２科目）（他医療機関へ紹介）
+           03  FILLER              PIC X(14)   VALUE   "310KD112016410".
       *
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
-           03  TBL-SINSATU-OCC         OCCURS  15    INDEXED  TBL-IDX.
+      *****03  TBL-SINSATU-OCC         OCCURS  15    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  19    INDEXED  TBL-IDX.
       *        １：一般、２：小児科外来診察料、３：外来診療料
                05  TBL-KAISU           PIC 9(01).
-      *        老人一般区分（０：一般、１：老人）(０：なし）
+      *******  老人一般区分（０：一般、１：老人）(０：なし）
+      *H25.4　から（１:紹介なし)
                05  TBL-ROUJIN          PIC 9(01).
       *        病院種別（１：病院、２：診療所）
                05  TBL-HOSPSBT         PIC 9(01).
@@ -448,7 +461,7 @@
       *        診療コード
                05  TBL-SRYCD           PIC X(09).
       *
-       01  TBL-SIN-MAX                 PIC 9(04)   VALUE   12.
+      *01  TBL-SIN-MAX                 PIC 9(04)   VALUE   12.
       *
       *    外来管理加算等加算テーブル
        01  TBL-GAIRAI-AREA.
@@ -1672,6 +1685,9 @@
       *       初診料・同日初診
                WHEN    "111000110"
                WHEN    "111011810"
+      *H25.4   紹介なし
+               WHEN    "111012510"
+               WHEN    "111012610"
       *            受診履歴判定
                    PERFORM 100131-RSIJYURRKCHK-SEC
            END-EVALUATE
@@ -4525,6 +4541,8 @@
            MOVE    ZERO                TO  FLG-FUKUSU
       *    他医院退院日
            MOVE    ZERO                TO  FLG-TAITAIIN
+      *H25.4
+           MOVE    ZERO                TO  FLG-SYOKAINASI
       *
       *    診察料チェック
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
@@ -4985,6 +5003,9 @@
                      OR ((SPA-SYOYMD          =   LNK-ORCSC-RRK-LSTYMD)
                       AND (IDX-ZAI1           =   1    )  AND
                           (FLG-DOUJITU        =   1    ))
+      *H25.4         外来診察料（紹介なし）
+                     OR  (FLG-SYOKAINASI      =   1    )
+      *
                        CONTINUE
                    ELSE
                        MOVE    "0101"              TO  LNK-ORCSC-KIDCD
@@ -5118,6 +5139,11 @@
       *            再診料
                    ADD     1               TO  IDX-ZAI2
                    MOVE   IDX-Z            TO  IDX-SYU2
+      *H25.4
+      *            外来診察料（紹介） 
+                   IF     (WRK-SYOUKAI     =   "1"  )
+                       MOVE    1               TO  FLG-SYOKAINASI
+                   END-IF
                END-IF
            ELSE
       *        労災の時、労災コードで判定する
@@ -5537,12 +5563,15 @@
                        MOVE    SPACE           TO  WRK-KBN
                        MOVE    SPACE           TO  WRK-KBN2
                        MOVE    ZERO            TO  WRK-KAISU
+                       MOVE    ZERO            TO  WRK-SYOUKAI
                        MOVE    ZERO            TO  FLG-TBL
                    WHEN    WRK-COM-INPUTCD(IDX-Z)
                                                =   TBL-SRYCD (TBL-IDX)
                        MOVE    TBL-KAISU (TBL-IDX) TO  WRK-KAISU
                        MOVE    TBL-KBN (TBL-IDX)   TO  WRK-KBN
                        MOVE    TBL-KBN2(TBL-IDX)   TO  WRK-KBN2
+      *H25.4           紹介なし
+                       MOVE    TBL-ROUJIN(TBL-IDX) TO  WRK-SYOUKAI
                        MOVE    1                   TO  FLG-TBL
            END-SEARCH
       *

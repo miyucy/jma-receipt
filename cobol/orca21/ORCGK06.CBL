@@ -2073,6 +2073,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        OR  "113003710"
                                        OR  "101110010"
                                        OR  "099110001"
+      *H25.4           ¾Ò²ð¤Ê¤·
+                                       OR  "111012510"
                CONTINUE
            ELSE
                GO      TO      4510-KARRK-UPD-EXT

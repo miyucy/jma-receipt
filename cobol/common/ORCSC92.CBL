@@ -3338,10 +3338,13 @@
       *
       *    初診料
            MOVE    "111000110"         TO  WRK-SRYCD
+      *    初診料（紹介状なし）
+           MOVE    "111012510"         TO  WRK-SRYCD2
       *
            MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
            MOVE    ZERO                TO  FLG-SYO-ERR
            IF      CHK-CD              =   WRK-SRYCD
+                                       OR  WRK-SRYCD2
       *        初診以外入力時、前に初診算定があればエラー
                PERFORM VARYING     IDX-Y3  FROM    1   BY   1
                        UNTIL       IDX-Y3  >   31

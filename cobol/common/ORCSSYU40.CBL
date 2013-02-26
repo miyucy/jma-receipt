@@ -34,6 +34,7 @@
       *  01.00.04    NACL-多々納  06/04/12  電子化加算追加
       *  01.00.05    NACL-多々納  06/08/18  同日初診追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.08.00    NACL-多々納  12/03/XX  Ｈ２５年４月改正対応
       *****************************************************************
       *
       *
@@ -162,10 +163,15 @@
       *
       *    初診料（同日複数診療科）
            03  FILLER              PIC X(13)   VALUE   "111011810 110".
+      *H25.4 から
+      *    初診料（紹介状なし）
+           03  FILLER              PIC X(13)   VALUE   "111012510 1 0".
+      *    同日初診（紹介状なし）
+           03  FILLER              PIC X(13)   VALUE   "111012610 110".
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
       *****03  TBL-SINSATU-OCC         OCCURS  18    INDEXED  TBL-IDX.
-           03  TBL-SINSATU-OCC         OCCURS  23    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  25    INDEXED  TBL-IDX.
       *        診療コード
                05  TBL-SRYCD           PIC X(09).
       *
@@ -866,6 +872,8 @@
                    END-IF
       *        同日複数診療科
                WHEN    "111011810"
+      *H25.4   同日初診（紹介状なし）
+               WHEN    "111012610"
       *            最小の算定日編集
                    IF     (WRK-DD2             =   ZERO )  OR
                           (SANTEI-MSANTEID     <   WRK-DD2)

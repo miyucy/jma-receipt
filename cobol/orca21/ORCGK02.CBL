@@ -103,6 +103,7 @@
       *  04.07.00    NACL-多々納  12/08/XX  ドクター選択対応
       *  04.07.00    NACL-多々納  12/10/10  照会からの遷移対応
       *  04.08.00    NACL-多々納  12/12/17  患者情報通知対応
+      *  04.08.00    NACL-多々納  13/03/XX  Ｈ２５年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6323,11 +6324,13 @@
       *        今回変更位置
                IF     (K02-INPUTCD (WRK-IDX2)  NOT =
                                        SPA-GMN-INPUTCD (SPA-GMN-IDX))
+               AND    (K02-INPUTCD(WRK-IDX2 + 1) NOT =   SPACE )
                    MOVE    "1"                 TO  SPA-COM-IN4
                                                            (SPA-GMN-IDX)
                END-IF
                IF       (K02-MEISYO  (WRK-IDX2)   NOT =
                                        SPA-GMN-MEISYO-G (SPA-GMN-IDX))
+                 AND    (K02-INPUTCD(WRK-IDX2 + 1) NOT =   SPACE )
                    MOVE    "2"                 TO  SPA-COM-IN4
                                                            (SPA-GMN-IDX)
                END-IF
@@ -7891,6 +7894,8 @@
                                            "113003710"
       *        労災追加
                                        OR  "101110010"
+      *        紹介状なし追加
+                                       OR  "111012510"
                CONTINUE
            ELSE
                GO      TO      4101125-SYOSIN-CHK-EXT
@@ -7902,7 +7907,14 @@
            CALL    "ORCSGDAY"          USING
                                        ORCSGDAYAREA
            IF      SGDAY-RC            =   ZERO
-               IF      SGDAY-SDAY          >   SPA-SRYYMD
+      *H25.4   紹介状なしは、Ｈ２５.4から
+               IF      (SPA-COM-INPUTCD(SPA-GMN-IDX) =  "111012510")
+                  AND  (SGDAY-SDAY             <   "20130401" )
+                   MOVE    "1103"              TO  SPA-ERRCD
+                   GO      TO      4101125-SYOSIN-CHK-EXT
+               END-IF
+      *
+               IF      SGDAY-SDAY          >   SPA-SRYYMD 
                    MOVE    "1101"              TO  SPA-ERRCD
                ELSE
                    MOVE    SGDAY-SDAY          TO  SPA-SYOSIN-YMD
@@ -7939,6 +7951,8 @@
                                                "113003510"  OR
                                                "113003710"
                                            OR  "101110010"
+      *                紹介状なし追加
+                                           OR  "111012510"
                    IF      SPA-SYOSINFLG       =   ZERO
                        MOVE    "099110001"         TO  WRK-SRYCD
                    ELSE
@@ -12820,6 +12834,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  WRK-SURYO-HENSYU
            MOVE    SPA-GMN-SURYO   (WRK-IDX)   TO  WRK-H-SURYO
            MOVE    SPA-GMN-TANINAME(WRK-IDX)   TO  WRK-H-TANINAME
+      *
            MOVE    WRK-ZAIKEI-H                TO  WRK-H-ZAIKEI
            IF      SPA-GMN-KEI (WRK-IDX)   >=  ZERO
                MOVE    SPA-GMN-KEI (WRK-IDX)

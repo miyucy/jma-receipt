@@ -61,6 +61,7 @@
       *  04.07.00    NACL=Â¿¡¹Ç¼  11/10/XX  Æ±ÆüºÆÆþ±¡ÂÐ±þ
       *  04.07.00    NACL=Â¿¡¹Ç¼  11/10/30  API¸¡º÷ÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  13/01/11  ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë£±£°ÂÐ±þ
+      *  04.08.00    NACL-Â¿¡¹Ç¼  13/03/XX  £È£²£µÇ¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -3896,6 +3897,22 @@
                MOVE    WRK-YMDS        TO  WRK-SYO-YMD
                MOVE    WRK-YMDS-1      TO  WRK-SYO-YMD1
            END-IF
+      *H25.4 
+      *    ½é¿ÇÎÁ¡Ê¾Ò²ð¾õ¤Ê¤·¡Ë¡Ê£È£²£µ¡¥£´¤«¤é¡Ë
+           IF      SPA-SRYYMD          >=  "20130401"
+               MOVE    "111012510"         TO  WRK-SRYCD
+               PERFORM 30091-SANTEI-CHK-SEC
+               IF      WRK-YMDS        NOT =   SPACE
+                   IF      WRK-YMDS        >   WRK-SYO-YMD
+                       MOVE    WRK-YMDS        TO  WRK-SYO-YMD
+                   END-IF
+                   IF     (WRK-SYO-YMD1    =   SPACE        )
+                   OR     (WRK-YMDS-1      <   WRK-SYO-YMD1 )
+                      MOVE    WRK-YMDS-1      TO  WRK-SYO-YMD1
+                   END-IF
+               END-IF
+           END-IF
+      *
       *    ¾®»ù²Ê¿Ç»¡ÎÁ
       *    ±¡³°½èÊý   ½é¿Ç
            MOVE    "113003510"         TO  WRK-SRYCD
@@ -4084,6 +4101,17 @@
                   (WRK-YMDS            >   WRK-SYOSINYMD1)
                MOVE    WRK-YMDS            TO  WRK-SYOSINYMD1
            END-IF
+      *H25.4   ¾Ò²ð¤Ê¤·
+      *    Æ±Æü½é¿Ç¡Ê¾Ò²ð¾õ¤Ê¤·¡Ë¡Ê£È£²£µ¡¥£´¤«¤é¡Ë
+           IF      SPA-SRYYMD          >=  "20130401"
+               MOVE    "111012610"         TO  WRK-SRYCD
+               PERFORM 30091-SANTEI-CHK-SEC
+               IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                      (WRK-YMDS            >   WRK-SYOSINYMD1)
+                   MOVE    WRK-YMDS            TO  WRK-SYOSINYMD1
+               END-IF
+           END-IF
+      *
       *    Æ±Æü½é¿Ç¡ÊÏ«ºÒ¡Ë
            MOVE    "101110040"         TO  WRK-SRYCD
            PERFORM 30091-SANTEI-CHK-SEC
@@ -4125,6 +4153,18 @@
       *    Æ±Æü½é¿Ç¡Êº£·î¡Ë
            MOVE    SPA-SRYYMD(1:6)     TO  WRK-SRYYYMM
            PERFORM 3009111-DOU-SANTEI-SEC
+      *H25.4
+      *    Æ±Æü½é¿Ç¡Ê¾Ò²ð¾õ¤Ê¤·¡Ë¡Ê£È£²£µ¡¥£´¤«¤é¡Ë
+           MOVE    "111012610"         TO  WRK-SRYCD
+           MOVE    WRK-SRYYM-1         TO  WRK-SRYYYMM
+           IF      WRK-SRYYYMM         >=  "201304"
+               PERFORM 3009111-DOU-SANTEI-SEC
+           END-IF
+      *    Æ±Æü½é¿Ç¡Êº£·î¡Ë
+           MOVE    SPA-SRYYMD(1:6)     TO  WRK-SRYYYMM
+           IF      WRK-SRYYYMM         >=  "201304"
+               PERFORM 3009111-DOU-SANTEI-SEC
+           END-IF
       *
       *    Æ±Æü½é¿Ç¡ÊÏ«ºÒ¡Ë¡ÊÁ°·î¡Ë
            MOVE    "101110040"         TO  WRK-SRYCD
@@ -4227,7 +4267,7 @@
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-     *
+      *
            .
        300911-DOUSYOSIN-SRYKA-EXT.
            EXIT.
@@ -5466,6 +5506,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                OR  "112016210"
                    MOVE    ZERO            TO  FLG-CHK
                END-IF
+      *H24.5
+      *        Æ±°ìÆü£²²ÊÌÜ¡Ê½é¿Ç¡Ê¾Ò²ð¾õ¤Ê¤·¡Ë¡¢³°Íè¿Ç»¡ÎÁ¡Ê¾Ò²ð¡Ë
+               IF      WKSRY-SRYCD(IDXF)       =   "111012610"
+                                               OR  "112016410"
+                   MOVE    ZERO            TO  FLG-CHK
+               END-IF
+      *
            END-PERFORM
            .
        3002-SRYKBN-CHK-EXT.
