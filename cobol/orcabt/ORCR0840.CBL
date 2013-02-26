@@ -3737,9 +3737,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                PERFORM  220216-SETCOM-HENSYU-SEC
       *
+      *        レセ電（点滴の記録順並び替え用）
                IF      SRY-SRYKBN         =     "33"
                AND     FLG-HENSYU-OK      =     ZERO
-               AND     ACCT-JIHOKBN       =     SPACE
                  PERFORM  220217-TENTEKI-CDKBN-KBNNUM-HENSYU-SEC
                  MOVE     1     TO    FLG-HENSYU-OK
                END-IF
