@@ -146,6 +146,7 @@
       *                                     ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
       *  04.06.02    NACL-ÌçÏÆ    13/02/18  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
       *                                     ¡Ê¿·¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÂÐ±þ¡Ë
+      *  04.06.03    NACL-ÌçÏÆ    13/02/27  Ê¿À®£²£µÇ¯£´·î²þÀµÂÐ±þ
       *
       *  04.07.01    NACL-ÌçÏÆ    13/01/21  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
       *
@@ -773,10 +774,13 @@
       *    ¿²¤¿¤­¤êÏ·¿ÍºßÂðÁí¹ç¿ÇÎÅ²Ê»»Äê½ªÎ»
            03  FILLER          PIC X(09)   VALUE   "099140001".
       *
-       01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   59.
+      *    ½é¿ÇÎÁ¡Ê¾Ò²ð¾õ¤Ê¤·¡Ë
+           03  FILLER          PIC X(09)   VALUE   "111012510".
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   59.
+       01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   60.
+      *
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   60.
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
@@ -878,6 +882,8 @@
            03  CONS-SYOSIN-KASAN29 PIC X(09) VALUE "111012370".
       *    ½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»
            03  CONS-SYOSIN-KASAN30 PIC X(09) VALUE "111012470".
+      *    ½é¿ÇÎÁ¡ÊÆ±°ìÆü£²²ÊÌÜ¡§¾Ò²ð¾õ¤Ê¤·¡Ë
+           03  CONS-SYOSIN-KASAN31 PIC X(09) VALUE "111012610".
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  WRK-CONS-GAIJINKEN      PIC X(09)   VALUE 
@@ -1653,6 +1659,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                                 CONS-SYOSIN-KASAN28 OR
       ***>                                      CONS-SYOSIN-KASAN29 OR
                                                 CONS-SYOSIN-KASAN30 OR
+                                                CONS-SYOSIN-KASAN31 OR
                                                 CONS-COMMENT5       OR
                                                 CONS-COMMENT6       OR
                                                 CONS-COMMENT7       OR

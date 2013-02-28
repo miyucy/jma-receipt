@@ -61,6 +61,7 @@
       *                                     コード対応
       *  04.06.04    NACL-門脇    13/02/18  労災レセ電対応
       *                                     （新診療行為コード対応）
+      *  04.06.05    NACL-門脇    13/02/27  平成２５年４月改正対応
       *
       *  04.08.00    NACL-多々納  13/01/18  診療回数テーブル１０対応
       *****************************************************************
@@ -213,11 +214,12 @@
            03  FILLER          PIC X(09)   VALUE    "113003510".
            03  FILLER          PIC X(09)   VALUE    "113003710".
            03  FILLER          PIC X(09)   VALUE    "099110001".
+           03  FILLER          PIC X(09)   VALUE    "111012510".
       *
        01  TBL-SYOSIN-R        REDEFINES   TBL-SYOSIN-AREA.
-           03  TBL-SYOSIN      PIC X(09)   OCCURS    7.
+           03  TBL-SYOSIN      PIC X(09)   OCCURS    8.
       *
-       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     7.
+       01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE     8.
       *
       *****************************************************************
       *    ファイルレイアウト

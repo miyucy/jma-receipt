@@ -222,6 +222,7 @@
       *                                     レセプト記載対応
       *  04.06.05    NACL-門脇    13/02/18  労災レセ電対応
       *                                     （新診療行為コード対応）
+      *  04.06.06    NACL-門脇    13/02/27  平成２５年４月改正対応
       *
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
       *  04.07.02    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
@@ -996,6 +997,8 @@
            03  CONS-SYODOU2-COMMENT  PIC X(09)  VALUE  "830000024".
       *    初診（同日複数診療科）
            03  CONS-SYODOU3-COMMENT  PIC X(09)  VALUE  "111011810".
+      *    初診料（同一日２科目：紹介状なし）
+           03  CONS-SYODOU4-COMMENT  PIC X(09)  VALUE  "111012610".
       *    心大血管疾患リハビリテーション料（１）
            03  CONS-SINDAI1-COMMENT  PIC X(09)  VALUE  "180027410".
       *    心大血管疾患リハビリテーション料（２）
@@ -3765,7 +3768,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      RECE84-SRYKBN      =     "11"
       *       初診（同日複数診療科）
               IF  (SRY-SRYCD(IDX2)    =     CONS-SYODOU-COMMENT
-                                      OR    CONS-SYODOU3-COMMENT)
+                                      OR    CONS-SYODOU3-COMMENT
+                                      OR    CONS-SYODOU4-COMMENT)
               AND (FLG-SYODOU-COM     =     ZERO                )
                    MOVE   "1"   TO    RECE84-FLG-SYODOU-COMMENT
                    MOVE   SRY-SRYKA   TO    RECE84-SYODOU-SRYKA(1)
@@ -4701,8 +4705,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
            END-IF
       *
       *    初診（同日複数診療科）
-           IF    RECE85-SRYCD(IDX4)   = CONS-SYODOU-COMMENT
+           IF    RECE85-SRYCD(IDX4)   = CONS-SYODOU3-COMMENT
+                                     OR CONS-SYODOU4-COMMENT
                  MOVE   4             TO  WRK-SETCOM-JIDO
+           END-IF
+           IF    RECE85-SRYCD(IDX4)   = CONS-SYODOU-COMMENT
+                 MOVE   204           TO  WRK-SETCOM-JIDO
            END-IF
       *    傷病手当金意見書交付料
            IF    RECE85-SRYCD(IDX4)   = CONS-SYOBYO-COMMENT
