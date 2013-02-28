@@ -41,20 +41,7 @@
       *                                     （高齢受給者票がない場合）
       * 
       *  04.05.01    NACL-小豆沢  10/01/07  治験のレセプト種別対応
-      *
-      *  04.06.01    NACL-門脇    13/02/18  労災レセ電対応
-      *                                     （新診療行為コード対応）
       *  04.06.02    NACL-門脇    13/02/27  平成２５年４月改正対応
-      *  04.06.03    NACL-門脇    13/09/25  労災マスタ追加対応
-      *                                     （電話再診料　等）
-      *
-      *  04.07.01    NACL-藤原    14/03/30  平成２６年４月改正対応
-      *  04.07.02    NACL-藤原    14/08/18  ７５歳以上の海外居住者２割対応
-      *  04.07.03    NACL-門脇    14/12/15  平成２７年１月改正対応
-      *                                     （初再診料・低妥結率対応）
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-門脇    16/03/28  平成２８年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -90,7 +77,7 @@
                                    REPLACING  //TEIKI01PARA//
                                    BY         //TOUKEI04PARA//.
       *
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TOUKEIERR//.
       *
       *    フラグ領域
@@ -251,7 +238,6 @@
            03  WRK-CONS-KOUGAI-HKNNUM PIC X(03)    VALUE   "975".       
       *
            03  WRK-CONS-SRYYM-200804   PIC 9(06)   VALUE   200804.      
-           03  WRK-CONS-SRYYM-201404   PIC 9(06)   VALUE   201404.      
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -357,8 +343,6 @@
       *    レセプト種別返却サブ
            COPY    "CPORCSSYUBETUGET.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -411,21 +395,6 @@
                                                TOUKEIERR
            END-UNSTRING 
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           MOVE    "TOKEI110"          TO  TOUKEI04PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI04PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TOUKEIERR           TO  SGETTEMP-BASENAMES  (1)
-           MOVE    TOUKEI04PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  TOUKEI04PARA-FULLNAME
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -592,6 +561,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
+           MOVE    "TOKEI110"          TO  TOUKEI04PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI04PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
       *
            OPEN    OUTPUT              TOUKEI04-FILE
            CLOSE                       TOUKEI04-FILE
@@ -983,10 +956,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    WHEN    "112009210"
       *            電話再診（一般 診療所）
                    WHEN    "112009750"
-      *            再診（妥結率５割以下）
-                   WHEN    "112016610"
-      *            電話等再診（妥結率５割以下）
-                   WHEN    "112016750"
                        MOVE    2                   TO  WRK-KIHONKBN
       *
       *            同日再診（一般 病院）
@@ -997,17 +966,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    WHEN    "112010150"
       *            電話同日再診（一般 診療所）
                    WHEN    "112010650"
-      *
-                   WHEN    "112015810"
-                   WHEN    "112015950"
-      *            同日再診（妥結率５割以下）
-                   WHEN    "112016850"
-      *            同日電話等再診（妥結率５割以下）
-                   WHEN    "112016950"
-      *            再診料（同一日２科目・減点規定該当の場合）
-                   WHEN    "112017010"
-      *            電話等再診（同一日２科目・減点規定該当の場合）
-                   WHEN    "112017150"
                        MOVE    3                   TO  WRK-KIHONKBN
       *
       *            再診料（老人 病院）
@@ -1035,42 +993,17 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    WHEN    "112016310"
       *            外来診療料（老人）
                    WHEN    "112705510"
-      *            外来診療料（妥結率５割以下）
-                   WHEN    "112017310"
                        MOVE    2                   TO  WRK-KIHONKBN
       *
       *            同日外来診療料
                    WHEN    "112011710"
-                   WHEN    "112016550"
       *            同日外来診療料（老人）
                    WHEN    "112705850"
-      *
-                   WHEN    "112016210"
-                   WHEN    "112016410"
-      *            同日外来診療料（妥結率５割以下）
-                   WHEN    "112017450"
-      *            外来診療料（同一日複数科受診時の２科目・妥結率５割以下）
-                   WHEN    "112017610"
-                       MOVE    3                   TO  WRK-KIHONKBN
+                       MOVE    2                   TO  WRK-KIHONKBN
       *
       *            労災再診料
                    WHEN    "101120040"
-                       IF     SRY-SRYYM       <=   "201306"
-                           MOVE    2               TO  WRK-KIHONKBN
-                       ELSE
-                           MOVE    3               TO  WRK-KIHONKBN
-                       END-IF
-                   WHEN    "101120010"
-                   WHEN    "101120050"
-                       IF     SRY-SRYYM       >=   "201307"
-                           MOVE    2               TO  WRK-KIHONKBN
-                       END-IF
-                   WHEN    "101120060"
-                   WHEN    "101120070"
-                   WHEN    "101120080"
-                       IF     SRY-SRYYM       >=   "201307"
-                           MOVE    3               TO  WRK-KIHONKBN
-                       END-IF
+                       MOVE    2                   TO  WRK-KIHONKBN
       *
       *            他科受診
                    WHEN    "830000021"
@@ -1107,20 +1040,12 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    WHEN    "113003510"
       *            小児科外来診察料(院内処方 初診)
                    WHEN    "113003710"
-      *            小児かかりつけ診療料（処方せんを交付）（初診時）
-                   WHEN    "113019710"
-      *            小児かかりつけ診療料（処方せんを交付しない）（初診時）
-                   WHEN    "113019910"
                        MOVE    1                   TO  WRK-KIHONKBN
       *
       *            小児科外来診察料(院外処方 再診)
                    WHEN    "113003610"
-      *            小児科外来診察料(院内処方 再診)
-                   WHEN    "113003810"
-      *            小児かかりつけ診療料（処方せんを交付）（再診時）
-                   WHEN    "113019810"
-      *            小児かかりつけ診療料（処方せんを交付しない）（再診時）
-                   WHEN    "113020010"
+      *            小児科外来診察料(院内処方 再診初診)
+                   WHEN    "113003610"
                        MOVE    2                   TO  WRK-KIHONKBN
                END-EVALUATE
            END-PERFORM
@@ -1142,9 +1067,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    WHEN    "114001610"
       *            在宅患者訪問診察料
                    WHEN    "114001110"
-                   WHEN    "114012910"
-                   WHEN    "114018010"
-                   WHEN    "114030310"
       *                往診区分
                        MOVE    1                   TO  TOUKEI04-OSINKBN
                END-EVALUATE
@@ -1543,115 +1465,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF
       * 
-               IF      WRK-PARA-SRYYMD(1:6)    >=  WRK-CONS-SRYYM-201404
-                   IF    ( COMB-HKNNUM     =   "002" )
-                   AND  ( WRK-AGE          >=  75    )
-                       EVALUATE    COMB-HOJOKBN
-                           WHEN    "A"
-                           WHEN    "G"
-                           WHEN    "D"
-                               MOVE    "1"     TO  COMB-HOJOKBN
-                           WHEN    "B"
-                           WHEN    "H"
-                           WHEN    "E"
-                               MOVE    "2"     TO  COMB-HOJOKBN
-                           WHEN    "C"
-                           WHEN    "I"
-                           WHEN    "F"
-                               MOVE    "3"     TO  COMB-HOJOKBN
-                       END-EVALUATE
-                   END-IF
-      *
-                   EVALUATE    COMB-HKNNUM
-                       WHEN    "002" 
-                           EVALUATE   COMB-HOJOKBN
-                               WHEN   "A"
-                               WHEN   "B"
-                               WHEN   "C"
-                               WHEN   "9"
-                                   MOVE   "9"   TO   WK-HONKZKKBN
-                               WHEN   "D"
-                               WHEN   "E"
-                               WHEN   "F"
-                               WHEN   "8"
-                                   MOVE   "8"   TO   WK-HONKZKKBN
-                               WHEN   "G"
-                               WHEN   "H"
-                               WHEN   "I"
-                               WHEN   "7"
-                                   MOVE   "7"   TO   WK-HONKZKKBN
-                           END-EVALUATE
-                       WHEN    "031"  THRU    "034"  
-                           EVALUATE   COMB-HOJOKBN
-                               WHEN   "B"
-                               WHEN   "9"   
-                                   MOVE   "9"   TO   WK-HONKZKKBN
-                               WHEN   "E"
-                               WHEN   "8"
-                                   MOVE   "8"   TO   WK-HONKZKKBN
-                               WHEN   "H"
-                               WHEN   "7"
-                                   MOVE   "7"   TO   WK-HONKZKKBN
-                           END-EVALUATE
-                       WHEN    "060" 
-                       WHEN    "068" 
-      *********************IF  (WRK-AGE  >=   70)  AND
-      *********************    (WRK-AGE  <=   74)
-                           IF  (WRK-AGE  >=   70)
-                           AND (WRK-KOUKI-FLG
-                                         =    0 )
-                               EVALUATE   COMB-HOJOKBN
-                                   WHEN   "1"
-                                   WHEN   "4"
-                                       MOVE   "9"   TO   WK-HONKZKKBN
-                                   WHEN   "2"
-                                   WHEN   "5"
-                                       MOVE   "8"   TO   WK-HONKZKKBN
-                                   WHEN   "3"
-                                   WHEN   "6"
-                                       MOVE   "7"   TO   WK-HONKZKKBN
-                               END-EVALUATE
-                           END-IF     
-                       WHEN    "039" 
-                       WHEN    "040" 
-                           EVALUATE   COMB-HOJOKBN
-                               WHEN   "1"
-                                   MOVE   "9"   TO   WK-RJN
-                               WHEN   "3"
-                                   MOVE   "7"   TO   WK-RJN
-                           END-EVALUATE
-                       WHEN    "067" 
-                       WHEN    "069" 
-                           IF      WRK-AGE       >=   65
-                               MOVE   "?"   TO   WK-HONKZKKBN
-                           ELSE
-                               EVALUATE   COMB-HOJOKBN
-                                   WHEN   "9"
-                                       MOVE   "9"   TO   WK-HONKZKKBN
-                                   WHEN   "8"
-                                       MOVE   "?"   TO   WK-HONKZKKBN
-                                   WHEN   "7"
-                                       MOVE   "7"   TO   WK-HONKZKKBN
-                               END-EVALUATE
-                           END-IF
-                       WHEN    OTHER 
-                           EVALUATE   COMB-HOJOKBN
-                               WHEN   "9"
-                                   MOVE   "9"   TO   WK-HONKZKKBN
-                               WHEN   "8"
-                                   MOVE   "8"   TO   WK-HONKZKKBN
-                               WHEN   "7"
-                                   MOVE   "7"   TO   WK-HONKZKKBN
-                           END-EVALUATE
-                     END-EVALUATE
-      *
-                   IF      COMB-KOH1HKNNUM      =    "027"
-                       MOVE   "?"               TO   WK-RJN
-                   END-IF
-               END-IF
-      * 
-               IF    ( WRK-PARA-SRYYMD(1:6)  >= WRK-CONS-SRYYM-200804 )
-               AND   ( WRK-PARA-SRYYMD(1:6)  <= WRK-CONS-SRYYM-201404 )
+               IF      WRK-PARA-SRYYMD(1:6)    >=  WRK-CONS-SRYYM-200804
                    IF    ( COMB-HKNNUM     =   "002" )
                    AND  ( WRK-AGE          >=  75    )
                        EVALUATE    COMB-HOJOKBN
@@ -1922,54 +1736,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-PARA-SRYYMD(1:6)
                                        TO  LNK-SYUBETUGET-SRYYM
            MOVE    TOUKEI04-HKNNUM     TO  LNK-SYUBETUGET-HKNNUM
-           MOVE    TOUKEI04-BIRTHDAY   TO  LNK-SYUBETUGET-BIRTHDAY
-      *
-      *    国保のとき９７７の公費の有無
-           IF    ( LNK-SYUBETUGET-BIRTHDAY
-                                       <   19440402 )
-           AND   ( LNK-SYUBETUGET-HKNNUM
-                                       =   "060"    )
-           AND   ( LNK-SYUBETUGET-SRYYM
-                                       >   "201404" )
-               MOVE    "99"                TO  LNK-SYUBETUGET-RJNPAYKBN
-      *
-               MOVE    WRK-PARA-SRYYMD (1:6)   TO  WRK-TEKSTYYMM
-               IF      COMB-TEKSTYMD (1:6)     >=  WRK-PARA-SRYYMD (1:6)
-                   MOVE  COMB-TEKSTYMD (7:2)      TO  WRK-TEKSTDD
-               ELSE
-                   MOVE  01                       TO  WRK-TEKSTDD
-               END-IF
-      *
-               INITIALIZE                      PTKOHINF-REC
-               MOVE    WRK-PARA-HOSPNUM    TO  PTKOH-HOSPNUM
-               MOVE    COMB-PTID           TO  PTKOH-PTID
-               MOVE    "977"               TO  PTKOH-KOHNUM
-               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-                   MOVE    "key4"              TO  MCP-PATHNAME
-                   PERFORM 900-PTKOHINF-READ-N-SEC
-                   PERFORM UNTIL   FLG-PTKOHINF    =   1
-                       IF    ( PTKOH-TEKSTYMD  <=  WRK-TEKSTYMD   )
-                       AND   ( WRK-TEKSTYMD    <=  PTKOH-TEKEDYMD )
-                           MOVE    SPACE           TO
-                                               LNK-SYUBETUGET-RJNPAYKBN
-                           MOVE    1               TO  FLG-PTKOHINF
-                       ELSE
-                           MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-                           MOVE    "key4"          TO  MCP-PATHNAME
-                           PERFORM  900-PTKOHINF-READ-N-SEC
-                       END-IF
-                   END-PERFORM
-               END-IF
-               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-               MOVE    "key4"               TO  MCP-PATHNAME
-               PERFORM  900-CLOSE-SEC
-           END-IF
-      *
            CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
            MOVE    LNK-SYUBETUGET-RECESYUBETU

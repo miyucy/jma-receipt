@@ -111,48 +111,6 @@
       *  04.07.03    NACL-ÃÁœ∆    12/10/12   ›∏± Ã¿¡µ·•¡•ß•√•Ø…Ω° …∏Ω‡ƒ¢…º°À
       *                                     §Œµ°«Ωƒ…≤√¬–±˛
       *  04.07.04    NACL-ÃÁœ∆    12/09/25  •≥•·•Û•»∫ππ˛ºË§Íªﬂ§·° ∫ﬂ¬ª˝¬≥Õ€∞µ°À
-      *  04.07.05    NACL-ÃÁœ∆    13/07/01  ∆˛±°Œ¡¬æ ›∏±ªªƒÍª˛•≥•·•Û•»µ≠∫‹¬–±˛
-      *  04.07.06    NACL-ÃÁœ∆    14/03/14   ø¿Æ£≤£∂«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.07.07    NACL-ÃÁœ∆    14/03/28   ø¿Æ£≤£∂«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.07.08    NACL-ÃÁœ∆    14/04/24  ƒ∂Ω≈æ…ª˘° º‘°À∆˛±°ø«Œ≈≤√ªª≈˘§Œ
-      *                                     •≥•·•Û•»º´∆∞µ≠∫‹Ω§¿µ
-      *  04.07.09    NACL-ÃÁœ∆    14/05/13  ƒ∂Ω≈æ…ª˘° º‘°À∆˛±°ø«Œ≈≤√ªª≈˘§Œ
-      *                                     •≥•·•Û•»º´∆∞µ≠∫‹Ω§¿µ
-      *  04.07.10    NACL-ÃÁœ∆    14/06/17  ±…Õ‹¥…Õ˝¬Œ¿©∏∫ªªµ¨ƒÍ≥∫≈ˆ¬–±˛
-      *  04.07.11    NACL-∆£∏∂    14/08/19  ¥µº‘•≥•·•Û•»§Œ∆˛Œœ•≥•·•Û•»§Œ
-      *                                     ≤˛π‘•≥°º•…•¡•ß•√•Ø
-      *                                     •®•È°ºª˛ΩËÕ˝Ω™Œª
-      *  04.07.12    NACL-ÃÁœ∆    14/09/01  À¨Ã‰ø«Œ≈§À§´§´§Îµ≠œøΩÒ•≥•·•Û•»¬–±˛
-      *  04.07.13    NACL-ÃÁœ∆    14/09/01   ø¿Æ£≤£∂«Ø£±£∞∑Ó≤˛¿µ¬–±˛
-      *  04.07.14    NACL-ÃÁœ∆    14/10/17  ≈¿≈©§Œø«Œ≈≤  ‘Ω∏¬–±˛
-      *  04.07.15    NACL-ÃÁœ∆    15/03/16   ø¿Æ£≤£∑«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.07.16    NACL-ÃÁœ∆    15/08/12  ƒ∂Ω≈æ…ª˘° º‘°À∆˛±°ø«Œ≈≤√ªª≈˘§Œ
-      *                                     •≥•·•Û•»º´∆∞µ≠∫‹Ω§¿µ
-      *
-      *  04.08.01    NACL-ÃÁœ∆    13/01/25   Ò≥Áø«Œ≈ ¨§Œ≈¿∏°Õ—•Ï•ª•◊•»µ≠∫‹¬–±˛
-      *  04.08.02    NACL-∆£∏∂    14/07/07  ∞Ïª˛•«•£•Ï•Ø•»•Í¬–±˛
-      *  04.08.03    NACL-ÃÁœ∆    14/07/23  £≥£≤ ∏ª˙∞ æÂ§Œ ∏ª˙ŒÛΩ§¿µ
-      *                                     ° •≥•Û•—•§•Îª˛§Œ•Ô°º•À•Û•∞Ω§¿µ°À
-      *  04.08.04    NACL-ÃÁœ∆    15/12/24  ¥Ô∫‡§Œ√±≤¡ ‘Ω∏Ω§¿µ
-      *  04.08.05    NACL-ÃÁœ∆    16/01/12  ≈¿∏°Õ—•Ï•ª•◊•»±°≥∞ΩË ˝∞Ï»ÃÃæµ≠∫‹¬–±˛
-      *  04.08.06    NACL-ÃÁœ∆    16/03/03  ∏¯≥≤§ŒŒ≈Õ‹√¥≈ˆºÍ≈ˆ§œ
-      *                                     ÃÙ∫ﬁ°¶¥Ô∫‡≈¿§ŒºË§Í∞∑§§§»§π§Î
-      *  04.08.07    NACL-ÃÁœ∆    16/03/28   ø¿Æ£≤£∏«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.08.08    NACL-ÃÁœ∆    16/05/20  …∏Ω‡…È√¥≥€∑–≤·¡º√÷° ¿∫ø¿°À∆˛±°«Ø∑Ó∆¸
-      *                                     §Œ•≥•·•Û•»¬–±˛
-      *  04.08.09    NACL-ÃÁœ∆    16/08/23  ª˝ª≤ÃÙ¬–±˛
-      *  04.08.10    NACL-ÃÁœ∆    16/09/15  •Í•œ•”•Í•ﬁ•π•øƒ…≤√¬–±˛
-      *  04.08.11    NACL-ÃÁœ∆    16/09/20  £±£µ±ﬂ∞ ≤ºÃÙ∫ﬁ§ŒƒÛΩ–Õ—•Ï•ª•◊•»µ≠∫‹
-      *                                     ° µ≠œø°À¬–±˛
-      *  04.08.12    NACL-ÃÁœ∆    16/11/07  £±£µ±ﬂ∞ ≤ºÃÙ∫ﬁ§ŒƒÛΩ–Õ—•Ï•ª•◊•»µ≠∫‹
-      *                                     ° µ≠œø°À¬–±˛Ω§¿µ
-      *  04.08.13    NACL-ÃÁœ∆    17/03/27  ¿¡µ·∂‚≥€£∞±ﬂ•Ï•ª•◊•»∫Ó¿Æ¬–±˛
-      *  04.08.14    NACL-ÃÁœ∆    17/10/18  ∆˛±°Œ¡§»∞€§ §Î ›∏±¡»§ﬂπÁ§Ô§ª
-      *                                     §«§Œø©ªˆªªƒÍ¬–±˛
-      *  04.08.15    NACL-ÃÁœ∆    17/12/15  ¬Ëª∞º‘π‘∞Ÿ∏Ω ™µÎ…’§À¥ÿ§Ô§Î
-      *                                     …È√¥∂‚∑◊ªª¬–±˛
-      *  04.08.16    NACL-ÃÁœ∆    18/03/01   ø¿Æ£≥£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.08.17    NACL-ÃÁœ∆    18/03/27   ø¿Æ£≥£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -198,7 +156,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •Ï•ª•◊•»Ã¿∫Ÿ•’•°•§•ÎÃææŒ
+      *     •Ï•ª•◊•»Ã¿∫Ÿ•’•°•§•Î ÃææŒŒŒ∞Ë 
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE200//.
@@ -211,13 +169,10 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE230//.
       *
-      *    •®•È°º•’•°•§•ÎÃææŒŒŒ∞Ë
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+      *    •®•È°º•’•°•§•Î ÃææŒŒŒ∞Ë 
+           COPY    "CPERRFL.INC"
+                                   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    •’•°•§•ÎÃææŒŒŒ∞Ë
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    •’•È•∞ŒŒ∞Ë
        01  STS-AREA.
@@ -260,11 +215,6 @@
            03  FLG-RYOYO-COM       PIC 9(01).
            03  FLG-SYODOU-COM      PIC 9(01).
            03  FLG-KENSA-COM       PIC 9(01).
-           03  FLG-ZAIKYO-COM      PIC 9(01).
-           03  FLG-BOKOHO-COM      PIC 9(01).
-           03  FLG-HAIJRT-COM      PIC 9(01).
-           03  FLG-CYOJKSN-COM     PIC 9(01).
-           03  FLG-CYOJKSN-OK      PIC 9(01).
            03  FLG-RINYAK          PIC 9(01).
            03  FLG-TENTEKIMATOME   PIC 9(01).
            03  FLG-TAHOKEN         PIC 9(01).
@@ -275,9 +225,6 @@
            03  FLG-FORMALNAME      PIC 9(01).
            03  FLG-DOJITU          PIC 9(01).
            03  FLG-HENSYU-NG       PIC 9(01).
-           03  FLG-IRYORENKEI      PIC 9(01).
-           03  FLG-YKZ-PRTKBN      PIC 9(01).
-           03  FLG-HENSYU          PIC 9(01).
       *
       *    •´•¶•Û•»ŒŒ∞Ë
        01  CNT-AREA.
@@ -288,8 +235,6 @@
            03  CNT-IN              PIC 9(06).
            03  CNT-OUT3            PIC 9(06).
            03  CNT-DAY21           PIC 9(06).
-           03  CNT-DAY21-X         PIC 9(06).
-           03  CNT-DAY21-Y         PIC 9(06).
            03  CNT-DAY22           PIC 9(06).
       *
       *    ≈∫ª˙ŒŒ∞Ë
@@ -302,14 +247,6 @@
            03  IDX6                PIC 9(03).
            03  IDX8                PIC 9(02).
            03  IDX9                PIC 9(02).
-           03  IDX11               PIC 9(03).
-           03  IDX15               PIC 9(03).
-           03  IDX17               PIC 9(03).
-           03  IDX25               PIC 9(02).
-           03  IDX26               PIC 9(02).
-           03  IDX30               PIC 9(03).
-           03  IDX31               PIC 9(03).
-           03  IDX35               PIC 9(03).
            03  IDXA                PIC 9(01).
            03  IDXB                PIC 9(03).
            03  IDXX                PIC 9(02).
@@ -323,16 +260,15 @@
            03  IDW6                PIC 9(03).
            03  ID1                 PIC 9(03).
            03  ID4                 PIC 9(03).
-           03  IDV                 PIC 9(02).
-           03  IDV2                PIC 9(03).
-           03  IDU                 PIC 9(03).
-           03  IDZ1                PIC 9(02).
-           03  IDZ2                PIC 9(02).
            03  NUM-IDX             PIC 9(01).
            03  SYUKEI-IDX          PIC 9(03).
            03  SYUKEI-IDX2         PIC 9(03).
            03  SYUKEI-IDX3         PIC 9(03).
            03  SYUKEI-IDX4         PIC 9(03).
+           03  SYUKEI-IDX5         PIC 9(03).
+           03  IDV                 PIC 9(02).
+           03  IDV2                PIC 9(03).
+           03  IDU                 PIC 9(03).
            03  SYSKAN-IDX          PIC 9(03).
            03  SYSKAN-IDX2         PIC 9(03).
            03  FUKA-IDX            PIC 9(03).
@@ -367,12 +303,9 @@
                05  WRK-DAY1-KSN-SRYCD                  PIC 9(09).
                05  WRK-DAY1-NYUTENTTLKBN               PIC 9(03).
                05  WRK-DAY1-KHNTEN                     PIC 9(08).
-               05  WRK-DAY1-ZAITEN-GEN                 PIC 9(08).
                05  WRK-DAY1-KSNTEN                     PIC S9(08).
                05  WRK-DAY1-NYUKHNKSNKBN               PIC 9(03).
                05  WRK-DAY1-CHUKSNCD                   PIC X(04).
-               05  WRK-DAY1-NYUKHNKBN                  PIC 9(03).
-               05  WRK-DAY1-NYUINKHN                   PIC X(09).
                05  WRK-DAY2                            PIC 9(04).
                05  WRK-DAY4                            PIC 9(04).
                05  WRK-DAY4X                           PIC 9(04).
@@ -381,23 +314,18 @@
        01  WRK-DAY-TABLE2.
            03  WRK-DAY-T2                              OCCURS   31.
                05  WRK-DAY21                           PIC 9(04).
-               05  WRK-DAY21-X                         PIC 9(04).
-               05  WRK-DAY21-Y                         PIC 9(04).
                05  WRK-DAY22                           PIC 9(04).
                05  WRK-DAY22-NYUTENTTLKBN              PIC 9(03).
                05  WRK-DAY22-NYUKHNRYO                 PIC 9(08).
                05  WRK-DAY22-NYUKHNKSNKBN              PIC 9(03).
                05  WRK-DAY22-CHUKSNCD                  PIC X(04).
-               05  WRK-DAY22-NYUKHNKBN                 PIC 9(03).
-               05  WRK-DAY22-NYUINKHN                  PIC X(09).
                05  WRK-DAY24                           PIC 9(04).
       *
        01  WRK-GAI-TABLE.
-           03  WRK-GAI-TBL                             OCCURS   62.
+           03  WRK-GAI-TBL                             OCCURS   46.
              04  WRK-GAI-T                             OCCURS   10.
                05  WRK-GAI-DAY                         PIC 9(02).
                05  WRK-GAI-ZAITEN                      PIC 9(08).
-               05  WRK-GAI-KANGOGEN-SRYCD              PIC X(09).
                05  WRK-GAI-ZAIKAISU                    PIC 9(04).
                05  WRK-GAI-KAISU-T.
                 06  WRK-GAI-KAISU-OCC                  OCCURS   31.
@@ -406,8 +334,6 @@
        01  WRK-GAI-TABLE2.
            03  WRK-GAI-T2                              OCCURS   20.
                05  WRK-GAI2-DAY                        PIC 9(02).
-               05  WRK-GAI2-KANGOGEN-SRYCD.
-                   07  WRK-GAI2-KANGOGEN-SRYCD-9       PIC 9(09).
                05  WRK-GAI2-SRYCD.
                    07  WRK-GAI2-SRYCD-9                PIC 9(09).
                05  WRK-GAI2-SRYCD2.
@@ -419,7 +345,7 @@
                 06  WRK-GAI2-KAISU-OCC                 OCCURS   31.
                  07  WRK-GAI2-KAISU                    PIC 9(01).
       *
-       01  WRK-GAI-DATA                                PIC X(73).
+       01  WRK-GAI-DATA                                PIC X(64).
       *
        01  WRK-SKJ200604-TABLE.
            03  WRK-SKJ200604-T                         OCCURS   31.
@@ -427,8 +353,7 @@
                05  WRK-SKJ200604-SRYCDTOTAL            PIC 9(14).
                05  WRK-SKJ200604-MEISAISU              PIC 9(02).
                05  WRK-SKJ200604-SURYOUTOTAL           PIC 9(02).
-      **>      05  WRK-SKJ200604-T3                    OCCURS    3.
-               05  WRK-SKJ200604-T3                    OCCURS    4.
+               05  WRK-SKJ200604-T3                    OCCURS    3.
                    07  WRK-SKJ200604-DAY               PIC 9(04).
                05  WRK-SKJ200604-DAY-KAN               PIC 9(01).
       *
@@ -443,20 +368,18 @@
        01  WRK-NYULIFE-TABLE.
            03  WRK-NYULIFE-AREA                        OCCURS   31.
                05  WRK-NYULIFE-KBN                     PIC X(01).
-      *
-       01  WRK-SKJHKN-TABLE.
-           03  WRK-SKJHKN-AREA                         OCCURS   31.
-               05  WRK-SKJHKN-HKNCOMBI                 PIC X(04).
-               05  WRK-SKJHKN-HKNCOMBI-DOU             PIC X(04).
+               05  WRK-NYULIFE-SKJFTN-SRYCD            PIC X(09).
+               05  WRK-NYULIFE-SKJFTN-MONEY            PIC 9(07).
+               05  WRK-NYULIFE-KANFTN-SRYCD            PIC X(09).
+               05  WRK-NYULIFE-KANFTN-MONEY            PIC 9(07).
       *
        01  WRK-TENTEKI2-TABLE.
            03  WRK-TENTEKI2-HENKYAKU-AREA.
       *
                05  WRK-TENTEKI2-ZAINUM                 PIC 9(08)
-                                                       OCCURS   40.
+                                                       OCCURS   20.
       *
                05  WRK-TENTEKI2-T-AREA                 OCCURS   31.
-                 06  WRK-TENTEKI2-T-SRYKA              PIC X(02).
                  06  WRK-TENTEKI2-T-MEISAISU           PIC 9(03).
                  06  WRK-TENTEKI2-T-ZAITEN             PIC 9(07).
                  06  WRK-TENTEKI2-T-SRYCDTOTAL         PIC 9(13).
@@ -471,7 +394,6 @@
                05  WRK-TENTEKI2-T-ERRCD                PIC 9(01).
       *
                05  WRK-TENTEKI2-C-AREA                 OCCURS   31.
-                 06  WRK-TENTEKI2-C-SRYKA              PIC X(02).
                  06  WRK-TENTEKI2-C-MEISAISU           PIC 9(03).
                  06  WRK-TENTEKI2-C-ZAITEN             PIC 9(07).
                  06  WRK-TENTEKI2-C-SRYCDTOTAL         PIC 9(13).
@@ -492,29 +414,18 @@
                05  WRK-ORCSTEN-COM-MEI                 PIC X(80).
            03  WRK-ORCSTEN-T2                          OCCURS   31.
                05  WRK-ORCSTEN-DAY                     PIC 9(03).
-               05  WRK-ORCSTEN-KIZ-SRYKA               PIC X(02).
            03  WRK-ORCSTEN-ZAIKAISU                    PIC 9(04).
-      *
-      *    ±°≥∞ΩË ˝∞Ï»ÃÃæ ‘Ω∏æ Û¬‡»ÚŒŒ∞Ë
-       01  WRK-ORCSGETGE-OUT-AREA.
-           03  WRK-ORCSGETGE-OUT-TABLE                 OCCURS  50.
-               05  WRK-ORCSGETGE-YAKKAKJNCD            PIC X(12).
-               05  WRK-ORCSGETGE-GENERIC-KBN           PIC X(01).
-               05  WRK-ORCSGETGE-GENERICNAME           PIC X(200).
       *
       *    ª‹¿ﬂ¥Ω‡æ Û¬‡»ÚÕ—ŒŒ∞Ë
        01  TBL-SYS1006-T.
            03  TBL-SYS1006-OCC                         OCCURS  100.
                05  TBL-SYS10062                        PIC X(610).
                05  TBL-SYS10067                        PIC X(610).
+      *
       *    ∞ÂŒ≈µ°¥ÿ° ∆˛±°¥À‹°À¬‡»ÚÕ—ŒŒ∞Ë
        01  TBL-SYS5000-T.
-           03  TBL-SYS5000-OCC                         OCCURS  100.
+           03  TBL-SYS5000-OCC     OCCURS  100.
                05  TBL-SYS5000                         PIC X(610).
-      *    ƒ¢…º ‘Ω∏∂Ë ¨æ Û¬‡»ÚÕ—ŒŒ∞Ë
-       01  TBL-SYS1030-T.
-           03  TBL-SYS1030-OCC                         OCCURS  100.
-               05  TBL-SYS1030                         PIC X(610).
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
@@ -562,6 +473,8 @@
            03  WRK-FILMTEN         PIC 9(07)V9(02).
            03  WRK-FILMTEN2        PIC 9(07)V9(02).
       *
+           03  WRK-RECEERR         PIC X(200).
+      *
            03  WRK-SRYYM-5000      PIC X(06).
       *
            03  WRK-SYS5000-COUNT   PIC 9(02).
@@ -573,21 +486,11 @@
            03  WRK-NYUTENTTLKBN    PIC 9(03).
       *
            03  WRK-KHNTEN          PIC 9(08).
-           03  WRK-KHNTEN-MOTO     PIC 9(08).
-           03  WRK-KHNTEN-GEN      PIC 9(08).
-      *****03  WRK-KHN-ZAITEN      PIC 9(08).
-           03  WRK-KHN-ZAITEN-MOTO PIC 9(08).
-           03  WRK-KHN-ZAITEN-GEN  PIC 9(08).
            03  WRK-KSNTEN          PIC S9(08).
-           03  WRK-ZAITEN-W        PIC 9(08).
-           03  WRK-KANGOGEN-SRYCD-W
-                                   PIC 9(09).
            03  WRK-GAIHAKU-SRYCD   PIC X(09).
            03  WRK-GAIHAKU-KHNTEN  PIC 9(08).
            03  WRK-NYUKHNKSNKBN    PIC 9(03).
            03  WRK-CHUKSNCD        PIC X(04).
-           03  WRK-NYUKHNKBN       PIC 9(03).
-           03  WRK-NYUINKHN        PIC X(09).
       *
            03  WRK-SHOKUJIRYOYO-OCC.
                05  WRK-SHOKUJIRYOYO   PIC 9(01)
@@ -601,8 +504,6 @@
            03  WRK-SISETU3058      PIC 9(01).
            03  WRK-SISETU3168      PIC 9(01).
            03  WRK-SISETU3169      PIC 9(01).
-      *
-           03  WRK-RYOYOTEATE      PIC 9(07).
       *
       *    øÙª˙»æ≥—¡¥≥— —¥πÕ—
            03  WRK-CHAR-IDX PIC 9(02).
@@ -651,12 +552,6 @@
            03  WRK-TOTALTEN1                   PIC  9(08).
            03  WRK-TOTALTEN2                   PIC  9(08).
       *
-           03  WRK-COL                         PIC  9(03).
-      *
-           03  WRK-1030-KOUHATUKA              PIC  X(01).
-      *
-           03  WRK-NYUSAI-SRYKBN               PIC  X(02).
-      *
       *    ∏«ƒÍ√Õ
        01  CONST-AREA.
       *    •’•Í°º•≥•·•Û•»
@@ -701,18 +596,6 @@
            03  CONS-YAKUKAN-COMMENT3 PIC X(09)  VALUE  "120001610".
       *    ∆˛±°±…Õ‹ø©ªˆªÿ∆≥Œ¡
            03  CONS-NYUEIYO-COMMENT  PIC X(09)  VALUE  "113003310".
-      *    ∆˛±°±…Õ‹ø©ªˆªÿ∆≥Œ¡£±
-           03  CONS-NYUEIYO1-COMMENT PIC X(09)  VALUE  "113014810".
-      *    ∆˛±°±…Õ‹ø©ªˆªÿ∆≥Œ¡£≤
-           03  CONS-NYUEIYO2-COMMENT PIC X(09)  VALUE  "113014910".
-      *    ∆˛±°±…Õ‹ø©ªˆªÿ∆≥Œ¡£±° ΩÈ≤Û°À
-           03  CONS-NYUEIYO3-COMMENT PIC X(09)  VALUE  "113017610".
-      *    ∆˛±°±…Õ‹ø©ªˆªÿ∆≥Œ¡£±° £≤≤ÛÃ‹°À
-           03  CONS-NYUEIYO4-COMMENT PIC X(09)  VALUE  "113017710".
-      *    ∆˛±°±…Õ‹ø©ªˆªÿ∆≥Œ¡£≤° ΩÈ≤Û°À
-           03  CONS-NYUEIYO5-COMMENT PIC X(09)  VALUE  "113017810".
-      *    ∆˛±°±…Õ‹ø©ªˆªÿ∆≥Œ¡£≤° £≤≤ÛÃ‹°À
-           03  CONS-NYUEIYO6-COMMENT PIC X(09)  VALUE  "113017910".
       *    ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡
            03  CONS-HOUMON-COMMENT1  PIC X(09)  VALUE  "190030310".
       *    ° œ∑°À¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡
@@ -777,10 +660,6 @@
            03  CONS-CTMRI-COMMENT19  PIC X(09)  VALUE  "170033410".
       *    £Õ£“£…ª£±∆° £≥•∆•π•È∞ æÂ§Œµ°¥Ô°À
            03  CONS-CTMRI-COMMENT20  PIC X(09)  VALUE  "170033510".
-      *    £√£‘ª£±∆° £∂£¥ŒÛ∞ æÂ•ﬁ•Î•¡•π•È•§•π∑øµ°¥Ô°À° ∂¶∆±Õ¯Õ—ª‹¿ﬂ°À
-           03  CONS-CTMRI-COMMENT21  PIC X(09)  VALUE  "170034910".
-      *    £Õ£“£…ª£±∆° £≥•∆•π•È∞ æÂ§Œµ°¥Ô°À° ∂¶∆±Õ¯Õ—ª‹¿ﬂ°À
-           03  CONS-CTMRI-COMMENT22  PIC X(09)  VALUE  "170035010".
       *    ¿∫ø¿≤ ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡
            03  CONS-HOUSEI-COMMENT   PIC X(09)  VALUE  "180018310".
       *    ¿∫ø¿≤ ¬‡±°¡∞À¨Ã‰ªÿ∆≥Œ¡ªªƒÍ∆¸
@@ -795,8 +674,6 @@
            03  CONS-SYODOU2-COMMENT  PIC X(09)  VALUE  "830000024".
       *    ΩÈø«Œ¡° ∆±∞Ï∆¸£≤≤ Ã‹°ßæ“≤æı§ §∑°À
            03  CONS-SYODOU3-COMMENT  PIC X(09)  VALUE  "111012610".
-      *    ΩÈø«° ∆±∞Ï∆¸ £øÙ≤ ºıø«ª˛§Œ£≤≤ Ã‹°¶¬≈∑ÎŒ®£µ≥‰∞ ≤º°À
-           03  CONS-SYODOU4-COMMENT  PIC X(09)  VALUE  "111012810".
       *    ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
            03  CONS-SINDAI1-COMMENT  PIC X(09)  VALUE  "180027410".
       *    ø¥¬Á∑Ï¥…º¿¥µ•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
@@ -836,43 +713,23 @@
       *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À
            03  CONS-NOUKE7-COMMENT   PIC X(09)  VALUE  "180030810".
       *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° «—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE11-COMMENT  PIC X(09)  VALUE  "180032410".
+           03  CONS-NOUKE8-COMMENT   PIC X(09)  VALUE  "180032410".
       *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° «—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE12-COMMENT  PIC X(09)  VALUE  "180032510".
+           03  CONS-NOUKE9-COMMENT   PIC X(09)  VALUE  "180032510".
       *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° «—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE13-COMMENT  PIC X(09)  VALUE  "180032610".
+           03  CONS-NOUKE10-COMMENT  PIC X(09)  VALUE  "180032610".
       *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤∞ ≥∞°À
-           03  CONS-NOUKE14-COMMENT  PIC X(09)  VALUE  "180033910".
+           03  CONS-NOUKE11-COMMENT  PIC X(09)  VALUE  "180033910".
       *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE15-COMMENT  PIC X(09)  VALUE  "180034010".
+           03  CONS-NOUKE12-COMMENT  PIC X(09)  VALUE  "180034010".
       *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤∞ ≥∞°À
-           03  CONS-NOUKE16-COMMENT  PIC X(09)  VALUE  "180034110".
+           03  CONS-NOUKE13-COMMENT  PIC X(09)  VALUE  "180034110".
       *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE17-COMMENT  PIC X(09)  VALUE  "180034210".
+           03  CONS-NOUKE14-COMMENT  PIC X(09)  VALUE  "180034210".
       *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤∞ ≥∞°À
-           03  CONS-NOUKE18-COMMENT  PIC X(09)  VALUE  "180034310".
+           03  CONS-NOUKE15-COMMENT  PIC X(09)  VALUE  "180034310".
       *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶«—Õ—æ…∏ı∑≤°À
-           03  CONS-NOUKE19-COMMENT  PIC X(09)  VALUE  "180034410".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶∆˛±°°À
-           03  CONS-NOUKE23-COMMENT  PIC X(09)  VALUE  "180044310".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶∆˛±°°À
-           03  CONS-NOUKE24-COMMENT  PIC X(09)  VALUE  "180044410".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶∆˛±°°À
-           03  CONS-NOUKE25-COMMENT  PIC X(09)  VALUE  "180044510".
-      *
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° •Í∏∫°À
-           03  CONS-NOUKE26-COMMENT  PIC X(09)  VALUE  "180050330".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° •Í∏∫°À
-           03  CONS-NOUKE27-COMMENT  PIC X(09)  VALUE  "180050430".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° •Í∏∫°À
-           03  CONS-NOUKE28-COMMENT  PIC X(09)  VALUE  "180050530".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶∆˛±°°À° •Í∏∫°À
-           03  CONS-NOUKE29-COMMENT  PIC X(09)  VALUE  "180050630".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶∆˛±°°À° •Í∏∫°À
-           03  CONS-NOUKE30-COMMENT  PIC X(09)  VALUE  "180050830".
-      *    «æ∑Ï¥…º¿¥µ≈˘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶∆˛±°°À° •Í∏∫°À
-           03  CONS-NOUKE31-COMMENT  PIC X(09)  VALUE  "180051030".
-      *
+           03  CONS-NOUKE16-COMMENT  PIC X(09)  VALUE  "180034410".
       *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
            03  CONS-UNDOKI1-COMMENT  PIC X(09)  VALUE  "180027810".
       *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À
@@ -886,33 +743,13 @@
       **   ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•Û∞Â≥ÿ¥…Õ˝Œ¡° £≤°À
            03  CONS-UNDOKI6-COMMENT  PIC X(09)  VALUE  "180030410".
       *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À
-           03  CONS-UNDOKI9-COMMENT  PIC X(09)  VALUE  "180032710".
+           03  CONS-UNDOKI7-COMMENT  PIC X(09)  VALUE  "180032710".
       *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°À
-           03  CONS-UNDOKI11-COMMENT PIC X(09)  VALUE  "180034510".
+           03  CONS-UNDOKI8-COMMENT  PIC X(09)  VALUE  "180034510".
       *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°À
-           03  CONS-UNDOKI12-COMMENT PIC X(09)  VALUE  "180034610".
+           03  CONS-UNDOKI9-COMMENT  PIC X(09)  VALUE  "180034610".
       *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°À
-           03  CONS-UNDOKI13-COMMENT PIC X(09)  VALUE  "180034710".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶∆˛±°°À
-           03  CONS-UNDOKI17-COMMENT PIC X(09)  VALUE  "180045810".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶∆˛±°°À
-           03  CONS-UNDOKI18-COMMENT PIC X(09)  VALUE  "180045910".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶∆˛±°°À
-           03  CONS-UNDOKI19-COMMENT PIC X(09)  VALUE  "180046010".
-      *
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° •Í∏∫°À
-           03  CONS-UNDOKI22-COMMENT PIC X(09)  VALUE  "180052730".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° •Í∏∫°À
-           03  CONS-UNDOKI23-COMMENT PIC X(09)  VALUE  "180052830".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° •Í∏∫°À
-           03  CONS-UNDOKI24-COMMENT PIC X(09)  VALUE  "180052930".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶∆˛±°°À° •Í∏∫°À
-           03  CONS-UNDOKI25-COMMENT PIC X(09)  VALUE  "180053030".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶∆˛±°°À° •Í∏∫°À
-           03  CONS-UNDOKI26-COMMENT PIC X(09)  VALUE  "180053230".
-      *    ±ø∆∞¥Ô•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶∆˛±°°À° •Í∏∫°À
-           03  CONS-UNDOKI27-COMMENT PIC X(09)  VALUE  "180053430".
-      *
+           03  CONS-UNDOKI10-COMMENT PIC X(09)  VALUE  "180034710".
       *    ∆Ò…¬¥µº‘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡
            03  CONS-NANBYO-COMMENT   PIC X(09)  VALUE  "180017910".
       *    æ„≥≤ª˘° º‘°À•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £∂∫–Ã§À˛°À
@@ -923,37 +760,6 @@
            03  CONS-SYOGAI3-COMMENT  PIC X(09)  VALUE  "180028410".
       *    ¿›ø©µ°«ΩŒ≈À°
            03  CONS-SESSYOKU-COMMENT PIC X(09)  VALUE  "180016610".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° £±√±∞Ã°À
-           03  CONS-HAIYO1-COMMENT   PIC X(09)  VALUE  "180044610".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° £±√±∞Ã°À
-           03  CONS-HAIYO2-COMMENT   PIC X(09)  VALUE  "180044710".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° £±√±∞Ã°À
-           03  CONS-HAIYO3-COMMENT   PIC X(09)  VALUE  "180044810".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶∆˛±°°À
-           03  CONS-HAIYO4-COMMENT   PIC X(09)  VALUE  "180044910".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶∆˛±°°À
-           03  CONS-HAIYO5-COMMENT   PIC X(09)  VALUE  "180045110".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶∆˛±°°À
-           03  CONS-HAIYO6-COMMENT   PIC X(09)  VALUE  "180045310".
-      *
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° •Í∏∫°À
-           03  CONS-HAIYO10-COMMENT  PIC X(09)  VALUE  "180051530".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° •Í∏∫°À
-           03  CONS-HAIYO11-COMMENT  PIC X(09)  VALUE  "180051630".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° •Í∏∫°À
-           03  CONS-HAIYO12-COMMENT  PIC X(09)  VALUE  "180051730".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £±°À° Õ◊≤∏Ó°¶∆˛±°°À° •Í∏∫°À
-           03  CONS-HAIYO13-COMMENT  PIC X(09)  VALUE  "180051830".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≤°À° Õ◊≤∏Ó°¶∆˛±°°À° •Í∏∫°À
-           03  CONS-HAIYO14-COMMENT  PIC X(09)  VALUE  "180052030".
-      *    «—Õ—æ…∏ı∑≤•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡° £≥°À° Õ◊≤∏Ó°¶∆˛±°°À° •Í∏∫°À
-           03  CONS-HAIYO15-COMMENT  PIC X(09)  VALUE  "180052230".
-      *
-      *    ΩÈ¥¸≤√ªª° •Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡°À
-           03  CONS-RIHAKSN1-COMMENT PIC X(09)  VALUE  "180033870".
-      *    ¡·¥¸•Í•œ•”•Í•∆°º•∑•Á•Û≤√ªª
-           03  CONS-RIHAKSN2-COMMENT PIC X(09)  VALUE  "180030770".
-      *
       *    §¨§Û¥µº‘•Í•œ•”•Í•∆°º•∑•Á•ÛŒ¡
            03  CONS-GANKNJ-COMMENT   PIC X(09)  VALUE  "180033110".
       *    ≤√£∏£∞˙
@@ -1018,10 +824,6 @@
            03  CONS-JYUSYO-COMMENT   PIC X(09)  VALUE  "190141370".
       *    Ω≈æ…º‘≤√ªª£±
            03  CONS-JYUSYO-COMMENT2  PIC X(09)  VALUE  "190151470".
-      *    Ω≈æ…º‘≤√ªª£±° √œ∞Ë∞‹π‘µ°«Ω∂Ø≤Ω…¬≈Ô∆˛±°Œ¡°À
-           03  CONS-JYUSYO-COMMENT3  PIC X(09)  VALUE  "190195770".
-      *    Ω≈æ…º‘≤√ªª£≤° √œ∞Ë∞‹π‘µ°«Ω∂Ø≤Ω…¬≈Ô∆˛±°Œ¡°À
-           03  CONS-JYUSYO-COMMENT4  PIC X(09)  VALUE  "190195870".
       *
       *    ≤∏Óø¶∞˜≈˘”Ω·‚µ€∞˙≈˘ªÿº®Œ¡
            03  CONS-KAISYOKU-COMMENT PIC X(09)  VALUE  "114020910".
@@ -1041,67 +843,13 @@
            03  CONS-SEIKEA7-COMMENT  PIC X(09)  VALUE  "180039430".
       *    ¿∫ø¿≤ •«•§°¶•±•¢° ¬Áµ¨Ãœ°À° ¡·¥¸°¶∆˛±°√Ê§Œ¥µº‘°À
            03  CONS-SEIKEA8-COMMENT  PIC X(09)  VALUE  "180039530".
-      *    ¿∫ø¿≤ •«•§°¶•±•¢° æÆµ¨Ãœ°À° £≥«Øƒ∂°¶Ωµ£≥∆¸ƒ∂°À° ∆˛±°√Ê§Œ¥µº‘°À
-           03  CONS-SEIKEA9-COMMENT  PIC X(09)  VALUE  "180048930".
-      *    ¿∫ø¿≤ •«•§°¶•±•¢° æÆµ¨Ãœ°À° £≥«Øƒ∂°¶Ωµ£≥∆¸ƒ∂°À° ∆˛±°√Ê§Œ¥µº‘°À
-           03  CONS-SEIKEA10-COMMENT PIC X(09)  VALUE  "180049030".
       *    ¿∫ø¿≤ •Í•®•æ•Û•¡°º•‡≤√ªª
            03  CONS-SEIRIE-COMMENT   PIC X(09)  VALUE  "190147010".
       *    …¬≈ÔÃÙ∫ﬁ∂»Ã≥º¬ª‹≤√ªª
            03  CONS-BYOYAK-COMMENT   PIC X(09)  VALUE  "190149110".
-      *    …¬≈ÔÃÙ∫ﬁ∂»Ã≥º¬ª‹≤√ªª£±
-           03  CONS-BYOYAK-COMMENT2  PIC X(09)  VALUE  "190192110".
-      *    …¬≈ÔÃÙ∫ﬁ∂»Ã≥º¬ª‹≤√ªª£≤
-           03  CONS-BYOYAK-COMMENT3  PIC X(09)  VALUE  "190192210".
       *
       *    ∫ﬂ¬ª˝¬≥Õ€∞µ∏∆µ€Œ≈À°ªÿ∆≥¥…Õ˝Œ¡
            03  CONS-YOUATU-COMMENT   PIC X(09)  VALUE  "114009710".
-      *
-      *    ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡° ±˝ø«°À
-           03  CONS-ZAIKYO1-COMMENT  PIC X(09)  VALUE  "114027610".
-      *    ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡° À¨Ã‰ø«Œ≈°À° ∆±∞Ï∑˙ ™µÔΩªº‘∞ ≥∞°À
-           03  CONS-ZAIKYO2-COMMENT  PIC X(09)  VALUE  "114027710".
-      *    ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡° À¨Ã‰ø«Œ≈°À° ∆±∞Ï∑˙ ™µÔΩªº‘°¶∆√ƒÍª‹¿ﬂ≈˘°À
-           03  CONS-ZAIKYO3-COMMENT  PIC X(09)  VALUE  "114027810".
-      *    ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡° À¨Ã‰ø«Œ≈°À° ∆±∞Ï∑˙ ™µÔΩªº‘°¶∆√ƒÍª‹¿ﬂ≈˘∞ ≥∞°À
-           03  CONS-ZAIKYO4-COMMENT  PIC X(09)  VALUE  "114027910".
-      *    ΩÈ≤ÛªªƒÍ°°°°°°∑Ó°°°°∆¸
-           03  CONS-ZAIKYO5-COMMENT  PIC X(09)  VALUE  "840000097".
-      *    ƒÃªªº¬ª‹≤ÛøÙ° °°°°≤Û°À
-           03  CONS-ZAIKYO6-COMMENT  PIC X(09)  VALUE  "840000086".
-      *
-      *    ø¥¬°•⁄°º•π•·°º•´°ºªÿ∆≥¥…Õ˝Œ¡° √ÂÕ—∑øº´∆∞Ω¸∫Ÿ∆∞¥Ô°À
-           03  CONS-SINPESUR1-COMMENT PIC X(09) VALUE  "113015010".
-      *    ø¥¬°•⁄°º•π•·°º•´°ºªÿ∆≥¥…Õ˝Œ¡° •Ì°¶ø¢π˛∑øΩ¸∫Ÿ∆∞¥Ô∞‹π‘¥¸≤√ªª¥ﬁ§‡°À
-           03  CONS-SINPESUR2-COMMENT PIC X(09) VALUE  "113015130".
-      *
-      *    §¨§Û¥µº‘ªÿ∆≥¥…Õ˝Œ¡° ∞Âª’°¶¥«∏Óª’§¨ø¥Õ˝≈™…‘∞¬∑⁄∏∫§Œ§ø§·ÃÃ¿‹°À
-           03  CONS-GANSIDO1-COMMENT PIC X(09)  VALUE  "113015310".
-      *    §¨§Û¥µº‘ªÿ∆≥¥…Õ˝Œ¡° ∞Âª’≈˘§¨π£∞≠¿≠º·Á∫ﬁ§Œ…¨Õ◊¿≠≈˘§Ú ∏ΩÒ¿‚Ã¿°À
-           03  CONS-GANSIDO2-COMMENT PIC X(09)  VALUE  "113015410".
-      *
-      *    ºßµ§§À§Ë§ÎÁØÊ˘≈˘ª…∑„À°
-           03  CONS-BOKOHO1-COMMENT  PIC X(09)  VALUE  "140055110".
-      *    ΩÈ≤Ûº¬ª‹°°°°°°∑Ó°°°°∆¸
-           03  CONS-BOKOHO2-COMMENT  PIC X(09)  VALUE  "840000085".
-      *
-      *    ƒ∂Ω≈æ…ª˘° º‘°À∆˛±°ø«Œ≈≤√ªª° £∂∫–∞ æÂ°À
-           03  CONS-CYOJKSN1-COMMENT PIC X(09)  VALUE  "190076570".
-      *    Ω‡ƒ∂Ω≈æ…ª˘° º‘°À∆˛±°ø«Œ≈≤√ªª° £∂∫–∞ æÂ°À
-           03  CONS-CYOJKSN2-COMMENT PIC X(09)  VALUE  "190076670".
-      *    ƒ∂Ω≈æ…ª˘° º‘°À∆˛±°ø«Œ≈≤√ªª° £∂∫–Ã§À˛°À
-           03  CONS-CYOJKSN3-COMMENT PIC X(09)  VALUE  "190127510".
-      *    Ω‡ƒ∂Ω≈æ…ª˘° º‘°À∆˛±°ø«Œ≈≤√ªª° £∂∫–Ã§À˛°À
-           03  CONS-CYOJKSN4-COMMENT PIC X(09)  VALUE  "190127610".
-      *    ªªƒÍ≥´ªœ°°°°°°«Ø°°°°∑Ó°°°°∆¸
-           03  CONS-CYOJKSN5-COMMENT PIC X(09)  VALUE  "840000056".
-      *
-      *    «”«¢º´Œ©ªÿ∆≥Œ¡
-           03  CONS-HAIJRT-COMMENT   PIC X(09)  VALUE  "113022810".
-      *    ΩÈ≤ÛªªƒÍ°°°°°°∑Ó°°°°∆¸
-           03  CONS-HAIJRT2-COMMENT  PIC X(09)  VALUE  "840000097".
-      *    ƒÃªªº¬ª‹≤ÛøÙ° °°°°≤Û°À
-           03  CONS-HAIJRT3-COMMENT  PIC X(09)  VALUE  "840000086".
       *
       *    ≥∞ÕËø◊¬Æ∏°¬Œ∏°∫∫≤√ªª
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -1138,9 +886,6 @@
        01  TBL-SUJI-X-R        REDEFINES   TBL-SUJI-AREA-X.
            03  TBL-SUJI-X      PIC X(01)   OCCURS   10.
       *
-      *    ≤˛π‘•≥°º•…
-       01  WRK-CONS-RETURN     PIC X(01)   VALUE   X"0A".
-      *
            COPY    "MCPAREA".
       *
            COPY    "COMMON-SPA".
@@ -1159,21 +904,6 @@
        01  WRK-RECE200C-REC. 
            COPY    "CPRCF200.INC"  REPLACING  //RECE200//
                                    BY         //WRK-RECE200C//.
-      *
-       01  WRK-ERR-AREA.
-           03  WRK-RECEERR                         PIC X(200).
-           03  WRK-ERRMSG                          PIC X(300).
-           03  WRK-MCP-RC                          PIC 9(9).
-           03  WRK-ERR-FILE-STS                    PIC X(02).
-           03  WRK-ERR-FILE-MSG                    PIC X(100).
-           03  WRK-ERR-FILE-MSG1                   PIC X(17).
-           03  WRK-ERR-FLG                         PIC 9(01).
-      *    •®•È°º•’•°•§•ÎÃææŒŒŒ∞Ë 
-           COPY    "CPRECEDAT1.INC"
-                                   REPLACING  //RECEDAT1PARA//
-                                   BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME∆‚§ŒBASENAME≥´ªœ∞Ã√÷
-       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
@@ -1214,8 +944,6 @@
       *
            COPY    "CPSK5000.INC".
       *
-           COPY    "CPSK1030.INC".
-      *
       *    ¥µº‘•≥•·•Û•»
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
@@ -1246,17 +974,6 @@
            COPY    "CPORCSNYULIFE.INC".
       *    ∆˛±°≈¿≈©ºÍµª≤√ªª§ﬁ§»§·•µ•÷
            COPY    "CPORCSTENTEK2.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
-      *
-      *    ±°≥∞ΩË ˝∞Ï»ÃÃæ ‘Ω∏•µ•÷
-           COPY    "CPORCSGETGENERIC.INC".
-      *    ∆˛±°ª˛¿∏≥ËŒ≈Õ‹»Ò…È√¥≥€ºË∆¿•µ•÷£≤
-           COPY    "CPORCSNYULIFE2.INC".
-      *    ∆˛±°Œ¡§»∞€§ §Îø©ªˆªªƒÍ ›∏±¡»§ﬂπÁ§Ô§ªºË∆¿•µ•÷
-           COPY    "CPORCSSKJHKN.INC".
-      *    ∆˛±°Œ¡Ã§ªªƒÍ∆¸ºË∆¿•µ•÷
-           COPY    "CPORCSNYUINDAY.INC".
       *
       *    £ƒ£¬∏°∫˜
            COPY    "MCPDATA.INC".
@@ -1305,24 +1022,6 @@
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
-      *
-           MOVE    "RECE700"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE200PARA
-      *
-           MOVE    "RECE720"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE220PARA
-      *
-           MOVE    "RECE730"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE230PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        £ƒ£¬•™°º•◊•ÛΩËÕ˝
@@ -1398,34 +1097,6 @@
                 PERFORM   900-CLOSE-SEC
                END-IF
               END-PERFORM
-      *       ƒ¢…º ‘Ω∏∂Ë ¨æ Û
-              MOVE    SPACE               TO  WRK-1030-KOUHATUKA
-              IF      WRK-PARA-PRTKBN = "2" OR "3" OR "4" OR "5"
-                INITIALIZE                      SYSKANRI-REC
-                MOVE    "1030"              TO  SYS-KANRICD
-                MOVE    "*"                 TO  SYS-KBNCD
-                MOVE    WRK-PARA-SRYYM      TO  SYS-STYUKYMD (1:6)
-                MOVE    "01"                TO  SYS-STYUKYMD (7:2)
-                MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
-                MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                MOVE    "key10"             TO  MCP-PATHNAME
-                PERFORM   900-DBSELECT-SEC
-                IF      MCP-RC  =  ZERO
-                  MOVE  "tbl_syskanri"      TO  MCP-TABLE
-                  MOVE  "key10"             TO  MCP-PATHNAME
-                  PERFORM 960-KANRIMST-READ-SEC
-                  IF    FLG-SYSKANRI  =  ZERO
-                    MOVE  MCPDATA-REC       TO  SYS-1030-REC
-                    MOVE  SYS-1030-KOUHATUKA
-                                            TO  WRK-1030-KOUHATUKA
-                  END-IF
-                END-IF
-                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                MOVE    "key10"             TO  MCP-PATHNAME
-                PERFORM   900-CLOSE-SEC
-              END-IF
            ELSE
               MOVE     SPACE              TO  TBL-SYS1006-T
               INITIALIZE                      TBL-SYS1006-T
@@ -1474,39 +1145,6 @@
                  PERFORM   900-CLOSE-SEC
                END-IF
               END-PERFORM
-      *
-              MOVE     ZERO               TO  SYSKAN-IDX
-              MOVE     SPACE              TO  TBL-SYS1030-T
-              INITIALIZE                      TBL-SYS1030-T
-              IF      WRK-PARA-PRTKBN = "2" OR "3" OR "4" OR "5"
-                INITIALIZE                      SYSKANRI-REC
-                MOVE    "1030"              TO  SYS-KANRICD
-                MOVE    "*"                 TO  SYS-KBNCD
-                MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-                MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                MOVE    "key8"              TO  MCP-PATHNAME
-                PERFORM 900-DBSELECT-SEC
-                IF      MCP-RC              =   ZERO
-                  MOVE    "tbl_syskanri"    TO  MCP-TABLE
-                  MOVE    "key8"            TO  MCP-PATHNAME
-                  PERFORM 960-KANRIMST-READ-SEC
-                  PERFORM  UNTIL  (FLG-SYSKANRI  =    1)
-                            OR    (SYSKAN-IDX   >=  100)
-      *
-                    MOVE    MCPDATA-REC     TO  SYS-1030-REC
-                    ADD     1               TO  SYSKAN-IDX
-                    MOVE    SYS-1030-REC    TO  TBL-SYS1030(SYSKAN-IDX)
-      *
-                    MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                    MOVE    "key8"          TO  MCP-PATHNAME
-                    PERFORM 960-KANRIMST-READ-SEC
-                  END-PERFORM
-                END-IF
-                MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                MOVE    "key8"              TO  MCP-PATHNAME
-                PERFORM 900-CLOSE-SEC
-              END-IF
            END-IF
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
@@ -1623,19 +1261,19 @@
                                     =   SPACE
                MOVE    "1"   TO  SYS-200501-COMMENT-NYUINRYO-KSIKBN
            END-IF
-           IF      SYS-200501-COMMENT-NYUINRYO1-KSIKBN
-                                    =   SPACE
-               MOVE    "2"   TO  SYS-200501-COMMENT-NYUINRYO1-KSIKBN
-           END-IF
-           IF      SYS-200501-INSPECT-GENERAL-KBN   =   SPACE
-               MOVE    "0"   TO  SYS-200501-INSPECT-GENERAL-KBN
-           END-IF
-           IF      SYS-200501-15-YKZ-PRTKBN         =   SPACE
-               MOVE    "0"   TO  SYS-200501-15-YKZ-PRTKBN
-           END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
+      *
+           MOVE    "RECE700"           TO  RECE200PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE200PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE200PARA-HOSPNUM
+           MOVE    "RECE720"           TO  RECE220PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE220PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE220PARA-HOSPNUM
+           MOVE    "RECE730"           TO  RECE230PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE230PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE230PARA-HOSPNUM
       *
            OPEN    OUTPUT              RECE220-FILE
            CLOSE                       RECE220-FILE
@@ -1801,7 +1439,6 @@
                                WRK-SKJ200604-TABLE
                                WRK-NYULIFE-TABLE
                                WRK-TENTEKI2-TABLE
-                               WRK-SKJHKN-TABLE
       *
            INITIALIZE          WRK-RECE200G-REC
            INITIALIZE          WRK-RECE200C-REC
@@ -1871,19 +1508,40 @@
                       PERFORM   21015-TENTEKIMATOME-CHECK-SEC
                    END-IF
       *
-                   PERFORM   21016-FLG-KURIA-SEC
+                   MOVE   ZERO          TO  FLG-RINYAK
       *
-                   IF  ((ACCT-ZAITEN    NOT =    ZERO ) AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO ) AND
-                        (FLG-TENTEKIMATOME  =    ZERO ) AND
-                        (WRK-PARA-PRTKBN    =
-                                    "1" OR "2" OR "3" ) AND
-                        (ACCT-JIHOKBN       =    SPACE))
-                   OR  ((ACCT-ZAITEN    NOT =    ZERO ) AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO ) AND
-                        (FLG-TENTEKIMATOME  =    ZERO ) AND
-                        (WRK-PARA-PRTKBN    =
-                                           "4" OR "5" ))
+                   IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
+                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                        (ACCT-JIHOKBN       =   SPACE)    AND
+                        (FLG-TENTEKIMATOME  =    ZERO)
+                      MOVE   ZERO   TO   WRK-SRYSURYO
+                      MOVE   ZERO   TO   WRK-SRYSURYO2
+                      MOVE   ZERO   TO   WRK-SRYSURYO3
+                      MOVE   ZERO   TO   WRK-TANICD
+                      MOVE   ZERO   TO   WRK-TANIMOJISU
+                      MOVE   SPACE  TO   WRK-TANINAME
+                      MOVE   ZERO   TO   FLG-HOUSIJI-COM
+                                         FLG-SYOBYO-COM
+                                         FLG-RYOYO-COM
+                                         FLG-SYODOU-COM
+                                         FLG-OSIN-COM
+                                         FLG-HOUSEI-COM
+                                         FLG-HOUMON-COM
+                                         FLG-TAHOKEN
+                                         FLG-KENSA-COM
+      *
+                      MOVE   ZERO   TO   WRK-FILMTEN
+      *
+                      MOVE   ZERO   TO
+                                    WRK-KZI058-TEN
+                                    WRK-KZI058-TANICD
+                                    WRK-KZI058-TANIMOJISU
+                      MOVE   SPACE  TO
+                                    WRK-KZI058-TANINAME
+      *
+                      MOVE   ZERO   TO   FLG-WRITE230
+                      MOVE   ZERO   TO   FLG-TENTEKI
+                      MOVE   ZERO   TO   FLG-HENSYU-NG
                       IF  (ACCT-SRYKBN     = "97"     )
                       AND (ACCT-SRYCDTOTAL = 197000470
                                           OR 197001570
@@ -1905,18 +1563,9 @@
                         END-IF
                       END-IF
                    ELSE
-                      IF   (ACCT-ZAIKAISU     NOT =  ZERO )
-                      AND  (FLG-TENTEKIMATOME     =  ZERO )
-                      AND  (ACCT-JIHOKBN          =  SPACE)
-      **>             IF  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
-      **>                  (FLG-TENTEKIMATOME  =    ZERO ) AND
-      **>                  (WRK-PARA-PRTKBN    =
-      **>                              "1" OR "2" OR "3" ) AND
-      **>                  (ACCT-JIHOKBN       =    SPACE))
-      **>             OR  ((ACCT-ZAIKAISU  NOT =    ZERO ) AND
-      **>                  (FLG-TENTEKIMATOME  =    ZERO ) AND
-      **>                  (WRK-PARA-PRTKBN    =
-      **>                                     "4" OR "5" ))
+                      IF  (ACCT-ZAIKAISU  NOT =    ZERO)   AND
+                          (ACCT-JIHOKBN       =   SPACE)   AND
+                          (FLG-TENTEKIMATOME  =    ZERO)
                          IF ( ACCT-SRYKBN  NOT =
                               "12" AND "25" AND "93" AND "98")
                          OR ( ACCT-ZAIKBN  =   1             )
@@ -1925,6 +1574,34 @@
                             AND (ACCT-MEISAISU      =   1    )
                                  CONTINUE
                             ELSE
+                                 MOVE   ZERO   TO   WRK-SRYSURYO
+                                 MOVE   ZERO   TO   WRK-SRYSURYO2
+                                 MOVE   ZERO   TO   WRK-SRYSURYO3
+                                 MOVE   ZERO   TO   WRK-TANICD
+                                 MOVE   ZERO   TO   WRK-TANIMOJISU
+                                 MOVE   SPACE  TO   WRK-TANINAME
+                                 MOVE   ZERO   TO   FLG-HOUSIJI-COM
+                                                    FLG-SYOBYO-COM
+                                                    FLG-RYOYO-COM
+                                                    FLG-SYODOU-COM
+                                                    FLG-OSIN-COM
+                                                    FLG-HOUSEI-COM
+                                                    FLG-HOUMON-COM
+                                                    FLG-TAHOKEN
+                                                    FLG-KENSA-COM
+      *
+                                 MOVE   ZERO   TO   WRK-FILMTEN
+      *
+                                 MOVE   ZERO   TO
+                                               WRK-KZI058-TEN
+                                               WRK-KZI058-TANICD
+                                               WRK-KZI058-TANIMOJISU
+                                 MOVE   SPACE  TO
+                                               WRK-KZI058-TANINAME
+      *
+                                 MOVE   ZERO   TO   FLG-WRITE230
+                                 MOVE   ZERO   TO   FLG-TENTEKI
+                                 MOVE   ZERO   TO   FLG-HENSYU-NG
                                  IF    ACCT-SRYKBN  =
                                        "60" OR "64" OR "80"
                                    PERFORM 21014-SINRYO-CHECK-SEC
@@ -1935,17 +1612,6 @@
                                    PERFORM RECE220-WRITE-SEC
                                  END-IF
                             END-IF
-                         END-IF
-                      ELSE
-                         IF   (ACCT-ZAIKAISU     NOT =  ZERO )
-                         AND  (FLG-TENTEKIMATOME     =  ZERO )
-                         AND  (ACCT-JIHOKBN      NOT =  SPACE)
-                         AND  (ACCT-ZAIKBN       =  3 OR 4   )
-                                 PERFORM   21011-RECE220-TENSOU-SEC
-                                 PERFORM   21012-RECE230-HENSYU-SEC
-                                 IF    FLG-WRITE230  =   1
-                                   PERFORM RECE220-WRITE-SEC
-                                 END-IF
                          END-IF
                       END-IF
                    END-IF
@@ -1974,11 +1640,7 @@
            INITIALIZE                           RECE220-REC
            MOVE    RECE200-KEY          TO      RECE220-KEY1
            MOVE    ACCT-SRYKBN          TO      RECE220-SRYKBN
-           IF     (ACCT-SRYKBN      =  "90"     )
-           AND    (ACCT-SRYCDTOTAL  =  190182690)
-             MOVE    "92"               TO      RECE220-SRYKBN
-           END-IF
-           IF      ACCT-SRYKBN = "90" OR "92" OR "12"
+           IF      ACCT-SRYKBN = "90" OR "92"
                  MOVE    "6"            TO      RECE220-ZAISKBKBN
            ELSE 
               IF   ACCT-SRYKBN = "97"
@@ -2021,8 +1683,8 @@
                            UNTIL     IDX2   >      31
                    MOVE    ACCT-DAY(IDX3 IDX2)  TO
                                             RECE220-KAISU (IDX3 IDX2)
-                   IF    (WK-TAIHI-FLG               =  ZERO)
-                   AND   (RECE220-KAISU(1 IDX2)  NOT =  ZERO)
+                   IF     (WK-TAIHI-FLG            =   ZERO)   AND
+                          (ACCT-DAY(1 IDX2)    NOT =   ZERO)
                        MOVE     IDX2    TO      WK-TAIHI-DAY
                        MOVE     1       TO      WK-TAIHI-FLG
                    END-IF
@@ -2041,15 +1703,6 @@
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œ∫Ó¿Æ° £∆£∞£∞£µ°À
       *****************************************************************
        21012-RECE230-HENSYU-SEC               SECTION.
-      *
-           INITIALIZE     WRK-ORCSGETGE-OUT-AREA
-           MOVE    ZERO                TO      FLG-IRYORENKEI
-           IF     (WRK-PARA-PRTKBN       =  "2" OR "3" OR "4" OR "5")
-           AND    (SYS-200501-INSPECT-GENERAL-KBN  =  "1"           )
-           AND    (RECE200-SRYYM        >=  "201204"                )
-             PERFORM 210123-IRYORENKEI-HENSYU-SEC
-           END-IF
-           MOVE    ZERO                TO      IDX17
       *
            INITIALIZE                           SRYACT-REC
            MOVE    ACCT-HOSPNUM         TO      SRY-HOSPNUM
@@ -2074,9 +1727,7 @@
                    PERFORM   210121-RECE230-TENSOU-SEC
                    IF   FLG-TENTEKI   =  ZERO
                    AND  FLG-WRITE230X =   1
-                     IF  ACCT-JIHOKBN  =  SPACE
-                       PERFORM 210122-RECE200-HENSYU-SEC
-                     END-IF
+                     PERFORM 210122-RECE200-HENSYU-SEC
                      PERFORM RECE230-WRITE-SEC
                      MOVE  1            TO      FLG-WRITE230
                    END-IF
@@ -2119,19 +1770,12 @@
            MOVE    SRY-SRYKA            TO      RECE230-SRYKA
            MOVE    SRY-SRYKBN           TO      RECE230-SRYKBN
            MOVE    SRY-SRYSYUKBN        TO      RECE230-SRYSYUKBN
-           IF     (ACCT-SRYKBN      =  "90"     )
-           AND    (ACCT-SRYCDTOTAL  =  190182690)
-             MOVE    "92"               TO      RECE230-SRYKBN
-             MOVE    "920"              TO      RECE230-SRYSYUKBN
-           END-IF
            MOVE    SRY-JIHIMONEYTOTAL   TO      RECE230-JIHIMONEY
       *
            MOVE    ZERO                 TO      IDX4
            PERFORM     VARYING   IDX2   FROM    1    BY   1
                        UNTIL    (IDX2      >    5)    OR
                                 (SRY-SRYCD(IDX2)  =   SPACE)
-      *
-            ADD    1                    TO      IDX17
       *
             MOVE   SRY-SRYCD(IDX2)      TO      WRK-SRYCD
             MOVE   RECE230-SRYYM        TO      WK-TAIHI-SRYYM
@@ -2143,20 +1787,8 @@
                                               -  1
             END-IF
       *
-            IF       SRY-SRYCD(IDX2)   =  "099999909" OR "099999910" OR
-                                          "099999921" OR "099999922" OR
-                                          "099999923" OR "099999924" OR
-                                          "099999925" OR "099999929" OR
-                                          "099999930" OR "099999931"
-                  MOVE    1     TO    FLG-HENSYU-NG
-            END-IF
-      *
             IF       SRY-SRYCD(IDX2)(1:5)  =
-                     "09960" OR "09970" OR "09980" OR "09983"
-                  MOVE    1     TO    FLG-HENSYU-NG
-            END-IF
-            IF       SRY-SRYCD(IDX2)   =  "099140004" OR "099400001" OR
-                                          "099140011" OR "099140012"
+                     "09960" OR "09970" OR "09980"
                   MOVE    1     TO    FLG-HENSYU-NG
             END-IF
       *
@@ -2174,8 +1806,15 @@
                      (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
                     ( ACCT-ZAITEN      NOT =   ZERO       ) AND
                     ( ACCT-SYUTEN1         =   ZERO       ) AND
-                    ( ACCT-ZAIKAISU    NOT =   ZERO       ) AND
-                    ( ACCT-JIHOKBN         =   SPACE      ))
+                    ( ACCT-ZAIKAISU    NOT =   ZERO       ))
+            OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
+                                   "60" OR "64" OR "70" OR
+                                   "80"                   ) AND
+                    (ACCT-ZAITEN       NOT =  ZERO        ) AND
+                    (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
+                    (ACCT-JIHOKBN          =  SPACE       ) AND
+                    (ACCT-YKZTEN           =  ZERO        ) AND
+                    (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
             OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
             OR     ( SRY-SRYCD(IDX2)       =
                      "099209902" OR "099209903" OR
@@ -2185,16 +1824,28 @@
                      "099999903" OR "099999904" OR
                      "099999905" OR "099999906" OR
                      "099999907" OR "099999908" OR
-                     "099200101" OR "099999926" OR
-                     "099999927" OR "099999928" OR
-                     "099209811" OR "099209812" OR
-                     "099209821" OR "099209822" OR
-                     "099209711" OR "099209712" OR
-                     "099209721" OR "099209722" OR
-                     "840000136" OR "840000140"            )
-      *
-                  PERFORM   2101213-MEISAISU-HENSYU-SEC
-      *
+                     "099999909" OR "099999910" OR
+                     "099999921" OR
+                     "099830101"                           )
+                  COMPUTE   RECE220-MEISAISU    =  RECE220-MEISAISU
+                                                -  1
+                  MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
+                  COMPUTE   RECE220-SRYCDTOTAL  =  RECE220-SRYCDTOTAL
+                                                -  WRK-SRYCD
+                  IF ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
+                                     "60" OR "64" OR "70" OR
+                                     "80"                   ) AND
+                      (ACCT-ZAITEN       NOT =  ZERO        ) AND
+                      (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
+                      (ACCT-JIHOKBN          =  SPACE       ) AND
+                      (ACCT-YKZTEN           =  ZERO        ) AND
+                      (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
+                     COMPUTE  RECE220-SURYOUTOTAL =  RECE220-SURYOUTOTAL
+                                                  -  SRY-SRYSURYO(IDX2)
+                  ELSE
+                     COMPUTE  RECE220-SURYOUTOTAL =  RECE220-SURYOUTOTAL
+                                                  -  1
+                  END-IF
             END-IF
       *
             IF      SRY-SRYCD(IDX2)(1:1)     =   "0" OR  "1" OR
@@ -2211,7 +1862,6 @@
              AND (  ACCT-ZAITEN          NOT = ZERO  )
       *******AND (  ACCT-SYUTEN1             = ZERO  )
              AND (  ACCT-ZAIKAISU        NOT = ZERO  )
-             AND (  ACCT-JIHOKBN             = SPACE )
       *
               MOVE    1                  TO    FLG-TENTEKI
       *
@@ -2231,8 +1881,15 @@
                        (SRY-SRYCD(IDX2)(1:3) =   "008"     )) AND
                       ( ACCT-ZAITEN      NOT =   ZERO       ) AND
                       ( ACCT-SYUTEN1         =   ZERO       ) AND
-                      ( ACCT-ZAIKAISU    NOT =   ZERO       ) AND
-                      ( ACCT-JIHOKBN         =   SPACE      ))
+                      ( ACCT-ZAIKAISU    NOT =   ZERO       ))
+              OR     ((ACCT-SRYKBN = "40" OR "50" OR "54" OR
+                                     "60" OR "64" OR "70" OR
+                                     "80"                   ) AND
+                      (ACCT-ZAITEN       NOT =  ZERO        ) AND
+                      (ACCT-ZAIKAISU     NOT =  ZERO        ) AND
+                      (ACCT-JIHOKBN          =  SPACE       ) AND
+                      (ACCT-YKZTEN           =  ZERO        ) AND
+                      (SRY-SRYCD(IDX2)(1:1)  =  "6"         ))
               OR     ( FLG-HENSYU-NG     NOT =  ZERO         )
               OR     ( SRY-SRYCD(IDX2)       =
                        "099209902" OR "099209903" OR
@@ -2242,39 +1899,11 @@
                        "099999903" OR "099999904" OR
                        "099999905" OR "099999906" OR
                        "099999907" OR "099999908" OR
-                       "099200101" OR "099999926" OR
-                       "099999927" OR "099999928" OR
-                       "099209811" OR "099209812" OR
-                       "099209821" OR "099209822" OR
-                       "099209711" OR "099209712" OR
-                       "099209721" OR "099209722" OR
-                       "840000136" OR "840000140"            )
+                       "099999909" OR "099999910" OR
+                       "099999921" OR
+                       "099830101"                           )
       *
-               IF      SRY-SRYCD(IDX2)    =     "099209811"
-                  MOVE   "1"    TO    RECE220-JISANYAKKBN
-               END-IF
-               IF      SRY-SRYCD(IDX2)    =     "099209812"
-                  MOVE   "2"    TO    RECE220-JISANYAKKBN
-               END-IF
-               IF      SRY-SRYCD(IDX2)    =     "099209821"
-                  MOVE   "3"    TO    RECE220-JISANYAKKBN
-               END-IF
-               IF      SRY-SRYCD(IDX2)    =     "099209822"
-                  MOVE   "4"    TO    RECE220-JISANYAKKBN
-               END-IF
-      *
-               IF      SRY-SRYCD(IDX2)    =     "099209711"
-                  MOVE   "5"    TO    RECE220-JISANYAKKBN
-               END-IF
-               IF      SRY-SRYCD(IDX2)    =     "099209712"
-                  MOVE   "6"    TO    RECE220-JISANYAKKBN
-               END-IF
-               IF      SRY-SRYCD(IDX2)    =     "099209721"
-                  MOVE   "7"    TO    RECE220-JISANYAKKBN
-               END-IF
-               IF      SRY-SRYCD(IDX2)    =     "099209722"
-                  MOVE   "8"    TO    RECE220-JISANYAKKBN
-               END-IF
+               CONTINUE
       *
               ELSE
       *
@@ -2283,7 +1912,6 @@
                MOVE    SRY-SRYCD(IDX2)    TO    RECE230-SRYCD(IDX4)
       *
                IF      SRY-SRYKBN         =     "13"
-               AND     ACCT-JIHOKBN       =     SPACE
                    IF   SRY-SRYCD(IDX2)   =     CONS-SIDORYO1    OR
                                                 CONS-SIDORYO2    OR
                                                 CONS-SIDORYO3    OR
@@ -2318,67 +1946,29 @@
                   END-IF
                END-IF
       *
-               IF      ACCT-JIHOKBN  NOT =     SPACE
-                  IF     RECE220-SAFLG   NOT =  SPACE
-                        MOVE    "3"       TO    RECE220-TOYAKUFLG
-                  ELSE
-                    IF  (SRY-SRYCD(IDX2)(1:1)  =  "8"  )
-                    OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
-                        IF   RECE220-TOYAKUFLG = SPACE
-                          MOVE  "4"       TO    RECE220-TOYAKUFLG
-                        END-IF
-                    ELSE
-                        MOVE    "3"       TO    RECE220-TOYAKUFLG
-                    END-IF
-                  END-IF
-               END-IF
-      *
                IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
-               AND   ( RECE220-ZAITEN    =     ZERO         )
+               AND   ( RECE220-ZAITEN     =     ZERO        )
                AND   ( ACCT-ZAIKBN   NOT =     1            )
-               AND   ( ACCT-JIHOKBN      =     SPACE        )
                   IF     RECE220-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE220-TOYAKUFLG
                   ELSE
                     IF  (SRY-SRYCD(IDX2)(1:1)  =  "8"  )
                     OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
                         IF   SRY-SRYSYUKBN  =  "212" OR "292" OR
-                                               "222" OR "232" OR
-                                               "295"
+                                               "222" OR "232"
                           IF   RECE220-TOYAKUFLG = SPACE
                             MOVE   "2"    TO    RECE220-TOYAKUFLG
                           END-IF
                         END-IF
                     ELSE
                         MOVE    "1"       TO    RECE220-TOYAKUFLG
-                        IF   (RECE230-SRYCD(IDX4)(1:1) = "6"   )
-                        AND  (WRK-ORCSGETGE-GENERICNAME(IDX17)
-                                                   NOT =  SPACE)
-                          MOVE    "1"  TO  RECE230-INGAIFLG-RECE(IDX4)
-                          MOVE  WRK-ORCSGETGE-YAKKAKJNCD(IDX17)
-                                          TO  RECE230-YAKKAKJNCD(IDX4)
-                          MOVE  WRK-ORCSGETGE-GENERIC-KBN(IDX17)
-                                          TO  RECE230-GENERIC-KBN(IDX4)
-                          MOVE  WRK-ORCSGETGE-GENERICNAME(IDX17)
-                                          TO  RECE230-GENERICNAME(IDX4)
-                          PERFORM  VARYING  IDX15  FROM  200  BY  -1
-                                    UNTIL   IDX15   <     1
-                            IF  RECE230-GENERICNAME(IDX4)(IDX15:1)
-                                                        NOT =   SPACE
-                               COMPUTE RECE230-GENERICYUKOKETA(IDX4) =
-                                       IDX15  /  2
-                               MOVE    1   TO  IDX15
-                            END-IF
-                          END-PERFORM
-                        END-IF
                     END-IF
                   END-IF
                END-IF
       *
-               IF    ( SRY-SRYKBN        =     "14"  )
-               AND   ( RECE220-ZAITEN    =     ZERO  )
-               AND   ( ACCT-ZAIKBN   NOT =     1     )
-               AND   ( ACCT-JIHOKBN      =     SPACE )
+               IF    ( SRY-SRYKBN        =     "14" )
+               AND   ( RECE220-ZAITEN    =     ZERO )
+               AND   ( ACCT-ZAIKBN   NOT =     1    )
                   IF     RECE220-SAFLG   NOT =  SPACE
                         MOVE   SPACE      TO    RECE220-TOYAKUFLG
                   ELSE
@@ -2391,61 +1981,11 @@
                         END-IF
                     ELSE
                         MOVE    "1"       TO    RECE220-TOYAKUFLG
-                        IF   (RECE230-SRYCD(IDX4)(1:1) = "6"   )
-                        AND  (WRK-ORCSGETGE-GENERICNAME(IDX17)
-                                                   NOT =  SPACE)
-                          MOVE    "1"  TO  RECE230-INGAIFLG-RECE(IDX4)
-                          MOVE  WRK-ORCSGETGE-YAKKAKJNCD(IDX17)
-                                          TO  RECE230-YAKKAKJNCD(IDX4)
-                          MOVE  WRK-ORCSGETGE-GENERIC-KBN(IDX17)
-                                          TO  RECE230-GENERIC-KBN(IDX4)
-                          MOVE  WRK-ORCSGETGE-GENERICNAME(IDX17)
-                                          TO  RECE230-GENERICNAME(IDX4)
-                          PERFORM  VARYING  IDX15  FROM  200  BY  -1
-                                    UNTIL   IDX15   <     1
-                            IF  RECE230-GENERICNAME(IDX4)(IDX15:1)
-                                                        NOT =   SPACE
-                               COMPUTE RECE230-GENERICYUKOKETA(IDX4) =
-                                       IDX15  /  2
-                               MOVE    1   TO  IDX15
-                            END-IF
-                          END-PERFORM
-                        END-IF
                     END-IF
                   END-IF
                END-IF
       *
-               IF   (ACCT-SRYKBN = "40" OR "50" OR "54" OR "60" OR
-                                   "64" OR "70" OR "80"           )
-               AND  (ACCT-YKZTEN =  ZERO                          )
-                 IF  ( SYS-200501-15-YKZ-PRTKBN  =  "0" )
-                 OR  ((SYS-200501-15-YKZ-PRTKBN  =  "1") AND
-                      (RECE200-SRYYM  <  "201204"      ))
-                   IF    SRY-SRYCD(IDX2)(1:1)  =  "6"
-                         MOVE   "1"    TO  RECE230-RECEPTFLG(IDX4)
-                         MOVE    1     TO  FLG-YKZ-PRTKBN
-                         PERFORM   2101213-MEISAISU-HENSYU-SEC
-                   ELSE
-                     IF  FLG-YKZ-PRTKBN  =  1
-                       IF  ( ACCT-ZAITEN           =  ZERO  )
-                       AND ((SRY-SRYCD(IDX2)(1:1)  =  "8"  ) OR
-                            (SRY-SRYCD(IDX2)(1:3)  =  "008"))
-                         MOVE   "1"    TO  RECE230-RECEPTFLG(IDX4)
-                         PERFORM   2101213-MEISAISU-HENSYU-SEC
-                       ELSE
-                         MOVE   ZERO   TO  FLG-YKZ-PRTKBN
-                       END-IF
-                     END-IF
-                   END-IF
-                 ELSE
-                   IF    SRY-SRYCD(IDX2)(1:1)  =  "6"
-                         MOVE   "1"    TO  RECE220-YKZKISAIFLG
-                   END-IF
-                 END-IF
-               END-IF
-      *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
-               AND    FLG-YKZ-PRTKBN   =   ZERO
       *          IF  SRY-SRYCD(IDX2)(1:3) NOT = "001"
                    MOVE    SRY-SRYCD(IDX2)   TO  WRK-SRYCD
       *
@@ -2513,16 +2053,6 @@
                   END-IF
                END-IF
       *
-      *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ
-               IF      SRY-SRYCD(IDX2)  =  "199000510"
-                  COMPUTE  WRK-RYOYOTEATE    =  WRK-RYOYOTEATE
-                                             +  TNS-TEN
-                  COMPUTE  RECE220-SYUTEN1   =  RECE220-SYUTEN1
-                                             -  TNS-TEN
-                  COMPUTE  RECE220-KIZAITEN  =  RECE220-KIZAITEN
-                                             +  TNS-TEN
-               END-IF
-      *
                IF      TNS-SRYKBN         =     "80"
                    IF  TNS-NYUTENTTLKBN   =     130
                        MOVE   "13"        TO    RECE220-SRYKBN
@@ -2530,35 +2060,7 @@
                    END-IF
                END-IF
       *
-               IF      TNS-SRYKBN         =     "12"
-                 PERFORM  VARYING  IDX31  FROM  1  BY  1
-                           UNTIL   IDX31    >  31
-                   IF   ACCT-DAY(1 IDX31)   NOT =   ZERO
-                     IF   RECE200-NYUDAY-SRYKBN(IDX31) = "90"
-                       MOVE   "90"        TO    RECE220-SRYKBN
-                                                RECE230-SRYKBN
-                                                WRK-NYUSAI-SRYKBN
-                     ELSE
-                       MOVE   "92"        TO    RECE220-SRYKBN
-                                                RECE230-SRYKBN
-                                                WRK-NYUSAI-SRYKBN
-                     END-IF
-                     MOVE     "1"         TO    RECE220-NYUSAIFLG
-                     MOVE      31         TO    IDX31
-                   END-IF
-                 END-PERFORM
-               END-IF
-      *
-               IF      ACCT-JIHOKBN       =     SPACE
-                  PERFORM  2101211-RECE230-COMCNT-HEN-SEC
-               ELSE
-                  IF   RECE220-SRYKBN     =     "50"
-                     MOVE   "1"   TO    RECE220-FLG-SHUJUTU-COMMENT
-                  END-IF
-                  IF   RECE220-SRYKBN     =     "54"
-                     MOVE   "1"   TO    RECE220-FLG-MASUI-COMMENT
-                  END-IF
-               END-IF
+               PERFORM  2101211-RECE230-TENSOU-COMCNT-HEN-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI
                 IF   ACCT-ZAIKBN  =  1
@@ -2842,17 +2344,19 @@
       *
       *        ∆√ƒÍ¥Ô∫‡° ≤Ë¡¸ø«√«§Œ•’•£•Î•‡∞ ≥∞°À§Œ§»§≠√±≤¡§Ú ‘Ω∏
                IF      SRY-SRYCD (IDX2) (1:1)  =   "7"
-                   IF   (  SRY-SRYCD (IDX2)         =
+      ***          IF   (( SRY-SRYKBN               =   "70" )  AND
+      ***                ( TNS-DATAKBN              =   "3"  ))
+                   IF   (  TNS-DATAKBN              =   "3"   )
+                   OR   (  SRY-SRYCD (IDX2)         =
                                     CONS-FILM-YOUJI-KASAN  OR
                                     CONS-SANSO             OR
                                     CONS-SANSO2               )
-      ***          OR   (  TNS-DATAKBN              =   "3"   )
                        CONTINUE
                    ELSE
-                     IF      RECE230-TEN(IDX4)  =   ZERO
+                     IF      TNS-TEN         =   ZERO
                        CONTINUE
                      ELSE
-                       PERFORM 2101212-RECE230-TANKA-HEN-SEC
+                       PERFORM 2101212-RECE230-TENSOU-TANKA-HEN-SEC
                        COMPUTE IDW =   RECE230-YUKOKETA(IDX4)  *  2
                                                    +   3
                        MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -2904,13 +2408,12 @@
       *****************************************************************
       *    •Ï•ª•◊•»•≥•·•Û•»•’•È•∞ ‘Ω∏ΩËÕ˝
       *****************************************************************
-       2101211-RECE230-COMCNT-HEN-SEC               SECTION.
+       2101211-RECE230-TENSOU-COMCNT-HEN-SEC               SECTION.
       *
            IF      RECE220-SRYKBN      =     "11"
       *       ΩÈø«° ∆±∆¸ £øÙø«Œ≈≤ °À
               IF  (SRY-SRYCD(IDX2)    =     CONS-SYODOU-COMMENT
-                                      OR    CONS-SYODOU3-COMMENT
-                                      OR    CONS-SYODOU4-COMMENT)
+                                      OR    CONS-SYODOU3-COMMENT)
               AND (FLG-SYODOU-COM     =     ZERO                )
                    MOVE   "1"   TO    RECE220-FLG-SYODOU-COMMENT
                    MOVE   SRY-SRYKA   TO    RECE220-SYODOU-SRYKA(1)
@@ -2959,17 +2462,6 @@
                                           OR  CONS-KYOKUIN4-COMMENT
                         MOVE   "1"    TO    RECE220-FLG-KYOKUIN-COMMENT
                   END-IF
-                END-IF
-              END-IF
-      *       ºßµ§§À§Ë§ÎÁØÊ˘≈˘ª…∑„À°
-              IF   RECE200-SRYYM    >=     "201404"
-                IF  (SRY-SRYCD(IDX2)    =     CONS-BOKOHO1-COMMENT)
-                AND (FLG-BOKOHO-COM     =     ZERO                )
-                   MOVE   "1"   TO    RECE220-FLG-BOKOHO-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)    =     CONS-BOKOHO2-COMMENT
-                   MOVE  SPACE  TO    RECE220-FLG-BOKOHO-COMMENT
-                   MOVE    1    TO    FLG-BOKOHO-COM
                 END-IF
               END-IF
            END-IF
@@ -3022,56 +2514,26 @@
                                             CONS-NOUKE3-COMMENT   OR
                                             CONS-NOUKE4-COMMENT   OR
                                             CONS-NOUKE7-COMMENT   OR
+                                            CONS-NOUKE8-COMMENT   OR
+                                            CONS-NOUKE9-COMMENT   OR
+                                            CONS-NOUKE10-COMMENT  OR
                                             CONS-NOUKE11-COMMENT  OR
                                             CONS-NOUKE12-COMMENT  OR
                                             CONS-NOUKE13-COMMENT  OR
                                             CONS-NOUKE14-COMMENT  OR
                                             CONS-NOUKE15-COMMENT  OR
                                             CONS-NOUKE16-COMMENT  OR
-                                            CONS-NOUKE17-COMMENT  OR
-                                            CONS-NOUKE18-COMMENT  OR
-                                            CONS-NOUKE19-COMMENT  OR
-                                            CONS-NOUKE23-COMMENT  OR
-                                            CONS-NOUKE24-COMMENT  OR
-                                            CONS-NOUKE25-COMMENT  OR
-                                            CONS-NOUKE26-COMMENT  OR
-                                            CONS-NOUKE27-COMMENT  OR
-                                            CONS-NOUKE28-COMMENT  OR
-                                            CONS-NOUKE29-COMMENT  OR
-                                            CONS-NOUKE30-COMMENT  OR
-                                            CONS-NOUKE31-COMMENT  OR
                                             CONS-UNDOKI1-COMMENT  OR
                                             CONS-UNDOKI2-COMMENT  OR
                                             CONS-UNDOKI3-COMMENT  OR
                                             CONS-UNDOKI4-COMMENT  OR
+                                            CONS-UNDOKI7-COMMENT  OR
+                                            CONS-UNDOKI8-COMMENT  OR
                                             CONS-UNDOKI9-COMMENT  OR
-                                            CONS-UNDOKI11-COMMENT OR
-                                            CONS-UNDOKI12-COMMENT OR
-                                            CONS-UNDOKI13-COMMENT OR
-                                            CONS-UNDOKI17-COMMENT OR
-                                            CONS-UNDOKI18-COMMENT OR
-                                            CONS-UNDOKI19-COMMENT OR
-                                            CONS-UNDOKI22-COMMENT OR
-                                            CONS-UNDOKI23-COMMENT OR
-                                            CONS-UNDOKI24-COMMENT OR
-                                            CONS-UNDOKI25-COMMENT OR
-                                            CONS-UNDOKI26-COMMENT OR
-                                            CONS-UNDOKI27-COMMENT OR
+                                            CONS-UNDOKI10-COMMENT OR
                                             CONS-SYOGAI1-COMMENT  OR
                                             CONS-SYOGAI2-COMMENT  OR
                                             CONS-SYOGAI3-COMMENT  OR
-                                            CONS-HAIYO1-COMMENT   OR
-                                            CONS-HAIYO2-COMMENT   OR
-                                            CONS-HAIYO3-COMMENT   OR
-                                            CONS-HAIYO4-COMMENT   OR
-                                            CONS-HAIYO5-COMMENT   OR
-                                            CONS-HAIYO6-COMMENT   OR
-                                            CONS-HAIYO10-COMMENT  OR
-                                            CONS-HAIYO11-COMMENT  OR
-                                            CONS-HAIYO12-COMMENT  OR
-                                            CONS-HAIYO13-COMMENT  OR
-                                            CONS-HAIYO14-COMMENT  OR
-                                            CONS-HAIYO15-COMMENT  OR
                                             CONS-GANKNJ-COMMENT
       ****              MOVE   "1"    TO    RECE200-COMCNTFLG
                         MOVE   "1"    TO    RECE220-RIHABIRI-COMMENT
@@ -3121,24 +2583,15 @@
                                       OR    CONS-NOUKE5-COMMENT
                                       OR    CONS-NOUKE6-COMMENT
                                       OR    CONS-NOUKE7-COMMENT
+                                      OR    CONS-NOUKE8-COMMENT
+                                      OR    CONS-NOUKE9-COMMENT
+                                      OR    CONS-NOUKE10-COMMENT
                                       OR    CONS-NOUKE11-COMMENT
                                       OR    CONS-NOUKE12-COMMENT
                                       OR    CONS-NOUKE13-COMMENT
                                       OR    CONS-NOUKE14-COMMENT
                                       OR    CONS-NOUKE15-COMMENT
                                       OR    CONS-NOUKE16-COMMENT
-                                      OR    CONS-NOUKE17-COMMENT
-                                      OR    CONS-NOUKE18-COMMENT
-                                      OR    CONS-NOUKE19-COMMENT
-                                      OR    CONS-NOUKE23-COMMENT
-                                      OR    CONS-NOUKE24-COMMENT
-                                      OR    CONS-NOUKE25-COMMENT
-                                      OR    CONS-NOUKE26-COMMENT
-                                      OR    CONS-NOUKE27-COMMENT
-                                      OR    CONS-NOUKE28-COMMENT
-                                      OR    CONS-NOUKE29-COMMENT
-                                      OR    CONS-NOUKE30-COMMENT
-                                      OR    CONS-NOUKE31-COMMENT
                         MOVE   "1"    TO    RECE200-COMCNTFLG
                         MOVE   "1"    TO    RECE220-NOUKE-COMMENT
                 END-IF
@@ -3148,19 +2601,10 @@
                                       OR    CONS-UNDOKI4-COMMENT
                                       OR    CONS-UNDOKI5-COMMENT
                                       OR    CONS-UNDOKI6-COMMENT
+                                      OR    CONS-UNDOKI7-COMMENT
+                                      OR    CONS-UNDOKI8-COMMENT
                                       OR    CONS-UNDOKI9-COMMENT
-                                      OR    CONS-UNDOKI11-COMMENT
-                                      OR    CONS-UNDOKI12-COMMENT
-                                      OR    CONS-UNDOKI13-COMMENT
-                                      OR    CONS-UNDOKI17-COMMENT
-                                      OR    CONS-UNDOKI18-COMMENT
-                                      OR    CONS-UNDOKI19-COMMENT
-                                      OR    CONS-UNDOKI22-COMMENT
-                                      OR    CONS-UNDOKI23-COMMENT
-                                      OR    CONS-UNDOKI24-COMMENT
-                                      OR    CONS-UNDOKI25-COMMENT
-                                      OR    CONS-UNDOKI26-COMMENT
-                                      OR    CONS-UNDOKI27-COMMENT
+                                      OR    CONS-UNDOKI10-COMMENT
                         MOVE   "1"    TO    RECE200-COMCNTFLG
                         MOVE   "1"    TO    RECE220-UNDOKI-COMMENT
                 END-IF
@@ -3178,35 +2622,6 @@
                         MOVE   "1"    TO    RECE200-COMCNTFLG
                         MOVE   "1"    TO    RECE220-SESSYOKU-COMMENT
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-HAIYO1-COMMENT
-                                      OR    CONS-HAIYO2-COMMENT
-                                      OR    CONS-HAIYO3-COMMENT
-                                      OR    CONS-HAIYO4-COMMENT
-                                      OR    CONS-HAIYO5-COMMENT
-                                      OR    CONS-HAIYO6-COMMENT
-                                      OR    CONS-HAIYO10-COMMENT
-                                      OR    CONS-HAIYO11-COMMENT
-                                      OR    CONS-HAIYO12-COMMENT
-                                      OR    CONS-HAIYO13-COMMENT
-                                      OR    CONS-HAIYO14-COMMENT
-                                      OR    CONS-HAIYO15-COMMENT
-                        MOVE   "1"    TO    RECE200-COMCNTFLG
-                        MOVE   "1"    TO    RECE220-HAIYO-COMMENT
-                END-IF
-              END-IF
-      *
-              IF   (RECE200-SRYYM   >=   "201604"             )
-              AND  (SRY-SRYCD(IDX2)  =   CONS-RIHAKSN1-COMMENT
-                                     OR  CONS-RIHAKSN2-COMMENT)
-                IF   RECE220-SINDAI-COMMENT = "1"
-                    MOVE   "1"    TO    RECE220-SINDAI9-COMMENT
-                END-IF
-                IF   RECE220-KOKYUKI-COMMENT = "1"
-                    MOVE   "1"    TO    RECE220-KOKYUKI9-COMMENT
-                END-IF
-                IF   RECE220-HAIYO-COMMENT = "1"
-                    MOVE   "1"    TO    RECE220-HAIYO9-COMMENT
-                END-IF
               END-IF
            END-IF
       *
@@ -3216,13 +2631,7 @@
                                             CONS-YAKUKAN-COMMENT3
                    MOVE   "1"   TO    RECE220-FLG-YAKUKAN-COMMENT
               END-IF
-              IF   SRY-SRYCD(IDX2)    =     CONS-NYUEIYO-COMMENT  OR
-                                            CONS-NYUEIYO1-COMMENT OR
-                                            CONS-NYUEIYO2-COMMENT OR
-                                            CONS-NYUEIYO3-COMMENT OR
-                                            CONS-NYUEIYO4-COMMENT OR
-                                            CONS-NYUEIYO5-COMMENT OR
-                                            CONS-NYUEIYO6-COMMENT
+              IF   SRY-SRYCD(IDX2)    =     CONS-NYUEIYO-COMMENT
                    MOVE   "1"   TO    RECE220-FLG-NYUEIYO-COMMENT
               END-IF
       *
@@ -3267,35 +2676,6 @@
       *         Ω∏√ƒ±…Õ‹ø©ªˆªÿ∆≥Œ¡
                 IF   SRY-SRYCD(IDX2)  =     CONS-SYUEIYO-COMMENT
                         MOVE   "1"    TO    RECE220-FLG-SYUEIYO-COMMENT
-                END-IF
-              END-IF
-      *       ø¥¬°•⁄°º•π•·°º•´°ºªÿ∆≥¥…Õ˝Œ¡° √ÂÕ—∑øº´∆∞Ω¸∫Ÿ∆∞¥Ô°À
-      *       ø¥¬°•⁄°º•π•·°º•´°ºªÿ∆≥¥…Õ˝Œ¡° •Ì°¶ø¢π˛∑øΩ¸∫Ÿ∆∞¥Ô∞‹π‘¥¸≤√ªª¥ﬁ§‡°À
-      *       §¨§Û¥µº‘ªÿ∆≥¥…Õ˝Œ¡£≤°¶£≥
-              IF   RECE200-SRYYM    >=     "201404"
-                IF   SRY-SRYCD(IDX2) =  CONS-SINPESUR1-COMMENT
-                   MOVE   "1"   TO    RECE220-FLG-SINPESUR-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2) =  CONS-SINPESUR2-COMMENT
-                   MOVE   "2"   TO    RECE220-FLG-SINPESUR-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2) =  CONS-GANSIDO1-COMMENT
-                   MOVE   "1"   TO    RECE220-FLG-GANSIDO-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2) =  CONS-GANSIDO2-COMMENT
-                   MOVE   "2"   TO    RECE220-FLG-GANSIDO-COMMENT
-                END-IF
-              END-IF
-      *       «”«¢º´Œ©ªÿ∆≥Œ¡
-              IF   RECE200-SRYYM    >=     "201604"
-                IF  (SRY-SRYCD(IDX2)  =     CONS-HAIJRT-COMMENT)
-                AND (FLG-HAIJRT-COM   =     ZERO               )
-                        MOVE   "1"    TO    RECE220-FLG-HAIJRT-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-HAIJRT2-COMMENT
-                                      OR    CONS-HAIJRT3-COMMENT
-                        MOVE  SPACE   TO    RECE220-FLG-HAIJRT-COMMENT
-                        MOVE    1     TO    FLG-HAIJRT-COM
                 END-IF
               END-IF
            END-IF
@@ -3374,21 +2754,6 @@
       ***          MOVE   "1"   TO    RECE220-FLG-YOUATU-COMMENT
       ***       END-IF
               END-IF
-      *       ∫ﬂ¬¥µº‘∂¶∆±ø«Œ≈Œ¡
-              IF   RECE200-SRYYM    >=     "201404"
-                IF  (SRY-SRYCD(IDX2)    =     CONS-ZAIKYO1-COMMENT
-                                        OR    CONS-ZAIKYO2-COMMENT
-                                        OR    CONS-ZAIKYO3-COMMENT
-                                        OR    CONS-ZAIKYO4-COMMENT)
-                AND (FLG-ZAIKYO-COM     =     ZERO                )
-                   MOVE   "1"   TO    RECE220-FLG-ZAIKYO-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)    =     CONS-ZAIKYO5-COMMENT
-                                        OR    CONS-ZAIKYO6-COMMENT
-                   MOVE  SPACE  TO    RECE220-FLG-ZAIKYO-COMMENT
-                   MOVE    1    TO    FLG-ZAIKYO-COM
-                END-IF
-              END-IF
            END-IF
       *
            IF      RECE220-SRYKBN      =     "50"
@@ -3439,9 +2804,7 @@
                                             CONS-CTMRI-COMMENT7  OR
                                             CONS-CTMRI-COMMENT18 OR
                                             CONS-CTMRI-COMMENT19 OR
-                                            CONS-CTMRI-COMMENT20 OR
-                                            CONS-CTMRI-COMMENT21 OR
-                                            CONS-CTMRI-COMMENT22)
+                                            CONS-CTMRI-COMMENT20)
               AND (RECE200-SRYYM      >=    "201004"            )
                    MOVE   "1"   TO    RECE220-FLG-CTMRI-COMMENT
               END-IF
@@ -3466,8 +2829,6 @@
                                       OR    CONS-SEIKEA6-COMMENT
                                       OR    CONS-SEIKEA7-COMMENT
                                       OR    CONS-SEIKEA8-COMMENT
-                                      OR    CONS-SEIKEA9-COMMENT
-                                      OR    CONS-SEIKEA10-COMMENT
                    MOVE   "1"   TO    RECE220-FLG-SEIKEA-COMMENT
                 END-IF
               END-IF
@@ -3497,12 +2858,6 @@
                 IF   SRY-SRYCD(IDX2)  =     CONS-JYUSYO-COMMENT2
                         MOVE   "2"    TO    RECE220-FLG-JYUSYO-COMMENT
                 END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-JYUSYO-COMMENT3
-                        MOVE   "3"    TO    RECE220-FLG-JYUSYO-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-JYUSYO-COMMENT4
-                        MOVE   "4"    TO    RECE220-FLG-JYUSYO-COMMENT
-                END-IF
               END-IF
       *
               IF   RECE200-SRYYM     >=    "201204"
@@ -3513,101 +2868,6 @@
       *         …¬≈ÔÃÙ∫ﬁ∂»Ã≥º¬ª‹≤√ªª
                 IF   SRY-SRYCD(IDX2)  =     CONS-BYOYAK-COMMENT
                         MOVE   "1"    TO    RECE220-FLG-BYOYAK-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-BYOYAK-COMMENT2
-                        MOVE   "2"    TO    RECE220-FLG-BYOYAK-COMMENT
-                END-IF
-                IF   SRY-SRYCD(IDX2)  =     CONS-BYOYAK-COMMENT3
-                        MOVE   "3"    TO    RECE220-FLG-BYOYAK-COMMENT
-                END-IF
-              END-IF
-      *       ƒ∂Ω≈æ…ª˘° º‘°À∆˛±°ø«Œ≈≤√ªª°¶Ω‡ƒ∂Ω≈æ…ª˘° º‘°À∆˛±°ø«Œ≈≤√ªª
-              IF   RECE200-SRYYM    >=     "201404"
-                IF  (SRY-SRYCD(IDX2) =  CONS-CYOJKSN1-COMMENT
-                                    OR  CONS-CYOJKSN2-COMMENT
-                                    OR  CONS-CYOJKSN3-COMMENT
-                                    OR  CONS-CYOJKSN4-COMMENT)
-                AND (FLG-CYOJKSN-COM =  ZERO                 )
-                  MOVE     ZERO       TO    FLG-CYOJKSN-OK
-                  IF   RECE200-SRYYM  =  RECE200-NYUINYMD(1:6)
-                    MOVE  RECE200-NYUINYMD(7:2)  TO  IDX25
-                    PERFORM  VARYING  IDX26  FROM  1  BY  1
-                              UNTIL   IDX26   >   31
-                      IF  (ACCT-DAY(1 IDX26) NOT = ZERO )
-                      AND (IDX26                >= IDX25)
-                        MOVE     1    TO    FLG-CYOJKSN-OK
-                      END-IF
-                    END-PERFORM
-                  ELSE
-                        MOVE     1    TO    FLG-CYOJKSN-OK
-                  END-IF
-                END-IF
-                IF  (SRY-SRYCD(IDX2) =  CONS-CYOJKSN1-COMMENT)
-                AND (FLG-CYOJKSN-COM =  ZERO                 )
-                 IF  FLG-CYOJKSN-OK  =   1
-                   MOVE   "1"   TO    RECE220-FLG-CYOJKSN-COMMENT
-                   MOVE   "1"   TO    RECE200-COMCNTFLG
-                   EVALUATE  RECE200-CYOJKSNFLG
-                     WHEN     SPACE
-                        MOVE   "X"    TO   RECE200-CYOJKSNFLG
-                     WHEN     "Y"
-                        MOVE   "Z"    TO   RECE200-CYOJKSNFLG
-                   END-EVALUATE
-                 ELSE
-                   MOVE   "5"   TO    RECE220-FLG-CYOJKSN-COMMENT
-                 END-IF
-                END-IF
-                IF  (SRY-SRYCD(IDX2) =  CONS-CYOJKSN2-COMMENT)
-                AND (FLG-CYOJKSN-COM =  ZERO                 )
-                 IF  FLG-CYOJKSN-OK  =   1
-                   MOVE   "2"   TO    RECE220-FLG-CYOJKSN-COMMENT
-                   MOVE   "1"   TO    RECE200-COMCNTFLG
-                   EVALUATE  RECE200-CYOJKSNFLG
-                     WHEN     SPACE
-                        MOVE   "Y"    TO   RECE200-CYOJKSNFLG
-                     WHEN     "X"
-                        MOVE   "Z"    TO   RECE200-CYOJKSNFLG
-                   END-EVALUATE
-                 ELSE
-                   MOVE   "6"   TO    RECE220-FLG-CYOJKSN-COMMENT
-                 END-IF
-                END-IF
-                IF  (SRY-SRYCD(IDX2) =  CONS-CYOJKSN3-COMMENT)
-                AND (FLG-CYOJKSN-COM =  ZERO                 )
-                 IF  FLG-CYOJKSN-OK  =   1
-                   MOVE   "3"   TO    RECE220-FLG-CYOJKSN-COMMENT
-                   MOVE   "1"   TO    RECE200-COMCNTFLG
-                   EVALUATE  RECE200-CYOJKSNFLG
-                     WHEN     SPACE
-                        MOVE   "X"    TO   RECE200-CYOJKSNFLG
-                     WHEN     "Y"
-                        MOVE   "Z"    TO   RECE200-CYOJKSNFLG
-                   END-EVALUATE
-                 ELSE
-                   MOVE   "7"   TO    RECE220-FLG-CYOJKSN-COMMENT
-                 END-IF
-                END-IF
-                IF  (SRY-SRYCD(IDX2) =  CONS-CYOJKSN4-COMMENT)
-                AND (FLG-CYOJKSN-COM =  ZERO                 )
-                 IF  FLG-CYOJKSN-OK  =   1
-                   MOVE   "4"   TO    RECE220-FLG-CYOJKSN-COMMENT
-                   MOVE   "1"   TO    RECE200-COMCNTFLG
-                   EVALUATE  RECE200-CYOJKSNFLG
-                     WHEN     SPACE
-                        MOVE   "Y"    TO   RECE200-CYOJKSNFLG
-                     WHEN     "X"
-                        MOVE   "Z"    TO   RECE200-CYOJKSNFLG
-                   END-EVALUATE
-                 ELSE
-                   MOVE   "8"   TO    RECE220-FLG-CYOJKSN-COMMENT
-                 END-IF
-                END-IF
-                IF   SRY-SRYCD(IDX2) =  CONS-CYOJKSN5-COMMENT
-                   MOVE    1    TO    FLG-CYOJKSN-COM
-                   IF  RECE220-FLG-CYOJKSN-COMMENT =
-                                           "1" OR "2" OR "3" OR "4"
-                        MOVE   "1"    TO   RECE230-RECEPTFLG(IDX4)
-                   END-IF
                 END-IF
               END-IF
            END-IF
@@ -3637,19 +2897,22 @@
            END-IF
       *
            .
-       2101211-RECE230-COMCNT-HEN-EXT.
+       2101211-RECE230-TENSOU-COMCNT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    ª¿¡«§Œ√±≤¡ ‘Ω∏ΩËÕ˝
       *****************************************************************
-       2101212-RECE230-TANKA-HEN-SEC     SECTION.
+       2101212-RECE230-TENSOU-TANKA-HEN-SEC     SECTION.
+      *
+      ***  IF      TNS-TEN         =   ZERO
+      ***      GO  TO  2101212-RECE230-TENSOU-TANKA-HEN-EXT
+      ***  END-IF
       *
            MOVE    SPACE           TO  WRK-TANKA-X
       *
       *    øÙª˙…Ωº®Õ— ‘Ω∏° »æ≥—°À
-           MOVE    RECE230-TEN(IDX4)
-                                   TO  WRK-TANKA
+           MOVE    TNS-TEN         TO  WRK-TANKA
            MOVE    WRK-TANKA-S1    TO  WRK-TANKA-Z1
            MOVE    ZERO            TO  FLG-SP
            PERFORM   VARYING   IDY3   FROM    2   BY  -1
@@ -3704,32 +2967,7 @@
            END-IF
       *
            .
-       2101212-RECE230-TANKA-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ã¿∫ŸøÙ≈˘§Œ ‘Ω∏
-      *****************************************************************
-       2101213-MEISAISU-HENSYU-SEC                 SECTION.
-      *
-           COMPUTE   RECE220-MEISAISU    =  RECE220-MEISAISU
-                                         -  1
-           MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
-           COMPUTE   RECE220-SRYCDTOTAL  =  RECE220-SRYCDTOTAL
-                                         -  WRK-SRYCD
-           IF   (ACCT-SRYKBN = "40" OR "50" OR "54" OR "60" OR
-                               "64" OR "70" OR "80"           )
-           AND  (ACCT-YKZTEN =  ZERO                          )
-           AND  (SRY-SRYCD(IDX2)(1:1)  =  "6"                 )
-              COMPUTE  RECE220-SURYOUTOTAL =  RECE220-SURYOUTOTAL
-                                           -  SRY-SRYSURYO(IDX2)
-           ELSE
-              COMPUTE  RECE220-SURYOUTOTAL =  RECE220-SURYOUTOTAL
-                                           -  1
-           END-IF
-      *
-           .
-       2101213-MEISAISU-HENSYU-EXT.
+       2101212-RECE230-TENSOU-TANKA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3767,20 +3005,13 @@
                              COMPUTE  WK-YKZTEN  =  WK-YKZTEN
                                                  +  ACCT-SYUTEN2
                            END-IF
-                           IF  WRK-RYOYOTEATE  NOT =  ZERO
-                             COMPUTE  WK-SYUTEN  =  WK-SYUTEN
-                                                 -  WRK-RYOYOTEATE
-                             COMPUTE  WK-YKZTEN  =  WK-YKZTEN
-                                                 +  WRK-RYOYOTEATE
-                           END-IF
                        END-IF
                    ELSE
                        IF   SRY-SRYKBN   =  "21"  OR  "22"  OR  "23" OR
                                             "31"  OR  "32"  OR  "33" OR
                                             "40"  OR  "50"  OR  "54" OR
                                             "60"  OR  "70"  OR  "80" OR
-                                            "13"  OR  "14"  OR  "64" OR
-                                            "12"
+                                            "13"  OR  "14"  OR  "64"
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -3805,7 +3036,7 @@
                                       "31"   OR   "32"   OR   "33"   OR
                                       "40"   OR   "50"   OR   "54"   OR
                                       "60"   OR   "70"   OR   "13"   OR
-                                      "14"   OR   "64"   OR   "12"
+                                      "14"   OR   "64"
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
@@ -3827,8 +3058,7 @@
            EVALUATE    SRY-SRYKBN
       *    ΩÈø«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "11"
-                   IF   TNS-CHUKSNTUBAN        =   "0"
-                   AND  SRY-SRYCD(IDX3)(1:1)   =   "1"
+                   IF   TNS-CHUKSNTUBAN    =   "0"
                         ADD   WK-ZAIKAISU      TO   RECE200-KAISU (1)
                    END-IF
       *************£±°ßª˛¥÷≥∞°°£≤°ßøºÃÎ°°£≥°ßµŸ∆¸°°£¥°ßª˛¥÷≥∞°¶øºÃÎ
@@ -3897,24 +3127,9 @@
                              END-EVALUATE
                      END-EVALUATE
                    END-IF
-                   COMPUTE    RECE200-TENSU(1 1)  =
-                              RECE200-TENSU(1 1)  +
-                             (TNS-TEN     *   ACCT-ZAIKAISU)
-      *    ∫∆ø«§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-               WHEN    "12"
-                   COMPUTE        RECE200-NYUSAI-TENSU  =
-                                  RECE200-NYUSAI-TENSU  +
-                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                   EVALUATE  WRK-NYUSAI-SRYKBN
-                     WHEN      "90"
-                       COMPUTE    RECE200-NYUKHNKEI2    =
-                                  RECE200-NYUKHNKEI2    +
-                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                     WHEN      "92"
-                       COMPUTE    RECE200-NYUTOKKEI2    =
-                                  RECE200-NYUTOKKEI2    +
-                                 (WK-ZAITEN   *   WK-ZAIKAISU)
-                   END-EVALUATE
+                       COMPUTE    RECE200-TENSU(1 1)  =
+                                  RECE200-TENSU(1 1)  +
+                                 (TNS-TEN     *   ACCT-ZAIKAISU)
       *    ∞Â≥ÿ¥…Õ˝§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
                WHEN    "13"
                  IF  ACCT-ZAIKBN   =    2
@@ -4118,78 +3333,6 @@
            EXIT.
       *
       *****************************************************************
-      *    ∞ÂŒ≈æ Ûœ¢∑» ‘Ω∏
-      *****************************************************************
-       210123-IRYORENKEI-HENSYU-SEC               SECTION.
-      *
-           IF   (ACCT-SRYKBN       =  "14" OR "21" OR "22" OR "23")
-           AND  (ACCT-ZAITEN       =  ZERO                        )
-           AND  (ACCT-ZAIKBN   NOT =   1                          )
-           AND  (ACCT-JIHOKBN      =  SPACE                       )
-      *
-             INITIALIZE                   SRYACT-REC
-             MOVE    ACCT-HOSPNUM     TO  SRY-HOSPNUM
-             MOVE    ACCT-NYUGAIKBN   TO  SRY-NYUGAIKBN
-             MOVE    ACCT-PTID        TO  SRY-PTID
-             MOVE    ACCT-SRYYM       TO  SRY-SRYYM
-             MOVE    ACCT-ZAINUM      TO  SRY-ZAINUM
-             MOVE    "820000046"      TO  SRY-SRYCD(1)
-             MOVE    "820000046"      TO  SRY-SRYCD(2)
-             MOVE    "820000046"      TO  SRY-SRYCD(3)
-             MOVE    "820000046"      TO  SRY-SRYCD(4)
-             MOVE    "820000046"      TO  SRY-SRYCD(5)
-             MOVE    SRYACT-REC       TO  MCPDATA-REC
-             MOVE    "tbl_sryact"     TO  MCP-TABLE
-             MOVE    "key8"           TO  MCP-PATHNAME
-             PERFORM 900-DBSELECT-SEC
-             IF      MCP-RC   =   ZERO
-               MOVE    "tbl_sryact"   TO  MCP-TABLE
-               MOVE    "key8"         TO  MCP-PATHNAME
-               PERFORM  900-SRYACT-READ-SEC
-               IF   FLG-SRYACT  =  ZERO
-                 CONTINUE
-               ELSE
-                 MOVE    1            TO  FLG-IRYORENKEI
-               END-IF
-             END-IF
-             MOVE    "tbl_sryact"     TO  MCP-TABLE
-             MOVE    "key8"           TO  MCP-PATHNAME
-             PERFORM 900-CLOSE-SEC
-      *
-           END-IF
-      *
-           IF    FLG-IRYORENKEI   =   1
-      *
-             INITIALIZE                      ORCSGETGENERICAREA
-             MOVE    RECE200-HOSPNUM     TO  ORCSGETGE-HOSPNUM
-             MOVE    RECE200-PTID        TO  ORCSGETGE-PTID
-             MOVE    RECE200-SRYYM       TO  ORCSGETGE-SRYYM
-             MOVE    "1"                 TO  ORCSGETGE-NYUGAIKBN
-             MOVE    ACCT-ZAINUM         TO  ORCSGETGE-ZAINUM
-             MOVE    WRK-1030-KOUHATUKA  TO  ORCSGETGE-KOUHATUKA
-             CALL    "ORCSGETGENERIC"    USING
-                                         ORCSGETGENERICAREA
-                                         SPA-AREA
-             IF      ORCSGETGE-ERRCD     =   ZERO
-               PERFORM   VARYING  IDX15    FROM    1   BY  1
-                          UNTIL   IDX15     >     50
-                 MOVE  ORCSGETGE-YAKKAKJNCD(IDX15)
-                            TO  WRK-ORCSGETGE-YAKKAKJNCD(IDX15)
-                 MOVE  ORCSGETGE-GENERIC-KBN(IDX15)
-                            TO  WRK-ORCSGETGE-GENERIC-KBN(IDX15)
-                 MOVE  ORCSGETGE-GENERICNAME(IDX15)
-                            TO  WRK-ORCSGETGE-GENERICNAME(IDX15)
-               END-PERFORM
-             END-IF
-      *
-           END-IF
-      *
-           .
-      *
-       210123-IRYORENKEI-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    ∫ﬁ§Œø«Œ≈∆‚Õ∆•¡•ß•√•Ø
       *****************************************************************
        21014-SINRYO-CHECK-SEC                 SECTION.
@@ -4252,7 +3395,7 @@
        21015-TENTEKIMATOME-CHECK-SEC                 SECTION.
       *
            PERFORM  VARYING  ID4    FROM   1   BY   1
-                     UNTIL  (ID4                      >   40 )
+                     UNTIL  (ID4                      >   20 )
                        OR   (WRK-TENTEKI2-ZAINUM(ID4) =  ZERO)
                        OR   (FLG-TENTEKIMATOME        =    1 )
       *
@@ -4264,52 +3407,6 @@
       *
            .
        21015-TENTEKIMATOME-CHECK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    •’•È•∞≈˘§Œ•Ø•Í•¢
-      *****************************************************************
-       21016-FLG-KURIA-SEC                 SECTION.
-      *
-           MOVE   ZERO   TO   FLG-RINYAK
-      *
-           MOVE   ZERO   TO   WRK-SRYSURYO
-           MOVE   ZERO   TO   WRK-SRYSURYO2
-           MOVE   ZERO   TO   WRK-SRYSURYO3
-           MOVE   ZERO   TO   WRK-TANICD
-           MOVE   ZERO   TO   WRK-TANIMOJISU
-           MOVE   SPACE  TO   WRK-TANINAME
-           MOVE   ZERO   TO   FLG-HOUSIJI-COM
-                              FLG-SYOBYO-COM
-                              FLG-RYOYO-COM
-                              FLG-SYODOU-COM
-                              FLG-OSIN-COM
-                              FLG-HOUSEI-COM
-                              FLG-HOUMON-COM
-                              FLG-TAHOKEN
-                              FLG-KENSA-COM
-                              FLG-ZAIKYO-COM
-                              FLG-BOKOHO-COM
-                              FLG-CYOJKSN-COM
-                              FLG-HAIJRT-COM
-      *
-           MOVE   ZERO   TO   WRK-FILMTEN
-      *
-           MOVE   ZERO   TO   WRK-KZI058-TEN
-                              WRK-KZI058-TANICD
-                              WRK-KZI058-TANIMOJISU
-           MOVE   SPACE  TO   WRK-KZI058-TANINAME
-      *
-           MOVE   ZERO   TO   WRK-RYOYOTEATE
-      *
-           MOVE   ZERO   TO   FLG-WRITE230
-           MOVE   ZERO   TO   FLG-TENTEKI
-           MOVE   ZERO   TO   FLG-HENSYU-NG
-           MOVE   ZERO   TO   FLG-YKZ-PRTKBN
-           MOVE   SPACE  TO   WRK-NYUSAI-SRYKBN
-      *
-           .
-       21016-FLG-KURIA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4331,7 +3428,7 @@
                MOVE    "tbl_nyuinacct"   TO      MCP-TABLE
                MOVE    "key7"            TO      MCP-PATHNAME
                PERFORM  900-NYUINACCT-READ-SEC
-               PERFORM  UNTIL  (FLG-NYUINACCT  =  1)
+               PERFORM  UNTIL  (FLG-NYUINACCT  =    "1")
       *
                  IF     NACCT-ZAISKBKBN    =    "1"  
                    IF     NACCT-SRYCDTOTAL   NOT =    099999916         
@@ -4343,11 +3440,6 @@
                         IF     NACCT-SRYCDTOTAL    =    099999916       
                            CONTINUE
                         ELSE                                            
-                           IF    RECE200-KANGOGEN-SRYCD(IDY)  =  SPACE
-                             MOVE  WRK-KHNTEN-MOTO  TO  WRK-KHNTEN
-                           ELSE
-                             MOVE  WRK-KHNTEN-GEN   TO  WRK-KHNTEN
-                           END-IF
                            MOVE   NACCT-DAY(IDY)  TO   WRK-DAY1(IDY) 
                            IF (NACCT-SRYKBN     =  "90"       )
                            OR (NACCT-SRYCDTOTAL =   190799410 )
@@ -4358,18 +3450,12 @@
                            END-IF                                       
                            MOVE   WRK-KHNTEN
                                          TO  WRK-DAY1-KHNTEN(IDY) 
-                           MOVE   WRK-KHN-ZAITEN-GEN
-                                         TO  WRK-DAY1-ZAITEN-GEN(IDY)
                            MOVE   WRK-KSNTEN
                                          TO  WRK-DAY1-KSNTEN(IDY)
                            MOVE   WRK-NYUKHNKSNKBN                      
                                          TO  WRK-DAY1-NYUKHNKSNKBN(IDY)
                            MOVE   WRK-CHUKSNCD
                                          TO  WRK-DAY1-CHUKSNCD(IDY)
-                           MOVE   WRK-NYUKHNKBN
-                                         TO  WRK-DAY1-NYUKHNKBN(IDY)
-                           MOVE   WRK-NYUINKHN
-                                         TO  WRK-DAY1-NYUINKHN(IDY)
                            MOVE   WRK-HYOKETU-SRYCD
                                          TO  WRK-DAY1-HYOKETU-SRYCD
                                                                (IDY)
@@ -4434,8 +3520,6 @@
              END-IF
            END-PERFORM
       *
-      *    ∆˛±°Œ¡§»∞€§ §Îø©ªˆªªƒÍ ›∏±¡»§ﬂπÁ§Ô§ªºË∆¿
-           PERFORM      210225-SKJHKN-GET-SEC
       *
            MOVE    ZERO    TO    WRK-ZAINUM-CNT2
            MOVE    ZERO    TO    FLG-DOJITU
@@ -4455,7 +3539,7 @@
                MOVE    "tbl_nyuinacct"   TO      MCP-TABLE
                MOVE    "key7"            TO      MCP-PATHNAME
                PERFORM  900-NYUINACCT-READ-SEC
-               PERFORM  UNTIL  (FLG-NYUINACCT  =  1)
+               PERFORM  UNTIL  (FLG-NYUINACCT  =    "1") 
       *
                  IF     NACCT-ZAISKBKBN    =    "1"  OR  "2"  OR
                                                 "4"  OR  "6"  OR
@@ -4469,13 +3553,9 @@
                                           WRK-GAI-TABLE
                                           WRK-GAI-TABLE2
                       MOVE     ZERO       TO    CNT-DAY21
-                                                CNT-DAY21-X
-                                                CNT-DAY21-Y
                                                 CNT-DAY22
                       MOVE     ZERO       TO    FLG-DAY21
                                                 FLG-DAY22
-                      MOVE     ZERO       TO    WRK-ZAITEN-W
-                                                WRK-KANGOGEN-SRYCD-W
                       MOVE     ZERO       TO    WRK-NYUTENTTLKBN
       *
                       PERFORM  VARYING  IDY    FROM    1   BY  1
@@ -4491,20 +3571,6 @@
                                            TO   WRK-DAY21(IDY) 
                                     ADD    1   TO   CNT-DAY21
                                     MOVE   1   TO   FLG-DAY21
-                                    IF RECE200-KANGOGEN-SRYCD(IDY)
-                                                            =  SPACE
-                                      MOVE   NACCT-DAY(IDY)  
-                                           TO   WRK-DAY21-X(IDY)
-                                      ADD  1   TO   CNT-DAY21-X
-                                    ELSE
-                                      MOVE   NACCT-DAY(IDY)  
-                                           TO   WRK-DAY21-Y(IDY)
-                                      MOVE   WRK-DAY1-ZAITEN-GEN(IDY)
-                                           TO   WRK-ZAITEN-W
-                                      MOVE   RECE200-KANGOGEN-SRYCD(IDY)
-                                           TO   WRK-KANGOGEN-SRYCD-W
-                                      ADD  1   TO   CNT-DAY21-Y
-                                    END-IF
                                END-IF
                               ELSE
                                IF  ((WRK-DAY1(IDY)   NOT  =  ZERO   ) OR
@@ -4533,46 +3599,79 @@
                                         TO  WRK-DAY22-NYUKHNKSNKBN(IDY) 
                                MOVE   WRK-DAY1-CHUKSNCD(IDY)
                                         TO  WRK-DAY22-CHUKSNCD(IDY)
-                               MOVE   WRK-DAY1-NYUKHNKBN(IDY)
-                                        TO  WRK-DAY22-NYUKHNKBN(IDY)
-                               MOVE   WRK-DAY1-NYUINKHN(IDY)
-                                        TO  WRK-DAY22-NYUINKHN(IDY)
                                PERFORM      210203-NYUINACCT-GET-SEC
                             END-IF
       *                     *ø©ªˆ
-                            PERFORM      210226-SKJ-HENSYU-SEC
+                            IF  ((WRK-DAY1(IDY)   NOT  =  ZERO   ) OR
+                                 (RECE200-NYUINDAY-KBN(IDY) = "1"))
+                            AND ( NACCT-ZAITEN         =  ZERO    )
+                            AND ( NACCT-ZAISKBKBN      =  "4"     )
+                            AND ( NACCT-DAY(IDY)  NOT  =  ZERO    )
+                            AND ( WRK-SHOKUJIRYOYO(IDY)
+                                                  NOT  =  ZERO    )
+                            AND ((WRK-DAY2(IDY)   =  ZERO        ) OR
+                                 (WRK-DAY2(IDY)  >=   4          ))
+                            AND ( RECE200-SRYYM   >= "200604"     )
+                            AND ( NACCT-SRYCDTOTAL = 099999918
+                                                 OR  099999919
+                                                 OR  099999920    )
+                               MOVE   NACCT-DAY(IDY)
+                                            TO   WRK-DAY24(IDY)
+                               PERFORM      210204-NYUINACCT-SYU2-SEC
+                            END-IF
+                            IF    ( RECE200-SRYYM       >= "200610" )
+                            AND   ((WRK-DAY1(IDY)   NOT  =  ZERO   ) OR
+                                   (RECE200-NYUINDAY-KBN(IDY) = "1"))
+                            AND   ( NACCT-ZAITEN         =  ZERO    )
+                            AND   ( NACCT-ZAISKBKBN      =  "4"     )
+      ***                   AND   ( NACCT-DAY(IDY)  NOT  =  ZERO    )
+                            AND   ( WRK-SHOKUJIRYOYO(IDY)
+                                                    NOT  =  ZERO    )
+                            AND   ( NACCT-SRYCDTOTAL = 099999918
+                                                   OR  099999919
+                                                   OR  099999920    )
+                            AND   ((WRK-DAY2(IDY)  =  ZERO         ) OR
+                                   (WRK-DAY2(IDY) >=   4           ))
+                               PERFORM   210218-NYUINACCT-SYU2-KAN-SEC
+                            END-IF
                          ELSE
       *                     *ø©ªˆ
-                            PERFORM      210227-SKJ-HENSYU2-SEC
+                            IF  (RECE200-HKNCOMBI   =
+                                   RECE200-DOUJITSU-HKNCOMBI(IDY))
+                            AND (NACCT-ZAITEN          =  ZERO   )
+                            AND (NACCT-ZAISKBKBN       =  "4"    )
+                            AND (NACCT-DAY(IDY)   NOT  =  ZERO   )
+                            AND (WRK-SHOKUJIRYOYO(IDY)
+                                                  NOT  =  ZERO   )
+                            AND ((WRK-DAY2(IDY)   =  ZERO       ) OR
+                                 (WRK-DAY2(IDY)  >=   4         ))
+                            AND (RECE200-SRYYM >= "200604"       )
+                             IF  NACCT-SRYCDTOTAL = 099999918
+                                                 OR 099999919
+                                                 OR 099999920
+                              MOVE  1 TO  FLG-DOJITU
+                              MOVE  1 TO  WRK-SKJ-DOJITU-KBN (IDY)
+                              EVALUATE   NACCT-SRYCDTOTAL
+                                WHEN  099999918
+                                  MOVE  NACCT-DAY(IDY) TO
+                                          WRK-SKJ-DOJITU-ASA (IDY)
+                                WHEN  099999919
+                                  MOVE  NACCT-DAY(IDY) TO
+                                          WRK-SKJ-DOJITU-HIRU(IDY)
+                                WHEN  099999920
+                                  MOVE  NACCT-DAY(IDY) TO
+                                          WRK-SKJ-DOJITU-YORU(IDY)
+                              END-EVALUATE
+                             END-IF
+                            END-IF
                          END-IF
       *
                       END-PERFORM
       *
                       IF   FLG-DAY21    =   1
-                        IF   RECE200-SRYYM       >= "201804"
-                        AND  NACCT-ZAISKBKBN      = "1"
-                        AND  CNT-DAY21-Y      NOT = ZERO
-                         IF  CNT-DAY21 = CNT-DAY21-Y
-                           MOVE      2    TO    FLG-HENSYU
-                           PERFORM   210205-RECE220-TENSOU2-SEC
-                           PERFORM   210206-RECE230-HENSYU2-SEC
-                           PERFORM   RECE220-WRITE-SEC
-                         ELSE
-                           MOVE      3    TO    FLG-HENSYU
-                           PERFORM   210205-RECE220-TENSOU2-SEC
-                           PERFORM   210206-RECE230-HENSYU2-SEC
-                           PERFORM   RECE220-WRITE-SEC
-                           MOVE      4    TO    FLG-HENSYU
-                           PERFORM   210205-RECE220-TENSOU2-SEC
-                           PERFORM   210206-RECE230-HENSYU2-SEC
-                           PERFORM   RECE220-WRITE-SEC
-                         END-IF
-                        ELSE
-                         MOVE      1      TO    FLG-HENSYU
                          PERFORM   210205-RECE220-TENSOU2-SEC
                          PERFORM   210206-RECE230-HENSYU2-SEC
                          PERFORM   RECE220-WRITE-SEC
-                        END-IF
                       END-IF
       *
                       IF   FLG-DAY22    =   1
@@ -4603,28 +3702,12 @@
       *
            IF   RECE200-SRYYM   >=  "200604"
               IF   FLG-DOJITU   =   1
-                    PERFORM   210223-NYUINACCT-SYU2-DOU-SEC
+                    PERFORM   210221-NYUINACCT-SYU2-DOJITU-SEC
               END-IF
            END-IF
       *
       *    ∆˛±°ª˛¿∏≥ËŒ≈Õ‹»Ò…È√¥≥€ºË∆¿
-           IF     RECE200-SRYYM   >=  "201604"
-             INITIALIZE                    ORCSNYULIFE2-AREA
-             MOVE    RECE200-HOSPNUM   TO  LNK-NYULIFE2-HOSPNUM
-             MOVE    RECE200-PTID      TO  LNK-NYULIFE2-PTID
-             MOVE    RECE200-SRYYM     TO  LNK-NYULIFE2-SANTEIYM
-             CALL    "ORCSNYULIFE2"        USING
-                                           ORCSNYULIFE2-AREA
-                                           SPA-AREA
-             IF      LNK-NYULIFE2-RC  =   ZERO
-               PERFORM  VARYING  SYUKEI-IDX3  FROM  1  BY  1
-                         UNTIL   SYUKEI-IDX3   >   31
-                 MOVE  LNK-NYULIFE2-KBN(SYUKEI-IDX3)
-                             TO  WRK-NYULIFE-KBN(SYUKEI-IDX3)
-               END-PERFORM
-             END-IF
-           ELSE
-            IF    RECE200-SRYYM   >=  "200610"
+           IF    RECE200-SRYYM   >=  "200610"
              INITIALIZE                    ORCSNYULIFE-AREA
              MOVE    RECE200-HOSPNUM   TO  LNK-NYULIFE-HOSPNUM
              MOVE    RECE200-PTID      TO  LNK-NYULIFE-PTID
@@ -4637,9 +3720,16 @@
                          UNTIL   SYUKEI-IDX3   >   31
                  MOVE  LNK-NYULIFE-KBN(SYUKEI-IDX3)
                              TO  WRK-NYULIFE-KBN(SYUKEI-IDX3)
+                 MOVE  LNK-NYULIFE-SKJFTN-SRYCD(SYUKEI-IDX3)
+                             TO  WRK-NYULIFE-SKJFTN-SRYCD(SYUKEI-IDX3)
+                 MOVE  LNK-NYULIFE-SKJFTN-MONEY(SYUKEI-IDX3)
+                             TO  WRK-NYULIFE-SKJFTN-MONEY(SYUKEI-IDX3)
+                 MOVE  LNK-NYULIFE-KANFTN-SRYCD(SYUKEI-IDX3)
+                             TO  WRK-NYULIFE-KANFTN-SRYCD(SYUKEI-IDX3)
+                 MOVE  LNK-NYULIFE-KANFTN-MONEY(SYUKEI-IDX3)
+                             TO  WRK-NYULIFE-KANFTN-MONEY(SYUKEI-IDX3)
                END-PERFORM
              END-IF
-            END-IF
            END-IF
       *
       *    £≤£∞£∞£∂«Ø£¥∑Ó∞ πﬂ§Œø©ªˆŒ≈Õ‹
@@ -4650,22 +3740,19 @@
       *
                  IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 1)
                                                     NOT =  ZERO
-                 OR   WRK-SKJ200604-DAY(SYUKEI-IDX3 4)
-                                                    NOT =  ZERO
-                    PERFORM 210213-RECE220-TENSOU2-SKJ2-SEC
-                    PERFORM 210214-RECE230-HENSYU2-SKJ2-SEC
+                    PERFORM 210213-RECE220-TENSOU2-SKJ200604-SEC
+                    PERFORM 210214-RECE230-HENSYU2-SKJ200604-SEC
                     PERFORM RECE230-WRITE-SEC
                     PERFORM RECE220-WRITE-SEC
                  END-IF
       *
-                 IF   WRK-NYULIFE-KBN(SYUKEI-IDX3)  NOT =  SPACE
-                   IF    WRK-SKJ200604-DAY-KAN(SYUKEI-IDX3)
+                 IF   WRK-SKJ200604-DAY-KAN(SYUKEI-IDX3)
                                                     NOT =  ZERO
-                    PERFORM 210219-RECE220-TENSOU2-KAN-SEC
-                    PERFORM 210220-RECE230-HENSYU2-KAN-SEC
+                 AND  WRK-NYULIFE-KBN(SYUKEI-IDX3)  NOT =  SPACE
+                    PERFORM 210219-RECE220-TENSOU2-SKJ200610-KAN-SEC
+                    PERFORM 210220-RECE230-HENSYU2-SKJ200610-KAN-SEC
                     PERFORM RECE230-WRITE-SEC
                     PERFORM RECE220-WRITE-SEC
-                   END-IF
                  END-IF
       *
               END-PERFORM
@@ -4682,18 +3769,11 @@
        210201-NYUINKHN-GET-SEC           SECTION.
       *
            MOVE    ZERO               TO   WRK-KHNTEN
-                                           WRK-KHNTEN-MOTO
-                                           WRK-KHNTEN-GEN
-      *****                                WRK-KHN-ZAITEN
-                                           WRK-KHN-ZAITEN-MOTO
-                                           WRK-KHN-ZAITEN-GEN
                                            WRK-NYUKHNKSNKBN
                                            WRK-KSNTEN
                                            WRK-KSN-SRYCD
       *
            MOVE    SPACE              TO   WRK-CHUKSNCD
-           MOVE    ZERO               TO   WRK-NYUKHNKBN
-           MOVE    SPACE              TO   WRK-NYUINKHN
       *
            MOVE    SPACE              TO   WRK-GAIHAKU-SRYCD
            MOVE    ZERO               TO   WRK-GAIHAKU-KHNTEN
@@ -4730,40 +3810,18 @@
                      PERFORM    900-TENSU-TBL-SEC
                      IF   FLG-TENSU      =    ZERO
                        IF   TNS-DATAKBN    =    1
-                          MOVE   TNS-TEN   TO   WRK-KHNTEN-MOTO
-      *                   ÃÎ¥÷¥«∏Ó¬Œ¿©∆√ƒÍ∆¸∏∫ªª
-                          COMPUTE  WRK-KHNTEN-GEN   =
-                                  (WRK-KHNTEN-MOTO  * 0.95) +  0.5
+                          MOVE   TNS-TEN   TO   WRK-KHNTEN
                           MOVE   TNS-NYUKHNKSNKBN
                                            TO   WRK-NYUKHNKSNKBN
-      *                   ∆˛±°¥À‹Œ¡≤√ªª∂Ë ¨√÷§≠¥π§®
-                          IF  RECE200-SRYYM >= "201804"
-      *                     Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡
-      *                                   ° ∆√ Ã∆˛±°¥À‹Œ¡°À
-                            IF   (TNS-NYUKHNKSNKBN = 27 )
-                            AND  (TNS-CDKBN-KBNNUM = 101)
-                              MOVE   901   TO   WRK-NYUKHNKSNKBN
-                            END-IF
-      *                     Õ≠æ≤ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤∆˛±°¥À‹Œ¡
-      *                                   ° ∆√ Ã∆˛±°¥À‹Œ¡°À
-                            IF   (TNS-NYUKHNKSNKBN = 27 )
-                            AND  (TNS-CDKBN-KBNNUM = 109)
-                              MOVE   909   TO   WRK-NYUKHNKSNKBN
-                            END-IF
-                          END-IF
                           MOVE   TNS-CHUKSNCD
                                            TO   WRK-CHUKSNCD
-                          MOVE   TNS-NYUKHNKBN
-                                           TO   WRK-NYUKHNKBN
-                          MOVE   NSRY-SRYCD(IDX2)
-                                           TO   WRK-NYUINKHN
       *                   ¥«∏Ó»ÊŒ®¥Ω‡Ã§√£ª˛§Œ∆˛±°¥À‹≈¿øÙ§ŒºË∆¿
                           IF    RECE200-SRYYM  <=  "201203"
-                           PERFORM 2102011-GAIHAKU-NYUINKHN-SEC
+                           PERFORM 2102011-GAIHAKU-NYUINKHN-SET-SEC
                           END-IF
                           IF   WRK-GAIHAKU-KHNTEN  NOT =  ZERO
                                  MOVE   WRK-GAIHAKU-KHNTEN
-                                           TO   WRK-KHNTEN-MOTO
+                                               TO   WRK-KHNTEN
                           END-IF
       ***                 MOVE   1         TO   FLG-NYUKHN
                        ELSE
@@ -4785,24 +3843,19 @@
                      END-IF
                END-PERFORM
       *
-               COMPUTE  WRK-KHN-ZAITEN-MOTO     =
-                        NACCT-ZAITEN
-               COMPUTE  WRK-KHN-ZAITEN-GEN      =
-                        WRK-KHNTEN-GEN          +
-                        WRK-KSNTEN
-               IF     WRK-HYOKETU-TEN    NOT =   ZERO
-      *          …∏∑Á°ß°Û∏∫ªª
-                 COMPUTE    WRK-KHN-ZAITEN-GEN      =
-                          ( WRK-KHN-ZAITEN-GEN      -
-                           (WRK-KHN-ZAITEN-GEN      *
-                            (WRK-HYOKETU-TEN   /  100))) + 0.5
-               END-IF
-      *
            END-IF
       *
            MOVE    "tbl_nyuinact"      TO      MCP-TABLE
            MOVE    "key9"              TO      MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
+      *
+      ***  IF     WRK-HYOKETU-TEN    NOT =   ZERO
+      *      …∏∑Á°ß°Û∏∫ªª
+      ***    COMPUTE    WRK-KHNTEN  =
+      ***             ( WRK-KHNTEN  -
+      ***              (WRK-KHNTEN  *
+      ***               (WRK-HYOKETU-TEN   /  100)))  +  0.5
+      ***  END-IF
       *
            .
        210201-NYUINKHN-GET-EXT.
@@ -4811,7 +3864,7 @@
       **************************************************************
       *    ≥∞«Òª˛§Œ∆˛±°¥À‹Œ¡ºË∆¿
       **************************************************************
-       2102011-GAIHAKU-NYUINKHN-SEC           SECTION.
+       2102011-GAIHAKU-NYUINKHN-SET-SEC           SECTION.
       *
            EVALUATE  TNS-SRYCD
                WHEN  "190078210"
@@ -4983,7 +4036,7 @@
            END-IF
       *
            .
-       2102011-GAIHAKU-NYUINKHN-EXT.
+       2102011-GAIHAKU-NYUINKHN-SET-EXT.
            EXIT.
       *
       **************************************************************
@@ -5009,15 +4062,9 @@
                          MOVE    2     TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
                      WHEN   4
-                         IF    RECE200-SRYYM    >=    "201604"
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.6)
-                                                          +  0.5
-                         ELSE
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.3)
-                                                          +  0.5
-                         END-IF
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.3)
+                                                        +  0.5
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                   WRK-DAY22-NYUKHNRYO(IDY) +
                                   WRK-DAY1-KSNTEN(IDY)
@@ -5031,15 +4078,9 @@
                          MOVE    4     TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
                      WHEN   5
-                         IF    RECE200-SRYYM    >=    "201604"
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.9)
-                                                          +  0.5
-                         ELSE
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.7)
-                                                          +  0.5
-                         END-IF
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.7)
+                                                        +  0.5
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                   WRK-DAY22-NYUKHNRYO(IDY) +
                                   WRK-DAY1-KSNTEN(IDY)
@@ -5053,15 +4094,9 @@
                          MOVE    11    TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
                      WHEN   6
-                         IF    RECE200-SRYYM    >=    "201604"
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.8 )
-                                                          +  0.5
-                         ELSE
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.45)
-                                                          +  0.5
-                         END-IF
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.45)
+                                                        +  0.5
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                   WRK-DAY22-NYUKHNRYO(IDY) +
                                   WRK-DAY1-KSNTEN(IDY)
@@ -5075,9 +4110,6 @@
                          MOVE    15    TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
                      WHEN   7
-                       IF    RECE200-SRYYM    >=    "201604"
-                         CONTINUE
-                       ELSE
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                  (WRK-DAY1-KHNTEN(IDY)  *  0.85)
                                                         +  0.5
@@ -5093,7 +4125,6 @@
                          END-IF
                          MOVE    19    TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
-                       END-IF
                      WHEN   8
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                  (WRK-DAY1-KHNTEN(IDY)  *  0.92)
@@ -5126,44 +4157,74 @@
                          END-IF
                          MOVE    27    TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
-      ***            WHEN   11
-      ***                COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-      ***                        (WRK-DAY1-KHNTEN(IDY)  *  0.92)
-      ***                                               +  0.5
-      ***                COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-      ***                        (WRK-DAY22-NYUKHNRYO(IDY)
-      ***                                               *  0.7 )
-      ***                                               +  0.5
-      ***                COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-      ***                         WRK-DAY22-NYUKHNRYO(IDY) +
-      ***                         WRK-DAY1-KSNTEN(IDY)
-      ***                IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
-      ***                  COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
-      ***                         (WRK-DAY22-NYUKHNRYO(IDY)    -
-      ***                          (WRK-DAY22-NYUKHNRYO(IDY)   *
-      ***                           (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
-      ***                                                      + 0.5
-      ***                END-IF
-      ***                MOVE    35    TO    SYUKEI-IDX
-      ***                PERFORM    2102031-NYUINACCT-SYU-SEC
-                     WHEN   13
-                         IF    RECE200-SRYYM    >=    "201604"
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.92)
-                                                          +  0.5
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY22-NYUKHNRYO(IDY)
-                                                          *  0.9 )
-                                                          +  0.5
-                         ELSE
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.92)
-                                                          +  0.5
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY22-NYUKHNRYO(IDY)
-                                                          *  0.7 )
-                                                          +  0.5
+                     WHEN   10
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.92)
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY22-NYUKHNRYO(IDY)
+                                                        *  0.3 )
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                  WRK-DAY22-NYUKHNRYO(IDY) +
+                                  WRK-DAY1-KSNTEN(IDY)
+                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
+                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
+                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
+                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
+                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
+                                                               + 0.5
                          END-IF
+                         MOVE    31    TO    SYUKEI-IDX
+                         PERFORM    2102031-NYUINACCT-SYU-SEC
+                     WHEN   11
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.92)
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY22-NYUKHNRYO(IDY)
+                                                        *  0.7 )
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                  WRK-DAY22-NYUKHNRYO(IDY) +
+                                  WRK-DAY1-KSNTEN(IDY)
+                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
+                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
+                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
+                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
+                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
+                                                               + 0.5
+                         END-IF
+                         MOVE    35    TO    SYUKEI-IDX
+                         PERFORM    2102031-NYUINACCT-SYU-SEC
+                     WHEN   12
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.92)
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY22-NYUKHNRYO(IDY)
+                                                        *  0.3 )
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                  WRK-DAY22-NYUKHNRYO(IDY) +
+                                  WRK-DAY1-KSNTEN(IDY)
+                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
+                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
+                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
+                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
+                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
+                                                               + 0.5
+                         END-IF
+                         MOVE    39    TO    SYUKEI-IDX
+                         PERFORM    2102031-NYUINACCT-SYU-SEC
+                     WHEN   13
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.92)
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY22-NYUKHNRYO(IDY)
+                                                        *  0.7 )
+                                                        +  0.5
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                   WRK-DAY22-NYUKHNRYO(IDY) +
                                   WRK-DAY1-KSNTEN(IDY)
@@ -5175,74 +4236,6 @@
                                                                + 0.5
                          END-IF
                          MOVE    43    TO    SYUKEI-IDX
-                         PERFORM    2102031-NYUINACCT-SYU-SEC
-                     WHEN   14
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.95)
-                                                        +  0.5
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                  WRK-DAY22-NYUKHNRYO(IDY) +
-                                  WRK-DAY1-KSNTEN(IDY)
-                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
-                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
-                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
-                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
-                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
-                                                               + 0.5
-                         END-IF
-                         MOVE    47    TO    SYUKEI-IDX
-                         PERFORM    2102031-NYUINACCT-SYU-SEC
-                     WHEN   15
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.65)
-                                                        +  0.5
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                  WRK-DAY22-NYUKHNRYO(IDY) +
-                                  WRK-DAY1-KSNTEN(IDY)
-                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
-                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
-                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
-                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
-                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
-                                                               + 0.5
-                         END-IF
-                         MOVE    51    TO    SYUKEI-IDX
-                         PERFORM    2102031-NYUINACCT-SYU-SEC
-                     WHEN   16
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.85)
-                                                        +  0.5
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                  WRK-DAY22-NYUKHNRYO(IDY) +
-                                  WRK-DAY1-KSNTEN(IDY)
-                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
-                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
-                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
-                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
-                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
-                                                               + 0.5
-                         END-IF
-                         MOVE    55    TO    SYUKEI-IDX
-                         PERFORM    2102031-NYUINACCT-SYU-SEC
-                     WHEN   17
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.92)
-                                                        +  0.5
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY22-NYUKHNRYO(IDY)
-                                                        *  0.95)
-                                                        +  0.5
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                  WRK-DAY22-NYUKHNRYO(IDY) +
-                                  WRK-DAY1-KSNTEN(IDY)
-                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
-                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
-                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
-                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
-                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
-                                                               + 0.5
-                         END-IF
-                         MOVE    59    TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
                     END-EVALUATE
                WHEN   920
@@ -5260,15 +4253,9 @@
                          MOVE    7     TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
                      WHEN   4
-                         IF    RECE200-SRYYM    >=    "201604"
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.6)
-                                                          +  0.5
-                         ELSE
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.3)
-                                                          +  0.5
-                         END-IF
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.3)
+                                                        +  0.5
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                   WRK-DAY22-NYUKHNRYO(IDY) +
                                   WRK-DAY1-KSNTEN(IDY)
@@ -5282,15 +4269,9 @@
                          MOVE    9     TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
                      WHEN   5
-                         IF    RECE200-SRYYM    >=    "201604"
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.9)
-                                                          +  0.5
-                         ELSE
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.7)
-                                                          +  0.5
-                         END-IF
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.7)
+                                                        +  0.5
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                   WRK-DAY22-NYUKHNRYO(IDY) +
                                   WRK-DAY1-KSNTEN(IDY)
@@ -5304,15 +4285,9 @@
                          MOVE    13    TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
                      WHEN   6
-                         IF    RECE200-SRYYM    >=    "201604"
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.8 )
-                                                          +  0.5
-                         ELSE
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.45)
-                                                          +  0.5
-                         END-IF
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.45)
+                                                        +  0.5
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                   WRK-DAY22-NYUKHNRYO(IDY) +
                                   WRK-DAY1-KSNTEN(IDY)
@@ -5326,9 +4301,6 @@
                          MOVE    16    TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
                      WHEN   7
-                       IF    RECE200-SRYYM    >=    "201604"
-                         CONTINUE
-                       ELSE
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                  (WRK-DAY1-KHNTEN(IDY)  *  0.85)
                                                         +  0.5
@@ -5344,7 +4316,6 @@
                          END-IF
                          MOVE    20    TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
-                       END-IF
                      WHEN   8
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                  (WRK-DAY1-KHNTEN(IDY)  *  0.92)
@@ -5377,44 +4348,74 @@
                          END-IF
                          MOVE    28    TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
-      ***            WHEN   11
-      ***                COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-      ***                        (WRK-DAY1-KHNTEN(IDY)  *  0.92)
-      ***                                               +  0.5
-      ***                COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-      ***                        (WRK-DAY22-NYUKHNRYO(IDY)
-      ***                                               *  0.7 )
-      ***                                               +  0.5
-      ***                COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-      ***                         WRK-DAY22-NYUKHNRYO(IDY) +
-      ***                         WRK-DAY1-KSNTEN(IDY)
-      ***                IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
-      ***                  COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
-      ***                         (WRK-DAY22-NYUKHNRYO(IDY)    -
-      ***                          (WRK-DAY22-NYUKHNRYO(IDY)   *
-      ***                           (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
-      ***                                                      + 0.5
-      ***                END-IF
-      ***                MOVE    36    TO    SYUKEI-IDX
-      ***                PERFORM    2102031-NYUINACCT-SYU-SEC
-                     WHEN   13
-                         IF    RECE200-SRYYM    >=    "201604"
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.92)
-                                                          +  0.5
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY22-NYUKHNRYO(IDY)
-                                                          *  0.9 )
-                                                          +  0.5
-                         ELSE
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY1-KHNTEN(IDY)  *  0.92)
-                                                          +  0.5
-                           COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                   (WRK-DAY22-NYUKHNRYO(IDY)
-                                                          *  0.7 )
-                                                          +  0.5
+                     WHEN   10
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.92)
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY22-NYUKHNRYO(IDY)
+                                                        *  0.3 )
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                  WRK-DAY22-NYUKHNRYO(IDY) +
+                                  WRK-DAY1-KSNTEN(IDY)
+                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
+                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
+                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
+                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
+                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
+                                                               + 0.5
                          END-IF
+                         MOVE    32    TO    SYUKEI-IDX
+                         PERFORM    2102031-NYUINACCT-SYU-SEC
+                     WHEN   11
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.92)
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY22-NYUKHNRYO(IDY)
+                                                        *  0.7 )
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                  WRK-DAY22-NYUKHNRYO(IDY) +
+                                  WRK-DAY1-KSNTEN(IDY)
+                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
+                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
+                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
+                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
+                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
+                                                               + 0.5
+                         END-IF
+                         MOVE    36    TO    SYUKEI-IDX
+                         PERFORM    2102031-NYUINACCT-SYU-SEC
+                     WHEN   12
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.92)
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY22-NYUKHNRYO(IDY)
+                                                        *  0.3 )
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                  WRK-DAY22-NYUKHNRYO(IDY) +
+                                  WRK-DAY1-KSNTEN(IDY)
+                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
+                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
+                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
+                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
+                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
+                                                               + 0.5
+                         END-IF
+                         MOVE    40    TO    SYUKEI-IDX
+                         PERFORM    2102031-NYUINACCT-SYU-SEC
+                     WHEN   13
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY1-KHNTEN(IDY)  *  0.92)
+                                                        +  0.5
+                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
+                                 (WRK-DAY22-NYUKHNRYO(IDY)
+                                                        *  0.7 )
+                                                        +  0.5
                          COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
                                   WRK-DAY22-NYUKHNRYO(IDY) +
                                   WRK-DAY1-KSNTEN(IDY)
@@ -5426,74 +4427,6 @@
                                                                + 0.5
                          END-IF
                          MOVE    44    TO    SYUKEI-IDX
-                         PERFORM    2102031-NYUINACCT-SYU-SEC
-                     WHEN   14
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.95)
-                                                        +  0.5
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                  WRK-DAY22-NYUKHNRYO(IDY) +
-                                  WRK-DAY1-KSNTEN(IDY)
-                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
-                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
-                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
-                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
-                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
-                                                               + 0.5
-                         END-IF
-                         MOVE   48     TO    SYUKEI-IDX
-                         PERFORM    2102031-NYUINACCT-SYU-SEC
-                     WHEN   15
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.65)
-                                                        +  0.5
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                  WRK-DAY22-NYUKHNRYO(IDY) +
-                                  WRK-DAY1-KSNTEN(IDY)
-                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
-                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
-                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
-                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
-                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
-                                                               + 0.5
-                         END-IF
-                         MOVE   52     TO    SYUKEI-IDX
-                         PERFORM    2102031-NYUINACCT-SYU-SEC
-                     WHEN   16
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.85)
-                                                        +  0.5
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                  WRK-DAY22-NYUKHNRYO(IDY) +
-                                  WRK-DAY1-KSNTEN(IDY)
-                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
-                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
-                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
-                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
-                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
-                                                               + 0.5
-                         END-IF
-                         MOVE   56     TO    SYUKEI-IDX
-                         PERFORM    2102031-NYUINACCT-SYU-SEC
-                     WHEN   17
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY1-KHNTEN(IDY)  *  0.92)
-                                                        +  0.5
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                 (WRK-DAY22-NYUKHNRYO(IDY)
-                                                        *  0.95)
-                                                        +  0.5
-                         COMPUTE  WRK-DAY22-NYUKHNRYO(IDY) =
-                                  WRK-DAY22-NYUKHNRYO(IDY) +
-                                  WRK-DAY1-KSNTEN(IDY)
-                         IF  WRK-DAY1-HYOKETU-TEN(IDY)  NOT =  ZERO
-                           COMPUTE WRK-DAY22-NYUKHNRYO(IDY)    =
-                                  (WRK-DAY22-NYUKHNRYO(IDY)    -
-                                   (WRK-DAY22-NYUKHNRYO(IDY)   *
-                                    (WRK-DAY1-HYOKETU-TEN(IDY) / 100)))
-                                                               + 0.5
-                         END-IF
-                         MOVE   60     TO    SYUKEI-IDX
                          PERFORM    2102031-NYUINACCT-SYU-SEC
                     END-EVALUATE
            END-EVALUATE
@@ -5514,10 +4447,8 @@
                   UNTIL  SYUKEI-IDX2           > 10
                    OR    WRK-GAI-DAY(SYUKEI-IDX SYUKEI-IDX2) = ZERO
                    OR    FLG-ARI               = 1
-              IF  (WRK-GAI-ZAITEN(SYUKEI-IDX SYUKEI-IDX2)
-                                        =  WRK-DAY22-NYUKHNRYO(IDY)   )
-              AND (WRK-GAI-KANGOGEN-SRYCD(SYUKEI-IDX SYUKEI-IDX2)
-                                        =  RECE200-KANGOGEN-SRYCD(IDY))
+              IF  WRK-GAI-ZAITEN(SYUKEI-IDX SYUKEI-IDX2)
+                                            =  WRK-DAY22-NYUKHNRYO(IDY)
                  ADD   1  TO   WRK-GAI-ZAIKAISU(SYUKEI-IDX SYUKEI-IDX2)
                  MOVE  1  TO                                            
                            WRK-GAI-KAISU   (SYUKEI-IDX SYUKEI-IDX2 IDY) 
@@ -5529,9 +4460,6 @@
                           TO   WRK-GAI-DAY     (SYUKEI-IDX SYUKEI-IDX2)
                  MOVE  WRK-DAY22-NYUKHNRYO(IDY)
                           TO   WRK-GAI-ZAITEN  (SYUKEI-IDX SYUKEI-IDX2) 
-                 MOVE  RECE200-KANGOGEN-SRYCD(IDY)
-                          TO   WRK-GAI-KANGOGEN-SRYCD
-                                               (SYUKEI-IDX SYUKEI-IDX2)
                  ADD   1  TO   WRK-GAI-ZAIKAISU(SYUKEI-IDX SYUKEI-IDX2)
                  MOVE  1  TO                                            
                            WRK-GAI-KAISU   (SYUKEI-IDX SYUKEI-IDX2 IDY) 
@@ -5547,188 +4475,13 @@
        2102031-NYUINACCT-SYU-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    ∆˛±°Œ¡§»∞€§ §Îø©ªˆªªƒÍ ›∏±¡»§ﬂπÁ§Ô§ªºË∆¿
-      *****************************************************************
-       210225-SKJHKN-GET-SEC                SECTION.
-      *
-           IF   RECE200-SRYYM  >=  "201710"
-             INITIALIZE                    ORCSNYUINDAY-AREA
-             PERFORM    VARYING   IDX35   FROM   1   BY   1
-                         UNTIL    IDX35    >    31
-               MOVE  RECE200-DOUJITSU-HKNCOMBI(IDX35)
-                           TO  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX35)
-             END-PERFORM
-      *
-             INITIALIZE                    ORCSSKJHKN-AREA
-             MOVE    RECE200-HOSPNUM   TO  LNK-SKJHKN-HOSPNUM
-             MOVE    RECE200-PTID      TO  LNK-SKJHKN-PTID
-             MOVE    RECE200-SRYYM     TO  LNK-SKJHKN-SANTEIYM
-             CALL    "ORCSSKJHKN"      USING   ORCSSKJHKN-AREA
-                                               ORCSNYUINDAY-AREA
-                                               SPA-AREA
-             IF      LNK-SKJHKN-RC     =   ZERO
-                PERFORM    VARYING   IDY   FROM   1   BY   1
-                            UNTIL    IDY    >    31
-                  MOVE  LNK-SKJHKN-HKNCOMBINUM(IDY 1) TO
-                                          WRK-SKJHKN-HKNCOMBI(IDY)
-                  MOVE  LNK-SKJHKN-HKNCOMBINUM(IDY 2) TO
-                                          WRK-SKJHKN-HKNCOMBI-DOU(IDY)
-                END-PERFORM
-             END-IF
-           END-IF
-      *
-           .
-       210225-SKJHKN-GET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ø©ªˆ ‘Ω∏
-      *****************************************************************
-       210226-SKJ-HENSYU-SEC                SECTION.
-      *
-           IF  ((WRK-DAY1(IDY)         NOT =  ZERO) OR
-                (RECE200-NYUINDAY-KBN(IDY) =  "1" ))
-           AND ( NACCT-ZAITEN              =  ZERO )
-           AND ( NACCT-ZAISKBKBN           =  "4"  )
-           AND ( NACCT-DAY(IDY)        NOT =  ZERO )
-           AND ( WRK-SHOKUJIRYOYO(IDY) NOT =  ZERO )
-           AND ((WRK-DAY2(IDY)             =  ZERO) OR
-                (WRK-DAY2(IDY)            >=   4  ))
-             IF   RECE200-SRYYM  >= "200604"
-               IF  NACCT-SRYCDTOTAL = 099999918 OR 099999919
-                                                OR 099999920
-                 IF    WRK-SKJHKN-HKNCOMBI(IDY)  =  SPACE
-                   MOVE  NACCT-DAY(IDY)  TO  WRK-DAY24(IDY)
-                   PERFORM  210204-NYUINACCT-SYU2-SEC
-                 ELSE
-                   PERFORM  210227-SKJ-HENSYU2-SEC
-                 END-IF
-               END-IF
-             END-IF
-           END-IF
-           IF  ( RECE200-SRYYM            >=  "200610"     )
-           AND ((WRK-DAY1(IDY)         NOT =  ZERO        ) OR
-                (RECE200-NYUINDAY-KBN(IDY) =  "1"         ))
-           AND ( NACCT-ZAITEN              =  ZERO         )
-           AND ( NACCT-ZAISKBKBN           =  "4"          )
-      ***  AND ( NACCT-DAY(IDY)        NOT =  ZERO         )
-           AND ( WRK-SHOKUJIRYOYO(IDY) NOT =  ZERO         )
-           AND ( NACCT-SRYCDTOTAL = 099999918 OR 099999919
-                                              OR 099999920 )
-           AND ((WRK-DAY2(IDY)             =  ZERO        ) OR
-                (WRK-DAY2(IDY)            >=   4          ))
-               PERFORM  210218-NYUINACCT-SYU2-KAN-SEC
-           END-IF
-      *
-           .
-       210226-SKJ-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ø©ªˆ ‘Ω∏
-      *****************************************************************
-       210227-SKJ-HENSYU2-SEC                SECTION.
-      *
-           IF  ( RECE200-SRYYM            >=  "200604"     )
-           AND ( NACCT-ZAITEN              =  ZERO         )
-           AND ( NACCT-ZAISKBKBN           =  "4"          )
-           AND ( NACCT-DAY(IDY)        NOT =  ZERO         )
-           AND ( WRK-SHOKUJIRYOYO(IDY) NOT =  ZERO         )
-           AND ((WRK-DAY2(IDY)             =  ZERO        ) OR
-                (WRK-DAY2(IDY)            >=   4          ))
-           AND ((WRK-DAY1(IDY)         NOT =  ZERO        ) OR
-                (RECE200-NYUINDAY-KBN(IDY) =  "1"         ))
-           AND ( NACCT-SRYCDTOTAL = 099999918 OR 099999919
-                                              OR 099999920 )
-      *
-             IF  ( WRK-SKJHKN-HKNCOMBI(IDY)      = SPACE )
-             OR  ((WRK-SKJHKN-HKNCOMBI(IDY)  NOT = SPACE) AND
-                  (RECE200-HKNCOMBI          NOT =
-                                WRK-SKJHKN-HKNCOMBI(IDY)))
-               IF ((RECE200-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
-                   (RECE200-HKNCOMBI             =
-                                     RECE200-DOUJITSU-HKNCOMBI(IDY)) AND
-                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)        = SPACE    ))
-               OR ((RECE200-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
-                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)    NOT = SPACE    ) AND
-                   (RECE200-HKNCOMBI             =
-                                     WRK-SKJHKN-HKNCOMBI-DOU(IDY)  ))
-                 MOVE    1    TO  FLG-DOJITU
-                 MOVE    1    TO  WRK-SKJ-DOJITU-KBN (IDY)
-                 EVALUATE   NACCT-SRYCDTOTAL
-                   WHEN  099999918
-                     MOVE  NACCT-DAY(IDY)
-                              TO  WRK-SKJ-DOJITU-ASA (IDY)
-                   WHEN  099999919
-                     MOVE  NACCT-DAY(IDY)
-                              TO  WRK-SKJ-DOJITU-HIRU(IDY)
-                   WHEN  099999920
-                     MOVE  NACCT-DAY(IDY)
-                              TO  WRK-SKJ-DOJITU-YORU(IDY)
-                 END-EVALUATE
-               END-IF
-             END-IF
-      *
-             IF   (WRK-SKJHKN-HKNCOMBI(IDY)  NOT = SPACE)
-             AND  (RECE200-HKNCOMBI              =
-                                WRK-SKJHKN-HKNCOMBI(IDY))
-               IF ((RECE200-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
-                   (RECE200-HKNCOMBI             =
-                                     RECE200-DOUJITSU-HKNCOMBI(IDY)) AND
-                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)        = SPACE    ))
-               OR ((RECE200-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
-                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)    NOT = SPACE    ) AND
-                   (RECE200-HKNCOMBI             =
-                                     WRK-SKJHKN-HKNCOMBI-DOU(IDY)  ))
-               OR ( RECE200-DOUJITSU-HKNCOMBI(IDY)      = ZERO      )
-                 MOVE  NACCT-DAY(IDY)  TO  WRK-DAY24(IDY)
-                 PERFORM  210204-NYUINACCT-SYU2-SEC
-               END-IF
-      *
-               IF ((RECE200-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
-                   (RECE200-HKNCOMBI         NOT =
-                                     RECE200-DOUJITSU-HKNCOMBI(IDY)) AND
-                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)        = SPACE    ))
-               OR ((RECE200-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
-                   (WRK-SKJHKN-HKNCOMBI-DOU(IDY)    NOT = SPACE    ) AND
-                   (RECE200-HKNCOMBI         NOT =
-                                     WRK-SKJHKN-HKNCOMBI-DOU(IDY)  ))
-                 MOVE    1    TO  FLG-DOJITU
-                 MOVE    2    TO  WRK-SKJ-DOJITU-KBN (IDY)
-                 EVALUATE   NACCT-SRYCDTOTAL
-                   WHEN  099999918
-                     MOVE  NACCT-DAY(IDY)
-                              TO  WRK-SKJ-DOJITU-ASA (IDY)
-                   WHEN  099999919
-                     MOVE  NACCT-DAY(IDY)
-                              TO  WRK-SKJ-DOJITU-HIRU(IDY)
-                   WHEN  099999920
-                     MOVE  NACCT-DAY(IDY)
-                              TO  WRK-SKJ-DOJITU-YORU(IDY)
-                 END-EVALUATE
-               END-IF
-             END-IF
-      *
-           END-IF
-      *
-           .
-       210227-SKJ-HENSYU2-EXT.
-           EXIT.
-      *
       **************************************************************
       *    ø©ªˆŒ≈Õ‹»Ò§ŒΩ∏∑◊
       **************************************************************
        210204-NYUINACCT-SYU2-SEC           SECTION.
       *
-           IF  ((RECE200-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
-                (RECE200-HKNCOMBI        NOT =
-                                  RECE200-DOUJITSU-HKNCOMBI(IDY)) AND
-                (WRK-SKJHKN-HKNCOMBI-DOU(IDY)        = SPACE    ))
-           OR  ((RECE200-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO     ) AND
-                (WRK-SKJHKN-HKNCOMBI-DOU(IDY)    NOT = SPACE    ) AND
-                (RECE200-HKNCOMBI        NOT =
-                                  WRK-SKJHKN-HKNCOMBI-DOU(IDY)  ))
+           IF  RECE200-DOUJITSU-HKNCOMBI(IDY)  NOT = ZERO
+           AND RECE200-HKNCOMBI  NOT =  RECE200-DOUJITSU-HKNCOMBI(IDY)
             MOVE    1    TO  FLG-DOJITU
             MOVE    2    TO  WRK-SKJ-DOJITU-KBN (IDY)
             EVALUATE   NACCT-SRYCDTOTAL
@@ -5758,24 +4511,10 @@
                        ADD   1       TO  WRK-SKJ200604-DAY(IDY 3)
                        MOVE  ZERO    TO  WRK-DAY4(IDY)
                      END-IF
-                   WHEN  3
-                     MOVE    1       TO  WRK-SKJ200604-KBN(IDY)
-                     ADD     1       TO  WRK-SKJ200604-DAY(IDY 4)
-                     IF    WRK-DAY4(IDY)  NOT =  ZERO
-                       ADD   1       TO  WRK-SKJ200604-DAY(IDY 3)
-                       MOVE  ZERO    TO  WRK-DAY4(IDY)
-                     END-IF
                  END-EVALUATE
               WHEN  2
-                 EVALUATE   WRK-DAY24(IDY)
-                   WHEN  1
-                   WHEN  2
                      MOVE    2       TO  WRK-SKJ200604-KBN(IDY)
                      ADD     1       TO  WRK-SKJ200604-DAY(IDY 1)
-                   WHEN  3
-                     MOVE    2       TO  WRK-SKJ200604-KBN(IDY)
-                     ADD     1       TO  WRK-SKJ200604-DAY(IDY 4)
-                 END-EVALUATE
             END-EVALUATE
            END-IF
       *
@@ -5786,7 +4525,7 @@
       **************************************************************
       *    ø©ªˆŒ≈Õ‹»Ò§ŒΩ∏∑◊° ∆±∆¸∫∆∆˛±° ¨°À
       **************************************************************
-       210223-NYUINACCT-SYU2-DOU-SEC           SECTION.
+       210221-NYUINACCT-SYU2-DOJITU-SEC           SECTION.
       *
            PERFORM    VARYING   IDY   FROM   1   BY   1
                        UNTIL    IDY    >    31
@@ -5858,28 +4597,12 @@
                        MOVE ZERO  TO  WRK-SKJ-DOJITU-SHOKUDO(IDY)
                      END-IF
                    END-IF
-                   IF   WRK-SKJ-DOJITU-ASA (IDY) =  3
-                     MOVE    1       TO  WRK-SKJ200604-KBN(IDY)
-                     ADD     1       TO  WRK-SKJ200604-DAY(IDY 4)
-                     IF   WRK-SKJ-DOJITU-SHOKUDO(IDY)  NOT =  ZERO
-                       ADD   1       TO  WRK-SKJ200604-DAY(IDY 3)
-                       MOVE ZERO  TO  WRK-SKJ-DOJITU-SHOKUDO(IDY)
-                     END-IF
-                   END-IF
                    IF   WRK-SKJ-DOJITU-HIRU(IDY) =  1 OR 2
                      MOVE    1       TO  WRK-SKJ200604-KBN(IDY)
                      ADD     1       TO  WRK-SKJ200604-DAY(IDY 1)
                      IF   WRK-SKJ-DOJITU-HIRU(IDY) =  2
                        ADD   1       TO  WRK-SKJ200604-DAY(IDY 2)
                      END-IF
-                     IF   WRK-SKJ-DOJITU-SHOKUDO(IDY)  NOT =  ZERO
-                       ADD   1       TO  WRK-SKJ200604-DAY(IDY 3)
-                       MOVE ZERO  TO  WRK-SKJ-DOJITU-SHOKUDO(IDY)
-                     END-IF
-                   END-IF
-                   IF   WRK-SKJ-DOJITU-HIRU(IDY) =  3
-                     MOVE    1       TO  WRK-SKJ200604-KBN(IDY)
-                     ADD     1       TO  WRK-SKJ200604-DAY(IDY 4)
                      IF   WRK-SKJ-DOJITU-SHOKUDO(IDY)  NOT =  ZERO
                        ADD   1       TO  WRK-SKJ200604-DAY(IDY 3)
                        MOVE ZERO  TO  WRK-SKJ-DOJITU-SHOKUDO(IDY)
@@ -5896,45 +4619,25 @@
                        MOVE ZERO  TO  WRK-SKJ-DOJITU-SHOKUDO(IDY)
                      END-IF
                    END-IF
-                   IF   WRK-SKJ-DOJITU-YORU(IDY) =  3
-                     MOVE    1       TO  WRK-SKJ200604-KBN(IDY)
-                     ADD     1       TO  WRK-SKJ200604-DAY(IDY 4)
-                     IF   WRK-SKJ-DOJITU-SHOKUDO(IDY)  NOT =  ZERO
-                       ADD   1       TO  WRK-SKJ200604-DAY(IDY 3)
-                       MOVE ZERO  TO  WRK-SKJ-DOJITU-SHOKUDO(IDY)
-                     END-IF
-                   END-IF
                  WHEN  2
                    IF   WRK-SKJ-DOJITU-ASA (IDY) =  1 OR 2
                      MOVE    2       TO  WRK-SKJ200604-KBN(IDY)
                      ADD     1       TO  WRK-SKJ200604-DAY(IDY 1)
                    END-IF
-                   IF   WRK-SKJ-DOJITU-ASA (IDY) =  3
-                     MOVE    2       TO  WRK-SKJ200604-KBN(IDY)
-                     ADD     1       TO  WRK-SKJ200604-DAY(IDY 4)
-                   END-IF
                    IF   WRK-SKJ-DOJITU-HIRU(IDY) =  1 OR 2
                      MOVE    2       TO  WRK-SKJ200604-KBN(IDY)
                      ADD     1       TO  WRK-SKJ200604-DAY(IDY 1)
                    END-IF
-                   IF   WRK-SKJ-DOJITU-HIRU(IDY) =  3
-                     MOVE    2       TO  WRK-SKJ200604-KBN(IDY)
-                     ADD     1       TO  WRK-SKJ200604-DAY(IDY 4)
-                   END-IF
                    IF   WRK-SKJ-DOJITU-YORU(IDY) =  1 OR 2
                      MOVE    2       TO  WRK-SKJ200604-KBN(IDY)
                      ADD     1       TO  WRK-SKJ200604-DAY(IDY 1)
-                   END-IF
-                   IF   WRK-SKJ-DOJITU-YORU(IDY) =  3
-                     MOVE    2       TO  WRK-SKJ200604-KBN(IDY)
-                     ADD     1       TO  WRK-SKJ200604-DAY(IDY 4)
                    END-IF
                END-EVALUATE
              END-IF
            END-PERFORM
       *
            .
-       210223-NYUINACCT-SYU2-DOU-EXT.
+       210221-NYUINACCT-SYU2-DOJITU-EXT.
            EXIT.
       *
       **************************************************************
@@ -5960,148 +4663,82 @@
       *****************************************************************
        210205-RECE220-TENSOU2-SEC                SECTION.
       *
-           MOVE    SPACE                TO   RECE220-REC
-           INITIALIZE                        RECE220-REC
-           MOVE    RECE200-KEY          TO   RECE220-KEY1
-           MOVE    NACCT-SRYKBN         TO   RECE220-SRYKBN
-           IF      NACCT-ZAISKBKBN  =  "1"
-             IF  (NACCT-SRYCDTOTAL =   190799410)
-             OR  (NACCT-SRYCDTOTAL =   190799510)
-                MOVE    "90"            TO   RECE220-SRYKBN
+           MOVE    SPACE                TO      RECE220-REC
+           INITIALIZE                           RECE220-REC
+           MOVE    RECE200-KEY          TO      RECE220-KEY1
+           MOVE    NACCT-SRYKBN         TO      RECE220-SRYKBN
+           IF      NACCT-ZAISKBKBN      =       "1"
+             IF  (NACCT-SRYCDTOTAL =   190799410 )
+             OR  (NACCT-SRYCDTOTAL =   190799510 )
+                MOVE    "90"            TO      RECE220-SRYKBN
              END-IF
            END-IF
-           IF      NACCT-ZAISKBKBN  =  "6"
+           IF      NACCT-ZAISKBKBN      =       "6"
              EVALUATE  WRK-NYUTENTTLKBN
                WHEN      903
-                MOVE    "90"            TO   RECE220-SRYKBN
+                MOVE    "90"            TO      RECE220-SRYKBN
                WHEN      920
-                MOVE    "92"            TO   RECE220-SRYKBN
+                MOVE    "92"            TO      RECE220-SRYKBN
              END-EVALUATE
            END-IF
-           MOVE    NACCT-ZAISKBKBN      TO   RECE220-ZAISKBKBN
-           IF      NACCT-ZAISKBKBN  =  "7"
-                MOVE     "80"           TO   RECE220-SRYKBN
-                MOVE    SPACE           TO   RECE220-ZAISKBKBN
+           MOVE    NACCT-ZAISKBKBN      TO      RECE220-ZAISKBKBN
+           IF      NACCT-ZAISKBKBN      =       "7"
+                MOVE     "80"           TO      RECE220-SRYKBN
+                MOVE    SPACE           TO      RECE220-ZAISKBKBN
            END-IF
       *
-           EVALUATE  FLG-HENSYU
-             WHEN      1
-             WHEN      2
-               MOVE    ZERO               TO   WRK-ZAINUM-CNT
-               EVALUATE  NACCT-ZAISKBKBN
-                 WHEN    "1"
-                   PERFORM  VARYING  IDX2  FROM  1  BY  1
-                             UNTIL   IDX2   >   31
-                              OR     WRK-ZAINUM-CNT  NOT =  ZERO
-                     IF  WRK-DAY21(IDX2)  NOT =  ZERO
-                         MOVE    IDX2     TO   WRK-ZAINUM-CNT
-                     END-IF
-                   END-PERFORM
-                   COMPUTE WRK-ZAINUM  = 99999800  +  WRK-ZAINUM-CNT
-                   MOVE    WRK-ZAINUM     TO   RECE220-ZAINUM
-                WHEN     "6"
-                WHEN     "7"
-                   COMPUTE WRK-ZAINUM  = 99993000  +  WRK-ZAINUM-CNT2
-                   MOVE    WRK-ZAINUM     TO   RECE220-ZAINUM
-                WHEN     OTHER
-                   MOVE    NACCT-ZAINUM   TO   RECE220-ZAINUM
-               END-EVALUATE
-             WHEN      3
-               MOVE    ZERO               TO   WRK-ZAINUM-CNT
-               PERFORM  VARYING  IDX2  FROM  1  BY  1
-                         UNTIL   IDX2   >   31
-                          OR     WRK-ZAINUM-CNT  NOT =  ZERO
-                 IF  WRK-DAY21-X(IDX2)  NOT =  ZERO
-                     MOVE    IDX2         TO   WRK-ZAINUM-CNT
+           MOVE    ZERO                 TO      WRK-ZAINUM-CNT
+           EVALUATE  NACCT-ZAISKBKBN
+            WHEN    "1"
+             PERFORM     VARYING   IDX2   FROM    1    BY   1
+                          UNTIL    IDX2    >     31
+                            OR     WRK-ZAINUM-CNT  NOT =  ZERO
+                 IF  WRK-DAY21(IDX2)   NOT =   ZERO
+                     MOVE    IDX2       TO      WRK-ZAINUM-CNT
                  END-IF
-               END-PERFORM
-               COMPUTE WRK-ZAINUM  = 99999800  +  WRK-ZAINUM-CNT
-               MOVE    WRK-ZAINUM         TO   RECE220-ZAINUM
-             WHEN      4
-               MOVE    ZERO               TO   WRK-ZAINUM-CNT
-               PERFORM  VARYING  IDX2  FROM  1  BY  1
-                         UNTIL   IDX2   >   31
-                          OR     WRK-ZAINUM-CNT  NOT =  ZERO
-                 IF  WRK-DAY21-Y(IDX2)  NOT =  ZERO
-                     MOVE    IDX2         TO   WRK-ZAINUM-CNT
-                 END-IF
-               END-PERFORM
-               COMPUTE WRK-ZAINUM  = 99999800  +  WRK-ZAINUM-CNT
-               MOVE    WRK-ZAINUM         TO   RECE220-ZAINUM
+             END-PERFORM
+             COMPUTE WRK-ZAINUM  = 99999800  +  WRK-ZAINUM-CNT
+             MOVE    WRK-ZAINUM         TO      RECE220-ZAINUM
+            WHEN    "6"
+            WHEN    "7"
+             COMPUTE WRK-ZAINUM  = 99993000  +  WRK-ZAINUM-CNT2
+             MOVE    WRK-ZAINUM         TO      RECE220-ZAINUM
+            WHEN    OTHER
+             MOVE    NACCT-ZAINUM       TO      RECE220-ZAINUM
            END-EVALUATE
       *
-           MOVE    RECE200-PTNUM        TO   RECE220-PTNUM
-           MOVE    NACCT-SRYKA          TO   RECE220-SRYKA
-           MOVE    RECE200-HKNCOMBI     TO   RECE220-HKNCOMBI
-           MOVE    SPACE                TO   RECE220-JIHOKBN
+           MOVE    RECE200-PTNUM        TO      RECE220-PTNUM
       *
-           EVALUATE  FLG-HENSYU
-             WHEN      1
-               MOVE  NACCT-ZAITEN       TO   RECE220-ZAITEN
-               MOVE  NACCT-MEISAISU     TO   RECE220-MEISAISU
-               MOVE  CNT-DAY21          TO   RECE220-ZAIKAISU
-               MOVE  NACCT-SYUTEN1      TO   RECE220-SYUTEN1
-               MOVE  NACCT-SRYCDTOTAL   TO   RECE220-SRYCDTOTAL
-               IF    NACCT-ZAISKBKBN  =  "7"
-                   MOVE   199000510     TO   RECE220-SRYCDTOTAL
-               END-IF
-             WHEN      2
-               MOVE  WRK-ZAITEN-W       TO   RECE220-ZAITEN
-               COMPUTE  RECE220-MEISAISU   =  NACCT-MEISAISU  +  1
-               MOVE  CNT-DAY21          TO   RECE220-ZAIKAISU
-               MOVE  WRK-ZAITEN-W       TO   RECE220-SYUTEN1
-               COMPUTE  RECE220-SRYCDTOTAL =  NACCT-SRYCDTOTAL
-                                           +  WRK-KANGOGEN-SRYCD-W
-             WHEN      3
-               MOVE  NACCT-ZAITEN       TO   RECE220-ZAITEN
-               MOVE  NACCT-MEISAISU     TO   RECE220-MEISAISU
-               MOVE  CNT-DAY21-X        TO   RECE220-ZAIKAISU
-               MOVE  NACCT-SYUTEN1      TO   RECE220-SYUTEN1
-               MOVE  NACCT-SRYCDTOTAL   TO   RECE220-SRYCDTOTAL
-             WHEN      4
-               MOVE  WRK-ZAITEN-W       TO   RECE220-ZAITEN
-               COMPUTE  RECE220-MEISAISU   =  NACCT-MEISAISU  +  1
-               MOVE  CNT-DAY21-Y        TO   RECE220-ZAIKAISU
-               MOVE  WRK-ZAITEN-W       TO   RECE220-SYUTEN1
-               COMPUTE  RECE220-SRYCDTOTAL =  NACCT-SRYCDTOTAL
-                                           +  WRK-KANGOGEN-SRYCD-W
-           END-EVALUATE
-      *
-      *****MOVE    NACCT-SURYOUTOTAL    TO   RECE220-SURYOUTOTAL
-           MOVE    RECE220-MEISAISU     TO   RECE220-SURYOUTOTAL
-           MOVE    NACCT-SYUTEN2        TO   RECE220-SYUTEN2
-           MOVE    NACCT-YKZTEN         TO   RECE220-YKZTEN
-           MOVE    NACCT-KIZAITEN       TO   RECE220-KIZAITEN
-           IF      NACCT-ZAISKBKBN  =  "7"
-             MOVE  NACCT-SYUTEN1        TO   RECE220-KIZAITEN
-             MOVE  ZERO                 TO   RECE220-SYUTEN1
+           MOVE    NACCT-SRYKA          TO      RECE220-SRYKA
+           MOVE    RECE200-HKNCOMBI     TO      RECE220-HKNCOMBI
+           MOVE    SPACE                TO      RECE220-JIHOKBN
+           MOVE    NACCT-ZAITEN         TO      RECE220-ZAITEN
+           MOVE    NACCT-MEISAISU       TO      RECE220-MEISAISU
+           MOVE    CNT-DAY21            TO      RECE220-ZAIKAISU
+           MOVE    NACCT-SYUTEN1        TO      RECE220-SYUTEN1
+           MOVE    NACCT-SRYCDTOTAL     TO      RECE220-SRYCDTOTAL
+           IF      NACCT-ZAISKBKBN      =       "7"
+                MOVE    199000510       TO      RECE220-SRYCDTOTAL
            END-IF
-           MOVE    NACCT-DRCD           TO   RECE220-DRCD
-           MOVE    SPACE                TO   RECE220-ZAIREQFLG
-           MOVE    ZERO                 TO   RECE220-TEIGENRATE
-      *
-           MOVE    ZERO                 TO   WK-TAIHI-DAY
-           MOVE    ZERO                 TO   WK-TAIHI-FLG
-           PERFORM  VARYING  IDX2  FROM  1  BY  1
-                     UNTIL   IDX2   >   31
-             EVALUATE  FLG-HENSYU
-               WHEN      1
-               WHEN      2
-                 MOVE   WRK-DAY21(IDX2) TO   RECE220-KAISU (1 IDX2)
-               WHEN      3
-                 MOVE   WRK-DAY21-X(IDX2)
-                                        TO   RECE220-KAISU (1 IDX2)
-               WHEN      4
-                 MOVE   WRK-DAY21-Y(IDX2)
-                                        TO   RECE220-KAISU (1 IDX2)
-             END-EVALUATE
-             IF    (WK-TAIHI-FLG               =  ZERO)
-             AND   (RECE220-KAISU(1 IDX2)  NOT =  ZERO)
-                 MOVE   IDX2            TO   WK-TAIHI-DAY
-                 MOVE   1               TO   WK-TAIHI-FLG
-             END-IF
+           MOVE    NACCT-SURYOUTOTAL    TO      RECE220-SURYOUTOTAL
+           MOVE    NACCT-SYUTEN2        TO      RECE220-SYUTEN2
+           MOVE    NACCT-YKZTEN         TO      RECE220-YKZTEN
+           MOVE    NACCT-KIZAITEN       TO      RECE220-KIZAITEN
+           MOVE    NACCT-DRCD           TO      RECE220-DRCD
+           MOVE    SPACE                TO      RECE220-ZAIREQFLG
+           MOVE    ZERO                 TO      RECE220-TEIGENRATE
+           MOVE        ZERO             TO      WK-TAIHI-DAY
+           MOVE        ZERO             TO      WK-TAIHI-FLG
+           PERFORM     VARYING   IDX2   FROM    1    BY   1
+                        UNTIL    IDX2   >       31
+                   MOVE    WRK-DAY21(IDX2)  TO
+                                            RECE220-KAISU (1 IDX2)
+                   IF     (WK-TAIHI-FLG           =   ZERO)   AND
+                          (WRK-DAY21(IDX2)    NOT =   ZERO)
+                       MOVE     IDX2    TO      WK-TAIHI-DAY
+                       MOVE     1       TO      WK-TAIHI-FLG
+                   END-IF
            END-PERFORM
-      *
            .
        210205-RECE220-TENSOU2-EXT.
            EXIT.
@@ -6126,7 +4763,7 @@
                MOVE    "tbl_nyuinact"   TO   MCP-TABLE
                MOVE    "key9"           TO   MCP-PATHNAME
                PERFORM  900-NYUINACT-READ-SEC
-               PERFORM  UNTIL  (FLG-NYUINACT  =  1)
+               PERFORM  UNTIL  (FLG-NYUINACT  =    "1")
                    PERFORM   2102061-RECE230-TENSOU2-SEC
                    IF      NACCT-ZAISKBKBN      =       "7"
                       PERFORM   2102062-RECE200-HENSYU2-SEC
@@ -6155,41 +4792,32 @@
            INITIALIZE                           RECE230-REC
            MOVE    RECE200-KEY          TO      RECE230-KEY1
       *
-           EVALUATE  FLG-HENSYU
-             WHEN      1
-             WHEN      2
-               EVALUATE  NACCT-ZAISKBKBN
-                 WHEN    "1"
-                   COMPUTE WRK-ZAINUM  = 99999800  +  WRK-ZAINUM-CNT
-                   MOVE    WRK-ZAINUM   TO      RECE230-ZAINUM
-                WHEN     "6"
-                WHEN     "7"
-                   COMPUTE WRK-ZAINUM  = 99993000  +  WRK-ZAINUM-CNT2
-                   MOVE    WRK-ZAINUM   TO      RECE230-ZAINUM
-                WHEN     OTHER
-                   MOVE    NSRY-ZAINUM  TO      RECE230-ZAINUM
-               END-EVALUATE
-             WHEN      3
-               COMPUTE WRK-ZAINUM  = 99999800  +  WRK-ZAINUM-CNT
-               MOVE    WRK-ZAINUM       TO      RECE230-ZAINUM
-             WHEN      4
-               COMPUTE WRK-ZAINUM  = 99999800  +  WRK-ZAINUM-CNT
-               MOVE    WRK-ZAINUM       TO      RECE230-ZAINUM
+           EVALUATE  NACCT-ZAISKBKBN
+            WHEN    "1"
+             COMPUTE WRK-ZAINUM   =  99999800  +  WRK-ZAINUM-CNT
+             MOVE    WRK-ZAINUM         TO      RECE230-ZAINUM
+            WHEN    "6"
+            WHEN    "7"
+             COMPUTE WRK-ZAINUM   =  99993000  +  WRK-ZAINUM-CNT2
+             MOVE    WRK-ZAINUM         TO      RECE230-ZAINUM
+            WHEN    OTHER
+             MOVE    NSRY-ZAINUM        TO      RECE230-ZAINUM
            END-EVALUATE
       *
            MOVE    NSRY-RENNUM          TO      RECE230-RENNUM
            MOVE    RECE200-PTNUM        TO      RECE230-PTNUM
+      *
            MOVE    NSRY-SRYKA           TO      RECE230-SRYKA
            MOVE    NSRY-SRYKBN          TO      RECE230-SRYKBN
            MOVE    NSRY-SRYSYUKBN       TO      RECE230-SRYSYUKBN
-           IF      NACCT-ZAISKBKBN  =  "1"
-             IF  (NACCT-SRYCDTOTAL =   190799410)
-             OR  (NACCT-SRYCDTOTAL =   190799510)
+           IF      NACCT-ZAISKBKBN      =       "1"
+             IF  (NACCT-SRYCDTOTAL =   190799410 )
+             OR  (NACCT-SRYCDTOTAL =   190799510 )
                 MOVE    "90"            TO      RECE230-SRYKBN
                 MOVE    "900"           TO      RECE230-SRYSYUKBN
              END-IF
            END-IF
-           IF      NACCT-ZAISKBKBN  =  "6"
+           IF      NACCT-ZAISKBKBN      =       "6"
              EVALUATE  WRK-NYUTENTTLKBN
                WHEN      903
                 MOVE    "90"            TO      RECE230-SRYKBN
@@ -6199,7 +4827,7 @@
                 MOVE    "920"           TO      RECE230-SRYSYUKBN
              END-EVALUATE
            END-IF
-           IF      NACCT-ZAISKBKBN  =  "7"
+           IF      NACCT-ZAISKBKBN      =       "7"
                 MOVE     "80"           TO      RECE230-SRYKBN
                 MOVE     "800"          TO      RECE230-SRYSYUKBN
            END-IF
@@ -6209,10 +4837,11 @@
            PERFORM     VARYING   IDX2   FROM    1    BY   1
                        UNTIL    (IDX2      >    5)    OR
                                 (NSRY-SRYCD(IDX2)  =   SPACE)
-             IF    NSRY-SRYCD(IDX2)(1:1)  =  "0" OR "1" OR "8"
+             IF      NSRY-SRYCD(IDX2)(1:1)    =   "0"  OR  "1" OR
+                                                  "8"
                ADD     1                   TO  IDX4
                MOVE    NSRY-SRYCD(IDX2)    TO  RECE230-SRYCD(IDX4)
-               IF      NACCT-ZAISKBKBN  =  "7"
+               IF      NACCT-ZAISKBKBN      =       "7"
                   MOVE     "199000510"     TO  RECE230-SRYCD(IDX4)
                END-IF
                MOVE    NSRY-SRYSURYO(IDX2) TO  RECE230-SRYSURYO(IDX4)
@@ -6221,13 +4850,50 @@
                MOVE    NSRY-AUTOKBN(IDX2)  TO  RECE230-AUTOKBN(IDX4)
                MOVE    NSRY-INPUTNUM(IDX2) TO  RECE230-INPUTNUM(IDX4)
                MOVE    NSRY-SRYCD(IDX2)    TO  WRK-SRYCD
-               IF      NACCT-ZAISKBKBN  =  "7"
+               IF      NACCT-ZAISKBKBN      =       "7"
                   MOVE     199000510       TO  WRK-SRYCD
                END-IF
                MOVE    RECE230-SRYYM       TO  WK-TAIHI-SRYYM
                MOVE    WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
-               PERFORM 900-TENSU-TBL-SEC
-               PERFORM 21020611-RECE230-TENSOU2X-SEC
+               PERFORM    900-TENSU-TBL-SEC
+               MOVE    TNS-TANICD          TO  RECE230-TANICD(IDX4)
+               MOVE    TNS-TANIMOJISU      TO  RECE230-TANIMOJISU(IDX4)
+               MOVE    TNS-TANINAME        TO  RECE230-TANINAME(IDX4)
+               MOVE    TNS-TENSIKIBETU     TO  RECE230-TENSIKIBETU(IDX4)
+               MOVE    TNS-TEN             TO  RECE230-TEN(IDX4)
+               MOVE    TNS-NYUTENTTLKBN    TO  RECE230-TENTTLKBN(IDX4)
+               MOVE    TNS-YUKOKETA        TO  RECE230-YUKOKETA(IDX4)
+               MOVE    TNS-DATAKBN         TO  RECE230-DATAKBN (IDX4)
+               MOVE    TNS-HOUKNSKBN       TO  RECE230-HOUKNSKBN(IDX4)
+               MOVE    TNS-KNSJISKBN       TO  RECE230-KNSJISKBN(IDX4)
+               MOVE    TNS-CDKBN-KBN       TO  RECE230-CDKBN-KBN(IDX4)
+               MOVE    TNS-CDKBN-SYO       TO  RECE230-CDKBN-SYO(IDX4)
+               MOVE    TNS-CDKBN-BU        TO  RECE230-CDKBN-BU(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM
+                                      TO RECE230-CDKBN-KBNNUM(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE230-CDKBN-KBNNUM-EDA(IDX4)
+               MOVE    TNS-CDKBN-KOUBAN
+                                      TO RECE230-CDKBN-KOUBAN(IDX4)
+               MOVE    TNS-KOUHYOJYUNNUM
+                                      TO RECE230-KOUHYOJYUNNUM(IDX4)
+      *
+               MOVE    TNS-SRYSYUKBN  TO RECE230-SRYSYUKBN-X(IDX4)
+               MOVE    TNS-KOKUJISKBKBN1
+                                      TO RECE230-KOKUJISKBKBN1(IDX4)
+               MOVE    TNS-KZMCOMPSIKIBETU
+                                      TO RECE230-KZMCOMPSIKIBETU(IDX4)
+               MOVE    TNS-CHUKSNCD   TO RECE230-CHUKSNCD(IDX4)
+               MOVE    TNS-CHUKSNTUBAN
+                                      TO RECE230-CHUKSNTUBAN(IDX4)
+               MOVE    TNS-KENTAICOMMENT
+                                      TO RECE230-KENTAICOMMENT(IDX4)
+               MOVE    TNS-KNSJISGRPKBN
+                                      TO RECE230-KNSJISGRPKBN(IDX4)
+               MOVE    TNS-TOKUKIZAISBT1
+                                      TO RECE230-TOKUKIZAISBT1(IDX4)
+               MOVE    TNS-SANSOKBN   TO RECE230-SANSOKBN     (IDX4)
+      *
                IF    ((NSRY-SRYCD    (IDX2)(1:1)     =   "8"  )  OR
                       (NSRY-SRYCD    (IDX2)(1:3)     =   "008"))
                AND   ( NSRY-INPUTNUM (IDX2)      NOT =   ZERO  )
@@ -6238,67 +4904,35 @@
                    MOVE    NSRY-INPUTNUM(IDX2)   TO  PTCOM-RENNUM
                    PERFORM 950-PTCOM-READ-SEC
                    MOVE    PTCOM-INPUTCOMENT     TO  RECE230-NAME(IDX4)
+               ELSE
+                   MOVE    TNS-NAME              TO  RECE230-NAME(IDX4)
                END-IF
       *
-               IF    NACCT-ZAISKBKBN    NOT =    "1"
-                 MOVE    NSRY-SRYCD(IDX2)  TO  WRK-SRYCD
-                 IF      NACCT-ZAISKBKBN  =  "7"
-                    MOVE     199000510     TO  WRK-SRYCD
+               MOVE    NSRY-SRYCD(IDX2)  TO  WRK-SRYCD
+               IF      NACCT-ZAISKBKBN      =       "7"
+                  MOVE     199000510     TO  WRK-SRYCD
+               END-IF
+               MOVE     ZERO    TO    WRK-FUKA-KINGAKU
+               PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
+                         UNTIL   FUKA-IDX   >    9
+                 MOVE   WRK-SRYCD(FUKA-IDX:1)
+                                         TO  WRK-FUKA-VALUE
+                 IF  WRK-FUKA-VALUE  =  ZERO
+                   CONTINUE
+                 ELSE
+                   COMPUTE  RECE220-RUIKEITOTAL  =
+                            RECE220-RUIKEITOTAL  +
+                          ( WRK-FUKA-VALUE    * WRK-SRYCD)
+                   COMPUTE  WRK-FUKA-KINGAKU    =
+                            WRK-FUKA-KINGAKU    +
+                          ((WRK-FUKA-VALUE^4) * FUKA-IDX
+                                              * NSRY-SRYSURYO(IDX2))
                  END-IF
-                 MOVE    ZERO              TO  WRK-FUKA-KINGAKU
-                 PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
-                           UNTIL   FUKA-IDX   >    9
-                   MOVE   WRK-SRYCD(FUKA-IDX:1)
-                                           TO  WRK-FUKA-VALUE
-                   IF  WRK-FUKA-VALUE  =  ZERO
-                     CONTINUE
-                   ELSE
-                     COMPUTE  RECE220-RUIKEITOTAL  =
-                              RECE220-RUIKEITOTAL  +
-                            ( WRK-FUKA-VALUE    * WRK-SRYCD)
-                     COMPUTE  WRK-FUKA-KINGAKU    =
-                              WRK-FUKA-KINGAKU    +
-                            ((WRK-FUKA-VALUE^4) * FUKA-IDX
-                                                * NSRY-SRYSURYO(IDX2))
-                   END-IF
-                 END-PERFORM
-                 COMPUTE  RECE220-RUIKEITOTAL  =
-                          RECE220-RUIKEITOTAL  +
-                          WRK-FUKA-KINGAKU
+               END-PERFORM
+               COMPUTE  RECE220-RUIKEITOTAL  =
+                        RECE220-RUIKEITOTAL  +
+                        WRK-FUKA-KINGAKU
       *
-                 MOVE     ZERO    TO    WRK-FUKA-KINGAKU
-                 PERFORM  VARYING  FUKA-IDX  FROM  1  BY  1
-                           UNTIL   FUKA-IDX   >    8
-                   MOVE   NSRY-SRYSURYO(IDX2)(FUKA-IDX:1)
-                                  TO    WRK-FUKA-VALUE
-                   IF  WRK-FUKA-VALUE  =  ZERO
-                     CONTINUE
-                   ELSE
-                     COMPUTE  WRK-FUKA-KINGAKU  =
-                              WRK-FUKA-KINGAKU  +
-                            ((WRK-FUKA-VALUE^4) * FUKA-IDX)
-                   END-IF
-                 END-PERFORM
-                 COMPUTE  RECE220-RUIKEITOTAL  =
-                          RECE220-RUIKEITOTAL  +
-                          WRK-FUKA-KINGAKU
-               END-IF
-             END-IF
-      *
-             IF    (IDX2  =  1             )
-             AND   (FLG-HENSYU  =  2  OR  4)
-               ADD     1                     TO  IDX4
-               MOVE    WRK-KANGOGEN-SRYCD-W  TO  RECE230-SRYCD(IDX4)
-               MOVE    1                     TO  RECE230-SRYSURYO(IDX4)
-               MOVE    ZERO                  TO  RECE230-SRYKAISU(IDX4)
-               MOVE    SPACE                 TO  RECE230-MEISKYFLG(IDX4)
-               MOVE    SPACE                 TO  RECE230-AUTOKBN(IDX4)
-               MOVE    ZERO                  TO  RECE230-INPUTNUM(IDX4)
-               MOVE    WRK-KANGOGEN-SRYCD-W  TO  WRK-SRYCD
-               MOVE    RECE230-SRYYM         TO  WK-TAIHI-SRYYM
-               MOVE    WK-TAIHI-DAY          TO  WK-TAIHI-SRYD
-               PERFORM 900-TENSU-TBL-SEC
-               PERFORM 21020611-RECE230-TENSOU2X-SEC
              END-IF
            END-PERFORM
       *
@@ -6307,50 +4941,13 @@
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜° £∆£∞£∞£µ°À
-      *****************************************************************
-       21020611-RECE230-TENSOU2X-SEC                SECTION.
-      *
-           MOVE  TNS-TANICD           TO  RECE230-TANICD(IDX4)
-           MOVE  TNS-TANIMOJISU       TO  RECE230-TANIMOJISU(IDX4)
-           MOVE  TNS-TANINAME         TO  RECE230-TANINAME(IDX4)
-           MOVE  TNS-TENSIKIBETU      TO  RECE230-TENSIKIBETU(IDX4)
-           MOVE  TNS-TEN              TO  RECE230-TEN(IDX4)
-           MOVE  TNS-NYUTENTTLKBN     TO  RECE230-TENTTLKBN(IDX4)
-           MOVE  TNS-YUKOKETA         TO  RECE230-YUKOKETA(IDX4)
-           MOVE  TNS-DATAKBN          TO  RECE230-DATAKBN(IDX4)
-           MOVE  TNS-HOUKNSKBN        TO  RECE230-HOUKNSKBN(IDX4)
-           MOVE  TNS-KNSJISKBN        TO  RECE230-KNSJISKBN(IDX4)
-           MOVE  TNS-CDKBN-KBN        TO  RECE230-CDKBN-KBN(IDX4)
-           MOVE  TNS-CDKBN-SYO        TO  RECE230-CDKBN-SYO(IDX4)
-           MOVE  TNS-CDKBN-BU         TO  RECE230-CDKBN-BU(IDX4)
-           MOVE  TNS-CDKBN-KBNNUM     TO  RECE230-CDKBN-KBNNUM(IDX4)
-           MOVE  TNS-CDKBN-KBNNUM-EDA TO  RECE230-CDKBN-KBNNUM-EDA(IDX4)
-           MOVE  TNS-CDKBN-KOUBAN     TO  RECE230-CDKBN-KOUBAN(IDX4)
-           MOVE  TNS-KOUHYOJYUNNUM    TO  RECE230-KOUHYOJYUNNUM(IDX4)
-           MOVE  TNS-SRYSYUKBN        TO  RECE230-SRYSYUKBN-X(IDX4)
-           MOVE  TNS-KOKUJISKBKBN1    TO  RECE230-KOKUJISKBKBN1(IDX4)
-           MOVE  TNS-KZMCOMPSIKIBETU  TO  RECE230-KZMCOMPSIKIBETU(IDX4)
-           MOVE  TNS-CHUKSNCD         TO  RECE230-CHUKSNCD(IDX4)
-           MOVE  TNS-CHUKSNTUBAN      TO  RECE230-CHUKSNTUBAN(IDX4)
-           MOVE  TNS-KENTAICOMMENT    TO  RECE230-KENTAICOMMENT(IDX4)
-           MOVE  TNS-KNSJISGRPKBN     TO  RECE230-KNSJISGRPKBN(IDX4)
-           MOVE  TNS-TOKUKIZAISBT1    TO  RECE230-TOKUKIZAISBT1(IDX4)
-           MOVE  TNS-SANSOKBN         TO  RECE230-SANSOKBN(IDX4)
-           MOVE  TNS-NAME             TO  RECE230-NAME(IDX4)
-      *
-           .
-       21020611-RECE230-TENSOU2X-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜° Œ≈Õ‹√¥≈ˆºÍ≈ˆ°À
       *****************************************************************
        2102062-RECE200-HENSYU2-SEC                SECTION.
       *
       *    §Ω§Œ¬æ§Œ•Ï•ª≈¿øÙÕÛ§Œ ‘Ω∏
-           COMPUTE   RECE200-TENSU(21 2)  =
-                     RECE200-TENSU(21 2)  +
+           COMPUTE   RECE200-TENSU(20 1)  =
+                     RECE200-TENSU(20 1)  +
                     (NACCT-ZAITEN   *   CNT-DAY21)
       *
            .
@@ -6365,7 +4962,7 @@
            MOVE     ZERO     TO     SYUKEI-IDX3
       *
            PERFORM    VARYING  SYUKEI-IDX     FROM    1   BY  1
-                  UNTIL  SYUKEI-IDX            > 62
+                  UNTIL  SYUKEI-IDX            > 46
       *
              PERFORM  VARYING  SYUKEI-IDX2    FROM    1   BY  1
                   UNTIL  SYUKEI-IDX2           > 10
@@ -6375,15 +4972,6 @@
       *
                MOVE   WRK-GAI-DAY(SYUKEI-IDX SYUKEI-IDX2)
                                     TO   WRK-GAI2-DAY     (SYUKEI-IDX3)
-               IF     WRK-GAI-KANGOGEN-SRYCD(SYUKEI-IDX SYUKEI-IDX2)
-                                                NOT = SPACE
-                 MOVE   WRK-GAI-KANGOGEN-SRYCD(SYUKEI-IDX SYUKEI-IDX2)
-                                    TO   WRK-GAI2-KANGOGEN-SRYCD-9
-                                                          (SYUKEI-IDX3)
-               ELSE
-                 MOVE   ZERO        TO   WRK-GAI2-KANGOGEN-SRYCD-9
-                                                          (SYUKEI-IDX3)
-               END-IF
                EVALUATE  SYUKEI-IDX
                   WHEN     1
                      MOVE   "190107290" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
@@ -6401,19 +4989,14 @@
                   WHEN    16
                   WHEN    19
                   WHEN    20
-                  WHEN    47
-                  WHEN    48
-                  WHEN    51
-                  WHEN    52
-                  WHEN    55
-                  WHEN    56
-                     PERFORM  2102091-NYUINACCT-HEN-TAIN-SEC
+                     PERFORM  2102091-NYUINACCT-HEN-TAKIKAN-SEC
                   WHEN    23  THRU  24
                   WHEN    27  THRU  28
-      ***         WHEN    35  THRU  36
+                  WHEN    31  THRU  32
+                  WHEN    35  THRU  36
+                  WHEN    39  THRU  40
                   WHEN    43  THRU  44
-                  WHEN    59  THRU  60
-                     PERFORM  2102093-NYUINACCT-HEN-GEN-SEC
+                     PERFORM  2102093-NYUINACCT-HEN-GENSAN-SEC
                END-EVALUATE
                MOVE   WRK-GAI-ZAITEN(SYUKEI-IDX SYUKEI-IDX2)
                                     TO   WRK-GAI2-ZAITEN  (SYUKEI-IDX3)
@@ -6428,12 +5011,10 @@
                   WHEN    19
                   WHEN    23
                   WHEN    27
-      ***         WHEN    35
+                  WHEN    31
+                  WHEN    35
+                  WHEN    39
                   WHEN    43
-                  WHEN    47
-                  WHEN    51
-                  WHEN    55
-                  WHEN    59
                      MOVE    1      TO   WRK-GAI2-SRYKBNFLG(SYUKEI-IDX3)
                      MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)  TO   SYUKEI-IDX4
                      IF WRK-GAI2-SRYCD2-9(SYUKEI-IDX3)       NOT = ZERO
@@ -6453,12 +5034,10 @@
                   WHEN    20
                   WHEN    24
                   WHEN    28
-      ***         WHEN    36
+                  WHEN    32
+                  WHEN    36
+                  WHEN    40
                   WHEN    44
-                  WHEN    48
-                  WHEN    52
-                  WHEN    56
-                  WHEN    60
                      MOVE    2      TO   WRK-GAI2-SRYKBNFLG(SYUKEI-IDX3)
                      MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)  TO   SYUKEI-IDX4
                      IF WRK-GAI2-SRYCD2-9(SYUKEI-IDX3)       NOT = ZERO
@@ -6511,196 +5090,11 @@
       **************************************************************
       *    ¬æ∞ÂŒ≈µ°¥ÿºıø«ª˛§Œø«Œ≈π‘∞Ÿ•≥°º•…ºË∆¿
       **************************************************************
-       2102091-NYUINACCT-HEN-TAIN-SEC           SECTION.
+       2102091-NYUINACCT-HEN-TAKIKAN-SEC           SECTION.
       *
            MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)   TO   SYUKEI-IDX4
       *
-           IF    RECE200-SRYYM   >=  "201804"
-              EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-      *        ∆√ƒÍ∆˛±°Œ¡
-               WHEN   200  THRU  257
-               WHEN   260  THRU  263
-      *          «ß√Œæ…º£Œ≈…¬≈Ô∆˛±°Œ¡°¢¿∫ø¿Œ≈Õ‹…¬≈Ô∆˛±°Œ¡
-      *          √œ∞Ë∞‹π‘µ°«Ω∂Ø≤Ω…¬≈Ô∆˛±°Œ¡
-                 IF  WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-                                         = 255 OR 254 OR 257
-                   EVALUATE   SYUKEI-IDX
-                    WHEN     4
-                    WHEN     9
-                      MOVE "190108790" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    WHEN    11
-                    WHEN    13
-                      MOVE "190142090" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    WHEN    15
-                    WHEN    16
-                      MOVE "190182990" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    WHEN    47
-                    WHEN    48
-                      MOVE "190214390" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    WHEN    51
-                    WHEN    52
-                      MOVE "190213990" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    WHEN    55
-                    WHEN    56
-                      MOVE "190214190" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                   END-EVALUATE
-                 ELSE
-                   EVALUATE   SYUKEI-IDX
-                    WHEN     4
-                    WHEN     9
-                      MOVE "190108790" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    WHEN    11
-                    WHEN    13
-                      MOVE "190142090" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    WHEN    47
-                    WHEN    48
-                      MOVE "190214390" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    WHEN    51
-                    WHEN    52
-                      MOVE "190213990" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                   END-EVALUATE
-                 END-IF
-      *        Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡
-               WHEN    11  THRU   14
-               WHEN    51
-               WHEN   901
-                 EVALUATE   SYUKEI-IDX
-                  WHEN     4
-                  WHEN     9
-                    MOVE   "190108890" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    11
-                  WHEN    13
-                    MOVE   "190142190" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    47
-                  WHEN    48
-                    MOVE   "190214290" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    51
-                  WHEN    52
-                    MOVE   "190213890" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 END-EVALUATE
-      *        Õ≠æ≤ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤∆˛±°¥À‹Œ¡
-               WHEN    26
-               WHEN    53
-               WHEN   909
-                 EVALUATE   SYUKEI-IDX
-                  WHEN     4
-                  WHEN     9
-                    MOVE   "190108890" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    11
-                  WHEN    13
-                    MOVE   "190142190" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    15
-                  WHEN    16
-                    MOVE   "190109090" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    47
-                  WHEN    48
-                    MOVE   "190214290" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    51
-                  WHEN    52
-                    MOVE   "190213890" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    55
-                  WHEN    56
-                    MOVE   "190214090" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 END-EVALUATE
-      *        √ª¥¸¬⁄∫ﬂºÍΩ—¥À‹Œ¡£≤°¶√ª¥¸¬⁄∫ﬂºÍΩ—¥À‹Œ¡£≥
-               WHEN   258  THRU  259
-                 CONTINUE
-               WHEN   OTHER
-                 EVALUATE   SYUKEI-IDX
-                  WHEN    11
-                  WHEN    13
-                    MOVE   "190141590" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    47
-                  WHEN    48
-                    MOVE   "190213790" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 END-EVALUATE
-              END-EVALUATE
-           ELSE
-            IF   RECE200-SRYYM   >=  "201604"
-              EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-      *        ∆√ƒÍ∆˛±°Œ¡
-               WHEN   201  THRU  206
-               WHEN   208  THRU  210
-               WHEN   212  THRU  217
-               WHEN   221
-               WHEN   227  THRU  229
-               WHEN   232  THRU  236
-               WHEN   238  THRU  239
-               WHEN   241  THRU  249
-               WHEN   250  THRU  254
-               WHEN   257  THRU  267
-      *        --- H28.4 TUIKA ---
-               WHEN   268  THRU  270
-      *          «ß√Œæ…º£Œ≈…¬≈Ô∆˛±°Œ¡°¢¿∫ø¿Œ≈Õ‹…¬≈Ô∆˛±°Œ¡
-      *          √œ∞Ë∞‹π‘µ°«Ω∂Ø≤Ω…¬≈Ô∆˛±°Œ¡
-                 IF  WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-                                         = 221 OR 232 OR 217 OR 268
-                   EVALUATE   SYUKEI-IDX
-                    WHEN     4
-                    WHEN     9
-                      MOVE "190108790" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    WHEN    11
-                    WHEN    13
-                      MOVE "190142090" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    WHEN    15
-                    WHEN    16
-                      MOVE "190182990" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                   END-EVALUATE
-                 ELSE
-                   EVALUATE   SYUKEI-IDX
-                    WHEN     4
-                    WHEN     9
-                      MOVE "190108790" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    WHEN    11
-                    WHEN    13
-                      MOVE "190142090" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                   END-EVALUATE
-                 END-IF
-      *        Œ≈Õ‹…¬≈Ô∆˛±°¥À‹Œ¡
-               WHEN   004  THRU  008
-               WHEN   010  THRU  012
-               WHEN   152
-               WHEN   173  THRU  190
-               WHEN   196
-               WHEN   199
-      *        --- H28.4 TUIKA ---
-               WHEN   048  THRU  049
-               WHEN   051  THRU  054
-               WHEN   057  THRU  068
-                 EVALUATE   SYUKEI-IDX
-                  WHEN     4
-                  WHEN     9
-                    MOVE   "190108890" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    11
-                  WHEN    13
-                    MOVE   "190142190" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 END-EVALUATE
-      *        Õ≠æ≤ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤∆˛±°¥À‹Œ¡
-               WHEN   153  THRU  158
-                 EVALUATE   SYUKEI-IDX
-                  WHEN     4
-                  WHEN     9
-                    MOVE   "190108890" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    11
-                  WHEN    13
-                    MOVE   "190142190" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                  WHEN    15
-                  WHEN    16
-                    MOVE   "190109090" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 END-EVALUATE
-      *        √ª¥¸¬⁄∫ﬂºÍΩ—¥À‹Œ¡£≤°¶√ª¥¸¬⁄∫ﬂºÍΩ—¥À‹Œ¡£≥
-               WHEN   226
-               WHEN   240
-                 CONTINUE
-               WHEN   OTHER
-                 EVALUATE   SYUKEI-IDX
-                  WHEN    11
-                  WHEN    13
-                    MOVE   "190141590" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 END-EVALUATE
-              END-EVALUATE
-            ELSE
-              EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
+           EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
       *        ∆√ƒÍ∆˛±°¥À‹Œ¡
                WHEN   099  THRU  100
                  IF   RECE200-SRYYM  >=  "201004"
@@ -6721,13 +5115,6 @@
                WHEN   230  THRU  239
                WHEN   241  THRU  249
                WHEN   250  THRU  255
-      *        (H26-ADD-ST)
-               WHEN   256
-               WHEN   257  THRU  259
-               WHEN   260  THRU  261
-               WHEN   262  THRU  265
-               WHEN   266  THRU  267
-      *        (H26-ADD-ED)
       *          «ß√Œæ…º£Œ≈…¬≈Ô∆˛±°Œ¡
                  IF    WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4) = 221 OR 232
                    EVALUATE   SYUKEI-IDX
@@ -6748,7 +5135,7 @@
       *            ¿∫ø¿≤ µﬂµﬁ∆˛±°Œ¡°¢¿∫ø¿≤ µﬁ¿≠¥¸º£Œ≈…¬≈Ô∆˛±°Œ¡
       *            ¿∫ø¿≤ µﬂµﬁ°¶πÁ ªæ…∆˛±°Œ¡°¢¿∫ø¿Œ≈Õ‹…¬≈Ô∆˛±°Œ¡
                    IF  WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4) =
-                          229 OR 238 OR 215 OR 216 OR 217 OR 239 OR 252
+                          229 OR 238 OR 215 OR 216 OR 217 OR 239
                      EVALUATE   SYUKEI-IDX
                       WHEN     4
                       WHEN     9
@@ -6777,11 +5164,6 @@
                WHEN   147  THRU  152
                WHEN   173  THRU  190
                WHEN   196
-      *        (H26-ADD-ST)
-               WHEN   199
-               WHEN   004  THRU  008
-               WHEN   010  THRU  012
-      *        (H26-ADD-ED)
                  EVALUATE   SYUKEI-IDX
                    WHEN     4
                    WHEN     9
@@ -6836,9 +5218,6 @@
                WHEN   038
                WHEN   170
                WHEN   191
-      *        (H26-ADD-ST)
-               WHEN   017  THRU  020
-      *        (H26-ADD-ED)
                  EVALUATE   SYUKEI-IDX
                    WHEN    11
                    WHEN    13
@@ -6857,9 +5236,6 @@
                WHEN   136
                WHEN   168
                WHEN   169
-      *        (H26-ADD-ST)
-               WHEN   013  THRU  016
-      *        (H26-ADD-ED)
                  EVALUATE   SYUKEI-IDX
                    WHEN    11
                    WHEN    13
@@ -6872,9 +5248,6 @@
                WHEN   081
                WHEN   083
                WHEN   172
-      *        (H26-ADD-ST)
-               WHEN   032  THRU  037
-      *        (H26-ADD-ED)
                  EVALUATE   SYUKEI-IDX
                    WHEN    11
                    WHEN    13
@@ -6890,151 +5263,29 @@
                    WHEN    13
                      MOVE "190141590" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                  END-EVALUATE
-              END-EVALUATE
-            END-IF
-           END-IF
+           END-EVALUATE
            .
       *
-       2102091-NYUINACCT-HEN-TAIN-EXT.
+       2102091-NYUINACCT-HEN-TAKIKAN-EXT.
            EXIT.
       *
       **************************************************************
       *    ∏∫ªª§Œø«Œ≈π‘∞Ÿ•≥°º•…ºË∆¿
       **************************************************************
-       2102093-NYUINACCT-HEN-GEN-SEC           SECTION.
+       2102093-NYUINACCT-HEN-GENSAN-SEC           SECTION.
       *
            MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)   TO   SYUKEI-IDX4
       *
-           IF    RECE200-SRYYM   >=  "201804"
-             EVALUATE  SYUKEI-IDX
-              WHEN     23
-              WHEN     24
-      ***     WHEN     35
-      ***     WHEN     36
+           EVALUATE  SYUKEI-IDX
+             WHEN     23
+             WHEN     24
+             WHEN     31
+             WHEN     32
+             WHEN     35
+             WHEN     36
                EVALUATE   WRK-DAY22-CHUKSNCD(SYUKEI-IDX4)
                  WHEN   "9017"
-                   EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-                     WHEN    27
-                     WHEN    40
-                       MOVE "190161570" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                     WHEN   OTHER
-                       MOVE "190161470" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                   END-EVALUATE
-                 WHEN   "9026"
-                     MOVE   "190161870" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 WHEN   "9030"
-                     MOVE   "190162070" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 WHEN   "9090"
-                     MOVE   "190198570" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-               END-EVALUATE
-               IF   SYUKEI-IDX = 35 OR 36
-                     MOVE   "190141590" TO WRK-GAI2-SRYCD2(SYUKEI-IDX3)
-               END-IF
-              WHEN     27
-              WHEN     28
-              WHEN     43
-              WHEN     44
-              WHEN     59
-              WHEN     60
-               EVALUATE   WRK-DAY22-CHUKSNCD(SYUKEI-IDX4)
-                 WHEN   "9017"
-                   EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-                     WHEN    27
-                     WHEN    40
-                       MOVE "190161770" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                     WHEN   OTHER
-                       MOVE "190161670" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                   END-EVALUATE
-                 WHEN   "9026"
-                     MOVE   "190161970" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 WHEN   "9030"
-                     MOVE   "190162170" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 WHEN   "9090"
-                     MOVE   "190198670" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-               END-EVALUATE
-               IF   SYUKEI-IDX = 43 OR 44
-                     MOVE   "190141590" TO WRK-GAI2-SRYCD2(SYUKEI-IDX3)
-               END-IF
-               IF   SYUKEI-IDX = 59 OR 60
-                     MOVE   "190213790" TO WRK-GAI2-SRYCD2(SYUKEI-IDX3)
-               END-IF
-             END-EVALUATE
-           ELSE
-            IF   RECE200-SRYYM   >=  "201604"
-             EVALUATE  SYUKEI-IDX
-              WHEN     23
-              WHEN     24
-      ***     WHEN     35
-      ***     WHEN     36
-               EVALUATE   WRK-DAY22-CHUKSNCD(SYUKEI-IDX4)
-                 WHEN   "9017"
-                   EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-                     WHEN     9
-                     WHEN    42   THRU   44
-                     WHEN    47
-                     WHEN   166   THRU  167
-                     WHEN   197   THRU  198
-                       MOVE "190161570" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                     WHEN   OTHER
-                       MOVE "190161470" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                   END-EVALUATE
-                 WHEN   "9026"
-                     MOVE   "190161870" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 WHEN   "9030"
-                     MOVE   "190162070" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 WHEN   "9090"
-                     MOVE   "190198570" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-               END-EVALUATE
-               IF   SYUKEI-IDX = 35 OR 36
-                     MOVE   "190141590" TO WRK-GAI2-SRYCD2(SYUKEI-IDX3)
-               END-IF
-              WHEN     27
-              WHEN     28
-              WHEN     43
-              WHEN     44
-               EVALUATE   WRK-DAY22-CHUKSNCD(SYUKEI-IDX4)
-                 WHEN   "9017"
-                   EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-                     WHEN     9
-                     WHEN    42   THRU   44
-                     WHEN    47
-                     WHEN   166   THRU  167
-                     WHEN   197   THRU  198
-                       MOVE "190161770" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                     WHEN   OTHER
-                       MOVE "190161670" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                   END-EVALUATE
-                 WHEN   "9026"
-                     MOVE   "190161970" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 WHEN   "9030"
-                     MOVE   "190162170" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                 WHEN   "9090"
-                     MOVE   "190198670" TO WRK-GAI2-SRYCD(SYUKEI-IDX3)
-               END-EVALUATE
-               IF   SYUKEI-IDX = 43 OR 44
-                     MOVE   "190141590" TO WRK-GAI2-SRYCD2(SYUKEI-IDX3)
-               END-IF
-             END-EVALUATE
-            ELSE
-             EVALUATE  SYUKEI-IDX
-              WHEN     23
-              WHEN     24
-      ***     WHEN     35
-      ***     WHEN     36
-               EVALUATE   WRK-DAY22-CHUKSNCD(SYUKEI-IDX4)
-                 WHEN   "9017"
-                   IF   RECE200-SRYYM   >=  "201404"
-                    IF  (WRK-DAY22-NYUKHNKBN(SYUKEI-IDX4)
-                                             =   79 OR 88  )
-                    OR  (WRK-DAY22-NYUINKHN(SYUKEI-IDX4)
-                                             =  "190799510")
-                      MOVE "190161570" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    ELSE
-                      MOVE "190161470" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    END-IF
-                   ELSE
-                      MOVE "190161470" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                   END-IF
+                   MOVE   "190161470"  TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                  WHEN   "9018"
                    MOVE   "190161570"  TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                  WHEN   "9026"
@@ -7042,34 +5293,18 @@
                  WHEN   "9030"
                    MOVE   "190162070"  TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                END-EVALUATE
-               IF   SYUKEI-IDX = 35 OR 36
-                 EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-      *           ∆√ƒÍ∆˛±°¥À‹Œ¡
-                  WHEN   099  THRU  100
-                   MOVE   "190142190"  TO  WRK-GAI2-SRYCD2(SYUKEI-IDX3)
-      *           ¬æ
-                  WHEN   OTHER
-                   MOVE   "190141590"  TO  WRK-GAI2-SRYCD2(SYUKEI-IDX3)
-                 END-EVALUATE
+               IF   SYUKEI-IDX = 31 OR 32 OR 35 OR 36
+                   PERFORM  2102094-NYUINACCT-HEN-TAKIKAN-XXX-SEC
                END-IF
-              WHEN     27
-              WHEN     28
-              WHEN     43
-              WHEN     44
+             WHEN     27
+             WHEN     28
+             WHEN     39
+             WHEN     40
+             WHEN     43
+             WHEN     44
                EVALUATE   WRK-DAY22-CHUKSNCD(SYUKEI-IDX4)
                  WHEN   "9017"
-                   IF   RECE200-SRYYM   >=  "201404"
-                    IF  (WRK-DAY22-NYUKHNKBN(SYUKEI-IDX4)
-                                             =   79 OR 88  )
-                    OR  (WRK-DAY22-NYUINKHN(SYUKEI-IDX4)
-                                             =  "190799510")
-                      MOVE "190161770" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    ELSE
-                      MOVE "190161670" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                    END-IF
-                   ELSE
-                      MOVE "190161670" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                   END-IF
+                   MOVE   "190161670"  TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                  WHEN   "9018"
                    MOVE   "190161770"  TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                  WHEN   "9026"
@@ -7077,22 +5312,48 @@
                  WHEN   "9030"
                    MOVE   "190162170"  TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                END-EVALUATE
-               IF   SYUKEI-IDX = 43 OR 44
-                 EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-      *           ∆√ƒÍ∆˛±°¥À‹Œ¡
-                  WHEN   099  THRU  100
-                   MOVE   "190142190"  TO  WRK-GAI2-SRYCD2(SYUKEI-IDX3)
-      *           ¬æ
-                  WHEN   OTHER
-                   MOVE   "190141590"  TO  WRK-GAI2-SRYCD2(SYUKEI-IDX3)
-                 END-EVALUATE
+               IF   SYUKEI-IDX = 39 OR 40 OR 43 OR 44
+                   PERFORM  2102094-NYUINACCT-HEN-TAKIKAN-XXX-SEC
                END-IF
-             END-EVALUATE
-            END-IF
-           END-IF
+           END-EVALUATE
            .
       *
-       2102093-NYUINACCT-HEN-GEN-EXT.
+       2102093-NYUINACCT-HEN-GENSAN-EXT.
+           EXIT.
+      *
+      **************************************************************
+      *    ¬æ∞ÂŒ≈µ°¥ÿºıø«ª˛§Œø«Œ≈π‘∞Ÿ•≥°º•…ºË∆¿£≤
+      **************************************************************
+       2102094-NYUINACCT-HEN-TAKIKAN-XXX-SEC           SECTION.
+      *
+           EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
+      *      ∆√ƒÍ∆˛±°¥À‹Œ¡
+             WHEN   099  THRU  100
+               EVALUATE   SYUKEI-IDX
+                 WHEN    31
+                 WHEN    32
+                 WHEN    39
+                 WHEN    40
+                     MOVE "190108890" TO  WRK-GAI2-SRYCD2(SYUKEI-IDX3)
+                 WHEN    35
+                 WHEN    36
+                 WHEN    43
+                 WHEN    44
+                     MOVE "190142190" TO  WRK-GAI2-SRYCD2(SYUKEI-IDX3)
+               END-EVALUATE
+      *      ¬æ
+             WHEN   OTHER
+               EVALUATE   SYUKEI-IDX
+                 WHEN    35
+                 WHEN    36
+                 WHEN    43
+                 WHEN    44
+                     MOVE "190141590" TO  WRK-GAI2-SRYCD2(SYUKEI-IDX3)
+               END-EVALUATE
+           END-EVALUATE
+           .
+      *
+       2102094-NYUINACCT-HEN-TAKIKAN-XXX-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7148,12 +5409,6 @@
                 ADD   1   TO   RECE220-SURYOUTOTAL
               END-IF
            END-IF
-           IF  WRK-GAI2-KANGOGEN-SRYCD-9(SYUKEI-IDX3) NOT = ZERO
-                ADD   1   TO   RECE220-MEISAISU
-                ADD   WRK-GAI2-KANGOGEN-SRYCD-9(SYUKEI-IDX3)
-                          TO   RECE220-SRYCDTOTAL
-                ADD   1   TO   RECE220-SURYOUTOTAL
-           END-IF
            MOVE    ZERO                 TO      RECE220-RUIKEITOTAL
            MOVE    WRK-GAI2-ZAIKAISU(SYUKEI-IDX3)
                                         TO      RECE220-ZAIKAISU
@@ -7171,8 +5426,9 @@
                         UNTIL    IDX2   >       31
                    MOVE    WRK-GAI2-KAISU(SYUKEI-IDX3 IDX2)
                                         TO    RECE220-KAISU (1 IDX2)
-                   IF    (WK-TAIHI-FLG               =  ZERO)
-                   AND   (RECE220-KAISU(1 IDX2)  NOT =  ZERO)
+                   IF     (WK-TAIHI-FLG           =   ZERO)
+                   AND    (WRK-GAI2-KAISU(SYUKEI-IDX3 IDX2)
+                                                      NOT =   ZERO)
                        MOVE     IDX2    TO      WK-TAIHI-DAY
                        MOVE     1       TO      WK-TAIHI-FLG
                    END-IF
@@ -7242,40 +5498,78 @@
            END-IF 
            MOVE    NSRY-JIHIMONEYTOTAL  TO      RECE230-JIHIMONEY
       *
-           MOVE    ZERO                 TO  IDX11
-           IF  WRK-GAI2-KANGOGEN-SRYCD-9(SYUKEI-IDX3) NOT = ZERO
-             ADD     1                  TO  IDX11
-             MOVE    WRK-GAI2-KANGOGEN-SRYCD-9(SYUKEI-IDX3)
-                                        TO  WRK-SRYCD2
-             PERFORM 21021111-RECE230-TENSOU2-G2-SEC
-           END-IF
+           MOVE    WRK-GAI2-SRYCD(SYUKEI-IDX3)
+                                        TO  RECE230-SRYCD(1)
+           MOVE    1                    TO  RECE230-SRYSURYO(1)
+           MOVE    ZERO                 TO  RECE230-SRYKAISU(1)
+           MOVE    SPACE                TO  RECE230-MEISKYFLG(1)
+           MOVE    SPACE                TO  RECE230-AUTOKBN(1)
+           MOVE    ZERO                 TO  RECE230-INPUTNUM(1)
+           MOVE    WRK-GAI2-SRYCD(SYUKEI-IDX3)
+                                        TO  WRK-SRYCD
+           MOVE    RECE230-SRYYM        TO  WK-TAIHI-SRYYM
+           MOVE    WK-TAIHI-DAY         TO  WK-TAIHI-SRYD
+           PERFORM    900-TENSU-TBL-SEC
+           MOVE    TNS-TANICD          TO  RECE230-TANICD(1)
+           MOVE    TNS-TANIMOJISU      TO  RECE230-TANIMOJISU(1)
+           MOVE    TNS-TANINAME        TO  RECE230-TANINAME(1)
+           MOVE    TNS-TENSIKIBETU     TO  RECE230-TENSIKIBETU(1)
+           MOVE    TNS-TEN             TO  RECE230-TEN(1)
+           MOVE    TNS-NYUTENTTLKBN    TO  RECE230-TENTTLKBN(1)
+           MOVE    TNS-YUKOKETA        TO  RECE230-YUKOKETA(1)
+           MOVE    TNS-DATAKBN         TO  RECE230-DATAKBN (1)
+           MOVE    TNS-HOUKNSKBN       TO  RECE230-HOUKNSKBN(1)
+           MOVE    TNS-KNSJISKBN       TO  RECE230-KNSJISKBN(1)
+           MOVE    TNS-CDKBN-KBN       TO  RECE230-CDKBN-KBN(1)
+           MOVE    TNS-CDKBN-SYO       TO  RECE230-CDKBN-SYO(1)
+           MOVE    TNS-CDKBN-BU        TO  RECE230-CDKBN-BU(1)
+           MOVE    TNS-CDKBN-KBNNUM
+                                  TO RECE230-CDKBN-KBNNUM(1)
+           MOVE    TNS-CDKBN-KBNNUM-EDA
+                                  TO RECE230-CDKBN-KBNNUM-EDA(1)
+           MOVE    TNS-CDKBN-KOUBAN
+                                  TO RECE230-CDKBN-KOUBAN(1)
+           MOVE    TNS-KOUHYOJYUNNUM
+                                  TO RECE230-KOUHYOJYUNNUM(1)
       *
-           ADD       1                  TO  IDX11
-           MOVE      WRK-GAI2-SRYCD(SYUKEI-IDX3)
-                                        TO  WRK-SRYCD2
-           PERFORM   21021111-RECE230-TENSOU2-G2-SEC
+           MOVE    TNS-SRYSYUKBN  TO RECE230-SRYSYUKBN-X(1)
+           MOVE    TNS-KOKUJISKBKBN1
+                                  TO RECE230-KOKUJISKBKBN1(1)
+           MOVE    TNS-KZMCOMPSIKIBETU
+                                  TO RECE230-KZMCOMPSIKIBETU(1)
+           MOVE    TNS-CHUKSNCD   TO RECE230-CHUKSNCD(1)
+           MOVE    TNS-CHUKSNTUBAN
+                                  TO RECE230-CHUKSNTUBAN(1)
+           MOVE    TNS-KENTAICOMMENT
+                                  TO RECE230-KENTAICOMMENT(1)
+           MOVE    TNS-KNSJISGRPKBN
+                                  TO RECE230-KNSJISGRPKBN(1)
+           MOVE    TNS-TOKUKIZAISBT1
+                                  TO RECE230-TOKUKIZAISBT1(1)
+           MOVE    TNS-SANSOKBN   TO RECE230-SANSOKBN(1)
       *
-           IF  WRK-GAI2-SRYKBNFLG(SYUKEI-IDX3)  =  3 OR 4
-             MOVE    WRK-GAI2-DAY(SYUKEI-IDX3)
-                                        TO  SYUKEI-IDX4
-             IF   WRK-GAI2-SRYCD2-9(SYUKEI-IDX3)       NOT = ZERO
-               ADD       1              TO  IDX11
-               MOVE      WRK-GAI2-SRYCD2-9(SYUKEI-IDX3)
-                                        TO  WRK-SRYCD2
-               PERFORM   21021111-RECE230-TENSOU2-G2-SEC
-             END-IF
-             IF   WRK-DAY1-KSN-SRYCD(SYUKEI-IDX4)      NOT = ZERO
-               ADD       1              TO  IDX11
-               MOVE      WRK-DAY1-KSN-SRYCD(SYUKEI-IDX4)
-                                        TO  WRK-SRYCD2
-               PERFORM   21021111-RECE230-TENSOU2-G2-SEC
-             END-IF
-             IF   WRK-DAY1-HYOKETU-SRYCD(SYUKEI-IDX4)  NOT = ZERO
-               ADD       1              TO  IDX11
-               MOVE      WRK-DAY1-HYOKETU-SRYCD(SYUKEI-IDX4)
-                                        TO  WRK-SRYCD2
-               PERFORM   21021111-RECE230-TENSOU2-G2-SEC
-             END-IF
+           MOVE    TNS-NAME       TO RECE230-NAME(1)
+      *
+           IF      WRK-GAI2-SRYKBNFLG(SYUKEI-IDX3)  =   3 OR 4
+      *
+            MOVE    1     TO     SYUKEI-IDX5
+            MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)  TO  SYUKEI-IDX4
+            IF WRK-GAI2-SRYCD2-9(SYUKEI-IDX3)       NOT = ZERO
+              ADD   1     TO     SYUKEI-IDX5
+              MOVE  WRK-GAI2-SRYCD2-9(SYUKEI-IDX3)      TO  WRK-SRYCD2
+              PERFORM    21021111-RECE230-TENSOU2-GAI2-SEC
+            END-IF
+            IF WRK-DAY1-KSN-SRYCD(SYUKEI-IDX4)      NOT = ZERO
+              ADD   1     TO     SYUKEI-IDX5
+              MOVE  WRK-DAY1-KSN-SRYCD(SYUKEI-IDX4)     TO  WRK-SRYCD2
+              PERFORM    21021111-RECE230-TENSOU2-GAI2-SEC
+            END-IF
+            IF WRK-DAY1-HYOKETU-SRYCD(SYUKEI-IDX4)  NOT = ZERO
+              ADD   1     TO     SYUKEI-IDX5
+              MOVE  WRK-DAY1-HYOKETU-SRYCD(SYUKEI-IDX4) TO  WRK-SRYCD2
+              PERFORM    21021111-RECE230-TENSOU2-GAI2-SEC
+            END-IF
+      *
            END-IF
       *
            .
@@ -7285,68 +5579,96 @@
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜° £∆£∞£∞£µ°À
       *****************************************************************
-       21021111-RECE230-TENSOU2-G2-SEC                SECTION.
+       21021111-RECE230-TENSOU2-GAI2-SEC                SECTION.
       *
-           MOVE    WRK-SRYCD2       TO  RECE230-SRYCD(IDX11)
-           MOVE    1                TO  RECE230-SRYSURYO(IDX11)
-           MOVE    ZERO             TO  RECE230-SRYKAISU(IDX11)
-           MOVE    SPACE            TO  RECE230-MEISKYFLG(IDX11)
-           MOVE    SPACE            TO  RECE230-AUTOKBN(IDX11)
-           MOVE    ZERO             TO  RECE230-INPUTNUM(IDX11)
-           MOVE    WRK-SRYCD2       TO  WRK-SRYCD
-           MOVE    RECE230-SRYYM    TO  WK-TAIHI-SRYYM
-           MOVE    WK-TAIHI-DAY     TO  WK-TAIHI-SRYD
-           PERFORM 900-TENSU-TBL-SEC
-           MOVE    IDX11            TO  IDX4
-           PERFORM 21020611-RECE230-TENSOU2X-SEC
+           MOVE  WRK-SRYCD2       TO RECE230-SRYCD(SYUKEI-IDX5)
+           MOVE  1                TO RECE230-SRYSURYO(SYUKEI-IDX5)
+           MOVE  ZERO             TO RECE230-SRYKAISU(SYUKEI-IDX5)
+           MOVE  SPACE            TO RECE230-MEISKYFLG(SYUKEI-IDX5)
+           MOVE  SPACE            TO RECE230-AUTOKBN(SYUKEI-IDX5)
+           MOVE  ZERO             TO RECE230-INPUTNUM(SYUKEI-IDX5)
+           MOVE  WRK-SRYCD2       TO WRK-SRYCD
+           MOVE  RECE230-SRYYM    TO WK-TAIHI-SRYYM
+           MOVE  WK-TAIHI-DAY     TO WK-TAIHI-SRYD
+           PERFORM    900-TENSU-TBL-SEC
+           MOVE  TNS-TANICD       TO RECE230-TANICD(SYUKEI-IDX5)
+           MOVE  TNS-TANIMOJISU   TO RECE230-TANIMOJISU(SYUKEI-IDX5)
+           MOVE  TNS-TANINAME     TO RECE230-TANINAME(SYUKEI-IDX5)
+           MOVE  TNS-TENSIKIBETU  TO RECE230-TENSIKIBETU(SYUKEI-IDX5)
+           MOVE  TNS-TEN          TO RECE230-TEN(SYUKEI-IDX5)
+           MOVE  TNS-NYUTENTTLKBN TO RECE230-TENTTLKBN(SYUKEI-IDX5)
+           MOVE  TNS-YUKOKETA     TO RECE230-YUKOKETA(SYUKEI-IDX5)
+           MOVE  TNS-DATAKBN      TO RECE230-DATAKBN (SYUKEI-IDX5)
+           MOVE  TNS-HOUKNSKBN    TO RECE230-HOUKNSKBN(SYUKEI-IDX5)
+           MOVE  TNS-KNSJISKBN    TO RECE230-KNSJISKBN(SYUKEI-IDX5)
+           MOVE  TNS-CDKBN-KBN    TO RECE230-CDKBN-KBN(SYUKEI-IDX5)
+           MOVE  TNS-CDKBN-SYO    TO RECE230-CDKBN-SYO(SYUKEI-IDX5)
+           MOVE  TNS-CDKBN-BU     TO RECE230-CDKBN-BU(SYUKEI-IDX5)
+           MOVE  TNS-CDKBN-KBNNUM
+                             TO RECE230-CDKBN-KBNNUM(SYUKEI-IDX5)
+           MOVE  TNS-CDKBN-KBNNUM-EDA
+                             TO RECE230-CDKBN-KBNNUM-EDA(SYUKEI-IDX5)
+           MOVE  TNS-CDKBN-KOUBAN
+                             TO RECE230-CDKBN-KOUBAN(SYUKEI-IDX5)
+           MOVE  TNS-KOUHYOJYUNNUM
+                             TO RECE230-KOUHYOJYUNNUM(SYUKEI-IDX5)
+      *
+           MOVE  TNS-SRYSYUKBN
+                             TO RECE230-SRYSYUKBN-X(SYUKEI-IDX5)
+           MOVE  TNS-KOKUJISKBKBN1
+                             TO RECE230-KOKUJISKBKBN1(SYUKEI-IDX5)
+           MOVE  TNS-KZMCOMPSIKIBETU
+                             TO RECE230-KZMCOMPSIKIBETU(SYUKEI-IDX5)
+           MOVE  TNS-CHUKSNCD
+                             TO RECE230-CHUKSNCD(SYUKEI-IDX5)
+           MOVE  TNS-CHUKSNTUBAN
+                             TO RECE230-CHUKSNTUBAN(SYUKEI-IDX5)
+           MOVE  TNS-KENTAICOMMENT
+                             TO RECE230-KENTAICOMMENT(SYUKEI-IDX5)
+           MOVE  TNS-KNSJISGRPKBN
+                             TO RECE230-KNSJISGRPKBN(SYUKEI-IDX5)
+           MOVE  TNS-TOKUKIZAISBT1
+                             TO RECE230-TOKUKIZAISBT1(SYUKEI-IDX5)
+           MOVE  TNS-SANSOKBN
+                             TO RECE230-SANSOKBN(SYUKEI-IDX5)
+      *
+           MOVE  TNS-NAME    TO RECE230-NAME(SYUKEI-IDX5)
       *
            .
-       21021111-RECE230-TENSOU2-G2-EXT.
+       21021111-RECE230-TENSOU2-GAI2-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜° £∆£∞£∞£¥°À
       *****************************************************************
-       210213-RECE220-TENSOU2-SKJ2-SEC               SECTION.
+       210213-RECE220-TENSOU2-SKJ200604-SEC               SECTION.
       *
-           IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 1)  NOT =  ZERO
-              ADD   1   TO   WRK-SKJ200604-MEISAISU(SYUKEI-IDX3)
-              ADD  WRK-SKJ200604-DAY(SYUKEI-IDX3 1)
-                     TO   WRK-SKJ200604-SURYOUTOTAL(SYUKEI-IDX3)
-           END-IF
+           ADD      1   TO   WRK-SKJ200604-MEISAISU(SYUKEI-IDX3)
            IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 2)  NOT =  ZERO
               ADD   1   TO   WRK-SKJ200604-MEISAISU(SYUKEI-IDX3)
-              ADD  WRK-SKJ200604-DAY(SYUKEI-IDX3 2)
-                     TO   WRK-SKJ200604-SURYOUTOTAL(SYUKEI-IDX3)
            END-IF
            IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 3)  NOT =  ZERO
               ADD   1   TO   WRK-SKJ200604-MEISAISU(SYUKEI-IDX3)
-              ADD  WRK-SKJ200604-DAY(SYUKEI-IDX3 3)
-                     TO   WRK-SKJ200604-SURYOUTOTAL(SYUKEI-IDX3)
            END-IF
-           IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 4)  NOT =  ZERO
-              ADD   1   TO   WRK-SKJ200604-MEISAISU(SYUKEI-IDX3)
-              ADD  WRK-SKJ200604-DAY(SYUKEI-IDX3 4)
+      *
+           ADD  WRK-SKJ200604-DAY(SYUKEI-IDX3 1)
                      TO   WRK-SKJ200604-SURYOUTOTAL(SYUKEI-IDX3)
-           END-IF
+           ADD  WRK-SKJ200604-DAY(SYUKEI-IDX3 2)
+                     TO   WRK-SKJ200604-SURYOUTOTAL(SYUKEI-IDX3)
+           ADD  WRK-SKJ200604-DAY(SYUKEI-IDX3 3)
+                     TO   WRK-SKJ200604-SURYOUTOTAL(SYUKEI-IDX3)
       *
            IF   WRK-NYULIFE-KBN(SYUKEI-IDX3)  NOT =  SPACE
              EVALUATE   WRK-SKJ200604-KBN(SYUKEI-IDX3)
               WHEN      1
-                IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 1)  NOT =  ZERO
-                  ADD   197001310
+                ADD     197001310
                      TO   WRK-SKJ200604-SRYCDTOTAL (SYUKEI-IDX3)
-                END-IF
                 IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 2)  NOT =  ZERO
                   ADD   197001570
                      TO   WRK-SKJ200604-SRYCDTOTAL (SYUKEI-IDX3)
                 END-IF
                 IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 3)  NOT =  ZERO
                   ADD   197001670
-                     TO   WRK-SKJ200604-SRYCDTOTAL (SYUKEI-IDX3)
-                END-IF
-                IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 4)  NOT =  ZERO
-                  ADD   197003510
                      TO   WRK-SKJ200604-SRYCDTOTAL (SYUKEI-IDX3)
                 END-IF
               WHEN      2
@@ -7356,10 +5678,8 @@
            ELSE
              EVALUATE   WRK-SKJ200604-KBN(SYUKEI-IDX3)
               WHEN      1
-                IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 1)  NOT =  ZERO
-                  ADD   197000110
+                ADD     197000110
                      TO   WRK-SKJ200604-SRYCDTOTAL (SYUKEI-IDX3)
-                END-IF
                 IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 2)  NOT =  ZERO
                   ADD   197000470
                      TO   WRK-SKJ200604-SRYCDTOTAL (SYUKEI-IDX3)
@@ -7368,21 +5688,12 @@
                   ADD   197000570
                      TO   WRK-SKJ200604-SRYCDTOTAL (SYUKEI-IDX3)
                 END-IF
-                IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 4)  NOT =  ZERO
-                  ADD   197003110
-                     TO   WRK-SKJ200604-SRYCDTOTAL (SYUKEI-IDX3)
-                END-IF
               WHEN      2
-                IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 1)  NOT =  ZERO
-                  ADD   197000710
+                ADD     197000710
                      TO   WRK-SKJ200604-SRYCDTOTAL (SYUKEI-IDX3)
-                END-IF
-                IF   WRK-SKJ200604-DAY(SYUKEI-IDX3 4)  NOT =  ZERO
-                  ADD   197003210
-                     TO   WRK-SKJ200604-SRYCDTOTAL (SYUKEI-IDX3)
-                END-IF
              END-EVALUATE
            END-IF
+      *
       *
            MOVE    SPACE                TO  RECE220-REC
            INITIALIZE                       RECE220-REC
@@ -7400,7 +5711,7 @@
       ***  MOVE    WRK-ZAINUM           TO  RECE220-ZAINUM
            MOVE    RECE200-PTNUM        TO  RECE220-PTNUM
       *
-           MOVE    "00"                 TO  RECE220-SRYKA
+           MOVE    SPACE                TO  RECE220-SRYKA
            MOVE    RECE200-HKNCOMBI     TO  RECE220-HKNCOMBI
            MOVE    SPACE                TO  RECE220-JIHOKBN
       *
@@ -7421,13 +5732,13 @@
            MOVE    1                    TO  RECE220-KAISU(1 SYUKEI-IDX3)
            MOVE    SYUKEI-IDX3          TO  WK-TAIHI-DAY
            .
-       210213-RECE220-TENSOU2-SKJ2-EXT.
+       210213-RECE220-TENSOU2-SKJ200604-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜° ¥ƒ∂≠°À° £∆£∞£∞£¥°À
       *****************************************************************
-       210219-RECE220-TENSOU2-KAN-SEC               SECTION.
+       210219-RECE220-TENSOU2-SKJ200610-KAN-SEC               SECTION.
       *
            MOVE    SPACE                TO  RECE220-REC
            INITIALIZE                       RECE220-REC
@@ -7438,7 +5749,7 @@
            MOVE    WRK-ZAINUM           TO  RECE220-ZAINUM
            MOVE    RECE200-PTNUM        TO  RECE220-PTNUM
       *
-           MOVE    "00"                 TO  RECE220-SRYKA
+           MOVE    SPACE                TO  RECE220-SRYKA
            MOVE    RECE200-HKNCOMBI     TO  RECE220-HKNCOMBI
            MOVE    SPACE                TO  RECE220-JIHOKBN
       *
@@ -7461,13 +5772,13 @@
            MOVE    1                    TO  RECE220-KAISU(1 SYUKEI-IDX3)
            MOVE    SYUKEI-IDX3          TO  WK-TAIHI-DAY
            .
-       210219-RECE220-TENSOU2-KAN-EXT.
+       210219-RECE220-TENSOU2-SKJ200610-KAN-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œ∫Ó¿Æ° £∆£∞£∞£µ°À
       *****************************************************************
-       210214-RECE230-HENSYU2-SKJ2-SEC               SECTION.
+       210214-RECE230-HENSYU2-SKJ200604-SEC               SECTION.
       *
            MOVE    SPACE                TO   RECE230-REC
            INITIALIZE                        RECE230-REC
@@ -7484,51 +5795,28 @@
            MOVE    1                    TO   RECE230-RENNUM
            MOVE    RECE200-PTNUM        TO   RECE230-PTNUM
       *
-           MOVE    "00"                 TO   RECE230-SRYKA
+           MOVE    SPACE                TO   RECE230-SRYKA
            MOVE    "97"                 TO   RECE230-SRYKBN
            MOVE    "970"                TO   RECE230-SRYSYUKBN
            MOVE    ZERO                 TO   RECE230-JIHIMONEY
       *
            MOVE    ZERO                 TO      IDX4
            PERFORM     VARYING   IDX2   FROM    1    BY   1
-      **>              UNTIL     IDX2     >     3
-                       UNTIL     IDX2     >     4
+                       UNTIL     IDX2     >     3
       *
-             EVALUATE   IDX2
-               WHEN    1
-                 MOVE     1     TO   IDX30
-               WHEN    2
-                 MOVE     4     TO   IDX30
-               WHEN    3
-                 MOVE     2     TO   IDX30
-               WHEN    4
-                 MOVE     3     TO   IDX30
-             END-EVALUATE
-      *
-      **>    IF  WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX2)  NOT =  ZERO
-             IF  WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX30) NOT =  ZERO
+             IF  WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX2)  NOT =  ZERO
       *
                ADD     1                    TO  IDX4
                IF   WRK-NYULIFE-KBN(SYUKEI-IDX3)  NOT =  SPACE
                 EVALUATE   WRK-SKJ200604-KBN(SYUKEI-IDX3)
                  WHEN      1
-      **>          EVALUATE    IDX2
-      **>            WHEN       1
-      **>                MOVE  "197001310"  TO  RECE230-SRYCD(IDX4)
-      **>            WHEN       2
-      **>                MOVE  "197001570"  TO  RECE230-SRYCD(IDX4)
-      **>            WHEN       3
-      **>                MOVE  "197001670"  TO  RECE230-SRYCD(IDX4)
-      **>          END-EVALUATE
-                   EVALUATE    IDX30
+                   EVALUATE    IDX2
                      WHEN       1
                          MOVE  "197001310"  TO  RECE230-SRYCD(IDX4)
                      WHEN       2
                          MOVE  "197001570"  TO  RECE230-SRYCD(IDX4)
                      WHEN       3
                          MOVE  "197001670"  TO  RECE230-SRYCD(IDX4)
-                     WHEN       4
-                         MOVE  "197003510"  TO  RECE230-SRYCD(IDX4)
                    END-EVALUATE
                  WHEN      2
                          MOVE  "197001710"  TO  RECE230-SRYCD(IDX4)
@@ -7536,36 +5824,19 @@
                ELSE
                 EVALUATE   WRK-SKJ200604-KBN(SYUKEI-IDX3)
                  WHEN      1
-      **>          EVALUATE    IDX2
-      **>            WHEN       1
-      **>                MOVE  "197000110"  TO  RECE230-SRYCD(IDX4)
-      **>            WHEN       2
-      **>                MOVE  "197000470"  TO  RECE230-SRYCD(IDX4)
-      **>            WHEN       3
-      **>                MOVE  "197000570"  TO  RECE230-SRYCD(IDX4)
-      **>          END-EVALUATE
-                   EVALUATE    IDX30
+                   EVALUATE    IDX2
                      WHEN       1
                          MOVE  "197000110"  TO  RECE230-SRYCD(IDX4)
                      WHEN       2
                          MOVE  "197000470"  TO  RECE230-SRYCD(IDX4)
                      WHEN       3
                          MOVE  "197000570"  TO  RECE230-SRYCD(IDX4)
-                     WHEN       4
-                         MOVE  "197003110"  TO  RECE230-SRYCD(IDX4)
                    END-EVALUATE
                  WHEN      2
-      **>                MOVE  "197000710"  TO  RECE230-SRYCD(IDX4)
-                   EVALUATE    IDX30
-                     WHEN       1
                          MOVE  "197000710"  TO  RECE230-SRYCD(IDX4)
-                     WHEN       4
-                         MOVE  "197003210"  TO  RECE230-SRYCD(IDX4)
-                   END-EVALUATE
                 END-EVALUATE
                END-IF
-      **>      MOVE    WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX2)
-               MOVE    WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX30)
+               MOVE    WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX2)
                                             TO  RECE230-SRYSURYO(IDX4)
                MOVE    ZERO                 TO  RECE230-SRYKAISU(IDX4)
                MOVE    SPACE                TO  RECE230-MEISKYFLG(IDX4)
@@ -7576,28 +5847,65 @@
                MOVE    RECE230-SRYYM        TO  WK-TAIHI-SRYYM
                MOVE    WK-TAIHI-DAY         TO  WK-TAIHI-SRYD
                PERFORM 900-TENSU-TBL-SEC
-               PERFORM 21020611-RECE230-TENSOU2X-SEC
+               MOVE    TNS-TANICD           TO  RECE230-TANICD(IDX4)
+               MOVE    TNS-TANIMOJISU       TO  RECE230-TANIMOJISU(IDX4)
+               MOVE    TNS-TANINAME         TO  RECE230-TANINAME(IDX4)
+               MOVE    TNS-TENSIKIBETU      TO  RECE230-TENSIKIBETU
+                                                                  (IDX4)
+               MOVE    TNS-TEN              TO  RECE230-TEN(IDX4)
+               MOVE    TNS-NYUTENTTLKBN     TO  RECE230-TENTTLKBN(IDX4)
+               MOVE    TNS-YUKOKETA         TO  RECE230-YUKOKETA(IDX4)
+               MOVE    TNS-DATAKBN          TO  RECE230-DATAKBN (IDX4)
+               MOVE    TNS-HOUKNSKBN        TO  RECE230-HOUKNSKBN(IDX4)
+               MOVE    TNS-KNSJISKBN        TO  RECE230-KNSJISKBN(IDX4)
+               MOVE    TNS-CDKBN-KBN        TO  RECE230-CDKBN-KBN(IDX4)
+               MOVE    TNS-CDKBN-SYO        TO  RECE230-CDKBN-SYO(IDX4)
+               MOVE    TNS-CDKBN-BU         TO  RECE230-CDKBN-BU(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM     TO
+                                          RECE230-CDKBN-KBNNUM(IDX4)
+               MOVE    TNS-CDKBN-KBNNUM-EDA TO
+                                          RECE230-CDKBN-KBNNUM-EDA(IDX4)
+               MOVE    TNS-CDKBN-KOUBAN     TO
+                                          RECE230-CDKBN-KOUBAN(IDX4)
+               MOVE    TNS-KOUHYOJYUNNUM    TO
+                                          RECE230-KOUHYOJYUNNUM(IDX4)
+      *
+               MOVE    TNS-SRYSYUKBN  TO  RECE230-SRYSYUKBN-X(IDX4)
+               MOVE    TNS-KOKUJISKBKBN1
+                                      TO  RECE230-KOKUJISKBKBN1(IDX4)
+               MOVE    TNS-KZMCOMPSIKIBETU
+                                      TO  RECE230-KZMCOMPSIKIBETU(IDX4)
+               MOVE    TNS-CHUKSNCD   TO  RECE230-CHUKSNCD(IDX4)
+               MOVE    TNS-CHUKSNTUBAN
+                                      TO  RECE230-CHUKSNTUBAN(IDX4)
+               MOVE    TNS-KENTAICOMMENT
+                                      TO  RECE230-KENTAICOMMENT(IDX4)
+               MOVE    TNS-KNSJISGRPKBN
+                                      TO  RECE230-KNSJISGRPKBN(IDX4)
+               MOVE    TNS-TOKUKIZAISBT1
+                                      TO  RECE230-TOKUKIZAISBT1(IDX4)
+               MOVE    TNS-SANSOKBN   TO  RECE230-SANSOKBN     (IDX4)
+      *
+               MOVE    TNS-NAME       TO  RECE230-NAME(IDX4)
       *
                COMPUTE RECE220-ZAITEN =
                        RECE220-ZAITEN +
-      **>         (TNS-TEN * WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX2))
-                  (TNS-TEN * WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX30))
+                  (TNS-TEN * WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX2))
                COMPUTE RECE220-SYUTEN1 =
                        RECE220-SYUTEN1 +
-      **>         (TNS-TEN * WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX2))
-                  (TNS-TEN * WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX30))
+                  (TNS-TEN * WRK-SKJ200604-DAY(SYUKEI-IDX3 IDX2))
              END-IF
       *
            END-PERFORM
       *
            .
-       210214-RECE230-HENSYU2-SKJ2-EXT.
+       210214-RECE230-HENSYU2-SKJ200604-EXT.
            EXIT.
       *
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œ∫Ó¿Æ° ¥ƒ∂≠°À° £∆£∞£∞£µ°À
       *****************************************************************
-       210220-RECE230-HENSYU2-KAN-SEC               SECTION.
+       210220-RECE230-HENSYU2-SKJ200610-KAN-SEC               SECTION.
       *
            MOVE    SPACE                TO   RECE230-REC
            INITIALIZE                        RECE230-REC
@@ -7607,7 +5915,7 @@
            MOVE    1                    TO   RECE230-RENNUM
            MOVE    RECE200-PTNUM        TO   RECE230-PTNUM
       *
-           MOVE    "00"                 TO   RECE230-SRYKA
+           MOVE    SPACE                TO   RECE230-SRYKA
            MOVE    "97"                 TO   RECE230-SRYKBN
            MOVE    "970"                TO   RECE230-SRYSYUKBN
            MOVE    ZERO                 TO   RECE230-JIHIMONEY
@@ -7629,14 +5937,41 @@
            MOVE    RECE230-SRYYM        TO  WK-TAIHI-SRYYM
            MOVE    WK-TAIHI-DAY         TO  WK-TAIHI-SRYD
            PERFORM 900-TENSU-TBL-SEC
-           MOVE    1                    TO  IDX4
-           PERFORM 21020611-RECE230-TENSOU2X-SEC
+           MOVE    TNS-TANICD           TO  RECE230-TANICD(1)
+           MOVE    TNS-TANIMOJISU       TO  RECE230-TANIMOJISU(1)
+           MOVE    TNS-TANINAME         TO  RECE230-TANINAME(1)
+           MOVE    TNS-TENSIKIBETU      TO  RECE230-TENSIKIBETU(1)
+           MOVE    TNS-TEN              TO  RECE230-TEN(1)
+           MOVE    TNS-NYUTENTTLKBN     TO  RECE230-TENTTLKBN(1)
+           MOVE    TNS-YUKOKETA         TO  RECE230-YUKOKETA(1)
+           MOVE    TNS-DATAKBN          TO  RECE230-DATAKBN (1)
+           MOVE    TNS-HOUKNSKBN        TO  RECE230-HOUKNSKBN(1)
+           MOVE    TNS-KNSJISKBN        TO  RECE230-KNSJISKBN(1)
+           MOVE    TNS-CDKBN-KBN        TO  RECE230-CDKBN-KBN(1)
+           MOVE    TNS-CDKBN-SYO        TO  RECE230-CDKBN-SYO(1)
+           MOVE    TNS-CDKBN-BU         TO  RECE230-CDKBN-BU(1)
+           MOVE    TNS-CDKBN-KBNNUM     TO  RECE230-CDKBN-KBNNUM(1)
+           MOVE    TNS-CDKBN-KBNNUM-EDA TO  RECE230-CDKBN-KBNNUM-EDA(1)
+           MOVE    TNS-CDKBN-KOUBAN     TO  RECE230-CDKBN-KOUBAN(1)
+           MOVE    TNS-KOUHYOJYUNNUM    TO  RECE230-KOUHYOJYUNNUM(1)
+      *
+           MOVE    TNS-SRYSYUKBN        TO  RECE230-SRYSYUKBN-X(1)
+           MOVE    TNS-KOKUJISKBKBN1    TO  RECE230-KOKUJISKBKBN1(1)
+           MOVE    TNS-KZMCOMPSIKIBETU  TO  RECE230-KZMCOMPSIKIBETU(1)
+           MOVE    TNS-CHUKSNCD         TO  RECE230-CHUKSNCD(1)
+           MOVE    TNS-CHUKSNTUBAN      TO  RECE230-CHUKSNTUBAN(1)
+           MOVE    TNS-KENTAICOMMENT    TO  RECE230-KENTAICOMMENT(1)
+           MOVE    TNS-KNSJISGRPKBN     TO  RECE230-KNSJISGRPKBN(1)
+           MOVE    TNS-TOKUKIZAISBT1    TO  RECE230-TOKUKIZAISBT1(1)
+           MOVE    TNS-SANSOKBN         TO  RECE230-SANSOKBN(1)
+      *
+           MOVE    TNS-NAME             TO  RECE230-NAME(1)
       *
            MOVE    TNS-TEN              TO  RECE220-ZAITEN
            MOVE    TNS-TEN              TO  RECE220-SYUTEN1
       *
            .
-       210220-RECE230-HENSYU2-KAN-EXT.
+       210220-RECE230-HENSYU2-SKJ200610-KAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7747,8 +6082,6 @@
                                       WRK-ORCSTEN-DAY  (IDX5)
                           ADD   ORCSTEN-KIZ-DAY  (IDY IDX5)  TO
                                       WRK-ORCSTEN-ZAIKAISU
-                          MOVE  ORCSTEN-KIZ-SRYKA(IDY IDX5)  TO
-                                      WRK-ORCSTEN-KIZ-SRYKA(IDX5)
                        END-PERFORM
       *
                        PERFORM   21032-RECE220-TENSOU3-SEC
@@ -7775,7 +6108,7 @@
                        PERFORM   21032X-RECE220-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-T-SRYCD-X(IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   21035-RECE230-TENTEKI2-HEN-SEC
+                       PERFORM   21035-RECE230-TENTEKI2-HENSYU-SEC
                        PERFORM   21034-RECE200-HENSYU3-SEC
                        PERFORM   RECE220-WRITE-SEC
                     END-IF
@@ -7790,7 +6123,7 @@
                        PERFORM   21032X-RECE220-TENSOU3-SEC
                        MOVE      WRK-TENTEKI2-C-SRYCD-X(IDY)
                                      TO   WRK-TENTEKI2-SRYCD-X
-                       PERFORM   21035-RECE230-TENTEKI2-HEN-SEC
+                       PERFORM   21035-RECE230-TENTEKI2-HENSYU-SEC
                        PERFORM   21034-RECE200-HENSYU3-SEC
                        PERFORM   RECE220-WRITE-SEC
                     END-IF
@@ -7819,20 +6152,7 @@
            MOVE    WRK-ZAINUM           TO      RECE220-ZAINUM
            MOVE    RECE200-PTNUM        TO      RECE220-PTNUM
       *
-           IF    FLG-SIKIBETU  =  1
-             MOVE  ORCSTEN-YK-SRYKA(IDY)
-                                        TO      RECE220-SRYKA
-           ELSE
-             PERFORM  VARYING  IDX2  FROM  1  BY  1
-                       UNTIL   IDX2   >   31
-               IF   WRK-ORCSTEN-DAY(IDX2)  NOT =   ZERO
-                  MOVE  WRK-ORCSTEN-KIZ-SRYKA(IDX2)
-                                        TO      RECE220-SRYKA
-                  MOVE  31              TO      IDX2
-               END-IF
-             END-PERFORM
-           END-IF
-      *
+           MOVE    "00"                 TO      RECE220-SRYKA
            MOVE    RECE200-HKNCOMBI     TO      RECE220-HKNCOMBI
            MOVE    SPACE                TO      RECE220-JIHOKBN
            IF    FLG-SIKIBETU  =  1
@@ -7873,8 +6193,8 @@
                           UNTIL    IDX2     >    31
                    MOVE    WRK-ORCSTEN-DAY(IDX2)  TO
                                             RECE220-KAISU (1 IDX2)
-                   IF    (WK-TAIHI-FLG               =  ZERO)
-                   AND   (RECE220-KAISU(1 IDX2)  NOT =  ZERO)
+                   IF     (WK-TAIHI-FLG            =   ZERO)   AND
+                          (WRK-ORCSTEN-DAY(IDX2)  NOT =   ZERO)
                        MOVE     IDX2    TO      WK-TAIHI-DAY
                        MOVE     1       TO      WK-TAIHI-FLG
                    END-IF
@@ -7902,14 +6222,7 @@
            MOVE    WRK-ZAINUM           TO      RECE220-ZAINUM
            MOVE    RECE200-PTNUM        TO      RECE220-PTNUM
       *
-           IF    FLG-SIKIBETU  =  3
-             MOVE  WRK-TENTEKI2-T-SRYKA(IDY)
-                                        TO      RECE220-SRYKA
-           ELSE
-             MOVE  WRK-TENTEKI2-C-SRYKA(IDY)
-                                        TO      RECE220-SRYKA
-           END-IF
-      *
+           MOVE    "00"                 TO      RECE220-SRYKA
            MOVE    RECE200-HKNCOMBI     TO      RECE220-HKNCOMBI
            MOVE    SPACE                TO      RECE220-JIHOKBN
       *
@@ -7969,7 +6282,7 @@
               MOVE    WRK-RENNUM           TO   RECE230-RENNUM
               MOVE    RECE200-PTNUM        TO   RECE230-PTNUM
       *
-              MOVE    RECE220-SRYKA        TO   RECE230-SRYKA
+              MOVE    "00"                 TO   RECE230-SRYKA
               MOVE    "33"                 TO   RECE230-SRYKBN
               MOVE    "330"                TO   RECE230-SRYSYUKBN
               MOVE    ZERO                 TO   RECE230-JIHIMONEY
@@ -8153,10 +6466,10 @@
                                        CONS-SANSO2              
                       CONTINUE
                     ELSE
-                      IF      RECE230-TEN(IDX4)  =   ZERO
+                      IF      TNS-TEN         =   ZERO
                         CONTINUE
                       ELSE
-                        PERFORM 2101212-RECE230-TANKA-HEN-SEC
+                        PERFORM 2101212-RECE230-TENSOU-TANKA-HEN-SEC
                         COMPUTE IDW =   RECE230-YUKOKETA(IDX4)  *  2
                                     +   3
                         MOVE    WRK-CHAR-N (1:WRK-CHAR-N-CNT)
@@ -8186,7 +6499,7 @@
       *****************************************************************
       *    •Ï•ª•◊•»√Ê¥÷•’•°•§•Î§Œπ‡Ã‹≈æ¡˜° £∆£∞£∞£µ°À
       *****************************************************************
-       21035-RECE230-TENTEKI2-HEN-SEC                SECTION.
+       21035-RECE230-TENTEKI2-HENSYU-SEC                SECTION.
       *
            INITIALIZE             WRK-TENTEKI2-SRYCD2-X
       *
@@ -8224,7 +6537,7 @@
            END-PERFORM
       *
            .
-       21035-RECE230-TENTEKI2-HEN-EXT.
+       21035-RECE230-TENTEKI2-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8245,7 +6558,7 @@
            MOVE    WRK-RENNUM           TO   RECE230-RENNUM
            MOVE    RECE200-PTNUM        TO   RECE230-PTNUM
       *
-           MOVE    RECE220-SRYKA        TO   RECE230-SRYKA
+           MOVE    "00"                 TO   RECE230-SRYKA
            MOVE    "33"                 TO   RECE230-SRYKBN
            IF    FLG-SIKIBETU  =  3
               MOVE    "330"             TO   RECE230-SRYSYUKBN
@@ -8272,19 +6585,59 @@
                                             TO  WRK-SRYCD
                   MOVE  RECE230-SRYYM       TO  WK-TAIHI-SRYYM
                   MOVE  WK-TAIHI-DAY        TO  WK-TAIHI-SRYD
-                  PERFORM 900-TENSU-TBL-SEC
-                  PERFORM 21020611-RECE230-TENSOU2X-SEC
+                  PERFORM    900-TENSU-TBL-SEC
+                  MOVE  TNS-TANICD          TO  RECE230-TANICD(IDX4)
+                  MOVE  TNS-TANIMOJISU      TO  RECE230-TANIMOJISU(IDX4)
+                  MOVE  TNS-TANINAME        TO  RECE230-TANINAME(IDX4)
+                  MOVE  TNS-TENSIKIBETU     TO  RECE230-TENSIKIBETU
+                                                                (IDX4)
+                  MOVE  TNS-TEN             TO  RECE230-TEN(IDX4)
+                  MOVE  TNS-NYUTENTTLKBN    TO  RECE230-TENTTLKBN(IDX4)
                   IF  (WRK-TENTEKI2-SRYCD2(IDX2)(1:1)  =   "8"  )
                   OR  (WRK-TENTEKI2-SRYCD2(IDX2)(1:3)  =   "008")
                      MOVE   ZERO            TO  RECE230-YUKOKETA(IDX4)
+                  ELSE
+                     MOVE   TNS-YUKOKETA    TO  RECE230-YUKOKETA(IDX4)
                   END-IF
+                  MOVE  TNS-DATAKBN         TO  RECE230-DATAKBN (IDX4)
+                  MOVE  TNS-HOUKNSKBN       TO  RECE230-HOUKNSKBN(IDX4)
+                  MOVE  TNS-KNSJISKBN       TO  RECE230-KNSJISKBN(IDX4)
+                  MOVE  TNS-CDKBN-KBN       TO  RECE230-CDKBN-KBN(IDX4)
+                  MOVE  TNS-CDKBN-SYO       TO  RECE230-CDKBN-SYO(IDX4)
+                  MOVE  TNS-CDKBN-BU        TO  RECE230-CDKBN-BU(IDX4)
+                  MOVE  TNS-CDKBN-KBNNUM
+                                      TO RECE230-CDKBN-KBNNUM(IDX4)
+                  MOVE  TNS-CDKBN-KBNNUM-EDA
+                                      TO RECE230-CDKBN-KBNNUM-EDA(IDX4)
+                  MOVE  TNS-CDKBN-KOUBAN
+                                      TO RECE230-CDKBN-KOUBAN(IDX4)
+                  MOVE  TNS-KOUHYOJYUNNUM
+                                      TO RECE230-KOUHYOJYUNNUM(IDX4)
+      *
+                  MOVE  TNS-SRYSYUKBN TO RECE230-SRYSYUKBN-X(IDX4)
+                  MOVE  TNS-KOKUJISKBKBN1
+                                      TO RECE230-KOKUJISKBKBN1(IDX4)
+                  MOVE  TNS-KZMCOMPSIKIBETU
+                                      TO RECE230-KZMCOMPSIKIBETU(IDX4)
+                  MOVE  TNS-CHUKSNCD  TO RECE230-CHUKSNCD(IDX4)
+                  MOVE  TNS-CHUKSNTUBAN
+                                      TO RECE230-CHUKSNTUBAN(IDX4)
+                  MOVE  TNS-KENTAICOMMENT
+                                      TO RECE230-KENTAICOMMENT(IDX4)
+                  MOVE  TNS-KNSJISGRPKBN
+                                      TO RECE230-KNSJISGRPKBN(IDX4)
+                  MOVE  TNS-TOKUKIZAISBT1
+                                      TO RECE230-TOKUKIZAISBT1(IDX4)
+                  MOVE  TNS-SANSOKBN  TO RECE230-SANSOKBN     (IDX4)
+      *
                   IF  (WRK-TENTEKI2-SRYCD2(IDX2)(1:1)  =   "8"  )
                   OR  (WRK-TENTEKI2-SRYCD2(IDX2)(1:3)  =   "008")
                      MOVE   WRK-TENTEKI2-COM-MOJI2(IDX2)
                                       TO RECE230-NAME(IDX4)
                                          RECE230-INPUTCOMENT(IDX4)
                   ELSE
-                     MOVE   TNS-NAME  TO RECE230-INPUTCOMENT(IDX4)
+                     MOVE   TNS-NAME  TO RECE230-NAME(IDX4)
+                                         RECE230-INPUTCOMENT(IDX4)
                   END-IF
       *
                   IF   RECE230-YUKOKETA(IDX4)  =  ZERO
@@ -8416,16 +6769,6 @@
            MOVE    "key19"              TO      MCP-PATHNAME
            PERFORM  900-CLOSE-SEC
       *
-      *    ø©ªˆæ Û•Ø•Í•¢
-           IF   RECE200-SRYYM  >= "201604"
-             IF   RECE200-SHOKUJISYUBETU-KHN    =  "£π"
-                MOVE   SPACE  TO   RECE200-SHOKUJISYUBETU-KHN
-             END-IF
-             IF   RECE200-SHOKUJIKHNRYO(1)      =  999999999
-                MOVE   ZERO   TO   RECE200-SHOKUJIKHNRYO(1)
-             END-IF
-           END-IF
-      *
            IF   FLG-SYUNOU-ARI  =  ZERO
               DISPLAY "<SYUNOU NG STOP>"
               MOVE    "≤æº˝«º•«°º•ø§¨§¢§Í§ﬁ§ª§Û"  TO  ERR-ERRMSG
@@ -8449,15 +6792,7 @@
                PERFORM         210441-NYUINRYOFLG-SET-SEC
            END-IF
       *
-           IF   RECE200-SRYYM   >=  "201604"
-               PERFORM         210445-SKJ-KINGAKU-HENSYU2-SEC
-           ELSE
-               PERFORM         210445-SKJ-KINGAKU-HENSYU-SEC
-           END-IF
-      *
-           IF  SYU-SYUSKJ-RYOYOHI  NOT =  ZERO
-             ADD   SYU-SYUSKJ-NISSU   TO   RECE200-SHOKUJITOTALDAY
-           END-IF
+           PERFORM             210445-SKJ-KINGAKU-HENSYU-SEC
       *
            .
        21044-RECE200-FTN-HENSYU-EXT.
@@ -8477,14 +6812,7 @@
       *
                 IF         WRK-DAY5(IDY)      NOT =  ZERO
                 AND        WRK-DAY1(IDY)      NOT =  ZERO
-                     EVALUATE  SYS-200501-COMMENT-NYUINRYO1-KSIKBN
-                       WHEN     "0"
-                          MOVE   SPACE    TO   RECE200-NYUINRYOFLG
-                       WHEN     "1"
-                          MOVE    "6"     TO   RECE200-NYUINRYOFLG
-                       WHEN     "2"
-                          PERFORM  2104411-NYUINRYOFLG-HENSYU-SEC
-                     END-EVALUATE
+                   PERFORM  2104411-NYUINRYOFLG-HENSYU-SEC
                 ELSE
                    IF      WRK-DAY5(IDY)               NOT =  ZERO
                    AND     RECE200-NYUINDAY-KBN(IDY)   NOT =  "1"
@@ -8502,14 +6830,7 @@
                    IF      WRK-DAY5(IDY)               NOT =  ZERO
                    AND     RECE200-NYUINDAY-KBN(IDY)       =  "1"
                    AND     RECE200-SRYYM                  >=  "200904"
-                     EVALUATE  SYS-200501-COMMENT-NYUINRYO1-KSIKBN
-                       WHEN     "0"
-                          MOVE   SPACE    TO   RECE200-NYUINRYOFLG
-                       WHEN     "1"
-                          MOVE    "6"     TO   RECE200-NYUINRYOFLG
-                       WHEN     "2"
                           PERFORM  2104411-NYUINRYOFLG-HENSYU-SEC
-                     END-EVALUATE
                    END-IF
                 END-IF
       *
@@ -8695,109 +7016,12 @@
       *
            END-IF
       *
+           IF  SYU-SYUSKJ-RYOYOHI  NOT =  ZERO
+             ADD   SYU-SYUSKJ-NISSU   TO   RECE200-SHOKUJITOTALDAY
+           END-IF
+      *
            .
        210445-SKJ-KINGAKU-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ø©ªˆ∂‚≥€ ‘Ω∏° £≤£∞£±£∂«Ø£¥∑Ó°¡°À
-      *****************************************************************
-       210445-SKJ-KINGAKU-HENSYU2-SEC               SECTION.
-      *
-           PERFORM  VARYING  ID1    FROM    1   BY  1
-                     UNTIL   ID1      >    14
-      *
-             IF  SYU-SHOKUJI(ID1)   =   ZERO
-               CONTINUE
-             ELSE
-               EVALUATE    ID1
-                 WHEN       1
-                 WHEN       2
-                 WHEN       5
-                 WHEN       6
-                 WHEN      11
-                 WHEN      12
-                 WHEN      13
-                   COMPUTE  RECE200-SHOKUJIKHNRYO-KEI =
-                            RECE200-SHOKUJIKHNRYO-KEI +
-                            (SYU-SHOKUJI-NISSU(ID1) * SYU-SHOKUJI(ID1))
-                   ADD   SYU-SHOKUJI-NISSU(ID1)  TO
-                                    RECE200-SHOKUJIKHNNISSU(1)
-                   IF    RECE200-SHOKUJIKHNRYO(1) = ZERO
-                       MOVE  SYU-SHOKUJI(ID1)
-                                     TO  RECE200-SHOKUJIKHNRYO(1)
-                   ELSE
-                     IF  RECE200-SHOKUJIKHNRYO(1)  NOT =
-                                                SYU-SHOKUJI(ID1)
-                       MOVE  999999999
-                                     TO  RECE200-SHOKUJIKHNRYO(1)
-                     END-IF
-                   END-IF
-                   EVALUATE    ID1
-                     WHEN       1
-                     WHEN       5
-                       IF    RECE200-SHOKUJISYUBETU-KHN = SPACE
-                           MOVE  "£±"  TO  RECE200-SHOKUJISYUBETU-KHN
-                       ELSE
-                         IF  RECE200-SHOKUJISYUBETU-KHN  NOT = "£±"
-                           MOVE  "£π"  TO  RECE200-SHOKUJISYUBETU-KHN
-                         END-IF
-                       END-IF
-                     WHEN       2
-                     WHEN       6
-                       IF    RECE200-SHOKUJISYUBETU-KHN = SPACE
-                           MOVE  "£≤"  TO  RECE200-SHOKUJISYUBETU-KHN
-                       ELSE
-                         IF  RECE200-SHOKUJISYUBETU-KHN  NOT = "£≤"
-                           MOVE  "£π"  TO  RECE200-SHOKUJISYUBETU-KHN
-                         END-IF
-                       END-IF
-                     WHEN      11
-                     WHEN      13
-                       IF    RECE200-SHOKUJISYUBETU-KHN = SPACE
-                           MOVE  "£≥"  TO  RECE200-SHOKUJISYUBETU-KHN
-                       ELSE
-                         IF  RECE200-SHOKUJISYUBETU-KHN  NOT = "£≥"
-                           MOVE  "£π"  TO  RECE200-SHOKUJISYUBETU-KHN
-                         END-IF
-                       END-IF
-                     WHEN      12
-                       IF    RECE200-SHOKUJISYUBETU-KHN = SPACE
-                           MOVE  "£¥"  TO  RECE200-SHOKUJISYUBETU-KHN
-                       ELSE
-                         IF  RECE200-SHOKUJISYUBETU-KHN  NOT = "£¥"
-                           MOVE  "£π"  TO  RECE200-SHOKUJISYUBETU-KHN
-                         END-IF
-                       END-IF
-                   END-EVALUATE
-                 WHEN       3
-                 WHEN       7
-                   ADD   SYU-SHOKUJI-NISSU(ID1)  TO
-                                    RECE200-SHOKUJIKHNNISSU(2)
-                   MOVE  SYU-SHOKUJI(ID1)        TO
-                                    RECE200-SHOKUJIKHNRYO(2)
-                   MOVE  "∆√ Ã" TO  RECE200-SHOKUJISYUBETU(1)
-                 WHEN       4
-                 WHEN       8
-                   ADD   SYU-SHOKUJI-NISSU(ID1)  TO
-                                    RECE200-SHOKUJIKHNNISSU(3)
-                   MOVE  SYU-SHOKUJI(ID1)        TO
-                                    RECE200-SHOKUJIKHNRYO(3)
-                   MOVE  "ø©∆≤" TO  RECE200-SHOKUJISYUBETU(2)
-                 WHEN       9
-                 WHEN      10
-                   ADD   SYU-SHOKUJI-NISSU(ID1)  TO
-                                    RECE200-SHOKUJIKHNNISSU(4)
-                   MOVE  SYU-SHOKUJI(ID1)        TO
-                                    RECE200-SHOKUJIKHNRYO(4)
-                   MOVE  "¥ƒ∂≠" TO  RECE200-SHOKUJISYUBETU(3)
-               END-EVALUATE
-             END-IF
-      *
-           END-PERFORM
-      *
-           .
-       210445-SKJ-KINGAKU-HENSYU2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8832,16 +7056,10 @@
       *
            PERFORM VARYING IDX    FROM    1   BY  1
                    UNTIL   IDX    >       4
-               IF      RECE200-SHOKUJIKHNNISSU (IDX) >   ZERO
-                 IF   RECE200-SRYYM   >=  "201604"
-                 AND  IDX              =   1
-                   ADD     RECE200-SHOKUJIKHNRYO-KEI
-                                             TO   RECE200-SYOUKEI(3)
-                 ELSE
+               IF      RECE200-SHOKUJIKHNRYO (IDX)  >   ZERO
                    COMPUTE WRK-SYOKUJIKEI = RECE200-SHOKUJIKHNRYO  (IDX)
                                           * RECE200-SHOKUJIKHNNISSU(IDX)
                    ADD     WRK-SYOKUJIKEI    TO   RECE200-SYOUKEI(3)
-                 END-IF
                END-IF
            END-PERFORM
       *
@@ -9014,20 +7232,6 @@
       *
            .
        800-NUM-ZENKAKU-HENKAN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ∞Ïª˛•’•°•§•ÎÃæºË∆¿ΩËÕ˝
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  TEMPFLPARA (SGETTEMP-ST:)
-           .
-       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -9328,62 +7532,6 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-           IF      FLG-PTCOM           =   ZERO
-               IF      PTCOM-INPUTCOMENT   NOT =   SPACE
-                   MOVE    ZERO            TO  WRK-COL
-                                               IDZ1
-                                               IDZ2 
-                   INSPECT PTCOM-INPUTCOMENT   TALLYING    WRK-COL
-                                               FOR ALL WRK-CONS-RETURN
-                   IF      WRK-COL         >   ZERO
-                       DISPLAY "PTCOM=" PTCOM-KEY
-                       PERFORM VARYING IDZ1    FROM    1   BY  1
-                               UNTIL   IDZ1    >       80
-                           IF      PTCOM-INPUTCOMENT(IDZ1:1)
-                                               =   WRK-CONS-RETURN
-                               COMPUTE IDZ2    =   IDZ1    -   1
-                               MOVE    80      TO  IDZ1
-                           END-IF
-                       END-PERFORM
-      *
-                       CALL    "coblog" USING   "ptcom returncd err"
-                       MOVE    SPACE               TO  WRK-RECEERR
-                       MOVE    SPACE               TO  WRK-ERRMSG
-                       STRING
-                        "•≥•·•Û•» ∏ª˙•≥°º•……‘¿µ°°¥µº‘»÷πÊ="
-                                                   DELIMITED  BY  SIZE
-                               RECE200-PTNUM       DELIMITED  BY  SPACE
-                               "°°ø«Œ≈∂Ë ¨="       DELIMITED  BY  SIZE
-                               SRY-SRYKBN          DELIMITED  BY  SPACE
-                                                   INTO    WRK-ERRMSG
-                       END-STRING
-                       IF      IDZ2        >   1    
-                           STRING   WRK-ERRMSG     DELIMITED  BY  SPACE
-                                   "°°•≥•·•Û•»="   DELIMITED  BY  SIZE
-                                   PTCOM-INPUTCOMENT(1:IDZ2)
-                                                   DELIMITED  BY  SPACE
-                                                   INTO    WRK-RECEERR
-                           END-STRING
-                       ELSE
-                           STRING   WRK-ERRMSG     DELIMITED  BY  SPACE
-                                    "°°•≥•·•Û•»="  DELIMITED  BY  SIZE
-                                    PTCOM-SRYCD    DELIMITED  BY  SPACE
-                                                   INTO    WRK-RECEERR
-                           END-STRING
-                       END-IF
-                       PERFORM 500-ERR-HENSYU-SEC
-      *
-                       MOVE    SPACE               TO  WRK-ERRMSG
-                       STRING  "ORCR1220 "         DELIMITED  BY  SIZE
-                               WRK-RECEERR         DELIMITED  BY  SIZE
-                               LOW-VALUE           DELIMITED  BY  SIZE
-                                                   INTO    WRK-ERRMSG
-                       END-STRING
-                       PERFORM 500-COBABORT-SEC
-                   END-IF
-               END-IF
-           END-IF
-      *
            .
        950-PTCOM-READ-EXT.
            EXIT.
@@ -9404,8 +7552,6 @@
                    DISPLAY "RECE200 "  " PTNUM=" RECE200-PTNUM
                                        " (PTID=" RECE200-PTID ")"
       *
-                   MOVE  RECE200-SRYYM TO  WRK-SYS-SRYYMD(1:6)
-                   MOVE  "01"          TO  WRK-SYS-SRYYMD(7:2)
                    PERFORM 910-SYSKANRI-HENSYU-SEC
       *
            END-READ
@@ -9423,6 +7569,8 @@
            ELSE
       *        ª‹¿ﬂ¥Ω‡æ Û
                MOVE  ZERO          TO  FLG-SET
+               MOVE  RECE200-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+               MOVE  "01"          TO  WRK-SYS-SRYYMD(7:2)
                PERFORM  VARYING  SYSKAN-IDX2  FROM  1   BY  1
                          UNTIL ( SYSKAN-IDX2               >  100  )
                           OR   ( TBL-SYS10062(SYSKAN-IDX2) = SPACE )
@@ -9442,6 +7590,8 @@
                END-IF
       *
                MOVE  ZERO          TO  FLG-SET
+               MOVE  RECE200-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+               MOVE  "01"          TO  WRK-SYS-SRYYMD(7:2)
                PERFORM  VARYING  SYSKAN-IDX2  FROM  1   BY  1
                          UNTIL ( SYSKAN-IDX2               >  100  )
                           OR   ( TBL-SYS10067(SYSKAN-IDX2) = SPACE )
@@ -9468,31 +7618,14 @@
                    MOVE  SYS-1006-SSTKIJUN(169)  TO  WRK-SISETU3169
                END-IF
       *
-      *        ƒ¢…º ‘Ω∏∂Ë ¨æ Û
-               MOVE    ZERO                TO  FLG-SET
-               MOVE    SPACE               TO  WRK-1030-KOUHATUKA
-      *
-               IF      WRK-PARA-PRTKBN = "2" OR "3" OR "4" OR "5"
-                 PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
-                         UNTIL ( SYSKAN-IDX              >  100  )
-                         OR    ( TBL-SYS1030(SYSKAN-IDX) = SPACE )
-                         OR    ( FLG-SET                 =   1   )
-                   MOVE    TBL-SYS1030(SYSKAN-IDX) TO  SYS-1030-REC
-                   IF  ( SYS-1030-STYUKYMD       <= WRK-SYS-SRYYMD    )
-                   AND ( WRK-SYS-SRYYMD          <= SYS-1030-EDYUKYMD )
-                       MOVE     1            TO  FLG-SET
-                       MOVE    SYS-1030-KOUHATUKA
-                                             TO  WRK-1030-KOUHATUKA
-                   END-IF
-                 END-PERFORM
-               END-IF
-      *
                MOVE      RECE200-SRYYM   TO  WRK-SRYYM-5000
                PERFORM   1001-SYS-5000-CHK-SEC
       *        ø©ªˆæ Û° •∑•π•∆•‡¥…Õ˝•∆°º•÷•Î§Ë§Í°À
                INITIALIZE             WRK-SHOKUJIRYOYO-OCC
       *
                MOVE  ZERO          TO  FLG-SET
+               MOVE  RECE200-SRYYM TO  WRK-SYS-SRYYMD(1:6)
+               MOVE  "01"          TO  WRK-SYS-SRYYMD(7:2)
                PERFORM  VARYING  SYSKAN-IDX  FROM  1  BY  1
                     UNTIL  ( SYSKAN-IDX              >  100  )
                      OR    ( TBL-SYS5000(SYSKAN-IDX) = SPACE )
@@ -9546,12 +7679,6 @@
       *    •«°º•øΩ–ŒœΩËÕ˝° £∆£∞£∞£¥°À
       *****************************************************************
        RECE220-WRITE-SEC                SECTION.
-      *
-           MOVE    RECE220-ZAITEN      TO  RECE220-HOKATU-ZAITEN
-           MOVE    RECE220-SYUTEN1     TO  RECE220-HOKATU-SYUTEN1
-           MOVE    RECE220-SYUTEN2     TO  RECE220-HOKATU-SYUTEN2
-           MOVE    RECE220-YKZTEN      TO  RECE220-HOKATU-YKZTEN
-           MOVE    RECE220-KIZAITEN    TO  RECE220-HOKATU-KIZAITEN
       *
            WRITE   RECE220-REC
            ADD     1                   TO  CNT-OUT1
@@ -9692,17 +7819,6 @@
       *
            .
        500-ERR-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    •®•È°ºª˛Ω™ŒªΩËÕ˝
-      *****************************************************************
-       500-COBABORT-SEC                SECTION.
-      *
-           CALL    "cobabort"          USING   WRK-ERRMSG
-      *
-           .
-       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************

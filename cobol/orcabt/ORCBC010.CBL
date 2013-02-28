@@ -66,24 +66,7 @@
       *
       *  04.06.01    NACL-Æ£¸¶    11/02/01  ¼çÊÝ¸±¤¬¤Ê¤¤¾ì¹ç¡¢»ùÆ¸ÊÝ¸î(53)
       *                                     ¤Ï¸øÈñÃ±ÆÈ¤Î¥ì¥»¥×¥È¤È¤¹¤ë
-      *  04.06.02    NACL-ÌçÏÆ    13/02/18  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
-      *                                     ¡Ê¿·¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÂÐ±þ¡Ë
       *  04.06.03    NACL-ÌçÏÆ    13/02/27  Ê¿À®£²£µÇ¯£´·î²þÀµÂÐ±þ
-      *  04.06.04    NACL-ÌçÏÆ    13/09/25  Ï«ºÒ¥Þ¥¹¥¿ÄÉ²ÃÂÐ±þ
-      *                                     ¡ÊÅÅÏÃºÆ¿ÇÎÁ¡¡Åù¡Ë
-      *
-      *  04.07.01    NACL-ÌçÏÆ    14/03/28  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      *  04.07.02    NACL-Æ£¸¶    14/03/30  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      *  04.07.03    NACL-Æ£¸¶    14/08/18  £·£µºÐ°Ê¾å¤Î³¤³°µï½»¼Ô£²³äÂÐ±þ
-      *  04.07.04    NACL-ÌçÏÆ    14/09/01  Ê¿À®£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
-      *  04.07.05    NACL-ÌçÏÆ    14/12/15  Ê¿À®£²£·Ç¯£±·î²þÀµÂÐ±þ
-      *                                     ¡Ê½éºÆ¿ÇÎÁ¡¦ÄãÂÅ·ëÎ¨ÂÐ±þ¡Ë
-      *  04.07.06    NACL-ÌçÏÆ    15/03/16  Ê¿À®£²£·Ç¯£´·î²þÀµÂÐ±þ
-      *
-      *  04.08.01    NACL-ÌçÏÆ    16/03/28  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.02    NACL-¾®Æ¦Âô  16/08/25  Ê¿À®£²£¸Ç¯£±£°·î»ý»²ÌôÂÐ±þ
-      *  04.08.03    NACL-¾®Æ¦Âô  17/08/17  À¸³èÎÅÍÜÉ¸½àÉéÃ´³Û¥³¡¼¥ÉÄÉ²ÃÂÐ±þ
-      *  04.08.04    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -201,8 +184,7 @@
       *01  PRGSKBNO                PIC X(08)  VALUE "20081031".
       *01  PRGSKBNO                PIC X(08)  VALUE "20100128".
       *01  PRGSKBNO                PIC X(08)  VALUE "20100527".
-      *01  PRGSKBNO                PIC X(08)  VALUE "20100604".
-       01  PRGSKBNO                PIC X(08)  VALUE "20160401".
+       01  PRGSKBNO                PIC X(08)  VALUE "20100604".
       *
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
@@ -570,66 +552,6 @@
       *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
                05  WRK-CONS-HYOJYUN-FUTAN16
                                       PIC X(09)   VALUE   "197003010".
-      *        Ê¿À®£²£¸Ç¯ÅÙ²þÄê¤ÎÄÉ²ÃÊ¬
-      *        ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡¦¾®»ùËýÀ­ÆÃÄê¼ÀÉÂ´µ¼Ô¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN17
-                                      PIC X(09)   VALUE   "197003310".
-      *        ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÀº¿À£±Ç¯Ä¶¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN18
-                                      PIC X(09)   VALUE   "197003410".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN19
-                                      PIC X(09)   VALUE   "197003610".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÀº¿À£±Ç¯Ä¶¡¦°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN20
-                                      PIC X(09)   VALUE   "197003710".
-      *        Ê¿À®£²£¹Ç¯£±£°·î²þÄê¤ÎÄÉ²ÃÊ¬
-      *        À¸³èÎÅÍÜ´Ä¶­ÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN21
-                                      PIC X(09)   VALUE   "197003810".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN22
-                                      PIC X(09)   VALUE   "197003910".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡ÊÄã¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN23
-                                      PIC X(09)   VALUE   "197004010".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡ÊÄã£±¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN24
-                                      PIC X(09)   VALUE   "197004110".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°Æü°Ê²¼¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN25
-                                      PIC X(09)   VALUE   "197004210".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°Æü°Ê²¼¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN26
-                                      PIC X(09)   VALUE   "197004310".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°ÆüÄ¶¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN27
-                                      PIC X(09)   VALUE   "197004410".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡¦£¹£°ÆüÄ¶¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN28
-                                      PIC X(09)   VALUE   "197004510".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN29
-                                      PIC X(09)   VALUE   "197004610".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN30
-                                      PIC X(09)   VALUE   "197004710".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN31
-                                      PIC X(09)   VALUE   "197004810".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN32
-                                      PIC X(09)   VALUE   "197004910".
-      *        À¸³èÎÅÍÜ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê¶­³¦ÁØ³ºÅö¡Ë¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡ÊÄã£±¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN33
-                                      PIC X(09)   VALUE   "197005010".
-      *        Ê¿À®£³£°Ç¯£´·î²þÄê¤ÎÄÉ²ÃÊ¬
-      *        À¸³èÎÅÍÜ¡Ê£±¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN34
-                                      PIC X(09)   VALUE   "197005110".
-      *        À¸³èÎÅÍÜ¡Ê£²¡Ë¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°åÎÅ¶èÊ¬£²¡¦£³¡Ë¡Ê°ìÈÌ¡Ë
-               05  WRK-CONS-HYOJYUN-FUTAN35
-                                      PIC X(09)   VALUE   "197005210".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -1397,11 +1319,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                    MOVE    "1"             TO  LNK-NYURECEDEN-HKNKBN
                END-IF
            END-IF
-           PERFORM  VARYING   IDZ1    FROM   1   BY  1
-             UNTIL  IDZ1    >    10
-               MOVE   COLDAT01-HKNCOMBI(IDZ1)
-                                  TO  LNK-NYURECEDEN-SET-HKNCOMBI(IDZ1)
-           END-PERFORM
            CALL    "ORCSNYURECEDEN"    USING   ORCSNYURECEDEN-AREA
                                                SPA-AREA
            IF      LNK-NYURECEDEN-RC   NOT =   ZERO
@@ -1445,26 +1362,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                                        OR  WRK-CONS-HYOJYUN-FUTAN13
                                        OR  WRK-CONS-HYOJYUN-FUTAN14
                                        OR  WRK-CONS-HYOJYUN-FUTAN15
-                                       OR  WRK-CONS-HYOJYUN-FUTAN16
-                                       OR  WRK-CONS-HYOJYUN-FUTAN17
-                                       OR  WRK-CONS-HYOJYUN-FUTAN18
-                                       OR  WRK-CONS-HYOJYUN-FUTAN19
-                                       OR  WRK-CONS-HYOJYUN-FUTAN20
-                                       OR  WRK-CONS-HYOJYUN-FUTAN21
-                                       OR  WRK-CONS-HYOJYUN-FUTAN22
-                                       OR  WRK-CONS-HYOJYUN-FUTAN23
-                                       OR  WRK-CONS-HYOJYUN-FUTAN24
-                                       OR  WRK-CONS-HYOJYUN-FUTAN25
-                                       OR  WRK-CONS-HYOJYUN-FUTAN26
-                                       OR  WRK-CONS-HYOJYUN-FUTAN27
-                                       OR  WRK-CONS-HYOJYUN-FUTAN28
-                                       OR  WRK-CONS-HYOJYUN-FUTAN29
-                                       OR  WRK-CONS-HYOJYUN-FUTAN30
-                                       OR  WRK-CONS-HYOJYUN-FUTAN31
-                                       OR  WRK-CONS-HYOJYUN-FUTAN32
-                                       OR  WRK-CONS-HYOJYUN-FUTAN33
-                                       OR  WRK-CONS-HYOJYUN-FUTAN34
-                                       OR  WRK-CONS-HYOJYUN-FUTAN35 )
+                                       OR  WRK-CONS-HYOJYUN-FUTAN16 )
                    MOVE    SPACE           TO  COLDAT02-REC
                    INITIALIZE                  COLDAT02-REC
       *            ¿ÇÎÅ²ñ·×¥Ç¡¼¥¿ÊÔ½¸
@@ -1780,19 +1678,13 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT =   1
                                    OR      KEY-NEW NOT =   KEY-OLD
-      *                    »ý»²Ìô°Ê³°¤Î»þ¡¢ÊÔ½¸½èÍý¤ò¹Ô¤¦
-                           IF    ACCT-ZAIKBN   NOT =   3  AND  4
-                               PERFORM 2003-SRYACCT-HENSYU-SEC
-                           END-IF
+                           PERFORM 2003-SRYACCT-HENSYU-SEC
                            MOVE    "tbl_sryacct"      TO  MCP-TABLE
                            MOVE    "key9"             TO  MCP-PATHNAME
                            PERFORM 900-SRYACCT-READ-SEC
                        END-PERFORM
                    ELSE
-      *                »ý»²Ìô°Ê³°¤Î»þ¡¢ÊÔ½¸½èÍý¤ò¹Ô¤¦
-                       IF    ACCT-ZAIKBN   NOT =   3  AND  4
-                           PERFORM 2003-SRYACCT-HENSYU-SEC
-                       END-IF
+                       PERFORM 2003-SRYACCT-HENSYU-SEC
                        MOVE    "tbl_sryacct"      TO  MCP-TABLE
                        MOVE    "key9"             TO  MCP-PATHNAME
                        PERFORM 900-SRYACCT-READ-SEC
@@ -2392,15 +2284,12 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
                            EVALUATE    PTHKN-HOJOKBN
                                WHEN    "A"
                                WHEN    "G"
-                               WHEN    "D"
                                    MOVE    "1" TO  COLDAT01-HOJOKBN
                                WHEN    "B"
                                WHEN    "H"
-                               WHEN    "E"
                                    MOVE    "2" TO  COLDAT01-HOJOKBN
                                WHEN    "C"
                                WHEN    "I"
-                               WHEN    "F"
                                    MOVE    "3" TO  COLDAT01-HOJOKBN
                                WHEN    OTHER
                                    MOVE    PTHKN-HOJOKBN
@@ -2517,15 +2406,12 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
                            EVALUATE    PTHKN-HOJOKBN
                                WHEN    "A"
                                WHEN    "G"
-                               WHEN    "D"
                                    MOVE    "1" TO  COLDAT01-THOJOKBN (1)
                                WHEN    "B"
                                WHEN    "H"
-                               WHEN    "E"
                                    MOVE    "2" TO  COLDAT01-THOJOKBN (1)
                                WHEN    "C"
                                WHEN    "I"
-                               WHEN    "F"
                                    MOVE    "3" TO  COLDAT01-THOJOKBN (1)
                            END-EVALUATE
                        END-IF
@@ -2664,17 +2550,14 @@ grpsys             MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
                                      EVALUATE    PTHKN-HOJOKBN
                                        WHEN    "A"
                                        WHEN    "G"
-                                       WHEN    "D"
                                          MOVE    "1"
                                            TO  COLDAT01-THOJOKBN (IDX)
                                        WHEN    "B"
                                        WHEN    "H"
-                                       WHEN    "E"
                                          MOVE    "2"
                                            TO  COLDAT01-THOJOKBN (IDX)
                                        WHEN    "C"
                                        WHEN    "I"
-                                       WHEN    "F"
                                          MOVE    "3"
                                            TO  COLDAT01-THOJOKBN (IDX)
                                      END-EVALUATE
@@ -3620,56 +3503,6 @@ grpsys         MOVE    SPA-HOSPNUM     TO HKN-HOSPNUM
            MOVE    COLDAT01-NYUGAIKBN  TO  LNK-SYUBETUGET-NYUGAIKBN
            MOVE    WRK-PARA-SRYYM      TO  LNK-SYUBETUGET-SRYYM
            MOVE    COLDAT01-HKNNUM     TO  LNK-SYUBETUGET-HKNNUM
-           MOVE    COLDAT01-BIRTHDAY   TO  LNK-SYUBETUGET-BIRTHDAY 
-      *
-      *    ¹ñÊÝ¤Î¤È¤­£¹£·£·¤Î¸øÈñ¤ÎÍ­Ìµ
-           IF    ( LNK-SYUBETUGET-BIRTHDAY
-                                       <   19440402 )
-           AND   ( LNK-SYUBETUGET-HKNNUM
-                                       =   "060"    )
-           AND   ( LNK-SYUBETUGET-SRYYM
-                                       >   "201404" )
-               MOVE    "99"                TO  LNK-SYUBETUGET-RJNPAYKBN
-      *
-               MOVE    LNK-SYUBETUGET-SRYYM
-                                           TO  WRK-TEKSTYYMM
-               IF      COLDAT01-TTEKSTYMD (IDY) (1:6)
-                                           >=  WRK-PARA-SRYYM
-                   MOVE    COLDAT01-TTEKSTYMD (IDY)(7:2)
-                                               TO  WRK-TEKSTDD
-               ELSE
-                   MOVE    01                  TO  WRK-TEKSTDD
-               END-IF
-      *
-               INITIALIZE                      PTKOHINF-REC
-               MOVE    WRK-PARA-HOSPNUM    TO  PTKOH-HOSPNUM
-               MOVE    COLDAT01-PTID       TO  PTKOH-PTID
-               MOVE    "977"               TO  PTKOH-KOHNUM
-               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-                   MOVE    "key4"              TO  MCP-PATHNAME
-                   PERFORM 900-PTKOHINF-READ-N-SEC
-                   PERFORM UNTIL   FLG-PTKOHINF    =   1
-                       IF    ( PTKOH-TEKSTYMD  <=  WRK-TEKSTYMD   )
-                       AND   ( WRK-TEKSTYMD    <=  PTKOH-TEKEDYMD )
-                           MOVE    SPACE           TO
-                                               LNK-SYUBETUGET-RJNPAYKBN
-                           MOVE    1               TO  FLG-PTKOHINF
-                       ELSE
-                           MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-                           MOVE    "key4"          TO  MCP-PATHNAME
-                           PERFORM  900-PTKOHINF-READ-N-SEC
-                       END-IF
-                   END-PERFORM
-               END-IF
-               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-               MOVE    "key4"               TO  MCP-PATHNAME
-               PERFORM  900-DBCLOSE-SEC
-           END-IF
            CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
            MOVE    LNK-SYUBETUGET-RECESYUBETU
@@ -4063,7 +3896,6 @@ grpsys             MOVE    SPA-HOSPNUM             TO  PTCOM-HOSPNUM
                                               OR "112703350"
       *
                                               OR "112011710"
-                                              OR "112016550"
                                               OR "112011810"
                                               OR "112011910"
                                               OR "112012010"
@@ -4081,28 +3913,8 @@ grpsys             MOVE    SPA-HOSPNUM             TO  PTCOM-HOSPNUM
                                               OR "112015950"
                                               OR "112016210"
                                               OR "112016410"
-                                              OR "113015810"
                                               OR "101110040"
-                                              OR "112016850"
-                                              OR "112016950"
-                                              OR "112017010"
-                                              OR "112017150"
-                                              OR "112017450"
-      *
-                                              OR "113018410"
-                                              OR "111012810"
-                                              OR "112017610"
-                                              OR "113024810"
-                                              OR "113025710"
-                                              OR "112023210"      )
-                       OR ( (SRY-SRYCD(IDX2)  =  "101120100" ) AND
-                            (SRY-SRYYM       <=  "201306"    )    )
-                       OR ( (SRY-SRYCD(IDX2)  =  "101120040"
-                                              OR "101120050"
-                                              OR "101120060"
-                                              OR "101120070"
-                                              OR "101120080" ) AND
-                            (SRY-SRYYM       >=  "201307"    )    )
+                                              OR "101120100"      )
                              MOVE    1      TO    FLG-SHOSAISIN
                        END-IF
                        IF    SRY-SRYCD(IDX2)  =  "099409903"
@@ -4286,9 +4098,8 @@ grpsys             MOVE    SPA-HOSPNUM             TO  PTCOM-HOSPNUM
                 OR     ( COLDAT02-SRYCD      =   "099999912" )
                    CONTINUE
                ELSE
-                 IF  (ACCT-SRYCDTOTAL  =  630010002  OR  630010005
-                                      OR  630010006  OR  630010007)
-                 OR  (ACCT-ZAIKBN      =  2                       )
+                 IF       (ACCT-SRYCDTOTAL    =    630010002)  OR
+                          (ACCT-ZAIKBN        =    2)
                    IF    ACCT-ZAIKBN        =    2
                          COMPUTE    WRK-TOTALTENSU(1)   =
                                                   WRK-TOTALTENSU(1) +
@@ -4358,9 +4169,8 @@ grpsys             MOVE    SPA-HOSPNUM             TO  PTCOM-HOSPNUM
                    OR     ( COLDAT02-SRYCD      =   "099999912" )
                      CONTINUE
                   ELSE
-                     IF  (ACCT-SRYCDTOTAL  =  630010002  OR  630010005
-                                          OR  630010006  OR  630010007)
-                     OR  (ACCT-ZAIKBN      =  2                       )
+                     IF       (ACCT-SRYCDTOTAL    =    630010002)  OR
+                              (ACCT-ZAIKBN        =    2)
                          IF    ACCT-ZAIKBN        =    2
                              COMPUTE    WRK-TOTALTENSU(KH-IDX)   =
                                               WRK-TOTALTENSU(KH-IDX) +
