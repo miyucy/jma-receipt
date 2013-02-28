@@ -108,7 +108,6 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-PRF                 PIC 9(01).
            03  FLG-MSTPRF              PIC 9(01).
       *
-           03  FLG-CHECK               PIC 9(01).
       *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
@@ -197,6 +196,9 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    ファイル存在チェックサブ
+           COPY    "CPORCSACCESS.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -483,35 +485,19 @@ grpsys         PERFORM 910-DBUPDATE-SEC
       *****************************************************************
        2001-PGEXIST-CHECK              SECTION.
       *
-           MOVE    ZERO            TO  FLG-CHECK
-      *
-           STRING  HOMEDIR-NAME        DELIMITED  BY  SPACE
-                   PARA-UPPG           DELIMITED  BY  SPACE
+           MOVE    SPACE           TO  PGEXIST01
+           STRING  PARA-UPPG           DELIMITED  BY  SPACE
                    ".so"               DELIMITED  BY  SIZE
-                                       INTO   PGEXIST01 
+                                       INTO   PGEXIST01
            END-STRING
-      *    入力　初期処理
-           OPEN    INPUT           IN-FILE
-           IF      STS-IN          NOT =   ZERO
-               STRING  HOMEDIR-NAME        DELIMITED  BY  SPACE
-                       "patch-lib/"        DELIMITED  BY  SIZE
-                       PARA-UPPG           DELIMITED  BY  SPACE
-                       ".so"               DELIMITED  BY  SIZE
-                                           INTO   PGEXIST01 
-               END-STRING
-               OPEN    INPUT           IN-FILE
-               IF      STS-IN          NOT =   ZERO
-                   MOVE    1           TO  FLG-CHECK
-                   DISPLAY "*(ORCXRMST2)* IN-FILE OPN STS["
-                                           STS-IN "]"
-               ELSE
-                   CLOSE    IN-FILE
-               END-IF
-           ELSE
-               CLOSE    IN-FILE
-           END-IF
       *
-           IF    ( FLG-CHECK       NOT =  ZERO )
+           INITIALIZE                  SACCESS-AREA
+           MOVE    "X"             TO  SACCESS-MODE
+           MOVE    PGEXIST01       TO  SACCESS-IN-FILENAME
+           CALL    "ORCSACCESS"    USING
+                                   SACCESS-AREA
+      *
+           IF    ( SACCESS-RC      NOT =  ZERO )
                DISPLAY "*(ORCXMST2)* MODULE NOT FOUND:" PARA-UPPG
                MOVE    SPACE           TO  WRK-MSTERR
                STRING  "更新プログラムが存在しません:"
