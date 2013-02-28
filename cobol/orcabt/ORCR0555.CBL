@@ -191,6 +191,9 @@
            03  IDWW                    PIC 9(03).
            03  IDVV                    PIC 9(03).
            03  IDV1                    PIC 9(03).
+           03  IDX4                    PIC 9(04). 
+           03  IDX5                    PIC 9(04). 
+           03  IDX6                    PIC 9(04). 
       *
            03  SYSKAN-IDX              PIC 9(03).
            03  IDX0                    PIC 9(03).
@@ -288,6 +291,12 @@
                                        PIC 9(01).
       *    ∆¸…’ —¥πÕ—
            03  WRK-SYMD                PIC X(08).
+           03  WRK-RYOSTYMD.
+               05  FILLER              PIC X(06).
+               05  WRK-RYOSTYMD-DD     PIC 9(02).
+           03  WRK-RYOEDYMD.
+               05  FILLER              PIC X(06).
+               05  WRK-RYOEDYMD-DD     PIC 9(02).
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -311,6 +320,9 @@
       *
       *    ºÍΩ—ŒÚ ‘Ω∏
            03  WRK-OPECOM-HEN          PIC X(50).
+      *
+           03  WRK-STYMD               PIC X(08).
+           03  WRK-EDYMD               PIC X(08).
       *
        01  WRK-ERR-AREA.
            03  WRK-RECEERR             PIC X(200).
@@ -1299,6 +1311,9 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+      *    Œ≈Õ‹¥¸¥÷ ‘Ω∏ΩËÕ˝
+           PERFORM 2001-SRYYM-HENSYU-SEC
+      *
            MOVE    ZERO                TO  WRK-RENNUM
            MOVE    ZERO                TO  FLG-TOYAKUFLG
       *
@@ -1338,6 +1353,27 @@
            .
        200-MAIN-EXT.
            EXIT.             
+      *
+      *****************************************************************
+      *    Œ≈Õ‹¥¸¥÷ ‘Ω∏ΩËÕ˝      
+      *****************************************************************
+       2001-SRYYM-HENSYU-SEC           SECTION.
+      *     
+      *    Œ≈Õ‹¥¸¥÷≥´ªœ
+           MOVE    RECE41-SRYYM        TO  WRK-STYMD (1:6)
+           MOVE    "01"                TO  WRK-STYMD (7:2)
+      *     
+      *    Œ≈Õ‹¥¸¥÷Ω™Œª
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    RECE41-SRYYM        TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"               USING   STS-AREA-DAY
+                                                   LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
+           . 
+       2001-SRYYM-HENSYU-EXT.
+           EXIT.
       * 
       *****************************************************************
       *    •Ï•ª•◊•»∂¶ƒÃ•Ï•≥°º•… ‘Ω∏ΩËÕ˝
@@ -1552,14 +1588,47 @@
            MOVE    RECE41-TENKI        TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
+      *    Œ≈Õ‹¥¸¥÷
+           IF      RECE41-RYOSTYMD     <   WRK-STYMD
+               MOVE    WRK-STYMD           TO  WRK-RYOSTYMD
+               MOVE    WRK-STYMD (7:2)     TO  IDX5
+           ELSE      
+               MOVE    RECE41-RYOSTYMD     TO  WRK-RYOSTYMD
+               MOVE    RECE41-RYOSTYMD (7:2)
+                                           TO  IDX5
+           END-IF    
+           IF      RECE41-RYOEDYMD     >   WRK-EDYMD
+               MOVE    WRK-EDYMD           TO  WRK-RYOEDYMD
+               MOVE    WRK-EDYMD (7:2)     TO  IDX6
+           ELSE      
+               MOVE    RECE41-RYOEDYMD     TO  WRK-RYOEDYMD
+               MOVE    RECE41-RYOEDYMD (7:2)
+                                           TO  IDX6
+           END-IF    
+           PERFORM VARYING IDX4    FROM    IDX5    BY  1
+                   UNTIL   IDX4    >       IDX6
+               IF    ( RECE41-NYUINBITBL(IDX4) =  SPACE )
+               OR    ( RECE41-JNISSUTBL (IDX4) =  "1"   )
+                   MOVE    IDX4                TO  WRK-RYOSTYMD-DD
+                   MOVE    IDX6                TO  IDX4
+               END-IF
+           END-PERFORM
+           PERFORM VARYING IDX4    FROM    IDX6    BY  -1
+                   UNTIL   IDX4    <       IDX5
+               IF    ( RECE41-NYUINBITBL(IDX4) =   SPACE )
+               OR    ( RECE41-JNISSUTBL (IDX4) =   "1"   )
+                   MOVE    IDX4                TO  WRK-RYOEDYMD-DD
+                   MOVE    IDX5                TO  IDX4
+               END-IF
+           END-PERFORM
       *    Œ≈Õ‹¥¸¥÷°›ΩÈ∆¸
-           MOVE    RECE41-RYOSTYMD     TO  WRK-SYMD
+           MOVE    WRK-RYOSTYMD        TO  WRK-SYMD
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMD          TO  WRK-DATA
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    Œ≈Õ‹¥¸¥÷°›Àˆ∆¸
-           MOVE    RECE41-RYOEDYMD     TO  WRK-SYMD
+           MOVE    WRK-RYOEDYMD        TO  WRK-SYMD
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMD          TO  WRK-DATA
            MOVE    7                   TO  WRK-NAGASA
@@ -1644,24 +1713,28 @@
       *    ªˆ∂»æÏ§ŒΩÍ∫ﬂ√œ
            INITIALIZE                      WRK-PREF-AREA
            IF      RECE41-HKNKBN       =   "1"
-               EVALUATE    RECE41-PREFKBN
-                   WHEN    "1"
-                       MOVE    "≈‘"            TO  WRK-PREFKBN
-                   WHEN    "2"
-                       MOVE    "∆ª"            TO  WRK-PREFKBN
-                   WHEN    "3"
-                       MOVE    "…‹"            TO  WRK-PREFKBN
-                   WHEN    "4"
-                       MOVE    "∏©"            TO  WRK-PREFKBN
-               END-EVALUATE
-               EVALUATE    RECE41-CITYKBN
-                   WHEN    "1"
-                       MOVE    "∑¥"            TO  WRK-CITYKBN
-                   WHEN    "2"
-                       MOVE    "ª‘"            TO  WRK-CITYKBN
-                   WHEN    "3"
-                       MOVE    "∂Ë"            TO  WRK-CITYKBN
-               END-EVALUATE
+               IF      RECE41-PREFNAME NOT =   SPACE
+                   EVALUATE    RECE41-PREFKBN
+                       WHEN    "1"
+                           MOVE    "≈‘"            TO  WRK-PREFKBN
+                       WHEN    "2"
+                           MOVE    "∆ª"            TO  WRK-PREFKBN
+                       WHEN    "3"
+                           MOVE    "…‹"            TO  WRK-PREFKBN
+                       WHEN    "4"
+                           MOVE    "∏©"            TO  WRK-PREFKBN
+                   END-EVALUATE
+               END-IF
+               IF      RECE41-CITYNAME NOT =   SPACE
+                   EVALUATE    RECE41-CITYKBN
+                       WHEN    "1"
+                           MOVE    "∑¥"            TO  WRK-CITYKBN
+                       WHEN    "2"
+                           MOVE    "ª‘"            TO  WRK-CITYKBN
+                       WHEN    "3"
+                           MOVE    "∂Ë"            TO  WRK-CITYKBN
+                   END-EVALUATE
+               END-IF
                STRING  RECE41-PREFNAME     DELIMITED  BY  SPACE
                        WRK-PREFKBN         DELIMITED  BY  SPACE
                        RECE41-CITYNAME     DELIMITED  BY  SPACE

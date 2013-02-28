@@ -314,7 +314,9 @@
            03  WRK-SRYKBN40-KOKUJISKBKBN1
                                        PIC 9(01).
       *    ÆüÉÕÊÑ´¹ÍÑ
-           03  WRK-SYMD                PIC X(08).
+           03  WRK-SYMD.
+               05  WRK-SYMD-YM         PIC X(06).
+               05  WRK-SYMD-DD         PIC 9(02).
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -341,6 +343,9 @@
       *
       *    ÆþÂà±¡ÍúÎòÊÔ½¸¡Ê¼«±¡Îò¡ÝÆþ±¡Ãæ¶èÊ¬¡Ë
            03  WRK-NYUINCHUKBN         PIC X(01).
+      *
+           03  WRK-STYMD               PIC X(08).
+           03  WRK-EDYMD               PIC X(08).
       *
        01  WRK-ERR-AREA.
            03  WRK-RECEERR             PIC X(200).
@@ -1311,6 +1316,9 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+      *    ÎÅÍÜ´ü´ÖÊÔ½¸½èÍý
+           PERFORM 2001-SRYYM-HENSYU-SEC
+      *
       *    Æþ±¡²ñ·×¼èÆÀ½èÍý
            PERFORM 2001-NYURECEDEN-GET-SEC
       *
@@ -1354,6 +1362,27 @@
            .
        200-MAIN-EXT.
            EXIT.             
+      *
+      *****************************************************************
+      *    ÎÅÍÜ´ü´ÖÊÔ½¸½èÍý      
+      *****************************************************************
+       2001-SRYYM-HENSYU-SEC           SECTION.
+      *     
+      *    ÎÅÍÜ´ü´Ö³«»Ï
+           MOVE    RECE82-SRYYM        TO  WRK-STYMD (1:6)
+           MOVE    "01"                TO  WRK-STYMD (7:2)
+      *     
+      *    ÎÅÍÜ´ü´Ö½ªÎ»
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY7-AREA
+           MOVE    "71"                TO  LNK-DAY7-IRAI
+           MOVE    RECE82-SRYYM        TO  LNK-DAY7-YM
+           CALL    "ORCSDAY"               USING   STS-AREA-DAY
+                                                   LNK-DAY7-AREA
+           MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
+           . 
+       2001-SRYYM-HENSYU-EXT.
+           EXIT.
       *
       *****************************************************************
       *    Æþ±¡²ñ·×¼èÆÀ½èÍý
@@ -1588,13 +1617,45 @@
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ÎÅÍÜ´ü´Ö¡Ý½éÆü
-           MOVE    RECE82-RYOSTYMD     TO  WRK-SYMD
+           MOVE    SPACE               TO  WRK-SYMD 
+           IF      RECE82-RYOSTYMD NOT =   SPACE
+               IF      RECE82-RYOSTYMD     <   WRK-STYMD
+                   MOVE    WRK-STYMD           TO  WRK-SYMD
+               ELSE      
+                   MOVE    RECE82-RYOSTYMD     TO  WRK-SYMD
+               END-IF    
+           ELSE
+               MOVE    WRK-STYMD (1:6)     TO  WRK-SYMD-YM
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       31
+                   IF      RECE82-DAY (IDX)    =   RECE82-HKNCOMBI
+                       MOVE    IDX                 TO  WRK-SYMD-DD
+                       MOVE    31                  TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMD          TO  WRK-DATA
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ÎÅÍÜ´ü´Ö¡ÝËöÆü
-           MOVE    RECE82-RYOEDYMD     TO  WRK-SYMD
+           MOVE    SPACE               TO  WRK-SYMD 
+           IF      RECE82-RYOEDYMD NOT =  SPACE
+               IF      RECE82-RYOEDYMD    >   WRK-EDYMD
+                   MOVE    WRK-EDYMD          TO  WRK-SYMD
+               ELSE      
+                   MOVE    RECE82-RYOEDYMD    TO  WRK-SYMD
+               END-IF    
+           ELSE
+               MOVE    WRK-EDYMD (1:6)     TO  WRK-SYMD-YM
+             PERFORM VARYING IDX FROM    31  BY  -1
+                     UNTIL   IDX <       1
+                   IF      RECE82-DAY (IDX)    =   RECE82-HKNCOMBI
+                       MOVE    IDX                 TO  WRK-SYMD-DD
+                       MOVE    1                   TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMD          TO  WRK-DATA
            MOVE    7                   TO  WRK-NAGASA
@@ -1679,24 +1740,28 @@
       *    »ö¶È¾ì¤Î½êºßÃÏ
            INITIALIZE                      WRK-PREF-AREA
            IF      RECE82-HKNKBN       =   "1"
-               EVALUATE    RECE82-PREFKBN
-                   WHEN    "1"
-                       MOVE    "ÅÔ"            TO  WRK-PREFKBN
-                   WHEN    "2"
-                       MOVE    "Æ»"            TO  WRK-PREFKBN
-                   WHEN    "3"
-                       MOVE    "ÉÜ"            TO  WRK-PREFKBN
-                   WHEN    "4"
-                       MOVE    "¸©"            TO  WRK-PREFKBN
-               END-EVALUATE
-               EVALUATE    RECE82-CITYKBN
-                   WHEN    "1"
-                       MOVE    "·´"            TO  WRK-CITYKBN
-                   WHEN    "2"
-                       MOVE    "»Ô"            TO  WRK-CITYKBN
-                   WHEN    "3"
-                       MOVE    "¶è"            TO  WRK-CITYKBN
-               END-EVALUATE
+               IF      RECE82-PREFNAME NOT =   SPACE
+                   EVALUATE    RECE82-PREFKBN
+                       WHEN    "1"
+                           MOVE    "ÅÔ"            TO  WRK-PREFKBN
+                       WHEN    "2"
+                           MOVE    "Æ»"            TO  WRK-PREFKBN
+                       WHEN    "3"
+                           MOVE    "ÉÜ"            TO  WRK-PREFKBN
+                       WHEN    "4"
+                           MOVE    "¸©"            TO  WRK-PREFKBN
+                   END-EVALUATE
+               END-IF
+               IF      RECE82-CITYNAME NOT =   SPACE
+                   EVALUATE    RECE82-CITYKBN
+                       WHEN    "1"
+                           MOVE    "·´"            TO  WRK-CITYKBN
+                       WHEN    "2"
+                           MOVE    "»Ô"            TO  WRK-CITYKBN
+                       WHEN    "3"
+                           MOVE    "¶è"            TO  WRK-CITYKBN
+                   END-EVALUATE
+               END-IF
                STRING  RECE82-PREFNAME     DELIMITED  BY  SPACE
                        WRK-PREFKBN         DELIMITED  BY  SPACE
                        RECE82-CITYNAME     DELIMITED  BY  SPACE
