@@ -120,10 +120,8 @@
       *
            MOVE    SACCESS-IN-FILENAME
                                    TO  CACCESS-IN-FILENAME
-           DISPLAY "SUB START"
            CALL    "orcaccess"     USING
                                    CACCESS-AREA
-           DISPLAY "SUB END"
            MOVE    CACCESS-OT-FILENAME
                                    TO  SACCESS-OT-FILENAME
            MOVE    CACCESS-FULLPATH
