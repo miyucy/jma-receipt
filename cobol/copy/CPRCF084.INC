@@ -55,219 +55,224 @@
       ************************************************************
       *01  RECE84-REC.
            03  RECE84-KEY.
+               05  RECE84-KEY1.
       *°åÎÅµ¡´Ø£É£Ä
-               05  RECE84-HOSPNUM         PIC  9(02).
+                   07  RECE84-HOSPNUM     PIC  9(02).
       *¿ÇÎÅÇ¯·î
-               05  RECE84-SRYYM           PIC  9(06).
+                   07  RECE84-SRYYM       PIC  9(06).
       *Æþ³°¶èÊ¬
-               05  RECE84-NYUGAIKBN       PIC  X(01).
+                   07  RECE84-NYUGAIKBN   PIC  X(01).
       *´µ¼Ô£É£Ä
-               05  RECE84-PTID            PIC  9(10).
+                   07  RECE84-PTID        PIC  9(10).
       *¥ì¥»¥×¥È²Ê
-               05  RECE84-RECEKA          PIC  X(02).
+                   07  RECE84-RECEKA      PIC  X(02).
       *ÊÝ¸±£É£Ä        
-               05  RECE84-HKNID           PIC  9(10).
+                   07  RECE84-HKNID       PIC  9(10).
       *Å¬ÍÑ³«»ÏÇ¯·îÆü
-               05  RECE84-TEKSTYMD        PIC  X(08).
+                   07  RECE84-TEKSTYMD    PIC  X(08).
       *ºÞÈÖ¹æ
                05  RECE84-ZAINUM          PIC  9(08).
       *¿ÇÎÅ¶èÊ¬
            03  RECE84-SRYKBN              PIC  X(02).
+      *
+           03  RECE84-DATA-AREA. 
       *¿ÇÎÅ¼ïÊÌ¶èÊ¬
-           03  RECE84-SRYSYUKBN           PIC  X(03).
+               05  RECE84-SRYSYUKBN           PIC  X(03).
       *ºÞ¼±ÊÌ¶èÊ¬
-           03  RECE84-ZAISKBKBN           PIC  X(01).
+               05  RECE84-ZAISKBKBN           PIC  X(01).
       *´µ¼ÔÈÖ¹æ
-           03  RECE84-PTNUM               PIC  X(20).
+               05  RECE84-PTNUM               PIC  X(20).
       *¿ÇÎÅ²Ê
-           03  RECE84-SRYKA               PIC  X(02).
+               05  RECE84-SRYKA               PIC  X(02).
       *ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
-           03  RECE84-HKNCOMBI            PIC  9(04).
+               05  RECE84-HKNCOMBI            PIC  9(04).
       *¼«ÊÝ¶èÊ¬
-           03  RECE84-JIHOKBN             PIC  X(01).
+               05  RECE84-JIHOKBN             PIC  X(01).
       *ºÞÅÀ¿ô
-           03  RECE84-ZAITEN              PIC  9(08).
+               05  RECE84-ZAITEN              PIC  9(08).
       *¿ÇÎÅ¥³¡¼¥É·×
-           03  RECE84-SRYCDTOTAL          PIC  9(14).
+               05  RECE84-SRYCDTOTAL          PIC  9(14).
       *¿ôÎÌ·×
-           03  RECE84-SURYOUTOTAL         PIC  9(07)V9(05).
+               05  RECE84-SURYOUTOTAL         PIC  9(07)V9(05).
       *¿ÇÎÅ¥³¡¼¥É¡ö¿ôÎÌ¤ÎÎß·×
-           03  RECE84-RUIKEITOTAL         PIC  9(13)V9(05).
+               05  RECE84-RUIKEITOTAL         PIC  9(13)V9(05).
       *ÌÀºÙ¿ô
-           03  RECE84-MEISAISU            PIC  9(04).
+               05  RECE84-MEISAISU            PIC  9(04).
       *ºÞ²ó¿ô
-           03  RECE84-ZAIKAISU            PIC  9(04).
+               05  RECE84-ZAIKAISU            PIC  9(04).
       *¼êµ»ÅÀ¿ô£±
-           03  RECE84-SYUTEN1             PIC  9(07).
+               05  RECE84-SYUTEN1             PIC  9(07).
       *¼êµ»ÅÀ¿ô£²
-           03  RECE84-SYUTEN2             PIC  9(07).
+               05  RECE84-SYUTEN2             PIC  9(07).
       *ÌôºÞÅÀ¿ô
-           03  RECE84-YKZTEN              PIC  9(07).
+               05  RECE84-YKZTEN              PIC  9(07).
       *´ïºàÅÀ¿ô
-           03  RECE84-KIZAITEN            PIC  9(07).
+               05  RECE84-KIZAITEN            PIC  9(07).
       *¥É¥¯¥¿¡¼¥³¡¼¥É
-           03  RECE84-DRCD                PIC  X(05).
+               05  RECE84-DRCD                PIC  X(05).
       *ºÞÀÁµá¥Õ¥é¥°
-           03  RECE84-ZAIREQFLG           PIC  X(01).
+               05  RECE84-ZAIREQFLG           PIC  X(01).
       *Äþ¸ºÎ¨
-           03  RECE84-TEIGENRATE          PIC  X(01).
+               05  RECE84-TEIGENRATE          PIC  X(01).
       *¥³¥á¥ó¥È¥³¡¼¥É¥Õ¥é¥°
-           03  RECE84-COMCDFLG            PIC  X(01).
+               05  RECE84-COMCDFLG            PIC  X(01).
       *¡Ê¥µ¡Ë¥Õ¥é¥°
-           03  RECE84-SAFLG               PIC  X(01).
+               05  RECE84-SAFLG               PIC  X(01).
       *ÅêÌôºÞÅÀ£°¡Ê£±Ëô¤Ï£²¡Ê¥³¥á¥ó¥È¤Î¤ß¡Ë¡Ë
-           03  RECE84-TOYAKUFLG           PIC  X(01).
+               05  RECE84-TOYAKUFLG           PIC  X(01).
       *¿ÇÎÅ¶èÊ¬ÃÖ¤­´¹¤¨¥Õ¥é¥°¡Ê¼«ÇåÀÕ¥ê¥ÏÍÑ¡Ë
-           03  RECE84-OKIKAEFLG           PIC  X(01).
+               05  RECE84-OKIKAEFLG           PIC  X(01).
       *ÎÅÍÜÉÂÅïÆþ±¡ÎÁºÞÅÀµ­ºÜÌÀºÙ¿ô
-           03  RECE84-RYOTENKISAISU       PIC  9(04).
+               05  RECE84-RYOTENKISAISU       PIC  9(04).
       *¼«ÇåÀÕ½¸·×Åù¼è°·
-           03  RECE84-JIBAISYUKEIKBN      PIC  9(01).
+               05  RECE84-JIBAISYUKEIKBN      PIC  9(01).
       *´Ø·¸¥³¥á¥ó¥ÈÂ¸ºß¥Õ¥é¥°
-           03  RECE84-SETCOMFLG           PIC  X(01).
+               05  RECE84-SETCOMFLG           PIC  X(01).
       *ºÞ¶èÊ¬
-           03  RECE84-ZAIKBN              PIC  9(03).
+               05  RECE84-ZAIKBN              PIC  9(03).
       *²èÁü¿ÇÃÇ¡Ê£²²óÌÜ°Ê¹ß¸º»»¤¢¤ê¡Ë
-           03  RECE84-GAZOGEN             PIC  X(01).
+               05  RECE84-GAZOGEN             PIC  X(01).
       *
       *¥ê¥Ï¥Ó¥ê
-           03  RECE84-RIHABIRI-COMMENT    PIC  X(01).
+               05  RECE84-RIHABIRI-COMMENT    PIC  X(01).
       *¥ê¥Ï¥Ó¥ê¡Ê¿´Âç·ì´É¼À´µ¡Ë
-           03  RECE84-SINDAI-COMMENT      PIC  X(01).
+               05  RECE84-SINDAI-COMMENT      PIC  X(01).
       *¥ê¥Ï¥Ó¥ê¡Ê¸ÆµÛ´ï¡Ë
-           03  RECE84-KOKYUKI-COMMENT     PIC  X(01).
+               05  RECE84-KOKYUKI-COMMENT     PIC  X(01).
       *¥ê¥Ï¥Ó¥ê¡ÊÇ¾·ì´É¼À´µÅù¡Ë
-           03  RECE84-NOUKE-COMMENT       PIC  X(01).
+               05  RECE84-NOUKE-COMMENT       PIC  X(01).
       *¥ê¥Ï¥Ó¥ê¡Ê±¿Æ°´ï¡Ë
-           03  RECE84-UNDOKI-COMMENT      PIC  X(01).
+               05  RECE84-UNDOKI-COMMENT      PIC  X(01).
       *¥ê¥Ï¥Ó¥ê¡ÊÆñÉÂ´µ¼Ô¡Ë
-           03  RECE84-NANBYO-COMMENT      PIC  X(01).
+               05  RECE84-NANBYO-COMMENT      PIC  X(01).
       *¥ê¥Ï¥Ó¥ê¡Ê¾ã³²»ù¡Ê¼Ô¡Ë¡Ë
-           03  RECE84-SYOGAI-COMMENT      PIC  X(01).
+               05  RECE84-SYOGAI-COMMENT      PIC  X(01).
       *¥ê¥Ï¥Ó¥ê¡ÊÀÝ¿©¡Ë
-           03  RECE84-SESSYOKU-COMMENT    PIC  X(01).
+               05  RECE84-SESSYOKU-COMMENT    PIC  X(01).
       *²ðÃ£¸£°ú
-           03  RECE84-KAITATU-COMMENT     PIC  X(01).
+               05  RECE84-KAITATU-COMMENT     PIC  X(01).
       *
       *ÌôºÞ´ÉÍý»ØÆ³ÎÁ
-           03  RECE84-FLG-YAKUKAN-COMMENT PIC  X(01).
+               05  RECE84-FLG-YAKUKAN-COMMENT PIC  X(01).
       *Æþ±¡±ÉÍÜ¿©»ö»ØÆ³ÎÁ
-           03  RECE84-FLG-NYUEIYO-COMMENT PIC  X(01).
+               05  RECE84-FLG-NYUEIYO-COMMENT PIC  X(01).
       *Âà±¡Á°Ë¬Ìä»ØÆ³ÎÁ
-           03  RECE84-FLG-HOUMON-COMMENT  PIC  X(01).
+               05  RECE84-FLG-HOUMON-COMMENT  PIC  X(01).
       *½ýÉÂ¼êÅö¶â°Õ¸«½ñ¸òÉÕÎÁ
-           03  RECE84-FLG-SYOBYO-COMMENT  PIC  X(01).
+               05  RECE84-FLG-SYOBYO-COMMENT  PIC  X(01).
       *ÎÅÍÜÈñÆ±°Õ½ñ¸òÉÕÎÁ
-           03  RECE84-FLG-RYOYO-COMMENT   PIC  X(01).
+               05  RECE84-FLG-RYOYO-COMMENT   PIC  X(01).
       *Âà±¡»þÉþÌô»ØÆ³²Ã»»¤ò»»Äê»þ¤ÎÌôºÞ´ÉÍý»ØÆ³ÎÁ
-           03  RECE84-FLG-TAIIN-COMMENT   PIC  X(01).
+               05  RECE84-FLG-TAIIN-COMMENT   PIC  X(01).
       *Ë¬Ìä´Ç¸î»Ø¼¨ÎÁ
-           03  RECE84-FLG-HOUSIJI-COMMENT PIC  X(01).
+               05  RECE84-FLG-HOUSIJI-COMMENT PIC  X(01).
       *¼ê½Ñ¡ÊÍ¢·ì¤Ï½ü¤¯¡Ë
-           03  RECE84-FLG-SHUJUTU-COMMENT PIC  X(01).
+               05  RECE84-FLG-SHUJUTU-COMMENT PIC  X(01).
       *£Ã£Ô¡¦£Í£Ò£É
-           03  RECE84-FLG-CTMRI-COMMENT   PIC  X(01).
+               05  RECE84-FLG-CTMRI-COMMENT   PIC  X(01).
       *Àº¿À²ÊÂà±¡Á°Ë¬Ìä»ØÆ³ÎÁ
-           03  RECE84-FLG-HOUSEI-COMMENT  PIC  X(01).
+               05  RECE84-FLG-HOUSEI-COMMENT  PIC  X(01).
       *Àº¿À²Ê³ÖÎ¥ÉÂ¼¼´ÉÍý²Ã»»¡ÊÆþ±¡ÎÁ²Ã»»¡Ë
-           03  RECE84-FLG-KAKURI-COMMENT  PIC  X(01).
+               05  RECE84-FLG-KAKURI-COMMENT  PIC  X(01).
       *Ï«ºÒ¼£ÎÅ·×²è²Ã»»¡ÊÆþ±¡ÎÁ²Ã»»¡Ë
-           03  RECE84-FLG-CHIRYO-COMMENT  PIC  X(01).
+               05  RECE84-FLG-CHIRYO-COMMENT  PIC  X(01).
       *ºßÂð·ì±ÕÆ©ÀÏÉÑ²ó»ØÆ³´ÉÍýÎÁ
-           03  RECE84-FLG-HINKAI-COMMENT  PIC  X(01).
+               05  RECE84-FLG-HINKAI-COMMENT  PIC  X(01).
       *»ÀÁÇ
-           03  RECE84-FLG-SANSO-COMMENT   PIC  X(01).
+               05  RECE84-FLG-SANSO-COMMENT   PIC  X(01).
       *½é¿Ç¡ÊÆ±ÆüÊ£¿ô¿ÇÎÅ²Ê¡Ë
-           03  RECE84-FLG-SYODOU-COMMENT  PIC  X(01).
-           03  RECE84-SYODOU-SRYKA-AREA.
-               05  RECE84-SYODOU-SRYKA    PIC  X(02)     OCCURS  10.
+               05  RECE84-FLG-SYODOU-COMMENT  PIC  X(01).
+               05  RECE84-SYODOU-SRYKA-AREA.
+                   07  RECE84-SYODOU-SRYKA    PIC  X(02)     OCCURS  10.
       *¸¡ººÅù¼Â»ÜÈ½ÃÇ
-           03  RECE84-KNSJISKBN           PIC  9(01).
+               05  RECE84-KNSJISKBN           PIC  9(01).
       *¸¡ººÅù¼Â»ÜÈ½ÃÇ¥°¥ë¡¼¥×
-           03  RECE84-KNSJISGRPKBN        PIC  9(02).
+               05  RECE84-KNSJISGRPKBN        PIC  9(02).
       *±ý¿Ç¡¦ÆÃÊÌ±ý¿Ç
-           03  RECE84-FLG-OSIN-COMMENT    PIC  X(01).
+               05  RECE84-FLG-OSIN-COMMENT    PIC  X(01).
       *ºß»Ù±ç¤Ë´Ø¤¹¤ë¿ÇÎÅ
-           03  RECE84-FLG-ZAISIEN-COMMENT PIC  X(01).
+               05  RECE84-FLG-ZAISIEN-COMMENT PIC  X(01).
       *¥ì¥»ÅÅÍÑÆþ±¡ÎÁ²Ã»»¥Õ¥é¥°
-           03  RECE84-NYUKSNFLG           PIC  9(01).
+               05  RECE84-NYUKSNFLG           PIC  9(01).
       *¸¡ºº¡Ê£Â£Î£Ð¡¢£Î£Ô¡Ý£ð£ò£ï£Â£Î£Ð¡¢£È£Á£Î£Ð¡Ë
-           03  RECE84-FLG-KENSA-COMMENT   PIC  X(01).
+               05  RECE84-FLG-KENSA-COMMENT   PIC  X(01).
       *
       *²ð¸î»Ù±çÏ¢·È»ØÆ³ÎÁ
-           03  RECE84-FLG-KAISIEN-COMMENT PIC  X(01).
+               05  RECE84-FLG-KAISIEN-COMMENT PIC  X(01).
       *½¸ÃÄ±ÉÍÜ¿©»ö»ØÆ³ÎÁ
-           03  RECE84-FLG-SYUEIYO-COMMENT PIC  X(01).
+               05  RECE84-FLG-SYUEIYO-COMMENT PIC  X(01).
       *¿Í¹©¿ÕÂ¡Åù
-           03  RECE84-FLG-JINZOU-COMMENT  PIC  X(01).
+               05  RECE84-FLG-JINZOU-COMMENT  PIC  X(01).
       *¶É½ê±¢°µÊÄº¿½èÃÖ
-           03  RECE84-FLG-KYOKUIN-COMMENT PIC  X(01).
+               05  RECE84-FLG-KYOKUIN-COMMENT PIC  X(01).
       *Ëã¿ì
-           03  RECE84-FLG-MASUI-COMMENT   PIC  X(01).
+               05  RECE84-FLG-MASUI-COMMENT   PIC  X(01).
       *±ÉÍÜ¥µ¥Ý¡¼¥È¥Á¡¼¥à²Ã»»
-           03  RECE84-FLG-EISAPO-COMMENT  PIC  X(01).
+               05  RECE84-FLG-EISAPO-COMMENT  PIC  X(01).
       *¸ÆµÛ¥±¥¢¥Á¡¼¥à²Ã»»
-           03  RECE84-FLG-KOKKEA-COMMENT  PIC  X(01).
+               05  RECE84-FLG-KOKKEA-COMMENT  PIC  X(01).
       *½Å¾É¼Ô²Ã»»¡ÊÀº¿ÀÎÅÍÜÉÂÅïÆþ±¡ÎÁ¡Ë
-           03  RECE84-FLG-JYUSYO-COMMENT  PIC  X(01).
+               05  RECE84-FLG-JYUSYO-COMMENT  PIC  X(01).
       *
       *²èÁü¿ÇÃÇ¥Õ¥¤¥ë¥à
-           03  RECE84-FLG-FILM-COMMENT    PIC  X(01).
+               05  RECE84-FLG-FILM-COMMENT    PIC  X(01).
       *
       *²ð¸î¿¦°÷ÅùÓ½áâµÛ°úÅù»Ø¼¨ÎÁ
-           03  RECE84-FLG-KAISYOKU-COMMENT
+               05  RECE84-FLG-KAISYOKU-COMMENT
                                           PIC  X(01).
       *Àº¿À²Ê¥·¥ç¡¼¥È¡¦¥±¥¢¡¦Àº¿À²Ê¥Ç¥¤¡¦¥±¥¢
-           03  RECE84-FLG-SEIKEA-COMMENT  PIC  X(01).
+               05  RECE84-FLG-SEIKEA-COMMENT  PIC  X(01).
       *Àº¿À²Ê¥ê¥¨¥¾¥ó¥Á¡¼¥à²Ã»»
-           03  RECE84-FLG-SEIRIE-COMMENT  PIC  X(01).
+               05  RECE84-FLG-SEIRIE-COMMENT  PIC  X(01).
       *ÉÂÅïÌôºÞ¶ÈÌ³¼Â»Ü²Ã»»
-           03  RECE84-FLG-BYOYAK-COMMENT  PIC  X(01).
+               05  RECE84-FLG-BYOYAK-COMMENT  PIC  X(01).
       *
       *ºßÂð»ýÂ³ÍÛ°µ¸ÆµÛÎÅË¡»ØÆ³´ÉÍýÎÁ
-           03  RECE84-FLG-YOUATU-COMMENT  PIC  X(01).
+               05  RECE84-FLG-YOUATU-COMMENT  PIC  X(01).
       *
       *¼êµ»Ëè¤ÎÆâÍÆ¡Ê¼ê½Ñ¡¦²èÁü¿ÇÃÇ¡¦½èÃÖ¡Ë
-           03  RECE84-ACCTP-SYUGI-TBL-G.
-               05    RECE84-ACCTP-SYUGI-TBL     OCCURS  5.
+               05  RECE84-ACCTP-SYUGI-TBL-G.
+                   07    RECE84-ACCTP-SYUGI-TBL     OCCURS  5.
       *¼êµ»³«»Ï¥³¡¼¥É
-                     07  RECE84-ACCTP-SRYCD     PIC X(09).
+                         09  RECE84-ACCTP-SRYCD     PIC X(09).
       *¼êµ»ÅÀ¿ô
-                     07  RECE84-ACCTP-SYUTEN    PIC 9(07).
+                         09  RECE84-ACCTP-SYUTEN    PIC 9(07).
       *ÌôºÞÅÀ¿ô
-                     07  RECE84-ACCTP-YKZTEN    PIC 9(07).
+                         09  RECE84-ACCTP-YKZTEN    PIC 9(07).
       *¤½¤ÎÂ¾´ïºàÅÀ¿ô¡Ê¥Õ¥£¥ë¥à¡¦»ÀÁÇ¡¦ÃâÁÇ°Ê³°¡Ë
-                     07  RECE84-ACCTP-KIZAITEN  PIC 9(07).
+                         09  RECE84-ACCTP-KIZAITEN  PIC 9(07).
       *¥Õ¥£¥ë¥àÅÀ¿ô
-                     07  RECE84-ACCTP-FIRTEN    PIC 9(07).
+                         09  RECE84-ACCTP-FIRTEN    PIC 9(07).
       *»ÀÁÇÅÀ¿ô
-           03  RECE84-ACCTP-SANSOTEN            PIC 9(07).
+               05  RECE84-ACCTP-SANSOTEN            PIC 9(07).
       *ÃâÁÇÅÀ¿ô
-           03  RECE84-ACCTP-CHISOTEN            PIC 9(07).
+               05  RECE84-ACCTP-CHISOTEN            PIC 9(07).
       *
       *Êñ³ç¿ÇÎÅÊ¬ÂàÈòÅÀ¿ô
-           03  RECE84-HOKATU-TENSU-AREA.
+               05  RECE84-HOKATU-TENSU-AREA.
       *ºÞÅÀ¿ô
-               05    RECE84-HOKATU-ZAITEN       PIC 9(08).
+                   07    RECE84-HOKATU-ZAITEN       PIC 9(08).
       *¼êµ»ÅÀ¿ô£±
-               05    RECE84-HOKATU-SYUTEN1      PIC 9(07).
+                   07    RECE84-HOKATU-SYUTEN1      PIC 9(07).
       *¼êµ»ÅÀ¿ô£²
-               05    RECE84-HOKATU-SYUTEN2      PIC 9(07).
+                   07    RECE84-HOKATU-SYUTEN2      PIC 9(07).
       *ÌôºÞÅÀ¿ô
-               05    RECE84-HOKATU-YKZTEN       PIC 9(07).
+                   07    RECE84-HOKATU-YKZTEN       PIC 9(07).
       *´ïºàÅÀ¿ô
-               05    RECE84-HOKATU-KIZAITEN     PIC 9(07).
+                   07    RECE84-HOKATU-KIZAITEN     PIC 9(07).
       *
       *ºÞ¡ÊÅÀ¿ô¡Ë
-           03  RECE84-ZAI-TENSU                 PIC 9(09).
+               05  RECE84-ZAI-TENSU                 PIC 9(09).
       *ºÞ¡Ê¶â³Û¡Ë
-           03  RECE84-ZAI-KINGAKU               PIC 9(09).
+               05  RECE84-ZAI-KINGAKU               PIC 9(09).
       *
       *Æü¿ô²ó¿ô¥Æ¡¼¥Ö¥ë
-           03  RECE84-DAY-AREA.
+               05  RECE84-DAY-AREA.
       *        ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë¡Ê1:¹ç·×,2:£±²ó,3:£²²ó, 4:£³²ó°Ê¾å¡Ë
-             04  RECE84-DAY-TBL           OCCURS  4.
-                 05  RECE84-KAISUINF      OCCURS  31.
-                     07  RECE84-KAISU     PIC  9(03).
+                  07  RECE84-DAY-TBL           OCCURS  4.
+                      09  RECE84-KAISUINF      OCCURS  31.
+                          11  RECE84-KAISU     PIC  9(03).
+      *¥ì¥»¥×¥È¼ïÊÌ
+               05  RECE84-RECESYUBETU          PIC 9(04).
       *¥³¡¼¥ÉÉ½ÍÑÈÖ¹æ¡Ý¶èÊ¬ÈÖ¹æ
            03  RECE84-CDKBN-KBNNUM        PIC  9(03).

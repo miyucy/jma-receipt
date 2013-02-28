@@ -26,23 +26,26 @@
       ************************************************************
       *01  RECE88-REC.
            03  RECE88-KEY.
+               05  RECE88-KEY1.
       *医療機関ＩＤ
-               05  RECE88-HOSPNUM         PIC  9(02).
+                   07  RECE88-HOSPNUM      PIC 9(02).
       *診療年月
-               05  RECE88-SRYYM           PIC  9(06).
+                   07  RECE88-SRYYM        PIC 9(06).
       *入外区分
-               05  RECE88-NYUGAIKBN       PIC  X(01).
+                   07  RECE88-NYUGAIKBN    PIC X(01).
       *患者ＩＤ
-               05  RECE88-PTID            PIC  9(10).
+                   07  RECE88-PTID         PIC 9(10).
       *レセプト科
-               05  RECE88-RECEKA          PIC  X(02).
+                   07  RECE88-RECEKA       PIC X(02).
       *保険ＩＤ        
-               05  RECE88-HKNID           PIC  9(10).
+                   07  RECE88-HKNID        PIC 9(10).
       *適用開始年月日
-               05  RECE88-TEKSTYMD        PIC  X(08).
+                   07  RECE88-TEKSTYMD     PIC X(08).
       *入院年月日
-               05  RECE88-NYUINYMD        PIC  X(08).
+               05  RECE88-NYUINYMD         PIC X(08).
       *退院年月日
-           03  RECE88-TAIINYMD            PIC  X(08).
+           03  RECE88-TAIINYMD             PIC X(08).
       *自院歴−入院中区分
-           03  RECE88-NYUINCHUKBN         PIC  X(01).
+           03  RECE88-NYUINCHUKBN          PIC X(01).
+      *初回番号（入院年月日と同じときだけセット）
+           03  RECE88-SHONUM               PIC 9(03).

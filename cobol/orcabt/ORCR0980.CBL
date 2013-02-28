@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCR0865.
+       PROGRAM-ID.             ORCR0980.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト入院（労災・自賠責）
@@ -139,7 +139,6 @@
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
-           03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-RECE842                             PIC 9(06).
            03  CNT-RECE84W                             PIC 9(06). 
       *
@@ -158,10 +157,8 @@
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
                05  WRK-PARA-SYSYMD                     PIC  X(08).
-               05  WRK-PARA-RECEKBN                    PIC  X(01).
                05  WRK-PARA-JOBID                      PIC  9(07).
                05  WRK-PARA-SHELLID                    PIC  X(08).
-           03  WRK-PARA-JIBAIPRTKBN                    PIC  X(01).
            03  WRK-PARA-HOSPNUM                        PIC  9(02).
       *
            03  WRK-COMRENNUM           PIC 9(05).
@@ -176,11 +173,21 @@
            03  WRK-INDEX-AREA.
                05  WRK-INDEX           PIC 9(003)    OCCURS  10.
       *
-           03  WRK-RECEERR             PIC X(200). 
-      *
        01  WRK-RECE842-REC.
            COPY    "CPRCF0842.INC" REPLACING  //RECE842//
                                    BY         //WRK-RECE842//.
+      *
+       01  WRK-ERR-AREA.
+           03  WRK-RECEERR             PIC X(200).
+           03  WRK-ERRMSG              PIC X(300).
+           03  WRK-MCP-RC              PIC 9(9).
+           03  WRK-ERR-FILE-STS        PIC X(02).
+           03  WRK-ERR-FILE-MSG        PIC X(100).
+           03  WRK-ERR-FILE-MSG1       PIC X(17).
+           03  WRK-ERR-FLG             PIC 9(01).
+      *    エラーファイル名称領域
+           COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
+                                       BY         //WRK-ERR-FILE-NM//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -223,14 +230,10 @@
       *
            PERFORM 300-TERM-SEC
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               STOP    RUN
-           ELSE
-               EXIT    PROGRAM
-           END-IF 
+           STOP    RUN
            .
       *****************************************************************
-      *    初期　処理
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -241,7 +244,8 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
-                                               WRK-PARA-JIBAIPRTKBN
+                                               WRK-PARA-JOBID
+                                               WRK-PARA-SHELLID
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -249,38 +253,33 @@
       *
            MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE82PARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE82PARA-HOSPNUM
       *
            MOVE    "RECE84C"           TO  RECE84PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84PARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE84PARA-HOSPNUM
       *
            MOVE    "RECE85C"           TO  RECE85PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE85PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE85PARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE85PARA-HOSPNUM
       *
            MOVE    "RECE84D"           TO  RECE842PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE842PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE842PARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE842PARA-HOSPNUM
       *
            MOVE    "RECE84E"           TO  RECE84WPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84WPARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84WPARA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE84WPARA-HOSPNUM
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               PERFORM 100-DBOPEN-SEC
+           PERFORM 100-DBOPEN-SEC
       *
-      *        ステップ管理開始処理
-               MOVE    "STS"               TO  SJOBKANRI-MODE
-               INITIALIZE                      JOBKANRI-REC
-               MOVE    "ORCR0865"          TO  JOB-PGID
-               MOVE    "同一剤のまとめ（労災・自賠責）（レセ電用）"
-                                           TO  JOB-SHELLMSG
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
-      *
-      *        処理中止設定処理
-               PERFORM 500-CANCEL-HENSYU-SEC
-           END-IF 
+      *    ステップ管理開始処理
+           MOVE    "STS"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    "ORCR0980"          TO  JOB-PGID
+           MOVE    "同一剤のまとめ（労災・自賠責）（レセ電用）"
+                                       TO  JOB-SHELLMSG
+           PERFORM 900-CALL-ORCSJOB-SEC
       *
            OPEN    OUTPUT              RECE842-FILE
            CLOSE                       RECE842-FILE
@@ -299,9 +298,53 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    同一剤のまとめ処理
            OPEN    INPUT               RECE82-FILE
-                                       RECE84-FILE
-                                       RECE85-FILE
+           IF      STS-RECE82          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE82PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE82          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
+           OPEN    INPUT               RECE84-FILE
+           IF      STS-RECE84          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE84PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE84          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
+           OPEN    INPUT               RECE85-FILE
+           IF      STS-RECE85          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE85PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE85          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            OPEN    I-O                 RECE842-FILE
+           IF      STS-RECE842         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE842PARA         TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE842         TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            PERFORM 900-RECE82-READ-SEC
       *
            PERFORM 210-RECE842-WRITE-SEC
@@ -434,9 +477,34 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                  IF      FLG-MATOME    =   ZERO
                      WRITE   RECE842-REC
+      *
+                   IF      STS-RECE842         =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE               TO  WRK-ERR-AREA
+                       INITIALIZE                      WRK-ERR-AREA
+      *
+                       MOVE    3                   TO  WRK-ERR-FLG
+                       MOVE    RECE842PARA         TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE842         TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
                      ADD     1                   TO  CNT-RECE842
                  ELSE
                      REWRITE RECE842-REC
+      *
+                     IF      STS-RECE842         =   "00"
+                         CONTINUE
+                     ELSE
+                         MOVE    SPACE       TO  WRK-ERR-AREA
+                         INITIALIZE              WRK-ERR-AREA
+      *
+                         MOVE    4           TO  WRK-ERR-FLG
+                         MOVE    RECE842PARA TO  WRK-ERR-FILE-NM
+                         MOVE    STS-RECE842 TO  WRK-ERR-FILE-STS
+                         PERFORM 500-FILE-ERR-ABORT-SEC
+                     END-IF
                  END-IF
                ELSE
                  MOVE    RECE842-REC         TO  WRK-RECE842-REC
@@ -476,19 +544,39 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                  IF      FLG-RECE842         =   1
                      WRITE   RECE842-REC
+      *
+                     IF      STS-RECE842         =   "00"
+                         CONTINUE
+                     ELSE
+                         MOVE    SPACE           TO  WRK-ERR-AREA
+                         INITIALIZE                  WRK-ERR-AREA
+      *
+                         MOVE    3               TO  WRK-ERR-FLG
+                         MOVE    RECE842PARA     TO  WRK-ERR-FILE-NM
+                         MOVE    STS-RECE842     TO  WRK-ERR-FILE-STS
+                         PERFORM 500-FILE-ERR-ABORT-SEC
+                     END-IF
+      *
                      ADD     1                   TO  CNT-RECE842
                  ELSE
                      REWRITE RECE842-REC
+      *
+                     IF      STS-RECE842         =   "00"
+                         CONTINUE
+                     ELSE
+                         MOVE    SPACE       TO  WRK-ERR-AREA
+                         INITIALIZE              WRK-ERR-AREA
+      *
+                         MOVE    4           TO  WRK-ERR-FLG
+                         MOVE    RECE842PARA TO  WRK-ERR-FILE-NM
+                         MOVE    STS-RECE842 TO  WRK-ERR-FILE-STS
+                         PERFORM 500-FILE-ERR-ABORT-SEC
+                     END-IF
                  END-IF
                END-IF
       *
                PERFORM     900-RECE84-READ-SEC
       *
-      *        処理中止設定処理
-               IF      CNT-IN-CANCEL       =   50
-                   MOVE    ZERO                TO  CNT-IN-CANCEL
-                   PERFORM 500-CANCEL-HENSYU-SEC
-               END-IF
            END-PERFORM
       *
            PERFORM 900-RECE82-READ-SEC
@@ -609,15 +697,23 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                         TO  RECE84W-SYODOU-SRYKA-AREA
       *
            WRITE   RECE84W-REC
+      *
+           IF      STS-RECE84W         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+      *
+               MOVE    3                   TO  WRK-ERR-FLG
+               MOVE    RECE84WPARA         TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE84W         TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
            ADD     1                   TO  CNT-RECE84W
       *
            PERFORM     900-RECE842-READ-SEC
       *
-      *    処理中止設定処理
-           IF      CNT-IN-CANCEL       =   50
-               MOVE    ZERO                TO  CNT-IN-CANCEL
-               PERFORM 500-CANCEL-HENSYU-SEC
-           END-IF
            .
        220-RECE84W-WRITE-EXT.
            EXIT.
@@ -637,83 +733,102 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-               IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ジョブ管理終了処理
-                   MOVE    "JBE"           TO  SJOBKANRI-MODE
-                   INITIALIZE                  JOBKANRI-REC
-                   MOVE    WRK-RECEERR     TO  JOB-YOBI
-                   MOVE    "9999"          TO  JOB-ERRCD
-grpsys             PERFORM 900-CALL-ORCSJOB-SEC
-               END-IF
+      *        ジョブ管理終了処理
+               MOVE    "JBE"           TO  SJOBKANRI-MODE
+               INITIALIZE                  JOBKANRI-REC
+               MOVE    WRK-RECEERR     TO  JOB-YOBI
+               MOVE    "9999"          TO  JOB-ERRCD
+               PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *                             
-           MOVE    1                   TO  FLG-END
-      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCR0980 "         DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
            .
        500-ERR-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    処理中止処理
+      *    エラー時終了処理
       *****************************************************************
-       500-CANCEL-HENSYU-SEC                SECTION.
+       500-COBABORT-SEC            SECTION.
       *
-           IF      WRK-PARA-SHELLID    =   "RECEPTX"
-               CONTINUE
-           ELSE
-               MOVE    "CHK"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
-               IF    ( SJOBKANRI-RETURN
-                                       =   ZERO )
-               AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "処理が中止されました"
-                                           TO  WRK-RECEERR
+           CALL    "cobabort"          USING   WRK-ERRMSG
       *
-                   OPEN    INPUT   RECEERR-FILE
-                   IF      STS-RECEERR         =   ZERO
-                       CLOSE   RECEERR-FILE
-                   ELSE
-                       OPEN    OUTPUT              RECEERR-FILE
-      *    
-                       MOVE    WRK-RECEERR         TO  RECEERR-REC
-                       WRITE   RECEERR-REC
-                       CLOSE   RECEERR-FILE
-      *         
-      *                ジョブ管理終了処理
-                       MOVE    "CAN"           TO  SJOBKANRI-MODE
-                       INITIALIZE                  JOBKANRI-REC
-                       MOVE    WRK-RECEERR     TO  JOB-YOBI
-                       MOVE    "8888"          TO  JOB-ERRCD
-                       MOVE    2               TO  JOB-STOPFLG
-grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
-                   END-IF
-      *                             
-                   MOVE    1                   TO  FLG-END
-               END-IF
-           END-IF
            .
-       500-CANCEL-HENSYU-EXT.
+       500-COBABORT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ファイルエラー処理
+      *****************************************************************
+       500-FILE-ERR-ABORT-SEC      SECTION.
+      *
+           EVALUATE    WRK-ERR-FLG
+               WHEN    1
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
+               WHEN    2
+                   MOVE    "ファイル読み込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
+               WHEN    3
+                   MOVE    "ファイル書き込みエラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file write err"
+                                           TO  WRK-ERR-FILE-MSG1
+               WHEN    4
+                   MOVE    "ファイル更新エラー　FILE="
+                                           TO  WRK-ERR-FILE-MSG
+                   MOVE    "file rewrite err"
+                                           TO  WRK-ERR-FILE-MSG1
+           END-EVALUATE
+      *
+           STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
+                   " STS="                 DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                                           INTO    WRK-RECEERR
+           END-STRING
+           PERFORM 500-ERR-HENSYU-SEC
+      *
+           STRING  "ORCR0980 "             DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
+                   " FILE="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
+                   "  STS="                DELIMITED   BY  SIZE
+                   WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
+                   LOW-VALUE               DELIMITED   BY  SIZE
+                                           INTO    WRK-ERRMSG
+           END-STRING
+           PERFORM 500-COBABORT-SEC
+      *
+           .
+       500-FILE-ERR-ABORT-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        ステップ管理終了処理
-               MOVE    "STE"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-grpsys         PERFORM 900-CALL-ORCSJOB-SEC
+      *    ステップ管理終了処理
+           MOVE    "STE"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           PERFORM 900-CALL-ORCSJOB-SEC
       *
-               PERFORM 900-DBDISCONNECT-SEC
-           END-IF
+           PERFORM 900-DBDISCONNECT-SEC
       *
            DISPLAY "RECE84     :" CNT-IN   
            DISPLAY "RECE842    :" CNT-RECE842
            DISPLAY "RECE84W    :" CNT-RECE84W
-           DISPLAY "*** ORCR0865 END ***"
+           DISPLAY "*** ORCR0980 END ***"
            .
        300-TERM-EXT.
            EXIT.
@@ -727,9 +842,32 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                AT  END
                    MOVE    1           TO  FLG-RECE82
                NOT AT  END
-                   ADD     ZERO        TO  FLG-RECE82
+                   IF      STS-RECE82          =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE               TO  WRK-ERR-AREA
+                       INITIALIZE                      WRK-ERR-AREA
+                       MOVE    2                   TO  WRK-ERR-FLG
+                       MOVE    RECE82PARA          TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE82          TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
+                   IF  (   RECE82-SRYYM        <   201307 )
+                   OR  (   RECE82-PTNUM        =   SPACE  )
+                   OR  (   RECE82-TSTPTNUMKBN  =   "1"    )
+                   OR  (   RECE82-RECESYUBETU  =   ZERO
+                                               OR  7021   )
+                   OR  ( ( RECE82-TOTALKIN     =   ZERO )
+                           AND
+                         ( RECE82-TOTALKIN2    =   ZERO ) )
+                       GO  TO  900-RECE82-READ-SEC
+                   END-IF
+      *
+                   MOVE    ZERO        TO  FLG-RECE82
       *
                    DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
+                                  " SRYYM=" RECE82-SRYYM
       *
            END-READ
            .
@@ -745,9 +883,24 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                AT  END
                    MOVE    1             TO    FLG-RECE84
                NOT AT END    
+                   IF      STS-RECE84          =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE               TO  WRK-ERR-AREA
+                       INITIALIZE                      WRK-ERR-AREA
+                       MOVE    2                   TO  WRK-ERR-FLG
+                       MOVE    RECE84PARA          TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE84          TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
+                   IF      RECE84-SRYKBN       =   "95"   OR
+                                                   "96"
+                       GO  TO  900-RECE84-READ-SEC
+                   END-IF
+      *
                    MOVE    ZERO          TO    FLG-RECE84
                    ADD     1             TO    CNT-IN
-                                               CNT-IN-CANCEL
            END-READ
            .
        900-RECE84-READ-EXT.
@@ -762,6 +915,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                AT  END
                    MOVE    1      TO    FLG-RECE85
                NOT AT  END
+                   IF      STS-RECE85          =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE               TO  WRK-ERR-AREA
+                       INITIALIZE                      WRK-ERR-AREA
+                       MOVE    2                   TO  WRK-ERR-FLG
+                       MOVE    RECE85PARA          TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE85          TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
                    MOVE    ZERO   TO    FLG-RECE85
            END-READ
            .
@@ -777,8 +941,18 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                AT  END
                    MOVE    1             TO    FLG-RECE842
                NOT AT END    
+                   IF      STS-RECE842         =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE               TO  WRK-ERR-AREA
+                       INITIALIZE                      WRK-ERR-AREA
+                       MOVE    2                   TO  WRK-ERR-FLG
+                       MOVE    RECE842PARA         TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE842         TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
                    MOVE    ZERO          TO    FLG-RECE842
-                   ADD     1             TO    CNT-IN-CANCEL
            END-READ
            .
        900-RECE842-READ-EXT.
@@ -907,7 +1081,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
@@ -921,7 +1095,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            .
@@ -937,12 +1111,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBOPEN"            TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBSTART"           TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -955,12 +1129,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBCOMMIT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    LOW-VALUE           TO  MCP-TABLE
                                            MCP-PATHNAME
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
            .
        900-DBDISCONNECT-EXT.
            EXIT.

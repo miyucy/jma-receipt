@@ -40,6 +40,8 @@
                    07  RECE841-TEKSTYMD    PIC  X(08).
       *診療区分
                05  RECE841-SRYKBN          PIC  X(02).
+      *コード表用番号−区分番号
+               05  RECE841-CDKBN-KBNNUM    PIC  9(03).
       *剤番号
                05  RECE841-ZAINUM          PIC  9(08).
       *
@@ -240,3 +242,5 @@
                    07  RECE841-DAY-TBL             OCCURS  4.
                        09  RECE841-KAISUINF        OCCURS  31.
                            11  RECE841-KAISU       PIC 9(03).
+      *レセプト種別
+               05  RECE84-RECESYUBETU          PIC 9(04).

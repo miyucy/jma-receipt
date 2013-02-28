@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCR0885.
+       PROGRAM-ID.             ORCR0981.
       *****************************************************************
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥ì¥»¥×¥ÈÆþ±¡¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¡Ë
@@ -112,7 +112,7 @@
       *¥ï¡¼¥¯
        FD  RECE849-FILE.
        01  RECE849-REC. 
-           COPY    "CPRCF0841.INC" REPLACING   //RECE841//
+           COPY    "CPRCF084.INC" REPLACING    //RECE84//
                                    BY          //RECE849//.
       *
        FD  RECE859-FILE.
@@ -235,7 +235,6 @@
            03  CNT-RECE84-RE       PIC 9(06).
            03  CNT-RECE85-RE       PIC 9(06).
            03  CNT-RIHA            PIC 9(06).
-           03  CNT-IN-COMMIT       PIC 9(06).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -758,11 +757,7 @@
       *
            PERFORM 300-END-SEC
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               STOP    RUN
-           ELSE
-               EXIT    PROGRAM
-           END-IF 
+           STOP    RUN
            .
       *****************************************************************
       *    ½é´ü¡¡½èÍý
@@ -787,17 +782,15 @@
       *
            PERFORM 110-FILE-OPEN-SEC
       *
-           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-               PERFORM 120-DBOPEN-SEC
+           PERFORM 120-DBOPEN-SEC
       *
-      *        ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
-               MOVE    "STS"               TO  SJOBKANRI-MODE
-               INITIALIZE                      JOBKANRI-REC
-               MOVE    "ORCR0885"          TO  JOB-PGID
-               MOVE    "¥³¥á¥ó¥ÈÊÔ½¸¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¡Ë¡Ê¥ì¥»ÅÅÍÑ¡Ë"
-                                           TO  JOB-SHELLMSG
-               PERFORM 900-CALL-ORCSJOB-SEC
-           END-IF 
+      *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
+           MOVE    "STS"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI-REC
+           MOVE    "ORCR0981"          TO  JOB-PGID
+           MOVE    "¥³¥á¥ó¥ÈÊÔ½¸¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¡Ë¡Ê¥ì¥»ÅÅÍÑ¡Ë"
+                                       TO  JOB-SHELLMSG
+           PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM 990-RECE82-READ-SEC
            .
@@ -842,10 +835,40 @@
            MOVE    WRK-PARA-HOSPNUM    TO  RECE855PARA-HOSPNUM
       *
            OPEN    INPUT               RECE82-FILE
+           IF      STS-RECE82          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE82PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE82          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
       *
            OPEN    INPUT               RECE84-FILE
+           IF      STS-RECE84          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE84PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE84          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
       *
            OPEN    INPUT               RECE85-FILE
+           IF      STS-RECE85          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+               MOVE    1                   TO  WRK-ERR-FLG
+               MOVE    RECE85PARA          TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE85          TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
       *
            OPEN    OUTPUT              RECE841-FILE
            CLOSE                       RECE841-FILE
@@ -1595,12 +1618,6 @@
       *
            PERFORM 990-RECE82-READ-SEC
       *
-           IF  CNT-IN-COMMIT   =    300
-                 MOVE  ZERO          TO      CNT-IN-COMMIT
-                 PERFORM 900-DBCOMMIT-SEC
-                 PERFORM 900-DBSTART-SEC
-           END-IF
-      *
            .
        200-MAIN-EXT.
            EXIT.
@@ -1617,8 +1634,7 @@
            MOVE    1                   TO  RECE849-MEISAISU
       *
            MOVE    RECE82-HKNCOMBI     TO  RECE849-HKNCOMBI
-           WRITE   RECE849-REC
-           ADD     1                   TO  CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            PERFORM 800-RECE82-SET859-SEC
            MOVE    99999999            TO  RECE859-ZAINUM
@@ -1666,8 +1682,7 @@
       *
            MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
                                        TO  RECE859-SRYACT-TBL(1)
-           WRITE   RECE859-REC
-           ADD     1                   TO  CNT-RECE859
+           PERFORM 800-RECE859-WRITE-SEC
       *
            .
        2001-NYUINRYO-COMMENT-EXT.
@@ -2154,8 +2169,7 @@
                    END-IF
                 END-PERFORM
                 IF   RECE859-SRYCD(1)  NOT =  SPACE
-                   WRITE   RECE859-REC
-                   ADD     1            TO   CNT-RECE859
+                     PERFORM 800-RECE859-WRITE-SEC
                 END-IF
            END-PERFORM
       *
@@ -2167,8 +2181,7 @@
            MOVE    WRK-CNT-MEISAI      TO  RECE849-MEISAISU
       *
            MOVE    RECE82-HKNCOMBI     TO  RECE849-HKNCOMBI
-           WRITE   RECE849-REC
-           ADD     1                   TO  CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            .
        20011-KYUSEIHASSYO-COMMENT-EXT.
@@ -2478,8 +2491,7 @@
                    END-IF
                 END-PERFORM
                 IF   RECE859-SRYCD(1)  NOT =  SPACE
-                   WRITE   RECE859-REC
-                   ADD     1            TO   CNT-RECE859
+                     PERFORM 800-RECE859-WRITE-SEC
                 END-IF
            END-PERFORM
       *
@@ -2492,8 +2504,7 @@
            MOVE    WRK-CNT-MEISAI      TO  RECE849-MEISAISU
       *
            MOVE    RECE82-HKNCOMBI     TO  RECE849-HKNCOMBI
-           WRITE   RECE849-REC
-           ADD     1                   TO  CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            .
        20011-HASSYO-COMMENT-EXT.
@@ -2887,8 +2898,7 @@
            MOVE    1                   TO  RECE849-MEISAISU
       *
            MOVE    RECE82-HKNCOMBI     TO  RECE849-HKNCOMBI
-           WRITE   RECE849-REC
-           ADD     1                   TO  CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            PERFORM 800-RECE82-SET859-SEC
            MOVE    99999998            TO  RECE859-ZAINUM
@@ -2915,8 +2925,7 @@
            MOVE     "1"                TO  WRK-RECE85XX-SIKFLG(1 1)
            MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
                                        TO  RECE859-SRYACT-TBL(1)
-           WRITE   RECE859-REC
-           ADD     1                   TO  CNT-RECE859
+           PERFORM 800-RECE859-WRITE-SEC
       *
            .
        2001-KASANRITU-COMMENT-EXT.
@@ -2956,8 +2965,7 @@
            MOVE    1                   TO  RECE849-MEISAISU
       *
            MOVE    RECE82-HKNCOMBI     TO  RECE849-HKNCOMBI
-           WRITE   RECE849-REC
-           ADD     1                   TO  CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            PERFORM 800-RECE82-SET859-SEC
            MOVE    99999998            TO  RECE859-ZAINUM
@@ -2984,8 +2992,7 @@
            MOVE     "1"                TO  WRK-RECE85XX-SIKFLG(1 1)
            MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
                                        TO  RECE859-SRYACT-TBL(1)
-           WRITE   RECE859-REC
-           ADD     1                   TO  CNT-RECE859
+           PERFORM 800-RECE859-WRITE-SEC
       *
            .
        2001-YKZTENTANKA-COMMENT-EXT.
@@ -3003,8 +3010,7 @@
            MOVE    1                   TO  RECE849-MEISAISU
       *
            MOVE    RECE82-HKNCOMBI     TO  RECE849-HKNCOMBI
-           WRITE   RECE849-REC
-           ADD     1                   TO  CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            PERFORM 800-RECE82-SET859-SEC
            MOVE    99999965            TO  RECE859-ZAINUM
@@ -3025,8 +3031,7 @@
       *
            MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
                                        TO  RECE859-SRYACT-TBL(1)
-           WRITE   RECE859-REC
-           ADD     1                   TO  CNT-RECE859
+           PERFORM 800-RECE859-WRITE-SEC
       *
            .
        2001-ZAISIEN-COMMENT-EXT.
@@ -3043,8 +3048,7 @@
            MOVE    1                   TO  RECE849-MEISAISU
       *
            MOVE    RECE82-HKNCOMBI     TO  RECE849-HKNCOMBI
-           WRITE   RECE849-REC
-           ADD     1                   TO  CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            PERFORM 800-RECE82-SET859-SEC
            MOVE    99999990            TO  RECE859-ZAINUM
@@ -3060,8 +3064,7 @@
            MOVE     "1"                TO  WRK-RECE85XX-SIKFLG(1 1)
            MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
                                        TO  RECE859-SRYACT-TBL(1)
-           WRITE   RECE859-REC
-           ADD     1                   TO  CNT-RECE859
+           PERFORM 800-RECE859-WRITE-SEC
       *
            .
        2001-TAIN-TOKUBETU-COMMENT-EXT.
@@ -4178,19 +4181,13 @@
                      END-IF  
                   END-PERFORM
                   IF   RECE859-SRYCD(1)  NOT =  SPACE
-                     WRITE   RECE859-REC
-                     ADD     1            TO   CNT-RECE859
+                       PERFORM 800-RECE859-WRITE-SEC
                   END-IF
            END-PERFORM
       *
            MOVE    RECE84-REC        TO      RECE849-REC
-      *@@@@
-           MOVE    RECE84-ZAINUM     TO      RECE849-ZAINUM
-           MOVE    RECE84-SRYKBN     TO      RECE849-SRYKBN
-      *@@@@
            MOVE    WRK-CNT-MEISAI    TO      RECE849-MEISAISU
-           WRITE   RECE849-REC
-           ADD     1                 TO      CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            .
        20011-KENSENTOU-COMMENT-EXT.
@@ -4279,10 +4276,6 @@
        20011-TAIIN-COMMENT-SEC          SECTION.
       *
            MOVE       RECE84-REC       TO  RECE849-REC
-      *@@@@
-           MOVE       RECE84-ZAINUM    TO  RECE849-ZAINUM
-           MOVE       RECE84-SRYKBN    TO  RECE849-SRYKBN
-      *@@@@
            EVALUATE   FLG-HANTEI
              WHEN       1
                 ADD     1              TO  RECE849-MEISAISU
@@ -4290,8 +4283,7 @@
                 ADD     2              TO  RECE849-MEISAISU
            END-EVALUATE
            MOVE   "1"                  TO  RECE849-SETCOMFLG
-           WRITE      RECE849-REC
-           ADD     1                   TO  CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            PERFORM 800-RECE84-SET85-SEC
            MOVE    RECE84-ZAINUM       TO  RECE85-ZAINUM
@@ -4351,8 +4343,7 @@
                MOVE     "1"                 TO  RECE859-SIKFLG(3)
            END-EVALUATE
       *
-           WRITE    RECE859-REC
-           ADD      1                   TO  CNT-RECE859
+           PERFORM 800-RECE859-WRITE-SEC
       *
            .
        20011-TAIIN-COMMENT-EXT.
@@ -5498,8 +5489,7 @@
                    END-IF
                END-PERFORM
                IF   RECE859-SRYCD(1)  NOT =  SPACE
-                   WRITE   RECE859-REC
-                   ADD     1            TO   CNT-RECE859
+                   PERFORM 800-RECE859-WRITE-SEC
                END-IF
            END-PERFORM
       *
@@ -5570,8 +5560,7 @@
       *
            MOVE    WRK-CNT-MEISAI      TO  RECE849-MEISAISU
       *
-           WRITE   RECE849-REC
-           ADD     1                   TO  CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            .
        20012-NYUKASAN-HENSYU-EXT.
@@ -5692,13 +5681,8 @@
            PERFORM    200111-SANTEI-DAY-SEC
       *
            MOVE       RECE84-REC       TO  RECE849-REC
-      *@@@@
-           MOVE       RECE84-ZAINUM    TO  RECE849-ZAINUM
-           MOVE       RECE84-SRYKBN    TO  RECE849-SRYKBN
-      *@@@@
            ADD     1                   TO  RECE849-MEISAISU
-           WRITE      RECE849-REC
-           ADD     1                   TO  CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            PERFORM 800-RECE84-SET85-SEC
            MOVE    RECE84-ZAINUM       TO  RECE85-ZAINUM
@@ -5729,8 +5713,7 @@
            MOVE     "1"                 TO  RECE859-RECEDENFLG(2)
            MOVE     "1"                 TO  RECE859-SIKFLG(2)
       *
-           WRITE    RECE859-REC
-           ADD      1                   TO  CNT-RECE859
+           PERFORM 800-RECE859-WRITE-SEC
       *
            IF     RECE84-ZAISKBKBN             =    "6"
            AND    RECE84-MEISAISU              =     1
@@ -5748,12 +5731,7 @@
        2099-RECE84-WRITE-SEC      SECTION.
       *
            MOVE    RECE84-REC      TO  RECE849-REC
-      *@@@@
-           MOVE    RECE84-ZAINUM   TO  RECE849-ZAINUM
-           MOVE    RECE84-SRYKBN   TO  RECE849-SRYKBN
-      *@@@@
-           WRITE   RECE849-REC
-           ADD     1               TO  CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            PERFORM 20991-RECE85-TENSOU-SEC
            .
@@ -5787,8 +5765,7 @@
       *
       *
                MOVE          RECE85-REC       TO      RECE859-REC
-               WRITE         RECE859-REC
-               ADD     1                 TO  CNT-RECE859
+               PERFORM 800-RECE859-WRITE-SEC
       *
                PERFORM 990-RECE85-NEXT-SEC
       *
@@ -5878,23 +5855,17 @@
                      END-IF  
                   END-PERFORM
                   IF   RECE859-SRYCD(1)  NOT =  SPACE
-                     WRITE   RECE859-REC
-                     ADD     1            TO   CNT-RECE859
+                      PERFORM 800-RECE859-WRITE-SEC
                   END-IF
            END-PERFORM
       *
            MOVE    RECE84-REC        TO      RECE849-REC
-      *@@@@
-           MOVE    RECE84-ZAINUM     TO      RECE849-ZAINUM
-           MOVE    RECE84-SRYKBN     TO      RECE849-SRYKBN
-      *@@@@
            MOVE    WRK-CNT-MEISAI    TO      RECE849-MEISAISU
            IF   WRK-JIDO-SETCOMFLG   =  "1"
              MOVE  WRK-JIDO-SETCOMFLG
                                      TO      RECE849-SETCOMFLG
            END-IF
-           WRITE   RECE849-REC
-           ADD     1                 TO      CNT-RECE849
+           PERFORM 800-RECE849-WRITE-SEC
       *
            .
        200111-SRYACTINF-HENSYU-EXT.
@@ -6420,15 +6391,17 @@
                      END-IF  
                   END-PERFORM
                   IF   RECE851-SRYCD(1)  NOT =  SPACE
-                     WRITE   RECE851-REC
-                     ADD     1            TO   CNT-RECE85
+                       PERFORM 800-RECE851-WRITE-SEC
                   END-IF
            END-PERFORM
       *
-           MOVE    RECE849-REC       TO      RECE841-REC
-           MOVE    WRK-CNT-MEISAI    TO      RECE841-MEISAISU
-           WRITE   RECE841-REC
-           ADD     1                 TO      CNT-RECE84
+           INITIALIZE                      RECE841-REC
+           MOVE    RECE849-KEY1        TO  RECE841-KEY1
+           MOVE    RECE849-ZAINUM      TO  RECE841-ZAINUM
+           MOVE    RECE849-SRYKBN      TO  RECE841-SRYKBN
+           MOVE    RECE849-DATA-AREA   TO  RECE841-DATA-AREA
+           MOVE    WRK-CNT-MEISAI      TO  RECE841-MEISAISU
+           PERFORM 800-RECE841-WRITE-SEC
       *
            .
        250111-SRYACTINF2-HENSYU-EXT.
@@ -6871,18 +6844,20 @@
                      END-IF
                   END-PERFORM
                   IF   RECE851-SRYCD(1)  NOT =  SPACE
-                     WRITE   RECE851-REC
-                     ADD     1            TO   CNT-RECE85
+                     PERFORM 800-RECE851-WRITE-SEC
                   END-IF
            END-PERFORM
       *
-           MOVE    RECE849-REC       TO      RECE841-REC
-           MOVE    WRK-CNT-MEISAI    TO      RECE841-MEISAISU
+           INITIALIZE                      RECE841-REC
+           MOVE    RECE849-KEY1        TO  RECE841-KEY1
+           MOVE    RECE849-ZAINUM      TO  RECE841-ZAINUM
+           MOVE    RECE849-SRYKBN      TO  RECE841-SRYKBN
+           MOVE    RECE849-DATA-AREA   TO  RECE841-DATA-AREA
+           MOVE    WRK-CNT-MEISAI      TO  RECE841-MEISAISU
       *
            MOVE    RECE849-MEISAISU  TO      RECE841-RYOTENKISAISU
       *
-           WRITE   RECE841-REC
-           ADD     1                 TO      CNT-RECE84
+           PERFORM 800-RECE841-WRITE-SEC
       *
            .
        250211-SRYACTINF3-HENSYU-EXT.
@@ -7216,18 +7191,20 @@
                        END-IF  
                     END-PERFORM
                     IF   RECE851-SRYCD(1)  NOT =  SPACE
-                       WRITE   RECE851-REC
-                       ADD     1            TO   CNT-RECE85
+                         PERFORM 800-RECE851-WRITE-SEC
                     END-IF
            END-PERFORM
       *
-           MOVE    RECE849-REC          TO   RECE841-REC
-           MOVE    WRK-CNT-MEISAI       TO   RECE841-MEISAISU
-           IF   WRK-JIDO-SETCOMFLG   =  "1"
-             MOVE  WRK-JIDO-SETCOMFLG   TO   RECE841-SETCOMFLG
+           INITIALIZE                      RECE841-REC
+           MOVE    RECE849-KEY1        TO  RECE841-KEY1
+           MOVE    RECE849-ZAINUM      TO  RECE841-ZAINUM
+           MOVE    RECE849-SRYKBN      TO  RECE841-SRYKBN
+           MOVE    RECE849-DATA-AREA   TO  RECE841-DATA-AREA
+           MOVE    WRK-CNT-MEISAI      TO  RECE841-MEISAISU
+           IF   WRK-JIDO-SETCOMFLG     =  "1"
+             MOVE  WRK-JIDO-SETCOMFLG      TO  RECE841-SETCOMFLG
            END-IF
-           WRITE   RECE841-REC
-           ADD     1                    TO   CNT-RECE84
+           PERFORM 800-RECE841-WRITE-SEC
       *
            .
        250311-SRYACTINF2-HENSYU-EXT.
@@ -7262,9 +7239,12 @@
       *****************************************************************
        2599-RECE849-WRITE-SEC      SECTION.
       *
-           MOVE    RECE849-REC      TO  RECE841-REC
-           WRITE   RECE841-REC
-           ADD     1                TO  CNT-RECE84
+           INITIALIZE                      RECE841-REC
+           MOVE    RECE849-KEY1        TO  RECE841-KEY1
+           MOVE    RECE849-ZAINUM      TO  RECE841-ZAINUM
+           MOVE    RECE849-SRYKBN      TO  RECE841-SRYKBN
+           MOVE    RECE849-DATA-AREA   TO  RECE841-DATA-AREA
+           PERFORM 800-RECE841-WRITE-SEC
       *
            PERFORM 25991-RECE859-TENSOU-SEC
            .
@@ -7297,8 +7277,7 @@
                OR     ( RECE849-ZAINUM    NOT =   RECE859-ZAINUM       )
       *
                MOVE    RECE859-REC       TO   RECE851-REC
-               WRITE   RECE851-REC
-               ADD     1                 TO   CNT-RECE85
+               PERFORM 800-RECE851-WRITE-SEC
       *
                PERFORM 990-RECE859-NEXT-SEC
       *
@@ -7637,7 +7616,7 @@
            END-IF
       *
            MOVE    SPACE               TO  WRK-ERRMSG
-           STRING  "ORCR0885 "         DELIMITED  BY  SIZE
+           STRING  "ORCR0981 "         DELIMITED  BY  SIZE
                    WRK-RECEERR         DELIMITED  BY  SIZE
                    LOW-VALUE           DELIMITED  BY  SIZE
                                        INTO    WRK-ERRMSG
@@ -7693,7 +7672,7 @@
            END-STRING
            PERFORM 500-ERR-HENSYU-SEC
       *
-           STRING  "ORCR0885 "             DELIMITED   BY  SIZE
+           STRING  "ORCR0981 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
@@ -7715,7 +7694,16 @@
        300-END-SEC                 SECTION.
       *
       *    ¥Õ¥¡¥¤¥ë£Ã£Ì£Ï£Ó£Å½èÍý
-           PERFORM 310-FILE-CLOSE-SEC
+           CLOSE                       RECE82-FILE
+           CLOSE                       RECE84-FILE
+           CLOSE                       RECE85-FILE
+           CLOSE                       RECE841-FILE     
+           CLOSE                       RECE851-FILE     
+           CLOSE                       RECE849-FILE
+           CLOSE                       RECE859-FILE
+           CLOSE                       RECE855-FILE
+      *
+           PERFORM 3001-FILE-SORT-SEC
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
@@ -7734,7 +7722,7 @@
            DISPLAY "RECE84  REWRITE :" CNT-RECE84-RE
            DISPLAY "RECE85  REWRITE :" CNT-RECE85-RE
            DISPLAY "RECE855 CNT-OUT :" CNT-RECE855
-           DISPLAY "*** ORCR0885 END ***"
+           DISPLAY "*** ORCR0981 END ***"
       *
            .
        300-END-EXT.
@@ -7743,24 +7731,10 @@
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë£Ã£Ì£Ï£Ó£Å½èÍý
       *****************************************************************
-       310-FILE-CLOSE-SEC              SECTION.
-      *
-           CLOSE                       RECE82-FILE
-      *
-           CLOSE                       RECE84-FILE
-      *
-           CLOSE                       RECE85-FILE
-      *
-           CLOSE                       RECE841-FILE     
-           CLOSE                       RECE851-FILE     
-      *
-           CLOSE                       RECE849-FILE
-           CLOSE                       RECE859-FILE
-      *
-           CLOSE                       RECE855-FILE
+       3001-FILE-SORT-SEC              SECTION.
       *
            .
-       310-FILE-CLOSE-EXT.
+       3001-FILE-SORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7794,6 +7768,8 @@
            MOVE    RECE82-RECEKA       TO  RECE849-RECEKA
            MOVE    RECE82-HKNID        TO  RECE849-HKNID
            MOVE    RECE82-TEKSTYMD     TO  RECE849-TEKSTYMD
+      *
+           MOVE    RECE82-RECESYUBETU  TO  RECE849-RECESYUBETU 
       *
            .
        800-RECE82-SET849-EXT.
@@ -7890,6 +7866,118 @@
            EXIT.
       *
       *****************************************************************
+      *    ¥ì¥»¥×¥È£¸£´£¹£×£Ò£É£Ô£Å½èÍý
+      *****************************************************************
+       800-RECE849-WRITE-SEC           SECTION.
+      *
+           WRITE   RECE849-REC
+           IF      STS-RECE849         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+      *
+               MOVE    3                   TO  WRK-ERR-FLG
+               MOVE    RECE849PARA         TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE849         TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
+           ADD     1                   TO  CNT-RECE849
+      *
+           .
+       800-RECE849-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥È£¸£µ£¹£×£Ò£É£Ô£Å½èÍý
+      *****************************************************************
+       800-RECE859-WRITE-SEC           SECTION.
+      *
+           WRITE   RECE859-REC
+           IF      STS-RECE859         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+      *
+               MOVE    3                   TO  WRK-ERR-FLG
+               MOVE    RECE859PARA         TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE859         TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
+           ADD     1            TO   CNT-RECE859
+      *
+           .
+       800-RECE859-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥È£¸£´£±£×£Ò£É£Ô£Å½èÍý
+      *****************************************************************
+       800-RECE841-WRITE-SEC           SECTION.
+      *
+           MOVE    RECE849-CDKBN-KBNNUM
+                                      TO  RECE841-CDKBN-KBNNUM
+      *
+           IF      RECE841-SRYKBN      =   "99"
+               IF      RECE841-SRYSYUKBN   =   "991"
+                   MOVE    "99"            TO  RECE841-SRYKBN
+               ELSE
+                   MOVE    "01"            TO  RECE841-SRYKBN
+               END-IF
+           ELSE
+               IF      RECE841-SRYKBN   =   "64"
+                   MOVE    "60"            TO  RECE841-SRYKBN
+               END-IF
+           END-IF
+      *
+           WRITE   RECE841-REC
+           IF      STS-RECE841         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+      *
+               MOVE    3                   TO  WRK-ERR-FLG
+               MOVE    RECE841PARA         TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE841         TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
+           ADD     1                 TO      CNT-RECE84
+      *
+           .
+       800-RECE841-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥ì¥»¥×¥È£¸£µ£±£×£Ò£É£Ô£Å½èÍý
+      *****************************************************************
+       800-RECE851-WRITE-SEC           SECTION.
+      *
+           WRITE   RECE851-REC
+           IF      STS-RECE851         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-ERR-AREA
+               INITIALIZE                      WRK-ERR-AREA
+      *
+               MOVE    3                   TO  WRK-ERR-FLG
+               MOVE    RECE851PARA         TO  WRK-ERR-FILE-NM
+               MOVE    STS-RECE851         TO  WRK-ERR-FILE-STS
+               PERFORM 500-FILE-ERR-ABORT-SEC
+           END-IF
+      *
+           ADD     1            TO   CNT-RECE85
+      *
+           .
+       800-RECE851-WRITE-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    ¥ì¥»¥×¥È£°£²¥Ç¡¼¥¿½ç¸¡º÷½èÍý
       *****************************************************************
        990-RECE82-READ-SEC           SECTION.
@@ -7898,10 +7986,32 @@
                AT  END
                    MOVE    1           TO  FLG-END
                NOT AT  END
+                   IF      STS-RECE82          =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE           TO  WRK-ERR-AREA
+                       INITIALIZE                  WRK-ERR-AREA
+                       MOVE    2               TO  WRK-ERR-FLG
+                       MOVE    RECE82PARA      TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE82      TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
+                   IF  (   RECE82-SRYYM        <   201307 )
+                   OR  (   RECE82-PTNUM        =   SPACE  )
+                   OR  (   RECE82-TSTPTNUMKBN  =   "1"    )
+                   OR  (   RECE82-RECESYUBETU  =   ZERO
+                                               OR  7021   )
+                   OR  ( ( RECE82-TOTALKIN     =   ZERO )
+                           AND
+                         ( RECE82-TOTALKIN2    =   ZERO ) )
+                       GO  TO  990-RECE82-READ-SEC
+                   END-IF
+      *
                    ADD     1           TO  CNT-RECE82
-                   ADD     1           TO  CNT-IN-COMMIT
       *
                    DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
+                                  " SRYYM=" RECE82-SRYYM
       *
            END-READ
       *
@@ -7918,6 +8028,17 @@
                AT  END
                    MOVE    1         TO  FLG-RECE84
                NOT AT  END
+                   IF      STS-RECE84          =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE           TO  WRK-ERR-AREA
+                       INITIALIZE                  WRK-ERR-AREA
+                       MOVE    2               TO  WRK-ERR-FLG
+                       MOVE    RECE84PARA      TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE84      TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
                    MOVE    ZERO      TO  FLG-RECE84
            END-READ
       *
@@ -7934,6 +8055,17 @@
                AT  END
                    MOVE    1         TO  FLG-RECE849
                NOT AT  END
+                   IF      STS-RECE849         =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE           TO  WRK-ERR-AREA
+                       INITIALIZE                  WRK-ERR-AREA
+                       MOVE    2               TO  WRK-ERR-FLG
+                       MOVE    RECE849PARA    TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE849     TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
                    MOVE    ZERO      TO  FLG-RECE849
            END-READ
       *
@@ -7950,6 +8082,17 @@
                AT  END
                    MOVE    1         TO  FLG-RECE841
                NOT AT  END
+                   IF      STS-RECE841         =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE           TO  WRK-ERR-AREA
+                       INITIALIZE                  WRK-ERR-AREA
+                       MOVE    2               TO  WRK-ERR-FLG
+                       MOVE    RECE841PARA     TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE841     TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
                    MOVE    ZERO      TO  FLG-RECE841
            END-READ
       *
@@ -7966,6 +8109,17 @@
                AT  END
                    MOVE    1         TO  FLG-RECE85
                NOT AT  END
+                   IF      STS-RECE85          =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE           TO  WRK-ERR-AREA
+                       INITIALIZE                  WRK-ERR-AREA
+                       MOVE    2               TO  WRK-ERR-FLG
+                       MOVE    RECE85PARA      TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE85      TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
                    MOVE    ZERO      TO  FLG-RECE85
            END-READ
       *
@@ -7982,6 +8136,17 @@
                AT  END
                    MOVE    1         TO  FLG-RECE859
                NOT AT  END
+                   IF      STS-RECE859         =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE           TO  WRK-ERR-AREA
+                       INITIALIZE                  WRK-ERR-AREA
+                       MOVE    2               TO  WRK-ERR-FLG
+                       MOVE    RECE859PARA     TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE859     TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
                    MOVE    ZERO      TO  FLG-RECE859
            END-READ
       *
@@ -7998,6 +8163,17 @@
                AT  END
                    MOVE    1         TO  FLG-RECE851
                NOT AT  END
+                   IF      STS-RECE851         =   "00"
+                       CONTINUE
+                   ELSE
+                       MOVE    SPACE           TO  WRK-ERR-AREA
+                       INITIALIZE                  WRK-ERR-AREA
+                       MOVE    2               TO  WRK-ERR-FLG
+                       MOVE    RECE851PARA     TO  WRK-ERR-FILE-NM
+                       MOVE    STS-RECE851     TO  WRK-ERR-FILE-STS
+                       PERFORM 500-FILE-ERR-ABORT-SEC
+                   END-IF
+      *
                    MOVE    ZERO      TO  FLG-RECE851
            END-READ
       *
@@ -8241,7 +8417,7 @@
                END-STRING
                PERFORM 500-ERR-HENSYU-SEC
       *
-               STRING  "ORCR0885 select err TABLE="
+               STRING  "ORCR0981 select err TABLE="
                                            DELIMITED   BY  SIZE
                        MCP-TABLE           DELIMITED   BY  SPACE
                        " PATHNAME="        DELIMITED   BY  SIZE
