@@ -586,9 +586,10 @@
       *    初診チェック
            IF   (( TNS-JITUDAY             =   2 )
              AND ( TNS-DAYCNT              =   1 ))
-            OR  (  SRY-SRYCD (IDX-SRYCD)   =   "099110001" )
-            OR  (  SRY-SRYCD (IDX-SRYCD)   =   "111011810" )
-            OR  (  SRY-SRYCD (IDX-SRYCD)   =   "101110040" )
+            OR  (  SRY-SRYCD (IDX-SRYCD)   =   "099110001"
+                                            OR "111011810"
+                                            OR "111012610"
+                                            OR "101110040" )
                MOVE    "1"                 TO  WRK-SYOSAISIN-KBN
            END-IF
       *
@@ -619,7 +620,8 @@
                                            OR  "113014110"
                                            OR  "112015810"
                                            OR  "112015950"
-                                           OR  "112016210" )
+                                           OR  "112016210"
+                                           OR  "112016410" )
            OR   (( SRY-SRYCD (IDX-SRYCD)   =   "101120100") AND
                  ( SRY-SRYYM              <=   "201306"   ))
            OR   (( SRY-SRYCD (IDX-SRYCD)   =   "101120040") AND
