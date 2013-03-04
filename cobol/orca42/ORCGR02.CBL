@@ -143,6 +143,7 @@
       *  04.07.04    NACL-藤原    13/01/07  自費レセプトを印刷しない設定
       *                                     のとき、入力順、ターミナルデジット
       *                                     出力の対象としない
+      *  04.07.05    NACL-藤原    13/03/01  保険者番号の条件設定変更
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -6170,6 +6171,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            TO  WRK-RECE09-BTUNUM
                END-IF
            END-IF
+      *
+           INSPECT WRK-RECE09-HKNJANUM  REPLACING   ALL " "
+                                                    BY  "#"
       *
       *　　（ＯＲＣＲ０１０１）　
       *
