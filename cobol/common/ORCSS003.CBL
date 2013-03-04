@@ -28,9 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-太田    07/06/05  グループ診療対応
-      *
-      *  04.06.01    NACL-門脇    13/02/18  労災レセ電対応
-      *                                     （新診療行為コード対応）
       *****************************************************************
       *
       *
@@ -81,8 +78,6 @@
       *
            COPY    "CPTTNS.INC".
       *
-           COPY    "ENUM-VALUE".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -113,8 +108,6 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    入院会計作成パラ
            COPY    "CPORCHCM34S01.INC".
@@ -154,10 +147,6 @@
       *
            INITIALIZE                      SS003-OT
       *
-           INITIALIZE                      SGETTEMP-AREA
-           CALL    "ORCSGETTEMP"           USING
-                                           SGETTEMP-AREA
-      *
       *    初期処理
            PERFORM 100-INIT-SEC
       *    主処理
@@ -187,7 +176,6 @@
        200-MAIN-SEC                    SECTION.
       *
            IF    ( SS003-SYORIKBN      =   "0" OR "2" )
-            OR   ( SGETTEMP-MW         =   SPA-GINBEE )
                INITIALIZE              TTNS-AREA
            END-IF
       *
@@ -307,6 +295,9 @@
       *
            MOVE    JYURRK-SRYYMD       TO  WRK-SRYYMD
            COMPUTE IDX-KAISU   =   JYURRK-RENNUM   +   1
+           IF    ( IDX-KAISU   >   4 )
+               MOVE    4               TO  IDX-KAISU
+           END-IF
       *
       *    診療会計検索
            MOVE    ZERO                TO  FLG-SRYACCT
@@ -597,16 +588,15 @@
              AND ( TNS-DAYCNT              =   1 ))
             OR  (  SRY-SRYCD (IDX-SRYCD)   =   "099110001"
                                             OR "111011810"
-                                            OR "111012810"
                                             OR "111012610"
                                             OR "101110040" )
                MOVE    "1"                 TO  WRK-SYOSAISIN-KBN
            END-IF
       *
       *    再診チェック
-           IF   (( TNS-JITUDAY             =   2          ) AND
-                 ( TNS-DAYCNT              =   2          ))
-           OR   (  SRY-SRYCD (IDX-SRYCD)   =   "112700850"
+           IF   (( TNS-JITUDAY             =   2 )
+             AND ( TNS-DAYCNT              =   2 ))
+            OR  (  SRY-SRYCD (IDX-SRYCD)   =   "112700850"
                                            OR  "099120001"
                                            OR  "099409901"
                                            OR  "099999902"
@@ -625,33 +615,14 @@
                                            OR  "112704450"
                                            OR  "112704850"
                                            OR  "112705850"
+                                           OR  "101120100"
                                            OR  "113013910"
                                            OR  "113014010"
                                            OR  "113014110"
                                            OR  "112015810"
                                            OR  "112015950"
                                            OR  "112016210"
-                                           OR  "112017610"
-                                           OR  "112016410"
-                                           OR  "112016550"
-                                           OR  "113015810"
-                                           OR  "113018410"
-      *
-                                           OR  "112016850"
-                                           OR  "112016950"
-                                           OR  "112017010"
-                                           OR  "112017150"
-                                           OR  "112017450"
-                                                           )
-           OR   (( SRY-SRYCD (IDX-SRYCD)   =   "101120100") AND
-                 ( SRY-SRYYM              <=   "201306"   ))
-           OR   (( SRY-SRYCD (IDX-SRYCD)   =   "101120040"
-                                           OR  "101120050"
-                                           OR  "101120060"
-                                           OR  "101120070"
-                                           OR  "101120080"
-                                                          ) AND
-                 ( SRY-SRYYM              >=   "201307"   ))
+                                           OR  "112016410" )
                IF    ( WRK-SYOSAISIN-KBN   =   "1" )
                    CONTINUE
                ELSE
