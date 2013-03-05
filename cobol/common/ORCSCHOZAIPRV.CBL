@@ -146,7 +146,7 @@
            03  WRK-JIHOKBN             PIC X(01).
            03  WRK-ZAINUM              PIC 9(08).
            03  WRK-DAY-AREA.
-               05  WRK-DAY-TBL         OCCURS   4.
+               05  WRK-DAY-TBL         OCCURS   10.
                     07  WRK-DAY        PIC 9(03)
                                            OCCURS  31.
       *
@@ -185,7 +185,7 @@
                05  TBL-CHO-ADD             PIC X(01).
       *        作成
                05  TBL-CHO-DAY-AREA.
-                   07  TBL-CHO-DAY-TBL     OCCURS   4.
+                   07  TBL-CHO-DAY-TBL     OCCURS   10.
                         09  TBL-CHO-DAY    PIC 9(03)
                                            OCCURS  31.
       *    麻毒料
@@ -198,7 +198,7 @@
                05  TBL-MAD-ADD             PIC X(01).
       *        作成
                05  TBL-MAD-DAY-AREA.
-                   07  TBL-MAD-DAY-TBL     OCCURS   4.
+                   07  TBL-MAD-DAY-TBL     OCCURS   10.
                         09  TBL-MAD-DAY    PIC 9(03)
                                            OCCURS  31.
       *    外泊
@@ -1306,6 +1306,19 @@
                    IF      TBL-CHO-DAY (IDX2 1 IDX)   >   ZERO
                        IF      FLG-ARI         =   ZERO
                            MOVE    1               TO  FLG-ARI
+      *ver.4.7
+                           IF      TBL-CHO-DAY (IDX2 IDX4 IDX) =   ZERO
+                               MOVE    ZERO            TO  FLG-ARI
+                               MOVE    ZERO            TO  TBL-CHO-DAY
+                                                         (IDX2 1 IDX)
+                               MOVE    ZERO            TO  TBL-CHO-DAY
+                                                         (IDX2 2 IDX)
+                               MOVE    ZERO            TO  TBL-CHO-DAY
+                                                         (IDX2 3 IDX)
+                               MOVE    ZERO            TO  TBL-CHO-DAY
+                                                         (IDX2 4 IDX)
+                           END-IF
+      *ver.4.7
                        ELSE
                            MOVE    ZERO            TO  TBL-CHO-DAY
                                                          (IDX2 1 IDX)
@@ -1328,9 +1341,9 @@
                                                          (IDX2 4 IDX)
                END-IF
            END-PERFORM
-      *?   IF      FLG-ARI             =   1
-      *        GO      TO      4002-TOU-ADD-SYORI-EXT
-      *    END-IF
+           IF      FLG-ARI             =   1
+               GO      TO      4002-TOU-ADD-SYORI-EXT
+           END-IF
       *    当日調剤料指定がない時、対象の剤へ
            IF      WRK-IDX2            >   ZERO
                MOVE    1               TO  TBL-CHO-DAY (WRK-IDX2 1 IDX)
@@ -1447,8 +1460,16 @@
                        IF      FLG-ARI         =   ZERO
                            MOVE    1               TO  FLG-ARI
       *ver.4.7
-                           IF      TBL-MAD-DAY (IDX2 IDX4 IDX) >   ZERO
+                           IF      TBL-MAD-DAY (IDX2 IDX4 IDX) =   ZERO
                                MOVE    ZERO            TO  FLG-ARI
+                               MOVE    ZERO            TO  TBL-MAD-DAY
+                                                         (IDX2 1 IDX)
+                               MOVE    ZERO            TO  TBL-MAD-DAY
+                                                         (IDX2 2 IDX)
+                               MOVE    ZERO            TO  TBL-MAD-DAY
+                                                         (IDX2 3 IDX)
+                               MOVE    ZERO            TO  TBL-MAD-DAY
+                                                         (IDX2 4 IDX)
                            END-IF
       *ver.4.7
                        ELSE
