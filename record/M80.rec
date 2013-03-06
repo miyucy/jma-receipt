@@ -14,7 +14,6 @@ M80	{
 					value4	varchar(20);
 					value5	varchar(20);
 					value6	varchar(10);
-					value7	varchar(10);
 				}	[100];
 				select	bool[100];
 			};
@@ -30,15 +29,15 @@ M80	{
 			style   varchar(20);
 			value	varchar(60);
 		};
+		B03	{
+	           	state	int;
+			label	varchar(10);
+		};
 		B09	{
 	           	state	int;
 			label	varchar(10);
 		};
 		B10	{
-	           	state	int;
-			label	varchar(10);
-		};
-		B11	{
 	           	state	int;
 			label	varchar(10);
 		};

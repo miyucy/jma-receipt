@@ -13,7 +13,6 @@
                     06  M80-TVERSION  PIC X(20).
                     06  M80-TVERSION2 PIC X(20).
                     06  M80-TVENDOR   PIC X(20).
-                    06  M80-TINS      PIC X(10).
                     06  M80-TLINK     PIC X(10).
                   05  M80-LIST-SELECT
                           PIC X       OCCURS  100 TIMES.
@@ -25,14 +24,14 @@
               03  M80-SYORIMSG.
                 04  M80-SYORIMSG-STYLE   PIC X(20).
                 04  M80-SYORIMSG-VALUE   PIC X(60).
+              03  M80-B03.
+                04  M80-B03-STATE   PIC S9(9)   BINARY.
+                04  M80-B03-LABEL   PIC X(10).
               03  M80-B09.
                 04  M80-B09-STATE   PIC S9(9)   BINARY.
                 04  M80-B09-LABEL   PIC X(10).
               03  M80-B10.
                 04  M80-B10-STATE   PIC S9(9)   BINARY.
                 04  M80-B10-LABEL   PIC X(10).
-              03  M80-B11.
-                04  M80-B11-STATE   PIC S9(9)   BINARY.
-                04  M80-B11-LABEL   PIC X(10).
               03  M80-PANDATIMER1.
                 04  M80-DURATION    PIC S9(9)   BINARY.
