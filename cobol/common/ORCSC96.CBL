@@ -2113,6 +2113,13 @@
                WHEN    "1102"
                    MOVE    "初診算定日が暦日ではありません。"
                                        TO  SPA-ERRMSG
+      *H25.4
+               WHEN    "1103"
+                   STRING  "この初診の初診算定日は平成２５年４月以降"
+                           "にして下さい。"
+                                           DELIMITED   BY  SIZE
+                                           INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "1017"
       *?           MOVE
       *            "初診算定日を登録して、再診料自動算定をして下さい"

@@ -943,7 +943,7 @@
                        MOVE    SPA-SRYKA-MAX   TO  IDY
                    END-IF
                END-PERFORM
-      *!!!!!!!!
+      *	H25.3  ²Ê¥³¡¼¥É¤Ê¤·
                IF      SPA-GMN-RRKSRYKA(IDX)   =   SPACE
                    MOVE    SPA-NAI-RRK-SRYKA (IDX)
                                                TO  SPA-GMN-RRKSRYKA(IDX)
@@ -3899,17 +3899,15 @@
            END-IF
       *H25.4 
       *    ½é¿ÇÎÁ¡Ê¾Ò²ð¾õ¤Ê¤·¡Ë¡Ê£È£²£µ¡¥£´¤«¤é¡Ë
-           IF      SPA-SRYYMD          >=  "20130401"
-               MOVE    "111012510"         TO  WRK-SRYCD
-               PERFORM 30091-SANTEI-CHK-SEC
-               IF      WRK-YMDS        NOT =   SPACE
-                   IF      WRK-YMDS        >   WRK-SYO-YMD
-                       MOVE    WRK-YMDS        TO  WRK-SYO-YMD
-                   END-IF
-                   IF     (WRK-SYO-YMD1    =   SPACE        )
-                   OR     (WRK-YMDS-1      <   WRK-SYO-YMD1 )
-                      MOVE    WRK-YMDS-1      TO  WRK-SYO-YMD1
-                   END-IF
+           MOVE    "111012510"         TO  WRK-SRYCD
+           PERFORM 30091-SANTEI-CHK-SEC
+           IF      WRK-YMDS        NOT =   SPACE
+               IF      WRK-YMDS        >   WRK-SYO-YMD
+                   MOVE    WRK-YMDS        TO  WRK-SYO-YMD
+               END-IF
+               IF     (WRK-SYO-YMD1    =   SPACE        )
+               OR     (WRK-YMDS-1      <   WRK-SYO-YMD1 )
+                  MOVE    WRK-YMDS-1      TO  WRK-SYO-YMD1
                END-IF
            END-IF
       *
@@ -4103,13 +4101,11 @@
            END-IF
       *H25.4   ¾Ò²ð¤Ê¤·
       *    Æ±Æü½é¿Ç¡Ê¾Ò²ð¾õ¤Ê¤·¡Ë¡Ê£È£²£µ¡¥£´¤«¤é¡Ë
-           IF      SPA-SRYYMD          >=  "20130401"
-               MOVE    "111012610"         TO  WRK-SRYCD
-               PERFORM 30091-SANTEI-CHK-SEC
-               IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
-                      (WRK-YMDS            >   WRK-SYOSINYMD1)
-                   MOVE    WRK-YMDS            TO  WRK-SYOSINYMD1
-               END-IF
+           MOVE    "111012610"         TO  WRK-SRYCD
+           PERFORM 30091-SANTEI-CHK-SEC
+           IF     (WRK-SYOSINYMD1      =   SPACE  )  OR
+                  (WRK-YMDS            >   WRK-SYOSINYMD1)
+               MOVE    WRK-YMDS            TO  WRK-SYOSINYMD1
            END-IF
       *
       *    Æ±Æü½é¿Ç¡ÊÏ«ºÒ¡Ë
