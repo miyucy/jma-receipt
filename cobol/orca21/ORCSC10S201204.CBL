@@ -73,7 +73,6 @@
       * 04.07.00     NACL-¬ø°π«º  12/03/XX   ø¿Æ£≤£¥«Ø£¥∑Ó≤˛¿µ¬–±˛
       * 04.07.00     NACL-¬ø°π«º  12/05/01  ≥∞ÕË•Í•œ•”•Íø«ª°Œ¡≈˘¬–±˛
       * 04.07.00     NACL-¬ø°π«º  12/08/08  ø«ª°Œ¡§ §∑∆±∆¸ΩÈø«Œ¡»Ø¿∏¬–±˛
-      * 04.08.00     NACL-¬ø°π«º  12/12/XX  ≈≈œ√∫∆ø«§Œ≤√ªªªªƒÍ¬–±˛
       * 04.08.00     NACL-¬ø°π«º  13/03/XX   ø¿Æ£≤£µ«Ø£¥∑Ó≤˛¿µ¬–±˛
       *****************************************************************
       *
@@ -225,8 +224,6 @@
       *
            03  IDX-STR              PIC 9(02).
            03  IDX-R                PIC 9(02).
-      *
-           03  IDX-TEL                 PIC 9(04).
       *
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
@@ -441,13 +438,10 @@
            03  FILLER              PIC X(14)   VALUE   "311  112016310".
       *    ≥∞ÕËø«Œ≈Œ¡° ∆±∞Ï∆¸£≤≤ Ã‹°À° ¬æ∞ÂŒ≈µ°¥ÿ§ÿæ“≤°À
            03  FILLER              PIC X(14)   VALUE   "310KD112016410".
-      *    ∆±∆¸≥∞ÕËø«Œ≈Œ¡° ¬æ∞ÂŒ≈µ°¥ÿ§ÿæ“≤°À
-           03  FILLER              PIC X(14)   VALUE   "311D 112016550".
-      *
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
       ***  03  TBL-SINSATU-OCC         OCCURS  15    INDEXED  TBL-IDX.
-           03  TBL-SINSATU-OCC         OCCURS  20    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  19    INDEXED  TBL-IDX.
       *        £±°ß∞Ï»Ã°¢£≤°ßæÆª˘≤ ≥∞ÕËø«ª°Œ¡°¢£≥°ß≥∞ÕËø«Œ≈Œ¡
                05  TBL-KAISU           PIC 9(01).
       *****    œ∑øÕ∞Ï»Ã∂Ë ¨° £∞°ß∞Ï»Ã°¢£±°ßœ∑øÕ°À(£∞°ß§ §∑°À
@@ -2913,11 +2907,6 @@
            ELSE
                MOVE    SPA-HOSPSBT         TO  WRK-HOSPSBT
            END-IF
-      *H25.4
-           IF      WRK-KBN4        NOT =   "1"
-               MOVE    "0"             TO  WRK-KBN4
-           END-IF
-      *
       *    ø«ª°Œ¡•ª•√•»
            SET     TBL-IDX             TO  1
            SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
@@ -2929,8 +2918,8 @@
                      AND  (WRK-KBN             =   TBL-KBN    (TBL-IDX))
                      AND  (WRK-SRYKBN          =   TBL-SRYCD(TBL-IDX)
                                                                 (2:2))
-      *H25.4         æ“≤§ §∑
-                     AND  (WRK-KBN4            =   TBL-ROUJIN(TBL-IDX))
+      *H25.4         æ“≤§ §∑§œ¬–æ›≥∞
+                     AND  (TBL-ROUJIN(TBL-IDX)  =   "0"   )
                        MOVE    TBL-SRYCD (TBL-IDX)
                                                TO  WRK-SRYCD
            END-SEARCH
@@ -3817,29 +3806,6 @@
                    END-IF
                END-PERFORM
            END-IF
-      *H25.5
-           IF     (LNK-SC10S-SYORI     =   "W"  )
-      *        √Ê≈”Ω™Œª≈∏≥´§«°¢æÆª˘≤ ≥∞ÕËø«ª°Œ¡§Ú∫∆ø«Œ¡§ÿ —¥π§∑§øª˛
-      *        æÆª˘≤ ≥∞ÕËø«ª°Œ¡∫ÔΩ¸
-               PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL      (IDX     >   SPA-MAX-LINE )
-                   IF     (WRK-COM-INPUTCD (IDX)(1:1)  =   "1" )
-                      AND (WRK-COM-SRYKBN (IDX)    =   "13"    )
-                       SET     TBL-IDX             TO  1
-                       SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
-                           AT  END
-                               MOVE    ZERO        TO  FLG-ARI
-                           WHEN   WRK-COM-INPUTCD (IDX)
-                                               =   TBL-SRYCD (TBL-IDX)
-                           MOVE    1                   TO  FLG-ARI
-                       END-SEARCH
-                       IF      FLG-ARI         =   1
-                           MOVE    SPACE       TO  WRK-COM-INPUTCD (IDX)
-                           MOVE    SPA-MAX-LINE    TO  IDX
-                       END-IF
-                   END-IF
-               END-PERFORM
-           END-IF
       *
            INITIALIZE                  ORCSC92AREA
            MOVE    "3"                 TO  LNK-SC92-KBN
@@ -4321,7 +4287,6 @@
       *****************************************************************
        300-DOUSAISIN-SET-SEC         SECTION.
       *
-           MOVE    SPACE               TO  WRK-KBN4
       *    ≈≈œ√∫∆ø«§´§Œ•¡•ß•√•Ø
            PERFORM 3001-TELSAISIN-CHK-SEC
            IF      FLG-TEL-ARI         =   1
@@ -4372,8 +4337,6 @@
        3001-TELSAISIN-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-TEL-ARI
-      *H25.4
-           MOVE    SPACE               TO  WRK-KBN4
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                              ((SPA-GMN-INPUTCD(IDX)    =   SPACE) AND
@@ -4391,8 +4354,6 @@
                        MOVE    TBL-KBN   (TBL-IDX)     TO  WRK-KBN
                        MOVE    TBL-KBN2  (TBL-IDX)     TO  WRK-KBN2
                        MOVE    ZERO            TO  WRK-KAISU
-      *H25.4           æ“≤§ §∑¬–±˛
-                       MOVE    TBL-ROUJIN(TBL-IDX) TO  WRK-KBN4
                END-SEARCH
       *
       *        ∆±∆¸∫∆ø«Œ¡§ÿ√÷¥π§®
@@ -5950,28 +5911,6 @@
            IF     (SPA-INITAUTO-FLG    =   "0" )
                MOVE    ZERO                TO  FLG-HENKAN
            END-IF
-      *
-      *TEST
-      *ver.4.8
-      *    ≈≈œ√∫∆ø«ΩËÕ˝∫—§ﬂ∂Ë ¨¿ﬂƒÍ
-           IF     (WRK-KBN3            =   "T"  OR  "S" )
-             AND  (IDX-TEL             >   ZERO         )
-      *        £√£Ã£¡£…£Õ§´§È§œ°¢¥ƒ∂≠¿ﬂƒÍ§œ»ø±«§ §∑
-               IF     (SPA-WKSRY-KARTE-FLG NOT =   1   )
-                   MOVE    "2"             TO  SPA-COM-KSNAUTO
-                                                   (IDX-TEL)
-               END-IF
-      *        ø«ª°Œ¡º´∆∞»Ø¿∏§ §∑ª˛CLAIM§‚§ §∑
-               IF     (SPA-INITAUTO-FLG    =   "0" )
-      *        √Ê≈”Ω™Œª§«∫∆ªªƒÍ§∑§ §§ª˛
-                 OR  ((SPA-CHUTOTENKAI-FLG =   "0"  )  AND
-                      (SPA-WKSRY-KARTE-FLG =   1    ))
-                   MOVE    "1"             TO  SPA-COM-KSNAUTO
-                                                   (IDX-TEL)
-               END-IF
-           END-IF
-      *ver.4.8
-      *
       *    ø«ª°Œ¡ —¥π
            IF      FLG-HENKAN          =   1
       *        ª˛¥÷≥∞§ §∑
@@ -5989,7 +5928,6 @@
       *
            MOVE    ZERO                TO  FLG-TAKA
            MOVE    ZERO                TO  FLG-ARI
-           MOVE    ZERO                TO  IDX-TEL
            MOVE    SPACE               TO  WRK-KBN4
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE    )  OR
@@ -6041,12 +5979,6 @@
                    IF      WRK-KBN             =   "G"
                        MOVE    1               TO  FLG-GAI
                    END-IF
-      *ver.4.8
-      *            ≈≈œ√∫∆ø«§Œ∞Ã√÷
-                   IF     (WRK-KBN3            =   "T"  OR  "S" )
-                       MOVE    IDX             TO  IDX-TEL
-                   END-IF
-      *
                END-IF
                EVALUATE    SPA-COM-INPUTCD (IDX)
       *                £ƒ£’£Õ£Õ£Ÿø«ª°Œ¡
@@ -7023,7 +6955,6 @@
                IF     FLG-SYOKAINASI       =   1
                    MOVE   "111012610"          TO  WRK-SRYCD
                END-IF
-      *
            END-IF
            IF      IDX-A               <   SPA-MAX-LINE
                IF      SPA-COM-INPUTCD(IDX-A + 1)

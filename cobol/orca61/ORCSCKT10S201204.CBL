@@ -299,8 +299,6 @@
                05  WRK-SRYMM           PIC 9(02).
                05  WRK-SRYDD           PIC 9(02).
            03  WRK-SYODD               PIC 9(02).
-      *    ¾Ò²ðÂÐ±þ
-           03  WRK-KBN4                PIC X(01).
       *
       *    ¿Ç»¡ÎÁ¥Æ¡¼¥Ö¥ë
        01  TBL-SINSATU-AREA.
@@ -360,12 +358,10 @@
            03  FILLER              PIC X(14)   VALUE   "311  112016310".
       *    ³°Íè¿ÇÎÅÎÁ¡ÊÆ±°ìÆü£²²ÊÌÜ¡Ë¡ÊÂ¾°åÎÅµ¡´Ø¤Ø¾Ò²ð¡Ë
            03  FILLER              PIC X(14)   VALUE   "310KD112016410".
-      *    Æ±Æü³°Íè¿ÇÎÅÎÁ¡ÊÂ¾°åÎÅµ¡´Ø¤Ø¾Ò²ð¡Ë
-           03  FILLER              PIC X(14)   VALUE   "311D 112016550".
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
       **** 03  TBL-SINSATU-OCC         OCCURS  15    INDEXED  TBL-IDX.
-           03  TBL-SINSATU-OCC         OCCURS  20    INDEXED  TBL-IDX.
+           03  TBL-SINSATU-OCC         OCCURS  19    INDEXED  TBL-IDX.
       *        £±¡§°ìÈÌ¡¢£²¡§¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¡¢£³¡§³°Íè¿ÇÎÅÎÁ
                05  TBL-KAISU           PIC 9(01).
       *******  Ï·¿Í°ìÈÌ¶èÊ¬¡Ê£°¡§°ìÈÌ¡¢£±¡§Ï·¿Í¡Ë(£°¡§¤Ê¤·¡Ë
@@ -950,10 +946,6 @@
            ELSE
                MOVE    SPA-HOSPSBT         TO  WRK-HOSPSBT
            END-IF
-      *H25.4
-           IF      WRK-KBN4        NOT =   "1"
-               MOVE    "0"             TO  WRK-KBN4
-           END-IF
       *    ¿Ç»¡ÎÁ¥»¥Ã¥È
            SET     TBL-IDX             TO  1
            SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
@@ -965,8 +957,6 @@
                      AND  (WRK-KBN             =   TBL-KBN    (TBL-IDX))
                      AND  (WRK-SRYKBN          =   TBL-SRYCD(TBL-IDX)
                                                                 (2:2))
-      *H25.4         ¾Ò²ð¤Ê¤·
-                     AND  (WRK-KBN4            =   TBL-ROUJIN(TBL-IDX))
                        MOVE    TBL-SRYCD (TBL-IDX)
                                                TO  WRK-SRYCD
            END-SEARCH

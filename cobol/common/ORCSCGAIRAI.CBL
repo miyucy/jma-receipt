@@ -45,13 +45,6 @@
       *  04.06.00    NACL-多々納  10/09/10  分娩管理テーブル削除対応
       *  04.06.00    NACL-多々納  10/11/05  発行日変更対応
       *  04.07.00    NACL-多々納  11/08/XX  算定履歴付加テーブル削除対応
-      *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
-      *  04.08.00    NACL-多々納  13/07/XX  第三者行為対応
-      *  04.08.00    NACL-多々納  14/05/27  一時ファイル変更
-      *  04.08.00    NACL-多々納  14/08/22  外用薬剤回数チェック対応
-      *  04.08.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
-      *  04.08.00    NACL-多々納  15/03/XX  Ｈ２７年０４月改正対応
-      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年０４月改正対応
       *****************************************************************
       *
       *
@@ -61,34 +54,34 @@
        FILE-CONTROL.
       *
       *    パラメタデータ
-      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-      *                            ORGANIZATION    IS  SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-PARA.
+           SELECT  PARA-FILE       ASSIGN  FILE-NAME2
+                                   ORGANIZATION    IS  SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
       *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PARA-KEY.
-      *        05  PARA-FILEMEI         PIC X(08).
-      *        05  PARA-EDABAN          PIC 9(03).
-      *    03  PARA-DATA-REC            PIC X(60000).
+       FD  PARA-FILE.
+       01  PARA-REC.
+           03  PARA-KEY.
+               05  PARA-FILEMEI         PIC X(08).
+               05  PARA-EDABAN          PIC 9(03).
+           03  PARA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
-      *01  FILE-NAME2.
-      *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-      *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
-      *    03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
-      *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
-      *    03  FILLER              PIC X(06)   VALUE   ".TXT".
+       01  FILE-NAME2.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(07)   VALUE   "K01PARA".
+           03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
+           03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
-      *01  STS-AREA.
-      *    03  STS-PARA            PIC X(02).
+       01  STS-AREA.
+           03  STS-PARA            PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -155,7 +148,6 @@
            03  IDX-1               PIC 9(04).
            03  IDX-2               PIC 9(02).
            03  IDX-3               PIC 9(02).
-           03  IDX-A               PIC 9(04).
       *
            03  IDH                 PIC 9(04).
            03  IDH2                PIC 9(04).
@@ -296,26 +288,32 @@
            03  WRK-HZN-SRYKA           PIC X(02).
       *    診療行為附加情報設定（科毎）
            03  WRK-ACTP-AREA.
-               05  WRK-ACTP-ZAINUM-G       OCCURS   30.
+               05  WRK-ACTP-ZAINUM-G       OCCURS   10.
                    07  WRK-ACTP-SRYKA      PIC X(02).
                    07  WRK-ACTP-HKNCOMBI   PIC X(04).
-      *H26.10      診療区分毎
-                   07  WRK-ACTP-SRYKBN     PIC X(02).
                    07  WRK-ACTP-MAX        PIC 9(04).
                    07  WRK-ACTP-ZAINUM     PIC 9(08)   OCCURS   50.
                05  IDX-GEN                 PIC 9(04).
                05  IDX-GEN2                PIC 9(04).
-      *H27.4
-      *    診療行為附加情報設定（科毎）３０日逓減
-           03  WRK-ACTP30-AREA.
-               05  WRK-ACTP30-ZAINUM-G       OCCURS   30.
-                   07  WRK-ACTP30-SRYKA      PIC X(02).
-                   07  WRK-ACTP30-HKNCOMBI   PIC X(04).
-                   07  WRK-ACTP30-SRYKBN     PIC X(02).
-                   07  WRK-ACTP30-MAX        PIC 9(04).
-                   07  WRK-ACTP30-ZAINUM     PIC 9(08)   OCCURS   50.
-               05  IDX-GEN3                 PIC 9(04).
-               05  IDX-GEN32                PIC 9(04).
+      *
+      *    診療行為内容比較用テーブル
+      *01  TBL-AREA.
+      *    03  TBL-MAE-AREA.
+      *        05  TBL-MAE-REC     OCCURS   50.
+      *            07  TBL-MAE-SRYCD       PIC  X(09).
+      *            07  TBL-MAE-SRYSURYO    PIC  9(05)V9(03).
+      *            07  TBL-MAE-SRYKAISU    PIC  9(03).
+      *            07  TBL-MAE-INPUTCOMENT PIC  X(40).
+      *            07  TBL-MAE-ATAI-G.
+      *                09  TBL-MAE-ATAI    PIC  X(08)  OCCURS  3.
+      *    03  TBL-ATO-AREA.
+      *        05  TBL-ATO-REC     OCCURS   50.
+      *            07  TBL-ATO-SRYCD       PIC  X(09).
+      *            07  TBL-ATO-SRYSURYO    PIC  9(05)V9(03).
+      *            07  TBL-ATO-SRYKAISU    PIC  9(03).
+      *            07  TBL-ATO-INPUTCOMENT PIC  X(40).
+      *            07  TBL-ATO-ATAI-G.
+      ***              09  TBL-ATO-ATAI    PIC  X(08)  OCCURS  3.
       *
       *    剤テーブル領域
        01  WRK-TBL-ZAINUM-AREA.
@@ -326,19 +324,10 @@
       *
       *    診療会計附加情報マスタ−（内服逓減）
        01  TBL-SRYACCTPLUS-AREA.
-           02  TBL-SRYACCTPLUS-REC   OCCURS   30.
+           02  TBL-SRYACCTPLUS-REC   OCCURS   10.
            COPY    "CPSRYACCTPLUS.INC"  REPLACING
                                      //ACCTP-// BY //TBL-ACCTP-//.
            03  TBL-ACCTP-HKNCOMBI      PIC X(04).
-           03  TBL-ACCTP-SRYKBN        PIC X(02).
-      *H27.4
-      *    診療会計附加情報マスタ−（３０日逓減）
-       01  TBL-SRYACCTPLUS30-AREA.
-           02  TBL-SRYACCTPLUS30-REC   OCCURS   30.
-           COPY    "CPSRYACCTPLUS.INC"  REPLACING
-                                     //ACCTP-// BY //TBL-ACCTP30-//.
-           03  TBL-ACCTP30-HKNCOMBI      PIC X(04).
-           03  TBL-ACCTP30-SRYKBN        PIC X(02).
       *
       *!!!!
       *    リハビリ開始日訂正前情報
@@ -351,16 +340,6 @@
            03  IDX-RIH                 PIC 9(02).
            03  IDX-R2                  PIC 9(02).
       *!!!!
-      *
-      *H26.10
-      * 向精神薬多剤投与減算コード
-       01  CONS-TAZAI-SRYCD        PIC X(09)   VALUE    "630010005".
-      * （精減）
-       01  CONS-SGEN-SRYCD         PIC X(09)   VALUE    "820000166".
-      *H28.4
-      * （湿布減）
-       01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -474,12 +453,6 @@
            02  TBL-JYURRK-REC        OCCURS   10.
            COPY    "CPJYURRK.INC"  REPLACING
                                      //JYURRK-// BY //TBL-JYURRK-//.
-      *
-      *v4.8
-      *    パラメタテーブル
-       01  PARA-REC.
-           COPY    "CPPARA.INC". 
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -626,7 +599,7 @@
                    UNTIL      (IDH     >   15  )  OR
                               (SPA-TBL-HKNCOMBI(IDH)   =   SPACE)
                PERFORM VARYING     IDH2    FROM    1   BY  1
-                       UNTIL      (IDH2    >   10  )  OR
+                       UNTIL      (IDH2    >   15  )  OR
                                   (SPA-TBL-SRYKA(IDH IDH2) =   SPACE)
                    MOVE    SPA-TBL-SRYKA(IDH IDH2) TO  WRK-SRYKA
                    PERFORM VARYING     IDH3    FROM    1   BY  1
@@ -649,8 +622,6 @@
            END-IF
            INITIALIZE                  WRK-ACTP-AREA
            INITIALIZE                  TBL-SRYACCTPLUS-AREA
-           INITIALIZE                  WRK-ACTP30-AREA
-           INITIALIZE                  TBL-SRYACCTPLUS30-AREA
       *
            PERFORM VARYING     IDH     FROM    1   BY  1
                    UNTIL      (IDH     >   15  )  OR
@@ -667,7 +638,7 @@
                    MOVE    1                   TO  FLG-FUKU-FLG
                END-IF
                PERFORM VARYING     IDH2    FROM    1   BY  1
-                       UNTIL      (IDH2    >   10  )  OR
+                       UNTIL      (IDH2    >   15  )  OR
                                   (SPA-TBL-SRYKA(IDH IDH2) =   SPACE)
                               OR  (SPA-ERRCD   NOT =   SPACE )
                    MOVE    SPA-TBL-SRYKA(IDH IDH2) TO  WRK-SRYKA
@@ -678,25 +649,19 @@
                IF      FLG-FUKU-FLG            =   1
                    MOVE    ZERO                TO  WRK-SRYKA
       *            複数科まとめ収納作成
-                   IF      SPA-ERRCD           =   SPACE
-                       PERFORM 1004-DBKOUSIN-SYUTTL-SEC
-                   END-IF
+                   PERFORM 1004-DBKOUSIN-SYUTTL-SEC
                END-IF
            END-PERFORM
       *    内服７種類逓減の診療会計附加情報追加
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4504-SRYACCTPLUS-GENINS-SEC
-           END-IF
+           PERFORM 4504-SRYACCTPLUS-GENINS-SEC
       *!!!!
-           IF     (SPA-SYORIFLG        =   1    )
-              AND (SPA-ERRCD           =   SPACE)
+           IF      SPA-SYORIFLG        =   1
       *        リハビリ開始日の履歴付加削除
                PERFORM 45005-SANTEIPLUS-DEL-SEC
            END-IF
       *!!!!
       *
-           IF     (SPA-SYORIFLG        =   1    )
-              AND (SPA-ERRCD           =   SPACE)
+           IF      SPA-SYORIFLG        =   1
       *        訂正の時、前回の削除分を削除する
                PERFORM 45004-ALL-JYURRK-UPD-SEC
            END-IF
@@ -726,15 +691,6 @@
                   AND (SPA-SYSYMD          =   SPA-SRYYMD)
                    PERFORM 45003-UKETUKE-SEC
                END-IF
-           END-IF
-      *
-      *H25.5
-      * 訂正時のみ
-      *    レセプト作成管理マスタ更新処理
-           IF     (SPA-SYORIFLG        =   1    )
-             AND  (SPA-HKNCOMBINUM NOT =   "9999")
-             AND  (SPA-ERRCD           =   SPACE )
-               PERFORM 3009-RECEUPD-UPDATE-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -915,45 +871,26 @@
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
            MOVE    ZERO                TO  IDX-KOUI
       *
-      *    MOVE    SPA-TERMID          TO  FILE-TERMID2
-      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-      *    OPEN    INPUT               PARA-FILE
-      *    IF      STS-PARA        NOT =   ZERO
-      *        DISPLAY "ORCSGAIARI PARA STS-PARA:" STS-PARA
-      *    END-IF
-      *****PERFORM 980-PARA-READ-SEC
-      *ver.4.8
-           MOVE    SPACE               TO  PARA-REC
-           INITIALIZE                      PARA-REC
-           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
-           MOVE    "K02"               TO  PARA-GYOUMUID
-           MOVE    SPA-TERMID          TO  PARA-TERMID
-           MOVE    "WKSRYACT"          TO  PARA-FILEMEI
-      *
-           MOVE    PARA-REC            TO  MCPDATA-REC
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1                   TO  FLG-PARA
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+           OPEN    INPUT               PARA-FILE
+           IF      STS-PARA        NOT =   ZERO
+               DISPLAY "ORCSGAIARI PARA STS-PARA:" STS-PARA
            END-IF
+           PERFORM 980-PARA-READ-SEC
       *
            PERFORM
                    UNTIL      (FLG-PARA   =    1  )  OR
                               (SPA-ERRCD  NOT =   SPACE)
+               IF      PARA-FILEMEI        =   "WKSRYACT"
       *!!!
-      *        対象有
-               MOVE    1                   TO  FLG-SYORI-ARI
+      *          対象有
+                 MOVE    1                   TO  FLG-SYORI-ARI
       *!!!
-               MOVE    PARA-DATA-REC       TO  WRK-WKSRYACT-REC
-               IF     (WRK-WKSRY-SRYKA     =   WRK-SRYKA)  AND
-                      (WRK-WKSRY-HKNCOMBI  =   WRK-HKNCOMBI) AND
-                      (WRK-WKSRY-SRYCD (1)(1:1)
+                 MOVE    PARA-DATA-REC     TO  WRK-WKSRYACT-REC
+                 IF     (WRK-WKSRY-SRYKA      =   WRK-SRYKA)  AND
+                        (WRK-WKSRY-HKNCOMBI   =   WRK-HKNCOMBI) AND
+                        (WRK-WKSRY-SRYCD (1)(1:1)
                                            NOT =  "$"  AND "#" )
       *
                    IF     (IDX-KOUI        >   ZERO  )  AND
@@ -961,31 +898,32 @@
                                            LNK-WKSRY-ZAINUM (IDX-KOUI))
       *                剤毎に処理を行う
                        PERFORM 4501-SRYACT-KOU-SEC
-                       IF      SPA-ERRCD       =   SPACE
-                           PERFORM 45001-JYURRK-SYORI2-SEC
-                       END-IF
+                       PERFORM 45001-JYURRK-SYORI2-SEC
                        MOVE    SPACE           TO  LNK-WKSRYACT-AREA
                        MOVE    ZERO            TO  IDX-KOUI
                    END-IF
                    ADD     1               TO  IDX-KOUI
                    MOVE    PARA-DATA-REC   TO  LNK-WKSRYACT-REC
                                                             (IDX-KOUI)
+                 END-IF
+               ELSE
+                   IF      IDX-KOUI        >   ZERO
+                       PERFORM 4501-SRYACT-KOU-SEC
+                       PERFORM 45001-JYURRK-SYORI2-SEC
+                       MOVE    SPACE           TO  LNK-WKSRYACT-AREA
+                       MOVE    ZERO            TO  IDX-KOUI
+                   END-IF
                END-IF
       *
-               MOVE    "tbl_para"          TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 990-PARA-READ-SEC
+               PERFORM 980-PARA-READ-SEC
            END-PERFORM
-           MOVE    "tbl_para"          TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *
+           CLOSE                       PARA-FILE
       *
            IF     (SPA-ERRCD       =   SPACE ) AND
                   (IDX-KOUI        >   ZERO  )
                PERFORM 4501-SRYACT-KOU-SEC
-               IF      SPA-ERRCD       =   SPACE
-                   PERFORM 45001-JYURRK-SYORI2-SEC
-               END-IF
+               PERFORM 45001-JYURRK-SYORI2-SEC
                MOVE    SPACE           TO  LNK-WKSRYACT-AREA
                MOVE    ZERO            TO  IDX-KOUI
                MOVE    ZERO            TO  WRK-ZAINUM
@@ -2126,10 +2064,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        ELSE
                            MOVE    "1"                 TO  JYURRK-HKNKBN
                        END-IF
-      *
-                   WHEN    "6"
-      *                自賠責（第三者行為）
-                       MOVE    "7"             TO  JYURRK-HKNKBN
                END-EVALUATE
            END-IF
       *    公害保険
@@ -2190,7 +2124,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                OR (SPA-TBL-HKNCOMBI(IDH)   =   SPACE)
                                OR (FLG-SRYKA-OK   =   1  )
                    PERFORM VARYING     IDH2    FROM    1   BY  1
-                           UNTIL      (IDH2    >   10  )  OR
+                           UNTIL      (IDH2    >   15  )  OR
                                    (SPA-TBL-SRYKA(IDH IDH2) =   SPACE)
                                    OR (FLG-SRYKA-OK   =   1  )
                        IF      SPA-TBL-SRYKA(IDH IDH2) =
@@ -2217,13 +2151,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-PERFORM
-      *
-      *H25.5
-      *    レセプト作成管理マスタ更新処理
-      *    IF     (SPA-HKNCOMBINUM NOT =   "9999")
-      *      AND  (SPA-ERRCD           =   SPACE )
-      *        PERFORM 3009-RECEUPD-UPDATE-SEC
-      *    END-IF
       *
            .
        1001-TEISEI-SYORI-EXT.
@@ -2433,29 +2360,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        45001112-TEISEI-ACCT-SEC          SECTION.
       *
            MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
-      *
-      *ver.4.8
-      *    EVALUATE    JYURRK-RENNUM
-      *        WHEN    1
-      *            MOVE    2               TO  IDX-1
-      *        WHEN    2
-      *            MOVE    3               TO  IDX-1
-      *        WHEN    OTHER
-      *            MOVE    4               TO  IDX-1
-      *    END-EVALUATE
-      *    EVALUATE    WRK-MAE-RENNUM
-      *        WHEN    1
-      *            MOVE    2               TO  IDX-3
-      *        WHEN    2
-      *            MOVE    3               TO  IDX-3
-      *        WHEN    OTHER
-      *            MOVE    4               TO  IDX-3
-      ***  END-EVALUATE
-      *ver.4.8
-      *    連番＋１　を会計テーブル位置とする
-           COMPUTE IDX-1               =   JYURRK-RENNUM   +   1
-           COMPUTE IDX-3               =   WRK-MAE-RENNUM  +   1
-      *
+           EVALUATE    JYURRK-RENNUM
+               WHEN    1
+                   MOVE    2               TO  IDX-1
+               WHEN    2
+                   MOVE    3               TO  IDX-1
+               WHEN    OTHER
+                   MOVE    4               TO  IDX-1
+           END-EVALUATE
+           EVALUATE    WRK-MAE-RENNUM
+               WHEN    1
+                   MOVE    2               TO  IDX-3
+               WHEN    2
+                   MOVE    3               TO  IDX-3
+               WHEN    OTHER
+                   MOVE    4               TO  IDX-3
+           END-EVALUATE
       *
            IF      IDX-1           NOT =   IDX-3
       *        回数テーブルが異なる時のみ変更
@@ -2582,16 +2502,14 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                         OR (SPA-ERRCD      NOT =   SPACE )
       *
                    MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
-      *ver.4.8
-      ****         EVALUATE    JYURRK-RENNUM
-      *                WHEN    1
-      *                    MOVE    2               TO  IDX-1
-      *                WHEN    2
-      *                    MOVE    3               TO  IDX-1
-      *                WHEN    OTHER
-      *                    MOVE    4               TO  IDX-1
-      ************ END-EVALUATE
-                   COMPUTE IDX-1       =   JYURRK-RENNUM   +   1
+                   EVALUATE    JYURRK-RENNUM
+                       WHEN    1
+                           MOVE    2               TO  IDX-1
+                       WHEN    2
+                           MOVE    3               TO  IDX-1
+                       WHEN    OTHER
+                           MOVE    4               TO  IDX-1
+                   END-EVALUATE
       *
       *            算定履歴の削除処理
                    MOVE    ACCT-DAY (IDX-1 IDX-2)  TO  WRK-KAISU
@@ -2848,12 +2766,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "6"
       *            公害
                    MOVE    "2"             TO  SSANTEI-HKNKBN
-      *
-               WHEN    "7"
-      *            自賠責（第三者行為）
-                   MOVE    "1"             TO  SSANTEI-HKNKBN
-                   MOVE    "6"             TO  SSANTEI-RSI-HKNKBN
-                   MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
            END-EVALUATE
            CALL    "ORCSSANTEI"        USING
                                        ORCSSANTEIAREA
@@ -3008,18 +2920,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        WHEN    "113003710"
                            MOVE    SYU-SRYYMD      TO
                                                    WRK-KARRK-SYOSINYMD2
-      *H28.4           小児かかりつけ診療料
-                       WHEN    "113019710"
-                       WHEN    "113019910"
-                           MOVE    SYU-SRYYMD      TO
-                                                   WRK-KARRK-SYOSINYMD2
       *                同日初診
                        WHEN    "101110040"
                        WHEN    "111011810"
       *H25.4           紹介なし
                        WHEN    "111012610"
-      *H28.4           妥結５割以下
-                       WHEN    "111012810"
                            IF      LNK-WKSRY-SRYKBN (IDX)  =   "11"
                                MOVE    1               TO  FLG-DOUJITU
                            END-IF
@@ -3227,8 +3132,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    診療行為マスター処理 
-           IF     (FLG-SINKI           =   1     )
-             AND  (SPA-ERRCD           =   SPACE )
+           IF      FLG-SINKI           =   1
                PERFORM 4501-SRYACT-SYORI-SEC
            END-IF
       *
@@ -3236,7 +3140,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    診療会計附加情報処理 
            IF     (FLG-SINKI           =   1 )  AND
                   (LNK-WKSRYP-ADDKBN(01)   =   "1"  )
-             AND  (SPA-ERRCD           =   SPACE )
                PERFORM 4503-SRYACCTPLUS-SYORI-SEC
            END-IF
       *!!
@@ -3304,26 +3207,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            内服逓減の減の有無判定
                    IF     (LNK-WKSRY-SRYCD (IDX IDY)   =   "820000047")
                       AND (LNK-WKSRY-SRYKBN (IDX)      =   "21"  )
-                       MOVE    1               TO  FLG-GEN-ARI
-                   END-IF
-      *H27.4
-                   IF     (LNK-WKSRY-SRYCD (IDX IDY)   =   "820000047")
-                      AND (LNK-WKSRY-SRYKBN (IDX)      =   "22"  )
-                       MOVE    1               TO  FLG-GEN-ARI
-                   END-IF
-      *H28.4       湿布薬減点
-                   IF     (LNK-WKSRY-SRYCD (IDX IDY)
-                                                   =   CONS-SPCM-SRYCD)
-                      AND (LNK-WKSRY-SRYKBN (IDX)      =   "23"  )
-                       MOVE    1               TO  FLG-GEN-ARI
-                   END-IF
-      *H26.10
-      *            向精神薬多剤逓減の減の有無判定
-                   IF     (LNK-WKSRY-SRYCD (IDX IDY)
-                                                   =   CONS-SGEN-SRYCD)
-                      AND (LNK-WKSRY-SRYKBN (IDX)  =   "21"
-                                                   OR  "22"
-                                                   OR  "23"     )
                        MOVE    1               TO  FLG-GEN-ARI
                    END-IF
                END-PERFORM
@@ -3404,26 +3287,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ORCSCZAICHK-ZAINUM  TO  WRK-ZAINUM
       *    内服逓減の剤チェック
            IF     (WRK-ZAINUM      NOT =   ZERO )  AND
-                  (LNK-WKSRY-SRYKBN    (1) =   "21"
-                                           OR  "22"
-                                           OR  "23" )  AND
+                  (LNK-WKSRY-SRYKBN    (1) =   "21" )  AND
                   (LNK-WKSRYP-TEI-NKBN (1) =   2    )
                PERFORM 45015-TEIGEN-CHK-SEC
-           END-IF
-      *H27.4
-      *    ３０日以上逓減の剤チェック
-           IF     (WRK-ZAINUM      NOT =   ZERO )  AND
-                  (LNK-WKSRY-SRYKBN    (1) =   "21"
-                                           OR  "22" )  AND
-                  (LNK-WKSRYP-TEI-NKBN30(1) =   2    )
-               PERFORM 45015-TEIGEN30-CHK-SEC
-           END-IF
-      *H28.4
-      *    湿布７０枚以上逓減の剤チェック
-           IF     (WRK-ZAINUM      NOT =   ZERO )  AND
-                  (LNK-WKSRY-SRYKBN    (1) =   "23" )  AND
-                  (LNK-WKSRYP-TEI-NKBN30(1) =   2    )
-               PERFORM 45015-TEIGEN30-CHK-SEC
            END-IF
       *
            IF      WRK-ZAINUM          =   ZERO
@@ -3435,73 +3301,30 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *!!
       *    内服逓減処理
-      *****IF      FLG-GEN-ARI         =   1
-      *H27.4
-      *    内服逓減対象剤
-           IF      LNK-WKSRYP-TEI-NKBN (1) =   1
+           IF      FLG-GEN-ARI         =   1
                PERFORM VARYING IDX-GEN2    FROM    1   BY  1
-                       UNTIL   IDX-GEN2    >   30
+                       UNTIL   IDX-GEN2    >   10
                    IF      WRK-ACTP-SRYKA(IDX-GEN2)    =   SPACE
                        MOVE    LNK-WKSRY-SRYKA(01)
                                            TO  WRK-ACTP-SRYKA(IDX-GEN2)
                        MOVE    LNK-WKSRY-HKNCOMBI(01)
                                            TO  WRK-ACTP-HKNCOMBI
                                                             (IDX-GEN2)
-      *H26.10
-                       MOVE    LNK-WKSRY-SRYKBN(01)
-                                           TO  WRK-ACTP-SRYKBN
-                                                            (IDX-GEN2)
                    END-IF
                    IF     (WRK-ACTP-SRYKA(IDX-GEN2)
                                            =   LNK-WKSRY-SRYKA(01) )
                      AND  (WRK-ACTP-HKNCOMBI(IDX-GEN2)
                                            =   LNK-WKSRY-HKNCOMBI(01))
-      *H26.10
-                     AND  (WRK-ACTP-SRYKBN  (IDX-GEN2)
-                                           =   LNK-WKSRY-SRYKBN  (01))
                        ADD     1           TO  WRK-ACTP-MAX (IDX-GEN2)
                        MOVE    WRK-ACTP-MAX (IDX-GEN2) 
                                            TO  IDX-GEN
                        IF      IDX-GEN     >   50
                            MOVE    50                  TO  IDX-GEN
                        END-IF
-                       MOVE    WRK-ZAINUM      TO  WRK-ACTP-ZAINUM
-                                                    (IDX-GEN2 IDX-GEN)
-                       MOVE    30              TO  IDX-GEN2
-                   END-IF
-               END-PERFORM
-           END-IF
-      *H27.4
-      *    ３０日以上逓減対象剤
-           IF      LNK-WKSRYP-TEI-NKBN30 (1) =   1
-               PERFORM VARYING IDX-GEN2    FROM    1   BY  1
-                       UNTIL   IDX-GEN2    >   30
-                   IF      WRK-ACTP30-SRYKA(IDX-GEN2)    =   SPACE
-                       MOVE    LNK-WKSRY-SRYKA(01)
-                                           TO  WRK-ACTP30-SRYKA
-                                                            (IDX-GEN2)
-                       MOVE    LNK-WKSRY-HKNCOMBI(01)
-                                           TO  WRK-ACTP30-HKNCOMBI
-                                                            (IDX-GEN2)
-                       MOVE    LNK-WKSRY-SRYKBN(01)
-                                           TO  WRK-ACTP30-SRYKBN
-                                                            (IDX-GEN2)
-                   END-IF
-                   IF     (WRK-ACTP30-SRYKA(IDX-GEN2)
-                                           =   LNK-WKSRY-SRYKA(01) )
-                     AND  (WRK-ACTP30-HKNCOMBI(IDX-GEN2)
-                                           =   LNK-WKSRY-HKNCOMBI(01))
-                     AND  (WRK-ACTP30-SRYKBN  (IDX-GEN2)
-                                           =   LNK-WKSRY-SRYKBN  (01))
-                       ADD     1           TO  WRK-ACTP30-MAX (IDX-GEN2)
-                       MOVE    WRK-ACTP30-MAX (IDX-GEN2) 
-                                           TO  IDX-GEN
-                       IF      IDX-GEN     >   50
-                           MOVE    50                  TO  IDX-GEN
-                       END-IF
-                       MOVE    WRK-ZAINUM      TO  WRK-ACTP30-ZAINUM
-                                                    (IDX-GEN2 IDX-GEN)
-                       MOVE    30              TO  IDX-GEN2
+      **********   END-IF
+                   MOVE    WRK-ZAINUM      TO  WRK-ACTP-ZAINUM
+                                                     (IDX-GEN2 IDX-GEN)
+                   MOVE    10              TO  IDX-GEN2
                    END-IF
                END-PERFORM
            END-IF
@@ -3628,7 +3451,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                               (FLG-ERR         =   1 )
                    MOVE    ZERO                TO  FLG-ERR2
                    PERFORM VARYING IDX-GEN5    FROM    1   BY  1
-                           UNTIL  (IDX-GEN5    >   30   )  OR
+                           UNTIL  (IDX-GEN5    >   10   )  OR
                                   (WRK-ACTP-SRYKA(IDX-GEN5)
                                                =   SPACE  )  OR
                                   (FLG-ERR2    =   1      )
@@ -3636,9 +3459,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            =   WRK-ACTP-SRYKA(IDX-GEN5))
                          AND  (LNK-WKSRY-HKNCOMBI (01)
                                            =   WRK-ACTP-HKNCOMBI
-                                                            (IDX-GEN5))
-                         AND  (LNK-WKSRY-SRYKBN   (01)
-                                           =   WRK-ACTP-SRYKBN
                                                             (IDX-GEN5))
                            PERFORM VARYING IDX-GEN6    FROM    1   BY  1
                                    UNTIL  (IDX-GEN6    >   50  )  OR
@@ -3673,90 +3493,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        45015-TEIGEN-CHK-EXT.
-           EXIT.
-      *
-      *H27.4
-      *****************************************************************
-      *   ３０日以上逓減剤内容判定処理
-      *****************************************************************
-       45015-TEIGEN30-CHK-SEC          SECTION.
-      *
-           MOVE    SPACE               TO  SRYACCTPLUS-REC
-           INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    LNK-WKSRY-HOSPNUM (01)  TO  ACCTP-HOSPNUM
-           MOVE    LNK-WKSRY-NYUGAIKBN(01) TO  ACCTP-NYUGAIKBN
-           MOVE    LNK-WKSRY-PTID   (01)   TO  ACCTP-PTID
-           MOVE    LNK-WKSRY-SRYKA  (01)   TO  ACCTP-SRYKA
-           MOVE    LNK-WKSRY-SRYYMD (01)(1:6)
-                                           TO  ACCTP-SRYYM
-           MOVE    WRK-ZAINUM              TO  ACCTP-ZAINUM
-      *
-           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
-           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 910-SRYACCTPLUS-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCTPLUS
-           END-IF
-           MOVE    ZERO                TO  FLG-ERR
-           PERFORM UNTIL  (FLG-SRYACCTPLUS =   1 )  OR
-                          (FLG-ERR         =   1 )
-               PERFORM VARYING IDX-GEN4    FROM    1   BY  1
-                       UNTIL  (IDX-GEN4    >   5   )  OR
-                              (ACCTP-GRP-ZAINUM(IDX-GEN4)  =   ZERO) OR
-                              (FLG-ERR         =   1 )
-                   MOVE    ZERO                TO  FLG-ERR2
-                   PERFORM VARYING IDX-GEN5    FROM    1   BY  1
-                           UNTIL  (IDX-GEN5    >   30   )  OR
-                                  (WRK-ACTP30-SRYKA(IDX-GEN5)
-                                               =   SPACE  )  OR
-                                  (FLG-ERR2    =   1      )
-                       IF     (LNK-WKSRY-SRYKA(01)
-                                           =   WRK-ACTP30-SRYKA
-                                                            (IDX-GEN5))
-                         AND  (LNK-WKSRY-HKNCOMBI (01)
-                                           =   WRK-ACTP30-HKNCOMBI
-                                                            (IDX-GEN5))
-                         AND  (LNK-WKSRY-SRYKBN   (01)
-                                           =   WRK-ACTP30-SRYKBN
-                                                            (IDX-GEN5))
-                           PERFORM VARYING IDX-GEN6    FROM    1   BY  1
-                                   UNTIL  (IDX-GEN6    >   50  )  OR
-                                          (WRK-ACTP30-ZAINUM
-                                                    (IDX-GEN5 IDX-GEN6)
-                                                       =   ZERO   ) OR
-                                          (FLG-ERR2    =   1      )
-                               IF      WRK-ACTP30-ZAINUM
-                                                     (IDX-GEN5 IDX-GEN6)
-                                           =   ACCTP-GRP-ZAINUM
-                                                         (IDX-GEN4)
-                                   MOVE    1           TO  FLG-ERR2
-                               END-IF
-                           END-PERFORM
-                       END-IF
-                   END-PERFORM
-                   IF      FLG-ERR2            =   ZERO
-                       MOVE    1               TO  FLG-ERR
-                   END-IF
-               END-PERFORM
-               MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 910-SRYACCTPLUS-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *    診療会計附加情報の逓減剤内容が違う時、新規
-           IF      FLG-ERR             =   1
-               MOVE    ZERO            TO  WRK-ZAINUM
-           END-IF
-      *
-           .
-       45015-TEIGEN30-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3855,11 +3591,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      LNK-WKSRYP-TEI-NKBN (1) =   1
                MOVE    "2"                 TO  ACCT-ZAIREQFLG
            END-IF
-      *H27.4
-      *    ３０日逓減対象剤
-           IF      LNK-WKSRYP-TEI-NKBN30 (1) =   1
-               MOVE    "2"                 TO  ACCT-ZAIREQFLG
-           END-IF
       *!!
       *@
       *    包括剤の設定
@@ -3887,23 +3618,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            COMPUTE IDX1                =   WRK-JYURRK-RENNUM
                                        +   1
-      *ver.4.8
-      ***  IF      IDX1                >   4
-      *        MOVE    4                   TO  IDX1
-      **** END-IF
-           ADD     WRK-SRYKAISUKEI     TO  ACCT-DAY  (IDX1 IDX-2)
-      *
-      *H26.8
-      *    外用で回数１以上はエラー
-           IF     (ACCT-SRYKBN         =   "23" )
-             AND  (WRK-SYUTEN1         =   ZERO )
-             AND  (WRK-SRYKAISUKEI     =   1    )
-             AND  (ACCT-DAY  (IDX1 IDX-2)  >   1)
-      *v4.7 は集計以外
-      **     AND  (WRK-JYURRK-RENNUM       <   4 )
-               MOVE    "0052"          TO  SPA-ERRCD
+           IF      IDX1                >   4
+               MOVE    4                   TO  IDX1
            END-IF
-      *
+           ADD     WRK-SRYKAISUKEI     TO  ACCT-DAY  (IDX1 IDX-2)
       *    剤回数編集
            PERFORM 450140-ZAIKAISU-HEN-SEC
            .
@@ -3915,12 +3633,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        450140-ZAIKAISU-HEN-SEC          SECTION.
       *
-           MOVE    ZERO                TO  ACCT-DAY (1 IDX-2)
-           PERFORM VARYING     IDX-A   FROM    2   BY  1
-                   UNTIL       IDX-A   >   10
-               COMPUTE ACCT-DAY (1 IDX-2)  =   ACCT-DAY (1 IDX-2)
-                                           +   ACCT-DAY (IDX-A IDX-2)
-           END-PERFORM
+           COMPUTE ACCT-DAY (1 IDX-2)  =   ACCT-DAY (2 IDX-2)
+                                       +   ACCT-DAY (3 IDX-2)
+                                       +   ACCT-DAY (4 IDX-2)
       *
            MOVE    ZERO                TO  ACCT-ZAIKAISU
            PERFORM VARYING     IDX-D   FROM    1   BY  1
@@ -3997,22 +3712,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        WHEN    "2"
                            MOVE    "3"             TO  SRY-MEISKYFLG
                                                             (IDX-SIN)
-      *H25.3
-      *            労災読み替え手技
-                       WHEN    "R"
-                           IF      SPA-SRYYMD      >=  "20130701"
-                               MOVE    "R"             TO  SRY-MEISKYFLG
-                                                            (IDX-SIN)
-                            END-IF
                    END-EVALUATE
-      *
       *            患者コメント作成
                    IF     (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:1)  =  "8")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "008")
                       OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:3)  =  "001")
-      *H30.4
-                      OR  (LNK-WKSRY-SRYCD (IDX IDX-SIN)(1:7)
-                                                         =   "0992081")
       *               入力があれば作成
                        IF      (LNK-WKSRY-INPUTCHI-G (IDX IDX-SIN)
                                                        =  SPACE ) AND
@@ -4304,39 +4008,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    内服７種類逓減対象剤番号
            IF      LNK-WKSRYP-TEI-NKBN (1) =   2
                PERFORM VARYING     IDW     FROM    1   BY  1
-                       UNTIL       IDW     >   30
+                       UNTIL       IDW     >   10
                    IF      TBL-ACCTP-HOSPNUM (IDW)  =   ZERO
                        MOVE    SRYACCTPLUS-REC
                                            TO  TBL-SRYACCTPLUS-REC(IDW)
                        MOVE    ACCT-HKNCOMBI
                                            TO  TBL-ACCTP-HKNCOMBI (IDW)
-                       MOVE    ACCT-SRYKBN
-                                           TO  TBL-ACCTP-SRYKBN   (IDW)
-                       MOVE    30          TO  IDW
+                       MOVE    10          TO  IDW
                    END-IF
                END-PERFORM
-           END-IF
-      *H27.4
-      *    ３０日逓減対象剤
-           IF      LNK-WKSRYP-TEI-NKBN30 (1)   =   2
-               PERFORM VARYING     IDW     FROM    1   BY  1
-                       UNTIL       IDW     >   30
-                   IF      TBL-ACCTP30-HOSPNUM (IDW)  =   ZERO
-                       MOVE    SRYACCTPLUS-REC
-                                           TO  TBL-SRYACCTPLUS30-REC
-                                                                (IDW)
-                       MOVE    ACCT-HKNCOMBI
-                                           TO  TBL-ACCTP30-HKNCOMBI
-                                                                 (IDW)
-                       MOVE    ACCT-SRYKBN
-                                           TO  TBL-ACCTP30-SRYKBN(IDW)
-                       MOVE    30          TO  IDW
-                   END-IF
-               END-PERFORM
-           END-IF
-           IF      (LNK-WKSRYP-TEI-NKBN (1)    =   2 )
-               OR  (LNK-WKSRYP-TEI-NKBN30 (1)  =   2 )
-               CONTINUE
            ELSE
                PERFORM 4503-SRYACCTPLUS-INS-SEC
            END-IF
@@ -4350,22 +4030,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4504-SRYACCTPLUS-GENINS-SEC              SECTION.
       *
            PERFORM VARYING     IDW     FROM    1   BY  1
-                   UNTIL      (IDW     >   30   )   OR
+                   UNTIL      (IDW     >   10   )   OR
                               (TBL-ACCTP-HOSPNUM (IDW)  =   ZERO )
                MOVE    TBL-SRYACCTPLUS-REC(IDW)    TO  SRYACCTPLUS-REC
                INITIALIZE                  ACCTP-GRP-ZAINUM-G
                MOVE    ZERO                TO  IDW2
                PERFORM VARYING     IDX-GEN2    FROM    1   BY  1
-                       UNTIL      (IDX-GEN2    >   30   )   OR
+                       UNTIL      (IDX-GEN2    >   10   )   OR
                                   (WRK-ACTP-SRYKA(IDX-GEN2)
                                               =   SPACE)
                    IF     (ACCTP-SRYKA        =    WRK-ACTP-SRYKA
                                                           (IDX-GEN2))
                      AND  (TBL-ACCTP-HKNCOMBI(IDW)
                                               =    WRK-ACTP-HKNCOMBI
-                                                          (IDX-GEN2))
-                     AND  (TBL-ACCTP-SRYKBN  (IDW)
-                                              =    WRK-ACTP-SRYKBN
                                                           (IDX-GEN2))
                        PERFORM VARYING IDX-GEN FROM    1   BY  1
                                UNTIL   (IDX-GEN    >   50  )   OR
@@ -4385,50 +4062,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        IF      IDW2                >   ZERO
                            PERFORM 4503-SRYACCTPLUS-INS-SEC
                        END-IF
-                       MOVE    30             TO  IDX-GEN2
-                   END-IF
-               END-PERFORM
-           END-PERFORM
-      *
-      *H27.4
-      *    30日逓減
-           PERFORM VARYING     IDW     FROM    1   BY  1
-                   UNTIL      (IDW     >   30   )   OR
-                              (TBL-ACCTP30-HOSPNUM (IDW)  =   ZERO )
-               MOVE    TBL-SRYACCTPLUS30-REC(IDW)    TO  SRYACCTPLUS-REC
-               INITIALIZE                  ACCTP-GRP-ZAINUM-G
-               MOVE    ZERO                TO  IDW2
-               PERFORM VARYING     IDX-GEN2    FROM    1   BY  1
-                       UNTIL      (IDX-GEN2    >   30   )   OR
-                                  (WRK-ACTP30-SRYKA (IDX-GEN2)
-                                              =   SPACE)
-                   IF     (ACCTP-SRYKA        =    WRK-ACTP30-SRYKA
-                                                          (IDX-GEN2))
-                     AND  (TBL-ACCTP30-HKNCOMBI(IDW)
-                                              =    WRK-ACTP30-HKNCOMBI
-                                                          (IDX-GEN2))
-                     AND  (TBL-ACCTP30-SRYKBN  (IDW)
-                                              =    WRK-ACTP30-SRYKBN
-                                                          (IDX-GEN2))
-                       PERFORM VARYING IDX-GEN FROM    1   BY  1
-                               UNTIL   (IDX-GEN    >   50  )   OR
-                                       (WRK-ACTP30-ZAINUM
-                                                  (IDX-GEN2 IDX-GEN)
-                                                       =  ZERO)
-                           ADD     1                   TO  IDW2
-                           IF      IDW2                >   15
-                               PERFORM 4503-SRYACCTPLUS-INS-SEC
-                               MOVE    1           TO  IDW2
-                               INITIALIZE          ACCTP-GRP-ZAINUM-G
-                               ADD     1           TO  ACCTP-RENNUM
-                           END-IF
-                           MOVE    WRK-ACTP30-ZAINUM (IDX-GEN2 IDX-GEN)
-                                          TO  ACCTP-GRP-ZAINUM (IDW2)
-                       END-PERFORM
-                       IF      IDW2                >   ZERO
-                           PERFORM 4503-SRYACCTPLUS-INS-SEC
-                       END-IF
-                       MOVE    30             TO  IDX-GEN2
+                       MOVE    10             TO  IDX-GEN2
                    END-IF
                END-PERFORM
            END-PERFORM
@@ -5030,12 +4664,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        300-DELETE-SYORI-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-NAIBUN
-      *
-      *    レセプト作成管理マスタ更新処理
-           IF      SPA-HKNCOMBINUM NOT =   "9999"
-               PERFORM 3009-RECEUPD-UPDATE-SEC
-           END-IF
-      *
       *    削除処理
       *    複数科・保険入力があった場合、すべて削除する
            IF      SPA-TEI-DENPNUM (1) NOT =   ZERO
@@ -5082,10 +4710,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      **** レセプト作成管理マスタ更新処理
-      *    IF      SPA-HKNCOMBINUM NOT =   "9999"
-      *        PERFORM 3009-RECEUPD-UPDATE-SEC
-      **** END-IF
+      *    レセプト作成管理マスタ更新処理
+           IF      SPA-HKNCOMBINUM NOT =   "9999"
+               PERFORM 3009-RECEUPD-UPDATE-SEC
+           END-IF
            IF      SPA-ERRCD           =   SPACE
       *        ワーク診療行為マスタ−が存在した時、削除する
                PERFORM 45002-WKSRYACT-DEL-SEC
@@ -5558,26 +5186,22 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
            MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
-      *ver.4.8
-      *    EVALUATE    JYURRK-RENNUM
-      *        WHEN    1
-      *            MOVE    2               TO  IDX-1
-      *        WHEN    2
-      *            MOVE    3               TO  IDX-1
-      *        WHEN    OTHER
-      *            MOVE    4               TO  IDX-1
-      *    END-EVALUATE
-      *    EVALUATE    WRK-RENNUM-KEY
-      *        WHEN    1
-      *            MOVE    2               TO  IDX-3
-      *        WHEN    2
-      *            MOVE    3               TO  IDX-3
-      *        WHEN    OTHER
-      *            MOVE    4               TO  IDX-3
-      **** END-EVALUATE
-      *
-           COMPUTE IDX-1               =   JYURRK-RENNUM   +   1
-           COMPUTE IDX-3               =   WRK-RENNUM-KEY  +   1
+           EVALUATE    JYURRK-RENNUM
+               WHEN    1
+                   MOVE    2               TO  IDX-1
+               WHEN    2
+                   MOVE    3               TO  IDX-1
+               WHEN    OTHER
+                   MOVE    4               TO  IDX-1
+           END-EVALUATE
+           EVALUATE    WRK-RENNUM-KEY
+               WHEN    1
+                   MOVE    2               TO  IDX-3
+               WHEN    2
+                   MOVE    3               TO  IDX-3
+               WHEN    OTHER
+                   MOVE    4               TO  IDX-3
+           END-EVALUATE
       *
            IF      IDX-1           NOT =   IDX-3
       *        回数テーブルが異なる時のみ変更
@@ -5698,10 +5322,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        ELSE
                            MOVE    "1"             TO  LNK-UPD-HKNKBN
                        END-IF
-      *
-                   WHEN    "6"
-      *                自賠責（第三者行為）
-                       MOVE    "7"             TO  LNK-UPD-HKNKBN
                END-EVALUATE
            END-IF
       *    公害保険
@@ -5785,8 +5405,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
@@ -6077,24 +5697,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        910-SRYACCTPLUS-READ-EXT.
            EXIT.
-      *v.4.8
-      *****************************************************************
-      *    パラメタ情報読み込み
-      *****************************************************************
-       990-PARA-READ-SEC        SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PARA-REC
-               MOVE    ZERO            TO  FLG-PARA
-           ELSE
-               INITIALIZE                  PARA-REC
-               MOVE    1               TO  FLG-PARA
-           END-IF
-      *
-           .
-       990-PARA-READ-EXT.
-           EXIT.
       *
       *****************************************************************
       *    テーブル検索処理
@@ -6138,4 +5740,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    パラメタデータ順読み
+      *****************************************************************
+       980-PARA-READ-SEC         SECTION.
+      *
+           READ    PARA-FILE 
+               AT  END
+                   MOVE    1           TO  FLG-PARA
+               NOT AT  END 
+                   MOVE    ZERO        TO  FLG-PARA
+           END-READ
+      *
+           .
+       980-PARA-READ-EXT.
+           EXIT.
       *
