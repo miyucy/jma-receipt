@@ -1443,7 +1443,9 @@
       *        労災点数の再セット
                    COMPUTE    WRK-SO-TEN(IDX1)    =
                               LNK-SROUNYUIN-ZAITEN(IDX1)  +
-                              LNK-SROUNYUIN-ZAITEN-NACCT(IDX1)
+                              LNK-SROUNYUIN-ZAITEN-NACCT(IDX1)  +
+                              LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)  +
+                              LNK-SROUNYUIN-ZAITEN-ACCTETC(IDX1)
       *        回数情報のセット
                IF    WRK-SO-SRYCD(IDX1 1) NOT  =   SPACE
                    MOVE     1      TO    WRK-SO-DAY(IDX1 IDX1)
