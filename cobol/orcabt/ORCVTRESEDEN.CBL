@@ -896,10 +896,6 @@
            IF      FLG-PTINF       NOT =   ZERO
                MOVE    1               TO  FLG-PTNUM-ERR
            END-IF
-      *TEST
-           DISPLAY "SPA-PTNUM:" SPA-PTNUM
-                  ",SPA-PTID:" SPA-PTID
-      *TEST
       *
            .
        20011-PTNUM-SET-EXT.
@@ -1086,14 +1082,6 @@
            MOVE    HZN-IN-KOUMOKU(11)      TO  WRK-HEN-MEISYO  (2)
            MOVE    HZN-IN-KOUMOKU(12)(1:9) TO  WRK-HEN-SRYCD-C (3)
            MOVE    HZN-IN-KOUMOKU(13)      TO  WRK-HEN-MEISYO  (3)
-      *TEST
-           DISPLAY "20011-SI-SYORI-SEC"
-                   ",SRYKBN:"  WRK-HEN-SRYKBN
-                   ",TENSU:"  WRK-HEN-TENSU
-                   ",ZAIKAIKEI:"  WRK-HEN-ZAIKAIKEI
-                   ",SRYCD:"  WRK-HEN-SRYCD
-                   ",SRYSURYO:"  WRK-HEN-SRYSURYO
-      *TEST
       *    算定日
            MOVE    13                  TO  IDX-D
            PERFORM VARYING      IDD     FROM    1   BY  1
@@ -1243,15 +1231,6 @@
                PERFORM 290-SURYO-HENKAN-SEC
                MOVE    WRK-HEN-NUM         TO  WRK-HEN-DAY (IDD)
            END-PERFORM
-      *TEST
-           DISPLAY "20011-IY-SYORI-SEC"
-                   ",SRYKBN:"  WRK-HEN-SRYKBN
-                   ",TENSU:"  WRK-HEN-TENSU
-                   ",ZAIKAIKEI:"  WRK-HEN-ZAIKAIKEI
-                   ",SRYCD:"  WRK-HEN-SRYCD
-                   ",SRYSURYO:"  WRK-HEN-SRYSURYO
-      *TEST
-      *TEST
       *    点数マスタ検索
            MOVE    WRK-HEN-SRYCD       TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
@@ -2233,16 +2212,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            ADD     1                   TO  WRK-JYURRK-EDANUM
            MOVE    WRK-JYURRK-EDANUM   TO  JYURRK-EDANUM
-      *
-      *TEST
-           DISPLAY "20092-JYURRK-INS-SEC "
-                   " SRYYMD:"  JYURRK-SRYYMD
-                   " PTID:"  JYURRK-PTID
-                   " SRYKA:"  JYURRK-SRYKA
-                   " HKNCOMBINUM:"  JYURRK-HKNCOMBINUM
-                   " RENNUM:"  JYURRK-RENNUM
-                   " EDANUM:"  JYURRK-EDANUM
-      *TEST
       *
       *
            MOVE    SMCNDATE-YMD        TO  JYURRK-CREYMD
