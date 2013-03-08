@@ -443,7 +443,7 @@
       *
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
-      *****03  TBL-SINSATU-OCC         OCCURS  15    INDEXED  TBL-IDX.
+      **** 03  TBL-SINSATU-OCC         OCCURS  15    INDEXED  TBL-IDX.
            03  TBL-SINSATU-OCC         OCCURS  19    INDEXED  TBL-IDX.
       *        £±¡§°ìÈÌ¡¢£²¡§¾®»ù²Ê³°Íè¿Ç»¡ÎÁ¡¢£³¡§³°Íè¿ÇÎÅÎÁ
                05  TBL-KAISU           PIC 9(01).
@@ -4114,7 +4114,9 @@
                                 OR    (FLG-CHK3        =   1     )
                        IF      (WRK-COM-INPUTCD(IDZ6)
                                                    =   "099209905"
-                                                   OR  "099209906" )
+                                                   OR  "099209906"
+                                                   OR  "099209907"
+                                                   OR  "099209908" )
                            CONTINUE
                        ELSE
                            IF      (WRK-COM-INPUTCD(IDZ6)(1:1)
@@ -4130,9 +4132,9 @@
                        MOVE    "1"             TO  WRK-COM-CUR
                                                              (IDX-Z)
                    END-IF
-      *        °ìÈÌÌ¾µ­ºÜÉÔ²Ä
+      *        ÌÃÊÁÌ¾µ­ºÜ
                WHEN    "099209907"
-      *        °ìÈÌÌ¾µ­ºÜ²Ä
+      *        °ìÈÌÌ¾µ­ºÜ
                WHEN    "099209908"
       *            Á°¹Ô¤ËÌôºÞ¤¬¤¢¤ë¤³¤È
                    IF      (IDX-Z          >   1   ) AND
