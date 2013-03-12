@@ -3733,8 +3733,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *H25.3
       *            労災読み替え手技
                        WHEN    "R"
-                           MOVE    "R"             TO  SRY-MEISKYFLG
+                           IF      SPA-SRYYMD      >=  "20130701"
+                               MOVE    "R"             TO  SRY-MEISKYFLG
                                                             (IDX-SIN)
+                            END-IF
                    END-EVALUATE
       *
       *            患者コメント作成

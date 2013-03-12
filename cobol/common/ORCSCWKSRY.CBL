@@ -2415,8 +2415,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    SPA-COM-SYUTEN2 (IDX)
                                                    TO  WRK-SYUTEN2
       *H25.3               Ï«ºÒÆÉ¤ßÂØ¤¨¼êµ»
-                           MOVE    "R"             TO  WKSRY-INPUTKBN
+                           IF      SPA-SRYYMD      >=  "20130701"
+                               MOVE    "R"         TO  WKSRY-INPUTKBN
                                                                (IDY)
+                           END-IF
                        END-IF
                    END-IF
       *
