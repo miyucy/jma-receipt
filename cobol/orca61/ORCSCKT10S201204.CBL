@@ -957,6 +957,8 @@
                      AND  (WRK-KBN             =   TBL-KBN    (TBL-IDX))
                      AND  (WRK-SRYKBN          =   TBL-SRYCD(TBL-IDX)
                                                                 (2:2))
+      *H25.4         ¾Ò²ð¤Ê¤·¤ÏÂÐ¾Ý³°
+                     AND  (TBL-ROUJIN(TBL-IDX)  =   "0"   )
                        MOVE    TBL-SRYCD (TBL-IDX)
                                                TO  WRK-SRYCD
            END-SEARCH

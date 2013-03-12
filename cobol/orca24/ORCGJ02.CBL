@@ -3180,9 +3180,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        =   "1"   )  AND
                   (TNS-DATAKBN         =   "1"   )  AND
                   (TNS-GAIKANRIKBN     =   1     )  AND
-                  (TNS-TEN             =   SPA-NAI-SYUTEN2(IDX)) AND
-                  (TNS-TEN             <   WRK-RSAI-GAIRAITEN )
-               MOVE    1               TO  FLG-RSIGAIRAI
+                  (SPA-NAI-SYUTEN2(IDX)    >   ZERO )
+      *H25.3
+               IF     ((TNS-TEN            =   SPA-NAI-SYUTEN2(IDX)) AND
+                       (TNS-TEN            <   WRK-RSAI-GAIRAITEN ))
+      *          読み替え手技区分対応
+                 OR   ( SRY-MEISKYFLG (IDZ) =   "R"    )
+                   MOVE    1               TO  FLG-RSIGAIRAI
+               END-IF
            END-IF
       *!!!
       *    コメント以外の最終行セット
