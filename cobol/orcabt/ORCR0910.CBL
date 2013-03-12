@@ -598,8 +598,6 @@
            03  FILLER          PIC X(09)   VALUE   "120000410".
       *    ¼ÂÆü¿ô»»Äê
            03  FILLER          PIC X(09)   VALUE   "099409901".
-      *    Ï«ºÒ¡Ê²Ã»»¤Ê¤·¡Ë
-           03  FILLER          PIC X(09)   VALUE   "099509901".
       *    ½é¿ÇÎÁ¥À¥ß¡¼
            03  FILLER          PIC X(09)   VALUE   "099110001".
       *    ½é¿ÇÎÁ»»Äê²Ê¡§
@@ -617,9 +615,9 @@
            03  FILLER          PIC X(09)   VALUE   "099140001".
       *
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS  13.       
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS  12.       
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE  13.         
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE  12.         
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
@@ -3316,6 +3314,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                        MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
                        MOVE      999999985   TO  WRK-ZAIW-KOUHYOJYUNNUM
                    END-EVALUATE
+                 ELSE
+                   IF  WRK-ZAIW-SRYCD1(1:3) = "101"
+                       MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
+                       MOVE  WRK-ZAIW-SRYCD1 TO  WRK-ZAIW-KOUHYOJYUNNUM
+                   END-IF
                  END-IF
                END-IF
                MOVE    WRK-ZAIW-CDKBN-SYO  TO  RECE86-CDKBN-SYO

@@ -692,8 +692,6 @@
            03  FILLER          PIC X(09)   VALUE   "101120080".
       *    実日数算定
            03  FILLER          PIC X(09)   VALUE   "099409901".
-      *    労災（加算なし）
-           03  FILLER          PIC X(09)   VALUE   "099509901".
       *    初診料ダミー
            03  FILLER          PIC X(09)   VALUE   "099110001".
       *    再診料ダミー
@@ -775,9 +773,9 @@
            03  FILLER          PIC X(09)   VALUE   "099140001".
       *
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   59.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   58.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   59.
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   58.
       *
       *    固定値
        01  CONST-AREA.
@@ -3689,6 +3687,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                        MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
                        MOVE      999999985   TO  WRK-ZAIW-KOUHYOJYUNNUM
                    END-EVALUATE
+                 ELSE
+                   IF  WRK-ZAIW-SRYCD1(1:3) = "101"
+                       MOVE      ALL "9"     TO  WRK-ZAIW-CDKBN-AREA
+                       MOVE  WRK-ZAIW-SRYCD1 TO  WRK-ZAIW-KOUHYOJYUNNUM
+                   END-IF
                  END-IF
                END-IF
                MOVE    WRK-ZAIW-CDKBN-SYO  TO  RECE46-CDKBN-SYO
