@@ -76,7 +76,7 @@ int search_file(
 	return -1;
 }
 
-extern void orcaccess (char *args)
+void orcaccess (char *args)
 {
     int  str_len,mode,access_mode;
     char *envname;

@@ -11,7 +11,8 @@ CSRCS = \
 	orcfileencode.c \
 	orcmkdir.c \
 	orcsauth.c \
-	orcaccess.c
+	orcnop.c \
+	orcaccess.c 
 
 CJQSRCS = orcqrencode.c
 
