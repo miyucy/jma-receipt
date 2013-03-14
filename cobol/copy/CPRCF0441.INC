@@ -240,6 +240,9 @@
       *在宅持続陽圧呼吸療法指導管理料
                05  RECE441-FLG-YOUATU-COMMENT
                                            PIC X(01).
+      *外来管理加算（読み替え）
+               05  RECE441-FLG-GAIKAN-COMMENT
+                                           PIC X(01).
       *
       *手技毎の内容（手術・画像診断・処置）
                05  RECE441-ACCTP-SYUGI-TBL-G.

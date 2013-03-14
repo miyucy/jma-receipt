@@ -3995,6 +3995,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
               END-IF
            END-IF
       *
+           IF      RECE44-SRYKBN   =  "40" OR "54" OR "60" OR "80"
+              IF      SRY-MEISKYFLG(IDX2)   =   "R"
+                   MOVE   "1"   TO    RECE44-FLG-GAIKAN-COMMENT
+              END-IF
+           END-IF
+      *
            .
        2101211-RECE45-TENSOU-COMCNT-HEN-EXT.
            EXIT.
