@@ -1574,8 +1574,6 @@
                        MOVE    "K402"              TO  WRK-ERRCD
                        MOVE    "1"                 TO  WRK-COM-KZMFLG
                                                               (IDX-F-J)
-                       MOVE    "1"                 TO  WRK-COM-CUR
-                                                              (IDX-F-J)
                        MOVE    IDX-F-J             TO  LNK-ORCSC-KEI-IDX
                    END-IF
                END-IF
@@ -1923,12 +1921,6 @@
                COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
                                            +   WRK-SUM-TENGAKEI
            END-IF
-      *TEST
-           DISPLAY "C40 IDX-SYU:"  IDX-SYU
-              "," WRK-COM-INPUTCD (IDX-SYU)
-               ",LNK-SC90-TENSUKEI:" LNK-SC90-TENSUKEI
-               ",LNK-SC90-TENSU:" LNK-SC90-TENSU
-      *TEST
       *
            .
        100212-TENSUKEI-EXT.
