@@ -70,9 +70,6 @@
       * 04.05.00     NACL-多々納  09/06/09  予約一覧・予約患者一覧変更
       * 04.05.00     NACL-太田    09/09/04  分娩費用明細書追加
       * 04.07.00     NACL-太田    13/03/13  プログラム存在チェック追加
-      * 04.08.00     NACL-太田    13/09/17  ＡＤＬ区分・医療区分評価票追加
-      * 04.08.01     NACL-森脇    16/12/16  請求書兼領収書５追加
-      * 05.00.00     NACL-森脇    17/09/06  PUSH通知によるサーバ印刷追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -220,10 +217,6 @@
       *    帳票プログラム選択情報 （入院）
            COPY  "CPSK1035.INC".
       *----(01.00.03) LINE UPD END   --------------------------
-      *----(05.00.00)--ADD-START---
-      *    PUSH通知情報
-           COPY  "CPSK9901.INC".
-      *----(05.00.00)--ADD-END-----
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -253,7 +246,61 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC".
+           COPY    "W08.INC".
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W122.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W201.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W321.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W35.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W65.INC".
+           COPY    "W66.INC".
+           COPY    "W67.INC".
+           COPY    "W68.INC".
+           COPY    "W96.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                                 DIVISION    USING
                                                  MCPAREA
@@ -370,9 +417,6 @@
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
-      *----(05.00.00)--ADD-START---
-           MOVE    "F"                 TO  SPA-GMN-USE-PRINT-SERVER
-      *----(05.00.00)--ADD-END-----
       *
            EVALUATE    SPA-W01-KANRICD
       *
@@ -382,12 +426,6 @@
       *
       *    出力先プリンタ割り当て情報
            WHEN    "1031"
-      *----(05.00.00)--ADD-START---
-               IF    ( SPA-MW      =   SPA-GINBEE )
-      *            PUSH通知情報
-                   PERFORM 3101-SYS9901-SYOKI-SEC
-               END-IF
-      *----(05.00.00)--ADD-END-----
       *----(02.00.03)--UPD-START---
       *        端末区分初期処理
                PERFORM 3101-USERKBN-SYOKI-SEC
@@ -403,30 +441,7 @@
            .
        310-SPASET-EXT.
            EXIT.
-      *----(05.00.00)--ADD-START---
-      *****************************************************************
-      *    PUSH通知情報初期処理
-      *****************************************************************
-       3101-SYS9901-SYOKI-SEC          SECTION.
       *
-           MOVE    SPACE               TO  SYSKANRI-REC
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "9901"              TO  SYS-KANRICD
-           MOVE    "*"                 TO  SYS-KBNCD
-           PERFORM 900-SYSKANRI-INV-SEC
-           IF  (   FLG-SYSKANRI        =   ZERO )
-               MOVE    SYSKANRI-REC    TO  SYS-9901-REC
-               IF      SYS-9901-USE-PRINT-SERVER   =   1
-                   MOVE    "T"         TO  SPA-GMN-USE-PRINT-SERVER
-               ELSE
-                   MOVE    "F"         TO  SPA-GMN-USE-PRINT-SERVER
-               END-IF
-           END-IF
-      *
-           .
-       3101-SYS9901-SYOKI-EXT.
-           EXIT.
-      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    帳票編集区分情報初期処理
       *****************************************************************
@@ -589,9 +604,7 @@
            MOVE    "ORCHC03V03A5"      TO  SPA-GMN-ORGPGNM03MEIL(4)
       ***  MOVE    4                   TO  SPA-GMN-ORGPGNM03-MAX
            MOVE    "ORCHC03V04"        TO  SPA-GMN-ORGPGNM03MEIL(5)
-      *     MOVE    5                   TO  SPA-GMN-ORGPGNM03-MAX
-           MOVE    "ORCHC03V05"        TO  SPA-GMN-ORGPGNM03MEIL(6)
-           MOVE    6                   TO  SPA-GMN-ORGPGNM03-MAX
+           MOVE    5                   TO  SPA-GMN-ORGPGNM03-MAX
       *
       *    請求書兼領収書コンボ（入院）
            MOVE    "ORCHCN03"          TO  SPA-GMN-ORGPGNM03NMEIL(1)
@@ -617,26 +630,6 @@
            MOVE    "ORCHC31"           TO  SPA-GMN-ORGPGNM04-MEI(2)
            MOVE    2                   TO  SPA-GMN-ORGPGNM04-MAX
       *----(04.02.02)--ADD-END-----
-      *
-           MOVE    2                   TO  SPA-GMN-CSTPGNMLST-MAX (1)
-           MOVE    "A21000H01A4"       TO  SPA-GMN-CSTPGNMMEIL (1 1)
-           MOVE    "A21000H01B5"       TO  SPA-GMN-CSTPGNMMEIL (1 2)
-      *
-           MOVE    2                   TO  SPA-GMN-CSTPGNMLST-MAX (2)
-           MOVE    "A00000H02"         TO  SPA-GMN-CSTPGNMMEIL (2 1)
-           MOVE    "A21000H02"         TO  SPA-GMN-CSTPGNMMEIL (2 2)
-      *
-           MOVE    6                   TO  SPA-GMN-CSTPGNMLST-MAX (3)
-           MOVE    "A00000H03"         TO  SPA-GMN-CSTPGNMMEIL (3 1)
-           MOVE    "A00000H03A4"       TO  SPA-GMN-CSTPGNMMEIL (3 2)
-           MOVE    "A00000H03A5"       TO  SPA-GMN-CSTPGNMMEIL (3 3)
-           MOVE    "A21000H03"         TO  SPA-GMN-CSTPGNMMEIL (3 4)
-           MOVE    "A00000H03A5P"      TO  SPA-GMN-CSTPGNMMEIL (3 5)
-           MOVE    "A00000H03A5L"      TO  SPA-GMN-CSTPGNMMEIL (3 6)
-      *
-           MOVE    2                   TO  SPA-GMN-CSTPGNM-NLST-MAX (3)
-           MOVE    "A00000H03NA4"      TO  SPA-GMN-CSTPGNM-NMEIL (3 1)
-           MOVE    "A00000H03NA5"      TO  SPA-GMN-CSTPGNM-NMEIL (3 2)
       *
            INITIALIZE                      SPA-GMN-USERLSTSCROLLE
            INITIALIZE                      SPA-NAI-TBL
@@ -866,8 +859,6 @@
            MOVE    "処方せん（退院時院外）"
                                        TO  SPA-GMN-TNAME-N (12)
            MOVE    "分娩費用明細書"    TO  SPA-GMN-TNAME-N (13)
-           MOVE    "医療区分・ＡＤＬ区分評価票"
-                                       TO  SPA-GMN-TNAME-N (14)
       *
       *    カルテ１号紙
            MOVE    "ORCHCN01"          TO  SPA-GMN-TORGPGNM-N (1)
@@ -1460,10 +1451,6 @@
                IF      SPA-W01-KANRICD     =   "1031"
                    PERFORM 460-W62-SYORI-SEC
                END-IF
-      *----(05.00.00)--ADD-START---
-           WHEN    "CLICKED"       ALSO    "USE-PRINT-SERVER"
-               PERFORM 4101-GMN-SPA-SET-SEC
-      *----(05.00.00)--ADD-END-----
       *
            END-EVALUATE
            .
@@ -1698,11 +1685,6 @@
       *----(02.00.12)--ADD-START---
            MOVE    W11-GAZOFOLDER      TO  SPA-GMN-GAZOFOLDER
       *----(02.00.12)--ADD-END-----
-      *
-      *----(05.00.00)--ADD-START---
-           MOVE    W11-USE-PRINT-SERVER
-                                       TO  SPA-GMN-USE-PRINT-SERVER
-      *----(05.00.00)--ADD-END-----
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -2153,7 +2135,6 @@
       *****************************************************************
        4101-CSTPGNM-SET-SEC            SECTION.
       *
-      *
            .
       *
        4101-CSTPGNM-SET-EXT.
@@ -2549,12 +2530,6 @@
       *            職員毎登録
                    PERFORM 4902-SYS1031-SYOUIN-SEC
                END-IF
-      *----(05.00.00)--ADD-START---
-               IF    ( SPA-MW      =   SPA-GINBEE )
-      *            PUSH通知情報
-                   PERFORM 490-SYS-9901-KOUSHIN-SEC
-               END-IF
-      *----(05.00.00)--ADD-END-----
       *        初期画面へ
                IF      SPA-ERRCD           =   SPACE
                    PERFORM 310-SPASET-SEC
@@ -2627,6 +2602,7 @@
        490-SAKUJYO-EXT.
            EXIT.
       *----(02.00.03)--ADD-END-----
+      *
       *****************************************************************
       *       出力先プリンタ割り当て情報・標準登録
       *****************************************************************
@@ -2987,6 +2963,7 @@
       *
        490-SYS-1030-KOUSHIN-EXT.
            EXIT.
+      *
       *****************************************************************
       *       帳票区分削除処理
       *****************************************************************
@@ -3011,39 +2988,6 @@
        490-SYS-1030-DELETE-EXT.
            EXIT.
       *----(02.00.03)--ADD-START---
-      *----(05.00.00)--ADD-START---
-      *****************************************************************
-      *    PUSH通知更新処理
-      *****************************************************************
-       490-SYS-9901-KOUSHIN-SEC    SECTION.
-      *
-           MOVE    SPACE               TO  SYS-9901-REC
-           INITIALIZE                      SYS-9901-REC
-           MOVE    "9901"              TO  SYS-9901-KANRICD
-           MOVE    "*"                 TO  SYS-9901-KBNCD
-      *
-           MOVE    SPA-W01-STYUKYMD    TO  SYS-9901-STYUKYMD
-           MOVE    SPA-W01-EDYUKYMD    TO  SYS-9901-EDYUKYMD
-           IF      SPA-GMN-USE-PRINT-SERVER    =   "T"
-               MOVE    1               TO  SYS-9901-USE-PRINT-SERVER
-           ELSE
-               MOVE    0               TO  SYS-9901-USE-PRINT-SERVER
-           END-IF
-      *
-           MOVE    SYS-9901-REC        TO  SYSKANRI-REC
-      *
-           PERFORM 900-SYSKANRI-INV2-SEC
-           MOVE    SYS-9901-REC        TO  SYSKANRI-REC
-      *
-           PERFORM 490-SYSKANRI-KOUSHIN-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    "4006"          TO  SPA-ERRCD
-           END-IF
-           .
-      *
-       490-SYS-9901-KOUSHIN-EXT.
-           EXIT.
-      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *       出力先プリンタ割り当て情報
       *****************************************************************
@@ -3539,16 +3483,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "red"   TO  W11-MSG01-STYLE
                    END-IF
                END-IF
-      *
-               MOVE    SPA-GMN-CSTPGNMLST-MAX (IDZ2)
-                                       TO  W11-ORCACSTNM-COUNT (IDZ2)
-      *
-               PERFORM VARYING IDX2 FROM    1   BY  1
-                       UNTIL ( IDX2 >   W11-ORCACSTNM-COUNT (IDZ2) )
-                   MOVE    SPA-GMN-CSTPGNMMEIL (IDZ2 IDX2)
-                                   TO  W11-ORCACSTNM-ITEM  (IDZ2 IDX2)
-               END-PERFORM
-      *
            END-PERFORM
       *
       *    入院
@@ -3595,9 +3529,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-ORGPGNM09N-MAX
                                        TO  W11-ORCAORGNM-N09-COUNT
       *
-           MOVE    "ORCHCM50"          TO  W11-JIHI-UCHIWAKE
-           MOVE    "ORCHCN63"          TO  W11-BUNBEN
-      *
            PERFORM VARYING     IDZ2     FROM    1   BY  1
                    UNTIL       IDZ2     >       SPA-NPGNM-MAX
                MOVE    SPA-GMN-TCSTPGNM-N  (IDZ2)
@@ -3624,15 +3555,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "red"   TO  W11-MSG01-STYLE
                    END-IF
                END-IF
-      *
-               MOVE    SPA-GMN-CSTPGNM-NLST-MAX (IDZ2)
-                                       TO  W11-ORCACSTNM-N-COUNT (IDZ2)
-      *
-               PERFORM VARYING IDX2 FROM    1   BY  1
-                       UNTIL ( IDX2 >   W11-ORCACSTNM-N-COUNT (IDZ2) )
-                   MOVE    SPA-GMN-CSTPGNM-NMEIL (IDZ2 IDX2)
-                                   TO  W11-ORCACSTNM-N-ITEM  (IDZ2 IDX2)
-               END-PERFORM
            END-PERFORM
       *
            MOVE    SPA-GMN-SYOHOGEPRTFLG-G   TO  W11-SYOHOGEPRTFLG
@@ -3673,18 +3595,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-GMN-STYUKYMD     TO  W11-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD     TO  W11-EDYUKYMD
-      *
-      *----(05.00.00)--ADD-START---
-           MOVE    SPA-GMN-USE-PRINT-SERVER
-                                        TO  W11-USE-PRINT-SERVER
-           IF    ( SPA-W01-KANRICD      =   "1031" )   AND
-                 ( SPA-MW               =   SPA-GINBEE )
-               MOVE    WIDGET-NORMAL    TO  W11-USE-PRINT-SERVER-STATE
-           ELSE
-               MOVE    WIDGET-INSENSITIVE
-                                        TO  W11-USE-PRINT-SERVER-STATE
-           END-IF
-      *----(05.00.00)--ADD-END-----
       *
            MOVE    WIDGET-NORMAL        TO  W11-B03-STATE
                                             W11-B04-STATE
@@ -4155,7 +4065,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

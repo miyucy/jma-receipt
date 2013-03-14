@@ -5,13 +5,11 @@ CSRCS = \
 	orcfiledel.c \
 	orcfileio.c \
 	cobabort.c \
-	cobalert.c \
 	coblog.c \
 	cobsleep.c \
 	orcsjistoeuc.c \
 	orcfileencode.c \
 	orcmkdir.c \
-	orcsauth.c \
 	orcnop.c \
 	orcaccess.c 
 
@@ -27,8 +25,6 @@ PNG_CFLAGS = @png_CFLAGS@
 PNG_LIBS = @png_LIBS@
 XML2_CFLAGS = @xml2_CFLAGS@
 XML2_LIBS = @xml2_LIBS@
-UUID_CFLAGS = @uuid_CFLAGS@
-UUID_LIBS = @uuid_LIBS@
 
 COBJS = ${CSRCS:.c=.so}
 CJQOBJS = ${CJQSRCS:.c=.so}
@@ -52,9 +48,6 @@ install: all installdirs
 installdirs:
 	$(INSTALL) -d $(orcalibdir)
 
-orcsauth.so: orcsauth.c
-	$(CC) -Wl,--no-as-needed -lcrypt -fPIC -shared $< -o $@
-
 orcqrencode.so: orcqrencode.c
 	$(CC) -Wl,--no-as-needed $(QRENCODE_LIB) $(PNG_CFLAGS) $(PNG_LIBS) -fPIC -shared $< -o $@
 
@@ -72,7 +65,7 @@ orcaccess.so: orcaccess.o euc.o
 
 
 %.so: %.c
-	$(CC) $(UUID_CFLAGS) -Wl,--no-as-needed $(UUID_LIBS) -fPIC -shared $< -o $@
+	$(CC) -fPIC -shared $< -o $@
 
 .SUFFIXIES: .c .o
 .c.o:
