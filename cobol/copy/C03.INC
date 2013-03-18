@@ -58,6 +58,8 @@
                     06  C03-THKNBYOMEIFLG   PIC X(8).
                     06  C03-TDSPSEQ         PIC X(4).
                   05  C03-BYOMEILST-SELECT  PIC X   OCCURS  100 TIMES.
+                  05  C03-BYOMEILST-FGCOLOR PIC X(16) OCCURS  100 TIMES.
+                  05  C03-BYOMEILST-BGCOLOR PIC X(16) OCCURS  100 TIMES.
               03  C03-UTAGAIFLGCOMBO.
                 04  C03-UTAGAIFLG.
                   05  C03-VALUE   PIC X(14).

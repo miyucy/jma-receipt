@@ -232,6 +232,8 @@ C02	{
 					value13	varchar(10);
 				}	[200];
 				select	bool[200];
+				fgcolor	varchar(16)[200];
+				bgcolor	varchar(16)[200];
 			};
 		};
 		BSRYKA_COMBO	{

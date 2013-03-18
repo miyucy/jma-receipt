@@ -69,6 +69,8 @@ C03	{
 					value10	varchar(4);
 				}	[100];
 				select	bool[100];
+				fgcolor	varchar(16)[100];
+				bgcolor	varchar(16)[100];
 			};
 		};
 		UTAGAIFLGCOMBO	{

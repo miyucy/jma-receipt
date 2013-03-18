@@ -290,6 +290,8 @@
       *  04.07.02    NACL-太田    11/09/15  データチェック業務からの病名
       *                                     引継ぎ対応
       *  04.07.03    NACL-太田    12/02/20  前画面戻り時SPA-PTIDを初期化する
+      *
+      *  04.08.01    NACL-藤原    13/02/05  編集病名の強調表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -643,6 +645,8 @@
            COPY    "CPSK200501.INC".
       *    病名機能情報
            COPY    "CPSK1042.INC".
+      *    診療行為一括入金管理情報
+           COPY    "CPSK1038.INC".
       *
       *    病名マスタ−
        01  BYOMEI-REC.
@@ -1364,6 +1368,27 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    SPACE            TO  SYSKANRI-REC
            INITIALIZE                   SYSKANRI-REC
 grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
+           MOVE    "1038"           TO  SYS-KANRICD
+           MOVE    "*"              TO  SYS-KBNCD
+           MOVE    SPA-NAI-C02-SYSYMD
+                                    TO  SYS-STYUKYMD
+                                        SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC      TO  SYS-1038-REC
+           ELSE    
+               INITIALIZE                   SYS-1038-REC
+           END-IF
+           IF      SYS-1038-ERRCOLORS
+                                   =   SPACE
+               MOVE    "#FFB5C5"       TO  SYS-1038-ERRCOLORS
+           END-IF
+           MOVE    SYS-1038-ERRCOLORS  TO  SPA-C02-1038-ERRCOLORS
+      *         
+      *    病名機能情報 
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
            MOVE    "1042"           TO  SYS-KANRICD
            MOVE    "*"              TO  SYS-KBNCD
            MOVE    SPA-NAI-C02-SYSYMD
@@ -1865,6 +1890,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TO  WRK-KBN 
                    PERFORM 5001-REZEFLG-HENSYU-SEC
                    MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TREZEFLG   (IDX)
+      *
+                   MOVE    WRK-PTBYO-SRYYMD-BYOMEIHENFLG   (IDZZ)
+                                       TO  SPA-NAI-C02-TBYOMEIHENFLG
+                                                                  (IDX)
                END-PERFORM
            END-IF
       *
@@ -3656,7 +3685,7 @@ grpsys                                         SPA-AREA
                                    MOVE    IDX     TO  WRK-STNUM-O(IDXX)
                                    MOVE    SPA-GMN-C02-MAX
                                                    TO  IDX
-                               END-IF    
+                               END-IF
                            END-PERFORM
       *
                            IF      WRK-STNUM-O(IDXX)   =   ZERO
@@ -3690,7 +3719,7 @@ grpsys                                         SPA-AREA
                                    MOVE    IDX     TO  WRK-EDNUM-O(IDXX)
                                    MOVE    SPA-GMN-C02-MAX
                                                    TO  IDX
-                               END-IF    
+                               END-IF
                            END-PERFORM
       *
                            IF      WRK-EDNUM-O(IDXX)   =   ZERO
@@ -11417,6 +11446,11 @@ grpsys                                          SPA-AREA
                    MOVE    "T"             TO  C02-BYO-SELECT (IDX)
                ELSE
                    MOVE    "F"             TO  C02-BYO-SELECT (IDX)
+               END-IF
+      *
+               IF      SPA-NAI-C02-TBYOMEIHENFLG (IDX)
+                                           =   "1"
+                     MOVE    "#99CC99"       TO  C02-BYO-BGCOLOR (IDX)
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-C02-MAX         TO  C02-BYO-COUNT

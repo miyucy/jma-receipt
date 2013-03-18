@@ -119,6 +119,8 @@
       *
       *  04.07.01    NACL-藤原    11/06/10  未コード化病名となる病名の別
       *                                     組み立てへの移行を可能にする
+      *
+      *  04.08.01    NACL-藤原    13/02/05  編集病名の強調表示
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1223,6 +1225,10 @@
                        MOVE    SPA-GMN-C03-BYOMEISBT-MAX   TO  IDY
                    END-IF
                END-PERFORM
+      *
+               MOVE    USBYO-BYOMEIHENFLG  TO  SPA-NAI-C03-TBYOMEIHENFLG
+                                                                  (IDX)
+                
            END-IF
       *
            .
@@ -4899,6 +4905,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
                    MOVE    "T"         TO  C03-BYOMEILST-SELECT (IDX)
                ELSE
                    MOVE    "F"         TO  C03-BYOMEILST-SELECT (IDX)
+               END-IF
+      *
+               IF      SPA-NAI-C03-TBYOMEIHENFLG (IDX)
+                                           =   "1"
+                   MOVE    "#99CC99"    TO  C03-BYOMEILST-BGCOLOR (IDX)
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-C03-MAX         TO  C03-BYOMEILST-COUNT

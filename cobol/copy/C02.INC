@@ -171,6 +171,8 @@
                     06  C02-TREZEMM       PIC X(4).
                     06  C02-THKNBYOMEIFLG PIC X(10).
                   05  C02-BYO-SELECT      PIC X   OCCURS  200 TIMES.
+                  05  C02-BYO-FGCOLOR     PIC X(16)   OCCURS  200 TIMES.
+                  05  C02-BYO-BGCOLOR     PIC X(16)   OCCURS  200 TIMES.
               03  C02-BSRYKA-COMBO.
                 04  C02-BSRYKA  PIC X(21).
                 04  C02-BSRYKA-COUNT
