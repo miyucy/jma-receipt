@@ -59,6 +59,7 @@ db	{
 	tbl_dbcatalog;
 	tbl_prtctrl;
 	tbl_sryacctplus;
+        tbl_generic_log;
 };
 
 /* #include "orcadb.inc" */

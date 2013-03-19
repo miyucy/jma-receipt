@@ -79,6 +79,7 @@
       *                                     含量規格変更不可等の対応
       * 04.06.00     NACL-多々納  12/09/27  医師コード等編集対応
       * 04.08.00     NACL-多々納  13/01/11  診療回数テーブル１０対応
+      * 04.08.00     NACL-多々納  13/03/18  一般名記載ログ出力対応
       *****************************************************************
       *
       *
@@ -223,6 +224,9 @@
       *H24.4
            03  IDX-M                   PIC 9(04).
            03  IDX-SH                  PIC 9(04).
+      *H25.3
+      *    一般名記載ログ用
+           03  IDX-LG                  PIC 9(04).
       *
       *    システム領域
        01  SYS-AREA.
@@ -665,6 +669,10 @@
       *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
+      *H25.3
+      *    一般名記載ログ作成サブパラメタ
+           COPY    "CPORCHC02GELOG.INC".
+      *
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -698,6 +706,8 @@
            INITIALIZE                  WRK-NAIYOU-AREA
            INITIALIZE                  WRK-SYOHOU-AREA
            INITIALIZE                  WRK-BIKOU-AREA
+      *    一般名記載ログクリア
+           INITIALIZE                  ORCHC02GELOGAREA
       *
       *---(04.03.00) LINE UPD START ------------------------------------
       **** ACCEPT  SYS-TIME            FROM    TIME
@@ -2139,6 +2149,11 @@
                    PERFORM 2002-DENPNUM-SYORI-SEC
            END-EVALUATE
       *
+      *H25.3
+      *    一般名記載ログ出力
+           IF     (IDX-LG              >   ZERO )
+                PERFORM 2009-ORCHC02GELOG-CALL-SEC
+           END-IF
            .
        200-MAIN-SYORI-EXT.
            EXIT.
@@ -3505,9 +3520,84 @@
                        MOVE    TNSP-IPN-KANZANCHI  TO  WRK-KANZANCHI
                    END-IF
            END-EVALUATE
+      *
+      *H25.3
+      *    一般名記載ログ
+           IF    (TNSP-IPN-KISAIKBN    =   1
+                                       OR  3  )
+            AND  (ORCHC19-KBN          =   SPACE
+                                       OR  "4"
+                                       OR  "N" )
+      *        一般名記載で、登録時印刷・中途印刷・退院時処方のみ
+               PERFORM 3103211-ORCHC02GELOG-HEN-SEC
+           END-IF
            .
        310321-GENERIC-HEN-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *     一般名記載ログ編集処理
+      *****************************************************************
+       3103211-ORCHC02GELOG-HEN-SEC    SECTION.
+      *
+           ADD     1                   TO  IDX-LG
+           IF      IDX-LG              >   100
+               GO      TO      3103211-ORCHC02GELOG-HEN-EXT
+           END-IF
+      *
+           IF      ORCHC19-KBN         =   SPACE
+      *        伝票番号
+               MOVE    JYURRK-DENPNUM      TO  ORCHC02GELOG-DENPNUM
+                                                               (IDX-LG)
+      *        剤番号
+               MOVE    WRK-ZAINUM          TO  ORCHC02GELOG-ZAINUM
+                                                               (IDX-LG)
+           END-IF
+      *    診療コード
+           MOVE    WRK-SRY-SRYCD (IDXA)    TO  ORCHC02GELOG-SRYCD
+                                                              (IDX-LG)
+      *
+           EVALUATE    TNSP-IPN-KISAIKBN
+      *        一般名記載
+               WHEN    1
+      *            薬価基準コード（一般名コード）
+                   MOVE    TNS-YAKKAKJNCD  TO  ORCHC02GELOG-YAKKAKJNCD
+                                                               (IDX-LG)
+      *            一般名記載内容
+                   MOVE    GENERIC-GENERICNAME
+                                           TO  ORCHC02GELOG-GENERICNAME
+                                                               (IDX-LG)
+      *        処方名称を一般名称とする
+               WHEN    3
+      *            処方名称
+                   MOVE    TNSP-SHONAME    TO  ORCHC02GELOG-GENERICNAME
+                                                               (IDX-LG)
+           END-EVALUATE
+           .
+       3103211-ORCHC02GELOG-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     一般名記載ログ出力処理
+      *****************************************************************
+       2009-ORCHC02GELOG-CALL-SEC    SECTION.
+      *
+           EVALUATE    ORCHC19-KBN
+               WHEN    SPACE
+                   MOVE    "1"             TO  ORCHC02GELOG-SYORIKBN
+               WHEN    "4"
+                   MOVE    "2"             TO  ORCHC02GELOG-SYORIKBN
+               WHEN    "N"
+                   MOVE    "3"             TO  ORCHC02GELOG-SYORIKBN
+           END-EVALUATE
+      *
+           CALL    "ORCHC02GELOG"      USING
+                                       SPA-AREA
+                                       ORCHC02GELOGAREA
+           .
+       2009-ORCHC02GELOG-CALL-EXT.
+           EXIT.
+      *
       *---(03.04.00) LINE ADD END   ------------------------------------
       *
       *****************************************************************

@@ -176,4 +176,5 @@ db	{
         tbl_generic_price;
         tbl_ptnum_public;
         tbl_pt_hdist_day;
+        tbl_generic_log;
 };
