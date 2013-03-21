@@ -27,13 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *平成３０年４月改定対応
-      *  05.00.00    NACL-小豆沢  18/03/12  入院料と入院料加算のチェック
-      *                                     を入院料加算チェックマスタから
-      *                                     電子点数表マスタに変更
-      *  05.00.00    NACL-小豆沢  18/03/19  入院基本料等加算の中で注の加算
-      *                                     は注加算通番ゼロの加算に読み替えて
-      *                                     チェックする
       *****************************************************************
       *
       *
@@ -60,7 +53,6 @@
            03  FLG-KSN                     PIC 9(01).
            03  FLG-SENTEI-SET              PIC 9(01).
            03  FLG-SENTEICDCHG             PIC 9(01).
-           03  FLG-ETENSU1                 PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
@@ -78,8 +70,6 @@
            03  WRK-MM-9     REDEFINES   WRK-MM-X
                                            PIC 9(02).
            03  WRK-KSN-NYUKHNKSNKBN        PIC 9(03).
-           03  WRK-KSN-CHUKSNCD            PIC X(04).
-           03  WRK-KSN-CHUKSNTUBAN         PIC X(01).
            03  WRK-KSNKBN                  PIC 9(03).
            03  WRK-CHUKSNCD-XXX            PIC X(04).
       *
@@ -157,10 +147,6 @@
       *    入院料加算チェック
        01  NYUKSNCHK-REC.
            COPY   "CPNYUKSNCHK.INC".
-      *
-      *    電子点数表マスタ
-       01  ETENSU1-REC.
-           COPY   "CPETENSU1.INC".
       *
       *    選定療養費
        01  SENTEICDCHG-REC.
@@ -314,36 +300,9 @@
       *    入院料加算の入院基本加算区分を取得
            MOVE    ZERO                    TO  FLG-KSN
            MOVE    ZERO                    TO  WRK-KSN-NYUKHNKSNKBN
-           MOVE    SPACE                   TO  WRK-KSN-CHUKSNCD
-                                               WRK-KSN-CHUKSNTUBAN
            INITIALIZE                          TNS-TENSU-REC
            MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            MOVE    ORCSCNKSN-SRYCD         TO  TNS-SRYCD
-      *    平成３０年４月からの入院料加算チェック対応
-      *  （入院基本料等加算の中で更に注の加算となっているものを読み替え）
-      *  （注加算通番０で単純に読み替えができないものが対象）
-           IF    ORCSCNKSN-SRYYM      >=   "201804"
-      *(A207-3)夜間３０対１急性期看護補助体制加算（急性期看護補助体制加算の注加算）
-               IF    ORCSCNKSN-SRYCD   =  "190173010"
-                  MOVE   "190145710"   TO  ORCSCNKSN-SRYCD
-                                           TNS-SRYCD
-               END-IF
-      *(A207-3)夜間５０対１急性期看護補助体制加算（急性期看護補助体制加算の注加算）
-               IF    ORCSCNKSN-SRYCD   =  "190145970"
-                  MOVE   "190145710"   TO  ORCSCNKSN-SRYCD
-                                           TNS-SRYCD
-               END-IF
-      *(A207-3)夜間１００対１急性期看護補助体制加算（急性期看護補助体制加算の注加算）
-               IF    ORCSCNKSN-SRYCD   =  "190146070"
-                  MOVE   "190145710"   TO  ORCSCNKSN-SRYCD
-                                           TNS-SRYCD
-               END-IF
-      *(A207-3)夜間看護体制加算（急性期看護補助体制加算の注加算）
-               IF    ORCSCNKSN-SRYCD   =  "190190770"
-                  MOVE   "190145710"   TO  ORCSCNKSN-SRYCD
-                                           TNS-SRYCD
-               END-IF
-           END-IF
            MOVE    ORCSCNKSN-SRYYM         TO  TNS-YUKOSTYMD(1:6)
            MOVE    "01"                    TO  TNS-YUKOSTYMD(7:2)
            MOVE    TNS-YUKOSTYMD           TO  TNS-YUKOEDYMD
@@ -355,57 +314,22 @@
            ELSE
                GO  TO  200-MAIN-1-EXT
            END-IF
-      *    注加算（入院基本料）
+      *    注加算
            IF   ((TNS-CDKBN-KBNNUM         >=  100)   AND
                  (TNS-CDKBN-KBNNUM         <=  199))
+      *        入院基本料等加算
                MOVE      1                 TO  FLG-KSN
            END-IF
-      *    注加算（特定入院料）
            IF   ((TNS-CDKBN-KBNNUM         >=  300)   AND
                  (TNS-CDKBN-KBNNUM         <=  399))
+      *        入院基本料等加算
                MOVE      1                 TO  FLG-KSN
            END-IF
-      *    入院基本料等加算
-             IF ((TNS-CDKBN-KBNNUM         >=  200)   AND
-                 (TNS-CDKBN-KBNNUM         <=  299))  
-               MOVE      2                 TO  FLG-KSN
-           END-IF
-      *
-      *    平成３０年３月までは入院料加算チェックマスタを使用する
-           IF     ORCSCNKSN-SRYYM   <=     "201803"
-               MOVE    TNS-NYUKHNKSNKBN    TO  WRK-KSN-NYUKHNKSNKBN
-           END-IF
-      *
-           MOVE    SPACE                   TO  WRK-KSN-CHUKSNCD
-                                               WRK-KSN-CHUKSNTUBAN
-           IF     ORCSCNKSN-SRYYM          >=  "201804"
-             IF ((TNS-CDKBN-KBNNUM         >=  200)   AND
-                 (TNS-CDKBN-KBNNUM         <=  299))  
+           IF   ((TNS-CDKBN-KBNNUM         >=  200)   AND
+                 (TNS-CDKBN-KBNNUM         <=  299))
       *        入院基本料等加算
-               MOVE    TNS-CHUKSNCD        TO  WRK-KSN-CHUKSNCD
-               MOVE    TNS-CHUKSNTUBAN     TO  WRK-KSN-CHUKSNTUBAN
-               IF      WRK-KSN-CHUKSNTUBAN  NOT =  "0"
-      *          加算コードを注加算通番０のものに読み替える
-                 INITIALIZE                          TNS-TENSU-REC
-                 MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
-                 MOVE    WRK-KSN-CHUKSNCD        TO  TNS-CHUKSNCD
-                 MOVE    "0"                     TO  TNS-CHUKSNTUBAN
-                 MOVE    ORCSCNKSN-SRYYM         TO  TNS-YUKOSTYMD(1:6)
-                 MOVE    "01"                    TO  TNS-YUKOSTYMD(7:2)
-                 MOVE    TNS-YUKOSTYMD           TO  TNS-YUKOEDYMD
-                 PERFORM   910-TENSU-READ2-SEC
-                 IF        FLG-TENSU       =   ZERO
-                     MOVE  TNS-SRYCD       TO    ORCSCNKSN-SRYCD
-                 END-IF
-               END-IF
-             END-IF
-           END-IF
-      *
-      *    (A246)入退院支援加算はチェック対象外とする
-           IF   (TNS-CDKBN-KBN         =   "A")   AND
-                (TNS-CDKBN-KBNNUM      =   246)   AND
-                (TNS-CDKBN-KBNNUM-EDA  =   0)
-                 MOVE      ZERO                 TO  FLG-KSN
+               MOVE      2                 TO  FLG-KSN
+               MOVE    TNS-NYUKHNKSNKBN    TO  WRK-KSN-NYUKHNKSNKBN
            END-IF
       *
       *    入院料の取得
@@ -466,13 +390,11 @@
            PERFORM   900-CLOSE-SEC
       *
       *
-      *    入院料加算チェック（入院基本料等加算）
+      *    入院料加算チェックテーブルによるチェック（入院基本料等加算）
            IF    FLG-KSN      =     2
              PERFORM    VARYING   IDX1   FROM   1   BY   1
                       UNTIL     IDX1   >   31
-               IF    ORCSCNKSN-SRYYM          <=    "201803"
-      *          入院料加算チェックマスタによるチェック
-                 IF (ORCSCNKSN-DAY(IDX1)         NOT =   ZERO)  AND
+               IF   (ORCSCNKSN-DAY(IDX1)         NOT =   ZERO)  AND
                     (WRK-KHN-NYUKHNKSNKBN(IDX1)  NOT =   ZERO)  AND
                     (WRK-KSN-NYUKHNKSNKBN        NOT =   ZERO)
       *
@@ -504,39 +426,6 @@
                     MOVE    "tbl_nyuksnchk"         TO  MCP-TABLE
                     MOVE    "key"                   TO  MCP-PATHNAME
                     PERFORM   900-CLOSE-SEC
-                 END-IF
-               ELSE
-      *          平成３０年４月以降は電子点数表マスタによるチェック
-                 IF (ORCSCNKSN-DAY(IDX1)   NOT =   ZERO)   AND
-                    (WRK-NYUINKHN(IDX1)    NOT =   SPACE)
-      *
-                    INITIALIZE                 ETENSU1-REC
-                    MOVE    WRK-NYUINKHN (IDX1)
-                                           TO  ETENSU1-SRYCD
-                    MOVE    ORCSCNKSN-SRYCD
-                                           TO  ETENSU1-UPSRYCD
-                    MOVE    ORCSCNKSN-SRYYM
-                                           TO  ETENSU1-YUKOSTYMD(1:6)
-                    MOVE    "01"           TO  ETENSU1-YUKOSTYMD(7:2)
-                    MOVE    ETENSU1-YUKOSTYMD
-                                           TO  ETENSU1-YUKOEDYMD
-                    MOVE    "tbl_etensu_1" TO  MCP-TABLE
-                    MOVE    "key4"         TO  MCP-PATHNAME
-                    PERFORM 910-ETENSU1-SELECT-SEC
-                    MOVE    "tbl_etensu_1" TO MCP-TABLE
-                    MOVE    "key4"         TO  MCP-PATHNAME
-                    PERFORM 910-ETENSU1-READ-SEC
-                    DISPLAY "FLG-ETENSU1 = " FLG-ETENSU1
-                    IF      FLG-ETENSU1    NOT =   ZERO
-                      MOVE    6            TO  ORCSCNKSN-RC
-                      MOVE  "算定入院料では算定できない入院料加算です。"
-                                           TO      ORCSCNKSN-ERRMSG
-                    END-IF
-      *             電子点数表マスタクローズ
-                    MOVE    "tbl_etensu_1"          TO  MCP-TABLE
-                    MOVE    "key4"                  TO  MCP-PATHNAME
-                    PERFORM   900-CLOSE-SEC
-                 END-IF
                END-IF
              END-PERFORM
       *
@@ -904,41 +793,6 @@
            EXIT.
       *
       *****************************************************************
-      *    電子点数表検索
-      *****************************************************************
-       910-ETENSU1-SELECT-SEC        SECTION.
-      *
-           MOVE    ETENSU1-REC            TO  MCPDATA-REC
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO               TO  FLG-ETENSU1
-           ELSE
-               MOVE    1                  TO  FLG-ETENSU1
-           END-IF
-      *
-           .
-       910-ETENSU1-SELECT-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    電子点数表読込
-      *****************************************************************
-       910-ETENSU1-READ-SEC        SECTION.
-      *
-           PERFORM   900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC        TO  ETENSU1-REC
-               MOVE    ZERO               TO  FLG-ETENSU1
-           ELSE
-               INITIALIZE                     ETENSU1-REC
-               MOVE    1                  TO  FLG-ETENSU1
-           END-IF
-      *
-           .
-       910-ETENSU1-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    点数マスター読込（主キー）
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
@@ -969,38 +823,6 @@
       *
            .
        910-TENSU-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    点数マスター読込（key36）
-      *****************************************************************
-       910-TENSU-READ2-SEC         SECTION.
-      *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key36"             TO  MCP-PATHNAME
-           PERFORM   900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_tensu"         TO  MCP-TABLE
-               MOVE    "key36"             TO  MCP-PATHNAME
-               PERFORM   900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-                   MOVE    ZERO                TO  FLG-TENSU
-               ELSE
-                   MOVE    1                   TO  FLG-TENSU
-                   INITIALIZE                  TNS-TENSU-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-TENSU
-               INITIALIZE                  TNS-TENSU-REC
-           END-IF
-      *
-           MOVE    "tbl_tensu"         TO  MCP-TABLE
-           MOVE    "key36"             TO  MCP-PATHNAME
-           PERFORM   900-CLOSE-SEC
-      *
-           .
-       910-TENSU-READ2-EXT.
            EXIT.
       *
       *****************************************************************
