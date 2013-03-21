@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（労災）
-      *  コンポーネント名  : レセプト電算ファイル作成
+      *  コンポーネント名  : レセプト電算ファイル作成（入院）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  13/02/07    NACL−藤原    新規作成
@@ -175,6 +175,7 @@
            03  FLG-TOYAKUFLG           PIC 9(01).
            03  FLG-NYUTAI-RIREKI       PIC 9(01).
            03  FLG-NYUIN-SRYCD         PIC 9(01).
+           03  FLG-TAISYO              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1991,7 +1992,7 @@
            END-START
            PERFORM     UNTIL  ( FLG-RECE84           =   1           )
                        OR     ( RECE82-KEY       NOT =   RECE84-KEY1 )
-                       OR     ( RECE84-SRYKBN       >=  "90"         )
+                       OR     ( RECE84-SRYKBN        >=  "90"        )
       *
       *        検査に判断料がある場合の検査、又は薬剤料の減点がある場合の
       *        注射（その他）の編集
@@ -2229,14 +2230,34 @@
                NOT INVALID
                    PERFORM 990-RECE85-NEXT-SEC
            END-START
-           PERFORM
-               UNTIL  ( FLG-RECE85             =   1             )
-               OR     ( RECE84-KEY1        NOT =   RECE85-KEY1   )
-               OR     ( RECE84-ZAINUM      NOT =   RECE85-ZAINUM )
+           PERFORM     UNTIL ( FLG-RECE85          =   1             )
+                       OR    ( RECE84-KEY1     NOT =   RECE85-KEY1   )
+                       OR    ( RECE84-ZAINUM   NOT =   RECE85-ZAINUM )
       *
-               PERFORM   VARYING   IDX   FROM    1   BY  1
-                         UNTIL   ( IDX               >   5     )
-                         OR      ( RECE85-SRYCD(IDX) =   SPACE )
+             PERFORM   VARYING   IDX   FROM    1   BY  1
+                       UNTIL   ( IDX               >   5     )
+                       OR      ( RECE85-SRYCD(IDX) =   SPACE )
+      *
+               MOVE    ZERO                TO  FLG-TAISYO
+      *        入院料はコメントか労災治療計画加算、病衣貸与料のみ対象とする
+               IF      RECE84-SRYKBN       >=  "90"
+                   IF    ( RECE85-SRYCD (IDX) (1:1)
+                                               =   "8"   OR
+                           RECE85-SRYCD (IDX) (1:3)
+                                               =   "008"    )
+                   OR    ( RECE84-JIHOKBN  NOT =   SPACE     )
+                       MOVE    1                   TO  FLG-TAISYO
+                   ELSE
+                       IF    ( RECE85-SRYCD (IDX)  =   "101910050"
+                                                   OR  "101910060" )
+                           MOVE    1                   TO  FLG-TAISYO
+                       END-IF
+                   END-IF
+               ELSE
+                   MOVE    1                  TO  FLG-TAISYO
+               END-IF
+      *
+               IF      FLG-TAISYO          =   1
                  IF    ( RECE85-RECEDENFLG(IDX) =   SPACE )
                  AND   ( RECE85-MEISKYFLG (IDX)
                                             NOT =   "2"   )
@@ -2304,9 +2325,10 @@
                            END-IF
                    END-EVALUATE
                  END-IF
-               END-PERFORM
+               END-IF
+             END-PERFORM
       *
-               PERFORM 990-RECE85-NEXT-SEC
+             PERFORM 990-RECE85-NEXT-SEC
            END-PERFORM
       *
       *    画像診断のとき順番を変える
