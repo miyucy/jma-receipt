@@ -1,12 +1,20 @@
 #!/usr/bin/ruby
 
-require "monthly/receden"
-require "monthly/receden_common"
-require "monthly/receden_error"
-require	"date"
-require	"kconv"
-require	"jcode"
-require	"json"
+begin
+  require "monthly/receden"
+  require "monthly/receden_common"
+  require "monthly/receden_error"
+  require "date"
+  require "kconv"
+  require "jcode"
+  require "json"
+rescue LoadError => err
+    STDERR.puts "#{err.class}\n#{err.message}\n#{err.backtrace.join("\n")}"
+    open(@errlog,"w"){|f|
+      f.print "#{err.class}\n#{err.message}\n#{err.backtrace.join("\n")}"
+    }
+    raise "#{err.message}\n#{err.backtrace.join("\n")}"
+end
 
 $KCODE = "UTF-8"
 
@@ -1554,6 +1562,7 @@ class Receden_check < Receden_common
     db.exec("DBDISCONNECT")
 
   rescue => err
+    STDERR.puts "#{err.class}\n#{err.message}\n#{err.backtrace.join("\n")}"
     open(@errlog,"w"){|f|
       f.print "#{err.class}\n#{err.message}\n#{err.backtrace.join("\n")}"
     }
