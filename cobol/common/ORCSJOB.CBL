@@ -140,15 +140,23 @@ grpsys         SPA-AREA
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
                WHEN    "STS"
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
                        PERFORM 130-STS-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
                WHEN    "STM"
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
                        PERFORM 180-STM-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
                WHEN    "STE"
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
                        PERFORM 160-STE-SEC
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
                WHEN    "DEL"
                        PERFORM 140-DEL-SEC
                WHEN    "ALL"
@@ -156,14 +164,20 @@ grpsys         SPA-AREA
                WHEN    "CHK"
                        PERFORM 150-CHK-SEC
                WHEN    "STP"
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
                        PERFORM 190-STP-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
                WHEN    "CAN"
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
                        PERFORM 200-CANCEL-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
                WHEN    "CA2"
+                       PERFORM 900-DBCOMMIT-SEC
+                       PERFORM 900-DBSTART-SEC
                        PERFORM 210-CANCEL2-SEC
                        PERFORM 900-DBCOMMIT-SEC
                        PERFORM 900-DBSTART-SEC
