@@ -106,6 +106,11 @@
       *    Äê¿ôÄ¶²áÆþ±¡´ðËÜÎÁ¸º³Û¡Ê£±£°£°Ê¬¤Î£²£°¡Ë¡ÊÆÃÄêÆþ±¡ÎÁ¡Ë
            03  CONS-TEISU4                 PIC X(09) VALUE "190123090".
       *
+      *    Ï«ºÒ¼£ÎÅ·×²è²Ã»»
+           03  CONS-ROUSAI-CHIRYOU         PIC X(09) VALUE "101910050".
+      *    ÉÂ°áÂßÍ¿ÎÁ
+           03  CONS-ROUSAI-BYOUI           PIC X(09) VALUE "101910060".
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
       *
@@ -948,6 +953,15 @@
                MOVE    "01"                TO  TNS-YUKOSTYMD(7:2)
                MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
                PERFORM   910-TENSU-READ-SEC
+      *
+      *        ÉÂ°áÂßÍ¿ÎÁ¤ÈÏ«ºÒ¼£ÎÅ·×²è²Ã»»¤Ï"ORCSRNYURECEDEN"¤ÎÊÖµÑ
+      *        ÂÐ¾Ý³°¤È¤¹¤ë
+               IF    NSRY-SRYCD(1)     =    "101910050"  OR
+                                            "101910060"
+                   MOVE   "9999"       TO   TNS-CHUKSNCD
+                   MOVE   999          TO   TNS-CDKBN-KBNNUM
+               END-IF
+      *
       *        Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
       *
                IF   TNS-CHUKSNCD     =   "0000"
@@ -1082,6 +1096,14 @@
                            MOVE    "01"          TO  TNS-YUKOSTYMD(7:2)
                            MOVE    TNS-YUKOSTYMD TO  TNS-YUKOEDYMD
                            PERFORM   910-TENSU-READ-SEC
+      *
+      *                   ÉÂ°áÂßÍ¿ÎÁ¤ÈÏ«ºÒ¼£ÎÅ·×²è²Ã»»¤Ï
+      *                   "ORCSRNYURECEDEN"¤ÎÊÖµÑÂÐ¾Ý³°¤È¤¹¤ë
+                           IF    SRY-SRYCD(1)     =    "101910050"  OR
+                                                       "101910060"
+                               MOVE   "9999"      TO   TNS-CHUKSNCD
+                               MOVE   999         TO   TNS-CDKBN-KBNNUM
+                           END-IF
                          END-IF
                      END-IF
       *              ¿ÇÎÅ¹Ô°Ù¥¯¥í¡¼¥º
@@ -1444,8 +1466,7 @@
                    COMPUTE    WRK-SO-TEN(IDX1)    =
                               LNK-SROUNYUIN-ZAITEN(IDX1)  +
                               LNK-SROUNYUIN-ZAITEN-NACCT(IDX1)  +
-                              LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)  +
-                              LNK-SROUNYUIN-ZAITEN-ACCTETC(IDX1)
+                              LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
       *        ²ó¿ô¾ðÊó¤Î¥»¥Ã¥È
                IF    WRK-SO-SRYCD(IDX1 1) NOT  =   SPACE
                    MOVE     1      TO    WRK-SO-DAY(IDX1 IDX1)
