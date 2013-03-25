@@ -49,7 +49,7 @@
                                    FILE    STATUS  IS  STS-BQ01.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  ASGNPARA
+           SELECT  PRT-FILE        ASSIGN  HC01PARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
@@ -69,7 +69,13 @@
       *
       *    印刷用データ
        FD  PRT-FILE.
-           COPY    "CPPRTALL.INC".
+       01  PRT-REC.
+           03  PRT-PRTID               PIC X(30).
+           03  PRT-PRTNM               PIC X(20).
+           03  PRT-OFFSET-X            PIC X(05).
+           03  PRT-OFFSET-Y            PIC X(05).
+           03  PRT-SITEKBN             PIC X(01).
+           03  PRT-PRTDATA             PIC X(20000).
       *
       *    ＣＳＶファイル
        FD  CSV-FILE.
@@ -92,15 +98,12 @@
                                    REPLACING  //BQ01//
                                    BY         //WKBQ01//.
       *
-           COPY    "CPASGNPARA.INC".
       *
-           COPY    "CPASGNPARA.INC"
-                                   REPLACING  //ASGNPARA//
-                                   BY         //PRFNAME//.
-      *
-           COPY    "CPASGNPARA.INC"
-                                   REPLACING  //ASGNPARA//
-                                   BY         //CSVNAME//.
+       01  ASSIGN-NAME-AREA.
+      *        パラメータファイル名
+           03  PRFNAME                 PIC X(100).
+      *        ＣＳＶファイル名
+           03  CSVNAME                 PIC X(100).
       *
       *    ステータス領域
        01  STS-AREA.
@@ -119,7 +122,6 @@
            03  FLG-PTINF               PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTSRH               PIC 9(01).
-           03  FLG-PTPUBLIC            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -174,7 +176,6 @@
            03  WRK-ENCODING            PIC X(01).
            03  WRK-ENCODING9           REDEFINES WRK-ENCODING
                                        PIC 9(01).
-           03  WRK-UUID                PIC X(36).
       * 
        01  CSV-EDIT-AREA.
            03  CSV-NO                  PIC Z(9)9.
@@ -206,8 +207,6 @@
            03  CSV-JYUSYO              PIC X(400).
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-KANANAME            PIC X(100).
-           03  FILLER                  PIC X(01)   VALUE ",".
-           03  CSV-PATIENT-ID1         PIC X(20)   VALUE "地域連携ＩＤ".
       * 
        01  CONST-AREA.
            03  CONST-FORMID            PIC X(20)   VALUE  "HCM28.red".
@@ -246,12 +245,6 @@
            03  CONST-CSV-JYUSYO        PIC X(20)   VALUE "住所".
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CONST-CSV-KANANAME      PIC X(20)   VALUE "カナ氏名".
-           03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-PATIENT-ID1   PIC X(20)   VALUE "地域連携ＩＤ".
-      *
-      *    患者一覧
-           COPY "HCM28.INC"        REPLACING  //HCM28//
-                                   BY         //HC28//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -267,7 +260,6 @@
       *    出力先プリンタ名割り当て情報
            COPY  "CPSYSKANRI.INC".
            COPY  "CPSK1001.INC".
-           COPY  "CPSK1010.INC".
            COPY  "CPSK1031.INC".
            COPY  "CPSK1044.INC".
       *
@@ -279,24 +271,13 @@
        01  PTSRH-REC.
            COPY    "CPPTSRH.INC".
       *
-      *    患者地域連携
-       01  PTPUBLIC-REC.
-           COPY    "CPPTNUM-PUBLIC.INC".
-      *
+      *    患者一覧
+           COPY "HCM28.INC"
+                                   REPLACING  //HCM28//
+                                   BY         //HC28//.
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *   ＵＩＤ取得用エリア
-       01 UIDIO-AREA.
-           03  UIDIO-RET   PIC X(2).
-           03  UIDIO-UID   PIC X(36).
-       01  UIDIO-ST        PIC 9(2).
-      *
-           COPY    "CPORCSCOMMON.INC".
-      *
-      *    マシン日付取得サブ
-           COPY    "CPORCSMCNDATE.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -320,9 +301,6 @@
       *
       *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
-      *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -383,28 +361,6 @@
            MOVE    WRK-PARA-TERMID     TO  SPA-TERMID
            MOVE    WRK-PARA-STAFFCD    TO  SPA-STAFFCD
            MOVE    WRK-PARA-SYSYMD     TO  SPA-SYSYMD
-           MOVE    MCP-USER            TO  SPA-OPID
-      *
-           INITIALIZE              ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"   USING
-                                   ORCSMCNDATEAREA
-      *
-           INITIALIZE              UIDIO-AREA.
-           CALL    "orcuidset"     USING
-                                   UIDIO-ST
-                                   UIDIO-AREA
-      *
-           MOVE    UIDIO-UID           TO  WRK-UUID
-      *
-      *    ＳＰＡ共通設定
-           INITIALIZE                  SYS-1010-REC
-           INITIALIZE                  ORCSCOMMONAREA
-           MOVE    "M00"               TO  ORCSCOMMON-PG
-           CALL    "ORCSCOMMON"        USING
-                                       MCPAREA
-                                       SPA-AREA
-                                       ORCSCOMMONAREA
-                                       SYS-1010-REC
       *
            INITIALIZE                      SYSKANRI-REC
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
@@ -415,6 +371,7 @@
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC        TO  SYS-1001-REC
+           DISPLAY "SYS-1001-BEDSU[" SYS-1001-BEDSU "]"
            IF    ( SYS-1001-BEDSU  >   ZERO )
                MOVE    1               TO  SPA-BEDFLG
            END-IF
@@ -426,34 +383,20 @@
       *
            PERFORM 900-JOB-STEP-START-SEC
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    WRK-PARA-PAFNAME    TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP"   USING
-                                   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  PRFNAME
-           MOVE    SGETTEMP-TEMPDIR    TO  MCP-TEMPDIR
+           MOVE    WRK-PARA-PAFNAME    TO  PRFNAME
       *
       *    パラメータファイルオープン
            OPEN    INPUT               BQ01-FILE
       *
       *    パラメータファイル読み込み
            READ    BQ01-FILE
-           END-READ
       *
            MOVE    BQ01                TO  WKBQ01
       *
            CLOSE   BQ01-FILE
       *
            IF  ( WKBQ01-PROC-FLG       =   ZERO )
-      *
-               INITIALIZE                  SGETTEMP-AREA
-               MOVE    WRK-PARA-CSVFILENM
-                                       TO  SGETTEMP-BASENAMES (1)
-               CALL    "ORCSGETTEMP"   USING
-                                       SGETTEMP-AREA
-               MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  CSVNAME
+               MOVE    WRK-PARA-CSVFILENM      TO  CSVNAME
       *
                OPEN    OUTPUT              CSV-FILE
       *
@@ -466,15 +409,6 @@
                MOVE    WRK-PARA-SYSTIME
                                        TO  HC01PARA-SYOHMS
                MOVE    1               TO  HC01PARA-CNT
-      *
-               INITIALIZE                  SGETTEMP-AREA
-               MOVE    HC01PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES (1)
-               CALL    "ORCSGETTEMP"   USING
-                                       SGETTEMP-AREA
-               MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  ASGNPARA
-               MOVE    SGETTEMP-ST     TO  ASGNPARA-ST
       *
                OPEN    OUTPUT              PRT-FILE
       *
@@ -540,8 +474,6 @@
       *
                PERFORM 900-PTINF-KEY-SEL-SEC
       *
-               PERFORM 900-PTNUM-PUBLIC-KEY-SEL-SEC
-      *
                IF  ( WKBQ01-PROC-FLG   =  ZERO )
       *
       *            ＣＳＶ編集処理
@@ -585,22 +517,19 @@
                CLOSE   PRT-FILE
       *
                MOVE    SPACE           TO  SHELLTBL
-               MOVE    "HCALL_prv.sh"  TO  SHELLTBL-NAME
+      *        ファイルデイレクトリ位置指定
+               INITIALIZE              ORCSMKPASSAREA
+               MOVE    "scripts/daily/HCALL2.sh"
+                                       TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
-               MOVE    ASGNPARA (ASGNPARA-ST:)
-                                       TO  SHELLTBL-ARG1
-               MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
-               MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
-               MOVE    "0"             TO  SHELLTBL-ARG4
-               IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-                   MOVE    "患者照会検索結果"  TO  SHELLTBL-ARG5
-                   MOVE    SPA-CLIENT-SHOWDIALOG
-                                       TO  SHELLTBL-ARG6
-               END-IF
+               MOVE    HC01PARA        TO  SHELLTBL-ARG1
+               MOVE    WRK-ENCODING    TO  SHELLTBL-ARG2
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
-               MOVE    "daily"         TO  MCP-PATHNAME
+               MOVE    "shell"         TO  MCP-PATHNAME
                CALL    "ORCDBMAIN"     USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
@@ -642,9 +571,9 @@
                MOVE    WRK-PARA-SYSTIME
                                        TO  SFILESV-SRYYM (WRK-RENNUM)
                MOVE    WRK-RENNUM      TO  SFILESV-RENNUM   (WRK-RENNUM)
-               MOVE    MCP-TEMPDIR     TO  SFILESV-FOR-FOLDER
+               MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
                                                             (WRK-RENNUM)
-               MOVE    WRK-PARA-CSVFILENM
+               MOVE    WRK-PARA-CSVFILENM (6:)
                                        TO  SFILESV-FOR-DATA (WRK-RENNUM)
                MOVE    WRK-PARA-FILENM-FOLDER
                                        TO  SFILESV-TO-FOLDER(WRK-RENNUM)
@@ -722,7 +651,6 @@
                                        CSV-POST
                                        CSV-JYUSYO
                                        CSV-KANANAME
-                                       CSV-PATIENT-ID1
       *
            COMPUTE CNT-CSV =   CNT-CSV +   1
            IF    ( CNT-CSV =   1 )
@@ -798,9 +726,6 @@
            MOVE    WRK-ADRS        TO  CSV-JYUSYO
       *
            MOVE    PTINF-KANANAME  TO  CSV-KANANAME
-      *
-           MOVE    PTPUBLIC-PATIENT-ID1
-                                   TO  CSV-PATIENT-ID1
       *
            MOVE    CSV-EDIT-AREA   TO  CSV-REC
       *
@@ -896,22 +821,11 @@
       *
            PERFORM 900-ADRS-EDIT-SEC
       *
-           IF    ( PTPUBLIC-PATIENT-ID1 NOT =  SPACE )
-               IF    ( WRK-ADRS (35:)  NOT =   SPACE )
-                   MOVE    WRK-ADRS    TO  HC28-JYUSYO2 (CNT-LINE)
-               ELSE
-                   MOVE    WRK-ADRS    TO  HC28-JYUSYO  (CNT-LINE)
-               END-IF
+           IF    ( WRK-ADRS (51:)  NOT =   SPACE )
+               MOVE    WRK-ADRS        TO  HC28-JYUSYO2 (CNT-LINE)
            ELSE
-               IF    ( WRK-ADRS (51:)  NOT =   SPACE )
-                   MOVE    WRK-ADRS    TO  HC28-JYUSYO2 (CNT-LINE)
-               ELSE
-                   MOVE    WRK-ADRS    TO  HC28-JYUSYO  (CNT-LINE)
-               END-IF
+               MOVE    WRK-ADRS        TO  HC28-JYUSYO (CNT-LINE)
            END-IF
-      *
-           MOVE    PTPUBLIC-PATIENT-ID1
-                                   TO  HC28-PATIENT-ID1 (CNT-LINE)
       *
            IF  ( CNT-LINE         >=   CONST-LINE )
       *
@@ -950,27 +864,11 @@
       *
       *
            MOVE    SPACE           TO  PRT-REC
-           INITIALIZE                  PRT-REC
            MOVE    "HCM28.red"     TO  PRT-PRTID
            MOVE    WRK-PRTNM       TO  PRT-PRTNM
            MOVE    SYS-1044-OFFSET-X   TO  PRT-OFFSET-X
            MOVE    SYS-1044-OFFSET-Y   TO  PRT-OFFSET-Y
            MOVE    "1"             TO  PRT-SITEKBN
-      *
-           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-               MOVE    "5"         TO  PRT-PRTKBN
-           ELSE
-               MOVE    "6"         TO  PRT-PRTKBN
-           END-IF
-           MOVE    MCP-TEMPDIR     TO  PRT-OUT
-           MOVE    "ORCA0131"      TO  PRT-TBL-KEY
-           MOVE    1               TO  PRT-RENNUM
-           MOVE    SMCNDATE-YMD    TO  PRT-TBL-GROUP
-           MOVE    SMCNDATE-HMS    TO  PRT-TBL-GROUP(9:)
-           MOVE    1               TO  PRT-SHORI-RENNUM
-           MOVE    CNT-PAGE        TO  PRT-PAGE
-           MOVE    WRK-UUID        TO  PRT-UUID
-      *
            INITIALIZE                  SFIXREDDATA-AREA
            MOVE    "1"             TO  SFIXREDDATA-SITEKBN
            MOVE    PRT-PRTID       TO  SFIXREDDATA-FORMID
@@ -1247,34 +1145,6 @@
       *
            .
        900-PTINF-KEY-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者地域連携検索処理
-      *****************************************************************
-       900-PTNUM-PUBLIC-KEY-SEL-SEC           SECTION.
-      *
-           MOVE    ZERO            TO  FLG-PTPUBLIC
-      *
-           INITIALIZE                  PTPUBLIC-REC
-           MOVE    SPA-HOSPNUM     TO  PTPUBLIC-HOSPNUM
-           MOVE    PTSRH-PTID      TO  PTPUBLIC-PTID
-           MOVE    PTPUBLIC-REC    TO  MCPDATA-REC
-           MOVE    "tbl_ptnum_public" TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  PTPUBLIC-REC
-           ELSE
-               INITIALIZE              PTPUBLIC-REC
-               MOVE    1           TO  FLG-PTPUBLIC
-           END-IF
-      *
-           MOVE    "tbl_ptnum_public" TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-PTNUM-PUBLIC-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ステップ管理開始処理
