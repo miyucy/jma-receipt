@@ -3198,7 +3198,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                    END-IF    
                WHEN    "B17"
                    IF      SPA-GMN-DATAKBN =   "1" OR  "3"
-                       MOVE    "????"          TO  SPA-ERRCD
+                       MOVE    "0013"          TO  SPA-ERRCD
                    END-IF
            END-EVALUATE
       *
@@ -6579,6 +6579,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    END-STRING
                WHEN    "0012"
                    MOVE    "再印刷できない帳票です"    TO  TERR-ERRMSG
+               WHEN    "0013"
+                   MOVE    "フロッピイは選択できません"
+                                               TO  TERR-ERRMSG
                WHEN    "0020"
                    STRING  "改正パッチ提供以降に平成２４年３月以前の"
                                                    DELIMITED  BY  SIZE

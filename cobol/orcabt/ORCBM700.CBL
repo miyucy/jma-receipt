@@ -1466,7 +1466,7 @@
            MOVE    "I"             TO  SFILESV-MODE
            MOVE    WRK-PARA-SHELLID
                                    TO  SFILESV-TBL-KEY
-           MOVE    "recept41.sh"   TO  SFILESV-SHELLID  (1)
+           MOVE    "recept4.sh"    TO  SFILESV-SHELLID  (1)
            MOVE    LNK-PRTKANRI-SHORI-RENNUM
                                    TO  SFILESV-SHORI-RENNUM
                                                         (1)
@@ -1476,29 +1476,32 @@
                                    TO  SFILESV-SRYYM    (1)
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  SFILESV-SKYYMD   (1)
-           MOVE    WRK-PARA-FOLDER TO  SFILESV-FOR-FOLDER
+      *****MOVE    WRK-PARA-FOLDER TO  SFILESV-FOR-FOLDER
+           MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
                                                         (1)
            IF      WRK-PARA-DATAKBN    =   "5"
                IF      WRK-PARA-PRTKBN     =   "1"
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "RECEIPTC.UKE"      DELIMITED  BY  SIZE
+                           "rousai_RREC.zip"   DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
                    END-STRING
-                   MOVE    "RECEIPTC.UKE"  TO  SFILESV-TO-DATA  (1)
+                   MOVE    "rousai_RREC.zip"   TO  SFILESV-TO-DATA  (1)
                ELSE
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "TENKENRC.UKE"      DELIMITED  BY  SIZE
+                           "rousai_TENKENRC.zip"
+                                               DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
                    END-STRING
-                   MOVE    "TENKENRC.UKE"  TO  SFILESV-TO-DATA  (1)
+                   MOVE    "rousai_TENKENRC.zip"
+                                               TO  SFILESV-TO-DATA  (1)
                END-IF
            ELSE
                IF      WRK-PARA-PRTKBN     =   "1"
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "RECEIPTC.iso"      DELIMITED  BY  SIZE
+                           "RREC.iso"      DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
                    END-STRING
-                   MOVE    "RECEIPTC.iso"  TO  SFILESV-TO-DATA  (1)
+                   MOVE    "RREC.iso"      TO  SFILESV-TO-DATA  (1)
                ELSE
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
                            "TENKENRC.iso"      DELIMITED  BY  SIZE
