@@ -883,7 +883,6 @@ COPYS = \
         CPSYUTOTAL.INC \
         J025.INC \
         K97.INC  \
-	CPQSUB03.INC \
 	ORCA-BLOB \
 	N31.INC \
 	N31ERR.INC \
