@@ -57,8 +57,7 @@
       *  04.06.00    NACL-多々納  10/07/16  免疫学的検査重複チェック対応
       *  04.07.00    NACL-多々納  11/11/25  同日再入院対応
       *  04.07.00    NACL-多々納  12/03/XX  Ｈ２４．４改正対応
-      *  04.07.00    NACL-多々納  12/10/XX  時間外緊急院内検査加算チェック対応
-      *  04.08.00    NACL-多々納  13/08/XX  時間外緊急院内チェック設定
+      * 04.07.00     NACL-多々納  12/10/XX  時間外緊急院内検査加算チェック対応
       *****************************************************************
       *
       *
@@ -588,27 +587,16 @@
       *    抗シトルリン化ペクチド定量(D014-16)
            03  FILLER          PIC X(14)  VALUE    "08 1 160197410".
       *
-      *どれか１つ(D007)
-      *    ＴＩＢＣ（比色法）
-           03  FILLER          PIC X(14)  VALUE    "09 1 160023610".
-      *    ＵＩＢＣ（比色法）
-           03  FILLER          PIC X(14)  VALUE    "09 1 160023710".
-      *    ＴＩＢＣ
-           03  FILLER          PIC X(14)  VALUE    "09 1 160028710".
-      *    ＵＩＢＣ
-           03  FILLER          PIC X(14)  VALUE    "09 1 160028810".
-      *
        01  TBL-KENSA-JYU-AREA-R    REDEFINES   TBL-KENSA-JYU-AREA.
       *****03  TBL-KENSA-JYU-OCC       OCCURS  19  INDEXED  JYU-IDX.
-           03  TBL-KENSA-JYU-OCC       OCCURS  26  INDEXED  JYU-IDX.
+           03  TBL-KENSA-JYU-OCC       OCCURS  22  INDEXED  JYU-IDX.
                05  TBL-JYU-KBN         PIC X(02).
                05  TBL-FILLER1         PIC X(01).
                05  TBL-JYU-KEN         PIC X(01).
                05  TBL-FILLER2         PIC X(01).
                05  TBL-JYU-SRYCD       PIC X(09).
       *01  KEN-JYU-MAX                 PIC 9(04)   VALUE   11.
-      *01  KEN-JYU-MAX                 PIC 9(04)   VALUE   22.
-       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   26.
+       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   22.
       *
       *    重複算定不可テーブル（２）
       *01  TBL-KENSA-JYU2-AREA.
@@ -648,128 +636,6 @@
            COPY     "CMSANSOTBL.INC".
       *
       *****************************************************************
-      *    時間外加算テーブル（緊急時間外の判定）（画像診断と同じ）
-      *****************************************************************
-       01  TBL-TIMEKSN-AREA.
-      *初診
-      *    時間外
-           03  FILLER              PIC X(12)   VALUE   "11 111000570".
-      *    休日
-           03  FILLER              PIC X(12)   VALUE   "12 111000670".
-      *    深夜
-           03  FILLER              PIC X(12)   VALUE   "13 111000770".
-      *    時間外特例
-           03  FILLER              PIC X(12)   VALUE   "14 111000870".
-      *    早朝加算
-           03  FILLER              PIC X(12)   VALUE   "18 111012470".
-      *（乳幼児） 時間外
-           03  FILLER              PIC X(12)   VALUE   "11 111011970".
-      *    休日
-           03  FILLER              PIC X(12)   VALUE   "12 111012070".
-      *    深夜
-           03  FILLER              PIC X(12)   VALUE   "13 111012170".
-      *    時間外特例
-           03  FILLER              PIC X(12)   VALUE   "14 111012270".
-      *    夜間（時間外）加算
-           03  FILLER              PIC X(12)   VALUE   "15 111011570".
-      *    休日加算
-           03  FILLER              PIC X(12)   VALUE   "16 111011670".
-      *    深夜加算
-           03  FILLER              PIC X(12)   VALUE   "17 111011770".
-      *再診料加算
-      *    時間外
-           03  FILLER              PIC X(12)   VALUE   "21 112001110".
-      *    休日
-           03  FILLER              PIC X(12)   VALUE   "22 112001210".
-      *    深夜
-           03  FILLER              PIC X(12)   VALUE   "23 112001310".
-      *    時間外特例
-           03  FILLER              PIC X(12)   VALUE   "24 112001410".
-      *    早朝加算
-           03  FILLER              PIC X(12)   VALUE   "28 112015570".
-      *（乳幼児）    時間外
-           03  FILLER              PIC X(12)   VALUE   "21 112014770".
-      *    休日
-           03  FILLER              PIC X(12)   VALUE   "22 112014870".
-      *    深夜
-           03  FILLER              PIC X(12)   VALUE   "23 112014970".
-      *    時間外特例
-           03  FILLER              PIC X(12)   VALUE   "24 112015070".
-      *    夜間（時間外）加算
-           03  FILLER              PIC X(12)   VALUE   "25 112014170".
-      *    休日加算
-           03  FILLER              PIC X(12)   VALUE   "26 112014270".
-      *    深夜加算
-           03  FILLER              PIC X(12)   VALUE   "27 112014370".
-      *外来診察料加算
-      *    時間外
-           03  FILLER              PIC X(12)   VALUE   "21 112006470".
-      *    休日
-           03  FILLER              PIC X(12)   VALUE   "22 112006570".
-      *    深夜
-           03  FILLER              PIC X(12)   VALUE   "23 112006670".
-      *    時間外特例
-           03  FILLER              PIC X(12)   VALUE   "24 112006770".
-      *（乳幼児）    時間外
-           03  FILLER              PIC X(12)   VALUE   "21 112015170".
-      *    休日
-           03  FILLER              PIC X(12)   VALUE   "22 112015270".
-      *    深夜
-           03  FILLER              PIC X(12)   VALUE   "23 112015370".
-      *    時間外特例
-           03  FILLER              PIC X(12)   VALUE   "24 112015470".
-      *    夜間（時間外）加算
-           03  FILLER              PIC X(12)   VALUE   "25 112014470".
-      *    休日加算
-           03  FILLER              PIC X(12)   VALUE   "26 112014570".
-      *    深夜加算
-           03  FILLER              PIC X(12)   VALUE   "27 112014670".
-      *小児科外来診療科（初診）
-      *    時間外
-           03  FILLER              PIC X(12)   VALUE   "11 113009670".
-      *    休日
-           03  FILLER              PIC X(12)   VALUE   "12 113007170".
-      *    深夜
-           03  FILLER              PIC X(12)   VALUE   "13 113007270".
-      *    時間外特例
-           03  FILLER              PIC X(12)   VALUE   "14 111010770".
-      *    夜間（時間外）加算
-           03  FILLER              PIC X(12)   VALUE   "15 113007070".
-      *小児科外来診療科（再診）
-      *    時間外
-           03  FILLER              PIC X(12)   VALUE   "21 113009770".
-      *    休日
-           03  FILLER              PIC X(12)   VALUE   "22 113007470".
-      *    深夜
-           03  FILLER              PIC X(12)   VALUE   "23 113007570".
-      *    時間外特例
-           03  FILLER              PIC X(12)   VALUE   "24 112006070".
-      *    夜間（時間外）加算
-           03  FILLER              PIC X(12)   VALUE   "25 113007370".
-      *外来診察料外来診療科（再診）
-      *    時間外
-           03  FILLER              PIC X(12)   VALUE   "21 113009870".
-      *    休日
-           03  FILLER              PIC X(12)   VALUE   "22 113007770".
-      *    深夜
-           03  FILLER              PIC X(12)   VALUE   "23 113007870".
-      *    時間外特例
-           03  FILLER              PIC X(12)   VALUE   "24 113005570".
-      *    夜間（時間外）加算
-           03  FILLER              PIC X(12)   VALUE   "25 113007670".
-      *
-       01  TBL-TIMEKSN-AREA-R      REDEFINES   TBL-TIMEKSN-AREA.
-           03  TBL-TIMEKSN-OCC     OCCURS   50
-                                   INDEXED  TBL-TIDX.
-      *        1:初診、2：再診
-               05  TBL-TM-KBN1         PIC X(01).
-      *        1:時間外、2：休日、3:深夜、4:特定時間外、5:夜間、8:夜間・早朝
-               05  TBL-TM-KBN2         PIC X(01).
-               05  TBL-TM-YOBI         PIC X(01).
-      *
-               05  TBL-TM-SRYCD        PIC X(09).
-      *
-      *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
       *
@@ -777,8 +643,6 @@
            COPY    "CPSK1006.INC".
       *    システム管理マスタ（外来迅速検体検査情報）
            COPY    "CPSK1016.INC".
-      *    システム管理マスタ
-           COPY    "CPSYSKANRI.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -1225,13 +1089,24 @@
            END-EVALUATE
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
-      *
       *    システム管理検索
-           MOVE    SYS-1006-REC        TO  SYSKANRI-REC
-           PERFORM 900-SYSKANRI-INV-SEC
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
+           MOVE    SYS-1006-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-1006-REC
+               MOVE    MCPDATA-REC         TO  SYS-1006-REC
            ELSE
                INITIALIZE                  SYS-1006-REC
            END-IF
@@ -1382,9 +1257,9 @@
       *        算定歴チェック
                MOVE    WRK-COM-INPUTCD (IDX-TEIGEN) TO  WRK-SRYCD
                PERFORM 108121-SANTEI-CHK-SEC
-      ****     IF      SPA-ERRCD       NOT =   SPACE
-      *            GO      TO      100812-TEIGEN-CHK-EXT
-      ****     END-IF
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO      TO      100812-TEIGEN-CHK-EXT
+               END-IF
       *        逓減加算自動追加あり
                MOVE    1                   TO  WRK-COM-TEIGEN-CHK
                                                        (IDX-TEIGEN)
@@ -1572,9 +1447,9 @@
       *
       *    算定歴の回数をチェックする
            MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNT
-      **** IF     (SANTEI-FSANTEIYMD   >   SPA-SRYYMD)
-      *        MOVE    "0056"          TO  WRK-ERRCD
-      ***  END-IF
+           IF      SANTEI-FSANTEIYMD   >   SPA-SRYYMD
+               MOVE    "0056"          TO  SPA-ERRCD
+           END-IF
       *
       *    訂正の時、訂正前までカウントする
            IF      LNK-ORCSC-SYORIFLG  =   1
@@ -3908,7 +3783,6 @@
            IF     (SPA-KENJIKAN-CHK    =   ZERO )
             AND   (SPA-NYUGAIKBN       =   "2"  )
             AND   (LNK-ORCSC-PG        =   "K02")
-            AND   (SPA-JGAIKEIKBN-FLG  =   "1"  )
                PERFORM 3001-JIKANGAI-CHK-SEC
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
                IF      SPA-ERRCD       NOT =   SPACE
@@ -4411,20 +4285,16 @@
                        END-IF
                        IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  )
                        AND    (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
-      *??                  MOVE    WRK-COM-TIMEKSNKBN(IDX-Z)
-      *??                                          TO  FLG-JIKASAN 
-      *                    時間外加算コードチェック処理
-                           PERFORM 10053-TIMEKSNKBNSET-SEC
+                           MOVE    WRK-COM-TIMEKSNKBN(IDX-Z)
+                                                   TO  FLG-JIKASAN 
                        END-IF
                    END-IF
       *           小児科外来診察料の時間外加算
                    IF     (WRK-COM-SRYKBN  (IDX-Z)     =   "13" )
                        IF     (WRK-COM-DATAKBN   (IDX-Z)   =   "2"  )
                        AND    (WRK-COM-TIMEKSNKBN(IDX-Z)   NOT =   ZERO)
-      *??                  MOVE    WRK-COM-TIMEKSNKBN(IDX-Z)
-      *??                                          TO  FLG-JIKASAN 
-      *                    時間外加算コードチェック処理
-                           PERFORM 10053-TIMEKSNKBNSET-SEC
+                           MOVE    WRK-COM-TIMEKSNKBN(IDX-Z)
+                                                   TO  FLG-JIKASAN 
                        END-IF
                    END-IF
       *
@@ -4453,14 +4323,18 @@
                IF     (SPA-SRYYMD          =   SPA-SYSYMD)  AND
                       (LNK-ORCSC-SYORIFLG  =   ZERO      )  AND
                       (SPA-GAI-JIKANKBN    NOT =   ZERO  )
-                   MOVE    SPA-GAI-JIKANKBN    TO  FLG-JIKASAN
+      *            夜間・早朝は警告なし
+                   IF      SPA-GAI-JIKANKBN    NOT =   8
+                       MOVE    SPA-GAI-JIKANKBN    TO  FLG-JIKASAN2
+                   END-IF
                END-IF
            END-IF
-           IF     (FLG-JIKASAN         =   1
-                                       OR  2
-                                       OR  3
-                                       OR  4   )
-      *        時間外・休日・深夜・時間外特例のみ警告
+           IF     (FLG-JIKASAN         =   ZERO
+                                       OR  6    )
+             AND  (FLG-JIKASAN2        =   ZERO )
+      *        夜間・早朝は警告なし
+               CONTINUE
+           ELSE
                MOVE    "K160"              TO  SPA-ERRCD
            END-IF
            MOVE    1                   TO  SPA-KENJIKAN-CHK
@@ -4468,26 +4342,6 @@
            .
       *
        3001-JIKANGAI-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    時間外加算コードチェック処理
-      *****************************************************************
-       10053-TIMEKSNKBNSET-SEC                SECTION.
-      *
-      *    診察料検索
-           SET     TBL-TIDX            TO  1
-           SEARCH  TBL-TIMEKSN-OCC     VARYING   TBL-TIDX
-               AT  END
-                   MOVE    ZERO            TO  FLG-JIKASAN
-                WHEN   WRK-COM-INPUTCD (IDX-Z)
-                                           =   TBL-TM-SRYCD
-                                                      (TBL-TIDX)
-                   MOVE    TBL-TM-KBN2 (TBL-TIDX)
-                                           TO  FLG-JIKASAN
-           END-SEARCH
-      *
-           .
-       10053-TIMEKSNKBNSET-EXT.
            EXIT.
       *ver.4.7
       *
@@ -4504,11 +4358,22 @@
            MOVE    SPA-SRYYMD          TO  SYS-1016-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1016-EDYUKYMD
       *
-      *    システム管理検索
-           MOVE    SYS-1016-REC        TO  SYSKANRI-REC
-           PERFORM 900-SYSKANRI-INV-SEC
+           MOVE    SYS-1016-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-1016-REC
+               MOVE    MCPDATA-REC         TO  SYS-1016-REC
            ELSE
                INITIALIZE                  SYS-1016-REC
            END-IF
@@ -5362,56 +5227,11 @@
                WHEN    "160061910"
       *            生体検査１０項目算定日より前日に算定
                    IF     WRK-YMD          <   WRK-HOU-YMD
-      ***              MOVE    1           TO  FLG-KENSA-ARI
-      *H25.11          入院日算定は入院での算定をチェック
-                       IF      WRK-YMD         =  SPA-K02N-NYUINYMD
-                           PERFORM 300811-SYOKAI-CHK02-SEC
-                       ELSE
-                           MOVE    1           TO  FLG-KENSA-ARI
-                       END-IF
+                       MOVE    1           TO  FLG-KENSA-ARI
                    END-IF
            END-EVALUATE
            .
        30081-SYOKAI-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院時初回算定有無判定
-      *****************************************************************
-       300811-SYOKAI-CHK02-SEC         SECTION.
-      *
-           MOVE    SPACE               TO  SRYACT-REC
-           INITIALIZE                      SRYACT-REC
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
-           MOVE    SPA-NYUGAIKBN       TO  SRY-NYUGAIKBN
-           MOVE    SPA-PTID            TO  SRY-PTID
-           MOVE    SANTEI-SRYYM        TO  SRY-SRYYM
-           MOVE    SANTEI-SRYCD        TO  SRY-SRYCD(1)
-           MOVE    SANTEI-SRYCD        TO  SRY-SRYCD(2)
-           MOVE    SANTEI-SRYCD        TO  SRY-SRYCD(3)
-           MOVE    SANTEI-SRYCD        TO  SRY-SRYCD(4)
-           MOVE    SANTEI-SRYCD        TO  SRY-SRYCD(5)
-      *
-           MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryact"        TO  MCP-TABLE
-               MOVE    "key7"              TO  MCP-PATHNAME
-               PERFORM 900-SRYACT-NEXT-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYACT
-           END-IF
-      *
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *    診療行為テーブルに存在しない時、算定なし
-           IF      FLG-SRYACT          =   ZERO
-               MOVE    1               TO  FLG-KENSA-ARI
-           END-IF
-           .
-       300811-SYOKAI-CHK02-EXT.
            EXIT.
       *****************************************************************
       *    入院時初回算定有無判定
@@ -5593,37 +5413,6 @@
       *
            .
        920-SANTEI-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    管理マスター読込（キー）
-      *****************************************************************
-       900-SYSKANRI-INV-SEC         SECTION.
-      *
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
-                   MOVE    ZERO            TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    1               TO  FLG-SYSKANRI
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       900-SYSKANRI-INV-EXT.
            EXIT.
       *
       *****************************************************************
