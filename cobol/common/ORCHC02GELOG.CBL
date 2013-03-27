@@ -54,6 +54,8 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-YAKKAKJNCD          PIC X(12).
+           03  WRK-GENERIC-STYMD       PIC X(08).
+           03  WRK-GENERIC-EDYMD       PIC X(08).
       *
       *    一般名例外コードテーブル
            COPY    "CMGENERICTBL.INC".
@@ -253,13 +255,29 @@
            SET     TBL-GEN             TO  1
            SEARCH      TBL-GENERIC-OCC     VARYING   TBL-GEN
                    AT  END
-                       MOVE    SPACE               TO  WRK-YAKKAKJNCD
+                       MOVE    SPACE            TO  WRK-YAKKAKJNCD
+                       MOVE    SPACE            TO  WRK-GENERIC-STYMD
+                       MOVE    SPACE            TO  WRK-GENERIC-EDYMD
                    WHEN    ORCHC02GELOG-YAKKAKJNCD(IDX)
                                                =   TBL-YAKKAKJNCD
                                                            (TBL-GEN)
                        MOVE    TBL-GENERIC-CODE (TBL-GEN)
                                                 TO  WRK-YAKKAKJNCD
+                       MOVE    TBL-GENERIC-STYMD (TBL-GEN)
+                                                TO  WRK-GENERIC-STYMD
+                       MOVE    TBL-GENERIC-EDYMD (TBL-GEN)
+                                                TO  WRK-GENERIC-EDYMD
            END-SEARCH
+      *
+           IF      WRK-YAKKAKJNCD  NOT =   SPACE
+      *        有効期間判定
+               IF    (SPA-SRYYMD           >=  WRK-GENERIC-STYMD)
+                 AND (SPA-SRYYMD           <=  WRK-GENERIC-EDYMD)
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE           TO  WRK-YAKKAKJNCD
+               END-IF
+           END-IF
       *
            IF      WRK-YAKKAKJNCD      =   SPACE
                MOVE    ORCHC02GELOG-YAKKAKJNCD(IDX)(1:9)
