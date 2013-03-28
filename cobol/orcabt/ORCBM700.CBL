@@ -1476,16 +1476,21 @@
                                    TO  SFILESV-SRYYM    (1)
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  SFILESV-SKYYMD   (1)
-      *****MOVE    WRK-PARA-FOLDER TO  SFILESV-FOR-FOLDER
-           MOVE    "/tmp/"         TO  SFILESV-FOR-FOLDER
+           MOVE    WRK-PARA-FOLDER TO  SFILESV-FOR-FOLDER
                                                         (1)
            IF      WRK-PARA-DATAKBN    =   "5"
                IF      WRK-PARA-PRTKBN     =   "1"
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "rousai_RREC.zip"   DELIMITED  BY  SIZE
+                           "Rousai_"           DELIMITED  BY  SIZE
+                           LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
+                           ".zip"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
                    END-STRING
-                   MOVE    "rousai_RREC.zip"   TO  SFILESV-TO-DATA  (1)
+                   STRING  "Rousai_"           DELIMITED  BY  SIZE
+                           LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
+                           ".zip"              DELIMITED  BY  SIZE
+                                               INTO  SFILESV-TO-DATA (1)
+                   END-STRING
                ELSE
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
                            "rousai_TENKENRC.zip"

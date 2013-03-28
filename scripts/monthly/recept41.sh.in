@@ -68,6 +68,11 @@ fi
     rm  ${13}${20}${RECEFILE1}*.UKE
     rm  /tmp/${20}${RECEFILE2}*.txt
 
+    OUT_FOLDER="/tmp/Rousai_"
+    rm -fr ${OUT_FOLDER}*
+
+
+
 #   レセ電ファイル作成
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM700 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${13},${14},${15},${19},${17},$fixedsize,${21},${20},${16} >> $LOG_FILE 2>&1
@@ -76,25 +81,16 @@ fi
         exit 
     fi
 
-#   漢字コード変換
-    echo "ファイルの処理(sjis変換)"
-
-   all=`ls  /tmp/${20}${RECEFILE2}*.txt`
- 
-    for f in $all ; do
-        echo "f= " $f >> $LOG_FILE 2>&1
-        echo "mm = " ${f:14:2} >> $LOG_FILE 2>&1
-        echo "nn = " ${f:16:2} >> $LOG_FILE 2>&1
-        echo ${13}${20}${RECEFILE1}${f:14:2}${f:16:2}.UKE >> $LOG_FILE 2>&1
-
-        nkf -s $f > ${13}${20}${RECEFILE1}${f:14:2}${f:16:2}.UKE
-    done
-
-#   クライアント保存
-    if  [ ${17} -eq '5' ]; then
-        ROUSAI_FOLDER="/tmp/rousai/"
-        if ! test -d  "$ROUSAI_FOLDER"; then
-            mkdir ${ROUSAI_FOLDER}
+    ROUSAI_FOLDER="${20}Rousai_${5}"
+    OUT_FOLDER="/tmp/$ROUSAI_FOLDER/"
+#
+#   一時フォルダ作成
+    if ( [ ${17} -eq '3' ]|| [ ${17} -eq '4' ] ) && [ ${24} -eq '0' ]; then
+        echo "--- not out holder  ---" >>$LOG_FILE
+    else
+        echo "--- folder name  [" ${OUT_FOLDER} "]" >>$LOG_FILE
+        if ! test -d  "$OUT_FOLDER"; then
+            mkdir ${OUT_FOLDER}
             RC=$?
             if  [ $RC -ne '0' ]; then
                 ERRCD='0077'
@@ -102,24 +98,82 @@ fi
                 echo "--- mkdir  err   ---" >>$LOG_FILE
                 exit
             fi
-            chmod -R g+r ${ROUSAI_FOLDER}
-            echo "--- mkdir rireki holder ---" >>$LOG_FILE
+            chmod -R g+r ${OUT_FOLDER}
+            echo "--- mkdir out holder ---" >>$LOG_FILE
         else
-            rm ${ROUSAI_FOLDER}/*
-            echo "--- rm rireki holder file ---" >>$LOG_FILE
+            rm ${OUT_FOLDER}*
+            echo "--- rm out holder file ---" >>$LOG_FILE
         fi
-        echo "--- folder name  [" ${ROUSAI_FOLDER} "]" >>$LOG_FILE
-        cp ${13}${20}${RECEFILE1}*.UKE ${ROUSAI_FOLDER}
-        chmod -R g+r ${ROUSAI_FOLDER}${RECEFILE1}*.UKE
-        echo "--- zip name [" /tmp/${20}rousai_${RECEFILE1}.zip "]" >>$LOG_FILE
-        zip /tmp/${20}rousai_${RECEFILE1}.zip $ROUSAI_FOLDER
+    fi
+
+#   漢字コード変換
+    echo "ファイルの処理(sjis変換)"
+
+    all=`ls  /tmp/${20}${RECEFILE2}*.txt`
+ 
+    for f in $all ; do
+        echo "f= " $f >> $LOG_FILE 2>&1
+        echo "mm = " ${f:14:2} >> $LOG_FILE 2>&1
+        echo "nn = " ${f:16:2} >> $LOG_FILE 2>&1
+
+#       システム管理場所出力のとき
+        if ( [ ${17} -eq '3' ]|| [ ${17} -eq '4' ] ) && [ ${24} -eq '0' ]; then
+            echo ${13}${20}${RECEFILE1}${f:14:2}${f:16:2}.UKE >> $LOG_FILE 2>&1
+            nkf -s $f > ${13}${20}${RECEFILE1}${f:14:2}${f:16:2}.UKE
+        else
+            echo ${OUT_FOLDER}${RECEFILE1}${f:14:2}${f:16:2}.UKE >> $LOG_FILE 2>&1
+            nkf -s $f > ${OUT_FOLDER}${RECEFILE1}${f:14:2}${f:16:2}.UKE
+        fi
+    done
+
+#   システム管理場所（履歴保存先）出力のとき
+    if  [ ${17} -eq '3' ]|| [ ${17} -eq '4' ]; then
+        if  [ ${24} -eq '1' ]; then
+#           履歴保存先のフォルダへファイル作成
+            RIREKI_FOLDER="${13}${20}_Rousai_${5}/"
+            echo "--- rireki folder name  [" ${RIREKI_FOLDER} "]" >>$LOG_FILE
+            if ! test -d  "${RIREKI_FOLDER}"; then
+                 mkdir ${RIREKI_FOLDER}
+                 RC=$?
+                 echo "--- mkdir end   ---[" $RC  "]" >>$LOG_FILE
+                 if  [ $RC -ne '0' ]; then
+                     ERRCD='0077'
+                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD},${20} >> $LOG_FILE
+                     echo "--- mkdir  err   ---" >>$LOG_FILE
+                     exit
+                 fi
+                 chmod -R g+r ${RIREKI_FOLDER}
+                 echo "--- mkdir rireki holder ---" >>$LOG_FILE
+            else
+                 rm ${RIREKI_FOLDER}*
+                 echo "--- rm rireki holder file ---" >>$LOG_FILE
+            fi
+            cp ${OUT_FOLDER}${RECEFILE1}*.UKE ${RIREKI_FOLDER}
+            chmod -R g+r ${RIREKI_FOLDER}${RECEFILE1}*.UKE
+        fi
+    fi
+
+#   クライアント保存
+    if  [ ${17} -eq '5' ]; then
+        cd  /tmp/
+#       chmod -R g+r ${OUT_FOLDER}*
+        echo "--- zip name [" ${ROUSAI_FOLDER}.zip "]" >>$LOG_FILE
+        zip -r ${ROUSAI_FOLDER}.zip ${ROUSAI_FOLDER}/
+	RC=$?
+        echo "--- zip end   ---[" $RC  "]" >>$LOG_FILE
+	if  [ $RC -ne '0' ]; then
+	    ERRCD='0000'$RC
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD:${#ERRCD}-4:4},${20} >> $LOG_FILE
+            echo "--- zip err   ---" >>$LOG_FILE
+            exit
+	fi
     fi
 
 #   ＣＤ−Ｒ出力のときisoファイル作成
     if  [ ${17} -eq '6' ]; then
         echo "--- iso start ---" >>$LOG_FILE
         DIR=`mktemp -d`
-        cp ${13}${20}${RECEFILE1}*.UKE ${DIR}/
+        cp ${OUT_FOLDER}${RECEFILE1}*.UKE ${DIR}/
         mkisofs --input-charset cp437 -o ${13}${20}${RECEFILE1}.iso ${DIR}/
 	RC=$?
         echo "--- iso end   ---[" $RC  "]" >>$LOG_FILE
@@ -132,31 +186,6 @@ fi
     fi
 
 
-#   履歴保存先のフォルダへファイル作成
-    if  [ ${24} -eq '1' ]; then
-        if  [ ${17} -eq '3' ]|| [ ${17} -eq '4' ]; then
-            OUT_FOLDER="${13}${20}_rousai_${5}/"
-            if ! test -d  "$OUT_FOLDER"; then
-                 mkdir $OUT_FOLDER
-                 RC=$?
-                 echo "--- mkdir end   ---[" $RC  "]" >>$LOG_FILE
-                 if  [ $RC -ne '0' ]; then
-                     ERRCD='0077'
-                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15}'  '${ERRCD},${20} >> $LOG_FILE
-                     echo "--- mkdir  err   ---" >>$LOG_FILE
-                     exit
-                 fi
-                 chmod -R g+r ${OUT_FOLDER}
-                 echo "--- mkdir rireki holder ---" >>$LOG_FILE
-            else
-                 rm $OUT_FOLDER/${RECEFILE1}.UKE*
-                 echo "--- rm rireki holder file ---" >>$LOG_FILE
-            fi
-            echo "--- folder name  [" $OUT_FOLDER "]" >>$LOG_FILE
-            cp ${13}${20}${RECEFILE1}*.UKE ${OUT_FOLDER}
-            chmod -R g+r ${ROUSAI_FOLDER}${RECEFILE1}*.UKE
-        fi
-    fi
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${14}${15},${20} >> $LOG_FILE
     exit 
