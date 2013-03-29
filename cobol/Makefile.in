@@ -12,6 +12,7 @@ SUBDIRS = \
 	orca04 \
 	orca06 \
 	orca07 \
+	orca08 \
 	orca11 \
 	orca12 \
 	orca13 \
@@ -47,14 +48,13 @@ SUBDIRS = \
 	orca107 \
 	orca108 \
 	orca109 \
-	orca901 \
 	orcabt \
 	claim \
 	cutils \
 	api21 \
 	api01r \
 	api01rv2 \
-	session 
+	session
 
 BINDIRS = bin
 

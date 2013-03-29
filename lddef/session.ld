@@ -1,7 +1,8 @@
 name    session;
 
-bind	"session_end"		"OpenCOBOL"	"ORCGSESEND";
-bindapi	"session_start"		"OpenCOBOL"	"ORCGSESSTART";
+bind	""		"OpenCOBOL"	"ORCGSESEND";
+bind	"session_end"	"OpenCOBOL"	"ORCGSESEND";
+bindapi	"session_start"	"OpenCOBOL"	"ORCGSESSTART";
 
 data {
  spa orcaspa;
@@ -13,7 +14,6 @@ data {
 
 db {
  tbl_lock;
- tbl_passwd;
 };
 
 #include "orcadbh.inc"

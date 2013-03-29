@@ -38,7 +38,6 @@ db_group "xml2" {
 };
 
 ld	{
-	session  1;
 	orca00	 1;
 	orca01	 1;
 	orca02	 1;
@@ -46,6 +45,7 @@ ld	{
 	orca04	 1;
 	orca06	 1;
 	orca07	 1;
+	orca08	 1;
 	orca11	 1;
 	orca12	 1;
 	orca13	 1;
@@ -75,7 +75,7 @@ ld	{
 	orca103	 1;
 	orca104	 1;
 	orca107	 1; 
-	orca901	 1; 
+	session  1;
 	api21	 1; 
 	api01r	 1; 
 	api01rv2 1; 
@@ -86,7 +86,4 @@ bd	{
 };
 db      {
 #include	<./orcadbs.inc>
-};
-db_group "push" {
- type    "PushEvent";
 };
