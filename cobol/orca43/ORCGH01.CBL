@@ -102,6 +102,7 @@
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       *  04.07.02    NACL-藤原    12/11/19  主科情報の取得方法変更
+      *  04.07.03    NACL-藤原    13/02/07  労災レセ電対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -580,11 +581,17 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                                        =   SPACE
                MOVE    "1"             TO  SYS-200501-RECEDEN-DISASTER
            END-IF
+           IF     SYS-200501-ROURECEKBN
+                                       =   SPACE
+               MOVE    "0"             TO  SYS-200501-ROURECEKBN
+           END-IF
            MOVE    SYS-200501-KOUIKIRECEKBN
                                        TO  SPA-NAI-200501-KOUIKIRECEKBN
            MOVE    SYS-200501-RECEDEN-DISASTER
                                        TO
                                        SPA-NAI-200501-RECEDEN-DISASTER
+           MOVE    SYS-200501-ROURECEKBN
+                                       TO  SPA-NAI-200501-ROURECEKBN
       *
       *    レセプト編集区分情報（主科情報）
            MOVE    SPACE               TO  SYS-2009-REC
@@ -2229,11 +2236,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *    レセ電データ存在チェック
            MOVE    ZERO                TO  SPA-H01NAI-RECEDEN-MSG
-      *    特別療養費、労災、公害未確定分をレセ電データに記録しないとき
-           IF    ( RECE10-RECESYUBETU  =   "6666"              )
-           OR    ( RECE10-TEISYUTUSAKI =   "5" OR  "3" OR  "4" )
+      *    特別療養費、公害、自賠責はレセ電データに記録しない
+           IF    ( RECE10-RECESYUBETU  =   "6666"      )
+           OR    ( RECE10-TEISYUTUSAKI =   "5" OR  "4" )
                CONTINUE
            ELSE
+      *      労災でアフターケア、公務災害はレセ電データに記録しない
+             IF    ( RECE10-TEISYUTUSAKI =   "3"         )
+             AND   ( RECE10-HKNKBN       =   "3" OR  "5" )
+               CONTINUE
+             ELSE
       *        未確定分をレセ電データに記録しないとき
                IF    (  SPA-NAI-200501-RECEDEN-DISASTER
                                            =   "0"              )
@@ -2280,9 +2292,22 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                    =   "1" OR  "3"
                                MOVE    1   TO  SPA-H01NAI-RECEDEN-MSG
                            END-IF
+                       WHEN    "3"             ALSO    "1"
+                           IF    ( SPA-NAI-200501-ROURECEKBN
+                                                   =   "2" OR  "3" )
+                           AND   ( RECE10-SRYYM    >=  "201307"    )
+                               MOVE    1   TO  SPA-H01NAI-RECEDEN-MSG
+                           END-IF
+                       WHEN    "3"             ALSO    "2"
+                           IF    ( SPA-NAI-200501-ROURECEKBN
+                                                   =   "1" OR  "3" )
+                           AND   ( RECE10-SRYYM    >=  "201307"    )
+                               MOVE    1   TO  SPA-H01NAI-RECEDEN-MSG
+                           END-IF
                      END-EVALUATE
                    END-IF 
                END-IF
+             END-IF 
            END-IF
       *
            MOVE    "1"                 TO  SPA-HENFLG

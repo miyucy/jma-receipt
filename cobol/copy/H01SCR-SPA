@@ -55,6 +55,7 @@
       *                                     receipt_kbn ÄÉ²Ã 
       *
       *  04.07.01    NACL-Æ£¸¶    11/09/02  Ï«ºÒÀÁµá½ñºîÀ®ÂÐ±þ
+      *  04.07.02    NACL-Æ£¸¶    13/02/07  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
       *****************************************************************
        01  SPA-H01FREE.
          02  SPA-H01FREE-AREA.
@@ -205,6 +206,7 @@
                05  SPA-NAI-2005-SYARECEKBN     PIC X(01).
                05  SPA-NAI-200501-KOUIKIRECEKBN
                                                PIC X(01).
+               05  SPA-NAI-200501-ROURECEKBN   PIC X(01).
                05  SPA-NAI-200501-RECEDEN-DISASTER
                                                PIC X(01).
       *
