@@ -3509,7 +3509,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                    MOVE    "1003"          TO  SPA-ERRCD
                    GO  TO  4801-DBDELETE-SYORI-EXT
                END-IF
-      *
       *        レセ電削除
                INITIALIZE                  RECEDEN-REC
                MOVE    SPA-HOSPNUM     TO  RECEDEN-HOSPNUM
@@ -3517,9 +3516,68 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                MOVE    WRK-ACCT-NYUGAIKBN
                                        TO  RECEDEN-NYUGAIKBN
                MOVE    WRK-ACCT-PTID   TO  RECEDEN-PTID
+               MOVE    1               TO  RECEDEN-TEISYUTUSAKI
                MOVE    RECEDEN-REC     TO  MCPDATA-REC
                MOVE    "tbl_receden"   TO  MCP-TABLE
-               MOVE    "del2"          TO  MCP-PATHNAME
+               MOVE    "del4"          TO  MCP-PATHNAME
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC      NOT =   ZERO
+                   DISPLAY "RECEDEN KEY=" RECEDEN-KEY
+                   MOVE    "1004"          TO  SPA-ERRCD
+                   GO  TO  4801-DBDELETE-SYORI-EXT
+               END-IF
+      *
+               INITIALIZE                  RECEDEN-REC
+               MOVE    SPA-HOSPNUM     TO  RECEDEN-HOSPNUM
+               MOVE    WRK-ACCT-SRYYM  TO  RECEDEN-SRYYM
+               MOVE    WRK-ACCT-NYUGAIKBN
+                                       TO  RECEDEN-NYUGAIKBN
+               MOVE    WRK-ACCT-PTID   TO  RECEDEN-PTID
+               MOVE    2               TO  RECEDEN-TEISYUTUSAKI
+               MOVE    RECEDEN-REC     TO  MCPDATA-REC
+               MOVE    "tbl_receden"   TO  MCP-TABLE
+               MOVE    "del4"          TO  MCP-PATHNAME
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC      NOT =   ZERO
+                   DISPLAY "RECEDEN KEY=" RECEDEN-KEY
+                   MOVE    "1004"          TO  SPA-ERRCD
+                   GO  TO  4801-DBDELETE-SYORI-EXT
+               END-IF
+      *
+               INITIALIZE                  RECEDEN-REC
+               MOVE    SPA-HOSPNUM     TO  RECEDEN-HOSPNUM
+               MOVE    WRK-ACCT-SRYYM  TO  RECEDEN-SRYYM
+               MOVE    WRK-ACCT-NYUGAIKBN
+                                       TO  RECEDEN-NYUGAIKBN
+               MOVE    WRK-ACCT-PTID   TO  RECEDEN-PTID
+               MOVE    6               TO  RECEDEN-TEISYUTUSAKI
+               MOVE    RECEDEN-REC     TO  MCPDATA-REC
+               MOVE    "tbl_receden"   TO  MCP-TABLE
+               MOVE    "del4"          TO  MCP-PATHNAME
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC      NOT =   ZERO
+                   DISPLAY "RECEDEN KEY=" RECEDEN-KEY
+                   MOVE    "1004"          TO  SPA-ERRCD
+                   GO  TO  4801-DBDELETE-SYORI-EXT
+               END-IF
+           END-IF     
+      *
+           IF    ( SPA-R01-RECEKBN     =   "3"      )
+           AND   ( WRK-ACCT-SRYYM      >=  "201307" )
+      *        レセ電削除
+               INITIALIZE                  RECEDEN-REC
+               MOVE    SPA-HOSPNUM     TO  RECEDEN-HOSPNUM
+               MOVE    WRK-ACCT-SRYYM  TO  RECEDEN-SRYYM
+               MOVE    WRK-ACCT-NYUGAIKBN
+                                       TO  RECEDEN-NYUGAIKBN
+               MOVE    WRK-ACCT-PTID   TO  RECEDEN-PTID
+               MOVE    3               TO  RECEDEN-TEISYUTUSAKI
+               MOVE    RECEDEN-REC     TO  MCPDATA-REC
+               MOVE    "tbl_receden"   TO  MCP-TABLE
+               MOVE    "del4"          TO  MCP-PATHNAME
                MOVE    "DBDELETE"      TO  MCP-FUNC
                PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC      NOT =   ZERO
