@@ -7338,6 +7338,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          UNTIL   SYUKEI-IDX3   >   31
                  MOVE  LNK-NYULIFE-KBN(SYUKEI-IDX3)
                                   TO  WRK-NYULIFE-KBN(SYUKEI-IDX3)
+                 IF  ((RECE82-HKNKBN      =   "4") AND
+                      (RECE82-JIBAIKBN    =   "2"))
+                 OR  ((RECE82-HKNKBN      =   "5") AND
+                      (RECE82-KOMUKBN     =   "2"))
+                    CONTINUE
+                 ELSE
+                    MOVE  SPACE   TO  WRK-NYULIFE-KBN(SYUKEI-IDX3)
+                 END-IF
                END-PERFORM
              END-IF
            END-IF

@@ -20285,6 +20285,10 @@
                                 TO  WK-NYULIFE-SKJFTN-MONEY(NYULIFE-IDX)
                  MOVE  LNK-NYULIFE-KANFTN-MONEY(NYULIFE-IDX)
                                 TO  WK-NYULIFE-KANFTN-MONEY(NYULIFE-IDX)
+                 IF   (LNK-SYU-SYUHKNNUM   =  "971" OR "973")
+                 AND  (FLG-KENPOJYUNKYO    =  ZERO          )
+                   MOVE  SPACE  TO  WK-NYULIFE-KBN(NYULIFE-IDX)
+                 END-IF
                END-PERFORM
              END-IF
            END-IF
