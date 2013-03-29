@@ -1613,7 +1613,7 @@
       *****************************************************************
        4103-RSIIRYOCDN-CHK-SEC       SECTION.
       *
-      *    È¾³Ñ¥Á¥§¥Ã¥¯
+      *    Á´³Ñ¥Á¥§¥Ã¥¯
            IF    ( SPA-GMN-RSIIRYOCDN      NOT =   SPACE )
       *
                INITIALIZE                  ORCSKANACHKAREA
@@ -1621,25 +1621,6 @@
                MOVE    SPA-GMN-RSIIRYOCDN  TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
                MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-RSIIRYOCDN
-      *
-               IF    ( SPA-GMN-RSIIRYOCDN (15 :)   NOT =   SPACE )
-                   MOVE    "0004"          TO  SPA-ERRCD
-                   MOVE    2               TO  SPA-GMN-CUR
-               END-IF
-      *
-               PERFORM VARYING IDXP    FROM    1   BY  2
-                       UNTIL ( IDXP    >   13 )
-                        OR   ( SPA-ERRCD   NOT =   SPACE )
-      *
-                   IF    ( SPA-GMN-RSIIRYOCDN (IDXP : 2)  >=  "£°" )
-                    AND  ( SPA-GMN-RSIIRYOCDN (IDXP : 2)  <=  "£¹" )
-                       CONTINUE
-                   ELSE
-                       MOVE    "0004"      TO  SPA-ERRCD
-                       MOVE    2           TO  SPA-GMN-CUR
-                   END-IF
-      *
-               END-PERFORM
       *
            END-IF
       *
@@ -2998,6 +2979,32 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    IF      SPA-ERRCD            =   SPACE
       *        MOVE    WRK-GMN-CUR          TO  SPA-GMN-CUR
       *****END-IF             
+      *
+      *
+           IF    ( SPA-ERRCD               =   SPACE )
+      *
+               IF    ( SPA-GMN-RSIIRYOKBN  =   "1" )
+                   IF    ( SPA-GMN-RSIIRYOCDN (15 :)   NOT =   SPACE )
+                       MOVE    "0004"      TO  SPA-ERRCD
+                       MOVE    2           TO  SPA-GMN-CUR
+                   END-IF
+      *
+                   PERFORM VARYING IDXP    FROM    1   BY  2
+                           UNTIL ( IDXP    >   13 )
+                            OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+                       IF    ( SPA-GMN-RSIIRYOCDN (IDXP : 2)  >=  "£°" )
+                        AND  ( SPA-GMN-RSIIRYOCDN (IDXP : 2)  <=  "£¹" )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0004"      TO  SPA-ERRCD
+                           MOVE    2           TO  SPA-GMN-CUR
+                       END-IF
+      *
+                   END-PERFORM
+               END-IF
+           END-IF
+      *
            .
        4900-KANRENCHK-EXT.
            EXIT.
