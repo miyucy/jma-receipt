@@ -59,7 +59,7 @@ fi
     RECEFILE2="RECEDEN"
 
     if  [ ${21} -eq '2' ]; then
-	RECEFILE1="TENKENRC"
+	RECEFILE1="TENC"
 	RECEFILE2="TENKENT"
 	echo "file name change!" >>$LOG_FILE
     fi
@@ -68,22 +68,25 @@ fi
     rm  ${13}${20}${RECEFILE1}*.UKE
     rm  /tmp/${20}${RECEFILE2}*.txt
 
-    OUT_FOLDER="/tmp/Rousai_"
-    rm -fr ${OUT_FOLDER}*
-
+    rm -fr "/tmp/${20}Rousai_"*
+    rm -fr "/tmp/${20}TRousai_"*
 
 
 #   レセ電ファイル作成
-
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM700 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${13},${14},${15},${19},${17},$fixedsize,${21},${20},${16} >> $LOG_FILE 2>&1
     if  [ -e ${16} ]; then
         echo "--- BM700 err file exist ---" >> $LOG_FILE 2>&1
         exit 
     fi
 
-    ROUSAI_FOLDER="${20}Rousai_${5}"
+    if  [ ${21} -eq '2' ]; then
+        ROUSAI_FOLDER="${20}TRousai_${5}"
+    else
+        ROUSAI_FOLDER="${20}Rousai_${5}"
+    fi
     OUT_FOLDER="/tmp/$ROUSAI_FOLDER/"
-#
+
+
 #   一時フォルダ作成
     if ( [ ${17} -eq '3' ]|| [ ${17} -eq '4' ] ) && [ ${24} -eq '0' ]; then
         echo "--- not out holder  ---" >>$LOG_FILE
@@ -158,6 +161,7 @@ fi
         cd  /tmp/
 #       chmod -R g+r ${OUT_FOLDER}*
         echo "--- zip name [" ${ROUSAI_FOLDER}.zip "]" >>$LOG_FILE
+        rm  ${ROUSAI_FOLDER}.zip
         zip -r ${ROUSAI_FOLDER}.zip ${ROUSAI_FOLDER}/
 	RC=$?
         echo "--- zip end   ---[" $RC  "]" >>$LOG_FILE
@@ -173,8 +177,9 @@ fi
     if  [ ${17} -eq '6' ]; then
         echo "--- iso start ---" >>$LOG_FILE
         DIR=`mktemp -d`
-        cp ${OUT_FOLDER}${RECEFILE1}*.UKE ${DIR}/
-        mkisofs --input-charset cp437 -o ${13}${20}${RECEFILE1}.iso ${DIR}/
+        cp ${OUT_FOLDER}${RECEFILE1}*.UKE ${DIR}/*
+        echo "--- iso name [" ${13}${ROUSAI_FOLDER}.iso "]" >>$LOG_FILE
+        mkisofs --input-charset cp437 -o ${13}${ROUSAI_FOLDER}.iso ${DIR}/
 	RC=$?
         echo "--- iso end   ---[" $RC  "]" >>$LOG_FILE
 	if  [ $RC -ne '0' ]; then

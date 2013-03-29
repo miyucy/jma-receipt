@@ -1493,26 +1493,42 @@
                    END-STRING
                ELSE
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "rousai_TENKENRC.zip"
-                                               DELIMITED  BY  SIZE
+                           "TRousai_"          DELIMITED  BY  SIZE
+                           LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
+                           ".zip"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
                    END-STRING
-                   MOVE    "rousai_TENKENRC.zip"
-                                               TO  SFILESV-TO-DATA  (1)
+                   STRING  "TRousai_"           DELIMITED  BY  SIZE
+                           LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
+                           ".zip"              DELIMITED  BY  SIZE
+                                               INTO  SFILESV-TO-DATA (1)
+                   END-STRING
                END-IF
            ELSE
                IF      WRK-PARA-PRTKBN     =   "1"
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "RREC.iso"      DELIMITED  BY  SIZE
+                           "Rousai_"           DELIMITED  BY  SIZE
+                           LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
+                           ".iso"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
                    END-STRING
-                   MOVE    "RREC.iso"      TO  SFILESV-TO-DATA  (1)
+                   STRING  "Rousai_"           DELIMITED  BY  SIZE
+                           LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
+                           ".iso"              DELIMITED  BY  SIZE
+                                               INTO  SFILESV-TO-DATA (1)
+                   END-STRING
                ELSE
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "TENKENRC.iso"      DELIMITED  BY  SIZE
+                           "TRousai_"          DELIMITED  BY  SIZE
+                           LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
+                           ".iso"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
                    END-STRING
-                   MOVE    "TENKENRC.iso"  TO  SFILESV-TO-DATA  (1)
+                   STRING  "TRousai_"          DELIMITED  BY  SIZE
+                           LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
+                           ".iso"              DELIMITED  BY  SIZE
+                                               INTO  SFILESV-TO-DATA (1)
+                   END-STRING
                END-IF
            END-IF
            MOVE    CNT-OUT         TO  SFILESV-CNT-ALL  (1)
