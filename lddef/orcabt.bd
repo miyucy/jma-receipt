@@ -1,7 +1,18 @@
 name	orcabt;
 
 arraysize	20;
-textsize	512;
+textsize	400;
+
+handler "RubyExec" {
+        class "Exec";
+        serialize "CGI";
+        start "/usr/bin/ruby -Ke %p/%m.rb %a";
+        locale "euc-jp";
+};
+
+
+bind	"Sysbase"		    "RubyExec";
+bind	"receden_check_start"	"RubyExec";
 
 bind    "ORCVTPTINF"    	"OpenCOBOL";
 bind    "ORCVTPTHKNINF" 	"OpenCOBOL";
@@ -267,88 +278,9 @@ bind    "ORCBS02"       "OpenCOBOL";
 bind    "ORHCML13"      "OpenCOBOL";
 bind    "ORCBM560"      "OpenCOBOL";
 bind	"ORCBI202"	"OpenCOBOL";
-bind    "ORCR0550"      "OpenCOBOL";
-bind    "ORCR0551"      "OpenCOBOL";
-bind    "ORCR0552"      "OpenCOBOL";
-bind    "ORCR0555"      "OpenCOBOL";
-bind    "ORCR0980"      "OpenCOBOL";
-bind    "ORCR0981"      "OpenCOBOL";
-bind    "ORCR0982"      "OpenCOBOL";
-bind    "ORCR0985"      "OpenCOBOL";
-bind    "ORCBM700"      "OpenCOBOL";
-bind    "ORCBMNOTE"      "OpenCOBOL";
-bind    "ORCBDELMNOTE"      "OpenCOBOL";
-bind    "ORCBM570"      "OpenCOBOL";
-bind    "ORCBM710"      "OpenCOBOL";
-bind    "ORCR0469"      "OpenCOBOL";
-bind    "ORCR0937"      "OpenCOBOL";
-bind    "ORCR0461"      "OpenCOBOL";
-bind    "ORCR0911"      "OpenCOBOL";
-bind    "ORCR0510"      "OpenCOBOL";
-bind    "ORCBM580"      "OpenCOBOL";
-bind    "ORCBM590"      "OpenCOBOL";
-bind    "ORCBMRCSV"     "OpenCOBOL";
-bind    "ORCR0967"      "OpenCOBOL";
-bind    "ORCBM720"      "OpenCOBOL";
-bind	"ORCBX03"		"OpenCOBOL";
-bind    "ORCRDPC10"     "OpenCOBOL";
-bind    "ORCRDPC20"     "OpenCOBOL";
-bind    "ORCBM610"      "OpenCOBOL";
-bind    "ORCBCLPRT"      "OpenCOBOL";
-bind    "ORCBNOMIMISV"  "OpenCOBOL";
-bind    "ORCBAUTH"      "OpenCOBOL";
-bind    "ORCBDASCONF"   "OpenCOBOL";
-bind    "ORCBM043"      "OpenCOBOL";
-bind    "ORCBM620"      "OpenCOBOL";
-bind    "ORCL0040"      "OpenCOBOL";
-bind    "ORCL0050"      "OpenCOBOL";
-bind	"ORCBI203"	    "OpenCOBOL";
-bind	"ORCBSETSYSBASE"	"OpenCOBOL";
-bind	"ORCBM400"	"OpenCOBOL";
-bind	"ORCBAPIFMTERM"	"OpenCOBOL";
-bind	"ORAPI052BR1V3"	"OpenCOBOL";
-bind	"ORAPI052BR2V3"	"OpenCOBOL";
-bind    "ORCBBLOBIMPORT"    "OpenCOBOL";
-bind	"ORAPI052BR3V3"	"OpenCOBOL";
-bind	"ORCBUPMAIN"	"OpenCOBOL";
-bind	"ORAPI052BR4V3"	"OpenCOBOL";
-bind	"ORAPI052BR5V3"	"OpenCOBOL";
-bind	"ORCBDELTEMPDIR"	"OpenCOBOL";
-bind	"ORCBJOBCHK1"	"OpenCOBOL";
-bind	"ORAPI052BR7V3"	"OpenCOBOL";
-bind	"ORCBM501"	"OpenCOBOL";
-bind	"ORCBM701"	"OpenCOBOL";
-bind	"ORAPI052BR8V3"	"OpenCOBOL";
-bind	"ORCBPUSH"	"OpenCOBOL";
-bind	"ORCBFILEMIS"	"OpenCOBOL";
-bind	"ORCBMRCSV10B"	"OpenCOBOL";
-
-db "xml2" {
- fm_payment_certificate;
- fm_invoice_receipt_h;
- xml_stock1;
- xml_disease_masterlst;
- xml_medication_masterlst;
- xml_patient_basis_all;
- xml_patient_disease_all;
- xml_patient_medical_all;
- xml_address_masterlst;
-};
-
-db "monblob" {
- monblob;
-};
 
 #include "orcadb.inc"
 db "shell" {
         shell;
-};
-db      "blob_body" {
-         blob;
-};
-db "push" {
-        push_find;
-        push_print001;
-        push_batch01;
 };
 
