@@ -436,10 +436,10 @@
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBRSICHG"        TO  JOB-PGID
-           MOVE    "汐阂壳闻コ〖ド恃构リスト磅湖"
+           MOVE    "汐阂壳闻コ〖ド恃构办枉山"
                                        TO  JOB-SHELLMSG
            IF      WRK-PARA-SYORIKBN   =   "9"
-               MOVE    "汐阂壳闻コ〖ド掐蜗ＣＤ猴近借妄"
+               MOVE    "汐阂掐蜗ＣＤ猴近借妄"
                                        TO  JOB-SHELLMSG
            END-IF
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
@@ -1363,10 +1363,10 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCPOM2.red"        TO  SPRT-PRTID
-           MOVE    "汐阂壳闻コ〖ド恃构リスト办枉山"
+           MOVE    "汐阂壳闻コ〖ド恃构办枉山"
                                        TO  SPRT-TITLE
            IF      WRK-PARA-SYORIKBN   =   "9"
-               MOVE    "汐阂壳闻コ〖ド掐蜗ＣＤ猴近リスト办枉"
+               MOVE    "汐阂壳闻コ〖ド掐蜗ＣＤ猴近办枉山"
                                        TO  SPRT-TITLE
            END-IF
            MOVE    HCPOM2              TO  SPRT-PRTDATA
