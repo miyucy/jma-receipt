@@ -154,7 +154,7 @@
       *    見出し
        01  HEAD-01.
            03  FILLER                  PIC X(02)   VALUE   SPACE.
-           03  H01-MIDASI              PIC X(64).
+           03  H01-MIDASI              PIC X(68).
            03  FILLER                  PIC X(03)   VALUE   SPACE.
            03  FILLER                  PIC X(08)   VALUE   "作成日：".
            03  H01-YY                  PIC 9(04).
@@ -276,8 +276,8 @@
        01  COMS-MID3.
            03  FILLER                  PIC X(06)   VALUE
                "＊＊　".
-           03  FILLER                  PIC X(52)   VALUE
-               "労災マスタ（診療コード変更分）の特定器材商品名リスト".
+           03  FILLER                  PIC X(56)   VALUE
+           "労災マスタ（診療コード変更分）の特定器材商品名登録リスト".
            03  FILLER                  PIC X(06)   VALUE
                "　＊＊".
       *
