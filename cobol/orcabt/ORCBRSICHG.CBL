@@ -260,32 +260,32 @@
        01  COMS-MID1.
            03  FILLER                  PIC X(06)   VALUE
                "＊＊　".
-           03  FILLER                  PIC X(50)   VALUE
-               "労災マスタ（診療コード変更分）の入力ＣＤ登録リスト".
+           03  FILLER                  PIC X(36)   VALUE
+               "労災コード変更分の入力ＣＤ登録リスト".
            03  FILLER                  PIC X(06)   VALUE
                "　＊＊".
       *
        01  COMS-MID2.
            03  FILLER                  PIC X(06)   VALUE
                "＊＊　".
-           03  FILLER                  PIC X(48)   VALUE
-               "労災マスタ（診療コード変更分）のセット登録リスト".
+           03  FILLER                  PIC X(34)   VALUE
+               "労災コード変更分のセット登録リスト".
            03  FILLER                  PIC X(06)   VALUE
                "　＊＊".
       *
        01  COMS-MID3.
            03  FILLER                  PIC X(06)   VALUE
                "＊＊　".
-           03  FILLER                  PIC X(56)   VALUE
-           "労災マスタ（診療コード変更分）の特定器材商品名登録リスト".
+           03  FILLER                  PIC X(42)   VALUE
+              "労災コード変更分の特定器材商品名登録リスト".
            03  FILLER                  PIC X(06)   VALUE
                "　＊＊".
       *
        01  COMS-MID4.
            03  FILLER                  PIC X(06)   VALUE
                "＊＊　".
-           03  FILLER                  PIC X(50)   VALUE
-               "労災マスタ（診療コード変更分）の入力ＣＤ削除リスト".
+           03  FILLER                  PIC X(36)   VALUE
+               "労災コード変更分の入力ＣＤ削除リスト".
            03  FILLER                  PIC X(06)   VALUE
                "　＊＊".
       *
@@ -436,7 +436,7 @@
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBRSICHG"        TO  JOB-PGID
-           MOVE    "労災診療コード変更一覧表"
+           MOVE    "労災コード変更一覧表"
                                        TO  JOB-SHELLMSG
            IF      WRK-PARA-SYORIKBN   =   "9"
                MOVE    "労災入力ＣＤ削除処理"
@@ -1363,10 +1363,10 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCPOM2.red"        TO  SPRT-PRTID
-           MOVE    "労災診療コード変更一覧表"
+           MOVE    "労災コード変更分一覧表"
                                        TO  SPRT-TITLE
            IF      WRK-PARA-SYORIKBN   =   "9"
-               MOVE    "労災診療コード入力ＣＤ削除一覧表"
+               MOVE    "労災コード変更分入力ＣＤ削除一覧表"
                                        TO  SPRT-TITLE
            END-IF
            MOVE    HCPOM2              TO  SPRT-PRTDATA
