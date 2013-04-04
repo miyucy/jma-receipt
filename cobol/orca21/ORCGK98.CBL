@@ -1844,6 +1844,12 @@
                        MOVE    1               TO  FLG-CHK
                    END-IF
                END-IF
+      *        労災の外来管理加算（読替）は対象外（レセプト自動記載）
+               IF     (TNS-SRYCD(1:3)           =   "101" )
+               AND    (TNS-SRYKBN           NOT =   "12" )
+               AND    (TNS-GAIKANRIKBN          =   2    )
+                   MOVE    1               TO  FLG-CHK
+               END-IF
       *
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
@@ -1971,7 +1977,7 @@
                    MOVE    "key12s"             TO  WRK-PATH
                    MOVE    "100000000"          TO  TNS-SRYCD
                    MOVE    "109999999"          TO  TNSUP-SRYCD
-      *???         MOVE    "1"                  TO  SPA-K98-GMN-ALL
+      *H25.7       MOVE    "1"                  TO  SPA-K98-GMN-ALL
                WHEN    "U6"
       *            予約コード
                    MOVE    "key12s"             TO  WRK-PATH
