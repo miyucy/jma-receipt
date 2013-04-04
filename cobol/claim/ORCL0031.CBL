@@ -4137,20 +4137,30 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    WRK-PTID            TO  PTBYO-PTID
            MOVE    WRK-BYOYMD          TO  PTBYO-SRYYMD
-           IF      WRK-UTAGAIFLG-KETASU    =   ZERO
+           IF      FLG-BYOMEI-DELETE   =   1 
                MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
-               STRING  WRK-BYOMEI1 (1:80)  DELIMITED BY  SPACE
-                       "及翕中"            DELIMITED BY  SIZE  
-                                           INTO    PTBYO-XXBYOMEI
-               END-STRING
+                                               PTBYO-XXBYOMEI
            ELSE
-               MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
-               STRING  WRK-BYOMEI1 (1:WRK-UTAGAIFLG-KETASU - 1)
-                                           DELIMITED BY  SIZE
-                       WRK-BYOMEI1 (WRK-UTAGAIFLG-KETASU + 6:)
-                                           DELIMITED BY  SPACE
-                                           INTO    PTBYO-XXBYOMEI
-               END-STRING
+               IF      WRK-UTAGAIFLG-KETASU    =   ZERO
+                   MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+                   STRING  WRK-BYOMEI1 (1:80)  DELIMITED BY  SPACE
+                           "及翕中"            DELIMITED BY  SIZE  
+                                               INTO    PTBYO-XXBYOMEI
+                   END-STRING
+               ELSE
+                   IF      WRK-UTAGAIFLG-KETASU    =   1
+                       MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+                                                       PTBYO-XXBYOMEI
+                   ELSE
+                       MOVE    WRK-BYOMEI1 (1:80)  TO  PTBYO-BYOMEI
+                       STRING  WRK-BYOMEI1 (1:WRK-UTAGAIFLG-KETASU - 1)
+                                                   DELIMITED BY  SIZE
+                               WRK-BYOMEI1 (WRK-UTAGAIFLG-KETASU + 6:)
+                                                   DELIMITED BY  SPACE
+                                               INTO    PTBYO-XXBYOMEI
+                       END-STRING
+                   END-IF
+               END-IF
            END-IF
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
