@@ -3872,7 +3872,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      FLG-BYOMEI-DELETE   =   1
                MOVE    "1"                 TO  PTBYO-DLTFLG
-               MOVE    "claim"             to  PTBYO-DLT-OPID
+               MOVE    "claim"             TO  PTBYO-DLT-OPID
            ELSE
       *
       *    Å¾µ¢Æü
@@ -4536,6 +4536,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      FLG-BYOMEI-DELETE   =   1
                    IF    ( WRK-TENKIYMD    =   PTBYO-TENKIYMD  )
                    AND   ( WRK-UTAGAIFLG   =   PTBYO-UTAGAIFLG )
+                   AND   ( WRK-NYUGAIKBN   =   PTBYO-NYUGAIKBN )
                        CONTINUE
                    ELSE
                        GO  TO  900-PTBYO-READ-SEC
