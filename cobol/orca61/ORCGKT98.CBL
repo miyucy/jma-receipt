@@ -1804,6 +1804,12 @@
                        MOVE    1               TO  FLG-CHK
                    END-IF
                END-IF
+      *        労災の外来管理加算（読替）は対象外（レセプト自動記載）
+               IF     (TNS-SRYCD(1:3)           =   "101" )
+               AND    (TNS-SRYKBN           NOT =   "12" )
+               AND    (TNS-GAIKANRIKBN          =   2    )
+                   MOVE    1               TO  FLG-CHK
+               END-IF
       *
       *
                IF      FLG-CHK             =   ZERO
