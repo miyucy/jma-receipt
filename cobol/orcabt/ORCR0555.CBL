@@ -303,6 +303,9 @@
       *
            03  WRK-ACCTP-SYUTEN        PIC 9(07).
       *
+           03  WRK-CO-COMMENT          PIC X(76).
+           03  WRK-CO-SRYCD            PIC X(09).
+      *
       *    レセプトコメント編集
            03  WRK-COMMENT-G.
                05  WRK-COMMENT         PIC X(50)
@@ -1535,7 +1538,7 @@
            MOVE    "RR,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
       *    回数
-           MOVE    RECE41-KAISU-KSI    TO  WRK-NUM
+           MOVE    RECE41-RECEKAISU    TO  WRK-NUM
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    業務災害・通勤災害
@@ -3271,7 +3274,18 @@
                        MOVE    TBL-KOUI-NAME(IDX)  TO  WRK-DATA
                        MOVE    76                  TO  WRK-NAGASA
                        MOVE    1                   TO  WRK-END 
-                       PERFORM 5004-MOJI-HENSYU-SEC  
+                       PERFORM 5004-MOJI-HENSYU-SEC
+      *
+                       IF      TBL-KOUI-NAME(IDX) (77:)
+                                               NOT =   SPACE
+                           PERFORM 5001-FILE-WRITE-SEC
+      *
+                           MOVE    TBL-KOUI-SRYCD (IDX)
+                                                   TO  WRK-CO-SRYCD
+                           MOVE    TBL-KOUI-NAME  (IDX) (77:)
+                                                   TO  WRK-CO-COMMENT
+                           PERFORM 5010-CO-RECORD-NEXT-HENSYU-SEC
+                       END-IF
                    WHEN    OTHER
       *                関連コメント退避処理
                        IF      RECE44-SETCOMFLG   =   "1"
@@ -3579,6 +3593,17 @@
            MOVE    76                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC  
+      *
+           IF      TBL-COMMENT-NAME(IDX) (77:)
+                                   NOT =   SPACE
+               PERFORM 5001-FILE-WRITE-SEC
+      *
+               MOVE    TBL-COMMENT-SRYCD (IDX)
+                                           TO  WRK-CO-SRYCD
+               MOVE    TBL-COMMENT-NAME  (IDX) (77:)
+                                           TO  WRK-CO-COMMENT
+               PERFORM 5010-CO-RECORD-NEXT-HENSYU-SEC
+            END-IF
       *
             PERFORM 5001-FILE-WRITE-SEC
            .
@@ -4156,6 +4181,17 @@
                    MOVE    76                  TO  WRK-NAGASA
                    MOVE    1                   TO  WRK-END 
                    PERFORM 5004-MOJI-HENSYU-SEC  
+      *
+                   IF      WRK-RECE45-NAME (1) (77:)
+                                           NOT =   SPACE
+                       PERFORM 5001-FILE-WRITE-SEC
+      *
+                       MOVE    WRK-RECE45-SRYCD (1)
+                                                   TO  WRK-CO-SRYCD
+                       MOVE    WRK-RECE45-NAME  (1) (77:)
+                                                   TO  WRK-CO-COMMENT
+                       PERFORM 5010-CO-RECORD-NEXT-HENSYU-SEC
+                   END-IF
                WHEN    OTHER     
       *            関連コメント退避処理
                    IF      RECE44-SETCOMFLG   =   "1"
@@ -4522,6 +4558,17 @@
                MOVE    76                  TO  WRK-NAGASA
                MOVE    1                   TO  WRK-END 
                PERFORM 5004-MOJI-HENSYU-SEC
+      *
+               IF      TBL-RECE455-NAME (IDVV) (77:)
+                                       NOT =   SPACE
+                   PERFORM 5001-FILE-WRITE-SEC
+      *
+                   MOVE    TBL-RECE455-SRYCD (IDVV)
+                                               TO  WRK-CO-SRYCD
+                   MOVE    TBL-RECE455-NAME (IDVV) (77:)
+                                               TO  WRK-CO-COMMENT
+                   PERFORM 5010-CO-RECORD-NEXT-HENSYU-SEC
+               END-IF
       *
                PERFORM 5001-FILE-WRITE-SEC
            END-PERFORM
@@ -5309,11 +5356,37 @@
        5005-NUM-HENSYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    コメントレコード記録処理
+      *****************************************************************
+       5010-CO-RECORD-NEXT-HENSYU-SEC  SECTION.
+      *
+           MOVE    SPACE               TO  WRK-REC
+           MOVE    ZERO                TO  WRK-REC-LENGTH
+      *
+           MOVE    "CO,"               TO  WRK-REC
+           MOVE    3                   TO  WRK-REC-LENGTH
+      *    診療識別
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    負担区分
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード
+           MOVE    WRK-CO-SRYCD        TO  WRK-DATA
+           MOVE    9                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    文字データ
+           MOVE    WRK-CO-COMMENT      TO  WRK-DATA
+           MOVE    76                  TO  WRK-NAGASA
+           MOVE    1                   TO  WRK-END 
+           PERFORM 5004-MOJI-HENSYU-SEC
            .
+       5010-CO-RECORD-NEXT-HENSYU-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    システム管理マスタ読込
       *****************************************************************
-       910-SYSKANRI-INV-SEC         SECTION.
+       910-SYSKANRI-INV-SEC            SECTION.
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -5506,11 +5579,13 @@
                        PERFORM 500-FILE-ERR-ABORT-SEC
                    END-IF
       *
+      *            公務災害、アフターケア、種別不明のとき対象外
                    IF  (   RECE41-SRYYM        <   201307 )
                    OR  (   RECE41-PTNUM        =   SPACE  )
                    OR  (   RECE41-TSTPTNUMKBN  =   "1"    )
                    OR  (   RECE41-RECESYUBETU  =   ZERO
-                                               OR  7021   )
+                                               OR  7021
+                                               OR  7051   )
                    OR  ( ( RECE41-TOTALKIN     =   ZERO )
                            AND
                          ( RECE41-TOTALKIN2    =   ZERO ) )

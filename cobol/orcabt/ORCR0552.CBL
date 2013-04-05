@@ -395,10 +395,11 @@
                            PERFORM 500-FILE-ERR-ABORT-SEC
                        END-IF
       *
-      *                アフターケア、種別不明又は転帰区分:8(移行)のとき対象外
+      *                公務災害、アフターケア、種別不明又は転帰区分:8(移行)のとき対象外
                        IF    ( RECE43-SRYYM        <   201307 )
                        OR    ( RECE43-RECESYUBETU  =   ZERO
-                                                   OR  7021   )
+                                                   OR  7021
+                                                   OR  7051   )
                        OR    ( RECE43-TENKIKBN     =   "8"    )
                            CONTINUE
                        ELSE
@@ -409,7 +410,7 @@
                            ADD     1           TO  CNT-IN
                            MOVE    ZERO        TO  FLG-END
       *
-                           DISPLAY "RECE43  PTID=" RECE43-PTID
+                           DISPLAY "RECE43  PTNUM=" RECE43-PTNUM
                        END-IF
                END-READ
            END-PERFORM
