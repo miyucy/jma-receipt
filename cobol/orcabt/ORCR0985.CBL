@@ -251,7 +251,7 @@
            03  WRK-OPECOM-MCP-PATHNAME PIC X(64).
       *
            03  WRK-KIZAI-SRYCD         PIC X(09).
-      *     右ずめ編集用     
+      *     右づめ編集用     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
