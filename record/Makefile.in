@@ -410,7 +410,7 @@ RECORD_files = \
 	MDAS.rec \
 	MLOG.rec \
 	MINF.rec \
-	sessionend.rec \
+	session_end.rec \
 	M80.rec \
 	M80ERR.rec \
 	M80ID1.rec \

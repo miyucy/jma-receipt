@@ -1,11 +1,11 @@
-name    sessionend;
+name    session;
 
-bind	""		"OpenCOBOL"	"ORCGSESEND";
+bind	"session_end"		"OpenCOBOL"	"ORCGSESEND";
 
 data {
  spa orcaspa;
 	window {
-		sessionend;
+		session_end;
 	};
 };
 
