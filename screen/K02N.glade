@@ -52,7 +52,6 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <text_max_length>20</text_max_length>
         <text>12345678901234567890</text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -78,7 +77,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>50</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -94,7 +92,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>50</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -110,7 +107,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>2</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -126,7 +122,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>6</text_max_length>
         <text>100%</text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -142,7 +137,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>9</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -158,7 +152,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>6</text_max_length>
         <text>XXヶ月</text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -498,7 +491,6 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <text_max_length>14</text_max_length>
         <text></text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -524,7 +516,6 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <text_max_length>4</text_max_length>
         <text></text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -550,7 +541,6 @@
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <text_max_length>10</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -941,6 +931,18 @@
         </signal>
       </widget>
       <widget>
+        <class>GtkHSeparator</class>
+        <name>hseparator1</name>
+        <x>8</x>
+        <y>56</y>
+        <width>808</width>
+        <height>20</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+      </widget>
+      <widget>
         <class>GtkPandaCombo</class>
         <name>TABOOCOB</name>
         <x>444</x>
@@ -962,7 +964,6 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <text_max_length>62</text_max_length>
           <text>１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1356,7 +1357,6 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <text_max_length>22</text_max_length>
           <text></text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1394,7 +1394,6 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <text_max_length>16</text_max_length>
           <text></text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1432,7 +1431,6 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <text_max_length>65</text_max_length>
           <text></text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1495,7 +1493,6 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <text_max_length>22</text_max_length>
         <text></text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -1514,9 +1511,9 @@
         <class>GtkScrolledWindow</class>
         <name>scrolledwindow2</name>
         <x>4</x>
-        <y>86</y>
+        <y>76</y>
         <width>798</width>
-        <height>576</height>
+        <height>584</height>
         <visible>True</visible>
         <sensitive>True</sensitive>
         <can_focus>True</can_focus>
@@ -1537,106 +1534,12 @@
           <column_types>label,text,text,label</column_types>
           <column_titles>診区,入力コード,名称,数量・点数</column_titles>
           <column_widths>36,140,330,300</column_widths>
-          <im_controls>f,f,t,f</im_controls>
           <signal>
             <name>cell_edited</name>
             <handler>table_send_event</handler>
             <data>ACTIVATE</data>
           </signal>
         </widget>
-      </widget>
-      <widget>
-        <class>GtkButton</class>
-        <name>CTRLHOME</name>
-        <x>8</x>
-        <y>744</y>
-        <width>80</width>
-        <height>24</height>
-        <sensitive>True</sensitive>
-        <can_focus>False</can_focus>
-        <has_focus>False</has_focus>
-        <receives_default>True</receives_default>
-        <border_width>0</border_width>
-        <label>CTRL+Home</label>
-        <relief>GTK_RELIEF_NORMAL</relief>
-        <xalign>0.5</xalign>
-        <yalign>0.5</yalign>
-        <response_id>0</response_id>
-        <accelerator>
-          <modifiers>GDK_CONTROL_MASK</modifiers>
-          <key>GDK_Home</key>
-          <signal>clicked</signal>
-        </accelerator>
-        <signal>
-          <name>clicked</name>
-          <handler>send_event</handler>
-          <data>CLICKED</data>
-        </signal>
-      </widget>
-      <widget>
-        <class>GtkLabel</class>
-        <name>KOHMSG</name>
-        <x>168</x>
-        <y>63</y>
-        <width>410</width>
-        <height>20</height>
-        <visible>True</visible>
-        <sensitive>True</sensitive>
-        <can_focus>False</can_focus>
-        <has_focus>False</has_focus>
-        <xalign>0</xalign>
-        <yalign>0.5</yalign>
-        <xpad>0</xpad>
-        <ypad>0</ypad>
-        <label></label>
-        <justify>GTK_JUSTIFY_LEFT</justify>
-        <wrap>False</wrap>
-      </widget>
-      <widget>
-        <class>GtkButton</class>
-        <name>BSH2</name>
-        <x>958</x>
-        <y>60</y>
-        <width>64</width>
-        <height>24</height>
-        <sensitive>True</sensitive>
-        <can_focus>True</can_focus>
-        <has_focus>False</has_focus>
-        <border_width>0</border_width>
-        <label>メモ</label>
-        <relief>GTK_RELIEF_NORMAL</relief>
-        <xalign>0.5</xalign>
-        <yalign>0.5</yalign>
-        <response_id>0</response_id>
-        <accelerator>
-          <modifiers>GDK_CONTROL_MASK</modifiers>
-          <key>GDK_F10</key>
-          <signal>clicked</signal>
-        </accelerator>
-        <signal>
-          <name>clicked</name>
-          <handler>send_event</handler>
-          <data>CLICKED</data>
-        </signal>
-      </widget>
-      <widget>
-        <class>GtkLabel</class>
-        <name>MODE3</name>
-        <x>508</x>
-        <y>64</y>
-        <width>80</width>
-        <height>20</height>
-        <visible>True</visible>
-        <sensitive>True</sensitive>
-        <can_focus>False</can_focus>
-        <has_focus>False</has_focus>
-        <xalign>0</xalign>
-        <yalign>0.5</yalign>
-        <xpad>0</xpad>
-        <ypad>0</ypad>
-        <label></label>
-        <justify>GTK_JUSTIFY_LEFT</justify>
-        <wrap>False</wrap>
       </widget>
     </widget>
   </widget>
