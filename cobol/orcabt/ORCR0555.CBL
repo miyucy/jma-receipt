@@ -298,6 +298,11 @@
                05  FILLER              PIC X(06).
                05  WRK-RYOEDYMD-DD     PIC 9(02).
       *
+           03  WRK-SINRYO-MM.
+               05  WRK-SINRYO-MM2      PIC 9(02).
+           03  WRK-KYUGYO-MM.
+               05  WRK-KYUGYO-MM2      PIC 9(02).
+      *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
@@ -1592,38 +1597,83 @@
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    Œ≈Õ‹¥¸¥÷
-           IF      RECE41-RYOSTYMD     <   WRK-STYMD
-               MOVE    WRK-STYMD           TO  WRK-RYOSTYMD
-               MOVE    WRK-STYMD (7:2)     TO  IDX5
-           ELSE      
-               MOVE    RECE41-RYOSTYMD     TO  WRK-RYOSTYMD
-               MOVE    RECE41-RYOSTYMD (7:2)
-                                           TO  IDX5
-           END-IF    
-           IF      RECE41-RYOEDYMD     >   WRK-EDYMD
-               MOVE    WRK-EDYMD           TO  WRK-RYOEDYMD
-               MOVE    WRK-EDYMD (7:2)     TO  IDX6
-           ELSE      
-               MOVE    RECE41-RYOEDYMD     TO  WRK-RYOEDYMD
-               MOVE    RECE41-RYOEDYMD (7:2)
-                                           TO  IDX6
-           END-IF    
-           PERFORM VARYING IDX4    FROM    IDX5    BY  1
-                   UNTIL   IDX4    >       IDX6
-               IF    ( RECE41-NYUINBITBL(IDX4) =  SPACE )
-               OR    ( RECE41-JNISSUTBL (IDX4) =  "1"   )
-                   MOVE    IDX4                TO  WRK-RYOSTYMD-DD
-                   MOVE    IDX6                TO  IDX4
+           IF      RECE41-JNISSU       =   999
+               IF    ( RECE41-KYUGYOFLG    =   SPACE )
+               OR    ( RECE41-KYUGYO-PRTKBN
+                                           =   "2"   )
+                   MOVE    RECE41-RYOSTYMD     TO  WRK-RYOSTYMD
+                                                   WRK-RYOEDYMD
+               ELSE
+                   MOVE    RECE41-RYOSTYMD     TO  WRK-RYOSTYMD
+      *
+                   IF    ( RECE41-KYUGYO-END
+                                           NOT NUMERIC    )
+                   OR    ( RECE41-KYUGYO-END   =   "0000" )
+                       MOVE    RECE41-RYOSTYMD     TO  WRK-RYOSTYMD
+                                                       WRK-RYOEDYMD
+                   ELSE
+                       MOVE    RECE41-SRYYM(5:2)   TO  WRK-SINRYO-MM
+                       MOVE    RECE41-KYUGYO-END(1:2)
+                                                   TO  WRK-KYUGYO-MM
+                       IF    WRK-KYUGYO-MM2    <=  WRK-SINRYO-MM2
+                           MOVE   RECE41-SRYYM (1:4)
+                                                   TO  WRK-RYOEDYMD(1:4)
+                           MOVE   RECE41-KYUGYO-END
+                                                   TO  WRK-RYOEDYMD(5:4)
+                       ELSE
+                           INITIALIZE                  STS-AREA-DAY
+                           INITIALIZE                  LNK-DAY6-AREA
+                           MOVE    "61"            TO  LNK-DAY6-IRAI
+                           MOVE    RECE41-SRYYM    TO  
+                                                   LNK-DAY6-KIJUN (1:6)
+                           MOVE    "01"            TO
+                                                   LNK-DAY6-KIJUN (7:2)
+                           MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
+                           MOVE    -12             TO  LNK-DAY6-ZOGEN
+                           CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                           LNK-DAY6-AREA
+                           MOVE    LNK-DAY6-KEISAN(1:4)
+                                                   TO  WRK-RYOEDYMD(1:4)
+                           MOVE    RECE41-KYUGYO-END
+                                                   TO  WRK-RYOEDYMD(5:4)
+                       END-IF
+                   END-IF
                END-IF
-           END-PERFORM
-           PERFORM VARYING IDX4    FROM    IDX6    BY  -1
-                   UNTIL   IDX4    <       IDX5
-               IF    ( RECE41-NYUINBITBL(IDX4) =   SPACE )
-               OR    ( RECE41-JNISSUTBL (IDX4) =   "1"   )
-                   MOVE    IDX4                TO  WRK-RYOEDYMD-DD
-                   MOVE    IDX5                TO  IDX4
-               END-IF
-           END-PERFORM
+           ELSE
+               IF      RECE41-RYOSTYMD     <   WRK-STYMD
+                   MOVE    WRK-STYMD           TO  WRK-RYOSTYMD
+                   MOVE    WRK-STYMD (7:2)     TO  IDX5
+               ELSE      
+                   MOVE    RECE41-RYOSTYMD     TO  WRK-RYOSTYMD
+                   MOVE    RECE41-RYOSTYMD (7:2)
+                                               TO  IDX5
+               END-IF    
+               IF      RECE41-RYOEDYMD     >   WRK-EDYMD
+                   MOVE    WRK-EDYMD           TO  WRK-RYOEDYMD
+                   MOVE    WRK-EDYMD (7:2)     TO  IDX6
+               ELSE      
+                   MOVE    RECE41-RYOEDYMD     TO  WRK-RYOEDYMD
+                   MOVE    RECE41-RYOEDYMD (7:2)
+                                               TO  IDX6
+               END-IF    
+               PERFORM VARYING IDX4    FROM    IDX5    BY  1
+                       UNTIL   IDX4    >       IDX6
+                   IF    ( RECE41-NYUINBITBL(IDX4) =  SPACE )
+                   OR    ( RECE41-JNISSUTBL (IDX4) =  "1"   )
+                       MOVE    IDX4                TO  WRK-RYOSTYMD-DD
+                       MOVE    IDX6                TO  IDX4
+                   END-IF
+               END-PERFORM
+               PERFORM VARYING IDX4    FROM    IDX6    BY  -1
+                       UNTIL   IDX4    <       IDX5
+                   IF    ( RECE41-NYUINBITBL(IDX4) =   SPACE )
+                   OR    ( RECE41-JNISSUTBL (IDX4) =   "1"   )
+                       MOVE    IDX4                TO  WRK-RYOEDYMD-DD
+                       MOVE    IDX5                TO  IDX4
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
       *    Œ≈Õ‹¥¸¥÷°›ΩÈ∆¸
            MOVE    WRK-RYOSTYMD        TO  WRK-SYMD
            PERFORM 5002-HIZUKE-HEN-SEC
