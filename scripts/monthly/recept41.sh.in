@@ -176,10 +176,9 @@ fi
 #   ＣＤ−Ｒ出力のときisoファイル作成
     if  [ ${17} -eq '6' ]; then
         echo "--- iso start ---" >>$LOG_FILE
-        DIR=`mktemp -d`
-        cp ${OUT_FOLDER}${RECEFILE1}*.UKE ${DIR}/*
+        cd  /tmp/
         echo "--- iso name [" ${13}${ROUSAI_FOLDER}.iso "]" >>$LOG_FILE
-        mkisofs --input-charset cp437 -l -o ${13}${ROUSAI_FOLDER}.iso ${DIR}/
+        mkisofs --input-charset cp437 -l -o ${13}${ROUSAI_FOLDER}.iso ${ROUSAI_FOLDER}/
 	RC=$?
         echo "--- iso end   ---[" $RC  "]" >>$LOG_FILE
 	if  [ $RC -ne '0' ]; then
