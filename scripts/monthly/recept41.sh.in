@@ -179,7 +179,7 @@ fi
         DIR=`mktemp -d`
         cp ${OUT_FOLDER}${RECEFILE1}*.UKE ${DIR}/*
         echo "--- iso name [" ${13}${ROUSAI_FOLDER}.iso "]" >>$LOG_FILE
-        mkisofs --input-charset cp437 -o ${13}${ROUSAI_FOLDER}.iso ${DIR}/
+        mkisofs --input-charset cp437 -l -o ${13}${ROUSAI_FOLDER}.iso ${DIR}/
 	RC=$?
         echo "--- iso end   ---[" $RC  "]" >>$LOG_FILE
 	if  [ $RC -ne '0' ]; then
