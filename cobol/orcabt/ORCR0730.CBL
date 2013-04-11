@@ -1914,6 +1914,8 @@
                                     =   SPACE
                MOVE    ZERO             TO  SYS-200501-TENKIBYOMEI-KBN
            END-IF
+           DISPLAY "SYS-2005-TENKIHENKBN            ="
+                                    SYS-2005-TENKIHENKBN
            DISPLAY "SYS-200501-INSPECT-CHARACTER-KBN="
                                     SYS-200501-INSPECT-CHARACTER-KBN
                     " " WRK-PARA-PRTKBN

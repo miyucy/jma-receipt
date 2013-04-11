@@ -1807,6 +1807,8 @@
                                    =   SPACE
                MOVE    "0"             TO  SYS-2005-NYUTAIINREKI-KSIKBN
            END-IF
+           DISPLAY "SYS-2005-TENKIHENKBN            ="
+                                    SYS-2005-TENKIHENKBN
       *         
            MOVE    SPACE            TO  SYSKANRI-REC
            INITIALIZE                   SYSKANRI-REC
