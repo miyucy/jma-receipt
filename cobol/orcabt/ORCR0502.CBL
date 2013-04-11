@@ -30,6 +30,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-門脇    13/04/11  実日数９９９の療養期間編集修正
       *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
@@ -1315,7 +1316,7 @@
       *
                 IF      RECE41-KYUGYO-END   NOT   NUMERIC
                 OR      RECE41-KYUGYO-END   =  "0000"
-                  MOVE  SPACE               TO  HCM70-RYOEDYMD
+                  MOVE  WRK-HENYMD          TO  HCM70-RYOEDYMD
                 ELSE
                   MOVE  RECE41-SRYYM(5:2)   TO  WRK-SINRYO-MM
                   MOVE  RECE41-KYUGYO-END(1:2)
