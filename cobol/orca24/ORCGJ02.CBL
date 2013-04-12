@@ -8152,7 +8152,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
       *H25.4
-      *    レセ電移動データの一括削除
+      *    レセ電移行データの一括削除
            IF     (SPA-ERRCD           =   SPACE  )
               AND (SPA-JIDCD           =   SPACE  )
               AND (SPA-GMN-HHKNCOMBI   =   "9999" )
@@ -8650,6 +8650,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        430011-JYURRK-RENNUM-EXT.
            EXIT.
       *
+      *H25.4
       *****************************************************************
       *    レセ電移行データ削除
       *****************************************************************
