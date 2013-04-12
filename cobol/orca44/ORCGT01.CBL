@@ -354,8 +354,6 @@
            COPY  "CPMKPASS.INC".
       *
            COPY    "CPSHELLTBL.INC".
-      *     
-           COPY    "ORCA-SYSTEM".
       *
       *    プレビュー用情報
            COPY    "CPXC01LNK.INC".
@@ -507,6 +505,8 @@
       *    クライアント保存可否情報取得サブ
            COPY    "CPORCSCLIENTSV.INC".
       *
+      *    ユーザー情報取得
+           COPY    "CPORCSLDUSER.INC".
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -1774,21 +1774,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  SHELLTBL-ARG3         
            MOVE    RECEERR         TO  SHELLTBL-ARG4
       *ipアドレス取得
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "GETVALUE"      TO  MCP-FUNC
-           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           MOVE    10              TO  ORCA-SYSTEM-NUM
-           MOVE    "host"          TO  ORCA-SYSTEM-KEY (1)
-           MOVE    ORCA-SYSTEM     TO  MCPDATA-REC 
-           MOVE    "system"        TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           MOVE    ORCA-SYSTEM-VALUE (1)
-                                   TO  SHELLTBL-ARG5
+           PERFORM 900-SYSTEM-GET-SEC
+           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG5
            MOVE    SPA-T01-WRNO    TO  SHELLTBL-ARG6
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG7
            MOVE    SPA-GMN-PRTKBN  TO  SHELLTBL-ARG8
@@ -2381,21 +2368,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
                                    TO  SHELLTBL-ARG8
       *    ipアドレス取得
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "GETVALUE"      TO  MCP-FUNC
-           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           MOVE    10              TO  ORCA-SYSTEM-NUM
-           MOVE    "host"          TO  ORCA-SYSTEM-KEY (1)
-           MOVE    ORCA-SYSTEM     TO  MCPDATA-REC 
-           MOVE    "system"        TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           MOVE    ORCA-SYSTEM-VALUE (1)
-                                   TO  SHELLTBL-ARG9
+           PERFORM 900-SYSTEM-GET-SEC
+           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG9
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG10
            MOVE    WRK-CONS-JOB-SHELLID
@@ -5132,21 +5106,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            MOVE    RECEERR         TO  SHELLTBL-ARG16
            MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG17
       *ipアドレス取得
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "GETVALUE"      TO  MCP-FUNC
-           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           MOVE    10              TO  ORCA-SYSTEM-NUM
-           MOVE    "host"          TO  ORCA-SYSTEM-KEY (1)
-           MOVE    ORCA-SYSTEM     TO  MCPDATA-REC 
-           MOVE    "system"        TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           MOVE    ORCA-SYSTEM-VALUE (1)
-                                   TO  SHELLTBL-ARG18
+           PERFORM 900-SYSTEM-GET-SEC
+           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG18
            MOVE    SPA-GMN-NYUGAIKBN
                                    TO  SHELLTBL-ARG19
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
@@ -5379,21 +5340,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            MOVE    RECEERR         TO  SHELLTBL-ARG16
            MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG17
       *ipアドレス取得
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "GETVALUE"      TO  MCP-FUNC
-           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           MOVE    10              TO  ORCA-SYSTEM-NUM
-           MOVE    "host"          TO  ORCA-SYSTEM-KEY (1)
-           MOVE    ORCA-SYSTEM     TO  MCPDATA-REC 
-           MOVE    "system"        TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           MOVE    ORCA-SYSTEM-VALUE (1)
-                                   TO  SHELLTBL-ARG18
+           PERFORM 900-SYSTEM-GET-SEC
+           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG18
            MOVE    SPA-GMN-NYUGAIKBN
                                    TO  SHELLTBL-ARG19
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
@@ -7025,6 +6973,22 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        530-TID2SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ipアドレス取得
+      *****************************************************************
+       900-SYSTEM-GET-SEC          SECTION.
+      *
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    2               TO  SLDUSER-KBN
+           MOVE    MCP-TERM        TO  SLDUSER-ID
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
+      *
+           .
+       900-SYSTEM-GET-EXT.
            EXIT.
       *
       *****************************************************************

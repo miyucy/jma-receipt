@@ -82,8 +82,6 @@
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".
       *
-      *
-           COPY    "ORCA-SYSTEM".
            COPY    "MCPDATA.INC".
       **************************************************************************
       *
@@ -94,6 +92,9 @@
       *    印刷制御マスタ
        01  PRTCTRL-REC.
            COPY    "CPPRTCTRL.INC".
+      *
+      *    ユーザー情報取得
+           COPY    "CPORCSLDUSER.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -147,29 +148,12 @@
       *    端末種別取得処理
       *****************************************************************
        100-AGENTGET-SEC            SECTION.
-      *    AGENT 取得
-           INITIALIZE                      ORCA-SYSTEM
-           MOVE    "GETVALUE"          TO  MCP-FUNC
-           MOVE    MCP-TERM            TO  ORCA-SYSTEM-ID
-           MOVE    10                  TO  ORCA-SYSTEM-NUM
-           MOVE    "agent"             TO  ORCA-SYSTEM-KEY(1)
-           MOVE    ORCA-SYSTEM         TO  MCPDATA-REC
-           MOVE    "system"            TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL   "ORCDBMAIN"          USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
-           ELSE
-               INITIALIZE                      ORCA-SYSTEM
-           END-IF
       *
-           DISPLAY "ORCA-SYSTEM-VALUE(1)(1:9) = " 
-                      ORCA-SYSTEM-VALUE(1)(1:9)
+           PERFORM 900-SYSTEM-GET-SEC
       *
-           IF    ORCA-SYSTEM-VALUE(1)(1:9) = "glclient/"
+           DISPLAY "SLDUSER-AGENT(1)(1:9) = "   SLDUSER-AGENT(1)(1:9)
+      *
+           IF    SLDUSER-AGENT(1)(1:9)   = "glclient/"
                  MOVE  ".ps"           TO  WRK-FILE-TYPE
            ELSE
                  MOVE  ".pdf"          TO  WRK-FILE-TYPE
@@ -406,6 +390,22 @@
       *
            .
        1001-ONLINE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ipアドレス取得
+      *****************************************************************
+       900-SYSTEM-GET-SEC          SECTION.
+      *
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    2               TO  SLDUSER-KBN
+           MOVE    MCP-TERM        TO  SLDUSER-ID
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
+      *
+           .
+       900-SYSTEM-GET-EXT.
            EXIT.
       *
       *****************************************************************

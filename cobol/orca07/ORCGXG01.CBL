@@ -164,8 +164,8 @@
       *    ファイルデイレクトリ位置指定サブ
            COPY    "CPMKPASS.INC".
       *
-           COPY    "ORCA-SYSTEM".
-      *
+      *    ユーザー情報取得
+           COPY    "CPORCSLDUSER.INC".
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -556,50 +556,39 @@
            MOVE    SPA-NAI-XG02-TO-DATA
                                        TO  SHELLTBL-ARG8
       *    ipアドレス取得
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "GETVALUE"      TO  MCP-FUNC
-           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           MOVE    10              TO  ORCA-SYSTEM-NUM
-           MOVE    "host"          TO  ORCA-SYSTEM-KEY (1)
-           MOVE    ORCA-SYSTEM     TO  MCPDATA-REC 
-           MOVE    "system"        TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
+           PERFORM 900-SYSTEM-GET-SEC
+           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG9
+           MOVE    WRK-CONS-JOB-JOBID
+                                   TO  SHELLTBL-ARG10
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SHELLTBL-ARG11
+           MOVE    TOUKEICSVERR    TO  SHELLTBL-ARG12
+           MOVE    SPA-GMN-XG02-FILENAME
+                                   TO  SHELLTBL-ARG13
+           MOVE    SPA-GMN-XG02-CDKBN
+                                   TO  SHELLTBL-ARG14
+           MOVE    SPA-GMN-TPRT-TITLE(SPA-NAI-SELNUM)
+                                   TO  SHELLTBL-ARG15
+      *
+           MOVE    SPA-TERMID      TO  SHELLTBL-ARG16
+           MOVE    SPA-OPID        TO  SHELLTBL-ARG17
+      *
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
-           MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           MOVE    ORCA-SYSTEM-VALUE (1)
-                                   TO  SHELLTBL-ARG9
-           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG10
-           MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  SHELLTBL-ARG11
-           MOVE    TOUKEICSVERR        TO  SHELLTBL-ARG12
-           MOVE    SPA-GMN-XG02-FILENAME
-                                       TO  SHELLTBL-ARG13
-           MOVE    SPA-GMN-XG02-CDKBN  TO  SHELLTBL-ARG14
-           MOVE    SPA-GMN-TPRT-TITLE (SPA-NAI-SELNUM)
-                                       TO  SHELLTBL-ARG15
-      *
-           MOVE    SPA-TERMID          TO  SHELLTBL-ARG16
-           MOVE    SPA-OPID            TO  SHELLTBL-ARG17
-      *
-           MOVE    SHELLTBL            TO  MCPDATA-REC
-           MOVE    "SHELL"             TO  MCP-FUNC
-           MOVE    "shell"             TO  MCP-TABLE
-           MOVE    "shell"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
       *
            IF    ( SPA-GMN-XG02-FILE   =   "1" )
-               MOVE    "SV"                TO  SPA-XGID1-FLG
+               MOVE    "SV"            TO  SPA-XGID1-FLG
            ELSE
-               MOVE    SPACE               TO  SPA-XGID1-FLG
+               MOVE    SPACE           TO  SPA-XGID1-FLG
            END-IF
-           MOVE    SPACE               TO  SPA-XGIDCD
-                                           SPA-XG99-FLG
+           MOVE    SPACE           TO  SPA-XGIDCD
+                                       SPA-XG99-FLG
       *     
       *    情報確認画面を表示                                                   
            PERFORM 490-KAKUNIN-SEC
@@ -1415,6 +1404,22 @@
       *
            .
        800-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ipアドレス取得
+      *****************************************************************
+       900-SYSTEM-GET-SEC          SECTION.
+      *
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    2               TO  SLDUSER-KBN
+           MOVE    MCP-TERM        TO  SLDUSER-ID
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
+      *
+           .
+       900-SYSTEM-GET-EXT.
            EXIT.
       *
       *****************************************************************

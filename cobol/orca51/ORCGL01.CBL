@@ -3520,6 +3520,7 @@
       *
            INITIALIZE                  SLDUSER-AREA
            MOVE    51              TO  SLDUSER-MY-LD
+           MOVE    1               TO  SLDUSER-KBN
            CALL    "ORCSLDUSER"        USING
                                        SLDUSER-AREA
                                        SPA-AREA

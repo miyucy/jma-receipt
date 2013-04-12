@@ -125,8 +125,6 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
-      *     
-           COPY    "ORCA-SYSTEM".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -193,6 +191,8 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
+      *    ユーザー情報取得
+           COPY    "CPORCSLDUSER.INC".
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -732,21 +732,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
                                    TO  SHELLTBL-ARG8
       *    ipアドレス取得
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "GETVALUE"      TO  MCP-FUNC
-           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           MOVE    10              TO  ORCA-SYSTEM-NUM
-           MOVE    "host"          TO  ORCA-SYSTEM-KEY (1)
-           MOVE    ORCA-SYSTEM     TO  MCPDATA-REC 
-           MOVE    "system"        TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           MOVE    ORCA-SYSTEM-VALUE (1)
-                                   TO  SHELLTBL-ARG9
+           PERFORM 900-SYSTEM-GET-SEC
+           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG9
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG10
            MOVE    WRK-CONS-JOB-SHELLID
@@ -1059,6 +1046,22 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        5002-HIZUKE-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ipアドレス取得
+      *****************************************************************
+       900-SYSTEM-GET-SEC          SECTION.
+      *
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    2               TO  SLDUSER-KBN
+           MOVE    MCP-TERM        TO  SLDUSER-ID
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
+      *
+           .
+       900-SYSTEM-GET-EXT.
            EXIT.
       *
       *****************************************************************

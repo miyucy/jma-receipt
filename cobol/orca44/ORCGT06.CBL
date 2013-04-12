@@ -363,9 +363,9 @@
       *
       *    クライアント保存可否情報取得サブ
            COPY    "CPORCSCLIENTSV.INC".
-      *     
-           COPY    "ORCA-SYSTEM".
       *
+      *    ユーザー情報取得
+           COPY    "CPORCSLDUSER.INC".
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -1132,21 +1132,8 @@
                                    TO  SHELLTBL-ARG3         
            MOVE    RECEERR         TO  SHELLTBL-ARG4
       *    ipアドレス取得
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "GETVALUE"      TO  MCP-FUNC
-           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           MOVE    10              TO  ORCA-SYSTEM-NUM
-           MOVE    "host"          TO  ORCA-SYSTEM-KEY (1)
-           MOVE    ORCA-SYSTEM     TO  MCPDATA-REC 
-           MOVE    "system"        TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           MOVE    ORCA-SYSTEM-VALUE (1)
-                                   TO  SHELLTBL-ARG5
+           PERFORM 900-SYSTEM-GET-SEC
+           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG5
            MOVE    SPA-T01-WRNO    TO  SHELLTBL-ARG6
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG7
            MOVE    SPA-GMN-T98-PRTKBN
@@ -4321,21 +4308,8 @@
            MOVE    SPA-GMN-T98-DATAKBN
                                    TO  SHELLTBL-ARG21
       *ipアドレス取得
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "GETVALUE"      TO  MCP-FUNC
-           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           MOVE    10              TO  ORCA-SYSTEM-NUM
-           MOVE    "host"          TO  ORCA-SYSTEM-KEY (1)
-           MOVE    ORCA-SYSTEM     TO  MCPDATA-REC 
-           MOVE    "system"        TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"     USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           MOVE    ORCA-SYSTEM-VALUE (1)
-                                   TO  SHELLTBL-ARG22
+           PERFORM 900-SYSTEM-GET-SEC
+           MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG22
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG23
            MOVE    SPA-GMN-T98-PRTKBN
                                    TO  SHELLTBL-ARG24
@@ -5574,6 +5548,22 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG18
        530-TID2SET-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    ipアドレス取得
+      *****************************************************************
+       900-SYSTEM-GET-SEC          SECTION.
+      *
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    2               TO  SLDUSER-KBN
+           MOVE    MCP-TERM        TO  SLDUSER-ID
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
+      *
+           .
+       900-SYSTEM-GET-EXT.
+           EXIT.
       *
       *****************************************************************
       *    管理ファイルＳＥＬＥＣＴ処理

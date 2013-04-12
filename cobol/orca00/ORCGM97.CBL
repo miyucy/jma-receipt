@@ -166,8 +166,6 @@
        01  SYSUSER-REC.
            COPY    "CPSYSUSER.INC".
       *
-           COPY    "ORCA-SYSTEM".
-      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -190,6 +188,8 @@
            COPY  "CPORCSDAY.INC".
            COPY  "CPORCSLNK.INC".
       *
+      *    ユーザー情報取得
+           COPY    "CPORCSLDUSER.INC".
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -814,28 +814,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        410-TERMIDCNT-SEC           SECTION.
       *
            MOVE    ZERO            TO  CNT-TERMID
-      *    LISTENTRY により全ての端末IDを取得する
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "LISTENTRY"     TO  MCP-FUNC
-           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           PERFORM 900-SYSDB-INV-SEC
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
-           ELSE
-               GO  TO  410-TERMIDCNT-EXT
-           END-IF
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       100
-               IF      ORCA-SYSTEM-KEY(IDX)    NOT =    SPACE
-                   COMPUTE CNT-TERMID  =   CNT-TERMID  +   1
-               END-IF
-           END-PERFORM
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    1               TO  SLDUSER-KBN
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
       *
-           IF      CNT-TERMID      >   1
+           IF    ( SLDUSER-OTHERS  =   ZERO )
+               PERFORM 410-KAKUNIN-SEC
+           ELSE
+               MOVE    SLDUSER-MAX     TO  CNT-TERMID
                MOVE    "0201"          TO  SPA-MIDCD
                PERFORM 520-MIDSET-SEC
-           ELSE
-               PERFORM 410-KAKUNIN-SEC
            END-IF
       *
            .
@@ -936,23 +926,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        420-SENDALL-SEC             SECTION.
       *
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "SETVALUEALL"   TO  MCP-FUNC
-           MOVE    1               TO  ORCA-SYSTEM-NUM
-           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           MOVE    "dialog"        TO  ORCA-SYSTEM-KEY(1)
-           MOVE    SPACE           TO  ORCA-SYSTEM-VALUE(1)
-           STRING  "プログラム更新処理を行います。"    DELIMITED BY SIZE
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    5               TO  SLDUSER-KBN
+           STRING  "プログラム更新処理を行います。"
+                                       DELIMITED BY SIZE
                    "入力作業を完了し速やかにログアウトしてください。"
-                                                       DELIMITED BY SIZE
-                                 INTO  ORCA-SYSTEM-VALUE(1)
+                                       DELIMITED BY SIZE
+                                 INTO  SLDUSER-MESSAGE
            END-STRING
-           PERFORM 900-SYSDB-INV-SEC
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           ELSE
-               GO  TO  420-SENDALL-EXT
-           END-IF
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
       *
            .
        420-SENDALL-EXT.
@@ -1333,7 +1317,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
        820-JOBKANRI-DEL-EXT.
            EXIT.
-      *
       *****************************************************************
       *    ジョブ管理作成
       *****************************************************************
@@ -1352,7 +1335,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
        820-JOBKANRI-JBS-EXT.
            EXIT.
-      *
       *****************************************************************
       *    画面ERR
       *****************************************************************
@@ -1371,7 +1353,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
        830-GAMENN-SET4-EXT.
            EXIT.
-      *
       *****************************************************************
       *    画面警告
       *****************************************************************
@@ -1390,7 +1371,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
        830-GAMENN-SET5-EXT.
            EXIT.
-      *
       *****************************************************************
       *    戻る
       *****************************************************************
@@ -1408,24 +1388,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
        830-GAMENN-SET6-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    システムＤＢ読込
-      *****************************************************************
-       900-SYSDB-INV-SEC         SECTION.
-      *
-           MOVE    ORCA-SYSTEM   TO  MCPDATA-REC
-           MOVE    "system"      TO  MCP-TABLE
-           MOVE    "key"         TO  MCP-PATHNAME
-           CALL   "ORCDBMAIN"        USING
-                                     MCPAREA
-                                     MCPDATA-REC
-                                     SPA-AREA
-      *
-           .
-       900-SYSDB-INV-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************

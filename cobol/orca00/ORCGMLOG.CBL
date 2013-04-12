@@ -169,8 +169,6 @@
        01  SYSUSER-REC.
            COPY    "CPSYSUSER.INC".
       *
-           COPY    "ORCA-SYSTEM".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -188,6 +186,8 @@
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    ユーザー情報取得
+           COPY    "CPORCSLDUSER.INC".
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -463,23 +463,16 @@
        3101-LISTENTRY-SEC          SECTION.
       *
            PERFORM 420-CLEAR-SEC
-           INITIALIZE              SPA-NAI-TBL
-      *
-      *    LISTENTRY により全ての端末IDを取得する
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "LISTENTRY"     TO  MCP-FUNC
-           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
-           PERFORM 900-SYSDB-INV-SEC
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
-               PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX     >       100
-                   MOVE    ORCA-SYSTEM-KEY(IDX)
-                                       TO  SPA-NAI-TERMID(IDX)
-               END-PERFORM
-      *        GETVALUE によりそれぞれの端末の詳細を取得する
-               PERFORM 3101-LISTKEY-SEC
-           END-IF
+           INITIALIZE                  SPA-NAI-TBL
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    1               TO  SLDUSER-KBN
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
+           PERFORM VARYING  IDX    FROM    1   BY  1
+                   UNTIL    IDX    >   SLDUSER-MAX
+               PERFORM 3101-GETVALUE-SEC
+           END-PERFORM
       *
            .
        3101-LISTENTRY-EXT.
@@ -488,97 +481,46 @@
       *****************************************************************
       *    TermIDの内容取得処理
       *****************************************************************
-       3101-LISTKEY-SEC            SECTION.
-      * 
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       100 
-               IF      SPA-NAI-TERMID(IDX) NOT =    SPACE
-                   INITIALIZE        ORCA-SYSTEM
-                   MOVE    "LISTKEY"           TO  MCP-FUNC
-                   MOVE    SPA-NAI-TERMID(IDX) TO  ORCA-SYSTEM-ID
-                   PERFORM 900-SYSDB-INV-SEC
-                   IF    ( MCP-RC          =   ZERO    OR    1 )
-                       MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
-                   ELSE
-                       GO  TO   3101-LISTKEY-EXT
-                   END-IF
-      *
-                   MOVE    "in_process"        TO  SPA-NAI-PROCESS-C(1)
-                   MOVE    "window"            TO  SPA-NAI-WINDOW-C(1)
-                   MOVE    "user"              TO  SPA-NAI-USER-C(1)
-                   MOVE    "event"             TO  SPA-NAI-EVENT-C(1)
-                   MOVE    "access_time"       TO  SPA-NAI-ACCESST-C(1)
-                   MOVE    "process_time"      TO  SPA-NAI-PROCESST-C(1)
-                   MOVE    "total_proc"        TO  SPA-NAI-TOTALT-C(1)
-                   MOVE    "host"              TO  SPA-NAI-HOST-C(1)
-                   MOVE    "widget"            TO  SPA-NAI-WIDGET-C(1)
-                   MOVE    "create_time"       TO  SPA-NAI-LOGIN-C(1)
-      *
-      *            GETVALUE によりそれぞれの端末の詳細を取得する
-                   PERFORM 3101-GETVALUE-SEC
-               END-IF
-           END-PERFORM
-      *
-           .
-       3101-LISTKEY-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    TermIDの内容取得処理
-      *****************************************************************
        3101-GETVALUE-SEC           SECTION.
       *
-           INITIALIZE                         ORCA-SYSTEM
-           MOVE    "GETVALUE"              TO  MCP-FUNC
-           MOVE    SPA-NAI-TERMID(IDX)     TO  ORCA-SYSTEM-ID
-           MOVE    10                      TO  ORCA-SYSTEM-NUM
-           MOVE    SPA-NAI-PROCESS-C(1)    TO  ORCA-SYSTEM-KEY(1)
-           MOVE    SPA-NAI-WINDOW-C(1)     TO  ORCA-SYSTEM-KEY(2)
-           MOVE    SPA-NAI-USER-C(1)       TO  ORCA-SYSTEM-KEY(3)
-           MOVE    SPA-NAI-EVENT-C(1)      TO  ORCA-SYSTEM-KEY(4)
-           MOVE    SPA-NAI-ACCESST-C(1)    TO  ORCA-SYSTEM-KEY(5)
-           MOVE    SPA-NAI-PROCESST-C(1)   TO  ORCA-SYSTEM-KEY(6)
-           MOVE    SPA-NAI-TOTALT-C(1)     TO  ORCA-SYSTEM-KEY(7)
-           MOVE    SPA-NAI-HOST-C(1)       TO  ORCA-SYSTEM-KEY(8)
-           MOVE    SPA-NAI-WIDGET-C(1)     TO  ORCA-SYSTEM-KEY(9)
-           MOVE    SPA-NAI-LOGIN-C(1)      TO  ORCA-SYSTEM-KEY(10)
-           PERFORM 900-SYSDB-INV-SEC
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
-           ELSE
-               GO  TO  3101-GETVALUE-EXT
-           END-IF
-           MOVE  ORCA-SYSTEM-VALUE(1)      TO  SPA-NAI-PROCESS-N(IDX)
-           MOVE  ORCA-SYSTEM-VALUE(2)      TO  SPA-NAI-WINDOW-N(IDX)
-           MOVE  ORCA-SYSTEM-VALUE(3)      TO  SPA-NAI-USER-N(IDX)
-                                               WRK-SYSUSER
-      *    
+           MOVE    SLDUSER-TERMID(IDX)
+                                   TO  SPA-NAI-TERMID(IDX)
+           MOVE    SLDUSER-IN-PROCESS(IDX)
+                                   TO  SPA-NAI-PROCESS-N(IDX)
+           MOVE    SLDUSER-WINDOW(IDX)
+                                   TO  SPA-NAI-WINDOW-N(IDX)
+           MOVE    SLDUSER-USER(IDX)
+                                   TO  SPA-NAI-USER-N(IDX)
+                                       WRK-SYSUSER
+      *
            PERFORM 900-SYSUSER-READ-SEC
-           MOVE    WRK-HOSPNUM             TO  SPA-NAI-HOSP-N(IDX)
-           MOVE    ORCA-SYSTEM-VALUE(4)    TO  SPA-NAI-EVENT-N(IDX)
-           MOVE    ORCA-SYSTEM-VALUE(5)    TO  SPA-NAI-ACCESST-N(IDX)
+           MOVE    WRK-HOSPNUM     TO  SPA-NAI-HOSP-N(IDX)
+           MOVE    SLDUSER-EVENT(IDX)
+                                   TO  SPA-NAI-EVENT-N(IDX)
+           MOVE    SLDUSER-ACCESS-TIME(IDX)
+                                   TO  SPA-NAI-ACCESST-N(IDX)
            UNSTRING
-                   ORCA-SYSTEM-VALUE(5)    DELIMITED  BY  " "
+                   SLDUSER-ACCESS-TIME(IDX)
+                                           DELIMITED  BY  " "
                                   INTO     WRK-MSG1
                                            WRK-MSG2
                                            WRK-MSG3
                                            WRK-MSG4
                                            WRK-MSG5
-      *    MOVE    WRK-MSG4                TO  SPA-NAI-ACCESST-N(IDX)
-      *    MOVE    ORCA-SYSTEM-VALUE(6)    TO  SPA-NAI-PROCESST-N(IDX)
-           MOVE    WRK-MSG4                TO  SPA-NAI-PROCESST-N(IDX)
-           MOVE    ORCA-SYSTEM-VALUE(7)    TO  SPA-NAI-TOTALT-N(IDX)
-           MOVE    ORCA-SYSTEM-VALUE(8)    TO  SPA-NAI-HOST-N(IDX)
-           MOVE    ORCA-SYSTEM-VALUE(9)    TO  SPA-NAI-WIDGET-N(IDX)
-           MOVE    ORCA-SYSTEM-VALUE(10)   TO  SPA-NAI-LOGIN-N(IDX)
+           MOVE    WRK-MSG4            TO  SPA-NAI-PROCESST-N(IDX)
+           MOVE    SLDUSER-TOTAL-PROC(IDX)
+                                       TO  SPA-NAI-TOTALT-N(IDX)
+           MOVE    SLDUSER-HOST(IDX)   TO  SPA-NAI-HOST-N(IDX)
+           MOVE    SLDUSER-WIDGET(IDX) TO  SPA-NAI-WIDGET-N(IDX)
            UNSTRING
-                   ORCA-SYSTEM-VALUE(10)   DELIMITED  BY  " "
+                   SLDUSER-CREATE-TIME(IDX)
+                                           DELIMITED  BY  " "
                                   INTO     WRK-MSG1
                                            WRK-MSG2
                                            WRK-MSG3
                                            WRK-MSG4
                                            WRK-MSG5
-           MOVE    WRK-MSG4            TO  SPA-NAI-LOGIN-N(IDX)
+           MOVE    WRK-MSG4        TO  SPA-NAI-LOGIN-N(IDX)
       *
            .
        3101-GETVALUE-EXT.
@@ -761,23 +703,18 @@
                GO  TO  420-TERMSTOP-EXT
            END-IF
       *
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "SETVALUE"      TO  MCP-FUNC
-           MOVE    1               TO  ORCA-SYSTEM-NUM
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    8               TO  SLDUSER-KBN
            MOVE    SPA-NAI-TERMID(SPA-GMN-SELNUM)
-                                   TO  ORCA-SYSTEM-ID
-           MOVE    "abort"         TO  ORCA-SYSTEM-KEY(1)
+                                   TO  SLDUSER-ID
            STRING  WRK-CONST-STOP1     DELIMITED  BY  SIZE
                    MCP-USER            DELIMITED  BY  SPACE
                    WRK-CONST-STOP2     DELIMITED  BY  SIZE
-                               INTO    ORCA-SYSTEM-VALUE(1)
+                               INTO    SLDUSER-MESSAGE
            END-STRING
-           PERFORM 900-SYSDB-INV-SEC
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           ELSE
-               GO  TO  420-TERMSTOP-EXT
-           END-IF
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
       *
            .
        420-TERMSTOP-EXT.
@@ -788,32 +725,16 @@
       *****************************************************************
        420-ALLSTOP-SEC             SECTION.
       *
-           PERFORM VARYING IDX     FROM   1   BY  1
-                   UNTIL   IDX     >   100
-               IF    ( SPA-NAI-TERMID(IDX) NOT =   SPACE ) AND
-                     ( SPA-NAI-TERMID(IDX) NOT =   MCP-TERM )
-                   INITIALIZE                  ORCA-SYSTEM
-                   MOVE    "SETVALUE"      TO  MCP-FUNC
-                   MOVE    1               TO  ORCA-SYSTEM-NUM
-                   MOVE    SPA-NAI-TERMID(IDX)
-                                           TO  ORCA-SYSTEM-ID
-                   MOVE    "abort"         TO  ORCA-SYSTEM-KEY(1)
-                   STRING  WRK-CONST-STOP1     DELIMITED  BY  SIZE
-                           MCP-USER            DELIMITED  BY  SPACE
-                           WRK-CONST-STOP2     DELIMITED  BY  SIZE
-                                       INTO    ORCA-SYSTEM-VALUE(1)
-                   END-STRING
-                   PERFORM 900-SYSDB-INV-SEC
-                   IF    ( MCP-RC          =   ZERO    OR  1 )
-                       MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-                   ELSE
-                       GO  TO   420-ALLSTOP-EXT
-                   END-IF
-               END-IF
-               IF      SPA-NAI-TERMID (IDX) = SPACE  
-                  MOVE  100            TO  IDX
-              END-IF
-           END-PERFORM
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    7               TO  SLDUSER-KBN
+           STRING  WRK-CONST-STOP1     DELIMITED  BY  SIZE
+                   MCP-USER            DELIMITED  BY  SPACE
+                   WRK-CONST-STOP2     DELIMITED  BY  SIZE
+                               INTO    SLDUSER-MESSAGE
+           END-STRING
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
       *
            .
        420-ALLSTOP-EXT.
@@ -824,19 +745,14 @@
       *****************************************************************
        420-SENDMSG-SEC             SECTION.
       *
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "SETVALUE"      TO  MCP-FUNC
-           MOVE    1               TO  ORCA-SYSTEM-NUM
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    6               TO  SLDUSER-KBN
            MOVE    SPA-NAI-TERMID(SPA-GMN-SELNUM)
-                                   TO  ORCA-SYSTEM-ID
-           MOVE    "dialog"        TO  ORCA-SYSTEM-KEY(1)
-           MOVE    MLOG-MES1       TO  ORCA-SYSTEM-VALUE(1)
-           PERFORM 900-SYSDB-INV-SEC
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           ELSE
-               GO  TO   420-SENDMSG-EXT
-           END-IF
+                                   TO  SLDUSER-ID
+           MOVE    MLOG-MES1       TO  SLDUSER-MESSAGE
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
       *
            .
        420-SENDMSG-EXT.
@@ -847,19 +763,14 @@
       *****************************************************************
        420-SENDALL-SEC             SECTION.
       *
-           INITIALIZE                  ORCA-SYSTEM
-           MOVE    "SETVALUEALL"   TO  MCP-FUNC
-           MOVE    1               TO  ORCA-SYSTEM-NUM
+           INITIALIZE                  SLDUSER-AREA
+           MOVE    5               TO  SLDUSER-KBN
            MOVE    SPA-NAI-TERMID(SPA-GMN-SELNUM)
-                                   TO  ORCA-SYSTEM-ID
-           MOVE    "dialog"        TO  ORCA-SYSTEM-KEY(1)
-           MOVE    MLOG-MES1       TO  ORCA-SYSTEM-VALUE(1)
-           PERFORM 900-SYSDB-INV-SEC
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
-           ELSE
-               GO  TO   420-SENDALL-EXT
-           END-IF
+                                   TO  SLDUSER-ID
+           MOVE    MLOG-MES1       TO  SLDUSER-MESSAGE
+           CALL    "ORCSLDUSER"        USING
+                                       SLDUSER-AREA
+                                       SPA-AREA
       *
            .
        420-SENDALL-EXT.
@@ -1247,23 +1158,6 @@
       *
            .
        900-SYSKANRI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    システムＤＢ読込
-      *****************************************************************
-       900-SYSDB-INV-SEC         SECTION.
-      *
-           MOVE    ORCA-SYSTEM   TO  MCPDATA-REC
-           MOVE    "system"      TO  MCP-TABLE
-           MOVE    "key"         TO  MCP-PATHNAME
-           CALL   "ORCDBMAIN"        USING
-                                     MCPAREA
-                                     MCPDATA-REC
-                                     SPA-AREA
-      *
-           .
-       900-SYSDB-INV-EXT.
            EXIT.
       *
       *****************************************************************

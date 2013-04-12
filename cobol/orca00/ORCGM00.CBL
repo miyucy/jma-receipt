@@ -234,8 +234,6 @@
       *    システムカタログ
            COPY    "CPDBCTG.INC".
       *
-           COPY    "ORCA-SYSTEM".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -1068,20 +1066,6 @@
                    MOVE    "1011"      TO  SPA-ERRCD
            END-IF
       *
-      *####
-      *    IF    ( SPA-ERRCD           =   SPACE )
-      *     AND  ( SPA-ERR-FLG         =   ZERO  )
-      *        GETVALUE により端末の詳細を取得する
-      *        PERFORM 3101-GETVALUE-SEC
-      *
-      *    エンコーディング情報が　"UTF8"　かつ、端末が　glclient
-      *        IF     (SPA-ENCODING                =   2    )
-      *        AND    (ORCA-SYSTEM-VALUE(1)(1:9)   =   "glclient/" )
-      *            MOVE    "K001"               TO  SPA-ERRCD
-      *        END-IF
-      *    END-IF
-      *####
-      *
       *    感染症
            PERFORM 810-INFECTION-001-SEC
       *
@@ -1089,26 +1073,6 @@
            MOVE    SPACE           TO  SPA-MIDCD
            .
        310-SPASET-EXT.
-           EXIT.
-      *****************************************************************
-      *    TermIDの内容取得処理
-      *****************************************************************
-       3101-GETVALUE-SEC           SECTION.
-      *
-           INITIALIZE                      ORCA-SYSTEM
-           MOVE    "GETVALUE"          TO  MCP-FUNC
-           MOVE    MCP-TERM            TO  ORCA-SYSTEM-ID
-           MOVE    10                  TO  ORCA-SYSTEM-NUM
-           MOVE    "agent"             TO  ORCA-SYSTEM-KEY(1)
-           PERFORM 900-SYSDB-INV-SEC
-           IF    ( MCP-RC              =   ZERO    OR  1 )
-               MOVE    MCPDATA-REC         TO  ORCA-SYSTEM
-           ELSE
-               INITIALIZE                      ORCA-SYSTEM
-           END-IF
-      *
-           .
-       3101-GETVALUE-EXT.
            EXIT.
       *****************************************************************
       *    点数マスタ更新判定処理
@@ -2409,22 +2373,6 @@
            END-IF
            .
        900-MSTKANRI-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    システムＤＢ読込
-      *****************************************************************
-       900-SYSDB-INV-SEC         SECTION.
-      *
-           MOVE    ORCA-SYSTEM   TO  MCPDATA-REC
-           MOVE    "system"      TO  MCP-TABLE
-           MOVE    "key"         TO  MCP-PATHNAME
-           CALL   "ORCDBMAIN"        USING
-                                     MCPAREA
-                                     MCPDATA-REC
-                                     SPA-AREA
-      *
-           .
-       900-SYSDB-INV-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

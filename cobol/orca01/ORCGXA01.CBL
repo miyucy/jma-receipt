@@ -270,8 +270,6 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "ORCA-SYSTEM".
       *    クライアント印刷制御
            COPY    "CPORCSPRTCTRL.INC".
       *****************************************************************
