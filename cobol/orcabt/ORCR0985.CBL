@@ -3435,43 +3435,45 @@
       *                ÅÀ¿ô
                        IF    ( IDX                 =   WRK-SRYCD1-MAX )
                          IF      RECE84-ZAI-KINGAKU    >   ZERO
-                           EVALUATE    RECE84-SRYKBN
-                               WHEN    "70"
-                                   COMPUTE WRK-TENSU   =
+                           IF      RECE84-ZAI-TENSU      >   ZERO
+                               EVALUATE    RECE84-SRYKBN
+                                   WHEN    "70"
+                                       COMPUTE WRK-TENSU   =
                                                RECE84-ZAI-TENSU    -
                                                RECE84-SYUTEN2
-                               WHEN    "12"
-                               WHEN    "13"
-                               WHEN    "14"
-                                   COMPUTE WRK-TENSU   =
+                                   WHEN    "12"
+                                   WHEN    "13"
+                                   WHEN    "14"
+                                       COMPUTE WRK-TENSU   =
                                                RECE84-ZAI-TENSU -
                                                TBL-KOUI-SRYKBN12-TEN-G
-                               WHEN    OTHER  
-                                   MOVE    RECE84-ZAI-TENSU
+                                   WHEN    OTHER  
+                                       MOVE    RECE84-ZAI-TENSU
                                                        TO  WRK-TENSU
-                           END-EVALUATE
-                           MOVE    WRK-TENSU         TO  WRK-NUM
-                           MOVE    7                 TO  WRK-NAGASA
+                               END-EVALUATE
+                               MOVE    WRK-TENSU         TO  WRK-NUM
+                               MOVE    7                 TO  WRK-NAGASA
+                           END-IF
                          ELSE
-                          IF      RECE84-SYUTEN1      >   ZERO
-                           EVALUATE    RECE84-SRYKBN
-                               WHEN    "70"
-                             COMPUTE WRK-TENSU   =
+                           IF      RECE84-SYUTEN1      >   ZERO
+                               EVALUATE    RECE84-SRYKBN
+                                   WHEN    "70"
+                                       COMPUTE WRK-TENSU   =
                                                RECE84-SYUTEN1 -
                                                RECE84-SYUTEN2
-                               WHEN    "12"
-                               WHEN    "13"
-                               WHEN    "14"
-                                   COMPUTE WRK-TENSU   =
+                                   WHEN    "12"
+                                   WHEN    "13"
+                                   WHEN    "14"
+                                       COMPUTE WRK-TENSU   =
                                                RECE84-SYUTEN1 -
                                                TBL-KOUI-SRYKBN12-TEN-G
-                               WHEN    OTHER  
-                                   MOVE    RECE84-SYUTEN1
+                                   WHEN    OTHER  
+                                       MOVE    RECE84-SYUTEN1
                                                        TO  WRK-TENSU
-                           END-EVALUATE
-                           MOVE    WRK-TENSU         TO  WRK-NUM
-                           MOVE    7                 TO  WRK-NAGASA
-                          END-IF
+                               END-EVALUATE
+                               MOVE    WRK-TENSU         TO  WRK-NUM
+                               MOVE    7                 TO  WRK-NAGASA
+                           END-IF
                          END-IF 
                        END-IF    
                        PERFORM 5005-NUM-HENSYU-SEC  
