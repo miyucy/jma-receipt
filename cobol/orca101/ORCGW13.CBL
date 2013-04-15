@@ -1633,6 +1633,13 @@
                END-IF
            END-IF
       *
+           IF  ( SPA-GMN-RSIIRYOKBN      =   "0"  )  AND
+               ( SPA-GMN-RSIIRYOCDN      NOT =   SPACE )
+                       MOVE    2               TO  SPA-GMN-CUR
+                       MOVE    "1007"          TO  SPA-ERRCD
+      *
+           END-IF
+      *
            .
        4103-RSIIRYOCDN-CHK-EXT.
            EXIT.
@@ -3354,6 +3361,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1006"
                    MOVE    "追加ができませんでした"
                                                TO  SPA-ERRMSG
+               WHEN    "1007"
+                   MOVE    "労災指定でないときは入力しないで下さい"
+                                                         TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  WERR
