@@ -1068,6 +1068,9 @@
            COPY    "CPSK2005.INC".
            COPY    "CPSK200501.INC".
       *
+      *    労災自賠医療機関情報
+           COPY    "CPSK4001.INC".
+      *
       *    入院基本情報
       *    COPY    "CPSK5000.INC".
       *
@@ -1342,6 +1345,9 @@
       *
       *    レセプト編集区分取得処理
            PERFORM 1001-SYS2005-GET-SEC
+      *
+      *    労災自賠医療機関情報取得処理
+           PERFORM 1001-SYS4001-GET-SEC
       *
       *    記号抜けチェック対象取得処理
            PERFORM 1001-CK4-1102-GET-SEC
@@ -2072,6 +2078,36 @@
       *
            .
        1001-SYS2005-GET-EXT.
+           EXIT.
+      *****************************************************************
+      *    労災自賠医療機関情報取得処理
+      *****************************************************************
+       1001-SYS4001-GET-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    WRK-KJNYMD          TO  SYS-4001-STYUKYMD
+                                           SYS-4001-EDYUKYMD
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-4001-HOSPNUM
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYS-4001-REC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+               INITIALIZE                  SYS-4001-REC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       1001-SYS4001-GET-EXT.
            EXIT.
       *****************************************************************
       *    データチェック３機能情報
@@ -9633,6 +9669,7 @@
            ELSE
                IF    ( DTCHK003-HKNKBN     =   CONST-ROSAI )
                 AND  ( FLG-RSI-RECEDEN-CHK =   1 )
+                AND  ( SYS-4001-RSIIRYOKBN =   "1" )
                    MOVE    PTINF-KANANAME      TO  WRK-KANACHK-MAE-INPUT
                    PERFORM 801-KATAKANA-CHK-SEC
                    IF  ( FLG-KANACHK   NOT =   ZERO )
