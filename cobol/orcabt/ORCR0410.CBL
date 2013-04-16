@@ -93,8 +93,10 @@
       *
       *  04.07.01    NACL-門脇    11/09/07  労災請求書作成対応
       *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
-      *  04.07.02    NACL-藤原    13/03/25  リアルタイムプレビュー時は
+      *  04.07.03    NACL-藤原    13/03/25  リアルタイムプレビュー時は
       *                                     テスト患者にする
+      *  04.07.04    NACL-門脇    13/04/16  労災レセ電対応
+      *                                     労災指定医療機関区分編集
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *****************************************************************
@@ -238,6 +240,7 @@
            03  WRK-KOMUKBN                             PIC  X(01).
            03  WRK-KOMUTENTANKA                        PIC  9(02).
            03  WRK-KYUGYO-PRTKBN                       PIC  X(01).
+           03  WRK-RSIIRYOKBN                          PIC  X(01).
       *
            03  WRK-TAIHI-FLG                           PIC  9(01).
            03  WRK-TAIHI-SRYYMD.
@@ -669,6 +672,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-4001-HOSPNUM
                     MOVE SYS-4001-KYUGYO-PRTKBN
                                            TO    WRK-KYUGYO-PRTKBN
                   END-IF
+                  IF     SYS-4001-RSIIRYOKBN      =  SPACE
+                    MOVE "0"               TO    WRK-RSIIRYOKBN
+                  ELSE
+                    MOVE SYS-4001-RSIIRYOKBN
+                                           TO    WRK-RSIIRYOKBN
+                  END-IF
               ELSE
                   MOVE    "労災自賠医療機関情報が取得できませんでした"     
                                               TO  WRK-RECEERR
@@ -1014,6 +1023,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    WRK-KOMUTENTANKA      TO   RECE41-KOMUTENTANKA
       *    休業証明療養期間記載
            MOVE    WRK-KYUGYO-PRTKBN     TO   RECE41-KYUGYO-PRTKBN
+      *    労災指定医療機関区分
+           MOVE    WRK-RSIIRYOKBN        TO   RECE41-RSIIRYOKBN
       *
       *    労災レセプト回数取得
            IF    ( RECE41-HKNKBN     =   "1"  OR  "2" )
@@ -3020,6 +3031,12 @@ grpsys     PERFORM 900-DBFETCH-SEC
                    ELSE
                      MOVE SYS-4001-KYUGYO-PRTKBN
                                             TO    WRK-KYUGYO-PRTKBN
+                   END-IF
+                   IF     SYS-4001-RSIIRYOKBN      =  SPACE
+                     MOVE "0"               TO    WRK-RSIIRYOKBN
+                   ELSE
+                     MOVE SYS-4001-RSIIRYOKBN
+                                            TO    WRK-RSIIRYOKBN
                    END-IF
                 END-IF
       *
