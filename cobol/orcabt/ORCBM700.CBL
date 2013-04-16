@@ -507,8 +507,7 @@
       *
       *    Ï«ºÒ°åÎÅµ¡´Ø¾ðÊó¼èÆÀ
            INITIALIZE                      SYS-4001-REC
-           MOVE    WRK-PARA-HOSPNUM
-                                       TO  SYS-4001-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-4001-HOSPNUM
            MOVE    "4001"              TO  SYS-4001-KANRICD
            MOVE    "*"                 TO  SYS-4001-KBNCD
            MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-4001-STYUKYMD (1:6)
@@ -819,9 +818,9 @@
            IF      FLG-DATA            =   9
                EVALUATE    SYS-4001-TENKBN
                    WHEN    "1"
-                       MOVE    "1150"      TO  WRK-DATA
+                       MOVE    1150        TO  WRK-NUM
                    WHEN    "2"
-                       MOVE    "1200"      TO WRK-DATA
+                       MOVE    1200        TO  WRK-NUM
                END-EVALUATE 
                MOVE    4               TO  WRK-NAGASA
            END-IF
