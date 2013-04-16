@@ -30,6 +30,7 @@ db	{
 	tbl_syskanri;
 	tbl_toukeicsv_h;
 	tbl_toukeicsv_b;
+	tbl_sysuser;
 };
 
 /* #include "orcadb.inc" */

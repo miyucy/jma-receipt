@@ -70,6 +70,7 @@ db	{
 	tbl_seikyu_rsi;
 	tbl_syskanri;
 	tbl_syuka;
+	tbl_sysuser;
 };
 
 /* #include "orcadb.inc" */
