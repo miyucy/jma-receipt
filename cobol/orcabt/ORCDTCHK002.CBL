@@ -340,6 +340,7 @@
            03  FLG-PROC                                PIC 9(01).
            03  FLG-THEIYOU-SET                         PIC 9(01).
            03  FLG-RECEDEN-CHK                         PIC 9(01).
+           03  FLG-RSI-RECEDEN-CHK                     PIC 9(01).
            03  FLG-SANTEI                              PIC 9(01).
            03  FLG-NBFUKACD                            PIC 9(01).
            03  FLG-NBFUKATG                            PIC 9(01).
@@ -376,6 +377,7 @@
            03  FLG-TMPSND                              PIC 9(01).
            03  FLG-TEKBYO                              PIC 9(01).
            03  FLG-HAISHI                              PIC 9(01).
+           03  FLG-RSI-KANA                            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -455,6 +457,7 @@
            03  IDXH                                    PIC 9(05).
            03  IDXI                                    PIC 9(05).
            03  IDXP                                    PIC 9(05).
+           03  IDXR                                    PIC 9(05).
            03  IDX-TSRYKA                              PIC 9(05).
            03  IDX-TKAISU                              PIC 9(05).
            03  IDX-ERRCD                               PIC 9(05).
@@ -653,6 +656,7 @@
                05  WRK-058-SRYCD                       PIC X(09).
                05  WRK-058-TANICD                      PIC X(03).
            03  WRK-TEKBYOCHKKBN                        PIC X(01).
+           03  WRK-ERR-KANA                            PIC X(100).
       *
        01  TERRINF-AREA.
            03  TERRINF-CHKKBN                          PIC X(01).
@@ -903,7 +907,24 @@
            03  CONST-H009                      PIC X(03)   VALUE "009".
            03  CONST-H2004                 PIC X(06)   VALUE "200804".
            03  CONST-TEMP                      PIC X(04)   VALUE "TEMP".
-      *
+           03  CONST-RSI-KATAKANA-G.
+               05  CONST-RSI-KATAKANA-VAL.
+                   07  FILLER                      PIC X(32)   VALUE
+                       "ァアィイゥウェエォオカガキギクグ".
+                   07  FILLER                      PIC X(32)   VALUE
+                       "ケゲコゴサザシジスズセゼソゾタダ".
+                   07  FILLER                      PIC X(32)   VALUE
+                       "チヂッツヅテデトドナニヌネノハバ".
+                   07  FILLER                      PIC X(32)   VALUE
+                       "パヒビピフブプヘベペホボポマミ　".
+                   07  FILLER                      PIC X(32)   VALUE
+                       "ムメモャヤュユョヨラリルレロヮワ".
+                   07  FILLER                      PIC X(16)   VALUE
+                       "ヰヱヲンヴヵヶー".
+               05  CONST-RSI-KATAKANA-R REDEFINES
+                                        CONST-RSI-KATAKANA-VAL.
+                   07  CONST-RSI-KATAKANA      PIC X(02)   OCCURS 88.
+               05  CONST-RSI-KATAKANA-MAX      PIC 9(05)   VALUE  88.
       *
       *    エラーメッセージ
            COPY    "CPDTCHKERRMES.INC".
@@ -1970,6 +1991,7 @@
        1001-SYS2005-GET-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-RECEDEN-CHK
+           MOVE    ZERO                TO  FLG-RSI-RECEDEN-CHK
       *
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYS-2005-REC
@@ -2027,6 +2049,11 @@
                WHEN  ( SYS-200501-KOUIKIRECEKBN    =   "3" )
                    MOVE    1           TO  FLG-RECEDEN-CHK
                END-EVALUATE
+      *
+               IF    ( SYS-200501-ROURECEKBN    =  "2" OR "3" )
+                   MOVE    1           TO  FLG-RSI-RECEDEN-CHK
+               END-IF
+      *
            ELSE
                EVALUATE   TRUE
                WHEN  ( SYS-2005-KKHRECEKBN =   "1" )
@@ -2037,6 +2064,10 @@
                WHEN  ( SYS-200501-KOUIKIRECEKBN    =   "3" )
                    MOVE    1           TO  FLG-RECEDEN-CHK
                END-EVALUATE
+      *
+               IF    ( SYS-200501-ROURECEKBN    =  "1" OR "3" )
+                   MOVE    1           TO  FLG-RSI-RECEDEN-CHK
+               END-IF
            END-IF
       *
            .
@@ -9599,16 +9630,25 @@
                    MOVE    1           TO  FLG-CHKEND (13)
                    GO  TO  200111-KANANAME-CHK-EXT
                END-IF
-      *
-           END-IF
-      *
-           IF    ( PTINF-KANANAME          NOT =   SPACE )
-               MOVE    PTINF-KANANAME      TO  WRK-KANACHK-MAE-INPUT
-               PERFORM 800-KATAKANA-CHK-SEC
-               IF  ( FLG-KANACHK   NOT =   ZERO )
-                   MOVE    "130002"        TO  WRK-ERRCD
-                   INITIALIZE              TERRINF-AREA
-                   PERFORM 210-ERRMES-HEN-SEC
+           ELSE
+               IF    ( DTCHK003-HKNKBN     =   CONST-ROSAI )
+                AND  ( FLG-RSI-RECEDEN-CHK =   1 )
+                   MOVE    PTINF-KANANAME      TO  WRK-KANACHK-MAE-INPUT
+                   PERFORM 801-KATAKANA-CHK-SEC
+                   IF  ( FLG-KANACHK   NOT =   ZERO )
+                       MOVE    WRK-ERR-KANA    TO  WRK-ERRMES-PLUS
+                       MOVE    "130007"        TO  WRK-ERRCD
+                       INITIALIZE              TERRINF-AREA
+                       PERFORM 215-ERRMES-HEN-SEC
+                   END-IF
+               ELSE
+                   MOVE    PTINF-KANANAME      TO  WRK-KANACHK-MAE-INPUT
+                   PERFORM 800-KATAKANA-CHK-SEC
+                   IF  ( FLG-KANACHK   NOT =   ZERO )
+                       MOVE    "130002"        TO  WRK-ERRCD
+                       INITIALIZE              TERRINF-AREA
+                       PERFORM 210-ERRMES-HEN-SEC
+                   END-IF
                END-IF
       *
                IF    ( ORCBSD01-CHKKBN (13) =   "1" )
@@ -11312,7 +11352,8 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-ERRCD   =   "990019" )
+           EVALUATE    WRK-ERRCD
+           WHEN    "990019"
                MOVE    WRK-INGAITEN    TO  WRK-STR-LEFT-ZX99
                PERFORM 800-STR-HIDARIZUME-HEN-SEC
                MOVE    WRK-STR-LEFT    TO  WRK-MAE-INPUT
@@ -11323,7 +11364,7 @@
                MOVE    WRK-OUT-INPUT   TO  ORCSSTR-STRING3
                CALL    "orcsstring" USING  ORCSSTRINGAREA
                MOVE    ORCSSTR-STRING1 TO  WRK-ERRMES
-           END-IF
+           END-EVALUATE
       *
            .
        2111-ERRMES-GET-EXT.
@@ -12538,6 +12579,51 @@
       *
            .
        800-KATAKANA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角カタカナ入力チェック（労災レセ電）
+      *****************************************************************
+       801-KATAKANA-CHK-SEC                    SECTION.
+      *
+           MOVE    ZERO                TO  FLG-KANACHK
+           MOVE    SPACE               TO  WRK-ERR-KANA
+      *
+           IF  ( WRK-KANACHK-MAE-INPUT =   SPACE )
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDX-KANA    FROM    1   BY  2
+                       UNTIL ( IDX-KANA    >   CONST-INPUT-MAX )
+                        OR   ( WRK-KANACHK-MAE-INPUT (IDX-KANA : )
+                                           =   SPACE )
+      *
+                   MOVE    ZERO        TO  FLG-RSI-KANA
+                   PERFORM VARYING IDXR    FROM    1   BY  1
+                           UNTIL ( IDXR    >   CONST-RSI-KATAKANA-MAX )
+                            OR   ( FLG-RSI-KANA
+                                           NOT =   ZERO )
+      *
+                       IF    ( WRK-KANACHK-MAE-INPUT (IDX-KANA : 2)
+                                       =   CONST-RSI-KATAKANA (IDXR))
+                           MOVE    1   TO  FLG-RSI-KANA
+                       END-IF
+      *
+                   END-PERFORM
+      *
+                   IF    ( FLG-RSI-KANA    =   ZERO )
+                       MOVE    "■"    TO  WRK-ERR-KANA
+                                                     (IDX-KANA : 2)
+                       MOVE    1       TO  FLG-KANACHK
+                   ELSE
+                       MOVE    WRK-KANACHK-MAE-INPUT (IDX-KANA : 2)
+                                       TO  WRK-ERR-KANA
+                                                     (IDX-KANA : 2)
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
+           .
+       801-KATAKANA-CHK-EXT.
            EXIT.
       *****************************************************************
       *    半角ェック
