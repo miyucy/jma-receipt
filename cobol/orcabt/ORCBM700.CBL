@@ -762,7 +762,16 @@
            MOVE    3                   TO  WRK-REC-LENGTH
       *    ÉÂ±¡¡¦¿ÇÎÅ½ê¤Î¶èÊ¬
            IF      FLG-DATA            =   9
-               MOVE    SYS-1001-HOSPSBT    TO  WRK-NUM
+               EVALUATE    SYS-1001-HOSPSBT
+                   WHEN    "1"
+                       IF      SYS-1001-BEDSUIPN   >=  200
+                           MOVE    1               TO  WRK-NUM
+                       ELSE
+                           MOVE    2               TO  WRK-NUM
+                       END-IF
+                   WHEN    "2"
+                       MOVE    3               TO  WRK-NUM
+               END-EVALUATE
                MOVE    1                   TO  WRK-NAGASA
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC

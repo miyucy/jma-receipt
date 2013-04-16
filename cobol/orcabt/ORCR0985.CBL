@@ -1582,9 +1582,9 @@
       *    Ä¢É¼¼ïÊÌ
            EVALUATE    RECE82-HKNKBN
                WHEN    "1"
-                   MOVE    "3"                 TO  WRK-DATA
+                   MOVE    "2"                 TO  WRK-DATA
                WHEN    "2"
-                   MOVE    "5"                 TO  WRK-DATA
+                   MOVE    "4"                 TO  WRK-DATA
            END-EVALUATE
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
