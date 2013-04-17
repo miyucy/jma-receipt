@@ -2566,6 +2566,30 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                        MOVE    "0"             TO  SYS-200501-ROURECEKBN
                    END-IF
       *
+      *            労災指定医療機関の有無
+      *           （平成２５年６月以前は指定なしとする）
+                   INITIALIZE                  SYS-4001-REC
+                   IF      SPA-NAI-SRYYM   <   201307
+                       MOVE    "0"             TO  SYS-4001-RSIIRYOKBN
+                   ELSE 
+                       MOVE    SPA-HOSPNUM     TO  SYS-4001-HOSPNUM
+                       MOVE    "4001"          TO  SYS-4001-KANRICD
+                       MOVE    "*"             TO  SYS-4001-KBNCD
+                       MOVE    SPA-NAI-SRYYM   TO  SYS-4001-STYUKYMD
+                                                                   (1:6)
+                       MOVE    "01"            TO  SYS-4001-STYUKYMD
+                                                                   (7:2)
+                       MOVE    SYS-4001-STYUKYMD
+                                               TO  SYS-4001-EDYUKYMD
+                       MOVE    SYS-4001-REC    TO  MCPDATA-REC
+                       PERFORM 900-SYSKANRI-INV-SEC
+                       IF      FLG-SYSKANRI        =   ZERO
+                           MOVE    MCPDATA-REC     TO  SYS-4001-REC
+                       ELSE
+                           INITIALIZE                  SYS-4001-REC
+                       END-IF
+                   END-IF
+      *
                    MOVE    SPACE           TO  SHELLTBL
                    EVALUATE    SPA-R01-RECEKBN
                        WHEN    "0"
@@ -2667,7 +2691,8 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                        WHEN    "3"
                            MOVE    SYS-200501-ROURECEKBN
                                                    TO  SHELLTBL-ARG12
-                           MOVE    "0"             TO  SHELLTBL-ARG13
+                           MOVE    SYS-4001-RSIIRYOKBN
+                                                   TO  SHELLTBL-ARG13
                        WHEN    OTHER
                            MOVE    "0"             TO  SHELLTBL-ARG12
                                                        SHELLTBL-ARG13

@@ -23,6 +23,7 @@ fi
 #        $9  作成年月日
 #        $10 作成時間
 #        $12 レセ電出力区分
+#        $13 指定医療機関
 #        $14 コメント記載記載区分
 #        $15 枠記載区分
 #        $16 HOSPNUM 
@@ -60,6 +61,7 @@ fi
         echo "arg9  = [" ${9}  "]" >>$LOG_FILE
         echo "arg10 = [" ${10} "]" >>$LOG_FILE
         echo "arg12 = [" ${12} "]" >>$LOG_FILE
+        echo "arg13 = [" ${13} "]" >>$LOG_FILE
         echo "arg14 = [" ${14} "]" >>$LOG_FILE
         echo "arg15 = [" ${15} "]" >>$LOG_FILE
         echo "arg16 = [" ${16} "]" >>$LOG_FILE
@@ -207,8 +209,8 @@ fi
             exit 
         else
             if  [ ${12} -eq '1' ] || [ ${12} -eq '3' ] ; then
-                if  [ ${8} -lt '201307' ] && [ ${2} = '1' ] ;  then
-                    echo "no receden " ${8} >> $LOG_FILE 2>&1
+                if  [ ${13} -eq '0' ]; then
+                    echo "no receden " ${13}  >> $LOG_FILE 2>&1
                 else
                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0550 -parameter $1,$5,$6,${16},${4} >> $LOG_FILE 2>&1
                     if  [ -e $4 ]; then
@@ -224,7 +226,7 @@ fi
                     fi
                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0555 -parameter $1,$5,$6,${16},${9},${10},${4} >> $LOG_FILE 2>&1
                 fi
-            fi    
+            fi
         fi
 
         if  [ -e $4 ]; then

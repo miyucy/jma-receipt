@@ -238,6 +238,7 @@
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-SEIKYU-UMU      PIC 9(01).
            03  FLG-TAISYO          PIC 9(01).
+           03  FLG-4001-RSIIRYOKBN PIC X(01).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -4368,6 +4369,37 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                MOVE    "0"             TO  SYS-200501-ROURECEKBN
            END-IF
       *
+           MOVE    ZERO                TO  FLG-4001-RSIIRYOKBN
+           INITIALIZE                      SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM  900-SYSKANRI-READ-SEC
+               PERFORM  UNTIL   FLG-SYSKANRI   =    1
+                  MOVE    MCPDATA-REC     TO  SYS-4001-REC
+                  IF    ( SYS-4001-EDYUKYMD   >=  20130701 )
+                  AND   ( SYS-4001-RSIIRYOKBN =   "1"      )
+                      MOVE    SYS-4001-RSIIRYOKBN
+                                      TO  FLG-4001-RSIIRYOKBN
+                      MOVE    1       TO  FLG-SYSKANRI
+                  END-IF
+      *
+                  MOVE    "tbl_syskanri"  TO  MCP-TABLE
+                  MOVE    "key8"          TO  MCP-PATHNAME
+                  PERFORM 900-SYSKANRI-READ-SEC
+              END-PERFORM
+          END-IF
+          MOVE    "tbl_syskanri"      TO  MCP-TABLE
+          MOVE    "key8"              TO  MCP-PATHNAME
+          PERFORM 900-CLOSE-SEC
+      *
            MOVE    SPACE           TO  SHELLTBL
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "0"
@@ -4465,7 +4497,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                WHEN    "3"
                    MOVE    SYS-200501-ROURECEKBN
                                                TO  SHELLTBL-ARG12
-                   MOVE    "0"                 TO  SHELLTBL-ARG13
+                   MOVE    FLG-4001-RSIIRYOKBN TO  SHELLTBL-ARG13
                WHEN    OTHER
                    MOVE    "0"                 TO  SHELLTBL-ARG12
                                                    SHELLTBL-ARG13

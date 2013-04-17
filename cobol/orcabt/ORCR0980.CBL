@@ -854,11 +854,13 @@
                    END-IF
       *
       *            公務災害、種別不明のとき対象外
+      *            指定医療機関ではないとき対象外
                    IF  (   RECE82-SRYYM        <   201307 )
                    OR  (   RECE82-PTNUM        =   SPACE  )
                    OR  (   RECE82-TSTPTNUMKBN  =   "1"    )
                    OR  (   RECE82-RECESYUBETU  =   ZERO
                                                OR  7061   )
+                   OR  (   RECE82-RSIIRYOKBN   =   "0"    )
                    OR  ( ( RECE82-TOTALKIN     =   ZERO )
                            AND
                          ( RECE82-TOTALKIN2    =   ZERO ) )

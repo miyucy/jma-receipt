@@ -5632,12 +5632,14 @@
                    END-IF
       *
       *            公務災害、アフターケア、種別不明のとき対象外
+      *            指定医療機関ではないとき対象外
                    IF  (   RECE41-SRYYM        <   201307 )
                    OR  (   RECE41-PTNUM        =   SPACE  )
                    OR  (   RECE41-TSTPTNUMKBN  =   "1"    )
                    OR  (   RECE41-RECESYUBETU  =   ZERO
                                                OR  7021
                                                OR  7051   )
+                   OR  (   RECE41-RSIIRYOKBN   =   "0"    )
                    OR  ( ( RECE41-TOTALKIN     =   ZERO )
                            AND
                          ( RECE41-TOTALKIN2    =   ZERO ) )
@@ -5653,7 +5655,9 @@
                        END-IF
        *
                        ADD     1               TO  CNT-IN
-                       DISPLAY "RECE41  PTNUM=" RECE41-PTNUM     
+                       DISPLAY "RECE41  PTNUM=" RECE41-PTNUM 
+                               " SRYYM="        RECE41-SRYYM 
+                               " RECESYUBETU="  RECE41-RECESYUBETU
                    END-IF
            END-READ
            .
