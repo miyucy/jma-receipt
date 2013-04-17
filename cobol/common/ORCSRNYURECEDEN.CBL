@@ -446,7 +446,6 @@
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-           DISPLAY "ORCERNYURECEDEN 100-PRM-CHK-SEC START"
       *    算定年月チェック
            IF    ( LNK-RNYURECEDEN-SANTEIYM    =   SPACE )
                MOVE    1               TO  LNK-RNYURECEDEN-RC
@@ -558,7 +557,6 @@
       *****************************************************************
        200-MAIN-1-SEC            SECTION.
       *
-           DISPLAY "ORCERNYURECEDEN 200-MAIN-1-SEC START"
       *短期滞在手術基本料２と３の入院料未算定日について取得
            INITIALIZE                             ORCSNYUINDAY-AREA
            MOVE    LNK-RNYURECEDEN-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
