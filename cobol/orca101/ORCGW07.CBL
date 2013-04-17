@@ -2189,7 +2189,7 @@
            MOVE    "99 レセプト摘要欄コメント"
                                        TO  SPA-GMN-SJKBNLST (13)
       *H25.7 から追加
-           MOVE    "AA 労災レセプトの傷病の経過"
+           MOVE    "AA 労災レセプト「傷病の経過」コメント"
                                        TO  SPA-GMN-SJKBNLST (14)
            MOVE    14                  TO  SPA-GMN-SJKBN-MAX
       *

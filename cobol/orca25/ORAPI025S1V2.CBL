@@ -795,7 +795,7 @@
                                                TO  WRK-SJKBN-NAME
       *H25.7
                WHEN    "AA"
-                   MOVE    "労災レセプトの傷病の経過"
+                   MOVE    "労災レセプト「傷病の経過」コメント"
                                                TO  WRK-SJKBN-NAME
                WHEN    OTHER
       *        エラー
