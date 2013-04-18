@@ -237,6 +237,7 @@
            03  IDXX                PIC 9(04).
            03  IDXY                PIC 9(04).
            03  IDYY                PIC 9(04).
+           03  IDZZ                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -283,7 +284,6 @@
            03  WRK-PRT-PAGE        PIC 9(10).
            03  WRK-PRT-PAGE1       PIC 9(10).
            03  WRK-PRT-PAGE2       PIC 9(06).
-     *     
       *
            03  WRK-PRTNM           PIC 9(04).
            03  WRK-PRTNM-R         REDEFINES   WRK-PRTNM.
@@ -301,6 +301,8 @@
                05  WRK-BTPARA-STNO PIC 9(02).
                05  WRK-BTPARA-EDNO PIC 9(02).
                05  WRK-BTPARA-WRNO PIC 9(02).
+      *
+           03  WRK-SYS-SRYYMD      PIC X(08).
       *
       *    直接請求する保険者番号
        01  WRK-HKNJANUM-AREA.
@@ -436,6 +438,8 @@
            COPY    "CPSK3003.INC".
       *
            COPY    "CPSK3004.INC".
+      *
+           COPY    "CPSK4001.INC".
       *
            COPY    "CPSK4100.INC".
       *
@@ -1051,12 +1055,59 @@ grpsys                                         SPA-AREA
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-4100-REC
            ELSE
-               INITIALIZE                  SYS-4100-REC
+               INITIALIZE                      SYS-4100-REC
            END-IF
            IF      SYS-4100-KGISKYKBN  =   SPACE
                MOVE    "00"                TO  SYS-4100-KGISKYKBN
            END-IF
            MOVE    SYS-4100-KGISKYKBN  TO  SPA-NAI-4100-KGISKYKBN
+      *
+      *    労災医療機関情報
+           INITIALIZE                      SYS-4001-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               PERFORM UNTIL ( FLG-SYSKANRI        =   1   )
+                       OR    ( SPA-NAI-4001-MAX    >=  100 )
+                   MOVE    MCPDATA-REC         TO  SYS-4001-REC
+                   IF      SYS-4001-EDYUKYMD   <   "20130701"
+                       CONTINUE
+                   ELSE
+                       ADD     1               TO  SPA-NAI-4001-MAX
+                       MOVE    SYS-4001-STYUKYMD
+                                               TO  SPA-NAI-4001-STYUKYMD
+                                                      (SPA-NAI-4001-MAX)
+                       MOVE    SYS-4001-EDYUKYMD
+                                               TO  SPA-NAI-4001-EDYUKYMD
+                                                      (SPA-NAI-4001-MAX)
+                       MOVE    SYS-4001-RSIIRYOKBN
+                                               TO
+                                               SPA-NAI-4001-RSIIRYOKBN
+                                                      (SPA-NAI-4001-MAX)
+      *
+           DISPLAY "4001=" SPA-NAI-4001-MAX "#" SYS-4001-STYUKYMD " "
+                                          SYS-4001-EDYUKYMD " "
+                                          SYS-4001-RSIIRYOKBN
+      *
+                   END-IF
+      *
+                   MOVE    "tbl_syskanri"    TO  MCP-TABLE
+                   MOVE    "key8"            TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
       *    クライアント保存可否情報取得サブ
            INITIALIZE                      ORCSCLIENTSVAREA
@@ -4813,7 +4864,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    レセ電データ月遅れ分存在チェック処理
+      *    月遅れ分のレセ電データの存在チェック処理
       *****************************************************************
        4601-RECEDEN-CHK-SEC            SECTION.
       *
@@ -4842,31 +4893,41 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            =   6   OR  7  OR  8 )
                    CONTINUE
                ELSE
-      *          労災で平成２５年６月以前またはアフターケアと公務災害は対象外
-                 IF  (   RECE10-TEISYUTUSAKI =   "3"                   )
-                 AND ( ( RECE10-SRYYM        <   WRK-CONS-SRYYM-201307) 
-                         OR
-                       ( RECE10-HKNKBN       =   "3" OR  "5"          )) 
-                     CONTINUE
-                 ELSE
-                   MOVE    SPACE               TO  RECEDEN-REC
-                   INITIALIZE                      RECEDEN-REC
-                   MOVE    RECE10-KEY          TO  RECEDEN-KEY
-                   MOVE    "1"                 TO  RECEDEN-RECKBN
-                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                   PERFORM 900-RECEDEN-READ-SEC
-                   IF      FLG-RECEDEN         =   1
-                       MOVE    1                   TO  FLG-RECEDEN-CHK
-                   ELSE
-      *                平成２４年３月以前の月後れ分が改正パッチ前の作成か
-                       IF    ( SPA-NAI-SKYYM   >   201203     )
-                       AND   ( RECE10-SRYYM    <=  201203     )
-                       AND   ( RECE10-CREYMD   <   "20120423" )
-                           MOVE    1               TO
-                                               FLG-RECEDEN-201203-CHK
+      *            労災で平成２５年６月以前またはアフターケアと公務災害は対象外
+                   IF      RECE10-TEISYUTUSAKI =   "3"
+                       IF    ( RECE10-SRYYM        <
+                                               WRK-CONS-SRYYM-201307   ) 
+                       OR    ( RECE10-RECESYUBETU  =   7021   OR  7051
+                                                   OR  7061            )
+                           CONTINUE
+                       ELSE
+      *                    労災指定医療機関でないときは対象外
+                           MOVE    RECE10-SRYYM    TO
+                                                   WRK-SYS-SRYYMD (1:6)
+                           MOVE    "01"            TO
+                                                   WRK-SYS-SRYYMD (7:2)
+      *
+                           PERFORM VARYING IDZZ    FROM    1   BY  1
+                                   UNTIL   IDZZ    >  SPA-NAI-4001-MAX
+                               IF    ( SPA-NAI-4001-STYUKYMD (IDZZ)
+                                                   <=  WRK-SYS-SRYYMD )
+                               AND   ( SPA-NAI-4001-EDYUKYMD (IDZZ)
+                                                   >=  WRK-SYS-SRYYMD )
+                                   IF      SPA-NAI-4001-RSIIRYOKBN
+                                                               (IDZZ)
+                                                       =   "0"
+                                       CONTINUE
+                                   ELSE
+                                       PERFORM 46011-RECEDEN-CHK-SEC
+                                   END-IF
+                                   MOVE     SPA-NAI-4001-MAX
+                                                       TO  IDZZ
+                               END-IF
+                           END-PERFORM
                        END-IF
+                   ELSE
+                       PERFORM 46011-RECEDEN-CHK-SEC
                    END-IF
-                 END-IF
                END-IF
       *
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
@@ -4884,6 +4945,31 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
            .
        4601-RECEDEN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主科未設定データ存在チェック処理
+      *****************************************************************
+       46011-RECEDEN-CHK-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  RECEDEN-REC
+           INITIALIZE                      RECEDEN-REC
+           MOVE    RECE10-KEY          TO  RECEDEN-KEY
+           MOVE    "1"                 TO  RECEDEN-RECKBN
+           MOVE    RECEDEN-REC         TO  MCPDATA-REC
+           PERFORM 900-RECEDEN-READ-SEC
+           IF      FLG-RECEDEN         =   1
+               MOVE    1                   TO  FLG-RECEDEN-CHK
+           ELSE
+      *        平成２４年３月以前の月後れ分が改正パッチ前の作成か
+               IF    ( SPA-NAI-SKYYM   >   201203     )
+               AND   ( RECE10-SRYYM    <=  201203     )
+               AND   ( RECE10-CREYMD   <   "20120423" )
+                  MOVE    1               TO  FLG-RECEDEN-201203-CHK
+               END-IF
+           END-IF
+           .
+       46011-RECEDEN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5273,6 +5359,26 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                MOVE    "/var/tmp/"     TO  SYS-2005-RECEDENOUT
            END-IF    
       *
+      *    労災指定医療機関の有無
+           MOVE    SPACE               TO  SYS-4001-REC 
+           INITIALIZE                      SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    SPA-NAI-SKYYM       TO  SYS-4001-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-4001-STYUKYMD (7:2)
+           MOVE    SYS-4001-STYUKYMD   TO  SYS-4001-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-4001-REC
+           ELSE
+               INITIALIZE                      SYS-4001-REC
+           END-IF
+           IF      SYS-4001-RSIIRYOKBN =   SPACE
+               MOVE    "0"                 TO  SYS-4001-RSIIRYOKBN
+           END-IF
+      *
       *    印刷ＤＢのＫＥＹ用     
            MOVE    WRK-SYSYMD      TO
                                    WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
@@ -5326,6 +5432,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                                    TO  SHELLTBL-ARG10      
            MOVE    LNK-PRTKANRI-PRTNM
                                    TO  SHELLTBL-ARG11      
+           MOVE    SYS-4001-RSIIRYOKBN
+                                   TO  SHELLTBL-ARG12
            IF      SPA-GMN-DATAKBN  =  "1"  OR  "2" OR  "5" OR  "6"
                MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
            END-IF

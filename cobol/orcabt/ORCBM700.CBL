@@ -105,7 +105,8 @@
       *
            03  FLG-DATA                PIC 9(01).
            03  FLG-RECE3W              PIC 9(01).
-     *
+           03  FLG-SET                 PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
@@ -150,6 +151,7 @@
            05  WRK-PARA-FIXEDSIZE      PIC 9(07).
            05  WRK-PARA-HOSPNUM        PIC 9(02).
            05  WRK-PARA-PRTKBN         PIC X(01).
+           05  WRK-PARA-RSIIRYOKBN     PIC X(01).
       *
       *    マルチボリューム識別情報     
            03  WRK-VOLNUM              PIC 9(02).
@@ -184,7 +186,9 @@
       *
            03  WRK-STR                 PIC X(2500).
       *
-      *     右づめ編集用     
+           03  WRK-SYS-SRYYMD          PIC X(08).
+      *
+      *     右づめ編集用
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
@@ -259,6 +263,13 @@
            03  TABLE-SRYYM-OCC         OCCURS  100.
                05  TBL-SRYYM           PIC 9(06).
                05  TBL-SRYYM-SEQNUM    PIC 9(02).
+      *
+      *    労災自賠医療機関情報退避用領域
+       01  TBL-SYS4001-T.
+           03  TBL-SYS4001-OCC         OCCURS  100.
+               05  TBL-SYS4001         PIC X(610).
+      *     
+           03  SYSKAN-IDX              PIC 9(03).
       *
        01  WRK-ERR-AREA.
            03  WRK-RECEERR             PIC X(200).
@@ -408,6 +419,7 @@
                                                WRK-PARA-DATAKBN
                                                WRK-PARA-FIXEDSIZE
                                                WRK-PARA-PRTKBN
+                                               WRK-PARA-RSIIRYOKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -527,6 +539,58 @@
                PERFORM 500-COBABORT-SEC
            END-IF
       *
+           MOVE     ZERO               TO  SYSKAN-IDX
+           MOVE     SPACE              TO  TBL-SYS4001-T
+           INITIALIZE                      TBL-SYS4001-T
+           MOVE    WRK-CONS-SRYYM-201307
+                                       TO  WRK-SYS-SRYYMD (1:6)
+           MOVE    "01"                TO  WRK-SYS-SRYYMD (7:2)
+      *
+           INITIALIZE                      SYS-4001-REC
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-4001-HOSPNUM
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-N-SEC
+               PERFORM UNTIL ( FLG-SYSKANRI    =   1   )
+                       OR    ( SYSKAN-IDX      >=  100 )
+                   MOVE    MCPDATA-REC             TO  SYS-4001-REC
+                   IF      SYS-4001-EDYUKYMD       <   WRK-SYS-SRYYMD
+                       CONTINUE
+                   ELSE
+                       ADD     1                   TO  SYSKAN-IDX
+                       MOVE    SYS-4001-REC        TO  TBL-SYS4001
+                                                          (SYSKAN-IDX)
+      *
+           DISPLAY "4001=" SYSKAN-IDX "#" SYS-4001-STYUKYMD " "
+                                          SYS-4001-EDYUKYMD " "
+                                          SYS-4001-RSIIRYOKBN
+      *
+                   END-IF
+      *
+                   MOVE    "tbl_syskanri"    TO  MCP-TABLE
+                   MOVE    "key8"            TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-N-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           IF      SYSKAN-IDX          =   ZERO
+               MOVE    "労災指定医療機関情報が取得できませんでした。"
+                                           TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+      *
       *    労災指定医療機関番号医療機関情報取得
            INITIALIZE                      ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
@@ -579,6 +643,7 @@
                        " HENREI-SIJI-FLG="  RECE10-HENREI-SIJI-FLG
                        " SKYKBN-RECEDEN="  RECE10-SKYKBN-RECEDEN
                        " HKNJANUM-S="  RECE10-HKNJANUM-S
+                       " HKNKBN="       RECE10-HKNKBN
       *
                PERFORM 900-RECEDEN-SELECT-SEC
                IF      FLG-RECEDEN     =   1
@@ -1907,9 +1972,41 @@
                MOVE    MCPDATA-REC         TO  RECE10-REC
       *
       *        平成２５年６月以前またはアフターケアと公務災害は対象外
-               IF    ( RECE10-HKNKBN       =   "3" OR  "5"           )
-               OR    ( RECE10-SRYYM        <   WRK-CONS-SRYYM-201307 )
+               IF    ( RECE10-RECESYUBETU  =   7021    OR  7051    OR
+                                               7061                   )
+               OR    ( RECE10-SRYYM        <   WRK-CONS-SRYYM-201307  )
                    GO  TO  900-SEIKYU-READ-SEC
+               END-IF
+      *
+      *        労災指定医療機関でないときは対象外
+               IF      LNK-PRTKANRI-SRYYM  =   RECE10-SRYYM
+                   IF     WRK-PARA-RSIIRYOKBN  =   "0"
+                       GO  TO  900-SEIKYU-READ-SEC
+                   END-IF
+               ELSE
+                   MOVE    RECE10-SRYYM        TO  WRK-SYS-SRYYMD (1:6)
+                   MOVE    "01"                TO  WRK-SYS-SRYYMD (7:2)
+      *
+                   MOVE    ZERO                TO  FLG-SET
+                   PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                           UNTIL ( SYSKAN-IDX              >  100  )
+                           OR    ( TBL-SYS4001(SYSKAN-IDX) = SPACE )
+                           OR    ( FLG-SET                 =   1   )
+                       MOVE    TBL-SYS4001 (SYSKAN-IDX)
+                                                   TO  SYS-4001-REC
+                       IF    ( SYS-4001-STYUKYMD   <=
+                                                   WRK-SYS-SRYYMD    )
+                       AND   ( WRK-SYS-SRYYMD      <=
+                                                   SYS-4001-EDYUKYMD )
+                           MOVE     1                  TO  FLG-SET
+                       END-IF
+                   END-PERFORM
+                   IF      FLG-SET             =   ZERO
+                       GO  TO  900-SEIKYU-READ-SEC
+                   END-IF
+                   IF      SYS-4001-RSIIRYOKBN =   "0"
+                       GO  TO  900-SEIKYU-READ-SEC
+                   END-IF
                END-IF
       *
                ADD     1                   TO  CNT-RECE10
@@ -1986,12 +2083,7 @@
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
-               PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    1                   TO  FLG-SYSKANRI
-               END-IF
+               PERFORM 900-SYSKANRI-N-SEC
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
@@ -2002,6 +2094,22 @@
       *
            .
        910-SYSKANRI-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタ読込
+      *****************************************************************
+       900-SYSKANRI-N-SEC         SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-N-EXT.
            EXIT.
       *
       *****************************************************************
