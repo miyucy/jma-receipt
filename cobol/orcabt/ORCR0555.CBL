@@ -1798,8 +1798,55 @@
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    傷病の経過
-           MOVE    RECE41-COMMENT      TO  WRK-DATA
-           MOVE    100                 TO  WRK-NAGASA    
+           INITIALIZE                      RECECOM-REC
+           MOVE    RECE41-HOSPNUM      TO  RECECOM-HOSPNUM
+           MOVE    RECE41-SRYYM        TO  RECECOM-SRYYM
+           MOVE    RECE41-PTID         TO  RECECOM-PTID
+           MOVE    RECE41-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
+           MOVE    "AA"                TO  RECECOM-SJKBN
+           MOVE    RECE41-HKNCOMBI     TO  RECECOM-HKNCOMBI
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    "tbl_rececom"       TO  MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_rececom"       TO  MCP-TABLE
+               MOVE    "key16"             TO  MCP-PATHNAME
+               PERFORM 900-RECECOM-READ-SEC
+           ELSE
+               INITIALIZE                  RECECOM-REC
+               MOVE    1               TO  FLG-RECECOM
+           END-IF
+      *
+           MOVE    "tbl_rececom"       TO  MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           IF      FLG-RECECOM         =   ZERO
+               MOVE    RECECOM-COMMENT     TO  WRK-COMM
+               IF      WRK-COMM (1:1)      =   WRK-CONS-RETURN
+                   CONTINUE
+               ELSE             
+                   INSPECT WRK-COMM    TALLYING    WRK-COL
+                                               FOR ALL WRK-CONS-RETURN
+                   IF      WRK-COL         >   ZERO
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >
+                                           WRK-CONS-RECECOM-LENGTH-MAX
+                           IF      WRK-COMM(IDX:1) =   WRK-CONS-RETURN
+                               COMPUTE IDY1    =   IDX     -   1
+                               MOVE    WRK-COMM (1:IDY1)
+                                                   TO  WRK-DATA
+                               MOVE    WRK-CONS-RECECOM-LENGTH-MAX
+                                                   TO  IDX
+                           END-IF
+                       END-PERFORM
+                   ELSE
+                       MOVE    WRK-COMM        TO  WRK-DATA
+                   END-IF
+                   MOVE    100                 TO  WRK-NAGASA
+               END-IF
+           END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    小計点数
            MOVE    RECE41-TOTALTEN     TO  WRK-NUM
