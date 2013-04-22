@@ -1029,17 +1029,25 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            PERFORM 330-HC101-TENSU-HEN-SEC
       *
       *    帳票編集<傷病の経過>処理
-           IF      WRK-PARA-RECECOM    =   "0"
-               PERFORM 360-HC101-COMMENT-HEN-SEC
+           IF      RECE41-SRYYM        <   201307
+               IF      WRK-PARA-RECECOM    =   "0"
+                   PERFORM 360-HC101-COMMENT-HEN-SEC
+               END-IF
+           ELSE
+               PERFORM 360-COMMENT-HENSYU-SEC
            END-IF 
       *
       *    帳票編集<適用（点数）>処理
            PERFORM 340-HC101-ZAI-HEN-SEC
       *
       *    帳票編集<傷病の経過>処理
-           IF      WRK-PARA-RECECOM    =   "1"
+           IF      RECE41-SRYYM        <   201307
+               IF      WRK-PARA-RECECOM    =   "1"
+                   PERFORM 360-HC101-COMMENT-HEN-SEC
+               END-IF
+           ELSE
                PERFORM 360-HC101-COMMENT-HEN-SEC
-           END-IF 
+           END-IF
       *
       *    帳票印刷処理（続紙）
            IF      CNT-PAGE           >   1
@@ -1509,6 +1517,58 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    帳票編集<傷病の経過>処理
+      *****************************************************************
+       360-COMMENT-HENSYU-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  WRK-RECECOM
+                                           WRK-KEIKA-LINE
+      *     
+      *    傷病の経過
+           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+           MOVE    "key17"             TO  WRK-MCP-PATHNAME
+      *     
+           INITIALIZE                      RECECOM-REC
+           MOVE    RECE41-HOSPNUM      TO  RECECOM-HOSPNUM
+           MOVE    RECE41-SRYYM        TO  RECECOM-SRYYM
+           MOVE    RECE41-PTID         TO  RECECOM-PTID
+           MOVE    RECE41-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
+           MOVE    RECE41-TEKSTYMD (7:2)
+                                       TO  RECECOM-SRYDD
+           MOVE    "AA"                TO  RECECOM-SJKBN
+      * 
+           MOVE    RECECOM-REC         TO  MCPDATA-REC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-RECECOM-READ-SEC
+           ELSE
+               INITIALIZE                  RECECOM-REC
+               MOVE    1               TO  FLG-RECECOM
+           END-IF
+      *
+           PERFORM             UNTIL   FLG-RECECOM   =   1
+               IF      RECECOM-HKNCOMBI    =   RECE41-HKNCOMBI
+                   PERFORM 3601-COMMENT-HENSYU-SEC                 
+               END-IF
+      *                 
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-RECECOM-READ-SEC
+           END-PERFORM
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *     
+           .
+       360-COMMENT-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    帳票編集<コメント>処理
       *****************************************************************
        360-HC101-COMMENT-HEN-SEC      SECTION.
@@ -1517,7 +1577,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                                            WRK-KEIKA-LINE
       *
       *    適用欄に記載するときの設定
-           IF      WRK-PARA-RECECOM    =   "1"
+           IF    ( WRK-PARA-RECECOM    =   "1"    )
+           OR    ( RECE41-SRYYM        >=  201307 )
                MOVE    WRK-KEIKA-HC18-LINE     TO  WRK-KEIKA-LINE
            END-IF
       *     
@@ -1535,7 +1596,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-grpsys     PERFORM 900-DBSELECT-SEC
+           PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
