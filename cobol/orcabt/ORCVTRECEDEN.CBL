@@ -1131,8 +1131,28 @@
                ADD     1                   TO  IDX
                MOVE    ZERO                TO  IDY
                MOVE    WRK-HEN-SRYKBN      TO  TBL-SRYKBN  (IDX)
+      *        病理診断変換
+               IF     (TNS-SRYKBN          =   "64" )  AND
+                      (WRK-HEN-SRYKBN      =   "60" )
+                   MOVE    TNS-SRYKBN          TO  WRK-HEN-SRYKBN
+               END-IF
                IF      WRK-HEN-SRYKBN      =   TNS-SRYKBN
                    MOVE    TNS-SRYSYUKBN       TO  TBL-SRYSYUKBN (IDX)
+      *            加算の時、診療種別の変更
+                   IF      TNS-DATAKBN         =   "2"
+                       EVALUATE    TNS-SRYSYUKBN
+                       WHEN    "140"
+                           MOVE    "143"       TO  TBL-SRYSYUKBN (IDX)
+                       WHEN    "400"
+                           MOVE    "403"       TO  TBL-SRYSYUKBN (IDX)
+                       WHEN    "600"
+                           MOVE    "603"       TO  TBL-SRYSYUKBN (IDX)
+                       WHEN    "640"
+                           MOVE    "643"       TO  TBL-SRYSYUKBN (IDX)
+                       WHEN    "700"
+                           MOVE    "704"       TO  TBL-SRYSYUKBN (IDX)
+                       END-EVALUATE
+                   END-IF
                END-IF
                MOVE    WRK-HEN-ZAIKAIKEI   TO  TBL-KAISU  (IDX)
                MOVE    WRK-HEN-DAY-G       TO  TBL-DAY-G  (IDX)
@@ -1265,6 +1285,17 @@
                ADD     1                   TO  IDX
                MOVE    ZERO                TO  IDY
                MOVE    WRK-HEN-SRYKBN      TO  TBL-SRYKBN  (IDX)
+      *        注射の時は、手技料なしの診療種別へ
+               IF     (WRK-HEN-SRYKBN      =   "31"
+                                           OR  "32"
+                                           OR  "33")
+               AND    (SPA-NYUGAIKBN       =   "2" )
+                   MOVE    WRK-HEN-SRYKBN      TO  TBL-SRYSYUKBN(IDX)
+                                                             (1:2)
+                   MOVE    "1"                 TO  TBL-SRYSYUKBN(IDX)
+                                                             (3:1)
+               END-IF
+      *
                MOVE    FLG-PLUSKBN         TO  TBL-PLUSKBN (IDX)
                MOVE    WRK-HEN-ZAIKAIKEI   TO  TBL-KAISU  (IDX)
                MOVE    WRK-HEN-DAY-G       TO  TBL-DAY-G  (IDX)
