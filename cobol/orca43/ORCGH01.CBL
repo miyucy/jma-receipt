@@ -210,6 +210,8 @@
            03  WRK-TITLE           PIC X(10).
            03  WRK-ZAITAKU         PIC X(08).
       *
+           03  WRK-SYS-SRYYMD      PIC X(08).
+      *
       *    入力項目名
            03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-GMN-CUR         PIC 9(03).
@@ -246,6 +248,8 @@
            COPY    "CPSK200501.INC".
       *
            COPY    "CPSK2009.INC".
+      *
+           COPY    "CPSK4001.INC".
       *
            COPY    "CPRCF010.INC".
       *
@@ -642,6 +646,52 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                                        TO  SPA-NAI-2009-SYUKA-KOKUHO
            MOVE    SYS-2009-SYUKA-KOUIKI
                                        TO  SPA-NAI-2009-SYUKA-KOUIKI
+      *
+      *    労災医療機関情報
+           INITIALIZE                      SYS-4001-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               PERFORM UNTIL ( FLG-SYSKANRI        =   1   )
+                       OR    ( SPA-NAI-4001-MAX    >=  100 )
+                   MOVE    MCPDATA-REC         TO  SYS-4001-REC
+                   IF      SYS-4001-EDYUKYMD   <   "20130701"
+                       CONTINUE
+                   ELSE
+                       IF      SYS-4001-RSIIRYOKBN =   "0"
+                           MOVE    1           TO
+                                           SPA-NAI-4001-RSIIRYOKBN-FLG
+                       END-IF
+                       ADD     1               TO  SPA-NAI-4001-MAX
+                       MOVE    SYS-4001-STYUKYMD
+                                               TO  SPA-NAI-4001-STYUKYMD
+                                                      (SPA-NAI-4001-MAX)
+                       MOVE    SYS-4001-EDYUKYMD
+                                               TO  SPA-NAI-4001-EDYUKYMD
+                                                      (SPA-NAI-4001-MAX)
+                       MOVE    SYS-4001-RSIIRYOKBN
+                                               TO
+                                               SPA-NAI-4001-RSIIRYOKBN
+                                                      (SPA-NAI-4001-MAX)
+                   END-IF
+      *
+                   MOVE    "tbl_syskanri"    TO  MCP-TABLE
+                   MOVE    "key8"            TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
       *
       *****IF      SYS-2005-??         =   "0"
                MOVE    WIDGET-INSENSITIVE  TO
@@ -2243,7 +2293,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE
       *      労災でアフターケア、公務災害はレセ電データに記録しない
              IF    ( RECE10-TEISYUTUSAKI =   "3"         )
-             AND   ( RECE10-HKNKBN       =   "3" OR  "5" )
+             AND   ( RECE10-HKNKBN       =   "3" OR  "4" )
                CONTINUE
              ELSE
       *        未確定分をレセ電データに記録しないとき
@@ -2293,10 +2343,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    1   TO  SPA-H01NAI-RECEDEN-MSG
                            END-IF
                        WHEN    "3"             ALSO    "1"
-                           IF    ( SPA-NAI-200501-ROURECEKBN
-                                                   =   "2" OR  "3" )
-                           AND   ( RECE10-SRYYM    >=  "201307"    )
-                               MOVE    1   TO  SPA-H01NAI-RECEDEN-MSG
+                           IF      SPA-NAI-200501-ROURECEKBN
+                                                   =   "2" OR  "3"
+                               PERFORM 410212-ROU-RECEDEN-CHK-SEC
                            END-IF
                        WHEN    "3"             ALSO    "2"
                            IF    ( SPA-NAI-200501-ROURECEKBN
@@ -2418,9 +2467,42 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
+      *    レセ電データ存在チェック
+      *****************************************************************
+       410212-ROU-RECEDEN-CHK-SEC  SECTION.
+      *
+           IF    ( RECE10-SRYYM    >=  "201307" )
+           AND   ( SPA-NAI-4001-RSIIRYOKBN-FLG
+                                   =   1        )
+      *        労災指定医療機関でないときは対象外
+               MOVE    RECE10-SRYYM    TO  WRK-SYS-SRYYMD (1:6)
+               MOVE    "01"            TO  WRK-SYS-SRYYMD (7:2)
+      *
+               PERFORM VARYING IDZZ    FROM    1   BY  1
+                       UNTIL   IDZZ    >   SPA-NAI-4001-MAX
+                   IF    ( SPA-NAI-4001-STYUKYMD (IDZZ)
+                                           <=  WRK-SYS-SRYYMD )
+                   AND   ( SPA-NAI-4001-EDYUKYMD (IDZZ)
+                                           >=  WRK-SYS-SRYYMD )
+                       IF      SPA-NAI-4001-RSIIRYOKBN  (IDZZ)
+                                               =   "0"
+                           CONTINUE
+                       ELSE
+                           MOVE    1               TO
+                                               SPA-H01NAI-RECEDEN-MSG
+                       END-IF
+                       MOVE     SPA-NAI-4001-MAX   TO  IDZZ
+                   END-IF
+               END-PERFORM
+           END-IF
+           .
+       410212-ROU-RECEDEN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    レセプト検索画面編集処理
       *****************************************************************
-       41021-H99-HENSYU-SEC         SECTION.
+       41021-H99-HENSYU-SEC        SECTION.
       *
            INITIALIZE                      SPA-H99GMN-AREA
            MOVE    SPACE               TO  SPA-H99-AREA
@@ -4878,12 +4960,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key10"             TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    1                   TO  FLG-SYSKANRI
-               END-IF
+               PERFORM 900-SYSKANRI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
@@ -4894,6 +4971,21 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        910-SYSKANRI-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           .
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************
