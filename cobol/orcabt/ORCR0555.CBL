@@ -1303,6 +1303,11 @@
            MOVE    SYS-2005-STYUKYMD   TO  SYS-2005-EDYUKYMD
            MOVE    SYS-2005-REC        TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2005-REC
+           ELSE
+               INITIALIZE                      SYS-2005-REC
+           END-IF
            IF      SYS-2005-SYUBYOHENFLG
                                        =   SPACE
                MOVE    ZERO                TO  SYS-2005-SYUBYOHENFLG
@@ -1310,6 +1315,8 @@
            IF      SYS-2005-RECECOMKBN =   SPACE
                MOVE    ZERO                TO  SYS-2005-RECECOMKBN
            END-IF
+      *    
+           MOVE    "0"                 TO  SYS-2005-RECECOMKBN
            .
        1001-SYSKANRI-HENSYU-EXT.
            EXIT.
@@ -5313,6 +5320,12 @@
       *    �耀瞿氿峉茛籟猀埣駖�
       *****************************************************************
        50012-DBINSERT-SEC          SECTION.
+      *
+      *    導橇擇筏迕及犯□正反筏狤仄卅中
+           IF      RECEDEN-RECKBN      =   "2"
+               GO  TO  50012-DBINSERT-EXT
+           END-IF
+      *
       *
            MOVE    WRK-PARA-CREYMD     TO  RECEDEN-CREYMD
            MOVE    WRK-PARA-CREHMS (1:6)
