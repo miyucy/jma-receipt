@@ -318,7 +318,7 @@
 <!-- RegisteredDiagnosisModule DTD Version 1.0         -->
 <!--***************************************************-->
 <!ELEMENT mmlRd:RegisteredDiagnosisModule  ( (mmlRd:diagnosis | mmlRd:diagnosisContents) , mmlRd:categories? ,
-                                             mmlRd:startDate? , mmlRd:endDate? , mmlRd:outcome? , 
+                                             mmlRd:startDate? , mmlRd:endDate? , mmlRd:outcome? , mmlRd:InOutPatient? ,
                                              mmlRd:firstEncounterDate? , mmlRd:relatedHealthInsurance? )>
 <!ELEMENT mmlRd:diagnosis  (#PCDATA )>
 <!ATTLIST mmlRd:diagnosis  mmlRd:code   CDATA  #IMPLIED
@@ -333,6 +333,7 @@
 <!ELEMENT mmlRd:startDate  (#PCDATA )>
 <!ELEMENT mmlRd:endDate  (#PCDATA )>
 <!ELEMENT mmlRd:outcome  (#PCDATA )>
+<!ELEMENT mmlRd:InOutPatient  (#PCDATA )>
 <!ELEMENT mmlRd:firstEncounterDate  (#PCDATA )>
 <!ELEMENT mmlRd:relatedHealthInsurance EMPTY>
 <!ATTLIST mmlRd:relatedHealthInsurance  mmlRd:uid CDATA  #IMPLIED >
@@ -524,7 +525,10 @@
                                                     transferAcute | 
                                                     transferChronic | 
                                                     home | 
+                                                    delete | 
                                                     unknown )  #IMPLIED >
+<!ATTLIST mmlSm:dischargeCondition  mmlSm:InOutPatient  (outpatient | 
+                                                    inpatient )  #IMPLIED >
 <!ELEMENT mmlSm:referTo  (mmlPsi:PersonalizedInfo )>
 <!ELEMENT mmlSm:staffInfo  (mmlPsi:PersonalizedInfo , mmlCi:creatorLicense+ )>
 <!ELEMENT mmlSm:deathInfo  (#PCDATA )>
