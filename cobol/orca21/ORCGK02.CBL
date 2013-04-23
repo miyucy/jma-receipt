@@ -1614,7 +1614,7 @@
                            MOVE    SPACE               TO  WRK-PUTTYPE
                            PERFORM 450-K02N-SYORI-SEC
                        END-IF
-                  ELSE
+                   ELSE
                        IF     (SPA-PTNUM       =   SPACE )  AND
                               (SPA-GMN-PTNUM   =   SPACE )
                            PERFORM 30010-INIT-GMN-SEC
@@ -6595,6 +6595,18 @@
                        MOVE    SPACE           TO  SPA-COM-KZMFLG5(IDX)
                    WHEN    "K122" 
                        MOVE    SPACE           TO  SPA-COM-KZMFLG6(IDX)
+                   WHEN    "K227"
+                       MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG1
+                                                                  (IDX)
+                   WHEN    "K228"
+                       MOVE    SPACE           TO  SPA-COM-TUKIJGNFLG
+                                                                  (IDX)
+                   WHEN    "K210"
+                   WHEN    "K211"
+                   WHEN    "K212"
+                   WHEN    "K213"
+                       MOVE    SPACE           TO  SPA-COM-KINKIFLG
+                                                                  (IDX)
                    WHEN    OTHER
                       MOVE    SPACE            TO  SPA-COM-KZMFLG (IDX)
                    END-EVALUATE
