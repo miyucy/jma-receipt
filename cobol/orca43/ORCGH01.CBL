@@ -2348,10 +2348,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                PERFORM 410212-ROU-RECEDEN-CHK-SEC
                            END-IF
                        WHEN    "3"             ALSO    "2"
-                           IF    ( SPA-NAI-200501-ROURECEKBN
-                                                   =   "1" OR  "3" )
-                           AND   ( RECE10-SRYYM    >=  "201307"    )
-                               MOVE    1   TO  SPA-H01NAI-RECEDEN-MSG
+                           IF      SPA-NAI-200501-ROURECEKBN
+                                                   =   "1" OR  "3"
+                               PERFORM 410212-ROU-RECEDEN-CHK-SEC
                            END-IF
                      END-EVALUATE
                    END-IF 
