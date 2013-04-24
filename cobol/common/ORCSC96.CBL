@@ -861,7 +861,6 @@
       *H25.4
                WHEN    "8052"
                    STRING  "外来管理加算（読み替え加算）は"
-                           "レセプトで自動記載します。"
                            "入力できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
