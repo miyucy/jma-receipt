@@ -666,7 +666,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                    IF      SYS-4001-EDYUKYMD   <   "20130701"
                        CONTINUE
                    ELSE
-                       IF      SYS-4001-RSIIRYOKBN =   "0"
+                       IF      SYS-4001-RSIIRYOKBN =   "1"
                            MOVE    1           TO
                                            SPA-NAI-4001-RSIIRYOKBN-FLG
                        END-IF
