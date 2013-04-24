@@ -268,12 +268,13 @@
                05  SPA-NAI-2009-SYUKA-KOKUHO       PIC X(01).
                05  SPA-NAI-2009-SYUKA-KOUIKI       PIC X(01).
       *
-               01  SPA-NAI-4001-T.
-                   03  SPA-NAI-4001-OCC            OCCURS  100.
-                       05  SPA-NAI-4001-STYUKYMD   PIC X(08).
-                       05  SPA-NAI-4001-EDYUKYMD   PIC X(08).
-                       05  SPA-NAI-4001-RSIIRYOKBN PIC X(01).
-                   03  SPA-NAI-4001-MAX            PIC 9(03).
+               05  SPA-NAI-4001-T.
+                   07  SPA-NAI-4001-OCC            OCCURS  100.
+                       09  SPA-NAI-4001-STYUKYMD   PIC X(08).
+                       09  SPA-NAI-4001-EDYUKYMD   PIC X(08).
+                       09  SPA-NAI-4001-RSIIRYOKBN PIC X(01).
+                   07  SPA-NAI-4001-MAX            PIC 9(03).
+               05  SPA-NAI-4001-RSIIRYOKBN-FLG     PIC 9(01).
       *
       *    给锐改侍回年
            03  SPA-T02-AREA.
