@@ -299,6 +299,7 @@
                    07  TBL-SRYSURYO        PIC 9(07)V9(5).
                    07  TBL-MEISYO          PIC X(100).
                    07  TBL-MEISKYFLG       PIC X(01).
+                   07  TBL-SURFLG          PIC X(01).
       *
       *    受診履歴剤編集
        01  TBL-JYURRKZAI-AREA.
@@ -1216,6 +1217,12 @@
            PERFORM 20011-TBL-UPD-SEC
            MOVE    WRK-HEN-SRYCD       TO  TBL-SRYCD (IDX IDY)
            MOVE    WRK-HEN-SRYSURYO    TO  TBL-SRYSURYO(IDX IDY)
+      *    診療行為のきざみ値入力
+           IF     (TBL-SRYSURYO(IDX IDY)   >   1  )
+              AND (TBL-SRYCD (IDX IDY)(1:1)    =   "1" )
+               MOVE    "1"                 TO  TBL-SURFLG (IDX IDY)
+           END-IF
+      *
            PERFORM VARYING     IDC     FROM    1   BY  1
                    UNTIL       IDC     >   3
                IF      WRK-HEN-SRYCD-C (IDC)   NOT =   SPACE
@@ -1919,6 +1926,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                             (IDX-SIN)
                MOVE    ZERO                    TO  SRY-SRYKAISU
                                                             (IDX-SIN)
+               IF      TBL-SURFLG (IDX IDY)    =   "1"
+                   MOVE    "S"                 TO  SRY-AUTOKBN
+                                                            (IDX-SIN)
+               END-IF
+      *
       *        （減）は自動発生分とする
                IF      TBL-SRYCD (IDX IDY)     =   "820000047"
                    MOVE    "3"                 TO  SRY-AUTOKBN
