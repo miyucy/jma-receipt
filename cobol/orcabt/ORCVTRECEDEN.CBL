@@ -64,6 +64,13 @@
            03  FILLER                  PIC X(01).
            03  PARA-DATA               PIC X(100).
       *
+       01  PARA2-REC.
+           03  PARA2-RECKBN             PIC X(01).
+           03  PARA2-DATKBN             PIC X(03).
+           03  PARA2-DATKBNREN          PIC X(03).
+           03  FILLER                   PIC X(01).
+           03  PARA2-DATA               PIC X(98).
+      *
       *    レセ電データＣＳＶファイル
        FD  CSV-FILE.
        01  CSV-REC.
@@ -119,6 +126,7 @@
            03  FLG-ERR                 PIC 9(01).
            03  FLG-HENKAN              PIC 9(01).
            03  FLG-HENKANERR           PIC 9(01).
+           03  FLG-PARACHK             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -146,13 +154,17 @@
            03  IDX-D                   PIC 9(04).
       *
            03  IDH                     PIC 9(04).
+           03  IDP                     PIC 9(04).
       *
       *    パラメータ保存
        01  PARA-SAVE.
            03  PARA-05-1               PIC X(02).
-           03  PARA-12-3               PIC X(06).
-           03  PARA-12-4               PIC X(06).
+           03  PARA-09-A               PIC X(06).
+           03  PARA-11-A               PIC X(06).
            03  PARA-HOSPNUM            PIC X(02).
+           03  PARA-12-G.
+               05  PARA-12-1           PIC X(09)
+                                       OCCURS   200.
       *
       *    一時領域
        01  WRK-AREA.
@@ -238,6 +250,9 @@
            03  WRK-KETA2               PIC 9(03).
            03  WRK-ICHI                PIC 9(03).
            03  WRK-ICHI2               PIC 9(03).
+      *
+           03  WRK-CO-SRYCD            PIC X(09).
+      *
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
            03  WRK-INPUT-TBL.
@@ -497,6 +512,7 @@
            MOVE    ZERO            TO  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
+           INITIALIZE                  PARA-SAVE
       *
       *    パラメタセット
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
@@ -565,8 +581,8 @@
            END-IF
       *
            MOVE    PARA-05-1       TO  WRK-RENKETA
-           MOVE    PARA-12-3       TO  WRK-COMMIT
-           MOVE    PARA-12-4       TO  WRK-ERR
+           MOVE    PARA-09-A       TO  WRK-COMMIT
+           MOVE    PARA-11-A       TO  WRK-ERR
       *
       *    ＣＳＶファイル　検索処理
            PERFORM 900-CSV-KENSAKU-SEC
@@ -602,8 +618,8 @@
       *
       *    パラメータチェック処理
            IF    ( PARA-05-1           IS  NUMERIC )   AND
-                 ( PARA-12-3           IS  NUMERIC )   AND
-                 ( PARA-12-4           IS  NUMERIC )
+                 ( PARA-09-A           IS  NUMERIC )   AND
+                 ( PARA-11-A           IS  NUMERIC )
                CONTINUE
            ELSE
                MOVE    1               TO  FLG-CSV
@@ -620,18 +636,27 @@
        101-PARA-GET1-SEC           SECTION.
       *
            EVALUATE                PARA-DATKBN
-             WHEN  "01-A"
-                   MOVE  PARA-DATA TO  ASS-CSV
-             WHEN  "02-A"
-                   MOVE  PARA-DATA TO  ASS-ERR
-             WHEN  "05-1"
-                   MOVE  PARA-DATA TO  PARA-05-1
-             WHEN  "09-A"
-                   MOVE  PARA-DATA TO  PARA-12-3
-             WHEN  "11-A"
-                   MOVE  PARA-DATA TO  PARA-12-4
+               WHEN  "01-A"
+                   MOVE  PARA-DATA     TO  ASS-CSV
+               WHEN  "02-A"
+                   MOVE  PARA-DATA     TO  ASS-ERR
+               WHEN  "05-1"
+                   MOVE  PARA-DATA     TO  PARA-05-1
+               WHEN  "09-A"
+                   MOVE  PARA-DATA     TO  PARA-09-A
+               WHEN  "11-A"
+                   MOVE  PARA-DATA     TO  PARA-11-A
                WHEN    "HN"
-                   MOVE    PARA-DATA     TO  PARA-HOSPNUM
+                   MOVE    PARA-DATA   TO  PARA-HOSPNUM
+               WHEN    OTHER
+                   IF     (PARA2-DATKBN    =   "12-" )
+                    AND   (PARA2-DATA  NOT =   SPACE
+                                           AND ZERO  )
+                       ADD     1               TO  IDP
+                       IF      IDP             <=  200
+                           MOVE    PARA2-DATA   TO  PARA-12-1 (IDP)
+                       END-IF
+                   END-IF
            END-EVALUATE
       *
            .
@@ -736,17 +761,6 @@
            IF      CNT-CSV (4:3)       =   ZERO
                DISPLAY "***(ORCVTRECEDEN)*** CNT-CSV[" CNT-CSV "]"
            END-IF
-      *    指定した件数になったらコミット処理を行う
-      *    IF      CNT-COMMIT          =   WRK-COMMIT
-      *        PERFORM 900-DBCOMMIT-SEC
-      *        MOVE    ZERO            TO  CNT-COMMIT
-      *    END-IF
-      *    エラーが指定した件数になったら処理を抜ける
-      *    IF    ( WRK-ERR         NOT =   ZERO )  AND
-      *          ( CNT-ERR             =   WRK-ERR )
-      *        MOVE    1               TO  FLG-CSV
-      *        GO  TO  200-MAIN-EXT
-      *****END-IF
       *
            MOVE    ZERO            TO  FLG-PTNUM-ERR
            MOVE    ZERO            TO  IDX-AREA
@@ -1205,12 +1219,18 @@
            PERFORM VARYING     IDC     FROM    1   BY  1
                    UNTIL       IDC     >   3
                IF      WRK-HEN-SRYCD-C (IDC)   NOT =   SPACE
-                   PERFORM 20011-TBL-UPD-SEC
-                   MOVE    WRK-HEN-SRYCD-C (IDC)
+      *            コメントコードの対象外判定
+                   MOVE    WRK-HEN-SRYCD-C (IDC)   TO  WRK-CO-SRYCD
+                   PERFORM 200110-COMMENT-PARACHK-SEC
+      *
+                   IF      FLG-PARACHK         =   ZERO
+                       PERFORM 20011-TBL-UPD-SEC
+                       MOVE    WRK-HEN-SRYCD-C (IDC)
                                            TO  TBL-SRYCD (IDX IDY)
-                   MOVE    WRK-HEN-MEISYO   (IDC)
+                       MOVE    WRK-HEN-MEISYO   (IDC)
                                            TO  TBL-MEISYO(IDX IDY)
-                   MOVE    "2"             TO  TBL-MEISKYFLG(IDX IDY)
+                       MOVE    "2"         TO  TBL-MEISKYFLG(IDX IDY)
+                   END-IF
                END-IF
            END-PERFORM
            .
@@ -1455,6 +1475,13 @@
       *****************************************************************
        20011-CO-SYORI-SEC         SECTION.
       *
+      *    コメントコードの対象外判定
+           MOVE    HZN-IN-KOUMOKU (4)(1:9) TO  WRK-CO-SRYCD
+           PERFORM 200110-COMMENT-PARACHK-SEC
+           IF      FLG-PARACHK         =   1
+               GO      TO      20011-CO-SYORI-EXT
+           END-IF
+      *
            INITIALIZE                  WRK-RECHEN-AREA
       *    診療識別
            MOVE    HZN-IN-KOUMOKU (2)(1:2) TO  WRK-HEN-SRYKBN
@@ -1494,6 +1521,24 @@
            MOVE    WRK-HEN-MEISYO  (1) TO  TBL-MEISYO(IDX IDY)
            .
        20011-CO-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    コメントコードの対象外判定処理
+      *****************************************************************
+       200110-COMMENT-PARACHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PARACHK
+           PERFORM VARYING    IDP      FROM    1   BY  1
+                   UNTIL     (IDP      >   200 )
+                        OR   (PARA-12-1 (IDP)  =   SPACE)
+                        OR   (FLG-PARACHK  NOT =   ZERO )
+               IF      WRK-CO-SRYCD    =   PARA-12-1 (IDP)
+                   MOVE    1               TO  FLG-PARACHK
+               END-IF
+           END-PERFORM
+           .
+       200110-COMMENT-PARACHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2282,8 +2327,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
            MOVE    SMCNDATE-YMD        TO  JYURRK-CREYMD
-      *    MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
-      *    MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+      **   MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
+      **   MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
       *
            MOVE    SPA-OPID            TO  JYURRK-OPID
            MOVE    SPA-TERMID          TO  JYURRK-TERMID
