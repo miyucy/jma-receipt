@@ -1059,10 +1059,11 @@
            END-IF
       *
            MOVE    WRK-PARA-HOSPNUM    TO  RECE30PARA-HOSPNUM
-           MOVE    WRK-FILE-SEQNUM     TO  RECE30PARA-SEQNUM1
+      *****MOVE    WRK-FILE-SEQNUM     TO  RECE30PARA-SEQNUM1
            MOVE    WRK-VOLNUM          TO  RECE30PARA-SEQNUM2
            COMPUTE WRK-FILE-RENNUM =   WRK-FILE-RENNUM  +   1
            MOVE    WRK-FILE-RENNUM     TO  RECE30PARA-RENNUM
+                                           RECE30PARA-SEQNUM1
            IF      WRK-PARA-PRTKBN     =   "1"
                MOVE    "RECEDEN"           TO  RECE30PARA-FILENM
            ELSE
