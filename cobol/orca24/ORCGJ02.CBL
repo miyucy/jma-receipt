@@ -7072,6 +7072,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (SYU-SRYYMD      NOT =   SPA-NAI-HENSRYYMD) AND
                   (FLG-SYUNOU          =   ZERO   )
                MOVE    SPA-NAI-HENSRYYMD   TO  SYU-SRYYMD
+               MOVE    SPA-NAI-HENSRYYMD   TO  SYU-SKYSTYMD
       *
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
