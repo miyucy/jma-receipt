@@ -879,8 +879,7 @@ grpsys                                         SPA-AREA
                                        TO
                                        SPA-NAI-200501-RECEDEN-CHK-KBN
            MOVE    SYS-200501-ROURECEKBN
-                                       TO
-                                       SPA-NAI-200501-ROURECEKBN
+                                       TO  SPA-NAI-200501-ROURECEKBN
       *
            IF      SPA-NAI-200501-RECEDEN-CHK-KBN
                                        =   "0"
@@ -943,104 +942,6 @@ grpsys                                         SPA-AREA
                                            SPA-NAI-DIRECT-HKNJANUM-63
            END-IF
       *
-           MOVE    WIDGET-NORMAL       TO  SPA-DATAKBN1-STATE
-                                           SPA-DATAKBN2-STATE
-                                           SPA-DATAKBN3-STATE
-                                           SPA-DATAKBN4-STATE
-                                           SPA-DATAKBN5-STATE
-                                           SPA-DATAKBN6-STATE
-                                           SPA-DATAKBN7-STATE
-                                           SPA-DATAKBN8-STATE
-                                           SPA-B06-STATE
-                                           SPA-B07-STATE
-                                           SPA-B08-STATE
-                                           SPA-B09-STATE
-                                           SPA-B10-STATE
-                                           SPA-B15-STATE
-                                           SPA-B16-STATE
-                                           SPA-B17-STATE
-                                           SPA-B19-STATE
-                                           SPA-B20-STATE
-                                           SPA-B21-STATE
-                                           SPA-B22-STATE
-                                           SPA-SYOKBN1-STATE
-      *
-           MOVE    "T"                 TO  SPA-SYOKBN1-VALUE  
-           MOVE    "F"                 TO  SPA-SYOKBN2-VALUE  
-           MOVE    "T"                 TO  SPA-DATAKBN1-VALUE  
-           MOVE    "T"                 TO  SPA-DATAKBN3-VALUE  
-           MOVE    "T"                 TO  SPA-DATAKBN4-VALUE  
-           MOVE    "T"                 TO  SPA-DATAKBN5-VALUE  
-           MOVE    "T"                 TO  SPA-DATAKBN6-VALUE  
-           MOVE    "F"                 TO  SPA-DATAKBN7-VALUE
-           MOVE    "F"                 TO  SPA-DATAKBN8-VALUE
-      *    ★
-           MOVE    "F"                 TO  SPA-DATAKBN2-VALUE  
-           MOVE    "T"                 TO  SPA-CHK11-VALUE
-                                           SPA-CHK12-VALUE
-                                           SPA-CHK21-VALUE
-                                           SPA-CHK22-VALUE
-                                           SPA-CHK31-VALUE
-                                           SPA-CHK32-VALUE
-      *
-           IF      SYS-2005-SYARECEKBN =   "1" OR  "2" OR  "3"
-               MOVE    WIDGET-NORMAL       TO  SPA-B06-STATE
-                                               SPA-B15-STATE
-                                               SPA-B16-STATE
-           ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  SPA-B06-STATE
-           END-IF
-           IF      SYS-2005-KKHRECEKBN =   "1" OR  "2" OR  "3"
-               MOVE    WIDGET-NORMAL       TO  SPA-B07-STATE
-                                               SPA-B15-STATE
-                                               SPA-B16-STATE
-           ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  SPA-B07-STATE
-           END-IF
-           IF      SYS-200501-KOUIKIRECEKBN
-                                       =   "1" OR  "2" OR  "3"
-               IF      SYS-200501-KOUIKIKBN    =   "0"
-                   MOVE    WIDGET-NORMAL       TO  SPA-B08-STATE
-                                                   SPA-B15-STATE
-                                                   SPA-B16-STATE
-               ELSE
-                   MOVE    WIDGET-INSENSITIVE  TO  SPA-B08-STATE
-               END-IF
-           ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  SPA-B08-STATE
-           END-IF
-           IF    ( SYS-200501-ROURECEKBN =   "1" OR  "2" OR  "3"   )
-           AND   ( SPA-NAI-SKYYM         >=  WRK-CONS-SRYYM-201307 )
-               MOVE    WIDGET-NORMAL       TO  SPA-B17-STATE
-                                               SPA-B15-STATE
-                                               SPA-B16-STATE
-           ELSE
-               MOVE    WIDGET-INSENSITIVE  TO  SPA-B17-STATE
-           END-IF
-      *
-      *
-           IF    ( SYS-2005-SYARECEKBN =   "1" OR  "2" OR  "3" )
-           OR    ( SYS-2005-KKHRECEKBN =   "1" OR  "2" OR  "3" )
-           OR    ( SYS-200501-KOUIKIRECEKBN
-                                       =   "1" OR  "2" OR  "3" )
-               MOVE    WIDGET-NORMAL       TO  SPA-DATA-STATE
-                                               SPA-NYUGAIKBN-STATE
-                                               SPA-PRTKBN-STATE
-                                               SPA-RECEDEN-CHK-STATE
-           ELSE
-               IF    ( SYS-200501-ROURECEKBN
-                                           =   "1" OR  "2" OR  "3" )
-                   MOVE    WIDGET-NORMAL       TO  SPA-DATA-STATE
-                                                   SPA-NYUGAIKBN-STATE
-                                                   SPA-PRTKBN-STATE
-               ELSE
-                   MOVE    WIDGET-INSENSITIVE  TO  SPA-DATA-STATE
-                                                   SPA-NYUGAIKBN-STATE
-                                                   SPA-PRTKBN-STATE
-                                                   SPA-RECEDEN-CHK-STATE
-               END-IF 
-           END-IF
-      *
       *    公害医療機関情報
            MOVE    SPACE               TO  SYS-4100-REC 
            INITIALIZE                      SYS-4100-REC
@@ -1081,6 +982,10 @@ grpsys                                         SPA-AREA
                    IF      SYS-4001-EDYUKYMD   <   "20130701"
                        CONTINUE
                    ELSE
+                       IF      SYS-4001-RSIIRYOKBN =   "1"
+                           MOVE    1           TO
+                                           SPA-NAI-4001-RSIIRYOKBN-FLG
+                       END-IF
                        ADD     1               TO  SPA-NAI-4001-MAX
                        MOVE    SYS-4001-STYUKYMD
                                                TO  SPA-NAI-4001-STYUKYMD
@@ -1092,13 +997,7 @@ grpsys                                         SPA-AREA
                                                TO
                                                SPA-NAI-4001-RSIIRYOKBN
                                                       (SPA-NAI-4001-MAX)
-      *
-           DISPLAY "4001=" SPA-NAI-4001-MAX "#" SYS-4001-STYUKYMD " "
-                                          SYS-4001-EDYUKYMD " "
-                                          SYS-4001-RSIIRYOKBN
-      *
                    END-IF
-      *
                    MOVE    "tbl_syskanri"    TO  MCP-TABLE
                    MOVE    "key8"            TO  MCP-PATHNAME
                    PERFORM 900-SYSKANRI-READ-SEC
@@ -1194,33 +1093,9 @@ grpsys                                         SPA-AREA
                                        TO  SPA-NAI-2009-SYUKA-KOKUHO
            MOVE    SYS-2009-SYUKA-KOUIKI
                                        TO  SPA-NAI-2009-SYUKA-KOUIKI
-           IF      SPA-SYUKA-KBN      =   "0"
-               MOVE    WIDGET-INSENSITIVE  TO  SPA-B20-STATE
-           ELSE
-               IF    ( SYS-2009-SYUKA-SYAHO  =   "1" )
-               OR    ( SYS-2009-SYUKA-KOKUHO =   "1" )
-               OR    ( SYS-2009-SYUKA-KOUIKI =   "1" )
-                   MOVE    WIDGET-NORMAL       TO  SPA-B20-STATE
-               ELSE
-                   MOVE    WIDGET-INSENSITIVE  TO  SPA-B20-STATE
-               END-IF
-           END-IF
       *
-           IF      SPA-NAI-2005-KKHRECEKBN
-                                      =   "1" OR  "2" OR  "3"
-               CONTINUE
-           ELSE
-               MOVE    WIDGET-INSENSITIVE TO  SPA-DATAKBN6-STATE
-               MOVE    "F"                TO  SPA-DATAKBN6-VALUE  
-           END-IF
-      *
-           IF      SPA-NAI-200501-KOUIKIRECEKBN
-                                       =   "1" OR  "2" OR  "3"
-               CONTINUE
-           ELSE
-               MOVE    WIDGET-INSENSITIVE TO  SPA-DATAKBN2-STATE
-               MOVE    "F"                TO  SPA-DATAKBN2-VALUE  
-           END-IF
+      *    ボタン設定処理
+           PERFORM 3100-STATE-SET-SEC
       *
       *    ファイル保存情報チェック
            PERFORM 3102-FILE-INFO-CHECK-SEC
@@ -1239,6 +1114,154 @@ grpsys                                         SPA-AREA
       *
            .
        310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ボタン設定処理
+      *****************************************************************
+       3100-STATE-SET-SEC            SECTION.
+      *
+           MOVE    WIDGET-NORMAL       TO  SPA-DATAKBN1-STATE
+                                           SPA-DATAKBN3-STATE
+                                           SPA-DATAKBN4-STATE
+                                           SPA-DATAKBN5-STATE
+                                           SPA-DATAKBN6-STATE
+                                           SPA-DATAKBN7-STATE
+                                           SPA-DATAKBN8-STATE
+                                           SPA-B09-STATE
+                                           SPA-B10-STATE
+                                           SPA-B19-STATE
+                                           SPA-B20-STATE
+                                           SPA-B21-STATE
+                                           SPA-B22-STATE
+                                           SPA-SYOKBN1-STATE
+           MOVE    WIDGET-INSENSITIVE  TO  SPA-B06-STATE
+                                           SPA-B07-STATE
+                                           SPA-B08-STATE
+                                           SPA-B15-STATE
+                                           SPA-B16-STATE
+                                           SPA-B17-STATE
+           MOVE    WIDGET-INSENSITIVE  TO  SPA-DATA-STATE
+                                           SPA-NYUGAIKBN-STATE
+                                           SPA-PRTKBN-STATE
+                                           SPA-RECEDEN-CHK-STATE
+      *
+           MOVE    "T"                 TO  SPA-SYOKBN1-VALUE  
+           MOVE    "F"                 TO  SPA-SYOKBN2-VALUE  
+           MOVE    "T"                 TO  SPA-DATAKBN1-VALUE  
+           MOVE    "T"                 TO  SPA-DATAKBN3-VALUE  
+           MOVE    "T"                 TO  SPA-DATAKBN4-VALUE  
+           MOVE    "T"                 TO  SPA-DATAKBN5-VALUE  
+           MOVE    "T"                 TO  SPA-DATAKBN6-VALUE  
+           MOVE    "F"                 TO  SPA-DATAKBN7-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN8-VALUE
+      *
+           MOVE    "T"                 TO  SPA-CHK11-VALUE
+                                           SPA-CHK12-VALUE
+                                           SPA-CHK21-VALUE
+                                           SPA-CHK22-VALUE
+                                           SPA-CHK31-VALUE
+                                           SPA-CHK32-VALUE
+      *    レセ電総括表・国保は選択不可
+           MOVE    "F"                 TO  SPA-DATAKBN2-VALUE  
+           MOVE    WIDGET-INSENSITIVE  TO  SPA-DATAKBN2-STATE
+      *
+           IF      SPA-NAI-2005-SYARECEKBN 
+                                       =   "1" OR  "2" OR  "3"
+               MOVE    WIDGET-NORMAL       TO  SPA-B06-STATE
+                                               SPA-B15-STATE
+                                               SPA-B16-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  SPA-B06-STATE
+           END-IF
+           IF      SPA-NAI-2005-KKHRECEKBN 
+                                       =   "1" OR  "2" OR  "3"
+               MOVE    WIDGET-NORMAL       TO  SPA-B07-STATE
+                                               SPA-B15-STATE
+                                               SPA-B16-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  SPA-B07-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  SPA-DATAKBN6-STATE
+               MOVE    "F"                 TO  SPA-DATAKBN6-VALUE  
+           END-IF
+           IF      SPA-NAI-200501-KOUIKIRECEKBN
+                                       =   "1" OR  "2" OR  "3"
+               IF      SPA-NAI-200501-KOUIKIKBN
+                                           =   "0"
+                   MOVE    WIDGET-NORMAL       TO  SPA-B08-STATE
+                                                   SPA-B15-STATE
+                                                   SPA-B16-STATE
+               ELSE
+                   MOVE    WIDGET-INSENSITIVE  TO  SPA-B08-STATE
+               END-IF
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  SPA-B08-STATE
+           END-IF
+      *
+           IF    ( SPA-NAI-2005-SYARECEKBN
+                                       =   "1" OR  "2" OR  "3" )
+           OR    ( SPA-NAI-2005-KKHRECEKBN
+                                       =   "1" OR  "2" OR  "3" )
+           OR    ( SPA-NAI-200501-KOUIKIRECEKBN
+                                       =   "1" OR  "2" OR  "3" )
+               MOVE    WIDGET-NORMAL       TO  SPA-DATA-STATE
+                                               SPA-NYUGAIKBN-STATE
+                                               SPA-PRTKBN-STATE
+                                               SPA-RECEDEN-CHK-STATE
+           END-IF
+      *
+           IF    ( SPA-NAI-200501-ROURECEKBN
+                                       =   "1" OR  "2" OR  "3"   )
+           AND   ( SPA-NAI-SKYYM       >=  WRK-CONS-SRYYM-201307 )
+           AND   ( SPA-NAI-4001-RSIIRYOKBN-FLG
+                                       =   1                     )
+               MOVE    SPA-NAI-SKYYM       TO  WRK-SYS-SRYYMD (1:6)
+               MOVE    "01"                TO  WRK-SYS-SRYYMD (7:2)
+      *
+               PERFORM VARYING IDZZ    FROM    1   BY  1
+                       UNTIL   IDZZ    >  SPA-NAI-4001-MAX
+                   IF      SPA-NAI-4001-RSIIRYOKBN (IDZZ)
+                                               =   "1"
+                       IF    ( SPA-NAI-4001-STYUKYMD (IDZZ)
+                                                   <=  WRK-SYS-SRYYMD )
+                       AND   ( SPA-NAI-4001-EDYUKYMD (IDZZ)
+                                                   >=  WRK-SYS-SRYYMD )
+      *                    該当診療年月が労災指定医療機関のとき
+                           MOVE    WIDGET-NORMAL       TO
+                                                   SPA-B17-STATE
+                                                   SPA-DATA-STATE
+                                                   SPA-NYUGAIKBN-STATE
+                                                   SPA-PRTKBN-STATE
+                           MOVE     SPA-NAI-4001-MAX   TO  IDZZ
+                       ELSE
+                           IF      SPA-NAI-4001-EDYUKYMD (IDZZ)
+                                                   <   WRK-SYS-SRYYMD
+      *                        該当診療年月以前が労災指定医療機関のとき
+                               MOVE    WIDGET-NORMAL       TO
+                                                   SPA-B17-STATE
+                                                   SPA-DATA-STATE
+                                                   SPA-NYUGAIKBN-STATE
+                                                   SPA-PRTKBN-STATE
+                               MOVE     SPA-NAI-4001-MAX   TO  IDZZ
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           IF      SPA-SYUKA-KBN      =   "0"
+               MOVE    WIDGET-INSENSITIVE  TO  SPA-B20-STATE
+           ELSE
+               IF    ( SYS-2009-SYUKA-SYAHO  =   "1" )
+               OR    ( SYS-2009-SYUKA-KOKUHO =   "1" )
+               OR    ( SYS-2009-SYUKA-KOUIKI =   "1" )
+                   MOVE    WIDGET-NORMAL       TO  SPA-B20-STATE
+               ELSE
+                   MOVE    WIDGET-INSENSITIVE  TO  SPA-B20-STATE
+               END-IF
+           END-IF
+           .
+       3100-STATE-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1292,6 +1315,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                            CONTINUE
                        ELSE
                            MOVE    WIDGET-NORMAL   TO  SPA-B19-STATE
+                                                       SPA-DATA-STATE
                            MOVE    100             TO  IDXY
                        END-IF
                    END-PERFORM
@@ -2841,69 +2865,21 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
            IF      SPA-NAI-SKYYM  NOT =   WRK-SKYYM-OLD
+      *        ボタン設定処理
+               PERFORM 3100-STATE-SET-SEC
+      *
       *        診療年月によるシステム管理の取得処理
                PERFORM 3103-SYSKANRI-HENSYU-SEC
       *
-               MOVE    WIDGET-NORMAL       TO  SPA-DATAKBN1-STATE
-                                               SPA-DATAKBN3-STATE       
-                                               SPA-DATAKBN4-STATE       
-                                               SPA-DATAKBN5-STATE       
-                                               SPA-B09-STATE
-                                               SPA-B10-STATE
-                                               SPA-B21-STATE
-                                               SPA-B22-STATE
-                                               SPA-SYOKBN1-STATE
-      *
-               MOVE    "T"                 TO  SPA-SYOKBN1-VALUE  
-               MOVE    "F"                 TO  SPA-SYOKBN2-VALUE  
-               MOVE    "T"                 TO  SPA-DATAKBN1-VALUE  
-               MOVE    "T"                 TO  SPA-DATAKBN3-VALUE  
-               MOVE    "T"                 TO  SPA-DATAKBN4-VALUE  
-               MOVE    "T"                 TO  SPA-DATAKBN5-VALUE  
-               IF      SPA-NAI-PRTKBN3 NOT =   SPACE
-                   MOVE    WIDGET-NORMAL       TO  SPA-DATAKBN6-STATE
-                   MOVE    "T"                 TO  SPA-DATAKBN6-VALUE
-               ELSE
-                   MOVE    WIDGET-INSENSITIVE  TO  SPA-DATAKBN6-STATE
-                   MOVE    "F"                 TO  SPA-DATAKBN6-VALUE  
-               END-IF
-               MOVE    "F"                 TO  SPA-DATAKBN7-VALUE
-               MOVE    "F"                 TO  SPA-DATAKBN8-VALUE
-      *
-               IF      SPA-NAI-2005-KKHRECEKBN
-                                          =   "1" OR  "2" OR  "3"
-                   CONTINUE
-               ELSE
-                   MOVE    WIDGET-INSENSITIVE TO  SPA-DATAKBN6-STATE
-                   MOVE    "F"                TO  SPA-DATAKBN6-VALUE  
+      *        診療年月によるレセ電作成区分の設定
+               IF      SPA-NAI-SKYYM      <   200804
+                   MOVE    SPA-GMN-PRTKBNLST (1)
+                                              TO  SPA-GMN-PRTKBN-G
                END-IF
       *
-               IF      SPA-NAI-200501-KOUIKIRECEKBN
-                                           =   "1" OR  "2" OR  "3"
-                   CONTINUE
-               ELSE
-                   MOVE    WIDGET-INSENSITIVE TO  SPA-DATAKBN2-STATE
-                   MOVE    "F"                TO  SPA-DATAKBN2-VALUE  
-               END-IF
-      *
-               IF    ( SYS-200501-ROURECEKBN =   "1" OR  "2" OR  "3"   )
-               AND   ( SPA-NAI-SKYYM         >=  WRK-CONS-SRYYM-201307 )
-                   MOVE    WIDGET-NORMAL       TO  SPA-B17-STATE
-                                                   SPA-B15-STATE
-                                                   SPA-B16-STATE
-               ELSE
-                   MOVE    WIDGET-INSENSITIVE  TO  SPA-B17-STATE
-               END-IF
+      *        ファイル保存情報
+               PERFORM 3102-FILE-INFO-CHECK-SEC
            END-IF
-      *
-      *    診療年月によるレセ電作成区分の設定
-           IF      SPA-NAI-SKYYM      <   200804
-               MOVE    SPA-GMN-PRTKBNLST (1)
-                                          TO  SPA-GMN-PRTKBN-G
-           END-IF
-      *
-      *    ファイル保存情報
-           PERFORM 3102-FILE-INFO-CHECK-SEC
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    SPACE           TO  SPA-GMN-TITLE
