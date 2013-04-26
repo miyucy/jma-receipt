@@ -4138,6 +4138,8 @@
                MOVE    "1"                 TO  SPA-COM-KZMFLG4(IDX)
                MOVE    "1"                 TO  SPA-COM-KZMFLG5(IDX)
                MOVE    "1"                 TO  SPA-COM-KZMFLG6(IDX)
+               MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG1(IDX)
+               MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG(IDX)
            END-PERFORM
       *    内分泌負荷試験検査情報
            INITIALIZE                  SPA-NAI-FUKATEN-AREA
@@ -10371,7 +10373,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        450-MAEGMN-SEC             SECTION.
       *
-           MOVE    1                   TO  FLG-HENKOU
+      *H25.5  警告メッセージ表示対応
+      **   MOVE    1                   TO  FLG-HENKOU
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -10403,7 +10406,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        460-ATOGMN-SEC             SECTION.
       *
-           MOVE    1                   TO  FLG-HENKOU
+      *H25.5  警告メッセージ表示対応
+      **   MOVE    1                   TO  FLG-HENKOU
       *    診療行為入力チェック
            PERFORM 41011-KOUI-ALLHEN-SEC
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
