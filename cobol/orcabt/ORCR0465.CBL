@@ -49,16 +49,6 @@
       *
       *  04.06.01    NACL-ÌçÏÆ    13/02/18  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
       *                                     ¡Ê¿·¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÂÐ±þ¡Ë
-      *  04.06.02    NACL-ÌçÏÆ    13/09/25  Ï«ºÒ¥Þ¥¹¥¿ÄÉ²ÃÂÐ±þ
-      *                                     ¡ÊÅÅÏÃºÆ¿ÇÎÁ¡¡Åù¡Ë
-      *
-      *  04.07.01    NACL-ÌçÏÆ    13/01/21  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
-      *  04.07.02    NACL-ÌçÏÆ    13/10/02  ¼«ÇåÀÕ¡ÊÂè»°¼Ô¹Ô°Ù¡ËÂÐ±þ
-      *  04.07.03    NACL-ÌçÏÆ    13/12/03  ¼«ÇåÀÕ¡ÊÏ«ºÒ½àµò¡Ë¤Î¥ì¥»¥×¥ÈÍÍ¼°
-      *                                     ÄÉ²ÃÂÐ±þ
-      *  04.07.04    NACL-ÌçÏÆ    14/02/13  Ï«ºÒ¡¦¼«ÇåÀÕ¤Î»Ü½Ñ²Ã»»ÂÐ±þ
-      *
-      *  04.08.01    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -239,7 +229,6 @@
                05  TBL-ZAIW-SRYACTINF.
       *            ¿ÇÎÅ¥³¡¼¥É/¿ôÎÌ/²ó¿ô
                    07  TBL-ZAIW-SRYCD           PIC  X(09).
-                   07  TBL-ZAIW-SRYSYUKBN-X     PIC  X(03).
                    07  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(05).
                    07  TBL-ZAIW-SRYKAISU        PIC  9(03).
       *            Ã±°Ì¥³¡¼¥É/Ã±°ÌÌ¾¾ÎÍ­¸ú·å¿ô/Ã±°ÌÌ¾¾Î
@@ -254,29 +243,8 @@
                    07  TBL-ZAIW-AUTOKBN         PIC  X(01).
                    07  TBL-ZAIW-INPUTNUM        PIC  9(03).
                    07  TBL-ZAIW-TENTTLKBN       PIC  9(03).
-      *
-                   07  TBL-ZAIW-DATAKBN         PIC  9(01).
-                   07  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
-                   07  TBL-ZAIW-KNSJISKBN       PIC  9(01).
-                   07  TBL-ZAIW-KNSJISGRPKBN    PIC  9(02).
-                   07  TBL-ZAIW-CDKBNINF.
-                     09 TBL-ZAIW-CDKBN-KBN        PIC  X(01).
-                     09 TBL-ZAIW-CDKBN-SYO        PIC  9(01).
-                     09 TBL-ZAIW-CDKBN-BU         PIC  9(02).
-                     09 TBL-ZAIW-CDKBN-KBNNUM     PIC  9(03).
-                     09 TBL-ZAIW-CDKBN-KBNNUM-EDA PIC  9(02).
-                     09 TBL-ZAIW-CDKBN-KOUBAN     PIC  9(02).
-                     09 TBL-ZAIW-KOUHYOJYUNNUM    PIC  9(09).
-                   07  TBL-ZAIW-KOKUJISKBKBN1   PIC  9(01).
-                   07  TBL-ZAIW-KOKUJISKBKBN2   PIC  9(01).
-                   07  TBL-ZAIW-TUSOKUGAIKBN    PIC  9(01).
-                   07  TBL-ZAIW-TIMEKSNKBN      PIC  9(01).
-                   07  TBL-ZAIW-KZMCOMPSIKIBETU PIC  9(01).
-                   07  TBL-ZAIW-CHUKSNINF.
-                     09 TBL-ZAIW-CHUKSNCD       PIC  X(04).
-                     09 TBL-ZAIW-CHUKSNTUBAN    PIC  X(01).
-                   07  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
-                   07  TBL-ZAIW-INPUTCOMENT     PIC  X(80).
+      *            ¸¡ÂÎ¸¡ºº¥³¥á¥ó¥È
+      *****        07  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
                05  TBL-ZAIW-NAMEINF.
       *            ´Á»úÍ­¸ú·å¿ô/´Á»úÌ¾¾Î
                    07  TBL-ZAIW-YUKOKETA        PIC  9(03).
@@ -288,7 +256,6 @@
                05  TBL-ZAI-SRYACTINF.
       *            ¿ÇÎÅ¥³¡¼¥É/¿ôÎÌ/²ó¿ô
                    07  TBL-ZAI-SRYCD           PIC  X(09).
-                   07  TBL-ZAI-SRYSYUKBN-X     PIC  X(03).
                    07  TBL-ZAI-SRYSURYO        PIC  9(05)V9(05).
                    07  TBL-ZAI-SRYKAISU        PIC  9(03).
       *            Ã±°Ì¥³¡¼¥É/Ã±°ÌÌ¾¾ÎÍ­¸ú·å¿ô/Ã±°ÌÌ¾¾Î
@@ -303,29 +270,8 @@
                    07  TBL-ZAI-AUTOKBN         PIC  X(01).
                    07  TBL-ZAI-INPUTNUM        PIC  9(03).
                    07  TBL-ZAI-TENTTLKBN       PIC  9(03).
-      *
-                   07  TBL-ZAI-DATAKBN         PIC  9(01).
-                   07  TBL-ZAI-HOUKNSKBN       PIC  9(02).
-                   07  TBL-ZAI-KNSJISKBN       PIC  9(01).
-                   07  TBL-ZAI-KNSJISGRPKBN    PIC  9(02).
-                   07  TBL-ZAI-CDKBNINF.
-                     09 TBL-ZAI-CDKBN-KBN        PIC  X(01).
-                     09 TBL-ZAI-CDKBN-SYO        PIC  9(01).
-                     09 TBL-ZAI-CDKBN-BU         PIC  9(02).
-                     09 TBL-ZAI-CDKBN-KBNNUM     PIC  9(03).
-                     09 TBL-ZAI-CDKBN-KBNNUM-EDA PIC  9(02).
-                     09 TBL-ZAI-CDKBN-KOUBAN     PIC  9(02).
-                     09 TBL-ZAI-KOUHYOJYUNNUM    PIC  9(09).
-                   07  TBL-ZAI-KOKUJISKBKBN1   PIC  9(01).
-                   07  TBL-ZAI-KOKUJISKBKBN2   PIC  9(01).
-                   07  TBL-ZAI-TUSOKUGAIKBN    PIC  9(01).
-                   07  TBL-ZAI-TIMEKSNKBN      PIC  9(01).
-                   07  TBL-ZAI-KZMCOMPSIKIBETU PIC  9(01).
-                   07  TBL-ZAI-CHUKSNINF.
-                     09 TBL-ZAI-CHUKSNCD       PIC  X(04).
-                     09 TBL-ZAI-CHUKSNTUBAN    PIC  X(01).
-                   07  TBL-ZAI-KENTAICOMMENT   PIC  9(01).
-                   07  TBL-ZAI-INPUTCOMENT     PIC  X(80).
+      *            ¸¡ÂÎ¸¡ºº¥³¥á¥ó¥È
+      *****        07  TBL-ZAI-KENTAICOMMENT   PIC  9(01).
                05  TBL-ZAI-NAMEINF.
       *            ´Á»úÍ­¸ú·å¿ô/´Á»úÌ¾¾Î
                    07  TBL-ZAI-YUKOKETA        PIC  9(03).
@@ -336,20 +282,17 @@
       *    ½é¿Ç
            03  CONS-SYOSHIN    PIC X(09)   VALUE   "101110010".
       *     
-      *    ºÆ¿Ç¡Ê£²£°£±£³Ç¯£¶·î¤Þ¤Ç¡Ë
+      *    ºÆ¿Ç¡Ê£²£°£±£³Ç¯£³·î¤Þ¤Ç¡Ë
            03  CONS-SAISHIN-G.
                05  FILLER      PIC X(09)   VALUE   "101120040".
                05  FILLER      PIC X(09)   VALUE   "101120050".
            03  CONS-SAISHIN-R              REDEFINES   CONS-SAISHIN-G.
                05  CONS-SAISHIN            PIC X(09)   OCCURS  2. 
-      *    ºÆ¿Ç¡Ê£²£°£±£³Ç¯£··î¤«¤é¡Ë
+      *    ºÆ¿Ç¡Ê£²£°£±£³Ç¯£´·î¤«¤é¡Ë
            03  CONS-SAISHIN2-G.
                05  FILLER      PIC X(09)   VALUE   "101120010".
-               05  FILLER      PIC X(09)   VALUE   "101120050".
-               05  FILLER      PIC X(09)   VALUE   "101120060".
-               05  FILLER      PIC X(09)   VALUE   "101120070".
            03  CONS-SAISHIN2-R             REDEFINES   CONS-SAISHIN2-G.
-               05  CONS-SAISHIN2           PIC X(09)   OCCURS  4. 
+               05  CONS-SAISHIN2           PIC X(09)   OCCURS  1. 
       *
            COPY    "MCPAREA".
       *
@@ -374,8 +317,6 @@
       *
       *    È¾³Ñ¥Á¥§¥Ã¥¯¥µ¥Ö
            COPY    "CPORCSKANACHK.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -419,7 +360,6 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  TBL-ZAI-AREA
            INITIALIZE                  TBL-ZAIW-AREA
-           INITIALIZE                  RECEERR
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î½èÍý
       *
@@ -457,47 +397,21 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE01PARA
-           INITIALIZE                      RECE01PARA
            MOVE    "RECE410"           TO  RECE01PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE44PARA
-           INITIALIZE                      RECE44PARA
            MOVE    "RECE44B"           TO  RECE44PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE44PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE44PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE45PARA
-           INITIALIZE                      RECE45PARA
            MOVE    "RECE45B"           TO  RECE45PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE45PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE45PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE46PARA
-           INITIALIZE                      RECE46PARA
            MOVE    "RECE461"           TO  RECE46PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE46PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE01PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE44PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           MOVE    RECE45PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
-           MOVE    RECE46PARA-BASENAME TO  SGETTEMP-BASENAMES  (5)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE01PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE44PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE45PARA
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  RECE46PARA
       *
            OPEN    INPUT               RECE41-FILE
       *
@@ -696,7 +610,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
       *
            IF     (WRK-PARA-RECEKBN       =  "5")
            OR     (RECE41-HKNKBN          =  "5")
-           OR     (RECE41-HKNKBN          =  "6")
              CONTINUE
            ELSE
              EVALUATE    RECE44-SRYKBN
@@ -708,19 +621,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                WHEN    "12"
                    IF  RECE41-SRYYM   >=  "201307"
                      PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY         >   4
+                               UNTIL   IDY         >   1
                                OR      FLG-NOPRT   =   1
                        IF  TBL-ZAIW-SRYCD (WRK-WIDX1)
                                          =   CONS-SAISHIN2(IDY)
                            MOVE    1           TO  FLG-NOPRT
-                           IF   (WRK-PARA-RECEKBN      =  "4")
-                           AND  (WRK-PARA-JIBAIPRTKBN  =  "2")
-                              IF  TBL-ZAIW-SRYCD (WRK-WIDX1) =
-                                  "101120050" OR "101120060"
-                                              OR "101120070"
-                                MOVE   ZERO    TO  FLG-NOPRT
-                              END-IF
-                           END-IF
                        END-IF
                      END-PERFORM
                    ELSE
@@ -785,23 +690,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                ADD     1                 TO  WRK-LINENUM
                MOVE    SPACE             TO  RECE46-REC
                INITIALIZE                    RECE46-REC
-      *
-               MOVE  TBL-ZAI-SRYCD(IDY)       TO  RECE46-SRYCD
-               MOVE  TBL-ZAI-SRYSURYO(IDY)    TO  RECE46-SRYSURYO
-               MOVE  TBL-ZAI-SRYKAISU(IDY)    TO  RECE46-SRYKAISU
-               MOVE  TBL-ZAI-TANICD(IDY)      TO  RECE46-TANICD
-               MOVE  TBL-ZAI-TANIMOJISU(IDY)  TO  RECE46-TANIMOJISU
-               MOVE  TBL-ZAI-TANINAME(IDY)    TO  RECE46-TANINAME
-               MOVE  TBL-ZAI-TENSIKIBETU(IDY) TO  RECE46-TENSIKIBETU
-               MOVE  TBL-ZAI-TEN(IDY)         TO  RECE46-TEN
-               MOVE  TBL-ZAI-MEISKYFLG(IDY)   TO  RECE46-MEISKYFLG
-               MOVE  TBL-ZAI-AUTOKBN(IDY)     TO  RECE46-AUTOKBN
-               MOVE  TBL-ZAI-INPUTNUM(IDY)    TO  RECE46-INPUTNUM
-               MOVE  TBL-ZAI-TENTTLKBN(IDY)   TO  RECE46-TENTTLKBN
-      *
-               MOVE  TBL-ZAI-YUKOKETA(IDY)    TO  RECE46-YUKOKETA
-               MOVE  TBL-ZAI-NAME(IDY)        TO  RECE46-NAME
-      *
+               MOVE    TBL-ZAI-SRYACTINF (IDY)
+                                         TO  RECE46-SRYACTINF
+               MOVE    TBL-ZAI-NAMEINF  (IDY)
+                                         TO  RECE46-NAMEINF 
                PERFORM 4501-RECE46-HENSYU-SEC
            END-PERFORM
       *     
@@ -852,13 +744,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                        MOVE   778       TO  RECE46-GAITENTTLKBN
                    END-EVALUATE
                END-EVALUATE
-             ELSE
-               IF   (RECE46-SRYCD1 >= "101801010" AND <= "101801020")
-               AND  (RECE41-SRYYM  >= "201307"                      )
-                    MOVE   997               TO  RECE46-GAITENTTLKBN
-               ELSE
-                    MOVE   WRK-GAITENTTLKBN  TO  RECE46-GAITENTTLKBN
-               END-IF
+             ELSE                                                         
+               MOVE   WRK-GAITENTTLKBN  TO  RECE46-GAITENTTLKBN
              END-IF
            END-IF
       *
