@@ -95,30 +95,9 @@
       *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
       *  04.06.02    NACL-藤原    11/10/07  傷病名を３行まで記載可能とする
       *  04.06.03    NACL-門脇    13/04/11  実日数９９９の療養期間編集修正
-      *  04.06.04    NACL-藤原    13/04/30  「傷病の経過」記載対応
-      *  04.06.05    NACL-門脇    13/06/07  合計額ワーク領域のクリア
-      *  04.06.06    NACL-門脇    13/10/07  療養期間記載修正
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       *  04.07.02    NACL-藤原    12/01/24  monpe-0.6.20対応
-      *  04.07.03    NACL-門脇    13/01/21  労災レセ電対応
-      *  04.07.04    NACL-藤原    13/05/27  症状詳記の表題を平成２５年７月
-      *                                     診療分以降は全て記載
-      *  04.07.05    NACL-藤原    13/08/20  ０９５９３で始まるコードの有
-      *                                     無区分を追加
-      *  04.07.06    NACL-門脇    14/10/02  摘要欄の最終行まで記載してから
-      *                                     改ページするよう修正
-      *  04.07.07    NACL-門脇    14/10/15  療養期間の記載修正
-      *  04.07.08    NACL-藤原    14/12/03  平成２６年１１月改正対応
-      *  04.07.09    NACL-門脇    15/03/09  症状詳記９０の対応
-      *
-      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
-      *                                     載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
-      *
-      *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
-      *  05.00.02    NACL-伊藤    17/12/22  診療情報システム対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -211,7 +190,7 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //RECEYMD//.
-      *****03  FILLER              PIC X(04)   VALUE   ".dat".
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
@@ -413,8 +392,6 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME内のBASENAME開始位置
-       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG.
@@ -516,13 +493,6 @@
            03  WRK-KGK2            PIC ZZ.
            03  WRK-RECEKAISU       PIC ZZZ.
       *
-       01  WRK-ERR-MSG-AREA.
-           03  WRK-ERR-MSG-1.
-               05  FILLER          PIC X(50)   VALUE
-               "★★０５９で始まる「その他材料コード」が使用されて". 
-               05  FILLER          PIC X(10)   VALUE
-               "います★★". 
-      *
        01  WRK-CONS-AREA.    
       *    改行コード
            03  WRK-CONS-RETURN     PIC X(01)   VALUE   X"0A".
@@ -559,32 +529,11 @@
       *   症状詳記区分の表題
        01  TBL-RECECOM-AREA.
            03  FILLER              PIC X(52)   VALUE
-               "【主たる疾患の診断根拠となる臨床症状】".
-           03  FILLER              PIC X(52)   VALUE
-               "【主たる疾患の診断根拠となる臨床症状の診察検査所見】".
-           03  FILLER              PIC X(52)   VALUE
-               "【主な治療行為（手術、処置、薬物治療等）の必要性】".
-           03  FILLER              PIC X(52)   VALUE
-               "【主な治療行為（手術、処置、薬物治療等）の経過】".
-           03  FILLER              PIC X(52)   VALUE
-               "【合計点数が１００万点以上の薬剤に係る症状等】".
-           03  FILLER              PIC X(52)   VALUE
-               "【合計点数が１００万点以上の処置に係る症状等】".
-           03  FILLER              PIC X(52)   VALUE
-               "【その他】".
-           03  FILLER              PIC X(52)   VALUE
-               "【薬事法に規定する治験に係る治験概要】".
-           03  FILLER              PIC X(52)   VALUE
                "【疾患別リハビリテーションに係る治療継続の理由等】".
            03  FILLER              PIC X(52)   VALUE
                "【廃用症候群に係る評価表】".
-           03  FILLER              PIC X(52)   VALUE
-               "【上記以外の診療報酬明細書】".
-           03  FILLER              PIC X(52)   VALUE
-               "【医薬品医療機器等法に規定する治験に係る治験概要】".
        01  TBL-RECECOM-AREA-R      REDEFINES   TBL-RECECOM-AREA.
-           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   12.
-      *
+           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   2.
       *     
            COPY    "ORCA-DBMETA".
       *
@@ -638,9 +587,6 @@
       *    請求管理
            COPY    "CPRCF010.INC".
       *
-      *    レセプト電算
-           COPY    "CPRECEDEN.INC".
-      *
       *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
@@ -664,7 +610,6 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -706,7 +651,6 @@
            INITIALIZE                  TABLE-AREA
            INITIALIZE                  SYS-1001-REC
            INITIALIZE                  SYS-1002-REC
-           INITIALIZE                  RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -718,13 +662,7 @@
                                                RECEERR
            END-UNSTRING
       *
-           DISPLAY "WRK-PARA-HOSPNUM   =" WRK-PARA-HOSPNUM
-           DISPLAY "WRK-PARA-SYOKBN    =" WRK-PARA-SYOKBN
-           DISPLAY "WRK-PARA-SRYYM     =" WRK-PARA-SRYYM
-           DISPLAY "WRK-PARA-PRTKBN    =" WRK-PARA-PRTKBN
-           DISPLAY "WRK-PARA-DLTKBN    =" WRK-PARA-DLTKBN
-           DISPLAY "WRK-PARA-RECECOM   =" WRK-PARA-RECECOM
-           DISPLAY "WRK-PARA-FRAME     =" WRK-PARA-FRAME
+           DISPLAY "WRK-PARA-DLTKBN=" WRK-PARA-DLTKBN
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -747,30 +685,6 @@
            MOVE    "RECEYMD"           TO  RECEYMD-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECEYMD-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECEYMD-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE41PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE43PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           MOVE    RECE47PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
-           MOVE    RECE471PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (5)
-           MOVE    RECEYMD-BASENAME    TO  SGETTEMP-BASENAMES  (6)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE41PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE43PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE47PARA
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  RECE471PARA
-           MOVE    SGETTEMP-FULLNAMES (6)
-                                       TO  RECEYMD
-      *
-           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -856,11 +770,6 @@
            OPEN    OUTPUT              RECEYMD-FILE     
       *
            MOVE    ZERO                TO  WRK-RECENUM
-      *
-      *    診療情報システム用のとき処理終了
-           IF      WRK-PARA-PRTKBN     =   "B"
-               MOVE    2                   TO  FLG-STS
-           END-IF
       *
            IF      FLG-STS             =   ZERO
               PERFORM 990-RECE41-READ-SEC
@@ -1269,12 +1178,8 @@
            PERFORM 320-HC101-BYOMEI-HEN-SEC
       *
       *    帳票編集<傷病の経過>処理
-           IF      RECE41-SRYYM        <   201307
-               IF      WRK-PARA-RECECOM    =   "0"
-                   PERFORM 360-HC101-COMMENT-HEN-SEC
-               END-IF
-           ELSE
-               PERFORM 360-COMMENT-HENSYU-SEC
+           IF      WRK-PARA-RECECOM    =   "0"
+               PERFORM 360-HC101-COMMENT-HEN-SEC
            END-IF 
       *
       *    帳票編集<手術歴>処理
@@ -1284,13 +1189,9 @@
            PERFORM 340-HC101-ZAI-HEN-SEC
       *
       *    帳票編集<傷病の経過>処理
-           IF      RECE41-SRYYM        <   201307
-               IF      WRK-PARA-RECECOM    =   "1"
-                   PERFORM 360-HC101-COMMENT-HEN-SEC
-               END-IF
-           ELSE
+           IF      WRK-PARA-RECECOM    =   "1"
                PERFORM 360-HC101-COMMENT-HEN-SEC
-           END-IF
+           END-IF 
       *
       *    帳票編集<適用（金額）>処理
            PERFORM 350-HC101-ZAI-HEN1-SEC
@@ -1337,8 +1238,7 @@
            STRING   RECE41-PTNUM   DELIMITED   BY  SPACE
                     " "            DELIMITED   BY  SIZE
                     RECE41-RECEKA  DELIMITED   BY  SPACE
-                                   INTO    HC22-PTNUM
-           END-STRING
+                                   INTO    HC22-PTNUM         
       *    指定病院等の番号
            MOVE    SYS-4001-RSIIRYOCDN TO  HC22-RSIIRYOCD
       *    病院等の名称
@@ -1395,28 +1295,26 @@
                MOVE    WRK-HENYMD          TO  HC22-ENDYMD
                MOVE  RECE41-RYOEDYMD(7:2)  TO  IDX6
            END-IF    
-           IF    RECE41-NYUINFLG  =  1
-      *      療養開始年月日再セット
-             PERFORM   VARYING   IDX4   FROM   IDX5   BY  1
-                       UNTIL     IDX4    >     IDX6
-                   IF  (RECE41-NYUINBITBL(IDX4)  =  SPACE)  OR
-                       (RECE41-JNISSUTBL(IDX4)   =  "1"  )
-                       MOVE    IDX4                TO  WRK-KGK2
-                       MOVE    WRK-KGK2            TO  HC22-STRYMD(5:2)
-                       MOVE    IDX6                TO  IDX4
-                   END-IF
-             END-PERFORM
-      *      療養終了年月日再セット
-             PERFORM   VARYING   IDX4   FROM   IDX6   BY  -1
-                       UNTIL     IDX4    <     IDX5
-                   IF  (RECE41-NYUINBITBL(IDX4)   =  SPACE) OR
-                       (RECE41-JNISSUTBL(IDX4)    =  "1"  )
-                       MOVE    IDX4                TO  WRK-KGK2
-                       MOVE    WRK-KGK2            TO  HC22-ENDYMD(5:2)
-                       MOVE    IDX5                TO  IDX4
-                   END-IF
-             END-PERFORM
-           END-IF
+      *    療養開始年月日再セット
+           PERFORM   VARYING   IDX4   FROM   IDX5   BY  1
+                     UNTIL     IDX4    >     IDX6
+                 IF  (RECE41-NYUINBITBL(IDX4)  =  SPACE)  OR
+                     (RECE41-JNISSUTBL(IDX4)   =  "1"  )
+                     MOVE    IDX4                TO  WRK-KGK2
+                     MOVE    WRK-KGK2            TO  HC22-STRYMD (5:2)
+                     MOVE    IDX6                TO  IDX4
+                 END-IF
+           END-PERFORM
+      *    療養終了年月日再セット
+           PERFORM   VARYING   IDX4   FROM   IDX6   BY  -1
+                     UNTIL     IDX4    <     IDX5
+                 IF  (RECE41-NYUINBITBL(IDX4)   =  SPACE) OR
+                     (RECE41-JNISSUTBL(IDX4)    =  "1"  )
+                     MOVE    IDX4                TO  WRK-KGK2
+                     MOVE    WRK-KGK2            TO  HC22-ENDYMD (5:2)
+                     MOVE    IDX5                TO  IDX4
+                 END-IF
+           END-PERFORM
       *
            IF      RECE41-JNISSU  =  999
               IF  (RECE41-KYUGYOFLG      =   SPACE)
@@ -1466,7 +1364,6 @@
            MOVE    RECE41-JNISSU       TO  WRK-JNISSU
            MOVE    WRK-JNISSU          TO  HC22-NISSU
       *    合計額
-           MOVE    ZERO                TO  WRK-GOKEI
            COMPUTE WRK-GOKEI   =   RECE41-TOTALKIN
                                +   RECE41-TOTALKIN2
            MOVE    WRK-GOKEI           TO  WRK-KHNTENZ
@@ -1524,26 +1421,16 @@
            END-EVALUATE                             
       *
       *    労災レセプト回数
-           IF   RECE41-ROUKAISU   =   "2"
-             MOVE    RECE41-RECEKAISU      TO  WRK-RECEKAISU
-             MOVE    WRK-RECEKAISU         TO  HC22-KAI
-           END-IF
+           MOVE    RECE41-RECEKAISU        TO  WRK-RECEKAISU
+           MOVE    WRK-RECEKAISU           TO  HC22-KAI
       *
       *    労災基準監督署コード
            IF      RECE41-SYOKAIFLG    =   "1"
                MOVE   RECE41-SYOCD         TO  HC22-SYOCD
            END-IF     
       *
-      *    レセプト種別不明のときは原因を編集する
-           IF      CNT-PAGE            =   1
-               IF    ( RECE41-RECESYUBETU  =    ZERO )
-               OR    ( RECE41-ERR-ERRKBN   >    ZERO )
-                   PERFORM 3101-FUMEI-HENSYU-SEC
-               END-IF
-           END-IF
-      *
       *    点検用レセプト作成時
-           IF      WRK-PARA-PRTKBN NOT =   "1"
+           IF      WRK-PARA-PRTKBN     =   "2"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
                                            =   "0"
                    MOVE    "点検用レセプト"    TO  HC22-LABEL
@@ -1558,22 +1445,7 @@
            .
        310-HC101-HEAD-HEN-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    レセプト種別不明のとき不明の原因を編集処理
-      *****************************************************************
-       3101-FUMEI-HENSYU-SEC           SECTION.
-      *
-           EVALUATE    RECE41-ERR-ERRKBN
-               WHEN    15
-                   MOVE    WRK-ERR-MSG-1   TO   HC22-HEAD (2)
-           END-EVALUATE
-           INSPECT HC22-HEAD-G REPLACING   ALL "  "    BY  "　"
-      *
-           .
-       3101-FUMEI-HENSYU-EXT.
-           EXIT.
-      *
+      *     
       *****************************************************************
       *    帳票編集<続紙ヘッダー部>処理
       *****************************************************************
@@ -1596,8 +1468,7 @@
                     RECE41-RECEKA  DELIMITED   BY  SPACE
                     "-"            DELIMITED   BY  SIZE
                     CNT-PAGE (3:1) DELIMITED   BY  SIZE
-                                   INTO    HC24-PTNUM
-           END-STRING
+                                   INTO    HC24-PTNUM         
       *    指定病院等の番号
            MOVE    SYS-4001-RSIIRYOCDN TO  HC24-HOSPNUM
       *    病院等の名称
@@ -2136,89 +2007,54 @@
       *****************************************************************
        3410-RECE47-HENSYU-SEC           SECTION.
       *
-      ***  IF  CNT-ZAIMEISAISU           =   1
-      *        次の行為明細数を追加すると何行になるか
-      ***      COMPUTE   WRK-WLINETEK    =   WRK-LINETEK
-      ***                                +   RECE47-ZAIMEISAISU
-      ***      IF  CNT-RECE47           >   1
-      *            診療区分が変更している場合、診療区切り線分を追加
-      ***          IF  RECE47-SRYKBN    NOT =   WRK-R061-SRYKBN-O
-      ***              ADD     1             TO  WRK-WLINETEK
-      ***              MOVE    1             TO  FLG-KUGIRI
-      ***          END-IF
-      ***      END-IF
-      *
-      ***      IF  WRK-WLINETEK          >         WRK-LINE-MAX
-      ***          PERFORM 34120-PAGE-SEC
-      *
-      *            区切り線
-      ***          IF  FLG-KUGIRI        =   2
-      ***              PERFORM 34110-KUGIRI-LINE-SEC
-      ***          END-IF
-      *            診療区分
-      ***          ADD     1               TO  WRK-LINETEK
-      ***          IF      CNT-PAGE        =   1
-      ***              MOVE    RECE47-SRYKBN  TO  HC22-SRYKBN
-      ***                                              (WRK-LINETEK)
-      ***          ELSE
-      ***              MOVE    RECE47-SRYKBN  TO  HC24-SRYKBN
-      ***                                              (WRK-LINETEK)
-      ***          END-IF                                    
-      ***      ELSE
-      *            区切り線
-      ***          IF  FLG-KUGIRI    NOT =   ZERO
-      ***              PERFORM 34110-KUGIRI-LINE-SEC
-      ***          END-IF
-      *            診療区分
-      ***          ADD     1             TO  WRK-LINETEK
-      ***          IF  RECE47-SRYKBN    NOT =   WRK-R061-SRYKBN-O
-      ***              IF      CNT-PAGE        =   1
-      ***                  MOVE    RECE47-SRYKBN  TO  HC22-SRYKBN
-      ***                                              (WRK-LINETEK)
-      ***              ELSE
-      ***                  MOVE    RECE47-SRYKBN  TO  HC24-SRYKBN
-      ***                                              (WRK-LINETEK)
-      ***              END-IF                                    
-      ***          END-IF
-      ***      END-IF
-      ***  ELSE
-      ***      ADD     1                 TO  WRK-LINETEK
-      ***  END-IF
-      *
            IF  CNT-ZAIMEISAISU           =   1
-             IF  CNT-RECE47            >   1
-      *          診療区分が変更している場合、診療区切り線分を追加
-                 IF  RECE47-SRYKBN    NOT =   WRK-R061-SRYKBN-O
-                     MOVE    1             TO  FLG-KUGIRI
-                 END-IF
-             END-IF
-           END-IF
+      *        次の行為明細数を追加すると何行になるか
+               COMPUTE   WRK-WLINETEK    =   WRK-LINETEK
+                                         +   RECE47-ZAIMEISAISU
+               IF  CNT-RECE47           >   1
+      *            診療区分が変更している場合、診療区切り線分を追加
+                   IF  RECE47-SRYKBN    NOT =   WRK-R061-SRYKBN-O
+                       ADD     1             TO  WRK-WLINETEK
+                       MOVE    1             TO  FLG-KUGIRI
+                   END-IF
+               END-IF
       *
-           IF      WRK-LINETEK          >=   WRK-LINE-MAX
-             PERFORM 34120-PAGE-SEC
+               IF  WRK-WLINETEK          >         WRK-LINE-MAX
+
+                   PERFORM 34120-PAGE-SEC
+      *
+      *            区切り線
+                   IF  FLG-KUGIRI        =   2
+                       PERFORM 34110-KUGIRI-LINE-SEC
+                   END-IF
+      *            診療区分
+                   ADD     1               TO  WRK-LINETEK
+                   IF      CNT-PAGE        =   1
+                       MOVE    RECE47-SRYKBN  TO  HC22-SRYKBN
+                                                       (WRK-LINETEK)
+                   ELSE
+                       MOVE    RECE47-SRYKBN  TO  HC24-SRYKBN
+                                                       (WRK-LINETEK)
+                   END-IF                                    
+               ELSE
+      *            区切り線
+                   IF  FLG-KUGIRI    NOT =   ZERO
+                       PERFORM 34110-KUGIRI-LINE-SEC
+                   END-IF
+      *            診療区分
+                   ADD     1             TO  WRK-LINETEK
+                   IF  RECE47-SRYKBN    NOT =   WRK-R061-SRYKBN-O
+                       IF      CNT-PAGE        =   1
+                           MOVE    RECE47-SRYKBN  TO  HC22-SRYKBN
+                                                       (WRK-LINETEK)
+                       ELSE
+                           MOVE    RECE47-SRYKBN  TO  HC24-SRYKBN
+                                                       (WRK-LINETEK)
+                       END-IF                                    
+                   END-IF
+               END-IF
            ELSE
-      *      区切り線
-             IF      FLG-KUGIRI    NOT =   ZERO
-                 PERFORM 34110-KUGIRI-LINE-SEC
-             END-IF
-           END-IF
-      *
-      *    診療区分
-           IF      WRK-LINETEK          >=   WRK-LINE-MAX
-             PERFORM 34120-PAGE-SEC
-           END-IF
-      *
-           ADD     1                TO  WRK-LINETEK
-      *
-           IF   ( WRK-R061-SRYKBN-O  =   SPACE  )
-           OR   ( FLG-KUGIRI     NOT =   ZERO   )
-           OR   ((CNT-PAGE           >   1     ) AND
-                 (WRK-LINETEK        =   1     ))
-             IF      CNT-PAGE        =   1
-               MOVE  RECE47-SRYKBN  TO  HC22-SRYKBN(WRK-LINETEK)
-             ELSE
-               MOVE  RECE47-SRYKBN  TO  HC24-SRYKBN(WRK-LINETEK)
-             END-IF
+               ADD     1                 TO  WRK-LINETEK
            END-IF
       *
       *    明細
@@ -2272,26 +2108,6 @@
            EXIT.
       *
       *****************************************************************
-      *    帳票編集<傷病の経過>処理
-      *****************************************************************
-       360-COMMENT-HENSYU-SEC      SECTION.
-      *
-           MOVE    ZERO                TO  WRK-RECECOM
-                                           WRK-KEIKA-LINE
-           MOVE    ZERO                TO  FLG-RECECOM-SJKBN
-           MOVE    SPACE               TO  WRK-RECECOM-NAME 
-                                           WRK-RECECOM-SJKBN
-      *     
-      *    適用欄コメント     
-           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
-           MOVE    "key16"             TO  WRK-MCP-PATHNAME
-           PERFORM 3601-RECECOM-HENSYU-SEC
-      *     
-           .
-       360-COMMENT-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    帳票編集<コメント>処理
       *****************************************************************
        360-HC101-COMMENT-HEN-SEC      SECTION.
@@ -2303,8 +2119,7 @@
                                            WRK-RECECOM-SJKBN
       *
       *    適用欄に記載するときの設定
-           IF    ( WRK-PARA-RECECOM    =   "1"    )
-           OR    ( RECE41-SRYYM        >=  201307 )
+           IF      WRK-PARA-RECECOM    =   "1"
                MOVE    WRK-KEIKA-HC22-LINE     TO  WRK-KEIKA-LINE
            END-IF
       *     
@@ -2323,9 +2138,9 @@
            MOVE    "key9"              TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
       *     
-      *    症状詳記コメント（５０、５１、５２、９０）
+      *    症状詳記コメント（５０、５１、５２）     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
-           MOVE    "key23"             TO  WRK-MCP-PATHNAME
+           MOVE    "key12"             TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
            .
        360-HC101-COMMENT-HEN-EXT.
@@ -2341,9 +2156,6 @@
            MOVE    RECE41-SRYYM        TO  RECECOM-SRYYM
            MOVE    RECE41-PTID         TO  RECECOM-PTID
            MOVE    RECE41-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
-           IF      WRK-MCP-PATHNAME    =   "key16"
-               MOVE    "AA"                TO  RECECOM-SJKBN
-           END-IF
       *
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
@@ -2386,48 +2198,23 @@
            MOVE    ZERO            TO  FLG-RECECOM-SJKBN
       *
       *    症状詳記区分の見出しを記載
-      *   （平成２５年７月以降は全て記載）
-           IF      RECE41-SRYYM    <   201307
-               IF      RECECOM-SJKBN   =   "51"   OR  "52"
-                   MOVE    RECECOM-SJKBN   TO  RECECOM-SJKBN
-               ELSE
-                   MOVE    SPACE           TO  RECECOM-SJKBN
-               END-IF
+           IF      RECECOM-SJKBN   =   "51"   OR  "52"
+               MOVE    RECECOM-SJKBN   TO  RECECOM-SJKBN
            ELSE
-               IF      RECECOM-SJKBN   =   "07"    OR  "08"    OR  "09"
-                   MOVE    "07"            TO  RECECOM-SJKBN
-               END-IF
+               MOVE    SPACE           TO  RECECOM-SJKBN
            END-IF 
            IF      RECECOM-SJKBN   NOT =   WRK-RECECOM-SJKBN
                MOVE   RECECOM-SJKBN        TO  WRK-RECECOM-SJKBN
       *
                MOVE    SPACE           TO  WRK-RECECOM-NAME
                EVALUATE    WRK-RECECOM-SJKBN
-                   WHEN    "01"    THRU    "07"
-                       MOVE    1               TO  FLG-RECECOM-SJKBN
-                       MOVE    RECECOM-SJKBN   TO  WRK-SJKBN-X
-                       MOVE    TBL-RECECOM-NAME (WRK-SJKBN)
-                                               TO  WRK-RECECOM-NAME
-                   WHEN    "50"
-                       MOVE    1               TO  FLG-RECECOM-SJKBN
-                       IF      RECE41-SRYYM    <   201412
-                           MOVE    TBL-RECECOM-NAME (8)
-                                                   TO  WRK-RECECOM-NAME
-                       ELSE
-                           MOVE    TBL-RECECOM-NAME (12)
-                                                   TO  WRK-RECECOM-NAME
-                       END-IF
                    WHEN    "51"
                        MOVE    1               TO  FLG-RECECOM-SJKBN
-                       MOVE    TBL-RECECOM-NAME (9)
+                       MOVE    TBL-RECECOM-NAME (1)
                                                TO  WRK-RECECOM-NAME
                    WHEN    "52"
                        MOVE    1               TO  FLG-RECECOM-SJKBN
-                       MOVE    TBL-RECECOM-NAME (10)
-                                               TO  WRK-RECECOM-NAME
-                   WHEN    "90"
-                       MOVE    1               TO  FLG-RECECOM-SJKBN
-                       MOVE    TBL-RECECOM-NAME (11)
+                       MOVE    TBL-RECECOM-NAME (2)
                                                TO  WRK-RECECOM-NAME
                END-EVALUATE
            END-IF
@@ -2779,9 +2566,8 @@
            MOVE    RECE41-TEKSTYMD     TO  RECE08-TEKSTYMD
            MOVE    "3"                 TO  RECE08-TEISYUTUSAKI
       *****IF      RECE41-PTNUM        =   SPACE
-           IF      RECE41-ERR-ERRKBN   >    ZERO
-               MOVE    ZERO                TO  RECE08-RECESYUBETU
-           ELSE
+      *         MOVE    ZERO                TO  RECE08-RECESYUBETU
+      *     ELSE      
                IF      TBL-RECE-RENNUM (IDXY)  =   1                                 
                    MOVE    RECE41-RECESYUBETU  TO  RECE08-RECESYUBETU
                ELSE
@@ -2789,7 +2575,7 @@
                    MOVE    "3"                 TO  RECE08-RECESYUBETU
                                                                 (4:1)
                END-IF                                                         
-           END-IF
+      *****END-IF    
            MOVE    RECE41-PTNUM        TO  RECE08-PTNUM
            PERFORM VARYING IDX FROM    20  BY  -1
                    UNTIL   IDX <       1
@@ -2962,16 +2748,9 @@
                                                    TO  RECE07-STYMD
                    END-EVALUATE
                END-IF 
-               EVALUATE    WRK-PARA-PRTKBN
-                   WHEN    "2"
-                       MOVE    "1"                 TO  RECE07-PRTKBN
-                   WHEN    "3"
-                       MOVE    "2"                 TO  RECE07-PRTKBN
-                   WHEN    "4"
-                       MOVE    "3"                 TO  RECE07-PRTKBN
-                   WHEN    "5"
-                       MOVE    "4"                 TO  RECE07-PRTKBN
-               END-EVALUATE
+               IF      WRK-PARA-PRTKBN     =   "2"
+                   MOVE    "1"                 TO  RECE07-PRTKBN
+               END-IF
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
            ELSE
@@ -3018,7 +2797,6 @@
       *    テスト患者、レセプト種別不明のとき更新しない
            IF    ( RECE41-TSTPTNUMKBN  =   "1"  )
            OR    ( RECE41-RECESYUBETU  =   ZERO )
-           OR    ( RECE41-ERR-ERRKBN   >   ZERO )
                GO  TO  3904-RECE10-HENSYU-EXT
            END-IF
       *          
@@ -3135,9 +2913,6 @@
       *
            MOVE    "00000000000000000000000000000000000000000000000000"
                                        TO  RECE10-RESERVE-AREA
-      *
-           MOVE    RECE41-ORIGINALCDKBN
-                                       TO  RECE10-FLG (1)
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
@@ -3275,8 +3050,7 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -3284,8 +3058,7 @@
            PERFORM 500-ERR-HENSYU-SEC
       *
            STRING  "ORCR0480 "             DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
                    "  STS="                DELIMITED   BY  SIZE
@@ -3344,39 +3117,12 @@
            EXIT.
       * 
       *****************************************************************
-      *    データ削除処理
+      *    中止処理時データ削除処理
       *****************************************************************
        5001-DB-DELETE-SEC               SECTION.
       *
-      *    診療情報システム用のとき
-           IF      WRK-PARA-PRTKBN     =   "B"
-               IF      WRK-PARA-SYOKBN     =   "1"
-      *            レセ電
-                   INITIALIZE                  RECEDEN-REC
-                   MOVE    WRK-PARA-HOSPNUM    TO  RECEDEN-HOSPNUM
-      *********    MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
-      *********    MOVE    3                   TO  RECEDEN-TEISYUTUSAKI
-                   MOVE    "2"                 TO  RECEDEN-NYUGAIKBN
-                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   MOVE    "tbl_receden_tmp"   TO  MCP-TABLE
-                   MOVE    "del1"              TO  MCP-PATHNAME
-                   PERFORM 900-ORCDBMAIN-SEC
-                   IF      MCP-RC           NOT =   ZERO
-                       DISPLAY "DBPATH=" MCP-TABLE " " MCP-PATHNAME
-                               " MCP-RC=" MCP-RC
-                       MOVE
-                   "診療情報システム用削除処理でエラーとなりました"
-                                               TO    WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                   END-IF
-               END-IF
-               GO  TO  5001-DB-DELETE-EXT
-           END-IF
-      *
            IF      WRK-PARA-SYOKBN     =   "1"
-      *        削除処理（一括分）
-      *        請求管理
+      *        請求管理削除処理（一括分）
                INITIALIZE                      RECE10-REC
 grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
@@ -3395,26 +3141,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  5001-DB-DELETE-EXT
                END-IF      
-      *        レセ電
-               INITIALIZE                  RECEDEN-REC
-               MOVE    WRK-PARA-HOSPNUM    TO  RECEDEN-HOSPNUM
-               MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
-               MOVE    3                   TO  RECEDEN-TEISYUTUSAKI
-               MOVE    "2"                 TO  RECEDEN-NYUGAIKBN
-               MOVE    RECEDEN-REC         TO  MCPDATA-REC
-               MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_receden"       TO  MCP-TABLE
-               MOVE    "del1"              TO  MCP-PATHNAME
-               PERFORM 900-ORCDBMAIN-SEC
-               IF      MCP-RC           NOT =   ZERO
-                   DISPLAY "DBPATH=" MCP-TABLE " " MCP-PATHNAME
-                           " MCP-RC=" MCP-RC
-                   MOVE
-                   "レセ電削除処理でエラーとなりました"
-                                           TO    WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   GO  TO  5001-DB-DELETE-EXT
-               END-IF      
+      *
       *        診療年月レセプト管理削除処理（一括分）
                INITIALIZE                  RECE07-REC
                MOVE    WRK-PARA-HOSPNUM    TO  RECE07-HOSPNUM
@@ -3568,33 +3295,6 @@ grpsys                     PERFORM 900-ORCDBMAIN-SEC
                                GO  TO  5001-DB-DELETE-EXT
                            END-IF
       *
-      *                    診療年月のレセ電削除処理
-                           INITIALIZE                  RECEDEN-REC
-                           MOVE    WRK-PARA-HOSPNUM    TO
-                                                       RECEDEN-HOSPNUM
-                           MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
-                           MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
-                           MOVE    SYS-2002-NYUGAIKBN  TO
-                                                       RECEDEN-NYUGAIKBN
-                           MOVE    3                   TO
-                                                   RECEDEN-TEISYUTUSAKI
-                           MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                           MOVE    "DBDELETE"          TO  MCP-FUNC
-                           MOVE    "tbl_receden"       TO  MCP-TABLE
-                           MOVE    "del4"              TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC           NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                          "レセ電削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
-      *
                            MOVE    "tbl_syskanri"  TO  MCP-TABLE
                            MOVE    "key2"          TO  MCP-PATHNAME
                            PERFORM 900-KANRIMST-NEXT-SEC
@@ -3666,32 +3366,6 @@ grpsys                     PERFORM 900-ORCDBMAIN-SEC
                                GO  TO  5001-DB-DELETE-EXT
                            END-IF
       *
-      *                    診療年月のレセ電削除処理
-                           INITIALIZE                  RECEDEN-REC
-                           MOVE    WRK-PARA-HOSPNUM    TO
-                                                       RECEDEN-HOSPNUM
-                           MOVE    PTINF-PTID      TO  RECEDEN-PTID
-                           MOVE    BTPARA-INFO-PARA (17:6)
-                                                   TO  RECEDEN-SRYYM
-                           MOVE    "2"             TO  RECEDEN-NYUGAIKBN
-                           MOVE    3               TO
-                                                   RECEDEN-TEISYUTUSAKI
-                           MOVE    RECEDEN-REC     TO  MCPDATA-REC
-                           MOVE    "DBDELETE"      TO  MCP-FUNC
-                           MOVE    "tbl_receden"   TO  MCP-TABLE
-                           MOVE    "del4"          TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC      NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                          "レセ電削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
                            MOVE    "tbl_ptinf"         TO  MCP-TABLE
                            MOVE    "key18"             TO  MCP-PATHNAME
                            PERFORM 900-PTINF-READ-N-SEC
@@ -3758,32 +3432,6 @@ grpsys                     PERFORM 900-ORCDBMAIN-SEC
                                GO  TO  5001-DB-DELETE-EXT
                            END-IF
       *
-      *                    診療年月のレセ電削除処理
-                           INITIALIZE                  RECEDEN-REC
-                           MOVE    WRK-PARA-HOSPNUM    TO
-                                                       RECEDEN-HOSPNUM
-                           MOVE    PTINF-PTID      TO  RECEDEN-PTID
-                           MOVE    BTPARA-INFO-PARA (1:6)
-                                                   TO  RECEDEN-SRYYM
-                           MOVE    "2"             TO  RECEDEN-NYUGAIKBN
-                           MOVE    3               TO
-                                                   RECEDEN-TEISYUTUSAKI
-                           MOVE    RECEDEN-REC     TO  MCPDATA-REC
-                           MOVE    "DBDELETE"      TO  MCP-FUNC
-                           MOVE    "tbl_receden"   TO  MCP-TABLE
-                           MOVE    "del4"          TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC       NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                          "レセ電削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
                            MOVE    "tbl_ptinf"         TO  MCP-TABLE
                            MOVE    "key16"             TO  MCP-PATHNAME
                            PERFORM 900-PTINF-READ-N-SEC
@@ -3825,7 +3473,7 @@ grpsys                     PERFORM 900-ORCDBMAIN-SEC
       *
            DISPLAY "*** ORCR0480 IN       "  CNT-RECE41
       *    DISPLAY "*** ORCR0480 RECE471= "  CNT-RECE471
-           DISPLAY "*** ORCR0480 PAGE     "  CNT-OUT
+           DISPLAY "*** ORCR0480 OUT      "  CNT-OUT
            DISPLAY "*** ORCR0480 END ***"
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
@@ -3833,7 +3481,6 @@ grpsys                     PERFORM 900-ORCDBMAIN-SEC
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    CNT-OUT         TO  JOB-UPDCNT
-               MOVE    CNT-RECE41      TO  JOB-UPDCNT1
                PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *

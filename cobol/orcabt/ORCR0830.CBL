@@ -77,28 +77,9 @@
       *                                     ¥³¡¼¥ÉÂÐ±þ
       *  04.06.02    NACL-ÌçÏÆ    13/02/18  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
       *                                     ¡Ê¿·¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÂÐ±þ¡Ë
-      *  04.06.03    NACL-ÌçÏÆ    13/06/12  Ï«ºÒ¡¦¼«ÇåÀÕ¤Î
-      *                                     ´Ç¸îÎÁ³äÁý²Ã»»ÂÐ±þ
-      *  04.06.04    NACL-ÌçÏÆ    13/06/14  µßµÞ°åÎÅ´ÉÍý²Ã»»»»ÄêÈ½Äê½¤Àµ
-      *  04.06.05    NACL-ÌçÏÆ    13/09/09  ÅÀ¿ô¥Þ¥¹¥¿·îÅÓÃæ¶â³ÛÊÑ¹¹ÂÐ±þ
-      *                                     ¡Ê£°£¹£µ£¹£±¡Á£¹£´¡Ë
       *
       *  04.07.01    NACL-ÌçÏÆ    11/09/09  Ï«ºÒÀÁµá½ñºîÀ®ÂÐ±þ
       *  04.07.02    NACL-ÌçÏÆ    12/08/28  ÌôºÞÎÁ¸ºÅÀÂÐ±þ
-      *  04.07.03    NACL-ÌçÏÆ    13/10/02  ¼«ÇåÀÕ¡ÊÂè»°¼Ô¹Ô°Ù¡ËÂÐ±þ
-      *  04.07.04    NACL-ÌçÏÆ    14/02/13  Ï«ºÒ¡¦¼«ÇåÀÕ¤Î»Ü½Ñ²Ã»»ÂÐ±þ
-      *  04.07.05    NACL-ÌçÏÆ    14/03/01  Ï«ºÒ¥Þ¥¹¥¿ÄÉ²ÃÂÐ±þ
-      *  04.07.06    NACL-ÌçÏÆ    14/03/04  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      *  04.07.07    NACL-ÌçÏÆ    14/03/28  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      *  04.07.08    NACL-ÌçÏÆ    15/01/14  Æ±ÆüÆþ±¡»þ¤Î¥Õ¥é¥°ÊÔ½¸½¤Àµ
-      *
-      *  04.08.01    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
-      *  04.08.02    NACL-ÌçÏÆ    16/04/18  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.03    NACL-ÌçÏÆ    16/08/23  »ý»²ÌôÂÐ±þ
-      *  04.08.04    NACL-ÌçÏÆ    16/09/06  Æþ±¡¼¼ÎÁ²Ã»»º¹³ÛÀÁµá¥Þ¥¹¥¿¤È
-      *                                     ÆÃÊÌÏ«ºÒÉÕÅº´Ç¸îÎÁº¹³ÛÀÁµá
-      *                                     ¥Þ¥¹¥¿¤ÎÂÐ±þ
-      *  04.08.05    NACL-ÌçÏÆ    18/02/01  Âè»°¼Ô¹Ô°Ù¤ÎÁªÄêÆþ±¡ÎÁÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -169,7 +150,6 @@
            03  IDX2                                    PIC 9(03).
            03  IDX3                                    PIC 9(02).
            03  IDX4                                    PIC 9(02).
-           03  IDX8                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
            03  IDY2                                    PIC 9(03).
            03  ID1                                     PIC 9(03).
@@ -230,8 +210,6 @@
                05  WRK-TAIHI-SRYD                      PIC  9(02).
       *
            03  WRK-TEN                                 PIC  9(09).
-           03  WRK-TEN-KG                              PIC  9(09).
-           03  WRK-TEN-KG2                             PIC  9(09).
            03  WRK-KIN                                 PIC  9(09).
            03  WRK-KIN2                                PIC  9(09).
       *
@@ -259,8 +237,6 @@
       *
            03  WRK-KEISAN                              PIC  9(09).
            03  WRK-KEISAN2                             PIC  9(09).
-           03  WRK-KEISAN-KG                           PIC  9(09).
-           03  WRK-KEISAN-KG2                          PIC  9(09).
       *
            03  WRK-STDAY                               PIC  9(02).
            03  WRK-STDAY2                              PIC  9(02).
@@ -269,16 +245,6 @@
       *
            03  WRK-SYUTEN-TOTALTEN                     PIC S9(09).
            03  WRK-YKZTEN-TOTALTEN                     PIC  9(09).
-      *
-           03  WRK-FUTANWARI                           PIC  9V99.
-      *
-           03  WRK-TAIHI-DAY                           PIC  9(02).
-      *
-           03  WRK-S1                                  PIC  9(03).
-           03  WRK-S2                                  PIC  9(03).
-           03  WRK-S3                                  PIC  9V99999.
-           03  WRK-S4                                  PIC  9V99.
-           03  WRK-S5                                  PIC  9V99.
       *
        01  WRK-TENTEK.
            03  WRK-TENTEK-SYUTEN                       PIC  9(07).
@@ -358,13 +324,6 @@
       *
            03  CONS-ROUSAI42   PIC X(09)   VALUE   "101800880".
       *
-           03  CONS-ROUSAI43   PIC X(09)   VALUE   "101801040".
-      *
-           03  CONS-ROUSAI44   PIC X(09)   VALUE   "101801150".
-           03  CONS-ROUSAI45   PIC X(09)   VALUE   "101801160".
-           03  CONS-ROUSAI46   PIC X(09)   VALUE   "101801170".
-           03  CONS-ROUSAI47   PIC X(09)   VALUE   "101801180".
-      *
       *    ¹øÉô¸ÇÄêÂÓ²Ã»»
            03  CONS-YOUBUKASAN PIC X(09)   VALUE   "140037490".
       *    ¶»Éô¸ÇÄêÂÓ²Ã»»
@@ -435,8 +394,6 @@
       *    Ï«ºÒÆþ±¡²ñ·×ºîÀ®¥µ¥Ö
            COPY    "CPORCSROUNYUIN.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *
@@ -477,7 +434,6 @@
                                        WRK-AREA
                                        FLG-AREA
                                        SPA-AREA
-                                       RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -487,20 +443,9 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE82PARA
-           INITIALIZE                      RECE82PARA
            MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE82PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE82PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE82PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
@@ -603,9 +548,6 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                  MOVE     MCPDATA-REC     TO  SYS-1001-REC
                  MOVE     SYS-1001-TAX-HASU-KBN
                                           TO  WRK-TAX1001-KBN
-                 IF   WRK-TAX1001-KBN = SPACE
-                    MOVE   "2"            TO  WRK-TAX1001-KBN
-                 END-IF
               ELSE
                  MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£"
                                          TO  WRK-RECEERR
@@ -809,27 +751,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
-      *    ¾ÃÈñÀÇ·×»»¤Î·¸¿ôÀßÄê
-           IF  RECE82-SRYYM >= "201404"
-               MOVE       8      TO  WRK-S1
-               MOVE     108      TO  WRK-S2
-               MOVE     0.08     TO  WRK-S4
-               MOVE     1.08     TO  WRK-S5
-           ELSE
-               MOVE       5      TO  WRK-S1
-               MOVE     105      TO  WRK-S2
-               MOVE     0.05     TO  WRK-S4
-               MOVE     1.05     TO  WRK-S5
-           END-IF
-           EVALUATE  WRK-TAX1001-KBN
-               WHEN      "1"
-                 MOVE   0.50000  TO  WRK-S3
-               WHEN      "2"
-                 MOVE   0.00000  TO  WRK-S3
-               WHEN      "3"
-                 MOVE   0.99999  TO  WRK-S3
-           END-EVALUATE
-      *
            MOVE       SPACE             TO     TBL-JNISSU
            INITIALIZE                          TBL-JNISSU
            MOVE       SPACE             TO     TBL-JNISSU-GEN
@@ -907,8 +828,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                  IF        WRK-DAY5(IDY)   =   RECE82-HKNCOMBI
                       MOVE    ZERO            TO    FLG-SHOSAISIN
-                      IF  (WRK-DAY1(IDY)   NOT =    ZERO )
-                      OR  (RECE82-NYUINDAY-KBN(IDY) = "1")
+                      IF   WRK-DAY1(IDY)   NOT =    ZERO    
                                MOVE    1      TO    FLG-SHOSAISIN
                       END-IF
                       PERFORM   2202-RECE82-TENSOU11-SEC
@@ -923,15 +843,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                  IF   RECE82-HKNCOMBI         =
                                    RECE82-DOUJITSU-HKNCOMBI(IDY)
-      ***             MOVE    SPACE           TO    RECE82-NYUINRYOFLG
-                      IF   RECE82-HKNCOMBI = WRK-DAY5(IDY)
-                        CONTINUE
-                      ELSE
-                        MOVE  SPACE           TO    RECE82-NYUINRYOFLG
-                      END-IF
+                      MOVE    SPACE           TO    RECE82-NYUINRYOFLG
                       MOVE    ZERO            TO    FLG-SHOSAISIN
-                      IF  (WRK-DAY1(IDY)   NOT =    ZERO )
-                      OR  (RECE82-NYUINDAY-KBN(IDY) = "1")
+                      IF   WRK-DAY1(IDY)   NOT =    ZERO
                                MOVE    1      TO    FLG-SHOSAISIN
                       END-IF
                       PERFORM   2202-RECE82-TENSOU11-SEC
@@ -960,7 +874,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
                         (ACCT-JIHOKBN       =   SPACE)    AND
-                        (ACCT-ZAIKBN        =    ZERO)
+                        (ACCT-ZAIKBN    NOT = 1 AND 2)
                         MOVE    ZERO     TO    FLG-SHOSAISIN
                                                FLG-SHOSAISIN-GEN
                                                FLG-KYUKYU
@@ -977,7 +891,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    1    TO    FLG-SHOSAISIN
                             END-IF
                         END-IF
-                        IF   ACCT-SRYKBN  =  "11"  OR  "80"
+                        IF   ACCT-SRYKBN  =  "11"   
                             PERFORM   2204-KYUKYU-HANTEI-SEC
                         END-IF
                         PERFORM   2205-RECE82-TENSOU12-SEC
@@ -985,7 +899,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF   (ACCT-ZAITEN    =        ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
                         (ACCT-JIHOKBN       =   SPACE)    AND
-                        (ACCT-ZAIKBN        =    ZERO)
+                        (ACCT-ZAIKBN    NOT = 1 AND 2)
                         MOVE    ZERO     TO    FLG-SHOSAISIN
                                                FLG-SHOSAISIN-GEN
                                                FLG-KYUKYU
@@ -1023,13 +937,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     CONTINUE
                   ELSE
                     MOVE   NACCT-DAY(IDY)   TO  WRK-DAY1(IDY) 
-                    IF  ( NACCT-SRYKBN     = "90"      )
-                    OR  ( NACCT-SRYCDTOTAL = 190799410 )
-                    OR  ( NACCT-SRYCDTOTAL = 190799510 )
-                       MOVE   "90" TO  RECE82-NYUDAY-SRYKBN(IDY)
-                    ELSE
-                       MOVE   "92" TO  RECE82-NYUDAY-SRYKBN(IDY)
-                    END-IF
                   END-IF
                END-IF 
       *
@@ -1166,8 +1073,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       CONS-ROUSAI34 OR CONS-ROUSAI35 OR
                       CONS-ROUSAI36 OR CONS-ROUSAI37 OR
                       CONS-ROUSAI38 OR CONS-ROUSAI39 OR
-                      CONS-ROUSAI40 OR CONS-ROUSAI41 OR
-                      CONS-ROUSAI43                       ) AND
+                      CONS-ROUSAI40 OR CONS-ROUSAI41      ) AND
                      (RECE82-SRYYM  >= "201307"           ))
                  OR ( SRY-SRYCD(1)(1:5) =
                       "09591" OR "09592" OR "09593"        )
@@ -1279,10 +1185,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    RECE82-SRYYM        TO  LNK-SROUNYUIN-SANTEIYM
            MOVE    RECE82-HKNCOMBI     TO  LNK-SROUNYUIN-HKNCOMBI
            MOVE    "1"                 TO  LNK-SROUNYUIN-RYAKUKBN
-           IF   (RECE82-HKNKBN  =  "6"    )
-           AND  (RECE82-SRYYM  >= "201604")
-             MOVE  "1"                 TO  LNK-SROUNYUIN-DAISANFLG
-           END-IF
       *
            CALL    "ORCSROUNYUIN"      USING   MCPAREA
                                                ORCSROUNYUIN-AREA
@@ -1315,7 +1217,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            EVALUATE   LNK-SROUNYUIN-SRYKBN(IDY)
              WHEN   "90"
-                IF    LNK-SROUNYUIN-ZAITEN(IDY)  NOT = ZERO
                   MOVE     ZERO     TO    FLG-ARI
                   PERFORM  VARYING  ID1    FROM    1   BY  1
                                 UNTIL   ID1                   > 10
@@ -1337,31 +1238,29 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       ADD    LNK-SROUNYUIN-ZAITEN(IDY)
                                        TO  RECE82-NYUKHNKEI(ID1)
                   END-IF
-                END-IF
       *
-                COMPUTE  RECE82-NYUKHNKEI2  =
-                         RECE82-NYUKHNKEI2  +
-                         LNK-SROUNYUIN-ZAITEN-NACCT(IDY)
+                  COMPUTE  RECE82-NYUKHNKEI2  =
+                           RECE82-NYUKHNKEI2  +  
+                           LNK-SROUNYUIN-ZAITEN-NACCT(IDY)
       *
-                COMPUTE  RECE82-NYUKHNKEI2  =
-                         RECE82-NYUKHNKEI2  +
-                         LNK-SROUNYUIN-ZAITEN-ACCT(IDY)
+                  COMPUTE  RECE82-NYUKHNKEI2  =
+                           RECE82-NYUKHNKEI2  +  
+                           LNK-SROUNYUIN-ZAITEN-ACCT(IDY)
       *
-      **>       COMPUTE  RECE82-NYUTOKKEI2  =
-      **>                RECE82-NYUTOKKEI2  +
-      **>                LNK-SROUNYUIN-ZAITEN-ACCTETC(IDY)
+      **>         COMPUTE  RECE82-NYUTOKKEI2  =
+      **>                  RECE82-NYUTOKKEI2  +  
+      **>                  LNK-SROUNYUIN-ZAITEN-ACCTETC(IDY)
       *
-                COMPUTE  RECE82-NYUTOKKEI2  =
-                         RECE82-NYUTOKKEI2  -
-                         LNK-SROUNYUIN-GENTEN(IDY)
+                  COMPUTE  RECE82-NYUTOKKEI2  =
+                           RECE82-NYUTOKKEI2  -
+                           LNK-SROUNYUIN-GENTEN(IDY)
       *
              WHEN   "92"
-                COMPUTE  WRK-NYUTOKRYO                   =
-                         LNK-SROUNYUIN-ZAITEN(IDY)       +
-                         LNK-SROUNYUIN-ZAITEN-NACCT(IDY) +
-                         LNK-SROUNYUIN-ZAITEN-ACCT(IDY)
+                  COMPUTE  WRK-NYUTOKRYO  =  
+                           LNK-SROUNYUIN-ZAITEN(IDY)  +
+                           LNK-SROUNYUIN-ZAITEN-NACCT(IDY) +
+                           LNK-SROUNYUIN-ZAITEN-ACCT(IDY)
       *
-                IF    WRK-NYUTOKRYO  NOT = ZERO
                   IF     LNK-SROUNYUIN-GAIHAKU(IDY) =  ZERO
                     MOVE     ZERO     TO    FLG-ARI
                     PERFORM  VARYING  ID1    FROM    1   BY  1
@@ -1411,15 +1310,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       ADD    WRK-NYUTOKRYO   TO  RECE82-NYUTOKKEI(ID1)
                     END-IF
                   END-IF
-                END-IF
       *
-      **>       COMPUTE  RECE82-NYUTOKKEI2  =
-      **>                RECE82-NYUTOKKEI2  +
-      **>                LNK-SROUNYUIN-ZAITEN-ACCTETC(IDY)
+      **>         COMPUTE  RECE82-NYUTOKKEI2  =
+      **>                  RECE82-NYUTOKKEI2  +
+      **>                  LNK-SROUNYUIN-ZAITEN-ACCTETC(IDY)
       *
-                COMPUTE  RECE82-NYUTOKKEI2  =
-                         RECE82-NYUTOKKEI2  -
-                         LNK-SROUNYUIN-GENTEN(IDY)
+                  COMPUTE  RECE82-NYUTOKKEI2  =
+                           RECE82-NYUTOKKEI2  -
+                           LNK-SROUNYUIN-GENTEN(IDY)
       *
            END-EVALUATE
       *
@@ -1622,12 +1520,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
                         (ACCT-JIHOKBN       =   SPACE)
-                     IF  ACCT-ZAIKBN        =    ZERO
+                     IF  ACCT-ZAIKBN    NOT = 1 AND 2
                        MOVE    ZERO     TO    WRK-TEN
                                               WRK-KIN
                                               WRK-KIN2
                        PERFORM   2602-ENDATE-HANTEI-SEC
-                       IF    RECE82-HKNKBN   =   "4" OR "6"
+                       IF    RECE82-HKNKBN   =   "4"
                          IF   ACCT-SRYKBN  =  "80"
                              PERFORM   2603-SINDAN-HANTEI-SEC
                          END-IF
@@ -1657,7 +1555,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    ZERO     TO    WRK-TEN
                                               WRK-KIN
                                               WRK-KIN2
-                       IF    RECE82-HKNKBN   =   "4" OR "6"
+                       IF    RECE82-HKNKBN   =   "4"
                          IF  WRK-TENTEK-FLG2  =   ZERO
                            PERFORM VARYING IDY FROM 1  BY 1
                                        UNTIL    IDY     >    31
@@ -1686,8 +1584,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF   (ACCT-ZAITEN        =    ZERO)    AND
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
                         (ACCT-JIHOKBN       =   SPACE)
-                     IF  ACCT-ZAIKBN        =    ZERO
-                       IF    RECE82-HKNKBN   =   "4" OR "6"
+                     IF  ACCT-ZAIKBN    NOT = 1 AND 2
+                       IF    RECE82-HKNKBN   =   "4"
                          IF   ACCT-SRYKBN  =  "80"
                              PERFORM   2603-SINDAN-HANTEI-SEC
                          END-IF
@@ -1716,16 +1614,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   AND (WRK-DAY7-ZAITEN(IDY)   NOT =  ZERO)
                   AND ((WRK-DAY2(IDY)         =  ZERO   ) OR
                        (WRK-DAY2(IDY)        >=   4     ))
-                     IF    RECE82-HKNKBN   =   "4" OR "6"
-                      IF   (RECE82-HKNKBN    =  "4")
-                      AND  (RECE82-JIBAIKBN  =  "1")
+                     IF    RECE82-HKNKBN   =   "4"
+                      EVALUATE  RECE82-JIBAIKBN
+                       WHEN  "1"
                         COMPUTE  TOTALKIN2-ACCT =  TOTALKIN2-ACCT
                                                 +  120
-                      ELSE
+                       WHEN  "2"
                         COMPUTE  TBL-YKZTEN-JI(IDY)  =
                                  TBL-YKZTEN-JI(IDY)  +
                                  WRK-DAY7-ZAITEN(IDY)
-                      END-IF
+                      END-EVALUATE
                      ELSE
                         COMPUTE  TOTALTEN-ACCT  =  TOTALTEN-ACCT
                                                 +  WRK-DAY7-ZAITEN(IDY)
@@ -1806,8 +1704,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2602-ENDATE-HANTEI-SEC                 SECTION.
       *
-           PERFORM 290-DAY-CHECK-SEC
-      *
            PERFORM 800-ACCT-SETACT9-SEC
       *
            IF      MCP-RC               =       ZERO
@@ -1825,7 +1721,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                    IF       FLG-TENSU      =    ZERO
       *
-                     IF    RECE82-HKNKBN   =   "4" OR "6"
+                     IF    RECE82-HKNKBN   =   "4"
                          IF   RECE82-SRYYM    >=   "201307"
                           IF  SRY-SRYCD(SRYACT-IDX) = CONS-ROUSAI1  OR
                                                       CONS-ROUSAI42 OR
@@ -1862,31 +1758,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                               CONS-ROUSAI34 OR  CONS-ROUSAI35 OR
                               CONS-ROUSAI36 OR  CONS-ROUSAI37 OR
                               CONS-ROUSAI38 OR  CONS-ROUSAI39 OR
-                              CONS-ROUSAI40 OR  CONS-ROUSAI41 OR
-                              CONS-ROUSAI43 OR  CONS-ROUSAI44 OR
-                              CONS-ROUSAI45 OR  CONS-ROUSAI46 OR
-                              CONS-ROUSAI47                        ) AND
+                              CONS-ROUSAI40 OR  CONS-ROUSAI41      ) AND
                              (RECE82-SRYYM         >= "201307"     ))
                             ADD    TNS-TEN      TO    WRK-KIN2
                          END-IF
                          IF   RECE82-SRYYM         >= "201307"
                            EVALUATE  SRY-SRYCD(SRYACT-IDX)
                              WHEN    "101800570"  THRU  "101800860"
-                             WHEN    "101801010"  THRU  "101801020"
-                             WHEN    "101801190"  THRU  "101801420"
                               ADD    TNS-TEN      TO    WRK-KIN2
-      *
-                              COMPUTE WRK-TEN-KG2 = TNS-TEN
                            END-EVALUATE
-                           IF   SRY-SRYCD(SRYACT-IDX) = "101800550" OR
-                                         "101800560" OR "101800990" OR
-                                         "101801030"
-                              COMPUTE WRK-FUTANWARI = TNS-TEN / 100
-      *
-                              COMPUTE WRK-KEISAN-KG2 =
-                                     (WRK-TEN-KG2 * WRK-FUTANWARI)
-                              ADD  WRK-KEISAN-KG2 TO    WRK-KIN2
-                           END-IF
                          ELSE
                            EVALUATE  SRY-SRYCD(SRYACT-IDX)
                              WHEN    "101910110"  THRU  "101910400"
@@ -1907,8 +1787,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *                ¡Ê¼«ÇåÀÕ¤Î¾ì¹ç¡¢£±£°ÅÀ¤ò£±£²£°±ß¤ËÆÉ¤ßÂØ¤¨¤ë¡Ë
       *                ¡ÊÎÅÍÜÃ´Åö¼êÅö¡§£±·î£±²ó¤Î»»Äê¡Ë
                          IF   SRY-SRYCD(SRYACT-IDX) =  CONS-RYOYOTEATE
-                          IF   (RECE82-HKNKBN    =  "4")
-                          AND  (RECE82-JIBAIKBN  =  "1")
+                          IF   RECE82-JIBAIKBN      =  "1"
                             ADD    120          TO    WRK-KIN2
                           END-IF
                          END-IF
@@ -1940,10 +1819,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                               CONS-ROUSAI34 OR  CONS-ROUSAI35 OR
                               CONS-ROUSAI36 OR  CONS-ROUSAI37 OR
                               CONS-ROUSAI38 OR  CONS-ROUSAI39 OR
-                              CONS-ROUSAI40 OR  CONS-ROUSAI41 OR
-                              CONS-ROUSAI43 OR  CONS-ROUSAI44 OR
-                              CONS-ROUSAI45 OR  CONS-ROUSAI46 OR
-                              CONS-ROUSAI47                        ) AND
+                              CONS-ROUSAI40 OR  CONS-ROUSAI41      ) AND
                              (RECE82-SRYYM         >= "201307"     ))
                             ADD    TNS-TEN      TO    WRK-KIN
                             COMPUTE  WRK-TEN  =   WRK-TEN   +
@@ -1952,29 +1828,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          IF   RECE82-SRYYM         >= "201307"
                            EVALUATE  SRY-SRYCD(SRYACT-IDX)
                              WHEN    "101800570"  THRU  "101800860"
-                             WHEN    "101801010"  THRU  "101801020"
-                             WHEN    "101801190"  THRU  "101801420"
                               ADD    TNS-TEN      TO    WRK-KIN
                               COMPUTE  WRK-TEN  =   WRK-TEN   +
                                        ( TNS-TEN / 10)
-      *
-                              COMPUTE WRK-TEN-KG  = TNS-TEN / 10
-                              COMPUTE WRK-TEN-KG2 = TNS-TEN
                            END-EVALUATE
-                           IF   SRY-SRYCD(SRYACT-IDX) = "101800550" OR
-                                         "101800560" OR "101800990" OR
-                                         "101801030"
-                              COMPUTE WRK-FUTANWARI = TNS-TEN / 100
-      *
-                              COMPUTE WRK-KEISAN-KG2 =
-                                     (WRK-TEN-KG2 * WRK-FUTANWARI)
-                              ADD  WRK-KEISAN-KG2 TO    WRK-KIN
-      *
-                              COMPUTE WRK-KEISAN-KG  =
-                                     (WRK-TEN-KG  * WRK-FUTANWARI)
-                                                  + 0.5
-                              ADD  WRK-KEISAN-KG  TO    WRK-TEN
-                           END-IF
                          ELSE
                            EVALUATE  SRY-SRYCD(SRYACT-IDX)
                              WHEN    "101910110"  THRU  "101910400"
@@ -2024,8 +1881,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2603-SINDAN-HANTEI-SEC                 SECTION.
       *
-           PERFORM 290-DAY-CHECK-SEC
-      *
            PERFORM 800-ACCT-SETACT9-SEC
       *
            IF      MCP-RC               =       ZERO
@@ -2049,14 +1904,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                     ACCT-ZAIKAISU
       ****
                           IF    RECE82-TAXKBN      =   "2"
-                            IF  SRY-SRYSYUKBN = "809"
-                              COMPUTE  WRK-KEISAN  =
-                               (SRY-JIHIMONEY(SRYACT-IDX) * WRK-S5)
-                                                          + WRK-S3
+                            IF  WRK-TAX1001-KBN =   "1"
+                              IF  SRY-SRYSYUKBN = "809"
+                                COMPUTE  WRK-KEISAN  =
+                                 (SRY-JIHIMONEY(SRYACT-IDX) *  1.05)
+                                                            +  0.5
+                              ELSE
+                                COMPUTE  WRK-KEISAN  =
+                                 (TNS-TEN                   *  1.05)
+                                                            +  0.5
+                              END-IF
                             ELSE
-                              COMPUTE  WRK-KEISAN  =
-                               (TNS-TEN                   * WRK-S5)
-                                                          + WRK-S3
+                              IF  SRY-SRYSYUKBN = "809"
+                                COMPUTE  WRK-KEISAN  =
+                                  SRY-JIHIMONEY(SRYACT-IDX) *  1.05
+                              ELSE
+                                COMPUTE  WRK-KEISAN  =
+                                  TNS-TEN                   *  1.05
+                              END-IF
                             END-IF
                             COMPUTE  WRK-KEISAN2     =  WRK-KEISAN
                                                      *  ACCT-ZAIKAISU
@@ -2083,14 +1948,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                     ACCT-ZAIKAISU
       ****
                           IF    RECE82-TAXKBN      =   "2"
-                            IF  SRY-SRYSYUKBN = "809"
-                              COMPUTE  WRK-KEISAN  =
-                               (SRY-JIHIMONEY(SRYACT-IDX) * WRK-S5)
-                                                          + WRK-S3
+                            IF  WRK-TAX1001-KBN =   "1"
+                              IF  SRY-SRYSYUKBN = "809"
+                                COMPUTE  WRK-KEISAN  =
+                                 (SRY-JIHIMONEY(SRYACT-IDX) *  1.05)
+                                                            +  0.5
+                              ELSE
+                                COMPUTE  WRK-KEISAN  =
+                                 (TNS-TEN                   *  1.05)
+                                                            +  0.5
+                              END-IF
                             ELSE
-                              COMPUTE  WRK-KEISAN  =
-                               (TNS-TEN                   * WRK-S5)
-                                                          + WRK-S3
+                              IF  SRY-SRYSYUKBN = "809"
+                                COMPUTE  WRK-KEISAN  =
+                                  SRY-JIHIMONEY(SRYACT-IDX) *  1.05
+                              ELSE
+                                COMPUTE  WRK-KEISAN  =
+                                  TNS-TEN                   *  1.05
+                              END-IF
                             END-IF
                             COMPUTE  WRK-KEISAN2     =  WRK-KEISAN
                                                      *  ACCT-ZAIKAISU
@@ -2134,8 +2009,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    ÆüÃ±°Ì¤Î¼êµ»ÅÀ¡¦ÌôºÞÅÀÅù¤ò¥»¥Ã¥È
       *****************************************************************
        2604-SYUGITEN-HANTEI-SEC                 SECTION.
-      *
-           PERFORM 290-DAY-CHECK-SEC
       *
            PERFORM 800-ACCT-SETACT9-SEC
       *
@@ -2254,10 +2127,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             CONS-ROUSAI34 OR  CONS-ROUSAI35 OR
                             CONS-ROUSAI36 OR  CONS-ROUSAI37 OR
                             CONS-ROUSAI38 OR  CONS-ROUSAI39 OR
-                            CONS-ROUSAI40 OR  CONS-ROUSAI41 OR
-                            CONS-ROUSAI43 OR  CONS-ROUSAI44 OR
-                            CONS-ROUSAI45 OR  CONS-ROUSAI46 OR
-                            CONS-ROUSAI47                         ) AND
+                            CONS-ROUSAI40 OR  CONS-ROUSAI41       ) AND
                            (RECE82-SRYYM         >=  "201307"     ))
       *
                             COMPUTE  WRK-TEN-JI   =  TNS-TEN / 10
@@ -2269,27 +2139,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        IF   RECE82-SRYYM         >= "201307"
                          EVALUATE  SRY-SRYCD(SRYACT-IDX)
                            WHEN    "101800570"  THRU  "101800860"
-                           WHEN    "101801010"  THRU  "101801020"
-                           WHEN    "101801190"  THRU  "101801420"
                               COMPUTE  WRK-TEN-JI   =  TNS-TEN / 10
                               COMPUTE  TBL-SYUTEN-JI(IDY)  =
                                        TBL-SYUTEN-JI(IDY)  -
                                 ( WRK-ZAIKAISU-JI * WRK-TEN-JI )
-      *
-                              COMPUTE  WRK-TEN-KG = TNS-TEN / 10
                          END-EVALUATE
-                         IF   SRY-SRYCD(SRYACT-IDX) = "101800550" OR
-                                       "101800560" OR "101800990" OR
-                                       "101801030"
-                              COMPUTE  WRK-FUTANWARI = TNS-TEN / 100
-      *
-                              COMPUTE  WRK-KEISAN-KG =
-                                      (WRK-TEN-KG * WRK-FUTANWARI)
-                                                  + 0.5
-                              COMPUTE  TBL-SYUTEN-JI(IDY)  =
-                                       TBL-SYUTEN-JI(IDY)  -
-                                ( WRK-ZAIKAISU-JI * WRK-KEISAN-KG )
-                         END-IF
                        ELSE
                          EVALUATE  SRY-SRYCD(SRYACT-IDX)
                            WHEN    "101910110"  THRU  "101910400"
@@ -2334,9 +2188,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             COMPUTE  TBL-SYUTEN-JI(IDY)  =
                                      TBL-SYUTEN-JI(IDY)  -
                                     ( WRK-ZAIKAISU-JI * TNS-TEN )
-                            IF ((RECE82-HKNKBN     =  "4") AND
-                                (RECE82-JIBAIKBN   =  "2"))
-                            OR ( RECE82-HKNKBN     =  "6" )
+                            IF   RECE82-JIBAIKBN  =  "2"
                               COMPUTE  TBL-YKZTEN-JI(ID1)  =
                                        TBL-YKZTEN-JI(ID1)  +
                                       ( WRK-ZAIKAISU-JI * TNS-TEN )
@@ -2402,7 +2254,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                    (WRK-TEN    *
                                                     ACCT-ZAIKAISU)
       *
-                       IF    RECE82-HKNKBN   =   "4" OR "6"
+                       IF    RECE82-HKNKBN   =   "4"
                          COMPUTE  TOTALKIN-ACCT  =  TOTALKIN-ACCT  +
                                                      (WRK-KIN    *
                                                       ACCT-ZAIKAISU)
@@ -2630,7 +2482,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 (RECE82-JIBAIKBN   =   "2"))
            OR  ((RECE82-HKNKBN     =   "5") AND
                 (RECE82-KOMUKBN    =   "2"))
-           OR  ( RECE82-HKNKBN     =   "6" )
              CONTINUE
            ELSE
              IF  RECE82-JNISSU     =   ZERO
@@ -2648,8 +2499,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE                                                         
                 MOVE   WRK-SINDAN-TUU      TO  RECE82-SINDAN-TUU        
       ***>      IF    RECE82-TAXKBN      =   "2"                           
-      ***>        COMPUTE  WRK-SINDAN-KIN  =
-      ***>                (WRK-SINDAN-KIN  * WRK-S5) + WRK-S3
+      ***>        IF  WRK-TAX1001-KBN =   "1"
+      ***>           COMPUTE  WRK-SINDAN-KIN  =  
+      ***>                   (WRK-SINDAN-KIN  *  1.05)  +  0.5          
+      ***>        ELSE
+      ***>           COMPUTE  WRK-SINDAN-KIN  =  
+      ***>                    WRK-SINDAN-KIN  *  1.05                   
+      ***>        END-IF
       ***>      END-IF                                                  
                 MOVE   WRK-SINDAN-KIN      TO  RECE82-SINDAN-KIN        
            END-IF
@@ -2659,13 +2515,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE                                                         
                 MOVE   WRK-MEISAI-TUU      TO  RECE82-MEISAI-TUU        
       ***>      IF    RECE82-TAXKBN      =   "2"                           
-      ***>        COMPUTE  WRK-MEISAI-KIN  =
-      ***>                (WRK-MEISAI-KIN  * WRK-S5) + WRK-S3
+      ***>        IF  WRK-TAX1001-KBN =   "1"
+      ***>           COMPUTE  WRK-MEISAI-KIN  =  
+      ***>                   (WRK-MEISAI-KIN  *  1.05)  +  0.5          
+      ***>        ELSE
+      ***>           COMPUTE  WRK-MEISAI-KIN  =  
+      ***>                    WRK-MEISAI-KIN  *  1.05                   
+      ***>        END-IF
       ***>      END-IF                                                  
                 MOVE   WRK-MEISAI-KIN      TO  RECE82-MEISAI-KIN
            END-IF                                                       
       *
-           IF    RECE82-HKNKBN   =   "4" OR "6"
+           IF    RECE82-HKNKBN   =   "4"
       *
               PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL      IDX    >      10
@@ -2782,27 +2643,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        280-RECE82-REWRITE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    »»ÄêÆü¥Á¥§¥Ã¥¯
-      *****************************************************************
-       290-DAY-CHECK-SEC              SECTION.
-      *
-           MOVE     ZERO         TO    WRK-TAIHI-DAY
-           PERFORM   VARYING   IDX8   FROM    1    BY   1
-                      UNTIL    IDX8     >    31
-              IF   ACCT-DAY(1 IDX8)  NOT =   ZERO
-                MOVE     IDX8    TO    WRK-TAIHI-DAY
-                MOVE     31      TO    IDX8
-              END-IF
-           END-PERFORM
-           IF   WRK-TAIHI-DAY  =  ZERO
-              MOVE       01      TO    WRK-TAIHI-DAY
-           END-IF
-      *
-           .
-       290-DAY-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2966,9 +2806,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      MOVE     1       TO    FLG-SET
                      MOVE    SYS-1001-TAX-HASU-KBN
                                       TO    WRK-TAX1001-KBN
-                     IF   WRK-TAX1001-KBN = SPACE
-                        MOVE   "2"    TO    WRK-TAX1001-KBN
-                     END-IF
                   END-IF
       *
                 END-PERFORM
@@ -3094,9 +2931,9 @@ grpsys     PERFORM 900-DBFETCH-SEC
 grpsys     MOVE    SRY-HOSPNUM            TO   TNS-HOSPNUM
            MOVE    SRY-SRYCD(SRYACT-IDX)  TO   TNS-SRYCD
            MOVE    ACCT-SRYYM             TO   TNS-YUKOSTYMD(1:6)
-           MOVE    WRK-TAIHI-DAY          TO   TNS-YUKOSTYMD(7:2)
+           MOVE    "01"                   TO   TNS-YUKOSTYMD(7:2)
            MOVE    ACCT-SRYYM             TO   TNS-YUKOEDYMD(1:6)
-           MOVE    WRK-TAIHI-DAY          TO   TNS-YUKOEDYMD(7:2)
+           MOVE    "01"                   TO   TNS-YUKOEDYMD(7:2)
       *
            MOVE    TNS-TENSU-REC          TO   MCPDATA-REC
       *
