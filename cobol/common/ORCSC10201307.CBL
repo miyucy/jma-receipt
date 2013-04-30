@@ -363,6 +363,8 @@
       *H25.3
            03  WRK-SYOUKAI             PIC 9(01).
            03  FLG-SYOKAINASI          PIC 9(01).
+      *H25.7
+           03  WRK-SRYYMD              PIC X(08).
       *
       *    ÊÝÂ¸ÍÑ£Ó£Ð£Á
        01  HZN-SCR-REC.
@@ -6266,6 +6268,17 @@
       *****************************************************************
        10019-RSI-KYUKYU-SEC                SECTION.
       *
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+           IF      SPA-NYUGAIKBN       =   "1"
+      *    Æþ±¡Æü¤ÎºÇ¸å¤ÎÆü¤ò¿ÇÎÅÆü¤È¤¹¤ë
+               PERFORM VARYING IDX-N2      FROM    1   BY  1
+                       UNTIL   IDX-N2      >   31
+                   IF      WRK-COM-NYUINDAY(IDX-Z IDX-N2)  >   ZERO
+                       MOVE    IDX-N2              TO  WRK-SRYYMD(7:2)
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
       *    µßµÞ°åÎÅ´ÉÍý²Ã»»¡ÊÆþ±¡¡ËÆþ±¡Æü¤«¤é£·Æü°ÊÆâ
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY6-AREA
@@ -6279,11 +6292,11 @@
       *TEST
             DISPLAY "LNK-ORCSC-NYUINYMD:"  LNK-ORCSC-NYUINYMD
                    ",WRK-NYUINYMD-7:" WRK-NYUINYMD-7
-                ",SPA-SRYYMD:"  SPA-SRYYMD
+                ",WRK-SRYYMD:"  WRK-SRYYMD
                 ",GMN:"  WRK-COM-INPUTCD (IDX-Z)
       *TEST
-           IF     (SPA-SRYYMD          >=  LNK-ORCSC-NYUINYMD)
-             AND  (SPA-SRYYMD          <   WRK-NYUINYMD-7 )
+           IF     (WRK-SRYYMD          >=  LNK-ORCSC-NYUINYMD)
+             AND  (WRK-SRYYMD          <   WRK-NYUINYMD-7 )
                CONTINUE
            ELSE
                MOVE    "8028"          TO  SPA-ERRCD
