@@ -160,26 +160,4 @@ path	key8	{
 	};
 };
 
-path	key9	{
-	DBSELECT	{
-		DECLARE tbl_inputset_key9_csr CURSOR FOR
-		SELECT *
-		FROM tbl_inputset
-			WHERE   HOSPNUM   =   :HOSPNUM
-			AND   SETCD       =   :SETCD
-			ORDER   BY        YUKOSTYMD  DESC,
-			                  SETSEQ
-		;
-	};
-};
-
-path	del2	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_inputset
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   SETCD       =   :SETCD
-		;
-	};
-};
 

@@ -27,8 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  04.07.00    NACL-多々納  13/09/XX  第三者行為対応
-      *  04.07.00    NACL-多々納  14/07/03  ワーニングメッセージ対応他
+      *
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -66,7 +65,6 @@
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDY2                    PIC 9(04).
-           03  IDK                     PIC 9(04).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -103,8 +101,7 @@
       *    エラーコード
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
-           03  WRK-KEICD-G.
-               05  WRK-KEICD               PIC X(02)   OCCURS   5.
+           03  WRK-KEICD               PIC X(02).
       *
            03  WRK-RESULT-MSG          PIC X(100).
       *
@@ -285,13 +282,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APIMOD-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-RGTXMLMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-RGTXMLMAKE-SEC
       *
            DISPLAY   "***********************"
            DISPLAY   "* subjectivesmod end  *"
@@ -329,7 +321,6 @@
            MOVE    WRK-HEN-TIME        TO  SUBJETRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -367,8 +358,7 @@
       *
            MOVE    ZERO                TO  SUBJETRES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
-           MOVE    SPACE               TO  WRK-KEICD-G
-           MOVE    ZERO                TO  IDK
+           MOVE    SPACE               TO  WRK-KEICD
       *
            MOVE    ZERO                TO  FLG-SYORI
            EVALUATE    APIMOD-CLASS
@@ -411,9 +401,6 @@
       *    XML情報から内容を取り出す
       *****************************************************************
        1000-RGTXMLREAD-SEC   SECTION.
-      *
-           INITIALIZE                      XML-SUBJECTIVESREQ
-           INITIALIZE                      XML-APIREQ
       *
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
@@ -473,11 +460,11 @@
        300-RGTXMLMAKE-SEC   SECTION.
       *
       *    エラーメッセージ編集
-      *    IF      WRK-ERRCD           =   SPACE
-      *        IF      FLG-SYORI           =   1
-      *            MOVE    WRK-KEICD           TO  WRK-ERRCD
-      *        END-IF
-      **** END-IF
+           IF      WRK-ERRCD           =   SPACE
+               IF      FLG-SYORI           =   1
+                   MOVE    WRK-KEICD           TO  WRK-ERRCD
+               END-IF
+           END-IF
            IF      WRK-ERRCD           =   SPACE
       *        正常終了
                EVALUATE    FLG-SYORI
@@ -495,21 +482,19 @@
                MOVE    WRK-ERRMSG          TO  SUBJETRES-API-RESULT-MSG
            END-IF
       *
-      *    警告メッセージ編集
-           IF     (WRK-KEICD-G     NOT =   SPACE )
-             AND  (FLG-SYORI           =   1     )
-             AND  (WRK-ERRCD           =   SPACE )
-               PERFORM VARYING     IDK     FROM    1   BY  1
-                       UNTIL      (IDK     >   5   )
-                              OR  (WRK-KEICD (IDK) =   SPACE )
-                   MOVE    WRK-KEICD (IDK)     TO  WRK-ERRCD
-                   PERFORM 890-ERRCD-MSG-SEC
-                   IF      IDK             =   1
-                       MOVE    WRK-ERRCD       TO  SUBJETRES-API-RESULT
-                   END-IF
-                   MOVE    WRK-ERRMSG      TO  SUBJETRES-API-WARNING-MSG
-                                                                 (IDK)
-               END-PERFORM
+           IF     (FLG-COMMENT     =   1    )
+             AND  (FLG-SYORI       =   1    )
+               IF     (WRK-ERRCD           =   SPACE )
+                  OR  (WRK-ERRCD(1:1)      =   "K"   )
+                   MOVE    SUBJETRES-API-RESULT-MSG
+                                           TO  WRK-RESULT-MSG
+                   MOVE    SPACE           TO  SUBJETRES-API-RESULT-MSG
+                   STRING  WRK-RESULT-MSG
+                           "　症状詳記内容を変更しました"
+                                      DELIMITED  BY  SPACE
+                                      INTO  SUBJETRES-API-RESULT-MSG
+                   END-STRING
+               END-IF
            END-IF
       *
            IF      APIMOD-BODY        NOT =   LOW-VALUE
@@ -622,16 +607,14 @@
            MOVE    SPACE                   TO  WRK-HEN-TIME
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD                TO  WRK-PERFORM-YMD
-           IF     (WRK-PERFORM-YM  NOT =   SPACE )
-             AND  (WRK-PERFORM-DD      =   SPACE
-                                       OR  "00"  )
+           IF      WRK-PERFORM-DD      =   SPACE
+                                       OR  "00"
                MOVE    "01"                TO  WRK-PERFORM-DD
            END-IF
       *    未設定時はシステム情報設定
            IF      WRK-PERFORM-YMD     =   SPACE
                MOVE    SMCNDATE-YMD        TO  WRK-PERFORM-YMD
-               ADD     1                   TO  IDK
-               MOVE    "K1"                TO  WRK-KEICD (IDK)
+               MOVE    "K1"                TO  WRK-KEICD
            END-IF
       *    診療日をシステム日付へ
            MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
@@ -798,6 +781,9 @@
                WHEN    "09"
                    MOVE    "その他（３）"
                                                TO  WRK-SJKBN-NAME
+               WHEN    "99"
+                   MOVE    "レセプト摘要欄コメント"
+                                               TO  WRK-SJKBN-NAME
                WHEN    "50"
                    MOVE    "治験概要"
                                                TO  WRK-SJKBN-NAME
@@ -807,20 +793,9 @@
                WHEN    "52"
                    MOVE    "廃用症候群に係る評価表"
                                                TO  WRK-SJKBN-NAME
-      *H26.4
-               WHEN    "90"
-                   MOVE    "上記以外の診療報酬明細書"
-                                               TO  WRK-SJKBN-NAME
-               WHEN    "99"
-                   MOVE    "レセプト摘要欄コメント"
-                                               TO  WRK-SJKBN-NAME
       *H25.7
                WHEN    "AA"
                    MOVE    "労災レセプト「傷病の経過」"
-                                               TO  WRK-SJKBN-NAME
-      *H25.9
-               WHEN    "BB"
-                   MOVE    "自賠責（第三者行為）レセプト摘要欄コメント"
                                                TO  WRK-SJKBN-NAME
                WHEN    OTHER
       *        エラー
@@ -938,8 +913,6 @@
                                    NOT =   SUBJETRES-DETAIL-RECORD
       *        コメント内容変換あり
                MOVE    1                   TO  FLG-COMMENT
-               ADD     1                   TO  IDK
-               MOVE    "K4"                TO  WRK-KEICD (IDK)
            END-IF
            .
        20023-COMMENT-HEN-EXT.
@@ -1032,10 +1005,7 @@
                                        ORCSAPIHKNAREA
            IF      ORCSAPIHKN-OT-HKNCOMBI  =   SPACE
                MOVE    ZERO                    TO  WRK-HKNCOMBI
-               IF      WRK-KBN2            =   "1"
-                   ADD     1                   TO  IDK
-                   MOVE    "K2"                TO  WRK-KEICD (IDK)
-               END-IF
+               MOVE    "K2"                    TO  WRK-KEICD
            ELSE
                MOVE    ORCSAPIHKN-OT-HKNCOMBI  TO  WRK-HKNCOMBI
            END-IF
@@ -1054,7 +1024,7 @@
            IF     (SNUM-RC         NOT =   ZERO  )   OR
                   (SNUM-MINKBN     NOT =   SPACE )   OR
                   (SNUM-SYOKBN     NOT =   SPACE )
-               MOVE    "25"                TO  WRK-ERRCD
+               MOVE    "12"                TO  WRK-ERRCD
                MOVE    SUBJETREQ-COMBINATION-NUMBER
                                            TO  WRK-HKNCOMBI
            ELSE
@@ -1095,8 +1065,7 @@
                        MOVE    "25"                TO  WRK-ERRCD
                    END-IF
                ELSE
-                   ADD     1                   TO  IDK
-                   MOVE    "K3"                TO  WRK-KEICD(IDK)
+                   MOVE    "K3"                TO  WRK-KEICD
                    PERFORM VARYING     IDX     FROM    1   BY  1
                            UNTIL      (IDX     >   20  )
                              OR   (ORCSAPIHKN-THKNCOMBI (IDX)
@@ -1572,22 +1541,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-               MOVE    "患者番号が未設定です"
+               MOVE    "患者番号未設定"
                                                TO  WRK-ERRMSG
            WHEN    "02"
-               MOVE    "診療科が未設定です"
-                                              TO  WRK-ERRMSG
+               MOVE    "診療科未設定"
+                                               TO  WRK-ERRMSG
            WHEN    "03"
-               MOVE    "症状詳記区分が未設定です"
+               MOVE    "症状詳記区分未設定"
                                                TO  WRK-ERRMSG
            WHEN    "04"
-               MOVE    "症状詳記内容が未設定です"
+               MOVE    "症状詳記未設定"
                                                TO  WRK-ERRMSG
            WHEN    "10"
-               MOVE    "患者番号に該当する患者が存在しません"
+               MOVE    "該当患者番号なし"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "診療日付が暦日ではありません"
+               MOVE    "診療日付設定誤り"
                                                TO  WRK-ERRMSG
            WHEN    "12"
                MOVE    "診療科が存在しません"
@@ -1601,15 +1570,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    "20"
                MOVE    "アフターケアは診療日付を設定して下さい"
                                                TO  WRK-ERRMSG
-      **   WHEN    "21"
-      *        MOVE    "保険の一致する患者保険情報がありません"
-      *                                        TO  WRK-ERRMSG
-      *    WHEN    "22"
-      *        MOVE    "公費の一致する患者公費情報がありません"
-      *                                        TO  WRK-ERRMSG
-      *    WHEN    "23"
-      *        MOVE    "保険情報と一致する保険組合せがありません"
-      ***                                      TO  WRK-ERRMSG
+           WHEN    "21"
+               MOVE    "保険の一致する患者保険情報がありません"
+                                               TO  WRK-ERRMSG
+           WHEN    "22"
+               MOVE    "公費の一致する患者公費情報がありません"
+                                               TO  WRK-ERRMSG
+           WHEN    "23"
+               MOVE    "保険情報と一致する保険組合せがありません"
+                                               TO  WRK-ERRMSG
            WHEN    "25"
                MOVE    "保険組合せが存在しません。"
                                                TO  WRK-ERRMSG
@@ -1640,9 +1609,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  WRK-ERRMSG
            WHEN    "K3"
                MOVE    "期間外の保険組合せで登録しました。"
-                                               TO  WRK-ERRMSG
-           WHEN    "K4"
-               MOVE    "症状詳記内容を変更しました。"
                                                TO  WRK-ERRMSG
       *共通エラー
            WHEN    "89"

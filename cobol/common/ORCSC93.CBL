@@ -62,12 +62,6 @@
       * 04.05.00     NACL-Â¿¡¹Ç¼  10/01/XX  ¼£¸³ÂÐ±þ
       * 04.06.00     NACL-Â¿¡¹Ç¼  10/12/01  ¼«ÇåÀÕ¶â³ÛÆþÎÏÂÐ±þ
       * 04.07.00     NACL-Â¿¡¹Ç¼  12/08/28  ÌôºÞÎÁ¸ºÅÀÂÐ±þ
-      * 04.07.00     NACL-Â¿¡¹Ç¼  13/07/XX  Âè»°¼Ô¹Ô°ÙÂÐ±þ
-      * 04.07.00     NACL-Â¿¡¹Ç¼  14/06/XX  ³°ÍÑÌô¡ÊÎ×»þÅêÌô¡ËÂÐ±þ
-      * 04.07.00     NACL-Â¿¡¹Ç¼  14/09/XX  £È£²£¶Ç¯£±£°·î²þÀµÂÐ±þ
-      * 04.07.00     NACL-Â¿¡¹Ç¼  15/03/XX  £È£²£·Ç¯£´·î²þÀµÂÐ±þÂ¾
-      * 04.08.00     NACL-Â¿¡¹Ç¼  16/03/XX  £È£²£¸Ç¯£´·î²þÀµÂÐ±þÂ¾
-      * 04.08.00     NACL-Â¿¡¹Ç¼  16/08/XX  »ý»²ÌôÍ½Ìó¥³¡¼¥ÉÂÐ±þ
       *****************************************************************
       *
       *
@@ -95,8 +89,6 @@
            03  FLG-JIHI            PIC 9(01).
       *    ¼êµ»ÎÁ¥Õ¥é¥°
            03  FLG-SYUGI           PIC 9(01).
-      *H28.4
-           03  FLG-KSNARI          PIC 9(01).
       *    £±ºÞ¥Õ¥é¥°
            03  FLG-ZAI             PIC 9(01).
       *    È¯À¸Æü¥Õ¥é¥°
@@ -115,11 +107,6 @@
            03  FLG-YAKUHYO         PIC 9(01).
       *    ¸ºÅÀÊ¬
            03  FLG-GENTEN          PIC 9(01).
-      *H28.9 »ý»²ÌôÍ½Ìó¥³¡¼¥É
-           03  FLG-JISANYAKU       PIC 9(01).
-      *
-       01  FLG-AREA2.
-           03  FLG-KENSA-CHK       PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -204,18 +191,6 @@
            03  TBL-CHISRYCD1       PIC X(09)   VALUE   "112016070".
       *    »þ´Ö³°ÂÐ±þ²Ã»»£³
            03  TBL-CHISRYCD3       PIC X(09)   VALUE   "112016170".
-      *
-      *H28.9
-      *»ý»²ÌôÍ½Ìó¥³¡¼¥É
-           03  CONS-JSNYCD1        PIC X(09)    VALUE   "099209811".
-           03  CONS-JSNYCD2        PIC X(09)    VALUE   "099209812".
-           03  CONS-JSNYCD3        PIC X(09)    VALUE   "099209821".
-           03  CONS-JSNYCD4        PIC X(09)    VALUE   "099209822".
-      *
-           03  CONS-JSNYCD5        PIC X(09)    VALUE   "099209711".
-           03  CONS-JSNYCD6        PIC X(09)    VALUE   "099209712".
-           03  CONS-JSNYCD7        PIC X(09)    VALUE   "099209721".
-           03  CONS-JSNYCD8        PIC X(09)    VALUE   "099209722".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -315,7 +290,6 @@
       *        ÌôÉ¾¥¯¥ê¥¢
                MOVE    SPACE               TO  SPA-COM-YAKUHYO (IDX)
                MOVE    SPACE               TO  SPA-COM-GENTEN  (IDX)
-               MOVE    SPACE               TO  SPA-COM-JISANYAKU(IDX)
       *
                IF      (SPA-GMN-INPUTCD(IDX) =   SPACE )   AND
                        (SPA-COM-INPUTCD(IDX) =   SPACE )
@@ -334,8 +308,6 @@
        100-ZAI-SET-SEC              SECTION.
       *
            MOVE    ZERO                TO  FLG-KENSA-ARI
-      *H27.10
-           MOVE    ZERO                TO  FLG-KENSA-CHK
       *    ºÞÊ¬Î¥
            PERFORM 1002-ZAIBUNNRI-SEC
            IF     (SPA-ERRCD           =   SPACE ) 
@@ -350,16 +322,12 @@
                        IF      LNK-SC93-KENSAARIFLG    =   1
                            PERFORM 200-KENSA-SORT-SEC
                        END-IF
-      *H27.10
-                       MOVE    1               TO  FLG-KENSA-CHK
       *                ºÞÊ¬Î¥
                        PERFORM 1002-ZAIBUNNRI-SEC
                    END-IF
                ELSE
                    IF      FLG-KENSA-ARI       =   1
                        PERFORM 200-KENSA-SORT-SEC
-      *H27.10
-                       MOVE    1               TO  FLG-KENSA-CHK
       *                ºÞÊ¬Î¥
                        PERFORM 1002-ZAIBUNNRI-SEC
                    END-IF
@@ -459,8 +427,6 @@
            MOVE    ZERO                TO  FLG-HOUKATU
            MOVE    ZERO                TO  FLG-YAKUHYO
            MOVE    ZERO                TO  FLG-GENTEN
-      *H28.9 »ý»²ÌôÍ½Ìó¥³¡¼¥É
-           MOVE    ZERO                TO  FLG-JISANYAKU
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-MAX-LINE  )   OR
                              ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
@@ -473,12 +439,6 @@
                END-IF
                IF     (SPA-COM-YAKUHYO(IDX)    =   "1"  )
                    MOVE    1                   TO  FLG-YAKUHYO
-               END-IF
-               IF     (SPA-COM-JISANYAKU(IDX)   =   "1"  )
-                   MOVE    1                   TO  FLG-JISANYAKU
-               END-IF
-               IF     (SPA-COM-JISANYAKU(IDX)   =   "2"  )
-                   MOVE    2                   TO  FLG-JISANYAKU
                END-IF
                IF     (SPA-COM-ZAIEND (IDX)    =   "1"   )
                    PERFORM VARYING     IDX-Z   FROM    IDX-S  BY  1
@@ -495,29 +455,11 @@
                        ELSE
                            MOVE    SPACE       TO  SPA-COM-YAKUHYO (IDX)
                        END-IF
-      *H28.9 »ý»²ÌôÍ½Ìó¥³¡¼¥É
-                       MOVE    SPACE           TO  SPA-COM-JISANYAKU
-                                                               (IDX-Z)
-                       IF      FLG-JISANYAKU   =   1
-                           MOVE    "1"         TO  SPA-COM-JISANYAKU
-                                                              (IDX-Z)
-      *                    Êñ³ç°·¤¤
-                           MOVE    1           TO  SPA-COM-HOUKATU-ZAI
-                                                              (IDX-Z)
-                       END-IF
-                       IF      FLG-JISANYAKU   =   2
-                           MOVE    "2"         TO  SPA-COM-JISANYAKU
-                                                              (IDX-Z)
-      *                    Êñ³ç°·¤¤
-                           MOVE    1           TO  SPA-COM-HOUKATU-ZAI
-                                                              (IDX-Z)
-                       END-IF
                    END-PERFORM
                    MOVE    IDX-Z               TO  IDX-S
                    MOVE    ZERO                TO  FLG-HOUKATU
                    MOVE    ZERO                TO  FLG-YAKUHYO
                    MOVE    ZERO                TO  FLG-GENTEN
-                   MOVE    ZERO                TO  FLG-JISANYAKU
                END-IF
            END-PERFORM
            .
@@ -540,8 +482,6 @@
            END-PERFORM
       *
            MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-           MOVE    ZERO                TO  FLG-KSNARI
       *!
            MOVE    SPACE               TO  WRK-HKNCOMBI
            MOVE    SPACE               TO  WRK-CHIKENKBN
@@ -604,13 +544,6 @@
                    ELSE
                        MOVE    "1055"          TO  SPA-ERRCD
                        MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                   END-IF
-      *H28.1
-                   IF      SPA-ERRCD       NOT =   SPACE
-                       IF      WRK-ERRCD       =   SPACE
-                           MOVE    SPA-ERRCD       TO  WRK-ERRCD
-                       END-IF
-                       MOVE    SPACE           TO  SPA-ERRCD
                    END-IF
                END-IF
                IF      SPA-ERRCD           =   SPACE
@@ -729,8 +662,6 @@
                    MOVE    ZERO                TO  FLG-JIHI
                    MOVE    ZERO                TO  FLG-BUIKBN
                    MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-                   MOVE    ZERO            TO  FLG-KSNARI
                    MOVE    ZERO                TO  FLG-HASSYO
                    MOVE    ZERO                TO  FLG-AKUSEI-ARI
                    MOVE    ZERO                TO  FLG-YAKUHYO
@@ -756,8 +687,6 @@
                    MOVE    ZERO                TO  FLG-JIHI
                    MOVE    ZERO                TO  FLG-BUIKBN
                    MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-                   MOVE    ZERO            TO  FLG-KSNARI
                    MOVE    ZERO                TO  FLG-HASSYO
                    MOVE    ZERO                TO  FLG-AKUSEI-ARI
                    MOVE    ZERO                TO  FLG-YAKUHYO
@@ -784,8 +713,6 @@
                        MOVE    SPACE       TO  SPA-COM-ZAIEND (IDX)
                        MOVE    IDX                 TO  IDX-SET
                        MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-                       MOVE    ZERO            TO  FLG-KSNARI
                    END-IF
       *
                WHEN    "."
@@ -809,16 +736,12 @@
                    MOVE    SPACE               TO  SPA-COM-ZAIEND (IDX)
       *            ¼«Èñ¤Î»þ¡¢²ó¿ôÆþÎÏ¤Þ¤Ç¼«Èñ¤È¤¹¤ë
                    IF      WRK-SRYSYUKBN       =   "950"  OR  "960"
-      *H25.10
-                                                          OR  "961"
                        MOVE    1                   TO  FLG-JIHI
                    ELSE
                        MOVE    ZERO                TO  FLG-JIHI
                    END-IF
                    MOVE    ZERO                TO  FLG-BUIKBN
                    MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-                   MOVE    ZERO            TO  FLG-KSNARI
                    MOVE    ZERO                TO  FLG-HASSYO
                    MOVE    ZERO                TO  FLG-AKUSEI-ARI
                    MOVE    ZERO                TO  FLG-YAKUHYO
@@ -877,35 +800,6 @@
                            END-IF
                        END-IF
                    END-IF
-      *ver.4.7.0
-      *            Î×»þÅêÌô¡Ê³°ÍÑ¡Ë¤ÏH£²£¶Ç¯£´·î¤«¤é
-                   IF      WRK-SRYSYUKBN       =   "293"
-                                               OR  "294"
-                                               OR  "295"
-                       IF      SPA-SRYYMD          <   "20140401"
-                           MOVE    "0504"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                       END-IF
-                   END-IF
-      *            Î×»þÅêÌô¡ÊÆÜÉþ¡Ë¤ÏH£²£¶Ç¯£±£°·î¤«¤é
-                   IF      WRK-SRYSYUKBN       =   "296"
-                                               OR  "297"
-                                               OR  "298"
-                       IF      SPA-SRYYMD          <   "20141001"
-                           MOVE    "0505"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                       END-IF
-                   END-IF
-      *H28.9
-      *            ½é¿Ç¡¦ºÆ¿Ç²Ã»»¤Î¤ß¤Ï£È£²£¸Ç¯£´·î¤«¤é
-                   IF      WRK-SRYSYUKBN       =   "114"
-                                               OR  "124"
-                                               OR  "133"
-                       IF      SPA-SRYYMD          <   "20160401"
-                           MOVE    "0506"          TO  SPA-ERRCD
-                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
-                       END-IF
-                   END-IF
                WHEN    OTHER
       *        ¤½¤ÎÂ¾
                    IF      FLG-JIHI            =   1
@@ -948,8 +842,6 @@
                MOVE    ZERO            TO  FLG-JIHI
            END-IF
            MOVE    ZERO                TO  FLG-SYUGI
-      *H28.4
-           MOVE    ZERO                TO  FLG-KSNARI
            MOVE    ZERO                TO  FLG-AKUSEI-ARI
       *
            .
@@ -1022,9 +914,6 @@
                           (SPA-COM-KAIFLG (IDX - 1 )   =   "1" ) OR
                           (SPA-GMN-INPUTCD(IDX - 1 )(1:1)  =  "#"
                                                            OR "$")
-      *H26.10
-                       OR (SPA-COM-INPUTCD(IDX - 1)
-                                               =   "099140012" )
       *                ÌôºÞÎÁÄþ¸º¤Î»þ¡¢ÆâÉþÌôºÞ¤È¤¹¤ë
                        IF      SPA-COM-INPUTCD (IDX)   =   "820000047"
                            MOVE    "21"            TO  SPA-COM-SRYKBN
@@ -1038,8 +927,7 @@
                    ELSE
       *                ÌôºÞÎÁÄþ¸º¤Î»þ¡¢ÆâÉþÌôºÞ¤È¤¹¤ë
                        IF      (SPA-COM-INPUTCD(IDX)  =   "820000047")
-      *???               AND   (SPA-COM-AUTOKBN(IDX)  =   "3"        )
-                         AND   (SPA-COM-AUTOKBN(IDX)  =   SPACE      )
+                         AND   (SPA-COM-AUTOKBN(IDX)  =   "3"        )
                            MOVE    "21"            TO  SPA-COM-SRYKBN
                                                                 (IDX)
                        ELSE
@@ -1073,11 +961,7 @@
                    END-IF
       *            ÌôÉ¾¡¦´ïÉ¾
                    IF      (SPA-COM-INPUTCD (IDX)  =   "820000094"  OR
-                                                       "820000095"
-      *H26.12          ¡Ê²ÃÉ¾¡Ë
-                                                   OR  "820000171"
-      *H28.4           ¡ÊÂÎÉ¾¡Ë
-                                                   OR  "820000226"  )
+                                                       "820000095"  )
       *                ¿ÇÎÅ¼ïÊÌ¤ÎÄ¾²¼
                        IF     (IDX             >   1     )  AND
                               (SPA-GMN-INPUTCD (IDX - 1)(1:1)
@@ -1134,10 +1018,6 @@
                                                    "232"
                                                OR  "233"
                                                OR  "234"
-      *H26.4 ¤«¤é¡¡Î×»þÅêÌôÄÉ²Ã
-                                               OR  "293"
-                                               OR  "294"
-                                               OR  "295"
                        MOVE    "23"            TO  WRK-SRYKBN
                    END-IF
       *!
@@ -1402,16 +1282,10 @@
            IF     (SPA-COM-SRYKBN (IDX)(1:1)    =   "1" )  AND
                   (SPA-COM-DATAKBN (IDX)   =   "1"  )
                IF      FLG-SYUGI           =   1
-                  OR   FLG-KSNARI          =   1
                    MOVE    2               TO  FLG-SYORI
                END-IF
                MOVE    1               TO  FLG-SYUGI
            END-IF
-           IF     (SPA-COM-SRYKBN (IDX)(1:1)    =   "1" )  AND
-                  (SPA-COM-DATAKBN (IDX)   =   "2"  )
-               MOVE    1                TO  FLG-KSNARI
-           END-IF
-      *
       *H25.7
       *    Ï«ºÒ¥³¡¼¥É¤Î¤½¤ÎÂ¾£¸£°¤ÏºÞÊ¬Î¥
            IF     (SPA-SRYYMD          >=  "20130701" )
@@ -1482,20 +1356,14 @@
            IF     (SPA-COM-INPUTCD(IDX)    =   "099800101"
                                            OR  "099800102"
       *        ºßÁí¿Ç»»Äê½ªÎ»
-                                           OR  "099140001"
-                                           OR  "099140004" )
-      *H26.10  ºßÂðË¬Ìä¿ÇÎÅÂ¾
-            OR    (SPA-COM-INPUTCD(IDX)    =   "099140011"
-                                           OR  "099140012" )
+                                           OR  "099140001" )
                MOVE    1               TO  FLG-HASSYO
            ELSE
                IF      FLG-HASSYO          =   1
                    IF     (SPA-COM-SRYKBN(IDX)
                                        =   SPA-COM-SRYKBN(IDX - 1)) AND
-                         ((SPA-COM-INPUTCD(IDX)(1:1)
-                                               =   "8"  )  OR
-                          (SPA-COM-INPUTCD(IDX)(1:3)
-                                               =   "008"  ))
+                          (SPA-COM-INPUTCD(IDX)(1:1)
+                                               =   "8"  )
                        CONTINUE
                    ELSE
                        MOVE    ZERO            TO  FLG-HASSYO
@@ -1577,8 +1445,6 @@
                    MOVE    SPACE           TO  WRK-SRYSYUKBN
                    MOVE    ZERO            TO  IDX-SET
                    MOVE    ZERO            TO  FLG-SYUGI
-      *H28.4
-                   MOVE    ZERO            TO  FLG-KSNARI
                    MOVE    ZERO            TO  FLG-AKUSEI-ARI
                END-IF
                IF      FLG-SYORI           =   2
@@ -1589,8 +1455,6 @@
                    MOVE    ZERO            TO  IDX-SET
                ELSE
                    MOVE    ZERO            TO  FLG-SYUGI
-      *H28.4
-                   MOVE    ZERO            TO  FLG-KSNARI
                END-IF
            END-IF
       *
@@ -1599,13 +1463,12 @@
                   (SPA-COM-KAIFLG (IDX - 1)    =   "1" )  AND
                   (SPA-GMN-INPUTCD(IDX - 1)(1:1)   NOT =  ".")
                MOVE    "1"             TO  SPA-COM-ZAIEND (IDX - 1)
-      *H28.8   ºï½ü
-      *        IF     (SPA-COM-SRYKBN(IDX - 1) NOT =   "13" )
-      *        AND    (SPA-COM-SRYKBN(IDX)     =   "13"     )
-      *            CONTINUE
-      *        ELSE
-      *            MOVE    ZERO            TO  FLG-AKUSEI-ARI
-      ****     END-IF
+               IF     (SPA-COM-SRYKBN(IDX - 1) NOT =   "13" )
+               AND    (SPA-COM-SRYKBN(IDX)     =   "13"     )
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO            TO  FLG-AKUSEI-ARI
+               END-IF
            END-IF
       *
       *    Æþ±¡²ó¿ôÆþÎÏ»þ¡¢½ªÎ»¤È¤¹¤ë
@@ -1724,11 +1587,6 @@
       *            Êñ³ç»»Äê¡ÊºÞ¡Ë
                                                    OR  "099999908" )
                        MOVE    1                   TO  FLG-SYORI
-                   END-IF
-      *H27.10
-                   IF      FLG-SYORI               =   2
-                       MOVE    SPACE               TO  WRK-HOUKNSKBN
-                       MOVE    ZERO                TO  WRK-KENSA-CNT
                    END-IF
                ELSE
       *            Êñ³çÂÐ¾Ý¸¡ººÊÑ¹¹»þ
@@ -1925,27 +1783,6 @@
                        MOVE    "1"         TO  SPA-COM-ZAIEND  (IDX)
                        MOVE    2           TO  FLG-ZAI
                    END-IF
-      *H25.7
-      *            Âè»°¼Ô¹Ô°Ù¤Î»þ¡¡£¸£°¤È¤¹¤ë
-                   IF     (SPA-RSI-HKNKBN            =  "6" )
-                    AND  ((SPA-COM-INPUTCD(IDX)(1:5) =  "09591"
-                                                    OR  "09592"
-                                                    OR  "09593")  OR
-                         ((SPA-NYUGAIKBN             =  "1"  ) AND
-                          (SPA-COM-INPUTCD(IDX)(1:5) =  "09594")))
-                       MOVE    "80"        TO  SPA-COM-SRYKBN (IDX)
-                       MOVE    "800"       TO  SPA-COM-SRYSYUKBN
-                                                               (IDX)
-      *                ÅÀ¿ô¥Þ¥¹¥¿¶â³Û¡á£°
-                       IF     (SPA-COM-TEN (IDX)    =   ZERO )
-                       AND    (SPA-SRYYMD           >=  "20100401")
-                           MOVE    "809"       TO  SPA-COM-SRYSYUKBN
-                                                               (IDX)
-                       END-IF
-                       MOVE    "1"         TO  SPA-COM-ZAIEND (IDX)
-                       MOVE    2           TO  FLG-ZAI
-                   END-IF
-      *
       *        ÊÝ¸±³°¡Ê¼«Èñ¡Ë¡Ê1¹Ô£±ºÞ¤È¤¹¤ë¡Ë
                WHEN    "096"
                    MOVE    "96"            TO  SPA-COM-SRYKBN (IDX)
@@ -1989,10 +1826,7 @@
                           (SPA-COM-KAIFLG (IDX - 1 )   =   "1")
                        OR (SPA-GMN-INPUTCD(IDX - 1 )(1:1)
                                                        =   "#"
-                                                       OR  "$" )
-      *H26.10
-                       OR (SPA-COM-INPUTCD(IDX - 1)
-                                               =   "099140012" ))
+                                                       OR  "$" ))
                        MOVE    "99"            TO  SPA-COM-SRYKBN(IDX)
                        MOVE    "990"           TO  SPA-COM-SRYSYUKBN
                                                                  (IDX)
@@ -2003,6 +1837,14 @@
                                                TO  SPA-COM-ZAIEND(IDX)
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                               (IDX - 1)
+      *                ¿ÇÎÅ¼ïÊÌÆþÎÏ
+      *                 IF      WRK-SRYSYUKBN   NOT =   SPACE
+      *                     MOVE    WRK-SRYSYUKBN
+      *                                             TO  SPA-COM-SRYSYUKBN
+      *                                                          (IDX)
+      *                     MOVE    SPACE           TO  SPA-COM-ZAIEND
+      *                                                          (IDX)
+      **                 END-IF
                    END-IF
       *        ¥Õ¥ê¡¼¤Î»þ¡¢ÅÀ¿ô¥Þ¥¹¥¿¤è¤ê¡¢·èÄê
                WHEN    OTHER
@@ -2075,45 +1917,10 @@
                            MOVE    1               TO  FLG-ZAI
       *                ºßÁí¿Ç½ªÎ»
                        WHEN    "099140001"
-      *                ºßÂð´µ¼Ô¶¦Æ±³«»ÏÆü
-                       WHEN    "099140004"
                            MOVE    "14"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "140"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    £±ºÞ£±ÌÀºÙ¤È¤¹¤ë
-                           MOVE    "1"             TO  SPA-COM-ZAIEND
-                                                                  (IDX)
-                           MOVE    1               TO  FLG-ZAI
-      *H26.10
-      *                Ë¬Ìä¿ÇÎÅ¤Ë³Ý¤«¤ëµ­Ï¿½ñ
-                       WHEN    "099140011"
-                           MOVE    "99"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-      *                    1¹ÔÁ°¤¬¿ÇÎÅ¼ïÊÌ°Ê³°
-                           IF     (IDX             >   1  )  AND
-                                  (SPA-GMN-INPUTCD(IDX - 1)(1:4)
-                                                   =   ".990"
-                                                   OR  ".991" )
-                               CONTINUE
-                           ELSE
-                               MOVE    "991"       TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-                           END-IF
-      *                ¿ÇÎÅ¿Í¿ô¹ç·×
-                       WHEN    "099140012"
-                           MOVE    "99"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-      *                    1¹ÔÁ°¤¬¿ÇÎÅ¼ïÊÌ°Ê³°
-                           IF     (IDX             >   1  )  AND
-                                  (SPA-GMN-INPUTCD(IDX - 1)(1:4)
-                                                   =   ".990"
-                                                   OR  ".991" )
-                               CONTINUE
-                           ELSE
-                               MOVE    "991"       TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-                           END-IF
       *                    £±ºÞ£±ÌÀºÙ¤È¤¹¤ë
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
@@ -2125,8 +1932,6 @@
                        WHEN    "099200013"
                        WHEN    "099200014"
                        WHEN    "099200015"
-      *H27.4           £³£°ÆüÅêÌô²ÄÇ½
-                       WHEN    "099200101"
                            IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
                                                            OR  "22"
                                                            OR  "23" )
@@ -2136,33 +1941,10 @@
                            ELSE
                                MOVE    "2062"        TO  SPA-ERRCD
                            END-IF
-      *H30.4
-      *               Ê¬³äÄ´ºÞ
-                       WHEN    "099208101"
-                           IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
-                                                           OR  "22"
-                                                           OR  "23" )
-                              AND (SPA-COM-ZAIEND (IDX - 1)
-                                                            =  SPACE )
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           ELSE
-                               MOVE    "0281"        TO  SPA-ERRCD
-                           END-IF
-      *
       *                ¸åÈ¯°åÌôÉÊ¤Ø¤ÎÊÑ¹¹²Ä¡Ê½èÊý¤»¤óËè¡Ë
                        WHEN    "099209902"
       *                ¸åÈ¯°åÌôÉÊ¤Ø¤ÎÊÑ¹¹ÉÔ²Ä
                        WHEN    "099209904"
-      *H28.4           ¼¾ÉÛÌôËç¿ôÀ©¸Â²ò½ü
-                       WHEN    "099200201"
-      *                ÊÝ¸±°åÎÅµ¡´Ø¤Øµ¿µÁ¾È²ñ¤·¤¿¾å¤ÇÄ´ºÞ
-                       WHEN    "099209921"
-      *                ÊÝ¸±°åÎÅµ¡´Ø¤Ø¾ðÊóÄó¶¡
-                       WHEN    "099209922"
-      *H28.11          »ÄÌô»Ø¼¨¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥ó²ò½ü
-                       WHEN    "099209923"
                            MOVE    "98"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "980"           TO  SPA-COM-SRYSYUKBN
@@ -2220,90 +2002,6 @@
                            ELSE
                                MOVE    "2071"        TO  SPA-ERRCD
                            END-IF
-      *H28.9 »ý»²ÌôÍ½Ìó¥³¡¼¥É
-                       WHEN    CONS-JSNYCD1
-                       WHEN    CONS-JSNYCD2
-                       WHEN    CONS-JSNYCD3
-                       WHEN    CONS-JSNYCD4
-      *                    ÅêÌô¤Î£±·ïÌÜ¤È¤¹¤ë
-                           IF     (IDX             >   ZERO )
-                             AND  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
-                                                   =   "."  )
-                             AND  (SPA-COM-SRYKBN(IDX - 1) =   "21"
-                                                           OR  "22"
-                                                           OR  "23"
-                                                           OR  "14" )
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                               MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
-                                                   TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                        »ý»²Ìô¶èÊ¬
-                               MOVE    "1"         TO  SPA-COM-JISANYAKU
-                                                              (IDX)
-                               MOVE    "1"         TO  SPA-COM-JISANYAKU
-                                                              (IDX - 1)
-                           ELSE
-                               MOVE    "0227"        TO  SPA-ERRCD
-                           END-IF
-      *                    Êñ³çÊÝ¸±¤Ï¥¨¥é¡¼
-                           IF      SPA-COM-HKNCOMBI (IDX)  =   "9999"
-                               MOVE    "0228"        TO  SPA-ERRCD
-                           END-IF
-      *                ¿ôÎÌÉÔÌÀ
-                       WHEN    CONS-JSNYCD5
-                       WHEN    CONS-JSNYCD6
-                       WHEN    CONS-JSNYCD7
-                       WHEN    CONS-JSNYCD8
-      *                    ÅêÌô¤Î£±·ïÌÜ¤È¤¹¤ë
-                           IF     (IDX             >   ZERO )
-                             AND  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
-                                                   =   "."  )
-                             AND  (SPA-COM-SRYKBN(IDX - 1) =   "21"
-                                                           OR  "22"
-                                                           OR  "23"
-                                                           OR  "14" )
-                               MOVE    SPA-COM-SRYKBN(IDX - 1)
-                                                     TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                               MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
-                                                   TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                        »ý»²Ìô¶èÊ¬
-                               MOVE    "2"         TO  SPA-COM-JISANYAKU
-                                                              (IDX)
-                               MOVE    "2"         TO  SPA-COM-JISANYAKU
-                                                              (IDX - 1)
-                           ELSE
-                               MOVE    "0227"        TO  SPA-ERRCD
-                           END-IF
-      *                    Êñ³çÊÝ¸±¤Ï¥¨¥é¡¼
-                           IF      SPA-COM-HKNCOMBI (IDX)  =   "9999"
-                               MOVE    "0228"        TO  SPA-ERRCD
-                           END-IF
-      *H27.4
-      *                ¸åÈ¯°åÌôÉÊ¤Ø¤ÎÊÑ¹¹²Ä¡Ê½èÊý¤»¤óËè¡Ë
-                       WHEN    "099209910"
-      *                ¸åÈ¯°åÌôÉÊ¤Ø¤ÎÊÑ¹¹ÉÔ²Ä¡Ê½èÊý¤»¤óËè¡Ë
-                       WHEN    "099209911"
-                           MOVE    "98"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           MOVE    "980"           TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                    Æþ±¡»þ¤Ï982 ¤Ø
-                           IF      SPA-NYUGAIKBN   =   "1"
-                               MOVE    "982"       TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-                           END-IF
-      *                    £±ºÞ£±ÌÀºÙ¤È¤¹¤ë
-                           MOVE    "1"             TO  SPA-COM-ZAIEND
-                                                                  (IDX)
-      *                    ¥³¥á¥ó¥È¤âÉÔ²Ä
-                           MOVE   "1"              TO  SPA-COM-KAIFLG
-                                                                  (IDX)
-                           MOVE    1               TO  FLG-ZAI
-      *
       *                Êñ³ç½ÐÍè¹â»»Äê¡ÊºÞ¡Ë
                        WHEN    "099999903"
                            IF     (IDX             >   ZERO )  AND
@@ -2342,31 +2040,8 @@
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
-      *H26.4
-      *                ¼§µ¤¤Ë¤è¤ë»É·ãË¡³«»ÏÆü
-                       WHEN    "099400001"
-                           MOVE    "40"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           MOVE    "400"           TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                    £±ºÞ£±ÌÀºÙ¤È¤¹¤ë
-                           MOVE    "1"             TO  SPA-COM-ZAIEND
-                                                                  (IDX)
-                           MOVE    1               TO  FLG-ZAI
       *ver.4.7         Àº¿À²Ê¥±¥¢³«»Ï
                        WHEN    "099830101"
-      *H26.4           ÄÌ±¡¡¦ºßÂðÀº¿ÀÎÅË¡³«»Ï
-                       WHEN    "099830102"
-                           MOVE    "80"            TO  SPA-COM-SRYKBN
-                                                                  (IDX)
-                           MOVE    "830"           TO  SPA-COM-SRYSYUKBN
-                                                                  (IDX)
-      *                    £±ºÞ£±ÌÀºÙ¤È¤¹¤ë
-                           MOVE    "1"             TO  SPA-COM-ZAIEND
-                                                                  (IDX)
-                           MOVE    1               TO  FLG-ZAI
-      *H28.4           °ÍÂ¸¾É½¸ÃÄÎÅË¡³«»Ï
-                       WHEN    "099830103"
                            MOVE    "80"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "830"           TO  SPA-COM-SRYSYUKBN
@@ -2387,7 +2062,6 @@
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
                        ELSE
-      *                    ¥³¥á¥ó¥È¤È¤¹¤ë
                            MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
       *!                   MOVE    "990"           TO  SPA-COM-SRYSYUKBN
@@ -2550,9 +2224,6 @@
            IF      SPA-COM-SRYSYUKBN (IDX) =   "960"  OR
                                                "950"  OR
                                                SPACE
-      *H26.10
-                                           OR  "961"
-      *
                MOVE    SPA-COM-TNSSRYSYUKBN(IDX)
                                            TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    SPACE               TO  SPA-COM-KEIFLG    (IDX)
@@ -2576,9 +2247,8 @@
       *!
            END-IF
       *
-      *    ½é¿Ç»þ¥Ö¥é¥Ã¥·¥ó¥°ÎÁÈ½Äê¡Ê£È£²£µÇ¯£··î¤«¤é¤Ï¼ê½Ñ¤¢¤ê¡Ë
-           IF     (SPA-COM-INPUTCD(IDX)    =   "101400030" )
-             AND  (SPA-SRYYMD              <   "20130701"  )
+      *    ½é¿Ç»þ¥Ö¥é¥Ã¥·¥ó¥°ÎÁÈ½Äê
+           IF      SPA-COM-INPUTCD(IDX)    =   "101400030"
                IF     (IDX                 >   1  )  AND
                      ((SPA-GMN-INPUTCD(IDX - 1)(1:1) =   ".") OR
                       (SPA-COM-ZAIEND(IDX -  1)   =  SPACE  ))
@@ -2694,9 +2364,7 @@
                    MOVE    2             TO  WRK-KENSA-MAX
                WHEN    08
       *            ÆâÉôÈçÉé²Ù»î¸³¤ÎÊñ³ç¡ÊÊÝÎ±¡Ë
-      ****         MOVE    1             TO  WRK-KENSA-MAX
-      *H29.12      ¤Þ¤È¤áÇÑ»ß
-                   MOVE    ZERO          TO  WRK-KENSA-MAX
+                   MOVE    1             TO  WRK-KENSA-MAX
       *Ê¿À®£±£µÇ¯£¹·î
                WHEN    09
       *            ¥¦¥¤¥ë¥¹¹³ÂÎ²Á
@@ -2707,10 +2375,6 @@
       *Ê¿À®£±£¸Ç¯£´·î
                WHEN    11
       *            ÆÃ°ÛÅª£É£Ç£Å
-                   MOVE    2             TO  WRK-KENSA-MAX
-      *Ê¿À®£³£°Ç¯£´·î
-               WHEN    12
-      *            °­À­¼ðáç°äÅÁ»Ò¸¡ºº
                    MOVE    2             TO  WRK-KENSA-MAX
                WHEN    OTHER
                    MOVE    ZERO          TO  WRK-KENSA-MAX
@@ -2746,37 +2410,7 @@
                                                         (IDX-KEN) )
                        ADD     1                 TO  WRK-KENSA-CNT
                    END-IF
-      *H27.10
-      *            Êñ³ç¶èÊ¬ÊÑ¹¹¤Ç½ªÎ»
-                   IF      FLG-KENSA-CHK       =   1
-      *
-                       IF     (WRK-KENSA-CNT       >   ZERO )  AND
-                             ((SPA-COM-HOUKNSKBN(IDX)
-                                           NOT =   SPA-COM-HOUKNSKBN
-                                                        (IDX-KEN) )
-                        OR    (SPA-COM-KAIFLG (IDX-KEN)   =   "1" ))
-                           IF      IDX             >   IDX-KEN
-                               MOVE    ZERO        TO  WRK-KENSA-CNT
-                           ELSE
-                               MOVE    SPA-MAX-LINE    TO  IDX-KEN
-                           END-IF
-                       END-IF
-                   END-IF
-      *
                END-IF
-      *H29.6
-      *        ¿ÇÎÅ¼ïÊÌÆþÎÏ¤Ç½ªÎ»
-               IF     (SPA-GMN-INPUTCD (IDX-KEN)(1:1)  =   "."
-                                                       OR  "*" )
-                 AND  (SPA-NYUGAIKBN        =   1     )
-                 AND  (FLG-KENSA-CHK        =   1    )
-                    IF      IDX             >   IDX-KEN
-                        MOVE    ZERO        TO  WRK-KENSA-CNT
-                    ELSE
-                        MOVE    SPA-MAX-LINE    TO  IDX-KEN
-                    END-IF
-               END-IF
-      *
            END-PERFORM
            IF      WRK-KENSA-MAX       =   ZERO
                CONTINUE
@@ -2793,7 +2427,6 @@
       ******** IF     (SPA-NYUGAIKBN       =   "1" )  AND
                IF     (IDX                 <   SPA-MAX-LINE )  AND
                       (SPA-GMN-INPUTCD (IDX + 1)(1:1) =   "*" )
-                 AND  (ID2                 >   ZERO  )
                    MOVE    9               TO  TBL-HOUKNARI (ID2)
       *            ·Ù¹ð
                    MOVE    1               TO  LNK-SC93-ERRCD
@@ -2868,16 +2501,6 @@
                        END-IF
                    END-IF
                END-IF
-      *H26.4
-      *        ÃÏ°èÊñ³ç¿ÇÎÅÎÁ»þ´Ö³°
-               IF     (IDX                 >   1 )  AND
-                      (SPA-GMN-INPUTCD(IDX - 1)(1:4)
-                                           =   ".130")
-                    IF      SPA-COM-TIMEKSNKBN (IDX)   NOT =   ZERO
-                        MOVE    1           TO  FLG-ARI
-                    END-IF
-               END-IF
-      *
       *        ºßÂð»ØÆ³ÎÁ¤Î»þ¡¢ÅÀ¿ô²Ã»»¤Ï£Ï£Ë
       ******** IF      LNK-SC93-NETAKIRI-ARI   =   1
                    IF     (WRK-SRYSYUKBN           =   "143" )  AND
@@ -2902,22 +2525,6 @@
                        IF      SPA-COM-INPUTCD(IDX)    =   "130009470"
                            MOVE    ZERO                TO  FLG-ARI
                        ELSE
-                           MOVE    1                   TO  FLG-ARI
-                       END-IF
-                   END-IF
-      *H28.5
-               ELSE
-      *            ³°Íè¤Ï¡¢332,340¤Î¤ß
-                   IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "300" OR
-                                                           "330" OR
-                                                           "340" )  AND
-                           (IDX                    >   1 )  AND
-                           (SPA-GMN-INPUTCD(IDX - 1)(1:4)
-                                                   =   ".332"
-                                                   OR  ".340" )
-      *                ÄÌÂ§²Ã»»¤Î¤ß
-                       IF     (SPA-COM-CDKBN-KBN (IDX)     =   "G"  )
-                         AND  (SPA-COM-CDKBN-KBNNUM(IDX)   =   "000")
                            MOVE    1                   TO  FLG-ARI
                        END-IF
                    END-IF
@@ -2954,17 +2561,6 @@
       *        ÉÂÍý¿ÇÃÇ²Ã»»¤Î¤ß
                IF     (WRK-SRYSYUKBN           =   "643" )  AND
                       (SPA-COM-TNSSRYKBN (IDX) =   "64"  )
-                   MOVE    1               TO  FLG-ARI
-               END-IF
-      *
-      *H28.1
-      *        ½é¿Ç¡¦ºÆ¿Ç²Ã»»¤Î¤ß
-               IF    ((WRK-SRYSYUKBN           =   "114" )  AND
-                      (SPA-COM-TNSSRYKBN (IDX) =   "11"  ))
-               OR    ((WRK-SRYSYUKBN           =   "124" )  AND
-                      (SPA-COM-TNSSRYKBN (IDX) =   "12"  ))
-               OR    ((WRK-SRYSYUKBN           =   "133" )  AND
-                      (SPA-COM-TNSSRYKBN (IDX) =   "13"  ))
                    MOVE    1               TO  FLG-ARI
                END-IF
            END-IF

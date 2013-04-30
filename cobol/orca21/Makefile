@@ -34,14 +34,9 @@ SRCS = ORCGK01.CBL \
        ORCGK061.CBL \
        ORCGK062.CBL \
        ORCSC10S201004.CBL \
+       ORCGKDMY01.CBL \
        ORCSC10S201204.CBL \
        ORCSC10S201307.CBL \
-       ORCSC10S201404.CBL \
-       ORAPI021SETV2.CBL \
-       ORCSC10S201604.CBL \
-       ORCGK024.CBL \
-       ORCGK0241.CBL \
-       ORCSC10S201804.CBL \
 
 top_builddir = ../..
 include $(top_builddir)/cobol/Makefile.global

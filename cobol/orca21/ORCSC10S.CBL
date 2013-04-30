@@ -33,7 +33,6 @@
       * 01.00.03     NACL-Â¿¡¹Ç¼  06/03/16  £È£±£¸Ç¯£´·î²þÀµÄÉ²Ã
       * 04.05.00     NACL-Â¿¡¹Ç¼  10/03/XX  £È£²£²Ç¯£´·î²þÀµÄÉ²Ã
       * 04.07.00     NACL-Â¿¡¹Ç¼  13/03/XX  £È£²£µÇ¯£··îÏ«ºÒ¥ì¥»ÅÅÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  18/03/XX  £È£³£°Ç¯£´·î²þÀµÄÉ²Ã
       *****************************************************************
       *
       *
@@ -143,32 +142,8 @@
                                                SPA-K02
       *
                WHEN   (SPA-SRYYMD          >=  "20130701" )  AND
-                      (SPA-SRYYMD          <   "20140401" )
-                   CALL    "ORCSC10S201307"    USING
-                                               ORCSC10SAREA
-                                               SPA-AREA
-                                               SPA-SCR-REC
-                                               SPA-K02
-      *
-               WHEN   (SPA-SRYYMD          >=  "20140401" )  AND
-                      (SPA-SRYYMD          <   "20160401" )
-                   CALL    "ORCSC10S201404"    USING
-                                               ORCSC10SAREA
-                                               SPA-AREA
-                                               SPA-SCR-REC
-                                               SPA-K02
-      *
-               WHEN   (SPA-SRYYMD          >=  "20160401" )  AND
-                      (SPA-SRYYMD          <   "20180401" )
-                   CALL    "ORCSC10S201604"    USING
-                                               ORCSC10SAREA
-                                               SPA-AREA
-                                               SPA-SCR-REC
-                                               SPA-K02
-      *
-               WHEN   (SPA-SRYYMD          >=  "20180401" )  AND
                       (SPA-SRYYMD          <   "99999999" )
-                   CALL    "ORCSC10S201804"    USING
+                   CALL    "ORCSC10S201307"    USING
                                                ORCSC10SAREA
                                                SPA-AREA
                                                SPA-SCR-REC

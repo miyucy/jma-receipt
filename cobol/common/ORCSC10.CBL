@@ -38,9 +38,6 @@
       * 04.02.00     NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµÄÉ²Ã
       * 04.05.00     NACL-Â¿¡¹Ç¼  10/03/XX  £È£²£²Ç¯£´·î²þÀµÄÉ²Ã
       * 04.07.00     NACL-Â¿¡¹Ç¼  13/03/XX  £È£²£µÇ¯£··îÏ«ºÒ¥ì¥»ÅÅÂÐ±þ
-      * 04.07.00     NACL-Â¿¡¹Ç¼  14/03/XX  £È£²£¶Ç¯£´·î²þÀµÄÉ²Ã
-      * 04.08.00     NACL-Â¿¡¹Ç¼  16/03/XX  £È£²£¸Ç¯£´·î²þÀµÄÉ²Ã
-      * 04.08.00     NACL-Â¿¡¹Ç¼  16/03/XX  £È£³£°Ç¯£´·î²þÀµÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -158,32 +155,8 @@
                                                SPA-AREA
       *
                WHEN   (SPA-SRYYMD          >=  "20130701" )  AND
-                      (SPA-SRYYMD          <   "20140401" )
-                   CALL    "ORCSC10201307"     USING
-                                               MCPAREA
-                                               ORCSC00AREA
-                                               WRK-SCR-REC
-                                               SPA-AREA
-      *
-               WHEN   (SPA-SRYYMD          >=  "20140401" )  AND
-                      (SPA-SRYYMD          <   "20160401" )
-                   CALL    "ORCSC10201404"     USING
-                                               MCPAREA
-                                               ORCSC00AREA
-                                               WRK-SCR-REC
-                                               SPA-AREA
-      *
-               WHEN   (SPA-SRYYMD          >=  "20160401" )  AND
-                      (SPA-SRYYMD          <   "20180401" )
-                   CALL    "ORCSC10201604"     USING
-                                               MCPAREA
-                                               ORCSC00AREA
-                                               WRK-SCR-REC
-                                               SPA-AREA
-      *
-               WHEN   (SPA-SRYYMD          >=  "20180401" )  AND
                       (SPA-SRYYMD          <   "99999999" )
-                   CALL    "ORCSC10201804"     USING
+                   CALL    "ORCSC10201307"     USING
                                                MCPAREA
                                                ORCSC00AREA
                                                WRK-SCR-REC

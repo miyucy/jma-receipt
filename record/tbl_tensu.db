@@ -98,16 +98,6 @@ tbl_tensu {
 	GAZOOPESUP			number(1,0);
 	IRYOKANSATUKBN			number(1,0);
 	MASUISKBKBN			number(1,0);
-	FUKUBIKUNAIKBN		number(1,0);
-	FUKUBIKUKOTUKBN		number(1,0);
-	TIMEMASUIKBN		number(1,0);
-	DPCKBN		number(1,0);
-	HISINSYUMONITORKSN		number(1,0);
-	TOUKETUHOZONKSN		number(1,0);
-	KUBUNBANGOU		varchar(30);
-	ROSAIKBN		number(1,0);
-	SISIKSN			number(1,0);
-	AKUSEIBYORIKSN		number(1,0);
 	OLDTENSKB			number(1,0);
 	OLDTEN   			number(11,2);
 	MADOKUKBN  			number(1,0);
@@ -156,7 +146,6 @@ tbl_tensu {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-	MASTER_CLASS		number(1,0);
 #-----> 主キー更新用項目
 	UPHOSPNUM			number(2,0),virtual;
 	UPSRYCD				char(9),virtual;
@@ -582,16 +571,6 @@ path	upd1	{
 	GAZOOPESUP 		=	:GAZOOPESUP,
 	IRYOKANSATUKBN 		=	:IRYOKANSATUKBN,
 	MASUISKBKBN 		=	:MASUISKBKBN,
-	FUKUBIKUNAIKBN		=	:FUKUBIKUNAIKBN,
-	FUKUBIKUKOTUKBN		=	:FUKUBIKUKOTUKBN,
-	TIMEMASUIKBN		=	:TIMEMASUIKBN,
-	DPCKBN		=	:DPCKBN,
-	HISINSYUMONITORKSN	=	:HISINSYUMONITORKSN,
-	TOUKETUHOZONKSN		=	:TOUKETUHOZONKSN,
-	KUBUNBANGOU		=	:KUBUNBANGOU,
-	ROSAIKBN		=	:ROSAIKBN,
-	SISIKSN			=	:SISIKSN,
-	AKUSEIBYORIKSN		=	:AKUSEIBYORIKSN,
 	OLDTENSKB		=	:OLDTENSKB,
 	OLDTEN 			=	:OLDTEN,
 	MADOKUKBN 		=	:MADOKUKBN,
@@ -1531,20 +1510,29 @@ path	key95	{
 path	key28   	{
 	DBSELECT	{
 		DECLARE tbl_tensu_key28_csr CURSOR FOR
+		SELECT distinct a.*
+		FROM tbl_tensu a,tbl_inputcd b
+			WHERE a.HOSPNUM  =   :HOSPNUM
+			AND   a.HOSPNUM  =   b.HOSPNUM
+			AND   a.SRYCD    =   b.SRYCD
+			AND   a.YUKOEDYMD  =
+                           (SELECT MAX(YUKOEDYMD)
+                                   FROM tbl_tensu
+				WHERE	a.HOSPNUM =  HOSPNUM
+				AND	a.SRYCD   =  SRYCD)
+			AND   a.YUKOEDYMD  =  :YUKOEDYMD
+			ORDER  BY  a.YKZKBN,
+			           a.KANANAME
+		;
+	};
+};
+
+path	key29   	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key29_csr CURSOR FOR
 		SELECT *
-		FROM tbl_tensu a
-			WHERE HOSPNUM  =   :HOSPNUM
-			AND  (HOSPNUM,SRYCD) in
-              (
-               SELECT HOSPNUM,SRYCD FROM tbl_inputcd
-              )
-			AND   NOT EXISTS 
-              (SELECT * FROM tbl_tensu
-				WHERE	HOSPNUM =  a.HOSPNUM
-				AND	    SRYCD   =  a.SRYCD
-			    AND     YUKOEDYMD  >  :YUKOEDYMD
-            )
-			AND    YUKOEDYMD  =  :YUKOEDYMD
+		FROM tbl_tensu HOSPNUM    =   :HOSPNUM
+			AND    YUKOEDYMD  =   :YUKOEDYMD
 			ORDER  BY  YKZKBN,
 			           KANANAME
 		;
@@ -1631,83 +1619,6 @@ path	key32   	{
                         AND   IDOKANREN  LIKE :IDOKANREN
 			ORDER  BY  SRYCD,
 				   YUKOSTYMD
-		;
-	};
-};
-
-path	key33 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key33_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM	 =   :HOSPNUM
-			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			AND   SRYCD      >=  :SRYCD
-			AND   SRYCD      <=  :UPSRYCD
-			AND   NAME       =   :NAME
-		;
-	};
-};
-
-path	key34 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key34_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
-			AND   SRYCD      =   :SRYCD
- 			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			ORDER  BY  YUKOEDYMD DESC 
-		;
-	};
-};
-
-path	key35 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key35_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
-			AND   UPYMD      >=  :UPYMD
-			ORDER  BY  SRYCD
-		;
-	};
-};
-
-path	key36 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key36_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
-			AND   CHUKSNCD   =   :CHUKSNCD
-			AND   CHUKSNTSUBAN =  :CHUKSNTSUBAN
- 			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			ORDER  BY  SRYCD
-		;
-	};
-};
-
-path	last_update1 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_last_update1_csr CURSOR FOR
-		SELECT MAX(UPYMD||UPHMS) AS TERMID
-		FROM tbl_tensu
-		;
-	};
-};
-
-path	last_update2	{
-	DBSELECT	{
-		DECLARE tbl_tensu_last_update2_csr CURSOR FOR
-		SELECT UPYMD||TO_CHAR(COUNT(*), 'FM00000000') AS TERMID
-		FROM tbl_tensu
-        GROUP BY UPYMD
-        ORDER BY UPYMD DESC
-        LIMIT 5
 		;
 	};
 };
