@@ -86,22 +86,14 @@
       *
        WORKING-STORAGE             SECTION.
       *
-           COPY  "HCGS139NV02.INC" REPLACING  //HCGS139NV02//
-                                   BY         //HCGS139N//.
-           COPY  "HCGS139GV02.INC" REPLACING  //HCGS139GV02//
-                                   BY         //HCGS139G//.
+           COPY  "HCGS139N.INC".
+           COPY  "HCGS139G.INC".
       *
-           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
-                                   BY         //ASS-BGSSKY//.
-      *
-           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
-                                   BY         //ASS-BGSKOH//.
-      *
-           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
-                                   BY         //ASS-BGSETC//.
-      *
-           COPY "CPASGNPARA.INC"   REPLACING  //ASGNPARA//
-                                   BY         //ASS-BGS100ERR//.
+       01  ASS-AREA.
+           03  ASS-BGSSKY          PIC X(255).
+           03  ASS-BGSKOH          PIC X(255).
+           03  ASS-BGSETC          PIC X(255).
+           03  ASS-BGS100ERR       PIC X(255).
       *
        01  STS-AREA.
            03  STS-BGSSKY          PIC X(02).
@@ -379,18 +371,15 @@
            03  KEY-NYUGAIKBN               PIC X(01).
       *
        01  CONST-AREA.
-           03  CONST-H2605         PIC X(06)   VALUE "201405".
-      *
-           03  CONST-SYAHO         PIC 9(02) VALUE 1.
-           03  CONST-KOKUHO        PIC 9(02) VALUE 2.
-           03  CONST-KOUKI         PIC 9(02) VALUE 3.
-           03  CONST-TOKURYO       PIC 9(02) VALUE 4.
-           03  CONST-JIHIHKN       PIC 9(02) VALUE 5.
-           03  CONST-CHIKEN        PIC 9(02) VALUE 6.
-           03  CONST-ROUSAI        PIC 9(02) VALUE 7.
-           03  CONST-JIBAI         PIC 9(02) VALUE 8.
-           03  CONST-DAISAN        PIC 9(02) VALUE 9.
-           03  CONST-KOUGAI        PIC 9(02) VALUE 10.
+           03  CONST-SYAHO         PIC 9(01) VALUE 1.
+           03  CONST-KOKUHO        PIC 9(01) VALUE 2.
+           03  CONST-KOUKI         PIC 9(01) VALUE 3.
+           03  CONST-TOKURYO       PIC 9(01) VALUE 4.
+           03  CONST-JIHIHKN       PIC 9(01) VALUE 5.
+           03  CONST-CHIKEN        PIC 9(01) VALUE 6.
+           03  CONST-ROUSAI        PIC 9(01) VALUE 7.
+           03  CONST-JIBAI         PIC 9(01) VALUE 8.
+           03  CONST-KOUGAI        PIC 9(01) VALUE 9.
            03  CONST-SYAKOU9HEI    PIC 9(03) VALUE 1.
            03  CONST-SYAKOU9TAN    PIC 9(03) VALUE 2.
            03  CONST-SYAKOU7HEI    PIC 9(03) VALUE 3.
@@ -420,10 +409,9 @@
            03  CONST-CHIKENTTL     PIC 9(03) VALUE 27.
            03  CONST-ROUSAITTL     PIC 9(03) VALUE 28.
            03  CONST-JIBAITTL      PIC 9(03) VALUE 29.
-           03  CONST-DAISANTTL     PIC 9(03) VALUE 30.
-           03  CONST-KOUGAITTL     PIC 9(03) VALUE 31.
-           03  CONST-ALLTTL        PIC 9(03) VALUE 32.
-           03  CONST-THKN-MAX      PIC 9(03) VALUE 32.
+           03  CONST-KOUGAITTL     PIC 9(03) VALUE 30.
+           03  CONST-ALLTTL        PIC 9(03) VALUE 31.
+           03  CONST-THKN-MAX      PIC 9(03) VALUE 31.
       *
            03  CONST-GRP-SYA-KOU9HEI   PIC 9(02)   VALUE 1.
            03  CONST-GRP-SYA-KOU9TAN   PIC 9(02)   VALUE 2.
@@ -510,13 +498,11 @@
                05  CONST-HKNMEI29  PIC X(50)
                                    VALUE "自賠責計".
                05  CONST-HKNMEI30  PIC X(50)
-                                   VALUE "自賠責（第三者行為）計".
-               05  CONST-HKNMEI31  PIC X(50)
                                    VALUE "公害計".
-               05  CONST-HKNMEI32  PIC X(50)
+               05  CONST-HKNMEI31  PIC X(50)
                                    VALUE "合計".
            03  CONST-HKNMEI-R  REDEFINES   CONST-HKNMEI-G.
-               05  CONST-HKNMEI-OCC    OCCURS 32.
+               05  CONST-HKNMEI-OCC    OCCURS 31.
                    07  CONST-HKNMEI    PIC X(50).
       *
       *    集計領域
@@ -545,9 +531,6 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *    文字列操作サブ
-           COPY    "CPORCSSTRING.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -962,7 +945,7 @@
            COMPUTE THKN-NISSU (IDX1 IDX2)
                =   THKN-NISSU (IDX1 IDX2)    +   BGSSKY-NISSU
            COMPUTE THKN-TENSU (IDX1 IDX2)
-               =   THKN-TENSU (IDX1 IDX2)    +   BGSSKY-TENSU
+               =   THKN-TENSU (IDX1 IDX2)        + BGSSKY-TENSU
            COMPUTE THKN-FTNMONEY (IDX1 IDX2)
                =   THKN-FTNMONEY (IDX1 IDX2)     + BGSSKY-FTNMONEY
            COMPUTE THKN-HKNMONEY (IDX1 IDX2)
@@ -1069,13 +1052,6 @@
                    MOVE    3               TO  IDX1
                    MOVE    CONST-JIBAITTL  TO  IDX2
                    PERFORM 20011-ETC-SKY-SUM-SEC
-               WHEN    CONST-DAISAN
-                   MOVE    IDX-NG          TO  IDX1
-                   MOVE    CONST-DAISANTTL TO  IDX2
-                   PERFORM 20011-ETC-SKY-SUM-SEC
-                   MOVE    3               TO  IDX1
-                   MOVE    CONST-DAISANTTL TO  IDX2
-                   PERFORM 20011-ETC-SKY-SUM-SEC
                WHEN    CONST-KOUGAI
                    MOVE    IDX-NG            TO  IDX1
                    MOVE    CONST-KOUGAITTL TO  IDX2
@@ -1115,23 +1091,13 @@
                    =   THKN-KENSU (IDX1 IDX2)
                    +   BGSETC-KENSU
       *
-               IF    ( BGSETC-HOKEN    =   CONST-DAISAN )
-                AND  ( IDX2            =   CONST-ALLTTL )
-                   CONTINUE
-               ELSE
+               COMPUTE THKN-NISSU (IDX1 IDX2)
+                   =   THKN-NISSU (IDX1 IDX2)
+                   +   BGSETC-NISSU
       *
-                   COMPUTE THKN-NISSU (IDX1 IDX2)
-                       =   THKN-NISSU (IDX1 IDX2)
-                       +   BGSETC-NISSU
-      *
-                   COMPUTE THKN-TENSU (IDX1 IDX2)
-                       =   THKN-TENSU (IDX1 IDX2)
-                       +   BGSETC-TENSU
-      *
-                   COMPUTE THKN-SKJKAISU (IDX1 IDX2)
-                       =   THKN-SKJKAISU (IDX1 IDX2)
-                       +   BGSETC-SKJKAISU
-               END-IF
+               COMPUTE THKN-TENSU (IDX1 IDX2)
+                   =   THKN-TENSU (IDX1 IDX2)
+                   +   BGSETC-TENSU
       *
                COMPUTE THKN-FTNMONEY (IDX1 IDX2)
                    =   THKN-FTNMONEY (IDX1 IDX2)
@@ -1148,6 +1114,10 @@
                COMPUTE THKN-TTLMONEY (IDX1 IDX2)
                    =   THKN-TTLMONEY (IDX1 IDX2)
                    +   BGSETC-TTLMONEY
+      *
+               COMPUTE THKN-SKJKAISU (IDX1 IDX2)
+                   =   THKN-SKJKAISU (IDX1 IDX2)
+                   +   BGSETC-SKJKAISU
       *
                COMPUTE THKN-SKJTTLMONEY (IDX1 IDX2)
                    =   THKN-SKJTTLMONEY (IDX1 IDX2)
@@ -1278,7 +1248,6 @@
                                  OR    CONST-CHIKENTTL
                                  OR    CONST-ROUSAITTL
                                  OR    CONST-JIBAITTL
-                                 OR    CONST-DAISANTTL
                                  OR    CONST-KOUGAITTL
                                  OR    CONST-ALLTTL )
                    CONTINUE
@@ -1332,7 +1301,6 @@
                                  OR    CONST-CHIKENTTL
                                  OR    CONST-ROUSAITTL
                                  OR    CONST-JIBAITTL
-                                 OR    CONST-DAISANTTL
                                  OR    CONST-KOUGAITTL
                                  OR    CONST-ALLTTL )
       *
@@ -1359,7 +1327,6 @@
       *
            END-PERFORM
       *
-           MOVE    "特別療養費(注)"    TO  HCGS139N-LBLTOKUYO
            MOVE    "労　　災 （注）"   TO  HCGS139N-LBLROUSAI
            MOVE    "自 賠 責 （注）"   TO  HCGS139N-LBLJIBAI
            MOVE    "公　　害 （注）"   TO  HCGS139N-LBLKOUGAI
@@ -1367,14 +1334,17 @@
            IF    ( KEY-RECEKA          =   SPACE )
       *
                IF    ( BGS100P-ETCGETKBN   =   "0" )
-                   MOVE    "特別療養費" TO HCGS139N-LBLTOKUYO
                    MOVE    "労　　災"  TO  HCGS139N-LBLROUSAI
                    MOVE    "自 賠 責"  TO  HCGS139N-LBLJIBAI
                    MOVE    "公　　害"  TO  HCGS139N-LBLKOUGAI
                END-IF
       *
                MOVE    SPACE           TO  HCGS139N-ETCHKNMSG
-               STRING  "（注）実際のレセプト件数"
+               STRING  "（注）件数は患者数"
+                                           DELIMITED BY SIZE
+                       "（複数保険使用の場合はその数）"
+                                           DELIMITED BY SIZE
+                       "の集計結果となります。実際のレセプト件数"
                                            DELIMITED BY SIZE
                        "・日数と一致しない場合があります。"
                                            DELIMITED BY SIZE
@@ -1397,20 +1367,6 @@
            MOVE    TKOH-KENSU (IDX1)   TO  WRK-Z4
            MOVE    WRK-Z4              TO  HCGS139N-KOHKENSU
       *
-           IF    ( BGS100P-SRYYM   >=  CONST-H2605 )
-               STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
-                       " -L LBL0101 "      DELIMITED  BY  SIZE
-                       "MonpeLayerOut"     DELIMITED  BY  SIZE
-               INTO    HCGS139N-LOPTION
-               END-STRING
-           ELSE
-               STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
-                       " -L LBL0102 "      DELIMITED  BY  SIZE
-                       "MonpeLayerOut"     DELIMITED  BY  SIZE
-               INTO    HCGS139N-LOPTION
-               END-STRING
-           END-IF
-      *
            PERFORM 230-HCGS139N-PRINT-SEC
       *
            .
@@ -1427,7 +1383,7 @@
                MOVE    "1"         TO  WRK-NYUGAIKBN
                MOVE    "入院"      TO  WRK-NYUGAIKBNMEI
            ELSE
-               MOVE    " "         TO  WRK-NYUGAIKBN
+               MOVE    ""          TO  WRK-NYUGAIKBN
                MOVE    "入院・外来　総計"
                                    TO  WRK-NYUGAIKBNMEI
            END-IF
@@ -1535,9 +1491,6 @@
                MOVE    CONST-JIBAITTL      TO  IDX2
                PERFORM 20011-HCGS139N-HKN-CSV-SEC
       *
-               MOVE    CONST-DAISANTTL      TO  IDX2
-               PERFORM 20011-HCGS139N-HKN-CSV-SEC
-      *
                MOVE    CONST-KOUGAITTL     TO  IDX2
                PERFORM 20011-HCGS139N-HKN-CSV-SEC
       *
@@ -1589,9 +1542,6 @@
                MOVE    CONST-JIBAITTL      TO  IDX2
                PERFORM 20011-HCGS139N-ETC-CSV-SEC
       *
-               MOVE    CONST-DAISANTTL      TO  IDX2
-               PERFORM 20011-HCGS139N-ETC-CSV-SEC
-      *
                MOVE    CONST-KOUGAITTL     TO  IDX2
                PERFORM 20011-HCGS139N-ETC-CSV-SEC
       *
@@ -1615,16 +1565,6 @@
       *
            MOVE    CONST-HKNMEI (IDX2)
                                    TO  WRK-ITEM
-           IF    ( BGS100P-SRYYM   >=  CONST-H2605 )
-               INITIALIZE          ORCSSTRINGAREA
-               MOVE    "sub"   TO  ORCSSTR-COMMAND
-               MOVE    WRK-ITEM TO ORCSSTR-STRING1
-               MOVE    "高９"  TO  ORCSSTR-STRING2
-               MOVE    "高一"  TO  ORCSSTR-STRING3
-               CALL    "orcsstring" USING  ORCSSTRINGAREA
-               MOVE    ORCSSTR-STRING1
-                               TO  WRK-ITEM
-           END-IF
            PERFORM 801-CSVDATA-EDIT-SEC
       *
            MOVE    HCGS139N-KENSU (IDX2)
@@ -1771,7 +1711,7 @@
       *
            INITIALIZE                  ORCSPRTAREA
       *
-           MOVE    "HCGS139NV02.red" TO  SPRT-PRTID
+           MOVE    "HCGS139N.red" TO  SPRT-PRTID
            MOVE    HCGS139N       TO  SPRT-PRTDATA
       *
            PERFORM 230-PRINT-SEC
@@ -1808,7 +1748,6 @@
                                  OR    CONST-CHIKENTTL
                                  OR    CONST-ROUSAITTL
                                  OR    CONST-JIBAITTL
-                                 OR    CONST-DAISANTTL
                                  OR    CONST-KOUGAITTL
                                  OR    CONST-ALLTTL )
                    CONTINUE
@@ -1843,7 +1782,6 @@
                                  OR    CONST-CHIKENTTL
                                  OR    CONST-ROUSAITTL
                                  OR    CONST-JIBAITTL
-                                 OR    CONST-DAISANTTL
                                  OR    CONST-KOUGAITTL
                                  OR    CONST-ALLTTL )
       *
@@ -1871,7 +1809,6 @@
       *
            END-PERFORM
       *
-           MOVE    "特別療養費(注)"    TO  HCGS139G-LBLTOKUYO
            MOVE    "労　　災 （注）"   TO  HCGS139G-LBLROUSAI
            MOVE    "自 賠 責 （注）"   TO  HCGS139G-LBLJIBAI
            MOVE    "公　　害 （注）"   TO  HCGS139G-LBLKOUGAI
@@ -1879,14 +1816,17 @@
            IF    ( KEY-RECEKA          =   SPACE )
       *
                IF    ( BGS100P-ETCGETKBN   =   "0" )
-                   MOVE    "特別療養費" TO HCGS139G-LBLTOKUYO
                    MOVE    "労　　災"  TO  HCGS139G-LBLROUSAI
                    MOVE    "自 賠 責"  TO  HCGS139G-LBLJIBAI
                    MOVE    "公　　害"  TO  HCGS139G-LBLKOUGAI
                END-IF
       *
                MOVE    SPACE           TO  HCGS139G-ETCHKNMSG
-               STRING  "（注）実際のレセプト件数"
+               STRING  "（注）件数は患者数"
+                                           DELIMITED BY SIZE
+                       "（複数保険使用の場合はその数）"
+                                           DELIMITED BY SIZE
+                       "の集計結果となります。実際のレセプト件数"
                                            DELIMITED BY SIZE
                        "・日数と一致しない場合があります。"
                                            DELIMITED BY SIZE
@@ -1909,20 +1849,6 @@
            MOVE    TKOH-KENSU (IDX1)   TO  WRK-Z4
            MOVE    WRK-Z4              TO  HCGS139G-KOHKENSU
       *
-           IF    ( BGS100P-SRYYM   >=  CONST-H2605 )
-               STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
-                       " -L LBL0101 "      DELIMITED  BY  SIZE
-                       "MonpeLayerOut"     DELIMITED  BY  SIZE
-               INTO    HCGS139G-LOPTION
-               END-STRING
-           ELSE
-               STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
-                       " -L LBL0102 "      DELIMITED  BY  SIZE
-                       "MonpeLayerOut"     DELIMITED  BY  SIZE
-               INTO    HCGS139G-LOPTION
-               END-STRING
-           END-IF
-      *
            PERFORM 230-HCGS139G-PRINT-SEC
       *
            .
@@ -1935,7 +1861,7 @@
       *
            INITIALIZE                  ORCSPRTAREA
       *
-           MOVE    "HCGS139GV02.red" TO  SPRT-PRTID
+           MOVE    "HCGS139G.red" TO  SPRT-PRTID
            MOVE    HCGS139G       TO  SPRT-PRTDATA
       *
            PERFORM 230-PRINT-SEC
@@ -2056,9 +1982,6 @@
                MOVE    CONST-JIBAITTL      TO  IDX2
                PERFORM 20011-HCGS139G-HKN-CSV-SEC
       *
-               MOVE    CONST-DAISANTTL     TO  IDX2
-               PERFORM 20011-HCGS139G-HKN-CSV-SEC
-      *
                MOVE    CONST-KOUGAITTL     TO  IDX2
                PERFORM 20011-HCGS139G-HKN-CSV-SEC
       *
@@ -2110,9 +2033,6 @@
                MOVE    CONST-JIBAITTL      TO  IDX2
                PERFORM 20011-HCGS139G-ETC-CSV-SEC
       *
-               MOVE    CONST-DAISANTTL      TO  IDX2
-               PERFORM 20011-HCGS139G-ETC-CSV-SEC
-      *
                MOVE    CONST-KOUGAITTL     TO  IDX2
                PERFORM 20011-HCGS139G-ETC-CSV-SEC
       *
@@ -2136,16 +2056,6 @@
       *
            MOVE    CONST-HKNMEI (IDX2)
                                    TO  WRK-ITEM
-           IF    ( BGS100P-SRYYM   >=  CONST-H2605 )
-               INITIALIZE          ORCSSTRINGAREA
-               MOVE    "sub"   TO  ORCSSTR-COMMAND
-               MOVE    WRK-ITEM TO ORCSSTR-STRING1
-               MOVE    "高９"  TO  ORCSSTR-STRING2
-               MOVE    "高一"  TO  ORCSSTR-STRING3
-               CALL    "orcsstring" USING  ORCSSTRINGAREA
-               MOVE    ORCSSTR-STRING1
-                               TO  WRK-ITEM
-           END-IF
            PERFORM 801-CSVDATA-EDIT-SEC
       *
            MOVE    HCGS139G-KENSU (IDX2)
