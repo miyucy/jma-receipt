@@ -146,6 +146,7 @@
       *    労災コード置換えテーブル 
            COPY   "CMRSICNGTBL.INC".
       *
+      *
       *    算定履歴
        01  WRK-SANTEI-REC.
            COPY    "CPSANTEI.INC"   REPLACING
@@ -606,14 +607,6 @@
               AND (TNS-CDKBN-KBNNUM-EDA    =   "00"    )
                MOVE    1               TO  FLG-RIHA-OK
            END-IF
-      *    H28.4 廃用症候群
-           IF     (SSANTEI-SRYYMD          >=  "20160401")
-              AND (FLG-RIHA-OK             =   ZERO    )
-              AND (TNS-CDKBN-KBN           =   "H"     )
-              AND (TNS-CDKBN-KBNNUM        =   "001"   )
-              AND (TNS-CDKBN-KBNNUM-EDA    =   "02"    )
-               MOVE    1               TO  FLG-RIHA-OK
-           END-IF
            IF      FLG-RIHA-OK         =   1
                MOVE    "099800201"         TO  WRK-SRYCD
            END-IF
@@ -882,12 +875,11 @@
                   (SSANTEI-SRYYMD      >=  "20130701" )
                PERFORM 10009-RSICD-SANTEI-CHK-SEC
            END-IF
+      *
       *    Ｈ２２年４月から追加のコードは固定で判定
       *     (COPY に追加するのは、パッケージ対応で）
            IF      WRK-SRYCD           =   "099800181"
                                        OR  "099800182"
-      *H28.4
-             OR  (WRK-SRYCD(1:7)       =   "0998002"  )
       *        がん患者リハ開始日・終了日
                MOVE    1               TO  FLG-HKNSAN
                MOVE    SPACE           TO  WRK-RIGAKU-RYO
@@ -1005,7 +997,7 @@
            .
        10009-RSICD-SANTEI-CHK-EXT.
            EXIT.
-      *!!!!!!!!!!!!!! 
+      *
       *
       *****************************************************************
       *     新規、変更処理
@@ -1949,8 +1941,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SSANTEI-SRYYMD      TO  TNSP-YUKOSTYMD
-           MOVE    SSANTEI-SRYYMD      TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
