@@ -2427,14 +2427,14 @@
       *
       *    発生日を求める　(使用なし　労災コード変更対応なし）
       *    救急医療管理加算のチェック
-           MOVE    SPACE               TO  WRK-HASSYOYMD
-           MOVE    "101110030"         TO  WRK-SRYCD
-           PERFORM 10001-RSI-JYURRK-CHK-SEC
-           IF      WRK-HASSYOYMD       =   SPACE
+      *    MOVE    SPACE               TO  WRK-HASSYOYMD
+      *    MOVE    "101110030"         TO  WRK-SRYCD
+      *    PERFORM 10001-RSI-JYURRK-CHK-SEC
+      *    IF      WRK-HASSYOYMD       =   SPACE
                MOVE    SPA-RSI-SHOBYOYMD   TO  SPA-RSI-HASSYOYMD
-           ELSE
-               MOVE    WRK-HASSYOYMD       TO  SPA-RSI-HASSYOYMD
-           END-IF
+      *    ELSE
+      *        MOVE    WRK-HASSYOYMD       TO  SPA-RSI-HASSYOYMD
+      *    END-IF
       *
            END-IF
       *
