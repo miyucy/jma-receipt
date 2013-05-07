@@ -28,13 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.01    NACL-藤原    13/05/07  公務災害を対象外とする
-      *  04.07.02    NACL-藤原    13/09/27  ￥マークの変更
-      *  04.07.03    NACL-藤原    15/07/27  医療機関編集情報からの郵便番
-      *                                     号の編集を追加
-      *  04.07.04    NACL-藤原    15/08/18  医療機関編集情報への開設者名
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -72,15 +65,15 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEUPD//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
-           COPY    "HCM72V01.INC"  REPLACING  //HCM72V01//
-                                   BY         //HCM72//.
+           COPY    "HCM72.INC". 
       *
-           COPY    "HCM73V01.INC"  REPLACING  //HCM73V01//
-                                   BY         //HCM73//.
+           COPY    "HCM73.INC". 
       *
       *    スパ領域
        01  STS-AREA.
@@ -157,8 +150,6 @@
                05  WRK-HOSPADRS1   PIC X(50).
                05  WRK-HOSPADRS2   PIC X(50).
            03  WRK-TEL             PIC X(15).
-           03  WRK-POST            PIC X(07).
-           03  WRK-KAISETUNAME     PIC X(80).
       *
            03  WRK-RSIIRYOCD       PIC X(07).
            03  WRK-PREFNAME        PIC X(08).
@@ -210,10 +201,9 @@
            03  WRK-ERR-FILE-MSG1   PIC X(17).
            03  WRK-ERR-FLG         PIC 9(01).
       *    エラーファイル名称領域
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME内のBASENAME開始位置
-       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -246,7 +236,6 @@
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
-           COPY    "CPSK1903.INC".
       *
       *    労災医療機関情報
            COPY    "CPSK4001.INC".
@@ -286,8 +275,6 @@
       *    県名取得パラメタ
            COPY    "CPORCSPREF.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -326,7 +313,6 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SUM-AREA
                                        SPA-AREA
-           INITIALIZE                  RECEERR
            MOVE    LOW-VALUE       TO  KEY-AREA    
       *
            PERFORM 100-DBOPEN-SEC
@@ -363,19 +349,6 @@
                                    TO  RECEUPD-TERMID
            MOVE    WRK-PARA-HOSPNUM
                                    TO  RECEUPD-HOSPNUM
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECEUPD-BASENAME
-                                   TO  SGETTEMP-BASENAMES  (2)
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SPACE           TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                   TO  RECEUPD
-      *
-           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  WRK-SRYYMD (1:6)
@@ -503,11 +476,8 @@
            END-IF 
       *
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1001-KAISETUNAME
-                                       TO  WRK-KAISETUNAME
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
            MOVE    SYS-1002-TEL        TO  WRK-TEL
-           MOVE    SYS-1002-POST       TO  WRK-POST
       *
       *    医療機関編集情報
            PERFORM 900-1900-HENSYU-SEC
@@ -672,7 +642,7 @@
                    PERFORM VARYING IDX FROM    8   BY  -1
                            UNTIL   IDX <       1
                        IF      WRK-KINGAKZ (IDX:1) =   SPACE
-                           MOVE    "\"             TO
+                           MOVE    "￥"            TO
                                                    HCM73-MARK-S (IDX)
                            MOVE    1               TO  IDX
                        END-IF
@@ -688,10 +658,12 @@
                    COMPUTE SUM-NINZU   =   SUM-NINZU   -   1
                    MOVE    SUM-NINZU           TO  WRK-NINZUZ
                    MOVE    WRK-NINZUZ          TO  HCM73-NINZU
-      *
-                   MOVE    WRK-POST (1:3)      TO  HCM73-HOSPPOST (1:3)
-                   MOVE    "-"                 TO  HCM73-HOSPPOST (4:1)
-                   MOVE    WRK-POST (4:4)      TO  HCM73-HOSPPOST (5:4)
+      *    
+                   IF   SYS-1002-POST   IS  NUMERIC
+                     MOVE  SYS-1002-POST(1:3)  TO  HCM73-HOSPPOST(1:3)
+                     MOVE  "-"                 TO  HCM73-HOSPPOST(4:1)
+                     MOVE  SYS-1002-POST(4:4)  TO  HCM73-HOSPPOST(5:4)
+                   END-IF
       *
                    MOVE    WRK-HOSPADRS        TO  HCM73-HOSPADRS
                    INSPECT HCM73-HOSPADRS
@@ -701,7 +673,8 @@
                    INSPECT HCM73-HOSPNAME
                                    REPLACING   ALL "  "    BY  "　"
       *    
-                   MOVE    WRK-KAISETUNAME     TO  HCM73-KAISETSUNAME
+                   MOVE    SYS-1001-KAISETUNAME
+                                               TO  HCM73-KAISETSUNAME
       *    
                    MOVE    WRK-TEL             TO  HCM73-HOSPTEL
       *
@@ -738,7 +711,7 @@
                    PERFORM VARYING IDX FROM    8   BY  -1
                            UNTIL   IDX <       1
                        IF      WRK-KINGAKZ (IDX:1) =   SPACE
-                           MOVE    "\"            TO
+                           MOVE    "￥"            TO
                                                    HCM72-MARK-S (IDX)
                            MOVE    1               TO  IDX
                        END-IF
@@ -756,9 +729,11 @@
                    MOVE    SUM-NINZU           TO  WRK-NINZUZ
                    MOVE    WRK-NINZUZ          TO  HCM72-NINZU
       *    
-                   MOVE    WRK-POST (1:3)      TO  HCM72-HOSPPOST (1:3)
-                   MOVE    "-"                 TO  HCM72-HOSPPOST (4:1)
-                   MOVE    WRK-POST (4:4)      TO  HCM72-HOSPPOST (5:4)
+                   IF   SYS-1002-POST   IS  NUMERIC
+                     MOVE  SYS-1002-POST(1:3)  TO  HCM72-HOSPPOST(1:3)
+                     MOVE  "-"                 TO  HCM72-HOSPPOST(4:1)
+                     MOVE  SYS-1002-POST(4:4)  TO  HCM72-HOSPPOST(5:4)
+                   END-IF
       *
                    MOVE    WRK-HOSPADRS        TO  HCM72-HOSPADRS
                    INSPECT HCM72-HOSPADRS
@@ -768,7 +743,8 @@
                    INSPECT HCM72-HOSPNAME
                                    REPLACING   ALL "  "    BY  "　"
       *    
-                   MOVE    WRK-KAISETUNAME     TO  HCM72-KAISETSUNAME
+                   MOVE    SYS-1001-KAISETUNAME
+                                               TO  HCM72-KAISETSUNAME
       *    
                    MOVE    WRK-TEL             TO  HCM72-HOSPTEL
       *
@@ -804,7 +780,7 @@
                                        TO  SPRT-PRIORITY
            EVALUATE    FLG-SYORI
                WHEN    1
-                   MOVE   "HCM73V01.red"       TO  SPRT-PRTID
+                   MOVE   "HCM73.red"          TO  SPRT-PRTID
                    MOVE    HCM73               TO  SPRT-PRTDATA
       *
                    IF    ( KEY-O-SYOKAIFLG     =   "1"  )
@@ -819,7 +795,7 @@
                                                    TO  SPRT-TITLE
                    END-IF
                WHEN    2
-                   MOVE   "HCM72V01.red"       TO  SPRT-PRTID
+                   MOVE   "HCM72.red"          TO  SPRT-PRTID
                    MOVE    HCM72               TO  SPRT-PRTDATA
                    MOVE    "アフターケア委託費請求書" 
                                                TO  SPRT-TITLE
@@ -918,8 +894,7 @@
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -929,8 +904,7 @@
            STRING  "ORCBM042 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE
@@ -1228,8 +1202,6 @@
                    PERFORM 900-1901-READ-SEC
       *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
-      *            医療機関名称編集情報（２）
-                   PERFORM 900-1903-READ-SEC
                END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
@@ -1294,43 +1266,12 @@
                MOVE    SYS-1902-ADRS1  TO  WRK-HOSPADRS1
                MOVE    SYS-1902-ADRS2  TO  WRK-HOSPADRS2
                MOVE    SYS-1902-TEL    TO  WRK-TEL
-               MOVE    SYS-1902-POST   TO  WRK-POST
            ELSE
                INITIALIZE                  SYS-1902-REC
            END-IF
            .
       *
        900-1902-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関名称編集情報（２）読み込み
-      *****************************************************************
-       900-1903-READ-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SYS-1903-REC
-           INITIALIZE                  SYS-1903-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-1903-HOSPNUM
-           MOVE    "1903"          TO  SYS-1903-KANRICD
-           MOVE    SYS-1900-PRTKBN(23)
-                                   TO  SYS-1903-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM
-                                   TO  SYS-1903-STYUKYMD (1:6)
-           MOVE    "01"            TO  SYS-1903-STYUKYMD (7:2)
-           MOVE    SYS-1903-STYUKYMD
-                                   TO  SYS-1903-EDYUKYMD
-           MOVE    SYS-1903-REC    TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-KEY10-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1903-REC
-               MOVE    SYS-1903-KAISETUNAME
-                                           TO  WRK-KAISETUNAME
-           ELSE
-               INITIALIZE                      SYS-1903-REC
-           END-IF
-           .
-      *
-       900-1903-READ-EXT.
            EXIT.
       *
       *****************************************************************
