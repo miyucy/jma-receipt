@@ -71,7 +71,7 @@
       *                                     ０８（老健）のレセプト対応
       *
       *  04.07.01    NACL-門脇    12/09/25  コメント差込項目追加
-      *  04.07.02    NACL-門脇    13/01/22  日数回数テーブルの位置変更
+      *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       ************************************************************
@@ -268,6 +268,13 @@
       *在宅持続陽圧呼吸療法指導管理料
            03  RECE04-FLG-YOUATU-COMMENT  PIC  X(01).
       *
+      *日数回数テーブル
+           03  RECE04-DAY-AREA.
+      *        診療回数テーブル（1:合計、2-9:１回〜９回）
+             04  RECE04-DAY-TBL            OCCURS  10.
+                 05  RECE04-KAISUINF       OCCURS  31.
+                     07  RECE04-KAISU      PIC  9(03).
+      *
       *手技毎の内容（手術・画像診断・処置）
            03  RECE04-ACCTP-SYUGI-TBL-G.
                05  RECE04-ACCTP-SYUGI-TBL  OCCURS  5.
@@ -299,10 +306,3 @@
                05  RECE04-HOKATU-YKZTEN    PIC 9(07).
       *器材点数
                05  RECE04-HOKATU-KIZAITEN  PIC 9(07).
-      *
-      *日数回数テーブル
-           03  RECE04-DAY-AREA.
-      *        診療回数テーブル（1:合計、2-9:１回〜９回）
-             04  RECE04-DAY-TBL            OCCURS  10.
-                 05  RECE04-KAISUINF       OCCURS  31.
-                     07  RECE04-KAISU      PIC  9(03).

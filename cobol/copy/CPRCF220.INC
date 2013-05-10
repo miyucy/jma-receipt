@@ -196,6 +196,13 @@
       *在宅持続陽圧呼吸療法指導管理料
            03  RECE220-FLG-YOUATU-COMMENT  PIC  X(01).
       *
+      *日数回数テーブル
+           03  RECE220-DAY-AREA.
+      *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
+             04  RECE220-DAY-TBL           OCCURS  4.
+                 05  RECE220-KAISUINF      OCCURS  31.
+                     07  RECE220-KAISU     PIC 9(03).
+      *
       *包括診療分退避点数
            03  RECE220-HOKATU-TENSU-AREA.
       *剤点数
@@ -208,10 +215,3 @@
                05  RECE220-HOKATU-YKZTEN   PIC  9(07).
       *器材点数
                05  RECE220-HOKATU-KIZAITEN PIC  9(07).
-      *
-      *日数回数テーブル
-           03  RECE220-DAY-AREA.
-      *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
-             04  RECE220-DAY-TBL           OCCURS  4.
-                 05  RECE220-KAISUINF      OCCURS  31.
-                     07  RECE220-KAISU     PIC 9(03).
