@@ -4454,8 +4454,6 @@
                                                        TO  WRK-DATA
                                MOVE    2               TO  WRK-NAGASA
                                PERFORM 5004-MOJI-HENSYU-SEC  
-      *                        Í½È÷£±
-                               PERFORM 5004-MOJI-HENSYU-SEC  
       *                        ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
                                MOVE    LNK-RNYURECEDEN-SRYCD
                                                        (IDZ1 IDZ2 IDXZ)
