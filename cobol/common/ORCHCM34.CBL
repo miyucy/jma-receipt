@@ -60,7 +60,7 @@
                                    FILE    STATUS  IS  STS-HCM34F02.
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
-           SELECT  PRT-FILE        ASSIGN  ASGNPARA
+           SELECT  PRT-FILE        ASSIGN  HC01PARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                        DIVISION.
@@ -72,26 +72,19 @@
          02  HCM34ACCT-DAT.
            COPY    "CPSRYACCT.INC"         REPLACING   //ACCT-//
                                            BY          //HCM34ACCT-//.
-           03  HCM34ACCT-DATPLUS.
-               05  HCM34ACCT-RUIKEITOTAL           PIC 9(15).
-               05  HCM34ACCT-RUIKEITOTAL2          PIC 9(15).
-               05  HCM34ACCT-JIHIMONEYTOTAL        PIC 9(07).
-               05  HCM34ACCT-SRT-SRYCD             PIC X(09).
-               05  HCM34ACCT-SRT-SRYSYUKBN         PIC X(03).
-               05  HCM34ACCT-SRT-KOKUJISKBKBN2     PIC 9(01).
-               05  HCM34ACCT-SRT-SRYCOMMENT        PIC 9(01).
-               05  HCM34ACCT-ACCTKBN               PIC X(01).
-               05  HCM34ACCT-ZAISKBKBN             PIC X(01).
-               05  HCM34ACCT-PRIORITY              PIC 9(03).
-               05  HCM34ACCT-PRIORITY2             PIC 9(03).
-               05  HCM34ACCT-PRIORITY3             PIC 9(03).
-               05  HCM34ACCT-TNSTEN                PIC 9(10).
-               05  HCM34ACCT-SRYSTATUS             PIC 9(01).
-               05  HCM34ACCT-MINUS                 PIC 9(01).
-               05  HCM34ACCT-RIHA                  PIC 9(01).
-               05  HCM34ACCT-RIHA-SYS              PIC 9(01).
-               03  HCM34ACCT-TENTEKSBT             PIC X(01).
-               03  HCM34ACCT-INGAIKBN              PIC X(01).
+           03  HCM34ACCT-RUIKEITOTAL               PIC 9(15).
+           03  HCM34ACCT-RUIKEITOTAL2              PIC 9(15).
+           03  HCM34ACCT-JIHIMONEYTOTAL            PIC 9(07).
+           03  HCM34ACCT-SRT-SRYCD                 PIC X(09).
+           03  HCM34ACCT-SRT-SRYSYUKBN             PIC X(03).
+           03  HCM34ACCT-SRT-SRYCOMMENT            PIC 9(01).
+           03  HCM34ACCT-ACCTKBN                   PIC X(01).
+           03  HCM34ACCT-ZAISKBKBN                 PIC X(01).
+           03  HCM34ACCT-PRIORITY                  PIC 9(03).
+           03  HCM34ACCT-PRIORITY2                 PIC 9(03).
+           03  HCM34ACCT-PRIORITY3                 PIC 9(03).
+           03  HCM34ACCT-TNSTEN                    PIC 9(10).
+           03  HCM34ACCT-SRYSTATUS                 PIC 9(01).
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Õ¥¡¥¤¥ë
        FD  HCM34SRY-FILE.
@@ -103,9 +96,6 @@
          02  HCM34SRY-DAT.
            COPY    "CPSRYACT.INC"          REPLACING   //SRY-//
                                            BY          //HCM34SRY-//.
-         02  HCM34SRY-PLUS.
-           03  HCM34SRY-PLUS-OCC                   OCCURS 5.
-               05  HCM34SRY-COMMENT                 PIC X(200).
       *
       *    °õºþÍÑ¥Ç¡¼¥¿
        FD  PRT-FILE.
@@ -115,17 +105,18 @@
       *
       *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
-           COPY    "CPASGNPARA.INC".
       *
       *    ½èÍýÂÐ¾Ý´µ¼Ô¥Õ¥¡¥¤¥ë
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01PARA//
                                            BY          //HCM34F01//.
+           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
       *    ½èÍýÂÐ¾Ý´µ¼Ô¥Õ¥¡¥¤¥ë
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01PARA//
                                            BY          //HCM34F02//.
+           03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCM341V01.INC"
                    REPLACING   //HCM341V01//  BY //HCM341//.
@@ -166,7 +157,6 @@
            03  FLG-RSIJBI-AREA-HEN                 PIC 9(01).
            03  FLG-JIBAI                           PIC 9(01).
            03  FLG-ROSAI                           PIC 9(01).
-           03  FLG-DAISAN                          PIC 9(01).
            03  FLG-AFTER-CARE                      PIC 9(01).
            03  FLG-TBLCOMBI                        PIC 9(01).
            03  FLG-SRYACT-HEN5                     PIC 9(01).
@@ -182,21 +172,14 @@
            03  FLG-HKNCOMBI                        PIC 9(01).
            03  FLG-COMMENT-HEN                      PIC 9(01).
            03  FLG-JIHI-HEN                        PIC 9(01).
-           03  FLG-RIHA                            PIC 9(01).
-           03  FLG-RIHA-SYS                        PIC 9(01).
-           03  FLG-RIHA-HEN                        PIC 9(01).
            03  FLG-SRYSTATUS                       PIC 9(01).
            03  FLG-TARGET                          PIC 9(01).
-           03  FLG-ACCEPT                          PIC 9(01).
            03  FLG-HIT                             PIC 9(01).
            03  FLG-ORCSHKNSET                      PIC 9(01)
                                                    OCCURS 100.
-           03  FLG-HKNGENTEI                       PIC 9(01).
            03  FLG-PTRSIINF                        PIC 9(01).
            03  FLG-RECECOM                         PIC 9(01).
            03  FLG-TAJYUSHIN                       PIC 9(01).
-           03  FLG-COMB-CHANGED                    PIC 9(01).
-           03  FLG-KENPO                           PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -208,13 +191,14 @@
            03  CNT-YKZINGAI                        PIC 9(05).
            03  CNT-YKZHKT                          PIC 9(05).
            03  CNT-ZAIHKT                          PIC 9(05).
-           03  CNT-JISANYAKU                       PIC 9(05).
            03  CNT-SPACE                           PIC 9(05).
            03  CNT-STR                             PIC 9(05).
            03  CNT-BYOMEIMOJI                      PIC 9(05).
            03  CNT-HOUSRYACT                       PIC 9(05).
            03  CNT-RENPAKU                         PIC 9(03).
            03  CNT-PTNYUINRRK                      PIC 9(05).
+           03  CNT-RSIJBI-KIN                      PIC 9(05).
+           03  CNT-RSIJBI-TEN                      PIC 9(05).
            03  CNT-RENNUM                          PIC 9(05).
            03  CNT-SRYACCT                         PIC 9(05).
            03  CNT-COMB-ACCT                       PIC 9(05).
@@ -265,7 +249,6 @@
            03  IDX34                               PIC 9(05).
            03  IDX35                               PIC 9(05).
            03  IDX36                               PIC 9(05).
-           03  IDX37                               PIC 9(05).
            03  IDXA                                PIC 9(05).
            03  IDXB                                PIC 9(05).
            03  IDXC                                PIC 9(05).
@@ -277,13 +260,7 @@
            03  IDXI                                PIC 9(05).
            03  IDXJ                                PIC 9(05).
            03  IDXK                                PIC 9(05).
-           03  IDXL                                PIC 9(05).
-           03  IDXM                                PIC 9(05).
-           03  IDXR                                PIC 9(05).
-           03  IDXS                                PIC 9(05).
-           03  IDXT                                PIC 9(05).
-           03  IDXW                                PIC 9(05).
-           03  IDXZ                                PIC 9(05).
+           03  IDX-S                               PIC 9(05).
            03  IDX-RRK                             PIC 9(05).
            03  IDX-RJ                              PIC 9(05).
            03  IDX-DAY                             PIC 9(05).
@@ -392,7 +369,6 @@
            03  WRK-TNS-HOUKNSKBN                   PIC 9(02).
            03  WRK-KUGIRI                          PIC X(02).
            03  WRK-TTL-TEN                         PIC S9(11).
-           03  WRK-TTL-KINGAKU                         PIC S9(11).
            03  WRK-TTL-JIHI                        PIC 9(09).
            03  WRK-TTL-JIHI-TAX                    PIC 9(09).
            03  WRK-TTL-BRMSAGAKU                   PIC 9(09).
@@ -405,10 +381,8 @@
            03  WRK-GAIHAKU-ED-Z9                   PIC Z9.
            03  WRK-HKNCOMBI-KEY-MAE                PIC X(04).
            03  WRK-HKNCOMBI-KEY                    PIC X(04).
-           03  WRK-HKNCOMBINUM-G.
-               05  WRK-HKNCOMBINUM                 PIC 9(04).
+           03  WRK-HKNCOMBINUM                     PIC 9(04).
            03  WRK-HKNNUM                          PIC X(03).
-           03  WRK-KOHNUM                          PIC X(03).
            03  WRK-SHONUM-G.
                05  WRK-SHONUM-MAX                  PIC 9(03).
                05  WRK-SHONUM                      PIC 9(03)
@@ -420,8 +394,6 @@
            03  WRK-SRYCD                           PIC X(09).
            03  WRK-SRYCD-9                         PIC 9(09).
            03  WRK-SRYSYUKBN                       PIC X(03).
-           03  WRK-KOKUJISKBKBN2                   PIC 9(01).
-           03  WRK-TNS-SRYCD                       PIC X(09).
            03  WRK-TANINAME                        PIC X(24).
            03  WRK-JBI-SONOTA-G.
                05  WRK-JBI-SONOTA-KBN              PIC X(01).
@@ -476,16 +448,6 @@
                05  WRK-BYOMEI.
                    07  WRK-BYOMEI-LINE             PIC X(56)
                                                    OCCURS 3.
-           03  WRK-RATE1                           PIC 999V99.
-           03  WRK-RATE2                           PIC 999V99.
-           03  WRK-RATE3                           PIC 999V99.
-           03  WRK-RATE4                           PIC 999V99.
-           03  WRK-HASU                            PIC 9V99999.
-           03  WRK-RIHA-MAX                        PIC 9(05).
-           03  WRK-COMMENT                         PIC X(200).
-           03  WRK-MAXZAINUM                       PIC 9(08).
-           03  WRK-MAX                             PIC 9(05).
-           03  WRK-INGAIKBN                        PIC X(1).
       *
        01  COMMENT-CHK-AREA.
            03  COMMENT-IDX                         PIC 9(03).
@@ -513,19 +475,15 @@
                05  WRK-SRYACT-OCC                  OCCURS  500.
                    07  WRK-SRYACT                  PIC X(52).
            03  WRK-SRYACT-SRYKBN                   PIC X(02).
-           03  WRK-SRYACT-SRYSYUKBN                PIC X(03).
            03  WRK-SRYACT-MARK                     PIC X(04).
            03  WRK-SRYACT-HKNCOMBI                 PIC X(04).
            03  WRK-SRYACT-JIHOKBN                  PIC X(01).
       *    TANI 1:TEN 2:EN
-           03  WRK-SRYACT-TOTAL-G.
-               05  WRK-SRYACT-TOTAL-OCC            OCCURS 2.
-                   07  WRK-SRYACT-POS              PIC 9(05).
-                   07  WRK-SRYACT-TANI             PIC 9(01).
-                   07  WRK-SRYACT-TOTAL            PIC S9(11).
-               05  WRK-SRYACT-DAY-OCC              OCCURS  31.
-                   07  WRK-SRYACT-DAY-X            PIC X(03).
-                   07  WRK-SRYACT-DAY-Z    REDEFINES   WRK-SRYACT-DAY-X
+           03  WRK-SRYACT-TANI                     PIC 9(01).
+           03  WRK-SRYACT-TOTAL                    PIC S9(11).
+           03  WRK-SRYACT-DAY-OCC                  OCCURS  31.
+               05  WRK-SRYACT-DAY-X                PIC X(03).
+               05  WRK-SRYACT-DAY-Z    REDEFINES   WRK-SRYACT-DAY-X
                                                    PIC Z(03).
       *
        01  TCOMBI-AREA.
@@ -540,8 +498,6 @@
                05  TCOMBI-SENTEI-PTFTN             PIC 9(08).
       *
        01  TRECECOM-AREA.
-           03  TRECECOM-AA                         PIC 9(01).
-           03  TRECECOM-SRYDD                      PIC 9(02).
            03  TRECECOM-KARAGYO                    PIC 9(01).
            03  TRECECOM-PNT                        PIC 9(05).
            03  TRECECOM-SKJKBN                     PIC X(02).
@@ -593,7 +549,6 @@
                        09 SRT-SRYACCT-JIHIKBN      PIC 9(01).
                        09 SRT-SRYACCT-SRYKBN       PIC X(02).
                        09 SRT-SRYACCT-SRYCOMMENT   PIC 9(01).
-                       09 SRT-SRYACCT-TEMP         PIC X(05).
                        09 SRT-SRYACCT-ZAISKBKBN    PIC X(01).
                        09 SRT-SRYACCT-PRIORITY     PIC 9(03).
                        09 SRT-SRYACCT-PRIORITY2    PIC 9(03).
@@ -604,16 +559,14 @@
                        09 SRT-SRYACCT-KNSJISKBN    PIC 9(01).
                        09 SRT-SRYACCT-OPE-SRYSYUKBN PIC  X(03).
                        09 SRT-SRYACCT-OPE-DAY       PIC  9(02).
-                       09 SRT-SRYACCT-CDKBN-KBN-ETC
-                                                   PIC X(01).
-                       09 SRT-SRYACCT-CDKBN-KBN-G.
-                           11 SRT-SRYACCT-CDKBN-KBN
-                                                   PIC X(01).
                        09 SRT-SRYACCT-CDKBN-SYO-G.
                            11 SRT-SRYACCT-CDKBN-SYO
                                                    PIC 9(01).
                        09 SRT-SRYACCT-CDKBN-BU-G.
                            11 SRT-SRYACCT-CDKBN-BU PIC 9(02).
+                       09 SRT-SRYACCT-CDKBN-KBN-G.
+                           11 SRT-SRYACCT-CDKBN-KBN
+                                                   PIC X(01).
                        09 SRT-SRYACCT-CDKBN-KBNNUM-G.
                            11 SRT-SRYACCT-CDKBN-KBNNUM
                                                    PIC 9(03).
@@ -635,27 +588,22 @@
            03  RSIJBI-IDX1                         PIC 9(05).
            03  RSIJBI-IDX2                         PIC 9(05).
            03  RSIJBI-MAX                          PIC 9(05).
-           03  RSIJBI-COM-IDX                      PIC S9(05).
-           03  RSIJBI-TEN-IDX                      PIC S9(05).
-           03  RSIJBI-KIN-IDX                      PIC S9(05).
+           03  RSIJBI-TEN-MAX                      PIC S9(05).
+           03  RSIJBI-TEN-COM-MAX                  PIC S9(05).
+           03  RSIJBI-KIN-MAX                      PIC S9(05).
+           03  RSIJBI-KIN-COM-MAX                  PIC S9(05).
            03  RSIJBI-TEN                          PIC 9(08).
            03  RSIJBI-KINGAKU                      PIC 9(08).
            03  RSIJBI-ZAIKAISU                     PIC 9(07).
-           03  RSIJBI-OCC                          OCCURS  20.
+           03  RSIJBI-OCC                          OCCURS  21.
+               05  RSIJBI-KEY.
+                   07  RSIJBI-TEN-FLG              PIC 9(1).
+                   07  RSIJBI-GRP-CNT              PIC 9(3).
                05  RSIJBI-SRYCD                    PIC X(09).
                05  RSIJBI-INPUTNUM                 PIC 9(3).
                05  RSIJBI-NAME                     PIC X(200).
-               05  RSIJBI-COMMENT                  PIC X(200).
-           03  WRK-TAX-RATE                        PIC 9V99.
-      *
-       01  KEY-AREA.
-           03  KEY-ACCT-HKNCOMBI                   PIC 9(4).
       *
        01  CONST-AREA.
-           03  CONST-H9999             PIC X(08)   VALUE "999999".
-           03  CONST-H2910             PIC X(08)   VALUE "201710".
-           03  CONST-H2612             PIC X(08)   VALUE "201412".
-           03  CONST-H2604             PIC X(08)   VALUE "201404".
            03  CONST-H190401           PIC X(08)   VALUE "20070401".
            03  CONST-H141001           PIC X(08)   VALUE "20021001".
            03  CONST-H181001           PIC X(08)   VALUE "20061001".
@@ -724,18 +672,8 @@
                "¡Ú¼À´µÊÌ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó¤Ë·¸¤ë¼£ÎÅ·ÑÂ³¤ÎÍýÍ³Åù¡Û".
                05  FILLER                       PIC X(52)   VALUE
                "¡ÚÇÑÍÑ¾É¸õ·²¤Ë·¸¤ëÉ¾²ÁÉ½¡Û".
-               05  FILLER                       PIC X(52)   VALUE
-               "¡Ú¥ì¥»¥×¥ÈÅ¦Í×Íó¥³¥á¥ó¥È¡Û".
-               05  FILLER                       PIC X(52)   VALUE
-               "¡ÚÏ«ºÒ¥ì¥»¥×¥È¡Ö½ýÉÂ¤Î·Ð²á¡×¡Û".
-               05  FILLER                       PIC X(52)   VALUE
-               "¡Ú¼«ÇåÀÕ¡ÊÂè»°¼Ô¹Ô°Ù¡Ë¥ì¥»¥×¥ÈÅ¦Í×Íó¥³¥á¥ó¥È¡Û".
-               05  FILLER                       PIC X(52)   VALUE
-               "¡Ú¾åµ­°Ê³°¤Î¿ÇÎÅÊó½·ÌÀºÙ½ñ¡Û".
-               05  FILLER                       PIC X(52)   VALUE
-               "¡Ú°åÌôÉÊ°åÎÅµ¡´ïÅùË¡¤Ëµ¬Äê¤¹¤ë¼£¸³¤Ë·¸¤ë¼£¸³³µÍ×¡Û".
            03  CONST-RECECOM-R     REDEFINES   CONST-RECECOM-VAL.
-               05  CONST-RECECOM   PIC X(52)   OCCURS   15.
+               05  CONST-RECECOM   PIC X(52)   OCCURS   10.
       *    ÌôºÞÎÁÄþ¸º
            03  CONST-TEIGEN                PIC X(09)   VALUE
                "630010002".
@@ -756,10 +694,6 @@
                "190111790".
            03  CONST-GENZAN8               PIC X(09)   VALUE
                "190809190".
-           03  CONST-GENZAN9               PIC X(09)   VALUE
-               "190182590".
-           03  CONST-GENZAN10              PIC X(09)   VALUE
-               "190182690".
            03  CONST-SRYKAMEI-LEN          PIC 9(05)   VALUE   32.
            03  CONST-GAZOU-TANICD          PIC X(03)   VALUE   "006".
            03  CONST-SRYACCT-MAX           PIC 9(05)   VALUE   2000.
@@ -837,7 +771,6 @@
                03 WKACCT-JIHIMONEYTOTAL   PIC 9(07).
                03 WKACCT-SRT-SRYCD        PIC X(09).
                03 WKACCT-SRT-SRYSYUKBN    PIC X(03).
-               03 WKACCT-SRT-KOKUJISKBKBN2 PIC 9(01).
                03 WKACCT-SRT-SRYCOMMENT   PIC 9(01).
                03 WKACCT-ACCTKBN          PIC X(01).
                03 WKACCT-ZAISKBKBN        PIC X(01).
@@ -846,11 +779,6 @@
                03 WKACCT-PRIORITY3        PIC 9(03).
                03 WKACCT-TNSTEN           PIC 9(10).
                03 WKACCT-SRYSTATUS        PIC 9(01).
-               03 WKACCT-MINUS            PIC 9(01).
-               03 WKACCT-RIHA             PIC 9(01).
-               03 WKACCT-RIHA-SYS         PIC 9(01).
-               03 WKACCT-TENTEKSBT        PIC X(01).
-               03 WKACCT-INGAIKBN         PIC X(01).
       *
       *    ÊÝ¸±ÁÈ¹ç¤»
        01  TBLCOMBI-AREA.
@@ -862,9 +790,6 @@
        01  WKCOMB-REC.
            COPY    "CPHKNCOMBI.INC"    REPLACING   //COMB-//
                                        BY          //WKCOMB-//.
-      *
-           COPY    "CPORCHCN68S01.INC" REPLACING   //HCN68S01-//
-                                       BY          //THCN68S01-//.
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -1014,21 +939,6 @@
       *    ÉÂÌ¾ÊÔ½¸
            COPY    "CPORCSMKBYOMEI.INC".
       *
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
-           COPY    "CPORCSGETTEMP.INC".
-      *
-      *    ¥ê¥Ï¥Ó¥ê³«»ÏÆü¥³¥á¥ó¥ÈÊÔ½¸
-           COPY    "CPORCSRIHASTDAY.INC".
-      *
-      *    Æþ±¡ÅÀÅ©½¸·×¥µ¥Ö
-           COPY    "CPORCSTENTEK3.INC".
-      *
-      *    °åÎÅ¶èÊ¬¡¦£Á£Ä£ÌÅÀ¿ô¼èÆÀ¥µ¥Ö
-           COPY    "CPORCHCN68S01.INC".
-      *
-      *    Æþ±¡ÎÁ¤È°Û¤Ê¤ë¿©»ö»»ÄêÊÝ¸±ÁÈ¤ß¹ç¤ï¤»¼èÆÀ¥µ¥Ö
-           COPY    "CPORCSSKJHKN.INC".
-      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
       *
@@ -1075,11 +985,9 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SRH-AREA
-           INITIALIZE                  KEY-AREA
            INITIALIZE                  ORCHCM34-OT
            INITIALIZE                  TBLCOMBI-AREA
            INITIALIZE                  WKPTBYOMEI-REC
-           INITIALIZE                  HCN68S01-AREA
       *
       *    °åÎÅµ¡´Ø¾ðÊó¼èÆÀ½èÍý
            PERFORM 1001-SYS1001-GET-SEC
@@ -1099,11 +1007,6 @@
       *    ¿ÇÎÅ²ÊÊÔ½¸½èÍý
            PERFORM 1001-SRYKA-HEN-SEC
       *
-      *    °åÎÅ¶èÊ¬¡¢£Á£Ä£ÌÅÀ¿ô¼èÆÀ½èÍý
-           IF    ( ORCHCM34-EDIT-MEDADL    =   "1" )
-               PERFORM 1001-MEDADL-HEN-SEC
-           END-IF
-      *
       *    ´ðËÜ¾ðÊóÊÔ½¸
            PERFORM 1001-KHN-EDIT-SEC
       *
@@ -1120,24 +1023,13 @@
       *
            MOVE    ORCHCM34-PRTAREA    TO  ORCSPRTAREA
       *
-           INITIALIZE                      HCM34F01
            MOVE    SPA-HOSPNUM         TO  HCM34F01-HOSPNUM
            MOVE    "HCM3401"           TO  HCM34F01-FILE-ID
            MOVE     SPRT-TERMID        TO  HCM34F01-TERMID
       *
-           INITIALIZE                      HCM34F02
            MOVE    SPA-HOSPNUM         TO  HCM34F02-HOSPNUM
            MOVE    "HCM3402"           TO  HCM34F02-FILE-ID
            MOVE    SPRT-TERMID         TO  HCM34F02-TERMID
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    HCM34F01-BASENAME   TO  SGETTEMP-BASENAMES (1)
-           MOVE    HCM34F02-BASENAME   TO  SGETTEMP-BASENAMES (2)
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  HCM34F01-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  HCM34F02-FULLNAME
       *
            INITIALIZE                  HCM341
            INITIALIZE                  TCOMBI-AREA
@@ -1148,37 +1040,11 @@
            MOVE    ZERO                TO  CNT-YKZINGAI
            MOVE    ZERO                TO  CNT-YKZHKT
            MOVE    ZERO                TO  CNT-ZAIHKT
-           MOVE    ZERO                TO  CNT-JISANYAKU
            MOVE    LOW-VALUE           TO  WRK-KEY-HKNCOMBI
            MOVE    ZERO                TO  WRK-TTL-TEN
-           MOVE    ZERO                TO  WRK-TTL-KINGAKU
            MOVE    ZERO                TO  WRK-TTL-JIHI
            MOVE    ZERO                TO  WRK-TTL-JIHI-TAX
            MOVE    ZERO                TO  WRK-TTL-BRMSAGAKU
-           COMPUTE WRK-MAXZAINUM   =   PTINF-MAXZAINUM     +   1000
-      *
-           EVALUATE    TRUE
-           WHEN  ( ORCHCM34-SRYYM      >=  CONST-H9999 )
-               MOVE    0.10            TO  WRK-RATE1
-           WHEN  ( ORCHCM34-SRYYM      >=  CONST-H2604 )
-               MOVE    0.08            TO  WRK-RATE1
-           WHEN  OTHER
-               MOVE    0.05            TO  WRK-RATE1
-           END-EVALUATE
-      *
-           COMPUTE WRK-RATE2 = WRK-RATE1   +   1
-      *
-           COMPUTE WRK-RATE3 = WRK-RATE1   *   100
-      *
-           COMPUTE WRK-RATE4 = WRK-RATE2   *   100
-      *
-           MOVE    0                   TO  WRK-HASU
-           EVALUATE  SYS-1001-TAX-HASU-KBN
-           WHEN    "1"
-               MOVE    0.5             TO  WRK-HASU
-           WHEN    "3"
-               MOVE    0.99999         TO  WRK-HASU
-           END-EVALUATE
       *
            .
        100-INIT-EXT.
@@ -1481,12 +1347,9 @@
       *
                IF    ( ORCHCM34-HOKEN  =   SPACE )
                    MOVE    1       TO  FLG-ORCSHKNSET (IDX0)
-                   MOVE    ZERO    TO  FLG-HKNGENTEI
                ELSE
                    MOVE    ORCSHKN-NAI-HKNNUM (IDX0)
                                    TO  WRK-HKNNUM
-                   MOVE    ORCSHKN-NAI-KOHHKNNUM (IDX0 1)
-                                   TO  WRK-KOHNUM
       *
                    PERFORM 800-HOKENBUNRUI-SEC
                    IF    ( ORCHCM34-HOKEN  =   WRK-HOKEN )
@@ -1494,10 +1357,6 @@
                    END-IF
                END-IF
            END-PERFORM
-      *
-           IF    ( ORCHCM34-HOKEN  =   "4" OR "5" OR "6" OR "7" )
-               MOVE    1           TO  FLG-HKNGENTEI
-           END-IF
       *
            .
        1001-KHN-EDIT-EXT.
@@ -1885,25 +1744,6 @@
        1001-SRYKA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    °åÎÅ¶èÊ¬¡¢£Á£Ä£ÌÅÀ¿ô¼èÆÀ½èÍý
-      *****************************************************************
-       1001-MEDADL-HEN-SEC             SECTION.
-      *
-           INITIALIZE                  HCN68S01-AREA
-      *
-           MOVE    "1"             TO  HCN68S01-RANGE
-           MOVE    SPA-PTID        TO  HCN68S01-PTID
-           MOVE    ORCHCM34-SRYYM  TO  HCN68S01-SRYYM
-           MOVE    ORCHCM34-SRYYM  TO  HCN68S01-SRYYMD
-           MOVE    "01"            TO  HCN68S01-SRYYMD(7:)
-           CALL    "ORCHCN68S01"       USING
-                                       SPA-AREA
-                                       HCN68S01-AREA
-      *
-           .
-       1001-MEDADL-HEN-EXT.
-           EXIT.
-      *****************************************************************
       *    ¼ç¡¡¡¡½èÍý
       *****************************************************************
        200-MAIN-SEC                    SECTION.
@@ -1999,7 +1839,6 @@
            END-PERFORM
       *
            IF    ( ORCHCM34-HOKEN  =   SPACE   OR  "9" )
-            AND  ( ORCHCM34-HIDEHOKATSU    NOT =   "1" )
       *        ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»Êñ³çÊ¬ÊÔ½¸½èÍý
                PERFORM 20011-HOUKATU-HEN-SEC
            END-IF
@@ -2693,62 +2532,36 @@
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
            END-IF
       *
+      *
            MOVE    ZERO            TO  CNT-BYOMEI-LINE
            PERFORM UNTIL ( FLG-PTBYOMEI    NOT =   ZERO )
       *
                MOVE    1           TO  FLG-TARGET
                INITIALIZE              WRK-BYOMEI-G
       *
-               IF    ( ORCHCM34-HOKEN  NOT =   SPACE )
-                   IF   ( PTBYO-HKNCOMBI       =   ZERO )
-                    AND ( PTBYO-KOHID          =   ZERO )
-                       IF    ( FLG-HKNGENTEI   =   1 )
-                           MOVE    ZERO    TO FLG-TARGET
-                       END-IF
-                   ELSE
-                       IF   ( PTBYO-HKNCOMBI   NOT =   ZERO )
-                           MOVE    ZERO    TO  FLG-HIT
-                           PERFORM VARYING IDX0    FROM    1   BY  1
-                                   UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
-                                    OR   ( FLG-HIT =   1 )
+               IF    ( ORCHCM34-HOKEN  =   SPACE )
+                OR   ( PTBYO-HKNCOMBI  =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-HIT
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
+                            OR   ( FLG-HIT =   1 )
       *
-                               IF    ( PTBYO-HKNCOMBI
+                       IF    ( PTBYO-HKNCOMBI
                                    =   ORCSHKN-GMN-HKNCOMBINUM (IDX0))
       *
-                                   MOVE    1       TO  FLG-HIT
+                           MOVE    1       TO  FLG-HIT
       *
-                                   IF    ( FLG-ORCSHKNSET (IDX0)
-                                                   =   1 )
-                                       CONTINUE
-                                   ELSE
-                                       MOVE    ZERO    TO FLG-TARGET
-                                   END-IF
-                               END-IF
-                           END-PERFORM
-                           IF    ( FLG-HIT =    ZERO )
+                           IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
+                               CONTINUE
+                           ELSE
                                MOVE    ZERO    TO FLG-TARGET
                            END-IF
                        END-IF
       *
-                       IF    ( PTBYO-KOHID     NOT =   ZERO )
-                           MOVE    ZERO    TO  FLG-HIT
-                           PERFORM VARYING IDX0    FROM    1   BY  1
-                                   UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
+                   END-PERFORM
       *
-                               IF    ( PTBYO-KOHID
-                                   =   ORCSHKN-NAI-KOHID (IDX0 1))
-      *
-                                   MOVE    1       TO  FLG-HIT
-      *
-                                   IF    ( FLG-ORCSHKNSET (IDX0)  = 1 )
-                                       CONTINUE
-                                   ELSE
-                                       MOVE    ZERO    TO FLG-TARGET
-                                   END-IF
-                               END-IF
-                           END-PERFORM
-                       END-IF
-                   END-IF
                END-IF
       *
                IF    ( FLG-TARGET      =   1 )
@@ -2933,7 +2746,6 @@
            MOVE    SPACE               TO  WRK-HKNCOMBI-KEY
                                            WRK-HKNCOMBI-KEY-MAE
                                            WRK-HKNNUM
-                                           WRK-KOHNUM
            INITIALIZE                      WKCOMB-REC
       *
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤òÊÔ½¸
@@ -2965,7 +2777,6 @@
                                            FLG-BRMSAGAKU-TTL-HEN
                                            FLG-COMMENT-HEN
                                            FLG-JIHI-HEN
-                                           FLG-RIHA-HEN
            MOVE    ZERO                TO  CNT-COMB-ACCT
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -3013,18 +2824,6 @@
                MOVE    SRY-ZAINUM      TO  HCM34SRY-ISM-ZAINUM
                MOVE    SRY-RENNUM      TO  HCM34SRY-ISM-RENNUM
                MOVE    SRYACT-REC      TO  HCM34SRY-DAT
-      *
-               PERFORM VARYING IDX9    FROM    1   BY  1
-                       UNTIL ( IDX9    >   5 )
-      *
-                   IF    ( SRY-INPUTNUM (IDX9) NOT =   ZERO )
-                       PERFORM 200111-COMMENT-EDIT-SEC
-                       MOVE    WRK-COMMENT
-                                       TO  HCM34SRY-COMMENT (IDX9)
-                   END-IF
-      *
-               END-PERFORM
-      *
                WRITE   HCM34SRY-REC
       *
                PERFORM 900-SRYACT-KEY4-FET-SEC
@@ -3042,61 +2841,11 @@
        20011-HCM34SRY-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥³¥á¥ó¥ÈÊÔ½¸½èÍý
-      *****************************************************************
-       200111-COMMENT-EDIT-SEC             SECTION.
-      *
-           MOVE    SPACE               TO  WRK-COMMENT
-      *
-           INITIALIZE                      PTCOM-REC
-           MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
-           MOVE    SRY-PTID            TO  PTCOM-PTID
-           MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
-           MOVE    SRY-SRYCD   (IDX9)  TO  PTCOM-SRYCD
-           MOVE    SRY-INPUTNUM(IDX9)  TO  PTCOM-RENNUM
-           MOVE    PTCOM-REC           TO  MCPDATA-REC
-           MOVE    "tbl_ptcom"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC        NOT =   ZERO )
-               CONTINUE
-           ELSE
-      *
-               MOVE    MCPDATA-REC     TO  PTCOM-REC
-      *
-               IF    ( PTCOM-INPUTCOMENT   NOT =   SPACE )
-                   IF    ( SRY-SRYCD   (IDX9)(1:3) =   "001" )
-                       STRING "¡Ú"                 DELIMITED   BY  SIZE
-                              PTCOM-INPUTCOMENT    DELIMITED   BY  SPACE
-                              "¡Û"                 DELIMITED   BY  SIZE
-                       INTO   WRK-COMMENT
-                       END-STRING
-                   ELSE
-                       MOVE    PTCOM-INPUTCOMENT
-                                       TO  WRK-COMMENT
-                   END-IF
-               END-IF
-      *
-               MOVE    "tbl_ptcom"     TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
-           END-IF
-      *
-           .
-       200111-COMMENT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
       *    ¿ÇÎÅ²ñ·×¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý
       *****************************************************************
        20011-HCM34ACCT-HEN-SEC         SECTION.
       *
-           INITIALIZE                  ORCSRIHASTDAYAREA
-           CALL    "ORCSRIHASTDAY"     USING
-                                       ORCSRIHASTDAYAREA
-                                       SPA-AREA
-      *
            OPEN    OUTPUT  HCM34ACCT-FILE
-           OPEN    I-O     HCM34SRY-FILE
       *
       *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤òÊÔ½¸
            PERFORM 900-SRYACCT-KEY20-SEL-SEC
@@ -3104,52 +2853,52 @@
                PERFORM 900-SRYACCT-KEY20-FET-SEC
            END-IF
       *
-           PERFORM UNTIL ( FLG-SRYACCT     NOT =   ZERO )
+           PERFORM UNTIL ( FLG-SRYACCT     =   1 )
       *
-               MOVE    ACCT-HKNCOMBI       TO  KEY-ACCT-HKNCOMBI
+               INITIALIZE                  HCM34ACCT-REC
       *
-               INITIALIZE                      ORCSTENTEK3AREA
-               IF    ( ORCHCM34-NYUGAIKBN  =   "1" )
-                AND  ( ORCHCM34-SRYKAKBN   =   SPACE )
-                   MOVE    ACCT-HOSPNUM    TO  LNK-ORCSTEN3-HOSPNUM
-                   MOVE    ACCT-NYUGAIKBN  TO  LNK-ORCSTEN3-NYUGAIKBN
-                   MOVE    ACCT-PTID       TO  LNK-ORCSTEN3-PTID
-                   MOVE    ACCT-SRYYM      TO  LNK-ORCSTEN3-SRYYM
-                   MOVE    ACCT-HKNCOMBI   TO  LNK-ORCSTEN3-HKNCOMBI
-                   CALL    "ORCSTENTEK3"   USING
-                                           ORCSTENTEK3AREA
-                                           SPA-AREA
+      *        ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿½èÍý
+               PERFORM 200111-SRYACT-SEL-SEC
       *
-                   PERFORM 280-TENTEKI-SEC
-      *
+               IF    ( FLG-YAKUSOKU        =   1 )
+                   COMPUTE ACCT-MEISAISU
+                       =   ACCT-MEISAISU   -   1
                END-IF
       *
-               PERFORM UNTIL ( FLG-SRYACCT NOT =   ZERO )
-                        OR   ( ACCT-HKNCOMBI
-                                           NOT = KEY-ACCT-HKNCOMBI )
+               MOVE    SRYACCT-REC     TO  HCM34ACCT-DAT
       *
-                   MOVE    1               TO  FLG-ACCEPT
-      *
-                   PERFORM VARYING IDXZ    FROM    1   BY  1
-                           UNTIL ( IDXZ    >   100 )
-                            OR   ( LNK-ORCSTEN3-ZAINUM (IDXZ)
-                                                       =   ZERO )
-                            OR   ( FLG-ACCEPT          =   ZERO )
-      *
-                       IF    ( ACCT-ZAINUM
-                                       =   LNK-ORCSTEN3-ZAINUM (IDXZ))
-                           MOVE    ZERO     TO  FLG-ACCEPT
-                       END-IF
-      *
-                   END-PERFORM
-      *
-                   IF    ( FLG-ACCEPT      NOT =   ZERO )
-                       PERFORM 200111-HCM34ACCT-HEN-SEC
+               MOVE    WRK-RUIKEITOTAL TO  HCM34ACCT-RUIKEITOTAL
+               MOVE    WRK-RUIKEITOTAL2 TO  HCM34ACCT-RUIKEITOTAL2
+               MOVE    WRK-JIHIMONEYTOTAL
+                                       TO  HCM34ACCT-JIHIMONEYTOTAL
+               MOVE    WRK-SRYCD       TO  HCM34ACCT-SRT-SRYCD
+               MOVE    WRK-SRYSYUKBN   TO  HCM34ACCT-SRT-SRYSYUKBN
+               IF    ( FLG-SRYSTATUS   =   2 )
+                   MOVE    1           TO  HCM34ACCT-SRT-SRYCOMMENT
+               END-IF
+               MOVE    "1"             TO  HCM34ACCT-ACCTKBN
+               IF        ( ACCT-SRYKBN     =   "90" OR "92" )
+                       MOVE    "6"     TO  HCM34ACCT-ZAISKBKBN
+               ELSE
+                   IF    ( ACCT-SRYKBN     =   "97" )
+                       MOVE    "4"     TO  HCM34ACCT-ZAISKBKBN
                    END-IF
+               END-IF
       *
-                   PERFORM 900-SRYACCT-KEY20-FET-SEC
+               IF        ( ACCT-SRYKBN     =   "90" OR "92" )
+                   MOVE    3           TO  HCM34ACCT-PRIORITY
+               ELSE
+                   MOVE    ZERO        TO  HCM34ACCT-PRIORITY
+               END-IF
       *
-               END-PERFORM
+               MOVE    ZERO            TO  HCM34ACCT-PRIORITY2
+                                           HCM34ACCT-PRIORITY3
+               MOVE    WRK-TNSTEN      TO  HCM34ACCT-TNSTEN
+               MOVE    FLG-SRYSTATUS   TO  HCM34ACCT-SRYSTATUS
+      *
+               WRITE   HCM34ACCT-REC
+      *
+               PERFORM 900-SRYACCT-KEY20-FET-SEC
       *
            END-PERFORM
       *
@@ -3158,77 +2907,9 @@
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            CLOSE   HCM34ACCT-FILE
-           CLOSE   HCM34SRY-FILE
       *
            .
        20011-HCM34ACCT-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý
-      *****************************************************************
-       200111-HCM34ACCT-HEN-SEC         SECTION.
-      *
-           INITIALIZE                  HCM34ACCT-REC
-      *
-      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿½èÍý
-           PERFORM 200111-SRYACT-SEL-SEC
-      *
-           IF    ( FLG-YAKUSOKU        =   1 )
-               COMPUTE ACCT-MEISAISU
-                   =   ACCT-MEISAISU   -   1
-           END-IF
-      *
-           MOVE    SRYACCT-REC     TO  HCM34ACCT-DAT
-           INITIALIZE                  HCM34ACCT-DATPLUS
-      *
-           MOVE    WRK-RUIKEITOTAL TO  HCM34ACCT-RUIKEITOTAL
-           MOVE    WRK-RUIKEITOTAL2 TO  HCM34ACCT-RUIKEITOTAL2
-           MOVE    WRK-JIHIMONEYTOTAL
-                                   TO  HCM34ACCT-JIHIMONEYTOTAL
-           MOVE    WRK-SRYCD       TO  HCM34ACCT-SRT-SRYCD
-           MOVE    WRK-KOKUJISKBKBN2
-                                   TO  HCM34ACCT-SRT-KOKUJISKBKBN2
-           MOVE    WRK-SRYSYUKBN   TO  HCM34ACCT-SRT-SRYSYUKBN
-           IF    ( FLG-SRYSTATUS   =   2 )
-               MOVE    1           TO  HCM34ACCT-SRT-SRYCOMMENT
-           END-IF
-           MOVE    "1"             TO  HCM34ACCT-ACCTKBN
-           IF        ( ACCT-SRYKBN     =   "90" OR "92" )
-                   MOVE    "6"     TO  HCM34ACCT-ZAISKBKBN
-           ELSE
-               IF    ( ACCT-SRYKBN     =   "97" )
-                   MOVE    "4"     TO  HCM34ACCT-ZAISKBKBN
-               END-IF
-           END-IF
-      *
-           IF        ( ACCT-SRYKBN     =   "90" OR "92" )
-               MOVE    3           TO  HCM34ACCT-PRIORITY
-           ELSE
-               MOVE    ZERO        TO  HCM34ACCT-PRIORITY
-           END-IF
-      *
-           MOVE    ZERO            TO  HCM34ACCT-PRIORITY2
-                                       HCM34ACCT-PRIORITY3
-           MOVE    WRK-TNSTEN      TO  HCM34ACCT-TNSTEN
-           MOVE    FLG-SRYSTATUS   TO  HCM34ACCT-SRYSTATUS
-           MOVE    FLG-MINUS       TO  HCM34ACCT-MINUS
-           MOVE    FLG-RIHA        TO  HCM34ACCT-RIHA
-           MOVE    FLG-RIHA-SYS    TO  HCM34ACCT-RIHA-SYS
-      *
-           IF    ( ACCT-SRYKBN     =  "21" OR "22" OR "23" )
-            OR   ( WRK-SRYSYUKBN   =  "148" )
-               IF    ( WRK-SRYSYUKBN (3:1)    NOT =    "3" )
-                AND  ( WRK-SRYSYUKBN (3:1)    NOT =    "1" )
-                AND  ( WRK-SRYSYUKBN          NOT =    "294" )
-                AND  ( ACCT-ZAITEN =  ZERO )
-                   MOVE    "1"     TO  HCM34ACCT-INGAIKBN
-               END-IF
-           END-IF
-      *
-           WRITE   HCM34ACCT-REC
-      *
-           .
-       200111-HCM34ACCT-HEN-EXT.
            EXIT.
       *****************************************************************
       *    Æ±°ìºÞ¤Þ¤È¤áÊÔ½¸½èÍý
@@ -3431,8 +3112,6 @@
                MOVE    WKACCT-SRT-SRYCOMMENT (SRT-IDX1)
                                        TO  SRT-SRYACCT-SRYCOMMENT
                                                            (SRT-IDX1)
-               MOVE    ALL "9"         TO  SRT-SRYACCT-TEMP
-                                                           (SRT-IDX1)
                MOVE    WKACCT-ZAISKBKBN (SRT-IDX1)
                                        TO  SRT-SRYACCT-ZAISKBKBN
                                                            (SRT-IDX1)
@@ -3451,7 +3130,6 @@
                                        TO  SRT-SRYACCT-PRIORITY3
                                                            (SRT-IDX1)
                IF    ( WRK-SRYCD   NOT =   SPACE )
-                   MOVE    WRK-SRYCD   TO  WRK-TNS-SRYCD
                    PERFORM 200111-TENSU-SEL-SEC
                    IF    ( FLG-TENSU   =   ZERO )
       *
@@ -3506,14 +3184,15 @@
                            IF   ( ACCT-SRYKBN    = "98" OR "99" )
                                CONTINUE
                            ELSE
-                               MOVE   TNS-CDKBN-KBN
-                                       TO   SRT-SRYACCT-CDKBN-KBN
-                                                          (SRT-IDX1)
+      *
                                MOVE   TNS-CDKBN-SYO
                                        TO   SRT-SRYACCT-CDKBN-SYO
                                                           (SRT-IDX1)
                                MOVE   TNS-CDKBN-BU
                                        TO   SRT-SRYACCT-CDKBN-BU
+                                                          (SRT-IDX1)
+                               MOVE   TNS-CDKBN-KBN
+                                       TO   SRT-SRYACCT-CDKBN-KBN
                                                           (SRT-IDX1)
                                MOVE   TNS-CDKBN-KBNNUM
                                        TO   SRT-SRYACCT-CDKBN-KBNNUM
@@ -3527,61 +3206,10 @@
                                MOVE   TNS-KOUHYOJYUNNUM
                                        TO   SRT-SRYACCT-KOUHYOJYUNNUM
                                                           (SRT-IDX1)
-                               IF   ( TNS-CDKBN-KBN    =   SPACE )
-                                OR  ((TNS-CDKBN-KBN   >=   "A" 
-                                  AND TNS-CDKBN-KBN   <=   "Z"  ))
-                                   CONTINUE
-                               ELSE
-                                   MOVE    "1"
-                                       TO   SRT-SRYACCT-CDKBN-KBN-ETC
-                                                          (SRT-IDX1)
-                               END-IF
                            END-IF
                        END-IF
                    END-IF
       *
-               END-IF
-      *
-               IF    ( WKACCT-SRYKBN    (SRT-IDX1)     =   "33" )
-                   IF    ( WKACCT-TENTEKSBT (SRT-IDX1) NOT =   SPACE )
-                       MOVE    WKACCT-TENTEKSBT (SRT-IDX1)
-                                   TO  SRT-SRYACCT-TEMP (SRT-IDX1)
-                       MOVE    "0" TO  SRT-SRYACCT-TEMP (SRT-IDX1)(2:1)
-                   ELSE
-                       EVALUATE    TRUE
-                       WHEN    ( WKACCT-SYUTEN1 (SRT-IDX1) NOT = ZERO )
-                       WHEN    ( WKACCT-SYUTEN2 (SRT-IDX1) NOT = ZERO )
-                           IF    ( WKACCT-SRT-KOKUJISKBKBN2 (SRT-IDX1)
-                                               =   "1" OR "3" OR "5" )
-                               MOVE  "11" TO SRT-SRYACCT-TEMP (SRT-IDX1)
-                           ELSE
-                               MOVE  "21" TO SRT-SRYACCT-TEMP (SRT-IDX1)
-                           END-IF
-                       WHEN    ( WKACCT-YKZTEN  (SRT-IDX1) NOT = ZERO )
-                               MOVE  "31" TO SRT-SRYACCT-TEMP (SRT-IDX1)
-                       WHEN    OTHER
-                               MOVE  "41" TO SRT-SRYACCT-TEMP (SRT-IDX1)
-                       END-EVALUATE
-                   END-IF
-               END-IF
-      *
-               IF    ( WKACCT-ZAISKBKBN    (SRT-IDX1)     =   "8" )
-                   MOVE    ALL "9"        TO SRT-SRYACCT-TEMP (SRT-IDX1)
-               END-IF
-      *
-               IF    ( WKACCT-RIHA-SYS (SRT-IDX1)  =   "1" )
-                   MOVE    "H"         TO  SRT-SRYACCT-CDKBN-KBN
-                                                          (SRT-IDX1)
-                   MOVE    ZERO        TO  SRT-SRYACCT-CDKBN-SYO
-                                                          (SRT-IDX1)
-                                           SRT-SRYACCT-CDKBN-BU
-                                                          (SRT-IDX1)
-                                           SRT-SRYACCT-CDKBN-KBNNUM
-                                                          (SRT-IDX1)
-                                           SRT-SRYACCT-CDKBN-KBNNUM-EDA
-                                                          (SRT-IDX1)
-                                           SRT-SRYACCT-CDKBN-KOUBAN
-                                                          (SRT-IDX1)
                END-IF
       *
                IF    ( ACCT-JIHOKBN    =  "1" )
@@ -3593,9 +3221,12 @@
                            MOVE    1       TO  SRT-SRYACCT-YKZHKTKBN
                                                           (SRT-IDX1)
                ELSE
-                   IF    ( WKACCT-INGAIKBN (SRT-IDX1)     =    "1" )
+                   IF    ( ACCT-SRYKBN     =  "21" OR "22" OR "23" )
+                    OR   ( WRK-SRYSYUKBN   =  "148" )
+                       IF    ( ACCT-ZAITEN =  ZERO )
                            MOVE    1       TO  SRT-SRYACCT-YKZINGAIKBN
                                                           (SRT-IDX1)
+                       END-IF
                    END-IF
                END-IF
       *
@@ -3658,9 +3289,6 @@
       *
            MOVE    ZERO                TO  FLG-YAKUSOKU
                                            FLG-SRYSTATUS
-                                           FLG-MINUS
-                                           FLG-RIHA
-                                           FLG-RIHA-SYS
       *
            MOVE    SPACE               TO  WRK-SRYCD
                                            WRK-SRYSYUKBN
@@ -3669,7 +3297,8 @@
                                            WRK-RUIKEITOTAL2
                                            WRK-JIHIMONEYTOTAL
                                            WRK-TNSTEN
-                                           WRK-KOKUJISKBKBN2
+      *
+           OPEN    INPUT   HCM34SRY-FILE
       *
            PERFORM 900-HCM34SRY-START-SEC
       *
@@ -3697,55 +3326,17 @@
                    IF    ( SRY-SRYCD(IDX20)    IS  NUMERIC )
       *
                        MOVE    SRY-SRYCD(IDX20)
-                                           TO  WRK-TNS-SRYCD
+                                           TO  WRK-SRYCD
                        PERFORM 200111-TENSU-SEL-SEC
                        COMPUTE WRK-TNSTEN
                            =   WRK-TNSTEN   +   TNS-TEN
       *
-                       IF    ( TNS-TENSIKIBETU  =  7 )
-                           MOVE    1       TO  FLG-MINUS
-                       END-IF
-      *
-                       IF    ( TNS-SRYCD (1:1) =   "1" )
-                           IF    ( WRK-KOKUJISKBKBN2
-                                               =   ZERO )
-                            OR   ( TNS-KOKUJISKBKBN2
-                                               <   WRK-KOKUJISKBKBN2 )
-                               MOVE    TNS-KOKUJISKBKBN2
-                                               TO  WRK-KOKUJISKBKBN2
-                           END-IF
-                       END-IF
-      *
-                       PERFORM VARYING IDXL    FROM    1   BY  1
-                               UNTIL ( IDXL
-                                       >   LNK-RIHASTDAY-SYSCDLST-IDX )
-                                OR   ( FLG-RIHA-SYS    NOT =   ZERO )
-      *
-                           IF    ( SRY-SRYCD(IDX20)
-                                       =   LNK-RIHASTDAY-SYSCDLST(IDXL))
-                               MOVE    1   TO  FLG-RIHA-SYS
-                           END-IF
-      *
-                       END-PERFORM
-      *
-                       PERFORM VARYING IDXL    FROM    1   BY  1
-                               UNTIL ( IDXL
-                                       >   LNK-RIHASTDAY-SRYCDLST-IDX )
-                                OR   ( FLG-RIHA    NOT =   ZERO )
-      *
-                           IF    ( SRY-SRYCD(IDX20)
-                                       =   LNK-RIHASTDAY-SRYCDLST(IDXL))
-                               MOVE    1   TO  FLG-RIHA
-                           END-IF
-      *
-                       END-PERFORM
-      *
-                       MOVE     SRY-SRYCD(IDX20) TO  WRK-SRYCD-9
-                       MOVE     SRY-SRYSURYO(IDX20)
+                      MOVE     SRY-SRYCD(IDX20) TO  WRK-SRYCD-9
+                      MOVE     SRY-SRYSURYO(IDX20)
                                                 TO  WRK-SURYO
       *
-                       MOVE     SRY-SRYCD(IDX20) TO  WRK-CALCSRYCD-G
-                       PERFORM  2001111-RUIKEITOTAL-SEC
+                      MOVE     SRY-SRYCD(IDX20) TO  WRK-CALCSRYCD-G
+                      PERFORM  2001111-RUIKEITOTAL-SEC
       *
                        IF    ( WRK-SRYCD       =   SPACE )
                            IF    ( SRY-SRYCD (IDX20) (1:1)
@@ -3764,17 +3355,13 @@
       *
            END-PERFORM
       *
+           CLOSE   HCM34SRY-FILE
+      *
            IF    ( FLG-SRYSTATUS   =   ZERO )
                IF    ( ACCT-ZAITEN =   ZERO )
                 AND  ( WRK-TNSTEN  =   ZERO )
-                AND  ( FLG-MINUS   =   ZERO )
-                AND  ( FLG-RIHA-SYS =  ZERO )
                    MOVE    2       TO  FLG-SRYSTATUS
                END-IF
-           END-IF
-      *
-           IF    ( FLG-MINUS       =   1 )
-               MOVE    ZERO        TO  FLG-SRYSTATUS
            END-IF
       *
            .
@@ -3849,7 +3436,7 @@
       *
            MOVE    ZERO                TO  FLG-TENSU
            INITIALIZE                      TNS-TENSU-REC
-           MOVE    WRK-TNS-SRYCD       TO  TNS-SRYCD
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
            MOVE    ZERO                TO  TNS-YUKOSTYMD
            MOVE    ALL "9"             TO  TNS-YUKOEDYMD
            MOVE    ACCT-SRYYM          TO  WRK-SRYYMD(1:6)
@@ -3908,12 +3495,6 @@
                                        TO  WRK-ZAISKBKBN
            MOVE    WKACCT-SRYSTATUS (IDX11)
                                        TO  FLG-SRYSTATUS
-           MOVE    WKACCT-MINUS (IDX11)
-                                       TO  FLG-MINUS
-           MOVE    WKACCT-RIHA (IDX11)
-                                       TO  FLG-RIHA
-           MOVE    WKACCT-INGAIKBN (IDX11)
-                                       TO  WRK-INGAIKBN
       *
            MOVE    1                   TO  FLG-EDIT
       *
@@ -3930,11 +3511,11 @@
       *
            MOVE    ZERO                TO  CNT-HOUSRYACT
            MOVE    ZERO                TO  FLG-SRYACT-HEN5
+           MOVE    ZERO                TO  FLG-MINUS
            MOVE    ZERO                TO  FLG-TAJYUSHIN
            MOVE    ZERO                TO  FLG-RSIJBI-AREA-HEN
            MOVE    ZERO                TO  FLG-JIBAI
            MOVE    ZERO                TO  FLG-ROSAI
-           MOVE    ZERO                TO  FLG-DAISAN
            MOVE    SPACE               TO  WRK-JBI-RYOYO-TEATE-KBN
            INITIALIZE                      WRK-JBI-SONOTA-G
                                            WRK-RSI-SONOTA-G
@@ -3987,10 +3568,6 @@
       *
            END-IF
       *
-           IF   ( WRK-KOHNUM       =   "970" )
-               MOVE    1           TO  FLG-DAISAN
-           END-IF
-      *
            PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
       *
            IF    ( ACCT-SRYKBN          =   "95" OR "96" )
@@ -4034,11 +3611,6 @@
                    MOVE    1       TO  FLG-MINUS
            END-IF
       *
-           IF    ( FLG-RIHA            =   1 )
-            AND  ( FLG-RIHA-HEN        =   ZERO )
-               PERFORM 200111-RIHACOM-HEN-SEC
-           END-IF
-      *
            PERFORM UNTIL ( FLG-HCM34SRY    NOT =   ZERO )
                     OR   ( WRK-SRYACT-MAX  >   500 )
       *
@@ -4073,11 +3645,19 @@
                                                    OR  CONST-GENZAN5
                                                    OR  CONST-GENZAN6
                                                    OR  CONST-GENZAN7
-                                                   OR  CONST-GENZAN8 
-                                                   OR  CONST-GENZAN9
-                                                   OR  CONST-GENZAN10  )
+                                                   OR  CONST-GENZAN8 )
                            MOVE    1       TO  FLG-MINUS
                        END-IF
+                   END-IF
+      *
+                   IF    ( SRY-SRYCD (IDX9)    =   "190108790"
+                                               OR  "190108890"
+                                               OR  "190109090"
+                                               OR  "190141590"
+                                               OR  "190142090"
+                                               OR  "190142190"
+                                               OR  "190142290" )
+                           MOVE    1       TO  FLG-TAJYUSHIN
                    END-IF
       *
                    IF    ( FLG-RSIJBI-AREA-HEN =   1 )
@@ -4104,8 +3684,6 @@
            WHEN  ( WRK-ZAISKBKBN   NOT =   SPACE )
       *
                EVALUATE    WRK-ZAISKBKBN
-               WHEN    "8"
-                   CONTINUE
                WHEN    "1"
                WHEN    "6"
                    MOVE    ACCT-ZAITEN     TO  WRK-ZAITEN
@@ -4143,6 +3721,8 @@
       *
                END-EVALUATE
       *
+           WHEN  ( FLG-RSIJBI-AREA-HEN =   1 )
+               PERFORM 200111-RSIJBI-SRYACT-HEN-SEC
       *
            WHEN  ( WRK-JBI-SONOTA-KBN      NOT =   SPACE )
                PERFORM 200111-JBI-SONOTA-HEN-SEC
@@ -4150,8 +3730,6 @@
                PERFORM 200111-RSI-SONOTA-HEN-SEC
            WHEN  ( WRK-JBI-RYOYO-TEATE-KBN NOT =   SPACE )
                PERFORM 200111-JBI-RYOYO-TEATE-HEN-SEC
-           WHEN  ( FLG-RSIJBI-AREA-HEN =   1 )
-               PERFORM 200111-RSIJBI-SRYACT-HEN-SEC
       *
            WHEN  ( ACCT-SRYKBN         =   "95"  OR  "96" )
                CONTINUE
@@ -4193,8 +3771,6 @@
       *****************************************************************
        200111-HKNCOMBI-KEY-CHK-SEC     SECTION.
       *
-           MOVE    ZERO                    TO  FLG-COMB-CHANGED
-      *
            EVALUATE    TRUE
            WHEN  ( IDX1                    =     1 )
                MOVE    SPACE               TO  WRK-HKNCOMBI-KEY-MAE
@@ -4202,14 +3778,7 @@
                                                WRK-HKNCOMBINUM
                PERFORM 900-HKNCOMBI-KEY-SEL-SEC
                MOVE    COMB-HKNNUM         TO  WRK-HKNNUM
-               MOVE    COMB-KOHHKNNUM (1)  TO  WRK-KOHNUM
                MOVE    HKNCOMBI-REC        TO  WKCOMB-REC
-               MOVE    1                   TO  FLG-COMB-CHANGED
-               IF    ( WKCOMB-HKNNUM   =   "971" OR "973" )
-                   PERFORM 900-PTRSIINF-KEY-SEL-SEC
-               ELSE
-                   INITIALIZE          PTRSIINF-REC
-               END-IF
            WHEN  ( IDX1                >   1 )
                IF    ( ACCT-HKNCOMBI   NOT =   WRK-HKNCOMBI-KEY )
       *
@@ -4229,7 +3798,6 @@
                                            FLG-BRMSAGAKU-HEN
                                            FLG-COMMENT-HEN
                                            FLG-JIHI-HEN
-                                           FLG-RIHA-HEN
                    MOVE    ZERO    TO      CNT-COMB-ACCT
       *
                    MOVE    WRK-HKNCOMBI-KEY
@@ -4238,15 +3806,7 @@
                                                WRK-HKNCOMBINUM
                    PERFORM 900-HKNCOMBI-KEY-SEL-SEC
                    MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
-                   MOVE    COMB-KOHHKNNUM (1)
-                                           TO  WRK-KOHNUM
                    MOVE    HKNCOMBI-REC    TO  WKCOMB-REC
-                   MOVE    1               TO  FLG-COMB-CHANGED
-                   IF    ( WKCOMB-HKNNUM   =   "971" OR "973" )
-                       PERFORM 900-PTRSIINF-KEY-SEL-SEC
-                   ELSE
-                       INITIALIZE          PTRSIINF-REC
-                   END-IF
       *
                    MOVE    1               TO  FLG-LINE
       *
@@ -4270,23 +3830,15 @@
                MOVE    SRY-SRYKBN      TO  WRK-SRYACT-SRYKBN
            END-IF
       *
-           MOVE    SRY-SRYSYUKBN       TO  WRK-SRYACT-SRYSYUKBN
-      *
            MOVE    ACCT-JIHOKBN        TO  WRK-SRYACT-JIHOKBN
       *
       *    ¿ÇÎÅ¶èÊ¬
            MOVE    SPACE               TO  WRK-SRYACT-MARK
            EVALUATE    TRUE
            WHEN  ( ACCT-JIHOKBN    =   "1" )
-               IF    ( ACCT-ZAIKBN =   3 OR 4 )
-                   MOVE    "¡þ"   TO  WRK-SRYACT-MARK
-                   COMPUTE CNT-JISANYAKU
-                       =   CNT-JISANYAKU  +   1
-               ELSE
-                   MOVE    "¡ý"   TO  WRK-SRYACT-MARK
-                   COMPUTE CNT-ZAIHKT
-                       =   CNT-ZAIHKT  +   1
-               END-IF
+               MOVE    "¡ý"   TO  WRK-SRYACT-MARK
+               COMPUTE CNT-ZAIHKT
+                   =   CNT-ZAIHKT  +   1
            WHEN  ( ACCT-ZAITEN         =   ZERO )
             AND  ( FLG-SRYSTATUS       =   1 )
                    EVALUATE    TRUE
@@ -4294,7 +3846,8 @@
                             MOVE    "¡û"   TO  WRK-SRYACT-MARK
                             COMPUTE CNT-YKZHKT
                                 =   CNT-YKZHKT  +   1
-                   WHEN  (  WRK-INGAIKBN   =   "1" )
+                   WHEN  ( ACCT-SRYKBN     =   "21" OR "22" OR "23" )
+                    OR   ( SRY-SRYSYUKBN   =  "148" )
                             MOVE    "¡ù"   TO  WRK-SRYACT-MARK
                             COMPUTE CNT-YKZINGAI
                                 =   CNT-YKZINGAI    +   1
@@ -4327,77 +3880,6 @@
        200111-RSIJBI-SYOKI-EXT.
            EXIT.
       *****************************************************************
-      *   ¥ê¥Ï¥Ó¥ê³«»ÏÆü¥³¥á¥ó¥ÈÊÔ½¸½èÍý
-      *****************************************************************
-       200111-RIHACOM-HEN-SEC           SECTION.
-      *
-           MOVE    1               TO  FLG-RIHA-HEN
-      *
-           INITIALIZE                  ORCSRIHASTDAYAREA
-           MOVE    SPA-HOSPNUM         TO  LNK-RIHASTDAY-HOSPNUM
-           MOVE    ORCHCM34-NYUGAIKBN  TO  LNK-RIHASTDAY-NYUGAIKBN
-           MOVE    SPA-PTID            TO  LNK-RIHASTDAY-PTID
-           IF    ( ORCHCM34-SRYKAKBN   =   "1" )
-               MOVE    ORCHCM34-SRYKA  TO  LNK-RIHASTDAY-SRYKA
-           END-IF
-           MOVE    ORCHCM34-SRYYM      TO  LNK-RIHASTDAY-SRYYM
-           MOVE    ACCT-HKNCOMBI       TO  LNK-RIHASTDAY-HKNCOMBI
-           CALL    "ORCSRIHASTDAY"     USING
-                                       ORCSRIHASTDAYAREA
-                                       SPA-AREA
-      *
-           COMPUTE WRK-MAX = FUNCTION LENGTH(LNK-RIHASTDAY-OUT-DAT)
-                           / FUNCTION LENGTH(LNK-RIHASTDAY-OUT-OCC(1))
-      *
-           PERFORM VARYING IDXL    FROM    1   BY  1
-                   UNTIL ( IDXL    >   WRK-MAX )
-      *
-               IF    ( LNK-RIHASTDAY-IDX (IDXL)    >   ZERO )
-      *
-                   MOVE    LNK-RIHASTDAY-IDX (IDXL)
-                                       TO  WRK-RIHA-MAX
-      *
-                   PERFORM VARYING IDXM    FROM    1   BY  1
-                           UNTIL ( IDXM    >   WRK-RIHA-MAX )
-      *
-                       IF    ( LNK-RIHASTDAY-MARK (IDXL IDXM)
-                                           NOT =   SPACE )
-      *
-                           IF    ( IDXM    >   1 )
-                               MOVE    "5"         TO  WRK-ITEM-KBN
-                               MOVE    ZERO        TO  FLG-LINE
-                               PERFORM 210-SRYACT-HEN-SEC
-                           END-IF
-      *
-                           PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
-      *
-                           MOVE    ACCT-SRYKBN   TO  WRK-SRYACT-SRYKBN
-      *
-                           MOVE    ACCT-HKNCOMBI TO  WRK-SRYACT-HKNCOMBI
-      *
-                       END-IF
-      *
-                       MOVE    LNK-RIHASTDAY-COM (IDXL IDXM)
-                                           TO   WRK-SRYACT-STR
-      *
-                       PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
-      *
-                   END-PERFORM
-      *
-                   MOVE    "5"                 TO  WRK-ITEM-KBN
-                   MOVE    ZERO                TO  FLG-LINE
-                   PERFORM 210-SRYACT-HEN-SEC
-      *
-                   PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       200111-RIHACOM-HEN-EXT.
-           EXIT.
-      *****************************************************************
       *   Ï«ºÒ¼«ÇåÀÕÊÔ½¸¥¨¥ê¥¢ÊÔ½¸½èÍý
       *****************************************************************
        200111-RSIJBI-HEN-SEC           SECTION.
@@ -4424,24 +3906,40 @@
       *
            END-IF
       *
-           MOVE    TNS-SRYCD           TO  RSIJBI-SRYCD(RSIJBI-MAX)
-           MOVE    SRY-INPUTNUM (IDX9) TO  RSIJBI-INPUTNUM(RSIJBI-MAX)
-           MOVE    HCM34SRY-COMMENT (IDX9)
-                                       TO  RSIJBI-COMMENT (RSIJBI-MAX)
-           MOVE    TNS-NAME            TO  RSIJBI-NAME (RSIJBI-MAX)
+           MOVE    TNS-SRYCD               TO  RSIJBI-SRYCD(RSIJBI-MAX)
+           MOVE    SRY-INPUTNUM (IDX9)     TO  RSIJBI-INPUTNUM
+                                                           (RSIJBI-MAX)
+           MOVE    TNS-NAME                TO  RSIJBI-NAME (RSIJBI-MAX)
       *
-           EVALUATE    TRUE
-           WHEN  ( TNS-SRYCD (1:3)     =   "101" )
-            AND  ( TNS-TENSIKIBETU     =   1 )
+           IF    ( TNS-TENSIKIBETU     =   1 )
                COMPUTE RSIJBI-KINGAKU  =   RSIJBI-KINGAKU + TNS-TEN
                COMPUTE RSIJBI-TEN      =   RSIJBI-TEN - ( TNS-TEN / 10 )
-               MOVE    RSIJBI-MAX      TO  RSIJBI-KIN-IDX
-           WHEN  (( TNS-SRYCD   (1:1)  =   "8"  )
-              OR  ( TNS-SRYCD   (1:3)  =   "008"  ))
-               CONTINUE
-           WHEN    OTHER
-               MOVE    RSIJBI-MAX      TO  RSIJBI-TEN-IDX
-           END-EVALUATE
+      *
+               COMPUTE RSIJBI-KIN-MAX  =   RSIJBI-KIN-MAX  +   1
+      *
+               IF   (( TNS-SRYCD   (1:1)       =   "8"  )
+                 OR  ( TNS-SRYCD   (1:3)       =   "008"  ))
+                AND  ( SRY-INPUTNUM(IDX9)  NOT =   ZERO )
+                   COMPUTE RSIJBI-KIN-COM-MAX
+                       =   RSIJBI-KIN-COM-MAX  +   1
+               END-IF
+      *
+      *
+               MOVE    ZERO            TO  RSIJBI-TEN-FLG  (RSIJBI-MAX)
+               MOVE    RSIJBI-KIN-MAX  TO  RSIJBI-GRP-CNT  (RSIJBI-MAX)
+           ELSE
+               COMPUTE RSIJBI-TEN-MAX  =   RSIJBI-TEN-MAX  +   1
+      *
+               IF   (( TNS-SRYCD   (1:1)       =   "8"  )
+                 OR  ( TNS-SRYCD   (1:3)       =   "008"  ))
+                AND  ( SRY-INPUTNUM(IDX9)  NOT =   ZERO )
+                   COMPUTE RSIJBI-TEN-COM-MAX
+                       =   RSIJBI-TEN-COM-MAX  +   1
+               END-IF
+      *
+               MOVE    1               TO  RSIJBI-TEN-FLG  (RSIJBI-MAX)
+               MOVE    RSIJBI-TEN-MAX  TO  RSIJBI-GRP-CNT  (RSIJBI-MAX)
+           END-IF
       *
            .
        200111-RSIJBI-HEN-EXT.
@@ -4451,15 +3949,25 @@
       *****************************************************************
        200111-RSIJBI-SRYACT-HEN-SEC    SECTION.
       *
-           IF    ( RSIJBI-TEN-IDX      >  ZERO )
-               MOVE    RSIJBI-MAX      TO  RSIJBI-TEN-IDX
-           ELSE
-               IF    ( RSIJBI-KIN-IDX  >  ZERO )
-                   MOVE    RSIJBI-MAX  TO  RSIJBI-KIN-IDX
-               ELSE
-                   MOVE    RSIJBI-MAX  TO  RSIJBI-TEN-IDX
-               END-IF
-           END-IF
+      *    Ï«ºÒ¼«ÇåÊÔ½¸ÎÎ°è¤ò¥½¡¼¥È
+           PERFORM VARYING RSIJBI-IDX1    FROM    2   BY  1
+                   UNTIL ( RSIJBI-IDX1    >   RSIJBI-MAX )
+               COMPUTE RSIJBI-STIDX   =   RSIJBI-IDX1    -   1
+               MOVE    RSIJBI-OCC (RSIJBI-IDX1)
+                                   TO  RSIJBI-OCC (21)
+               PERFORM VARYING RSIJBI-IDX2 FROM    RSIJBI-STIDX   BY  -1
+                       UNTIL ( RSIJBI-IDX2    <   1 )
+                          OR ( RSIJBI-KEY (21)
+                                       >=  RSIJBI-KEY (RSIJBI-IDX2) )
+                       MOVE    RSIJBI-OCC (RSIJBI-IDX2)
+                                   TO  RSIJBI-OCC (RSIJBI-IDX2 + 1)
+               END-PERFORM
+               MOVE    RSIJBI-OCC (21)
+                                   TO  RSIJBI-OCC (RSIJBI-IDX2 + 1)
+           END-PERFORM
+      *
+           MOVE    ZERO            TO  CNT-RSIJBI-KIN
+                                       CNT-RSIJBI-TEN
       *
            PERFORM VARYING IDX19   FROM    1   BY  1
                    UNTIL ( IDX19   >   RSIJBI-MAX )
@@ -4469,34 +3977,63 @@
                  OR  ( RSIJBI-SRYCD  (IDX19)(1:3)  =   "008"  ))
                 AND  ( RSIJBI-INPUTNUM(IDX19)  NOT =   ZERO )
       *
-                   MOVE    RSIJBI-COMMENT (IDX19)  TO  WRK-SRYACT-STR
+                   INITIALIZE                          PTCOM-REC
+                   MOVE    ACCT-HOSPNUM             TO  PTCOM-HOSPNUM
+                   MOVE    ACCT-PTID               TO  PTCOM-PTID
+                   MOVE    ACCT-ZAINUM             TO  PTCOM-ZAINUM
+                   MOVE    RSIJBI-SRYCD   (IDX19)  TO  PTCOM-SRYCD
+                   MOVE    RSIJBI-INPUTNUM(IDX19)  TO  PTCOM-RENNUM
+                   MOVE    PTCOM-REC               TO  MCPDATA-REC
+                   MOVE    "tbl_ptcom"             TO  MCP-TABLE
+                   MOVE    "key"                   TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+                   IF    ( MCP-RC        NOT =   ZERO )
+                       CONTINUE
+                   ELSE
+                       MOVE    MCPDATA-REC     TO  PTCOM-REC
+                       IF    ( PTCOM-INPUTCOMENT   NOT =   SPACE )
+                           MOVE    PTCOM-INPUTCOMENT
+                                               TO  WRK-SRYACT-STR
+                       END-IF
+                   END-IF
+      *
+                   MOVE    "tbl_ptcom"             TO  MCP-TABLE
+                   MOVE    "key"                   TO  MCP-PATHNAME
+                   PERFORM 910-DBCLOSECURSOR-SEC
       *
                    PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
       *
                ELSE
+      *
                    MOVE    RSIJBI-NAME (IDX19)     TO  WRK-SRYACT-STR
                    PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
-               END-IF
-      *
-               EVALUATE    TRUE
-               WHEN  ( RSIJBI-KIN-IDX  =   IDX19 )
-                   MOVE    RSIJBI-KINGAKU  TO  WRK-ZAITEN
-                   MOVE    RSIJBI-ZAIKAISU TO  WRK-ZAIKAISU
-                   PERFORM 205-KINGAKUKAISU-HEN-SEC
-               WHEN  ( RSIJBI-TEN-IDX  =   IDX19 )
-                   MOVE    RSIJBI-TEN      TO  WRK-ZAITEN
-                   MOVE    RSIJBI-ZAIKAISU TO  WRK-ZAIKAISU
-                   IF    ( WRK-ZAITEN          >   ZERO )
-                       PERFORM 205-TENSUKAISU-HEN-SEC
+                   IF    ( RSIJBI-TEN-FLG (IDX19)  =   ZERO )
+                       COMPUTE CNT-RSIJBI-KIN  =   CNT-RSIJBI-KIN  +   1
+                       IF    ( RSIJBI-KIN-MAX  -   RSIJBI-KIN-COM-MAX
+                                               =   CNT-RSIJBI-KIN )
+                           MOVE    RSIJBI-KINGAKU  TO  WRK-ZAITEN
+                           MOVE    RSIJBI-ZAIKAISU TO  WRK-ZAIKAISU
+                           PERFORM 205-KINGAKUKAISU-HEN-SEC
+                       END-IF
                    ELSE
-                       EVALUATE    FLG-SRYSTATUS
-                       WHEN    2
-                           PERFORM 205-KAISU-HEN-SEC
-                       WHEN    OTHER
-                           PERFORM 205-TENSUKAISU-HEN-SEC
-                       END-EVALUATE
+                       COMPUTE CNT-RSIJBI-TEN  =   CNT-RSIJBI-TEN  +   1
+                       IF    ( RSIJBI-TEN-MAX  -   RSIJBI-TEN-COM-MAX
+                                               =   CNT-RSIJBI-TEN )
+                           MOVE    RSIJBI-TEN      TO  WRK-ZAITEN
+                           MOVE    RSIJBI-ZAIKAISU TO  WRK-ZAIKAISU
+                           IF    ( WRK-ZAITEN          >   ZERO )
+                               PERFORM 205-TENSUKAISU-HEN-SEC
+                           ELSE
+                               EVALUATE    FLG-SRYSTATUS
+                               WHEN    2
+                                   PERFORM 205-KAISU-HEN-SEC
+                               WHEN    OTHER
+                                   PERFORM 205-TENSUKAISU-HEN-SEC
+                               END-EVALUATE
+                           END-IF
+                       END-IF
                    END-IF
-               END-EVALUATE
+               END-IF
            END-PERFORM
       *
            .
@@ -4529,8 +4066,13 @@
            WHEN    "1"
            WHEN    "2"
                 IF   ( SYS-4001-TAXKBN         =   "2" )
-                 COMPUTE  WRK-ZAITEN
-                     =  ( WRK-ZAITEN   *   WRK-RATE2 )  +  WRK-HASU
+                  IF ( SYS-1001-TAX-HASU-KBN   =   "1" )
+                     COMPUTE  WRK-ZAITEN
+                         =  ( WRK-ZAITEN   *   1.05)  +  0.5
+                  ELSE
+                     COMPUTE  WRK-ZAITEN
+                         =    WRK-ZAITEN   *   1.05
+                  END-IF
                 END-IF
            WHEN    "3"
                MOVE    ZERO        TO  FLG-JBI-KZI-OUT
@@ -4559,12 +4101,15 @@
                    END-IF
       *
                    IF    ( FLG-JBI-KZI-OUT =   ZERO )
-                       COMPUTE  WRK-ZAITEN
-                           =  ( WRK-ZAITEN   *   WRK-RATE2 ) + WRK-HASU
+                       IF    ( SYS-1001-TAX-HASU-KBN   =   "1" )
+                           COMPUTE  WRK-ZAITEN
+                               =  ( WRK-ZAITEN   *   1.05)  +  0.5
+                       ELSE
+                           COMPUTE  WRK-ZAITEN
+                               =    WRK-ZAITEN   *   1.05
+                       END-IF
                    END-IF
                END-IF
-           WHEN    OTHER
-               CONTINUE
            END-EVALUATE
       *
            PERFORM 205-KINGAKUKAISU-HEN-SEC
@@ -4577,19 +4122,7 @@
       *****************************************************************
        200111-JBI-RYOYO-TEATE-HEN-SEC  SECTION.
       *
-           MOVE    ZERO                    TO  FLG-KENPO
-      *
-           IF    ( PTRSI-JIBAIKBN  =   SPACE OR ZERO )
-               IF  ( SYS-4001-JIBAIKBN =   "2" )
-                   MOVE    1       TO  FLG-KENPO
-               END-IF
-           ELSE
-               IF    ( PTRSI-JIBAIKBN  =   "2" )
-                   MOVE    1       TO  FLG-KENPO
-               END-IF
-           END-IF
-      *
-           IF    ( FLG-KENPO           =   ZERO )
+           IF    ( SYS-4001-JIBAIKBN           =   "1" )
                IF    ( WRK-JBI-RYOYO-TEATE-KBN     =   "1" )
                    MOVE    120             TO  WRK-ZAITEN
                ELSE
@@ -4688,8 +4221,7 @@
       *    ÌôºÞÉþÍÑ¥³¥á¥ó¥È¤Î»þ¡¢ºÆÊÔ½¸
            IF    ( SRY-SRYCD (IDX9)(1:3)   =   "001" )
                IF    ( SRY-INPUTNUM(IDX9)  NOT =   ZERO )
-                   MOVE    HCM34SRY-COMMENT (IDX9)
-                                           TO  WRK-SRYACT-STR
+                   PERFORM 2001111-PTCOM-SET-SEC
                ELSE
                    STRING "¡Ú"                 DELIMITED   BY  SIZE
                           TNS-NAME             DELIMITED   BY  SPACE
@@ -4721,8 +4253,7 @@
            IF   (( SRY-SRYCD  (IDX9)(1:1)  =   "8"  )
              OR  ( SRY-SRYCD  (IDX9)(1:3)  =   "008"  ))
             AND  ( SRY-INPUTNUM(IDX9)  NOT =   ZERO )
-               MOVE    HCM34SRY-COMMENT (IDX9)
-                                           TO  WRK-SRYACT-STR
+               PERFORM 2001111-PTCOM-SET-SEC
            END-IF
       *
       *    ¿ôÎÌ¡ÊÌôºÞ¡¢´ïºà¤Î¤È¤­¡Ë
@@ -4769,65 +4300,50 @@
                END-IF
            END-IF
       *
-           IF    ( SRY-SRYKBN          =   "80" )
       *
-               IF    ( FLG-ROSAI       =   1 )
-                OR   ( FLG-JIBAI       =   1 )
-                OR   ( FLG-DAISAN      =   1 )
+           IF    ( FLG-JIBAI           =   1 )
+            AND  ( SRY-SRYKBN          =   "80" )
       *
-                   IF    ( SRY-SRYCD (IDX9)(1:5)   >=  "09591" )
-                    AND  ( SRY-SRYCD (IDX9)(1:5)   <=  "09594" )
-      *
-                       IF    ( FLG-ROSAI       =   1 )
-      *
-                           IF    ( SRY-SRYSYUKBN   =   "809" )
-                               MOVE    SRY-JIHIMONEY  (IDX9)
-                                           TO  WRK-RSI-SONOTA-TEN
-                           ELSE
-                               MOVE    TNS-TEN
-                                           TO  WRK-RSI-SONOTA-TEN
-                           END-IF
-      *
-                           MOVE    "1"     TO  WRK-RSI-SONOTA-KBN
-      *
-                       ELSE
-                           IF    ( SRY-SRYSYUKBN   =   "809" )
-                               MOVE    SRY-JIHIMONEY  (IDX9)
-                                           TO  WRK-JBI-SONOTA-TEN
-                           ELSE
-                               MOVE    TNS-TEN
-                                           TO  WRK-JBI-SONOTA-TEN
-                           END-IF
-      *
-                           MOVE    SRY-SRYCD (IDX9)
-                                           TO  WRK-JBI-SONOTA-SRYCD
-      *
-                           MOVE    SRY-SRYCD (IDX9)(5:1)
+               IF    ( SRY-SRYCD (IDX9)(1:5)   >=  "09591" )
+                AND  ( SRY-SRYCD (IDX9)(1:5)   <=  "09594" )
+                   MOVE    SRY-SRYCD (IDX9)(5:1)
                                            TO  WRK-JBI-SONOTA-KBN
-                       END-IF
-      *
+                   IF    ( SRY-SRYSYUKBN   =   "809" )
+                       MOVE    SRY-JIHIMONEY  (IDX9)
+                                           TO  WRK-JBI-SONOTA-TEN
+                   ELSE
+                       MOVE    TNS-TEN     TO  WRK-JBI-SONOTA-TEN
                    END-IF
-      *
-                   IF    ( SRY-SRYCD (IDX9) (1:3)  =   "101" )
-                    AND  ( TNS-TENSIKIBETU         =   1 )
-                       MOVE    "1"         TO  WRK-RSI-SONOTA-KBN
-                       MOVE    TNS-TEN     TO  WRK-RSI-SONOTA-TEN
-                   END-IF
-      *
-               END-IF
-      *
-               IF    ( FLG-JIBAI       =   1 )
+                   MOVE    SRY-SRYCD (IDX9)
+                                           TO  WRK-JBI-SONOTA-SRYCD
+               ELSE
                    IF    ( SRY-SRYCD (IDX9)
-                                   =   CONST-RYOYO-TEATE-GAI )
+                                       =   CONST-RYOYO-TEATE-GAI )
                        MOVE    "2"     TO  WRK-JBI-RYOYO-TEATE-KBN
                    END-IF
       *
                    IF    ( SRY-SRYCD (IDX9)
-                                   =   CONST-RYOYO-TEATE-NYU )
+                                       =   CONST-RYOYO-TEATE-NYU )
                        MOVE    "1"     TO  WRK-JBI-RYOYO-TEATE-KBN
                    END-IF
                END-IF
       *
+           END-IF
+      *
+           IF    ( FLG-ROSAI           =   1 )
+            AND  ( SRY-SRYKBN          =   "80" )
+      *
+               IF    ( SRY-SRYCD (IDX9)(1:5)   >=  "09591" )
+                AND  ( SRY-SRYCD (IDX9)(1:5)   <=  "09594" )
+                   MOVE    SRY-SRYCD (IDX9)(5:1)
+                                           TO  WRK-RSI-SONOTA-KBN
+                   IF    ( SRY-SRYSYUKBN   =   "809" )
+                       MOVE    SRY-JIHIMONEY  (IDX9)
+                                           TO  WRK-RSI-SONOTA-TEN
+                   ELSE
+                       MOVE    TNS-TEN     TO  WRK-RSI-SONOTA-TEN
+                   END-IF
+               END-IF
            END-IF
       *
            IF    ( SRY-SRYCD (IDX9)(1:1)   =   "7")
@@ -4879,8 +4395,7 @@
            IF   (( SRY-SRYCD  (IDX9)(1:1)  =   "8"  )
              OR  ( SRY-SRYCD  (IDX9)(1:3)  =   "008"  ))
             AND  ( SRY-INPUTNUM(IDX9)  NOT =   ZERO )
-               MOVE    HCM34SRY-COMMENT (IDX9)
-                                           TO  WRK-SRYACT-STR
+               PERFORM 2001111-PTCOM-SET-SEC
            END-IF
       *
            PERFORM 210-WRK-SRYACT-TBL-HEN-SEC
@@ -4930,19 +4445,6 @@
                MOVE    ZERO                TO  WRK-TTL-TEN
            END-IF
       *
-           IF    ( WRK-TTL-KINGAKU    >   ZERO )
-      *
-               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
-      *
-               MOVE    "¡¡¡¡¡¡¡¡¡¡¶â³Û¹ç·×"
-                                           TO  WRK-TENSU-LBL
-               MOVE    WRK-TTL-KINGAKU         TO  WRK-TENSU
-               PERFORM 2001111-KINGAKU-HEN-SEC
-      *
-               PERFORM 210-WRK-SRYACT-TBL-SYOKI-SEC
-               MOVE    ZERO                TO  WRK-TTL-KINGAKU
-           END-IF
-      *
            .
       *
        200111-TEN-TOTAL-HEN-EXT.
@@ -4972,16 +4474,24 @@
                        MOVE    "¡¡¡¡¡¡¡¡¡¡¼«Èñ¾ÃÈñÀÇ³Û"
                                            TO  WRK-TENSU-LBL
                    END-IF
-                   IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
-                       COMPUTE  WRK-TENSU
-                            = ( WRK-TTL-JIHI-TAX
-                             *  WRK-RATE3
-                             /  WRK-RATE4 )
-                            +   WRK-HASU
+                   IF   ( SYS-1001-TAX-HASU-KBN =   "1" )
+                       IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                           COMPUTE  WRK-TENSU
+                                = ( WRK-TTL-JIHI-TAX   *  5 / 105)
+                                +  0.5
+                       ELSE
+                           COMPUTE  WRK-TENSU
+                                = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                                +  0.5
+                       END-IF
                    ELSE
-                       COMPUTE  WRK-TENSU
-                            = ( WRK-TTL-JIHI-TAX   *  WRK-RATE1 )
-                            +   WRK-HASU
+                       IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
+                           COMPUTE  WRK-TENSU
+                                = ( WRK-TTL-JIHI-TAX   *  5 / 105)
+                       ELSE
+                           COMPUTE  WRK-TENSU
+                                = ( WRK-TTL-JIHI-TAX   *  0.05 )
+                       END-IF
                    END-IF
                    PERFORM 2001111-KINGAKU-HEN-SEC
                END-IF
@@ -5081,6 +4591,48 @@
       *
            .
        200111-KENSASU-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼Ô¥³¥á¥ó¥È¤«¤éÊÔ½¸¤¹¤ë 
+      *****************************************************************
+       2001111-PTCOM-SET-SEC               SECTION.
+      *
+           INITIALIZE                      PTCOM-REC
+           MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
+           MOVE    SRY-PTID            TO  PTCOM-PTID
+           MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
+           MOVE    SRY-SRYCD   (IDX9)  TO  PTCOM-SRYCD
+           MOVE    SRY-INPUTNUM(IDX9)  TO  PTCOM-RENNUM
+           MOVE    PTCOM-REC           TO  MCPDATA-REC
+           MOVE    "tbl_ptcom"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC        NOT =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    MCPDATA-REC     TO  PTCOM-REC
+               IF    ( PTCOM-INPUTCOMENT   NOT =   SPACE )
+                   IF    ( SRY-SRYCD   (IDX9)(1:3) =   "001" )
+                       MOVE    SPACE   TO  WRK-SRYACT-STR
+                       STRING "¡Ú"         DELIMITED   BY  SIZE
+                              PTCOM-INPUTCOMENT
+                                           DELIMITED   BY  SPACE
+                              "¡Û"         DELIMITED   BY  SIZE
+                       INTO   WRK-SRYACT-STR
+                       END-STRING
+                   ELSE
+                       MOVE    PTCOM-INPUTCOMENT
+                                       TO  WRK-SRYACT-STR
+                   END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    "tbl_ptcom"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       2001111-PTCOM-SET-EXT.
            EXIT.
       *****************************************************************
       *    ¿ôÎÌÉ½¼¨ÍÑÊÔ½¸½èÍý
@@ -5803,33 +5355,6 @@
       *
            END-PERFORM
       *
-           IF    ( ORCHCM34-SRYYM      >= CONST-H2910 )
-               INITIALIZE              ORCSSKJHKN-AREA
-               MOVE    SPA-HOSPNUM
-                                       TO  LNK-SKJHKN-HOSPNUM
-               MOVE    SPA-PTID        TO  LNK-SKJHKN-PTID
-               MOVE    ORCHCM34-SRYYM  TO  LNK-SKJHKN-SANTEIYM
-               CALL    "ORCSSKJHKN"    USING
-                                       ORCSSKJHKN-AREA
-                                       ORCSNYUINDAY-AREA
-                                       SPA-AREA
-               IF    ( LNK-SKJHKN-RC   =   ZERO )
-                   PERFORM VARYING IDX25   FROM    ORCHCM34-STDAY BY 1
-                           UNTIL ( IDX25   >       ORCHCM34-EDDAY )
-                       PERFORM VARYING IDXW    FROM    1   BY  1
-                               UNTIL ( IDXW    >   2 )
-                           IF    ( LNK-SKJHKN-HKNCOMBINUM  (IDX25 IDXW)
-                                       NOT =   SPACE )
-                               MOVE LNK-SKJHKN-HKNCOMBINUM  (IDX25 IDXW)
-                                       TO  WRK-HKNCOMBINUM-G
-                               PERFORM 200211-TCOMBI-HEN-SEC
-                           END-IF
-                       END-PERFORM
-                   END-PERFORM
-               END-IF
-           END-IF
-           
-      *
            .
        20021-TCOMBI-HEN-EXT.
            EXIT.
@@ -5849,15 +5374,16 @@
       *
            IF    (     IDX26               >   TCOMBI-MAX )
                IF    ( CONST-TCOMBI-MAX    >   TCOMBI-MAX )
-                   MOVE    IDX26   TO      TCOMBI-MAX
+                   COMPUTE TCOMBI-MAX  =   TCOMBI-MAX  +   1
                    MOVE    WRK-HKNCOMBINUM
-                                   TO  TCOMBI-HKNCOMBI (TCOMBI-MAX)
+                                           TO  TCOMBI-HKNCOMBI
+                                                       (TCOMBI-MAX)
+                   COMPUTE TCOMBI-HKNCOMBI-CNT (TCOMBI-MAX)
+                       =   TCOMBI-HKNCOMBI-CNT (TCOMBI-MAX)
+                       +   1
+                   MOVE    1       TO  TCOMBI-HKNCOMBI-DAY
+                                               (TCOMBI-MAX IDX25)
                ELSE
-                   MOVE    ZERO    TO  IDX26
-               END-IF
-           END-IF
-      *
-           IF    (     IDX26               >   ZERO )
                    IF    ( TCOMBI-HKNCOMBI-DAY (IDX26 IDX25)
                                            =    ZERO )
                        COMPUTE TCOMBI-HKNCOMBI-CNT (IDX26)
@@ -5866,6 +5392,7 @@
                        MOVE    1   TO  TCOMBI-HKNCOMBI-DAY
                                                    (IDX26 IDX25)
                    END-IF
+               END-IF
            END-IF
       *
            .
@@ -5890,8 +5417,6 @@
                ELSE
       *
                    MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
-                   MOVE    COMB-KOHHKNNUM (1)
-                                           TO  WRK-KOHNUM
                    PERFORM 800-HOKENBUNRUI-SEC
                    IF    ( ORCHCM34-HOKEN  =   WRK-HOKEN )
                        CONTINUE
@@ -5934,9 +5459,6 @@
                                    TO  TCOMBI-SENTEI-PTFTN (IDX27)
       *
                    PERFORM 20011-HCM34ACCT-INS-SEC
-      *
-                   PERFORM 280-MEDADL-SEC
-      *
                END-IF
       *
            END-PERFORM
@@ -6027,7 +5549,6 @@
            END-PERFORM
       *
            MOVE    SRYACCT-REC         TO  HCM34ACCT-DAT
-           INITIALIZE                      HCM34ACCT-DATPLUS
       *
            MOVE    WRK-RUIKEITOTAL     TO  HCM34ACCT-RUIKEITOTAL
            MOVE    WRK-RUIKEITOTAL2    TO  HCM34ACCT-RUIKEITOTAL2
@@ -6206,6 +5727,7 @@
            MOVE    ZERO                    TO  FLG-AFTER-CARE
       *
            IF    ( WKCOMB-HKNNUM           =   "971" )
+               PERFORM 900-PTRSIINF-KEY-SEL-SEC
                IF    ( PTRSI-HKNKBN    =   '3' )
                    MOVE    1       TO  FLG-AFTER-CARE
                END-IF
@@ -6214,11 +5736,24 @@
            INITIALIZE                      TRECECOM-AREA
       *
            IF    ( FLG-AFTER-CARE      =   ZERO )
-               MOVE    "key21"              TO  WRK-PATHNAME
+      *        Å¬ÍÑÍó¥³¥á¥ó¥È
+               MOVE    "key7"              TO  WRK-PATHNAME
+               PERFORM 2002111-RECECOM-HEN-SEC
+      *
+      *        ¾É¾õ¾Üµ­¥³¥á¥ó¥È¡Ê£°£±¡Á£°£¶¡Ë
+               MOVE    "key8"              TO  WRK-PATHNAME
+               PERFORM 2002111-RECECOM-HEN-SEC
+      *
+      *        ¾É¾õ¾Üµ­¥³¥á¥ó¥È¡Ê¤½¤ÎÂ¾¡Ë    
+               MOVE    "key9"              TO  WRK-PATHNAME
+               PERFORM 2002111-RECECOM-HEN-SEC
+      *
+      *        ¾É¾õ¾Üµ­¥³¥á¥ó¥È¡Ê£µ£°¡¢£µ£±¡¢£µ£²¡Ë     
+               MOVE    "key12"             TO  WRK-PATHNAME
                PERFORM 2002111-RECECOM-HEN-SEC
            ELSE
       *        ¥³¥á¥ó¥È
-               MOVE    "key22"             TO  WRK-PATHNAME
+               MOVE    "key13"             TO  WRK-PATHNAME
                PERFORM 2002111-RECECOM-HEN-SEC
            END-IF
       *
@@ -6245,7 +5780,7 @@
       *
                MOVE    1               TO  FLG-TARGET
       *
-               IF    ( WKCOMB-HKNNUM       =   "973" )
+               IF    ( WKCOMB-HKNNUM       =   "971" OR "973" )
                    IF    ( RECECOM-SJKBN   =   "51"  OR "52" )
                        CONTINUE
                    ELSE
@@ -6253,32 +5788,12 @@
                    END-IF
                END-IF
       *
+               IF    ( FLG-AFTER-CARE  =   1 )
+                       MOVE    ZERO    TO  FLG-TARGET
+               END-IF
+      *
                IF    ( FLG-TARGET  =   1 )
-                   IF    ( FLG-AFTER-CARE  =   1 )
-                       IF    ( RECECOM-SRYDD   NOT =   TRECECOM-SRYDD )
-      *
-                           MOVE    RECECOM-SRYDD
-                                           TO  WRK-Z9
-                           MOVE    SPACE   TO  WRK-MAE-INPUT
-                           STRING  "¡ö¡ö¡ö¡¡"   DELIMITED BY SIZE
-                                   WRK-Z9       DELIMITED BY SIZE
-                                   "Æü¡¡¡ö¡ö¡ö"
-                                                DELIMITED BY SIZE
-                           INTO    WRK-MAE-INPUT
-                           END-STRING
-                           PERFORM 800-ZENKAKU-HEN-SEC
-                           MOVE    WRK-OUT-INPUT   TO  WRK-LONGSTR
-                           PERFORM 20021111-RECECOM-HEN2-SEC
-      *
-                           MOVE    RECECOM-SRYDD   TO  TRECECOM-SRYDD
-                           INITIALIZE                  TRECECOM-AA
-                                                       TRECECOM-SKJKBN
-      *
-                       END-IF
-                   END-IF
-      *
                    MOVE    SPACE           TO  WRK-LONGSTR
-      *
                    IF    ( RECECOM-SJKBN
                                    =   "07"    OR  "08"    OR  "09" )
                        MOVE    "07"            TO  RECECOM-SJKBN
@@ -6294,33 +5809,13 @@
                            MOVE    CONST-RECECOM  (WRK-SJKBN)
                                                TO  WRK-LONGSTR
                        WHEN    "50"
-                           IF    ( ORCHCM34-SRYYM >=   CONST-H2612 )
-                               MOVE    CONST-RECECOM (15)
+                           MOVE    CONST-RECECOM (8)
                                                TO  WRK-LONGSTR
-                           ELSE
-                               MOVE    CONST-RECECOM (8)
-                                               TO  WRK-LONGSTR
-                           END-IF
                        WHEN    "51"
                            MOVE    CONST-RECECOM (9)
                                                TO  WRK-LONGSTR
                        WHEN    "52"
                            MOVE    CONST-RECECOM (10)
-                                               TO  WRK-LONGSTR
-                       WHEN    "90"
-                           MOVE    CONST-RECECOM (14)
-                                               TO  WRK-LONGSTR
-                       WHEN    "99"
-                           IF    ( TRECECOM-AA =   1 )
-                               MOVE    CONST-RECECOM (11)
-                                               TO  WRK-LONGSTR
-                           END-IF
-                       WHEN    "AA"
-                           MOVE    1           TO  TRECECOM-AA
-                           MOVE    CONST-RECECOM (12)
-                                               TO  WRK-LONGSTR
-                       WHEN    "BB"
-                           MOVE    CONST-RECECOM (13)
                                                TO  WRK-LONGSTR
                        END-EVALUATE
                    END-IF
@@ -6453,14 +5948,10 @@
       *
                    IF    ( ORCHCM34-SRYYM  >=   CONST-H190401 (1:6))
                        COMPUTE  WRK-TTL-BRMSAGAKU-TAX
-                            = ( WRK-TTL-BRMSAGAKU
-                             *  WRK-RATE3
-                             /  WRK-RATE4 )
-                            +   WRK-HASU
+                            = ( WRK-TTL-BRMSAGAKU  *  5 / 105)
                    ELSE
                        COMPUTE  WRK-TTL-BRMSAGAKU-TAX
-                            = ( WRK-TTL-BRMSAGAKU  *  WRK-RATE1 )
-                            +   WRK-HASU
+                            = ( WRK-TTL-BRMSAGAKU  *  0.05 )
                    END-IF
       *
                    IF    ( WRK-TTL-BRMSAGAKU-TAX   >   ZERO )
@@ -6612,8 +6103,7 @@
            PERFORM 800-ZENKAKU-HEN-SEC
            MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
            PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
-           MOVE    WRK-SRYACT-MAX  TO  WRK-SRYACT-POS (1)
-           MOVE    1               TO  WRK-SRYACT-TANI (1)
+           MOVE    1               TO  WRK-SRYACT-TANI
            PERFORM 220-ZAI-TOTAL-HEN-SEC
       *
            .
@@ -6655,8 +6145,7 @@
            PERFORM 800-ZENKAKU-HEN-SEC
            MOVE    WRK-OUT-INPUT   TO  WRK-SRYACT-STR
            PERFORM 210-WRK-SRYACT-TBL-HEN3-SEC
-           MOVE    WRK-SRYACT-MAX  TO  WRK-SRYACT-POS (2)
-           MOVE    2               TO  WRK-SRYACT-TANI (2)
+           MOVE    2               TO  WRK-SRYACT-TANI
            PERFORM 221-ZAI-TOTAL-HEN-SEC
       *
            .
@@ -6977,9 +6466,7 @@
                            MOVE    WRK-SRYACT-HKNCOMBI
                                            TO   WRK-KEY-HKNCOMBI
                        END-IF
-                       IF  ( IDX4            =   WRK-SRYACT-POS (1)
-                                              OR WRK-SRYACT-POS (2)
-                                              OR WRK-SRYACT-MAX )
+                       IF  ( IDX4            =   WRK-SRYACT-MAX )
                            PERFORM VARYING IDXF    FROM    1   BY  1
                                    UNTIL ( IDXF    >   31 )
                                MOVE    WRK-SRYACT-DAY-X (IDXF)
@@ -6987,14 +6474,11 @@
                            END-PERFORM
                        END-IF
                    END-IF
-                   PERFORM VARYING IDX37   FROM    1   BY  1
-                           UNTIL ( IDX37   >   2 )
-                       IF    ( IDX4        =   WRK-SRYACT-POS (IDX37))
-                        AND  ( WRK-SRYACT-TANI (IDX37) NOT =   ZERO )
-                           PERFORM 210-SRYACT-TOTAL-HEN-SEC
-                           MOVE    WRK-TOTAL-G TO  HCM341-TOTAL (IDXC)
-                       END-IF
-                   END-PERFORM
+                   IF    ( IDX4            =   WRK-SRYACT-MAX )
+                    AND  ( WRK-SRYACT-TANI NOT =   ZERO )
+                       PERFORM 210-SRYACT-TOTAL-HEN-SEC
+                       MOVE    WRK-TOTAL-G TO  HCM341-TOTAL (IDXC)
+                   END-IF
                    MOVE    WRK-SRYACT (IDX4)
                                            TO  HCM341-TEKIYO (IDXC)
                ELSE
@@ -7016,9 +6500,7 @@
                            MOVE    WRK-SRYACT-HKNCOMBI
                                            TO   WRK-KEY-HKNCOMBI
                        END-IF
-                       IF  ( IDX4            =   WRK-SRYACT-POS (1)
-                                              OR WRK-SRYACT-POS (2)
-                                              OR WRK-SRYACT-MAX )
+                       IF  ( IDX4            =   WRK-SRYACT-MAX )
                            PERFORM VARYING IDXF    FROM    1   BY  1
                                    UNTIL ( IDXF    >   31 )
                                MOVE    WRK-SRYACT-DAY-X (IDXF)
@@ -7026,14 +6508,11 @@
                            END-PERFORM
                        END-IF
                    END-IF
-                   PERFORM VARYING IDX37   FROM    1   BY  1
-                           UNTIL ( IDX37   >   2 )
-                       IF    ( IDX4        =   WRK-SRYACT-POS (IDX37))
-                        AND  ( WRK-SRYACT-TANI (IDX37) NOT =   ZERO )
-                           PERFORM 210-SRYACT-TOTAL-HEN-SEC
-                           MOVE    WRK-TOTAL-G TO  HCM342-TOTAL (IDXC)
-                       END-IF
-                   END-PERFORM
+                   IF    ( IDX4            =   WRK-SRYACT-MAX )
+                    AND  ( WRK-SRYACT-TANI NOT =   ZERO )
+                       PERFORM 210-SRYACT-TOTAL-HEN-SEC
+                       MOVE    WRK-TOTAL-G TO  HCM342-TOTAL (IDXC)
+                   END-IF
                    MOVE    WRK-SRYACT (IDX4)
                                            TO  HCM342-TEKIYO (IDXC)
                END-IF
@@ -7089,21 +6568,20 @@
       *
            INITIALIZE                  WRK-TOTAL-G
       *
-           EVALUATE    WRK-SRYACT-TANI (IDX37)
+           EVALUATE    WRK-SRYACT-TANI
            WHEN    1
-               MOVE    WRK-SRYACT-TOTAL (IDX37)
+               MOVE    WRK-SRYACT-TOTAL
                                    TO  WRK-TOTALZ
                MOVE    "ÅÀ"        TO  WRK-TOTAL-TANI
            WHEN    2
-               MOVE    WRK-SRYACT-TOTAL (IDX37)
+               MOVE    WRK-SRYACT-TOTAL
                                    TO  WRK-TOTALZ
                MOVE    "±ß"        TO  WRK-TOTAL-TANI
            END-EVALUATE
       *
            IF    ( WRK-SRYACT-JIHOKBN  =   "1" )
-            OR   ( WRK-SRYACT-SRYSYUKBN =  "971" )
                MOVE    ")"         TO  WRK-TOTAL-KAKKO
-               MOVE    "("         TO  WRK-TOTAL-G(1:1)
+               MOVE    " ("        TO  WRK-TOTAL-G(1:2)
            END-IF
       *
            .
@@ -7126,20 +6604,19 @@
                MOVE    ZERO        TO  CNT-YKZINGAI
                MOVE    ZERO        TO  CNT-YKZHKT
                MOVE    ZERO        TO  CNT-ZAIHKT
-               MOVE    ZERO        TO  CNT-JISANYAKU
            END-IF
       *
            .
        210-KAIPEGE-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ºÞ¹ç·×ÅÀ¿ô¡ÊÅÀ¿ô¡ß²ó¿ô¡ËÊÔ½¸½èÍý
+      *    ºÞ¹ç·×ÅÀ¿ô¡ÊºÞÅÀ¡ß¶â³Û¡ËÊÔ½¸½èÍý
       *****************************************************************
        220-ZAI-TOTAL-HEN-SEC           SECTION.
       *
            IF    ( FLG-MINUS       =   ZERO )
-               COMPUTE WRK-SRYACT-TOTAL (1)
-                   =   WRK-SRYACT-TOTAL (1)
+               COMPUTE WRK-SRYACT-TOTAL
+                   =   WRK-SRYACT-TOTAL
                    + ( WRK-ZAITEN  *   WRK-ZAIKAISU )
       *
                IF    ( ACCT-JIHOKBN    =   "1" )
@@ -7150,8 +6627,8 @@
                        + ( WRK-ZAITEN  *   WRK-ZAIKAISU )
                END-IF
            ELSE
-               COMPUTE WRK-SRYACT-TOTAL (1)
-                   =   WRK-SRYACT-TOTAL (1)
+               COMPUTE WRK-SRYACT-TOTAL
+                   =   WRK-SRYACT-TOTAL
                    - ( WRK-ZAITEN  *   WRK-ZAIKAISU )
       *
                IF    ( ACCT-JIHOKBN    =   "1" )
@@ -7167,359 +6644,24 @@
        220-ZAI-TOTAL-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ºÞ¹ç·×ÅÀ¿ô¡Ê¶â³Û¡ß²ó¿ô¡ËÊÔ½¸½èÍý
+      *    ºÞ¹ç·×ÅÀ¿ô¡ÊºÞÅÀ¡ß¶â³Û¡ËÊÔ½¸½èÍý
       *****************************************************************
        221-ZAI-TOTAL-HEN-SEC           SECTION.
       *
            IF    ( FLG-MINUS       =   ZERO )
-               COMPUTE WRK-SRYACT-TOTAL (2)
-                   =   WRK-SRYACT-TOTAL (2)
+               COMPUTE WRK-SRYACT-TOTAL
+                   =   WRK-SRYACT-TOTAL
                    + ( WRK-ZAITEN  *   WRK-ZAIKAISU )
       *
-               IF    ( WRK-SRYACT-SRYSYUKBN    NOT =   "971" )
-                   COMPUTE WRK-TTL-KINGAKU
-                       =   WRK-TTL-KINGAKU
-                       + ( WRK-ZAITEN  *   WRK-ZAIKAISU )
-               END-IF
            ELSE
-               COMPUTE WRK-SRYACT-TOTAL (2)
-                   =   WRK-SRYACT-TOTAL (2)
+               COMPUTE WRK-SRYACT-TOTAL
+                   =   WRK-SRYACT-TOTAL
                    - ( WRK-ZAITEN  *   WRK-ZAIKAISU )
       *
-               IF    ( WRK-SRYACT-SRYSYUKBN    NOT =   "971" )
-                   COMPUTE WRK-TTL-KINGAKU
-                       =   WRK-TTL-KINGAKU
-                       - ( WRK-ZAITEN  *   WRK-ZAIKAISU )
-               END-IF
            END-IF
       *
            .
        221-ZAI-TOTAL-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    Æþ±¡ÅÀÅ©ºÞÊÔ½¸½èÍý
-      *****************************************************************
-       280-TENTEKI-SEC                 SECTION.
-      *
-           PERFORM VARYING IDXT    FROM    1   BY  1
-                   UNTIL ( IDXT    >   LNK-ORCSTEN3-MAX )
-      *
-               PERFORM 2801-TENTEKI-ACCT-SEC
-      *
-           END-PERFORM
-      *
-           .
-       280-TENTEKI-EXT.
-           EXIT.
-      *****************************************************************
-      *    Æþ±¡ÅÀÅ©ºÞÊÔ½¸½èÍý
-      *****************************************************************
-       2801-TENTEKI-ACCT-SEC           SECTION.
-      *
-           COMPUTE WRK-MAXZAINUM = WRK-MAXZAINUM + 1
-      *
-           MOVE    ZERO              TO    WRK-RUIKEITOTAL
-                                           WRK-RUIKEITOTAL2
-      *
-           PERFORM 2801-TENTEKI-SRY-SEC
-      *
-           INITIALIZE                      HCM34ACCT-REC
-      *
-           MOVE    ACCT-HOSPNUM        TO  HCM34ACCT-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN      TO  HCM34ACCT-NYUGAIKBN
-           MOVE    ACCT-PTID           TO  HCM34ACCT-PTID
-           MOVE    ZERO                TO  HCM34ACCT-SRYKA
-           MOVE    ACCT-SRYYM          TO  HCM34ACCT-SRYYM
-           MOVE    "33"                TO  HCM34ACCT-SRYKBN
-           MOVE    WRK-MAXZAINUM       TO  HCM34ACCT-ZAINUM
-           MOVE    ACCT-HKNCOMBI       TO  HCM34ACCT-HKNCOMBI
-           MOVE    LNK-ORCSTEN3-ZAITEN     (IDXT)
-                                       TO  HCM34ACCT-ZAITEN
-           MOVE    LNK-ORCSTEN3-SRYCDTOTAL (IDXT)
-                                       TO  HCM34ACCT-SRYCDTOTAL
-           MOVE    LNK-ORCSTEN3-SURYOUTOTAL(IDXT)
-                                       TO  HCM34ACCT-SURYOUTOTAL
-           MOVE    LNK-ORCSTEN3-MEISAISU   (IDXT)
-                                       TO  HCM34ACCT-MEISAISU
-      *
-           PERFORM VARYING IDX-DAY FROM    ORCHCM34-STDAY   BY  1
-                   UNTIL ( IDX-DAY >   ORCHCM34-EDDAY )
-      *
-               MOVE    LNK-ORCSTEN3-DAY (IDXT IDX-DAY)
-                                       TO  HCM34ACCT-DAY (1 IDX-DAY)
-               COMPUTE HCM34ACCT-ZAIKAISU
-                   =   HCM34ACCT-ZAIKAISU
-                   +   LNK-ORCSTEN3-DAY (IDXT IDX-DAY)
-      *
-           END-PERFORM
-      *
-           INITIALIZE                      HCM34ACCT-DATPLUS
-      *
-           MOVE    WRK-RUIKEITOTAL     TO  HCM34ACCT-RUIKEITOTAL
-           MOVE    WRK-RUIKEITOTAL2    TO  HCM34ACCT-RUIKEITOTAL2
-           MOVE    ZERO                TO  HCM34ACCT-JIHIMONEYTOTAL
-           MOVE    LNK-ORCSTEN3-SRYCD (IDXT 1)
-                                       TO  HCM34ACCT-SRT-SRYCD
-           MOVE    SPACE               TO  HCM34ACCT-SRT-SRYSYUKBN
-           MOVE    "3"                 TO  HCM34ACCT-ACCTKBN
-           MOVE    ZERO                TO  HCM34ACCT-PRIORITY
-           MOVE    ZERO                TO  HCM34ACCT-PRIORITY2
-           MOVE    ZERO                TO  HCM34ACCT-PRIORITY3
-           MOVE    LNK-ORCSTEN3-SBT (IDXT)
-                                       TO  HCM34ACCT-TENTEKSBT
-      *
-           WRITE   HCM34ACCT-REC
-      *
-           .
-       2801-TENTEKI-ACCT-EXT.
-           EXIT.
-      *****************************************************************
-      *    Æþ±¡ÅÀÅ©ºÞÊÔ½¸½èÍý
-      *****************************************************************
-       2801-TENTEKI-SRY-SEC            SECTION.
-      *
-           MOVE    ZERO            TO  CNT-RENNUM
-                                       IDX31
-      *
-           INITIALIZE                  HCM34SRY-REC
-      *
-           MOVE    LNK-ORCSTEN3-OCC2-MAX (IDXT)
-                                   TO  WRK-MAX
-           PERFORM VARYING IDX30   FROM    1   BY  1
-                   UNTIL ( IDX30   >   WRK-MAX )
-      *
-               COMPUTE IDX31       =   IDX31      +   1
-      *
-               IF    ( IDX31       =  1 )
-                   COMPUTE CNT-RENNUM      =   CNT-RENNUM  +   1
-                   MOVE    ACCT-PTID       TO  HCM34SRY-ISM-PTID
-                   MOVE    WRK-MAXZAINUM   TO  HCM34SRY-ISM-ZAINUM
-                   MOVE    CNT-RENNUM      TO  HCM34SRY-ISM-RENNUM
-                   MOVE    ACCT-HOSPNUM    TO  HCM34SRY-HOSPNUM
-                   MOVE    ACCT-NYUGAIKBN  TO  HCM34SRY-NYUGAIKBN
-                   MOVE    ACCT-PTID       TO  HCM34SRY-PTID
-                   MOVE    WRK-MAXZAINUM   TO  HCM34SRY-ZAINUM
-                   MOVE    CNT-RENNUM      TO  HCM34SRY-RENNUM
-                   MOVE    ZERO            TO  HCM34SRY-SRYKA
-                   MOVE    "33"            TO  HCM34SRY-SRYKBN
-                   MOVE    SPACE           TO  HCM34SRY-SRYSYUKBN
-               END-IF
-      *
-               MOVE    LNK-ORCSTEN3-SRYCD (IDXT IDX30)
-                                           TO  HCM34SRY-SRYCD    (IDX31)
-               MOVE    LNK-ORCSTEN3-SURYO (IDXT IDX30)
-                                           TO  HCM34SRY-SRYSURYO (IDX31)
-               IF    ( LNK-ORCSTEN3-COM (IDXT IDX30)
-                                       NOT =   SPACE )
-                   MOVE    IDX30           TO  HCM34SRY-INPUTNUM (IDX31)
-                   MOVE    LNK-ORCSTEN3-COM (IDXT IDX30)
-                                           TO  HCM34SRY-COMMENT (IDX31)
-               END-IF
-      *
-               MOVE     HCM34SRY-SRYCD    (IDX31)
-                                           TO  WRK-SRYCD-9
-                                               WRK-CALCSRYCD-G
-               MOVE     HCM34SRY-SRYSURYO (IDX31)
-                                           TO  WRK-SURYO
-               PERFORM  2001111-RUIKEITOTAL-SEC
-      *
-      *
-               IF    ( IDX31           >=  5 )
-                   WRITE   HCM34SRY-REC
-                   MOVE    ZERO        TO  IDX31
-                   INITIALIZE              HCM34SRY-REC
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF       (  IDX31           >  ZERO )
-               WRITE   HCM34SRY-REC
-           END-IF
-      *
-           .
-       2801-TENTEKI-SRY-EXT.
-           EXIT.
-      *****************************************************************
-      *    °åÎÅ¶èÊ¬£Á£Ä£ÌÊÔ½¸½èÍý
-      *****************************************************************
-       280-MEDADL-SEC                  SECTION.
-      *
-           MOVE    HCN68S01-AREA   TO  THCN68S01-AREA
-      *
-           PERFORM VARYING IDXR    FROM    1   BY  1
-                   UNTIL ( IDXR    >   HCN68S01-RYOLIST-MAX )
-      *
-               MOVE    ZERO        TO  HCN68S01-TDAYALL (IDXR)
-                                       HCN68S01-TDAY-G  (IDXR)
-      *
-               PERFORM VARYING IDX-DAY FROM  ORCHCM34-STDAY    BY  1
-                       UNTIL ( IDX-DAY >     ORCHCM34-EDDAY )
-      *
-                   IF    ( HCN68S01-COMB-DAY (IDX-DAY)
-                                       =   COMB-HKNCOMBINUM )
-                       EVALUATE     TRUE
-                       WHEN  ( ORCHCM34-SRYKAKBN   =   SPACE )
-                       WHEN  ( ORCHCM34-SRYKAKBN   =   "1" )
-                        AND  ( ORCHCM34-SRYKADAY (IDX-DAY)     = 1 )
-                           IF    ( THCN68S01-TDAYALL (IDXR)
-                                                   >   ZERO )
-                               IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
-                                                NOT =   SPACE )
-                                   MOVE    THCN68S01-TDAYALL (IDXR)
-                                       TO  HCN68S01-TDAY (IDXR IDX-DAY)
-                               END-IF
-                           ELSE
-                               IF    ( THCN68S01-TDAY (IDXR IDX-DAY)
-                                                   >   ZERO )
-                                   MOVE    THCN68S01-TDAY (IDXR IDX-DAY)
-                                       TO  HCN68S01-TDAY (IDXR IDX-DAY)
-                               END-IF
-                           END-IF
-                       END-EVALUATE
-                   END-IF
-      *
-               END-PERFORM
-      *
-               IF    ( HCN68S01-TDAY-G  (IDXR) NOT =   ZERO )
-                   PERFORM 2801-MEDADL-ACCT-SEC
-               END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    THCN68S01-AREA  TO   HCN68S01-AREA
-      *
-           .
-       280-MEDADL-EXT.
-           EXIT.
-      *****************************************************************
-      *    °åÎÅ¶èÊ¬£Á£Ä£ÌÊÔ½¸½èÍý
-      *****************************************************************
-       2801-MEDADL-ACCT-SEC           SECTION.
-      *
-           EVALUATE    HCN68S01-TZAINUM (IDXR)
-           WHEN    1001
-               MOVE    "840000126"     TO  HCN68S01-TSRYCD (IDXR)
-           WHEN    1002
-               MOVE    "840000127"     TO  HCN68S01-TSRYCD (IDXR)
-           WHEN    1003
-               MOVE    "840000128"     TO  HCN68S01-TSRYCD (IDXR)
-           WHEN    1004
-               MOVE    "840000129"     TO  HCN68S01-TSRYCD (IDXR)
-           END-EVALUATE
-      *
-           COMPUTE WRK-MAXZAINUM = WRK-MAXZAINUM + 1
-      *
-           MOVE    ZERO                TO  WRK-RUIKEITOTAL
-                                           WRK-RUIKEITOTAL2
-      *
-           PERFORM 2801-MEDADL-SRY-SEC
-      *
-           INITIALIZE                      HCM34ACCT-REC
-      *
-           MOVE    NACCT-HOSPNUM       TO  HCM34ACCT-HOSPNUM
-           MOVE    NACCT-NYUGAIKBN     TO  HCM34ACCT-NYUGAIKBN
-           MOVE    NACCT-PTID          TO  HCM34ACCT-PTID
-           IF    ( ORCHCM34-SRYKAKBN   =   "1" )
-               MOVE    ORCHCM34-SRYKA  TO  HCM34ACCT-SRYKA
-           ELSE
-               MOVE    ZERO            TO  HCM34ACCT-SRYKA
-           END-IF
-           MOVE    NACCT-SRYYM         TO  HCM34ACCT-SRYYM
-           MOVE    "90"                TO  HCM34ACCT-SRYKBN
-           MOVE    WRK-MAXZAINUM       TO  HCM34ACCT-ZAINUM
-           MOVE    COMB-HKNCOMBINUM    TO  HCM34ACCT-HKNCOMBI
-           MOVE    ZERO                TO  HCM34ACCT-ZAITEN
-           MOVE    HCN68S01-TSRYCD (IDXR)
-                                       TO  WRK-SRYCD-9
-           MOVE    WRK-SRYCD-9         TO  HCM34ACCT-SRYCDTOTAL
-           MOVE    999                 TO  HCM34ACCT-SURYOUTOTAL
-           MOVE    1                   TO  HCM34ACCT-MEISAISU
-      *
-           PERFORM VARYING IDX-DAY FROM  ORCHCM34-STDAY    BY  1
-                   UNTIL ( IDX-DAY >     ORCHCM34-EDDAY )
-      *
-               MOVE    HCN68S01-TDAY (IDXR IDX-DAY)
-                                       TO  HCM34ACCT-DAY (1 IDX-DAY)
-               COMPUTE HCM34ACCT-ZAIKAISU
-                   =   HCM34ACCT-ZAIKAISU
-                   +   HCN68S01-TDAY (IDXR IDX-DAY)
-      *
-           END-PERFORM
-      *
-           INITIALIZE                      HCM34ACCT-DATPLUS
-      *
-           MOVE    WRK-RUIKEITOTAL     TO  HCM34ACCT-RUIKEITOTAL
-           MOVE    WRK-RUIKEITOTAL2    TO  HCM34ACCT-RUIKEITOTAL2
-           MOVE    ZERO                TO  HCM34ACCT-JIHIMONEYTOTAL
-           MOVE    HCN68S01-TSRYCD (IDXR)
-                                       TO  HCM34ACCT-SRT-SRYCD
-           MOVE    SPACE               TO  HCM34ACCT-SRT-SRYSYUKBN
-           MOVE    "4"                 TO  HCM34ACCT-ACCTKBN
-           MOVE    "8"                 TO  HCM34ACCT-ZAISKBKBN
-           MOVE    ZERO                TO  HCM34ACCT-PRIORITY
-           MOVE    ZERO                TO  HCM34ACCT-PRIORITY2
-           MOVE    ZERO                TO  HCM34ACCT-PRIORITY3
-      *
-           WRITE   HCM34ACCT-REC
-      *
-           .
-       2801-MEDADL-ACCT-EXT.
-           EXIT.
-      *****************************************************************
-      *    °åÎÅ¶èÊ¬£Á£Ä£ÌÊÔ½¸½èÍý
-      *****************************************************************
-       2801-MEDADL-SRY-SEC            SECTION.
-      *
-           INITIALIZE                  HCM34SRY-REC
-      *
-           MOVE    NACCT-PTID      TO  HCM34SRY-ISM-PTID
-           MOVE    WRK-MAXZAINUM   TO  HCM34SRY-ISM-ZAINUM
-           MOVE    1               TO  HCM34SRY-ISM-RENNUM
-           MOVE    NACCT-HOSPNUM   TO  HCM34SRY-HOSPNUM
-           MOVE    NACCT-NYUGAIKBN TO  HCM34SRY-NYUGAIKBN
-           MOVE    NACCT-PTID      TO  HCM34SRY-PTID
-           MOVE    WRK-MAXZAINUM   TO  HCM34SRY-ZAINUM
-           MOVE    1               TO  HCM34SRY-RENNUM
-           IF    ( ORCHCM34-SRYKAKBN
-                                   =   "1" )
-               MOVE    ORCHCM34-SRYKA
-                                   TO  HCM34SRY-SRYKA
-           ELSE
-               MOVE     ZERO       TO  HCM34SRY-SRYKA
-           END-IF
-           MOVE    "90"            TO  HCM34SRY-SRYKBN
-           MOVE    SPACE           TO  HCM34SRY-SRYSYUKBN
-      *
-           MOVE    HCN68S01-TSRYCD (IDXR)
-                                   TO  HCM34SRY-SRYCD    (1)
-           MOVE    1               TO  HCM34SRY-SRYSURYO (1)
-      *
-           EVALUATE    HCN68S01-TZAISKBKBN(IDXR)
-           WHEN    "1"
-               MOVE    1           TO  HCM34SRY-INPUTNUM(1)
-               STRING  "£Á£Ä£Ì"                DELIMITED BY SIZE
-                       HCN68S01-TNAME (IDXR)   DELIMITED BY SPACE
-               INTO    HCM34SRY-COMMENT (1)
-               END-STRING
-           WHEN    "2"
-               MOVE    1           TO  HCM34SRY-INPUTNUM(1)
-               STRING  "°åÎÅ¶èÊ¬"              DELIMITED BY SIZE
-                       HCN68S01-TNAME (IDXR)   DELIMITED BY SPACE
-               INTO    HCM34SRY-COMMENT (1)
-               END-STRING
-           END-EVALUATE
-      *
-           MOVE    HCN68S01-TSRYCD (IDXR)
-                                   TO  WRK-SRYCD-9
-                                       WRK-CALCSRYCD-G
-           MOVE    HCM34SRY-SRYSURYO (1)
-                                   TO  WRK-SURYO
-           PERFORM 2001111-RUIKEITOTAL-SEC
-      *
-           WRITE   HCM34SRY-REC
-      *
-           .
-       2801-MEDADL-SRY-EXT.
            EXIT.
       *****************************************************************
       *    °õºþ½èÍý
@@ -7558,12 +6700,12 @@
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE            TO  HC01PARA-CNT
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
-      *
+           COMPUTE HC01PARA-CNT    =   HC01PARA-CNT    *   10
+           IF    ( ORCHCM34-KBN        =   "1" )
+               COMPUTE HC01PARA-CNT    =   HC01PARA-CNT    +   1
+           ELSE
+               COMPUTE HC01PARA-CNT    =   HC01PARA-CNT    +   2
+           END-IF
            OPEN    OUTPUT              PRT-FILE
       *    °õºþÍÑ¥Ç¡¼¥¿½ÐÎÏ
            MOVE    HCM341             TO  PRT-REC
@@ -7577,7 +6719,7 @@
            MOVE   SPACE               TO  MKPRT-DEF
            MOVE   HC01PARA            TO  MKPRT-DAT
       *    ¢£»ÃÄê
-           MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
+           MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
                                       SPA-AREA
@@ -7599,13 +6741,7 @@
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE            TO  HC01PARA-CNT
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    HC01PARA            TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
-      *
-           OPEN    OUTPUT                 PRT-FILE
+           OPEN    OUTPUT              PRT-FILE
       *    °õºþÍÑ¥Ç¡¼¥¿½ÐÎÏ
            MOVE    HCM342             TO  PRT-REC
            WRITE   PRT-REC
@@ -7618,7 +6754,7 @@
            MOVE   SPACE               TO  MKPRT-DEF
            MOVE   HC01PARA            TO  MKPRT-DAT
       *    ¢£»ÃÄê
-           MOVE   SYS-1031-PRTNM(6)   TO  MKPRT-PRTNM
+           MOVE   SYS-1031-PRTNM(1)   TO  MKPRT-PRTNM
            CALL   "ORCSMKPRT"         USING
                                       ORCSMKPRTAREA
                                       SPA-AREA
@@ -7727,13 +6863,6 @@
                END-STRING
            END-IF
       *
-           IF    ( CNT-JISANYAKU     >       ZERO )
-               STRING  "¡þ¡§»ý»²Ìô¡¡"  DELIMITED   BY  SIZE
-               INTO    HCM341-COMMENT
-               WITH    POINTER     IDX-PNT
-               END-STRING
-           END-IF
-      *
            IF    ( CNT-YKZINGAI    >       ZERO )
                STRING  "¡ù¡§±¡³°½èÊý¤ÎÌôºÞ¡¡"  DELIMITED   BY  SIZE
                INTO    HCM341-COMMENT
@@ -7799,14 +6928,6 @@
                END-STRING
            END-IF
       *
-      *
-           IF    ( CNT-JISANYAKU     >       ZERO )
-               STRING  "¡þ¡§»ý»²Ìô¡¡"  DELIMITED   BY  SIZE
-               INTO    HCM342-COMMENT
-               WITH    POINTER     IDX-PNT
-               END-STRING
-           END-IF
-      *
            IF    ( CNT-YKZINGAI    >       ZERO )
                STRING  "¡ù¡§±¡³°½èÊý¤ÎÌôºÞ¡¡"  DELIMITED   BY  SIZE
                INTO    HCM342-COMMENT
@@ -7855,34 +6976,30 @@
       *
            INITIALIZE              WRK-HOKEN
       *
-           IF    ( WRK-KOHNUM      =   "970" )
-                   MOVE    "6"         TO  WRK-HOKEN
-           ELSE
-               EVALUATE    WRK-HKNNUM
-               WHEN    SPACE
-                   MOVE    "1"         TO  WRK-HOKEN
-               WHEN    "971"
-                   MOVE    "4"         TO  WRK-HOKEN
-               WHEN    "973"
-                   MOVE    "5"         TO  WRK-HOKEN
-               WHEN    "975"
-                   MOVE    "7"         TO  WRK-HOKEN
-               WHEN    "060"
-               WHEN    "067"
-               WHEN    "068"
-               WHEN    "069"
-                   MOVE    "2"         TO  WRK-HOKEN
-               WHEN    "040"
-               WHEN    "039"
-                   MOVE    "3"         TO  WRK-HOKEN
-               WHEN    OTHER
-                   IF    ( WRK-HKNNUM (1:2)   =   "98" OR "90" OR "91" )
-                       MOVE    "8"     TO  WRK-HOKEN
-                   ELSE
-                       MOVE    "1"     TO  WRK-HOKEN
-                   END-IF
-               END-EVALUATE
-           END-IF
+           EVALUATE    WRK-HKNNUM
+           WHEN    SPACE
+               MOVE    "1"         TO  WRK-HOKEN
+           WHEN    "971"
+               MOVE    "9"         TO  WRK-HOKEN
+           WHEN    "973"
+               MOVE    "9"         TO  WRK-HOKEN
+           WHEN    "975"
+               MOVE    "9"         TO  WRK-HOKEN
+           WHEN    "060"
+           WHEN    "067"
+           WHEN    "068"
+           WHEN    "069"
+               MOVE    "2"         TO  WRK-HOKEN
+           WHEN    "040"
+           WHEN    "039"
+               MOVE    "3"         TO  WRK-HOKEN
+           WHEN    OTHER
+               IF    ( WRK-HKNNUM (1:2)   =   "98" OR "90" OR "91" )
+                   MOVE    "9"     TO  WRK-HOKEN
+               ELSE
+                   MOVE    "1"     TO  WRK-HOKEN
+               END-IF
+           END-EVALUATE
       *
            .
        800-HOKENBUNRUI-EXT.
@@ -8256,12 +7373,6 @@
                                                ACCT-DAY (2 IDX35)
                                                ACCT-DAY (3 IDX35)
                                                ACCT-DAY (4 IDX35)
-                                               ACCT-DAY (5 IDX35)
-                                               ACCT-DAY (6 IDX35)
-                                               ACCT-DAY (7 IDX35)
-                                               ACCT-DAY (8 IDX35)
-                                               ACCT-DAY (9 IDX35)
-                                               ACCT-DAY (10 IDX35)
                        END-IF
       *
                    END-PERFORM
@@ -8280,8 +7391,6 @@
                        MOVE    ACCT-HKNCOMBI   TO  WRK-HKNCOMBINUM
                        PERFORM 900-HKNCOMBI-KEY-SEL-SEC
                        MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
-                       MOVE    COMB-KOHHKNNUM (1)
-                                               TO  WRK-KOHNUM
                        PERFORM 800-HOKENBUNRUI-SEC
                        IF    ( ORCHCM34-HOKEN  =   WRK-HOKEN )
                            CONTINUE
@@ -8290,14 +7399,6 @@
                        END-IF
                    END-IF
       *
-                   IF    ( ORCHCM34-HIDEHOKATSU    =   "1" )
-                       IF    ( ACCT-JIHOKBN        =   "1" )
-                           MOVE    ZERO        TO  FLG-LOOPEND
-                       END-IF
-                       IF    ( ACCT-HKNCOMBI       =   9999 )
-                           MOVE    ZERO        TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
                ELSE
                    MOVE    1               TO  FLG-SRYACCT
                END-IF
@@ -8666,23 +7767,6 @@
                        CONTINUE
                    ELSE
                        MOVE    ZERO    TO  FLG-LOOPEND
-                   END-IF
-      *
-                   IF    ( RECECOM-SJKBN       =   "AA" )
-                       IF    ( WKCOMB-HKNNUM   =   "971" )
-                           CONTINUE
-                       ELSE
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
-                   END-IF
-      *
-                   IF    ( RECECOM-SJKBN       =   "BB" )
-                       IF    ( WKCOMB-KOHHKNNUM (1)
-                                               =   "970" )
-                           CONTINUE
-                       ELSE
-                           MOVE    ZERO    TO  FLG-LOOPEND
-                       END-IF
                    END-IF
       *
                    IF    ( FLG-AFTER-CARE  =   1 )
