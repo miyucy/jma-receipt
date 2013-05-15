@@ -8133,7 +8133,13 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            WRITE   RECE4B-REC
            ADD     1                   TO   CNT-OUT5
       *
-           IF      RECE41-HKNKBN    =   "1" OR "2"
+           IF  (RECE41-SRYYM        <   201307              )
+           OR  (RECE41-PTNUM        =   SPACE               )
+           OR  (RECE41-TSTPTNUMKBN  =   "1"                 )
+           OR  (RECE41-RECESYUBETU  =   ZERO OR 7021 OR 7051)
+           OR  (RECE41-RSIIRYOKBN   =   "0"                 )
+             CONTINUE
+           ELSE
              WRITE RECE45C-REC
              ADD   1                   TO   CNT-OUT7
            END-IF
@@ -8199,7 +8205,13 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *
       *****
       *
-           IF      RECE41-HKNKBN    =   "1" OR "2"
+           IF  (RECE41-SRYYM        <   201307              )
+           OR  (RECE41-PTNUM        =   SPACE               )
+           OR  (RECE41-TSTPTNUMKBN  =   "1"                 )
+           OR  (RECE41-RECESYUBETU  =   ZERO OR 7021 OR 7051)
+           OR  (RECE41-RSIIRYOKBN   =   "0"                 )
+             CONTINUE
+           ELSE
       *
              MOVE    ZERO                TO  FLG-REWRITE
       *
@@ -8314,7 +8326,13 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *
       *****
       *
-           IF      RECE41-HKNKBN    =   "1" OR "2"
+           IF  (RECE41-SRYYM        <   201307              )
+           OR  (RECE41-PTNUM        =   SPACE               )
+           OR  (RECE41-TSTPTNUMKBN  =   "1"                 )
+           OR  (RECE41-RECESYUBETU  =   ZERO OR 7021 OR 7051)
+           OR  (RECE41-RSIIRYOKBN   =   "0"                 )
+             CONTINUE
+           ELSE
       *
              MOVE    ZERO                TO  FLG-REWRITE
       *
@@ -8420,7 +8438,13 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
            WRITE   RECE4A-REC
            ADD     1                TO  CNT-OUT4
       *
-           IF      RECE41-HKNKBN    =   "1" OR "2"
+           IF  (RECE41-SRYYM        <   201307              )
+           OR  (RECE41-PTNUM        =   SPACE               )
+           OR  (RECE41-TSTPTNUMKBN  =   "1"                 )
+           OR  (RECE41-RECESYUBETU  =   ZERO OR 7021 OR 7051)
+           OR  (RECE41-RSIIRYOKBN   =   "0"                 )
+             CONTINUE
+           ELSE
       *
              COMPUTE  RECE44C-ZAI-TENSU  =  RECE44C-ZAITEN
                                          -  WRK-TEN

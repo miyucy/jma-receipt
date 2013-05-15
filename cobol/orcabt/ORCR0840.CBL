@@ -11676,7 +11676,13 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *
            ADD     1                TO  CNT-OUT4
       *
-           IF      RECE82-HKNKBN    =   "1" OR "2"
+           IF  (RECE82-SRYYM        <   201307      )
+           OR  (RECE82-PTNUM        =   SPACE       )
+           OR  (RECE82-TSTPTNUMKBN  =   "1"         )
+           OR  (RECE82-RECESYUBETU  =   ZERO OR 7061)
+           OR  (RECE82-RSIIRYOKBN   =   "0"         )
+             CONTINUE
+           ELSE
       *
              COMPUTE  RECE84C-ZAI-TENSU  =  RECE84C-ZAITEN
                                          -  WRK-TEN
@@ -11755,7 +11761,13 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *
            ADD     1                   TO   CNT-OUT5
       *
-           IF      RECE82-HKNKBN    =   "1" OR "2"
+           IF  (RECE82-SRYYM        <   201307      )
+           OR  (RECE82-PTNUM        =   SPACE       )
+           OR  (RECE82-TSTPTNUMKBN  =   "1"         )
+           OR  (RECE82-RECESYUBETU  =   ZERO OR 7061)
+           OR  (RECE82-RSIIRYOKBN   =   "0"         )
+             CONTINUE
+           ELSE
              WRITE RECE85C-REC
       *
              IF      STS-RECE85C    =   "00"
@@ -11849,7 +11861,13 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *
       *****
       *
-           IF      RECE82-HKNKBN    =   "1" OR "2"
+           IF  (RECE82-SRYYM        <   201307      )
+           OR  (RECE82-PTNUM        =   SPACE       )
+           OR  (RECE82-TSTPTNUMKBN  =   "1"         )
+           OR  (RECE82-RECESYUBETU  =   ZERO OR 7061)
+           OR  (RECE82-RSIIRYOKBN   =   "0"         )
+             CONTINUE
+           ELSE
       *
              MOVE    ZERO                TO  FLG-REWRITE
       *
@@ -11991,7 +12009,13 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *
       *****
       *
-           IF      RECE82-HKNKBN    =   "1" OR "2"
+           IF  (RECE82-SRYYM        <   201307      )
+           OR  (RECE82-PTNUM        =   SPACE       )
+           OR  (RECE82-TSTPTNUMKBN  =   "1"         )
+           OR  (RECE82-RECESYUBETU  =   ZERO OR 7061)
+           OR  (RECE82-RSIIRYOKBN   =   "0"         )
+             CONTINUE
+           ELSE
       *
              MOVE    ZERO                TO  FLG-REWRITE
       *

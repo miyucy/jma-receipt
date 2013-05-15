@@ -1291,6 +1291,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    WRK-KOMUTENTANKA      TO   WRK-RECE82-KOMUTENTANKA
       *    Ï«ºÒ»ØÄê°åÎÅµ¡´Ø¶èÊ¬
            MOVE    WRK-RSIIRYOKBN        TO   WRK-RECE82-RSIIRYOKBN
+           IF      WRK-RECE82-HKNKBN     =   "4"
+               MOVE    "0"               TO   WRK-RECE82-RSIIRYOKBN
+           END-IF
       *
            IF    WRK-RECE82-SYOCD  =  SPACE
              EVALUATE  WRK-RECE82-HKNKBN

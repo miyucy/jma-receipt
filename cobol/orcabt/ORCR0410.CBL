@@ -1025,6 +1025,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    WRK-KYUGYO-PRTKBN     TO   RECE41-KYUGYO-PRTKBN
       *    労災指定医療機関区分
            MOVE    WRK-RSIIRYOKBN        TO   RECE41-RSIIRYOKBN
+           IF      RECE41-HKNKBN     =   "4"
+               MOVE    "0"               TO   RECE41-RSIIRYOKBN
+           END-IF
       *
       *    労災レセプト回数取得
            IF    ( RECE41-HKNKBN     =   "1"  OR  "2" )
