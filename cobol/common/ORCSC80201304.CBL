@@ -661,7 +661,6 @@
       *    各急性発生日
       *    心大血管疾患リハビリテーション
            MOVE    "099800111"         TO  WRK-SRYCD
-      *****PERFORM 10001-KYUSEI-YMD-SEC
            PERFORM 10001-RIHA-STRYMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI1-YMD
       *    終了日判定
@@ -676,7 +675,6 @@
            END-IF
       *    脳血管疾患リハビリテーション
            MOVE    "099800121"         TO  WRK-SRYCD
-      *****PERFORM 10001-KYUSEI-YMD-SEC
            PERFORM 10001-RIHA-STRYMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI2-YMD
            IF      WRK-KYUSEI2-YMD NOT =   SPACE
@@ -690,7 +688,6 @@
            END-IF
       *    運動器リハビリテーション
            MOVE    "099800131"         TO  WRK-SRYCD
-      *****PERFORM 10001-KYUSEI-YMD-SEC
            PERFORM 10001-RIHA-STRYMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI3-YMD
            IF      WRK-KYUSEI3-YMD NOT =   SPACE
@@ -704,7 +701,6 @@
            END-IF
       *    呼吸器リハビリテーション
            MOVE    "099800141"         TO  WRK-SRYCD
-      *****PERFORM 10001-KYUSEI-YMD-SEC
            PERFORM 10001-RIHA-STRYMD-SEC
            MOVE    WRK-YMD             TO  WRK-KYUSEI4-YMD
            IF      WRK-KYUSEI4-YMD NOT =   SPACE
@@ -717,7 +713,7 @@
                END-IF
            END-IF
       *    逓減対象外
-      *    MOVE    "099800401"         TO  WRK-SRYCD
+      ***  MOVE    "099800401"         TO  WRK-SRYCD
       *    PERFORM 10001-KYUSEI-YMD-SEC
       **** MOVE    WRK-YMD             TO  WRK-TEIGEN-GAI
       *
@@ -3431,8 +3427,9 @@
                                            TO  WRK-TUKI-CNT2
                    END-IF
                END-PERFORM
-      *TEST
+      *
                IF      WRK-TUKI-CNT    >   ZERO
+      *            診療会計から疾患別算定集計
                    PERFORM 20021-SRYACCT-TUKI-SEC
                END-IF
       *TEST
@@ -3441,7 +3438,7 @@
       *          ",WRK-KAISU:"  WRK-KAISU
       *          ",WRK-TEI-CNT:"  WRK-TEI-CNT
       *TEST
-      *TEST
+      *T
                COMPUTE WRK-TUKCNT          =   WRK-ACCT-CNT
                                            +   WRK-TUKI-CNT2
                                            +   WRK-KAISU
