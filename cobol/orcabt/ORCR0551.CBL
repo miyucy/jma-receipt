@@ -8446,9 +8446,9 @@
                                                OR  7021
                                                OR  7051   )
                    OR  (   RECE41-RSIIRYOKBN   =   "0"    )
-                   OR  ( ( RECE41-TOTALKIN     =   ZERO )
-                           AND
-                         ( RECE41-TOTALKIN2    =   ZERO ) )
+                   OR  ((  RECE41-HKNKBN    = "1" OR "2" ) AND
+                        (  RECE41-TOTALKIN  =  ZERO      ) AND
+                        (  RECE41-TOTALKIN2 =  ZERO      ))
                        GO  TO  990-RECE41-READ-SEC
                    END-IF
       *

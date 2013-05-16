@@ -8005,9 +8005,10 @@
                    OR  (   RECE82-RECESYUBETU  =   ZERO
                                                OR  7061   )
                    OR  (   RECE82-RSIIRYOKBN   =   "0"    )
-                   OR  ( ( RECE82-TOTALKIN     =   ZERO )
-                           AND
-                         ( RECE82-TOTALKIN2    =   ZERO ) )
+                   OR  ((  RECE82-HKNKBN    = "1" OR "2" ) AND
+                        (  RECE82-TOTALKIN        = ZERO ) AND
+                        (  RECE82-KINGAKU2-SYO    = ZERO ) AND
+                        (  RECE82-SHOKUJITOTALKIN = ZERO ))
                        GO  TO  990-RECE82-READ-SEC
                    END-IF
       *
