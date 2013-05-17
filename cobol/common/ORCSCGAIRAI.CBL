@@ -651,19 +651,25 @@
                IF      FLG-FUKU-FLG            =   1
                    MOVE    ZERO                TO  WRK-SRYKA
       *            複数科まとめ収納作成
-                   PERFORM 1004-DBKOUSIN-SYUTTL-SEC
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 1004-DBKOUSIN-SYUTTL-SEC
+                   END-IF
                END-IF
            END-PERFORM
       *    内服７種類逓減の診療会計附加情報追加
-           PERFORM 4504-SRYACCTPLUS-GENINS-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4504-SRYACCTPLUS-GENINS-SEC
+           END-IF
       *!!!!
-           IF      SPA-SYORIFLG        =   1
+           IF     (SPA-SYORIFLG        =   1    )
+              AND (SPA-ERRCD           =   SPACE)
       *        リハビリ開始日の履歴付加削除
                PERFORM 45005-SANTEIPLUS-DEL-SEC
            END-IF
       *!!!!
       *
-           IF      SPA-SYORIFLG        =   1
+           IF     (SPA-SYORIFLG        =   1    )
+              AND (SPA-ERRCD           =   SPACE)
       *        訂正の時、前回の削除分を削除する
                PERFORM 45004-ALL-JYURRK-UPD-SEC
            END-IF
@@ -900,7 +906,9 @@
                                            LNK-WKSRY-ZAINUM (IDX-KOUI))
       *                剤毎に処理を行う
                        PERFORM 4501-SRYACT-KOU-SEC
-                       PERFORM 45001-JYURRK-SYORI2-SEC
+                       IF      SPA-ERRCD       =   SPACE
+                           PERFORM 45001-JYURRK-SYORI2-SEC
+                       END-IF
                        MOVE    SPACE           TO  LNK-WKSRYACT-AREA
                        MOVE    ZERO            TO  IDX-KOUI
                    END-IF
@@ -911,7 +919,9 @@
                ELSE
                    IF      IDX-KOUI        >   ZERO
                        PERFORM 4501-SRYACT-KOU-SEC
-                       PERFORM 45001-JYURRK-SYORI2-SEC
+                       IF      SPA-ERRCD       =   SPACE
+                           PERFORM 45001-JYURRK-SYORI2-SEC
+                       END-IF
                        MOVE    SPACE           TO  LNK-WKSRYACT-AREA
                        MOVE    ZERO            TO  IDX-KOUI
                    END-IF
@@ -925,7 +935,9 @@
            IF     (SPA-ERRCD       =   SPACE ) AND
                   (IDX-KOUI        >   ZERO  )
                PERFORM 4501-SRYACT-KOU-SEC
-               PERFORM 45001-JYURRK-SYORI2-SEC
+               IF      SPA-ERRCD       =   SPACE
+                   PERFORM 45001-JYURRK-SYORI2-SEC
+               END-IF
                MOVE    SPACE           TO  LNK-WKSRYACT-AREA
                MOVE    ZERO            TO  IDX-KOUI
                MOVE    ZERO            TO  WRK-ZAINUM
@@ -3143,7 +3155,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    診療行為マスター処理 
-           IF      FLG-SINKI           =   1
+           IF     (FLG-SINKI           =   1     )
+             AND  (SPA-ERRCD           =   SPACE )
                PERFORM 4501-SRYACT-SYORI-SEC
            END-IF
       *
@@ -3151,6 +3164,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    診療会計附加情報処理 
            IF     (FLG-SINKI           =   1 )  AND
                   (LNK-WKSRYP-ADDKBN(01)   =   "1"  )
+             AND  (SPA-ERRCD           =   SPACE )
                PERFORM 4503-SRYACCTPLUS-SYORI-SEC
            END-IF
       *!!

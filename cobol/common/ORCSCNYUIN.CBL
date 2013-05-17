@@ -557,7 +557,9 @@
                                            LNK-WKSRY-ZAINUM (IDX-KOUI))
       *                剤毎に処理を行う
                        PERFORM 100-SRYACT-KOU-SEC
-                       PERFORM 200-JYURRK-SYORI-SEC
+                       IF      SPA-ERRCD           =   SPACE
+                           PERFORM 200-JYURRK-SYORI-SEC
+                       END-IF
                        MOVE    SPACE           TO  LNK-WKSRYACT-AREA
                        MOVE    ZERO            TO  IDX-KOUI
                    END-IF
@@ -568,7 +570,9 @@
       *            剤毎に処理を行う
                    IF      IDX-KOUI        >   ZERO
                        PERFORM 100-SRYACT-KOU-SEC
-                       PERFORM 200-JYURRK-SYORI-SEC
+                       IF      SPA-ERRCD           =   SPACE
+                           PERFORM 200-JYURRK-SYORI-SEC
+                       END-IF
                        MOVE    SPACE           TO  LNK-WKSRYACT-AREA
                        MOVE    ZERO            TO  IDX-KOUI
                    END-IF
@@ -583,12 +587,15 @@
       *    剤毎に処理を行う
               IF      IDX-KOUI        >   ZERO
                    PERFORM 100-SRYACT-KOU-SEC
-                   PERFORM 200-JYURRK-SYORI-SEC
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 200-JYURRK-SYORI-SEC
+                   END-IF
                END-IF
            END-IF
       *
       *!!!!
-           IF      SPA-SYORIFLG        =   1
+           IF     (SPA-SYORIFLG        =   1  )
+             AND  (SPA-ERRCD           =   SPACE )
       *        リハビリ開始日の履歴付加削除
                PERFORM 45005-SANTEIPLUS-DEL-SEC
            END-IF
@@ -888,22 +895,27 @@
            END-IF
       *
       *    診療行為マスター処理 
-           IF      FLG-SINKI           =   1
+           IF     (FLG-SINKI           =   1     )
+             AND  (SPA-ERRCD           =   SPACE )
                PERFORM 4501-SRYACT-SYORI-SEC
            END-IF
       *!!
       *    診療会計附加情報処理 
            IF     (FLG-SINKI           =   1 )  AND
                   (LNK-WKSRYP-ADDKBN(01)   =   "1"  )
+             AND  (SPA-ERRCD           =   SPACE )
                PERFORM 4503-SRYACCTPLUS-SYORI-SEC
            END-IF
       *!!
       *
       *    算定履歴更新処理
-           PERFORM 4502-SANTEI-SYORI-SEC
+           IF     (SPA-ERRCD           =   SPACE )
+               PERFORM 4502-SANTEI-SYORI-SEC
+           END-IF
       *
       *    翌月がある時、翌月分を作成する
-           IF      TBL2-KAISUU-AREA    NOT =   ZERO
+           IF     (TBL2-KAISUU-AREA    NOT =   ZERO )
+             AND  (SPA-ERRCD           =   SPACE )
                PERFORM 1000-NEXT-SRYACT-KOU-SEC
            END-IF
            .
