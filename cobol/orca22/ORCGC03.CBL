@@ -2276,22 +2276,23 @@
                    AND   ( C03-BYOMEICD (6)
                                            =   SPA-GMN-C03-BYOMEICD (6))
                        PERFORM 41013-BYOMEI-CHK-SEC
-                   END-IF
-                   IF    ( C03-BYOMEI      =   SPA-GMN-C03-BYOMEI      )
-                   AND   ( C03-BYOMEICD (1)
+                   ELSE
+                       IF    ( C03-BYOMEI  =   SPA-GMN-C03-BYOMEI      )
+                       AND   ( C03-BYOMEICD (1)
                                        NOT =   SPA-GMN-C03-BYOMEICD (1)
-                        OR C03-BYOMEICD (2)
+                            OR C03-BYOMEICD (2)
                                        NOT =   SPA-GMN-C03-BYOMEICD (2)
-                        OR C03-BYOMEICD (3)
+                            OR C03-BYOMEICD (3)
                                        NOT =   SPA-GMN-C03-BYOMEICD (3)
-                        OR C03-BYOMEICD (4)
+                            OR C03-BYOMEICD (4)
                                        NOT =   SPA-GMN-C03-BYOMEICD (4)
-                        OR C03-BYOMEICD (5)
+                            OR C03-BYOMEICD (5)
                                        NOT =   SPA-GMN-C03-BYOMEICD (5)
-                        OR C03-BYOMEICD (6)
+                            OR C03-BYOMEICD (6)
                                        NOT =   SPA-GMN-C03-BYOMEICD (6))
-                       MOVE    "BYOMEICD_1"    TO  WRK-WIDGET
-                       PERFORM 4102-BYOMEICD-CHK-SEC
+                           MOVE    "BYOMEICD_1"    TO  WRK-WIDGET
+                           PERFORM 4102-BYOMEICD-CHK-SEC
+                       END-IF
                    END-IF
            END-EVALUATE
       *
