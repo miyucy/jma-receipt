@@ -518,27 +518,6 @@
            END-IF    
       *
       *    労災医療機関情報取得
-           INITIALIZE                      SYS-4001-REC
-           MOVE    WRK-PARA-HOSPNUM    TO  SYS-4001-HOSPNUM
-           MOVE    "4001"              TO  SYS-4001-KANRICD
-           MOVE    "*"                 TO  SYS-4001-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-4001-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-4001-STYUKYMD (7:2)
-           MOVE    SYS-4001-STYUKYMD   TO  SYS-4001-EDYUKYMD
-           MOVE    SYS-4001-REC        TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-4001-REC
-               IF      SYS-4001-RSIIRYOCDN =   LOW-VALUE
-                   MOVE    SPACE               TO  SYS-4001-RSIIRYOCDN
-               END-IF
-           ELSE
-               MOVE    "労災自賠責医療機関情報が取得できませんでした。"
-                                       TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               PERFORM 500-COBABORT-SEC
-           END-IF
-      *
            MOVE     ZERO               TO  SYSKAN-IDX
            MOVE     SPACE              TO  TBL-SYS4001-T
            INITIALIZE                      TBL-SYS4001-T
@@ -589,23 +568,6 @@
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
-           END-IF
-      *
-      *    労災指定医療機関番号医療機関情報取得
-           INITIALIZE                      ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    SYS-4001-RSIIRYOCDN TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
-           IF    ( KANACHK-RC          =   ZERO )
-           AND   ( KANACHK-SYUBETU     =   "2"  )
-               INITIALIZE                      WRK-CHAR-HENKAN-AREA
-               MOVE    SYS-4001-RSIIRYOCDN TO  WRK-CHAR-N
-               MOVE    13                  TO  WRK-CHAR-N-CNT
-               IF      KANACHK-MAX         <   14
-                   COMPUTE WRK-CHAR-N-CNT  =   KANACHK-MAX   -   1
-               END-IF
-               PERFORM 800-NUM-HANKAKU-HENKAN-SEC
-               MOVE    WRK-CHAR-X          TO  WRK-RSIIRYOCD
            END-IF
       *    
            .
@@ -819,6 +781,49 @@
       *    労災診療費請求書レコード編集処理
       *****************************************************************
        2008-HENSYU-SEC              SECTION.
+      *
+      *    最新の診療年月の労災医療機関情報取得
+           MOVE    WRK-SRYYM           TO  WRK-SYS-SRYYMD (1:6)
+           MOVE    "01"                TO  WRK-SYS-SRYYMD (7:2)
+      *
+           MOVE    ZERO                TO  FLG-SET
+           PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
+                   UNTIL ( SYSKAN-IDX              >  100  )
+                   OR    ( TBL-SYS4001(SYSKAN-IDX) = SPACE )
+                   OR    ( FLG-SET                 =   1   )
+               MOVE    TBL-SYS4001 (SYSKAN-IDX)    TO  SYS-4001-REC
+               IF    ( SYS-4001-STYUKYMD   <=  WRK-SYS-SRYYMD    )
+               AND   ( WRK-SYS-SRYYMD      <=  SYS-4001-EDYUKYMD )
+                   MOVE     1                  TO  FLG-SET
+               END-IF
+           END-PERFORM
+           IF      FLG-SET             =   ZERO
+               STRING
+                   "最新の診療年月の労災医療機関情報取得ができません　"
+                                               DELIMITED  BY  SIZE
+                       WRK-SRYYM               DELIMITED  BY  SIZE 
+                                               INTO  WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+      *
+      *    労災指定医療機関番号を数字変換
+           INITIALIZE                      ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SYS-4001-RSIIRYOCDN TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
+           IF    ( KANACHK-RC          =   ZERO )
+           AND   ( KANACHK-SYUBETU     =   "2"  )
+               INITIALIZE                      WRK-CHAR-HENKAN-AREA
+               MOVE    SYS-4001-RSIIRYOCDN TO  WRK-CHAR-N
+               MOVE    13                  TO  WRK-CHAR-N-CNT
+               IF      KANACHK-MAX         <   14
+                   COMPUTE WRK-CHAR-N-CNT  =   KANACHK-MAX   -   1
+               END-IF
+               PERFORM 800-NUM-HANKAKU-HENKAN-SEC
+               MOVE    WRK-CHAR-X          TO  WRK-RSIIRYOCD
+           END-IF
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
