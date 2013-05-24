@@ -4910,7 +4910,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
       *
                IF      SPA-NAI-C03-TBYOMEIHENFLG (IDX)
                                            =   "1"
-                   MOVE    "#99CC99"    TO  C03-BYOMEILST-BGCOLOR (IDX)
+                   MOVE    "#FFCC99"    TO  C03-BYOMEILST-BGCOLOR (IDX)
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-C03-MAX         TO  C03-BYOMEILST-COUNT

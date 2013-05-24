@@ -11482,7 +11482,7 @@ grpsys                                          SPA-AREA
       *
                IF      SPA-NAI-C02-TBYOMEIHENFLG (IDX)
                                            =   "1"
-                     MOVE    "#99CC99"       TO  C02-BYO-BGCOLOR (IDX)
+                   MOVE    "#FFCC99"       TO  C02-BYO-BGCOLOR (IDX)
                END-IF
            END-PERFORM
            MOVE    SPA-GMN-C02-MAX         TO  C02-BYO-COUNT
