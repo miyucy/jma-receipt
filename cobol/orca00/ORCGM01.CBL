@@ -942,6 +942,10 @@
       *½¤Àµ*************************************************************
       *             MOVE     "CHANGE"           TO  MCP-PUTTYPE
                    IF  SPA-SAKIPG   =   "M96"
+      *
+                       MOVE    SPA-M00KYOUTU       TO  SPA-WORK
+                       MOVE    SPA-AREA            TO  SPA-COMMON
+      *
                        MOVE     "LINK"             TO  MCP-STATUS
                        MOVE     SPACE              TO  MCP-EVENT
                        CALL     "ORCGM96"          USING
@@ -950,6 +954,10 @@
                                                    LINKAREA
                                                    SCRAREA
                        MOVE    SPA-FREE            TO  SPA-M01
+      *
+                       MOVE    SPA-COMMON          TO  SPA-AREA
+                       MOVE    SPA-WORK            TO  SPA-M00KYOUTU
+      *
                        MOVE    "M96"               TO  SPA-MOTOPG2
                        MOVE     "NEW"              TO  MCP-PUTTYPE
                    ELSE
