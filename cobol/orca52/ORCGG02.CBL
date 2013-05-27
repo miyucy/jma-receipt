@@ -44,9 +44,6 @@
       *  04.05.01    NACL-藤原    10/03/23  ＨＯＳＴ名取得方法の変更
       *
       *  04.07.01    NACL-藤原    12/10/31  ファイル出力先のデフォルト変更
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-藤原    14/08/26  fdd 廃止に伴う対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -74,10 +71,21 @@
       *    画面用ＳＰＡ
            COPY    "G01SCR-SPA".
       *
+      *    ファイルデイレクトリ位置指定サブ
+           COPY  "CPMKPASS.INC".
+      *
+      *    フラグ領域
+       01  STS-AREA.
+           03  STS-TOUKEIERR         PIC X(02).
+      *
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-ERR             PIC 9(06).
       *
       *    添字領域
        01  IDX-AREA.
@@ -85,6 +93,22 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDX2                PIC 9(04).
+      *
+      *    システム領域
+       01  SYS-AREA.
+           03  SYS-TIME.
+               05  SYS-THH         PIC 9(02).
+               05  SYS-TMM         PIC 9(02).
+               05  SYS-TSS         PIC 9(02).
+               05  SYS-TDD         PIC 9(02).
+           03  SYS-YMD.
+               05  SYS-YY          PIC 9(02).
+               05  SYS-MM          PIC 9(02).
+               05  SYS-DD          PIC 9(02).
+           03  WRK-SYSYMD.
+               05  WRK-SYSYY       PIC 9(04).
+               05  WRK-SYSMM       PIC 9(02).
+               05  WRK-SYSDD       PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -105,16 +129,20 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-HENFLG          PIC 9(01).    
       *     
+           03  WRK-SHELL-ARG1.
+             05  WRK-SHELL-SRYYM   PIC  X(06).
+             05  WRK-SHELL-TERMID  PIC  X(16).
+             05  WRK-SHELL-SYSYMD  PIC  X(08).  
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
       *
            03  WRK-FILENM-AREA.
                07  WRK-FILENM1     PIC X(150).
                07  WRK-FILENM2     PIC X(150).
-      *********07  WRK-FILENM1-FOLDER 
-      *********                    PIC X(150).
-      *********07  WRK-FILENM2-FOLDER
-      *********                    PIC X(150).
+               07  WRK-FILENM1-FOLDER 
+                                   PIC X(150).
+               07  WRK-FILENM2-FOLDER
+                                   PIC X(150).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -132,6 +160,12 @@
                05  WRK-MM          PIC X(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
+      *                             
+       01  WRK-SHELL-NAME.
+           05  FILLER             PIC X(16) VALUE
+                                             "scripts/monthly/".
+           05  WRK-SHELL-SHELL    PIC X(20).         
+      *              
       *
        01  WRK-CONS-AREA.
       *    ジョブ管理ＤＢのキー値  
@@ -189,9 +223,10 @@
            COPY    "CPORCSCLIENTSV.INC".
       *
            COPY    "CPSHELLTBL.INC".
+      *     
+           COPY    "ORCA-SYSTEM".
       *
-      *    ユーザー情報取得
-           COPY    "CPORCSLDUSER.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -203,7 +238,28 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA51SCRAREA.INC".
+           COPY    "L01.INC".
+           COPY    "L02.INC".
+           COPY    "L03.INC".
+           COPY    "L04.INC".
+           COPY    "L06.INC".
+           COPY    "L07.INC".
+           COPY    "L99.INC".
+           COPY    "L100.INC".
+           COPY    "LERR.INC".
+           COPY    "LID1.INC".
+           COPY    "LID2.INC".
+           COPY    "G01.INC".
+           COPY    "G02.INC".
+           COPY    "G03.INC".
+           COPY    "G05.INC".
+           COPY    "G07.INC".
+           COPY    "G99.INC".
+           COPY    "G100.INC".
+           COPY    "GERR.INC".
+           COPY    "GID1.INC".
+           COPY    "GID2.INC".
+           COPY    "LDMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -270,6 +326,13 @@
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
+               END-IF
+               IF      SPA-GIDCD       NOT =   SPACE
+                   EVALUATE    SPA-GIDCD
+                       WHEN    "2001"
+                           PERFORM 520-GIDSET-SEC
+                           GO  TO  100-INIT-EXT
+                   END-EVALUATE
                END-IF
            END-IF
       *
@@ -356,26 +419,54 @@
            CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
                                                SPA-AREA
       *
+           MOVE    "1"             TO  SPA-GMN-G02-FILE1L        (1)
+           MOVE    "フロッピィ"    TO  SPA-GMN-G02-FILE1MEIL     (1)
+           MOVE    "2"             TO  SPA-GMN-G02-FILE1L        (2)
+           MOVE    "ＭＯ"          TO  SPA-GMN-G02-FILE1MEIL     (2)
+           MOVE    "3"             TO  SPA-GMN-G02-FILE1L        (3)
+           MOVE    "ユーザー指定場所１"
+                                   TO  SPA-GMN-G02-FILE1MEIL     (3)
+           MOVE    "4"             TO  SPA-GMN-G02-FILE1L        (4)
+           MOVE    "ユーザー指定場所２"
+                                   TO  SPA-GMN-G02-FILE1MEIL     (4)
+           MOVE    "5"             TO  SPA-GMN-G02-FILE1L        (5)
+           MOVE    "ユーザー指定場所３"
+                                   TO  SPA-GMN-G02-FILE1MEIL     (5)
+           MOVE    5               TO  SPA-GMN-G02-FILE1-MAX
            IF      SCLIENTSV-CLIENT-SAVE
                                    =   "1"
-               MOVE    "6"             TO  SPA-GMN-G02-FILE1L    (1)
+               MOVE    "6"             TO  SPA-GMN-G02-FILE1L    (6)
                MOVE    "クライアント保存"
-                                       TO  SPA-GMN-G02-FILE1MEIL (1)
-               MOVE    1               TO  SPA-GMN-G02-FILE1-MAX
+                                       TO  SPA-GMN-G02-FILE1MEIL (6)
+               MOVE    6               TO  SPA-GMN-G02-FILE1-MAX
            END-IF
       *
-           MOVE    SPA-GMN-G02-FILE1LST (1)
+           MOVE    SPA-GMN-G02-FILE1LST (3)
                                    TO  SPA-GMN-G02-FILE1-G
       *
+           MOVE    "1"             TO  SPA-GMN-G02-FILE2L        (1)
+           MOVE    "フロッピィ"    TO  SPA-GMN-G02-FILE2MEIL     (1)
+           MOVE    "2"             TO  SPA-GMN-G02-FILE2L        (2)
+           MOVE    "ＭＯ"          TO  SPA-GMN-G02-FILE2MEIL     (2)
+           MOVE    "3"             TO  SPA-GMN-G02-FILE2L        (3)
+           MOVE    "ユーザー指定場所１"
+                                   TO  SPA-GMN-G02-FILE2MEIL     (3)
+           MOVE    "4"             TO  SPA-GMN-G02-FILE2L        (4)
+           MOVE    "ユーザー指定場所２"
+                                   TO  SPA-GMN-G02-FILE2MEIL     (4)
+           MOVE    "5"             TO  SPA-GMN-G02-FILE2L        (5)
+           MOVE    "ユーザー指定場所３"
+                                   TO  SPA-GMN-G02-FILE2MEIL     (5)
+           MOVE    5               TO  SPA-GMN-G02-FILE2-MAX
            IF      SCLIENTSV-CLIENT-SAVE
                                    =   "1"
-               MOVE    "6"             TO  SPA-GMN-G02-FILE2L    (1)
+               MOVE    "6"             TO  SPA-GMN-G02-FILE2L    (6)
                MOVE    "クライアント保存"
-                                       TO  SPA-GMN-G02-FILE2MEIL (1)
-               MOVE    1               TO  SPA-GMN-G02-FILE2-MAX
+                                       TO  SPA-GMN-G02-FILE2MEIL (6)
+               MOVE    6               TO  SPA-GMN-G02-FILE2-MAX
            END-IF
       *
-           MOVE    SPA-GMN-G02-FILE2LST (1)
+           MOVE    SPA-GMN-G02-FILE2LST (3)
                                    TO  SPA-GMN-G02-FILE2-G
       *
            MOVE    "T"             TO  SPA-GMN-G02-DATAKBN1-VALUE
@@ -385,9 +476,8 @@
            MOVE    "F"             TO  SPA-GMN-G02-HOUKATUKBN2-VALUE
            MOVE    "T"             TO  SPA-GMN-G02-KOJINKBN1-VALUE
            MOVE    "F"             TO  SPA-GMN-G02-KOJINKBN2-VALUE
-           MOVE    "T"             TO  SPA-GMN-G02-CDKBN-VALUE (1)
-           MOVE    "F"             TO  SPA-GMN-G02-CDKBN-VALUE (2)
-           MOVE    "F"             TO  SPA-GMN-G02-CDKBN-VALUE (3)
+           MOVE    "T"             TO  SPA-GMN-G02-CDKBN1-VALUE
+           MOVE    "F"             TO  SPA-GMN-G02-CDKBN2-VALUE
       *
            MOVE    1               TO  SPA-GMN-G02-CUR
       *
@@ -409,10 +499,34 @@
       *                ジョブ管理チェック処理
                        PERFORM 4501-JOBKANRI-CHK-SEC
                        IF      SPA-ERRCD      =   SPACE
+                           IF   (( SPA-GMN-G02-FILE1
+                                                   =   "1" OR  "2" ) AND
+                                 ( SPA-GMN-G02-DATAKBN1-VALUE
+                                                   =   "T" OR
+                                   SPA-GMN-G02-DATAKBN2-VALUE
+                                                   =   "T"         )   )
+                           OR   (( SPA-GMN-G02-FILE2
+                                                   =   "1" OR  "2" ) AND
+                                 ( SPA-GMN-G02-DATAKBN1-VALUE
+                                                   =   "T" OR
+                                   SPA-GMN-G02-DATAKBN3-VALUE
+                                                   =   "T"         )   )
+                               MOVE    SPACE           TO  SPA-GID1-FLG
+                               MOVE    "2001"          TO  SPA-GIDCD
+                               GO  TO  330-GID1-SET-EXT
+                           ELSE
+                               PERFORM 500-KAKUTEI-SEC
+                               GO  TO  330-GID1-SET-EXT
+                           END-IF    
+                       END-IF
+                   WHEN    "2001"
+      *                ジョブ管理チェック処理
+                       PERFORM 4501-JOBKANRI-CHK-SEC
+                       IF      SPA-ERRCD      =   SPACE
                            PERFORM 500-KAKUTEI-SEC
                            GO  TO  330-GID1-SET-EXT
-                       END-IF
-                END-EVALUATE
+                       END-IF    
+               END-EVALUATE
            END-IF
       *
            MOVE    SPACE           TO  SPA-G99-FLG
@@ -484,7 +598,6 @@
       *    文字コード
                WHEN    "CLICKED"       ALSO    "CDKBN1"
                WHEN    "CLICKED"       ALSO    "CDKBN2"
-               WHEN    "CLICKED"       ALSO    "CDKBN3"
                    PERFORM 400-CDKBN-SEC
            END-EVALUATE
       *
@@ -640,15 +753,8 @@
       *****************************************************************
        41023-FILE1-CHK-SEC           SECTION.
       *
-           IF      SPA-GMN-G02-FILE1-MAX
-                                       =   ZERO
-               MOVE    "0010"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN-G02-CUR
-               GO  TO  41023-FILE1-CHK-EXT
-           END-IF
-      *
            IF      SPA-GMN-G02-FILE1     =   SPACE
-               MOVE    SPA-GMN-G02-FILE1LST (1)
+               MOVE    SPA-GMN-G02-FILE1LST (3)
                                            TO  SPA-GMN-G02-FILE1-G
            ELSE
                PERFORM VARYING IDX FROM    1   BY  1
@@ -662,7 +768,7 @@
                    END-IF
                END-PERFORM        
                IF      SPA-GMN-G02-FILE1MEI  =   SPACE  
-                   MOVE    SPA-GMN-G02-FILE1LST (1)
+                   MOVE    SPA-GMN-G02-FILE1LST (3)
                                              TO  SPA-GMN-G02-FILE1-G
                END-IF
            END-IF
@@ -675,15 +781,8 @@
       *****************************************************************
        41024-FILE2-CHK-SEC           SECTION.
       *
-           IF      SPA-GMN-G02-FILE1-MAX
-                                       =   ZERO
-               MOVE    "0010"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN-G02-CUR
-               GO  TO  41024-FILE2-CHK-EXT
-           END-IF
-      *
            IF      SPA-GMN-G02-FILE2     =   SPACE
-               MOVE    SPA-GMN-G02-FILE2LST (1)
+               MOVE    SPA-GMN-G02-FILE2LST (3)
                                            TO  SPA-GMN-G02-FILE2-G
            ELSE
                PERFORM VARYING IDX FROM    1   BY  1
@@ -697,7 +796,7 @@
                    END-IF
                END-PERFORM        
                IF      SPA-GMN-G02-FILE2MEI  =   SPACE  
-                   MOVE    SPA-GMN-G02-FILE2LST (1)
+                   MOVE    SPA-GMN-G02-FILE2LST (3)
                                                TO  SPA-GMN-G02-FILE2-G
                END-IF
            END-IF
@@ -883,9 +982,8 @@
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-           MOVE    G02-CDKBN(1)    TO  SPA-GMN-G02-CDKBN-VALUE(1)
-           MOVE    G02-CDKBN(2)    TO  SPA-GMN-G02-CDKBN-VALUE(2)
-           MOVE    G02-CDKBN(3)    TO  SPA-GMN-G02-CDKBN-VALUE(3)
+           MOVE    G02-CDKBN1      TO  SPA-GMN-G02-CDKBN1-VALUE
+           MOVE    G02-CDKBN2      TO  SPA-GMN-G02-CDKBN2-VALUE
       *
            MOVE    1               TO  SPA-GMN-G02-CUR     
            .
@@ -920,7 +1018,7 @@
            MOVE    SPACE           TO  SPA-ERRCD
       *
       *    ジョブ管理チェック処理
-           MOVE    "CH2"           TO  SJOBKANRI-MODE
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    SPA-HOSPNUM     TO JOB-HOSPNUM
            MOVE    WRK-CONS-JOB-JOBID
@@ -960,8 +1058,8 @@
                        UNTIL   IDX <       1
                    IF      ( SPA-GMN-G02-FILENM1 (IDX:1)
                                                =   "/" )
-      *********        MOVE    SPA-GMN-G02-FILENM1 (1:IDX)
-      *********                                TO  WRK-FILENM1-FOLDER
+                       MOVE    SPA-GMN-G02-FILENM1 (1:IDX)
+                                               TO  WRK-FILENM1-FOLDER
                        COMPUTE IDY =   IDX     +   1
                        MOVE    SPA-GMN-G02-FILENM1 (IDY:)
                                                TO  WRK-FILENM1
@@ -970,7 +1068,7 @@
                END-PERFORM
            END-IF
            IF      WRK-FILENM1         =   SPACE
-      *********MOVE    "/home/orca/"        TO  WRK-FILENM1-FOLDER
+               MOVE    "/home/orca/"        TO  WRK-FILENM1-FOLDER
                MOVE    SPA-GMN-G02-FILENM1     TO  WRK-FILENM1
            END-IF             
            IF    ( SPA-GMN-G02-FILE2       =   "6" )
@@ -978,8 +1076,8 @@
                        UNTIL   IDX <       1
                    IF      ( SPA-GMN-G02-FILENM2 (IDX:1)
                                                =   "/" )
-      ********         MOVE    SPA-GMN-G02-FILENM2 (1:IDX)
-      ********                                 TO  WRK-FILENM2-FOLDER
+                       MOVE    SPA-GMN-G02-FILENM2 (1:IDX)
+                                               TO  WRK-FILENM2-FOLDER
                        COMPUTE IDY =   IDX     +   1
                        MOVE    SPA-GMN-G02-FILENM2 (IDY:)
                                                TO  WRK-FILENM2
@@ -988,7 +1086,7 @@
                END-PERFORM
            END-IF
            IF      WRK-FILENM2         =   SPACE
-      ******** MOVE    "/home/orca/"        TO  WRK-FILENM2-FOLDER
+               MOVE    "/home/orca/"        TO  WRK-FILENM2-FOLDER
                MOVE    SPA-GMN-G02-FILENM2     TO  WRK-FILENM2
            END-IF             
       *
@@ -1040,15 +1138,13 @@
            ELSE
                MOVE   SPACE        TO  SYS-1001-REC
            END-IF
+      *    ファイルデイレクトリ位置指定
+           MOVE    "toukei1.sh"    TO  WRK-SHELL-SHELL
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *     
-           MOVE    "toukei1.sh"    TO  SHELLTBL-NAME
-      *
-           MOVE    SPA-HOSPNUM     TO  SHELLTBL-HOSPNUM
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  SHELLTBL-JOBID
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  SHELLTBL-SHELLID
-      *
            MOVE    SPA-TERMID      TO  SHELLTBL-ARG1
            MOVE    SPA-HOSPID      TO  SHELLTBL-ARG2
            MOVE     SYS-1001-HOSPCD
@@ -1082,34 +1178,47 @@
                    MOVE    "2"         TO  SHELLTBL-ARG11
            END-EVALUATE
            EVALUATE    TRUE
-               WHEN    SPA-GMN-G02-CDKBN-VALUE(1) =   "T"
+               WHEN    SPA-GMN-G02-CDKBN1-VALUE    =   "T"
                    MOVE    "1"         TO  SHELLTBL-ARG12
-               WHEN    SPA-GMN-G02-CDKBN-VALUE(2) =   "T"
+               WHEN    SPA-GMN-G02-CDKBN2-VALUE    =   "T"
                    MOVE    "2"         TO  SHELLTBL-ARG12
-               WHEN    SPA-GMN-G02-CDKBN-VALUE(3) =   "T"
-                   MOVE    "3"         TO  SHELLTBL-ARG12
            END-EVALUATE
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG13
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG14
-           MOVE    ERRFLPARA-BASENAME
-                                   TO  SHELLTBL-ARG15
+           MOVE    ERRFLPARA       TO  SHELLTBL-ARG15
            MOVE    SPA-GMN-G02-FILE1   TO  SHELLTBL-ARG16
            MOVE    SPA-GMN-G02-FILE2   TO  SHELLTBL-ARG17
       *    ipアドレス取得
-      *****PERFORM 900-SYSTEM-GET-SEC
-      *****MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG18
+           INITIALIZE                  ORCA-SYSTEM
+           MOVE    "GETVALUE"      TO  MCP-FUNC
+           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
+           MOVE    10              TO  ORCA-SYSTEM-NUM
+           MOVE    "host"          TO  ORCA-SYSTEM-KEY (1)
+           MOVE    ORCA-SYSTEM     TO  MCPDATA-REC 
+           MOVE    "system"        TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"     USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *     CALL    "MONFUNC"          USING
+      *                                MCPAREA
+      *                                MCPDATA-REC
+           MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
+           MOVE    ORCA-SYSTEM-VALUE (1)
+                                   TO  SHELLTBL-ARG18
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG19
-      *****MOVE    WRK-FILENM1-FOLDER
-      *****                        TO  SHELLTBL-ARG20
-      *****MOVE    WRK-FILENM2-FOLDER
-      *****                        TO  SHELLTBL-ARG21
+           MOVE    WRK-FILENM1-FOLDER
+                                   TO  SHELLTBL-ARG20
+           MOVE    WRK-FILENM2-FOLDER
+                                   TO  SHELLTBL-ARG21
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "monthly"       TO  MCP-PATHNAME
+           MOVE    "shell"         TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
                                        MCPDATA-REC
@@ -1342,7 +1451,6 @@
       *
            MOVE    SPACE               TO  G02
       *
-           INITIALIZE                      G02
            MOVE    SPA-GMN-G02-SRYYM       TO  G02-SRYYM
            MOVE    SPA-GMN-G02-FILENM1     TO  G02-FILENM1
            MOVE    SPA-GMN-G02-FILENM2     TO  G02-FILENM2
@@ -1356,9 +1464,8 @@
                                                TO  G02-HOUKATUKBN1
            MOVE    SPA-GMN-G02-HOUKATUKBN2-VALUE
                                                TO  G02-HOUKATUKBN2
-           MOVE    SPA-GMN-G02-CDKBN-VALUE (1) TO  G02-CDKBN(1)
-           MOVE    SPA-GMN-G02-CDKBN-VALUE (2) TO  G02-CDKBN(2)
-           MOVE    SPA-GMN-G02-CDKBN-VALUE (3) TO  G02-CDKBN(3)
+           MOVE    SPA-GMN-G02-CDKBN1-VALUE    TO  G02-CDKBN1
+           MOVE    SPA-GMN-G02-CDKBN2-VALUE    TO  G02-CDKBN2
       *
            MOVE    SPA-GMN-G02-NYUGAIKBN-G     TO  G02-NYUGAIKBN
            PERFORM VARYING IDX FROM    1   BY  1
@@ -1384,13 +1491,6 @@
                                            TO  G02-FILE2-ITEM (IDX)
            END-PERFORM
            MOVE    SPA-GMN-G02-FILE2-MAX   TO  G02-FILE2-COUNT
-      *
-           IF      SPA-GMN-G02-FILE1-MAX
-                                       =   ZERO
-               MOVE    WIDGET-INSENSITIVE  TO  G02-B12-STATE
-           ELSE
-               MOVE    WIDGET-NORMAL       TO  G02-B12-STATE
-           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1486,13 +1586,6 @@
                                                      DELIMITED  BY  SIZE
                                                      INTO  SPA-ERRMSG
                    END-STRING
-               WHEN    "0010"
-                   STRING   "システム管理のクライアント保存"
-                                                   DELIMITED  BY  SIZE
-                            "の指定を有効にして下さい"
-                                                   DELIMITED  BY  SIZE
-                                                   INTO  SPA-ERRMSG
-                   END-STRING
                WHEN    "7777"
                    MOVE    WRK-TOUKEIERR               TO  SPA-ERRMSG
            END-EVALUATE
@@ -1531,13 +1624,15 @@
                                              DELIMITED  BY  SIZE 
                                              INTO  WRK-GIDMSG
                    END-STRING
+               WHEN    "2001"
+                   MOVE    "媒体をドライブにセットして下さい"
+                                       TO  WRK-GIDMSG
                WHEN    "6666"
                    MOVE    "統計データ作成中です"
                                        TO  WRK-GIDMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  GID1
-           INITIALIZE                       GID1
            MOVE    SPA-GIDCD            TO  GID1-ID1CODE
            MOVE    WRK-GIDMSG           TO  GID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -1581,22 +1676,6 @@
            .
       *
        800-MCNDATE-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ipアドレス取得
-      *****************************************************************
-       900-SYSTEM-GET-SEC          SECTION.
-      *
-           INITIALIZE                  SLDUSER-AREA
-           MOVE    2               TO  SLDUSER-KBN
-           MOVE    MCP-TERM        TO  SLDUSER-ID
-           CALL    "ORCSLDUSER"        USING
-                                       SLDUSER-AREA
-                                       SPA-AREA
-      *
-           .
-       900-SYSTEM-GET-EXT.
            EXIT.
       *
       *****************************************************************
