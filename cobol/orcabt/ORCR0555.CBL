@@ -158,6 +158,7 @@
            03  FLG-COMMENT             PIC 9(01).
            03  FLG-KOUI                PIC 9(01).
            03  FLG-TOYAKUFLG           PIC 9(01).
+           03  FLG-RECECOM-XX          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -320,6 +321,7 @@
                                            OCCURS  24.
            03  WRK-COMM                PIC X(2400).
            03  WRK-COMM1               PIC X(2400).
+           03  WRK-COMM-BACK           PIC X(2400). 
            03  WRK-COL                 PIC 9(03). 
            03  WRK-RECECOM             PIC 9(01).
            03  WRK-RECEHEN             PIC 9(01).
@@ -1804,13 +1806,18 @@
                MOVE    80                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
+      *
       *    傷病の経過
+           MOVE    ZERO                TO  FLG-RECECOM-XX
+           MOVE    SPACE               TO  WRK-COMM-BACK
+      *
            INITIALIZE                      RECECOM-REC
            MOVE    RECE41-HOSPNUM      TO  RECECOM-HOSPNUM
            MOVE    RECE41-SRYYM        TO  RECECOM-SRYYM
            MOVE    RECE41-PTID         TO  RECECOM-PTID
            MOVE    RECE41-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
            MOVE    "AA"                TO  RECECOM-SJKBN
+           MOVE    RECE41-HKNCOMBI     TO  RECECOM-HKNCOMBI
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    "tbl_rececom"       TO  MCP-TABLE
            MOVE    "key16"             TO  MCP-PATHNAME
@@ -1820,39 +1827,69 @@
                MOVE    "key16"             TO  MCP-PATHNAME
                PERFORM 900-RECECOM-READ-SEC
            ELSE
-               INITIALIZE                      RECECOM-REC
-               MOVE    1                   TO  FLG-RECECOM
+               INITIALIZE                  RECECOM-REC
+               MOVE    1               TO  FLG-RECECOM
            END-IF
       *
            PERFORM             UNTIL   FLG-RECECOM   =   1
                IF      RECECOM-HKNCOMBI    =   RECE41-HKNCOMBI
-                   MOVE    RECECOM-COMMENT     TO  WRK-COMM
-                   IF      WRK-COMM (1:1)      =   WRK-CONS-RETURN
-                       CONTINUE
-                   ELSE             
-                       INSPECT WRK-COMM    TALLYING    WRK-COL
-                                           FOR ALL WRK-CONS-RETURN
-                       IF      WRK-COL         >   ZERO
-                           PERFORM VARYING IDX FROM    1   BY  1
-                                   UNTIL   IDX >
-                                           WRK-CONS-RECECOM-LENGTH-MAX
-                               IF      WRK-COMM(IDX:1) =
-                                                       WRK-CONS-RETURN
-                                   COMPUTE IDY1    =   IDX     -   1
-                                   MOVE    WRK-COMM (1:IDY1)
-                                                       TO  WRK-DATA
-                                   MOVE    WRK-CONS-RECECOM-LENGTH-MAX
-                                                       TO  IDX
-                               END-IF
-                           END-PERFORM
-                       ELSE
-                           MOVE    WRK-COMM        TO  WRK-DATA
-                       END-IF
-                       MOVE    100                 TO  WRK-NAGASA
-                       MOVE    1                   TO  FLG-RECECOM
-                   END-IF
-               END-IF
+                   MOVE    RECECOM-COMMENT TO  WRK-COMM
+                   MOVE    ZERO            TO  WRK-RECEHEN
+                   PERFORM     UNTIL       WRK-RECEHEN  =   1      
+                       MOVE    SPACE           TO  WRK-COMM1
+                       MOVE    ZERO            TO  WRK-COL
       *
+                       IF      WRK-COMM (1:1)  =   WRK-CONS-RETURN
+                           MOVE    WRK-COMM (2:)   TO  WRK-COMM1
+                       ELSE             
+                           INSPECT WRK-COMM    TALLYING    WRK-COL
+                                               FOR ALL WRK-CONS-RETURN
+                           IF      WRK-COL         >   ZERO
+                               PERFORM VARYING IDX FROM    1   BY  1
+                                       UNTIL   IDX >
+                                           WRK-CONS-RECECOM-LENGTH-MAX
+                                  IF       WRK-COMM(IDX:1) =
+                                                       WRK-CONS-RETURN
+                                       COMPUTE IDY1    =   IDX     -   1
+                                       COMPUTE IDY2    =   IDX     +   1
+                                       STRING  WRK-COMM-BACK
+                                                   DELIMITED  BY  SPACE
+                                               WRK-COMM (1:IDY1)
+                                                   DELIMITED  BY  SPACE
+                                                   INTO  WRK-DATA
+                                       END-STRING
+                                       MOVE    WRK-COMM (IDY2:)
+                                                           TO  WRK-COMM1
+                                       MOVE
+                                           WRK-CONS-RECECOM-LENGTH-MAX
+                                                           TO  IDX
+                                   END-IF
+                               END-PERFORM
+                           ELSE
+                               STRING  WRK-COMM-BACK
+                                                   DELIMITED  BY  SPACE
+                                       WRK-COMM    DELIMITED  BY  SPACE
+                                                   INTO  WRK-DATA
+                               END-STRING
+                               MOVE    1           TO  WRK-RECEHEN
+                           END-IF
+      *
+                           IF      WRK-DATA        NOT =   SPACE
+                               IF      WRK-DATA (101:) NOT =   SPACE
+      *                            ５０文字を超えていたら症状詳記に記載
+                                   MOVE    1       TO  FLG-RECECOM-XX
+                                   MOVE    1       TO  WRK-RECEHEN
+                                   MOVE    1       TO  FLG-RECECOM
+                               ELSE
+                                   MOVE    WRK-DATA
+                                                   TO  WRK-COMM-BACK
+                               END-IF 
+                               MOVE    100         TO  WRK-NAGASA
+                           END-IF
+                       END-IF  
+                       MOVE    WRK-COMM1       TO  WRK-COMM
+                   END-PERFORM
+               END-IF    
                IF      FLG-RECECOM             =   ZERO
                    MOVE    "tbl_rececom"       TO  MCP-TABLE
                    MOVE    "key16"             TO  MCP-PATHNAME
@@ -1863,6 +1900,9 @@
            MOVE    "key16"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
+           IF      FLG-RECECOM-XX      =   1
+               MOVE    "症状詳記に記載"    TO  WRK-DATA
+           END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    小計点数
            MOVE    RECE41-TOTALTEN     TO  WRK-NUM
@@ -4835,6 +4875,13 @@
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key12"             TO  WRK-MCP-PATHNAME
            PERFORM 2009-RECECOM-HENSYU-SEC
+      *
+      *    傷病の経過（５０文字を超えるとき）
+           IF      FLG-RECECOM-XX      =   "1"
+               MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+               MOVE    "key16"             TO  WRK-MCP-PATHNAME
+               PERFORM 2009-RECECOM-HENSYU-SEC
+           END-IF
            .
        2009-COMMENT-HEN-99-EXT.
            EXIT.
@@ -4849,6 +4896,11 @@
            MOVE    RECE41-SRYYM        TO  RECECOM-SRYYM
            MOVE    RECE41-PTID         TO  RECECOM-PTID
            MOVE    RECE41-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
+           IF      WRK-MCP-PATHNAME    =   "key16"
+      *        傷病の経過
+               MOVE    "AA"                TO  RECECOM-SJKBN
+           END-IF
+      * 
       * 
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
@@ -4961,6 +5013,9 @@
            MOVE    ZERO            TO  WRK-RECEHEN
            IF      RECECOM-SJKBN   =   "07"    OR  "08"    OR  "09"
                MOVE    "07"            TO  RECECOM-SJKBN
+           END-IF 
+           IF      RECECOM-SJKBN   =   "AA"
+               MOVE    "90"            TO  RECECOM-SJKBN
            END-IF 
            IF      RECECOM-SJKBN   NOT =   WRK-RECECOM-SJKBN
                MOVE   RECECOM-SJKBN        TO  WRK-RECECOM-SJKBN
