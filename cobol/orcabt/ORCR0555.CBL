@@ -1780,7 +1780,8 @@
                        WHEN    "1"
                            MOVE    "≈‘"            TO  WRK-PREFKBN
                        WHEN    "2"
-                           MOVE    "∆ª"            TO  WRK-PREFKBN
+      **********           MOVE    "∆ª"            TO  WRK-PREFKBN
+                           MOVE    SPACE           TO  WRK-PREFKBN
                        WHEN    "3"
                            MOVE    "…‹"            TO  WRK-PREFKBN
                        WHEN    "4"
