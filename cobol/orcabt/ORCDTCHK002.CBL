@@ -6134,20 +6134,8 @@
       *    病名編集処理（疑いフラグを考慮して文字数を求める）
            PERFORM 2001121-PTBYO-BYOMEI-HEN-SEC
       *
-           IF    ( SYS-2005-SYUBYOHENFLG   =   "0" )
-               IF    ( CNT-BYOMEIMOJI      >   40 )
-                   MOVE    2           TO  FLG-PTBYO-LEN-ERR
-               END-IF
-           ELSE
-               IF    ( PTBYO-SYUBYOFLG     =   "1" )
-                   IF    ( CNT-BYOMEIMOJI  >   34 )
-                       MOVE    1           TO  FLG-PTBYO-LEN-ERR
-                   END-IF
-               ELSE
-                   IF    ( CNT-BYOMEIMOJI  >   40 )
-                       MOVE    2           TO  FLG-PTBYO-LEN-ERR
-                   END-IF
-               END-IF
+           IF    ( CNT-BYOMEIMOJI      >   40 )
+               MOVE    2           TO  FLG-PTBYO-LEN-ERR
            END-IF
       *
            IF    ( FLG-PTBYO-LEN-ERR       NOT =   ZERO )
@@ -12754,13 +12742,40 @@
            INITIALIZE                  ORCXKANACONVAREA
       *
            IF  ( WRK-KANACHK-MAE-INPUT =   SPACE )
-               GO  TO  800-ZENKAKU-CHK-EXT
+               GO  TO  800-HANKAKU-CHK-EXT
            END-IF
       *
            MOVE    300                 TO  KANACONV-LEN
            MOVE    1000                TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    112                 TO  KANACONV-CHAR-TYPE
+           MOVE    WRK-KANACHK-MAE-INPUT
+                                       TO  KANACONV-INDATA
+           CALL    "kanaconv"          USING ORCXKANACONVAREA
+           MOVE    KANACONV-RETURN     TO  FLG-KANACHK
+           MOVE    KANACONV-MAXLEN     TO  WRK-MAXLEN
+      *
+           .
+       800-HANKAKU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    全角ェック
+      *****************************************************************
+       800-ZENKAKU-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-KANACHK
+           MOVE    ZERO                TO  WRK-MAXLEN
+      *
+           INITIALIZE                  ORCXKANACONVAREA
+      *
+           IF  ( WRK-KANACHK-MAE-INPUT =   SPACE )
+               GO  TO  800-ZENKAKU-CHK-EXT
+           END-IF
+      *
+           MOVE    300                 TO  KANACONV-LEN
+           MOVE    1000                TO  KANACONV-STLEN
+           MOVE    0                   TO  KANACONV-CONV-FLAG
+           MOVE    15                  TO  KANACONV-CHAR-TYPE
            MOVE    WRK-KANACHK-MAE-INPUT
                                        TO  KANACONV-INDATA
            CALL    "kanaconv"          USING ORCXKANACONVAREA
@@ -12779,33 +12794,6 @@
                    MOVE    2           TO  FLG-KANACHK
                END-IF
            END-IF
-           MOVE    KANACONV-MAXLEN     TO  WRK-MAXLEN
-      *
-           .
-       800-HANKAKU-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    全角ェック
-      *****************************************************************
-       800-ZENKAKU-CHK-SEC             SECTION.
-      *
-           MOVE    ZERO                TO  FLG-KANACHK
-           MOVE    ZERO                TO  WRK-MAXLEN
-      *
-           INITIALIZE                  ORCXKANACONVAREA
-      *
-           IF  ( WRK-KANACHK-MAE-INPUT =   SPACE )
-               GO  TO  800-HANKAKU-CHK-EXT
-           END-IF
-      *
-           MOVE    300                 TO  KANACONV-LEN
-           MOVE    1000                TO  KANACONV-STLEN
-           MOVE    0                   TO  KANACONV-CONV-FLAG
-           MOVE    15                  TO  KANACONV-CHAR-TYPE
-           MOVE    WRK-KANACHK-MAE-INPUT
-                                       TO  KANACONV-INDATA
-           CALL    "kanaconv"          USING ORCXKANACONVAREA
-           MOVE    KANACONV-RETURN     TO  FLG-KANACHK
            MOVE    KANACONV-MAXLEN     TO  WRK-MAXLEN
       *
            .
