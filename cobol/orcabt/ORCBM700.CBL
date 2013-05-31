@@ -1560,7 +1560,7 @@
            IF      WRK-PARA-DATAKBN    =   "5"
                IF      WRK-PARA-PRTKBN     =   "1"
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "Rousai_"           DELIMITED  BY  SIZE
+                           "_Rousai_"          DELIMITED  BY  SIZE
                            LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
                            ".zip"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
@@ -1572,12 +1572,12 @@
                    END-STRING
                ELSE
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "TRousai_"          DELIMITED  BY  SIZE
+                           "_TRousai_"         DELIMITED  BY  SIZE
                            LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
                            ".zip"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
                    END-STRING
-                   STRING  "TRousai_"           DELIMITED  BY  SIZE
+                   STRING  "TRousai_"          DELIMITED  BY  SIZE
                            LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
                            ".zip"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-TO-DATA (1)
@@ -1586,7 +1586,7 @@
            ELSE
                IF      WRK-PARA-PRTKBN     =   "1"
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "Rousai_"           DELIMITED  BY  SIZE
+                           "_Rousai_"          DELIMITED  BY  SIZE
                            LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
                            ".iso"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
@@ -1598,7 +1598,7 @@
                    END-STRING
                ELSE
                    STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                           "TRousai_"          DELIMITED  BY  SIZE
+                           "_TRousai_"         DELIMITED  BY  SIZE
                            LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
                            ".iso"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)

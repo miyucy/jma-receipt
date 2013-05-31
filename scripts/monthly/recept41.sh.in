@@ -82,9 +82,9 @@ fi
     fi
 
     if  [ ${21} -eq '2' ]; then
-        ROUSAI_FOLDER="${20}TRousai_${5}"
+        ROUSAI_FOLDER="${20}_TRousai_${5}"
     else
-        ROUSAI_FOLDER="${20}Rousai_${5}"
+        ROUSAI_FOLDER="${20}_Rousai_${5}"
     fi
     OUT_FOLDER="/tmp/$ROUSAI_FOLDER/"
 
