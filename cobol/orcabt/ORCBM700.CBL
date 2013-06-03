@@ -1565,7 +1565,8 @@
                            ".zip"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
                    END-STRING
-                   STRING  "Rousai_"           DELIMITED  BY  SIZE
+                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                           "_Rousai_"          DELIMITED  BY  SIZE
                            LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
                            ".zip"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-TO-DATA (1)
@@ -1577,7 +1578,8 @@
                            ".zip"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-FOR-DATA(1)
                    END-STRING
-                   STRING  "TRousai_"          DELIMITED  BY  SIZE
+                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                           "_TRousai_"         DELIMITED  BY  SIZE
                            LNK-PRTKANRI-SRYYM  DELIMITED  BY  SIZE
                            ".zip"              DELIMITED  BY  SIZE
                                                INTO  SFILESV-TO-DATA (1)
