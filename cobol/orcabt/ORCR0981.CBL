@@ -7380,7 +7380,7 @@
                          UNTIL   ( IDX                >   5     )
                          OR      ( RECE851-SRYCD(IDX) =   SPACE )
                  IF   RECE851-MEISKYFLG(IDX)  =  "2"
-                   IF      RECE851-SRYYM  >=  "201204"
+                   IF      RECE851-SRYYM  >=  "201307"
                     IF     RECE851-SETCOMATFLG(IDX) = ZERO
                       IF   (FLG-SETCOM              =  1   )
                       AND  (RECE851-RECEDENFLG(IDX) = SPACE)
@@ -7457,6 +7457,7 @@
                     MOVE   1       TO  FLG-MEISKY-OKIKAE
                    END-IF
                  ELSE
+                   IF      RECE851-SRYYM  >=  "201307"
                     IF   (RECE851-SRYCD(IDX)(1:1) = "1" OR "6" OR "7")
                     OR   (RECE851-SRYCD(IDX)(1:3) = "059"            )
                       MOVE   1               TO  FLG-SETCOM
@@ -7525,13 +7526,20 @@
       *107
                           "180039030" OR "180036030" OR "180039130" OR
                           "180039230" OR "180039330" OR "180036130" OR
-                          "180039430" OR "180039530" OR
+                          "180039430" OR "180039530"               )
       *
+      *16
+                    OR   (RECE851-SRYCD(IDX) =
+                          "101800230" OR "101800240" OR "101800250" OR
+                          "101800260" OR "101800270" OR "101800280" OR
+                          "101800290" OR "101800330" OR "101800340" OR
+                          "101800350"                              )
       *204
-                          "101110040" OR
+                    OR   (RECE851-SRYCD(IDX) = "101110040"         )
       *301
-                          "101110020" OR "101800880"         )
-                    OR   (RECE851-SRYCD(IDX)(1:5)  =  "09593")
+                    OR   (RECE851-SRYCD(IDX) = "101800880"         )
+      *
+                    OR   (RECE851-SRYCD(IDX)(1:5)  =  "09593"      )
       *
                        MOVE   RECE851-RENNUM  TO  WRK-HEN-RENNUM-J
                        MOVE   IDX       TO  WRK-HEN-SHORI-RENNUM-J
@@ -7546,6 +7554,7 @@
                        MOVE   IDX       TO  WRK-HEN-SHORI-RENNUM-J2
                        MOVE   ZERO            TO  WRK-HEN-SEQNO-J2
                     END-IF
+                   END-IF
                  END-IF
                END-PERFORM
       *
