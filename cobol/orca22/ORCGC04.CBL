@@ -1480,7 +1480,6 @@
                    MOVE    SPACE   TO  SPA-NAI-C04-BYOMEITOP (IDX3)
                WHEN    "7"
                WHEN    "0"
-           DISPLAY "TUSERBYOMEIFLG=" SPA-C01-TUSERBYOMEIFLG (IDW) " "
                    IF      SPA-C01-TUSERBYOMEIFLG (IDW)
                                                    =   "1"
                        EVALUATE    SPA-NAI-C04-BYOMEISBT (IDW)
