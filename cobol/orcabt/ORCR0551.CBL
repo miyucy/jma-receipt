@@ -419,6 +419,9 @@
            03  WRK-TENSU-SRYCD               PIC X(09).
            03  WRK-TENSU-SRYYM               PIC X(06).
       *
+           03  WRK-ZAIKAISUX                 PIC Z9.
+           03  WRK-TNSKAI                    PIC X(10).
+      *
        01  WRK-ERR-AREA.
            03  WRK-RECEERR             PIC X(200).
            03  WRK-ERRMSG              PIC X(300).
@@ -1359,6 +1362,13 @@
            IF     TBL-ZAISIEN-COMMENT   NOT =  ZERO
                PERFORM     2001-ZAISIEN-COMMENT-SEC
            END-IF
+      *
+      *+++++++++++++++++++++++++++++++++++++++++++++++++
+      *    外来管理加算（特)のコメント（レセ電用）
+           IF     RECE41-GAITOKU-PRTKBN1    =  "1"
+               PERFORM     2001-GAITOK-COMMENT-SEC
+           END-IF
+      *+++++++++++++++++++++++++++++++++++++++++++++++++
       *
       *    パラメータ０４ファイルより編集
            PERFORM 800-RECE41-SET44-SEC
@@ -3650,6 +3660,60 @@
       *
            .
        2001-ZAISIEN-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来管理加算（特)のコメント編集（レセ電用）
+      *****************************************************************
+       2001-GAITOK-COMMENT-SEC          SECTION.
+      *
+           PERFORM 800-RECE41-SET449-SEC
+           MOVE    99999986            TO  RECE449-ZAINUM
+           MOVE    "99"                TO  RECE449-SRYKBN
+           MOVE    1                   TO  RECE449-MEISAISU
+      *
+           MOVE    RECE41-HKNCOMBI     TO  RECE449-HKNCOMBI
+           PERFORM 800-RECE449-WRITE-SEC
+      *
+           PERFORM 800-RECE41-SET459-SEC
+           MOVE    99999986            TO  RECE459-ZAINUM
+           MOVE    "99"                TO  RECE459-SRYKBN
+      *
+      *    「（特)　５２×回数」のコメント挿入
+           MOVE    SPACE               TO  WRK-RECE45XX-REC
+           INITIALIZE                      WRK-RECE45XX-REC
+           MOVE    "810000001"         TO  WRK-RECE45XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE45XX-SRYSURYO(1 1)
+           MOVE    9                   TO  WRK-RECE45XX-YUKOKETA(1 1)
+      *
+           MOVE    "（特）　"          TO  WRK-RECE45XX-NAME(1 1)(1:8)
+      *
+           MOVE    "　　　　　"    TO  WRK-TNSKAI
+           MOVE    RECE41-GAITOKU-KAISU1
+                                   TO  WRK-ZAIKAISUX
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"             TO  KANACHK-SYORI
+           MOVE    "52"            TO  KANACHK-MAE-INPUT (1:2)
+           MOVE    "X"             TO  KANACHK-MAE-INPUT (3:1)
+           MOVE    WRK-ZAIKAISUX   TO  KANACHK-MAE-INPUT (4:2)
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           IF      KANACHK-RC      =   ZERO
+           AND     KANACHK-MAX     >   ZERO
+             MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                   TO  WRK-TNSKAI
+             MOVE    "×"          TO  WRK-TNSKAI(5:2)
+           END-IF
+           MOVE    WRK-TNSKAI          TO  WRK-RECE45XX-NAME(1 1)(9:10)
+      *
+           MOVE    "1"                 TO  WRK-RECE45XX-RECEPTFLG(1 1)
+      *
+           MOVE    "2"                 TO  WRK-RECE45XX-SIKFLG(1 1)
+           MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
+                                       TO  RECE459-SRYACT-TBL(1)
+           PERFORM 800-RECE459-WRITE-SEC
+      *
+           .
+       2001-GAITOK-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
