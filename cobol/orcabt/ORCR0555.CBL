@@ -552,6 +552,12 @@
                05  WRK-KOUI-KASAN-TAIHI-TIMEKSNKBN
                                                 PIC  9(01).
       *
+      *    ¿ÇÎÅ¹Ô°Ù¥Ç¡¼¥¿ÍÑ¥Æ¡¼¥Ö¥ë¡ÊÏ«ºÒÆÃÊÌ²Ã»»¹àÌÜ¡Ë
+       01  WRK-KOUI-RSI-KASAN-TAIHI-AREA.
+           03  WRK-KOUI-RSI-KASAN-TAIHI-TABLE   OCCURS  5.
+               05  WRK-KOUI-RSI-KASAN-TAIHI-REC PIC X(500).
+           03  WRK-KOUI-RSI-KASAN-TAIHI-MAX     PIC 9(02).
+      *
       *    ¿ÇÎÅ¹Ô°Ù¥Ç¡¼¥¿ÍÑ¥Æ¡¼¥Ö¥ë¡Ê¹ð¼¨Åù¼±ÊÌ¶èÊ¬¤Ë¤è¤ëµ­Ï¿½ç¡Ë
        01  WRK-KOUI-TAIHI-AREA.
            03  WRK-KOUI-TAIHI-TABLE             OCCURS  100.
@@ -578,7 +584,7 @@
       *
       *   
        01  WRK-KOUI-AREA.
-           03  WRK-KOUI-TABLE                   OCCURS  5.
+           03  WRK-KOUI-TABLE                   OCCURS  4.
                05  WRK-KOUI-TBLMAX              PIC 9(03).
                05  WRK-KOUI-REC                     OCCURS  100.
                    07  WRK-KOUI-KEY.
@@ -3003,6 +3009,7 @@
            INITIALIZE                  WRK-KOUI-AREA
                                        WRK-KOUI-TAIHI-AREA
                                        WRK-KOUI-KASAN-TAIHI-AREA
+                                       WRK-KOUI-RSI-KASAN-TAIHI-AREA
                                        WRK-KOUI-SRY-TAIHI-AREA
                                        WRK-SRYKBN40-KOKUJISKBKBN1
       *
@@ -3039,6 +3046,16 @@
                                                TO
                                    WRK-KOUI-KASAN-TAIHI-TIMEKSNKBN
                                                             (IDWW)
+               END-IF
+      *
+      *        Ï«ºÒÆÃÊÌ²Ã»»¹àÌÜ¤¬¤¢¤ë¤«
+               IF    ( TBL-KOUI-KOKUJISKBKBN1 (IDX)
+                                           =   "8"         )
+                   ADD     1                   TO
+                                          WRK-KOUI-RSI-KASAN-TAIHI-MAX
+                   MOVE    TBL-KOUI-REC  (IDX) TO
+                                   WRK-KOUI-RSI-KASAN-TAIHI-REC
+                                       (WRK-KOUI-RSI-KASAN-TAIHI-MAX)
                END-IF
       *
       *        ½èÃÖ¤Î²Ã»»¹àÌÜ¤ÎÍ­Ìµ                
@@ -3211,7 +3228,6 @@
                        OR    ( WRK-KOUI-TBLMAX (2) >  ZERO )
                        OR    ( WRK-KOUI-TBLMAX (3) >  ZERO )
                        OR    ( WRK-KOUI-TBLMAX (4) >  ZERO )
-                       OR    ( WRK-KOUI-TBLMAX (5) >  ZERO )
                            PERFORM 200741-KASAN-HENSYU-SEC
                        END-IF
                        ADD     1           TO  IDY   
@@ -3236,7 +3252,6 @@
                                    OR    ( WRK-KOUI-TBLMAX (2) >  ZERO )
                                    OR    ( WRK-KOUI-TBLMAX (3) >  ZERO )
                                    OR    ( WRK-KOUI-TBLMAX (4) >  ZERO )
-                                   OR    ( WRK-KOUI-TBLMAX (5) >  ZERO )
                                        PERFORM 200741-KASAN-HENSYU-SEC
                                    END-IF
                                    MOVE    1               TO  IDZ  
@@ -3279,8 +3294,6 @@
                                    ELSE
                                        MOVE    4           TO  IDZ
                                    END-IF  
-                               WHEN    "8" 
-                                   MOVE    5           TO  IDZ
                            END-EVALUATE
                            IF      IDZ         >   ZERO
                                ADD     1           TO
@@ -3300,7 +3313,6 @@
            OR    ( WRK-KOUI-TBLMAX (2) >  ZERO )
            OR    ( WRK-KOUI-TBLMAX (3) >  ZERO )
            OR    ( WRK-KOUI-TBLMAX (4) >  ZERO )
-           OR    ( WRK-KOUI-TBLMAX (5) >  ZERO )
                PERFORM 200741-KASAN-HENSYU-SEC
            END-IF
            .
@@ -3333,11 +3345,11 @@
                END-PERFORM
            END-IF    
       *
-      *    ´ðËÜ¹àÌÜ¡¦Ãí²Ã»»¹àÌÜ¡¦ÄÌÂ§²Ã»»¹àÌÜ¡¦Ï«ºÒÆÃÊÌ²Ã»»¹àÌÜ¤Î½ç¤ËÊÔ½¸
+      *    ´ðËÜ¹àÌÜ¡¦Ãí²Ã»»¹àÌÜ¡¦ÄÌÂ§²Ã»»¹àÌÜ¤Î½ç¤ËÊÔ½¸
            MOVE    ZERO            TO  WRK-KIHON-TIMEKSNKBN
       *
            PERFORM VARYING IDY1    FROM    1   BY  1
-                   UNTIL   IDY1    >       5
+                   UNTIL   IDY1    >       4
                MOVE    WRK-KOUI-TBLMAX (IDY1)  TO  IDYY
                PERFORM VARYING IDY2    FROM    1   BY  1
                        UNTIL   IDY2    >       IDYY
@@ -3375,6 +3387,15 @@
                                            TO  WRK-KOUI-TAIHI-REC  (IDY)
                    MOVE    IDY             TO  WRK-SRYCD1-MAX
                END-IF    
+           END-PERFORM
+      *
+      *    Ï«ºÒÆÃÊÌ²Ã»»¹àÌÜ¤ÎÊÔ½¸
+           PERFORM VARYING IDY1    FROM    1   BY  1
+                   UNTIL   IDY1    >       WRK-KOUI-RSI-KASAN-TAIHI-MAX
+               ADD     1               TO  IDY
+               MOVE    WRK-KOUI-RSI-KASAN-TAIHI-REC (IDY1)
+                                           TO  WRK-KOUI-TAIHI-REC  (IDY)
+               MOVE    IDY             TO  WRK-SRYCD1-MAX
            END-PERFORM
       *
            INITIALIZE                   WRK-KOUI-AREA
