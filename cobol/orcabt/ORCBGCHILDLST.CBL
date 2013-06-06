@@ -31,8 +31,6 @@
       *  04.05.01    NACL-Æ£¸¶    10/07/07  £²£µÆüÀÁµáÂÐ±þ
       *
       *  04.06.01    NACL-Æ£¸¶    13/06/05  Âà¿¦¹ñÊÝ¤ÎÊÝ¸±¼ÔÈÖ¹æ¤òµ­ºÜ¤¹¤ë
-      *
-      *  04.07.01    NACL-Æ£¸¶    12/01/24  monpe-0.6.20ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -52,9 +50,6 @@
        01  BUNBENERR-REC           PIC X(200).
       *
        WORKING-STORAGE             SECTION.
-      *
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
-                                   BY         //BUNBENERR//.
       *
            COPY    "HCMSL55.INC".
       *
@@ -109,6 +104,7 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
+           03  BUNBENERR           PIC X(100).
            03  WRK-PARA-SKYYM      PIC X(06).
            03  WRK-PARA-SKYKBN     PIC X(01).
       *
@@ -175,14 +171,14 @@
        01  BODY-01.
            03  B01-FIL1                PIC X(2).
            03  B01-HKNJANUM            PIC X(10).
-           03  B01-BUNBENKBN           PIC X(12).
+           03  B01-BUNBENKBN           PIC X(10).
            03  B01-PTNUM               PIC X(20).
            03  B01-NAME                PIC X(40).
            03  B01-FIL2                PIC X(01).
            03  B01-BIRTHDAY            PIC X(09).
            03  B01-FIL3                PIC X(03).
            03  B01-TEISYUTUBIKBN       PIC X(08).
-           03  B01-FIL4                PIC X(09).
+           03  B01-FIL4                PIC X(08).
            03  B01-DAIRI-MONEY         PIC X(10).
       *
        01  BODY-02.
@@ -246,9 +242,6 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
       *
@@ -294,8 +287,6 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
            MOVE    LOW-VALUE       TO  KEY-AREA
-      *
-           INITIALIZE                  BUNBENERR
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -347,12 +338,6 @@
                                    TO  JOB-SHELLMSG
       *
            PERFORM 900-CALL-ORCSJOB-SEC
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    BUNBENERR       TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  BUNBENERR
       *
       *    ÀÁµáÇ¯·îÊÔ½¸
            IF      WRK-PARA-SKYYM  =   "000000"
