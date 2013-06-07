@@ -31,6 +31,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.06.01    NACL-藤原    13/04/30  「傷病の経過」記載対応
+      *  04.06.02    NACL-門脇    13/06/07  合計額ワーク領域のクリア
       *
       *  04.07.01    NACL-藤原    13/05/27  症状詳記の表題を平成２５年７月
       *                                     診療分以降は全て記載
@@ -1063,6 +1064,7 @@
                MOVE    WRK-HENYMDG         TO  HCM71-KENSAYMD
            END-IF     
       *    合計額
+           MOVE    ZERO                TO  WRK-GOKEI
            COMPUTE WRK-GOKEI   =   RECE41-TOTALKIN
                                +   RECE41-TOTALKIN2
            MOVE    WRK-GOKEI           TO  WRK-KHNTENZ
