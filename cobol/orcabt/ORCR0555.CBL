@@ -2239,7 +2239,6 @@
                  AND   ( RECE45-MEISKYFLG (IDX)
                                             NOT =   "2"   )
                    IF    ( RECE45-SRYCD (IDX) (1:3) = "059"   )
-                   OR    ( RECE45-SRYCD (IDX) (1:5) = "09593" )
                        MOVE    "777770000"      TO  RECE45-SRYCD (IDX)
                    END-IF
       *

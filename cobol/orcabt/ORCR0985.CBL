@@ -2375,8 +2375,28 @@
                  AND   ( RECE85-MEISKYFLG (IDX)
                                             NOT =   "2"   )
                    IF    ( RECE85-SRYCD (IDX) (1:3) = "059"   )
-                   OR    ( RECE85-SRYCD (IDX) (1:5) = "09593" )
                        MOVE    "777770000"      TO  RECE85-SRYCD (IDX)
+                   END-IF
+      *
+                   IF    ( RECE85-SRYCD (IDX) (1:5) = "09594" )
+                     EVALUATE  RECE85-SRYCD(IDX)(6:2)
+                       WHEN      "01"
+                         MOVE  "101800390"      TO  RECE85-SRYCD (IDX)
+                       WHEN      "02"
+                         MOVE  "101800400"      TO  RECE85-SRYCD (IDX)
+                       WHEN      "03"
+                         MOVE  "101800410"      TO  RECE85-SRYCD (IDX)
+                       WHEN      "04"
+                         MOVE  "101800420"      TO  RECE85-SRYCD (IDX)
+                       WHEN      "07"
+                         MOVE  "101800430"      TO  RECE85-SRYCD (IDX)
+                       WHEN      "08"
+                         MOVE  "101800440"      TO  RECE85-SRYCD (IDX)
+                       WHEN      "09"
+                         MOVE  "101800450"      TO  RECE85-SRYCD (IDX)
+                       WHEN      "10"
+                         MOVE  "101800460"      TO  RECE85-SRYCD (IDX)
+                     END-EVALUATE
                    END-IF
       *
                    EVALUATE    RECE85-SRYCD (IDX) (1:1)
