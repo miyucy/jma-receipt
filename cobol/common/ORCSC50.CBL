@@ -34,8 +34,6 @@
       *  01.00.04    NACL-Â¿¡¹Ç¼  06/03/16  £È£±£¸Ç¯£´·î²þÀµÄÉ²Ã
       *  04.02.00    NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµÄÉ²Ã
       *  04.05.00    NACL-Â¿¡¹Ç¼  10/03/XX  £È£²£²Ç¯£´·î²þÀµÄÉ²Ã
-      *  04.07.00    NACL-Â¿¡¹Ç¼  14/03/XX  £È£²£¶Ç¯£´·î²þÀµÄÉ²Ã
-      *  04.07.00    NACL-Â¿¡¹Ç¼  14/03/XX  £È£²£¸Ç¯£´·î²þÀµÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -134,32 +132,8 @@
                                                SPA-AREA
       *
                WHEN   (SPA-SRYYMD          >=  "20130701" )  AND
-                      (SPA-SRYYMD          <   "20140401" )
-                   CALL    "ORCSC50201307"     USING
-                                               MCPAREA
-                                               ORCSC00AREA
-                                               WRK-SCR-REC
-                                               SPA-AREA
-      *
-               WHEN   (SPA-SRYYMD          >=  "20140401" )  AND
-                      (SPA-SRYYMD          <   "20160401" )
-                   CALL    "ORCSC50201404"     USING
-                                               MCPAREA
-                                               ORCSC00AREA
-                                               WRK-SCR-REC
-                                               SPA-AREA
-      *
-               WHEN   (SPA-SRYYMD          >=  "20160401" )  AND
-                      (SPA-SRYYMD          <   "20180401" )
-                   CALL    "ORCSC50201604"     USING
-                                               MCPAREA
-                                               ORCSC00AREA
-                                               WRK-SCR-REC
-                                               SPA-AREA
-      *
-               WHEN   (SPA-SRYYMD          >=  "20180401" )  AND
                       (SPA-SRYYMD          <   "99999999" )
-                   CALL    "ORCSC50201804"     USING
+                   CALL    "ORCSC50201307"     USING
                                                MCPAREA
                                                ORCSC00AREA
                                                WRK-SCR-REC
