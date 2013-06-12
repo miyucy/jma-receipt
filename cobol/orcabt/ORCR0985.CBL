@@ -1355,7 +1355,7 @@
       *    合計金額の退避
            MOVE    ZERO            TO  FLG-TOTALKIN
            COMPUTE SUM-TOTALKIN    =   RECE82-TOTALKIN
-                                   +   RECE82-TOTALKIN2
+                                   +   RECE82-KINGAKU2-SYO
                                    +   RECE82-SHOKUJITOTALKIN
       *
       *    レセプト共通レコード
@@ -1898,7 +1898,7 @@
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    小計金額（ロ）
-           MOVE    RECE82-TOTALKIN2    TO  WRK-NUM
+           MOVE    RECE82-KINGAKU2-SYO TO  WRK-NUM
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    食事療養合計回数
