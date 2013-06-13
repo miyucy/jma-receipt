@@ -157,6 +157,7 @@
            03  WRK-VOLNUM              PIC 9(02).
       *    •Ï•ª•◊•»»÷πÊ
            03  WRK-RECENUM             PIC 9(06).
+           03  WRK-RECENUM-VOL         PIC 9(06).
            03  WRK-RECENUM-ALL         PIC 9(06).
       *    ¿¡µ·«Ø∑Ó∆¸° œ¬ŒÒ°À
            03  WRK-SKYYMD              PIC 9(07).
@@ -594,6 +595,19 @@
            PERFORM                 UNTIL   FLG-END     =   1
                                    OR      KEY-NEW NOT =   KEY-OLD
       *
+      *        •Ï•ª•◊•»∑ÔøÙ§¨£π£π£∑∑Ô§Úƒ∂§®§ø§»§≠
+      *??      IF      WRK-RECENUM-VOL >=  997
+               IF      WRK-RECENUM-VOL >=  2
+      *
+      *            œ´∫“ø«Œ≈»Ò¿¡µ·ΩÒ•Ï•≥°º•…
+                   PERFORM 2008-HENSYU-SEC
+      *
+                   DISPLAY "CNT-OUT=" CNT-OUT
+      *
+      *            •Ô°º•Ø•’•°•§•Î£œ£–£≈£ŒΩËÕ˝
+                   PERFORM 2001-HENSYU-SEC
+               END-IF
+      *
                INITIALIZE                  TABLE-AREA
                                            WRK-PTNUM-LENGTH
       *
@@ -637,24 +651,6 @@
       *
                PERFORM 900-SEIKYU-READ-SEC
       *
-      *        £∆£ƒΩ–Œœ§Œ§»§≠§œ £øÙÀÁ§Œ•¡•ß•√•Ø§Ú§π§Î
-               IF      WRK-PARA-DATAKBN    =   "1" OR  "3"
-                   COMPUTE WRK-LEN =
-                           WRK-DATA-LENGTH +   WRK-PTNUM-LENGTH
-                   IF      WRK-LEN         >   WRK-CONS-LENGTH
-                       DISPLAY "2008 WRITE VOL="  WRK-VOLNUM
-                                         " LEN="  WRK-LEN 
-      *
-      *                œ´∫“ø«Œ≈»Ò¿¡µ·ΩÒ•Ï•≥°º•…
-                       PERFORM 2008-HENSYU-SEC
-      *
-                       DISPLAY "CNT-OUT=" CNT-OUT
-      *
-      *                •Ô°º•Ø•’•°•§•Î£œ£–£≈£ŒΩËÕ˝
-                       PERFORM 2001-HENSYU-SEC
-                   END-IF
-               END-IF
-      *
       *        •«°º•øΩ–ŒœΩËÕ˝
                PERFORM 2003-TABLE-WRITE-SEC
            END-PERFORM
@@ -688,6 +684,7 @@
            END-IF
       *
            MOVE    ZERO            TO  WRK-SRYYM
+                                       WRK-RECENUM-VOL
            .
        2001-HENSYU-EXT.
            EXIT. 
@@ -715,6 +712,7 @@
                MOVE    3                   TO  WRK-REC-LENGTH
                ADD     1                   TO  WRK-RECENUM
                                                WRK-RECENUM-ALL
+                                               WRK-RECENUM-VOL
                MOVE    WRK-RECENUM         TO  WRK-NUM
                MOVE    6                   TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
@@ -831,78 +829,60 @@
            MOVE    "RS,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
       *    …¬±°°¶ø«Œ≈ΩÍ§Œ∂Ë ¨
-           IF      FLG-DATA            =   9
-               EVALUATE    SYS-1001-HOSPSBT
-                   WHEN    "1"
-                       IF      SYS-1001-BEDSUIPN   >=  200
-                           MOVE    1               TO  WRK-NUM
-                       ELSE
-                           MOVE    2               TO  WRK-NUM
-                       END-IF
-                   WHEN    "2"
-                       MOVE    3               TO  WRK-NUM
-               END-EVALUATE
-               MOVE    1                   TO  WRK-NAGASA
-           END-IF
+           EVALUATE    SYS-1001-HOSPSBT
+               WHEN    "1"
+                   IF      SYS-1001-BEDSUIPN   >=  200
+                       MOVE    1               TO  WRK-NUM
+                   ELSE
+                       MOVE    2               TO  WRK-NUM
+                   END-IF
+               WHEN    "2"
+                   MOVE    3               TO  WRK-NUM
+           END-EVALUATE
+           MOVE    1                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    ¿¡µ·ΩÒƒÛΩ–∆¸
-           IF      FLG-DATA            =   9
-               MOVE    WRK-SKYYMD          TO  WRK-DATA
-               MOVE    7                   TO  WRK-NAGASA
-           END-IF
+           MOVE    WRK-SKYYMD          TO  WRK-DATA
+           MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
       *    ≈‘∆ª…‹∏©œ´∆Ø∂…•≥°º•…
-           IF      FLG-DATA            =   9
-               IF      KEY-O-SYOKAIFLG     =   "1"
-                   MOVE    KEY-O-SYOCD (1:2)   TO  WRK-DATA
-                   MOVE    2                   TO  WRK-NAGASA
-               END-IF
+           IF      KEY-O-SYOKAIFLG     =   "1"
+               MOVE    KEY-O-SYOCD (1:2)   TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    œ´∆Ø¥Ω‡¥∆∆ƒΩ•≥°º•…
-           IF      FLG-DATA            =   9
-               IF      KEY-O-SYOKAIFLG     =   "1"
-                   MOVE    KEY-O-SYOCD (4:2)   TO  WRK-DATA
-                   MOVE    2                   TO  WRK-NAGASA
-               END-IF
+           IF      KEY-O-SYOKAIFLG     =   "1"
+               MOVE    KEY-O-SYOCD (4:2)   TO  WRK-DATA
+               MOVE    2                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ªÿƒÍ…¬±°≈˘§Œ»÷πÊ
-           IF      FLG-DATA            =   9
-               MOVE    WRK-RSIIRYOCD       TO  WRK-NUM
-               MOVE    7                   TO  WRK-NAGASA
-           END-IF
+           MOVE    WRK-RSIIRYOCD       TO  WRK-NUM
+           MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    Õπ ÿ»÷πÊ
-           IF      FLG-DATA            =   9
-               MOVE    WRK-SYS-1002-POST   TO  WRK-DATA
-               MOVE    7                   TO  WRK-NAGASA
-           END-IF
+           MOVE    WRK-SYS-1002-POST   TO  WRK-DATA
+           MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ∞ÂŒ≈µ°¥ÿΩÍ∫ﬂ√œ
-           IF      FLG-DATA            =   9
-               MOVE    WRK-SYS-1002-ADRS   TO  WRK-DATA
-               MOVE    80                  TO  WRK-NAGASA
-           END-IF
+           MOVE    WRK-SYS-1002-ADRS   TO  WRK-DATA
+           MOVE    80                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    ∞ÂŒ≈µ°¥ÿ¿’«§º‘ª·Ãæ
-           IF      FLG-DATA            =   9
-               MOVE    SYS-1001-KAISETUNAME
-                                           TO  WRK-DATA
-               MOVE    40                  TO  WRK-NAGASA
-           END-IF
+           MOVE    SYS-1001-KAISETUNAME
+                                       TO  WRK-DATA
+           MOVE    40                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    œ´∫“ø«Œ≈»Ò√±≤¡
-           IF      FLG-DATA            =   9
-               EVALUATE    SYS-4001-TENKBN
-                   WHEN    "1"
-                       MOVE    1150        TO  WRK-NUM
-                   WHEN    "2"
-                       MOVE    1200        TO  WRK-NUM
-               END-EVALUATE 
-               MOVE    4               TO  WRK-NAGASA
-           END-IF
+           EVALUATE    SYS-4001-TENKBN
+               WHEN    "1"
+                   MOVE    1150        TO  WRK-NUM
+               WHEN    "2"
+                   MOVE    1200        TO  WRK-NUM
+           END-EVALUATE 
+           MOVE    4               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    ¿¡µ·∂‚≥€
            IF      FLG-DATA            =   9
