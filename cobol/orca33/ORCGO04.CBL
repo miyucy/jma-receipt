@@ -264,9 +264,6 @@
       *    入院請求期間取得サブ
            COPY    "CPORCSS006.INC".
       *
-      *    クライアント印刷制御
-           COPY    "CPORCSPRTCTRL.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -3046,13 +3043,7 @@
                                   <=  SPA-GMN-O04-SMEILIST-MAX )
                    MOVE    SPA-GMN-O04-TDENPEDANUM(SPA-GMN-O04-SELNUM)
                                    TO  WRK-SKYPRT-DENPEDANUM
-      *
-                   PERFORM 800-ORCSPRTCTRL-SEC
-      *
                    PERFORM 4101-SKYPRT-PRINT-SEC
-      *
-                   PERFORM 800-ORCHCDUMMY-SEC
-      *
                ELSE
                    MOVE    8       TO  SPA-GMN-O04-CUR
                    MOVE    "0005"  TO  SPA-ERRCD
@@ -3066,13 +3057,6 @@
       *    請求書兼領収書印刷処理
       *************************************************************
        4101-SKYPRT-PRINT-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SPA-PRT-FLG
-           MOVE    ZERO            TO  SPA-CLIENT-TEMP-FLG
-           IF    ( SPA-CLIENT-PRT-FLG  =   1 )
-               MOVE    "01"        TO  SPA-PRT-FLG
-               MOVE    2           TO  SPA-CLIENT-TEMP-FLG
-           END-IF
       *
            INITIALIZE                  WRK-SKYPRT-SKYMONEY
                                        WRK-SKYPRT-NYUKIN
@@ -3212,7 +3196,6 @@
       *
            CALL    WRK-SEIKYU-PG   USING   ORCHCN03AREA
                                            SPA-AREA
-           MOVE    SPACE           TO  SPA-PRT-FLG
       *
            .
        4101-SKYPRT-PRINT-EXT.
@@ -3259,11 +3242,7 @@
                                    TO  WRK-SRYPRT-DENPEDANUM
            END-IF
       *
-           PERFORM 800-ORCSPRTCTRL-SEC
-      *
            PERFORM 4111-SRYPRT-PRINT-SEC
-      *
-           PERFORM 800-ORCHCDUMMY-SEC
       *
            .
        411-PRINT-EXT.
@@ -3272,13 +3251,6 @@
       *    明細書兼領収書印刷処理
       *************************************************************
        4111-SRYPRT-PRINT-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SPA-PRT-FLG
-           MOVE    ZERO            TO  SPA-CLIENT-TEMP-FLG
-           IF    ( SPA-CLIENT-PRT-FLG  =   1 )
-               MOVE    "02"        TO  SPA-PRT-FLG
-               MOVE    2           TO  SPA-CLIENT-TEMP-FLG
-           END-IF
       *
            MOVE    SPA-AREA            TO  WRK-SPA-AREA
            MOVE    SPA-NAI-O04-SRYYMD  TO  WRK-SPA-SRYYMD
@@ -3304,7 +3276,6 @@
       *
            CALL    WRK-MEISAI-PG   USING   WRK-SPA-AREA
                                            ORCHCN04AREA
-           MOVE    SPACE           TO  SPA-PRT-FLG
       *
            .
        4111-SRYPRT-PRINT-EXT.
@@ -3455,8 +3426,6 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
       *
-               PERFORM 800-ORCSPRTCTRL-SEC
-      *
                IF    ( SPA-GMN-O04-SKYPRT  =   "1" )
                    MOVE    SPA-NAI-O04-DENPEDANUM
                                    TO  WRK-SKYPRT-DENPEDANUM
@@ -3468,8 +3437,6 @@
                                    TO  WRK-SRYPRT-DENPEDANUM
                    PERFORM 4111-SRYPRT-PRINT-SEC
                END-IF
-      *
-               PERFORM 800-ORCHCDUMMY-SEC
       *
                PERFORM 3101-SYUNOU-SET-SEC
       *
@@ -4427,7 +4394,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  OID1
-           INITIALIZE                       OID1
            MOVE    SPA-OIDCD            TO  OID1-ID1CODE
            MOVE    WRK-OIDMSG           TO  OID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -4516,39 +4482,6 @@
       *
            .
        800-KINGAKU-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    クライアント印刷制御情報取得処理
-      *****************************************************************
-       800-ORCSPRTCTRL-SEC             SECTION.
-      *
-           CALL    "ORCSONPRTSET"      USING   SPA-AREA
-           IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-             OR  ( SPA-PRTCONF         =   "1" )
-               INITIALIZE                  ORCSPRTCTRLAREA
-               CALL    "ORCSPRTCTRL"       USING
-                                           SPA-AREA
-                                           ORCSPRTCTRLAREA
-                                           MCPAREA
-           END-IF
-      *
-           .
-       800-ORCSPRTCTRL-EXT.
-           EXIT.
-      *****************************************************************
-      *    ダミー印刷処理
-      *****************************************************************
-       800-ORCHCDUMMY-SEC              SECTION.
-      *
-           IF      (SPA-CLIENT-PRT-FLG =   1  )
-      *        印刷ダミー処理
-               MOVE    "99"                TO  SPA-PRT-FLG
-               CALL    "ORCHCDUMMY"    USING   SPA-AREA
-               MOVE    ZERO                TO  SPA-CLIENT-TEMP-FLG
-           END-IF
-      *
-           .
-       800-ORCHCDUMMY-EXT.
            EXIT.
       *************************************************************
       *    患者定期請求履歴検索処理
