@@ -1192,6 +1192,7 @@
                        UNTIL      (IDXS        >   SPA-MAX-LINE )
                             OR    (WRK-COM-INPUTCD (IDXS)  =   SPACE)
                    IF      (WRK-COM-INPUTCD (IDXS)(1:1)    =   "8")
+                       OR  (WRK-COM-INPUTCD (IDXS)(1:3)    =   "008")
                        IF      WRK-COM-INPUTCONT (IDXS)    =   "1"
                            MOVE    IDXS            TO  IDX-S
                        END-IF
