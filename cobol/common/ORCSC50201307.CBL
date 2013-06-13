@@ -1560,7 +1560,7 @@
            END-PERFORM
       *
            IF      WRK-TAIJYU          =   ZERO
-               MOVE    1               TO  WRK-TAIJYU-2
+               MOVE    ZERO            TO  WRK-TAIJYU-2
            ELSE
                COMPUTE WRK-KEISAN      =  (WRK-TAIJYU   /   1000 )
                                        +   0.05
