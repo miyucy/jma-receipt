@@ -5662,8 +5662,6 @@
       *****************************************************************
        900-TENSU-READ-SEC               SECTION.
       *
-           INITIALIZE                      TNS-TENSU-REC
-           MOVE    TNS-SRYCD           TO  TNS-SRYCD
            MOVE    RECE41-SRYYM        TO  TNS-YUKOSTYMD (1:6)
            MOVE    "01"                TO  TNS-YUKOSTYMD (7:2)
            MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
