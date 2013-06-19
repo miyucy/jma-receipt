@@ -571,12 +571,6 @@
                05  WRK-KOUI-KASAN-TAIHI-TIMEKSNKBN
                                                 PIC  9(01).
       *
-      *    診療行為データ用テーブル（労災特別加算項目）
-       01  WRK-KOUI-RSI-KASAN-TAIHI-AREA.
-           03  WRK-KOUI-RSI-KASAN-TAIHI-TABLE   OCCURS  5.
-               05  WRK-KOUI-RSI-KASAN-TAIHI-REC PIC X(500).
-           03  WRK-KOUI-RSI-KASAN-TAIHI-MAX     PIC 9(02).
-      *
       *    診療行為データ用テーブル（告示等識別区分による記録順）
        01  WRK-KOUI-TAIHI-AREA.
            03  WRK-KOUI-TAIHI-TABLE             OCCURS  100.
@@ -603,7 +597,7 @@
       *
       *   
        01  WRK-KOUI-AREA.
-           03  WRK-KOUI-TABLE                   OCCURS  4.
+           03  WRK-KOUI-TABLE                   OCCURS  5.
                05  WRK-KOUI-TBLMAX              PIC 9(03).
                05  WRK-KOUI-REC                     OCCURS  100.
                    07  WRK-KOUI-KEY.
@@ -3090,7 +3084,6 @@
            INITIALIZE                  WRK-KOUI-AREA
                                        WRK-KOUI-TAIHI-AREA
                                        WRK-KOUI-KASAN-TAIHI-AREA
-                                       WRK-KOUI-RSI-KASAN-TAIHI-AREA
                                        WRK-KOUI-SRY-TAIHI-AREA
                                        WRK-SRYKBN40-KOKUJISKBKBN1
       *
@@ -3127,16 +3120,6 @@
                                                TO
                                    WRK-KOUI-KASAN-TAIHI-TIMEKSNKBN
                                                             (IDWW)
-               END-IF
-      *
-      *        労災特別加算項目があるか
-               IF    ( TBL-KOUI-KOKUJISKBKBN1 (IDX)
-                                           =   "8"         )
-                   ADD     1                   TO
-                                          WRK-KOUI-RSI-KASAN-TAIHI-MAX
-                   MOVE    TBL-KOUI-REC  (IDX) TO
-                                   WRK-KOUI-RSI-KASAN-TAIHI-REC
-                                       (WRK-KOUI-RSI-KASAN-TAIHI-MAX)
                END-IF
       *
       *        処置の加算項目の有無                
@@ -3309,6 +3292,7 @@
                        OR    ( WRK-KOUI-TBLMAX (2) >  ZERO )
                        OR    ( WRK-KOUI-TBLMAX (3) >  ZERO )
                        OR    ( WRK-KOUI-TBLMAX (4) >  ZERO )
+                       OR    ( WRK-KOUI-TBLMAX (5) >  ZERO )
                            PERFORM 200741-KASAN-HENSYU-SEC
                        END-IF
                        ADD     1           TO  IDY   
@@ -3333,6 +3317,7 @@
                                    OR    ( WRK-KOUI-TBLMAX (2) >  ZERO )
                                    OR    ( WRK-KOUI-TBLMAX (3) >  ZERO )
                                    OR    ( WRK-KOUI-TBLMAX (4) >  ZERO )
+                                   OR    ( WRK-KOUI-TBLMAX (5) >  ZERO )
                                        PERFORM 200741-KASAN-HENSYU-SEC
                                    END-IF
                                    MOVE    1               TO  IDZ  
@@ -3375,6 +3360,8 @@
                                    ELSE
                                        MOVE    4           TO  IDZ
                                    END-IF  
+                               WHEN    "8" 
+                                   MOVE    5           TO  IDZ
                            END-EVALUATE
                            IF      IDZ         >   ZERO
                                ADD     1           TO
@@ -3394,6 +3381,7 @@
            OR    ( WRK-KOUI-TBLMAX (2) >  ZERO )
            OR    ( WRK-KOUI-TBLMAX (3) >  ZERO )
            OR    ( WRK-KOUI-TBLMAX (4) >  ZERO )
+           OR    ( WRK-KOUI-TBLMAX (5) >  ZERO )
                PERFORM 200741-KASAN-HENSYU-SEC
            END-IF
            .
@@ -3471,11 +3459,13 @@
            END-PERFORM
       *
       *    労災特別加算項目の編集
-           PERFORM VARYING IDY1    FROM    1   BY  1
-                   UNTIL   IDY1    >       WRK-KOUI-RSI-KASAN-TAIHI-MAX
+           MOVE    5                       TO  IDY1
+           MOVE    WRK-KOUI-TBLMAX (IDY1)  TO  IDYY
+           PERFORM VARYING IDY2    FROM    1   BY  1
+                   UNTIL   IDY2    >       IDYY
                ADD     1               TO  IDY
-               MOVE    WRK-KOUI-RSI-KASAN-TAIHI-REC (IDY1)
-                                           TO  WRK-KOUI-TAIHI-REC  (IDY)
+               MOVE    WRK-KOUI-REC (IDY1 IDY2)
+                                       TO  WRK-KOUI-TAIHI-REC  (IDY)
                MOVE    IDY             TO  WRK-SRYCD1-MAX
            END-PERFORM
       *
