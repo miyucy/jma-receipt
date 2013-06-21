@@ -1426,6 +1426,9 @@
            MOVE    SPA-AKUSEIHYOFLG    TO  LNK-ORCSC-AKUSEIHYOFLG
       *    残量廃棄区分
            MOVE    SPA-HAIKIKBN-FLG    TO  LNK-ORCSC-HAIKIKBN-FLG
+      *v4.8
+      *    労災レセ電対応
+           MOVE    SPA-ROURECEKBN      TO  LNK-ORCSC-ROURECEKBN
       *
            MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
            IF      SPA-NYUGAIKBN       =   "1"
@@ -2299,6 +2302,9 @@
            MOVE    SPA-AKUSEIHYOFLG    TO  LNK-ORCSC-AKUSEIHYOFLG
       *    残量廃棄区分
            MOVE    SPA-HAIKIKBN-FLG    TO  LNK-ORCSC-HAIKIKBN-FLG
+      *v4.8
+      *    労災レセ電対応
+           MOVE    SPA-ROURECEKBN      TO  LNK-ORCSC-ROURECEKBN
       *
       *    小児科特例時間外チェック
            MOVE    ZERO                TO  LNK-ORCSC-JIKANERR-FLG

@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 04.07.00     NACL=多々納  12/03/XX  平成２４年４月改正対応
       * 04.08.00     NACL=多々納  12/12/14  患者情報通知対応
+      * 04.08.00     NACL-多々納  13/06/XX  労災レセ電対応
       *****************************************************************
       *
       *
@@ -92,6 +93,9 @@
            COPY    "CPSK1920.INC".
       *    ＣＬＡＩＭ接続情報 
            COPY    "CPSK9000.INC".
+      *
+      *    レセプト印刷情報
+           COPY  "CPSK200501.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -572,6 +576,7 @@
       *        メモ２
                MOVE    SYS-1920-POPUP-MEMO2    TO  SPA-POPUP-MEMO2
            END-IF
+      *
            .
        100-K01KYOUTU-EXT.
            EXIT.
@@ -736,6 +741,30 @@
       *******  MOVE    "pink1"             TO  SPA-KEICOLORS
                MOVE    "#FFB5C5"           TO  SPA-KEICOLORS
            END-IF
+      *
+      *ver.4.8
+      *    労災レセ電対応
+           IF      SPA-SRYYMD          >=  "20130801"
+               MOVE    SPACE               TO  SYS-200501-REC
+               INITIALIZE                      SYS-200501-REC
+               MOVE    "2005"              TO  SYS-200501-KANRICD
+               MOVE    "01"                TO  SYS-200501-KBNCD
+               MOVE    SPA-SRYYMD          TO  SYS-200501-STYUKYMD
+               MOVE    SPA-SRYYMD          TO  SYS-200501-EDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
+               MOVE    SYS-200501-REC      TO  SYSKANRI-REC
+               PERFORM 900-SYSKANRI-INV-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    SYSKANRI-REC        TO  SYS-200501-REC
+                   IF      SYS-200501-ROURECEKBN   =   SPACE
+                       MOVE    "0"             TO  SYS-200501-ROURECEKBN
+                   END-IF
+                   MOVE    SYS-200501-ROURECEKBN   TO  SPA-ROURECEKBN
+               END-IF
+           ELSE
+               MOVE    ZERO                    TO  SPA-ROURECEKBN
+           END-IF
+      *
       *
            .
        1002-SYSKANRI-KYOTU-EXT.

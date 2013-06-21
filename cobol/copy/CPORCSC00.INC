@@ -179,6 +179,11 @@
       *
       *    リハビリ逓減確認
            03  LNK-ORCSC-FLG-RIHTEI            PIC 9(01).
+      *
+      *ver.4.8
+      *    労災レセ電対応
+           03  LNK-ORCSC-ROURECEKBN        PIC 9(01).
+      *
       *投薬の継続分チェック
            03  LNK-ORCSC-KBN20.
       *継続区分

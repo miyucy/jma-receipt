@@ -190,6 +190,13 @@
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(07).
                05  WRK-SURYO-S2    PIC 9(05).
+      *TEST
+           03  FLG-YKZ-CHK             PIC 9(01).
+           03  FLG-KZI-CHK             PIC 9(01).
+           03  FLG-YKZ-ERR             PIC 9(01).
+           03  FLG-KZI-ERR             PIC 9(01).
+           03  IDX-YKZ                 PIC 9(04).
+           03  IDX-KZI                 PIC 9(04).
       *
       *    保存用
        01  HOZ-SCR-REC.
@@ -260,6 +267,10 @@
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *
+      *    診療行為用共通パラメタ
+           COPY    "K01COMMON-SPA".
+      *
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -292,6 +303,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
+      *
       *
            EVALUATE    LNK-ORCSC-KBN
       *        剤別　チェック、編集、自動算定
@@ -1476,6 +1488,11 @@
                PERFORM 100111-KASAN-CHK-SEC
       *        加算料追加処理
                PERFORM 1002-KASAN-SET-SEC
+      *TEST
+            DISPLAY " WRK-SRYCD:"  WRK-SRYCD
+              ",FLG-ADD:"  FLG-ADD
+              ",LNK-ORCSC-NENREI:" LNK-ORCSC-NENREI
+      *TEST
                IF      FLG-ADD             =   1
                    MOVE    1                   TO  WRK-COM-SANFLG
                                                            (IDX-S)
@@ -1525,14 +1542,21 @@
            MOVE    ZERO                TO  IDX-FUKU-J4
            MOVE    ZERO                TO  IDX-FUKU-J5
            MOVE    ZERO                TO  IDX-F-J
+      *
+           MOVE    ZERO                TO  FLG-YKZ-CHK
+           MOVE    ZERO                TO  FLG-KZI-CHK
+           MOVE    ZERO                TO  FLG-YKZ-ERR
+           MOVE    ZERO                TO  FLG-KZI-ERR
+           MOVE    ZERO                TO  IDX-YKZ
+           MOVE    ZERO                TO  IDX-KZI
            PERFORM VARYING     IDXF    FROM    1   BY  1
-                   UNTIL      (IDXF    >=   IDX-Z  )   OR
+                   UNTIL      (IDXF    >   SPA-MAX-LINE  )   OR
                              ((WRK-COM-INPUTCD(IDXF)   =   SPACE ) AND
                               (WRK-GMN-INPUTCD(IDXF)   =   SPACE ))
       *        腰部固定帯加算、初診時ブラッシング料は重複手技としない
                IF      WRK-COM-INPUTCD(IDXF)   =   "140037490"
                                                OR  "140040110"
-                                               OR  "101400030"
+      *???                                     OR  "101400030"
       *            頸部固定帯加算
                                                OR  "140052610"
                    CONTINUE
@@ -1546,7 +1570,18 @@
                        IF      (WRK-COM-INPUTCD(IDXF)(1:3) NOT =  "101")
                            PERFORM 10091-RSISYUGI-CHEK-SEC
                        END-IF
+      *H25.7
+      *                手技の前に薬剤
+                       IF      IDX-FUKU        >   1
+                           IF      IDX-YKZ         >   ZERO
+                               MOVE    1           TO  FLG-YKZ-CHK
+                           END-IF
+                           IF      IDX-KZI         >   ZERO
+                               MOVE    1           TO  FLG-KZI-CHK
+                           END-IF
+                       END-IF
                    END-IF
+      *            時間外加算
                    IF    ((WRK-COM-INPUTCD(IDXF)(1:1)  =   "1")  AND
                           (WRK-COM-INPUTCD(IDXF)(1:3)
                                                    NOT =   "101")) AND
@@ -1559,28 +1594,50 @@
                        MOVE    1               TO  FLG-KASAN-ARI
                    END-IF
                END-IF
+      *
+               IF      WRK-COM-INPUTCD (IDXF)(1:1) =   "6"
+                   MOVE    IDXF            TO  IDX-YKZ
+                   IF      FLG-YKZ-CHK         =   1
+                       MOVE    1               TO  FLG-YKZ-ERR
+                   END-IF
+               END-IF
+               IF      WRK-COM-INPUTCD (IDXF)(1:1) =   "7"
+                   MOVE    IDXF            TO  IDX-KZI
+                   IF      FLG-KZI-CHK         =   1
+                       MOVE    1               TO  FLG-KZI-ERR
+                   END-IF
+               END-IF
            END-PERFORM
       *
       *    労災（短期・傷病）の時、合成コード使用を促す
            IF     (SPA-HKNKBN          =   1   )
              AND  (SPA-RSI-HKNKBN      =   "1"  OR  "2")
-               IF     (IDX-FUKU-J1         >   1   )
-                 OR   (IDX-FUKU-J2         >   1   )
-                 OR   (IDX-FUKU-J3         >   1   )
-                 OR   (IDX-FUKU-J4         >   1   )
-                 OR   (IDX-FUKU-J5         >   1   )
-                  IF     (WRK-COM-KZMFLG (IDX-F-J) =   SPACE)
-                      AND (LNK-ORCSC-KEI-IDX       =   ZERO )
-                       MOVE    "K402"              TO  WRK-ERRCD
-                       MOVE    "1"                 TO  WRK-COM-KZMFLG
+               IF     (LNK-ORCSC-ROURECEKBN   =   ZERO )
+      *     レセ電対応なし
+      *            警告
+                   IF     (IDX-FUKU-J1         >   1   )
+                     OR   (IDX-FUKU-J2         >   1   )
+                     OR   (IDX-FUKU-J3         >   1   )
+                     OR   (IDX-FUKU-J4         >   1   )
+                     OR   (IDX-FUKU-J5         >   1   )
+                      IF     (WRK-COM-KZMFLG (IDX-F-J) =   SPACE)
+                          AND (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    "K402"          TO  WRK-ERRCD
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
                                                               (IDX-F-J)
-                       MOVE    IDX-F-J             TO  LNK-ORCSC-KEI-IDX
+                           MOVE    IDX-F-J         TO  LNK-ORCSC-KEI-IDX
+                       END-IF
                    END-IF
+      *
+               ELSE
+      *        レセ電対応あり
+                   PERFORM 10091-RSIRESE-CHEK-SEC
+                   GO      TO      1009-SYUGI-CHEK-EXT
                END-IF
            END-IF
       *!!!!
       *    腰部固定帯加算、初診時ブラッシング料は重複手技としない
-           IF      IDX-FUKU            >   1
+           IF     (IDX-FUKU            >   1     )
             AND   (WRK-ERRCD           =   SPACE )
                IF      FLG-KASAN-ARI       =   ZERO
       *********    手技１以上の警告
@@ -1598,21 +1655,8 @@
       *            時間外加算のある時は１剤１手技とする
                    IF     (SPA-HKNKBN          =   1   )
                      AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-      *                労災（自賠責・公害）の時、エラーとしない
-                       IF     (SPA-RSI-HKNKBN      =   "1"
-                                                   OR  "2")
-      *                    労災（短期・傷病）の時エラー
-                           MOVE    "0401"          TO  WRK-ERRCD
-                           MOVE    "1"             TO  WRK-COM-CUR
-                                                         (IDX-F)
-                           IF     (IDX-FUKU-J1         >   1   )
-                             OR   (IDX-FUKU-J2         >   1   )
-                             OR   (IDX-FUKU-J3         >   1   )
-                             OR   (IDX-FUKU-J4         >   1   )
-                             OR   (IDX-FUKU-J5         >   1   )
-                               MOVE    "0402"          TO  WRK-ERRCD
-                           END-IF
-                       END-IF
+      *                労災の時、エラーとしない
+                       CONTINUE
                    ELSE
                        MOVE    "0401"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR (IDX-F)
@@ -1620,8 +1664,83 @@
                END-IF
            END-IF
       *
+           IF     (IDX-FUKU            >   1     )
+            AND   (WRK-ERRCD           =   SPACE )
+            AND   (FLG-YKZ-ERR         =   1     )
+      *        手技毎の薬剤入力
+      *        エラー
+               MOVE    "0404"          TO  WRK-ERRCD
+               MOVE    "1"             TO  WRK-COM-CUR (IDX-YKZ)
+      *??      警告
+      *        IF     (WRK-COM-KZMFLG(IDX-YKZ) =   SPACE)
+      *           AND (LNK-ORCSC-KEI-IDX       =   ZERO )
+      *            MOVE    "0404"          TO  WRK-ERRCD
+      *            MOVE    "1"             TO  WRK-COM-KZMFLG
+      *                                                    (IDX-YKZ)
+      *            MOVE    "1"             TO  WRK-COM-CUR (IDX-YKZ)
+      *            MOVE    IDX-YKZ         TO  LNK-ORCSC-KEI-IDX
+      *??      END-IF
+           END-IF
+      *
+           IF     (IDX-FUKU            >   1     )
+            AND   (WRK-ERRCD           =   SPACE )
+            AND   (FLG-KZI-ERR         =   1     )
+      *        手技毎の器材入力はエラー
+      *        エラー
+               MOVE    "0405"          TO  WRK-ERRCD
+               MOVE    "1"             TO  WRK-COM-CUR (IDX-KZI)
+      *??      警告
+      *        IF     (WRK-COM-KZMFLG(IDX-KZI) =   SPACE)
+      *           AND (LNK-ORCSC-KEI-IDX       =   ZERO )
+      *            MOVE    "K405"          TO  WRK-ERRCD
+      *            MOVE    "1"             TO  WRK-COM-KZMFLG
+      *                                                    (IDX-KZI)
+      *            MOVE    "1"             TO  WRK-COM-CUR (IDX-KZI)
+      *            MOVE    IDX-KZI         TO  LNK-ORCSC-KEI-IDX
+      *??      END-IF
+           END-IF
+      *
            .
        1009-SYUGI-CHEK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災レセ電　手技料判定処理
+      *****************************************************************
+       10091-RSIRESE-CHEK-SEC                  SECTION.
+      *
+           IF     (IDX-FUKU            >   1     )
+            AND   (WRK-ERRCD           =   SPACE )
+               IF     (IDX-FUKU-J1         >   1   )
+                 OR   (IDX-FUKU-J2         >   1   )
+                 OR   (IDX-FUKU-J3         >   1   )
+                 OR   (IDX-FUKU-J4         >   1   )
+                 OR   (IDX-FUKU-J5         >   1   )
+      *            合成コードへ変換エラー
+                   MOVE    "0402"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-F)
+               ELSE
+                  IF      FLG-KASAN-ARI       =   ZERO
+      *                時間外なしは警告
+                       IF     (WRK-COM-KZMFLG (IDX-F)  =   SPACE)
+                          AND (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    "K401"          TO  WRK-ERRCD
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-F)
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-F)
+                           MOVE    IDX-F           TO  LNK-ORCSC-KEI-IDX
+                       END-IF
+                   ELSE
+      *                時間外ありはエラー
+                       MOVE    "0401"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR (IDX-F)
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       10091-RSIRESE-CHEK-EXT.
            EXIT.
       *
       *****************************************************************
