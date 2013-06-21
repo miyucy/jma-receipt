@@ -1751,6 +1751,20 @@
                                MOVE   WRK-SO-SRYKBN(IDX1)  TO   
                                     LNK-RNYURECEDEN-SRYSKB(1 IDX2 IDX3)
                          END-IF
+      *                  入院料加算の労災用置き換え
+      *                  一般病棟看護必要度加算（一般病棟）（労災用）
+                         IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190131570"
+                            MOVE "101900100" TO WRK-SO-SRYCD(IDX1 IDX3)
+                         END-IF
+      *                  一般病棟看護必要度加算（専門病院）（労災用）
+                         IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190134970"
+                            MOVE "101900120" TO WRK-SO-SRYCD(IDX1 IDX3)
+                         END-IF
+      *                  重度認知症加算（精神病棟）（労災用）
+                         IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190118570"
+                            MOVE "101900110" TO WRK-SO-SRYCD(IDX1 IDX3)
+                         END-IF
+      *
                          MOVE  WRK-SO-SRYCD(IDX1 IDX3) TO
                                     LNK-RNYURECEDEN-SRYCD(1 IDX2 IDX3)
                          MOVE   WRK-SO-KAISU(IDX1)   TO
