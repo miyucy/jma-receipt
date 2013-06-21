@@ -119,6 +119,8 @@
       *
       *  04.07.01    NACL-藤原    11/06/10  未コード化病名となる病名の別
       *                                     組み立てへの移行を可能にする
+      *  04.07.02    NACL-藤原    13/06/20  廃止病名警告表示の条件変更
+
       *
       *  04.08.01    NACL-藤原    13/02/05  編集病名の強調表示
       *****************************************************************
@@ -3245,7 +3247,7 @@
       *
                            MOVE    SPA-NAI-C03-IKOSAKI-ERRCD (IDX)
                                            TO  SPA-CIDCD6
-                       END-IF 
+                       END-IF
                        INITIALIZE          SPA-NAI-C03-HAISI (IDX)
                    END-IF
                END-IF
@@ -3255,8 +3257,10 @@
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
                    OR      SPA-ERRCD   NOT =   SPACE
-               IF      SPA-NAI-C03-HAISIYMD (IDX)
-                                       NOT =   SPACE
+               IF    ( SPA-NAI-C03-HAISIYMD (IDX)
+                                       NOT =   SPACE )
+               AND   ( SPA-NAI-C03-IKOSAKI-BYOMEICD (IDX)
+                                           =   SPACE )
                    MOVE    "0074"              TO  SPA-ERRCD
                    COMPUTE SPA-GMN-C03-CUR     =   4   +   IDX
                    MOVE    SPA-NAI-C03-HAISIYMD(IDX)
