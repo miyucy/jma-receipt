@@ -45,7 +45,7 @@
       *  04.07.00    NACL-¿¹ÏÆ     11/10/04  Ï«ºÒ¡¢¥¢¥Õ¥¿¡¼¥±¥¢ÂÐ±þ
       *  04.07.00    NACL-¿¹ÏÆ     12/02/07  ¿·¥â¥ó¥Ú¡¢£°ÅÀ¸øÈñµ­ºÜÂÐ±þ
       *  04.07.01    NACL-¿¹ÏÆ     12/03/30  ·òÊÝÁÈ¹ç¤Ø¤ÎÄ¾ÀÜÀÁµá¤È¿³ºº
-       *                                      »ÙÊ§µ¡´ØÀÁµáÂÐ±þ
+      *                                      »ÙÊ§µ¡´ØÀÁµáÂÐ±þ
       *  04.07.02    NACL-¿¹ÏÆ     13/06/14  ºßÁí¿Ç¶èÊ¬Ê¬Îà¤Ê¤·ÄÉ²Ã   
       *****************************************************************
       *
@@ -5323,20 +5323,21 @@
            END-IF
       *----(04.07.02)--UPD-START---------------
       *    ºßÁí¿Ç¥Á¥§¥Ã¥¯
-           IF  WRK-PARA-ZAIKBN     =   "3"
+           IF    ( WRK-PARA-ZAIKBN     =   "3" )   AND
+                 ( RECE10-SRYYM        >=  "201204" )
                MOVE    "1"             TO  WRK-ZAIKBN
            ELSE
-           IF          RECE10-ZAITAKU      =   "1"
-               IF      WRK-PARA-ZAIKBN     =   "1"
-                   GO  TO  900-SEIKYU-CHEK-EXT
+               IF          RECE10-ZAITAKU      =   "1"
+                   IF      WRK-PARA-ZAIKBN     =   "1"
+                       GO  TO  900-SEIKYU-CHEK-EXT
+                   END-IF
+                   MOVE    "2"             TO  WRK-ZAIKBN
+               ELSE
+                   IF      WRK-PARA-ZAIKBN     =   "2"
+                       GO  TO  900-SEIKYU-CHEK-EXT
+                   END-IF
+                   MOVE    "1"             TO  WRK-ZAIKBN
                END-IF
-               MOVE    "2"             TO  WRK-ZAIKBN
-           ELSE
-               IF      WRK-PARA-ZAIKBN     =   "2"
-                   GO  TO  900-SEIKYU-CHEK-EXT
-               END-IF
-               MOVE    "1"             TO  WRK-ZAIKBN
-           END-IF
            END-IF
       *----(04.07.02)--UPD-END-----------------
       *
