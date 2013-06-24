@@ -1601,7 +1601,8 @@
                        MOVE    1               TO  FLG-YKZ-ERR
                    END-IF
                END-IF
-               IF      WRK-COM-INPUTCD (IDXF)(1:1) =   "7"
+               IF     (WRK-COM-INPUTCD (IDXF)(1:1) =   "7" )
+                 AND  (WRK-COM-TOKUKIZAISBT1 (IDXF)    =   ZERO)
                    MOVE    IDXF            TO  IDX-KZI
                    IF      FLG-KZI-CHK         =   1
                        MOVE    1               TO  FLG-KZI-ERR

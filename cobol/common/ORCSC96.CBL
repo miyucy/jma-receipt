@@ -1238,7 +1238,7 @@
                WHEN    "0405"
                    STRING  "手技と器材が混在しています。"
                            "手技毎に剤分離するか、"
-                           "薬剤をまとめて下さい。"
+                           "器材をまとめて下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -1254,7 +1254,7 @@
                    STRING  "警告！"
                            "手技と器材が混在しています。"
                            "手技毎に剤分離するか、"
-                           "薬剤をまとめて下さい。"
+                           "器材をまとめて下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
