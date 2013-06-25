@@ -1258,6 +1258,13 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K406"
+                   STRING  "警告！"
+                           "複数の手技と時間外加算があります。"
+                           "労災の合成コードで算定して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *!!!
                WHEN    "K501"
                    STRING  "警告！手術の手技が剤内に複数あります。"

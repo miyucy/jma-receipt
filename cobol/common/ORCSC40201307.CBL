@@ -2347,15 +2347,93 @@
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *
+      *    労災（短期・傷病）の時、合成コードのチェック
+           IF     (SPA-HKNKBN          =   1   )
+             AND  (SPA-RSI-HKNKBN      =   "1"  OR  "2")
+               PERFORM 2001-ROURECE-CHK-SEC
+           END-IF
            .
        200-ALL-SYORI-EXT.
+           EXIT.
+      *
+      *H25.7
+      *****************************************************************
+      *    労災合成コード算定チェック処理
+      *****************************************************************
+       2001-ROURECE-CHK-SEC                SECTION.
+      *
+           MOVE    ZERO                TO  IDX-FUKU
+           MOVE    ZERO                TO  IDX-F
+           MOVE    ZERO                TO  IDX-FUKU-J1
+           MOVE    ZERO                TO  IDX-FUKU-J2
+           MOVE    ZERO                TO  IDX-FUKU-J3
+           MOVE    ZERO                TO  IDX-FUKU-J4
+           MOVE    ZERO                TO  IDX-FUKU-J5
+           MOVE    ZERO                TO  IDX-F-J
+      *
+           MOVE    ZERO                TO  FLG-ARI
+      *
+           PERFORM VARYING     IDXF    FROM    1   BY  1
+                   UNTIL      (IDXF    >   SPA-MAX-LINE  )   OR
+                             ((WRK-COM-INPUTCD(IDXF)   =   SPACE ) AND
+                              (WRK-GMN-INPUTCD(IDXF)   =   SPACE ))
+               IF     (WRK-COM-SRYKBN (IDXF)   =   "40" )
+                   IF     (WRK-COM-INPUTCD(IDXF)(1:1)  =   "1")  AND
+                          (WRK-COM-DATAKBN(IDXF)       =   "1")
+      *                創傷処置等の判定
+                       IF      (WRK-COM-INPUTCD(IDXF)(1:3) NOT =  "101")
+                           PERFORM 10091-RSISYUGI-CHEK-SEC
+                           IF      IDX-F-J             =   IDXF
+      *                        対象あり
+                               MOVE    1               TO  FLG-ARI
+                           END-IF
+                       END-IF
+                   END-IF
+      *            時間外加算
+                   IF    ((WRK-COM-INPUTCD(IDXF)(1:1)  =   "1")  AND
+                          (WRK-COM-INPUTCD(IDXF)(1:3)
+                                                   NOT =   "101")) AND
+                          (WRK-COM-DATAKBN(IDXF)       =   "2")  AND
+                          (WRK-COM-TENSIKIBETU (IDXF)
+                                                       =   5
+                                                       OR  6  )  AND
+                          (WRK-COM-TIMEKSNKBN (IDXF)
+                                                   NOT =   ZERO )
+                    AND   (FLG-ARI             =   1    )
+                       MOVE    1               TO  FLG-KASAN-ARI
+                   END-IF
+               END-IF
+               IF      WRK-COM-ZAIEND (IDXF)   =   "1"
+                   MOVE    ZERO                TO  FLG-ARI
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ((IDX-FUKU-J1         >   1   )
+             OR   (IDX-FUKU-J2         >   1   )
+             OR   (IDX-FUKU-J3         >   1   )
+             OR   (IDX-FUKU-J4         >   1   )
+             OR   (IDX-FUKU-J5         >   1   ))
+            AND  ( FLG-KASAN-ARI       =   1    )
+      *        警告
+               IF     (WRK-COM-KZMFLG(IDX-F-J) =   SPACE)
+                  AND (LNK-ORCSC-KEI-IDX       =   ZERO )
+                   MOVE    "K406"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-F-J)
+                   MOVE    "1"             TO  WRK-COM-CUR    (IDX-F-J)
+                   MOVE    IDX-F-J         TO  LNK-ORCSC-KEI-IDX
+               END-IF
+           END-IF
+           .
+       2001-ROURECE-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC                SECTION.
-     *
+      *
        300-AUTO-SYORI-EXT.
            EXIT.
       *
