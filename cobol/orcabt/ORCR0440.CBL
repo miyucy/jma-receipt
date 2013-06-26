@@ -48,10 +48,6 @@
       *  04.06.02    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
       *
       *  04.07.01    NACL-藤原    13/01/21  労災レセ電対応
-      *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
-      *  04.07.03    NACL-藤原    14/03/18  連番号を３桁に変更
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -139,7 +135,7 @@
            03  WRK-PARA-HOSPNUM      PIC 9(02).
       *
            03  WRK-YM              PIC 9(06).
-           03  WRK-RENNUM          PIC 9(03).
+           03  WRK-RENNUM          PIC 9(02).
       *
        01  KEY-AREA                            VALUE   LOW-VALUE.
            03  KEY-NEW.
@@ -158,8 +154,6 @@
       *    エラーファイル名称領域 
            COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
                                        BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME内のBASENAME開始位置
-       01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *    ワーク患者病名
        01  WRK-PTBYOMEI-REC.
@@ -206,8 +200,6 @@
       *    拡張漢字チェックサブ
            COPY    "CPORCSKANACHK2.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -250,7 +242,6 @@
                                        WRK-AREA
                                        FLG-AREA
                                        SPA-AREA
-                                       RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -260,31 +251,13 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE01PARA
-           INITIALIZE                      RECE01PARA
            MOVE    "RECE410"           TO  RECE01PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE42PARA
-           INITIALIZE                      RECE42PARA
            MOVE    "RECE420"           TO  RECE42PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE42PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE42PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE01PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE42PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE01PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE42PARA
-      *
-           MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
@@ -293,7 +266,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE42PARA-HOSPNUM
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    "ORCR0440"      TO  JOB-PGID
-               MOVE    "傷病名編集（労災・自賠責）"
+               MOVE    "傷病名編集（労災・自賠責）" 
                                        TO  JOB-SHELLMSG
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *        処理中止設定処理
@@ -467,20 +440,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
       *
-           IF      WRK-PARA-RECEKBN     =   "8"
-      *        公費ＩＤ（第三者行為）
-               IF      PTBYO-KOHID          =   RECE41-HKNID 
-                   CONTINUE
-               ELSE
-                   GO  TO  2001-PTBYO-CHK-EXT
-               END-IF
+      *    保険組合せ
+           IF      PTBYO-HKNCOMBI       =   RECE41-HKNCOMBI 
+               CONTINUE
            ELSE
-      *        保険組合せ
-               IF      PTBYO-HKNCOMBI       =   RECE41-HKNCOMBI 
-                   CONTINUE
-               ELSE
-                   GO  TO  2001-PTBYO-CHK-EXT
-               END-IF
+               GO  TO  2001-PTBYO-CHK-EXT
            END-IF
       *
       *    レセプト表示月
@@ -768,8 +732,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            STRING  WRK-ERR-FILE-MSG        DELIMITED   BY  SPACE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM-FILE-ID DELIMITED   BY  SIZE
                    " STS="                 DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -779,8 +742,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            STRING  "ORCR0440 "             DELIMITED   BY  SIZE
                    WRK-ERR-FILE-MSG1       DELIMITED   BY  SIZE
                    " FILE="                DELIMITED   BY  SIZE
-                   WRK-ERR-FILE-NM (WRK-SGETTEMP-ST:)
-                                           DELIMITED   BY  SPACE
+                   WRK-ERR-FILE-NM         DELIMITED   BY  SIZE
                    "  STS="                DELIMITED   BY  SIZE
                    WRK-ERR-FILE-STS        DELIMITED   BY  SIZE
                    LOW-VALUE               DELIMITED   BY  SIZE

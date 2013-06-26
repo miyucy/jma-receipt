@@ -50,13 +50,6 @@
       *  04.07.03    NACL-門脇    13/02/12  労災レセ電対応
       *                                     剤（点数）・剤（金額）
       *                                     コード表用番号−区分番号追加
-      *  04.07.04    NACL-門脇    14/04/07  改正対応項目追加
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.02    NACL-門脇    16/03/31  平成２８年４月改正対応
-      *  04.08.03    NACL-門脇    16/08/02  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応
-      *  04.08.04    NACL-門脇    16/08/23  持参薬対応
       ************************************************************
       *01  RECE84-REC.
            03  RECE84-KEY.
@@ -79,8 +72,6 @@
                05  RECE84-ZAINUM          PIC  9(08).
       *診療区分
            03  RECE84-SRYKBN              PIC  X(02).
-      *コード表用番号−区分番号
-           03  RECE84-CDKBN-KBNNUM        PIC  9(03).
       *
            03  RECE84-DATA-AREA. 
       *診療種別区分
@@ -139,12 +130,6 @@
                05  RECE84-ZAIKBN              PIC  9(03).
       *画像診断（２回目以降減算あり）
                05  RECE84-GAZOGEN             PIC  X(01).
-      *再診加算（入院）の剤
-               05  RECE84-NYUSAIFLG           PIC  X(01).
-      *１５円以下薬剤レセプト記載フラグ
-               05  RECE84-YKZKISAIFLG         PIC  X(01).
-      *持参薬区分
-               05  RECE84-JISANYAKKBN         PIC  X(01).
       *
       *リハビリ
                05  RECE84-RIHABIRI-COMMENT    PIC  X(01).
@@ -162,17 +147,8 @@
                05  RECE84-SYOGAI-COMMENT      PIC  X(01).
       *リハビリ（摂食）
                05  RECE84-SESSYOKU-COMMENT    PIC  X(01).
-      *リハビリ（廃用症候群）
-               05  RECE84-HAIYO-COMMENT       PIC  X(01).
       *介達牽引
                05  RECE84-KAITATU-COMMENT     PIC  X(01).
-      *
-      *リハビリ加算（心大血管疾患）
-               05  RECE84-SINDAI9-COMMENT     PIC  X(01).
-      *リハビリ加算（呼吸器）
-               05  RECE84-KOKYUKI9-COMMENT    PIC  X(01).
-      *リハビリ加算（廃用症候群）
-               05  RECE84-HAIYO9-COMMENT      PIC  X(01).
       *
       *薬剤管理指導料
                05  RECE84-FLG-YAKUKAN-COMMENT PIC  X(01).
@@ -252,20 +228,6 @@
       *在宅持続陽圧呼吸療法指導管理料
                05  RECE84-FLG-YOUATU-COMMENT  PIC  X(01).
       *
-      *心臓ペースメーカー指導管理料（着用型自動除細動器）
-      *心臓ペースメーカー指導管理料（ロ・植込型除細動器移行期加算含む）
-               05  RECE84-FLG-SINPESUR-COMMENT  PIC  X(01).
-      *がん患者指導管理料２・３
-               05  RECE84-FLG-GANSIDO-COMMENT   PIC  X(01).
-      *在宅患者共同診療料
-               05  RECE84-FLG-ZAIKYO-COMMENT    PIC  X(01).
-      *磁気による膀胱等刺激法
-               05  RECE84-FLG-BOKOHO-COMMENT    PIC  X(01).
-      *超重症児（者）入院診療加算・準超重症児（者）入院診療加算
-               05  RECE84-FLG-CYOJKSN-COMMENT   PIC  X(01).
-      *排尿自立指導料
-               05  RECE84-FLG-HAIJRT-COMMENT    PIC  X(01).
-      *
       *手技毎の内容（手術・画像診断・処置）
                05  RECE84-ACCTP-SYUGI-TBL-G.
                    07    RECE84-ACCTP-SYUGI-TBL     OCCURS  5.
@@ -284,19 +246,6 @@
       *窒素点数
                05  RECE84-ACCTP-CHISOTEN            PIC 9(07).
       *
-      *包括診療分退避点数
-               05  RECE84-HOKATU-TENSU-AREA.
-      *剤点数
-                   07    RECE84-HOKATU-ZAITEN       PIC 9(08).
-      *手技点数１
-                   07    RECE84-HOKATU-SYUTEN1      PIC 9(07).
-      *手技点数２
-                   07    RECE84-HOKATU-SYUTEN2      PIC 9(07).
-      *薬剤点数
-                   07    RECE84-HOKATU-YKZTEN       PIC 9(07).
-      *器材点数
-                   07    RECE84-HOKATU-KIZAITEN     PIC 9(07).
-      *
       *剤（点数）
                05  RECE84-ZAI-TENSU                 PIC 9(09).
       *剤（金額）
@@ -310,3 +259,5 @@
                           11  RECE84-KAISU     PIC  9(03).
       *レセプト種別
                05  RECE84-RECESYUBETU          PIC 9(04).
+      *コード表用番号−区分番号
+           03  RECE84-CDKBN-KBNNUM        PIC  9(03).

@@ -36,8 +36,6 @@
       *  04.05.02    NACL-門脇    12/04/10  改正対応項目追加
       *
       *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
-      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
-      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       ************************************************************
       *01  RECE442-REC.
            03  RECE442-KEY.
@@ -72,20 +70,18 @@
       *在宅患者訪問点滴注射管理指導料算定時の点滴注射
                05  RECE442-FLG-HOUTEN-COMMENT
                                            PIC  X(01).
-      *自保区分
-               05  RECE442-JIHOKBN         PIC  X(01).
       *コメント剤連番
                05  RECE442-COMRENNUM       PIC  9(05).
       *剤回数
            03  RECE442-ZAIKAISU            PIC  9(04).
       *日数回数テーブル
            03  RECE442-DAY-AREA.
-      *        診療回数テーブル（1:合計、2-9:１回〜９回）
-               05  RECE442-DAY-TBL         OCCURS  10.
+      *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
+               05  RECE442-DAY-TBL         OCCURS  4.
                    07  RECE442-KAISUINF    OCCURS  31.
                        09  RECE442-KAISU   PIC  9(03).
       *データ
-           03  RECE442-REC1                PIC  X(2000).
+           03  RECE442-REC1                PIC  X(1000).
       *コメントデータ
            03  RECE442-COM-AREA.
                05  RECE442-COM             PIC  X(200)    OCCURS  10.

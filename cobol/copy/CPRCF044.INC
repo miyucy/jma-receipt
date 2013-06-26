@@ -58,15 +58,6 @@
       *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
       *  04.07.03    NACL-門脇    13/02/12  労災レセ電対応
       *                                     剤（点数）・剤（金額）追加
-      *  04.07.04    NACL-門脇    14/04/07  改正対応項目追加
-      *  04.07.05    NACL-門脇    15/03/09  訪問診療にかかる記録書コメント
-      *                                     フラグ追加
-      *
-      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
-      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.03    NACL-門脇    16/03/31  平成２８年４月改正対応
-      *  04.08.04    NACL-門脇    16/08/02  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応
       ************************************************************
       *01  RECE44-REC.
            03  RECE44-KEY.
@@ -143,14 +134,6 @@
                05  RECE44-ZAIKBN              PIC  9(03).
       *画像診断（２回目以降減算あり）
                05  RECE44-GAZOGEN             PIC  X(01).
-      *訪問診療にかかる記録書コメントフラグ
-               05  RECE44-HOMONCOMFLG         PIC  X(01).
-      *院外湿布薬７０枚超理由コメントフラグ
-               05  RECE44-SIPPUCOMFLG         PIC  X(01).
-      *湿布薬フラグ（１：院外分　２：院内分）
-               05  RECE44-SIPPUFLG            PIC  X(01).
-      *１５円以下薬剤レセプト記載フラグ
-               05  RECE44-YKZKISAIFLG         PIC  X(01).
       *
       *初診料算定科：
                05  RECE44-SYOSANTEIKA-COMMENT PIC  X(01).
@@ -178,17 +161,8 @@
                05  RECE44-SYOGAI-COMMENT      PIC  X(01).
       *リハビリ（摂食）
                05  RECE44-SESSYOKU-COMMENT    PIC  X(01).
-      *リハビリ（廃用症候群）
-               05  RECE44-HAIYO-COMMENT       PIC  X(01).
       *介達牽引
                05  RECE44-KAITATU-COMMENT     PIC  X(01).
-      *
-      *リハビリ加算（心大血管疾患）
-               05  RECE44-SINDAI9-COMMENT     PIC  X(01).
-      *リハビリ加算（呼吸器）
-               05  RECE44-KOKYUKI9-COMMENT    PIC  X(01).
-      *リハビリ加算（廃用症候群）
-               05  RECE44-HAIYO9-COMMENT      PIC  X(01).
       *
       *慢性疼痛疾患管理料
                05  RECE44-FLG-SHIDOU-COMMENT  PIC  X(01).
@@ -271,24 +245,6 @@
                05  RECE44-FLG-GAIKAN-COMMENT
                                            PIC X(01).
       *
-      *心臓ペースメーカー指導管理料（着用型自動除細動器）
-      *心臓ペースメーカー指導管理料（ロ・植込型除細動器移行期加算含む）
-               05  RECE44-FLG-SINPESUR-COMMENT PIC  X(01).
-      *がん患者指導管理料２・３
-               05  RECE44-FLG-GANSIDO-COMMENT  PIC  X(01).
-      *在宅患者共同診療料
-               05  RECE44-FLG-ZAIKYO-COMMENT   PIC  X(01).
-      *在宅患者訪問リハビリテーション指導管理料
-               05  RECE44-FLG-ZAIRIHA-COMMENT  PIC  X(01).
-      *磁気による膀胱等刺激法
-               05  RECE44-FLG-BOKOHO-COMMENT   PIC  X(01).
-      *通院・在宅精神療法（２０歳未満）加算
-               05  RECE44-FLG-TUINZAI-COMMENT  PIC  X(01).
-      *依存症集団療法
-               05  RECE44-FLG-IZONSYO-COMMENT  PIC  X(01).
-      *精神科重症患者早期集中支援管理料
-               05  RECE44-FLG-SEIJYU-COMMENT   PIC  X(01).
-      *
       *手技毎の内容（手術・画像診断・処置）
                05  RECE44-ACCTP-SYUGI-TBL-G.
                    07  RECE44-ACCTP-SYUGI-TBL  OCCURS  5.
@@ -308,20 +264,6 @@
       *窒素点数
                05  RECE44-ACCTP-CHISOTEN   PIC 9(07).
       *
-      *包括診療分退避点数
-               05  RECE44-HOKATU-TENSU-AREA.
-      *剤点数
-                   07    RECE44-HOKATU-ZAITEN  PIC 9(08).
-      *手技点数１
-                   07    RECE44-HOKATU-SYUTEN1 PIC 9(07).
-      *手技点数２
-                   07    RECE44-HOKATU-SYUTEN2 PIC 9(07).
-      *薬剤点数
-                   07    RECE44-HOKATU-YKZTEN  PIC 9(07).
-      *器材点数
-                   07    RECE44-HOKATU-KIZAITEN
-                                               PIC 9(07).
-      *
       *剤（点数）
                05  RECE44-ZAI-TENSU        PIC 9(09).
       *剤（金額）
@@ -329,8 +271,8 @@
       *
       *日数回数テーブル
                05  RECE44-DAY-AREA.
-      *            診療回数テーブル（1:合計、2-9:１回〜９回）
-                    07  RECE44-DAY-TBL         OCCURS  10.
+      *            診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
+                    07  RECE44-DAY-TBL         OCCURS  4.
                         09  RECE44-KAISUINF    OCCURS  31.
                             11  RECE44-KAISU   PIC 9(03).
       *レセプト種別
