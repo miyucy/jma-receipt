@@ -63,12 +63,6 @@
        01  WRK-AREA.
            03  WRK-MCP-WIDGET              PIC X(64).
            03  WRK-KANACHK-STR             PIC X(100).
-           03  WRK-RENNUM                  PIC 9(03).
-           03  WRK-LBLRENNUM.
-               05  WRK-LBLRENNUM-ST        PIC Z.
-               05  WRK-LBLRENNUM-SEP       PIC X(04).
-               05  WRK-LBLRENNUM-ED        PIC ZZZ.
-               05  WRK-LBLRENNUM-MSG       PIC X(20).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -100,7 +94,19 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA13SCRAREA.INC".
+           COPY    "Q01.INC".
+           COPY    "Q02.INC".
+           COPY    "Q02A.INC".
+           COPY    "Q02B.INC".
+           COPY    "Q03.INC".
+           COPY    "Q04.INC".
+           COPY    "Q96.INC".
+           COPY    "Q97.INC".
+           COPY    "Q98.INC".
+           COPY    "Q99.INC".
+           COPY    "Q100.INC".
+           COPY    "QERR.INC".
+           COPY    "QID1.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -201,9 +207,6 @@
       *
            INITIALIZE                  SPA-Q04
       *
-           MOVE    SPA-Q01-Q04-RENNUM
-                               TO  SPA-GMN-Q04-RENNUM
-      *
            MOVE    SPA-Q01-Q04-NAME
                                    TO  SPA-GMN-Q04-NAME
       *
@@ -292,7 +295,6 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
-           MOVE    Q04-RENNUM      TO  SPA-GMN-Q04-RENNUM
            MOVE    Q04-NAME        TO  SPA-GMN-Q04-NAME
       *
            .
@@ -304,11 +306,6 @@
       *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
-      *
-      *    表示順番チェック処理
-           IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 4101-RENNUM-CHK-SEC
-           END-IF
       *
       *    登録名チェック処理
            IF    ( SPA-ERRCD       =   SPACE )
@@ -332,22 +329,6 @@
       *
            .
        4100-TITLEKBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    表題順番チェック処理
-      *****************************************************************
-       4101-RENNUM-CHK-SEC               SECTION.
-      *
-           EVALUATE    TRUE
-           WHEN      ( SPA-GMN-Q04-RENNUM  <   1 )
-               MOVE    1               TO  SPA-GMN-Q04-RENNUM
-           WHEN      ( SPA-GMN-Q04-RENNUM  >   SPA-Q01-Q04-RENNUM-MAX )
-               MOVE    SPA-Q01-Q04-RENNUM-MAX
-                                       TO  SPA-GMN-Q04-RENNUM
-           END-EVALUATE
-      *
-           .
-       4101-RENNUM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    登録名チェック処理
@@ -419,8 +400,6 @@
            END-IF
       *
            IF    (  SPA-ERRCD      =   SPACE )
-               MOVE    SPA-GMN-Q04-RENNUM
-                                   TO  SPA-Q01-Q04-RENNUM
                MOVE    SPA-GMN-Q04-NAME
                                    TO  SPA-Q01-Q04-NAME
                IF    ( SPA-GMN-Q04-TITLEKBN    =   "T" )
@@ -461,17 +440,10 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    SPACE           TO  Q04
            INITIALIZE                  Q04
       *
       *    登録名
-           MOVE    SPA-GMN-Q04-NAME    TO  Q04-NAME
-      *
-      *    表題順番
-           MOVE    SPA-GMN-Q04-LBLRENNUM
-                                       TO  Q04-LBLRENNUM
-           MOVE    SPA-GMN-Q04-RENNUM
-                                       TO  Q04-RENNUM
+           MOVE    SPA-GMN-Q04-NAME   TO  Q04-NAME
       *
       *    表題区分
            MOVE    SPA-GMN-Q04-TITLEKBN
@@ -497,8 +469,6 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
-           MOVE    "T"                 TO  Q04-RENNUM-VISIBLE
-           MOVE    WIDGET-NORMAL       TO  Q04-RENNUM-STATE
       *
            .
        500-GMNHEN-STATE-EDIT-EXT.
@@ -513,13 +483,9 @@
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
       *
-           PERFORM 5012-SKIP-CUR-SEC
-      *
            EVALUATE    SPA-GMN-Q04-CUR
            WHEN    001
                MOVE    "NAME"          TO  MCP-WIDGET
-           WHEN    002
-               MOVE    "RENNUM"        TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -534,8 +500,6 @@
        5011-INPUT-CUR-SEC          SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
-           WHEN    "RENNUM"
-               MOVE    001             TO  SPA-GMN-Q04-CUR
            WHEN    "NAME"
                MOVE    212             TO  SPA-GMN-Q04-CUR
            END-EVALUATE
@@ -543,21 +507,6 @@
            .
       *
        5011-INPUT-CUR-EXT.
-           EXIT.
-      *****************************************************************
-      *    カーソルスキップ処理
-      *****************************************************************
-       5012-SKIP-CUR-SEC               SECTION.
-      *
-           IF    ( SPA-GMN-Q04-CUR     =   2 )
-               IF    ( Q04-RENNUM-VISIBLE  =   "F" )
-                   MOVE    1           TO  SPA-GMN-Q04-CUR
-               END-IF
-           END-IF
-      *
-           .
-      *
-       5012-SKIP-CUR-EXT.
            EXIT.
       *****************************************************************
       *    エラーメッセージ表示理
@@ -658,35 +607,6 @@
            .
       *
        900-SHOUKAIKANRI-KEY3-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者照会検索条件管理情報検索処理
-      *****************************************************************
-       900-SHOUKAIKANRI-KEY4-SEL-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-SHOUKAIKANRI
-      *
-           INITIALIZE                      SHOUKAIKANRI-REC
-           MOVE    SPA-HOSPNUM         TO  SHOKANRI-HOSPNUM
-           MOVE    "0"                 TO  SHOKANRI-NYUGAIKBN
-           MOVE    SHOUKAIKANRI-REC    TO  MCPDATA-REC
-           MOVE    "tbl_shoukaikanri"  TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF  ( MCP-RC        =   ZERO )
-               MOVE    MCPDATA-REC     TO  SHOUKAIKANRI-REC
-           ELSE
-               MOVE    1               TO  FLG-SHOUKAIKANRI
-               INITIALIZE                  SHOUKAIKANRI-REC
-           END-IF
-      *
-           MOVE    "tbl_shoukaikanri"  TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-      *
-       900-SHOUKAIKANRI-KEY4-SEL-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

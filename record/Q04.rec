@@ -1,21 +1,13 @@
-Q04 {
-  fixed4 {
-    TITLE {
-      textdata varchar(20);
-    };
-    TITLEKBN {
-      isactive bool;
-    };
-    LBLRENNUM {
-      textdata varchar(10);
-    };
-    RENNUM {
-          visible bool;
-          state   integer;
-          numdata number(3);
-    };
-    NAME {
-      textdata varchar(100);
-    };
-  };
+Q04	{
+	fixed4	{
+		TITLE	{
+			value	varchar(20);
+		};
+		NAME	{
+			value	varchar(30);
+		};
+		TITLEKBN	{
+			value	bool;
+		};
+	};
 };
