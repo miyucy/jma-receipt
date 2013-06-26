@@ -267,9 +267,6 @@
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *
-      *    診療行為用共通パラメタ
-           COPY    "K01COMMON-SPA".
-      *
       *
       *****************************************************************
       *    連絡　領域
@@ -1488,11 +1485,6 @@
                PERFORM 100111-KASAN-CHK-SEC
       *        加算料追加処理
                PERFORM 1002-KASAN-SET-SEC
-      *TEST
-            DISPLAY " WRK-SRYCD:"  WRK-SRYCD
-              ",FLG-ADD:"  FLG-ADD
-              ",LNK-ORCSC-NENREI:" LNK-ORCSC-NENREI
-      *TEST
                IF      FLG-ADD             =   1
                    MOVE    1                   TO  WRK-COM-SANFLG
                                                            (IDX-S)
