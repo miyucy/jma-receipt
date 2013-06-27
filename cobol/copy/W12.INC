@@ -102,12 +102,18 @@
                     06  W12-COMMENT-NYUINRYO-COUNT   PIC S9(9)   BINARY.
                     06  W12-COMMENT-NYUINRYOLST
                             PIC X(34)   OCCURS  5 TIMES.
+                  05  W12-COMMENT-NYUINRYO1-COMBO.
+                    06  W12-COMMENT-NYUINRYO1.
+                      07  W12-VALUE   PIC X(34).
+                    06  W12-COMMENT-NYUINRYO1-COUNT   PIC S9(9)  BINARY.
+                    06  W12-COMMENT-NYUINRYO1LST
+                            PIC X(34)   OCCURS  5 TIMES.
                   05  W12-CHKKBN-COMBO.
                     06  W12-CHKKBN.
-                      07  W12-VALUE   PIC X(20).
+                      07  W12-VALUE   PIC X(36).
                     06  W12-CHKKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-CHKKBNLST
-                            PIC X(20)   OCCURS  5 TIMES.
+                            PIC X(36)   OCCURS  5 TIMES.
                   05  W12-BYOMEI-PRTJYUN-COMBO.
                     06  W12-BYOMEI-PRTJYUN.
                       07  W12-VALUE   PIC X(36).

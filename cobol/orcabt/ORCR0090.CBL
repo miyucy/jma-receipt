@@ -248,6 +248,9 @@
       *                                     レセプト記載対応
       *  04.06.04    NACL-門脇    13/02/27  平成２５年４月改正対応
       *
+      *  04.07.01    NACL-藤原    13/07/01  レセ電請求時の受付エラー分の
+      *                                     自費レセプト対象の有無設定
+      *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -1626,9 +1629,12 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
       *        生保の負担者番号、受給者番号の入力がない時のエラー設定
       *        災害該当のときはチェックしない 
-               IF    ( SYS-200501-CHKKBN   =   "1" )
-               AND   ( RECE02-RJNGAIKOHFTN (1)
-                                           =   0   )
+               IF  (   ( SYS-200501-CHKKBN     =   "1"    )
+                    OR ( SYS-200501-CHKKBN     =   "2" AND
+                         RECE02-RECESYUBETU
+                                           NOT =   "8888" ) )
+               AND  (    RECE02-RJNGAIKOHFTN (1)
+                                               =   0        )
                    PERFORM VARYING IDX6    FROM    1   BY  1
                            UNTIL   IDX6 >          4
                            OR      RECE02-KOHNUM(IDX6) =   SPACE
@@ -2029,7 +2035,10 @@ grpsys         PERFORM 900-DBSELECT-SEC
                        END-IF
       *
       *                レセ電請求時の受付エラー分チェック
-                       IF      SYS-200501-CHKKBN   =   "1"
+                       IF    ( SYS-200501-CHKKBN   =   "1"     )
+                       OR    ( SYS-200501-CHKKBN   =   "2" AND
+                               RECE02-RECESYUBETU
+                                               NOT =   "8888"  )
                            PERFORM 20021-DATA-CHK-SEC
                        END-IF
                      END-IF
