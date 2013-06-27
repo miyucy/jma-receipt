@@ -306,10 +306,6 @@
                    07  SPA-IKKATUKBN                  PIC X(01).
       *            ∆˛∂‚§ﬁ§»§· ÷µ—∂Ë ¨
                    07  SPA-MATOME-NYUHENKIN-KBN       PIC X(02).
-      *ver.4.7
-      *            £√£”£÷∂Ë ¨
-                   07  SPA-NAI-CSVKBN                 PIC X(01).
-                   07  SPA-NAI-CSVKBN2                PIC X(01).
       *
       *    £√£Ã£¡£…£Õ≤ËÃÃ
            03  SPA-K03X-AREA.
