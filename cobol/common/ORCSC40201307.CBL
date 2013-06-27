@@ -2426,11 +2426,10 @@
                               OR  (SPA-ERRCD   NOT =   SPACE )
                    IF      TBL-IDX-F (IDXF)    >   ZERO
                        MOVE    TBL-IDX-F (IDXF)    TO  IDXF2
-                       IF     (WRK-COM-KZMFLG(IDXF2)   =   SPACE
-                                                       OR  "1"  )
+                       IF     (WRK-COM-KZMFLG(IDXF2)   =   SPACE)
                           AND (LNK-ORCSC-KEI-IDX       =   ZERO )
                            MOVE    "K406"          TO  SPA-ERRCD
-                           MOVE    "2"             TO  WRK-COM-KZMFLG
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
                                                               (IDXF2)
                            MOVE    "1"             TO  WRK-COM-CUR
                                                               (IDXF2)
