@@ -135,6 +135,7 @@
            03  IDX-FUKU-J4         PIC 9(04).
            03  IDX-FUKU-J5         PIC 9(04).
            03  IDX-F-J             PIC 9(04).
+           03  IDXF2               PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -191,12 +192,18 @@
                05  WRK-SURYO-S1    PIC 9(07).
                05  WRK-SURYO-S2    PIC 9(05).
       *TEST
+      *H25.7
+      *    ¼êµ»¤ÈÌôºÞ¡¦´ïºàº®ºß¥Á¥§¥Ã¥¯
            03  FLG-YKZ-CHK             PIC 9(01).
            03  FLG-KZI-CHK             PIC 9(01).
            03  FLG-YKZ-ERR             PIC 9(01).
            03  FLG-KZI-ERR             PIC 9(01).
            03  IDX-YKZ                 PIC 9(04).
            03  IDX-KZI                 PIC 9(04).
+      *    Ê£¿ôºÞ¤Î¥Á¥§¥Ã¥¯
+           03  TBL-IDX-F-G.
+               05  TBL-IDX-F           PIC 9(04)
+                                       OCCURS   5.
       *
       *    ÊÝÂ¸ÍÑ
        01  HOZ-SCR-REC.
@@ -1749,24 +1756,29 @@
                    WHEN    "000"    ALSO  "00"
                        ADD     1               TO  IDX-FUKU-J1
                        MOVE    IDXF            TO  IDX-F-J
+                       MOVE    1               TO  IDXF2
       *            Ç®½ý½èÃÖ
                    WHEN    "001"    ALSO  "00"
                        ADD     1               TO  IDX-FUKU-J2
                        MOVE    IDXF            TO  IDX-F-J
+                       MOVE    2               TO  IDXF2
       *            ½ÅÅÙêóáì½èÍý
                    WHEN    "001"    ALSO  "04"
                        ADD     1               TO  IDX-FUKU-J3
                        MOVE    IDXF            TO  IDX-F-J
+                       MOVE    3               TO  IDXF2
       *            ÈéÉæ²ÊÆð¹Ñ
                    WHEN    "053"    ALSO  "00"
                        ADD     1               TO  IDX-FUKU-J4
                        MOVE    IDXF            TO  IDX-F-J
+                       MOVE    4               TO  IDXF2
       *            ¾Ã±êÄÃÄË½èÃÖ
                    WHEN    "119"    ALSO  "00"
       *                ¼¾ÉÛ½èÃÖ
                        IF      WRK-COM-INPUTCD(IDXF)   =   "140002210"
                            ADD     1               TO  IDX-FUKU-J5
                            MOVE    IDXF            TO  IDX-F-J
+                           MOVE    5               TO  IDXF2
                        END-IF
                END-EVALUATE
            END-IF
@@ -2393,6 +2405,7 @@
                                                    NOT =   ZERO )
                     AND   (FLG-ARI             =   1    )
                        MOVE    1               TO  FLG-KASAN-ARI
+                       MOVE    IDX-F-J         TO  TBL-IDX-F (IDXF2)
                    END-IF
                END-IF
                IF      WRK-COM-ZAIEND (IDXF)   =   "1"
@@ -2408,14 +2421,23 @@
              OR   (IDX-FUKU-J5         >   1   ))
             AND  ( FLG-KASAN-ARI       =   1    )
       *        ·Ù¹ð
-               IF     (WRK-COM-KZMFLG(IDX-F-J) =   SPACE)
-                  AND (LNK-ORCSC-KEI-IDX       =   ZERO )
-                   MOVE    "K406"          TO  SPA-ERRCD
-                   MOVE    "1"             TO  WRK-COM-KZMFLG
-                                                              (IDX-F-J)
-                   MOVE    "1"             TO  WRK-COM-CUR    (IDX-F-J)
-                   MOVE    IDX-F-J         TO  LNK-ORCSC-KEI-IDX
-               END-IF
+               PERFORM VARYING     IDXF    FROM    1   BY  1
+                       UNTIL      (IDXF    >       5 )
+                              OR  (SPA-ERRCD   NOT =   SPACE )
+                   IF      TBL-IDX-F (IDXF)    >   ZERO
+                       MOVE    TBL-IDX-F (IDXF)    TO  IDXF2
+                       IF     (WRK-COM-KZMFLG(IDXF2)   =   SPACE
+                                                       OR  "1"  )
+                          AND (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    "K406"          TO  SPA-ERRCD
+                           MOVE    "2"             TO  WRK-COM-KZMFLG
+                                                              (IDXF2)
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                              (IDXF2)
+                           MOVE    IDXF2           TO  LNK-ORCSC-KEI-IDX
+                       END-IF
+                   END-IF
+               END-PERFORM
            END-IF
            .
        2001-ROURECE-CHK-EXT.
