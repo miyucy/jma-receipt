@@ -6,24 +6,13 @@
               03  T01-B08-STATE   PIC S9(9)   BINARY.
               03  T01-B09-STATE   PIC S9(9)   BINARY.
               03  T01-B10-STATE   PIC S9(9)   BINARY.
-              03  T01-B14-STATE   PIC S9(9)   BINARY.
               03  T01-B15-STATE   PIC S9(9)   BINARY.
               03  T01-B16-STATE   PIC S9(9)   BINARY.
               03  T01-B17-STATE   PIC S9(9)   BINARY.
-              03  T01-B18-STATE   PIC S9(9)   BINARY.
-              03  T01-B18-LABEL   PIC X(6).
               03  T01-B19-STATE   PIC S9(9)   BINARY.
               03  T01-B20-STATE   PIC S9(9)   BINARY.
               03  T01-B21-STATE   PIC S9(9)   BINARY.
               03  T01-B22-STATE   PIC S9(9)   BINARY.
-              03  T01-SRYYMKBN-COMBO.
-                04  T01-SRYYMKBN-COM-STATE    PIC S9(9)   BINARY.
-                04  T01-SRYYMKBN-COM-VISIBLE  PIC X(01).
-                04  T01-SRYYMKBN.
-                  05  T01-VALUE    PIC X(18).
-                04  T01-SRYYMKBN-COUNT PIC S9(9)   BINARY.
-                04  T01-SRYYMKBN-ITEM
-                        PIC X(18)   OCCURS  10 TIMES.
               03  T01-SKYYMD.
                 04  T01-VALUE   PIC X(10).
               03  T01-HKNJANUM.
@@ -37,7 +26,7 @@
                   05  T01-VALUE    PIC X(32).
                 04  T01-PRTKBN-COUNT PIC S9(9)   BINARY.
                 04  T01-PRTKBN-ITEM
-                        PIC X(32)   OCCURS  10 TIMES.
+                        PIC X(32)   OCCURS  5 TIMES.
               03  T01-RECEDEN-CHK-COMBO.
                 04  T01-RECEDEN-CHK-STATE PIC S9(9)   BINARY.
                 04  T01-RECEDEN-CHK.
@@ -62,7 +51,7 @@
               03  T01-HKNJANUM-TITLE-VISIBLE  PIC X(01).
               03  T01-HKNJANUM-TITLE          PIC X(10).
               03  T01-DIRECT-HKNJANUM-COMBO.
-                04  T01-DIRECT-HKNJANUM-COM-VISIBLE  PIC X(01).
+                04  T01-DIRECT-HKNJANUM-COMBO-VISIBLE  PIC X(01).
                 04  T01-DIRECT-HKNJANUM.
                   05  T01-VALUE    PIC X(39).
                 04  T01-DIRECT-HKNJANUM-COUNT PIC S9(9)   BINARY.
@@ -114,8 +103,6 @@
               03  T01-TITLE-VALUE     PIC X(110).
               03  T01-TITLE1-STYLE    PIC X(20).
               03  T01-TITLE1-VALUE    PIC X(90).
-              03  T01-TITLE2-STYLE    PIC X(20).
-              03  T01-TITLE2-VALUE    PIC X(50).
               03  T01-SYOKBN1-STATE   PIC S9(9)   BINARY.
               03  T01-SYOKBN1-VALUE   PIC X.
               03  T01-SYOKBN2-VALUE   PIC X.
