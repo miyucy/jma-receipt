@@ -3174,7 +3174,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *        処理開始前チェック処理
+      *    処理開始前チェック処理
       *****************************************************************
        4101-KAKUTEI-CHK-SEC        SECTION.
       *
@@ -3217,6 +3217,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                WHEN    "B17"
                    IF      SPA-GMN-DATAKBN =   "1" OR  "2" OR  "3"
                        MOVE    "0013"          TO  SPA-ERRCD
+                       MOVE    4               TO  SPA-GMN-CUR
                    END-IF
            END-EVALUATE
       *
@@ -4935,7 +4936,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    主科未設定データ存在チェック処理
+      *    レセ電データ月遅れ分存在チェック処理
       *****************************************************************
        46011-RECEDEN-CHK-SEC            SECTION.
       *
