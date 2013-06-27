@@ -2697,7 +2697,6 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                            MOVE    "0"             TO  SHELLTBL-ARG12
                                                        SHELLTBL-ARG13
                    END-EVALUATE
-                   
                    EVALUATE    SPA-R01-RECEKBN
                        WHEN    "3"
                            MOVE    SYS-200501-COMMENT-ROU-KSIKBN
