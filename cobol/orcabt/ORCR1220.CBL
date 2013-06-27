@@ -111,6 +111,7 @@
       *  04.07.03    NACL-門脇    12/10/12  保険別請求チェック表（標準帳票）
       *                                     の機能追加対応
       *  04.07.04    NACL-門脇    12/09/25  コメント差込取り止め（在宅持続陽圧）
+      *  04.07.05    NACL-門脇    13/07/01  入院料他保険算定時コメント記載対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -1262,6 +1263,10 @@
            IF      SYS-200501-COMMENT-NYUINRYO-KSIKBN
                                     =   SPACE
                MOVE    "1"   TO  SYS-200501-COMMENT-NYUINRYO-KSIKBN
+           END-IF
+           IF      SYS-200501-COMMENT-NYUINRYO1-KSIKBN
+                                    =   SPACE
+               MOVE    "2"   TO  SYS-200501-COMMENT-NYUINRYO1-KSIKBN
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -6859,7 +6864,14 @@
       *
                 IF         WRK-DAY5(IDY)      NOT =  ZERO
                 AND        WRK-DAY1(IDY)      NOT =  ZERO
-                   PERFORM  2104411-NYUINRYOFLG-HENSYU-SEC
+                     EVALUATE  SYS-200501-COMMENT-NYUINRYO1-KSIKBN
+                       WHEN     "0"
+                          MOVE   SPACE    TO   RECE200-NYUINRYOFLG
+                       WHEN     "1"
+                          MOVE    "6"     TO   RECE200-NYUINRYOFLG
+                       WHEN     "2"
+                          PERFORM  2104411-NYUINRYOFLG-HENSYU-SEC
+                     END-EVALUATE
                 ELSE
                    IF      WRK-DAY5(IDY)               NOT =  ZERO
                    AND     RECE200-NYUINDAY-KBN(IDY)   NOT =  "1"
@@ -6877,7 +6889,14 @@
                    IF      WRK-DAY5(IDY)               NOT =  ZERO
                    AND     RECE200-NYUINDAY-KBN(IDY)       =  "1"
                    AND     RECE200-SRYYM                  >=  "200904"
+                     EVALUATE  SYS-200501-COMMENT-NYUINRYO1-KSIKBN
+                       WHEN     "0"
+                          MOVE   SPACE    TO   RECE200-NYUINRYOFLG
+                       WHEN     "1"
+                          MOVE    "6"     TO   RECE200-NYUINRYOFLG
+                       WHEN     "2"
                           PERFORM  2104411-NYUINRYOFLG-HENSYU-SEC
+                     END-EVALUATE
                    END-IF
                 END-IF
       *
