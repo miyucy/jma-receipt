@@ -35,6 +35,7 @@
       *  04.05.00    NACL-多々納  09/10/XX  換算値入力対応
       *  04.07.00    NACL-多々納  12/01/06  クライアント印刷対応
       *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
+      *  04.08.00    NACL-多々納  13/07/XX  院外投薬のみ対象対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -227,6 +228,8 @@
                        09  SPA-WKSRY-ZAINUM            PIC  9(08).
                        09  SPA-WKSRY-SRYSYUKBN         PIC  X(03).
                        09  SPA-WKSRY-SRYKBN            PIC  X(02).
+      *                院内区分
+                       09  SPA-WKSRY-SRYSYUKBN2        PIC  X(03).
       *                剤点数計
                        09  SPA-WKSRY-ZAITENKEI         PIC  9(08).
                        09  SPA-WKSRY-ZAIKAIKEI         PIC  9(07).
@@ -275,6 +278,9 @@
            03  FLG-KANSAN          PIC 9(01).
       *    クライアント印刷有
            03  FLG-CLIENT-OK       PIC 9(01).
+      *
+           03  FLG-CHK2            PIC 9(01).
+           03  FLG-INNAI           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -381,6 +387,11 @@
       *
       *    商品名単位名称
            03  WRK-SYO-TANINAME        PIC X(12).
+      *
+      *    院内表示
+       01  TBL-INNAI-AREA.
+           03  TBL-INNAI-TBL           OCCURS   400.
+               05  TBL-INNAI-TMEISYO       PIC X(120).
       *
       *   年齢表示
        01  WRK-NENREI-G.
@@ -1204,6 +1215,9 @@
            INITIALIZE                  SPA-NAI-WKSRY-TBL
            MOVE    ZERO                TO  SPA-WKSRY-MAX
            MOVE    ZERO                TO  SPA-KEIFLG
+      *H25.7
+           MOVE    ZERO                TO  FLG-INNAI
+           INITIALIZE                      TBL-INNAI-AREA
       *
       *    受診歴を検索する
            INITIALIZE                  JYURRK-KEY
@@ -1249,6 +1263,19 @@
                MOVE    MAX-LINE            TO  SPA-MEISAI-MAX
            ELSE
                MOVE    IDG                 TO  SPA-MEISAI-MAX
+           END-IF
+      *
+      *H25.7
+      *    院内・院外混在時、院内の診療種別変更
+           IF     (SPA-NAI-INNAI       =   "1"  )  AND
+                  (FLG-INNAI           =   1    )
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   SPA-MEISAI-MAX
+                   IF      TBL-INNAI-TMEISYO  (IDX)  NOT =   SPACE
+                       MOVE    TBL-INNAI-TMEISYO(IDX)
+                                           TO  SPA-GMN-TMEISYO(IDX)
+                   END-IF
+               END-PERFORM
            END-IF
       *
       *    すべての行を選択可能とする
@@ -1559,6 +1586,29 @@
            IF      IDX-W               >   ZERO
                MOVE    WRK-ZAIKAISU        TO  WKSRY-ZAIKAISU (IDX-W)
            END-IF
+      *
+      *H25.7
+      *    院内設定
+           IF     (WKSRY-SRYKBN(1:1)   =   "2"  )  AND
+                  (ACCT-ZAITEN         >   ZERO )  AND
+                  (FLG-YAKUZAI         =   1    )  AND
+                 ((WKSRY-SRYSYUKBN     =   SPACE   )  OR
+                  (WKSRY-SRYSYUKBN(3:1)    =   "0" ))
+               MOVE    WKSRY-SRYKBN        TO  WKSRY-UPHMS(1:2)
+               MOVE    "1"                 TO  WKSRY-UPHMS(3:1)
+               MOVE    1                   TO  FLG-INNAI
+           END-IF
+           IF     (WKSRY-SRYSYUKBN     =   "211"
+                                       OR  "221"
+                                       OR  "231"
+                                       OR  "291"
+                                       OR  "141"
+                                       OR  "142")
+            OR   ((WKSRY-SRYSYUKBN     =   "140") AND
+                  (FLG-YAKUZAI         =   1    ))
+               MOVE    1                   TO  FLG-INNAI
+           END-IF
+      *
       *    院外判定
            IF     (WKSRY-SRYSYUKBN     =   "212"
                                        OR  "222"
@@ -1629,6 +1679,12 @@
                MOVE    LNK-WKSRY-SRYSYUKBN(IDX)
                                            TO  SPA-WKSRY-SRYSYUKBN
                                                     (SPA-WKSRY-MAX)
+      *H25.7
+      *        院内診療種別
+               MOVE    LNK-WKSRY-UPHMS (IDX)(1:3)
+                                           TO  SPA-WKSRY-SRYSYUKBN2
+                                                    (SPA-WKSRY-MAX)
+      *
       *        剤点数計
                MOVE    LNK-WKSRY-ZAITENKEI(IDX)
                                            TO  SPA-WKSRY-ZAITENKEI
@@ -1734,6 +1790,26 @@
       *    番号
            MOVE    SPA-WKSRY-MAX        TO  SPA-GMN-TBANGO    (IDG)
            MOVE    SPA-WKSRY-MAX        TO  SPA-NAI-TBANGO    (IDG)
+      *
+      *H25.7
+      *    院内分診療種別区分名称、診療行為区分セット
+           IF      SPA-WKSRY-SRYSYUKBN2 (SPA-WKSRY-MAX)
+                                   NOT =   SPACE
+               SET     MSYU-IDX            TO  1
+               SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
+                       AT   END
+                           MOVE    SPACE       TO  WRK-SRYSYUMEI
+                   WHEN    SPA-WKSRY-SRYSYUKBN2 (SPA-WKSRY-MAX)
+                                                =   MSYU-SRYSYUKBN
+                                                      (MSYU-IDX)
+                       MOVE    MSYU-SRYMEI (MSYU-IDX)
+                                                TO  WRK-SRYSYUMEI
+               END-SEARCH
+               MOVE    "."             TO  TBL-INNAI-TMEISYO (IDG)(1:1)
+               MOVE    SPA-WKSRY-SRYSYUKBN2 (SPA-WKSRY-MAX)
+                                       TO  TBL-INNAI-TMEISYO(IDG)(2:3)
+               MOVE    WRK-SRYSYUMEI   TO  TBL-INNAI-TMEISYO(IDG)(7:)
+           END-IF
       *
            .
        31011-GYO1-HEN-EXT.
@@ -3716,8 +3792,28 @@
                IF     ( SPA-WKSRY-ZAIKAIKEI(IDX-W) =   ZERO  )
                  OR   ((SPA-SEL-SYORI              =   1    ) AND
                        (SPA-WKSRY-SELFLG (IDX-W)   =   ZERO ))
-                   CONTINUE
+                   MOVE    ZERO            TO  FLG-CHK2
                ELSE
+      *        院外処方の時、院内投薬は対象外
+                   MOVE    1               TO  FLG-CHK2
+                   IF      SPA-NAI-INNAI       =   "1"
+                       IF     (SPA-WKSRY-SRYSYUKBN2 (IDX-W)
+                                           NOT =   SPACE )
+                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                               =   "140"
+                                               OR  "141"
+                                               OR  "142"  )
+                           MOVE    ZERO            TO  FLG-CHK2
+                       END-IF
+                   END-IF
+      *            選択があれば対象
+                   IF     (SPA-SEL-SYORI              =   1    ) AND
+                          (SPA-WKSRY-SELFLG (IDX-W)   =   1    ) AND
+                          (FLG-CHK2                   =   ZERO )
+                       MOVE    1               TO  FLG-CHK2
+                   END-IF
+               END-IF
+               IF      FLG-CHK2            =   1
                    ADD     1               TO  IDX1
                    MOVE    IDX1            TO  ORCHC19-ZAI-MAX
                    MOVE    SPA-WKSRY-ZAIKAIKEI (IDX-W)
@@ -3811,7 +3907,7 @@
                IF      FLG-CLIENT-OK       =   1
                    MOVE    "02"                TO  SPA-PRT-FLG
                END-IF
-              CALL    "ORCSCH30"          USING   SPA-AREA
+               CALL    "ORCSCH30"          USING   SPA-AREA
                                                    ORCSCH30AREA
            END-IF
       *
@@ -3835,7 +3931,27 @@
       *            投薬のみ
       ******     OR   ( SPA-WKSRY-SRYKBN (IDX-W)   =   "14"  )
                    CONTINUE
+                   MOVE    ZERO            TO  FLG-CHK2
                ELSE
+      *        院外処方の時、院内投薬は対象外
+                   MOVE    1               TO  FLG-CHK2
+                   IF      SPA-NAI-INNAI       =   "1"
+                       IF     (SPA-WKSRY-SRYSYUKBN2 (IDX-W)
+                                           NOT =   SPACE )
+                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                               =   "140"
+                                               OR  "141"
+                                               OR  "142"  )
+                           MOVE    ZERO            TO  FLG-CHK2
+                       END-IF
+                   END-IF
+      *            選択があれば対象
+                   IF     (SPA-SEL-SYORI              =   1    ) AND
+                          (SPA-WKSRY-SELFLG (IDX-W)   =   1    )
+                       MOVE    1               TO  FLG-CHK2
+                   END-IF
+               END-IF
+               IF      FLG-CHK2            =   1
                    ADD     1               TO  IDX1
                    MOVE    IDX1            TO  ORCSCH30-ZAI-MAX
                    MOVE    SPA-WKSRY-ZAIKAIKEI (IDX-W)
@@ -3954,7 +4070,28 @@
                  OR   ((SPA-SEL-SYORI              =   1    )  AND
                        (SPA-WKSRY-SELFLG (IDX-W)   =   ZERO ))
                    CONTINUE
+      *H25.7
+                   MOVE    ZERO            TO  FLG-CHK2
                ELSE
+      *        院外処方の時、院内投薬は対象外
+                   MOVE    1               TO  FLG-CHK2
+                   IF      SPA-NAI-INNAI       =   "1"
+                       IF     (SPA-WKSRY-SRYSYUKBN2 (IDX-W)
+                                           NOT =   SPACE )
+                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                               =   "140"
+                                               OR  "141"
+                                               OR  "142"  )
+                           MOVE    ZERO            TO  FLG-CHK2
+                       END-IF
+                   END-IF
+      *            選択があれば対象
+                   IF     (SPA-SEL-SYORI              =   1    ) AND
+                          (SPA-WKSRY-SELFLG (IDX-W)   =   1    )
+                       MOVE    1               TO  FLG-CHK2
+                   END-IF
+               END-IF
+               IF      FLG-CHK2            =   1
                    ADD     1               TO  IDX1
                    MOVE    IDX1            TO  ORCSCH62-ZAI-MAX
                    MOVE    SPA-WKSRY-ZAIKAIKEI (IDX-W)
