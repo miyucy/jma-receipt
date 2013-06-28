@@ -2690,6 +2690,11 @@
       *
            INITIALIZE                  SPA-S01KYOUTU
            MOVE    "09"                TO  SPA-S01-SYORINO
+      *
+           MOVE    "S03"           TO  SPA-NAI-GYOUMUID
+           PERFORM 800-ORCUIDSET-SEC
+           MOVE    C-UID           TO  SPA-NAI-UID
+      *
            PERFORM 4901-SPAKYOTUKEY-SET-SEC
       *
            MOVE    "S02"           TO  SPA-MOTOPG
@@ -3379,7 +3384,7 @@
            END-IF
       *
            MOVE    WIDGET-INSENSITIVE          TO  S02-B12C-STATE
-           MOVE    "°ì³çºÆ·×»»³ºÅö"            TO  S02-B12C-LABEL
+           MOVE    "ºÆ·×»»ÂÐ¾Ý°ìÍ÷"            TO  S02-B12C-LABEL
            IF    ( SPA-GMN-MODE    =   CONST-MODE-NORMON )
                MOVE    WIDGET-NORMAL           TO  S02-B12C-STATE
            END-IF
