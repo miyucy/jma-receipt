@@ -120,6 +120,7 @@ fi
             fi
         fi         
 
+#       システム管理場所出力のとき
         if  [ ${6} -eq '3' ]|| [ ${6} -eq '4' ]; then
 #           履歴保存先のフォルダへファイル作成
             if  [ ${15} -eq '1' ]; then
@@ -153,6 +154,9 @@ fi
     	            echo $FILE_2 "nothing"
 	            break
 	        fi
+            else
+#               履歴保存を行わないとき
+                chmod -R g+r $FILE_2
             fi
         fi
 

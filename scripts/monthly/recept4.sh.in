@@ -226,9 +226,10 @@ fi
 	fi
     fi
 
-#   履歴保存先のフォルダへファイル作成
-    if  [ ${24} -eq '1' ]; then
-        if  [ ${17} -eq '3' ]|| [ ${17} -eq '4' ]; then
+#   システム管理場所出力のとき
+    if  [ ${17} -eq '3' ]|| [ ${17} -eq '4' ]; then
+        if  [ ${24} -eq '1' ]; then
+#           履歴保存先のフォルダへファイル作成
             if  [ ${12} -eq '1' ]; then
                 OUT_FOLDER="${13}${20}_Shaho_${5}/"
             else
@@ -278,6 +279,9 @@ fi
 	            fi
                 fi
             done 
+        else
+#           履歴保存を行わないとき
+            chmod -R g+r ${13}${20}${RECEFILE1}*.UKE
         fi
     fi
 
