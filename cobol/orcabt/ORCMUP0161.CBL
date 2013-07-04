@@ -32,7 +32,7 @@
       * 04.04.00     NACL-伊藤    09/03/25  更新データレイアウト変更
       *                                     OPTION 5000 -> 44000
       * 04.04.00     NACL-太田    09/03/27  ２重追加チェック修正
-      * 04.07.01     NACL-森脇    13/07/04  OPIDセット
+      * 04.06.01     NACL-森脇    13/07/04  OPIDセット
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -136,17 +136,16 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-IN                  PIC X(01).
            03  WRK-OPTION              PIC X(60000).
            03  WRK-OPTION-LEN          PIC 9(08).
-      *----(04.07.01)--ADD-START---
+      *----(04.06.01)--ADD-START---
            03  WRK-OPID                PIC X(16).
-      *----(04.07.01)--ADD-END-----
+      *----(04.06.01)--ADD-END-----
       *
-           03  WRK-MAE-NAIYO           PIC X(200).
-           03  WRK-ATO-NAIYO           PIC X(200).
+           03  WRK-MAE-NAIYO           PIC X(100).
+           03  WRK-ATO-NAIYO           PIC X(100).
            03  WRK-MAE-AREA.
-               05  WRK-MAE-OPTION      PIC X(200) OCCURS 100.
+               05  WRK-MAE-OPTION      PIC X(100) OCCURS 100.
            03  WRK-ATO-AREA.
-               05  WRK-ATO-OPTION      PIC X(200) OCCURS 100.
-           03  WRK-HOMEDIR             PIC X(128).
+               05  WRK-ATO-OPTION      PIC X(100) OCCURS 100.
       *
       *    旧マスタデータ退避領域
        01  PRGWK-REC.
@@ -187,16 +186,14 @@ grpsys     COPY    "COMMON-SPA".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  WRK-KBNCD               PIC X(08).
       *
-       01  CONST-AREA.
-           03  CONST-HOMEDIR           PIC X(28)  VALUE
+       01  WRK-HOMEDIR.
+           03  FILLER                  PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
+           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
+           03  FILLER                  PIC X(01)  VALUE "/".
       *****************************************************************
       *    ファイル定義
       *****************************************************************
-      *
-           COPY    "ENUM-VALUE".
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
        01  PRGOPTIONWK-REC.
            03  PRGOPTIONWK-SYORIKBN           PIC  X(01).
@@ -286,25 +283,17 @@ grpsys     COPY    "COMMON-SPA".
            .
        100-INIT-EXT.
            EXIT.
+      *
       *****************************************************************
       *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
-           INITIALIZE                      SGETTEMP-AREA
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-      *
-           IF      SGETTEMP-MW         =   SPA-PANDA
-               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
-           ELSE
-               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
-           END-IF
+           MOVE    SPA-HOSPNUM         TO  WRK-HOMEDIR-HOSPNUM
       *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    LNK-DBFILE          DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
@@ -314,8 +303,6 @@ grpsys     COPY    "COMMON-SPA".
       *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
@@ -325,8 +312,6 @@ grpsys     COPY    "COMMON-SPA".
       *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
@@ -335,6 +320,7 @@ grpsys     COPY    "COMMON-SPA".
            .
        101-ASSIN-GET-EXT.
            EXIT.
+      *
       *****************************************************************
       *    メイン処理
       *****************************************************************
@@ -637,12 +623,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *            コメントチェック
                    IF      WRK-MAE-NAIYO(1:1)  NOT =   "#"
                        PERFORM VARYING IDX-PNT2 FROM 1 BY 1
-                               UNTIL ( IDX-PNT2 >   200 )
+                               UNTIL ( IDX-PNT2 >   100 )
                                OR    ( WRK-MAE-NAIYO(IDX-PNT2:)
                                                            =   SPACE )
                            IF      WRK-MAE-NAIYO(IDX-PNT2:1)   =   "="
                                MOVE    1               TO  FLG-LF
-                               MOVE    200             TO  IDX-PNT2
+                               MOVE    100             TO  IDX-PNT2
                            END-IF
                        END-PERFORM
                    END-IF
@@ -666,11 +652,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    コメントチェック
            IF      WRK-MAE-NAIYO(1:1)  NOT =   "#"
                PERFORM VARYING IDX-PNT2 FROM 1 BY 1
-                       UNTIL ( IDX-PNT2 >   200 )
+                       UNTIL ( IDX-PNT2 >   100 )
                        OR    ( WRK-MAE-NAIYO(IDX-PNT2:)    =   SPACE )
                    IF      WRK-MAE-NAIYO(IDX-PNT2:1)   =   "="
                        MOVE    1               TO  FLG-LF
-                       MOVE    200             TO  IDX-PNT2
+                       MOVE    100             TO  IDX-PNT2
                    END-IF
                END-PERFORM
            END-IF
@@ -679,13 +665,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                COMPUTE CNT-MAE     =   CNT-MAE     +   1
                MOVE    WRK-MAE-NAIYO   TO  WRK-MAE-OPTION(CNT-MAE)
            END-IF
-      *----(04.07.01)--ADD-START---
+      *----(04.06.01)--ADD-START---
            IF      CNT-MAE     =   ZERO
                MOVE    SPACE           TO  WRK-OPID
            ELSE
                MOVE    PRGOPTION-OPID  TO  WRK-OPID
            END-IF
-      *----(04.07.01)--ADD-END-----
+      *----(04.06.01)--ADD-END-----
       *
       *    更新データ
            INITIALIZE                      PRGOPTION-REC
@@ -739,7 +725,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    WRK-ATO-OPTION(IDX) TO  WRK-ATO-NAIYO
                MOVE    ZERO            TO  FLG-LF
                PERFORM VARYING IDX-PNT1 FROM 1 BY 1
-                       UNTIL ( IDX-PNT1 >   200 )
+                       UNTIL ( IDX-PNT1 >   100 )
                        OR    ( WRK-ATO-NAIYO(IDX-PNT1:)    =  SPACE )
                        OR    ( FLG-LF  =   1 )
       *            コメントチェック
@@ -767,7 +753,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
                IF  ( FLG-LF  =  ZERO )
                    PERFORM VARYING IDX-PNT1 FROM 1 BY 1
-                           UNTIL ( IDX-PNT1 >   200 )
+                           UNTIL ( IDX-PNT1 >   100 )
                            OR    ( WRK-ATO-NAIYO(IDX-PNT1:)  =   SPACE )
                        MOVE    WRK-ATO-NAIYO(IDX-PNT1:1)
                                        TO  WRK-OPTION(IDX-PNT3:1)
@@ -775,7 +761,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    END-PERFORM
                ELSE
                    PERFORM VARYING IDX-PNT1 FROM 1 BY 1
-                           UNTIL ( IDX-PNT1 >   200 )
+                           UNTIL ( IDX-PNT1 >   100 )
                            OR    ( WRK-MAE-NAIYO(IDX-PNT1:)  =   SPACE )
                        MOVE    WRK-MAE-NAIYO(IDX-PNT1:1)
                                        TO  WRK-OPTION(IDX-PNT3:1)
@@ -787,9 +773,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-PERFORM
       *
            MOVE    WRK-OPTION          TO  PRGOPTION-OPTION
-      *----(04.07.01)--ADD-START---
+      *----(04.06.01)--ADD-START---
            MOVE    WRK-OPID            TO  PRGOPTION-OPID
-      *----(04.07.01)--ADD-END-----
+      *----(04.06.01)--ADD-END-----
       *
            MOVE    LNK-MNTYMD          TO  PRGOPTION-UPYMD
            MOVE    LNK-MNTHMS          TO  PRGOPTION-UPHMS
