@@ -31,12 +31,8 @@
                 04  S02-B07-LABEL      PIC X(10).
               03  S02-B08.
                 04  S02-B08-LABEL      PIC X(10).
-              03  S02-B11S.
-                04  S02-B11S-LABEL      PIC X(10).
               03  S02-B12.
                 04  S02-B12-STATE    PIC S9(9)   BINARY.
-              03  S02-B12S.
-                04  S02-B12S-LABEL      PIC X(10).
               03  S02-B12C.
                 04  S02-B12C-STATE     PIC S9(9)   BINARY.
                 04  S02-B12C-STYLE     PIC X(20).
@@ -54,8 +50,7 @@
                 04  S02-LBLMSG4-STYLE  PIC X(20).
                 04  S02-LBLMSG4        PIC X(100).
               03  S02-LBLMSG5-G.
-                04  S02-LBLMSG5-STYLE  PIC X(20).
-                04  S02-LBLMSG5        PIC X(18).
+                04  S02-LBLMSG5        PIC X(10).
               03  S02-LBLMSG6-G.
                 04  S02-LBLMSG6-STYLE  PIC X(20).
                 04  S02-LBLMSG6        PIC X(28).
@@ -105,11 +100,11 @@
                     06  S02-TDENPJTI    PIC X(16).
                   05  S02-SYULIST-SELECT   PIC X
                                            OCCURS  500 TIMES.
-              03  S02-CMB-SRYKA.
+              03  S02-SRYKACOMBO.
                 04  S02-SRYKA         PIC X(21).
                 04  S02-SRYKA-COUNT   PIC S9(9)   BINARY.
                 04  S02-SRYKALST      PIC X(21)   OCCURS  99 TIMES.
-              03  S02-CMB-NYUGAIKBN.
+              03  S02-NYUGAIKBNCOMBO.
                 04  S02-NYUGAIKBN.
                   05  S02-VALUE   PIC X(8).
                 04  S02-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
@@ -141,7 +136,7 @@
                 04  S02-VALUE   PIC X(10).
               03  S02-NYUKINYMD-STATE
                                 PIC S9(9)   BINARY.
-              03  S02-CMB-NYUKINHOUHOU.
+              03  S02-NYUKINHOUHOU-COMBO.
                 04  S02-NYUKINHOUHOU PIC X(33).
                 04  S02-NYUKINHOUHOU-STATE
                                 PIC S9(9)   BINARY.
@@ -149,13 +144,13 @@
                 04  S02-NYUKINHOUHOULST      PIC X(33) OCCURS 50 TIMES.
                 04  S02-NYUKINHOUHOULST-STATE
                                 PIC S9(9)   BINARY.
-              03  S02-CMB-SKYPRT.
+              03  S02-SKYPRT-COMBO.
                 04  S02-SKYPRT PIC X(24).
                 04  S02-SKYPRT-STATE PIC S9(9)   BINARY.
                 04  S02-SKYPRT-COUNT   PIC S9(9)   BINARY.
                 04  S02-SKYPRTLST      PIC X(24) OCCURS 5 TIMES.
                 04  S02-SKYPRTLST-STATE PIC S9(9)   BINARY.
-              03  S02-CMB-SRYPRT.
+              03  S02-SRYPRT-COMBO.
                 04  S02-SRYPRT PIC X(24).
                 04  S02-SRYPRT-STATE PIC S9(9)   BINARY.
                 04  S02-SRYPRT-COUNT   PIC S9(9)   BINARY.
