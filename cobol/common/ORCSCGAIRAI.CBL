@@ -46,6 +46,7 @@
       *  04.06.00    NACL-多々納  10/11/05  発行日変更対応
       *  04.07.00    NACL-多々納  11/08/XX  算定履歴付加テーブル削除対応
       *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
+      *  04.08.00    NACL-多々納  13/07/XX  第三者行為対応
       *****************************************************************
       *
       *
@@ -2078,6 +2079,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        ELSE
                            MOVE    "1"                 TO  JYURRK-HKNKBN
                        END-IF
+      *
+                   WHEN    "6"
+      *                自賠責（第三者行為）
+                       MOVE    "7"             TO  JYURRK-HKNKBN
                END-EVALUATE
            END-IF
       *    公害保険
@@ -5366,6 +5371,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        ELSE
                            MOVE    "1"             TO  LNK-UPD-HKNKBN
                        END-IF
+      *
+                   WHEN    "6"
+      *                自賠責（第三者行為）
+                       MOVE    "7"             TO  LNK-UPD-HKNKBN
                END-EVALUATE
            END-IF
       *    公害保険

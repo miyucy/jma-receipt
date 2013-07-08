@@ -342,7 +342,7 @@
                05  SPA-HKNCOMBI-AREA.
                    07  SPA-GMN-HKNCOMBI-LIST       OCCURS   15.
                        09  SPA-GMN-THKNCOMBINUM    PIC 9(04).
-                       09  SPA-GMN-THKNCOMBIMEI    PIC X(40).
+                       09  SPA-GMN-THKNCOMBIMEI    PIC X(60).
                        09  SPA-GMN-TTEKSTYMD       PIC X(09).
                        09  SPA-GMN-TTEKEDYMD       PIC X(09).
                        09  SPA-GMN-THKNNUM         PIC X(03).
@@ -354,6 +354,7 @@
                        09  SPA-NAI-TKOH2HKNNUM     PIC X(03).
                        09  SPA-NAI-TKOH3HKNNUM     PIC X(03).
                        09  SPA-NAI-TKOH4HKNNUM     PIC X(03).
+                       09  SPA-NAI-TKOH1ID         PIC 9(10).
       *
                        09  SPA-NAI-THYOJIKBN       PIC X(01).
                    07  SPA-HKNCOMBI-MAX            PIC 9(04).
@@ -1253,7 +1254,7 @@
                        09  SPA-GMN2D-HKNKBNMEI     PIC X(14).
                    07  SPA-GMN2D-HKNKBN-COMB.
                        09  SPA-GMN2D-HKNKBN-LST    PIC X(16)
-                                                   OCCURS   5.
+                                                   OCCURS   9.
                    07  SPA-GMN2D-HKNKBN-MAX        PIC 9(04).
       *            ¼«ÈñÀÁµá¶èÊ¬
                    07  SPA-GMN2D-JIBAISEIKBN-G.
@@ -1419,6 +1420,32 @@
       *            Á°Ï«Æ¯´ð½à´ÆÆÄ½ð¥³¡¼¥É
                    07  SPA-NAI2D-MAE-SYOCD         PIC  X(05).
                    07  SPA-NAI2D-SYOCDCHK          PIC  X(01).
+      *
+      *     Âè»°¼ÔÂÐ±þ
+      *        Ï«ºÒÊÝ¸±¤Î»þ¡¢Ï«ºÒÊÝ¸±¤ÎÏ¢ÈÖ
+               05  SPA-NAI2D-RSHKN-EDANUM      PIC 9(04).
+      *
+               05  SPA-NAI2D-HKNID             PIC 9(10).
+               05  SPA-NAI2D-KOHID             PIC 9(10).
+      *
+               05  SPA-NAI2D-KOHIDX            PIC 9(04).
+               05  SPA-NAI2D-KOHIADD           PIC 9(01).
+      *
+      *        Ï«ºÒ¥ê¥¹¥È
+               05  SPA-GMN2D-RSILST-AREA.
+                   07  SPA-GMN2D-RSILST-OCC        OCCURS   40.
+                       11  SPA-GMN2D-TRENNUM       PIC 9(03).
+                       11  SPA-GMN2D-TPARANUM      PIC 9(03).
+                       11  SPA-GMN2D-THKNKBN       PIC X(03).
+                       11  SPA-GMN2D-THKNKBNMEI    PIC X(16).
+                       11  SPA-GMN2D-TRSIKIKAN     PIC X(20).
+                       11  SPA-GMN2D-THKNID        PIC 9(10).
+                       11  SPA-GMN2D-TKOHID        PIC 9(10).
+                       11  SPA-GMN2D-TRYOSTYMD     PIC X(08).
+                       11  SPA-GMN2D-TRYOEDYMD     PIC X(08).
+                   07  SPA-GMN2D-RSIMAX            PIC 9(04).
+               05  SPA-GMN2D-SELNUM                PIC 9(03).
+               05  SPA-GMN2D-MAE-SELNUM            PIC 9(03).
       *
       *
       *----(01.00.03) LINE ADD START ---------------------------------

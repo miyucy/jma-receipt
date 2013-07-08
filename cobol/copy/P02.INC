@@ -322,7 +322,7 @@
                       07  P02-HKNLIST-ROWATTR PIC S9(9)   BINARY.
                       07  P02-ITEM        OCCURS  30 TIMES.
                         08  P02-HKNCOBNUM     PIC X(4).
-                        08  P02-HKNCOBNAME    PIC X(40).
+                        08  P02-HKNCOBNAME    PIC X(60).
                       07  P02-HKNLIST-SELECT  PIC X   OCCURS  30 TIMES.
                   05  P02-P02-HKNNAME.
                     06  P02-VALUE   PIC X(30).

@@ -508,9 +508,11 @@
                    END-IF
       *******  END-IF
       *        汐阂ˇ极清勒は滦据嘲
-               IF      COMB-HKNNUM         =   "971"  OR
+               IF     (COMB-HKNNUM         =   "971"  OR
                                                "973"
-                                           OR  "975"
+                                           OR  "975"  )
+      *           妈话荚乖百
+                  OR  (COMB-KOH1HKNNUM     =   "970"  )
                   MOVE    ZERO                 TO  FLG-HKNCOMBICHK
                END-IF
       *
@@ -1180,10 +1182,12 @@
                INITIALIZE                  HKNCOMBI-REC
            END-IF
       *    汐阂ˇ极清勒は滦据嘲
-           IF      COMB-HKNNUM         =   "971"  OR
+           IF     (COMB-HKNNUM         =   "971"  OR
                                            "973"
       *        给巢
-                                       OR  "975"
+                                       OR  "975"  )
+      *           妈话荚乖百
+              OR  (COMB-KOH1HKNNUM     =   "970"  )
                MOVE    "0001"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-J021-CUR
            END-IF

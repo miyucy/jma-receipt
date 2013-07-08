@@ -2109,6 +2109,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        ELSE
                            MOVE    "1"                 TO  JYURRK-HKNKBN
                        END-IF
+      *
+                   WHEN    "6"
+      *                极清勒∈妈话荚乖百∷
+                       MOVE    "7"             TO  JYURRK-HKNKBN
                END-EVALUATE
            END-IF
       *    给巢瘦副
@@ -2562,6 +2566,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "6"
       *            给巢
                    MOVE    "2"             TO  SSANTEI-HKNKBN
+      *
+               WHEN    "7"
+      *            极清勒∈妈话荚乖百∷
+                   MOVE    "1"             TO  SSANTEI-HKNKBN
+                   MOVE    "6"             TO  SSANTEI-RSI-HKNKBN
+                   MOVE    "1"             TO  SSANTEI-RSI-JUNKYO
            END-EVALUATE
       * take mod st
       *    CALL    "ORCSSANTEI"        USING

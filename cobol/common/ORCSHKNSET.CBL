@@ -39,6 +39,7 @@
       * 04.05.00     NACL-Â¿¡¹Ç¼  10/01/XX  ¼£¸³ÂÐ±þ
       * 04.06.00     NACL-ÂÀÅÄ    10/08/30  Êä½õ¶èÊ¬¡¢ËÜ¿Í²ÈÂ²¶èÊ¬ÄÉ²Ã
       * 04.06.00     NACL-Â¿¡¹Ç¼  10/09/29  Æþ±¡¡¦³°ÍèÈó³ºÅöÂÐ±þ
+      * 04.08.00     NACL-Â¿¡¹Ç¼  13/07/XX  Âè»°¼Ô¹Ô°ÙÂÐ±þ
       *****************************************************************
       *
       *
@@ -345,7 +346,8 @@
                END-IF
       *        Ï«ºÒ¡¦¼«ÇåÀÕÊÝ¸±¸¡º÷
                IF     (FLG-HKNCOMBICHK     =    1    )  AND
-                      (COMB-HKNNUM         =   "971"  OR  "973")
+                     ((COMB-HKNNUM         =   "971"  OR  "973")
+                  OR  (COMB-KOH1HKNNUM     =   "970"   ))
                    PERFORM 1100-PTRSIINF-CHK-SEC
                    IF      FLG-PTRSIINF        =   1
                        MOVE    ZERO            TO  FLG-HKNCOMBICHK
@@ -381,6 +383,12 @@
            MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    SPA-PTID            TO  PTRSI-PTID
            MOVE    COMB-HKNID          TO  PTRSI-HKNID
+      *    Âè»°¼Ô¹Ô°Ù
+           IF      COMB-KOH1HKNNUM     =   "970"
+               MOVE    COMB-KOH1ID         TO  PTRSI-KOHID
+               MOVE    ZERO                TO  PTRSI-HKNID
+           END-IF
+      *
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
@@ -644,6 +652,28 @@
                    MOVE    PTRSI-JIBAISEIKBN   TO  WRK-JIBAISEKIKBN
                END-IF
            END-IF
+      *ver.4.7
+      *    Âè»°¼Ô¹Ô°Ù
+           IF      COMB-KOH1HKNNUM     =   "970"
+      *        ÊÝ¸±¶èÊ¬
+               MOVE    1               TO  ORCSHKN-NAI-HKNKBN (IDX)
+      *        Ï«ºÒÊÝ¸±¶èÊ¬
+               MOVE    PTRSI-HKNKBN    TO  ORCSHKN-NAI-RSI-HKNKBN
+                                                               (IDX)
+      *        Ì¾¾ÎÊÔ½¸
+               IF      PTRSI-COMMENT   NOT =   SPACE
+      *            ÊÝ¸±¡Ü¸øÈñ£±¤Î¤ß¤È¤Ê¤ë
+                   MOVE    SPACE               TO  WRK-HKNCOMBI
+                   STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
+                           " "                     DELIMITED  BY  SIZE
+                           COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
+                           "¡Ê"                    DELIMITED  BY  SIZE
+                           PTRSI-COMMENT(1:24)     DELIMITED  BY  SPACE
+                           "¡Ë"                    DELIMITED  BY  SIZE
+                           INTO              WRK-HKNCOMBI
+                   END-STRING
+               END-IF
+          END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI

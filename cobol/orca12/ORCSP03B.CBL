@@ -300,6 +300,11 @@
                               (SPA-ERRCD   NOT =   SPACE )  OR
                               (SPA-PIDCD   NOT =   SPACE )
                            OR (SPA-FLG-END         =   1     )
+      *        第三者行為なし
+               IF      SPA-GMN-KOHNUM(IDX-K) =   "970"
+                   CONTINUE
+               ELSE
+      *
       *        基本チェック
                PERFORM 100-KIHON-CHK-SEC
                IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -307,6 +312,8 @@
                    COMPUTE SPA-GMN-CUR     =   SPA-GMN-CUR
                                            +  ((IDX-K  -   1  )  *  6 )
                    MOVE    IDX-K           TO  SPA-KOH-ERRIDX
+               END-IF
+      *
                END-IF
            END-PERFORM
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
@@ -1965,7 +1972,10 @@
                                            OR  "015"  OR  "016"    )
       *                北海道の地方公費
                           OR  (SPA-GMN-KOHNUM(IDX-K)   =   "183"  AND
-                               SPA-PREFNUM             =   01    ))
+                               SPA-PREFNUM             =   01    )
+      *H25.7
+      *                第三者行為
+                          OR  (SPA-GMN-KOHNUM(IDX-K)   =   "970" ) )
                            CONTINUE
                        ELSE
       *
@@ -2117,7 +2127,9 @@
                                                OR  "015"  OR  "016"  )
       *                  北海道の地方公費
                          OR  ((SPA-GMN-KOHNUM(IDX-K)   =   "183" ) AND
-                              (SPA-PREFNUM             =   01    ) )
+                              (SPA-PREFNUM             =   01    ))
+      *H25.7              第三者行為
+                         OR   (SPA-GMN-KOHNUM(IDX-K)   =   "970" )
                              MOVE    ZERO              TO  FLG-CHK
                        END-IF
                    END-IF

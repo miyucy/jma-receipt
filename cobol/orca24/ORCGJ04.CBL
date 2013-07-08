@@ -2401,6 +2401,9 @@
                WHEN    5
       *            Ï«Ì³ºÒ³²·òÊÝ½àµò
                    MOVE    "1"             TO  SPA-RSI-JUNKYO
+               WHEN    7
+      *            Âè»°¼Ô¹Ô°Ù¡Ê¼«ÇåÀÕ·òÊÝ½àµò¡Ë
+                   MOVE    "1"             TO  SPA-RSI-JUNKYO
            END-EVALUATE
       *    Å¬ÍÑ´ü´ÖÈ½Äê
            MOVE    ZERO                TO  WRK-YMDS1
@@ -6624,6 +6627,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                    Ï«ºÒ½àµò
                            MOVE    "1"             TO  JYURRK-HKNKBN
                        END-IF
+      *H25.7
+                   WHEN    "6"
+      *                Âè»°¼Ô¹Ô°Ù
+                       MOVE    "7"                 TO  JYURRK-HKNKBN
                END-EVALUATE
            END-IF
       *    ¸ø³²
@@ -7058,6 +7065,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                    Ï«ºÒ½àµò
                            MOVE    "1"             TO  LNK-UPD-HKNKBN
                        END-IF
+      *H25.7
+                   WHEN    "6"
+      *                Âè»°¼Ô¹Ô°Ù
+                       MOVE    "7"                 TO  LNK-UPD-HKNKBN
                END-EVALUATE
            END-IF
            CALL    "ORCSRECEUPD"       USING    ORCSRECEUPDAREA

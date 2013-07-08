@@ -2200,6 +2200,10 @@
                                                        OR  "5"
                    PERFORM 30081-JIBAISEKI-HEN-SEC
                END-IF
+      *        第三者行為（健保準拠）
+               IF      ORCSHKN-NAI-RSI-HKNKBN (IDX)    =   "6"
+                   MOVE    "1"             TO  SPA-NAI-TRSI-JUNKYO(IDH)
+               END-IF
       *
                MOVE    IDH             TO  SPA-HKN-MAX
            END-PERFORM
@@ -10583,6 +10587,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                MOVE    "5"         TO  WRK-RRK-HKNKBN
                            END-IF
                        END-IF
+      *H25.7
+      *                第三者行為
+                       IF     (SPA-NAI-TRSI-HKNKBN (IDH)   =   "6")
+                           MOVE    "7"             TO  WRK-RRK-HKNKBN
+                       END-IF
                    END-IF
                    MOVE    SPA-HKN-MAX             TO  IDH
                END-IF
@@ -12848,6 +12857,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        3104-SYUNOU-CHECK-EXT.
            EXIT.
       *
+      *!!!未使用
       *****************************************************************
       *    保険組合せ名称編集処理
       *****************************************************************
@@ -12882,6 +12892,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        510-HKNCOMBI-MEI-EXT.
            EXIT.
+      *!!!未使用
       *
       *****************************************************************
       *    保険組合せ名称編集処理
@@ -13013,6 +13024,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        5101-HKNCOMBI-SET-EXT.
            EXIT.
+      *!!!未使用　まで
+      *
+      *
       *****************************************************************
       *    算定履歴チェック処理
       *****************************************************************

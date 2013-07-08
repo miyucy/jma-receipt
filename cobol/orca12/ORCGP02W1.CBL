@@ -97,6 +97,7 @@
       * 04.07.00     NACL-多々納  11/08/XX  保険確認年月日履歴対応
       * 04.07.00     NACL-多々納  11/09/06  住所等半角全角変換へ
       * 04.07.00     NACL-多々納  11/11/07  地方公費負担額変更対応
+      * 04.07.00     NACL-多々納  13/07/XX  第三者行為対応など
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -223,6 +224,11 @@
            03  FLG-RJNCHK4             PIC 9(01).
       *    API処理
            03  FLG-APICHK              PIC 9(01).
+      *    第三者行為
+           03  FLG-KOHCHK-END          PIC 9(01).
+           03  FLG-KOH-01              PIC 9(01).
+           03  FLG-KOH-02              PIC 9(01).
+           03  FLG-KOH-03              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -270,6 +276,7 @@
            03  IDX5                PIC 9(04).
       *
            03  IDX-API             PIC 9(04).
+           03  IDXS                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -404,6 +411,9 @@
                05  WRK-P02-KOHNUM      PIC X(03).
                05  WRK-P02-KOHNUM2     PIC X(01).
                05  WRK-P02-KOHNUMMEI   PIC X(16).
+      *TEST
+           03  WRK-IDOMSG              PIC X(30).
+      *TEST
       *
       *
       *    公費ＳＯＲＴ用（ＳＰＡと同じ領域）
@@ -464,7 +474,7 @@
            03  WRK-HKNCOMBI-AREA.
                05  WRK-GMN-HKNCOMBI-LIST       OCCURS   15.
                        09  WRK-GMN-THKNCOMBINUM    PIC 9(04).
-                       09  WRK-GMN-THKNCOMBIMEI    PIC X(40).
+                       09  WRK-GMN-THKNCOMBIMEI    PIC X(60).
                        09  WRK-GMN-TTEKSTYMD       PIC X(09).
                        09  WRK-GMN-TTEKEDYMD       PIC X(09).
                        09  WRK-GMN-THKNNUM         PIC X(03).
@@ -487,7 +497,7 @@
            03  WRK-HKNCOMBI02-AREA.
                05  WRK-GMN-HKNCOMBI02-LIST       OCCURS   15.
                        09  WRK-GMN02-THKNCOMBINUM    PIC 9(04).
-                       09  WRK-GMN02-THKNCOMBIMEI    PIC X(40).
+                       09  WRK-GMN02-THKNCOMBIMEI    PIC X(60).
                        09  WRK-GMN02-TTEKSTYMD       PIC X(09).
                        09  WRK-GMN02-TTEKEDYMD       PIC X(09).
                        09  WRK-GMN02-THKNNUM         PIC X(03).
@@ -2153,6 +2163,9 @@
                                                               (IDX)
                    MOVE    COMB-KOH4HKNNUM     TO  SPA-NAI-TKOH4HKNNUM
                                                               (IDX)
+      *            第三者判定用
+                   MOVE    COMB-KOH1ID         TO  SPA-NAI-TKOH1ID
+                                                              (IDX)
                END-IF
       *
                MOVE    "tbl_para"          TO  MCP-TABLE
@@ -2173,6 +2186,10 @@
                IF      SPA-GMN-THKNNUM (IDX)   =   "971"
                                                OR  "973"
                    PERFORM 31032-RSI-HKNCOMBI-HEN-SEC
+               END-IF
+      *        第三者行為
+               IF      SPA-NAI-TKOH1HKNNUM (IDX)   =   "970"
+                   PERFORM 31033-DAI3-HKNCOMBI-HEN-SEC
                END-IF
            END-PERFORM
       *
@@ -2423,7 +2440,7 @@
                            " "                     DELIMITED  BY  SIZE
                            WRK-HKNKBN-MEI          DELIMITED  BY  SPACE
                            "（"                    DELIMITED  BY  SIZE
-                           PTRSI-COMMENT           DELIMITED  BY  SPACE
+                           PTRSI-COMMENT(1:24)     DELIMITED  BY  SPACE
                            "）"                    DELIMITED  BY  SIZE
                            INTO              WRK-HKNCOMBI
                        END-STRING
@@ -2454,12 +2471,79 @@
            EXIT.
       *
       *****************************************************************
+      *    労災保険組合せ編集処理（第三者行為）
+      *****************************************************************
+       31033-DAI3-HKNCOMBI-HEN-SEC      SECTION.
+      *
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTRSIINF"          TO  PARA-FILEMEI
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           MOVE    SPACE               TO  WRK-HKNCOMBI
+           PERFORM
+               UNTIL   FLG-PARA            =   1
+      *
+               MOVE    PARA-DATA-REC       TO  PTRSIINF-REC
+               IF      PTRSI-KOHID         =   SPA-NAI-TKOH1ID (IDX)
+                   IF      PTRSI-COMMENT   NOT =   SPACE
+                       MOVE    SPACE               TO  WRK-HKNCOMBI
+                       STRING  SPA-GMN-THKNCOMBIMEI (IDX)
+                                                   DELIMITED  BY  "  "
+                           "（"                    DELIMITED  BY  SIZE
+                           PTRSI-COMMENT(1:24)     DELIMITED  BY  SPACE
+                           "）"                    DELIMITED  BY  SIZE
+                           INTO              WRK-HKNCOMBI
+                       END-STRING
+                   END-IF
+                   MOVE    WRK-HKNCOMBI        TO  SPA-GMN-THKNCOMBIMEI
+                                                                   (IDX)
+                   MOVE    1               TO  FLG-PARA
+               END-IF
+      *
+               IF      FLG-PARA         =   ZERO
+                   MOVE    "tbl_para"          TO  MCP-TABLE
+                   MOVE    "key5"              TO  MCP-PATHNAME
+                   PERFORM 990-PARA-READ-SEC
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       31033-DAI3-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    労災保険更新画面処理
       *****************************************************************
        4910-RSKOH-PARAOUT-SEC         SECTION.
+      *
       *    処理なし
            IF      SPA-RSPAR-FLG      =   "1"
                MOVE    8              TO  SPA-GMN-CUR
+               GO      TO      4910-RSKOH-PARAOUT-EXT
+           END-IF
+      *
+      *    第三者行為　公費登録
+           IF     (SPA-NAI2D-HKNNUM    =   "970")
+             AND  (SPA-NAI2D-HKNID     =   ZERO )
+               PERFORM 49101-RSIKOH-SYORI-SEC
                GO      TO      4910-RSKOH-PARAOUT-EXT
            END-IF
       *
@@ -2472,9 +2556,107 @@
            PERFORM 41031-HKN-SPA-TBL-SET-SEC
       *    登録ボタンへ
            MOVE    60                  TO  SPA-GMN-CUR
+      *    労災保険情報
+           MOVE    SPACE               TO  SPA-P02D-AREA
+           INITIALIZE                      SPA-P02D-AREA
       *
            .
        4910-RSKOH-PARAOUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    労災保険更新　第三者行為処理
+      *****************************************************************
+       49101-RSIKOH-SYORI-SEC         SECTION.
+      *
+           IF      SPA-NAI2D-KOHIADD   =   1
+      *        新規追加　１行目に追加
+               MOVE    ZERO            TO  SPA-HKNKOH-FLG
+               PERFORM 4104-KOH-ADD-SEC
+               MOVE    1               TO  SPA-NAI2D-KOHIDX
+               MOVE    1               TO  SPA-KOH-GMN2
+           ELSE
+               MOVE    ZERO                TO  FLG-KOHCHK-END
+               PERFORM 
+                       UNTIL   (SPA-NAI2D-KOHIDX   >   ZERO )
+                          OR   (SPA-ERRCD      NOT =   SPACE )
+                          OR   (FLG-KOHCHK-END NOT =   ZERO  )
+      *           次の公費情報
+                   IF     (SPA-NAI-KOHEND      <   SPA-PTKOH-MAX )  AND
+                          (SPA-GMN-KOHNUM(3)   NOT =   SPACE )
+                       MOVE    SPA-NAI-KOHSTR      TO  WRK-KOHSTR
+                       MOVE    SPA-NAI-KOHEND      TO  SPA-NAI-KOHSTR
+      *                保険情報ＴＢＬから編集
+                       ADD     1                   TO  SPA-NAI-KOHSTR
+                       PERFORM 3101-KOH-TBL-SPA-SEC
+                       PERFORM VARYING     IDX     FROM    1   BY  1
+                               UNTIL      (IDX         >   SPA-KOH-MAX )
+                                     OR   (SPA-NAI2D-KOHIDX
+                                                   NOT =   ZERO)
+                           IF      SPA-NAI-PTKOH-KOHID (IDX)
+                                              =   SPA-NAI2D-KOHID
+                               MOVE    IDX         TO  SPA-NAI2D-KOHIDX
+                           END-IF
+                       END-PERFORM
+      *                対象がない時元へ
+                       IF      SPA-NAI-KOHSTR      =   ZERO
+                           MOVE    WRK-KOHSTR      TO  SPA-NAI-KOHSTR
+                           PERFORM 3101-KOH-TBL-SPA-SEC
+                           MOVE    "0144"          TO  SPA-ERRCD
+                           MOVE    1               TO  FLG-KOHCHK-END
+                       END-IF
+                   ELSE
+                       MOVE    1                   TO  FLG-KOHCHK-END
+                   END-IF
+               END-PERFORM
+               IF      SPA-NAI2D-KOHIDX    =   ZERO
+                   COMPUTE SPA-NAI2D-KOHIDX    =   SPA-KOH-MAX   +   1
+               END-IF
+           END-IF
+           IF      SPA-NAI2D-KOHIDX    >   ZERO
+               MOVE    SPA-NAI2D-KOHIDX    TO  IDX
+      *
+               MOVE    "970"               TO  SPA-GMN-KOHNUM (IDX)
+      *        部位を受給者番号へ
+               MOVE    SPA-GMN2D-COMMENT   TO  SPA-GMN-JKYSNUM (IDX)
+      *        療養開始年月日
+               MOVE    SPA-GMN2D-RYOSTYMD  TO  SPA-GMN-KTEKSTYMD (IDX)
+               MOVE    SPA-GMN2D-RYOEDYMD  TO  SPA-GMN-KTEKEDYMD (IDX)
+               MOVE    SPA-NAI2D-RYOSTYMD  TO  SPA-NAI-KTEKSTYMD (IDX)
+               MOVE    SPA-NAI2D-RYOEDYMD  TO  SPA-NAI-KTEKEDYMD (IDX)
+      *
+               PERFORM VARYING     IDXS    FROM    1   BY  1
+                       UNTIL       IDXS    >   SPA-GMN-KOHMAX
+                   IF     (SPA-GMN-KOHNUM(IDX)
+                                      =    SPA-GMN-KOHNUML (IDXS))
+                       MOVE    SPA-GMN-KOHNUMLST (IDXS)
+                                           TO  SPA-GMN-KOHNUM-G(IDX)
+                       MOVE    SPA-NAI-KOHSBTKBN (IDXS)
+                                           TO  SPA-NAI-PTKOH-SBTKBN
+                                                              (IDX)
+                       MOVE    SPA-NAI-KOHPAYKBN (IDXS)
+                                           TO  SPA-NAI-PTKOH-PAYKBN
+                                                              (IDX)
+                       MOVE    SPA-GMN-KOHMAX  TO  IDXS
+                   END-IF
+               END-PERFORM
+      *        削除処理
+               IF      SPA-NAI-SAKJOKBN    =   "1"
+                   MOVE    "/D"            TO  SPA-GMN-FTNJANUM (IDX)
+      *            公費
+                   PERFORM 4102-KOH-CHKALL-SEC
+               END-IF
+      *        公費画面の内容をＴＢＬへ編集する
+               PERFORM 41032-KOH-SPA-TBL-SET-SEC
+      *        登録ボタンへ
+               MOVE    60                  TO  SPA-GMN-CUR
+           END-IF
+           MOVE    SPACE               TO  SPA-NAI-SAKJOKBN
+      *    労災保険情報
+           MOVE    SPACE               TO  SPA-P02D-AREA
+           INITIALIZE                      SPA-P02D-AREA
+           .
+       49101-RSIKOH-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2780,8 +2962,10 @@
            MOVE    P02-P02-SELNUM      TO  SPA-GMN-SELNUM
            MOVE    P02-P02-SRYKA       TO  SPA-GMN-SRYKA-G
       *    保険情報
-           IF      SPA-MAE-HKNNUM      =   "971"
-                                       OR  "973"
+           IF     (SPA-MAE-HKNNUM      =   "971"
+                                       OR  "973" )
+             OR   (P02-P02-HKNNUM(1:3) =    "971"
+                                       OR  "973" )
       *        労災の時、保険情報に入力がないこと
                PERFORM 41011-ROUSAI-CHK-SEC
            ELSE
@@ -2813,6 +2997,61 @@
                END-IF
                MOVE    P02-P02-HKAKUNINYMD TO  SPA-GMN-HKAKUNINYMD
       *
+           END-IF
+      *
+      *    公費　第三者行為
+           IF     (SPA-GMN-KOHNUM (1)      =   "970" )
+             OR   (P02-P02-KOHNUM1(1:3)    =   "970" )
+      *        労災の時、保険情報に入力がないこと
+               IF     (P02-P02-FTNJANUM1   =   SPA-GMN-FTNJANUM (1))
+                 AND  (P02-P02-KOHNUM1     =   SPA-GMN-KOHNUM-G (1))
+                 AND  (P02-P02-JKYSNUM1    =   SPA-GMN-JKYSNUM  (1))
+                 AND  (P02-P02-KTEKSTYMD1  =   SPA-GMN-KTEKSTYMD(1))
+                 AND  (P02-P02-KTEKEDYMD1  =   SPA-GMN-KTEKEDYMD(1))
+                   MOVE    ZERO            TO  FLG-KOH-01
+               ELSE
+                   MOVE    1               TO  FLG-KOH-01
+               END-IF
+               MOVE    SPA-GMN-JKYSNUM  (1)   TO  P02-P02-JKYSNUM1
+               MOVE    SPA-GMN-KOHNUM-G (1)   TO  P02-P02-KOHNUM1
+               MOVE    SPA-GMN-KTEKSTYMD (1)  TO  P02-P02-KTEKSTYMD1
+               MOVE    SPA-GMN-KTEKEDYMD (1)  TO  P02-P02-KTEKEDYMD1
+           END-IF
+      *
+           IF     (SPA-GMN-KOHNUM (2)      =   "970" )
+             OR   (P02-P02-KOHNUM2(1:3)    =   "970" )
+      *        労災の時、保険情報に入力がないこと
+               IF     (P02-P02-FTNJANUM2   =   SPA-GMN-FTNJANUM (2))
+                 AND  (P02-P02-KOHNUM2     =   SPA-GMN-KOHNUM-G (2))
+                 AND  (P02-P02-JKYSNUM2    =   SPA-GMN-JKYSNUM  (2))
+                 AND  (P02-P02-KTEKSTYMD2  =   SPA-GMN-KTEKSTYMD(2))
+                 AND  (P02-P02-KTEKEDYMD2  =   SPA-GMN-KTEKEDYMD(2))
+                   MOVE    ZERO            TO  FLG-KOH-02
+               ELSE
+                   MOVE    1               TO  FLG-KOH-02
+               END-IF
+               MOVE    SPA-GMN-JKYSNUM  (2)   TO  P02-P02-JKYSNUM2
+               MOVE    SPA-GMN-KOHNUM-G (2)   TO  P02-P02-KOHNUM2
+               MOVE    SPA-GMN-KTEKSTYMD (2)  TO  P02-P02-KTEKSTYMD2
+               MOVE    SPA-GMN-KTEKEDYMD (2)  TO  P02-P02-KTEKEDYMD2
+           END-IF
+      *
+           IF     (SPA-GMN-KOHNUM (3)      =   "970" )
+             OR   (P02-P02-KOHNUM3(1:3)    =   "970" )
+      *        労災の時、保険情報に入力がないこと
+               IF     (P02-P02-FTNJANUM3   =   SPA-GMN-FTNJANUM (3))
+                 AND  (P02-P02-KOHNUM3     =   SPA-GMN-KOHNUM-G (3))
+                 AND  (P02-P02-JKYSNUM3    =   SPA-GMN-JKYSNUM  (3))
+                 AND  (P02-P02-KTEKSTYMD3  =   SPA-GMN-KTEKSTYMD(3))
+                 AND  (P02-P02-KTEKEDYMD3  =   SPA-GMN-KTEKEDYMD(3))
+                   MOVE    ZERO            TO  FLG-KOH-03
+               ELSE
+                   MOVE    1               TO  FLG-KOH-03
+               END-IF
+               MOVE    SPA-GMN-JKYSNUM  (3)   TO  P02-P02-JKYSNUM3
+               MOVE    SPA-GMN-KOHNUM-G (3)   TO  P02-P02-KOHNUM3
+               MOVE    SPA-GMN-KTEKSTYMD (3)  TO  P02-P02-KTEKSTYMD3
+               MOVE    SPA-GMN-KTEKEDYMD (3)  TO  P02-P02-KTEKEDYMD3
            END-IF
       *
       *    保険者番号変更時に異動チェックをクリアする
@@ -3302,6 +3541,16 @@
       *
            MOVE    ZERO                TO  FLG-KOH-ADD
            MOVE    ZERO                TO  FLG-KOH-DEL
+      *    第三者行為判定
+           PERFORM VARYING     IDX-K   FROM    1   BY  1
+                   UNTIL      (IDX-K   >   3 )
+                          OR  (SPA-ERRCD   NOT =   SPACE )
+               PERFORM 41023-RSIKOH-CHK-SEC
+           END-PERFORM
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KOH-CHKALL-EXT
+           END-IF
+      *
       *    削除の判定
            PERFORM VARYING     IDX-K   FROM    1   BY  1
                    UNTIL       IDX-K   >   3
@@ -3316,7 +3565,9 @@
            END-IF
       *
       *    画面の空白行をつめる
+      *
            PERFORM 41022-PTKOH-TBL-SET-SEC
+      *
       *    次のデータを編集する
       **** IF      FLG-KOH-DEL         =   1
            IF      SPA-KOH-MAX         <   3
@@ -3356,6 +3607,39 @@
       *
        4102-KOH-CHKALL-EXT.
            EXIT.
+      *
+      ****************************************************************
+      *    第三者行為処理
+      ****************************************************************
+       41023-RSIKOH-CHK-SEC      SECTION.
+      *
+           IF     ((IDX-K           =   1   )  AND
+                   (FLG-KOH-01      =   1   ))
+             OR   ((IDX-K           =   2   )  AND
+                   (FLG-KOH-02      =   1   ))
+             OR   ((IDX-K           =   3   )  AND
+                   (FLG-KOH-03      =   1   ))
+      *        削除
+               EVALUATE    SPA-GMN-FTNJANUM(IDX-K)(1:2)
+               WHEN    "/D"
+               WHEN    "/d"
+                   MOVE    SPACE            TO  SPA-GMN-FTNJANUM(IDX-K)
+                   MOVE    "0143"           TO  SPA-ERRCD
+                   MOVE    61               TO  SPA-GMN-CUR
+      *        行追加
+               WHEN    "/A"
+               WHEN    "/a"
+                   CONTINUE
+               WHEN    OTHER
+                   MOVE    "0143"           TO  SPA-ERRCD
+                   MOVE    61               TO  SPA-GMN-CUR
+               END-EVALUATE
+           END-IF
+           .
+      *
+       41023-RSIKOH-CHK-EXT.
+           EXIT.
+      *!!!!!
       *
       ****************************************************************
       *    公費削除処理
@@ -5078,7 +5362,14 @@
       *
       *    新規の時公費ＩＤ取得
            IF      SPA-NAI-PTKOH-KOHID (IDX)   =   ZERO
-               ADD     1                   TO  SPA-PTNUM-KOHID
+      *        第三者行為追加のＩＤは設定済み
+               IF     (SPA-NAI2D-KOHIADD   =   1  )
+                AND   (SPA-GMN-KOHNUM(IDX) =   "970" )
+                   CONTINUE
+               ELSE
+                   ADD     1                   TO  SPA-PTNUM-KOHID
+               END-IF
+     ********* ADD     1                   TO  SPA-PTNUM-KOHID
                MOVE    SPA-PTNUM-KOHID     TO  SPA-NAI-PTKOH-KOHID(IDX)
       *
                MOVE    "1"                 TO  SPA-PTKOH-SINKIKBN (IDY)
@@ -6253,7 +6544,8 @@
       *
            EVALUATE    MCP-WIDGET
                WHEN    "BK1"
-                   IF       SPA-GMN-KOHNUM (1) NOT =   SPACE
+                   IF      (SPA-GMN-KOHNUM (1) NOT =   SPACE )
+                     AND   (SPA-GMN-KOHNUM (1) NOT =   "970" )
                        IF     (SPA-SYSYMD      =   SPA-NAI-KKAKUNINYMD
                                                              (1) ) AND
                               (SPA-MAE-KKAKUNINYMD (1)
@@ -6277,7 +6569,8 @@
                        END-IF
                    END-IF
                WHEN    "BK2"
-                   IF       SPA-GMN-KOHNUM (2) NOT =   SPACE
+                   IF      (SPA-GMN-KOHNUM (2) NOT =   SPACE )
+                     AND   (SPA-GMN-KOHNUM (2) NOT =   "970" )
                        IF     (SPA-SYSYMD      =   SPA-NAI-KKAKUNINYMD
                                                              (2) ) AND
                               (SPA-MAE-KKAKUNINYMD (2)
@@ -6301,7 +6594,8 @@
                        END-IF
                    END-IF
                WHEN    "BK3"
-                   IF       SPA-GMN-KOHNUM (3) NOT =   SPACE
+                   IF      (SPA-GMN-KOHNUM (3) NOT =   SPACE )
+                     AND   (SPA-GMN-KOHNUM (1) NOT =   "970" )
                        IF     (SPA-SYSYMD      =   SPA-NAI-KKAKUNINYMD
                                                              (3) ) AND
                               (SPA-MAE-KKAKUNINYMD (3)
@@ -6342,7 +6636,8 @@
       *
            EVALUATE    MCP-WIDGET
                WHEN    "CK1"
-                   IF       SPA-GMN-KOHNUM (1) NOT =   SPACE
+                   IF      (SPA-GMN-KOHNUM (1) NOT =   SPACE )
+                     AND   (SPA-GMN-KOHNUM (1) NOT =   "970" )
                        IF     (SPA-NAI-TEKEDCHKKBN (1)
                                                    =   "1"    )
                            MOVE    SPACE       TO  SPA-NAI-TEKEDCHKKBN
@@ -6353,7 +6648,8 @@
                        END-IF
                    END-IF
                WHEN    "CK2"
-                   IF       SPA-GMN-KOHNUM (2) NOT =   SPACE
+                   IF      (SPA-GMN-KOHNUM (2) NOT =   SPACE )
+                     AND   (SPA-GMN-KOHNUM (2) NOT =   "970" )
                        IF     (SPA-NAI-TEKEDCHKKBN (2)
                                                    =   "1"    )
                            MOVE    SPACE       TO  SPA-NAI-TEKEDCHKKBN
@@ -6364,7 +6660,8 @@
                        END-IF
                    END-IF
                WHEN    "CK3"
-                   IF       SPA-GMN-KOHNUM (3) NOT =   SPACE
+                   IF      (SPA-GMN-KOHNUM (3) NOT =   SPACE )
+                     AND   (SPA-GMN-KOHNUM (3) NOT =   "970" )
                        IF     (SPA-NAI-TEKEDCHKKBN (3)
                                                    =   "1"    )
                            MOVE    SPACE       TO  SPA-NAI-TEKEDCHKKBN
@@ -7474,6 +7771,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
            MOVE    "973"               TO  HKN-HKNNUM
            MOVE    ZERO                TO  HKN-PAYKBN
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
@@ -7494,8 +7792,38 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO            TO  SPA-JIBAI-FLG
            END-IF
       *
+      *    第三者行為（自賠責）が登録されていること
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+           MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
+           MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+           MOVE    "970"               TO  HKN-HKNNUM
+           MOVE    ZERO                TO  HKN-PAYKBN
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 921-HKNNUM-NEXT-SEC
+           ELSE
+               INITIALIZE                  HKNNUM-REC
+               MOVE    1               TO  FLG-HKNNUM
+           END-IF
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-HKNNUM          =   ZERO
+               MOVE    1               TO  SPA-DAISAN-FLG
+           ELSE
+               MOVE    ZERO            TO  SPA-DAISAN-FLG
+           END-IF
+      *
+      *
            IF     (SPA-ROSAI-FLG       =   ZERO )  AND
                   (SPA-JIBAI-FLG       =   ZERO )
+            AND   (SPA-DAISAN-FLG      =   ZERO )
                MOVE    "0024"          TO  SPA-ERRCD
                MOVE    8               TO  SPA-GMN-CUR
                GO      TO              481-ROUSAI-EXT
@@ -7539,6 +7867,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "3"
                    MOVE   16                   TO  SPA-GMN2D-CUR
                    MOVE   "KOHNUM3"            TO  MCP-WIDGET
+               WHEN    "4"
+               WHEN    "5"
+                   MOVE    22                  TO  SPA-GMN2D-CUR
+                   MOVE   "JIBAISEIKBN"        TO  MCP-WIDGET
+               WHEN    "6"
+                   MOVE    6                   TO  SPA-GMN2D-CUR
+                   MOVE   "TENKI"              TO  MCP-WIDGET
                WHEN    OTHER
                    MOVE   1                    TO  SPA-GMN2D-CUR
                    MOVE   "HKNKBN"             TO  MCP-WIDGET
@@ -7569,15 +7904,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        IF      FLG-CHK             =   ZERO
                            MOVE    IDX-R           TO  IDX-R2
                            MOVE    1               TO  FLG-CHK
-                       ELSE
-                           MOVE    ZERO            TO  IDX-R2
+      *                ELSE
+      *                    MOVE    ZERO            TO  IDX-R2
                        END-IF
                    END-IF
                END-IF
            END-PERFORM
       *    有効な労災・自賠責が１件の時、対象とする
-           IF     (FLG-CHK             =   1  )  AND
-                  (IDX-R2              >   ZERO)
+      *    IF     (FLG-CHK             =   1  )  AND
+      ***         (IDX-R2              >   ZERO)
+           IF      IDX-R2              >   ZERO
                MOVE    IDX-R2          TO  SPA-NAI-HKNSTR
                MOVE    IDX-R2          TO  IDX
                PERFORM 3101-HOKEN-HEN-SEC
@@ -7591,15 +7927,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE           TO  SPA-GMN-CONTKBN-G
                MOVE    SPACE           TO  SPA-GMN-CONTKBN-LIST
                MOVE    ZERO            TO  SPA-GMN-CONT-MAX
-           ELSE
+      *    ELSE
       *        有効な労災・自賠責がない時、新規追加
-               IF      FLG-CHK             =   ZERO
-                   INITIALIZE                  SPA-GMN-HKN-AREA
-                   MOVE    ZERO                TO  SPA-NAI-HKNSTR
-               ELSE
-                   MOVE    "0022"        TO  SPA-ERRCD
-                   MOVE    8             TO  SPA-GMN-CUR
-               END-IF
+      *??      IF      FLG-CHK             =   ZERO
+      *            INITIALIZE                  SPA-GMN-HKN-AREA
+      *            MOVE    ZERO                TO  SPA-NAI-HKNSTR
+      *        ELSE
+      *            MOVE    "0022"        TO  SPA-ERRCD
+      *            MOVE    8             TO  SPA-GMN-CUR
+      *        END-IF
            END-IF
            .
        4811-RSIHKN-SET-EXT.

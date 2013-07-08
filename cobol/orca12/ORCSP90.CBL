@@ -669,6 +669,13 @@
                                                DELIMITED   BY  SPACE
                                                INTO   SPA-ERRMSG
                    END-STRING
+      *H25.XX
+               WHEN    "0143"
+                   STRING  "第三者行為はこの画面では変更できません。"
+                           "労災・自賠ボタンを選択して下さい"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
       *    更新前エラー
                WHEN    "0100"
                    MOVE    "カナ氏名は必ず入力して下さい"

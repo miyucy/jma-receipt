@@ -37,6 +37,7 @@
       *  04.05.00    NACL-多々納  09/06/26  入院食事区分対応
       *  04.06.00    NACL-多々納  10/09/29  入外非表示区分対応
       *  04.06.00    NACL-多々納  12/09/25  生活保護重複対応
+      *  04.08.00    NACL-多々納  13/07/XX  第三者行為対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -601,6 +602,11 @@
                    PERFORM 3201-RSI-HENSYU-SEC
                END-IF
       *
+      *        第三者行為の時、部位を公費２の項目へ
+               IF      LNK-COMB-KOH1HKNNUM (IDX)   =  "970"
+                   PERFORM 3202-DAI3-HENSYU-SEC
+               END-IF
+      *
       *        特定負有の時、受給者番号設定
                IF     (LNK-COMB-KOH1HKNNUM (IDX)   =   "051"
                                                    OR  "052"
@@ -683,7 +689,7 @@
       *    表示区分編集処理
       *****************************************************************
        3201-HYOJIKBN-HEN-SEC            SECTION.
-     *
+      *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX5    FROM    1   BY  1
                    UNTIL      (IDX5        >   SPA-HYO-MAX )
@@ -755,6 +761,30 @@
       *
            .
        3202-JKYSNUM-HENSYUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    第三者行為部位編集処理
+      *****************************************************************
+       3202-DAI3-HENSYU-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-JKYSNUM
+           PERFORM VARYING     IDX4    FROM    1   BY  1
+                   UNTIL       IDX4    >   SPA-PTKOH-MAX
+               IF     (SPA-PTKOH-KOHID (IDX4)  NOT =   ZERO )  AND
+                      (SPA-PTKOH-KOHID (IDX4)  =   LNK-COMB-KOH1ID(IDX))
+                   STRING  "（"
+                           SPA-PTKOH-JKYSNUM (IDX4)
+                           "）"            DELIMITED  BY  SPACE
+                                           INTO
+                                           SPA-GMN27-KOHSEIDO2(IDX)
+                   END-STRING
+                   MOVE    SPA-PTKOH-MAX       TO  IDX4
+               END-IF
+           END-PERFORM
+      *
+           .
+       3202-DAI3-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1204,6 +1234,11 @@
            MOVE    SPA-GMN27-KOHRENNUM(SPA-GMN27-KOH-PCNT IDX)
                                            TO  IDY
            IF      IDY                 >   ZERO
+      *        第三者行為の時、セットしない
+               IF      SPA-PTKOH-KOHNUM (IDY) =   "970"
+                   CONTINUE
+               ELSE
+      *!
                IF     (SPA-SYSYMD      =  SPA-PTKOH-KAKUNINYMD(IDY))
                   AND (SPA-PTKOH-MAEKAKUNINYMD(IDY) NOT =  SPACE)
                    MOVE    SPA-PTKOH-MAEKAKUNINYMD(IDY)
@@ -1216,6 +1251,8 @@
                    MOVE    SPA-SYSYMD      TO  SPA-PTKOH-KAKUNINYMD(IDY)
                    MOVE    SPA-SYSYMDWH    TO  SPA-PTKOH-KAKUNINYMDW
                                                                (IDY)
+               END-IF
+      *!
                END-IF
            END-IF
            .
