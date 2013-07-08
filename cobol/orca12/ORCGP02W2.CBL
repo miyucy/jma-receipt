@@ -115,6 +115,8 @@
       *                                     レセプト一部負担金記載対応
       *  04.06.04    NACL-門脇    13/05/08  特定負有と特定負無（水俣）の
       *                                     保険組合せ作成
+      *
+      *  04.07.01    NACL-門脇    13/07/08  自賠責（第三者行為）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -928,9 +930,28 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                      (WRK-LCOMB-KOH3HKNNUM(IDZ)(1:2) = "99" ) OR
                      (WRK-LCOMB-KOH4HKNNUM(IDZ)(1:2) = "99" ) OR
                      (WRK-LCOMB-HKNNUM(IDZ)(1:1)     = "9"  )))
-              ADD     1      TO  WRK-TCOMB2-MAX
-              MOVE    WRK-LCOMB-REC(IDZ)
-                             TO  WRK-TCOMB2-REC(WRK-TCOMB2-MAX)
+            OR     (((WRK-LCOMB-KOH1HKNNUM(IDZ)      = "970") OR
+                     (WRK-LCOMB-KOH2HKNNUM(IDZ)      = "970") OR
+                     (WRK-LCOMB-KOH3HKNNUM(IDZ)      = "970") OR
+                     (WRK-LCOMB-KOH4HKNNUM(IDZ)      = "970")))
+              IF  (WRK-LCOMB-KOH1HKNNUM(IDZ) = "970")
+              OR  (WRK-LCOMB-KOH2HKNNUM(IDZ) = "970")
+              OR  (WRK-LCOMB-KOH3HKNNUM(IDZ) = "970")
+              OR  (WRK-LCOMB-KOH4HKNNUM(IDZ) = "970")
+                IF   (WRK-LCOMB-HKNNUM(IDZ)    NOT = SPACE)
+                AND  (WRK-LCOMB-KOH1HKNNUM(IDZ)    = "970")
+                AND  (WRK-LCOMB-KOH2HKNNUM(IDZ)    = SPACE)
+                AND  (WRK-LCOMB-KOH3HKNNUM(IDZ)    = SPACE)
+                AND  (WRK-LCOMB-KOH4HKNNUM(IDZ)    = SPACE)
+                  ADD     1    TO  WRK-TCOMB2-MAX
+                  MOVE    WRK-LCOMB-REC(IDZ)
+                               TO  WRK-TCOMB2-REC(WRK-TCOMB2-MAX)
+                END-IF
+              ELSE
+                  ADD     1    TO  WRK-TCOMB2-MAX
+                  MOVE    WRK-LCOMB-REC(IDZ)
+                               TO  WRK-TCOMB2-REC(WRK-TCOMB2-MAX)
+              END-IF
             ELSE
               IF   WRK-LCOMB-TEKSTYMD(IDZ)  <  WRK-SYOCYO-TEKSTYMD
                 ADD     1    TO  WRK-TCOMB2-MAX
