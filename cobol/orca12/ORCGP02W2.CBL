@@ -939,10 +939,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               OR  (WRK-LCOMB-KOH3HKNNUM(IDZ) = "970")
               OR  (WRK-LCOMB-KOH4HKNNUM(IDZ) = "970")
                 IF   (WRK-LCOMB-HKNNUM(IDZ)    NOT = SPACE)
-                AND  (WRK-LCOMB-KOH1HKNNUM(IDZ)    = "970")
-                AND  (WRK-LCOMB-KOH2HKNNUM(IDZ)    = SPACE)
-                AND  (WRK-LCOMB-KOH3HKNNUM(IDZ)    = SPACE)
-                AND  (WRK-LCOMB-KOH4HKNNUM(IDZ)    = SPACE)
+                AND  (WRK-LCOMB-KOH1HKNNUM(IDZ)  = "970"     )
+                AND  (WRK-LCOMB-KOH2HKNNUM(IDZ)  =  SPACE    )
+                AND  (WRK-LCOMB-KOH3HKNNUM(IDZ)  =  SPACE    )
+                AND  (WRK-LCOMB-KOH4HKNNUM(IDZ)  =  SPACE    )
+                AND  (WRK-LCOMB-TEKEDYMD(IDZ)   >= "20080401")
+                  IF  WRK-LCOMB-TEKSTYMD(IDZ)   <  "20080401"
+                    MOVE  "20080401"  TO  WRK-LCOMB-TEKSTYMD(IDZ)
+                  END-IF
                   ADD     1    TO  WRK-TCOMB2-MAX
                   MOVE    WRK-LCOMB-REC(IDZ)
                                TO  WRK-TCOMB2-REC(WRK-TCOMB2-MAX)
