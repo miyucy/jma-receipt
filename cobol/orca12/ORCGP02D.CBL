@@ -2415,14 +2415,14 @@
       *
       *!!
       *    第三者行為はH25.4.1からとする
-           IF     (SPA-ERRCD           =   SPACE ) AND
-                  (SPA-NAI2D-RYOSTYMD  NOT =    SPACE )
-               IF     (SPA-GMN2D-HKNKBN    =   "6" ) AND
-                      (SPA-NAI2D-RYOSTYMD  <   "20130401" )
-                   MOVE    "0045"              TO  SPA-ERRCD
-                   MOVE    9                   TO  SPA-GMN2D-CUR
-               END-IF
-           END-IF
+      *    IF     (SPA-ERRCD           =   SPACE ) AND
+      *           (SPA-NAI2D-RYOSTYMD  NOT =    SPACE )
+      *        IF     (SPA-GMN2D-HKNKBN    =   "6" ) AND
+      *               (SPA-NAI2D-RYOSTYMD  <   "20130401" )
+      *            MOVE    "0045"              TO  SPA-ERRCD
+      *            MOVE    9                   TO  SPA-GMN2D-CUR
+      *        END-IF
+      *****END-IF
       *!
            .
        4101-RYOSTYMD-CHK-EXT.
