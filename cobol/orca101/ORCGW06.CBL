@@ -54,6 +54,7 @@
       * 04.04.01     NACL-森脇    09/03/13  外部まとめ追加
       * 04.05.00     NACL-多々納  10/03/XX  平成２２年４月改正対応
       * 04.07.00     NACL-太田    12/05/27  タブラベル対応
+      * 04.07.01     NACL-森脇    13/07/05  業務処理権限変更不可
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -80,6 +81,9 @@
       *
                05  SPA-GMN-PAGENO      PIC 9(02).
                05  SPA-GMN-SYORI       PIC 9(01).
+      *----(04.07.01)--ADD-START---
+               05  SPA-GMN-BACK        PIC 9(01).
+      *----(04.07.01)--ADD-END-----
       *
                05  SPA-GMN-AREA.
       *            職員区分
@@ -141,6 +145,10 @@
                        09  SPA-GMN-ORCA21FLG       PIC X(01).
                        09  SPA-GMN-ORCA21FLGF1     PIC X(01).
                        09  SPA-GMN-ORCA21FLG-MEI   PIC X(10).
+      *----(04.07.01)--ADD-START---
+      *            スーパーバイザー
+                   07  SPA-NAI-SUPERVISOR          PIC X(01).
+      *----(04.07.01)--ADD-END-----
       *
       *        診療科テーブル
                05  SPA-GMN-SEMONKACD-AREA.
@@ -275,11 +283,79 @@
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD       PIC X(08).
                    07  SPA-NAI-EDYUKYMD       PIC X(08).
-      *
-                   07  SPA-MAE-STYUKYMD       PIC X(08).
-                   07  SPA-MAE-EDYUKYMD       PIC X(08).
-      *
+      *----(04.07.01)--UPD-START---
+      *             07  SPA-MAE-STYUKYMD       PIC X(08).
+      *             07  SPA-MAE-EDYUKYMD       PIC X(08).
+      *----(04.07.01)--UPD-END-----
                    07  SPA-NAI-KEIFLG         PIC 9(01).
+      *
+      *----(04.07.01)--ADD\START---
+      *        変更項目領域
+               05  SPA-MAE-AREA.
+                   07  SPA-MAE-STYUKYMD       PIC X(10).
+                   07  SPA-MAE-EDYUKYMD       PIC X(10).
+      *
+                   07  SPA-MAE-USERID         PIC X(16).
+                   07  SPA-MAE-KANANAME       PIC X(80).
+                   07  SPA-MAE-NAME           PIC X(80).
+                   07  SPA-MAE-MAYAKULICENSE  PIC X(40).
+                   07  SPA-MAE-ISEKINUM       PIC X(08).
+                   07  SPA-MAE-HKNDRNUMS      PIC X(08).
+                   07  SPA-MAE-HKNDRNUMK      PIC X(12).
+      *
+                   07  SPA-MAE-SEMONKACD-G    OCCURS  5.
+                       09  SPA-MAE-SEMONKACD       PIC X(02).
+                       09  SPA-MAE-SEMONKACD-FL    PIC X(01).
+                       09  SPA-MAE-SEMONKACD-MEI   PIC X(14).
+                   07  SPA-MAE-KANRIAUTHFLG-G. 
+                       09  SPA-MAE-KANRIAUTH-MEI   PIC X(12).
+                   07  SPA-MAE-ORCA21FLG-G. 
+                       09  SPA-MAE-ORCA21FLG       PIC X(01).
+                       09  SPA-MAE-ORCA21FLGF1     PIC X(01).
+                       09  SPA-MAE-ORCA21FLG-MEI   PIC X(10).
+      *
+                   07  SPA-MAE-SKYPRTFLG-G. 
+                       09  SPA-MAE-SKYPRTFLG       PIC X(01).
+                       09  SPA-MAE-SKYPRTFLG-F1    PIC X(01).
+                       09  SPA-MAE-SKYPRTFLG-MEI   PIC X(30).
+                   07  SPA-MAE-SYOHOPRTFLG-G. 
+                       09  SPA-MAE-SYOHOPRTFLG     PIC X(01).
+                       09  SPA-MAE-SYOHOPRTFLG-F1  PIC X(01).
+                       09  SPA-MAE-SYOHOPRTFLG-MEI PIC X(28).
+                   07  SPA-MAE-YAKUJYOFLG-G. 
+                       09  SPA-MAE-YAKUJYOFLG      PIC X(01).
+                       09  SPA-MAE-YAKUJYOFLG-F1   PIC X(01).
+                       09  SPA-MAE-YAKUJYOFLG-MEI  PIC X(28).
+                   07  SPA-MAE-MEIPRTFLG-G. 
+                       09  SPA-MAE-MEIPRTFLG       PIC X(01).
+                       09  SPA-MAE-MEIPRTFLG-F1    PIC X(01).
+                       09  SPA-MAE-MEIPRTFLG-MEI   PIC X(30).
+                   07  SPA-MAE-FORMALFLG-G. 
+                       09  SPA-MAE-FORMALFLG       PIC X(01).
+                       09  SPA-MAE-FORMALFLG-F1    PIC X(01).
+                       09  SPA-MAE-FORMALFLG-MEI   PIC X(24).
+                   07  SPA-MAE-CLIENT-SAVE-G. 
+                       09  SPA-MAE-CLIENT-SAVE     PIC X(01).
+                       09  SPA-MAE-CLIENT-SAVE-F1  PIC X(01).
+                       09  SPA-MAE-CLIENT-SAVE-MEI PIC X(24).
+                   07  SPA-MAE-USER-KANRI-G. 
+                       09  SPA-MAE-USER-KANRI      PIC X(01).
+                       09  SPA-MAE-USER-KANRI-F1   PIC X(01).
+                       09  SPA-MAE-USER-KANRI-MEI  PIC X(24).
+                   07  SPA-MAE-CLIENT-PRT-G. 
+                       09  SPA-MAE-CLIENT-PRT      PIC X(01).
+                       09  SPA-MAE-CLIENT-PRT-F1   PIC X(01).
+                       09  SPA-MAE-CLIENT-PRT-MEI  PIC X(24).
+                   07  SPA-MAE-DIALOGFLG-G. 
+                       09  SPA-MAE-DIALOGFLG       PIC X(01).
+                       09  SPA-MAE-DIALOGFLG-F1    PIC X(01).
+                       09  SPA-MAE-DIALOGFLG-MEI   PIC X(24).
+      *
+                   07  SPA-MAE-GRPHOSP-G.
+                       09  MAE-GMN-GRPHOSP-MAX     PIC 9(02).
+                       09  MAE-GMN-GRPHOSP-OCC     OCCURS 9.
+                           11  SPA-MAE-GRPUSERID   PIC X(16).
+      *----(04.07.01)--ADD-END-----
       *
            COPY    "ENUM-VALUE".
       *
@@ -589,7 +665,14 @@
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM 490-KOUSHIN-SEC
                    ELSE
-                       MOVE    2           TO  SPA-GMN-CUR
+      *----(04.07.01)--UPD-START---
+                       IF      SPA-GMN-BACK    =   1
+                          PERFORM 210-BACK
+                          GO  TO  330-WID1-SET-EXT
+                       ELSE
+                           MOVE    2           TO  SPA-GMN-CUR
+                       END-IF
+      *----(04.07.01)--UPD-END-----
                    END-IF
                WHEN    "1003"
                    IF      SPA-WID1-FLG    =   "OK"
@@ -611,6 +694,7 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE   SPA-W06
+      *
       *    職員区分
            MOVE    "1 医師"            TO  SPA-GMN-SYOKUKBN-LIST (1)
            MOVE    "2 看護師（婦）"    TO  SPA-GMN-SYOKUKBN-LIST (2)
@@ -752,6 +836,7 @@
            MOVE    1                   TO  SPA-GMN-CUR
       *
            MOVE    1                   TO  SPA-GMN-PAGENO
+      *
            . 
        310-SPASET-EXT.
            EXIT.
@@ -1000,7 +1085,9 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
-                   PERFORM 210-BACK
+      *----(04.07.01)--UPD-START---
+                   PERFORM 210-BACK-CHK-SEC
+      *----(04.07.01)--UPD-END-----
       *    クリア
                WHEN    "CLICKED"      ALSO    "B02"
                    PERFORM  402-CLERA-SEC
@@ -1009,6 +1096,9 @@
                    PERFORM  403-DEL-SEC
       *    登録
                WHEN    "CLICKED"      ALSO    "B12"
+      *----(04.07.01)--ADD-START---
+                   MOVE    ZERO        TO  SPA-GMN-BACK
+      *----(04.07.01)--ADD-END-----
                    PERFORM 490-TOUROKU-SEC
       *    タグ切替
                WHEN    "CLICKED"      ALSO    "B08"
@@ -1284,6 +1374,10 @@
                    MOVE    5                   TO  SPA-GMN-CUR
                END-IF
            END-IF
+      *----(04.07.01)--ADD-START---
+      *    変更項目セット
+           PERFORM 4101-HENKOU-SET-SEC
+      *----(04.07.01)--ADD-END-----
            .
        20021-SYOKUCOD-CHK-EXT.
            EXIT.
@@ -1411,6 +1505,15 @@
                    MOVE    SPA-GMN-KANRIAUTH-LST(2)
                                                TO  SPA-GMN-KANRIAUTH-MEI
                END-IF
+      *----(04.07.01)--ADD-START---
+      *        スーパーバイザー
+               PERFORM 49001-SYSUSER-CHK-SEC
+               IF      FLG-USERID-UPD  =   ZERO
+                   MOVE    SYSUSER-SUPERVISOR  TO  SPA-NAI-SUPERVISOR
+               ELSE
+                   MOVE    SPACE               TO  SPA-NAI-SUPERVISOR
+               END-IF
+      *----(04.07.01)--ADD-END-----
       *
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       5
@@ -1819,7 +1922,7 @@
            . 
        320-SPASET-GSRAUTH-EXT.
            EXIT.
-           .
+      *
       *****************************************************************
       *    入力チェック処理
       *****************************************************************
@@ -1884,6 +1987,159 @@
        4101-GMN-SPA-SET-EXT.
            EXIT.
       *
+      *----(04.07.01)--ADD-START---
+      *****************************************************************
+      *    変更項目セット処理
+      *****************************************************************
+       4101-HENKOU-SET-SEC         SECTION.
+      *
+           INITIALIZE              SPA-MAE-AREA
+      *
+           MOVE    SPA-GMN-STYUKYMD        TO  SPA-MAE-STYUKYMD
+           MOVE    SPA-GMN-EDYUKYMD        TO  SPA-MAE-EDYUKYMD
+      *
+           MOVE    SPA-GMN-USERID          TO  SPA-MAE-USERID
+           MOVE    SPA-GMN-KANANAME        TO  SPA-MAE-KANANAME
+           MOVE    SPA-GMN-NAME            TO  SPA-MAE-NAME
+           MOVE    SPA-GMN-ISEKINUM        TO  SPA-MAE-ISEKINUM
+           MOVE    SPA-GMN-HKNDRNUMS       TO  SPA-MAE-HKNDRNUMS
+           MOVE    SPA-GMN-HKNDRNUMK       TO  SPA-MAE-HKNDRNUMK
+           MOVE    SPA-GMN-MAYAKULICENSE   TO  SPA-MAE-MAYAKULICENSE
+      *    専門科コード
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   5
+               MOVE    SPA-GMN-SEMONKACD-G(IDX)
+                                           TO  SPA-MAE-SEMONKACD-G(IDX)
+           END-PERFORM
+      *    管理者権限
+           MOVE    SPA-GMN-KANRIAUTH-MEI   TO  SPA-MAE-KANRIAUTH-MEI
+      *
+           MOVE    SPA-GMN-ORCA21FLG-G     TO  SPA-MAE-ORCA21FLG-G
+      *
+      *    個別設定画面
+           MOVE    SPA-GMN-SKYPRTFLG-G     TO  SPA-MAE-SKYPRTFLG-G
+           MOVE    SPA-GMN-MEIPRTFLG-G     TO  SPA-MAE-MEIPRTFLG-G
+           MOVE    SPA-GMN-SYOHOPRTFLG-G   TO  SPA-MAE-SYOHOPRTFLG-G
+           MOVE    SPA-GMN-YAKUJYOFLG-G    TO  SPA-MAE-YAKUJYOFLG-G
+           MOVE    SPA-GMN-FORMALFLG-G     TO  SPA-MAE-FORMALFLG-G
+           MOVE    SPA-GMN-CLIENT-SAVE-G   TO  SPA-MAE-CLIENT-SAVE-G
+           MOVE    SPA-GMN-USER-KANRI-G    TO  SPA-MAE-USER-KANRI-G
+           MOVE    SPA-GMN-CLIENT-PRT-G    TO  SPA-MAE-CLIENT-PRT-G
+           MOVE    SPA-GMN-DIALOGFLG-G     TO  SPA-MAE-DIALOGFLG-G
+      *
+      *    他院情報設定画面
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   CONST-GRPHOSP-MAX
+               MOVE    SPA-GMN-GRPUSERID(IDX)
+                                           TO  SPA-MAE-GRPUSERID(IDX)
+           END-PERFORM
+      *
+           .
+       4101-HENKOU-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    変更項目チェック処理
+      *****************************************************************
+       4102-HENKOU-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-OK
+      *
+           IF      SPA-GMN-STYUKYMD    NOT =   SPA-MAE-STYUKYMD
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-EDYUKYMD    NOT =   SPA-MAE-EDYUKYMD
+               MOVE    1               TO  FLG-OK
+           END-IF
+      *
+           IF      SPA-GMN-USERID      NOT =   SPA-MAE-USERID
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-KANANAME    NOT =   SPA-MAE-KANANAME
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-NAME        NOT =   SPA-MAE-NAME
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-ISEKINUM    NOT =   SPA-MAE-ISEKINUM
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-HKNDRNUMS   NOT =   SPA-MAE-HKNDRNUMS
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-HKNDRNUMK   NOT =   SPA-MAE-HKNDRNUMK
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-MAYAKULICENSE
+                                       NOT =   SPA-MAE-MAYAKULICENSE
+               MOVE    1               TO  FLG-OK
+           END-IF
+      *    専門科コード
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   5
+               IF      SPA-GMN-SEMONKACD-G(IDX)
+                                       NOT =   SPA-MAE-SEMONKACD-G(IDX)
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *    管理者権限
+           IF      SPA-GMN-KANRIAUTH-MEI
+                                       NOT =   SPA-MAE-KANRIAUTH-MEI
+               MOVE    1               TO  FLG-OK
+           END-IF
+      *
+           IF      SPA-GMN-ORCA21FLG-G NOT =   SPA-MAE-ORCA21FLG-G
+               MOVE    1               TO  FLG-OK
+           END-IF
+      *
+      *    個別設定画面
+           IF      SPA-GMN-SKYPRTFLG-G NOT =   SPA-MAE-SKYPRTFLG-G
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-MEIPRTFLG-G NOT =   SPA-MAE-MEIPRTFLG-G
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-SYOHOPRTFLG-G
+                                       NOT =   SPA-MAE-SYOHOPRTFLG-G
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-YAKUJYOFLG-G
+                                       NOT =   SPA-MAE-YAKUJYOFLG-G
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-FORMALFLG-G NOT =   SPA-MAE-FORMALFLG-G
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-CLIENT-SAVE-G
+                                       NOT =   SPA-MAE-CLIENT-SAVE-G
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-USER-KANRI-G
+                                       NOT =   SPA-MAE-USER-KANRI-G
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-CLIENT-PRT-G
+                                       NOT =   SPA-MAE-CLIENT-PRT-G
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-DIALOGFLG-G NOT =   SPA-MAE-DIALOGFLG-G
+               MOVE    1               TO  FLG-OK
+           END-IF
+      *
+      *    他院情報設定画面
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   CONST-GRPHOSP-MAX
+               IF      SPA-GMN-GRPUSERID(IDX)
+                                       NOT =   SPA-MAE-GRPUSERID(IDX)
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           .
+       4102-HENKOU-CHK-EXT.
+           EXIT.
+      *
+      *----(4.07.01)--ADD-END-----
       *****************************************************************
       *    基本チェック処理
       *****************************************************************
@@ -2856,15 +3112,36 @@
            .
        460-TAGUCHG-EXT.
            EXIT.
+      *----(04.07.01)--ADD-START---
       *****************************************************************
       *    戻る　処理
       *****************************************************************
-       210-BACK                        SECTION.
+       210-BACK-CHK-SEC            SECTION.
+      *
+           IF     SPA-GMN-SYORI    NOT =   ZERO
+      *        画面をＳＰＡセット
+               PERFORM 4101-GMN-SPA-SET-SEC
+      *        変更項目チェク
+               PERFORM 4102-HENKOU-CHK-SEC
+               IF      FLG-OK          NOT =   ZERO
+                   MOVE    1           TO  SPA-GMN-BACK
+                   PERFORM 490-TOUROKU-SEC
+                   GO  TO  210-BACK-CHK-EXT
+               END-IF
+           END-IF
+      *
+           PERFORM 210-BACK
+           .
+       210-BACK-CHK-EXT.
+           EXIT.
+      *----(04.07.01)--ADD-END-----
+      *****************************************************************
+      *    戻る　処理
+      *****************************************************************
+       210-BACK                    SECTION.
       *
            MOVE    "W01"               TO  SPA-SAKIPG
            MOVE    "W06"               TO  SPA-MOTOPG
-      *
-      *    INITIALIZE                  SPA-W01KYOUTU
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
            MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -2872,11 +3149,10 @@
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
-      *
            .
        210-BACK-EXT.
            EXIT.
-      *
+
       *****************************************************************
       *    クリア処理
       *****************************************************************
@@ -3911,13 +4187,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        500-GMNHEN-EXT.
            EXIT.
       *
+      *----(04.07.01)--UPD-START---
       *****************************************************************
       *    業務権限非活性処理
       *****************************************************************
        510-GSRAUTH-SEC             SECTION.
-      *
-           MOVE    WIDGET-INSENSITIVE      TO  W06-CHK19-STATE
-           MOVE    WIDGET-INSENSITIVE      TO  W06-CHK33-STATE
       *
            IF     (SPA-GMN-SYORI       =   1   ) AND
                   (SPA-GMN-SELNUM      =   ZERO)
@@ -3931,15 +4205,144 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-INSENSITIVE      TO  W06-B03-STATE
            END-IF
       *
-           IF      SPA-NAI-KANRIAUTHFLG    =  "T"
+      *    スーパーバイザーの場合
+           IF      SPA-NAI-SUPERVISOR      =  "T"
+               MOVE    "T"                 TO  W06-CHK01
+                                               W06-CHK02
+                                               W06-CHK03
+                                               W06-CHK04
+                                               W06-CHK05
+                                               W06-CHK06
+                                               W06-CHK07
+                                               W06-CHK08
+                                               W06-CHK09
+                                               W06-CHK10
+                                               W06-CHK11
+                                               W06-CHK12
+                                               W06-CHK13
+                                               W06-CHK14
+                                               W06-CHK15
+                                               W06-CHK16
+                                               W06-CHK17
+                                               W06-CHK18
+                                               W06-CHK19
+                                               W06-CHK20
+                                               W06-CHK21
+                                               W06-CHK22
+                                               W06-CHK23
+                                               W06-CHK24
+                                               W06-CHK25
+                                               W06-CHK26
+                                               W06-CHK27
+                                               W06-CHK28
+                                               W06-CHK29
+                                               W06-CHK30
+                                               W06-CHK31
+                                               W06-CHK32
+                                               W06-CHK33
+                                               W06-CHK34
+                                               W06-CHK35
+                                               W06-CHK36
+               MOVE    WIDGET-INSENSITIVE  TO  W06-CHK01-STATE
+                                               W06-CHK02-STATE
+                                               W06-CHK03-STATE
+                                               W06-CHK04-STATE
+                                               W06-CHK05-STATE
+                                               W06-CHK06-STATE
+                                               W06-CHK07-STATE
+                                               W06-CHK08-STATE
+                                               W06-CHK09-STATE
+                                               W06-CHK10-STATE
+                                               W06-CHK11-STATE
+                                               W06-CHK12-STATE
+                                               W06-CHK13-STATE
+                                               W06-CHK14-STATE
+                                               W06-CHK15-STATE
+                                               W06-CHK16-STATE
+                                               W06-CHK17-STATE
+                                               W06-CHK18-STATE
+                                               W06-CHK19-STATE
+                                               W06-CHK20-STATE
+                                               W06-CHK21-STATE
+                                               W06-CHK22-STATE
+                                               W06-CHK23-STATE
+                                               W06-CHK24-STATE
+                                               W06-CHK25-STATE
+                                               W06-CHK26-STATE
+                                               W06-CHK27-STATE
+                                               W06-CHK28-STATE
+                                               W06-CHK29-STATE
+                                               W06-CHK30-STATE
+                                               W06-CHK31-STATE
+                                               W06-CHK32-STATE
+                                               W06-CHK33-STATE
+                                               W06-CHK34-STATE
+                                               W06-CHK35-STATE
+                                               W06-CHK36-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  W06-CHK01-STATE
+                                               W06-CHK02-STATE
+                                               W06-CHK03-STATE
+                                               W06-CHK04-STATE
+                                               W06-CHK05-STATE
+                                               W06-CHK06-STATE
+                                               W06-CHK07-STATE
+                                               W06-CHK08-STATE
+                                               W06-CHK09-STATE
+                                               W06-CHK10-STATE
+                                               W06-CHK11-STATE
+                                               W06-CHK12-STATE
+                                               W06-CHK13-STATE
+                                               W06-CHK14-STATE
+                                               W06-CHK15-STATE
+                                               W06-CHK16-STATE
+                                               W06-CHK17-STATE
+                                               W06-CHK18-STATE
+                                               W06-CHK19-STATE
+                                               W06-CHK20-STATE
+                                               W06-CHK21-STATE
+                                               W06-CHK22-STATE
+                                               W06-CHK23-STATE
+                                               W06-CHK24-STATE
+                                               W06-CHK25-STATE
+                                               W06-CHK26-STATE
+                                               W06-CHK27-STATE
+                                               W06-CHK28-STATE
+                                               W06-CHK29-STATE
+                                               W06-CHK30-STATE
+                                               W06-CHK31-STATE
+                                               W06-CHK32-STATE
+                                               W06-CHK33-STATE
+                                               W06-CHK34-STATE
+                                               W06-CHK35-STATE
+                                               W06-CHK36-STATE
+      *
       *        管理者である時
-               MOVE    WIDGET-NORMAL      TO  W06-CHK19-STATE
-               MOVE    WIDGET-NORMAL      TO  W06-CHK33-STATE
+               IF      SPA-NAI-KANRIAUTHFLG    =  "T"
+                   MOVE    "T"                 TO  W06-CHK01
+                                                   W06-CHK18
+                                                   W06-CHK19
+                                                   W06-CHK20
+                                                   W06-CHK33
+                   MOVE    WIDGET-INSENSITIVE  TO  W06-CHK01-STATE
+                                                   W06-CHK18-STATE
+                                                   W06-CHK19-STATE
+                                                   W06-CHK20-STATE
+                                                   W06-CHK33-STATE
+               END-IF
+      *
+      *        管理者でない時
+               IF      SPA-NAI-KANRIAUTHFLG    =  "F"
+                   MOVE    "F"                 TO  W06-CHK19
+                                                   W06-CHK33
+                   MOVE    WIDGET-INSENSITIVE  TO  W06-CHK19-STATE
+                                                   W06-CHK33-STATE
+               END-IF
            END-IF
            .
        51O-GSRAUTH-EXT.
            EXIT.
-      *
+      *----(04.07.01)--UPD-END-----
       *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
