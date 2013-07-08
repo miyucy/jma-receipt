@@ -3024,6 +3024,8 @@
       *
            INITIALIZE                  SPA-GMN2D-AREA
            INITIALIZE                  SPA-NAI2D-AREA
+           MOVE    ZERO                TO  SPA-NAI2D-HKNID
+           MOVE    ZERO                TO  SPA-NAI2D-KOHID
       *
            MOVE    ZERO                TO  SPA-NAI2D-RSHKN-EDANUM
       *
