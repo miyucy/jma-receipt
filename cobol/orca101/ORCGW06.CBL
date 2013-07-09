@@ -1952,6 +1952,46 @@
            MOVE    W06-HKNDRNUMS       TO  SPA-GMN-HKNDRNUMS
            MOVE    W06-HKNDRNUMK       TO  SPA-GMN-HKNDRNUMK
            MOVE    W06-MAYAKULICENSE   TO  SPA-GMN-MAYAKULICENSE
+      *
+      *----(04.07.01)--ADD-START---
+           MOVE    W06-CHK01           TO  SPA-GMN-CHK(1)
+           MOVE    W06-CHK02           TO  SPA-GMN-CHK(2)
+           MOVE    W06-CHK03           TO  SPA-GMN-CHK(3)
+           MOVE    W06-CHK04           TO  SPA-GMN-CHK(4)
+           MOVE    W06-CHK05           TO  SPA-GMN-CHK(5)
+           MOVE    W06-CHK06           TO  SPA-GMN-CHK(6)
+           MOVE    W06-CHK07           TO  SPA-GMN-CHK(7)
+           MOVE    W06-CHK08           TO  SPA-GMN-CHK(8)
+           MOVE    W06-CHK09           TO  SPA-GMN-CHK(9)
+           MOVE    W06-CHK10           TO  SPA-GMN-CHK(10)
+           MOVE    W06-CHK11           TO  SPA-GMN-CHK(11)
+           MOVE    W06-CHK12           TO  SPA-GMN-CHK(12)
+           MOVE    W06-CHK13           TO  SPA-GMN-CHK(13)
+           MOVE    W06-CHK14           TO  SPA-GMN-CHK(14)
+           MOVE    W06-CHK15           TO  SPA-GMN-CHK(15)
+           MOVE    W06-CHK16           TO  SPA-GMN-CHK(16)
+           MOVE    W06-CHK17           TO  SPA-GMN-CHK(17)
+           MOVE    W06-CHK18           TO  SPA-GMN-CHK(18)
+           MOVE    W06-CHK19           TO  SPA-GMN-CHK(19)
+           MOVE    W06-CHK20           TO  SPA-GMN-CHK(20)
+           MOVE    W06-CHK21           TO  SPA-GMN-CHK(21)
+           MOVE    W06-CHK22           TO  SPA-GMN-CHK(22)
+           MOVE    W06-CHK23           TO  SPA-GMN-CHK(23)
+           MOVE    W06-CHK24           TO  SPA-GMN-CHK(24)
+           MOVE    W06-CHK25           TO  SPA-GMN-CHK(25)
+           MOVE    W06-CHK26           TO  SPA-GMN-CHK(26)
+           MOVE    W06-CHK27           TO  SPA-GMN-CHK(27)
+           MOVE    W06-CHK28           TO  SPA-GMN-CHK(28)
+           MOVE    W06-CHK29           TO  SPA-GMN-CHK(29)
+           MOVE    W06-CHK30           TO  SPA-GMN-CHK(30)
+           MOVE    W06-CHK31           TO  SPA-GMN-CHK(31)
+           MOVE    W06-CHK32           TO  SPA-GMN-CHK(32)
+           MOVE    W06-CHK33           TO  SPA-GMN-CHK(33)
+           MOVE    W06-CHK34           TO  SPA-GMN-CHK(34)
+           MOVE    W06-CHK35           TO  SPA-GMN-CHK(35)
+           MOVE    W06-CHK36           TO  SPA-GMN-CHK(36)
+      *----(04.07.01)--ADD-END-----
+      *
       *    ÀìÌç²Ê¥³¡¼¥É
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   5
