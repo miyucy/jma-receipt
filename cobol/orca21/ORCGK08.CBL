@@ -3875,7 +3875,9 @@
       *    自賠責の時、システム管理検索
            IF      (SPA-HKNKBN         =   1   )  AND
                    (SPA-RSI-HKNKBN     =   "4"
-                                       OR  "5"  )
+                                       OR  "5"
+      *             第三者行為追加
+                                       OR  "6"  ) 
                PERFORM 4500-RSI-SYSKANRI-SEC
            END-IF
       *
@@ -4689,7 +4691,9 @@
       *            自賠責の時、技術点を集計する
                    IF      (SPA-HKNKBN         =   1   )  AND
                            (SPA-RSI-HKNKBN     =   "4"
-                                               OR  "5"  ) 
+                                               OR  "5"
+      *                    第三者行為追加
+                                               OR  "6"  ) 
       ************   AND   (LNK-WKSRY-SYUTEN1 (IDX)    >   ZERO )
                        PERFORM 45052-JIBAI-SYORI-SEC
                    END-IF
