@@ -83,10 +83,6 @@
            03  SRYSRH-STSRYYM      PIC X(6).
       *終了診療月
            03  SRYSRH-EDSRYYM      PIC X(6).
-      *ドクター
-           03  SRYSRH-DRCD         PIC X(5).
       *SQL
            03  SRYSRH-SQL          PIC X(15000).
-      *日付＋時刻
-           03  SRYSRH-YMDHMS       PIC X(14).
 

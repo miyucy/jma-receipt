@@ -191,17 +191,3 @@
            03  SHKITEMID-STBYOYMD      PIC 9(05)   VALUE   166.
            03  SHKITEMID-EDBYOYMD      PIC 9(05)   VALUE   167.
            03  SHKITEMID-HOKATSUKBN    PIC 9(05)   VALUE   168.
-           03  SHKITEMID-TSTPT         PIC 9(05)   VALUE   169.
-           03  SHKITEMID-HKNEDYM       PIC 9(05)   VALUE   170.
-           03  SHKITEMID-KOHEDYM       PIC 9(05)   VALUE   171.
-           03  SHKITEMID-FTNRATE       PIC 9(05)   VALUE   172.
-           03  SHKITEMID-AGREEMENT     PIC 9(05)   VALUE   173.
-           03  SHKITEMID-KHSKBT        PIC 9(05)   VALUE   174.
-           03  SHKITEMID-STKHYM        PIC 9(05)   VALUE   175.
-           03  SHKITEMID-EDKHYM        PIC 9(05)   VALUE   176.
-           03  SHKITEMID-KHHKNJANUM    PIC 9(05)   VALUE   177.
-           03  SHKITEMID-KNSKBT        PIC 9(05)   VALUE   178.
-           03  SHKITEMID-STKNYM        PIC 9(05)   VALUE   179.
-           03  SHKITEMID-EDKNYM        PIC 9(05)   VALUE   180.
-           03  SHKITEMID-KNJOTAI       PIC 9(05)   VALUE   181.
-           03  SHKITEMID-DRCD          PIC 9(05)   VALUE   182.

@@ -35,9 +35,7 @@ tbl_srysrh {
 	EDSRYYMD			char(8),virtual;
 	STSRYYM				char(6),virtual;
 	EDSRYYM				char(6),virtual;
-	DRCD				  char(5),virtual;
 	SQL                             dbcode(15000),virtual;
-	YMDHMS				varchar(12),virtual;
 };
 
 path	all 	{
@@ -60,15 +58,7 @@ path	del1 	{
 	};
 };
 
-path    key     {
-        DBSELECT        {
-                DECLARE tbl_srysrh_key_csr CURSOR FOR
-                :SQL
-                ;
-        };
-};
-
-path	ins1_1 	{
+path	ins1 	{
 	DBINSERT	{
 	INSERT INTO TBL_SRYSRH
 	    ( 
@@ -176,11 +166,8 @@ path	ins1_1 	{
 	      SRYCD5
 	     ))
 	    )
-		;
-	};
-};
-path	ins1_2 	{
-	DBUPDATE	{
+	;
+	
 	UPDATE TBL_SRYSRH
 	SET    HKNCOMBINUM = A.HKNCOMBI,
 	       HOKATSUKBN  = A.JIHOKBN
@@ -189,10 +176,7 @@ path	ins1_2 	{
 	 AND   TBL_SRYSRH.PTID    = A.PTID
 	 AND   TBL_SRYSRH.ZAINUM  = A.ZAINUM
 	;
-	};
-};
-path	ins1_3	{
-	DBINSERT	{
+	
 	INSERT INTO TBL_SRYSRH
 	    ( 
 	       HOSPNUM,
@@ -261,7 +245,7 @@ path	ins1_3	{
 	};
 };
 
-path	ins2_1 	{
+path	ins2 	{
 	DBINSERT	{
 	INSERT INTO TBL_SRYSRH
 	    ( 
@@ -340,7 +324,6 @@ path	ins2_1 	{
        AND A.PTID      = B.PTID
        AND A.NYUGAIKBN = B.NYUGAIKBN
        AND A.SRYKA     = B.SRYKA
-       AND B.DRCD      LIKE :DRCD
        AND B.SRYYMD   >= :STSRYYMD
        AND B.SRYYMD   <= :EDSRYYMD
        AND A.ZAINUM in
@@ -401,11 +384,7 @@ path	ins2_1 	{
 	     ))
 	    )
      ;
-	};
-};
 
-path	ins2_2 	{
-	DBINSERT	{
 	INSERT INTO TBL_SRYSRH
 	    ( 
 	       HOSPNUM,
@@ -483,7 +462,7 @@ path	ins2_2 	{
 };
 
 #-----> 診療区分、診療種別のみでの検索
-path	ins3_1 	{
+path	ins3 	{
 	DBINSERT	{
 	INSERT INTO TBL_SRYSRH
 	    ( 
@@ -532,10 +511,7 @@ path	ins3_1 	{
          AND A.SRYKBN LIKE :SRYKBN
          AND A.SRYSYUKBN LIKE :SRYSYUKBN
 	;
-	};
-};
-path	ins3_2 	{
-	DBINSERT	{
+
 	INSERT INTO TBL_SRYSRH
 	    ( 
 	       HOSPNUM,
@@ -585,7 +561,7 @@ path	ins3_2 	{
 };
 
 #-----> 診療区分、診療種別のみでの検索
-path	ins4_1 	{
+path	ins4 	{
 	DBINSERT	{
 	INSERT INTO TBL_SRYSRH
 	    ( 
@@ -644,7 +620,6 @@ path	ins4_1 	{
        AND A.PTID      = B.PTID
        AND A.NYUGAIKBN = B.NYUGAIKBN
        AND A.SRYKA     = B.SRYKA
-       AND B.DRCD      LIKE :DRCD
        AND B.SRYYMD   >= :STSRYYMD
        AND B.SRYYMD   <= :EDSRYYMD
        AND A.ZAINUM in
@@ -664,10 +639,7 @@ path	ins4_1 	{
            B.ZAINUM14 ,
            B.ZAINUM15 )
      ;
-	};
-};
-path	ins4_2	{
-	DBINSERT	{
+
 	INSERT INTO TBL_SRYSRH
 	    ( 
 	       HOSPNUM,
@@ -724,23 +696,11 @@ path	ins4_2	{
 	};
 };
 
-path	del2 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_srysrh
-		WHERE	HOSPNUM    =    :HOSPNUM
-		AND     CREYMD    <     :CREYMD
-		;
-	};
+path    key     {
+        DBSELECT        {
+                DECLARE tbl_srysrh_key_csr CURSOR FOR
+                :SQL
+                ;
+        };
 };
 
-
-path	del3 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_srysrh
-		WHERE  HOSPNUM      =   :HOSPNUM
-		AND    UPYMD||UPHMS <   :YMDHMS
-		;
-	};
-};

@@ -28,8 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.06.01     NACL-森脇    10/08/25  ＣＳＶ出力対応
-      * 04.08.01     NACL-森脇    14/07/23  一時ファイルディレクトリ設定
-      * 04.08.02     NACL-森脇    16/09/01  持参薬システム予約コード対象外
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -69,11 +67,10 @@
                05  IN01-KEY-KANANAME   PIC X(100).
                05  IN01-KEY-SRYCD      PIC X(09).
                05  IN01-KEY-SURYO      PIC 9(05)V999.
-               05  IN01-TEN            PIC 9(09)V99.
            03  IN01-NAME               PIC X(100).
+           03  IN01-TEN                PIC 9(09)V99.
            03  IN01-TENSIKIBETU        PIC 9(01).
            03  IN01-TANI               PIC X(10).
-           03  IN01-IN-TEN             PIC 9(09)V99.
            03  IN01-KAISU              PIC 9(06).
       *
       *    診療会計ファイル
@@ -94,20 +91,13 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0171//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    診療会計ファイル
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0172//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
-      *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
-      *----(04.08.01)--ADD-END-----
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCG017.INC".
       *
@@ -166,7 +156,6 @@
                05  WRK-RECEERR-END PIC X(1).
            03  WRK-TOUKEIERR       PIC X(200).
            03  WRK-SRYYMD          PIC X(08).
-           03  WRK-SRYYM           PIC X(06).
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
                05  WRK-SMM             PIC 9(02).
@@ -412,11 +401,6 @@
       *    指定診療行為件数調サブ２
            COPY    "CPORCSS009.INC".
       *
-      *----(04.08.01)--ADD-START---
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -429,10 +413,7 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *----(04.08.01)--UPD-START---
-      *     03  RECEERR             PIC X(100).
-           03  RECEERRX            PIC X(100).
-      *----(04.08.01)--UPD-END-----
+           03  RECEERR             PIC X(100).
            03  WRK-PARA-STRYMD     PIC X(08).
            03  WRK-PARA-ENDYMD     PIC X(08).
            03  WRK-PARA-KIKANFLG   PIC X(01).
@@ -480,9 +461,6 @@
            INITIALIZE                  TPTINF-AREA
            INITIALIZE                  TTNS-AREA
            INITIALIZE                  SPA-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            MOVE    WRK-PARA-HOSPNUM
                                    TO  SPA-HOSPNUM
@@ -512,20 +490,6 @@
            MOVE    "BG01702"       TO  BG0172-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  BG0172-TERMID
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    BG0171-BASENAME     TO  SGETTEMP-BASENAMES (1)
-           MOVE    BG0172-BASENAME     TO  SGETTEMP-BASENAMES (2)
-           MOVE    RECEERRX            TO  SGETTEMP-BASENAMES (3)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  BG0171-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  BG0172-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -847,13 +811,6 @@
                END-IF
            END-IF
       *
-      *----(04.08.02)--ADD-START---
-           IF  ( ACCT-JIHOKBN        = "1" )   AND
-               ( ACCT-TEIGENRATE     =  3 OR 4 )
-               GO  TO  20011-IN01-HEN-EXT
-           END-IF
-      *----(04.08.02)--ADD-END-----
-      *
            MOVE    SRY-PTID            TO  WRK-PTID
            PERFORM 900-PTINF-PTNUM-KEY-SEL-SEC
            IF    ( FLG-PTINF       NOT =   ZERO )
@@ -861,7 +818,6 @@
            END-IF
       *
            MOVE    SRY-SRYCD (IDX3)    TO  WRK-SRYCD
-           MOVE    SRY-SRYYM           TO  WRK-SRYYM
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU       NOT =   ZERO )
                DISPLAY "TENSU   SEL ERR !! " WRK-SRYCD
@@ -966,7 +922,6 @@
            MOVE    TNS-KANANAME        TO  IN01-KEY-KANANAME
            MOVE    TNS-SRYCD           TO  IN01-KEY-SRYCD
            MOVE    SRY-SRYSURYO (IDX3) TO  IN01-KEY-SURYO
-           MOVE    TNS-TEN             TO  IN01-TEN
            PERFORM 900-IN01DYN-READ-SEC
            IF    ( FLG-IN01            =   ZERO )
       *
@@ -994,29 +949,6 @@
                        MOVE    TNS-TANINAME TO IN01-TANI
                    END-IF
                END-IF
-      *
-               MOVE    ZERO                TO  WRK-IN-TEN
-               IF    ( TNS-KZMCOMPSIKIBETU     =   1 )
-                   MOVE    IN01-KEY-SURYO  TO  WRK-KIZAMI
-                   IF    ( IN01-KEY-SURYO  <   TNS-KZMKGN )
-                       MOVE    TNS-KZMKGN  TO  WRK-KIZAMI
-                   END-IF
-      *
-                   COMPUTE WRK-IN-TEN
-                       =   WRK-KIZAMI
-                       -   TNS-KZMKGN
-      *
-                   DIVIDE  TNS-KZM INTO WRK-IN-TEN GIVING    WRK-SHO
-                                                   REMAINDER WRK-AMARI
-      *
-                   IF    ( WRK-AMARI > 0 )
-                       COMPUTE WRK-SHO =   WRK-SHO +   1
-                   END-IF
-      *
-                   COMPUTE WRK-IN-TEN
-                       = ( WRK-SHO * TNS-KZMTEN + IN01-TEN )
-               END-IF
-               MOVE    WRK-IN-TEN         TO  IN01-IN-TEN
       *
                PERFORM 200111-IN01-ACCT-HEN-SEC
       *
@@ -1127,7 +1059,6 @@
       *
            MOVE    SS009-SRYCD (IDX-NACCT IDX-NSRY)
                                        TO  WRK-SRYCD
-           MOVE    NACCT-SRYYM         TO  WRK-SRYYM
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU       NOT =   ZERO )
                DISPLAY "TENSU   SEL ERR !! " WRK-SRYCD
@@ -1237,7 +1168,6 @@
            MOVE    TNS-SRYCD           TO  IN01-KEY-SRYCD
            MOVE    SS009-SURYO (IDX-NACCT IDX-NSRY)
                                        TO  IN01-KEY-SURYO
-           MOVE    TNS-TEN             TO  IN01-TEN
            PERFORM 900-IN01DYN-READ-SEC
            IF    ( FLG-IN01            =   ZERO )
       *
@@ -1272,29 +1202,6 @@
                        MOVE    TNS-TANINAME TO IN01-TANI
                    END-IF
                END-IF
-      *
-               MOVE    ZERO                TO  WRK-IN-TEN
-               IF    ( TNS-KZMCOMPSIKIBETU     =   1 )
-                   MOVE    IN01-KEY-SURYO  TO  WRK-KIZAMI
-                   IF    ( IN01-KEY-SURYO  <   TNS-KZMKGN )
-                       MOVE    TNS-KZMKGN  TO  WRK-KIZAMI
-                   END-IF
-      *
-                   COMPUTE WRK-IN-TEN
-                       =   WRK-KIZAMI
-                       -   TNS-KZMKGN
-      *
-                   DIVIDE  TNS-KZM INTO WRK-IN-TEN GIVING    WRK-SHO
-                                                   REMAINDER WRK-AMARI
-      *
-                   IF    ( WRK-AMARI > 0 )
-                       COMPUTE WRK-SHO =   WRK-SHO +   1
-                   END-IF
-      *
-                   COMPUTE WRK-IN-TEN
-                       = ( WRK-SHO * TNS-KZMTEN + IN01-TEN )
-               END-IF
-               MOVE    WRK-IN-TEN         TO  IN01-IN-TEN
       *
                PERFORM 200121-IN01-ACCT-HEN-SEC
       *
@@ -1361,10 +1268,10 @@
                MOVE    "（外来）"      TO  HCG017-NYUGAIKBN
            END-IF
       *
-      *     IF    ( WRK-PARA-HOKATSUKBN =   "1" )
-      *         MOVE    "（包括分を含まない）"
-      *                                 TO  HCG017-HOKATSUKBN
-      *     END-IF
+           IF    ( WRK-PARA-HOKATSUKBN =   "1" )
+               MOVE    "（包括分を含まない）"
+                                       TO  HCG017-HOKATSUKBN
+           END-IF
       *
            COMPUTE CNT-PAGE        =   CNT-PAGE        +   1
       *
@@ -1454,8 +1361,6 @@
                END-IF
                PERFORM 400-ZHEN-SURYO-SET-SEC
                MOVE    WRK-HENSURYO    TO  CSV-SURYO
-           ELSE
-               MOVE    SPACE           TO  CSV-SURYO
            END-IF
       *
            MOVE    IN01-KAISU          TO  WRK-ZZZZZ9
@@ -1464,17 +1369,36 @@
            PERFORM 400-ZHEN-SURYO-SET-SEC
            MOVE    WRK-HENSURYO    TO  CSV-KAISU
       *
-           IF      IN01-IN-TEN     NOT =   ZERO
+           MOVE    IN01-KEY-SRYCD      TO  WRK-SRYCD
+           MOVE    ZERO                TO  WRK-IN-TEN
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( TNS-KZMCOMPSIKIBETU     =   1 )
+               MOVE    IN01-KEY-SURYO  TO  WRK-KIZAMI
+               IF    ( IN01-KEY-SURYO  <   TNS-KZMKGN )
+                   MOVE    TNS-KZMKGN  TO  WRK-KIZAMI
+               END-IF
+      *
                COMPUTE WRK-IN-TEN
-                   =   IN01-IN-TEN
+                   =   WRK-KIZAMI
+                   -   TNS-KZMKGN
+      *
+               DIVIDE  TNS-KZM INTO WRK-IN-TEN GIVING    WRK-SHO
+                                               REMAINDER WRK-AMARI
+      *
+               IF    ( WRK-AMARI > 0 )
+                   COMPUTE WRK-SHO =   WRK-SHO +   1
+               END-IF
+      *
+               COMPUTE WRK-IN-TEN
+                   = ( WRK-SHO * TNS-KZMTEN + TNS-TEN )
                    *   IN01-KAISU
+      *
            ELSE
                COMPUTE WRK-IN-TEN
                    =   IN01-TEN
                    *   IN01-KEY-SURYO
                    *   IN01-KAISU
            END-IF
-      *
            PERFORM 200111-TEN-EDIT-SEC
            IF    ( WRK-SIKIBETU        =   "円" OR "点" )
                MOVE    WRK-OT-TEN      TO  HCG017-KEI (CNT-LINE)
@@ -1881,9 +1805,7 @@
       *
       *
            MOVE    WRK-SRYCD           TO  TTNS-CHK-SRYCD
-      *     MOVE    WRK-SRYYMD          TO  TTNS-CHK-YMD
-           MOVE    WRK-SRYYM           TO  TTNS-CHK-YMD(1:6)
-           MOVE    "01"                TO  TTNS-CHK-YMD(7:2)
+           MOVE    WRK-SRYYMD          TO  TTNS-CHK-YMD
       *
       *    点数マスタ退避ワークチェック
            PERFORM 9001-TTNS-CHK-SEC
@@ -1972,7 +1894,7 @@
            MOVE    ZERO            TO  FLG-SRYACCT
       *
            INITIALIZE                  SRYACCT-REC
-           MOVE    SRY-HOSPNUM     TO  ACCT-HOSPNUM
+           MOVE    SRY-HOSPNUM      TO  ACCT-HOSPNUM
            MOVE    SRY-NYUGAIKBN   TO  ACCT-NYUGAIKBN
            MOVE    SRY-PTID        TO  ACCT-PTID
            MOVE    SRY-SRYKA       TO  ACCT-SRYKA

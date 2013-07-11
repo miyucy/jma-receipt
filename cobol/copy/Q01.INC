@@ -23,9 +23,9 @@
               04  Q01-B06-LABEL                PIC X(10).
               04  Q01-B07-LABEL                PIC X(10).
               04  Q01-CMB-SELPATTERN.
-                05  Q01-SELPATTERN             PIC X(104).
+                05  Q01-SELPATTERN             PIC X(33).
                 05  Q01-CMB-SELPATTERN-COUNT   PIC S9(9)   BINARY.
-                05  Q01-CMB-SELPATTERN-ITEM    PIC X(104)  OCCURS 200.
+                05  Q01-CMB-SELPATTERN-ITEM    PIC X(33)   OCCURS  50.
               04  Q01-STSRYYMD                 PIC X(10).
               04  Q01-EDSRYYMD                 PIC X(10).
               04  Q01-LBLSENISAKI              PIC X(40).
@@ -51,12 +51,6 @@
                     07  Q01-CMB-NYUGAIKBN-COUNT
                                                PIC S9(9)   BINARY.
                     07  Q01-CMB-NYUGAIKBN-ITEM PIC X(12)   OCCURS  2.
-                  06  Q01-CMB-DRCD.
-                    07  Q01-DRCD                 PIC X(29).
-                    07  Q01-CMB-DRCD-COUNT       PIC S9(9)   BINARY.
-                    07  Q01-CMB-DRCD-ITEM        PIC X(29)   OCCURS  99.
-                  06  Q01-LBLMSG01             PIC X(100).
-                  06  Q01-LBLMSG01-STYLE       PIC X(20).
                   06  Q01-CMB-SRYKA.
                     07  Q01-SRYKA              PIC X(23).
                     07  Q01-CMB-SRYKA-COUNT    PIC S9(9)   BINARY.
@@ -65,15 +59,7 @@
                     07  Q01-DEATH              PIC         X(10).
                     07  Q01-CMB-DEATH-COUNT    PIC S9(9)   BINARY.
                     07  Q01-CMB-DEATH-ITEM     PIC X(10)   OCCURS  2.
-                  06  Q01-CMB-AGREEMENT.
-                    07  Q01-AGREEMENT              PIC         X(22).
-                    07  Q01-CMB-AGREEMENT-COUNT    PIC S9(9)   BINARY.
-                    07  Q01-CMB-AGREEMENT-ITEM     PIC X(22)   OCCURS 5.
-                  06  Q01-LBLTSTPT             PIC         X(20).
-                  06  Q01-CMB-TSTPT.
-                    07  Q01-TSTPT              PIC         X(32).
-                    07  Q01-CMB-TSTPT-COUNT    PIC S9(9)   BINARY.
-                    07  Q01-CMB-TSTPT-ITEM     PIC X(32)   OCCURS 5.
+                  06  Q01-CHKTSTPT             PIC X.
                   06  Q01-POST-TBL.
                     07  Q01-POST               PIC X(07)   OCCURS 5.
                   06  Q01-JYUSHO-TBL.
@@ -150,31 +136,23 @@
                     07  Q01-CMB-TENKENRECE-COUNT    PIC S9(9) BINARY.
                     07  Q01-CMB-TENKENRECE-ITEM     PIC X(22) OCCURS 5.
                 05  Q01-FIXED17.
-                  06  Q01-HKNEDYM              PIC X(07).
                   06  Q01-CMB-HONKZKKBN.
                     07  Q01-HONKZKKBN          PIC X(10).
                     07  Q01-CMB-HONKZKKBN-COUNT
                                                PIC S9(9)   BINARY.
                     07  Q01-CMB-HONKZKKBN-ITEM
                                                PIC X(10)   OCCURS 5.
-                  06  Q01-CMB-FTNRATE.
-                    07  Q01-FTNRATE            PIC X(35).
-                    07  Q01-CMB-FTNRATE-COUNT
-                                               PIC S9(9)   BINARY.
-                    07  Q01-CMB-FTNRATE-ITEM
-                                               PIC X(35)   OCCURS 10.
                   06  Q01-HKNJANUM-TBL.
                     07  Q01-HKNJANUM           PIC X(08)   OCCURS 5.
                   06  Q01-CMB-HKNNUM-TBL.
                     07  Q01-CMB-HKNNUM-OCC                 OCCURS 5.
-                      08  Q01-HKNNUM           PIC X(30).
+                      08  Q01-HKNNUM           PIC X(20).
                       08  Q01-CMB-HKNNUM-COUNT PIC S9(9)   BINARY.
-                      08  Q01-CMB-HKNNUM-ITEM  PIC X(30)   OCCURS  50.
+                      08  Q01-CMB-HKNNUM-ITEM  PIC X(20)   OCCURS  50.
                   06  Q01-KIGO-TBL.
                     07  Q01-KIGO               PIC X(40)   OCCURS 5.
                   06  Q01-NUM-TBL.
                     07  Q01-NUM                PIC X(40)   OCCURS 5.
-                  06  Q01-KOHEDYM              PIC X(07).
                   06  Q01-CMB-KOHNUM-TBL.
                     07  Q01-CMB-KOHNUM-OCC                 OCCURS 5.
                       08  Q01-KOHNUM           PIC X(20).
@@ -315,28 +293,6 @@
                     07  Q01-JKNSRYACT           PIC X(10).
                     07  Q01-CMB-JKNSRYACT-COUNT PIC S9(9)   BINARY.
                     07  Q01-CMB-JKNSRYACT-ITEM  PIC X(10)   OCCURS 5.
-                05  Q01-FIXED20.
-                  06  Q01-CMB-KHSKBT.
-                    07  Q01-KHSKBT              PIC X(10).
-                    07  Q01-KHSKBT-COUNT        PIC S9(9)   BINARY.
-                    07  Q01-KHSKBT-ITEM         PIC X(10)   OCCURS 5.
-                  06  Q01-STKHYM                PIC X(10).
-                  06  Q01-LBLKHYM               PIC X(02).
-                  06  Q01-EDKHYM                PIC X(10).
-                  06  Q01-EDKHYM-STATE          PIC S9(9) BINARY.
-                  06  Q01-KHHKNJANUM            PIC X(06).
-                  06  Q01-CMB-KNSKBT.
-                    07  Q01-KNSKBT              PIC X(10).
-                    07  Q01-KNSKBT-COUNT        PIC S9(9)   BINARY.
-                    07  Q01-KNSKBT-ITEM         PIC X(10)   OCCURS 5.
-                  06  Q01-STKNYM                PIC X(10).
-                  06  Q01-LBLKNYM               PIC X(02).
-                  06  Q01-EDKNYM                PIC X(10).
-                  06  Q01-EDKNYM-STATE          PIC S9(9) BINARY.
-                  06  Q01-CMB-KNJOTAI.
-                    07  Q01-KNJOTAI               PIC X(20).
-                    07  Q01-KNJOTAI-COUNT         PIC S9(9)   BINARY.
-                    07  Q01-KNJOTAI-ITEM          PIC X(20)   OCCURS 20.
                 05  Q01-FIXED19.
                   06  Q01-CMB-KMK-TBL.
                     07  Q01-CMB-KMK-OCC    OCCURS  3.
