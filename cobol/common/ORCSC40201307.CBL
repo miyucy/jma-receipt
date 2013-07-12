@@ -1612,6 +1612,9 @@
       *    労災（短期・傷病）の時、合成コード使用を促す
            IF     (SPA-HKNKBN          =   1   )
              AND  (SPA-RSI-HKNKBN      =   "1"  OR  "2")
+      *!!レセ電開始までシステム管理設定なしとする
+               MOVE    ZERO                TO  LNK-ORCSC-ROURECEKBN
+      *!!!!!
                IF     (LNK-ORCSC-ROURECEKBN   =   ZERO )
       *     レセ電対応なし
       *            警告
