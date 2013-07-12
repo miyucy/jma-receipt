@@ -3803,6 +3803,15 @@
                                                =   "140"
                                                OR  "141"
                                                OR  "142"  )
+                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                               =   "211"
+                                               OR  "221"
+                                               OR  "231"
+                                               OR  "291"
+                                               OR  "213"
+                                               OR  "223"
+                                               OR  "233"
+                                               OR  "293" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF
                    END-IF
@@ -3942,6 +3951,15 @@
                                                =   "140"
                                                OR  "141"
                                                OR  "142"  )
+                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                               =   "211"
+                                               OR  "221"
+                                               OR  "231"
+                                               OR  "291"
+                                               OR  "213"
+                                               OR  "223"
+                                               OR  "233"
+                                               OR  "293" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF
                    END-IF
@@ -4082,6 +4100,15 @@
                                                =   "140"
                                                OR  "141"
                                                OR  "142"  )
+                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                               =   "211"
+                                               OR  "221"
+                                               OR  "231"
+                                               OR  "291"
+                                               OR  "213"
+                                               OR  "223"
+                                               OR  "233"
+                                               OR  "293" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF
                    END-IF
