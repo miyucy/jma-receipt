@@ -327,10 +327,15 @@
       *****************************************************************
        4101-SELNUM-SYORI-SEC           SECTION.
       *
-           IF      SPA-KT011-TTOUMEI (IDX)  =   SPACE
+           IF     (SPA-KT011-TTOUMEI (IDX)  =   SPACE    )
+              OR  (SPA-KT011-TTOUMEI (IDX)  =   "¡Ú¢¨¡Û" )
                PERFORM VARYING     IDY     FROM    IDX  BY  -1
                        UNTIL       IDY     <   1
-                   IF      SPA-KT011-TTOUMEI (IDY)  NOT =   SPACE
+      **********   IF      SPA-KT011-TTOUMEI (IDY)  NOT =   SPACE
+                   IF     (SPA-KT011-TTOUMEI (IDY)  =   SPACE    )
+                      OR  (SPA-KT011-TTOUMEI (IDY)  =   "¡Ú¢¨¡Û" )
+                       CONTINUE
+                   ELSE
                        MOVE    SPA-KT011-TTOUMEI (IDY)
                                                TO  WRK-KT011-TOUMEI
                        MOVE    1               TO  IDY
