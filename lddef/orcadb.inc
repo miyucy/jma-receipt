@@ -177,4 +177,6 @@ db	{
         tbl_ptnum_public;
         tbl_pt_hdist_day;
         tbl_generic_log;
+        tbl_mnote_h;
+        tbl_mnote_b;
 };

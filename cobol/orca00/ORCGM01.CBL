@@ -53,6 +53,7 @@
       *  04.04.00    NACL-森脇    09/01/27  排他ＳＰＡ共通対応
       *  04.04.00    NACL-森脇    09/01/30  他院切替対応
       *  04.07.00    NACL-森脇    12/07/04  ユーザーＩＤ表示
+      *  04.07.00    NACL-太田    13/07/16  電子お薬手帳対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -154,6 +155,9 @@
            COPY  "CPSK1001.INC".
       *
            COPY  "CPSK1038.INC".
+      *
+      *    ＩＣリーダライタ情報
+           COPY  "CPSK9100.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -486,6 +490,36 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
+           MOVE    SPACE               TO  SPA-NAI-MNOTE
+      *
+           MOVE    SPACE               TO  SYS-9100-REC
+           INITIALIZE                      SYS-9100-REC
+           MOVE    "9100"              TO  SYS-9100-KANRICD
+           MOVE    "*"                 TO  SYS-9100-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-9100-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-9100-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-9100-HOSPNUM
+           MOVE    SYS-9100-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF    ( FLG-SYSKANRI    =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYS-9100-REC
+                   MOVE    SYS-9100-CONNECT
+                                       TO  SPA-NAI-MNOTE
+               END-IF
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    !TEST ST
+           MOVE    "1"             TO  SPA-NAI-MNOTE
+      *    !TEST ED
+      *
            MOVE    SPACE           TO  SPA-MID1-FLG
            MOVE    SPACE           TO  SPA-MIDCD
       *
@@ -675,6 +709,11 @@
       *    印刷削除
                WHEN    "CLICKED"       ALSO    "B07"
                    MOVE    "0001"      TO  SPA-MIDCD
+      *    電子手帳画面
+               WHEN    "CLICKED"       ALSO    "B04"
+                   IF    ( SPA-NAI-MNOTE   =   "1" )
+                       PERFORM 470-MNOTE-SEC
+                   END-IF
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
@@ -1192,6 +1231,28 @@
            EXIT.
       *
       *****************************************************************
+      *    電子手帳画面へ
+      *****************************************************************
+       470-MNOTE-SEC             SECTION.
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "M01"               TO  SPA-MOTOPG
+           MOVE    "XG03"              TO  SPA-SAKIPG
+      *
+           INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
+           MOVE   "XG03"               TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       470-MNOTE-EXT.
+           EXIT.
+      *****************************************************************
       *    定点調査確認画面へ
       *****************************************************************
        490-TEITEN-SEC             SECTION.
@@ -1275,6 +1336,10 @@
       ***         MOVE    "未読緊急情報あり！"    TO  M01-ALERT
       ***     END-IF
       *----(01.00.04) LINE DEL START ----------------------------------
+      *
+           IF    ( SPA-NAI-MNOTE    =   "1" )
+               MOVE    "電子手帳"   TO  M01-B04-LABEL
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *

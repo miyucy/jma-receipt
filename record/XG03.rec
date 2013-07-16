@@ -1,0 +1,66 @@
+XG03	{
+	fixed32	{
+		B06S	{
+			state	int;
+		};
+		B07S	{
+			state	int;
+		};
+		B09	{
+			label	varchar(10);
+		};
+		SELNUM	{
+			value	number(3);
+		};
+		LBLSRYYMD	{
+            style   varchar(20);
+			value	varchar(10);
+		};
+		SRYYMD	{
+            style   varchar(20);
+			value	varchar(10);
+		};
+		scrolledwindow26	{
+			LIST	{
+				HEAD1	{
+					value	varchar(8);
+				};
+				HEAD2	{
+					value	varchar(10);
+				};
+				count	int;
+				row int;
+				rowattr int;
+				item	{
+					value1	varchar(5);
+					value2	varchar(12);
+					value3	varchar(20);
+					value4 	varchar(50);
+					value5 	varchar(60);
+					value6	varchar(9);
+					value7	varchar(8);
+					value8	varchar(9);
+					value9	varchar(6);
+				}	[300];
+				select	bool[300];
+			};
+		};
+		PTNUM	{
+            value   varchar(20);
+		};
+        PTNAME    {
+            style   varchar(20);
+            value   varchar(50);
+        };
+		CREYMD	{
+            value   varchar(10);
+		};
+		LBLMSG01	{
+            style   varchar(20);
+            value   varchar(100);
+		};
+        pandatimer1     {
+			duration        int;
+        };
+	};
+};
