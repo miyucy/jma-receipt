@@ -179,4 +179,5 @@ db	{
         tbl_generic_log;
         tbl_mnote_h;
         tbl_mnote_b;
+        tbl_ptconf;
 };
