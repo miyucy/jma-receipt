@@ -486,6 +486,7 @@
                        09  WRK-NAI-TKOH2HKNNUM     PIC X(03).
                        09  WRK-NAI-TKOH3HKNNUM     PIC X(03).
                        09  WRK-NAI-TKOH4HKNNUM     PIC X(03).
+                       09  WRK-NAI-TKOH1ID         PIC 9(10).
                        09  WRK-NAI-THYOJIKBN       PIC X(01).
                05  WRK-HKNCOMBI-MAX            PIC 9(04).
       *
@@ -509,6 +510,7 @@
                        09  WRK-NAI02-TKOH2HKNNUM     PIC X(03).
                        09  WRK-NAI02-TKOH3HKNNUM     PIC X(03).
                        09  WRK-NAI02-TKOH4HKNNUM     PIC X(03).
+                       09  WRK-NAI02-TKOH1ID         PIC 9(10).
                        09  WRK-NAI02-THYOJIKBN       PIC X(01).
       *
        01  WRK-HENSYU-AREA.
