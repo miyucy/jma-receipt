@@ -145,7 +145,8 @@
                     06  W06-CHK35-STATE   PIC S9(9)   BINARY.
                   05  W06-KKANRIAUTHFLG-COMB.
                     06  W06-KANRIAUTHFLG.
-                      07  W06-VALUE   PIC X(12).
+                        07  W06-VALUE   PIC X(12).
+                    06  W06-KANRIAUTHFLG-STATE   PIC S9(9)   BINARY.
                     06  W06-KANRIAUTHFLG-COUNT   PIC S9(9)   BINARY.
                     06  W06-KANRIAUTHFLG-ITEM
                             PIC X(12)   OCCURS  2 TIMES.

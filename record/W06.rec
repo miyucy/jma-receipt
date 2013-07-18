@@ -198,6 +198,7 @@ W06	{
 					KANRIAUTHFLG	{
 						value	varchar(12);
 					};
+					state   int;
 					count	int;
 					item	varchar(12)[2];
 				};

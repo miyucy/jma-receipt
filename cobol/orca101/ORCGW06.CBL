@@ -55,6 +55,7 @@
       * 04.05.00     NACL-多々納  10/03/XX  平成２２年４月改正対応
       * 04.07.00     NACL-太田    12/05/27  タブラベル対応
       * 04.07.01     NACL-森脇    13/07/05  業務処理権限変更不可
+      *                           13/07/17  スーパーバイザー処理変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4319,6 +4320,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                W06-CHK34-STATE
                                                W06-CHK35-STATE
                                                W06-CHK36-STATE
+      *        管理者であるにする
+               MOVE    SPA-GMN-KANRIAUTH-LST(1)
+                                           TO  W06-KANRIAUTHFLG
+               MOVE    WIDGET-INSENSITIVE  TO  W06-KANRIAUTHFLG-STATE
+      *
+      *        医師の時移籍登録番号、それ以外は診療行為初期画面に移動
+               IF      SPA-GMN-SYOKUKBN    =   "1"
+                   MOVE    9                   TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    19                  TO  SPA-GMN-CUR
+               END-IF
+               PERFORM 5001-MAPCUR-SEC
            ELSE
                MOVE    WIDGET-NORMAL       TO  W06-CHK01-STATE
                                                W06-CHK02-STATE
@@ -4356,6 +4369,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                W06-CHK34-STATE
                                                W06-CHK35-STATE
                                                W06-CHK36-STATE
+               MOVE    WIDGET-NORMAL       TO  W06-KANRIAUTHFLG-STATE
       *
       *        管理者である時
                IF      SPA-NAI-KANRIAUTHFLG    =  "T"
