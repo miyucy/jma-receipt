@@ -918,16 +918,37 @@
                        MOVE    IDX-K               TO  SPA-K021-TSEQNO
                                                                (IDX-K)
       *!!!
-                       IF     (WRK-KNK-CHKFLG (IDX-K1 IDX-K2)
-                                               =  "2"  )  AND
-                              (WRK-KNK-TOUYMD (IDX-K1 IDX-K2)
-                                               <   SPA-SRYYMD )
-                           MOVE    "【※】"        TO  SPA-K021-TTOUMEI
-                                                             (IDX-K)
-                       END-IF
+      *                IF     (WRK-KNK-CHKFLG (IDX-K1 IDX-K2)
+      *                                        =  "2"  )  AND
+      *                       (WRK-KNK-TOUYMD (IDX-K1 IDX-K2)
+      *                                        <   SPA-SRYYMD )
+      *                    MOVE    CONS-TOUMEI     TO  SPA-K021-TTOUMEI
+      *                                                      (IDX-K)
+      *****            END-IF
                    END-IF
-                   MOVE    WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
+      ***          MOVE    WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
+      ***                                  TO  SPA-K021-TKNKMEI(IDX-K)
+      *            方向設定
+                   IF     (WRK-KNK-CHKFLG (IDX-K1 IDX-K2)
+                                               =  "2"  )
+                       STRING   "←"
+                               WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
+                               DELIMITED  BY  SIZE
+                                       INTO    SPA-K021-TKNKMEI(IDX-K)
+                       END-STRING
+                   ELSE
+                       STRING   "→"
+                               WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
+                               DELIMITED  BY  SIZE
+                                       INTO    SPA-K021-TKNKMEI(IDX-K)
+                       END-STRING
+                   END-IF
+      *            チェックマスタは方向なし
+                   IF      WRK-KNK-SYOJYOUCD (IDX-K1 IDX-K2)
+                                               =   ALL "*"
+                       MOVE    WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
                                            TO  SPA-K021-TKNKMEI(IDX-K)
+                   END-IF
                    MOVE    WRK-KNK-TOUYMD (IDX-K1 IDX-K2)
                                            TO  SPA-K021-TTOUYMD (IDX-K)
                    MOVE    WRK-KNK-SYOJYOUCD (IDX-K1 IDX-K2)
