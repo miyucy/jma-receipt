@@ -3128,11 +3128,25 @@
                EVALUATE    WRK-PAGENO
                    WHEN    0
       *                基本画面
+      *----(04.07.01)--UPD-START---
                        IF      SPA-GMN-SYOKUKBN    =   "1"
+      *                    医師の場合は医籍登録番号へ
                            MOVE    9               TO  SPA-GMN-CUR
                        ELSE
-                           MOVE    31              TO  SPA-GMN-CUR
+      *                    スーパーバイザーの場合は診療行為初期画面へ
+                           IF      SPA-NAI-SUPERVISOR  =   "T"
+                               MOVE    19              TO  SPA-GMN-CUR
+                           ELSE
+      *                        管理者である場合は外来まとめへ
+                               IF      SPA-NAI-KANRIAUTHFLG    =  "T"
+                                   MOVE    66          TO  SPA-GMN-CUR
+      *                        管理者でない場合は医事業務へ
+                               ELSE
+                                   MOVE    31          TO  SPA-GMN-CUR
+                               END-IF
+                           END-IF
                        END-IF
+      *----(04.07.01)--UPD-END-----
                        MOVE    1                   TO  SPA-GMN-PAGENO
                    WHEN    1
       *                個別設定
@@ -3344,11 +3358,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    OTHER
                    MOVE    1                   TO  SPA-GMN-PAGENO
       *            基本画面
+      *----(04.07.01)--UPD-START---
                    IF      SPA-GMN-SYOKUKBN    =   "1"
+      *                医師の場合は医籍登録番号へ
                        MOVE    9               TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    31              TO  SPA-GMN-CUR
+      *                スーパーバイザーの場合は診療行為初期画面へ
+                       IF      SPA-NAI-SUPERVISOR  =   "T"
+                           MOVE    19              TO  SPA-GMN-CUR
+                       ELSE
+      *                    管理者である場合は外来まとめへ
+                           IF      SPA-NAI-KANRIAUTHFLG    =  "T"
+                               MOVE    66              TO  SPA-GMN-CUR
+      *                    管理者でない場合は医事業務へ
+                           ELSE
+                               MOVE    31              TO  SPA-GMN-CUR
+                           END-IF
+                       END-IF
                    END-IF
+      *----(04.07.01)--UPD-END-----
                END-EVALUATE
            END-IF
            .
@@ -4324,14 +4352,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-KANRIAUTH-LST(1)
                                            TO  W06-KANRIAUTHFLG
                MOVE    WIDGET-INSENSITIVE  TO  W06-KANRIAUTHFLG-STATE
-      *
-      *        医師の時移籍登録番号、それ以外は診療行為初期画面に移動
-               IF      SPA-GMN-SYOKUKBN    =   "1"
-                   MOVE    9                   TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    19                  TO  SPA-GMN-CUR
-               END-IF
-               PERFORM 5001-MAPCUR-SEC
            ELSE
                MOVE    WIDGET-NORMAL       TO  W06-CHK01-STATE
                                                W06-CHK02-STATE
@@ -4704,11 +4724,25 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "KANANAME"
                    MOVE    8               TO  SPA-GMN-CUR
                WHEN    "NAME"
+      *----(04.07.01)--UPD-START---
                    IF      SPA-GMN-SYOKUKBN    =   "1"
+      *                医師の場合は医籍登録番号へ
                        MOVE    9               TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    31              TO  SPA-GMN-CUR
+      *                スーパーバイザーの場合は診療行為初期画面へ
+                       IF      SPA-NAI-SUPERVISOR  =   "T"
+                           MOVE    19              TO  SPA-GMN-CUR
+                       ELSE
+      *                    管理者である場合は外来まとめへ
+                           IF      SPA-NAI-KANRIAUTHFLG    =  "T"
+                               MOVE    66              TO  SPA-GMN-CUR
+      *                    管理者でない場合は医事業務へ
+                           ELSE
+                               MOVE    31              TO  SPA-GMN-CUR
+                           END-IF
+                       END-IF
                    END-IF
+      *----(04.07.01)--UPD-END-----
                WHEN    "ISEKINUM"
                    MOVE    10              TO  SPA-GMN-CUR
                WHEN    "HKNDRNUMS" 
