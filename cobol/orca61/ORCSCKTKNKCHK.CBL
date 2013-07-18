@@ -624,7 +624,7 @@
            END-IF
            IF      IDX-K2              >   ZERO
                MOVE    "1"                 TO  SPA-COM-KNKFLG (IDX-Z)
-               MOVE    SPA-GMN-MEISYO (IDX-Z)
+               MOVE    SPA-COM-NAME   (IDX-Z)
                                            TO  WRK-KNK-TOUMEI (IDX-K1)
                MOVE    SPA-COM-INPUTCD(IDX-Z)
                                            TO  WRK-KNK-TOUSRYCD (IDX-K1)
@@ -642,7 +642,7 @@
                    PERFORM VARYING     IDX-K       FROM    1   BY  1
                            UNTIL      (IDX-K       >     100  )
                        IF      WRK-KNK-GSRYCD (IDX-K)    =  SPACE
-                           MOVE    SPA-GMN-MEISYO (IDX-Z)
+                           MOVE    SPA-COM-NAME   (IDX-Z)
                                                TO  WRK-KNK-GNAME(IDX-K)
                            MOVE    SPA-COM-INPUTCD(IDX-Z)
                                                TO  WRK-KNK-GSRYCD(IDX-K)
@@ -794,7 +794,7 @@
                                                            (IDX-Z))
                  AND  (IDX-S               NOT =   IDX-Z          )
                    ADD     1                   TO  IDX-K2
-                   MOVE    SPA-GMN-MEISYO (IDX-S)  TO  WRK-KNK-KNKMEI
+                   MOVE    SPA-COM-NAME   (IDX-S)  TO  WRK-KNK-KNKMEI
                                                         (IDX-K1 IDX-K2)
                    MOVE    SPA-COM-INPUTCD (IDX-S) TO  WRK-KNK-SRYCD
                                                         (IDX-K1 IDX-K2)
@@ -915,7 +915,7 @@
       *
            IF      IDX-K2              >   ZERO
                MOVE    "1"                 TO  SPA-COM-KNKFLG (IDX-Z)
-               MOVE    SPA-GMN-MEISYO (IDX-Z)
+               MOVE    SPA-COM-NAME   (IDX-Z)
                                            TO  WRK-KNK-TOUMEI (IDX-K1)
                MOVE    SPA-COM-INPUTCD(IDX-Z)
                                            TO  WRK-KNK-TOUSRYCD (IDX-K1)
