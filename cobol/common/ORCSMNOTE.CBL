@@ -95,7 +95,9 @@
            IF    ( SMNOTE-TBL-KEY  =   SPACE )
                MOVE    "MNOTE"     TO  SMNOTE-TBL-KEY
            END-IF
-           MOVE    1               TO  SMNOTE-RENNUM
+           IF    ( SMNOTE-RENNUM   =   ZERO )
+               MOVE    1           TO  SMNOTE-RENNUM
+           END-IF
            MOVE    SPA-PRT-GROUP   TO  SMNOTE-TBL-GROUP
            IF    ( SPA-PRT-FLG     IS  NUMERIC )
                MOVE SPA-PRT-FLG    TO  WRK-SHORI-RENNUMX
