@@ -341,12 +341,8 @@
            ELSE
                MOVE    SPA-KT011-TTOUMEI (IDX)  TO  WRK-KT011-TOUMEI
            END-IF
-           IF      SPA-KT011-TKNKMEI(IDX)(1:2) =   "¢ª"
-                                               OR  "¢«"
-               MOVE    SPA-KT011-TKNKMEI(IDX)(3:)  TO  WRK-KT011-KNKMEI
-           ELSE
-               MOVE    SPA-KT011-TKNKMEI(IDX)      TO  WRK-KT011-KNKMEI
-           END-IF
+           MOVE    SPA-KT011-TKNKMEI (IDX)(3:)
+                                       TO  WRK-KT011-KNKMEI
            MOVE    "1"                 TO  WRK-KT011-KNKMEIFLG
       *    ¾É¾õÊÔ½¸
            INITIALIZE                  SSKIJYO-REC
@@ -533,7 +529,6 @@
            END-IF
            MOVE    SPACE               TO  KT011
       *
-           INITIALIZE                      KT011
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-KT011-MAX
                MOVE    SPA-KT011-TSEQNO (IDX)   TO  WRK-ZZ
