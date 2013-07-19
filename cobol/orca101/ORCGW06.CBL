@@ -671,7 +671,7 @@
                           PERFORM 210-BACK
                           GO  TO  330-WID1-SET-EXT
                        ELSE
-                           MOVE    2           TO  SPA-GMN-CUR
+                           MOVE    6           TO  SPA-GMN-CUR
                        END-IF
       *----(04.07.01)--UPD-END-----
                    END-IF
@@ -3408,6 +3408,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        490-TOUROKU-EXT.
            EXIT.
       *
+      *----(04.07.01)--UPD-START---
       *****************************************************************
       *       入力項目の関連チェック処理
       *****************************************************************
@@ -3426,7 +3427,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-OK              =   ZERO
                MOVE    "0001"          TO  SPA-ERRCD
                MOVE    1               TO  SPA-GMN-CUR
-               GO      TO      4900-KANRENCHK-EXT
+               GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
       *    職員コード
@@ -3461,18 +3462,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1                   TO  SPA-NAI-KEIFLG
                END-IF
            END-IF
-      *    オペレータＩＤ
-           IF     (SPA-GMN-USERID      =   SPACE )
-             AND  (SPA-ERRCD           =   SPACE )
-               MOVE    "0008"              TO  SPA-ERRCD
-               MOVE    6                   TO  SPA-GMN-CUR
-           END-IF
       *
-      *    氏名必須チェック
-           IF     (SPA-GMN-NAME        =   SPACE )
-             AND  (SPA-ERRCD           =   SPACE )
-               MOVE    "0011"              TO  SPA-ERRCD
-               MOVE    4                   TO  SPA-GMN-CUR
+           IF      SPA-ERRCD           NOT =   SPACE
+               GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
            IF      SPA-GMN-STYUKYMD   =   SPACE
@@ -3487,6 +3479,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-NAI-STYUKYMD   >   SPA-NAI-EDYUKYMD
                    MOVE    "0005"             TO  SPA-ERRCD
                    MOVE    3                  TO  SPA-GMN-CUR
+                   GO  TO  4900-KANRENCHK-EXT
                END-IF
            END-IF
       *    期間重複チェック
@@ -3509,6 +3502,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-PERFORM
       **** END-IF
+      ***
+      *    オペレータＩＤ
+           IF     (SPA-GMN-USERID      =   SPACE )
+             AND  (SPA-ERRCD           =   SPACE )
+               MOVE    "0008"              TO  SPA-ERRCD
+               MOVE    6                   TO  SPA-GMN-CUR
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
+      *    氏名必須チェック
+           IF     (SPA-GMN-NAME        =   SPACE )
+             AND  (SPA-ERRCD           =   SPACE )
+               MOVE    "0011"              TO  SPA-ERRCD
+               MOVE    8                   TO  SPA-GMN-CUR
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
       *        システムユーザーチェック
@@ -3518,6 +3527,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4900-KANRENCHK-EXT.
            EXIT.
       *
+      *----(04.07.01)--UPD-END-----
       *****************************************************************
       *       システムユーザーチェック処理
       *****************************************************************
