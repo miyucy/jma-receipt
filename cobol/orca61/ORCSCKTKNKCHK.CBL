@@ -996,17 +996,29 @@
                        ADD     1                   TO  IDX-K
                        MOVE    IDX-K               TO  SPA-KT011-TSEQNO
                                                                (IDX-K)
-      *!!!
-                       IF     (WRK-KNK-CHKFLG (IDX-K1 IDX-K2)
-                                               =  "2"  )  AND
-                              (WRK-KNK-TOUYMD (IDX-K1 IDX-K2)
-                                               <   SPA-SRYYMD )
-                           MOVE    "【※】"        TO  SPA-KT011-TTOUMEI
-                                                             (IDX-K)
-                       END-IF
                    END-IF
-                   MOVE    WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
+      *            方向設定
+                   IF     (WRK-KNK-CHKFLG (IDX-K1 IDX-K2)
+                                               =  "2"  )
+                       STRING   "←"
+                               WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
+                               DELIMITED  BY  SIZE
+                                       INTO    SPA-KT011-TKNKMEI(IDX-K)
+                       END-STRING
+                   ELSE
+                       STRING   "→"
+                               WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
+                               DELIMITED  BY  SIZE
+                                       INTO    SPA-KT011-TKNKMEI(IDX-K)
+                       END-STRING
+                   END-IF
+      *            チェックマスタは方向なし
+                   IF      WRK-KNK-SYOJYOUCD (IDX-K1 IDX-K2)
+                                               =   ALL "*"
+                       MOVE    WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
                                            TO  SPA-KT011-TKNKMEI(IDX-K)
+                   END-IF
+      *
                    MOVE    WRK-KNK-TOUYMD (IDX-K1 IDX-K2)
                                            TO  SPA-KT011-TTOUYMD (IDX-K)
                    MOVE    WRK-KNK-SYOJYOUCD (IDX-K1 IDX-K2)

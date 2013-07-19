@@ -917,17 +917,7 @@
                        ADD     1                   TO  IDX-K
                        MOVE    IDX-K               TO  SPA-K021-TSEQNO
                                                                (IDX-K)
-      *!!!
-      *                IF     (WRK-KNK-CHKFLG (IDX-K1 IDX-K2)
-      *                                        =  "2"  )  AND
-      *                       (WRK-KNK-TOUYMD (IDX-K1 IDX-K2)
-      *                                        <   SPA-SRYYMD )
-      *                    MOVE    CONS-TOUMEI     TO  SPA-K021-TTOUMEI
-      *                                                      (IDX-K)
-      *****            END-IF
                    END-IF
-      ***          MOVE    WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
-      ***                                  TO  SPA-K021-TKNKMEI(IDX-K)
       *            方向設定
                    IF     (WRK-KNK-CHKFLG (IDX-K1 IDX-K2)
                                                =  "2"  )
