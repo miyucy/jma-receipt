@@ -1301,6 +1301,7 @@
       *
            MOVE    ORCHC62-CSVKBN      TO  ORCSQRCSV62-CSV-KBN
            MOVE    WRK-QRKBN           TO  ORCSQRCSV62-QR-KBN
+           MOVE    ORCHC62-CNT         TO  ORCSQRCSV62-CNT
       *
            CALL    "ORCSQRCSV62"       USING
                                        SPA-AREA
