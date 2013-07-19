@@ -29,7 +29,6 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  01.00.01    NACL-Â¿¡¹Ç¼  05/11/17  MONFUNC ÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  13/07/XX  Áê¸ß¾É¾õµ¡½øÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -360,12 +359,7 @@
            ELSE
                MOVE    SPA-K021-TTOUMEI (IDX)  TO  WRK-K021-TOUMEI
            END-IF
-           IF      SPA-K021-TKNKMEI (IDX)(1:2) =   "¢ª"
-                                               OR  "¢«"
-               MOVE    SPA-K021-TKNKMEI(IDX)(3:)   TO  WRK-K021-KNKMEI
-           ELSE
-               MOVE    SPA-K021-TKNKMEI(IDX)       TO  WRK-K021-KNKMEI
-           END-IF
+           MOVE    SPA-K021-TKNKMEI (IDX)(3:)  TO  WRK-K021-KNKMEI
            MOVE    "1"                     TO  WRK-K021-KNKMEIFLG
       *    ¾É¾õÊÔ½¸
            INITIALIZE                  SSKIJYO-REC
@@ -552,7 +546,6 @@
            END-IF
            MOVE    SPACE               TO  K021
       *
-           INITIALIZE                      K021
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-K021-MAX
                MOVE    SPA-K021-TSEQNO (IDX)   TO  WRK-ZZ
