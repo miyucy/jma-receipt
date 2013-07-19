@@ -60,6 +60,9 @@ db	{
 	tbl_prtctrl;
 	tbl_sryacctplus;
         tbl_generic_log;
+        tbl_mnote_h;
+        tbl_mnote_b;
+        tbl_ptconf;
 };
 
 /* #include "orcadb.inc" */
