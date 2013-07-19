@@ -98,4 +98,8 @@
       *
       *    £Ñ£Ò£Ã£Ó£Ö¥Õ¥¡¥¤¥ëÌ¾
            03  ORCSQRCSV62-CSV-FILENAME       PIC X(256).
+      *    £Ñ£Ò½ÐÎÏ¶èÊ¬
+           03  ORCSQRCSV62-QR-KBN             PIC X(01).
+      *    £Ñ£Ò£Ã£Ó£Ö½èÍý¶èÊ¬
+           03  ORCSQRCSV62-CSV-KBN            PIC X(01).
       *

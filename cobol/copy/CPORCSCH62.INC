@@ -30,6 +30,8 @@
       *    A:処方内容変更、B:前回処方（院外）
       *    C:前回処方（院内）、D:前回処方（選択）
            03  ORCSCH62-KBN             PIC X(01).
+      *    1:ＣＳＶ出力のみ
+           03  ORCSCH62-KBN2            PIC X(01).
       *
       *    伝票番号
            03  ORCSCH62-DENPNUM         PIC 9(07).

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.00    NACL-多々納  13/07/XX  パソリ対応他
       *****************************************************************
       *
       *
@@ -158,6 +159,9 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
+      *    お薬手帳データ制御サブパラメタ
+           COPY    "CPORCSMNOTE.INC".
+      *
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -213,31 +217,52 @@
            CLOSE                       QRCSV-FILE
       *
       *    ＱＲイメージ作成
-           IF      ORCSQRCSV62-ERRCD   =   ZERO
+           IF     (ORCSQRCSV62-ERRCD   =   ZERO )
+             AND  (ORCSQRCSV62-QR-KBN  =   "1"  )
                PERFORM 400-QRIMAGE-SEC
+           END-IF
+      *
+      *    CSVデータ
+           IF     (ORCSQRCSV62-ERRCD   =   ZERO   )    AND
+                  (ORCSQRCSV62-CSV-FILENAME
+                                   NOT =   SPACE  )
+               INITIALIZE                  ORCSMNOTEAREA
+               MOVE    "INS"               TO  SMNOTE-MODE
+               MOVE    SPA-PTID            TO  SMNOTE-PTID
+               MOVE    "2"                 TO  SMNOTE-NYUGAIKBN
+               MOVE    "/var/tmp"          TO  SMNOTE-TO-FOLDER
+               MOVE    ORCSQRCSV62-CSV-FILENAME
+                                           TO  SMNOTE-TO-DATA
+               MOVE    "2"                 TO  SMNOTE-CODE-TYPE
+               MOVE    "お薬手帳"          TO  SMNOTE-TITLE
+               MOVE    "MNOTE"             TO  SMNOTE-TBL-KEY
+               MOVE    FILE-NAME1          TO  SMNOTE-CSVFILE
+               CALL    "ORCSMNOTE"         USING
+                                           ORCSMNOTEAREA
+                                           SPA-AREA
            END-IF
       *
       *    CSVデータ（JIS）の作成
       *    CSVファイル名が設定されている場合に作成する
-           IF      ORCSQRCSV62-CSV-FILENAME
-                                   NOT =   SPACE
-               INITIALIZE                      ORCSFILEENCODEAREA
-               MOVE    FILE-NAME1          TO  FLEN-INFILENAME
-               MOVE    ORCSQRCSV62-CSV-FILENAME
-                                           TO  FLEN-OUTFILENAME
-               MOVE    "3"                 TO  FLEN-OPTION
-               CALL    "orcfileencode"     USING
-                                           ORCSFILEENCODEAREA
-               IF      FLEN-RET        NOT =   ZERO
-                   MOVE    9               TO  ORCSQRCSV62-ERRCD
-               END-IF
-           END-IF
+      *    IF      ORCSQRCSV62-CSV-FILENAME
+      *                            NOT =   SPACE
+      *        INITIALIZE                      ORCSFILEENCODEAREA
+      *        MOVE    FILE-NAME1          TO  FLEN-INFILENAME
+      *        MOVE    ORCSQRCSV62-CSV-FILENAME
+      *                                    TO  FLEN-OUTFILENAME
+      *        MOVE    "3"                 TO  FLEN-OPTION
+      *        CALL    "orcfileencode"     USING
+      *                                    ORCSFILEENCODEAREA
+      *        IF      FLEN-RET        NOT =   ZERO
+      *            MOVE    9               TO  ORCSQRCSV62-ERRCD
+      *        END-IF
+      *    END-IF
       *
       *    ＱＲデータ削除
-           MOVE    ZERO                TO  IF-RESULT
-           MOVE    FILE-NAME1          TO  IF-FILENAME
-           CALL    "orcfiledel"        USING
-                                       ORCSFDELAREA
+      *    MOVE    ZERO                TO  IF-RESULT
+      *    MOVE    FILE-NAME1          TO  IF-FILENAME
+      *    CALL    "orcfiledel"        USING
+      ***                              ORCSFDELAREA
            .
        000-PROC-EXT.
            EXIT    PROGRAM
