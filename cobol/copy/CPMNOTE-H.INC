@@ -37,6 +37,8 @@
            03  MNOTE-H-PUTFLG      PIC X(1).
       *    処理タイトル
            03  MNOTE-H-TITLE       PIC X(100).
+      *    ドクターコード
+           03  MNOTE-H-DRCD        PIC X(5).
       *    作成日
            03  MNOTE-H-CREYMD      PIC X(8).
       *    更新年月日

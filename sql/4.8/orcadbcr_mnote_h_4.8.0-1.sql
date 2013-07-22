@@ -20,6 +20,7 @@ CREATE TABLE tbl_mnote_h (
     code_type character(1) NOT NULL,
     putflg character(1) NOT NULL,
     title character varying(100) NOT NULL,
+    drcd character(5),
     creymd character(8),
     upymd character(8),
     uphms character(6)

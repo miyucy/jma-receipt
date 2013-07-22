@@ -61,5 +61,7 @@
            03  SMNOTE-GYOUMU-CD    PIC 9(03).
       *    保存用CSVファイル名(PATH付)
            03  SMNOTE-CSVFILE      PIC X(255).
+      *    ドクターコード
+           03  SMNOTE-DRCD         PIC X(05).
       *    帳票データ
            03  SMNOTE-CSVDATA      PIC X(20000).

@@ -16,6 +16,7 @@ tbl_mnote_h	{
 	CODE_TYPE		char(1);
 	PUTFLG			char(1);
 	TITLE			varchar(100);
+	DRCD			char(5);
 	CREYMD			varchar(8);
 	UPYMD			char(8);
 	UPHMS			char(6);
