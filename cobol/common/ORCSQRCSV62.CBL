@@ -238,6 +238,7 @@
                MOVE    "MNOTE"             TO  SMNOTE-TBL-KEY
                MOVE    FILE-NAME1          TO  SMNOTE-CSVFILE
                MOVE    ORCSQRCSV62-CNT     TO  SMNOTE-RENNUM
+               MOVE    ORCSQRCSV62-DRCD    TO  SMNOTE-DRCD
                CALL    "ORCSMNOTE"         USING
                                            ORCSMNOTEAREA
                                            SPA-AREA
