@@ -1603,6 +1603,7 @@
                MOVE    HKNJA-TEL           TO  SPA-HKNJA-TEL
       *
                MOVE    HKNJA-IDOYMD        TO  SPA-HKNJA-IDOYMD
+               MOVE    HKNJA-IDOKBN        TO  SPA-HKNJA-IDOKBN
       *!       MOVE    SPA-PTHKN-KEIFLG(IDX)
       *!                                   TO  SPA-HKNJA-KEIFLG
            ELSE
@@ -1612,6 +1613,7 @@
                MOVE    SPACE               TO  SPA-HKNJA-TEL
       *
                MOVE    SPACE               TO  SPA-HKNJA-IDOYMD
+               MOVE    SPACE               TO  SPA-HKNJA-IDOKBN
       *!!      MOVE    SPACE               TO  SPA-HKNJA-KEIFLG
            END-IF
       *

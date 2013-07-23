@@ -43,6 +43,7 @@
       *  04.07.00    NACL-多々納  11/08/XX  保険確認年月日履歴対応
       *  04.07.00    NACL-多々納  12/06/XX  公費種別２００件対応
       *  04.07.00    NACL-多々納  12/12/19  患者レセ分割対応
+      *  04.07.00    NACL-多々納  13/07/19  患者個別設定追加対応
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -261,8 +262,10 @@
                            11  SPA-HKNJA-ADRS          PIC X(100).
                            11  SPA-HKNJA-BANTI         PIC X(100).
                            11  SPA-HKNJA-TEL           PIC X(15).
-      *                    保険者警告表示
+      *                    異動情報
                            11  SPA-HKNJA-IDOYMD        PIC X(08).
+                           11  SPA-HKNJA-IDOKBN        PIC X(01).
+      *
                            11  SPA-HKNJA-HON-GAIKYURATE    PIC 9(03).
                            11  SPA-HKNJA-HON-NYUKYURATE    PIC 9(03).
                            11  SPA-HKNJA-KZK-GAIKYURATE    PIC 9(03).
@@ -1134,6 +1137,28 @@
                            11  SPA-GMN26-THDHKNCOMBI     PIC X(04).
                            11  SPA-GMN26-THDHKNDELFLG    PIC X(01).
                            11  SPA-GMN26-THDHKNNAME      PIC X(60).
+      *
+      *
+      *    P028(個別設定）
+           03  SPA-P028-AREA.
+               05  SPA-GMN28-CUR             PIC 9(02).
+               05  SPA-GMN28-MNOTE-QRKBN-G.
+                   07  SPA-GMN28-MNOTE-QRKBN       PIC X(01).
+                   07  SPA-GMN28-MNOTE-F1          PIC X(01).
+                   07  SPA-GMN28-MNOTE-QRKBNMEI    PIC X(28).
+               05  SPA-GMN28-MNOTE-QRKBN-COMB.
+                   07  SPA-GMN28-MNOTE-QRKBN-LST   PIC X(30)
+                                                      OCCURS 9.
+               05  SPA-GMN28-QRKBN-MAX         PIC 9(02).
+      *
+               05  SPA-GMN28-MNOTE-CSV-G.
+                   07  SPA-GMN28-MNOTE-CSV         PIC X(01).
+                   07  SPA-GMN28-MNOTE-F1          PIC X(01).
+                   07  SPA-GMN28-MNOTE-CSVMEI      PIC X(48).
+               05  SPA-GMN28-MNOTE-CSV-COMB.
+                   07  SPA-GMN28-MNOTE-CSV-LST     PIC X(50)
+                                                      OCCURS 20.
+               05  SPA-GMN28-CSV-MAX           PIC 9(02).
       *
       *
       *    P0201（未登録受付者一覧）

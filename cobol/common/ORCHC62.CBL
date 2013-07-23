@@ -234,16 +234,16 @@
        01  CONS-FORM-ID        PIC X(05)   VALUE   "HC62Q".
       *H24.9
       *
-       01  CONS-CSVDIR             PIC X(28)   VALUE
-                                   "/var/lib/jma-receipt/jahistc".
+      *01  CONS-CSVDIR             PIC X(28)   VALUE
+      *                            "/var/lib/jma-receipt/jahistc".
       *    プログラムオプションパラメタ
        01  PARA-AREA.
            03  PARA-COMMENT2           PIC X(01).
       *H24.9
            03  PARA-QRKBN              PIC X(01).
            03  PARA-SHOHIN             PIC X(01).
-           03  PARA-CSVKBN             PIC X(01).
-           03  PARA-CSVDIR             PIC X(256).
+      ***  03  PARA-CSVKBN             PIC X(01).
+      ***  03  PARA-CSVDIR             PIC X(256).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).

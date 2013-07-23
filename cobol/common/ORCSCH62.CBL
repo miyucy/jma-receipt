@@ -407,21 +407,16 @@
            IF      FLG-PTCONF          =   ZERO
                MOVE    PTCONF-CDATA(1:1)   TO  WRK-QRKBN
            END-IF
-      *    ＣＳＶ出力設定
+      *    データフォーマット区分設定
            MOVE    SPACE               TO  PTCONF-REC
            INITIALIZE                  PTCONF-REC
            MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
            MOVE    SPA-PTID            TO  PTCONF-PTID
-           MOVE    "MNOTECSV"          TO  PTCONF-CKEY
+           MOVE    "MNOTEVER"          TO  PTCONF-CKEY
            PERFORM 970-PTCONF-READ-SEC
            IF      FLG-PTCONF          =   ZERO
                MOVE    PTCONF-CDATA(1:1)   TO  WRK-CSVKBN
            END-IF
-      *!!!!!!!!!!!!!!!!!!
-      *TEST
-           MOVE    "1"                TO  WRK-CSVKBN
-      *TEST
-      *!!!!!!!!!!!!!!!!!!!
       *    ＣＳＶ出力のみの設定
            IF     (ORCSCH62-KBN2       =   "1"   )
               AND (WRK-CSVKBN      NOT =   SPACE )

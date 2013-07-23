@@ -1217,6 +1217,14 @@
                                                INTO    SPA-ERRMSG
                    END-STRING
       *
+      *        個別設定
+               WHEN    "2801"
+                   MOVE    "お薬手帳ＱＲコード入力エラー"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2802"
+                   MOVE    "お薬手帳データフォーマット入力エラー"
+                                                   TO  SPA-ERRMSG
+      *
       *        患者番号取得エラー
                WHEN    "8000"
                    STRING  "自動採番の患者番号が最大値です。"

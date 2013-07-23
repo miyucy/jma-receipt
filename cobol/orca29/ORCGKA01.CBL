@@ -107,6 +107,7 @@
                        09  SPA-GMN-HKNCOMBIMEI     PIC X(65).
       *            院内・院外
                    07  SPA-NAI-INNAI               PIC X(01).
+                   07  SPA-NAI-INNAIGAI            PIC X(01).
       *
                05  SPA-GMN-INITAREA.
                    07  SPA-GMN-DRCD-COMB-G.
@@ -1211,6 +1212,7 @@
       *
            MOVE    ZERO                TO  SPA-PRINT-SYORI
            MOVE    ZERO                TO  SPA-NAI-INNAI
+           MOVE    SPACE               TO  SPA-NAI-INNAIGAI
            INITIALIZE                  SPA-GMN-MEISAI-AREA
            INITIALIZE                  SPA-NAI-WKSRY-TBL
            MOVE    ZERO                TO  SPA-WKSRY-MAX
@@ -1269,6 +1271,7 @@
       *    院内・院外混在時、院内の診療種別変更
            IF     (SPA-NAI-INNAI       =   "1"  )  AND
                   (FLG-INNAI           =   1    )
+               MOVE    "1"                 TO  SPA-NAI-INNAIGAI
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   SPA-MEISAI-MAX
                    IF      TBL-INNAI-TMEISYO  (IDX)  NOT =   SPACE
@@ -1300,6 +1303,7 @@
       *
       *    院内・院外
            MOVE    SPACE                   TO  SPA-NAI-INNAI
+           MOVE    SPACE                   TO  SPA-NAI-INNAIGAI
       *
            MOVE    SPA-GMN-RRKYMD (IDX)    TO  SPA-GMN-SRYYMD
            MOVE    SPA-NAI-RRKYMD (IDX)    TO  SPA-NAI-SRYYMD
@@ -2277,6 +2281,12 @@
                    MOVE    ZERO            TO  SPA-PRINT-SYORI
                    MOVE    "0101"          TO  SPA-KAID2CD
                    PERFORM 530-KA02IDSET-SEC
+      *ver.4.7
+      *        お薬手帳前回ＣＳＶ出力
+               WHEN    "0110"
+               WHEN    "0111"
+                   MOVE    4                TO  FLG-PRINT
+                   PERFORM 4104-OKUSURI-PRINT-SEC
            END-EVALUATE
       *
            IF      (SPA-CLIENT-PRT-FLG =   1  )
@@ -2445,6 +2455,9 @@
       *        処方せん印刷
                WHEN    "CLICKED"       ALSO    "B12"
                     PERFORM 412-SYOHOU-PRT-SEC
+      *        お薬手帳ＣＳＶ出力
+               WHEN    "CLICKED"       ALSO    "B12S"
+                    PERFORM 413-OKUSURI-CSV-SEC
            END-EVALUATE
       *
            .
@@ -3803,15 +3816,6 @@
                                                =   "140"
                                                OR  "141"
                                                OR  "142"  )
-                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
-                                               =   "211"
-                                               OR  "221"
-                                               OR  "231"
-                                               OR  "291"
-                                               OR  "213"
-                                               OR  "223"
-                                               OR  "233"
-                                               OR  "293" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF
                    END-IF
@@ -3951,15 +3955,6 @@
                                                =   "140"
                                                OR  "141"
                                                OR  "142"  )
-                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
-                                               =   "211"
-                                               OR  "221"
-                                               OR  "231"
-                                               OR  "291"
-                                               OR  "213"
-                                               OR  "223"
-                                               OR  "233"
-                                               OR  "293" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF
                    END-IF
@@ -4059,6 +4054,16 @@
                    MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
                                                TO  SPA-SRYKA
                    PERFORM 41041-ORCSCH62-HENSYU-SEC
+               WHEN    4
+      *            ＣＳＶのみ出力（前回処方（内容変更））
+                   MOVE    "5"                 TO  ORCSCH62-KBN
+                   MOVE    "1"                 TO  ORCSCH62-KBN2
+                   MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
+                   MOVE    "1"                 TO  SPA-DRCD(1:1)
+                   MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
+                   MOVE    SPA-NAI-RRK-SRYKA (SPA-GMN-SELNUM1)
+                                               TO  SPA-SRYKA
+                   PERFORM 41041-ORCSCH62-HENSYU-SEC
            END-EVALUATE
       *
            IF      SPA-ERRCD           =   SPACE
@@ -4100,15 +4105,6 @@
                                                =   "140"
                                                OR  "141"
                                                OR  "142"  )
-                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
-                                               =   "211"
-                                               OR  "221"
-                                               OR  "231"
-                                               OR  "291"
-                                               OR  "213"
-                                               OR  "223"
-                                               OR  "233"
-                                               OR  "293" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF
                    END-IF
@@ -4168,6 +4164,35 @@
       *
            .
        41041-ORCSCH62-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    お薬手帳ＣＳＶ出力処理
+      *****************************************************************
+       413-OKUSURI-CSV-SEC       SECTION.
+      *
+           IF      SPA-GMN-SELNUM1     =   ZERO
+               MOVE    "0100"          TO  SPA-ERRCD
+               MOVE    1               TO  SPA-GMN-CUR
+           ELSE
+               MOVE    1                TO  FLG-KOUSIN
+               PERFORM 410-INPUT-CHK-SEC
+               IF      SPA-ERRCD       =   SPACE
+      *            対象チェック処理
+                   PERFORM 4104-TBL-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    1                   TO  SPA-PRINT-SYORI
+               MOVE    "0110"              TO  SPA-KAID1CD
+               IF     (SPA-SEL-SYORI       =   ZERO )
+                  AND (SPA-NAI-INNAIGAI    =   "1"  )
+                   MOVE    "0111"              TO  SPA-KAID1CD
+               END-IF
+           END-IF
+           .
+       413-OKUSURI-CSV-EXT.
            EXIT.
       *****************************************************************
       *    西暦和暦編集処理
@@ -4624,6 +4649,19 @@
                WHEN    "0108"
                    STRING  "変更内容で薬剤情報・お薬手帳を印刷します。"
                                            DELIMITED  BY  SIZE
+                           "よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO   KAID1-ID1MSG
+                   END-STRING
+      *ver.4.7
+               WHEN    "0110"
+                   STRING  "変更内容でお薬手帳のＣＳＶを出力します。"
+                           "よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                       INTO   KAID1-ID1MSG
+                   END-STRING
+               WHEN    "0111"
+                   STRING  "院外処方でお薬手帳のＣＳＶを出力します。"
                            "よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   KAID1-ID1MSG

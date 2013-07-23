@@ -144,7 +144,7 @@
       *    ＱＲ作成用
            COPY    "CPORCSQRENCODE.INC".
       *    ＣＳＶファイル作成パラメタ
-           COPY    "CPORCSFILEENCODE.INC".
+      ***  COPY    "CPORCSFILEENCODE.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -260,11 +260,14 @@
       *        END-IF
       *    END-IF
       *
-      *    ＱＲデータ削除
-      *    MOVE    ZERO                TO  IF-RESULT
-      *    MOVE    FILE-NAME1          TO  IF-FILENAME
-      *    CALL    "orcfiledel"        USING
-      ***                              ORCSFDELAREA
+      *    ＱＲデータ削除（ＣＳＶなし）
+           IF      ORCSQRCSV62-CSV-FILENAME
+                                       =   SPACE
+               MOVE    ZERO                TO  IF-RESULT
+               MOVE    FILE-NAME1          TO  IF-FILENAME
+               CALL    "orcfiledel"        USING
+                                           ORCSFDELAREA
+           END-IF
            .
        000-PROC-EXT.
            EXIT    PROGRAM
