@@ -6127,6 +6127,16 @@
                END-IF
            END-IF
       *
+      *H25.7
+      *    ºÆ¿ÇÎÁÊÑ´¹¡Ê¡¥£±£²¡Ë¤ÇÂ¾²Ê¼õ¿Ç¤¢¤ê¤ÏÆ±ÆüºÆ¿ÇÎÁ¤È¤¹¤ë
+           IF      (LNK-SC10S-SYORI    =   "E" )  AND
+                   (FLG-HENKAN         =   ZERO)
+               IF     (SPA-TAKA-SRYKA-R    NOT =   SPACE )
+                   MOVE    1               TO  FLG-DOUJI-HEN 
+                   MOVE    1               TO  FLG-HENKAN
+               END-IF
+           END-IF
+      *
       *    £Ä£Õ£Í£Í£Ù¿Ç»¡ÎÁ¤ÎÊÑ¹¹¤ò¤ª¤³¤Ê¤ï¤Ê¤¤
            IF     (FLG-DUMMY           =   1     )
              AND  (SPA-PTTOKK-KBN      =   SPACE )
