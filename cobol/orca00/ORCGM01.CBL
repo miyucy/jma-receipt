@@ -156,9 +156,6 @@
       *
            COPY  "CPSK1038.INC".
       *
-      *    ＩＣリーダライタ情報
-           COPY  "CPSK9100.INC".
-      *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
@@ -490,36 +487,6 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           MOVE    SPACE               TO  SPA-NAI-MNOTE
-      *
-           MOVE    SPACE               TO  SYS-9100-REC
-           INITIALIZE                      SYS-9100-REC
-           MOVE    "9100"              TO  SYS-9100-KANRICD
-           MOVE    "*"                 TO  SYS-9100-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-9100-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-9100-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-9100-HOSPNUM
-           MOVE    SYS-9100-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key10"         TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-               IF    ( FLG-SYSKANRI    =   ZERO )
-                   MOVE    MCPDATA-REC TO  SYS-9100-REC
-                   MOVE    SYS-9100-CONNECT
-                                       TO  SPA-NAI-MNOTE
-               END-IF
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *    !TEST ST
-           MOVE    "1"             TO  SPA-NAI-MNOTE
-      *    !TEST ED
-      *
            MOVE    SPACE           TO  SPA-MID1-FLG
            MOVE    SPACE           TO  SPA-MIDCD
       *
@@ -710,10 +677,8 @@
                WHEN    "CLICKED"       ALSO    "B07"
                    MOVE    "0001"      TO  SPA-MIDCD
       *    電子手帳画面
-               WHEN    "CLICKED"       ALSO    "B04"
-                   IF    ( SPA-NAI-MNOTE   =   "1" )
-                       PERFORM 470-MNOTE-SEC
-                   END-IF
+               WHEN    "CLICKED"       ALSO    "B08"
+                   PERFORM 470-MNOTE-SEC
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
@@ -1337,9 +1302,7 @@
       ***     END-IF
       *----(01.00.04) LINE DEL START ----------------------------------
       *
-           IF    ( SPA-NAI-MNOTE    =   "1" )
-               MOVE    "電子手帳"   TO  M01-B04-LABEL
-           END-IF
+           MOVE    "電子手帳"   TO  M01-B08-LABEL
       *
            PERFORM 5001-MAPCUR-SEC
       *

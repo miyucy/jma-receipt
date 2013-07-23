@@ -139,23 +139,28 @@
                                    TO  SHELLTBL-ARG11
            MOVE    SMNOTE-NYUGAIKBN
                                    TO  SHELLTBL-ARG12
-           MOVE    SMNOTE-TO-FOLDER
-                                   TO  SHELLTBL-ARG13
-           MOVE    SMNOTE-TO-DATA
-                                   TO  SHELLTBL-ARG14
-           MOVE    SMNOTE-CODE-TYPE
-                                   TO  SHELLTBL-ARG15
-           MOVE    SMNOTE-TITLE
-                                   TO  SHELLTBL-ARG16
            MOVE    SMNOTE-PTID
+                                   TO  SHELLTBL-ARG13
+           MOVE    SMNOTE-DRCD
+                                   TO  SHELLTBL-ARG14
+           MOVE    SMNOTE-TO-FOLDER
+                                   TO  SHELLTBL-ARG15
+           MOVE    SMNOTE-TO-DATA
+                                   TO  SHELLTBL-ARG16
+           MOVE    SMNOTE-CODE-TYPE
                                    TO  SHELLTBL-ARG17
+           MOVE    SMNOTE-TITLE
+                                   TO  SHELLTBL-ARG18
       *
-           MOVE    SMNOTE-CSVFILE  TO  SHELLTBL-ARG18
+           MOVE    SMNOTE-CSVFILE  TO  SHELLTBL-ARG19
       *
            MOVE    SMNOTE-TBL-UUID
-                                   TO  SHELLTBL-ARG19
-           MOVE    SMNOTE-GYOUMU-CD
                                    TO  SHELLTBL-ARG20
+           MOVE    SMNOTE-GYOUMU-CD
+                                   TO  SHELLTBL-ARG21
+           MOVE    SMNOTE-DATA-VERSION
+                                   TO  SHELLTBL-ARG22
+           MOVE    SPA-OPID        TO  SHELLTBL-ARG23
       *
            MOVE    SHELLTBL        TO      MCPDATA-REC
            MOVE    "SHELL"         TO      MCP-FUNC

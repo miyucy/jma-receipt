@@ -18,7 +18,10 @@
             02  XG03.
               03  XG03-B06S-STATE              PIC S9(9)   BINARY.
               03  XG03-B07S-STATE              PIC S9(9)   BINARY.
-              03  XG03-B09-LABEL               PIC X(10).
+              03  XG03-B09-STATE               PIC S9(9)   BINARY.
+              03  XG03-B10-LABEL               PIC X(10).
+              03  XG03-B11-STATE               PIC S9(9)   BINARY.
+              03  XG03-B12-STATE               PIC S9(9)   BINARY.
               03  XG03-SELNUM                  PIC S9(3).
               03  XG03-LBLSRYYMD-STYLE         PIC X(20).
               03  XG03-LBLSRYYMD               PIC X(10).
@@ -36,7 +39,7 @@
                     06  XG03-GYOMUNM           PIC X(12).
                     06  XG03-LPTNUM            PIC X(20).
                     06  XG03-PTNAME            PIC X(50).
-                    06  XG03-TCSV-TITLE        PIC X(60).
+                    06  XG03-DRNAME            PIC X(50).
                     06  XG03-SAKU-YMD          PIC X(9).
                     06  XG03-SAKU-TIME         PIC X(8).
                     06  XG03-TSRYYMD           PIC X(9).
@@ -50,3 +53,6 @@
               03  XG03-LBLMSG01-STYLE          PIC X(20).
               03  XG03-LBLMSG01                PIC X(100).
               03  XG03-PANDATIMER1             PIC S9(9)   BINARY.
+              03  XG03-PANDADOWNLOAD1.
+                  05  XG03-OBJECTDATA          PIC X(8).
+                  05  XG03-FILENAME            PIC X(1024).

@@ -129,14 +129,17 @@
                                        SMNOTE-SRYYMD
                                        SMNOTE-PUTFLG
                                        SMNOTE-NYUGAIKBN
+                                       SMNOTE-PTID
+                                       SMNOTE-DRCD
                                        SMNOTE-TO-FOLDER
                                        SMNOTE-TO-DATA
                                        SMNOTE-CODE-TYPE
                                        SMNOTE-TITLE
-                                       SMNOTE-PTID
                                        ASS-SAVE
                                        SMNOTE-TBL-UUID
                                        SMNOTE-GYOUMU-CD
+                                       SMNOTE-DATA-VERSION
+                                       SPA-OPID
            END-UNSTRING
       *
            PERFORM 100-DBOPEN-SEC

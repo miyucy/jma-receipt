@@ -65,3 +65,5 @@
            03  SMNOTE-DRCD         PIC X(05).
       *    帳票データ
            03  SMNOTE-CSVDATA      PIC X(20000).
+      *    データバージョン
+           03  SMNOTE-DATA-VERSION PIC X(1).

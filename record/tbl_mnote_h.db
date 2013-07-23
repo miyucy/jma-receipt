@@ -11,12 +11,15 @@ tbl_mnote_h	{
 	SRYYMD			varchar(8);
 	CNT				number(5);
 	NYUGAIKBN		char(1);
+	PTID			number(10);
+	DRCD			char(5);
 	TO_FOLDER		varchar(200);
 	TO_DATA			varchar(200);
 	CODE_TYPE		char(1);
 	PUTFLG			char(1);
 	TITLE			varchar(100);
-	DRCD			char(5);
+	DATA_VERSION	char(1);
+	OPID			varchar(16);
 	CREYMD			varchar(8);
 	UPYMD			char(8);
 	UPHMS			char(6);

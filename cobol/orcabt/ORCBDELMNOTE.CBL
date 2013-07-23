@@ -63,7 +63,6 @@
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý
            COPY    "CPSYSKANRI.INC".
-           COPY    "CPSK9100.INC".
       *
       *    ¤ªÌô¼êÄ¢³ÊÇ¼´ÉÍý
        01  MNOTE-H-REC.
@@ -134,26 +133,13 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-           MOVE    "9100"          TO  SYS-KANRICD
-           MOVE    "*"             TO  SYS-KBNCD
-           MOVE    SMCNDATE-YMD    TO  SYS-STYUKYMD
-                                       SYS-EDYUKYMD
-           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC    TO  SYS-9100-REC
-           IF    ( SYS-9100-KEEPINGTERM    IS NOT NUMERIC )
-            OR   ( SYS-9100-KEEPINGTERM    =  ZERO )
-               MOVE    1           TO  SYS-9100-KEEPINGTERM
-           END-IF
-      *
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY6-AREA
            MOVE    "61"            TO  LNK-DAY6-IRAI
            MOVE    SMCNDATE-YMD    TO  LNK-DAY6-KIJUN
            MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
            COMPUTE LNK-DAY6-ZOGEN
-               =   SYS-9100-KEEPINGTERM
+               =   3
                *   -1
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY6-AREA
@@ -168,15 +154,12 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           IF    ( SYS-9100-KEEPINGTERM    NOT =   999 )
-      *
                DISPLAY "DELETE MNOTE   (BEFORE "
                         WRK-MNOTE-DELYMD ")"
       *
                MOVE    CONST-MNOTE     TO  WRK-TBL-KEY
                MOVE    WRK-MNOTE-DELYMD TO  WRK-DELYMD
                PERFORM 2001-MNOTE-DEL-SEC
-           END-IF
       *
            .
        200-MAIN-EXT.

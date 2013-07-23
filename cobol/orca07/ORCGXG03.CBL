@@ -81,6 +81,7 @@
                            11  SPA-GMN-TSRYYMD     PIC X(09).
                            11  SPA-GMN-TLPTNUM     PIC X(20).
                            11  SPA-GMN-TLPTNAME    PIC X(50).
+                           11  SPA-GMN-TLDRNAME    PIC X(50).
                            11  SPA-GMN-TCSV-TITLE  PIC X(60).
       *
                    07  SPA-GMN-BODY.
@@ -97,6 +98,8 @@
                            11  SPA-GMN-NAME        PIC X(50).
       *
                05  SPA-NAI-AREA.
+                   07  SPA-NAI-ICCARDRW            PIC X(01).
+                   07  SPA-NAI-CLIENT-SAVE         PIC X(01).
                    07  SPA-NAI-CREYMD              PIC X(08).
                    07  SPA-NAI-CREYMD-OLD          PIC X(08).
       *
@@ -188,13 +191,18 @@
                05  WRK-YY2         PIC 9(04).
                05  WRK-MM2         PIC 9(02).
                05  WRK-DD2         PIC 9(02).
-           03  WRK-AGE             PIC 9(03).
+           03  WRK-AGE-G.
+               05  WRK-AGE         PIC 9(03).
            03  WRK-PTID            PIC 9(10).
            03  WRK-XG03-ROW        PIC 9(05).
            03  WRK-NAME            PIC X(50).
            03  WRK-HOST-G.
                05  WRK-HOST        PIC X(40).
                05  WRK-PORT        PIC X(05).
+           03  WRK-AGE-X           PIC X(03).
+           03  WRK-OBJECTDATA      PIC X(8).
+           03  WRK-DL-FILENAME     PIC X(1024).
+           03  WRK-DEL-FILENAME    PIC X(1024).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -227,9 +235,9 @@
       *
       *    システム管理
            COPY    "CPSYSKANRI.INC".
-      *
-      *    スマートパソリ接続情報
-           COPY    "CPSK9101.INC".
+      *    職員情報
+           COPY    "CPSK1010.INC".
+           COPY    "CPSK1050.INC".
       *
       *    統計ＣＳＶ格納管理
        01  MNOTE-H-REC.
@@ -265,6 +273,22 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+       01  UIDIO-AREA.
+           03  UIDIO-RET   PIC X(2).
+           03  UIDIO-UID   PIC X(36).
+       01  UIDIO-ST        PIC 9(2).
+      *
+           COPY    "ORCA-BLOB".
+      *
+      *    文字コード変換
+           COPY    "CPORCSFILEENCODE.INC".
+      *
+      *    クライアント保存可否情報取得サブ
+           COPY    "CPORCSCLIENTSV.INC".
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -289,7 +313,7 @@
            SPAAREA
            LINKAREA
            SCRAREA.
-      *     
+      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
@@ -400,9 +424,7 @@
                                        SPA-XG01KYOUTU
       *
       *    更新日取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
+           PERFORM 800-ORCSMCNDATE-SEC
       *
            MOVE    SMCNDATE-YMD    TO  SPA-NAI-SMCNDATE-YMD
            MOVE    SMCNDATE-YMD    TO  WRK-SYMD 
@@ -419,6 +441,22 @@
       *
           MOVE    "業務名"         TO  SPA-GMN-TITLE1
           MOVE    "患者番号"       TO  SPA-GMN-TITLE2
+      *
+      *    クライアント保存可否情報取得サブ
+           INITIALIZE                      ORCSCLIENTSVAREA
+           CALL    "ORCSCLIENTSV"  USING   ORCSCLIENTSVAREA
+                                           SPA-AREA
+           MOVE    SCLIENTSV-CLIENT-SAVE
+                                   TO  SPA-NAI-CLIENT-SAVE
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1050"              TO  SYS-KANRICD
+           MOVE    SPA-STAFFCD         TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-1050-REC
+           MOVE    SYS-1050-ICCARDRW   TO  SPA-NAI-ICCARDRW
       *
            MOVE    1               TO  FLG-LIST-ROW
       *
@@ -550,20 +588,24 @@
       *****************************************************************
        3101-SPA-PTINFO-SEC             SECTION.
       *
-           PERFORM 900-MNOTE-B-KEY-SEL-SEC
-           IF    ( FLG-MNOTE-B     =   ZERO )
+           MOVE    MNOTE-H-PTID    TO  SPA-NAI-LPTID (IDXL)
       *
-               MOVE    MNOTE-B-PTID    TO  SPA-NAI-LPTID (IDXL)
+           MOVE    MNOTE-H-PTID    TO  WRK-PTID
+           PERFORM 900-PTNUM-KEY-SEL-SEC
+           PERFORM 900-PTINF-KEY-SEL-SEC
       *
-               MOVE    MNOTE-B-PTID    TO  WRK-PTID
-               PERFORM 900-PTNUM-KEY-SEL-SEC
-               PERFORM 900-PTINF-KEY-SEL-SEC
+           MOVE    PTNUM-PTNUM         TO  SPA-GMN-TLPTNUM   (IDXL)
+           MOVE    PTINF-NAME          TO  SPA-GMN-TLPTNAME  (IDXL)
       *
-               MOVE    PTNUM-PTNUM         TO  SPA-GMN-TLPTNUM   (IDXL)
-               MOVE    PTINF-NAME          TO  SPA-GMN-TLPTNAME  (IDXL)
-           ELSE
-               DISPLAY "XG03 MNOTE-B FETCH ERR !!"
-           END-IF
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1010"              TO  SYS-KANRICD
+           MOVE    MNOTE-H-DRCD        TO  SYS-KBNCD
+           MOVE    MNOTE-H-SRYYMD      TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-1010-REC
+           MOVE    SYS-1010-NAME       TO  SPA-GMN-TLDRNAME  (IDXL)
+      *
            .
        3101-SPA-PTINFO-EXT.
            EXIT.
@@ -623,15 +665,18 @@
       *    次頁
            WHEN    "CLICKED"       ALSO    "B07S"
                PERFORM 450-NEXT-PAGE-SEC
-      *    状態変更
+      *    クライアント保存
            WHEN    "CLICKED"       ALSO    "B09"
+               PERFORM 460-SAVE-SEC
+      *    状態変更
+           WHEN    "CLICKED"       ALSO    "B10"
                PERFORM 450-CHANGE-STATUS-SEC
-      *    一覧更新
-           WHEN    "CLICKED"       ALSO    "B11S"
-               PERFORM 470-REFRESH-SEC
       *    リセット
            WHEN    "CLICKED"       ALSO    "B11"
                PERFORM 460-RESET-SEC
+      *    一覧更新
+           WHEN    "CLICKED"       ALSO    "B11S"
+               PERFORM 470-REFRESH-SEC
       *    送信
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 460-SEND-SEC
@@ -1248,9 +1293,7 @@
       *****************************************************************
        4501-CHANGE-STATUS-SEC      SECTION.
       *
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
+           PERFORM 800-ORCSMCNDATE-SEC
       *
            INITIALIZE                      MNOTE-H-REC
            MOVE    SPA-NAI-TBL-KEY     TO  MNOTE-H-TBL-KEY
@@ -1308,131 +1351,28 @@
        470-EDIT-CREYMD-EXT.
            EXIT.
       *****************************************************************
-      *    リセット処理
+      *    クライアント保存
       *****************************************************************
-       460-RESET-SEC                   SECTION.
+       460-SAVE-SEC                    SECTION.
       *
-           PERFORM 4601-HOST-CHK-SEC
-           IF    ( WRK-HOST        =   SPACE )
-               MOVE    "0101"          TO  SPA-ERRCD
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-NAI-PTID    =   ZERO )
+                   MOVE    "0101"      TO  SPA-ERRCD
+                   MOVE    1           TO  SPA-GMN-CUR
+               END-IF
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               PERFORM 4601-RESET-SEC
+               PERFORM 4601-SAVE-SEC
            END-IF
       *
            .
-       460-RESET-EXT.
+       460-SAVE-EXT.
            EXIT.
       *****************************************************************
-      *    リセット処理
+      *    クライアント保存
       *****************************************************************
-       4601-RESET-SEC                  SECTION.
-      *
-           MOVE    SPACE           TO  SHELLTBL
-           INITIALIZE                  SHELLTBL
-           MOVE    "reset_pasori.sh"
-                                   TO  SHELLTBL-NAME
-           MOVE    "localhost"     TO  SHELLTBL-ARG1
-           MOVE    "8999"          TO  SHELLTBL-ARG2
-           MOVE    SPA-TERMID      TO  SHELLTBL-ARG3
-           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG4
-           MOVE    SHELLTBL        TO  MCPDATA-REC
-           MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "allways"       TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-      *
-           MOVE    1               TO  FLG-RESET
-      *
-           .
-       4601-RESET-EXT.
-           EXIT.
-      *****************************************************************
-      *    送信処理
-      *****************************************************************
-       460-SEND-SEC                    SECTION.
-      *
-           PERFORM 4601-HOST-CHK-SEC
-           IF    ( WRK-HOST        =   SPACE )
-               MOVE    "0101"          TO  SPA-ERRCD
-           END-IF
-      *
-           IF    ( SPA-ERRCD           =   SPACE )
-               PERFORM 4601-SEND-SEC
-           END-IF
-      *
-           .
-       460-SEND-EXT.
-           EXIT.
-      *****************************************************************
-      *    送信先チェック処理
-      *****************************************************************
-       4601-HOST-CHK-SEC               SECTION.
-      *
-           INITIALIZE                  WRK-HOST-G
-      *
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-           MOVE    "9101"          TO  SYS-KANRICD
-           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
-                                       SYS-EDYUKYMD
-           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
-           MOVE    SYSKANRI-REC    TO  SYS-9101-REC
-      *
-           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
-      *
-               IF    ( SYS-9101-KBNCD  =   "*" )
-                   IF    ( WRK-HOST    =   SPACE )
-                       MOVE    SYS-9101-HOST
-                                   TO  WRK-HOST
-                       MOVE    SYS-9101-PORT
-                                   TO  WRK-PORT
-                   END-IF
-               ELSE
-                   IF    ( SYS-9101-USERID =   SPA-OPID )
-                       MOVE    SYS-9101-HOST
-                                   TO  WRK-HOST
-                       MOVE    SYS-9101-PORT
-                                   TO  WRK-PORT
-                   END-IF
-               END-IF
-      *
-               PERFORM 900-SYSKANRI-KEY2-FET-SEC
-               MOVE    SYSKANRI-REC    TO  SYS-9101-REC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       4601-HOST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    送信処理
-      *****************************************************************
-       4601-SEND-SEC                   SECTION.
-      *
-           MOVE    SPA-NAI-PTID        TO  WRK-PTID
-           PERFORM 900-PTINF-KEY-SEL-SEC
-           IF    ( PTINF-BIRTHDAY      <   SPA-NAI-SMCNDATE-YMD )
-               MOVE    ZERO            TO  WRK-AGE
-           ELSE
-               MOVE    SPA-NAI-SMCNDATE-YMD
-                                       TO  WRK-YMD1
-               MOVE    PTINF-BIRTHDAY  TO  WRK-YMD2
-               COMPUTE WRK-AGE     =   WRK-YY2
-                                   -   WRK-YY1
-               IF    ( WRK-YMD1(5:4)  >   WRK-YMD2(5:4) )
-                   COMPUTE WRK-AGE    =   WRK-AGE
-                                      -   1
-               END-IF
-           END-IF
+       4601-SAVE-SEC                   SECTION.
       *
       *    帳票管理ＤＢのチェック
            PERFORM 900-MNOTE-H-KEY3-SEL-SEC
@@ -1440,11 +1380,19 @@
       *
                MOVE    SPACE           TO  ASS-CSVDATA
       *
-               STRING  MNOTE-H-TO-FOLDER
-                                       DELIMITED BY SPACE
-                       "/"             DELIMITED BY SIZE
-                       MNOTE-H-TO-DATA
-                                       DELIMITED BY SPACE
+               PERFORM 800-ORCSMCNDATE-SEC
+      *
+               PERFORM 800-ORCUIDSET-SEC
+      *
+               STRING  "/tmp/"         DELIMITED BY SIZE
+                       "/okusuri_techo-"
+                                       DELIMITED BY SIZE
+                       SMCNDATE-YMD    DELIMITED BY SIZE
+                       "-"             DELIMITED BY SIZE
+                       SMCNDATE-HMS    DELIMITED BY SIZE
+                       "-"             DELIMITED BY SIZE
+                       UIDIO-UID       DELIMITED BY SPACE
+                       ".csv"          DELIMITED BY SIZE
                INTO    ASS-CSVDATA
                END-STRING
       *
@@ -1468,47 +1416,187 @@
       *
                CLOSE   CSVDATA-FILE
       *
-               MOVE    SPACE           TO  SHELLTBL
-               INITIALIZE                  SHELLTBL
-               MOVE    "send_mnote_info.sh"
-                                       TO  SHELLTBL-NAME
+               INITIALIZE                      ORCSFILEENCODEAREA
+               MOVE    ASS-CSVDATA         TO  FLEN-INFILENAME
+               STRING  ASS-CSVDATA             DELIMITED BY SPACE
+                       ".sjis"                 DELIMITED BY SIZE
+               INTO    FLEN-OUTFILENAME
+               END-STRING
+               MOVE    "3"                 TO  FLEN-OPTION
+               CALL    "orcfileencode"     USING
+                                           ORCSFILEENCODEAREA
       *
-               MOVE    WRK-HOST        TO  SHELLTBL-ARG1
-               MOVE    WRK-PORT        TO  SHELLTBL-ARG2
+               INITIALIZE                      ORCA-BLOB
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "blob"              TO  MCP-TABLE
+               MOVE    FLEN-OUTFILENAME    TO  ORCA-BLOB-FILE
+               PERFORM 910-BLOBIMPORT-SEC
+               MOVE    ORCA-BLOB-OBJECT    TO  WRK-OBJECTDATA
+               MOVE    MNOTE-H-TO-DATA     TO  WRK-DL-FILENAME
       *
-               MOVE    SPA-NAI-PTID    TO  SHELLTBL-ARG3
-               MOVE    SPA-GMN-PTNUM   TO  SHELLTBL-ARG4
-               MOVE    SPA-GMN-NAME    TO  SHELLTBL-ARG5
-               MOVE    WRK-AGE         TO  SHELLTBL-ARG6
-               IF    ( PTINF-SEX       =   "1" )
-                   MOVE    "male"      TO  SHELLTBL-ARG7
-               ELSE
-                   MOVE    "female"    TO  SHELLTBL-ARG7
+               MOVE    FLEN-INFILENAME     TO  WRK-DEL-FILENAME
+               PERFORM 800-ORCFILEDEL-SEC
+      *
+               MOVE    FLEN-OUTFILENAME    TO  WRK-DEL-FILENAME
+               PERFORM 800-ORCFILEDEL-SEC
+      *
+           END-IF
+      *
+           MOVE    "tbl_mnote_h"       TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       4601-SAVE-EXT.
+           EXIT.
+      *****************************************************************
+      *    リセット処理
+      *****************************************************************
+       460-RESET-SEC                   SECTION.
+      *
+           MOVE    SPACE           TO  ASS-CSVDATA
+      *
+           PERFORM 800-ORCUIDSET-SEC
+      *
+           STRING  "/tmp/"         DELIMITED BY SIZE
+                   "/okusuri_techo-reset-"
+                   UIDIO-UID       DELIMITED BY SPACE
+                   ".ksr"          DELIMITED BY SIZE
+           INTO    ASS-CSVDATA
+           END-STRING
+      *
+           OPEN    OUTPUT          CSVDATA-FILE
+           MOVE    SPACE           TO  CSVDATA-REC
+           WRITE   CSVDATA-REC
+      *
+           CLOSE   CSVDATA-FILE
+      *
+           INITIALIZE                      ORCA-BLOB
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "blob"              TO  MCP-TABLE
+           MOVE    ASS-CSVDATA         TO  ORCA-BLOB-FILE
+           PERFORM 910-BLOBIMPORT-SEC
+           MOVE    ORCA-BLOB-OBJECT    TO  WRK-OBJECTDATA
+           MOVE    "okusuri_techo-reset.ksr"
+                                       TO  WRK-DL-FILENAME
+      *
+           MOVE    1                   TO  FLG-RESET
+      *
+           MOVE    ASS-CSVDATA         TO  WRK-DEL-FILENAME
+           PERFORM 800-ORCFILEDEL-SEC
+      *
+           .
+       460-RESET-EXT.
+           EXIT.
+      *****************************************************************
+      *    送信処理
+      *****************************************************************
+       460-SEND-SEC                    SECTION.
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-NAI-PTID    =   ZERO )
+                   MOVE    "0101"      TO  SPA-ERRCD
+                   MOVE    1           TO  SPA-GMN-CUR
                END-IF
+           END-IF
       *
-               MOVE    ASS-CSVDATA     TO  SHELLTBL-ARG8
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4601-SEND-SEC
+           END-IF
       *
-               MOVE    SPA-TERMID      TO  SHELLTBL-ARG9
-               MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG10
+           .
+       460-SEND-EXT.
+           EXIT.
+      *****************************************************************
+      *    送信処理
+      *****************************************************************
+       4601-SEND-SEC                   SECTION.
       *
-               MOVE    MNOTE-H-TBL-KEY
-                                       TO  SHELLTBL-ARG11
-               MOVE    MNOTE-H-TBL-GROUP
-                                       TO  SHELLTBL-ARG12
-               MOVE    MNOTE-H-TBL-UUID
-                                       TO  SHELLTBL-ARG13
-               MOVE    MNOTE-H-SHORI-RENNUM
-                                       TO  SHELLTBL-ARG14
-               MOVE    MNOTE-H-RENNUM
-                                       TO  SHELLTBL-ARG15
-               MOVE    SHELLTBL        TO  MCPDATA-REC
-               MOVE    "SHELL"         TO  MCP-FUNC
-               MOVE    "shell"         TO  MCP-TABLE
-               MOVE    "allways"       TO  MCP-PATHNAME
-               CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           MOVE    SPA-NAI-PTID        TO  WRK-PTID
+           PERFORM 900-PTINF-KEY-SEL-SEC
+           IF    ( PTINF-BIRTHDAY      <   SPA-NAI-SMCNDATE-YMD )
+               MOVE    ZERO            TO  WRK-AGE
+           ELSE
+               MOVE    SPA-NAI-SMCNDATE-YMD
+                                       TO  WRK-YMD1
+               MOVE    PTINF-BIRTHDAY  TO  WRK-YMD2
+               COMPUTE WRK-AGE     =   WRK-YY2
+                                   -   WRK-YY1
+               IF    ( WRK-YMD1(5:4)  >   WRK-YMD2(5:4) )
+                   COMPUTE WRK-AGE    =   WRK-AGE
+                                      -   1
+               END-IF
+           END-IF
+      *
+      *
+      *    帳票管理ＤＢのチェック
+           PERFORM 900-MNOTE-H-KEY3-SEL-SEC
+           IF    ( FLG-MNOTE-H     =   ZERO )
+      *
+               MOVE    SPACE           TO  ASS-CSVDATA
+      *
+               PERFORM 800-ORCSMCNDATE-SEC
+      *
+               PERFORM 800-ORCUIDSET-SEC
+      *
+               STRING  "/tmp/"         DELIMITED BY SIZE
+                       "/okusuri_techo-"
+                                       DELIMITED BY SIZE
+                       SMCNDATE-YMD    DELIMITED BY SIZE
+                       "-"             DELIMITED BY SIZE
+                       SMCNDATE-HMS    DELIMITED BY SIZE
+                       "-"             DELIMITED BY SIZE
+                       UIDIO-UID       DELIMITED BY SPACE
+                       ".ksr"          DELIMITED BY SIZE
+               INTO    ASS-CSVDATA
+               END-STRING
+      *
+               OPEN    OUTPUT          CSVDATA-FILE
+      *
+               PERFORM 46011-HEADER-EDIT-SEC
+      *
+               MOVE    "{{{"           TO  CSVDATA-REC
+               WRITE   CSVDATA-REC
+      *
+               PERFORM 900-MNOTE-B-KEY2-SEL-SEC
+      *
+               PERFORM UNTIL ( FLG-MNOTE-B NOT =   ZERO )
+      *
+                   MOVE    MNOTE-B-CSVDATA
+                                       TO  CSVDATA-REC
+                   WRITE   CSVDATA-REC
+      *
+                   PERFORM 900-MNOTE-B-KEY2-FET-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_mnote_b"   TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               MOVE    "}}}"           TO  CSVDATA-REC
+               WRITE   CSVDATA-REC
+      *
+               CLOSE   CSVDATA-FILE
+      *
+               INITIALIZE                      ORCSFILEENCODEAREA
+               MOVE    ASS-CSVDATA         TO  FLEN-INFILENAME
+               STRING  ASS-CSVDATA             DELIMITED BY SPACE
+                       ".sjis"                 DELIMITED BY SIZE
+               INTO    FLEN-OUTFILENAME
+               END-STRING
+               MOVE    "3"                 TO  FLEN-OPTION
+               CALL    "orcfileencode"     USING
+                                           ORCSFILEENCODEAREA
+      *
+               INITIALIZE                      ORCA-BLOB
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "blob"              TO  MCP-TABLE
+               MOVE    FLEN-OUTFILENAME    TO  ORCA-BLOB-FILE
+               PERFORM 910-BLOBIMPORT-SEC
+               MOVE    ORCA-BLOB-OBJECT    TO  WRK-OBJECTDATA
+               MOVE    "okusuri_techo.ksr"
+                                           TO  WRK-DL-FILENAME
       *
                MOVE    SPA-GMN-NAME    TO  WRK-NAME
       *
@@ -1516,6 +1604,12 @@
                PERFORM 4501-CHANGE-STATUS-SEC
       *
                MOVE    1               TO  FLG-SENDDATA
+      *
+               MOVE    FLEN-INFILENAME TO  WRK-DEL-FILENAME
+               PERFORM 800-ORCFILEDEL-SEC
+      *
+               MOVE    FLEN-OUTFILENAME TO  WRK-DEL-FILENAME
+               PERFORM 800-ORCFILEDEL-SEC
       *
            END-IF
       *
@@ -1525,6 +1619,58 @@
       *
            .
        4601-SEND-EXT.
+           EXIT.
+      *****************************************************************
+      *    ヘッダー編集処理
+      *****************************************************************
+       46011-HEADER-EDIT-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  CSVDATA-REC
+           STRING  "id="               DELIMITED BY SIZE
+                   SPA-GMN-PTNUM       DELIMITED BY SPACE
+           INTO    CSVDATA-REC
+           END-STRING
+           WRITE   CSVDATA-REC
+      *
+           MOVE    SPACE               TO  CSVDATA-REC
+           STRING  "name="             DELIMITED BY SIZE
+                   SPA-GMN-NAME        DELIMITED BY SPACE
+           INTO    CSVDATA-REC
+           END-STRING
+           WRITE   CSVDATA-REC
+      *
+           MOVE    WRK-AGE-G           TO  WRK-AGE-X
+           EVALUATE    TRUE
+           WHEN   ( WRK-AGE             <  10 )
+               MOVE    WRK-AGE-G (3:)  TO  WRK-AGE-X
+           WHEN   ( WRK-AGE             <  100 )
+               MOVE    WRK-AGE-G (2:)  TO  WRK-AGE-X
+           END-EVALUATE
+           MOVE    SPACE               TO  CSVDATA-REC
+           STRING  "age="              DELIMITED BY SIZE
+                   WRK-AGE-X           DELIMITED BY SPACE
+           INTO    CSVDATA-REC
+           END-STRING
+           WRITE   CSVDATA-REC
+      *
+           IF    ( PTINF-SEX           =   "1" )
+               MOVE    "gender=male"   TO  CSVDATA-REC
+               WRITE   CSVDATA-REC
+           ELSE
+               MOVE    "gender=female" TO  CSVDATA-REC
+               WRITE   CSVDATA-REC
+           END-IF
+      *
+           MOVE    "mime=application/x-medication-note"
+                                       TO  CSVDATA-REC
+           WRITE   CSVDATA-REC
+      *
+           MOVE    "charset=Shift-JIS"
+                                       TO  CSVDATA-REC
+           WRITE   CSVDATA-REC
+      *
+           .
+       46011-HEADER-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    和暦西暦変換編集処理
@@ -1652,8 +1798,8 @@
       *
                MOVE    SPA-GMN-TLPTNUM   (IDXL)
                                            TO  XG03-LPTNUM (IDXL)
-               MOVE    SPA-GMN-TCSV-TITLE(IDXL)
-                                           TO  XG03-TCSV-TITLE(IDXL)
+               MOVE    SPA-GMN-TLDRNAME(IDXL)
+                                           TO  XG03-DRNAME    (IDXL)
                MOVE    SPA-GMN-TLPTNAME  (IDXL)
                                            TO  XG03-PTNAME    (IDXL)
                IF    ( SPA-NAI-TPUTFLG (IDXL)
@@ -1681,13 +1827,16 @@
       *
            MOVE    WIDGET-NORMAL       TO  XG03-B06S-STATE
                                            XG03-B07S-STATE
+                                           XG03-B09-STATE
+                                           XG03-B11-STATE
+                                           XG03-B12-STATE
       *
            IF    ( SPA-NAI-SELNUM      >   ZERO )
                IF    ( SPA-NAI-TPUTFLG(SPA-NAI-SELNUM)
                                        =   SPACE )
-                   MOVE    "済に変更"  TO  XG03-B09-LABEL
+                   MOVE    "済に変更"  TO  XG03-B10-LABEL
                ELSE
-                   MOVE    "未に変更"  TO  XG03-B09-LABEL
+                   MOVE    "未に変更"  TO  XG03-B10-LABEL
                END-IF
            END-IF
       *
@@ -1699,6 +1848,17 @@
            IF    ( SPA-GMN-TBL-NEXT    =   ZERO )
                MOVE    WIDGET-INSENSITIVE
                                        TO  XG03-B07S-STATE
+           END-IF
+      *
+           IF    ( SPA-NAI-CLIENT-SAVE NOT =   "1" )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  XG03-B09-STATE
+           END-IF
+      *
+           IF    ( SPA-NAI-ICCARDRW    NOT =   "1" )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  XG03-B11-STATE
+                                           XG03-B12-STATE
            END-IF
       *
            MOVE    "blue"              TO  XG03-LBLMSG01-STYLE
@@ -1714,7 +1874,8 @@
                                        TO  XG03-LBLMSG01
            END-EVALUATE
       *
-           DISPLAY "XG03-PANDATIMER1=" XG03-PANDATIMER1
+           MOVE    WRK-OBJECTDATA      TO  XG03-OBJECTDATA
+           MOVE    WRK-DL-FILENAME     TO  XG03-FILENAME
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1785,7 +1946,7 @@
                MOVE    "診療年月日入力エラー"
                                                TO  SPA-ERRMSG
            WHEN    "0101"
-               MOVE    "接続先が未設定のため、送信できません"
+               MOVE    "番号を選択してください"
                                                TO  SPA-ERRMSG
            WHEN    "1001"  THRU  "1003"
                MOVE    "更新処理に失敗しました"
@@ -1820,15 +1981,19 @@
       *****************************************************************
        520-TIDSET-SEC              SECTION.
       *
-           MOVE    SPACE               TO  WRK-XGIDMSG
+           MOVE    SPACE                TO  WRK-XGIDMSG
+      *
+           MOVE    "B12"                TO  MCP-WIDGET
       *
            EVALUATE    SPA-XGIDCD
            WHEN    "3002"
               MOVE    "電送用のお薬情報を削除します"
                                        TO  WRK-XGIDMSG
+               MOVE    "B01"           TO  MCP-WIDGET
            WHEN    "3003"
                MOVE    "未送信のデータですが削除しますか"
                                        TO  WRK-XGIDMSG
+               MOVE    "B01"           TO  MCP-WIDGET
            WHEN    "3004"
                MOVE    "送信済に変更します。よろしいですか"
                                        TO  WRK-XGIDMSG
@@ -1840,7 +2005,6 @@
            MOVE    SPACE                TO  XGID1
            MOVE    SPA-XGIDCD           TO  XGID1-ID1CODE
            MOVE    WRK-XGIDMSG          TO  XGID1-ID1MSG
-           MOVE    "B12"                TO  MCP-WIDGET
       *
            MOVE    "XG03"               TO  SPA-MOTOPG
            MOVE    "XGID1"              TO  SPA-SAKIPG
@@ -1875,6 +2039,43 @@
       *
            .
        800-CALENDAR-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得
+      *****************************************************************
+       800-ORCSMCNDATE-SEC                SECTION.
+      *
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           .
+       800-ORCSMCNDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＵＵＩＤ取得
+      *****************************************************************
+       800-ORCUIDSET-SEC               SECTION.
+      *
+           INITIALIZE                  UIDIO-AREA
+           CALL    "orcuidset" USING
+                               UIDIO-ST
+                               UIDIO-AREA
+      *
+           .
+       800-ORCUIDSET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ファイル削除処理
+      *****************************************************************
+       800-ORCFILEDEL-SEC              SECTION.
+      *
+           MOVE    ZERO            TO  IF-RESULT
+           MOVE    WRK-DEL-FILENAME TO IF-FILENAME
+           CALL    "orcfiledel"    USING   ORCSFDELAREA
+      *
+           .
+       800-ORCFILEDEL-EXT.
            EXIT.
       *****************************************************************
       *    統計ＣＳＶ格納管理検索処理
@@ -2309,6 +2510,21 @@
            .
       *
        910-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＢＬＯＢＩＭＰＯＲＴ処理
+      *****************************************************************
+       910-BLOBIMPORT-SEC              SECTION.
+      *
+           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+      *
+           .
+      *
+       910-BLOBIMPORT-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理

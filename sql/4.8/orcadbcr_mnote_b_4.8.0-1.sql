@@ -10,7 +10,6 @@ CREATE TABLE tbl_mnote_b (
     shellid character varying(20) NOT NULL,
     sryym character varying(6) NOT NULL,
     sryymd character varying(8) NOT NULL,
-    ptid bigint DEFAULT 0,
     seq_no integer DEFAULT 0 NOT NULL,
     csvdata character varying(20000) NOT NULL,
     creymd character(8),

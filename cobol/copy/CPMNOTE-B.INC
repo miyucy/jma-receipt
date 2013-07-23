@@ -19,7 +19,6 @@
            03  MNOTE-B-SRYYM       PIC X(6).
       *    診療年月日
            03  MNOTE-B-SRYYMD      PIC X(8).
-           03  MNOTE-B-PTID        PIC 9(10).
            03  MNOTE-B-SEQ-NO      PIC 9(5).
            03  MNOTE-B-CSVDATA     PIC X(20000).
       *    作成日

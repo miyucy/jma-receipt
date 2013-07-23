@@ -148,11 +148,16 @@
                    MOVE    SPACE          TO  MNOTE-H-PUTFLG
                END-IF
                MOVE    SMNOTE-NYUGAIKBN   TO  MNOTE-H-NYUGAIKBN
+               MOVE    SMNOTE-PTID        TO  MNOTE-H-PTID
+               MOVE    SMNOTE-DRCD        TO  MNOTE-H-DRCD
                MOVE    SMNOTE-TO-FOLDER   TO  MNOTE-H-TO-FOLDER
                MOVE    SMNOTE-TO-DATA     TO  MNOTE-H-TO-DATA
                MOVE    SMNOTE-CODE-TYPE
                                           TO  MNOTE-H-CODE-TYPE
                MOVE    SMNOTE-TITLE       TO  MNOTE-H-TITLE
+               MOVE    SMNOTE-DATA-VERSION
+                                          TO  MNOTE-H-DATA-VERSION
+               MOVE    SPA-OPID           TO  MNOTE-H-OPID
            END-IF
       *
            MOVE    SMNOTE-TBL-GROUP(1:8)  TO  MNOTE-H-CREYMD
@@ -203,7 +208,6 @@
            MOVE    SMNOTE-SHELLID      TO  MNOTE-B-SHELLID
            MOVE    SMNOTE-SRYYM        TO  MNOTE-B-SRYYM
            MOVE    SMNOTE-SRYYMD       TO  MNOTE-B-SRYYMD
-           MOVE    SMNOTE-PTID         TO  MNOTE-B-PTID 
            MOVE    MNOTE-H-CNT         TO  MNOTE-B-SEQ-NO
            MOVE    SMNOTE-CSVDATA      TO  MNOTE-B-CSVDATA
            MOVE    SMNOTE-TBL-GROUP(1:8)

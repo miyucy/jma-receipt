@@ -27,6 +27,10 @@
            03  MNOTE-H-CNT         PIC 9(5).
       *    入外区分
            03  MNOTE-H-NYUGAIKBN   PIC X(1).
+      *    患者ＩＤ
+           03  MNOTE-H-PTID        PIC 9(10).
+      *    ドクターコード
+           03  MNOTE-H-DRCD        PIC X(5).
       *    先格納場所
            03  MNOTE-H-TO-FOLDER   PIC X(200).
       *    先ファイル名
@@ -37,8 +41,11 @@
            03  MNOTE-H-PUTFLG      PIC X(1).
       *    処理タイトル
            03  MNOTE-H-TITLE       PIC X(100).
-      *    ドクターコード
-           03  MNOTE-H-DRCD        PIC X(5).
+      *    データバージョン
+           03  MNOTE-H-DATA-VERSION
+                                   PIC X(1).
+      *    オペレータＩＤ
+           03  MNOTE-H-OPID        PIC X(16).
       *    作成日
            03  MNOTE-H-CREYMD      PIC X(8).
       *    更新年月日

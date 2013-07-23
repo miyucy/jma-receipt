@@ -23,14 +23,17 @@ fi
 #        ${10} SRYYMD
 #        ${11} PUTFLG
 #        ${12} NYUGAIKBN
-#        ${13} TO-FOLDER
-#        ${14} TO-DATA
-#        ${15} CODE-TYPE
-#        ${16} TITLE
-#        ${17} PTID
-#        ${18} CSVFILE
-#        ${19} TBL-UUID
-#        ${20} GYOUMU-CD
+#        ${13} PTID
+#        ${14} DRCD
+#        ${15} TO-FOLDER
+#        ${16} TO-DATA
+#        ${17} CODE-TYPE
+#        ${18} TITLE
+#        ${19} CSVFILE
+#        ${20} TBL-UUID
+#        ${21} GYOUMU-CD
+#        ${22} DATA-VERSION
+#        ${23} OPID
 #-------------------------------------------#
 #
 
