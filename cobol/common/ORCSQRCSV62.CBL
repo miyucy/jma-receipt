@@ -239,6 +239,8 @@
                MOVE    FILE-NAME1          TO  SMNOTE-CSVFILE
                MOVE    ORCSQRCSV62-CNT     TO  SMNOTE-RENNUM
                MOVE    ORCSQRCSV62-DRCD    TO  SMNOTE-DRCD
+      *        データバージョン
+               MOVE    ORCSQRCSV62-CSV-KBN TO  SMNOTE-DATA-VERSION
                CALL    "ORCSMNOTE"         USING
                                            ORCSMNOTEAREA
                                            SPA-AREA
