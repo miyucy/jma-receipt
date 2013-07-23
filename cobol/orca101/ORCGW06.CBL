@@ -284,17 +284,15 @@
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD       PIC X(08).
                    07  SPA-NAI-EDYUKYMD       PIC X(08).
-      *----(04.07.01)--UPD-START---
-      *             07  SPA-MAE-STYUKYMD       PIC X(08).
-      *             07  SPA-MAE-EDYUKYMD       PIC X(08).
-      *----(04.07.01)--UPD-END-----
+                   07  SPA-MAE-STYUKYMD       PIC X(08).
+                   07  SPA-MAE-EDYUKYMD       PIC X(08).
                    07  SPA-NAI-KEIFLG         PIC 9(01).
       *
-      *----(04.07.01)--ADD\START---
+      *----(04.07.01)--ADD-START---
       *         —πππ‡Ã‹ŒŒ∞Ë
                05  SPA-MAE-AREA.
-                   07  SPA-MAE-STYUKYMD       PIC X(10).
-                   07  SPA-MAE-EDYUKYMD       PIC X(10).
+                   07  SPA-MAE-STYUKYMD2      PIC X(10).
+                   07  SPA-MAE-EDYUKYMD2      PIC X(10).
       *
                    07  SPA-MAE-USERID         PIC X(16).
                    07  SPA-MAE-KANANAME       PIC X(80).
@@ -2037,8 +2035,8 @@
       *
            INITIALIZE              SPA-MAE-AREA
       *
-           MOVE    SPA-GMN-STYUKYMD        TO  SPA-MAE-STYUKYMD
-           MOVE    SPA-GMN-EDYUKYMD        TO  SPA-MAE-EDYUKYMD
+           MOVE    SPA-GMN-STYUKYMD        TO  SPA-MAE-STYUKYMD2
+           MOVE    SPA-GMN-EDYUKYMD        TO  SPA-MAE-EDYUKYMD2
       *
            MOVE    SPA-GMN-USERID          TO  SPA-MAE-USERID
            MOVE    SPA-GMN-KANANAME        TO  SPA-MAE-KANANAME
@@ -2087,10 +2085,10 @@
       *
            MOVE    ZERO            TO  FLG-OK
       *
-           IF      SPA-GMN-STYUKYMD    NOT =   SPA-MAE-STYUKYMD
+           IF      SPA-GMN-STYUKYMD    NOT =   SPA-MAE-STYUKYMD2
                MOVE    1               TO  FLG-OK
            END-IF
-           IF      SPA-GMN-EDYUKYMD    NOT =   SPA-MAE-EDYUKYMD
+           IF      SPA-GMN-EDYUKYMD    NOT =   SPA-MAE-EDYUKYMD2
                MOVE    1               TO  FLG-OK
            END-IF
       *
