@@ -1373,10 +1373,6 @@
                    MOVE    5                   TO  SPA-GMN-CUR
                END-IF
            END-IF
-      *----(04.07.01)--ADD-START---
-      *    変更項目セット
-           PERFORM 4101-HENKOU-SET-SEC
-      *----(04.07.01)--ADD-END-----
            .
        20021-SYOKUCOD-CHK-EXT.
            EXIT.
@@ -1437,6 +1433,10 @@
                    MOVE    5               TO  SPA-GMN-CUR
                END-IF
            END-IF
+      *----(04.07.01)--ADD-START---
+      *    変更項目セット
+           PERFORM 4101-HENKOU-SET-SEC
+      *----(04.07.01)--ADD-END-----
            .
        2003-SELNUM-CHK-EXT.
            EXIT.
