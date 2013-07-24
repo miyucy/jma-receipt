@@ -741,6 +741,14 @@
                MOVE    SBYOINFO-REZEMM (IDX)
                                        TO  DISERES-RECEIPT-PERIOD (IDX)
            END-IF
+      *    保険病名フラグ
+           IF      SBYOINFO-HKNBYOMEIFLG (IDX) =   "1"
+               MOVE    "True"          TO  DISERES-INSURANCE-DISEASE
+                                                                  (IDX)
+           ELSE
+               MOVE    "False"         TO  DISERES-INSURANCE-DISEASE
+                                                                  (IDX)
+           END-IF
            .
        20021-BYOMEI-HEN-EXT.
            EXIT.
