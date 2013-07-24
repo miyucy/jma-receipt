@@ -35,9 +35,6 @@
               03  DISERES-API-RESULT-MSG      PIC X(100).
       *
               03  DISERES-RESKEY              PIC X(100).
-      *       病名情報オーバーフラグ
-              03  DISERES-INFORMATION-OVERFLOW
-                                              PIC X(5).
       *       患者情報
               03  DISERES-PATIENT-INFOMATION.
       *           患者番号
@@ -83,15 +80,6 @@
                    05  DISERES-OUTCOME             PIC X(02).
       *            補足コメント
                    05  DISERES-SUPPLEMENT-NAME     PIC X(80).
-      *            補足コメントコード
-                   05  DISERES-SUPPLEMENT-SINGLE-G.
-                       07  DISERES-SUPPLEMENT-SINGLE   OCCURS   3.
-      *                    補足コメントコード
-                           09  DISERES-SUPPLEMENT-SINGLE-CODE
-                                                   PIC X(20).
-      *                    補足コメント
-                           09  DISERES-SUPPLEMENT-SINGLE-NAME
-                                                   PIC X(80).
       *            カルテ病名
                    05  DISERES-KARTE-NAME          PIC X(160).
       *            疾患区分
@@ -102,9 +90,4 @@
                    05  DISERES-RECEIPT-PERIOD      PIC X(02).
       *            保険病名フラグ
                    05  DISERES-INSURANCE-DISEASE   PIC X(05).
-      *            原疾患区分
-                   05  DISERES-CLASSIFICATION-NUMBER-MASTER
-                                                   PIC X(02).
-      *            合併症区分
-                   05  DISERES-CLASSIFICATION-NUMBER-SERVANT
-                                                   PIC X(02).
+      *

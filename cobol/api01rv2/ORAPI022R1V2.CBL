@@ -28,11 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.07.00    NACL-多々納  13/07/24  保険病名フラグ追加対応
-      *
-      *  04.08.01    NACL-藤原    16/02/29  合併症に係わる情報追加対応
-      *                                     原疾患区分、合併症区分
-      *  04.08.02    NACL-藤原    16/09/08  全ての患者病名情報の取得対応
-      *  04.08.03    NACL-藤原    17/05/15  補足コメントコード返却対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -107,7 +102,6 @@
                05  WRK-BASE-YM          PIC X(06).
                05  WRK-BASE-DD          PIC X(02).
            03  WRK-PTNUM               PIC X(20).
-           03  WRK-SELECT-MODE         PIC X(03).
       *
       *
       *****************************************************************
@@ -165,25 +159,24 @@
             COPY    "ORCA-SPA".
             COPY    "LINKAREA".
        01  SCRAREA.
-           COPY    "API01RV2SCRAREA.INC".
-      *    COPY    "CPAPIPTAV2.INC".
-      *    COPY    "CPAPILSTV2.INC".
-      *    COPY    "CPAPILSTV2.INC"    REPLACING
-      *                              //APILST-// BY //APILST1-//.
-      *    COPY    "CPAPILSTV2.INC"    REPLACING
-      *                              //APILST-// BY //APILST2-//.
-      *    COPY    "CPAPILSTV2.INC"  REPLACING
-      *                              //APILST-// BY //APILST3-//.
-      *    COPY    "CPAPILSTV2.INC"    REPLACING
-      *                              //APILST-// BY //APILST4-//.
-      *    COPY    "CPAPILSTV2.INC"    REPLACING
-      *                              //APILST-// BY //APILST5-//.
-      *    COPY    "CPAPILSTV2.INC"    REPLACING
-      *                              //APILST-// BY //APILST6-//.
-      *    COPY    "CPAPILSTV2.INC"    REPLACING
-      *                              //APILST-// BY //APILST7-//.
-      *    COPY    "CPAPILSTV2.INC"    REPLACING
-      *                                //APILST-// BY //APILST8-//.
+           COPY    "CPAPIPTAV2.INC".
+           COPY    "CPAPILSTV2.INC".
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                     //APILST-// BY //APILST1-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                     //APILST-// BY //APILST2-//.
+           COPY    "CPAPILSTV2.INC"  REPLACING
+                                     //APILST-// BY //APILST3-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                     //APILST-// BY //APILST4-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                     //APILST-// BY //APILST5-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                     //APILST-// BY //APILST6-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                     //APILST-// BY //APILST7-//.
+           COPY    "CPAPILSTV2.INC"    REPLACING
+                                       //APILST-// BY //APILST8-//.
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -196,9 +189,9 @@
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
-           DISPLAY   "*********************"
-           DISPLAY   "* disease_info start*"
-           DISPLAY   "*********************"
+           DISPLAY   "***************"
+           DISPLAY   "* accept start*"
+           DISPLAY   "***************"
       *
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
@@ -213,18 +206,12 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
+      *    返却領域編集
+           PERFORM 300-APTXMLMAKE-SEC
       *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APILST7-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-APTXMLMAKE-SEC
-           END-IF
-      *
-           DISPLAY   "*********************"
-           DISPLAY   "* disease_info end  *"
-           DISPLAY   "*********************"
+           DISPLAY   "***************"
+           DISPLAY   "* accept end  *"
+           DISPLAY   "***************"
            .
        000-MAIN-EXIT.
            EXIT    PROGRAM.
@@ -254,7 +241,6 @@
            MOVE    WRK-HEN-TIME        TO  DISERES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -327,7 +313,6 @@
            IF      APILST7-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_disease_infov2req" TO  MCP-TABLE
@@ -458,7 +443,7 @@
                MOVE    "application/xml"   TO  APILST7-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "disease_info xml write failure "
+               DISPLAY "appoint xml write failure "
            END-IF
       *
           .
@@ -475,9 +460,6 @@
            END-IF
            IF     DISEREQ-BASE-DATE     =   LOW-VALUE
                MOVE  SPACE             TO  DISEREQ-BASE-DATE
-           END-IF
-           IF     DISEREQ-SELECT-MODE   =   LOW-VALUE
-               MOVE  SPACE             TO  DISEREQ-SELECT-MODE
            END-IF
       *
            .
@@ -524,13 +506,6 @@
                MOVE    DISERES-INFORMATION-DATE
                                            TO  DISEREQ-BASE-DATE
            END-IF
-      *    出力設定
-           MOVE    DISEREQ-SELECT-MODE     TO  WRK-SELECT-MODE
-           IF      WRK-SELECT-MODE         =   "All"
-               CONTINUE
-           ELSE
-               MOVE    SPACE                   TO  WRK-SELECT-MODE
-           END-IF
       *
       *    必須入力チェック
       *    患者番号
@@ -559,6 +534,7 @@
                                        LNK-DAY2-AREA
            IF      STS-DAY-RC1     NOT =   ZERO
                MOVE    "11"                TO  WRK-ERRCD
+               DISPLAY "Accept Ymd =  " WRK-BASE-YMD
            END-IF
            MOVE    WRK-BASE-YMD        TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
@@ -600,7 +576,7 @@
            EXIT.
       *
       *****************************************************************
-      *    患者病名編集処理
+      *    受診履歴編集処理
       *****************************************************************
        2002-SYORI-01-SEC           SECTION.
       *
@@ -613,9 +589,6 @@
            MOVE    SPA-PTID            TO  SBYOINFO-PTID
       *    診療年月
            MOVE    WRK-BASE-YM         TO  SBYOINFO-SRYYM
-      *    出力設定
-           MOVE    WRK-SELECT-MODE     TO  SBYOINFO-SELECT-MODE
-      *
            CALL    "ORCSBYOINFO"   USING   ORCSBYOINFOAREA
                                            SPA-AREA
       *
@@ -629,12 +602,7 @@
       *
            IF      SBYOINFO-RC    NOT =   ZERO
       *        200件以上あり
-               MOVE    "True"             TO
-                                          DISERES-INFORMATION-OVERFLOW
                MOVE    "20"               TO  WRK-ERRCD
-           ELSE
-               MOVE    "False"           TO
-                                          DISERES-INFORMATION-OVERFLOW
            END-IF
       *
            IF      TBL-MAX             =   ZERO
@@ -757,20 +725,6 @@
       *    補足コメント
            MOVE    SBYOINFO-HOSOKU-COMMENT (IDX)
                                        TO  DISERES-SUPPLEMENT-NAME(IDX)
-      *    補足コメントコード
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       3
-                   OR      SBYOINFO-HOSOKUCD (IDX IDY)
-                                   =       SPACE
-               MOVE    SBYOINFO-HOSOKUCD (IDX IDY)
-                                           TO
-                                       DISERES-SUPPLEMENT-SINGLE-CODE
-                                                               (IDX IDY)
-               MOVE    SBYOINFO-HOSOKUCD-COMMENT (IDX IDY)
-                                           TO
-                                       DISERES-SUPPLEMENT-SINGLE-NAME
-                                                               (IDX IDY)
-           END-PERFORM
       *    カルテ病名
            MOVE    SBYOINFO-CHARTBYOMEI (IDX)
                                        TO  DISERES-KARTE-NAME (IDX)
@@ -793,20 +747,6 @@
                                                                   (IDX)
            ELSE
                MOVE    "False"         TO  DISERES-INSURANCE-DISEASE
-                                                                  (IDX)
-           END-IF
-      *    原疾患区分
-           IF      SBYOINFO-CLASS1(IDX) NOT =   ZERO
-               MOVE    SBYOINFO-CLASS1 (IDX)
-                                       TO
-                                   DISERES-CLASSIFICATION-NUMBER-MASTER
-                                                                 (IDX)
-           END-IF
-      *    合併症区分
-           IF      SBYOINFO-CLASS2(IDX) NOT =   ZERO
-               MOVE    SBYOINFO-CLASS2 (IDX)
-                                       TO
-                                   DISERES-CLASSIFICATION-NUMBER-SERVANT
                                                                   (IDX)
            END-IF
            .
@@ -871,13 +811,13 @@
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-               MOVE    "患者番号の設定がありません"
+               MOVE    "患者番号未設定"
                                                TO  WRK-ERRMSG
            WHEN    "10"
-               MOVE    "患者番号に該当する患者が存在しません"
+               MOVE    "該当患者番号なし"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "基準日が暦日ではありません"
+               MOVE    "基準日設定誤り"
                                                TO  WRK-ERRMSG
            WHEN    "20"
                MOVE    "対象病名が２００件以上存在します。"
