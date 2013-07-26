@@ -5773,8 +5773,12 @@
       *
                MOVE    1               TO  FLG-TARGET
       *
-               IF    ( WKCOMB-HKNNUM   =   "973" )
-                   MOVE    ZERO        TO  FLG-TARGET
+               IF    ( WKCOMB-HKNNUM       =   "973" )
+                   IF    ( RECECOM-SJKBN   =   "51"  OR "52" )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO    TO  FLG-TARGET
+                   END-IF
                END-IF
       *
                IF    ( FLG-TARGET  =   1 )
