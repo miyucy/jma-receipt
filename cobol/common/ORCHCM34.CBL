@@ -5773,9 +5773,14 @@
       *
                MOVE    1               TO  FLG-TARGET
       *
+               IF    ( WKCOMB-HKNNUM   =   "973" )
+                   MOVE    ZERO        TO  FLG-TARGET
+               END-IF
+      *
                IF    ( FLG-TARGET  =   1 )
                    IF    ( FLG-AFTER-CARE  =   1 )
                        IF    ( RECECOM-SRYDD   NOT =   TRECECOM-SRYDD )
+      *
                            MOVE    RECECOM-SRYDD
                                            TO  WRK-Z9
                            MOVE    SPACE   TO  WRK-MAE-INPUT
@@ -5790,6 +5795,8 @@
                            PERFORM 20021111-RECECOM-HEN2-SEC
       *
                            MOVE    RECECOM-SRYDD   TO  TRECECOM-SRYDD
+                           INITIALIZE                  TRECECOM-AA
+                                                       TRECECOM-SKJKBN
       *
                        END-IF
                    END-IF
