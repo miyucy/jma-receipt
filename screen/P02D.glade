@@ -44,7 +44,7 @@
       <widget>
         <class>GtkButton</class>
         <name>B01</name>
-        <x>24</x>
+        <x>16</x>
         <y>596</y>
         <width>68</width>
         <height>24</height>
@@ -71,7 +71,7 @@
       <widget>
         <class>GtkButton</class>
         <name>B03</name>
-        <x>260</x>
+        <x>248</x>
         <y>596</y>
         <width>68</width>
         <height>24</height>
@@ -98,7 +98,7 @@
       <widget>
         <class>GtkButton</class>
         <name>B12</name>
-        <x>396</x>
+        <x>380</x>
         <y>596</y>
         <width>68</width>
         <height>24</height>
@@ -133,6 +133,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>9</max_length>
         <text>123456789</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -158,6 +159,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>80</max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -183,6 +185,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>50</max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -208,6 +211,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>10</max_length>
         <text>H14. 4. 1</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -233,6 +237,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>14</max_length>
         <text>12345678901234</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -258,6 +263,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>10</max_length>
         <text></text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -283,6 +289,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>13</max_length>
         <text>1234567890123</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -308,6 +315,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>10</max_length>
         <text>H14. 6.30</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -333,6 +341,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>10</max_length>
         <text>H14. 4. 1</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -358,6 +367,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>20</max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -383,6 +393,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>100</max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -419,6 +430,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>4</max_length>
           <text>1 都</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -456,6 +468,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>4</max_length>
           <text>3 区</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -493,6 +506,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>8</max_length>
           <text>2 手指</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -530,6 +544,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>8</max_length>
           <text>3 継続</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -567,6 +582,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>20</max_length>
           <text></text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -593,6 +609,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>10</max_length>
         <text></text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -610,9 +627,9 @@
       <widget>
         <class>GtkHSeparator</class>
         <name>hseparator2</name>
-        <x>8</x>
+        <x>1</x>
         <y>88</y>
-        <width>80</width>
+        <width>90</width>
         <height>16</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -893,6 +910,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>16</max_length>
           <text>01  短期給付</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -930,6 +948,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>30</max_length>
           <text></text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -985,6 +1004,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>20</max_length>
           <text>和歌山</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1029,6 +1049,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>80</max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -1065,6 +1086,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>10</max_length>
           <text>2 転医始診</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1085,7 +1107,7 @@
         <name>hseparator5</name>
         <x>220</x>
         <y>460</y>
-        <width>576</width>
+        <width>570</width>
         <height>16</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -1121,6 +1143,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>6</max_length>
         <text>H14. 4</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -1179,9 +1202,9 @@
       <widget>
         <class>GtkHSeparator</class>
         <name>hseparator4</name>
-        <x>8</x>
+        <x>1</x>
         <y>460</y>
-        <width>80</width>
+        <width>90</width>
         <height>16</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -1246,6 +1269,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>40</max_length>
           <text>02-1 １２３４５６７８９０１２３４５６７</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1318,9 +1342,9 @@
       <widget>
         <class>GtkHSeparator</class>
         <name>hseparator1</name>
-        <x>0</x>
+        <x>1</x>
         <y>576</y>
-        <width>500</width>
+        <width>498</width>
         <height>16</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -1440,6 +1464,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
+        <max_length>5</max_length>
         <text>12345</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -1494,6 +1519,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>15</max_length>
           <text>01 あああああ</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1531,6 +1557,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
+          <max_length>29</max_length>
           <text>01 あああああ</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1563,6 +1590,33 @@
         <label>労働基準監督署</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkButton</class>
+        <name>B02</name>
+        <x>108</x>
+        <y>596</y>
+        <width>120</width>
+        <height>24</height>
+        <sensitive>True</sensitive>
+        <can_focus>True</can_focus>
+        <has_focus>False</has_focus>
+        <border_width>0</border_width>
+        <label>F2 クリア（追加）</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <accelerator>
+          <modifiers>0</modifiers>
+          <key>GDK_F2</key>
+          <signal>clicked</signal>
+        </accelerator>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
       </widget>
       <widget>
         <class>GtkScrolledWindow</class>
@@ -1709,33 +1763,6 @@
         <accelerator>
           <modifiers>0</modifiers>
           <key>GDK_F7</key>
-          <signal>clicked</signal>
-        </accelerator>
-        <signal>
-          <name>clicked</name>
-          <handler>send_event</handler>
-          <data>CLICKED</data>
-        </signal>
-      </widget>
-      <widget>
-        <class>GtkButton</class>
-        <name>B02</name>
-        <x>126</x>
-        <y>596</y>
-        <width>120</width>
-        <height>24</height>
-        <sensitive>True</sensitive>
-        <can_focus>True</can_focus>
-        <has_focus>False</has_focus>
-        <border_width>0</border_width>
-        <label>F2 クリア（追加）</label>
-        <relief>GTK_RELIEF_NORMAL</relief>
-        <xalign>0.5</xalign>
-        <yalign>0.5</yalign>
-        <response_id>0</response_id>
-        <accelerator>
-          <modifiers>0</modifiers>
-          <key>GDK_F2</key>
           <signal>clicked</signal>
         </accelerator>
         <signal>
