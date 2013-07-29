@@ -862,7 +862,7 @@
         <name>label1</name>
         <x>176</x>
         <y>108</y>
-        <width>152</width>
+        <width>160</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
@@ -871,14 +871,14 @@
         <yalign>0.5</yalign>
         <xpad>0</xpad>
         <ypad>0</ypad>
-        <label>（うち特定入院対象日数</label>
+        <label>（うち特定入院料対象日数</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
       </widget>
       <widget>
         <class>GtkNumberEntry</class>
         <name>TOKUTAISYONISSU</name>
-        <x>330</x>
+        <x>341</x>
         <y>108</y>
         <width>55</width>
         <height>24</height>
@@ -900,7 +900,7 @@
       <widget>
         <class>GtkLabel</class>
         <name>label2</name>
-        <x>392</x>
+        <x>400</x>
         <y>108</y>
         <width>20</width>
         <height>24</height>
