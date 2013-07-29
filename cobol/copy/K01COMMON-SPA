@@ -204,6 +204,9 @@
       *手帳加算確認チェック
                05  SPA-TECHOKBN-FLG           PIC X(01).
       *ver.4.8
+      *時間外緊急院内チェック
+               05  SPA-JGAIKEIKBN-FLG         PIC X(01).
+      *ver.4.8
       *患者情報表示
                05  SPA-POPUPKBN-G.
                    07  SPA-POPUP-TIMEOUT      PIC 9(03).

@@ -30,6 +30,7 @@
       * 04.07.00     NACL=多々納  12/03/XX  平成２４年４月改正対応
       * 04.08.00     NACL=多々納  12/12/14  患者情報通知対応
       * 04.08.00     NACL-多々納  13/06/XX  労災レセ電対応
+      * 04.08.00     NACL-多々納  13/07/XX  時間外緊急院内チェック追加
       *****************************************************************
       *
       *
@@ -457,6 +458,13 @@
                    MOVE    SYS-1008-TECHOKBN-FLG
                                            TO  SPA-TECHOKBN-FLG
                END-IF
+      *        時間外緊急院内チェック
+               IF      SYS-1008-JGAIKEIKBN-FLG   =   SPACE
+                   MOVE    "1"             TO  SPA-JGAIKEIKBN-FLG
+               ELSE
+                   MOVE    SYS-1008-JGAIKEIKBN-FLG
+                                           TO  SPA-JGAIKEIKBN-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -486,6 +494,8 @@
       *        診察料自動発生
                MOVE    "1"                 TO  SPA-INITAUTO-FLG
                MOVE    "0"                 TO  SPA-TECHOKBN-FLG
+      *        時間外緊急院内チェック
+               MOVE    "1"                 TO  SPA-JGAIKEIKBN-FLG
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1302,11 +1312,20 @@
                    MOVE    SYS-1008-TECHOKBN-FLG
                                            TO  SPA-TECHOKBN-FLG
                END-IF
+      *        時間外緊急院内チェック
+               IF      SYS-1008-JGAIKEIKBN-FLG   =   SPACE
+                   MOVE    "1"             TO  SPA-JGAIKEIKBN-FLG
+               ELSE
+                   MOVE    SYS-1008-JGAIKEIKBN-FLG
+                                           TO  SPA-JGAIKEIKBN-FLG
+               END-IF
            ELSE
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
       *        検体検査加算自動発生
                MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
                MOVE    "0"                 TO  SPA-TECHOKBN-FLG
+      *        時間外緊急院内チェック
+               MOVE    "1"                 TO  SPA-JGAIKEIKBN-FLG
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME

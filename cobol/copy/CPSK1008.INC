@@ -126,6 +126,9 @@
            03  SYS-1008-INITAUTO-FLG    PIC X(01).
       *手帳加算確認チェック
            03  SYS-1008-TECHOKBN-FLG        PIC X(01).
+      *時間外緊急院内チェック
+      *     （ver.4.7　はYOBI2の１桁目）
+           03  SYS-1008-JGAIKEIKBN-FLG      PIC X(01).
       *予備
       *****03  FILLER                   PIC X(489).
       *****03  FILLER                   PIC X(486).
@@ -134,7 +137,8 @@
       *****03  FILLER                   PIC X(450).
       *****03  FILLER                   PIC X(449).
       **** 03  FILLER                   PIC X(445).
-           03  SYS-1008-YOBI2           PIC X(440).
+      **** 03  SYS-1008-YOBI2           PIC X(440).
+           03  SYS-1008-YOBI2           PIC X(439).
       *端末ＩＤ
            03  SYS-1008-TERMID          PIC  X(16).
       *オペーレータＩＤ

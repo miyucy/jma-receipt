@@ -3612,6 +3612,7 @@
            IF     (SPA-GAZJIKAN-CHK    =   ZERO )
             AND   (SPA-NYUGAIKBN       =   "2"  )
             AND   (LNK-ORCSC-PG        =   "K02")
+            AND   (SPA-JGAIKEIKBN-FLG  =   "1"  )
                PERFORM 3001-JIKANGAI-CHK-SEC
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
                IF      SPA-ERRCD       NOT =   SPACE
