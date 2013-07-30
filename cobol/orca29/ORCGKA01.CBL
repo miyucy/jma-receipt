@@ -220,6 +220,8 @@
                    07  SPA-WKSRY-MAX               PIC 9(04).
       *        包括保険対象区分
                05  SPA-NAI-YKJOKUKBN       PIC 9(01).
+      *ver.4.7 手帳ＣＳＶ
+               05  SPA-NAI-MNOTE-CSV       PIC X(01).
       *
       *    画面スパ領域２
        01  SPA-KA01-DATA.
@@ -267,6 +269,7 @@
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-TENSUPLUS       PIC 9(01).
+           03  FLG-PTCONF          PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -491,6 +494,11 @@
            02  LNK-WKSRYACT-REC      OCCURS   50.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
+      *
+      *    患者個別設定テーブル
+       01  PTCONF-REC.
+           COPY    "CPPTCONF.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -860,6 +868,17 @@
       *
       *    包括保険対象区分
            PERFORM 30001-YKJOKUKBN-SET-SEC
+      *ver.4.7
+      *    患者個別情報編集（データフォーマット区分）
+           MOVE    SPACE               TO  PTCONF-REC
+           INITIALIZE                  PTCONF-REC
+           MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
+           MOVE    SPA-PTID            TO  PTCONF-PTID
+           MOVE    "MNOTEVER"          TO  PTCONF-CKEY
+           PERFORM 970-PTCONF-READ-SEC
+           IF      FLG-PTCONF          =   ZERO
+               MOVE    PTCONF-CDATA(1:1)   TO  SPA-NAI-MNOTE-CSV
+           END-IF
       *
       *    保険組合せ
            INITIALIZE                  ORCSHKNSETAREA
@@ -4430,6 +4449,12 @@
       *****************************************************************
        510-GSRAUTH-SEC             SECTION.
       *
+      *    手帳ＣＳＶ
+           IF      SPA-NAI-MNOTE-CSV   =   "1"
+               MOVE    WIDGET-NORMAL       TO  KA01-B12S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  KA01-B12S-STATE
+           END-IF
            .
        51O-GSRAUTH-EXT.
            EXIT.
@@ -4962,6 +4987,36 @@
       *
            .
        980-TENSUPLUS-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者個別設定テーブル読込処理
+      *****************************************************************
+       970-PTCONF-READ-SEC         SECTION.
+      *
+           MOVE    PTCONF-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptconf"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  PTCONF-REC
+                   MOVE    ZERO                TO  FLG-PTCONF
+               ELSE
+                   INITIALIZE                  PTCONF-REC
+                   MOVE    1                   TO  FLG-PTCONF
+               END-IF
+           ELSE
+               INITIALIZE                  PTCONF-REC
+               MOVE    1                   TO  FLG-PTCONF
+           END-IF
+      *
+           MOVE    "tbl_ptconf"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       970-PTCONF-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

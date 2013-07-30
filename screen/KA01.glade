@@ -1458,7 +1458,7 @@
         <class>GtkButton</class>
         <name>B12S</name>
         <x>920</x>
-        <y>696</y>
+        <y>694</y>
         <width>80</width>
         <height>24</height>
         <sensitive>True</sensitive>
