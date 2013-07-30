@@ -1294,6 +1294,7 @@
                                        OR  "S"  )
              AND  (WRK-COM-KSNAUTO(IDX-Z)  =   SPACE
                                            OR  "2" )
+             AND  (LNK-ORCSC-SYORIFLG   =   ZERO)
                PERFORM 1001149-TELSAISIN-SET-SEC
            END-IF
       *ver.4.8
