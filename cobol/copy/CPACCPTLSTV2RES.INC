@@ -57,11 +57,6 @@
                       07  ACPLSTRES-CLAIM-INFO         PIC X(1).
       *               会計時間
                       07  ACPLSTRES-ACCOUNT-TIME       PIC X(8).
-      *H29.4
-      *               予約時間
-                      07  ACPLSTRES-APPOINT-TIME       PIC X(8).
-      *               予約ID
-                      07  ACPLSTRES-APPOINT-ID         PIC X(2).
       *               患者情報
                       07  ACPLSTRES-PATIENT-INFOMATION.
       *                   患者番号
@@ -76,10 +71,6 @@
                           09  ACPLSTRES-SEX               PIC X(1).
       *               保険情報
                       07  ACPLSTRES-INSURANCE-INFO.
-      *                 保険組合せ番号
-                        09  ACPLSTRES-COMBINATION-NUMBER     PIC X(04).
-      *H29.4            非表示区分
-                        09  ACPLSTRES-COMBINATION-HYOJI      PIC X(01).
       *                 保険の種類
                         09  ACPLSTRES-MAIN-INSURANCE-CLASS   PIC X(03).
       *                 保険者番号
