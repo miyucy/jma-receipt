@@ -359,7 +359,12 @@
            ELSE
                MOVE    SPA-K021-TTOUMEI (IDX)  TO  WRK-K021-TOUMEI
            END-IF
-           MOVE    SPA-K021-TKNKMEI (IDX)(3:)  TO  WRK-K021-KNKMEI
+           IF      SPA-K021-TKNKMEI (IDX)(1:2) =   "¢ª"
+                                               OR  "¢«"
+               MOVE    SPA-K021-TKNKMEI(IDX)(3:)   TO  WRK-K021-KNKMEI
+           ELSE
+               MOVE    SPA-K021-TKNKMEI(IDX)       TO  WRK-K021-KNKMEI
+           END-IF
            MOVE    "1"                     TO  WRK-K021-KNKMEIFLG
       *    ¾É¾õÊÔ½¸
            INITIALIZE                  SSKIJYO-REC
