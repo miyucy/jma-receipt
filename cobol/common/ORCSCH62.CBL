@@ -551,25 +551,25 @@
       *     DISPLAY "ORCHC62-GRP-DENPNUM "  IDY 
       *                ":" ORCHC62-GRP-DENPNUM(IDY)
       *    END-PERFORM
-          PERFORM VARYING    IDX   FROM    1  BY  1
-                   UNTIL      IDX   >  ORCHC62-ZAI-MAX
-             DISPLAY "ORCHC62-SRYKBN:" ORCHC62-SRYKBN (IDX)
-               ",YSRYCD:" ORCHC62-YSRYCD (IDX)
-          PERFORM VARYING    IDY   FROM    1  BY  1
-                   UNTIL      IDY   >  50 
-              IF      ORCHC62-SRYCD (IDX IDY)  NOT =   SPACE
-             DISPLAY "ORCHC62-SRYCD:" ORCHC62-SRYCD (IDX IDY)
-                     ",ORCHC62-SRYSURYO:" ORCHC62-SRYSURYO (IDX IDY)
-                     ",KANSURYO:" ORCHC62-KANSURYO (IDX IDY)
+      *   PERFORM VARYING    IDX   FROM    1  BY  1
+      *            UNTIL      IDX   >  ORCHC62-ZAI-MAX
+      *      DISPLAY "ORCHC62-SRYKBN:" ORCHC62-SRYKBN (IDX)
+      *        ",YSRYCD:" ORCHC62-YSRYCD (IDX)
+      *   PERFORM VARYING    IDY   FROM    1  BY  1
+      *            UNTIL      IDY   >  50 
+      *       IF      ORCHC62-SRYCD (IDX IDY)  NOT =   SPACE
+      *      DISPLAY "ORCHC62-SRYCD:" ORCHC62-SRYCD (IDX IDY)
+      *              ",ORCHC62-SRYSURYO:" ORCHC62-SRYSURYO (IDX IDY)
+      *              ",KANSURYO:" ORCHC62-KANSURYO (IDX IDY)
       ***          ",COMMNT:"  ORCHC62-INPUTCOMENT (IDX IDY)(1:10)
-                   ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 1)
-                   ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 2)
-                   ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 3)
-                   ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 4)
-                   ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 5)
-              END-IF
-           END-PERFORM 
-           END-PERFORM 
+      *            ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 1)
+      *            ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 2)
+      *            ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 3)
+      *            ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 4)
+      *            ",YOURYOU:"  ORCHC62-YOURYOU (IDX IDY 5)
+      *       END-IF
+      *    END-PERFORM 
+      **** END-PERFORM 
       *TEST
       *
       *    °õºþ½èÍý
