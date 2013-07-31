@@ -433,17 +433,17 @@
            END-IF
       *
       *TEST
-           PERFORM VARYING    IDX  FROM   1   BY  1
-                   UNTIL      IDX  >   31
-              IF  ORCSTEN-ZAITEN(IDX)  >   ZERO
-                 DISPLAY "IDX:"  IDX
-                  ",ORCSTEN-ZAITEN:" ORCSTEN-ZAITEN (IDX)
-                  ",ORCSTEN-CHUSYARYO:" ORCSTEN-CHUSYARYO (IDX)
-                  ",SRYCD:" ORCSTEN-SRYCD (IDX 1)
-               ",ORCSTEN-DOU-ZAITEN 1:"  ORCSTEN-DOU-ZAITEN (IDX 1) 
-               ",ORCSTEN-DOU-ZAITEN 2:"  ORCSTEN-DOU-ZAITEN (IDX 2) 
-              END-IF
-            END-PERFORM
+      *    PERFORM VARYING    IDX  FROM   1   BY  1
+      *            UNTIL      IDX  >   31
+      *       IF  ORCSTEN-ZAITEN(IDX)  >   ZERO
+      *          DISPLAY "IDX:"  IDX
+      *           ",ORCSTEN-ZAITEN:" ORCSTEN-ZAITEN (IDX)
+      *           ",ORCSTEN-CHUSYARYO:" ORCSTEN-CHUSYARYO (IDX)
+      *           ",SRYCD:" ORCSTEN-SRYCD (IDX 1)
+      *        ",ORCSTEN-DOU-ZAITEN 1:"  ORCSTEN-DOU-ZAITEN (IDX 1) 
+      *        ",ORCSTEN-DOU-ZAITEN 2:"  ORCSTEN-DOU-ZAITEN (IDX 2) 
+      *       END-IF
+      *     END-PERFORM
       *TEST
            . 
        000-PROC-EXT.
