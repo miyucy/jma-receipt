@@ -6,7 +6,6 @@ CREATE TABLE tbl_mnote_b (
     tbl_group character(14) NOT NULL,
     tbl_uuid character varying(36),
     shori_rennum smallint DEFAULT 0 NOT NULL,
-    gyoumu_cd numeric(3,0),
     shellid character varying(20) NOT NULL,
     sryym character varying(6) NOT NULL,
     sryymd character varying(8) NOT NULL,
