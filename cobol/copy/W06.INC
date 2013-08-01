@@ -38,7 +38,6 @@
                   05  W06-CHK33.
                     06  W06-CHK33-VALUE   PIC X.
                     06  W06-CHK33-STATE   PIC S9(9)   BINARY.
-                    06  W06-CHK33-LABEL   PIC X(20).
                   05  W06-CHK36.
                     06  W06-CHK36-VALUE   PIC X.
                     06  W06-CHK36-STATE   PIC S9(9)   BINARY.
@@ -120,11 +119,9 @@
                   05  W06-CHK16.
                     06  W06-CHK16-VALUE   PIC X.
                     06  W06-CHK16-STATE   PIC S9(9)   BINARY.
-                    06  W06-CHK16-LABEL   PIC X(20).
                   05  W06-CHK17.
                     06  W06-CHK17-VALUE   PIC X.
                     06  W06-CHK17-STATE   PIC S9(9)   BINARY.
-                    06  W06-CHK17-LABEL   PIC X(20).
                   05  W06-CHK26.
                     06  W06-CHK26-VALUE   PIC X.
                     06  W06-CHK26-STATE   PIC S9(9)   BINARY.
@@ -148,7 +145,7 @@
                     06  W06-CHK35-STATE   PIC S9(9)   BINARY.
                   05  W06-KKANRIAUTHFLG-COMB.
                     06  W06-KANRIAUTHFLG.
-                        07  W06-VALUE   PIC X(12).
+                      07  W06-VALUE   PIC X(12).
                     06  W06-KANRIAUTHFLG-STATE   PIC S9(9)   BINARY.
                     06  W06-KANRIAUTHFLG-COUNT   PIC S9(9)   BINARY.
                     06  W06-KANRIAUTHFLG-ITEM
@@ -159,12 +156,6 @@
                     06  W06-ORCA21FLG-COUNT   PIC S9(9)   BINARY.
                     06  W06-ORCA21FLG-ITEM
                             PIC X(12)   OCCURS  2 TIMES.
-                  05  W06-HYOJIFLG-COMB.
-                    06  W06-HYOJIFLG.
-                      07  W06-VALUE   PIC X(10).
-                    06  W06-HYOJIFLG-COUNT   PIC S9(9)   BINARY.
-                    06  W06-HYOJIFLG-ITEM
-                            PIC X(10)   OCCURS  2 TIMES.
                 04  W06-TG2.
                   05  W06-SKYPRTFLG-COMB.
                     06  W06-SKYPRTFLG.
@@ -205,21 +196,12 @@
                   05  W06-USER-KANRI-COMB.
                     06  W06-USER-KANRI.
                       07  W06-VALUE   PIC X(40).
-                    06  W06-USER-KANRI-STATE   PIC S9(9)   BINARY.
                     06  W06-USER-KANRI-COUNT   PIC S9(9)   BINARY.
                     06  W06-USER-KANRI-ITEM
                             PIC X(40)   OCCURS  5 TIMES.
-                  05  W06-PRTCONF-COMB.
-                    06  W06-PRTCONF.
-                      07  W06-VALUE   PIC X(40).
-                    06  W06-PRTCONF-STATE   PIC S9(9)   BINARY.
-                    06  W06-PRTCONF-COUNT   PIC S9(9)   BINARY.
-                    06  W06-PRTCONF-ITEM
-                            PIC X(40)   OCCURS  2 TIMES.
                   05  W06-CLIENT-PRT-COMB.
                     06  W06-CLIENT-PRT.
                       07  W06-VALUE   PIC X(40).
-                    06  W06-CLIENT-PRT-STATE   PIC S9(9)   BINARY.
                     06  W06-CLIENT-PRT-COUNT   PIC S9(9)   BINARY.
                     06  W06-CLIENT-PRT-ITEM
                             PIC X(40)   OCCURS  2 TIMES.
@@ -229,16 +211,6 @@
                     06  W06-DIALOGFLG-COUNT    PIC S9(9)   BINARY.
                     06  W06-DIALOGFLG-ITEM
                             PIC X(40)   OCCURS  2 TIMES.
-                  05  W06-ICCARDRW-COMB.
-                    06  W06-ICCARDRW.
-                      07  W06-VALUE   PIC X(40).
-                    06  W06-ICCARDRW-COUNT    PIC S9(9)   BINARY.
-                    06  W06-ICCARDRW-ITEM
-                            PIC X(40)   OCCURS  2 TIMES.
-                  05  W06-GLINECNT.
-                    06  W06-VALUE   PIC S9(2).
-                  05  W06-NLINECNT.
-                    06  W06-VALUE   PIC S9(2).
                 04  W06-TGN3-STATE       PIC S9(9)   BINARY.
                 04  W06-TG3.
                   05   W06-GRPHOSPNUM  PIC X(02)   OCCURS  9 TIMES.
@@ -246,16 +218,9 @@
                   05   W06-GRPUSERID   PIC X(16)   OCCURS  9 TIMES.
               03  W06-STYUKYMD.
                 04  W06-VALUE   PIC X(10).
-                04  W06-STYUKYMD-STATE   PIC S9(9)   BINARY.
               03  W06-EDYUKYMD.
                 04  W06-VALUE   PIC X(10).
-                04  W06-EDYUKYMD-STATE   PIC S9(9)   BINARY.
               03  W06-USERID.
-                04  W06-VALUE   PIC X(16).
-                04  W06-USERID-STATE   PIC S9(9)   BINARY.
-              03  W06-PASSWORD1.
-                04  W06-VALUE   PIC X(16).
-              03  W06-PASSWORD2.
                 04  W06-VALUE   PIC X(16).
               03  W06-KANANAME.
                 04  W06-VALUE   PIC X(80).
@@ -266,14 +231,12 @@
               03  W06-SYOKUKBN-COMB.
                 04  W06-SYOKUKBN.
                   05  W06-VALUE   PIC X(20).
-                04  W06-SYOKUKBN-STATE   PIC S9(9)   BINARY.
                 04  W06-SYOKUKBN-COUNT   PIC S9(9)   BINARY.
                 04  W06-SYOKUKBN-ITEM
                         PIC X(20)   OCCURS  10 TIMES.
               03  W06-SYOKUCOD-COMB.
                 04  W06-SYOKUCOD.
                   05  W06-VALUE   PIC X(35).
-                04  W06-SYOKUCOD-STATE   PIC S9(9)   BINARY.
                 04  W06-SYOKUCOD-COUNT   PIC S9(9)   BINARY.
                 04  W06-SYOKUCOD-ITEM
                         PIC X(35)   OCCURS  100 TIMES.
@@ -290,6 +253,3 @@
                           PIC X       OCCURS  10 TIMES.
               03  W06-B03.
                 04  W06-B03-STATE   PIC S9(9)   BINARY.
-              03  W06-B05.
-                04  W06-B05-STATE   PIC S9(9)   BINARY.
-                04  W06-B05-LABEL   PIC X(10).
