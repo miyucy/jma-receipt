@@ -5,7 +5,6 @@ tbl_mnote_b	{
 	TBL_GROUP		char(14);
 	TBL_UUID 		char(36);
 	SHORI_RENNUM	number(4);
-	GYOUMU_CD       number(3);
 	SHELLID			varchar(20);
 	SRYYM			varchar(6);
 	SRYYMD			varchar(8);

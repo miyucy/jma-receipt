@@ -138,6 +138,7 @@
                                        ASS-SAVE
                                        SMNOTE-TBL-UUID
                                        SMNOTE-GYOUMU-CD
+                                       SMNOTE-LOCATION-CD
                                        SMNOTE-DATA-VERSION
                                        SPA-OPID
            END-UNSTRING

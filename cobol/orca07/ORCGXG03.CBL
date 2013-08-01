@@ -58,72 +58,84 @@
       *
        01  SPA-XG03.
            03  SPA-XG03-AREA.
-               05  SPA-GMN-PAGE        PIC 9(05).
-               05  SPA-GMN-MAX         PIC 9(03).
-               05  SPA-GMN-CUR         PIC 9(02).
+               05  SPA-GMN-PAGE            PIC 9(05).
+               05  SPA-GMN-MAX             PIC 9(03).
+               05  SPA-GMN-CUR             PIC 9(03).
+               05  SPA-NAI-TODAY           PIC 9(08).
+               05  SPA-GMN-TODAY           PIC X(09).
       *
                05  SPA-GMN-AREA.
-                   07  SPA-GMN-TITLE1              PIC X(08).
-                   07  SPA-GMN-TITLE2              PIC X(10).
-                   07  SPA-GMN-CREYMD              PIC X(10).
-      *
-                   07  SPA-GMN-TBL-NEXT            PIC 9(01).
-      *
-                   07  SPA-GMN-TBL.
-                       09  SPA-GMN-OCC             OCCURS  300.
+                   07  SPA-GMN-MLIST-NEXT          PIC 9(01).
+                   07  SPA-GMN-MLIST-AREA.
+                       09  SPA-GMN-MLIST-OCC       OCCURS  200.
                            11  SPA-GMN-TNO         PIC 9(05).
-                           11  SPA-GMN-TTBL-GROUP  PIC X(14).
-                           11  SPA-GMN-TRENNUM     PIC 9(04).
-                           11  SPA-GMN-TSHORI-RENNUM
-                                                   PIC 9(04).
-                           11  SPA-GMN-TCNT        PIC 9(05).
-                           11  SPA-GMN-TGYOUMU     PIC X(12).
+                           11  SPA-GMN-TPTNUM      PIC X(20).
+                           11  SPA-GMN-TPTNAME     PIC X(50).
+                           11  SPA-GMN-TTITLE      PIC X(50).
+                           11  SPA-GMN-TDATA-VERSION
+                                                   PIC X(10).
                            11  SPA-GMN-TSRYYMD     PIC X(09).
-                           11  SPA-GMN-TLPTNUM     PIC X(20).
-                           11  SPA-GMN-TLPTNAME    PIC X(50).
-                           11  SPA-GMN-TLDRNAME    PIC X(50).
-                           11  SPA-GMN-TCSV-TITLE  PIC X(60).
+                           11  SPA-GMN-TLDNAME     PIC X(20).
+                           11  SPA-GMN-TDRNAME     PIC X(50).
+                           11  SPA-GMN-TCREYMD     PIC X(9).
+                           11  SPA-GMN-TCREHMS     PIC X(8).
+                           11  SPA-GMN-TSTATUS     PIC X(6).
       *
-                   07  SPA-GMN-BODY.
+                   07  SPA-GMN-BODY-AREA.
                        09  SPA-GMN-BODY1.
                            11  SPA-GMN-SELNUM      PIC 9(03).
-                           11  SPA-GMN-SRYYMD      PIC X(10).
-                           11  SPA-GMN-TBL-UUID    PIC X(36).
-                           11  SPA-GMN-RENNUM      PIC 9(04).
-                           11  SPA-GMN-SHORI-RENNUM PIC 9(04).
-                           11  SPA-GMN-CSV-TITLE   PIC X(60).
-      *
-                       09  SPA-GMN-BODY2.
+                           11  SPA-GMN-CREYMD      PIC X(10).
                            11  SPA-GMN-PTNUM       PIC X(20).
                            11  SPA-GMN-NAME        PIC X(50).
+                       09  SPA-GMN-BODY2.
+                           11  SPA-GMN-IPTNUM      PIC X(20).
+                           11  SPA-GMN-IPTNAME     PIC X(50).
+                           11  SPA-GMN-ITITLE      PIC X(50).
+                           11  SPA-GMN-IDATA-VERSION
+                                                   PIC X(10).
+                           11  SPA-GMN-ISRYYMD     PIC X(09).
+                           11  SPA-GMN-ILDNAME     PIC X(20).
+                           11  SPA-GMN-IDRNAME     PIC X(50).
+                           11  SPA-GMN-ICREYMD     PIC X(9).
+                           11  SPA-GMN-ICREHMS     PIC X(8).
+                           11  SPA-GMN-IOPID       PIC X(16).
+                           11  SPA-GMN-ISTATUS     PIC X(6).
+                           11  SPA-GMN-CONTEXT     PIC X(50000).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-ICCARDRW            PIC X(01).
                    07  SPA-NAI-CLIENT-SAVE         PIC X(01).
-                   07  SPA-NAI-CREYMD              PIC X(08).
-                   07  SPA-NAI-CREYMD-OLD          PIC X(08).
       *
-                   07  SPA-NAI-BODY.
-                       09  SPA-NAI-BODY1.
-                           11  SPA-NAI-SELNUM      PIC 9(03).
-                           11  SPA-NAI-TBL-GROUP   PIC X(14).
-                           11  SPA-NAI-TBL-KEY     PIC X(08).
-                           11  SPA-NAI-SRYYMD      PIC X(08).
-                       09  SPA-NAI-BODY2.
-                           11  SPA-NAI-PTID        PIC 9(10).
-      *
-                   07  SPA-NAI-TBL.
-                       09  SPA-NAI-OCC             OCCURS  300.
+                   07  SPA-NAI-MLIST-AREA.
+                       09  SPA-NAI-MLIST-OCC       OCCURS  200.
                            11  SPA-NAI-TTBL-KEY    PIC X(08).
                            11  SPA-NAI-TTBL-GROUP  PIC X(14).
                            11  SPA-NAI-TTBL-UUID   PIC X(36).
-                           11  SPA-NAI-TPUTFLG     PIC X(01).
-                           11  SPA-NAI-LPTID       PIC 9(10).
-                           11  SPA-NAI-TSRYYMD     PIC X(09).
+                           11  SPA-NAI-TRENNUM     PIC 9(04).
+                           11  SPA-NAI-TSHORI-RENNUM PIC 9(04).
+                           11  SPA-NAI-TPTID       PIC 9(10).
+                           11  SPA-NAI-TSRYYMD     PIC X(08).
+                           11  SPA-NAI-TOPID       PIC X(16).
+                           11  SPA-NAI-TCNT        PIC 9(05).
+                           11  SPA-NAI-TSTATUS     PIC X(1).
       *
-               05  SPA-WRK-TBL-KEY                 PIC X(08).
-               05  SPA-NAI-SMCNDATE-YMD            PIC 9(08).
-               05  SPA-GMN-SMCNDATE-YMD            PIC X(09).
+                   07  SPA-NAI-BODY-AREA.
+                       09  SPA-NAI-BODY1.
+                           11  SPA-NAI-COLLECT     PIC X(01).
+                           11  SPA-NAI-SELNUM      PIC 9(03).
+                           11  SPA-NAI-CREYMD      PIC X(08).
+                           11  SPA-NAI-PTID        PIC 9(10).
+                       09  SPA-NAI-BODY2.
+                           11  SPA-NAI-IPTID       PIC 9(10).
+                           11  SPA-NAI-ITBL-KEY    PIC X(08).
+                           11  SPA-NAI-ITBL-GROUP  PIC X(14).
+                           11  SPA-NAI-ITBL-UUID   PIC X(36).
+                           11  SPA-NAI-IRENNUM     PIC 9(04).
+                           11  SPA-NAI-ISHORI-RENNUM PIC 9(04).
+                           11  SPA-NAI-ICNT        PIC 9(05).
+                           11  SPA-NAI-ISTATUS     PIC X(1).
+                           11  SPA-NAI-OVER-FLOW   PIC X(1).
+      *
       *
            COPY    "ENUM-VALUE".
            COPY    "CMJOBNAME.INC".
@@ -142,8 +154,8 @@
       *
       *    フラグ領域
        01  FLG-AREA.
-           03  FLG-MNOTE-H     PIC 9(01).
-           03  FLG-MNOTE-B     PIC 9(01).
+           03  FLG-MNOTE-H         PIC 9(01).
+           03  FLG-MNOTE-B         PIC 9(01).
            03  FLG-END             PIC 9(01).
            03  FLG-LIST-ROW        PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
@@ -160,6 +172,7 @@
            03  IDX0                PIC 9(05).
            03  IDXL                PIC 9(05).
            03  IDXN                PIC 9(05).
+           03  IDXP                PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -170,8 +183,8 @@
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
-           03  WRK-CNT             PIC ZZZZ9.   
-           03  WRK-SELNUM          PIC S9(05). 
+           03  WRK-CNT             PIC ZZZZ9.
+           03  WRK-SELNUM          PIC S9(05).
       *
            03  WRK-ZZ              PIC ZZZZ9.
            03  WRK-YMD             PIC X(10).
@@ -203,6 +216,9 @@
            03  WRK-OBJECTDATA      PIC X(8).
            03  WRK-DL-FILENAME     PIC X(1024).
            03  WRK-DEL-FILENAME    PIC X(1024).
+           03  WRK-MAX-TEXTSIZE    PIC 9(8).
+           03  WRK-MAX-DATASIZE    PIC 9(8).
+           03  WRK-SIZE            PIC 9(8).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -226,8 +242,12 @@
            COPY    "CPSHELLTBL.INC".
       *
        01  CONST-AREA.
-           03  CONST-TBL-MAX    PIC 9(03)   VALUE   300.
+           03  CONST-TBL-MAX    PIC 9(03)   VALUE   200.
            03  CONST-TBL-KEY    PIC X(08)   VALUE   "MNOTE".
+      *
+       01  TMNOTE-B-REC.
+           COPY    "CPMNOTE-B.INC"      REPLACING    //MNOTE-//
+                                        BY           //TMNOTE-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -331,19 +351,19 @@
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
       *
-           EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
-               WHEN    "LINK"          ALSO    ANY
-                   PERFORM 100-INIT-SEC
+           EVALUATE    MCP-STATUS  ALSO    MCP-EVENT
+           WHEN    "LINK"          ALSO    ANY
+               PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN     "PUTG"           ALSO   "CLICKED"
-                   PERFORM 200-GMNSENI
+           WHEN    "PUTG"          ALSO   "CLICKED"
+               PERFORM 200-GMNSENI
       *    入力
-               WHEN      OTHER
-                   PERFORM 200-ENTRY
-           END-EVALUATE.
+           WHEN    OTHER
+               PERFORM 200-ENTRY
+           END-EVALUATE
       *
       *    画面遷移がない時、画面表示へ
-           IF      FLG-END             =   ZERO
+           IF    ( FLG-END         =   ZERO )
                PERFORM 500-SET-SCREEN
            END-IF
       *
@@ -360,18 +380,18 @@
        100-INIT-SEC                   SECTION.
       *
       *    エラー画面より
-           IF      SPA-MOTOPG          =   "XGERR"
-               MOVE    SPACE               TO  SPA-MOTOPG
+           IF    ( SPA-MOTOPG         =   "XGERR" )
+               MOVE    SPACE          TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
-               IF      FLG-END             =   1
+               IF    ( FLG-END        =   1 )
                    GO  TO  100-INIT-EXT
                END-IF
       *        画面編集
                PERFORM 500-GMNHEN-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
+               IF    ( SPA-ERRCD       NOT =   SPACE )
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
@@ -426,43 +446,39 @@
       *    更新日取得
            PERFORM 800-ORCSMCNDATE-SEC
       *
-           MOVE    SMCNDATE-YMD    TO  SPA-NAI-SMCNDATE-YMD
+           MOVE    SMCNDATE-YMD    TO  SPA-NAI-TODAY
            MOVE    SMCNDATE-YMD    TO  WRK-SYMD 
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  SPA-GMN-SMCNDATE-YMD
+           PERFORM 800-HIZUKE-SEC
+           MOVE    WRK-HENYMDG     TO  SPA-GMN-TODAY
       *
-          MOVE    SPA-NAI-SMCNDATE-YMD
-                                   TO  SPA-NAI-CREYMD
-                                       SPA-NAI-CREYMD-OLD
-          MOVE    SPA-GMN-SMCNDATE-YMD
-                                   TO  SPA-GMN-CREYMD
+          MOVE    SPA-NAI-TODAY    TO  SPA-NAI-CREYMD
+          MOVE    SPA-GMN-TODAY    TO  SPA-GMN-CREYMD
       *
           MOVE    1                TO  SPA-GMN-PAGE
       *
-          MOVE    "業務名"         TO  SPA-GMN-TITLE1
-          MOVE    "患者番号"       TO  SPA-GMN-TITLE2
-      *
       *    クライアント保存可否情報取得サブ
-           INITIALIZE                      ORCSCLIENTSVAREA
-           CALL    "ORCSCLIENTSV"  USING   ORCSCLIENTSVAREA
-                                           SPA-AREA
+           INITIALIZE              ORCSCLIENTSVAREA
+           CALL    "ORCSCLIENTSV"  USING
+                                   ORCSCLIENTSVAREA
+                                   SPA-AREA
            MOVE    SCLIENTSV-CLIENT-SAVE
-                                   TO  SPA-NAI-CLIENT-SAVE
+                               TO  SPA-NAI-CLIENT-SAVE
       *
-           INITIALIZE                      SYSKANRI-REC
-           MOVE    "1050"              TO  SYS-KANRICD
-           MOVE    SPA-STAFFCD         TO  SYS-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
-                                           SYS-EDYUKYMD
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "1050"          TO  SYS-KANRICD
+           MOVE    SPA-STAFFCD     TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC        TO  SYS-1050-REC
-           MOVE    SYS-1050-ICCARDRW   TO  SPA-NAI-ICCARDRW
+           MOVE    SYSKANRI-REC    TO  SYS-1050-REC
+           MOVE    SYS-1050-ICCARDRW
+                                   TO  SPA-NAI-ICCARDRW
       *
            MOVE    1               TO  FLG-LIST-ROW
       *
            MOVE    ZERO            TO  SPA-GMN-CUR
       *
-           PERFORM 3101-SPA-LIST-HEN-SEC
+           PERFORM 3101-MLIST-EDIT-SEC
       *
            .
        310-SPASET-EXT.
@@ -471,10 +487,10 @@
       *****************************************************************
       *    コラムリスト編集処理
       *****************************************************************
-       3101-SPA-LIST-HEN-SEC               SECTION.
+       3101-MLIST-EDIT-SEC         SECTION.
       *
-           INITIALIZE                      SPA-GMN-TBL
-                                           SPA-NAI-TBL
+           INITIALIZE                      SPA-GMN-MLIST-AREA
+                                           SPA-NAI-MLIST-AREA
       *
            PERFORM 900-MNOTE-H-KEY8-SEL-SEC
       *
@@ -496,7 +512,7 @@
                    COMPUTE IDXL    =   IDXL    +   1
       *
                    IF    ( IDXL   <=  CONST-TBL-MAX )
-                       PERFORM 31011-MNOTE-H-SPA-SEC
+                       PERFORM 31011-MLIST-EDIT-SEC
                    END-IF
       *
                END-IF
@@ -511,9 +527,9 @@
       *
            IF    ( IDXL               >=   CONST-TBL-MAX )
             AND  ( FLG-MNOTE-H     =   ZERO )
-               MOVE    1               TO  SPA-GMN-TBL-NEXT
+               MOVE    1               TO  SPA-GMN-MLIST-NEXT
            ELSE
-               MOVE    ZERO            TO  SPA-GMN-TBL-NEXT
+               MOVE    ZERO            TO  SPA-GMN-MLIST-NEXT
            END-IF
       *
            IF    ( SPA-GMN-MAX     >   ZERO )
@@ -523,79 +539,17 @@
            END-IF
       *
            .
-       3101-SPA-LIST-HEN-EXT.
+       3101-MLIST-EDIT-EXT.
            EXIT.
       *
       *****************************************************************
       *    コラムリスト編集処理
       *****************************************************************
-       31011-MNOTE-H-SPA-SEC       SECTION.
-      *
-           MOVE    IDXN            TO  SPA-GMN-TNO        (IDXL)
-      *
-           MOVE    MNOTE-H-TBL-KEY
-                                   TO  SPA-NAI-TTBL-KEY   (IDXL)
-           MOVE    MNOTE-H-TBL-GROUP
-                                   TO  SPA-NAI-TTBL-GROUP (IDXL)
-           MOVE    MNOTE-H-TBL-UUID
-                                   TO  SPA-NAI-TTBL-UUID  (IDXL)
-      *
-           IF    ( MNOTE-H-SRYYMD  = SPACE OR ZERO )
-               CONTINUE
-           ELSE
-               MOVE    MNOTE-H-SRYYMD
-                                   TO  SPA-NAI-TSRYYMD(IDXL)
-                                       WRK-SYMD 
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG TO  SPA-GMN-TSRYYMD(IDXL)
-           END-IF
-      *
-           MOVE    MNOTE-H-TBL-GROUP
-                                   TO  SPA-GMN-TTBL-GROUP (IDXL)
-      *
-           SET     TBLLOCK-IDX TO  1
-           SEARCH  ORC-LOCKCONST-TX    VARYING  TBLLOCK-IDX
-           AT  END
-               MOVE    "その他"
-                                   TO  SPA-GMN-TGYOUMU (IDXL)
-           WHEN  ( MNOTE-H-GYOUMU-CD   =
-                                  ORC-LOCKCONST-GNUM (TBLLOCK-IDX))
-               MOVE    ORC-LOCKCONST-NAME (TBLLOCK-IDX)
-                                   TO  SPA-GMN-TGYOUMU (IDXL)
-           END-SEARCH
-      *
-           MOVE    MNOTE-H-RENNUM
-                                   TO  SPA-GMN-TRENNUM (IDXL)
-           MOVE    MNOTE-H-SHORI-RENNUM
-                                   TO  SPA-GMN-TSHORI-RENNUM (IDXL)
-           MOVE    MNOTE-H-CNT
-                                   TO  SPA-GMN-TCNT (IDXL)
-           MOVE    MNOTE-H-TITLE
-                                   TO  SPA-GMN-TCSV-TITLE (IDXL)
-           MOVE    MNOTE-H-PUTFLG
-                                   TO  SPA-NAI-TPUTFLG (IDXL)
-      *
-           PERFORM 3101-SPA-PTINFO-SEC
-      *
-           MOVE    IDXL            TO  SPA-GMN-MAX
-      *
-           .
-       31011-MNOTE-H-SPA-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     患者情報取得
-      *****************************************************************
-       3101-SPA-PTINFO-SEC             SECTION.
-      *
-           MOVE    MNOTE-H-PTID    TO  SPA-NAI-LPTID (IDXL)
+       31011-MLIST-EDIT-SEC       SECTION.
       *
            MOVE    MNOTE-H-PTID    TO  WRK-PTID
            PERFORM 900-PTNUM-KEY-SEL-SEC
            PERFORM 900-PTINF-KEY-SEL-SEC
-      *
-           MOVE    PTNUM-PTNUM         TO  SPA-GMN-TLPTNUM   (IDXL)
-           MOVE    PTINF-NAME          TO  SPA-GMN-TLPTNAME  (IDXL)
       *
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1010"              TO  SYS-KANRICD
@@ -604,12 +558,93 @@
                                            SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC        TO  SYS-1010-REC
-           MOVE    SYS-1010-NAME       TO  SPA-GMN-TLDRNAME  (IDXL)
+      *
+           MOVE    IDXN                TO  SPA-GMN-TNO       (IDXL)
+           MOVE    PTNUM-PTNUM         TO  SPA-GMN-TPTNUM    (IDXL)
+           MOVE    PTINF-NAME          TO  SPA-GMN-TPTNAME   (IDXL)
+           MOVE    MNOTE-H-TITLE       TO  SPA-GMN-TTITLE    (IDXL)
+           EVALUATE    MNOTE-H-DATA-VERSION
+           WHEN    "1"
+               MOVE    "1.0"           TO  SPA-GMN-TDATA-VERSION
+                                                             (IDXL)
+           END-EVALUATE
+      *
+           MOVE    MNOTE-H-SRYYMD      TO  SPA-NAI-TSRYYMD   (IDXL)
+                                           WRK-SYMD
+           PERFORM 800-HIZUKE-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-TSRYYMD   (IDXL)
+      *
+           SET     TBLLOCK-IDX TO  1
+           SEARCH  ORC-LOCKCONST-TX    VARYING  TBLLOCK-IDX
+           AT  END
+               MOVE    "その他"        TO  SPA-GMN-TLDNAME (IDXL)
+           WHEN  ( MNOTE-H-GYOUMU-CD   =
+                                  ORC-LOCKCONST-GNUM (TBLLOCK-IDX))
+               MOVE    ORC-LOCKCONST-NAME (TBLLOCK-IDX)
+                                       TO  SPA-GMN-TLDNAME (IDXL)
+           END-SEARCH
+      *
+           MOVE    SYS-1010-NAME       TO  SPA-GMN-TDRNAME  (IDXL)
+           MOVE    MNOTE-H-TBL-GROUP (1:8)
+                                       TO  WRK-SYMD
+           PERFORM 800-HIZUKE-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-TCREYMD  (IDXL)
+      *
+           MOVE    SPACE               TO  SPA-GMN-TCREHMS  (IDXL)
+           STRING  MNOTE-H-TBL-GROUP (9:2)     DELIMITED BY SIZE
+                   ":"                         DELIMITED BY SIZE
+                   MNOTE-H-TBL-GROUP (11:2)    DELIMITED BY SIZE
+                   ":"                         DELIMITED BY SIZE
+                   MNOTE-H-TBL-GROUP (13:2)    DELIMITED BY SIZE
+           INTO    SPA-GMN-TCREHMS  (IDXL)
+           END-STRING
+      *
+           IF    ( MNOTE-H-PUTFLG     =    "1" )
+               MOVE    "送信済"        TO  SPA-GMN-TSTATUS  (IDXL)
+           ELSE
+               MOVE    "未送信"        TO  SPA-GMN-TSTATUS  (IDXL)
+           END-IF
+      *
+           MOVE    MNOTE-H-TBL-KEY     TO  SPA-NAI-TTBL-KEY  (IDXL)
+           MOVE    MNOTE-H-TBL-GROUP   TO  SPA-NAI-TTBL-GROUP(IDXL)
+           MOVE    MNOTE-H-TBL-UUID    TO  SPA-NAI-TTBL-UUID (IDXL)
+           MOVE    MNOTE-H-RENNUM      TO  SPA-NAI-TRENNUM (IDXL)
+           MOVE    MNOTE-H-SHORI-RENNUM
+                                       TO  SPA-NAI-TSHORI-RENNUM (IDXL)
+           MOVE    MNOTE-H-PTID        TO  SPA-NAI-TPTID     (IDXL)
+           MOVE    MNOTE-H-OPID        TO  SPA-NAI-TOPID     (IDXL)
+           MOVE    MNOTE-H-CNT         TO  SPA-NAI-TCNT      (IDXL)
+           MOVE    MNOTE-H-PUTFLG      TO  SPA-NAI-TSTATUS   (IDXL)
+      *
+           MOVE    IDXL                TO  SPA-GMN-MAX
+      *
+           MOVE    1                   TO  FLG-LIST-ROW
       *
            .
-       3101-SPA-PTINFO-EXT.
+       31011-MLIST-EDIT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    データ情報初期化処理
+      *****************************************************************
+       31011-MNOTE-INFO-CLEAR-SEC       SECTION.
+      *
+           INITIALIZE                      SPA-GMN-BODY2
+                                           SPA-NAI-BODY2
+      *
+           MOVE    ZERO            TO      SPA-GMN-SELNUM
+                                           SPA-NAI-SELNUM
+      *
+           IF    ( SPA-NAI-COLLECT =   SPACE )
+      *
+               INITIALIZE                  SPA-NAI-PTID
+                                           SPA-GMN-PTNUM
+                                           SPA-GMN-NAME
+           END-IF
+      *
+           .
+       31011-MNOTE-INFO-CLEAR-EXT.
+           EXIT.
       *****************************************************************
       *    確認画面（ＣＩＤ１）ＯＫ処理
       *****************************************************************
@@ -653,6 +688,9 @@
       *    削除
            WHEN    "CLICKED"       ALSO    "B03"
                PERFORM 430-DELETE-GID-SEC
+      *    絞込
+           WHEN    "CLICKED"       ALSO    "B04"
+               PERFORM 440-COLLECT-MNOTE-SEC
       *    前日
            WHEN    "CLICKED"       ALSO    "B06"
                PERFORM 440-BEFORE-SEC
@@ -697,11 +735,11 @@
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
            WHEN    "ACTIVATE"      ALSO    "SELNUM"
-               PERFORM 201-SELNUM-SEC
+               PERFORM 4100-SELNUM-CHK-SEC
            WHEN    "ACTIVATE"      ALSO    "PTNUM"
-               PERFORM 207-PTNUM-SEC
+               PERFORM 4100-PTNUM-CHK-SEC
            WHEN    "ACTIVATE"      ALSO    "CREYMD"
-               PERFORM 209-CREYMD-SEC
+               PERFORM 4100-CREYMD-CHK-SEC
       *    行選択
            WHEN    ANY             ALSO    "LIST"
                PERFORM 203-SELECT-SEC
@@ -748,6 +786,14 @@
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
+            IF    ( SPA-ERRCD      =   SPACE )
+                PERFORM 4101-CREYMD-CHK-SEC
+            END-IF
+      *
+            IF    ( SPA-ERRCD      =   SPACE )
+                PERFORM 4101-PTNUM-CHK-SEC
+            END-IF
+      *
            .
        4102-KIHON-CHK-EXT.
            EXIT.
@@ -755,18 +801,15 @@
       *****************************************************************
       *    選択番号入力処理
       *****************************************************************
-       201-SELNUM-SEC                  SECTION.
+       4100-SELNUM-CHK-SEC             SECTION.
       *
-           INITIALIZE                  SPA-GMN-BODY
-                                       SPA-NAI-BODY
+           PERFORM 31011-MNOTE-INFO-CLEAR-SEC
       *
-           MOVE    XG03-SELNUM         TO  SPA-GMN-SELNUM
+           MOVE    XG03-SELNUM     TO  SPA-GMN-SELNUM
       *
            IF    ( SPA-GMN-SELNUM  =   ZERO )
                CONTINUE
            ELSE
-      *
-               MOVE    ZERO        TO  SPA-NAI-SELNUM
                PERFORM VARYING IDXL    FROM    1   BY  1
                        UNTIL ( IDXL        >   SPA-GMN-MAX )
                         OR   ( SPA-NAI-SELNUM
@@ -776,6 +819,7 @@
                                    =   SPA-GMN-SELNUM )
                        MOVE    IDXL
                                    TO  SPA-NAI-SELNUM
+                       PERFORM 4101-ITEM-EDIT-SEC
                    END-IF
       *
                END-PERFORM
@@ -783,146 +827,246 @@
                IF    ( SPA-NAI-SELNUM  =    ZERO )
                    MOVE    "0001"      TO  SPA-ERRCD
                    MOVE    1           TO  SPA-GMN-CUR
-               ELSE
-                   PERFORM 2011-SELECT-HENSYU-SEC
-                   MOVE    SPA-NAI-SELNUM
-                                       TO  WRK-XG03-ROW
-                   MOVE    99          TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
            .
-       201-SELNUM-EXT.
+       4100-SELNUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    患者検索処理
+      *    選択項目編集処理
       *****************************************************************
-       2011-SELECT-HENSYU-SEC          SECTION.
+       4101-ITEM-EDIT-SEC              SECTION.
+      *
+           MOVE    SPA-GMN-TNO (SPA-NAI-SELNUM)
+                                       TO  SPA-GMN-SELNUM
+           MOVE    SPA-NAI-TPTID (SPA-NAI-SELNUM)
+                                       TO  SPA-NAI-PTID
+           MOVE    SPA-GMN-TPTNUM (SPA-NAI-SELNUM)
+                                       TO  SPA-GMN-PTNUM
+           MOVE    SPA-GMN-TPTNAME (SPA-NAI-SELNUM)
+                                       TO  SPA-GMN-NAME
+           PERFORM 41001-MNOTE-INFO-EDIT-SEC
+           MOVE    SPA-NAI-SELNUM      TO  WRK-XG03-ROW
+      *
+           .
+       4101-ITEM-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    お薬手帳管理情報編集処理
+      *****************************************************************
+       41001-MNOTE-INFO-EDIT-SEC       SECTION.
       *
            MOVE    SPA-NAI-SELNUM      TO  IDXL
       *
-           MOVE    SPA-NAI-TTBL-GROUP (IDXL)
-                                       TO  SPA-NAI-TBL-GROUP
+           MOVE    SPA-GMN-TCREYMD (IDXL)
+                                       TO  SPA-GMN-ICREYMD
+           MOVE    SPA-GMN-TPTNUM  (IDXL)
+                                       TO  SPA-GMN-IPTNUM
+           MOVE    SPA-GMN-TPTNAME (IDXL)
+                                       TO  SPA-GMN-IPTNAME
+           MOVE    SPA-GMN-TTITLE  (IDXL)
+                                       TO  SPA-GMN-ITITLE
+           MOVE    SPA-GMN-TDATA-VERSION (IDXL)
+                                       TO  SPA-GMN-IDATA-VERSION
+           MOVE    SPA-GMN-TSRYYMD (IDXL)
+                                       TO  SPA-GMN-ISRYYMD
+           MOVE    SPA-GMN-TLDNAME (IDXL)
+                                       TO  SPA-GMN-ILDNAME
+           MOVE    SPA-GMN-TDRNAME (IDXL)
+                                       TO  SPA-GMN-IDRNAME
+           MOVE    SPA-GMN-TCREYMD (IDXL)
+                                       TO  SPA-GMN-ICREYMD
+           MOVE    SPA-GMN-TCREHMS (IDXL)
+                                       TO  SPA-GMN-ICREHMS
+           MOVE    SPA-NAI-TOPID   (IDXL)
+                                       TO  SPA-GMN-IOPID
+           MOVE    SPA-GMN-TSTATUS (IDXL)
+                                       TO  SPA-GMN-ISTATUS
+           MOVE    SPA-NAI-TPTID   (IDXL)
+                                       TO  SPA-NAI-IPTID
            MOVE    SPA-NAI-TTBL-KEY   (IDXL)
-                                       TO  SPA-NAI-TBL-KEY
-           MOVE    SPA-GMN-TSRYYMD    (IDXL)
-                                       TO  SPA-GMN-SRYYMD
-           MOVE    SPA-NAI-TSRYYMD    (IDXL)
-                                       TO  SPA-NAI-SRYYMD
+                                       TO  SPA-NAI-ITBL-KEY
+           MOVE    SPA-NAI-TTBL-GROUP (IDXL)
+                                       TO  SPA-NAI-ITBL-GROUP
            MOVE    SPA-NAI-TTBL-UUID  (IDXL)
-                                       TO  SPA-GMN-TBL-UUID 
-           MOVE    SPA-GMN-TRENNUM    (IDXL)
-                                       TO  SPA-GMN-RENNUM
-           MOVE    SPA-GMN-TSHORI-RENNUM (IDXL)
-                                       TO  SPA-GMN-SHORI-RENNUM
-           MOVE    SPA-GMN-TLPTNUM     (IDXL)
-                                       TO  SPA-GMN-PTNUM  
-           MOVE    SPA-GMN-TLPTNAME    (IDXL)
-                                       TO  SPA-GMN-NAME
-           MOVE    SPA-NAI-LPTID       (IDXL)
-                                       TO  SPA-NAI-PTID
-           MOVE    SPA-GMN-TCSV-TITLE  (IDXL)
-                                       TO  SPA-GMN-CSV-TITLE
+                                       TO  SPA-NAI-ITBL-UUID
+           MOVE    SPA-NAI-TRENNUM    (IDXL)
+                                       TO  SPA-NAI-IRENNUM
+           MOVE    SPA-NAI-TSHORI-RENNUM (IDXL)
+                                       TO  SPA-NAI-ISHORI-RENNUM
+           MOVE    SPA-NAI-TCNT (IDXL)
+                                       TO  SPA-NAI-ICNT
+           MOVE    SPA-NAI-TSTATUS (IDXL)
+                                       TO  SPA-NAI-ISTATUS
       *
-           .
-       2011-SELECT-HENSYU-EXT.
-           EXIT.
-           .
-      *     
-      *****************************************************************
-      *    患者番号入力処理
-      *****************************************************************
-       207-PTNUM-SEC                    SECTION.
+           PERFORM 900-MNOTE-H-KEY-SEL-SEC
+           PERFORM 900-MNOTE-B-KEY2-SEL-SEC
       *
-           MOVE    XG03-PTNUM       TO  SPA-GMN-PTNUM
+           INSPECT SPA-GMN-CONTEXT
+                           TALLYING WRK-MAX-TEXTSIZE FOR ALL " "
       *
-           IF    ( SPA-GMN-PTNUM    =   SPACE )
-               CONTINUE
-           ELSE
-               PERFORM 2071-PTNUM-SEC
-           END-IF
+           INITIALIZE                  TMNOTE-B-REC
+           INSPECT TMNOTE-B-CSVDATA
+                           TALLYING WRK-MAX-DATASIZE FOR ALL " "
       *
-           .
-       207-PTNUM-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者番号入力処理
-      *****************************************************************
-       2071-PTNUM-SEC                   SECTION.
+           MOVE    1                   TO  IDXP
       *
-           MOVE    SPACE           TO  SPA-GMN-NAME
-           MOVE    ZERO            TO  SPA-NAI-PTID
+           PERFORM UNTIL ( FLG-MNOTE-B NOT =   ZERO )
+                    OR   ( SPA-NAI-OVER-FLOW   =   "1" )
       *
-           INITIALIZE                   ORCSPTIDAREA
-           MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
-           MOVE    SPA-GMN-PTNUM
-                                   TO  SPTID-PTNUM
-           CALL    "ORCSPTID"      USING
-                                   ORCSPTIDAREA
-                                   SPA-AREA
-           IF    ( SPTID-RC    NOT =   ZERO )
-               MOVE    "0008"      TO  SPA-ERRCD
-               MOVE    7           TO  SPA-GMN-CUR
-           ELSE
-               MOVE    SPTID-PTNUM TO  SPA-GMN-PTNUM
-               MOVE    SPTID-PTID  TO  SPA-NAI-PTID
-      *
-      *        患者マスター存在チェック
-               MOVE    SPA-NAI-PTID
-                                   TO  WRK-PTID
-               PERFORM 900-PTINF-KEY-SEL-SEC
-               IF    ( FLG-PTINF   NOT =  ZERO )
-                   MOVE    "0008"  TO  SPA-ERRCD
-                   MOVE    7       TO  SPA-GMN-CUR
-               ELSE
-                   MOVE    PTINF-NAME
-                                   TO  SPA-GMN-NAME
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-               MOVE    ZERO        TO  SPA-NAI-SELNUM
-               PERFORM VARYING IDXL    FROM    1   BY  1
-                       UNTIL ( IDXL    >   SPA-GMN-MAX )
-                         OR  ( SPA-NAI-SELNUM
-                                       >   ZERO )
-                   IF    ( SPA-NAI-PTID
-                                       =   SPA-NAI-LPTID  (IDXL))
-                       MOVE    IDXL    TO  SPA-NAI-SELNUM
-                       INITIALIZE          SPA-GMN-BODY
-                       MOVE    SPA-GMN-TNO (IDXL)
-                                       TO  SPA-GMN-SELNUM
-                       PERFORM 2011-SELECT-HENSYU-SEC
-                       MOVE    SPA-NAI-SELNUM
-                                       TO  WRK-XG03-ROW
-                       MOVE    99      TO  SPA-GMN-CUR
-                   END-IF
+               PERFORM VARYING WRK-SIZE FROM WRK-MAX-DATASIZE BY -1
+                       UNTIL ( WRK-SIZE <=  0 )
+                        OR   ( MNOTE-B-CSVDATA (WRK-SIZE : 1 )
+                                     NOT =   SPACE )
+                   CONTINUE
                END-PERFORM
       *
-               IF    ( SPA-NAI-SELNUM  =   ZERO )
-                   INITIALIZE              SPA-GMN-BODY1
-                                           SPA-NAI-BODY1
-                   MOVE    "0009"      TO  SPA-ERRCD
-                   MOVE    7           TO  SPA-GMN-CUR
+               IF    ( WRK-MAX-TEXTSIZE    <
+                                  IDXP + WRK-SIZE )
+                   MOVE    "1"         TO  SPA-NAI-OVER-FLOW
+               ELSE
+                   IF    ( MNOTE-B-SEQ-NO  >   1 )
+                       STRING    X"0A"         DELIMITED BY SIZE
+                       INTO      SPA-GMN-CONTEXT
+                       WITH POINTER IDXP
+                       END-STRING
+                   END-IF
+      *
+                   IF    ( WRK-SIZE    >   ZERO )
+                       STRING    MNOTE-B-CSVDATA (1: WRK-SIZE)
+                                               DELIMITED BY SIZE
+                       INTO      SPA-GMN-CONTEXT
+                       WITH POINTER IDXP
+                       END-STRING
+                   END-IF
+               END-IF
+      *
+               PERFORM 900-MNOTE-B-KEY2-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_mnote_b"   TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       41001-MNOTE-INFO-EDIT-EXT.
+           EXIT.
+           .
+      *****************************************************************
+      *    患者番号入力処理
+      *****************************************************************
+       4100-PTNUM-CHK-SEC              SECTION.
+      *
+           IF    ( XG03-PTNUM      =   SPA-GMN-PTNUM )
+               CONTINUE
+           ELSE
+      *
+               PERFORM 31011-MNOTE-INFO-CLEAR-SEC
+      *
+               MOVE    XG03-PTNUM  TO  SPA-GMN-PTNUM
+      *
+               PERFORM 4101-PTNUM-CHK-SEC
+      *
+               IF    ( SPA-ERRCD   =   SPACE )
+                   PERFORM VARYING IDXL    FROM    1   BY  1
+                           UNTIL ( IDXL        >   CONST-TBL-MAX )
+                       IF    ( SPA-NAI-TPTID (IDXL)
+                                           =   SPA-NAI-PTID )
+                           MOVE    IDXL    TO  SPA-NAI-SELNUM
+                           PERFORM 4101-ITEM-EDIT-SEC
+                           MOVE    CONST-TBL-MAX
+                                           TO  IDXL
+                       END-IF
+      *
+                   END-PERFORM
+               END-IF
+      *
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               IF    ( SPA-NAI-SELNUM  >   ZERO )
+                   MOVE    212         TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
            .
-       2071-PTNUM-EXT.
+       4100-PTNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    診療年月日入力処理
+      *    患者番号入力処理
       *****************************************************************
-       209-CREYMD-SEC               SECTION.
+       4101-PTNUM-CHK-SEC              SECTION.
       *
-           MOVE    XG03-CREYMD      TO  SPA-GMN-CREYMD
-           MOVE    SPACE            TO  SPA-NAI-CREYMD
+           MOVE    SPACE       TO  SPA-GMN-NAME
+           MOVE    ZERO        TO  SPA-NAI-PTID
+      *
+           IF    ( SPA-GMN-PTNUM   NOT =   SPACE )
+               INITIALIZE                  ORCSPTIDAREA
+               MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
+               MOVE    SPA-GMN-PTNUM
+                                       TO  SPTID-PTNUM
+               CALL    "ORCSPTID"      USING
+                                       ORCSPTIDAREA
+                                       SPA-AREA
+               IF    ( SPTID-RC    NOT =   ZERO )
+                   MOVE    "0008"      TO  SPA-ERRCD
+                   MOVE    7           TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    SPTID-PTNUM TO  SPA-GMN-PTNUM
+                   MOVE    SPTID-PTID  TO  SPA-NAI-PTID
+      *
+      *            患者マスター存在チェック
+                   MOVE    SPA-NAI-PTID
+                                       TO  WRK-PTID
+                   PERFORM 900-PTINF-KEY-SEL-SEC
+                   IF    ( FLG-PTINF   NOT =  ZERO )
+                       MOVE    "0008"  TO  SPA-ERRCD
+                       MOVE    7       TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    PTINF-NAME
+                                       TO  SPA-GMN-NAME
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       4101-PTNUM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    作成日入力処理
+      *****************************************************************
+       4100-CREYMD-CHK-SEC              SECTION.
+      *
+           IF    ( XG03-CREYMD      =   SPA-GMN-CREYMD )
+               CONTINUE
+           ELSE
+               PERFORM 31011-MNOTE-INFO-CLEAR-SEC
+               MOVE    XG03-CREYMD  TO  SPA-GMN-CREYMD
+               PERFORM 4101-CREYMD-CHK-SEC
+      *
+               IF    ( SPA-ERRCD   =   SPACE )
+                   PERFORM 3101-MLIST-EDIT-SEC
+               END-IF
+           END-IF
+      *
+           .
+       4100-CREYMD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    作成日入力処理
+      *****************************************************************
+       4101-CREYMD-CHK-SEC             SECTION.
+      *
+           MOVE    SPACE        TO  SPA-NAI-CREYMD
       *
            IF    ( SPA-GMN-CREYMD   =   SPACE )
-               MOVE    SPA-NAI-SMCNDATE-YMD
+               MOVE    SPA-NAI-TODAY
                                     TO  SPA-NAI-CREYMD
-               MOVE    SPA-GMN-SMCNDATE-YMD
+               MOVE    SPA-GMN-TODAY
                                     TO  SPA-GMN-CREYMD
            ELSE
       *        日付画面チェックサブ
@@ -940,51 +1084,27 @@
                END-IF
            END-IF
       *
-           IF    ( SPA-ERRCD        =   SPACE )
-               IF    ( SPA-NAI-CREYMD-OLD
-                                NOT =   SPA-NAI-CREYMD )
-                   MOVE    SPA-NAI-CREYMD
-                                    TO  SPA-NAI-CREYMD-OLD
-                   PERFORM 420-CLEAR-SEC
-                   MOVE    1        TO  SPA-GMN-PAGE
-      *            コラムリストの編集
-                   PERFORM 3101-SPA-LIST-HEN-SEC
-               ELSE
-                   IF    ( SPA-GMN-MAX  >   ZERO )
-                       MOVE    1    TO  SPA-GMN-CUR
-                   ELSE
-                       MOVE    8    TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
-           ELSE
-               MOVE   SPACE         TO  SPA-NAI-CREYMD-OLD
-           END-IF
-      *
            .
-       209-CREYMD-EXT.
+       4101-CREYMD-CHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    行選択処理
       *****************************************************************
        203-SELECT-SEC              SECTION.
       *
-           INITIALIZE              SPA-GMN-BODY
-                                   SPA-NAI-BODY
-      *
            PERFORM VARYING IDXL    FROM    1   BY  1
                    UNTIL ( IDXL    >   SPA-GMN-MAX )
-                    OR   ( SPA-NAI-SELNUM
-                                   >   ZERO )
                IF    ( XG03-SELECT (IDXL)   =   "T" )
+                   PERFORM 31011-MNOTE-INFO-CLEAR-SEC
                    MOVE    SPA-GMN-TNO (IDXL)
                                    TO  XG03-SELNUM
-                   PERFORM 201-SELNUM-SEC
+                   PERFORM 4100-SELNUM-CHK-SEC
                    MOVE    ZERO    TO  WRK-XG03-ROW
+                   MOVE    212     TO  SPA-GMN-CUR
+                   MOVE    SPA-GMN-MAX
+                                   TO  IDXL
                END-IF
            END-PERFORM
-      *
-           MOVE    99              TO  SPA-GMN-CUR
       *
            .
        203-SELECT-EXT.
@@ -995,8 +1115,9 @@
       *****************************************************************
        4103-KAKUTEI-CHK-SEC        SECTION.
       *
-           IF    ( SPA-NAI-TBL-GROUP   =   SPACE )
-               MOVE    "0001"      TO  SPA-ERRCD
+           IF    ( SPA-NAI-ITBL-GROUP  =   SPACE )
+               MOVE    "0101"      TO  SPA-ERRCD
+               MOVE    1           TO  SPA-GMN-CUR
            END-IF
       *
            .
@@ -1042,10 +1163,20 @@
       *****************************************************************
        420-CLEAR-SEC                SECTION.
       *
-           INITIALIZE               SPA-GMN-BODY
-                                    SPA-NAI-BODY
+           IF    ( SPA-NAI-COLLECT  =    "1" )
+               IF    ( SPA-NAI-SELNUM   =    ZERO )
+                   PERFORM 440-COLLECT-MNOTE-SEC
+               ELSE
+                   PERFORM 31011-MNOTE-INFO-CLEAR-SEC
+               END-IF
+           ELSE
       *
-           MOVE    1            TO  SPA-GMN-CUR
+               IF    ( SPA-NAI-SELNUM   =    ZERO )
+                   PERFORM 310-SPASET-SEC
+               ELSE
+                   PERFORM 31011-MNOTE-INFO-CLEAR-SEC
+               END-IF
+           END-IF
       *
            .
        420-CLEAR-EXT.
@@ -1065,41 +1196,11 @@
            END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
-      *
-      *        帳票管理ＤＢのチェック
-               PERFORM 900-MNOTE-H-KEY3-SEL-SEC
-      *
-               MOVE    SPACE       TO  SPA-WRK-TBL-KEY
-      *
-      *        未処理の帳票があるとき
-               PERFORM UNTIL ( FLG-MNOTE-H    =   1 )
-      *
-                   MOVE    MNOTE-H-TBL-KEY
-                                       TO  SPA-WRK-TBL-KEY
-      *
-                   IF    ( MNOTE-H-PUTFLG     =   SPACE )
-                       MOVE    "3003"  TO  SPA-XGIDCD
-                       MOVE    1       TO  FLG-MNOTE-H
-                   END-IF
-      *
-                   PERFORM 900-MNOTE-H-KEY3-FET-SEC
-      *
-               END-PERFORM
-      *
-               MOVE    "tbl_mnote_h"   TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
-      *
-      *        指定のグループが存在しないとき
-               IF    ( SPA-WRK-TBL-KEY =   SPACE )
-                       MOVE    "0005"  TO  SPA-ERRCD
+               IF    ( SPA-NAI-ISTATUS  =   SPACE )
+                   MOVE    "3003"  TO  SPA-XGIDCD
                ELSE
-                   IF    ( SPA-XGIDCD  =   SPACE )
-      *                ガイドメッセージセット
-                       MOVE    "3002"  TO  SPA-XGIDCD
-                   END-IF
+                   MOVE    "3002"  TO  SPA-XGIDCD
                END-IF
-      *
            END-IF
       *
            .
@@ -1112,15 +1213,15 @@
        430-DELETE-SEC                SECTION.
       *
            INITIALIZE                      MNOTE-H-REC
-           MOVE    SPA-WRK-TBL-KEY     TO  MNOTE-H-TBL-KEY
-           MOVE    SPA-NAI-TBL-GROUP   TO  MNOTE-H-TBL-GROUP
-           MOVE    SPA-GMN-TBL-UUID    TO  MNOTE-H-TBL-UUID 
-           MOVE    SPA-GMN-SHORI-RENNUM
+           MOVE    SPA-NAI-ITBL-KEY    TO  MNOTE-H-TBL-KEY
+           MOVE    SPA-NAI-ITBL-GROUP  TO  MNOTE-H-TBL-GROUP
+           MOVE    SPA-NAI-ITBL-UUID   TO  MNOTE-H-TBL-UUID 
+           MOVE    SPA-NAI-ISHORI-RENNUM
                                        TO  MNOTE-H-SHORI-RENNUM
-           MOVE    SPA-GMN-RENNUM      TO  MNOTE-H-RENNUM
+           MOVE    SPA-NAI-IRENNUM     TO  MNOTE-H-RENNUM
            MOVE    SPA-HOSPNUM         TO  MNOTE-H-HOSPNUM
-           MOVE    MNOTE-H-REC     TO  MCPDATA-REC
-           MOVE    "tbl_mnote_h"   TO  MCP-TABLE
+           MOVE    MNOTE-H-REC         TO  MCPDATA-REC
+           MOVE    "tbl_mnote_h"       TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC         NOT  =   ZERO )
@@ -1129,20 +1230,20 @@
       *
            IF    ( SPA-ERRCD           =   SPACE )
                INITIALIZE                  MNOTE-B-REC
-               MOVE    SPA-WRK-TBL-KEY     TO  MNOTE-B-TBL-KEY
-               MOVE    SPA-NAI-TBL-GROUP   TO  MNOTE-B-TBL-GROUP
-               MOVE    SPA-GMN-TBL-UUID    TO  MNOTE-B-TBL-UUID
-               MOVE    SPA-GMN-SHORI-RENNUM
+               MOVE    SPA-NAI-ITBL-KEY    TO  MNOTE-B-TBL-KEY
+               MOVE    SPA-NAI-ITBL-GROUP  TO  MNOTE-B-TBL-GROUP
+               MOVE    SPA-NAI-ITBL-UUID   TO  MNOTE-B-TBL-UUID
+               MOVE    SPA-NAI-ISHORI-RENNUM
                                            TO  MNOTE-B-SHORI-RENNUM
-               MOVE    SPA-GMN-RENNUM      TO  MNOTE-B-RENNUM
+               MOVE    SPA-NAI-IRENNUM     TO  MNOTE-B-RENNUM
                MOVE    SPA-HOSPNUM         TO  MNOTE-B-HOSPNUM
-               MOVE    MNOTE-B-REC     TO  MCPDATA-REC
+               MOVE    MNOTE-B-REC         TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    "tbl_mnote_b"   TO  MCP-TABLE
+               MOVE    "tbl_mnote_b"       TO  MCP-TABLE
                MOVE    "del2"              TO  MCP-PATHNAME
                PERFORM 910-DBDELETE-SEC
-               IF      MCP-RC         NOT  =   ZERO
-                   MOVE    "1002"              TO  SPA-ERRCD
+               IF    ( MCP-RC         NOT  =   ZERO )
+                   MOVE    "1002"          TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -1154,6 +1255,36 @@
        430-DELETE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    患者情報絞込処理
+      *****************************************************************
+       440-COLLECT-MNOTE-SEC           SECTION.
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+      *
+               IF    ( SPA-NAI-COLLECT =   SPACE )
+      *
+                   IF    ( SPA-NAI-ITBL-GROUP  =   SPACE )
+                    AND  ( SPA-NAI-PTID        =   ZERO )
+                       MOVE    "0102"      TO  SPA-ERRCD
+                       MOVE    1           TO  SPA-GMN-CUR
+                   END-IF
+      *
+                   IF    ( SPA-ERRCD           =   SPACE )
+                       MOVE    "1"         TO  SPA-NAI-COLLECT
+                   END-IF
+               ELSE
+                   MOVE    SPACE       TO  SPA-NAI-COLLECT
+               END-IF
+      *
+               PERFORM 31011-MNOTE-INFO-CLEAR-SEC
+               PERFORM 3101-MLIST-EDIT-SEC
+      *
+           END-IF
+      *
+           .
+       440-COLLECT-MNOTE-EXT.
+           EXIT.
       *****************************************************************
       *    前日処理
       *****************************************************************
@@ -1182,10 +1313,14 @@
       *****************************************************************
        4401-CHANGE-DATE-SEC            SECTION.
       *
-          INITIALIZE                   SPA-GMN-BODY
-                                       SPA-GMN-TBL
-                                       SPA-NAI-BODY
-                                       SPA-NAI-TBL
+           PERFORM 31011-MNOTE-INFO-CLEAR-SEC
+      *
+           IF    ( SPA-NAI-COLLECT     =   "1" )
+               MOVE    SPACE       TO  SPA-NAI-COLLECT
+               MOVE    SPACE       TO  SPA-GMN-NAME
+               MOVE    SPACE       TO  SPA-GMN-PTNUM
+               MOVE    ZERO        TO  SPA-NAI-PTID
+           END-IF
       *
            MOVE    1                   TO  SPA-GMN-PAGE
       *
@@ -1200,11 +1335,13 @@
       *
            PERFORM 800-CALENDAR-SEC
            MOVE    LNK-DAY6-KEISAN     TO  SPA-NAI-CREYMD
-                                           SPA-NAI-CREYMD-OLD
-      *    コラムリストの編集
-           PERFORM 3101-SPA-LIST-HEN-SEC
       *
-           PERFORM 470-EDIT-CREYMD-SEC
+           MOVE    SPA-NAI-CREYMD      TO  WRK-SYMD
+           PERFORM 800-HIZUKE-SEC
+           MOVE    WRK-HENYMDG         TO  SPA-GMN-CREYMD
+      *
+      *    コラムリストの編集
+           PERFORM 3101-MLIST-EDIT-SEC
       *
            .
        4401-CHANGE-DATE-EXT.
@@ -1228,7 +1365,7 @@
       *****************************************************************
        450-NEXT-PAGE-SEC           SECTION.
       *
-           IF    ( SPA-GMN-TBL-NEXT    =   1 )
+           IF    ( SPA-GMN-MLIST-NEXT    =   1 )
                MOVE    1           TO  FLG-NEXT
                PERFORM 4401-CHANGE-PAGE-SEC
            END-IF
@@ -1242,10 +1379,7 @@
       *****************************************************************
        4401-CHANGE-PAGE-SEC        SECTION.
       *
-           INITIALIZE              SPA-GMN-BODY
-                                   SPA-GMN-TBL
-                                   SPA-NAI-BODY
-                                   SPA-NAI-TBL
+           PERFORM 31011-MNOTE-INFO-CLEAR-SEC
       *
            IF    ( FLG-NEXT            =   1 )
                COMPUTE     SPA-GMN-PAGE
@@ -1258,7 +1392,7 @@
            END-IF
       *
       *    コラムリストの編集
-           PERFORM 3101-SPA-LIST-HEN-SEC
+           PERFORM 3101-MLIST-EDIT-SEC
       *
            .
        4401-CHANGE-PAGE-EXT.
@@ -1277,7 +1411,7 @@
            END-IF
       *
            IF    ( SPA-NAI-SELNUM  >   ZERO )
-               IF    ( SPA-NAI-TPUTFLG (SPA-NAI-SELNUM)
+               IF    ( SPA-NAI-TSTATUS (SPA-NAI-SELNUM)
                                    =  SPACE )
                    MOVE    "3004"      TO SPA-XGIDCD
                ELSE
@@ -1296,12 +1430,12 @@
            PERFORM 800-ORCSMCNDATE-SEC
       *
            INITIALIZE                      MNOTE-H-REC
-           MOVE    SPA-NAI-TBL-KEY     TO  MNOTE-H-TBL-KEY
-           MOVE    SPA-NAI-TBL-GROUP   TO  MNOTE-H-TBL-GROUP
-           MOVE    SPA-GMN-TBL-UUID    TO  MNOTE-H-TBL-UUID 
-           MOVE    SPA-GMN-SHORI-RENNUM
+           MOVE    SPA-NAI-ITBL-KEY    TO  MNOTE-H-TBL-KEY
+           MOVE    SPA-NAI-ITBL-GROUP  TO  MNOTE-H-TBL-GROUP
+           MOVE    SPA-NAI-ITBL-UUID   TO  MNOTE-H-TBL-UUID 
+           MOVE    SPA-NAI-ISHORI-RENNUM
                                        TO  MNOTE-H-SHORI-RENNUM
-           MOVE    SPA-GMN-RENNUM      TO  MNOTE-H-RENNUM
+           MOVE    SPA-NAI-IRENNUM     TO  MNOTE-H-RENNUM
            MOVE    SPA-HOSPNUM         TO  MNOTE-H-HOSPNUM
            IF    ( FLG-SENT            =   1 )
                MOVE    "1"             TO  MNOTE-H-PUTFLG
@@ -1328,35 +1462,20 @@
       *****************************************************************
        470-REFRESH-SEC                 SECTION.
       *
-          INITIALIZE               SPA-GMN-BODY
-                                   SPA-GMN-TBL
-                                   SPA-NAI-BODY
-                                   SPA-NAI-TBL
-           PERFORM 3101-SPA-LIST-HEN-SEC
+           PERFORM 31011-MNOTE-INFO-CLEAR-SEC
+           PERFORM 3101-MLIST-EDIT-SEC
       *
            .
        470-REFRESH-EXT.
            EXIT.
       *
       *****************************************************************
-      *    診療日編集処理
-      *****************************************************************
-       470-EDIT-CREYMD-SEC             SECTION.
-      *
-           MOVE    SPA-NAI-CREYMD  TO  WRK-SYMD
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMDG     TO  SPA-GMN-CREYMD
-      *
-           .
-       470-EDIT-CREYMD-EXT.
-           EXIT.
-      *****************************************************************
       *    クライアント保存
       *****************************************************************
        460-SAVE-SEC                    SECTION.
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-NAI-PTID    =   ZERO )
+               IF    ( SPA-NAI-ITBL-GROUP  =   SPACE )
                    MOVE    "0101"      TO  SPA-ERRCD
                    MOVE    1           TO  SPA-GMN-CUR
                END-IF
@@ -1375,7 +1494,7 @@
        4601-SAVE-SEC                   SECTION.
       *
       *    帳票管理ＤＢのチェック
-           PERFORM 900-MNOTE-H-KEY3-SEL-SEC
+           PERFORM 900-MNOTE-H-KEY-SEL-SEC
            IF    ( FLG-MNOTE-H     =   ZERO )
       *
                MOVE    SPACE           TO  ASS-CSVDATA
@@ -1442,10 +1561,6 @@
       *
            END-IF
       *
-           MOVE    "tbl_mnote_h"       TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
            .
        4601-SAVE-EXT.
            EXIT.
@@ -1494,7 +1609,7 @@
        460-SEND-SEC                    SECTION.
       *
            IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-NAI-PTID    =   ZERO )
+               IF    ( SPA-NAI-ITBL-GROUP  =   SPACE )
                    MOVE    "0101"      TO  SPA-ERRCD
                    MOVE    1           TO  SPA-GMN-CUR
                END-IF
@@ -1512,12 +1627,12 @@
       *****************************************************************
        4601-SEND-SEC                   SECTION.
       *
-           MOVE    SPA-NAI-PTID        TO  WRK-PTID
+           MOVE    SPA-NAI-IPTID       TO  WRK-PTID
            PERFORM 900-PTINF-KEY-SEL-SEC
-           IF    ( PTINF-BIRTHDAY      <   SPA-NAI-SMCNDATE-YMD )
+           IF    ( PTINF-BIRTHDAY      <   SPA-NAI-TODAY )
                MOVE    ZERO            TO  WRK-AGE
            ELSE
-               MOVE    SPA-NAI-SMCNDATE-YMD
+               MOVE    SPA-NAI-TODAY
                                        TO  WRK-YMD1
                MOVE    PTINF-BIRTHDAY  TO  WRK-YMD2
                COMPUTE WRK-AGE     =   WRK-YY2
@@ -1528,9 +1643,8 @@
                END-IF
            END-IF
       *
-      *
       *    帳票管理ＤＢのチェック
-           PERFORM 900-MNOTE-H-KEY3-SEL-SEC
+           PERFORM 900-MNOTE-H-KEY-SEL-SEC
            IF    ( FLG-MNOTE-H     =   ZERO )
       *
                MOVE    SPACE           TO  ASS-CSVDATA
@@ -1613,10 +1727,6 @@
       *
            END-IF
       *
-           MOVE    "tbl_mnote_h"       TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
            .
        4601-SEND-EXT.
            EXIT.
@@ -1627,14 +1737,14 @@
       *
            MOVE    SPACE               TO  CSVDATA-REC
            STRING  "id="               DELIMITED BY SIZE
-                   SPA-GMN-PTNUM       DELIMITED BY SPACE
+                   SPA-GMN-IPTNUM      DELIMITED BY SPACE
            INTO    CSVDATA-REC
            END-STRING
            WRITE   CSVDATA-REC
       *
            MOVE    SPACE               TO  CSVDATA-REC
            STRING  "name="             DELIMITED BY SIZE
-                   SPA-GMN-NAME        DELIMITED BY SPACE
+                   SPA-GMN-IPTNAME     DELIMITED BY SPACE
            INTO    CSVDATA-REC
            END-STRING
            WRITE   CSVDATA-REC
@@ -1673,43 +1783,18 @@
        46011-HEADER-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    和暦西暦変換編集処理
-      *****************************************************************
-       5002-HIZUKE-HEN-SEC          SECTION.
-      *
-           IF      WRK-SYMD            =   ALL "9"  OR   SPACE
-               MOVE    SPACE               TO  WRK-HGO
-               MOVE    WRK-SYMD(3:2)       TO  WRK-HYY
-               MOVE    WRK-SYMD(5:2)       TO  WRK-HMM
-               MOVE    WRK-SYMD(7:2)       TO  WRK-HDD
-               MOVE    WRK-HENYMD          TO  WRK-HENYMDG
-           ELSE
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY2-AREA
-               MOVE    "21"                TO  LNK-DAY2-IRAI
-               MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
-               CALL    "ORCSDAY"            USING   STS-AREA-DAY
-                                                   LNK-DAY2-AREA
-               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
-           END-IF
-      *
-           .
-       5002-HIZUKE-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
            PERFORM 500-GMNHEN-SEC
       *
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF    ( SPA-ERRCD       NOT =   SPACE )
                PERFORM 510-ERRSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-           IF      SPA-XGIDCD       NOT =   SPACE
+           IF    ( SPA-XGIDCD      NOT =   SPACE )
                PERFORM 520-TIDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
@@ -1749,65 +1834,33 @@
                MOVE    ZERO            TO  XG03-ROWATTR
            END-EVALUATE
       *
-           MOVE    SPA-GMN-TITLE1      TO  XG03-HEAD1
-           MOVE    SPA-GMN-TITLE2      TO  XG03-HEAD2
-      *
-           MOVE    SPA-GMN-SELNUM      TO  XG03-SELNUM
-      *
-           MOVE    "blue"              TO  XG03-LBLSRYYMD-STYLE
-                                           XG03-SRYYMD-STYLE
-      *
-           IF    ( SPA-NAI-SRYYMD  NOT =   SPACE )
-            AND  ( SPA-NAI-SRYYMD  NOT =   SPA-NAI-SMCNDATE-YMD )
-               MOVE    "診療年月日"    TO  XG03-LBLSRYYMD
-               MOVE    SPA-GMN-SRYYMD  TO  XG03-SRYYMD
-           END-IF
-      *
+           MOVE    SPA-GMN-MAX         TO  XG03-COUNT
            PERFORM VARYING     IDXL    FROM    1   BY  1
-                   UNTIL       IDXL        >   SPA-GMN-MAX
+                   UNTIL     ( IDXL        >   SPA-GMN-MAX )
       *
                MOVE    SPA-GMN-TNO (IDXL)
                                        TO  WRK-ZZ
                MOVE    WRK-ZZ          TO  XG03-TNO    (IDXL)
-      *
-               IF    ( IDXL            =   1 )
-                OR   ( SPA-GMN-TTBL-GROUP (IDXL)
-                                   NOT = SPA-GMN-TTBL-GROUP (IDXL - 1))
-      *
-                   MOVE    SPA-GMN-TGYOUMU   (IDXL)
-                                           TO  XG03-GYOMUNM   (IDXL)
-                   MOVE    SPA-GMN-TTBL-GROUP (IDXL) (1:8)
-                                           TO  WRK-SYMD
-                   PERFORM 5002-HIZUKE-HEN-SEC
-                   MOVE    WRK-HENYMDG     TO  XG03-SAKU-YMD(IDXL)
-                   STRING  SPA-GMN-TTBL-GROUP(IDXL)(9:2)
-                                               DELIMITED  BY  SIZE
-                           ":"                 DELIMITED  BY  SIZE
-                           SPA-GMN-TTBL-GROUP(IDXL)(11:2)
-                                               DELIMITED  BY  SIZE
-                           ":"                 DELIMITED  BY  SIZE
-                           SPA-GMN-TTBL-GROUP(IDXL)(13:2)
-                                               DELIMITED  BY  SIZE
-                   INTO    XG03-SAKU-TIME(IDXL)
-                   END-STRING
-                   MOVE    SPA-GMN-TSRYYMD (IDXL)
-                                           TO  XG03-TSRYYMD(IDXL)
-               END-IF
-      *        MOVE    SPA-GMN-TCNT (IDXL) TO  WRK-CNT
-      *        MOVE    WRK-CNT             TO  XG03-TCNT   (IDXL)
-      *
-               MOVE    SPA-GMN-TLPTNUM   (IDXL)
-                                           TO  XG03-LPTNUM (IDXL)
-               MOVE    SPA-GMN-TLDRNAME(IDXL)
-                                           TO  XG03-DRNAME    (IDXL)
-               MOVE    SPA-GMN-TLPTNAME  (IDXL)
-                                           TO  XG03-PTNAME    (IDXL)
-               IF    ( SPA-NAI-TPUTFLG (IDXL)
-                                           =   SPACE )
-                   MOVE    "未送信"        TO  XG03-TSTATUS   (IDXL)
-               ELSE
-                   MOVE    "送信済"        TO  XG03-TSTATUS   (IDXL)
-               END-IF
+               MOVE    SPA-GMN-TPTNUM (IDXL)
+                                       TO  XG03-TPTNUM (IDXL)
+               MOVE    SPA-GMN-TPTNAME (IDXL)
+                                       TO  XG03-TPTNAME (IDXL)
+               MOVE    SPA-GMN-TTITLE (IDXL)
+                                       TO  XG03-TTITLE (IDXL)
+               MOVE    SPA-GMN-TDATA-VERSION (IDXL)
+                                       TO  XG03-TDATA-VERSION (IDXL)
+               MOVE    SPA-GMN-TSRYYMD (IDXL)
+                                       TO  XG03-TSRYYMD (IDXL)
+               MOVE    SPA-GMN-TDRNAME (IDXL)
+                                       TO  XG03-TDRNAME (IDXL)
+               MOVE    SPA-GMN-TLDNAME (IDXL)
+                                       TO  XG03-TLDNAME (IDXL)
+               MOVE    SPA-GMN-TCREYMD (IDXL)
+                                       TO  XG03-TCREYMD (IDXL)
+               MOVE    SPA-GMN-TCREHMS (IDXL)
+                                       TO  XG03-TCREHMS (IDXL)
+               MOVE    SPA-GMN-TSTATUS (IDXL)
+                                       TO  XG03-TSTATUS (IDXL)
       *
                IF    ( IDXL                =   SPA-NAI-SELNUM )
                    MOVE    "T"             TO  XG03-SELECT (IDXL)
@@ -1817,22 +1870,44 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-MAX         TO  XG03-COUNT
-      *
+           MOVE    SPA-GMN-SELNUM      TO  XG03-SELNUM
            MOVE    SPA-GMN-PTNUM       TO  XG03-PTNUM 
            MOVE    "blue"              TO  XG03-PTNAME-STYLE
            MOVE    SPA-GMN-NAME        TO  XG03-PTNAME-VALUE
       *
            MOVE    SPA-GMN-CREYMD      TO  XG03-CREYMD
       *
+           MOVE    SPA-GMN-IPTNUM      TO  XG03-IPTNUM
+           MOVE    SPA-GMN-IPTNAME     TO  XG03-IPTNAME
+           MOVE    SPA-GMN-ITITLE      TO  XG03-ITITLE
+           MOVE    SPA-GMN-IDATA-VERSION
+                                       TO  XG03-IDATA-VERSION
+           MOVE    SPA-GMN-IDRNAME     TO  XG03-IDRNAME
+           MOVE    SPA-GMN-ISRYYMD     TO  XG03-ISRYYMD
+           MOVE    SPA-GMN-ILDNAME     TO  XG03-ILDNAME
+           MOVE    SPA-GMN-ICREYMD     TO  XG03-ICREYMD
+           MOVE    SPA-GMN-ICREHMS     TO  XG03-ICREHMS
+           MOVE    SPA-GMN-IOPID       TO  XG03-IOPID
+           MOVE    SPA-GMN-ISTATUS     TO  XG03-ISTATUS
+           MOVE    SPA-GMN-CONTEXT     TO  XG03-CONTEXT
+      *
            MOVE    WIDGET-NORMAL       TO  XG03-B06S-STATE
                                            XG03-B07S-STATE
                                            XG03-B09-STATE
                                            XG03-B11-STATE
                                            XG03-B12-STATE
+                                           XG03-PTNUM-STATE
+                                           XG03-CREYMD-STATE
+      *
+           IF    ( SPA-NAI-COLLECT     =   "1" )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  XG03-PTNUM-STATE
+                                           XG03-CREYMD-STATE
+               MOVE    SPACE           TO  XG03-CREYMD
+           END-IF
       *
            IF    ( SPA-NAI-SELNUM      >   ZERO )
-               IF    ( SPA-NAI-TPUTFLG(SPA-NAI-SELNUM)
+               IF    ( SPA-NAI-TSTATUS(SPA-NAI-SELNUM)
                                        =   SPACE )
                    MOVE    "済に変更"  TO  XG03-B10-LABEL
                ELSE
@@ -1840,12 +1915,21 @@
                END-IF
            END-IF
       *
+           IF    ( SPA-NAI-COLLECT =   SPACE )
+               IF    ( SPA-NAI-SELNUM      >   ZERO )
+                OR   ( SPA-NAI-PTID    NOT =   ZERO )
+                   MOVE    "名寄せ"    TO  XG03-B04-LABEL
+               END-IF
+           ELSE
+                   MOVE    "名寄せ解除" TO XG03-B04-LABEL
+           END-IF
+      *
            IF    ( SPA-GMN-PAGE        =   1 )
                MOVE    WIDGET-INSENSITIVE
                                        TO  XG03-B06S-STATE
            END-IF
       *
-           IF    ( SPA-GMN-TBL-NEXT    =   ZERO )
+           IF    ( SPA-GMN-MLIST-NEXT    =   ZERO )
                MOVE    WIDGET-INSENSITIVE
                                        TO  XG03-B07S-STATE
            END-IF
@@ -1874,6 +1958,12 @@
                                        TO  XG03-LBLMSG01
            END-EVALUATE
       *
+           MOVE    "red"               TO  XG03-LBLMSG02-STYLE
+           IF    ( SPA-NAI-OVER-FLOW   =   "1" )
+               MOVE    "サイズが大きいため、途中まで表示しています。"
+                                       TO  XG03-LBLMSG02
+           END-IF
+      *
            MOVE    WRK-OBJECTDATA      TO  XG03-OBJECTDATA
            MOVE    WRK-DL-FILENAME     TO  XG03-FILENAME
       *
@@ -1893,6 +1983,16 @@
                PERFORM 50011-INPUT-CUR-SEC
            END-IF
       *
+           IF    ( SPA-GMN-CUR     =    212 )
+               IF    ( XG03-B12-STATE  =   WIDGET-INSENSITIVE )
+                   IF    ( XG03-B09-STATE  =   WIDGET-INSENSITIVE )
+                       MOVE    1       TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    209     TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *
            EVALUATE    SPA-GMN-CUR
            WHEN    1
                MOVE    "SELNUM"   TO  MCP-WIDGET
@@ -1900,7 +2000,9 @@
                MOVE    "PTNUM"    TO  MCP-WIDGET
            WHEN    8
                MOVE    "CREYMD"   TO  MCP-WIDGET
-           WHEN    99
+           WHEN    209
+               MOVE    "B09"      TO  MCP-WIDGET
+           WHEN    212
                MOVE    "B12"      TO  MCP-WIDGET
            END-EVALUATE
           .
@@ -1914,6 +2016,10 @@
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "SELNUM"
+               MOVE    8          TO  SPA-GMN-CUR
+           WHEN    "CREYMD"
+               MOVE    7          TO  SPA-GMN-CUR
+           WHEN    "PTNUM"
                MOVE    8          TO  SPA-GMN-CUR
            END-EVALUATE
       *
@@ -1931,22 +2037,25 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
-               MOVE    "該当の選択番号はありません" 
+               MOVE    "正しい選択番号を入力してください" 
                                                TO  SPA-ERRMSG
            WHEN    "0005"
-               MOVE    "該当の電送用のお薬情報が存在しません" 
+               MOVE    "該当の電子版お薬情報が存在しません" 
                                                TO  SPA-ERRMSG
            WHEN    "0008"
                MOVE    "該当の患者が存在しません"
                                                TO  SPA-ERRMSG
            WHEN    "0009"
-               MOVE    "該当患者の電送データはありません"
+               MOVE    "該当患者の電子版お薬情報はありません"
                                                TO  SPA-ERRMSG
            WHEN    "0010"
                MOVE    "診療年月日入力エラー"
                                                TO  SPA-ERRMSG
            WHEN    "0101"
                MOVE    "番号を選択してください"
+                                               TO  SPA-ERRMSG
+           WHEN    "0102"
+               MOVE    "番号を選択するか患者番号を入力してください"
                                                TO  SPA-ERRMSG
            WHEN    "1001"  THRU  "1003"
                MOVE    "更新処理に失敗しました"
@@ -1987,7 +2096,7 @@
       *
            EVALUATE    SPA-XGIDCD
            WHEN    "3002"
-              MOVE    "電送用のお薬情報を削除します"
+              MOVE    "電子版お薬情報を削除します"
                                        TO  WRK-XGIDMSG
                MOVE    "B01"           TO  MCP-WIDGET
            WHEN    "3003"
@@ -2078,9 +2187,36 @@
        800-ORCFILEDEL-EXT.
            EXIT.
       *****************************************************************
+      *    和暦西暦変換編集処理
+      *****************************************************************
+       800-HIZUKE-SEC                  SECTION.
+      *
+           MOVE    SPACE               TO  WRK-HENYMDG
+      *
+           IF    ( WRK-SYMD            =   ALL "9"  OR   SPACE )
+               MOVE    SPACE           TO  WRK-HGO
+               MOVE    WRK-SYMD(3:2)   TO  WRK-HYY
+               MOVE    WRK-SYMD(5:2)   TO  WRK-HMM
+               MOVE    WRK-SYMD(7:2)   TO  WRK-HDD
+               MOVE    WRK-HENYMD      TO  WRK-HENYMDG
+           ELSE
+               INITIALIZE                  ORCSGDAYAREA
+               MOVE    WRK-SYMD        TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"      USING
+                                               ORCSGDAYAREA
+               IF  ( SGDAY-RC          =   ZERO )
+                   MOVE    SGDAY-OTDAY TO  WRK-HENYMDG
+                   MOVE    SGDAY-SDAY  TO  WRK-SYMD
+               END-IF
+           END-IF
+      *
+           .
+       800-HIZUKE-EXT.
+           EXIT.
+      *****************************************************************
       *    統計ＣＳＶ格納管理検索処理
       *****************************************************************
-       900-MNOTE-H-KEY3-SEL-SEC        SECTION.
+       900-MNOTE-H-KEY-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-MNOTE-H
       *
@@ -2088,11 +2224,14 @@
       *
            MOVE    SPA-HOSPNUM         TO  MNOTE-H-HOSPNUM
            MOVE    CONST-TBL-KEY       TO  MNOTE-H-TBL-KEY
-           MOVE    SPA-NAI-TBL-GROUP   TO  MNOTE-H-TBL-GROUP
-           MOVE    SPA-GMN-TBL-UUID    TO  MNOTE-H-TBL-UUID
+           MOVE    SPA-NAI-IRENNUM     TO  MNOTE-H-RENNUM
+           MOVE    SPA-NAI-ITBL-GROUP  TO  MNOTE-H-TBL-GROUP
+           MOVE    SPA-NAI-ITBL-UUID   TO  MNOTE-H-TBL-UUID
+           MOVE    SPA-NAI-ISHORI-RENNUM
+                                       TO  MNOTE-H-SHORI-RENNUM
            MOVE    MNOTE-H-REC     TO  MCPDATA-REC
            MOVE    "tbl_mnote_h"   TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
+           MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  MNOTE-H-REC
@@ -2101,30 +2240,13 @@
                INITIALIZE                  MNOTE-H-REC
            END-IF
       *
-           .
-      *
-       900-MNOTE-H-KEY3-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    統計ＣＳＶ格納管理FETCH処理
-      *****************************************************************
-       900-MNOTE-H-KEY3-FET-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-MNOTE-H
-      *
-           MOVE    "tbl_mnote_h"   TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  MNOTE-H-REC
-           ELSE
-               MOVE    1               TO  FLG-MNOTE-H
-               INITIALIZE                  MNOTE-H-REC
-           END-IF
+           MOVE    "tbl_mnote_h"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
-       900-MNOTE-H-KEY3-FET-EXT.
+       900-MNOTE-H-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    統計ＣＳＶ格納管理検索処理
@@ -2192,7 +2314,11 @@
       *
            MOVE    SPA-HOSPNUM         TO  MNOTE-H-HOSPNUM
            MOVE    CONST-TBL-KEY       TO  MNOTE-H-TBL-KEY
-           MOVE    SPA-NAI-CREYMD      TO  MNOTE-H-CREYMD
+           IF    ( SPA-NAI-COLLECT     =   SPACE )
+               MOVE    SPA-NAI-CREYMD  TO  MNOTE-H-CREYMD
+           ELSE
+               MOVE    SPA-NAI-PTID    TO  MNOTE-H-PTID
+           END-IF
            MOVE    MNOTE-H-REC     TO  MCPDATA-REC
            MOVE    "tbl_mnote_h"   TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME

@@ -138,6 +138,7 @@
                MOVE    SMNOTE-SHORI-RENNUM
                                           TO   MNOTE-H-SHORI-RENNUM
                MOVE    SMNOTE-GYOUMU-CD   TO   MNOTE-H-GYOUMU-CD
+               MOVE    SMNOTE-LOCATION-CD TO   MNOTE-H-LOCATION-CD
                MOVE    SMNOTE-SHELLID     TO   MNOTE-H-SHELLID
                MOVE    SMNOTE-SRYYM       TO   MNOTE-H-SRYYM
                MOVE    SMNOTE-SRYYMD      TO   MNOTE-H-SRYYMD
@@ -204,7 +205,6 @@
            MOVE    SMNOTE-TBL-UUID     TO  MNOTE-B-TBL-UUID
            MOVE    SMNOTE-SHORI-RENNUM
                                        TO  MNOTE-B-SHORI-RENNUM
-           MOVE    SMNOTE-GYOUMU-CD    TO  MNOTE-B-GYOUMU-CD
            MOVE    SMNOTE-SHELLID      TO  MNOTE-B-SHELLID
            MOVE    SMNOTE-SRYYM        TO  MNOTE-B-SRYYM
            MOVE    SMNOTE-SRYYMD       TO  MNOTE-B-SRYYMD

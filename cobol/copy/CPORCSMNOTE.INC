@@ -59,6 +59,11 @@
            03  SMNOTE-TBL-UUID     PIC X(36).
       *    業務コード
            03  SMNOTE-GYOUMU-CD    PIC 9(03).
+      *    出力場所コード
+      *    01:診療行為（請求確認）
+      *    02:診療行為（中途終了）
+      *    03:診療行為（前回処方）
+           03  SMNOTE-LOCATION-CD  PIC X(02).
       *    保存用CSVファイル名(PATH付)
            03  SMNOTE-CSVFILE      PIC X(255).
       *    ドクターコード

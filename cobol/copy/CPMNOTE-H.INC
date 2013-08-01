@@ -17,6 +17,8 @@
                                        PIC 9(4).
       *    業務コード
            05  MNOTE-H-GYOUMU-CD    PIC 9(03).
+      *    出力場所コード
+           05  MNOTE-H-LOCATION-CD  PIC X(02).
       *    シェルＩＤ
            03  MNOTE-H-SHELLID     PIC X(20).
       *    診療年月

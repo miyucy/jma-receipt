@@ -32,8 +32,9 @@ fi
 #        ${19} CSVFILE
 #        ${20} TBL-UUID
 #        ${21} GYOUMU-CD
-#        ${22} DATA-VERSION
-#        ${23} OPID
+#        ${22} LOCATION-CD
+#        ${23} DATA-VERSION
+#        ${24} OPID
 #-------------------------------------------#
 #
 

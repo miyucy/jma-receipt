@@ -6,6 +6,7 @@ tbl_mnote_h	{
 	TBL_UUID		varchar(36);
 	SHORI_RENNUM	number(4);
 	GYOUMU_CD       number(3);
+	LOCATION_CD     char(02);
 	SHELLID			varchar(20);
 	SRYYM			varchar(6);
 	SRYYMD			varchar(8);
@@ -102,7 +103,8 @@ path	key8		{
 		FROM tbl_mnote_h
 	    	    WHERE 	HOSPNUM	= :HOSPNUM
                     AND      TBL_KEY    =   :TBL_KEY
-                    AND	     CREYMD	=   :CREYMD
+                    AND	   ( TRIM(:CREYMD) =   '' OR CREYMD = :CREYMD )
+                    AND	   ( :PTID	       =   0  OR PTID   = :PTID )
                     ORDER BY  TBL_GROUP desc,TBL_UUID,RENNUM,SHORI_RENNUM
 		;
 	};

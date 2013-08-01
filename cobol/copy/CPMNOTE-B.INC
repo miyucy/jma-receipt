@@ -11,8 +11,6 @@
       *     処理内連番
             03  MNOTE-B-SHORI-RENNUM
                                        PIC 9(4).
-      *    業務コード
-           03  MNOTE-B-GYOUMU-CD   PIC 9(03).
       *    シェルＩＤ
            03  MNOTE-B-SHELLID     PIC X(20).
       *    診療年月
