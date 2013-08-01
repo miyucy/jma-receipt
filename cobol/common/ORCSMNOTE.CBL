@@ -158,9 +158,11 @@
                                    TO  SHELLTBL-ARG20
            MOVE    SMNOTE-GYOUMU-CD
                                    TO  SHELLTBL-ARG21
-           MOVE    SMNOTE-DATA-VERSION
+           MOVE    SMNOTE-LOCATION-CD
                                    TO  SHELLTBL-ARG22
-           MOVE    SPA-OPID        TO  SHELLTBL-ARG23
+           MOVE    SMNOTE-DATA-VERSION
+                                   TO  SHELLTBL-ARG23
+           MOVE    SPA-OPID        TO  SHELLTBL-ARG24
       *
            MOVE    SHELLTBL        TO      MCPDATA-REC
            MOVE    "SHELL"         TO      MCP-FUNC
