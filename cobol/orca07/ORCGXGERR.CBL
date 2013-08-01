@@ -62,7 +62,12 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA07SCRAREA.INC".
+           COPY    "XG01.INC".
+           COPY    "XG02.INC".
+           COPY    "XG03.INC".
+           COPY    "XG99.INC".
+           COPY    "XGERR.INC".
+           COPY    "XGID1.INC".
       *
       ******************************************************************
        PROCEDURE                   DIVISION    USING

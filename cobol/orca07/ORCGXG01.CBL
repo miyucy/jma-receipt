@@ -28,11 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.05.01    NACL-藤原    10/03/23  ＨＯＳＴ名取得方法の変更
-      *
-      *  04.07.01    NACL-藤原    14/03/24  スクリプト起動パスサーチ対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-森脇    16/11/29  チェックマスタCSV出力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -114,6 +109,11 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
       *
+       01  WRK-SHELL-NAME.
+           05  FILLER             PIC X(16) VALUE
+                                             "scripts/allways/".
+           05  WRK-SHELL-SHELL    PIC X(20).
+      *
        01  WRK-ROW.
            05  WRK-LIST-ROW        PIC S9(9)   BINARY.
       *
@@ -161,8 +161,11 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ユーザー情報取得
-           COPY    "CPORCSLDUSER.INC".
+      *    ファイルデイレクトリ位置指定サブ
+           COPY    "CPMKPASS.INC".
+      *
+           COPY    "ORCA-SYSTEM".
+      *
       *****************************************************************
       *    連絡領域
       *****************************************************************
@@ -173,7 +176,12 @@
            COPY    "LINKAREA". 
       *
        01  SCRAREA.
-           COPY    "ORCA07SCRAREA.INC".
+           COPY    "XG01.INC".
+           COPY    "XG02.INC".
+           COPY    "XG03.INC".
+           COPY    "XG99.INC".
+           COPY    "XGERR.INC".
+           COPY    "XGID1.INC".
       *
       ******************************************************************
        PROCEDURE                   DIVISION    USING
@@ -282,7 +290,8 @@
       *        元の画面へ戻す
                EVALUATE    WRK-MOTOPG
                WHEN    "XB01"
-                   MOVE    SPA-WORK        TO   WRK-MOTOPG
+                   MOVE    SPA-WORK        TO   SPA-XG01KYOUTU
+                   MOVE    SPA-XG01-MOTOPG TO   WRK-MOTOPG
                    INITIALIZE                   SPA-XG01FREE
                                                 SPA-XG01KYOUTU
                    MOVE    WRK-MOTOPG      TO   SPA-XG01-MOTOPG
@@ -316,10 +325,6 @@
                    MOVE    "DAILY"         TO  TOUKEICSV-H-TBL-KEY
                WHEN    "G01"
                    MOVE    "MONTHLY"       TO  TOUKEICSV-H-TBL-KEY
-      *----(04.08.02)--ADD-START---
-               WHEN    "X91"
-                   MOVE    "CHKMST"        TO  TOUKEICSV-H-TBL-KEY
-      *----(04.08.02)--ADD-END-----
            END-EVALUATE 
            MOVE    TOUKEICSV-H-REC     TO  MCPDATA-REC
            MOVE    "tbl_toukeicsv_h"   TO  MCP-TABLE
@@ -520,18 +525,20 @@
            MOVE    SPA-TERMID          TO  TOUKEICSVERR-TERMID
            MOVE    1                   TO  TOUKEICSVERR-SYOKBN1
       *             
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE                      ORCSMKPASSAREA
+           MOVE    "orc_putcsv.sh"     TO  WRK-SHELL-SHELL
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
+      *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "orc_putcsv.sh"     TO  SHELLTBL-NAME
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG1
            EVALUATE    SPA-XG01-MOTOPG
                WHEN    "L01"
                    MOVE    "DAILY"         TO  SHELLTBL-ARG2
                WHEN    "G01"
                    MOVE    "MONTHLY"       TO  SHELLTBL-ARG2
-      *----(04.08.02)--ADD-START---
-               WHEN    "X91"
-                   MOVE    "CHKMST"        TO  SHELLTBL-ARG2
-      *----(04.08.02)--ADD-END-----
            END-EVALUATE 
            MOVE    SPA-GMN-TBL-GROUP   TO  SHELLTBL-ARG3
            MOVE    SPA-GMN-SHORI-RENNUM
@@ -542,50 +549,58 @@
            ELSE
                MOVE    SPA-GMN-XG02-FILE   TO  SHELLTBL-ARG6
            END-IF
-           IF      SPA-GMN-XG02-FILE   =   SPACE
-               STRING  SPA-NAI-XG02-TO-FOLDER
-                                           DELIMITED   BY  SPACE
-                       "/"                 DELIMITED   BY  SIZE 
-                                           INTO  SHELLTBL-ARG7
-               END-STRING
-           END-IF
+           STRING  SPA-NAI-XG02-TO-FOLDER
+                                       DELIMITED   BY  SPACE
+                   "/"                 DELIMITED   BY  SIZE 
+                                       INTO  SHELLTBL-ARG7
+           END-STRING
            MOVE    SPA-NAI-XG02-TO-DATA
                                        TO  SHELLTBL-ARG8
       *    ipアドレス取得
-      *****PERFORM 900-SYSTEM-GET-SEC
-      *****MOVE    SLDUSER-HOST(1) TO  SHELLTBL-ARG9
-           MOVE    WRK-CONS-JOB-JOBID
-                                   TO  SHELLTBL-ARG10
-           MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  SHELLTBL-ARG11
-           MOVE    TOUKEICSVERR-BASENAME
-                                   TO  SHELLTBL-ARG12
-           MOVE    SPA-GMN-XG02-FILENAME
-                                   TO  SHELLTBL-ARG13
-           MOVE    SPA-GMN-XG02-CDKBN
-                                   TO  SHELLTBL-ARG14
-           MOVE    SPA-GMN-TPRT-TITLE(SPA-NAI-SELNUM)
-                                   TO  SHELLTBL-ARG15
-      *
-           MOVE    SPA-TERMID      TO  SHELLTBL-ARG16
-           MOVE    SPA-OPID        TO  SHELLTBL-ARG17
-      *
-           MOVE    SHELLTBL        TO  MCPDATA-REC
-           MOVE    "SHELL"         TO  MCP-FUNC
-           MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "allways"       TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
+           INITIALIZE                  ORCA-SYSTEM
+           MOVE    "GETVALUE"      TO  MCP-FUNC
+           MOVE    MCP-TERM        TO  ORCA-SYSTEM-ID
+           MOVE    10              TO  ORCA-SYSTEM-NUM
+           MOVE    "host"          TO  ORCA-SYSTEM-KEY (1)
+           MOVE    ORCA-SYSTEM     TO  MCPDATA-REC 
+           MOVE    "system"        TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"     USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
+           MOVE    MCPDATA-REC     TO  ORCA-SYSTEM
+           MOVE    ORCA-SYSTEM-VALUE (1)
+                                   TO  SHELLTBL-ARG9
+           MOVE    WRK-CONS-JOB-JOBID  TO  SHELLTBL-ARG10
+           MOVE    WRK-CONS-JOB-SHELLID
+                                       TO  SHELLTBL-ARG11
+           MOVE    TOUKEICSVERR        TO  SHELLTBL-ARG12
+           MOVE    SPA-GMN-XG02-FILENAME
+                                       TO  SHELLTBL-ARG13
+           MOVE    SPA-GMN-XG02-CDKBN  TO  SHELLTBL-ARG14
+           MOVE    SPA-GMN-TPRT-TITLE (SPA-NAI-SELNUM)
+                                       TO  SHELLTBL-ARG15
+      *
+           MOVE    SPA-TERMID          TO  SHELLTBL-ARG16
+           MOVE    SPA-OPID            TO  SHELLTBL-ARG17
+      *
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
       *
            IF    ( SPA-GMN-XG02-FILE   =   "1" )
-               MOVE    "SV"            TO  SPA-XGID1-FLG
+               MOVE    "SV"                TO  SPA-XGID1-FLG
            ELSE
-               MOVE    SPACE           TO  SPA-XGID1-FLG
+               MOVE    SPACE               TO  SPA-XGID1-FLG
            END-IF
-           MOVE    SPACE           TO  SPA-XGIDCD
-                                       SPA-XG99-FLG
+           MOVE    SPACE               TO  SPA-XGIDCD
+                                           SPA-XG99-FLG
       *     
       *    情報確認画面を表示                                                   
            PERFORM 490-KAKUNIN-SEC
@@ -804,10 +819,6 @@
                    MOVE    "DAILY"         TO  TOUKEICSV-H-TBL-KEY
                WHEN    "G01"
                    MOVE    "MONTHLY"       TO  TOUKEICSV-H-TBL-KEY
-      *----(04.08.02)--ADD-START---
-               WHEN    "X91"
-                   MOVE    "CHKMST"        TO  TOUKEICSV-H-TBL-KEY
-      *----(04.08.02)--ADD-END-----
            END-EVALUATE 
            MOVE    SPA-GMN-TBL-GROUP   TO  TOUKEICSV-H-TBL-GROUP
            MOVE    SPA-GMN-RENNUM      TO  TOUKEICSV-H-RENNUM
@@ -855,10 +866,6 @@
                    MOVE    "DAILY"         TO  TOUKEICSV-H-TBL-KEY
                WHEN    "G01"
                    MOVE    "MONTHLY"       TO  TOUKEICSV-H-TBL-KEY
-      *----(04.08.02)--ADD-START---
-               WHEN    "X91"
-                   MOVE    "CHKMST"        TO  TOUKEICSV-H-TBL-KEY
-      *----(04.08.02)--ADD-END-----
            END-EVALUATE 
            MOVE    SPA-GMN-TBL-GROUP   TO  TOUKEICSV-H-TBL-GROUP
            MOVE    SPA-GMN-RENNUM      TO  TOUKEICSV-H-RENNUM
@@ -882,10 +889,6 @@
                    MOVE    "DAILY"         TO  TOUKEICSV-H-TBL-KEY
                WHEN    "G01"
                    MOVE    "MONTHLY"       TO  TOUKEICSV-H-TBL-KEY
-      *----(04.08.02)--ADD-START---
-               WHEN    "X91"
-                   MOVE    "CHKMST"        TO  TOUKEICSV-H-TBL-KEY
-      *----(04.08.02)--ADD-END-----
            END-EVALUATE 
            MOVE    SPA-GMN-TBL-GROUP   TO  TOUKEICSV-B-TBL-GROUP
            MOVE    SPA-GMN-RENNUM      TO  TOUKEICSV-B-RENNUM
@@ -919,7 +922,7 @@
            MOVE    WRK-CONS-JOB-SHELLID
                                        TO  SPA-JOB-SHELLID
       *
-           MOVE    SPA-XG01-MOTOPG     TO  SPA-WORK
+           MOVE    SPA-XG01KYOUTU      TO  SPA-WORK
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -958,10 +961,6 @@
                    MOVE    "DAILY"         TO  TOUKEICSV-H-TBL-KEY
                WHEN    "G01"
                    MOVE    "MONTHLY"       TO  TOUKEICSV-H-TBL-KEY
-      *----(04.08.02)--ADD-START---
-               WHEN    "X91"
-                   MOVE    "CHKMST"        TO  TOUKEICSV-H-TBL-KEY
-      *----(04.08.02)--ADD-END-----
            END-EVALUATE 
            MOVE    SPA-GMN-TBL-GROUP   TO  TOUKEICSV-H-TBL-GROUP
            MOVE    SPA-GMN-RENNUM      TO  TOUKEICSV-H-RENNUM
@@ -1386,7 +1385,6 @@
            END-EVALUATE
       *
            MOVE    SPACE           TO  XGID1
-           INITIALIZE                  XGID1
            MOVE    SPA-XGIDCD      TO  XGID1-ID1CODE
            MOVE    WRK-XGIDMSG     TO  XGID1-ID1MSG
            MOVE    "B12"           TO  MCP-WIDGET
@@ -1418,22 +1416,6 @@
       *
            .
        800-ORCSJOB-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ipアドレス取得
-      *****************************************************************
-       900-SYSTEM-GET-SEC          SECTION.
-      *
-           INITIALIZE                  SLDUSER-AREA
-           MOVE    2               TO  SLDUSER-KBN
-           MOVE    MCP-TERM        TO  SLDUSER-ID
-           CALL    "ORCSLDUSER"        USING
-                                       SLDUSER-AREA
-                                       SPA-AREA
-      *
-           .
-       900-SYSTEM-GET-EXT.
            EXIT.
       *
       *****************************************************************
