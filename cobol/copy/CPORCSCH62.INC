@@ -32,6 +32,8 @@
            03  ORCSCH62-KBN             PIC X(01).
       *    1:ＣＳＶ出力のみ
            03  ORCSCH62-KBN2            PIC X(01).
+      *    発行画面区分（1:請求確認、2:中途終了、3：前回処方
+           03  ORCSCH62-PGKBN           PIC X(01).
       *
       *    伝票番号
            03  ORCSCH62-DENPNUM         PIC 9(07).

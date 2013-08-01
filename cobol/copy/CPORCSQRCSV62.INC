@@ -95,6 +95,8 @@
            03  ORCSQRCSV62-QR-KBN          PIC X(01).
       *    ＱＲＣＳＶ処理区分
            03  ORCSQRCSV62-CSV-KBN         PIC X(01).
+      *    発行画面区分
+           03  ORCSQRCSV62-PGKBN           PIC X(01).
       *
       *出力
       *    エラーコード

@@ -6532,6 +6532,7 @@
                MOVE    WRK-DENPNUM         TO  ORCSCH62-DENPNUM
                MOVE    SPA-GMN-OKUSURIFLG  TO  ORCSCH62-KBN
                MOVE    "05"                TO  SPA-PRT-FLG
+               MOVE    "1"                 TO  ORCSCH62-PGKBN
                CALL    "ORCSCH62"          USING   SPA-AREA
                                                    ORCSCH62AREA
            ELSE
@@ -6542,6 +6543,7 @@
                    MOVE    "1"                 TO  ORCSCH62-KBN
                    MOVE    "1"                 TO  ORCSCH62-KBN2
                    MOVE    "05"                TO  SPA-PRT-FLG
+                   MOVE    "1"                 TO  ORCSCH62-PGKBN
                    CALL    "ORCSCH62"          USING   SPA-AREA
                                                        ORCSCH62AREA
                END-IF

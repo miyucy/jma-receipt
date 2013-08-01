@@ -241,6 +241,18 @@
                MOVE    ORCSQRCSV62-DRCD    TO  SMNOTE-DRCD
       *        データバージョン
                MOVE    ORCSQRCSV62-CSV-KBN TO  SMNOTE-DATA-VERSION
+      *        出力場所コード
+               EVALUATE    ORCSQRCSV62-PGKBN
+      *            請求確認
+                   WHEN    "1"
+                       MOVE    "01"        TO  SMNOTE-LOCATION-CD
+      *            中途終了
+                   WHEN    "2"
+                       MOVE    "02"        TO  SMNOTE-LOCATION-CD
+      *            前回処方
+                   WHEN    "3"
+                       MOVE    "03"        TO  SMNOTE-LOCATION-CD
+               END-EVALUATE
                CALL    "ORCSMNOTE"         USING
                                            ORCSMNOTEAREA
                                            SPA-AREA

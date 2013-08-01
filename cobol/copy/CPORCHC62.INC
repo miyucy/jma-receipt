@@ -82,4 +82,6 @@
            03  ORCHC62-CSVKBN          PIC X(01).
       *    ＣＳＶ出力のみ区分
            03  ORCHC62-PRTKBN          PIC X(01).
+      *    発行画面区分（1:請求確認、2:中途終了、3：前回処方
+           03  ORCHC62-PGKBN           PIC X(01).
       *

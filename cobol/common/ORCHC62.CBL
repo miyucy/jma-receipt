@@ -311,9 +311,9 @@
       *    ファイル存在チェック
            COPY    "CPORCSFILECHK.INC".
       *    ＣＳＶファイル作成パラメタ
-           COPY    "CPORCSFILEENCODE.INC".
+      **** COPY    "CPORCSFILEENCODE.INC".
       *    ディレクトリ作成パラメタ
-           COPY    "CPORCSMKDIR.INC".
+      **** COPY    "CPORCSMKDIR.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -1302,6 +1302,7 @@
            MOVE    ORCHC62-CSVKBN      TO  ORCSQRCSV62-CSV-KBN
            MOVE    WRK-QRKBN           TO  ORCSQRCSV62-QR-KBN
            MOVE    ORCHC62-CNT         TO  ORCSQRCSV62-CNT
+           MOVE    ORCHC62-PGKBN       TO  ORCSQRCSV62-PGKBN
       *
            CALL    "ORCSQRCSV62"       USING
                                        SPA-AREA

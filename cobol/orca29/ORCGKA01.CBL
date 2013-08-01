@@ -4084,6 +4084,7 @@
                                                TO  SPA-SRYKA
                    PERFORM 41041-ORCSCH62-HENSYU-SEC
            END-EVALUATE
+           MOVE    "3"                 TO  ORCSCH62-PGKBN
       *
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPACE               TO  SPA-PRT-FLG
