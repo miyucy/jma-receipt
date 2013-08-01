@@ -10,6 +10,7 @@ bind	"KA021"		"OpenCOBOL"	"ORCGKA021";
 bind	"KAERR"		"OpenCOBOL"	"ORCGKAERR";
 bind	"KAID1"		"OpenCOBOL"	"ORCGKAID1";
 bind	"KAID2"		"OpenCOBOL"	"ORCGKAID2";
+bind	"_KADMY01"	"OpenCOBOL"	"ORCGKADMY01";
 
 multiplex_group	orca29;
 
@@ -23,6 +24,7 @@ data	{
 		KAERR;
 		KAID1;
 		KAID2;
+                _KADMY01;
 	};
 };
 
@@ -57,28 +59,10 @@ db	{
 	tbl_dbcatalog;
 	tbl_prtctrl;
 	tbl_sryacctplus;
-        tbl_generic_log;
         tbl_mnote_h;
         tbl_mnote_b;
         tbl_ptconf;
-	tbl_tnkrrk;
-	tbl_spa_tmp;
-	tbl_med_image;
-	tbl_list_doctor;
-        tbl_generic_price;
-	tbl_santei;
-	tbl_prtdata;
-	tbl_prtkanri;
-	tbl_api_para;
 };
-db "xml2" {
- fm_medicine_notebook;
- fm_prescription;
- fm_medicine_information;
- fm_medicine_notebook_h;
- fm_medicine_information_h;
-};
-
 
 /* #include "orcadb.inc" */
 #include "orcadbh.inc"

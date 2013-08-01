@@ -32,11 +32,7 @@
       *  04.05.00    NACL-多々納  09/10/XX  換算値数量対応
       *  04.06.00    NACL-多々納  11/02/22  用法コードコメント対応
       *  04.07.00    NACL-多々納  12/09/27  商品コード対応
-      *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
-      *  04.08.00    NACL-多々納  13/07/XX  電子版お薬手帳アプリ連携対応他
-      *  04.07.00    NACL-多々納  14/06/XX  外用薬（臨時投薬）対応
-      *  04.07.00    NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
-      *  04.07.00    NACL-多々納  14/10/XX  頓服（臨時投薬）対応
+      *  04.07.00    NACL-多々納  13/07/XX  パソリ対応他
       *****************************************************************
       *
       *
@@ -74,8 +70,6 @@
            03  FLG-ZAITAKU-ARI     PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
            03  FLG-YKJOKUKBN       PIC 9(01).
-      *H26.10
-           03  FLG-NO              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -246,10 +240,6 @@
            03  LNK-WKSRY-SYORI         PIC X(01).
       *
        01  LNK-WKSRYACT-MAX           PIC 9(04).
-      *
-      *H28.4
-      * 湿布薬（減）
-       01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -562,15 +552,6 @@
       *****************************************************************
        300-HC62-PRINT-SEC             SECTION.
       *
-      *H29.6
-      *HAORI対応
-           IF      SPA-API-FLG         NOT =   ZERO
-               CALL    "ORCHC62"           USING
-                                           SPA-AREA
-                                           ORCHC62AREA
-               GO      TO      300-HC62-PRINT-EXT
-           END-IF
-      *
            CALL    WRK-OKUSURI-PG          USING
                                            SPA-AREA
                                            ORCHC62AREA
@@ -781,10 +762,9 @@
                MOVE    JYURRK-ZAINUM (IDX-JYU) TO  WRK-ZAINUM
                COMPUTE IDX-REN         =   JYURRK-RENNUM
                                        +   1
-      *ver.4.8
-      ***      IF      IDX-REN         >   4
-      *            MOVE    4               TO  IDX-REN
-      ****     END-IF
+               IF      IDX-REN         >   4
+                   MOVE    4               TO  IDX-REN
+               END-IF
                PERFORM 2002-SRYACT-SYORI-SEC
            END-PERFORM
       *
@@ -796,6 +776,7 @@
       *        診療行為より編集処理
       *****************************************************************
        2002-SRYACT-SYORI-SEC      SECTION.
+      *
       *
            INITIALIZE                  SRYACT-REC
            MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
@@ -904,9 +885,7 @@
                                                    "211"  OR
                                                    "221"  OR
                                                    "231"  OR
-                                                   "291"  OR
-                                                   "297"  OR
-                                                   "294" )
+                                                   "291" )
       *                院内処方種別
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
@@ -928,9 +907,7 @@
                    IF     (WRK-SRYSYUKBN       =   "212"  OR
                                                    "222"  OR
                                                    "232"  OR
-                                                   "292"  OR
-                                                   "298"  OR
-                                                   "295")
+                                                   "292")
                        MOVE    1               TO  FLG-TAIGAI
                    END-IF
            END-EVALUATE
@@ -945,8 +922,6 @@
                                            OR  "220"
                                            OR  "230" 
                                            OR  "290" 
-                                           OR  "293" 
-                                           OR  "296" 
                                            OR  SPACE )
                    IF     (ORCSCH62-KBN        =   "1"  )
       *                剤点数ゼロで院内処方印刷
@@ -1081,17 +1056,6 @@
                    MOVE    WRK-SRY-SRYCD(IDXA)     TO  WRK-SHO-SRYCD
                END-IF
       *
-      *H26.10
-               MOVE    ZERO            TO  FLG-NO
-               IF     (WRK-SRY-SRYCD (IDXA)(1:1) =   "6" )
-      *            点数マスタを検索
-                   MOVE    WRK-SRY-SRYCD (IDXA)    TO  TNS-SRYCD
-                   PERFORM 910-TENSU-READ-SEC
-                   IF      TNS-TENSIKIBETU     =   7
-      *                減点は対象外
-                       MOVE    1               TO  FLG-NO
-                   END-IF
-               END-IF
       *        薬剤・器材・用法・コメントのみ
                IF     (WRK-SRY-SRYCD (IDXA)(1:1)   =   "6"
                                                    OR  "7"
@@ -1102,11 +1066,6 @@
                    IF     (WRK-SRY-SRYCD (IDXA)    =   "630010002" )
                      OR   (WRK-SRY-SRYCD (IDXA)    =   "630010004" )
                      OR   (WRK-SRY-SRYCD (IDXA)(1:4)   =   "0086"  )
-      *H26.10        （精減）
-                     OR   (WRK-SRY-SRYCD (IDXA)    =   "820000166" )
-      *H28.4        （湿布減）
-                     OR   (WRK-SRY-SRYCD (IDXA)    =   CONS-SPCM-SRYCD)
-                     OR   (FLG-NO                  =   1   )
                        CONTINUE
                    ELSE
                        ADD     1               TO  IDX-T3
@@ -1541,8 +1500,6 @@
                                            OR  "222"
                                            OR  "232"
                                            OR  "292"
-                                           OR  "298"
-                                           OR  "295"
                    MOVE    1               TO  FLG-OK2
                END-IF
       *        院内の診療種別
@@ -1550,8 +1507,6 @@
                                            OR  "221"
                                            OR  "231"
                                            OR  "291"
-                                           OR  "294"
-                                           OR  "297"
                                            OR  "213"
                                            OR  "223"
                                            OR  "233"
@@ -1571,8 +1526,6 @@
                                            OR  "221"
                                            OR  "231"
                                            OR  "291"
-                                           OR  "294"
-                                           OR  "297"
                                            OR  "213"
                                            OR  "223"
                                            OR  "233"
