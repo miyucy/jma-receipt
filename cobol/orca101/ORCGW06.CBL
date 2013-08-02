@@ -83,9 +83,6 @@
       *
                05  SPA-GMN-PAGENO      PIC 9(02).
                05  SPA-GMN-SYORI       PIC 9(01).
-      *----(04.07.01)--ADD-START---
-               05  SPA-GMN-BACK        PIC 9(01).
-      *----(04.07.01)--ADD-END-----
       *
                05  SPA-GMN-AREA.
       *            職員区分
@@ -681,12 +678,7 @@
                        PERFORM 490-KOUSHIN-SEC
                    ELSE
       *----(04.07.01)--UPD-START---
-                       IF      SPA-GMN-BACK    =   1
-                          PERFORM 210-BACK
-                          GO  TO  330-WID1-SET-EXT
-                       ELSE
-                           MOVE    6           TO  SPA-GMN-CUR
-                       END-IF
+                       MOVE    6           TO  SPA-GMN-CUR
       *----(04.07.01)--UPD-END-----
                    END-IF
                WHEN    "1003"
@@ -695,6 +687,14 @@
                    ELSE
                        MOVE    2           TO  SPA-GMN-CUR
                    END-IF
+      *----(04.07.01)--ADD-START---
+               WHEN    "1004"
+                   IF      SPA-WID1-FLG    =   "OK"
+                       PERFORM 210-BACK
+                   ELSE
+                       MOVE    6           TO  SPA-GMN-CUR
+                   END-IF
+      *----(04.07.01)--ADD-END-----
            END-EVALUATE
       *
            MOVE    SPACE           TO  SPA-WID1-FLG
@@ -1115,9 +1115,6 @@
                    PERFORM  403-DEL-SEC
       *    登録
                WHEN    "CLICKED"      ALSO    "B12"
-      *----(04.07.01)--ADD-START---
-                   MOVE    ZERO        TO  SPA-GMN-BACK
-      *----(04.07.01)--ADD-END-----
                    PERFORM 490-TOUROKU-SEC
       *    タグ切替
                WHEN    "CLICKED"      ALSO    "B08"
@@ -3288,8 +3285,7 @@
       *        変更項目チェク
                PERFORM 4102-HENKOU-CHK-SEC
                IF      FLG-OK          NOT =   ZERO
-                   MOVE    1           TO  SPA-GMN-BACK
-                   PERFORM 490-TOUROKU-SEC
+                   MOVE    "1004"      TO  SPA-WIDCD
                    GO  TO  210-BACK-CHK-EXT
                END-IF
            END-IF
@@ -4818,6 +4814,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "職員情報を更新します"    TO  WRK-WIDMSG
                WHEN    "1003"
                    MOVE    "職員情報を削除します"    TO  WRK-WIDMSG
+               WHEN    "1004"
+                   MOVE    "編集中ですが中止しますか？"
+                                                     TO  WRK-WIDMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
