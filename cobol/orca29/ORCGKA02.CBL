@@ -4446,31 +4446,6 @@
                MOVE    "0101"              TO  SPA-ERRCD
            END-IF
       *
-      *TEST
-      *TEST
-      *TEST
-          PERFORM VARYING    IDX2  FROM    1  BY  1
-                   UNTIL    ( IDX2  >  100 )
-                      OR    ( ORCHCN62-SRYKBN (IDX2) =  SPACE)
-            DISPLAY "IDX2:" IDX2
-                  ",ORCHCN62-YSRYCD:" ORCHCN62-YSRYCD (IDX2)
-          PERFORM VARYING    IDX3  FROM    1  BY  1
-                   UNTIL      IDX3  >  50 
-              IF      ORCHCN62-SRYCD (IDX2 IDX3)  NOT =   SPACE
-             DISPLAY "ORCHCN62-SRYCD:" ORCHCN62-SRYCD (IDX2 IDX3)
-                     ",ORCHCN62-SRYSURYO:" ORCHCN62-SRYSURYO (IDX2 IDX3)
-                     ",KANSURYO:" ORCHCN62-KANSURYO (IDX2 IDX3)
-                   ",YOURYOU:"  ORCHCN62-YOURYOU (IDX2 IDX3 1)
-                   ",YOURYOU:"  ORCHCN62-YOURYOU (IDX2 IDX3 2)
-                   ",YOURYOU:"  ORCHCN62-YOURYOU (IDX2 IDX3 3)
-                   ",YOURYOU:"  ORCHCN62-YOURYOU (IDX2 IDX3 4)
-                   ",YOURYOU:"  ORCHCN62-YOURYOU (IDX2 IDX3 5)
-              END-IF
-           END-PERFORM 
-           END-PERFORM 
-      *TEST
-      *TEST
-      *
            .
        41041-ORCHC62-HENSYU-EXT.
            EXIT.

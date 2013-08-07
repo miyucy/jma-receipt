@@ -36,6 +36,7 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  12/01/06  ¥¯¥é¥¤¥¢¥ó¥È°õºþÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  13/01/11  ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë£±£°ÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  13/07/XX  ±¡³°ÅêÌô¤Î¤ßÂÐ¾ÝÂÐ±þ
+      *  04.07.00    NACL-Â¿¡¹Ç¼  13/08/01  ¼êÄ¢£Ã£Ó£ÖÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3835,6 +3836,15 @@
                                                =   "140"
                                                OR  "141"
                                                OR  "142"  )
+                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                               =   "211"
+                                               OR  "221"
+                                               OR  "231"
+                                               OR  "291"
+                                               OR  "213"
+                                               OR  "223"
+                                               OR  "233"
+                                               OR  "293" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF
                    END-IF
@@ -3974,6 +3984,15 @@
                                                =   "140"
                                                OR  "141"
                                                OR  "142"  )
+                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                               =   "211"
+                                               OR  "221"
+                                               OR  "231"
+                                               OR  "291"
+                                               OR  "213"
+                                               OR  "223"
+                                               OR  "233"
+                                               OR  "293" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF
                    END-IF
@@ -4125,6 +4144,15 @@
                                                =   "140"
                                                OR  "141"
                                                OR  "142"  )
+                        OR    (SPA-WKSRY-SRYSYUKBN (IDX-W)
+                                               =   "211"
+                                               OR  "221"
+                                               OR  "231"
+                                               OR  "291"
+                                               OR  "213"
+                                               OR  "223"
+                                               OR  "233"
+                                               OR  "293" )
                            MOVE    ZERO            TO  FLG-CHK2
                        END-IF
                    END-IF
