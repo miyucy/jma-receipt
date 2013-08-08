@@ -508,6 +508,7 @@
        01  LNK-ERROR-AREA.
            03  LNK-KBN-CODE            PIC X(01).
            03  LNK-KBN-CODE2           PIC X(01).
+           03  LNK-KBN-V2              PIC X(01).
            03  LNK-ERR-CODE            PIC 9(02).
            03  LNK-ERR-MSG             PIC X(100).
            03  LNK-OUT-HKNCOMBI        PIC X(04).

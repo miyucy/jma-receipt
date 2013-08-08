@@ -141,6 +141,7 @@
        01  WRK-ERROR-AREA.
            03  WRK-KBN-CODE            PIC X(01).
            03  WRK-KBN-CODE2           PIC X(01).
+           03  WRK-KBN-V2              PIC X(01).
            03  WRK-ERR-CODE            PIC 9(02).
            03  WRK-ERR-MSG             PIC X(100).
            03  WRK-OUT-HKNCOMBI        PIC X(04).
@@ -1191,6 +1192,8 @@
            IF     (CNT-SRYCNT          =   ZERO )
                MOVE    "1"                 TO  WRK-KBN-CODE2
            END-IF
+      *    V2∂Ë ¨
+           MOVE    "1"                 TO  WRK-KBN-V2
            CALL    "ORCL0031"          USING LF04-REC
                                              WRK-ERROR-AREA
       *
