@@ -53,6 +53,10 @@ xml_medicalv2req {
 				Disease_Single_Code	varchar(10);
 				Disease_Single_Name	varchar(20);
 			}[6] ;
+			Disease_Scode1			varchar(12);
+			Disease_Scode2			varchar(12);
+			Disease_Scode3			varchar(12);
+			Disease_Sname			varchar(40);
 			Disease_Category		varchar(2);
 			Disease_SuspectedFlag		varchar(2);
 			Disease_StartDate		varchar(10);

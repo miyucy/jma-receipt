@@ -9,6 +9,7 @@
       *  02.05.00    NACL-竹田    04/10/20  ドクターコード追加
       *  04.07.00    NACL-多々納  11/10/XX  UID追加
       *  04.07.00    NACL-多々納  11/11/02  同日再入院区分追加
+      *  04.07.00    NACL-多々納  13/08/XX  病名補足コメント追加
       ************************************************************
       *01  LF04-REC.
       *
@@ -443,6 +444,13 @@
                05  LF04-SND-SKNHLTUID       PIC X(36).
       * 入外区分 (mmlRd:InOutPatient)
                05  LF04-SND-NYUGAIKBN       PIC X(20).
+      *ver.4.7
+      * 補足コメントコード
+               05  LF04-HOSOKUCD-G.
+                   07  LF04-HOSOKUCD      PIC X(12)
+                                          OCCURS   3.
+      * 補足コメント
+               05  LF04-HOSOKU-COMMENT    PIC X(40).
       *
       *
       * [予約請求(Claim)モジュール]
