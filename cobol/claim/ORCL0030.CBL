@@ -125,6 +125,8 @@
       *    claim連携リターンエリア
        01  WRK-ERROR-AREA.
            03  WRK-KBN-CODE            PIC X(01).
+           03  WRK-KBN-CODE2           PIC X(01).
+           03  WRK-KBN-V2              PIC X(01).
            03  WRK-ERR-CODE            PIC 9(02).
            03  WRK-ERR-MSG             PIC X(100).
            03  WRK-OUT-HKNCOMBI        PIC X(04).
