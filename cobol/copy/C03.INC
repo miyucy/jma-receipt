@@ -22,8 +22,6 @@
                 04  C03-VALUE   PIC X(8).
               03  C03-BYOMEI.
                 04  C03-VALUE   PIC X(80).
-              03  C03-HOSOKU-COMMENT.
-                04  C03-VALUE   PIC X(40).
               03  C03-CHARTBYOMEI.
                 04  C03-VALUE   PIC X(80).
               03  C03-BYOMEIHENFLG.
@@ -53,15 +51,13 @@
                     06  C03-TBUNRUIMEI      PIC X(16).
                     06  C03-TBYOMEIINPUTCD  PIC X(10).
                     06  C03-TBYOMEISBT      PIC X(6).
-                    06  C03-TBYOMEI         PIC X(130).
+                    06  C03-TBYOMEI         PIC X(80).
                     06  C03-TCHARTBYOMEI    PIC X(80).
                     06  C03-TUTAGAIFLG      PIC X(14).
                     06  C03-TMANSEIFLG      PIC X(42).
                     06  C03-THKNBYOMEIFLG   PIC X(8).
                     06  C03-TDSPSEQ         PIC X(4).
                   05  C03-BYOMEILST-SELECT  PIC X   OCCURS  100 TIMES.
-                  05  C03-BYOMEILST-FGCOLOR PIC X(16) OCCURS  100 TIMES.
-                  05  C03-BYOMEILST-BGCOLOR PIC X(16) OCCURS  100 TIMES.
               03  C03-UTAGAIFLGCOMBO.
                 04  C03-UTAGAIFLG.
                   05  C03-VALUE   PIC X(14).
