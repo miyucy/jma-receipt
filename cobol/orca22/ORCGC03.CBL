@@ -2053,13 +2053,13 @@
                                            TO  USBYO-BYOMEIINPUTCD
                    PERFORM 900-USBYO-INV-SEC
                    IF      FLG-USERBYOMEI  =   ZERO    
-                       IF      IDYY            =   1
-                           MOVE    "0054"          TO
-                                   SPA-NAI-C03-BYOMEIINPUTCD-ERRCD(IDYY)
-                       ELSE
+      **************   IF      IDYY            =   1
+      **************       MOVE    "0054"          TO
+      **************               SPA-NAI-C03-BYOMEIINPUTCD-ERRCD(IDYY)
+      **************   ELSE
                            MOVE    "0002"          TO
                                    SPA-NAI-C03-BYOMEIINPUTCD-ERRCD(IDYY)
-                       END-IF
+      **************   END-IF
                        GO  TO  410021-BYOMEIINPUT-CHECK-EXT
                    END-IF
                END-IF
@@ -4253,7 +4253,9 @@ grpsys                                         SPA-AREA
                    MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
                    MOVE    USERBYOMEI-REC      TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   MOVE    1                   TO  WRK-SYOKBN
+                   IF      WRK-SYOKBN          =   ZERO
+                       MOVE    1                   TO  WRK-SYOKBN
+                   END-IF
                END-IF
                MOVE    "tbl_userbyomei"    TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
