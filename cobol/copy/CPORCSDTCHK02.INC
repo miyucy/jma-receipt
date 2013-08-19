@@ -36,5 +36,4 @@
                    07  SDTCHK02-O-KOUGAI       PIC 9(01).
                    07  SDTCHK02-O-KOUKI        PIC 9(01).
                    07  SDTCHK02-O-CHIKEN       PIC 9(01).
-                   07  SDTCHK02-O-DAISAN       PIC 9(01).
                    07  SDTCHK02-O-HKNNUM       PIC X(03).
