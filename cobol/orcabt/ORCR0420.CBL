@@ -3241,7 +3241,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                AND   (RECE41-RSIIRYOKBN   NOT =   "0"       )
                  IF  (ACCT-SRYKBN          =  "80"   )
                  AND (SRY-SRYCD(IDX2)(1:5) =  "09593")
-                    MOVE    "1"     TO  RECE41-ORIGINALCDKBN
+                    MOVE     1      TO  RECE41-ORIGINALCDKBN
                  END-IF
                END-IF
       *
