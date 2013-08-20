@@ -327,7 +327,7 @@
                05  RECE41-RSIIRYOKBN      PIC  X(01).
       *
       *£°£¹£µ£¹£³¤Ç»Ï¤Þ¤ë¥³¡¼¥É¤ÎÍ­Ìµ¶èÊ¬
-               05  RECE41-ORIGINALCDKBN   PIC  9(01).
+           03  RECE41-ORIGINALCDKBN       PIC  9(01).
       *
       *Í½È÷
            03  RECE41-YOBIETC-AREA.

@@ -381,7 +381,7 @@
                05  RECE82-RSIIRYOKBN      PIC  X(01).
       *
       *０９５９３で始まるコードの有無区分
-               05  RECE82-ORIGINALCDKBN   PIC  9(01).
+           03  RECE82-ORIGINALCDKBN       PIC 9(01).
       *
       *入院料情報取得フラグ
            03  RECE82-DOUJITSU-FLG        PIC 9(01).
