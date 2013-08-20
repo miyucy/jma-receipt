@@ -29,7 +29,6 @@
       * 04.05.00     NACL-多々納  09/12/14  エンコーディング追加
       * 04.06.01     NACL-伊藤    11/01/28  リアルタイム送信
       * 04.07.01     NACL-竹田    11/06/29  クライアント印刷情報設定
-      * 04.08.00     NACL-太田    14/02/08  Ginbee対応(ユーザー登録なしを許可）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -41,8 +40,6 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-      *
-           COPY    "ENUM-VALUE".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -101,7 +98,6 @@
       *    システム管理マスタ領域
       *    職員情報
            COPY  "CPSK1010.INC".
-           COPY  "CPSK1050.INC".
       *    医療機関情報
            COPY  "CPSK1001.INC".
       *    自動算定情報
@@ -183,17 +179,6 @@
       *    マスターメニュー処理
       *****************************************************************
        100-SPA-INIT-SEC                SECTION.
-      *
-      *    ミドルウェア
-           EVALUATE    MCP-MIDDLEWARE-NAME
-           WHEN    "panda"
-               MOVE    SPA-PANDA       TO  SPA-MW
-           WHEN    "ginbee"
-               MOVE    SPA-GINBEE      TO  SPA-MW
-      *    取得できない場合はpandaとみなす
-           WHEN    OTHER
-               MOVE    SPA-PANDA       TO  SPA-MW
-           END-EVALUATE
       *
       *    端末ＩＤ
            MOVE    MCP-TERM            TO  SPA-TERMID
@@ -460,34 +445,10 @@
            PERFORM 990-DBCLOSE-SEC
       *    職員情報なし
            IF     FLG-OK               =   ZERO
-      *
                INITIALIZE                  SYS-1010-REC
                INITIALIZE                  LNK-SYS-1010-REC
-      *
-               IF  ( SPA-MW            =   SPA-GINBEE )
-                AND( SPA-MOTOPG        =   "API"    )
-                   CONTINUE
-               ELSE
-                   MOVE    "1001"              TO  SPA-ERRCD
-                   GO      TO      1003-SYS1010-SPA-EXT
-               END-IF
-      *
-           END-IF
-      *
-           INITIALIZE                  SYS-1050-REC
-           MOVE    "1050"              TO  SYS-1050-KANRICD
-           MOVE    SYS-1010-KBNCD      TO  SYS-1050-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-1050-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-1050-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1050-HOSPNUM
-           MOVE    SYS-1050-REC        TO  SYSKANRI-REC
-           PERFORM 900-SYSKANRI-KEY10-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC    TO  SYS-1050-REC
-           END-IF
-      *
-           IF    ( SPA-MW              =   SPA-GINBEE )
-               MOVE    "1"             TO  SYS-1050-PRTCONF
+               MOVE    "1001"              TO  SPA-ERRCD
+               GO      TO      1003-SYS1010-SPA-EXT
            END-IF
       *
       *    職員コード設定
@@ -502,11 +463,6 @@
                MOVE  1                 TO  SPA-CLIENT-SHOWDIALOG
            ELSE
                MOVE  ZERO              TO  SPA-CLIENT-SHOWDIALOG
-           END-IF
-      *
-           IF    ( SPA-CLIENT-PRT-FLG  =   ZERO )
-            AND  ( SYS-1050-PRTCONF    =   "1" )
-               MOVE    "1"             TO  SPA-PRTCONF
            END-IF
       *
       *2001.9.27 強制プロテクト（ＰＧ未作成）
