@@ -379,8 +379,9 @@
                05  RECE82-KOMUTENTANKA    PIC  9(02).
       *労災指定医療機関区分
                05  RECE82-RSIIRYOKBN      PIC  X(01).
+      *
       *０９５９３で始まるコードの有無区分
-               05  RECE82-ORIGINALCDKBN   PIC  X(01).
+               05  RECE82-ORIGINALCDKBN   PIC  9(01).
       *
       *入院料情報取得フラグ
            03  RECE82-DOUJITSU-FLG        PIC 9(01).
