@@ -48,7 +48,11 @@
       *
        WORKING-STORAGE             SECTION.
       *
-           COPY    "CPRECEERR.INC".
+      *    エラーファイル 名称領域 
+      **     COPY    "CPCOMMONDAT2.INC"
+      **                             REPLACING  //RECE01PARA//
+      **                             BY         //RECEERR//.
+      **     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
@@ -60,21 +64,13 @@
            03  FLG-SRYACT              PIC 9(01).
            03  FLG-NYUINACCT           PIC 9(01).
            03  FLG-SANTEI              PIC 9(01).
-           03  FLG-JYURRK              PIC 9(01).
-           03  FLG-SYUNOU              PIC 9(01).
-           03  FLG-PTBYOMEI            PIC 9(01).
            03  FLG-RIHA                PIC 9(01).
-           03  FLG-SYORI               PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-SRYACCT-UPD         PIC 9(05).
            03  CNT-NYUINACCT-UPD       PIC 9(05).
            03  CNT-SANTEI-UPD          PIC 9(05).
-           03  CNT-JYURRK-DEL          PIC 9(05).
-           03  CNT-SYUNOU-DEL          PIC 9(05).
-           03  CNT-PTBYOMEI-UPD        PIC 9(05).
-           03  CNT-PTBYOMEI-DEL        PIC 9(05).
       *
       *    システム領域
        01  SYS-AREA.
@@ -93,6 +89,7 @@
            03  WRK-PARA-JOBID          PIC 9(07).
            03  WRK-PARA-SHELLID        PIC X(08).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
+           03  RECEERR                 PIC X(100).
            03  WRK-PARA-SRYYM          PIC X(06).
            03  WRK-PARA-STIDX          PIC X(02).
            03  WRK-PARA-EDIDX          PIC X(02).
@@ -103,8 +100,6 @@
            03  WRK-RECEERR             PIC X(200).
            03  WRK-STIDX               PIC 9(05).
            03  WRK-EDIDX               PIC 9(05).
-           03  WRK-STYMD               PIC X(08).
-           03  WRK-EDYMD               PIC X(08).
       *
       *    COPY    "CPSHELLTBL.INC".
       *
@@ -131,18 +126,6 @@
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    受診履歴
-       01  JYURRK-REC.
-           COPY    "CPJYURRK.INC".
-      *
-      *    収納マスター
-       01  SYUNOU-REC.
-           COPY    "CPSYUNOU.INC".
-      *
-      *    患者病名マスター
-       01  PTBYOMEI-REC.
-           COPY    "CPPTBYOMEI.INC".
-      *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
@@ -153,9 +136,6 @@
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -203,8 +183,6 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
       *
-           INITIALIZE                  RECEERR
-      *
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
@@ -237,16 +215,9 @@
                                    TO  JOB-SHELLMSG
            PERFORM   900-CALL-ORCSJOB-SEC
       *
-           MOVE    "STP"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    3               TO  JOB-STOPFLG
-           PERFORM   900-CALL-ORCSJOB-SEC
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP" USING SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  RECEERR
+      **     MOVE    "RECEERR"       TO  RECEERR-FILE-ID
+      **     MOVE    LNK-PRTKANRI-TERMID
+      **                             TO  RECEERR-TERMID
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -257,20 +228,6 @@
            MOVE    WRK-PARA-STIDX    TO  WRK-STIDX
            MOVE    WRK-PARA-EDIDX    TO  WRK-EDIDX
       *
-      *    開始年月日、終了年月日のセット
-           MOVE    WRK-PARA-SRYYM    TO  WRK-STYMD (1:6)
-           MOVE    WRK-PARA-STIDX    TO  WRK-STYMD (7:2)
-           MOVE    WRK-PARA-SRYYM    TO  WRK-EDYMD (1:6)
-           MOVE    WRK-PARA-EDIDX    TO  WRK-EDYMD (7:2)
-           DISPLAY  "WRK-STYMD = " WRK-STYMD
-           DISPLAY  "WRK-EDYMD = " WRK-EDYMD
-      *
-      *    前半削除、後半削除のフラグセット
-           IF     WRK-PARA-STIDX     =    "01"
-               MOVE    1             TO  FLG-SYORI
-           ELSE
-               MOVE    2             TO  FLG-SYORI
-           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -289,15 +246,6 @@
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
-      *
-           IF   WRK-PARA-STIDX  IS  NUMERIC
-               CONTINUE
-           ELSE
-               MOVE    "開始日が誤りです"   TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  110-PARA-HENSYU-EXT
-           END-IF
-      *
            IF ( WRK-PARA-EDIDX     >=   "01")   AND
               ( WRK-PARA-EDIDX     <=   "31")
                CONTINUE
@@ -306,15 +254,6 @@
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
-      *
-           IF   WRK-PARA-EDIDX  IS  NUMERIC
-               CONTINUE
-           ELSE
-               MOVE    "終了日が誤りです"   TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  110-PARA-HENSYU-EXT
-           END-IF
-      *
            IF ( WRK-PARA-STIDX     <=    WRK-PARA-EDIDX)
                CONTINUE
            ELSE
@@ -347,24 +286,6 @@
       *
       *    算定履歴更新処理
            PERFORM 201-SANTEI-UPD-SEC
-           IF    ( FLG-END     NOT =   ZERO )
-               GO  TO  200-MAIN-EXT
-           END-IF
-      *
-      *    受診履歴削除処理
-           PERFORM 201-JYURRK-DEL-SEC
-           IF    ( FLG-END     NOT =   ZERO )
-               GO  TO  200-MAIN-EXT
-           END-IF
-      *
-      *    収納削除処理
-           PERFORM 201-SYUNOU-DEL-SEC
-           IF    ( FLG-END     NOT =   ZERO )
-               GO  TO  200-MAIN-EXT
-           END-IF
-      *
-      *    患者病名更新処理
-           PERFORM 201-PTBYOMEI-UPD-SEC
            IF    ( FLG-END     NOT =   ZERO )
                GO  TO  200-MAIN-EXT
            END-IF
@@ -408,12 +329,6 @@
                                            ACCT-DAY (2 IDX1 )
                                            ACCT-DAY (3 IDX1 )
                                            ACCT-DAY (4 IDX1 )
-                                           ACCT-DAY (5 IDX1 )
-                                           ACCT-DAY (6 IDX1 )
-                                           ACCT-DAY (7 IDX1 )
-                                           ACCT-DAY (8 IDX1 )
-                                           ACCT-DAY (9 IDX1 )
-                                           ACCT-DAY (10 IDX1 )
       *
                  END-PERFORM
       *
@@ -697,249 +612,6 @@
        201-SANTEI-UPD-EXT.
            EXIT.
       *****************************************************************
-      *    受診履歴削除処理
-      *****************************************************************
-       201-JYURRK-DEL-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-JYURRK
-      *
-           INITIALIZE                  JYURRK-REC
-           MOVE    WRK-PARA-SRYYM  TO  JYURRK-SRYYMD (1:6)
-           MOVE    "%"             TO  JYURRK-SRYYMD (7:1)
-           MOVE    SPA-HOSPNUM     TO  JYURRK-HOSPNUM
-           MOVE    JYURRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_jyurrk"    TO  MCP-TABLE
-           MOVE    "all2"          TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  JYURRK-REC
-           ELSE
-               MOVE    1           TO  FLG-JYURRK
-           END-IF
-      *
-           PERFORM UNTIL ( FLG-JYURRK NOT =   ZERO )
-      *
-      *        受診履歴の削除
-               IF     ( JYURRK-SRYYMD   >=   WRK-STYMD  )  AND
-                      ( JYURRK-SRYYMD   <=   WRK-EDYMD  )
-      *
-                 MOVE    JYURRK-REC      TO  MCPDATA-REC
-                 MOVE    "DBDELETE"      TO  MCP-FUNC
-                 MOVE    "tbl_jyurrk"    TO  MCP-TABLE
-                 MOVE    "key"           TO  MCP-PATHNAME
-                 PERFORM   900-ORCDBMAIN-SEC
-                 IF    ( MCP-RC      NOT =   ZERO )
-                     DISPLAY "ORCBMRECE JYURRK DEL ERR:"  MCP-RC
-                             ",PTID:"   JYURRK-PTID
-                     MOVE    "受診履歴の削除に失敗しました"
-                                         TO  WRK-RECEERR
-                     PERFORM 500-ERR-HENSYU-SEC
-                     GO  TO  201-JYURRK-DEL-EXT
-                 END-IF
-      *
-                 COMPUTE CNT-JYURRK-DEL  =   CNT-JYURRK-DEL   +   1
-      *
-               END-IF
-      *
-               MOVE    "tbl_jyurrk"    TO  MCP-TABLE
-               MOVE    "all2"          TO  MCP-PATHNAME
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   MOVE    MCPDATA-REC TO  JYURRK-REC
-               ELSE
-                   MOVE    1           TO  FLG-JYURRK
-               END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "all2"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       201-JYURRK-DEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    収納削除処理
-      *****************************************************************
-       201-SYUNOU-DEL-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SYUNOU
-      *
-           INITIALIZE                  SYUNOU-REC
-           MOVE    WRK-PARA-SRYYM  TO  SYU-SRYYMD (1:6)
-           MOVE    "%"             TO  SYU-SRYYMD (7:1)
-           MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
-           MOVE    "2"             TO  SYU-NYUGAIKBN
-           MOVE    SYUNOU-REC      TO  MCPDATA-REC
-           MOVE    "tbl_syunou"    TO  MCP-TABLE
-           MOVE    "key15"         TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  SYUNOU-REC
-           ELSE
-               MOVE    1           TO  FLG-SYUNOU
-           END-IF
-      *
-           PERFORM UNTIL ( FLG-SYUNOU NOT =   ZERO )
-      *
-      *        収納の削除
-               IF     ( SYU-SRYYMD   >=   WRK-STYMD  )  AND
-                      ( SYU-SRYYMD   <=   WRK-EDYMD  )
-      *
-                 MOVE    SYUNOU-REC      TO  MCPDATA-REC
-                 MOVE    "DBDELETE"      TO  MCP-FUNC
-                 MOVE    "tbl_syunou"    TO  MCP-TABLE
-                 MOVE    "key"           TO  MCP-PATHNAME
-                 PERFORM   900-ORCDBMAIN-SEC
-                 IF    ( MCP-RC      NOT =   ZERO )
-                     DISPLAY "ORCBMRECE SYUNOU DEL ERR:"  MCP-RC
-                             ",PTID:"   SYU-PTID
-                     MOVE    "収納の削除に失敗しました"
-                                         TO  WRK-RECEERR
-                     PERFORM 500-ERR-HENSYU-SEC
-                     GO  TO  201-SYUNOU-DEL-EXT
-                 END-IF
-      *
-                 COMPUTE CNT-SYUNOU-DEL  =   CNT-SYUNOU-DEL   +   1
-      *
-               END-IF
-      *
-               MOVE    "tbl_syunou"    TO  MCP-TABLE
-               MOVE    "key15"         TO  MCP-PATHNAME
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   MOVE    MCPDATA-REC TO  SYUNOU-REC
-               ELSE
-                   MOVE    1           TO  FLG-SYUNOU
-               END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key15"             TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       201-SYUNOU-DEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者病名更新処理
-      *****************************************************************
-       201-PTBYOMEI-UPD-SEC              SECTION.
-      *
-           MOVE    ZERO            TO  FLG-PTBYOMEI
-      *
-           INITIALIZE                  PTBYOMEI-REC
-           MOVE    SPA-HOSPNUM     TO  PTBYO-HOSPNUM
-           MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
-           MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
-           MOVE    "all"           TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  PTBYOMEI-REC
-           ELSE
-               MOVE    1           TO  FLG-PTBYOMEI
-           END-IF
-      *
-           PERFORM UNTIL ( FLG-PTBYOMEI NOT =   ZERO )
-      *
-      *        患者病名の前半クリア処理
-               IF       FLG-SYORI    =    1
-      *          前半期間の終了日より以前の転帰済データを削除する
-                 IF     ( PTBYO-TENKIKBN   NOT =   SPACE )      AND
-                        ( PTBYO-TENKIYMD   <=      WRK-EDYMD )  AND
-                        ( PTBYO-DLTFLG     =       SPACE )
-      *
-                   MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
-                   MOVE    "DBDELETE"      TO  MCP-FUNC
-                   MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM   900-ORCDBMAIN-SEC
-                   IF    ( MCP-RC      NOT =   ZERO )
-                       DISPLAY "ORCBMRECE PTBYOMEI DEL ERR:"  MCP-RC
-                               ",PTID:"   PTBYO-PTID
-                       MOVE    "患者病名の削除に失敗しました"
-                                           TO  WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                       GO  TO  201-PTBYOMEI-UPD-EXT
-                   END-IF
-      *
-                   COMPUTE CNT-PTBYOMEI-DEL = CNT-PTBYOMEI-DEL   +   1
-      *
-                 END-IF
-               END-IF
-      *
-      *        患者病名の後半クリア処理
-               IF       FLG-SYORI    =    2
-      *          後半期間に入力された転帰をクリアする
-                 IF     ( PTBYO-SRYYMD     <       WRK-STYMD ) AND
-                        ( PTBYO-TENKIKBN   NOT =   SPACE )     AND
-                        ( PTBYO-TENKIYMD   >=      WRK-STYMD ) AND
-                        ( PTBYO-DLTFLG     =       SPACE )
-      *
-                   MOVE    SPACE           TO  PTBYO-TENKIKBN
-                                               PTBYO-TENKIYMD
-                   MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
-                   MOVE    "DBUPDATE"      TO  MCP-FUNC
-                   MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM   900-ORCDBMAIN-SEC
-                   IF    ( MCP-RC      NOT =   ZERO )
-                       DISPLAY "ORCBMRECE PTBYOMEI UPD ERR:"  MCP-RC
-                               ",PTID:"   PTBYO-PTID
-                       MOVE    "患者病名の更新に失敗しました"
-                                           TO  WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                       GO  TO  201-PTBYOMEI-UPD-EXT
-                   END-IF
-      *
-                   COMPUTE CNT-PTBYOMEI-UPD = CNT-PTBYOMEI-UPD   +   1
-      *
-                 END-IF
-      *
-      *          後半期間に入力された患者病名を削除する
-                 IF     ( PTBYO-SRYYMD     >=      WRK-STYMD ) AND
-                        ( PTBYO-DLTFLG     =       SPACE )
-      *
-                   MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
-                   MOVE    "DBDELETE"      TO  MCP-FUNC
-                   MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM   900-ORCDBMAIN-SEC
-                   IF    ( MCP-RC      NOT =   ZERO )
-                       DISPLAY "ORCBMRECE PTBYOMEI DEL ERR:"  MCP-RC
-                               ",PTID:"   PTBYO-PTID
-                       MOVE    "患者病名の削除に失敗しました"
-                                           TO  WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                       GO  TO  201-PTBYOMEI-UPD-EXT
-                   END-IF
-      *
-                   COMPUTE CNT-PTBYOMEI-DEL = CNT-PTBYOMEI-DEL   +   1
-      *
-                 END-IF
-               END-IF
-      *
-               MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
-               MOVE    "all"           TO  MCP-PATHNAME
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC          =   ZERO )
-                   MOVE    MCPDATA-REC TO  PTBYOMEI-REC
-               ELSE
-                   MOVE    1           TO  FLG-PTBYOMEI
-               END-IF
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "all"               TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           .
-       201-PTBYOMEI-UPD-EXT.
-           EXIT.
-      *****************************************************************
       *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
@@ -947,10 +619,6 @@
            DISPLAY "*** ORCBMRECE SRYACCT   UPD:"     CNT-SRYACCT-UPD
            DISPLAY "*** ORCBMRECE NYUINACCT UPD:"     CNT-NYUINACCT-UPD
            DISPLAY "*** ORCBMRECE SANTEI    UPD:"     CNT-SANTEI-UPD
-           DISPLAY "*** ORCBMRECE JYURRK    DEL:"     CNT-JYURRK-DEL
-           DISPLAY "*** ORCBMRECE SYUNOU    DEL:"     CNT-SYUNOU-DEL
-           DISPLAY "*** ORCBMRECE PTBYOMEI  UPD:"     CNT-PTBYOMEI-UPD
-           DISPLAY "*** ORCBMRECE PTBYOMEI  DEL:"     CNT-PTBYOMEI-DEL
            DISPLAY "*** ORCBMRECE END ***"
       *     
       *    ステップ管理終了処理
@@ -1116,5 +784,5 @@
            MOVE    "DBDISCONNECT"      TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
            .
-       900-DBDISCONNECT-EXT.
+       900-DBCLOSE-EXT.
            EXIT.
