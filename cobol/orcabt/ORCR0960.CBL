@@ -68,6 +68,8 @@
       *  04.07.03    NACL-門脇    13/01/21  労災レセ電対応
       *  04.07.04    NACL-藤原    13/05/27  症状詳記の表題を平成２５年７月
       *                                     診療分以降は全て記載
+      *  04.07.05    NACL-藤原    13/08/20  ０９５９３で始まるコードの有
+      *                                     無区分を追加
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -3269,6 +3271,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    "00000000000000000000000000000000000000000000000000"
                                        TO  RECE10-RESERVE-AREA
+      *
+           MOVE    RECE82-ORIGINALCDKBN
+                                       TO  RECE10-FLG (1)
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
