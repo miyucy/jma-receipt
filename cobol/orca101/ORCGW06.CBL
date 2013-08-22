@@ -308,6 +308,8 @@
                    07  SPA-MAE-ISEKINUM       PIC X(08).
                    07  SPA-MAE-HKNDRNUMS      PIC X(08).
                    07  SPA-MAE-HKNDRNUMK      PIC X(12).
+                   07  SPA-MAE-CHK-G.
+                       09  SPA-MAE-CHK        PIC X     OCCURS  36.
       *
                    07  SPA-MAE-SEMONKACD-G    OCCURS  5.
                        09  SPA-MAE-SEMONKACD       PIC X(02).
@@ -362,8 +364,8 @@
                        09  SPA-MAE-ICCARDRW-MEI    PIC X(24).
       *
                    07  SPA-MAE-GRPHOSP-G.
-                       09  MAE-GMN-GRPHOSP-MAX     PIC 9(02).
-                       09  MAE-GMN-GRPHOSP-OCC     OCCURS 9.
+                       09  SPA-MAE-GRPHOSP-MAX     PIC 9(02).
+                       09  SPA-MAE-GRPHOSP-OCC     OCCURS 9.
                            11  SPA-MAE-GRPUSERID   PIC X(16).
       *----(04.07.01)--ADD-END-----
       *
@@ -2116,6 +2118,9 @@
            MOVE    SPA-GMN-HKNDRNUMS       TO  SPA-MAE-HKNDRNUMS
            MOVE    SPA-GMN-HKNDRNUMK       TO  SPA-MAE-HKNDRNUMK
            MOVE    SPA-GMN-MAYAKULICENSE   TO  SPA-MAE-MAYAKULICENSE
+      *
+           MOVE    SPA-GMN-CHK-G           TO  SPA-MAE-CHK-G
+      *
       *    専門科コード
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   5
@@ -2184,6 +2189,9 @@
            END-IF
            IF      SPA-GMN-MAYAKULICENSE
                                        NOT =   SPA-MAE-MAYAKULICENSE
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      SPA-GMN-CHK-G       NOT =   SPA-MAE-CHK-G
                MOVE    1               TO  FLG-OK
            END-IF
       *    専門科コード
