@@ -27,7 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *
+      *  04.07.00    NACL-多々納  13/07/24  保険病名フラグ追加対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -159,24 +159,25 @@
             COPY    "ORCA-SPA".
             COPY    "LINKAREA".
        01  SCRAREA.
-           COPY    "CPAPIPTAV2.INC".
-           COPY    "CPAPILSTV2.INC".
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST1-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST2-//.
-           COPY    "CPAPILSTV2.INC"  REPLACING
-                                     //APILST-// BY //APILST3-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST4-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST5-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST6-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST7-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST8-//.
+           COPY    "API01RV2SCRAREA.INC".
+      *    COPY    "CPAPIPTAV2.INC".
+      *    COPY    "CPAPILSTV2.INC".
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST1-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST2-//.
+      *    COPY    "CPAPILSTV2.INC"  REPLACING
+      *                              //APILST-// BY //APILST3-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST4-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST5-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST6-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST7-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                                //APILST-// BY //APILST8-//.
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -189,9 +190,9 @@
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
-           DISPLAY   "***************"
-           DISPLAY   "* accept start*"
-           DISPLAY   "***************"
+           DISPLAY   "*********************"
+           DISPLAY   "* disease_info start*"
+           DISPLAY   "*********************"
       *
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
@@ -209,9 +210,9 @@
       *    返却領域編集
            PERFORM 300-APTXMLMAKE-SEC
       *
-           DISPLAY   "***************"
-           DISPLAY   "* accept end  *"
-           DISPLAY   "***************"
+           DISPLAY   "*********************"
+           DISPLAY   "* disease_info end  *"
+           DISPLAY   "*********************"
            .
        000-MAIN-EXIT.
            EXIT    PROGRAM.
@@ -443,7 +444,7 @@
                MOVE    "application/xml"   TO  APILST7-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "disease_info xml write failure "
            END-IF
       *
           .
@@ -534,7 +535,6 @@
                                        LNK-DAY2-AREA
            IF      STS-DAY-RC1     NOT =   ZERO
                MOVE    "11"                TO  WRK-ERRCD
-               DISPLAY "Accept Ymd =  " WRK-BASE-YMD
            END-IF
            MOVE    WRK-BASE-YMD        TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC

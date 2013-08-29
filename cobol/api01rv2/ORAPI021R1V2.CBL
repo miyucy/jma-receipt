@@ -312,24 +312,25 @@
             COPY    "ORCA-SPA".
             COPY    "LINKAREA".
        01  SCRAREA.
-           COPY    "CPAPIPTAV2.INC".
-           COPY    "CPAPILSTV2.INC".
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST1-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST2-//.
-           COPY    "CPAPILSTV2.INC"  REPLACING
-                                     //APILST-// BY //APILST3-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST4-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST5-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST6-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                     //APILST-// BY //APILST7-//.
-           COPY    "CPAPILSTV2.INC"    REPLACING
-                                       //APILST-// BY //APILST8-//.
+           COPY    "API01RV2SCRAREA.INC".
+      *    COPY    "CPAPIPTAV2.INC".
+      *    COPY    "CPAPILSTV2.INC".
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST1-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST2-//.
+      *    COPY    "CPAPILSTV2.INC"  REPLACING
+      *                              //APILST-// BY //APILST3-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST4-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST5-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST6-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST7-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                                //APILST-// BY //APILST8-//.
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -342,9 +343,9 @@
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
-           DISPLAY   "***************"
-           DISPLAY   "* accept start*"
-           DISPLAY   "***************"
+           DISPLAY   "*******************"
+           DISPLAY   "* medicalget start*"
+           DISPLAY   "*******************"
       *
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
@@ -362,9 +363,9 @@
       *     ÷µ—ŒŒ∞Ë ‘Ω∏
            PERFORM 300-APTXMLMAKE-SEC
       *
-           DISPLAY   "***************"
-           DISPLAY   "* accept end  *"
-           DISPLAY   "***************"
+           DISPLAY   "*******************"
+           DISPLAY   "* medicalget end  *"
+           DISPLAY   "*******************"
            .
        000-MAIN-EXIT.
            EXIT    PROGRAM.
@@ -617,7 +618,7 @@
                MOVE    "application/xml"   TO  APILST6-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "medicalget xml write failure "
            END-IF
       *
           .
@@ -684,7 +685,7 @@
                MOVE    "application/xml"   TO  APILST6-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "medicalget xml write failure "
            END-IF
       *
           .
@@ -750,7 +751,7 @@
                MOVE    "application/xml"   TO  APILST6-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "appoint xml write failure "
+               DISPLAY "medicalget xml write failure "
            END-IF
       *
           .
@@ -862,7 +863,6 @@
                                        LNK-DAY2-AREA
            IF      STS-DAY-RC1     NOT =   ZERO
                MOVE    "11"                TO  WRK-ERRCD
-               DISPLAY "Accept Ymd =  " WRK-PERFORM-YMD
            END-IF
            MOVE    WRK-PERFORM-YMD     TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
