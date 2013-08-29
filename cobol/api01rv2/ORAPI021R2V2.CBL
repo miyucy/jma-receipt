@@ -1335,8 +1335,8 @@
        930-PTHKNINF-READ-SEC              SECTION.
       *
            INITIALIZE                  PTHKNINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
-           MOVE    SPA-PTID            TO  PTHKN-PTID
+           MOVE    JYURRK-HOSPNUM      TO  PTHKN-HOSPNUM
+           MOVE    JYURRK-PTID         TO  PTHKN-PTID
            MOVE    COMB-HKNID          TO  PTHKN-HKNID 
       *
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
@@ -1370,8 +1370,8 @@
        940-PTKOHINF-READ-SEC              SECTION.
       *
            INITIALIZE                  PTKOHINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-           MOVE    SPA-PTID            TO  PTKOH-PTID
+           MOVE    JYURRK-HOSPNUM      TO  PTKOH-HOSPNUM
+           MOVE    JYURRK-PTID         TO  PTKOH-PTID
            MOVE    COMB-KOHID (IDK)    TO  PTKOH-KOHID 
       *
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
