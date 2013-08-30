@@ -1135,8 +1135,6 @@
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
                                MOVE  1     TO   FLG-TENTEK-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-TENTEK-SRYKA(IDX1)
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
@@ -1192,8 +1190,6 @@
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
                                MOVE  1     TO   FLG-TENTEK-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-TENTEK-SRYKA(IDX1)
                                ADD   ACCT-ZAITEN     TO 
                                     LNK-ORCSTEN2-TENTEK-ZAITEN(IDX1)
                                ADD   ACCT-SRYCDTOTAL     TO 
@@ -1256,8 +1252,6 @@
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
                                MOVE  1     TO   FLG-CHUJOU-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-CHUJOU-SRYKA(IDX1)
                                ADD   1     TO 
                                     LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
@@ -1313,8 +1307,6 @@
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
                                MOVE  1     TO   FLG-CHUJOU-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-CHUJOU-SRYKA(IDX1)
                                ADD   ACCT-ZAITEN     TO 
                                     LNK-ORCSTEN2-CHUJOU-ZAITEN(IDX1)
                                ADD   ACCT-SRYCDTOTAL     TO 
@@ -1382,8 +1374,6 @@
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-SEIBUTSU-SET
                                MOVE  1     TO   FLG-TENTEK-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-TENTEK-SRYKA(IDX1)
                                ADD   1     TO
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                EVALUATE   TRUE
@@ -1421,8 +1411,6 @@
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-SEIBUTSU-SET
                                MOVE  1     TO   FLG-CHUJOU-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-CHUJOU-SRYKA(IDX1)
                                ADD   1     TO 
                                     LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                EVALUATE   TRUE
@@ -1460,8 +1448,6 @@
       *                        生物学的製剤注射については取り込みを行う
                                MOVE  1     TO   FLG-SEIBUTSU-SET
                                MOVE  1     TO   FLG-TENTEK-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-TENTEK-SRYKA(IDX1)
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                EVALUATE   TRUE
@@ -1538,8 +1524,6 @@
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-SEIMITSU-SET
                                MOVE  1     TO   FLG-TENTEK-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-TENTEK-SRYKA(IDX1)
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                EVALUATE   TRUE
@@ -1577,8 +1561,6 @@
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-SEIMITSU-SET
                                MOVE  1     TO   FLG-CHUJOU-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-CHUJOU-SRYKA(IDX1)
                                ADD   1     TO 
                                     LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                EVALUATE   TRUE
@@ -1616,8 +1598,6 @@
       *                        精密持続点滴注射については取り込みを行う
                                MOVE  1     TO   FLG-SEIMITSU-SET
                                MOVE  1     TO   FLG-TENTEK-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-TENTEK-SRYKA(IDX1)
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                EVALUATE   TRUE
@@ -1694,8 +1674,6 @@
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-MAYAKU-SET
                                MOVE  1     TO   FLG-TENTEK-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-TENTEK-SRYKA(IDX1)
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                EVALUATE   TRUE
@@ -1733,8 +1711,6 @@
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-MAYAKU-SET
                                MOVE  1     TO   FLG-CHUJOU-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-CHUJOU-SRYKA(IDX1)
                                ADD   1     TO 
                                     LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                EVALUATE   TRUE
@@ -1772,8 +1748,6 @@
       *                        麻薬注射については取り込みを行う
                                MOVE  1     TO   FLG-MAYAKU-SET
                                MOVE  1     TO   FLG-TENTEK-SET
-                               MOVE  ACCT-SRYKA  TO
-                                     LNK-ORCSTEN2-TENTEK-SRYKA(IDX1)
                                ADD   1     TO 
                                     LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                EVALUATE   TRUE
@@ -2059,7 +2033,7 @@
       *
            MOVE       ZERO        TO   FLG-ZAINUM-MATCH
            PERFORM    VARYING   IDX2    FROM   1   BY  1
-             UNTIL    (IDX2     >    40)
+             UNTIL    (IDX2     >    20)
                  IF   ACCT-ZAINUM    =   LNK-ORCSTEN2-ZAINUM(IDX2)
                      MOVE    1    TO   FLG-ZAINUM-MATCH
                  END-IF
