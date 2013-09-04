@@ -608,7 +608,7 @@
            03  LF04-BYOMEI-TBL        OCCURS   50.
       *        補足コメントコード
                05  LF04-HOSOKUCD-G.
-                   07  LF04-HOSOKUCD      PIC X(12)
+                   07  LF04-HOSOKUCD      PIC X(10)
                                           OCCURS   3.
       *        補足コメント
                05  LF04-HOSOKU-COMMENT    PIC X(40).
