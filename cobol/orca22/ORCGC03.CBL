@@ -121,6 +121,7 @@
       *                                     組み立てへの移行を可能にする
       *  04.07.02    NACL-藤原    13/06/20  廃止病名警告表示の条件変更
       *  04.07.03    NACL-藤原    13/07/05  病名の複数自院病名登録対応
+      *  04.07.04    NACL-藤原    13/07/30  自院病名のセット登録対応
       *
       *  04.08.01    NACL-藤原    13/02/05  編集病名の強調表示
       *****************************************************************
@@ -165,6 +166,7 @@
            03  FLG-USERBYOMEI      PIC 9(01).
            03  FLG-SYNONYM         PIC 9(01).
            03  FLG-JOBEND          PIC 9(01).
+           03  FLG-BYOMEIINPUTSET  PIC 9(01).
       *
            03  FLG-ROW             PIC 9(01).
            03  FLG-MANSEI          PIC 9(01).
@@ -321,6 +323,10 @@
        01  SYNONYM-REC.
            COPY    "CPSYNONYM.INC".
       *
+      *    病名入力セット
+       01  BYOMEIINPUTSET-REC.
+           COPY    "CPBYOMEIINPUTSET.INC".
+      *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
@@ -367,6 +373,7 @@
            COPY    "C03.INC".
            COPY    "C04.INC".
            COPY    "C05.INC".
+           COPY    "C06.INC".
            COPY    "C09.INC".
            COPY    "C10.INC".
            COPY    "C11.INC".
@@ -2166,6 +2173,21 @@
                    END-IF
                END-IF    
            END-IF
+      *
+           IF      SPA-NAI-C03-BYOMEIINPUTCD-ERRCD(IDYY)
+                                   =   SPACE
+      *        病名入力セット検索
+               INITIALIZE                      BYOMEIINPUTSET-REC
+               MOVE    SPA-HOSPNUM         TO  BYOSET-HOSPNUM
+               MOVE    SPA-GMN-C03-BYOMEIINPUTCD (IDYY)
+                                           TO   BYOSET-BYOMEIINPUTSET
+               MOVE    BYOMEIINPUTSET-REC  TO  MCPDATA-REC
+               PERFORM 900-BYOMEIINPUTSET-READ-SEC
+               IF      FLG-BYOMEIINPUTSET  =   ZERO
+                   MOVE    "0031"              TO
+                                   SPA-NAI-C03-BYOMEIINPUTCD-ERRCD(IDYY)
+               END-IF
+           END-IF 
       *
            IF      SPA-NAI-C03-BYOMEIINPUTCD-ERRCD(IDYY)
                                 NOT =   SPACE     
@@ -5445,9 +5467,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
                       "先頭の文字が入力できない文字です"
                                                        TO  SPA-ERRMSG
                WHEN    "0031"
-                   MOVE
-                   "病名マスタ又は予約病名コードに存在するコードです"
-                                                       TO  SPA-ERRMSG
+                   STRING   "病名マスタ、病名セットコード"
+                                               DELIMITED   BY  SIZE
+                            "又は予約病名コードに存在するコードです"
+                                               DELIMITED   BY  SIZE 
+                                               INTO        SPA-ERRMSG
+                   END-STRING
                WHEN    "0032"
                    MOVE
                        "登録できない入力コードです"    TO  SPA-ERRMSG
@@ -6204,6 +6229,41 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
       *
            .
        900-SYNONYM-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病名入力セット読込
+      *****************************************************************
+       900-BYOMEIINPUTSET-READ-SEC     SECTION.
+      *
+           MOVE    "tbl_byomeiinputset"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_byomeiinputset"
+                                           TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  BYOMEIINPUTSET-REC
+                   MOVE    ZERO                TO  FLG-BYOMEIINPUTSET
+               ELSE
+                   INITIALIZE                      BYOMEIINPUTSET-REC
+                   MOVE    1                   TO  FLG-BYOMEIINPUTSET
+               END-IF
+           ELSE
+               INITIALIZE                      BYOMEIINPUTSET-REC
+               MOVE    1                   TO  FLG-BYOMEIINPUTSET
+           END-IF
+      *
+           MOVE    "tbl_byomeiinputset"
+                                       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-BYOMEIINPUTSET-READ-EXT.
            EXIT.
       *
       *****************************************************************

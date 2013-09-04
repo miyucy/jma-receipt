@@ -477,6 +477,7 @@ RECORD_files = \
 	W36.rec \
 	visitptlstv2.rec \
     hsconfbasev2.rec \
+	C06.rec \
 
 DEF_files = \
 
@@ -739,6 +740,7 @@ DB_files = \
 	xml_visitptlst02v2res.db \
     xml_hsconfbasev2req.db \
     xml_hsconfbasev2res.db \
+	tbl_byomeiinputset.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
