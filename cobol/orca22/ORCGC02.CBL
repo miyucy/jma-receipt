@@ -10511,17 +10511,33 @@ grpsys                                          SPA-AREA
                END-IF
            END-PERFORM
       *
-      *    画面移行用のパラメタ
-           MOVE    "C02"               TO  SPA-MOTOPG
-           MOVE    "C06"               TO  SPA-SAKIPG
+           MOVE    SPACE               TO  SPA-MOTOPG
            MOVE    SPA-C01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-C02FREE         TO  SPA-FREE
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
-           MOVE   "C06"                TO  MCP-WINDOW
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGC06"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-C01KYOUTU
+           MOVE    SPA-FREE        TO  SPA-C02FREE
+      *
+           MOVE    "C02"                TO  SPA-MOTOPG
+           MOVE    "C06"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "C06"                TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
+           MOVE    1                    TO  FLG-END              
       *
            .
        600-C06-SYORI-EXT.

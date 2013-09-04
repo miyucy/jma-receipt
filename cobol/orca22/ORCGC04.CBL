@@ -1791,8 +1791,9 @@
       *
       *            変更処理のときの複数病名入力
                    IF    ( SPA-NAI-C04-BYOMEISU-MAX
-                                               >   1    )
-                   AND   ( SPA-GMN-C02-BANGO   >   ZERO )               
+                                               >   1     )
+                   AND   ( SPA-GMN-C02-BANGO   >   ZERO  )
+                   AND   ( SPA-C01-MOTOPG      =   "C02" )
                        MOVE    99                  TO  SPA-GMN-C04-CUR
                        MOVE    "0003"              TO  SPA-ERRCD
                    END-IF
@@ -1862,8 +1863,9 @@
       *    新規以外のときは複数病名の入力不可
            IF      SPA-ERRCD               =   SPACE  
                IF    ( SPA-NAI-C04-BYOMEISU-MAX
-                                           >   1    )
-               AND   ( SPA-GMN-C02-BANGO   >   ZERO )               
+                                           >   1     )
+               AND   ( SPA-GMN-C02-BANGO   >   ZERO  )               
+               AND   ( SPA-C01-MOTOPG      =   "C02" )
                    MOVE    "0003"              TO  SPA-ERRCD
                END-IF
            END-IF        
@@ -2960,8 +2962,9 @@
       *
       *    変更処理のときの複数病名入力
            IF    ( SPA-NAI-C04-BYOMEISU-MAX
-                                       >   1    )
-           AND   ( SPA-GMN-C02-BANGO   >   ZERO )               
+                                       >   1     )
+           AND   ( SPA-GMN-C02-BANGO   >   ZERO  )               
+           AND   ( SPA-C01-MOTOPG      =   "C02" )
                MOVE    99                  TO  SPA-GMN-C04-CUR
                MOVE    "0003"              TO  SPA-ERRCD
                GO  TO  450-KAKUTEI-EXT

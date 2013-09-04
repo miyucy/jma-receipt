@@ -1189,12 +1189,23 @@
        4105-KEIKOKU-CHK-SEC                SECTION.
       *
       *    セットコードのチェック
-           IF    ( SPA-GMN-C06-BYOMEIINPUTSET
-                                   NOT =   SPACE )
-           AND   ( SPA-NAI-C06-BYOMEIINPUTSET
-                                       =   SPACE )
-               MOVE    "0032"              TO  SPA-ERRCD
+           IF      SPA-NAI-C06-BYOMEIINPUTSET
+                                       =   SPACE
+               IF      SPA-GMN-C06-BYOMEIINPUTSET
+                                           =   SPACE
+                   MOVE    "0006"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    "0032"              TO  SPA-ERRCD
+               END-IF
                MOVE    2                   TO  SPA-GMN-C06-CUR
+               GO  TO  4105-KEIKOKU-CHK-EXT
+           END-IF
+      *
+      *    自院コード入力チェック
+           IF      SPA-GMN-C06-INPUTCD-G
+                                   =   SPACE
+               MOVE    "0034"              TO  SPA-ERRCD
+               MOVE    4                   TO  SPA-GMN-C06-CUR
                GO  TO  4105-KEIKOKU-CHK-EXT
            END-IF
       *
@@ -1754,6 +1765,8 @@
                        "登録できないセットコードです"  TO  CERR-ERRMSG
                WHEN    "0033"
                    MOVE    "セットコード入力エラー"    TO  CERR-ERRMSG
+               WHEN    "0034"
+                   MOVE    "入力コードが未入力です"    TO  CERR-ERRMSG
                WHEN    "0035"
                    MOVE    "不明の入力コードが入力されています"
                                                        TO  CERR-ERRMSG
