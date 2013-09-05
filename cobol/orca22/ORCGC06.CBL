@@ -265,6 +265,7 @@
                IF      SPA-CID1-FLG    =   "OK"
                    EVALUATE    SPA-CIDCD
                        WHEN    "0101"
+                           INITIALIZE          SPA-GMN-C06-INPUTCD-G
                            PERFORM 410021-SETCD-HENSYU-SEC
                        WHEN    "0104"
       *                    ºï½ü½èÍý
@@ -273,6 +274,7 @@
                ELSE
                    EVALUATE    SPA-CIDCD
                        WHEN    "0101"
+                           INITIALIZE          SPA-GMN-C06-INPUTCD-G
                            PERFORM 410021-SETCD-HENSYU-SEC
                    END-EVALUATE
                END-IF
