@@ -16,63 +16,45 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ＡＰＩリクエスト入院基本情報    COPY (CPHSCONFBASEV2REQ.INC)
+      *    ＡＰＩレスポンス入院基本情報    COPY (CPHSCONFBASEV2RES.INC)
       ******************************************************************
-        01  XML-HSCONFBASERES.
-            03  HSCBRES-CONTEXT          PIC S9(9)   BINARY.
-            03  HSCBRES-OBJECT           PIC X(8).
-            03  HSCBRES-MODE             PIC S9(9)   BINARY.
-            03  HSCBRES-RECORDNAME       PIC X(128).
+       01  XML-HSCONFBASERES.
+           03  HSCBRES-CONTEXT          PIC S9(9)   BINARY.
+           03  HSCBRES-OBJECT           PIC X(8).
+           03  HSCBRES-MODE             PIC S9(9)   BINARY.
+           03  HSCBRES-RECORDNAME       PIC X(128).
       *
-            03  HSCBRES-PRIVATE-AREA.
-                05  HSCBRES-INFORMATION-DATE       PIC X(10).
-                05  HSCBRES-INFORMATION-TIME       PIC X(8).
-                05  HSCBRES-API-RESULT             PIC X(2).
-                05  HSCBRES-API-RESULT-MSG         PIC X(100).
-                05  HSCBRES-SKJRYOYO-G.
-                    07 HSCBRES-SKJRYOYO-LBL        PIC X(30).
-                    07 HSCBRES-SKJRYOYO-DATA       PIC X(9).
-                    07 HSCBRES-SKJRYOYO-NAME       PIC X(30).
-                05  HSCBRES-EIYOKANRI-G.
-                    07 HSCBRES-EIYOKANRI-LBL       PIC X(30).
-                    07 HSCBRES-EIYOKANRI-DATA      PIC X(1).
-                    07 HSCBRES-EIYOKANRI-NAME      PIC X(30).
-                05  HSCBRES-SAGAKUTAX-G.
-                    07 HSCBRES-SAGAKUTAX-LBL       PIC X(30).
-                    07 HSCBRES-SAGAKUTAX-DATA      PIC X(1).
-                    07 HSCBRES-SAGAKUTAX-NAME      PIC X(30).
-                05  HSCBRES-HYOKETSU-G.
-                    07 HSCBRES-HYOKETSU-LBL        PIC X(30).
-                    07 HSCBRES-HYOKETSU-DATA       PIC X(1).
-                    07 HSCBRES-HYOKETSU-NAME       PIC X(30).
-                05  HSCBRES-TEISUCHOKA-G.
-                    07 HSCBRES-TEISUCHOKA-LBL      PIC X(30).
-                    07 HSCBRES-TEISUCHOKA-DATA     PIC X(1).
-                    07 HSCBRES-TEISUCHOKA-NAME     PIC X(30).
-                05  HSCBRES-NYUINKSN-G.
-                    07 HSCBRES-NYUINKSN-LBL        PIC X(30).
-                    07 HSCBRES-NYUINKSN-OCC        OCCURS  21.
+           03  HSCBRES-PRIVATE-AREA.
+               05  HSCBRES-INFORMATION-DATE       PIC X(10).
+               05  HSCBRES-INFORMATION-TIME       PIC X(8).
+               05  HSCBRES-API-RESULT             PIC X(2).
+               05  HSCBRES-API-RESULT-MSG         PIC X(100).
+               05  HSCBRES-SKJRYOYO-G.
+                   07  HSCBRES-SKJRYOYO-LBL        PIC X(30).
+                   07  HSCBRES-SKJRYOYO-DATA       PIC X(9).
+                   07  HSCBRES-SKJRYOYO-NAME       PIC X(30).
+               05  HSCBRES-EIYOKANRI-G.
+                   07  HSCBRES-EIYOKANRI-LBL       PIC X(30).
+                   07  HSCBRES-EIYOKANRI-DATA      PIC X(1).
+                   07  HSCBRES-EIYOKANRI-NAME      PIC X(30).
+               05  HSCBRES-SAGAKUTAX-G.
+                   07  HSCBRES-SAGAKUTAX-LBL       PIC X(30).
+                   07  HSCBRES-SAGAKUTAX-DATA      PIC X(1).
+                   07  HSCBRES-SAGAKUTAX-NAME      PIC X(30).
+               05  HSCBRES-HYOKETSU-G.
+                   07  HSCBRES-HYOKETSU-LBL        PIC X(30).
+                   07  HSCBRES-HYOKETSU-DATA       PIC X(1).
+                   07  HSCBRES-HYOKETSU-NAME       PIC X(30).
+               05  HSCBRES-TEISUCHOKA-G.
+                   07  HSCBRES-TEISUCHOKA-LBL      PIC X(30).
+                   07  HSCBRES-TEISUCHOKA-DATA     PIC X(1).
+                   07  HSCBRES-TEISUCHOKA-NAME     PIC X(30).
+               05  HSCBRES-NYUINKSN-G.
+                   07  HSCBRES-NYUINKSN-OCC        OCCURS  21.
+                       09  HSCBRES-NYUINKSN-LBL    PIC X(30).
                        09  HSCBRES-NYUINKSN-DATA   PIC X(9).
                        09  HSCBRES-NYUINKSN-NAME   PIC X(50).
-                05  HSCBRES-SENTEI-G.
-                    07 HSCBRES-SENTEI-LBL          PIC X(30).
-                    07 HSCBRES-SENTEI-DEF-G.
-                       09  HSCBRES-SENTEI-DEF-LBL  PIC X(30).
-                       09  HSCBRES-SENTEI-DEF-DATA PIC X(1).
-                       09  HSCBRES-SENTEI-DEF-NAME PIC X(30).
-                    07 HSCBRES-SENTEI-FTN-G.
-                       09  HSCBRES-SENTEI-FTN-LBL  PIC X(30).
-                       09  HSCBRES-SENTEI-FTN-DATA PIC X(1).
-                       09  HSCBRES-SENTEI-FTN-NAME PIC X(30).
-                    07 HSCBRES-SENTEI-TAX-G.
-                       09  HSCBRES-SENTEI-TAX-LBL  PIC X(30).
-                       09  HSCBRES-SENTEI-TAX-DATA PIC X(1).
-                       09  HSCBRES-SENTEI-TAX-NAME PIC X(30).
-                    07 HSCBRES-SENTEI-IPPAN-G.
-                       09  HSCBRES-SENTEI-IPPAN-LBL  PIC X(30).
-                       09  HSCBRES-SENTEI-IPPAN-DATA PIC X(04).
-                       09  HSCBRES-SENTEI-IPPAN-NAME PIC X(30).
-                    07 HSCBRES-SENTEI-KOUKI-G.
-                       09  HSCBRES-SENTEI-KOUKI-LBL  PIC X(30).
-                       09  HSCBRES-SENTEI-KOUKI-DATA PIC X(04).
-                       09  HSCBRES-SENTEI-KOUKI-NAME PIC X(30).
+               05  HSCBRES-SENTEI-DEF-G.
+                   07  HSCBRES-SENTEI-DEF-LBL  PIC X(30).
+                   07  HSCBRES-SENTEI-DEF-DATA PIC X(1).
+                   07  HSCBRES-SENTEI-DEF-NAME PIC X(30).
