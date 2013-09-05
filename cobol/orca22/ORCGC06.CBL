@@ -274,7 +274,6 @@
                ELSE
                    EVALUATE    SPA-CIDCD
                        WHEN    "0101"
-                           INITIALIZE          SPA-GMN-C06-INPUTCD-G
                            PERFORM 410021-SETCD-HENSYU-SEC
                    END-EVALUATE
                END-IF
