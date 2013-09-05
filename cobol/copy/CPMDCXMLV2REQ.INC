@@ -114,10 +114,11 @@
                     07 MDCREQ-DIAGNOSIS-SINGLE-NAME
                                                      PIC X(20). 
       *           補足コメント
-                  05  MDCREQ-DIAGNOSIS-SCODE1        PIC X(10).
-                  05  MDCREQ-DIAGNOSIS-SCODE2        PIC X(10).
-                  05  MDCREQ-DIAGNOSIS-SCODE3        PIC X(10).
-                  05  MDCREQ-DIAGNOSIS-SNAME         PIC X(40).
+                  05  MDCREQ-DIAGNOSIS-SUPPLEMENT.
+                      07  MDCREQ-DIAGNOSIS-SCODE1        PIC X(10).
+                      07  MDCREQ-DIAGNOSIS-SCODE2        PIC X(10).
+                      07  MDCREQ-DIAGNOSIS-SCODE3        PIC X(10).
+                      07  MDCREQ-DIAGNOSIS-SNAME         PIC X(40).
       *
                   05  MDCREQ-DIAGNOSIS-CATEGORY      PIC X(2).
                   05  MDCREQ-DIAGNOSIS-SUSPECTEDFLAG PIC X(2).
