@@ -321,7 +321,7 @@
            MOVE    SPACE               TO  WRK-KEICD
       *
            MOVE    ZERO                TO  FLG-SYORI
-           EVALUATE    APILST10-CLASS
+           EVALUATE    VISREQ-REQUEST-NUMBER
            WHEN    "01"
       *        受診年月日
                MOVE    1                   TO  FLG-SYORI
@@ -339,7 +339,7 @@
                GO      TO      200-MAIN-EXT
            END-IF
       *
-           EVALUATE    APILST10-CLASS
+           EVALUATE    VISREQ-REQUEST-NUMBER
            WHEN    "01"
       *        受診年月日
                PERFORM 2002-SYORI-01-SEC

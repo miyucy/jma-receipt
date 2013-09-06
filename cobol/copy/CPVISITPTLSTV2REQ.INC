@@ -29,6 +29,8 @@
             02  VISREQ-MODE              PIC S9(9)   BINARY.
             02  VISREQ-RECORDNAME        PIC X(128).
             02  VISREQ-VISITPTREQ.
+      *       ΩËÕ˝∂Ë ¨
+              03  VISREQ-REQUEST-NUMBER    PIC X(02).
       *       ø«Œ≈∆¸…’
               03  VISREQ-VISIT-DATE        PIC X(10).
       *       ø«Œ≈≤ 
