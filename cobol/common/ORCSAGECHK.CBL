@@ -57,10 +57,6 @@
       *                                     （残留邦人）
       * 04.05.00     NACL-多々納  09/08/11  退職国保の６５歳以上判定追加
       * 04.05.00     NACL-多々納  10/08/24  高齢者非該当追加
-      * 04.08.00     NACL-多々納  13/07/XX  第三者行為対応
-      * 04.08.00     NACL-多々納  14/03/XX  前期高齢者２割対応
-      * 04.07.00     NACL-多々納  14/08/08  高齢非該当２割対応
-      * 04.08.00     NACL-多々納  17/05/XX  自賠責点数算定区分対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -100,9 +96,6 @@
            03  FLG-TAHKN           PIC 9(01).
            03  FLG-HI-ROUJIN       PIC 9(01).
            03  FLG-HI-ROUJIN2      PIC 9(01).
-      *
-           03  FLG-ROU-02          PIC 9(01).
-           03  FLG-ROU-03          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -150,10 +143,6 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *!!
-      *    保険組み合わせ負担割合取得サブ
-           COPY    "CPORCSFTNRATE.INC".
-      *!!
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -161,8 +150,6 @@
       *    共通領域
            COPY    "MCPAREA".
       *
-      *    システム管理マスタ
-           COPY    "CPSYSKANRI.INC".
       *    基本情報
            COPY    "CPSK1001.INC".
       *
@@ -512,35 +499,6 @@
            IF      COMB-HKNNUM         =   "975"
                MOVE    6               TO  AGECHK-HKNKBN
            END-IF
-      *H25.7
-      *    第三者行為
-           IF     (COMB-KOH1HKNNUM     =   "970" )
-               MOVE    7               TO  AGECHK-HKNKBN
-           END-IF
-      *
-      *!!!!
-           IF     (COMB-KOH1HKNNUM     =   "970" )
-               OR (COMB-KOH1HKNNUM     =   SPACE )
-               CONTINUE
-           ELSE
-      *        地方公費対応負担割合設定
-               INITIALIZE                  ORCSFTNRATEAREA
-               MOVE    AGECHK-HOSPNUM      TO  LNK-FTNRATE-HOSPNUM
-               MOVE    AGECHK-PTID         TO  LNK-FTNRATE-PTID
-               MOVE    AGECHK-SRYYMD       TO  LNK-FTNRATE-SRYYMD
-               MOVE    AGECHK-HKNCOMBINUM  TO  LNK-FTNRATE-HKNCOMBINUM
-               MOVE    "1"                 TO  LNK-FTNRATE-KBN
-               CALL    "ORCSFTNRATE"       USING
-                                           ORCSFTNRATEAREA
-                                           SPA-AREA
-                                           HKNCOMBI-REC
-               IF      LNK-FTNRATE-RC      =   ZERO
-                   MOVE    LNK-FTNRATE-NYUIN   TO  COMB-NYU-KFTNRATE
-                   MOVE    LNK-FTNRATE-GAIRAI  TO  COMB-GAI-KFTNRATE
-               END-IF
-           END-IF
-      *
-      *!!!!
       *
            IF      AGECHK-NYUGAIKBN    =   "1"
                MOVE    COMB-NYU-KFTNRATE   TO  AGECHK-FTNRATE
@@ -584,15 +542,6 @@
                END-IF
            END-IF
       *
-      *H26.4
-      *    前期高齢者２割負担対応
-      *         （S19.4.2生まれ以降）
-           IF     (AGECHK-SRYYMD       >=  "20140501" )
-              AND (WRK-BIRTHDAY        >=  "19440402" )
-               MOVE    1                   TO  FLG-ROU-02
-           ELSE
-               MOVE    ZERO                TO  FLG-ROU-02
-           END-IF
       *    老人判定
            IF      AGECHK-SRYYMD       <   "20080401"
                PERFORM 2009-ROUJIN-HANTEI-SEC
@@ -798,24 +747,6 @@
                   (COMB-KOH2HKNNUM     =   "079" )  OR
                   (COMB-KOH3HKNNUM     =   "079" )  OR
                   (COMB-KOH4HKNNUM     =   "079" ))
-               MOVE    1               TO  FLG-OK2
-           END-IF
-      *H27.1
-      *    難病のみの時
-           IF     (COMB-HKNNUM         =   SPACE )  AND
-                 ((COMB-KOH1HKNNUM     =   "054" )  OR
-                  (COMB-KOH2HKNNUM     =   "054" )  OR
-                  (COMB-KOH3HKNNUM     =   "054" )  OR
-                  (COMB-KOH4HKNNUM     =   "054" ))
-               MOVE    1               TO  FLG-OK2
-           END-IF
-      *H28.7
-      *    石綿のみの時
-           IF     (COMB-HKNNUM         =   SPACE )  AND
-                 ((COMB-KOH1HKNNUM     =   "066" )  OR
-                  (COMB-KOH2HKNNUM     =   "066" )  OR
-                  (COMB-KOH3HKNNUM     =   "066" )  OR
-                  (COMB-KOH4HKNNUM     =   "066" ))
                MOVE    1               TO  FLG-OK2
            END-IF
       *!!!!
@@ -1057,15 +988,6 @@
                        IF      PTHKN-HOJOKBN       =   "2"
                            MOVE    1               TO  FLG-ERR
                        END-IF
-      *                H26.5から２割対応
-                       IF      FLG-ROU-02      =   1
-                           MOVE    ZERO            TO  FLG-ERR
-                           IF      PTHKN-HOJOKBN       =   "1"
-                           AND     FLG-ROU-03          =   ZERO
-                               MOVE    1               TO  FLG-ERR
-                           END-IF
-                       END-IF
-      *
                    END-IF
       *            前期高齢者開始日以降に確定がない時、警告
                    IF     (PTHKN-TEKSTYMD      <   WRK-BYMD-70 )
@@ -1086,18 +1008,6 @@
                                                    OR  "E"
                                                    OR  "F"
                            IF      PTHKN-CONTKBN   =   SPACE
-                               MOVE    1               TO  FLG-ERR
-                           END-IF
-                       END-IF
-      *                H26.5から２割対応
-                       IF      FLG-ROU-02      =   1
-                           MOVE    ZERO            TO  FLG-ERR
-      *                    １割で継続以外はエラー
-                           IF     (PTHKN-HOJOKBN   =   "9"
-                                                   OR  "A"
-                                                   OR  "B"
-                                                   OR  "C" )
-                           AND    (PTHKN-CONTKBN   =   SPACE)
                                MOVE    1               TO  FLG-ERR
                            END-IF
                        END-IF
@@ -1129,20 +1039,6 @@
                        ELSE
                            MOVE    2               TO  FLG-OK
                        END-IF
-      *                H26.5から２割対応
-                       IF      FLG-ROU-02      =   1
-                           MOVE    ZERO            TO  FLG-ERR
-                           MOVE    1               TO  FLG-OK
-      *                    １割で継続以外はエラー
-                           IF      PTHKN-HOJOKBN       =   "9"
-                                                       OR  "B"
-                               IF      PTHKN-CONTKBN   =   SPACE
-                                   MOVE    1               TO  FLG-ERR
-                               END-IF
-                           ELSE
-                               MOVE    2               TO  FLG-OK
-                           END-IF
-                       END-IF
                    END-IF
       *        Ｈ２０．４から（後期高齢者）
                WHEN    "039"
@@ -1158,16 +1054,6 @@
                        IF      PTHKN-HOJOKBN       =   "8"
                            IF      PTHKN-CONTKBN   =   SPACE
                                MOVE    1               TO  FLG-ERR
-                           END-IF
-                       END-IF
-      *                H26.5から２割対応
-                       IF      FLG-ROU-02      =   1
-                           MOVE    ZERO            TO  FLG-ERR
-      *                    １割で継続以外はエラー
-                           IF      PTHKN-HOJOKBN       =   "9"
-                               IF      PTHKN-CONTKBN   =   SPACE
-                                   MOVE    1               TO  FLG-ERR
-                               END-IF
                            END-IF
                        END-IF
                    END-IF
@@ -1242,7 +1128,7 @@
                END-EVALUATE
            END-IF
       *
-      *H29.4
+      *    自賠責区分の判定
       *    システム管理検索（労災情報）
            MOVE    SPACE               TO  SYS-4001-REC
            INITIALIZE                  SYS-4001-REC
@@ -1251,29 +1137,30 @@
            MOVE    AGECHK-SRYYMD       TO  SYS-4001-STYUKYMD
                                            SYS-4001-EDYUKYMD
            MOVE    AGECHK-HOSPNUM      TO  SYS-4001-HOSPNUM
-           MOVE    SYS-4001-REC        TO  SYSKANRI-REC
-           PERFORM 900-SYSKANRI-KEY10-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-4001-REC
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
            ELSE
+               MOVE    SPACE               TO  SYS-4001-REC
                INITIALIZE                  SYS-4001-REC
+               MOVE    1               TO  FLG-SYSKANRI
            END-IF
-     *
-      *    自賠責点数区分の設定があれば優先
-           EVALUATE    PTRSI-JIBAIKBN
-               WHEN    "1"
-      *        労災準拠
-                   MOVE    2               TO  AGECHK-HKNKBN
-               WHEN    "2"
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-4001-REC
       *        健保準拠
+               IF      SYS-4001-JIBAIKBN       =   "2"
                    MOVE    4               TO  AGECHK-HKNKBN
-               WHEN    OTHER
-      *        システム管理準拠
-                   IF      SYS-4001-JIBAIKBN   =   "2"
-      *                健保準拠
-                       MOVE    4               TO  AGECHK-HKNKBN
-                   END-IF
-           END-EVALUATE
+               END-IF
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            .
       *
        2002-JIBAI-FTNRATE-EXT.
@@ -1461,13 +1348,6 @@
                            MOVE    ZERO            TO  AGECHK-ROUJIN
                        END-IF
                        MOVE    AGECHK-ROUJIN       TO  AGECHK-ROUJIN2
-      *H26.8
-      *                後期非該当
-                       IF     (FLG-HI-ROUJIN       =   1 )
-                         AND  (AGECHK-SRYYMD       >=  "20140501" )
-                           MOVE    1                   TO  FLG-ROU-02
-                           MOVE    1                   TO  FLG-ROU-03
-                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -1624,12 +1504,6 @@
                       (COMB-KOH2HKNNUM     =   "025" )  OR
                       (COMB-KOH3HKNNUM     =   "025" )  OR
                       (COMB-KOH4HKNNUM     =   "025" ))
-      *H27.1
-      *            難病
-                 OR  ((COMB-KOH1HKNNUM     =   "054" )  OR
-                      (COMB-KOH2HKNNUM     =   "054" )  OR
-                      (COMB-KOH3HKNNUM     =   "054" )  OR
-                      (COMB-KOH4HKNNUM     =   "054" ))
                    MOVE    AGECHK-ROUJIN2      TO  AGECHK-ROUJIN
                END-IF
            END-IF
@@ -1998,42 +1872,14 @@
        910-PTHKNINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    システム管理検索処理
-      *****************************************************************
-       900-SYSKANRI-KEY10-SEC         SECTION.
-      *
-           MOVE    AGECHK-HOSPNUM      TO  SYS-HOSPNUM
-           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       900-SYSKANRI-KEY10-EXT.
-           EXIT.
-      *****************************************************************
       *    システム管理マスタ読み込み処理
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
                MOVE    ZERO            TO  FLG-SYSKANRI
            ELSE
-               INITIALIZE                  SYSKANRI-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
       *
