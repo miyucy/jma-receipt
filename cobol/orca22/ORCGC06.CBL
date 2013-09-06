@@ -852,7 +852,7 @@
            ELSE
                MOVE    SPA-GMN-C06-BYOMEIINPUTSET
                                            TO
-                                       SPA-NAI-C06-BYOMEIINPUTSET-OLD
+      *********                        SPA-NAI-C06-BYOMEIINPUTSET-OLD
                                        SPA-NAI-C06-BYOMEIINPUTSET
       *
       *        登録済かどうかのチェック
@@ -869,7 +869,7 @@
                    INITIALIZE          SPA-GMN-C06-SELNUM
                                        SPA-NAI-C06-SELNUM
                                        C06-SETCDLST-ROW
-                                       SPA-NAI-C06-BYOMEIINPUTSET-OLD
+      *********                        SPA-NAI-C06-BYOMEIINPUTSET-OLD
                END-IF
            END-IF    
       *
@@ -1550,6 +1550,30 @@
                MOVE    "1004"              TO  SPA-ERRCD
                DISPLAY MCP-FUNC "BYOSET-KEY =>" USBYO-KEY 
                GO  TO  250-KAKUTEI-EXT
+           END-IF
+      *
+      *    変更前のコード削除処理
+           IF      SPA-NAI-C06-BYOMEIINPUTSET-OLD
+                                   NOT =   SPACE
+               INITIALIZE                      BYOMEIINPUTSET-REC
+               MOVE    SPA-HOSPNUM         TO  BYOSET-HOSPNUM
+               MOVE    SPA-NAI-C06-BYOMEIINPUTSET-OLD
+                                           TO  BYOSET-BYOMEIINPUTSET
+               MOVE    BYOMEIINPUTSET-REC  TO  MCPDATA-REC
+      *
+               MOVE    "tbl_byomeiinputset"
+                                           TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               CALL    "ORCDBMAIN"         USING
+                                               MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+               IF      MCP-RC      NOT =   ZERO 
+                   MOVE    "1002"          TO  SPA-ERRCD
+                   DISPLAY "BYOSET-KEY =>" BYOSET-KEY
+                   GO  TO  250-KAKUTEI-EXT
+                END-IF
            END-IF
       *
       *    病名セット一覧
