@@ -291,6 +291,12 @@
                    MOVE    ZERO                TO  WRK-NENREI-MM
                END-IF
            END-IF
+      *    診療日＜生年月日は０歳とする
+           IF      AGECHK-SRYYMD       <   WRK-BIRTHDAY
+               MOVE    ZERO                TO  WRK-NENREI-YY
+               MOVE    ZERO                TO  WRK-NENREI-MM
+               MOVE    ZERO                TO  WRK-NENREI-DD
+           END-IF
            MOVE    WRK-NENREI-YY       TO  AGECHK-NENREI2-YY
            MOVE    WRK-NENREI-MM       TO  AGECHK-NENREI2-MM
            MOVE    WRK-NENREI-DD       TO  AGECHK-NENREI2-DD
