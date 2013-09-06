@@ -291,12 +291,6 @@
                    MOVE    ZERO                TO  WRK-NENREI-MM
                END-IF
            END-IF
-      *    ¿ÇÎÅÆü¡ãÀ¸Ç¯·îÆü¤Ï£°ºÐ¤È¤¹¤ë
-           IF      AGECHK-SRYYMD       <   WRK-BIRTHDAY
-               MOVE    ZERO                TO  WRK-NENREI-YY
-               MOVE    ZERO                TO  WRK-NENREI-MM
-               MOVE    ZERO                TO  WRK-NENREI-DD
-           END-IF
            MOVE    WRK-NENREI-YY       TO  AGECHK-NENREI2-YY
            MOVE    WRK-NENREI-MM       TO  AGECHK-NENREI2-MM
            MOVE    WRK-NENREI-DD       TO  AGECHK-NENREI2-DD
@@ -319,7 +313,8 @@
            MOVE    WRK-SRYYMD          TO  WRK-SYMD
            COMPUTE WRK-NENREI-YY       =   WRK-SYY
                                        -   WRK-BYY
-           IF      WRK-BYMD(5:4)       >   WRK-SYMD(5:4)
+           IF     (WRK-BYMD(5:4)       >   WRK-SYMD(5:4))
+            AND   (WRK-NENREI-YY       >   ZERO         )
                COMPUTE WRK-NENREI-YY       =   WRK-NENREI-YY
                                            -   1
                COMPUTE WRK-NENREI-MM       =  (WRK-BMM   +  12 )
