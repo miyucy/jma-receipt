@@ -4,6 +4,7 @@ xml_hsconfwardv2req {
     mode	int;
     recordname	varchar(128);
 	private_objects {
+		Request_Number		varchar(01);
 		Base_Date			varchar(10);
 		Ward_Number			varchar(02);
 		Room_Id				varchar(06);

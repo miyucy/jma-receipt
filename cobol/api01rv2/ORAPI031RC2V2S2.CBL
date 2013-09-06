@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION      DIVISION.
-       PROGRAM-ID.         ORAPI031RC1V2.
+       PROGRAM-ID.         ORAPI031RC2V2S2.
       *****************************************************************
       *  システム名        : 日医標準レセプトソフト
       *  サブシステム名    : API連携用モジュール
-      *  コンポーネント名  : 入院基本情報取得
+      *  コンポーネント名  : 入院病室情報取得
       *  管理者            :
       *  作成日付    作業者        記述
-      *  13/08/20    NACL−太田　新規作成
+      *  13/09/03    NACL−太田　新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -47,17 +47,26 @@
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
+           03  FLG-TAISHO              PIC 9(01).
+      *
+      *    カウント領域
+       01  CNT-AREA.
+           03  CNT-BYOSHITSU               PIC 9(05).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
+           03  IDX1                    PIC 9(05).
            03  IDXK                    PIC 9(05).
+           03  IDXW                    PIC 9(05).
+           03  IDXR                    PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-TNS-SRYCD           PIC X(09).
+           03  WRK-TNS-SRYYMD          PIC X(08).
            03  WRK-KJNYMD              PIC X(08).
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -80,12 +89,20 @@
                05  WRK-TIME-MM         PIC 9(02).
                05  WRK-TIME-FL2        PIC X(01).
                05  WRK-TIME-SS         PIC 9(02).
-           03  WRK-NUMZ                PIC ZZZ9.
+           03  WRK-NUM2Z               PIC Z9.
+           03  WRK-NUM4Z               PIC ZZZ9.
+           03  WRK-NUM7Z               PIC ZZZZZZ9.
+           03  WRK-SRYCD               PIC X(09).
+      *
+       01  KEY-AREA.
+           03  KEY-BTUNUM              PIC X(02).
+           03  KEY-BRMNUM              PIC X(06).
       *
        01  CONST-AREA.
-           03  CONST-NYUINKSN-MAX      PIC 9(03)   VALUE 21.
            03  CONST-H240401           PIC X(08)   VALUE "20120401".
            03  CONST-H200401           PIC X(08)   VALUE "20080401".
+           03  CONST-BYOSHITSU-MAX     PIC 9(03)   VALUE 200.
+           03  CONST-NYUINKSN-MAX      PIC 9(03)   VALUE 12.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -101,11 +118,15 @@
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    API XML読み込み用定義体
-           COPY    "CPHSCONFBASEV2REQ.INC".
+      *    病室番号編集サブ
+           COPY    "CPORCSBRMNUM.INC".
+      *
+      *    特定入院料コード取得パラメタ
+           COPY    "CPORCSTOKNYUIN.INC".
+      *
       *
       *    API XML書き込み用定義体
-           COPY    "CPHSCONFBASEV2RES.INC".
+           COPY    "CPHSCONFROOMV2RES.INC".
       *
       *ver.4.7
       *    API XML読み込み共通定義
@@ -119,16 +140,26 @@
            COPY    "CPSYSKANRI.INC".
       *    職員情報
            COPY    "CPSK1010.INC".
-      *    入院基本
+      *    診療科情報
+           COPY    "CPSK1005.INC".
+      *    入院基本情報
            COPY    "CPSK5000.INC".
+      *    病棟情報
+           COPY    "CPSK5001.INC".
+      *    病室情報
+           COPY    "CPSK5002.INC".
+      *    病室種別
+           COPY    "CPSK5108.INC".
+      *    室料差額
+           COPY    "CPSK5113.INC".
+      *    性別特定
+           COPY    "CPSK5109.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
            COPY    "MCPDATA.INC".
-      *
-           COPY    "ORCA-BLOB".
       *
       *****************************************************************
       *    連絡領域
@@ -139,25 +170,26 @@
             COPY    "LINKAREA".
        01  SCRAREA.
            COPY    "API01RV2SCRAREA.INC".
+      *    API XML読み込み用定義体
+           COPY    "CPHSCONFWARDV2REQ.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
            SPAAREA
            LINKAREA
-           SCRAREA.
+           SCRAREA
+           XML-HSCONFWARDV2REQ.
       *
       *****************************************************************
       *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
-           DISPLAY   "***************"
-           DISPLAY   "* accept start*"
-           DISPLAY   "***************"
-      *
            INITIALIZE                  FLG-AREA
+           INITIALIZE                  CNT-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
+           INITIALIZE                  KEY-AREA
            INITIALIZE                  SPA-AREA
       *
       *    初期処理
@@ -171,9 +203,6 @@
       *    返却領域編集
            PERFORM 300-END-SEC
       *
-           DISPLAY   "***************"
-           DISPLAY   "* accept end  *"
-           DISPLAY   "***************"
            .
        000-MAIN-EXIT.
            EXIT    PROGRAM.
@@ -184,7 +213,7 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  XML-HSCONFBASERES
+           INITIALIZE                  XML-HSCONFROOMRES
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -217,9 +246,6 @@
                END-IF
            END-IF
       *
-      *    XML情報取り出し
-           PERFORM 900-XML-READ-SEC
-      *
            PERFORM 1001-INIT-CHECK-SEC
       *
            .
@@ -233,7 +259,7 @@
       *
            MOVE    SPACE           TO  WRK-KJNYMD
       *
-           MOVE    HSCBREQ-BASE-DATE
+           MOVE    HSCWREQ-BASE-DATE
                                    TO  WRK-DATE
            PERFORM 800-SYMD-SEC
            IF    ( WRK-SYMD        =   SPACE )
@@ -249,6 +275,21 @@
            IF    ( WRK-ERRCD       =   SPACE )
                IF    ( WRK-KJNYMD  <   CONST-H200401 )
                    MOVE    "92"    TO  WRK-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( WRK-ERRCD       =   SPACE )
+      *
+               MOVE    HSCWREQ-BTUNUM      TO  KEY-BTUNUM
+      *
+               IF    ( HSCWREQ-BRMNUM  NOT =   SPACE )
+                   INITIALIZE                  ORCSBRMNUMAREA
+                   MOVE    "2"             TO  SBRMNUM-IN-PROCKBN
+                   MOVE    HSCWREQ-BRMNUM
+                                           TO  SBRMNUM-IN-BRMNUM
+                   CALL    "ORCSBRMNUM"    USING   ORCSBRMNUMAREA
+                   MOVE    SBRMNUM-OT-BRMNUM
+                                           TO  KEY-BRMNUM
                END-IF
            END-IF
       *
@@ -269,139 +310,264 @@
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-5000-REC
            IF    ( FLG-SYSKANRI    =   ZERO )
-               PERFORM 2001-NYUIN-KIHON-EDIT-SEC
+               CONTINUE
            ELSE
                MOVE    "02"        TO  WRK-ERRCD
            END-IF
       *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "5002"          TO  SYS-KANRICD
+           MOVE    WRK-KJNYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5002-REC
+      *
+           MOVE    ZERO            TO  IDXR
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                    OR   ( IDXR        >=  CONST-BYOSHITSU-MAX )
+                    OR   ( WRK-ERRCD       NOT =   SPACE )
+      *
+               PERFORM 2001-TAISHO-BYOSHITSU-CHK-SEC
+      *
+               IF    ( FLG-TAISHO  =   1 )
+                   PERFORM 2001-BYOSHITSU-EDIT-SEC
+               END-IF
+      *
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5002-REC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           MOVE    IDXR                TO  CNT-BYOSHITSU
+      *
            .
        200-MAIN-EXT.
            EXIT.
-      *
-      *
       *****************************************************************
-      *    入院基本情報編集処理
+      *    対象病室チェック処理
       *****************************************************************
-       2001-NYUIN-KIHON-EDIT-SEC       SECTION.
+       2001-TAISHO-BYOSHITSU-CHK-SEC   SECTION.
       *
-           IF    ( SYS-5000-EIYOUKSNKBN    =   SPACE )
-               MOVE    "0"             TO  SYS-5000-EIYOUKSNKBN
-           END-IF
+           MOVE    ZERO                TO  FLG-TAISHO
       *
-           IF    ( SYS-5000-BRMSGK-TAXKBN  =   SPACE )
-               MOVE    "0"             TO  SYS-5000-BRMSGK-TAXKBN
-           END-IF
-      *
-           IF    ( SYS-5000-HYOUKETUKBN    =   SPACE )
-               MOVE    "0"             TO  SYS-5000-HYOUKETUKBN
-           END-IF
-      *
-           IF    ( SYS-5000-TEISUKBN       =   SPACE )
-               MOVE    "0"             TO  SYS-5000-TEISUKBN
-           END-IF
-      *
-           IF    ( SYS-5000-SENTEIKBN      =   SPACE )
-               MOVE    "1"             TO  SYS-5000-SENTEIKBN
-               MOVE    "1"             TO  SYS-5000-SENTEI-FTNKBN
-               MOVE   10               TO  SYS-5000-SENTEI-TANKA
-               MOVE   "0"              TO  SYS-5000-SENTEI-TAXKBN
-           END-IF
-      *
-           MOVE    "食事療養費"        TO  HSCBRES-SKJRYOYO-LBL
-           MOVE    SYS-5000-SHOKUJIRYOYOCD
-                                       TO  HSCBRES-SKJRYOYO-DATA
-           MOVE    SYS-5000-SHOKUJIRYOYOCD
-                                       TO  WRK-TNS-SRYCD
-           PERFORM 900-TENSU-KEY-SEL-SEC
-           MOVE    TNS-NAME            TO  HSCBRES-SKJRYOYO-NAME
-      *
-           IF    ( SYS-5000-STYUKYMD   >=  CONST-H240401 )
-               MOVE    "栄養管理経過措置"  TO  HSCBRES-EIYOKANRI-LBL
-               MOVE    SYS-5000-EIYOUKSNKBN
-                                       TO  HSCBRES-EIYOKANRI-DATA
-               EVALUATE    SYS-5000-EIYOUKSNKBN
-               WHEN    "0"
-                   MOVE    "栄養管理体制基準適合"
-                                       TO  HSCBRES-EIYOKANRI-NAME
-               WHEN    "1"
-                   MOVE    "栄養管理体制基準未適合"
-                                       TO  HSCBRES-EIYOKANRI-NAME
-               END-EVALUATE
-           END-IF
-      *
-           MOVE    "室料差額消費税"    TO  HSCBRES-SAGAKUTAX-LBL
-           MOVE    SYS-5000-BRMSGK-TAXKBN
-                                       TO  HSCBRES-SAGAKUTAX-DATA
-           EVALUATE    SYS-5000-BRMSGK-TAXKBN
-           WHEN    "0"
-               MOVE    "なし"          TO  HSCBRES-SAGAKUTAX-NAME
-           WHEN    "1"
-               MOVE    "あり"          TO  HSCBRES-SAGAKUTAX-NAME
-           END-EVALUATE
-      *
-           MOVE    "標欠による減額"    TO  HSCBRES-HYOKETSU-LBL
-           MOVE    SYS-5000-HYOUKETUKBN
-                                       TO  HSCBRES-HYOKETSU-DATA
-           EVALUATE    SYS-5000-HYOUKETUKBN
-           WHEN    "0"
-               MOVE    "減額なし"
-                                       TO  HSCBRES-HYOKETSU-NAME
-           WHEN    "1"
-               MOVE    "１００分の１０減額"
-                                       TO  HSCBRES-HYOKETSU-NAME
-           WHEN    "2"
-               MOVE    "１００分の１５減額"
-                                       TO  HSCBRES-HYOKETSU-NAME
-           WHEN    "3"
-               MOVE    "１００分の２減額"
-                                       TO  HSCBRES-HYOKETSU-NAME
-           WHEN    "4"
-               MOVE    "１００分の３減額"
-                                       TO  HSCBRES-HYOKETSU-NAME
-           END-EVALUATE
-      *
-           MOVE    "定数超過"          TO  HSCBRES-TEISUCHOKA-LBL
-           MOVE    SYS-5000-TEISUKBN   TO  HSCBRES-TEISUCHOKA-DATA
-           EVALUATE    SYS-5000-TEISUKBN
-           WHEN    "0"
-               MOVE    "定数超過なし"  TO  HSCBRES-TEISUCHOKA-NAME
-           WHEN    "1"
-               MOVE    "定数超過あり"  TO  HSCBRES-TEISUCHOKA-NAME
-           END-EVALUATE
-      *
-           MOVE    ZERO                TO  IDXK
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   20 )
-               IF    ( SYS-5000-KSNKBN (IDX0)  =   "2" )
-                   MOVE    SYS-5000-KSNCD (IDX0)
-                                       TO  WRK-TNS-SRYCD
-                   PERFORM 20011-NYUIN-KSN-EDIT-SEC
+           EVALUATE    TRUE
+           WHEN  ( KEY-BTUNUM      NOT =   SPACE )
+            AND  ( KEY-BRMNUM          =   SPACE )
+               IF    ( KEY-BTUNUM      =   SYS-5002-KBNCD (1:2) )
+                   MOVE    1           TO  FLG-TAISHO
                END-IF
-           END-PERFORM
+           WHEN  ( KEY-BTUNUM          =   SPACE )
+            AND  ( KEY-BRMNUM      NOT =   SPACE )
+               IF    ( KEY-BRMNUM      =   SYS-5002-KBNCD (3:6) )
+                   MOVE    1           TO  FLG-TAISHO
+               END-IF
+           WHEN  OTHER
+               IF    ( KEY-BTUNUM      =   SYS-5002-KBNCD (1:2) )
+                 AND ( KEY-BRMNUM      =   SYS-5002-KBNCD (3:6) )
+                   MOVE    1           TO  FLG-TAISHO
+               END-IF
+           END-EVALUATE
       *
-           MOVE    SYS-5000-CHIIKIKSN  TO  WRK-TNS-SRYCD
+           .
+       2001-TAISHO-BYOSHITSU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    病室情報編集処理
+      *****************************************************************
+       2001-BYOSHITSU-EDIT-SEC         SECTION.
+      *
+           COMPUTE IDXR    =   IDXR    +   1
+      *
+           MOVE    SYS-5002-STYUKYMD   TO  WRK-SYMD
+           PERFORM 800-DATE-SEC
+           MOVE    WRK-DATE            TO  HSCRRES-ST-DATE (IDXR)
+      *
+           MOVE    SYS-5002-EDYUKYMD   TO  WRK-SYMD
+           PERFORM 800-DATE-SEC
+           MOVE    WRK-DATE            TO  HSCRRES-ED-DATE (IDXR)
+      *
+           MOVE    "病棟番号"          TO  HSCRRES-BTUNUM-LBL (IDXR)
+           MOVE    SYS-5002-KBNCD(1:2)
+                                       TO  HSCRRES-BTUNUM-DATA (IDXR)
+      *
+           MOVE    "病棟名称"          TO  HSCRRES-BTUNAME-LBL (IDXR)
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    "5001"              TO  SYS-KANRICD
+           MOVE    SYS-5002-KBNCD (1:2)
+                                       TO  SYS-KBNCD
+           MOVE    WRK-KJNYMD          TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-5001-REC
+           MOVE    SYS-5001-BTU-NAME   TO  HSCRRES-BTUNAME-DATA (IDXR)
+      *
+           MOVE    "病室番号"          TO  HSCRRES-BRMNUM-LBL  (IDXR)
+           MOVE    SYS-5002-BRM-NUM    TO  HSCRRES-BRMNUM-DATA (IDXR)
+      *
+           IF    ( SYS-5002-BRM-SBT    NOT =   SPACE )
+               MOVE    "病室種別"      TO  HSCRRES-BTUSBT-LBL (IDXR)
+               MOVE    SYS-5002-BRM-SBT
+                                       TO  HSCRRES-BTUSBT-DATA (IDXR)
+               INITIALIZE                      SYSKANRI-REC
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+               MOVE    "5108"              TO  SYS-KANRICD
+               MOVE    SYS-5002-BRM-SBT    TO  SYS-KBNCD
+               MOVE    SYS-5002-STYUKYMD   TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               MOVE    SYSKANRI-REC        TO  SYS-5108-REC
+               MOVE    SYS-5108-BRM-SBT-NM
+                                       TO  HSCRRES-BTUSBT-NAME (IDXR)
+           END-IF
+      *
+           IF    ( SYS-5002-BRM-NINZU  NOT =   ZERO )
+               MOVE    "収容人数"      TO  HSCRRES-NINZU-LBL (IDXR)
+               MOVE    SYS-5002-BRM-NINZU
+                                       TO  WRK-NUM2Z
+               MOVE    WRK-NUM2Z       TO  HSCRRES-NINZU-DATA(IDXR)
+               MOVE    "人"            TO  HSCRRES-NINZU-NAME(IDXR)
+           END-IF
+      *
+           IF    ( SYS-5002-BRM-SAGAKU NOT =   SPACE )
+               MOVE    "室料差額"      TO  HSCRRES-SAGAKU-LBL (IDXR)
+      *
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+               MOVE    "5113"          TO  SYS-KANRICD
+               MOVE    SYS-5002-BRM-SAGAKU
+                                       TO  SYS-KBNCD
+               MOVE    SYS-5002-STYUKYMD
+                                       TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5113-REC
+               MOVE    SYS-5113-BRM-SAGAKU-NM
+                                       TO  WRK-NUM7Z
+               MOVE    WRK-NUM7Z       TO  HSCRRES-SAGAKU-DATA (IDXR)
+               MOVE    "円"            TO  HSCRRES-SAGAKU-NAME (IDXR)
+           END-IF
+      *
+           IF    ( SYS-5002-BRM-SEX    NOT =   SPACE )
+               MOVE    "性別特定"      TO  HSCRRES-SEX-LBL (IDXR)
+               MOVE    SYS-5002-BRM-SEX
+                                       TO  HSCRRES-SEX-DATA (IDXR)
+      *
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+               MOVE    "5109"          TO  SYS-KANRICD
+               MOVE    SYS-5002-BRM-SEX
+                                       TO  SYS-KBNCD
+               MOVE    SYS-5002-STYUKYMD
+                                       TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-5109-REC
+               MOVE    SYS-5109-BRM-SEX-NM
+                                       TO  HSCRRES-SEX-NAME (IDXR)
+           END-IF
+      *
+           IF    ( SYS-5002-BRM-NAITEL NOT =   SPACE )
+               MOVE    "内線番号"      TO  HSCRRES-NAISEN-LBL (IDXR)
+               MOVE    SYS-5002-BRM-NAITEL
+                                       TO  HSCRRES-NAISEN-DATA(IDXR)
+               MOVE    "番"            TO  HSCRRES-NAISEN-NAME(IDXR)
+           END-IF
+      *
+           IF    ( SYS-5002-BRM-KA     NOT =   SPACE )
+               MOVE    "診療科"        TO  HSCRRES-SRYKA-LBL (IDXR)
+               MOVE    SYS-5002-BRM-KA TO  HSCRRES-SRYKA-DATA (IDXR)
+      *
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+               MOVE    "1005"          TO  SYS-KANRICD
+               MOVE    SYS-5002-BRM-KA TO  SYS-KBNCD
+               MOVE    SYS-5002-STYUKYMD
+                                       TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-1005-REC
+               MOVE    SYS-1005-SRYKANAME
+                                       TO  HSCRRES-SRYKA-NAME (IDXR)
+           END-IF
+      *
+           IF    ( SYS-5002-BRM-TOKTEI-NYUIN
+                                       NOT =   SPACE )
+               MOVE    "特定入院料"    TO  HSCRRES-TOKNYUIN-LBL (IDXR)
+      *
+               INITIALIZE                  ORCSTOKNYUIN-AREA
+               MOVE    "3"             TO  LNK-TOKNYUIN-KBN
+               MOVE    SYS-5002-BRM-TOKTEI-NYUIN
+                                       TO  LNK-TOKNYUIN-NYUIN
+               MOVE    SYS-5002-STYUKYMD (1:6)
+                                       TO  LNK-TOKNYUIN-SANTEIYM
+               MOVE    SYS-5002-KBNCD (1:2)
+                                       TO  LNK-TOKNYUIN-BTUNUM
+               CALL    "ORCSTOKNYUIN"  USING
+                                       ORCSTOKNYUIN-AREA
+                                       SPA-AREA
+               MOVE    LNK-TOKNYUIN-SRYCD
+                                       TO  HSCRRES-TOKNYUIN-DATA (IDXR)
+               MOVE    LNK-TOKNYUIN-SRYCD
+                                       TO  WRK-TNS-SRYCD
+               MOVE    SYS-5002-STYUKYMD
+                                       TO  WRK-TNS-SRYYMD
+               PERFORM 901-TENSU-KEY-SEL-SEC
+               MOVE    TNS-NAME        TO  HSCRRES-TOKNYUIN-NAME (IDXR)
+           END-IF
+      *
+           IF    ( SYS-5002-KHNSRYCD   NOT =   SPACE )
+               MOVE    "入院基本料"    TO  HSCRRES-NYUINKHN-LBL (IDXR)
+               MOVE    SYS-5002-KHNSRYCD
+                                       TO  HSCRRES-NYUINKHN-DATA(IDXR)
+               MOVE    SYS-5002-KHNSRYCD
+                                       TO  WRK-TNS-SRYCD
+               MOVE    SYS-5002-STYUKYMD
+                                       TO  WRK-TNS-SRYYMD
+               PERFORM 901-TENSU-KEY-SEL-SEC
+               MOVE    TNS-NAME        TO  HSCRRES-NYUINKHN-NAME (IDXR)
+           END-IF
+      *
            PERFORM 20011-NYUIN-KSN-EDIT-SEC
       *
-           MOVE    "入院時の選定入院"  TO  HSCBRES-SENTEI-DEF-LBL
-           MOVE    SYS-5000-SENTEIKBN  TO  HSCBRES-SENTEI-DEF-DATA
-           EVALUATE    SYS-5000-SENTEIKBN
-           WHEN    "1"
-               MOVE    "選定対象"      TO  HSCBRES-SENTEI-DEF-NAME
-           WHEN    "2"
-               MOVE    "選定対象外"    TO  HSCBRES-SENTEI-DEF-NAME
-           END-EVALUATE
-      *
           .
-       2001-NYUIN-KIHON-EDIT-EXT.
+       2001-BYOSHITSU-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    入院加算編集処理
       *****************************************************************
        20011-NYUIN-KSN-EDIT-SEC        SECTION.
       *
+           MOVE    ZERO                TO  IDXK
+      *
+           MOVE    SYS-5002-STYUKYMD   TO  WRK-TNS-SRYYMD
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   12 )
+               IF    ( SYS-5002-KSNKBN (IDX0)  =   "2" )
+                   MOVE    SYS-5002-KSNCD (IDX0)
+                                       TO  WRK-TNS-SRYCD
+                   PERFORM 200111-NYUIN-KSN-EDIT-SEC
+               END-IF
+           END-PERFORM
+      *
+          .
+       20011-NYUIN-KSN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院加算編集処理
+      *****************************************************************
+       200111-NYUIN-KSN-EDIT-SEC        SECTION.
+      *
            IF    ( WRK-TNS-SRYCD   NOT =   SPACE )
-            AND  ( IDXK                <   CONST-NYUINKSN-MAX )
-               PERFORM 900-TENSU-KEY-SEL-SEC
+             AND ( IDXK                <   CONST-NYUINKSN-MAX )
+               PERFORM 901-TENSU-KEY-SEL-SEC
                IF    ( FLG-TENSU   =   ZERO )
                    IF    ( TNS-HOSPSRYKBN  =   0 )
                     OR   ( TNS-HOSPSRYKBN  =   SPA-HOSPSBT )
@@ -409,17 +575,17 @@
                        COMPUTE IDXK  = IDXK  + 1
       *
                        MOVE    "入院加算"
-                                   TO  HSCBRES-NYUINKSN-LBL  (IDXK)
+                                   TO  HSCRRES-NYUINKSN-LBL  (IDXR IDXK)
                        MOVE    TNS-SRYCD
-                                   TO  HSCBRES-NYUINKSN-DATA (IDXK)
+                                   TO  HSCRRES-NYUINKSN-DATA (IDXR IDXK)
                        MOVE    TNS-NAME
-                                   TO  HSCBRES-NYUINKSN-NAME (IDXK)
+                                   TO  HSCRRES-NYUINKSN-NAME (IDXR IDXK)
                    END-IF
                END-IF
            END-IF
       *
           .
-       20011-NYUIN-KSN-EDIT-EXT.
+       200111-NYUIN-KSN-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
@@ -428,18 +594,24 @@
       *
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE            TO  HSCBRES-INFORMATION-DATE
+           MOVE    WRK-DATE            TO  HSCRRES-INFORMATION-DATE
       *
            MOVE    SMCNDATE-HMS        TO  WRK-HMS
            PERFORM 800-TIME-SEC
-           MOVE    WRK-TIME            TO  HSCBRES-INFORMATION-TIME
+           MOVE    WRK-TIME            TO  HSCRRES-INFORMATION-TIME
+      *
+           IF    ( WRK-ERRCD           =   SPACE )
+               IF    ( CNT-BYOSHITSU   =   ZERO )
+                   MOVE    "51"        TO  WRK-ERRCD
+               END-IF
+           END-IF
       *
            IF    ( WRK-ERRCD           =   SPACE )
                MOVE    "00"            TO  WRK-ERRCD
            END-IF
            PERFORM 890-ERRCD-MSG-SEC
-           MOVE    WRK-ERRCD           TO  HSCBRES-API-RESULT
-           MOVE    WRK-ERRMSG          TO  HSCBRES-API-RESULT-MSG
+           MOVE    WRK-ERRCD           TO  HSCRRES-API-RESULT
+           MOVE    WRK-ERRMSG          TO  HSCRRES-API-RESULT-MSG
       *
            PERFORM 900-XML-WRITE-SEC
       *
@@ -464,6 +636,10 @@
                IF    ( WRK-SYMD            =   "99999999" )
                    MOVE    12              TO  WRK-DATE-MM
                    MOVE    31              TO  WRK-DATE-DD
+               END-IF
+               IF    ( WRK-SYMD            =   "00000000" )
+                   MOVE    01              TO  WRK-DATE-MM
+                   MOVE    01              TO  WRK-DATE-DD
                END-IF
            END-IF
            .
@@ -543,6 +719,9 @@
            WHEN    "02"
                MOVE    "入院基本情報が取得できません"
                                        TO  WRK-ERRMSG
+           WHEN    "51"
+               MOVE    "病室情報が取得できません"
+                                       TO  WRK-ERRMSG
       *共通エラー
            WHEN    "89"
       *        ORCSCOMMON のエラー
@@ -579,12 +758,6 @@
                                        DELIMITED BY SIZE
                INTO  WRK-ERRMSG
                END-STRING
-           WHEN    "97"
-               MOVE   "送信内容に誤りがあります"
-                                       TO  WRK-ERRMSG
-           WHEN    "98"
-               MOVE   "送信内容の読込ができませんでした"
-                                       TO  WRK-ERRMSG
            WHEN    "99"
                MOVE    "ユーザＩＤが未登録です"
                                        TO  WRK-ERRMSG
@@ -597,72 +770,16 @@
            EXIT.
       *
       *****************************************************************
-      *    XML情報から内容を取り出す
-      *****************************************************************
-       900-XML-READ-SEC             SECTION.
-      *
-           IF    ( APILST11-BODY    NOT =   LOW-VALUE )
-               DISPLAY "hsconfbasev2 object is not low_value"
-           END-IF
-      *
-           INITIALIZE                      XML-APIREQ
-      * XML情報取り出し
-           MOVE    "xml_hsconfbasev2req"   TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           MOVE    APILST11-BODY           TO  APIREQ-OBJECT
-           MOVE    ZERO                    TO  APIREQ-MODE
-           PERFORM 910-XMLOPEN-SEC
-           IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_hsconfbasev2req"
-                                           TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               MOVE    "private_objects"   TO  APIREQ-RECORDNAME
-               MOVE    "XMLREAD"       TO  MCP-FUNC
-               PERFORM 910-XMLREAD-SEC
-               IF    ( MCP-RC              =   ZERO  OR  1 )
-                   PERFORM 9001-XML-FILTER-SEC
-               ELSE
-                   DISPLAY "XMLREAD failure = " MCP-RC
-                   MOVE   "98"             TO  WRK-ERRCD
-               END-IF
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-               MOVE   "97"                 TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    "xml_hsconfbasev2req"   TO  MCP-TABLE
-           MOVE    "key"                   TO  MCP-PATHNAME
-           PERFORM 910-XMLCLOSE-SEC
-       *
-           .
-       900-XML-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    XMLフィルタリング処理
-      *****************************************************************
-       9001-XML-FILTER-SEC             SECTION.
-      *
-           MOVE    APIREQ-PATIENTINFOREQ
-                                       TO  HSCBREQ-PRIVATE-OBJECTS
-      *
-           IF    ( HSCBREQ-BASE-DATE   =   LOW-VALUE )
-               MOVE    SPACE           TO  HSCBREQ-BASE-DATE
-           END-IF
-      *
-           .
-       9001-XML-FILTER-EXT.
-           EXIT.
-      *****************************************************************
       *    XML情報を書き出す
       *****************************************************************
        900-XML-WRITE-SEC             SECTION.
       *
-           IF    ( APILST11-BODY    NOT =   LOW-VALUE )
-               DISPLAY "hsconfbasev2 object is not low_value"
+           IF    ( APILST12-BODY    NOT =   LOW-VALUE )
+               DISPLAY "hsconfroomv2 object is not low_value"
            END-IF
       *
            INITIALIZE                      XML-APIREQ
-           MOVE    "xml_hsconfbasev2res"   TO  MCP-TABLE
+           MOVE    "xml_hsconfroomv2res"   TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    1                       TO  APIREQ-MODE
            PERFORM 910-XMLOPEN-SEC
@@ -672,8 +789,8 @@
                DISPLAY "XMLOPEN failure = " MCP-RC
            END-IF
       *
-           MOVE    HSCBRES-PRIVATE-OBJECTS TO  APIREQ-PATIENTINFOREQ
-           MOVE    "xml_hsconfbasev2res"   TO  MCP-TABLE
+           MOVE    HSCRRES-PRIVATE-OBJECTS TO  APIREQ-PATIENTINFOREQ
+           MOVE    "xml_hsconfroomv2res"   TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    "private_objects"       TO  APIREQ-RECORDNAME
            PERFORM 910-XMLWRITE-SEC
@@ -683,12 +800,12 @@
                DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
-           MOVE    "xml_hsconfbasev2res"   TO  MCP-TABLE
+           MOVE    "xml_hsconfroomv2res"   TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM 910-XMLCLOSE-SEC
            IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    APIREQ-OBJECT       TO  APILST11-BODY
-               MOVE    "application/xml"   TO  APILST11-CONTENT-TYPE
+               MOVE    APIREQ-OBJECT       TO  APILST12-BODY
+               MOVE    "application/xml"   TO  APILST12-CONTENT-TYPE
            ELSE
                DISPLAY "XMLCLOSE failure = " MCP-RC
                DISPLAY "appoint xml write failure "
@@ -724,6 +841,94 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
+      *    システム管理検索処理
+      *****************************************************************
+       900-SYSKANRI-KEY2-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理FETCH処理
+      *****************************************************************
+       900-SYSKANRI-KEY2-FET-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理
+      *****************************************************************
+       900-SYSKANRI-KEY9-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY9-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理FETCH処理
+      *****************************************************************
+       900-SYSKANRI-KEY9-FET-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY9-FET-EXT.
+           EXIT.
+      *****************************************************************
       *    点数マスタ検索処理
       *****************************************************************
        900-TENSU-KEY-SEL-SEC          SECTION.
@@ -753,6 +958,37 @@
       *
            .
        900-TENSU-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ検索処理
+      *****************************************************************
+       901-TENSU-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TENSU
+      *
+           INITIALIZE  TNS-TENSU-REC
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    WRK-TNS-SRYCD       TO  TNS-SRYCD
+           MOVE    WRK-TNS-SRYYMD      TO  TNS-YUKOSTYMD
+                                           TNS-YUKOEDYMD
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC      =   ZERO )
+               MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
+           ELSE
+               MOVE    1               TO  FLG-TENSU
+               INITIALIZE                  TNS-TENSU-REC
+           END-IF
+      *
+      *    点数マスタクローズ
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       901-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理

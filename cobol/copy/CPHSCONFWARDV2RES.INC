@@ -23,7 +23,7 @@
            03  HSCWRES-OBJECT                      PIC X(8).
            03  HSCWRES-MODE                        PIC S9(9)   BINARY.
            03  HSCWRES-RECORDNAME                  PIC X(128).
-           03  HSCWRES-PRIVATE-AREA.
+           03  HSCWRES-PRIVATE-OBJECTS.
                05  HSCWRES-INFORMATION-DATE        PIC X(10).
                05  HSCWRES-INFORMATION-TIME        PIC X(8).
                05  HSCWRES-API-RESULT              PIC X(2).
@@ -32,33 +32,33 @@
                    07  HSCWRES-ST-DATE             PIC X(10).
                    07  HSCWRES-ED-DATE             PIC X(10).
                    07  HSCWRES-BTUNUM-G.
-                       09  HSCWRES-BTUNUM-LBL          PIC X(30).
+                       09  HSCWRES-BTUNUM-LBL          PIC X(20).
                        09  HSCWRES-BTUNUM-DATA         PIC X(2).
                    07  HSCWRES-BTUNAME-G.
-                       09  HSCWRES-BTUNAME-LBL         PIC X(30).
+                       09  HSCWRES-BTUNAME-LBL         PIC X(20).
                        09  HSCWRES-BTUNAME-DATA        PIC X(20).
                    07  HSCWRES-BTUNAME2-G.
-                       09  HSCWRES-BTUNAME2-LBL        PIC X(30).
+                       09  HSCWRES-BTUNAME2-LBL        PIC X(20).
                        09  HSCWRES-BTUNAME2-DATA       PIC X(10).
                    07  HSCWRES-BTUSBT-G.
-                       09  HSCWRES-BTUSBT-LBL          PIC X(30).
+                       09  HSCWRES-BTUSBT-LBL          PIC X(20).
                        09  HSCWRES-BTUSBT-DATA         PIC X(2).
                        09  HSCWRES-BTUSBT-NAME         PIC X(30).
                    07  HSCWRES-SRYKA-G.
-                       09  HSCWRES-SRYKA-LBL           PIC X(30).
+                       09  HSCWRES-SRYKA-LBL           PIC X(20).
                        09  HSCWRES-SRYKA-DATA          PIC X(2).
                        09  HSCWRES-SRYKA-NAME          PIC X(30).
                    07  HSCWRES-TOKNYUIN-G.
-                       09  HSCWRES-TOKNYUIN-LBL        PIC X(30).
+                       09  HSCWRES-TOKNYUIN-LBL        PIC X(20).
                        09  HSCWRES-TOKNYUIN-DATA       PIC X(9).
                        09  HSCWRES-TOKNYUIN-NAME       PIC X(50).
                    07  HSCWRES-NYUINKHN-G.
-                       09  HSCWRES-NYUINKHN-LBL        PIC X(30).
+                       09  HSCWRES-NYUINKHN-LBL        PIC X(20).
                        09  HSCWRES-NYUINKHN-DATA       PIC X(9).
                        09  HSCWRES-NYUINKHN-NAME       PIC X(50).
                    07  HSCWRES-NYUINKSN-G.
                        09 HSCWRES-NYUINKSN-OCC         OCCURS  20.
-                          11 HSCWRES-NYUINKSN-LBL      PIC X(30).
+                          11 HSCWRES-NYUINKSN-LBL      PIC X(20).
                           11  HSCWRES-NYUINKSN-DATA    PIC X(9).
                           11  HSCWRES-NYUINKSN-NAME    PIC X(50).
                    07  HSCWRES-USERKSN-G.
@@ -84,3 +84,7 @@
                           11  HSCWRES-SENTEI-KOUKI-LBL  PIC X(30).
                           11  HSCWRES-SENTEI-KOUKI-DATA PIC X(04).
                           11  HSCWRES-SENTEI-KOUKI-NAME PIC X(30).
+                   07  HSCWRES-BRMNUM-G.
+                       09  HSCWRES-BRMNUM-OCC           OCCURS 200.
+                          11  HSCWRES-BRMNUM-LBL        PIC X(10).
+                          11  HSCWRES-BRMNUM-DATA       PIC X(06).

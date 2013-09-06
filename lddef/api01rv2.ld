@@ -70,6 +70,7 @@ db "xml2" {
  xml_hsconfbasev2res;
  xml_hsconfwardv2req;
  xml_hsconfwardv2res;
+ xml_hsconfroomv2res;
 };
 
 #include "orcadb.inc"

@@ -744,6 +744,7 @@ DB_files = \
 	tbl_byomeiinputset.db \
     xml_hsconfwardv2req.db \
     xml_hsconfwardv2res.db \
+    xml_hsconfroomv2res.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@

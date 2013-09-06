@@ -25,6 +25,7 @@
             03  HSCWREQ-RECORDNAME       PIC X(128).
       *
             03  HSCWREQ-PRIVATE-OBJECTS.
+                05  HSCWREQ-REQUEST-NUMBER PIC X(1).
                 05  HSCWREQ-BASE-DATE    PIC X(10).
                 05  HSCWREQ-BTUNUM       PIC X(2).
                 05  HSCWREQ-BRMNUM       PIC X(6).

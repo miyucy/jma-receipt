@@ -24,7 +24,7 @@
            03  HSCBRES-MODE             PIC S9(9)   BINARY.
            03  HSCBRES-RECORDNAME       PIC X(128).
       *
-           03  HSCBRES-PRIVATE-AREA.
+           03  HSCBRES-PRIVATE-OBJECTS.
                05  HSCBRES-INFORMATION-DATE       PIC X(10).
                05  HSCBRES-INFORMATION-TIME       PIC X(8).
                05  HSCBRES-API-RESULT             PIC X(2).
