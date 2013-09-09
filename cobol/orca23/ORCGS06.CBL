@@ -109,18 +109,7 @@
                                13  SPA-GMN-IKT-NYUKIN  PIC S9(09).
                                13  SPA-GMN-IKT-NYUKIN-MAX
                                                        PIC S9(09).
-                       09  SPA-GMN-IKT-HENKIN-VAL.
-                           11  SPA-GMN-NYU-HENKIN      PIC S9(09).
-                           11  SPA-GMN-NYU-HENKIN-MAX  PIC S9(09).
-                           11  SPA-GMN-GAI-HENKIN      PIC S9(09).
-                           11  SPA-GMN-GAI-HENKIN-MAX  PIC S9(09).
-                       09  SPA-GMN-IKT-HENKIN-R REDEFINES
-                                                SPA-GMN-IKT-HENKIN-VAL.
-                           11  SPA-GMN-IKT-HENKIN-OCC  OCCURS  2.
-                               13  SPA-GMN-IKT-HENKIN  PIC S9(09).
-                               13  SPA-GMN-IKT-HENKIN-MAX
-                                                       PIC S9(09).
-                       09  SPA-GMN-KBT-HENKIN-VAL.
+                       09  SPA-GMN-KBT-NYUKIN-VAL.
                            11  SPA-GMN-NYUKIN      PIC S9(09).
                            11  SPA-GMN-NYUKIN-MAX  PIC S9(09).
                    07  SPA-GMN-MISYU.
@@ -232,8 +221,6 @@
                        09  SPA-NAI-NYUKINYMD       PIC  X(08).
                        09  SPA-NAI-SKYSUMKBN-BF    PIC  X(01).
                        09  SPA-NAI-NYKNKNRKBN-BF   PIC  X(01).
-                       09  SPA-NAI-KBT-NYUKIN-VAL.
-                           11  SPA-NAI-HENKINFLG   PIC  9(01).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -250,7 +237,7 @@
            03  FLG-NYU-SKYPRT                      PIC 9(01).
            03  FLG-SORT                            PIC 9(01).
            03  FLG-TARGET                          PIC 9(01).
-           03  FLG-NYUHENKIN                       PIC 9(01).
+           03  FLG-CLIENT-OK                       PIC 9(01).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -264,7 +251,6 @@
            03  IDX4                                PIC 9(05).
            03  IDXA                                PIC 9(05).
            03  IDXB                                PIC 9(05).
-           03  IDXL                                PIC 9(05).
            03  IDX-OUT                             PIC 9(05).
            03  IDX-LST                             PIC 9(05).
            03  IDX-SRT                             PIC 9(05).
@@ -300,9 +286,7 @@
            03  WRK-GAI-SEIKYU-PG           PIC X(20).
            03  WRK-DENPITEM-G.
                05  WRK-NYU-NYUKIN          PIC S9(10).
-               05  WRK-NYU-HENKIN          PIC S9(10).
                05  WRK-GAI-NYUKIN          PIC S9(10).
-               05  WRK-GAI-HENKIN          PIC S9(10).
                05  WRK-GAI-DENPNUM         PIC 9(07).
                05  WRK-NYU-DENPNUM         PIC 9(07).
                05  WRK-GAI-SRYYMD          PIC X(08).
@@ -316,17 +300,6 @@
                05  WRK-FILEMEI-HMS         PIC X(06).
                05  WRK-FILEMEI-CD          PIC X(06).
            03  WRK-SYU-DENPNUM             PIC 9(07).
-           03  WRK-NUM                     PIC S9(10).
-           03  WRK-NUMZL                   PIC ZZ,ZZZ,ZZ9.
-           03  WRK-NUMZS                   PIC ZZZ,ZZ9.
-           03  WRK-STR                     PIC X(500).
-           03  WRK-STR-Z   REDEFINES   WRK-STR.
-               05  WRK-STR-ZX99            PIC Z(9)9.
-               05  WRK-STR-FL              PIC X(490).
-           03  WRK-STR-TMP                 PIC X(500).
-           03  WRK-LBLKINGAKU              PIC S9(9).
-           03  WRK-LBLKINGAKUX             PIC X(20).
-           03  WRK-MISYU                   PIC S9(9).
       *
        01  WRK-ROW-AREA.
            03  WRK-SYULIST-ROW             PIC S9(9)   BINARY.
@@ -454,7 +427,22 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA23SCRAREA.INC".
+      *****COPY    "S01.INC".
+           COPY    "S02.INC".
+           COPY    "S03.INC".
+           COPY    "S04.INC".
+           COPY    "S06.INC".
+           COPY    "S07.INC".
+           COPY    "S08.INC".
+           COPY    "S09.INC".
+           COPY    "S10.INC".
+           COPY    "S99.INC".
+           COPY    "SERR.INC".
+           COPY    "SID1.INC".
+           COPY    "SID2.INC".
+           COPY    "SID3.INC".
+           COPY    "SID4.INC".
+           COPY    "SDMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -493,6 +481,11 @@
       *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
+           END-IF
+      *
+      *    クライアント印刷
+           IF    ( FLG-CLIENT-OK   =   1 )
+               PERFORM 600-CLIENT-DMY-SEC
            END-IF
       *
            MOVE    SPA-S01KYOUTU   TO  SPA-WORK
@@ -1134,18 +1127,12 @@
       *
            MOVE    ZERO            TO  SPA-GMN-NYU-NYUKIN
                                        SPA-GMN-GAI-NYUKIN
+                                       SPA-GMN-NYUKIN
                                        SPA-GMN-NYU-NYUKIN-MAX
                                        SPA-GMN-GAI-NYUKIN-MAX
-                                       SPA-GMN-NYUKIN
                                        SPA-GMN-NYUKIN-MAX
-                                       SPA-NAI-HENKINFLG
-                                       SPA-GMN-NYU-HENKIN
-                                       SPA-GMN-GAI-HENKIN
-                                       SPA-GMN-NYU-HENKIN-MAX
-                                       SPA-GMN-GAI-HENKIN-MAX
       *
            IF    ( SPA-GMN-RD-NYUKIN-IKT   =   "T" )
-               MOVE    ZERO        TO  FLG-NYUHENKIN
                PERFORM 31011-NYUKIN-MAX-IKT-HEN-SEC
            ELSE
                PERFORM 31011-SYULIST-OUT-IDX-CHK-SEC
@@ -1178,35 +1165,17 @@
                END-IF
       *
                IF    ( FLG-TARGET      =   1 )
-                   IF    ( FLG-NYUHENKIN        =   ZERO )
-                       IF    ( SPA-GMN-TMISYU (IDX-LST)    >   ZERO )
-                           IF    ( SPA-NAI-TNYUGAIKBN (IDX-LST)
+                   IF    ( SPA-GMN-TMISYU (IDX-LST)    >   ZERO )
+                       IF    ( SPA-NAI-TNYUGAIKBN (IDX-LST)
                                                    =   "1" )
-                               COMPUTE SPA-GMN-NYU-NYUKIN-MAX
-                                   =   SPA-GMN-NYU-NYUKIN-MAX
-                                   +   SPA-GMN-TMISYU  (IDX-LST)
-                           ELSE
-                               COMPUTE SPA-GMN-GAI-NYUKIN-MAX
-                                   =   SPA-GMN-GAI-NYUKIN-MAX
-                                   +   SPA-GMN-TMISYU  (IDX-LST)
-                           END-IF
+                           COMPUTE SPA-GMN-NYU-NYUKIN-MAX
+                               =   SPA-GMN-NYU-NYUKIN-MAX
+                               +   SPA-GMN-TMISYU  (IDX-LST)
                        ELSE
-                           IF    ( SPA-NAI-TNYUGAIKBN (IDX-LST)
-                                                   =   "1" )
-                               COMPUTE SPA-GMN-NYU-HENKIN-MAX
-                                   =   SPA-GMN-NYU-HENKIN-MAX
-                                   + ( SPA-GMN-TMISYU  (IDX-LST) * -1 )
-                           ELSE
-                               COMPUTE SPA-GMN-GAI-HENKIN-MAX
-                                   =   SPA-GMN-GAI-HENKIN-MAX
-                                   + ( SPA-GMN-TMISYU  (IDX-LST) * -1 )
-                           END-IF
+                           COMPUTE SPA-GMN-GAI-NYUKIN-MAX
+                               =   SPA-GMN-GAI-NYUKIN-MAX
+                               +   SPA-GMN-TMISYU  (IDX-LST)
                        END-IF
-                   ELSE
-                       COMPUTE SPA-GMN-TNYUKIN (IDX-LST)
-                           =   SPA-GMN-TNYUKIN (IDX-LST)
-                           +   SPA-GMN-TMISYU (IDX-LST)
-                       MOVE    ZERO        TO  SPA-GMN-TMISYU (IDX-LST)
                    END-IF
                END-IF
       *
@@ -1230,13 +1199,6 @@
            ELSE
                MOVE    SPA-GMN-TNYUKIN (IDX-KBT)
                                        TO  SPA-GMN-NYUKIN
-           END-IF
-      *
-           IF    ( SPA-GMN-TMISYU (IDX-KBT)    <   ZERO )
-            OR   ( SPA-GMN-TNYUKIN(IDX-KBT)    <   ZERO )
-               MOVE    1               TO  SPA-NAI-HENKINFLG
-               COMPUTE SPA-GMN-NYUKIN-MAX  =   SPA-GMN-NYUKIN-MAX * -1
-               COMPUTE SPA-GMN-NYUKIN      =   SPA-GMN-NYUKIN * -1
            END-IF
       *
            .
@@ -1415,15 +1377,11 @@
                                        WRK-DENPNUM
       *
            MOVE    SPA-GMN-NYU-NYUKIN  TO  WRK-NYU-NYUKIN
-           MOVE    SPA-GMN-NYU-HENKIN  TO  WRK-NYU-HENKIN
            MOVE    SPA-GMN-GAI-NYUKIN  TO  WRK-GAI-NYUKIN
-           MOVE    SPA-GMN-GAI-HENKIN  TO  WRK-GAI-HENKIN
            MOVE    SPA-GMN-NYUKIN      TO  WRK-NYUKIN
       *
            MOVE    ZERO                TO  SPA-GMN-NYU-NYUKIN
-           MOVE    ZERO                TO  SPA-GMN-NYU-HENKIN
            MOVE    ZERO                TO  SPA-GMN-GAI-NYUKIN
-           MOVE    ZERO                TO  SPA-GMN-GAI-HENKIN
            MOVE    ZERO                TO  SPA-GMN-NYUKIN
       *
            PERFORM 31011-SYULIST-OUT-IDX-CHK-SEC
@@ -1516,9 +1474,7 @@
       *
            IF    ( SPA-GMN-RD-NYUKIN-IKT   =   "T" )
                MOVE    WRK-NYU-NYUKIN  TO  SPA-GMN-NYU-NYUKIN
-               MOVE    WRK-NYU-HENKIN  TO  SPA-GMN-NYU-HENKIN
                MOVE    WRK-GAI-NYUKIN  TO  SPA-GMN-GAI-NYUKIN
-               MOVE    WRK-GAI-HENKIN  TO  SPA-GMN-GAI-HENKIN
            ELSE
                IF    ( SPA-GMN-SYULIST-SEL >   ZERO )
                    MOVE    WRK-NYUKIN  TO  SPA-GMN-NYUKIN
@@ -1621,10 +1577,6 @@
       *
                PERFORM 4101-RD-NYUKIN-CHK-SEC
       *
-      *    一括入返金
-           WHEN    "CLICKED"       ALSO    "B09"
-               PERFORM 4101-ALL-NYUHENKIN-SEC
-      *
       *    登録
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 480-TOUROKU-SEC
@@ -1716,12 +1668,8 @@
            MOVE    S06-SKYSUMKBN       TO  SPA-GMN-SKYSUMKBN-G
       *    外来入金額
            MOVE    S06-GAI-NYUKIN      TO  SPA-GMN-GAI-NYUKIN
-      *    外来返金額
-           MOVE    S06-GAI-HENKIN      TO  SPA-GMN-GAI-HENKIN
       *    入院入金額
            MOVE    S06-NYU-NYUKIN      TO  SPA-GMN-NYU-NYUKIN
-      *    入院返金額
-           MOVE    S06-NYU-HENKIN      TO  SPA-GMN-NYU-HENKIN
       *    個別入金額
            MOVE    S06-NYUKIN          TO  SPA-GMN-NYUKIN
       *
@@ -1765,20 +1713,8 @@
                    GO  TO  4102-KIHON-CHK-EXT
                END-IF
       *
-      *        外来返金額チェック
-               PERFORM 4101-GAI-HENKIN-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  4102-KIHON-CHK-EXT
-               END-IF
-      *
       *        入院入金額チェック
                PERFORM 4101-NYU-NYUKIN-CHK-SEC
-               IF    ( SPA-ERRCD   NOT =   SPACE )
-                   GO  TO  4102-KIHON-CHK-EXT
-               END-IF
-      *
-      *        入院返金額チェック
-               PERFORM 4101-NYU-HENKIN-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
                    GO  TO  4102-KIHON-CHK-EXT
                END-IF
@@ -1833,6 +1769,10 @@
            MOVE    ZERO                TO  SPA-GMN-SELNUM
                                            SPA-GMN-SYULIST-SEL
       *
+           IF    ( SPA-GMN-RD-NYUKIN-IKT   =   "T" )
+               GO  TO  4100-SYULIST-CHK-EXT
+           END-IF
+      *
            PERFORM VARYING IDX-LST     FROM    1   BY  1
                    UNTIL ( IDX-LST     >   SPA-GMN-SYULIST-OUT-MAX )
       *
@@ -1848,15 +1788,9 @@
       *
            END-PERFORM
       *
-           IF    ( SPA-GMN-SYULIST-SEL  >  ZERO )
+           PERFORM 3101-NYUKIN-MAX-HEN-SEC
       *
-               MOVE    "F"   TO  SPA-GMN-RD-NYUKIN-IKT
-               MOVE    "T"   TO  SPA-GMN-RD-NYUKIN-KBT
-      *
-               PERFORM 3101-NYUKIN-MAX-HEN-SEC
-      *
-               PERFORM 3101-SYOKI-CUR-HEN-SEC
-           END-IF
+           PERFORM 3101-SYOKI-CUR-HEN-SEC
       *
            .
       *
@@ -2056,21 +1990,6 @@
        4101-RD-NYUKIN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    一括入返金処理
-      *****************************************************************
-       4101-ALL-NYUHENKIN-SEC          SECTION.
-      *
-           MOVE    1               TO  FLG-NYUHENKIN
-           PERFORM 31011-NYUKIN-MAX-IKT-HEN-SEC
-      *
-           PERFORM 3101-MISYU-HEN-SEC
-      *
-           PERFORM 3101-NYUKIN-MAX-HEN-SEC
-      *
-           .
-       4101-ALL-NYUHENKIN-EXT.
-           EXIT.
-      *****************************************************************
       *    選択番号チェック処理
       *****************************************************************
        4101-SELNUM-CHK-SEC             SECTION.
@@ -2145,32 +2064,6 @@
        4101-GAI-NYUKIN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    外来返金額チェック処理
-      *****************************************************************
-       4101-GAI-HENKIN-CHK-SEC         SECTION.
-      *
-           IF    ( SPA-GMN-GAI-HENKIN  <   ZERO )
-               MOVE    "0017"          TO  SPA-ERRCD
-               MOVE    13              TO  SPA-GMN-CUR
-           END-IF
-      *
-           IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-GMN-GAI-HENKIN  >   SPA-GMN-GAI-HENKIN-MAX )
-                   MOVE    "0018"      TO  SPA-ERRCD
-                   MOVE    13          TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( WRK-MCP-WIDGET  =   "GAI_HENKIN" )
-                   PERFORM 41011-IKT-KARINYUKIN-SEC
-               END-IF
-           END-IF
-      *
-           .
-       4101-GAI-HENKIN-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    入院入金額チェック処理
       *****************************************************************
        4101-NYU-NYUKIN-CHK-SEC         SECTION.
@@ -2195,60 +2088,36 @@
        4101-NYU-NYUKIN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    外来返金額チェック処理
-      *****************************************************************
-       4101-NYU-HENKIN-CHK-SEC         SECTION.
-      *
-           IF    ( SPA-GMN-NYU-HENKIN  <   ZERO )
-               MOVE    "0019"          TO  SPA-ERRCD
-               MOVE    14              TO  SPA-GMN-CUR
-           END-IF
-      *
-           IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-GMN-NYU-HENKIN  >   SPA-GMN-NYU-HENKIN-MAX )
-                   MOVE    "0020"      TO  SPA-ERRCD
-                   MOVE    14          TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( WRK-MCP-WIDGET  =   "NYU_HENKIN" )
-                   PERFORM 41011-IKT-KARINYUKIN-SEC
-               END-IF
-           END-IF
-      *
-           .
-       4101-NYU-HENKIN-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    入金額チェック処理
       *****************************************************************
        4101-NYUKIN-CHK-SEC         SECTION.
       *
-           IF    ( SPA-GMN-NYUKIN  <   ZERO )
-               IF    ( SPA-NAI-HENKINFLG   =   ZERO )
-                   MOVE    "0009"  TO  SPA-ERRCD
+           IF    ( SPA-GMN-NYUKIN-MAX  <   ZERO )
+               IF    ( SPA-GMN-NYUKIN  <=  ZERO )
+                AND  ( SPA-GMN-NYUKIN  >=  SPA-GMN-NYUKIN-MAX )
+                   CONTINUE
                ELSE
-                   MOVE    "0021"  TO  SPA-ERRCD
+                   MOVE    "0008"          TO  SPA-ERRCD
+                   MOVE    6               TO  SPA-GMN-CUR
+                   GO  TO  4101-NYUKIN-CHK-EXT
                END-IF
-               MOVE    6           TO  SPA-GMN-CUR
-           END-IF
+           ELSE
       *
-           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-GMN-NYUKIN  <   ZERO )
+                   MOVE    "0009"          TO  SPA-ERRCD
+                   MOVE    6               TO  SPA-GMN-CUR
+                   GO  TO  4101-NYUKIN-CHK-EXT
+               END-IF
+      *
                IF    ( SPA-GMN-NYUKIN  >   SPA-GMN-NYUKIN-MAX )
-                   IF    ( SPA-NAI-HENKINFLG   =   ZERO )
-                       MOVE    "0010"  TO  SPA-ERRCD
-                   ELSE
-                       MOVE    "0022"  TO  SPA-ERRCD
-                   END-IF
-                   MOVE    6       TO  SPA-GMN-CUR
+                   MOVE    "0010"          TO  SPA-ERRCD
+                   MOVE    6               TO  SPA-GMN-CUR
+                   GO  TO  4101-NYUKIN-CHK-EXT
                END-IF
            END-IF
       *
-           IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( WRK-MCP-WIDGET      =   "NYUKIN" )
-                   PERFORM 41011-KBT-KARINYUKIN-SEC
-               END-IF
+           IF    ( WRK-MCP-WIDGET      =   "NYUKIN" )
+               PERFORM 41011-KBT-KARINYUKIN-SEC
            END-IF
       *
            .
@@ -2307,7 +2176,8 @@
       *
            MOVE    1               TO  FLG-TARGET
       *
-           IF    ( SPA-GMN-TMISYU (IDX-LST) NOT =   ZERO )
+           IF    ( SPA-GMN-IKT-NYUKIN (IDX3)    >   ZERO )
+            AND  ( SPA-GMN-TMISYU (IDX-LST)     >   ZERO )
                CONTINUE
            ELSE
                    MOVE    ZERO    TO  FLG-TARGET
@@ -2324,53 +2194,27 @@
       *
            IF    ( FLG-TARGET      =   1 )
       *
-               IF    ( SPA-GMN-TMISYU (IDX-LST)    >=  ZERO )
-                   IF    ( SPA-GMN-TMISYU (IDX-LST)
+               IF    ( SPA-GMN-TMISYU (IDX-LST)
                                        >   SPA-GMN-IKT-NYUKIN (IDX3) )
-                       COMPUTE SPA-GMN-TNYUKIN (IDX-LST)
-                           =   SPA-GMN-TNYUKIN (IDX-LST)
-                           +   SPA-GMN-IKT-NYUKIN (IDX3)
-                       COMPUTE SPA-GMN-TMISYU (IDX-LST)
-                           =   SPA-GMN-TMISYU (IDX-LST)
-                           -   SPA-GMN-IKT-NYUKIN (IDX3)
-                       MOVE    ZERO    TO  SPA-GMN-IKT-NYUKIN (IDX3)
-                   ELSE
-                       COMPUTE SPA-GMN-TNYUKIN (IDX-LST)
-                           =   SPA-GMN-TNYUKIN (IDX-LST)
-                           +   SPA-GMN-TMISYU (IDX-LST)
-                       COMPUTE SPA-GMN-IKT-NYUKIN (IDX3)
-                           =   SPA-GMN-IKT-NYUKIN (IDX3)
-                           -   SPA-GMN-TMISYU (IDX-LST)
-                       MOVE    ZERO    TO  SPA-GMN-TMISYU (IDX-LST)
-                   END-IF
-               ELSE
-                   COMPUTE WRK-MISYU
+                   COMPUTE SPA-GMN-TNYUKIN (IDX-LST)
+                       =   SPA-GMN-TNYUKIN (IDX-LST)
+                       +   SPA-GMN-IKT-NYUKIN (IDX3)
+                   COMPUTE SPA-GMN-TMISYU (IDX-LST)
                        =   SPA-GMN-TMISYU (IDX-LST)
-                       +   SPA-GMN-IKT-HENKIN (IDX3)
-                   IF    ( WRK-MISYU       >=  ZERO )
-                       COMPUTE SPA-GMN-TNYUKIN (IDX-LST)
-                           =   SPA-GMN-TNYUKIN (IDX-LST)
-                           +   SPA-GMN-TMISYU (IDX-LST)
-                       COMPUTE SPA-GMN-TMISYU (IDX-LST)
-                           =   0
-                       COMPUTE SPA-GMN-IKT-HENKIN (IDX3)
-                           =   WRK-MISYU
-                   ELSE
-                       COMPUTE SPA-GMN-TNYUKIN (IDX-LST)
-                           =   SPA-GMN-TNYUKIN (IDX-LST)
-                           -   SPA-GMN-IKT-HENKIN (IDX3)
-                       COMPUTE SPA-GMN-TMISYU (IDX-LST)
-                           =   SPA-GMN-TMISYU (IDX-LST)
-                           +   SPA-GMN-IKT-HENKIN (IDX3)
-                       COMPUTE SPA-GMN-IKT-HENKIN (IDX3)
-                           =   0
-                   END-IF
+                       -   SPA-GMN-IKT-NYUKIN (IDX3)
+                   MOVE    ZERO    TO  SPA-GMN-IKT-NYUKIN (IDX3)
+               ELSE
+                   COMPUTE SPA-GMN-TNYUKIN (IDX-LST)
+                       =   SPA-GMN-TNYUKIN (IDX-LST)
+                       +   SPA-GMN-TMISYU (IDX-LST)
+                   COMPUTE SPA-GMN-IKT-NYUKIN (IDX3)
+                       =   SPA-GMN-IKT-NYUKIN (IDX3)
+                       -   SPA-GMN-TMISYU (IDX-LST)
+                   MOVE    ZERO    TO  SPA-GMN-TMISYU (IDX-LST)
                END-IF
       *
                IF    ( SPA-GMN-NYU-NYUKIN  <=  ZERO )
-                AND  ( SPA-GMN-NYU-HENKIN  <=  ZERO )
                 AND  ( SPA-GMN-GAI-NYUKIN  <=  ZERO )
-                AND  ( SPA-GMN-GAI-HENKIN  <=  ZERO )
                    MOVE    1       TO  FLG-LOOP-END
                END-IF
            END-IF
@@ -2385,20 +2229,11 @@
       *
            PERFORM 31011-SYULIST-OUT-IDX-CHK-SEC
            IF    ( IDX-OUT         NOT =   ZERO )
-               IF    ( SPA-NAI-HENKINFLG   =   ZERO )
-                   COMPUTE SPA-GMN-TMISYU (IDX-OUT)
-                       =   SPA-GMN-TMISYU (IDX-OUT)
-                       +   SPA-GMN-TNYUKIN (IDX-OUT)
-                       -   SPA-GMN-NYUKIN
-                   MOVE    SPA-GMN-NYUKIN  TO  SPA-GMN-TNYUKIN (IDX-OUT)
-               ELSE
-                   COMPUTE SPA-GMN-TMISYU (IDX-OUT)
-                       =   SPA-GMN-TMISYU (IDX-OUT)
-                       +   SPA-GMN-TNYUKIN (IDX-OUT)
-                       +   SPA-GMN-NYUKIN
-                   COMPUTE SPA-GMN-TNYUKIN (IDX-OUT)
-                       =   SPA-GMN-NYUKIN  *  -1
-               END-IF
+               COMPUTE SPA-GMN-TMISYU (IDX-OUT)
+                   =   SPA-GMN-TMISYU (IDX-OUT)
+                   +   SPA-GMN-TNYUKIN (IDX-OUT)
+                   -   SPA-GMN-NYUKIN
+               MOVE    SPA-GMN-NYUKIN  TO  SPA-GMN-TNYUKIN (IDX-OUT)
            END-IF
       *
       *    未収額合計編集処理
@@ -2852,7 +2687,6 @@
               AND( SPA-GMN-SKYPRTKBN   =   "1" ))
       *
                IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-                OR   ( SPA-PRTCONF         =   "1" )
                    PERFORM 800-CLIENT-PRT-SEC
                END-IF
       *
@@ -3375,57 +3209,15 @@
                                        TO  S06-SKYSUMKBN-ITEM (IDX1)
            END-PERFORM
       *
-           MOVE    SPA-GMN-GAI-NYUKIN  TO  S06-GAI-NYUKIN
-           MOVE    SPA-GMN-GAI-HENKIN  TO  S06-GAI-HENKIN
            MOVE    SPA-GMN-NYU-NYUKIN  TO  S06-NYU-NYUKIN
-           MOVE    SPA-GMN-NYU-HENKIN  TO  S06-NYU-HENKIN
-           MOVE    SPA-GMN-NYUKIN      TO  S06-NYUKIN
-      *
-           IF    ( SPA-GMN-RD-NYUKIN-IKT   =   "T" )
-      *
-               MOVE    "上限"          TO  S06-GAI-LNYUKIN-MAX
-      *
-               MOVE    SPA-GMN-GAI-NYUKIN-MAX
-                                       TO  WRK-LBLKINGAKU
-               PERFORM 800-LBLKINGAKU-SEC
-               MOVE    WRK-LBLKINGAKUX
-                                       TO  S06-GAI-NYUKIN-MAX
-      *
-               MOVE    "上限"          TO  S06-GAI-LHENKIN-MAX
-               MOVE    SPA-GMN-GAI-HENKIN-MAX
-                                       TO  WRK-LBLKINGAKU
-               PERFORM 800-LBLKINGAKU-SEC
-               MOVE    WRK-LBLKINGAKUX
-                                       TO  S06-GAI-HENKIN-MAX
-               MOVE    "上限"          TO  S06-NYU-LNYUKIN-MAX
-               MOVE    SPA-GMN-NYU-NYUKIN-MAX
-                                       TO  WRK-LBLKINGAKU
-               PERFORM 800-LBLKINGAKU-SEC
-               MOVE    WRK-LBLKINGAKUX
+           MOVE    SPA-GMN-NYU-NYUKIN-MAX
                                        TO  S06-NYU-NYUKIN-MAX
-               MOVE    "上限"          TO  S06-NYU-LHENKIN-MAX
-               MOVE    SPA-GMN-NYU-HENKIN-MAX
-                                       TO  WRK-LBLKINGAKU
-               PERFORM 800-LBLKINGAKU-SEC
-               MOVE    WRK-LBLKINGAKUX
-                                       TO  S06-NYU-HENKIN-MAX
-           END-IF
-      *
-      *
-           IF    ( SPA-NAI-HENKINFLG   =   ZERO )
-               MOVE    "入金額"        TO  S06-LBLNYUKIN
-           ELSE
-               MOVE    "返金額"        TO  S06-LBLNYUKIN
-           END-IF
-      *
-      *
-           IF    ( SPA-GMN-RD-NYUKIN-KBT   =   "T" )
-               MOVE    "上限"          TO  S06-LNYUKIN-MAX
-               MOVE    SPA-GMN-NYUKIN-MAX
-                                       TO  WRK-LBLKINGAKU
-               PERFORM 800-LBLKINGAKU-SEC
-               MOVE    WRK-LBLKINGAKUX TO  S06-NYUKIN-MAX
-           END-IF
+           MOVE    SPA-GMN-GAI-NYUKIN  TO  S06-GAI-NYUKIN
+           MOVE    SPA-GMN-GAI-NYUKIN-MAX
+                                       TO  S06-GAI-NYUKIN-MAX
+           MOVE    SPA-GMN-NYUKIN      TO  S06-NYUKIN
+           MOVE    SPA-GMN-NYUKIN-MAX
+                                       TO  S06-NYUKIN-MAX
       *
            MOVE   SPA-GMN-SYULIST-OUT-MAX
                                        TO  S06-SYULIST-COUNT
@@ -3500,10 +3292,11 @@
                                            S06-NYKNKNRKBN-STATE
                                            S06-NYKNKNRKBN-ITEM-STATE
                                            S06-NYU-NYUKIN-STATE
+                                           S06-NYU-NYUKIN-MAX-STATE
                                            S06-GAI-NYUKIN-STATE
-                                           S06-NYU-HENKIN-STATE
-                                           S06-GAI-HENKIN-STATE
+                                           S06-GAI-NYUKIN-MAX-STATE
                                            S06-NYUKIN-STATE
+                                           S06-NYUKIN-MAX-STATE
                                            S06-SKYSUMKBN-STATE
                                            S06-SKYSUMKBN-ITEM-STATE
                                            S06-IKTSRYYMKBN-STATE
@@ -3513,6 +3306,7 @@
                MOVE    WIDGET-INSENSITIVE
                                        TO  S06-SELNUM-STATE
                                            S06-NYUKIN-STATE
+                                           S06-NYUKIN-MAX-STATE
                IF    ( SPA-GMN-IKTSRYYMKBN =   "1" )
                    MOVE    WIDGET-INSENSITIVE
                                        TO  S06-IKTSRYYM-STATE
@@ -3522,9 +3316,9 @@
                                        TO  S06-NYKNKNRKBN-STATE
                                            S06-NYKNKNRKBN-ITEM-STATE
                                            S06-NYU-NYUKIN-STATE
+                                           S06-NYU-NYUKIN-MAX-STATE
                                            S06-GAI-NYUKIN-STATE
-                                           S06-NYU-HENKIN-STATE
-                                           S06-GAI-HENKIN-STATE
+                                           S06-GAI-NYUKIN-MAX-STATE
                                            S06-IKTSRYYMKBN-STATE
                                            S06-IKTSRYYMKBN-ITEM-STATE
                                            S06-IKTSRYYM-STATE
@@ -3554,19 +3348,26 @@
                MOVE    "外来入金額にマイナスは設定できません"
                                            TO  SPA-ERRMSG
            WHEN    "0005"
-               MOVE    "外来入金額が上限を上回っています"
+               MOVE    "外来入金額が入金上限額を上回っています"
                                            TO  SPA-ERRMSG
            WHEN    "0006"
                MOVE    "入院入金額にマイナスは設定できません"
                                            TO  SPA-ERRMSG
            WHEN    "0007"
-               MOVE    "入院入金額が上限を上回っています"
+               MOVE    "入院入金額が入金上限額を上回っています"
                                            TO  SPA-ERRMSG
+           WHEN    "0008"
+               MOVE    "入金額を入金上限額〜０円の範囲で入力して"
+                                           TO  SPA-ERRMSG (1:40)
+               MOVE    "ください"
+                                           TO  SPA-ERRMSG (41:)
            WHEN    "0009"
-               MOVE    "入金額にマイナスは設定できません"
-                                           TO  SPA-ERRMSG
+               MOVE    "マイナスの入金額は入金上限額がプラスの場"
+                                           TO  SPA-ERRMSG (1:40)
+               MOVE    "合入力できません"
+                                           TO  SPA-ERRMSG (41:)
            WHEN    "0010"
-               MOVE    "入金額が上限を上回っています"
+               MOVE    "入金額が入金上限額を上回っています"
                                            TO  SPA-ERRMSG
            WHEN    "0011"
                MOVE    "請求書兼領収書発行区分入力エラー"
@@ -3585,24 +3386,6 @@
                                            TO  SPA-ERRMSG
            WHEN    "0016"
                MOVE    "診療年月指定エラー"
-                                           TO  SPA-ERRMSG
-           WHEN    "0017"
-               MOVE    "外来返金額にマイナスは設定できません"
-                                           TO  SPA-ERRMSG
-           WHEN    "0018"
-               MOVE    "外来返金額が上限を上回っています"
-                                           TO  SPA-ERRMSG
-           WHEN    "0019"
-               MOVE    "入院返金額にマイナスは設定できません"
-                                           TO  SPA-ERRMSG
-           WHEN    "0020"
-               MOVE    "入院返金額が上限を上回っています"
-                                           TO  SPA-ERRMSG
-           WHEN    "0021"
-               MOVE    "返金額にマイナスは設定できません"
-                                           TO  SPA-ERRMSG
-           WHEN    "0022"
-               MOVE    "返金額が上限を上回っています"
                                            TO  SPA-ERRMSG
            WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"
@@ -3642,7 +3425,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  SID1
-           INITIALIZE                       SID1
            MOVE    SPA-SIDCD            TO  SID1-ID1CODE
            MOVE    WRK-SIDMSG           TO  SID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -3696,10 +3478,6 @@
                MOVE  "IKTSRYYMKBN"     TO  MCP-WIDGET
            WHEN    12
                MOVE  "IKTSRYYM"        TO  MCP-WIDGET
-           WHEN    13
-               MOVE  "GAI_HENKIN"      TO  MCP-WIDGET
-           WHEN    14
-               MOVE  "NYU_HENKIN"      TO  MCP-WIDGET
            WHEN    212
                MOVE  "B12"             TO  MCP-WIDGET
            END-EVALUATE
@@ -3733,29 +3511,19 @@
                MOVE    12              TO  SPA-GMN-CUR
       *    一括入金診療年月　　→　外来入金額
            WHEN    "IKTSRYYM"
-               IF    ( SPA-GMN-GAI-NYUKIN-MAX   =  ZERO )
+               IF    ( SPA-GMN-GAI-NYUKIN-MAX  <=  ZERO )
                 AND  ( SPA-GMN-GAI-NYUKIN       =  ZERO )
-                AND  ( SPA-GMN-GAI-HENKIN-MAX   =  ZERO )
-                AND  ( SPA-GMN-GAI-HENKIN       =  ZERO )
-                AND  ( SPA-GMN-NYU-NYUKIN-MAX   =  ZERO )
+                AND  ( SPA-GMN-NYU-NYUKIN-MAX  <=  ZERO )
                 AND  ( SPA-GMN-NYU-NYUKIN       =  ZERO )
-                AND  ( SPA-GMN-NYU-HENKIN-MAX   =  ZERO )
-                AND  ( SPA-GMN-NYU-HENKIN       =  ZERO )
                    MOVE    12          TO  SPA-GMN-CUR
                ELSE
                    MOVE    04          TO  SPA-GMN-CUR
                END-IF
-      *    外来入金額　　　→　外来返金額
+      *    外来入金額　　　→　入院入金額
            WHEN    "GAI_NYUKIN"
-               MOVE    13              TO  SPA-GMN-CUR
-      *    外来返金額　　　→　入院入金額
-           WHEN    "GAI_HENKIN"
                MOVE    05              TO  SPA-GMN-CUR
-      *    入院入金額　　　→　入院返金額
+      *    入院入金額　　　→　外来入院入金額
            WHEN    "NYU_NYUKIN"
-               MOVE    14              TO  SPA-GMN-CUR
-      *    入院返金額　　　→　外来入金額
-           WHEN    "NYU_HENKIN"
                MOVE    04              TO  SPA-GMN-CUR
       *    入金額　　　　　→　選択番号
            WHEN    "NYUKIN"
@@ -3825,20 +3593,8 @@
                                        =   WIDGET-INSENSITIVE )
                    MOVE    06              TO  SPA-GMN-CUR
                ELSE
-                   IF    ( SPA-GMN-GAI-NYUKIN-MAX   =  ZERO )
+                   IF    ( SPA-GMN-GAI-NYUKIN-MAX  <=  ZERO )
                     AND  ( SPA-GMN-GAI-NYUKIN       =  ZERO )
-                       MOVE    13          TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR         =   04 )
-               IF    ( S06-GAI-HENKIN-STATE
-                                       =   WIDGET-INSENSITIVE )
-                   MOVE    06              TO  SPA-GMN-CUR
-               ELSE
-                   IF    ( SPA-GMN-GAI-HENKIN-MAX   =  ZERO )
-                    AND  ( SPA-GMN-GAI-HENKIN       =  ZERO )
                        MOVE    05          TO  SPA-GMN-CUR
                    END-IF
                END-IF
@@ -3849,21 +3605,9 @@
                                        =   WIDGET-INSENSITIVE )
                    MOVE    06              TO  SPA-GMN-CUR
                ELSE
-                   IF    ( SPA-GMN-NYU-NYUKIN-MAX   =  ZERO )
+                   IF    ( SPA-GMN-NYU-NYUKIN-MAX  <=  ZERO )
                     AND  ( SPA-GMN-NYU-NYUKIN       =  ZERO )
-                       MOVE    14          TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR         =   14 )
-               IF    ( S06-NYU-HENKIN-STATE
-                                       =   WIDGET-INSENSITIVE )
-                   MOVE    06              TO  SPA-GMN-CUR
-               ELSE
-                   IF    ( SPA-GMN-NYU-HENKIN-MAX   =  ZERO )
-                    AND  ( SPA-GMN-NYU-HENKIN       =  ZERO )
-                       MOVE    04          TO  SPA-GMN-CUR
+                       MOVE    05          TO  SPA-GMN-CUR
                    END-IF
                END-IF
            END-IF
@@ -3871,7 +3615,7 @@
            IF    ( SPA-GMN-CUR         =   10 )
                IF    ( S06-SKYSUMKBN-STATE
                                        =   WIDGET-INSENSITIVE )
-                   MOVE    212         TO  SPA-GMN-CUR
+                   MOVE    04              TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
@@ -3880,15 +3624,38 @@
        50012-CUR-SKIP-EXT.
            EXIT.
       *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC              SECTION.
+      *
+           MOVE    MCP-WINDOW          TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE         TO  SPA-PUTTYPE
+           MOVE    "_SDMY01"           TO  MCP-WINDOW
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
+      *****************************************************************
       *    クライアント印刷前　処理
       *****************************************************************
        800-CLIENT-PRT-SEC         SECTION.
       *
+           INITIALIZE                      SDMY01
+           MOVE    SPACE               TO  SDMY01-PANDAPRINT1
+      *
       *    クライアント印刷制御情報取得サブ
            INITIALIZE                          ORCSPRTCTRLAREA
+           MOVE    "外来請求書兼領収書"    TO  ORCSPRTCTRL-TITLE-I(01)
+           MOVE    "入院請求書兼領収書"    TO  ORCSPRTCTRL-TITLE-I(02)
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
                                                MCPAREA
+           MOVE    ORCSPRTCTRL-OUT     TO  SDMY01-PANDAPRINT1
+      *
+           MOVE    1                   TO  FLG-CLIENT-OK
       *
            .
        800-CLIENT-PRT-EXT.
@@ -3966,54 +3733,6 @@
            .
       *
        800-MCNDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    文字列左詰処理
-      *****************************************************************
-       800-LTRIM-SEC               SECTION.
-      *
-           IF    ( WRK-STR         =   SPACE )
-               CONTINUE
-           ELSE
-               PERFORM VARYING IDXL    FROM    1   BY  1
-                       UNTIL ( IDXL    >       500 )
-      *
-                   IF    ( WRK-STR (IDXL:1)    NOT =   SPACE )
-                       MOVE    WRK-STR (IDXL:)
-                                           TO  WRK-STR-TMP
-                       MOVE    WRK-STR-TMP TO  WRK-STR
-                       MOVE    500         TO  IDXL
-                   END-IF
-      *
-               END-PERFORM
-           END-IF
-      *
-           .
-       800-LTRIM-EXT.
-           EXIT.
-      *****************************************************************
-      *    金額編集処理
-      *****************************************************************
-       800-LBLKINGAKU-SEC             SECTION.
-      *
-           MOVE    SPACE               TO  WRK-LBLKINGAKUX
-      *
-           IF    ( WRK-LBLKINGAKU      <   1000000 )
-               MOVE    WRK-LBLKINGAKU      TO  WRK-NUMZS
-               STRING  WRK-NUMZS           DELIMITED   BY  SIZE
-                       "円"                DELIMITED   BY  SIZE
-               INTO    WRK-LBLKINGAKUX
-               END-STRING
-           ELSE
-               MOVE    WRK-LBLKINGAKU      TO  WRK-NUMZL
-               STRING  WRK-NUMZL           DELIMITED   BY  SIZE
-                       "円"                DELIMITED   BY  SIZE
-               INTO    WRK-LBLKINGAKUX
-               END-STRING
-           END-IF
-      *
-           .
-       800-LBLKINGAKU-EXT.
            EXIT.
       *****************************************************************
       *    収納検索処理
