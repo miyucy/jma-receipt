@@ -28,15 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *
-      * 04.08.00     NACL-多々納  13/01/11  診療回数テーブル１０対応
-      * 04.08.00     NACL-多々納  13/12/XX  診療行為剤点数情報対応
-      * 04.07.00     NACL-多々納  14/12/XX  診療月数対応
-      * 04.07.00     NACL-多々納  15/08/XX  入院対応、単位追加対応
-      *                                     包括対象項目追加
-      * 04.08.00     NACL-多々納  15/12/14  伝票番号追加対応
-      * 05.00.00     NACL-多々納  17/08/XX  CLASS=02伝票番号追加対応
-      * 05.00.00     NACL-多々納  17/11/XX  CLASS=02点数など追加対応
-      * 05.00.00     NACL-多々納  18/01/XX  レセ電データ移行分対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -75,12 +66,6 @@
            03  FLG-TENCHK              PIC 9(01).
            03  FLG-SP                  PIC 9(01).
       *
-           03  FLG-HKNKBN              PIC 9(01).
-           03  FLG-CHK2                PIC 9(01).
-           03  FLG-HKNCHK              PIC 9(01).
-      *
-           03  FLG-RECEDEN             PIC 9(01).
-      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -92,8 +77,6 @@
            03  IDX-H               PIC 9(04).
            03  IDK                 PIC 9(04).
            03  IDX-J               PIC 9(04).
-           03  IDX1                PIC 9(04).
-           03  IDX3                PIC 9(04).
       *
            03  IDXR                PIC 9(02).
            03  IDXM                PIC 9(02).
@@ -108,7 +91,6 @@
            03  IDX-D               PIC 9(02).
       *
            03  TBL-MAX             PIC 9(04).
-           03  IDX-MAX             PIC 9(04).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -171,15 +153,6 @@
            03  WRK-ZAITEN              PIC S9(07).
            03  WRK-SUM-TENSU           PIC 9(07).
            03  WRK-SUM-KINGAKU         PIC 9(07).
-      *H26.12
-      *    月数
-           03  WRK-TUKICNT             PIC 9(02).
-           03  WRK-END-SRYYM.
-               05  WRK-END-SRYYY           PIC 9(04).
-               05  WRK-END-SRYMM           PIC 9(02).
-           03  WRK-SRYYMD              PIC X(08).
-      *    包括検査数
-           03  WRK-HOUKNS-CNT          PIC 9(02).
       *
       *    数値変換用
            03  WRK-SURYO               PIC S9(08)V9(05).
@@ -197,18 +170,6 @@
            03  WRK-SURYO-HX            PIC X(15).
            03  WRK-S-MAX               PIC 9(02).
       *
-      * CLASS=4　用
-           03  WRK-RSI-MONEY           PIC S9(09).
-           03  WRK-MONEY               PIC S9(09).
-           03  WRK-SUM-TEN             PIC S9(09).
-           03  WRK-SRY-SRYSYUKBN       PIC X(03).
-      *    単位
-           03  WRK-TANICD              PIC X(03).
-           03  WRK-TANINAME            PIC X(24).
-      *
-           03  WRK-DENPNUM             PIC 9(07).
-      *
-      *
        01  TBL-JYURRK-AREA.
            03  TBL-JYURRK-OCC          OCCURS   150.
                05  TBL-RRK-SRYYMD              PIC X(08).
@@ -216,8 +177,6 @@
                05  TBL-RRK-HKNCOMBI            PIC X(04).
                05  TBL-RRK-RENNUM              PIC 9(01).
                05  TBL-RRK-DOUJI-RENNUM        PIC 9(01).
-      *        伝票番号
-               05  TBL-RRK-DENPNUM             PIC 9(07).
       *    月集計
        01  TBL-SYORI03-AREA.
            03  TBL-SYORI03-REC              OCCURS   40.
@@ -226,32 +185,10 @@
                05  TBL-SYORI03-OCC2         OCCURS   400.
                    07  TBL-SRYCD            PIC X(09).
                    07  TBL-NAME             PIC X(80).
-      *H27.8       単位
-                   07  TBL-TANICD           PIC X(03).
-                   07  TBL-TANINAME         PIC X(24).
-      *
                    07  TBL-HKTKBN           PIC X(01).
                    07  TBL-DAY-G            OCCURS   31.
                        09  TBL-D-DAY        PIC 9(03).
                        09  TBL-D-SURYO      PIC S9(8)V9(05).
-      *    月剤毎
-       01  TBL-SYORI04-AREA.
-           03  TBL-SYORI04-REC              OCCURS   31.
-               05  TBL-SYORI04-REC2             OCCURS   40.
-                   07  TBL-S4-SRYKBN            PIC X(02).
-                   07  TBL-S4-SRYSYUKBN         PIC X(03).
-                   07  TBL-S4-SRYKBNMEI         PIC X(50).
-                   07  TBL-S4-IDX               PIC 9(04).
-                   07  TBL-SYORI04-OCC2         OCCURS   100.
-                       09  TBL-S4-JIHOKBN          PIC  X(01).
-                       09  TBL-S4-ZAITEN           PIC S9(09).
-                       09  TBL-S4-MOENY            PIC S9(09).
-                       09  TBL-S4-KAISU            PIC  9(03).
-      *
-           03  TBL-S4-HKNCOMBI-G.
-               05  TBL-S4-HKNCOMBI-OCC     OCCURS   20.
-                   07  TBL-S4-HKNCOMBI         PIC X(04).
-                   07  TBL-S4-HKNKBN           PIC X(01).
       *
        01  WRK-XML-AREA.
            03  WRK-PERFORM-DATE.
@@ -301,8 +238,6 @@
            COPY    "CPMDCGET02V2RES.INC".
       *    API XML書き込み用定義体（月診療行為）
            COPY    "CPMDCGET03V2RES.INC".
-      *    API XML書き込み用定義体（月剤毎診療行為）
-           COPY    "CPMDCGET04V2RES.INC".
       *ver.4.7
       *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
@@ -377,6 +312,24 @@
             COPY    "LINKAREA".
        01  SCRAREA.
            COPY    "API01RV2SCRAREA.INC".
+      *    COPY    "CPAPIPTAV2.INC".
+      *    COPY    "CPAPILSTV2.INC".
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST1-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST2-//.
+      *    COPY    "CPAPILSTV2.INC"  REPLACING
+      *                              //APILST-// BY //APILST3-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST4-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST5-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST6-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                              //APILST-// BY //APILST7-//.
+      *    COPY    "CPAPILSTV2.INC"    REPLACING
+      *                                //APILST-// BY //APILST8-//.
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -406,13 +359,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APILST6-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-APTXMLMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-APTXMLMAKE-SEC
       *
            DISPLAY   "*******************"
            DISPLAY   "* medicalget end  *"
@@ -431,7 +379,6 @@
            INITIALIZE                      XML-MEDICALGET01RES
            INITIALIZE                      XML-MEDICALGET02RES
            INITIALIZE                      XML-MEDICALGET03RES
-           INITIALIZE                      XML-MEDICALGET04RES
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
@@ -449,7 +396,6 @@
            MOVE    WRK-HEN-TIME        TO  MDC01RES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -499,9 +445,6 @@
            WHEN    "03"
       *        診療行為（月）
                MOVE    3                   TO  FLG-SYORI
-           WHEN    "04"
-      *        診療行為剤点数情報
-               MOVE    4                   TO  FLG-SYORI
            WHEN    OTHER
                MOVE    "91"                TO  WRK-ERRCD
            END-EVALUATE
@@ -523,9 +466,6 @@
            WHEN    "03"
       *        月診療行為内容情報
                PERFORM 2004-SYORI-03-SEC
-           WHEN    "04"
-      *        診療行為剤点数情報
-               PERFORM 2005-SYORI-04-SEC
            END-EVALUATE
       *
            .
@@ -540,7 +480,6 @@
            IF      APILST6-BODY     NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_medicalgetv2req"   TO  MCP-TABLE
@@ -622,11 +561,9 @@
                    PERFORM 3002-MDC02XMLMAKE-SEC
                WHEN    3
                    PERFORM 3003-MDC03XMLMAKE-SEC
-               WHEN    4
-                   PERFORM 3004-MDC04XMLMAKE-SEC
            END-EVALUATE
       *
-           .
+          .
        300-APTXMLMAKE-EXT.
            EXIT.
       *
@@ -819,72 +756,6 @@
           .
        3003-MDC03XMLMAKE-EXT.
            EXIT.
-      *****************************************************************
-      *    XML情報書き込み処理（月診療行為）
-      *****************************************************************
-       3004-MDC04XMLMAKE-SEC        SECTION.
-      *
-      *    共通編集
-           MOVE   "Medical Info"           TO  MDC04RES-RESKEY
-      *
-           MOVE    MDC01RES-INFORMATION-DATE
-                                           TO  MDC04RES-INFORMATION-DATE
-           MOVE    MDC01RES-INFORMATION-TIME
-                                           TO  MDC04RES-INFORMATION-TIME
-           MOVE    MDC01RES-API-RESULT     TO  MDC04RES-API-RESULT
-           MOVE    MDC01RES-API-RESULT-MSG TO  MDC04RES-API-RESULT-MSG
-      *
-           IF      APILST6-BODY     NOT =   LOW-VALUE
-               DISPLAY "MDCRES-OBJECT not low_value"
-           END-IF
-      *
-           MOVE    "XMLOPEN"           TO  MCP-FUNC
-           MOVE    "xml_medicalget04v2res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    1                   TO  MDC04RES-MODE
-           MOVE    "medicalget04res"   TO  MDC04RES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-MEDICALGET04RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLOPEN failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLWRITE"          TO  MCP-FUNC
-           MOVE    "xml_medicalget04v2res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "medicalget04res"   TO  MDC04RES-RECORDNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-MEDICALGET04RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               CONTINUE
-           ELSE
-               DISPLAY "XMLWRITE failure = " MCP-RC
-           END-IF
-      *
-           MOVE    "XMLCLOSE"          TO  MCP-FUNC
-           MOVE    "xml_medicalget04v2res"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       XML-MEDICALGET04RES
-                                       SPA-AREA
-           IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    MDC04RES-OBJECT     TO  APILST6-BODY 
-               MOVE    "application/xml"   TO  APILST6-CONTENT-TYPE
-           ELSE
-               DISPLAY "XMLCLOSE failure = " MCP-RC
-               DISPLAY "medicalget xml write failure "
-           END-IF
-      *
-          .
-       3004-MDC04XMLMAKE-EXT.
-           EXIT.
       *
       *****************************************************************
       *    読み込んだXMLのLOW-VALUE を  SPACE に置換
@@ -924,17 +795,7 @@
       *    診療科コードチェック
            IF     (WRK-SRYKA       NOT =   SPACE  )
            AND    (WRK-ERRCD           =   SPACE  )
-               MOVE    SPA-SYSYMD          TO  WRK-SRYYMD
                PERFORM 20011-SRYKA-CHK-SEC
-           END-IF
-      *    レセ電移行分
-           IF     (WRK-SRYKA       NOT =   SPACE  )
-           AND    (WRK-ERRCD           =   SPACE  )
-               IF      (WRK-SRYKA(1:1)     =   "A"  )
-                  AND  (FLG-RECEDEN        =   1    )
-      *            対象外
-                   MOVE    "24"            TO  WRK-ERRCD
-               END-IF
            END-IF
       *
            .
@@ -968,13 +829,6 @@
            END-IF
       *    システム日付とする
            MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
-      *H27.8
-      *    入外区分（Ｉ：入院）
-           IF      MDCREQ-INOUT-CLASS  =   "I"
-               MOVE    "1"                 TO  SPA-NYUGAIKBN
-           ELSE
-               MOVE    "2"                 TO  SPA-NYUGAIKBN
-           END-IF
       *
       *    必須入力チェック
       *    患者番号
@@ -985,27 +839,9 @@
            IF      WRK-SRYKA           =   SPACE
                IF     (FLG-SYORI           =   2      )
                AND    (WRK-ERRCD           =   SPACE  )
-      *!!
-      *            伝票番号なし、入院は必須
-                   IF     (MDCREQ-INVOICD-NUMBER   =   SPACE)
-                      OR  (SPA-NYUGAIKBN           =   "1"  )
-                       MOVE    "02"                TO  WRK-ERRCD
-                   END-IF
+                   MOVE    "02"                TO  WRK-ERRCD
                END-IF
            END-IF
-      *H30.1
-      *    レセ電データ移行分
-           EVALUATE    MDCREQ-CONTAIN-MIGRATION
-           WHEN    "False"
-      *        含めない
-               MOVE    1               TO  FLG-RECEDEN
-           WHEN    "True"
-           WHEN    SPACE
-      *        含める
-               MOVE    ZERO            TO  FLG-RECEDEN
-           WHEN    OTHER
-               MOVE    ZERO            TO  FLG-RECEDEN
-           END-EVALUATE
            .
        20010-INPUT-HEN-EXT.
            EXIT.
@@ -1071,23 +907,13 @@
       *****************************************************************
        20011-SRYKA-CHK-SEC         SECTION.
       *
-      *H30.1
-      *    レセ電データ移行分
-           IF     (WRK-SRYKA (1:1)     =   "A" )
-              AND (WRK-SRYKA (2:1)     NUMERIC )
-               MOVE    SPACE           TO  WRK-SRYKA-NAME
-               GO      TO      20011-SRYKA-CHK-EXT
-           END-IF
-      *
       *    診療科の存在チェック
            MOVE    SPACE               TO  SYS-1005-REC
            INITIALIZE                  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
-      **** MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
-      **** MOVE    SPA-SYSYMD          TO  SYS-1005-EDYUKYMD
-           MOVE    WRK-SRYYMD          TO  SYS-1005-STYUKYMD
-           MOVE    WRK-SRYYMD          TO  SYS-1005-EDYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1005-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *    システム管理検索
            MOVE    SYS-1005-REC        TO  SYSKANRI-REC
@@ -1097,7 +923,6 @@
                MOVE    SYS-1005-SRYKANAME1 TO  WRK-SRYKA-NAME
            ELSE
                MOVE    "13"                TO  WRK-ERRCD
-               MOVE    SPACE               TO  WRK-SRYKA-NAME
            END-IF
       *
            .
@@ -1111,63 +936,21 @@
       *
       *    患者情報内容編集
            PERFORM 20021-MDC01RES-HEN-SEC
-      *
-      *H26.12
-      *    診療月数チェック
-           PERFORM 20023-TUKICNT-CHK-SEC
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO      TO      2002-SYORI-01-EXT
-           END-IF
       *!
       *    外来とする
-      **** MOVE    "2"                 TO  SPA-NYUGAIKBN
-      *
-      *H26.12
-      *    検索終了診療年月
-           MOVE    ZERO                TO  WRK-END-SRYYM
-           IF      WRK-TUKICNT         >   ZERO
-               MOVE    WRK-PERFORM-YM      TO  WRK-END-SRYYM
-               IF      WRK-END-SRYMM       <=  WRK-TUKICNT
-                   COMPUTE WRK-END-SRYYY       =   WRK-END-SRYYY
-                                               -   1
-                   COMPUTE WRK-END-SRYMM       =  (WRK-END-SRYMM
-                                               +   12 )
-                                               -   WRK-TUKICNT
-               ELSE
-                   COMPUTE WRK-END-SRYMM       =   WRK-END-SRYMM
-                                               -   WRK-TUKICNT
-               END-IF
-               IF      WRK-TUKICNT         =   99
-                   MOVE    ZERO            TO  WRK-END-SRYYM
-               END-IF
-           END-IF
+           MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
       *    受診歴を検索する  医療機関、患者ＩＤ
-      *H26.12
-           IF      WRK-TUKICNT         =   ZERO
-      *        月数指定なし（昇順）
-               INITIALIZE                  JYURRK-REC
-               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
-               MOVE    SPA-PTID            TO  JYURRK-PTID
-               MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-               MOVE    WRK-PERFORM-YM      TO  JYURRK-SRYYMD(1:6)
-               MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
-               MOVE    WRK-PERFORM-YM      TO  JYURRK-UPSRYYMD(1:6)
-               MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
+           INITIALIZE                  JYURRK-REC
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    WRK-PERFORM-YM      TO  JYURRK-SRYYMD(1:6)
+           MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
+           MOVE    WRK-PERFORM-YM      TO  JYURRK-UPSRYYMD(1:6)
+           MOVE    "31"                TO  JYURRK-UPSRYYMD(7:2)
       *
-               MOVE    "key14"             TO  WRK-MCP-PATHNAME
-      *
-           ELSE
-      *        月数指定あり（降順）
-               INITIALIZE                  JYURRK-REC
-               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
-               MOVE    SPA-PTID            TO  JYURRK-PTID
-               MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-               MOVE    WRK-PERFORM-YM      TO  JYURRK-SRYYMD(1:6)
-               MOVE    "31"                TO  JYURRK-SRYYMD(7:2)
-      *
-               MOVE    "key60"             TO  WRK-MCP-PATHNAME
-           END-IF
+           MOVE    "key14"             TO  WRK-MCP-PATHNAME
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
@@ -1182,29 +965,13 @@
                MOVE    1               TO  FLG-JYURRK
            END-IF
       *
-           MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  TBL-MAX
            INITIALIZE                      TBL-JYURRK-AREA
            PERFORM
                UNTIL   (FLG-JYURRK         =   1    )  OR
                        (WRK-ERRCD      NOT =   SPACE)
-      *H26.12
-               IF      WRK-TUKICNT         >   ZERO
-                   IF      JYURRK-SRYYMD(1:6)  <=  WRK-END-SRYYM
-                       MOVE    1               TO  FLG-JYURRK
-                   END-IF
-               END-IF
-      *
-               IF      FLG-JYURRK          =   ZERO
       *
                MOVE    ZERO            TO  FLG-ARI
-      *H30.1
-      *        レセ電移行分対象外
-               IF     (FLG-RECEDEN         =   1   )
-                 AND  (JYURRK-SRYKA(1:1)   =   "A" )
-                   MOVE    1               TO  FLG-ARI
-               END-IF
-      *
       *        診療日、連番で１行とする
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2    >   TBL-MAX  )
@@ -1221,12 +988,11 @@
                END-PERFORM
       *
                IF      FLG-ARI             =   ZERO
-                   ADD     1               TO  IDX-MAX
-                   IF      IDX-MAX         >   150
+                   ADD     1               TO  TBL-MAX
+                   IF      TBL-MAX         >   150
                        MOVE    "14"            TO  WRK-ERRCD
                    ELSE
       *                明細項目退避
-                       ADD     1               TO  TBL-MAX
                        MOVE    JYURRK-SRYYMD   TO  TBL-RRK-SRYYMD
                                                              (TBL-MAX)
                        MOVE    JYURRK-SRYKA    TO  TBL-RRK-SRYKA
@@ -1239,18 +1005,12 @@
                        MOVE    JYURRK-DOUJI-RENNUM
                                                TO  TBL-RRK-DOUJI-RENNUM
                                                              (TBL-MAX)
-                       MOVE    JYURRK-DENPNUM
-                                               TO  TBL-RRK-DENPNUM
-                                                             (TBL-MAX)
                    END-IF
                END-IF
       *
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 970-JYURRK-READ-SEC
-      *
-               END-IF
-      *
            END-PERFORM
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -1284,35 +1044,6 @@
            .
        20021-MDC01RES-HEN-EXT.
            EXIT.
-      *****************************************************************
-      *    診療月数チェック処理
-      *****************************************************************
-       20023-TUKICNT-CHK-SEC          SECTION.
-      *
-           MOVE    ZERO                TO  WRK-TUKICNT
-           IF      MDCREQ-FOR-MONTHS   NOT =   SPACE
-               INITIALIZE                      ORCSNUMAREA
-               MOVE    MDCREQ-FOR-MONTHS   TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF     (SNUM-RC         NOT =   ZERO  )   OR
-                      (SNUM-MINKBN     NOT =   SPACE )   OR
-                      (SNUM-SYOKBN     NOT =   SPACE )
-                   MOVE    "16"                TO  WRK-ERRCD
-               ELSE
-                   MOVE    SNUM-OUTNUM         TO  WRK-TUKICNT
-               END-IF
-           END-IF
-      *
-           IF     (WRK-TUKICNT         >=  0  AND  <=  12 )
-              OR  (WRK-TUKICNT         =   99      )
-               CONTINUE
-           ELSE
-               MOVE    "16"                TO  WRK-ERRCD
-           END-IF
-           .
-       20023-TUKICNT-CHK-EXT.
-           EXIT.
       *
       *****************************************************************
       *    受診履歴内容編集処理
@@ -1326,8 +1057,6 @@
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  MDC01RES-PERFORM-DATE
                                                                  (IDX)
-      *
-               MOVE    TBL-RRK-SRYYMD (IDX)    TO  WRK-SRYYMD
       *        診療科
                MOVE    TBL-RRK-SRYKA (IDX) TO  MDC01RES-DEP-CODE
                                                                 (IDX)
@@ -1340,14 +1069,6 @@
                MOVE    TBL-RRK-HKNCOMBI(IDX)
                                        TO  MDC01RES-COMBINATION-NUMBER
                                                                (IDX)
-      *        伝票番号
-               IF      SPA-NYUGAIKBN   =   "2"
-      *H30.1     レセ電データ移行分
-                  AND (WRK-SRYKA(1:1)  NOT =   "A" )
-                   MOVE    TBL-RRK-DENPNUM (IDX)
-                                       TO  MDC01RES-INVOICD-NUMBER
-                                                               (IDX)
-               END-IF
                PERFORM 20011-HKNCOMBI-HEN01-SEC
            END-PERFORM
            .
@@ -1472,16 +1193,8 @@
       *****************************************************************
        2003-SYORI-02-SEC          SECTION.
       *
-      *H29.8
-      *    伝票番号なし
-           IF     (MDCREQ-INVOICD-NUMBER   =   SPACE )
-              OR  (SPA-NYUGAIKBN           =   "1"   )
-      *        保険組合せチェック
-               PERFORM 20031-HKNCOMBI-CHK-SEC
-           ELSE
-      *        伝票番号チェック
-               PERFORM 20033-DENPNUM-CHK-SEC
-           END-IF
+      *    保険組合せチェック
+           PERFORM 20031-HKNCOMBI-CHK-SEC
       *
       *    患者情報内容編集
            PERFORM 20032-MDC02RES-HEN-SEC
@@ -1490,7 +1203,7 @@
            END-IF
       *!
       *    外来とする
-      **** MOVE    "2"                 TO  SPA-NYUGAIKBN
+           MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
       *    診療種別テーブルセット
            CALL    "ORCSSRYSYU"        USING
@@ -1542,24 +1255,14 @@
                    ELSE
                        MOVE    JYURRK-HKNCOMBINUM  TO  WRK-KEY-HKNCOMBI
                        PERFORM 20033-HKNCOMBI-HEN-SEC
-      *H29.8
-                       IF     (SPA-NYUGAIKBN       =   "2"  )
-      *H30.1
-                          AND (JYURRK-SRYKA(1:1)   NOT =   "A" )
-      *                    伝票番号
-                           MOVE    JYURRK-DENPNUM  TO
-                                               MDC02RES-INVOICD-NUMBER
-                                                               (IDX)
-                       END-IF
                    END-IF
                END-IF
       *        剤毎編集
                COMPUTE IDX-REN         =   JYURRK-RENNUM
                                        +   1
-      *v4.8
-      *        IF      IDX-REN         >   4
-      *            MOVE    4               TO  IDX-REN
-      *******  END-IF
+               IF      IDX-REN         >   4
+                   MOVE    4               TO  IDX-REN
+               END-IF
                PERFORM VARYING     IDX-J   FROM    1   BY  1
                        UNTIL      (IDX-J       >   15      )
                                OR (WRK-ERRCD   NOT =   SPACE)
@@ -1578,7 +1281,7 @@
       *
            IF      IDX                 =   ZERO
       *        対象なし
-               MOVE    "15"                TO  WRK-ERRCD
+               MOVE    "22"                TO  WRK-ERRCD
                IF      WRK-HKNCOMBI    NOT =   SPACE
                    MOVE    1                   TO  IDX
                    MOVE    WRK-HKNCOMBI        TO  WRK-KEY-HKNCOMBI
@@ -1607,8 +1310,6 @@
                INITIALIZE                      ORCSAPIHKNAREA
       *        対象なし有
                MOVE    "2"                 TO  ORCSAPIHKN-KBN
-      *        当月有効分から
-               MOVE    "2"                 TO  ORCSAPIHKN-KBN2
       *        診療科
                MOVE    WRK-SRYKA           TO  ORCSAPIHKN-SRYKA
       *        保険種類
@@ -1653,8 +1354,7 @@
       *        保険組合せチェック
                PERFORM 200311-HKNCOMBI-NUM-SEC
       *        存在チェック
-               IF     (WRK-ERRCD           =   SPACE   )
-                  AND (WRK-HKNCOMBI    NOT =    "9999" )
+               IF      WRK-ERRCD           =   SPACE
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                    MOVE    SPA-PTID            TO  COMB-PTID
@@ -1690,70 +1390,6 @@
        200311-HKNCOMBI-NUM-EXT.
            EXIT.
       *****************************************************************
-      *    伝票番号チェック処理
-      *****************************************************************
-       20033-DENPNUM-CHK-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  WRK-DENPNUM
-      *
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    MDCREQ-INVOICD-NUMBER   TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                  (SNUM-SEISUU         >   7     )   OR
-                  (SNUM-SYOSUU         >   0     )
-      *        数値７桁
-               MOVE    "22"                TO  WRK-ERRCD
-           ELSE
-               MOVE    SNUM-OUTNUM         TO  WRK-DENPNUM
-           END-IF
-      *
-           IF      WRK-DENPNUM         =   ZERO
-               MOVE    "22"                TO  WRK-ERRCD
-               GO      TO      20033-DENPNUM-CHK-EXT
-           END-IF
-      *
-           INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
-           MOVE    SPA-PTID            TO  JYURRK-PTID
-           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-           MOVE    WRK-DENPNUM         TO  JYURRK-DENPNUM
-      *
-           MOVE    JYURRK-REC          TO  MCPDATA-REC
-           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key6"              TO  MCP-PATHNAME
-               PERFORM 970-JYURRK-READ-SEC
-           ELSE
-               INITIALIZE                  JYURRK-REC
-               MOVE    1               TO  FLG-JYURRK
-           END-IF
-           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           IF      FLG-JYURRK          =   ZERO
-               IF      JYURRK-SRYYMD   NOT =   WRK-PERFORM-YMD
-                   MOVE    "23"                 TO  WRK-ERRCD
-               END-IF
-               IF      WRK-ERRCD           =   SPACE
-                   MOVE    JYURRK-SRYKA        TO  WRK-SRYKA
-                   MOVE    JYURRK-RENNUM       TO  WRK-RENNUM
-                   MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBI
-      *            診療科名称
-                   MOVE    JYURRK-SRYYMD       TO  WRK-SRYYMD
-                   PERFORM 20011-SRYKA-CHK-SEC
-               END-IF
-           ELSE
-               MOVE    "15"                 TO  WRK-ERRCD
-           END-IF
-      *
-           .
-       20033-DENPNUM-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    患者情報出力情報編集処理
       *****************************************************************
        20032-MDC02RES-HEN-SEC     SECTION.
@@ -1773,24 +1409,13 @@
       *    診療科
            MOVE    WRK-SRYKA           TO  MDC02RES-DEP-CODE
            MOVE    WRK-SRYKA-NAME      TO  MDC02RES-DEP-NAME
-      *
-      *H29.8
-           IF      MDCREQ-INVOICD-NUMBER   =   SPACE
       *    連番
-               IF      MDCREQ-NUMBER   NOT NUMERIC
-                   MOVE    1                   TO  WRK-RENNUM
-               ELSE
-                   MOVE    MDCREQ-NUMBER       TO  WRK-RENNUM
-               END-IF
-               MOVE    WRK-RENNUM          TO  MDC02RES-NUMBER
+           IF      MDCREQ-NUMBER   NOT NUMERIC
+               MOVE    1                   TO  WRK-RENNUM
            ELSE
-      *        伝票番号
-               MOVE    MDCREQ-INVOICD-NUMBER
-                                           TO  MDC02RES-INVOICD-NUMBER
-                                                               (1)
-      *        連番
-               MOVE    WRK-RENNUM          TO  MDC02RES-NUMBER
+               MOVE    MDCREQ-NUMBER       TO  WRK-RENNUM
            END-IF
+           MOVE    WRK-RENNUM          TO  MDC02RES-NUMBER
       *
       *    保険組合せ情報
            IF      WRK-ERRCD       NOT =   SPACE
@@ -1831,7 +1456,7 @@
                                        TO  MDC02RES-RECIPIENT-NUMBER
                                                               (1 IDK)
                END-PERFORM
-           END-IF
+          END-IF
            .
        20032-MDC02RES-HEN-EXT.
            EXIT.
@@ -1939,8 +1564,6 @@
            MOVE    ZERO                TO  WRK-SUM-TENSU
            MOVE    ZERO                TO  WRK-SUM-KINGAKU
            MOVE    ZERO                TO  FLG-TENCHK
-      *H29.11
-           MOVE    ZERO                TO  WRK-HOUKNS-CNT
       *
            IF     (FLG-CHK             =   ZERO  )
                INITIALIZE                  SRYACCTPLUS-REC
@@ -2052,9 +1675,9 @@
       *    用法コード
            IF      SRY-SRYCD (IDXA)(1:3)   =   "001"
                MOVE    SPACE               TO  WRK-HZN-NAME
-               STRING     "【"             DELIMITED   BY  SIZE
+               STRING     "〔"             DELIMITED   BY  SIZE
                           WRK-TNS-NAME     DELIMITED   BY  "    "
-                          "】"             DELIMITED   BY  SIZE
+                          "〕"             DELIMITED   BY  SIZE
                           INTO             WRK-HZN-NAME
                END-STRING
                MOVE    WRK-HZN-NAME        TO  WRK-TNS-NAME
@@ -2082,28 +1705,6 @@
                                                        (IDX IDY IDX-S)
            MOVE    WRK-SURYO-HX        TO  MDC02RES-PRSCRPT-NUMBER
                                                        (IDX IDY IDX-S)
-      *H27.8
-      *    単位
-           PERFORM 200341-TANINAME-HEN-SEC
-           MOVE    WRK-TANICD          TO  MDC02RES-UNIT-CODE
-                                                     (IDX IDY IDX-S)
-           MOVE    WRK-TANINAME        TO  MDC02RES-UNIT-NAME
-                                                     (IDX IDY IDX-S)
-      *H29.11
-      *    点数識別、点数
-           IF     (SRY-SRYCD (IDXA) (1:1)  =   "1"
-                                           OR  "6"
-                                           OR  "7" )
-              OR  (SRY-SRYCD (IDXA) (1:3)  =   "059"
-                                           OR  "058")
-               MOVE    TNS-TENSIKIBETU     TO  MDC02RES-TENSIKIBETU
-                                                     (IDX IDY IDX-S)
-               MOVE    TNS-TEN             TO  WRK-SURYO
-               PERFORM 810-NUMHENKAN-SEC
-               MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
-                                           TO  MDC02RES-TEN
-                                                     (IDX IDY IDX-S)
-           END-IF
       *
       *    診療コードの金額集計
            IF      SRY-SRYKBN          =   "95"
@@ -2130,14 +1731,6 @@
                    END-IF
                    ADD     TNS-TEN             TO  WRK-SUM-KINGAKU
                END-IF
-           END-IF
-      *H29.11
-      *    包括検査の判定
-           IF     (SRY-SRYCD (IDXA)(1:1)   =   "1" )  AND
-                  (SRY-SRYKBN              =   "60" ) AND
-                  (TNS-DATAKBN             =   1    ) AND
-                  (TNS-HOUKNSKBN       NOT =   ZERO )
-               ADD     1                   TO  WRK-HOUKNS-CNT
            END-IF
            .
        200341-MEISE-HEN-EXT.
@@ -2195,8 +1788,6 @@
       *    包括区分
            IF      ACCT-JIHOKBN        =   "1"
                MOVE    "1"             TO  MDC02RES-MDC-CODE  (IDX IDY)
-               MOVE    "True"          TO  MDC02RES-INCLUSION-CLASS
-                                                              (IDX IDY)
            END-IF
            .
        200342-ZAINUM-HEN-EXT.
@@ -2232,43 +1823,8 @@
            MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
                                        TO  MDC02RES-MDC-MOENY
                                                              (IDX IDY)
-      *H29.11
-      *    包括検査の検査数
-           IF      WRK-HOUKNS-CNT      >   ZERO
-               MOVE    WRK-HOUKNS-CNT  TO  MDC02RES-HKTKNSA-CNT
-                                                             (IDX IDY)
-           END-IF
            .
        200342-KINGAKU-HEN-EXT.
-           EXIT.
-      *H27.8
-      *****************************************************************
-      *     単位名称編集処理
-      *****************************************************************
-       200341-TANINAME-HEN-SEC            SECTION.
-      *
-           MOVE    SPACE               TO  WRK-TANICD
-           MOVE    SPACE               TO  WRK-TANINAME
-      *    薬剤・器材
-           IF     (SRY-SRYCD (IDXA)(1:1)   =   "6"
-                                           OR  "7" )
-               MOVE    TNS-TANICD          TO  WRK-TANICD
-               MOVE    TNS-TANINAME        TO  WRK-TANINAME
-           END-IF
-      *    診療コード・商品コードは単位ありの時
-           IF     (TNS-TANICD          =   ZERO
-                                       OR  SPACE )
-               CONTINUE
-           ELSE
-               IF     (SRY-SRYCD (IDXA)(1:1)   =   "1"  ) 
-                  OR  (SRY-SRYCD (IDXA)(1:3)   =   "059"
-                                               OR  "058")
-                   MOVE    TNS-TANICD          TO  WRK-TANICD
-                   MOVE    TNS-TANINAME        TO  WRK-TANINAME
-               END-IF
-           END-IF
-           .
-       200341-TANINAME-HEN-EXT.
            EXIT.
       *****************************************************************
       *     診療種別区分名称、診療行為区分セット
@@ -2307,7 +1863,7 @@
            END-IF
       *!
       *    外来とする
-      *****MOVE    "2"                 TO  SPA-NYUGAIKBN
+           MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
       *    診療種別テーブルセット
            CALL    "ORCSSRYSYU"        USING
@@ -2366,14 +1922,6 @@
                        END-IF
                    END-IF
                END-IF
-      *H30.1
-      *        レセ電移行分対象外
-               IF      WRK-SRYKA           =   SPACE
-                   IF     (FLG-RECEDEN         =   1   )
-                     AND  (ACCT-SRYKA(1:1)     =   "A" )
-                       MOVE    1               TO  FLG-CHK
-                   END-IF
-               END-IF
       *
                IF      FLG-CHK             =   ZERO
                    PERFORM 20043-SRYACCT-HEN-SEC
@@ -2418,11 +1966,7 @@
        20043-SRYACCT-HEN-SEC                SECTION.
       *
       *    診療種別名称編集処理
-      **** PERFORM 200431-SRYKBN-CHK-SEC
-           MOVE    ACCT-SRYKBN         TO  WRK-H-SRYKBN
-           MOVE    WRK-H-SRYKBN        TO  WRK-SRYSYUKBN(1:2)
-           MOVE    "0"                 TO  WRK-SRYSYUKBN(3:1)
-           PERFORM 200341-SRYKBN-MEI-SEC
+           PERFORM 200431-SRYKBN-CHK-SEC
       *
       *    診療行為マスター読み込み
            INITIALIZE                      SRYACT-REC
@@ -2573,12 +2117,6 @@
                                                                (IDX IDY)
                            MOVE    TNS-NAME            TO  TBL-NAME
                                                                (IDX IDY)
-      *H27.8               単位
-                           PERFORM 200341-TANINAME-HEN-SEC
-                           MOVE    WRK-TANICD          TO  TBL-TANICD
-                                                               (IDX IDY)
-                           MOVE    WRK-TANINAME        TO  TBL-TANINAME
-                                                               (IDX IDY)
       *                    包括区分
                            IF      ACCT-JIHOKBN        =   "1"
                                MOVE    "1"             TO  TBL-HKTKBN
@@ -2684,19 +2222,8 @@
                                                                 (IDX-T)
            MOVE    TBL-SRYCD (IDX IDY) TO  MDC03RES-PRSCRPT-CODE(IDX-T)
            MOVE    TBL-NAME  (IDX IDY) TO  MDC03RES-PRSCRPT-NAME(IDX-T)
-      *    単位
-           MOVE    TBL-TANICD (IDX IDY)
-                                       TO  MDC03RES-UNIT-CODE(IDX-T)
-           MOVE    TBL-TANINAME (IDX IDY)
-                                       TO  MDC03RES-UNIT-NAME(IDX-T)
       *    包括区分
            MOVE    TBL-HKTKBN(IDX IDY) TO  MDC03RES-MDC-CODE (IDX-T)
-      *H27.8
-           IF      TBL-HKTKBN(IDX IDY) =   "1"
-               MOVE    "True"          TO  MDC03RES-INCLUSION-CLASS
-                                                             (IDX-T)
-           END-IF
-      *
       *    算定回数
            MOVE    ZERO                TO  WRK-CNT
            MOVE    ZERO                TO  WRK-TBL-DAY-G
@@ -2730,730 +2257,6 @@
       *
            .
        200441-MEISAI-HEN-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    診療行為剤点数情報処理
-      *****************************************************************
-       2005-SYORI-04-SEC          SECTION.
-      *
-      *    保険組合せチェック
-           PERFORM 20031-HKNCOMBI-CHK-SEC
-           IF     (WRK-HKNCOMBI        =   SPACE )
-             AND  (WRK-ERRCD           =   SPACE )
-      *        保険指定なしの時
-               INITIALIZE                      ORCSAPIHKNAREA
-      *        当月有効をすべて
-               MOVE    "2"                 TO  ORCSAPIHKN-KBN2
-               CALL    "ORCSAPIHKN"        USING
-                                           SPA-AREA
-                                           ORCSAPIHKNAREA
-           END-IF
-      *
-      *    患者情報内容編集
-           PERFORM 20051-MDC04RES-HEN-SEC
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO      TO      2005-SYORI-04-EXT
-           END-IF
-      *!
-      *    外来とする
-      **** MOVE    "2"                 TO  SPA-NYUGAIKBN
-      *
-      *    診療種別テーブルセット
-           CALL    "ORCSSRYSYU"        USING
-                                       MSYU-DATA-REC
-      *
-           INITIALIZE                      TBL-SYORI04-AREA
-           MOVE    SPACE               TO  WRK-KEY-HKNCOMBI
-      *
-      *    診療会計マスターから編集
-           INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
-           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
-           MOVE    SPA-PTID            TO  ACCT-PTID
-           MOVE    WRK-SRYKA           TO  ACCT-SRYKA
-           MOVE    WRK-PERFORM-YM      TO  ACCT-SRYYM
-      *
-           IF      WRK-SRYKA           =   SPACE
-               MOVE    "key7"          TO  WRK-MCP-PATHNAME
-           ELSE
-               MOVE    "key2"          TO  WRK-MCP-PATHNAME
-           END-IF
-           MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-               PERFORM 930-SRYACCT-READ-SEC
-           ELSE
-               INITIALIZE                  SRYACCT-REC
-               MOVE    1               TO  FLG-SRYACCT
-           END-IF
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL      (FLG-SRYACCT     =   1   )
-               MOVE    ZERO                TO  FLG-CHK
-      *        薬評剤対象外
-               IF      ACCT-ZAIKBN         =   1
-                   MOVE    1                   TO  FLG-CHK
-               END-IF
-      *        保険組合せ判定
-               IF      WRK-HKNCOMBI        =   SPACE
-      *            包括保険以外対象
-                   IF     (ACCT-HKNCOMBI       =   "9999")
-                       MOVE    1                   TO  FLG-CHK
-                   ELSE
-      *                対象の保険判定
-                       PERFORM 20052-HKNCOMBI-CHK-SEC
-                   END-IF
-               ELSE
-                   IF     (WRK-HKNCOMBI        =   "9999" )
-                       IF     (ACCT-HKNCOMBI       =   "9999")
-                          OR  (ACCT-JIHOKBN        =   "1"    )
-                           CONTINUE
-                       ELSE
-                           MOVE    1               TO  FLG-CHK
-                       END-IF
-                   ELSE
-                       IF      ACCT-HKNCOMBI   NOT =   WRK-HKNCOMBI
-                           MOVE    1                   TO  FLG-CHK
-                       END-IF
-                   END-IF
-               END-IF
-      *H30.1
-      *        レセ電移行分対象外
-               IF      WRK-SRYKA           =   SPACE
-                   IF     (FLG-RECEDEN         =   1   )
-                     AND  (ACCT-SRYKA(1:1)     =   "A" )
-                       MOVE    1               TO  FLG-CHK
-                   END-IF
-               END-IF
-      *
-               IF     (FLG-CHK             =   ZERO )
-                   PERFORM 20053-SRYACCT-HENSYU-SEC
-               END-IF
-      *
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-               PERFORM 930-SRYACCT-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      WRK-KEY-HKNCOMBI    =   SPACE
-      *        対象なし
-               MOVE    "15"            TO  WRK-ERRCD
-               PERFORM 20051-MDC04RES-HEN-SEC
-           ELSE
-      *        返却内容編集
-               PERFORM 20054-MDC04RES-MEIHEN-SEC
-           END-IF
-           .
-       2005-SYORI-04-EXT.
-           EXIT.
-      *****************************************************************
-      *    対象保険組合せ判定処理
-      *****************************************************************
-       20052-HKNCOMBI-CHK-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  FLG-HKNCHK
-           PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL      (IDX             >   20  )  OR
-                              (FLG-HKNCHK      =   1   )  OR
-                              (ORCSAPIHKN-THKNCOMBI(IDX) =   SPACE)
-               IF      ORCSAPIHKN-THKNCOMBI(IDX)   =   ACCT-HKNCOMBI
-                   IF     (ORCSAPIHKN-HKNNUM (IDX) =   "971"
-                                                   OR  "973")
-                      OR  (ORCSAPIHKN-HKNNUM (IDX)(1:2) 
-                                                   =   "98"  )
-      *            労災・自賠責・自費保険は対象外
-                       MOVE    1               TO  FLG-CHK
-                   END-IF
-                   MOVE    1                   TO  FLG-HKNCHK
-               END-IF
-           END-PERFORM
-      *    該当なし
-           IF      FLG-HKNCHK          =   ZERO
-               INITIALIZE                  HKNCOMBI-REC
-               MOVE    ACCT-HOSPNUM        TO  COMB-HOSPNUM
-               MOVE    ACCT-PTID           TO  COMB-PTID
-               MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM
-               PERFORM 920-HKNCOMBI-READ-SEC
-               IF     (COMB-HKNNUM         =   "971"
-                                           OR  "973" )
-                  OR  (COMB-HKNNUM (1:2)   =   "98"  )
-      *            労災・自賠責・自費保険は対象外
-                   MOVE    1               TO  FLG-CHK
-               END-IF
-           END-IF
-           .
-       20052-HKNCOMBI-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者情報出力情報編集処理
-      *****************************************************************
-       20051-MDC04RES-HEN-SEC     SECTION.
-      *
-           MOVE    WRK-PERFORM-DATE1   TO  MDC04RES-PERFORM-DATE
-      *
-           MOVE    WRK-PTNUM           TO  MDC04RES-PATIENTID
-      *
-           MOVE    PTINF-NAME          TO  MDC04RES-NAME
-           MOVE    PTINF-KANANAME      TO  MDC04RES-KANANAME
-           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
-           MOVE    ZERO                TO  WRK-THMS
-           PERFORM 801-DAYHEN01-SEC
-           MOVE    WRK-HEN-DATE        TO  MDC04RES-BIRTHDAY
-           MOVE    PTINF-SEX           TO  MDC04RES-SEX
-      *    診療科
-           MOVE    WRK-SRYKA           TO  MDC04RES-DEP-CODE
-           MOVE    WRK-SRYKA-NAME      TO  MDC04RES-DEP-NAME
-      *
-      *    保険組合せ情報
-           IF      WRK-ERRCD       NOT =   SPACE
-               MOVE    WRK-HKNCOMBI    TO  MDC04RES-COMBINATION-NUMBER
-                                                                 (1)
-      *        保険種類
-               MOVE    MDCREQ-MAIN-INSURANCE-CLASS 
-                                       TO  MDC04RES-MAIN-INSURANCE-CLASS
-                                                                 (1)
-      *        保険者番号
-               MOVE    MDCREQ-MAIN-INSURANCE-NUMBER
-                                   TO  MDC04RES-MAIN-INSURANCE-NUMBER(1)
-      *        保険種類
-               MOVE    MDCREQ-MAIN-INSURANCE-NAME 
-                                       TO  MDC04RES-MAIN-INSURANCE-NAME
-                                                                 (1)
-      *        記号
-               MOVE    MDCREQ-MAIN-MARK    TO  MDC04RES-MAIN-MARK (1)
-      *        番号
-               MOVE    MDCREQ-MAIN-NUMBER  TO  MDC04RES-MAIN-NUMBER (1)
-      *        公費情報
-               PERFORM VARYING     IDK     FROM    1   BY  1
-                       UNTIL       IDK     >   4
-      *            公費種類
-                   MOVE    MDCREQ-INSURANCE-CLASS (IDK)
-                                       TO  MDC04RES-INSURANCE-CLASS
-                                                              (1 IDK)
-      *            公費名称
-                   MOVE    MDCREQ-INSURANCE-NAME  (IDK)
-                                       TO  MDC04RES-INSURANCE-NAME
-                                                              (1 IDK)
-      *            負担者番号
-                   MOVE    MDCREQ-PROVIDER-NUMBER(IDK)
-                                       TO  MDC04RES-PROVIDER-NUMBER
-                                                              (1 IDK)
-      *            受給者番号
-                   MOVE    MDCREQ-RECIPIENT-NUMBER (IDK)
-                                       TO  MDC04RES-RECIPIENT-NUMBER
-                                                              (1 IDK)
-               END-PERFORM
-          END-IF
-      *
-           .
-       20051-MDC04RES-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    診療内容処理
-      *****************************************************************
-       20053-SRYACCT-HENSYU-SEC         SECTION.
-      *
-      *    保険判定
-           IF      WRK-KEY-HKNCOMBI    NOT =   ACCT-HKNCOMBI
-               PERFORM 200531-HKNCOMBI-HEN-SEC
-           END-IF
-      *
-           MOVE    ZERO                TO  FLG-CHK2
-           MOVE    ZERO                TO  WRK-ZAITEN
-           MOVE    ZERO                TO  WRK-RSI-MONEY
-           MOVE    ZERO                TO  WRK-MONEY
-           MOVE    SPACE               TO  WRK-SRY-SRYSYUKBN
-      *    労災・自賠責の時、円分を減算、自費の金額編集
-           IF    ((FLG-HKNKBN          =   1    )  AND
-                  (ACCT-SRYKBN         =   "11"
-                                       OR  "12"
-                                       OR  "13"
-                                       OR  "80"  )  AND
-                  (ACCT-ZAIREQFLG      =   "1"   ))
-            OR   ((FLG-HKNKBN          =   2    )  AND
-                  (ACCT-SRYKBN         =   "80" )  AND
-                  (ACCT-ZAIREQFLG      =   "1"   ))
-            OR   ( ACCT-SRYKBN         =   "96"
-                                       OR  "95"  )
-               PERFORM 20053-RSI-ZAITEN-SEC
-           ELSE
-      *        診療種別取得
-               IF      ACCT-SRYKBN     =   "80"
-                   PERFORM 20054-SRYACT-GET-SEC
-                   MOVE    SRY-SRYSYUKBN       TO  WRK-SRY-SRYSYUKBN
-               END-IF
-           END-IF
-      *
-           IF      FLG-CHK2             =  ZERO
-      *        逓減点数を判定する
-               INITIALIZE                  SRYACCTPLUS-REC
-               IF      ACCT-ZAIREQFLG      =   "1"
-      *            附加情報あり
-                   PERFORM 32012-SRYACCTPLUS-READ-SEC
-               END-IF
-               IF      ACCTP-PLUSKBN        =   1
-                    COMPUTE WRK-ZAITEN          =   ACCT-ZAITEN
-                                                *   -1
-               ELSE
-                   MOVE    ACCT-ZAITEN           TO  WRK-ZAITEN
-               END-IF
-           END-IF
-           IF     (WRK-ZAITEN          =   ZERO )
-             AND  (WRK-RSI-MONEY       =   ZERO )
-             AND  (WRK-MONEY           =   ZERO )
-               GO      TO      20053-SRYACCT-HENSYU-EXT
-           END-IF
-      *    診療種別名称編集処理
-           MOVE    SPACE               TO  WRK-H-SRYKBN
-           MOVE    ACCT-SRYKBN         TO  WRK-SRYKBN
-           IF      ACCT-SRYKBN         =   "80"
-               EVALUATE    WRK-SRY-SRYSYUKBN(1:2)
-                   WHEN    "82"
-                       MOVE    "82"            TO  WRK-H-SRYKBN
-                   WHEN    "83"
-                       MOVE    "83"            TO  WRK-H-SRYKBN
-                   WHEN    "84"
-                       MOVE    "84"            TO  WRK-H-SRYKBN
-                   WHEN    "85"
-                       MOVE    "85"            TO  WRK-H-SRYKBN
-                   WHEN    "89"
-                       MOVE    "89"            TO  WRK-H-SRYKBN
-                   WHEN    OTHER
-                       MOVE    ACCT-SRYKBN     TO  WRK-H-SRYKBN
-               END-EVALUATE
-           ELSE
-               MOVE    ACCT-SRYKBN     TO  WRK-H-SRYKBN
-           END-IF
-           MOVE    WRK-H-SRYKBN        TO  WRK-SRYSYUKBN(1:2)
-           MOVE    "0"                 TO  WRK-SRYSYUKBN(3:1)
-           PERFORM 200341-SRYKBN-MEI-SEC
-      *
-      *    集計先テーブル
-           PERFORM VARYING     IDX1    FROM    1   BY  1
-                   UNTIL      (IDX1    >   31 )
-               IF      ACCT-DAY (1 IDX1)   >   ZERO
-                   PERFORM VARYING     IDX2    FROM    1   BY  1
-                           UNTIL      (IDX2    >   40 )
-                       IF      TBL-S4-SRYKBN (IDX1 IDX2)   =   SPACE
-                           MOVE    WRK-SRYKBN      TO  TBL-S4-SRYKBN
-                                                            (IDX1 IDX2)
-                           MOVE    WRK-SRYSYUKBN   TO  TBL-S4-SRYSYUKBN
-                                                            (IDX1 IDX2)
-                           MOVE    WRK-SRYSYUKBNMEI
-                                                   TO  TBL-S4-SRYKBNMEI
-                                                            (IDX1 IDX2)
-                       END-IF
-                       IF    ( WRK-SRYKBN      =   TBL-S4-SRYKBN
-                                                            (IDX1 IDX2))
-                         AND ( WRK-SRYSYUKBN   =   TBL-S4-SRYSYUKBN
-                                                            (IDX1 IDX2))
-                           ADD     1           TO  TBL-S4-IDX(IDX1 IDX2)
-                           MOVE    TBL-S4-IDX(IDX1 IDX2)    TO  IDX3
-                           IF      IDX3                >   100
-                                MOVE    100            TO  IDX3
-                                MOVE    100            TO  TBL-S4-IDX
-                                                            (IDX1 IDX2)
-                           END-IF
-                           MOVE    WRK-ZAITEN      TO  TBL-S4-ZAITEN
-                                                        (IDX1 IDX2 IDX3)
-                           IF      WRK-RSI-MONEY       >   ZERO
-                               MOVE    WRK-RSI-MONEY   TO  TBL-S4-MOENY
-                                                        (IDX1 IDX2 IDX3)
-                           END-IF
-                           IF      WRK-MONEY           >   ZERO
-                               MOVE    WRK-MONEY       TO  TBL-S4-MOENY
-                                                        (IDX1 IDX2 IDX3)
-                           END-IF
-                           MOVE    ACCT-DAY (1 IDX1)   TO  TBL-S4-KAISU
-                                                        (IDX1 IDX2 IDX3)
-                           MOVE    ACCT-JIHOKBN    TO  TBL-S4-JIHOKBN
-                                                        (IDX1 IDX2 IDX3)
-                           MOVE    40              TO  IDX2
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-PERFORM
-           .
-       20053-SRYACCT-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せ決定処理
-      *****************************************************************
-       200531-HKNCOMBI-HEN-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  FLG-HKNKBN
-           MOVE    ACCT-HKNCOMBI       TO  WRK-KEY-HKNCOMBI
-           PERFORM VARYING     IDX     FROM    1  BY  1
-                   UNTIL      (IDX     >   20  )
-               IF      TBL-S4-HKNCOMBI(IDX)    =   SPACE
-                   MOVE    ACCT-HKNCOMBI       TO  TBL-S4-HKNCOMBI(IDX)
-                   INITIALIZE                  HKNCOMBI-REC
-                   MOVE    ACCT-HOSPNUM        TO  COMB-HOSPNUM
-                   MOVE    ACCT-PTID           TO  COMB-PTID
-                   MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM
-                   PERFORM 920-HKNCOMBI-READ-SEC
-                   IF     (COMB-HKNNUM         =   "971"
-                                               OR  "973" )
-                       MOVE    "1"             TO  TBL-S4-HKNKBN (IDX)
-                   END-IF
-                   IF     (COMB-KOH1HKNNUM     =   "970" )
-                       MOVE    "2"             TO  TBL-S4-HKNKBN (IDX)
-                   END-IF
-               END-IF
-               IF      TBL-S4-HKNCOMBI(IDX)    =   ACCT-HKNCOMBI
-                   MOVE    TBL-S4-HKNKBN (IDX) TO  FLG-HKNKBN
-                   MOVE    20                  TO  IDX
-               END-IF
-           END-PERFORM
-           .
-       200531-HKNCOMBI-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療行為マスター読み込み処理
-      *****************************************************************
-       20054-SRYACT-GET-SEC                SECTION.
-      *
-           INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
-           MOVE    ACCT-PTID           TO  SRY-PTID
-           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
-           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
-           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-      *
-           MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryact"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 920-SRYACT-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYACT
-               INITIALIZE                      SRYACT-REC
-           END-IF
-      *
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       20054-SRYACT-GET-EXT.
-           EXIT.
-      *****************************************************************
-      *    労災・自費金額編集処理
-      *****************************************************************
-       20053-RSI-ZAITEN-SEC                SECTION.
-      *
-      *    診療行為マスター読み込み
-           INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
-           MOVE    ACCT-PTID           TO  SRY-PTID
-           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
-           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
-           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-      *    点数検索用日付編集
-           MOVE    ACCT-SRYYM          TO  WRK-SYSYM
-           MOVE    "01"                TO  WRK-SYSDD
-           PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL       IDX-D   >   31
-               IF      ACCT-DAY (1 IDX-D)  NOT =   ZERO
-                   MOVE    IDX-D           TO  WRK-SYSDD
-                   MOVE    31              TO  IDX-D
-               END-IF
-           END-PERFORM
-      *
-           MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryact"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 920-SRYACT-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYACT
-           END-IF
-           MOVE    ZERO                TO  WRK-SUM-TEN
-           MOVE    ZERO                TO  WRK-MONEY
-           MOVE    ZERO                TO  WRK-RSI-MONEY
-      *    自費コードの自費金額
-           IF     (SRY-SRYKBN          =   "95"
-                                       OR  "96" )
-               MOVE    SRY-JIHIMONEYTOTAL  TO  WRK-MONEY
-               MOVE    1                   TO  FLG-SRYACT
-           END-IF
-           MOVE    SRY-SRYSYUKBN       TO  WRK-SRY-SRYSYUKBN
-      *
-           PERFORM UNTIL       FLG-SRYACT      =   1
-      *        剤明細編集
-               PERFORM VARYING     IDXA    FROM    1   BY  1
-                       UNTIL      (IDXA             >   5   )  OR
-                                  (SRY-SRYCD (IDXA) =   SPACE )
-      *            点数マスタ検索
-                   IF      (SRY-SRYCD (IDXA)(1:3)  =   "101"  )  OR
-                           (SRY-SRYCD (IDXA)(1:5)  =   "09591" OR
-                                                       "09592" OR
-                                                       "09593" )
-                       MOVE    SRY-SRYCD (IDXA)    TO  TNS-SRYCD
-                       PERFORM 910-TENSU-READ-SEC
-      *                労災の金額算定分の時、点数をゼロとする
-                       IF     (TNS-TENSIKIBETU     =   1  )  OR
-                              (TNS-SRYCD (1:5)     =   "09591" OR
-                                                       "09592" OR
-                                                       "09593" )
-      *                自賠責金額入力を点数とする
-                           IF     (SRY-SRYSYUKBN       =   "809")
-                              MOVE    SRY-JIHIMONEY(IDZ)   TO  TNS-TEN
-                           END-IF
-                           COMPUTE WRK-SUM-TEN     =   WRK-SUM-TEN
-                                                   +  (TNS-TEN
-                                                   /   10  )
-                           COMPUTE WRK-RSI-MONEY   =   WRK-RSI-MONEY
-                                                   +   TNS-TEN
-                       END-IF
-                   END-IF
-               END-PERFORM
-      *
-               MOVE    "tbl_sryact"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 920-SRYACT-READ-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      ACCT-ZAITEN         >=  WRK-SUM-TEN
-               COMPUTE WRK-ZAITEN          =   ACCT-ZAITEN
-                                           -   WRK-SUM-TEN
-           ELSE
-               MOVE    ZERO                TO  WRK-ZAITEN
-           END-IF
-      *    労災円分
-           IF      WRK-RSI-MONEY       >   ZERO
-               MOVE      1                 TO  FLG-CHK2
-           END-IF
-      *    自費分
-           IF      WRK-MONEY           >   ZERO
-               MOVE      1                 TO  FLG-CHK2
-               MOVE    ZERO                TO  WRK-ZAITEN
-           END-IF
-           .
-       20053-RSI-ZAITEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    返却内容編集処理
-      *****************************************************************
-       20054-MDC04RES-MEIHEN-SEC                SECTION.
-      *
-           MOVE    ZERO                TO  IDX1
-           MOVE    ZERO                TO  IDX2
-           MOVE    ZERO                TO  IDX3
-           PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL       IDX-D   >   31
-               IF      TBL-S4-SRYKBN (IDX-D 1) NOT =   SPACE
-                   ADD     1               TO  IDX1
-      *            診療区分順に編集
-                   PERFORM 200541-SRYKBN-HEN-SEC
-               END-IF
-           END-PERFORM
-      *    対象なし
-           IF      IDX1                =   ZERO
-               MOVE    "15"            TO  WRK-ERRCD
-           END-IF
-      *    保険組合せ編集
-           PERFORM 200543-HKNCOMBI-HEN-SEC
-           .
-       20054-MDC04RES-MEIHEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    明細編集処理
-      *****************************************************************
-       200541-SRYKBN-HEN-SEC                SECTION.
-      *
-           MOVE    ZERO                TO  IDX-T
-           MOVE    ZERO                TO  FLG-TEND
-           MOVE    ZERO                TO  IDX2
-           PERFORM 
-                   UNTIL    (FLG-TEND      =   1     )
-               MOVE    ZERO                TO  IDX-TBL
-               MOVE    "99"                TO  WRK-KEY-SRYKBN
-               PERFORM VARYING    IDX      FROM    1   BY  1
-                       UNTIL     (IDX      >   40  )
-                   IF     (TBL-S4-SRYKBN (IDX-D IDX)   NOT =   SPACE )
-                   AND    (TBL-S4-SRYKBN (IDX-D IDX)
-                                                   <   WRK-KEY-SRYKBN)
-                       MOVE    IDX                 TO  IDX-TBL
-                       MOVE    TBL-S4-SRYKBN (IDX-D IDX)
-                                                   TO  WRK-KEY-SRYKBN
-                   END-IF
-               END-PERFORM
-               IF      IDX-TBL             =   ZERO
-                   MOVE    1               TO  FLG-TEND
-               ELSE
-                   MOVE    IDX-TBL         TO  IDX
-                   ADD     1               TO  IDX2
-                   PERFORM 2005411-MEISAI-HEN01-SEC
-               END-IF
-               PERFORM VARYING    IDY      FROM    1   BY  1
-                       UNTIL     (IDY      >   100 )
-                           OR    (FLG-TEND =   1    )
-                           OR    (IDY      >   TBL-S4-IDX (IDX-D IDX))
-                   ADD     1                   TO  IDX3
-                   IF      IDX3                >   400
-                       MOVE    1               TO  FLG-TEND
-                   ELSE
-                       PERFORM 2005412-MEISAI-HEN02-SEC
-                   END-IF
-               END-PERFORM
-               IF      FLG-TEND        =   ZERO
-                   MOVE    SPACE           TO  TBL-S4-SRYKBN (IDX-D IDX)
-               END-IF
-           END-PERFORM
-      *
-           .
-       200541-SRYKBN-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    明細編集処理
-      *****************************************************************
-       2005411-MEISAI-HEN01-SEC        SECTION.
-      *
-           MOVE    IDX-D               TO  MDC04RES-MDC-DAY (IDX1)
-      *
-           MOVE    TBL-S4-SRYKBN (IDX-D IDX)
-                                       TO  MDC04RES-MDC-CLASS
-                                                       (IDX1 IDX2)
-           MOVE    TBL-S4-SRYSYUKBN (IDX-D IDX)
-                                       TO  MDC04RES-MDC-CLASS2
-                                                       (IDX1 IDX2)
-           MOVE    TBL-S4-SRYKBNMEI (IDX-D IDX)
-                                       TO  MDC04RES-MDC-CLASS-NAME
-                                                       (IDX1 IDX2)
-           .
-       2005411-MEISAI-HEN01-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    明細編集処理
-      *****************************************************************
-       2005412-MEISAI-HEN02-SEC                SECTION.
-      *
-           IF      TBL-S4-ZAITEN (IDX-D IDX IDY)   NOT =   ZERO
-               MOVE    TBL-S4-ZAITEN (IDX-D IDX IDY)   TO  WRK-SURYO
-               PERFORM 810-NUMHENKAN-SEC
-               MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
-                                       TO  MDC04RES-MDC-POINT
-                                                     (IDX1 IDX2 IDX3)
-           END-IF
-      *
-           IF      TBL-S4-MOENY (IDX-D IDX IDY)    NOT =   ZERO
-               MOVE    TBL-S4-MOENY (IDX-D IDX IDY)    TO  WRK-SURYO
-               PERFORM 810-NUMHENKAN-SEC
-               MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
-                                       TO  MDC04RES-MDC-MOENY
-                                                     (IDX1 IDX2 IDX3)
-           END-IF
-      *
-           MOVE    TBL-S4-KAISU (IDX-D IDX IDY)    TO  WRK-SURYO
-           PERFORM 810-NUMHENKAN-SEC
-           MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
-                                      TO MDC04RES-MDC-CLASS-NUMBER
-                                                     (IDX1 IDX2 IDX3)
-      *    包括区分
-           IF      TBL-S4-JIHOKBN (IDX-D IDX IDY)  =   "1"
-               MOVE    TBL-S4-JIHOKBN (IDX-D IDX IDY)
-                                       TO  MDC04RES-MDC-CODE
-                                                     (IDX1 IDX2 IDX3)
-               MOVE    "True"          TO  MDC04RES-INCLUSION-CLASS
-                                                     (IDX1 IDX2 IDX3)
-           END-IF
-      *
-           .
-       2005412-MEISAI-HEN02-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険組合せ内容編集処理
-      *****************************************************************
-       200543-HKNCOMBI-HEN-SEC               SECTION.
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   5   )
-                         OR   (TBL-S4-HKNCOMBI (IDX)   =   SPACE)
-                IF     TBL-S4-HKNCOMBI (IDX)   =   "9999"
-      *
-                   INITIALIZE                  HKNCOMBI-REC
-                   MOVE    "包括分入力"        TO  COMB-SYU-TANSEIDONAME
-               ELSE
-                   INITIALIZE                  HKNCOMBI-REC
-                   MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
-                   MOVE    SPA-PTID            TO  COMB-PTID
-                   MOVE    TBL-S4-HKNCOMBI (IDX)
-                                               TO  COMB-HKNCOMBINUM
-                   PERFORM 920-HKNCOMBI-READ-SEC
-               END-IF
-               MOVE    TBL-S4-HKNCOMBI (IDX)
-                                       TO  MDC04RES-COMBINATION-NUMBER
-                                                            (IDX)
-      *        主保険−保険番号
-               MOVE    COMB-HKNNUM     TO  MDC04RES-MAIN-INSURANCE-CLASS
-                                                            (IDX)
-      *        主保険−短縮制度名
-               MOVE    COMB-SYU-TANSEIDONAME
-                                       TO  MDC04RES-MAIN-INSURANCE-NAME
-                                                            (IDX)
-               IF      COMB-HKNID      NOT =   ZERO
-      *            保険情報編集
-                   PERFORM 930-PTHKNINF-READ-SEC
-      *            保険者番号
-                   MOVE    PTHKN-HKNJANUM  TO
-                                       MDC04RES-MAIN-INSURANCE-NUMBER
-                                                            (IDX)
-      *            記号・番号
-                   MOVE    PTHKN-KIGO      TO  MDC04RES-MAIN-MARK  (IDX)
-                   MOVE    PTHKN-NUM       TO  MDC04RES-MAIN-NUMBER(IDX)
-               END-IF
-      *        公費情報
-               PERFORM VARYING    IDK      FROM    1   BY  1
-                       UNTIL      IDK      >   4
-                   IF      COMB-KOHID (IDK)    NOT =   ZERO
-      *                公費の種類
-                       MOVE    COMB-KOHHKNNUM (IDK)
-                                       TO  MDC04RES-INSURANCE-CLASS
-                                                            (IDX IDK)
-                       MOVE    COMB-KOH-TANSEIDONAME (IDK)
-                                       TO  MDC04RES-INSURANCE-NAME
-                                                            (IDX IDK)
-      *                公費情報編集
-                       PERFORM 940-PTKOHINF-READ-SEC
-      *                負担者番号
-                       MOVE    PTKOH-FTNJANUM
-                                           TO  MDC04RES-PROVIDER-NUMBER
-                                                            (IDX IDK)
-                       MOVE    PTKOH-JKYSNUM
-                                           TO  MDC04RES-RECIPIENT-NUMBER
-                                                            (IDX IDK)
-                   END-IF
-               END-PERFORM
-           END-PERFORM
-           .
-       200543-HKNCOMBI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3562,24 +2365,19 @@
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-      ***      MOVE    "患者番号未設定"
-               MOVE    "患者番号の設定がありません"
+               MOVE    "患者番号未設定"
                                                TO  WRK-ERRMSG
            WHEN    "02"
-      ***      MOVE    "診療科未設定"
-               MOVE    "診療科の設定がありません"
+               MOVE    "診療科未設定"
                                                TO  WRK-ERRMSG
            WHEN    "10"
-      ***      MOVE    "該当患者番号なし"
-               MOVE    "患者番号に該当する患者が存在しません"
+               MOVE    "該当患者番号なし"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-      ***      MOVE    "診療日設定誤り"
-               MOVE    "診療日が暦日ではありません"
+               MOVE    "診療日設定誤り"
                                                TO  WRK-ERRMSG
            WHEN    "12"
-      *****    MOVE    "保険組合せ番号誤り"
-               MOVE    "保険組合せ番号の設定が違います"
+               MOVE    "保険組合せ番号誤り"
                                                TO  WRK-ERRMSG
            WHEN    "13"
                MOVE    "診療科が存在しません"
@@ -3590,30 +2388,15 @@
            WHEN    "15"
                MOVE    "対象がありません"
                                                TO  WRK-ERRMSG
-           WHEN    "16"
-               MOVE    "月数は０〜１２、９９を設定して下さい。"
-                                               TO  WRK-ERRMSG
            WHEN    "20"
-     ******    MOVE    "保険組合せがありません"
-               MOVE    "該当する保険組合せがありません"
+               MOVE    "保険組合せがありません"
                                                TO  WRK-ERRMSG
            WHEN    "21"
                MOVE    "対象の保険組合せが５件以上あります。"
                                                TO  WRK-ERRMSG
-      *H29.8
            WHEN    "22"
-               MOVE    "伝票番号エラーです"
+               MOVE    "対象がありません。"
                                                TO  WRK-ERRMSG
-           WHEN    "23"
-               MOVE    "伝票番号の受診履歴が送信内容と一致しません"
-                                               TO  WRK-ERRMSG
-      *H30.1
-           WHEN    "24"
-               STRING  "レセ電データ移行の診療科です。"
-                       "レセ電データは対象外となっています。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
       *警告
            WHEN    "K1"
                MOVE    "診療日を設定しました"
@@ -3967,8 +2750,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    WRK-SYSYMD          TO  TNSP-YUKOSTYMD
-           MOVE    WRK-SYSYMD          TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC

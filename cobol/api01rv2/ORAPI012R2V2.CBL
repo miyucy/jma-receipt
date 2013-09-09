@@ -202,14 +202,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-      *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APILST2-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-PTXMLMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-PTXMLMAKE-SEC
       *
            DISPLAY   "*******************"
            DISPLAY   "* patientlst1 end *"
@@ -243,7 +237,6 @@
            MOVE    WRK-HEN-TIME        TO  PATLSTRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -316,7 +309,6 @@
            IF      APILST2-BODY        NOT =   LOW-VALUE
                DISPLAY "ACPLSTRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_patientlst1v2req"
@@ -446,6 +438,7 @@
            MOVE    WRK-START-YMD       TO  PTNUM-CREYMD
       *    更新年月日
            MOVE    WRK-START-YMD       TO  PTNUM-UPYMD
+      *
            IF      FLG-SYORI           =   1
       *        更新・登録
                MOVE    "key6"              TO  WRK-MCP-PATHNAME
@@ -466,26 +459,13 @@
            MOVE    ZERO                TO  FLG-SYORI-END
            MOVE    ZERO                TO  WRK-CNT
            PERFORM UNTIL     (FLG-PTNUM    NOT =   ZERO )
-     ****              OR    (FLG-SYORI-END    =   1    )
+                       OR    (FLG-SYORI-END    =   1    )
                        OR    (WRK-ERRCD    NOT =   SPACE)
                IF      FLG-SYORI           =   1
       *            更新・登録判定
-      *            IF     (PTNUM-CREYMD        >   WRK-END-YMD)
-      *            AND    (PTNUM-UPYMD         >   WRK-END-YMD)
-      *                MOVE    1               TO  FLG-SYORI-END
-      *            END-IF
-      *
-      *H28.7       更新・登録日　対象判定
-                   MOVE    1               TO  FLG-SYORI-END
-                   IF     (PTNUM-CREYMD    NOT =   SPACE      )
-                      IF      (PTNUM-CREYMD    >=  WRK-START-YMD)
-                        AND   (PTNUM-CREYMD    <=  WRK-END-YMD  )
-                           MOVE    ZERO            TO  FLG-SYORI-END
-                      END-IF
-                   END-IF
-                   IF     (PTNUM-UPYMD         >=  WRK-START-YMD)
-                     AND  (PTNUM-UPYMD         <=  WRK-END-YMD  )
-                       MOVE    ZERO            TO  FLG-SYORI-END
+                   IF     (PTNUM-CREYMD        >   WRK-END-YMD)
+                   AND    (PTNUM-UPYMD         >   WRK-END-YMD)
+                       MOVE    1               TO  FLG-SYORI-END
                    END-IF
                ELSE
       *            登録判定
@@ -564,11 +544,8 @@
            MOVE    WRK-HEN-DATE        TO  PATLSTRES-CREYMD  (IDX)
       *    更新日
            MOVE    PTNUM-UPYMD         TO  WRK-SYMD
-           MOVE    PTNUM-UPHMS         TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  PATLSTRES-UPYMD  (IDX)
-      *H29.12 時間
-           MOVE    WRK-HEN-TIME        TO  PATLSTRES-UPTIME (IDX)
       *    テスト患者
            MOVE    PTINF-TSTPTNUMKBN   TO  PATLSTRES-TSTPTNUMKBN(IDX)
            .
@@ -713,9 +690,6 @@
            EVALUATE    WRK-ERRCD
            WHEN    "01"
                MOVE    "開始日付＞終了日付です。"
-                                               TO  WRK-ERRMSG
-           WHEN    "02"
-               MOVE    "テスト患者区分がありません。"
                                                TO  WRK-ERRMSG
            WHEN    "10"
                MOVE    "該当患者が１０００件以上となります。"

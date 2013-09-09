@@ -251,13 +251,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APILST4-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-PTXMLMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-PTXMLMAKE-SEC
       *
            DISPLAY   "*******************"
            DISPLAY   "* patient res end *"
@@ -291,7 +286,6 @@
            MOVE    WRK-HEN-TIME        TO  PATLSTRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -361,7 +355,6 @@
                DISPLAY "ACPLSTRES-OBJECT not low_value"
                 ",APILST4-BODY:"  APILST4-BODY
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_patientlst3v2req"
@@ -1183,33 +1176,32 @@
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "10"
-               MOVE    "検索氏名に外字があります"
+               MOVE    "検索氏名に外字があります。"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "開始生年月日が暦日ではありません"
+               MOVE    "開始生年月日の暦日エラーです。"
                                                TO  WRK-ERRMSG
            WHEN    "12"
-               MOVE    "終了生年月日が暦日ではありません"
+               MOVE    "終了生年月日の暦日エラーです。"
                                                TO  WRK-ERRMSG
            WHEN    "13"
-      *******  MOVE    "開始生年月日がありません"
-               MOVE    "開始生年月日の設定がありません"
+               MOVE    "開始生年月日がありません"
                                                TO  WRK-ERRMSG
            WHEN    "14"
                MOVE    "開始生年月日＞終了生年月日です。"
                                                TO  WRK-ERRMSG
            WHEN    "15"
-               MOVE    "性別が存在しません"
+               MOVE    "性別がありません。"
                                                TO  WRK-ERRMSG
            WHEN    "16"
-               MOVE    "入外区分が存在しません"
+               MOVE    "入外区分がありません"
                                                TO  WRK-ERRMSG
            WHEN    "17"
       ******** MOVE    "検索氏名か開始生年月日を設定して下さい。"
                MOVE    "検索氏名を設定して下さい。"
                                                TO  WRK-ERRMSG
            WHEN    "20"
-               MOVE    "該当患者が存在しません。"
+               MOVE    "該当患者がありません。"
                                                TO  WRK-ERRMSG
            WHEN    "21"
                MOVE    "該当患者が１００件以上となります。"

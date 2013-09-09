@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 05.00.00     NACL-多々納  17/11/XX  予約ＩＤ追加対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -229,13 +228,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APILST8-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-APTLSTMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-APTLSTMAKE-SEC
       *
            DISPLAY   "********************"
            DISPLAY   "* appointlst2 end  *"
@@ -269,7 +263,6 @@
            MOVE    WRK-HEN-TIME        TO  APLST2RES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -343,7 +336,6 @@
            IF      APILST8-BODY    NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE   "XMLOPEN"            TO  MCP-FUNC
            MOVE    "xml_appointlst2v2req"  TO  MCP-TABLE
@@ -675,8 +667,6 @@
            PERFORM 200212-SRYKA-NAME-SEC
            MOVE    WRK-SRYKA-NAME      TO  APLST2RES-APPOINT-DEP-NAME
                                                                  (IDX)
-      *    予約ＩＤ編集
-           MOVE    YYK-YYKID           TO  APLST2RES-APPOINT-ID(IDX)
       *    来院済み
            MOVE    YYK-RAIINZUMI       TO  APLST2RES-VISIT-INFO (IDX)
       *
@@ -866,13 +856,13 @@
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-               MOVE    "患者番号の設定がありません"
+               MOVE    "患者番号未設定"
                                                TO  WRK-ERRMSG
            WHEN    "10"
-               MOVE    "患者番号に該当する患者が存在しません"
+               MOVE    "該当患者番号なし"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "予約日が暦日ではありません"
+               MOVE    "予約日設定誤り"
                                                TO  WRK-ERRMSG
            WHEN    "20"
                MOVE    "予約対象件数が５０件以上あります。"
@@ -911,7 +901,7 @@
            WHEN    "91"
                MOVE    "処理区分未設定"        TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE    "送信内容に誤りがあります。"
+               MOVE   "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "98"
                MOVE   "送信内容の読込ができませんでした"

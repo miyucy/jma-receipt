@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 05.00.00     NACL-多々納  17/11/XX  予約ＩＤ追加対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -234,13 +233,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APILST1-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-APTLSTMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-APTLSTMAKE-SEC
       *
            DISPLAY   "*******************"
            DISPLAY   "* appointlst end  *"
@@ -274,7 +268,6 @@
            MOVE    WRK-HEN-TIME        TO  APLSTRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -348,7 +341,6 @@
            IF      APILST1-BODY    NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE   "XMLOPEN"            TO  MCP-FUNC
            MOVE    "xml_appointlstv2req"   TO  MCP-TABLE
@@ -765,8 +757,6 @@
                    MOVE    99          TO  IDK
                END-IF
            END-PERFORM
-      *    予約ＩＤ編集
-           MOVE    YYK-YYKID           TO  APLSTRES-APPOINT-ID(IDX)
       *    来院済み
            MOVE    YYK-RAIINZUMI       TO  APLSTRES-VISIT-INFO (IDX)
       *
@@ -954,7 +944,7 @@
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "11"
-               MOVE    "予約日が暦日ではありません"
+               MOVE    "予約日設定誤り"
                                                TO  WRK-ERRMSG
            WHEN    "12"
                MOVE    "ドクターが存在しません"
