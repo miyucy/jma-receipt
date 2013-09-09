@@ -260,20 +260,20 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-           IF      SPA-MOTOPG      =   "CID1"
+           IF      SPA-MOTOPG      =   "CID4"
       *        確認画面
-               IF      SPA-CID1-FLG    =   "OK"
-                   EVALUATE    SPA-CIDCD
+               IF      SPA-CID4-FLG    =   "OK"
+                   EVALUATE    SPA-CIDCD4
                        WHEN    "0101"
-                           INITIALIZE          SPA-GMN-C06-INPUTCD-G
                            PERFORM 410021-SETCD-HENSYU-SEC
                        WHEN    "0104"
       *                    削除処理
                            PERFORM 2801-SAKUJYO-SEC
                    END-EVALUATE
                ELSE
-                   EVALUATE    SPA-CIDCD
+                   EVALUATE    SPA-CIDCD4
                        WHEN    "0101"
+                           INITIALIZE          SPA-GMN-C06-INPUTCD-G
                            PERFORM 410021-SETCD-HENSYU-SEC
                    END-EVALUATE
                END-IF
@@ -863,7 +863,7 @@
                MOVE    BYOMEIINPUTSET-REC  TO  MCPDATA-REC
                PERFORM 900-BYOMEIINPUTSET-READ-SEC
                IF      FLG-BYOMEIINPUTSET  =   ZERO
-                   MOVE    "0101"              TO  SPA-CIDCD
+                   MOVE    "0101"              TO  SPA-CIDCD4
                    GO  TO  41002-SETCD-CHK-EXT
                ELSE
                    INITIALIZE          SPA-GMN-C06-SELNUM
@@ -884,7 +884,9 @@
       *****************************************************************
        410021-SETCD-HENSYU-SEC         SECTION.
       *          
-           IF      SPA-CID1-FLG    =   "OK"
+           IF      SPA-CID4-FLG    =   "OK"
+               CONTINUE
+           ELSE
                PERFORM 4100111-BYOMEIINPUTSET-HENSYU-SEC
            END-IF
       *
@@ -1439,7 +1441,7 @@
                GO  TO  280-SAKUJYO-GID-EXT
            END-IF
       *
-           MOVE    "0104"              TO  SPA-CIDCD
+           MOVE    "0104"              TO  SPA-CIDCD4
       *
           .
        280-SAKUJYO-GID-EXT.
@@ -1598,7 +1600,7 @@
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
-           IF      SPA-CIDCD       NOT =   SPACE
+           IF      SPA-CIDCD4      NOT =   SPACE
                PERFORM 520-CIDSET-SEC
                GO      TO      500-SET-SCREEN-EXT
            END-IF
@@ -1829,30 +1831,36 @@
       *****************************************************************
        520-CIDSET-SEC              SECTION.
       *
-           MOVE    SPACE               TO  CID1
+           MOVE    SPACE               TO  SPA-CID4-FLG
       *
-           MOVE    SPA-CIDCD           TO  CID1-ID1CODE
-           EVALUATE    SPA-CIDCD
+           MOVE    SPACE               TO  CID4
+           MOVE    SPA-CIDCD4          TO  CID4-ID1CODE
+           EVALUATE    SPA-CIDCD4
                WHEN    "0101"
-                   MOVE    "セットコードが存在します。修正をしますか？"
-                                       TO  CID1-ID1MSG
+                   STRING   "セットコードが登録済ですが、"
+                                           DELIMITED   BY  SIZE
+                            "表示の入力コードに変更しますか？"
+                                            DELIMITED   BY  SIZE
+                                            INTO    CID4-ID1MSG
+                   END-STRING
                WHEN    "0104"
-                   MOVE    "セットを削除してもよろしいですか？"
-                                       TO  CID1-ID1MSG
+                   MOVE    "セットコードを削除します。よろしいですか？"
+                                       TO  CID4-ID1MSG
            END-EVALUATE
       *
-           EVALUATE    SPA-CIDCD
+           EVALUATE    SPA-CIDCD4
                WHEN    "0104"
                    MOVE    "B01"               TO  MCP-WIDGET
                WHEN    OTHER
                    MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
+           MOVE    "B01"               TO  MCP-WIDGET
       *
            MOVE    "C06"               TO  SPA-MOTOPG
-           MOVE    "CID1"              TO  SPA-SAKIPG
+           MOVE    "CID4"              TO  SPA-SAKIPG
       *
            MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "CID1"              TO  MCP-WINDOW
+           MOVE    "CID4"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
