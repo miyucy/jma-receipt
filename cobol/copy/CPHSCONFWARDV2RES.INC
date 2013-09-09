@@ -51,11 +51,11 @@
                    07  HSCWRES-TOKNYUIN-G.
                        09  HSCWRES-TOKNYUIN-LBL        PIC X(20).
                        09  HSCWRES-TOKNYUIN-DATA       PIC X(9).
-                       09  HSCWRES-TOKNYUIN-NAME       PIC X(50).
+                       09  HSCWRES-TOKNYUIN-NAME       PIC X(100).
                    07  HSCWRES-NYUINKHN-G.
                        09  HSCWRES-NYUINKHN-LBL        PIC X(20).
                        09  HSCWRES-NYUINKHN-DATA       PIC X(9).
-                       09  HSCWRES-NYUINKHN-NAME       PIC X(50).
+                       09  HSCWRES-NYUINKHN-NAME       PIC X(100).
                    07  HSCWRES-NYUINKSN-G.
                        09 HSCWRES-NYUINKSN-OCC         OCCURS  20.
                           11 HSCWRES-NYUINKSN-LBL      PIC X(20).

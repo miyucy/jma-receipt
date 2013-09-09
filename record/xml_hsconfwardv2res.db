@@ -36,12 +36,12 @@ xml_hsconfwardv2res {
 			Specific_Hospital_Charge{
 				Label	varchar(20);
 				Data	varchar(09);
-				Name	varchar(50);
+				Name	varchar(100);
 			};
 			Hospital_Charge{
 				Label	varchar(20);
 				Data	varchar(09);
-				Name	varchar(50);
+				Name	varchar(100);
 			};
 			Additional_Hospital_Charge{
 				Label	varchar(20);

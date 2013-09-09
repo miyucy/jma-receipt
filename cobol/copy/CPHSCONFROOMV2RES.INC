@@ -67,11 +67,11 @@
                    07  HSCRRES-TOKNYUIN-G.
                        09  HSCRRES-TOKNYUIN-LBL        PIC X(20).
                        09  HSCRRES-TOKNYUIN-DATA       PIC X(9).
-                       09  HSCRRES-TOKNYUIN-NAME       PIC X(50).
+                       09  HSCRRES-TOKNYUIN-NAME       PIC X(100).
                    07  HSCRRES-NYUINKHN-G.
                        09  HSCRRES-NYUINKHN-LBL        PIC X(20).
                        09  HSCRRES-NYUINKHN-DATA       PIC X(9).
-                       09  HSCRRES-NYUINKHN-NAME       PIC X(50).
+                       09  HSCRRES-NYUINKHN-NAME       PIC X(100).
                    07  HSCRRES-NYUINKSN-G.
                        09 HSCRRES-NYUINKSN-OCC         OCCURS  12.
                           11 HSCRRES-NYUINKSN-LBL      PIC X(20).
