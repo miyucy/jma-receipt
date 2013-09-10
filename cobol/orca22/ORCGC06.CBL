@@ -863,8 +863,14 @@
                MOVE    BYOMEIINPUTSET-REC  TO  MCPDATA-REC
                PERFORM 900-BYOMEIINPUTSET-READ-SEC
                IF      FLG-BYOMEIINPUTSET  =   ZERO
-                   MOVE    "0101"              TO  SPA-CIDCD4
-                   GO  TO  41002-SETCD-CHK-EXT
+                   IF      SPA-GMN-C06-INPUTCD-G
+                                               NOT =   SPACE
+                       MOVE    "0101"              TO  SPA-CIDCD4
+                       GO  TO  41002-SETCD-CHK-EXT
+                   ELSE
+                       INITIALIZE          SPA-GMN-C06-INPUTCD-G
+                       PERFORM 410021-SETCD-HENSYU-SEC
+                   END-IF
                ELSE
                    INITIALIZE          SPA-GMN-C06-SELNUM
                                        SPA-NAI-C06-SELNUM
@@ -1555,8 +1561,10 @@
            END-IF
       *
       *    変更前のコード削除処理
-           IF      SPA-NAI-C06-BYOMEIINPUTSET-OLD
-                                   NOT =   SPACE
+           IF    ( SPA-NAI-C06-BYOMEIINPUTSET-OLD
+                                   NOT =   SPACE                      )
+           AND   ( SPA-NAI-C06-BYOMEIINPUTSET-OLD
+                                   NOT =   SPA-GMN-C06-BYOMEIINPUTSET )
                INITIALIZE                      BYOMEIINPUTSET-REC
                MOVE    SPA-HOSPNUM         TO  BYOSET-HOSPNUM
                MOVE    SPA-NAI-C06-BYOMEIINPUTSET-OLD
