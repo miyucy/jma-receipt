@@ -21,8 +21,6 @@ bind	"CID3"		"OpenCOBOL"	"ORCGCID3";
 bind	"CID4"		"OpenCOBOL"	"ORCGCID4";
 bind	"CID5"		"OpenCOBOL"	"ORCGCID5";
 bind	"CID6"		"OpenCOBOL"	"ORCGCID6";
-bindapi	"diseasev2"	"OpenCOBOL"	"ORAPI022R1V3";
-bindapi	"diseasev3"	"OpenCOBOL"	"ORAPI022R2V3";
 
 multiplex_group	orca22;
 
@@ -47,17 +45,39 @@ data	{
 		CID4;
 		CID5;
 		CID6;
-		diseasev2;
-		diseasev3;
 	};
 };
 
-db "xml2" {
- xml_diseasev2req;
- xml_diseasev2res;
- xml_diseasev3req;
- xml_diseasev3res;
+db	{
+	tbl_byomei;
+	tbl_byomeiinputset;
+	tbl_example;
+	tbl_hkncombi;
+	tbl_hknnum;
+	tbl_jyurrk;
+	tbl_jobkanri;
+	tbl_ldmap;
+	tbl_lock;
+	tbl_nyuinacct;
+	tbl_opecom;
+	tbl_ptbyomei;
+	tbl_ptinf;
+	tbl_ptnum;
+	tbl_ptnyuinrrk;
+	tbl_ptrsiinf;
+	tbl_pthkninf;
+	tbl_ptkohinf;
+	tbl_rececom;
+	tbl_receupd;
+	tbl_sryact;
+	tbl_srykarrk;
+	tbl_syskanri;
+	tbl_tensu;
+	tbl_userbyomei;
+	tbl_sryacct_main;
+	tbl_sryacct_sub;
+	tbl_synonym;
 };
 
-#include "orcadb.inc"
+/* #include "orcadb.inc" */
 #include "orcadbh.inc"

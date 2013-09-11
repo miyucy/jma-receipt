@@ -213,7 +213,24 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA22SCRAREA.INC".
+           COPY    "C02.INC".
+           COPY    "C03.INC".
+           COPY    "C04.INC".
+           COPY    "C05.INC".
+           COPY    "C06.INC".
+           COPY    "C09.INC".
+           COPY    "C10.INC".
+           COPY    "C11.INC".
+           COPY    "C12.INC".
+           COPY    "C99.INC".
+           COPY    "CERR.INC".
+           COPY    "CID1.INC".
+           COPY    "CID2.INC".
+           COPY    "CID3.INC".
+           COPY    "CID4.INC".
+           COPY    "CID5.INC".
+           COPY    "CID6.INC".
+      *
        PROCEDURE                   DIVISION    USING
            MCPAREA
            SPAAREA
@@ -1448,7 +1465,6 @@ grpsys                                       SPA-AREA
       *
            MOVE    SPACE               TO  C05
       *
-           INITIALIZE                      C05
            MOVE    SPA-GMN-C05-HENBYO      TO  C05-EDITBYOMEI
            MOVE    SPA-GMN-C05-BYOKEN      TO  C05-BYOMEIKEN
            MOVE    SPA-GMN-C05-SELNUM1     TO  C05-SELNUM1
@@ -1611,7 +1627,6 @@ grpsys                                       SPA-AREA
            END-EVALUATE
       *
            MOVE    SPACE               TO  CID2
-           INITIALIZE                      CID2
            MOVE    WRK-CIDMSG          TO  CID2-MSG
            MOVE    SPA-C05-IKOMOTO-BYOMEICD
                                        TO  CID2-BYOMEICD1
