@@ -2246,7 +2246,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                     SPA-K062-GMN-G
            MOVE    SPA-GMN-SRYCD       TO  SPA-K062-SRYCD
            MOVE    SPA-NAI-SRYYM       TO  SPA-K062-SRYYM
-           MOVE    SPA-GMN-THKNCOMBI (SPA-GMN-RENNUM)
+           MOVE    SPA-NAI-THKNCOMBI (SPA-GMN-RENNUM)
                                        TO  SPA-K062-HKNCOMBI
            MOVE    "K06"               TO  SPA-K062-MOTOPG
            MOVE    SPACE               TO  SPA-MOTOPG
