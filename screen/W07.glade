@@ -354,7 +354,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <max_length>9</max_length>
+        <text_max_length>9</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -370,7 +370,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>False</editable>
-        <max_length>9</max_length>
+        <text_max_length>9</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -417,7 +417,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -466,7 +466,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -504,7 +504,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -542,7 +542,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -580,7 +580,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -618,7 +618,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -656,7 +656,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -694,7 +694,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -732,7 +732,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -770,7 +770,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -808,7 +808,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -846,7 +846,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -884,7 +884,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -922,7 +922,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -960,7 +960,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -998,7 +998,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1036,7 +1036,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -1342,7 +1342,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>16</max_length>
+              <text_max_length>16</text_max_length>
               <text>1 診療区分順</text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1380,7 +1380,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text>1 表示する</text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1418,7 +1418,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>30</max_length>
+              <text_max_length>30</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1456,7 +1456,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>22</max_length>
+              <text_max_length>22</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1494,7 +1494,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>22</max_length>
+              <text_max_length>22</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1532,7 +1532,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>22</max_length>
+              <text_max_length>22</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1570,7 +1570,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>22</max_length>
+              <text_max_length>22</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1608,7 +1608,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>32</max_length>
+              <text_max_length>32</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1790,7 +1790,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1828,7 +1828,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1866,7 +1866,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -1904,7 +1904,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2050,7 +2050,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2214,7 +2214,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>30</max_length>
+              <text_max_length>30</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2288,7 +2288,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>22</max_length>
+              <text_max_length>22</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2326,7 +2326,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>22</max_length>
+              <text_max_length>22</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2400,7 +2400,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>30</max_length>
+              <text_max_length>30</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2450,7 +2450,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2488,7 +2488,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2526,7 +2526,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2576,7 +2576,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2614,7 +2614,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>22</max_length>
+              <text_max_length>22</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2652,7 +2652,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>22</max_length>
+              <text_max_length>22</text_max_length>
               <text>1 算定する（月１回）</text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2690,7 +2690,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>22</max_length>
+              <text_max_length>22</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2728,7 +2728,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2766,7 +2766,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>30</max_length>
+              <text_max_length>30</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2804,7 +2804,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2842,7 +2842,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2880,7 +2880,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -2918,7 +2918,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>12</max_length>
+              <text_max_length>12</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3245,7 +3245,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>30</max_length>
+              <text_max_length>30</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3298,7 +3298,7 @@
             <can_focus>True</can_focus>
             <has_focus>False</has_focus>
             <editable>True</editable>
-            <max_length>2</max_length>
+            <text_max_length>2</text_max_length>
             <text></text>
             <input_mode>XIM</input_mode>
             <xim_enabled>False</xim_enabled>
@@ -3335,7 +3335,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3373,7 +3373,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3411,7 +3411,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3449,7 +3449,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3487,7 +3487,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3525,7 +3525,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>60</max_length>
+              <text_max_length>60</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3563,7 +3563,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3601,7 +3601,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3639,7 +3639,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3713,7 +3713,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3751,7 +3751,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3789,7 +3789,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3827,7 +3827,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3865,7 +3865,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>40</max_length>
+              <text_max_length>40</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -3903,7 +3903,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -4049,7 +4049,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -4087,7 +4087,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>28</max_length>
+              <text_max_length>28</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>
@@ -4349,7 +4349,7 @@
               <can_focus>True</can_focus>
               <has_focus>False</has_focus>
               <editable>True</editable>
-              <max_length>40</max_length>
+              <text_max_length>40</text_max_length>
               <text></text>
               <input_mode>XIM</input_mode>
               <xim_enabled>False</xim_enabled>

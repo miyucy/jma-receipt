@@ -133,7 +133,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>9</max_length>
+        <text_max_length>9</text_max_length>
         <text>123456789</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -159,7 +159,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>80</max_length>
+        <text_max_length>80</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -185,7 +185,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>50</max_length>
+        <text_max_length>50</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -211,7 +211,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>10</max_length>
+        <text_max_length>10</text_max_length>
         <text>H14. 4. 1</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -237,7 +237,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>14</max_length>
+        <text_max_length>14</text_max_length>
         <text>12345678901234</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -263,7 +263,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>10</max_length>
+        <text_max_length>10</text_max_length>
         <text></text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -289,7 +289,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>13</max_length>
+        <text_max_length>13</text_max_length>
         <text>1234567890123</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -315,7 +315,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>10</max_length>
+        <text_max_length>10</text_max_length>
         <text>H14. 6.30</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -341,7 +341,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>10</max_length>
+        <text_max_length>10</text_max_length>
         <text>H14. 4. 1</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -367,7 +367,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>20</max_length>
+        <text_max_length>20</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -393,7 +393,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>100</max_length>
+        <text_max_length>100</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -430,7 +430,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>4</max_length>
+          <text_max_length>4</text_max_length>
           <text>1 都</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -468,7 +468,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>4</max_length>
+          <text_max_length>4</text_max_length>
           <text>3 区</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -506,7 +506,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>8</max_length>
+          <text_max_length>8</text_max_length>
           <text>2 手指</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -544,7 +544,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>8</max_length>
+          <text_max_length>8</text_max_length>
           <text>3 継続</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -582,7 +582,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>20</max_length>
+          <text_max_length>20</text_max_length>
           <text></text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -609,7 +609,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>10</max_length>
+        <text_max_length>10</text_max_length>
         <text></text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -910,7 +910,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>16</max_length>
+          <text_max_length>16</text_max_length>
           <text>01  短期給付</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -948,7 +948,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>30</max_length>
+          <text_max_length>30</text_max_length>
           <text></text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1004,7 +1004,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>20</max_length>
+          <text_max_length>20</text_max_length>
           <text>和歌山</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1049,7 +1049,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>80</max_length>
+        <text_max_length>80</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -1086,7 +1086,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>10</max_length>
+          <text_max_length>10</text_max_length>
           <text>2 転医始診</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1143,7 +1143,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>6</max_length>
+        <text_max_length>6</text_max_length>
         <text>H14. 4</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -1269,7 +1269,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>40</max_length>
+          <text_max_length>40</text_max_length>
           <text>02-1 １２３４５６７８９０１２３４５６７</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1464,7 +1464,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>5</max_length>
+        <text_max_length>5</text_max_length>
         <text>12345</text>
         <input_mode>ASCII</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -1519,7 +1519,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>15</max_length>
+          <text_max_length>15</text_max_length>
           <text>01 あああああ</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -1557,7 +1557,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>29</max_length>
+          <text_max_length>29</text_max_length>
           <text>01 あああああ</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>

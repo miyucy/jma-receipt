@@ -251,7 +251,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>20</max_length>
+        <text_max_length>20</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -277,7 +277,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>10</max_length>
+        <text_max_length>10</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -303,7 +303,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>10</max_length>
+        <text_max_length>10</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>False</xim_enabled>
@@ -329,7 +329,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>5</max_length>
+        <text_max_length>5</text_max_length>
         <format>ZZZZ9</format>
         <signal>
           <name>changed</name>
@@ -353,7 +353,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>50</max_length>
+        <text_max_length>50</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -379,7 +379,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>50</max_length>
+        <text_max_length>50</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -405,7 +405,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>50</max_length>
+        <text_max_length>50</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -456,7 +456,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>50</max_length>
+        <text_max_length>50</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -482,7 +482,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>50</max_length>
+        <text_max_length>50</text_max_length>
         <text></text>
         <input_mode>XIM</input_mode>
         <xim_enabled>True</xim_enabled>
@@ -585,7 +585,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>8</max_length>
+          <text_max_length>8</text_max_length>
           <text></text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -785,7 +785,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>40</max_length>
+          <text_max_length>40</text_max_length>
           <text>3 他院歴（特別な関係にある医療機関）</text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -841,7 +841,7 @@
           <can_focus>True</can_focus>
           <has_focus>False</has_focus>
           <editable>True</editable>
-          <max_length>10</max_length>
+          <text_max_length>10</text_max_length>
           <text></text>
           <input_mode>XIM</input_mode>
           <xim_enabled>False</xim_enabled>
@@ -886,7 +886,7 @@
         <can_focus>True</can_focus>
         <has_focus>False</has_focus>
         <editable>True</editable>
-        <max_length>5</max_length>
+        <text_max_length>5</text_max_length>
         <format>ZZZZ9</format>
         <signal>
           <name>changed</name>
