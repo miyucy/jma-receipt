@@ -8042,6 +8042,7 @@ grpsys                                       SPA-AREA
                END-IF
            END-IF 
       *
+           MOVE    SPACE               TO  C02-HOSOKUCD (IDZ) (11:)
            MOVE    C02-HOSOKUCD (IDZ)  TO  SPA-GMN-C02-HOSOKUCD (IDZ)
       *
            INITIALIZE                  SPA-NAI-C02-HOSOKU-OCC (IDZ)
@@ -8078,31 +8079,45 @@ grpsys                                       SPA-AREA
                    END-IF                     
                END-PERFORM
            ELSE   
-               IF      WRK-LENGTH          =   7
-      *            病名マスタ読み込み
-                   INITIALIZE                      BYOMEI-REC
-                   MOVE    SPA-GMN-C02-HOSOKUCD (IDZ)
-                                               TO  BYO-BYOMEICD
-                   PERFORM 410242-HOSOKU-HENSYU-SEC
-               END-IF
+      *        病名入力セット読み込み
+               INITIALIZE          BYOMEIINPUTSET-REC
+               MOVE    SPA-HOSPNUM TO  BYOSET-HOSPNUM
+               MOVE    SPA-GMN-C02-HOSOKUCD (IDZ)
+                                   TO  BYOSET-BYOMEIINPUTSET
+               MOVE    BYOMEIINPUTSET-REC
+                                   TO  MCPDATA-REC
+               PERFORM 900-BYOMEIINPUTSET-READ-SEC
+               IF      FLG-BYOMEIINPUTSET  =   ZERO
+                   MOVE    "■■■"            TO
+                                       SPA-NAI-C02-HOSOKU-COMMENT (IDZ)
+                   MOVE    "0099"              TO  SPA-ERRCD
+               ELSE
+                   IF      WRK-LENGTH          =   7
+      *                病名マスタ読み込み
+                       INITIALIZE                      BYOMEI-REC
+                       MOVE    SPA-GMN-C02-HOSOKUCD (IDZ)
+                                                   TO  BYO-BYOMEICD
+                       PERFORM 410242-HOSOKU-HENSYU-SEC
+                   END-IF
       *
-               IF    ( FLG-BYOMEI          =   1 )
-               OR    ( WRK-LENGTH      NOT =   7 )
-      *            自院病名マスタ読み込み
-                   INITIALIZE                  USERBYOMEI-REC
-                   MOVE    SPA-HOSPNUM         TO  USBYO-HOSPNUM
-                   MOVE    SPA-GMN-C02-HOSOKUCD(IDZ)
+                   IF    ( FLG-BYOMEI          =   1 )
+                   OR    ( WRK-LENGTH      NOT =   7 )
+      *                自院病名マスタ読み込み
+                       INITIALIZE                  USERBYOMEI-REC
+                       MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
+                       MOVE    SPA-GMN-C02-HOSOKUCD(IDZ)
                                                TO  USBYO-BYOMEIINPUTCD
-                   PERFORM 410243-HOSOKU-USERBYOMEI-HENSYU-SEC
-      *            自院病名検索
-                   IF      FLG-USERBYOMEI   NOT =   ZERO
-                       PERFORM 41029-USERBYOMEICD-KENSAKU-SEC
-                       IF    ( SPA-ERRCD       =   "0053" )
-                       AND   ( WRK-LENGTH      =   7      )
-                           MOVE    "0054"              TO  SPA-ERRCD
+                       PERFORM 410243-HOSOKU-USERBYOMEI-HENSYU-SEC
+      *                自院病名検索
+                       IF      FLG-USERBYOMEI   NOT =   ZERO
+                           PERFORM 41029-USERBYOMEICD-KENSAKU-SEC
+                           IF    ( SPA-ERRCD       =   "0053" )
+                           AND   ( WRK-LENGTH      =   7      )
+                               MOVE    "0054"              TO  SPA-ERRCD
+                           END-IF
                        END-IF
                    END-IF
-               END-IF        
+               END-IF
            END-IF
       *
            PERFORM 410241-HOSOKUCD-HENSYU-SEC
@@ -12449,6 +12464,10 @@ grpsys                                          SPA-AREA
                WHEN    "0098"
                    MOVE
                        "変更処理のときはセットコードの入力はできません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0099"
+                   MOVE
+                       "補足コメントにセットコードは入力できません"
                                                        TO  SPA-ERRMSG
                WHEN    "0103"
                    MOVE    "病名コードでの組み立てができませんでした。"
