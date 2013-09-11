@@ -72,20 +72,22 @@
                                                BINARY.
                 05  W24-NACCT-GAIHAKU-ITM      PIC X(14)
                                                OCCURS  5.
-              04  W24-NOTEBOOK-AREA.
-                05  W24-NOTEBOOK-PAGENO        PIC S9(9)   BINARY.
+              04  W24-FRAME3.
+                05  W24-FRAME3-LABEL           PIC X(20).
                 05  W24-FIXED9.
-                  06 W24-CHK-NYUKSN-OCC        OCCURS 30.
+                  06 W24-CHK-NYUKSN-OCC        OCCURS 20.
                     07  W24-CHK-NYUKSN         PIC X(01).
-                  06  W24-NYUKSNMEI            PIC X(50)
-                                               OCCURS 30.
+                    07  W24-CHK-LBL-NYUKSN     PIC X(01).
+                  06  W24-NYUKSNMEI            PIC X(32)
+                                               OCCURS 20.
                   06  W24-CMB-CHIIKIKSN.
                     07  W24-CHIIKIKSN          PIC X(28).
                     07  W24-CHIIKIKSN-CNT      PIC S9(9)
                                                BINARY.
                     07  W24-CHIIKIKSN-ITM      PIC X(28)
-                                               OCCURS  7.
-                05  W24-LBLNYUKSN              PIC X(20).
+                                               OCCURS  6.
+              04  W24-FRAME4.
+                05  W24-FRAME4-LABEL           PIC X(20).
                 05  W24-FIXED10.
                   06  W24-SRYCD                PIC X(09)
                                                OCCURS 10.
@@ -174,11 +176,11 @@
                 05  W24-TAIPRTKBN-ITM          PIC X(20)
                                                OCCURS  5.
               04  W24-CMB-TAIKSIKBN.
-                05  W24-TAIKSIKBN              PIC X(30).
+                05  W24-TAIKSIKBN              PIC X(20).
                 05  W24-TAIKSIKBN-CNT          PIC S9(9)
                                                BINARY.
-                05  W24-TAIKSIKBN-ITM          PIC X(30)
-                                               OCCURS  10.
+                05  W24-TAIKSIKBN-ITM          PIC X(20)
+                                               OCCURS  5.
               04  W24-CMB-HYOUKETU.
                 05  W24-HYOUKETU               PIC X(32).
                 05  W24-HYOUKETU-STATE         PIC S9(9)
@@ -198,17 +200,6 @@
                 05  W24-TEISU-ITM              PIC X(32)
                                                OCCURS  2.
                 05  W24-TEISU-ITM-STATE        PIC S9(9)
-                                               BINARY.
-              04  W24-CMB-YKNCHOKA.
-                05  W24-YKNCHOKA-VISIBLE       PIC X(1).
-                05  W24-YKNCHOKA               PIC X(32).
-                05  W24-YKNCHOKA-STATE         PIC S9(9)
-                                               BINARY.
-                05  W24-YKNCHOKA-CNT           PIC S9(9)
-                                               BINARY.
-                05  W24-YKNCHOKA-ITM           PIC X(32)
-                                               OCCURS  2.
-                05  W24-YKNCHOKA-ITM-STATE     PIC S9(9)
                                                BINARY.
               04  W24-CMB-ADLINPUT.
                 05  W24-ADLINPUT               PIC X(10).
@@ -273,10 +264,4 @@
                 05  W24-REKI-TAIINKBN-CNT   PIC S9(9)
                                                BINARY.
                 05  W24-REKI-TAIINKBN-ITM   PIC X(20)
-                                               OCCURS  5.
-              04  W24-CMB-SKJ-CREATE.
-                05  W24-SKJ-CREATE             PIC X(20).
-                05  W24-SKJ-CREATE-CNT         PIC S9(9)
-                                               BINARY.
-                05  W24-SKJ-CREATE-ITM         PIC X(20)
                                                OCCURS  5.

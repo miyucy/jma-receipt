@@ -20,9 +20,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.04.00    NACL-多々納  06/10/26  検索画面連絡情報移動他 
       *  04.03.00    NACL-多々納  08/08/28  退院時院外処方せん区分追加
-      *
-      *  04.08.01    NACL-藤原    16.04.20  退院証明書記載区分の設定追加
-      *  04.08.02    NACL-藤原    17.11.21  次月作成時の食事の設定追加
       *****************************************************************
       *
        01  SPA-W24FREE.
@@ -32,7 +29,7 @@
       *  医療機関入院情報画面ＳＰＡ
          03  SPA-W24.
            05  SPA-W24-AREA.
-             07  SPA-GMN-W24-PAGENO                    PIC 9(02).
+             07  SPA-GMN-W24-PAGE                      PIC 9(02).
              07  SPA-GMN-W24-LINE                      PIC 9(02).
              07  SPA-GMN-W24-MAX                       PIC 9(04).
              07  SPA-GMN-W24-CUR                       PIC 9(03).
@@ -97,11 +94,6 @@
                    13  SPA-GMN-W24-TEISU               PIC X(01).
                    13  SPA-GMN-W24-TEISUFL             PIC X(01).
                    13  SPA-GMN-W24-TEISUMEI            PIC X(32).
-      *          夜勤時間超過区分
-                 11  SPA-GMN-W24-YKNCHOKA-G.
-                   13  SPA-GMN-W24-YKNCHOKA            PIC X(01).
-                   13  SPA-GMN-W24-YKNCHOKAFL          PIC X(01).
-                   13  SPA-GMN-W24-YKNCHOKAMEI         PIC X(32).
       *          ＡＤＬ入力区分
                  11  SPA-GMN-W24-ADLINPUT-G.
                    13  SPA-GMN-W24-ADLINPUT            PIC X(01).
@@ -127,11 +119,6 @@
                    13  SPA-GMN-W24-KYUKYUKSN           PIC X(01).
                    13  SPA-GMN-W24-KYUKYUKSNFL         PIC X(01).
                    13  SPA-GMN-W24-KYUKYUKSNMEI        PIC X(18).
-      *          次回作成時の食事区分
-                 11  SPA-GMN-W24-SKJ-CREATE-G.
-                   13  SPA-GMN-W24-SKJ-CREATE         PIC X(01).
-                   13  SPA-GMN-W24-SKJ-CREATEFL       PIC X(01).
-                   13  SPA-GMN-W24-SKJ-CREATEMEI      PIC X(18).
       *          栄養管理経過措置区分
                  11  SPA-GMN-W24-EIYOUKSN-G.
                    13  SPA-GMN-W24-EIYOUKSN            PIC X(01).
@@ -140,9 +127,9 @@
       *          入院加算情報
                  11  SPA-GMN-W24-FRAME3.
                    13  SPA-GMN-W24-NYUKSN-G.
-                     15 SPA-GMN-W24-NYUKSN-OCC         OCCURS 30.
+                     15 SPA-GMN-W24-NYUKSN-OCC         OCCURS 20.
                        17 SPA-GMN-W24-CHK-NYUKSN       PIC X(01).
-                       17 SPA-GMN-W24-NYUKSNMEI        PIC X(50).
+                       17 SPA-GMN-W24-NYUKSNMEI        PIC X(32).
       *            地域加算
                    13  SPA-GMN-W24-CHIIKIKSN-G.
                      15 SPA-GMN-W24-CHIIKIKSN          PIC X(01).
@@ -221,7 +208,7 @@
                  11  SPA-GMN-W24-TAIKSIKBN-G.
                    13  SPA-GMN-W24-TAIKSIKBN           PIC X(01).
                    13  SPA-GMN-W24-TAIKSIKBNFL         PIC X(01).
-                   13  SPA-GMN-W24-TAIKSIKBNMEI        PIC X(28).
+                   13  SPA-GMN-W24-TAIKSIKBNMEI        PIC X(18).
       *!!
       *          退院時院外処方せん発行区分
                  11  SPA-GMN-W24-SHOHOUKBN-G.
@@ -266,7 +253,7 @@
       *          地域加算
                  11  SPA-GMN-W24-CHIIKIKSNLST-G.
                    13  SPA-GMN-W24-CHIIKIKSN-MAX       PIC 9(03).
-                   13  SPA-GMN-W24-CHIIKIKSNLST        OCCURS  7.
+                   13  SPA-GMN-W24-CHIIKIKSNLST        OCCURS  6.
                        15  SPA-GMN-W24-CHIIKIKSNL      PIC X(01).
                        15  SPA-GMN-W24-CHIIKIKSNLFL    PIC X(01).
                        15  SPA-GMN-W24-CHIIKIKSNMEIL   PIC X(26).
@@ -337,10 +324,10 @@
       *          退院証明書記載区分
                  11  SPA-GMN-W24-TAIKSIKBNLST-G.
                    13  SPA-GMN-W24-TAIKSIKBN-MAX       PIC 9(03).
-                   13  SPA-GMN-W24-TAIKSIKBNLST        OCCURS  10.
+                   13  SPA-GMN-W24-TAIKSIKBNLST        OCCURS  5.
                        15  SPA-GMN-W24-TAIKSIKBNL      PIC X(01).
                        15  SPA-GMN-W24-TAIKSIKBNLFL    PIC X(01).
-                       15  SPA-GMN-W24-TAIKSIKBNMEIL   PIC X(28).
+                       15  SPA-GMN-W24-TAIKSIKBNMEIL   PIC X(18).
       *          選定入院区分
                  11  SPA-GMN-W24-SENTEIKBNLST-G.
                    13  SPA-GMN-W24-SENTEIKBN-MAX       PIC 9(03).
@@ -415,14 +402,6 @@
                        15  SPA-GMN-W24-TEISULFL        PIC X(01).
                        15  SPA-GMN-W24-TEISUMEIL       PIC X(32).
       *
-      *          夜勤時間超過区分
-                 11  SPA-GMN-W24-YKNCHOKALST-G.
-                   13  SPA-GMN-W24-YKNCHOKA-MAX           PIC 9(03).
-                   13  SPA-GMN-W24-YKNCHOKALST            OCCURS  2.
-                       15  SPA-GMN-W24-YKNCHOKAL          PIC X(01).
-                       15  SPA-GMN-W24-YKNCHOKALFL        PIC X(01).
-                       15  SPA-GMN-W24-YKNCHOKAMEIL       PIC X(32).
-      *
       *          ＡＤＬ入力区分
                  11  SPA-GMN-W24-ADLINPUTLST-G.
                    13  SPA-GMN-W24-ADLINPUT-MAX        PIC 9(03).
@@ -463,14 +442,6 @@
                        15  SPA-GMN-W24-KYUKYUKSNLFL    PIC X(01).
                        15  SPA-GMN-W24-KYUKYUKSNMEIL   PIC X(18).
       *
-      *          次回作成時の食事区分
-                 11  SPA-GMN-W24-SKJ-CREATELST-G.
-                   13  SPA-GMN-W24-SKJ-CREATE-MAX      PIC 9(03).
-                   13  SPA-GMN-W24-SKJ-CREATELST       OCCURS  5.
-                       15  SPA-GMN-W24-SKJ-CREATEL     PIC X(01).
-                       15  SPA-GMN-W24-SKJ-CREATELFL   PIC X(01).
-                       15  SPA-GMN-W24-SKJ-CREATEMEIL  PIC X(18).
-      *
       *          栄養管理経過措置区分
                  11  SPA-GMN-W24-EIYOUKSNLST-G.
                    13  SPA-GMN-W24-EIYOUKSN-MAX        PIC 9(03).
@@ -500,6 +471,6 @@
                  11  SPA-NAI-W24-SKJSRY-SRYCD-OCC      OCCURS  2.
                      13  SPA-NAI-W24-SKJSRY-SRYCD      PIC X(09).
                09  SPA-NAI-W24-NYUKSN-SRYCD-G.
-                 11  SPA-NAI-W24-NYUKSN-SRYCD-OCC      OCCURS  30.
+                 11  SPA-NAI-W24-NYUKSN-SRYCD-OCC      OCCURS  20.
                      13  SPA-NAI-W24-NYUKSN-SRYCD      PIC X(09).
       *

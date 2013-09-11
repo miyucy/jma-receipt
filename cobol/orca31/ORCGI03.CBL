@@ -201,7 +201,17 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA31SCRAREA.INC".
+           COPY    "I01.INC".
+           COPY    "I02.INC".
+           COPY    "I03.INC".
+           COPY    "I04.INC".
+           COPY    "I05.INC".
+           COPY    "I06.INC".
+           COPY    "I0ERR.INC".
+           COPY    "I0ID1.INC".
+           COPY    "I0ID2.INC".
+           COPY    "I041.INC".
+      *
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -596,9 +606,6 @@
            MOVE    I03-TAIINYMD    TO  SPA-GMN-I03-TAIINYMD
       *    通算対象日数
            MOVE    I03-TAISYONISSU TO  SPA-GMN-I03-TAISYONISSU
-      *    特定入院−通算対象日数
-           MOVE    I03-TOKUTAISYONISSU
-                                   TO  SPA-GMN-I03-TOKUTAISYONISSU
       *    病名
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   5 )
@@ -775,10 +782,6 @@
       *    通算対象日数
            MOVE    PTNYUINRRK-TAISYONISSU
                                    TO  SPA-GMN-I03-TAISYONISSU
-      *
-      *    特定入院−通算対象日数
-           MOVE    PTNYUINRRK-TOKU-TAISYONISSU
-                                   TO  SPA-GMN-I03-TOKUTAISYONISSU
       *
            PERFORM 900-PTTAINFUKA-KEY-SEL-SEC
            IF    ( FLG-TAINFUKA    NOT =   ZERO )
@@ -983,7 +986,7 @@
                                    TO  SPA-GMN-I03-BYOMEI (IDX1)
            IF  ( FLG-ENTRYCHK          =   1 )
                MOVE    "0002"          TO  SPA-ERRCD
-               COMPUTE SPA-GMN-I03-CUR =   IDX1    +   7
+               COMPUTE SPA-GMN-I03-CUR =   IDX1    +   6
                GO  TO  4101-BYOMEI-CHK-EXT
            END-IF
       *
@@ -1009,7 +1012,7 @@
                                    TO  SPA-GMN-I03-KHNRYO
            IF  ( FLG-ENTRYCHK          =   1 )
                MOVE    "0002"          TO  SPA-ERRCD
-               MOVE    13              TO  SPA-GMN-I03-CUR
+               MOVE    12              TO  SPA-GMN-I03-CUR
                GO  TO  4101-KHNRYO-CHK-EXT
            END-IF
       *
@@ -1074,7 +1077,7 @@
       *****************************************************************
        4101-NYUINCHUKBN-CHK-SEC        SECTION.
       *
-           MOVE    5               TO  SPA-GMN-I03-CUR
+           MOVE    6               TO  SPA-GMN-I03-CUR
       *
            MOVE    I03-NYUINCHUKBN TO  SPA-GMN-I03-NYUINCHUKBN
       *
@@ -1086,7 +1089,7 @@
                                    TO  SPA-GMN-I03-NYUINCHUKBN
            END-IF
       *
-           MOVE    6               TO  SPA-GMN-I03-CUR
+           MOVE    7               TO  SPA-GMN-I03-CUR
       *
            .
       *
@@ -1410,9 +1413,6 @@
       *    通算対象日数
            MOVE    SPA-GMN-I03-TAISYONISSU
                                    TO  PTNYUINRRK-TAISYONISSU
-      *    特定入院−通算対象日数
-           MOVE    SPA-GMN-I03-TOKUTAISYONISSU
-                                   TO  PTNYUINRRK-TOKU-TAISYONISSU
       *
       *    入院中区分
            IF    ( SPA-GMN-I03-NYUINCHUKBN-CD  =   "1" )
@@ -1638,7 +1638,7 @@
            IF    ( SPA-GMN-I03-RRKKBN-CD   =   "1" )
                IF    ( SPA-GMN-I03-NYUINCHUKBN =   SPACE )
                    MOVE    "1010"      TO  SPA-ERRCD
-                   MOVE    5           TO  SPA-GMN-I03-CUR
+                   MOVE    6           TO  SPA-GMN-I03-CUR
                    GO  TO  4801-KANREN-CHK-EXT
                END-IF
            END-IF
@@ -1690,29 +1690,7 @@
                    CONTINUE
                ELSE
                    MOVE    "1006"      TO  SPA-ERRCD
-                   MOVE    6           TO  SPA-GMN-I03-CUR
-                   GO  TO  4801-KANREN-CHK-EXT
-               END-IF
-           END-IF
-      *
-      *    他院歴では特定入院−通算対象日数が入力不可のチェック
-           IF    SPA-GMN-I03-RRKKBN-CD      =    "2"
-               IF  SPA-GMN-I03-TOKUTAISYONISSU NOT =   ZERO
-                   MOVE    "1017"      TO  SPA-ERRCD
-                   MOVE    7           TO  SPA-GMN-I03-CUR
-                   GO  TO  4801-KANREN-CHK-EXT
-               END-IF
-           END-IF
-      *
-      *    通算対象日数≧特定入院−通算対象日数となっていること
-      *    （自院歴と特別な関係の他院のみチェックを行う）
-           IF    SPA-GMN-I03-RRKKBN-CD      =    "1"  OR "3"
-               IF    ( SPA-GMN-I03-TAISYONISSU    >=
-                                       SPA-GMN-I03-TOKUTAISYONISSU )
-                   CONTINUE
-               ELSE
-                   MOVE    "1018"      TO  SPA-ERRCD
-                   MOVE    7           TO  SPA-GMN-I03-CUR
+                   MOVE    5           TO  SPA-GMN-I03-CUR
                    GO  TO  4801-KANREN-CHK-EXT
                END-IF
            END-IF
@@ -1734,7 +1712,7 @@
            IF      ( SPA-GMN-I03-NYUINCHUKBN-CD    =   "1" )
                PERFORM 4801-KEIZOKU-NYUIN-CHK-SEC
                IF    ( SPA-ERRCD       NOT =   SPACE )
-                   MOVE    5       TO  SPA-GMN-I03-CUR
+                   MOVE    6       TO  SPA-GMN-I03-CUR
                    GO  TO  4801-KANREN-CHK-EXT
                END-IF
            END-IF
@@ -2069,9 +2047,6 @@
       *    通算対象日数
            MOVE    SPA-GMN-I03-TAISYONISSU
                                    TO  I03-TAISYONISSU
-      *    特定入院−通算対象日数
-           MOVE    SPA-GMN-I03-TOKUTAISYONISSU
-                                   TO  I03-TOKUTAISYONISSU
       *
       *    病名
            PERFORM VARYING IDX1    FROM    1   BY  1
@@ -2135,7 +2110,6 @@
                                                I03-NYUINYMD-STT
                                                I03-TAIINYMD-STT
                                                I03-TAISYONISSU-STT
-                                               I03-TOKUTAISYONISSU-STT
                                                I03-RRKKBN-STT
                                                I03-RRKKBN-ITM-STT
                                                I03-NYUINCHUKBN-STT
@@ -2174,7 +2148,6 @@
                    MOVE    WIDGET-INSENSITIVE  TO   I03-NYUINYMD-STT
                                                     I03-TAIINYMD-STT
                                                     I03-TAISYONISSU-STT
-                                                I03-TOKUTAISYONISSU-STT
                END-IF
            END-EVALUATE
       *
@@ -2265,22 +2238,20 @@
            WHEN    4
                MOVE    "TAIINYMD"      TO  MCP-WIDGET
            WHEN    5
-               MOVE    "NYUINCHUKBN"   TO  MCP-WIDGET
-           WHEN    6
                MOVE    "TAISYONISSU"   TO  MCP-WIDGET
+           WHEN    6
+               MOVE    "NYUINCHUKBN"   TO  MCP-WIDGET
            WHEN    7
-               MOVE    "TOKUTAISYONISSU"   TO  MCP-WIDGET
-           WHEN    8
                MOVE    "BYOMEI1"       TO  MCP-WIDGET
-           WHEN    9
+           WHEN    8
                MOVE    "BYOMEI2"       TO  MCP-WIDGET
-           WHEN    10
+           WHEN    9
                MOVE    "BYOMEI3"       TO  MCP-WIDGET
-           WHEN    11
+           WHEN    10
                MOVE    "BYOMEI4"       TO  MCP-WIDGET
-           WHEN    12
+           WHEN    11
                MOVE    "BYOMEI5"       TO  MCP-WIDGET
-           WHEN    13
+           WHEN    12
                MOVE    "KHNRYO"        TO  MCP-WIDGET
            WHEN    99
                MOVE    "RRKKBN"        TO  MCP-WIDGET
@@ -2306,24 +2277,22 @@
                MOVE    003             TO  SPA-GMN-I03-CUR
            WHEN    "TAIINYMD"
                MOVE    004             TO  SPA-GMN-I03-CUR
-           WHEN    "NYUINCHUKBN"
-               MOVE    005             TO  SPA-GMN-I03-CUR
            WHEN    "TAISYONISSU"
+               MOVE    005             TO  SPA-GMN-I03-CUR
+           WHEN    "NYUINCHUKBN"
                MOVE    006             TO  SPA-GMN-I03-CUR
-           WHEN    "TOKUTAISYONISSU"
-               MOVE    007             TO  SPA-GMN-I03-CUR
            WHEN    "BYOMEI1"
-               MOVE    008             TO  SPA-GMN-I03-CUR
+               MOVE    007             TO  SPA-GMN-I03-CUR
            WHEN    "BYOMEI2"
-               MOVE    009             TO  SPA-GMN-I03-CUR
+               MOVE    008             TO  SPA-GMN-I03-CUR
            WHEN    "BYOMEI3"
-               MOVE    010             TO  SPA-GMN-I03-CUR
+               MOVE    009             TO  SPA-GMN-I03-CUR
            WHEN    "BYOMEI4"
-               MOVE    011             TO  SPA-GMN-I03-CUR
+               MOVE    010             TO  SPA-GMN-I03-CUR
            WHEN    "BYOMEI5"
-               MOVE    012             TO  SPA-GMN-I03-CUR
+               MOVE    011             TO  SPA-GMN-I03-CUR
            WHEN    "KHNRYO"
-               MOVE    013             TO  SPA-GMN-I03-CUR
+               MOVE    012             TO  SPA-GMN-I03-CUR
            END-EVALUATE
       *
       *    次カーソル位置を設定
@@ -2364,19 +2333,13 @@
            END-IF
       *
            IF    ( SPA-GMN-I03-CUR =   5   )
-               IF    ( I03-NYUINCHUKBN-STT =   WIDGET-INSENSITIVE )
-                   COMPUTE SPA-GMN-I03-CUR =   SPA-GMN-I03-CUR +   1
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-I03-CUR =   6  )
                IF    ( I03-TAISYONISSU-STT =   WIDGET-INSENSITIVE )
                    COMPUTE SPA-GMN-I03-CUR =   SPA-GMN-I03-CUR +   1
                END-IF
            END-IF
       *
-           IF    ( SPA-GMN-I03-CUR =   7  )
-               IF    ( I03-TOKUTAISYONISSU-STT =   WIDGET-INSENSITIVE )
+           IF    ( SPA-GMN-I03-CUR =   6  )
+               IF    ( I03-NYUINCHUKBN-STT =   WIDGET-INSENSITIVE )
                    COMPUTE SPA-GMN-I03-CUR =   SPA-GMN-I03-CUR +   1
                END-IF
            END-IF
@@ -2454,12 +2417,6 @@
            WHEN    "1016"
                MOVE    "入院期間＜通算対象日数となっています"
                                        TO  SPA-ERRMSG
-           WHEN    "1017"
-               MOVE    "他院歴では特定入院日数は入力できません"
-                                       TO  SPA-ERRMSG
-           WHEN    "1018"
-               MOVE    "通算対象日数＜特定入院日数となっています"
-                                       TO  SPA-ERRMSG
            WHEN    "2001"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
@@ -2513,7 +2470,6 @@
       *
       *
            MOVE    SPACE                TO  I0ID1
-           INITIALIZE                       I0ID1
            MOVE    SPA-I0IDCD           TO  I0ID1-ID1CODE
            MOVE    WRK-I0IDMSG          TO  I0ID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
