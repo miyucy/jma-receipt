@@ -1615,6 +1615,9 @@
                MOVE    SRT-WKSRYACT-REC (IDX2) TO  WRK-WKSRYACT-REC
                MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-REC02
                WRITE   PARA-REC02
+               IF      STS-PARA02      NOT =  ZERO
+                   MOVE    "0051"             TO  SPA-ERRCD
+               END-IF
       *
            END-PERFORM
       *    剤毎に処理を行う
@@ -3964,6 +3967,9 @@
                IF      HZN-PARA-DATA-REC (IDY) NOT =   SPACE
                    MOVE    HZN-PARA-REC(IDY)   TO  PARA-REC
                    WRITE                       PARA-REC
+                   IF      STS-PARA        NOT =  ZERO
+                       MOVE    "0051"             TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -3980,6 +3986,9 @@
                MOVE    LNK-SYUNOU2-REC(IDX)
                                            TO  PARA-DATA-REC
                WRITE                       PARA-REC
+               IF      STS-PARA        NOT =  ZERO
+                   MOVE    "0051"             TO  SPA-ERRCD
+               END-IF
            END-PERFORM
       *
            CLOSE                       PARA-FILE
@@ -4067,6 +4076,9 @@
                    MOVE    LNK-WKSRYACT-REC (IDX) TO  WRK-WKSRYACT-REC
                    MOVE    WRK-WKSRYACT-REC    TO  PARA-DATA-REC
                    WRITE                       PARA-REC
+                   IF      STS-PARA        NOT =  ZERO
+                       MOVE    "0051"             TO  SPA-ERRCD
+                   END-IF
                ELSE
                    MOVE    SPACE               TO  LNK-WKSRYACT-REC(IDX)
                    INITIALIZE                      LNK-WKSRYACT-REC(IDX)
@@ -5399,6 +5411,9 @@
                IF      HZN-PARA-DATA-REC (IDY) NOT =   SPACE
                    MOVE    HZN-PARA-REC(IDY)   TO  PARA-REC
                    WRITE                       PARA-REC
+                   IF      STS-PARA        NOT =  ZERO
+                       MOVE    "0051"             TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -5757,6 +5772,9 @@
                IF      HZN-PARA-DATA-REC (IDY) NOT =   SPACE
                    MOVE    HZN-PARA-REC(IDY)   TO  PARA-REC
                    WRITE                       PARA-REC
+                   IF      STS-PARA        NOT =  ZERO
+                       MOVE    "0051"             TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -6974,7 +6992,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-ERRMSG
                WHEN    "0051"
                    STRING  "中間データに不整合が発生しました。"
-                           "再度、診療行為から入力して下さい。"
+                           "再度、診療行為へ戻って下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
