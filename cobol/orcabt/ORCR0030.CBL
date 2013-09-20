@@ -828,6 +828,7 @@
            03  FLG-HENSYU-ARI                          PIC 9(01).
            03  FLG-ZEROKOGAITO                         PIC 9(01).
            03  FLG-NYUSYO                              PIC 9(01).
+           03  FLG-DAISAN-ARI                          PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -3396,6 +3397,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *****************************************************************
        211X-DAISAN-CHECK-SEC      SECTION.
       *
+           MOVE      ZERO      TO      FLG-DAISAN-ARI
+      *
            PERFORM  VARYING  IDX16   FROM    1   BY  1
                      UNTIL  (IDX16                   >   10 )
                        OR   (RECE02-HKNCOMBI(IDX16)  =  ZERO)
@@ -3434,6 +3437,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                MOVE      "tbl_syunou"       TO  MCP-TABLE
                MOVE      "key41"            TO  MCP-PATHNAME
                PERFORM    900-CLOSE-SEC
+      *
+               MOVE       1                 TO  FLG-DAISAN-ARI
       *
              END-IF
       *
@@ -3482,6 +3487,34 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                END-IF
       *
              END-PERFORM
+      *
+           END-IF
+      *
+           IF    RECE02-DAISAN-GAITO  =  ZERO
+           AND   FLG-DAISAN-ARI       =  ZERO
+      *
+             INITIALIZE                          HKNCOMBI-REC
+             MOVE     RECE02-HOSPNUM       TO    COMB-HOSPNUM
+             MOVE     RECE02-PTID          TO    COMB-PTID
+             MOVE     HKNCOMBI-REC         TO    MCPDATA-REC
+             MOVE     "tbl_hkncombi"       TO    MCP-TABLE
+             MOVE     "key7"               TO    MCP-PATHNAME
+             PERFORM   900-DBSELECT-SEC
+             IF     MCP-RC   =   ZERO
+               MOVE   "tbl_hkncombi"       TO    MCP-TABLE
+               MOVE   "key7"               TO    MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF   MCP-RC   =   ZERO
+                 CONTINUE
+               ELSE
+                 MOVE     9     TO  RECE02-DAISAN-GAITO
+               END-IF
+             ELSE
+               MOVE       9     TO  RECE02-DAISAN-GAITO
+             END-IF
+             MOVE     "tbl_hkncombi"       TO    MCP-TABLE
+             MOVE     "key7"               TO    MCP-PATHNAME
+             PERFORM   900-CLOSE-SEC
       *
            END-IF
       *
