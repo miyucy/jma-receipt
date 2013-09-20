@@ -409,6 +409,7 @@
       *  04.07.04    NACL-ÌçÏÆ    12/08/27  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *  04.07.05    NACL-ÌçÏÆ    12/11/15  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
       *  04.07.06    NACL-ÌçÏÆ    13/07/01  ¥·¥¹¥Æ¥à´ÉÍý£²£°£±£°µ¡Ç½ÄÉ²ÃÂÐ±þ
+      *  04.07.07    NACL-ÌçÏÆ    13/07/10  ¼«ÇåÀÕ¡ÊÂè»°¼Ô¹Ô°Ù¡ËÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -2040,7 +2041,8 @@
       *
       *    ¸ºÌÈ·×»»¡¦ÀÁµá³ÛÃ¼¿ô·×»»¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¡¦¸ø³²¤ò½ü¤¯¡Ë
            MOVE     ZERO      TO    FLG-GENMEN.
-           IF   LNK-SYU-SYUHKNNUM         =    "971" OR "973" OR "975"
+           IF  (LNK-SYU-SYUHKNNUM         =    "971" OR "973" OR "975")
+           OR  (LNK-SYU-KOH1HKNNUM        =    "970"                  )
                    CONTINUE
            ELSE
       *            ¸ºÌÈ·×»»
@@ -2305,6 +2307,40 @@
            IF    LNK-SYU-SYUHKNNUM       =    "975"
       *
               PERFORM  400-SEIKYU-HASUU-KEISAN-KOGAI-SEC
+      *
+           END-IF.
+      *
+           IF    LNK-SYU-KOH1HKNNUM      =    "970"
+      *
+              INITIALIZE                       SYS-4001-REC
+              MOVE    "4001"               TO  SYS-4001-KANRICD
+              MOVE    "*"                  TO  SYS-4001-KBNCD
+              MOVE    LNK-SYU-HOSPNUM      TO  SYS-4001-HOSPNUM
+              MOVE    LNK-SYU-SRYYMD       TO  SYS-4001-STYUKYMD
+              MOVE    LNK-SYU-SRYYMD       TO  SYS-4001-EDYUKYMD
+              MOVE    SYS-4001-REC         TO  MCPDATA-REC
+              MOVE    "DBSELECT"           TO  MCP-FUNC
+              MOVE    "tbl_syskanri"       TO  MCP-TABLE
+              MOVE    "key10"              TO  MCP-PATHNAME
+              CALL    "ORCDBMAIN"          USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+              IF      MCP-RC               =   ZERO
+                MOVE     "tbl_syskanri"    TO  MCP-TABLE
+                MOVE     "key10"           TO  MCP-PATHNAME
+                PERFORM   SYSKANRI-READ-SEC
+                IF    MCP-RC               =   ZERO
+                  MOVE SYS-4001-TAXKBN     TO  WK-4001-TAXKBN
+                  MOVE SYS-4001-TAXKBN-KZI TO  WK-4001-TAXKBN-KZI
+                END-IF
+              END-IF
+              MOVE    "tbl_syskanri"       TO  MCP-TABLE
+              MOVE    "key10"              TO  MCP-PATHNAME
+              PERFORM  DB-CLOSE-SEC
+      *
+              PERFORM  500-JIBAI-SONOTA-HENSYU-SEC
+      *
+              PERFORM  400-SEIKYU-HASUU-KEISAN-DAISAN-SEC
       *
            END-IF.
       *
@@ -2803,6 +2839,48 @@
            .
       *
        400-SEIKYU-HASUU-KEISAN-KOGAI-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        ÀÁµá³ÛÃ¼¿ô·×»»½èÍý¡§Âè»°¼Ô¹Ô°Ù¡Ê¸ºÌÈÌµ¤·¡Ë
+      ******************************************************************
+       400-SEIKYU-HASUU-KEISAN-DAISAN-SEC          SECTION.
+      *
+           EVALUATE   WK-HASU1001-KBN2J
+            WHEN  "0"
+                EVALUATE   WK-HASU1001-KBN2
+                 WHEN  "1"
+                   COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   5
+                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+                 WHEN  "2"
+                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+                 WHEN  "3"
+                   COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   9
+                   COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                   COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+                 WHEN  "4"
+                   CONTINUE
+                END-EVALUATE
+            WHEN  "1"
+                COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   5
+                COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+            WHEN  "2"
+                COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+            WHEN  "3"
+                COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   9
+                COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
+                COMPUTE  LNK-SYU-SKYMONEY = WK-SEIKYUGK       *  10
+            WHEN  "4"
+                CONTINUE
+           END-EVALUATE
+      *
+           .
+      *
+       400-SEIKYU-HASUU-KEISAN-DAISAN-EXT.
            EXIT.
       *
       ******************************************************************
@@ -4010,6 +4088,7 @@
              OR  (COMB-SYU-HKNKOHSBTKBN  = "8" OR "9"    )
              OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
                                OR "068" OR "069" OR "040")
+             OR  (COMB-KOH1HKNNUM  =  "970"              )
                CONTINUE
              ELSE
                PERFORM   VARYING   GEN-IDX   FROM   1    BY   1
@@ -4140,6 +4219,9 @@
                                OR  "068"  OR  "069"  OR  "040"
                    MOVE  SPACE       TO  LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
+               IF  COMB-KOH1HKNNUM  =  "970"
+                   MOVE  SPACE       TO  LNK-S01-KOUREI-ZAITAKU-KBN
+               END-IF
            END-IF
       *
            IF   FLG-KOUREI-KBN  =  "1"
@@ -4148,6 +4230,9 @@
                END-IF
                IF  COMB-HKNNUM  =  "971"  OR  "973"  OR  "975"
                                OR  "068"  OR  "069"  OR  "040"
+                   MOVE  SPACE       TO  FLG-KOUREI-KBN
+               END-IF
+               IF  COMB-KOH1HKNNUM  =  "970"
                    MOVE  SPACE       TO  FLG-KOUREI-KBN
                END-IF
            END-IF
@@ -4227,6 +4312,7 @@
       *
             IF  (COMB-SYU-HKNKOHSBTKBN   =  "8" OR "9"  )
             OR  (COMB-HKNNUM  =  "971" OR "973" OR "975")
+            OR  (COMB-KOH1HKNNUM  =  "970"              )
               CONTINUE
             ELSE
               PERFORM   VARYING   GEN-IDX   FROM   1    BY   1
@@ -4356,6 +4442,7 @@
               IF  (COMB-SYU-HKNKOHSBTKBN =  "8" OR "9"    )
               OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
                                 OR "068" OR "069" OR "040")
+              OR  (COMB-KOH1HKNNUM  =  "970"              )
                 CONTINUE
               ELSE
                 INITIALIZE                       PTKOHINF-REC
@@ -4570,6 +4657,7 @@
              IF (COMB-SYU-HKNKOHSBTKBN   =  "8" OR "9"  )
              OR (COMB-HKNNUM  =  "971" OR "973" OR "975"
                               OR "068" OR "069" OR "040")
+             OR (COMB-KOH1HKNNUM  =  "970"              )
              OR (FLG-TOKU75                 =    1      )
              OR (FLG-TOKU75-KIZON           =    1      )
                 CONTINUE
@@ -4666,6 +4754,7 @@
                  IF  (COMB-SYU-HKNKOHSBTKBN =  "8" OR "9"    )
                  OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
                                    OR "068" OR "069" OR "040")
+                 OR  (COMB-KOH1HKNNUM  =  "970"              )
                    CONTINUE
                  ELSE
                    INITIALIZE                        PTKOHINF-REC
@@ -4980,6 +5069,7 @@
                                                        "069" OR "040")
                                  OR (WRK-COMB-SYU-HKNKOHSBTKBN =  "8"
                                                                OR "9")
+                                 OR (WRK-COMB-KOH1HKNNUM  =  "970"   )
                                    CONTINUE
                                  ELSE
                                    MOVE   "1"    TO
@@ -5340,6 +5430,7 @@
              IF (COMB-SYU-HKNKOHSBTKBN   =  "8" OR "9"  )
              OR (COMB-HKNNUM  =  "971" OR "973" OR "975"
                               OR "068" OR "069" OR "040")
+             OR (COMB-KOH1HKNNUM  =  "970"              )
                CONTINUE
              ELSE
                MOVE   SPACE   TO    WK-KOH-FTNJANUM
@@ -11203,6 +11294,7 @@
            IF (SYU-SYUHKNNUM       =  "971" OR "973" OR "975"
                                    OR "068" OR "069" OR "040")
            OR (SYU-SYUHKNNUM(1:2)  =  "98"  OR "90"  OR "91" )
+           OR (SYU-KOH1HKNNUM      =  "970"                  )
              CONTINUE
            ELSE
              IF   (SYU-SYUHKNNUM      NOT = SPACE     )
@@ -12014,6 +12106,7 @@
                IF ( SYU-SYUHKNNUM       =  "971" OR "973" OR "975"
                                         OR "068" OR "069" OR "040" )
                OR ( SYU-SYUHKNNUM(1:2)  =  "98"  OR "90"  OR "91"  )
+               OR ( SYU-KOH1HKNNUM      =  "970"                   )
       *
                  CONTINUE
       *

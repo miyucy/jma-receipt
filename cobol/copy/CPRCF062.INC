@@ -133,6 +133,7 @@
       *  04.07.03    NACL-門脇    12/08/27  システム管理２０１０機能追加対応
       *  04.07.04    NACL-門脇    12/10/02  高齢者判定フラグ追加
       *  04.07.05    NACL-藤原    12/12/17  複数枚レセプト分割対応
+      *  04.07.06    NACL-門脇    13/07/10  自賠責（第三者行為）対応
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -873,6 +874,40 @@
            03  RECE62-SKJFTNFLG-AREA.
                05  RECE62-SKJFTNFLG       PIC X(01)   OCCURS   4.
                05  RECE62-SKJFTNFLG2      PIC X(01).
+      *
+      *第三者行為情報（インデックスの情報は保険組合せ番号情報とリンク）
+           03  RECE62-DAISANINF-AREA.
+             04  RECE62-DAISANINF               OCCURS 10.
+      *第三者行為保険組合せフラグ
+               05  RECE62-DAISANFLG             PIC 9(01).
+      *第三者行為公費ＩＤ
+               05  RECE62-DAISAN-KOHID          PIC 9(10).
+      *第三者行為請求点数又は食事あり
+               05  RECE62-DAISAN-SKYFLG         PIC 9(01).
+      *リハビリ開始日編集用公費分離区分
+               05  RECE62-RIHA-KOHBUNRI         PIC 9(01).
+      *リハビリ算定テーブル
+               05  RECE62-RIHA-DAY-AREA.
+                 06  RECE62-RIHA-DAY-OCC        OCCURS 31.
+                   07  RECE62-RIHA-SINDAI       PIC 9(01).
+                   07  RECE62-RIHA-KOKYUKI      PIC 9(01).
+                   07  RECE62-RIHA-NOUKE        PIC 9(01).
+                   07  RECE62-RIHA-UNDOKI       PIC 9(01).
+                   07  RECE62-RIHA-NANBYO       PIC 9(01).
+                   07  RECE62-RIHA-SYOGAI       PIC 9(01).
+                   07  RECE62-RIHA-SESSYOKU     PIC 9(01).
+      *
+      *第三者行為レセプト該当フラグ
+      *（１：第三者行為のみ　２：第三者行為と第三者行為外が混在）
+           03  RECE62-DAISAN-GAITO              PIC 9(01).
+      *第三者行為請求点数合計
+           03  RECE62-DAISAN-TOTALTEN           PIC 9(08).
+      *第三者行為一部負担金相当額合計（１円単位）
+           03  RECE62-DAISAN-FTNMONEY           PIC 9(08).
+      *第三者行為食事合計
+           03  RECE62-DAISAN-SKJ-NISSU-KEI      PIC 9(02).
+           03  RECE62-DAISAN-SKJ-RYOYOHI-KEI    PIC 9(08).
+           03  RECE62-DAISAN-SKJ-FTN-KEI        PIC 9(08).
       *
       *予備
            03  RECE62-YOBIETC-AREA.

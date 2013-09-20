@@ -59,6 +59,8 @@
       *                                     （１円単位）（判定用）の編集追加
       *                                     公費を含む場合の主保険の一部負担額
       *                                     の編集修正
+      *
+      *  04.07.01    NACL-門脇    13/07/10  自賠責（第三者行為）対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -234,6 +236,9 @@ grpsys     MOVE    LNK-KOREIFTNCHK-HOSPNUM TO  COMB-HOSPNUM
                     UNTIL   (IDX1             >=    50 )   OR
                             (FLG-HKNCOMBI  NOT =   ZERO)
       *
+                 IF   COMB-KOH1HKNNUM  =  "970"
+                   CONTINUE
+                 ELSE
                    ADD     1     TO     IDX1
                    MOVE    COMB-HKNCOMBINUM  TO
                                      WRK-HKNCOMBINUM(IDX1)
@@ -317,9 +322,11 @@ grpsys     MOVE    LNK-KOREIFTNCHK-HOSPNUM TO  COMB-HOSPNUM
                    END-IF
                    PERFORM   210-KYURATE-HENSYU-SEC
       *
-                   MOVE   "tbl_hkncombi"   TO  MCP-TABLE
-                   MOVE   "key5"           TO  MCP-PATHNAME
-                   PERFORM 910-HKNCOMBI-READ-SEC
+                 END-IF
+      *
+                 MOVE   "tbl_hkncombi"   TO  MCP-TABLE
+                 MOVE   "key5"           TO  MCP-PATHNAME
+                 PERFORM 910-HKNCOMBI-READ-SEC
                END-PERFORM
            END-IF
       *

@@ -367,6 +367,7 @@
       *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
       *  04.07.02    NACL-藤原    12/09/04  薬剤料減点対応
       *  04.07.03    NACL-藤原    12/12/17  複数枚レセプト分割対応
+      *  04.07.04    NACL-門脇    13/09/11  自賠責（第三者行為）対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -777,6 +778,8 @@
            03  WRK-FUTAN               PIC ZZZZZZZZ9.
       ***  03  WRK-FUTAN1              PIC ZZZ,ZZ9. 
            03  WRK-FUTAN1              PIC ZZZZZ9.
+           03  WRK-FUTAN2              PIC ZZZZZZZ9.
+           03  WRK-FUTAN3              PIC Z9.
            03  WRK-ADRS.
                05  WRK-ADRS-R          PIC X(76)  OCCURS  4.
       *
@@ -3691,6 +3694,9 @@
                PERFORM 20070-DISASTER-HENSYU-SEC
            END-IF
       *
+      *    第三者行為
+           PERFORM 20073-DAISAN-HENSYU-SEC
+      *
       *    症状詳記（適用欄上段コメント・手術歴・保険履歴）
            MOVE    WRK-FTNKBN          TO  WRK-COM-FTNKBN
            MOVE    ZERO                TO  FLG-TOYAKUFLG
@@ -4352,6 +4358,115 @@
            MOVE    SPACE                TO  WRK-DISASTER-COMMENT
            .
        200701-DISASTER-COMMENT-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    摘要データ（第三者行為コメント）編集処理
+      *****************************************************************
+       20073-DAISAN-HENSYU-SEC       SECTION.
+      *
+           MOVE    "01"                TO  WRK-SRYKBN
+      *
+           MOVE    SPACE               TO  WRK-DISASTER-COMMENT
+           IF   RECE62-DAISAN-GAITO   =   1  OR  2
+               MOVE    RECE62-DAISAN-TOTALTEN  TO  WRK-FUTAN2
+               INITIALIZE              ORCSKANACHKAREA
+               MOVE    "2"             TO  KANACHK-SYORI 
+               MOVE    WRK-FUTAN2      TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF    ( KANACHK-RC      =   ZERO )
+               AND   ( KANACHK-MAX     >   ZERO )
+                 STRING  "（第三者行為）請求点数　"
+                                         DELIMITED  BY  SIZE
+                          KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                         DELIMITED  BY  SIZE
+                          "点"           DELIMITED  BY  SIZE
+                                         INTO    WRK-DISASTER-COMMENT
+                 END-STRING
+               END-IF
+               PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+      *
+               MOVE    SPACE             TO  WRK-DISASTER-COMMENT
+               IF   RECE62-DAISAN-TOTALTEN  NOT = ZERO
+                 MOVE    RECE62-DAISAN-FTNMONEY  TO  WRK-FUTAN2
+                 INITIALIZE              ORCSKANACHKAREA
+                 MOVE    "2"             TO  KANACHK-SYORI 
+                 MOVE    WRK-FUTAN2      TO  KANACHK-MAE-INPUT
+                 CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                 IF    ( KANACHK-RC      =   ZERO )
+                 AND   ( KANACHK-MAX     >   ZERO )
+                   STRING  "（第三者行為）一部負担金"
+                                           DELIMITED  BY  SIZE
+                            KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           DELIMITED  BY  SIZE
+                            "円"           DELIMITED  BY  SIZE
+                                           INTO    WRK-DISASTER-COMMENT
+                   END-STRING
+                 END-IF
+                 PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+               END-IF
+      *
+               MOVE    SPACE             TO  WRK-DISASTER-COMMENT
+               IF   RECE62-DAISAN-SKJ-RYOYOHI-KEI  NOT = ZERO
+                 MOVE    RECE62-DAISAN-SKJ-NISSU-KEI  TO  WRK-FUTAN3
+                 INITIALIZE              ORCSKANACHKAREA
+                 MOVE    "2"             TO  KANACHK-SYORI 
+                 MOVE    WRK-FUTAN3      TO  KANACHK-MAE-INPUT
+                 CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                 IF    ( KANACHK-RC      =   ZERO )
+                 AND   ( KANACHK-MAX     >   ZERO )
+                   STRING  "（第三者行為）食事回数　　　　　　　"
+                                           DELIMITED  BY  SIZE
+                            KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           DELIMITED  BY  SIZE
+                            "回"           DELIMITED  BY  SIZE
+                                           INTO    WRK-DISASTER-COMMENT
+                   END-STRING
+                 END-IF
+                 PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+               END-IF
+      *
+               MOVE    SPACE           TO  WRK-DISASTER-COMMENT
+               MOVE    RECE62-DAISAN-SKJ-RYOYOHI-KEI  TO  WRK-FUTAN2
+               INITIALIZE              ORCSKANACHKAREA
+               MOVE    "2"             TO  KANACHK-SYORI 
+               MOVE    WRK-FUTAN2      TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF    ( KANACHK-RC      =   ZERO )
+               AND   ( KANACHK-MAX     >   ZERO )
+                 STRING  "（第三者行為）食事療養費"
+                                         DELIMITED  BY  SIZE
+                          KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                         DELIMITED  BY  SIZE
+                          "円"           DELIMITED  BY  SIZE
+                                         INTO    WRK-DISASTER-COMMENT
+                 END-STRING
+               END-IF
+               PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+      *
+               MOVE    SPACE             TO  WRK-DISASTER-COMMENT
+               IF   RECE62-DAISAN-SKJ-RYOYOHI-KEI  NOT = ZERO
+                 MOVE    RECE62-DAISAN-SKJ-FTN-KEI  TO  WRK-FUTAN2
+                 INITIALIZE              ORCSKANACHKAREA
+                 MOVE    "2"             TO  KANACHK-SYORI 
+                 MOVE    WRK-FUTAN2      TO  KANACHK-MAE-INPUT
+                 CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+                 IF    ( KANACHK-RC      =   ZERO )
+                 AND   ( KANACHK-MAX     >   ZERO )
+                   STRING  "（第三者行為）食事負担額"
+                                           DELIMITED  BY  SIZE
+                            KANACHK-OUT-INPUT(1:KANACHK-MAX)
+                                           DELIMITED  BY  SIZE
+                            "円"           DELIMITED  BY  SIZE
+                                           INTO    WRK-DISASTER-COMMENT
+                   END-STRING
+                 END-IF
+                 PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
+               END-IF
+           END-IF
+      *
+           .
+       20073-DAISAN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7352,7 +7467,7 @@
                            MOVE    1        TO  FLG-TOYAKUFLG
                        END-IF
       *
-      *               摘要データ編集処理
+      *                摘要データ編集処理
                        IF      FLG-END           =   ZERO
                            PERFORM 20072-ZAI-HENSYU-SEC
       * 
