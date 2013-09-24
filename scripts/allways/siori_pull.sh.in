@@ -24,23 +24,26 @@ JOBID=${3}
 SHELLID=$(printf "%-8s" ${4})
 HOSPNUM=${5}
 
-# MCP_TEMPDIRをTMPDIRとする
-TMPDIR=${MCP_TEMPDIR}
-
 MEDPHOTOPATH="${MSTSRVPATH}/siori/image"
-MEDIMAGEDIR="${MCP_TEMPDIR}/medimage"
+MEDPHOTODIR="/tmp/medphoto"
+MEDPHOTOTEMP="$MEDPHOTODIR"/${HOSPNUM}
 
 # 画像ファイル格納ディレクトリの作成
 
-if ! [ -d ${MEDIMAGEDIR} ]; then
-  mkdir ${MEDIMAGEDIR}
+if ! [ -d $MEDPHOTODIR ]; then
+  mkdir $MEDPHOTODIR
+fi
+if ! [ -d $MEDPHOTOTEMP ]; then
+  mkdir $MEDPHOTOTEMP
 fi
 
 # 取り込む前にレコードを削除
 
 TEMP=$(mktemp)
 trap "rm -f ${TEMP}" EXIT
-echo "delete from tbl_yakujyo_temp where termid='${TERMID}' and hospnum=${HOSPNUM};" > ${TEMP}
+echo "delete from tbl_yakujyo_temp where termid='${TERMID}' and hospnum=${HOSPNUM};" > ${TEMP}.wk
+mksqldata.rb ${TEMP}.wk ${TEMP}
+rm -f ${TEMP}.wk
 
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBSQL1 \
           -parameter ${HOSPNUM},${TEMP}
@@ -57,12 +60,14 @@ master_get.sh ${HOSPNUM} ${TERMID} ${JOBID} ${SHELLID} SIORI ${SRYCD}
 if [ $? -ne 0 ] ; then
   exit $?
 fi
-FLIST=`/usr/lib/panda/bin/monsql -dir ${LDDIRECTORY} -c "select photo1_filename || ' ' || photo2_filename || ' ' || photo3_filename from tbl_yakujyo_temp where termid='${TERMID}' and srycd='${SRYCD}' and hospnum=${HOSPNUM};" -o CSV2`
+create_pgpass
+FLIST=`echo "select photo1_filename || ' ' || photo2_filename || ' ' || photo3_filename from tbl_yakujyo_temp where termid='${TERMID}' and srycd='${SRYCD}' and hospnum=${HOSPNUM};" | psql ${DBCONNOPTION} -Atq ${DBNAME}`
+delete_pgpass
 #echo $FLIST
 
 for file in $FLIST
 do
-  wget -q -O ${MEDIMAGEDIR}/${file} ${MEDPHOTOPATH}/${file}
+  wget -q -O ${MEDPHOTOTEMP}/${file} ${MEDPHOTOPATH}/${file}
 done
 
 MSG="参照処理が終了しました"
