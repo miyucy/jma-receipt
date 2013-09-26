@@ -4197,6 +4197,7 @@
       *            MOVE    SPACE               TO  WRK-KBN2
       *            PERFORM 20091-RSI-SINSATU-SEC
       *******  END-IF
+      *H25.9
       *        同日再診料算定
                MOVE    ZERO                TO  FLG-DOUJITU
                IF     ( SPA-SYORIFLG        =   ZERO     ) AND
@@ -4500,6 +4501,7 @@
        30011-TELSAISIN-CHKSYORI-EXT.
            EXIT.
       *
+      *H25.9
       *****************************************************************
       *    院内院外変更処理
       *****************************************************************
@@ -5093,6 +5095,26 @@
                                MOVE    1           TO  SPA-SYONIKA-ARI
                            END-IF
                    END-EVALUATE
+      *H25.9
+               ELSE
+      *            労災コード判定
+                   SET     TBL-RSI              TO  1
+                   SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
+                   AT  END
+                       MOVE    SPACE              TO  WRK-KBN
+                    WHEN   SPA-COM-INPUTCD (IDX)
+                                              =   TBLR-SRYCD (TBL-RSI)
+                       MOVE    1                  TO  FLG-ARI
+                       MOVE    TBLR-KBN   (TBL-RSI)   TO  WRK-KBN
+                   END-SEARCH
+                   EVALUATE    WRK-KBN
+      *                電話再診、同日電話再診
+                       WHEN    "T"
+                       WHEN    "S"
+                       WHEN    "J"
+                           MOVE    1               TO  SPA-TELSAI-ARI
+                   END-EVALUATE
+      *
                END-IF
              END-IF
            END-PERFORM
@@ -6128,6 +6150,10 @@
       *            初診
                    IF      WRK-KBN             =   "F"
                        MOVE    1               TO  FLG-SYOSIN2
+                   END-IF
+      *            外来管理加算
+                   IF      WRK-KBN             =   "G"
+                       MOVE    1               TO  FLG-GAI
                    END-IF
       *ver.4.8
       *            電話再診の位置

@@ -5165,7 +5165,7 @@
       *
       *    ¿Ç»¡ÎÁ¤ÎÈ½Äê
            PERFORM 2001-SINSATU-CHK-SEC
-      *!!!!
+      *H25.9
            IF     (FLG-TBL             =   ZERO )
              AND  (SPA-ERRCD           =   SPACE )
       *        Ï«ºÒ¤Î»þ¡¢Ï«ºÒ¥³¡¼¥É¤ÇÈ½Äê¤¹¤ë
@@ -5779,27 +5779,28 @@
                    END-IF
                END-IF
            END-IF
-           GO      TO  20012-RSISINSATU-CHK-EXT
+      *
+      *H25.7 °Ê²¼·òÊÝ¤È¶¦ÄÌ
       *H24.4
       *        ºÆ¿Ç£²²ÊÌÜ
-               IF     (WRK-KBN             =   "R" )  AND
-                      (WRK-KBN2            =   "D" )
-                   MOVE    1               TO  FLG-DOUJITU-S
-                   MOVE    IDX-Z           TO  IDX-SINSATU2-S
-                   IF      IDX-SINSATU     >   ZERO
-                       GO      TO      20012-RSISINSATU-CHK-EXT
-                   END-IF
-               END-IF
+      *        IF     (WRK-KBN             =   "R" )  AND
+      *               (WRK-KBN2            =   "D" )
+      *            MOVE    1               TO  FLG-DOUJITU-S
+      *            MOVE    IDX-Z           TO  IDX-SINSATU2-S
+      *            IF      IDX-SINSATU     >   ZERO
+      *                GO      TO      20012-RSISINSATU-CHK-EXT
+      *            END-IF
+      *        END-IF
       *
-               MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
-               MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
-               MOVE    IDX-Z           TO  IDX-SINSATU
+      *        MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
+      *        MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
+      *        MOVE    IDX-Z           TO  IDX-SINSATU
       *        Æ±Æü½é¿Ç
-               IF     (WRK-KBN             =   "F" )  AND
-                      (WRK-KBN2            =   "D" )
-                   MOVE    1               TO  FLG-DOUJITU
-                   MOVE    IDX-Z           TO  IDX-SINSATU2
-               END-IF
+      *        IF     (WRK-KBN             =   "F" )  AND
+      *               (WRK-KBN2            =   "D" )
+      *            MOVE    1               TO  FLG-DOUJITU
+      *            MOVE    IDX-Z           TO  IDX-SINSATU2
+      *        END-IF
       *** END-IF
       *
            .
@@ -5836,11 +5837,11 @@
       *    ³°Íè´ÉÍý²Ã»»¥³¡¼¥ÉÄÉ²Ã½èÍý
       *****************************************************************
        20011-GAIKASAN-SET-SEC                  SECTION.
-      *    Ï«ºÒ¤Î³°Íè´ÉÍý²Ã»»
-           IF      SPA-HKNKBN          =   1
-      *****  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
+      *
+           IF     (SPA-HKNKBN          =   1   )
              AND  (SPA-RSI-JUNKYO  NOT =   "1" )
       *****    PERFORM 200111-RSI-GAIKASAN-SEC
+      *        Ï«ºÒ¤Î³°Íè´ÉÍý²Ã»»
                MOVE    TBLRG-SRYCD         TO  WRK-SRYCD
            ELSE
       *        ³°Íè´ÉÍý²Ã»»
@@ -6332,10 +6333,10 @@
                                                LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN     TO  WRK-NYUINYMD-7
       *TEST
-            DISPLAY "LNK-ORCSC-NYUINYMD:"  LNK-ORCSC-NYUINYMD
-                   ",WRK-NYUINYMD-7:" WRK-NYUINYMD-7
-                ",WRK-SRYYMD:"  WRK-SRYYMD
-                ",GMN:"  WRK-COM-INPUTCD (IDX-Z)
+      *     DISPLAY "LNK-ORCSC-NYUINYMD:"  LNK-ORCSC-NYUINYMD
+      *            ",WRK-NYUINYMD-7:" WRK-NYUINYMD-7
+      *         ",WRK-SRYYMD:"  WRK-SRYYMD
+      *         ",GMN:"  WRK-COM-INPUTCD (IDX-Z)
       *TEST
            IF     (WRK-SRYYMD          >=  LNK-ORCSC-NYUINYMD)
              AND  (WRK-SRYYMD          <   WRK-NYUINYMD-7 )
