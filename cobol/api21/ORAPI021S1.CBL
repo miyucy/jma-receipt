@@ -30,7 +30,6 @@
       *  04.07.00    NACL-多々納  11/10/XX  削除・置換え対応
       *  04.07.00    NACL-多々納  11/11/XX  同日再入院対応
       *  04.07.00    NACL=多々納  12/03/XX  平成２４年４月改正対応
-      *  04.07.00    NACL-多々納  14/10/XX  パラメタ変更対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -141,19 +140,15 @@
            03  WRK-LEN                 PIC 9(04).
       *
       *    claim連携リターンエリア
-      *01  WRK-ERROR-AREA.
-      *    03  WRK-KBN-CODE            PIC X(01).
-      *    03  WRK-KBN-CODE2           PIC X(01).
-      *    03  WRK-KBN-V2              PIC X(01).
-      *    03  WRK-ERR-CODE            PIC 9(02).
-      *    03  WRK-ERR-MSG             PIC X(100).
-      *    03  WRK-OUT-HKNCOMBI        PIC X(04).
-      *    03  WRK-OUT-CNT1            PIC 9(04).
-      *    03  WRK-OUT-CNT2            PIC 9(04).
-      *!
-      *H26.10
-      *    claim連携サブリターンエリア
-           COPY    "CPORCL0031.INC".
+       01  WRK-ERROR-AREA.
+           03  WRK-KBN-CODE            PIC X(01).
+           03  WRK-KBN-CODE2           PIC X(01).
+           03  WRK-KBN-V2              PIC X(01).
+           03  WRK-ERR-CODE            PIC 9(02).
+           03  WRK-ERR-MSG             PIC X(100).
+           03  WRK-OUT-HKNCOMBI        PIC X(04).
+           03  WRK-OUT-CNT1            PIC 9(04).
+           03  WRK-OUT-CNT2            PIC 9(04).
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -336,50 +331,6 @@
                GO  TO         100-INIT-EXT
            END-IF
       *    ＳＰＡ共通設定
-      *    INITIALIZE                  SYS-1010-REC
-      *    INITIALIZE                  ORCSCOMMONAREA
-      *    MOVE    "M00"               TO  ORCSCOMMON-PG
-      *    CALL    "ORCSCOMMON"        USING
-      *                                MCPAREA
-      *                                SPA-AREA
-      *                                ORCSCOMMONAREA
-      *                                SYS-1010-REC
-      *    IF      SPA-ERRCD       NOT =   SPACE
-      *        MOVE   "89"             TO  WRK-ERRCD
-      *    END-IF
-      *
-           .
-       100-INIT-EXT.
-           EXIT.
-      *
-      *H27.8
-      *****************************************************************
-      *    ＳＰＡ共通設定処理
-      *****************************************************************
-       1001-ORCSCOMMON-SEC           SECTION.
-      *
-      *    診療日チェック
-           MOVE    MDCREQ-PERFORM-DATE     TO  WRK-HEN-DATE
-           MOVE    MDCREQ-PERFORM-TIME     TO  WRK-HEN-TIME
-           PERFORM 802-DAYHEN02-SEC
-           MOVE    WRK-SYMD                TO  WRK-PERFORM-YMD
-           MOVE    WRK-THMS                TO  WRK-PERFORM-TIME
-      *    未設定時はシステム情報設定
-           IF      WRK-PERFORM-YMD         =   SPACE
-               MOVE    SMCNDATE-YMD        TO  WRK-PERFORM-YMD
-           END-IF
-      *    診療日チェック
-           PERFORM 20011-PERFORM-CHK-SEC
-      *    診療日をシステム日付へ
-           IF      WRK-ERRCD           =   SPACE
-               MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
-           ELSE
-      *        エラーは他項目と同時
-               MOVE    SPACE               TO  WRK-ERRCD
-           END-IF
-      *
-           MOVE    SPACE               TO  SPA-MOTOPG
-      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -391,10 +342,10 @@
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE   "89"             TO  WRK-ERRCD
            END-IF
+      *
            .
-       1001-ORCSCOMMON-EXT.
+       100-INIT-EXT.
            EXIT.
-      *H27.8
       *
       *****************************************************************
       *    主　処理
@@ -403,12 +354,6 @@
       *
       *    XML情報取り出し
            PERFORM 1000-APTXMLREAD-SEC
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO      TO      200-MAIN-EXT
-           END-IF
-      *H27.8
-      *    ＳＰＡ共通設定
-           PERFORM 1001-ORCSCOMMON-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
            END-IF
@@ -536,8 +481,8 @@
                    WHEN    1
                        MOVE    "登録処理終了"
                                            TO  MDCRES-API-RESULT-MSG
-                       IF     (LNK-OUT-CNT1        =   ZERO )
-                         AND  (LNK-OUT-CNT2        >   ZERO )
+                       IF     (WRK-OUT-CNT1        =   ZERO )
+                         AND  (WRK-OUT-CNT2        >   ZERO )
                            MOVE    "病名登録処理終了"
                                            TO  MDCRES-API-RESULT-MSG
                        END-IF
@@ -1233,41 +1178,34 @@
                GO      TO      20021-CLAIM-CALL-EXT
            END-IF
       *
-      **** INITIALIZE                  WRK-ERROR-AREA
-           INITIALIZE                  LNK-ORCL0031AREA
-           MOVE    "1"                 TO  LNK-KBN-CODE
+           INITIALIZE                  WRK-ERROR-AREA
+           MOVE    "1"                 TO  WRK-KBN-CODE
       *    診療行為なし
            IF     (CNT-SRYCNT          =   ZERO )
-               MOVE    "1"                 TO  LNK-KBN-CODE2
+               MOVE    "1"                 TO  WRK-KBN-CODE2
            END-IF
            CALL    "ORCL0031"          USING LF04-REC
-      ****                                   WRK-ERROR-AREA
-                                             LNK-ORCL0031AREA
-           IF      LNK-OUT-HKNCOMBI    NOT =   ZERO
+                                             WRK-ERROR-AREA
+           IF      WRK-OUT-HKNCOMBI    NOT =   ZERO
       *        対象保険組合せ情報編集
                PERFORM 200210-HKNCOMBI-HEN-SEC
            END-IF
-           IF      LNK-ERR1-CODE   NOT =   SPACE
+           IF      WRK-ERR-CODE    NOT =   ZERO
+      ******** MOVE    WRK-ERR-CODE        TO  WRK-ERRCD
                MOVE    "80"                TO  WRK-ERRCD
-               MOVE    LNK-ERR1-MSG        TO  WRK-ERRMSG
+               MOVE    WRK-ERR-MSG         TO  WRK-ERRMSG
            ELSE
-               IF      LNK-ERR2-CODE   NOT =   SPACE
-                   MOVE    "80"                TO  WRK-ERRCD
-                   MOVE    LNK-ERR2-MSG        TO  WRK-ERRMSG
-               END-IF
-           END-IF
-           IF      WRK-ERRCD           =   SPACE
-               IF     (LNK-OUT-HKNCOMBI    =   ZERO
+               IF     (WRK-OUT-HKNCOMBI    =   ZERO
                                            OR  SPACE)
                AND    (CNT-SRYCNT          >   ZERO )
                    MOVE    "K2"                TO  WRK-KEICD
                END-IF
                IF     (CNT-SRYCNT          >   ZERO )  AND
-                      (LNK-OUT-CNT1        =   ZERO )
+                      (WRK-OUT-CNT1        =   ZERO )
                    MOVE    "20"                TO  WRK-ERRCD
                END-IF
                IF     (CNT-BYOCNT          >   ZERO )  AND
-                      (LNK-OUT-CNT2        =   ZERO )
+                      (WRK-OUT-CNT2        =   ZERO )
                    MOVE    "21"                TO  WRK-ERRCD
                END-IF
                IF     (CNT-SRYCNT          =   ZERO )  AND
@@ -1276,7 +1214,7 @@
                END-IF
            END-IF
       *
-           IF      LNK-OUT-CNT1        =   ZERO
+           IF      WRK-OUT-CNT1        =   ZERO
       *        中途終了データ登録なしは、ＵＩＤのクリア
                MOVE    SPACE           TO  MDCRES-MEDICAL-UID
            END-IF
@@ -1342,7 +1280,7 @@
       *    診療科
            MOVE    WRK-SRYKA           TO  ORCSAPIHKN-SRYKA
       *    保険組合せ
-           MOVE    LNK-OUT-HKNCOMBI    TO  ORCSAPIHKN-IN-HKNCOMBI
+           MOVE    WRK-OUT-HKNCOMBI    TO  ORCSAPIHKN-IN-HKNCOMBI
            CALL    "ORCSAPIHKN"        USING
                                        SPA-AREA
                                        ORCSAPIHKNAREA
@@ -1352,7 +1290,7 @@
                    UNTIL      (IDX     >   20  )
                          OR   (ORCSAPIHKN-THKNCOMBI (IDX)
                                            =   SPACE  )
-               IF      ORCSAPIHKN-THKNCOMBI (IDX)  =   LNK-OUT-HKNCOMBI
+               IF      ORCSAPIHKN-THKNCOMBI (IDX)  =   WRK-OUT-HKNCOMBI
                    PERFORM 2002101-HKNHEN-TBL-SEC
                    MOVE    20                  TO  IDX
                END-IF
