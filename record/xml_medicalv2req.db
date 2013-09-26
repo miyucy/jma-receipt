@@ -14,7 +14,6 @@ xml_medicalv2req {
 			Department_Code		varchar(2);
 			Physician_Code		varchar(5);
 			HealthInsurance_Information  {
-				Insurance_Combination_Number	varchar(04);
 				InsuranceProvider_Class		varchar(03);
 				InsuranceProvider_Number	varchar(08);
 				InsuranceProvider_WholeName	varchar(20);
@@ -44,8 +43,6 @@ xml_medicalv2req {
 				Medication_Name		varchar(80);
 				Medication_Number	varchar(40);
 				Medication_Generic_Flg	varchar(03);
-				Medication_Continue		varchar(01);
-				Medication_Internal_Kinds	varchar(01);
 			} [40];
 		}[40] ;
 		Disease_Information  {

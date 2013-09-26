@@ -48,8 +48,6 @@
                 04  MDCREQ-APPOINT-DR-CODE  PIC X(5).
       *         保険情報
                 04  MDCREQ-INSURANCE-INFO.
-      *           保険組合せ番号
-                  05  MDCREQ-COMBINATION-NUMBER      PIC X(04).
       *           保険の種類
                   05  MDCREQ-MAIN-INSURANCE-CLASS    PIC X(03).
       *           保険者番号
@@ -104,12 +102,6 @@
                     06  MDCREQ-PRSCRPT-NUMBER        PIC X(40).
       *             処方せん一般名記載
                     06  MDCREQ-GENERIC-FLG           PIC X(03).
-      *H29.4
-      *             継続コメント指示区分
-                    06  MDCREQ-CONTKBN               PIC X(01).
-      *             内服１種類区分
-                    06  MDCREQ-NAIFKBN               PIC X(01).
-      *
       *         病名
                 04  MDCREQ-DIAGNOSIS-INFO          OCCURS  50 TIMES.
                   05  MDCREQ-DIAGNOSIS-NUMBER        PIC X(50).
