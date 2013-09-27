@@ -85,6 +85,9 @@
       *    サブプロ用　領域
       *****************************************************************
       *
+      *    クライアント保存可否情報取得サブ
+           COPY    "CPORCSCLIENTSV.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -96,7 +99,19 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA13SCRAREA.INC".
+           COPY    "Q01.INC".
+           COPY    "Q02.INC".
+           COPY    "Q02A.INC".
+           COPY    "Q02B.INC".
+           COPY    "Q03.INC".
+           COPY    "Q04.INC".
+           COPY    "Q96.INC".
+           COPY    "Q97.INC".
+           COPY    "Q98.INC".
+           COPY    "Q99.INC".
+           COPY    "Q100.INC".
+           COPY    "QERR.INC".
+           COPY    "QID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -188,7 +203,12 @@
       *        ＣＳＶ出力処理
       *
       *        クライアント保存可否情報取得サブ
-               IF      SPA-Q01-CLIENT-SAVE
+               INITIALIZE                      ORCSCLIENTSVAREA
+               CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
+                                                   SPA-AREA
+               MOVE    SCLIENTSV-CLIENT-SAVE
+                                           TO  SPA-Q100-CLIENT-SAVE
+               IF      SPA-Q100-CLIENT-SAVE
                                        =   "1"
                    MOVE    "1"             TO  SPA-GMN-Q100-FILEL   (1)
                    MOVE    "クライアント保存"
@@ -200,18 +220,8 @@
                    MOVE    "ＥＵＣ"        TO  SPA-GMN-Q100-CDKBNMEIL(1)
                    MOVE    "2"             TO  SPA-GMN-Q100-CDKBNL   (2)
                    MOVE    "Ｓ−ｊｉｓ"    TO  SPA-GMN-Q100-CDKBNMEIL(2)
-                   MOVE    "3"             TO  SPA-GMN-Q100-CDKBNL   (3)
-                   MOVE    "ＵＴＦ−８"    TO  SPA-GMN-Q100-CDKBNMEIL(3)
-                   MOVE    3               TO  SPA-GMN-Q100-CDKBN-MAX
+                   MOVE    2               TO  SPA-GMN-Q100-CDKBN-MAX
                    MOVE    WIDGET-NORMAL   TO  SPA-GMN-Q100-CDKBN-STATE
-      *
-                   IF    ( SPA-MW          =   SPA-GINBEE )
-                       MOVE    SPA-GMN-Q100-FILELST (1)
-                                           TO  SPA-GMN-Q100-FILE-G
-                       MOVE    SPA-GMN-Q100-CDKBNLST (1)
-                                           TO  SPA-GMN-Q100-CDKBN-G
-                   END-IF
-      *
                ELSE
                    MOVE    WIDGET-INSENSITIVE
                                            TO  SPA-GMN-Q100-FILE-STATE
@@ -223,13 +233,8 @@
                                        TO  SPA-GMN-Q100-MSG
                MOVE    "出力ファイル名"
                                        TO  SPA-GMN-Q100-LBLFILENAME
-               IF    ( SPA-MW          =   SPA-GINBEE )
-                   MOVE    "OUTPUT.csv"
+               MOVE    "/tmp/OUTPUT.csv"
                                        TO  SPA-GMN-Q100-FILENAME
-               ELSE
-                   MOVE    "/tmp/OUTPUT.csv"
-                                       TO  SPA-GMN-Q100-FILENAME
-               END-IF
                MOVE    WIDGET-NORMAL   TO  SPA-GMN-Q100-FILENAME-STATE
                MOVE    "件数指定"      TO  SPA-GMN-Q100-LBLNUMSEL
            ELSE
@@ -377,23 +382,13 @@
                        UNTIL   IDX2    >       100
                        OR      SPA-GMN-Q100-FILENAME (IDX2:1)
                                            =   SPACE
-      *
-                   IF    ( SPA-MW      =   SPA-GINBEE )
-                       IF        SPA-GMN-Q100-FILENAME (IDX2:1)
-                                               =   "\" OR  ":"  OR "/"
-                           MOVE    "1006"          TO  SPA-ERRCD
-                           MOVE    1               TO  SPA-GMN-Q100-CUR
-                           MOVE    100             TO  IDX2
-                       END-IF
-                   ELSE
-                       IF        SPA-GMN-Q100-FILENAME (IDX2:1)
+                   IF        SPA-GMN-Q100-FILENAME (IDX2:1)
                                                =   "\" OR  ":" 
-                           MOVE    "1004"          TO  SPA-ERRCD
-                           MOVE    1               TO  SPA-GMN-Q100-CUR
-                           MOVE    100             TO  IDX2
-                       END-IF
+                       MOVE    "1004"              TO  SPA-ERRCD
+                       MOVE    1                   TO  SPA-GMN-Q100-CUR
+                       MOVE    100                 TO  IDX2
                    END-IF
-               END-PERFORM
+               END-PERFORM        
            END-IF
            .
        4100-FILENAME-CHK-EXT.
@@ -453,13 +448,7 @@
       *****************************************************************
        4100-FILE-CHK-SEC           SECTION.
       *
-           IF      SPA-Q01-CLIENT-SAVE    =   "1"
-      *
-               IF    ( SPA-MW             =   SPA-GINBEE )
-                   MOVE    SPA-GMN-Q100-FILELST (1)
-                                          TO  SPA-GMN-Q100-FILE-G
-               END-IF
-      *
+           IF      SPA-Q100-CLIENT-SAVE    =   "1"
                IF      SPA-GMN-Q100-FILE       =   SPACE
                    MOVE    SPACE               TO  SPA-GMN-Q100-CDKBN-G
                ELSE
@@ -488,7 +477,7 @@
       *****************************************************************
        4100-CDKBN-CHK-SEC           SECTION.
       *
-           IF      SPA-Q01-CLIENT-SAVE    =   "1"
+           IF      SPA-Q100-CLIENT-SAVE    =   "1"
                IF      SPA-GMN-Q100-CDKBN      =   SPACE
                    IF      SPA-GMN-Q100-FILE       =   "1"
                        MOVE    SPA-GMN-Q100-CDKBNLST (1)
@@ -559,20 +548,15 @@
       *
                PERFORM VARYING IDX0 FROM 100 BY -1 
                        UNTIL ( IDX0 <    1 )
-                        OR   ( SPA-ERRCD NOT =   SPACE )
-      *
                    IF    ( SPA-GMN-Q100-FILENAME (IDX0 : 1) =  "/" )
-                       IF    ( SPA-ERRCD =  SPACE )
-                           IF    ( IDX0      =  100 )
-                            OR   ( SPA-GMN-Q100-FILENAME ( IDX0 + 1 : )
+                       IF    ( IDX0      =  100 )
+                        OR   ( SPA-GMN-Q100-FILENAME ( IDX0 + 1 : )
                                          = SPACE )
-                               MOVE    "1005"      TO  SPA-ERRCD
-                               MOVE    1           TO  SPA-GMN-Q100-CUR
-                               GO  TO  490-KAKUTEI-EXT
-                           END-IF
+                           MOVE    "1005"      TO  SPA-ERRCD
+                           MOVE    1           TO  SPA-GMN-Q100-CUR
+                           GO  TO  490-KAKUTEI-EXT
                        END-IF
                    END-IF
-      *
                END-PERFORM
       *
            END-IF
@@ -623,7 +607,7 @@
                                        TO  SPA-Q02-Q100-EDKNS
       *        文字コード区分
                IF      SPA-GMN-Q100-CDKBN  =   SPACE
-                   MOVE    "1"                 TO  SPA-Q02-Q100-CDKBN
+                   MOVE    "0"                 TO  SPA-Q02-Q100-CDKBN
                ELSE
                    MOVE    SPA-GMN-Q100-CDKBN  TO  SPA-Q02-Q100-CDKBN
                END-IF
@@ -720,9 +704,6 @@
            MOVE    SPA-GMN-Q100-CDKBN-G    TO  Q100-CDKBN
            MOVE    SPA-GMN-Q100-CDKBN-STATE
                                            TO  Q100-CDKBN-STATE
-           IF    ( SPA-GMN-Q100-FILE       =   SPACE )
-               MOVE    WIDGET-INSENSITIVE  TO  Q100-CDKBN-STATE
-           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -803,7 +784,7 @@
       *    次カーソル位置を設定
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "EDNUM"
-               IF      SPA-Q01-CLIENT-SAVE    =   "1"
+               IF      SPA-Q100-CLIENT-SAVE    =   "1"
                    MOVE    005         TO  SPA-GMN-Q100-CUR
                ELSE
                    MOVE    004         TO  SPA-GMN-Q100-CUR
@@ -844,15 +825,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "1004"
                STRING   "出力ファイル名に" DELIMITED  BY  SIZE
-                        "：￥が入力されています"
+                        "”：”、”￥”が入力してあります"
                                              DELIMITED  BY  SIZE
                                              INTO  SPA-ERRMSG
-               END-STRING
-           WHEN    "1006"
-               STRING   "出力ファイル名に" DELIMITED  BY  SIZE
-                        "：￥／が入力されています"
-               DELIMITED  BY  SIZE
-               INTO  SPA-ERRMSG
                END-STRING
            END-EVALUATE
       *
