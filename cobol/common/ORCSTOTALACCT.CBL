@@ -283,8 +283,9 @@ grpsys     CALL    "ORCDBMAIN"                  USING MCPAREA
        20011-SRYKA-HENSYU-SEC            SECTION.
       *
            MOVE    ZERO    TO   FLG-NG
-           IF  (WRK-HKNCOMBI-DAISANFLG(IDX)  =   1 )
-           AND (ACCT-ZAIREQFLG               =  "1")
+           IF  (WRK-HKNCOMBI-DAISANFLG(IDX)  =   1  )
+           AND (ACCT-SRYKBN                  =  "80")
+           AND (ACCT-ZAIREQFLG               =  "1" )
                PERFORM 200112-SRYACCTPLUS-KENSAKU-SEC
            END-IF
       *
