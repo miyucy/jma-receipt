@@ -102,6 +102,7 @@
       *                                     ¥Æ¥¹¥È´µ¼Ô¤Ë¤¹¤ë
       *  04.07.04    NACL-ÌçÏÆ    13/04/16  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
       *                                     Ï«ºÒ»ØÄê°åÎÅµ¡´Ø¶èÊ¬ÊÔ½¸
+      *  04.07.05    NACL-ÌçÏÆ    13/10/02  ¼«ÇåÀÕ¡ÊÂè»°¼Ô¹Ô°Ù¡ËÂÐ±þ
       *
       *  04.08.01    NACL-ÌçÏÆ    13/01/22  Æü¿ô²ó¿ô¥Æ¡¼¥Ö¥ë£±£°²óÂÐ±þ
       *****************************************************************
@@ -1027,9 +1028,17 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *    ¼«ÇåÀÕ¶èÊ¬
            MOVE    WRK-JIBAIKBN          TO   RECE41-JIBAIKBN
       *    µ»½ÑÅÀÃ±²Á
-           MOVE    WRK-SYUTENTANKA       TO   RECE41-SYUTENTANKA
+           IF      RECE41-HKNKBN    =   "6"
+             MOVE  10                    TO   RECE41-SYUTENTANKA
+           ELSE
+             MOVE  WRK-SYUTENTANKA       TO   RECE41-SYUTENTANKA
+           END-IF
       *    ÌôºÞÅùÅÀÃ±²Á
-           MOVE    WRK-YKZTENTANKA       TO   RECE41-YKZTENTANKA
+           IF      RECE41-HKNKBN    =   "6"
+             MOVE  10                    TO   RECE41-YKZTENTANKA
+           ELSE
+             MOVE  WRK-YKZTENTANKA       TO   RECE41-YKZTENTANKA
+           END-IF
       *    ¸øÌ³ºÒ³²¶èÊ¬
            MOVE    WRK-KOMUKBN           TO   RECE41-KOMUKBN
       *    ¸øÌ³ºÒ³²ÅÀÃ±²Á
@@ -1038,7 +1047,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    WRK-KYUGYO-PRTKBN     TO   RECE41-KYUGYO-PRTKBN
       *    Ï«ºÒ»ØÄê°åÎÅµ¡´Ø¶èÊ¬
            MOVE    WRK-RSIIRYOKBN        TO   RECE41-RSIIRYOKBN
-           IF      RECE41-HKNKBN     =   "4"
+           IF      RECE41-HKNKBN     =   "4" OR "6"
                MOVE    "0"               TO   RECE41-RSIIRYOKBN
            END-IF
       *
@@ -1275,13 +1284,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                    PERFORM   21034-GAIRAI-HANTEI-SEC
                                END-IF
                                PERFORM   21035-ENDATE-HANTEI-SEC 
-                               IF    RECE41-HKNKBN   =   "4"            
+                               IF    RECE41-HKNKBN   =   "4" OR "6"
                                  IF   ACCT-SRYKBN  =  "80"              
                                    PERFORM   21036-SINDAN-HANTEI-SEC          
                                  END-IF                                 
                                END-IF                                   
       *
-                               IF    RECE41-HKNKBN   =   "4"
+                               IF    RECE41-HKNKBN   =   "4" OR "6"
                                 PERFORM VARYING ID1 FROM 1  BY 1
                                            UNTIL    ID1     >    31
                                  IF  ACCT-DAY(1 ID1)   NOT =    ZERO
@@ -1307,7 +1316,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                           OR  "99" 
                                    PERFORM   21031-SHOSAISIN-HANTEI-SEC
                                END-IF
-                               IF    RECE41-HKNKBN   =   "4"
+                               IF    RECE41-HKNKBN   =   "4" OR "6"
                                  IF   ACCT-SRYKBN  =  "80"
                                    PERFORM   21036-SINDAN-HANTEI-SEC
                                  END-IF
@@ -1978,7 +1987,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             COMPUTE  TBL-SYUTEN-JI(ID1)  =
                                      TBL-SYUTEN-JI(ID1)  -
                                     ( WRK-ZAIKAISU-JI * TNS-TEN )
-                            IF   WRK-JIBAIKBN  =  "2"
+                            IF ((RECE41-HKNKBN  =  "4") AND
+                                (WRK-JIBAIKBN   =  "2"))
+                            OR ( RECE41-HKNKBN  =  "6" )
                               COMPUTE  TBL-YKZTEN-JI(ID1)  =
                                        TBL-YKZTEN-JI(ID1)  +
                                       ( WRK-ZAIKAISU-JI * TNS-TEN )
@@ -2099,7 +2110,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        END-PERFORM
                     END-PERFORM
                END-IF
-               IF    RECE41-HKNKBN   =   "4"
+               IF    RECE41-HKNKBN   =   "4" OR "6"
                    CONTINUE
                ELSE
                  IF        ACCT-SRYKBN        =    "95"   OR  "96"
@@ -2196,6 +2207,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 (WRK-JIBAIKBN    =   "2"))
            OR  ((RECE41-HKNKBN   =   "5") AND
                 (WRK-KOMUKBN     =   "2"))
+           OR  ( RECE41-HKNKBN   =   "6" )
              CONTINUE
            ELSE
              IF       RECE41-JNISSU   =    ZERO  
@@ -2266,7 +2278,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2105-HENSYU-SET2-SEC                    SECTION.
       *
-           IF    RECE41-HKNKBN   =   "4"                                
+           IF    RECE41-HKNKBN   =   "4" OR "6"
                CONTINUE                                                 
            ELSE                                                         
              IF    RECE41-HKNKBN   =   "5"
