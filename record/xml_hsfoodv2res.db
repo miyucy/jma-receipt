@@ -67,7 +67,7 @@ xml_hsfoodv2res {
 			};
 		}[31];
 		ICN_Information	{
-			ICN_Key							varchar(04);
+		 	Insurance_Combination_Number	varchar(04);
 			InsuranceProvider_Class			varchar(03);
 			InsuranceProvider_Number		varchar(08);
 			InsuranceProvider_WholeName		varchar(20);
