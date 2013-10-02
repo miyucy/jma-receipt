@@ -446,33 +446,3 @@ path	key15 	{
 		;
 	};
 };
-
-path	key16 	{
-	DBSELECT	{
-		DECLARE tbl_wksryact_key16_csr CURSOR FOR
-		SELECT *
-		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND   PTID        =   :PTID
-			AND   SRYKA       =   :SRYKA
-			AND   SRYYMD      =   :SRYYMD
-			AND   HKNCOMBI    =   :HKNCOMBI
-			AND   DOUJITSUKBN   =   :DOUJITSUKBN
-			ORDER   BY        ZAINUM   DESC,
-                                          RENNUM
-		;
-	};
-};
-
-path	del14 	{
-	DBDELETE	{
-		DELETE
-		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN   =   :NYUGAIKBN
-			AND  (SRYYMD      >=   :SRYYMD)
-			AND  (SRYYMD      <=   :UPYMD )
-		;
-	};
-};
