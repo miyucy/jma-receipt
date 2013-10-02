@@ -800,11 +800,16 @@
            IF      WKSRY-MOD-FLG   NOT =   ZERO
       *        展開中
                MOVE    "1"              TO  TMDCRES-MODE-FLG (IDX)
+           ELSE
+               MOVE    "0"              TO  TMDCRES-MODE-FLG (IDX)
            END-IF
       *    電子カルテフラグ
            IF      WKSRY-KARTE-FLG      =   1
       *        中途終了登録
                MOVE    "1"              TO  TMDCRES-KARTE-FLG (IDX)
+           ELSE
+      *        中途終了登録以外
+               MOVE    "0"              TO  TMDCRES-KARTE-FLG (IDX)
            END-IF
       *    電子カルテキー（ＵＩＤ）
            MOVE    WKSRY-KARTE-KEY      TO  TMDCRES-MEDICAL-UID (IDX)
@@ -1177,8 +1182,8 @@
        930-PTHKNINF-READ-SEC              SECTION.
       *
            INITIALIZE                  PTHKNINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
-           MOVE    SPA-PTID            TO  PTHKN-PTID
+           MOVE    COMB-HOSPNUM        TO  PTHKN-HOSPNUM
+           MOVE    COMB-PTID           TO  PTHKN-PTID
            MOVE    COMB-HKNID          TO  PTHKN-HKNID 
       *
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
@@ -1212,9 +1217,9 @@
        940-PTKOHINF-READ-SEC              SECTION.
       *
            INITIALIZE                  PTKOHINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-           MOVE    SPA-PTID            TO  PTKOH-PTID
-           MOVE    COMB-KOHID (IDK)    TO  PTKOH-KOHID 
+           MOVE    COMB-HOSPNUM        TO  PTKOH-HOSPNUM
+           MOVE    COMB-PTID           TO  PTKOH-PTID
+           MOVE    COMB-KOHID (IDK)    TO  PTKOH-KOHID
       *
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
