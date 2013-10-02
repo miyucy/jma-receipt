@@ -76,19 +76,15 @@
            03  WRK-SRYYM                   PIC X(06).
            03  WRK-ZAINUM-G.
                05  WRK-ZAINUM              PIC 9(08).
-           03  WRK-NUM-ZEN                 PIC X(02).
-           03  WRK-NUM-HAN                 PIC X(01).
       *
        01  MEDINF-AREA.
            03  MEDINF-MAX                  PIC 9(05).
-           03  MEDINF-OCC                  OCCURS       100.
+           03  MEDINF-OCC                  OCCURS       50.
                09  MEDINF-MEDKBN           PIC X(01).
                09  MEDINF-LIMIT            PIC 9(03).
                09  MEDINF-ALLKBN           PIC 9(01).
                09  MEDINF-ZAINUM           PIC 9(04).
                09  MEDINF-SRYCD            PIC X(09).
-               09  MEDINF-ID               PIC X(02).
-               09  MEDINF-NAME             PIC X(100).
       *
        01  CONST-AREA.
            03  CONST-H240401           PIC X(08)   VALUE   "20120401".
@@ -102,7 +98,6 @@
                05  CONST-ADLKBN-OCC    OCCURS  4.
                    07  CONST-ADLKBN-ALLKBN PIC 9(01).
                    07  CONST-ADLKBN-ZAINUM PIC 9(04).
-                   07  CONST-ADLKBN-ID     PIC X(02).
                    07  CONST-ADLKBN-NAME   PIC X(100).
                05  CONST-ADLKBN-MAX        PIC 9(03).
       *
@@ -151,12 +146,14 @@
        LINKAGE                     SECTION.
       *
        COPY    "COMMON-SPA".
+       COPY    "CPORCHCN68.INC".
        COPY    "CPORCHCN68S01.INC".
       *
       ******************************************************************
        PROCEDURE               DIVISION
                                    USING
                                    SPA-AREA
+                                   ORCHCN68AREA
                                    HCN68S01-AREA
                                    .
       *
@@ -183,33 +180,25 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  MEDINF-AREA
       *
-           IF    ( HCN68S01-RANGE      =   SPACE )
-               MOVE    "0"             TO  HCN68S01-RANGE
-           END-IF
-      *
            MOVE    6                   TO  CONST-ADLTEN-MAX
            MOVE    4                   TO  CONST-ADLKBN-MAX
       *
            MOVE    0                   TO  CONST-ADLKBN-ALLKBN (1)
            MOVE    1001                TO  CONST-ADLKBN-ZAINUM (1)
-           MOVE    "a"                 TO  CONST-ADLKBN-ID     (1)
-           MOVE    "ａ　ベッドの可動性"
+           MOVE    "　ａ　ベッドの可動性"
                                        TO  CONST-ADLKBN-NAME   (1)
       *
            MOVE    0                   TO  CONST-ADLKBN-ALLKBN (2)
            MOVE    1002                TO  CONST-ADLKBN-ZAINUM (2)
-           MOVE    "b"                 TO  CONST-ADLKBN-ID     (2)
-           MOVE    "ｂ　移乗"          TO  CONST-ADLKBN-NAME   (2)
+           MOVE    "　ｂ　移乗"        TO  CONST-ADLKBN-NAME   (2)
       *
            MOVE    0                   TO  CONST-ADLKBN-ALLKBN (3)
            MOVE    1003                TO  CONST-ADLKBN-ZAINUM (3)
-           MOVE    "c"                 TO  CONST-ADLKBN-ID     (3)
-           MOVE    "ｃ　食事"          TO  CONST-ADLKBN-NAME   (3)
+           MOVE    "　ｃ　食事"        TO  CONST-ADLKBN-NAME   (3)
       *
            MOVE    0                   TO  CONST-ADLKBN-ALLKBN (4)
            MOVE    1004                TO  CONST-ADLKBN-ZAINUM (4)
-           MOVE    "d"                 TO  CONST-ADLKBN-ID     (4)
-           MOVE    "ｄ　トイレの使用"  TO  CONST-ADLKBN-NAME   (4)
+           MOVE    "　ｄ　トイレの使用" TO CONST-ADLKBN-NAME   (4)
       *
            .
        100-INIT-EXT.
@@ -253,14 +242,8 @@
            IF    ( FLG-NYUINACCT   =   ZERO )
                PERFORM VARYING IDX-DAY FROM    1   BY  1
                        UNTIL ( IDX-DAY >   31 )
-      *
-                   MOVE    NACCT-DAY (IDX-DAY)
-                                   TO  HCN68S01-COMB-DAY  (IDX-DAY)
-      *
                    IF    ( NACCT-DAY (IDX-DAY) >   ZERO )
                        MOVE    1   TO  HCN68S01-NYUIN-DAY (IDX-DAY)
-                       COMPUTE HCN68S01-NYUIN-NISSU
-                           =   HCN68S01-NYUIN-NISSU    +   1
                    END-IF
                END-PERFORM
            END-IF
@@ -409,7 +392,7 @@
                    UNTIL ( IDX0    >   MEDINF-MAX )
                     OR   ( IDX-LST >=  CONST-RYOLIST-MAX )
       *
-               MOVE    HCN68S01-SRYYM  TO  WRK-SRYYM
+               MOVE    ORCHCN68-SRYYM  TO  WRK-SRYYM
                MOVE    MEDINF-ZAINUM (IDX0)
                                        TO  WRK-ZAINUM
                PERFORM 900-RYOCOM-KEY-SEL-SEC
@@ -423,18 +406,8 @@
       *
                    PERFORM VARYING IDX-DAY FROM    1   BY  1
                            UNTIL ( IDX-DAY >   31 )
-      *
-                       EVALUATE    TRUE
-                       WHEN  ( HCN68S01-RANGE      =   "1" )
-                         AND ( HCN68S01-RYOYO-CD (IDX-DAY)
-                                               NOT =   SPACE )
-                       WHEN  ( HCN68S01-RANGE      =   "0" )
-                         AND ( HCN68S01-NYUIN-DAY (IDX-DAY)
-                                                   >   ZERO )
-                           MOVE    RYOCOM-DAY (IDX-DAY)
+                       MOVE    RYOCOM-DAY (IDX-DAY)
                                    TO  HCN68S01-TDAY (IDX-LST IDX-DAY)
-                       END-EVALUATE
-      *
                    END-PERFORM
       *
                ELSE
@@ -461,12 +434,10 @@
                                    TO  HCN68S01-TALLKBN (IDX-LST)
                MOVE    CONST-ADLKBN-ZAINUM (IDX0)
                                    TO  HCN68S01-TZAINUM (IDX-LST)
-               MOVE    CONST-ADLKBN-ID     (IDX0)
-                                   TO  HCN68S01-TID     (IDX-LST)
                MOVE    CONST-ADLKBN-NAME   (IDX0)
                                    TO  HCN68S01-TNAME   (IDX-LST)
       *
-               MOVE    HCN68S01-SRYYM  TO  WRK-SRYYM
+               MOVE    ORCHCN68-SRYYM  TO  WRK-SRYYM
                MOVE    HCN68S01-TZAINUM (IDX-LST)
                                    TO  WRK-ZAINUM
                PERFORM 900-RYOCOM-KEY-SEL-SEC
@@ -474,35 +445,19 @@
                    IF    ( RYOCOM-MONTH    >   ZERO )
                     AND  ( RYOCOM-DAY-TBL2 =   ZERO )
                        PERFORM VARYING IDX-DAY FROM    1   BY  1
-                               UNTIL ( IDX-DAY >   31 )
-      *
-                           EVALUATE    TRUE
-                           WHEN  ( HCN68S01-RANGE      =   "1" )
-                             AND ( HCN68S01-RYOYO-CD (IDX-DAY)
-                                               NOT =   SPACE )
-                           WHEN  ( HCN68S01-RANGE      =   "0" )
-                             AND ( HCN68S01-NYUIN-DAY (IDX-DAY)
-                                                   >   ZERO )
+                           UNTIL ( IDX-DAY >   31 )
+                           IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
+                                           NOT =   SPACE )
                                MOVE    RYOCOM-MONTH
                                    TO  HCN68S01-TDAY (IDX-LST IDX-DAY)
-                           END-EVALUATE
-      *
+                           END-IF
                        END-PERFORM
                    ELSE
+      *
                        PERFORM VARYING IDX-DAY FROM    1   BY  1
                                UNTIL ( IDX-DAY >   31 )
-      *
-                           EVALUATE    TRUE
-                           WHEN  ( HCN68S01-RANGE      =   "1" )
-                             AND ( HCN68S01-RYOYO-CD (IDX-DAY)
-                                               NOT =   SPACE )
-                           WHEN  ( HCN68S01-RANGE      =   "0" )
-                             AND ( HCN68S01-NYUIN-DAY (IDX-DAY)
-                                                   >   ZERO )
-                               MOVE    RYOCOM-DAY (IDX-DAY)
+                           MOVE    RYOCOM-DAY (IDX-DAY)
                                    TO  HCN68S01-TDAY (IDX-LST IDX-DAY)
-                           END-EVALUATE
-      *
                        END-PERFORM
                    END-IF
                END-IF
@@ -530,12 +485,31 @@
                                    TO  HCN68S01-TZAINUM (IDX-LST)
            MOVE    MEDINF-SRYCD  (IDX0)
                                    TO  HCN68S01-TSRYCD  (IDX-LST)
-           MOVE    MEDINF-SRYCD  (IDX0)
-                                   TO  HCN68S01-TSRYCD  (IDX-LST)
-           MOVE    MEDINF-NAME   (IDX0)
+           MOVE    SPACE           TO  HCN68S01-TNAME   (IDX-LST)
+      *
+           EVALUATE    TRUE
+           WHEN  ( HCN68S01-SRYYMD  >=  CONST-H200401 )
+               PERFORM VARYING IDX2 FROM    1   BY  1
+                       UNTIL ( IDX2 >   MEDH20-MAX )
+                        OR   ( HCN68S01-TNAME   (IDX-LST)
+                                       NOT =   SPACE )
+                   IF    ( MEDH20-STYMD  (IDX2)
+                                      <=   HCN68S01-SRYYMD )
+                     AND ( MEDH20-EDYMD  (IDX2)
+                                      >=   HCN68S01-SRYYMD )
+                     AND ( MEDH20-ZAINUM (IDX2)
+                                       =   HCN68S01-TZAINUM  (IDX-LST))
+                       MOVE    MEDH20-MEIL (IDX2)
+                                       TO  HCN68S01-TNAME   (IDX-LST)
+                   END-IF
+      *
+               END-PERFORM
+           END-EVALUATE
+      *
+           IF    ( HCN68S01-TNAME   (IDX-LST)   =   SPACE )
+               MOVE    MEDINF-SRYCD  (IDX0)
                                    TO  HCN68S01-TNAME   (IDX-LST)
-           MOVE    MEDINF-ID     (IDX0)
-                                   TO  HCN68S01-TID     (IDX-LST)
+           END-IF
       *
            .
        21011-EDIT-RYOLST-MEDKBN-EXT.
@@ -567,18 +541,6 @@
                                            TO  MEDINF-ZAINUM (IDXM)
                        MOVE  MEDH20-SRYCDL (IDX0)
                                            TO  MEDINF-SRYCD  (IDXM)
-                       MOVE  MEDH20-SRYCDL (IDX0)
-                                             TO WRK-TNS-SRYCD
-                       MOVE  HCN68S01-SRYYMD TO WRK-TNS-KJNYMD
-                       PERFORM 900-TENSU-KEY-SEL-SEC
-      * 暫定対応
-      *                MOVE    TNS-NAME    TO MEDINF-NAME (IDXM)
-      *                IF    ( MEDINF-NAME (IDXM)  =   SPACE )
-                           MOVE    MEDH20-MEIL (IDX0)
-                                           TO MEDINF-NAME (IDXM)
-      *                END-IF
-                       MOVE    MEDH20-ID   (IDX0)
-                                           TO MEDINF-ID (IDXM)
                    END-IF
                END-PERFORM
            END-EVALUATE
@@ -594,7 +556,7 @@
            PERFORM 21011-EDIT-MEDADL-SEC
       *
            INITIALIZE                  SS011-AREA
-           MOVE    HCN68S01-PTID   TO  SS011-PTID
+           MOVE    ORCHCN68-PTID   TO  SS011-PTID
            MOVE    HCN68S01-SRYYMD TO  SS011-SRYYM
            MOVE    1               TO  SS011-DAYFLG
            MOVE    1               TO  SS011-MEDADLFLG
@@ -626,17 +588,12 @@
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
       *
-               IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
-                                       NOT =   SPACE )
-                   MOVE    SS011-DAY  (IDX-DAY)
+               MOVE    SS011-DAY  (IDX-DAY)
                                 TO  HCN68S01-PTSTS-DAY (IDX-DAY)
-                   MOVE    SS011-DAY2  (IDX-DAY)
+               MOVE    SS011-DAY2  (IDX-DAY)
                                 TO  HCN68S01-PTSTS-DAY2(IDX-DAY)
-                   MOVE    SS011-DAY3  (IDX-DAY)
-                                TO  HCN68S01-PTSTS-DAY3(IDX-DAY)
-                   MOVE    SS011-SRYCD (IDX-DAY)
+               MOVE    SS011-SRYCD (IDX-DAY)
                                 TO  HCN68S01-PTSTS-SRYCD (IDX-DAY)
-               END-IF
       *
            END-PERFORM
       *
@@ -660,7 +617,7 @@
                        PERFORM VARYING IDX-DAY FROM    1   BY  1
                                UNTIL ( IDX-DAY >   31 )
                            IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
-                                       NOT =   SPACE )
+                                                    NOT =   SPACE )
                                COMPUTE HCN68S01-ADLTEN-DAY (IDX-DAY)
                                    =   HCN68S01-ADLTEN-DAY (IDX-DAY)
                                    +   HCN68S01-TDAYALL (IDX-LST)
@@ -670,7 +627,7 @@
                        PERFORM VARYING IDX-DAY FROM    1   BY  1
                                UNTIL ( IDX-DAY >   31 )
                            IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
-                                       NOT =   SPACE )
+                                                    NOT =   SPACE )
                                COMPUTE HCN68S01-ADLTEN-DAY (IDX-DAY)
                                    =   HCN68S01-ADLTEN-DAY (IDX-DAY)
                                    +   HCN68S01-TDAY  (IDX-LST IDX-DAY)
@@ -699,10 +656,10 @@
       *
                    PERFORM VARYING IDX-DAY FROM    1   BY  1
                            UNTIL ( IDX-DAY >   31 )
-                       IF    ( HCN68S01-TDAY   (IDX-LST IDX-DAY)
+                       IF    ( HCN68S01-RYOYO-CD (IDX-DAY)
+                                       NOT =  SPACE )
+                        AND  ( HCN68S01-TDAY   (IDX-LST IDX-DAY)
                                            >   ZERO )
-                        AND  ( HCN68S01-RYOYO-CD (IDX-DAY)
-                                       NOT =   SPACE )
                            MOVE    HCN68S01-TDAY   (IDX-LST IDX-DAY)
                                TO  HCN68S01-MEDKBN-DAY (IDX-MED IDX-DAY)
                        END-IF
@@ -733,39 +690,6 @@
            .
       *
        800-MCNDATE-EXT.
-           EXIT.
-      *****************************************************************
-      *    数字半角処理
-      *****************************************************************
-       800-NUM-HANKAKU-SEC         SECTION.
-      *
-           MOVE    ZERO            TO  WRK-NUM-HAN
-           EVALUATE    WRK-NUM-ZEN
-           WHEN    "０"
-               MOVE    "0"         TO  WRK-NUM-HAN
-           WHEN    "１"
-               MOVE    "1"         TO  WRK-NUM-HAN
-           WHEN    "２"
-               MOVE    "2"         TO  WRK-NUM-HAN
-           WHEN    "３"
-               MOVE    "3"         TO  WRK-NUM-HAN
-           WHEN    "４"
-               MOVE    "4"         TO  WRK-NUM-HAN
-           WHEN    "５"
-               MOVE    "5"         TO  WRK-NUM-HAN
-           WHEN    "６"
-               MOVE    "6"         TO  WRK-NUM-HAN
-           WHEN    "７"
-               MOVE    "7"         TO  WRK-NUM-HAN
-           WHEN    "８"
-               MOVE    "8"         TO  WRK-NUM-HAN
-           WHEN    "９"
-               MOVE    "9"         TO  WRK-NUM-HAN
-           END-EVALUATE
-      *
-           .
-      *
-       800-NUM-HANKAKU-EXT.
            EXIT.
       *****************************************************************
       *    システム管理検索処理
@@ -803,8 +727,8 @@
            INITIALIZE  NYUINACCT-REC
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
-           MOVE    HCN68S01-PTID       TO  NACCT-PTID
-           MOVE    HCN68S01-SRYYM      TO  NACCT-SRYYM
+           MOVE    ORCHCN68-PTID       TO  NACCT-PTID
+           MOVE    ORCHCN68-SRYYM      TO  NACCT-SRYYM
            MOVE    "5"                 TO  NACCT-ZAISKBKBN
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -833,8 +757,8 @@
       *
            INITIALIZE                  NYUINACCT-REC
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
-           MOVE    HCN68S01-PTID       TO  NACCT-PTID
-           MOVE    HCN68S01-SRYYM      TO  NACCT-SRYYM
+           MOVE    ORCHCN68-PTID       TO  NACCT-PTID
+           MOVE    ORCHCN68-SRYYM      TO  NACCT-SRYYM
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key35"             TO  MCP-PATHNAME
@@ -962,7 +886,7 @@
            INITIALIZE                  RYOCOM-REC
            MOVE    SPA-HOSPNUM     TO  RYOCOM-HOSPNUM
            MOVE    "1"             TO  RYOCOM-NYUGAIKBN
-           MOVE    HCN68S01-PTID   TO  RYOCOM-PTID
+           MOVE    ORCHCN68-PTID   TO  RYOCOM-PTID
            MOVE    WRK-SRYYM       TO  RYOCOM-SRYYM
            MOVE    WRK-ZAINUM      TO  RYOCOM-ZAINUM
            MOVE    RYOCOM-REC      TO  MCPDATA-REC
