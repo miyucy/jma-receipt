@@ -53,6 +53,9 @@ R03	{
 		DATAKBN32	{
 			value	bool;
 		};
+		DATAKBN33	{
+			value	bool;
+		};
 		DATAKBN11	{
 			value	bool;
 		};
@@ -75,6 +78,9 @@ R03	{
 			value	bool;
 		};
 		DATAKBN25	{
+			value	bool;
+		};
+		DATAKBN26	{
 			value	bool;
 		};
 	};

@@ -56,6 +56,7 @@
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       *  04.07.02    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -3356,7 +3357,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       * 
       *****************************************************************
-      *    中止処理時データ削除処理
+      *    データ削除処理
       *****************************************************************
        5001-DB-DELETE-SEC               SECTION.
       *
@@ -3367,10 +3368,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
                MOVE    "1"                 TO  RECE10-NYUGAIKBN
                MOVE    4                   TO  RECE10-TEISYUTUSAKI
+               MOVE    "971"               TO  RECE10-HKNNUM
                MOVE    RECE10-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
-               MOVE    "del6"              TO  MCP-PATHNAME
+               MOVE    "del8"              TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC           NOT =   ZERO
                    DISPLAY "DBPATH=" MCP-TABLE " " MCP-PATHNAME
@@ -3507,12 +3509,13 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    MOVE    SYS-2002-NYUGAIKBN  TO  RECE10-NYUGAIKBN
                    MOVE    4                   TO  RECE10-TEISYUTUSAKI
                                                    RECE10-XXTEISYUTUSAKI 
+                   MOVE    "971"               TO  RECE10-HKNNUM
                    MOVE    RECE10-REC          TO  MCPDATA-REC
                    MOVE    "tbl_seikyu"        TO  MCP-TABLE
                    IF      WRK-PARA-DLTKBN     =   "0"
-                       MOVE    "del4"          TO  MCP-PATHNAME
+                       MOVE    "del9"          TO  MCP-PATHNAME
                    ELSE
-                       MOVE    "del7"          TO  MCP-PATHNAME
+                       MOVE    "del10"         TO  MCP-PATHNAME
                    END-IF
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    PERFORM   900-ORCDBMAIN-SEC

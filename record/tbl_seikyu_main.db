@@ -2559,3 +2559,48 @@ path	key84		{
 		;
 	};
 };
+
+path	del8 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_seikyu_main
+                WHERE   HOSPNUM       =   :HOSPNUM
+                  AND   SRYYM        =   :SRYYM
+                  AND   NYUGAIKBN    =   :NYUGAIKBN
+                  AND   TEISYUTUSAKI =   :TEISYUTUSAKI
+                  AND   SKYKBN       <>  '0' 
+                  AND   HKNNUM       =   :HKNNUM
+		;
+	};
+};
+
+path	del9 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_seikyu_main
+                WHERE   HOSPNUM      =   :HOSPNUM
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
+                  AND   SKYKBN      <>  '0' 
+                  AND  (TEISYUTUSAKI =  :TEISYUTUSAKI  OR
+                        TEISYUTUSAKI =  :XXTEISYUTUSAKI)
+                  AND   HKNNUM       =   :HKNNUM
+		;
+	};
+};
+
+path    del10    {
+        DBDELETE        {
+                DELETE
+                FROM tbl_seikyu_main
+                WHERE   HOSPNUM      =   :HOSPNUM
+                  AND   SRYYM       =   :SRYYM
+                  AND   NYUGAIKBN   =   :NYUGAIKBN
+                  AND   PTID        =   :PTID
+                  AND  (TEISYUTUSAKI =  :TEISYUTUSAKI  OR
+                        TEISYUTUSAKI =  :XXTEISYUTUSAKI)
+                  AND   HKNNUM       =   :HKNNUM
+                ;
+        };
+};

@@ -55,6 +55,7 @@
       *
       *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
       *  04.07.02    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -1051,8 +1052,26 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE     WRK-STYMDW(3:2)    TO  HC23-HAKKOUMM
       *    患者番号
            MOVE    RECE82-PTNUM        TO  HC23-PTNUM
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "8"
+      *            被保険者証の記号・番号
+                   STRING   RECE82-KIGO    DELIMITED  BY  SPACE
+                            "　"           DELIMITED  BY  SIZE
+                            RECE82-NUM     DELIMITED  BY  SPACE
+                                           INTO    HC23-KIGONUM
+                   END-STRING
+      *            保険者名
+                   MOVE    RECE82-HKNJANAME    TO  HC23-HKNJANAME
+           END-EVALUATE
       *    診療の種類
-           MOVE    "○"                TO  HC23-SINRYOKBN(3)
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "3"
+               WHEN    "4"
+               WHEN    "5"
+                   MOVE    "○"                TO  HC23-SINRYOKBN (3)
+               WHEN    "8"
+                   MOVE    "○"                TO  HC23-SINRYOKBN (1)
+           END-EVALUATE
       *    カナ氏名
            MOVE    RECE82-KANANAME     TO  HC23-KANANAME
       *    氏名
@@ -2417,6 +2436,11 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key7"              TO  WRK-MCP-PATHNAME
            PERFORM 20024-RECECOM-HENSYU-SEC
+      *
+      *    第三者行為のみの適用欄コメント
+           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+           MOVE    "key16"             TO  WRK-MCP-PATHNAME
+           PERFORM 20024-RECECOM-HENSYU-SEC
       *     
       *    症状詳記コメント（０１〜０６）
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
@@ -2446,6 +2470,9 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    RECE82-SRYYM        TO  RECECOM-SRYYM
            MOVE    RECE82-PTID         TO  RECECOM-PTID
            MOVE    RECE82-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
+           IF      WRK-MCP-PATHNAME    =   "key16"
+               MOVE    "BB"                TO  RECECOM-SJKBN
+           END-IF
       * 
            MOVE    RECECOM-REC         TO  MCPDATA-REC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
@@ -2954,7 +2981,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    RECE82-COMMENT      TO  RECE10-COMMENT
       *
-           MOVE    "5"                 TO  RECE10-RECEKBN
+           IF      WRK-PARA-RECEKBN    =   "8"
+               MOVE    "6"                 TO  RECE10-RECEKBN
+           ELSE
+               MOVE    "5"                 TO  RECE10-RECEKBN
+           END-IF
       * 
            MOVE    RECE82-TOTALTEN     TO  RECE10-TOTALTEN         (1)
            MOVE    RECE82-TOTALKIN-JYU TO  RECE10-FTNMONEY-FTN     (1)
@@ -3226,10 +3257,15 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
                MOVE    "1"                 TO  RECE10-NYUGAIKBN
                MOVE    4                   TO  RECE10-TEISYUTUSAKI
+               IF      WRK-PARA-RECEKBN    =   "8"
+                   MOVE    "970"               TO  RECE10-HKNNUM
+               ELSE
+                   MOVE    "971"               TO  RECE10-HKNNUM
+               END-IF
                MOVE    RECE10-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
-               MOVE    "del6"              TO  MCP-PATHNAME
+               MOVE    "del8"              TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC           NOT =   ZERO
                    DISPLAY "DBPATH=" MCP-TABLE " " MCP-PATHNAME
@@ -3366,12 +3402,18 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    MOVE    SYS-2002-NYUGAIKBN  TO  RECE10-NYUGAIKBN
                    MOVE    4                   TO  RECE10-TEISYUTUSAKI
                                                    RECE10-XXTEISYUTUSAKI 
+                   IF      WRK-PARA-RECEKBN    =   "8"
+                       MOVE    "970"           TO  RECE10-HKNNUM
+                   ELSE
+                       MOVE    "971"           TO  RECE10-HKNNUM
+                   END-IF
                    MOVE    RECE10-REC          TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_seikyu"        TO  MCP-TABLE
                    IF      WRK-PARA-DLTKBN     =   "0"
-                       MOVE    "del4"          TO  MCP-PATHNAME
+                       MOVE    "del9"          TO  MCP-PATHNAME
                    ELSE
-                       MOVE    "del7"          TO  MCP-PATHNAME
+                       MOVE    "del10"         TO  MCP-PATHNAME
                    END-IF
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    PERFORM   900-ORCDBMAIN-SEC
@@ -3449,7 +3491,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
                    MOVE    ZERO                TO  FLG-RECE82
                    IF      RECE82-PTNUM        =   SPACE
-                   OR      RECE82-HKNKBN       =   "4"
+                   OR      RECE82-HKNKBN       =   "4" OR  "6"
                    OR      RECE82-RECESYUBETU  =   "0000"
       *
                        IF    ( RECE82-TOTALKIN-JYU     =   ZERO )
@@ -3462,6 +3504,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        END-IF
       *
                        DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
+                                     " HKNKBN=" RECE82-HKNKBN
       *
                        ADD     1                   TO  CNT-RECE82
                        MOVE    RECE82-HOSPNUM      TO  KEY-N-HOSPNUM

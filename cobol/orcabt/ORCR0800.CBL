@@ -60,7 +60,9 @@
       *  04.05.02    NACL-門脇    11/11/09  同日再入院食事対応
       *  04.05.03    NACL-門脇    12/09/18  改正対応（外泊区分８，９の対応）
       *  04.06.01    NACL-門脇    13/03/27  エラー時終了処理対応
+      *
       *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
+      *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -344,6 +346,8 @@
              WHEN      "4"
              WHEN      "5"
                  MOVE    "973"         TO  WRK-CONS-HKNNUM
+             WHEN      "8"
+                 MOVE    "970"         TO  WRK-CONS-HKNNUM
            END-EVALUATE
       *
       *
@@ -490,16 +494,28 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                PERFORM  UNTIL
                               (FLG-SYUNOU             =    1)
       *
-                 IF   SYU-SYUHKNNUM   =  WRK-CONS-HKNNUM
-      *
-                   MOVE    SYUNOU-REC     TO      MCPDATA-REC
-                   MOVE    "DBDELETE"     TO      MCP-FUNC
-                   MOVE    "tbl_syunou"   TO      MCP-TABLE
-                   MOVE    "key"          TO      MCP-PATHNAME
-                   PERFORM  900-ORCDBMAIN-SEC
-      *
-                 END-IF
-      *
+                 EVALUATE    WRK-PARA-RECEKBN
+                     WHEN    "3"
+                     WHEN    "4"
+                     WHEN    "5"
+                         IF      SYU-SYUHKNNUM =   WRK-CONS-HKNNUM
+                             MOVE    SYUNOU-REC    TO  MCPDATA-REC
+                             MOVE    "DBDELETE"    TO  MCP-FUNC
+                             MOVE    "tbl_syunou"  TO  MCP-TABLE
+                             MOVE    "key"         TO  MCP-PATHNAME
+                             PERFORM  900-ORCDBMAIN-SEC
+                         END-IF
+                     WHEN    "8"
+                         IF      SYU-KOH-HKNNUM (1)
+                                               =   WRK-CONS-HKNNUM
+                             MOVE    SYUNOU-REC    TO  MCPDATA-REC
+                             MOVE    "DBDELETE"    TO  MCP-FUNC
+                             MOVE    "tbl_syunou"  TO  MCP-TABLE
+                             MOVE    "key"         TO  MCP-PATHNAME
+                             PERFORM  900-ORCDBMAIN-SEC
+                         END-IF
+                 END-EVALUATE
+     *
                  MOVE    "tbl_syunou"     TO      MCP-TABLE
                  MOVE    "key40"          TO      MCP-PATHNAME
                  PERFORM  900-SYUNOU-READ-SEC
@@ -690,11 +706,20 @@ grpsys         PERFORM 900-DBSELECT-SEC
                    MOVE    SPACE               TO  WRK-ROUSAIKBN
       *
                    IF      FLG-HKNCOMBI    =   ZERO
-                       IF      COMB-HKNNUM     =
-                                              WRK-CONS-HKNNUM
-                           MOVE    "1"             TO  WRK-ROUSAIKBN
-                       END-IF
-                   END-IF
+                       EVALUATE    WRK-PARA-RECEKBN
+                           WHEN    "3"
+                           WHEN    "4"
+                           WHEN    "5"
+                               IF      COMB-HKNNUM =   WRK-CONS-HKNNUM
+                                   MOVE    "1"         TO  WRK-ROUSAIKBN
+                              END-IF
+                           WHEN    "8"
+                               IF      COMB-KOHHKNNUM (1)
+                                                   =   WRK-CONS-HKNNUM
+                                   MOVE    "1"         TO  WRK-ROUSAIKBN
+                              END-IF
+                      END-EVALUATE
+                  END-IF
       *
                    MOVE    KEY-NEW             TO  KEY-OLD
                    PERFORM         UNTIL   FLG-SRYACCT     =   1 
@@ -914,11 +939,23 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
            IF      FLG-HKNCOMBI    =   ZERO
       *        対象保険以外読み飛ばし
-               IF      COMB-HKNNUM     =   WRK-CONS-HKNNUM
-                   CONTINUE
-               ELSE    
-                   MOVE    "1"         TO  WRK-SYOKBN
-               END-IF
+               EVALUATE    WRK-PARA-RECEKBN
+                   WHEN    "3"
+                   WHEN    "4"
+                   WHEN    "5"
+                       IF      COMB-HKNNUM     =   WRK-CONS-HKNNUM
+                           CONTINUE
+                       ELSE    
+                           MOVE    "1"         TO  WRK-SYOKBN
+                       END-IF
+                   WHEN    "8"
+                       IF      COMB-KOHHKNNUM (1)
+                                               =   WRK-CONS-HKNNUM
+                           CONTINUE
+                       ELSE    
+                           MOVE    "1"         TO  WRK-SYOKBN
+                       END-IF
+               END-EVALUATE 
            END-IF
            .
        200121-NYUINACCT-CHK-EXT.
@@ -1637,9 +1674,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SPACE               TO  WRK-ROUSAIKBN
       *
            IF      FLG-HKNCOMBI        =   ZERO
-               IF      COMB-HKNNUM     =   WRK-CONS-HKNNUM
-                   MOVE    "1"             TO  WRK-ROUSAIKBN
-               END-IF    
+               EVALUATE    WRK-PARA-RECEKBN
+                   WHEN    "3"
+                   WHEN    "4"
+                   WHEN    "5"
+                       IF      COMB-HKNNUM     =   WRK-CONS-HKNNUM
+                           MOVE    "1"             TO  WRK-ROUSAIKBN
+                       END-IF
+                   WHEN    "8"
+                       IF      COMB-KOHHKNNUM (1)
+                                               =   WRK-CONS-HKNNUM
+                           MOVE    "1"             TO  WRK-ROUSAIKBN
+                       END-IF
+               END-EVALUATE
            END-IF    
       *
            MOVE    KEY-NEW             TO  KEY-OLD
@@ -2209,9 +2256,19 @@ grpsys         PERFORM 900-DBFETCH-SEC
                             (FLG-SYUNOU     =    1)  OR
                             (FLG-DATA       =    1)
       *
-               IF   SYU-SYUHKNNUM   =  WRK-CONS-HKNNUM
-                       MOVE     1       TO     FLG-DATA
-               END-IF
+               EVALUATE    WRK-PARA-RECEKBN
+                   WHEN    "3"
+                   WHEN    "4"
+                   WHEN    "5"
+                       IF      SYU-SYUHKNNUM   =   WRK-CONS-HKNNUM
+                           MOVE     1              TO  FLG-DATA
+                       END-IF
+                   WHEN    "8"
+                       IF      SYU-KOH-HKNNUM (1)
+                                               =   WRK-CONS-HKNNUM
+                           MOVE     1              TO  FLG-DATA
+                       END-IF
+               END-EVALUATE
       *
                MOVE    "tbl_syunou"     TO      MCP-TABLE
                MOVE    "key17"          TO      MCP-PATHNAME

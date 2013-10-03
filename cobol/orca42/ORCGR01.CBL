@@ -158,6 +158,7 @@
       *                                     一画面対応
       *  04.07.04    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
       *  04.07.05    NACL-藤原    12/11/21  労災レセ電作成対応
+      *  04.07.05    NACL-藤原    13/09/20  第三者行為対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -314,7 +315,7 @@
              05  WRK-SHELL-SRYYM   PIC X(06).
              05  WRK-SHELL-TERMID  PIC X(16).
              05  WRK-SHELL-SYSYMD  PIC X(08).  
-           03  WRK-RECEKBN         PIC X(18).
+           03  WRK-RECEKBN         PIC X(20).
            03  WRK-NYUGAIKBN       PIC X(10).
            03  WRK-PRTKBN          PIC X(44).
            03  WRK-ERRCD           PIC X(04).
@@ -400,6 +401,10 @@
       *    公害保険番号 
            03  WRK-CONS-KOUGAI-HKNNUM
                                    PIC X(03)   VALUE   "975". 
+      *
+      *    第三者行為
+           03  WRK-CONS-DAISANSYA-HKNNUM
+                                   PIC X(03)   VALUE   "970". 
       *
            03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   500.
       *
@@ -725,6 +730,9 @@
                                        TO  WRK-RECEKBN
                WHEN    "6"
                    MOVE    "公　害"    TO  WRK-RECEKBN
+               WHEN    "8"
+                   MOVE    "自賠責（第三者行為）" 
+                                       TO  WRK-RECEKBN
            END-EVALUATE
            EVALUATE    SPA-R01-NYUGAIKBN
                WHEN    "1"
@@ -1387,6 +1395,11 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                                        SPA-NAI-R01-BTPARA-TTAISYO (IDX)
                                END-IF
                                CONTINUE          
+      *??                  WHEN    "1" ALSO    "8"
+      *??                      IF      QTORS-NJBI-FLG      =   1
+      *??                          MOVE    1       TO
+      *??                              SPA-NAI-R01-BTPARA-TTAISYO (IDX)
+      *??                      END-IF          
                            WHEN    "2" ALSO    "0"
                                IF      QTORS-GIHO-FLG      =   1
                                    MOVE    1       TO
@@ -1409,6 +1422,11 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                                        SPA-NAI-R01-BTPARA-TTAISYO (IDX)
                                END-IF
                                CONTINUE          
+      *??                  WHEN    "2" ALSO    "8"
+      *??                      IF      QTORS-NJBI-FLG      =   1
+      *??                          MOVE    1       TO
+      *??                              SPA-NAI-R01-BTPARA-TTAISYO (IDX)
+      *??                      END-IF          
                        END-EVALUATE     
                        IF      SPA-NAI-R01-BTPARA-TTAISYO (IDX)
                                                        =   1
@@ -2308,6 +2326,12 @@ grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                                            WRK-CONS-KOUGAI-HKNNUM
                                MOVE    1           TO  FLG-CHK
                            END-IF
+                       WHEN    "8"
+                           IF      COMB-KOHHKNNUM (1)
+                                               =
+                                           WRK-CONS-DAISANSYA-HKNNUM
+                               MOVE    1           TO  FLG-CHK
+                           END-IF
                    END-EVALUATE
                ELSE
                    MOVE    1                   TO  FLG-ERR
@@ -2400,6 +2424,12 @@ grpsys                 MOVE    NACCT-HOSPNUM       TO  COMB-HOSPNUM
                                                WRK-CONS-KOUGAI-HKNNUM
                                    MOVE    1           TO  FLG-CHK
                                END-IF
+                           WHEN    "8"
+                               IF      COMB-KOHHKNNUM (1)
+                                                   =
+                                               WRK-CONS-DAISANSYA-HKNNUM
+                                   MOVE    1           TO  FLG-CHK
+                               END-IF
                          END-EVALUATE 
                        ELSE
                          MOVE    1                 TO  FLG-ERR
@@ -2472,6 +2502,12 @@ grpsys                 MOVE    NACCT-HOSPNUM       TO  COMB-HOSPNUM
                            WHEN    "6"
                                IF      COMB-HKNNUM =
                                                WRK-CONS-KOUGAI-HKNNUM
+                                   MOVE    1           TO  FLG-CHK
+                               END-IF
+                           WHEN    "8"
+                               IF      COMB-KOHHKNNUM (1)
+                                                   =
+                                               WRK-CONS-DAISANSYA-HKNNUM
                                    MOVE    1           TO  FLG-CHK
                                END-IF
                          END-EVALUATE 
@@ -2811,7 +2847,7 @@ grpsys                 MOVE    NACCT-HOSPNUM       TO  COMB-HOSPNUM
                    IF      SPA-R01-RECEKBN     =   "3"
                        MOVE    "HC21"              TO  RECE07-PRTID
                    END-IF
-                   IF      SPA-R01-RECEKBN     =   "4" OR  "5"
+                   IF      SPA-R01-RECEKBN     =   "4" OR  "5" OR  "8"
                        MOVE    "HC23"              TO  RECE07-PRTID
                    END-IF
                    IF      SPA-R01-RECEKBN     =   "6"
@@ -3454,6 +3490,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                    MOVE    3               TO  RECE10-XXTEISYUTUSAKI 
                WHEN    "4"
                WHEN    "5"
+               WHEN    "8"
                    MOVE    4               TO  RECE10-TEISYUTUSAKI
                    MOVE    4               TO  RECE10-XXTEISYUTUSAKI 
                WHEN    "6"
@@ -3462,7 +3499,14 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            END-EVALUATE
            MOVE    RECE10-REC      TO  MCPDATA-REC
            MOVE    "tbl_seikyu"    TO  MCP-TABLE
-           MOVE    "del7"          TO  MCP-PATHNAME
+           EVALUATE    SPA-R01-RECEKBN
+               WHEN    "4"
+               WHEN    "5"
+               WHEN    "8"
+                   MOVE    "del10"         TO  MCP-PATHNAME
+               WHEN    OTHER
+                   MOVE    "del7"          TO  MCP-PATHNAME
+           END-EVALUATE
            MOVE    "DBDELETE"      TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC      NOT =   ZERO
@@ -3702,6 +3746,8 @@ grpsys             MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                            MOVE    "4"            TO  PTINF-HKNKBN2
                        WHEN    "6"
                            MOVE    "6"            TO  PTINF-HKNKBN
+                       WHEN    "8"
+                           MOVE    "7"            TO  PTINF-HKNKBN
                    END-EVALUATE
                    IF      SPA-GMN-R01-SYORI       =   "2"
                        MOVE    SPA-NAI-R01-TEISEIYM
@@ -3915,7 +3961,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                IF      SPA-R01-RECEKBN     =   "3"
                    MOVE    "HC21"              TO  RECE07-PRTID
                END-IF
-               IF      SPA-R01-RECEKBN     =   "4" OR  "5"
+               IF      SPA-R01-RECEKBN     =   "4" OR  "5" OR  "8"
                    MOVE    "HC23"              TO  RECE07-PRTID
                END-IF
                IF      SPA-R01-RECEKBN     =   "6"
@@ -4421,6 +4467,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    "recept8.sh"    TO  WRK-SHELL-SHELL
                    END-IF
                WHEN    "5"
+               WHEN    "8"
                    IF      SPA-R01-NYUGAIKBN   =   "1"
                        MOVE    "recept13.sh"   TO  WRK-SHELL-SHELL
                    ELSE
@@ -4531,6 +4578,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "4"
                WHEN    "5"
+               WHEN    "8"
                    IF      SPA-R01-NYUGAIKBN   =   "1"
                        MOVE    SYS-200501-JIBAIPRTKBN-N
                                                    TO  SHELLTBL-ARG17
@@ -5936,11 +5984,19 @@ grpsys     PERFORM 900-DBFETCH-SEC
                        END-IF
                    WHEN    "4"
                    WHEN    "5"
-                       IF      RECE10-TEISYUTUSAKI =   4
+                       IF    ( RECE10-TEISYUTUSAKI =   4             )
+                       AND   ( RECE10-HKNNUM       =
+                                           WRK-CONS-JIBAISEKI-HKNNUM )
                            MOVE    1               TO  FLG-SEIKYU-UMU
                        END-IF
                    WHEN    "6"
                        IF      RECE10-TEISYUTUSAKI =   5
+                           MOVE    1               TO  FLG-SEIKYU-UMU
+                       END-IF
+                   WHEN    "8"
+                       IF    ( RECE10-TEISYUTUSAKI =   4             )
+                       AND   ( RECE10-HKNNUM       =
+                                           WRK-CONS-DAISANSYA-HKNNUM )
                            MOVE    1               TO  FLG-SEIKYU-UMU
                        END-IF
                END-EVALUATE
@@ -6010,11 +6066,19 @@ grpsys     PERFORM 900-DBFETCH-SEC
                        END-IF
                      WHEN    "4"
                      WHEN    "5"
-                       IF      RECE10-TEISYUTUSAKI =   4
+                       IF    ( RECE10-TEISYUTUSAKI =   4            )
+                       AND   ( RECE10-HKNNUM       =
+                                           WRK-CONS-JIBAISEKI-HKNNUM )
                            MOVE    1               TO  FLG-SEIKYU-UMU
                        END-IF
                      WHEN    "6"
                        IF      RECE10-TEISYUTUSAKI =   5
+                           MOVE    1               TO  FLG-SEIKYU-UMU
+                       END-IF
+                     WHEN    "8"
+                       IF    ( RECE10-TEISYUTUSAKI =   4             )
+                       AND   ( RECE10-HKNNUM       =
+                                           WRK-CONS-DAISANSYA-HKNNUM )
                            MOVE    1               TO  FLG-SEIKYU-UMU
                        END-IF
                    END-EVALUATE

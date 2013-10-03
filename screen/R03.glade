@@ -667,7 +667,7 @@
         <x>376</x>
         <y>480</y>
         <width>1</width>
-        <height>180</height>
+        <height>210</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -679,7 +679,7 @@
         <x>176</x>
         <y>480</y>
         <width>1</width>
-        <height>180</height>
+        <height>210</height>
         <sensitive>True</sensitive>
         <can_focus>False</can_focus>
         <has_focus>False</has_focus>
@@ -689,7 +689,7 @@
         <class>GtkHSeparator</class>
         <name>hseparator9</name>
         <x>176</x>
-        <y>660</y>
+        <y>690</y>
         <width>200</width>
         <height>1</height>
         <sensitive>True</sensitive>
@@ -922,9 +922,38 @@
       </widget>
       <widget>
         <class>GtkRadioButton</class>
-        <name>DATAKBN25</name>
+        <name>DATAKBN26</name>
         <x>200</x>
         <y>620</y>
+        <width>175</width>
+        <height>26</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <border_width>0</border_width>
+        <label>第三者行為</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <active>False</active>
+        <draw_indicator>True</draw_indicator>
+        <group>DATAKBN23</group>
+        <signal>
+          <name>toggled</name>
+          <handler>button_toggled</handler>
+        </signal>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
+      </widget>
+      <widget>
+        <class>GtkRadioButton</class>
+        <name>DATAKBN25</name>
+        <x>200</x>
+        <y>650</y>
         <width>170</width>
         <height>26</height>
         <sensitive>True</sensitive>
@@ -1216,6 +1245,35 @@
         <label>自　賠　責</label>
         <justify>GTK_JUSTIFY_CENTER</justify>
         <wrap>False</wrap>
+      </widget>
+      <widget>
+        <class>GtkRadioButton</class>
+        <name>DATAKBN33</name>
+        <x>614</x>
+        <y>288</y>
+        <width>130</width>
+        <height>26</height>
+        <sensitive>True</sensitive>
+        <can_focus>False</can_focus>
+        <has_focus>False</has_focus>
+        <border_width>0</border_width>
+        <label>第三者行為</label>
+        <relief>GTK_RELIEF_NORMAL</relief>
+        <xalign>0.5</xalign>
+        <yalign>0.5</yalign>
+        <response_id>0</response_id>
+        <active>False</active>
+        <draw_indicator>True</draw_indicator>
+        <group>DATAKBN23</group>
+        <signal>
+          <name>toggled</name>
+          <handler>button_toggled</handler>
+        </signal>
+        <signal>
+          <name>clicked</name>
+          <handler>send_event</handler>
+          <data>CLICKED</data>
+        </signal>
       </widget>
       <widget>
         <class>GtkRadioButton</class>

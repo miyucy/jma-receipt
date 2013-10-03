@@ -74,6 +74,7 @@
       *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
       *                                     支払機関請求対応
       *  04.07.02    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
+      *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -707,7 +708,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                IF      SPA-R01-RECEKBN     =   "3"
                    MOVE    "HC21"              TO  RECE07-PRTID
                END-IF
-               IF      SPA-R01-RECEKBN     =   "4" OR  "5"
+               IF      SPA-R01-RECEKBN     =   "4" OR  "5" OR  "8"
                    MOVE    "HC23"              TO  RECE07-PRTID
                END-IF
                IF      SPA-R01-RECEKBN     =   "6"

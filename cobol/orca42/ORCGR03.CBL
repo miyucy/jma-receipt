@@ -123,6 +123,7 @@
       *                                     一画面対応
       *  04.07.03    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
       *  04.07.04    NACL-藤原    12/11/21  労災レセ電作成対応
+      *  04.07.05    NACL-藤原    13/09/20  第三者行為対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -210,8 +211,10 @@
                        09  SPA-DATAKBN23-VALUE     PIC X(01).
                        09  SPA-DATAKBN24-VALUE     PIC X(01).
                        09  SPA-DATAKBN25-VALUE     PIC X(01).
+                       09  SPA-DATAKBN26-VALUE     PIC X(01).
                        09  SPA-DATAKBN31-VALUE     PIC X(01).
                        09  SPA-DATAKBN32-VALUE     PIC X(01).
+                       09  SPA-DATAKBN33-VALUE     PIC X(01).
      *
                05  SPA-NAIB-R03-AREA.
                    07  SPA-NAI-SRYYM               PIC 9(06).
@@ -625,8 +628,10 @@
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN25-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN26-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN33-VALUE
       *
       *        レセプト指示コード
            INITIALIZE                  SYS-2001-REC
@@ -663,6 +668,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2001-HOSPNUM
                        MOVE    "T"             TO  SPA-DATAKBN31-VALUE
                    WHEN    "1"             ALSO    "5"             
                        MOVE    "T"             TO  SPA-DATAKBN32-VALUE
+                   WHEN    "1"             ALSO    "8"             
+                       MOVE    "T"             TO  SPA-DATAKBN33-VALUE
                    WHEN    "1"             ALSO    "6"             
                        MOVE    "T"             TO  SPA-DATAKBN4-VALUE
                    WHEN    "2"             ALSO    " "             
@@ -676,6 +683,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2001-HOSPNUM
                        MOVE    "T"             TO  SPA-DATAKBN24-VALUE
                    WHEN    "2"             ALSO    "6"             
                        MOVE    "T"             TO  SPA-DATAKBN25-VALUE
+                   WHEN    "2"             ALSO    "8"             
+                       MOVE    "T"             TO  SPA-DATAKBN26-VALUE
                END-EVALUATE
                IF      SYS-2001-SYOKBN     =   "1"
                    MOVE    SYS-2001-SRYYM      TO  SPA-NAI-SRYYM
@@ -919,8 +928,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN25-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN26-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN33-VALUE
       *
            EVALUATE    SPA-R01-FILEKBN ALSO    SPA-R01-RECEKBN
                WHEN    "1"             ALSO    " "             
@@ -938,6 +949,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
                    MOVE    "T"             TO  SPA-DATAKBN31-VALUE
                WHEN    "1"             ALSO    "5"             
                    MOVE    "T"             TO  SPA-DATAKBN32-VALUE
+               WHEN    "1"             ALSO    "8"             
+                   MOVE    "T"             TO  SPA-DATAKBN33-VALUE
                WHEN    "1"             ALSO    "6"             
                    MOVE    "T"             TO  SPA-DATAKBN4-VALUE
                WHEN    "2"             ALSO    " "             
@@ -951,6 +964,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
                    MOVE    "T"             TO  SPA-DATAKBN24-VALUE
                WHEN    "2"             ALSO    "6"             
                    MOVE    "T"             TO  SPA-DATAKBN25-VALUE
+               WHEN    "2"             ALSO    "8"             
+                   MOVE    "T"             TO  SPA-DATAKBN26-VALUE
            END-EVALUATE
       *
            IF      SPA-R01-FILEKBN     =   "1"        
@@ -1068,8 +1083,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
                    MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN25-VALUE
+                   MOVE    "F"                 TO  SPA-DATAKBN26-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
+                   MOVE    "F"                 TO  SPA-DATAKBN33-VALUE
                    IF      SPA-GMN-IKKATU      =   "T"
                        MOVE    "F"             TO  SPA-GMN-IKKATU
                        MOVE    "T"             TO  SPA-GMN-KOBETU
@@ -1096,6 +1113,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
                WHEN    "CLICKED"       ALSO    "DATAKBN5"
                WHEN    "CLICKED"       ALSO    "DATAKBN31"
                WHEN    "CLICKED"       ALSO    "DATAKBN32"
+               WHEN    "CLICKED"       ALSO    "DATAKBN33"
                WHEN    "CLICKED"       ALSO    "DATAKBN11"
                    PERFORM 400-DATAKBN11-SEC
       *    個別帳票区分
@@ -1104,6 +1122,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
                WHEN    "CLICKED"       ALSO    "DATAKBN23"
                WHEN    "CLICKED"       ALSO    "DATAKBN24"
                WHEN    "CLICKED"       ALSO    "DATAKBN25"
+               WHEN    "CLICKED"       ALSO    "DATAKBN26"
                    PERFORM 400-DATAKBN21-SEC
       *    一括作成
                WHEN    "CLICKED"       ALSO    "IKKATU"
@@ -1479,6 +1498,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    R03-DATAKBN31 TO  SPA-DATAKBN31-VALUE
                WHEN    "CLICKED"       ALSO    "DATAKBN32"
                    MOVE    R03-DATAKBN32 TO  SPA-DATAKBN32-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN33"
+                   MOVE    R03-DATAKBN33 TO  SPA-DATAKBN33-VALUE
                WHEN    "CLICKED"       ALSO    "DATAKBN11"
                    MOVE    R03-DATAKBN11  TO  SPA-DATAKBN11-VALUE
            END-EVALUATE
@@ -1507,6 +1528,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    R03-DATAKBN24  TO  SPA-DATAKBN24-VALUE
                WHEN    "CLICKED"       ALSO    "DATAKBN25"
                    MOVE    R03-DATAKBN25  TO  SPA-DATAKBN25-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN26"
+                   MOVE    R03-DATAKBN26  TO  SPA-DATAKBN26-VALUE
            END-EVALUATE
       *
            MOVE    "F"           TO  SPA-GMN-IKKATU
@@ -1535,8 +1558,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN25-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN26-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN33-VALUE
       *
            MOVE    2                   TO  SPA-GMN-CUR     
            .
@@ -1561,8 +1586,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "F"                 TO  SPA-DATAKBN23-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN24-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN25-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN26-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN31-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN32-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN33-VALUE
       *
            MOVE    7                   TO  SPA-GMN-CUR     
            .
@@ -1960,7 +1987,8 @@ grpsys                 PERFORM 900-DBSELECT-SEC
       *    ガイドメッセージセット
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "4"
-               WHEN    "5"    
+               WHEN    "5"
+               WHEN    "8"
                    EVALUATE    SPA-GMN-SYOKBN  ALSO    SPA-R01-FILEKBN
                        WHEN    "T"             ALSO    "1" 
                            MOVE    "1009"              TO  SPA-RIDCD
@@ -2079,7 +2107,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                IF      SPA-R01-RECEKBN     =   "3"
                    MOVE    "HC21"              TO  RECE07-PRTID
                END-IF
-               IF      SPA-R01-RECEKBN     =   "4" OR  "5"
+               IF      SPA-R01-RECEKBN     =   "4" OR  "5" OR  "8"
                    MOVE    "HC23"              TO  RECE07-PRTID
                END-IF
                IF      SPA-R01-RECEKBN     =   "6"
@@ -2103,8 +2131,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
       *        自賠責で個別作成時に選択した様式と違う場合エラーとする
-               IF    ( SPA-R01-FILEKBN         =   "2"         )
-               AND   ( SPA-R01-RECEKBN         =   "4" OR  "5" )
+               IF    ( SPA-R01-FILEKBN         =   "2"                 )
+               AND   ( SPA-R01-RECEKBN         =   "4" OR  "5" OR  "8" )
                    IF      SPA-R01-RECEKBN     NOT =   RECE07-RECEKBN
                        GO  TO   4501-REPRINT-EXT
                    END-IF
@@ -2620,6 +2648,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                                    TO  WRK-SHELL-SHELL
                            END-IF
                        WHEN    "5"
+                       WHEN    "8"
                            IF      SPA-GMN-NYUGAIKBN   =   "1"
                                MOVE    "recept13.sh"
                                                    TO  WRK-SHELL-SHELL
@@ -2726,6 +2755,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                    EVALUATE    SPA-R01-RECEKBN
                        WHEN    "4"
                        WHEN    "5"
+                       WHEN    "8"
                            IF      SPA-GMN-NYUGAIKBN   =   "1"
                                MOVE    SYS-200501-JIBAIPRTKBN-N
                                                    TO  SHELLTBL-ARG17
@@ -2822,6 +2852,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "4"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN32-VALUE =   "T"
                    MOVE    "5"                 TO  SPA-R01-RECEKBN
+               WHEN    SPA-DATAKBN33-VALUE =   "T"
+                   MOVE    "8"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN4-VALUE  =   "T"
                    MOVE    "6"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN21-VALUE  =   "T"
@@ -2834,6 +2866,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "5"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN25-VALUE  =   "T"
                    MOVE    "6"                 TO  SPA-R01-RECEKBN
+               WHEN    SPA-DATAKBN26-VALUE  =   "T"
+                   MOVE    "8"                 TO  SPA-R01-RECEKBN
            END-EVALUATE
       *
            IF      SPA-GMN-IKKATU          =   "T"
@@ -3218,11 +3252,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-DATAKBN11-VALUE    TO  R03-DATAKBN11
            MOVE    SPA-DATAKBN31-VALUE    TO  R03-DATAKBN31
            MOVE    SPA-DATAKBN32-VALUE    TO  R03-DATAKBN32
+           MOVE    SPA-DATAKBN33-VALUE    TO  R03-DATAKBN33
            MOVE    SPA-DATAKBN21-VALUE    TO  R03-DATAKBN21
            MOVE    SPA-DATAKBN22-VALUE    TO  R03-DATAKBN22
            MOVE    SPA-DATAKBN23-VALUE    TO  R03-DATAKBN23
            MOVE    SPA-DATAKBN24-VALUE    TO  R03-DATAKBN24
            MOVE    SPA-DATAKBN25-VALUE    TO  R03-DATAKBN25
+           MOVE    SPA-DATAKBN26-VALUE    TO  R03-DATAKBN26
       *
            MOVE    SPA-GMN-NYUGAIKBN-G    TO  R03-NYUGAIKBN
            PERFORM VARYING IDX FROM    1       BY  1

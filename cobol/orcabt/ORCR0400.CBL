@@ -55,6 +55,8 @@
       *  04.01.01    NACL-門脇    07/10/31  公務災害対応
       *  04.05.01    NACL-門脇    12/02/13  アフターケア診療科情報編集修正
       *
+      *  04.07.01    NACL-藤原    13/09/20  第三者行為対応
+      *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
       *****************************************************************
@@ -219,8 +221,6 @@
            COPY    "CPSYSKANRI.INC".
       *    医療機関情報
            COPY  "CPSK1001.INC".
-      *    医療機関情報
-           COPY  "CPSK1005.INC".
       *    レセプト作成指示コード
            COPY    "CPSK2001.INC".
       *    レセプト作成指示（個別指示）コード
@@ -325,6 +325,8 @@
              WHEN      "4"
              WHEN      "5"
                  MOVE    "973"         TO  WRK-CONS-HKNNUM
+             WHEN      "8"
+                 MOVE    "970"         TO  WRK-CONS-HKNNUM
            END-EVALUATE
       *
            MOVE    "RECE400"           TO  RECE40PARA-FILE-ID
@@ -544,16 +546,33 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                                                    WRK-ROUSAIKBN
       *
                    IF      FLG-HKNCOMBI    =   ZERO
-                       IF      COMB-HKNNUM  =   WRK-CONS-HKNNUM
-                           IF      COMB-TEKSTYMD   <=  WRK-STYMD
-                           AND     COMB-TEKEDYMD   >=  WRK-EDYMD
-                               MOVE    SPACE           TO  WRK-UPDKBN
-                           ELSE
-                               MOVE    "1"             TO  WRK-UPDKBN
-                           END-IF
-                       ELSE     
-                           MOVE    "1"             TO  WRK-ROUSAIKBN
-                       END-IF    
+                       EVALUATE    WRK-PARA-RECEKBN
+                           WHEN    "3"
+                           WHEN    "4"
+                           WHEN    "5"
+                               IF      COMB-HKNNUM =   WRK-CONS-HKNNUM
+                                   IF      COMB-TEKSTYMD   <=  WRK-STYMD
+                                   AND     COMB-TEKEDYMD   >=  WRK-EDYMD
+                                       MOVE    SPACE   TO  WRK-UPDKBN
+                                   ELSE
+                                       MOVE    "1"     TO  WRK-UPDKBN
+                                   END-IF
+                               ELSE
+                                   MOVE    "1"     TO  WRK-ROUSAIKBN
+                               END-IF    
+                           WHEN    "8"
+                               IF      COMB-KOHHKNNUM (1)
+                                                   =   WRK-CONS-HKNNUM
+                                   IF      COMB-TEKSTYMD   <=  WRK-STYMD
+                                   AND     COMB-TEKEDYMD   >=  WRK-EDYMD
+                                       MOVE    SPACE   TO  WRK-UPDKBN
+                                   ELSE
+                                       MOVE    "1"     TO  WRK-UPDKBN
+                                   END-IF
+                               ELSE
+                                   MOVE    "1"     TO  WRK-ROUSAIKBN
+                               END-IF    
+                       END-EVALUATE
                    ELSE
                        MOVE    "1"             TO  WRK-TEISEIKBN    
                    END-IF    
@@ -571,7 +590,8 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                        IF    ( WRK-ROUSAIKBN         =   "1"           )  
                        OR    (     ( WRK-UPDKBN      =   SPACE       )         
                                AND ( PTRSI-HKNKBN    =   "1" OR  "2" 
-                                                     OR  "4" OR  "5" ) )
+                                                     OR  "4" OR  "5"
+                                                     OR  "6"         ) )
                            MOVE    KEY-NEW             TO  KEY-OLD
                            PERFORM     UNTIL   FLG-SRYACCT =   1 
                                        OR      FLG-END     =   1 
@@ -602,7 +622,14 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
       *    労災保険情報読み込み     
            INITIALIZE              PTRSIINF-REC
 grpsys     MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
-           MOVE    COMB-HKNID      TO  PTRSI-HKNID
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "3"
+               WHEN    "4"
+               WHEN    "5"
+                   MOVE    COMB-HKNID      TO  PTRSI-HKNID
+               WHEN    "8"
+                   MOVE    COMB-KOHID (1)  TO  PTRSI-KOHID
+           END-EVALUATE
            MOVE    COMB-PTID       TO  PTRSI-PTID
            MOVE    PTRSIINF-REC    TO  MCPDATA-REC
            PERFORM 900-PTRSIINF-INV-SEC
@@ -647,31 +674,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTRSI-HOSPNUM
                    END-IF    
                END-IF    
            END-IF
-      *     
-      *        レセプト診療科（旧総合病院のとき）
-           IF      SYS-1001-HOSPSBT1   =   1
-               INITIALIZE                  SYS-1005-REC
-               MOVE    "1005"              TO  SYS-1005-KANRICD
-               MOVE    ACCT-SRYKA          TO  SYS-1005-KBNCD
-      *********IF      WRK-PARA-SYOKBN     =   "1"
-      *********    MOVE    SYS-2001-SRYYM      TO  ORC-DBYMD(1:6)
-      *********ELSE
-      *********    MOVE    SYS-2002-SRYYM      TO  ORC-DBYMD(1:6)
-      *********END-IF
-      *********MOVE    "01"                TO  ORC-DBYMD(7:2)
-               MOVE    WRK-STYMD           TO  SYS-1005-STYUKYMD
-                                               SYS-1005-EDYUKYMD
-grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
-               MOVE    SYS-1005-REC        TO  MCPDATA-REC
-               PERFORM 910-SYSKANRI-INV-SEC
-               MOVE    MCPDATA-REC         TO  SYS-1005-REC
-           ELSE
-               INITIALIZE                   SYS-1005-REC
-           END-IF
       *
-      *    最終診療日
-      *
-      *    請求書
+      *    ファイル編集処理
            PERFORM 20011-FILE-HENSYU-SEC
            .
        20011-FILE-SYORI-EXT.
@@ -685,20 +689,18 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *     
            INITIALIZE                      WRK-RECE40-REC
 grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE40-HOSPNUM
-      *****IF      WRK-PARA-SYOKBN     =   "1"
-      *****    MOVE    SYS-2001-SRYYM      TO  WRK-RECE40-SRYYM
-      *****ELSE
-      *****    MOVE    SYS-2002-SRYYM      TO  WRK-RECE40-SRYYM
-      *****END-IF
            MOVE    WRK-STYMD (1:6)     TO  WRK-RECE40-SRYYM
            MOVE    ACCT-NYUGAIKBN      TO  WRK-RECE40-NYUGAIKBN
            MOVE    COMB-PTID           TO  WRK-RECE40-PTID
-           IF      SYS-1001-HOSPSBT1   =   1
-               MOVE    SYS-1005-RECESRYKA  TO WRK-RECE40-RECEKA
-           ELSE
-               MOVE    SPACE               TO WRK-RECE40-RECEKA
-           END-IF
-           MOVE    COMB-HKNID          TO  WRK-RECE40-HKNID
+           MOVE    SPACE               TO  WRK-RECE40-RECEKA
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "3"
+               WHEN    "4"
+               WHEN    "5"
+                   MOVE    COMB-HKNID      TO  WRK-RECE40-HKNID
+               WHEN    "8"
+                   MOVE    COMB-KOHID (1)  TO  WRK-RECE40-HKNID
+           END-EVALUATE
            IF      PTRSI-HKNKBN        =   "3"
                PERFORM VARYING IDW FROM    1   BY  1
                        UNTIL   IDW         >   31
@@ -739,7 +741,21 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE40-HOSPNUM
       *****************************************************************
        20011-RECE40-WRITE-SEC              SECTION.
       *
-           MOVE    COMB-HKNNUM         TO  WRK-RECE40-HKNNUM
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "3"
+               WHEN    "4"
+               WHEN    "5"
+                   MOVE    COMB-HKNNUM         TO  WRK-RECE40-HKNNUM
+               WHEN    "8"
+                   MOVE    COMB-KOHHKNNUM (1)  TO  WRK-RECE40-HKNNUM
+           END-EVALUATE
+      *
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "8"
+                   MOVE    COMB-HKNNUM         TO  WRK-RECE40-HKNNUM-X
+                   MOVE    COMB-HKNID          TO  WRK-RECE40-HKNID-X
+           END-EVALUATE
+      *
            MOVE    COMB-HKNCOMBINUM    TO  WRK-RECE40-HKNCOMBI
            MOVE    ACCT-SRYKA          TO  WRK-RECE40-SRYKA (1)
            MOVE    WRK-TEISEIKBN       TO  WRK-RECE40-TEISEIKBN
@@ -905,6 +921,8 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                          WHEN      "5"
                               MOVE    "2"          TO  PTINF-HKNKBN
                               MOVE    "4"          TO  PTINF-HKNKBN2
+                        WHEN      "8"
+                              MOVE    "7"          TO  PTINF-HKNKBN
                        END-EVALUATE
                        MOVE    BTPARA-INFO-PARA(17:6) 
                                                    TO  PTINF-SRYYM
@@ -916,6 +934,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                        EVALUATE  WRK-PARA-RECEKBN
       ***                WHEN      "3"
                          WHEN      "4"
+                         WHEN      "8"
                            MOVE    "tbl_ptinf"     TO  WRK-MCP-TABLE
                            MOVE    "key14"         TO  WRK-MCP-PATHNAME
                          WHEN      "3"
@@ -979,11 +998,14 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                          WHEN      "5"
                               MOVE    "2"          TO  PTINF-HKNKBN
                               MOVE    "4"          TO  PTINF-HKNKBN2
+                        WHEN      "8"
+                              MOVE    "7"          TO  PTINF-HKNKBN
                        END-EVALUATE
                        MOVE    PTINF-REC           TO  MCPDATA-REC
                        EVALUATE  WRK-PARA-RECEKBN
       ***                WHEN      "3"
                          WHEN      "4"
+                         WHEN      "8"
                             MOVE    "tbl_ptinf"    TO  WRK-MCP-TABLE
                             MOVE    "key12"        TO  WRK-MCP-PATHNAME
                          WHEN      "3"
@@ -1304,16 +1326,33 @@ grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                                                WRK-ROUSAIKBN
       *
                IF      FLG-HKNCOMBI    =   ZERO
-                   IF      COMB-HKNNUM  =   WRK-CONS-HKNNUM
-                       IF      COMB-TEKSTYMD   <=  WRK-STYMD
-                       AND     COMB-TEKEDYMD   >=  WRK-EDYMD
-                           MOVE    SPACE           TO  WRK-UPDKBN
-                       ELSE
-                           MOVE    "1"             TO  WRK-UPDKBN
-                       END-IF
-                   ELSE     
-                       MOVE    "1"             TO  WRK-ROUSAIKBN
-                   END-IF    
+                   EVALUATE    WRK-PARA-RECEKBN
+                       WHEN    "3"
+                       WHEN    "4"
+                       WHEN    "5"
+                           IF      COMB-HKNNUM =   WRK-CONS-HKNNUM
+                               IF      COMB-TEKSTYMD   <=  WRK-STYMD
+                               AND     COMB-TEKEDYMD   >=  WRK-EDYMD
+                                   MOVE    SPACE   TO  WRK-UPDKBN
+                               ELSE
+                                   MOVE    "1"     TO  WRK-UPDKBN
+                               END-IF
+                           ELSE
+                               MOVE    "1"     TO  WRK-ROUSAIKBN
+                           END-IF    
+                       WHEN    "8"
+                           IF      COMB-KOHHKNNUM (1)
+                                               =   WRK-CONS-HKNNUM
+                               IF      COMB-TEKSTYMD   <=  WRK-STYMD
+                               AND     COMB-TEKEDYMD   >=  WRK-EDYMD
+                                   MOVE    SPACE   TO  WRK-UPDKBN
+                               ELSE
+                                   MOVE    "1"     TO  WRK-UPDKBN
+                               END-IF
+                           ELSE
+                               MOVE    "1"     TO  WRK-ROUSAIKBN
+                           END-IF    
+                   END-EVALUATE
                ELSE
                    MOVE    "1"             TO  WRK-TEISEIKBN    
                END-IF    
@@ -1329,7 +1368,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                    IF    ( WRK-ROUSAIKBN           =   "1"           )  
                    OR    (     ( WRK-UPDKBN        =   SPACE       )         
                            AND ( PTRSI-HKNKBN      =   "1" OR  "2" 
-                                                   OR  "4" OR  "5" ) )
+                                                   OR  "4" OR  "5"
+                                                   OR  "6"         ) )
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
                                    OR      FLG-END         =   1 
