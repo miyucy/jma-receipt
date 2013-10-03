@@ -664,25 +664,27 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-4001-HOSPNUM
                   MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN                
                   MOVE   SYS-4001-KOTEIKBN TO    WRK-KOTEIKBN
                   IF     WRK-PARA-RECEKBN  =   "8"
-                      MOVE    "2"               TO    WRK-JIBAIKBN
+                      MOVE    "2"                TO    WRK-JIBAIKBN
+                      MOVE    10                 TO    WRK-SYUTENTANKA
+                      MOVE    10                 TO    WRK-YKZTENTANKA
                   ELSE
                       IF     SYS-4001-JIBAIKBN  =    SPACE
                           MOVE "1"               TO    WRK-JIBAIKBN
                       ELSE
                           MOVE SYS-4001-JIBAIKBN TO    WRK-JIBAIKBN
                       END-IF
-                  END-IF
-                  IF     SYS-4001-SYUTENTANKA-X  =  SPACE
-                    MOVE ZERO              TO    WRK-SYUTENTANKA
-                  ELSE
-                    MOVE SYS-4001-SYUTENTANKA
-                                           TO    WRK-SYUTENTANKA
-                  END-IF
-                  IF     SYS-4001-YKZTENTANKA-X  =  SPACE
-                    MOVE ZERO              TO    WRK-YKZTENTANKA
-                  ELSE
-                    MOVE SYS-4001-YKZTENTANKA
-                                           TO    WRK-YKZTENTANKA
+                      IF     SYS-4001-SYUTENTANKA-X  =  SPACE
+                          MOVE ZERO              TO    WRK-SYUTENTANKA
+                      ELSE
+                          MOVE SYS-4001-SYUTENTANKA
+                                                 TO    WRK-SYUTENTANKA
+                      END-IF
+                      IF     SYS-4001-YKZTENTANKA-X  =  SPACE
+                          MOVE ZERO              TO    WRK-YKZTENTANKA
+                      ELSE
+                          MOVE SYS-4001-YKZTENTANKA
+                                                 TO    WRK-YKZTENTANKA
+                      END-IF
                   END-IF
                   IF     SYS-4001-KOMUKBN  =    SPACE
                     MOVE "1"               TO    WRK-KOMUKBN
@@ -1086,17 +1088,9 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *    º´«Â¿’∂Ë ¨
            MOVE    WRK-JIBAIKBN          TO   RECE41-JIBAIKBN
       *    µªΩ—≈¿√±≤¡
-           IF      RECE41-HKNKBN    =   "6"
-             MOVE  10                    TO   RECE41-SYUTENTANKA
-           ELSE
-             MOVE  WRK-SYUTENTANKA       TO   RECE41-SYUTENTANKA
-           END-IF
+           MOVE    WRK-SYUTENTANKA       TO   RECE41-SYUTENTANKA
       *    ÃÙ∫ﬁ≈˘≈¿√±≤¡
-           IF      RECE41-HKNKBN    =   "6"
-             MOVE  10                    TO   RECE41-YKZTENTANKA
-           ELSE
-             MOVE  WRK-YKZTENTANKA       TO   RECE41-YKZTENTANKA
-           END-IF
+           MOVE    WRK-YKZTENTANKA       TO   RECE41-YKZTENTANKA
       *    ∏¯Ã≥∫“≥≤∂Ë ¨
            MOVE    WRK-KOMUKBN           TO   RECE41-KOMUKBN
       *    ∏¯Ã≥∫“≥≤≈¿√±≤¡
@@ -3200,25 +3194,27 @@ grpsys     PERFORM 900-DBFETCH-SEC
                    MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN
                    MOVE   SYS-4001-KOTEIKBN TO    WRK-KOTEIKBN
                    IF     WRK-PARA-RECEKBN  =   "8"
-                      MOVE    "2"               TO    WRK-JIBAIKBN
+                      MOVE    "2"                TO    WRK-JIBAIKBN
+                      MOVE    10                 TO    WRK-SYUTENTANKA
+                      MOVE    10                 TO    WRK-YKZTENTANKA
                    ELSE
                       IF     SYS-4001-JIBAIKBN  =    SPACE
                           MOVE "1"               TO    WRK-JIBAIKBN
                       ELSE
                           MOVE SYS-4001-JIBAIKBN TO    WRK-JIBAIKBN
                       END-IF
-                   END-IF
-                   IF     SYS-4001-SYUTENTANKA-X  =  SPACE
-                     MOVE ZERO              TO    WRK-SYUTENTANKA
-                   ELSE
-                     MOVE SYS-4001-SYUTENTANKA
-                                            TO    WRK-SYUTENTANKA
-                   END-IF
-                   IF     SYS-4001-YKZTENTANKA-X  =  SPACE
-                     MOVE ZERO              TO    WRK-YKZTENTANKA
-                   ELSE
-                     MOVE SYS-4001-YKZTENTANKA
-                                            TO    WRK-YKZTENTANKA
+                      IF     SYS-4001-SYUTENTANKA-X  =  SPACE
+                          MOVE ZERO              TO    WRK-SYUTENTANKA
+                      ELSE
+                          MOVE SYS-4001-SYUTENTANKA
+                                                 TO    WRK-SYUTENTANKA
+                      END-IF
+                      IF     SYS-4001-YKZTENTANKA-X  =  SPACE
+                          MOVE ZERO              TO    WRK-YKZTENTANKA
+                      ELSE
+                          MOVE SYS-4001-YKZTENTANKA
+                                                 TO    WRK-YKZTENTANKA
+                      END-IF
                    END-IF
                    IF     SYS-4001-KOMUKBN  =    SPACE
                      MOVE "1"               TO    WRK-KOMUKBN

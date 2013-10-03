@@ -149,6 +149,7 @@
       *  04.06.03    NACL-門脇    13/02/27  平成２５年４月改正対応
       *
       *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
+      *  04.07.02    NACL-門脇    13/10/02  自賠責（第三者行為）対応
       *
       *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
       *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
@@ -1171,6 +1172,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                      WHEN      "1"
                      WHEN      "2"
                      WHEN      "4"
+                     WHEN      "6"
                        MOVE    WRK-KENSA-KAISU    TO  RECE41-KAISU  (29)
                      WHEN      "3"
                        MOVE    WRK-KENSA-KAISU    TO  RECE41-KAISU  (24)
@@ -1277,7 +1279,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                      ELSE
                        EVALUATE    RECE45-SRYCD (IDX) (1:1)
                            WHEN    "0"
-                             IF   RECE41-HKNKBN    NOT  =  "4" 
+                             IF   RECE41-HKNKBN    NOT  =  "4" AND "6"
                                IF      RECE45-SRYCD (IDX) (1:3) = "059"
                                    IF   ( RECE44-SRYKBN     =   "70" )
                                    AND  ( RECE45-DATAKBN (IDX)
@@ -1338,7 +1340,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                  END-IF
                                END-IF
                            WHEN    "1"
-                               IF   RECE41-HKNKBN    NOT  =  "4" 
+                               IF   RECE41-HKNKBN    NOT  =  "4" AND "6"
                                    MOVE    3                 TO  IDY
                                ELSE
                                    IF  RECE45-SRYCD (IDX)    =
@@ -1354,7 +1356,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                    ELSE
                                      IF  RECE45-SRYCD (IDX)  =
                                            WRK-CONS-RYOYOTEATE
-                                       IF  RECE41-JIBAIKBN   =  "2"
+                                       IF ((RECE41-HKNKBN   = "4") AND
+                                           (RECE41-JIBAIKBN = "2"))
+                                       OR ( RECE41-HKNKBN   = "6" )
                                          MOVE  4             TO  IDY
                                        ELSE
                                          MOVE  3             TO  IDY
@@ -1367,7 +1371,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                            WHEN    "6"
                                MOVE    5             TO  IDY
                            WHEN    "7"
-                             IF   RECE41-HKNKBN    NOT  =  "4" 
+                             IF   RECE41-HKNKBN    NOT  =  "4" AND "6"
                                IF    ( RECE44-SRYKBN     =   "70" )
                                AND   ( RECE45-DATAKBN (IDX)
                                                          =   "3"  )
@@ -1802,17 +1806,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
              END-PERFORM
            END-IF
       *
-      ***  IF    RECE41-SRYYM   <  "200804"
-      ***    IF  ((RECE41-HKNKBN      =   "4") AND
-      ***         (RECE41-JIBAIKBN    =   "2"))
-      ***    OR  ((RECE41-HKNKBN      =   "5") AND
-      ***         (RECE41-KOMUKBN     =   "2"))
-      ***      IF  TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2) = "112000970"
-      ***             MOVE     1     TO    FLG-NOPRT
-      ***      END-IF
-      ***    END-IF
-      ***  END-IF
-      *
            IF  FLG-NOPRT             =   ZERO
       *        識別が点数の場合
                IF  TBL-ZAIW-TENSIKIBETU (WRK-WIDX1 WRK-WIDX2)
@@ -1837,12 +1830,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
              EVALUATE   TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
                WHEN       "112000970"
                   MOVE     2     TO     IDX6
-      ***         IF  ((RECE41-HKNKBN      =   "4") AND
-      ***              (RECE41-JIBAIKBN    =   "2"))
-      ***         OR  ((RECE41-HKNKBN      =   "5") AND
-      ***              (RECE41-KOMUKBN     =   "2"))
-      ***            MOVE  0     TO     IDX6
-      ***         END-IF
                WHEN       "112001410"
                   MOVE     3     TO     IDX6
                WHEN       "112015070"
@@ -1885,49 +1872,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
        2005-SRYKBNELSE-HENSYU-SEC    SECTION.
       *    処方のとき
            IF  RECE44-SRYKBN         =   "25"
-               EVALUATE      RECE41-HKNKBN                              
-                 WHEN      "1"                                          
-                 WHEN      "2"                                          
-      ***          IF    ( RECE41-KHNTEN  (19)     =   ZERO )  AND
-      ***                ( WRK-ZAIWMAX    (6)      >   1    )
-      ***              PERFORM 20042-SRYKBNELSE-REIGAI-SEC
-      ***          ELSE
-                       PERFORM 20052-SRYKBNELSE-CHECK-SEC
-      ***          END-IF
-                 WHEN      "3"                                          
-      ***          IF    ( RECE41-KHNTEN  (12)     =   ZERO )  AND      
-      ***                ( WRK-ZAIWMAX    (6)      >   1    )           
-      ***              PERFORM 20042-SRYKBNELSE-REIGAI-SEC              
-      ***          ELSE                                                 
-                       PERFORM 20052-SRYKBNELSE-CHECK-SEC               
-      ***          END-IF                                               
-                 WHEN      "4"                                          
-                   EVALUATE  WRK-PARA-RECEKBN
-                     WHEN      "4"
-      ****************（新様式）
-      ***             IF    ( RECE41-KHNTEN  (14)     =   ZERO )  AND
-      ***                   ( WRK-ZAIWMAX    (6)      >   1    )
-      ***                 PERFORM 20042-SRYKBNELSE-REIGAI-SEC
-      ***             ELSE
-                          PERFORM 20052-SRYKBNELSE-CHECK-SEC
-      ***             END-IF
-                     WHEN      "5"
-      ****************（従来様式）
-      ***             IF    ( RECE41-KHNTEN  (15)     =   ZERO )  AND
-      ***                   ( WRK-ZAIWMAX    (6)      >   1    )
-      ***                 PERFORM 20042-SRYKBNELSE-REIGAI-SEC
-      ***             ELSE
-                          PERFORM 20052-SRYKBNELSE-CHECK-SEC
-      ***             END-IF
-                   END-EVALUATE
-                 WHEN      "5"                                          
-      ***          IF    ( RECE41-KHNTEN  (22)     =   ZERO )  AND      
-      ***                ( WRK-ZAIWMAX    (6)      >   1    )           
-      ***              PERFORM 20042-SRYKBNELSE-REIGAI-SEC              
-      ***          ELSE                                                 
-                       PERFORM 20052-SRYKBNELSE-CHECK-SEC               
-      ***          END-IF                   
-               END-EVALUATE                                             
+                   PERFORM 20052-SRYKBNELSE-CHECK-SEC
            ELSE            
       *
       *        検査のとき剤が一つ以上なら”、”で編集

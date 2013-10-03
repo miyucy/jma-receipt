@@ -115,6 +115,7 @@
       *                                     コメントの対応
       *  04.07.02    NACL-門脇    12/09/25  コメント差込対応（在宅持続陽圧）
       *  04.07.03    NACL-門脇    13/01/21  労災レセ電対応
+      *  04.07.04    NACL-門脇    13/10/02  自賠責（第三者行為）対応
       *
       *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       *****************************************************************
@@ -982,7 +983,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                OR     ( RECE82-HKNID     NOT =   RECE84-HKNID        )
                OR     ( RECE82-TEKSTYMD  NOT =   RECE84-TEKSTYMD     )
       *
-               IF   RECE82-HKNKBN    NOT  =  "4"                        
+               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
                   EVALUATE      RECE84-SRYKBN
                       WHEN      "14"
       *               （在支援に関する診療のカウント）
@@ -1228,7 +1229,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                 INITIALIZE  WRK-JIDO-SETCOM-AREA
                 PERFORM     20011-HOKATU-COMMENT-SEC
                ELSE
-                IF   RECE82-HKNKBN    NOT  =  "4"                        
+                IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
                  EVALUATE      RECE84-SRYKBN                   
                    WHEN      "11"
                       IF   RECE82-HKNKBN     =   "5"
@@ -1421,10 +1422,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                 ELSE                                                     
                  EVALUATE      RECE84-SRYKBN                            
                    WHEN      "11"
-                      EVALUATE   RECE82-JIBAIKBN
-                        WHEN       "1"
+                      IF   (RECE82-HKNKBN    =  "4")
+                      AND  (RECE82-JIBAIKBN  =  "1")
                           PERFORM      2099-RECE84-WRITE-SEC
-                        WHEN       "2"
+                      ELSE
                           MOVE   ZERO   TO  FLG-COMMENT
       *                （初診（同日複数診療科）算定科のセット）
                           IF   FLG-COMMENT  =  ZERO
@@ -1433,7 +1434,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                           IF   FLG-COMMENT  =  ZERO
                             PERFORM    2099-RECE84-WRITE-SEC
                           END-IF
-                      END-EVALUATE
+                      END-IF
                    WHEN      "13"                                       
                       MOVE   ZERO   TO  FLG-COMMENT
       *            （薬剤管理指導料算定日のセット）
@@ -2240,7 +2241,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                  COMPUTE WRK-ZAINUM    =    99998200
                                        +   (IDX16 + 31)
                END-IF
-               IF   RECE82-HKNKBN    NOT  =  "4"
+               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                  EVALUATE  WRK-PARA-JIBAIPRTKBN
@@ -2285,7 +2286,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                  COMPUTE WRK-ZAINUM    =    99998400
                                        +   (IDX16 + 31)
                END-IF
-               IF   RECE82-HKNKBN    NOT  =  "4"
+               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                  EVALUATE  WRK-PARA-JIBAIPRTKBN
@@ -2329,7 +2330,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                  COMPUTE WRK-ZAINUM    =    99998600
                                        +   (IDX16 + 31)
                END-IF
-               IF   RECE82-HKNKBN    NOT  =  "4"
+               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                  EVALUATE  WRK-PARA-JIBAIPRTKBN
@@ -2354,7 +2355,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                  COMPUTE WRK-ZAINUM    =    99998800
                                        +   (IDX16 + 31)
                END-IF
-               IF   RECE82-HKNKBN    NOT  =  "4"
+               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                  EVALUATE  WRK-PARA-JIBAIPRTKBN
@@ -2379,7 +2380,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                  COMPUTE WRK-ZAINUM    =    99999000
                                        +   (IDX16 + 31)
                END-IF
-               IF   RECE82-HKNKBN    NOT  =  "4"
+               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                  EVALUATE  WRK-PARA-JIBAIPRTKBN
@@ -2423,7 +2424,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                  COMPUTE WRK-ZAINUM    =    99999200
                                        +   (IDX16 + 31)
                END-IF
-               IF   RECE82-HKNKBN    NOT  =  "4"
+               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                  EVALUATE  WRK-PARA-JIBAIPRTKBN
@@ -2448,7 +2449,7 @@ grpsys        PERFORM  900-DBSELECT-SEC
                  COMPUTE WRK-ZAINUM    =    99999400
                                        +   (IDX16 + 31)
                END-IF
-               IF   RECE82-HKNKBN    NOT  =  "4"
+               IF   RECE82-HKNKBN    NOT  =  "4" AND "6"
                     MOVE    "80" TO  WRK-SRYKBN
                ELSE
                  EVALUATE  WRK-PARA-JIBAIPRTKBN
