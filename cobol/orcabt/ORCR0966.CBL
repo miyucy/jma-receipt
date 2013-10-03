@@ -3260,7 +3260,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                IF      WRK-PARA-RECEKBN    =   "8"
                    MOVE    "970"               TO  RECE10-HKNNUM
                ELSE
-                   MOVE    "971"               TO  RECE10-HKNNUM
+                   MOVE    "973"               TO  RECE10-HKNNUM
                END-IF
                MOVE    RECE10-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -3405,7 +3405,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    IF      WRK-PARA-RECEKBN    =   "8"
                        MOVE    "970"           TO  RECE10-HKNNUM
                    ELSE
-                       MOVE    "971"           TO  RECE10-HKNNUM
+                       MOVE    "973"           TO  RECE10-HKNNUM
                    END-IF
                    MOVE    RECE10-REC          TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC

@@ -663,10 +663,14 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-4001-HOSPNUM
                   END-IF
                   MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN                
                   MOVE   SYS-4001-KOTEIKBN TO    WRK-KOTEIKBN
-                  IF     SYS-4001-JIBAIKBN  =    SPACE
-                    MOVE "1"               TO    WRK-JIBAIKBN
+                  IF     WRK-PARA-RECEKBN  =   "8"
+                      MOVE    "2"               TO    WRK-JIBAIKBN
                   ELSE
-                    MOVE SYS-4001-JIBAIKBN TO    WRK-JIBAIKBN
+                      IF     SYS-4001-JIBAIKBN  =    SPACE
+                          MOVE "1"               TO    WRK-JIBAIKBN
+                      ELSE
+                          MOVE SYS-4001-JIBAIKBN TO    WRK-JIBAIKBN
+                      END-IF
                   END-IF
                   IF     SYS-4001-SYUTENTANKA-X  =  SPACE
                     MOVE ZERO              TO    WRK-SYUTENTANKA
@@ -3195,10 +3199,14 @@ grpsys     PERFORM 900-DBFETCH-SEC
                    END-IF
                    MOVE   SYS-4001-TAXKBN   TO    WRK-TAXKBN
                    MOVE   SYS-4001-KOTEIKBN TO    WRK-KOTEIKBN
-                   IF     SYS-4001-JIBAIKBN  =    SPACE
-                     MOVE "1"               TO    WRK-JIBAIKBN
+                   IF     WRK-PARA-RECEKBN  =   "8"
+                      MOVE    "2"               TO    WRK-JIBAIKBN
                    ELSE
-                     MOVE SYS-4001-JIBAIKBN TO    WRK-JIBAIKBN
+                      IF     SYS-4001-JIBAIKBN  =    SPACE
+                          MOVE "1"               TO    WRK-JIBAIKBN
+                      ELSE
+                          MOVE SYS-4001-JIBAIKBN TO    WRK-JIBAIKBN
+                      END-IF
                    END-IF
                    IF     SYS-4001-SYUTENTANKA-X  =  SPACE
                      MOVE ZERO              TO    WRK-SYUTENTANKA

@@ -3014,7 +3014,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
                MOVE    "2"                 TO  RECE10-NYUGAIKBN
                MOVE    4                   TO  RECE10-TEISYUTUSAKI
-               MOVE    "971"               TO  RECE10-HKNNUM
+               MOVE    "973"               TO  RECE10-HKNNUM
                MOVE    RECE10-REC          TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
@@ -3162,7 +3162,7 @@ grpsys                     MOVE    WRK-PARA-HOSPNUM    TO
                            MOVE    4                   TO
                                                    RECE10-TEISYUTUSAKI
                                                    RECE10-XXTEISYUTUSAKI 
-                           MOVE    "971"               TO  RECE10-HKNNUM
+                           MOVE    "973"               TO  RECE10-HKNNUM
                            MOVE    RECE10-REC          TO  MCPDATA-REC
                            MOVE    "DBDELETE"          TO  MCP-FUNC
                            MOVE    "tbl_seikyu"        TO  MCP-TABLE
@@ -3233,7 +3233,7 @@ grpsys                     MOVE    WRK-PARA-HOSPNUM
                            MOVE    4               TO
                                                    RECE10-TEISYUTUSAKI
                                                    RECE10-XXTEISYUTUSAKI 
-                           MOVE    "971"           TO  RECE10-HKNNUM
+                           MOVE    "973"           TO  RECE10-HKNNUM
                            MOVE    RECE10-REC      TO  MCPDATA-REC
                            MOVE    "DBDELETE"      TO  MCP-FUNC
                            MOVE    "tbl_seikyu"    TO  MCP-TABLE
@@ -3299,7 +3299,7 @@ grpsys                     MOVE    WRK-PARA-HOSPNUM
                            MOVE    4               TO
                                                    RECE10-TEISYUTUSAKI
                                                    RECE10-XXTEISYUTUSAKI 
-                           MOVE    "971"           TO  RECE10-HKNNUM
+                           MOVE    "973"           TO  RECE10-HKNNUM
                            MOVE    RECE10-REC      TO  MCPDATA-REC
                            MOVE    "DBDELETE"      TO  MCP-FUNC
                            MOVE    "tbl_seikyu"    TO  MCP-TABLE
