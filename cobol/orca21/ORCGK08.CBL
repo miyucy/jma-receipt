@@ -1077,6 +1077,10 @@
                        MOVE    1               TO  FLG-KAKU-FLG
                        PERFORM 4503-HOUKATU-SYORI-SEC
                    END-IF
+      *        第三者行為確認
+               WHEN    "1001"
+      *            プレビュー処理
+                   PERFORM 4130-PREVIEW-SEC
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KIDCD
       *
@@ -6240,12 +6244,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        END-IF
       ***  END-IF
       *@
+      *
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-NYUGAIKBN       =   "1"
                    PERFORM 40101-PREVIEW-NYU-SEC
                ELSE
                    PERFORM 40102-PREVIEW-GAI-SEC
                END-IF
+      *!!!
+      *        第三者行為の時、保険確認
+               IF      (SPA-HKNKBN         =   1   )  AND
+                       (SPA-RSI-HKNKBN     =  "6"  ) 
+                  AND  (SPA-ERRCD          =   SPACE)
+                   MOVE    "1001"          TO  SPA-KIDCD
+                   GO      TO      4010-PREVIEW-SYORI-EXT
+               END-IF
+      *!!!
                IF      SPA-ERRCD           =   SPACE
       *            プレビュー処理
                    PERFORM 4130-PREVIEW-SEC
@@ -6580,6 +6594,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-HKNKBN          =   "2"
                MOVE    "3"                 TO  WRK-PRV-HKNKBN
            END-IF
+      *H25.10
+      *    第三者行為
+           IF     (SPA-HKNKBN          =   "1"  )  AND
+                  (SPA-RSI-HKNKBN      =   "6"  )
+               IF      (SPA-KID1-FLG        =   "OK" )
+                   MOVE    "4"                 TO  WRK-PRV-HKNKBN
+               ELSE
+      *            健保
+                   MOVE    "0"                 TO  WRK-PRV-HKNKBN
+                   MOVE    "0"                 TO  WRK-PRV-RSI-HKNKBN
+               END-IF
+           END-IF
+      *
       *    レセプトプレビュー区分
            MOVE    SPA-NAI-RESPRVFLG   TO  WRK-PRV-KBN
       *ver.4.7
@@ -7090,18 +7117,26 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-KIDCD
                WHEN    "0101"
-                   MOVE    "該当の受診履歴を削除します。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-KIDMSG(29:)
+                   STRING  "該当の受診履歴を削除します。"
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-KIDMSG
+                   END-STRING
                WHEN    "0102"
                    MOVE    "包括分入力を登録します。"
                                        TO  WRK-KIDMSG
                WHEN    "0103"
-                   MOVE    "包括分入力の受診履歴を削除します。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-KIDMSG(35:)
+                   STRING  "包括分入力の受診履歴を削除します。"
+                           "よろしいですか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-KIDMSG
+                   END-STRING
+               WHEN    "1001"
+                   STRING  "第三者行為の保険組合せです。"
+                           "ＯＫで第三者をＮＯで健保の処理を行います。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-KIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-KIDCD
                                        TO  WRK-KIDMSG
@@ -7115,6 +7150,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "ＯＫ"              TO  KID1-B12
            EVALUATE    SPA-KIDCD
                WHEN    "0101"
+               WHEN    "1001"
                    MOVE    "ＮＯ"            TO  KID1-B01
            END-EVALUATE
       *
