@@ -1863,6 +1863,11 @@
                WHEN    5
                    MOVE    "5"             TO  SPA-RSI-HKNKBN
                    MOVE    "1"             TO  SPA-RSI-JUNKYO
+      *        第三者行為（自賠責の健保準拠）
+               WHEN    7
+                   MOVE    1               TO  SPA-HKNKBN
+                   MOVE    "6"             TO  SPA-RSI-HKNKBN
+                   MOVE    "1"             TO  SPA-RSI-JUNKYO
            END-EVALUATE
       *
            MOVE    ZERO                TO  SPA-RJN-ERR
