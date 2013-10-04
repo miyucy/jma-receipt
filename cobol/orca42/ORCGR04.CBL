@@ -169,7 +169,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-NYUGAIKBN       PIC X(06).
            03  WRK-RECEERR         PIC X(200).
-           03  WRK-RECEPRTKBN      PIC X(240).
+           03  WRK-RECEPRTKBN      PIC X(24).
            03  WRK-RECEKBN         PIC X(20).
            03  WRK-PREFKBN         PIC X(01).
            03  WRK-TEISYUTUSAKI    PIC X(01).
@@ -527,6 +527,8 @@
                            MOVE    "01"               TO  WRK-SYMD (7:)
                            PERFORM 5002-HIZUKE-HEN-SEC
                            STRING  WRK-RECEPRTKBN DELIMITED  BY SPACE 
+                                   WRK-NYUGAIKBN  DELIMITED  BY  SPACE 
+                                   WRK-RECEKBN    DELIMITED  BY  SPACE 
                                    "訂正日指定　" DELIMITED  BY SIZE
                                    WRK-HENYMDG3 (1:16)
                                                   DELIMITED  BY SIZE
@@ -543,6 +545,8 @@
                            PERFORM 5002-HIZUKE-HEN-SEC
                            MOVE    WRK-HENYMDG3       TO  WRK-EDYMD
                            STRING  WRK-RECEPRTKBN DELIMITED  BY SPACE 
+                                   WRK-NYUGAIKBN  DELIMITED  BY  SPACE 
+                                   WRK-RECEKBN    DELIMITED  BY  SPACE 
                                    "受診日指定　" DELIMITED  BY SIZE
                                    WRK-STYMD      DELIMITED  BY SIZE
                                    "〜"           DELIMITED  BY SIZE
@@ -556,6 +560,8 @@
                            MOVE    "01"               TO  WRK-SYMD (7:)
                            PERFORM 5002-HIZUKE-HEN-SEC
                            STRING  WRK-RECEPRTKBN DELIMITED  BY  SPACE 
+                                   WRK-NYUGAIKBN  DELIMITED  BY  SPACE 
+                                   WRK-RECEKBN    DELIMITED  BY  SPACE 
                                    WRK-NYUGAIKBN  DELIMITED  BY SPACE 
                                    "　照会連携　" DELIMITED  BY SIZE
                                    WRK-HENYMDG3 (1:16)

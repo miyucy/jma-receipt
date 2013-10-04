@@ -3950,9 +3950,9 @@
       <widget>
         <class>GtkPandaEntry</class>
         <name>FILEKBN</name>
-        <x>100</x>
+        <x>10</x>
         <y>8</y>
-        <width>550</width>
+        <width>650</width>
         <height>24</height>
         <sensitive>True</sensitive>
         <can_focus>True</can_focus>
