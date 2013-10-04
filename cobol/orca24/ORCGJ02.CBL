@@ -216,6 +216,8 @@
            03  FLG-RSIHKN-OK       PIC 9(01).
            03  FLG-RSIHKN-OK2      PIC 9(01).
            03  FLG-RRKNUM-ARI      PIC 9(01).
+           03  FLG-DAISAN-OK       PIC 9(01).
+      *!!
       *
            03  FLG-HKN-CHK         PIC 9(01).
            03  FLG-DEKIDAKA        PIC 9(01).
@@ -3834,6 +3836,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÊÝ¸±ÁÈ¹ç¤»´ü´Ö
            MOVE    SPA-GMN-HKNCOMBMSG TO  J02-HKNCOMBMSG-VALUE
            MOVE    "black"            TO  J02-HKNCOMBMSG-STYLE
+      *
       *
       *    Æþ±¡ÎÁÊñ³ç
            MOVE    SPA-GMN-HKTMSG     TO  J02-HKTMSG-VALUE
@@ -12840,7 +12843,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM
                        UNTIL   FLG-SYUNOU      =   1
                    IF      SYU-ACCT-UPDKBN     NOT =   SPACE
-                       MOVE    "¡Ú¼ýÇ¼¹¹¿·¡Û"   TO  SPA-GMN-SYUMSG
+                       MOVE    "¡Ú¼ýÇ¼¹¹¿·¡Û"  TO  SPA-GMN-SYUMSG
                        MOVE    1               TO  FLG-SYUNOU
                    END-IF
       *
@@ -13693,6 +13696,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  FLG-RSIHKN-OK
            MOVE    ZERO                TO  FLG-KOGHKN-OK
            MOVE    ZERO                TO  FLG-RSIHKN-OK2
+           MOVE    ZERO                TO  FLG-DAISAN-OK
            IF     (SPA-GMN-PTNUM   NOT =   SPACE )  AND
                   (SPA-GMN-PTID    NOT =   ZERO  )  AND
                   (SPA-ERRCD           =   SPACE )  AND
@@ -13758,6 +13762,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE               TO  SPA-XC01-RSI-HKNKBN
                IF     (FLG-RSIHKN-OK   NOT =   ZERO ) OR
                       (FLG-KOGHKN-OK   NOT =   ZERO )
+                 OR   (FLG-DAISAN-OK   NOT =   ZERO )
                    MOVE    "1"             TO  SPA-XC01-CHK
                END-IF
            ELSE
@@ -13868,6 +13873,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    1               TO  FLG-KOGHKN-OK
                    ELSE
                        MOVE    1               TO  FLG-HKN-OK
+                   END-IF
+      *!!!
+      *            Âè»°¼Ô¹Ô°Ù
+                   IF     (SPA-NAI-TRSI-HKNKBN (IDH)   =   "6")
+                       MOVE    1               TO  FLG-DAISAN-OK
                    END-IF
                END-IF
            ELSE
@@ -14056,6 +14066,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     SPA-XC01-RSI-HKNKBN  =   "4"
       *D                               OR  "5"
                MOVE    "2"                 TO  SPA-XC01-HKNKBN
+           END-IF
+      *
+      *    Âè»°¼Ô¹Ô°Ù
+           IF     SPA-XC01-RSI-HKNKBN  =   "6"
+               MOVE    "4"                 TO  SPA-XC01-HKNKBN
            END-IF
       *
            MOVE    SPA-NAI-RESPRVFLG   TO  SPA-XC01-RESPRVFLG
