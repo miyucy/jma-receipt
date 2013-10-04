@@ -61,6 +61,7 @@
       *
       *  04.07.01    NACL-藤原    12/11/20  リアルタイムプレビュー時の
       *                                     一画面対応
+      *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
       *
       *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
       *                                     載対応
@@ -421,6 +422,7 @@
                WHEN    "1"
                    MOVE    "HC21"          TO  WRK-CONS-ARG-PRTID
                WHEN    "2"
+               WHEN    "4"
                    MOVE    "HC23"          TO  WRK-CONS-ARG-PRTID
                WHEN    "3"
                    MOVE    "HC25"          TO  WRK-CONS-ARG-PRTID
@@ -450,8 +452,10 @@
                WHEN    "2"                   ALSO    "1"
                    PERFORM 2003-ROUSAI-GAIRAI-SEC
                WHEN    "1"                   ALSO    "2"
+               WHEN    "1"                   ALSO    "4"
                    PERFORM 2006-JIBAI-NYUIN-SEC
                WHEN    "2"                   ALSO    "2"
+               WHEN    "2"                   ALSO    "4"
                    PERFORM 2005-JIBAI-GAIRAI-SEC
                WHEN    "1"                   ALSO    "3"
                    PERFORM 2008-KOUGAI-NYUIN-SEC
@@ -1624,9 +1628,13 @@
            DISPLAY "JIBAI="
                    WRK-PARA-A3 " " WRK-PARA-A13 " " WRK-PARA-A14
       *???
-           MOVE    "5"             TO  WRK-PARA0-A3
-                                       WRK-PARA1-A3
-                                       WRK-PARA3-A3
+           IF      WRK-PARA-HKNKBN =   "4"
+               CONTINUE
+           ELSE
+               MOVE    "5"             TO  WRK-PARA0-A3
+                                           WRK-PARA1-A3
+                                           WRK-PARA3-A3
+           END-IF
       *
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA0      DELIMITED   BY  SIZE
@@ -2029,9 +2037,13 @@
            DISPLAY "JIBAI="
                    WRK-PARA-A3 " " WRK-PARA-A13 " " WRK-PARA-A14
       *???
-           MOVE    "5"             TO  WRK-PARA0-A3
-                                       WRK-PARA1-A3
-                                       WRK-PARA3-A3
+           IF      WRK-PARA-HKNKBN =   "4"
+               CONTINUE
+           ELSE
+               MOVE    "5"             TO  WRK-PARA0-A3
+                                           WRK-PARA1-A3
+                                           WRK-PARA3-A3
+           END-IF
       *
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA0      DELIMITED   BY  SIZE
