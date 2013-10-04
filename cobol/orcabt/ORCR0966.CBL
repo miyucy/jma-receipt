@@ -2431,16 +2431,18 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    ZERO                TO  FLG-RECECOM-SJKBN
            MOVE    SPACE               TO  WRK-RECECOM-NAME 
                                            WRK-RECECOM-SJKBN
-      *     
-      *    適用欄コメント     
-           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
-           MOVE    "key7"              TO  WRK-MCP-PATHNAME
-           PERFORM 20024-RECECOM-HENSYU-SEC
       *
-      *    第三者行為のみの適用欄コメント
-           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
-           MOVE    "key16"             TO  WRK-MCP-PATHNAME
-           PERFORM 20024-RECECOM-HENSYU-SEC
+           IF      WRK-PARA-RECEKBN    =   "8"
+      *        第三者行為のみの適用欄コメント
+               MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+               MOVE    "key16"             TO  WRK-MCP-PATHNAME
+               PERFORM 20024-RECECOM-HENSYU-SEC
+           ELSE
+      *        適用欄コメント     
+               MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+               MOVE    "key7"              TO  WRK-MCP-PATHNAME
+               PERFORM 20024-RECECOM-HENSYU-SEC
+           END-IF
       *     
       *    症状詳記コメント（０１〜０６）
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
