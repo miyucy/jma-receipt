@@ -119,10 +119,12 @@
            03  CNT-GRSI                PIC 9(05).
            03  CNT-GJBI                PIC 9(05).
            03  CNT-GKGI                PIC 9(05).
+           03  CNT-GDI3                PIC 9(05).
            03  CNT-NIHO                PIC 9(05).
            03  CNT-NRSI                PIC 9(05).
            03  CNT-NJBI                PIC 9(05).
            03  CNT-NKGI                PIC 9(05).
+           03  CNT-NDI3                PIC 9(05).
       *    °ì»þÎÎ°è
        01  WRK-AREA. 
            03  WRK-BQERRCD             PIC X(04).
@@ -417,6 +419,10 @@
                COMPUTE CNT-GKGI    =   CNT-GKGI    +   1
            END-IF
       *
+           IF    ( QTORS-GDI3-FLG      =   1 )
+               COMPUTE CNT-GDI3    =   CNT-GDI3    +   1
+           END-IF
+      *
            IF    ( QTORS-NIHO-FLG      =   1 )
                COMPUTE CNT-NIHO    =   CNT-NIHO    +   1
            END-IF
@@ -431,6 +437,10 @@
       *
            IF    ( QTORS-NKGI-FLG      =   1 )
                COMPUTE CNT-NKGI    =   CNT-NKGI    +   1
+           END-IF
+      *
+           IF    ( QTORS-NDI3-FLG      =   1 )
+               COMPUTE CNT-NDI3    =   CNT-NDI3    +   1
            END-IF
       *
            PERFORM 200111-BTPARA-COMMON-SEC
@@ -514,10 +524,12 @@
                MOVE    CNT-GRSI            TO  QTORM-GRSI-CNT
                MOVE    CNT-GJBI            TO  QTORM-GJBI-CNT
                MOVE    CNT-GKGI            TO  QTORM-GKGI-CNT
+               MOVE    CNT-GDI3            TO  QTORM-GDI3-CNT
                MOVE    CNT-NIHO            TO  QTORM-NIHO-CNT
                MOVE    CNT-NRSI            TO  QTORM-NRSI-CNT
                MOVE    CNT-NJBI            TO  QTORM-NJBI-CNT
                MOVE    CNT-NKGI            TO  QTORM-NKGI-CNT
+               MOVE    CNT-NDI3            TO  QTORM-NDI3-CNT
       *
                PERFORM 200111-BTPARA-COMMON-SEC
       *
