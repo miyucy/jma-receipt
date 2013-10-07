@@ -1395,11 +1395,11 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                                        SPA-NAI-R01-BTPARA-TTAISYO (IDX)
                                END-IF
                                CONTINUE          
-      *??                  WHEN    "1" ALSO    "8"
-      *??                      IF      QTORS-NJBI-FLG      =   1
-      *??                          MOVE    1       TO
-      *??                              SPA-NAI-R01-BTPARA-TTAISYO (IDX)
-      *??                      END-IF          
+                           WHEN    "1" ALSO    "8"
+                               IF      QTORS-NDI3-FLG      =   1
+                                   MOVE    1       TO
+                                       SPA-NAI-R01-BTPARA-TTAISYO (IDX)
+                               END-IF          
                            WHEN    "2" ALSO    "0"
                                IF      QTORS-GIHO-FLG      =   1
                                    MOVE    1       TO
@@ -1422,11 +1422,11 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                                        SPA-NAI-R01-BTPARA-TTAISYO (IDX)
                                END-IF
                                CONTINUE          
-      *??                  WHEN    "2" ALSO    "8"
-      *??                      IF      QTORS-NJBI-FLG      =   1
-      *??                          MOVE    1       TO
-      *??                              SPA-NAI-R01-BTPARA-TTAISYO (IDX)
-      *??                      END-IF          
+                          WHEN    "2" ALSO    "8"
+                               IF      QTORS-GDI3-FLG      =   1
+                                   MOVE    1       TO
+                                        SPA-NAI-R01-BTPARA-TTAISYO (IDX)
+                               END-IF          
                        END-EVALUATE     
                        IF      SPA-NAI-R01-BTPARA-TTAISYO (IDX)
                                                        =   1
@@ -1536,6 +1536,13 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                    ELSE
                        MOVE    "　"    TO   SPA-GMN-R01-TKGI (IDY) (3:2)
                    END-IF          
+                   IF      QTORS-NDI3-FLG  =   1
+                       MOVE    "入"    TO   SPA-GMN-R01-TDAISAN
+                                                             (IDY) (3:2)
+                   ELSE
+                       MOVE    "　"    TO   SPA-GMN-R01-TDAISAN
+                                                             (IDY) (3:2)
+                   END-IF          
                    IF      QTORS-GIHO-FLG  =   1
                        MOVE    "外"    TO   SPA-GMN-R01-TIHO (IDY) (1:2)
                    ELSE
@@ -1555,6 +1562,13 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                        MOVE    "外"    TO   SPA-GMN-R01-TKGI (IDY) (1:2)
                    ELSE
                        MOVE    "　"    TO   SPA-GMN-R01-TKGI (IDY) (1:2)
+                   END-IF          
+                   IF      QTORS-GDI3-FLG  =   1
+                       MOVE    "外"    TO   SPA-GMN-R01-TDAISAN
+                                                             (IDY) (1:2)
+                   ELSE
+                       MOVE    "　"    TO   SPA-GMN-R01-TDAISAN
+                                                             (IDY) (1:2)
                    END-IF          
                    IF      SPA-NAI-R01-BTPARA-TTAISYO (IDX)
                                            =   1
@@ -1673,10 +1687,12 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SS001-HOSPNUM
                MOVE    SS001-GRSI-FLG  TO  QTORS-GRSI-FLG
                MOVE    SS001-GJBI-FLG  TO  QTORS-GJBI-FLG
                MOVE    SS001-GKGI-FLG  TO  QTORS-GKGI-FLG
+               MOVE    SS001-GDI3-FLG  TO  QTORS-GDI3-FLG
                MOVE    SS001-NIHO-FLG  TO  QTORS-NIHO-FLG
                MOVE    SS001-NRSI-FLG  TO  QTORS-NRSI-FLG
                MOVE    SS001-NJBI-FLG  TO  QTORS-NJBI-FLG
                MOVE    SS001-NKGI-FLG  TO  QTORS-NKGI-FLG
+               MOVE    SS001-NDI3-FLG  TO  QTORS-NDI3-FLG
                IF    ( QTORS-NIHO-FLG  =   ZERO )
                AND   ( QTORS-GIHO-FLG  =   ZERO )
       *************MOVE    1               TO
@@ -5054,6 +5070,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                TO  R01-TJBI      (IDX)
                MOVE    SPA-GMN-R01-TKGI       (IDX)
                                                TO  R01-TKOU      (IDX)
+               MOVE    SPA-GMN-R01-TDAISAN    (IDX)
+                                               TO  R01-TDAISAN   (IDX)
       *         
                IF      IDX             =   SPA-NAI-R01-SELNO
                    MOVE    "T"             TO  R01-SELECT (IDX)
