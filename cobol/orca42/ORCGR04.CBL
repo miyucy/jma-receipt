@@ -1815,10 +1815,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                        MOVE    3           TO  LNK-PRTKANRI-PRIORITY
                    WHEN    "4"
                    WHEN    "5"
-                   WHEN    "8"
                        MOVE    5           TO  LNK-PRTKANRI-PRIORITY
                    WHEN    "6"
                        MOVE    7           TO  LNK-PRTKANRI-PRIORITY
+                   WHEN    "8"
+                       MOVE    9           TO  LNK-PRTKANRI-PRIORITY
                END-EVALUATE
            ELSE
                EVALUATE    SPA-R01-RECE07-RECEKBN
@@ -1826,10 +1827,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                        MOVE    4           TO  LNK-PRTKANRI-PRIORITY
                    WHEN    "4"
                    WHEN    "5"
-                   WHEN    "8"
                        MOVE    6           TO  LNK-PRTKANRI-PRIORITY
                    WHEN    "6"
                        MOVE    8           TO  LNK-PRTKANRI-PRIORITY
+                   WHEN    "8"
+                       MOVE    10          TO  LNK-PRTKANRI-PRIORITY
                END-EVALUATE
            END-IF
            MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
