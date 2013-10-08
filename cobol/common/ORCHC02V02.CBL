@@ -79,6 +79,7 @@
       *                                     含量規格変更不可等の対応
       * 04.08.00     NACL-多々納  13/01/11  診療回数テーブル１０対応
       * 04.08.00     NACL-多々納  13/03/18  一般名記載ログ出力対応
+      * 04.07.00     NACL-多々納  13/10/08  第三者行為対応
       *****************************************************************
       *
       *
@@ -1288,6 +1289,14 @@
                                             TO  WRK-JKYSNO
                MOVE    KANACHK-MAX          TO  WRK-JKYSNO-MAX
            END-IF
+      *
+      *ver.4.7
+           IF      COMB-KOH1HKNNUM     =   "970"
+      *        第三者行為
+               MOVE    COMB-KOH1-TANSEIDONAME
+                                           TO  WRK-FTNSNO
+           END-IF
+      *
       *@@@ 埼玉県対応
       *    負担者番号編集なし
            IF     SYS-1001-PREFNUM     =   "11"

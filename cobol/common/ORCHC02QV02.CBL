@@ -80,6 +80,7 @@
       * 04.06.00     NACL-多々納  12/09/27  医師コード等編集対応
       * 04.08.00     NACL-多々納  13/01/11  診療回数テーブル１０対応
       * 04.08.00     NACL-多々納  13/03/18  一般名記載ログ出力対応
+      * 04.07.00     NACL-多々納  13/10/08  第三者行為対応
       *****************************************************************
       *
       *
@@ -332,6 +333,8 @@
       *    地方公費
            03  WRK-HEN-KOH-G.
                05  WRK-HEN-KOH         PIC X(86)
+                                       OCCURS   4.
+               05  WRK-HEN-KOHKBN      PIC X(01)
                                        OCCURS   4.
       *    保険医名称
            03  WRK-DRNAME              PIC X(50).
@@ -1324,6 +1327,7 @@
                MOVE    WRK-ZENKAKU-G(1:KANACHK-MAX)
                                            TO  WRK-FTNSNO
            END-IF
+      *
       *    受給者番号
            IF      PTKOH-JKYSNUM       =   SPACE
                MOVE    SPACE               TO  WRK-JKYSNO
@@ -1335,6 +1339,21 @@
                                             TO  WRK-JKYSNO
                MOVE    KANACHK-MAX          TO  WRK-JKYSNO-MAX
            END-IF
+      *ver.4.7
+           IF      COMB-KOH1HKNNUM     =   "970"
+      *        第三者行為
+               MOVE    COMB-KOH1-TANSEIDONAME
+                                           TO  WRK-FTNSNO
+      *        ＱＲは備考に記載
+               ADD     1               TO  IDX-K3
+               STRING  "【"
+                       COMB-KOH1-TANSEIDONAME
+                       "】"            DELIMITED  BY  SPACE
+                                       INTO  WRK-HEN-KOH(IDX-K3)
+               END-STRING
+               MOVE    "1"             TO  WRK-HEN-KOHKBN (IDX-K3)
+           END-IF
+      *
       *@@@ 埼玉県対応
       *    負担者番号編集なし
            IF     SYS-1001-PREFNUM     =   "11"
@@ -1488,6 +1507,7 @@
            PERFORM VARYING     IDX-K3  FROM    4   BY  -1
                    UNTIL      (IDX-K3      <   1   )
                IF      (WRK-HEN-KOH (IDX-K3)   NOT =   SPACE )
+                  AND  (WRK-HEN-KOHKBN(IDX-K3)     =   SPACE )
                    PERFORM VARYING     IDX-B1  FROM    9   BY  -1
                            UNTIL      (IDX-B1      <   1   )
                        IF      IDX-B1          =   1
@@ -4474,6 +4494,11 @@
                                    AND <=  "899"
                    MOVE    1               TO  FLG-KOHERR
                END-IF
+           END-IF
+      *ver.4.7
+           IF      COMB-KOHHKNNUM (IDX-K)  =   "970"
+      *        第三者行為は対象外
+               MOVE    1               TO  FLG-KOHERR
            END-IF
       *
            IF      FLG-KOHERR          =   ZERO

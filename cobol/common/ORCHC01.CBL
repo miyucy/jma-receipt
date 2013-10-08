@@ -61,6 +61,7 @@
       *  04.06.00    NACL=多々納  11/02/03  保険適応病名判定対応
       *  04.07.00    NACL=多々納  11/06/XX  病名なし処理区分対応
       *  04.07.00    NACL=多々納  11/08/03  主病区分、全公費編集対応
+      *  04.07.00    NACL-多々納  13/10/07  第三者行為対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1089,6 +1090,7 @@
        3103-KOHHEN-HC01-SEC         SECTION.
       *
            PERFORM 3102-PTKOHINF-HEN-SEC
+      *
            MOVE    WRK-FTNSNO      TO  HC01-FTNSNO (IDY)
       *****MOVE    WRK-JKYSNO      TO  HC01-JKYSNO (IDY)
            EVALUATE    WRK-JKYSNO-MAX
@@ -1273,6 +1275,9 @@
                           (PTKOH-KOHID         =   COMB-KOHID (2)) OR
                           (PTKOH-KOHID         =   COMB-KOHID (3)) OR
                           (PTKOH-KOHID         =   COMB-KOHID (4)))
+      *ver.4.7
+      *            第三者行為は対象外
+                   OR    ( PTKOH-KOHNUM        =   "970"   )
                        CONTINUE
                    ELSE
                        ADD     1               TO  IDX-KOH
@@ -1622,8 +1627,16 @@
            MOVE    SPACE               TO  WRK-JKYSNO
            MOVE    ZERO                TO  WRK-JKYSNO-MAX
       *    保険者情報
-      *    全角変換
-           MOVE    PTKOH-FTNJANUM      TO  WRK-MAE-INPUT
+      *ver.4.7
+           IF      COMB-KOH1HKNNUM     =   "970"
+      *        第三者行為
+               MOVE    COMB-KOH1-TANSEIDONAME
+                                           TO  WRK-MAE-INPUT
+           ELSE
+      *        全角変換
+               MOVE    PTKOH-FTNJANUM      TO  WRK-MAE-INPUT
+           END-IF
+      *
            MOVE    16                  TO  WRK-MOJISU
            PERFORM 2009-HENKAN-SEC
            MOVE    WRK-OUT-INPUT(1:16) TO  WRK-FTNSNO
