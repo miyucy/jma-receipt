@@ -265,12 +265,14 @@
            03  COM-MAX                 PIC 9(03).
       *
            03  WRK-COMB-HKNNUM         PIC X(03).
+           03  WRK-COMB-KOHID          PIC 9(10).
       *
       *    瘦副寥圭せテ〖ブル
        01  TBL-HKNCOMBI-AREA.
            03  TBL-HKNCOMBI-OCC        OCCURS   20.
                05  TBL-HKNCOMBINUM     PIC X(04).
                05  TBL-HKNNUM          PIC X(03).
+               05  TBL-KOHID           PIC 9(10).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -1308,6 +1310,12 @@
                MOVE    SPACE               TO  WRK-COMB-HKNNUM
            ELSE
                MOVE    COMB-HKNNUM         TO  WRK-COMB-HKNNUM
+      *ver.4.7
+      *        妈话荚
+               IF      COMB-KOH1HKNNUM     =   "970"
+                   MOVE    COMB-KOH1HKNNUM TO  WRK-COMB-HKNNUM
+                   MOVE    COMB-KOH1ID     TO  WRK-COMB-KOHID
+               END-IF
            END-IF
            IF     (PARA-HKNCOMBIKBN    =   "1"
                                        OR  "2" )
@@ -1425,11 +1433,20 @@
       *        汐阂ˇ极清勒とその戮瘦副
                IF      WRK-COMB-HKNNUM         =   "971"
                                                OR  "973"
+                                               OR  "970"
       *            瘦副寥圭せ办米のみ
                    IF      SPA-HKNCOMBINUM     =   PTBYO-HKNCOMBI
                        CONTINUE
                    ELSE
                        MOVE    1                   TO  FLG-INNO
+                   END-IF
+      *ver.47
+      *            妈话荚乖百は、给锐ＩＤ办米
+                   IF      WRK-COMB-HKNNUM     =   "970"
+                       MOVE    1                   TO  FLG-INNO
+                       IF      PTBYO-KOHID         =   WRK-COMB-KOHID
+                           MOVE    ZERO                TO  FLG-INNO
+                       END-IF
                    END-IF
                ELSE
       *            汐阂ˇ极清勒は滦据嘲
@@ -1440,11 +1457,17 @@
                                                                (IDX-H)
                            IF      TBL-HKNNUM (IDX-H)  =   "971"
                                                        OR  "973"
+                                                       OR  "970"
                                MOVE    1                   TO  FLG-INNO
                            END-IF
                            MOVE    20                  TO  IDX-H
                        END-IF
                    END-PERFORM
+      *ver.47
+      *            妈话荚乖百は滦据嘲
+                   IF      PTBYO-KOHID     NOT =   ZERO
+                       MOVE    1                   TO  FLG-INNO
+                   END-IF
                END-IF
            WHEN    "2"
       *        瘦副寥圭せ办米のみ
@@ -1452,6 +1475,14 @@
                    CONTINUE
                ELSE
                    MOVE    1                   TO  FLG-INNO
+               END-IF
+      *ver.47
+      *        妈话荚乖百は、给锐ＩＤ办米
+               IF      WRK-COMB-HKNNUM     =   "970"
+                   MOVE    1                   TO  FLG-INNO
+                   IF      PTBYO-KOHID         =   WRK-COMB-KOHID
+                       MOVE    ZERO                TO  FLG-INNO
+                   END-IF
                END-IF
            END-EVALUATE
            .
@@ -1706,6 +1737,12 @@
                                                                (IDX-H)
                    MOVE    COMB-HKNNUM         TO  TBL-HKNNUM
                                                                (IDX-H)
+      *ver.4.7
+      *            妈话荚
+                   IF      COMB-KOH1HKNNUM     =   "970"
+                       MOVE    COMB-KOH1HKNNUM TO  TBL-HKNNUM (IDX-H)
+                       MOVE    COMB-KOH1ID     TO  TBL-KOHID  (IDX-H)
+                   END-IF
                END-IF
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                MOVE    "key6"              TO  MCP-PATHNAME
