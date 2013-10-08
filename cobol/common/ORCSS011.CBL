@@ -574,7 +574,6 @@
                        END-IF
       *
                    MOVE    IDX-RYO     TO  IDX-PTRYO
-                   DISPLAY "IDX-PTRYO=" IDX-PTRYO
                    IF    ( IDX-KHN     =   5 OR 6 OR 9 OR 10 )
                            MOVE    1   TO  IDX-RYO
                    END-IF
@@ -586,7 +585,6 @@
                    MOVE    IDX-RYO TO  SS011-DAY2 (IDX-DAY)
                    MOVE    IDX-PTRYO
                                    TO  SS011-DAY3 (IDX-DAY)
-                   DISPLAY "IDX-DAY:"  SS011-DAY3 (IDX-DAY)
                    MOVE    CONST-RYOYOCD (IDX-KHN IDX-RYO)
                                        TO  SS011-SRYCD(IDX-DAY)
                    MOVE    1   TO  TNACCT-DAY (IDX-KHN IDX-RYO IDX-DAY)
