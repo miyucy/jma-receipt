@@ -562,7 +562,6 @@
                            STRING  WRK-RECEPRTKBN DELIMITED  BY  SPACE 
                                    WRK-NYUGAIKBN  DELIMITED  BY  SPACE 
                                    WRK-RECEKBN    DELIMITED  BY  SPACE 
-                                   WRK-NYUGAIKBN  DELIMITED  BY SPACE 
                                    "　照会連携　" DELIMITED  BY SIZE
                                    WRK-HENYMDG3 (1:16)
                                                   DELIMITED  BY SIZE
