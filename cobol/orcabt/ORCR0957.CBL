@@ -198,6 +198,7 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-OPECOM          PIC 9(01).
            03  FLG-RECE10          PIC 9(01).
+           03  FLG-BTPARA          PIC 9(01).
       *
            03  FLG-KUGIRI          PIC 9(01).
            03  FLG-SET             PIC 9(01).
@@ -566,6 +567,10 @@
       *
       *    請求管理
            COPY    "CPRCF010.INC".
+      *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -1007,6 +1012,21 @@ grpsys        PERFORM 900-DBSELECT-SEC
                                    =   SPACE
                MOVE    ZERO            TO
                                        SYS-200501-INSPECT-CHARACTER-KBN
+           END-IF
+      *
+      *    パラメタＤＢ読み込み
+           INITIALIZE                      BTPARA-REC
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
+               MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
+               PERFORM 900-BTPARA-READ-SEC
+               IF      FLG-BTPARA          =   1
+                   MOVE
+                   "パラメタ情報が取得できませんでした。"
+                                           TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    2               TO  FLG-STS
+               END-IF
            END-IF
       *
            .
@@ -2938,7 +2958,14 @@ grpsys         MOVE    RECE08-HOSPNUM      TO  RECE07-HOSPNUM
                MOVE    RECE08-TERMID       TO  RECE07-TERMID
                MOVE    RECE08-OPID         TO  RECE07-OPID
                IF      WRK-PARA-SYOKBN     =   "2"
-                   MOVE    ZERO            TO  RECE07-SYORISBT
+                   EVALUATE    BTPARA-INFO-KBN
+                       WHEN    "01"
+                           MOVE    ZERO            TO  RECE07-SYORISBT
+                       WHEN    "04"
+                           MOVE    "3"             TO  RECE07-SYORISBT
+                           MOVE    BTPARA-INFO-PARA (1:6)
+                                                   TO  RECE07-STYMD
+                   END-EVALUATE
                END-IF
                EVALUATE    WRK-PARA-PRTKBN
                    WHEN    "2"
@@ -4019,6 +4046,51 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *
            .
        900-SEIKYU-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-SEC         SECTION.
+      *
+           MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM   900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 900-BTPARA-READ-N-SEC
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-BTPARA-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    パラメタ読込
+      *****************************************************************
+       900-BTPARA-READ-N-SEC          SECTION.
+      *
+           PERFORM   900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  BTPARA-REC
+               MOVE    ZERO                TO  FLG-BTPARA
+           ELSE
+               MOVE    1                   TO  FLG-BTPARA
+               INITIALIZE                      BTPARA-REC
+           END-IF
+      *
+           .
+       900-BTPARA-READ-N-EXT.
            EXIT.
       *
       *****************************************************************
