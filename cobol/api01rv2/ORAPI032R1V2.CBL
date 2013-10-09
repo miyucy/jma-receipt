@@ -50,7 +50,6 @@
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDX1                    PIC 9(05).
-           03  IDX3                    PIC 9(05).
            03  IDXA                    PIC 9(05).
            03  IDXD                    PIC 9(05).
            03  IDXK                    PIC 9(05).
@@ -154,17 +153,14 @@
       *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
-      *    入院基本情報取得サブ（外泊等）
-           COPY    "CPORCSNINF03.INC".
-      *
       *    保険組合せセット領域
            COPY    "CPORCSAPIHKN.INC".
       *
       *    API XML読み込み用定義体
-           COPY    "CPHSMEALV2REQ.INC".
+           COPY    "CPHSFOODV2REQ.INC".
       *
       *    API XML書き込み用定義体
-           COPY    "CPHSMEALV2RES.INC".
+           COPY    "CPHSFOODV2RES.INC".
       *
       *ver.4.7
       *    API XML読み込み共通定義
@@ -261,8 +257,7 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           INITIALIZE                  XML-HSMEALV2REQ
-                                       XML-HSMEALRES
+           INITIALIZE                  XML-HSFOODRES
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -273,105 +268,113 @@
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
            IF    ( SPA-ERRCD   NOT =   SPACE )
                MOVE   "99"         TO  WRK-ERRCD
-               PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
-      *    ＳＰＡ共通設定
-           INITIALIZE                  SYS-1010-REC
-           INITIALIZE                  ORCSCOMMONAREA
-           MOVE    "M00"               TO  ORCSCOMMON-PG
-           CALL    "ORCSCOMMON"        USING
-                                       MCPAREA
-                                       SPA-AREA
-                                       ORCSCOMMONAREA
+           IF    ( WRK-ERRCD          =   SPACE )
+      *        ＳＰＡ共通設定
+               INITIALIZE                  SYS-1010-REC
+               INITIALIZE                  ORCSCOMMONAREA
+               MOVE    "M00"               TO  ORCSCOMMON-PG
+               CALL    "ORCSCOMMON"        USING
+                                           MCPAREA
+                                           SPA-AREA
+                                           ORCSCOMMONAREA
                                            SYS-1010-REC
-           IF    ( SPA-ERRCD       NOT =   SPACE )
-               MOVE   "89"         TO  WRK-ERRCD
-               PERFORM 990-EXIT-PROGRAM-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   MOVE   "89"         TO  WRK-ERRCD
+               END-IF
            END-IF
       *
       *    XML情報取り出し
            PERFORM 900-XML-READ-SEC
-           IF    ( WRK-ERRCD           NOT =   SPACE )
-               PERFORM 990-EXIT-PROGRAM-SEC
-           END-IF
       *
            PERFORM 1001-INIT-CHECK-SEC
       *
-           INITIALIZE                      ORCSNTYMDAREA
-           MOVE    SPA-HOSPNUM         TO  SNTYMD-HOSPNUM
-           MOVE    PTINF-PTID          TO  SNTYMD-PTID
-           MOVE    "2"                 TO  SNTYMD-KBN
-           CALL    "ORCSNTYMD" USING   ORCSNTYMDAREA
-                                           SPA-AREA
-           IF  ( SNTYMD-RC         NOT =   ZERO )
-               MOVE    "03"            TO  WRK-ERRCD
-               PERFORM 990-EXIT-PROGRAM-SEC
-           END-IF
-      *
-           MOVE    KEY-SRYYM   TO  WRK-SRYYMD-YM
-           PERFORM VARYING IDXD    FROM    1   BY  1
-                   UNTIL ( IDXD    >   31 )
-               MOVE    IDXD    TO  WRK-SRYYMD-DD
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   SNTYMD-MAX )
-                   IF    ( WRK-SRYYMD  >=  SNTYMD-NYUINYMD (IDX0))
-                    AND  ( WRK-SRYYMD  <=  SNTYMD-TAIINYMD (IDX0))
-                       MOVE    1   TO  WRK-NYUIN-DAY (IDXD)
+           IF    ( WRK-ERRCD           =   SPACE )
+               INITIALIZE                      ORCSNTYMDAREA
+               MOVE    SPA-HOSPNUM         TO  SNTYMD-HOSPNUM
+               MOVE    PTINF-PTID          TO  SNTYMD-PTID
+               MOVE    "2"                 TO  SNTYMD-KBN
+               CALL    "ORCSNTYMD" USING   ORCSNTYMDAREA
+                                               SPA-AREA
+               IF  ( SNTYMD-RC             =   ZERO )
+                   IF  ( SNTYMD-MAX        =   ZERO )
+                       MOVE    "50"        TO  WRK-ERRCD
                    END-IF
-               END-PERFORM
-           END-PERFORM
-      *
-           MOVE    "5"                 TO  WRK-ZAISKBKBN
-           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
-           IF    ( FLG-NYUINACCT   =   ZERO )
-               MOVE    NYUINACCT-REC   TO  TCOMB-AREA
-           ELSE
-               MOVE    "04"            TO  WRK-ERRCD
-               PERFORM 990-EXIT-PROGRAM-SEC
+               ELSE
+                   MOVE    "03"            TO  WRK-ERRCD
+               END-IF
            END-IF
       *
-           MOVE    "1"                 TO  WRK-ZAISKBKBN
-           PERFORM 901-NYUINACCT-KEY17-SEL-SEC
+           IF    ( WRK-ERRCD           =   SPACE )
       *
-           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
-      *
-               IF    ( NACCT-SRYCDTOTAL    =    099999916 )
-                   CONTINUE
-               ELSE
-                   PERFORM VARYING     IDX1    FROM    1   BY  1
-                           UNTIL     ( IDX1    >   31 )
-      *
-                       IF   ( NACCT-DAY(IDX1)  >   ZERO )
-                           MOVE    1   TO  WRK-NYUINRYO-DAY (IDX1)
+               MOVE    KEY-SRYYM   TO  WRK-SRYYMD-YM
+               PERFORM VARYING IDXD    FROM    1   BY  1
+                       UNTIL ( IDXD    >   31 )
+                   MOVE    IDXD    TO  WRK-SRYYMD-DD
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   SNTYMD-MAX )
+                       IF    ( WRK-SRYYMD  >=  SNTYMD-NYUINYMD (IDX0))
+                        AND  ( WRK-SRYYMD  <=  SNTYMD-TAIINYMD (IDX0))
+                           MOVE    1   TO  WRK-NYUIN-DAY (IDXD)
                        END-IF
-      *
                    END-PERFORM
+               END-PERFORM
+      *
+               MOVE    "5"                 TO  WRK-ZAISKBKBN
+               PERFORM 900-NYUINACCT-KEY17-SEL-SEC
+               IF    ( FLG-NYUINACCT   =   ZERO )
+                   MOVE    NYUINACCT-REC   TO  TCOMB-AREA
+               ELSE
+                   MOVE    "04"            TO  WRK-ERRCD
                END-IF
       *
-               PERFORM 901-NYUINACCT-KEY17-FET-SEC
+           END-IF
       *
-           END-PERFORM
+           IF    ( WRK-ERRCD           =   SPACE )
       *
-           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
+               MOVE    "1"                 TO  WRK-ZAISKBKBN
+               PERFORM 901-NYUINACCT-KEY17-SEL-SEC
       *
-           INITIALIZE                      ORCSNYUINDAY-AREA
-           MOVE    SPA-HOSPNUM         TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    SPA-PTID            TO  LNK-NYUINDAY-PTID
-           MOVE    KEY-SRYYM           TO  LNK-NYUINDAY-SANTEIYM
-           CALL    "ORCSNYUINDAY"          USING
-                                           ORCSNYUINDAY-AREA
-                                           SPA-AREA
-           IF    ( LNK-NYUINDAY-RC     NOT =   ZERO )
-               INITIALIZE                  ORCSNYUINDAY-AREA
+               PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+      *
+                   IF    ( NACCT-SRYCDTOTAL    =    099999916 )
+                       CONTINUE
+                   ELSE
+                       PERFORM VARYING     IDX1    FROM    1   BY  1
+                               UNTIL     ( IDX1    >   31 )
+      *
+                           IF   ( NACCT-DAY(IDX1)  >   ZERO )
+                               MOVE    1   TO  WRK-NYUINRYO-DAY (IDX1)
+                           END-IF
+      *
+                       END-PERFORM
+                   END-IF
+      *
+                   PERFORM 901-NYUINACCT-KEY17-FET-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key17"             TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               INITIALIZE                      ORCSNYUINDAY-AREA
+               MOVE    SPA-HOSPNUM         TO  LNK-NYUINDAY-HOSPNUM
+               MOVE    SPA-PTID            TO  LNK-NYUINDAY-PTID
+               MOVE    KEY-SRYYM           TO  LNK-NYUINDAY-SANTEIYM
+               CALL    "ORCSNYUINDAY"          USING
+                                               ORCSNYUINDAY-AREA
+                                               SPA-AREA
+               IF    ( LNK-NYUINDAY-RC     NOT =   ZERO )
+                   INITIALIZE                  ORCSNYUINDAY-AREA
+               END-IF
+      *
            END-IF
       *
            .
@@ -387,7 +390,9 @@
            MOVE    KEY-SRYYM       TO  SPA-SRYYMD
            MOVE    "01"            TO  SPA-SRYYMD (7:2)
       *
-           PERFORM 10011-PTNUM-CHECK-SEC
+           IF    ( WRK-ERRCD       =   SPACE )
+               PERFORM 10011-PTNUM-CHECK-SEC
+           END-IF
       *
            .
        1001-INIT-CHECK-EXT.
@@ -397,27 +402,27 @@
       *****************************************************************
        10011-SRYYM-CHECK-SEC       SECTION.
       *
-           IF    ( HSMEALREQ-SRYYM   =   SPACE )
+           IF    ( HSFDREQ-SRYYM   =   SPACE )
                MOVE    SPA-SYSYMD (1:6)
                                    TO  KEY-SRYYM
            ELSE
-               MOVE    HSMEALREQ-SRYYM
+               MOVE    HSFDREQ-SRYYM
                                    TO  WRK-DATE
                MOVE    "-01"       TO  WRK-DATE (8:3)
                PERFORM 800-SYMD-SEC
                PERFORM 800-HIZUKE-SEC
                IF    ( WRK-EDTYMD1     =   SPACE )
                    MOVE    "01"    TO  WRK-ERRCD
-                   PERFORM 990-EXIT-PROGRAM-SEC
                ELSE
                    MOVE    WRK-SYMD (1:6)
                                    TO  KEY-SRYYM
                END-IF
            END-IF
       *
-           IF    ( KEY-SRYYM   <   CONST-H200401 (1:6))
-               MOVE    "92"    TO  WRK-ERRCD
-               PERFORM 990-EXIT-PROGRAM-SEC
+           IF    ( WRK-ERRCD       =   SPACE )
+               IF    ( KEY-SRYYM   <   CONST-H200401 (1:6))
+                   MOVE    "92"    TO  WRK-ERRCD
+               END-IF
            END-IF
       *
            .
@@ -428,29 +433,28 @@
       *****************************************************************
        10011-PTNUM-CHECK-SEC       SECTION.
       *
-           IF    ( HSMEALREQ-PTNUM   =   SPACE )
+           IF    ( HSFDREQ-PTNUM   =   SPACE )
                MOVE    "02"            TO  WRK-ERRCD
-               PERFORM 990-EXIT-PROGRAM-SEC
            ELSE
                INITIALIZE                  ORCSPTIDAREA
                MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
-               MOVE    HSMEALREQ-PTNUM   TO  SPTID-PTNUM
+               MOVE    HSFDREQ-PTNUM   TO  SPTID-PTNUM
                CALL    "ORCSPTID"      USING
                                        ORCSPTIDAREA
                                        SPA-AREA
                IF    ( SPTID-RC        NOT =   ZERO )
                    MOVE    "02"        TO  WRK-ERRCD
-                   PERFORM 990-EXIT-PROGRAM-SEC
                END-IF
       *
                MOVE    SPTID-PTNUM     TO  SPA-PTNUM
                MOVE    SPTID-PTID      TO  SPA-PTID
            END-IF
       *
-           PERFORM 900-PTINF-KEY-SEL-SEC
-           IF    ( FLG-PTINF       NOT =   ZERO )
-               MOVE    "02"        TO  WRK-ERRCD
-               PERFORM 990-EXIT-PROGRAM-SEC
+           IF    ( WRK-ERRCD           =   SPACE )
+               PERFORM 900-PTINF-KEY-SEL-SEC
+               IF    ( FLG-PTINF       NOT =   ZERO )
+                   MOVE    "02"        TO  WRK-ERRCD
+               END-IF
            END-IF
       *
            .
@@ -461,165 +465,448 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           PERFORM 2001-RESPONSE-EDIT-SEC
+           PERFORM 2001-PTINF-EDIT-SEC
+      *
+           IF    ( WRK-ERRCD       =   SPACE )
+               PERFORM 2001-NACCT-EDIT-SEC
+           END-IF
+      *
+           IF    ( WRK-ERRCD       =   SPACE )
+               PERFORM 2001-HKN-EDIT-SEC
+           END-IF
       *
            .
        200-MAIN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    返却情報編集処理
+      *    患者報編集処理
       *****************************************************************
-       2001-RESPONSE-EDIT-SEC              SECTION.
+       2001-PTINF-EDIT-SEC                 SECTION.
       *
-           INITIALIZE                  SNINF03-AREA
-           MOVE    KEY-SRYYM       TO  SNINF03-IN-SRYYM
-           CALL    "ORCSNINF03"    USING
-                                   SNINF03-AREA
-                                   SPA-AREA
+           MOVE    SPA-PTNUM           TO  HSFDRES-PTNUM
+           MOVE    PTINF-NAME          TO  HSFDRES-NAME
+           MOVE    PTINF-KANANAME      TO  HSFDRES-KANANAME
+           MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
+           PERFORM 800-DATE-SEC
+           MOVE    WRK-DATE            TO  HSFDRES-BIRTHDAY
+           MOVE    PTINF-SEX           TO  HSFDRES-SEX
       *
-           MOVE    SNINF03-PTNUM       TO  HSMEALRES-PTNUM
-           MOVE    SNINF03-NAME        TO  HSMEALRES-NAME
-           MOVE    SNINF03-KANANAME    TO  HSMEALRES-KANANAME
-           MOVE    SNINF03-BIRTHDAY    TO  HSMEALRES-BIRTHDAY
-           MOVE    SNINF03-SEX         TO  HSMEALRES-SEX
+          .
+       2001-PTINF-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計情報編集処理
+      *****************************************************************
+       2001-NACCT-EDIT-SEC                 SECTION.
       *
-           PERFORM VARYING IDXA    FROM    1   BY  1
+           MOVE    ZERO            TO      IDXA
+           PERFORM VARYING IDX0    FROM    SNTYMD-MAX   BY  -1
                    UNTIL ( IDXA    >   5 )
-               MOVE    SNINF03-NYUINYMD (IDXA)
-                                       TO  HSMEALRES-NYUINYMD (IDXA)
-               MOVE    SNINF03-TAIINYMD (IDXA)
-                                       TO  HSMEALRES-TAIINYMD (IDXA)
+                    OR   ( IDX0    <   1)
+      *
+               IF    ( KEY-SRYYM   >=  SNTYMD-NYUINYMD (IDX0)(1:6))
+                AND  ( KEY-SRYYM   <=  SNTYMD-TAIINYMD (IDX0)(1:6))
+                   COMPUTE IDXA    =   IDXA    +   1
+                   MOVE    SNTYMD-NYUINYMD (IDX0)
+                                   TO  WRK-SYMD
+                   PERFORM 800-DATE-SEC
+                   MOVE    WRK-DATE    TO  HSFDRES-NYUINYMD (IDXA)
+      *
+                   MOVE    SNTYMD-TAIINYMD (IDX0)
+                                       TO  WRK-SYMD
+                   PERFORM 800-DATE-SEC
+                   MOVE    WRK-DATE    TO  HSFDRES-TAIINYMD (IDXA)
+               END-IF
+      *
            END-PERFORM
       *
-           MOVE    SNINF03-SRYYM       TO  HSMEALRES-SRYYM
+           MOVE    KEY-SRYYM           TO  WRK-SYMD
+           MOVE    "01"                TO  WRK-SYMD(7:2)
+           PERFORM 800-DATE-SEC
+           MOVE    WRK-DATE (1:7)      TO  HSFDRES-SRYYM
+      *
+           PERFORM 2001-SKJ-GAIHAKU-EDIT-SEC
+      *
+           MOVE    ZERO            TO  IDXA
+      *
+           INITIALIZE                  SS009-AREA
+           MOVE    "1"             TO  SS009-EXGAIHAKU
+           CALL    "ORCSS009"  USING   SS009-AREA
+                                       TCOMB-AREA
+                                       SPA-AREA
+           IF    ( SS009-RC        =   ZERO )
+               PERFORM VARYING IDXD    FROM    1   BY  1
+                       UNTIL ( IDXD    >   31 )
+                   IF    ( WRK-NYUIN-DAY (IDXD)    >   ZERO )
+                    AND  ( TCOMB-DAY     (IDXD)    >   ZERO )
+                       PERFORM 20011-NACCT-EDIT-SEC
+                   END-IF
+               END-PERFORM
+           ELSE
+               MOVE    "05"       TO  WRK-ERRCD
+           END-IF
+      *
+          .
+       2001-NACCT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計情報編集処理
+      *****************************************************************
+       20011-NACCT-EDIT-SEC                SECTION.
+      *
+           COMPUTE IDXA    =   IDXA    +   1
+      *
+           MOVE    IDXA            TO  WRK-CALENDAR-MAX
+      *
+           MOVE    KEY-SRYYM       TO  WRK-SRYYMD-YM
+           MOVE    IDXD            TO  WRK-SRYYMD-DD
+      *
+           MOVE    WRK-SRYYMD      TO  WRK-SYMD
+           PERFORM 800-DATE-SEC
+           MOVE    WRK-DATE        TO  HSFDRES-SRYYMD (IDXA)
+      *
+           MOVE    "診療科"        TO  HSFDRES-SRYKA-LBL  (IDXA)
+           MOVE    SS009-SRYKA-DAY (IDXD)
+                                   TO  HSFDRES-SRYKA-DATA (IDXA)
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "1005"          TO  SYS-KANRICD
+           MOVE    SS009-SRYKA-DAY (IDXD)
+                                   TO  SYS-KBNCD
+           MOVE    WRK-SRYYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-1005-REC
+           MOVE    SYS-1005-SRYKANAME
+                                   TO  HSFDRES-SRYKA-NAME (IDXA)
+      *
+           MOVE    "病棟番号"      TO  HSFDRES-BTUNUM-LBL (IDXA)
+           MOVE    SS009-BRMNUM-DAY(IDXD)(1:2)
+                                   TO  HSFDRES-BTUNUM-DATA(IDXA)
+      *
+           MOVE    "病棟名"        TO  HSFDRES-BTUNAME-LBL(IDXA)
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "5001"          TO  SYS-KANRICD
+           MOVE    SS009-BRMNUM-DAY(IDXD)(1:2)
+                                   TO  SYS-KBNCD
+           MOVE    WRK-SRYYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5001-REC
+           MOVE    SYS-5001-BTU-NAME
+                                   TO  HSFDRES-BTUNAME-DATA (IDXA)
+      *
+           MOVE    "病室番号"      TO  HSFDRES-BRMNUM-LBL   (IDXA)
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "5002"          TO  SYS-KANRICD
+           MOVE    SS009-BRMNUM-DAY(IDXD)
+                                   TO  SYS-KBNCD
+           MOVE    WRK-SRYYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-5002-REC
+           MOVE    SYS-5002-BRM-NUM
+                                   TO  HSFDRES-BRMNUM-DATA  (IDXA)
+      *
+           MOVE    SS009-HKNCOMBI-DAY (IDXD)
+                                   TO  HSFDRES-HKNCOMBI (IDXA)
+      *
+           MOVE    "外泊・他医療機関受診情報等"
+                                   TO  HSFDRES-PTSTATUS-LBL (IDXA)
+           MOVE    TNACCT-DAY (CONST-GAIHAKU IDXD)
+                                   TO  WRK-PTSTATUS-N
+           MOVE    WRK-PTSTATUS-N  TO  HSFDRES-PTSTATUS-DATA (IDXA)
+           EVALUATE    TNACCT-DAY (CONST-GAIHAKU IDXD)
+           WHEN    ZERO
+               MOVE    "入院中"        TO  HSFDRES-PTSTATUS-NAME (IDXA)
+           WHEN    1
+               MOVE    "外泊"          TO  HSFDRES-PTSTATUS-NAME (IDXA)
+           WHEN    2
+               MOVE    "治療の為の外泊"
+                                       TO  HSFDRES-PTSTATUS-NAME (IDXA)
+           WHEN    3
+               MOVE    "他医療機関受診７０％減"
+                                       TO  HSFDRES-PTSTATUS-NAME (IDXA)
+           WHEN    4
+               MOVE    "他医療機関受診７０％減"
+                                       TO  HSFDRES-PTSTATUS-NAME (IDXA)
+           WHEN    5
+               MOVE    "他医療機関受診３０％減"
+                                       TO  HSFDRES-PTSTATUS-NAME (IDXA)
+           WHEN    6
+               MOVE    "他医療機関受診５５％減"
+                                       TO  HSFDRES-PTSTATUS-NAME (IDXA)
+           WHEN    7
+               MOVE    "他医療機関受診１５％減"
+                                       TO  HSFDRES-PTSTATUS-NAME (IDXA)
+           WHEN    8
+               MOVE    "特定時間退院減算"
+                                       TO  HSFDRES-PTSTATUS-NAME (IDXA)
+           WHEN    9
+               MOVE    "特定曜日入退院減算"
+                                       TO  HSFDRES-PTSTATUS-NAME (IDXA)
+           WHEN    13
+               MOVE    "特定曜日入退院減算＋他医療機関受診３０％減"
+                                       TO  HSFDRES-PTSTATUS-NAME (IDXA)
+           END-EVALUATE
+      *
+           MOVE    "朝食"              TO  HSFDRES-SKJ-ASA-LBL   (IDXA)
+           MOVE    TNACCT-DAY (CONST-ASA IDXD)
+                                       TO  WRK-SKJ-N
+           MOVE    WRK-SKJ-N           TO  HSFDRES-SKJ-ASA-DATA  (IDXA)
+           MOVE    TNACCT-DAY (CONST-ASA IDXD)
+                                       TO  WRK-DAY
+           PERFORM 200111-SKJ-EDIT-SEC
+           MOVE    WRK-SKJ-NAME        TO  HSFDRES-SKJ-ASA-NAME  (IDXA)
+      *
+           MOVE    "昼食"              TO  HSFDRES-SKJ-HIRU-LBL  (IDXA)
+           MOVE    TNACCT-DAY (CONST-HIRU IDXD)
+                                       TO  WRK-SKJ-N
+           MOVE    WRK-SKJ-N           TO  HSFDRES-SKJ-HIRU-DATA (IDXA)
+           MOVE    TNACCT-DAY (CONST-HIRU IDXD)
+                                       TO  WRK-DAY
+           PERFORM 200111-SKJ-EDIT-SEC
+           MOVE    WRK-SKJ-NAME        TO  HSFDRES-SKJ-HIRU-NAME (IDXA)
+      *
+           MOVE    "夕食"              TO  HSFDRES-SKJ-YU-LBL   (IDXA)
+           MOVE    TNACCT-DAY (CONST-YU IDXD)
+                                       TO  WRK-SKJ-N
+           MOVE    WRK-SKJ-N           TO  HSFDRES-SKJ-YU-DATA  (IDXA)
+           MOVE    TNACCT-DAY (CONST-YU IDXD)
+                                       TO  WRK-DAY
+           PERFORM 200111-SKJ-EDIT-SEC
+           MOVE    WRK-SKJ-NAME        TO  HSFDRES-SKJ-YU-NAME  (IDXA)
+      *
+           MOVE    "室料差額"          TO  HSFDRES-SAGAKU-LBL   (IDXA)
+           MOVE    "円"                TO  HSFDRES-SAGAKU-NAME  (IDXA)
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    "5113"              TO  SYS-KANRICD
+           MOVE    SS009-SAGAKUCD-DAY (IDXD)
+                                       TO  SYS-KBNCD
+           MOVE    WRK-SRYYMD          TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-5113-REC
+           IF    ( FLG-SYSKANRI    =   ZERO )
+               MOVE    SYS-5113-BRM-SAGAKU-NM
+                                       TO  WRK-NUM7Z
+               MOVE    WRK-NUM7Z       TO  HSFDRES-SAGAKU-DATA (IDXA)
+           ELSE
+               MOVE    ZERO            TO  WRK-NUM7Z
+               MOVE    WRK-NUM7Z       TO  HSFDRES-SAGAKU-DATA (IDXA)
+           END-IF
+      *
+          .
+       20011-NACCT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事外泊情報編集処理
+      *****************************************************************
+       2001-SKJ-GAIHAKU-EDIT-SEC       SECTION.
+      *
+           PERFORM 900-NYUINACCT-KEY51-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+      *
+               MOVE    ZERO                TO  IDXN
+      *
+               EVALUATE    NACCT-ZAISKBKBN
+               WHEN    "2"
+                   MOVE    CONST-GAIHAKU   TO  IDXN
+               WHEN    "4"
+                   EVALUATE    NACCT-SRYCDTOTAL
+                   WHEN    099999918
+                       MOVE    CONST-ASA   TO  IDXN
+                   WHEN    099999919
+                       MOVE    CONST-HIRU  TO  IDXN
+                   WHEN    099999920
+                       MOVE    CONST-YU    TO  IDXN
+                   END-EVALUATE
+               END-EVALUATE
+      *
+               IF    ( IDXN            >   ZERO )
+                   MOVE    NYUINACCT-REC   TO  TNACCT-OCC (IDXN)
+               END-IF
+      *
+               PERFORM 900-NYUINACCT-KEY51-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key51"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           MOVE    TNACCT-OCC (CONST-GAIHAKU)
+                                   TO  TGAIHAKU-AREA
+           MOVE    ZERO            TO  TNACCT-ZAIKAISU (CONST-ASA)
+                                       TNACCT-ZAIKAISU (CONST-HIRU)
+                                       TNACCT-ZAIKAISU (CONST-YU)
       *
            PERFORM VARYING IDXD    FROM    1   BY  1
                    UNTIL ( IDXD    >   31 )
       *
-               MOVE    SNINF03-SRYYMD (IDXD)
-                                   TO  HSMEALRES-SRYYMD (IDXD)
+               MOVE    CONST-ASA   TO  IDXN
+               PERFORM 20011-SKJ-GAIHAKU-EDIT-SEC
       *
-               MOVE    SNINF03-SRYKA-LBL (IDXD)
-                                   TO  HSMEALRES-SRYKA-LBL (IDXD)
-               MOVE    SNINF03-SRYKA-DATA(IDXD)
-                                   TO  HSMEALRES-SRYKA-DATA(IDXD)
-               MOVE    SNINF03-SRYKA-NAME (IDXD)
-                                   TO  HSMEALRES-SRYKA-NAME (IDXD)
+               MOVE    CONST-HIRU  TO  IDXN
+               PERFORM 20011-SKJ-GAIHAKU-EDIT-SEC
       *
-               MOVE    SNINF03-BTUNUM-LBL (IDXD)
-                                   TO  HSMEALRES-BTUNUM-LBL (IDXD)
-               MOVE    SNINF03-BTUNUM-DATA (IDXD)
-                                   TO  HSMEALRES-BTUNUM-DATA (IDXD)
-      *
-               MOVE    SNINF03-BTUNAME-LBL (IDXD)
-                                   TO  HSMEALRES-BTUNAME-LBL (IDXD)
-               MOVE    SNINF03-BTUNAME-DATA (IDXD)
-                                   TO  HSMEALRES-BTUNAME-DATA (IDXD)
-      *
-               MOVE    SNINF03-BRMNUM-LBL (IDXD)
-                                   TO  HSMEALRES-BRMNUM-LBL (IDXD)
-               MOVE    SNINF03-BRMNUM-DATA (IDXD)
-                                   TO  HSMEALRES-BRMNUM-DATA (IDXD)
-      *
-               MOVE    SNINF03-HKNCOMBI (IDXD)
-                                   TO  HSMEALRES-HKNCOMBI (IDXD)
-      *
-               MOVE    SNINF03-PTSTATUS-LBL (IDXD)
-                                   TO  HSMEALRES-PTSTATUS-LBL (IDXD)
-               MOVE    SNINF03-PTSTATUS-DATA (IDXD)
-                                   TO  HSMEALRES-PTSTATUS-DATA (IDXD)
-               MOVE    SNINF03-PTSTATUS-NAME (IDXD)
-                                   TO  HSMEALRES-PTSTATUS-NAME (IDXD)
-      *
-               MOVE    SNINF03-SKJ-ASA-LBL (IDXD)
-                                   TO  HSMEALRES-SKJ-ASA-LBL (IDXD)
-               MOVE    SNINF03-SKJ-ASA-DATA (IDXD)
-                                   TO  HSMEALRES-SKJ-ASA-DATA (IDXD)
-               MOVE    SNINF03-SKJ-ASA-NAME (IDXD)
-                                   TO  HSMEALRES-SKJ-ASA-NAME (IDXD)
-      *
-               MOVE    SNINF03-SKJ-HIRU-LBL (IDXD)
-                                   TO  HSMEALRES-SKJ-HIRU-LBL (IDXD)
-               MOVE    SNINF03-SKJ-HIRU-DATA (IDXD)
-                                   TO  HSMEALRES-SKJ-HIRU-DATA (IDXD)
-               MOVE    SNINF03-SKJ-HIRU-NAME (IDXD)
-                                   TO  HSMEALRES-SKJ-HIRU-NAME (IDXD)
-      *
-               MOVE    SNINF03-SKJ-YU-LBL (IDXD)
-                                   TO  HSMEALRES-SKJ-YU-LBL (IDXD)
-               MOVE    SNINF03-SKJ-YU-DATA (IDXD)
-                                   TO  HSMEALRES-SKJ-YU-DATA (IDXD)
-               MOVE    SNINF03-SKJ-YU-NAME (IDXD)
-                                   TO  HSMEALRES-SKJ-YU-NAME (IDXD)
-      *
-               MOVE    SNINF03-SAGAKU-LBL (IDXD)
-                                   TO  HSMEALRES-SAGAKU-LBL (IDXD)
-               MOVE    SNINF03-SAGAKU-DATA (IDXD)
-                                   TO  HSMEALRES-SAGAKU-DATA (IDXD)
-               MOVE    SNINF03-SAGAKU-NAME (IDXD)
-                                   TO  HSMEALRES-SAGAKU-NAME (IDXD)
-      *
-               MOVE    SNINF03-NYUKHN-LBL (IDXD)
-                                   TO  HSMEALRES-NYUKHN-LBL (IDXD)
-               PERFORM VARYING IDX3    FROM    1   BY  1
-                       UNTIL ( IDX3    >   5 )
-                        OR   ( SNINF03-NYUKHN-DATA (IDXD IDX3)
-                                       =   SPACE )
-                   MOVE    SNINF03-NYUKHN-DATA (IDXD IDX3)
-                               TO  HSMEALRES-NYUKHN-DATA (IDXD IDX3)
-                   MOVE    SNINF03-NYUKHN-NAME (IDXD IDX3)
-                               TO  HSMEALRES-NYUKHN-NAME (IDXD IDX3)
-               END-PERFORM
-      *
-               PERFORM VARYING IDX3    FROM    1   BY  1
-                       UNTIL ( IDX3    >   20 )
-                        OR   ( SNINF03-NYUKSN-LBL (IDXD IDX3)
-                                       =   SPACE )
-                   MOVE    SNINF03-NYUKSN-LBL (IDXD IDX3)
-                               TO  HSMEALRES-NYUKSN-LBL (IDXD IDX3)
-                   MOVE    SNINF03-NYUKSN-DATA (IDXD IDX3)
-                               TO  HSMEALRES-NYUKSN-DATA (IDXD IDX3)
-                   MOVE    SNINF03-NYUKSN-NAME (IDXD IDX3)
-                               TO  HSMEALRES-NYUKSN-NAME (IDXD IDX3)
-               END-PERFORM
-      *
-           END-PERFORM
-      *
-           PERFORM VARYING IDXH    FROM    1   BY  1
-                   UNTIL ( IDXH    >   10 )
-      *
-               MOVE    SNINF03-HKNCOMBI-KEY (IDXH)
-                                   TO  HSMEALRES-HKNCOMBI-KEY (IDXH)
-               MOVE    SNINF03-HKNNUM (IDXH)
-                                   TO  HSMEALRES-HKNNUM (IDXH)
-               MOVE    SNINF03-HKNJANUM (IDXH)
-                                   TO  HSMEALRES-HKNJANUM (IDXH)
-               MOVE    SNINF03-HKNJANAME (IDXH)
-                                   TO  HSMEALRES-HKNJANAME (IDXH)
-               MOVE    SNINF03-HKIGO (IDXH)
-                                   TO  HSMEALRES-HKIGO (IDXH)
-               MOVE    SNINF03-HNUM (IDXH)
-                                   TO  HSMEALRES-HNUM (IDXH)
-      *
-               PERFORM VARYING IDXK    FROM    1   BY  1
-                       UNTIL ( IDXK    >   4 )
-      *
-                   MOVE    SNINF03-KOHNUM (IDXH IDXK)
-                                   TO  HSMEALRES-KOHNUM (IDXH IDXK)
-                   MOVE    SNINF03-KOHNAME (IDXH IDXK)
-                                   TO  HSMEALRES-KOHNAME (IDXH IDXK)
-                   MOVE    SNINF03-FTNJANUM (IDXH IDXK)
-                                   TO  HSMEALRES-FTNJANUM (IDXH IDXK)
-                   MOVE    SNINF03-JKYSNUM (IDXH IDXK)
-                                   TO  HSMEALRES-JKYSNUM (IDXH IDXK)
-      *
-               END-PERFORM
+               MOVE    CONST-YU    TO  IDXN
+               PERFORM 20011-SKJ-GAIHAKU-EDIT-SEC
       *
            END-PERFORM
       *
           .
-       2001-RESPONSE-EDIT-EXT.
+       2001-SKJ-GAIHAKU-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事外泊情報編集処理
+      *****************************************************************
+       20011-SKJ-GAIHAKU-EDIT-SEC          SECTION.
+      *
+           IF    ( TGAIHAKU-DAY (IDXD)     =   ZERO )
+             OR  ( TGAIHAKU-DAY (IDXD)    >=   4 )
+               IF    ( TNACCT-DAY (IDXN IDXD)      >   ZERO )
+                   COMPUTE TNACCT-ZAIKAISU (IDXN)
+                       =   TNACCT-ZAIKAISU (IDXN)  +   1
+               END-IF
+           ELSE
+               MOVE    ZERO    TO  TNACCT-DAY (IDXN IDXD)
+           END-IF
+      *
+          .
+       20011-SKJ-GAIHAKU-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    食事情報編集処理
+      *****************************************************************
+       200111-SKJ-EDIT-SEC                 SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SKJ-NAME
+      *
+           EVALUATE    WRK-DAY
+           WHEN    ZERO
+               MOVE    "食事なし"      TO  WRK-SKJ-NAME
+           WHEN    1
+               MOVE    "食事あり"      TO  WRK-SKJ-NAME
+           WHEN    2
+               MOVE    "食事あり（特別食）"
+                                       TO  WRK-SKJ-NAME
+           END-EVALUATE
+      *
+          .
+       200111-SKJ-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険情報編集処理
+      *****************************************************************
+       2001-HKN-EDIT-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  IDXH
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   WRK-CALENDAR-MAX )
+      *
+               PERFORM VARYING IDX0    FROM    1   BY  1
+                       UNTIL ( IDX0    >   CONST-HKN-MAX )
+                        OR   ( IDXH    >=  CONST-HKN-MAX )
+      *
+                   IF    ( IDX0        >   IDXH )
+                       COMPUTE IDXH    =   IDXH    +   1
+                       MOVE    HSFDRES-HKNCOMBI (IDXA)
+                                       TO  HSFDRES-HKNCOMBI-KEY (IDXH)
+                       MOVE    CONST-HKN-MAX
+                                       TO  IDX0
+                   ELSE
+                       IF   (  HSFDRES-HKNCOMBI (IDXA)
+                                        =  HSFDRES-HKNCOMBI-KEY (IDX0))
+                           MOVE    CONST-HKN-MAX
+                                       TO  IDX0
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+      *
+           END-PERFORM
+      *
+           MOVE    SPA-AREA    TO  TSPA-AREA
+           MOVE    SPA-SRYYMD  TO  SPA-SYSYMD
+           INITIALIZE              ORCSAPIHKNAREA
+           MOVE    "2"         TO  ORCSAPIHKN-KBN2
+           CALL    "ORCSAPIHKN"    USING
+                                   SPA-AREA
+                                   ORCSAPIHKNAREA
+           MOVE    TSPA-AREA   TO  SPA-AREA
+      *
+           PERFORM VARYING IDXH    FROM    1   BY  1
+                   UNTIL ( IDXH    >   CONST-HKN-MAX )
+                    OR   ( HSFDRES-HKNCOMBI-KEY (IDXH)
+                                   =   SPACE )
+               PERFORM VARYING IDXA    FROM    1   BY  1
+                       UNTIL ( IDXA    >   20 )
+                         OR  ( ORCSAPIHKN-THKNCOMBI (IDXA)
+                                       =   SPACE  )
+                   IF    ( HSFDRES-HKNCOMBI-KEY (IDXH)
+                                       =   ORCSAPIHKN-THKNCOMBI (IDXA))
+                       PERFORM 20011-HKN-EDIT-SEC
+                       MOVE    20      TO  IDXA
+                   END-IF
+      *
+               END-PERFORM
+           END-PERFORM
+      *
+          .
+       2001-HKN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    保険情報編集処理
+      *****************************************************************
+       20011-HKN-EDIT-SEC              SECTION.
+      *
+      *    保険の種類
+           MOVE    ORCSAPIHKN-HKNNUM (IDXA)
+                                   TO  HSFDRES-HKNNUM   (IDXH)
+      *
+      *    保険者番号
+           MOVE    ORCSAPIHKN-HKNJANUM (IDXA)
+                                   TO  HSFDRES-HKNJANUM (IDXH)
+      *
+      *    保険の名称
+           MOVE    ORCSAPIHKN-HKNNUM-NAME (IDXA)
+                                   TO  HSFDRES-HKNJANAME(IDXH)
+      *
+      *    記号
+           MOVE    ORCSAPIHKN-KIGO  (IDXA)
+                                   TO  HSFDRES-HKIGO (IDXH)
+      *
+      *    番号
+           MOVE    ORCSAPIHKN-NUM  (IDXA)
+                                   TO  HSFDRES-HNUM  (IDXH)
+      *
+      *    公費情報
+           PERFORM VARYING IDXK    FROM    1   BY  1
+                   UNTIL ( IDXK    >   4 )
+      *
+      *        公費の種類
+               MOVE    ORCSAPIHKN-KOHNUM (IDXA IDXK)
+                                   TO  HSFDRES-KOHNUM  (IDXH IDXK)
+      *        公費の種類名称
+               MOVE    ORCSAPIHKN-KOHNUM-NAME (IDXA IDXK)
+                                   TO  HSFDRES-KOHNAME (IDXH IDXK)
+      *        負担者番号
+               MOVE    ORCSAPIHKN-FTNJANUM (IDXA IDXK)
+                                   TO  HSFDRES-FTNJANUM(IDXH IDXK)
+      *        受給者番号
+               MOVE    ORCSAPIHKN-JKYSNUM (IDXA IDXK)
+                                   TO  HSFDRES-JKYSNUM (IDXH IDXK)
+           END-PERFORM
+      *
+          .
+       20011-HKN-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
@@ -628,18 +915,18 @@
       *
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE            TO  HSMEALRES-INFORMATION-DATE
+           MOVE    WRK-DATE            TO  HSFDRES-INFORMATION-DATE
       *
            MOVE    SMCNDATE-HMS        TO  WRK-HMS
            PERFORM 800-TIME-SEC
-           MOVE    WRK-TIME            TO  HSMEALRES-INFORMATION-TIME
+           MOVE    WRK-TIME            TO  HSFDRES-INFORMATION-TIME
       *
            IF    ( WRK-ERRCD           =   SPACE )
                MOVE    "00"            TO  WRK-ERRCD
            END-IF
            PERFORM 890-ERRCD-MSG-SEC
-           MOVE    WRK-ERRCD           TO  HSMEALRES-API-RESULT
-           MOVE    WRK-ERRMSG          TO  HSMEALRES-API-RESULT-MSG
+           MOVE    WRK-ERRCD           TO  HSFDRES-API-RESULT
+           MOVE    WRK-ERRMSG          TO  HSFDRES-API-RESULT-MSG
       *
            PERFORM 900-XML-WRITE-SEC
       *
@@ -750,6 +1037,9 @@
            WHEN    "05"
                MOVE    "入院会計情報の取得に失敗しました"
                                        TO  WRK-ERRMSG
+           WHEN    "50"
+               MOVE    "診療年月にかかる入退院情報はありません"
+                                       TO  WRK-ERRMSG
       *共通エラー
            WHEN    "89"
       *        ORCSCOMMON のエラー
@@ -809,18 +1099,18 @@
        900-XML-READ-SEC             SECTION.
       *
            IF    ( APILST14-BODY    NOT =   LOW-VALUE )
-               DISPLAY "hsmealv2 object is not low_value"
+               DISPLAY "hsfoodv2 object is not low_value"
            END-IF
       *
            INITIALIZE                      XML-APIREQ
       * XML情報取り出し
-           MOVE    "xml_hsmealv2req"   TO  MCP-TABLE
+           MOVE    "xml_hsfoodv2req"   TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    APILST14-BODY           TO  APIREQ-OBJECT
            MOVE    ZERO                    TO  APIREQ-MODE
            PERFORM 910-XMLOPEN-SEC
            IF    ( MCP-RC              =   ZERO  OR  1 )
-               MOVE    "xml_hsmealv2req"
+               MOVE    "xml_hsfoodv2req"
                                            TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                MOVE    "private_objects"   TO  APIREQ-RECORDNAME
@@ -837,7 +1127,7 @@
                MOVE   "97"                 TO  WRK-ERRCD
            END-IF
       *
-           MOVE    "xml_hsmealv2req"   TO  MCP-TABLE
+           MOVE    "xml_hsfoodv2req"   TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM 910-XMLCLOSE-SEC
        *
@@ -850,14 +1140,14 @@
        9001-XML-FILTER-SEC             SECTION.
       *
            MOVE    APIREQ-PATIENTINFOREQ
-                                       TO  HSMEALREQ-PRIVATE-OBJECTS
+                                       TO  HSFDREQ-PRIVATE-OBJECTS
       *
-           IF    ( HSMEALREQ-PTNUM   =   LOW-VALUE )
-               MOVE    SPACE           TO  HSMEALREQ-PTNUM
+           IF    ( HSFDREQ-PTNUM   =   LOW-VALUE )
+               MOVE    SPACE           TO  HSFDREQ-PTNUM
            END-IF
       *
-           IF    ( HSMEALREQ-SRYYM   =   LOW-VALUE )
-               MOVE    SPACE           TO  HSMEALREQ-SRYYM
+           IF    ( HSFDREQ-SRYYM   =   LOW-VALUE )
+               MOVE    SPACE           TO  HSFDREQ-SRYYM
            END-IF
       *
            .
@@ -869,11 +1159,11 @@
        900-XML-WRITE-SEC             SECTION.
       *
            IF    ( APILST14-BODY    NOT =   LOW-VALUE )
-               DISPLAY "hsmealv2 object is not low_value"
+               DISPLAY "hsfoodv2 object is not low_value"
            END-IF
       *
            INITIALIZE                      XML-APIREQ
-           MOVE    "xml_hsmealv2res"   TO  MCP-TABLE
+           MOVE    "xml_hsfoodv2res"   TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    1                       TO  APIREQ-MODE
            PERFORM 910-XMLOPEN-SEC
@@ -883,8 +1173,8 @@
                DISPLAY "XMLOPEN failure = " MCP-RC
            END-IF
       *
-           MOVE    HSMEALRES-PRIVATE-OBJECTS TO  APIREQ-PATIENTINFOREQ
-           MOVE    "xml_hsmealv2res"   TO  MCP-TABLE
+           MOVE    HSFDRES-PRIVATE-OBJECTS TO  APIREQ-PATIENTINFOREQ
+           MOVE    "xml_hsfoodv2res"   TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            MOVE    "private_objects"       TO  APIREQ-RECORDNAME
            PERFORM 910-XMLWRITE-SEC
@@ -894,7 +1184,7 @@
                DISPLAY "XMLWRITE failure = " MCP-RC
            END-IF
       *
-           MOVE    "xml_hsmealv2res"       TO  MCP-TABLE
+           MOVE    "xml_hsfoodv2res"       TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM 910-XMLCLOSE-SEC
            IF     (MCP-RC              =   ZERO  OR  1  )
@@ -1191,42 +1481,4 @@
            .
       *
        910-XMLCLOSE-EXT.
-           EXIT.
-      *****************************************************************
-      *    プログラム終了処理（エラー時）
-      *****************************************************************
-       990-EXIT-PROGRAM-SEC            SECTION.
-      *
-           IF    ( WRK-ERRCD           =   "99" )
-               MOVE    404             TO  APILST14-HTTPSTATUS
-           ELSE
-               PERFORM 9901-EXIT-PROGRAM-SEC
-           END-IF
-      *
-           EXIT PROGRAM
-      *
-           .
-       990-EXIT-PROGRAM-EXT.
-           EXIT.
-      *****************************************************************
-      *    プログラム終了処理（エラー時）
-      *****************************************************************
-       9901-EXIT-PROGRAM-SEC            SECTION.
-      *
-           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
-           PERFORM 800-DATE-SEC
-           MOVE    WRK-DATE            TO  HSMEALRES-INFORMATION-DATE
-      *
-           MOVE    SMCNDATE-HMS        TO  WRK-HMS
-           PERFORM 800-TIME-SEC
-           MOVE    WRK-TIME            TO  HSMEALRES-INFORMATION-TIME
-      *
-           PERFORM 890-ERRCD-MSG-SEC
-           MOVE    WRK-ERRCD           TO  HSMEALRES-API-RESULT
-           MOVE    WRK-ERRMSG          TO  HSMEALRES-API-RESULT-MSG
-      *
-           PERFORM 900-XML-WRITE-SEC
-      *
-           .
-       9901-EXIT-PROGRAM-EXT.
            EXIT.
