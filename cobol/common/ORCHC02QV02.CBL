@@ -334,8 +334,6 @@
            03  WRK-HEN-KOH-G.
                05  WRK-HEN-KOH         PIC X(86)
                                        OCCURS   4.
-               05  WRK-HEN-KOHKBN      PIC X(01)
-                                       OCCURS   4.
       *    ÊÝ¸±°åÌ¾¾Î
            03  WRK-DRNAME              PIC X(50).
       *    ¸òÉÕÇ¯·îÆü
@@ -1341,17 +1339,12 @@
            END-IF
       *ver.4.7
            IF      COMB-KOH1HKNNUM     =   "970"
-      *        Âè»°¼Ô¹Ô°Ù
-               MOVE    COMB-KOH1-TANSEIDONAME
-                                           TO  WRK-FTNSNO
-      *        £Ñ£Ò¤ÏÈ÷¹Í¤Ëµ­ºÜ
+      *        Âè»°¼Ô¹Ô°Ù¤ÏÈ÷¹Í¤Ø
                ADD     1               TO  IDX-K3
-               STRING  "¡Ú"
-                       COMB-KOH1-TANSEIDONAME
-                       "¡Û"            DELIMITED  BY  SPACE
-                                       INTO  WRK-HEN-KOH(IDX-K3)
-               END-STRING
-               MOVE    "1"             TO  WRK-HEN-KOHKBN (IDX-K3)
+               MOVE    COMB-KOH1-TANSEIDONAME
+                                           TO  WRK-HEN-KOH(IDX-K3)
+               MOVE    SPACE               TO  WRK-FTNSNO
+               MOVE    SPACE               TO  WRK-JKYSNO
            END-IF
       *
       *@@@ ºë¶Ì¸©ÂÐ±þ
@@ -1507,7 +1500,6 @@
            PERFORM VARYING     IDX-K3  FROM    4   BY  -1
                    UNTIL      (IDX-K3      <   1   )
                IF      (WRK-HEN-KOH (IDX-K3)   NOT =   SPACE )
-                  AND  (WRK-HEN-KOHKBN(IDX-K3)     =   SPACE )
                    PERFORM VARYING     IDX-B1  FROM    9   BY  -1
                            UNTIL      (IDX-B1      <   1   )
                        IF      IDX-B1          =   1

@@ -1292,9 +1292,12 @@
       *
       *ver.4.7
            IF      COMB-KOH1HKNNUM     =   "970"
-      *        第三者行為
+      *        第三者行為は備考へ
+               ADD     1               TO  IDX-K3
                MOVE    COMB-KOH1-TANSEIDONAME
-                                           TO  WRK-FTNSNO
+                                           TO  WRK-HEN-KOH(IDX-K3)
+               MOVE    SPACE               TO  WRK-FTNSNO
+               MOVE    SPACE               TO  WRK-JKYSNO
            END-IF
       *
       *@@@ 埼玉県対応

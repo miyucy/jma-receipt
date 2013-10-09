@@ -309,6 +309,7 @@
            03  PARA-HKNCOMBIKBN        PIC X(01).
            03  PARA-SYUBYOKBN          PIC X(01).
            03  PARA-ALLKOHKBN          PIC X(01).
+           03  PARA-DAISANKBN          PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -558,6 +559,11 @@
            MOVE    "ALLKOHKBN"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-ALLKOHKBN
+      *
+      *    第三者編集区分
+           MOVE    "DAISANKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-DAISANKBN
       *
       *    病名編集オプション設定
            IF      PARA-BYOMEIKBN      =   "0"
@@ -1658,16 +1664,7 @@
            MOVE    SPACE               TO  WRK-JKYSNO
            MOVE    ZERO                TO  WRK-JKYSNO-MAX
       *    保険者情報
-      *ver.4.7
-           IF      COMB-KOH1HKNNUM     =   "970"
-      *        第三者行為
-               MOVE    COMB-KOH1-TANSEIDONAME
-                                           TO  WRK-MAE-INPUT
-           ELSE
-      *        全角変換
-               MOVE    PTKOH-FTNJANUM      TO  WRK-MAE-INPUT
-           END-IF
-      *
+           MOVE    PTKOH-FTNJANUM      TO  WRK-MAE-INPUT
            MOVE    16                  TO  WRK-MOJISU
            PERFORM 2009-HENKAN-SEC
            MOVE    WRK-OUT-INPUT(1:16) TO  WRK-FTNSNO
@@ -1682,6 +1679,42 @@
            MOVE    SPACE               TO  WRK-JKYSNO
            MOVE    WRK-OUT-INPUT       TO  WRK-JKYSNO
            MOVE    WRK-OUT-MAX         TO  WRK-JKYSNO-MAX
+      *
+      *ver.4.7
+           IF      COMB-KOH1HKNNUM     =   "970"
+      *        第三者行為
+               IF      PARA-DAISANKBN      =   "1"
+      *            負担者番号へ
+                   MOVE    COMB-KOH1-TANSEIDONAME
+                                               TO  WRK-FTNSNO
+                   MOVE    SPACE               TO  WRK-JKYSNO
+                   IF      PTKOH-JKYSNUM   NOT =   SPACE
+                       STRING  "（"
+                               PTKOH-JKYSNUM
+                               "）"            DELIMITED  BY  SPACE
+                                           INTO    WRK-JKYSNO
+                       END-STRING
+                       ADD     4                   TO  WRK-JKYSNO-MAX
+                   END-IF
+               ELSE
+      *            備考へ
+                   MOVE    SPACE               TO  WRK-FTNSNO
+                   MOVE    SPACE               TO  WRK-JKYSNO
+                   MOVE    SPACE               TO  WRK-COMMENT-G
+                   IF      PTKOH-JKYSNUM       =   SPACE
+                       MOVE    COMB-KOH1-TANSEIDONAME
+                                               TO  WRK-COMMENT-G
+                   ELSE
+                       STRING  COMB-KOH1-TANSEIDONAME
+                               "（"
+                               PTKOH-JKYSNUM
+                               "）"            DELIMITED  BY  SPACE
+                                               INTO    WRK-COMMENT-G
+                       END-STRING
+                   END-IF
+               END-IF
+               PERFORM 200210-H01-COMMENT-SEC
+           END-IF
       *
       *    適用開始年月日
            MOVE    PTKOH-TEKSTYMD      TO  WRK-SYMD
