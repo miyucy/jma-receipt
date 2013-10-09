@@ -1,11 +1,11 @@
 tbl_hknjainf {
 	HOSPNUM				number(2,0);
-	HKNJANUM			varchar(8);
+	HKNJANUM			char(8);
 	HKNJANAME			varchar(200);
 	HKNJANAME_TAN1		varchar(100);
 	HKNJANAME_TAN2		varchar(40);
 	HKNJANAME_TAN3		varchar(40);
-	HKNNUM  			varchar(3);
+	HKNNUM  			char(3);
 	HON_GAIKYURATE 			number(3);
 	HON_NYUKYURATE 			number(3);
 	KZK_GAIKYURATE 			number(3);
@@ -19,9 +19,9 @@ tbl_hknjainf {
 	IDOYMD  			varchar(8);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
-	CREYMD   			varchar(8);
-	UPYMD    			varchar(8);
-	UPHMS				varchar(6);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
 };
 
 primary	{
