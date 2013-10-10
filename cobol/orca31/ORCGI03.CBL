@@ -1705,6 +1705,15 @@
                END-IF
            END-IF
       *
+      *    他院歴では特定入院−通算対象日数が入力不可のチェック
+           IF    SPA-GMN-I03-RRKKBN-CD      =    "2"
+               IF  SPA-GMN-I03-TOKUTAISYONISSU NOT =   ZERO
+                   MOVE    "1017"      TO  SPA-ERRCD
+                   MOVE    7           TO  SPA-GMN-I03-CUR
+                   GO  TO  4801-KANREN-CHK-EXT
+               END-IF
+           END-IF
+      *
       *    通算対象日数≧特定入院−通算対象日数となっていること
       *    （自院歴と特別な関係の他院のみチェックを行う）
            IF    SPA-GMN-I03-RRKKBN-CD      =    "1"  OR "3"
@@ -1712,7 +1721,7 @@
                                        SPA-GMN-I03-TOKUTAISYONISSU )
                    CONTINUE
                ELSE
-                   MOVE    "1017"      TO  SPA-ERRCD
+                   MOVE    "1018"      TO  SPA-ERRCD
                    MOVE    7           TO  SPA-GMN-I03-CUR
                    GO  TO  4801-KANREN-CHK-EXT
                END-IF
@@ -2456,6 +2465,9 @@
                MOVE    "入院期間＜通算対象日数となっています"
                                        TO  SPA-ERRMSG
            WHEN    "1017"
+               MOVE    "他院歴では特定入院日数は入力できません"
+                                       TO  SPA-ERRMSG
+           WHEN    "1018"
                MOVE    "通算対象日数＜特定入院日数となっています"
                                        TO  SPA-ERRMSG
            WHEN    "2001"
