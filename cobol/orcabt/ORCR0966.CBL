@@ -3587,14 +3587,26 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    OR      RECE82-HKNKBN       =   "4" OR  "6"
                    OR      RECE82-RECESYUBETU  =   "0000"
       *
-                       IF    ( RECE82-TOTALKIN-JYU     =   ZERO )
-                       AND   ( RECE82-SHOKUJITOTALKIN  =   ZERO )
-                       AND   ( RECE82-SINDAN-KIN       =   ZERO )
-                       AND   ( RECE82-MEISAI-KIN       =   ZERO )
-                       AND   ( RECE82-SITURYO-JYU      =   ZERO )
-                       AND   ( RECE82-SONOTAKIN-JYU    =   ZERO )
-                               GO  TO  990-RECE82-READ-SEC
-                       END-IF
+                       EVALUATE  RECE82-HKNKBN
+                         WHEN      "4"
+                          IF    ( RECE82-TOTALKIN-JYU     =   ZERO )
+                          AND   ( RECE82-SHOKUJITOTALKIN  =   ZERO )
+                          AND   ( RECE82-SINDAN-KIN       =   ZERO )
+                          AND   ( RECE82-MEISAI-KIN       =   ZERO )
+                          AND   ( RECE82-SITURYO-JYU      =   ZERO )
+                          AND   ( RECE82-SONOTAKIN-JYU    =   ZERO )
+                                  GO  TO  990-RECE82-READ-SEC
+                          END-IF
+                         WHEN      "6"
+                          IF    ( RECE82-FTNMONEY         =   ZERO )
+                          AND   ( RECE82-SKJFTNMONEY      =   ZERO )
+                          AND   ( RECE82-SINDAN-KIN       =   ZERO )
+                          AND   ( RECE82-MEISAI-KIN       =   ZERO )
+                          AND   ( RECE82-SITURYO-JYU      =   ZERO )
+                          AND   ( RECE82-SONOTAKIN-JYU    =   ZERO )
+                                  GO  TO  990-RECE82-READ-SEC
+                          END-IF
+                       END-EVALUATE
       *
                        DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
                                      " HKNKBN=" RECE82-HKNKBN

@@ -3363,12 +3363,22 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    OR    ( RECE41-HKNKBN       =   "4" OR  "6" )
                    OR    ( RECE41-RECESYUBETU  =   "0000"      )
       *
-                       IF    ( RECE41-TOTALKIN-JYU  =   ZERO )
-                       AND   ( RECE41-SONOTAKIN-JYU =   ZERO )
-                       AND   ( RECE41-SINDAN-KIN    =   ZERO )
-                       AND   ( RECE41-MEISAI-KIN    =   ZERO )
-                            GO  TO  990-RECE41-READ-SEC
-                       END-IF
+                       EVALUATE  RECE41-HKNKBN
+                         WHEN      "4"
+                          IF    ( RECE41-TOTALKIN-JYU  =   ZERO )
+                          AND   ( RECE41-SONOTAKIN-JYU =   ZERO )
+                          AND   ( RECE41-SINDAN-KIN    =   ZERO )
+                          AND   ( RECE41-MEISAI-KIN    =   ZERO )
+                              GO  TO  990-RECE41-READ-SEC
+                          END-IF
+                         WHEN      "6"
+                          IF    ( RECE41-FTNMONEY      =   ZERO )
+                          AND   ( RECE41-SONOTAKIN-JYU =   ZERO )
+                          AND   ( RECE41-SINDAN-KIN    =   ZERO )
+                          AND   ( RECE41-MEISAI-KIN    =   ZERO )
+                              GO  TO  990-RECE41-READ-SEC
+                          END-IF
+                       END-EVALUATE
       *
                        DISPLAY "RECE41  PTNUM=" RECE41-PTNUM
                                      " HKNKBN=" RECE41-HKNKBN
