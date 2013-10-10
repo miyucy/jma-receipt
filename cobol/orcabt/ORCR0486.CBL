@@ -1230,6 +1230,21 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    RECE41-TOTALKIN-JYU  TO  WRK-TOTALTEN
            MOVE    WRK-TOTALTEN         TO  HC23-KINGAKUG
       *
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "8"
+      *          º“≤Ò ›∏±§ÿ§Œ¿¡µ·≥€
+                 MOVE    RECE41-SKYMONEY      TO  WRK-KINGAKUZ
+                 MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYU(1)
+      *          ¥µº‘…È√¥
+                 IF   RECE41-FTNMONEY  NOT =  ZERO
+                   MOVE  RECE41-FTNRATE       TO  WRK-ZZZ
+                   MOVE  WRK-ZZZ              TO  HC23-FTNWARIAI
+                 END-IF
+                 MOVE    RECE41-FTNMONEY      TO  WRK-KINGAKUZ
+                 MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYU(2)
+                                                  HC23-SEIKYU(4)
+           END-EVALUATE
+      *
       *    ø«√«ΩÒŒ¡
            MOVE    RECE41-SINDAN-TUU    TO  WRK-ZZZ
            MOVE    WRK-ZZZ              TO  HC23-SHINDANSYOSUU
@@ -1253,12 +1268,24 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    WRK-GOKEI            TO  WRK-KINGAKUZ
            MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYU(8)
       *    ¡Ì¿¡µ·≥€
-           COMPUTE WRK-GOKEI   =    RECE41-TOTALKIN-JYU
-                               +    RECE41-SONOTAKIN-JYU
-                               +    RECE41-SINDAN-KIN
-                               +    RECE41-MEISAI-KIN
-           MOVE    WRK-GOKEI            TO  WRK-KINGAKUZ
-           MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYUG
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "3"
+               WHEN    "4"
+               WHEN    "5"
+                 COMPUTE WRK-GOKEI   =    RECE41-TOTALKIN-JYU
+                                     +    RECE41-SONOTAKIN-JYU
+                                     +    RECE41-SINDAN-KIN
+                                     +    RECE41-MEISAI-KIN
+                 MOVE    WRK-GOKEI            TO  WRK-KINGAKUZ
+                 MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYUG
+               WHEN    "8"
+                 COMPUTE WRK-GOKEI   =    RECE41-FTNMONEY
+                                     +    RECE41-SONOTAKIN-JYU
+                                     +    RECE41-SINDAN-KIN
+                                     +    RECE41-MEISAI-KIN
+                 MOVE    WRK-GOKEI            TO  WRK-KINGAKUZ
+                 MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYUG
+           END-EVALUATE
       *
       *    ≈¿øÙ√±≤¡
            EVALUATE    RECE41-JIBAIKBN
@@ -1308,12 +1335,24 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    WRK-Z9               TO  HC23-TSUINSUU(1)
       *
       *    ¿¡µ·≥€
-           COMPUTE WRK-GOKEI   =    RECE41-TOTALKIN-JYU
-                               +    RECE41-SONOTAKIN-JYU
-                               +    RECE41-SINDAN-KIN
-                               +    RECE41-MEISAI-KIN
-           MOVE    WRK-GOKEI            TO  WRK-SEIKYUZ
-           MOVE    WRK-SEIKYUZ          TO  HC23-SEIKYUGAKUTOTAL
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "3"
+               WHEN    "4"
+               WHEN    "5"
+                 COMPUTE WRK-GOKEI   =    RECE41-TOTALKIN-JYU
+                                     +    RECE41-SONOTAKIN-JYU
+                                     +    RECE41-SINDAN-KIN
+                                     +    RECE41-MEISAI-KIN
+                 MOVE    WRK-GOKEI            TO  WRK-SEIKYUZ
+                 MOVE    WRK-SEIKYUZ          TO  HC23-SEIKYUGAKUTOTAL
+               WHEN    "8"
+                 COMPUTE WRK-GOKEI   =    RECE41-FTNMONEY
+                                     +    RECE41-SONOTAKIN-JYU
+                                     +    RECE41-SINDAN-KIN
+                                     +    RECE41-MEISAI-KIN
+                 MOVE    WRK-GOKEI            TO  WRK-SEIKYUZ
+                 MOVE    WRK-SEIKYUZ          TO  HC23-SEIKYUGAKUTOTAL
+           END-EVALUATE
       *
       *    ΩÍ∫ﬂ√œ
            IF      FLG-SYS-1902        =   1
@@ -2614,11 +2653,22 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    RECE41-JNISSU       TO  RECE10-JNISSU       (1)
            END-IF
            MOVE    RECE41-TOTALTEN     TO  RECE10-TOTALTEN     (1)
-           COMPUTE RECE10-FTNMONEY (1) =   RECE41-TOTALKIN-JYU     +
-                                           RECE41-SONOTAKIN-JYU    +
-                                           RECE41-SINDAN-KIN       +
-                                           RECE41-MEISAI-KIN
-           MOVE    RECE41-TOTALKIN-JYU TO  RECE10-FTNMONEY-FTN (1)
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "3"
+               WHEN    "4"
+               WHEN    "5"
+                 COMPUTE RECE10-FTNMONEY (1) =   RECE41-TOTALKIN-JYU  +
+                                                 RECE41-SONOTAKIN-JYU +
+                                                 RECE41-SINDAN-KIN    +
+                                                 RECE41-MEISAI-KIN
+                 MOVE    RECE41-TOTALKIN-JYU TO  RECE10-FTNMONEY-FTN(1)
+               WHEN    "8"
+                 COMPUTE RECE10-FTNMONEY (1) =   RECE41-FTNMONEY      +
+                                                 RECE41-SONOTAKIN-JYU +
+                                                 RECE41-SINDAN-KIN    +
+                                                 RECE41-MEISAI-KIN
+                 MOVE    RECE41-FTNMONEY     TO  RECE10-FTNMONEY-FTN(1)
+           END-EVALUATE
            COMPUTE RECE10-FTNMONEY-KOJ (1) 
                                        =   RECE41-SONOTAKIN-JYU    +
                                            RECE41-SINDAN-KIN       +

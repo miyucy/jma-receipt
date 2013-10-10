@@ -413,6 +413,15 @@
       *医保分番号
                05  RECE82-NUM             PIC X(80).
       *
+      *第三者行為（社会保険への請求額）
+           03  RECE82-SKYMONEY            PIC  9(09).
+      *第三者行為（患者負担）
+           03  RECE82-FTNMONEY            PIC  9(09).
+      *第三者行為（患者割合）
+           03  RECE82-FTNRATE             PIC  9(03).
+      *第三者行為（食事標準負担）
+           03  RECE82-SKJFTNMONEY         PIC  9(09).
+      *
       *予備
            03  RECE82-YOBIETC-AREA.
                05  RECE82-YOBIETCINF           OCCURS  10.

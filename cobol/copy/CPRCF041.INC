@@ -345,6 +345,13 @@
       *医保分番号
                05  RECE41-NUM             PIC  X(80).
       *
+      *第三者行為（社会保険への請求額）
+           03  RECE41-SKYMONEY            PIC  9(09).
+      *第三者行為（患者負担）
+           03  RECE41-FTNMONEY            PIC  9(09).
+      *第三者行為（患者割合）
+           03  RECE41-FTNRATE             PIC  9(03).
+      *
       *予備
            03  RECE41-YOBIETC-AREA.
                05  RECE41-YOBIETCINF           OCCURS  10.

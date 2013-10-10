@@ -9569,6 +9569,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          RECE41-KINGAKU-JYU(36)  +
                          RECE41-KINGAKU-JYU(37)   
       *
+               IF   RECE41-TOTALKIN-JYU  NOT =  ZERO
+               AND  RECE41-FTNRATE       NOT =  ZERO
+                 COMPUTE RECE41-FTNMONEY = RECE41-TOTALKIN-JYU
+                                         * RECE41-FTNRATE
+                                         / 100
+               END-IF
+               COMPUTE   RECE41-SKYMONEY = RECE41-TOTALKIN-JYU
+                                         - RECE41-FTNMONEY
+      *
            END-IF                                                       
       *
            REWRITE   RECE41-REC

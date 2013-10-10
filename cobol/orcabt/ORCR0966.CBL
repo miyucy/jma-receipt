@@ -1237,6 +1237,28 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    RECE82-SHOKUJITOTALKIN  TO  WRK-KINGAKUZ
            MOVE    WRK-KINGAKUZ            TO  HC23-SYOKINGAKU
       *
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "8"
+      *          º“≤Ò ›∏±§ÿ§Œ¿¡µ·≥€
+                 MOVE    RECE82-SKYMONEY        TO  WRK-KINGAKUZ
+                 MOVE    WRK-KINGAKUZ           TO  HC23-SEIKYU(1)
+      *          ¥µº‘…È√¥
+                 IF   RECE82-FTNMONEY  NOT =  ZERO
+                   MOVE  RECE82-FTNRATE         TO  WRK-ZZZ
+                   MOVE  WRK-ZZZ                TO  HC23-FTNWARIAI
+                 END-IF
+                 MOVE    RECE82-FTNMONEY        TO  WRK-KINGAKUZ
+                 MOVE    WRK-KINGAKUZ           TO  HC23-SEIKYU(2)
+                 MOVE    RECE82-SHOKUJITOTALDAY TO  WRK-ZZZ
+                 MOVE    WRK-ZZZ                TO  HC23-FTNNISSU
+                 MOVE    RECE82-SKJFTNMONEY     TO  WRK-KINGAKUZ
+                 MOVE    WRK-KINGAKUZ           TO  HC23-SEIKYU(3)
+                 COMPUTE WRK-GOKEI   =    RECE82-FTNMONEY
+                                     +    RECE82-SKJFTNMONEY
+                 MOVE    WRK-GOKEI              TO  WRK-KINGAKUZ
+                 MOVE    WRK-KINGAKUZ           TO  HC23-SEIKYU(4)
+           END-EVALUATE
+      *
       *    ø«√«ΩÒŒ¡
            MOVE    RECE82-SINDAN-TUU    TO  WRK-ZZZ
            MOVE    WRK-ZZZ              TO  HC23-SHINDANSYOSUU
@@ -1267,14 +1289,28 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    WRK-GOKEI            TO  WRK-KINGAKUZ
            MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYU(9)
       *    ¡Ì¿¡µ·≥€
-           COMPUTE WRK-GOKEI   =    RECE82-TOTALKIN-JYU
-                               +    RECE82-SHOKUJITOTALKIN
-                               +    RECE82-SINDAN-KIN
-                               +    RECE82-MEISAI-KIN
-                               +    RECE82-SITURYO-JYU
-                               +    RECE82-SONOTAKIN-JYU
-           MOVE    WRK-GOKEI            TO  WRK-KINGAKUZ
-           MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYUG
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "3"
+               WHEN    "4"
+               WHEN    "5"
+                 COMPUTE WRK-GOKEI   =    RECE82-TOTALKIN-JYU
+                                     +    RECE82-SHOKUJITOTALKIN
+                                     +    RECE82-SINDAN-KIN
+                                     +    RECE82-MEISAI-KIN
+                                     +    RECE82-SITURYO-JYU
+                                     +    RECE82-SONOTAKIN-JYU
+                 MOVE    WRK-GOKEI            TO  WRK-KINGAKUZ
+                 MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYUG
+               WHEN    "8"
+                 COMPUTE WRK-GOKEI   =    RECE82-FTNMONEY
+                                     +    RECE82-SKJFTNMONEY
+                                     +    RECE82-SINDAN-KIN
+                                     +    RECE82-MEISAI-KIN
+                                     +    RECE82-SITURYO-JYU
+                                     +    RECE82-SONOTAKIN-JYU
+                 MOVE    WRK-GOKEI            TO  WRK-KINGAKUZ
+                 MOVE    WRK-KINGAKUZ         TO  HC23-SEIKYUG
+           END-EVALUATE
       *
       *    ≈¿øÙ√±≤¡
            EVALUATE    RECE82-JIBAIKBN
@@ -1309,14 +1345,28 @@ grpsys        PERFORM 900-DBSELECT-SEC
       ***>                                     HC23-SEIKYU(2)
       *
       *    ¿¡µ·≥€
-           COMPUTE WRK-GOKEI   =    RECE82-TOTALKIN-JYU
-                               +    RECE82-SHOKUJITOTALKIN
-                               +    RECE82-SINDAN-KIN
-                               +    RECE82-MEISAI-KIN
-                               +    RECE82-SITURYO-JYU
-                               +    RECE82-SONOTAKIN-JYU
-           MOVE    WRK-GOKEI            TO  WRK-SEIKYUZ
-           MOVE    WRK-SEIKYUZ          TO  HC23-SEIKYUGAKUTOTAL
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "3"
+               WHEN    "4"
+               WHEN    "5"
+                 COMPUTE WRK-GOKEI   =    RECE82-TOTALKIN-JYU
+                                     +    RECE82-SHOKUJITOTALKIN
+                                     +    RECE82-SINDAN-KIN
+                                     +    RECE82-MEISAI-KIN
+                                     +    RECE82-SITURYO-JYU
+                                     +    RECE82-SONOTAKIN-JYU
+                 MOVE    WRK-GOKEI            TO  WRK-SEIKYUZ
+                 MOVE    WRK-SEIKYUZ          TO  HC23-SEIKYUGAKUTOTAL
+               WHEN    "8"
+                 COMPUTE WRK-GOKEI   =    RECE82-FTNMONEY
+                                     +    RECE82-SKJFTNMONEY
+                                     +    RECE82-SINDAN-KIN
+                                     +    RECE82-MEISAI-KIN
+                                     +    RECE82-SITURYO-JYU
+                                     +    RECE82-SONOTAKIN-JYU
+                 MOVE    WRK-GOKEI            TO  WRK-SEIKYUZ
+                 MOVE    WRK-SEIKYUZ          TO  HC23-SEIKYUGAKUTOTAL
+           END-EVALUATE
       *
       *    ΩÍ∫ﬂ√œ
            IF      FLG-SYS-1902        =   1
@@ -3017,20 +3067,34 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       * 
            MOVE    RECE82-TOTALTEN     TO  RECE10-TOTALTEN         (1)
-           MOVE    RECE82-TOTALKIN-JYU TO  RECE10-FTNMONEY-FTN     (1)
            COMPUTE RECE10-FTNMONEY-KOJ (1) 
                                        =   RECE82-SONOTAKIN-JYU    +
                                            RECE82-SINDAN-KIN       +
                                            RECE82-MEISAI-KIN       +
                                            RECE82-SITURYO-JYU
-           MOVE    RECE82-SHOKUJITOTALKIN
-                                       TO  RECE10-SHOKUJIRYOYOHI   (1)
-           COMPUTE RECE10-FTNMONEY (1) =   RECE82-TOTALKIN-JYU     +
-                                           RECE82-SONOTAKIN-JYU    +
-                                           RECE82-SINDAN-KIN       +
-                                           RECE82-MEISAI-KIN       +
-                                           RECE82-SITURYO-JYU      +
-                                           RECE82-SHOKUJITOTALKIN
+           EVALUATE    WRK-PARA-RECEKBN
+               WHEN    "3"
+               WHEN    "4"
+               WHEN    "5"
+                 COMPUTE RECE10-FTNMONEY (1) =  RECE82-TOTALKIN-JYU  +
+                                                RECE82-SONOTAKIN-JYU +
+                                                RECE82-SINDAN-KIN    +
+                                                RECE82-MEISAI-KIN    +
+                                                RECE82-SITURYO-JYU   +
+                                                RECE82-SHOKUJITOTALKIN
+                 MOVE    RECE82-TOTALKIN-JYU TO RECE10-FTNMONEY-FTN(1)
+                 MOVE    RECE82-SHOKUJITOTALKIN
+                                             TO RECE10-SHOKUJIRYOYOHI(1)
+               WHEN    "8"
+                 COMPUTE RECE10-FTNMONEY (1) =  RECE82-FTNMONEY      +
+                                                RECE82-SONOTAKIN-JYU +
+                                                RECE82-SINDAN-KIN    +
+                                                RECE82-MEISAI-KIN    +
+                                                RECE82-SITURYO-JYU   +
+                                                RECE82-SKJFTNMONEY
+                 MOVE    RECE82-FTNMONEY     TO RECE10-FTNMONEY-FTN(1)
+                 MOVE    RECE82-SKJFTNMONEY  TO RECE10-SHOKUJIRYOYOHI(1)
+           END-EVALUATE
            IF      RECE82-JNISSU       =   999
                MOVE    ZERO                TO  RECE10-JNISSU       (1)
            ELSE

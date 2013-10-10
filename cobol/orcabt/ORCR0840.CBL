@@ -11031,6 +11031,10 @@ grpsys     PERFORM  900-DBSELECT-SEC
                                        RECE82-SHOKUJITOTALDAY
                    ADD   SYU-SYUSKJ-RYOYOHI   TO
                                        RECE82-SHOKUJITOTALKIN
+                   IF    RECE82-HKNKBN  =  "6"
+                     ADD SYU-SYUSKJ-FTN-RECE  TO
+                                       RECE82-SKJFTNMONEY
+                   END-IF
            END-IF
       *
            .
@@ -12013,6 +12017,18 @@ grpsys     PERFORM  900-DBSELECT-SEC
                COMPUTE   RECE82-KINGAKU-JYU(29)  =
                          RECE82-KINGAKU-JYU(27)  +
                          RECE82-KINGAKU-JYU(28)   
+      *
+               IF   RECE82-TOTALKIN-JYU  NOT =  ZERO
+               AND  RECE82-FTNRATE       NOT =  ZERO
+                 COMPUTE RECE82-FTNMONEY = RECE82-TOTALKIN-JYU
+                                         * RECE82-FTNRATE
+                                         / 100
+               END-IF
+               COMPUTE   RECE82-SKYMONEY = RECE82-TOTALKIN-JYU
+                                         - RECE82-FTNMONEY
+      *
+               COMPUTE   RECE82-SKYMONEY = RECE82-SKYMONEY +
+                 (RECE82-SHOKUJITOTALKIN - RECE82-SKJFTNMONEY)
       *
            END-IF
       *
