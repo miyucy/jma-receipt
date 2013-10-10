@@ -37,6 +37,7 @@
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *  04.01.00    NACL-多々納  08/01/30  予約内容追加
       *  04.05.00    NACL-多々納  09/06/10  予約一覧カスタマイズ帳票対応
+      *  04.08.00    NACL-森脇    13/10/10  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -131,6 +132,10 @@
       *
            03  FLG-CHK             PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
+      *----(04.08.00)--ADD-START---
+      *    クライアント印刷有
+           03  FLG-CLIENT-OK       PIC 9(01).
+      *----(04.08.00)--ADD-END-----
       *
       *    カウント領域
        01  CNT-AREA.
@@ -280,6 +285,10 @@
            COPY    "CPONPRTDATA.INC".
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *----(04.08.00)--ADD-START---
+      *    クライアント印刷制御
+           COPY    "CPORCSPRTCTRL.INC".
+      *----(04.08.00)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -306,6 +315,7 @@
            COPY    "YID1.INC".
            COPY    "APPOINTMOD.INC".
            COPY    "CPAPIMODV2.INC".
+           COPY    "YDMY01.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -343,6 +353,13 @@
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
+      *
+      *----(04.08.00)--ADD-START---
+      *    クライアント印刷
+           IF      FLG-CLIENT-OK       =   1
+               PERFORM 600-CLIENT-DMY-SEC
+           END-IF
+      *----(04.08.00)--ADD-END-----
       *
            MOVE    SPA-Y01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -956,6 +973,54 @@
        3001-TBL-SORT-EXT.
            EXIT.
       *
+      *----(04.08.00)--ADD-START---
+      *****************************************************************
+      *    クライアント印刷前　処理
+      *****************************************************************
+       4901-CLIENT-PRT-SEC         SECTION.
+      *
+           INITIALIZE                  YDMY01
+           MOVE    SPACE           TO  YDMY01-PANDAPRINT1
+      *
+      *    クライアント印刷制御情報取得サブ
+           INITIALIZE                  ORCSPRTCTRLAREA
+      *
+           IF      SPA-Y01-YYKID       =   ZERO
+               MOVE    "予約一覧表"    TO  ORCSPRTCTRL-TITLE-I(01)
+           ELSE
+               MOVE    "未院一覧表"    TO  ORCSPRTCTRL-TITLE-I(01)
+           END-IF
+      *
+           CALL    "ORCSPRTCTRL"       USING
+                                       SPA-AREA
+                                       ORCSPRTCTRLAREA
+                                       MCPAREA
+      *
+           MOVE    ORCSPRTCTRL-OUT TO  YDMY01-PANDAPRINT1
+      *
+           MOVE    1               TO  FLG-CLIENT-OK
+      *
+           .
+       4901-CLIENT-PRT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    クライアント印刷画面処理
+      *****************************************************************
+       600-CLIENT-DMY-SEC          SECTION.
+      *
+           MOVE    MCP-WINDOW      TO  SPA-SAKIPG
+           MOVE    MCP-PUTTYPE     TO  SPA-PUTTYPE
+           MOVE    "_YDMY01"       TO  MCP-WINDOW
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           .
+       600-CLIENT-DMY-EXT.
+           EXIT.
+      *
+      *----(04.08.00)--ADD-END-----
       *****************************************************************
       *    画面編集処理
       *****************************************************************
@@ -1186,6 +1251,13 @@
       *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
+      *----(04.08.00)--ADD-START---
+           IF      SPA-CLIENT-PRT-FLG  =   2
+      *        クライアント印刷制御情報取得サブ
+               PERFORM 4901-CLIENT-PRT-SEC
+           END-IF
+      *----(04.08.00)--ADD-END-----
+      *
       *    予約・未院一覧出力
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "1"                 TO  ORCSPRTNM-KBN
@@ -1210,12 +1282,36 @@
            MOVE     SPA-NAI-SINYMD     TO  ORCHC14-YYKYMD
       *
            IF      WRK-YYKICH-PG   NOT =   SPACE
-               MOVE    WRK-YYKICH-PG       TO  ONPRTDATA-PGID
-               MOVE    ORCHC14AREA         TO  ONPRTDATA-DATA
-               CALL    "ORCHCOMMON"        USING
+      *----(04.08.00)--ADD-START---
+      *        クライアント印刷
+               IF      FLG-CLIENT-OK       =   1
+                   MOVE    "01"            TO  SPA-PRT-FLG
+               ELSE
+                   MOVE    SPACE           TO  SPA-PRT-FLG
+               END-IF
+      *
+               MOVE    ORCHC14AREA     TO  ONPRTDATA-DATA
+               CALL    WRK-YYKICH-PG       USING
                                            SPA-AREA
                                            ONPRTDATA
+      *----(04.08.00)--ADD-END-----
+      *----(04.08.00)--UPD-START---
+      *         MOVE    WRK-YYKICH-PG       TO  ONPRTDATA-PGID
+      *         MOVE    ORCHC14AREA         TO  ONPRTDATA-DATA
+      *         CALL    "ORCHCOMMON"        USING
+      *                                     SPA-AREA
+      *                                     ONPRTDATA
+      *----(04.08.00)--UPD-END-----
            END-IF
+      *
+      *----(04.08.00)--ADD-START---
+           IF      (SPA-CLIENT-PRT-FLG =   1  )
+      *        印刷ダミー処理
+               MOVE    "99"            TO  SPA-PRT-FLG
+               CALL    "ORCHCDUMMY"        USING
+                                           SPA-AREA
+           END-IF
+      *----(04.08.00)--ADD-END-----
       *
            .
        460-YYKICHI-EXT.

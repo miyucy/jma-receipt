@@ -16,14 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGYERR.
+       PROGRAM-ID.                 ORCGYDMY01.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 予約登録
-      *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
+      *  サブシステム名    : 受付
+      *  コンポーネント名  : クライアント印刷(dummy)
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  01.00.01    NACL-多々納  06/05/12  MONFUNC 対応
+      *  11/12/26    NACL-多々納   新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -50,7 +53,7 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      **** COPY    "CPORCMCP.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -89,6 +92,11 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+      *
+           DISPLAY "!!!!======  ORCGYDMY01 START" 
+                       " MCP-STATUS:" MCP-STATUS 
+           DISPLAY "YDMY01-PRTPATH(01) = " YDMY01-PRTPATH(01)
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
@@ -97,9 +105,13 @@
       *    画面遷移
                WHEN      OTHER
                    PERFORM 210-BACK
-           END-EVALUATE.
+           END-EVALUATE
       *
            MOVE    SPA-AREA        TO  SPA-COMMON
+      *
+           DISPLAY "!!!!======  ORCGYDMY01 END MCP-PUTTYPE = "
+                   MCP-PUTTYPE
+               ",MCP-WINDOW:" MCP-WINDOW
       *
            .
            EXIT    PROGRAM
@@ -109,6 +121,8 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
+           MOVE    SPA-PUTTYPE         TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
            .
        100-INIT-EXT.
            EXIT.
@@ -117,11 +131,7 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "YERR"              TO  SPA-MOTOPG
-      *
-      *****MOVE    "BACK"              TO  MCP-PUTTYPE
-           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    SPA-PUTTYPE         TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW

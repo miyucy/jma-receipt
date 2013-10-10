@@ -481,6 +481,7 @@ RECORD_files = \
     hsconfwardv2.rec \
 	tmedicalgetv2.rec \
 	insprogetv2.rec \
+	_YDMY01.rec \
 
 DEF_files = \
 
