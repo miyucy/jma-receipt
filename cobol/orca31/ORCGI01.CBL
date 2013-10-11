@@ -13806,13 +13806,17 @@
            INITIALIZE                       ORCSTOKNYUIN2-AREA
            MOVE   PTNYUINRRK-HOSPNUM    TO  LNK-TOKNYUIN2-HOSPNUM
            MOVE   PTNYUINRRK-PTID       TO  LNK-TOKNYUIN2-PTID
-           MOVE   "2"                   TO  LNK-TOKNYUIN2-IDOKBN
+           MOVE   "1"                   TO  LNK-TOKNYUIN2-IDOKBN
            MOVE   PTNYUINRRK-NYUINYMD   TO  LNK-TOKNYUIN2-NYUINYMD
            MOVE   SPA-NAI-I01-TAIINYMD  TO  LNK-TOKNYUIN2-SANTEIYMD
            MOVE   SYOKIKSN-IN-KHNSRYCD  TO  LNK-TOKNYUIN2-SET-SRYCD
            MOVE   STUSAN-NISSU08        TO  LNK-TOKNYUIN2-NISSU08
            MOVE   PTNYUINRRK-TOKUTEI-NYUIN
                              TO  LNK-TOKNYUIN2-PTNYUINRRK-TOKUTEI-NYUIN
+           IF    (LNK-AKYUSEI-RC        =   1)           AND
+                 (SPA-NAI-I01-TAIINYMD  >=   "20120401")
+              MOVE   "1"      TO   LNK-TOKNYUIN2-TOKUBETSU-SYORI-FLG(1)
+           END-IF
            CALL  "ORCSTOKNYUIN2"     USING  ORCSTOKNYUIN2-AREA
                                             SPA-AREA
            IF     LNK-TOKNYUIN2-RC      =   ZERO
@@ -15049,13 +15053,17 @@
            INITIALIZE                       ORCSTOKNYUIN2-AREA
            MOVE   PTNYUINRRK-HOSPNUM    TO  LNK-TOKNYUIN2-HOSPNUM
            MOVE   PTNYUINRRK-PTID       TO  LNK-TOKNYUIN2-PTID
-           MOVE   "2"                   TO  LNK-TOKNYUIN2-IDOKBN
+           MOVE   "1"                   TO  LNK-TOKNYUIN2-IDOKBN
            MOVE   PTNYUINRRK-NYUINYMD   TO  LNK-TOKNYUIN2-NYUINYMD
            MOVE   SPA-NAI-I01-IDOYMD    TO  LNK-TOKNYUIN2-SANTEIYMD
            MOVE   SYOKIKSN-IN-KHNSRYCD  TO  LNK-TOKNYUIN2-SET-SRYCD
            MOVE   STUSAN-NISSU08        TO  LNK-TOKNYUIN2-NISSU08
            MOVE   SPA-GMN-I01-TOKNYUIN-CD
                              TO  LNK-TOKNYUIN2-PTNYUINRRK-TOKUTEI-NYUIN
+           IF    (LNK-AKYUSEI-RC        =   1)           AND
+                 (SPA-NAI-I01-IDOYMD    >=   "20120401")
+              MOVE   "1"      TO   LNK-TOKNYUIN2-TOKUBETSU-SYORI-FLG(1)
+           END-IF
            CALL  "ORCSTOKNYUIN2"     USING  ORCSTOKNYUIN2-AREA
                                             SPA-AREA
            IF     LNK-TOKNYUIN2-RC      =   ZERO
@@ -16188,7 +16196,7 @@
            INITIALIZE                       ORCSTOKNYUIN2-AREA
            MOVE   PTNYUINRRK-HOSPNUM    TO  LNK-TOKNYUIN2-HOSPNUM
            MOVE   PTNYUINRRK-PTID       TO  LNK-TOKNYUIN2-PTID
-           MOVE   "2"                   TO  LNK-TOKNYUIN2-IDOKBN
+           MOVE   "1"                   TO  LNK-TOKNYUIN2-IDOKBN
            MOVE   PTNYUINRRK-NYUINYMD   TO  LNK-TOKNYUIN2-NYUINYMD
            MOVE   SPA-NAI-I01-MAEIDOYMD TO  LNK-TOKNYUIN2-SANTEIYMD
            MOVE   SYOKIKSN-IN-KHNSRYCD  TO  LNK-TOKNYUIN2-SET-SRYCD

@@ -814,12 +814,20 @@
       *      (A308-2)°¡µÞÀ­´üÆþ±¡°åÎÅ´ÉÍýÎÁ£±
               WHEN      "190117410"
                   MOVE  "190117410"    TO  WRK-TOKNYUIN2-SRYCD(1)
-                  MOVE  60             TO  WRK-JGN-NISSU(1)
+                  IF    LNK-TOKNYUIN2-TOKUBETSU-SYORI-FLG(1)  =  "1"
+                      MOVE  90         TO  WRK-JGN-NISSU(1)
+                  ELSE
+                      MOVE  60         TO  WRK-JGN-NISSU(1)
+                  END-IF
                   MOVE  1              TO  WRK-SRYCD-COUNT
       *      (A308-2)°¡µÞÀ­´üÆþ±¡°åÎÅ´ÉÍýÎÁ£±¡Ê»ØÄêÃÏ°è¡Ë
               WHEN      "190150310"
                   MOVE  "190150310"    TO  WRK-TOKNYUIN2-SRYCD(1)
-                  MOVE  60             TO  WRK-JGN-NISSU(1)
+                  IF    LNK-TOKNYUIN2-TOKUBETSU-SYORI-FLG(1)  =  "1"
+                      MOVE  90         TO  WRK-JGN-NISSU(1)
+                  ELSE
+                      MOVE  60         TO  WRK-JGN-NISSU(1)
+                  END-IF
                   MOVE  1              TO  WRK-SRYCD-COUNT
       *      (A308-2)°¡µÞÀ­´üÆþ±¡°åÎÅ´ÉÍýÎÁ£²
               WHEN      "190129910"
