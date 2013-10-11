@@ -782,6 +782,8 @@ grpsys     COPY    "COMMON-SPA".
       ***  03  WRK-FUTAN               PIC ZZZ,ZZZ,ZZ9. 
            03  WRK-FUTAN               PIC ZZZZZZZZ9.
            03  WRK-FUTAN2              PIC ZZZZZZZ9.
+           03  WRK-FUTAN3              PIC ZZ,ZZZ,ZZ9.
+           03  WRK-FUTAN4              PIC ZZZ,ZZZ,ZZ9.
            03  WRK-ADRS.
                05  WRK-ADRS-R      PIC X(76)  OCCURS  4.
       *
@@ -3994,14 +3996,14 @@ grpsys         MOVE    RECE041-HOSPNUM TO  COMB-HOSPNUM
       *
            MOVE    SPACE               TO  WRK-DISASTER-COMMENT
            IF   RECE02-DAISAN-GAITO   =   1  OR  2
-               MOVE    RECE02-DAISAN-TOTALTEN  TO  WRK-FUTAN2
+               MOVE    RECE02-DAISAN-TOTALTEN  TO  WRK-FUTAN3
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "2"             TO  KANACHK-SYORI 
-               MOVE    WRK-FUTAN2      TO  KANACHK-MAE-INPUT
+               MOVE    WRK-FUTAN3      TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                IF    ( KANACHK-RC      =   ZERO )
                AND   ( KANACHK-MAX     >   ZERO )
-                 STRING  "¡ÊÂè»°¼Ô¹Ô°Ù¡ËÀÁµáÅÀ¿ô¡¡"
+                 STRING  "¡ÊÂè»°¼Ô¹Ô°Ù¡ËÀÁµáÅÀ¡¡¡¡¡¡"
                                          DELIMITED  BY  SIZE
                           KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                          DELIMITED  BY  SIZE
@@ -4012,14 +4014,14 @@ grpsys         MOVE    RECE041-HOSPNUM TO  COMB-HOSPNUM
                PERFORM 200701-DISASTER-COMMENT-HENSYU-SEC
       *
                MOVE    SPACE           TO  WRK-DISASTER-COMMENT
-               MOVE    RECE02-DAISAN-FTNMONEY  TO  WRK-FUTAN2
+               MOVE    RECE02-DAISAN-FTNMONEY  TO  WRK-FUTAN4
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "2"             TO  KANACHK-SYORI 
-               MOVE    WRK-FUTAN2      TO  KANACHK-MAE-INPUT
+               MOVE    WRK-FUTAN4      TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                IF    ( KANACHK-RC      =   ZERO )
                AND   ( KANACHK-MAX     >   ZERO )
-                 STRING  "¡ÊÂè»°¼Ô¹Ô°Ù¡Ë°ìÉôÉéÃ´¶â"
+                 STRING  "¡ÊÂè»°¼Ô¹Ô°Ù¡Ë°ìÉôÉéÃ´³Û"
                                          DELIMITED  BY  SIZE
                           KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                          DELIMITED  BY  SIZE

@@ -780,6 +780,8 @@
            03  WRK-FUTAN1              PIC ZZZZZ9.
            03  WRK-FUTAN2              PIC ZZZZZZZ9.
            03  WRK-FUTAN3              PIC Z9.
+           03  WRK-FUTAN4              PIC ZZ,ZZZ,ZZ9.
+           03  WRK-FUTAN5              PIC ZZZ,ZZZ,ZZ9.
            03  WRK-ADRS.
                05  WRK-ADRS-R          PIC X(76)  OCCURS  4.
       *
@@ -4369,14 +4371,14 @@
       *
            MOVE    SPACE               TO  WRK-DISASTER-COMMENT
            IF   RECE62-DAISAN-GAITO   =   1  OR  2
-               MOVE    RECE62-DAISAN-TOTALTEN  TO  WRK-FUTAN2
+               MOVE    RECE62-DAISAN-TOTALTEN  TO  WRK-FUTAN4
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "2"             TO  KANACHK-SYORI 
-               MOVE    WRK-FUTAN2      TO  KANACHK-MAE-INPUT
+               MOVE    WRK-FUTAN4      TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                IF    ( KANACHK-RC      =   ZERO )
                AND   ( KANACHK-MAX     >   ZERO )
-                 STRING  "（第三者行為）請求点数　"
+                 STRING  "（第三者行為）請求点　　　"
                                          DELIMITED  BY  SIZE
                           KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                          DELIMITED  BY  SIZE
@@ -4388,14 +4390,14 @@
       *
                MOVE    SPACE             TO  WRK-DISASTER-COMMENT
                IF   RECE62-DAISAN-TOTALTEN  NOT = ZERO
-                 MOVE    RECE62-DAISAN-FTNMONEY  TO  WRK-FUTAN2
+                 MOVE    RECE62-DAISAN-FTNMONEY  TO  WRK-FUTAN5
                  INITIALIZE              ORCSKANACHKAREA
                  MOVE    "2"             TO  KANACHK-SYORI 
-                 MOVE    WRK-FUTAN2      TO  KANACHK-MAE-INPUT
+                 MOVE    WRK-FUTAN5      TO  KANACHK-MAE-INPUT
                  CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                  IF    ( KANACHK-RC      =   ZERO )
                  AND   ( KANACHK-MAX     >   ZERO )
-                   STRING  "（第三者行為）一部負担金"
+                   STRING  "（第三者行為）一部負担額"
                                            DELIMITED  BY  SIZE
                             KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                            DELIMITED  BY  SIZE
@@ -4415,7 +4417,7 @@
                  CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                  IF    ( KANACHK-RC      =   ZERO )
                  AND   ( KANACHK-MAX     >   ZERO )
-                   STRING  "（第三者行為）食事回数　　　　　　　"
+                   STRING  "（第三者行為）食事回数　　　　　　　　　　"
                                            DELIMITED  BY  SIZE
                             KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                            DELIMITED  BY  SIZE
@@ -4427,14 +4429,14 @@
                END-IF
       *
                MOVE    SPACE           TO  WRK-DISASTER-COMMENT
-               MOVE    RECE62-DAISAN-SKJ-RYOYOHI-KEI  TO  WRK-FUTAN2
+               MOVE    RECE62-DAISAN-SKJ-RYOYOHI-KEI  TO  WRK-FUTAN4
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "2"             TO  KANACHK-SYORI 
-               MOVE    WRK-FUTAN2      TO  KANACHK-MAE-INPUT
+               MOVE    WRK-FUTAN4      TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                IF    ( KANACHK-RC      =   ZERO )
                AND   ( KANACHK-MAX     >   ZERO )
-                 STRING  "（第三者行為）食事療養費"
+                 STRING  "（第三者行為）食事療養費　"
                                          DELIMITED  BY  SIZE
                           KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                          DELIMITED  BY  SIZE
@@ -4446,14 +4448,14 @@
       *
                MOVE    SPACE             TO  WRK-DISASTER-COMMENT
                IF   RECE62-DAISAN-SKJ-RYOYOHI-KEI  NOT = ZERO
-                 MOVE    RECE62-DAISAN-SKJ-FTN-KEI  TO  WRK-FUTAN2
+                 MOVE    RECE62-DAISAN-SKJ-FTN-KEI  TO  WRK-FUTAN4
                  INITIALIZE              ORCSKANACHKAREA
                  MOVE    "2"             TO  KANACHK-SYORI 
-                 MOVE    WRK-FUTAN2      TO  KANACHK-MAE-INPUT
+                 MOVE    WRK-FUTAN4      TO  KANACHK-MAE-INPUT
                  CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                  IF    ( KANACHK-RC      =   ZERO )
                  AND   ( KANACHK-MAX     >   ZERO )
-                   STRING  "（第三者行為）食事負担額"
+                   STRING  "（第三者行為）標準負担額　"
                                            DELIMITED  BY  SIZE
                             KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                            DELIMITED  BY  SIZE

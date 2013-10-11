@@ -906,7 +906,7 @@
       *第三者行為請求点数合計
            03  RECE62-DAISAN-TOTALTEN           PIC 9(08).
       *第三者行為一部負担金相当額合計（１円単位）
-           03  RECE62-DAISAN-FTNMONEY           PIC 9(08).
+           03  RECE62-DAISAN-FTNMONEY           PIC 9(09).
       *第三者行為食事合計
            03  RECE62-DAISAN-SKJ-NISSU-KEI      PIC 9(02).
            03  RECE62-DAISAN-SKJ-RYOYOHI-KEI    PIC 9(08).
