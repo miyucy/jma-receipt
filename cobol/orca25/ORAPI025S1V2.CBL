@@ -799,8 +799,7 @@
                                                TO  WRK-SJKBN-NAME
       *H25.9
                WHEN    "BB"
-                   MOVE
-                   "自賠責（第三者行為）レセプトのみの摘要欄コメント"
+                   MOVE    "自賠責（第三者行為）レセプト摘要欄コメント"
                                                TO  WRK-SJKBN-NAME
                WHEN    OTHER
       *        エラー

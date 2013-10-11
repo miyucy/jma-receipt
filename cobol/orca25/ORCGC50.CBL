@@ -962,8 +962,7 @@
            END-IF
       *!!!
            ADD     1                   TO  SPA-SJKBN-MAX
-           MOVE
-               "BB 自賠責（第三者行為）レセプトのみの摘要欄コメント"
+           MOVE    "BB 自賠責（第三者行為）レセプト摘要欄コメント"
                                        TO  SPA-GMN-SJKBNLST
                                                 (SPA-SJKBN-MAX)
       *
