@@ -301,6 +301,7 @@
       *  04.07.08    NACL-藤原    13/07/12  第三者行為対応
       *
       *  04.08.01    NACL-藤原    13/02/05  編集病名の強調表示
+      *  04.08.02    NACL-藤原    13/10/11  更新時のopid 設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2886,6 +2887,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    "1"                 TO  PTBYO-DLTFLG
            MOVE    SPA-OPID            TO  PTBYO-DLT-OPID
       *
+           MOVE    SPA-OPID            TO  PTBYO-OPID
            MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -4589,6 +4591,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    WRK-PTBYO-CHK-RECEDENFLG
                                        TO  PTBYO-RECEDENFLG
       *
+           MOVE    SPA-OPID            TO  PTBYO-OPID
            MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -8871,6 +8874,7 @@ grpsys     MOVE    SPA-HOSPNUM             TO  PTBYO-HOSPNUM
            MOVE    "1"                 TO  PTBYO-DLTFLG
            MOVE    SPA-OPID            TO  PTBYO-DLT-OPID
       *
+           MOVE    SPA-OPID            TO  PTBYO-OPID
            MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -10184,6 +10188,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                            MOVE    WRK-PTBYOMEI-REC (IDXX)
                                                    TO  PTBYOMEI-REC
       *
+                           MOVE    SPA-OPID        TO  PTBYO-OPID
                            MOVE    SMCNDATE-YMD    TO  PTBYO-UPYMD
                            MOVE    SMCNDATE-HMS    TO  PTBYO-UPHMS
       *
@@ -10309,6 +10314,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
            MOVE    WRK-RENNUM          TO  PTBYO-RENNUM
            MOVE    9999                TO  PTBYO-SEQNUM
+           MOVE    SPA-OPID            TO  PTBYO-OPID
            MOVE    SMCNDATE-YMD        TO  PTBYO-CREYMD
            MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
@@ -10405,6 +10411,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
                            ELSE
                                MOVE    WRK-RENNUM      TO  PTBYO-SEQNUM
+                               MOVE    SPA-OPID        TO  PTBYO-OPID
                                MOVE    SMCNDATE-YMD    TO  PTBYO-UPYMD
                                MOVE    SMCNDATE-HMS    TO  PTBYO-UPHMS
       *
