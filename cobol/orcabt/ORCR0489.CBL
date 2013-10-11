@@ -1029,6 +1029,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                             RECE41-NUM     DELIMITED  BY  SPACE
                                            INTO    HC23-KIGONUM
                    END-STRING
+      *            保険者番号
+                   MOVE    RECE41-HKNJANUM     TO  HC23-HKNJANUM
       *            保険者名
                    MOVE    RECE41-HKNJANAME    TO  HC23-HKNJANAME
            END-EVALUATE

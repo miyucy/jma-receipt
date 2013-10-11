@@ -1080,6 +1080,8 @@ grpsys        PERFORM 900-DBSELECT-SEC
                             RECE82-NUM     DELIMITED  BY  SPACE
                                            INTO    HC23-KIGONUM
                    END-STRING
+      *            保険者番号
+                   MOVE    RECE82-HKNJANUM     TO  HC23-HKNJANUM
       *            保険者名
                    MOVE    RECE82-HKNJANAME    TO  HC23-HKNJANAME
            END-EVALUATE
