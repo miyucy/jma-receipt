@@ -672,6 +672,12 @@
                END-IF
            END-PERFORM
            IF    ( TDAY-DAY-G      NOT =   ZERO )
+               INITIALIZE              TDAY-AREA
+               PERFORM VARYING IDXD    FROM    1   BY  1
+                       UNTIL ( IDXD    >   31 )
+                   MOVE    HCN68S01-PTSTS-DAY   (IDXD)
+                                   TO  TDAY-DAY (IDXD)
+               END-PERFORM
                PERFORM 20113-DAY-CSV-SEC
                MOVE    TDAY-CSV    TO  HSPTEVALRES-PTEVAL-DIFF
            END-IF
