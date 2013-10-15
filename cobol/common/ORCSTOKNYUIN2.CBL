@@ -823,16 +823,16 @@
       *      (A308-2)啊缔拉袋掐薄板闻瓷妄瘟１∈回年孟拌∷
               WHEN      "190150310"
                   MOVE  "190150310"    TO  WRK-TOKNYUIN2-SRYCD(1)
+                  MOVE  60             TO  WRK-JGN-NISSU(1)
+                  MOVE  1              TO  WRK-SRYCD-COUNT
+      *      (A308-2)啊缔拉袋掐薄板闻瓷妄瘟２
+              WHEN      "190129910"
+                  MOVE  "190129910"    TO  WRK-TOKNYUIN2-SRYCD(1)
                   IF    LNK-TOKNYUIN2-TOKUBETSU-SYORI-FLG(1)  =  "1"
                       MOVE  90         TO  WRK-JGN-NISSU(1)
                   ELSE
                       MOVE  60         TO  WRK-JGN-NISSU(1)
                   END-IF
-                  MOVE  1              TO  WRK-SRYCD-COUNT
-      *      (A308-2)啊缔拉袋掐薄板闻瓷妄瘟２
-              WHEN      "190129910"
-                  MOVE  "190129910"    TO  WRK-TOKNYUIN2-SRYCD(1)
-                  MOVE  60             TO  WRK-JGN-NISSU(1)
                   MOVE  1              TO  WRK-SRYCD-COUNT
       *      (A308-2)啊缔拉袋掐薄板闻瓷妄瘟２∈回年孟拌∷
               WHEN      "190150410"
