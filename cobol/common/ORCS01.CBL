@@ -2846,9 +2846,9 @@
       ******************************************************************
        400-SEIKYU-HASUU-KEISAN-DAISAN-SEC          SECTION.
       *
-           EVALUATE   WK-HASU1001-KBN2J
+           EVALUATE   WK-HASU1001-KBN4J
             WHEN  "0"
-                EVALUATE   WK-HASU1001-KBN2
+                EVALUATE   WK-HASU1001-KBN4
                  WHEN  "1"
                    COMPUTE  LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY  +   5
                    COMPUTE  WK-SEIKYUGK      = LNK-SYU-SKYMONEY  /  10
