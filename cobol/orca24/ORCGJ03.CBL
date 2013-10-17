@@ -269,8 +269,8 @@
                        09  TBL-DAY         PIC 9(03)
                                                OCCURS   31.
       *    外泊
+           03  TBL-GAIHAKU-SRYYM           PIC X(06).
            03  TBL-GAIHAKU-G.
-               05  TBL-GAIHAKU-SRYYM       PIC X(06).
                05  TBL-GAIHAKU             PIC 9(03)
                                            OCCURS   31.
       *    保険組合せ
