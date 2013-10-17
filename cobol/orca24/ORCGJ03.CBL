@@ -139,7 +139,7 @@
       *  ÊÝ¸±ÁÈ¹ç¤»°ìÍ÷
                05  SPA-HKNCOMI-AREA.
                    07  SPA-GMN-HKNCOMBI-LISTG.
-                       09  SPA-GMN-HKN-LIST    OCCURS  40.
+                       09  SPA-GMN-HKN-LIST    OCCURS  20.
                            11  SPA-GMN-THKNCOMBINUM-G.
                                13  SPA-GMN-THKNCOMBINUM    PIC X(04).
                                13  SPA-GMN-THKNCOMBY1      PIC X(01).
@@ -253,8 +253,6 @@
            03  WRK-ERRMSG          PIC X(40).
       *
            03  WRK-HKNCOMBI        PIC 9(04).
-      *
-           03  WRK-RSI-TENSU        PIC 9(08).
       *
       *    ÊÝ¸±¥Æ¡¼¥Ö¥ë
        01  TBL-HKNCOMBI-AREA.
@@ -439,7 +437,21 @@
 028600     COPY    "LINKAREA".
 028700*
        01  SCRAREA.
-           COPY    "ORCA24SCRAREA.INC".
+           COPY    "J02.INC".
+           COPY    "J021.INC".
+           COPY    "J022.INC".
+           COPY    "J025.INC".
+           COPY    "J026.INC".
+           COPY    "J03.INC".
+           COPY    "J04.INC".
+           COPY    "J041.INC".
+           COPY    "J042.INC".
+           COPY    "J98.INC".
+           COPY    "J99.INC".
+           COPY    "JERR.INC".
+           COPY    "JERR2.INC".
+           COPY    "JID1.INC".
+           COPY    "JID2.INC".
 029400*
 029500 PROCEDURE                   DIVISION    USING
 029600     MCPAREA
@@ -675,7 +687,6 @@
            MOVE    1                   TO  IDH
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   ORCSHKN-HKN-MAX
-                           OR (IDH     >=  40      )
                ADD     1                   TO  IDH
                MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
                                        TO  SPA-GMN-THKNCOMBINUM (IDH)
@@ -1794,17 +1805,7 @@
                          ((FLG-HKNKBN          =   1         )  AND
                           (ACCT-SRYKBN         =   "11"  OR   "12"
                                                OR  "13"  OR   "80" ))
-                       IF      ACCT-ZAIREQFLG      =   "1"
-      *                    ÉÕ²Ã¾ðÊó¤ÎÏ«ºÒ¶â³ÛÈ½Äê
-                           PERFORM 950-SRYACCTPLUS-READ-SEC
-                           IF      ACCTP-RSIKINGAKU    >   ZERO
-                               PERFORM 310921-RSIKINGAKU-HEN-SEC
-                           ELSE
-                               PERFORM 31092-SRYACCT-HEN-SEC
-                           END-IF
-                       ELSE
-                           PERFORM 31092-SRYACCT-HEN-SEC
-                       END-IF
+                       PERFORM 31092-SRYACCT-HEN-SEC
                    ELSE
                        MOVE    ZERO                TO  FLG-GENZAN
       *                ¸º³ÛÈ½Äê
@@ -2154,30 +2155,6 @@
            .
        31092-SRYACCT-HEN-EXT.
            EXIT.
-      *
-      *
-      *****************************************************************
-      *   ¿ÇÎÅ²ñ·×ÉÕ²Ã¥Þ¥¹¥¿¡¼Ï«ºÒ¶â³ÛÊÔ½¸½èÍý
-      *****************************************************************
-       310921-RSIKINGAKU-HEN-SEC             SECTION.
-      *
-      *    Ï«ºÒ¶â³Û½¸·×
-           COMPUTE WRK-GOK-RSITENSU    =   WRK-GOK-RSITENSU
-                                       +  (ACCTP-RSIKINGAKU
-                                       *   ACCT-ZAIKAISU )
-      *    ÅÀ¿ôº®ºß¤Î»þ
-           COMPUTE WRK-RSI-TENSU       =   ACCTP-RSIKINGAKU
-                                       /   10
-           IF      WRK-RSI-TENSU       <   ACCT-ZAITEN
-               COMPUTE WRK-TENSU       =  (ACCT-ZAITEN
-                                       -   WRK-RSI-TENSU )
-                                       *   ACCT-ZAIKAISU
-               COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
-                                       +   WRK-TENSU
-           END-IF
-           .
-       310921-RSIKINGAKU-HEN-EXT.
-           EXIT.
 088600*****************************************************************
 088700*    À¾ÎñÏÂÎñÊÔ½¸½èÍý
 088800*****************************************************************
@@ -2209,7 +2186,6 @@
       *
 091400     MOVE    SPACE               TO  J03
 091500*
-091400     INITIALIZE                      J03
 091600     MOVE    SPA-GMN-PTNUM       TO  J03-PTNUM
 091700     MOVE    SPA-GMN-KANANAME    TO  J03-KANANAME
 091800     MOVE    SPA-GMN-NAME        TO  J03-NAME

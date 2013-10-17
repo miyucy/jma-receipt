@@ -172,7 +172,6 @@
            03  FLG-NYUINACT        PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
-           03  FLG-SRYACCTPLUS     PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
       *
@@ -243,8 +242,6 @@
       *
            03  WRK-HKNCOMBI        PIC 9(04).
       *
-           03  WRK-RSI-TENSU        PIC 9(08).
-      *
       *    保険テーブル
        01  TBL-HKNCOMBI-AREA.
            03  TBL-HKNCOMBI-OCC        OCCURS   20.
@@ -255,7 +252,7 @@
        01  TBL-NYUIN-TENSU-AREA.
            03  TBL-NYUIN-TENSU-G.
                05  TBL-NYUIN-TENSU-OCC     OCCURS   100.
-                   07  TBL-ZAITEN          PIC S9(07).
+                   07  TBL-ZAITEN          PIC 9(07).
                    07  TBL-DAY-G.
                        09  TBL-DAY         PIC 9(03)
                                                OCCURS   31.
@@ -389,10 +386,6 @@
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
-      *    診療会計附加情報マスタ−
-       01  SRYACCTPLUS-REC.
-           COPY    "CPSRYACCTPLUS.INC".
-      *
       *****************************************************************
       *    サブプロ用連絡領域
       *****************************************************************
@@ -429,7 +422,16 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA32SCRAREA.INC".
+           COPY    "I41.INC".
+           COPY    "I42.INC".
+           COPY    "I44.INC".
+           COPY    "I47.INC".
+           COPY    "I48.INC".
+           COPY    "I49.INC".
+           COPY    "I411.INC".
+           COPY    "I4ERR.INC".
+           COPY    "I4ID1.INC".
+      *
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1716,26 +1718,9 @@
                          ((FLG-HKNKBN          =   1         )  AND
                           (ACCT-SRYKBN         =   "11"  OR   "12"
                                                OR  "13"  OR   "80" ))
-      *!!!!!!!!!!!!!!  PERFORM 31092-SRYACCT-HEN-SEC
-                       IF      ACCT-ZAIREQFLG      =   "1"
-      *                    付加情報の労災金額判定
-                           PERFORM 950-SRYACCTPLUS-READ-SEC
-                           IF      ACCTP-RSIKINGAKU    >   ZERO
-                               PERFORM 310921-RSIKINGAKU-HEN-SEC
-                           ELSE
-                               PERFORM 31092-SRYACCT-HEN-SEC
-                           END-IF
-                       END-IF
+                       PERFORM 31092-SRYACCT-HEN-SEC
                    ELSE
                        MOVE    ZERO                TO  FLG-GENZAN
-      *                減額判定
-                       IF      ACCT-ZAIREQFLG      =   "1"
-                           PERFORM 950-SRYACCTPLUS-READ-SEC
-                           IF      ACCTP-PLUSKBN       =   1
-                               MOVE    1               TO  FLG-GENZAN
-                           END-IF
-                       ELSE
-      *
       *!診療会計に減額フラグを追加するまで
       *                内服の逓減かどうかを判定する
                        IF      ACCT-SRYKBN         =   "21"
@@ -1744,9 +1729,6 @@
                                                    OR  "97"
                            PERFORM 31092-SRYACCT-HEN-SEC
                        END-IF
-      *!
-                       END-IF
-      *!
                        COMPUTE WRK-TENSU       =   ACCT-ZAITEN
                                                *   ACCT-ZAIKAISU
                        IF      ACCT-SRYKBN         =   "90"
@@ -1834,8 +1816,8 @@
                        MOVE    NACCT-DAY-AREA  TO  TBL-DAY-G  (IDX-N)
                    WHEN    "2"
       *            外泊
-                       MOVE    NACCT-SRYYM     TO  TBL-GAIHAKU-SRYYYMM
                        MOVE    NACCT-DAY-AREA  TO  TBL-GAIHAKU-G
+                       MOVE    NACCT-SRYYM     TO  TBL-GAIHAKU-SRYYYMM
       *            食事関係
                    WHEN    "4"
                        CONTINUE
@@ -1846,15 +1828,7 @@
                    WHEN    OTHER
                        IF      NACCT-ZAITEN    >   ZERO
                            ADD     1               TO  IDX-N
-      *                    栄養管理体制減算に該当する場合はマイナス
-                           IF     (NACCT-MEISAISU   =    1)   AND
-                                  (NACCT-SRYCDTOTAL =    190182590  OR
-                                                         190182690)
-                               COMPUTE  TBL-ZAITEN(IDX-N)  =
-                                        NACCT-ZAITEN    *   -1
-                           ELSE
-                               MOVE  NACCT-ZAITEN  TO  TBL-ZAITEN(IDX-N)
-                           END-IF
+                           MOVE    NACCT-ZAITEN    TO  TBL-ZAITEN(IDX-N)
                            MOVE    NACCT-DAY-AREA  TO  TBL-DAY-G (IDX-N)
                        END-IF
                END-EVALUATE
@@ -2082,30 +2056,6 @@
            .
        31092-SRYACCT-HEN-EXT.
            EXIT.
-      *
-      *!!!
-      *****************************************************************
-      *   診療会計付加マスター労災金額編集処理
-      *****************************************************************
-       310921-RSIKINGAKU-HEN-SEC             SECTION.
-      *
-      *    労災金額集計
-           COMPUTE WRK-GOK-RSITENSU    =   WRK-GOK-RSITENSU
-                                       +  (ACCTP-RSIKINGAKU
-                                       *   ACCT-ZAIKAISU )
-      *    点数混在の時
-           COMPUTE WRK-RSI-TENSU       =   ACCTP-RSIKINGAKU
-                                       /   10
-           IF      WRK-RSI-TENSU       <   ACCT-ZAITEN
-               COMPUTE WRK-TENSU       =  (ACCT-ZAITEN
-                                       -   WRK-RSI-TENSU )
-                                       *   ACCT-ZAIKAISU
-               COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
-                                       +   WRK-TENSU
-           END-IF
-           .
-       310921-RSIKINGAKU-HEN-EXT.
-           EXIT.
 088600*****************************************************************
 088700*    西暦和暦編集処理
 088800*****************************************************************
@@ -2137,7 +2087,6 @@
       *
 091400     MOVE    SPACE               TO  I42
 091500*
-091400     INITIALIZE                      I42
 091600     MOVE    SPA-GMN-PTNUM       TO  I42-PTNUM
 091700     MOVE    SPA-GMN-KANANAME    TO  I42-KANANAME
 091800     MOVE    SPA-GMN-NAME        TO  I42-NAME
@@ -2797,49 +2746,6 @@
       *
            .
        910-HKNCOMBI-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    診療会計マスター読込（主キー）
-      *****************************************************************
-       950-SRYACCTPLUS-READ-SEC           SECTION.
-      *
-           MOVE    SPACE               TO  SRYACCTPLUS-REC
-           INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
-           MOVE    ACCT-PTID           TO  ACCTP-PTID
-           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
-           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
-           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
-           MOVE    1                   TO  ACCTP-RENNUM
-      *
-           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
-           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryacctplus"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
-                   MOVE    ZERO                TO  FLG-SRYACCTPLUS
-               ELSE
-                   MOVE    1                   TO  FLG-SRYACCTPLUS
-                   INITIALIZE                  SRYACCTPLUS-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCTPLUS
-               INITIALIZE                  SRYACCTPLUS-REC
-           END-IF
-      *
-           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       950-SRYACCTPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************
