@@ -911,6 +911,8 @@
            03  RECE62-DAISAN-SKJ-NISSU-KEI      PIC 9(02).
            03  RECE62-DAISAN-SKJ-RYOYOHI-KEI    PIC 9(08).
            03  RECE62-DAISAN-SKJ-FTN-KEI        PIC 9(08).
+      *第三者行為高齢者フラグ（第三者行為のみ＋高齢者）
+           03  RECE62-DAISAN-KOUREI             PIC 9(01).
       *
       *予備
            03  RECE62-YOBIETC-AREA.

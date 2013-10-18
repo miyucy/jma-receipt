@@ -3000,6 +3000,9 @@
       *
            PERFORM        211B-DAISAN-CHECK-SEC
            IF   RECE62-DAISAN-GAITO   =   1
+             IF   RECE62-KOUREI  =  "1"
+               MOVE    1       TO   RECE62-DAISAN-KOUREI
+             END-IF
              MOVE      SPACE   TO   RECE62-KOUREI
            END-IF
       *
@@ -3452,7 +3455,8 @@
                                             *  RECE62-KYURATE
                                             /  100
               MOVE   WRK-DAISAN-FTNMONEY  TO  RECE62-DAISAN-FTNMONEY
-              IF  RECE62-KOUREI       =  "1" OR "2"
+              IF  (RECE62-KOUREI         =  "1" OR "2")
+              OR  (RECE62-DAISAN-KOUREI  =   1        )
                 ADD  WRK-DAISAN-FTNMONEY  TO  RECE62-FTNMONEY(1)
               END-IF
            END-IF
@@ -21654,6 +21658,15 @@
       *
            END-IF
       *
+           IF      RECE62-DAISAN-KOUREI   =   1
+      *
+               EVALUATE  WRK-TAIHI-OKIKAE
+                 WHEN        2
+                       MOVE    2       TO   RECE62-YOBIETC(3)
+               END-EVALUATE
+      *
+           END-IF
+      *
            PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
                      UNTIL    KOHFTN-IDX     >    4
              IF ((RECE62-EKF-ENCHGKBN-K(KOHFTN-IDX + 1) = "3") AND
@@ -26081,6 +26094,36 @@
              MOVE       ZERO                TO   RECE62-YOBIETC(3)
            END-IF
       *
+           IF  (IDZ                   =   1)
+           AND (RECE62-DAISAN-KOUREI  =   1)
+           AND (WRK-TAIHI-OKIKAE      =   1)
+      *      再掲上置き換え
+             MOVE       123456789           TO   RECE62-YOBIETC(12)
+      *      再掲下置き換え
+             MOVE       123456789           TO   RECE62-YOBIETC(13)
+      *      保険一部負担金置き換え
+             IF    RECE62-YOBIETC(14)  =  009999999
+                 MOVE   123456789           TO   RECE62-YOBIETC(14)
+             END-IF
+             IF    RECE62-YOBIETC(14)  =  123456789
+                 CONTINUE
+             ELSE
+                 MOVE   RECE62-YOBIETC(14)  TO   RECE62-FTNMONEY(1)
+             END-IF
+      *
+             IF    RECE62-YOBIETC(12)  =  123456789
+             AND   RECE62-YOBIETC(13)  =  123456789
+             AND   RECE62-YOBIETC(14)  =  123456789
+               IF  RECE62-YOBIETC(11)  =  1
+                MOVE    ZERO                TO   RECE62-YOBIETC(11)
+               END-IF
+               IF  RECE62-YOBIETC(11)  =  2
+                MOVE    3                   TO   RECE62-YOBIETC(11)
+               END-IF
+             END-IF
+             MOVE       ZERO                TO   RECE62-YOBIETC(3)
+           END-IF
+      *
            IF  (IDZ                     =   1         )
            AND (RECE62-KOUREI       NOT =  "1" AND "2")
            AND (WRK-TAIHI-OKIKAE        =   2         )
@@ -26108,9 +26151,16 @@
                (RECE62-KOUREI           =  "1" OR  "2") AND
                (WRK-TAIHI-OKIKAE        =   1         ))
            OR ((IDZ                     =   1         ) AND
+               (RECE62-DAISAN-KOUREI    =   1         ) AND
+               (WRK-TAIHI-OKIKAE        =   1         ))
+           OR ((IDZ                     =   1         ) AND
                (RECE62-KOUREI       NOT =  "1" AND "2") AND
                (WRK-TAIHI-OKIKAE        =   2         ))
-             CONTINUE
+             IF   (RECE62-DAISAN-KOUREI    =   1)
+             AND  (WRK-TAIHI-OKIKAE        =   2)
+                MOVE    ZERO                TO   RECE62-DAISAN-KOUREI
+                MOVE    ZERO                TO   RECE62-FTNMONEY(1)
+             END-IF
            ELSE
              MOVE       ZERO                TO   RECE62-YOBIETC(3)
              MOVE       ZERO                TO   RECE62-YOBIETC(11)
