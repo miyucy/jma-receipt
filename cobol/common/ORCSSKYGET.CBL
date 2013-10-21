@@ -678,10 +678,6 @@
        200211-INDEX-HENSYU-SEC            SECTION.
       *
            MOVE      ZERO            TO    IDX1
-      *    第三者行為
-           IF    SYU-KOH1HKNNUM       =   "970"
-              MOVE    10             TO    IDX1
-           END-IF
       *    自費保険
            IF    SYU-SYUHKNNUM(1:2)   =   "98"
               MOVE     5             TO    IDX1
@@ -717,6 +713,10 @@
       *    社保
            IF    IDX1   =   ZERO
               MOVE     1             TO    IDX1
+           END-IF
+      *    第三者行為
+           IF    SYU-KOH1HKNNUM       =   "970"
+              MOVE    10             TO    IDX1
            END-IF
       *
            .
