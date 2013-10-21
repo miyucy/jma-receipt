@@ -60,7 +60,6 @@
            03  FLG-PTBYOMEI            PIC 9(01).
            03  FLG-PTNYUINRRK          PIC 9(01).
            03  FLG-HKNJAINF            PIC 9(01).
-           03  FLG-KYUSEIRRK           PIC 9(01).
       *
            03  FLG-ERR                 PIC 9(01).
            03  FLG-HKNEND              PIC 9(01).
@@ -230,10 +229,6 @@
       *
       *    保険組合せ決定関数サブ
            COPY    "CPORCSAPIHKN.INC".
-      *ver.4.7
-      *    API XML読み込み共通定義
-           COPY    "CPAPIREQ.INC".
-      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -317,34 +312,30 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA12SCRAREA.INC".
-      *    COPY    "P02.INC".
-      *    COPY    "P02A.INC".
-      *    COPY    "P02D.INC".
-      *    COPY    "P02E.INC".
-      *    COPY    "P02F.INC".
-      *    COPY    "P014.INC".
-      *    COPY    "P015.INC".
-      *    COPY    "P98.INC".
-      *    COPY    "P981.INC".
-      *    COPY    "P0201.INC".
-      *    COPY    "P982.INC".
-      *    COPY    "P100.INC".
-      *    COPY    "P02X.INC".
-      *    COPY    "P02S.INC".
-      *    COPY    "P02Q.INC".
-      *    COPY    "P02Q1.INC".
-      *    COPY    "P02Y.INC".
-      *    COPY    "P02Y1.INC".
-      *    COPY    "P02G.INC".
-      *    COPY    "P02G2.INC".
-      *    COPY    "P02K.INC".
-      *    COPY    "P02H.INC".
-      *    COPY    "P02T.INC".
-      *    COPY    "PERR.INC".
-      *    COPY    "PID1.INC".
-      *    COPY    "PDMY01.INC".
-      *    COPY    "CPAPIMOD.INC".
+           COPY    "P02.INC".
+           COPY    "P02A.INC".
+           COPY    "P02D.INC".
+           COPY    "P02E.INC".
+           COPY    "P02F.INC".
+           COPY    "P014.INC".
+           COPY    "P015.INC".
+           COPY    "P98.INC".
+           COPY    "P981.INC".
+           COPY    "P0201.INC".
+           COPY    "P982.INC".
+           COPY    "P100.INC".
+           COPY    "P02X.INC".
+           COPY    "P02S.INC".
+           COPY    "P02Q.INC".
+           COPY    "P02Q1.INC".
+           COPY    "P02Y.INC".
+           COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
+           COPY    "P02K.INC".
+           COPY    "PERR.INC".
+           COPY    "PID1.INC".
+           COPY    "CPAPIMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -511,11 +502,11 @@
            MOVE   "XMLOPEN"            TO  MCP-FUNC
            MOVE    "xml_patientmodreq"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    API-BODY            TO  APIREQ-OBJECT
-           MOVE    ZERO                TO  APIREQ-MODE
+           MOVE    API-BODY            TO  PTMODREQ-OBJECT
+           MOVE    ZERO                TO  PTMODREQ-MODE
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-PATIENTMODREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
                CONTINUE
@@ -529,13 +520,12 @@
            MOVE   "XMLREAD"            TO  MCP-FUNC
            MOVE    "xml_patientmodreq"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  PTMODREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-PATIENTMODREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO  OR  1  )
-               MOVE    XML-APIREQ      TO  XML-PATIENTMODREQ
                PERFORM 10001-XML-REMAKE-SEC
            ELSE
                DISPLAY "XMLREAD failure = " MCP-RC
@@ -545,10 +535,10 @@
            MOVE    "XMLCLOSE"          TO  MCP-FUNC
            MOVE    "xml_patientmodreq"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    ORCA-BLOB-OBJECT    TO  APIREQ-OBJECT
+           MOVE    ORCA-BLOB-OBJECT    TO  PTMODREQ-OBJECT
            CALL    "ORCDBMAIN"         USING
                                        MCPAREA
-                                       XML-APIREQ
+                                       XML-PATIENTMODREQ
                                        SPA-AREA
            IF     (MCP-RC              =   ZERO    OR  1  )
                CONTINUE
@@ -1130,8 +1120,6 @@
                                                SPA-P02SCRAREA
                                                P02
            MOVE    SPACE               TO  SPA-ERRCD
-      *    公費法別一覧編集区分なし
-           MOVE    "0"                 TO  SPA-NAI-KOHHBTKBN-FLG
       *
       *    ＳＰＡ編集
       *    氏名
@@ -2687,7 +2675,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
              AND  (SPA-GMN-KANANAME    =   PTINF-KANANAME)
                CONTINUE
            ELSE
-               MOVE    1                   TO  FLG-KYUSEI
+               MOVE    SPA-NAI25-KYU-MAX   TO  IDX
+               IF    ( IDX                         >   ZERO      ) AND
+                     ( SPA-GMN25-KYU-CHGYMD(IDX)   =   SPA-SYSYMD)
+                   CONTINUE
+               ELSE
+      *            当日の旧姓は１件で、２０件以上は登録できない
+                   ADD     1               TO  IDX
+                   IF      IDX             <=  20
+                      MOVE    1                TO  FLG-KYUSEI
+                   END-IF
+               END-IF
            END-IF
            .
        20031-KYUSEI-HEN-EXT.
@@ -2770,16 +2768,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    旧姓履歴登録処理
       *****************************************************************
        200232-KYUSEI-INS-SEC     SECTION.
-      *
-      *    当日の旧姓履歴登録済みは登録なし
-           INITIALIZE                      KYUSEIRRK-REC
-           MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
-           MOVE    SPA-PTID            TO  KYUSEI-PTID
-           MOVE    SPA-SYSYMD          TO  KYUSEI-CHGYMD
-           PERFORM 903-KYUSEIRRK-READ-SEC
-           IF      FLG-KYUSEIRRK       =   ZERO
-               GO      TO      200232-KYUSEI-INS-EXT
-           END-IF
       *
            INITIALIZE                      KYUSEIRRK-REC
            MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
@@ -3138,6 +3126,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4904-PARA-DEL-EXT.
            EXIT.
+      *
       *
       *****************************************************************
       *    ＣＬＡＩＭ接続情報取得処理
@@ -3868,37 +3857,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        910-PTNUM-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    旧姓履歴情報取得
-      *****************************************************************
-       903-KYUSEIRRK-READ-SEC              SECTION.
-      *
-           MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-KYUSEIRRK
-                   MOVE    MCPDATA-REC         TO  KYUSEIRRK-REC
-               ELSE
-                   MOVE    1                   TO  FLG-KYUSEIRRK
-                   INITIALIZE                  KYUSEIRRK-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-KYUSEIRRK
-               INITIALIZE                  KYUSEIRRK-REC
-           END-IF
-           MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       903-KYUSEIRRK-READ-EXT.
            EXIT.
       *
       *****************************************************************
