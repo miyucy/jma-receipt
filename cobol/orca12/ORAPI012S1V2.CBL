@@ -28,10 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.07.00     NACL-多々納  13/10/21  PARA削除追加
-      * 04.07.00     NACL-多々納  13/11/01  API保険・公費追加対応
-      *                                     保険組合せ番号追加他
-      * 04.07.00     NACL-多々納  15/01/XX  性別・生年月日変更対応
-      * 04.08.00     NACL-多々納  18/03/XX  妊婦設定対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -64,8 +60,6 @@
            03  FLG-PTBYOMEI            PIC 9(01).
            03  FLG-PTNYUINRRK          PIC 9(01).
            03  FLG-HKNJAINF            PIC 9(01).
-           03  FLG-KYUSEIRRK           PIC 9(01).
-           03  FLG-PTCONF              PIC 9(01).
       *
            03  FLG-ERR                 PIC 9(01).
            03  FLG-HKNEND              PIC 9(01).
@@ -79,8 +73,6 @@
            03  FLG-GYOUMU-ARI          PIC 9(01).
            03  FLG-USERPG              PIC 9(01).
       *
-           03  FLG-DATA                PIC 9(01).
-      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
@@ -90,7 +82,6 @@
            03  IDY1                    PIC 9(04).
            03  IDX1                    PIC 9(04).
            03  TBL-MAX                 PIC 9(04).
-           03  IDX-W                   PIC 9(04).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -128,14 +119,11 @@
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-ERRMSG-2            PIC X(100).
+           03  WRK-KEICD               PIC X(02).
+           03  WRK-KEICD2              PIC X(02).
            03  WRK-KEIERRCD            PIC X(04).
-      *    ワーニングコード
-           03  WRK-KEICD-G.
-               05  WRK-KEICD           PIC X(02)   OCCURS   5.
-           03  WRK-OKMSG               PIC X(20).
       *    エラー公費種類
            03  WRK-ERR-KOHNUM          PIC X(03).
-           03  WRK-ERR-KOHNUMMEI       PIC X(20).
       *
       *    補助区分
            03  WRK-PTHKN-HOJOKBN       PIC X(01).
@@ -152,12 +140,6 @@
       *
            03  WRK-OPID                PIC X(16).
            03  HZN-SPA-OPID            PIC X(16).
-      *H30.4
-      *    患者個別設定　設定ＫＥＹ
-           03  WRK-CONF-CKEY           PIC  X(25).
-      *                  設定データ
-           03  WRK-CONF-CDATA          PIC  X(10).
-      *
       *    半角全角変換
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT           PIC X(100).
@@ -194,15 +176,6 @@
        01  CLAIM-FILE.
            03  FILLER              PIC X(30)   VALUE
                "scripts/claim/HL01.sh".
-      *
-      *v4.8
-      *    画面非表示
-           COPY    "ENUM-VALUE".
-      *
-      * 保険・公費最大件数
-       01  CONS-AREA.
-           03  TBL-MAX-KOH             PIC 9(02)  VALUE    60.
-           03  TBL-MAX-HKN             PIC 9(02)  VALUE    40.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -321,11 +294,6 @@
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
       *
-      *H30.4
-      *    患者個別設定テーブル
-       01  PTCONF-REC.
-           COPY    "CPPTCONF.INC".
-      *
       *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
@@ -377,13 +345,8 @@
                PERFORM 200-MAIN-SEC
            END-IF
       *
-           IF      WRK-ERRCD           =   "99"
-      *        ユーザＩＤエラー
-               MOVE   404                  TO  APIMOD-HTTPSTATUS
-           ELSE
-      *        返却領域編集
-               PERFORM 300-RGTXMLMAKE-SEC
-           END-IF
+      *    返却領域編集
+           PERFORM 300-RGTXMLMAKE-SEC
       *
            DISPLAY   "*******************"
            DISPLAY   "* patient res end *"
@@ -416,7 +379,6 @@
                    MCP-USER            DELIMITED  BY  SIZE
                                        INTO    WRK-OPID
            END-STRING
-      *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
       *    日付・時間出力編集
@@ -427,7 +389,6 @@
            MOVE    WRK-HEN-TIME        TO  PTMODRES-INFORMATION-TIME
       *
       *    医療機関識別番号セット 
-           MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -465,8 +426,7 @@
       *
            MOVE    ZERO                TO  PTMODRES-API-RESULT
            MOVE    SPACE               TO  WRK-ERRCD
-           INITIALIZE                      WRK-KEICD-G
-           MOVE    ZERO                TO  IDX-W
+           MOVE    SPACE               TO  WRK-KEICD
       *
            MOVE    ZERO                TO  FLG-SYORI
            EVALUATE    APIMOD-CLASS
@@ -479,10 +439,6 @@
            WHEN    "03"
       *        削除
                MOVE    3                   TO  FLG-SYORI
-      *H25.10
-           WHEN    "04"
-      *        保険・公費追加
-               MOVE    4                   TO  FLG-SYORI
            WHEN    OTHER
                MOVE    "91"                TO  WRK-ERRCD
            END-EVALUATE
@@ -491,10 +447,10 @@
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
            IF      WRK-ERRCD       NOT =   SPACE
-               PERFORM 890-ERRCD-MSG-SEC
       *TEST!!
-      *        DISPLAY "必須項目チェックエラー "    WRK-ERRCD
-      *                " " WRK-ERRMSG
+               PERFORM 890-ERRCD-MSG-SEC
+               DISPLAY "必須項目チェックエラー "    WRK-ERRCD
+                       " " WRK-ERRMSG
       *TEST!!
                GO      TO      200-MAIN-EXT
            END-IF
@@ -509,10 +465,6 @@
            WHEN    "03"
       *        削除処理
                PERFORM 2003-PTINF-DELETE-SEC
-      *H25.10
-           WHEN    "04"
-      *        保険・公費追加
-               PERFORM 2004-PTHKNKOH-INS-SEC
            END-EVALUATE
       *
            .
@@ -527,8 +479,6 @@
            IF      APIMOD-BODY        NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-           INITIALIZE                      XML-PATIENTMODREQ
-           INITIALIZE                      XML-APIREQ
       * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_patientmodv2req"   TO  MCP-TABLE
@@ -587,59 +537,64 @@
       *****************************************************************
        300-RGTXMLMAKE-SEC   SECTION.
       *
-           MOVE    SPACE               TO  WRK-OKMSG
+      *    エラーメッセージ編集
+           IF      WRK-ERRCD           =   SPACE
+               IF      WRK-KEIERRCD    NOT =   SPACE
+                   MOVE    WRK-KEIERRCD        TO  SPA-ERRCD
+                   MOVE    "K2"                TO  WRK-ERRCD
+               END-IF
+           END-IF
+           IF      WRK-ERRCD           =   SPACE
+               IF      WRK-KEICD       NOT =   SPACE
+                   MOVE    WRK-KEICD           TO  WRK-ERRCD
+               END-IF
+           END-IF
+           IF      WRK-ERRCD           =   SPACE
+               IF      WRK-KEICD2      NOT =   SPACE
+                   MOVE    WRK-KEICD2          TO  WRK-ERRCD
+                   MOVE    SPACE               TO  WRK-KEICD2
+               END-IF
+           END-IF
            IF      WRK-ERRCD           =   SPACE
       *        正常終了
                EVALUATE    FLG-SYORI
                    WHEN    1
                        MOVE    "登録終了"
-                                           TO  WRK-OKMSG
+                                           TO  PTMODRES-API-RESULT-MSG
                    WHEN    2
                        MOVE    "更新終了"
-                                           TO  WRK-OKMSG
+                                           TO  PTMODRES-API-RESULT-MSG
                    WHEN    3
                        MOVE    "削除終了"
-                                           TO  WRK-OKMSG
-                   WHEN    4
-                       MOVE    "追加終了"
-                                           TO  WRK-OKMSG
+                                           TO  PTMODRES-API-RESULT-MSG
                END-EVALUATE
-           END-IF
-           IF      WRK-ERRCD           =   SPACE
-      *        正常終了
-               MOVE    WRK-OKMSG           TO  PTMODRES-API-RESULT-MSG
            ELSE
-      *        エラーメッセージ
+      *        エラー・警告メッセージ
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD           TO  PTMODRES-API-RESULT
                MOVE    WRK-ERRMSG          TO  PTMODRES-API-RESULT-MSG
-           END-IF
-      *
-           MOVE    ZERO                TO  IDX
-      *    ワーニングメッセージ編集
-           IF      WRK-ERRCD           =   SPACE
-               IF      WRK-KEIERRCD    NOT =   SPACE
-                   MOVE    WRK-KEIERRCD    TO  SPA-ERRCD
-                   MOVE    "K2"            TO  WRK-ERRCD
+      *        保険種類変更有
+               IF      WRK-KEICD2          NOT =   SPACE
+                   MOVE    SPACE           TO  PTMODRES-API-RESULT-MSG
+                   MOVE    WRK-ERRMSG          TO  WRK-ERRMSG-2
+                   MOVE    WRK-KEICD2          TO  WRK-ERRCD
                    PERFORM 890-ERRCD-MSG-SEC
-                   MOVE    WRK-ERRCD       TO  PTMODRES-API-RESULT
-                   ADD     1               TO  IDX
-                   MOVE    WRK-ERRMSG      TO  PTMODRES-API-WARNING-MSG
-                                                             (IDX)
+                   STRING  WRK-ERRMSG-2        DELIMITED  BY  SIZE
+                           "　"
+                           WRK-ERRMSG          DELIMITED  BY  SPACE
+                                       INTO    PTMODRES-API-RESULT-MSG
+                   END-STRING
                END-IF
-               PERFORM VARYING     IDX-W   FROM    1   BY  1
-                       UNTIL      (IDX-W   >   5   )
-                               OR (WRK-KEICD (IDX-W)   =   SPACE)
-                               OR (IDX     >=  5   )
-                   MOVE    WRK-KEICD (IDX-W)   TO  WRK-ERRCD
-                   PERFORM 890-ERRCD-MSG-SEC
-                   ADD     1                   TO  IDX
-                   IF      IDX                 =   1
-                       MOVE    WRK-ERRCD       TO  PTMODRES-API-RESULT
-                   END-IF
-                   MOVE    WRK-ERRMSG      TO  PTMODRES-API-WARNING-MSG
-                                                             (IDX)
-               END-PERFORM
+           END-IF
+           IF      FLG-PTINF-JYU       =   1
+      *         同一患者情報あり
+                MOVE    PTMODRES-API-RESULT-MSG  TO  WRK-ERRMSG
+                MOVE    SPACE              TO  PTMODRES-API-RESULT-MSG
+                STRING  WRK-ERRMSG         DELIMITED  BY SPACE
+                        "　同一患者登録あり"
+                                           DELIMITED  BY SIZE
+                                           INTO  PTMODRES-API-RESULT-MSG
+               END-STRING
            END-IF
       *
            IF      APIMOD-BODY     NOT =   LOW-VALUE
@@ -776,12 +731,9 @@
       *    コメント
            MOVE    PTMODREQ-COMMENT-1      TO  PTMODRES-COMMENT-1
            MOVE    PTMODREQ-COMMENT-2      TO  PTMODRES-COMMENT-2
-      *    妊婦設定
-           MOVE    PTMODREQ-NINPUKBN       TO  PTMODRES-NINPUKBN
       *
       *    保険情報（登録のみ）
            IF      FLG-SYORI           =   1
-                                       OR  4
                PERFORM 200101-INHKN-HEN-SEC
            END-IF
       *
@@ -1061,8 +1013,7 @@
                                            ORCSP01AREA
                                            SPA-AREA
                IF      SPA-ERRCD           =   "8000"
-                   ADD     1                   TO  IDX-W
-                   MOVE    "K1"                TO  WRK-KEICD(IDX-W)
+                   MOVE    "K1"                TO  WRK-KEICD
                    MOVE    SPACE               TO  SPA-ERRCD
                END-IF
                IF      SPA-ERRCD           =   SPACE  OR  "8000"
@@ -1122,9 +1073,6 @@
            PERFORM 200211-PTINF-CHK-SEC
       *    保険情報チェック
            IF      WRK-ERRCD           =   SPACE
-               MOVE    ZERO                TO  SPA-PTHKN-MAX
-               MOVE    ZERO                TO  SPA-PTNUM-HKNID
-               MOVE    ZERO                TO  IDX
                PERFORM 200212-PTHKNINF-CHK-SEC
            END-IF
       *    公費情報チェック
@@ -1151,7 +1099,7 @@
            MOVE    SPA-GMN-NAME        TO  SPA-NAME
            MOVE    ZERO                TO  SPA-P02-UKEID
            MOVE    1                   TO  SPA-P02-SYORI
-           MOVE    "API"               TO  ORCSP02-SYORI
+           MOVE    "INIT"              TO  ORCSP02-SYORI
            CALL    "ORCSP02"           USING   ORCSP02AREA
                                                SPA-AREA
                                                SPA-P02KYOUTU
@@ -1305,12 +1253,6 @@
            IF     (WRK-ERRCD           =   SPACE ) 
            AND    (SPA-ERRCD           =   SPACE )
                PERFORM 200211-OFFICETEL-CHK-SEC
-           END-IF
-      *H30.4
-      *    妊婦設定
-           IF     (WRK-ERRCD           =   SPACE ) 
-           AND    (SPA-ERRCD           =   SPACE )
-               PERFORM 200211-NINPUKBN-CHK-SEC
            END-IF
       *
            IF     (WRK-ERRCD           =   SPACE ) 
@@ -1887,7 +1829,7 @@
            IF     (SPA-GMN982-MAX      =   ZERO  )
              AND  (WRK-ERRCD           =   SPACE )
                MOVE    "2106"              TO  WRK-KEIERRCD
-               GO  TO  200211-OFFPOST-CHK-EXT
+               GO  TO  200211-POST-CHK-EXT
            END-IF
       *    １件で住所なしは編集
            IF     (SPA-GMN982-MAX      =   1  )
@@ -1972,53 +1914,17 @@
        200211-OFFICETEL-CHK-EXT.
            EXIT.
       *
-      *H30.4
-      *****************************************************************
-      *    妊婦設定チェック処理
-      *****************************************************************
-       200211-NINPUKBN-CHK-SEC        SECTION.
-      *
-      *    妊婦設定
-           EVALUATE    PTMODREQ-NINPUKBN
-               WHEN    "True"
-      *            妊婦
-                   MOVE    "1"             TO  SPA-GMN28-NINPUKBN
-                   IF      SPA-GMN-SEX         =   "1"
-      *                男性はエラー
-                       MOVE    "34"            TO  WRK-ERRCD
-                   END-IF
-      *           １６歳未満は警告
-                   IF     (SPA-NAI-NENREI-YY   <   16 )
-                     AND  (WRK-ERRCD           =   SPACE )
-                       ADD     1               TO  IDX-W
-                       MOVE    "K5"            TO  WRK-KEICD (IDX-W)
-                   END-IF
-               WHEN    OTHER
-      *            妊婦解除
-                   MOVE    "0"             TO  SPA-GMN28-NINPUKBN
-           END-EVALUATE
-           .
-       200211-NINPUKBN-CHK-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    保険情報更新処理
       *****************************************************************
        200212-PTHKNINF-CHK-SEC        SECTION.
       *
            IF      PTMODREQ-INSURANCE-INFO-G   =   SPACE
-      *??      MOVE    ZERO                TO  SPA-PTHKN-MAX
-      *        MOVE    ZERO                TO  SPA-PTNUM-HKNID
-      *???     MOVE    ZERO                TO  IDX
+               MOVE    ZERO                TO  SPA-PTHKN-MAX
+               MOVE    ZERO                TO  SPA-PTNUM-HKNID
+               MOVE    ZERO                TO  IDX
                GO      TO    200212-PTHKNINF-CHK-EXT
            END-IF
-           MOVE    1                   TO  FLG-DATA
-      *H29.11
-           IF      SPA-PTHKN-MAX       >=  TBL-MAX-HKN
-               MOVE    "64"            TO  WRK-ERRCD
-               GO      TO    200212-PTHKNINF-CHK-EXT
-           END-IF
-      *!!
       *
            ADD     1                   TO  SPA-PTHKN-MAX
            ADD     1                   TO  SPA-PTNUM-HKNID
@@ -2034,6 +1940,9 @@
       *    保険者番号
            MOVE    PTMODREQ-MAIN-INSURANCE-NUMBER
                                        TO  SPA-PTHKN-HKNJANUM (IDX)
+      *    保険の種類名称
+      *    MOVE    PTMODREQ-MAIN-INSURANCE-NAME
+      *                                TO  SPA-GMN-HKNNUM(5:)
       *    記号
            MOVE    PTMODREQ-MAIN-MARK  TO  WRK-MAE-INPUT
            MOVE    40                  TO  WRK-LEN
@@ -2280,8 +2189,7 @@
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   4   )
-                          OR  (WRK-ERRCD   NOT =   SPACE )
+                   UNTIL       IDX     >   4
                IF     (PTMODREQ-INSURANCE-CLASS(IDX)   =   SPACE)
                   AND (PTMODREQ-PROVIDER-NUMBER(IDX)   =   SPACE)
                   AND (PTMODREQ-RECIPIENT-NUMBER(IDX)  =   SPACE)
@@ -2289,14 +2197,7 @@
                   AND (PTMODREQ-INSURANCE-END-DATE(IDX)    =   SPACE)
                    CONTINUE
                ELSE
-                   MOVE    1               TO  FLG-DATA
       *            公費編集
-      *H29.11
-                   IF      SPA-PTKOH-MAX       >=  TBL-MAX-KOH
-                       MOVE    "65"            TO  WRK-ERRCD
-                   ELSE
-      *!!
-      *
                    ADD     1               TO  SPA-PTKOH-MAX
                    MOVE    SPA-PTKOH-MAX   TO  IDY
       *            新規の時公費ＩＤ取得
@@ -2344,14 +2245,6 @@
                                                                    (IDY)
       *            支払区分
                    MOVE    "00"            TO  SPA-PTKOH-PAYKBN (IDY)
-      *            第三者行為はエラー
-                   IF      PTMODREQ-INSURANCE-CLASS(IDX)
-                                               =   "970"
-                       MOVE    "39"                TO  WRK-ERRCD
-                   END-IF
-      *
-               END-IF
-      *
                END-IF
            END-PERFORM
            .
@@ -2366,6 +2259,7 @@
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    ZERO                TO  FLG-HKNEND
            MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPACE               TO  WRK-KEICD2
       *
            PERFORM UNTIL    (FLG-HKNEND    =   1   )
                MOVE    SPA-P02SCRAREA      TO  SPA-FREE
@@ -2386,19 +2280,14 @@
                MOVE    SPACE               TO  SPA-MOTOPG
                MOVE    ZERO                TO  SPA-FLG-END
                MOVE    SPACE               TO  WRK-ERR-KOHNUM
-               MOVE    SPACE               TO  WRK-ERR-KOHNUMMEI
-               IF      SPA-ERRCD       NOT =   SPACE
-                   IF      SPA-KOH-ERRIDX      =   ZERO
-                       MOVE    SPA-GMN-HKNNUM  TO  WRK-ERR-KOHNUM
-                       MOVE    SPA-GMN-HKNNUMMEI
-                                               TO  WRK-ERR-KOHNUMMEI
-                   ELSE
-      *                公費エラー
-                       MOVE    SPA-GMN-KOHNUM (SPA-KOH-ERRIDX)
-                                               TO  WRK-ERR-KOHNUM
-                       MOVE    SPA-GMN-KOHNUMMEI (SPA-KOH-ERRIDX)
-                                               TO  WRK-ERR-KOHNUMMEI
-                   END-IF
+               IF      SPA-KOH-ERRIDX  NOT =   ZERO
+      *            公費エラー
+                   MOVE    SPA-GMN-KOHNUM (SPA-KOH-ERRIDX)
+                                           TO  WRK-ERR-KOHNUM
+               END-IF
+               IF     (SPA-PIDCD(1:1)      =   "K"   )
+      *            確認の警告はなし
+                   MOVE    SPACE           TO  SPA-PIDCD
                END-IF
                IF     (SPA-ERRCD           =   SPACE )
                   AND (SPA-PIDCD           =   SPACE )
@@ -2426,8 +2315,7 @@
                                        NOT =   SPACE)
                  AND  (PTMODREQ-MAIN-INSURANCE-CLASS
                                        NOT =   SPA-PTHKN-HKNNUM (1))
-                   ADD     1                   TO  IDX-W
-                   MOVE    "K3"                TO  WRK-KEICD (IDX-W)
+                   MOVE    "K3"                TO  WRK-KEICD2
                END-IF
            END-IF
            .
@@ -2463,15 +2351,6 @@
       *        登録
                PERFORM 200232-PTINF-INSERT-SEC
            END-IF
-      *H30.4
-      *    妊婦設定処理
-           IF     WRK-ERRCD            =   SPACE
-      *        登録
-               IF      SPA-GMN28-NINPUKBN   =   "1"
-                   PERFORM 200234-NINPUKBN-SYORI-SEC
-               END-IF
-           END-IF
-      *
       *    保険情報編集処理
            IF     WRK-ERRCD            =   SPACE
       *        登録
@@ -2509,15 +2388,12 @@
            END-IF
            MOVE    ZERO                TO  FLG-PTINF-JYU
            PERFORM   UNTIL  ( FLG-PTINF    =   1  )
-                       OR   ( FLG-PTINF-JYU    =   1  )
       *        氏名・漢字氏名・性別・生年月日一致
                IF     (PTINF-KANANAME      =   SPA-GMN-KANANAME)
                  AND  (PTINF-NAME          =   SPA-GMN-NAME    )
                  AND  (PTINF-SEX           =   SPA-GMN-SEX     )
                  AND  (PTINF-BIRTHDAY      =   SPA-NAI-BIRTHDAY)
                    MOVE    1                   TO  FLG-PTINF-JYU
-                   ADD     1                   TO  IDX-W
-                   MOVE    "K0"                TO  WRK-KEICD(IDX-W)
                END-IF
       *
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
@@ -2527,19 +2403,6 @@
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *
-      *
-      *    同じ内容の公費チェック
-           IF     (SPA-PTKOH-MAX       >   ZERO )
-             AND  (WRK-ERRCD           =   SPACE)
-               PERFORM VARYING    IDX      FROM   1   BY  1
-                       UNTIL     (IDX          >   SPA-PTKOH-MAX )
-                             OR  (WRK-ERRCD    NOT =   SPACE )
-                   IF      SPA-PTKOH-SINKIKBN (IDX)    =   "1"
-                       PERFORM 2004141-KOHJYUCHK-SEC
-                   END-IF
-               END-PERFORM
-           END-IF
       *
            .
        200234-JYUFUKU-CHK-EXT.
@@ -2553,9 +2416,6 @@
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
-      *H26.8
-      *    テスト患者番号区分
-           MOVE    "0"                 TO  PTINF-TSTPTNUMKBN
       *    明細編集
            PERFORM 20023-PTINF-HENSYU-SEC
       *
@@ -2574,7 +2434,7 @@
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "API PTINF INS ERR:" MCP-RC
                            ",KEY:" PTINF-KEY
-               MOVE    "44"             TO  WRK-ERRCD
+               MOVE    "90"             TO  WRK-ERRCD
            END-IF
       *
            .
@@ -2715,8 +2575,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-WORK            TO  SPA-P02KYOUTU
            MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-      *TEST
-      *     DISPLAY "ORCGP029 END:"  SPA-ERRCD
       *
            MOVE    HZN-SPA-OPID        TO  SPA-OPID
       *
@@ -2737,34 +2595,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "10"                TO  WRK-ERRCD
                GO      TO              2003-PTINF-UPDATE-EXT
            END-IF
-      *H27.01
-      *    処理区分
-           EVALUATE    PTMODREQ-MOD-KEY
-      *        氏名変更
-               WHEN    "1"
-               WHEN    " "
-      *            性別・生年月日が一致すること
-                   IF     (PTINF-SEX       =   SPA-GMN-SEX )  AND
-                          (PTINF-BIRTHDAY  =   SPA-NAI-BIRTHDAY )
-                       CONTINUE
-                   ELSE
-                       MOVE    "50"                TO  WRK-ERRCD
-                   END-IF
-      *        性別・生年月日変更
-               WHEN    "2"
-      *            氏名が一致すること
-                   IF     (PTINF-NAME      =   SPA-GMN-NAME   )  AND
-                          (PTINF-KANANAME  =   SPA-GMN-KANANAME)
-                       CONTINUE
-                   ELSE
-                       MOVE    "50"                TO  WRK-ERRCD
-                   END-IF
-               WHEN    OTHER
-                   MOVE    "53"            TO  WRK-ERRCD
-           END-EVALUATE
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO      TO              2003-PTINF-UPDATE-EXT
-           END-IF
       *
       *    排他チェック & ロック処理
            PERFORM 990-LOCK-IN-SEC
@@ -2772,7 +2602,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "90"            TO  WRK-ERRCD
                GO      TO              2003-PTINF-UPDATE-EXT
            END-IF
-      *
+      *    性別・生年月日が一致すること
+           IF     (PTINF-SEX           =   SPA-GMN-SEX )  AND
+                  (PTINF-BIRTHDAY      =   SPA-NAI-BIRTHDAY )
+               CONTINUE
+           ELSE
+               MOVE    "50"                TO  WRK-ERRCD
+           END-IF
       *    患者情報内容編集
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20031-UPDATE-CHK-SEC
@@ -2781,11 +2617,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    更新処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20023-PTINFUPD-SYORI-SEC
-           END-IF
-      *H30.4
-      *    妊婦設定処理
-           IF     WRK-ERRCD            =   SPACE
-               PERFORM 200234-NINPUKBN-SYORI-SEC
            END-IF
       *
       *    CLAIM送信チェック
@@ -2812,8 +2643,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        20031-UPDATE-CHK-SEC        SECTION.
       *
-           MOVE    SPA-PTID            TO  SPA-GMN-PTID
-           MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
       *    基本情報
            PERFORM 200211-PTINF-CHK-SEC
       *    旧姓履歴チェック
@@ -2834,7 +2663,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
              AND  (SPA-GMN-KANANAME    =   PTINF-KANANAME)
                CONTINUE
            ELSE
-               MOVE    1                   TO  FLG-KYUSEI
+               MOVE    SPA-NAI25-KYU-MAX   TO  IDX
+               IF    ( IDX                         >   ZERO      ) AND
+                     ( SPA-GMN25-KYU-CHGYMD(IDX)   =   SPA-SYSYMD)
+                   CONTINUE
+               ELSE
+      *            当日の旧姓は１件で、２０件以上は登録できない
+                   ADD     1               TO  IDX
+                   IF      IDX             <=  20
+                      MOVE    1                TO  FLG-KYUSEI
+                   END-IF
+               END-IF
            END-IF
            .
        20031-KYUSEI-HEN-EXT.
@@ -2918,16 +2757,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        200232-KYUSEI-INS-SEC     SECTION.
       *
-      *    当日の旧姓履歴登録済みは登録なし
-           INITIALIZE                      KYUSEIRRK-REC
-           MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
-           MOVE    SPA-PTID            TO  KYUSEI-PTID
-           MOVE    SPA-SYSYMD          TO  KYUSEI-CHGYMD
-           PERFORM 903-KYUSEIRRK-READ-SEC
-           IF      FLG-KYUSEIRRK       =   ZERO
-               GO      TO      200232-KYUSEI-INS-EXT
-           END-IF
-      *
            INITIALIZE                      KYUSEIRRK-REC
            MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
            MOVE    SPA-PTID            TO  KYUSEI-PTID
@@ -2999,147 +2828,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        20021-PTMODRES-HEN-EXT.
            EXIT.
       *
-      *H30.4
-      *****************************************************************
-      *    妊婦設定処理
-      *****************************************************************
-       200234-NINPUKBN-SYORI-SEC     SECTION.
-      *
-      *    妊婦区分
-           IF      SPA-GMN28-NINPUKBN   =   ZERO
-               MOVE    SPACE           TO  SPA-GMN28-NINPUKBN
-           END-IF
-           MOVE    SPA-GMN28-NINPUKBN  TO  WRK-CONF-CDATA
-           MOVE    "NINPUKBN"          TO  WRK-CONF-CKEY
-           PERFORM 2002341-PTCONF-DBSYORI-SEC
-           .
-       200234-NINPUKBN-SYORI-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者個別設定登録処理
-      *****************************************************************
-       2002341-PTCONF-DBSYORI-SEC        SECTION.
-      *
-           INITIALIZE                  PTCONF-REC
-           MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
-           MOVE    SPA-PTID            TO  PTCONF-PTID
-           MOVE    WRK-CONF-CKEY       TO  PTCONF-CKEY
-      *
-           MOVE    PTCONF-REC          TO  MCPDATA-REC
-           MOVE    "tbl_ptconf"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptconf"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC     TO  PTCONF-REC
-                   MOVE    ZERO            TO  FLG-PTCONF
-               ELSE
-                   MOVE    1               TO  FLG-PTCONF
-                   INITIALIZE                  PTCONF-REC
-               END-IF
-           ELSE
-               MOVE    1               TO  FLG-PTCONF
-               INITIALIZE                  PTCONF-REC
-           END-IF
-           MOVE    "tbl_ptconf"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    ＤＢあり
-           IF      FLG-PTCONF          =   ZERO
-               IF      WRK-CONF-CDATA      =   SPACE
-      *            ＤＢ削除
-                   MOVE    PTCONF-REC          TO  MCPDATA-REC
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   MOVE    "tbl_ptconf"        TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   IF      MCP-RC          NOT =   ZERO
-                       DISPLAY "API PTCONF DEL ERR:" MCP-RC
-                               ",KEY:" PTCONF-KEY
-                       MOVE    "83"             TO  WRK-ERRCD
-                   END-IF
-               ELSE
-      *            ＤＢ更新
-                   PERFORM 21111-PTCONF-UPS-SEC
-               END-IF
-           ELSE
-               IF      WRK-CONF-CDATA  NOT =   SPACE
-      *            登録
-                   PERFORM 21112-PTCONF-INS-SEC
-               END-IF
-           END-IF
-      *
-           .
-       2111-PTCONF-DBSYORI-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者個別設定データ登録処理
-      *****************************************************************
-       21112-PTCONF-INS-SEC        SECTION.
-      *
-           INITIALIZE                      PTCONF-REC
-           MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
-           MOVE    SPA-PTID            TO  PTCONF-PTID
-           MOVE    WRK-CONF-CKEY       TO  PTCONF-CKEY
-      *    入力値編集
-           MOVE    WRK-CONF-CDATA      TO  PTCONF-CDATA
-      *    作成年月日
-           MOVE    SMCNDATE-YMD        TO  PTCONF-CREYMD
-           MOVE    SMCNDATE-YMD        TO  PTCONF-UPYMD
-           MOVE    SMCNDATE-HMS        TO  PTCONF-UPHMS
-           MOVE    WRK-OPID            TO  PTCONF-OPID
-      *
-           MOVE    PTCONF-REC          TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_ptconf"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "API PTCONF INS ERR:" MCP-RC
-                           ",KEY:" PTCONF-KEY
-               MOVE    "45"             TO  WRK-ERRCD
-           END-IF
-           .
-       21112-PTCONF-INS-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者個別設定データ更新処理
-      *****************************************************************
-       21111-PTCONF-UPS-SEC        SECTION.
-      *
-      *    入力値編集
-           MOVE    WRK-CONF-CDATA      TO  PTCONF-CDATA
-      *    更新年月日
-           MOVE    SMCNDATE-YMD        TO  PTCONF-UPYMD
-           MOVE    SMCNDATE-HMS        TO  PTCONF-UPHMS
-           MOVE    WRK-OPID            TO  PTCONF-OPID
-      *
-           MOVE    PTCONF-REC          TO  MCPDATA-REC
-           MOVE    "DBUPDATE"          TO  MCP-FUNC
-           MOVE    "tbl_ptconf"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "API PTCONF UPD ERR:" MCP-RC
-                           ",KEY:" PTCONF-KEY
-               MOVE    "54"             TO  WRK-ERRCD
-           END-IF
-           .
-       21111-PTCONF-UPS-EXT.
-           EXIT.
-      *
-      *
       *****************************************************************
       *    保険組合せ編集処理
       *****************************************************************
@@ -3152,11 +2840,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSAPIHKN"        USING
                                        SPA-AREA
                                        ORCSAPIHKNAREA
-      *
-           IF      ORCSAPIHKN-ERRCD    =   9
-               ADD     1                   TO  IDX-W
-               MOVE    "K4"                TO  WRK-KEICD (IDX-W)
-           END-IF
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3175,10 +2858,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        200231-HKNHEN-TBL-SEC              SECTION.
       *
            ADD     1                   TO  IDY
-      *    保険組合せ番号
-           MOVE    ORCSAPIHKN-THKNCOMBI (IDX)
-                                   TO  PTMODRES-COMBINATION-NUMBER
-                                                                 (IDY)
       *    保険の種類
            MOVE    ORCSAPIHKN-HKNNUM (IDX)
                                    TO  PTMODRES-MAIN-INSURANCE-CLASS
@@ -3413,420 +3092,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        20031-DELETE-CHK-EXT.
            EXIT.
       *
-      *H25.10
-      *****************************************************************
-      *    保険・公費追加処理
-      *****************************************************************
-       2004-PTHKNKOH-INS-SEC        SECTION.
-      *
-           INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
-           MOVE    SPA-PTID            TO  PTINF-PTID
-           PERFORM 900-PTINF-READ-SEC
-           IF      FLG-PTINF       NOT =   ZERO
-               MOVE    "10"                TO  WRK-ERRCD
-               GO      TO              2004-PTHKNKOH-INS-EXT
-           END-IF
-      *    性別・生年月日が一致すること
-           IF     (PTINF-SEX           =   SPA-GMN-SEX )  AND
-                  (PTINF-BIRTHDAY      =   SPA-NAI-BIRTHDAY ) AND
-                  (PTINF-NAME          =   SPA-GMN-NAME )
-               CONTINUE
-           ELSE
-               MOVE    "60"                TO  WRK-ERRCD
-               GO      TO      2004-PTHKNKOH-INS-EXT
-           END-IF
-      *
-      *    排他チェック & ロック処理
-           PERFORM 990-LOCK-IN-SEC
-           IF      SLOCK-RETURN    NOT =   ZERO
-               MOVE    "90"            TO  WRK-ERRCD
-               GO      TO      2004-PTHKNKOH-INS-EXT
-           END-IF
-      *
-      *    患者情報出力内容編集処理
-           PERFORM 20041-PTMODRES-HEN-SEC
-      *
-      *    患者情報内容編集
-      *    パラメタファイル、患者情報のセット
-           MOVE    SPACE               TO  P02
-           INITIALIZE                      P02
-      *
-           MOVE    SPA-PTID            TO  SPA-GMN-PTID
-           MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
-           MOVE    ZERO                TO  SPA-P02-UKEID
-           MOVE    ZERO                TO  SPA-P02-SYORI
-           MOVE    "API"               TO  ORCSP02-SYORI
-           CALL    "ORCSP02"           USING   ORCSP02AREA
-                                               SPA-AREA
-                                               SPA-P02KYOUTU
-                                               SPA-P02SCRAREA
-                                               P02
-           MOVE    SPACE               TO  SPA-ERRCD
-      *    公費法別一覧編集区分なし
-           MOVE    "0"                 TO  SPA-NAI-KOHHBTKBN-FLG
-      *    生年月日から年齢編集処理
-           PERFORM 200211-BIRTHDAY-CHK-SEC
-      *
-           MOVE    ZERO                TO  FLG-DATA
-      *    保険情報チェック
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 200212-PTHKNINF-CHK-SEC
-           END-IF
-      *    公費情報チェック
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 200213-PTHKOHNF-CHK-SEC
-           END-IF
-      *
-           IF      FLG-DATA            =   ZERO
-               MOVE    "61"                TO  WRK-ERRCD
-      *
-               PERFORM 990-LOCK-OUT-SEC
-               GO      TO      2004-PTHKNKOH-INS-EXT
-           END-IF
-      *
-      *    保険組合せ作成チェック
-           IF     (WRK-ERRCD           =   SPACE )
-               PERFORM 200414-HKNCOMBI-INS-SYORI-SEC
-           END-IF
-      *    保険情報編集処理
-           IF     (WRK-ERRCD           =   SPACE )
-      *        保険組合せの変更による履歴チェック
-               MOVE    SPA-P02KYOUTU   TO  SPA-WORK
-               MOVE    SPA-P02SCRAREA  TO  SPA-FREE
-               MOVE    SPA-AREA        TO  SPA-COMMON
-      *        更新サブへ
-               CALL    "ORCGP029"      USING   MCPAREA
-                                               SPAAREA
-               MOVE    SPA-COMMON      TO  SPA-AREA
-               MOVE    SPA-WORK        TO  SPA-P02KYOUTU
-               MOVE    SPA-FREE        TO  SPA-P02SCRAREA
-               IF     (SPA-PIDCD       NOT =   SPACE )
-                   MOVE    "P2"            TO  WRK-ERRCD
-                   MOVE    1               TO  FLG-HKNEND
-               END-IF
-               IF     (WRK-ERRCD           =   SPACE )
-      *            保険登録
-                   PERFORM 200233-PTHKN-INSERT-SEC
-                   IF    WRK-ERRCD           =   SPACE
-      *                保険・公費ＩＤ登録
-                       PERFORM 20042-PTNUM-UPDATE-SEC
-                   END-IF
-                   IF     (WRK-ERRCD       NOT =   SPACE )
-      *                ＤＢ更新キャンセル
-                       MOVE    SPACE               TO  MCPDATA-REC
-                       MOVE    "DBSELECT"          TO  MCP-FUNC
-                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                       MOVE    "abort"             TO  MCP-PATHNAME
-                       CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-                   END-IF
-               END-IF
-           END-IF
-      *
-      *    パラメタ削除処理（保険情報）
-           PERFORM 4904-PARA-DEL-SEC
-      *
-      *    保険組合せ編集処理
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 20023-HKNCOMBI-HEN-SEC
-           END-IF
-      *
-      *    CLAIM送信チェック
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 4905-CLAIM-CHK-SEC
-           END-IF
-      *
-      *    ユーザ起動プログラム起動チェック
-           MOVE    2                   TO  FLG-USERPG
-           IF      WRK-ERRCD           =   SPACE
-               PERFORM 4907-USERPG-SEC
-           END-IF
-      *
-           PERFORM 990-LOCK-OUT-SEC
-           IF      SLOCK-RETURN   NOT =   ZERO
-               DISPLAY "ロック解除失敗"
-           END-IF
-           .
-       2004-PTHKNKOH-INS-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者情報出力内容編集処理
-      *****************************************************************
-       20041-PTMODRES-HEN-SEC     SECTION.
-      *
-      *    患者情報
-           MOVE    PTINF-NAME          TO  PTMODRES-NAME
-           MOVE    PTINF-KANANAME      TO  PTMODRES-KANANAME
-           MOVE    PTINF-SEX           TO  PTMODRES-SEX
-           MOVE    SPACE               TO  PTMODRES-SETAI-NAME
-           MOVE    SPACE               TO  PTMODRES-ZOKUGARA
-           MOVE    SPACE               TO  PTMODRES-JOB
-           MOVE    SPACE               TO  PTMODRES-KEITAI-TEL
-           MOVE    SPACE               TO  PTMODRES-FAX
-           MOVE    SPACE               TO  PTMODRES-EMAIL
-      *    自宅情報
-           MOVE    PTINF-HOME-POST     TO  PTMODRES-HOME-ZIP-CODE
-           MOVE    PTINF-HOME-ADRS     TO  PTMODRES-HOME-ADDRESSES1
-           MOVE    PTINF-HOME-BANTI    TO  PTMODRES-HOME-ADDRESSES2
-           MOVE    PTINF-HOME-TEL1     TO  PTMODRES-HOME-HPONE1
-           MOVE    PTINF-HOME-TEL2     TO  PTMODRES-HOME-HPONE2
-      *    勤務先情報
-           MOVE    SPACE               TO  PTMODRES-OFFICE-INFO
-      *    コメント
-           MOVE    SPACE               TO  PTMODRES-COMMENT-1
-           MOVE    SPACE               TO  PTMODRES-COMMENT-2
-           MOVE    SPACE               TO  PTMODRES-TABOO-1
-           MOVE    SPACE               TO  PTMODRES-TABOO-2
-           MOVE    SPACE               TO  PTMODRES-ALLERGY-1
-           MOVE    SPACE               TO  PTMODRES-ALLERGY-2
-           MOVE    SPACE               TO  PTMODRES-KANSENSYO-1
-           MOVE    SPACE               TO  PTMODRES-KANSENSYO-2
-           .
-       20021-PTMODRES-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険組合せ作成処理
-      *****************************************************************
-       200414-HKNCOMBI-INS-SYORI-SEC     SECTION.
-      *
-      **   MOVE    SPACE               TO  WRK-KEIERRCD
-           MOVE    SPACE               TO  WRK-ERRCD
-           MOVE    ZERO                TO  FLG-HKNEND
-           MOVE    SPACE               TO  SPA-MOTOPG
-      *
-           PERFORM UNTIL    (FLG-HKNEND    =   1   )
-               MOVE    SPA-P02SCRAREA      TO  SPA-FREE
-               MOVE    SPA-P02KYOUTU       TO  SPA-WORK
-               MOVE    SPA-AREA            TO  SPA-COMMON
-      *        基本情報チェック
-               MOVE    "CLICKED"           TO  MCP-EVENT
-               MOVE    "API4"              TO  MCP-WIDGET
-               MOVE    "PUTG"              TO  MCP-STATUS
-               CALL    "ORCGP02W1"     USING   MCPAREA
-                                               SPAAREA
-                                               LINKAREA
-                                               SCRAREA
-               MOVE    SPA-COMMON          TO  SPA-AREA
-               MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-               MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-      *
-               MOVE    SPACE               TO  SPA-MOTOPG
-               MOVE    ZERO                TO  SPA-FLG-END
-               MOVE    SPACE               TO  WRK-ERR-KOHNUM
-               MOVE    SPACE               TO  WRK-ERR-KOHNUMMEI
-               IF      SPA-ERRCD       NOT =   SPACE
-                   IF      SPA-KOH-ERRIDX      =   ZERO
-      *                保険エラー
-                       MOVE    SPA-GMN-HKNNUM  TO  WRK-ERR-KOHNUM
-                       MOVE    SPA-GMN-HKNNUMMEI
-                                               TO  WRK-ERR-KOHNUMMEI
-                   ELSE
-      *                公費エラー
-                       MOVE    SPA-GMN-KOHNUM (SPA-KOH-ERRIDX)
-                                               TO  WRK-ERR-KOHNUM
-                       MOVE    SPA-GMN-KOHNUMMEI (SPA-KOH-ERRIDX)
-                                               TO  WRK-ERR-KOHNUMMEI
-                   END-IF
-               END-IF
-               IF      SPA-PIDCD       NOT =   SPACE
-                   IF     (SPA-KOH-ERRIDX      =   ZERO)
-                      AND (SPA-KOH-IDX1        =   ZERO)
-      *                保険エラー
-                       MOVE    SPA-GMN-HKNNUM  TO  WRK-ERR-KOHNUM
-                       MOVE    SPA-GMN-HKNNUMMEI
-                                               TO  WRK-ERR-KOHNUMMEI
-                   ELSE
-      *                公費エラー
-                       IF      SPA-KOH-ERRIDX  NOT =   ZERO
-                           MOVE    SPA-GMN-KOHNUM (SPA-KOH-ERRIDX)
-                                               TO  WRK-ERR-KOHNUM
-                           MOVE    SPA-GMN-KOHNUMMEI (SPA-KOH-ERRIDX)
-                                               TO  WRK-ERR-KOHNUMMEI
-                       END-IF
-                       IF      SPA-KOH-IDX1  NOT =   ZERO
-                           MOVE    SPA-GMN-KOHNUM (SPA-KOH-IDX1)
-                                               TO  WRK-ERR-KOHNUM
-                           MOVE    SPA-GMN-KOHNUMMEI (SPA-KOH-IDX1)
-                                               TO  WRK-ERR-KOHNUMMEI
-                       END-IF
-                   END-IF
-               END-IF
-               IF     (SPA-ERRCD           =   SPACE )
-                  AND (SPA-PIDCD           =   SPACE )
-                   MOVE    1               TO  FLG-HKNEND
-               END-IF
-               IF     (SPA-ERRCD(1:1)      =   "K"   )
-                   IF      WRK-KEIERRCD        =   SPACE
-                       MOVE    SPA-ERRCD       TO  WRK-KEIERRCD
-                   END-IF
-                   MOVE    SPACE           TO  SPA-ERRCD
-               END-IF
-               IF     (SPA-ERRCD       NOT =   SPACE )
-                   MOVE    "H1"            TO  WRK-ERRCD
-                   MOVE    1               TO  FLG-HKNEND
-               END-IF
-               IF     (SPA-PIDCD       NOT =   SPACE )
-                   MOVE    "P2"            TO  WRK-ERRCD
-                   MOVE    1               TO  FLG-HKNEND
-               END-IF
-           END-PERFORM
-      *
-      *    保険種類の変更チェック
-           IF      WRK-ERRCD           =   SPACE
-               IF     (PTMODREQ-MAIN-INSURANCE-CLASS
-                                       NOT =   SPACE)
-                 AND  (PTMODREQ-MAIN-INSURANCE-CLASS
-                                       NOT =   SPA-PTHKN-HKNNUM
-                                                    (SPA-PTHKN-MAX))
-                   ADD     1                   TO  IDX-W
-                   MOVE    "K3"                TO  WRK-KEICD(IDX-W)
-               END-IF
-           END-IF
-      *    同じ内容の保険チェック
-           IF     (SPA-PTHKN-MAX       >   ZERO )
-             AND  (SPA-PTHKN-SINKIKBN (SPA-PTHKN-MAX)  =   "1" )
-               PERFORM VARYING    IDX      FROM   1   BY  1
-                       UNTIL     (IDX          >=  SPA-PTHKN-MAX )
-                             OR  (WRK-ERRCD    NOT =   SPACE )
-                   IF      (SPA-PTHKN-HKNNUM (IDX)
-                                       =   SPA-PTHKN-HKNNUM
-                                                 (SPA-PTHKN-MAX))
-                   AND     (SPA-PTHKN-HKNJANUM(IDX)
-                                       =   SPA-PTHKN-HKNJANUM
-                                                 (SPA-PTHKN-MAX))
-                   AND     (SPA-PTHKN-KIGO(IDX)
-                                       =   SPA-PTHKN-KIGO
-                                                 (SPA-PTHKN-MAX))
-                   AND     (SPA-PTHKN-NUM(IDX)
-                                       =   SPA-PTHKN-NUM
-                                                 (SPA-PTHKN-MAX))
-                   AND     (SPA-PTHKN-HOJOKBN(IDX)
-                                       =   SPA-PTHKN-HOJOKBN
-                                                 (SPA-PTHKN-MAX))
-                   AND     (SPA-PTHKN-HONKZKKBN(IDX)
-                                       =   SPA-PTHKN-HONKZKKBN
-                                                 (SPA-PTHKN-MAX))
-                   AND     (SPA-PTHKN-CONTKBN(IDX)
-                                       =   SPA-PTHKN-CONTKBN
-                                                 (SPA-PTHKN-MAX))
-                   AND     (SPA-PTHKN-HIHKNJANAME(IDX)
-                                       =   SPA-PTHKN-HIHKNJANAME
-                                                 (SPA-PTHKN-MAX))
-                       MOVE   "62"             TO  WRK-ERRCD
-                   END-IF
-               END-PERFORM
-           END-IF
-      *    同じ内容の公費チェック
-           IF     (SPA-PTKOH-MAX       >   ZERO )
-             AND  (WRK-ERRCD           =   SPACE)
-             AND  (SPA-PTKOH-SINKIKBN (SPA-PTKOH-MAX)  =   "1" )
-               PERFORM VARYING    IDX      FROM   1   BY  1
-                       UNTIL     (IDX          >   SPA-PTKOH-MAX )
-                             OR  (WRK-ERRCD    NOT =   SPACE )
-                   IF      SPA-PTKOH-SINKIKBN (IDX)    =   "1"
-                       PERFORM 2004141-KOHJYUCHK-SEC
-                   END-IF
-               END-PERFORM
-           END-IF
-           .
-       200414-HKNCOMBI-INS-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    同じ内容の公費チェック処理
-      *****************************************************************
-       2004141-KOHJYUCHK-SEC               SECTION.
-      *
-           PERFORM VARYING    IDY      FROM   1   BY  1
-                   UNTIL     (IDY      >   SPA-PTKOH-MAX)
-                         OR  (WRK-ERRCD    NOT =   SPACE )
-               IF      (IDX        NOT =   IDY )
-               AND     (SPA-PTKOH-KOHNUM (IDX)
-                                       =   SPA-PTKOH-KOHNUM (IDY))
-               AND     (SPA-PTKOH-FTNJANUM (IDX)
-                                       =   SPA-PTKOH-FTNJANUM (IDY))
-               AND     (SPA-PTKOH-JKYSNUM (IDX)
-                                       =   SPA-PTKOH-JKYSNUM (IDY))
-               AND     (SPA-PTKOH-TEKSTYMD (IDX)
-                                       =   SPA-PTKOH-TEKSTYMD (IDY))
-               AND     (SPA-PTKOH-TEKEDYMD (IDX)
-                                       =   SPA-PTKOH-TEKEDYMD (IDY))
-                   MOVE   "63"             TO  WRK-ERRCD
-                   MOVE   SPA-PTKOH-KOHNUM(IDX)
-                                           TO  WRK-ERR-KOHNUM
-                   MOVE   SPA-PTKOH-KOHNUM-MEI(IDX)
-                                           TO  WRK-ERR-KOHNUMMEI
-               END-IF
-           END-PERFORM
-           .
-       200414-HKNCOMBI-INS-SYORI-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険・公費ＩＤ登録処理
-      *****************************************************************
-       20042-PTNUM-UPDATE-SEC               SECTION.
-      *
-           INITIALIZE                      PTNUM-REC
-           MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
-           MOVE    SPA-PTID            TO  PTNUM-PTID
-      *
-           MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    "tbl_ptnum"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptnum"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-PTNUM-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTNUM
-           END-IF
-           MOVE    "tbl_ptnum"         TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-PTNUM           =   ZERO
-               IF     (SPA-MAE-HKNID       =   PTNUM-HKNID)
-                  AND (SPA-MAE-KOHID       =   PTNUM-KOHID)
-                  AND (SPA-MAE-AUTOCOMBINUM  =   PTNUM-AUTOCOMBINUM)
-                  AND (SPA-MAE-MANUCOMBINUM  =   PTNUM-MANUCOMBINUM)
-                   CONTINUE
-               ELSE
-                   MOVE    "51"            TO  WRK-ERRCD
-                   GO      TO  20042-PTNUM-UPDATE-EXT
-               END-IF
-               MOVE    SPA-PTNUM-HKNID         TO  PTNUM-HKNID
-               MOVE    SPA-PTNUM-KOHID         TO  PTNUM-KOHID
-               MOVE    SPA-PTNUM-AUTOCOMBINUM  TO  PTNUM-AUTOCOMBINUM
-               MOVE    SPA-PTNUM-MANUCOMBINUM  TO  PTNUM-MANUCOMBINUM
-      *
-               MOVE    SMCNDATE-YMD        TO  PTNUM-UPYMD
-               MOVE    SMCNDATE-HMS        TO  PTNUM-UPHMS
-      *
-               MOVE    WRK-OPID            TO  PTNUM-OPID
-      *
-               MOVE    PTNUM-REC           TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "tbl_ptnum"         TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-               IF      MCP-RC          NOT =   ZERO
-                   DISPLAY "API PTNUM UPD ERR:" MCP-RC
-                          ",KEY:" PTNUM-KEY   "."
-                   MOVE    "51"            TO  WRK-ERRCD
-               END-IF
-           ELSE
-               MOVE    "10"                TO  WRK-ERRCD
-           END-IF
-           .
-       20042-PTNUM-UPDATE-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    パラメタ削除処理
       *****************************************************************
@@ -3850,17 +3115,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        4904-PARA-DEL-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    ＣＬＡＩＭ接続情報取得処理
       *****************************************************************
        4905-CLAIM-CHK-SEC               SECTION.
-      *
-      *v4.8
-      *    ginbee対応
-           IF      SPA-MW              =   SPA-GINBEE
-               GO      TO      4905-CLAIM-CHK-EXT
-           END-IF
       *
            MOVE    ZERO                TO  FLG-CLAIM
            MOVE    ZERO                TO  FLG-CLAIM-MULTIHOST
@@ -4028,19 +3286,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4907-USERPG-SEC                 SECTION.
       *
-      *v4.8
-      *    ginbee対応
-      *    IF      SPA-MW              =   SPA-GINBEE
-      *        GO      TO      4907-USERPG-EXT
-      *    END-IF
-      *
-      *
            EVALUATE    FLG-USERPG
                WHEN    1
       *        追加
                    MOVE    1               TO  WRK-SYORI-FLG
                WHEN    2
-               WHEN    4
       *        更新
                    MOVE    2               TO  WRK-SYORI-FLG
                WHEN    3
@@ -4127,8 +3377,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-INPUT
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
-      *H29.10
-              OR  (KANACHK-RC4     NOT =   ZERO  )
                MOVE    1                   TO  FLG-ERR
                MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            ELSE
@@ -4169,8 +3417,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    KANACHK2-MAE-INPUT  TO  WRK-MAE-INPUT
            IF     (KANACHK2-RC     NOT =   ZERO  )  OR
                   (KANACHK2-SYUBETU    =   1     )
-      *H29.10
-              OR  (KANACHK2-RC5     NOT =   ZERO  )
                MOVE    1                   TO  FLG-ERR
                MOVE    KANACHK2-MAE-INPUT  TO  WRK-ATO-INPUT
            ELSE
@@ -4194,8 +3440,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  WRK-MAE-INPUT
            IF     (KANACHK-RC      NOT =   ZERO  )
-      *H29.10
-              OR  (KANACHK-RC4     NOT =   ZERO  )
                MOVE    1                   TO  FLG-ERR
                MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            ELSE
@@ -4298,11 +3542,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    "33"
                MOVE    "番号全角エラー"
                                                TO  WRK-ERRMSG
-      *H30.4
-           WHEN    "34"
-               MOVE    "妊婦設定はできません。"
-                                               TO  WRK-ERRMSG
-      *
            WHEN    "39"
                MOVE    "労災・自賠責保険は登録できません。"
                                                TO  WRK-ERRMSG
@@ -4326,13 +3565,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    "43"
                MOVE    "患者番号登録済みエラー"
                                                TO  WRK-ERRMSG
-      *H30.4
-           WHEN    "44"
-               MOVE    "患者情報登録エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "45"
-               MOVE    "患者個別情報登録エラー"
-                                               TO  WRK-ERRMSG
       *更新
            WHEN    "50"
                STRING  "患者登録内容が一致しません。"
@@ -4345,12 +3577,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  WRK-ERRMSG
            WHEN    "52"
                MOVE    "旧姓履歴登録エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "53"
-               MOVE    "更新区分エラー"
-                                               TO  WRK-ERRMSG
-           WHEN    "54"
-               MOVE    "患者個別情報更新エラー"
                                                TO  WRK-ERRMSG
       *削除
            WHEN    "81"
@@ -4368,38 +3594,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            WHEN    "83"
                MOVE    "削除処理エラー"
                                                TO  WRK-ERRMSG
-      *更新
-           WHEN    "60"
-               STRING  "患者登録内容が一致しません。"
-                       "処理できません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
-           WHEN    "61"
-               MOVE    "保険・公費の設定がありません"
-                                               TO  WRK-ERRMSG
-           WHEN    "62"
-               STRING  "同じ内容の保険が登録済みです。"
-                       "処理できません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
-           WHEN    "63"
-               STRING  WRK-ERR-KOHNUM
-                       " "               DELIMITED  BY  SIZE
-                       WRK-ERR-KOHNUMMEI DELIMITED  BY  SPACE
-                       " "               DELIMITED  BY  SIZE
-                       "同じ内容の公費があります。"
-                       "処理できません。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
-           WHEN    "64"
-               MOVE    "保険が４０件以上となります。登録できません。"
-                                               TO  WRK-ERRMSG
-           WHEN    "65"
-               MOVE    "公費が６０件以上となります。登録できません。"
-                                               TO  WRK-ERRMSG
       *警告
            WHEN    "K1"
                STRING  "警告！自動採番の患者番号が最大値です。"
@@ -4409,23 +3603,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-STRING
            WHEN    "K3"
                STRING  "警告！保険の種類を変更しました。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
-           WHEN    "K0"
-               STRING  "警告！同一患者の登録があります。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
-           WHEN    "K4"
-               STRING  "保険組合せが２０件以上存在します。"
-                                               DELIMITED  BY  SIZE
-                                               INTO    WRK-ERRMSG
-               END-STRING
-      *H30.4
-           WHEN    "K5"
-               STRING  "警告！"
-                       "１６歳未満です。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
@@ -4489,8 +3666,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE               TO  WRK-ERRMSG
                STRING    WRK-ERR-KOHNUM
                          " "               DELIMITED  BY  SIZE
-                         WRK-ERR-KOHNUMMEI DELIMITED  BY  SPACE
-                         " "               DELIMITED  BY  SIZE
                          SPA-ERRMSG        DELIMITED  BY  SPACE
                                        INTO    WRK-ERRMSG
                END-STRING
@@ -4514,42 +3689,26 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                                    INTO    WRK-PIDMSG
       ***          END-STRING
                    STRING    SPA-PIDMSG    DELIMITED  BY  SPACE
-                             "　開始日が前期高齢者の適応開始日以前"
-                             "です。"
+                             "　前期高齢者の開始日以降ではありません。"
                                            DELIMITED  BY  SIZE
                                            INTO    WRK-ERRMSG
                    END-STRING
                WHEN    "0105"
-      ********     STRING     "保険の期間が重複します。前の"
-      *                                    DELIMITED  BY  SIZE
-      *                       SPA-PIDMSG   DELIMITED  BY  SPACE
-      *                       "を終了して下さい。"
-      *                                    DELIMITED  BY  SIZE
-      *                                INTO    WRK-ERRMSG
-      *******      END-STRING
-                   STRING     SPA-PIDMSG   DELIMITED  BY  SPACE
-                              "と保険の期間が重複します。"
+                   STRING     "保険の期間が重複します。前の"
+                                           DELIMITED  BY  SIZE
+                              SPA-PIDMSG   DELIMITED  BY  SPACE
+                              "を終了して下さい。"
                                            DELIMITED  BY  SIZE
                                        INTO    WRK-ERRMSG
                    END-STRING
                WHEN    "0106"
-      **********   STRING  "公費の期間が重複します。"
-      *                    "前の公費を終了させます。よろしいですか？"
-      *                                        DELIMITED  BY  SIZE
-      *                                        INTO    WRK-ERRMSG
-      ************ END-STRING
-                   STRING    WRK-ERR-KOHNUM
-                             " "               DELIMITED  BY  SIZE
-                             WRK-ERR-KOHNUMMEI DELIMITED  BY  SPACE
-                             " "               DELIMITED  BY  SIZE
-                             "公費の期間が重複します。"
-                                               DELIMITED  BY  SPACE
-                                       INTO    WRK-ERRMSG
+                   STRING  "公費の期間が重複します。"
+      *******************  "前の公費を終了させます。よろしいですか？"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
                    END-STRING
                WHEN    "0107"
                    STRING    WRK-ERR-KOHNUM
-                             " "               DELIMITED  BY  SIZE
-                             WRK-ERR-KOHNUMMEI DELIMITED  BY  SPACE
                              " "               DELIMITED  BY  SIZE
                              "保険番号マスタとの期間が違います。"
                                                DELIMITED  BY  SPACE
@@ -4563,8 +3722,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    "0202"
-      *!!!         MOVE    "保険を切り替えます。よろしいですか？"
-                   MOVE    "保険番号マスタとの期間が違います。"
+                   MOVE    "保険を切り替えます。よろしいですか？"
                                                TO  WRK-ERRMSG
                WHEN    "0203"
                    STRING  "継続は平成１５年３月末で終了しています。"
@@ -4573,11 +3731,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    "0204"
-      ********     STRING  "任継を切り替えます。"
-      *                    "切り替え後の終了日を確認して下さい。"
-      *                                        DELIMITED  BY  SIZE
-      *                                        INTO    WRK-ERRMSG
-      ********     END-STRING
+                   STRING  "任継を切り替えます。"
+                           "切り替え後の終了日を確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-ERRMSG
+                   END-STRING
                    MOVE    "任継の終了日が違います。"
                                                TO  WRK-ERRMSG
       *        Ｈ１８．１０改正から
@@ -4600,22 +3758,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            END-STRING
       *
                WHEN    "K910"
-      *********    STRING  "警告！"
-                   STRING  "保険組合せ更新で期間外の診療が"
+                   STRING  "警告！"
+                           "保険組合せ更新で期間外の診療が"
                            "発生します。"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-ERRMSG
                    END-STRING
                WHEN    "K911"
-     ************  STRING  "警告！"
-                   STRING  "保険組合せ更新で期間外の病名が"
+                   STRING  "警告！"
+                           "保険組合せ更新で期間外の病名が"
                            "発生します。"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-ERRMSG
                    END-STRING
                WHEN    "K912"
-      ************ STRING  "警告！"
-                   STRING  "保険組合せ更新で期間外の診療と病名が"
+                   STRING  "警告！"
+                           "保険組合せ更新で期間外の診療と病名が"
                            "発生します。"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-ERRMSG
@@ -4694,8 +3852,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-LOCK-IN-SEC         SECTION.
       *
       *    排他制御処理
-      *    DISPLAY "mcp-window = "    MCP-WINDOW 
-      *
+           DISPLAY "mcp-window = "    MCP-WINDOW 
            MOVE    MCP-WINDOW          TO  WRK-MCP-WINDOW
            MOVE    "P02"               TO  SPA-MOTOPG
                                            MCP-WINDOW
@@ -4797,38 +3954,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    旧姓履歴情報取得
-      *****************************************************************
-       903-KYUSEIRRK-READ-SEC              SECTION.
-      *
-           MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    ZERO                TO  FLG-KYUSEIRRK
-                   MOVE    MCPDATA-REC         TO  KYUSEIRRK-REC
-               ELSE
-                   MOVE    1                   TO  FLG-KYUSEIRRK
-                   INITIALIZE                  KYUSEIRRK-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-KYUSEIRRK
-               INITIALIZE                  KYUSEIRRK-REC
-           END-IF
-           MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       903-KYUSEIRRK-READ-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
       *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
@@ -4857,6 +3982,38 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
+      *    No Commit処理
+      *****************************************************************
+       900-NOCOMMIT-SEC            SECTION.
+      *
+      * For Debug
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBDISCONNECT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBOPEN"            TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           MOVE    LOW-VALUE           TO  MCP-TABLE
+                                           MCP-PATHNAME
+           MOVE    "DBSTART"           TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+      * For Debug
+      *
+           .
+       900-NOCOMMIT-EXT.
+           EXIT.
+      *****************************************************************
       *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
@@ -4870,3 +4027,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-EXT.
            EXIT.
       *
+      **************************************************************************
+       010-INIT                SECTION.
+           DISPLAY 'init'
+      *    CALL    "coblog"    USING   "*************"
+      *    CALL    "coblog"    USING   "api start"
+      *    CALL    "coblog"    USING   "*************"
+           MOVE   'NEW'        TO  MCP-PUTTYPE.
+           MOVE   'windowtitle'     TO  MCP-WINDOW.
+           PERFORM 900-PUT-WINDOW.
+      **************************************************************************
+       800-CLICKED             SECTION.
+      *    CALL    "coblog"    USING   "api clicked"
+           DISPLAY 'CLICKED'
+           PERFORM 900-PUT-WINDOW.
+      **************************************************************************
+       900-PUT-WINDOW          SECTION.
+           MOVE   'PUTWINDOW'  TO  MCP-FUNC.
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+                MCPAREA.
