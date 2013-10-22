@@ -2547,51 +2547,46 @@
                MOVE    1           TO  FLG-TARGET
                INITIALIZE              WRK-BYOMEI-G
       *
-               IF    ( ORCHCM34-HOKEN  =   SPACE )
-                OR   ( PTBYO-HKNCOMBI  =   SPACE )
-                   CONTINUE
-               ELSE
-                   MOVE    ZERO    TO  FLG-HIT
-                   PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
-                            OR   ( FLG-HIT =   1 )
+               IF    ( ORCHCM34-HOKEN  NOT =   SPACE )
+                   IF   ( PTBYO-HKNCOMBI   NOT =   SPACE )
+                       MOVE    ZERO    TO  FLG-HIT
+                       PERFORM VARYING IDX0    FROM    1   BY  1
+                               UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
+                                OR   ( FLG-HIT =   1 )
       *
-                       IF    ( PTBYO-HKNCOMBI
+                           IF    ( PTBYO-HKNCOMBI
                                    =   ORCSHKN-GMN-HKNCOMBINUM (IDX0))
       *
-                           MOVE    1       TO  FLG-HIT
+                               MOVE    1       TO  FLG-HIT
       *
-                           IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
-                               CONTINUE
-                           ELSE
-                               MOVE    ZERO    TO FLG-TARGET
+                               IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    ZERO    TO FLG-TARGET
+                               END-IF
                            END-IF
-                       END-IF
+                       END-PERFORM
+                   END-IF
       *
-                   END-PERFORM
+                   IF    ( PTBYO-KOHID NOT =   ZERO )
+                       MOVE    ZERO    TO  FLG-HIT
+                       PERFORM VARYING IDX0    FROM    1   BY  1
+                               UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
       *
-               END-IF
-      *
-               IF    ( PTBYO-KOHID =   ZERO )
-                   CONTINUE
-               ELSE
-                   MOVE    ZERO    TO  FLG-HIT
-                   PERFORM VARYING IDX0    FROM    1   BY  1
-                           UNTIL ( IDX0    >   ORCSHKN-HKN-MAX )
-      *
-                       IF    ( PTBYO-KOHID
+                           IF    ( PTBYO-KOHID
                                    =   ORCSHKN-NAI-KOHID (IDX0 1))
       *
-                           MOVE    1       TO  FLG-HIT
+                               MOVE    1       TO  FLG-HIT
       *
-                           IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
-                               CONTINUE
-                           ELSE
-                               MOVE    ZERO    TO FLG-TARGET
+                               IF    ( FLG-ORCSHKNSET (IDX0)   =   1 )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    ZERO    TO FLG-TARGET
+                               END-IF
                            END-IF
-                       END-IF
+                       END-PERFORM
       *
-                   END-PERFORM
+                   END-IF
       *
                END-IF
       *
