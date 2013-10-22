@@ -141,16 +141,6 @@
            03  WRK-INTYPE             PIC X(01).
       *
            03  WRK-MIDASI             PIC X(160).
-      *H28.11
-      *    空白削除
-           03  TBL-K062-COMMNT-AREA.
-               07  TBL-K062-COMMENT-TBL    OCCURS   50.
-                   09  TBL-K062-COMMENT        PIC X(80).
-                   09  TBL-K062-TENDYMDG       PIC X(10).
-                   09  TBL-K062-TENDYMD        PIC X(08).
-                   09  TBL-K062-INFLG          PIC X(01).
-      *
-           03  WRK-YUKOSTYMD           PIC X(08).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -180,23 +170,11 @@
            03  FILLER          PIC X(09)   VALUE  "099800171".
       *    がん患者リハビリ開始日
            03  FILLER          PIC X(09)   VALUE  "099800181".
-      *    廃用症候群リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800191".
-      *    心大血管疾患　早期・初期リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800211".
-      *    脳血管疾患　早期・初期リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800221".
-      *    運動器　早期・初期リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800231".
-      *    呼吸器早期・初期リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800241".
-      *    廃用症候群・初期リハビリ開始日
-           03  FILLER          PIC X(09)   VALUE  "099800291".
       *
        01  TBL-IKOU-SRYCD-GR   REDEFINES   TBL-IKOU-SRYCD-G.
            03  TBL-IKOU-SRYCD          PIC X(09)
-                                       OCCURS    14.
-       01  TBL-IKOU-MAX                PIC 9(02)   VALUE   14.
+                                       OCCURS    8.
+       01  TBL-IKOU-MAX                PIC 9(02)   VALUE   8.
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
@@ -369,8 +347,7 @@
            END-IF
       *
            IF      FLG-END         =   ZERO
-      ******   MOVE    SPACE               TO  LINKAREA
-               MOVE    SPACE               TO  LNK-KYOUTU
+               MOVE    SPACE               TO  LINKAREA
       *
                MOVE    SPACE               TO  MCP-PUTTYPE
                MOVE    "K062   "           TO  MCP-WINDOW
@@ -663,8 +640,6 @@
                    MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
                    PERFORM 31011-HKNCOMBI-SET-SEC
                    IF      COMB-HKNNUM         =   "971"  OR  "973"
-      *             第三者行為
-                    OR    (COMB-KOH1HKNNUM     =   "970"  )
                        CONTINUE
                    ELSE
                        MOVE    1               TO  FLG-SRY-OK
@@ -977,69 +952,6 @@
                    MOVE    PTRSI-SHOBYOYMD     TO  WRK-COMB-TEKSTYMD
                END-IF
            END-IF
-      *
-      *    保険組合せ名は２０バイト
-           IF      WRK-HKNCOMBIMEI NOT =   SPACE
-               INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "1"                 TO  KANACHK-SYORI
-               MOVE    WRK-HKNCOMBIMEI     TO  KANACHK-MAE-INPUT
-               MOVE    20                  TO  KANACHK-MAX-CNT
-               CALL    "ORCSKANACHK"       USING
-                                               ORCSKANACHKAREA
-               MOVE    KANACHK-MAE-INPUT   TO  WRK-HKNCOMBIMEI
-           END-IF
-      *
-      *ver.4.7
-      *    第三者行為
-           IF      COMB-KOH1HKNNUM     =   "970"
-      *        患者保険情報検索
-               INITIALIZE                      PTRSIINF-REC
-               MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
-               MOVE    SPA-PTID            TO  PTRSI-PTID
-               MOVE    ZERO                TO  PTRSI-HKNID
-               MOVE    COMB-KOH1ID         TO  PTRSI-KOHID
-               MOVE    PTRSIINF-REC        TO  MCPDATA-REC
-               MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 993-PTRSIINF-NEXT-SEC
-               ELSE
-                   INITIALIZE                      PTRSIINF-REC
-                   MOVE    1                   TO  FLG-PTRSIINF
-               END-IF
-               MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
-      *        名称編集
-               IF      PTRSI-COMMENT   NOT =   SPACE
-      *            保険＋公費１のみとなる
-                   MOVE    SPACE               TO  WRK-HKNCOMBIMEI
-                   STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                           " "                     DELIMITED  BY  SIZE
-                           COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                           "（"                    DELIMITED  BY  SIZE
-                           PTRSI-COMMENT(1:24)     DELIMITED  BY  SPACE
-                           "）"                    DELIMITED  BY  SIZE
-                           INTO              WRK-HKNCOMBIMEI
-                   END-STRING
-      *            保険組合せ名は２０バイト
-                   INITIALIZE                  ORCSKANACHKAREA
-                   MOVE    "1"                 TO  KANACHK-SYORI
-                   MOVE    WRK-HKNCOMBIMEI     TO  KANACHK-MAE-INPUT
-                   MOVE    20                  TO  KANACHK-MAX-CNT
-                   CALL    "ORCSKANACHK"       USING
-                                               ORCSKANACHKAREA
-                   MOVE    KANACHK-MAE-INPUT   TO  WRK-HKNCOMBIMEI
-               END-IF
-      *        傷病年月日と療養開始日判定
-               IF     (PTRSI-SHOBYOYMD     NOT =   SPACE  )  AND
-                      (PTRSI-SHOBYOYMD         <   COMB-TEKSTYMD)
-                   MOVE    PTRSI-SHOBYOYMD     TO  WRK-COMB-TEKSTYMD
-               END-IF
-          END-IF
            .
        31011-HKNCOMBI-SET-EXT.
            EXIT.
@@ -1233,36 +1145,16 @@
        41012-COMMENT-CHK-SEC          SECTION.
       *
       *    空白削除
-      *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL       IDX     >   50
-      *        IF     (IDX                 <   50   )  AND
-      *               (SPA-K062-COMMENT(IDX)   =   SPACE )
-      *            MOVE    SPA-K062-COMMENT-TBL (IDX + 1)
-      *                                    TO  SPA-K062-COMMENT-TBL(IDX)
-      *            MOVE    SPACE           TO  SPA-K062-COMMENT-TBL
-      *                                                        (IDX + 1)
-      *        END-IF
-      **** END-PERFORM
-      *
-      *H28.11
-      *    空白削除
-           INITIALIZE                  TBL-K062-COMMNT-AREA
-           MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   50
-               IF     (SPA-K062-COMMENT(IDX)   NOT =   SPACE )
-                   ADD     1               TO  IDX2
-                   MOVE    SPA-K062-COMMENT-TBL (IDX)
-                                           TO  TBL-K062-COMMENT-TBL
-                                                                (IDX2)
+               IF     (IDX                 <   50   )  AND
+                      (SPA-K062-COMMENT(IDX)   =   SPACE )
+                   MOVE    SPA-K062-COMMENT-TBL (IDX + 1)
+                                           TO  SPA-K062-COMMENT-TBL(IDX)
+                   MOVE    SPACE           TO  SPA-K062-COMMENT-TBL
+                                                               (IDX + 1)
                END-IF
            END-PERFORM
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   50
-               MOVE    TBL-K062-COMMENT-TBL (IDX)
-                                           TO  SPA-K062-COMMENT-TBL(IDX)
-           END-PERFORM
-      *
       *    全角チェック
            MOVE    ZERO                TO  IDX-ERR
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1270,7 +1162,7 @@
                           OR  (SPA-ERRCD   NOT =   SPACE )
                IF      SPA-K062-COMMENT(IDX)   NOT =   SPACE
                    PERFORM 410121-MEISYO-HENKAN-SEC
-      ***********  IF     (SPA-K062-TENDYMDG(IDX)  NOT =   SPACE )
+      **********   IF     (SPA-K062-TENDYMDG(IDX)  NOT =   SPACE )
                    IF     (SPA-ERRCD                   =   SPACE )
                        PERFORM 410122-TENDYMD-CHK-SEC
                    END-IF
@@ -1786,8 +1678,7 @@
                GO      TO      500-SET-SCREEN-EXT
            END-IF
       *
-      **** MOVE    SPACE               TO  LINKAREA
-           MOVE    SPACE               TO  LNK-KYOUTU
+           MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE.
            MOVE    "K062"              TO  MCP-WINDOW.
@@ -2110,7 +2001,6 @@
            MOVE    SPACE               TO  SPA-KID1-FLG
       *
            MOVE    SPACE               TO  KID1
-           INITIALIZE                      KID1
            MOVE    SPA-KIDCD           TO  KID1-ID1CODE
            MOVE    WRK-KIDMSG          TO  KID1-ID1MSG
       *
@@ -2175,8 +2065,6 @@
            MOVE    "01"                TO  TNS-YUKOSTYMD (7:2)
            MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
       *
-           MOVE    TNS-YUKOSTYMD       TO  WRK-YUKOSTYMD
-      *
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
@@ -2225,8 +2113,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-           MOVE    WRK-YUKOSTYMD       TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
       *
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
